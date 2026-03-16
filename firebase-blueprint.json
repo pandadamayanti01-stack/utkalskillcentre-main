@@ -1,0 +1,114 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Stores student profile information.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Firebase UID" },
+        "name": { "type": "string", "description": "Full Name" },
+        "email": { "type": "string", "description": "Email Address" },
+        "class": { "type": "integer", "description": "Student Class (3-10)" },
+        "board": { "type": "string", "description": "Education Board" },
+        "preferred_language": { "type": "string", "description": "Preferred Language (en|or)" },
+        "points": { "type": "integer", "description": "Learning points" },
+        "role": { "type": "string", "enum": ["student", "admin"] },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "email", "role"]
+    },
+    "Chapter": {
+      "title": "Learning Chapter",
+      "description": "Stores chapters and video playlists.",
+      "type": "object",
+      "properties": {
+        "class": { "type": "integer" },
+        "board": { "type": "string" },
+        "language": { "type": "string" },
+        "subject": { "type": "string" },
+        "title": { "type": "string" },
+        "topic_title": { "type": "string" },
+        "concept_id": { "type": "string" },
+        "playlist_id": { "type": "string" }
+      },
+      "required": ["class", "board", "language", "subject", "title", "concept_id", "playlist_id"]
+    },
+    "Question": {
+      "title": "Quiz Question",
+      "description": "Stores questions for a chapter.",
+      "type": "object",
+      "properties": {
+        "chapter_id": { "type": "string" },
+        "question": { "type": "string" },
+        "options": { "type": "array", "items": { "type": "string" } },
+        "correct_answer": { "type": "string" }
+      },
+      "required": ["chapter_id", "question", "options", "correct_answer"]
+    },
+    "TestResult": {
+      "title": "Test Result",
+      "description": "Stores test results for students.",
+      "type": "object",
+      "properties": {
+        "user_id": { "type": "string" },
+        "chapter_id": { "type": "string" },
+        "score": { "type": "integer" },
+        "total": { "type": "integer" },
+        "completed_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["user_id", "chapter_id", "score", "total"]
+    },
+    "Payment": {
+      "title": "Payment Transaction",
+      "description": "Stores Razorpay payment history.",
+      "type": "object",
+      "properties": {
+        "user_id": { "type": "string" },
+        "amount": { "type": "number" },
+        "status": { "type": "string" },
+        "razorpay_order_id": { "type": "string" },
+        "razorpay_payment_id": { "type": "string" },
+        "razorpay_signature": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["user_id", "amount", "status", "razorpay_order_id"]
+    },
+    "Subscription": {
+      "title": "User Subscription",
+      "description": "Stores subscription status.",
+      "type": "object",
+      "properties": {
+        "active": { "type": "boolean" },
+        "plan": { "type": "string" },
+        "expires_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["active"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Collection of user profiles."
+    },
+    "/chapters/{chapterId}": {
+      "schema": "Chapter",
+      "description": "Learning chapters."
+    },
+    "/questions/{questionId}": {
+      "schema": "Question",
+      "description": "Quiz questions."
+    },
+    "/test_results/{resultId}": {
+      "schema": "TestResult",
+      "description": "Test results."
+    },
+    "/payments/{paymentId}": {
+      "schema": "Payment",
+      "description": "Payment records."
+    },
+    "/subscriptions/{userId}": {
+      "schema": "Subscription",
+      "description": "User subscription status."
+    }
+  }
+}

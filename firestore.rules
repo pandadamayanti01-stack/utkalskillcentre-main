@@ -1,0 +1,143 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: {userId} (Firebase UID)
+    // Fields:
+    //   - id: string (required) - Firebase UID
+    //   - name: string (required, 1-100 chars)
+    //   - email: string (optional)
+    //   - class: int (required, 5-10)
+    //   - points: int (default 0)
+    //   - role: string (student|admin)
+    //   - createdAt: timestamp
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (request.auth.token.email == "pandadamayanti01@gmail.com" ||
+         request.auth.token.phone_number == "+919337956168" ||
+         (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'));
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function isValidUser(userId, data) {
+      let allowedFields = ['id', 'name', 'email', 'class', 'role', 'board', 'points', 'updatedAt', 'createdAt', 'stats', 'preferred_language', 'phone'];
+      return data.keys().hasOnly(allowedFields) &&
+             (!('id' in data) || data.id == userId) &&
+             (!('name' in data) || (data.name is string && data.name.size() > 0 && data.name.size() < 100)) &&
+             (!('class' in data) || (data.class is number && data.class >= 3 && data.class <= 12) || data.class == null) &&
+             (!('email' in data) || (isValidEmail(data.email))) &&
+             (!('role' in data) || (data.role in ['admin', 'student'])) &&
+             (!('board' in data) || (data.board is string && data.board.size() < 100) || data.board == null) &&
+             (!('points' in data) || (data.points is number)) &&
+             (!('updatedAt' in data) || (data.updatedAt is timestamp)) &&
+             (!('createdAt' in data) || (data.createdAt is timestamp || data.createdAt is string)) &&
+             (!('preferred_language' in data) || (data.preferred_language in ['en', 'or'])) &&
+             (!('stats' in data) || (data.stats is map));
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    // Admin-only collections
+    match /transactions/{id} {
+      allow read, write: if isAdmin();
+    }
+    
+    match /ai_usage/{id} {
+      allow read, write: if isAdmin();
+    }
+    
+    match /notifications/{id} {
+      allow read, write: if isAdmin();
+    }
+    
+    match /settings/{id} {
+      allow read, write: if isAdmin();
+    }
+
+    match /content/{id} {
+      // Everyone can read content (courses/chapters), only admin can write
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /chapters/{id} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /questions/{id} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /test_results/{id} {
+      allow read: if isAuthenticated() && (request.auth.uid == resource.data.user_id || isAdmin());
+      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.user_id;
+      allow update, delete: if isAdmin();
+    }
+
+    match /payments/{id} {
+      allow read: if isAuthenticated() && (request.auth.uid == resource.data.user_id || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.user_id == request.auth.uid;
+      allow update: if isAuthenticated() && resource.data.user_id == request.auth.uid;
+      allow delete: if isAdmin();
+    }
+
+    match /subscriptions/{id} {
+      allow read: if isAuthenticated() && (request.auth.uid == id || isAdmin());
+      allow write: if isAuthenticated() && request.auth.uid == id;
+    }
+
+    match /public_profiles/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId) || isAdmin();
+    }
+    match /users/{userId} {
+      // Students can read their own profile. Admins can read all.
+      allow read: if isOwner(userId) || isAdmin();
+      
+      // Allow creation if authenticated and data is valid.
+      allow create: if isAuthenticated() && 
+                      isOwner(userId) &&
+                      isValidUser(userId, request.resource.data) &&
+                      (request.resource.data.role != 'admin' || isAdmin());
+      
+      // Allow updates if owner or admin.
+      allow update: if (isOwner(userId) || isAdmin()) &&
+                      isValidUser(userId, request.resource.data) &&
+                      (request.resource.data.role == resource.data.role || isAdmin());
+      
+      allow delete: if isAdmin();
+    }
+
+    // Default deny
+    match /{path=**} {
+      allow read, write: if false;
+    }
+  }
+}
