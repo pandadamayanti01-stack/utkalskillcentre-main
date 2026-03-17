@@ -46,6 +46,8 @@ import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, que
 import { translations } from './translations';
 import { solveMathDoubt } from './services/aiService';
 import { AdminDashboard } from './components/AdminDashboard';
+import logoUtkal from '../public/logo_utkal.png';
+import logoBigsan from '../public/logo_bigsan.png';
 
 // --- Types ---
 interface Badge {
@@ -120,7 +122,7 @@ const fetchJson = async (url: string, options?: RequestInit) => {
 const Logo = ({ className = "h-12" }: { className?: string }) => (
   <div className={`flex items-center gap-3 ${className}`}>
     <img 
-      src="/logo_utkal.png" 
+      src={logoUtkal} 
       alt="Utkal Skill Centre" 
       className="h-full object-contain" 
       referrerPolicy="no-referrer"
@@ -139,7 +141,7 @@ const BigsanBranding = ({ className = "" }: { className?: string }) => {
         {translations[lang]?.associate || 'Associate Partner'}
       </p>
       <img 
-        src="/logo_bigsan.png" 
+        src={logoBigsan} 
         alt="Bigsan Group" 
         className="h-6 opacity-80 grayscale hover:grayscale-0 transition-all" 
         referrerPolicy="no-referrer"
