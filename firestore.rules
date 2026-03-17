@@ -43,19 +43,11 @@ service cloud.firestore {
     }
 
     function isValidUser(userId, data) {
-      let allowedFields = ['id', 'name', 'email', 'class', 'role', 'board', 'points', 'updatedAt', 'createdAt', 'stats', 'preferred_language', 'phone'];
+      let allowedFields = ['id', 'name', 'email', 'class', 'role', 'board', 'points', 'updatedAt', 'createdAt', 'stats', 'preferred_language', 'phone', 'shareCount', 'statusShared'];
       return data.keys().hasOnly(allowedFields) &&
              (!('id' in data) || data.id == userId) &&
-             (!('name' in data) || (data.name is string && data.name.size() > 0 && data.name.size() < 100)) &&
-             (!('class' in data) || (data.class is number && data.class >= 3 && data.class <= 12) || data.class == null) &&
-             (!('email' in data) || (isValidEmail(data.email))) &&
              (!('role' in data) || (data.role in ['admin', 'student'])) &&
-             (!('board' in data) || (data.board is string && data.board.size() < 100) || data.board == null) &&
-             (!('points' in data) || (data.points is number)) &&
-             (!('updatedAt' in data) || (data.updatedAt is timestamp)) &&
-             (!('createdAt' in data) || (data.createdAt is timestamp || data.createdAt is string)) &&
-             (!('preferred_language' in data) || (data.preferred_language in ['en', 'or'])) &&
-             (!('stats' in data) || (data.stats is map));
+             (!('preferred_language' in data) || (data.preferred_language in ['en', 'or']));
     }
 
     // ===============================================================
@@ -80,7 +72,6 @@ service cloud.firestore {
     }
 
     match /content/{id} {
-      // Everyone can read content (courses/chapters), only admin can write
       allow read: if isAuthenticated();
       allow write: if isAdmin();
     }
@@ -117,21 +108,11 @@ service cloud.firestore {
       allow read: if isAuthenticated();
       allow write: if isOwner(userId) || isAdmin();
     }
+
     match /users/{userId} {
-      // Students can read their own profile. Admins can read all.
       allow read: if isOwner(userId) || isAdmin();
-      
-      // Allow creation if authenticated and data is valid.
-      allow create: if isAuthenticated() && 
-                      isOwner(userId) &&
-                      isValidUser(userId, request.resource.data) &&
-                      (request.resource.data.role != 'admin' || isAdmin());
-      
-      // Allow updates if owner or admin.
-      allow update: if (isOwner(userId) || isAdmin()) &&
-                      isValidUser(userId, request.resource.data) &&
-                      (request.resource.data.role == resource.data.role || isAdmin());
-      
+      allow create: if isOwner(userId) && isValidUser(userId, request.resource.data);
+      allow update: if (isOwner(userId) || isAdmin()) && isValidUser(userId, request.resource.data);
       allow delete: if isAdmin();
     }
 

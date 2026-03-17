@@ -42,7 +42,7 @@ import {
   sendEmailVerification,
   sendPasswordResetEmail
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, query, where, getDocs, orderBy, limit, addDoc, updateDoc, increment, getCountFromServer } from 'firebase/firestore';
+import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, query, where, getDocs, orderBy, limit, addDoc, updateDoc, increment, getCountFromServer, onSnapshot } from 'firebase/firestore';
 import { translations } from './translations';
 import { solveMathDoubt } from './services/aiService';
 import { AdminDashboard } from './components/AdminDashboard';
@@ -66,6 +66,8 @@ interface Student {
   preferred_language: string;
   points: number;
   role: string;
+  shareCount?: number;
+  statusShared?: boolean;
   stats?: {
     streak: number;
     level: number;
@@ -178,6 +180,8 @@ export default function App() {
   const [resendTimer, setResendTimer] = useState(0);
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   const [regData, _setRegData] = useState({ 
+    name: '',
+    email: '',
     class: '' as any, 
     board: '', 
     preferred_language: 'or' 
@@ -193,6 +197,8 @@ export default function App() {
   const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(null);
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const [adminStats, setAdminStats] = useState<any>(null);
+
+  const sharedAppUrl = window.location.origin;
 
   // --- Firestore Error Handling ---
   enum OperationType {
@@ -240,86 +246,95 @@ export default function App() {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       console.log("onAuthStateChanged: firebaseUser =", firebaseUser);
       if (firebaseUser) {
+        // Set up real-time listener for user data
+        const userDocRef = doc(firestore, 'users', firebaseUser.uid);
+        const unsubUser = onSnapshot(userDocRef, (docSnap) => {
+          if (docSnap.exists()) {
+            const data = docSnap.data() as Student;
+            const updatedUser = { ...data, id: docSnap.id };
+            setUser(updatedUser);
+            if (data.role === 'admin') {
+              setIsAdminView(true);
+            }
+            // Fetch initial data if not already fetched or if class/board changed
+            fetchInitialData(updatedUser);
+          }
+        }, (err) => {
+          handleFirestoreError(err, OperationType.GET, `users/${firebaseUser.uid}`);
+        });
+
         try {
-          // Sync with local backend
-          // Sync with Firestore for security rules and user data
-          let userData: any = null;
+          // Initial sync/creation
+          const userDocSnap = await getDoc(userDocRef);
           const isAdmin = firebaseUser.email === 'pandadamayanti01@gmail.com' || firebaseUser.phoneNumber === '+919337956168' || firebaseUser.phoneNumber === '9337956168';
-          try {
-            const userDocRef = doc(firestore, 'users', firebaseUser.uid);
-            const userDocSnap = await getDoc(userDocRef);
-            
-            const role = isAdmin ? 'admin' : (userDocSnap.exists() ? userDocSnap.data().role : 'student');
-            
-            userData = {
-              id: firebaseUser.uid,
-              name: firebaseUser.displayName || regDataRef.current.name || (userDocSnap.exists() ? userDocSnap.data().name : 'Student'),
-              email: firebaseUser.email || regDataRef.current.email || (userDocSnap.exists() ? userDocSnap.data().email : ''),
-              class: regDataRef.current.class || (userDocSnap.exists() ? userDocSnap.data().class : null),
-              board: regDataRef.current.board || (userDocSnap.exists() ? userDocSnap.data().board : ''),
-              preferred_language: languageRef.current || (userDocSnap.exists() ? userDocSnap.data().preferred_language : 'or'),
-              role: role,
-              points: userDocSnap.exists() ? userDocSnap.data().points : 0,
-              updatedAt: serverTimestamp()
-            };
+          
+          const role = isAdmin ? 'admin' : (userDocSnap.exists() ? userDocSnap.data().role : 'student');
+          
+          const userData: any = {
+            id: firebaseUser.uid,
+            name: firebaseUser.displayName || regDataRef.current.name || (userDocSnap.exists() ? userDocSnap.data().name : 'Student'),
+            email: firebaseUser.email || regDataRef.current.email || (userDocSnap.exists() ? userDocSnap.data().email : ''),
+            class: regDataRef.current.class || (userDocSnap.exists() ? userDocSnap.data().class : null),
+            board: regDataRef.current.board || (userDocSnap.exists() ? userDocSnap.data().board : ''),
+            preferred_language: languageRef.current || (userDocSnap.exists() ? userDocSnap.data().preferred_language : 'or'),
+            role: role,
+            points: userDocSnap.exists() ? userDocSnap.data().points : 0,
+            shareCount: userDocSnap.exists() ? (userDocSnap.data().shareCount || 0) : 0,
+            statusShared: userDocSnap.exists() ? (userDocSnap.data().statusShared || false) : false,
+            updatedAt: serverTimestamp()
+          };
 
-            if (!userDocSnap.exists()) {
-              userData.createdAt = serverTimestamp();
-            }
-
-            await setDoc(userDocRef, userData, { merge: true });
-            await setDoc(doc(firestore, 'public_profiles', firebaseUser.uid), {
-              name: userData.name,
-              points: userData.points,
-              class: userData.class
-            }, { merge: true });
-          } catch (fsErr) {
-            handleFirestoreError(fsErr, OperationType.WRITE, `users/${firebaseUser.uid}`);
-            console.error("Firestore Sync Error:", fsErr);
-            // Fallback to basic user data if Firestore fails
-            userData = {
-              id: firebaseUser.uid,
-              name: firebaseUser.displayName || 'Student',
-              email: firebaseUser.email || '',
-              role: isAdmin ? 'admin' : 'student',
-              points: 0
-            };
+          if (!userDocSnap.exists()) {
+            userData.createdAt = serverTimestamp();
           }
 
-          console.log("onAuthStateChanged: setting user =", userData);
-          setUser(userData);
-          if (userData.role === 'admin') {
-            setIsAdminView(true);
-          }
+          await setDoc(userDocRef, userData, { merge: true });
+          await setDoc(doc(firestore, 'public_profiles', firebaseUser.uid), {
+            name: userData.name,
+            points: userData.points,
+            class: userData.class
+          }, { merge: true });
+        } catch (fsErr) {
+          handleFirestoreError(fsErr, OperationType.WRITE, `users/${firebaseUser.uid}`);
+        }
 
-          // Check subscription
-          try {
-            const subDocRef = doc(firestore, 'subscriptions', firebaseUser.uid);
-            const subDocSnap = await getDoc(subDocRef);
-            if (subDocSnap.exists()) {
-              const subData = subDocSnap.data();
-              const expiresAt = new Date(subData.expires_at);
-              setIsPremium(subData.active && expiresAt > new Date());
-            } else {
-              setIsPremium(false);
-            }
-          } catch (subErr) {
-            console.error("Subscription Check Error:", subErr);
+        // Check subscription
+        const subDocRef = doc(firestore, 'subscriptions', firebaseUser.uid);
+        const unsubSub = onSnapshot(subDocRef, (subDocSnap) => {
+          if (subDocSnap.exists()) {
+            const subData = subDocSnap.data();
+            const now = new Date();
+            const expiresAt = new Date(subData.expires_at);
+            setIsPremium(subData.active && expiresAt > now);
+          } else {
             setIsPremium(false);
           }
-          
-          fetchInitialData(userData);
-        } catch (err) {
-          console.error("Auth Sync Error:", err);
-        }
+        });
+        
+        setLoading(false);
+        return () => {
+          unsubUser();
+          unsubSub();
+        };
       } else {
         setUser(null);
         setIsPremium(false);
+        setLoading(false);
       }
-      setLoading(false);
     });
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    const unsubscribe = onSnapshot(doc(firestore, 'users', user.id), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setUser(prev => prev ? { ...prev, ...data } : null);
+      }
+    });
+    return () => unsubscribe();
+  }, [user?.id]);
 
   useEffect(() => {
     let interval: any;
@@ -635,6 +650,13 @@ export default function App() {
 
   const handleSubscribe = async (amount: number = 199) => {
     if (!user) return;
+
+    if (amount === 999) {
+      if ((user.shareCount || 0) < 5) {
+        alert(language === 'en' ? "Please complete the share requirements to unlock this offer." : "ଏହି ଅଫର୍ ଅନଲକ୍ କରିବାକୁ ଦୟାକରି ସେୟାର୍ ସର୍ତ୍ତଗୁଡିକ ପୂରଣ କରନ୍ତୁ |");
+        return;
+      }
+    }
     
     // FORCE the new key to prevent environment variable mismatch
     const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY;
@@ -749,6 +771,28 @@ export default function App() {
       console.error("Order Creation Error:", err);
       alert("Error creating order: " + err.message);
     }
+  };
+
+  const handleShare = async () => {
+    if (!user) return;
+    const text = `Join Utkal Skill Centre and unlock your potential with AI-based learning! 🚀 https://utkalskillcentre.com`;
+    
+    // Mark as shared immediately - set to 5 to unlock
+    try {
+      await updateDoc(doc(firestore, 'users', user.id), {
+        shareCount: 5
+      });
+    } catch (err) {
+      console.error("Error updating share count:", err);
+    }
+
+    const url = `whatsapp://send?text=${encodeURIComponent(text)}`;
+    const webUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    
+    window.location.href = url;
+    setTimeout(() => {
+      window.open(webUrl, '_blank');
+    }, 500);
   };
 
   if (loading) {
@@ -894,7 +938,10 @@ export default function App() {
                       <select 
                         className="w-full px-3 py-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
                         value={regData.class}
-                        onChange={(e) => setRegData({ ...regData, class: parseInt(e.target.value) })}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setRegData({ ...regData, class: val === "" ? "" : parseInt(val) });
+                        }}
                       >
                         <option value="">{translations[language].selectClass} *</option>
                         {[3,4,5,6,7,8,9,10].map(c => (
@@ -1039,6 +1086,14 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200 flex">
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 z-40 lg:hidden backdrop-blur-sm"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       <aside className={`
         fixed inset-y-0 left-0 z-50 w-72 bg-slate-900/50 backdrop-blur-2xl border-r border-white/5 transform transition-transform duration-300 ease-in-out
@@ -1053,15 +1108,15 @@ export default function App() {
 
           <nav className="flex-1 space-y-2">
             {user.role === 'admin' ? (
-              <SidebarItem icon={<Settings size={20}/>} label={translations[language].admin} active={true} onClick={() => setIsAdminView(true)} />
+              <SidebarItem icon={<Settings size={20}/>} label={translations[language].admin} active={true} onClick={() => { setIsAdminView(true); setSidebarOpen(false); }} />
             ) : (
               <>
-                <SidebarItem icon={<User size={20}/>} label="Profile" active={activeTab === 'profile'} onClick={() => setActiveTab('profile')} />
-                <SidebarItem icon={<BarChart3 size={20}/>} label={translations[language].dashboard} active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} />
-                <SidebarItem icon={<BookOpen size={20}/>} label={translations[language].courses} active={activeTab === 'courses'} onClick={() => setActiveTab('courses')} />
-                <SidebarItem icon={<MessageSquare size={20}/>} label={translations[language].aiSolver} active={activeTab === 'ai'} onClick={() => setActiveTab('ai')} />
-                <SidebarItem icon={<Trophy size={20}/>} label={translations[language].leaderboard} active={activeTab === 'leaderboard'} onClick={() => setActiveTab('leaderboard')} />
-                <SidebarItem icon={<CreditCard size={20}/>} label="Plans" active={activeTab === 'plans'} onClick={() => setActiveTab('plans')} />
+                <SidebarItem icon={<User size={20}/>} label="Profile" active={activeTab === 'profile'} onClick={() => { setActiveTab('profile'); setSidebarOpen(false); }} />
+                <SidebarItem icon={<BarChart3 size={20}/>} label={translations[language].dashboard} active={activeTab === 'dashboard'} onClick={() => { setActiveTab('dashboard'); setSidebarOpen(false); }} />
+                <SidebarItem icon={<BookOpen size={20}/>} label={translations[language].courses} active={activeTab === 'courses'} onClick={() => { setActiveTab('courses'); setSidebarOpen(false); }} />
+                <SidebarItem icon={<MessageSquare size={20}/>} label={translations[language].aiSolver} active={activeTab === 'ai'} onClick={() => { setActiveTab('ai'); setSidebarOpen(false); }} />
+                <SidebarItem icon={<Trophy size={20}/>} label={translations[language].leaderboard} active={activeTab === 'leaderboard'} onClick={() => { setActiveTab('leaderboard'); setSidebarOpen(false); }} />
+                <SidebarItem icon={<CreditCard size={20}/>} label="Plans" active={activeTab === 'plans'} onClick={() => { setActiveTab('plans'); setSidebarOpen(false); }} />
               </>
             )}
           </nav>
@@ -1131,11 +1186,11 @@ export default function App() {
             {activeTab === 'dashboard' && <DashboardView user={user} leaderboard={leaderboard} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} />}
             {activeTab === 'courses' && <CoursesView chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} />}
             {activeTab === 'ai' && (
-              isPremium ? <AiSolverView language={language} /> : <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} />
+              isPremium ? <AiSolverView language={language} /> : <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} />
             )}
             {activeTab === 'leaderboard' && <LeaderboardView leaderboard={leaderboard} language={language} />}
             {activeTab === 'profile' && <ProfileView user={user} />}
-            {activeTab === 'plans' && <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} />}
+            {activeTab === 'plans' && <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} />}
           </AnimatePresence>
         </div>
       </main>
@@ -1409,7 +1464,7 @@ function TopicProgress({ label, progress, color }: any) {
   );
 }
 
-function SubscriptionGuard({ onSubscribe, language, isPremium }: any) {
+function SubscriptionGuard({ onSubscribe, language, isPremium, user, onShare }: any) {
   const p = translations[language].pricing;
   return (
     <div className="max-w-6xl mx-auto py-8">
@@ -1466,19 +1521,55 @@ function SubscriptionGuard({ onSubscribe, language, isPremium }: any) {
             ))}
           </ul>
           {!isPremium ? (
-            <div className="space-y-3">
+            <div className="space-y-4">
               <button 
                 onClick={() => onSubscribe(199)}
                 className="w-full py-4 rounded-2xl bg-emerald-600 text-white font-bold text-lg hover:bg-emerald-500 transition-all shadow-xl shadow-emerald-900/20"
               >
                 Subscribe Monthly (₹199)
               </button>
-              <button 
-                onClick={() => onSubscribe(999)}
-                className="w-full py-4 rounded-2xl bg-white/10 text-white font-bold text-lg hover:bg-white/20 transition-all border border-white/10"
-              >
-                Subscribe Yearly (₹999)
-              </button>
+              
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-4">
+                <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-400">
+                  <span>Unlock Yearly Offer (₹999)</span>
+                  {((user?.shareCount || 0) >= 5) ? (
+                    <span className="text-emerald-500">Unlocked!</span>
+                  ) : (
+                    <span className="text-orange-500">Locked</span>
+                  )}
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs text-slate-300">
+                    <span>{p.shareToUnlock}</span>
+                    <span>{user?.shareCount || 0}/5</span>
+                  </div>
+                  <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-emerald-500 transition-all" 
+                      style={{ width: `${Math.min(((user?.shareCount || 0) / 5) * 100, 100)}%` }}
+                    />
+                  </div>
+                  <button 
+                    onClick={onShare}
+                    className="w-full py-2 rounded-xl bg-emerald-500/10 text-emerald-500 text-xs font-bold hover:bg-emerald-500/20 transition-all border border-emerald-500/20 flex items-center justify-center gap-2"
+                  >
+                    <Send size={14} /> {p.shareOnWhatsApp}
+                  </button>
+                </div>
+
+                <button 
+                  onClick={() => onSubscribe(999)}
+                  disabled={((user?.shareCount || 0) < 5)}
+                  className={`w-full py-4 rounded-2xl font-bold text-lg transition-all ${
+                    ((user?.shareCount || 0) >= 5)
+                    ? 'bg-white text-slate-900 hover:bg-slate-100'
+                    : 'bg-white/5 text-slate-500 cursor-not-allowed'
+                  }`}
+                >
+                  {((user?.shareCount || 0) >= 5) ? p.unlocked : "Subscribe Yearly (₹999)"}
+                </button>
+              </div>
             </div>
           ) : (
             <button disabled className="w-full py-4 rounded-2xl bg-emerald-500/20 text-emerald-500 font-bold cursor-not-allowed">

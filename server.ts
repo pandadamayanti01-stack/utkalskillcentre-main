@@ -34,9 +34,9 @@ async function startServer() {
       const rzp = getRazorpay();
       
       const options = {
-        amount: amount * 100, // amount in smallest currency unit
+        amount: Math.round(amount * 100), // amount in smallest currency unit
         currency: "INR",
-        receipt: `receipt_${Date.now()}_${userId}`
+        receipt: `rcpt_${Date.now().toString().slice(-6)}_${userId ? userId.substring(0, 10) : 'anon'}`
       };
       
       const order = await rzp.orders.create(options);

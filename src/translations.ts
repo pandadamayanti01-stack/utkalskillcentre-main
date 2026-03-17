@@ -109,7 +109,13 @@ export const translations: any = {
         ]
       },
       upgradeNow: "Upgrade to AI Plan",
-      currentPlan: "Current Plan"
+      currentPlan: "Current Plan",
+      shareToUnlock: "Share with 5 friends on WhatsApp to unlock this offer",
+      postStatusToUnlock: "Post to WhatsApp Status to unlock",
+      sharesRemaining: "{count} more shares needed",
+      unlocked: "Offer Unlocked! Pay ₹999 Now",
+      shareOnWhatsApp: "Share on WhatsApp",
+      postToStatus: "WhatsApp Status"
     }
   },
   or: {
@@ -222,7 +228,13 @@ export const translations: any = {
         ]
       },
       upgradeNow: "AI ପ୍ଲାନ୍‌କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ",
-      currentPlan: "ସାମ୍ପ୍ରତିକ ପ୍ଲାନ୍"
+      currentPlan: "ସାମ୍ପ୍ରତିକ ପ୍ଲାନ୍",
+      shareToUnlock: "ଏହି ଅଫର୍ ଅନଲକ୍ କରିବାକୁ WhatsApp ରେ ୫ ଜଣ ସାଙ୍ଗଙ୍କ ସହିତ ସେୟାର୍ କରନ୍ତୁ",
+      postStatusToUnlock: "ଅନଲକ୍ କରିବାକୁ WhatsApp ଷ୍ଟାଟସ୍‌ରେ ପୋଷ୍ଟ କରନ୍ତୁ",
+      sharesRemaining: "ଆଉ {count} ସେୟାର୍ ଆବଶ୍ୟକ",
+      unlocked: "ଅଫର୍ ଅନଲକ୍ ହୋଇଛି! ଏବେ ₹୯୯୯ ପେମେଣ୍ଟ କରନ୍ତୁ",
+      shareOnWhatsApp: "WhatsApp ରେ ସେୟାର୍ କରନ୍ତୁ",
+      postToStatus: "WhatsApp Status"
     }
   }
 };

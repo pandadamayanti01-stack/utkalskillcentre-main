@@ -12,6 +12,8 @@
         "board": { "type": "string", "description": "Education Board" },
         "preferred_language": { "type": "string", "description": "Preferred Language (en|or)" },
         "points": { "type": "integer", "description": "Learning points" },
+        "shareCount": { "type": "integer", "description": "Number of WhatsApp shares" },
+        "statusShared": { "type": "boolean", "description": "Whether WhatsApp status was shared" },
         "role": { "type": "string", "enum": ["student", "admin"] },
         "created_at": { "type": "string", "format": "date-time" }
       },
