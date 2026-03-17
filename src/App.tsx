@@ -510,6 +510,11 @@ export default function App() {
       alert(language === 'en' ? "Please enter a valid phone number" : "ଦୟାକରି ଏକ ସଠିକ୍ ଫୋନ୍ ନମ୍ବର ଦିଅନ୍ତୁ");
       return;
     }
+    if (!isAdminLogin && (phoneNumber === '9337956168' || phoneNumber === '+919337956168')) {
+      alert(language === 'en' ? "This number is registered as Admin. Please use Admin Login." : "ଏହି ନମ୍ବର ଆଡମିନ୍ ଭାବରେ ପଞ୍ଜିକୃତ | ଦୟାକରି ଆଡମିନ୍ ଲଗଇନ୍ ବ୍ୟବହାର କରନ୍ତୁ |");
+      setIsAdminLogin(true);
+      return;
+    }
     startPhoneAuth();
   };
 
@@ -820,7 +825,34 @@ export default function App() {
                           className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
                         />
                       )}
-                      {isSendingOtp ? (language === 'en' ? 'Logging in...' : 'ଲଗଇନ୍ ହେଉଛି...') : (language === 'en' ? 'Login' : 'ଲଗଇନ୍')}
+                      {isSendingOtp ? (language === 'en' ? 'Logging in...' : 'ଲଗଇନ୍ ହେଉଛି...') : (language === 'en' ? 'Login with Email' : 'ଇମେଲ୍ ସହିତ ଲଗଇନ୍')}
+                    </button>
+
+                    <div className="relative my-4">
+                      <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-white/10"></div>
+                      </div>
+                      <div className="relative flex justify-center text-xs">
+                        <span className="bg-slate-900 px-2 text-slate-500">Or Admin Phone Login</span>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <div className="flex items-center justify-center px-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-medium">+91</div>
+                      <input 
+                        type="tel" 
+                        placeholder="Admin Phone"
+                        className="flex-1 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                      />
+                    </div>
+                    <button 
+                      onClick={handlePhoneLogin}
+                      disabled={isSendingOtp}
+                      className={`w-full py-2.5 rounded-xl bg-slate-800 text-white text-sm font-semibold hover:bg-slate-700 transition-all shadow-lg flex items-center justify-center gap-2 ${isSendingOtp ? 'opacity-70 cursor-not-allowed' : ''}`}
+                    >
+                      {language === 'en' ? 'Login with Phone' : 'ଫୋନ୍ ସହିତ ଲଗଇନ୍'}
                     </button>
                     {adminLoginError && (
                       <div className="text-red-400 text-xs text-center mt-2 p-2 bg-red-500/10 rounded-lg border border-red-500/20">
