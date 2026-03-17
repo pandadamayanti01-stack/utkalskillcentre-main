@@ -46,8 +46,8 @@ import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, que
 import { translations } from './translations';
 import { solveMathDoubt } from './services/aiService';
 import { AdminDashboard } from './components/AdminDashboard';
-import logoUtkal from '../public/logo_utkal.png';
-import logoBigsan from '../public/logo_bigsan.png';
+import logoUtkal from './assets/logo_utkal.png';
+import logoBigsan from './assets/logo_bigsan.png';
 
 // --- Types ---
 interface Badge {
