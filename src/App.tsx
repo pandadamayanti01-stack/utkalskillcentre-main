@@ -243,12 +243,20 @@ export default function App() {
   };
 
   useEffect(() => {
+    let unsubUser: (() => void) | undefined;
+    let unsubSub: (() => void) | undefined;
+
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       console.log("onAuthStateChanged: firebaseUser =", firebaseUser);
+      
+      // Clean up previous listeners if auth state changes
+      if (unsubUser) unsubUser();
+      if (unsubSub) unsubSub();
+
       if (firebaseUser) {
         // Set up real-time listener for user data
         const userDocRef = doc(firestore, 'users', firebaseUser.uid);
-        const unsubUser = onSnapshot(userDocRef, (docSnap) => {
+        unsubUser = onSnapshot(userDocRef, (docSnap) => {
           if (docSnap.exists()) {
             const data = docSnap.data() as Student;
             const updatedUser = { ...data, id: docSnap.id };
@@ -300,7 +308,7 @@ export default function App() {
 
         // Check subscription
         const subDocRef = doc(firestore, 'subscriptions', firebaseUser.uid);
-        const unsubSub = onSnapshot(subDocRef, (subDocSnap) => {
+        unsubSub = onSnapshot(subDocRef, (subDocSnap) => {
           if (subDocSnap.exists()) {
             const subData = subDocSnap.data();
             const now = new Date();
@@ -309,31 +317,27 @@ export default function App() {
           } else {
             setIsPremium(false);
           }
+        }, (err) => {
+          handleFirestoreError(err, OperationType.GET, `subscriptions/${firebaseUser.uid}`);
         });
         
         setLoading(false);
-        return () => {
-          unsubUser();
-          unsubSub();
-        };
       } else {
         setUser(null);
         setIsPremium(false);
         setLoading(false);
       }
     });
-    return () => unsubscribe();
+
+    return () => {
+      unsubscribe();
+      if (unsubUser) unsubUser();
+      if (unsubSub) unsubSub();
+    };
   }, []);
 
   useEffect(() => {
-    if (!user?.id) return;
-    const unsubscribe = onSnapshot(doc(firestore, 'users', user.id), (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        setUser(prev => prev ? { ...prev, ...data } : null);
-      }
-    });
-    return () => unsubscribe();
+    // Redundant onSnapshot listener removed
   }, [user?.id]);
 
   useEffect(() => {
