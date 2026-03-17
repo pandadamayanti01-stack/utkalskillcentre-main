@@ -1,0 +1,30 @@
+steps:
+  # 1. Build the container image using buildpacks
+  - name: 'gcr.io/k8s-skaffold/pack'
+    entrypoint: 'pack'
+    args:
+      - 'build'
+      - 'gcr.io/$PROJECT_ID/utkalskillcentre-main:$COMMIT_SHA'
+      - '--builder=gcr.io/buildpacks/builder:v1'
+      - '--path=.'
+  
+  # 2. Deploy container image to Cloud Run in Mumbai
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'utkalskillcentre-mumbai'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/utkalskillcentre-main:$COMMIT_SHA'
+      - '--region'
+      - 'asia-south1'
+      - '--allow-unauthenticated'
+
+images:
+  - 'gcr.io/$PROJECT_ID/utkalskillcentre-main:$COMMIT_SHA'
+
+options:
+  # THIS FIXES THE LOGGING ERROR!
+  logging: CLOUD_LOGGING_ONLY
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
