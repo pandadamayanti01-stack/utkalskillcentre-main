@@ -10,7 +10,7 @@
       {
         "source": "**",
         "run": {
-          "serviceId": "utkalskillcentre-mumbai",
+          "serviceId": "utkalskillcentre-main",
           "region": "asia-south1"
         }
       }

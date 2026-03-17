@@ -14,7 +14,7 @@ steps:
     args:
       - 'run'
       - 'deploy'
-      - 'utkalskillcentre-mumbai'
+      - 'utkalskillcentre-main'
       - '--image'
       - 'gcr.io/$PROJECT_ID/utkalskillcentre-main:$COMMIT_SHA'
       - '--region'
