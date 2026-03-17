@@ -48,7 +48,8 @@ async function startServer() {
       });
     } catch (error: any) {
       console.error('Create Order Error:', error);
-      res.status(500).json({ error: error.message || 'Failed to create order' });
+      const errorMessage = error?.error?.description || error?.message || 'Failed to create order';
+      res.status(500).json({ error: errorMessage, details: error });
     }
   });
 
