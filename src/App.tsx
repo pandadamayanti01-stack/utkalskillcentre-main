@@ -659,7 +659,7 @@ export default function App() {
     }
     
     // FORCE the new key to prevent environment variable mismatch
-    const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY;
+    const razorpayKey = "rzp_live_SSN1ujW6x6SBco"; // Hardcoded for deployment
     if (!razorpayKey) {
       alert("Razorpay Key ID is missing. Please set VITE_RAZORPAY_KEY in your environment variables.");
       console.error("VITE_RAZORPAY_KEY is not defined");

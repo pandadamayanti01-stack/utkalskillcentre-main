@@ -8,8 +8,8 @@ let razorpay: Razorpay | null = null;
 
 function getRazorpay() {
   if (!razorpay) {
-    const keyId = process.env.RAZORPAY_KEY_ID;
-    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+    const keyId = process.env.RAZORPAY_KEY_ID || "rzp_live_SSN1ujW6x6SBco";
+    const keySecret = process.env.RAZORPAY_KEY_SECRET || "f23Kg0K6eU6QW7EgbW05pxse";
     
     if (!keyId || !keySecret) {
       throw new Error('RAZORPAY_KEY_ID or RAZORPAY_KEY_SECRET is missing in environment variables.');
@@ -57,7 +57,7 @@ async function startServer() {
       const { razorpay_order_id, razorpay_payment_id, razorpay_signature, userId } = req.body;
       
       const crypto = await import('crypto');
-      const keySecret = process.env.RAZORPAY_KEY_SECRET;
+      const keySecret = process.env.RAZORPAY_KEY_SECRET || "f23Kg0K6eU6QW7EgbW05pxse";
       
       if (!keySecret) {
         throw new Error('RAZORPAY_KEY_SECRET is missing.');
