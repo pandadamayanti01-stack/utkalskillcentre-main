@@ -667,14 +667,6 @@ export default function App() {
       }
     }
     
-    // FORCE the new key to prevent environment variable mismatch
-    const razorpayKey = "rzp_live_SSN1ujW6x6SBco"; // Hardcoded for deployment
-    if (!razorpayKey) {
-      alert("Razorpay Key ID is missing. Please set VITE_RAZORPAY_KEY in your environment variables.");
-      console.error("VITE_RAZORPAY_KEY is not defined");
-      return;
-    }
-
     const res = await loadRazorpayScript();
     if (!res) {
       alert("Razorpay SDK failed to load. Are you online?");
@@ -694,6 +686,11 @@ export default function App() {
 
         if (!orderData || !orderData.id) {
           throw new Error("Invalid order ID received from server.");
+        }
+
+        const razorpayKey = orderData.key;
+        if (!razorpayKey) {
+          throw new Error("Razorpay Key ID not provided by server.");
         }
 
         // Store pending payment in Firestore

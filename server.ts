@@ -10,9 +10,9 @@ let ai: GoogleGenAI | null = null;
 
 function getAI() {
   if (!ai) {
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
     if (!apiKey) {
-      throw new Error('GEMINI_API_KEY is missing in environment variables.');
+      throw new Error('GEMINI_API_KEY (or VITE_GEMINI_API_KEY) is missing in environment variables.');
     }
     ai = new GoogleGenAI({ apiKey });
   }
@@ -21,11 +21,11 @@ function getAI() {
 
 function getRazorpay() {
   if (!razorpay) {
-    const keyId = process.env.RAZORPAY_KEY_ID;
+    const keyId = process.env.RAZORPAY_KEY_ID || process.env.VITE_RAZORPAY_KEY;
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
     
     if (!keyId || !keySecret) {
-      throw new Error('RAZORPAY_KEY_ID or RAZORPAY_KEY_SECRET is missing in environment variables.');
+      throw new Error('RAZORPAY_KEY_ID (or VITE_RAZORPAY_KEY) and RAZORPAY_KEY_SECRET are missing in environment variables.');
     }
 
     razorpay = new Razorpay({
@@ -57,7 +57,8 @@ async function startServer() {
       res.json({
         id: order.id,
         amount: order.amount,
-        currency: order.currency
+        currency: order.currency,
+        key: process.env.RAZORPAY_KEY_ID || process.env.VITE_RAZORPAY_KEY
       });
     } catch (error: any) {
       console.error('Create Order Error:', error);
