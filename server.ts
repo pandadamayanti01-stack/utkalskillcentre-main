@@ -3,8 +3,21 @@ import path from 'path';
 import 'dotenv/config';
 import { createServer as createViteServer } from 'vite';
 import Razorpay from 'razorpay';
+import { GoogleGenAI } from "@google/genai";
 
 let razorpay: Razorpay | null = null;
+let ai: GoogleGenAI | null = null;
+
+function getAI() {
+  if (!ai) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error('GEMINI_API_KEY is missing in environment variables.');
+    }
+    ai = new GoogleGenAI({ apiKey });
+  }
+  return ai;
+}
 
 function getRazorpay() {
   if (!razorpay) {
@@ -77,6 +90,31 @@ async function startServer() {
     } catch (error: any) {
       console.error('Verify Payment Error:', error);
       res.status(500).json({ success: false, message: error.message || 'Verification failed' });
+    }
+  });
+
+  app.post('/api/ai/solve', async (req, res) => {
+    try {
+      const { prompt, language } = req.body;
+      const genAI = getAI();
+      
+      const systemInstruction = language === 'en' 
+        ? "You are a friendly Math Tutor for Odisha Board students (Class 5-10). Provide step-by-step simple explanations in English."
+        : "You are a friendly Math Tutor for Odisha Board students (Class 5-10). Provide step-by-step simple explanations in Odia language. Use Odia script for the explanation but you can use numbers and mathematical symbols as they are.";
+
+      const response = await genAI.models.generateContent({
+        model: "gemini-3.1-pro-preview",
+        contents: prompt,
+        config: {
+          systemInstruction,
+          temperature: 0.7,
+        },
+      });
+
+      res.json({ text: response.text || "Sorry, I couldn't solve that. Please try again." });
+    } catch (error: any) {
+      console.error('AI Proxy Error:', error);
+      res.status(500).json({ error: error.message || 'Error connecting to AI tutor' });
     }
   });
 
