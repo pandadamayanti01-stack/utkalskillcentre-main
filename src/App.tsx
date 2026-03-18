@@ -119,14 +119,11 @@ const fetchJson = async (url: string, options?: RequestInit) => {
 const Logo = ({ className = "h-12" }: { className?: string }) => (
   <div className={`flex items-center gap-3 ${className} border border-red-500`}>
     <img 
-      src="/logo_utkal_v2.png" 
+      src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/200px-Google_2015_logo.svg.png" 
       alt="Utkal Skill Centre" 
+      width="200"
+      height="80"
       className="h-full w-auto object-contain" 
-      onLoad={() => console.log("Logo loaded")}
-      onError={(e) => {
-        console.error("Logo failed to load", e);
-        (e.target as HTMLImageElement).src = "https://placehold.co/200x80/1e293b/ffffff?text=Utkal+Skill+Centre";
-      }} 
     />
   </div>
 );
@@ -141,11 +138,9 @@ const BigsanBranding = ({ className = "" }: { className?: string }) => {
       <img 
         src="/logo_bigsan_v2.png" 
         alt="Bigsan Group" 
+        width="120"
+        height="40"
         className="h-6 w-auto opacity-80 grayscale hover:grayscale-0 transition-all" 
-        referrerPolicy="no-referrer"
-        onError={(e) => {
-          (e.target as HTMLImageElement).src = "https://placehold.co/120x40/1e293b/ffffff?text=Bigsan+Group";
-        }} 
       />
     </div>
   );
