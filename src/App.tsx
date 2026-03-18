@@ -117,12 +117,10 @@ const fetchJson = async (url: string, options?: RequestInit) => {
 };
 
 const Logo = ({ className = "h-12" }: { className?: string }) => (
-  <div className={`flex items-center gap-3 ${className} border border-red-500`}>
+  <div className={`flex items-center gap-3 ${className}`}>
     <img 
-      src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/200px-Google_2015_logo.svg.png" 
+      src="/logo_utkal_v2.png" 
       alt="Utkal Skill Centre" 
-      width="200"
-      height="80"
       className="h-full w-auto object-contain" 
     />
   </div>
@@ -138,8 +136,6 @@ const BigsanBranding = ({ className = "" }: { className?: string }) => {
       <img 
         src="/logo_bigsan_v2.png" 
         alt="Bigsan Group" 
-        width="120"
-        height="40"
         className="h-6 w-auto opacity-80 grayscale hover:grayscale-0 transition-all" 
       />
     </div>
