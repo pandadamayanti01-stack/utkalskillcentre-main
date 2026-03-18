@@ -119,6 +119,36 @@ async function startServer() {
     }
   });
 
+  app.post('/api/ai/translate', async (req, res) => {
+    try {
+      const { text, targetLanguage, isJson } = req.body;
+      const genAI = getAI();
+      
+      let systemInstruction = targetLanguage === 'or' 
+        ? "You are an expert translator. Translate the following educational content from English to Odia. Keep mathematical terms, numbers, and formatting intact."
+        : "You are an expert translator. Translate the following educational content from Odia to English. Keep mathematical terms, numbers, and formatting intact.";
+
+      if (isJson) {
+        systemInstruction += " The input is a JSON object. Translate all string values within the JSON object to the target language, but keep the keys exactly the same. Return ONLY the translated JSON object. Do not include any markdown formatting like ```json.";
+      }
+
+      const response = await genAI.models.generateContent({
+        model: "gemini-3.1-flash-preview",
+        contents: text,
+        config: {
+          systemInstruction,
+          temperature: 0.1,
+          ...(isJson ? { responseMimeType: "application/json" } : {})
+        },
+      });
+
+      res.json({ text: response.text || text });
+    } catch (error: any) {
+      console.error('Translation Error:', error);
+      res.status(500).json({ error: error.message || 'Error translating content' });
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({

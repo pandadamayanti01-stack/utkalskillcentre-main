@@ -13,7 +13,12 @@ import {
   Youtube,
   ListChecks,
   Menu,
-  X
+  X,
+  FileText,
+  ClipboardList,
+  Calendar,
+  CheckCircle2,
+  Trophy
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { db as firestore, auth } from '../firebase';
@@ -31,10 +36,11 @@ import {
   orderBy,
   limit,
   where,
-  Timestamp
+  Timestamp,
+  serverTimestamp
 } from 'firebase/firestore';
 
-type AdminTab = 'dashboard' | 'content' | 'ai_usage' | 'payments' | 'notifications' | 'settings';
+type AdminTab = 'dashboard' | 'content' | 'monthly_tests' | 'ai_usage' | 'payments' | 'notifications' | 'settings';
 
 interface AdminDashboardProps {
   onExit: () => void;
@@ -49,11 +55,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
   });
 
   const [content, setContent] = useState<any[]>([]);
-  const [isSeeding, setIsSeeding] = useState(false);
+  const [monthlyTests, setMonthlyTests] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [aiLogs, setAiLogs] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [systemSettings, setSystemSettings] = useState<any>({});
+  const [privateSettings, setPrivateSettings] = useState<any>({});
+  const [confirmAction, setConfirmAction] = useState<string | null>(null);
+  
+  const [isAddingTest, setIsAddingTest] = useState(false);
+  const [newTest, setNewTest] = useState<any>({
+    subject: '',
+    month: '',
+    year: new Date().getFullYear(),
+    language: 'or',
+    questions: [],
+    status: 'draft'
+  });
 
   const fetchContent = async () => {
     try {
@@ -62,6 +80,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
       setContent(data);
     } catch (err) {
       console.error("Fetch Content Error:", err);
+    }
+  };
+
+  const fetchMonthlyTests = async () => {
+    try {
+      const snapshot = await getDocs(collection(firestore, 'monthly_tests'));
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setMonthlyTests(data);
+    } catch (err) {
+      console.error("Fetch Monthly Tests Error:", err);
     }
   };
 
@@ -97,11 +125,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
       if (doc.exists()) setSystemSettings(doc.data());
     }, (err) => console.error("Firestore Settings onSnapshot Error:", err));
 
+    const unsubTests = onSnapshot(collection(firestore, 'monthly_tests'), (snapshot) => {
+      setMonthlyTests(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }, (err) => console.error("Firestore Monthly Tests onSnapshot Error:", err));
+
+    const unsubPrivateSettings = onSnapshot(doc(firestore, 'settings', 'private'), (doc) => {
+      if (doc.exists()) setPrivateSettings(doc.data());
+    }, (err) => console.error("Firestore Private Settings onSnapshot Error:", err));
+
     return () => {
       unsubTx();
       unsubAi();
       unsubNotifs();
       unsubSettings();
+      unsubTests();
+      unsubPrivateSettings();
     };
   }, []);
 
@@ -138,17 +176,73 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     language: 'or',
     subject: 'Mathematics',
     title: '',
-    topic_title: '',
     playlist_id: '',
-    questions: [] as any[]
+    notes: '',
+    practice_questions: [] as any[],
+    quiz_questions: [] as any[]
   });
 
   const handleAddChapter = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await addDoc(collection(firestore, 'chapters'), newChapter);
+      // Save the original chapter
+      const originalDocRef = await addDoc(collection(firestore, 'chapters'), {
+        ...newChapter,
+        createdAt: serverTimestamp()
+      });
+
+      // Determine target language for auto-translation
+      const targetLang = newChapter.language === 'en' ? 'or' : 'en';
       
-      alert("Chapter added successfully!");
+      // Translate title and notes
+      const translatedTitle = await fetch('/api/ai/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: newChapter.title, targetLanguage: targetLang, isJson: false })
+      }).then(res => res.json()).then(data => data.text);
+
+      const translatedNotes = newChapter.notes ? await fetch('/api/ai/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: newChapter.notes, targetLanguage: targetLang, isJson: false })
+      }).then(res => res.json()).then(data => data.text) : '';
+
+      // Translate practice questions
+      const translatedPractice = newChapter.practice_questions.length > 0 ? await fetch('/api/ai/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: JSON.stringify(newChapter.practice_questions), targetLanguage: targetLang, isJson: true })
+      }).then(res => res.json()).then(data => {
+        try { return JSON.parse(data.text); } catch(e) { return newChapter.practice_questions; }
+      }) : [];
+
+      // Translate quiz questions
+      const translatedQuiz = newChapter.quiz_questions.length > 0 ? await fetch('/api/ai/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: JSON.stringify(newChapter.quiz_questions), targetLanguage: targetLang, isJson: true })
+      }).then(res => res.json()).then(data => {
+        try { return JSON.parse(data.text); } catch(e) { return newChapter.quiz_questions; }
+      }) : [];
+
+      // Save the translated chapter
+      await addDoc(collection(firestore, 'chapters'), {
+        ...newChapter,
+        language: targetLang,
+        title: translatedTitle || newChapter.title,
+        notes: translatedNotes || newChapter.notes,
+        practice_questions: translatedPractice,
+        quiz_questions: translatedQuiz,
+        translationGroupId: originalDocRef.id,
+        createdAt: serverTimestamp()
+      });
+      
+      // Update original chapter with translationGroupId
+      await updateDoc(doc(firestore, 'chapters', originalDocRef.id), {
+        translationGroupId: originalDocRef.id
+      });
+      
+      alert("Chapter and its auto-translation added successfully!");
       setIsAddingChapter(false);
       setNewChapter({
         board: 'Odisha Board',
@@ -156,9 +250,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         language: 'or',
         subject: 'Mathematics',
         title: '',
-        topic_title: '',
         playlist_id: '',
-        questions: []
+        notes: '',
+        practice_questions: [],
+        quiz_questions: []
       });
       fetchContent();
     } catch (err: any) {
@@ -167,45 +262,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     }
   };
 
-  const handleSeedData = async () => {
-    setIsSeeding(true);
-    try {
-      const chapters = [
-        { class: 3, board: 'Odisha Board', language: 'or', subject: 'Mathematics', title: 'ସଂଖ୍ୟା ଗଣନା', concept_id: 'concept_counting', playlist_id: 'PL0o_zxa4K1BWYThyV4T2Allw6zY0jE_vX' },
-        { class: 3, board: 'Odisha Board', language: 'or', subject: 'Mathematics', title: 'ମିଶାଣ', concept_id: 'concept_addition', playlist_id: 'PL0o_zxa4K1BWYThyV4T2Allw6zY0jE_vX' },
-        { class: 3, board: 'Saraswati Sishu Mandir', language: 'or', subject: 'Mathematics', title: 'ଗଣନା କାର୍ଯ୍ୟ', concept_id: 'concept_counting', playlist_id: 'PL0o_zxa4K1BWYThyV4T2Allw6zY0jE_vX' },
-        { class: 3, board: 'Saraswati Sishu Mandir', language: 'or', subject: 'Mathematics', title: 'ମିଶାଣ ପ୍ରକ୍ରିୟା', concept_id: 'concept_addition', playlist_id: 'PL0o_zxa4K1BWYThyV4T2Allw6zY0jE_vX' },
-        { class: 3, board: 'CBSE', language: 'en', subject: 'Mathematics', title: 'Counting Numbers', concept_id: 'concept_counting', playlist_id: 'PL0o_zxa4K1BWYThyV4T2Allw6zY0jE_vX' },
-        { class: 3, board: 'CBSE', language: 'en', subject: 'Mathematics', title: 'Addition', concept_id: 'concept_addition', playlist_id: 'PL0o_zxa4K1BWYThyV4T2Allw6zY0jE_vX' }
-      ];
-
-      for (const chapter of chapters) {
-        await addDoc(collection(firestore, 'chapters'), chapter);
-      }
-      alert("Initial data seeded successfully!");
-      fetchContent();
-    } catch (err: any) {
-      console.error("Seed Data Error:", err);
-      alert("Failed to seed data: " + err.message);
-    } finally {
-      setIsSeeding(false);
-    }
-  };
-
   const renderContent = () => (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-white">Content Library</h2>
         <div className="flex gap-2">
-          {content.length === 0 && (
-            <button 
-              onClick={handleSeedData}
-              disabled={isSeeding}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all disabled:opacity-50"
-            >
-              {isSeeding ? "Seeding..." : "Seed Initial Data"}
-            </button>
-          )}
           <button 
             onClick={() => setIsAddingChapter(true)}
             className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl transition-all"
@@ -263,55 +324,119 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
                 />
               </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Chapter Title</label>
+              <div className="md:col-span-2">
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Chapter / Video Title</label>
                 <input 
                   type="text" 
                   value={newChapter.title}
                   onChange={(e) => setNewChapter({...newChapter, title: e.target.value})}
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                  placeholder="e.g. Fractions"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Topic Title</label>
-                <input 
-                  type="text" 
-                  value={newChapter.topic_title}
-                  onChange={(e) => setNewChapter({...newChapter, topic_title: e.target.value})}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                  placeholder="e.g. Introduction to Fractions"
+                  placeholder="e.g. ବସ୍ତୁରୁ ଆକୃତି ଜାଣିବା"
                 />
               </div>
               <div className="md:col-span-3">
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-2">YouTube Playlist ID</label>
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-2">YouTube Video ID</label>
                 <input 
                   type="text" 
                   value={newChapter.playlist_id}
                   onChange={(e) => setNewChapter({...newChapter, playlist_id: e.target.value})}
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                  placeholder="PL0o_zxa4K1BWYThyV4T2Allw6zY0jE_vX"
+                  placeholder="e.g. dQw4w9WgXcQ (The 11 characters after v= in the YouTube URL)"
+                />
+              </div>
+              <div className="md:col-span-3">
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Notes (Markdown)</label>
+                <textarea 
+                  value={newChapter.notes}
+                  onChange={(e) => setNewChapter({...newChapter, notes: e.target.value})}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none h-32"
+                  placeholder="# Introduction\nThis topic covers..."
                 />
               </div>
             </div>
 
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h4 className="text-sm font-bold text-white uppercase tracking-wider">Questions & Answers (Quiz)</h4>
+                <h4 className="text-sm font-bold text-white uppercase tracking-wider">Practice Questions</h4>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const predefined = [
+                        { question: "୧. ଏକ ବର୍ଗାକାର କାଗଜର କେତୋଟି କୋଣ ଥାଏ?", answer: "ଏକ ବର୍ଗାକାର କାଗଜର ୪ଟି କୋଣ ଥାଏ।" },
+                        { question: "୨. ତ୍ରିଭୁଜର କେତୋଟି ବାହୁ ଅଛି?", answer: "ତ୍ରିଭୁଜର ୩ଟି ବାହୁ ଅଛି।" },
+                        { question: "୩. ଗୋଟିଏ ଆୟତକାର କାଗଜକୁ ମଝିରୁ କୋଣାକୋଣି ଭାଙ୍ଗିଲେ କେଉଁ ଆକୃତି ମିଳିବ?", answer: "ଗୋଟିଏ ଆୟତକାର କାଗଜକୁ ମଝିରୁ କୋଣାକୋଣି ଭାଙ୍ଗିଲେ ତ୍ରିଭୁଜ ଆକୃତି ମିଳିବ।" },
+                        { question: "୪. ତୁମେ କାଗଜରେ ତିଆରି କରୁଥିବା ଦୁଇଟି ଖେଳନାର ନାମ ଲେଖ।", answer: "କାଗଜରେ ତିଆରି ଦୁଇଟି ଖେଳନା ହେଲା: କାଗଜ ଡଙ୍ଗା ଏବଂ କାଗଜ ବିମାନ।" }
+                      ];
+                      setNewChapter({
+                        ...newChapter,
+                        practice_questions: [...newChapter.practice_questions, ...predefined]
+                      });
+                    }}
+                    className="text-xs bg-emerald-900/50 text-emerald-400 px-3 py-1 rounded-lg hover:bg-emerald-900"
+                  >
+                    + Add Pre-defined
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={() => setNewChapter({
+                      ...newChapter, 
+                      practice_questions: [...newChapter.practice_questions, { question: '', answer: '' }]
+                    })}
+                    className="text-xs text-emerald-500 hover:underline"
+                  >
+                    + Add Question
+                  </button>
+                </div>
+              </div>
+              <div className="space-y-4">
+                {newChapter.practice_questions.map((pq, idx) => (
+                    <div key={idx} className="bg-black/20 p-6 rounded-xl border border-white/5 space-y-4">
+                    <input 
+                      type="text"
+                      placeholder="Practice Question"
+                      value={pq.question}
+                      onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
+                      onChange={(e) => {
+                        const pqs = [...newChapter.practice_questions];
+                        pqs[idx].question = e.target.value;
+                        setNewChapter({...newChapter, practice_questions: pqs});
+                      }}
+                      className="w-full bg-transparent border-b border-white/10 text-white text-base py-2 focus:outline-none focus:border-emerald-500"
+                    />
+                    <textarea 
+                      placeholder="Answer/Explanation"
+                      value={pq.answer}
+                      onKeyDown={(e) => { if (e.key === 'Enter') e.stopPropagation(); }}
+                      onChange={(e) => {
+                        const pqs = [...newChapter.practice_questions];
+                        pqs[idx].answer = e.target.value;
+                        setNewChapter({...newChapter, practice_questions: pqs});
+                      }}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white focus:outline-none h-32"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="text-sm font-bold text-white uppercase tracking-wider">Quiz Questions</h4>
                 <button 
                   type="button"
                   onClick={() => setNewChapter({
                     ...newChapter, 
-                    questions: [...newChapter.questions, { question: '', options: ['', '', '', ''], correct_answer: '' }]
+                    quiz_questions: [...newChapter.quiz_questions, { question: '', options: ['', '', '', ''], correct_answer: '', hint: '' }]
                   })}
                   className="text-xs text-emerald-500 hover:underline"
                 >
-                  + Add Question
+                  + Add Quiz Question
                 </button>
               </div>
               
               <div className="space-y-4">
-                {newChapter.questions.map((q, qIdx) => (
+                {newChapter.quiz_questions.map((q, qIdx) => (
                   <div key={qIdx} className="bg-black/20 p-4 rounded-xl border border-white/5 space-y-3">
                     <div className="flex justify-between items-start">
                       <input 
@@ -319,17 +444,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                         placeholder={`Question ${qIdx + 1}`}
                         value={q.question}
                         onChange={(e) => {
-                          const qs = [...newChapter.questions];
+                          const qs = [...newChapter.quiz_questions];
                           qs[qIdx].question = e.target.value;
-                          setNewChapter({...newChapter, questions: qs});
+                          setNewChapter({...newChapter, quiz_questions: qs});
                         }}
                         className="flex-1 bg-transparent border-b border-white/10 text-white text-sm py-1 focus:outline-none focus:border-emerald-500"
                       />
                       <button 
                         type="button"
                         onClick={() => {
-                          const qs = newChapter.questions.filter((_, i) => i !== qIdx);
-                          setNewChapter({...newChapter, questions: qs});
+                          const qs = newChapter.quiz_questions.filter((_, i) => i !== qIdx);
+                          setNewChapter({...newChapter, quiz_questions: qs});
                         }}
                         className="text-red-500 hover:text-red-400 ml-2"
                       >
@@ -344,9 +469,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                           placeholder={`Option ${oIdx + 1}`}
                           value={opt}
                           onChange={(e) => {
-                            const qs = [...newChapter.questions];
+                            const qs = [...newChapter.quiz_questions];
                             qs[qIdx].options[oIdx] = e.target.value;
-                            setNewChapter({...newChapter, questions: qs});
+                            setNewChapter({...newChapter, quiz_questions: qs});
                           }}
                           className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500/50"
                         />
@@ -358,11 +483,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                         placeholder="Correct Answer"
                         value={q.correct_answer}
                         onChange={(e) => {
-                          const qs = [...newChapter.questions];
+                          const qs = [...newChapter.quiz_questions];
                           qs[qIdx].correct_answer = e.target.value;
-                          setNewChapter({...newChapter, questions: qs});
+                          setNewChapter({...newChapter, quiz_questions: qs});
                         }}
-                        className="w-full bg-emerald-500/5 border border-emerald-500/20 rounded-lg px-3 py-1.5 text-xs text-emerald-400 focus:outline-none"
+                        className="w-full bg-emerald-500/5 border border-emerald-500/20 rounded-lg px-3 py-1.5 text-xs text-emerald-400 focus:outline-none mb-2"
+                      />
+                      <input 
+                        type="text"
+                        placeholder="Hint (Optional)"
+                        value={q.hint || ''}
+                        onChange={(e) => {
+                          const qs = [...newChapter.quiz_questions];
+                          qs[qIdx].hint = e.target.value;
+                          setNewChapter({...newChapter, quiz_questions: qs});
+                        }}
+                        className="w-full bg-amber-500/5 border border-amber-500/20 rounded-lg px-3 py-1.5 text-xs text-amber-400 focus:outline-none"
                       />
                     </div>
                   </div>
@@ -375,7 +511,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                 type="submit"
                 className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl py-3 font-semibold transition-all"
               >
-                Save Chapter & Quiz
+                Save Topic to Library
               </button>
               <button 
                 type="button"
@@ -399,28 +535,333 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
               <div className="flex gap-2">
                 <button 
                   onClick={async () => {
-                    if(window.confirm("Delete this chapter?")) {
+                    if (confirmAction === `delete_topic_${c.id}`) {
                       try {
                         await deleteDoc(doc(firestore, 'chapters', c.id));
+                        setConfirmAction(null);
                         fetchContent();
                       } catch (err) {
-                        console.error("Delete Chapter Error:", err);
-                        alert("Failed to delete chapter");
+                        console.error("Delete Topic Error:", err);
                       }
+                    } else {
+                      setConfirmAction(`delete_topic_${c.id}`);
+                      setTimeout(() => setConfirmAction(null), 3000);
                     }
                   }}
-                  className="text-slate-500 hover:text-red-500"
+                  className={confirmAction === `delete_topic_${c.id}` ? "text-red-500 font-bold text-xs" : "text-slate-500 hover:text-red-500"}
                 >
-                  <Trash2 size={14} />
+                  {confirmAction === `delete_topic_${c.id}` ? "Confirm?" : <Trash2 size={14} />}
                 </button>
               </div>
             </div>
             <h4 className="text-white font-semibold">{c.title}</h4>
-            <div className="text-xs text-slate-300 italic">{c.topic_title}</div>
             <div className="text-xs text-slate-500">{c.subject}</div>
             <div className="flex items-center gap-4 text-xs text-slate-400 pt-2 border-t border-white/5">
-              <div className="flex items-center gap-1"><Youtube size={14} /> Playlist</div>
-              <div className="flex items-center gap-1"><ListChecks size={14} /> Quiz</div>
+              <div className="flex items-center gap-1"><Youtube size={14} /> Video</div>
+              {c.notes && <div className="flex items-center gap-1"><FileText size={14} /> Notes</div>}
+              {c.quiz_questions?.length > 0 && <div className="flex items-center gap-1"><ListChecks size={14} /> Quiz</div>}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderMonthlyTests = () => (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h3 className="text-xl font-bold text-white">Monthly Tests Management</h3>
+        <button 
+          onClick={() => {
+            setNewTest({
+              subject: '',
+              month: new Date().toLocaleString('default', { month: 'long' }),
+              year: new Date().getFullYear(),
+              language: 'or',
+              questions: [{ question: '', options: ['', '', '', ''], correct_answer: '' }],
+              status: 'draft'
+            });
+            setIsAddingTest(true);
+          }}
+          className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all"
+        >
+          <Plus size={18} /> Create New Test
+        </button>
+      </div>
+
+      {isAddingTest && (
+        <div className="bg-white/5 border border-white/10 p-6 rounded-2xl space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Subject</label>
+              <input 
+                type="text" 
+                value={newTest.subject}
+                onChange={(e) => setNewTest({...newTest, subject: e.target.value})}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+                placeholder="e.g. Mathematics"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Language</label>
+              <select 
+                value={newTest.language}
+                onChange={(e) => setNewTest({...newTest, language: e.target.value})}
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+              >
+                <option value="or">Odia</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Month</label>
+              <select 
+                value={newTest.month}
+                onChange={(e) => setNewTest({...newTest, month: e.target.value})}
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+              >
+                {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map(m => (
+                  <option key={m} value={m}>{m}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Year</label>
+              <input 
+                type="number" 
+                value={newTest.year}
+                onChange={(e) => setNewTest({...newTest, year: parseInt(e.target.value)})}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h4 className="text-sm font-bold text-white uppercase tracking-wider">Test Questions</h4>
+              <button 
+                type="button"
+                onClick={() => setNewTest({
+                  ...newTest, 
+                  questions: [...newTest.questions, { question: '', options: ['', '', '', ''], correct_answer: '' }]
+                })}
+                className="text-xs text-emerald-500 hover:underline"
+              >
+                + Add Question
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              {newTest.questions.map((q: any, qIdx: number) => (
+                <div key={qIdx} className="bg-black/20 p-4 rounded-xl border border-white/5 space-y-3">
+                  <div className="flex justify-between items-start">
+                    <input 
+                      type="text"
+                      placeholder={`Question ${qIdx + 1}`}
+                      value={q.question}
+                      onChange={(e) => {
+                        const qs = [...newTest.questions];
+                        qs[qIdx].question = e.target.value;
+                        setNewTest({...newTest, questions: qs});
+                      }}
+                      className="flex-1 bg-transparent border-b border-white/10 text-white text-sm py-1 focus:outline-none focus:border-emerald-500"
+                    />
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        const qs = newTest.questions.filter((_: any, i: number) => i !== qIdx);
+                        setNewTest({...newTest, questions: qs});
+                      }}
+                      className="text-red-500 hover:text-red-400 ml-2"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {q.options.map((opt: string, oIdx: number) => (
+                      <input 
+                        key={oIdx}
+                        type="text"
+                        placeholder={`Option ${oIdx + 1}`}
+                        value={opt}
+                        onChange={(e) => {
+                          const qs = [...newTest.questions];
+                          qs[qIdx].options[oIdx] = e.target.value;
+                          setNewTest({...newTest, questions: qs});
+                        }}
+                        className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500/50"
+                      />
+                    ))}
+                  </div>
+                  <div>
+                    <input 
+                      type="text"
+                      placeholder="Correct Answer"
+                      value={q.correct_answer}
+                      onChange={(e) => {
+                        const qs = [...newTest.questions];
+                        qs[qIdx].correct_answer = e.target.value;
+                        setNewTest({...newTest, questions: qs});
+                      }}
+                      className="w-full bg-emerald-500/5 border border-emerald-500/20 rounded-lg px-3 py-1.5 text-xs text-emerald-400 focus:outline-none"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex gap-4">
+            <button 
+              onClick={async () => {
+                try {
+                  // Save original test
+                  const originalTestRef = await addDoc(collection(firestore, 'monthly_tests'), {
+                    ...newTest,
+                    createdAt: serverTimestamp()
+                  });
+
+                  // Determine target language for auto-translation
+                  const targetLang = newTest.language === 'en' ? 'or' : 'en';
+
+                  // Translate questions
+                  const translatedQuestions = newTest.questions.length > 0 ? await fetch('/api/ai/translate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: JSON.stringify(newTest.questions), targetLanguage: targetLang, isJson: true })
+                  }).then(res => res.json()).then(data => {
+                    try { return JSON.parse(data.text); } catch(e) { return newTest.questions; }
+                  }) : [];
+
+                  // Save translated test
+                  await addDoc(collection(firestore, 'monthly_tests'), {
+                    ...newTest,
+                    language: targetLang,
+                    questions: translatedQuestions,
+                    translationGroupId: originalTestRef.id,
+                    createdAt: serverTimestamp()
+                  });
+
+                  // Update original test with translationGroupId
+                  await updateDoc(doc(firestore, 'monthly_tests', originalTestRef.id), {
+                    translationGroupId: originalTestRef.id
+                  });
+
+                  setIsAddingTest(false);
+                  fetchMonthlyTests();
+                } catch (err) {
+                  console.error("Save Test Error:", err);
+                  alert("Failed to save test");
+                }
+              }}
+              className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl py-3 font-semibold transition-all"
+            >
+              Save Monthly Test
+            </button>
+            <button 
+              onClick={() => setIsAddingTest(false)}
+              className="px-8 bg-white/5 hover:bg-white/10 text-white rounded-xl py-3 font-semibold transition-all"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {monthlyTests.map((test) => (
+          <div key={test.id} className="bg-white/5 border border-white/10 p-5 rounded-2xl space-y-4">
+            <div className="flex justify-between items-start">
+              <div>
+                <h4 className="text-white font-bold text-lg">{test.subject}</h4>
+                <p className="text-slate-400 text-sm">{test.month} {test.year}</p>
+              </div>
+              <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${
+                test.status === 'published' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'
+              }`}>
+                {test.status}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-4 text-xs text-slate-400">
+              <div className="flex items-center gap-1"><FileText size={14} /> {test.questions?.length || 0} Questions</div>
+              <div className="flex items-center gap-1"><CheckCircle2 size={14} /> {test.results_published ? 'Results Out' : 'Results Pending'}</div>
+            </div>
+
+            <div className="flex gap-2 pt-2">
+              {test.status === 'draft' && (
+                <button 
+                  onClick={async () => {
+                    try {
+                      await updateDoc(doc(firestore, 'monthly_tests', test.id), { status: 'published' });
+                      fetchMonthlyTests();
+                    } catch (err) {
+                      alert("Failed to publish test");
+                    }
+                  }}
+                  className="flex-1 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-500 text-xs font-bold py-2 rounded-lg transition-all"
+                >
+                  Publish Test
+                </button>
+              )}
+              {!test.results_published && test.status === 'published' && (
+                <button 
+                  onClick={async () => {
+                    if (confirmAction === `publish_results_${test.id}`) {
+                      try {
+                        // Fetch all submissions for this test
+                        const q = query(collection(firestore, 'monthly_test_submissions'), where('testId', '==', test.id));
+                        const snap = await getDocs(q);
+                        const submissions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                        
+                        // Sort by score desc, then time asc
+                        submissions.sort((a: any, b: any) => {
+                          if (b.score !== a.score) return b.score - a.score;
+                          return (a.submittedAt?.seconds || 0) - (b.submittedAt?.seconds || 0);
+                        });
+
+                        // Assign ranks and update
+                        for (let i = 0; i < submissions.length; i++) {
+                          await updateDoc(doc(firestore, 'monthly_test_submissions', submissions[i].id), {
+                            rank: i + 1
+                          });
+                        }
+
+                        await updateDoc(doc(firestore, 'monthly_tests', test.id), { results_published: true });
+                        setConfirmAction(null);
+                        fetchMonthlyTests();
+                      } catch (err) {
+                        console.error("Publish Results Error:", err);
+                      }
+                    } else {
+                      setConfirmAction(`publish_results_${test.id}`);
+                      setTimeout(() => setConfirmAction(null), 3000);
+                    }
+                  }}
+                  className="flex-1 bg-blue-600/20 hover:bg-blue-600/30 text-blue-500 text-xs font-bold py-2 rounded-lg transition-all"
+                >
+                  {confirmAction === `publish_results_${test.id}` ? "Confirm Publish?" : "Publish Results"}
+                </button>
+              )}
+              <button 
+                onClick={async () => {
+                  if (confirmAction === `delete_test_${test.id}`) {
+                    try {
+                      await deleteDoc(doc(firestore, 'monthly_tests', test.id));
+                      setConfirmAction(null);
+                      fetchMonthlyTests();
+                    } catch (err) {
+                      console.error("Delete Test Error:", err);
+                    }
+                  } else {
+                    setConfirmAction(`delete_test_${test.id}`);
+                    setTimeout(() => setConfirmAction(null), 3000);
+                  }
+                }}
+                className={confirmAction === `delete_test_${test.id}` ? "p-2 bg-red-500/20 text-red-500 font-bold text-xs rounded-lg" : "p-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-lg transition-all"}
+              >
+                {confirmAction === `delete_test_${test.id}` ? "Confirm?" : <Trash2 size={16} />}
+              </button>
             </div>
           </div>
         ))}
@@ -537,6 +978,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
   const handleSaveSettings = async () => {
     try {
       await setDoc(doc(firestore, 'settings', 'system'), systemSettings);
+      await setDoc(doc(firestore, 'settings', 'private'), privateSettings);
       alert("System settings saved successfully!");
     } catch (err: any) {
       console.error("Save Settings Error:", err);
@@ -548,11 +990,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     <div className="max-w-2xl space-y-6">
       <div className="bg-white/5 border border-white/10 p-6 rounded-2xl space-y-6">
         <div>
-          <label className="block text-xs font-bold text-slate-500 uppercase mb-2">AI API Key</label>
+          <label className="block text-xs font-bold text-slate-500 uppercase mb-2">AI API Key (Private)</label>
           <input 
             type="password" 
-            value={systemSettings.aiApiKey || ''}
-            onChange={(e) => setSystemSettings({...systemSettings, aiApiKey: e.target.value})}
+            value={privateSettings.aiApiKey || ''}
+            onChange={(e) => setPrivateSettings({...privateSettings, aiApiKey: e.target.value})}
             className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500/50"
             placeholder="sk-..."
           />
@@ -598,7 +1040,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'content', label: 'Content', icon: BookOpen },
+    { id: 'content', label: 'Content Library', icon: BookOpen },
+    { id: 'monthly_tests', label: 'Monthly Tests', icon: Calendar },
     { id: 'ai_usage', label: 'AI Usage', icon: Brain },
     { id: 'payments', label: 'Payments', icon: CreditCard },
     { id: 'notifications', label: 'Notifications', icon: Bell },
@@ -697,6 +1140,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
           >
             {activeTab === 'dashboard' && renderDashboard()}
             {activeTab === 'content' && renderContent()}
+            {activeTab === 'monthly_tests' && renderMonthlyTests()}
             {activeTab === 'ai_usage' && renderAiUsage()}
             {activeTab === 'payments' && renderPayments()}
             {activeTab === 'notifications' && renderNotifications()}

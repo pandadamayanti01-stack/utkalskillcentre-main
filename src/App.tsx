@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { GoogleGenAI } from "@google/genai";
 import { 
   BookOpen, 
   Brain, 
@@ -24,9 +25,16 @@ import {
   Bot,
   Loader2,
   Send,
-  PenTool
+  PenTool,
+  FileText,
+  ArrowLeft,
+  ArrowRight,
+  Calendar,
+  Lightbulb,
+  Sparkles
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import Markdown from 'react-markdown';
 import { auth, db as firestore } from './firebase';
 import { 
   signInWithPopup, 
@@ -46,6 +54,25 @@ import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, que
 import { translations } from './translations';
 import { solveMathDoubt } from './services/aiService';
 import { AdminDashboard } from './components/AdminDashboard';
+import { PracticeQuestion } from './components/PracticeQuestion';
+
+const subjectTranslations: Record<string, string> = {
+  'Mathematics': 'ଗଣିତ',
+  'Science': 'ବିଜ୍ଞାନ',
+  'English': 'ଇଂରାଜୀ',
+  'Odia': 'ଓଡ଼ିଆ',
+  'History': 'ଇତିହାସ',
+  'Geography': 'ଭୂଗୋଳ',
+  'Social Studies': 'ସାମାଜିକ ବିଜ୍ଞାନ',
+};
+
+const getLocalizedSubject = (subject: string, language: string) => {
+  if (language === 'or' && subjectTranslations[subject]) {
+    return subjectTranslations[subject];
+  }
+  return subject;
+};
+
 // --- Types ---
 interface Badge {
   id: string;
@@ -79,22 +106,49 @@ interface Student {
   };
 }
 
+interface Question {
+  id?: string;
+  question: string;
+  options: string[];
+  correct_answer: string;
+  hint?: string;
+  chapter_id?: string;
+}
+
 interface Chapter {
-  id: number;
+  id: string;
   class: number;
   board: string;
   language: string;
   subject: string;
   title: string;
-  concept_id: string;
   playlist_id: string;
+  notes?: string;
+  practice_questions?: { question: string; answer: string }[];
+  quiz_questions?: { question: string; options: string[]; correct_answer: string; hint?: string }[];
+  translationGroupId?: string;
 }
 
-interface Question {
+interface MonthlyTest {
   id: string;
-  question: string;
-  options: string[];
-  correct_answer: string;
+  subject: string;
+  month: string;
+  year: number;
+  language?: string;
+  questions: { question: string; options: string[]; correct_answer: string }[];
+  status: 'draft' | 'published';
+  results_published: boolean;
+  translationGroupId?: string;
+}
+
+interface MonthlyTestSubmission {
+  id: string;
+  testId: string;
+  userId: string;
+  score: number;
+  totalQuestions: number;
+  rank?: number;
+  submittedAt: any;
 }
 
 // --- Components ---
@@ -163,13 +217,22 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [language, _setLanguage] = useState<'en' | 'or'>(localStorage.getItem('lang') as any || 'en');
   const languageRef = useRef(language);
-  const setLanguage = (lang: 'en' | 'or') => {
+  const setLanguage = async (lang: 'en' | 'or') => {
     languageRef.current = lang;
     _setLanguage(lang);
     localStorage.setItem('lang', lang);
+    if (user?.id) {
+      try {
+        await updateDoc(doc(firestore, 'users', user.id), { preferred_language: lang });
+      } catch (e) {
+        console.error("Failed to update preferred language", e);
+      }
+    }
   };
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
+  const [aiExplanations, setAiExplanations] = useState<Record<string, string>>({});
+  const [aiLoading, setAiLoading] = useState<Record<string, boolean>>({});
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [showConfigError, setShowConfigError] = useState<{title: string, message: string} | null>(null);
   
@@ -200,8 +263,16 @@ export default function App() {
   // Data State
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(null);
+  const [monthlyTests, setMonthlyTests] = useState<MonthlyTest[]>([]);
+  const [testSubmissions, setTestSubmissions] = useState<MonthlyTestSubmission[]>([]);
+  const [activeTest, setActiveTest] = useState<MonthlyTest | null>(null);
+  const [testAnswers, setTestAnswers] = useState<Record<number, string>>({});
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const [adminStats, setAdminStats] = useState<any>(null);
+  const [systemSettings, setSystemSettings] = useState<any>({
+    monthlyPrice: 199,
+    yearlyPrice: 999
+  });
 
   const sharedAppUrl = window.location.origin;
 
@@ -220,10 +291,12 @@ export default function App() {
       try {
         await getDocFromServer(doc(firestore, 'test', 'connection'));
       } catch (error: any) {
+        // Ignore permission errors as this is just a connection test
         if (error.message?.includes('the client is offline')) {
           console.error("Please check your Firebase configuration.");
+        } else if (error.message?.includes('Missing or insufficient permissions')) {
+          console.log("Connection test failed due to permissions, which is expected for the test collection.");
         }
-        // Skip logging for other errors, as this is simply a connection test.
       }
     };
     testConnection();
@@ -330,6 +403,11 @@ export default function App() {
       } else {
         setUser(null);
         setIsPremium(false);
+        setAuthStep('login');
+        setIsAdminLogin(false);
+        setIsAdminView(false);
+        setPhoneNumber('');
+        setOtp('');
         setLoading(false);
       }
     });
@@ -339,6 +417,17 @@ export default function App() {
       if (unsubUser) unsubUser();
       if (unsubSub) unsubSub();
     };
+  }, []);
+
+  useEffect(() => {
+    const unsubSettings = onSnapshot(doc(firestore, 'settings', 'system'), (doc) => {
+      if (doc.exists()) {
+        setSystemSettings(doc.data());
+      }
+    }, (err) => {
+      handleFirestoreError(err, OperationType.GET, 'settings/system');
+    });
+    return () => unsubSettings();
   }, []);
 
   useEffect(() => {
@@ -380,22 +469,42 @@ export default function App() {
       }
 
       const leaderboardQuery = query(collection(firestore, 'public_profiles'), orderBy('points', 'desc'), limit(10));
+      
+      // Fetch Monthly Tests
+      let testsQuery = query(collection(firestore, 'monthly_tests'), where('status', '==', 'published'));
+      if (student.preferred_language) {
+        testsQuery = query(collection(firestore, 'monthly_tests'), where('status', '==', 'published'), where('language', '==', student.preferred_language));
+      }
+      
+      // Fetch User Submissions
+      const submissionsQuery = query(collection(firestore, 'monthly_test_submissions'), where('userId', '==', student.id));
 
       const promises: Promise<any>[] = [
-        getDocs(leaderboardQuery)
+        getDocs(leaderboardQuery),
+        getDocs(testsQuery),
+        getDocs(submissionsQuery)
       ];
 
       if (chaptersQuery) {
         promises.push(getDocs(chaptersQuery));
       }
 
-      const results = await Promise.all(promises);
+      const results = await Promise.all(promises.map((p, i) => p.catch(err => {
+        console.error(`Error fetching promise ${i}:`, err);
+        throw err;
+      })));
       
       const leaderboardData = results[0].docs.map((d: any) => ({ id: d.id, ...d.data() }));
       setLeaderboard(leaderboardData);
+
+      const testsData = results[1].docs.map((d: any) => ({ id: d.id, ...d.data() }));
+      setMonthlyTests(testsData);
+
+      const submissionsData = results[2].docs.map((d: any) => ({ id: d.id, ...d.data() }));
+      setTestSubmissions(submissionsData);
       
-      if (chaptersQuery && results[1]) {
-        const chaptersData = results[1].docs.map((d: any) => ({ id: d.id, ...d.data() }));
+      if (chaptersQuery && results[3]) {
+        const chaptersData = results[3].docs.map((d: any) => ({ id: d.id, ...d.data() }));
         setChapters(chaptersData);
       }
     } catch (err) {
@@ -645,6 +754,37 @@ export default function App() {
       setUser(null);
       setIsPremium(false);
     }
+    setAiExplanations({});
+  };
+
+  const askAI = async (question: string, questionId: string) => {
+    if (!isPremium) {
+      alert(translations[language].subscriptionRequired);
+      return;
+    }
+
+    setAiLoading(prev => ({ ...prev, [questionId]: true }));
+    try {
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const response = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: `Provide a clear, step-by-step explanation for this educational question in ${language === 'en' ? 'English' : 'Odia'}. 
+        Question: ${question}
+        
+        Format the response with clear steps.`,
+      });
+      
+      const text = response.text || (language === 'en' ? "Could not generate explanation." : "ସ୍ପଷ୍ଟୀକରଣ ପ୍ରସ୍ତୁତ କରିହେଲା ନାହିଁ |");
+      setAiExplanations(prev => ({ ...prev, [questionId]: text }));
+    } catch (error) {
+      console.error("AI Error:", error);
+      const errorMessage = language === 'en' 
+        ? "Error generating explanation. Please try again later." 
+        : "ସ୍ପଷ୍ଟୀକରଣ ପ୍ରସ୍ତୁତ କରିବାରେ ତ୍ରୁଟି | ଦୟାକରି ପରେ ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |";
+      setAiExplanations(prev => ({ ...prev, [questionId]: errorMessage }));
+    } finally {
+      setAiLoading(prev => ({ ...prev, [questionId]: false }));
+    }
   };
 
   const loadRazorpayScript = () => {
@@ -657,10 +797,11 @@ export default function App() {
     });
   };
 
-  const handleSubscribe = async (amount: number = 199) => {
+  const handleSubscribe = async (amount: number, planType: 'monthly' | 'yearly' = 'monthly') => {
     if (!user) return;
 
-    if (amount === 999) {
+    if (planType === 'yearly') {
+      const yearlyPrice = systemSettings?.yearlyPrice || 999;
       if ((user.shareCount || 0) < 5) {
         alert(language === 'en' ? "Please complete the share requirements to unlock this offer." : "ଏହି ଅଫର୍ ଅନଲକ୍ କରିବାକୁ ଦୟାକରି ସେୟାର୍ ସର୍ତ୍ତଗୁଡିକ ପୂରଣ କରନ୍ତୁ |");
         return;
@@ -734,13 +875,18 @@ export default function App() {
               });
 
               // Update user subscription
-              const oneYearFromNow = new Date();
-              oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
+              const expiryDate = new Date();
+              if (planType === 'yearly') {
+                expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+              } else {
+                expiryDate.setMonth(expiryDate.getMonth() + 1);
+              }
               
               await setDoc(doc(firestore, 'subscriptions', user.id), {
                 active: true,
                 plan: 'premium',
-                expires_at: oneYearFromNow.toISOString()
+                type: planType,
+                expires_at: expiryDate.toISOString()
               });
 
               setIsPremium(true);
@@ -1086,10 +1232,6 @@ export default function App() {
     return <AdminDashboard onExit={() => setIsAdminView(false)} />;
   }
 
-  if (activeTab === 'lesson_preview') {
-    return <LessonView onBack={() => setActiveTab('dashboard')} onPlayGame={() => setActiveTab('games')} onTakeTest={() => setActiveTab('dashboard')} language={language} />;
-  }
-
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200 flex">
       {/* Mobile Sidebar Overlay */}
@@ -1120,6 +1262,7 @@ export default function App() {
                 <SidebarItem icon={<User size={20}/>} label="Profile" active={activeTab === 'profile'} onClick={() => { setActiveTab('profile'); setSidebarOpen(false); }} />
                 <SidebarItem icon={<BarChart3 size={20}/>} label={translations[language].dashboard} active={activeTab === 'dashboard'} onClick={() => { setActiveTab('dashboard'); setSidebarOpen(false); }} />
                 <SidebarItem icon={<BookOpen size={20}/>} label={translations[language].courses} active={activeTab === 'courses'} onClick={() => { setActiveTab('courses'); setSidebarOpen(false); }} />
+                <SidebarItem icon={<Clock size={20}/>} label={translations[language].monthlyTests} active={activeTab === 'monthly_tests'} onClick={() => { setActiveTab('monthly_tests'); setSidebarOpen(false); }} />
                 <SidebarItem icon={<MessageSquare size={20}/>} label={translations[language].aiSolver} active={activeTab === 'ai'} onClick={() => { setActiveTab('ai'); setSidebarOpen(false); }} />
                 <SidebarItem icon={<Trophy size={20}/>} label={translations[language].leaderboard} active={activeTab === 'leaderboard'} onClick={() => { setActiveTab('leaderboard'); setSidebarOpen(false); }} />
                 <SidebarItem icon={<CreditCard size={20}/>} label="Plans" active={activeTab === 'plans'} onClick={() => { setActiveTab('plans'); setSidebarOpen(false); }} />
@@ -1190,13 +1333,14 @@ export default function App() {
         <div className="flex-1 overflow-y-auto p-8">
           <AnimatePresence mode="wait">
             {activeTab === 'dashboard' && <DashboardView user={user} leaderboard={leaderboard} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} />}
-            {activeTab === 'courses' && <CoursesView chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} />}
+            {activeTab === 'courses' && <CoursesView chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'monthly_tests' && <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'ai' && (
-              isPremium ? <AiSolverView language={language} /> : <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} />
+              isPremium ? <AiSolverView language={language} onBack={() => setActiveTab('dashboard')} /> : <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
             )}
-            {activeTab === 'leaderboard' && <LeaderboardView leaderboard={leaderboard} language={language} />}
-            {activeTab === 'profile' && <ProfileView user={user} />}
-            {activeTab === 'plans' && <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} />}
+            {activeTab === 'leaderboard' && <LeaderboardView leaderboard={leaderboard} language={language} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'profile' && <ProfileView user={user} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'plans' && <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />}
           </AnimatePresence>
         </div>
       </main>
@@ -1204,7 +1348,7 @@ export default function App() {
   );
 }
 
-function ProfileView({ user }: any) {
+function ProfileView({ user, onBack }: any) {
   const [name, setName] = useState(user.name || '');
   const [email, setEmail] = useState(user.email || '');
   const [loading, setLoading] = useState(false);
@@ -1253,12 +1397,21 @@ function ProfileView({ user }: any) {
   const isEmailVerified = auth.currentUser?.emailVerified;
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      className="max-w-xl bg-slate-900/50 border border-white/5 rounded-3xl p-8 space-y-6"
-    >
+    <div className="max-w-xl mx-auto">
+      <button 
+        onClick={onBack}
+        className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
+      >
+        <ArrowLeft size={20} />
+        <span>Back to Dashboard</span>
+      </button>
+
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        className="bg-slate-900/50 border border-white/5 rounded-3xl p-8 space-y-6"
+      >
       <h2 className="text-2xl font-bold text-white">Edit Profile</h2>
       <div className="space-y-4">
         <div>
@@ -1304,6 +1457,7 @@ function ProfileView({ user }: any) {
         </button>
       </div>
     </motion.div>
+    </div>
   );
 }
 
@@ -1470,10 +1624,21 @@ function TopicProgress({ label, progress, color }: any) {
   );
 }
 
-function SubscriptionGuard({ onSubscribe, language, isPremium, user, onShare }: any) {
+function SubscriptionGuard({ onSubscribe, language, isPremium, user, onShare, systemSettings, onBack }: any) {
   const p = translations[language].pricing;
+  const monthlyPrice = systemSettings?.monthlyPrice || 199;
+  const yearlyPrice = systemSettings?.yearlyPrice || 999;
+
   return (
     <div className="max-w-6xl mx-auto py-8">
+      <button 
+        onClick={onBack}
+        className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
+      >
+        <ArrowLeft size={20} />
+        <span>Back to Dashboard</span>
+      </button>
+
       <div className="text-center mb-12">
         <h2 className="text-4xl font-bold text-white mb-4">{p.title}</h2>
         <p className="text-slate-400">Empowering your education with AI-driven intelligence</p>
@@ -1514,8 +1679,8 @@ function SubscriptionGuard({ onSubscribe, language, isPremium, user, onShare }: 
           <div className="mb-8">
             <h3 className="text-2xl font-bold text-white mb-2">{p.ai.name}</h3>
             <div className="space-y-1">
-              <div className="text-4xl font-bold text-white">{p.ai.monthly}</div>
-              <div className="text-emerald-400 font-bold">{p.ai.yearly} (Save 70%)</div>
+              <div className="text-4xl font-bold text-white">₹{monthlyPrice} / {language === 'en' ? 'month' : 'ମାସ'}</div>
+              <div className="text-emerald-400 font-bold">₹{yearlyPrice} / {language === 'en' ? 'year' : 'ବର୍ଷ'} (Save 70%)</div>
             </div>
           </div>
           <ul className="space-y-4 mb-10 flex-1">
@@ -1529,15 +1694,15 @@ function SubscriptionGuard({ onSubscribe, language, isPremium, user, onShare }: 
           {!isPremium ? (
             <div className="space-y-4">
               <button 
-                onClick={() => onSubscribe(199)}
+                onClick={() => onSubscribe(monthlyPrice, 'monthly')}
                 className="w-full py-4 rounded-2xl bg-emerald-600 text-white font-bold text-lg hover:bg-emerald-500 transition-all shadow-xl shadow-emerald-900/20"
               >
-                Subscribe Monthly (₹199)
+                {language === 'en' ? `Subscribe Monthly (₹${monthlyPrice})` : `ମାସିକ ସବସ୍କ୍ରିପସନ୍ (₹${monthlyPrice})`}
               </button>
               
               <div className="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-4">
                 <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-400">
-                  <span>Unlock Yearly Offer (₹999)</span>
+                  <span>{language === 'en' ? `Unlock Yearly Offer (₹${yearlyPrice})` : `ବାର୍ଷିକ ଅଫର୍ ଅନଲକ୍ କରନ୍ତୁ (₹${yearlyPrice})`}</span>
                   {((user?.shareCount || 0) >= 5) ? (
                     <span className="text-emerald-500">Unlocked!</span>
                   ) : (
@@ -1565,7 +1730,7 @@ function SubscriptionGuard({ onSubscribe, language, isPremium, user, onShare }: 
                 </div>
 
                 <button 
-                  onClick={() => onSubscribe(999)}
+                  onClick={() => onSubscribe(yearlyPrice, 'yearly')}
                   disabled={((user?.shareCount || 0) < 5)}
                   className={`w-full py-4 rounded-2xl font-bold text-lg transition-all ${
                     ((user?.shareCount || 0) >= 5)
@@ -1573,7 +1738,9 @@ function SubscriptionGuard({ onSubscribe, language, isPremium, user, onShare }: 
                     : 'bg-white/5 text-slate-500 cursor-not-allowed'
                   }`}
                 >
-                  {((user?.shareCount || 0) >= 5) ? p.unlocked : "Subscribe Yearly (₹999)"}
+                  {((user?.shareCount || 0) >= 5) 
+                    ? (language === 'en' ? `Offer Unlocked! Pay ₹${yearlyPrice} Now` : `ଅଫର୍ ଅନଲକ୍ ହୋଇଛି! ଏବେ ₹${yearlyPrice} ପେମେଣ୍ଟ କରନ୍ତୁ`)
+                    : (language === 'en' ? `Subscribe Yearly (₹${yearlyPrice})` : `ବାର୍ଷିକ ସବସ୍କ୍ରିପସନ୍ (₹${yearlyPrice})`)}
                 </button>
               </div>
             </div>
@@ -1588,39 +1755,77 @@ function SubscriptionGuard({ onSubscribe, language, isPremium, user, onShare }: 
   );
 }
 
-function CoursesView({ chapters, language, isPremium, onUpgrade }: any) {
+function CoursesView({ chapters, language, isPremium, onUpgrade, onBack }: any) {
   const [selected, setSelected] = useState<Chapter | null>(null);
-  const [testMode, setTestMode] = useState(false);
-  const [gameMode, setGameMode] = useState(false);
+  const [quizMode, setQuizMode] = useState(false);
 
-  if (testMode && selected) {
-    return <TestEngine chapter={selected} onComplete={() => setTestMode(false)} language={language} />;
-  }
+  useEffect(() => {
+    if (selected) {
+      const updatedSelected = chapters.find((c: Chapter) => c.id === selected.id || (c.translationGroupId && c.translationGroupId === selected.translationGroupId));
+      if (updatedSelected) {
+        setSelected(updatedSelected);
+      } else {
+        // If the chapter is no longer in the list (e.g. language changed and no translation exists), go back
+        setSelected(null);
+      }
+    }
+  }, [chapters]);
 
-  if (gameMode && selected) {
-    return <SkillGameView chapter={selected} onBack={() => setGameMode(false)} />;
+  if (quizMode && selected) {
+    return (
+      <QuizEngine 
+        questions={selected.quiz_questions || []} 
+        onComplete={() => setQuizMode(false)} 
+        language={language} 
+      />
+    );
   }
 
   if (selected) {
-    return <LessonView chapter={selected} onBack={() => setSelected(null)} onPlayGame={() => setGameMode(true)} onTakeTest={() => setTestMode(true)} language={language} />;
+    return (
+      <TopicDetailView 
+        topic={selected} 
+        onBack={() => setSelected(null)} 
+        onTakeQuiz={() => setQuizMode(true)} 
+        language={language} 
+        isPremium={isPremium}
+        onUpgrade={onUpgrade}
+      />
+    );
   }
 
   if (!chapters || chapters.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
+        <button 
+          onClick={onBack}
+          className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
+        >
+          <ArrowLeft size={20} />
+          <span>Back to Dashboard</span>
+        </button>
         <div className="w-24 h-24 bg-slate-800 rounded-full flex items-center justify-center mb-6">
           <BookOpen size={48} className="text-slate-500" />
         </div>
-        <h3 className="text-2xl font-bold text-white mb-2">No Courses Available</h3>
+        <h3 className="text-2xl font-bold text-white mb-2">No Content Available</h3>
         <p className="text-slate-400 max-w-md">
-          There are currently no chapters available for your selected class, board, and language. Please check back later or contact support.
+          There are currently no topics available for your selected class, board, and language. Please check back later.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="space-y-8">
+      <button 
+        onClick={onBack}
+        className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
+      >
+        <ArrowLeft size={20} />
+        <span>Back to Dashboard</span>
+      </button>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {chapters.map((chapter: Chapter) => (
         <button 
           key={chapter.id}
@@ -1632,6 +1837,7 @@ function CoursesView({ chapters, language, isPremium, onUpgrade }: any) {
               src={`https://img.youtube.com/vi/${chapter.playlist_id}/0.jpg`} 
               className="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform"
               alt={chapter.title}
+              referrerPolicy="no-referrer"
             />
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-xl">
@@ -1639,10 +1845,21 @@ function CoursesView({ chapters, language, isPremium, onUpgrade }: any) {
               </div>
             </div>
           </div>
-          <h3 className="text-lg font-semibold text-white mb-2">{chapter.title}</h3>
-          <p className="text-sm text-slate-500">{chapter.subject}</p>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-[10px] font-bold uppercase text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+              {getLocalizedSubject(chapter.subject, language)}
+            </span>
+          </div>
+          <h3 className="text-lg font-semibold text-white mb-1">{chapter.title}</h3>
+          
+          <div className="flex items-center gap-4 mt-4 pt-4 border-t border-white/5 text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+            <div className="flex items-center gap-1"><Play size={10} /> Video</div>
+            {chapter.notes && <div className="flex items-center gap-1"><FileText size={10} /> Notes</div>}
+            {chapter.quiz_questions?.length > 0 && <div className="flex items-center gap-1"><CheckCircle2 size={10} /> Quiz</div>}
+          </div>
         </button>
       ))}
+      </div>
     </div>
   );
 }
@@ -1779,7 +1996,7 @@ function TestEngine({ chapter, onComplete, language }: any) {
   );
 }
 
-function AiSolverView({ language }: any) {
+function AiSolverView({ language, onBack }: any) {
   const [prompt, setPrompt] = useState('');
   const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
@@ -1795,6 +2012,14 @@ function AiSolverView({ language }: any) {
 
   return (
     <div className="h-full flex flex-col max-w-4xl mx-auto">
+      <button 
+        onClick={onBack}
+        className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors w-fit"
+      >
+        <ArrowLeft size={20} />
+        <span>Back to Dashboard</span>
+      </button>
+
       <div className="flex-1 overflow-y-auto space-y-6 mb-6 pr-2" ref={scrollRef}>
         {response ? (
           <motion.div 
@@ -1834,7 +2059,7 @@ function AiSolverView({ language }: any) {
   );
 }
 
-function GamesView({ language }: any) {
+function GamesView({ language, onBack }: any) {
   const [gameState, setGameState] = useState<'idle' | 'playing' | 'over'>('idle');
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(60);
@@ -1882,6 +2107,14 @@ function GamesView({ language }: any) {
 
   return (
     <div className="max-w-xl mx-auto text-center">
+      <button 
+        onClick={onBack}
+        className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
+      >
+        <ArrowLeft size={20} />
+        <span>Back to Dashboard</span>
+      </button>
+
       <div className="mb-10">
         <h2 className="text-3xl font-bold text-white mb-2">{translations[language].quickCalc}</h2>
         <p className="text-slate-500">{translations[language].gameInstructions}</p>
@@ -1934,7 +2167,7 @@ function GamesView({ language }: any) {
   );
 }
 
-function LeaderboardView({ leaderboard, language }: any) {
+function LeaderboardView({ leaderboard, language, onBack }: any) {
   const [activeLeague, setActiveLeague] = useState<League>('Bronze');
   const leagues: League[] = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 
@@ -1951,6 +2184,14 @@ function LeaderboardView({ leaderboard, language }: any) {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
+      <button 
+        onClick={onBack}
+        className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
+      >
+        <ArrowLeft size={20} />
+        <span>Back to Dashboard</span>
+      </button>
+
       <div className="text-center mb-10">
         <h2 className="text-3xl font-bold text-white mb-2">{translations[language].weeklyLeaderboard}</h2>
         <p className="text-slate-500">Celebrate effort and consistency! Resets every Sunday.</p>
@@ -2034,210 +2275,536 @@ function LeaderboardView({ leaderboard, language }: any) {
   );
 }
 
-function LessonView({ chapter, onBack, onPlayGame, onTakeTest, language }: { chapter?: any, onBack: () => void, onPlayGame: () => void, onTakeTest: () => void, language: 'or' | 'en' }) {
-  const title = chapter?.title || "Subtraction Lesson";
-  const topic = chapter?.topic_title || "Mathematics";
-  const [activeTab, setActiveTab] = useState<'practice' | 'game' | 'ai'>('practice');
-  const [aiPrompt, setAiPrompt] = useState('');
-  const [aiResponse, setAiResponse] = useState('');
-  const [isAiLoading, setIsAiLoading] = useState(false);
-
-  const handleAskAi = async () => {
-    if (!aiPrompt.trim()) return;
-    setIsAiLoading(true);
-    try {
-      const res = await solveMathDoubt(`Context: Learning ${title}. Question: ${aiPrompt}`, language);
-      setAiResponse(res);
-    } catch (e) {
-      setAiResponse("Sorry, I couldn't process that right now. Please try again.");
-    }
-    setIsAiLoading(false);
-  };
+function TopicDetailView({ 
+  topic, 
+  onBack, 
+  onTakeQuiz, 
+  language,
+  isPremium,
+  onUpgrade
+}: { 
+  topic: Chapter, 
+  onBack: () => void, 
+  onTakeQuiz: () => void, 
+  language: 'or' | 'en',
+  isPremium: boolean,
+  onUpgrade: () => void
+}) {
+  const [activeSubTab, setActiveSubTab] = useState<'video' | 'notes' | 'practice'>('video');
 
   return (
-    <div className="min-h-screen bg-[#f4f6f8] text-slate-900 font-sans absolute inset-0 z-[100] overflow-y-auto">
-      {/* Header */}
-      <header className="bg-[#1e5b99] text-white px-6 py-4 flex items-center justify-between sticky top-0 z-50 shadow-md">
-        <div className="flex items-center gap-3">
-          <div className="bg-white p-1 rounded-md">
-            <BookOpen className="text-[#1e5b99]" size={24} />
-          </div>
-          <span className="text-xl font-bold tracking-tight">UtkalSkillCentre</span>
-        </div>
-        <div className="flex items-center gap-6">
-          <button onClick={onBack} className="font-medium hover:text-blue-200 transition-colors">Back to Chapters</button>
-          <button className="p-2 border-2 border-white/30 rounded hover:bg-white/10 transition-colors"><Menu size={20} /></button>
-        </div>
-      </header>
+    <div className="max-w-5xl mx-auto">
+      <button 
+        onClick={onBack}
+        className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
+      >
+        <ArrowLeft size={20} />
+        <span>Back to Topics</span>
+      </button>
 
-      {/* Breadcrumbs */}
-      <div className="px-6 py-3 border-b border-slate-200 text-sm text-[#1e5b99] font-medium bg-white">
-        Odisha Board <span className="mx-2 text-slate-400">›</span> {topic} <span className="mx-2 text-slate-400">›</span> {title}
-      </div>
-
-      {/* Content */}
-      <div className="max-w-5xl mx-auto p-6 space-y-8 pb-20">
-        <h1 className="text-3xl font-bold text-slate-800">{title}</h1>
-
-        {/* Main Card: Video + Notes */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          {/* Video Area */}
-          <div className="aspect-video bg-slate-200 relative">
-            {chapter?.playlist_id ? (
-              <iframe 
-                className="w-full h-full"
-                src={`https://www.youtube.com/embed/videoseries?list=${chapter.playlist_id}`}
-                title="YouTube video player"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            ) : (
-              <>
-                <img src="https://placehold.co/1200x675/4ade80/ffffff?text=Video+Thumbnail" alt="Video" className="w-full h-full object-cover" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-20 h-20 bg-red-600 rounded-2xl flex items-center justify-center text-white shadow-lg cursor-pointer hover:scale-110 transition-transform">
-                    <Play size={40} fill="currentColor" />
-                  </div>
-                </div>
-              </>
+      <div className="bg-slate-900/50 border border-white/5 rounded-3xl overflow-hidden mb-8">
+        <div className="p-8">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xs font-bold uppercase text-emerald-500 bg-emerald-500/10 px-3 py-1 rounded-full">
+                  {getLocalizedSubject(topic.subject, language)}
+                </span>
+              </div>
+              <h1 className="text-3xl font-bold text-white">{topic.title}</h1>
+            </div>
+            
+            {topic.quiz_questions?.length > 0 && (
+              <button 
+                onClick={onTakeQuiz}
+                className="flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-2xl font-bold transition-all shadow-lg shadow-emerald-500/20"
+              >
+                <Trophy size={20} />
+                <span>Take Basic Quiz</span>
+              </button>
             )}
           </div>
 
-          {/* Key Points Area */}
-          <div className="p-6 md:p-8 border-t border-slate-100">
-            <h2 className="text-2xl font-bold text-slate-800 mb-4">Key Points</h2>
-            <ul className="list-disc list-inside space-y-2 text-slate-700 font-medium text-lg">
-              <li>Subtraction means taking away.</li>
-              <li>Start from the ones column.</li>
-              <li>Borrow if needed.</li>
-            </ul>
+          <div className="flex gap-1 bg-slate-800/50 p-1 rounded-2xl w-fit mb-8">
+            <button 
+              onClick={() => setActiveSubTab('video')}
+              className={`flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-bold transition-all ${activeSubTab === 'video' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+            >
+              <Play size={16} /> {translations[language].video}
+            </button>
+            {topic.notes && (
+              <button 
+                onClick={() => setActiveSubTab('notes')}
+                className={`flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-bold transition-all ${activeSubTab === 'notes' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+              >
+                <FileText size={16} /> {translations[language].notes}
+              </button>
+            )}
+            {topic.practice_questions?.length > 0 && (
+              <button 
+                onClick={() => setActiveSubTab('practice')}
+                className={`flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-bold transition-all ${activeSubTab === 'practice' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+              >
+                <HelpCircle size={16} /> {translations[language].practice}
+              </button>
+            )}
+          </div>
+
+          <AnimatePresence mode="wait">
+            {activeSubTab === 'video' && (
+              <motion.div 
+                key="video"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="aspect-video rounded-2xl overflow-hidden bg-black shadow-2xl"
+              >
+                <iframe 
+                  src={topic.playlist_id.startsWith('PL') 
+                    ? `https://www.youtube.com/embed/videoseries?list=${topic.playlist_id}`
+                    : topic.playlist_id.includes('&list=')
+                      ? `https://www.youtube.com/embed/${topic.playlist_id.split('&list=')[0]}?list=${topic.playlist_id.split('&list=')[1].split('&')[0]}`
+                      : `https://www.youtube.com/embed/${topic.playlist_id}`}
+                  className="w-full h-full"
+                  allowFullScreen
+                />
+              </motion.div>
+            )}
+
+            {activeSubTab === 'notes' && (
+              <motion.div 
+                key="notes"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="bg-slate-800/30 rounded-2xl p-8 prose prose-invert max-w-none border border-white/5"
+              >
+                <div className="markdown-body">
+                  <Markdown>{topic.notes}</Markdown>
+                </div>
+              </motion.div>
+            )}
+
+            {activeSubTab === 'practice' && (
+              <motion.div 
+                key="practice"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+              >
+                {topic.practice_questions?.map((q, idx) => (
+                  <PracticeQuestion 
+                    key={idx} 
+                    question={q} 
+                    isPremium={isPremium} 
+                    language={language} 
+                    onUpgrade={onUpgrade}
+                  />
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function QuizEngine({ questions, onComplete, language }: { questions: any[], onComplete: () => void, language: string }) {
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [answers, setAnswers] = useState<number[]>([]);
+  const [finished, setFinished] = useState(false);
+  const [showHint, setShowHint] = useState(false);
+
+  const handleAnswer = (idx: number) => {
+    const newAnswers = [...answers];
+    newAnswers[currentIdx] = idx;
+    setAnswers(newAnswers);
+  };
+
+  const handleNext = () => {
+    setCurrentIdx(prev => prev + 1);
+    setShowHint(false);
+  };
+
+  const handlePrev = () => {
+    setCurrentIdx(prev => prev - 1);
+    setShowHint(false);
+  };
+
+  const score = answers.reduce((acc, ans, i) => acc + (ans === questions[i].correct_option ? 1 : 0), 0);
+
+  if (finished) {
+    return (
+      <div className="max-w-2xl mx-auto text-center py-12">
+        <div className="w-24 h-24 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-emerald-500/20">
+          <Trophy size={48} className="text-white" />
+        </div>
+        <h2 className="text-4xl font-bold text-white mb-4">Quiz Completed!</h2>
+        <p className="text-xl text-slate-400 mb-8">You scored {score} out of {questions.length}</p>
+        
+        <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-8 mb-8">
+          <div className="grid grid-cols-3 gap-4">
+            <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
+              <p className="text-2xl font-bold text-emerald-500">{score}</p>
+              <p className="text-[10px] font-bold uppercase text-slate-500">Correct</p>
+            </div>
+            <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20">
+              <p className="text-2xl font-bold text-red-500">{questions.length - score}</p>
+              <p className="text-[10px] font-bold uppercase text-slate-500">Wrong</p>
+            </div>
+            <div className="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20">
+              <p className="text-2xl font-bold text-blue-500">{Math.round((score / questions.length) * 100)}%</p>
+              <p className="text-[10px] font-bold uppercase text-slate-500">Accuracy</p>
+            </div>
           </div>
         </div>
 
-        {/* Tabs Row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button 
-            onClick={() => setActiveTab('practice')}
-            className={`flex items-center gap-4 p-4 rounded-xl transition-all duration-200 text-left ${
-              activeTab === 'practice' 
-                ? 'bg-[#1e5b99] text-white shadow-lg scale-[1.02]' 
-                : 'bg-[#e2e8f0] text-slate-700 hover:bg-slate-300 shadow-sm'
-            }`}
-          >
-            <div className={`text-3xl ${activeTab === 'practice' ? 'text-yellow-400' : 'text-[#1e5b99]'}`}>
-              📝
-            </div>
-            <div>
-              <div className="font-bold text-lg leading-tight">Practice</div>
-              <div className={`text-sm ${activeTab === 'practice' ? 'text-blue-200' : 'text-slate-500'}`}>Solve Questions</div>
-            </div>
-          </button>
+        <button 
+          onClick={onComplete}
+          className="bg-emerald-500 hover:bg-emerald-600 text-white px-12 py-4 rounded-2xl font-bold transition-all"
+        >
+          Back to Topic
+        </button>
+      </div>
+    );
+  }
 
-          <button 
-            onClick={() => setActiveTab('game')}
-            className={`flex items-center gap-4 p-4 rounded-xl transition-all duration-200 text-left ${
-              activeTab === 'game' 
-                ? 'bg-[#1e5b99] text-white shadow-lg scale-[1.02]' 
-                : 'bg-[#e2e8f0] text-slate-700 hover:bg-slate-300 shadow-sm'
-            }`}
-          >
-            <div className={`text-3xl ${activeTab === 'game' ? 'text-yellow-400' : 'text-[#1e5b99]'}`}>
-              🎮
-            </div>
-            <div>
-              <div className="font-bold text-lg leading-tight">Mind Game</div>
-              <div className={`text-sm ${activeTab === 'game' ? 'text-blue-200' : 'text-slate-500'}`}>Speed Challenge</div>
-            </div>
-          </button>
+  const q = questions[currentIdx];
 
-          <button 
-            onClick={() => setActiveTab('ai')}
-            className={`flex items-center gap-4 p-4 rounded-xl transition-all duration-200 text-left ${
-              activeTab === 'ai' 
-                ? 'bg-[#1e5b99] text-white shadow-lg scale-[1.02]' 
-                : 'bg-[#e2e8f0] text-slate-700 hover:bg-slate-300 shadow-sm'
-            }`}
-          >
-            <div className={`text-3xl ${activeTab === 'ai' ? 'text-yellow-400' : 'text-[#1e5b99]'}`}>
-              🤖
+  return (
+    <div className="max-w-3xl mx-auto">
+      <div className="flex items-center justify-between mb-8">
+        <button 
+          onClick={onComplete}
+          className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+        >
+          <ArrowLeft size={20} />
+          <span>Quit Quiz</span>
+        </button>
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white font-bold text-xl">
+            {currentIdx + 1}
+          </div>
+          <div>
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Question {currentIdx + 1} of {questions.length}</p>
+            <div className="w-48 h-1.5 bg-slate-800 rounded-full mt-1 overflow-hidden">
+              <div 
+                className="h-full bg-emerald-500 transition-all duration-500" 
+                style={{ width: `${((currentIdx + 1) / questions.length) * 100}%` }}
+              />
             </div>
-            <div>
-              <div className="font-bold text-lg leading-tight">AI Doubt</div>
-              <div className={`text-sm ${activeTab === 'ai' ? 'text-blue-200' : 'text-slate-500'}`}>Ask Questions</div>
-            </div>
-          </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-8 mb-6">
+        <h2 className="text-2xl font-bold text-white mb-8 leading-relaxed">{q.question}</h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          {q.options.map((opt: string, idx: number) => (
+            <button 
+              key={idx}
+              onClick={() => handleAnswer(idx)}
+              className={`flex items-center gap-4 p-6 rounded-2xl border transition-all text-left ${answers[currentIdx] === idx ? 'bg-emerald-500/10 border-emerald-500 text-white' : 'bg-slate-800/50 border-white/5 text-slate-400 hover:border-white/20 hover:text-white'}`}
+            >
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold ${answers[currentIdx] === idx ? 'bg-emerald-500 text-white' : 'bg-slate-700 text-slate-400'}`}>
+                {String.fromCharCode(65 + idx)}
+              </div>
+              <span className="text-lg font-medium">{opt}</span>
+            </button>
+          ))}
         </div>
 
-        {/* Tab Content */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 min-h-[300px]">
-          {activeTab === 'practice' && (
-            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <h3 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-                <PenTool className="text-[#1e5b99]" /> Practice Questions
-              </h3>
-              <div className="space-y-4 text-lg font-bold text-slate-800 bg-slate-50 p-6 rounded-xl border border-slate-200">
-                <p className="flex items-center gap-4"><span className="w-8 h-8 rounded-full bg-blue-100 text-[#1e5b99] flex items-center justify-center text-sm">1</span> 54 - 21 = ?</p>
-                <p className="flex items-center gap-4"><span className="w-8 h-8 rounded-full bg-blue-100 text-[#1e5b99] flex items-center justify-center text-sm">2</span> 73 - 26 = ?</p>
-                <p className="flex items-center gap-4"><span className="w-8 h-8 rounded-full bg-blue-100 text-[#1e5b99] flex items-center justify-center text-sm">3</span> 65 - 48 = ?</p>
-              </div>
-              <button onClick={onTakeTest} className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-emerald-700 transition-all shadow-md">
-                Submit Answers
+        {q.hint && (
+          <div className="mt-6 border-t border-white/5 pt-6">
+            {!showHint ? (
+              <button 
+                onClick={() => setShowHint(true)}
+                className="text-amber-500 hover:text-amber-400 text-sm font-bold flex items-center gap-2"
+              >
+                <Lightbulb size={16} /> Show Hint
               </button>
-            </div>
-          )}
-
-          {activeTab === 'game' && (
-            <div className="flex flex-col items-center justify-center py-8 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mb-6">
-                <Brain size={48} className="text-[#1e5b99]" />
+            ) : (
+              <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 flex gap-3">
+                <Lightbulb className="text-amber-500 shrink-0" size={20} />
+                <p className="text-amber-200/80 text-sm">{q.hint}</p>
               </div>
-              <h3 className="text-2xl font-bold text-slate-800 mb-4">Speed Math Challenge</h3>
-              <p className="text-slate-600 mb-8 max-w-md mx-auto text-lg">Improve your calculation speed and make learning fun with our interactive mind game!</p>
-              <button onClick={onPlayGame} className="bg-[#1e5b99] text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-800 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 flex items-center gap-3">
-                <Play fill="currentColor" /> Play Mind Game
-              </button>
-            </div>
-          )}
+            )}
+          </div>
+        )}
+      </div>
 
-          {activeTab === 'ai' && (
-            <div className="flex flex-col h-[400px] animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <h3 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-                <Bot className="text-[#1e5b99]" /> Ask AI Doubt Solver
-              </h3>
-              <div className="flex-1 bg-slate-50 rounded-xl border border-slate-200 p-4 flex flex-col mb-6 overflow-y-auto">
-                {aiResponse ? (
-                  <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-100 text-slate-700 whitespace-pre-wrap text-lg">
-                    {aiResponse}
-                  </div>
+      <div className="flex justify-between items-center">
+        <button 
+          disabled={currentIdx === 0}
+          onClick={handlePrev}
+          className="flex items-center gap-2 text-slate-500 hover:text-white disabled:opacity-0 transition-colors"
+        >
+          <ArrowLeft size={20} /> Previous
+        </button>
+        
+        {currentIdx === questions.length - 1 ? (
+          <button 
+            disabled={answers[currentIdx] === undefined}
+            onClick={() => setFinished(true)}
+            className="bg-emerald-500 hover:bg-emerald-600 text-white px-12 py-4 rounded-2xl font-bold transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50"
+          >
+            Finish Quiz
+          </button>
+        ) : (
+          <button 
+            disabled={answers[currentIdx] === undefined}
+            onClick={handleNext}
+            className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-8 py-4 rounded-2xl font-bold transition-all disabled:opacity-50"
+          >
+            Next Question <ArrowRight size={20} />
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function MonthlyTestsView({ tests, submissions, language, user, onBack }: any) {
+  const [selectedTest, setSelectedTest] = useState<MonthlyTest | null>(null);
+  const [takingTest, setTakingTest] = useState(false);
+
+  useEffect(() => {
+    if (selectedTest) {
+      const updatedSelected = tests.find((t: MonthlyTest) => t.id === selectedTest.id || (t.translationGroupId && t.translationGroupId === selectedTest.translationGroupId));
+      if (updatedSelected) {
+        setSelectedTest(updatedSelected);
+      } else {
+        setSelectedTest(null);
+        setTakingTest(false);
+      }
+    }
+  }, [tests]);
+
+  const getSubmission = (test: MonthlyTest) => {
+    const groupTestIds = tests
+      .filter((t: MonthlyTest) => t.id === test.id || (t.translationGroupId && t.translationGroupId === test.translationGroupId))
+      .map((t: MonthlyTest) => t.id);
+    return submissions.find((s: any) => groupTestIds.includes(s.testId));
+  };
+
+  if (takingTest && selectedTest) {
+    return (
+      <MonthlyTestEngine 
+        test={selectedTest} 
+        onComplete={() => {
+          setTakingTest(false);
+          setSelectedTest(null);
+        }} 
+        onBack={() => setTakingTest(false)}
+        language={language} 
+        user={user}
+      />
+    );
+  }
+
+  return (
+    <div className="space-y-8">
+      <button 
+        onClick={onBack}
+        className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
+      >
+        <ArrowLeft size={20} />
+        <span>Back to Dashboard</span>
+      </button>
+
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2">{translations[language].monthlyTests}</h1>
+          <p className="text-slate-400">Participate in monthly assessments and track your progress.</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {tests.map((test: MonthlyTest) => {
+          const submission = getSubmission(test);
+          const resultsPublished = test.results_published;
+
+          return (
+            <div key={test.id} className="bg-slate-900/50 border border-white/5 rounded-3xl p-8 hover:border-emerald-500/20 transition-all group">
+              <div className="flex items-start justify-between mb-6">
+                <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                  <Calendar size={32} />
+                </div>
+                {submission ? (
+                  <span className="px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-500 text-xs font-bold uppercase tracking-wider">
+                    Completed
+                  </span>
                 ) : (
-                  <div className="m-auto text-center text-slate-400">
-                    <Bot size={48} className="mx-auto mb-4 opacity-50" />
-                    <p className="text-lg">Ask any question about this chapter!</p>
-                    <p className="text-sm mt-2">Example: "Why do we borrow in subtraction?"</p>
-                  </div>
+                  <span className="px-4 py-1.5 rounded-full bg-blue-500/10 text-blue-500 text-xs font-bold uppercase tracking-wider">
+                    Available
+                  </span>
                 )}
               </div>
-              <div className="flex gap-3">
-                <input 
-                  type="text" 
-                  value={aiPrompt}
-                  onChange={(e) => setAiPrompt(e.target.value)}
-                  placeholder="Type your doubt here..." 
-                  className="flex-1 border-2 border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#1e5b99] text-lg"
-                  onKeyDown={(e) => e.key === 'Enter' && handleAskAi()}
-                />
-                <button 
-                  onClick={handleAskAi}
-                  disabled={isAiLoading}
-                  className="bg-[#1e5b99] text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-800 transition-all shadow-md disabled:opacity-50 flex items-center gap-2"
-                >
-                  {isAiLoading ? <Loader2 className="animate-spin" /> : <Send size={20} />}
-                  Ask
-                </button>
+
+              <h3 className="text-2xl font-bold text-white mb-2">{getLocalizedSubject(test.subject, language)} - {test.month} {test.year}</h3>
+              <p className="text-slate-400 mb-8">Total Questions: {test.questions.length}</p>
+
+              <div className="flex flex-col gap-3">
+                {submission ? (
+                  <>
+                    <div className="grid grid-cols-2 gap-4 mb-2">
+                      <div className="bg-slate-800/50 rounded-2xl p-4 text-center">
+                        <p className="text-xl font-bold text-white">{submission.score}</p>
+                        <p className="text-[10px] font-bold uppercase text-slate-500">Score</p>
+                      </div>
+                      <div className="bg-slate-800/50 rounded-2xl p-4 text-center">
+                        <p className="text-xl font-bold text-emerald-500">
+                          {resultsPublished ? `#${submission.rank || 'N/A'}` : 'Pending'}
+                        </p>
+                        <p className="text-[10px] font-bold uppercase text-slate-500">Rank</p>
+                      </div>
+                    </div>
+                    {resultsPublished && (
+                      <div className="w-full py-4 rounded-2xl bg-slate-800 text-white font-bold text-center flex items-center justify-center gap-2">
+                        <Trophy size={18} /> Results Published
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <button 
+                    onClick={() => {
+                      setSelectedTest(test);
+                      setTakingTest(true);
+                    }}
+                    className="w-full py-4 rounded-2xl bg-emerald-500 text-white font-bold hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
+                  >
+                    <Play size={18} /> {translations[language].takeMonthlyTest}
+                  </button>
+                )}
               </div>
             </div>
-          )}
+          );
+        })}
+
+        {tests.length === 0 && (
+          <div className="md:col-span-2 flex flex-col items-center justify-center py-20 text-center bg-slate-900/30 rounded-3xl border border-dashed border-white/10">
+            <Clock size={48} className="text-slate-600 mb-4" />
+            <h3 className="text-xl font-bold text-white mb-2">No Tests Scheduled</h3>
+            <p className="text-slate-500">Check back later for upcoming monthly assessments.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [answers, setAnswers] = useState<number[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleAnswer = (idx: number) => {
+    const newAnswers = [...answers];
+    newAnswers[currentIdx] = idx;
+    setAnswers(newAnswers);
+  };
+
+  const handleSubmit = async () => {
+    setSubmitting(true);
+    try {
+      const score = answers.reduce((acc, ans, i) => acc + (ans === test.questions[i].correct_option ? 1 : 0), 0);
+      
+      await addDoc(collection(firestore, 'monthly_test_submissions'), {
+        testId: test.id,
+        userId: user.uid,
+        userName: user.displayName || 'Student',
+        answers,
+        score,
+        submittedAt: serverTimestamp(),
+        rank: null
+      });
+
+      onComplete();
+    } catch (err) {
+      console.error("Submit Test Error:", err);
+      alert("Failed to submit test. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const q = test.questions[currentIdx];
+
+  return (
+    <div className="max-w-3xl mx-auto">
+      <button 
+        onClick={onBack}
+        className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
+      >
+        <ArrowLeft size={20} />
+        <span>Back to Tests</span>
+      </button>
+
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white font-bold text-xl">
+            {currentIdx + 1}
+          </div>
+          <div>
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Question {currentIdx + 1} of {test.questions.length}</p>
+            <div className="w-48 h-1.5 bg-slate-800 rounded-full mt-1 overflow-hidden">
+              <div 
+                className="h-full bg-emerald-500 transition-all duration-500" 
+                style={{ width: `${((currentIdx + 1) / test.questions.length) * 100}%` }}
+              />
+            </div>
+          </div>
         </div>
+      </div>
+
+      <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-8 mb-6">
+        <h2 className="text-2xl font-bold text-white mb-8 leading-relaxed">{q.question}</h2>
+        
+        <div className="grid grid-cols-1 gap-4">
+          {q.options.map((opt: string, idx: number) => (
+            <button 
+              key={idx}
+              onClick={() => handleAnswer(idx)}
+              className={`flex items-center gap-4 p-6 rounded-2xl border transition-all text-left ${answers[currentIdx] === idx ? 'bg-emerald-500/10 border-emerald-500 text-white' : 'bg-slate-800/50 border-white/5 text-slate-400 hover:border-white/20 hover:text-white'}`}
+            >
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold ${answers[currentIdx] === idx ? 'bg-emerald-500 text-white' : 'bg-slate-700 text-slate-400'}`}>
+                {String.fromCharCode(65 + idx)}
+              </div>
+              <span className="text-lg font-medium">{opt}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex justify-between items-center">
+        <button 
+          disabled={currentIdx === 0}
+          onClick={() => setCurrentIdx(prev => prev - 1)}
+          className="flex items-center gap-2 text-slate-500 hover:text-white disabled:opacity-0 transition-colors"
+        >
+          <ArrowLeft size={20} /> Previous
+        </button>
+        
+        {currentIdx === test.questions.length - 1 ? (
+          <button 
+            disabled={answers[currentIdx] === undefined || submitting}
+            onClick={handleSubmit}
+            className="bg-emerald-500 hover:bg-emerald-600 text-white px-12 py-4 rounded-2xl font-bold transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50 flex items-center gap-2"
+          >
+            {submitting ? <><Loader2 size={20} className="animate-spin" /> Submitting...</> : 'Submit Final Test'}
+          </button>
+        ) : (
+          <button 
+            disabled={answers[currentIdx] === undefined}
+            onClick={() => setCurrentIdx(prev => prev + 1)}
+            className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-8 py-4 rounded-2xl font-bold transition-all disabled:opacity-50"
+          >
+            Next Question <ArrowRight size={20} />
+          </button>
+        )}
       </div>
     </div>
   );
