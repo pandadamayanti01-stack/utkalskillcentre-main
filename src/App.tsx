@@ -46,9 +46,6 @@ import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, que
 import { translations } from './translations';
 import { solveMathDoubt } from './services/aiService';
 import { AdminDashboard } from './components/AdminDashboard';
-import logoUtkal from '/src/assets/logo_utkal.png';
-import logoBigsan from '/src/assets/logo_bigsan.png';
-
 // --- Types ---
 interface Badge {
   id: string;
@@ -122,7 +119,7 @@ const fetchJson = async (url: string, options?: RequestInit) => {
 const Logo = ({ className = "h-12" }: { className?: string }) => (
   <div className={`flex items-center gap-3 ${className} border border-red-500`}>
     <img 
-      src={logoUtkal} 
+      src="/logo_utkal_v2.png" 
       alt="Utkal Skill Centre" 
       className="h-full w-auto object-contain" 
       onLoad={() => console.log("Logo loaded")}
@@ -142,7 +139,7 @@ const BigsanBranding = ({ className = "" }: { className?: string }) => {
         {translations[lang]?.associate || 'Associate Partner'}
       </p>
       <img 
-        src={logoBigsan} 
+        src="/logo_bigsan_v2.png" 
         alt="Bigsan Group" 
         className="h-6 w-auto opacity-80 grayscale hover:grayscale-0 transition-all" 
         referrerPolicy="no-referrer"
