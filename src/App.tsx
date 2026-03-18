@@ -119,7 +119,7 @@ const fetchJson = async (url: string, options?: RequestInit) => {
 const Logo = ({ className = "h-12" }: { className?: string }) => (
   <div className={`flex items-center gap-3 ${className}`}>
     <img 
-      src="/logo_utkal_v2.png" 
+      src="/logo_utkal.png" 
       alt="Utkal Skill Centre" 
       className="h-full w-auto object-contain" 
     />
@@ -134,7 +134,7 @@ const BigsanBranding = ({ className = "" }: { className?: string }) => {
         {translations[lang]?.associate || 'Associate Partner'}
       </p>
       <img 
-        src="/logo_bigsan_v2.png" 
+        src="/logo_bigsan.png" 
         alt="Bigsan Group" 
         className="h-6 w-auto opacity-80 grayscale hover:grayscale-0 transition-all" 
       />
