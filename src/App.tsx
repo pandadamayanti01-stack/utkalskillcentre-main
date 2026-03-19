@@ -367,7 +367,6 @@ export default function App() {
             const data = docSnap.data() as Student;
             const updatedUser = { ...data, id: docSnap.id };
             setUser(updatedUser);
-            setRegData(updatedUser);
             if (data.role === 'admin') {
               setIsAdminView(true);
             }
@@ -380,55 +379,23 @@ export default function App() {
 
         try {
           // Initial sync/creation
-          let userDocSnap = await getDoc(userDocRef);
-          
-          // One Login, One Profile Logic:
-          // If the document for this UID doesn't exist, check if a user with the same email or phone exists
-          if (!userDocSnap.exists()) {
-            console.log("New UID detected, checking for existing profile by email/phone...");
-            const usersColl = collection(firestore, 'users');
-            let existingUserQuery;
-            
-            if (firebaseUser.email) {
-              existingUserQuery = query(usersColl, where('email', '==', firebaseUser.email), limit(1));
-            } else if (firebaseUser.phoneNumber) {
-              existingUserQuery = query(usersColl, where('phoneNumber', '==', firebaseUser.phoneNumber), limit(1));
-            }
-            
-            if (existingUserQuery) {
-              const querySnap = await getDocs(existingUserQuery);
-              if (!querySnap.empty) {
-                const existingData = querySnap.docs[0].data() as any;
-                console.log("Found existing profile with different UID, merging data...");
-                // Copy existing data to the new UID document
-                await setDoc(userDocRef, {
-                  ...existingData,
-                  id: firebaseUser.uid, // Update ID to current UID
-                  updatedAt: serverTimestamp()
-                }, { merge: true });
-                // Refresh doc snap
-                userDocSnap = await getDoc(userDocRef);
-              }
-            }
-          }
-
+          const userDocSnap = await getDoc(userDocRef);
           const isAdmin = firebaseUser.email === 'pandadamayanti01@gmail.com' || firebaseUser.phoneNumber === '+919337956168' || firebaseUser.phoneNumber === '9337956168';
           
-          const role = isAdmin ? 'admin' : (userDocSnap.exists() ? (userDocSnap.data()?.role || 'student') : 'student');
+          const role = isAdmin ? 'admin' : (userDocSnap.exists() ? userDocSnap.data().role : 'student');
           
           const userData: any = {
             id: firebaseUser.uid,
-            name: (userDocSnap.exists() ? (userDocSnap.data()?.name || 'Student') : (firebaseUser.displayName || regDataRef.current.name || 'Student')),
-            email: (userDocSnap.exists() ? (userDocSnap.data()?.email || '') : (firebaseUser.email || regDataRef.current.email || '')),
-            phoneNumber: (userDocSnap.exists() ? (userDocSnap.data()?.phoneNumber || '') : (firebaseUser.phoneNumber || '')),
-            class: (userDocSnap.exists() ? (userDocSnap.data()?.class || null) : (regDataRef.current.class || null)),
-            board: (userDocSnap.exists() ? (userDocSnap.data()?.board || '') : (regDataRef.current.board || '')),
-            subjects: (userDocSnap.exists() ? (userDocSnap.data()?.subjects || []) : (regDataRef.current.subjects || [])),
-            preferred_language: (userDocSnap.exists() ? (userDocSnap.data()?.preferred_language || 'or') : (languageRef.current || 'or')),
+            name: firebaseUser.displayName || regDataRef.current.name || (userDocSnap.exists() ? userDocSnap.data().name : 'Student'),
+            email: firebaseUser.email || regDataRef.current.email || (userDocSnap.exists() ? userDocSnap.data().email : ''),
+            class: regDataRef.current.class || (userDocSnap.exists() ? userDocSnap.data().class : null),
+            board: regDataRef.current.board || (userDocSnap.exists() ? userDocSnap.data().board : ''),
+            subjects: regDataRef.current.subjects.length > 0 ? regDataRef.current.subjects : (userDocSnap.exists() ? (userDocSnap.data().subjects || []) : []),
+            preferred_language: languageRef.current || (userDocSnap.exists() ? userDocSnap.data().preferred_language : 'or'),
             role: role,
-            points: userDocSnap.exists() ? (userDocSnap.data()?.points || 0) : 0,
-            shareCount: userDocSnap.exists() ? (userDocSnap.data()?.shareCount || 0) : 0,
-            statusShared: userDocSnap.exists() ? (userDocSnap.data()?.statusShared || false) : false,
+            points: userDocSnap.exists() ? userDocSnap.data().points : 0,
+            shareCount: userDocSnap.exists() ? (userDocSnap.data().shareCount || 0) : 0,
+            statusShared: userDocSnap.exists() ? (userDocSnap.data().statusShared || false) : false,
             updatedAt: serverTimestamp()
           };
 
@@ -589,6 +556,11 @@ export default function App() {
   };
 
   const handleGoogleLogin = async () => {
+    // For Google, we don't need email validation beforehand as we get it from Google
+    if (!isAdminLogin && (!regData.name.trim() || (!regData.class || !regData.board))) {
+      alert(translations[language].requiredFieldsError);
+      return;
+    }
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
@@ -706,6 +678,10 @@ export default function App() {
 
   const handlePhoneLogin = async () => {
     console.log("Handle Phone Login clicked");
+    if (!validateRegData()) {
+      console.log("Validation failed");
+      return;
+    }
     if (!phoneNumber || phoneNumber.length < 10) {
       alert(language === 'en' ? "Please enter a valid phone number" : "ଦୟାକରି ଏକ ସଠିକ୍ ଫୋନ୍ ନମ୍ବର ଦିଅନ୍ତୁ");
       return;
@@ -1067,9 +1043,126 @@ export default function App() {
             </div>
 
             {authStep === 'login' ? (
-              <div className="space-y-5">
-                {!isAdminLogin ? (
-                  <div className="space-y-4">
+              <div className="space-y-3">
+                {isAdminLogin ? (
+                  <div className="space-y-3">
+                    <input 
+                      type="email" 
+                      placeholder="Admin Email"
+                      className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
+                      value={adminEmail}
+                      onChange={(e) => setAdminEmail(e.target.value)}
+                    />
+                    <input 
+                      type="password" 
+                      placeholder="Password"
+                      className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
+                      value={adminPassword}
+                      onChange={(e) => setAdminPassword(e.target.value)}
+                    />
+                    <button 
+                      onClick={handleAdminEmailLogin}
+                      disabled={isSendingOtp}
+                      className={`w-full py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-900/20 flex items-center justify-center gap-2 ${isSendingOtp ? 'opacity-70 cursor-not-allowed' : ''}`}
+                    >
+                      {isSendingOtp && (
+                        <motion.div 
+                          animate={{ rotate: 360 }}
+                          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                          className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
+                        />
+                      )}
+                      {isSendingOtp ? (language === 'en' ? 'Logging in...' : 'ଲଗଇନ୍ ହେଉଛି...') : (language === 'en' ? 'Login with Email' : 'ଇମେଲ୍ ସହିତ ଲଗଇନ୍')}
+                    </button>
+
+                    <div className="relative my-4">
+                      <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-white/10"></div>
+                      </div>
+                      <div className="relative flex justify-center text-xs">
+                        <span className="bg-slate-900 px-2 text-slate-500">Or Admin Phone Login</span>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <div className="flex items-center justify-center px-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-medium">+91</div>
+                      <input 
+                        type="tel" 
+                        placeholder="Admin Phone"
+                        className="flex-1 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                      />
+                    </div>
+                    <button 
+                      onClick={handlePhoneLogin}
+                      disabled={isSendingOtp}
+                      className={`w-full py-2.5 rounded-xl bg-slate-800 text-white text-sm font-semibold hover:bg-slate-700 transition-all shadow-lg flex items-center justify-center gap-2 ${isSendingOtp ? 'opacity-70 cursor-not-allowed' : ''}`}
+                    >
+                      {language === 'en' ? 'Login with Phone' : 'ଫୋନ୍ ସହିତ ଲଗଇନ୍'}
+                    </button>
+                    {adminLoginError && (
+                      <div className="text-red-400 text-xs text-center mt-2 p-2 bg-red-500/10 rounded-lg border border-red-500/20">
+                        {adminLoginError}
+                      </div>
+                    )}
+                    {showResetPasswordButton && (
+                      <button 
+                        onClick={handleSendPasswordReset}
+                        className="w-full py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/20 mt-2"
+                      >
+                        Send Password Reset Email
+                      </button>
+                    )}
+                    <div className="relative my-4">
+                      <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-white/10"></div>
+                      </div>
+                      <div className="relative flex justify-center text-xs">
+                        <span className="bg-slate-900 px-2 text-slate-500">Or continue with</span>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={handleGoogleLogin}
+                      className="w-full py-2.5 rounded-xl bg-white text-slate-900 text-sm font-semibold hover:bg-slate-100 transition-all shadow-lg flex items-center justify-center gap-2"
+                    >
+                      <svg className="w-4 h-4" viewBox="0 0 24 24">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                      </svg>
+                      Google
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="space-y-3">
+                      <select 
+                        className="w-full px-3 py-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
+                        value={regData.class}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setRegData({ ...regData, class: val });
+                        }}
+                      >
+                        <option value="">{translations[language].selectClass} *</option>
+                        {Object.entries(translations[language].classes).map(([key, label]) => (
+                          <option key={key} value={key}>{label as string}</option>
+                        ))}
+                      </select>
+                      <select 
+                        className="w-full px-3 py-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
+                        value={regData.board}
+                        onChange={(e) => setRegData({ ...regData, board: e.target.value })}
+                      >
+                        <option value="">{translations[language].selectBoard} *</option>
+                        <option value="odisha">{translations[language].boards.odisha}</option>
+                        <option value="saraswati">{translations[language].boards.saraswati}</option>
+                        <option value="cbse">{translations[language].boards.cbse}</option>
+                      </select>
+                    </div>
+
                     <div className="space-y-3">
                       <div className="flex gap-2">
                         <div className="flex items-center justify-center px-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-medium">+91</div>
@@ -1096,60 +1189,19 @@ export default function App() {
                         {isSendingOtp ? translations[language].sending : translations[language].sendOtp}
                       </button>
                     </div>
-
-                    <div className="relative my-4">
-                      <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-white/10"></div>
-                      </div>
-                      <div className="relative flex justify-center text-xs">
-                        <span className="bg-slate-900 px-2 text-slate-500">Or continue with</span>
-                      </div>
-                    </div>
-
-                    <button 
-                      onClick={handleGoogleLogin}
-                      className="w-full py-2.5 rounded-xl bg-white text-slate-900 text-sm font-semibold hover:bg-slate-100 transition-all shadow-lg flex items-center justify-center gap-2"
-                    >
-                      <svg className="w-4 h-4" viewBox="0 0 24 24">
-                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                      </svg>
-                      Google
-                    </button>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    <input 
-                      type="email" 
-                      placeholder="Admin Email"
-                      className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
-                      value={adminEmail}
-                      onChange={(e) => setAdminEmail(e.target.value)}
-                    />
-                    <input 
-                      type="password" 
-                      placeholder="Password"
-                      className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
-                      value={adminPassword}
-                      onChange={(e) => setAdminPassword(e.target.value)}
-                    />
-                    <button 
-                      onClick={handleAdminEmailLogin}
-                      className="w-full py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-900/20"
-                    >
-                      Login as Admin
-                    </button>
                   </div>
                 )}
 
-                <div className="text-center mt-4">
+                <p className="text-[10px] text-slate-500 text-center mt-2">
+                  {!isAdminLogin && (language === 'en' ? '* All fields are mandatory' : '* ସମସ୍ତ ତଥ୍ୟ ଦେବା ଅନିର୍ବାଯ୍ୟ')}
+                </p>
+                
+                <div className="text-center mt-2">
                   <button 
-                    onClick={() => setIsAdminLogin(!isAdminLogin)}
+                    onClick={() => setIsAdminLogin(!isAdminLogin)} 
                     className="text-xs text-slate-500 hover:text-emerald-400 transition-colors"
                   >
-                    {isAdminLogin ? "Back to Student Login" : "Admin Login"}
+                    {isAdminLogin ? (language === 'en' ? "Student Login" : "ଛାତ୍ର ଲଗଇନ୍") : (language === 'en' ? "Admin Login" : "ଆଡମିନ୍ ଲଗଇନ୍")}
                   </button>
                 </div>
               </div>
@@ -1231,85 +1283,6 @@ export default function App() {
             </div>
           )}
         </AnimatePresence>
-      </div>
-    );
-  }
-
-  if (user && user.role !== 'admin' && (!user.class || !user.board)) {
-    return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md bg-slate-900/50 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-8 shadow-2xl relative z-10"
-        >
-          <div className="text-center mb-8">
-            <div className="w-20 h-20 bg-emerald-500/10 rounded-3xl flex items-center justify-center text-emerald-500 mx-auto mb-6">
-              <User size={40} />
-            </div>
-            <h2 className="text-3xl font-bold text-white mb-2">{translations[language].completeProfile}</h2>
-            <p className="text-slate-400 text-sm">{translations[language].profileTagline}</p>
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 px-1">
-                {translations[language].selectClass}
-              </label>
-              <select 
-                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all appearance-none"
-                value={regData.class || ''}
-                onChange={(e) => setRegData({ ...regData, class: e.target.value })}
-              >
-                <option value="" className="bg-slate-900">Choose Class</option>
-                {Object.entries(translations[language].classes).map(([key, label]) => (
-                  <option key={key} value={key} className="bg-slate-900">{label as string}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 px-1">
-                {translations[language].selectBoard}
-              </label>
-              <select 
-                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all appearance-none"
-                value={regData.board || ''}
-                onChange={(e) => setRegData({ ...regData, board: e.target.value })}
-              >
-                <option value="" className="bg-slate-900">Choose Board</option>
-                <option value="odisha" className="bg-slate-900">{translations[language].boards.odisha}</option>
-                <option value="saraswati" className="bg-slate-900">{translations[language].boards.saraswati}</option>
-                <option value="cbse" className="bg-slate-900">{translations[language].boards.cbse}</option>
-              </select>
-            </div>
-
-            <button 
-              onClick={async () => {
-                if (!regData.class || !regData.board) {
-                  alert(translations[language].requiredFieldsError);
-                  return;
-                }
-                setLoading(true);
-                try {
-                  await updateDoc(doc(firestore, 'users', user.id), {
-                    class: regData.class,
-                    board: regData.board,
-                    updatedAt: serverTimestamp()
-                  });
-                } catch (err) {
-                  console.error("Profile Setup Error:", err);
-                } finally {
-                  setLoading(false);
-                }
-              }}
-              disabled={loading}
-              className="w-full py-4 rounded-2xl bg-emerald-600 text-white font-bold hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-900/20 flex items-center justify-center gap-2 mt-4"
-            >
-              {loading ? <Loader2 className="animate-spin" size={20} /> : translations[language].finishSetup}
-            </button>
-          </div>
-        </motion.div>
       </div>
     );
   }
