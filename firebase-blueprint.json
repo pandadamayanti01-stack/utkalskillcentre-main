@@ -8,6 +8,7 @@
         "id": { "type": "string", "description": "Firebase UID" },
         "name": { "type": "string", "description": "Full Name" },
         "email": { "type": "string", "description": "Email Address" },
+        "phoneNumber": { "type": "string", "description": "Phone Number" },
         "class": { "type": "integer", "description": "Student Class (3-10)" },
         "board": { "type": "string", "description": "Education Board" },
         "preferred_language": { "type": "string", "description": "Preferred Language (en|or)" },
@@ -17,7 +18,7 @@
         "role": { "type": "string", "enum": ["student", "admin"] },
         "created_at": { "type": "string", "format": "date-time" }
       },
-      "required": ["id", "name", "email", "role"]
+      "required": ["id", "name", "role"]
     },
     "Chapter": {
       "title": "Learning Topic",
