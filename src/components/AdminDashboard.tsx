@@ -18,11 +18,15 @@ import {
   ClipboardList,
   Calendar,
   CheckCircle2,
-  Trophy
+  Trophy,
+  Search,
+  Edit2,
+  Sparkles
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { db as firestore, auth } from '../firebase';
 import { signOut } from 'firebase/auth';
+import { GoogleGenAI, Type } from "@google/genai";
 import { 
   collection, 
   query, 
@@ -39,6 +43,8 @@ import {
   Timestamp,
   serverTimestamp
 } from 'firebase/firestore';
+
+import { translations } from '../translations';
 
 type AdminTab = 'dashboard' | 'content' | 'monthly_tests' | 'ai_usage' | 'payments' | 'notifications' | 'settings';
 
@@ -62,11 +68,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
   const [systemSettings, setSystemSettings] = useState<any>({});
   const [privateSettings, setPrivateSettings] = useState<any>({});
   const [confirmAction, setConfirmAction] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   
   const [isAddingTest, setIsAddingTest] = useState(false);
   const [newTest, setNewTest] = useState<any>({
-    subject: '',
-    month: '',
+    subject: 'math',
+    class: 'class5',
+    month: 'January',
     year: new Date().getFullYear(),
     language: 'or',
     questions: [],
@@ -170,11 +178,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
   );
 
   const [isAddingChapter, setIsAddingChapter] = useState(false);
+  const [isEditingChapter, setIsEditingChapter] = useState(false);
+  const [editingChapterId, setEditingChapterId] = useState<string | null>(null);
+  const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [adminSubjectFilter, setAdminSubjectFilter] = useState('all');
+  const [isOtherSubject, setIsOtherSubject] = useState(false);
+  const [customSubject, setCustomSubject] = useState('');
+  const [isOtherTestSubject, setIsOtherTestSubject] = useState(false);
+  const [customTestSubject, setCustomTestSubject] = useState('');
   const [newChapter, setNewChapter] = useState({
-    board: 'Odisha Board',
-    class: 5,
+    board: 'odisha',
+    class: 'class3',
     language: 'or',
-    subject: 'Mathematics',
+    subject: 'math',
     title: '',
     playlist_id: '',
     notes: '',
@@ -185,70 +202,112 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
   const handleAddChapter = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // Save the original chapter
-      const originalDocRef = await addDoc(collection(firestore, 'chapters'), {
-        ...newChapter,
-        createdAt: serverTimestamp()
-      });
-
-      // Determine target language for auto-translation
-      const targetLang = newChapter.language === 'en' ? 'or' : 'en';
+      let finalSubject = isOtherSubject ? customSubject : newChapter.subject;
       
-      // Translate title and notes
-      const translatedTitle = await fetch('/api/ai/translate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: newChapter.title, targetLanguage: targetLang, isJson: false })
-      }).then(res => res.json()).then(data => data.text);
+      // Map common subject names to keys
+      const subjectMapping: Record<string, string> = {
+        'Mathematics': 'math',
+        'Math': 'math',
+        'Science': 'science',
+        'English': 'english',
+        'Odia': 'odia',
+        'History': 'history',
+        'Geography': 'geography',
+        'Social Studies': 'social',
+        'Hindi': 'hindi',
+        'Sanskrit': 'sanskrit',
+        'EVS': 'evs',
+        'General Knowledge': 'gk',
+        'GK': 'gk',
+        'Physics': 'physics',
+        'Chemistry': 'chemistry',
+        'Biology': 'biology'
+      };
 
-      const translatedNotes = newChapter.notes ? await fetch('/api/ai/translate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: newChapter.notes, targetLanguage: targetLang, isJson: false })
-      }).then(res => res.json()).then(data => data.text) : '';
+      if (subjectMapping[finalSubject]) {
+        finalSubject = subjectMapping[finalSubject];
+      }
 
-      // Translate practice questions
-      const translatedPractice = newChapter.practice_questions.length > 0 ? await fetch('/api/ai/translate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: JSON.stringify(newChapter.practice_questions), targetLanguage: targetLang, isJson: true })
-      }).then(res => res.json()).then(data => {
-        try { return JSON.parse(data.text); } catch(e) { return newChapter.practice_questions; }
-      }) : [];
+      if (isEditingChapter && editingChapterId) {
+        await updateDoc(doc(firestore, 'chapters', editingChapterId), {
+          ...newChapter,
+          subject: finalSubject,
+          updatedAt: serverTimestamp()
+        });
+        alert("Chapter updated successfully!");
+        setIsEditingChapter(false);
+        setEditingChapterId(null);
+      } else {
+        // Save the original chapter
+        const originalDocRef = await addDoc(collection(firestore, 'chapters'), {
+          ...newChapter,
+          subject: finalSubject,
+          createdAt: serverTimestamp()
+        });
 
-      // Translate quiz questions
-      const translatedQuiz = newChapter.quiz_questions.length > 0 ? await fetch('/api/ai/translate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: JSON.stringify(newChapter.quiz_questions), targetLanguage: targetLang, isJson: true })
-      }).then(res => res.json()).then(data => {
-        try { return JSON.parse(data.text); } catch(e) { return newChapter.quiz_questions; }
-      }) : [];
+        // Determine target language for auto-translation
+        const targetLang = newChapter.language === 'en' ? 'or' : 'en';
+        
+        // Translate title and notes
+        const translatedTitle = await fetch('/api/ai/translate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: newChapter.title, targetLanguage: targetLang, isJson: false })
+        }).then(res => res.json()).then(data => data.text);
 
-      // Save the translated chapter
-      await addDoc(collection(firestore, 'chapters'), {
-        ...newChapter,
-        language: targetLang,
-        title: translatedTitle || newChapter.title,
-        notes: translatedNotes || newChapter.notes,
-        practice_questions: translatedPractice,
-        quiz_questions: translatedQuiz,
-        translationGroupId: originalDocRef.id,
-        createdAt: serverTimestamp()
-      });
+        const translatedNotes = newChapter.notes ? await fetch('/api/ai/translate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: newChapter.notes, targetLanguage: targetLang, isJson: false })
+        }).then(res => res.json()).then(data => data.text) : '';
+
+        // Translate practice questions
+        const translatedPractice = newChapter.practice_questions.length > 0 ? await fetch('/api/ai/translate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: JSON.stringify(newChapter.practice_questions), targetLanguage: targetLang, isJson: true })
+        }).then(res => res.json()).then(data => {
+          try { return JSON.parse(data.text); } catch(e) { return newChapter.practice_questions; }
+        }) : [];
+
+        // Translate quiz questions
+        const translatedQuiz = newChapter.quiz_questions.length > 0 ? await fetch('/api/ai/translate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: JSON.stringify(newChapter.quiz_questions), targetLanguage: targetLang, isJson: true })
+        }).then(res => res.json()).then(data => {
+          try { return JSON.parse(data.text); } catch(e) { return newChapter.quiz_questions; }
+        }) : [];
+
+        // Save the translated chapter
+        await addDoc(collection(firestore, 'chapters'), {
+          ...newChapter,
+          subject: finalSubject,
+          language: targetLang,
+          title: translatedTitle || newChapter.title,
+          notes: translatedNotes || newChapter.notes,
+          practice_questions: translatedPractice,
+          quiz_questions: translatedQuiz,
+          translationGroupId: originalDocRef.id,
+          createdAt: serverTimestamp()
+        });
+        
+        // Update original chapter with translationGroupId
+        await updateDoc(doc(firestore, 'chapters', originalDocRef.id), {
+          translationGroupId: originalDocRef.id
+        });
+        
+        alert("Chapter and its auto-translation added successfully!");
+      }
       
-      // Update original chapter with translationGroupId
-      await updateDoc(doc(firestore, 'chapters', originalDocRef.id), {
-        translationGroupId: originalDocRef.id
-      });
-      
-      alert("Chapter and its auto-translation added successfully!");
       setIsAddingChapter(false);
+      setIsOtherSubject(false);
+      setCustomSubject('');
       setNewChapter({
-        board: 'Odisha Board',
-        class: 5,
+        board: 'odisha',
+        class: 'class3',
         language: 'or',
-        subject: 'Mathematics',
+        subject: 'math',
         title: '',
         playlist_id: '',
         notes: '',
@@ -257,350 +316,700 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
       });
       fetchContent();
     } catch (err: any) {
-      console.error("Add Chapter Error:", err);
-      alert("Failed to add chapter: " + err.message);
+      console.error("Add/Edit Chapter Error:", err);
+      alert("Failed to save chapter: " + err.message);
     }
   };
 
-  const renderContent = () => (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white">Content Library</h2>
-        <div className="flex gap-2">
-          <button 
-            onClick={() => setIsAddingChapter(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl transition-all"
-          >
-            <Plus size={18} />
-            Add New Chapter
-          </button>
-        </div>
-      </div>
+  const handleGenerateWithAI = async () => {
+    if (!newChapter.title) {
+      alert("Please enter a title first.");
+      return;
+    }
+    setIsGeneratingAI(true);
+    try {
+      const apiKey = process.env.GEMINI_API_KEY || (import.meta as any).env?.VITE_GEMINI_API_KEY || (globalThis as any).API_KEY || "";
+      const ai = new GoogleGenAI({ apiKey });
+      const response = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: `Generate educational content for a chapter titled "${newChapter.title}" for subject "${newChapter.subject}" and class "${newChapter.class}".
+        The language should be "${newChapter.language === 'or' ? 'Odia' : 'English'}".
+        Provide the output in JSON format with the following structure:
+        {
+          "notes": "Detailed educational notes in Markdown format",
+          "practice_questions": [
+            { "question": "Question text", "answer": "Detailed answer/explanation" }
+          ],
+          "quiz_questions": [
+            { "question": "Question text", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "The correct option text", "hint": "A small hint" }
+          ]
+        }`,
+        config: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              notes: { type: Type.STRING },
+              practice_questions: {
+                type: Type.ARRAY,
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    question: { type: Type.STRING },
+                    answer: { type: Type.STRING }
+                  },
+                  required: ["question", "answer"]
+                }
+              },
+              quiz_questions: {
+                type: Type.ARRAY,
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    question: { type: Type.STRING },
+                    options: { type: Type.ARRAY, items: { type: Type.STRING } },
+                    correct_answer: { type: Type.STRING },
+                    hint: { type: Type.STRING }
+                  },
+                  required: ["question", "options", "correct_answer"]
+                }
+              }
+            },
+            required: ["notes", "practice_questions", "quiz_questions"]
+          }
+        }
+      });
 
-      {isAddingChapter && (
-        <div className="bg-white/5 border border-white/10 p-6 rounded-2xl space-y-6">
-          <h3 className="text-lg font-semibold text-white">Add New Chapter</h3>
-          <form onSubmit={handleAddChapter} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Board</label>
-                <select 
-                  value={newChapter.board}
-                  onChange={(e) => setNewChapter({...newChapter, board: e.target.value})}
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+      const result = JSON.parse(response.text);
+      
+      setNewChapter(prev => ({
+        ...prev,
+        notes: result.notes,
+        practice_questions: result.practice_questions,
+        quiz_questions: result.quiz_questions
+      }));
+      
+      alert("AI has generated the content for you! Please review it before saving.");
+    } catch (err: any) {
+      console.error("AI Generation Error:", err);
+      alert("Failed to generate content with AI: " + err.message);
+    } finally {
+      setIsGeneratingAI(false);
+    }
+  };
+
+  const getBoardKey = (board: string) => {
+    if (board === 'Odisha Board') return 'odisha';
+    if (board === 'Saraswati Sishu Mandir') return 'saraswati';
+    if (board === 'CBSE') return 'cbse';
+    return 'odisha';
+  };
+
+  const handleDeleteAllTests = async () => {
+    if (!confirm(`Are you sure you want to delete ALL ${monthlyTests.length} monthly tests? This cannot be undone.`)) return;
+    
+    try {
+      setLoading(true);
+      for (const t of monthlyTests) {
+        await deleteDoc(doc(firestore, 'monthly_tests', t.id));
+      }
+      fetchMonthlyTests();
+      alert("Monthly tests cleared successfully!");
+    } catch (err) {
+      console.error("Delete All Tests Error:", err);
+      alert("Failed to clear tests. Some items may not have been deleted.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteAllNotifications = async () => {
+    if (!confirm(`Are you sure you want to delete ALL ${notifications.length} notifications? This cannot be undone.`)) return;
+    
+    try {
+      setLoading(true);
+      for (const n of notifications) {
+        await deleteDoc(doc(firestore, 'notifications', n.id));
+      }
+      alert("Notifications cleared successfully!");
+    } catch (err) {
+      console.error("Delete All Notifications Error:", err);
+      alert("Failed to clear notifications.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const renderContent = () => {
+    const filteredContent = content.filter(c => {
+      const matchesSearch = c.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           c.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           c.class.toLowerCase().includes(searchTerm.toLowerCase());
+      // Requirement: Do not show chapters in "all subjects" option
+      const matchesSubject = adminSubjectFilter !== 'all' && c.subject === adminSubjectFilter;
+      return matchesSearch && matchesSubject;
+    });
+
+    // Requirement: Only show one entry per logical chapter (addressing the "two chapters" issue)
+    const uniqueChapters = Array.from(
+      filteredContent.reduce((acc, current) => {
+        const groupId = current.translationGroupId || current.id;
+        const existing = acc.get(groupId);
+        // Prefer English version for the display if it exists, otherwise keep the first one found
+        if (!existing || current.language === 'en') {
+          acc.set(groupId, current);
+        }
+        return acc;
+      }, new Map<string, any>()).values()
+    );
+
+    const handleDeleteAll = async () => {
+      if (!confirm(`Are you sure you want to delete ALL ${content.length} chapters in the library? This cannot be undone.`)) return;
+      
+      try {
+        setLoading(true);
+        for (const c of content) {
+          await deleteDoc(doc(firestore, 'chapters', c.id));
+        }
+        fetchContent();
+        alert("Content library cleared successfully!");
+      } catch (err) {
+        console.error("Delete All Error:", err);
+        alert("Failed to clear library. Some items may not have been deleted.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <h2 className="text-xl font-bold text-white">Content Library</h2>
+          <div className="flex flex-wrap gap-4">
+            <select
+              value={adminSubjectFilter}
+              onChange={(e) => setAdminSubjectFilter(e.target.value)}
+              className="bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none"
+            >
+              <option value="all">All Subjects</option>
+              {Array.from(new Set([
+                ...Object.keys(translations['en'].subjects),
+                ...content.map((c: any) => c.subject)
+              ])).map(s => (
+                <option key={s} value={s}>
+                  {translations['en'].subjects[s as keyof typeof translations.en.subjects] || s}
+                </option>
+              ))}
+            </select>
+
+            <div className="flex gap-2">
+              {content.length > 0 && (
+                <button 
+                  onClick={handleDeleteAll}
+                  className="flex items-center gap-2 px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-500 border border-red-500/20 rounded-xl transition-all"
                 >
-                  <option value="Odisha Board">Odisha Board</option>
-                  <option value="Saraswati Sishu Mandir">Saraswati Sishu Mandir</option>
-                  <option value="CBSE">CBSE</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Language</label>
-                <select 
-                  value={newChapter.language}
-                  onChange={(e) => setNewChapter({...newChapter, language: e.target.value})}
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                >
-                  <option value="or">Odia</option>
-                  <option value="en">English</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class</label>
-                <select 
-                  value={newChapter.class}
-                  onChange={(e) => setNewChapter({...newChapter, class: parseInt(e.target.value)})}
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                >
-                  {[3,4,5,6,7,8,9,10].map(c => <option key={c} value={c}>Class {c}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Subject</label>
-                <input 
-                  type="text" 
-                  value={newChapter.subject}
-                  onChange={(e) => setNewChapter({...newChapter, subject: e.target.value})}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Chapter / Video Title</label>
-                <input 
-                  type="text" 
-                  value={newChapter.title}
-                  onChange={(e) => setNewChapter({...newChapter, title: e.target.value})}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                  placeholder="e.g. ବସ୍ତୁରୁ ଆକୃତି ଜାଣିବା"
-                />
-              </div>
-              <div className="md:col-span-3">
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-2">YouTube Video ID</label>
-                <input 
-                  type="text" 
-                  value={newChapter.playlist_id}
-                  onChange={(e) => setNewChapter({...newChapter, playlist_id: e.target.value})}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                  placeholder="e.g. dQw4w9WgXcQ (The 11 characters after v= in the YouTube URL)"
-                />
-              </div>
-              <div className="md:col-span-3">
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Notes (Markdown)</label>
-                <textarea 
-                  value={newChapter.notes}
-                  onChange={(e) => setNewChapter({...newChapter, notes: e.target.value})}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none h-32"
-                  placeholder="# Introduction\nThis topic covers..."
-                />
-              </div>
+                  <Trash2 size={18} />
+                  Clear All Chapters
+                </button>
+              )}
+              <button 
+                onClick={() => {
+                  setIsEditingChapter(false);
+                  setEditingChapterId(null);
+                  setNewChapter({
+                    board: 'odisha',
+                    class: 'class3',
+                    language: 'or',
+                    subject: 'math',
+                    title: '',
+                    playlist_id: '',
+                    notes: '',
+                    practice_questions: [],
+                    quiz_questions: []
+                  });
+                  setIsAddingChapter(true);
+                }}
+                className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl transition-all"
+              >
+                <Plus size={18} />
+                Add New Chapter
+              </button>
             </div>
+          </div>
+        </div>
 
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h4 className="text-sm font-bold text-white uppercase tracking-wider">Practice Questions</h4>
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const predefined = [
-                        { question: "୧. ଏକ ବର୍ଗାକାର କାଗଜର କେତୋଟି କୋଣ ଥାଏ?", answer: "ଏକ ବର୍ଗାକାର କାଗଜର ୪ଟି କୋଣ ଥାଏ।" },
-                        { question: "୨. ତ୍ରିଭୁଜର କେତୋଟି ବାହୁ ଅଛି?", answer: "ତ୍ରିଭୁଜର ୩ଟି ବାହୁ ଅଛି।" },
-                        { question: "୩. ଗୋଟିଏ ଆୟତକାର କାଗଜକୁ ମଝିରୁ କୋଣାକୋଣି ଭାଙ୍ଗିଲେ କେଉଁ ଆକୃତି ମିଳିବ?", answer: "ଗୋଟିଏ ଆୟତକାର କାଗଜକୁ ମଝିରୁ କୋଣାକୋଣି ଭାଙ୍ଗିଲେ ତ୍ରିଭୁଜ ଆକୃତି ମିଳିବ।" },
-                        { question: "୪. ତୁମେ କାଗଜରେ ତିଆରି କରୁଥିବା ଦୁଇଟି ଖେଳନାର ନାମ ଲେଖ।", answer: "କାଗଜରେ ତିଆରି ଦୁଇଟି ଖେଳନା ହେଲା: କାଗଜ ଡଙ୍ଗା ଏବଂ କାଗଜ ବିମାନ।" }
-                      ];
-                      setNewChapter({
-                        ...newChapter,
-                        practice_questions: [...newChapter.practice_questions, ...predefined]
-                      });
-                    }}
-                    className="text-xs bg-emerald-900/50 text-emerald-400 px-3 py-1 rounded-lg hover:bg-emerald-900"
+        {isAddingChapter && (
+          <div className="bg-white/5 border border-white/10 p-6 rounded-2xl space-y-6">
+            <h3 className="text-lg font-semibold text-white">{isEditingChapter ? 'Edit Chapter' : 'Add New Chapter'}</h3>
+            <form onSubmit={handleAddChapter} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Board</label>
+                  <select 
+                    value={newChapter.board}
+                    onChange={(e) => setNewChapter({...newChapter, board: e.target.value})}
+                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
                   >
-                    + Add Pre-defined
-                  </button>
+                    <option value="odisha">Odisha Board</option>
+                    <option value="saraswati">Saraswati Sishu Mandir</option>
+                    <option value="cbse">CBSE</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Language</label>
+                  <select 
+                    value={newChapter.language}
+                    onChange={(e) => setNewChapter({...newChapter, language: e.target.value})}
+                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+                  >
+                    <option value="or">Odia</option>
+                    <option value="en">English</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class</label>
+                  <select 
+                    value={newChapter.class}
+                    onChange={(e) => setNewChapter({...newChapter, class: e.target.value})}
+                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+                  >
+                    <option value="play">Play School</option>
+                    <option value="nursery">Nursery</option>
+                    <option value="lkg">LKG</option>
+                    <option value="ukg">UKG</option>
+                    <option value="class1">Class 1</option>
+                    <option value="class2">Class 2</option>
+                    <option value="class3">Class 3</option>
+                    <option value="class4">Class 4</option>
+                    <option value="class5">Class 5</option>
+                    <option value="class6">Class 6</option>
+                    <option value="class7">Class 7</option>
+                    <option value="class8">Class 8</option>
+                    <option value="class9">Class 9</option>
+                    <option value="class10">Class 10</option>
+                    <option value="class11">Class 11</option>
+                    <option value="class12">Class 12</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Subject</label>
+                  <select 
+                    value={isOtherSubject ? 'other' : newChapter.subject}
+                    onChange={(e) => {
+                      if (e.target.value === 'other') {
+                        setIsOtherSubject(true);
+                      } else {
+                        setIsOtherSubject(false);
+                        setNewChapter({...newChapter, subject: e.target.value});
+                      }
+                    }}
+                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+                  >
+                    {Object.entries(translations['en'].subjects).map(([key, label]) => (
+                      <option key={key} value={key}>{label as string}</option>
+                    ))}
+                    <option value="other">Other</option>
+                  </select>
+                  {isOtherSubject && (
+                    <input 
+                      type="text" 
+                      value={customSubject}
+                      placeholder="Enter custom subject"
+                      className="w-full mt-2 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+                      onChange={(e) => setCustomSubject(e.target.value)}
+                    />
+                  )}
+                </div>
+                <div className="md:col-span-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-xs font-bold text-slate-500 uppercase">Chapter / Video Title</label>
+                    <button 
+                      type="button"
+                      onClick={handleGenerateWithAI}
+                      disabled={isGeneratingAI || !newChapter.title}
+                      className="flex items-center gap-1 text-xs text-emerald-500 hover:text-emerald-400 disabled:opacity-50 transition-all"
+                    >
+                      {isGeneratingAI ? <div className="animate-spin h-3 w-3 border-2 border-emerald-500 border-t-transparent rounded-full" /> : <Sparkles size={14} />}
+                      {isGeneratingAI ? 'Generating...' : 'AI Magic: Generate Content'}
+                    </button>
+                  </div>
+                  <input 
+                    type="text" 
+                    value={newChapter.title}
+                    onChange={(e) => setNewChapter({...newChapter, title: e.target.value})}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+                    placeholder="e.g. ବସ୍ତୁରୁ ଆକୃତି ଜାଣିବା"
+                  />
+                </div>
+                <div className="md:col-span-3">
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">YouTube Video ID</label>
+                  <input 
+                    type="text" 
+                    value={newChapter.playlist_id}
+                    onChange={(e) => setNewChapter({...newChapter, playlist_id: e.target.value})}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+                    placeholder="e.g. dQw4w9WgXcQ (The 11 characters after v= in the YouTube URL)"
+                  />
+                </div>
+                <div className="md:col-span-3">
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Notes (Markdown)</label>
+                  <textarea 
+                    value={newChapter.notes}
+                    onChange={(e) => setNewChapter({...newChapter, notes: e.target.value})}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none h-32"
+                    placeholder="# Introduction\nThis topic covers..."
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-sm font-bold text-white uppercase tracking-wider">Practice Questions</h4>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const predefined = [
+                          { question: "୧. ଏକ ବର୍ଗାକାର କାଗଜର କେତୋଟି କୋଣ ଥାଏ?", answer: "ଏକ ବର୍ଗାକାର କାଗଜର ୪ଟି କୋଣ ଥାଏ।" },
+                          { question: "୨. ତ୍ରିଭୁଜର କେତୋଟି ବାହୁ ଅଛି?", answer: "ତ୍ରିଭୁଜର ୩ଟି ବାହୁ ଅଛି।" },
+                          { question: "୩. ଗୋଟିଏ ଆୟତକାର କାଗଜକୁ ମଝିରୁ କୋଣାକୋଣି ଭାଙ୍ଗିଲେ କେଉଁ ଆକୃତି ମିଳିବ?", answer: "ଗୋଟିଏ ଆୟତକାର କାଗଜକୁ ମଝିରୁ କୋଣାକୋଣି ଭାଙ୍ଗିଲେ ତ୍ରିଭୁଜ ଆକୃତି ମିଳିବ।" },
+                          { question: "୪. ତୁମେ କାଗଜରେ ତିଆରି କରୁଥିବା ଦୁଇଟି ଖେଳନାର ନାମ ଲେଖ।", answer: "କାଗଜରେ ତିଆରି ଦୁଇଟି ଖେଳନା ହେଲା: କାଗଜ ଡଙ୍ଗା ଏବଂ କାଗଜ ବିମାନ।" }
+                        ];
+                        setNewChapter({
+                          ...newChapter,
+                          practice_questions: [...newChapter.practice_questions, ...predefined]
+                        });
+                      }}
+                      className="text-xs bg-emerald-900/50 text-emerald-400 px-3 py-1 rounded-lg hover:bg-emerald-900"
+                    >
+                      + Add Pre-defined
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => setNewChapter({
+                        ...newChapter, 
+                        practice_questions: [...newChapter.practice_questions, { question: '', answer: '' }]
+                      })}
+                      className="text-xs text-emerald-500 hover:underline"
+                    >
+                      + Add Question
+                    </button>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  {newChapter.practice_questions.map((pq, idx) => (
+                      <div key={idx} className="bg-black/20 p-6 rounded-xl border border-white/5 space-y-4">
+                      <input 
+                        type="text"
+                        placeholder="Practice Question"
+                        value={pq.question}
+                        onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
+                        onChange={(e) => {
+                          const pqs = [...newChapter.practice_questions];
+                          pqs[idx].question = e.target.value;
+                          setNewChapter({...newChapter, practice_questions: pqs});
+                        }}
+                        className="w-full bg-transparent border-b border-white/10 text-white text-base py-2 focus:outline-none focus:border-emerald-500"
+                      />
+                      <textarea 
+                        placeholder="Answer/Explanation"
+                        value={pq.answer}
+                        onKeyDown={(e) => { if (e.key === 'Enter') e.stopPropagation(); }}
+                        onChange={(e) => {
+                          const pqs = [...newChapter.practice_questions];
+                          pqs[idx].answer = e.target.value;
+                          setNewChapter({...newChapter, practice_questions: pqs});
+                        }}
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white focus:outline-none h-32"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-sm font-bold text-white uppercase tracking-wider">Quiz Questions</h4>
                   <button 
                     type="button"
                     onClick={() => setNewChapter({
                       ...newChapter, 
-                      practice_questions: [...newChapter.practice_questions, { question: '', answer: '' }]
+                      quiz_questions: [...newChapter.quiz_questions, { question: '', options: ['', '', '', ''], correct_answer: '', hint: '' }]
                     })}
                     className="text-xs text-emerald-500 hover:underline"
                   >
-                    + Add Question
+                    + Add Quiz Question
                   </button>
                 </div>
-              </div>
-              <div className="space-y-4">
-                {newChapter.practice_questions.map((pq, idx) => (
-                    <div key={idx} className="bg-black/20 p-6 rounded-xl border border-white/5 space-y-4">
-                    <input 
-                      type="text"
-                      placeholder="Practice Question"
-                      value={pq.question}
-                      onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
-                      onChange={(e) => {
-                        const pqs = [...newChapter.practice_questions];
-                        pqs[idx].question = e.target.value;
-                        setNewChapter({...newChapter, practice_questions: pqs});
-                      }}
-                      className="w-full bg-transparent border-b border-white/10 text-white text-base py-2 focus:outline-none focus:border-emerald-500"
-                    />
-                    <textarea 
-                      placeholder="Answer/Explanation"
-                      value={pq.answer}
-                      onKeyDown={(e) => { if (e.key === 'Enter') e.stopPropagation(); }}
-                      onChange={(e) => {
-                        const pqs = [...newChapter.practice_questions];
-                        pqs[idx].answer = e.target.value;
-                        setNewChapter({...newChapter, practice_questions: pqs});
-                      }}
-                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white focus:outline-none h-32"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h4 className="text-sm font-bold text-white uppercase tracking-wider">Quiz Questions</h4>
-                <button 
-                  type="button"
-                  onClick={() => setNewChapter({
-                    ...newChapter, 
-                    quiz_questions: [...newChapter.quiz_questions, { question: '', options: ['', '', '', ''], correct_answer: '', hint: '' }]
-                  })}
-                  className="text-xs text-emerald-500 hover:underline"
-                >
-                  + Add Quiz Question
-                </button>
-              </div>
-              
-              <div className="space-y-4">
-                {newChapter.quiz_questions.map((q, qIdx) => (
-                  <div key={qIdx} className="bg-black/20 p-4 rounded-xl border border-white/5 space-y-3">
-                    <div className="flex justify-between items-start">
-                      <input 
-                        type="text"
-                        placeholder={`Question ${qIdx + 1}`}
-                        value={q.question}
-                        onChange={(e) => {
-                          const qs = [...newChapter.quiz_questions];
-                          qs[qIdx].question = e.target.value;
-                          setNewChapter({...newChapter, quiz_questions: qs});
-                        }}
-                        className="flex-1 bg-transparent border-b border-white/10 text-white text-sm py-1 focus:outline-none focus:border-emerald-500"
-                      />
-                      <button 
-                        type="button"
-                        onClick={() => {
-                          const qs = newChapter.quiz_questions.filter((_, i) => i !== qIdx);
-                          setNewChapter({...newChapter, quiz_questions: qs});
-                        }}
-                        className="text-red-500 hover:text-red-400 ml-2"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      {q.options.map((opt: string, oIdx: number) => (
+                
+                <div className="space-y-4">
+                  {newChapter.quiz_questions.map((q, qIdx) => (
+                    <div key={qIdx} className="bg-black/20 p-4 rounded-xl border border-white/5 space-y-3">
+                      <div className="flex justify-between items-start">
                         <input 
-                          key={oIdx}
                           type="text"
-                          placeholder={`Option ${oIdx + 1}`}
-                          value={opt}
+                          placeholder={`Question ${qIdx + 1}`}
+                          value={q.question}
                           onChange={(e) => {
                             const qs = [...newChapter.quiz_questions];
-                            qs[qIdx].options[oIdx] = e.target.value;
+                            qs[qIdx].question = e.target.value;
                             setNewChapter({...newChapter, quiz_questions: qs});
                           }}
-                          className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500/50"
+                          className="flex-1 bg-transparent border-b border-white/10 text-white text-sm py-1 focus:outline-none focus:border-emerald-500"
                         />
-                      ))}
+                        <button 
+                          type="button"
+                          onClick={() => {
+                            const qs = newChapter.quiz_questions.filter((_, i) => i !== qIdx);
+                            setNewChapter({...newChapter, quiz_questions: qs});
+                          }}
+                          className="text-red-500 hover:text-red-400 ml-2"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        {q.options.map((opt: string, oIdx: number) => (
+                          <input 
+                            key={oIdx}
+                            type="text"
+                            placeholder={`Option ${oIdx + 1}`}
+                            value={opt}
+                            onChange={(e) => {
+                              const qs = [...newChapter.quiz_questions];
+                              qs[qIdx].options[oIdx] = e.target.value;
+                              setNewChapter({...newChapter, quiz_questions: qs});
+                            }}
+                            className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500/50"
+                          />
+                        ))}
+                      </div>
+                      <div>
+                        <input 
+                          type="text"
+                          placeholder="Correct Answer"
+                          value={q.correct_answer}
+                          onChange={(e) => {
+                            const qs = [...newChapter.quiz_questions];
+                            qs[qIdx].correct_answer = e.target.value;
+                            setNewChapter({...newChapter, quiz_questions: qs});
+                          }}
+                          className="w-full bg-emerald-500/5 border border-emerald-500/20 rounded-lg px-3 py-1.5 text-xs text-emerald-400 focus:outline-none mb-2"
+                        />
+                        <input 
+                          type="text"
+                          placeholder="Hint (Optional)"
+                          value={q.hint || ''}
+                          onChange={(e) => {
+                            const qs = [...newChapter.quiz_questions];
+                            qs[qIdx].hint = e.target.value;
+                            setNewChapter({...newChapter, quiz_questions: qs});
+                          }}
+                          className="w-full bg-amber-500/5 border border-amber-500/20 rounded-lg px-3 py-1.5 text-xs text-amber-400 focus:outline-none"
+                        />
+                      </div>
                     </div>
-                    <div>
-                      <input 
-                        type="text"
-                        placeholder="Correct Answer"
-                        value={q.correct_answer}
-                        onChange={(e) => {
-                          const qs = [...newChapter.quiz_questions];
-                          qs[qIdx].correct_answer = e.target.value;
-                          setNewChapter({...newChapter, quiz_questions: qs});
-                        }}
-                        className="w-full bg-emerald-500/5 border border-emerald-500/20 rounded-lg px-3 py-1.5 text-xs text-emerald-400 focus:outline-none mb-2"
-                      />
-                      <input 
-                        type="text"
-                        placeholder="Hint (Optional)"
-                        value={q.hint || ''}
-                        onChange={(e) => {
-                          const qs = [...newChapter.quiz_questions];
-                          qs[qIdx].hint = e.target.value;
-                          setNewChapter({...newChapter, quiz_questions: qs});
-                        }}
-                        className="w-full bg-amber-500/5 border border-amber-500/20 rounded-lg px-3 py-1.5 text-xs text-amber-400 focus:outline-none"
-                      />
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
 
-            <div className="flex gap-4">
-              <button 
-                type="submit"
-                className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl py-3 font-semibold transition-all"
-              >
-                Save Topic to Library
-              </button>
-              <button 
-                type="button"
-                onClick={() => setIsAddingChapter(false)}
-                className="px-8 bg-white/5 hover:bg-white/10 text-white rounded-xl py-3 font-semibold transition-all"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {content.map((c, i) => (
-          <div key={i} className="bg-white/5 border border-white/10 p-4 rounded-2xl space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold uppercase text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-full">
-                {c.board} • Class {c.class} • {c.language === 'or' ? 'Odia' : 'English'}
-              </span>
-              <div className="flex gap-2">
+              <div className="flex gap-4">
                 <button 
-                  onClick={async () => {
-                    if (confirmAction === `delete_topic_${c.id}`) {
-                      try {
-                        await deleteDoc(doc(firestore, 'chapters', c.id));
-                        setConfirmAction(null);
-                        fetchContent();
-                      } catch (err) {
-                        console.error("Delete Topic Error:", err);
-                      }
-                    } else {
-                      setConfirmAction(`delete_topic_${c.id}`);
-                      setTimeout(() => setConfirmAction(null), 3000);
-                    }
-                  }}
-                  className={confirmAction === `delete_topic_${c.id}` ? "text-red-500 font-bold text-xs" : "text-slate-500 hover:text-red-500"}
+                  type="submit"
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl py-3 font-semibold transition-all"
                 >
-                  {confirmAction === `delete_topic_${c.id}` ? "Confirm?" : <Trash2 size={14} />}
+                  {isEditingChapter ? 'Update Topic' : 'Save Topic to Library'}
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => setIsAddingChapter(false)}
+                  className="px-8 bg-white/5 hover:bg-white/10 text-white rounded-xl py-3 font-semibold transition-all"
+                >
+                  Cancel
                 </button>
               </div>
-            </div>
-            <h4 className="text-white font-semibold">{c.title}</h4>
-            <div className="text-xs text-slate-500">{c.subject}</div>
-            <div className="flex items-center gap-4 text-xs text-slate-400 pt-2 border-t border-white/5">
-              <div className="flex items-center gap-1"><Youtube size={14} /> Video</div>
-              {c.notes && <div className="flex items-center gap-1"><FileText size={14} /> Notes</div>}
-              {c.quiz_questions?.length > 0 && <div className="flex items-center gap-1"><ListChecks size={14} /> Quiz</div>}
-            </div>
+            </form>
           </div>
-        ))}
+        )}
+
+        {adminSubjectFilter === 'all' ? (
+          <div className="bg-white/5 border border-white/10 p-12 rounded-2xl text-center">
+            <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Search className="text-slate-500" size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">Select a Subject</h3>
+            <p className="text-slate-400">Please select a subject from the dropdown above to view its chapters.</p>
+          </div>
+        ) : uniqueChapters.length === 0 ? (
+          <div className="bg-white/5 border border-white/10 p-12 rounded-2xl text-center">
+            <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+              <BookOpen className="text-slate-500" size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">No Chapters Found</h3>
+            <p className="text-slate-400">There are no chapters added for this subject yet.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {uniqueChapters.map((c: any) => (
+              <div key={c.id} className="bg-white/5 border border-white/10 p-4 rounded-2xl flex flex-col h-full space-y-3 group hover:border-emerald-500/30 transition-all">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-full">
+                    {translations['en'].boards[getBoardKey(c.board)] || c.board} • {translations['en'].classes[c.class] || c.class} • {translations['en'].subjects[c.subject] || c.subject}
+                  </span>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => {
+                        setNewChapter({
+                          board: c.board,
+                          class: c.class,
+                          language: c.language,
+                          subject: c.subject,
+                          title: c.title,
+                          playlist_id: c.playlist_id,
+                          notes: c.notes || '',
+                          practice_questions: c.practice_questions || [],
+                          quiz_questions: c.quiz_questions || []
+                        });
+                        setEditingChapterId(c.id);
+                        setIsEditingChapter(true);
+                        setIsAddingChapter(true);
+                        // Scroll to form
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="text-slate-500 hover:text-emerald-500"
+                    >
+                      <Edit2 size={14} />
+                    </button>
+                    <button 
+                      onClick={async () => {
+                        if (confirmAction === `delete_topic_${c.id}`) {
+                          try {
+                            // Delete both translations if they exist
+                            const groupId = c.translationGroupId || c.id;
+                            const related = content.filter((item: any) => item.translationGroupId === groupId || item.id === groupId);
+                            for (const item of related) {
+                              await deleteDoc(doc(firestore, 'chapters', item.id));
+                            }
+                            setConfirmAction(null);
+                            fetchContent();
+                          } catch (err) {
+                            console.error("Delete Topic Error:", err);
+                          }
+                        } else {
+                          setConfirmAction(`delete_topic_${c.id}`);
+                          setTimeout(() => setConfirmAction(null), 3000);
+                        }
+                      }}
+                      className={confirmAction === `delete_topic_${c.id}` ? "text-red-500 font-bold text-xs" : "text-slate-500 hover:text-red-500"}
+                    >
+                      {confirmAction === `delete_topic_${c.id}` ? "Confirm?" : <Trash2 size={14} />}
+                    </button>
+                  </div>
+                </div>
+                <h4 className="text-white font-semibold">{c.title}</h4>
+                <div className="text-xs text-slate-500 flex-grow">{translations['en'].subjects[c.subject] || c.subject}</div>
+                <div className="flex items-center gap-4 text-xs text-slate-400 pt-2 border-t border-white/5">
+                  <div className="flex items-center gap-1"><Youtube size={14} /> Video</div>
+                  {c.notes && <div className="flex items-center gap-1"><FileText size={14} /> Notes</div>}
+                  {c.quiz_questions?.length > 0 && <div className="flex items-center gap-1"><ListChecks size={14} /> Quiz</div>}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderMonthlyTests = () => (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h3 className="text-xl font-bold text-white">Monthly Tests Management</h3>
-        <button 
-          onClick={() => {
-            setNewTest({
-              subject: '',
-              month: new Date().toLocaleString('default', { month: 'long' }),
-              year: new Date().getFullYear(),
-              language: 'or',
-              questions: [{ question: '', options: ['', '', '', ''], correct_answer: '' }],
-              status: 'draft'
-            });
-            setIsAddingTest(true);
-          }}
-          className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all"
-        >
-          <Plus size={18} /> Create New Test
-        </button>
+        <div className="flex gap-2">
+          {monthlyTests.length > 0 && (
+            <button 
+              onClick={handleDeleteAllTests}
+              className="bg-red-600/20 hover:bg-red-600/30 text-red-500 border border-red-500/20 px-4 py-2 rounded-xl flex items-center gap-2 transition-all"
+            >
+              <Trash2 size={18} /> Clear All Tests
+            </button>
+          )}
+          <button 
+            onClick={() => {
+              setNewTest({
+                subject: '',
+                class: 'class5',
+                month: new Date().toLocaleString('default', { month: 'long' }),
+                year: new Date().getFullYear(),
+                language: 'or',
+                questions: [{ question: '', options: ['', '', '', ''], correct_answer: '' }],
+                status: 'draft'
+              });
+              setIsAddingTest(true);
+            }}
+            className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all"
+          >
+            <Plus size={18} /> Create New Test
+          </button>
+        </div>
       </div>
 
       {isAddingTest && (
         <div className="bg-white/5 border border-white/10 p-6 rounded-2xl space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class</label>
+              <select 
+                value={newTest.class}
+                onChange={(e) => setNewTest({...newTest, class: e.target.value})}
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+              >
+                <option value="play">Play School</option>
+                <option value="nursery">Nursery</option>
+                <option value="lkg">LKG</option>
+                <option value="ukg">UKG</option>
+                <option value="class1">Class 1</option>
+                <option value="class2">Class 2</option>
+                <option value="class3">Class 3</option>
+                <option value="class4">Class 4</option>
+                <option value="class5">Class 5</option>
+                <option value="class6">Class 6</option>
+                <option value="class7">Class 7</option>
+                <option value="class8">Class 8</option>
+                <option value="class9">Class 9</option>
+                <option value="class10">Class 10</option>
+                <option value="class11">Class 11</option>
+                <option value="class12">Class 12</option>
+              </select>
+            </div>
+            <div>
               <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Subject</label>
-              <input 
-                type="text" 
-                value={newTest.subject}
-                onChange={(e) => setNewTest({...newTest, subject: e.target.value})}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                placeholder="e.g. Mathematics"
-              />
+              <select 
+                value={isOtherTestSubject ? 'other' : newTest.subject}
+                onChange={(e) => {
+                  if (e.target.value === 'other') {
+                    setIsOtherTestSubject(true);
+                  } else {
+                    setIsOtherTestSubject(false);
+                    setNewTest({...newTest, subject: e.target.value});
+                  }
+                }}
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+              >
+                {Object.entries(translations['en'].subjects).map(([key, label]) => (
+                  <option key={key} value={key}>{label as string}</option>
+                ))}
+                <option value="other">Other</option>
+              </select>
+              {isOtherTestSubject && (
+                <input 
+                  type="text" 
+                  value={customTestSubject}
+                  placeholder="Enter custom subject"
+                  className="w-full mt-2 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+                  onChange={(e) => setCustomTestSubject(e.target.value)}
+                />
+              )}
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Language</label>
@@ -630,7 +1039,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
               <input 
                 type="number" 
                 value={newTest.year}
-                onChange={(e) => setNewTest({...newTest, year: parseInt(e.target.value)})}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setNewTest({...newTest, year: val === "" ? "" : parseInt(val)});
+                }}
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
               />
             </div>
@@ -715,9 +1127,36 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
             <button 
               onClick={async () => {
                 try {
+                  let finalSubject = isOtherTestSubject ? customTestSubject : newTest.subject;
+                  
+                  // Map common subject names to keys
+                  const subjectMapping: Record<string, string> = {
+                    'Mathematics': 'math',
+                    'Math': 'math',
+                    'Science': 'science',
+                    'English': 'english',
+                    'Odia': 'odia',
+                    'History': 'history',
+                    'Geography': 'geography',
+                    'Social Studies': 'social',
+                    'Hindi': 'hindi',
+                    'Sanskrit': 'sanskrit',
+                    'EVS': 'evs',
+                    'General Knowledge': 'gk',
+                    'GK': 'gk',
+                    'Physics': 'physics',
+                    'Chemistry': 'chemistry',
+                    'Biology': 'biology'
+                  };
+
+                  if (subjectMapping[finalSubject]) {
+                    finalSubject = subjectMapping[finalSubject];
+                  }
+
                   // Save original test
                   const originalTestRef = await addDoc(collection(firestore, 'monthly_tests'), {
                     ...newTest,
+                    subject: finalSubject,
                     createdAt: serverTimestamp()
                   });
 
@@ -736,6 +1175,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                   // Save translated test
                   await addDoc(collection(firestore, 'monthly_tests'), {
                     ...newTest,
+                    subject: finalSubject,
                     language: targetLang,
                     questions: translatedQuestions,
                     translationGroupId: originalTestRef.id,
@@ -748,6 +1188,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                   });
 
                   setIsAddingTest(false);
+                  setIsOtherTestSubject(false);
+                  setCustomTestSubject('');
                   fetchMonthlyTests();
                 } catch (err) {
                   console.error("Save Test Error:", err);
@@ -773,8 +1215,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
           <div key={test.id} className="bg-white/5 border border-white/10 p-5 rounded-2xl space-y-4">
             <div className="flex justify-between items-start">
               <div>
-                <h4 className="text-white font-bold text-lg">{test.subject}</h4>
-                <p className="text-slate-400 text-sm">{test.month} {test.year}</p>
+                <h4 className="text-white font-bold text-lg">{translations['en'].subjects[test.subject] || test.subject}</h4>
+                <p className="text-slate-400 text-sm">{test.class} • {test.month} {test.year}</p>
               </div>
               <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${
                 test.status === 'published' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'
@@ -809,8 +1251,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                   onClick={async () => {
                     if (confirmAction === `publish_results_${test.id}`) {
                       try {
-                        // Fetch all submissions for this test
-                        const q = query(collection(firestore, 'monthly_test_submissions'), where('testId', '==', test.id));
+                        // Fetch all submissions for this test and its translations
+                        const groupTestIds = monthlyTests
+                          .filter((t: any) => t.id === test.id || (t.translationGroupId && t.translationGroupId === test.translationGroupId))
+                          .map((t: any) => t.id);
+                        
+                        const q = query(collection(firestore, 'monthly_test_submissions'), where('testId', 'in', groupTestIds));
                         const snap = await getDocs(q);
                         const submissions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                         
@@ -827,7 +1273,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                           });
                         }
 
-                        await updateDoc(doc(firestore, 'monthly_tests', test.id), { results_published: true });
+                        // Update all tests in the group
+                        for (const tid of groupTestIds) {
+                          await updateDoc(doc(firestore, 'monthly_tests', tid), { results_published: true });
+                        }
                         setConfirmAction(null);
                         fetchMonthlyTests();
                       } catch (err) {
@@ -959,7 +1408,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
       </div>
 
       <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
-        <div className="p-4 border-b border-white/10 font-semibold text-white">Sent History</div>
+        <div className="p-4 border-b border-white/10 font-semibold text-white flex justify-between items-center">
+          <span>Sent History</span>
+          {notifications.length > 0 && (
+            <button 
+              onClick={handleDeleteAllNotifications}
+              className="text-xs text-red-500 hover:text-red-400 font-bold flex items-center gap-1"
+            >
+              <Trash2 size={14} /> Clear All
+            </button>
+          )}
+        </div>
         <div className="divide-y divide-white/5">
           {notifications.map((n, i) => (
             <div key={i} className="p-4 flex items-center justify-between">
@@ -1005,7 +1464,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
             <input 
               type="number" 
               value={systemSettings.monthlyPrice || 199}
-              onChange={(e) => setSystemSettings({...systemSettings, monthlyPrice: parseInt(e.target.value)})}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSystemSettings({...systemSettings, monthlyPrice: val === "" ? "" : parseInt(val)});
+              }}
               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500/50"
             />
           </div>
@@ -1014,7 +1476,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
             <input 
               type="number" 
               value={systemSettings.yearlyPrice || 999}
-              onChange={(e) => setSystemSettings({...systemSettings, yearlyPrice: parseInt(e.target.value)})}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSystemSettings({...systemSettings, yearlyPrice: val === "" ? "" : parseInt(val)});
+              }}
               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500/50"
             />
           </div>

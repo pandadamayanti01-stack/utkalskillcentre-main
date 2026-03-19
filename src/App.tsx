@@ -10,6 +10,7 @@ import {
   Play, 
   CheckCircle2, 
   ChevronRight, 
+  ChevronDown,
   Menu, 
   X, 
   User, 
@@ -31,7 +32,8 @@ import {
   ArrowRight,
   Calendar,
   Lightbulb,
-  Sparkles
+  Sparkles,
+  Search
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
@@ -58,18 +60,36 @@ import { PracticeQuestion } from './components/PracticeQuestion';
 
 const subjectTranslations: Record<string, string> = {
   'Mathematics': 'ଗଣିତ',
+  'Math': 'ଗଣିତ',
   'Science': 'ବିଜ୍ଞାନ',
   'English': 'ଇଂରାଜୀ',
   'Odia': 'ଓଡ଼ିଆ',
   'History': 'ଇତିହାସ',
   'Geography': 'ଭୂଗୋଳ',
   'Social Studies': 'ସାମାଜିକ ବିଜ୍ଞାନ',
+  'EVS': 'ପରିବେଶ ବିଜ୍ଞାନ',
+  'General Knowledge': 'ସାଧାରଣ ଜ୍ଞାନ',
+  'GK': 'ସାଧାରଣ ଜ୍ଞାନ',
+  'Hindi': 'ହିନ୍ଦୀ',
+  'Sanskrit': 'ସଂସ୍କୃତ',
+  'Physics': 'ପଦାର୍ଥ ବିଜ୍ଞାନ',
+  'Chemistry': 'ରସାୟନ ବିଜ୍ଞାନ',
+  'Biology': 'ଜୀବ ବିଜ୍ଞାନ',
 };
 
 const getLocalizedSubject = (subject: string, language: string) => {
+  if (!subject) return '';
+  
+  // First check if it's a key in translations
+  const localized = translations[language]?.subjects?.[subject];
+  if (localized) return localized;
+
+  // Then check legacy subjectTranslations
   if (language === 'or' && subjectTranslations[subject]) {
     return subjectTranslations[subject];
   }
+
+  // If it's already a localized label (e.g., from old data), return it
   return subject;
 };
 
@@ -87,8 +107,9 @@ interface Student {
   id: string;
   name: string;
   email: string;
-  class: number;
+  class: string;
   board: string;
+  subjects?: string[];
   preferred_language: string;
   points: number;
   role: string;
@@ -117,7 +138,7 @@ interface Question {
 
 interface Chapter {
   id: string;
-  class: number;
+  class: string;
   board: string;
   language: string;
   subject: string;
@@ -131,6 +152,7 @@ interface Chapter {
 
 interface MonthlyTest {
   id: string;
+  class: string;
   subject: string;
   month: string;
   year: number;
@@ -145,6 +167,9 @@ interface MonthlyTestSubmission {
   id: string;
   testId: string;
   userId: string;
+  userName: string;
+  class: string;
+  answers: number[];
   score: number;
   totalQuestions: number;
   rank?: number;
@@ -250,8 +275,9 @@ export default function App() {
   const [regData, _setRegData] = useState({ 
     name: '',
     email: '',
-    class: '' as any, 
+    class: '' as string, 
     board: '', 
+    subjects: [] as string[],
     preferred_language: 'or' 
   });
   const regDataRef = useRef(regData);
@@ -362,6 +388,7 @@ export default function App() {
             email: firebaseUser.email || regDataRef.current.email || (userDocSnap.exists() ? userDocSnap.data().email : ''),
             class: regDataRef.current.class || (userDocSnap.exists() ? userDocSnap.data().class : null),
             board: regDataRef.current.board || (userDocSnap.exists() ? userDocSnap.data().board : ''),
+            subjects: regDataRef.current.subjects.length > 0 ? regDataRef.current.subjects : (userDocSnap.exists() ? (userDocSnap.data().subjects || []) : []),
             preferred_language: languageRef.current || (userDocSnap.exists() ? userDocSnap.data().preferred_language : 'or'),
             role: role,
             points: userDocSnap.exists() ? userDocSnap.data().points : 0,
@@ -451,19 +478,33 @@ export default function App() {
       if (student.role === 'admin') {
         chaptersQuery = query(collection(firestore, 'chapters'));
       } else if (student.class) {
-        if (student.board && student.preferred_language) {
-          chaptersQuery = query(
-            collection(firestore, 'chapters'), 
-            where('class', '==', student.class),
-            where('board', '==', student.board),
-            where('language', '==', student.preferred_language)
-          );
-        } else {
-          chaptersQuery = query(
-            collection(firestore, 'chapters'), 
-            where('class', '==', student.class)
-          );
+        const constraints = [
+          where('class', '==', student.class)
+        ];
+
+        if (student.board) {
+          // Handle both keys and labels for legacy support
+          if (student.board === 'Odisha Board' || student.board === 'odisha') {
+            constraints.push(where('board', 'in', ['Odisha Board', 'odisha']));
+          } else if (student.board === 'Saraswati Sishu Mandir' || student.board === 'saraswati') {
+            constraints.push(where('board', 'in', ['Saraswati Sishu Mandir', 'saraswati']));
+          } else if (student.board === 'CBSE' || student.board === 'cbse') {
+            constraints.push(where('board', 'in', ['CBSE', 'cbse']));
+          } else {
+            constraints.push(where('board', '==', student.board));
+          }
         }
+        
+        if (student.preferred_language) {
+          constraints.push(where('language', '==', student.preferred_language));
+        }
+
+        if (student.subjects && student.subjects.length > 0) {
+          // Firestore 'in' query limit is 10, but we likely have fewer subjects
+          constraints.push(where('subject', 'in', student.subjects));
+        }
+
+        chaptersQuery = query(collection(firestore, 'chapters'), ...constraints);
       } else {
         console.warn("Skipping chapters fetch: student class is missing");
       }
@@ -657,6 +698,7 @@ export default function App() {
       return;
     }
     setIsSendingOtp(true);
+    setOtp(''); // Clear previous OTP when starting/resending
     console.log("Starting Phone Auth process...");
     try {
       // Disable app verification for testing to bypass reCAPTCHA for test numbers
@@ -733,10 +775,16 @@ export default function App() {
     if (!otp || !confirmationResult) return;
     setLoading(true);
     try {
-      await confirmationResult.confirm(otp);
-    } catch (error) {
+      await confirmationResult.confirm(otp.trim());
+    } catch (error: any) {
       console.error("OTP Error:", error);
-      alert("Invalid OTP. Please try again.");
+      if (error.code === 'auth/invalid-verification-code') {
+        alert(language === 'en' ? "Invalid OTP. Please check the code sent to your phone and try again." : "ଅବୈଧ OTP | ଦୟାକରି ଆପଣଙ୍କ ଫୋନକୁ ଆସିଥିବା କୋଡ୍ ଯାଞ୍ଚ କରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |");
+      } else if (error.code === 'auth/code-expired') {
+        alert(language === 'en' ? "OTP has expired. Please request a new one." : "OTP ର ସମୟ ସମାପ୍ତ ହୋଇଯାଇଛି | ଦୟାକରି ନୂତନ OTP ପାଇଁ ଅନୁରୋଧ କରନ୍ତୁ |");
+      } else {
+        alert(error.message || "Invalid OTP. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -765,7 +813,8 @@ export default function App() {
 
     setAiLoading(prev => ({ ...prev, [questionId]: true }));
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const apiKey = process.env.GEMINI_API_KEY || (import.meta as any).env?.VITE_GEMINI_API_KEY || (globalThis as any).API_KEY || "";
+      const ai = new GoogleGenAI({ apiKey });
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
         contents: `Provide a clear, step-by-step explanation for this educational question in ${language === 'en' ? 'English' : 'Odia'}. 
@@ -1092,12 +1141,12 @@ export default function App() {
                         value={regData.class}
                         onChange={(e) => {
                           const val = e.target.value;
-                          setRegData({ ...regData, class: val === "" ? "" : parseInt(val) });
+                          setRegData({ ...regData, class: val });
                         }}
                       >
                         <option value="">{translations[language].selectClass} *</option>
-                        {[3,4,5,6,7,8,9,10].map(c => (
-                          <option key={c} value={c}>Class {c}</option>
+                        {Object.entries(translations[language].classes).map(([key, label]) => (
+                          <option key={key} value={key}>{label as string}</option>
                         ))}
                       </select>
                       <select 
@@ -1106,9 +1155,9 @@ export default function App() {
                         onChange={(e) => setRegData({ ...regData, board: e.target.value })}
                       >
                         <option value="">{translations[language].selectBoard} *</option>
-                        <option value="Odisha Board">{translations[language].boards.odisha}</option>
-                        <option value="Saraswati Sishu Mandir">{translations[language].boards.saraswati}</option>
-                        <option value="CBSE">{translations[language].boards.cbse}</option>
+                        <option value="odisha">{translations[language].boards.odisha}</option>
+                        <option value="saraswati">{translations[language].boards.saraswati}</option>
+                        <option value="cbse">{translations[language].boards.cbse}</option>
                       </select>
                     </div>
 
@@ -1166,13 +1215,21 @@ export default function App() {
                   placeholder="------"
                   className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-center text-2xl tracking-[1em] focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
                   value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
                 />
                 <button 
                   onClick={verifyOtp}
-                  className="w-full py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-900/20"
+                  disabled={loading || otp.length < 6}
+                  className={`w-full py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-900/20 flex items-center justify-center gap-2 ${ (loading || otp.length < 6) ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  {translations[language].verifyOtp}
+                  {loading && (
+                    <motion.div 
+                      animate={{ rotate: 360 }}
+                      transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                      className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
+                    />
+                  )}
+                  {loading ? (language === 'en' ? 'Verifying...' : 'ଯାଞ୍ଚ କରାଯାଉଛି...') : translations[language].verifyOtp}
                 </button>
 
                 <div className="text-center">
@@ -1333,7 +1390,7 @@ export default function App() {
         <div className="flex-1 overflow-y-auto p-8">
           <AnimatePresence mode="wait">
             {activeTab === 'dashboard' && <DashboardView user={user} leaderboard={leaderboard} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} />}
-            {activeTab === 'courses' && <CoursesView chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'courses' && <CoursesView user={user} chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'monthly_tests' && <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'ai' && (
               isPremium ? <AiSolverView language={language} onBack={() => setActiveTab('dashboard')} /> : <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
@@ -1608,16 +1665,16 @@ function StatCard({ icon, label, value, subValue }: any) {
 
 function TopicProgress({ label, progress, color }: any) {
   return (
-    <div className="space-y-2">
-      <div className="flex justify-between text-sm">
-        <span className="text-slate-300">{label}</span>
-        <span className="text-slate-500">{progress}%</span>
+    <div className="group space-y-3">
+      <div className="flex justify-between items-end">
+        <span className="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">{label}</span>
+        <span className="text-xs font-bold text-slate-500">{progress}%</span>
       </div>
-      <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+      <div className="h-2.5 bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/5">
         <motion.div 
           initial={{ width: 0 }}
           animate={{ width: `${progress}%` }}
-          className={`h-full ${color}`}
+          className={`h-full rounded-full ${color} shadow-lg shadow-current/20`}
         />
       </div>
     </div>
@@ -1755,9 +1812,46 @@ function SubscriptionGuard({ onSubscribe, language, isPremium, user, onShare, sy
   );
 }
 
-function CoursesView({ chapters, language, isPremium, onUpgrade, onBack }: any) {
+function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }: any) {
   const [selected, setSelected] = useState<Chapter | null>(null);
   const [quizMode, setQuizMode] = useState(false);
+  const [subjectFilter, setSubjectFilter] = useState<string>('all');
+
+  const boardKey = React.useMemo(() => {
+    if (!user?.board) return 'odisha';
+    const b = user.board.toLowerCase();
+    if (b.includes('saraswati')) return 'saraswati';
+    if (b.includes('cbse')) return 'cbse';
+    return 'odisha';
+  }, [user?.board]);
+
+  const availableSubjects = React.useMemo(() => {
+    const predefined = translations[language]?.subjects ? Object.keys(translations[language].subjects) : [];
+    const existingInChapters = Array.from(new Set(chapters.map((c: Chapter) => c.subject)));
+    const all = Array.from(new Set(['all', ...predefined, ...existingInChapters]));
+    return all;
+  }, [language, chapters]);
+
+  const filteredChapters = chapters.filter((c: Chapter) => {
+    // Requirement: Do not show chapters in "all subjects" option
+    if (subjectFilter === 'all') return false;
+    return c.subject === subjectFilter;
+  });
+
+  // Requirement: Only show one entry per logical chapter (addressing the "two chapters" issue)
+  const uniqueChapters = React.useMemo(() => {
+    return Array.from(
+      filteredChapters.reduce((acc: Map<string, Chapter>, current: Chapter) => {
+        const groupId = current.translationGroupId || current.id;
+        const existing = acc.get(groupId);
+        // Prefer English version for the display if it exists, otherwise keep the first one found
+        if (!existing || current.language === 'en') {
+          acc.set(groupId, current);
+        }
+        return acc;
+      }, new Map<string, Chapter>()).values()
+    );
+  }, [filteredChapters]);
 
   useEffect(() => {
     if (selected) {
@@ -1765,7 +1859,6 @@ function CoursesView({ chapters, language, isPremium, onUpgrade, onBack }: any) 
       if (updatedSelected) {
         setSelected(updatedSelected);
       } else {
-        // If the chapter is no longer in the list (e.g. language changed and no translation exists), go back
         setSelected(null);
       }
     }
@@ -1794,72 +1887,108 @@ function CoursesView({ chapters, language, isPremium, onUpgrade, onBack }: any) 
     );
   }
 
-  if (!chapters || chapters.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 text-center">
-        <button 
-          onClick={onBack}
-          className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
-        >
-          <ArrowLeft size={20} />
-          <span>Back to Dashboard</span>
-        </button>
-        <div className="w-24 h-24 bg-slate-800 rounded-full flex items-center justify-center mb-6">
-          <BookOpen size={48} className="text-slate-500" />
-        </div>
-        <h3 className="text-2xl font-bold text-white mb-2">No Content Available</h3>
-        <p className="text-slate-400 max-w-md">
-          There are currently no topics available for your selected class, board, and language. Please check back later.
-        </p>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-8">
-      <button 
-        onClick={onBack}
-        className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
-      >
-        <ArrowLeft size={20} />
-        <span>Back to Dashboard</span>
-      </button>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="flex items-center gap-4">
+          <button 
+            onClick={onBack}
+            className="p-2 bg-slate-800/50 border border-white/5 rounded-xl text-slate-400 hover:text-white transition-all"
+          >
+            <ArrowLeft size={20} />
+          </button>
+          <div>
+            <h2 className="text-2xl font-bold text-white">
+              {subjectFilter === 'all' ? translations[language].courses : (translations[language].subjects[subjectFilter as keyof typeof translations.en.subjects] || subjectFilter)}
+            </h2>
+            <p className="text-xs text-slate-500 uppercase tracking-wider font-bold">
+              {translations[language].classes[user?.class as keyof typeof translations.en.classes] || user?.class} • {user?.board}
+            </p>
+          </div>
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {chapters.map((chapter: Chapter) => (
-        <button 
-          key={chapter.id}
-          onClick={() => setSelected(chapter)}
-          className="group text-left bg-slate-900/50 border border-white/5 rounded-3xl p-6 hover:border-emerald-500/50 transition-all"
-        >
-          <div className="aspect-video rounded-2xl bg-slate-800 mb-4 overflow-hidden relative">
-            <img 
-              src={`https://img.youtube.com/vi/${chapter.playlist_id}/0.jpg`} 
-              className="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform"
-              alt={chapter.title}
-              referrerPolicy="no-referrer"
-            />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-xl">
-                <Play fill="currentColor" size={20} />
-              </div>
-            </div>
+        <div className="relative min-w-[200px] w-full md:w-fit">
+          <select
+            value={subjectFilter}
+            onChange={(e) => setSubjectFilter(e.target.value)}
+            className="w-full px-4 py-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all appearance-none cursor-pointer pr-10"
+          >
+            {availableSubjects.map((s: string) => (
+              <option key={s} value={s} className="bg-slate-900">
+                {s === 'all' ? translations[language].allSubjects : (translations[language].subjects[s as keyof typeof translations.en.subjects] || s)}
+              </option>
+            ))}
+          </select>
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+            <ChevronDown size={16} />
           </div>
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-[10px] font-bold uppercase text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-              {getLocalizedSubject(chapter.subject, language)}
-            </span>
-          </div>
-          <h3 className="text-lg font-semibold text-white mb-1">{chapter.title}</h3>
-          
-          <div className="flex items-center gap-4 mt-4 pt-4 border-t border-white/5 text-[10px] text-slate-500 font-bold uppercase tracking-wider">
-            <div className="flex items-center gap-1"><Play size={10} /> Video</div>
-            {chapter.notes && <div className="flex items-center gap-1"><FileText size={10} /> Notes</div>}
-            {chapter.quiz_questions?.length > 0 && <div className="flex items-center gap-1"><CheckCircle2 size={10} /> Quiz</div>}
-          </div>
-        </button>
-      ))}
+        </div>
       </div>
+
+      {subjectFilter === 'all' ? (
+        <div className="flex flex-col items-center justify-center py-20 text-center bg-slate-900/30 border border-white/5 rounded-3xl">
+          <div className="w-24 h-24 bg-slate-800 rounded-full flex items-center justify-center mb-6">
+            <Search size={48} className="text-slate-500" />
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-2">
+            {language === 'en' ? "Select a Subject" : "ଏକ ବିଷୟ ଚୟନ କରନ୍ତୁ"}
+          </h3>
+          <p className="text-slate-400 max-w-md mx-auto">
+            {language === 'en' 
+              ? "Please select a subject from the dropdown above to view its chapters." 
+              : "ଏହାର ଅଧ୍ୟାୟଗୁଡ଼ିକ ଦେଖିବା ପାଇଁ ଦୟାକରି ଉପରୋକ୍ତ ଡ୍ରପଡାଉନ୍ ରୁ ଏକ ବିଷୟ ଚୟନ କରନ୍ତୁ |"}
+          </p>
+        </div>
+      ) : uniqueChapters.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <div className="w-24 h-24 bg-slate-800 rounded-full flex items-center justify-center mb-6">
+            <BookOpen size={48} className="text-slate-500" />
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-2">{translations[language].noContent}</h3>
+          <p className="text-slate-400 max-w-md mx-auto">
+            {language === 'en' 
+              ? "We're currently working on adding content for this subject. Please check back soon!" 
+              : "ଆମେ ବର୍ତ୍ତମାନ ଏହି ବିଷୟ ପାଇଁ ବିଷୟବସ୍ତୁ ଯୋଡିବା ପାଇଁ କାର୍ଯ୍ୟ କରୁଛୁ। ଦୟାକରି ଶୀଭ୍ର ପୁଣି ଯାଞ୍ଚ କରନ୍ତୁ!"}
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+          {uniqueChapters.map((chapter: Chapter) => (
+            <button 
+              key={chapter.id}
+              onClick={() => setSelected(chapter)}
+              className="group text-left bg-slate-900/50 border border-white/5 rounded-3xl p-6 hover:border-emerald-500/50 transition-all flex flex-col h-full"
+            >
+              <div className="aspect-video rounded-2xl bg-slate-800 mb-4 overflow-hidden relative flex-shrink-0">
+                <img 
+                  src={`https://img.youtube.com/vi/${chapter.playlist_id.includes('list=') ? chapter.playlist_id.split('list=')[1] : chapter.playlist_id}/mqdefault.jpg`} 
+                  className="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform"
+                  alt={chapter.title}
+                  referrerPolicy="no-referrer"
+                />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-xl">
+                    <Play fill="currentColor" size={20} />
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-[10px] font-bold uppercase text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                  {getLocalizedSubject(chapter.subject, language)}
+                </span>
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-1 line-clamp-2 min-h-[3.5rem]">{chapter.title}</h3>
+              
+              <div className="flex items-center gap-4 mt-auto pt-4 border-t border-white/5 text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                <div className="flex items-center gap-1"><Play size={10} /> Video</div>
+                {chapter.notes && <div className="flex items-center gap-1"><FileText size={10} /> Notes</div>}
+                {chapter.practice_questions && chapter.practice_questions.length > 0 && <div className="flex items-center gap-1"><HelpCircle size={10} /> Practice</div>}
+                {chapter.quiz_questions && chapter.quiz_questions.length > 0 && <div className="flex items-center gap-1"><CheckCircle2 size={10} /> Quiz</div>}
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -2303,21 +2432,21 @@ function TopicDetailView({
       </button>
 
       <div className="bg-slate-900/50 border border-white/5 rounded-3xl overflow-hidden mb-8">
-        <div className="p-8">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs font-bold uppercase text-emerald-500 bg-emerald-500/10 px-3 py-1 rounded-full">
+        <div className="p-4 md:p-8">
+          <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-xs font-bold uppercase text-emerald-500 bg-emerald-500/10 px-3 py-1 rounded-full tracking-wider">
                   {getLocalizedSubject(topic.subject, language)}
                 </span>
               </div>
-              <h1 className="text-3xl font-bold text-white">{topic.title}</h1>
+              <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight">{topic.title}</h1>
             </div>
             
             {topic.quiz_questions?.length > 0 && (
               <button 
                 onClick={onTakeQuiz}
-                className="flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-2xl font-bold transition-all shadow-lg shadow-emerald-500/20"
+                className="flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 rounded-2xl font-bold transition-all shadow-lg shadow-emerald-500/20 whitespace-nowrap"
               >
                 <Trophy size={20} />
                 <span>Take Basic Quiz</span>
@@ -2325,17 +2454,17 @@ function TopicDetailView({
             )}
           </div>
 
-          <div className="flex gap-1 bg-slate-800/50 p-1 rounded-2xl w-fit mb-8">
+          <div className="flex gap-1 bg-slate-800/50 p-1 rounded-2xl w-full md:w-fit mb-8 overflow-x-auto scrollbar-hide">
             <button 
               onClick={() => setActiveSubTab('video')}
-              className={`flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-bold transition-all ${activeSubTab === 'video' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+              className={`flex items-center gap-2 px-4 md:px-6 py-2 rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap ${activeSubTab === 'video' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
             >
               <Play size={16} /> {translations[language].video}
             </button>
             {topic.notes && (
               <button 
                 onClick={() => setActiveSubTab('notes')}
-                className={`flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-bold transition-all ${activeSubTab === 'notes' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                className={`flex items-center gap-2 px-4 md:px-6 py-2 rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap ${activeSubTab === 'notes' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
               >
                 <FileText size={16} /> {translations[language].notes}
               </button>
@@ -2343,7 +2472,7 @@ function TopicDetailView({
             {topic.practice_questions?.length > 0 && (
               <button 
                 onClick={() => setActiveSubTab('practice')}
-                className={`flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-bold transition-all ${activeSubTab === 'practice' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                className={`flex items-center gap-2 px-4 md:px-6 py-2 rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap ${activeSubTab === 'practice' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
               >
                 <HelpCircle size={16} /> {translations[language].practice}
               </button>
@@ -2605,6 +2734,12 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack }: any) {
     );
   }
 
+  const filteredTests = tests.filter((test: MonthlyTest) => {
+    const classMatch = test.class === user?.class;
+    const subjectMatch = user?.subjects?.includes(test.subject) || !user?.subjects || user.subjects.length === 0;
+    return classMatch && subjectMatch;
+  });
+
   return (
     <div className="space-y-8">
       <button 
@@ -2618,12 +2753,12 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack }: any) {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">{translations[language].monthlyTests}</h1>
-          <p className="text-slate-400">Participate in monthly assessments and track your progress.</p>
+          <p className="text-slate-400">Participate in monthly assessments for {translations[language].classes[user?.class as keyof typeof translations.en.classes] || user?.class} and track your progress.</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {tests.map((test: MonthlyTest) => {
+        {filteredTests.map((test: MonthlyTest) => {
           const submission = getSubmission(test);
           const resultsPublished = test.results_published;
 
@@ -2684,11 +2819,11 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack }: any) {
           );
         })}
 
-        {tests.length === 0 && (
+        {filteredTests.length === 0 && (
           <div className="md:col-span-2 flex flex-col items-center justify-center py-20 text-center bg-slate-900/30 rounded-3xl border border-dashed border-white/10">
             <Clock size={48} className="text-slate-600 mb-4" />
             <h3 className="text-xl font-bold text-white mb-2">No Tests Scheduled</h3>
-            <p className="text-slate-500">Check back later for upcoming monthly assessments.</p>
+            <p className="text-slate-500">Check back later for upcoming monthly assessments for your class and subjects.</p>
           </div>
         )}
       </div>
@@ -2710,14 +2845,19 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
-      const score = answers.reduce((acc, ans, i) => acc + (ans === test.questions[i].correct_option ? 1 : 0), 0);
+      const score = answers.reduce((acc, ansIdx, i) => {
+        const selectedOption = test.questions[i].options[ansIdx];
+        return acc + (selectedOption === test.questions[i].correct_answer ? 1 : 0);
+      }, 0);
       
       await addDoc(collection(firestore, 'monthly_test_submissions'), {
         testId: test.id,
         userId: user.uid,
         userName: user.displayName || 'Student',
+        class: user.class,
         answers,
         score,
+        totalQuestions: test.questions.length,
         submittedAt: serverTimestamp(),
         rank: null
       });

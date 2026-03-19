@@ -10,9 +10,9 @@ let ai: GoogleGenAI | null = null;
 
 function getAI() {
   if (!ai) {
-    const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || process.env.API_KEY;
     if (!apiKey) {
-      throw new Error('GEMINI_API_KEY (or VITE_GEMINI_API_KEY) is missing in environment variables.');
+      throw new Error('GEMINI_API_KEY is missing in environment variables.');
     }
     ai = new GoogleGenAI({ apiKey });
   }
@@ -133,7 +133,7 @@ async function startServer() {
       }
 
       const response = await genAI.models.generateContent({
-        model: "gemini-3.1-flash-preview",
+        model: "gemini-3-flash-preview",
         contents: text,
         config: {
           systemInstruction,
