@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { GoogleGenAI } from "@google/genai";
 import { 
   BookOpen, 
   Brain, 
@@ -33,7 +32,12 @@ import {
   Calendar,
   Lightbulb,
   Sparkles,
-  Search
+  Search,
+  AlertCircle,
+  Lock,
+  MessageCircle,
+  Book,
+  Download
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
@@ -67,6 +71,7 @@ const subjectTranslations: Record<string, string> = {
   'History': 'ଇତିହାସ',
   'Geography': 'ଭୂଗୋଳ',
   'Social Studies': 'ସାମାଜିକ ବିଜ୍ଞାନ',
+  'Social Science': 'ସାମାଜିକ ବିଜ୍ଞାନ',
   'EVS': 'ପରିବେଶ ବିଜ୍ଞାନ',
   'General Knowledge': 'ସାଧାରଣ ଜ୍ଞାନ',
   'GK': 'ସାଧାରଣ ଜ୍ଞାନ',
@@ -75,6 +80,13 @@ const subjectTranslations: Record<string, string> = {
   'Physics': 'ପଦାର୍ଥ ବିଜ୍ଞାନ',
   'Chemistry': 'ରସାୟନ ବିଜ୍ଞାନ',
   'Biology': 'ଜୀବ ବିଜ୍ଞାନ',
+  'Art & Health Education': 'କଳା ଏବଂ ସ୍ୱାସ୍ଥ୍ୟ ଶିକ୍ଷା',
+  'Art Education': 'କଳା ଶିକ୍ଷା',
+  'Physical Education & Well-being': 'ଶାରୀରିକ ଶିକ୍ଷା ଏବଂ ସୁସ୍ଥତା',
+  'Vocational Education': 'ଧନ୍ଦାମୂଳକ ଶିକ୍ଷା',
+  'Environmental & Population Education': 'ପରିବେଶ ଏବଂ ଜନସଂଖ୍ୟା ଶିକ୍ଷା',
+  'Aspirational Components': 'ଆକାଂକ୍ଷାମୂଳକ ଉପାଦାନ',
+  'Science (Jigyansa)': 'ବିଜ୍ଞାନ (ଜିଜ୍ଞାସା)'
 };
 
 const getLocalizedSubject = (subject: string, language: string) => {
@@ -92,6 +104,61 @@ const getLocalizedSubject = (subject: string, language: string) => {
   // If it's already a localized label (e.g., from old data), return it
   return subject;
 };
+
+// --- Error Boundary ---
+class ErrorBoundary extends React.Component<{ children: React.ReactNode, language: string }, { hasError: boolean, error: any }> {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: any) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: any, errorInfo: any) {
+    console.error("ErrorBoundary caught an error", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6 text-center">
+          <div className="max-w-md w-full bg-slate-900 border border-white/10 rounded-[2.5rem] p-10 space-y-6 shadow-2xl">
+            <div className="w-20 h-20 bg-red-500/10 rounded-3xl flex items-center justify-center text-red-500 mx-auto">
+              <AlertCircle size={40} />
+            </div>
+            <div className="space-y-2">
+              <h1 className="text-2xl font-bold text-white">
+                {this.props.language === 'en' ? "Something went wrong" : "କିଛି ଭୁଲ୍ ହୋଇଛି"}
+              </h1>
+              <p className="text-slate-400 text-sm">
+                {this.props.language === 'en' 
+                  ? "An unexpected error occurred. Please try refreshing the page." 
+                  : "ଏକ ଅପ୍ରତ୍ୟାଶିତ ତ୍ରୁଟି ଘଟିଛି | ଦୟାକରି ପୃଷ୍ଠାକୁ ପୁନର୍ବାର ଲୋଡ୍ କରିବାକୁ ଚେଷ୍ଟା କରନ୍ତୁ |"}
+              </p>
+            </div>
+            {process.env.NODE_ENV !== 'production' && (
+              <div className="p-4 bg-black/40 rounded-2xl text-left overflow-auto max-h-40 scrollbar-thin">
+                <code className="text-xs text-red-400 font-mono break-all">
+                  {this.state.error?.toString()}
+                </code>
+              </div>
+            )}
+            <button 
+              onClick={() => window.location.reload()}
+              className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-bold transition-all shadow-lg shadow-emerald-900/20"
+            >
+              {this.props.language === 'en' ? "Refresh Page" : "ପୃଷ୍ଠାକୁ ରିଫ୍ରେଶ୍ କରନ୍ତୁ"}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 
 // --- Types ---
 interface Badge {
@@ -117,6 +184,7 @@ interface Student {
   statusShared?: boolean;
   parent_pin?: string;
   completed_chapters?: string[];
+  parentShowLeaderboard?: boolean;
   stats?: {
     streak: number;
     level: number;
@@ -147,7 +215,8 @@ interface Chapter {
   title: string;
   playlist_id: string;
   notes?: string;
-  practice_questions?: { question: string; answer: string }[];
+  status?: 'draft' | 'published';
+  practice_questions?: { question: string; answer: string; ai_answer?: string }[];
   quiz_questions?: { question: string; options: string[]; correct_answer: string; hint?: string }[];
   translationGroupId?: string;
 }
@@ -176,6 +245,23 @@ interface MonthlyTestSubmission {
   totalQuestions: number;
   rank?: number;
   submittedAt: any;
+}
+
+interface Textbook {
+  id: string;
+  class: string;
+  board: string;
+  subject: string;
+  title: string;
+  download_url: string;
+  thumbnail_url?: string;
+  status?: 'draft' | 'published';
+  created_at?: any;
+}
+
+interface SystemSettings {
+  enabledClasses?: string[];
+  maintenanceMode?: boolean;
 }
 
 // --- Components ---
@@ -237,6 +323,51 @@ const BigsanBranding = ({ className = "" }: { className?: string }) => {
   );
 };
 
+// --- YouTube Helpers ---
+const getYouTubeId = (id: string) => {
+  if (!id) return '';
+  if (id.includes('youtube.com/watch?v=')) return id.split('v=')[1].split('&')[0];
+  if (id.includes('youtu.be/')) return id.split('youtu.be/')[1].split('?')[0];
+  if (id.includes('youtube.com/playlist?list=')) return id.split('list=')[1].split('&')[0];
+  if (id.includes('list=')) return id.split('list=')[1].split('&')[0];
+  return id;
+};
+
+const getYouTubeEmbedUrl = (id: string) => {
+  if (!id) return '';
+  
+  // Handle youtu.be with list
+  if (id.includes('youtu.be/') && id.includes('list=')) {
+    const videoId = id.split('youtu.be/')[1].split('?')[0];
+    const listId = id.split('list=')[1].split('&')[0];
+    return `https://www.youtube.com/embed/${videoId}?list=${listId}`;
+  }
+
+  const cleanId = getYouTubeId(id);
+  
+  if (id.includes('playlist') || id.startsWith('PL') || id.includes('list=')) {
+    // If it's a playlist, or contains list=, we might want to show the video with the list
+    if (id.includes('v=')) {
+      const videoId = id.split('v=')[1].split('&')[0];
+      const listId = id.split('list=')[1].split('&')[0];
+      return `https://www.youtube.com/embed/${videoId}?list=${listId}`;
+    }
+    return `https://www.youtube.com/embed/videoseries?list=${cleanId}`;
+  }
+  return `https://www.youtube.com/embed/${cleanId}`;
+};
+
+const getYouTubeThumbnail = (id: string) => {
+  if (!id) return 'https://picsum.photos/seed/edu/400/225';
+  if (id.startsWith('PL') || id.includes('playlist')) {
+    // For playlists, we can't easily get a thumbnail without the first video ID
+    // Fallback to a generic educational image or a placeholder
+    return `https://picsum.photos/seed/${id}/400/225`;
+  }
+  const videoId = getYouTubeId(id);
+  return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+};
+
 export default function App() {
   const [user, setUser] = useState<Student | null>(null);
   const [isAdminView, setIsAdminView] = useState(false);
@@ -258,6 +389,7 @@ export default function App() {
   };
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
+  const [dbError, setDbError] = useState<string | null>(null);
   const [aiExplanations, setAiExplanations] = useState<Record<string, string>>({});
   const [aiLoading, setAiLoading] = useState<Record<string, boolean>>({});
   const [isSendingOtp, setIsSendingOtp] = useState(false);
@@ -290,6 +422,7 @@ export default function App() {
 
   // Data State
   const [chapters, setChapters] = useState<Chapter[]>([]);
+  const [textbooks, setTextbooks] = useState<Textbook[]>([]);
   const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(null);
   const [monthlyTests, setMonthlyTests] = useState<MonthlyTest[]>([]);
   const [testSubmissions, setTestSubmissions] = useState<MonthlyTestSubmission[]>([]);
@@ -302,9 +435,6 @@ export default function App() {
     yearlyPrice: 999
   });
 
-  const sharedAppUrl = window.location.origin;
-
-  // --- Firestore Error Handling ---
   enum OperationType {
     CREATE = 'create',
     UPDATE = 'update',
@@ -343,9 +473,24 @@ export default function App() {
       path
     };
     console.error('Firestore Error: ', JSON.stringify(errInfo));
+    
     if (errInfo.error.includes('insufficient permissions')) {
       console.warn("Permission denied for path:", path, "Operation:", operationType);
     }
+    
+    if (errInfo.error.includes('client is offline')) {
+      setDbError(
+        language === 'en'
+          ? "Unable to connect to the database. Please ensure your Firestore Database is created in the Firebase Console and ad-blockers are disabled."
+          : "ଡାଟାବେସ୍ ସହିତ ସଂଯୋଗ କରିବାରେ ଅସମର୍ଥ | ଦୟାକରି ନିଶ୍ଚିତ କରନ୍ତୁ ଯେ ଆପଣଙ୍କର ଫାୟାରବେସ୍ କନସୋଲରେ ଫାୟାରଷ୍ଟୋର ଡାଟାବେସ୍ ସୃଷ୍ଟି ହୋଇଛି ଏବଂ ଆଡ୍-ବ୍ଲକର୍ ଗୁଡିକ ବନ୍ଦ ଅଛି |"
+      );
+    }
+    
+    setLoading(false);
+    setIsSendingOtp(false);
+    
+    // Throw error as required by the instructions for diagnosis
+    throw new Error(JSON.stringify(errInfo));
   };
 
   useEffect(() => {
@@ -370,8 +515,6 @@ export default function App() {
             if (data.role === 'admin') {
               setIsAdminView(true);
             }
-            // Fetch initial data if not already fetched or if class/board changed
-            fetchInitialData(updatedUser);
           }
         }, (err) => {
           handleFirestoreError(err, OperationType.GET, `users/${firebaseUser.uid}`);
@@ -380,18 +523,21 @@ export default function App() {
         try {
           // Initial sync/creation
           const userDocSnap = await getDoc(userDocRef);
-          const isAdmin = firebaseUser.email === 'pandadamayanti01@gmail.com' || firebaseUser.phoneNumber === '+919337956168' || firebaseUser.phoneNumber === '9337956168';
+          const userEmail = firebaseUser.email?.toLowerCase();
+          const isAdmin = userEmail === 'pandadamayanti01@gmail.com' || 
+                          firebaseUser.phoneNumber === '+919337956168' || 
+                          firebaseUser.phoneNumber === '9337956168';
           
           const role = isAdmin ? 'admin' : (userDocSnap.exists() ? userDocSnap.data().role : 'student');
           
           const userData: any = {
             id: firebaseUser.uid,
-            name: firebaseUser.displayName || regDataRef.current.name || (userDocSnap.exists() ? userDocSnap.data().name : 'Student'),
-            email: firebaseUser.email || regDataRef.current.email || (userDocSnap.exists() ? userDocSnap.data().email : ''),
-            class: regDataRef.current.class || (userDocSnap.exists() ? userDocSnap.data().class : null),
-            board: regDataRef.current.board || (userDocSnap.exists() ? userDocSnap.data().board : ''),
-            subjects: regDataRef.current.subjects.length > 0 ? regDataRef.current.subjects : (userDocSnap.exists() ? (userDocSnap.data().subjects || []) : []),
-            preferred_language: languageRef.current || (userDocSnap.exists() ? userDocSnap.data().preferred_language : 'or'),
+            name: firebaseUser.displayName || (userDocSnap.exists() ? userDocSnap.data().name : regDataRef.current.name) || 'Student',
+            email: firebaseUser.email || (userDocSnap.exists() ? userDocSnap.data().email : regDataRef.current.email) || '',
+            class: (userDocSnap.exists() && userDocSnap.data().class) ? userDocSnap.data().class : regDataRef.current.class,
+            board: (userDocSnap.exists() && userDocSnap.data().board) ? userDocSnap.data().board : regDataRef.current.board,
+            subjects: (userDocSnap.exists() && userDocSnap.data().subjects?.length > 0) ? userDocSnap.data().subjects : regDataRef.current.subjects,
+            preferred_language: (userDocSnap.exists() && userDocSnap.data().preferred_language) ? userDocSnap.data().preferred_language : (languageRef.current || 'or'),
             role: role,
             points: userDocSnap.exists() ? userDocSnap.data().points : 0,
             shareCount: userDocSnap.exists() ? (userDocSnap.data().shareCount || 0) : 0,
@@ -449,18 +595,83 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const unsubSettings = onSnapshot(doc(firestore, 'settings', 'system'), (doc) => {
+    const unsubSettings = onSnapshot(doc(firestore, 'system_settings', 'config'), (doc) => {
       if (doc.exists()) {
-        setSystemSettings(doc.data());
+        setSystemSettings(doc.data() as SystemSettings);
       }
     }, (err) => {
-      handleFirestoreError(err, OperationType.GET, 'settings/system');
+      handleFirestoreError(err, OperationType.GET, 'system_settings/config');
     });
+
     return () => unsubSettings();
   }, []);
 
   useEffect(() => {
-    // Redundant onSnapshot listener removed
+    if (!user) {
+      setChapters([]);
+      setLeaderboard([]);
+      setMonthlyTests([]);
+      setTestSubmissions([]);
+      return;
+    }
+
+    // Fetch all chapters for all roles to ensure consistency across student profiles as requested
+    const chaptersQuery = user.role === 'admin' 
+      ? collection(firestore, 'chapters')
+      : query(collection(firestore, 'chapters'), where('status', '==', 'published'));
+
+    const unsubChapters = onSnapshot(chaptersQuery, (snapshot) => {
+      const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as Chapter[];
+      setChapters(data);
+    }, (err) => handleFirestoreError(err, OperationType.GET, 'chapters'));
+
+    const unsubLeaderboard = onSnapshot(
+      query(collection(firestore, 'public_profiles'), orderBy('points', 'desc'), limit(10)),
+      (snapshot) => {
+        const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        setLeaderboard(data);
+      },
+      (err) => handleFirestoreError(err, OperationType.GET, 'public_profiles')
+    );
+
+    const unsubTests = onSnapshot(
+      query(collection(firestore, 'monthly_tests'), where('status', '==', 'published')),
+      (snapshot) => {
+        const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as MonthlyTest[];
+        setMonthlyTests(data);
+      },
+      (err) => handleFirestoreError(err, OperationType.GET, 'monthly_tests')
+    );
+
+    const unsubSubmissions = onSnapshot(
+      query(collection(firestore, 'monthly_test_submissions'), where('userId', '==', user.id)),
+      (snapshot) => {
+        const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as MonthlyTestSubmission[];
+        setTestSubmissions(data);
+      },
+      (err) => handleFirestoreError(err, OperationType.GET, 'monthly_test_submissions')
+    );
+
+    const textbooksQuery = user.role === 'admin'
+      ? collection(firestore, 'textbooks')
+      : query(collection(firestore, 'textbooks'), where('status', '==', 'published'));
+
+    const unsubTextbooks = onSnapshot(
+      textbooksQuery,
+      (snapshot) => {
+        const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as Textbook[];
+        setTextbooks(data);
+      },
+      (err) => handleFirestoreError(err, OperationType.GET, 'textbooks')
+    );
+
+    return () => {
+      unsubChapters();
+      unsubLeaderboard();
+      unsubTests();
+      unsubSubmissions();
+      unsubTextbooks();
+    };
   }, [user?.id]);
 
   useEffect(() => {
@@ -472,88 +683,6 @@ export default function App() {
     }
     return () => clearInterval(interval);
   }, [resendTimer]);
-
-  const fetchInitialData = async (student: Student) => {
-    try {
-      let chaptersQuery: any = null;
-      
-      if (student.role === 'admin') {
-        chaptersQuery = query(collection(firestore, 'chapters'));
-      } else if (student.class) {
-        const constraints = [
-          where('class', '==', student.class)
-        ];
-
-        if (student.board) {
-          // Handle both keys and labels for legacy support
-          if (student.board === 'Odisha Board' || student.board === 'odisha') {
-            constraints.push(where('board', 'in', ['Odisha Board', 'odisha']));
-          } else if (student.board === 'Saraswati Sishu Mandir' || student.board === 'saraswati') {
-            constraints.push(where('board', 'in', ['Saraswati Sishu Mandir', 'saraswati']));
-          } else if (student.board === 'CBSE' || student.board === 'cbse') {
-            constraints.push(where('board', 'in', ['CBSE', 'cbse']));
-          } else {
-            constraints.push(where('board', '==', student.board));
-          }
-        }
-        
-        if (student.preferred_language) {
-          constraints.push(where('language', '==', student.preferred_language));
-        }
-
-        if (student.subjects && student.subjects.length > 0) {
-          // Firestore 'in' query limit is 10, but we likely have fewer subjects
-          constraints.push(where('subject', 'in', student.subjects));
-        }
-
-        chaptersQuery = query(collection(firestore, 'chapters'), ...constraints);
-      } else {
-        console.warn("Skipping chapters fetch: student class is missing");
-      }
-
-      const leaderboardQuery = query(collection(firestore, 'public_profiles'), orderBy('points', 'desc'), limit(10));
-      
-      // Fetch Monthly Tests
-      let testsQuery = query(collection(firestore, 'monthly_tests'), where('status', '==', 'published'));
-      if (student.preferred_language) {
-        testsQuery = query(collection(firestore, 'monthly_tests'), where('status', '==', 'published'), where('language', '==', student.preferred_language));
-      }
-      
-      // Fetch User Submissions
-      const submissionsQuery = query(collection(firestore, 'monthly_test_submissions'), where('userId', '==', student.id));
-
-      const promises: Promise<any>[] = [
-        getDocs(leaderboardQuery),
-        getDocs(testsQuery),
-        getDocs(submissionsQuery)
-      ];
-
-      if (chaptersQuery) {
-        promises.push(getDocs(chaptersQuery));
-      }
-
-      const results = await Promise.all(promises.map((p, i) => p.catch(err => {
-        console.error(`Error fetching promise ${i}:`, err);
-        throw err;
-      })));
-      
-      const leaderboardData = results[0].docs.map((d: any) => ({ id: d.id, ...d.data() }));
-      setLeaderboard(leaderboardData);
-
-      const testsData = results[1].docs.map((d: any) => ({ id: d.id, ...d.data() }));
-      setMonthlyTests(testsData);
-
-      const submissionsData = results[2].docs.map((d: any) => ({ id: d.id, ...d.data() }));
-      setTestSubmissions(submissionsData);
-      
-      if (chaptersQuery && results[3]) {
-        const chaptersData = results[3].docs.map((d: any) => ({ id: d.id, ...d.data() }));
-        setChapters(chaptersData);
-      }
-    } catch (err) {
-      console.error("Initial Data Fetch Error:", err);
-    }
-  };
 
   const handleGoogleLogin = async () => {
     // For Google, we don't need email validation beforehand as we get it from Google
@@ -647,17 +776,25 @@ export default function App() {
       // Auto-create the admin account if it doesn't exist yet
       if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
         try {
-          await createUserWithEmailAndPassword(auth, adminEmail, adminPassword);
-          return; // Success!
+          // Only auto-create if it's the known admin email
+          if (adminEmail.toLowerCase() === 'pandadamayanti01@gmail.com') {
+            await createUserWithEmailAndPassword(auth, adminEmail, adminPassword);
+            return; // Success!
+          } else {
+            setAdminLoginError("Invalid admin credentials. If you are a student, please use the Student Login.");
+          }
         } catch (createError: any) {
           console.error("Admin Registration Error:", createError);
           if (createError.code === 'auth/email-already-in-use') {
-            setAdminLoginError("This email is already registered (likely via Google Sign-In), but the password doesn't match.");
+            setAdminLoginError("This email is already registered (likely via Google Sign-In). Please use the 'Google' button below to log in as admin.");
             setShowResetPasswordButton(true);
           } else {
             setAdminLoginError("Registration failed: " + createError.message);
           }
         }
+      } else if (error.code === 'auth/wrong-password') {
+        setAdminLoginError("Incorrect password for admin account. If you signed up via Google, please use the 'Google' button below.");
+        setShowResetPasswordButton(true);
       } else {
         setAdminLoginError("Login failed: " + error.message);
       }
@@ -815,17 +952,7 @@ export default function App() {
 
     setAiLoading(prev => ({ ...prev, [questionId]: true }));
     try {
-      const apiKey = process.env.GEMINI_API_KEY || (import.meta as any).env?.VITE_GEMINI_API_KEY || (globalThis as any).API_KEY || "";
-      const ai = new GoogleGenAI({ apiKey });
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: `Provide a clear, step-by-step explanation for this educational question in ${language === 'en' ? 'English' : 'Odia'}. 
-        Question: ${question}
-        
-        Format the response with clear steps.`,
-      });
-      
-      const text = response.text || (language === 'en' ? "Could not generate explanation." : "ସ୍ପଷ୍ଟୀକରଣ ପ୍ରସ୍ତୁତ କରିହେଲା ନାହିଁ |");
+      const text = await solveMathDoubt(question, language as 'en' | 'or');
       setAiExplanations(prev => ({ ...prev, [questionId]: text }));
     } catch (error) {
       console.error("AI Error:", error);
@@ -998,6 +1125,24 @@ export default function App() {
     }, 500);
   };
 
+  if (dbError) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-center">
+        <div className="bg-red-500/10 border border-red-500/20 p-8 rounded-2xl max-w-md">
+          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-white mb-2">Connection Error</h2>
+          <p className="text-slate-300 mb-6">{dbError}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-xl font-medium transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
@@ -1147,7 +1292,9 @@ export default function App() {
                         }}
                       >
                         <option value="">{translations[language].selectClass} *</option>
-                        {Object.entries(translations[language].classes).map(([key, label]) => (
+                        {Object.entries(translations[language].classes)
+                          .filter(([key]) => !systemSettings.enabledClasses || systemSettings.enabledClasses.length === 0 || systemSettings.enabledClasses.includes(key))
+                          .map(([key, label]) => (
                           <option key={key} value={key}>{label as string}</option>
                         ))}
                       </select>
@@ -1288,12 +1435,48 @@ export default function App() {
   }
 
   if (isAdminView && user?.role === 'admin') {
+    console.log("Rendering AdminDashboard for user:", user.email);
     return <AdminDashboard onExit={() => setIsAdminView(false)} />;
   }
 
+  if (isAdminView) {
+    console.warn("isAdminView is true but user role is not admin:", user?.role);
+  }
+
+  const isClassEnabled = !systemSettings.enabledClasses || 
+                         systemSettings.enabledClasses.length === 0 || 
+                         systemSettings.enabledClasses.includes(user?.class);
+
+  if (user && user.role !== 'admin' && !isClassEnabled) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6 text-center">
+        <div className="max-w-md space-y-6">
+          <div className="w-24 h-24 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Lock size={48} className="text-amber-500" />
+          </div>
+          <h2 className="text-3xl font-bold text-white">
+            {language === 'en' ? "Class Currently Disabled" : "ଶ୍ରେଣୀ ବର୍ତ୍ତମାନ ଅକ୍ଷମ ଅଛି"}
+          </h2>
+          <p className="text-slate-400">
+            {language === 'en' 
+              ? `Access to ${translations[language].classes[user.class] || user.class} is currently restricted by the administrator. Please contact support or check back later.`
+              : `${translations[language].classes[user.class] || user.class} ପାଇଁ ପ୍ରବେଶ ବର୍ତ୍ତମାନ ପ୍ରଶାସକଙ୍କ ଦ୍ୱାରା ସୀମିତ ଅଛି | ଦୟାକରି ସହାୟତା ସହିତ ଯୋଗାଯୋଗ କରନ୍ତୁ କିମ୍ବା ପରେ ପୁଣି ଯାଞ୍ଚ କରନ୍ତୁ |`}
+          </p>
+          <button 
+            onClick={handleLogout}
+            className="px-8 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl transition-all font-bold"
+          >
+            {translations[language].logout}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 flex">
-      {/* Mobile Sidebar Overlay */}
+    <ErrorBoundary language={language}>
+      <div className="min-h-screen bg-slate-950 text-slate-200 flex">
+        {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
         <div 
           className="fixed inset-0 bg-black/60 z-40 lg:hidden backdrop-blur-sm"
@@ -1321,9 +1504,9 @@ export default function App() {
                 <SidebarItem icon={<User size={20}/>} label="Profile" active={activeTab === 'profile'} onClick={() => { setActiveTab('profile'); setSidebarOpen(false); }} />
                 <SidebarItem icon={<BarChart3 size={20}/>} label={translations[language].dashboard} active={activeTab === 'dashboard'} onClick={() => { setActiveTab('dashboard'); setSidebarOpen(false); }} />
                 <SidebarItem icon={<BookOpen size={20}/>} label={translations[language].courses} active={activeTab === 'courses'} onClick={() => { setActiveTab('courses'); setSidebarOpen(false); }} />
+                <SidebarItem icon={<Book size={20}/>} label={language === 'en' ? 'Textbooks' : 'ପାଠ୍ୟପୁସ୍ତକ'} active={activeTab === 'textbooks'} onClick={() => { setActiveTab('textbooks'); setSidebarOpen(false); }} />
                 <SidebarItem icon={<Clock size={20}/>} label={translations[language].monthlyTests} active={activeTab === 'monthly_tests'} onClick={() => { setActiveTab('monthly_tests'); setSidebarOpen(false); }} />
                 <SidebarItem icon={<MessageSquare size={20}/>} label={translations[language].aiSolver} active={activeTab === 'ai'} onClick={() => { setActiveTab('ai'); setSidebarOpen(false); }} />
-                <SidebarItem icon={<Trophy size={20}/>} label={translations[language].leaderboard} active={activeTab === 'leaderboard'} onClick={() => { setActiveTab('leaderboard'); setSidebarOpen(false); }} />
                 <SidebarItem icon={<CreditCard size={20}/>} label="Plans" active={activeTab === 'plans'} onClick={() => { setActiveTab('plans'); setSidebarOpen(false); }} />
               </>
             )}
@@ -1357,7 +1540,7 @@ export default function App() {
             <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-slate-400"><Menu /></button>
             <div className="flex flex-col">
               <h2 className="text-xl font-semibold text-white">
-                {language === 'en' ? `Namaskar, ${user.name}! 🙏` : `ନମସ୍କାର, ${user.name}! 🙏`}
+                {user.name}
               </h2>
               {user.role !== 'admin' && (
                 <span className="text-[10px] text-slate-500 uppercase tracking-widest">
@@ -1391,24 +1574,25 @@ export default function App() {
         {/* Scrollable Area */}
         <div className="flex-1 overflow-y-auto p-8">
           <AnimatePresence mode="wait">
-            {activeTab === 'dashboard' && <DashboardView user={user} leaderboard={leaderboard} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} />}
+            {activeTab === 'dashboard' && <DashboardView user={user} leaderboard={leaderboard} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} chapters={chapters} />}
             {activeTab === 'courses' && <CoursesView user={user} chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'monthly_tests' && <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'ai' && (
               isPremium ? <AiSolverView language={language} onBack={() => setActiveTab('dashboard')} /> : <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
             )}
-            {activeTab === 'leaderboard' && <LeaderboardView leaderboard={leaderboard} language={language} onBack={() => setActiveTab('dashboard')} />}
-            {activeTab === 'profile' && <ProfileView user={user} onBack={() => setActiveTab('dashboard')} onParentAccess={() => setActiveTab('parent_dashboard')} />}
-            {activeTab === 'parent_dashboard' && <ParentDashboard user={user} chapters={chapters} language={language} onBack={() => setActiveTab('profile')} />}
+            {activeTab === 'profile' && <ProfileView user={user} language={language} onBack={() => setActiveTab('dashboard')} onParentAccess={() => setActiveTab('parent_dashboard')} />}
+            {activeTab === 'parent_dashboard' && <ParentDashboard user={user} chapters={chapters} leaderboard={leaderboard} language={language} onBack={() => setActiveTab('profile')} />}
             {activeTab === 'plans' && <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />}
           </AnimatePresence>
         </div>
       </main>
     </div>
+    </ErrorBoundary>
   );
 }
 
-function ParentDashboard({ user, chapters, language, onBack }: any) {
+function ParentDashboard({ user, chapters, leaderboard, language, onBack }: any) {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -1438,8 +1622,10 @@ function ParentDashboard({ user, chapters, language, onBack }: any) {
     totalChapters: chapters.length
   };
 
+  const userRank = leaderboard.findIndex((s: any) => s.name === user.name) + 1 || '-';
+
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto pb-12">
       <div className="flex items-center justify-between mb-8">
         <button 
           onClick={onBack}
@@ -1468,56 +1654,86 @@ function ParentDashboard({ user, chapters, language, onBack }: any) {
         </div>
       </div>
 
-      <div className="space-y-6">
-        <h3 className="text-xl font-bold text-white">Recent Activity</h3>
-        
-        {loading ? (
-          <div className="flex justify-center py-12">
-            <Loader2 className="animate-spin text-emerald-500" size={32} />
-          </div>
-        ) : results.length === 0 ? (
-          <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-12 text-center">
-            <p className="text-slate-500">No activity recorded yet. Encourage your child to take a quiz!</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {results.map((r) => {
-              const chapter = chapters.find((c: any) => c.id === r.chapterId);
-              return (
-                <div key={r.id} className="bg-slate-900/50 border border-white/5 rounded-2xl p-4 flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold ${r.accuracy >= 80 ? 'bg-emerald-500/10 text-emerald-500' : r.accuracy >= 50 ? 'bg-yellow-500/10 text-yellow-500' : 'bg-red-500/10 text-red-500'}`}>
-                      {r.accuracy}%
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-6">
+          <h3 className="text-xl font-bold text-white">Recent Activity</h3>
+          
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="animate-spin text-emerald-500" size={32} />
+            </div>
+          ) : results.length === 0 ? (
+            <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-12 text-center">
+              <p className="text-slate-500">No activity recorded yet. Encourage your child to take a quiz!</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {results.map((r) => {
+                const chapter = chapters.find((c: any) => c.id === r.chapterId);
+                return (
+                  <div key={r.id} className="bg-slate-900/50 border border-white/5 rounded-2xl p-4 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold ${r.accuracy >= 80 ? 'bg-emerald-500/10 text-emerald-500' : r.accuracy >= 50 ? 'bg-yellow-500/10 text-yellow-500' : 'bg-red-500/10 text-red-500'}`}>
+                        {r.accuracy}%
+                      </div>
+                      <div>
+                        <h4 className="text-white font-semibold">{chapter?.title || 'Unknown Chapter'}</h4>
+                        <p className="text-xs text-slate-500">{r.timestamp?.toDate().toLocaleDateString()} • {r.score}/{r.total} Correct</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="text-white font-semibold">{chapter?.title || 'Unknown Chapter'}</h4>
-                      <p className="text-xs text-slate-500">{r.timestamp?.toDate().toLocaleDateString()} • {r.score}/{r.total} Correct</p>
+                    <div className="text-[10px] font-bold uppercase text-slate-600 tracking-widest">
+                      {chapter?.subject}
                     </div>
                   </div>
-                  <div className="text-[10px] font-bold uppercase text-slate-600 tracking-widest">
-                    {chapter?.subject}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
 
-      <div className="mt-12 p-8 rounded-[2.5rem] bg-gradient-to-br from-emerald-600/20 to-blue-600/20 border border-emerald-500/20 text-center">
-        <h3 className="text-2xl font-bold text-white mb-2">Want deeper insights?</h3>
-        <p className="text-slate-400 mb-6">Upgrade to Premium to get AI-powered skill gap analysis and personalized learning paths for your child.</p>
-        <button className="px-8 py-3 rounded-xl bg-white text-slate-900 font-bold hover:bg-slate-100 transition-all">
-          Explore Premium Plans
-        </button>
+        <div className="space-y-6">
+          {user?.parentShowLeaderboard !== false && (
+            <>
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-white">Effort Ranking</h3>
+                <div className="px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-bold uppercase tracking-widest">
+                  Rank #{userRank}
+                </div>
+              </div>
+              <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-6 overflow-hidden">
+                <div className="space-y-4">
+                  {leaderboard.slice(0, 5).map((student: any, i: number) => (
+                    <div key={i} className={`flex items-center justify-between ${student.name === user.name ? 'bg-emerald-500/10 -mx-6 px-6 py-2 border-y border-emerald-500/20' : ''}`}>
+                      <div className="flex items-center gap-3">
+                        <span className={`w-6 text-xs font-bold ${i < 3 ? 'text-yellow-500' : 'text-slate-500'}`}>{i + 1}</span>
+                        <span className={`text-sm ${student.name === user.name ? 'text-emerald-400 font-bold' : 'text-slate-300'}`}>{student.name}</span>
+                      </div>
+                      <span className="text-xs font-mono text-emerald-400">{student.points}</span>
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-4 text-[10px] text-slate-500 text-center uppercase tracking-widest font-bold">Weekly Effort Points</p>
+              </div>
+            </>
+          )}
+
+          <div className="p-6 rounded-3xl bg-gradient-to-br from-emerald-600/20 to-blue-600/20 border border-emerald-500/20">
+            <h3 className="text-lg font-bold text-white mb-2">Insights</h3>
+            <p className="text-xs text-slate-400 mb-4 leading-relaxed">Upgrade to Premium to get AI-powered skill gap analysis and personalized learning paths for your child.</p>
+            <button className="w-full py-3 rounded-xl bg-white text-slate-900 text-xs font-bold hover:bg-slate-100 transition-all">
+              Upgrade to Premium
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
-function ProfileView({ user, onBack, onParentAccess }: any) {
+function ProfileView({ user, language, onBack, onParentAccess }: any) {
   const [name, setName] = useState(user.name || '');
   const [email, setEmail] = useState(user.email || '');
+  const [parentShowLeaderboard, setParentShowLeaderboard] = useState(user.parentShowLeaderboard ?? true);
   const [loading, setLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [showPinModal, setShowPinModal] = useState(false);
@@ -1548,7 +1764,8 @@ function ProfileView({ user, onBack, onParentAccess }: any) {
     try {
       await updateDoc(doc(firestore, 'users', user.id), {
         name,
-        email
+        email,
+        parentShowLeaderboard
       });
       
       if (auth.currentUser && email && email !== auth.currentUser.email) {
@@ -1601,10 +1818,10 @@ function ProfileView({ user, onBack, onParentAccess }: any) {
         exit={{ opacity: 0, y: -20 }}
         className="bg-slate-900/50 border border-white/5 rounded-3xl p-8 space-y-6"
       >
-      <h2 className="text-2xl font-bold text-white">Edit Profile</h2>
+      <h2 className="text-2xl font-bold text-white">{translations[language].profile.editTitle}</h2>
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-slate-400 mb-1">Name</label>
+          <label className="block text-sm font-medium text-slate-400 mb-1">{translations[language].name}</label>
           <input 
             type="text"
             value={name}
@@ -1613,7 +1830,7 @@ function ProfileView({ user, onBack, onParentAccess }: any) {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-400 mb-1">Email Address</label>
+          <label className="block text-sm font-medium text-slate-400 mb-1">{translations[language].email}</label>
           <div className="flex gap-2">
             <input 
               type="email"
@@ -1637,8 +1854,50 @@ function ProfileView({ user, onBack, onParentAccess }: any) {
             )}
           </div>
         </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-400 mb-1">{translations[language].profile.phone}</label>
+            <div className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-slate-400 flex items-center justify-between">
+              <span className="text-sm">{user.phoneNumber || user.phone || 'N/A'}</span>
+              <Lock size={14} className="opacity-50" />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-400 mb-1">{translations[language].profile.class}</label>
+            <div className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-slate-400 flex items-center justify-between">
+              <span className="text-sm">{translations[language].classes[user.class] || user.class || 'N/A'}</span>
+              <Lock size={14} className="opacity-50" />
+            </div>
+          </div>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10 space-y-3">
+          <p className="text-[10px] text-slate-400 leading-relaxed">
+            {translations[language].profile.requestChangeNote}
+          </p>
+          <div className="flex gap-2">
+            <a 
+              href={`https://wa.me/919337956168?text=${encodeURIComponent(`Namaskar Admin, I want to change my ${language === 'en' ? 'Class/Mobile Number' : 'ଶ୍ରେଣୀ/ମୋବାଇଲ୍ ନମ୍ବର'}. My Name: ${user.name}, Current Class: ${user.class}. Reason: `)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 py-2 rounded-xl bg-emerald-500/10 text-emerald-500 text-[10px] font-bold hover:bg-emerald-500/20 transition-all flex items-center justify-center gap-2 border border-emerald-500/20"
+            >
+              <MessageCircle size={14} />
+              WhatsApp
+            </a>
+            <a 
+              href={`mailto:pandadamayanti01@gmail.com?subject=Profile Change Request&body=${encodeURIComponent(`Namaskar Admin,\n\nI want to change my Class or Mobile Number.\n\nName: ${user.name}\nPhone: ${user.phoneNumber || user.phone}\nCurrent Class: ${user.class}\n\nReason for change:\n`)}`}
+              className="flex-1 py-2 rounded-xl bg-blue-500/10 text-blue-500 text-[10px] font-bold hover:bg-blue-500/20 transition-all flex items-center justify-center gap-2 border border-blue-500/20"
+            >
+              <Mail size={14} />
+              Email
+            </a>
+          </div>
+        </div>
+
         <div>
-          <label className="block text-sm font-medium text-slate-400 mb-1">Parent PIN (4 Digits)</label>
+          <label className="block text-sm font-medium text-slate-400 mb-1">{translations[language].profile.parentPin}</label>
           <input 
             type="password"
             maxLength={4}
@@ -1654,7 +1913,25 @@ function ProfileView({ user, onBack, onParentAccess }: any) {
             }}
             className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
           />
-          <p className="text-[10px] text-slate-500 mt-1">This PIN is required to access the Parent Dashboard.</p>
+          <p className="text-[10px] text-slate-500 mt-1">{translations[language].profile.parentPinNote}</p>
+        </div>
+
+        <div className="pt-2">
+          <label className="flex items-center gap-3 cursor-pointer group">
+            <div className="relative inline-flex items-center">
+              <input 
+                type="checkbox" 
+                checked={parentShowLeaderboard}
+                onChange={(e) => setParentShowLeaderboard(e.target.checked)}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-sm font-medium text-white group-hover:text-emerald-400 transition-colors">{translations[language].profile.parentLeaderboard}</span>
+              <span className="text-[10px] text-slate-500">{translations[language].profile.parentLeaderboardNote}</span>
+            </div>
+          </label>
         </div>
         <div className="pt-6 border-t border-white/5">
           <button 
@@ -1666,8 +1943,8 @@ function ProfileView({ user, onBack, onParentAccess }: any) {
                 <Settings size={20} />
               </div>
               <div className="text-left">
-                <p className="font-bold">Parent Dashboard</p>
-                <p className="text-[10px] opacity-70 uppercase tracking-wider">Track student progress & reports</p>
+                <p className="font-bold">{translations[language].profile.parentDashboard}</p>
+                <p className="text-[10px] opacity-70 uppercase tracking-wider">{translations[language].profile.parentDashboardTagline}</p>
               </div>
             </div>
             <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
@@ -1679,7 +1956,7 @@ function ProfileView({ user, onBack, onParentAccess }: any) {
           disabled={loading}
           className="w-full py-4 rounded-2xl bg-emerald-600 text-white font-bold hover:bg-emerald-500 transition-all flex items-center justify-center gap-2"
         >
-          {loading ? <Loader2 className="animate-spin" size={20} /> : 'Save Profile'}
+          {loading ? <Loader2 className="animate-spin" size={20} /> : translations[language].profile.saveProfile}
         </button>
       </div>
     </motion.div>
@@ -1756,16 +2033,16 @@ function SidebarItem({ icon, label, active, onClick }: any) {
   );
 }
 
-function DashboardView({ user, leaderboard, language, isPremium, onUpgrade }: any) {
+function DashboardView({ user, leaderboard, language, isPremium, onUpgrade, chapters }: any) {
   const userRank = leaderboard.findIndex((s: any) => s.name === user.name) + 1 || '-';
   const stats = user.stats || {
-    streak: 5,
-    level: 3,
-    experience: 65,
-    accuracy: 85,
+    streak: 0,
+    level: 1,
+    experience: 0,
+    accuracy: 0,
     league: 'Bronze',
-    badges: ['first_quiz', 'streak_3'],
-    weeklyPoints: 120
+    badges: [],
+    weeklyPoints: 0
   };
   
   return (
@@ -1812,57 +2089,49 @@ function DashboardView({ user, leaderboard, language, isPremium, onUpgrade }: an
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard icon={<Trophy className="text-yellow-500" />} label={translations[language].rank} value={`#${userRank}`} subValue="Top 15%" />
         <StatCard icon={<BarChart3 className="text-emerald-500" />} label={translations[language].effortPoints} value={stats.weeklyPoints} subValue="This Week" />
         <StatCard icon={<CheckCircle2 className="text-blue-500" />} label={translations[language].accuracy} value={`${stats.accuracy}%`} subValue="Avg. Score" />
         <StatCard icon={<Globe className="text-purple-500" />} label={translations[language].badges} value={stats.badges.length} subValue="Earned" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-3 space-y-6">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold text-white">{translations[language].myProgress}</h3>
           </div>
           <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-8">
             <div className="space-y-6">
-              <TopicProgress label="Algebraic Expressions" progress={45} color="bg-red-500" />
-              <TopicProgress label="Linear Equations" progress={60} color="bg-yellow-500" />
-              <TopicProgress label="Geometry Basics" progress={80} color="bg-emerald-500" />
+              {user.completed_chapters && user.completed_chapters.length > 0 ? (
+                user.completed_chapters.slice(0, 3).map((chapterId: string, i: number) => {
+                  const chapter = chapters.find((c: any) => c.id === chapterId);
+                  return (
+                    <TopicProgress 
+                      key={i} 
+                      label={chapter?.title || "Unknown Topic"} 
+                      progress={100} 
+                      color="bg-emerald-500" 
+                    />
+                  );
+                })
+              ) : (
+                <p className="text-slate-500 text-center py-4">No progress recorded yet. Start learning to see your progress!</p>
+              )}
             </div>
           </div>
 
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-white">{translations[language].badges}</h3>
             <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
-              {['🌟', '🔥', '📚', '🎯', '🧠'].map((emoji, i) => (
-                <div key={i} className="flex-shrink-0 w-20 h-20 rounded-2xl bg-slate-900/50 border border-white/5 flex items-center justify-center text-3xl grayscale hover:grayscale-0 transition-all cursor-help">
-                  {emoji}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-6">
-          <h3 className="text-lg font-semibold text-white">{translations[language].weeklyLeaderboard}</h3>
-          <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-6 overflow-hidden">
-            <div className="space-y-4">
-              {leaderboard.slice(0, 5).map((student: any, i: number) => (
-                <div key={i} className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className={`w-6 text-xs font-bold ${i < 3 ? 'text-yellow-500' : 'text-slate-500'}`}>{i + 1}</span>
-                    <span className="text-sm text-slate-300">{student.name}</span>
+              {stats.badges && stats.badges.length > 0 ? (
+                stats.badges.map((badge: string, i: number) => (
+                  <div key={i} className="flex-shrink-0 w-20 h-20 rounded-2xl bg-slate-900/50 border border-white/5 flex items-center justify-center text-3xl hover:scale-110 transition-all cursor-help">
+                    {badge === 'first_quiz' ? '🌟' : badge === 'streak_3' ? '🔥' : '🏅'}
                   </div>
-                  <span className="text-xs font-mono text-emerald-400">{student.points}</span>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-slate-500 text-sm">No badges earned yet. Complete quizzes to earn badges!</p>
+              )}
             </div>
-            <button 
-              onClick={() => onUpgrade()} 
-              className="w-full mt-6 py-3 rounded-xl bg-white/5 text-slate-400 text-xs font-bold hover:bg-white/10 transition-all"
-            >
-              View Full Leaderboard
-            </button>
           </div>
         </div>
       </div>
@@ -2038,6 +2307,32 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
   const [selected, setSelected] = useState<Chapter | null>(null);
   const [quizMode, setQuizMode] = useState(false);
   const [subjectFilter, setSubjectFilter] = useState<string>('all');
+  const [recentlyViewed, setRecentlyViewed] = useState<Chapter[]>([]);
+
+  // Load recently viewed from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem(`recently_viewed_${user?.id}`);
+    if (saved) {
+      try {
+        const ids = JSON.parse(saved);
+        const recent = ids.map((id: string) => chapters.find((c: Chapter) => c.id === id)).filter(Boolean);
+        setRecentlyViewed(recent);
+      } catch (e) {
+        console.error("Error parsing recently viewed", e);
+      }
+    }
+  }, [chapters, user?.id]);
+
+  const handleSelectChapter = (chapter: Chapter) => {
+    setSelected(chapter);
+    
+    // Update recently viewed
+    const updatedIds = [chapter.id, ...recentlyViewed.map(c => c.id).filter(id => id !== chapter.id)].slice(0, 3);
+    localStorage.setItem(`recently_viewed_${user?.id}`, JSON.stringify(updatedIds));
+    
+    const recent = updatedIds.map(id => chapters.find(c => c.id === id)).filter(Boolean) as Chapter[];
+    setRecentlyViewed(recent);
+  };
 
   const boardKey = React.useMemo(() => {
     if (!user?.board) return 'odisha';
@@ -2047,33 +2342,53 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
     return 'odisha';
   }, [user?.board]);
 
+  const classFilteredChapters = React.useMemo(() => {
+    return chapters.filter((c: Chapter) => {
+      const matchesClass = !user?.class || c.class === user.class;
+      const matchesBoard = !user?.board || c.board === boardKey;
+      return matchesClass && matchesBoard;
+    });
+  }, [chapters, user?.class, user?.board, boardKey]);
+
   const availableSubjects = React.useMemo(() => {
     const predefined = translations[language]?.subjects ? Object.keys(translations[language].subjects) : [];
-    const existingInChapters = Array.from(new Set(chapters.map((c: Chapter) => c.subject)));
-    const all = Array.from(new Set(['all', ...predefined, ...existingInChapters]));
-    return all;
-  }, [language, chapters]);
+    const existingInChapters = new Set<string>(classFilteredChapters.map((c: Chapter) => c.subject));
+    
+    // Only show subjects that have at least one chapter
+    const filteredPredefined = predefined.filter(s => existingInChapters.has(s));
+    const othersInChapters = Array.from(existingInChapters).filter(s => !predefined.includes(s));
+    
+    return ['all', ...filteredPredefined, ...othersInChapters];
+  }, [language, classFilteredChapters]);
 
-  const filteredChapters = chapters.filter((c: Chapter) => {
-    // Requirement: Do not show chapters in "all subjects" option
-    if (subjectFilter === 'all') return false;
+  const filteredChapters = classFilteredChapters.filter((c: Chapter) => {
+    if (subjectFilter === 'all') return true;
     return c.subject === subjectFilter;
   });
 
-  // Requirement: Only show one entry per logical chapter (addressing the "two chapters" issue)
+  // Requirement: Only show one entry per logical chapter
   const uniqueChapters = React.useMemo(() => {
     return Array.from(
       filteredChapters.reduce((acc: Map<string, Chapter>, current: Chapter) => {
         const groupId = current.translationGroupId || current.id;
         const existing = acc.get(groupId);
-        // Prefer English version for the display if it exists, otherwise keep the first one found
         if (!existing || current.language === 'en') {
           acc.set(groupId, current);
         }
         return acc;
       }, new Map<string, Chapter>()).values()
-    );
+    ) as Chapter[];
   }, [filteredChapters]);
+
+  // Grouped chapters for "All Subjects" view
+  const groupedChapters = React.useMemo(() => {
+    const groups: Record<string, Chapter[]> = {};
+    uniqueChapters.forEach((chapter: Chapter) => {
+      if (!groups[chapter.subject]) groups[chapter.subject] = [];
+      groups[chapter.subject].push(chapter);
+    });
+    return groups;
+  }, [uniqueChapters]);
 
   useEffect(() => {
     if (selected) {
@@ -2112,8 +2427,9 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div className="space-y-10 pb-20">
+      {/* Header & Tabs */}
+      <div className="space-y-6">
         <div className="flex items-center gap-4">
           <button 
             onClick={onBack}
@@ -2123,7 +2439,7 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
           </button>
           <div>
             <h2 className="text-2xl font-bold text-white">
-              {subjectFilter === 'all' ? translations[language].courses : (translations[language].subjects[subjectFilter as keyof typeof translations.en.subjects] || subjectFilter)}
+              {translations[language].courses}
             </h2>
             <p className="text-xs text-slate-500 uppercase tracking-wider font-bold">
               {translations[language].classes[user?.class as keyof typeof translations.en.classes] || user?.class} • {user?.board}
@@ -2131,40 +2447,63 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
           </div>
         </div>
 
-        <div className="relative min-w-[200px] w-full md:w-fit">
-          <select
-            value={subjectFilter}
-            onChange={(e) => setSubjectFilter(e.target.value)}
-            className="w-full px-4 py-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all appearance-none cursor-pointer pr-10"
-          >
-            {availableSubjects.map((s: string) => (
-              <option key={s} value={s} className="bg-slate-900">
-                {s === 'all' ? translations[language].allSubjects : (translations[language].subjects[s as keyof typeof translations.en.subjects] || s)}
-              </option>
-            ))}
-          </select>
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-            <ChevronDown size={16} />
-          </div>
+        {/* Subject Tabs */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+          {availableSubjects.map((s: string) => (
+            <button
+              key={s}
+              onClick={() => setSubjectFilter(s)}
+              className={`px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all border ${
+                subjectFilter === s 
+                  ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20' 
+                  : 'bg-slate-900/50 border-white/5 text-slate-400 hover:border-white/10 hover:text-white'
+              }`}
+            >
+              {s === 'all' ? translations[language].allSubjects : (translations[language].subjects[s as keyof typeof translations.en.subjects] || s)}
+            </button>
+          ))}
         </div>
       </div>
 
-      {subjectFilter === 'all' ? (
-        <div className="flex flex-col items-center justify-center py-20 text-center bg-slate-900/30 border border-white/5 rounded-3xl">
-          <div className="w-24 h-24 bg-slate-800 rounded-full flex items-center justify-center mb-6">
-            <Search size={48} className="text-slate-500" />
+      {/* Continue Learning Section */}
+      {subjectFilter === 'all' && recentlyViewed.length > 0 && (
+        <section className="space-y-4">
+          <div className="flex items-center gap-2 text-emerald-500">
+            <Clock size={18} />
+            <h3 className="text-lg font-bold text-white">
+              {language === 'en' ? "Continue Learning" : "ପଢା ଜାରି ରଖନ୍ତୁ"}
+            </h3>
           </div>
-          <h3 className="text-2xl font-bold text-white mb-2">
-            {language === 'en' ? "Select a Subject" : "ଏକ ବିଷୟ ଚୟନ କରନ୍ତୁ"}
-          </h3>
-          <p className="text-slate-400 max-w-md mx-auto">
-            {language === 'en' 
-              ? "Please select a subject from the dropdown above to view its chapters." 
-              : "ଏହାର ଅଧ୍ୟାୟଗୁଡ଼ିକ ଦେଖିବା ପାଇଁ ଦୟାକରି ଉପରୋକ୍ତ ଡ୍ରପଡାଉନ୍ ରୁ ଏକ ବିଷୟ ଚୟନ କରନ୍ତୁ |"}
-          </p>
-        </div>
-      ) : uniqueChapters.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {recentlyViewed.map((chapter) => (
+              <button
+                key={chapter.id}
+                onClick={() => handleSelectChapter(chapter)}
+                className="flex items-center gap-4 p-4 bg-slate-900/40 border border-white/5 rounded-2xl hover:border-emerald-500/30 transition-all text-left group"
+              >
+                <div className="w-16 h-10 rounded-lg bg-slate-800 overflow-hidden flex-shrink-0">
+                  <img 
+                    src={getYouTubeThumbnail(chapter.playlist_id)} 
+                    className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity"
+                    alt={chapter.title}
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] font-bold text-emerald-500 uppercase truncate">
+                    {getLocalizedSubject(chapter.subject, language)}
+                  </p>
+                  <h4 className="text-sm font-semibold text-white truncate">{chapter.title}</h4>
+                </div>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Content Area */}
+      {uniqueChapters.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 text-center bg-slate-900/30 border border-white/5 rounded-3xl">
           <div className="w-24 h-24 bg-slate-800 rounded-full flex items-center justify-center mb-6">
             <BookOpen size={48} className="text-slate-500" />
           </div>
@@ -2175,17 +2514,52 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
               : "ଆମେ ବର୍ତ୍ତମାନ ଏହି ବିଷୟ ପାଇଁ ବିଷୟବସ୍ତୁ ଯୋଡିବା ପାଇଁ କାର୍ଯ୍ୟ କରୁଛୁ। ଦୟାକରି ଶୀଭ୍ର ପୁଣି ଯାଞ୍ଚ କରନ୍ତୁ!"}
           </p>
         </div>
+      ) : subjectFilter === 'all' ? (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {availableSubjects.filter(s => s !== 'all').map((subject: string) => {
+            const subjectChapters = chapters.filter((c: Chapter) => c.subject === subject);
+            const count = Array.from(new Set(subjectChapters.map((c: Chapter) => c.translationGroupId || c.id))).length;
+            
+            return (
+              <button
+                key={subject}
+                onClick={() => setSubjectFilter(subject)}
+                className="group relative flex flex-col items-center justify-center p-8 bg-slate-900/50 border border-white/5 rounded-[2rem] hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all text-center"
+              >
+                <div className="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all text-emerald-500">
+                  {subject.toLowerCase().includes('math') ? <Shapes size={32} /> :
+                   subject.toLowerCase().includes('sci') ? <Brain size={32} /> :
+                   subject.toLowerCase().includes('eng') ? <Globe size={32} /> :
+                   subject.toLowerCase().includes('odi') ? <PenTool size={32} /> :
+                   <BookOpen size={32} />}
+                </div>
+                <h3 className="text-lg font-bold text-white mb-1">
+                  {translations[language].subjects[subject as keyof typeof translations.en.subjects] || subject}
+                </h3>
+                <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">
+                  {count} {language === 'en' ? 'Chapters' : 'ଅଧ୍ୟାୟ'}
+                </p>
+                
+                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500">
+                    <ChevronRight size={16} />
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
           {uniqueChapters.map((chapter: Chapter) => (
             <button 
               key={chapter.id}
-              onClick={() => setSelected(chapter)}
+              onClick={() => handleSelectChapter(chapter)}
               className="group text-left bg-slate-900/50 border border-white/5 rounded-3xl p-6 hover:border-emerald-500/50 transition-all flex flex-col h-full"
             >
               <div className="aspect-video rounded-2xl bg-slate-800 mb-4 overflow-hidden relative flex-shrink-0">
                 <img 
-                  src={`https://img.youtube.com/vi/${chapter.playlist_id.includes('list=') ? chapter.playlist_id.split('list=')[1] : chapter.playlist_id}/mqdefault.jpg`} 
+                  src={getYouTubeThumbnail(chapter.playlist_id)} 
                   className="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform"
                   alt={chapter.title}
                   referrerPolicy="no-referrer"
@@ -2628,6 +3002,126 @@ function LeaderboardView({ leaderboard, language, onBack }: any) {
   );
 }
 
+function TextbooksView({ user, textbooks, language, onBack }: any) {
+  const [subjectFilter, setSubjectFilter] = useState('all');
+
+  const boardKey = React.useMemo(() => {
+    if (!user?.board) return 'odisha';
+    const b = user.board.toLowerCase();
+    if (b.includes('saraswati')) return 'saraswati';
+    if (b.includes('cbse')) return 'cbse';
+    return 'odisha';
+  }, [user?.board]);
+
+  const filteredTextbooks = React.useMemo(() => {
+    return textbooks.filter((book: Textbook) => {
+      const matchesClass = !user?.class || book.class === user.class;
+      const matchesBoard = !user?.board || book.board === boardKey;
+      const matchesSubject = subjectFilter === 'all' || book.subject === subjectFilter;
+      return matchesClass && matchesBoard && matchesSubject;
+    });
+  }, [textbooks, user?.class, user?.board, boardKey, subjectFilter]);
+
+  const availableSubjects = React.useMemo(() => {
+    const subjects = new Set<string>(textbooks.filter(b => b.class === user?.class && b.board === boardKey).map(b => b.subject));
+    return ['all', ...Array.from(subjects)];
+  }, [textbooks, user?.class, boardKey]);
+
+  return (
+    <div className="space-y-10 pb-20">
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <button 
+            onClick={onBack}
+            className="p-2 bg-slate-800/50 border border-white/5 rounded-xl text-slate-400 hover:text-white transition-all"
+          >
+            <ArrowLeft size={20} />
+          </button>
+          <div>
+            <h2 className="text-2xl font-bold text-white">
+              {language === 'en' ? 'Textbooks' : 'ପାଠ୍ୟପୁସ୍ତକ'}
+            </h2>
+            <p className="text-xs text-slate-500 uppercase tracking-wider font-bold">
+              {translations[language].classes[user?.class as keyof typeof translations.en.classes] || user?.class} • {user?.board}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+          {availableSubjects.map((s: string) => (
+            <button
+              key={s}
+              onClick={() => setSubjectFilter(s)}
+              className={`px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all border ${
+                subjectFilter === s 
+                  ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20' 
+                  : 'bg-slate-900/50 border-white/5 text-slate-400 hover:border-white/10 hover:text-white'
+              }`}
+            >
+              {s === 'all' ? translations[language].allSubjects : (translations[language].subjects[s as keyof typeof translations.en.subjects] || s)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {filteredTextbooks.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 text-center bg-slate-900/30 border border-white/5 rounded-3xl">
+          <div className="w-24 h-24 bg-slate-800 rounded-full flex items-center justify-center mb-6">
+            <Book size={48} className="text-slate-500" />
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-2">
+            {language === 'en' ? 'No Textbooks Found' : 'କୌଣସି ପାଠ୍ୟପୁସ୍ତକ ମିଳିଲା ନାହିଁ'}
+          </h3>
+          <p className="text-slate-400 max-w-md mx-auto">
+            {language === 'en' 
+              ? "We're currently uploading textbooks for your class and board. Please check back soon!" 
+              : "ଆମେ ବର୍ତ୍ତମାନ ଆପଣଙ୍କ ଶ୍ରେଣୀ ଏବଂ ବୋର୍ଡ ପାଇଁ ପାଠ୍ୟପୁସ୍ତକ ଅପଲୋଡ୍ କରୁଛୁ। ଦୟାକରି ଶୀଘ୍ର ପୁଣି ଯାଞ୍ଚ କରନ୍ତୁ!"}
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredTextbooks.map((book: Textbook) => (
+            <div key={book.id} className="group bg-slate-900/50 border border-white/5 rounded-3xl overflow-hidden hover:border-emerald-500/50 transition-all flex flex-col">
+              <div className="aspect-[3/4] bg-slate-800 relative overflow-hidden">
+                {book.thumbnail_url ? (
+                  <img 
+                    src={book.thumbnail_url} 
+                    alt={book.title} 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-slate-600">
+                    <Book size={64} />
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60" />
+                <div className="absolute bottom-4 left-4 right-4">
+                  <span className="text-[10px] font-bold uppercase text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg border border-emerald-500/20 backdrop-blur-md">
+                    {translations[language].subjects[book.subject as keyof typeof translations.en.subjects] || book.subject}
+                  </span>
+                </div>
+              </div>
+              <div className="p-6 flex flex-col flex-1">
+                <h3 className="text-lg font-bold text-white mb-4 line-clamp-2 flex-1">{book.title}</h3>
+                <a 
+                  href={book.download_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-900/20"
+                >
+                  <Download size={18} />
+                  {language === 'en' ? 'Download PDF' : 'PDF ଡାଉନଲୋଡ୍'}
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function TopicDetailView({ 
   topic, 
   onBack, 
@@ -2710,17 +3204,23 @@ function TopicDetailView({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="aspect-video rounded-2xl overflow-hidden bg-black shadow-2xl"
+                className="aspect-video rounded-2xl overflow-hidden bg-black shadow-2xl flex items-center justify-center"
               >
-                <iframe 
-                  src={topic.playlist_id.startsWith('PL') 
-                    ? `https://www.youtube.com/embed/videoseries?list=${topic.playlist_id}`
-                    : topic.playlist_id.includes('&list=')
-                      ? `https://www.youtube.com/embed/${topic.playlist_id.split('&list=')[0]}?list=${topic.playlist_id.split('&list=')[1].split('&')[0]}`
-                      : `https://www.youtube.com/embed/${topic.playlist_id}`}
-                  className="w-full h-full"
-                  allowFullScreen
-                />
+                {topic.playlist_id ? (
+                  <iframe 
+                    src={getYouTubeEmbedUrl(topic.playlist_id)}
+                    className="w-full h-full border-0"
+                    allowFullScreen
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  />
+                ) : (
+                  <div className="text-center p-8">
+                    <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-500">
+                      <Play size={32} />
+                    </div>
+                    <p className="text-slate-400 font-medium">Video content is currently being updated.</p>
+                  </div>
+                )}
               </motion.div>
             )}
 
@@ -2957,34 +3457,6 @@ function QuizEngine({ questions, onComplete, language, userId, chapterId }: { qu
           </div>
         )}
       </div>
-
-      <div className="flex justify-between items-center">
-        <button 
-          disabled={currentIdx === 0}
-          onClick={handlePrev}
-          className="flex items-center gap-2 text-slate-500 hover:text-white disabled:opacity-0 transition-colors"
-        >
-          <ArrowLeft size={20} /> Previous
-        </button>
-        
-        {currentIdx === questions.length - 1 ? (
-          <button 
-            disabled={answers[currentIdx] === undefined}
-            onClick={() => setFinished(true)}
-            className="bg-emerald-500 hover:bg-emerald-600 text-white px-12 py-4 rounded-2xl font-bold transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50"
-          >
-            Finish Quiz
-          </button>
-        ) : (
-          <button 
-            disabled={answers[currentIdx] === undefined}
-            onClick={handleNext}
-            className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-8 py-4 rounded-2xl font-bold transition-all disabled:opacity-50"
-          >
-            Next Question <ArrowRight size={20} />
-          </button>
-        )}
-      </div>
     </div>
   );
 }
@@ -3027,11 +3499,7 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack }: any) {
     );
   }
 
-  const filteredTests = tests.filter((test: MonthlyTest) => {
-    const classMatch = test.class === user?.class;
-    const subjectMatch = user?.subjects?.includes(test.subject) || !user?.subjects || user.subjects.length === 0;
-    return classMatch && subjectMatch;
-  });
+  const filteredTests = tests; // Show all published tests to all students for consistency
 
   return (
     <div className="space-y-8">

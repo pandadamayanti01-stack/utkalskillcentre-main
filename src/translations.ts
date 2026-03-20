@@ -64,6 +64,21 @@ export const translations: any = {
     myProgress: "My Progress",
     badges: "Achievements",
     effortPoints: "Effort Points",
+    profile: {
+      editTitle: "Edit Profile",
+      phone: "Phone Number",
+      class: "Class",
+      requestChange: "Request Change",
+      requestChangeNote: "One mobile number and one class are allowed per year. To change these, please contact admin with a valid reason.",
+      contactAdmin: "Contact Admin",
+      saveProfile: "Save Profile",
+      parentPin: "Parent PIN (4 Digits)",
+      parentPinNote: "This PIN is required to access the Parent Dashboard.",
+      parentLeaderboard: "Parent Can See Leaderboard",
+      parentLeaderboardNote: "Allow parents to see your rank on the parent dashboard.",
+      parentDashboard: "Parent Dashboard",
+      parentDashboardTagline: "Track student progress & reports"
+    },
     bronze: "Bronze League",
     silver: "Silver League",
     gold: "Gold League",
@@ -78,6 +93,9 @@ export const translations: any = {
     emailLogin: "Email Login",
     password: "Password",
     loginSignup: "Login / Sign Up",
+    completeProfile: "Complete Your Profile",
+    finishSetup: "Finish Setup",
+    profileTagline: "Just a few more details to personalize your learning experience",
     error: "Something went wrong. Please try again.",
     requiredFieldsError: "Please fill in all required fields (Name, Email, Class, and Board) before proceeding.",
     invalidEmailError: "Please enter a valid email address.",
@@ -111,11 +129,19 @@ export const translations: any = {
       social: "Social Studies",
       hindi: "Hindi",
       sanskrit: "Sanskrit",
-      evs: "EVS",
+      evs: "Environmental Studies (EVS)",
       gk: "General Knowledge",
       physics: "Physics",
       chemistry: "Chemistry",
-      biology: "Biology"
+      biology: "Biology",
+      art_health: "Art & Health Education",
+      art: "Art Education",
+      physical_education: "Physical Education & Well-being",
+      vocational: "Vocational Education",
+      epe: "Environmental & Population Education",
+      aspirational: "Aspirational Components",
+      science_curiosity: "Science (Jigyansa)",
+      social_science: "Social Science"
     },
     subjectsByBoard: {
       odisha: {
@@ -126,7 +152,16 @@ export const translations: any = {
         history: "History",
         geography: "Geography",
         hindi: "Hindi",
-        sanskrit: "Sanskrit"
+        sanskrit: "Sanskrit",
+        evs: "EVS",
+        art_health: "Art & Health",
+        art: "Art Education",
+        physical_education: "Physical Education",
+        vocational: "Vocational Education",
+        epe: "EPE",
+        aspirational: "Aspirational Components",
+        science_curiosity: "Science (Jigyansa)",
+        social_science: "Social Science"
       },
       saraswati: {
         math: "Mathematics",
@@ -149,6 +184,20 @@ export const translations: any = {
         physics: "Physics",
         chemistry: "Chemistry",
         biology: "Biology"
+      }
+    },
+    subjectsByClass: {
+      odisha: {
+        class1: ['odia', 'math', 'english', 'art_health'],
+        class2: ['odia', 'math', 'english', 'art_health'],
+        class3: ['odia', 'english', 'math', 'evs', 'art', 'physical_education'],
+        class4: ['odia', 'english', 'math', 'evs', 'art', 'physical_education'],
+        class5: ['odia', 'english', 'math', 'evs', 'art', 'physical_education'],
+        class6: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science_curiosity', 'social_science', 'vocational', 'art', 'physical_education'],
+        class7: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science_curiosity', 'social_science', 'vocational', 'art', 'physical_education'],
+        class8: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science_curiosity', 'social_science', 'vocational', 'art', 'physical_education'],
+        class9: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social_science', 'epe', 'aspirational'],
+        class10: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social_science', 'epe', 'aspirational'],
       }
     },
     totalStudents: "Total Students",
@@ -267,6 +316,21 @@ export const translations: any = {
     myProgress: "ମୋର ପ୍ରଗତି",
     badges: "ସଫଳତା",
     effortPoints: "ପ୍ରୟାସ ପଏଣ୍ଟ",
+    profile: {
+      editTitle: "ପ୍ରୋଫାଇଲ୍ ସଂଶୋଧନ",
+      phone: "ଫୋନ୍ ନମ୍ବର",
+      class: "ଶ୍ରେଣୀ",
+      requestChange: "ପରିବର୍ତ୍ତନ ପାଇଁ ଅନୁରୋଧ",
+      requestChangeNote: "ବର୍ଷକୁ ଗୋଟିଏ ମୋବାଇଲ୍ ନମ୍ବର ଏବଂ ଗୋଟିଏ ଶ୍ରେଣୀ ଅନୁମତିପ୍ରାପ୍ତ | ଏଗୁଡ଼ିକୁ ପରିବର୍ତ୍ତନ କରିବାକୁ, ଦୟାକରି ବୈଧ କାରଣ ସହିତ ଆଡମିନ୍ ସହିତ ଯୋଗାଯୋଗ କରନ୍ତୁ |",
+      contactAdmin: "ଆଡମିନ୍ ସହିତ ଯୋଗାଯୋଗ କରନ୍ତୁ",
+      saveProfile: "ପ୍ରୋଫାଇଲ୍ ସଂରକ୍ଷଣ କରନ୍ତୁ",
+      parentPin: "ପିତାମାତା PIN (୪ ଅଙ୍କ)",
+      parentPinNote: "ପିତାମାତା ଡ୍ୟାସବୋର୍ଡ ବ୍ୟବହାର କରିବାକୁ ଏହି PIN ଆବଶ୍ୟକ |",
+      parentLeaderboard: "ପିତାମାତା ଲିଡରବୋର୍ଡ ଦେଖିପାରିବେ",
+      parentLeaderboardNote: "ପିତାମାତାଙ୍କୁ ଆପଣଙ୍କର ର୍ୟାଙ୍କ ଦେଖିବାକୁ ଅନୁମତି ଦିଅନ୍ତୁ |",
+      parentDashboard: "ପିତାମାତା ଡ୍ୟାସବୋର୍ଡ",
+      parentDashboardTagline: "ଛାତ୍ରଙ୍କ ପ୍ରଗତି ଏବଂ ରିପୋର୍ଟ ଟ୍ରାକ୍ କରନ୍ତୁ"
+    },
     bronze: "ବ୍ରୋଞ୍ଜ ଲିଗ୍",
     silver: "ସିଲଭର ଲିଗ୍",
     gold: "ଗୋଲ୍ଡ ଲିଗ୍",
@@ -281,6 +345,9 @@ export const translations: any = {
     emailLogin: "ଇମେଲ୍ ଲଗଇନ୍",
     password: "ପାସୱାର୍ଡ",
     loginSignup: "ଲଗଇନ୍ / ସାଇନ୍ ଅପ୍",
+    completeProfile: "ଆପଣଙ୍କ ପ୍ରୋଫାଇଲ୍ ସମ୍ପୂର୍ଣ୍ଣ କରନ୍ତୁ",
+    finishSetup: "ସେଟଅପ୍ ସମାପ୍ତ କରନ୍ତୁ",
+    profileTagline: "ଆପଣଙ୍କ ଶିକ୍ଷା ଅଭିଜ୍ଞତାକୁ ବ୍ୟକ୍ତିଗତ କରିବା ପାଇଁ ଆଉ କିଛି ତଥ୍ୟ ଆବଶ୍ୟକ",
     error: "କିଛି ଭୁଲ୍ ହୋଇଛି | ଦୟାକରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |",
     requiredFieldsError: "ଆଗକୁ ବଢିବା ପୂର୍ବରୁ ଦୟାକରି ସମସ୍ତ ଆବଶ୍ୟକୀୟ କ୍ଷେତ୍ର (ନାମ, ଇମେଲ୍, ଶ୍ରେଣୀ ଏବଂ ବୋର୍ଡ) ପୂରଣ କରନ୍ତୁ |",
     invalidEmailError: "ଦୟାକରି ଏକ ବୈଧ ଇମେଲ୍ ଠିକଣା ଦିଅନ୍ତୁ |",
@@ -314,11 +381,19 @@ export const translations: any = {
       social: "ସାମାଜିକ ବିଜ୍ଞାନ",
       hindi: "ହିନ୍ଦୀ",
       sanskrit: "ସଂସ୍କୃତ",
-      evs: "EVS",
+      evs: "ପରିବେଶ ବିଜ୍ଞାନ (EVS)",
       gk: "ସାଧାରଣ ଜ୍ଞାନ",
       physics: "ପଦାର୍ଥ ବିଜ୍ଞାନ",
       chemistry: "ରସାୟନ ବିଜ୍ଞାନ",
-      biology: "ଜୀବ ବିଜ୍ଞାନ"
+      biology: "ଜୀବ ବିଜ୍ଞାନ",
+      art_health: "କଳା ଏବଂ ସ୍ୱାସ୍ଥ୍ୟ ଶିକ୍ଷା",
+      art: "କଳା ଶିକ୍ଷା",
+      physical_education: "ଶାରୀରିକ ଶିକ୍ଷା ଏବଂ ସୁସ୍ଥତା",
+      vocational: "ଧନ୍ଦାମୂଳକ ଶିକ୍ଷା",
+      epe: "ପରିବେଶ ଏବଂ ଜନସଂଖ୍ୟା ଶିକ୍ଷା",
+      aspirational: "ଆକାଂକ୍ଷାମୂଳକ ଉପାଦାନ",
+      science_curiosity: "ବିଜ୍ଞାନ (ଜିଜ୍ଞାସା)",
+      social_science: "ସାମାଜିକ ବିଜ୍ଞାନ"
     },
     subjectsByBoard: {
       odisha: {
@@ -329,7 +404,16 @@ export const translations: any = {
         history: "ଇତିହାସ",
         geography: "ଭୂଗୋଳ",
         hindi: "ହିନ୍ଦୀ",
-        sanskrit: "ସଂସ୍କୃତ"
+        sanskrit: "ସଂସ୍କୃତ",
+        evs: "ପରିବେଶ ବିଜ୍ଞାନ",
+        art_health: "କଳା ଏବଂ ସ୍ୱାସ୍ଥ୍ୟ",
+        art: "କଳା ଶିକ୍ଷା",
+        physical_education: "ଶାରୀରିକ ଶିକ୍ଷା",
+        vocational: "ଧନ୍ଦାମୂଳକ ଶିକ୍ଷା",
+        epe: "EPE",
+        aspirational: "ଆକାଂକ୍ଷାମୂଳକ ଉପାଦାନ",
+        science_curiosity: "ବିଜ୍ଞାନ (ଜିଜ୍ଞାସା)",
+        social_science: "ସାମାଜିକ ବିଜ୍ଞାନ"
       },
       saraswati: {
         math: "ଗଣିତ",
@@ -352,6 +436,20 @@ export const translations: any = {
         physics: "Physics",
         chemistry: "Chemistry",
         biology: "Biology"
+      }
+    },
+    subjectsByClass: {
+      odisha: {
+        class1: ['odia', 'math', 'english', 'art_health'],
+        class2: ['odia', 'math', 'english', 'art_health'],
+        class3: ['odia', 'english', 'math', 'evs', 'art', 'physical_education'],
+        class4: ['odia', 'english', 'math', 'evs', 'art', 'physical_education'],
+        class5: ['odia', 'english', 'math', 'evs', 'art', 'physical_education'],
+        class6: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science_curiosity', 'social_science', 'vocational', 'art', 'physical_education'],
+        class7: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science_curiosity', 'social_science', 'vocational', 'art', 'physical_education'],
+        class8: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science_curiosity', 'social_science', 'vocational', 'art', 'physical_education'],
+        class9: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social_science', 'epe', 'aspirational'],
+        class10: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social_science', 'epe', 'aspirational'],
       }
     },
     totalStudents: "ସମୁଦାୟ ଛାତ୍ରଛାତ୍ରୀ",

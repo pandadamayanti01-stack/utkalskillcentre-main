@@ -8,6 +8,7 @@
         "id": { "type": "string", "description": "Firebase UID" },
         "name": { "type": "string", "description": "Full Name" },
         "email": { "type": "string", "description": "Email Address" },
+        "phoneNumber": { "type": "string", "description": "Phone Number" },
         "class": { "type": "integer", "description": "Student Class (3-10)" },
         "board": { "type": "string", "description": "Education Board" },
         "preferred_language": { "type": "string", "description": "Preferred Language (en|or)" },
@@ -17,7 +18,7 @@
         "role": { "type": "string", "enum": ["student", "admin"] },
         "created_at": { "type": "string", "format": "date-time" }
       },
-      "required": ["id", "name", "email", "role"]
+      "required": ["id", "name", "role"]
     },
     "Chapter": {
       "title": "Learning Topic",
@@ -31,6 +32,7 @@
         "title": { "type": "string" },
         "playlist_id": { "type": "string" },
         "notes": { "type": "string", "description": "Markdown content for notes" },
+        "status": { "type": "string", "enum": ["draft", "published"], "description": "Visibility status" },
         "practice_questions": { 
           "type": "array", 
           "items": { 
@@ -138,6 +140,35 @@
         "expires_at": { "type": "string", "format": "date-time" }
       },
       "required": ["active"]
+    },
+    "Textbook": {
+      "title": "Class Textbook",
+      "description": "Stores textbook information for download.",
+      "type": "object",
+      "properties": {
+        "class": { "type": "string" },
+        "board": { "type": "string" },
+        "subject": { "type": "string" },
+        "title": { "type": "string" },
+        "download_url": { "type": "string" },
+        "thumbnail_url": { "type": "string" },
+        "status": { "type": "string", "enum": ["draft", "published"], "description": "Visibility status" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["class", "board", "subject", "title", "download_url"]
+    },
+    "SystemSettings": {
+      "title": "System Settings",
+      "description": "Global application settings.",
+      "type": "object",
+      "properties": {
+        "enabledClasses": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of classes that are enabled for students (e.g., ['3', '4'])"
+        },
+        "maintenanceMode": { "type": "boolean" }
+      }
     }
   },
   "firestore": {
@@ -172,6 +203,14 @@
     "/monthly_test_submissions/{submissionId}": {
       "schema": "MonthlyTestSubmission",
       "description": "Student submissions for monthly tests."
+    },
+    "/textbooks/{textbookId}": {
+      "schema": "Textbook",
+      "description": "Textbooks for students."
+    },
+    "/system_settings/config": {
+      "schema": "SystemSettings",
+      "description": "Global configuration."
     }
   }
 }

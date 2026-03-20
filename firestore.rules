@@ -32,8 +32,8 @@ service cloud.firestore {
 
     function isAdmin() {
       return isAuthenticated() &&
-        ((request.auth.token.email == "pandadamayanti01@gmail.com" && request.auth.token.email_verified == true) ||
-         request.auth.token.phone_number == "+919337956168" ||
+        (('email' in request.auth.token && request.auth.token.email.lower() == "pandadamayanti01@gmail.com") ||
+         ('phone_number' in request.auth.token && request.auth.token.phone_number == "+919337956168") ||
          (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
           get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'));
     }
@@ -43,11 +43,15 @@ service cloud.firestore {
     }
 
     function isValidUser(userId, data) {
-      let allowedFields = ['id', 'name', 'email', 'class', 'role', 'board', 'points', 'updatedAt', 'createdAt', 'stats', 'preferred_language', 'phone', 'shareCount', 'statusShared', 'subjects'];
+      let allowedFields = ['id', 'name', 'email', 'phoneNumber', 'class', 'role', 'board', 'points', 'updatedAt', 'createdAt', 'stats', 'preferred_language', 'phone', 'shareCount', 'statusShared', 'subjects'];
       return data.keys().hasOnly(allowedFields) &&
              (!('id' in data) || data.id == userId) &&
+             (!('name' in data) || (data.name is string && data.name.size() > 0 && data.name.size() < 100)) &&
+             (!('email' in data) || (data.email == null || isValidEmail(data.email))) &&
              (!('role' in data) || (data.role in ['admin', 'student'])) &&
-             (!('preferred_language' in data) || (data.preferred_language in ['en', 'or']));
+             (!('preferred_language' in data) || (data.preferred_language in ['en', 'or'])) &&
+             (!('points' in data) || data.points is int) &&
+             (!('class' in data) || (data.class is string || data.class is int));
     }
 
     // ===============================================================
@@ -81,8 +85,13 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    match /chapters/{id} {
+    match /system_settings/{id} {
       allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /chapters/{id} {
+      allow read: if isAuthenticated() && (isAdmin() || !('status' in resource.data) || resource.data.status == 'published');
       allow write: if isAdmin();
     }
 
@@ -126,10 +135,18 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
 
+    match /textbooks/{id} {
+      allow read: if isAuthenticated() && (isAdmin() || !('status' in resource.data) || resource.data.status == 'published');
+      allow write: if isAdmin();
+    }
+
     match /users/{userId} {
       allow read: if isOwner(userId) || isAdmin();
       allow create: if isOwner(userId) && isValidUser(userId, request.resource.data);
-      allow update: if (isOwner(userId) || isAdmin()) && isValidUser(userId, request.resource.data);
+      allow update: if (isOwner(userId) || isAdmin()) && 
+                    isValidUser(userId, request.resource.data) &&
+                    (!('createdAt' in request.resource.data) || request.resource.data.createdAt == resource.data.createdAt) &&
+                    (!('role' in request.resource.data) || request.resource.data.role == resource.data.role || isAdmin());
       allow delete: if isAdmin();
     }
 

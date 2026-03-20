@@ -21,12 +21,22 @@ import {
   Trophy,
   Search,
   Edit2,
-  Sparkles
+  Sparkles,
+  ArrowLeft,
+  Rocket,
+  Book,
+  Edit,
+  Upload,
+  File
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { db as firestore, auth } from '../firebase';
+import { db as firestore, auth, storage } from '../firebase';
 import { signOut } from 'firebase/auth';
-import { GoogleGenAI, Type } from "@google/genai";
+import { 
+  ref, 
+  uploadBytesResumable, 
+  getDownloadURL 
+} from 'firebase/storage';
 import { 
   collection, 
   query, 
@@ -45,8 +55,16 @@ import {
 } from 'firebase/firestore';
 
 import { translations } from '../translations';
+import { 
+  translateContent, 
+  generateChapterContent, 
+  generateTestContent, 
+  importPlaylistContent,
+  generateCurriculum,
+  generateTestQuestions
+} from '../services/aiService';
 
-type AdminTab = 'dashboard' | 'content' | 'monthly_tests' | 'ai_usage' | 'payments' | 'notifications' | 'settings';
+type AdminTab = 'dashboard' | 'content' | 'monthly_tests' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup';
 
 interface AdminDashboardProps {
   onExit: () => void;
@@ -62,13 +80,31 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
 
   const [content, setContent] = useState<any[]>([]);
   const [monthlyTests, setMonthlyTests] = useState<any[]>([]);
+  const [textbooks, setTextbooks] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [aiLogs, setAiLogs] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [systemSettings, setSystemSettings] = useState<any>({});
   const [privateSettings, setPrivateSettings] = useState<any>({});
   const [confirmAction, setConfirmAction] = useState<string | null>(null);
+  const [notification, setNotification] = useState<{message: string, type: 'success' | 'error'} | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => setNotification(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [notification]);
+
+  const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
+    setNotification({ message, type });
+  };
+  
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationLog, setGenerationLog] = useState<string[]>([]);
+  const [genClass, setGenClass] = useState('class5');
+  const [genBoard, setGenBoard] = useState('odisha');
   
   const [isAddingTest, setIsAddingTest] = useState(false);
   const [newTest, setNewTest] = useState<any>({
@@ -81,31 +117,69 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     status: 'draft'
   });
 
-  const fetchContent = async () => {
-    try {
-      const snapshot = await getDocs(collection(firestore, 'chapters'));
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setContent(data);
-    } catch (err) {
-      console.error("Fetch Content Error:", err);
-    }
-  };
+  const [isAddingTextbook, setIsAddingTextbook] = useState(false);
+  const [editingTextbookId, setEditingTextbookId] = useState<string | null>(null);
+  const [uploadingFile, setUploadingFile] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [newTextbook, setNewTextbook] = useState<any>({
+    class: 'class5',
+    board: 'odisha',
+    subject: 'math',
+    title: '',
+    download_url: '',
+    thumbnail_url: '',
+    status: 'draft'
+  });
 
-  const fetchMonthlyTests = async () => {
-    try {
-      const snapshot = await getDocs(collection(firestore, 'monthly_tests'));
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setMonthlyTests(data);
-    } catch (err) {
-      console.error("Fetch Monthly Tests Error:", err);
-    }
+  const handleFileUpload = async (file: File, type: 'pdf' | 'thumbnail') => {
+    if (!file) return;
+    
+    setUploadingFile(type);
+    setUploadProgress(0);
+
+    const storageRef = ref(storage, `textbooks/${Date.now()}_${file.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    return new Promise<string>((resolve, reject) => {
+      uploadTask.on('state_changed', 
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setUploadProgress(progress);
+        }, 
+        (error) => {
+          console.error("Upload error:", error);
+          showNotification(`Upload failed: ${error.message}`, "error");
+          setUploadingFile(null);
+          reject(error);
+        }, 
+        async () => {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          if (type === 'pdf') {
+            setNewTextbook(prev => ({ ...prev, download_url: downloadURL }));
+          } else {
+            setNewTextbook(prev => ({ ...prev, thumbnail_url: downloadURL }));
+          }
+          setUploadingFile(null);
+          showNotification(`${type === 'pdf' ? 'PDF' : 'Thumbnail'} uploaded successfully`);
+          resolve(downloadURL);
+        }
+      );
+    });
   };
 
   useEffect(() => {
     if (!auth.currentUser) return;
     
-    fetchContent();
     // Real-time stats and data
+    const unsubChapters = onSnapshot(collection(firestore, 'chapters'), (snapshot) => {
+      setContent(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }, (err) => {
+      console.error("Firestore Chapters onSnapshot Error:", err);
+      if (err.message.includes('insufficient permissions')) {
+        showNotification("Permission denied for chapters.", "error");
+      }
+    });
+
     const unsubTx = onSnapshot(collection(firestore, 'transactions'), (snapshot) => {
       const txs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setTransactions(txs);
@@ -113,7 +187,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         ...prev,
         totalRevenue: txs.reduce((acc, curr: any) => acc + (curr.amount || 0), 0)
       }));
-    }, (err) => console.error("Firestore Transactions onSnapshot Error:", err));
+    }, (err) => {
+      console.error("Firestore Transactions onSnapshot Error:", err);
+      if (err.message.includes('insufficient permissions')) {
+        showNotification("Permission denied for transactions. Please ensure you are logged in as admin.", "error");
+      }
+    });
 
     const unsubAi = onSnapshot(collection(firestore, 'ai_usage'), (snapshot) => {
       const logs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -123,31 +202,67 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         ...prev,
         aiQuestionsToday: logs.filter((l: any) => l.date?.startsWith(today)).length
       }));
-    }, (err) => console.error("Firestore AI Usage onSnapshot Error:", err));
+    }, (err) => {
+      console.error("Firestore AI Usage onSnapshot Error:", err);
+      if (err.message.includes('insufficient permissions')) {
+        showNotification("Permission denied for AI usage logs.", "error");
+      }
+    });
 
     const unsubNotifs = onSnapshot(collection(firestore, 'notifications'), (snapshot) => {
       setNotifications(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    }, (err) => console.error("Firestore Notifications onSnapshot Error:", err));
+    }, (err) => {
+      console.error("Firestore Notifications onSnapshot Error:", err);
+      if (err.message.includes('insufficient permissions')) {
+        showNotification("Permission denied for notifications.", "error");
+      }
+    });
 
-    const unsubSettings = onSnapshot(doc(firestore, 'settings', 'system'), (doc) => {
+    const unsubSettings = onSnapshot(doc(firestore, 'system_settings', 'config'), (doc) => {
       if (doc.exists()) setSystemSettings(doc.data());
-    }, (err) => console.error("Firestore Settings onSnapshot Error:", err));
+    }, (err) => {
+      console.error("Firestore Settings onSnapshot Error:", err);
+      if (err.message.includes('insufficient permissions')) {
+        showNotification("Permission denied for system settings.", "error");
+      }
+    });
 
     const unsubTests = onSnapshot(collection(firestore, 'monthly_tests'), (snapshot) => {
       setMonthlyTests(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    }, (err) => console.error("Firestore Monthly Tests onSnapshot Error:", err));
+    }, (err) => {
+      console.error("Firestore Monthly Tests onSnapshot Error:", err);
+      if (err.message.includes('insufficient permissions')) {
+        showNotification("Permission denied for monthly tests.", "error");
+      }
+    });
 
     const unsubPrivateSettings = onSnapshot(doc(firestore, 'settings', 'private'), (doc) => {
       if (doc.exists()) setPrivateSettings(doc.data());
-    }, (err) => console.error("Firestore Private Settings onSnapshot Error:", err));
+    }, (err) => {
+      console.error("Firestore Private Settings onSnapshot Error:", err);
+      if (err.message.includes('insufficient permissions')) {
+        showNotification("Permission denied for private settings.", "error");
+      }
+    });
+
+    const unsubTextbooks = onSnapshot(collection(firestore, 'textbooks'), (snapshot) => {
+      setTextbooks(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }, (err) => {
+      console.error("Firestore Textbooks onSnapshot Error:", err);
+      if (err.message.includes('insufficient permissions')) {
+        showNotification("Permission denied for textbooks.", "error");
+      }
+    });
 
     return () => {
+      unsubChapters();
       unsubTx();
       unsubAi();
       unsubNotifs();
       unsubSettings();
       unsubTests();
       unsubPrivateSettings();
+      unsubTextbooks();
     };
   }, []);
 
@@ -174,6 +289,61 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         ))}
       </div>
 
+      <div className="bg-emerald-600/10 border border-emerald-500/20 p-6 rounded-2xl">
+        <div className="flex items-center gap-3 mb-4">
+          <Sparkles className="text-emerald-500" size={24} />
+          <h3 className="text-lg font-bold text-white">Quick AI Test Generator</h3>
+        </div>
+        <p className="text-slate-400 text-sm mb-6">Generate a complete monthly test with AI in seconds. Just select the class and subject.</p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <select 
+            value={newTest.class}
+            onChange={(e) => setNewTest({...newTest, class: e.target.value})}
+            className="bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+          >
+            {Object.entries(translations['en'].classes).map(([key, label]) => (
+              <option key={key} value={key}>{label as string}</option>
+            ))}
+          </select>
+          <select 
+            value={newTest.subject}
+            onChange={(e) => setNewTest({...newTest, subject: e.target.value})}
+            className="bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+          >
+            {Object.entries(translations['en'].subjects).map(([key, label]) => (
+              <option key={key} value={key}>{label as string}</option>
+            ))}
+          </select>
+          <button 
+            onClick={() => {
+              setActiveTab('monthly_tests');
+              setIsAddingTest(true);
+              handleGenerateTestWithAI();
+            }}
+            disabled={isGeneratingTestAI}
+            className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-6 py-2 font-bold transition-all flex items-center justify-center gap-2"
+          >
+            {isGeneratingTestAI ? <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" /> : <Rocket size={18} />}
+            Generate Now
+          </button>
+        </div>
+      </div>
+
+      <div className="bg-indigo-600/10 border border-indigo-500/20 p-6 rounded-2xl">
+        <div className="flex items-center gap-3 mb-4">
+          <Rocket className="text-indigo-500" size={24} />
+          <h3 className="text-lg font-bold text-white">Restore Deleted Chapters</h3>
+        </div>
+        <p className="text-slate-400 text-sm mb-6">If you accidentally deleted chapters, you can use AI to re-generate the standard curriculum for all classes (Play to Class 10).</p>
+        <button 
+          onClick={() => setActiveTab('production_setup')}
+          className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl px-6 py-3 font-bold transition-all flex items-center justify-center gap-2"
+        >
+          <Sparkles size={18} />
+          Go to Production Setup
+        </button>
+      </div>
     </div>
   );
 
@@ -181,8 +351,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
   const [isEditingChapter, setIsEditingChapter] = useState(false);
   const [editingChapterId, setEditingChapterId] = useState<string | null>(null);
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+  const [isGeneratingTestAI, setIsGeneratingTestAI] = useState(false);
+  const [isImportingPlaylist, setIsImportingPlaylist] = useState(false);
+  const [playlistUrl, setPlaylistUrl] = useState('');
+  const [importLog, setImportLog] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [adminSubjectFilter, setAdminSubjectFilter] = useState('all');
+  const [adminClassFilter, setAdminClassFilter] = useState('all');
   const [isOtherSubject, setIsOtherSubject] = useState(false);
   const [customSubject, setCustomSubject] = useState('');
   const [isOtherTestSubject, setIsOtherTestSubject] = useState(false);
@@ -195,8 +370,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     title: '',
     playlist_id: '',
     notes: '',
-    practice_questions: [] as any[],
-    quiz_questions: [] as any[]
+    practice_questions: [] as { question: string; answer: string; ai_answer?: string }[],
+    quiz_questions: [] as any[],
+    status: 'draft' as 'draft' | 'published'
   });
 
   const handleAddChapter = async (e: React.FormEvent) => {
@@ -234,7 +410,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
           subject: finalSubject,
           updatedAt: serverTimestamp()
         });
-        alert("Chapter updated successfully!");
+        showNotification("Chapter updated successfully!");
         setIsEditingChapter(false);
         setEditingChapterId(null);
       } else {
@@ -249,35 +425,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         const targetLang = newChapter.language === 'en' ? 'or' : 'en';
         
         // Translate title and notes
-        const translatedTitle = await fetch('/api/ai/translate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: newChapter.title, targetLanguage: targetLang, isJson: false })
-        }).then(res => res.json()).then(data => data.text);
-
-        const translatedNotes = newChapter.notes ? await fetch('/api/ai/translate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: newChapter.notes, targetLanguage: targetLang, isJson: false })
-        }).then(res => res.json()).then(data => data.text) : '';
+        const translatedTitle = await translateContent(newChapter.title, targetLang);
+        const translatedNotes = newChapter.notes ? await translateContent(newChapter.notes, targetLang) : '';
 
         // Translate practice questions
-        const translatedPractice = newChapter.practice_questions.length > 0 ? await fetch('/api/ai/translate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: JSON.stringify(newChapter.practice_questions), targetLanguage: targetLang, isJson: true })
-        }).then(res => res.json()).then(data => {
-          try { return JSON.parse(data.text); } catch(e) { return newChapter.practice_questions; }
-        }) : [];
+        const translatedPractice = newChapter.practice_questions.length > 0 ? await translateContent(newChapter.practice_questions, targetLang) : [];
 
         // Translate quiz questions
-        const translatedQuiz = newChapter.quiz_questions.length > 0 ? await fetch('/api/ai/translate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: JSON.stringify(newChapter.quiz_questions), targetLanguage: targetLang, isJson: true })
-        }).then(res => res.json()).then(data => {
-          try { return JSON.parse(data.text); } catch(e) { return newChapter.quiz_questions; }
-        }) : [];
+        const translatedQuiz = newChapter.quiz_questions.length > 0 ? await translateContent(newChapter.quiz_questions, targetLang) : [];
 
         // Save the translated chapter
         await addDoc(collection(firestore, 'chapters'), {
@@ -297,7 +452,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
           translationGroupId: originalDocRef.id
         });
         
-        alert("Chapter and its auto-translation added successfully!");
+        showNotification("Chapter and its auto-translation added successfully!");
       }
       
       setIsAddingChapter(false);
@@ -312,75 +467,28 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         playlist_id: '',
         notes: '',
         practice_questions: [],
-        quiz_questions: []
+        quiz_questions: [],
+        status: 'draft'
       });
-      fetchContent();
     } catch (err: any) {
       console.error("Add/Edit Chapter Error:", err);
-      alert("Failed to save chapter: " + err.message);
+      showNotification("Failed to save chapter: " + err.message, 'error');
     }
   };
 
   const handleGenerateWithAI = async () => {
     if (!newChapter.title) {
-      alert("Please enter a title first.");
+      showNotification("Please enter a title first.", 'error');
       return;
     }
     setIsGeneratingAI(true);
     try {
-      const apiKey = process.env.GEMINI_API_KEY || (import.meta as any).env?.VITE_GEMINI_API_KEY || (globalThis as any).API_KEY || "";
-      const ai = new GoogleGenAI({ apiKey });
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: `Generate educational content for a chapter titled "${newChapter.title}" for subject "${newChapter.subject}" and class "${newChapter.class}".
-        The language should be "${newChapter.language === 'or' ? 'Odia' : 'English'}".
-        Provide the output in JSON format with the following structure:
-        {
-          "notes": "Detailed educational notes in Markdown format",
-          "practice_questions": [
-            { "question": "Question text", "answer": "Detailed answer/explanation" }
-          ],
-          "quiz_questions": [
-            { "question": "Question text", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "The correct option text", "hint": "A small hint" }
-          ]
-        }`,
-        config: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              notes: { type: Type.STRING },
-              practice_questions: {
-                type: Type.ARRAY,
-                items: {
-                  type: Type.OBJECT,
-                  properties: {
-                    question: { type: Type.STRING },
-                    answer: { type: Type.STRING }
-                  },
-                  required: ["question", "answer"]
-                }
-              },
-              quiz_questions: {
-                type: Type.ARRAY,
-                items: {
-                  type: Type.OBJECT,
-                  properties: {
-                    question: { type: Type.STRING },
-                    options: { type: Type.ARRAY, items: { type: Type.STRING } },
-                    correct_answer: { type: Type.STRING },
-                    hint: { type: Type.STRING }
-                  },
-                  required: ["question", "options", "correct_answer"]
-                }
-              }
-            },
-            required: ["notes", "practice_questions", "quiz_questions"]
-          }
-        }
-      });
-
-      const result = JSON.parse(response.text);
+      const result = await generateChapterContent(
+        newChapter.title,
+        newChapter.subject,
+        newChapter.class,
+        newChapter.language as 'en' | 'or'
+      );
       
       setNewChapter(prev => ({
         ...prev,
@@ -389,12 +497,111 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         quiz_questions: result.quiz_questions
       }));
       
-      alert("AI has generated the content for you! Please review it before saving.");
+      showNotification("AI has generated the content for you! Please review it before saving.");
     } catch (err: any) {
       console.error("AI Generation Error:", err);
-      alert("Failed to generate content with AI: " + err.message);
+      showNotification("Failed to generate content with AI: " + err.message, 'error');
     } finally {
       setIsGeneratingAI(false);
+    }
+  };
+
+  const handleGenerateTestWithAI = async () => {
+    setIsGeneratingTestAI(true);
+    try {
+      const subjectName = isOtherTestSubject ? customTestSubject : (translations['en'].subjects[newTest.subject as keyof typeof translations.en.subjects] || newTest.subject);
+      
+      const result = await generateTestContent(
+        subjectName,
+        newTest.class,
+        newTest.month,
+        newTest.year,
+        newTest.language as 'en' | 'or'
+      );
+      
+      setNewTest(prev => ({
+        ...prev,
+        questions: result.questions
+      }));
+      
+      // Log AI usage
+      await addDoc(collection(firestore, 'ai_usage'), {
+        userId: auth.currentUser?.uid,
+        question: `Monthly Test: ${subjectName} - ${newTest.month} ${newTest.year}`,
+        date: new Date().toISOString(),
+        cost: 0.05
+      });
+      
+      showNotification("AI has generated the test questions for you! Please review them before saving.");
+    } catch (err: any) {
+      console.error("AI Test Generation Error:", err);
+      showNotification("Failed to generate test with AI: " + err.message, 'error');
+    } finally {
+      setIsGeneratingTestAI(false);
+    }
+  };
+
+  const handleImportPlaylist = async () => {
+    if (!playlistUrl) {
+      showNotification("Please enter a YouTube playlist URL.", 'error');
+      return;
+    }
+    setIsImportingPlaylist(true);
+    setImportLog(["Starting import..."]);
+    
+    try {
+      const result = await importPlaylistContent(playlistUrl);
+      const chapters = result.chapters;
+      
+      setImportLog(prev => [...prev, `Found ${chapters.length} chapters. Importing...`]);
+      
+      for (const chapter of chapters) {
+        setImportLog(prev => [...prev, `Importing: ${chapter.title}...`]);
+        
+        // Save the original chapter (Odia)
+        const originalDocRef = await addDoc(collection(firestore, 'chapters'), {
+          board: 'odisha',
+          class: 'class3',
+          language: 'or',
+          subject: 'math',
+          title: chapter.title,
+          playlist_id: chapter.videoId,
+          notes: '',
+          practice_questions: [],
+          quiz_questions: [],
+          createdAt: serverTimestamp()
+        });
+
+        // Auto-translate to English
+        const translatedTitle = await translateContent(chapter.title, 'en');
+
+        await addDoc(collection(firestore, 'chapters'), {
+          board: 'odisha',
+          class: 'class3',
+          language: 'en',
+          subject: 'math',
+          title: translatedTitle || chapter.title,
+          playlist_id: chapter.videoId,
+          notes: '',
+          practice_questions: [],
+          quiz_questions: [],
+          translationGroupId: originalDocRef.id,
+          createdAt: serverTimestamp()
+        });
+        
+        await updateDoc(doc(firestore, 'chapters', originalDocRef.id), {
+          translationGroupId: originalDocRef.id
+        });
+      }
+      
+      setImportLog(prev => [...prev, "Import completed successfully!"]);
+      showNotification(`Successfully imported ${chapters.length} chapters!`);
+    } catch (err: any) {
+      console.error("Playlist Import Error:", err);
+      setImportLog(prev => [...prev, `Error: ${err.message}`]);
+      showNotification("Failed to import playlist: " + err.message, 'error');
+    } finally {
+      setIsImportingPlaylist(false);
     }
   };
 
@@ -406,35 +613,42 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
   };
 
   const handleDeleteAllTests = async () => {
-    if (!confirm(`Are you sure you want to delete ALL ${monthlyTests.length} monthly tests? This cannot be undone.`)) return;
+    if (confirmAction !== 'delete_all_tests') {
+      setConfirmAction('delete_all_tests');
+      return;
+    }
     
     try {
       setLoading(true);
       for (const t of monthlyTests) {
         await deleteDoc(doc(firestore, 'monthly_tests', t.id));
       }
-      fetchMonthlyTests();
-      alert("Monthly tests cleared successfully!");
+      setNotification({ message: "Monthly tests cleared successfully!", type: 'success' });
+      setConfirmAction(null);
     } catch (err) {
       console.error("Delete All Tests Error:", err);
-      alert("Failed to clear tests. Some items may not have been deleted.");
+      setNotification({ message: "Failed to clear tests. Some items may not have been deleted.", type: 'error' });
     } finally {
       setLoading(false);
     }
   };
 
   const handleDeleteAllNotifications = async () => {
-    if (!confirm(`Are you sure you want to delete ALL ${notifications.length} notifications? This cannot be undone.`)) return;
+    if (confirmAction !== 'delete_all_notifications') {
+      setConfirmAction('delete_all_notifications');
+      return;
+    }
     
     try {
       setLoading(true);
       for (const n of notifications) {
         await deleteDoc(doc(firestore, 'notifications', n.id));
       }
-      alert("Notifications cleared successfully!");
+      setNotification({ message: "Notifications cleared successfully!", type: 'success' });
+      setConfirmAction(null);
     } catch (err) {
       console.error("Delete All Notifications Error:", err);
-      alert("Failed to clear notifications.");
+      setNotification({ message: "Failed to clear notifications.", type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -445,9 +659,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
       const matchesSearch = c.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            c.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            c.class.toLowerCase().includes(searchTerm.toLowerCase());
-      // Requirement: Do not show chapters in "all subjects" option
-      const matchesSubject = adminSubjectFilter !== 'all' && c.subject === adminSubjectFilter;
-      return matchesSearch && matchesSubject;
+      
+      const matchesSubject = adminSubjectFilter === 'all' || c.subject === adminSubjectFilter;
+      const matchesClass = adminClassFilter === 'all' || c.class === adminClassFilter;
+      
+      return matchesSearch && matchesSubject && matchesClass;
     });
 
     // Requirement: Only show one entry per logical chapter (addressing the "two chapters" issue)
@@ -463,19 +679,36 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
       }, new Map<string, any>()).values()
     );
 
-    const handleDeleteAll = async () => {
-      if (!confirm(`Are you sure you want to delete ALL ${content.length} chapters in the library? This cannot be undone.`)) return;
+    const handleDeleteFiltered = async () => {
+      const filterDesc = [];
+      if (adminClassFilter !== 'all') filterDesc.push(translations['en'].classes[adminClassFilter as keyof typeof translations.en.classes] || adminClassFilter);
+      if (adminSubjectFilter !== 'all') filterDesc.push(translations['en'].subjects[adminSubjectFilter as keyof typeof translations.en.subjects] || adminSubjectFilter);
+      
+      const confirmMsg = filterDesc.length > 0 
+        ? `delete_filtered_chapters_${adminClassFilter}_${adminSubjectFilter}`
+        : 'delete_all_chapters';
+
+      if (confirmAction !== confirmMsg) {
+        setConfirmAction(confirmMsg);
+        return;
+      }
       
       try {
         setLoading(true);
-        for (const c of content) {
+        let deletedCount = 0;
+        // We delete from filteredContent which respects class, subject and search term
+        for (const c of filteredContent) {
           await deleteDoc(doc(firestore, 'chapters', c.id));
+          deletedCount++;
         }
-        fetchContent();
-        alert("Content library cleared successfully!");
+        setNotification({ 
+          message: `${deletedCount} chapters cleared successfully!`, 
+          type: 'success' 
+        });
+        setConfirmAction(null);
       } catch (err) {
-        console.error("Delete All Error:", err);
-        alert("Failed to clear library. Some items may not have been deleted.");
+        console.error("Delete Filtered Error:", err);
+        setNotification({ message: "Failed to clear chapters. Some items may not have been deleted.", type: 'error' });
       } finally {
         setLoading(false);
       }
@@ -486,6 +719,35 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <h2 className="text-xl font-bold text-white">Content Library</h2>
           <div className="flex flex-wrap gap-4">
+            <div className="flex bg-slate-900 border border-white/10 rounded-xl overflow-hidden">
+              <input 
+                type="text"
+                placeholder="YouTube Playlist URL"
+                value={playlistUrl}
+                onChange={(e) => setPlaylistUrl(e.target.value)}
+                className="bg-transparent px-4 py-2 text-sm text-white focus:outline-none w-48 md:w-64"
+              />
+              <button 
+                onClick={handleImportPlaylist}
+                disabled={isImportingPlaylist || !playlistUrl}
+                className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 text-sm font-bold disabled:opacity-50 transition-all flex items-center gap-2"
+              >
+                {isImportingPlaylist ? <div className="animate-spin h-3 w-3 border-2 border-white border-t-transparent rounded-full" /> : <Rocket size={14} />}
+                Import
+              </button>
+            </div>
+
+            <select
+              value={adminClassFilter}
+              onChange={(e) => setAdminClassFilter(e.target.value)}
+              className="bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none"
+            >
+              <option value="all">All Classes</option>
+              {Object.entries(translations['en'].classes).map(([key, label]) => (
+                <option key={key} value={key}>{label as string}</option>
+              ))}
+            </select>
+
             <select
               value={adminSubjectFilter}
               onChange={(e) => setAdminSubjectFilter(e.target.value)}
@@ -503,13 +765,27 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
             </select>
 
             <div className="flex gap-2">
-              {content.length > 0 && (
+              {filteredContent.length > 0 ? (
                 <button 
-                  onClick={handleDeleteAll}
-                  className="flex items-center gap-2 px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-500 border border-red-500/20 rounded-xl transition-all"
+                  onClick={handleDeleteFiltered}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${
+                    confirmAction?.startsWith('delete_filtered_chapters') || confirmAction === 'delete_all_chapters'
+                    ? 'bg-red-600 text-white font-bold' 
+                    : 'bg-red-600/20 hover:bg-red-600/30 text-red-500 border border-red-500/20'
+                  }`}
                 >
                   <Trash2 size={18} />
-                  Clear All Chapters
+                  {confirmAction?.startsWith('delete_filtered_chapters') || confirmAction === 'delete_all_chapters' 
+                    ? 'Confirm Delete Filtered?' 
+                    : (adminClassFilter === 'all' && adminSubjectFilter === 'all' ? 'Clear All Chapters' : 'Clear Filtered Chapters')}
+                </button>
+              ) : (
+                <button 
+                  onClick={() => setActiveTab('production_setup')}
+                  className="flex items-center gap-2 px-4 py-2 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 rounded-xl transition-all"
+                >
+                  <Sparkles size={18} />
+                  Restore Default Curriculum (AI)
                 </button>
               )}
               <button 
@@ -525,7 +801,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                     playlist_id: '',
                     notes: '',
                     practice_questions: [],
-                    quiz_questions: []
+                    quiz_questions: [],
+                    status: 'draft'
                   });
                   setIsAddingChapter(true);
                 }}
@@ -605,9 +882,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                     }}
                     className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
                   >
-                    {Object.entries(translations['en'].subjects).map(([key, label]) => (
-                      <option key={key} value={key}>{label as string}</option>
-                    ))}
+                    {(() => {
+                      const board = newChapter.board || 'odisha';
+                      const cls = newChapter.class || 'class5';
+                      const subjectsByClass = translations['en'].subjectsByClass?.[board]?.[cls];
+                      
+                      if (subjectsByClass) {
+                        return subjectsByClass.map((key: string) => (
+                          <option key={key} value={key}>{translations['en'].subjects[key] || key}</option>
+                        ));
+                      }
+                      
+                      return Object.entries(translations['en'].subjects).map(([key, label]) => (
+                        <option key={key} value={key}>{label as string}</option>
+                      ));
+                    })()}
                     <option value="other">Other</option>
                   </select>
                   {isOtherSubject && (
@@ -642,13 +931,25 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                   />
                 </div>
                 <div className="md:col-span-3">
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">YouTube Video ID</label>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">YouTube URL / Video ID</label>
                   <input 
                     type="text" 
                     value={newChapter.playlist_id}
-                    onChange={(e) => setNewChapter({...newChapter, playlist_id: e.target.value})}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      // Extract ID if it's a full URL
+                      let id = val;
+                      if (val.includes('youtube.com/watch?v=')) {
+                        id = val.split('v=')[1].split('&')[0];
+                      } else if (val.includes('youtu.be/')) {
+                        id = val.split('youtu.be/')[1].split('?')[0];
+                      } else if (val.includes('youtube.com/embed/')) {
+                        id = val.split('embed/')[1].split('?')[0];
+                      }
+                      setNewChapter({...newChapter, playlist_id: id});
+                    }}
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                    placeholder="e.g. dQw4w9WgXcQ (The 11 characters after v= in the YouTube URL)"
+                    placeholder="Paste YouTube URL or enter Video ID (e.g. dQw4w9WgXcQ)"
                   />
                 </div>
                 <div className="md:col-span-3">
@@ -670,10 +971,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                       type="button"
                       onClick={() => {
                         const predefined = [
-                          { question: "୧. ଏକ ବର୍ଗାକାର କାଗଜର କେତୋଟି କୋଣ ଥାଏ?", answer: "ଏକ ବର୍ଗାକାର କାଗଜର ୪ଟି କୋଣ ଥାଏ।" },
-                          { question: "୨. ତ୍ରିଭୁଜର କେତୋଟି ବାହୁ ଅଛି?", answer: "ତ୍ରିଭୁଜର ୩ଟି ବାହୁ ଅଛି।" },
-                          { question: "୩. ଗୋଟିଏ ଆୟତକାର କାଗଜକୁ ମଝିରୁ କୋଣାକୋଣି ଭାଙ୍ଗିଲେ କେଉଁ ଆକୃତି ମିଳିବ?", answer: "ଗୋଟିଏ ଆୟତକାର କାଗଜକୁ ମଝିରୁ କୋଣାକୋଣି ଭାଙ୍ଗିଲେ ତ୍ରିଭୁଜ ଆକୃତି ମିଳିବ।" },
-                          { question: "୪. ତୁମେ କାଗଜରେ ତିଆରି କରୁଥିବା ଦୁଇଟି ଖେଳନାର ନାମ ଲେଖ।", answer: "କାଗଜରେ ତିଆରି ଦୁଇଟି ଖେଳନା ହେଲା: କାଗଜ ଡଙ୍ଗା ଏବଂ କାଗଜ ବିମାନ।" }
+                          { question: "୧. ଏକ ବର୍ଗାକାର କାଗଜର କେତୋଟି କୋଣ ଥାଏ?", answer: "ଏକ ବର୍ଗାକାର କାଗଜର ୪ଟି କୋଣ ଥାଏ।", ai_answer: "ବର୍ଗାକାର କାଗଜର ଚାରୋଟି ବାହୁ ଓ ଚାରୋଟି କୋଣ ଥାଏ।" },
+                          { question: "୨. ତ୍ରିଭୁଜର କେତୋଟି ବାହୁ ଅଛି?", answer: "ତ୍ରିଭୁଜର ୩ଟି ବାହୁ ଅଛି।", ai_answer: "ତ୍ରିଭୁଜର ତିନୋଟି ବାହୁ ଓ ତିନୋଟି କୋଣ ଥାଏ।" },
+                          { question: "୩. ଗୋଟିଏ ଆୟତକାର କାଗଜକୁ ମଝିରୁ କୋଣାକୋଣି ଭାଙ୍ଗିଲେ କେଉଁ ଆକୃତି ମିଳିବ?", answer: "ଗୋଟିଏ ଆୟତକାର କାଗଜକୁ ମଝିରୁ କୋଣାକୋଣି ଭାଙ୍ଗିଲେ ତ୍ରିଭୁଜ ଆକୃତି ମିଳିବ।", ai_answer: "ଆୟତକାର କାଗଜକୁ କୋଣାକୋଣି ଭାଙ୍ଗିଲେ ଏହା ଦୁଇଟି ତ୍ରିଭୁଜରେ ପରିଣତ ହୁଏ।" },
+                          { question: "୪. ତୁମେ କାଗଜରେ ତିଆରି କରୁଥିବା ଦୁଇଟି ଖେଳନାର ନାମ ଲେଖ।", answer: "କାଗଜରେ ତିଆରି ଦୁଇଟି ଖେଳନା ହେଲା: କାଗଜ ଡଙ୍ଗା ଏବଂ କାଗଜ ବିମାନ।", ai_answer: "କାଗଜ ଭାଙ୍ଗି ଆମେ ଡଙ୍ଗା, ବିମାନ, ଫୁଲ ଆଦି ତିଆରି କରିପାରିବା।" }
                         ];
                         setNewChapter({
                           ...newChapter,
@@ -688,7 +989,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                       type="button"
                       onClick={() => setNewChapter({
                         ...newChapter, 
-                        practice_questions: [...newChapter.practice_questions, { question: '', answer: '' }]
+                        practice_questions: [...newChapter.practice_questions, { question: '', answer: '', ai_answer: '' }]
                       })}
                       className="text-xs text-emerald-500 hover:underline"
                     >
@@ -699,29 +1000,54 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                 <div className="space-y-4">
                   {newChapter.practice_questions.map((pq, idx) => (
                       <div key={idx} className="bg-black/20 p-6 rounded-xl border border-white/5 space-y-4">
-                      <input 
-                        type="text"
-                        placeholder="Practice Question"
-                        value={pq.question}
-                        onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
-                        onChange={(e) => {
-                          const pqs = [...newChapter.practice_questions];
-                          pqs[idx].question = e.target.value;
-                          setNewChapter({...newChapter, practice_questions: pqs});
-                        }}
-                        className="w-full bg-transparent border-b border-white/10 text-white text-base py-2 focus:outline-none focus:border-emerald-500"
-                      />
-                      <textarea 
-                        placeholder="Answer/Explanation"
-                        value={pq.answer}
-                        onKeyDown={(e) => { if (e.key === 'Enter') e.stopPropagation(); }}
-                        onChange={(e) => {
-                          const pqs = [...newChapter.practice_questions];
-                          pqs[idx].answer = e.target.value;
-                          setNewChapter({...newChapter, practice_questions: pqs});
-                        }}
-                        className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white focus:outline-none h-32"
-                      />
+                      <div className="flex justify-between items-center">
+                        <input 
+                          type="text"
+                          placeholder="Practice Question"
+                          value={pq.question}
+                          onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
+                          onChange={(e) => {
+                            const pqs = [...newChapter.practice_questions];
+                            pqs[idx].question = e.target.value;
+                            setNewChapter({...newChapter, practice_questions: pqs});
+                          }}
+                          className="flex-1 bg-transparent border-b border-white/10 text-white text-base py-2 focus:outline-none focus:border-emerald-500"
+                        />
+                        <button 
+                          type="button"
+                          onClick={() => {
+                            const pqs = newChapter.practice_questions.filter((_, i) => i !== idx);
+                            setNewChapter({...newChapter, practice_questions: pqs});
+                          }}
+                          className="text-red-500 hover:text-red-400 ml-2"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <textarea 
+                          placeholder="Manual Answer/Explanation"
+                          value={pq.answer}
+                          onKeyDown={(e) => { if (e.key === 'Enter') e.stopPropagation(); }}
+                          onChange={(e) => {
+                            const pqs = [...newChapter.practice_questions];
+                            pqs[idx].answer = e.target.value;
+                            setNewChapter({...newChapter, practice_questions: pqs});
+                          }}
+                          className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white focus:outline-none h-24"
+                        />
+                        <textarea 
+                          placeholder="AI Answer (Optional)"
+                          value={pq.ai_answer || ''}
+                          onKeyDown={(e) => { if (e.key === 'Enter') e.stopPropagation(); }}
+                          onChange={(e) => {
+                            const pqs = [...newChapter.practice_questions];
+                            pqs[idx].ai_answer = e.target.value;
+                            setNewChapter({...newChapter, practice_questions: pqs});
+                          }}
+                          className="w-full bg-purple-500/5 border border-purple-500/20 rounded-lg px-4 py-3 text-sm text-purple-300 focus:outline-none h-24"
+                        />
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -813,6 +1139,26 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                 </div>
               </div>
 
+              <div className="mb-6">
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Visibility Status</label>
+                <div className="flex gap-4">
+                  {['draft', 'published'].map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => setNewChapter({...newChapter, status: s as 'draft' | 'published'})}
+                      className={`flex-1 py-2 rounded-xl border transition-all capitalize ${
+                        (newChapter.status || 'draft') === s 
+                        ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400' 
+                        : 'bg-slate-900 border-white/10 text-slate-500'
+                      }`}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <div className="flex gap-4">
                 <button 
                   type="submit"
@@ -868,7 +1214,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                           playlist_id: c.playlist_id,
                           notes: c.notes || '',
                           practice_questions: c.practice_questions || [],
-                          quiz_questions: c.quiz_questions || []
+                          quiz_questions: c.quiz_questions || [],
+                          status: c.status || 'draft'
                         });
                         setEditingChapterId(c.id);
                         setIsEditingChapter(true);
@@ -884,6 +1231,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                       onClick={async () => {
                         if (confirmAction === `delete_topic_${c.id}`) {
                           try {
+                            setLoading(true);
                             // Delete both translations if they exist
                             const groupId = c.translationGroupId || c.id;
                             const related = content.filter((item: any) => item.translationGroupId === groupId || item.id === groupId);
@@ -891,16 +1239,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                               await deleteDoc(doc(firestore, 'chapters', item.id));
                             }
                             setConfirmAction(null);
-                            fetchContent();
+                            showNotification("Chapter deleted successfully!");
                           } catch (err) {
                             console.error("Delete Topic Error:", err);
+                            showNotification("Failed to delete chapter.", 'error');
+                          } finally {
+                            setLoading(false);
                           }
                         } else {
                           setConfirmAction(`delete_topic_${c.id}`);
-                          setTimeout(() => setConfirmAction(null), 3000);
+                          setTimeout(() => setConfirmAction(null), 5000);
                         }
                       }}
-                      className={confirmAction === `delete_topic_${c.id}` ? "text-red-500 font-bold text-xs" : "text-slate-500 hover:text-red-500"}
+                      className={confirmAction === `delete_topic_${c.id}` ? "text-red-500 font-bold text-xs bg-red-500/10 px-2 py-1 rounded" : "text-slate-500 hover:text-red-500 p-1"}
                     >
                       {confirmAction === `delete_topic_${c.id}` ? "Confirm?" : <Trash2 size={14} />}
                     </button>
@@ -929,9 +1280,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
           {monthlyTests.length > 0 && (
             <button 
               onClick={handleDeleteAllTests}
-              className="bg-red-600/20 hover:bg-red-600/30 text-red-500 border border-red-500/20 px-4 py-2 rounded-xl flex items-center gap-2 transition-all"
+              className={`px-4 py-2 rounded-xl flex items-center gap-2 transition-all ${
+                confirmAction === 'delete_all_tests'
+                ? 'bg-red-600 text-white font-bold'
+                : 'bg-red-600/20 hover:bg-red-600/30 text-red-500 border border-red-500/20'
+              }`}
             >
-              <Trash2 size={18} /> Clear All Tests
+              <Trash2 size={18} /> {confirmAction === 'delete_all_tests' ? 'Confirm Delete All Tests?' : 'Clear All Tests'}
             </button>
           )}
           <button 
@@ -996,9 +1351,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                 }}
                 className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
               >
-                {Object.entries(translations['en'].subjects).map(([key, label]) => (
-                  <option key={key} value={key}>{label as string}</option>
-                ))}
+                {(() => {
+                  const board = 'odisha'; // Monthly tests currently only for Odisha in this logic
+                  const cls = newTest.class || 'class10';
+                  const subjectsByClass = translations['en'].subjectsByClass?.[board]?.[cls];
+                  
+                  if (subjectsByClass) {
+                    return subjectsByClass.map((key: string) => (
+                      <option key={key} value={key}>{translations['en'].subjects[key] || key}</option>
+                    ));
+                  }
+                  
+                  return Object.entries(translations['en'].subjects).map(([key, label]) => (
+                    <option key={key} value={key}>{label as string}</option>
+                  ));
+                })()}
                 <option value="other">Other</option>
               </select>
               {isOtherTestSubject && (
@@ -1051,16 +1418,27 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h4 className="text-sm font-bold text-white uppercase tracking-wider">Test Questions</h4>
-              <button 
-                type="button"
-                onClick={() => setNewTest({
-                  ...newTest, 
-                  questions: [...newTest.questions, { question: '', options: ['', '', '', ''], correct_answer: '' }]
-                })}
-                className="text-xs text-emerald-500 hover:underline"
-              >
-                + Add Question
-              </button>
+              <div className="flex gap-2">
+                <button 
+                  type="button"
+                  onClick={handleGenerateTestWithAI}
+                  disabled={isGeneratingTestAI}
+                  className="flex items-center gap-1 text-xs text-emerald-500 hover:text-emerald-400 disabled:opacity-50 transition-all"
+                >
+                  {isGeneratingTestAI ? <div className="animate-spin h-3 w-3 border-2 border-emerald-500 border-t-transparent rounded-full" /> : <Sparkles size={14} />}
+                  {isGeneratingTestAI ? 'Generating...' : 'AI Magic: Generate Test'}
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => setNewTest({
+                    ...newTest, 
+                    questions: [...newTest.questions, { question: '', options: ['', '', '', ''], correct_answer: '' }]
+                  })}
+                  className="text-xs text-emerald-500 hover:underline"
+                >
+                  + Add Question
+                </button>
+              </div>
             </div>
             
             <div className="space-y-4">
@@ -1164,13 +1542,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                   const targetLang = newTest.language === 'en' ? 'or' : 'en';
 
                   // Translate questions
-                  const translatedQuestions = newTest.questions.length > 0 ? await fetch('/api/ai/translate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text: JSON.stringify(newTest.questions), targetLanguage: targetLang, isJson: true })
-                  }).then(res => res.json()).then(data => {
-                    try { return JSON.parse(data.text); } catch(e) { return newTest.questions; }
-                  }) : [];
+                  const translatedQuestions = newTest.questions.length > 0 ? await translateContent(newTest.questions, targetLang) : [];
 
                   // Save translated test
                   await addDoc(collection(firestore, 'monthly_tests'), {
@@ -1190,10 +1562,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                   setIsAddingTest(false);
                   setIsOtherTestSubject(false);
                   setCustomTestSubject('');
-                  fetchMonthlyTests();
                 } catch (err) {
                   console.error("Save Test Error:", err);
-                  alert("Failed to save test");
+                  showNotification("Failed to save test", 'error');
                 }
               }}
               className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl py-3 font-semibold transition-all"
@@ -1236,9 +1607,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                   onClick={async () => {
                     try {
                       await updateDoc(doc(firestore, 'monthly_tests', test.id), { status: 'published' });
-                      fetchMonthlyTests();
                     } catch (err) {
-                      alert("Failed to publish test");
+                      showNotification("Failed to publish test", 'error');
                     }
                   }}
                   className="flex-1 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-500 text-xs font-bold py-2 rounded-lg transition-all"
@@ -1278,7 +1648,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                           await updateDoc(doc(firestore, 'monthly_tests', tid), { results_published: true });
                         }
                         setConfirmAction(null);
-                        fetchMonthlyTests();
                       } catch (err) {
                         console.error("Publish Results Error:", err);
                       }
@@ -1296,15 +1665,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                 onClick={async () => {
                   if (confirmAction === `delete_test_${test.id}`) {
                     try {
+                      setLoading(true);
                       await deleteDoc(doc(firestore, 'monthly_tests', test.id));
                       setConfirmAction(null);
-                      fetchMonthlyTests();
+                      showNotification("Monthly test deleted successfully!");
                     } catch (err) {
                       console.error("Delete Test Error:", err);
+                      showNotification("Failed to delete test.", 'error');
+                    } finally {
+                      setLoading(false);
                     }
                   } else {
                     setConfirmAction(`delete_test_${test.id}`);
-                    setTimeout(() => setConfirmAction(null), 3000);
+                    setTimeout(() => setConfirmAction(null), 5000);
                   }
                 }}
                 className={confirmAction === `delete_test_${test.id}` ? "p-2 bg-red-500/20 text-red-500 font-bold text-xs rounded-lg" : "p-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-lg transition-all"}
@@ -1413,9 +1786,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
           {notifications.length > 0 && (
             <button 
               onClick={handleDeleteAllNotifications}
-              className="text-xs text-red-500 hover:text-red-400 font-bold flex items-center gap-1"
+              className={`text-xs font-bold flex items-center gap-1 ${
+                confirmAction === 'delete_all_notifications'
+                ? 'text-red-500 underline'
+                : 'text-red-500 hover:text-red-400'
+              }`}
             >
-              <Trash2 size={14} /> Clear All
+              <Trash2 size={14} /> {confirmAction === 'delete_all_notifications' ? 'Confirm?' : 'Clear All'}
             </button>
           )}
         </div>
@@ -1426,7 +1803,29 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                 <div className="text-sm text-white">{n.message}</div>
                 <div className="text-xs text-slate-500">{n.createdAt}</div>
               </div>
-              <button className="text-slate-500 hover:text-red-500"><Trash2 size={16} /></button>
+              <button 
+                onClick={async () => {
+                  if (confirmAction === `delete_notif_${n.id}`) {
+                    try {
+                      setLoading(true);
+                      await deleteDoc(doc(firestore, 'notifications', n.id));
+                      setConfirmAction(null);
+                      showNotification("Notification deleted successfully!");
+                    } catch (err) {
+                      console.error("Delete Notification Error:", err);
+                      showNotification("Failed to delete notification.", 'error');
+                    } finally {
+                      setLoading(false);
+                    }
+                  } else {
+                    setConfirmAction(`delete_notif_${n.id}`);
+                    setTimeout(() => setConfirmAction(null), 5000);
+                  }
+                }}
+                className={`transition-all ${confirmAction === `delete_notif_${n.id}` ? "text-red-500 font-bold text-xs bg-red-500/10 px-2 py-1 rounded" : "text-slate-500 hover:text-red-500 p-1"}`}
+              >
+                {confirmAction === `delete_notif_${n.id}` ? "Confirm?" : <Trash2 size={16} />}
+              </button>
             </div>
           ))}
         </div>
@@ -1436,17 +1835,222 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
 
   const handleSaveSettings = async () => {
     try {
-      await setDoc(doc(firestore, 'settings', 'system'), systemSettings);
-      await setDoc(doc(firestore, 'settings', 'private'), privateSettings);
-      alert("System settings saved successfully!");
+      const safeSystemSettings = {
+        monthlyPrice: systemSettings.monthlyPrice || 199,
+        yearlyPrice: systemSettings.yearlyPrice || 999,
+        leaderboardRules: systemSettings.leaderboardRules || '',
+        enabledClasses: systemSettings.enabledClasses || ["class3", "class4", "class5", "class6", "class7", "class8", "class9", "class10"]
+      };
+      const safePrivateSettings = {
+        aiApiKey: privateSettings.aiApiKey || ''
+      };
+      await setDoc(doc(firestore, 'system_settings', 'config'), safeSystemSettings, { merge: true });
+      await setDoc(doc(firestore, 'settings', 'private'), safePrivateSettings, { merge: true });
+      showNotification("System settings saved successfully!");
     } catch (err: any) {
       console.error("Save Settings Error:", err);
-      alert("Failed to save settings: " + err.message);
+      showNotification("Failed to save settings: " + err.message, 'error');
     }
   };
 
+  const handleGenerateCurriculum = async () => {
+    setIsGenerating(true);
+    setGenerationLog(prev => [...prev, `Starting AI generation for ${genBoard.toUpperCase()} - ${genClass}...`]);
+    
+    try {
+      const generatedChapters = await generateCurriculum(genBoard, genClass);
+      setGenerationLog(prev => [...prev, `AI generated ${generatedChapters.length} chapters. Saving to database...`]);
+      
+      let savedCount = 0;
+      for (const ch of generatedChapters) {
+        await addDoc(collection(firestore, 'chapters'), {
+          board: genBoard,
+          class: genClass,
+          language: ch.language,
+          subject: ch.subject,
+          title: ch.title,
+          playlist_id: '',
+          notes: ch.notes,
+          quiz_questions: ch.quiz_questions || []
+        });
+        savedCount++;
+        setGenerationLog(prev => [...prev, `Saved: [${ch.subject}] ${ch.title}`]);
+      }
+      
+      setGenerationLog(prev => [...prev, `✅ Successfully saved ${savedCount} chapters to the database!`]);
+      
+    } catch (err: any) {
+      console.error(err);
+      setGenerationLog(prev => [...prev, `❌ Error: ${err.message}`]);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleGenerateAllClasses = async () => {
+    const allClasses = [
+      "play", "nursery", "lkg", "ukg", "class1", "class2", "class3", "class4", 
+      "class5", "class6", "class7", "class8", "class9", "class10"
+    ];
+
+    setIsGenerating(true);
+    setGenerationLog(prev => [...prev, `Starting AI generation for ALL CLASSES in ${genBoard.toUpperCase()}...`]);
+
+    try {
+      for (const currentClass of allClasses) {
+        setGenerationLog(prev => [...prev, `\n--- Generating for ${currentClass.toUpperCase()} ---`]);
+        
+        try {
+          const generatedChapters = await generateCurriculum(genBoard, currentClass);
+          setGenerationLog(prev => [...prev, `AI generated ${generatedChapters.length} chapters for ${currentClass}. Saving...`]);
+          
+          let savedCount = 0;
+          for (const ch of generatedChapters) {
+            await addDoc(collection(firestore, 'chapters'), {
+              board: genBoard,
+              class: currentClass,
+              language: ch.language,
+              subject: ch.subject,
+              title: ch.title,
+              playlist_id: '',
+              notes: ch.notes,
+              quiz_questions: ch.quiz_questions || []
+            });
+            savedCount++;
+          }
+          setGenerationLog(prev => [...prev, `✅ Saved ${savedCount} chapters for ${currentClass}.`]);
+        } catch (classErr: any) {
+          console.error(`Error generating for ${currentClass}:`, classErr);
+          setGenerationLog(prev => [...prev, `❌ Error for ${currentClass}: ${classErr.message}`]);
+        }
+        
+        // Add a small delay between requests to avoid rate limits
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
+      
+      setGenerationLog(prev => [...prev, `\n🎉 Finished generating curriculum for all classes!`]);
+    } catch (err: any) {
+      console.error(err);
+      setGenerationLog(prev => [...prev, `❌ Fatal Error: ${err.message}`]);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const renderProductionSetup = () => (
+    <div className="max-w-4xl space-y-6">
+      <div className="flex items-center gap-4 mb-6">
+        <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+          <Rocket size={24} />
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold text-white">Production Auto-Setup</h2>
+          <p className="text-slate-400">Use AI to instantly populate your database with curriculum data.</p>
+        </div>
+      </div>
+
+      <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-6 md:p-8">
+        <h3 className="text-lg font-bold text-white mb-4">AI Curriculum Generator</h3>
+        <p className="text-sm text-slate-400 mb-6">
+          Select a class and board. The AI will generate standard chapters for Math, Science, English, and Odia, and save them directly to your database.
+        </p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class</label>
+            <select 
+              value={genClass}
+              onChange={(e) => setGenClass(e.target.value)}
+              className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none"
+            >
+              <option value="play">Play School</option>
+              <option value="nursery">Nursery</option>
+              <option value="lkg">LKG</option>
+              <option value="ukg">UKG</option>
+              <option value="class1">Class 1</option>
+              <option value="class2">Class 2</option>
+              <option value="class3">Class 3</option>
+              <option value="class4">Class 4</option>
+              <option value="class5">Class 5</option>
+              <option value="class6">Class 6</option>
+              <option value="class7">Class 7</option>
+              <option value="class8">Class 8</option>
+              <option value="class9">Class 9</option>
+              <option value="class10">Class 10</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Board</label>
+            <select 
+              value={genBoard}
+              onChange={(e) => setGenBoard(e.target.value)}
+              className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none"
+            >
+              <option value="odisha">Odisha State Board</option>
+              <option value="cbse">CBSE</option>
+              <option value="saraswati">Saraswati Shishu Mandir</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-4">
+          <button 
+            onClick={handleGenerateCurriculum}
+            disabled={isGenerating}
+            className="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl py-4 font-bold transition-all flex items-center justify-center gap-2"
+          >
+            {isGenerating ? (
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Generating...
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Sparkles size={20} />
+                Generate Selected Class
+              </div>
+            )}
+          </button>
+          
+          <button 
+            onClick={handleGenerateAllClasses}
+            disabled={isGenerating}
+            className="flex-1 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-xl py-4 font-bold transition-all flex items-center justify-center gap-2"
+          >
+            {isGenerating ? (
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Generating...
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Rocket size={20} />
+                Generate ALL Classes
+              </div>
+            )}
+          </button>
+        </div>
+
+        {generationLog.length > 0 && (
+          <div className="mt-6 bg-black/50 border border-white/5 rounded-xl p-4 font-mono text-xs text-slate-300 h-64 overflow-y-auto space-y-2">
+            {generationLog.map((log, i) => (
+              <div key={i}>{log}</div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
   const renderSettings = () => (
     <div className="max-w-2xl space-y-6">
+      <button 
+        onClick={() => setActiveTab('dashboard')}
+        className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+      >
+        <ArrowLeft size={20} />
+        <span>Back to Dashboard</span>
+      </button>
       <div className="bg-white/5 border border-white/10 p-6 rounded-2xl space-y-6">
         <div>
           <label className="block text-xs font-bold text-slate-500 uppercase mb-2">AI API Key (Private)</label>
@@ -1493,6 +2097,35 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
             onChange={(e) => setSystemSettings({...systemSettings, leaderboardRules: e.target.value})}
           />
         </div>
+        <div>
+          <label className="block text-xs font-bold text-slate-500 uppercase mb-4">Class Management (Enable/Disable)</label>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {Object.entries(translations['en'].classes).map(([key, label]) => {
+              const isEnabled = (systemSettings.enabledClasses || []).includes(key);
+              return (
+                <button
+                  key={key}
+                  onClick={() => {
+                    const current = systemSettings.enabledClasses || [];
+                    const next = isEnabled 
+                      ? current.filter((c: string) => c !== key)
+                      : [...current, key];
+                    setSystemSettings({...systemSettings, enabledClasses: next});
+                  }}
+                  className={`flex items-center justify-between px-4 py-3 rounded-xl border transition-all ${
+                    isEnabled 
+                    ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400' 
+                    : 'bg-slate-900 border-white/10 text-slate-500'
+                  }`}
+                >
+                  <span className="text-sm font-medium">{label as string}</span>
+                  {isEnabled ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
+                </button>
+              );
+            })}
+          </div>
+          <p className="text-[10px] text-slate-500 mt-2 italic">* Disabled classes will be hidden from the student dashboard.</p>
+        </div>
         <button 
           onClick={handleSaveSettings}
           className="w-full bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl py-3 font-semibold transition-all"
@@ -1503,14 +2136,280 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     </div>
   );
 
+  const renderTextbooks = () => (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-bold text-white">Textbooks Management</h2>
+        <button 
+          onClick={() => {
+            setIsAddingTextbook(true);
+            setEditingTextbookId(null);
+            setNewTextbook({
+              class: 'class5',
+              board: 'odisha',
+              subject: 'math',
+              title: '',
+              download_url: '',
+              thumbnail_url: ''
+            });
+          }}
+          className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all"
+        >
+          <Plus size={18} /> Add Textbook
+        </button>
+      </div>
+
+      {isAddingTextbook && (
+        <div className="bg-slate-900/50 border border-white/10 p-6 rounded-2xl space-y-4">
+          <h3 className="text-lg font-semibold text-white">{editingTextbookId ? 'Edit Textbook' : 'Add New Textbook'}</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm text-slate-400 mb-1">Class</label>
+              <select 
+                className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
+                value={newTextbook.class}
+                onChange={(e) => setNewTextbook({...newTextbook, class: e.target.value})}
+              >
+                {Object.entries(translations['en'].classes).map(([key, label]) => (
+                  <option key={key} value={key}>{label as string}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm text-slate-400 mb-1">Board</label>
+              <select 
+                className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
+                value={newTextbook.board}
+                onChange={(e) => setNewTextbook({...newTextbook, board: e.target.value})}
+              >
+                <option value="odisha">Odisha State Board</option>
+                <option value="cbse">CBSE</option>
+                <option value="icse">ICSE</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm text-slate-400 mb-1">Subject</label>
+              <select 
+                className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
+                value={newTextbook.subject}
+                onChange={(e) => setNewTextbook({...newTextbook, subject: e.target.value})}
+              >
+                {(() => {
+                  const board = newTextbook.board || 'odisha';
+                  const cls = newTextbook.class || 'class5';
+                  const subjectsByClass = translations['en'].subjectsByClass?.[board]?.[cls];
+                  
+                  if (subjectsByClass) {
+                    return subjectsByClass.map((key: string) => (
+                      <option key={key} value={key}>{translations['en'].subjects[key] || key}</option>
+                    ));
+                  }
+                  
+                  return Object.entries(translations['en'].subjects).map(([key, label]) => (
+                    <option key={key} value={key}>{label as string}</option>
+                  ));
+                })()}
+              </select>
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm text-slate-400 mb-1">Title</label>
+              <input 
+                type="text"
+                className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
+                placeholder="e.g. Class 10 Math Textbook"
+                value={newTextbook.title}
+                onChange={(e) => setNewTextbook({...newTextbook, title: e.target.value})}
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm text-slate-400 mb-1">Textbook PDF File</label>
+              <div className="flex gap-2">
+                <input 
+                  type="text"
+                  className="flex-1 bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
+                  placeholder="Upload a PDF or enter URL"
+                  value={newTextbook.download_url}
+                  onChange={(e) => setNewTextbook({...newTextbook, download_url: e.target.value})}
+                />
+                <label className="cursor-pointer bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-slate-400 hover:text-white transition-all flex items-center gap-2">
+                  {uploadingFile === 'pdf' ? (
+                    <div className="animate-spin h-4 w-4 border-2 border-emerald-500 border-t-transparent rounded-full" />
+                  ) : (
+                    <Upload size={18} />
+                  )}
+                  <span>Upload</span>
+                  <input 
+                    type="file" 
+                    accept=".pdf" 
+                    className="hidden" 
+                    onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], 'pdf')}
+                  />
+                </label>
+              </div>
+              {uploadingFile === 'pdf' && (
+                <div className="mt-2 h-1 bg-slate-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-emerald-500 transition-all duration-300" style={{ width: `${uploadProgress}%` }} />
+                </div>
+              )}
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm text-slate-400 mb-1">Thumbnail Image</label>
+              <div className="flex gap-2">
+                <input 
+                  type="text"
+                  className="flex-1 bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
+                  placeholder="Upload an image or enter URL"
+                  value={newTextbook.thumbnail_url}
+                  onChange={(e) => setNewTextbook({...newTextbook, thumbnail_url: e.target.value})}
+                />
+                <label className="cursor-pointer bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-slate-400 hover:text-white transition-all flex items-center gap-2">
+                  {uploadingFile === 'thumbnail' ? (
+                    <div className="animate-spin h-4 w-4 border-2 border-emerald-500 border-t-transparent rounded-full" />
+                  ) : (
+                    <Upload size={18} />
+                  )}
+                  <span>Upload</span>
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    className="hidden" 
+                    onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], 'thumbnail')}
+                  />
+                </label>
+              </div>
+              {uploadingFile === 'thumbnail' && (
+                <div className="mt-2 h-1 bg-slate-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-emerald-500 transition-all duration-300" style={{ width: `${uploadProgress}%` }} />
+                </div>
+              )}
+            </div>
+            <div>
+              <label className="block text-sm text-slate-400 mb-1">Visibility Status</label>
+              <select 
+                className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
+                value={newTextbook.status || 'draft'}
+                onChange={(e) => setNewTextbook({...newTextbook, status: e.target.value})}
+              >
+                <option value="draft">Draft (Hidden)</option>
+                <option value="published">Published (Visible)</option>
+              </select>
+            </div>
+          </div>
+          <div className="flex gap-3 justify-end mt-4">
+            <button 
+              onClick={() => setIsAddingTextbook(false)}
+              className="px-4 py-2 text-slate-400 hover:text-white transition-all"
+            >
+              Cancel
+            </button>
+            <button 
+              onClick={async () => {
+                if (!newTextbook.title || !newTextbook.download_url) {
+                  showNotification("Title and Download URL are required", "error");
+                  return;
+                }
+                try {
+                  if (editingTextbookId) {
+                    await updateDoc(doc(firestore, 'textbooks', editingTextbookId), {
+                      ...newTextbook,
+                      updated_at: serverTimestamp()
+                    });
+                    showNotification("Textbook updated successfully");
+                  } else {
+                    await addDoc(collection(firestore, 'textbooks'), {
+                      ...newTextbook,
+                      created_at: serverTimestamp()
+                    });
+                    showNotification("Textbook added successfully");
+                  }
+                  setIsAddingTextbook(false);
+                } catch (err) {
+                  console.error("Error saving textbook:", err);
+                  showNotification("Failed to save textbook", "error");
+                }
+              }}
+              className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-xl font-semibold transition-all"
+            >
+              {editingTextbookId ? 'Update Textbook' : 'Save Textbook'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {textbooks.map((book) => (
+          <div key={book.id} className="bg-slate-900/50 border border-white/10 rounded-2xl overflow-hidden group hover:border-emerald-500/50 transition-all">
+            <div className="aspect-[3/4] bg-slate-800 relative">
+              {book.thumbnail_url ? (
+                <img src={book.thumbnail_url} alt={book.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-slate-600">
+                  <Book size={48} />
+                </div>
+              )}
+              <div className="absolute top-3 right-3 flex gap-2">
+                <button 
+                  onClick={() => {
+                    setEditingTextbookId(book.id);
+                    setNewTextbook({
+                      class: book.class,
+                      board: book.board,
+                      subject: book.subject,
+                      title: book.title,
+                      download_url: book.download_url,
+                      thumbnail_url: book.thumbnail_url || ''
+                    });
+                    setIsAddingTextbook(true);
+                  }}
+                  className="p-2 bg-slate-900/80 text-emerald-400 rounded-lg hover:bg-emerald-500 hover:text-white transition-all"
+                >
+                  <Edit2 size={16} />
+                </button>
+                <button 
+                  onClick={async () => {
+                    if (window.confirm("Are you sure you want to delete this textbook?")) {
+                      try {
+                        await deleteDoc(doc(firestore, 'textbooks', book.id));
+                        showNotification("Textbook deleted");
+                      } catch (err) {
+                        showNotification("Failed to delete", "error");
+                      }
+                    }
+                  }}
+                  className="p-2 bg-slate-900/80 text-red-400 rounded-lg hover:bg-red-500 hover:text-white transition-all"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            </div>
+            <div className="p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20">
+                  {book.class}
+                </span>
+                <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded-full border border-blue-500/20">
+                  {book.board}
+                </span>
+              </div>
+              <h4 className="text-white font-semibold line-clamp-1">{book.title}</h4>
+              <p className="text-slate-500 text-sm capitalize">{book.subject}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'content', label: 'Content Library', icon: BookOpen },
     { id: 'monthly_tests', label: 'Monthly Tests', icon: Calendar },
+    { id: 'textbooks', label: 'Textbooks', icon: Book },
     { id: 'ai_usage', label: 'AI Usage', icon: Brain },
     { id: 'payments', label: 'Payments', icon: CreditCard },
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'settings', label: 'Settings', icon: Settings },
+    { id: 'production_setup', label: 'Production Setup', icon: Rocket },
   ];
 
   return (
@@ -1590,6 +2489,27 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
 
       {/* Main Content */}
       <div className="flex-1 p-6 pt-24 lg:p-10 lg:pt-10 overflow-y-auto">
+        <AnimatePresence>
+          {notification && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className={`fixed top-6 right-6 z-50 px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border ${
+                notification.type === 'success' 
+                ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' 
+                : 'bg-red-500/10 border-red-500/20 text-red-400'
+              }`}
+            >
+              {notification.type === 'success' ? <CheckCircle2 size={20} /> : <XCircle size={20} />}
+              <span className="font-medium">{notification.message}</span>
+              <button onClick={() => setNotification(null)} className="ml-4 hover:opacity-70">
+                <X size={16} />
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <header className="mb-10">
           <h1 className="text-3xl font-bold text-white capitalize">{activeTab.replace('_', ' ')}</h1>
           <p className="text-slate-500">Manage your platform and monitor performance.</p>
@@ -1606,10 +2526,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
             {activeTab === 'dashboard' && renderDashboard()}
             {activeTab === 'content' && renderContent()}
             {activeTab === 'monthly_tests' && renderMonthlyTests()}
+            {activeTab === 'textbooks' && renderTextbooks()}
             {activeTab === 'ai_usage' && renderAiUsage()}
             {activeTab === 'payments' && renderPayments()}
             {activeTab === 'notifications' && renderNotifications()}
             {activeTab === 'settings' && renderSettings()}
+            {activeTab === 'production_setup' && renderProductionSetup()}
           </motion.div>
         </AnimatePresence>
       </div>

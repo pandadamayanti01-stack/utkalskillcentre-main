@@ -3,7 +3,7 @@ import { Brain, Sparkles, Loader2 } from 'lucide-react';
 import { solveMathDoubt } from '../services/aiService';
 
 interface PracticeQuestionProps {
-  question: { question: string; answer: string };
+  question: { question: string; answer: string; ai_answer?: string };
   isPremium: boolean;
   language: 'en' | 'or';
   onUpgrade?: () => void;
@@ -11,19 +11,26 @@ interface PracticeQuestionProps {
 
 export const PracticeQuestion: React.FC<PracticeQuestionProps> = ({ question, isPremium, language, onUpgrade }) => {
   const [showAnswer, setShowAnswer] = useState(false);
-  const [aiAnswer, setAiAnswer] = useState('');
+  const [aiAnswer, setAiAnswer] = useState(question.ai_answer || '');
   const [loadingAi, setLoadingAi] = useState(false);
 
   const handleAskAi = async () => {
+    if (aiAnswer) return; // Already have an answer
+    
     if (!isPremium) {
       alert("Please take a subscription to access the AI Answer feature.");
       if (onUpgrade) onUpgrade();
       return;
     }
     setLoadingAi(true);
-    const answer = await solveMathDoubt(question.question, language);
-    setAiAnswer(answer);
-    setLoadingAi(false);
+    try {
+      const answer = await solveMathDoubt(question.question, language);
+      setAiAnswer(answer);
+    } catch (err) {
+      console.error("AI Answer Error:", err);
+    } finally {
+      setLoadingAi(false);
+    }
   };
 
   return (
@@ -34,9 +41,17 @@ export const PracticeQuestion: React.FC<PracticeQuestionProps> = ({ question, is
         <button onClick={() => setShowAnswer(!showAnswer)} className="text-xs bg-emerald-600 text-white px-3 py-1.5 rounded-lg hover:bg-emerald-500 transition-all">
           {showAnswer ? "Hide Answer" : "View Answer"}
         </button>
-        <button onClick={handleAskAi} className="text-xs bg-purple-600 text-white px-3 py-1.5 rounded-lg flex items-center gap-1 hover:bg-purple-500 transition-all">
+        <button 
+          onClick={handleAskAi} 
+          disabled={!!aiAnswer && !loadingAi}
+          className={`text-xs px-3 py-1.5 rounded-lg flex items-center gap-1 transition-all ${
+            aiAnswer 
+              ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30 cursor-default' 
+              : 'bg-purple-600 text-white hover:bg-purple-500'
+          }`}
+        >
           {loadingAi ? <Loader2 className="animate-spin" size={12} /> : <Sparkles size={12} />}
-          Ask AI
+          {aiAnswer ? "AI Answer Ready" : "Ask AI"}
         </button>
       </div>
 

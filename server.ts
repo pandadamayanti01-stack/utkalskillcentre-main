@@ -3,21 +3,8 @@ import path from 'path';
 import 'dotenv/config';
 import { createServer as createViteServer } from 'vite';
 import Razorpay from 'razorpay';
-import { GoogleGenAI } from "@google/genai";
 
 let razorpay: Razorpay | null = null;
-let ai: GoogleGenAI | null = null;
-
-function getAI() {
-  if (!ai) {
-    const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || process.env.API_KEY;
-    if (!apiKey) {
-      throw new Error('GEMINI_API_KEY is missing in environment variables.');
-    }
-    ai = new GoogleGenAI({ apiKey });
-  }
-  return ai;
-}
 
 function getRazorpay() {
   if (!razorpay) {
@@ -91,61 +78,6 @@ async function startServer() {
     } catch (error: any) {
       console.error('Verify Payment Error:', error);
       res.status(500).json({ success: false, message: error.message || 'Verification failed' });
-    }
-  });
-
-  app.post('/api/ai/solve', async (req, res) => {
-    try {
-      const { prompt, language } = req.body;
-      const genAI = getAI();
-      
-      const systemInstruction = language === 'en' 
-        ? "You are a friendly Math Tutor for Odisha Board students (Class 5-10). Provide step-by-step simple explanations in English."
-        : "You are a friendly Math Tutor for Odisha Board students (Class 5-10). Provide step-by-step simple explanations in Odia language. Use Odia script for the explanation but you can use numbers and mathematical symbols as they are.";
-
-      const response = await genAI.models.generateContent({
-        model: "gemini-3.1-pro-preview",
-        contents: prompt,
-        config: {
-          systemInstruction,
-          temperature: 0.7,
-        },
-      });
-
-      res.json({ text: response.text || "Sorry, I couldn't solve that. Please try again." });
-    } catch (error: any) {
-      console.error('AI Proxy Error:', error);
-      res.status(500).json({ error: error.message || 'Error connecting to AI tutor' });
-    }
-  });
-
-  app.post('/api/ai/translate', async (req, res) => {
-    try {
-      const { text, targetLanguage, isJson } = req.body;
-      const genAI = getAI();
-      
-      let systemInstruction = targetLanguage === 'or' 
-        ? "You are an expert translator. Translate the following educational content from English to Odia. Keep mathematical terms, numbers, and formatting intact."
-        : "You are an expert translator. Translate the following educational content from Odia to English. Keep mathematical terms, numbers, and formatting intact.";
-
-      if (isJson) {
-        systemInstruction += " The input is a JSON object. Translate all string values within the JSON object to the target language, but keep the keys exactly the same. Return ONLY the translated JSON object. Do not include any markdown formatting like ```json.";
-      }
-
-      const response = await genAI.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: text,
-        config: {
-          systemInstruction,
-          temperature: 0.1,
-          ...(isJson ? { responseMimeType: "application/json" } : {})
-        },
-      });
-
-      res.json({ text: response.text || text });
-    } catch (error: any) {
-      console.error('Translation Error:', error);
-      res.status(500).json({ error: error.message || 'Error translating content' });
     }
   });
 
