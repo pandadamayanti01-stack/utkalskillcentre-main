@@ -1443,9 +1443,7 @@ export default function App() {
     console.warn("isAdminView is true but user role is not admin:", user?.role);
   }
 
-  const isClassEnabled = !systemSettings.enabledClasses || 
-                         systemSettings.enabledClasses.length === 0 || 
-                         systemSettings.enabledClasses.includes(user?.class);
+  const isClassEnabled = true; // Restriction removed
 
   if (user && user.role !== 'admin' && !isClassEnabled) {
     return (
@@ -1573,18 +1571,25 @@ export default function App() {
 
         {/* Scrollable Area */}
         <div className="flex-1 overflow-y-auto p-8">
-          <AnimatePresence mode="wait">
-            {activeTab === 'dashboard' && <DashboardView user={user} leaderboard={leaderboard} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} chapters={chapters} />}
-            {activeTab === 'courses' && <CoursesView user={user} chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
-            {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
-            {activeTab === 'monthly_tests' && <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} onBack={() => setActiveTab('dashboard')} />}
-            {activeTab === 'ai' && (
-              isPremium ? <AiSolverView language={language} onBack={() => setActiveTab('dashboard')} /> : <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
-            )}
-            {activeTab === 'profile' && <ProfileView user={user} language={language} onBack={() => setActiveTab('dashboard')} onParentAccess={() => setActiveTab('parent_dashboard')} />}
-            {activeTab === 'parent_dashboard' && <ParentDashboard user={user} chapters={chapters} leaderboard={leaderboard} language={language} onBack={() => setActiveTab('profile')} />}
-            {activeTab === 'plans' && <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />}
-          </AnimatePresence>
+          {user.role !== 'admin' && user.board !== 'odisha' ? (
+            <div className="flex flex-col items-center justify-center h-full text-white space-y-4">
+              <h1 className="text-4xl font-bold">Coming Soon!!</h1>
+              <p className="text-slate-400">We are currently focusing on Odia medium.</p>
+            </div>
+          ) : (
+            <AnimatePresence mode="wait">
+              {activeTab === 'dashboard' && <DashboardView user={user} leaderboard={leaderboard} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} chapters={chapters} />}
+              {activeTab === 'courses' && <CoursesView user={user} chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
+              {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
+              {activeTab === 'monthly_tests' && <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} onBack={() => setActiveTab('dashboard')} />}
+              {activeTab === 'ai' && (
+                isPremium ? <AiSolverView language={language} onBack={() => setActiveTab('dashboard')} /> : <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
+              )}
+              {activeTab === 'profile' && <ProfileView user={user} language={language} onBack={() => setActiveTab('dashboard')} onParentAccess={() => setActiveTab('parent_dashboard')} />}
+              {activeTab === 'parent_dashboard' && <ParentDashboard user={user} chapters={chapters} leaderboard={leaderboard} language={language} onBack={() => setActiveTab('profile')} />}
+              {activeTab === 'plans' && <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />}
+            </AnimatePresence>
+          )}
         </div>
       </main>
     </div>
@@ -3010,13 +3015,15 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
     const b = user.board.toLowerCase();
     if (b.includes('saraswati')) return 'saraswati';
     if (b.includes('cbse')) return 'cbse';
+    if (b.includes('icse')) return 'icse';
+    if (b.includes('odia')) return 'odisha';
     return 'odisha';
   }, [user?.board]);
 
   const filteredTextbooks = React.useMemo(() => {
     return textbooks.filter((book: Textbook) => {
-      const matchesClass = !user?.class || book.class === user.class;
-      const matchesBoard = !user?.board || book.board === boardKey;
+      const matchesClass = !user?.class || book.class.toLowerCase() === user.class.toLowerCase();
+      const matchesBoard = !user?.board || book.board.toLowerCase() === boardKey.toLowerCase();
       const matchesSubject = subjectFilter === 'all' || book.subject === subjectFilter;
       return matchesClass && matchesBoard && matchesSubject;
     });

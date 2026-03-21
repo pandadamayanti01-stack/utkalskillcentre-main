@@ -15,10 +15,6 @@ export const translations: any = {
     email: "Email Address",
     selectClass: "Select Your Class",
     classes: {
-      play: "Play School",
-      nursery: "Nursery",
-      lkg: "LKG (Lower Kindergarten)",
-      ukg: "UKG (Upper Kindergarten)",
       class1: "Class 1",
       class2: "Class 2",
       class3: "Class 3",
@@ -28,9 +24,7 @@ export const translations: any = {
       class7: "Class 7",
       class8: "Class 8",
       class9: "Class 9",
-      class10: "Class 10",
-      class11: "Class 11",
-      class12: "Class 12"
+      class10: "Class 10"
     },
     selectBoard: "Select Your Board",
     selectLanguage: "Preferred Language",
@@ -267,10 +261,6 @@ export const translations: any = {
     email: "ଇମେଲ୍ ଠିକଣା",
     selectClass: "ଆପଣଙ୍କ ଶ୍ରେଣୀ ଚୟନ କରନ୍ତୁ",
     classes: {
-      play: "ପ୍ଲେ ସ୍କୁଲ୍",
-      nursery: "ନର୍ସରୀ",
-      lkg: "LKG (ଲୋୟର କିଣ୍ଡରଗାର୍ଟେନ୍)",
-      ukg: "UKG (ଅପର କିଣ୍ଡରଗାର୍ଟେନ୍)",
       class1: "ପ୍ରଥମ ଶ୍ରେଣୀ",
       class2: "ଦ୍ୱିତୀୟ ଶ୍ରେଣୀ",
       class3: "ତୃତୀୟ ଶ୍ରେଣୀ",
@@ -280,9 +270,7 @@ export const translations: any = {
       class7: "ସପ୍ତମ ଶ୍ରେଣୀ",
       class8: "ଅଷ୍ଟମ ଶ୍ରେଣୀ",
       class9: "ନବମ ଶ୍ରେଣୀ",
-      class10: "ଦଶମ ଶ୍ରେଣୀ",
-      class11: "ଏକାଦଶ ଶ୍ରେଣୀ",
-      class12: "ଦ୍ୱାଦଶ ଶ୍ରେଣୀ"
+      class10: "ଦଶମ ଶ୍ରେଣୀ"
     },
     selectBoard: "ଆପଣଙ୍କ ବୋର୍ଡ ଚୟନ କରନ୍ତୁ",
     selectLanguage: "ପସନ୍ଦିତ ଭାଷା",

@@ -27,7 +27,8 @@ import {
   Book,
   Edit,
   Upload,
-  File
+  File,
+  Download
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { db as firestore, auth, storage } from '../firebase';
@@ -864,8 +865,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                     <option value="class8">Class 8</option>
                     <option value="class9">Class 9</option>
                     <option value="class10">Class 10</option>
-                    <option value="class11">Class 11</option>
-                    <option value="class12">Class 12</option>
                   </select>
                 </div>
                 <div>
@@ -1333,8 +1332,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                 <option value="class8">Class 8</option>
                 <option value="class9">Class 9</option>
                 <option value="class10">Class 10</option>
-                <option value="class11">Class 11</option>
-                <option value="class12">Class 12</option>
               </select>
             </div>
             <div>
@@ -1839,7 +1836,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         monthlyPrice: systemSettings.monthlyPrice || 199,
         yearlyPrice: systemSettings.yearlyPrice || 999,
         leaderboardRules: systemSettings.leaderboardRules || '',
-        enabledClasses: systemSettings.enabledClasses || ["class3", "class4", "class5", "class6", "class7", "class8", "class9", "class10"]
+        enabledClasses: systemSettings.enabledClasses || ["class1", "class2", "class3", "class4", "class5", "class6", "class7", "class8", "class9", "class10"]
       };
       const safePrivateSettings = {
         aiApiKey: privateSettings.aiApiKey || ''
@@ -2147,10 +2144,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
             setNewTextbook({
               class: 'class5',
               board: 'odisha',
-              subject: 'math',
-              title: '',
-              download_url: '',
-              thumbnail_url: ''
+              download_url: ''
             });
           }}
           className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all"
@@ -2163,6 +2157,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         <div className="bg-slate-900/50 border border-white/10 p-6 rounded-2xl space-y-4">
           <h3 className="text-lg font-semibold text-white">{editingTextbookId ? 'Edit Textbook' : 'Add New Textbook'}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm text-slate-400 mb-1">Title</label>
+              <input 
+                type="text"
+                className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
+                placeholder="Enter textbook title"
+                value={newTextbook.title}
+                onChange={(e) => setNewTextbook({...newTextbook, title: e.target.value})}
+              />
+            </div>
             <div>
               <label className="block text-sm text-slate-400 mb-1">Class</label>
               <select 
@@ -2185,103 +2189,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                 <option value="odisha">Odisha State Board</option>
                 <option value="cbse">CBSE</option>
                 <option value="icse">ICSE</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm text-slate-400 mb-1">Subject</label>
-              <select 
-                className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
-                value={newTextbook.subject}
-                onChange={(e) => setNewTextbook({...newTextbook, subject: e.target.value})}
-              >
-                {(() => {
-                  const board = newTextbook.board || 'odisha';
-                  const cls = newTextbook.class || 'class5';
-                  const subjectsByClass = translations['en'].subjectsByClass?.[board]?.[cls];
-                  
-                  if (subjectsByClass) {
-                    return subjectsByClass.map((key: string) => (
-                      <option key={key} value={key}>{translations['en'].subjects[key] || key}</option>
-                    ));
-                  }
-                  
-                  return Object.entries(translations['en'].subjects).map(([key, label]) => (
-                    <option key={key} value={key}>{label as string}</option>
-                  ));
-                })()}
+                <option value="saraswati">Saraswati</option>
               </select>
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm text-slate-400 mb-1">Title</label>
+              <label className="block text-sm text-slate-400 mb-1">Google Drive URL</label>
               <input 
                 type="text"
                 className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
-                placeholder="e.g. Class 10 Math Textbook"
-                value={newTextbook.title}
-                onChange={(e) => setNewTextbook({...newTextbook, title: e.target.value})}
+                placeholder="Paste Google Drive download URL here"
+                value={newTextbook.download_url}
+                onChange={(e) => setNewTextbook({...newTextbook, download_url: e.target.value})}
               />
-            </div>
-            <div className="md:col-span-2">
-              <label className="block text-sm text-slate-400 mb-1">Textbook PDF File</label>
-              <div className="flex gap-2">
-                <input 
-                  type="text"
-                  className="flex-1 bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
-                  placeholder="Upload a PDF or enter URL"
-                  value={newTextbook.download_url}
-                  onChange={(e) => setNewTextbook({...newTextbook, download_url: e.target.value})}
-                />
-                <label className="cursor-pointer bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-slate-400 hover:text-white transition-all flex items-center gap-2">
-                  {uploadingFile === 'pdf' ? (
-                    <div className="animate-spin h-4 w-4 border-2 border-emerald-500 border-t-transparent rounded-full" />
-                  ) : (
-                    <Upload size={18} />
-                  )}
-                  <span>Upload</span>
-                  <input 
-                    type="file" 
-                    accept=".pdf" 
-                    className="hidden" 
-                    onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], 'pdf')}
-                  />
-                </label>
-              </div>
-              {uploadingFile === 'pdf' && (
-                <div className="mt-2 h-1 bg-slate-800 rounded-full overflow-hidden">
-                  <div className="h-full bg-emerald-500 transition-all duration-300" style={{ width: `${uploadProgress}%` }} />
-                </div>
-              )}
-            </div>
-            <div className="md:col-span-2">
-              <label className="block text-sm text-slate-400 mb-1">Thumbnail Image</label>
-              <div className="flex gap-2">
-                <input 
-                  type="text"
-                  className="flex-1 bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
-                  placeholder="Upload an image or enter URL"
-                  value={newTextbook.thumbnail_url}
-                  onChange={(e) => setNewTextbook({...newTextbook, thumbnail_url: e.target.value})}
-                />
-                <label className="cursor-pointer bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-slate-400 hover:text-white transition-all flex items-center gap-2">
-                  {uploadingFile === 'thumbnail' ? (
-                    <div className="animate-spin h-4 w-4 border-2 border-emerald-500 border-t-transparent rounded-full" />
-                  ) : (
-                    <Upload size={18} />
-                  )}
-                  <span>Upload</span>
-                  <input 
-                    type="file" 
-                    accept="image/*" 
-                    className="hidden" 
-                    onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], 'thumbnail')}
-                  />
-                </label>
-              </div>
-              {uploadingFile === 'thumbnail' && (
-                <div className="mt-2 h-1 bg-slate-800 rounded-full overflow-hidden">
-                  <div className="h-full bg-emerald-500 transition-all duration-300" style={{ width: `${uploadProgress}%` }} />
-                </div>
-              )}
             </div>
             <div>
               <label className="block text-sm text-slate-400 mb-1">Visibility Status</label>
@@ -2304,10 +2223,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
             </button>
             <button 
               onClick={async () => {
-                if (!newTextbook.title || !newTextbook.download_url) {
-                  showNotification("Title and Download URL are required", "error");
-                  return;
-                }
                 try {
                   if (editingTextbookId) {
                     await updateDoc(doc(firestore, 'textbooks', editingTextbookId), {
@@ -2339,14 +2254,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {textbooks.map((book) => (
           <div key={book.id} className="bg-slate-900/50 border border-white/10 rounded-2xl overflow-hidden group hover:border-emerald-500/50 transition-all">
-            <div className="aspect-[3/4] bg-slate-800 relative">
-              {book.thumbnail_url ? (
-                <img src={book.thumbnail_url} alt={book.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-slate-600">
-                  <Book size={48} />
-                </div>
-              )}
+            <div className="aspect-[3/4] bg-slate-800 relative flex items-center justify-center">
+              <Book size={48} className="text-slate-600" />
               <div className="absolute top-3 right-3 flex gap-2">
                 <button 
                   onClick={() => {
@@ -2356,8 +2265,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                       board: book.board,
                       subject: book.subject,
                       title: book.title,
-                      download_url: book.download_url,
-                      thumbnail_url: book.thumbnail_url || ''
+                      download_url: book.download_url
                     });
                     setIsAddingTextbook(true);
                   }}
@@ -2367,18 +2275,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                 </button>
                 <button 
                   onClick={async () => {
-                    if (window.confirm("Are you sure you want to delete this textbook?")) {
+                    if (confirmAction === `delete-textbook-${book.id}`) {
                       try {
                         await deleteDoc(doc(firestore, 'textbooks', book.id));
                         showNotification("Textbook deleted");
+                        setConfirmAction(null);
                       } catch (err) {
+                        console.error("Error deleting textbook:", err);
                         showNotification("Failed to delete", "error");
+                        setConfirmAction(null);
                       }
+                    } else {
+                      setConfirmAction(`delete-textbook-${book.id}`);
                     }
                   }}
-                  className="p-2 bg-slate-900/80 text-red-400 rounded-lg hover:bg-red-500 hover:text-white transition-all"
+                  className={`p-2 rounded-lg transition-all z-10 ${confirmAction === `delete-textbook-${book.id}` ? "bg-red-500/20 text-red-500 font-bold text-xs" : "bg-slate-900/80 text-red-400 hover:bg-red-500 hover:text-white"}`}
                 >
-                  <Trash2 size={16} />
+                  {confirmAction === `delete-textbook-${book.id}` ? "Confirm?" : <Trash2 size={16} className="pointer-events-none" />}
                 </button>
               </div>
             </div>
@@ -2391,8 +2304,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                   {book.board}
                 </span>
               </div>
-              <h4 className="text-white font-semibold line-clamp-1">{book.title}</h4>
-              <p className="text-slate-500 text-sm capitalize">{book.subject}</p>
+              <a 
+                href={book.download_url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-all text-sm"
+              >
+                <Download size={14} />
+                Download
+              </a>
             </div>
           </div>
         ))}
@@ -2437,7 +2357,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
 
       {/* Sidebar */}
       <div className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-slate-900/95 backdrop-blur-2xl border-r border-white/10 p-6 flex flex-col transform transition-transform duration-300 ease-in-out
+        fixed inset-y-0 left-0 z-50 w-64 bg-slate-900/95 backdrop-blur-2xl border-r border-white/10 p-6 flex flex-col transform transition-transform duration-300 ease-in-out overflow-y-auto
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0 lg:static lg:bg-slate-900/50
       `}>

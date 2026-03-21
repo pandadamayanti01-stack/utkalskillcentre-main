@@ -1,0 +1,84 @@
+{
+  "entities": {
+    "Chapter": {
+      "title": "Chapter",
+      "description": "A chapter in a subject.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "subject": { "type": "string" },
+        "class": { "type": "string" },
+        "status": { "type": "string", "enum": ["draft", "published"] }
+      },
+      "required": ["title", "subject", "class", "status"]
+    },
+    "Textbook": {
+      "title": "Textbook",
+      "description": "A textbook for a subject.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "subject": { "type": "string" },
+        "class": { "type": "string" },
+        "board": { "type": "string" },
+        "download_url": { "type": "string" },
+        "status": { "type": "string", "enum": ["draft", "published"] }
+      },
+      "required": ["title", "subject", "class", "board", "download_url", "status"]
+    },
+    "User": {
+      "title": "User",
+      "description": "A user of the application.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string", "enum": ["student", "admin"] },
+        "class": { "type": "string" },
+        "board": { "type": "string" }
+      },
+      "required": ["name", "email", "role"]
+    },
+    "MonthlyTest": {
+      "title": "MonthlyTest",
+      "description": "A monthly test.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "status": { "type": "string", "enum": ["draft", "published"] }
+      },
+      "required": ["title", "status"]
+    },
+    "SystemSettings": {
+      "title": "SystemSettings",
+      "description": "System configuration settings.",
+      "type": "object",
+      "properties": {
+        "config": { "type": "object" }
+      },
+      "required": ["config"]
+    }
+  },
+  "firestore": {
+    "/chapters/{chapterId}": {
+      "schema": { "$ref": "Chapter" },
+      "description": "Chapters collection."
+    },
+    "/textbooks/{textbookId}": {
+      "schema": { "$ref": "Textbook" },
+      "description": "Textbooks collection."
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "User" },
+      "description": "Users collection."
+    },
+    "/monthly_tests/{testId}": {
+      "schema": { "$ref": "MonthlyTest" },
+      "description": "Monthly tests collection."
+    },
+    "/system_settings/{configId}": {
+      "schema": { "$ref": "SystemSettings" },
+      "description": "System settings collection."
+    }
+  }
+}

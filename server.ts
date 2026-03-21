@@ -3,6 +3,34 @@ import path from 'path';
 import 'dotenv/config';
 import { createServer as createViteServer } from 'vite';
 import Razorpay from 'razorpay';
+import multer from 'multer';
+import * as admin from 'firebase-admin';
+import fs from 'fs';
+
+// Initialize Firebase Admin
+if (admin.apps && !admin.apps.length) {
+  try {
+    const configPath = path.join(process.cwd(), 'firebase-applet-config.json');
+    if (fs.existsSync(configPath)) {
+      const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      admin.initializeApp({
+        credential: admin.credential.applicationDefault(),
+        projectId: config.projectId,
+        storageBucket: config.storageBucket
+      });
+      console.log("Firebase Admin initialized successfully with project:", config.projectId);
+    } else {
+      console.warn("firebase-applet-config.json not found. Firebase Admin not initialized.");
+    }
+  } catch (err) {
+    console.error("Error initializing Firebase Admin:", err);
+  }
+}
+
+const upload = multer({ 
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 100 * 1024 * 1024 } // 100MB limit
+});
 
 let razorpay: Razorpay | null = null;
 
@@ -28,6 +56,34 @@ async function startServer() {
   app.use(express.json());
 
   // API Routes
+  app.post('/api/upload-textbook', upload.single('file'), async (req: any, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+      }
+
+      const { type } = req.body;
+      const bucket = admin.storage().bucket();
+      const fileName = `textbooks/${Date.now()}_${req.file.originalname}`;
+      const file = bucket.file(fileName);
+
+      await file.save(req.file.buffer, {
+        metadata: {
+          contentType: req.file.mimetype,
+        },
+        public: true,
+      });
+
+      // Get public URL
+      const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+      
+      res.json({ url: publicUrl });
+    } catch (error: any) {
+      console.error('Upload Error:', error);
+      res.status(500).json({ error: error.message || 'Upload failed' });
+    }
+  });
+
   app.post('/api/payment/create-order', async (req, res) => {
     try {
       const { amount, userId } = req.body;

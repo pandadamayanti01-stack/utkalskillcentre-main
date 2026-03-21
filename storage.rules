@@ -7,15 +7,15 @@ service firebase.storage {
     
     function isAdmin() {
       return isAuthenticated() && (
-        (request.auth.token.email == "pandadamayanti01@gmail.com") ||
-        (request.auth.token.phone_number == "+919337956168") ||
-        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin'
+        request.auth.token.email == "pandadamayanti01@gmail.com" ||
+        request.auth.token.phone_number == "+919337956168" ||
+        firestore.get(/databases/ai-studio-2a24dfcb-5874-4b37-8e37-434f425283b9/documents/users/$(request.auth.uid)).data.role == 'admin'
       );
     }
 
     match /textbooks/{allPaths=**} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isAdmin() && request.resource.size < 100 * 1024 * 1024;
     }
   }
 }
