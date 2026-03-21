@@ -5,16 +5,26 @@ const getAI = () => {
   return new GoogleGenAI({ apiKey });
 };
 
-export async function solveMathDoubt(prompt: string, language: 'en' | 'or') {
+export async function solveMathDoubt(prompt: string, language: 'en' | 'or', imageData?: { data: string, mimeType: string }) {
   try {
     const ai = getAI();
     const systemInstruction = language === 'en' 
       ? "You are a friendly Math Tutor for Odisha Board students (Class 5-10). Provide step-by-step simple explanations in English."
       : "You are a friendly Math Tutor for Odisha Board students (Class 5-10). Provide step-by-step simple explanations in Odia language. Use Odia script for the explanation but you can use numbers and mathematical symbols as they are.";
 
+    const parts: any[] = [{ text: prompt }];
+    if (imageData) {
+      parts.push({
+        inlineData: {
+          data: imageData.data,
+          mimeType: imageData.mimeType
+        }
+      });
+    }
+
     const response = await ai.models.generateContent({
       model: "gemini-3.1-pro-preview",
-      contents: prompt,
+      contents: { parts },
       config: {
         systemInstruction,
         temperature: 0.7,

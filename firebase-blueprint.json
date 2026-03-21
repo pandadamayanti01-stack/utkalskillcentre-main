@@ -169,6 +169,44 @@
         },
         "maintenanceMode": { "type": "boolean" }
       }
+    },
+    "DailyChallenge": {
+      "title": "Daily Micro-Challenge",
+      "description": "Stores the question of the day.",
+      "type": "object",
+      "properties": {
+        "date": { "type": "string", "format": "date" },
+        "question": { "type": "string" },
+        "options": { "type": "array", "items": { "type": "string" } },
+        "correct_answer": { "type": "string" },
+        "points": { "type": "integer" },
+        "language": { "type": "string" }
+      },
+      "required": ["date", "question", "options", "correct_answer", "points"]
+    },
+    "UserProgress": {
+      "title": "User Progress Snapshot",
+      "description": "Stores daily learning metrics for charts.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "pointsEarned": { "type": "integer" },
+        "accuracy": { "type": "number" },
+        "chaptersCompleted": { "type": "integer" }
+      },
+      "required": ["userId", "date", "pointsEarned"]
+    },
+    "Friendship": {
+      "title": "User Friendship",
+      "description": "Stores following relationships between students.",
+      "type": "object",
+      "properties": {
+        "followerId": { "type": "string" },
+        "followingId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["followerId", "followingId"]
     }
   },
   "firestore": {
@@ -211,6 +249,18 @@
     "/system_settings/config": {
       "schema": "SystemSettings",
       "description": "Global configuration."
+    },
+    "/daily_challenges/{challengeId}": {
+      "schema": "DailyChallenge",
+      "description": "Daily micro-challenges."
+    },
+    "/user_progress/{progressId}": {
+      "schema": "UserProgress",
+      "description": "Daily progress snapshots for analytics."
+    },
+    "/friendships/{friendshipId}": {
+      "schema": "Friendship",
+      "description": "Student following relationships."
     }
   }
 }

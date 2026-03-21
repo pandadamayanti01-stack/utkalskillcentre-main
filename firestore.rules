@@ -56,6 +56,9 @@ service cloud.firestore {
     //   - role: string (required, enum: ['student', 'admin'])
     //   - class: string (optional, < 20 chars)
     //   - board: string (optional, < 20 chars)
+    //   - avatar: string (optional)
+    //   - streak: number (optional)
+    //   - lastActiveDate: string (optional)
     //   - stats: map (optional)
     //   - completed_chapters: list (optional)
     //
@@ -77,7 +80,8 @@ service cloud.firestore {
 
     function isAdmin() {
       return isAuthenticated() &&
-        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
           (request.auth.token.email == "pandadamayanti01@gmail.com" && request.auth.token.email_verified == true) ||
           request.auth.token.phone_number == "+919337956168");
     }
@@ -150,7 +154,7 @@ service cloud.firestore {
 
     function isValidUserForCreate(data) {
       return hasRequiredFields(['name', 'email', 'role']) &&
-             hasOnlyAllowedFields(['id', 'name', 'email', 'role', 'class', 'board', 'stats', 'completed_chapters', 'preferred_language', 'subjects', 'points', 'shareCount', 'statusShared', 'updatedAt', 'createdAt', 'parent_pin', 'parentShowLeaderboard']) &&
+             hasOnlyAllowedFields(['id', 'name', 'email', 'role', 'class', 'board', 'stats', 'completed_chapters', 'preferred_language', 'subjects', 'points', 'shareCount', 'statusShared', 'updatedAt', 'createdAt', 'parent_pin', 'parentShowLeaderboard', 'avatar', 'streak', 'lastActiveDate']) &&
              validStringLength('name', 1, 50) &&
              isValidEmail(data.email) &&
              data.role in ['student', 'admin'] &&
@@ -165,11 +169,14 @@ service cloud.firestore {
              (!('updatedAt' in data) || (data.updatedAt is timestamp)) &&
              (!('createdAt' in data) || (data.createdAt is timestamp)) &&
              (!('parent_pin' in data) || (data.parent_pin is string && data.parent_pin.size() == 4)) &&
-             (!('parentShowLeaderboard' in data) || (data.parentShowLeaderboard is bool));
+             (!('parentShowLeaderboard' in data) || (data.parentShowLeaderboard is bool)) &&
+             (!('avatar' in data) || (data.avatar is string)) &&
+             (!('streak' in data) || (data.streak is number)) &&
+             (!('lastActiveDate' in data) || (data.lastActiveDate is string));
     }
 
     function isValidUserForUpdate(data) {
-      return hasOnlyAllowedFields(['id', 'name', 'email', 'role', 'class', 'board', 'stats', 'completed_chapters', 'preferred_language', 'subjects', 'points', 'shareCount', 'statusShared', 'updatedAt', 'createdAt', 'parent_pin', 'parentShowLeaderboard']) &&
+      return hasOnlyAllowedFields(['id', 'name', 'email', 'role', 'class', 'board', 'stats', 'completed_chapters', 'preferred_language', 'subjects', 'points', 'shareCount', 'statusShared', 'updatedAt', 'createdAt', 'parent_pin', 'parentShowLeaderboard', 'avatar', 'streak', 'lastActiveDate']) &&
              (!('id' in data) || (data.id is string)) &&
              (!('name' in data) || validStringLength('name', 1, 50)) &&
              (!('email' in data) || isValidEmail(data.email)) &&
@@ -184,7 +191,10 @@ service cloud.firestore {
              (!('updatedAt' in data) || (data.updatedAt is timestamp)) &&
              (!('createdAt' in data) || (data.createdAt is timestamp)) &&
              (!('parent_pin' in data) || (data.parent_pin is string && data.parent_pin.size() == 4)) &&
-             (!('parentShowLeaderboard' in data) || (data.parentShowLeaderboard is bool));
+             (!('parentShowLeaderboard' in data) || (data.parentShowLeaderboard is bool)) &&
+             (!('avatar' in data) || (data.avatar is string)) &&
+             (!('streak' in data) || (data.streak is number)) &&
+             (!('lastActiveDate' in data) || (data.lastActiveDate is string));
     }
 
     function isValidMonthlyTest(data) {
@@ -295,6 +305,23 @@ service cloud.firestore {
     match /system_settings/{document=**} {
       allow read: if true;
       allow write: if isAdmin();
+    }
+
+    match /daily_challenges/{challengeId} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+
+    match /user_progress/{progressId} {
+      allow read: if request.auth != null && (request.auth.uid == resource.data.userId || isAdmin());
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+      allow update: if request.auth != null && request.auth.uid == resource.data.userId && request.auth.uid == request.resource.data.userId;
+    }
+
+    match /friendships/{friendshipId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.followerId;
+      allow delete: if request.auth != null && request.auth.uid == resource.data.followerId;
     }
   }
 }

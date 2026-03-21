@@ -30,6 +30,8 @@ import {
   ArrowLeft,
   ArrowRight,
   Calendar,
+  Camera,
+  Image,
   Lightbulb,
   Sparkles,
   Search,
@@ -38,8 +40,15 @@ import {
   MessageCircle,
   Book,
   Download,
+  Save,
   ShoppingBag,
-  Flame
+  Flame,
+  Mic,
+  MicOff,
+  UserPlus,
+  UserCheck,
+  TrendingUp,
+  Award
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
@@ -67,6 +76,10 @@ import { PracticeQuestion } from './components/PracticeQuestion';
 import { Dashboard } from './components/Dashboard';
 import { AvatarStore } from './components/AvatarStore';
 import { PwaUpdatePrompt } from './components/PwaUpdatePrompt';
+import { DailyChallenge } from './components/DailyChallenge';
+import { ProgressChart } from './components/ProgressChart';
+import { useVoiceSearch } from './hooks/useVoiceSearch';
+import { OfflineService } from './services/offlineService';
 
 const subjectTranslations: Record<string, string> = {
   'Mathematics': 'ଗଣିତ',
@@ -439,6 +452,9 @@ export default function App() {
   const [testAnswers, setTestAnswers] = useState<Record<number, string>>({});
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const [adminStats, setAdminStats] = useState<any>(null);
+  const [dailyChallenge, setDailyChallenge] = useState<any>(null);
+  const [userProgress, setUserProgress] = useState<any[]>([]);
+  const [following, setFollowing] = useState<string[]>([]);
   const [systemSettings, setSystemSettings] = useState<any>({
     monthlyPrice: 199,
     yearlyPrice: 999
@@ -696,12 +712,46 @@ export default function App() {
       (err) => handleFirestoreError(err, OperationType.GET, 'textbooks')
     );
 
+    const today = new Date().toISOString().split('T')[0];
+    const unsubChallenge = onSnapshot(
+      query(collection(firestore, 'daily_challenges'), where('date', '==', today)),
+      (snapshot) => {
+        if (!snapshot.empty) {
+          setDailyChallenge({ id: snapshot.docs[0].id, ...snapshot.docs[0].data() });
+        } else {
+          setDailyChallenge(null);
+        }
+      },
+      (err) => handleFirestoreError(err, OperationType.GET, 'daily_challenges')
+    );
+
+    const unsubProgress = onSnapshot(
+      query(collection(firestore, 'user_progress'), where('userId', '==', user.id), orderBy('date', 'desc'), limit(30)),
+      (snapshot) => {
+        const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })).reverse();
+        setUserProgress(data);
+      },
+      (err) => handleFirestoreError(err, OperationType.GET, 'user_progress')
+    );
+
+    const unsubFollowing = onSnapshot(
+      query(collection(firestore, 'friendships'), where('followerId', '==', user.id)),
+      (snapshot) => {
+        const data = snapshot.docs.map(d => (d.data() as any).followingId);
+        setFollowing(data);
+      },
+      (err) => handleFirestoreError(err, OperationType.GET, 'friendships')
+    );
+
     return () => {
       unsubChapters();
       unsubLeaderboard();
       unsubTests();
       unsubSubmissions();
       unsubTextbooks();
+      unsubChallenge();
+      unsubProgress();
+      unsubFollowing();
     };
   }, [user?.id]);
 
@@ -1805,7 +1855,7 @@ export default function App() {
             </div>
           ) : (
             <AnimatePresence mode="wait">
-              {activeTab === 'dashboard' && <Dashboard user={user} leaderboard={leaderboard} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} chapters={chapters} />}
+              {activeTab === 'dashboard' && <Dashboard user={user} leaderboard={leaderboard} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} chapters={chapters} dailyChallenge={dailyChallenge} />}
               {activeTab === 'courses' && <CoursesView user={user} chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
               {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
               {activeTab === 'monthly_tests' && <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} onBack={() => setActiveTab('dashboard')} />}
@@ -1813,7 +1863,8 @@ export default function App() {
                 isPremium ? <AiSolverView language={language} onBack={() => setActiveTab('dashboard')} /> : <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
               )}
               {activeTab === 'profile' && <ProfileView user={user} language={language} onBack={() => setActiveTab('dashboard')} onParentAccess={() => setActiveTab('parent_dashboard')} setActiveTab={setActiveTab} />}
-              {activeTab === 'parent_dashboard' && <ParentDashboard user={user} chapters={chapters} leaderboard={leaderboard} language={language} onBack={() => setActiveTab('profile')} />}
+              {activeTab === 'parent_dashboard' && <ParentDashboard user={user} chapters={chapters} leaderboard={leaderboard} language={language} onBack={() => setActiveTab('profile')} userProgress={userProgress} />}
+              {activeTab === 'leaderboard' && <LeaderboardView leaderboard={leaderboard} language={language} onBack={() => setActiveTab('dashboard')} following={following} user={user} />}
               {activeTab === 'store' && <AvatarStore user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
               {activeTab === 'plans' && <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />}
             </AnimatePresence>
@@ -1831,7 +1882,7 @@ export default function App() {
   );
 }
 
-function ParentDashboard({ user, chapters, leaderboard, language, onBack }: any) {
+function ParentDashboard({ user, chapters, leaderboard, language, onBack, userProgress }: any) {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [aiInsights, setAiInsights] = useState<string>('');
@@ -1937,6 +1988,10 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack }: any)
           <div className="text-3xl font-bold text-blue-500 mb-1">{stats.totalQuizzes}</div>
           <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Quizzes Taken</p>
         </div>
+      </motion.div>
+
+      <motion.div variants={itemVariants} className="mb-8">
+        <ProgressChart data={userProgress} language={language} />
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -2061,6 +2116,12 @@ function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: a
       setPin('');
     }
   };
+
+  const [showOfflineNotes, setShowOfflineNotes] = useState(false);
+
+  if (showOfflineNotes) {
+    return <OfflineNotesView language={language} onBack={() => setShowOfflineNotes(false)} />;
+  }
 
   const handleSave = async () => {
     setLoading(true);
@@ -2276,6 +2337,22 @@ function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: a
         </div>
         <div className="pt-6 border-t border-white/5">
           <button 
+            onClick={() => setShowOfflineNotes(true)}
+            className="w-full flex items-center justify-between p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-500 hover:bg-blue-500/20 transition-all group mb-4"
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-blue-500 text-white">
+                <FileText size={20} />
+              </div>
+              <div className="text-left">
+                <p className="font-bold">{language === 'en' ? 'Offline Notes' : 'ଅଫଲାଇନ୍ ନୋଟ୍'}</p>
+                <p className="text-[10px] opacity-70 uppercase tracking-wider">{language === 'en' ? 'Access saved study material' : 'ସେଭ୍ ହୋଇଥିବା ପାଠ୍ୟପଢା ସାମଗ୍ରୀ'}</p>
+              </div>
+            </div>
+            <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+          </button>
+
+          <button 
             onClick={handleParentAccess}
             className="w-full flex items-center justify-between p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/20 transition-all group"
           >
@@ -2368,6 +2445,13 @@ function StudyBuddy({ user, language }: any) {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { isListening, transcript, startListening, stopListening } = useVoiceSearch(language);
+
+  useEffect(() => {
+    if (transcript) {
+      setInput(prev => prev + (prev ? ' ' : '') + transcript);
+    }
+  }, [transcript]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -2471,20 +2555,32 @@ function StudyBuddy({ user, language }: any) {
 
             {/* Input */}
             <div className="p-6 border-t border-white/5 bg-slate-950/50">
-              <div className="relative">
-                <input 
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                  placeholder="Ask me anything..."
-                  className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-4 pr-12 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                />
-                <button 
-                  onClick={handleSend}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center hover:bg-emerald-400 transition-all"
+              <div className="flex items-center gap-2">
+                <div className="relative flex-1">
+                  <input 
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                    placeholder="Ask me anything..."
+                    className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-4 pr-12 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                  <button 
+                    onClick={handleSend}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center hover:bg-emerald-400 transition-all"
+                  >
+                    <Send size={16} />
+                  </button>
+                </div>
+                <button
+                  onClick={isListening ? stopListening : startListening}
+                  className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${
+                    isListening 
+                      ? 'bg-red-500 text-white animate-pulse' 
+                      : 'bg-white/5 text-slate-400 hover:bg-white/10'
+                  }`}
                 >
-                  <Send size={16} />
+                  {isListening ? <MicOff size={20} /> : <Mic size={20} />}
                 </button>
               </div>
             </div>
@@ -3093,14 +3189,42 @@ function AiSolverView({ language, onBack }: any) {
   const [prompt, setPrompt] = useState('');
   const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [imageMimeType, setImageMimeType] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert(language === 'en' ? "Image size should be less than 5MB" : "ଫଟୋର ଆକାର ୫ MB ରୁ କମ୍ ହେବା ଉଚିତ୍ |");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = (reader.result as string).split(',')[1];
+        setSelectedImage(base64String);
+        setImageMimeType(file.type);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSolve = async () => {
-    if (!prompt) return;
+    if (!prompt && !selectedImage) return;
     setLoading(true);
-    const result = await solveMathDoubt(prompt, language);
-    setResponse(result);
-    setLoading(false);
+    try {
+      const imageData = selectedImage && imageMimeType ? { data: selectedImage, mimeType: imageMimeType } : undefined;
+      const result = await solveMathDoubt(prompt || (language === 'en' ? "Please solve this math problem." : "ଦୟାକରି ଏହି ଗଣିତ ସମସ୍ୟାର ସମାଧାନ କରନ୍ତୁ |"), language, imageData);
+      setResponse(result);
+    } catch (error) {
+      console.error("AI Error:", error);
+      setResponse(language === 'en' ? "Error generating solution. Please try again." : "ସମାଧାନ ପ୍ରସ୍ତୁତ କରିବାରେ ତ୍ରୁଟି | ଦୟାକରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -3114,7 +3238,7 @@ function AiSolverView({ language, onBack }: any) {
         className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors w-fit"
       >
         <ArrowLeft size={20} />
-        <span>Back to Dashboard</span>
+        <span>{translations[language].backToDashboard}</span>
       </button>
 
       <div className="flex-1 overflow-y-auto space-y-6 mb-6 pr-2" ref={scrollRef}>
@@ -3124,6 +3248,10 @@ function AiSolverView({ language, onBack }: any) {
             animate={{ opacity: 1, scale: 1 }}
             className="bg-slate-900/50 border border-white/5 rounded-3xl p-8 text-slate-300 leading-relaxed whitespace-pre-wrap"
           >
+            <div className="flex items-center gap-2 mb-4 text-emerald-400 font-bold">
+              <Sparkles size={20} />
+              <span>{translations[language].aiExplanation}</span>
+            </div>
             {response}
           </motion.div>
         ) : (
@@ -3135,32 +3263,88 @@ function AiSolverView({ language, onBack }: any) {
             <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center">
               <MessageSquare size={32} />
             </div>
-            <p>Ask any math question and I'll explain it step-by-step!</p>
+            <p>{translations[language].askAi}</p>
           </motion.div>
         )}
       </div>
 
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="relative"
-      >
-        <textarea 
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          placeholder={translations[language].askAi}
-          className="w-full bg-slate-900 border border-white/10 rounded-3xl p-6 pr-32 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all resize-none h-32"
-        />
-        <button 
-          onClick={handleSolve}
-          disabled={loading}
-          className="absolute bottom-6 right-6 px-6 py-3 rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-500 transition-all disabled:opacity-50 flex items-center gap-2"
+      <div className="space-y-4">
+        {selectedImage && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="relative w-32 h-32 rounded-2xl overflow-hidden border-2 border-emerald-500/30 group"
+          >
+            <img 
+              src={`data:${imageMimeType};base64,${selectedImage}`} 
+              alt="Selected" 
+              className="w-full h-full object-cover"
+            />
+            <button 
+              onClick={() => { setSelectedImage(null); setImageMimeType(null); }}
+              className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-1 hover:bg-red-500 transition-colors"
+            >
+              <X size={16} />
+            </button>
+          </motion.div>
+        )}
+
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="relative"
         >
-          {loading ? <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} className="w-4 h-4 border-2 border-white border-t-transparent rounded-full" /> : <Play size={16} />}
-          {translations[language].solve}
-        </button>
-      </motion.div>
+          <textarea 
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder={translations[language].askAi}
+            className="w-full bg-slate-900 border border-white/10 rounded-3xl p-6 pr-44 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all resize-none h-32"
+          />
+          
+          <div className="absolute right-4 bottom-4 flex items-center gap-2">
+            <input 
+              type="file" 
+              accept="image/*" 
+              className="hidden" 
+              ref={fileInputRef}
+              onChange={handleImageSelect}
+            />
+            <input 
+              type="file" 
+              accept="image/*" 
+              capture="environment" 
+              className="hidden" 
+              ref={cameraInputRef}
+              onChange={handleImageSelect}
+            />
+            
+            <button 
+              onClick={() => cameraInputRef.current?.click()}
+              className="p-3 rounded-xl bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition-all"
+              title={translations[language].takePhoto}
+            >
+              <Camera size={20} />
+            </button>
+            
+            <button 
+              onClick={() => fileInputRef.current?.click()}
+              className="p-3 rounded-xl bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition-all"
+              title={translations[language].uploadImage}
+            >
+              <Image size={20} />
+            </button>
+
+            <button 
+              onClick={handleSolve}
+              disabled={loading || (!prompt && !selectedImage)}
+              className="p-3 rounded-xl bg-emerald-600 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-500/20"
+            >
+              {loading ? <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} className="w-4 h-4 border-2 border-white border-t-transparent rounded-full" /> : <Send size={20} />}
+            </button>
+          </div>
+        </motion.div>
+      </div>
     </motion.div>
   );
 }
@@ -3290,14 +3474,16 @@ function GamesView({ language, onBack }: any) {
   );
 }
 
-function LeaderboardView({ leaderboard, language, onBack }: any) {
+function LeaderboardView({ leaderboard, language, onBack, following, user }: any) {
+  const [activeFilter, setActiveFilter] = useState<'league' | 'friends'>('league');
   const [activeLeague, setActiveLeague] = useState<League>('Bronze');
   const leagues: League[] = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 
-  // Filter leaderboard by league (simulated for now, usually done on backend)
   const filteredLeaderboard = leaderboard.filter((s: any) => {
+    if (activeFilter === 'friends') {
+      return following.includes(s.id) || s.id === user.id;
+    }
     // In a real app, this would be based on student.stats.league
-    // For demo, we'll just distribute them
     const idx = leaderboard.indexOf(s);
     if (idx < 10) return activeLeague === 'Platinum';
     if (idx < 25) return activeLeague === 'Gold';
@@ -3339,21 +3525,43 @@ function LeaderboardView({ leaderboard, language, onBack }: any) {
         <p className="text-slate-500">Celebrate effort and consistency! Resets every Sunday.</p>
       </motion.div>
 
-      {/* League Tabs */}
-      <motion.div variants={itemVariants} className="flex justify-center gap-2 p-1 bg-slate-900/50 border border-white/5 rounded-2xl w-fit mx-auto">
-        {leagues.map((league) => (
+      <motion.div variants={itemVariants} className="flex flex-col items-center gap-6">
+        <div className="flex p-1 bg-slate-900/50 border border-white/5 rounded-2xl">
           <button
-            key={league}
-            onClick={() => setActiveLeague(league)}
+            onClick={() => setActiveFilter('league')}
             className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${
-              activeLeague === league 
-                ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20' 
-                : 'text-slate-500 hover:text-slate-300'
+              activeFilter === 'league' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-slate-300'
             }`}
           >
-            {translations[language][league.toLowerCase()]}
+            {translations[language].leagues}
           </button>
-        ))}
+          <button
+            onClick={() => setActiveFilter('friends')}
+            className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${
+              activeFilter === 'friends' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-slate-300'
+            }`}
+          >
+            {translations[language].friends}
+          </button>
+        </div>
+
+        {activeFilter === 'league' && (
+          <div className="flex justify-center gap-2 p-1 bg-slate-900/50 border border-white/5 rounded-2xl w-fit mx-auto">
+            {leagues.map((league) => (
+              <button
+                key={league}
+                onClick={() => setActiveLeague(league)}
+                className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${
+                  activeLeague === league 
+                    ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20' 
+                    : 'text-slate-500 hover:text-slate-300'
+                }`}
+              >
+                {translations[language][league.toLowerCase()]}
+              </button>
+            ))}
+          </div>
+        )}
       </motion.div>
 
       <motion.div variants={itemVariants} className="bg-slate-900/50 border border-white/5 rounded-[40px] overflow-hidden">
@@ -3460,7 +3668,7 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
 
   const availableSubjects = React.useMemo(() => {
     const subjects = new Set<string>(textbooks.filter(b => b.class === user?.class && b.board === boardKey).map(b => b.subject));
-    return ['all', ...Array.from(subjects)];
+    return ['all', ...Array.from(subjects).filter(s => s !== 'all')];
   }, [textbooks, user?.class, boardKey]);
 
   const containerVariants = {
@@ -3558,15 +3766,26 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
               </div>
               <div className="p-6 flex flex-col flex-1">
                 <h3 className="text-lg font-bold text-white mb-4 line-clamp-2 flex-1">{book.title}</h3>
-                <a 
-                  href={book.download_url} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-900/20"
-                >
-                  <Download size={18} />
-                  {language === 'en' ? 'Download PDF' : 'PDF ଡାଉନଲୋଡ୍'}
-                </a>
+                <div className="flex gap-2">
+                  <a 
+                    href={book.download_url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-900/20"
+                  >
+                    <Download size={18} />
+                    {language === 'en' ? 'Download PDF' : 'PDF ଡାଉନଲୋଡ୍'}
+                  </a>
+                  <button 
+                    onClick={() => {
+                      OfflineService.saveTextbook(book.id, book);
+                      alert(language === 'en' ? 'Textbook saved for offline!' : 'ପାଠ୍ୟପୁସ୍ତକ ଅଫଲାଇନ୍ ପାଇଁ ସେଭ୍ ହୋଇଛି!');
+                    }}
+                    className="p-3 bg-white/5 border border-white/10 text-slate-400 hover:text-white rounded-xl transition-all"
+                  >
+                    <Save size={18} />
+                  </button>
+                </div>
                 <a 
                   href={`https://wa.me/?text=${encodeURIComponent(
                     language === 'en' 
@@ -3585,6 +3804,137 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
           ))}
         </motion.div>
       )}
+    </motion.div>
+  );
+}
+
+function OfflineNotesView({ language, onBack }: { language: 'or' | 'en', onBack: () => void }) {
+  const [notes, setNotes] = useState<Record<string, string>>({});
+  const [textbooks, setTextbooks] = useState<Record<string, any>>({});
+  const [activeTab, setActiveTab] = useState<'notes' | 'textbooks'>('notes');
+
+  useEffect(() => {
+    setNotes(OfflineService.getAllNotes());
+    setTextbooks(OfflineService.getOfflineTextbooks());
+  }, []);
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      className="max-w-2xl mx-auto"
+    >
+      <button 
+        onClick={onBack}
+        className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
+      >
+        <ArrowLeft size={20} />
+        <span className="font-bold uppercase tracking-widest text-xs">Back to Profile</span>
+      </button>
+
+      <h1 className="text-3xl font-black text-white mb-8">{language === 'en' ? 'Offline Material' : 'ଅଫଲାଇନ୍ ସାମଗ୍ରୀ'}</h1>
+
+      <div className="flex gap-2 bg-slate-900/50 p-2 rounded-2xl w-fit mb-8 border border-white/5 backdrop-blur-md">
+        <button 
+          onClick={() => setActiveTab('notes')}
+          className={`flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${activeTab === 'notes' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
+        >
+          <FileText size={16} /> {language === 'en' ? 'Notes' : 'ନୋଟ୍'}
+        </button>
+        <button 
+          onClick={() => setActiveTab('textbooks')}
+          className={`flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${activeTab === 'textbooks' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
+        >
+          <Book size={16} /> {language === 'en' ? 'Textbooks' : 'ପାଠ୍ୟପୁସ୍ତକ'}
+        </button>
+      </div>
+
+      <AnimatePresence mode="wait">
+        {activeTab === 'notes' && (
+          <motion.div 
+            key="notes"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="space-y-4"
+          >
+            {Object.keys(notes).length === 0 ? (
+              <div className="glass-card p-12 text-center rounded-[2rem]">
+                <p className="text-slate-400">{language === 'en' ? 'No notes saved.' : 'କୌଣସି ନୋଟ୍ ସେଭ୍ ହୋଇନାହିଁ |'}</p>
+              </div>
+            ) : (
+              Object.entries(notes).map(([id, content]) => (
+                <div key={id} className="glass-card p-6 rounded-2xl border border-white/5">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-bold text-white">Chapter ID: {id}</h3>
+                    <button 
+                      onClick={() => {
+                        const newNotes = { ...notes };
+                        delete newNotes[id];
+                        localStorage.setItem('offline_notes', JSON.stringify(newNotes));
+                        setNotes(newNotes);
+                      }}
+                      className="p-2 text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                  <div className="bg-slate-900/50 p-4 rounded-xl prose prose-invert max-w-none text-sm">
+                    <Markdown>{content}</Markdown>
+                  </div>
+                </div>
+              ))
+            )}
+          </motion.div>
+        )}
+
+        {activeTab === 'textbooks' && (
+          <motion.div 
+            key="textbooks"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="space-y-4"
+          >
+            {Object.keys(textbooks).length === 0 ? (
+              <div className="glass-card p-12 text-center rounded-[2rem]">
+                <p className="text-slate-400">{language === 'en' ? 'No textbooks saved.' : 'କୌଣସି ପାଠ୍ୟପୁସ୍ତକ ସେଭ୍ ହୋଇନାହିଁ |'}</p>
+              </div>
+            ) : (
+              Object.entries(textbooks).map(([id, book]) => (
+                <div key={id} className="glass-card p-6 rounded-2xl border border-white/5 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-16 bg-slate-800 rounded-lg overflow-hidden">
+                      {book.thumbnail_url && <img src={book.thumbnail_url} className="w-full h-full object-cover" referrerPolicy="no-referrer" />}
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-white">{book.title}</h3>
+                      <p className="text-xs text-slate-500 uppercase tracking-wider">{book.subject}</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <a href={book.download_url} target="_blank" rel="noopener noreferrer" className="p-3 bg-emerald-500/10 text-emerald-500 rounded-xl hover:bg-emerald-500/20 transition-all">
+                      <Download size={18} />
+                    </a>
+                    <button 
+                      onClick={() => {
+                        const newBooks = { ...textbooks };
+                        delete newBooks[id];
+                        localStorage.setItem('offline_textbooks', JSON.stringify(newBooks));
+                        setTextbooks(newBooks);
+                      }}
+                      className="p-3 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500/20 transition-all"
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
@@ -3682,6 +4032,17 @@ function TopicDetailView({
                 <HelpCircle size={16} /> {translations[language].practice}
               </button>
             )}
+            <button 
+              onClick={() => {
+                if (topic.notes) {
+                  OfflineService.saveNote(topic.id, topic.notes);
+                  alert(language === 'en' ? 'Notes saved for offline!' : 'ନୋଟ୍ ଅଫଲାଇନ୍ ପାଇଁ ସେଭ୍ ହୋଇଛି!');
+                }
+              }}
+              className="flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap text-slate-400 hover:text-white hover:bg-white/5"
+            >
+              <Download size={16} /> {language === 'en' ? 'Save Offline' : 'ଅଫଲାଇନ୍ ସେଭ୍ କରନ୍ତୁ'}
+            </button>
           </div>
 
           <AnimatePresence mode="wait">

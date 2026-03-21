@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Brain, BarChart3, CheckCircle2, Globe, Flame } from 'lucide-react';
 import { translations } from '../translations';
+import { DailyChallenge } from './DailyChallenge';
 
 interface DashboardProps {
   user: any;
@@ -10,9 +11,11 @@ interface DashboardProps {
   isPremium: boolean;
   onUpgrade: () => void;
   chapters: any[];
+  dailyChallenge: any;
+  onChallengeComplete?: () => void;
 }
 
-export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters }: DashboardProps) {
+export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, onChallengeComplete }: DashboardProps) {
   const userRank = leaderboard.findIndex((s: any) => s.name === user.name) + 1 || '-';
   const stats = {
     streak: user.streak || 0,
@@ -110,47 +113,62 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         <StatCard icon={<Globe className="text-purple-500" />} label={translations[language].badges} value={stats.badges.length} subValue="Earned" />
       </motion.div>
 
-      <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-3 space-y-6">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-white">{translations[language].myProgress}</h3>
-          </div>
-          <div className="glass-card rounded-3xl p-8">
-            <div className="space-y-6">
-              {user.completed_chapters && user.completed_chapters.length > 0 ? (
-                user.completed_chapters.slice(0, 3).map((chapterId: string, i: number) => {
-                  const chapter = chapters.find((c: any) => c.id === chapterId);
-                  return (
-                    <TopicProgress 
-                      key={i} 
-                      label={chapter?.title || "Unknown Topic"} 
-                      progress={100} 
-                      color="bg-gradient-to-r from-emerald-400 to-cyan-400" 
-                    />
-                  );
-                })
-              ) : (
-                <p className="text-slate-500 text-center py-4 font-mono text-sm">No progress recorded yet. Start learning to see your progress!</p>
-              )}
-            </div>
-          </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-8">
+          {dailyChallenge && (
+            <motion.div variants={itemVariants}>
+              <DailyChallenge 
+                challenge={dailyChallenge} 
+                user={user} 
+                language={language} 
+                onComplete={onChallengeComplete || (() => {})}
+              />
+            </motion.div>
+          )}
 
-          <div className="space-y-4">
+          <motion.div variants={itemVariants} className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-white">{translations[language].myProgress}</h3>
+            </div>
+            <div className="glass-card rounded-3xl p-8">
+              <div className="space-y-6">
+                {user.completed_chapters && user.completed_chapters.length > 0 ? (
+                  user.completed_chapters.slice(0, 3).map((chapterId: string, i: number) => {
+                    const chapter = chapters.find((c: any) => c.id === chapterId);
+                    return (
+                      <TopicProgress 
+                        key={i} 
+                        label={chapter?.title || "Unknown Topic"} 
+                        progress={100} 
+                        color="bg-gradient-to-r from-emerald-400 to-cyan-400" 
+                      />
+                    );
+                  })
+                ) : (
+                  <p className="text-slate-500 text-center py-4 font-mono text-sm">No progress recorded yet. Start learning to see your progress!</p>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        <div className="space-y-8">
+          <motion.div variants={itemVariants} className="space-y-4">
             <h3 className="text-lg font-semibold text-white">{translations[language].badges}</h3>
-            <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+            <div className="grid grid-cols-3 gap-4">
               {stats.badges && stats.badges.length > 0 ? (
                 stats.badges.map((badge: string, i: number) => (
-                  <div key={i} className="flex-shrink-0 w-20 h-20 rounded-2xl bg-slate-900/50 border border-white/5 flex items-center justify-center text-3xl hover:scale-110 transition-all cursor-help">
+                  <div key={i} className="aspect-square rounded-2xl bg-slate-900/50 border border-white/5 flex items-center justify-center text-3xl hover:scale-110 transition-all cursor-help shadow-lg">
                     {badge === 'first_quiz' ? '🌟' : badge === 'streak_3' ? '🔥' : '🏅'}
                   </div>
                 ))
               ) : (
-                <p className="text-slate-500 text-sm">No badges earned yet. Complete quizzes to earn badges!</p>
+                <p className="text-slate-500 text-sm col-span-3">No badges earned yet. Complete quizzes to earn badges!</p>
               )}
             </div>
-          </div>
+          </motion.div>
         </div>
-      </motion.div>
+      </div>
     </motion.div>
   );
 }

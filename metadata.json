@@ -1,5 +1,5 @@
 {
   "name": "Utkal Skill Centre",
   "description": "AI-powered skill development and training platform associated with AHAS Group.",
-  "requestFramePermissions": []
+  "requestFramePermissions": ["camera", "microphone"]
 }
