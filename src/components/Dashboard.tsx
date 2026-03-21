@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Brain, BarChart3, CheckCircle2, Globe } from 'lucide-react';
+import { Brain, BarChart3, CheckCircle2, Globe, Flame } from 'lucide-react';
 import { translations } from '../translations';
 
 interface DashboardProps {
@@ -14,14 +14,14 @@ interface DashboardProps {
 
 export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters }: DashboardProps) {
   const userRank = leaderboard.findIndex((s: any) => s.name === user.name) + 1 || '-';
-  const stats = user.stats || {
-    streak: 0,
-    level: 1,
-    experience: 0,
-    accuracy: 0,
-    league: 'Bronze',
-    badges: [],
-    weeklyPoints: 0
+  const stats = {
+    streak: user.streak || 0,
+    level: Math.floor((user.points || 0) / 1000) + 1,
+    experience: (user.points || 0) % 1000 / 10,
+    accuracy: user.stats?.accuracy || 0,
+    league: user.stats?.league || 'Bronze',
+    badges: user.stats?.badges || [],
+    weeklyPoints: user.points || 0
   };
   
   const containerVariants = {
@@ -53,11 +53,19 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         <motion.div variants={itemVariants} className="lg:col-span-2 glass-card neon-border rounded-[2.5rem] p-8 flex flex-col justify-between relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none"></div>
           <div className="flex justify-between items-start mb-6 relative z-10">
-            <div>
-              <h3 className="text-4xl font-black text-white mb-1 tracking-tight">
-                {translations[language].level} <span className="text-gradient">{stats.level}</span>
-              </h3>
-              <p className="text-emerald-400 text-sm font-medium uppercase tracking-widest">Next Level in {100 - stats.experience} XP</p>
+            <div className="flex items-center gap-6">
+              <div className="w-20 h-20 rounded-[2rem] bg-slate-800/50 border border-white/10 p-2 flex items-center justify-center shadow-2xl relative group">
+                <img src={user.avatar || 'https://api.dicebear.com/7.x/bottts/svg?seed=default'} alt="Avatar" className="w-full h-full group-hover:scale-110 transition-transform" />
+                <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-emerald-500 border-4 border-slate-900 flex items-center justify-center text-[10px] font-black text-white shadow-lg">
+                  {stats.level}
+                </div>
+              </div>
+              <div>
+                <h3 className="text-4xl font-black text-white mb-1 tracking-tight">
+                  {translations[language].level} <span className="text-gradient">{stats.level}</span>
+                </h3>
+                <p className="text-emerald-400 text-sm font-medium uppercase tracking-widest">Next Level in {100 - stats.experience} XP</p>
+              </div>
             </div>
             <div className="px-4 py-2 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-bold uppercase tracking-widest shadow-xl">
               {translations[language][stats.league.toLowerCase() as keyof typeof translations[typeof language]]}
@@ -79,18 +87,20 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           </div>
         </motion.div>
 
-        <motion.div variants={itemVariants} className="glass-card rounded-[2.5rem] p-8 flex flex-col justify-center items-center text-center relative overflow-hidden">
+        <motion.div variants={itemVariants} className="glass-card rounded-[2.5rem] p-8 flex flex-col justify-center items-center text-center relative overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-b from-orange-500/10 to-transparent pointer-events-none"></div>
           <motion.div 
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", bounce: 0.5, delay: 0.3 }}
-            className="w-20 h-20 rounded-3xl bg-orange-500/20 flex items-center justify-center text-orange-400 mb-6 shadow-[0_0_30px_rgba(249,115,22,0.3)] border border-orange-500/30"
+            className="w-20 h-20 rounded-3xl bg-orange-500/20 flex items-center justify-center text-orange-400 mb-6 shadow-[0_0_30px_rgba(249,115,22,0.3)] border border-orange-500/30 group-hover:scale-110 transition-transform"
           >
-            <Brain size={40} />
+            <Flame size={40} className={stats.streak > 0 ? 'animate-bounce' : ''} />
           </motion.div>
           <div className="text-5xl font-black text-white mb-2 tracking-tighter">{stats.streak} <span className="text-2xl text-slate-400 font-medium">{translations[language].streak}</span></div>
-          <p className="text-orange-400/80 text-sm font-medium uppercase tracking-widest">You're on fire!</p>
+          <p className="text-orange-400/80 text-sm font-medium uppercase tracking-widest">
+            {stats.streak > 0 ? "You're on fire!" : "Start your streak today!"}
+          </p>
         </motion.div>
       </div>
 

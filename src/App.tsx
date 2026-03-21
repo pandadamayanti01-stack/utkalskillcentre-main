@@ -37,10 +37,13 @@ import {
   Lock,
   MessageCircle,
   Book,
-  Download
+  Download,
+  ShoppingBag,
+  Flame
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
+import { GoogleGenAI } from "@google/genai";
 import { auth, db as firestore } from './firebase';
 import { 
   signInWithPopup, 
@@ -62,6 +65,8 @@ import { solveMathDoubt } from './services/aiService';
 import { AdminDashboard } from './components/AdminDashboard';
 import { PracticeQuestion } from './components/PracticeQuestion';
 import { Dashboard } from './components/Dashboard';
+import { AvatarStore } from './components/AvatarStore';
+import { PwaUpdatePrompt } from './components/PwaUpdatePrompt';
 
 const subjectTranslations: Record<string, string> = {
   'Mathematics': 'ଗଣିତ',
@@ -181,6 +186,9 @@ interface Student {
   preferred_language: string;
   points: number;
   role: string;
+  avatar?: string;
+  streak?: number;
+  lastActiveDate?: string;
   shareCount?: number;
   statusShared?: boolean;
   parent_pin?: string;
@@ -541,10 +549,30 @@ export default function App() {
             preferred_language: (userDocSnap.exists() && userDocSnap.data().preferred_language) ? userDocSnap.data().preferred_language : (languageRef.current || 'or'),
             role: role,
             points: userDocSnap.exists() ? (userDocSnap.data().points ?? 0) : 0,
+            avatar: userDocSnap.exists() ? (userDocSnap.data().avatar ?? 'https://api.dicebear.com/7.x/bottts/svg?seed=default') : 'https://api.dicebear.com/7.x/bottts/svg?seed=default',
+            streak: userDocSnap.exists() ? (userDocSnap.data().streak ?? 0) : 0,
+            lastActiveDate: userDocSnap.exists() ? (userDocSnap.data().lastActiveDate ?? '') : '',
             shareCount: userDocSnap.exists() ? (userDocSnap.data().shareCount ?? 0) : 0,
             statusShared: userDocSnap.exists() ? (userDocSnap.data().statusShared ?? false) : false,
             updatedAt: serverTimestamp()
           };
+
+          // Update Streak Logic
+          const today = new Date().toISOString().split('T')[0];
+          if (userData.lastActiveDate !== today) {
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toISOString().split('T')[0];
+            
+            if (userData.lastActiveDate === yesterdayStr) {
+              userData.streak = (userData.streak || 0) + 1;
+            } else if (userData.lastActiveDate !== '') {
+              userData.streak = 1;
+            } else {
+              userData.streak = 1;
+            }
+            userData.lastActiveDate = today;
+          }
 
           if (!userDocSnap.exists()) {
             userData.createdAt = serverTimestamp();
@@ -554,7 +582,9 @@ export default function App() {
           await setDoc(doc(firestore, 'public_profiles', firebaseUser.uid), {
             name: userData.name,
             points: userData.points,
-            class: userData.class
+            class: userData.class,
+            avatar: userData.avatar,
+            streak: userData.streak
           }, { merge: true });
         } catch (fsErr) {
           handleFirestoreError(fsErr, OperationType.WRITE, `users/${firebaseUser.uid}`);
@@ -1667,6 +1697,8 @@ export default function App() {
                 <SidebarItem icon={<Book size={20}/>} label={language === 'en' ? 'Textbooks' : 'ପାଠ୍ୟପୁସ୍ତକ'} active={activeTab === 'textbooks'} onClick={() => { setActiveTab('textbooks'); setSidebarOpen(false); }} />
                 <SidebarItem icon={<Clock size={20}/>} label={translations[language].monthlyTests} active={activeTab === 'monthly_tests'} onClick={() => { setActiveTab('monthly_tests'); setSidebarOpen(false); }} />
                 <SidebarItem icon={<MessageSquare size={20}/>} label={translations[language].aiSolver} active={activeTab === 'ai'} onClick={() => { setActiveTab('ai'); setSidebarOpen(false); }} />
+                <SidebarItem icon={<Trophy size={20}/>} label={translations[language].leaderboard} active={activeTab === 'leaderboard'} onClick={() => { setActiveTab('leaderboard'); setSidebarOpen(false); }} />
+                <SidebarItem icon={<ShoppingBag size={20}/>} label={language === 'en' ? 'Avatar Store' : 'ଅବତାର ଷ୍ଟୋର'} active={activeTab === 'store'} onClick={() => { setActiveTab('store'); setSidebarOpen(false); }} />
                 <SidebarItem icon={<CreditCard size={20}/>} label="Plans" active={activeTab === 'plans'} onClick={() => { setActiveTab('plans'); setSidebarOpen(false); }} />
               </>
             )}
@@ -1736,9 +1768,22 @@ export default function App() {
                 <span className="text-sm font-medium text-emerald-400">{user.points} {translations[language].points}</span>
               </div>
             )}
+            {user.role !== 'admin' && user.streak > 0 && (
+              <div className="flex items-center gap-1 bg-orange-500/10 px-3 py-1.5 rounded-xl border border-orange-500/20 text-orange-400">
+                <Flame size={16} fill="currentColor" className="animate-pulse" />
+                <span className="text-sm font-black">{user.streak}</span>
+              </div>
+            )}
             <div className="flex items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/5">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center text-white font-bold">
-                {user.name[0]}
+              <div 
+                onClick={() => setActiveTab('profile')}
+                className="w-10 h-10 rounded-xl bg-slate-800 border border-white/10 flex items-center justify-center overflow-hidden cursor-pointer hover:scale-105 transition-transform"
+              >
+                {user.avatar ? (
+                  <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-white font-bold">{user.name[0]}</span>
+                )}
               </div>
               <button 
                 onClick={handleLogout}
@@ -1767,13 +1812,20 @@ export default function App() {
               {activeTab === 'ai' && (
                 isPremium ? <AiSolverView language={language} onBack={() => setActiveTab('dashboard')} /> : <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
               )}
-              {activeTab === 'profile' && <ProfileView user={user} language={language} onBack={() => setActiveTab('dashboard')} onParentAccess={() => setActiveTab('parent_dashboard')} />}
+              {activeTab === 'profile' && <ProfileView user={user} language={language} onBack={() => setActiveTab('dashboard')} onParentAccess={() => setActiveTab('parent_dashboard')} setActiveTab={setActiveTab} />}
               {activeTab === 'parent_dashboard' && <ParentDashboard user={user} chapters={chapters} leaderboard={leaderboard} language={language} onBack={() => setActiveTab('profile')} />}
+              {activeTab === 'store' && <AvatarStore user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
               {activeTab === 'plans' && <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />}
             </AnimatePresence>
           )}
         </div>
       </main>
+
+      {/* AI Study Buddy */}
+      {user && <StudyBuddy user={user} language={language} />}
+
+      {/* PWA Update Prompt */}
+      <PwaUpdatePrompt />
     </div>
     </ErrorBoundary>
   );
@@ -1782,6 +1834,8 @@ export default function App() {
 function ParentDashboard({ user, chapters, leaderboard, language, onBack }: any) {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [aiInsights, setAiInsights] = useState<string>('');
+  const [generatingInsights, setGeneratingInsights] = useState(false);
 
   useEffect(() => {
     const q = query(
@@ -1792,8 +1846,12 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack }: any)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      setResults(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setResults(data);
       setLoading(false);
+      if (data.length > 0) {
+        generateInsights(data);
+      }
     }, (error) => {
       console.error("Parent Dashboard Error:", error);
       setLoading(false);
@@ -1801,6 +1859,28 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack }: any)
 
     return () => unsubscribe();
   }, [user.id]);
+
+  const generateInsights = async (quizData: any[]) => {
+    if (aiInsights || generatingInsights) return;
+    setGeneratingInsights(true);
+    try {
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const prompt = `Analyze these quiz results for a student named ${user.name} and provide 3-4 concise, actionable insights for their parent. 
+      Data: ${JSON.stringify(quizData.map(r => ({ chapter: r.chapterId, accuracy: r.accuracy, score: r.score, total: r.total })))}
+      Format the response as a short list of bullet points. Focus on strengths and areas for improvement.`;
+
+      const response = await ai.models.generateContent({
+        model: "gemini-3.1-flash-lite-preview",
+        contents: prompt,
+      });
+      setAiInsights(response.text || "No insights available yet.");
+    } catch (err) {
+      console.error("Failed to generate AI insights:", err);
+      setAiInsights("Unable to generate AI insights at this time.");
+    } finally {
+      setGeneratingInsights(false);
+    }
+  };
 
   const stats = {
     totalQuizzes: results.length,
@@ -1927,10 +2007,24 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack }: any)
           )}
 
           <div className="p-6 rounded-3xl bg-gradient-to-br from-emerald-600/20 to-blue-600/20 border border-emerald-500/20">
-            <h3 className="text-lg font-bold text-white mb-2">Insights</h3>
-            <p className="text-xs text-slate-400 mb-4 leading-relaxed">Upgrade to Premium to get AI-powered skill gap analysis and personalized learning paths for your child.</p>
+            <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+              <Sparkles size={20} className="text-emerald-400" />
+              AI Insights
+            </h3>
+            {generatingInsights ? (
+              <div className="flex items-center gap-2 text-slate-400 text-xs py-4">
+                <Loader2 size={16} className="animate-spin" />
+                Analyzing performance...
+              </div>
+            ) : aiInsights ? (
+              <div className="text-xs text-slate-300 mb-4 leading-relaxed prose prose-invert prose-xs">
+                <Markdown>{aiInsights}</Markdown>
+              </div>
+            ) : (
+              <p className="text-xs text-slate-400 mb-4 leading-relaxed">Take more quizzes to unlock AI-powered skill gap analysis and personalized learning paths.</p>
+            )}
             <button className="w-full py-3 rounded-xl bg-white text-slate-900 text-xs font-bold hover:bg-slate-100 transition-all">
-              Upgrade to Premium
+              View Detailed Report
             </button>
           </div>
         </motion.div>
@@ -1939,7 +2033,7 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack }: any)
   );
 }
 
-function ProfileView({ user, language, onBack, onParentAccess }: any) {
+function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: any) {
   const [name, setName] = useState(user.name || '');
   const [email, setEmail] = useState(user.email || '');
   const [parentShowLeaderboard, setParentShowLeaderboard] = useState(user.parentShowLeaderboard ?? true);
@@ -2047,7 +2141,25 @@ function ProfileView({ user, language, onBack, onParentAccess }: any) {
         variants={itemVariants}
         className="glass-card neon-border rounded-3xl p-8 space-y-6"
       >
-      <h2 className="text-2xl font-bold text-white">{translations[language].profile.editTitle}</h2>
+      <div className="flex flex-col items-center gap-4 mb-6">
+        <div className="relative group">
+          <div className="w-24 h-24 rounded-[2rem] bg-slate-800/50 border-2 border-emerald-500/30 p-2 flex items-center justify-center shadow-2xl overflow-hidden">
+            <img src={user.avatar || 'https://api.dicebear.com/7.x/bottts/svg?seed=default'} alt="Avatar" className="w-full h-full group-hover:scale-110 transition-transform" />
+          </div>
+          <button 
+            onClick={() => setActiveTab('store')}
+            className="absolute -bottom-2 -right-2 p-2 bg-emerald-600 rounded-xl text-white shadow-lg hover:bg-emerald-500 transition-all border border-emerald-400/30"
+          >
+            <ShoppingBag size={16} />
+          </button>
+        </div>
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-white">{translations[language].profile.editTitle}</h2>
+          <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">
+            {language === 'en' ? 'Points:' : 'ପଏଣ୍ଟ:'} <span className="text-emerald-400">{user.points}</span>
+          </p>
+        </div>
+      </div>
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-slate-400 mb-1">{translations[language].name}</label>
@@ -2247,6 +2359,141 @@ function ProfileView({ user, language, onBack, onParentAccess }: any) {
 }
 
 // --- Sub-Views ---
+
+function StudyBuddy({ user, language }: any) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<any[]>([
+    { role: 'assistant', content: `Hi ${user.name}! I'm your AI Study Buddy. How can I help you today?` }
+  ]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  const handleSend = async () => {
+    if (!input.trim() || loading) return;
+
+    const userMessage = input.trim();
+    setInput('');
+    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    setLoading(true);
+
+    try {
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const chat = ai.chats.create({
+        model: "gemini-3.1-flash-lite-preview",
+        config: {
+          systemInstruction: `You are a helpful, encouraging AI Study Buddy for a student named ${user.name}. 
+          Your goal is to explain educational concepts clearly, help with homework (without just giving answers), and motivate the student. 
+          Keep your responses concise, friendly, and appropriate for a school-age student. 
+          Use simple language and analogies where helpful.`
+        }
+      });
+
+      const response = await chat.sendMessage({ message: userMessage });
+      setMessages(prev => [...prev, { role: 'assistant', content: response.text }]);
+    } catch (err) {
+      console.error("Study Buddy Error:", err);
+      setMessages(prev => [...prev, { role: 'assistant', content: "Oops! I'm having a little trouble thinking right now. Can we try again?" }]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      {/* Floating Button */}
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => setIsOpen(true)}
+        className="fixed bottom-8 right-8 w-16 h-16 rounded-full bg-emerald-500 text-white shadow-2xl shadow-emerald-500/40 flex items-center justify-center z-40 border-4 border-slate-950"
+      >
+        <Bot size={32} />
+        <motion.div 
+          animate={{ scale: [1, 1.2, 1] }}
+          transition={{ repeat: Infinity, duration: 2 }}
+          className="absolute -top-1 -right-1 w-5 h-5 bg-blue-500 rounded-full border-2 border-slate-950"
+        />
+      </motion.button>
+
+      {/* Chat Window */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 100, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 100, scale: 0.8 }}
+            className="fixed bottom-28 right-8 w-96 h-[500px] bg-slate-900 border border-white/10 rounded-[2.5rem] shadow-2xl flex flex-col z-50 overflow-hidden"
+          >
+            {/* Header */}
+            <div className="p-6 bg-gradient-to-r from-emerald-600 to-blue-600 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                  <Bot size={24} className="text-white" />
+                </div>
+                <div>
+                  <h3 className="text-white font-bold">Study Buddy</h3>
+                  <p className="text-white/70 text-[10px] uppercase font-bold tracking-widest">AI Tutor Online</p>
+                </div>
+              </div>
+              <button onClick={() => setIsOpen(false)} className="text-white/70 hover:text-white">
+                <X size={24} />
+              </button>
+            </div>
+
+            {/* Messages */}
+            <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-4 scrollbar-hide">
+              {messages.map((msg, i) => (
+                <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[80%] p-4 rounded-2xl text-sm ${
+                    msg.role === 'user' 
+                      ? 'bg-emerald-500 text-white rounded-tr-none' 
+                      : 'bg-white/5 text-slate-300 border border-white/10 rounded-tl-none'
+                  }`}>
+                    <Markdown>{msg.content}</Markdown>
+                  </div>
+                </div>
+              ))}
+              {loading && (
+                <div className="flex justify-start">
+                  <div className="bg-white/5 p-4 rounded-2xl rounded-tl-none border border-white/10">
+                    <Loader2 size={16} className="animate-spin text-emerald-500" />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Input */}
+            <div className="p-6 border-t border-white/5 bg-slate-950/50">
+              <div className="relative">
+                <input 
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                  placeholder="Ask me anything..."
+                  className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-4 pr-12 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                <button 
+                  onClick={handleSend}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center hover:bg-emerald-400 transition-all"
+                >
+                  <Send size={16} />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
 
 function SidebarItem({ icon, label, active, onClick }: any) {
   return (
@@ -3138,10 +3385,25 @@ function LeaderboardView({ leaderboard, language, onBack }: any) {
                   </td>
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-sm font-bold">
-                        {student.name[0]}
+                      <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden shadow-lg">
+                        {student.avatar ? (
+                          <img src={student.avatar} alt={student.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-sm font-bold">{student.name[0]}</span>
+                        )}
                       </div>
-                      <span className="font-semibold text-white">{student.name}</span>
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-white flex items-center gap-2">
+                          {student.name}
+                          {student.streak > 0 && (
+                            <span className="flex items-center gap-0.5 text-orange-400 text-[10px] font-black bg-orange-500/10 px-1.5 py-0.5 rounded-full border border-orange-500/20">
+                              <Flame size={10} fill="currentColor" />
+                              {student.streak}
+                            </span>
+                          )}
+                        </span>
+                        <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{translations[language].classes[student.class] || student.class}</span>
+                      </div>
                     </div>
                   </td>
                   <td className="px-8 py-6">
