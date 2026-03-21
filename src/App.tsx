@@ -845,9 +845,6 @@ export default function App() {
     setOtp(''); // Clear previous OTP when starting/resending
     console.log("Starting Phone Auth process...");
     try {
-      // Disable app verification for testing to bypass reCAPTCHA for test numbers
-      auth.settings.appVerificationDisabledForTesting = true;
-      
       setupRecaptcha();
       
       const verifier = (window as any).recaptchaVerifier;
