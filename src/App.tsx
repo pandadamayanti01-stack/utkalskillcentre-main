@@ -1772,6 +1772,9 @@ function ProfileView({ user, language, onBack, onParentAccess }: any) {
       await updateDoc(doc(firestore, 'users', user.id), {
         name,
         email,
+        role: user.role,
+        class: user.class || null,
+        board: user.board || null,
         parentShowLeaderboard
       });
       
