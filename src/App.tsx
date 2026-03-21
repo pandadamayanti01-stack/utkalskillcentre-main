@@ -735,8 +735,8 @@ export default function App() {
       console.error("Recaptcha container NOT found in DOM");
       return;
     }
-    console.log("Recaptcha container found, initializing...");
-
+    
+    // Clear existing verifier
     if ((window as any).recaptchaVerifier) {
       try {
         (window as any).recaptchaVerifier.clear();
@@ -746,16 +746,21 @@ export default function App() {
       (window as any).recaptchaVerifier = null;
     }
     
-    // Ensure the container is empty before creating a new verifier
-    container.innerHTML = '';
+    // Ensure the container is empty and has the widget div
+    container.innerHTML = '<div id="recaptcha-widget"></div>';
     
     try {
-      (window as any).recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      (window as any).recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-widget', {
         size: 'invisible',
-        callback: () => {
-          console.log("reCAPTCHA solved");
+        callback: (response: any) => {
+          console.log("reCAPTCHA solved", response);
+        },
+        'expired-callback': () => {
+          console.warn("reCAPTCHA expired");
         }
       });
+      // Important: render the verifier
+      (window as any).recaptchaVerifier.render();
     } catch (e) {
       console.error("Recaptcha Initialization Error:", e);
     }
