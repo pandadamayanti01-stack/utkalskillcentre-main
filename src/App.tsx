@@ -544,7 +544,7 @@ export default function App() {
           if (subDocSnap.exists()) {
             const subData = subDocSnap.data();
             const now = new Date();
-            const expiresAt = new Date(subData.expires_at);
+            const expiresAt = subData.expires_at?.toDate ? subData.expires_at.toDate() : new Date(subData.expires_at);
             setIsPremium(subData.active && expiresAt > now);
           } else {
             setIsPremium(false);
@@ -2487,7 +2487,7 @@ function StudyBuddy({ user, language }: any) {
 
             {/* Input */}
             <div className="p-6 border-t border-white/5 bg-slate-950/50">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 pl-2">
                 <div className="relative flex-1">
                   <input 
                     type="text"

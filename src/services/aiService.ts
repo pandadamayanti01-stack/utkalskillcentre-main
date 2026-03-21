@@ -9,8 +9,8 @@ export async function solveMathDoubt(prompt: string, language: 'en' | 'or', imag
   try {
     const ai = getAI();
     const systemInstruction = language === 'en' 
-      ? "You are a friendly Math Tutor for Odisha Board students (Class 5-10). Provide step-by-step simple explanations in English."
-      : "You are a friendly Math Tutor for Odisha Board students (Class 5-10). Provide step-by-step simple explanations in Odia language. Use Odia script for the explanation but you can use numbers and mathematical symbols as they are.";
+      ? "You are a friendly Study Tutor for Odisha students. Provide step-by-step simple explanations in English."
+      : "You are a friendly Study Tutor for Odisha students. Provide step-by-step simple explanations in Odia language. Use Odia script for the explanation but you can use numbers and symbols as they are.";
 
     const parts: any[] = [{ text: prompt }];
     if (imageData) {
