@@ -154,7 +154,7 @@ service cloud.firestore {
 
     function isValidUserForCreate(data) {
       return hasRequiredFields(['name', 'email', 'role']) &&
-             hasOnlyAllowedFields(['id', 'name', 'email', 'role', 'class', 'board', 'stats', 'completed_chapters', 'preferred_language', 'subjects', 'points', 'shareCount', 'statusShared', 'updatedAt', 'createdAt', 'parent_pin', 'parentShowLeaderboard', 'avatar', 'streak', 'lastActiveDate']) &&
+             hasOnlyAllowedFields(['id', 'name', 'email', 'role', 'class', 'board', 'stats', 'completed_chapters', 'preferred_language', 'subjects', 'points', 'shareCount', 'statusShared', 'updatedAt', 'createdAt', 'parent_pin', 'parentShowLeaderboard', 'avatar', 'streak', 'lastActiveDate', 'phoneNumber']) &&
              validStringLength('name', 1, 50) &&
              isValidEmail(data.email) &&
              data.role in ['student', 'admin'] &&
@@ -172,11 +172,12 @@ service cloud.firestore {
              (!('parentShowLeaderboard' in data) || (data.parentShowLeaderboard is bool)) &&
              (!('avatar' in data) || (data.avatar is string)) &&
              (!('streak' in data) || (data.streak is number)) &&
-             (!('lastActiveDate' in data) || (data.lastActiveDate is string));
+             (!('lastActiveDate' in data) || (data.lastActiveDate is string)) &&
+             (!('phoneNumber' in data) || (data.phoneNumber is string));
     }
 
     function isValidUserForUpdate(data) {
-      return hasOnlyAllowedFields(['id', 'name', 'email', 'role', 'class', 'board', 'stats', 'completed_chapters', 'preferred_language', 'subjects', 'points', 'shareCount', 'statusShared', 'updatedAt', 'createdAt', 'parent_pin', 'parentShowLeaderboard', 'avatar', 'streak', 'lastActiveDate']) &&
+      return hasOnlyAllowedFields(['id', 'name', 'email', 'role', 'class', 'board', 'stats', 'completed_chapters', 'preferred_language', 'subjects', 'points', 'shareCount', 'statusShared', 'updatedAt', 'createdAt', 'parent_pin', 'parentShowLeaderboard', 'avatar', 'streak', 'lastActiveDate', 'phoneNumber']) &&
              (!('id' in data) || (data.id is string)) &&
              (!('name' in data) || validStringLength('name', 1, 50)) &&
              (!('email' in data) || isValidEmail(data.email)) &&
@@ -194,7 +195,8 @@ service cloud.firestore {
              (!('parentShowLeaderboard' in data) || (data.parentShowLeaderboard is bool)) &&
              (!('avatar' in data) || (data.avatar is string)) &&
              (!('streak' in data) || (data.streak is number)) &&
-             (!('lastActiveDate' in data) || (data.lastActiveDate is string));
+             (!('lastActiveDate' in data) || (data.lastActiveDate is string)) &&
+             (!('phoneNumber' in data) || (data.phoneNumber is string));
     }
 
     function isValidMonthlyTest(data) {
@@ -226,6 +228,7 @@ service cloud.firestore {
       allow read: if isOwner(userId) || isAdmin();
       allow create: if (isOwner(userId) && isValidUserForCreate(request.resource.data) && request.resource.data.role == 'student') || (isAdmin() && isValidUserForCreate(request.resource.data));
       allow update: if (isOwner(userId) && isValidUserForUpdate(request.resource.data) && roleUnchanged()) || (isAdmin() && isValidUserForUpdate(request.resource.data));
+      allow delete: if isAdmin();
     }
 
     match /monthly_tests/{testId} {

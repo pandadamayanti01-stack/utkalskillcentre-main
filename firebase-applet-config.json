@@ -1,10 +1,10 @@
 {
-  "projectId": "utkalskillcentre",
-  "appId": "1:108736001473:web:07f139fe64f7641c2c6b40",
-  "apiKey": "AIzaSyAPEUIWH_P7jNUZI4--YFQ7HCaRulc4kXs",
-  "authDomain": "utkalskillcentre.firebaseapp.com",
+  "projectId": "utkal-skill-centre",
+  "appId": "1:527079317006:web:9fcd32759db4fb6569a65f",
+  "apiKey": "AIzaSyApEhBJmnNm6v1Uh5lkoVvJWifVr084I78",
+  "authDomain": "utkal-skill-centre.firebaseapp.com",
   "firestoreDatabaseId": "ai-studio-2a24dfcb-5874-4b37-8e37-434f425283b9",
-  "storageBucket": "utkalskillcentre.firebasestorage.app",
-  "messagingSenderId": "108736001473",
-  "measurementId": "G-Z2M2G8LL46"
+  "storageBucket": "utkal-skill-centre.firebasestorage.app",
+  "messagingSenderId": "527079317006",
+  "measurementId": ""
 }

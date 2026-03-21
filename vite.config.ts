@@ -10,30 +10,30 @@ export default defineConfig(({mode}) => {
     plugins: [
       react(), 
       tailwindcss(),
-      VitePWA({
-        registerType: 'prompt',
-        includeAssets: ['icon.svg'],
-        manifest: {
-          name: 'Utkal Skill Centre',
-          short_name: 'USC',
-          description: 'Utkal Skill Centre Learning Platform',
-          theme_color: '#ffffff',
-          background_color: '#ffffff',
-          display: 'standalone',
-          icons: [
-            {
-              src: 'icon.svg',
-              sizes: '192x192',
-              type: 'image/svg+xml'
-            },
-            {
-              src: 'icon.svg',
-              sizes: '512x512',
-              type: 'image/svg+xml'
-            }
-          ]
-        }
-      })
+      // VitePWA({
+      //   registerType: 'prompt',
+      //   includeAssets: ['icon.svg'],
+      //   manifest: {
+      //     name: 'Utkal Skill Centre',
+      //     short_name: 'USC',
+      //     description: 'Utkal Skill Centre Learning Platform',
+      //     theme_color: '#ffffff',
+      //     background_color: '#ffffff',
+      //     display: 'standalone',
+      //     icons: [
+      //       {
+      //         src: 'icon.svg',
+      //         sizes: '192x192',
+      //         type: 'image/svg+xml'
+      //       },
+      //       {
+      //         src: 'icon.svg',
+      //         sizes: '512x512',
+      //         type: 'image/svg+xml'
+      //       }
+      //     ]
+      //   }
+      // })
     ],
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY || process.env.GEMINI_API_KEY || env.API_KEY || process.env.API_KEY || ""),

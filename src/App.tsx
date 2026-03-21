@@ -71,6 +71,8 @@ import {
 import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, query, where, getDocs, orderBy, limit, addDoc, updateDoc, increment, getCountFromServer, onSnapshot } from 'firebase/firestore';
 import { translations } from './translations';
 import { solveMathDoubt } from './services/aiService';
+import { subjectTranslations } from './constants';
+import { getYouTubeId, getYouTubeEmbedUrl, getYouTubeThumbnail } from './utils/youtube';
 import { AdminDashboard } from './components/AdminDashboard';
 import { PracticeQuestion } from './components/PracticeQuestion';
 import { Dashboard } from './components/Dashboard';
@@ -81,32 +83,6 @@ import { ProgressChart } from './components/ProgressChart';
 import { useVoiceSearch } from './hooks/useVoiceSearch';
 import { OfflineService } from './services/offlineService';
 
-const subjectTranslations: Record<string, string> = {
-  'Mathematics': 'ଗଣିତ',
-  'Math': 'ଗଣିତ',
-  'Science': 'ବିଜ୍ଞାନ',
-  'English': 'ଇଂରାଜୀ',
-  'Odia': 'ଓଡ଼ିଆ',
-  'History': 'ଇତିହାସ',
-  'Geography': 'ଭୂଗୋଳ',
-  'Social Studies': 'ସାମାଜିକ ବିଜ୍ଞାନ',
-  'Social Science': 'ସାମାଜିକ ବିଜ୍ଞାନ',
-  'EVS': 'ପରିବେଶ ବିଜ୍ଞାନ',
-  'General Knowledge': 'ସାଧାରଣ ଜ୍ଞାନ',
-  'GK': 'ସାଧାରଣ ଜ୍ଞାନ',
-  'Hindi': 'ହିନ୍ଦୀ',
-  'Sanskrit': 'ସଂସ୍କୃତ',
-  'Physics': 'ପଦାର୍ଥ ବିଜ୍ଞାନ',
-  'Chemistry': 'ରସାୟନ ବିଜ୍ଞାନ',
-  'Biology': 'ଜୀବ ବିଜ୍ଞାନ',
-  'Art & Health Education': 'କଳା ଏବଂ ସ୍ୱାସ୍ଥ୍ୟ ଶିକ୍ଷା',
-  'Art Education': 'କଳା ଶିକ୍ଷା',
-  'Physical Education & Well-being': 'ଶାରୀରିକ ଶିକ୍ଷା ଏବଂ ସୁସ୍ଥତା',
-  'Vocational Education': 'ଧନ୍ଦାମୂଳକ ଶିକ୍ଷା',
-  'Environmental & Population Education': 'ପରିବେଶ ଏବଂ ଜନସଂଖ୍ୟା ଶିକ୍ଷା',
-  'Aspirational Components': 'ଆକାଂକ୍ଷାମୂଳକ ଉପାଦାନ',
-  'Science (Jigyansa)': 'ବିଜ୍ଞାନ (ଜିଜ୍ଞାସା)'
-};
 
 const getLocalizedSubject = (subject: string, language: string) => {
   if (!subject) return '';
@@ -345,50 +321,6 @@ const BigsanBranding = ({ className = "" }: { className?: string }) => {
   );
 };
 
-// --- YouTube Helpers ---
-const getYouTubeId = (id: string) => {
-  if (!id) return '';
-  if (id.includes('youtube.com/watch?v=')) return id.split('v=')[1].split('&')[0];
-  if (id.includes('youtu.be/')) return id.split('youtu.be/')[1].split('?')[0];
-  if (id.includes('youtube.com/playlist?list=')) return id.split('list=')[1].split('&')[0];
-  if (id.includes('list=')) return id.split('list=')[1].split('&')[0];
-  return id;
-};
-
-const getYouTubeEmbedUrl = (id: string) => {
-  if (!id) return '';
-  
-  // Handle youtu.be with list
-  if (id.includes('youtu.be/') && id.includes('list=')) {
-    const videoId = id.split('youtu.be/')[1].split('?')[0];
-    const listId = id.split('list=')[1].split('&')[0];
-    return `https://www.youtube.com/embed/${videoId}?list=${listId}`;
-  }
-
-  const cleanId = getYouTubeId(id);
-  
-  if (id.includes('playlist') || id.startsWith('PL') || id.includes('list=')) {
-    // If it's a playlist, or contains list=, we might want to show the video with the list
-    if (id.includes('v=')) {
-      const videoId = id.split('v=')[1].split('&')[0];
-      const listId = id.split('list=')[1].split('&')[0];
-      return `https://www.youtube.com/embed/${videoId}?list=${listId}`;
-    }
-    return `https://www.youtube.com/embed/videoseries?list=${cleanId}`;
-  }
-  return `https://www.youtube.com/embed/${cleanId}`;
-};
-
-const getYouTubeThumbnail = (id: string) => {
-  if (!id) return 'https://picsum.photos/seed/edu/400/225';
-  if (id.startsWith('PL') || id.includes('playlist')) {
-    // For playlists, we can't easily get a thumbnail without the first video ID
-    // Fallback to a generic educational image or a placeholder
-    return `https://picsum.photos/seed/${id}/400/225`;
-  }
-  const videoId = getYouTubeId(id);
-  return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
-};
 
 export default function App() {
   const [user, setUser] = useState<Student | null>(null);
@@ -1730,7 +1662,7 @@ export default function App() {
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0 lg:static
       `}>
-        <div className="h-full flex flex-col p-6">
+        <div className="h-full flex flex-col p-6 overflow-y-auto">
           <div className="flex items-center justify-between mb-10">
             <Logo className="h-10" />
             <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-slate-400"><X /></button>
@@ -1775,7 +1707,7 @@ export default function App() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 min-w-0 flex flex-col h-screen overflow-hidden">
+      <main className="flex-1 min-w-0 flex flex-col h-screen overflow-y-auto">
         {/* AI Banner */}
         {!isAdminView && (
           <div className="bg-gradient-to-r from-emerald-500/20 via-cyan-500/20 to-emerald-500/20 border-b border-emerald-500/30 px-6 py-2 flex items-center justify-center gap-2 shrink-0 z-40 relative overflow-hidden">
