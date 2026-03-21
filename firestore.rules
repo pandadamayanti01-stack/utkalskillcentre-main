@@ -34,6 +34,31 @@ service cloud.firestore {
     //   - class: string (optional, < 20 chars)
     //   - board: string (optional, < 20 chars)
     //
+    // Collection: monthly_test_submissions
+    // Document ID: {submissionId}
+    // Fields:
+    //   - userId: string (required)
+    //   - testId: string (required)
+    //   - score: number (required)
+    //   - submittedAt: timestamp (required)
+    //
+    // Collection: public_profiles
+    // Document ID: {userId}
+    // Fields:
+    //   - name: string (required)
+    //   - photoURL: string (optional)
+    //
+    // Collection: users
+    // Document ID: {userId}
+    // Fields:
+    //   - name: string (required, < 50 chars)
+    //   - email: string (required, valid email)
+    //   - role: string (required, enum: ['student', 'admin'])
+    //   - class: string (optional, < 20 chars)
+    //   - board: string (optional, < 20 chars)
+    //   - stats: map (optional)
+    //   - completed_chapters: list (optional)
+    //
     // Collection: monthly_tests
     // Document ID: {testId}
     // Fields:
@@ -53,11 +78,26 @@ service cloud.firestore {
     function isAdmin() {
       return isAuthenticated() &&
         (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
-          (request.auth.token.email == "pandadamayanti01@gmail.com" && request.auth.token.email_verified == true));
+          (request.auth.token.email == "pandadamayanti01@gmail.com" && request.auth.token.email_verified == true) ||
+          request.auth.token.phone_number == "+919337956168");
     }
 
     function isOwner(userId) {
        return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function roleUnchanged() {
+      return !('role' in request.resource.data) || request.resource.data.role == resource.data.role;
+    }
+
+    function isValidStats(stats) {
+      return stats is map && stats.keys().hasOnly(['streak', 'level', 'experience', 'accuracy', 'league', 'badges', 'weeklyPoints']) &&
+             (!('league' in stats) || (stats.league is string && stats.league.size() < 50)) &&
+             (!('badges' in stats) || (stats.badges is list && stats.badges.size() < 50));
+    }
+    
+    function isValidCompletedChapters(chapters) {
+      return chapters is list && chapters.size() < 100;
     }
 
     function hasRequiredFields(fields) {
@@ -81,7 +121,7 @@ service cloud.firestore {
 
     function isValidEmail(email) {
        return email is string &&
-         email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+         (email == "" || email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"));
     }
 
     // ===============================================================
@@ -108,12 +148,43 @@ service cloud.firestore {
              data.status in ['draft', 'published'];
     }
 
-    function isValidUser(data) {
+    function isValidUserForCreate(data) {
       return hasRequiredFields(['name', 'email', 'role']) &&
-             hasOnlyAllowedFields(['name', 'email', 'role', 'class', 'board']) &&
+             hasOnlyAllowedFields(['id', 'name', 'email', 'role', 'class', 'board', 'stats', 'completed_chapters', 'preferred_language', 'subjects', 'points', 'shareCount', 'statusShared', 'updatedAt', 'createdAt', 'parent_pin', 'parentShowLeaderboard']) &&
              validStringLength('name', 1, 50) &&
              isValidEmail(data.email) &&
-             data.role in ['student', 'admin'];
+             data.role in ['student', 'admin'] &&
+             (!('id' in data) || (data.id is string)) &&
+             (!('stats' in data) || isValidStats(data.stats)) &&
+             (!('completed_chapters' in data) || isValidCompletedChapters(data.completed_chapters)) &&
+             (!('preferred_language' in data) || (data.preferred_language is string && data.preferred_language.size() < 10)) &&
+             (!('subjects' in data) || (data.subjects is list && data.subjects.size() < 20)) &&
+             (!('points' in data) || (data.points is number && data.points >= 0)) &&
+             (!('shareCount' in data) || (data.shareCount is number && data.shareCount >= 0)) &&
+             (!('statusShared' in data) || (data.statusShared is bool)) &&
+             (!('updatedAt' in data) || (data.updatedAt is timestamp)) &&
+             (!('createdAt' in data) || (data.createdAt is timestamp)) &&
+             (!('parent_pin' in data) || (data.parent_pin is string && data.parent_pin.size() == 4)) &&
+             (!('parentShowLeaderboard' in data) || (data.parentShowLeaderboard is bool));
+    }
+
+    function isValidUserForUpdate(data) {
+      return hasOnlyAllowedFields(['id', 'name', 'email', 'role', 'class', 'board', 'stats', 'completed_chapters', 'preferred_language', 'subjects', 'points', 'shareCount', 'statusShared', 'updatedAt', 'createdAt', 'parent_pin', 'parentShowLeaderboard']) &&
+             (!('id' in data) || (data.id is string)) &&
+             (!('name' in data) || validStringLength('name', 1, 50)) &&
+             (!('email' in data) || isValidEmail(data.email)) &&
+             (!('role' in data) || data.role in ['student', 'admin']) &&
+             (!('stats' in data) || isValidStats(data.stats)) &&
+             (!('completed_chapters' in data) || isValidCompletedChapters(data.completed_chapters)) &&
+             (!('preferred_language' in data) || (data.preferred_language is string && data.preferred_language.size() < 10)) &&
+             (!('subjects' in data) || (data.subjects is list && data.subjects.size() < 20)) &&
+             (!('points' in data) || (data.points is number && data.points >= 0)) &&
+             (!('shareCount' in data) || (data.shareCount is number && data.shareCount >= 0)) &&
+             (!('statusShared' in data) || (data.statusShared is bool)) &&
+             (!('updatedAt' in data) || (data.updatedAt is timestamp)) &&
+             (!('createdAt' in data) || (data.createdAt is timestamp)) &&
+             (!('parent_pin' in data) || (data.parent_pin is string && data.parent_pin.size() == 4)) &&
+             (!('parentShowLeaderboard' in data) || (data.parentShowLeaderboard is bool));
     }
 
     function isValidMonthlyTest(data) {
@@ -143,8 +214,8 @@ service cloud.firestore {
 
     match /users/{userId} {
       allow read: if isOwner(userId) || isAdmin();
-      allow create: if isOwner(userId) && isValidUser(request.resource.data) && request.resource.data.role == 'student';
-      allow update: if (isOwner(userId) || isAdmin()) && isValidUser(request.resource.data);
+      allow create: if (isOwner(userId) && isValidUserForCreate(request.resource.data) && request.resource.data.role == 'student') || (isAdmin() && isValidUserForCreate(request.resource.data));
+      allow update: if (isOwner(userId) && isValidUserForUpdate(request.resource.data) && roleUnchanged()) || (isAdmin() && isValidUserForUpdate(request.resource.data));
     }
 
     match /monthly_tests/{testId} {
@@ -152,6 +223,73 @@ service cloud.firestore {
       allow create: if isAdmin() && isValidMonthlyTest(request.resource.data);
       allow update: if isAdmin() && isValidMonthlyTest(request.resource.data);
       allow delete: if isAdmin();
+    }
+
+    match /test_results/{resultId} {
+      allow read: if isAuthenticated() && request.auth.uid == resource.data.user_id;
+      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.user_id;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    match /quiz_results/{resultId} {
+      allow read: if isAuthenticated() && request.auth.uid == resource.data.userId;
+      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.userId;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    match /monthly_test_submissions/{submissionId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if false; // Submissions are immutable
+      allow delete: if false;
+    }
+
+    match /public_profiles/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId);
+    }
+
+    match /subscriptions/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId) || isAdmin();
+    }
+
+    match /payments/{paymentId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated();
+    }
+
+    match /transactions/{transactionId} {
+      allow read: if (isAuthenticated() && request.auth.uid == resource.data.userId) || isAdmin();
+      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.userId;
+      allow update: if isAuthenticated() && request.auth.uid == resource.data.userId && request.auth.uid == request.resource.data.userId;
+    }
+
+    match /ai_usage/{usageId} {
+      allow read: if (isAuthenticated() && request.auth.uid == resource.data.userId) || isAdmin();
+      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.userId;
+      allow update: if isAuthenticated() && request.auth.uid == resource.data.userId && request.auth.uid == request.resource.data.userId;
+    }
+
+    match /notifications/{notificationId} {
+      allow read: if (isAuthenticated() && request.auth.uid == resource.data.userId) || isAdmin();
+      allow create: if (isAuthenticated() && request.auth.uid == request.resource.data.userId) || isAdmin();
+      allow update: if (isAuthenticated() && request.auth.uid == resource.data.userId && request.auth.uid == request.resource.data.userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /private_settings/{settingId} {
+      allow read: if isAuthenticated() && request.auth.uid == resource.data.userId;
+      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.userId;
+      allow update: if isAuthenticated() && request.auth.uid == resource.data.userId && request.auth.uid == request.resource.data.userId;
+    }
+
+    match /settings/{document=**} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
     }
 
     match /system_settings/{document=**} {

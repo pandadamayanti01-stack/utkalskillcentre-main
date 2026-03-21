@@ -61,6 +61,7 @@ import { translations } from './translations';
 import { solveMathDoubt } from './services/aiService';
 import { AdminDashboard } from './components/AdminDashboard';
 import { PracticeQuestion } from './components/PracticeQuestion';
+import { Dashboard } from './components/Dashboard';
 
 const subjectTranslations: Record<string, string> = {
   'Mathematics': 'ଗଣିତ',
@@ -534,14 +535,14 @@ export default function App() {
             id: firebaseUser.uid,
             name: firebaseUser.displayName || (userDocSnap.exists() ? userDocSnap.data().name : regDataRef.current.name) || 'Student',
             email: firebaseUser.email || (userDocSnap.exists() ? userDocSnap.data().email : regDataRef.current.email) || '',
-            class: (userDocSnap.exists() && userDocSnap.data().class) ? userDocSnap.data().class : regDataRef.current.class,
-            board: (userDocSnap.exists() && userDocSnap.data().board) ? userDocSnap.data().board : regDataRef.current.board,
-            subjects: (userDocSnap.exists() && userDocSnap.data().subjects?.length > 0) ? userDocSnap.data().subjects : regDataRef.current.subjects,
+            class: (userDocSnap.exists() && userDocSnap.data().class) ? userDocSnap.data().class : (regDataRef.current.class || ''),
+            board: (userDocSnap.exists() && userDocSnap.data().board) ? userDocSnap.data().board : (regDataRef.current.board || ''),
+            subjects: (userDocSnap.exists() && userDocSnap.data().subjects?.length > 0) ? userDocSnap.data().subjects : (regDataRef.current.subjects || []),
             preferred_language: (userDocSnap.exists() && userDocSnap.data().preferred_language) ? userDocSnap.data().preferred_language : (languageRef.current || 'or'),
             role: role,
-            points: userDocSnap.exists() ? userDocSnap.data().points : 0,
-            shareCount: userDocSnap.exists() ? (userDocSnap.data().shareCount || 0) : 0,
-            statusShared: userDocSnap.exists() ? (userDocSnap.data().statusShared || false) : false,
+            points: userDocSnap.exists() ? (userDocSnap.data().points ?? 0) : 0,
+            shareCount: userDocSnap.exists() ? (userDocSnap.data().shareCount ?? 0) : 0,
+            statusShared: userDocSnap.exists() ? (userDocSnap.data().statusShared ?? false) : false,
             updatedAt: serverTimestamp()
           };
 
@@ -1159,174 +1160,210 @@ export default function App() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 relative overflow-hidden">
-        {/* Background Glows */}
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500/10 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-500/10 blur-[120px] rounded-full" />
+      <div className="min-h-screen bg-[#0B0F19] flex flex-col relative overflow-hidden font-sans">
+        {/* AI Banner */}
+        <div className="bg-gradient-to-r from-emerald-500/20 via-cyan-500/20 to-emerald-500/20 border-b border-emerald-500/30 px-6 py-2 flex items-center justify-center gap-2 shrink-0 z-50 relative overflow-hidden w-full">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LCAyNTUsLCAyNTUsIDAuMDUpIi8+PC9zdmc+')] pointer-events-none"></div>
+          <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
+          <p className="text-sm font-medium text-emerald-100 hidden sm:block">
+            {language === 'en' ? 'Experience the new AI-powered learning tools!' : 'ନୂତନ AI-ଚାଳିତ ଶିକ୍ଷଣ ଉପକରଣଗୁଡ଼ିକର ଅନୁଭବ କରନ୍ତୁ!'}
+          </p>
+          <p className="text-sm font-medium text-emerald-100 sm:hidden">
+            {language === 'en' ? 'New AI tools!' : 'ନୂତନ AI ଉପକରଣଗୁଡ଼ିକ!'}
+          </p>
+        </div>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md z-10"
-        >
-          <div className="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl relative">
-            <div className="absolute top-6 right-6">
-              <button 
-                onClick={() => {
-                  const newLang = language === 'en' ? 'or' : 'en';
-                  setLanguage(newLang);
-                }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-medium text-white hover:bg-white/10 transition-all"
+        <div className="flex-1 flex relative overflow-hidden">
+          {/* Background Glows & Grid */}
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LCAyNTUsLCAyNTUsIDAuMDUpIi8+PC9zdmc+')] [mask-image:linear-gradient(to_bottom,white,transparent)] pointer-events-none"></div>
+          <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-emerald-500/20 rounded-full blur-[120px] pointer-events-none"></div>
+          <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-blue-500/20 rounded-full blur-[120px] pointer-events-none"></div>
+
+          {/* Left Content - Marketing / AI Focus */}
+        <div className="hidden lg:flex flex-1 flex-col justify-center px-16 xl:px-24 relative z-10 border-r border-white/5 bg-slate-900/30 backdrop-blur-sm overflow-hidden">
+          {/* Abstract AI Network Background */}
+          <div className="absolute inset-0 opacity-20 pointer-events-none">
+            <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1"/>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#grid)" />
+            </svg>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="max-w-xl relative z-10"
+          >
+            <Logo className="h-12 mb-8 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
+            
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-6">
+              <Sparkles size={14} />
+              AI-Powered Learning
+            </div>
+            
+            <h1 className="text-5xl xl:text-6xl font-black text-white leading-[1.1] mb-6 tracking-tight">
+              Master Your Future with <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">Intelligent AI</span>
+            </h1>
+            
+            <p className="text-lg text-slate-400 mb-12 leading-relaxed">
+              Experience the next generation of education. Our AI tutor adapts to your learning style, providing real-time feedback and personalized pathways to success.
+            </p>
+
+            {/* AI Interface Mockup / Floating Elements */}
+            <div className="relative h-72 w-full mt-8">
+              {/* Main AI Core */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32">
+                <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-xl animate-pulse"></div>
+                <div className="absolute inset-0 border border-emerald-500/30 rounded-full animate-[spin_10s_linear_infinite]"></div>
+                <div className="absolute inset-2 border border-cyan-500/30 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
+                <div className="absolute inset-0 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm rounded-full border border-white/10 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+                  <Brain className="text-emerald-400 w-12 h-12" />
+                </div>
+              </div>
+
+              {/* Connecting Lines & Nodes */}
+              <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: -1 }}>
+                <motion.path 
+                  d="M 50 50 Q 150 100 200 150" 
+                  stroke="rgba(16,185,129,0.3)" 
+                  strokeWidth="2" 
+                  fill="none" 
+                  strokeDasharray="5,5"
+                  animate={{ strokeDashoffset: [0, -100] }}
+                  transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
+                />
+                <motion.path 
+                  d="M 350 50 Q 250 100 200 150" 
+                  stroke="rgba(6,182,212,0.3)" 
+                  strokeWidth="2" 
+                  fill="none" 
+                  strokeDasharray="5,5"
+                  animate={{ strokeDashoffset: [0, 100] }}
+                  transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
+                />
+                <motion.path 
+                  d="M 50 250 Q 150 200 200 150" 
+                  stroke="rgba(59,130,246,0.3)" 
+                  strokeWidth="2" 
+                  fill="none" 
+                  strokeDasharray="5,5"
+                  animate={{ strokeDashoffset: [0, -100] }}
+                  transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
+                />
+              </svg>
+
+              {/* Floating Nodes */}
+              <motion.div 
+                animate={{ y: [0, -10, 0], x: [0, 5, 0] }}
+                transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                className="absolute top-4 left-8 bg-slate-800/80 backdrop-blur-md border border-emerald-500/30 p-3 rounded-2xl shadow-lg flex items-center gap-3"
               >
-                <Globe size={12} />
-                {language === 'en' ? 'ଓଡ଼ିଆ' : 'English'}
-              </button>
+                <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                  <Bot className="text-emerald-400 w-4 h-4" />
+                </div>
+                <div>
+                  <div className="text-xs text-slate-400">AI Analysis</div>
+                  <div className="text-sm font-bold text-white">98% Accuracy</div>
+                </div>
+              </motion.div>
+
+              <motion.div 
+                animate={{ y: [0, 15, 0], x: [0, -5, 0] }}
+                transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 1 }}
+                className="absolute top-8 right-4 bg-slate-800/80 backdrop-blur-md border border-cyan-500/30 p-3 rounded-2xl shadow-lg flex items-center gap-3"
+              >
+                <div className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center">
+                  <Sparkles className="text-cyan-400 w-4 h-4" />
+                </div>
+                <div>
+                  <div className="text-xs text-slate-400">Learning Path</div>
+                  <div className="text-sm font-bold text-white">Optimized</div>
+                </div>
+              </motion.div>
+
+              <motion.div 
+                animate={{ y: [0, -15, 0] }}
+                transition={{ repeat: Infinity, duration: 6, ease: "easeInOut", delay: 2 }}
+                className="absolute bottom-4 left-1/4 bg-slate-800/80 backdrop-blur-md border border-blue-500/30 p-3 rounded-2xl shadow-lg flex items-center gap-3"
+              >
+                <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
+                  <Globe className="text-blue-400 w-4 h-4" />
+                </div>
+                <div>
+                  <div className="text-xs text-slate-400">Global Knowledge</div>
+                  <div className="text-sm font-bold text-white">Connected</div>
+                </div>
+              </motion.div>
             </div>
+          </motion.div>
+        </div>
 
-            <div className="text-center mb-8 mt-2">
-              <Logo className="h-12 mx-auto mb-4" />
-              <h1 className="text-2xl font-bold text-white mb-1.5">{translations[language].welcome}</h1>
-              <p className="text-slate-400 text-sm">{translations[language].tagline}</p>
-            </div>
+        {/* Right Content - Login Form */}
+        <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-12 relative z-10">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full max-w-md"
+          >
+            <div className="glass-card rounded-[2rem] p-8 shadow-2xl relative bg-slate-900/60 backdrop-blur-2xl border border-white/10 overflow-hidden">
+              {/* Subtle inner glow */}
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-blue-500/5 pointer-events-none"></div>
+              
+              <div className="absolute top-6 right-6 z-20">
+                <button 
+                  onClick={() => {
+                    const newLang = language === 'en' ? 'or' : 'en';
+                    setLanguage(newLang);
+                  }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800/80 border border-white/10 text-[10px] font-bold uppercase tracking-widest text-slate-300 hover:text-white hover:bg-slate-700 transition-all shadow-lg"
+                >
+                  <Globe size={12} />
+                  {language === 'en' ? 'ଓଡ଼ିଆ' : 'English'}
+                </button>
+              </div>
 
-            {authStep === 'login' ? (
-              <div className="space-y-3">
-                {isAdminLogin ? (
-                  <div className="space-y-3">
-                    <input 
-                      type="email" 
-                      placeholder="Admin Email"
-                      className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
-                      value={adminEmail}
-                      onChange={(e) => setAdminEmail(e.target.value)}
-                    />
-                    <input 
-                      type="password" 
-                      placeholder="Password"
-                      className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
-                      value={adminPassword}
-                      onChange={(e) => setAdminPassword(e.target.value)}
-                    />
-                    <button 
-                      onClick={handleAdminEmailLogin}
-                      disabled={isSendingOtp}
-                      className={`w-full py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-900/20 flex items-center justify-center gap-2 ${isSendingOtp ? 'opacity-70 cursor-not-allowed' : ''}`}
-                    >
-                      {isSendingOtp && (
-                        <motion.div 
-                          animate={{ rotate: 360 }}
-                          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                          className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
-                        />
-                      )}
-                      {isSendingOtp ? (language === 'en' ? 'Logging in...' : 'ଲଗଇନ୍ ହେଉଛି...') : (language === 'en' ? 'Login with Email' : 'ଇମେଲ୍ ସହିତ ଲଗଇନ୍')}
-                    </button>
+              <div className="text-center mb-8 mt-2 lg:hidden relative z-20">
+                <Logo className="h-10 mx-auto mb-4 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
+              </div>
 
-                    <div className="relative my-4">
-                      <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-white/10"></div>
-                      </div>
-                      <div className="relative flex justify-center text-xs">
-                        <span className="bg-slate-900 px-2 text-slate-500">Or Admin Phone Login</span>
-                      </div>
-                    </div>
+              <div className="mb-8 mt-6 relative z-20">
+                <h2 className="text-3xl font-bold text-white mb-2 tracking-tight">
+                  {authStep === 'login' ? (isAdminLogin ? 'Admin Portal' : 'Welcome Back') : 'Verify Identity'}
+                </h2>
+                <p className="text-slate-400 text-sm">
+                  {authStep === 'login' 
+                    ? (isAdminLogin ? 'Authenticate to access the control panel' : 'Enter your credentials to continue learning') 
+                    : `We sent a secure code to ${phoneNumber}`}
+                </p>
+              </div>
 
-                    <div className="flex gap-2">
-                      <div className="flex items-center justify-center px-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-medium">+91</div>
+              {authStep === 'login' ? (
+                <div className="space-y-4">
+                  {isAdminLogin ? (
+                    <div className="space-y-4">
                       <input 
-                        type="tel" 
-                        placeholder="Admin Phone"
-                        className="flex-1 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        type="email" 
+                        placeholder="Admin Email"
+                        className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
+                        value={adminEmail}
+                        onChange={(e) => setAdminEmail(e.target.value)}
                       />
-                    </div>
-                    <button 
-                      onClick={handlePhoneLogin}
-                      disabled={isSendingOtp}
-                      className={`w-full py-2.5 rounded-xl bg-slate-800 text-white text-sm font-semibold hover:bg-slate-700 transition-all shadow-lg flex items-center justify-center gap-2 ${isSendingOtp ? 'opacity-70 cursor-not-allowed' : ''}`}
-                    >
-                      {language === 'en' ? 'Login with Phone' : 'ଫୋନ୍ ସହିତ ଲଗଇନ୍'}
-                    </button>
-                    {adminLoginError && (
-                      <div className="text-red-400 text-xs text-center mt-2 p-2 bg-red-500/10 rounded-lg border border-red-500/20">
-                        {adminLoginError}
-                      </div>
-                    )}
-                    {showResetPasswordButton && (
+                      <input 
+                        type="password" 
+                        placeholder="Password"
+                        className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
+                        value={adminPassword}
+                        onChange={(e) => setAdminPassword(e.target.value)}
+                      />
                       <button 
-                        onClick={handleSendPasswordReset}
-                        className="w-full py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/20 mt-2"
-                      >
-                        Send Password Reset Email
-                      </button>
-                    )}
-                    <div className="relative my-4">
-                      <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-white/10"></div>
-                      </div>
-                      <div className="relative flex justify-center text-xs">
-                        <span className="bg-slate-900 px-2 text-slate-500">Or continue with</span>
-                      </div>
-                    </div>
-                    <button 
-                      onClick={handleGoogleLogin}
-                      className="w-full py-2.5 rounded-xl bg-white text-slate-900 text-sm font-semibold hover:bg-slate-100 transition-all shadow-lg flex items-center justify-center gap-2"
-                    >
-                      <svg className="w-4 h-4" viewBox="0 0 24 24">
-                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                      </svg>
-                      Google
-                    </button>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    <div className="space-y-3">
-                      <select 
-                        className="w-full px-3 py-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
-                        value={regData.class}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          setRegData({ ...regData, class: val });
-                        }}
-                      >
-                        <option value="">{translations[language].selectClass} *</option>
-                        {Object.entries(translations[language].classes)
-                          .filter(([key]) => !systemSettings.enabledClasses || systemSettings.enabledClasses.length === 0 || systemSettings.enabledClasses.includes(key))
-                          .map(([key, label]) => (
-                          <option key={key} value={key}>{label as string}</option>
-                        ))}
-                      </select>
-                      <select 
-                        className="w-full px-3 py-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
-                        value={regData.board}
-                        onChange={(e) => setRegData({ ...regData, board: e.target.value })}
-                      >
-                        <option value="">{translations[language].selectBoard} *</option>
-                        <option value="odisha">{translations[language].boards.odisha}</option>
-                        <option value="saraswati">{translations[language].boards.saraswati}</option>
-                        <option value="cbse">{translations[language].boards.cbse}</option>
-                      </select>
-                    </div>
-
-                    <div className="space-y-3">
-                      <div className="flex gap-2">
-                        <div className="flex items-center justify-center px-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-medium">+91</div>
-                        <input 
-                          type="tel" 
-                          placeholder={translations[language].enterPhone}
-                          className="flex-1 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
-                          value={phoneNumber}
-                          onChange={(e) => setPhoneNumber(e.target.value)}
-                        />
-                      </div>
-                      <button 
-                        onClick={handlePhoneLogin}
+                        onClick={handleAdminEmailLogin}
                         disabled={isSendingOtp}
-                        className={`w-full py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-900/20 flex items-center justify-center gap-2 ${isSendingOtp ? 'opacity-70 cursor-not-allowed' : ''}`}
+                        className={`w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-white text-sm font-bold hover:from-emerald-400 hover:to-cyan-400 transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 ${isSendingOtp ? 'opacity-70 cursor-not-allowed' : ''}`}
                       >
                         {isSendingOtp && (
                           <motion.div 
@@ -1335,75 +1372,192 @@ export default function App() {
                             className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
                           />
                         )}
-                        {isSendingOtp ? translations[language].sending : translations[language].sendOtp}
+                        {isSendingOtp ? (language === 'en' ? 'Logging in...' : 'ଲଗଇନ୍ ହେଉଛି...') : (language === 'en' ? 'Login with Email' : 'ଇମେଲ୍ ସହିତ ଲଗଇନ୍')}
+                      </button>
+
+                      <div className="relative my-6">
+                        <div className="absolute inset-0 flex items-center">
+                          <div className="w-full border-t border-white/10"></div>
+                        </div>
+                        <div className="relative flex justify-center text-xs">
+                          <span className="bg-slate-900 px-4 text-slate-500">Or Admin Phone Login</span>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <div className="flex items-center justify-center px-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-medium">+91</div>
+                        <input 
+                          type="tel" 
+                          placeholder="Admin Phone"
+                          className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
+                          value={phoneNumber}
+                          onChange={(e) => setPhoneNumber(e.target.value)}
+                        />
+                      </div>
+                      <button 
+                        onClick={handlePhoneLogin}
+                        disabled={isSendingOtp}
+                        className={`w-full py-3 rounded-xl bg-slate-800/80 border border-white/10 text-white text-sm font-bold hover:bg-slate-700 transition-all shadow-lg flex items-center justify-center gap-2 ${isSendingOtp ? 'opacity-70 cursor-not-allowed' : ''}`}
+                      >
+                        {language === 'en' ? 'Login with Phone' : 'ଫୋନ୍ ସହିତ ଲଗଇନ୍'}
+                      </button>
+                      {adminLoginError && (
+                        <div className="text-red-400 text-xs text-center mt-2 p-3 bg-red-500/10 rounded-lg border border-red-500/20">
+                          {adminLoginError}
+                        </div>
+                      )}
+                      {showResetPasswordButton && (
+                        <button 
+                          onClick={handleSendPasswordReset}
+                          className="w-full py-3 rounded-xl bg-blue-600 text-white text-sm font-bold hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/20 mt-2"
+                        >
+                          Send Password Reset Email
+                        </button>
+                      )}
+                      <div className="relative my-6">
+                        <div className="absolute inset-0 flex items-center">
+                          <div className="w-full border-t border-white/10"></div>
+                        </div>
+                        <div className="relative flex justify-center text-xs">
+                          <span className="bg-slate-900 px-4 text-slate-500">Or continue with</span>
+                        </div>
+                      </div>
+                      <button 
+                        onClick={handleGoogleLogin}
+                        className="w-full py-3 rounded-xl bg-white text-slate-900 text-sm font-bold hover:bg-slate-100 transition-all shadow-lg flex items-center justify-center gap-2"
+                      >
+                        <svg className="w-5 h-5" viewBox="0 0 24 24">
+                          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                        </svg>
+                        Google
                       </button>
                     </div>
-                  </div>
-                )}
-
-                <p className="text-[10px] text-slate-500 text-center mt-2">
-                  {!isAdminLogin && (language === 'en' ? '* All fields are mandatory' : '* ସମସ୍ତ ତଥ୍ୟ ଦେବା ଅନିର୍ବାଯ୍ୟ')}
-                </p>
-                
-                <div className="text-center mt-2">
-                  <button 
-                    onClick={() => setIsAdminLogin(!isAdminLogin)} 
-                    className="text-xs text-slate-500 hover:text-emerald-400 transition-colors"
-                  >
-                    {isAdminLogin ? (language === 'en' ? "Student Login" : "ଛାତ୍ର ଲଗଇନ୍") : (language === 'en' ? "Admin Login" : "ଆଡମିନ୍ ଲଗଇନ୍")}
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-5">
-                <div className="text-center">
-                  <p className="text-slate-400 text-sm mb-2">{translations[language].enterOtp} to {phoneNumber}</p>
-                  <button onClick={() => setAuthStep('login')} className="text-emerald-500 text-xs hover:underline">Change Number</button>
-                </div>
-                <input 
-                  type="text" 
-                  maxLength={6}
-                  placeholder="------"
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-center text-2xl tracking-[1em] focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                />
-                <button 
-                  onClick={verifyOtp}
-                  disabled={loading || otp.length < 6}
-                  className={`w-full py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-900/20 flex items-center justify-center gap-2 ${ (loading || otp.length < 6) ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  {loading && (
-                    <motion.div 
-                      animate={{ rotate: 360 }}
-                      transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                      className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
-                    />
-                  )}
-                  {loading ? (language === 'en' ? 'Verifying...' : 'ଯାଞ୍ଚ କରାଯାଉଛି...') : translations[language].verifyOtp}
-                </button>
-
-                <div className="text-center">
-                  {resendTimer > 0 ? (
-                    <p className="text-slate-500 text-xs">
-                      {language === 'en' ? `Resend OTP in ${resendTimer}s` : `${resendTimer} ସେକେଣ୍ଡ ପରେ ପୁଣି ପଠାନ୍ତୁ`}
-                    </p>
                   ) : (
-                    <button 
-                      onClick={startPhoneAuth}
-                      disabled={isSendingOtp}
-                      className={`text-emerald-500 text-xs hover:underline font-medium ${isSendingOtp ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    >
-                      {isSendingOtp ? (language === 'en' ? 'Sending...' : 'ପଠାଯାଉଛି...') : translations[language].resendOtp}
-                    </button>
+                    <div className="space-y-4">
+                      <div className="space-y-4">
+                        <select 
+                          className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
+                          value={regData.class}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setRegData({ ...regData, class: val });
+                          }}
+                        >
+                          <option value="">{translations[language].selectClass} *</option>
+                          {Object.entries(translations[language].classes)
+                            .filter(([key]) => !systemSettings.enabledClasses || systemSettings.enabledClasses.length === 0 || systemSettings.enabledClasses.includes(key))
+                            .map(([key, label]) => (
+                            <option key={key} value={key}>{label as string}</option>
+                          ))}
+                        </select>
+                        <select 
+                          className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
+                          value={regData.board}
+                          onChange={(e) => setRegData({ ...regData, board: e.target.value })}
+                        >
+                          <option value="">{translations[language].selectBoard} *</option>
+                          <option value="odisha">{translations[language].boards.odisha}</option>
+                          <option value="saraswati">{translations[language].boards.saraswati}</option>
+                          <option value="cbse">{translations[language].boards.cbse}</option>
+                        </select>
+                      </div>
+
+                      <div className="space-y-4">
+                        <div className="flex gap-2">
+                          <div className="flex items-center justify-center px-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-medium">+91</div>
+                          <input 
+                            type="tel" 
+                            placeholder={translations[language].enterPhone}
+                            className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
+                            value={phoneNumber}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
+                          />
+                        </div>
+                        <button 
+                          onClick={handlePhoneLogin}
+                          disabled={isSendingOtp}
+                          className={`w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-white text-sm font-bold hover:from-emerald-400 hover:to-cyan-400 transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 ${isSendingOtp ? 'opacity-70 cursor-not-allowed' : ''}`}
+                        >
+                          {isSendingOtp && (
+                            <motion.div 
+                              animate={{ rotate: 360 }}
+                              transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                              className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
+                            />
+                          )}
+                          {isSendingOtp ? translations[language].sending : translations[language].sendOtp}
+                        </button>
+                      </div>
+                    </div>
                   )}
+
+                  <p className="text-[10px] text-slate-500 text-center mt-4">
+                    {!isAdminLogin && (language === 'en' ? '* All fields are mandatory' : '* ସମସ୍ତ ତଥ୍ୟ ଦେବା ଅନିର୍ବାଯ୍ୟ')}
+                  </p>
+                  
+                  <div className="text-center mt-4">
+                    <button 
+                      onClick={() => setIsAdminLogin(!isAdminLogin)} 
+                      className="text-xs font-medium text-slate-400 hover:text-emerald-400 transition-colors"
+                    >
+                      {isAdminLogin ? (language === 'en' ? "Student Login" : "ଛାତ୍ର ଲଗଇନ୍") : (language === 'en' ? "Admin Login" : "ଆଡମିନ୍ ଲଗଇନ୍")}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-          <div id="recaptcha-container" className="flex justify-center my-4 min-h-[80px]"></div>
-          <BigsanBranding className="mt-12" />
-        </motion.div>
+              ) : (
+                <div className="space-y-6">
+                  <div className="text-center">
+                    <p className="text-slate-400 text-sm mb-2">{translations[language].enterOtp} to {phoneNumber}</p>
+                    <button onClick={() => setAuthStep('login')} className="text-emerald-500 text-xs font-medium hover:underline">Change Number</button>
+                  </div>
+                  <input 
+                    type="text" 
+                    maxLength={6}
+                    placeholder="------"
+                    className="w-full px-4 py-4 rounded-xl bg-white/5 border border-white/10 text-white text-center text-3xl tracking-[1em] focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all font-mono"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                  />
+                  <button 
+                    onClick={verifyOtp}
+                    disabled={loading || otp.length < 6}
+                    className={`w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-white text-sm font-bold hover:from-emerald-400 hover:to-cyan-400 transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 ${ (loading || otp.length < 6) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    {loading && (
+                      <motion.div 
+                        animate={{ rotate: 360 }}
+                        transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                        className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
+                      />
+                    )}
+                    {loading ? (language === 'en' ? 'Verifying...' : 'ଯାଞ୍ଚ କରାଯାଉଛି...') : translations[language].verifyOtp}
+                  </button>
+
+                  <div className="text-center">
+                    {resendTimer > 0 ? (
+                      <p className="text-slate-500 text-xs font-medium">
+                        {language === 'en' ? `Resend OTP in ${resendTimer}s` : `${resendTimer} ସେକେଣ୍ଡ ପରେ ପୁଣି ପଠାନ୍ତୁ`}
+                      </p>
+                    ) : (
+                      <button 
+                        onClick={startPhoneAuth}
+                        disabled={isSendingOtp}
+                        className={`text-emerald-500 text-xs font-medium hover:underline ${isSendingOtp ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      >
+                        {isSendingOtp ? (language === 'en' ? 'Sending...' : 'ପଠାଯାଉଛି...') : translations[language].resendOtp}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+            <div id="recaptcha-container" className="flex justify-center my-4 min-h-[80px]"></div>
+            <BigsanBranding className="mt-8" />
+          </motion.div>
+        </div>
 
         {/* Configuration Error Modal */}
         <AnimatePresence>
@@ -1432,6 +1586,7 @@ export default function App() {
             </div>
           )}
         </AnimatePresence>
+        </div>
       </div>
     );
   }
@@ -1475,7 +1630,12 @@ export default function App() {
 
   return (
     <ErrorBoundary language={language}>
-      <div className="min-h-screen bg-slate-950 text-slate-200 flex">
+      <div className="min-h-screen bg-transparent text-white flex relative overflow-hidden">
+        {/* Animated Background Orbs */}
+        <div className="bg-orb-1"></div>
+        <div className="bg-orb-2"></div>
+        <div className="bg-orb-3"></div>
+
         {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
         <div 
@@ -1486,7 +1646,7 @@ export default function App() {
 
       {/* Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 z-50 w-72 bg-slate-900/50 backdrop-blur-2xl border-r border-white/5 transform transition-transform duration-300 ease-in-out
+        fixed inset-y-0 left-0 z-50 w-72 glass-panel border-r border-white/5 transform transition-transform duration-300 ease-in-out
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0 lg:static
       `}>
@@ -1534,8 +1694,28 @@ export default function App() {
 
       {/* Main Content */}
       <main className="flex-1 min-w-0 flex flex-col h-screen overflow-hidden">
+        {/* AI Banner */}
+        {!isAdminView && (
+          <div className="bg-gradient-to-r from-emerald-500/20 via-cyan-500/20 to-emerald-500/20 border-b border-emerald-500/30 px-6 py-2 flex items-center justify-center gap-2 shrink-0 z-40 relative overflow-hidden">
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LCAyNTUsLCAyNTUsIDAuMDUpIi8+PC9zdmc+')] pointer-events-none"></div>
+            <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
+            <p className="text-sm font-medium text-emerald-100 hidden sm:block">
+              {language === 'en' ? 'Experience the new AI-powered learning tools!' : 'ନୂତନ AI-ଚାଳିତ ଶିକ୍ଷଣ ଉପକରଣଗୁଡ଼ିକର ଅନୁଭବ କରନ୍ତୁ!'}
+            </p>
+            <p className="text-sm font-medium text-emerald-100 sm:hidden">
+              {language === 'en' ? 'New AI tools!' : 'ନୂତନ AI ଉପକରଣଗୁଡ଼ିକ!'}
+            </p>
+            <button 
+              onClick={() => setActiveTab('ai')} 
+              className="text-xs bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-300 px-3 py-1 rounded-full transition-all ml-2 font-bold border border-emerald-500/30 hover:scale-105"
+            >
+              {language === 'en' ? 'Try Now' : 'ଚେଷ୍ଟା କରନ୍ତୁ'}
+            </button>
+          </div>
+        )}
+
         {/* Header */}
-        <header className="h-20 flex items-center justify-between px-8 bg-slate-950/50 backdrop-blur-md border-b border-white/5">
+        <header className="h-20 flex items-center justify-between px-8 glass-panel border-b border-white/5 z-10">
           <div className="flex items-center gap-4">
             <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-slate-400"><Menu /></button>
             <div className="flex flex-col">
@@ -1580,7 +1760,7 @@ export default function App() {
             </div>
           ) : (
             <AnimatePresence mode="wait">
-              {activeTab === 'dashboard' && <DashboardView user={user} leaderboard={leaderboard} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} chapters={chapters} />}
+              {activeTab === 'dashboard' && <Dashboard user={user} leaderboard={leaderboard} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} chapters={chapters} />}
               {activeTab === 'courses' && <CoursesView user={user} chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
               {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
               {activeTab === 'monthly_tests' && <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} onBack={() => setActiveTab('dashboard')} />}
@@ -1631,9 +1811,27 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack }: any)
 
   const userRank = leaderboard.findIndex((s: any) => s.name === user.name) + 1 || '-';
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.05 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    show: { opacity: 1, y: 0 }
+  };
+
   return (
-    <div className="max-w-4xl mx-auto pb-12">
-      <div className="flex items-center justify-between mb-8">
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+      className="max-w-4xl mx-auto pb-12"
+    >
+      <motion.div variants={itemVariants} className="flex items-center justify-between mb-8">
         <button 
           onClick={onBack}
           className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
@@ -1644,25 +1842,25 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack }: any)
         <div className="px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-bold uppercase tracking-widest">
           Parent Mode
         </div>
-      </div>
+      </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-6 text-center">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="glass-card neon-border rounded-3xl p-6 text-center">
           <div className="text-3xl font-bold text-white mb-1">{stats.chaptersCompleted} / {stats.totalChapters}</div>
           <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Chapters Completed</p>
         </div>
-        <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-6 text-center">
+        <div className="glass-card neon-border rounded-3xl p-6 text-center">
           <div className="text-3xl font-bold text-emerald-500 mb-1">{stats.avgScore}%</div>
           <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Average Accuracy</p>
         </div>
-        <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-6 text-center">
+        <div className="glass-card neon-border rounded-3xl p-6 text-center">
           <div className="text-3xl font-bold text-blue-500 mb-1">{stats.totalQuizzes}</div>
           <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Quizzes Taken</p>
         </div>
-      </div>
+      </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-6">
+        <motion.div variants={itemVariants} className="lg:col-span-2 space-y-6">
           <h3 className="text-xl font-bold text-white">Recent Activity</h3>
           
           {loading ? (
@@ -1670,7 +1868,7 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack }: any)
               <Loader2 className="animate-spin text-emerald-500" size={32} />
             </div>
           ) : results.length === 0 ? (
-            <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-12 text-center">
+            <div className="glass-card neon-border rounded-3xl p-12 text-center">
               <p className="text-slate-500">No activity recorded yet. Encourage your child to take a quiz!</p>
             </div>
           ) : (
@@ -1678,7 +1876,11 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack }: any)
               {results.map((r) => {
                 const chapter = chapters.find((c: any) => c.id === r.chapterId);
                 return (
-                  <div key={r.id} className="bg-slate-900/50 border border-white/5 rounded-2xl p-4 flex items-center justify-between">
+                  <motion.div 
+                    variants={itemVariants}
+                    key={r.id} 
+                    className="glass-card neon-border rounded-2xl p-4 flex items-center justify-between"
+                  >
                     <div className="flex items-center gap-4">
                       <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold ${r.accuracy >= 80 ? 'bg-emerald-500/10 text-emerald-500' : r.accuracy >= 50 ? 'bg-yellow-500/10 text-yellow-500' : 'bg-red-500/10 text-red-500'}`}>
                         {r.accuracy}%
@@ -1691,14 +1893,14 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack }: any)
                     <div className="text-[10px] font-bold uppercase text-slate-600 tracking-widest">
                       {chapter?.subject}
                     </div>
-                  </div>
+                  </motion.div>
                 );
               })}
             </div>
           )}
-        </div>
+        </motion.div>
 
-        <div className="space-y-6">
+        <motion.div variants={itemVariants} className="space-y-6">
           {user?.parentShowLeaderboard !== false && (
             <>
               <div className="flex items-center justify-between">
@@ -1707,7 +1909,7 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack }: any)
                   Rank #{userRank}
                 </div>
               </div>
-              <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-6 overflow-hidden">
+              <div className="glass-card neon-border rounded-3xl p-6 overflow-hidden">
                 <div className="space-y-4">
                   {leaderboard.slice(0, 5).map((student: any, i: number) => (
                     <div key={i} className={`flex items-center justify-between ${student.name === user.name ? 'bg-emerald-500/10 -mx-6 px-6 py-2 border-y border-emerald-500/20' : ''}`}>
@@ -1731,9 +1933,9 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack }: any)
               Upgrade to Premium
             </button>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -1812,21 +2014,38 @@ function ProfileView({ user, language, onBack, onParentAccess }: any) {
 
   const isEmailVerified = auth.currentUser?.emailVerified;
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.05 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    show: { opacity: 1, y: 0 }
+  };
+
   return (
-    <div className="max-w-xl mx-auto">
-      <button 
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+      className="max-w-xl mx-auto"
+    >
+      <motion.button 
+        variants={itemVariants}
         onClick={onBack}
         className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
       >
         <ArrowLeft size={20} />
         <span>Back to Dashboard</span>
-      </button>
+      </motion.button>
 
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        className="bg-slate-900/50 border border-white/5 rounded-3xl p-8 space-y-6"
+        variants={itemVariants}
+        className="glass-card neon-border rounded-3xl p-8 space-y-6"
       >
       <h2 className="text-2xl font-bold text-white">{translations[language].profile.editTitle}</h2>
       <div className="space-y-4">
@@ -2023,7 +2242,7 @@ function ProfileView({ user, language, onBack, onParentAccess }: any) {
         </div>
       )}
     </AnimatePresence>
-    </div>
+    </motion.div>
   );
 }
 
@@ -2031,7 +2250,9 @@ function ProfileView({ user, language, onBack, onParentAccess }: any) {
 
 function SidebarItem({ icon, label, active, onClick }: any) {
   return (
-    <button 
+    <motion.button 
+      whileHover={{ scale: 1.02, x: 4 }}
+      whileTap={{ scale: 0.98 }}
       onClick={onClick}
       className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all ${
         active ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'text-slate-400 hover:bg-white/5'
@@ -2039,148 +2260,11 @@ function SidebarItem({ icon, label, active, onClick }: any) {
     >
       {icon}
       <span className="font-medium">{label}</span>
-    </button>
+    </motion.button>
   );
 }
 
-function DashboardView({ user, leaderboard, language, isPremium, onUpgrade, chapters }: any) {
-  const userRank = leaderboard.findIndex((s: any) => s.name === user.name) + 1 || '-';
-  const stats = user.stats || {
-    streak: 0,
-    level: 1,
-    experience: 0,
-    accuracy: 0,
-    league: 'Bronze',
-    badges: [],
-    weeklyPoints: 0
-  };
-  
-  return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      className="space-y-8"
-    >
-      {/* Top Section: Level & League */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-gradient-to-br from-emerald-600/20 to-blue-600/20 border border-emerald-500/20 rounded-[2.5rem] p-8 flex flex-col justify-between">
-          <div className="flex justify-between items-start mb-6">
-            <div>
-              <h3 className="text-2xl font-bold text-white mb-1">{translations[language].level} {stats.level}</h3>
-              <p className="text-emerald-400 text-sm font-medium">Next Level in {100 - stats.experience} XP</p>
-            </div>
-            <div className="px-4 py-2 rounded-xl bg-white/10 border border-white/10 text-white text-xs font-bold uppercase tracking-widest">
-              {translations[language][stats.league.toLowerCase()]}
-            </div>
-          </div>
-          <div className="space-y-3">
-            <div className="h-4 bg-black/20 rounded-full overflow-hidden p-1 border border-white/5">
-              <motion.div 
-                initial={{ width: 0 }}
-                animate={{ width: `${stats.experience}%` }}
-                className="h-full bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full shadow-lg shadow-emerald-500/20"
-              />
-            </div>
-            <div className="flex justify-between text-[10px] text-slate-500 font-bold uppercase tracking-tighter">
-              <span>Level {stats.level}</span>
-              <span>Level {stats.level + 1}</span>
-            </div>
-          </div>
-        </div>
 
-        <div className="bg-slate-900/50 border border-white/5 rounded-[2.5rem] p-8 flex flex-col justify-center items-center text-center">
-          <div className="w-16 h-16 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-500 mb-4">
-            <Brain size={32} />
-          </div>
-          <div className="text-3xl font-bold text-white mb-1">{stats.streak} {translations[language].streak}</div>
-          <p className="text-slate-500 text-sm">You're on fire! Keep it up!</p>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard icon={<BarChart3 className="text-emerald-500" />} label={translations[language].effortPoints} value={stats.weeklyPoints} subValue="This Week" />
-        <StatCard icon={<CheckCircle2 className="text-blue-500" />} label={translations[language].accuracy} value={`${stats.accuracy}%`} subValue="Avg. Score" />
-        <StatCard icon={<Globe className="text-purple-500" />} label={translations[language].badges} value={stats.badges.length} subValue="Earned" />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-3 space-y-6">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-white">{translations[language].myProgress}</h3>
-          </div>
-          <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-8">
-            <div className="space-y-6">
-              {user.completed_chapters && user.completed_chapters.length > 0 ? (
-                user.completed_chapters.slice(0, 3).map((chapterId: string, i: number) => {
-                  const chapter = chapters.find((c: any) => c.id === chapterId);
-                  return (
-                    <TopicProgress 
-                      key={i} 
-                      label={chapter?.title || "Unknown Topic"} 
-                      progress={100} 
-                      color="bg-emerald-500" 
-                    />
-                  );
-                })
-              ) : (
-                <p className="text-slate-500 text-center py-4">No progress recorded yet. Start learning to see your progress!</p>
-              )}
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-white">{translations[language].badges}</h3>
-            <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
-              {stats.badges && stats.badges.length > 0 ? (
-                stats.badges.map((badge: string, i: number) => (
-                  <div key={i} className="flex-shrink-0 w-20 h-20 rounded-2xl bg-slate-900/50 border border-white/5 flex items-center justify-center text-3xl hover:scale-110 transition-all cursor-help">
-                    {badge === 'first_quiz' ? '🌟' : badge === 'streak_3' ? '🔥' : '🏅'}
-                  </div>
-                ))
-              ) : (
-                <p className="text-slate-500 text-sm">No badges earned yet. Complete quizzes to earn badges!</p>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-function StatCard({ icon, label, value, subValue }: any) {
-  return (
-    <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-6 hover:border-white/10 transition-all group">
-      <div className="flex items-center gap-4 mb-4">
-        <div className="p-3 rounded-2xl bg-white/5 group-hover:bg-white/10 transition-all">{icon}</div>
-        <span className="text-sm text-slate-400">{label}</span>
-      </div>
-      <div className="flex items-baseline gap-2">
-        <div className="text-2xl font-bold text-white">{value}</div>
-        {subValue && <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{subValue}</span>}
-      </div>
-    </div>
-  );
-}
-
-function TopicProgress({ label, progress, color }: any) {
-  return (
-    <div className="group space-y-3">
-      <div className="flex justify-between items-end">
-        <span className="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">{label}</span>
-        <span className="text-xs font-bold text-slate-500">{progress}%</span>
-      </div>
-      <div className="h-2.5 bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/5">
-        <motion.div 
-          initial={{ width: 0 }}
-          animate={{ width: `${progress}%` }}
-          className={`h-full rounded-full ${color} shadow-lg shadow-current/20`}
-        />
-      </div>
-    </div>
-  );
-}
 
 function SubscriptionGuard({ onSubscribe, language, isPremium, user, onShare, systemSettings, onBack }: any) {
   const p = translations[language].pricing;
@@ -2436,10 +2520,28 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
     );
   }
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.05 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    show: { opacity: 1, y: 0 }
+  };
+
   return (
-    <div className="space-y-10 pb-20">
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+      className="space-y-10 pb-20"
+    >
       {/* Header & Tabs */}
-      <div className="space-y-6">
+      <motion.div variants={itemVariants} className="space-y-6">
         <div className="flex items-center gap-4">
           <button 
             onClick={onBack}
@@ -2473,11 +2575,11 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
             </button>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* Continue Learning Section */}
       {subjectFilter === 'all' && recentlyViewed.length > 0 && (
-        <section className="space-y-4">
+        <motion.section variants={itemVariants} className="space-y-4">
           <div className="flex items-center gap-2 text-emerald-500">
             <Clock size={18} />
             <h3 className="text-lg font-bold text-white">
@@ -2486,7 +2588,9 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {recentlyViewed.map((chapter) => (
-              <button
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 key={chapter.id}
                 onClick={() => handleSelectChapter(chapter)}
                 className="flex items-center gap-4 p-4 bg-slate-900/40 border border-white/5 rounded-2xl hover:border-emerald-500/30 transition-all text-left group"
@@ -2505,15 +2609,15 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
                   </p>
                   <h4 className="text-sm font-semibold text-white truncate">{chapter.title}</h4>
                 </div>
-              </button>
+              </motion.button>
             ))}
           </div>
-        </section>
+        </motion.section>
       )}
 
       {/* Content Area */}
       {uniqueChapters.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-center bg-slate-900/30 border border-white/5 rounded-3xl">
+        <motion.div variants={itemVariants} className="flex flex-col items-center justify-center py-20 text-center bg-slate-900/30 border border-white/5 rounded-3xl">
           <div className="w-24 h-24 bg-slate-800 rounded-full flex items-center justify-center mb-6">
             <BookOpen size={48} className="text-slate-500" />
           </div>
@@ -2523,81 +2627,86 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
               ? "We're currently working on adding content for this subject. Please check back soon!" 
               : "ଆମେ ବର୍ତ୍ତମାନ ଏହି ବିଷୟ ପାଇଁ ବିଷୟବସ୍ତୁ ଯୋଡିବା ପାଇଁ କାର୍ଯ୍ୟ କରୁଛୁ। ଦୟାକରି ଶୀଭ୍ର ପୁଣି ଯାଞ୍ଚ କରନ୍ତୁ!"}
           </p>
-        </div>
+        </motion.div>
       ) : subjectFilter === 'all' ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {availableSubjects.filter(s => s !== 'all').map((subject: string) => {
             const subjectChapters = chapters.filter((c: Chapter) => c.subject === subject);
             const count = Array.from(new Set(subjectChapters.map((c: Chapter) => c.translationGroupId || c.id))).length;
             
             return (
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05, y: -5 }}
+                whileTap={{ scale: 0.95 }}
                 key={subject}
                 onClick={() => setSubjectFilter(subject)}
-                className="group relative flex flex-col items-center justify-center p-8 bg-slate-900/50 border border-white/5 rounded-[2rem] hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all text-center"
+                className="group relative flex flex-col items-center justify-center p-8 glass-card rounded-[2rem] hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all text-center overflow-hidden"
               >
-                <div className="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all text-emerald-500">
+                <div className="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-all pointer-events-none"></div>
+                <div className="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all text-emerald-500 relative z-10 shadow-lg">
                   {subject.toLowerCase().includes('math') ? <Shapes size={32} /> :
                    subject.toLowerCase().includes('sci') ? <Brain size={32} /> :
                    subject.toLowerCase().includes('eng') ? <Globe size={32} /> :
                    subject.toLowerCase().includes('odi') ? <PenTool size={32} /> :
                    <BookOpen size={32} />}
                 </div>
-                <h3 className="text-lg font-bold text-white mb-1">
+                <h3 className="text-xl font-black text-white mb-1 tracking-tight relative z-10">
                   {translations[language].subjects[subject as keyof typeof translations.en.subjects] || subject}
                 </h3>
-                <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">
+                <p className="text-xs text-slate-500 font-bold uppercase tracking-widest relative z-10">
                   {count} {language === 'en' ? 'Chapters' : 'ଅଧ୍ୟାୟ'}
                 </p>
                 
-                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500">
+                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                  <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]">
                     <ChevronRight size={16} />
                   </div>
                 </div>
-              </button>
+              </motion.button>
             );
           })}
-        </div>
+        </motion.div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+        <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
           {uniqueChapters.map((chapter: Chapter) => (
-            <button 
+            <motion.button 
+              whileHover={{ y: -5 }}
               key={chapter.id}
               onClick={() => handleSelectChapter(chapter)}
-              className="group text-left bg-slate-900/50 border border-white/5 rounded-3xl p-6 hover:border-emerald-500/50 transition-all flex flex-col h-full"
+              className="group text-left glass-card rounded-3xl p-6 hover:border-emerald-500/50 transition-all flex flex-col h-full relative overflow-hidden"
             >
-              <div className="aspect-video rounded-2xl bg-slate-800 mb-4 overflow-hidden relative flex-shrink-0">
+              <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-all pointer-events-none"></div>
+              <div className="aspect-video rounded-2xl bg-slate-800 mb-4 overflow-hidden relative flex-shrink-0 z-10 shadow-lg">
                 <img 
                   src={getYouTubeThumbnail(chapter.playlist_id)} 
-                  className="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform"
+                  className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform"
                   alt={chapter.title}
                   referrerPolicy="no-referrer"
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-xl">
+                  <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-[0_0_20px_rgba(16,185,129,0.5)] group-hover:scale-110 transition-transform">
                     <Play fill="currentColor" size={20} />
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-[10px] font-bold uppercase text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+              <div className="flex items-center gap-2 mb-2 relative z-10">
+                <span className="text-[10px] font-bold uppercase text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
                   {getLocalizedSubject(chapter.subject, language)}
                 </span>
               </div>
-              <h3 className="text-lg font-semibold text-white mb-1 line-clamp-2 min-h-[3.5rem]">{chapter.title}</h3>
+              <h3 className="text-xl font-bold text-white mb-1 line-clamp-2 min-h-[3.5rem] tracking-tight relative z-10">{chapter.title}</h3>
               
-              <div className="flex items-center gap-4 mt-auto pt-4 border-t border-white/5 text-[10px] text-slate-500 font-bold uppercase tracking-wider">
-                <div className="flex items-center gap-1"><Play size={10} /> Video</div>
-                {chapter.notes && <div className="flex items-center gap-1"><FileText size={10} /> Notes</div>}
-                {chapter.practice_questions && chapter.practice_questions.length > 0 && <div className="flex items-center gap-1"><HelpCircle size={10} /> Practice</div>}
-                {chapter.quiz_questions && chapter.quiz_questions.length > 0 && <div className="flex items-center gap-1"><CheckCircle2 size={10} /> Quiz</div>}
+              <div className="flex items-center gap-4 mt-auto pt-4 border-t border-white/5 text-[10px] text-slate-400 font-bold uppercase tracking-wider relative z-10">
+                <div className="flex items-center gap-1"><Play size={12} className="text-emerald-500" /> Video</div>
+                {chapter.notes && <div className="flex items-center gap-1"><FileText size={12} className="text-blue-500" /> Notes</div>}
+                {chapter.practice_questions && chapter.practice_questions.length > 0 && <div className="flex items-center gap-1"><HelpCircle size={12} className="text-purple-500" /> Practice</div>}
+                {chapter.quiz_questions && chapter.quiz_questions.length > 0 && <div className="flex items-center gap-1"><CheckCircle2 size={12} className="text-orange-500" /> Quiz</div>}
               </div>
-            </button>
+            </motion.button>
           ))}
-        </div>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }
 
@@ -2748,7 +2857,11 @@ function AiSolverView({ language, onBack }: any) {
   };
 
   return (
-    <div className="h-full flex flex-col max-w-4xl mx-auto">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="h-full flex flex-col max-w-4xl mx-auto"
+    >
       <button 
         onClick={onBack}
         className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors w-fit"
@@ -2767,16 +2880,25 @@ function AiSolverView({ language, onBack }: any) {
             {response}
           </motion.div>
         ) : (
-          <div className="h-full flex flex-col items-center justify-center text-center text-slate-500 space-y-4">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="h-full flex flex-col items-center justify-center text-center text-slate-500 space-y-4"
+          >
             <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center">
               <MessageSquare size={32} />
             </div>
             <p>Ask any math question and I'll explain it step-by-step!</p>
-          </div>
+          </motion.div>
         )}
       </div>
 
-      <div className="relative">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="relative"
+      >
         <textarea 
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
@@ -2791,8 +2913,8 @@ function AiSolverView({ language, onBack }: any) {
           {loading ? <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} className="w-4 h-4 border-2 border-white border-t-transparent rounded-full" /> : <Play size={16} />}
           {translations[language].solve}
         </button>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -2843,7 +2965,11 @@ function GamesView({ language, onBack }: any) {
   };
 
   return (
-    <div className="max-w-xl mx-auto text-center">
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="max-w-xl mx-auto text-center"
+    >
       <button 
         onClick={onBack}
         className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
@@ -2859,18 +2985,27 @@ function GamesView({ language, onBack }: any) {
 
       <div className="bg-slate-900/50 border border-white/5 rounded-[40px] p-12 shadow-2xl relative overflow-hidden">
         {gameState === 'idle' && (
-          <div className="space-y-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-8"
+          >
             <div className="w-24 h-24 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto">
               <Brain size={48} className="text-emerald-400" />
             </div>
             <button onClick={startGame} className="w-full py-4 rounded-2xl bg-emerald-600 text-white font-bold text-xl hover:bg-emerald-500 transition-all">
               {translations[language].start}
             </button>
-          </div>
+          </motion.div>
         )}
 
         {gameState === 'playing' && (
-          <div className="space-y-10">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            key={problem.a + problem.b}
+            className="space-y-10"
+          >
             <div className="flex justify-between items-center">
               <div className="text-sm text-slate-500 uppercase tracking-widest">Score: <span className="text-emerald-400 font-bold">{score}</span></div>
               <div className="text-sm text-slate-500 uppercase tracking-widest">Time: <span className="text-blue-400 font-bold">{timeLeft}s</span></div>
@@ -2887,20 +3022,24 @@ function GamesView({ language, onBack }: any) {
                 className="w-full bg-white/5 border border-white/10 rounded-2xl p-6 text-center text-4xl text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
             </form>
-          </div>
+          </motion.div>
         )}
 
         {gameState === 'over' && (
-          <div className="space-y-8">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="space-y-8"
+          >
             <h3 className="text-4xl font-bold text-red-400">{translations[language].gameOver}</h3>
             <div className="text-xl text-slate-300">Final Score: <span className="text-emerald-400 font-bold">{score}</span></div>
             <button onClick={startGame} className="w-full py-4 rounded-2xl bg-emerald-600 text-white font-bold text-xl hover:bg-emerald-500 transition-all">
               {translations[language].playAgain}
             </button>
-          </div>
+          </motion.div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -2919,23 +3058,42 @@ function LeaderboardView({ leaderboard, language, onBack }: any) {
     return activeLeague === 'Bronze';
   });
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.05 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    show: { opacity: 1, y: 0 }
+  };
+
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      <button 
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+      className="max-w-4xl mx-auto space-y-8"
+    >
+      <motion.button 
+        variants={itemVariants}
         onClick={onBack}
         className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
       >
         <ArrowLeft size={20} />
         <span>Back to Dashboard</span>
-      </button>
+      </motion.button>
 
-      <div className="text-center mb-10">
+      <motion.div variants={itemVariants} className="text-center mb-10">
         <h2 className="text-3xl font-bold text-white mb-2">{translations[language].weeklyLeaderboard}</h2>
         <p className="text-slate-500">Celebrate effort and consistency! Resets every Sunday.</p>
-      </div>
+      </motion.div>
 
       {/* League Tabs */}
-      <div className="flex justify-center gap-2 p-1 bg-slate-900/50 border border-white/5 rounded-2xl w-fit mx-auto">
+      <motion.div variants={itemVariants} className="flex justify-center gap-2 p-1 bg-slate-900/50 border border-white/5 rounded-2xl w-fit mx-auto">
         {leagues.map((league) => (
           <button
             key={league}
@@ -2949,9 +3107,9 @@ function LeaderboardView({ leaderboard, language, onBack }: any) {
             {translations[language][league.toLowerCase()]}
           </button>
         ))}
-      </div>
+      </motion.div>
 
-      <div className="bg-slate-900/50 border border-white/5 rounded-[40px] overflow-hidden">
+      <motion.div variants={itemVariants} className="bg-slate-900/50 border border-white/5 rounded-[40px] overflow-hidden">
         <table className="w-full text-left">
           <thead>
             <tr className="border-b border-white/5 bg-white/5">
@@ -2964,7 +3122,11 @@ function LeaderboardView({ leaderboard, language, onBack }: any) {
           <tbody>
             {filteredLeaderboard.length > 0 ? (
               filteredLeaderboard.map((student: any, i: number) => (
-                <tr key={i} className="border-b border-white/5 hover:bg-white/5 transition-all">
+                <motion.tr 
+                  variants={itemVariants}
+                  key={i} 
+                  className="border-b border-white/5 hover:bg-white/5 transition-all"
+                >
                   <td className="px-8 py-6">
                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold ${
                       leaderboard.indexOf(student) === 0 ? 'bg-yellow-500 text-slate-900' : 
@@ -2990,7 +3152,7 @@ function LeaderboardView({ leaderboard, language, onBack }: any) {
                     </div>
                   </td>
                   <td className="px-8 py-6 text-right font-mono text-emerald-400 font-bold">{student.points}</td>
-                </tr>
+                </motion.tr>
               ))
             ) : (
               <tr>
@@ -3001,14 +3163,14 @@ function LeaderboardView({ leaderboard, language, onBack }: any) {
             )}
           </tbody>
         </table>
-      </div>
+      </motion.div>
       
-      <div className="p-6 bg-emerald-500/5 border border-emerald-500/10 rounded-3xl text-center">
+      <motion.div variants={itemVariants} className="p-6 bg-emerald-500/5 border border-emerald-500/10 rounded-3xl text-center">
         <p className="text-emerald-400 text-sm font-medium">
           🌟 You are in the top 15% of effort makers this week! Keep it up!
         </p>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -3039,9 +3201,27 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
     return ['all', ...Array.from(subjects)];
   }, [textbooks, user?.class, boardKey]);
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.05 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    show: { opacity: 1, y: 0 }
+  };
+
   return (
-    <div className="space-y-10 pb-20">
-      <div className="space-y-6">
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+      className="space-y-10 pb-20"
+    >
+      <motion.div variants={itemVariants} className="space-y-6">
         <div className="flex items-center gap-4">
           <button 
             onClick={onBack}
@@ -3074,10 +3254,10 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
             </button>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {filteredTextbooks.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-center bg-slate-900/30 border border-white/5 rounded-3xl">
+        <motion.div variants={itemVariants} className="flex flex-col items-center justify-center py-20 text-center bg-slate-900/30 border border-white/5 rounded-3xl">
           <div className="w-24 h-24 bg-slate-800 rounded-full flex items-center justify-center mb-6">
             <Book size={48} className="text-slate-500" />
           </div>
@@ -3089,11 +3269,11 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
               ? "We're currently uploading textbooks for your class and board. Please check back soon!" 
               : "ଆମେ ବର୍ତ୍ତମାନ ଆପଣଙ୍କ ଶ୍ରେଣୀ ଏବଂ ବୋର୍ଡ ପାଇଁ ପାଠ୍ୟପୁସ୍ତକ ଅପଲୋଡ୍ କରୁଛୁ। ଦୟାକରି ଶୀଘ୍ର ପୁଣି ଯାଞ୍ଚ କରନ୍ତୁ!"}
           </p>
-        </div>
+        </motion.div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredTextbooks.map((book: Textbook) => (
-            <div key={book.id} className="group bg-slate-900/50 border border-white/5 rounded-3xl overflow-hidden hover:border-emerald-500/50 transition-all flex flex-col">
+            <motion.div whileHover={{ y: -5 }} key={book.id} className="group bg-slate-900/50 border border-white/5 rounded-3xl overflow-hidden hover:border-emerald-500/50 transition-all flex flex-col">
               <div className="aspect-[3/4] bg-slate-800 relative overflow-hidden">
                 {book.thumbnail_url ? (
                   <img 
@@ -3125,12 +3305,25 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
                   <Download size={18} />
                   {language === 'en' ? 'Download PDF' : 'PDF ଡାଉନଲୋଡ୍'}
                 </a>
+                <a 
+                  href={`https://wa.me/?text=${encodeURIComponent(
+                    language === 'en' 
+                      ? `Check out this textbook: ${book.title}\nDownload here: ${book.download_url}` 
+                      : `ଏହି ପାଠ୍ୟପୁସ୍ତକଟି ଦେଖନ୍ତୁ: ${book.title}\nଏଠାରୁ ଡାଉନଲୋଡ୍ କରନ୍ତୁ: ${book.download_url}`
+                  )}`}
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-full py-3 mt-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 rounded-xl font-bold flex items-center justify-center gap-2 transition-all border border-emerald-500/20"
+                >
+                  <MessageCircle size={18} />
+                  {language === 'en' ? 'Share on WhatsApp' : 'WhatsApp ରେ ସେୟାର କରନ୍ତୁ'}
+                </a>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }
 
@@ -3151,32 +3344,52 @@ function TopicDetailView({
 }) {
   const [activeSubTab, setActiveSubTab] = useState<'video' | 'notes' | 'practice'>('video');
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
+
   return (
-    <div className="max-w-5xl mx-auto">
-      <button 
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+      className="max-w-5xl mx-auto"
+    >
+      <motion.button 
+        variants={itemVariants}
         onClick={onBack}
         className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
       >
         <ArrowLeft size={20} />
-        <span>Back to Topics</span>
-      </button>
+        <span className="font-bold uppercase tracking-widest text-xs">Back to Topics</span>
+      </motion.button>
 
-      <div className="bg-slate-900/50 border border-white/5 rounded-3xl overflow-hidden mb-8">
-        <div className="p-4 md:p-8">
+      <motion.div variants={itemVariants} className="glass-card neon-border rounded-[2.5rem] overflow-hidden mb-8 relative">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl -mr-48 -mt-48 pointer-events-none"></div>
+        <div className="p-6 md:p-10 relative z-10">
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8">
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-xs font-bold uppercase text-emerald-500 bg-emerald-500/10 px-3 py-1 rounded-full tracking-wider">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-[10px] font-bold uppercase text-emerald-400 bg-emerald-500/10 px-4 py-1.5 rounded-full tracking-widest border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
                   {getLocalizedSubject(topic.subject, language)}
                 </span>
               </div>
-              <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight">{topic.title}</h1>
+              <h1 className="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight">{topic.title}</h1>
             </div>
             
             {topic.quiz_questions?.length > 0 && (
               <button 
                 onClick={onTakeQuiz}
-                className="flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 rounded-2xl font-bold transition-all shadow-lg shadow-emerald-500/20 whitespace-nowrap"
+                className="flex items-center justify-center gap-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-90 text-white px-8 py-4 rounded-2xl font-bold uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(16,185,129,0.4)] whitespace-nowrap border border-emerald-500/50"
               >
                 <Trophy size={20} />
                 <span>Take Basic Quiz</span>
@@ -3184,17 +3397,17 @@ function TopicDetailView({
             )}
           </div>
 
-          <div className="flex gap-1 bg-slate-800/50 p-1 rounded-2xl w-full md:w-fit mb-8 overflow-x-auto scrollbar-hide">
+          <div className="flex gap-2 bg-slate-900/50 p-2 rounded-2xl w-full md:w-fit mb-8 overflow-x-auto scrollbar-hide border border-white/5 backdrop-blur-md">
             <button 
               onClick={() => setActiveSubTab('video')}
-              className={`flex items-center gap-2 px-4 md:px-6 py-2 rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap ${activeSubTab === 'video' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+              className={`flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap ${activeSubTab === 'video' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
             >
               <Play size={16} /> {translations[language].video}
             </button>
             {topic.notes && (
               <button 
                 onClick={() => setActiveSubTab('notes')}
-                className={`flex items-center gap-2 px-4 md:px-6 py-2 rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap ${activeSubTab === 'notes' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                className={`flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap ${activeSubTab === 'notes' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
               >
                 <FileText size={16} /> {translations[language].notes}
               </button>
@@ -3202,7 +3415,7 @@ function TopicDetailView({
             {topic.practice_questions?.length > 0 && (
               <button 
                 onClick={() => setActiveSubTab('practice')}
-                className={`flex items-center gap-2 px-4 md:px-6 py-2 rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap ${activeSubTab === 'practice' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                className={`flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap ${activeSubTab === 'practice' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
               >
                 <HelpCircle size={16} /> {translations[language].practice}
               </button>
@@ -3271,8 +3484,8 @@ function TopicDetailView({
             )}
           </AnimatePresence>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -3344,10 +3557,19 @@ function QuizEngine({ questions, onComplete, language, userId, chapterId }: { qu
 
   if (finished) {
     return (
-      <div className="max-w-2xl mx-auto text-center py-12">
-        <div className="w-24 h-24 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-emerald-500/20">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="max-w-2xl mx-auto text-center py-12"
+      >
+        <motion.div 
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: "spring", stiffness: 200, damping: 20 }}
+          className="w-24 h-24 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-emerald-500/20"
+        >
           <Trophy size={48} className="text-white" />
-        </div>
+        </motion.div>
         <h2 className="text-4xl font-bold text-white mb-4">Quiz Completed!</h2>
         <p className="text-xl text-slate-400 mb-8">You scored {score} out of {questions.length}</p>
         
@@ -3368,20 +3590,27 @@ function QuizEngine({ questions, onComplete, language, userId, chapterId }: { qu
           </div>
         </div>
 
-        <button 
+        <motion.button 
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={onComplete}
           className="bg-emerald-500 hover:bg-emerald-600 text-white px-12 py-4 rounded-2xl font-bold transition-all"
         >
           Back to Topic
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
     );
   }
 
   const q = questions[currentIdx];
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      key={currentIdx}
+      className="max-w-3xl mx-auto"
+    >
       <div className="flex items-center justify-between mb-8">
         <button 
           onClick={onComplete}
@@ -3469,7 +3698,7 @@ function QuizEngine({ questions, onComplete, language, userId, chapterId }: { qu
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -3513,30 +3742,49 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack }: any) {
 
   const filteredTests = tests; // Show all published tests to all students for consistency
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
+
   return (
-    <div className="space-y-8">
-      <button 
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+      className="space-y-8"
+    >
+      <motion.button 
+        variants={itemVariants}
         onClick={onBack}
         className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
       >
         <ArrowLeft size={20} />
         <span>Back to Dashboard</span>
-      </button>
+      </motion.button>
 
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">{translations[language].monthlyTests}</h1>
           <p className="text-slate-400">Participate in monthly assessments for {translations[language].classes[user?.class as keyof typeof translations.en.classes] || user?.class} and track your progress.</p>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {filteredTests.map((test: MonthlyTest) => {
           const submission = getSubmission(test);
           const resultsPublished = test.results_published;
 
           return (
-            <div key={test.id} className="bg-slate-900/50 border border-white/5 rounded-3xl p-8 hover:border-emerald-500/20 transition-all group">
+            <motion.div whileHover={{ y: -5 }} key={test.id} className="bg-slate-900/50 border border-white/5 rounded-3xl p-8 hover:border-emerald-500/20 transition-all group">
               <div className="flex items-start justify-between mb-6">
                 <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
                   <Calendar size={32} />
@@ -3588,19 +3836,19 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack }: any) {
                   </button>
                 )}
               </div>
-            </div>
+            </motion.div>
           );
         })}
 
         {filteredTests.length === 0 && (
-          <div className="md:col-span-2 flex flex-col items-center justify-center py-20 text-center bg-slate-900/30 rounded-3xl border border-dashed border-white/10">
+          <motion.div variants={itemVariants} className="md:col-span-2 flex flex-col items-center justify-center py-20 text-center bg-slate-900/30 rounded-3xl border border-dashed border-white/10">
             <Clock size={48} className="text-slate-600 mb-4" />
             <h3 className="text-xl font-bold text-white mb-2">No Tests Scheduled</h3>
             <p className="text-slate-500">Check back later for upcoming monthly assessments for your class and subjects.</p>
-          </div>
+          </motion.div>
         )}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -3647,7 +3895,12 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
   const q = test.questions[currentIdx];
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      key={currentIdx}
+      className="max-w-3xl mx-auto"
+    >
       <button 
         onClick={onBack}
         className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
@@ -3719,7 +3972,7 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
           </button>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -3727,7 +3980,12 @@ function SkillGameView({ chapter, onBack }: { chapter?: any, onBack: () => void 
   const title = chapter?.title || "Skill Game";
   
   return (
-    <div className="min-h-screen bg-[#f8f9fa] text-slate-900 font-sans absolute inset-0 z-[100] overflow-y-auto">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="min-h-screen bg-[#f8f9fa] text-slate-900 font-sans absolute inset-0 z-[100] overflow-y-auto"
+    >
       {/* Header */}
       <header className="bg-[#1e5b99] text-white px-6 py-4 flex items-center justify-between sticky top-0 z-50 shadow-md">
         <div className="flex items-center gap-3">
@@ -3749,10 +4007,21 @@ function SkillGameView({ chapter, onBack }: { chapter?: any, onBack: () => void 
 
       {/* Content */}
       <div className="max-w-4xl mx-auto p-6 space-y-8 pb-20">
-        <h1 className="text-3xl font-bold text-slate-800">{title} - Mind Game</h1>
+        <motion.h1 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-3xl font-bold text-slate-800"
+        >
+          {title} - Mind Game
+        </motion.h1>
 
         {/* Game Canvas Area */}
-        <div className="relative aspect-[16/9] bg-sky-200 rounded-xl overflow-hidden border border-slate-300 shadow-md flex flex-col items-center justify-center">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.1 }}
+          className="relative aspect-[16/9] bg-sky-200 rounded-xl overflow-hidden border border-slate-300 shadow-md flex flex-col items-center justify-center"
+        >
           {/* Background elements */}
           <div className="absolute inset-0 bg-gradient-to-b from-sky-300 to-green-400 opacity-80"></div>
           
@@ -3769,42 +4038,77 @@ function SkillGameView({ chapter, onBack }: { chapter?: any, onBack: () => void 
           </div>
 
           {/* Chalkboard */}
-          <div className="z-10 bg-emerald-800 border-8 border-amber-700 rounded-lg p-8 shadow-2xl mb-12 relative">
+          <motion.div 
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", delay: 0.2 }}
+            className="z-10 bg-emerald-800 border-8 border-amber-700 rounded-lg p-8 shadow-2xl mb-12 relative"
+          >
             <span className="text-6xl font-bold text-white font-mono tracking-widest">8 + 3 = ?</span>
-          </div>
+          </motion.div>
 
           {/* Options */}
           <div className="z-10 flex gap-4 absolute bottom-8">
             {[10, 12, 11, 9].map((num, i) => (
-              <button key={i} className="w-20 h-20 bg-gradient-to-b from-orange-400 to-orange-600 rounded-xl border-b-4 border-orange-700 text-white text-3xl font-bold shadow-lg hover:translate-y-1 hover:border-b-0 transition-all">
+              <motion.button 
+                key={i} 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 + i * 0.1 }}
+                whileHover={{ scale: 1.1, y: -5 }}
+                whileTap={{ scale: 0.9 }}
+                className="w-20 h-20 bg-gradient-to-b from-orange-400 to-orange-600 rounded-xl border-b-4 border-orange-700 text-white text-3xl font-bold shadow-lg transition-all"
+              >
                 {num}
-              </button>
+              </motion.button>
             ))}
           </div>
-        </div>
+        </motion.div>
 
-        <section className="bg-slate-50 p-6 rounded-lg border border-slate-200 shadow-sm">
+        <motion.section 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-slate-50 p-6 rounded-lg border border-slate-200 shadow-sm"
+        >
           <h2 className="text-xl font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">Key Points</h2>
           <ul className="list-disc list-inside space-y-2 text-slate-700 font-medium">
             <li>Subtraction means taking away.</li>
             <li>Start from the ones column.</li>
             <li>Borrow if needed.</li>
           </ul>
-        </section>
+        </motion.section>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-          <button className="bg-[#1e5b99] text-white p-4 rounded-lg font-bold text-lg flex items-center justify-center gap-3 shadow-md hover:bg-blue-800 transition-colors">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4"
+        >
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-[#1e5b99] text-white p-4 rounded-lg font-bold text-lg flex items-center justify-center gap-3 shadow-md hover:bg-blue-800 transition-colors"
+          >
             <Star className="text-yellow-400" fill="currentColor" /> Mental Math
-          </button>
-          <button className="bg-slate-200 text-slate-700 p-4 rounded-lg font-bold text-lg flex items-center justify-center gap-3 shadow-sm hover:bg-slate-300 transition-colors">
+          </motion.button>
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-slate-200 text-slate-700 p-4 rounded-lg font-bold text-lg flex items-center justify-center gap-3 shadow-sm hover:bg-slate-300 transition-colors"
+          >
             <Hash className="text-slate-500" /> Number Puzzle
-          </button>
-          <button className="bg-slate-200 text-slate-700 p-4 rounded-lg font-bold text-lg flex items-center justify-center gap-3 shadow-sm hover:bg-slate-300 transition-colors">
+          </motion.button>
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-slate-200 text-slate-700 p-4 rounded-lg font-bold text-lg flex items-center justify-center gap-3 shadow-sm hover:bg-slate-300 transition-colors"
+          >
             <Shapes className="text-slate-500" /> Math Patterns
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

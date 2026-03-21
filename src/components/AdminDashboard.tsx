@@ -279,29 +279,35 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="bg-white/5 border border-white/10 p-4 rounded-2xl"
+            className="glass-card p-6 rounded-3xl relative overflow-hidden group hover:border-white/20 transition-all"
           >
-            <div className="flex items-center justify-between mb-2">
-              <stat.icon className={stat.color} size={20} />
+            <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-all pointer-events-none"></div>
+            <div className="flex items-center justify-between mb-4 relative z-10">
+              <div className="p-3 rounded-2xl bg-white/5 group-hover:bg-white/10 group-hover:scale-110 transition-all border border-white/5">
+                <stat.icon className={stat.color} size={24} />
+              </div>
             </div>
-            <div className="text-2xl font-bold text-white">{stat.value}</div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider">{stat.label}</div>
+            <div className="text-4xl font-black text-white tracking-tight relative z-10">{stat.value}</div>
+            <div className="text-xs text-slate-400 font-medium uppercase tracking-widest mt-2 relative z-10">{stat.label}</div>
           </motion.div>
         ))}
       </div>
 
-      <div className="bg-emerald-600/10 border border-emerald-500/20 p-6 rounded-2xl">
-        <div className="flex items-center gap-3 mb-4">
-          <Sparkles className="text-emerald-500" size={24} />
-          <h3 className="text-lg font-bold text-white">Quick AI Test Generator</h3>
+      <div className="glass-card neon-border p-8 rounded-[2.5rem] relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none"></div>
+        <div className="flex items-center gap-4 mb-4 relative z-10">
+          <div className="p-3 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+            <Sparkles size={28} />
+          </div>
+          <h3 className="text-2xl font-black text-white tracking-tight">Quick AI Test Generator</h3>
         </div>
-        <p className="text-slate-400 text-sm mb-6">Generate a complete monthly test with AI in seconds. Just select the class and subject.</p>
+        <p className="text-slate-400 text-sm mb-8 relative z-10 font-medium">Generate a complete monthly test with AI in seconds. Just select the class and subject.</p>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 relative z-10">
           <select 
             value={newTest.class}
             onChange={(e) => setNewTest({...newTest, class: e.target.value})}
-            className="bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+            className="bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50 transition-all"
           >
             {Object.entries(translations['en'].classes).map(([key, label]) => (
               <option key={key} value={key}>{label as string}</option>
@@ -310,7 +316,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
           <select 
             value={newTest.subject}
             onChange={(e) => setNewTest({...newTest, subject: e.target.value})}
-            className="bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+            className="bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50 transition-all"
           >
             {Object.entries(translations['en'].subjects).map(([key, label]) => (
               <option key={key} value={key}>{label as string}</option>
@@ -323,30 +329,58 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
               handleGenerateTestWithAI();
             }}
             disabled={isGeneratingTestAI}
-            className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-6 py-2 font-bold transition-all flex items-center justify-center gap-2"
+            className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-90 text-white rounded-2xl px-6 py-3 font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg border border-emerald-500/50"
           >
-            {isGeneratingTestAI ? <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" /> : <Rocket size={18} />}
+            {isGeneratingTestAI ? <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" /> : <Rocket size={20} />}
             Generate Now
           </button>
         </div>
       </div>
 
-      <div className="bg-indigo-600/10 border border-indigo-500/20 p-6 rounded-2xl">
-        <div className="flex items-center gap-3 mb-4">
-          <Rocket className="text-indigo-500" size={24} />
-          <h3 className="text-lg font-bold text-white">Restore Deleted Chapters</h3>
+      <div className="glass-card p-8 rounded-[2.5rem] relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none"></div>
+        <div className="flex items-center gap-4 mb-4 relative z-10">
+          <div className="p-3 rounded-2xl bg-indigo-500/20 border border-indigo-500/30 text-indigo-400 shadow-[0_0_15px_rgba(99,102,241,0.3)]">
+            <Rocket size={28} />
+          </div>
+          <h3 className="text-2xl font-black text-white tracking-tight">Restore Deleted Chapters</h3>
         </div>
-        <p className="text-slate-400 text-sm mb-6">If you accidentally deleted chapters, you can use AI to re-generate the standard curriculum for all classes (Play to Class 10).</p>
+        <p className="text-slate-400 text-sm mb-8 relative z-10 font-medium">If you accidentally deleted chapters, you can use AI to re-generate the standard curriculum for all classes (Play to Class 10).</p>
         <button 
           onClick={() => setActiveTab('production_setup')}
-          className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl px-6 py-3 font-bold transition-all flex items-center justify-center gap-2"
+          className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-90 text-white rounded-2xl px-8 py-4 font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg border border-indigo-500/50 relative z-10"
         >
-          <Sparkles size={18} />
+          <Sparkles size={20} />
           Go to Production Setup
         </button>
       </div>
     </div>
   );
+
+  const [notificationMessage, setNotificationMessage] = useState('');
+  const [notificationAudience, setNotificationAudience] = useState('all');
+
+  const handleBroadcast = async () => {
+    if (!notificationMessage.trim()) {
+      showNotification("Please enter a message.", 'error');
+      return;
+    }
+    try {
+      setLoading(true);
+      await addDoc(collection(firestore, 'notifications'), {
+        message: notificationMessage,
+        audience: notificationAudience,
+        createdAt: new Date().toISOString()
+      });
+      showNotification("Notification broadcasted successfully!");
+      setNotificationMessage('');
+    } catch (err: any) {
+      console.error("Broadcast Error:", err);
+      showNotification("Failed to broadcast: " + err.message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const [isAddingChapter, setIsAddingChapter] = useState(false);
   const [isEditingChapter, setIsEditingChapter] = useState(false);
@@ -1762,16 +1796,26 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         <div className="space-y-4">
           <textarea 
             placeholder="Type your message here..."
+            value={notificationMessage}
+            onChange={(e) => setNotificationMessage(e.target.value)}
             className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-emerald-500/50 h-32"
           />
           <div className="flex gap-4">
-            <select className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none">
+            <select 
+              value={notificationAudience}
+              onChange={(e) => setNotificationAudience(e.target.value)}
+              className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+            >
               <option value="all">All Users</option>
               <option value="premium">Premium Only</option>
               <option value="free">Free Only</option>
             </select>
-            <button className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl py-2 font-semibold transition-all">
-              Broadcast Message
+            <button 
+              onClick={handleBroadcast}
+              disabled={loading}
+              className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl py-2 font-semibold transition-all disabled:opacity-50"
+            >
+              {loading ? 'Broadcasting...' : 'Broadcast Message'}
             </button>
           </div>
         </div>

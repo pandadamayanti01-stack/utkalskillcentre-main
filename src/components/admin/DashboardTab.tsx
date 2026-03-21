@@ -59,14 +59,15 @@ export const DashboardTab: React.FC = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {cards.map((card, index) => (
-        <div key={index} className="bg-slate-800 p-6 rounded-2xl border border-white/5">
-          <div className="flex items-center gap-4 mb-4">
-            <div className={`p-3 bg-slate-900 rounded-xl ${card.color}`}>
+        <div key={index} className="glass-card p-6 rounded-3xl relative overflow-hidden group hover:border-white/20 transition-all">
+          <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-all pointer-events-none"></div>
+          <div className="flex items-center gap-4 mb-4 relative z-10">
+            <div className={`p-3 bg-white/5 rounded-2xl border border-white/5 group-hover:bg-white/10 group-hover:scale-110 transition-all ${card.color}`}>
               <card.icon size={24} />
             </div>
-            <h3 className="text-slate-400 font-medium">{card.label}</h3>
+            <h3 className="text-xs text-slate-400 font-medium uppercase tracking-widest">{card.label}</h3>
           </div>
-          <p className="text-3xl font-bold text-white">{card.value}</p>
+          <p className="text-4xl font-black text-white tracking-tight relative z-10">{card.value}</p>
         </div>
       ))}
     </div>
