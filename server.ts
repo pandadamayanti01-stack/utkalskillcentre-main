@@ -40,13 +40,19 @@ function getRazorpay() {
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
     
     if (!keyId || !keySecret) {
-      throw new Error('RAZORPAY_KEY_ID (or VITE_RAZORPAY_KEY) and RAZORPAY_KEY_SECRET are missing in environment variables.');
+      console.error('Razorpay credentials missing. Payment features will be disabled.');
+      return null;
     }
 
-    razorpay = new Razorpay({
-      key_id: keyId,
-      key_secret: keySecret,
-    });
+    try {
+      razorpay = new Razorpay({
+        key_id: keyId,
+        key_secret: keySecret,
+      });
+    } catch (err) {
+      console.error('Failed to initialize Razorpay:', err);
+      return null;
+    }
   }
   return razorpay;
 }
@@ -62,7 +68,6 @@ async function startServer() {
         return res.status(400).json({ error: 'No file uploaded' });
       }
 
-      const { type } = req.body;
       const bucket = admin.storage().bucket();
       const fileName = `textbooks/${Date.now()}_${req.file.originalname}`;
       const file = bucket.file(fileName);
@@ -89,6 +94,10 @@ async function startServer() {
       const { amount, userId } = req.body;
       const rzp = getRazorpay();
       
+      if (!rzp) {
+        return res.status(503).json({ error: 'Payment service is currently unavailable. Please contact support.' });
+      }
+      
       const options = {
         amount: Math.round(amount * 100), // amount in smallest currency unit
         currency: "INR",
@@ -106,7 +115,7 @@ async function startServer() {
     } catch (error: any) {
       console.error('Create Order Error:', error);
       const errorMessage = error?.error?.description || error?.message || 'Failed to create order';
-      res.status(500).json({ error: errorMessage, details: error });
+      res.status(500).json({ error: errorMessage });
     }
   });
 

@@ -5,6 +5,7 @@ import {
   CreditCard, 
   Bell, 
   Settings, 
+  Users,
   Plus, 
   Trash2, 
   XCircle,

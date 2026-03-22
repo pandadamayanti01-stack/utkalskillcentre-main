@@ -134,7 +134,6 @@ service cloud.firestore {
 
     function isValidChapter(data) {
       return hasRequiredFields(['title', 'subject', 'class', 'status']) &&
-             hasOnlyAllowedFields(['title', 'subject', 'class', 'status']) &&
              validStringLength('title', 1, 100) &&
              validStringLength('subject', 1, 50) &&
              validStringLength('class', 1, 20) &&
@@ -143,7 +142,6 @@ service cloud.firestore {
 
     function isValidTextbook(data) {
       return hasRequiredFields(['title', 'subject', 'class', 'board', 'download_url', 'status']) &&
-             hasOnlyAllowedFields(['title', 'subject', 'class', 'board', 'download_url', 'status']) &&
              validStringLength('title', 1, 100) &&
              validStringLength('subject', 1, 50) &&
              validStringLength('class', 1, 20) &&
@@ -158,7 +156,7 @@ service cloud.firestore {
              validStringLength('name', 1, 50) &&
              isValidEmail(data.email) &&
              data.role in ['student', 'admin'] &&
-             (!('id' in data) || (data.id is string)) &&
+             (!('id' in data) || (data.id is string && data.id.size() < 128)) &&
              (!('stats' in data) || isValidStats(data.stats)) &&
              (!('completed_chapters' in data) || isValidCompletedChapters(data.completed_chapters)) &&
              (!('preferred_language' in data) || (data.preferred_language is string && data.preferred_language.size() < 10)) &&
@@ -170,15 +168,15 @@ service cloud.firestore {
              (!('createdAt' in data) || (data.createdAt is timestamp)) &&
              (!('parent_pin' in data) || (data.parent_pin is string && data.parent_pin.size() == 4)) &&
              (!('parentShowLeaderboard' in data) || (data.parentShowLeaderboard is bool)) &&
-             (!('avatar' in data) || (data.avatar is string)) &&
-             (!('streak' in data) || (data.streak is number)) &&
-             (!('lastActiveDate' in data) || (data.lastActiveDate is string)) &&
-             (!('phoneNumber' in data) || (data.phoneNumber is string));
+             (!('avatar' in data) || (data.avatar is string && data.avatar.size() < 500)) &&
+             (!('streak' in data) || (data.streak is number && data.streak >= 0)) &&
+             (!('lastActiveDate' in data) || (data.lastActiveDate is string && data.lastActiveDate.size() < 20)) &&
+             (!('phoneNumber' in data) || (data.phoneNumber is string && data.phoneNumber.size() < 20));
     }
 
     function isValidUserForUpdate(data) {
       return hasOnlyAllowedFields(['id', 'name', 'email', 'role', 'class', 'board', 'stats', 'completed_chapters', 'preferred_language', 'subjects', 'points', 'shareCount', 'statusShared', 'updatedAt', 'createdAt', 'parent_pin', 'parentShowLeaderboard', 'avatar', 'streak', 'lastActiveDate', 'phoneNumber']) &&
-             (!('id' in data) || (data.id is string)) &&
+             (!('id' in data) || (data.id is string && data.id.size() < 128)) &&
              (!('name' in data) || validStringLength('name', 1, 50)) &&
              (!('email' in data) || isValidEmail(data.email)) &&
              (!('role' in data) || data.role in ['student', 'admin']) &&
@@ -193,17 +191,70 @@ service cloud.firestore {
              (!('createdAt' in data) || (data.createdAt is timestamp)) &&
              (!('parent_pin' in data) || (data.parent_pin is string && data.parent_pin.size() == 4)) &&
              (!('parentShowLeaderboard' in data) || (data.parentShowLeaderboard is bool)) &&
-             (!('avatar' in data) || (data.avatar is string)) &&
-             (!('streak' in data) || (data.streak is number)) &&
-             (!('lastActiveDate' in data) || (data.lastActiveDate is string)) &&
-             (!('phoneNumber' in data) || (data.phoneNumber is string));
+             (!('avatar' in data) || (data.avatar is string && data.avatar.size() < 500)) &&
+             (!('streak' in data) || (data.streak is number && data.streak >= 0)) &&
+             (!('lastActiveDate' in data) || (data.lastActiveDate is string && data.lastActiveDate.size() < 20)) &&
+             (!('phoneNumber' in data) || (data.phoneNumber is string && data.phoneNumber.size() < 20));
     }
 
     function isValidMonthlyTest(data) {
       return hasRequiredFields(['title', 'status']) &&
-             hasOnlyAllowedFields(['title', 'status']) &&
              validStringLength('title', 1, 100) &&
              data.status in ['draft', 'published'];
+    }
+
+    function isValidMonthlyTestSubmission(data) {
+      return hasRequiredFields(['userId', 'testId', 'answers', 'score', 'submittedAt']) &&
+             data.userId == request.auth.uid &&
+             data.answers is list && data.answers.size() < 100 &&
+             data.score is number &&
+             data.submittedAt is timestamp;
+    }
+
+    function isValidPublicProfile(data) {
+      return hasOnlyAllowedFields(['name', 'points', 'class', 'avatar', 'streak']) &&
+             (!('name' in data) || (data.name is string && data.name.size() < 100)) &&
+             (!('points' in data) || (data.points is number)) &&
+             (!('class' in data) || (data.class is string && data.class.size() < 20)) &&
+             (!('avatar' in data) || (data.avatar is string && data.avatar.size() < 500)) &&
+             (!('streak' in data) || (data.streak is number));
+    }
+
+    function isValidSubscription(data) {
+      return hasRequiredFields(['active']) &&
+             data.active is bool &&
+             (!('plan' in data) || (data.plan is string && data.plan.size() < 50)) &&
+             (!('expires_at' in data) || (data.expires_at is timestamp));
+    }
+
+    function isValidPayment(data) {
+      return hasRequiredFields(['user_id', 'amount', 'status', 'razorpay_order_id']) &&
+             data.user_id == request.auth.uid &&
+             data.amount is number &&
+             data.status is string && data.status.size() < 50 &&
+             data.razorpay_order_id is string && data.razorpay_order_id.size() < 100;
+    }
+
+    function isValidDailyChallenge(data) {
+      return hasRequiredFields(['date', 'question', 'options', 'correct_answer', 'points']) &&
+             data.date is string && data.date.size() < 20 &&
+             data.question is string && data.question.size() < 1000 &&
+             data.options is list && data.options.size() < 10 &&
+             data.correct_answer is string && data.correct_answer.size() < 500 &&
+             data.points is number;
+    }
+
+    function isValidUserProgress(data) {
+      return hasRequiredFields(['userId', 'date', 'pointsEarned']) &&
+             data.userId == request.auth.uid &&
+             data.date is string && data.date.size() < 20 &&
+             data.pointsEarned is number;
+    }
+
+    function isValidFriendship(data) {
+      return hasRequiredFields(['followerId', 'followingId']) &&
+             data.followerId == request.auth.uid &&
+             data.followingId is string && data.followingId.size() < 128;
     }
 
     // ===============================================================
@@ -239,65 +290,65 @@ service cloud.firestore {
     }
 
     match /test_results/{resultId} {
-      allow read: if isAuthenticated() && request.auth.uid == resource.data.user_id;
-      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.user_id;
+      allow read: if isAuthenticated() && resource.data.user_id == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.user_id == request.auth.uid;
       allow update: if false;
       allow delete: if false;
     }
 
     match /quiz_results/{resultId} {
-      allow read: if isAuthenticated() && request.auth.uid == resource.data.userId;
-      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.userId;
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
       allow update: if false;
       allow delete: if false;
     }
 
     match /monthly_test_submissions/{submissionId} {
       allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && isValidMonthlyTestSubmission(request.resource.data);
       allow update: if false; // Submissions are immutable
       allow delete: if false;
     }
 
     match /public_profiles/{userId} {
       allow read: if isAuthenticated();
-      allow write: if isOwner(userId);
+      allow write: if isOwner(userId) && isValidPublicProfile(request.resource.data);
     }
 
     match /subscriptions/{userId} {
       allow read: if isOwner(userId) || isAdmin();
-      allow write: if isOwner(userId) || isAdmin();
+      allow write: if isAdmin() || (isOwner(userId) && isValidSubscription(request.resource.data));
     }
 
     match /payments/{paymentId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated();
-      allow update: if isAuthenticated();
+      allow read: if isAuthenticated() && (resource.data.user_id == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && isValidPayment(request.resource.data);
+      allow update: if isAdmin();
     }
 
     match /transactions/{transactionId} {
-      allow read: if (isAuthenticated() && request.auth.uid == resource.data.userId) || isAdmin();
-      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.userId;
-      allow update: if isAuthenticated() && request.auth.uid == resource.data.userId && request.auth.uid == request.resource.data.userId;
+      allow read: if (isAuthenticated() && resource.data.userId == request.auth.uid) || isAdmin();
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAdmin();
     }
 
     match /ai_usage/{usageId} {
-      allow read: if (isAuthenticated() && request.auth.uid == resource.data.userId) || isAdmin();
-      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.userId;
-      allow update: if isAuthenticated() && request.auth.uid == resource.data.userId && request.auth.uid == request.resource.data.userId;
+      allow read: if (isAuthenticated() && resource.data.userId == request.auth.uid) || isAdmin();
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAdmin();
     }
 
     match /notifications/{notificationId} {
-      allow read: if (isAuthenticated() && request.auth.uid == resource.data.userId) || isAdmin();
-      allow create: if (isAuthenticated() && request.auth.uid == request.resource.data.userId) || isAdmin();
-      allow update: if (isAuthenticated() && request.auth.uid == resource.data.userId && request.auth.uid == request.resource.data.userId) || isAdmin();
+      allow read: if (isAuthenticated() && resource.data.userId == request.auth.uid) || isAdmin();
+      allow create: if isAdmin();
+      allow update: if (isAuthenticated() && resource.data.userId == request.auth.uid) || isAdmin();
       allow delete: if isAdmin();
     }
 
     match /private_settings/{settingId} {
-      allow read: if isAuthenticated() && request.auth.uid == resource.data.userId;
-      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.userId;
-      allow update: if isAuthenticated() && request.auth.uid == resource.data.userId && request.auth.uid == request.resource.data.userId;
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
     }
 
     match /settings/{document=**} {
@@ -311,20 +362,20 @@ service cloud.firestore {
     }
 
     match /daily_challenges/{challengeId} {
-      allow read: if request.auth != null;
-      allow write: if isAdmin();
+      allow read: if isAuthenticated();
+      allow write: if isAdmin() && isValidDailyChallenge(request.resource.data);
     }
 
     match /user_progress/{progressId} {
-      allow read: if request.auth != null && (request.auth.uid == resource.data.userId || isAdmin());
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
-      allow update: if request.auth != null && request.auth.uid == resource.data.userId && request.auth.uid == request.resource.data.userId;
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && isValidUserProgress(request.resource.data);
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid && isValidUserProgress(request.resource.data);
     }
 
     match /friendships/{friendshipId} {
-      allow read: if request.auth != null;
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.followerId;
-      allow delete: if request.auth != null && request.auth.uid == resource.data.followerId;
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidFriendship(request.resource.data);
+      allow delete: if isAuthenticated() && resource.data.followerId == request.auth.uid;
     }
   }
 }
