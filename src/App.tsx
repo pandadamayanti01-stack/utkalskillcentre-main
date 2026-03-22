@@ -77,7 +77,6 @@ import { AdminDashboard } from './components/AdminDashboard';
 import { PracticeQuestion } from './components/PracticeQuestion';
 import { Dashboard } from './components/Dashboard';
 import { AvatarStore } from './components/AvatarStore';
-import { PwaUpdatePrompt } from './components/PwaUpdatePrompt';
 import { DailyChallenge } from './components/DailyChallenge';
 import { ProgressChart } from './components/ProgressChart';
 import { useVoiceSearch } from './hooks/useVoiceSearch';
@@ -1807,8 +1806,6 @@ export default function App() {
       {/* AI Study Buddy */}
       {user && <StudyBuddy user={user} language={language} />}
 
-      {/* PWA Update Prompt */}
-      <PwaUpdatePrompt />
     </div>
     </ErrorBoundary>
   );
