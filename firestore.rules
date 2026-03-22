@@ -1,5 +1,4 @@
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
 
@@ -7,66 +6,138 @@ service cloud.firestore {
     // Assumed Data Model
     // ===============================================================
     //
+    // Collection: users
+    // Document ID: userId (Firebase UID)
+    // Fields:
+    //   - id: string (required) - Firebase UID
+    //   - name: string (required) - Full Name
+    //   - email: string (optional) - Email Address
+    //   - phoneNumber: string (optional) - Phone Number
+    //   - class: integer (optional) - Student Class (3-10)
+    //   - board: string (optional) - Education Board
+    //   - preferred_language: string (optional) - Preferred Language (en|or)
+    //   - points: integer (optional) - Learning points
+    //   - shareCount: integer (optional) - Number of WhatsApp shares
+    //   - statusShared: boolean (optional) - Whether WhatsApp status was shared
+    //   - role: string (required, enum: ["student", "admin"]) - User role
+    //   - created_at: timestamp (optional) - Creation time
+    //
     // Collection: chapters
-    // Document ID: {chapterId}
+    // Document ID: chapterId
     // Fields:
-    //   - title: string (required, < 100 chars)
-    //   - subject: string (required, < 50 chars)
-    //   - class: string (required, < 20 chars)
-    //   - status: string (required, enum: ['draft', 'published'])
+    //   - class: integer (required)
+    //   - board: string (required)
+    //   - language: string (required)
+    //   - subject: string (required)
+    //   - title: string (required)
+    //   - playlist_id: string (optional)
+    //   - notes: string (optional) - Markdown content
+    //   - status: string (optional, enum: ["draft", "published"])
+    //   - practice_questions: array (optional)
+    //   - quiz_questions: array (optional)
+    //   - translationGroupId: string (optional)
     //
-    // Collection: textbooks
-    // Document ID: {textbookId}
+    // Collection: questions
+    // Document ID: questionId
     // Fields:
-    //   - title: string (required, < 100 chars)
-    //   - subject: string (required, < 50 chars)
-    //   - class: string (required, < 20 chars)
-    //   - board: string (required, < 20 chars)
-    //   - download_url: string (required, valid URL)
-    //   - status: string (required, enum: ['draft', 'published'])
+    //   - chapter_id: string (required)
+    //   - question: string (required)
+    //   - options: array (required)
+    //   - correct_answer: string (required)
     //
-    // Collection: users
-    // Document ID: {userId}
+    // Collection: test_results
+    // Document ID: resultId
     // Fields:
-    //   - name: string (required, < 50 chars)
-    //   - email: string (required, valid email)
-    //   - role: string (required, enum: ['student', 'admin'])
-    //   - class: string (optional, < 20 chars)
-    //   - board: string (optional, < 20 chars)
+    //   - user_id: string (required)
+    //   - chapter_id: string (required)
+    //   - score: integer (required)
+    //   - total: integer (required)
+    //   - completed_at: timestamp (required)
     //
-    // Collection: monthly_test_submissions
-    // Document ID: {submissionId}
+    // Collection: payments
+    // Document ID: paymentId
     // Fields:
-    //   - userId: string (required)
-    //   - testId: string (required)
-    //   - score: number (required)
-    //   - submittedAt: timestamp (required)
+    //   - user_id: string (required)
+    //   - amount: number (required)
+    //   - status: string (required)
+    //   - razorpay_order_id: string (required)
+    //   - razorpay_payment_id: string (optional)
+    //   - razorpay_signature: string (optional)
+    //   - created_at: timestamp (required)
     //
-    // Collection: public_profiles
-    // Document ID: {userId}
+    // Collection: subscriptions
+    // Document ID: userId
     // Fields:
-    //   - name: string (required)
-    //   - photoURL: string (optional)
-    //
-    // Collection: users
-    // Document ID: {userId}
-    // Fields:
-    //   - name: string (required, < 50 chars)
-    //   - email: string (required, valid email)
-    //   - role: string (required, enum: ['student', 'admin'])
-    //   - class: string (optional, < 20 chars)
-    //   - board: string (optional, < 20 chars)
-    //   - avatar: string (optional)
-    //   - streak: number (optional)
-    //   - lastActiveDate: string (optional)
-    //   - stats: map (optional)
-    //   - completed_chapters: list (optional)
+    //   - active: boolean (required)
+    //   - plan: string (optional)
+    //   - expires_at: timestamp (optional)
     //
     // Collection: monthly_tests
-    // Document ID: {testId}
+    // Document ID: testId
     // Fields:
-    //   - title: string (required, < 100 chars)
-    //   - status: string (required, enum: ['draft', 'published'])
+    //   - subject: string (required)
+    //   - month: string (required)
+    //   - year: integer (required)
+    //   - questions: array (optional)
+    //   - status: string (required, enum: ["draft", "published"])
+    //   - results_published: boolean (optional)
+    //   - translationGroupId: string (optional)
+    //   - created_at: timestamp (optional)
+    //
+    // Collection: monthly_test_submissions
+    // Document ID: submissionId
+    // Fields:
+    //   - test_id: string (required)
+    //   - user_id: string (required)
+    //   - user_name: string (optional)
+    //   - answers: array (required)
+    //   - score: integer (optional)
+    //   - rank: integer (optional)
+    //   - submitted_at: timestamp (required)
+    //
+    // Collection: textbooks
+    // Document ID: textbookId
+    // Fields:
+    //   - class: string (required)
+    //   - board: string (required)
+    //   - subject: string (required)
+    //   - title: string (required)
+    //   - download_url: string (required)
+    //   - thumbnail_url: string (optional)
+    //   - status: string (optional, enum: ["draft", "published"])
+    //   - created_at: timestamp (optional)
+    //
+    // Collection: system_settings
+    // Document ID: config
+    // Fields:
+    //   - enabledClasses: array (optional)
+    //   - maintenanceMode: boolean (optional)
+    //
+    // Collection: daily_challenges
+    // Document ID: challengeId
+    // Fields:
+    //   - date: string (required, format: YYYY-MM-DD)
+    //   - question: string (required)
+    //   - options: array (required)
+    //   - correct_answer: string (required)
+    //   - points: integer (required)
+    //   - language: string (optional)
+    //
+    // Collection: user_progress
+    // Document ID: progressId
+    // Fields:
+    //   - userId: string (required)
+    //   - date: string (required, format: YYYY-MM-DD)
+    //   - pointsEarned: integer (required)
+    //   - accuracy: number (optional)
+    //   - chaptersCompleted: integer (optional)
+    //
+    // Collection: friendships
+    // Document ID: friendshipId
+    // Fields:
+    //   - followerId: string (required)
+    //   - followingId: string (required)
+    //   - createdAt: timestamp (required)
     //
     // ===============================================================
 
@@ -75,289 +146,193 @@ service cloud.firestore {
     // ===============================================================
 
     function isAuthenticated() {
-       return request.auth != null;
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
     }
 
     function isAdmin() {
       return isAuthenticated() &&
-        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
-         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
-          (request.auth.token.email == "pandadamayanti01@gmail.com" && request.auth.token.email_verified == true) ||
-          request.auth.token.phone_number == "+919337956168");
-    }
-
-    function isOwner(userId) {
-       return isAuthenticated() && request.auth.uid == userId;
-    }
-
-    function roleUnchanged() {
-      return !('role' in request.resource.data) || request.resource.data.role == resource.data.role;
-    }
-
-    function isValidStats(stats) {
-      return stats is map && stats.keys().hasOnly(['streak', 'level', 'experience', 'accuracy', 'league', 'badges', 'weeklyPoints']) &&
-             (!('league' in stats) || (stats.league is string && stats.league.size() < 50)) &&
-             (!('badges' in stats) || (stats.badges is list && stats.badges.size() < 50));
-    }
-    
-    function isValidCompletedChapters(chapters) {
-      return chapters is list && chapters.size() < 100;
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+          (request.auth.token.email == "pandadamayanti01@gmail.com" && request.auth.token.email_verified == true));
     }
 
     function hasRequiredFields(fields) {
-       return request.resource.data.keys().hasAll(fields);
+      return request.resource.data.keys().hasAll(fields);
     }
 
     function hasOnlyAllowedFields(fields) {
       return request.resource.data.keys().hasOnly(fields);
     }
 
-    function validStringLength(field, minLen, maxLen) {
-       return request.resource.data[field] is string &&
-         request.resource.data[field].size() >= minLen &&
-         request.resource.data[field].size() <= maxLen;
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
     }
 
     function isValidUrl(url) {
-       return url is string &&
-         (url.matches("^https://.*") || url.matches("^http://.*"));
+      return url is string && (url.matches("^https://.*") || url.matches("^http://.*"));
     }
 
-    function isValidEmail(email) {
-       return email is string &&
-         (email == "" || email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"));
+    function isValidDateString(dateStr) {
+      return dateStr is string && dateStr.matches("^\\d{4}-\\d{2}-\\d{2}$");
+    }
+
+    function isValidDateTimeString(dateStr) {
+      return dateStr is string && dateStr.matches("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.*Z?$");
     }
 
     // ===============================================================
     // Domain Validators
     // ===============================================================
 
-    function isValidChapter(data) {
-      return hasRequiredFields(['title', 'subject', 'class', 'status']) &&
-             validStringLength('title', 1, 100) &&
-             validStringLength('subject', 1, 50) &&
-             validStringLength('class', 1, 20) &&
-             data.status in ['draft', 'published'];
-    }
-
-    function isValidTextbook(data) {
-      return hasRequiredFields(['title', 'subject', 'class', 'board', 'download_url', 'status']) &&
-             validStringLength('title', 1, 100) &&
-             validStringLength('subject', 1, 50) &&
-             validStringLength('class', 1, 20) &&
-             validStringLength('board', 1, 20) &&
-             isValidUrl(data.download_url) &&
-             data.status in ['draft', 'published'];
-    }
-
-    function isValidUserForCreate(data) {
-      return hasRequiredFields(['name', 'email', 'role']) &&
-             hasOnlyAllowedFields(['id', 'name', 'email', 'role', 'class', 'board', 'stats', 'completed_chapters', 'preferred_language', 'subjects', 'points', 'shareCount', 'statusShared', 'updatedAt', 'createdAt', 'parent_pin', 'parentShowLeaderboard', 'avatar', 'streak', 'lastActiveDate', 'phoneNumber']) &&
-             validStringLength('name', 1, 50) &&
-             isValidEmail(data.email) &&
+    function isValidUser(data) {
+      return hasRequiredFields(['id', 'name', 'role']) &&
+             data.id is string && data.id.size() > 0 && data.id.size() < 128 &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
              data.role in ['student', 'admin'] &&
-             (!('id' in data) || (data.id is string && data.id.size() < 128)) &&
-             (!('stats' in data) || isValidStats(data.stats)) &&
-             (!('completed_chapters' in data) || isValidCompletedChapters(data.completed_chapters)) &&
-             (!('preferred_language' in data) || (data.preferred_language is string && data.preferred_language.size() < 10)) &&
-             (!('subjects' in data) || (data.subjects is list && data.subjects.size() < 20)) &&
-             (!('points' in data) || (data.points is number && data.points >= 0)) &&
-             (!('shareCount' in data) || (data.shareCount is number && data.shareCount >= 0)) &&
-             (!('statusShared' in data) || (data.statusShared is bool)) &&
-             (!('updatedAt' in data) || (data.updatedAt is timestamp)) &&
-             (!('createdAt' in data) || (data.createdAt is timestamp)) &&
-             (!('parent_pin' in data) || (data.parent_pin is string && data.parent_pin.size() == 4)) &&
-             (!('parentShowLeaderboard' in data) || (data.parentShowLeaderboard is bool)) &&
-             (!('avatar' in data) || (data.avatar is string && data.avatar.size() < 500)) &&
-             (!('streak' in data) || (data.streak is number && data.streak >= 0)) &&
-             (!('lastActiveDate' in data) || (data.lastActiveDate is string && data.lastActiveDate.size() < 20)) &&
-             (!('phoneNumber' in data) || (data.phoneNumber is string && data.phoneNumber.size() < 20));
-    }
-
-    function isValidUserForUpdate(data) {
-      return hasOnlyAllowedFields(['id', 'name', 'email', 'role', 'class', 'board', 'stats', 'completed_chapters', 'preferred_language', 'subjects', 'points', 'shareCount', 'statusShared', 'updatedAt', 'createdAt', 'parent_pin', 'parentShowLeaderboard', 'avatar', 'streak', 'lastActiveDate', 'phoneNumber']) &&
-             (!('id' in data) || (data.id is string && data.id.size() < 128)) &&
-             (!('name' in data) || validStringLength('name', 1, 50)) &&
              (!('email' in data) || isValidEmail(data.email)) &&
-             (!('role' in data) || data.role in ['student', 'admin']) &&
-             (!('stats' in data) || isValidStats(data.stats)) &&
-             (!('completed_chapters' in data) || isValidCompletedChapters(data.completed_chapters)) &&
+             (!('phoneNumber' in data) || (data.phoneNumber is string && data.phoneNumber.size() < 20)) &&
+             (!('class' in data) || (data.class is int && data.class >= 3 && data.class <= 10)) &&
+             (!('board' in data) || (data.board is string && data.board.size() < 50)) &&
              (!('preferred_language' in data) || (data.preferred_language is string && data.preferred_language.size() < 10)) &&
-             (!('subjects' in data) || (data.subjects is list && data.subjects.size() < 20)) &&
-             (!('points' in data) || (data.points is number && data.points >= 0)) &&
-             (!('shareCount' in data) || (data.shareCount is number && data.shareCount >= 0)) &&
-             (!('statusShared' in data) || (data.statusShared is bool)) &&
-             (!('updatedAt' in data) || (data.updatedAt is timestamp)) &&
-             (!('createdAt' in data) || (data.createdAt is timestamp)) &&
-             (!('parent_pin' in data) || (data.parent_pin is string && data.parent_pin.size() == 4)) &&
-             (!('parentShowLeaderboard' in data) || (data.parentShowLeaderboard is bool)) &&
-             (!('avatar' in data) || (data.avatar is string && data.avatar.size() < 500)) &&
-             (!('streak' in data) || (data.streak is number && data.streak >= 0)) &&
-             (!('lastActiveDate' in data) || (data.lastActiveDate is string && data.lastActiveDate.size() < 20)) &&
-             (!('phoneNumber' in data) || (data.phoneNumber is string && data.phoneNumber.size() < 20));
+             (!('points' in data) || data.points is int) &&
+             (!('shareCount' in data) || data.shareCount is int) &&
+             (!('statusShared' in data) || data.statusShared is bool);
     }
 
-    function isValidMonthlyTest(data) {
-      return hasRequiredFields(['title', 'status']) &&
-             validStringLength('title', 1, 100) &&
-             data.status in ['draft', 'published'];
+    function isValidChapter(data) {
+      return hasRequiredFields(['class', 'board', 'language', 'subject', 'title']) &&
+             data.class is int && data.board is string && data.language is string &&
+             data.subject is string && data.title is string &&
+             (!('status' in data) || data.status in ['draft', 'published']) &&
+             (!('practice_questions' in data) || data.practice_questions is list) &&
+             (!('quiz_questions' in data) || data.quiz_questions is list);
     }
 
-    function isValidMonthlyTestSubmission(data) {
-      return hasRequiredFields(['userId', 'testId', 'answers', 'score', 'submittedAt']) &&
-             data.userId == request.auth.uid &&
-             data.answers is list && data.answers.size() < 100 &&
-             data.score is number &&
-             data.submittedAt is timestamp;
+    function isValidQuestion(data) {
+      return hasRequiredFields(['chapter_id', 'question', 'options', 'correct_answer']) &&
+             data.chapter_id is string && data.question is string &&
+             data.options is list && data.correct_answer is string;
     }
 
-    function isValidPublicProfile(data) {
-      return hasOnlyAllowedFields(['name', 'points', 'class', 'avatar', 'streak']) &&
-             (!('name' in data) || (data.name is string && data.name.size() < 100)) &&
-             (!('points' in data) || (data.points is number)) &&
-             (!('class' in data) || (data.class is string && data.class.size() < 20)) &&
-             (!('avatar' in data) || (data.avatar is string && data.avatar.size() < 500)) &&
-             (!('streak' in data) || (data.streak is number));
-    }
-
-    function isValidSubscription(data) {
-      return hasRequiredFields(['active']) &&
-             data.active is bool &&
-             (!('plan' in data) || (data.plan is string && data.plan.size() < 50)) &&
-             (!('expires_at' in data) || (data.expires_at is timestamp));
+    function isValidTestResult(data) {
+      return hasRequiredFields(['user_id', 'chapter_id', 'score', 'total', 'completed_at']) &&
+             data.user_id is string && data.chapter_id is string &&
+             data.score is int && data.total is int && data.completed_at is timestamp;
     }
 
     function isValidPayment(data) {
-      return hasRequiredFields(['user_id', 'amount', 'status', 'razorpay_order_id']) &&
-             data.user_id == request.auth.uid &&
-             data.amount is number &&
-             data.status is string && data.status.size() < 50 &&
-             data.razorpay_order_id is string && data.razorpay_order_id.size() < 100;
+      return hasRequiredFields(['user_id', 'amount', 'status', 'razorpay_order_id', 'created_at']) &&
+             data.user_id is string && data.amount is number &&
+             data.status is string && data.razorpay_order_id is string &&
+             data.created_at is timestamp;
+    }
+
+    function isValidSubscription(data) {
+      return hasRequiredFields(['active']) && data.active is bool &&
+             (!('plan' in data) || data.plan is string) &&
+             (!('expires_at' in data) || data.expires_at is timestamp);
+    }
+
+    function isValidMonthlyTest(data) {
+      return hasRequiredFields(['subject', 'month', 'year', 'status']) &&
+             data.subject is string && data.month is string &&
+             data.year is int && data.status in ['draft', 'published'];
+    }
+
+    function isValidMonthlyTestSubmission(data) {
+      return hasRequiredFields(['test_id', 'user_id', 'answers', 'submitted_at']) &&
+             data.test_id is string && data.user_id is string &&
+             data.answers is list && data.submitted_at is timestamp;
+    }
+
+    function isValidTextbook(data) {
+      return hasRequiredFields(['class', 'board', 'subject', 'title', 'download_url']) &&
+             data.class is string && data.board is string &&
+             data.subject is string && data.title is string &&
+             isValidUrl(data.download_url);
     }
 
     function isValidDailyChallenge(data) {
       return hasRequiredFields(['date', 'question', 'options', 'correct_answer', 'points']) &&
-             data.date is string && data.date.size() < 20 &&
-             data.question is string && data.question.size() < 1000 &&
-             data.options is list && data.options.size() < 10 &&
-             data.correct_answer is string && data.correct_answer.size() < 500 &&
-             data.points is number;
+             isValidDateString(data.date) && data.question is string &&
+             data.options is list && data.correct_answer is string &&
+             data.points is int;
     }
 
     function isValidUserProgress(data) {
       return hasRequiredFields(['userId', 'date', 'pointsEarned']) &&
-             data.userId == request.auth.uid &&
-             data.date is string && data.date.size() < 20 &&
-             data.pointsEarned is number;
+             data.userId is string && isValidDateString(data.date) &&
+             data.pointsEarned is int;
     }
 
     function isValidFriendship(data) {
-      return hasRequiredFields(['followerId', 'followingId']) &&
-             data.followerId == request.auth.uid &&
-             data.followingId is string && data.followingId.size() < 128;
+      return hasRequiredFields(['followerId', 'followingId', 'createdAt']) &&
+             data.followerId is string && data.followingId is string &&
+             data.createdAt is timestamp;
     }
 
     // ===============================================================
     // Rules
     // ===============================================================
 
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isOwner(userId) && isValidUser(request.resource.data) &&
+                      (request.resource.data.role == 'student' || isAdmin());
+      allow update: if (isOwner(userId) || isAdmin()) && isValidUser(request.resource.data) &&
+                      (request.resource.data.role == resource.data.role || isAdmin());
+      allow delete: if isAdmin();
+    }
+
     match /chapters/{chapterId} {
       allow read: if isAuthenticated();
-      allow create: if isAdmin() && isValidChapter(request.resource.data);
-      allow update: if isAdmin() && isValidChapter(request.resource.data);
-      allow delete: if isAdmin();
+      allow write: if isAdmin() && isValidChapter(request.resource.data);
     }
 
-    match /textbooks/{textbookId} {
+    match /questions/{questionId} {
       allow read: if isAuthenticated();
-      allow create: if isAdmin() && isValidTextbook(request.resource.data);
-      allow update: if isAdmin() && isValidTextbook(request.resource.data);
+      allow write: if isAdmin() && isValidQuestion(request.resource.data);
+    }
+
+    match /test_results/{resultId} {
+      allow read: if isAuthenticated() && (isOwner(resource.data.user_id) || isAdmin());
+      allow create: if isAuthenticated() && isOwner(request.resource.data.user_id) && isValidTestResult(request.resource.data);
+      allow update: if isAdmin() && isValidTestResult(request.resource.data);
       allow delete: if isAdmin();
     }
 
-    match /users/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
-      allow create: if (isOwner(userId) && isValidUserForCreate(request.resource.data) && request.resource.data.role == 'student') || (isAdmin() && isValidUserForCreate(request.resource.data));
-      allow update: if (isOwner(userId) && isValidUserForUpdate(request.resource.data) && roleUnchanged()) || (isAdmin() && isValidUserForUpdate(request.resource.data));
-      allow delete: if isAdmin();
+    match /payments/{paymentId} {
+      allow read: if isAuthenticated() && (isOwner(resource.data.user_id) || isAdmin());
+      allow create: if isAuthenticated() && isOwner(request.resource.data.user_id) && isValidPayment(request.resource.data);
+      allow update, delete: if isAdmin();
+    }
+
+    match /subscriptions/{userId} {
+      allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      allow write: if isAdmin() && isValidSubscription(request.resource.data);
     }
 
     match /monthly_tests/{testId} {
       allow read: if isAuthenticated();
-      allow create: if isAdmin() && isValidMonthlyTest(request.resource.data);
-      allow update: if isAdmin() && isValidMonthlyTest(request.resource.data);
-      allow delete: if isAdmin();
-    }
-
-    match /test_results/{resultId} {
-      allow read: if isAuthenticated() && resource.data.user_id == request.auth.uid;
-      allow create: if isAuthenticated() && request.resource.data.user_id == request.auth.uid;
-      allow update: if false;
-      allow delete: if false;
-    }
-
-    match /quiz_results/{resultId} {
-      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-      allow update: if false;
-      allow delete: if false;
+      allow write: if isAdmin() && isValidMonthlyTest(request.resource.data);
     }
 
     match /monthly_test_submissions/{submissionId} {
+      allow read: if isAuthenticated() && (isOwner(resource.data.user_id) || isAdmin());
+      allow create: if isAuthenticated() && isOwner(request.resource.data.user_id) && isValidMonthlyTestSubmission(request.resource.data);
+      allow update, delete: if isAdmin();
+    }
+
+    match /textbooks/{textbookId} {
       allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && isValidMonthlyTestSubmission(request.resource.data);
-      allow update: if false; // Submissions are immutable
-      allow delete: if false;
+      allow write: if isAdmin() && isValidTextbook(request.resource.data);
     }
 
-    match /public_profiles/{userId} {
+    match /system_settings/{docId} {
       allow read: if isAuthenticated();
-      allow write: if isOwner(userId) && isValidPublicProfile(request.resource.data);
-    }
-
-    match /subscriptions/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
-      allow write: if isAdmin() || (isOwner(userId) && isValidSubscription(request.resource.data));
-    }
-
-    match /payments/{paymentId} {
-      allow read: if isAuthenticated() && (resource.data.user_id == request.auth.uid || isAdmin());
-      allow create: if isAuthenticated() && isValidPayment(request.resource.data);
-      allow update: if isAdmin();
-    }
-
-    match /transactions/{transactionId} {
-      allow read: if (isAuthenticated() && resource.data.userId == request.auth.uid) || isAdmin();
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-      allow update: if isAdmin();
-    }
-
-    match /ai_usage/{usageId} {
-      allow read: if (isAuthenticated() && resource.data.userId == request.auth.uid) || isAdmin();
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-      allow update: if isAdmin();
-    }
-
-    match /notifications/{notificationId} {
-      allow read: if (isAuthenticated() && resource.data.userId == request.auth.uid) || isAdmin();
-      allow create: if isAdmin();
-      allow update: if (isAuthenticated() && resource.data.userId == request.auth.uid) || isAdmin();
-      allow delete: if isAdmin();
-    }
-
-    match /private_settings/{settingId} {
-      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
-    }
-
-    match /settings/{document=**} {
-      allow read: if isAdmin();
-      allow write: if isAdmin();
-    }
-
-    match /system_settings/{document=**} {
-      allow read: if true;
       allow write: if isAdmin();
     }
 
@@ -367,15 +342,20 @@ service cloud.firestore {
     }
 
     match /user_progress/{progressId} {
-      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if isAuthenticated() && isValidUserProgress(request.resource.data);
-      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid && isValidUserProgress(request.resource.data);
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId) && isValidUserProgress(request.resource.data);
+      allow update, delete: if isAdmin();
     }
 
     match /friendships/{friendshipId} {
       allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && isValidFriendship(request.resource.data);
-      allow delete: if isAuthenticated() && resource.data.followerId == request.auth.uid;
+      allow create: if isAuthenticated() && isOwner(request.resource.data.followerId) && isValidFriendship(request.resource.data);
+      allow delete: if isAuthenticated() && (isOwner(resource.data.followerId) || isAdmin());
+    }
+
+    // Default deny
+    match /{path=**} {
+      allow read, write: if false;
     }
   }
 }

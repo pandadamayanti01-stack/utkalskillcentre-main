@@ -142,7 +142,7 @@ export function ParentDashboard({ user, chapters, leaderboard, language, onBack,
                     className="glass-card neon-border rounded-2xl p-4 flex items-center justify-between"
                   >
                     <div className="flex items-center gap-4">
-                      <div className={\`w-12 h-12 rounded-xl flex items-center justify-center font-bold \${r.accuracy >= 80 ? 'bg-emerald-500/10 text-emerald-500' : r.accuracy >= 50 ? 'bg-yellow-500/10 text-yellow-500' : 'bg-red-500/10 text-red-500'}\`}>
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold ${r.accuracy >= 80 ? 'bg-emerald-500/10 text-emerald-500' : r.accuracy >= 50 ? 'bg-yellow-500/10 text-yellow-500' : 'bg-red-500/10 text-red-500'}`}>
                         {r.accuracy}%
                       </div>
                       <div>
@@ -172,10 +172,10 @@ export function ParentDashboard({ user, chapters, leaderboard, language, onBack,
               <div className="glass-card neon-border rounded-3xl p-6 overflow-hidden">
                 <div className="space-y-4">
                   {leaderboard.slice(0, 5).map((student: any, i: number) => (
-                    <div key={i} className={\`flex items-center justify-between \${student.name === user.name ? 'bg-emerald-500/10 -mx-6 px-6 py-2 border-y border-emerald-500/20' : ''}\`}>
+                    <div key={i} className={`flex items-center justify-between ${student.name === user.name ? 'bg-emerald-500/10 -mx-6 px-6 py-2 border-y border-emerald-500/20' : ''}`}>
                       <div className="flex items-center gap-3">
-                        <span className={\`w-6 text-xs font-bold \${i < 3 ? 'text-yellow-500' : 'text-slate-500'}\`}>{i + 1}</span>
-                        <span className={\`text-sm \${student.name === user.name ? 'text-emerald-400 font-bold' : 'text-slate-300'}\`}>{student.name}</span>
+                        <span className={`w-6 text-xs font-bold ${i < 3 ? 'text-yellow-500' : 'text-slate-500'}`}>{i + 1}</span>
+                        <span className={`text-sm ${student.name === user.name ? 'text-emerald-400 font-bold' : 'text-slate-300'}`}>{student.name}</span>
                       </div>
                       <span className="text-xs font-mono text-emerald-400">{student.points}</span>
                     </div>
