@@ -607,7 +607,9 @@ export default function App() {
       query(collection(firestore, 'public_profiles'), orderBy('points', 'desc'), limit(10)),
       (snapshot) => {
         const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-        setLeaderboard(data);
+        const testingNumbers = ['9556086560', '+919556086560', '6370487877', '+916370487877', '9337956168', '+919337956168', '8926118509', '+918926118509', '8457811227', '+918457811227', '7735118243', '+917735118243'];
+        const filteredData = data.filter((s: any) => !testingNumbers.includes(s.phoneNumber));
+        setLeaderboard(filteredData);
       },
       (err) => handleFirestoreError(err, OperationType.GET, 'public_profiles')
     );
@@ -2425,7 +2427,7 @@ function StudyBuddy({ user, language }: any) {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-8 right-8 w-16 h-16 rounded-full bg-emerald-500 text-white shadow-2xl shadow-emerald-500/40 flex items-center justify-center z-40 border-4 border-slate-950"
+        className="fixed bottom-28 right-8 w-16 h-16 rounded-full bg-emerald-500 text-white shadow-2xl shadow-emerald-500/40 flex items-center justify-center z-40 border-4 border-slate-950"
       >
         <Bot size={32} />
         <motion.div 
