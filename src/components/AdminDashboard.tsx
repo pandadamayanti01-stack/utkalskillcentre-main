@@ -65,7 +65,7 @@ import {
   generateTestQuestions
 } from '../services/aiService';
 
-type AdminTab = 'dashboard' | 'content' | 'monthly_tests' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup';
+type AdminTab = 'dashboard' | 'content' | 'monthly_tests' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup' | 'students';
 
 interface AdminDashboardProps {
   onExit: () => void;
@@ -85,6 +85,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [aiLogs, setAiLogs] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
+  const [students, setStudents] = useState<any[]>([]);
   const [systemSettings, setSystemSettings] = useState<any>({});
   const [privateSettings, setPrivateSettings] = useState<any>({});
   const [confirmAction, setConfirmAction] = useState<string | null>(null);
@@ -255,6 +256,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
       }
     });
 
+    const unsubStudents = onSnapshot(collection(firestore, 'users'), (snapshot) => {
+      setStudents(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }, (err) => {
+      console.error("Firestore Students onSnapshot Error:", err);
+      if (err.message.includes('insufficient permissions')) {
+        showNotification("Permission denied for students.", "error");
+      }
+    });
+
     return () => {
       unsubChapters();
       unsubTx();
@@ -264,6 +274,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
       unsubTests();
       unsubPrivateSettings();
       unsubTextbooks();
+      unsubStudents();
     };
   }, []);
 
@@ -2372,6 +2383,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     { id: 'ai_usage', label: 'AI Usage', icon: Brain },
     { id: 'payments', label: 'Payments', icon: CreditCard },
     { id: 'notifications', label: 'Notifications', icon: Bell },
+    { id: 'students', label: 'Students', icon: Users },
     { id: 'settings', label: 'Settings', icon: Settings },
     { id: 'production_setup', label: 'Production Setup', icon: Rocket },
   ];
@@ -2496,9 +2508,68 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
             {activeTab === 'notifications' && renderNotifications()}
             {activeTab === 'settings' && renderSettings()}
             {activeTab === 'production_setup' && renderProductionSetup()}
+            {activeTab === 'students' && renderStudents()}
           </motion.div>
         </AnimatePresence>
       </div>
     </div>
   );
+
+  function renderStudents() {
+    return (
+      <div className="glass-card p-8 rounded-[2.5rem]">
+        <h2 className="text-2xl font-bold text-white mb-6">Student Management</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-slate-300">
+            <thead>
+              <tr className="border-b border-white/10">
+                <th className="pb-4">Name</th>
+                <th className="pb-4">Email</th>
+                <th className="pb-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {students.map(student => (
+                <tr key={student.id} className="border-b border-white/5 hover:bg-white/5">
+                  <td className="py-4">{student.name || 'N/A'}</td>
+                  <td className="py-4">{student.email || 'N/A'}</td>
+                  <td className="py-4">
+                    <button 
+                      onClick={() => handleResetStudent(student.id)}
+                      className="text-red-400 hover:text-red-300 font-medium"
+                    >
+                      Reset Data
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  }
+
+  async function handleResetStudent(studentId: string) {
+    if (!confirm("Are you sure you want to reset this student's data? This cannot be undone.")) return;
+    try {
+      setLoading(true);
+      // Reset student data
+      await updateDoc(doc(firestore, 'users', studentId), {
+        points: 0,
+        streak: 0,
+        stats: {
+          accuracy: 0,
+          league: 'Bronze',
+          badges: []
+        }
+      });
+      showNotification("Student data reset successfully!");
+    } catch (err: any) {
+      console.error("Reset Error:", err);
+      showNotification("Failed to reset student: " + err.message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  }
 };
