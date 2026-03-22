@@ -763,21 +763,33 @@ export default function App() {
     // Ensure the container is empty and has the widget div
     container.innerHTML = '<div id="recaptcha-widget"></div>';
     
-    try {
-      (window as any).recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-widget', {
-        size: 'invisible',
-        callback: (response: any) => {
-          console.log("reCAPTCHA solved", response);
-        },
-        'expired-callback': () => {
-          console.warn("reCAPTCHA expired");
-        }
-      });
-      // Important: render the verifier
-      (window as any).recaptchaVerifier.render();
-    } catch (e) {
-      console.error("Recaptcha Initialization Error:", e);
-    }
+    // Small delay to ensure DOM is ready
+    setTimeout(() => {
+      const widget = document.getElementById('recaptcha-widget');
+      if (!widget) {
+        console.error("Recaptcha widget element not found after creation");
+        return;
+      }
+
+      try {
+        (window as any).recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-widget', {
+          size: 'invisible',
+          callback: (response: any) => {
+            console.log("reCAPTCHA solved", response);
+          },
+          'expired-callback': () => {
+            console.warn("reCAPTCHA expired");
+          }
+        });
+        
+        // Important: render the verifier
+        (window as any).recaptchaVerifier.render().catch((e: any) => {
+          console.error("Recaptcha Render Error:", e);
+        });
+      } catch (e) {
+        console.error("Recaptcha Initialization Error:", e);
+      }
+    }, 100);
   };
 
   const handleAdminEmailLogin = async () => {
@@ -861,6 +873,9 @@ export default function App() {
     try {
       setupRecaptcha();
       
+      // Wait for reCAPTCHA to be ready
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
       const verifier = (window as any).recaptchaVerifier;
       if (!verifier) {
         throw new Error("reCAPTCHA verifier not initialized");
@@ -892,6 +907,11 @@ export default function App() {
         message = language === 'en' 
           ? "Real SMS requires the Firebase Blaze (Paid) plan. \n\nTO TEST FOR FREE:\n1. Go to Firebase Console > Auth > Users\n2. Click 'Add phone number for testing'\n3. Add your number and a code (e.g. 123456)\n4. Use that number in this app."
           : "ପ୍ରକୃତ SMS ପାଇଁ Firebase Blaze ପ୍ଲାନ୍ ଆବଶ୍ୟକ | \n\nମାଗଣାରେ ପରୀକ୍ଷା କରିବା ପାଇଁ:\n୧. Firebase Console > Auth > Users କୁ ଯାଆନ୍ତୁ\n୨. 'Add phone number for testing' କୁ ଯାଆନ୍ତୁ\n୩. ଆପଣଙ୍କ ନମ୍ବର ଏବଂ ଏକ କୋଡ୍ (ଯଥା: 123456) ଯୋଡନ୍ତୁ |";
+      } else if (error.code === 'auth/operation-not-allowed') {
+        title = "Phone Login Not Enabled";
+        message = language === 'en'
+          ? "Phone Authentication is not enabled in your Firebase project. \n\nTo fix this:\n1. Open Firebase Console\n2. Go to Build > Authentication > Sign-in method\n3. Click 'Add new provider'\n4. Select 'Phone' and click 'Enable'\n5. Save the changes."
+          : "Firebase ପ୍ରକଳ୍ପରେ Phone Authentication ସକ୍ରିୟ ନାହିଁ | \n\nସମାଧାନ:\n୧. Firebase Console ଖୋଲନ୍ତୁ\n୨. Build > Authentication > Sign-in method କୁ ଯାଆନ୍ତୁ\n୩. 'Add new provider' କୁ ଯାଆନ୍ତୁ\n୪. 'Phone' ଚୟନ କରି 'Enable' କରନ୍ତୁ |";
       } else if (error.code === 'auth/unauthorized-domain' || error.code === 'auth/app-not-authorized') {
         title = "Domain Not Authorized";
         message = language === 'en'
