@@ -26,23 +26,22 @@ import {
   getDocFromServer 
 } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
-import firebaseAppletConfig from '../firebase-applet-config.json';
 
 // Firebase configuration from AI Studio / Environment
 // @ts-ignore
 const injectedConfig = typeof __FIREBASE_CONFIG__ !== 'undefined' ? __FIREBASE_CONFIG__ : {};
 
 const firebaseConfig = {
-  apiKey: injectedConfig.apiKey || import.meta.env.VITE_FIREBASE_API_KEY || firebaseAppletConfig.apiKey,
-  authDomain: injectedConfig.authDomain || import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || firebaseAppletConfig.authDomain,
-  projectId: injectedConfig.projectId || import.meta.env.VITE_FIREBASE_PROJECT_ID || firebaseAppletConfig.projectId,
-  storageBucket: injectedConfig.storageBucket || import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || firebaseAppletConfig.storageBucket,
-  messagingSenderId: injectedConfig.messagingSenderId || import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || firebaseAppletConfig.messagingSenderId,
-  appId: injectedConfig.appId || import.meta.env.VITE_FIREBASE_APP_ID || firebaseAppletConfig.appId,
-  measurementId: injectedConfig.measurementId || import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || firebaseAppletConfig.measurementId,
+  apiKey: injectedConfig.apiKey || import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: injectedConfig.authDomain || import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: injectedConfig.projectId || import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: injectedConfig.storageBucket || import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: injectedConfig.messagingSenderId || import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: injectedConfig.appId || import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: injectedConfig.measurementId || import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
   
   // FIXED: Explicitly pointing to your AI Studio Database ID
-  firestoreDatabaseId: injectedConfig.firestoreDatabaseId || import.meta.env.VITE_FIREBASE_DATABASE_ID || firebaseAppletConfig.firestoreDatabaseId || 'ai-studio-2a24dfcb-5874-4b37-8e37-434f425283b9'
+  firestoreDatabaseId: injectedConfig.firestoreDatabaseId || import.meta.env.VITE_FIREBASE_DATABASE_ID || 'ai-studio-2a24dfcb-5874-4b37-8e37-434f425283b9'
 };
 
 // Initialize Firebase SDK
