@@ -3,23 +3,27 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChang
 import { getFirestore, doc, getDoc, setDoc, collection, query, where, onSnapshot, getDocs, addDoc, updateDoc, deleteDoc, serverTimestamp, getDocFromServer } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
-// Firebase configuration using environment variables
+// Firebase configuration
+// @ts-ignore
+const injectedConfig = typeof __FIREBASE_CONFIG__ !== 'undefined' ? __FIREBASE_CONFIG__ : {};
+
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+  apiKey: injectedConfig.apiKey || import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: injectedConfig.authDomain || import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: injectedConfig.projectId || import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: injectedConfig.storageBucket || import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: injectedConfig.messagingSenderId || import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: injectedConfig.appId || import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: injectedConfig.measurementId || import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+  firestoreDatabaseId: injectedConfig.firestoreDatabaseId || import.meta.env.VITE_FIREBASE_DATABASE_ID || '(default)'
 };
 
 // Initialize Firebase SDK
 let app;
 try {
-  if (!firebaseConfig.apiKey) {
-    console.warn("Firebase API Key is missing. Firebase features will be disabled.");
-    app = initializeApp({ apiKey: 'placeholder', projectId: 'placeholder' }); // Minimal placeholder to avoid crashes
+  if (!firebaseConfig || !firebaseConfig.apiKey || firebaseConfig.apiKey === 'TODO_KEYHERE') {
+    console.warn("Firebase configuration is missing or incomplete. Firebase features will be disabled.");
+    app = initializeApp({ apiKey: 'placeholder', projectId: 'placeholder' });
   } else {
     app = initializeApp(firebaseConfig);
   }
@@ -27,8 +31,9 @@ try {
   console.error("Firebase initialization failed:", e);
   app = initializeApp({ apiKey: 'placeholder', projectId: 'placeholder' });
 }
-// Use VITE_FIREBASE_DATABASE_ID if provided, otherwise default to '(default)'
-export const db = getFirestore(app, import.meta.env.VITE_FIREBASE_DATABASE_ID || '(default)');
+
+// Use firestoreDatabaseId from config if available
+export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId || '(default)');
 export const auth = getAuth(app);
 export const storage = getStorage(app);
 export const googleProvider = new GoogleAuthProvider();
