@@ -751,53 +751,66 @@ export default function App() {
     return true;
   };
 
-  const setupRecaptcha = () => {
-    const container = document.getElementById('recaptcha-container');
-    if (!container) {
-      console.error("Recaptcha container NOT found in DOM");
-      return;
-    }
-    
-    // Clear existing verifier
-    if ((window as any).recaptchaVerifier) {
-      try {
-        (window as any).recaptchaVerifier.clear();
-      } catch (e) {
-        console.warn("Recaptcha clear error:", e);
-      }
-      (window as any).recaptchaVerifier = null;
-    }
-    
-    // Ensure the container is empty and has the widget div
-    container.innerHTML = '<div id="recaptcha-widget"></div>';
-    
-    // Small delay to ensure DOM is ready
-    setTimeout(() => {
-      const widget = document.getElementById('recaptcha-widget');
-      if (!widget) {
-        console.error("Recaptcha widget element not found after creation");
+  const setupRecaptcha = (): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      const container = document.getElementById('recaptcha-container');
+      if (!container) {
+        console.error("Recaptcha container NOT found in DOM");
+        reject(new Error("Recaptcha container NOT found in DOM"));
         return;
       }
-
-      try {
-        (window as any).recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-widget', {
-          size: 'invisible',
-          callback: (response: any) => {
-            console.log("reCAPTCHA solved", response);
-          },
-          'expired-callback': () => {
-            console.warn("reCAPTCHA expired");
-          }
-        });
-        
-        // Important: render the verifier
-        (window as any).recaptchaVerifier.render().catch((e: any) => {
-          console.error("Recaptcha Render Error:", e);
-        });
-      } catch (e) {
-        console.error("Recaptcha Initialization Error:", e);
+      
+      // Clear existing verifier
+      if ((window as any).recaptchaVerifier) {
+        try {
+          (window as any).recaptchaVerifier.clear();
+        } catch (e) {
+          console.warn("Recaptcha clear error:", e);
+        }
+        (window as any).recaptchaVerifier = null;
       }
-    }, 100);
+      
+      // Ensure the container is empty and has the widget div
+      container.innerHTML = '<div id="recaptcha-widget"></div>';
+      
+      // Small delay to ensure DOM is ready
+      setTimeout(() => {
+        const widget = document.getElementById('recaptcha-widget');
+        if (!widget) {
+          console.error("Recaptcha widget element not found after creation");
+          reject(new Error("Recaptcha widget element not found after creation"));
+          return;
+        }
+
+        try {
+          const verifier = new RecaptchaVerifier(auth, 'recaptcha-widget', {
+            size: 'invisible',
+            callback: (response: any) => {
+              console.log("reCAPTCHA solved", response);
+            },
+            'expired-callback': () => {
+              console.warn("reCAPTCHA expired");
+            }
+          });
+          
+          (window as any).recaptchaVerifier = verifier;
+          
+          // Important: render the verifier and wait for it
+          verifier.render()
+            .then(() => {
+              console.log("reCAPTCHA rendered successfully");
+              resolve(verifier);
+            })
+            .catch((e: any) => {
+              console.error("Recaptcha Render Error:", e);
+              reject(e);
+            });
+        } catch (e) {
+          console.error("Recaptcha Initialization Error:", e);
+          reject(e);
+        }
+      }, 100);
+    });
   };
 
   const handleAdminEmailLogin = async () => {
@@ -879,12 +892,8 @@ export default function App() {
     setOtp(''); // Clear previous OTP when starting/resending
     console.log("Starting Phone Auth process...");
     try {
-      setupRecaptcha();
+      const verifier = await setupRecaptcha();
       
-      // Wait for reCAPTCHA to be ready
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      const verifier = (window as any).recaptchaVerifier;
       if (!verifier) {
         throw new Error("reCAPTCHA verifier not initialized");
       }
