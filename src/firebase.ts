@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, User as FirebaseUser, setPersistence, browserSessionPersistence } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc, collection, query, where, onSnapshot, getDocs, addDoc, updateDoc, deleteDoc, serverTimestamp, getDocFromServer } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
@@ -35,6 +35,12 @@ try {
 // Use firestoreDatabaseId from config if available
 export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId || '(default)');
 export const auth = getAuth(app);
+
+// Set session-only persistence
+setPersistence(auth, browserSessionPersistence).catch((err) => {
+  console.error("Auth persistence error:", err);
+});
+
 export const storage = getStorage(app);
 export const googleProvider = new GoogleAuthProvider();
 

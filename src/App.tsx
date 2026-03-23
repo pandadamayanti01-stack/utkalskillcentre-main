@@ -985,12 +985,15 @@ export default function App() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
+      // Clear all local storage data
+      localStorage.clear();
       // Force a reload to clear any stale state if needed, 
       // though onAuthStateChanged should handle it.
       window.location.href = '/';
     } catch (error) {
       console.error("Logout Error:", error);
       // Fallback: clear user state manually
+      localStorage.clear();
       setUser(null);
       setIsPremium(false);
     }
