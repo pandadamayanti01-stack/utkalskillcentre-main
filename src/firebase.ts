@@ -15,7 +15,18 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase SDK
-const app = initializeApp(firebaseConfig);
+let app;
+try {
+  if (!firebaseConfig.apiKey) {
+    console.warn("Firebase API Key is missing. Firebase features will be disabled.");
+    app = initializeApp({ apiKey: 'placeholder', projectId: 'placeholder' }); // Minimal placeholder to avoid crashes
+  } else {
+    app = initializeApp(firebaseConfig);
+  }
+} catch (e) {
+  console.error("Firebase initialization failed:", e);
+  app = initializeApp({ apiKey: 'placeholder', projectId: 'placeholder' });
+}
 // Use VITE_FIREBASE_DATABASE_ID if provided, otherwise default to '(default)'
 export const db = getFirestore(app, import.meta.env.VITE_FIREBASE_DATABASE_ID || '(default)');
 export const auth = getAuth(app);
