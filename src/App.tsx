@@ -540,6 +540,14 @@ export default function App() {
         // Check subscription
         const subDocRef = doc(firestore, 'subscriptions', firebaseUser.uid);
         unsubSub = onSnapshot(subDocRef, (subDocSnap) => {
+          const userEmail = firebaseUser.email?.toLowerCase();
+          const lifetimeEmails = ['gyanaloka.panda@gmail.com', 'gyanapd.ram@gmail.com', 'pandadamayanti01@gmail.com'];
+          
+          if (userEmail && lifetimeEmails.includes(userEmail)) {
+            setIsPremium(true);
+            return;
+          }
+
           if (subDocSnap.exists()) {
             const subData = subDocSnap.data();
             const now = new Date();
@@ -1050,11 +1058,11 @@ export default function App() {
 
         // Store pending payment in Firestore
         await setDoc(doc(firestore, 'payments', orderData.id), {
-          user_id: user.id,
+          userId: user.id,
           amount: amount,
           status: 'pending',
           razorpay_order_id: orderData.id,
-          created_at: new Date().toISOString()
+          createdAt: new Date().toISOString()
         });
 
         // 2. Open Razorpay Checkout
@@ -1864,7 +1872,7 @@ export default function App() {
       </main>
 
       {/* AI Study Buddy */}
-      {user && <StudyBuddy user={user} language={language} />}
+      {user && isPremium && <StudyBuddy user={user} language={language} />}
 
     </div>
     </ErrorBoundary>
@@ -2433,7 +2441,11 @@ function StudyBuddy({ user, language }: any) {
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [imageMimeType, setImageMimeType] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
   const { isListening, transcript, startListening, stopListening } = useVoiceSearch(language);
 
   useEffect(() => {
@@ -2442,24 +2454,49 @@ function StudyBuddy({ user, language }: any) {
     }
   }, [transcript]);
 
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert(language === 'en' ? "Image size should be less than 5MB" : "ଫଟୋର ଆକାର ୫ MB ରୁ କମ୍ ହେବା ଉଚିତ୍ |");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = (reader.result as string).split(',')[1];
+        setSelectedImage(base64String);
+        setImageMimeType(file.type);
+      };
+      reader.readAsDataURL(file);
     }
-  }, [messages]);
+  };
 
   const handleSend = async () => {
-    if (!input.trim() || loading) return;
+    if (!input.trim() && !selectedImage || loading) return;
 
     const userMessage = input.trim();
+    const imageData = selectedImage && imageMimeType ? { data: selectedImage, mimeType: imageMimeType } : undefined;
+    
     setInput('');
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    setSelectedImage(null);
+    setImageMimeType(null);
+    
+    setMessages(prev => [...prev, { 
+      role: 'user', 
+      content: userMessage || (language === 'en' ? "Sent an image" : "ଏକ ଫଟୋ ପଠାଗଲା"),
+      image: imageData ? `data:${imageData.mimeType};base64,${imageData.data}` : undefined
+    }]);
     setLoading(true);
 
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const chat = ai.chats.create({
+      const parts: any[] = [];
+      if (userMessage) parts.push({ text: userMessage });
+      if (imageData) parts.push({ inlineData: { data: imageData.data, mimeType: imageData.mimeType } });
+
+      const response = await ai.models.generateContent({
         model: "gemini-3.1-flash-lite-preview",
+        contents: { parts },
         config: {
           systemInstruction: `You are a helpful, encouraging AI Study Buddy for a student named ${user.name}. 
           Your goal is to explain educational concepts clearly, help with homework (without just giving answers), and motivate the student. 
@@ -2468,7 +2505,6 @@ function StudyBuddy({ user, language }: any) {
         }
       });
 
-      const response = await chat.sendMessage({ message: userMessage });
       setMessages(prev => [...prev, { role: 'assistant', content: response.text }]);
     } catch (err) {
       console.error("Study Buddy Error:", err);
@@ -2529,6 +2565,9 @@ function StudyBuddy({ user, language }: any) {
                       ? 'bg-emerald-500 text-white rounded-tr-none' 
                       : 'bg-white/5 text-slate-300 border border-white/10 rounded-tl-none'
                   }`}>
+                    {msg.image && (
+                      <img src={msg.image} alt="User upload" className="w-full h-32 object-cover rounded-lg mb-2" referrerPolicy="no-referrer" />
+                    )}
                     <Markdown>{msg.content}</Markdown>
                   </div>
                 </div>
@@ -2544,7 +2583,47 @@ function StudyBuddy({ user, language }: any) {
 
             {/* Input */}
             <div className="p-6 border-t border-white/5 bg-slate-950/50">
-              <div className="flex items-center gap-2 pl-2">
+              {selectedImage && (
+                <div className="mb-4 relative w-20 h-20 rounded-xl overflow-hidden border-2 border-emerald-500">
+                  <img src={`data:${imageMimeType};base64,${selectedImage}`} alt="Selected" className="w-full h-full object-cover" />
+                  <button 
+                    onClick={() => { setSelectedImage(null); setImageMimeType(null); }}
+                    className="absolute top-0 right-0 bg-black/60 text-white p-1"
+                  >
+                    <X size={12} />
+                  </button>
+                </div>
+              )}
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    className="hidden" 
+                    ref={fileInputRef}
+                    onChange={handleImageSelect}
+                  />
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    capture="environment" 
+                    className="hidden" 
+                    ref={cameraInputRef}
+                    onChange={handleImageSelect}
+                  />
+                  <button 
+                    onClick={() => cameraInputRef.current?.click()}
+                    className="p-2 text-slate-400 hover:text-white transition-colors"
+                  >
+                    <Camera size={18} />
+                  </button>
+                  <button 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="p-2 text-slate-400 hover:text-white transition-colors"
+                  >
+                    <Image size={18} />
+                  </button>
+                </div>
                 <div className="relative flex-1">
                   <input 
                     type="text"
@@ -3077,11 +3156,11 @@ function TestEngine({ chapter, onComplete, language }: any) {
       const user = auth.currentUser;
       if (user) {
         await addDoc(collection(firestore, 'test_results'), {
-          user_id: user.uid,
-          chapter_id: String(chapter.id),
+          userId: user.uid,
+          chapterId: String(chapter.id),
           score: score,
           total: questions.length,
-          completed_at: new Date().toISOString()
+          createdAt: new Date().toISOString()
         });
         
         await updateDoc(doc(firestore, 'users', user.uid), {
@@ -3183,6 +3262,13 @@ function AiSolverView({ language, onBack }: any) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
+  const { isListening, transcript, startListening, stopListening } = useVoiceSearch(language);
+
+  useEffect(() => {
+    if (transcript) {
+      setPrompt(prev => prev + (prev ? ' ' : '') + transcript);
+    }
+  }, [transcript]);
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -3322,6 +3408,18 @@ function AiSolverView({ language, onBack }: any) {
               title={translations[language].uploadImage}
             >
               <Image size={20} />
+            </button>
+
+            <button
+              onClick={isListening ? stopListening : startListening}
+              className={`p-3 rounded-xl transition-all ${
+                isListening 
+                  ? 'bg-red-500 text-white animate-pulse' 
+                  : 'bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white'
+              }`}
+              title="Voice Input"
+            >
+              {isListening ? <MicOff size={20} /> : <Mic size={20} />}
             </button>
 
             <button 
@@ -3643,21 +3741,28 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
     if (b.includes('cbse')) return 'cbse';
     if (b.includes('icse')) return 'icse';
     if (b.includes('odia')) return 'odisha';
-    return 'odisha';
+    return b; // Return the actual lowercase board if no match
   }, [user?.board]);
 
   const filteredTextbooks = React.useMemo(() => {
     return textbooks.filter((book: Textbook) => {
-      const matchesClass = !user?.class || book.class.toLowerCase() === user.class.toLowerCase();
-      const matchesBoard = !user?.board || book.board.toLowerCase() === boardKey.toLowerCase();
+      const matchesClass = !user?.class || book.class?.toLowerCase() === user.class.toLowerCase();
+      const matchesBoard = !user?.board || book.board?.toLowerCase() === boardKey.toLowerCase();
       const matchesSubject = subjectFilter === 'all' || book.subject === subjectFilter;
       return matchesClass && matchesBoard && matchesSubject;
     });
   }, [textbooks, user?.class, user?.board, boardKey, subjectFilter]);
 
   const availableSubjects = React.useMemo(() => {
-    const subjects = new Set<string>(textbooks.filter(b => b.class === user?.class && b.board === boardKey).map(b => b.subject));
-    return ['all', ...Array.from(subjects).filter(s => s !== 'all')];
+    const subjects = new Set<string>(
+      textbooks
+        .filter(b => 
+          b.class?.toLowerCase() === user?.class?.toLowerCase() && 
+          b.board?.toLowerCase() === boardKey.toLowerCase()
+        )
+        .map(b => b.subject)
+    );
+    return ['all', ...Array.from(subjects).filter(s => s && s !== 'all')];
   }, [textbooks, user?.class, boardKey]);
 
   const containerVariants = {

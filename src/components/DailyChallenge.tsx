@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, CheckCircle2, XCircle, Coins, Clock } from 'lucide-react';
-import { doc, updateDoc, increment, addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { db as firestore } from '../firebase';
+import { gcpService } from '../services/gcpService';
 
 interface DailyChallengeProps {
   user: any;
@@ -46,19 +45,20 @@ export const DailyChallenge: React.FC<DailyChallengeProps> = ({ user, language, 
 
     if (correct) {
       try {
-        const userRef = doc(firestore, 'users', user.id);
-        await updateDoc(userRef, {
-          points: increment(challenge.points || 10),
-          lastChallengeDate: new Date().toISOString().split('T')[0]
+        const newPoints = (user.points || 0) + (challenge.points || 10);
+        await gcpService.updateDoc('users', user.id, {
+          points: newPoints,
+          lastChallengeDate: new Date().toISOString().split('T')[0],
+          updatedAt: new Date().toISOString()
         });
         
         // Record progress
-        await addDoc(collection(firestore, 'user_progress'), {
+        await gcpService.addDoc('user_progress', {
           userId: user.id,
           date: new Date().toISOString().split('T')[0],
           pointsEarned: challenge.points || 10,
           type: 'daily_challenge',
-          createdAt: serverTimestamp()
+          createdAt: new Date().toISOString()
         });
       } catch (e) {
         console.error("Error updating points:", e);

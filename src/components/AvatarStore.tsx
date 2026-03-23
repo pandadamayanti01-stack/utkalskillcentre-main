@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, ShoppingBag, Star, CheckCircle2, Lock, Sparkles, Coins } from 'lucide-react';
-import { doc, updateDoc, increment } from 'firebase/firestore';
-import { db as firestore } from '../firebase';
+import { gcpService } from '../services/gcpService';
 
 interface AvatarStoreProps {
   user: any;
@@ -30,14 +29,17 @@ export function AvatarStore({ user, language, onBack }: AvatarStoreProps) {
     
     setPurchasing(avatar.id);
     try {
-      await updateDoc(doc(firestore, 'users', user.id), {
+      const newPoints = (user.points || 0) - avatar.price;
+      await gcpService.updateDoc('users', user.id, {
         avatar: avatar.url,
-        points: increment(-avatar.price)
+        points: newPoints,
+        updatedAt: new Date().toISOString()
       });
       
-      await updateDoc(doc(firestore, 'public_profiles', user.id), {
+      await gcpService.updateDoc('public_profiles', user.id, {
         avatar: avatar.url,
-        points: increment(-avatar.price)
+        points: newPoints,
+        updatedAt: new Date().toISOString()
       });
 
       setSuccess(avatar.id);

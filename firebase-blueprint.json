@@ -16,7 +16,7 @@
         "shareCount": { "type": "integer", "description": "Number of WhatsApp shares" },
         "statusShared": { "type": "boolean", "description": "Whether WhatsApp status was shared" },
         "role": { "type": "string", "enum": ["student", "admin"] },
-        "created_at": { "type": "string", "format": "date-time" }
+        "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["id", "name", "role"]
     },
@@ -80,55 +80,55 @@
       "description": "Stores student answers for monthly tests.",
       "type": "object",
       "properties": {
-        "test_id": { "type": "string" },
-        "user_id": { "type": "string" },
-        "user_name": { "type": "string" },
+        "testId": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
         "answers": { "type": "array" },
         "score": { "type": "integer" },
         "rank": { "type": "integer" },
-        "submitted_at": { "type": "string", "format": "date-time" }
+        "submittedAt": { "type": "string", "format": "date-time" }
       },
-      "required": ["test_id", "user_id", "answers"]
+      "required": ["testId", "userId", "answers"]
     },
     "Question": {
       "title": "Quiz Question",
       "description": "Stores questions for a chapter.",
       "type": "object",
       "properties": {
-        "chapter_id": { "type": "string" },
+        "chapterId": { "type": "string" },
         "question": { "type": "string" },
         "options": { "type": "array", "items": { "type": "string" } },
-        "correct_answer": { "type": "string" }
+        "correctAnswer": { "type": "string" }
       },
-      "required": ["chapter_id", "question", "options", "correct_answer"]
+      "required": ["chapterId", "question", "options", "correctAnswer"]
     },
     "TestResult": {
       "title": "Test Result",
       "description": "Stores test results for students.",
       "type": "object",
       "properties": {
-        "user_id": { "type": "string" },
-        "chapter_id": { "type": "string" },
+        "userId": { "type": "string" },
+        "chapterId": { "type": "string" },
         "score": { "type": "integer" },
         "total": { "type": "integer" },
-        "completed_at": { "type": "string", "format": "date-time" }
+        "createdAt": { "type": "string", "format": "date-time" }
       },
-      "required": ["user_id", "chapter_id", "score", "total"]
+      "required": ["userId", "chapterId", "score", "total"]
     },
     "Payment": {
       "title": "Payment Transaction",
       "description": "Stores Razorpay payment history.",
       "type": "object",
       "properties": {
-        "user_id": { "type": "string" },
+        "userId": { "type": "string" },
         "amount": { "type": "number" },
         "status": { "type": "string" },
-        "razorpay_order_id": { "type": "string" },
-        "razorpay_payment_id": { "type": "string" },
-        "razorpay_signature": { "type": "string" },
-        "created_at": { "type": "string", "format": "date-time" }
+        "razorpayOrderId": { "type": "string" },
+        "razorpayPaymentId": { "type": "string" },
+        "razorpaySignature": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
       },
-      "required": ["user_id", "amount", "status", "razorpay_order_id"]
+      "required": ["userId", "amount", "status", "razorpayOrderId"]
     },
     "Subscription": {
       "title": "User Subscription",
@@ -207,6 +207,63 @@
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["followerId", "followingId"]
+    },
+    "Transaction": {
+      "title": "Payment Transaction",
+      "description": "Stores payment history.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "amount": { "type": "number" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "AiUsage": {
+      "title": "AI Usage Log",
+      "description": "Stores AI generation history.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "question": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "cost": { "type": "number" }
+      }
+    },
+    "Notification": {
+      "title": "System Notification",
+      "description": "Stores broadcast notifications.",
+      "type": "object",
+      "properties": {
+        "message": { "type": "string" },
+        "audience": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "QuizResult": {
+      "title": "Quiz Result",
+      "description": "Stores quiz performance.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "chapterId": { "type": "string" },
+        "score": { "type": "integer" },
+        "total": { "type": "integer" },
+        "accuracy": { "type": "number" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      }
+    },
+    "PublicProfile": {
+      "title": "Public Profile",
+      "description": "Stores non-sensitive user data for leaderboard.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "points": { "type": "integer" },
+        "class": { "type": "string" },
+        "avatar": { "type": "string" },
+        "streak": { "type": "integer" }
+      }
     }
   },
   "firestore": {
@@ -226,9 +283,29 @@
       "schema": "TestResult",
       "description": "Test results."
     },
+    "/quiz_results/{resultId}": {
+      "schema": "QuizResult",
+      "description": "Quiz results."
+    },
     "/payments/{paymentId}": {
       "schema": "Payment",
       "description": "Payment records."
+    },
+    "/transactions/{txId}": {
+      "schema": "Transaction",
+      "description": "Payment transactions."
+    },
+    "/ai_usage/{logId}": {
+      "schema": "AiUsage",
+      "description": "AI usage logs."
+    },
+    "/notifications/{notifId}": {
+      "schema": "Notification",
+      "description": "System notifications."
+    },
+    "/public_profiles/{userId}": {
+      "schema": "PublicProfile",
+      "description": "Public user profiles."
     },
     "/subscriptions/{userId}": {
       "schema": "Subscription",
@@ -249,6 +326,10 @@
     "/system_settings/config": {
       "schema": "SystemSettings",
       "description": "Global configuration."
+    },
+    "/settings/private": {
+      "schema": "object",
+      "description": "Private system settings."
     },
     "/daily_challenges/{challengeId}": {
       "schema": "DailyChallenge",

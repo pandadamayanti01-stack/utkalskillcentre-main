@@ -235,6 +235,7 @@ export const translations: any = {
         features: [
           "🤖 AI Doubt Solver",
           "📸 Photo Question Solver",
+          "🎤 Voice Assistance",
           "🎯 Personalized Practice",
           "🧠 AI Tutor Chat",
           "📊 Performance Analysis"
@@ -486,6 +487,7 @@ export const translations: any = {
         features: [
           "🤖 AI ସନ୍ଦେହ ସମାଧାନ",
           "📸 ଫଟୋ ପ୍ରଶ୍ନ ସମାଧାନ",
+          "🎤 ଭଏସ୍ ସହାୟତା",
           "🎯 ବ୍ୟକ୍ତିଗତ ଅଭ୍ୟାସ",
           "🧠 AI ଟ୍ୟୁଟର ଚାଟ୍",
           "📊 ପ୍ରଦର୍ଶନ ବିଶ୍ଳେଷଣ"

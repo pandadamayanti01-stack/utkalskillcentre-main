@@ -29,7 +29,8 @@ import {
   Edit,
   Upload,
   File,
-  Download
+  Download,
+  Image as ImageIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { db as firestore, auth, storage } from '../firebase';
@@ -2200,7 +2201,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
             setNewTextbook({
               class: 'class5',
               board: 'odisha',
-              download_url: ''
+              subject: 'math',
+              title: '',
+              download_url: '',
+              thumbnail_url: '',
+              status: 'draft'
             });
           }}
           className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all"
@@ -2248,15 +2253,77 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                 <option value="saraswati">Saraswati</option>
               </select>
             </div>
-            <div className="md:col-span-2">
-              <label className="block text-sm text-slate-400 mb-1">Google Drive URL</label>
-              <input 
-                type="text"
+            <div>
+              <label className="block text-sm text-slate-400 mb-1">Subject</label>
+              <select 
                 className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
-                placeholder="Paste Google Drive download URL here"
-                value={newTextbook.download_url}
-                onChange={(e) => setNewTextbook({...newTextbook, download_url: e.target.value})}
-              />
+                value={newTextbook.subject}
+                onChange={(e) => setNewTextbook({...newTextbook, subject: e.target.value})}
+              >
+                {Object.entries(translations['en'].subjects).map(([key, label]) => (
+                  <option key={key} value={key}>{label as string}</option>
+                ))}
+              </select>
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm text-slate-400 mb-1">Textbook PDF File</label>
+              <div className="flex gap-2">
+                <input 
+                  type="text"
+                  className="flex-1 bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
+                  placeholder="Google Drive URL or Uploaded URL"
+                  value={newTextbook.download_url}
+                  onChange={(e) => setNewTextbook({...newTextbook, download_url: e.target.value})}
+                />
+                <label className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-xl cursor-pointer flex items-center gap-2 transition-all">
+                  <Upload size={18} />
+                  <span>Upload PDF</span>
+                  <input 
+                    type="file" 
+                    accept=".pdf"
+                    className="hidden" 
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        try {
+                          const url = await handleFileUpload(file, 'pdf');
+                          setNewTextbook({...newTextbook, download_url: url});
+                        } catch (err) {
+                          showNotification("Upload failed", "error");
+                        }
+                      }
+                    }}
+                  />
+                </label>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm text-slate-400 mb-1">Thumbnail Image</label>
+              <div className="flex gap-2">
+                <label className="w-full bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-xl cursor-pointer flex items-center justify-center gap-2 transition-all">
+                  <ImageIcon size={18} />
+                  <span>{newTextbook.thumbnail_url ? 'Change Thumbnail' : 'Upload Thumbnail'}</span>
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    className="hidden" 
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        try {
+                          const url = await handleFileUpload(file, 'thumbnail');
+                          setNewTextbook({...newTextbook, thumbnail_url: url});
+                        } catch (err) {
+                          showNotification("Upload failed", "error");
+                        }
+                      }
+                    }}
+                  />
+                </label>
+              </div>
+              {newTextbook.thumbnail_url && (
+                <img src={newTextbook.thumbnail_url} alt="Thumbnail preview" className="mt-2 h-20 w-auto rounded-lg border border-white/10" referrerPolicy="no-referrer" />
+              )}
             </div>
             <div>
               <label className="block text-sm text-slate-400 mb-1">Visibility Status</label>
@@ -2280,6 +2347,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
             <button 
               onClick={async () => {
                 try {
+                  if (!newTextbook.title || !newTextbook.download_url) {
+                    showNotification("Title and Download URL are required", "error");
+                    return;
+                  }
                   if (editingTextbookId) {
                     await updateDoc(doc(firestore, 'textbooks', editingTextbookId), {
                       ...newTextbook,
@@ -2310,8 +2381,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {textbooks.map((book) => (
           <div key={book.id} className="bg-slate-900/50 border border-white/10 rounded-2xl overflow-hidden group hover:border-emerald-500/50 transition-all">
-            <div className="aspect-[3/4] bg-slate-800 relative flex items-center justify-center">
-              <Book size={48} className="text-slate-600" />
+            <div className="aspect-[3/4] bg-slate-800 relative flex items-center justify-center overflow-hidden">
+              {book.thumbnail_url ? (
+                <img src={book.thumbnail_url} alt={book.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" referrerPolicy="no-referrer" />
+              ) : (
+                <Book size={48} className="text-slate-600" />
+              )}
+              <div className="absolute top-3 left-3">
+                <span className={`text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full border ${
+                  book.status === 'published' 
+                    ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' 
+                    : 'bg-amber-500/20 text-amber-400 border-amber-500/30'
+                }`}>
+                  {book.status || 'draft'}
+                </span>
+              </div>
               <div className="absolute top-3 right-3 flex gap-2">
                 <button 
                   onClick={() => {
@@ -2321,7 +2405,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                       board: book.board,
                       subject: book.subject,
                       title: book.title,
-                      download_url: book.download_url
+                      download_url: book.download_url,
+                      thumbnail_url: book.thumbnail_url || '',
+                      status: book.status || 'draft'
                     });
                     setIsAddingTextbook(true);
                   }}
@@ -2352,12 +2438,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
               </div>
             </div>
             <div className="p-4">
-              <div className="flex items-center gap-2 mb-2">
+              <h4 className="text-white font-semibold mb-1 truncate">{book.title || 'Untitled Textbook'}</h4>
+              <div className="flex flex-wrap items-center gap-2 mb-3">
                 <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20">
                   {book.class}
                 </span>
                 <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded-full border border-blue-500/20">
                   {book.board}
+                </span>
+                <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 bg-purple-500/10 text-purple-400 rounded-full border border-purple-500/20">
+                  {book.subject}
                 </span>
               </div>
               <a 

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getCountFromServer, query, where, Timestamp } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { gcpService } from '../../services/gcpService';
 import { LayoutDashboard, Users, Brain, CreditCard, BookOpen } from 'lucide-react';
 
 export const DashboardTab: React.FC = () => {
@@ -16,26 +15,26 @@ export const DashboardTab: React.FC = () => {
     const fetchStats = async () => {
       try {
         // Total Students
-        const studentsSnap = await getCountFromServer(collection(db, 'users'));
+        const studentsCount = await gcpService.getCount('users');
         
         // Total Revenue (assuming transactions collection)
-        // This is a simplified example, you might need to sum up actual transaction amounts
-        const transactionsSnap = await getCountFromServer(collection(db, 'transactions'));
+        const transactionsCount = await gcpService.getCount('transactions');
         
         // AI Questions Today
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        const aiQuery = query(collection(db, 'ai_usage'), where('timestamp', '>=', Timestamp.fromDate(today)));
-        const aiSnap = await getCountFromServer(aiQuery);
+        const aiQuestionsToday = await gcpService.getCount('ai_usage', {
+          where: [{ field: 'timestamp', operator: '>=', value: today.toISOString() }]
+        });
         
         // Total Chapters
-        const chaptersSnap = await getCountFromServer(collection(db, 'chapters'));
+        const totalChapters = await gcpService.getCount('chapters');
 
         setStats({
-          totalStudents: studentsSnap.data().count,
-          totalRevenue: transactionsSnap.data().count * 100, // Placeholder calculation
-          aiQuestionsToday: aiSnap.data().count,
-          totalChapters: chaptersSnap.data().count
+          totalStudents: studentsCount,
+          totalRevenue: transactionsCount * 100, // Placeholder calculation
+          aiQuestionsToday: aiQuestionsToday,
+          totalChapters: totalChapters
         });
       } catch (error) {
         console.error("Error fetching dashboard stats:", error);
