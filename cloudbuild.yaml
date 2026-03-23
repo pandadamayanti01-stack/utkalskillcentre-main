@@ -8,7 +8,7 @@ steps:
       - '--builder=gcr.io/buildpacks/builder:google-22'
       - '--path=.'
   
-  # 2. Deploy container image to Cloud Run in Taiwan
+  # 2. Deploy container image to Cloud Run in USA
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -18,7 +18,7 @@ steps:
       - '--image'
       - 'gcr.io/$PROJECT_ID/utkalskillcentre-main:$COMMIT_SHA'
       - '--region'
-      - 'asia-east1'
+      - 'us-central1'
       - '--allow-unauthenticated'
 
 images:
