@@ -8,18 +8,20 @@ steps:
       - '--builder=gcr.io/buildpacks/builder:google-22'
       - '--path=.'
   
-  # 2. Deploy container image to Cloud Run in USA
+  # 2. Deploy container image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
       - 'run'
       - 'deploy'
-      - 'utkalskillcentre-us'
+      - '$_SERVICE_NAME'
       - '--image'
       - 'gcr.io/$PROJECT_ID/utkalskillcentre-main:$COMMIT_SHA'
       - '--region'
-      - 'us-central1'
+      - '$_DEPLOY_REGION'
       - '--allow-unauthenticated'
+      - '--update-env-vars'
+      - 'GEMINI_API_KEY=$_GEMINI_API_KEY,RAZORPAY_KEY_ID=$_RAZORPAY_KEY_ID,RAZORPAY_KEY_SECRET=$_RAZORPAY_KEY_SECRET,VITE_RAZORPAY_KEY=$_VITE_RAZORPAY_KEY'
 
 images:
   - 'gcr.io/$PROJECT_ID/utkalskillcentre-main:$COMMIT_SHA'
