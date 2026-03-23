@@ -22,6 +22,35 @@ export default defineConfig(({mode}) => {
     plugins: [
       react(), 
       tailwindcss(),
+      VitePWA({
+        registerType: 'autoUpdate',
+        injectRegister: 'auto',
+        workbox: {
+          // CRITICAL: This prevents the service worker from caching your files
+          globPatterns: [], 
+          runtimeCaching: [] 
+        },
+        manifest: {
+          name: 'Utkal Skill Centre',
+          short_name: 'Utkal',
+          description: 'Learning portal for students',
+          theme_color: '#ffffff',
+          background_color: '#ffffff',
+          display: 'standalone',
+          icons: [
+            {
+              src: 'icon.svg',
+              sizes: '192x192',
+              type: 'image/svg+xml'
+            },
+            {
+              src: 'icon.svg',
+              sizes: '512x512',
+              type: 'image/svg+xml'
+            }
+          ]
+        }
+      })
     ],
     define: {
       'process.env.NODE_ENV': JSON.stringify(mode),

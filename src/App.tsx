@@ -321,6 +321,48 @@ const BigsanBranding = ({ className = "" }: { className?: string }) => {
 };
 
 
+const InstallPWA = () => {
+  const [supportsPWA, setSupportsPWA] = useState(false);
+  const [promptInstall, setPromptInstall] = useState<any>(null);
+
+  useEffect(() => {
+    const handler = (e: any) => {
+      e.preventDefault(); // Stop the browser's default bar
+      setSupportsPWA(true);
+      setPromptInstall(e);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
+
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
+
+  const onClick = (e: any) => {
+    e.preventDefault();
+    if (!promptInstall) return;
+    promptInstall.prompt();
+  };
+
+  if (!supportsPWA) return null;
+
+  return (
+    <div className="install-banner">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+          <Download size={20} />
+        </div>
+        <div className="flex flex-col">
+          <span className="font-bold text-sm">Install Utkal App</span>
+          <span className="text-[10px] opacity-80">For a better learning experience</span>
+        </div>
+      </div>
+      <button className="install-button shadow-lg shadow-blue-900/20" onClick={onClick}>
+        Install
+      </button>
+    </div>
+  );
+};
+
+
 export default function App() {
   const [user, setUser] = useState<Student | null>(null);
   const [isAdminView, setIsAdminView] = useState(false);
@@ -1223,6 +1265,7 @@ export default function App() {
             </p>
           </div>
         </motion.div>
+        <InstallPWA />
       </div>
     );
   }
@@ -1247,6 +1290,8 @@ export default function App() {
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LCAyNTUsLCAyNTUsIDAuMDUpIi8+PC9zdmc+')] [mask-image:linear-gradient(to_bottom,white,transparent)] pointer-events-none"></div>
           <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-emerald-500/20 rounded-full blur-[120px] pointer-events-none"></div>
           <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-blue-500/20 rounded-full blur-[120px] pointer-events-none"></div>
+
+          <InstallPWA />
 
           {/* Left Content - Marketing / AI Focus */}
         <div className="hidden lg:flex flex-1 flex-col justify-center px-16 xl:px-24 relative z-10 border-r border-white/5 bg-slate-900/30 backdrop-blur-sm overflow-hidden">
@@ -1885,6 +1930,8 @@ export default function App() {
 
       {/* AI Study Buddy */}
       {user && isPremium && <StudyBuddy user={user} language={language} />}
+
+      <InstallPWA />
 
     </div>
     </ErrorBoundary>
