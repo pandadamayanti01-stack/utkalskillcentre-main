@@ -158,14 +158,16 @@ async function startServer() {
   });
 
   // Vite middleware for development
-  if (process.env.NODE_ENV !== 'production') {
+  const distPath = path.join(process.cwd(), 'dist');
+  const indexPath = path.join(distPath, 'index.html');
+
+  if (process.env.NODE_ENV !== 'production' || !fs.existsSync(indexPath)) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = path.join(process.cwd(), 'dist');
     app.use(express.static(distPath, {
       setHeaders: (res, path) => {
         if (path.endsWith('index.html')) {

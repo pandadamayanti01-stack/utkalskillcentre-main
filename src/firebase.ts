@@ -1,28 +1,54 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, User as FirebaseUser, setPersistence, browserSessionPersistence } from 'firebase/auth';
-import { getFirestore, doc, getDoc, setDoc, collection, query, where, onSnapshot, getDocs, addDoc, updateDoc, deleteDoc, serverTimestamp, getDocFromServer } from 'firebase/firestore';
+import { 
+  getAuth, 
+  GoogleAuthProvider, 
+  signInWithPopup, 
+  signOut, 
+  onAuthStateChanged, 
+  User as FirebaseUser, 
+  setPersistence, 
+  browserSessionPersistence 
+} from 'firebase/auth';
+import { 
+  getFirestore, 
+  doc, 
+  getDoc, 
+  setDoc, 
+  collection, 
+  query, 
+  where, 
+  onSnapshot, 
+  getDocs, 
+  addDoc, 
+  updateDoc, 
+  deleteDoc, 
+  serverTimestamp, 
+  getDocFromServer 
+} from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
+import firebaseAppletConfig from '../firebase-applet-config.json';
 
-// Firebase configuration
+// Firebase configuration from AI Studio / Environment
 // @ts-ignore
 const injectedConfig = typeof __FIREBASE_CONFIG__ !== 'undefined' ? __FIREBASE_CONFIG__ : {};
 
 const firebaseConfig = {
-  apiKey: injectedConfig.apiKey || import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: injectedConfig.authDomain || import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: injectedConfig.projectId || import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: injectedConfig.storageBucket || import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: injectedConfig.messagingSenderId || import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: injectedConfig.appId || import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: injectedConfig.measurementId || import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
-  firestoreDatabaseId: injectedConfig.firestoreDatabaseId || import.meta.env.VITE_FIREBASE_DATABASE_ID || '(default)'
+  apiKey: injectedConfig.apiKey || import.meta.env.VITE_FIREBASE_API_KEY || firebaseAppletConfig.apiKey,
+  authDomain: injectedConfig.authDomain || import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || firebaseAppletConfig.authDomain,
+  projectId: injectedConfig.projectId || import.meta.env.VITE_FIREBASE_PROJECT_ID || firebaseAppletConfig.projectId,
+  storageBucket: injectedConfig.storageBucket || import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || firebaseAppletConfig.storageBucket,
+  messagingSenderId: injectedConfig.messagingSenderId || import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || firebaseAppletConfig.messagingSenderId,
+  appId: injectedConfig.appId || import.meta.env.VITE_FIREBASE_APP_ID || firebaseAppletConfig.appId,
+  measurementId: injectedConfig.measurementId || import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || firebaseAppletConfig.measurementId,
+  
+  // FIXED: Explicitly pointing to your AI Studio Database ID
+  firestoreDatabaseId: injectedConfig.firestoreDatabaseId || import.meta.env.VITE_FIREBASE_DATABASE_ID || firebaseAppletConfig.firestoreDatabaseId || 'ai-studio-2a24dfcb-5874-4b37-8e37-434f425283b9'
 };
 
 // Initialize Firebase SDK
 let app;
 try {
   if (!firebaseConfig || !firebaseConfig.apiKey || firebaseConfig.apiKey === 'TODO_KEYHERE') {
-    console.warn("Firebase configuration is missing or incomplete. Firebase features will be disabled.");
     app = initializeApp({ apiKey: 'placeholder', projectId: 'placeholder' });
   } else {
     app = initializeApp(firebaseConfig);
@@ -32,21 +58,24 @@ try {
   app = initializeApp({ apiKey: 'placeholder', projectId: 'placeholder' });
 }
 
-// Use firestoreDatabaseId from config if available
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId || '(default)');
+// Initialize Services
+export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 export const auth = getAuth(app);
+export const storage = getStorage(app);
+export const googleProvider = new GoogleAuthProvider();
 
-// Set session-only persistence
+// Set session-only persistence to prevent "stale session" bugs
 setPersistence(auth, browserSessionPersistence).catch((err) => {
   console.error("Auth persistence error:", err);
 });
 
-export const storage = getStorage(app);
-export const googleProvider = new GoogleAuthProvider();
-
 // Auth helper functions
 export const signInWithGoogle = () => signInWithPopup(auth, googleProvider);
-export const logout = () => signOut(auth);
+export const logout = () => {
+  // Clear local cache on logout to ensure a clean state for the next user
+  localStorage.clear();
+  return signOut(auth);
+};
 
 // Firestore Error Handling
 export enum OperationType {
@@ -63,11 +92,11 @@ export interface FirestoreErrorInfo {
   operationType: OperationType;
   path: string | null;
   authInfo: {
-    userId: string | undefined;
-    email: string | null | undefined;
-    emailVerified: boolean | undefined;
-    isAnonymous: boolean | undefined;
-    tenantId: string | null | undefined;
+    userId?: string;
+    email?: string | null;
+    emailVerified?: boolean;
+    isAnonymous?: boolean;
+    tenantId?: string | null;
     providerInfo: {
       providerId: string;
       displayName: string | null;
@@ -80,6 +109,8 @@ export interface FirestoreErrorInfo {
 export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
   const errInfo: FirestoreErrorInfo = {
     error: error instanceof Error ? error.message : String(error),
+    operationType,
+    path,
     authInfo: {
       userId: auth.currentUser?.uid,
       email: auth.currentUser?.email,
@@ -92,24 +123,24 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
         email: provider.email,
         photoUrl: provider.photoURL
       })) || []
-    },
-    operationType,
-    path
-  }
-  console.error('Firestore Error: ', JSON.stringify(errInfo));
+    }
+  };
+  console.error('Firestore Error Detailed: ', JSON.stringify(errInfo));
   throw new Error(JSON.stringify(errInfo));
 }
 
-// Test connection
-async function testConnection() {
+// Connection Health Check
+async function verifyDatabaseConnection() {
   try {
-    await getDocFromServer(doc(db, 'test', 'connection'));
+    // Attempting a server-side fetch to bypass any local cache
+    await getDocFromServer(doc(db, 'system_settings', 'config'));
+    console.log("✅ [Firebase] Success: Connected to AI Studio Database.");
   } catch (error) {
-    if(error instanceof Error && error.message.includes('the client is offline')) {
-      console.error("Please check your Firebase configuration. ");
+    if (error instanceof Error && (error.message.includes('offline') || error.message.includes('not found'))) {
+      console.error("❌ [Firebase] Error: Could not reach Firestore. Check Database ID or Authorized Domains.");
     }
   }
 }
-testConnection();
+verifyDatabaseConnection();
 
 export type { FirebaseUser };

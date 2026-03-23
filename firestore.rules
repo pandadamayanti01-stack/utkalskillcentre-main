@@ -98,6 +98,14 @@ service cloud.firestore {
              data.points is int;
     }
 
+    function isValidProgress(data) {
+      return data.userId is string && data.userId.size() < 50;
+    }
+
+    function isValidResult(data) {
+      return data.userId is string && data.userId.size() < 50;
+    }
+
     // ===============================================================
     // Rules
     // ===============================================================
@@ -139,14 +147,14 @@ service cloud.firestore {
     // Quiz Results
     match /quiz_results/{resultId} {
       allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid && isValidResult(request.resource.data);
       allow update, delete: if isAdmin();
     }
 
     // Test Results
     match /test_results/{resultId} {
       allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid && isValidResult(request.resource.data);
       allow update, delete: if isAdmin();
     }
 
@@ -159,7 +167,7 @@ service cloud.firestore {
     // Monthly Test Submissions
     match /monthly_test_submissions/{submissionId} {
       allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid && isValidResult(request.resource.data);
       allow update, delete: if isAdmin();
     }
 
@@ -207,7 +215,8 @@ service cloud.firestore {
 
     // Notifications
     match /notifications/{notifId} {
-      allow read: if isAuthenticated();
+      // FIX: Restrict notifications to the owner
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
       allow write: if isAdmin();
     }
 
@@ -220,8 +229,13 @@ service cloud.firestore {
     // User Progress
     match /user_progress/{progressId} {
       allow read: if isOwner(resource.data.userId) || isAdmin();
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-      allow update, delete: if isAdmin();
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid && isValidProgress(request.resource.data);
+      // FIX: Allow users to update their own progress, ensuring userId isn't hijacked
+      allow update: if isAuthenticated() && (
+        (resource.data.userId == request.auth.uid && request.resource.data.userId == request.auth.uid && isValidProgress(request.resource.data)) || 
+        isAdmin()
+      );
+      allow delete: if isAdmin();
     }
 
     // Friendships
