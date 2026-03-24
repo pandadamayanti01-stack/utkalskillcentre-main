@@ -76,6 +76,7 @@ import { getYouTubeId, getYouTubeEmbedUrl, getYouTubeThumbnail } from './utils/y
 import { AdminDashboard } from './components/AdminDashboard';
 import { PracticeQuestion } from './components/PracticeQuestion';
 import { Dashboard } from './components/Dashboard';
+import { UtkalDivasPoster } from './components/UtkalDivasPoster';
 import { AvatarStore } from './components/AvatarStore';
 import { DailyChallenge } from './components/DailyChallenge';
 import { ProgressChart } from './components/ProgressChart';
@@ -389,6 +390,7 @@ export default function App() {
   const [aiLoading, setAiLoading] = useState<Record<string, boolean>>({});
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [showConfigError, setShowConfigError] = useState<{title: string, message: string} | null>(null);
+  const [showLaunchPoster, setShowLaunchPoster] = useState(() => !localStorage.getItem('utkalDivasSeen'));
   
   // Auth State
   const [authStep, setAuthStep] = useState<'login' | 'otp'>('login');
@@ -1766,6 +1768,11 @@ export default function App() {
 
   return (
     <ErrorBoundary language={language}>
+      {showLaunchPoster && <UtkalDivasPoster onClose={() => {
+        setShowLaunchPoster(false);
+        localStorage.setItem('utkalDivasSeen', 'true');
+      }} />}
+      
       <div className="min-h-screen bg-transparent text-white flex relative overflow-hidden">
         {/* Animated Background Orbs */}
         <div className="bg-orb-1"></div>
