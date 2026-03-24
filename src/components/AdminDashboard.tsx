@@ -21,6 +21,7 @@ import {
   CheckCircle2,
   Trophy,
   Search,
+  HelpCircle,
   Edit2,
   Sparkles,
   ArrowLeft,
@@ -67,7 +68,7 @@ import {
   generateTestQuestions
 } from '../services/aiService';
 
-type AdminTab = 'dashboard' | 'content' | 'monthly_tests' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup' | 'students';
+type AdminTab = 'dashboard' | 'content' | 'monthly_tests' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup' | 'students' | 'support';
 
 interface AdminDashboardProps {
   onExit: () => void;
@@ -88,6 +89,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
   const [aiLogs, setAiLogs] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [students, setStudents] = useState<any[]>([]);
+  const [supportTickets, setSupportTickets] = useState<any[]>([]);
   const [systemSettings, setSystemSettings] = useState<any>({});
   const [privateSettings, setPrivateSettings] = useState<any>({});
   const [confirmAction, setConfirmAction] = useState<string | null>(null);
@@ -267,6 +269,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
       }
     });
 
+    const unsubSupport = onSnapshot(query(collection(firestore, 'support_tickets'), orderBy('createdAt', 'desc')), (snapshot) => {
+      setSupportTickets(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }, (err) => {
+      console.error("Firestore Support Tickets onSnapshot Error:", err);
+    });
+
     return () => {
       unsubChapters();
       unsubTx();
@@ -277,6 +285,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
       unsubPrivateSettings();
       unsubTextbooks();
       unsubStudents();
+      unsubSupport();
     };
   }, []);
 
@@ -608,10 +617,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         
         // Save the original chapter (Odia)
         const originalDocRef = await addDoc(collection(firestore, 'chapters'), {
-          board: 'odisha',
-          class: 'class3',
+          board: newChapter.board,
+          class: newChapter.class,
           language: 'or',
-          subject: 'math',
+          subject: newChapter.subject,
           title: chapter.title,
           playlist_id: chapter.videoId,
           notes: '',
@@ -624,10 +633,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         const translatedTitle = await translateContent(chapter.title, 'en');
 
         await addDoc(collection(firestore, 'chapters'), {
-          board: 'odisha',
-          class: 'class3',
+          board: newChapter.board,
+          class: newChapter.class,
           language: 'en',
-          subject: 'math',
+          subject: newChapter.subject,
           title: translatedTitle || chapter.title,
           playlist_id: chapter.videoId,
           notes: '',
@@ -2474,6 +2483,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     { id: 'ai_usage', label: 'AI Usage', icon: Brain },
     { id: 'payments', label: 'Payments', icon: CreditCard },
     { id: 'notifications', label: 'Notifications', icon: Bell },
+    { id: 'support', label: 'Support Tickets', icon: HelpCircle },
     { id: 'students', label: 'Students', icon: Users },
     { id: 'settings', label: 'Settings', icon: Settings },
     { id: 'production_setup', label: 'Production Setup', icon: Rocket },
@@ -2600,6 +2610,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
             {activeTab === 'settings' && renderSettings()}
             {activeTab === 'production_setup' && renderProductionSetup()}
             {activeTab === 'students' && renderStudents()}
+            {activeTab === 'support' && renderSupport()}
           </motion.div>
         </AnimatePresence>
       </div>
@@ -2616,6 +2627,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
               <tr className="border-b border-white/10">
                 <th className="pb-4">Name</th>
                 <th className="pb-4">Email</th>
+                <th className="pb-4">Class</th>
+                <th className="pb-4">Board</th>
+                <th className="pb-4">Points</th>
+                <th className="pb-4">Role</th>
                 <th className="pb-4">Actions</th>
               </tr>
             </thead>
@@ -2624,6 +2639,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                 <tr key={student.id} className="border-b border-white/5 hover:bg-white/5">
                   <td className="py-4">{student.name || 'N/A'}</td>
                   <td className="py-4">{student.email || 'N/A'}</td>
+                  <td className="py-4">{student.class || 'N/A'}</td>
+                  <td className="py-4">{student.board || 'N/A'}</td>
+                  <td className="py-4">{student.points ?? 'N/A'}</td>
+                  <td className="py-4">{student.role || 'N/A'}</td>
                   <td className="py-4">
                     <button 
                       onClick={() => handleResetStudent(student.id)}
@@ -2662,5 +2681,86 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     } finally {
       setLoading(false);
     }
+  }
+
+  function renderSupport() {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-bold text-white">Support Tickets</h2>
+          <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-full text-xs font-bold">
+            {supportTickets.filter(t => t.status === 'open').length} Open
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4">
+          {supportTickets.length === 0 ? (
+            <div className="glass-card p-12 rounded-3xl text-center">
+              <p className="text-slate-500">No support tickets found.</p>
+            </div>
+          ) : (
+            supportTickets.map((ticket) => (
+              <motion.div 
+                key={ticket.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="glass-card p-6 rounded-3xl border border-white/5 hover:border-white/10 transition-all"
+              >
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3">
+                      <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${ticket.status === 'open' ? 'bg-amber-500/10 text-amber-500' : 'bg-emerald-500/10 text-emerald-500'}`}>
+                        {ticket.status}
+                      </span>
+                      <h4 className="text-white font-bold">{ticket.userName}</h4>
+                      <span className="text-slate-500 text-xs">{ticket.userPhone || ticket.userEmail}</span>
+                    </div>
+                    <p className="text-slate-300 text-sm leading-relaxed">{ticket.message}</p>
+                    <div className="text-[10px] text-slate-500 flex items-center gap-2">
+                      <Calendar size={10} />
+                      {ticket.createdAt?.toDate ? ticket.createdAt.toDate().toLocaleString() : new Date(ticket.createdAt).toLocaleString()}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {ticket.status === 'open' ? (
+                      <button 
+                        onClick={async () => {
+                          await updateDoc(doc(firestore, 'support_tickets', ticket.id), { status: 'closed' });
+                          showNotification("Ticket marked as closed");
+                        }}
+                        className="px-4 py-2 bg-emerald-600/20 text-emerald-400 rounded-xl text-xs font-bold hover:bg-emerald-600/30 transition-all border border-emerald-500/20"
+                      >
+                        Mark as Closed
+                      </button>
+                    ) : (
+                      <button 
+                        onClick={async () => {
+                          await updateDoc(doc(firestore, 'support_tickets', ticket.id), { status: 'open' });
+                          showNotification("Ticket reopened");
+                        }}
+                        className="px-4 py-2 bg-slate-800 text-slate-400 rounded-xl text-xs font-bold hover:bg-slate-700 transition-all border border-white/5"
+                      >
+                        Reopen
+                      </button>
+                    )}
+                    <button 
+                      onClick={async () => {
+                        if (window.confirm("Are you sure you want to delete this ticket?")) {
+                          await deleteDoc(doc(firestore, 'support_tickets', ticket.id));
+                          showNotification("Ticket deleted");
+                        }
+                      }}
+                      className="p-2 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500/20 transition-all border border-red-500/20"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ))
+          )}
+        </div>
+      </div>
+    );
   }
 };

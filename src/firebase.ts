@@ -47,7 +47,8 @@ const firebaseConfig = {
 // Initialize Firebase SDK
 let app;
 try {
-  if (!firebaseConfig || !firebaseConfig.apiKey || firebaseConfig.apiKey === 'TODO_KEYHERE') {
+  if (!firebaseConfig.apiKey || firebaseConfig.apiKey === 'TODO_KEYHERE' || firebaseConfig.apiKey === 'placeholder') {
+    console.warn("Firebase API Key missing or invalid. Using placeholder initialization.");
     app = initializeApp({ apiKey: 'placeholder', projectId: 'placeholder' });
   } else {
     app = initializeApp(firebaseConfig);

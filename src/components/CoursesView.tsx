@@ -1,228 +1,320 @@
-import React, { useState } from 'react';
-import { 
-  Search, 
-  BookOpen, 
-  Play, 
-  FileText, 
-  HelpCircle, 
-  ChevronRight,
-  Filter,
-  LayoutGrid,
-  List,
-  Sparkles,
-  ArrowLeft
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
-import { translations } from '../translations';
+import React, { useState, useEffect, useMemo } from 'react';
+import { motion } from 'motion/react';
+import { ArrowLeft, Clock, BookOpen, Shapes, Brain, Globe, PenTool, ChevronRight, Play, FileText, HelpCircle, CheckCircle2 } from 'lucide-react';
+import { translations } from '../App';
+import { Chapter } from '../types';
+import { getYouTubeThumbnail, getYouTubeEmbedUrl } from '../utils/youtube';
 import { getLocalizedSubject } from '../utils/helpers';
-
-interface Chapter {
-  id: string;
-  title: string;
-  subject: string;
-  class: string;
-  board: string;
-  thumbnail_url?: string;
-  playlist_id?: string;
-  notes?: string;
-  practice_questions?: any[];
-  quiz_questions?: any[];
-}
+import { QuizEngine } from './QuizEngine';
+import { TopicDetailView } from './TopicDetailView';
 
 interface CoursesViewProps {
-  chapters: Chapter[];
-  language: 'en' | 'or';
-  onSelectChapter: (chapter: Chapter) => void;
   user: any;
+  chapters: Chapter[];
+  language: 'or' | 'en';
+  isPremium: boolean;
+  onUpgrade: () => void;
+  onBack: () => void;
 }
 
-export const CoursesView: React.FC<CoursesViewProps> = ({ 
-  chapters, 
-  language, 
-  onSelectChapter,
-  user 
-}) => {
-  const t = translations[language];
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedSubject, setSelectedSubject] = useState<string>('all');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+export function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }: CoursesViewProps) {
+  const [selected, setSelected] = useState<Chapter | null>(null);
+  const [quizMode, setQuizMode] = useState(false);
+  const [subjectFilter, setSubjectFilter] = useState<string>('all');
+  const [recentlyViewed, setRecentlyViewed] = useState<Chapter[]>([]);
 
-  const subjects = Array.from(new Set(chapters.map(c => c.subject)));
+  // Load recently viewed from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem(`recently_viewed_${user?.id}`);
+    if (saved) {
+      try {
+        const ids = JSON.parse(saved);
+        const recent = ids.map((id: string) => chapters.find((c: Chapter) => c.id === id)).filter(Boolean);
+        setRecentlyViewed(recent);
+      } catch (e) {
+        console.error("Error parsing recently viewed", e);
+      }
+    }
+  }, [chapters, user?.id]);
 
-  const filteredChapters = chapters.filter(chapter => {
-    const matchesSearch = chapter.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         chapter.subject.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesSubject = selectedSubject === 'all' || chapter.subject === selectedSubject;
-    const matchesClass = !user?.class || chapter.class === user.class;
-    return matchesSearch && matchesSubject && matchesClass;
+  const handleSelectChapter = (chapter: Chapter) => {
+    setSelected(chapter);
+    
+    // Update recently viewed
+    const updatedIds = [chapter.id, ...recentlyViewed.map(c => c.id).filter(id => id !== chapter.id)].slice(0, 3);
+    localStorage.setItem(`recently_viewed_${user?.id}`, JSON.stringify(updatedIds));
+    
+    const recent = updatedIds.map(id => chapters.find(id => id === id)).filter(Boolean) as Chapter[];
+    // Wait, the line above has a bug in original code: `chapters.find(id => id === id)`
+    // It should be `chapters.find(c => c.id === id)`
+    const correctedRecent = updatedIds.map(id => chapters.find(c => c.id === id)).filter(Boolean) as Chapter[];
+    setRecentlyViewed(correctedRecent);
+  };
+
+  const boardKey = useMemo(() => {
+    if (!user?.board) return 'odisha';
+    const b = user.board.toLowerCase();
+    if (b.includes('saraswati')) return 'saraswati';
+    if (b.includes('cbse')) return 'cbse';
+    return 'odisha';
+  }, [user?.board]);
+
+  const classFilteredChapters = useMemo(() => {
+    return chapters.filter((c: Chapter) => {
+      const matchesClass = !user?.class || c.class === user.class;
+      const matchesBoard = !user?.board || c.board === boardKey;
+      return matchesClass && matchesBoard;
+    });
+  }, [chapters, user?.class, user?.board, boardKey]);
+
+  const availableSubjects = useMemo(() => {
+    const predefined = translations[language]?.subjects ? Object.keys(translations[language].subjects) : [];
+    const existingInChapters = new Set<string>(classFilteredChapters.map((c: Chapter) => c.subject));
+    
+    // Only show subjects that have at least one chapter
+    const filteredPredefined = predefined.filter(s => existingInChapters.has(s));
+    const othersInChapters = Array.from(existingInChapters).filter(s => !predefined.includes(s));
+    
+    return ['all', ...filteredPredefined, ...othersInChapters];
+  }, [language, classFilteredChapters]);
+
+  const filteredChapters = classFilteredChapters.filter((c: Chapter) => {
+    if (subjectFilter === 'all') return true;
+    return c.subject === subjectFilter;
   });
+
+  // Requirement: Only show one entry per logical chapter
+  const uniqueChapters = useMemo(() => {
+    return Array.from(
+      filteredChapters.reduce((acc: Map<string, Chapter>, current: Chapter) => {
+        const groupId = current.translationGroupId || current.id;
+        const existing = acc.get(groupId);
+        if (!existing || current.language === 'en') {
+          acc.set(groupId, current);
+        }
+        return acc;
+      }, new Map<string, Chapter>()).values()
+    ) as Chapter[];
+  }, [filteredChapters]);
+
+  useEffect(() => {
+    if (selected) {
+      const updatedSelected = chapters.find((c: Chapter) => c.id === selected.id || (c.translationGroupId && c.translationGroupId === selected.translationGroupId));
+      if (updatedSelected) {
+        setSelected(updatedSelected);
+      } else {
+        setSelected(null);
+      }
+    }
+  }, [chapters]);
+
+  if (quizMode && selected) {
+    return (
+      <QuizEngine 
+        questions={selected.quiz_questions || []} 
+        onComplete={() => setQuizMode(false)} 
+        language={language} 
+        userId={user.id}
+        chapterId={selected.id}
+      />
+    );
+  }
+
+  if (selected) {
+    return (
+      <TopicDetailView 
+        topic={selected} 
+        onBack={() => setSelected(null)} 
+        onTakeQuiz={() => setQuizMode(true)} 
+        language={language} 
+        isPremium={isPremium}
+        onUpgrade={onUpgrade}
+      />
+    );
+  }
 
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
-      transition: { staggerChildren: 0.1 }
+      transition: { staggerChildren: 0.05 }
     }
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 10 },
     show: { opacity: 1, y: 0 }
   };
 
   return (
-    <div className="space-y-8">
-      {/* Header & Search */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <h1 className="text-3xl font-black text-white tracking-tight mb-2">
-            {t.courses} <span className="text-emerald-500">Library</span>
-          </h1>
-          <p className="text-slate-400 text-sm font-medium uppercase tracking-widest">
-            {user?.class ? t.classes[user.class] : 'All Classes'} • {filteredChapters.length} Topics Found
-          </p>
-        </div>
-
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+      className="space-y-10 pb-20"
+    >
+      <motion.div variants={itemVariants} className="space-y-6">
         <div className="flex items-center gap-4">
-          <div className="relative group">
-            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-emerald-500 transition-colors">
-              <Search size={18} />
-            </div>
-            <input 
-              type="text" 
-              placeholder={language === 'en' ? "Search chapters..." : "ଅଧ୍ୟାୟ ଖୋଜନ୍ତୁ..."}
-              className="w-full md:w-80 pl-12 pr-4 py-3 rounded-2xl bg-slate-900/50 border border-white/5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all backdrop-blur-md"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          
-          <div className="flex bg-slate-900/50 p-1 rounded-xl border border-white/5 backdrop-blur-md">
-            <button 
-              onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-500 hover:text-white'}`}
-            >
-              <LayoutGrid size={18} />
-            </button>
-            <button 
-              onClick={() => setViewMode('list')}
-              className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-500 hover:text-white'}`}
-            >
-              <List size={18} />
-            </button>
+          <button 
+            onClick={onBack}
+            className="p-2 bg-slate-800/50 border border-white/5 rounded-xl text-slate-400 hover:text-white transition-all"
+          >
+            <ArrowLeft size={20} />
+          </button>
+          <div>
+            <h2 className="text-2xl font-bold text-white">
+              {translations[language].courses}
+            </h2>
+            <p className="text-xs text-slate-500 uppercase tracking-wider font-bold">
+              {translations[language].classes[user?.class as keyof typeof translations.en.classes] || user?.class} • {user?.board}
+            </p>
           </div>
         </div>
-      </div>
 
-      {/* Filters */}
-      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-        <button 
-          onClick={() => setSelectedSubject('all')}
-          className={`px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all border ${selectedSubject === 'all' ? 'bg-emerald-500 border-emerald-400 text-white shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white'}`}
-        >
-          All Subjects
-        </button>
-        {subjects.map(subject => (
-          <button 
-            key={subject}
-            onClick={() => setSelectedSubject(subject)}
-            className={`px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all border whitespace-nowrap ${selectedSubject === subject ? 'bg-emerald-500 border-emerald-400 text-white shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white'}`}
-          >
-            {getLocalizedSubject(subject, language)}
-          </button>
-        ))}
-      </div>
-
-      {/* Chapters Grid/List */}
-      <AnimatePresence mode="wait">
-        <motion.div 
-          key={viewMode + selectedSubject + searchQuery}
-          variants={containerVariants}
-          initial="hidden"
-          animate="show"
-          className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-4"}
-        >
-          {filteredChapters.map((chapter) => (
-            <motion.div 
-              key={chapter.id}
-              variants={itemVariants}
-              whileHover={{ y: -5 }}
-              onClick={() => onSelectChapter(chapter)}
-              className={`group cursor-pointer glass-card neon-border overflow-hidden transition-all ${viewMode === 'grid' ? 'rounded-[2.5rem] flex flex-col' : 'rounded-3xl flex items-center p-4 gap-6'}`}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+          {availableSubjects.map((s: string) => (
+            <button
+              key={s}
+              onClick={() => setSubjectFilter(s)}
+              className={`px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all border ${
+                subjectFilter === s 
+                  ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20' 
+                  : 'bg-slate-900/50 border-white/5 text-slate-400 hover:border-white/10 hover:text-white'
+              }`}
             >
-              <div className={`relative overflow-hidden bg-slate-800 ${viewMode === 'grid' ? 'aspect-video w-full' : 'w-32 h-20 rounded-2xl shrink-0'}`}>
-                {chapter.thumbnail_url ? (
-                  <img src={chapter.thumbnail_url} alt={chapter.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" referrerPolicy="no-referrer" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-slate-600">
-                    <BookOpen size={viewMode === 'grid' ? 48 : 24} />
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-xl scale-0 group-hover:scale-100 transition-transform">
-                    <Play size={24} fill="currentColor" />
-                  </div>
-                </div>
-                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-slate-950/60 backdrop-blur-md border border-white/10 text-[10px] font-black text-emerald-400 uppercase tracking-widest">
-                  {getLocalizedSubject(chapter.subject, language)}
-                </div>
-              </div>
-
-              <div className={`p-6 flex-1 flex flex-col ${viewMode === 'list' ? 'p-0' : ''}`}>
-                <h3 className="text-xl font-black text-white mb-2 tracking-tight group-hover:text-emerald-400 transition-colors line-clamp-2">
-                  {chapter.title}
-                </h3>
-                
-                <div className="flex items-center gap-4 mt-auto">
-                  <div className="flex items-center gap-1.5 text-slate-500 text-[10px] font-bold uppercase tracking-widest">
-                    <FileText size={12} />
-                    {chapter.notes ? 'Notes' : 'No Notes'}
-                  </div>
-                  <div className="flex items-center gap-1.5 text-slate-500 text-[10px] font-bold uppercase tracking-widest">
-                    <HelpCircle size={12} />
-                    {chapter.practice_questions?.length || 0} Practice
-                  </div>
-                </div>
-
-                {user?.subject_progress?.[chapter.subject] !== undefined && (
-                  <div className="mt-4 pt-4 border-t border-white/5">
-                    <div className="flex justify-between items-center mb-1.5">
-                      <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Subject Progress</span>
-                      <span className="text-[8px] font-black text-emerald-500">{user.subject_progress[chapter.subject]}%</span>
-                    </div>
-                    <div className="h-1 bg-white/5 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-emerald-500 rounded-full" 
-                        style={{ width: `${user.subject_progress[chapter.subject]}%` }}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {viewMode === 'list' && (
-                <div className="pr-4">
-                  <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-500 group-hover:bg-emerald-500 group-hover:text-white transition-all">
-                    <ChevronRight size={20} />
-                  </div>
-                </div>
-              )}
-            </motion.div>
+              {s === 'all' ? translations[language].allSubjects : (translations[language].subjects[s as keyof typeof translations.en.subjects] || s)}
+            </button>
           ))}
+        </div>
+      </motion.div>
 
-          {filteredChapters.length === 0 && (
-            <div className="col-span-full py-20 text-center space-y-4">
-              <div className="w-20 h-20 bg-slate-900 rounded-full flex items-center justify-center mx-auto text-slate-700 border border-dashed border-white/10">
-                <Search size={32} />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-white">No Chapters Found</h3>
-                <p className="text-slate-500 max-w-xs mx-auto text-sm">We couldn't find any chapters matching your search or filters. Try adjusting them!</p>
-              </div>
-            </div>
-          )}
+      {subjectFilter === 'all' && recentlyViewed.length > 0 && (
+        <motion.section variants={itemVariants} className="space-y-4">
+          <div className="flex items-center gap-2 text-emerald-500">
+            <Clock size={18} />
+            <h3 className="text-lg font-bold text-white">
+              {language === 'en' ? "Continue Learning" : "ପଢା ଜାରି ରଖନ୍ତୁ"}
+            </h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {recentlyViewed.map((chapter) => (
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                key={chapter.id}
+                onClick={() => handleSelectChapter(chapter)}
+                className="flex items-center gap-4 p-4 bg-slate-900/40 border border-white/5 rounded-2xl hover:border-emerald-500/30 transition-all text-left group"
+              >
+                <div className="w-16 h-10 rounded-lg bg-slate-800 overflow-hidden flex-shrink-0">
+                  <img 
+                    src={getYouTubeThumbnail(chapter.playlist_id)} 
+                    className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity"
+                    alt={chapter.title}
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] font-bold text-emerald-500 uppercase truncate">
+                    {getLocalizedSubject(chapter.subject, language)}
+                  </p>
+                  <h4 className="text-sm font-semibold text-white truncate">{chapter.title}</h4>
+                </div>
+              </motion.button>
+            ))}
+          </div>
+        </motion.section>
+      )}
+
+      {uniqueChapters.length === 0 ? (
+        <motion.div variants={itemVariants} className="flex flex-col items-center justify-center py-20 text-center bg-slate-900/30 border border-white/5 rounded-3xl">
+          <div className="w-24 h-24 bg-slate-800 rounded-full flex items-center justify-center mb-6">
+            <BookOpen size={48} className="text-slate-500" />
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-2">{translations[language].noContent}</h3>
+          <p className="text-slate-400 max-w-md mx-auto">
+            {language === 'en' 
+              ? "We're currently working on adding content for this subject. Please check back soon!" 
+              : "ଆମେ ବର୍ତ୍ତମାନ ଏହି ବିଷୟ ପାଇଁ ବିଷୟବସ୍ତୁ ଯୋଡିବା ପାଇଁ କାର୍ଯ୍ୟ କରୁଛୁ। ଦୟାକରି ଶୀଭ୍ର ପୁଣି ଯାଞ୍ଚ କରନ୍ତୁ!"}
+          </p>
         </motion.div>
-      </AnimatePresence>
-    </div>
+      ) : subjectFilter === 'all' ? (
+        <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {availableSubjects.filter(s => s !== 'all').map((subject: string) => {
+            const subjectChapters = chapters.filter((c: Chapter) => c.subject === subject);
+            const count = Array.from(new Set(subjectChapters.map((c: Chapter) => c.translationGroupId || c.id))).length;
+            
+            return (
+              <motion.button
+                whileHover={{ scale: 1.05, y: -5 }}
+                whileTap={{ scale: 0.95 }}
+                key={subject}
+                onClick={() => setSubjectFilter(subject)}
+                className="group relative flex flex-col items-center justify-center p-8 glass-card rounded-[2rem] hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all text-center overflow-hidden"
+              >
+                <div className="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-all pointer-events-none"></div>
+                <div className="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all text-emerald-500 relative z-10 shadow-lg">
+                  {subject.toLowerCase().includes('math') ? <Shapes size={32} /> :
+                   subject.toLowerCase().includes('sci') ? <Brain size={32} /> :
+                   subject.toLowerCase().includes('eng') ? <Globe size={32} /> :
+                   subject.toLowerCase().includes('odi') ? <PenTool size={32} /> :
+                   <BookOpen size={32} />}
+                </div>
+                <h3 className="text-xl font-black text-white mb-1 tracking-tight relative z-10">
+                  {translations[language].subjects[subject as keyof typeof translations.en.subjects] || subject}
+                </h3>
+                <p className="text-xs text-slate-500 font-bold uppercase tracking-widest relative z-10">
+                  {count} {language === 'en' ? 'Chapters' : 'ଅଧ୍ୟାୟ'}
+                </p>
+                
+                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                  <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]">
+                    <ChevronRight size={16} />
+                  </div>
+                </div>
+              </motion.button>
+            );
+          })}
+        </motion.div>
+      ) : (
+        <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+          {uniqueChapters.map((chapter: Chapter) => (
+            <motion.button 
+              whileHover={{ y: -5 }}
+              key={chapter.id}
+              onClick={() => handleSelectChapter(chapter)}
+              className="group text-left glass-card rounded-3xl p-6 hover:border-emerald-500/50 transition-all flex flex-col h-full relative overflow-hidden"
+            >
+              <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-all pointer-events-none"></div>
+              <div className="aspect-video rounded-2xl bg-slate-800 mb-4 overflow-hidden relative flex-shrink-0 z-10 shadow-lg">
+                <img 
+                  src={getYouTubeThumbnail(chapter.playlist_id)} 
+                  className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform"
+                  alt={chapter.title}
+                  referrerPolicy="no-referrer"
+                />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-[0_0_20px_rgba(16,185,129,0.5)] group-hover:scale-110 transition-transform">
+                    <Play fill="currentColor" size={20} />
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 mb-2 relative z-10">
+                <span className="text-[10px] font-bold uppercase text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                  {getLocalizedSubject(chapter.subject, language)}
+                </span>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-1 line-clamp-2 min-h-[3.5rem] tracking-tight relative z-10">{chapter.title}</h3>
+              
+              <div className="flex items-center gap-4 mt-auto pt-4 border-t border-white/5 text-[10px] text-slate-400 font-bold uppercase tracking-wider relative z-10">
+                <div className="flex items-center gap-1"><Play size={12} className="text-emerald-500" /> Video</div>
+                {chapter.notes && <div className="flex items-center gap-1"><FileText size={12} className="text-blue-500" /> Notes</div>}
+                {chapter.practice_questions && chapter.practice_questions.length > 0 && <div className="flex items-center gap-1"><HelpCircle size={12} className="text-purple-500" /> Practice</div>}
+                {chapter.quiz_questions && chapter.quiz_questions.length > 0 && <div className="flex items-center gap-1"><CheckCircle2 size={12} className="text-orange-500" /> Quiz</div>}
+              </div>
+            </motion.button>
+          ))}
+        </motion.div>
+      )}
+    </motion.div>
   );
-};
+}

@@ -264,6 +264,31 @@
         "avatar": { "type": "string" },
         "streak": { "type": "integer" }
       }
+    },
+    "UserLock": {
+      "title": "User Class Lock",
+      "description": "Stores the class and board associated with a phone number to prevent multiple accounts.",
+      "type": "object",
+      "properties": {
+        "class": { "type": "string" },
+        "board": { "type": "string" }
+      },
+      "required": ["class", "board"]
+    },
+    "SupportTicket": {
+      "title": "Support Ticket",
+      "description": "Stores user support requests.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userPhone": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "message": { "type": "string" },
+        "status": { "type": "string", "enum": ["open", "closed"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "message", "status", "createdAt"]
     }
   },
   "firestore": {
@@ -342,6 +367,14 @@
     "/friendships/{friendshipId}": {
       "schema": "Friendship",
       "description": "Student following relationships."
+    },
+    "/user_locks/{phone}": {
+      "schema": "UserLock",
+      "description": "Maps phone numbers to their locked class/board."
+    },
+    "/support_tickets/{ticketId}": {
+      "schema": "SupportTicket",
+      "description": "User support requests."
     }
   }
 }

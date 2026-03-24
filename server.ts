@@ -6,6 +6,7 @@ import Razorpay from 'razorpay';
 import multer from 'multer';
 import * as admin from 'firebase-admin';
 import fs from 'fs';
+import crypto from 'node:crypto';
 
 // Initialize Firebase Admin
 if (admin.apps && !admin.apps.length) {
@@ -71,6 +72,13 @@ function getRazorpay() {
 async function startServer() {
   const app = express();
   app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+
+  // Basic request logging
+  app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    next();
+  });
 
   // API Routes
   app.post('/api/upload-textbook', upload.single('file'), async (req: any, res) => {
@@ -132,13 +140,13 @@ async function startServer() {
 
   app.post('/api/payment/verify', async (req, res) => {
     try {
-      const { razorpay_order_id, razorpay_payment_id, razorpay_signature, userId } = req.body;
+      const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
       
-      const crypto = await import('crypto');
       const keySecret = process.env.RAZORPAY_KEY_SECRET;
       
       if (!keySecret) {
-        throw new Error('RAZORPAY_KEY_SECRET is missing.');
+        console.error('RAZORPAY_KEY_SECRET is missing.');
+        return res.status(500).json({ success: false, message: 'Payment configuration error' });
       }
 
       const hmac = crypto.createHmac('sha256', keySecret);
@@ -148,7 +156,7 @@ async function startServer() {
       if (generated_signature === razorpay_signature) {
         res.json({ success: true });
       } else {
-        console.error('Invalid signature');
+        console.error('Invalid payment signature');
         res.status(400).json({ success: false, message: 'Invalid signature' });
       }
     } catch (error: any) {

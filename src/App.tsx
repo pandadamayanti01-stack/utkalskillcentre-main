@@ -43,12 +43,14 @@ import {
   Save,
   ShoppingBag,
   Flame,
+  Phone,
   Mic,
   MicOff,
   UserPlus,
   UserCheck,
   TrendingUp,
-  Award
+  Award,
+  Bell
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
@@ -66,7 +68,8 @@ import {
   createUserWithEmailAndPassword,
   updateEmail,
   sendEmailVerification,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
+  linkWithPopup
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, query, where, getDocs, orderBy, limit, addDoc, updateDoc, increment, getCountFromServer, onSnapshot } from 'firebase/firestore';
 import { translations } from './translations';
@@ -322,25 +325,38 @@ const BigsanBranding = ({ className = "" }: { className?: string }) => {
 };
 
 
+let deferredPrompt: any = null;
+
 const InstallPWA = () => {
-  const [supportsPWA, setSupportsPWA] = useState(false);
-  const [promptInstall, setPromptInstall] = useState<any>(null);
+  const [supportsPWA, setSupportsPWA] = useState(!!deferredPrompt);
 
   useEffect(() => {
     const handler = (e: any) => {
       e.preventDefault(); // Stop the browser's default bar
+      deferredPrompt = e;
       setSupportsPWA(true);
-      setPromptInstall(e);
     };
+    
+    if (deferredPrompt) {
+      setSupportsPWA(true);
+    }
+
     window.addEventListener("beforeinstallprompt", handler);
 
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
-  const onClick = (e: any) => {
+  const onClick = async (e: any) => {
     e.preventDefault();
-    if (!promptInstall) return;
-    promptInstall.prompt();
+    if (!deferredPrompt) return;
+    
+    deferredPrompt.prompt();
+    
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      deferredPrompt = null;
+      setSupportsPWA(false);
+    }
   };
 
   if (!supportsPWA) return null;
@@ -368,7 +384,20 @@ export default function App() {
   const [user, setUser] = useState<Student | null>(null);
   const [isAdminView, setIsAdminView] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState(() => localStorage.getItem('activeTab') || 'dashboard');
+
+  useEffect(() => {
+    localStorage.setItem('activeTab', activeTab);
+  }, [activeTab]);
+
+  useEffect(() => {
+    const handleTabChange = (e: any) => {
+      setActiveTab(e.detail);
+    };
+    window.addEventListener('changeTab', handleTabChange);
+    return () => window.removeEventListener('changeTab', handleTabChange);
+  }, []);
+
   const [language, _setLanguage] = useState<'en' | 'or'>(localStorage.getItem('lang') as any || 'en');
   const languageRef = useRef(language);
   const setLanguage = async (lang: 'en' | 'or') => {
@@ -430,6 +459,8 @@ export default function App() {
   const [dailyChallenge, setDailyChallenge] = useState<any>(null);
   const [userProgress, setUserProgress] = useState<any[]>([]);
   const [following, setFollowing] = useState<string[]>([]);
+  const [studentNotifications, setStudentNotifications] = useState<any[]>([]);
+  const [showNotificationsModal, setShowNotificationsModal] = useState(false);
   const [systemSettings, setSystemSettings] = useState<any>({
     monthlyPrice: 199,
     yearlyPrice: 999
@@ -524,11 +555,35 @@ export default function App() {
           // Initial sync/creation
           const userDocSnap = await getDoc(userDocRef);
           const userEmail = firebaseUser.email?.toLowerCase();
+          const userPhone = firebaseUser.phoneNumber;
           const isAdmin = userEmail === 'pandadamayanti01@gmail.com' || 
-                          firebaseUser.phoneNumber === '+919337956168' || 
-                          firebaseUser.phoneNumber === '9337956168';
+                          userPhone === '+919337956168' || 
+                          userPhone === '9337956168';
           
-          const role = isAdmin ? 'admin' : (userDocSnap.exists() ? userDocSnap.data().role : 'student');
+          const isTestAccount = 
+            (userEmail && ['gaynapd.ram@gmail.com', 'gyanaloka.panda@gmail.com', 'gyanalpanda@gmail.com'].includes(userEmail)) ||
+            (userPhone && [
+              '+917735118243', '7735118243', 
+              '+919556086560', '9556086560', 
+              '+918926118509', '8926118509',
+              '+918457811227', '8457811227',
+              '+916370487877', '6370487877'
+            ].includes(userPhone));
+
+          if (userDocSnap.exists() && !isAdmin && !isTestAccount) {
+            const dbClass = userDocSnap.data().class;
+            const dbBoard = userDocSnap.data().board;
+            const selectedClass = regDataRef.current.class;
+            const selectedBoard = regDataRef.current.board;
+
+            if (selectedClass && selectedBoard && (dbClass !== selectedClass || dbBoard !== selectedBoard)) {
+              alert("Account already associated with another class/board. Please create a ticket or connect with admin on support.");
+              auth.signOut();
+              return;
+            }
+          }
+
+          const role = isAdmin ? 'admin' : (userDocSnap.exists() ? (userDocSnap.data().role || 'student') : 'student');
           
           const userData: any = {
             id: firebaseUser.uid,
@@ -545,6 +600,7 @@ export default function App() {
             lastActiveDate: userDocSnap.exists() ? (userDocSnap.data().lastActiveDate ?? '') : '',
             shareCount: userDocSnap.exists() ? (userDocSnap.data().shareCount ?? 0) : 0,
             statusShared: userDocSnap.exists() ? (userDocSnap.data().statusShared ?? false) : false,
+            phoneNumber: userPhone || '',
             updatedAt: serverTimestamp()
           };
 
@@ -577,6 +633,13 @@ export default function App() {
             avatar: userData.avatar,
             streak: userData.streak
           }, { merge: true });
+
+          if (userData.phoneNumber) {
+            await setDoc(doc(firestore, 'user_locks', userData.phoneNumber), {
+              class: userData.class,
+              board: userData.board
+            }, { merge: true });
+          }
         } catch (fsErr) {
           handleFirestoreError(fsErr, OperationType.WRITE, `users/${firebaseUser.uid}`);
         }
@@ -585,9 +648,11 @@ export default function App() {
         const subDocRef = doc(firestore, 'subscriptions', firebaseUser.uid);
         unsubSub = onSnapshot(subDocRef, (subDocSnap) => {
           const userEmail = firebaseUser.email?.toLowerCase();
-          const lifetimeEmails = ['gyanaloka.panda@gmail.com', 'gyanapd.ram@gmail.com', 'pandadamayanti01@gmail.com'];
+          const userPhone = firebaseUser.phoneNumber;
+          const lifetimeEmails = ['gyanaloka.panda@gmail.com', 'gyanapd.ram@gmail.com', 'pandadamayanti01@gmail.com', 'gyanalpanda@gmail.com'];
+          const lifetimePhones = ['+918926118509', '8926118509', '+918457811227', '8457811227', '+916370487877', '6370487877'];
           
-          if (userEmail && lifetimeEmails.includes(userEmail)) {
+          if ((userEmail && lifetimeEmails.includes(userEmail)) || (userPhone && lifetimePhones.includes(userPhone))) {
             setIsPremium(true);
             return;
           }
@@ -728,6 +793,25 @@ export default function App() {
       (err) => handleFirestoreError(err, OperationType.GET, 'friendships')
     );
 
+    const unsubNotifications = onSnapshot(
+      collection(firestore, 'notifications'),
+      (snapshot) => {
+        const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        console.log("Notifications received:", data);
+        console.log("Current user class:", user?.class);
+        const filteredData = data.filter((n: any) => {
+          const matches = !n.audience || n.audience === 'all' || n.audience === user?.class;
+          if (!matches) {
+            console.log("Notification filtered out:", n, "Audience:", n.audience, "User Class:", user?.class);
+          }
+          return matches;
+        });
+        console.log("Filtered notifications:", filteredData);
+        setStudentNotifications(filteredData);
+      },
+      (err) => handleFirestoreError(err, OperationType.GET, 'notifications')
+    );
+
     return () => {
       unsubChapters();
       unsubLeaderboard();
@@ -737,6 +821,7 @@ export default function App() {
       unsubChallenge();
       unsubProgress();
       unsubFollowing();
+      unsubNotifications();
     };
   }, [user?.id]);
 
@@ -950,6 +1035,39 @@ export default function App() {
           formattedNumber = formattedNumber.substring(1);
         }
         formattedNumber = '+91' + formattedNumber;
+      }
+
+      // Class/Board Lock Check before sending OTP
+      if (!isAdminLogin) {
+        const isTestAccount = [
+          '+918926118509', '8926118509', 
+          '+917735118243', '7735118243', 
+          '+919556086560', '9556086560',
+          '+918457811227', '8457811227',
+          '+916370487877', '6370487877'
+        ].includes(formattedNumber);
+        
+        if (!isTestAccount) {
+          const lockDoc = await getDoc(doc(firestore, 'user_locks', formattedNumber));
+          
+          if (lockDoc.exists()) {
+            const lockData = lockDoc.data();
+            const dbClass = lockData.class;
+            const dbBoard = lockData.board;
+            const selectedClass = regData.class;
+            const selectedBoard = regData.board;
+
+            if (selectedClass && selectedBoard && (dbClass !== selectedClass || dbBoard !== selectedBoard)) {
+              const classLabel = translations[language].classes[dbClass] || dbClass;
+              const boardLabel = translations[language].boards[dbBoard] || dbBoard;
+              alert(language === 'en' 
+                ? `Your account is locked to ${classLabel} (${boardLabel}). Please select the correct class/board to login.`
+                : `ଆପଣଙ୍କ ଆକାଉଣ୍ଟ ${classLabel} (${boardLabel}) ପାଇଁ ଲକ୍ ହୋଇଛି | ଦୟାକରି ସଠିକ୍ ଶ୍ରେଣୀ/ବୋର୍ଡ ଚୟନ କରନ୍ତୁ |`);
+              setIsSendingOtp(false);
+              return;
+            }
+          }
+        }
       }
       
       console.log("Requesting OTP for:", formattedNumber);
@@ -1228,6 +1346,7 @@ export default function App() {
   if (dbError) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6 text-center">
+        <InstallPWA />
         <div className="max-w-md w-full bg-slate-900 border border-white/10 rounded-[2.5rem] p-10 space-y-6 shadow-2xl">
           <div className="w-20 h-20 bg-red-500/10 rounded-3xl flex items-center justify-center text-red-500 mx-auto">
             <AlertCircle size={40} />
@@ -1254,6 +1373,7 @@ export default function App() {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6">
+        <InstallPWA />
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -1267,7 +1387,6 @@ export default function App() {
             </p>
           </div>
         </motion.div>
-        <InstallPWA />
       </div>
     );
   }
@@ -1768,6 +1887,7 @@ export default function App() {
 
   return (
     <ErrorBoundary language={language}>
+      <InstallPWA />
       {showLaunchPoster && <UtkalDivasPoster onClose={() => {
         setShowLaunchPoster(false);
         localStorage.setItem('utkalDivasSeen', 'true');
@@ -1812,6 +1932,7 @@ export default function App() {
                 <SidebarItem icon={<MessageSquare size={20}/>} label={translations[language].aiSolver} active={activeTab === 'ai'} onClick={() => { setActiveTab('ai'); setSidebarOpen(false); }} />
                 <SidebarItem icon={<Trophy size={20}/>} label={translations[language].leaderboard} active={activeTab === 'leaderboard'} onClick={() => { setActiveTab('leaderboard'); setSidebarOpen(false); }} />
                 <SidebarItem icon={<ShoppingBag size={20}/>} label={language === 'en' ? 'Avatar Store' : 'ଅବତାର ଷ୍ଟୋର'} active={activeTab === 'store'} onClick={() => { setActiveTab('store'); setSidebarOpen(false); }} />
+                <SidebarItem icon={<HelpCircle size={20}/>} label={translations[language].support.title} active={activeTab === 'support'} onClick={() => { setActiveTab('support'); setSidebarOpen(false); }} />
                 <SidebarItem icon={<CreditCard size={20}/>} label="Plans" active={activeTab === 'plans'} onClick={() => { setActiveTab('plans'); setSidebarOpen(false); }} />
               </>
             )}
@@ -1882,11 +2003,20 @@ export default function App() {
               </div>
             )}
             {user.role !== 'admin' && user.streak > 0 && (
-              <div className="flex items-center gap-1 bg-orange-500/10 px-3 py-1.5 rounded-xl border border-orange-500/20 text-orange-400">
+              <div className="flex items-center gap-1 bg-orange-500/10 px-3 py-1.5 rounded-2xl border border-orange-500/20 text-orange-400">
                 <Flame size={16} fill="currentColor" className="animate-pulse" />
                 <span className="text-sm font-black">{user.streak}</span>
               </div>
             )}
+            <button 
+              onClick={() => setShowNotificationsModal(true)}
+              className="relative p-2.5 bg-white/5 rounded-2xl border border-white/5 text-slate-400 hover:text-white transition-colors"
+            >
+              <Bell size={20} />
+              {studentNotifications.length > 0 && (
+                <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" />
+              )}
+            </button>
             <div className="flex items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/5">
               <div 
                 onClick={() => setActiveTab('profile')}
@@ -1928,6 +2058,7 @@ export default function App() {
               {activeTab === 'profile' && <ProfileView user={user} language={language} onBack={() => setActiveTab('dashboard')} onParentAccess={() => setActiveTab('parent_dashboard')} setActiveTab={setActiveTab} />}
               {activeTab === 'parent_dashboard' && <ParentDashboard user={user} chapters={chapters} leaderboard={leaderboard} language={language} onBack={() => setActiveTab('profile')} userProgress={userProgress} />}
               {activeTab === 'leaderboard' && <LeaderboardView leaderboard={leaderboard} language={language} onBack={() => setActiveTab('dashboard')} following={following} user={user} />}
+              {activeTab === 'support' && <SupportView user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
               {activeTab === 'store' && <AvatarStore user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
               {activeTab === 'plans' && <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />}
             </AnimatePresence>
@@ -1936,9 +2067,7 @@ export default function App() {
       </main>
 
       {/* AI Study Buddy */}
-      {user && isPremium && <StudyBuddy user={user} language={language} />}
-
-      <InstallPWA />
+      {user && <StudyBuddy user={user} language={language} isPremium={isPremium} />}
 
     </div>
     </ErrorBoundary>
@@ -2151,6 +2280,102 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack, userPr
   );
 }
 
+function SupportView({ user, language, onBack }: any) {
+  const [ticket, setTicket] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!ticket.trim()) return;
+    setLoading(true);
+    try {
+      await addDoc(collection(firestore, 'support_tickets'), {
+        userId: user.id,
+        userName: user.name,
+        userPhone: user.phoneNumber || '',
+        userEmail: user.email || '',
+        message: ticket,
+        status: 'open',
+        createdAt: serverTimestamp()
+      });
+      setSuccess(true);
+      setTicket('');
+    } catch (e) {
+      console.error("Support Ticket Error:", e);
+      alert(translations[language].support.error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="max-w-2xl mx-auto space-y-8 pb-20"
+    >
+      <div className="flex items-center gap-4">
+        <button onClick={onBack} className="p-2 bg-slate-800/50 rounded-xl text-slate-400 hover:text-white">
+          <ArrowLeft size={20} />
+        </button>
+        <h2 className="text-2xl font-bold text-white">{translations[language].support.title}</h2>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <a href="https://wa.me/919337956168" target="_blank" className="p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-3xl flex flex-col items-center gap-3 hover:bg-emerald-500/20 transition-all">
+          <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center text-white">
+            <MessageCircle size={24} />
+          </div>
+          <span className="text-white font-bold text-sm">{translations[language].support.whatsappSupport}</span>
+        </a>
+        <a href="mailto:gyanaloka.panda@gmail.com" className="p-6 bg-blue-500/10 border border-blue-500/20 rounded-3xl flex flex-col items-center gap-3 hover:bg-blue-500/20 transition-all">
+          <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white">
+            <Mail size={24} />
+          </div>
+          <span className="text-white font-bold text-sm">{translations[language].support.emailSupport}</span>
+        </a>
+        <a href="tel:+919337956168" className="p-6 bg-purple-500/10 border border-purple-500/20 rounded-3xl flex flex-col items-center gap-3 hover:bg-purple-500/20 transition-all">
+          <div className="w-12 h-12 rounded-full bg-purple-500 flex items-center justify-center text-white">
+            <Phone size={24} />
+          </div>
+          <span className="text-white font-bold text-sm">{translations[language].support.callSupport}</span>
+        </a>
+      </div>
+
+      <div className="p-8 bg-slate-900/50 border border-white/5 rounded-[2.5rem] space-y-6">
+        <div>
+          <h3 className="text-xl font-bold text-white mb-2">{translations[language].support.ticketTitle}</h3>
+          <p className="text-slate-400 text-sm">{translations[language].support.ticketDescription}</p>
+        </div>
+
+        {success ? (
+          <div className="p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-center">
+            <p className="text-emerald-400 font-bold">{translations[language].support.success}</p>
+            <button onClick={() => setSuccess(false)} className="mt-4 text-emerald-500 text-sm hover:underline">Send another message</button>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <textarea 
+              value={ticket}
+              onChange={(e) => setTicket(e.target.value)}
+              placeholder="How can we help you?"
+              className="w-full h-32 bg-white/5 border border-white/10 rounded-2xl p-4 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+            />
+            <button 
+              onClick={handleSubmit}
+              disabled={loading || !ticket.trim()}
+              className="w-full py-4 rounded-2xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {loading ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}
+              {translations[language].support.submitTicket}
+            </button>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
 function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: any) {
   const [name, setName] = useState(user.name || '');
   const [email, setEmail] = useState(user.email || '');
@@ -2231,6 +2456,25 @@ function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: a
   };
 
   const isEmailVerified = auth.currentUser?.emailVerified;
+
+  const handleLinkGoogle = async () => {
+    if (!auth.currentUser) return;
+    try {
+      const provider = new GoogleAuthProvider();
+      await linkWithPopup(auth.currentUser, provider);
+      alert(language === 'en' ? "Google account linked successfully! You can now log in with either method." : "Google ଆକାଉଣ୍ଟ୍ ସଫଳତାର ସହ ଲିଙ୍କ୍ ହୋଇଛି! ଆପଣ ବର୍ତ୍ତମାନ ଯେକୌଣସି ପଦ୍ଧତି ସହିତ ଲଗଇନ୍ କରିପାରିବେ |");
+      // Force a re-render or state update if needed, but the providerData will be updated
+    } catch (error: any) {
+      console.error("Error linking Google account:", error);
+      if (error.code === 'auth/credential-already-in-use') {
+        alert(language === 'en' ? "This Google account is already linked to another user." : "ଏହି Google ଆକାଉଣ୍ଟ୍ ପୂର୍ବରୁ ଅନ୍ୟ ଏକ ଉପଭୋକ୍ତା ସହିତ ଲିଙ୍କ୍ ହୋଇଛି |");
+      } else {
+        alert(language === 'en' ? "Failed to link Google account. " + error.message : "Google ଆକାଉଣ୍ଟ୍ ଲିଙ୍କ୍ କରିବାରେ ବିଫଳ ହୋଇଛି | " + error.message);
+      }
+    }
+  };
+
+  const isGoogleLinked = auth.currentUser?.providerData.some(p => p.providerId === 'google.com');
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -2361,6 +2605,33 @@ function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: a
           </div>
         </div>
 
+        {/* Account Linking Section */}
+        {!isGoogleLinked && (
+          <div className="p-4 rounded-2xl bg-slate-800/50 border border-white/10 space-y-3">
+            <div className="flex items-center gap-2 mb-2">
+              <Globe className="text-blue-400" size={18} />
+              <h3 className="text-sm font-bold text-white">{language === 'en' ? 'Link Google Account' : 'Google ଆକାଉଣ୍ଟ୍ ଲିଙ୍କ୍ କରନ୍ତୁ'}</h3>
+            </div>
+            <p className="text-[10px] text-slate-400 leading-relaxed">
+              {language === 'en' 
+                ? 'Link your Google account to prevent data loss and log in easily with either your phone number or Google.' 
+                : 'ଡାଟା ହରାଇବା ରୋକିବା ପାଇଁ ଆପଣଙ୍କର Google ଆକାଉଣ୍ଟ୍ ଲିଙ୍କ୍ କରନ୍ତୁ ଏବଂ ଆପଣଙ୍କର ଫୋନ୍ ନମ୍ବର କିମ୍ବା Google ସହିତ ସହଜରେ ଲଗଇନ୍ କରନ୍ତୁ |'}
+            </p>
+            <button 
+              onClick={handleLinkGoogle}
+              className="w-full py-2.5 rounded-xl bg-white text-slate-900 text-xs font-bold hover:bg-slate-200 transition-all flex items-center justify-center gap-2 shadow-lg"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+              </svg>
+              {language === 'en' ? 'Link Google Account' : 'Google ସହିତ ଲିଙ୍କ୍ କରନ୍ତୁ'}
+            </button>
+          </div>
+        )}
+
         <div>
           <label className="block text-sm font-medium text-slate-400 mb-1">{translations[language].profile.parentPin}</label>
           <input 
@@ -2426,6 +2697,22 @@ function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: a
               <div className="text-left">
                 <p className="font-bold">{translations[language].profile.parentDashboard}</p>
                 <p className="text-[10px] opacity-70 uppercase tracking-wider">{translations[language].profile.parentDashboardTagline}</p>
+              </div>
+            </div>
+            <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+          </button>
+
+          <button 
+            onClick={() => setActiveTab('support')}
+            className="w-full flex items-center justify-between p-4 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-500 hover:bg-purple-500/20 transition-all group mt-4"
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-purple-500 text-white">
+                <HelpCircle size={20} />
+              </div>
+              <div className="text-left">
+                <p className="font-bold">{translations[language].support.title}</p>
+                <p className="text-[10px] opacity-70 uppercase tracking-wider">{translations[language].support.ticketDescription}</p>
               </div>
             </div>
             <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
@@ -3799,6 +4086,47 @@ function LeaderboardView({ leaderboard, language, onBack, following, user }: any
 
 function TextbooksView({ user, textbooks, language, onBack }: any) {
   const [subjectFilter, setSubjectFilter] = useState('all');
+  const [isLinking, setIsLinking] = useState(false);
+
+  const handleDownload = async (book: Textbook) => {
+    if (!auth.currentUser) return;
+    
+    // Check if user has an email
+    if (!auth.currentUser.email) {
+      setIsLinking(true);
+      try {
+        const provider = new GoogleAuthProvider();
+        const result = await linkWithPopup(auth.currentUser, provider);
+        const newEmail = result.user?.email;
+        
+        // Update user document in Firestore
+        if (newEmail) {
+          await updateDoc(doc(firestore, 'users', user.id), {
+            email: newEmail
+          });
+        }
+        
+        // Open the download URL
+        window.open(book.download_url, '_blank');
+      } catch (error: any) {
+        console.error("Error linking Google account:", error);
+        if (error.code === 'auth/credential-already-in-use') {
+          alert(language === 'en' ? "This Google account is already linked to another user. Please try a different account." : "ଏହି Google ଆକାଉଣ୍ଟ୍ ପୂର୍ବରୁ ଅନ୍ୟ ଏକ ଉପଭୋକ୍ତା ସହିତ ଲିଙ୍କ୍ ହୋଇଛି | ଦୟାକରି ଏକ ଭିନ୍ନ ଆକାଉଣ୍ଟ୍ ଚେଷ୍ଟା କରନ୍ତୁ |");
+        } else if (error.code === 'auth/popup-closed-by-user') {
+          console.log("User cancelled Google linking");
+        } else {
+          alert(language === 'en' ? "Failed to link Google account. " + error.message : "Google ଆକାଉଣ୍ଟ୍ ଲିଙ୍କ୍ କରିବାରେ ବିଫଳ ହୋଇଛି | " + error.message);
+        }
+        // Allow download even if linking fails or is cancelled
+        window.open(book.download_url, '_blank');
+      } finally {
+        setIsLinking(false);
+      }
+    } else {
+      // Already has email, just open
+      window.open(book.download_url, '_blank');
+    }
+  };
 
   const boardKey = React.useMemo(() => {
     if (!user?.board) return 'odisha';
@@ -3806,14 +4134,14 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
     if (b.includes('saraswati')) return 'saraswati';
     if (b.includes('cbse')) return 'cbse';
     if (b.includes('icse')) return 'icse';
-    if (b.includes('odia')) return 'odisha';
-    return b; // Return the actual lowercase board if no match
+    if (b.includes('odia') || b.includes('odisha')) return 'odisha';
+    return b;
   }, [user?.board]);
 
   const filteredTextbooks = React.useMemo(() => {
     return textbooks.filter((book: Textbook) => {
       const matchesClass = !user?.class || book.class?.toLowerCase() === user.class.toLowerCase();
-      const matchesBoard = !user?.board || book.board?.toLowerCase() === boardKey.toLowerCase();
+      const matchesBoard = !user?.board || book.board?.toLowerCase().includes(boardKey.toLowerCase()) || boardKey.toLowerCase().includes(book.board?.toLowerCase() || '');
       const matchesSubject = subjectFilter === 'all' || book.subject === subjectFilter;
       return matchesClass && matchesBoard && matchesSubject;
     });
@@ -3927,15 +4255,14 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
               <div className="p-6 flex flex-col flex-1">
                 <h3 className="text-lg font-bold text-white mb-4 line-clamp-2 flex-1">{book.title}</h3>
                 <div className="flex gap-2">
-                  <a 
-                    href={book.download_url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-900/20"
+                  <button 
+                    onClick={() => handleDownload(book)}
+                    disabled={isLinking}
+                    className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-900/20 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Download size={18} />
-                    {language === 'en' ? 'Download PDF' : 'PDF ଡାଉନଲୋଡ୍'}
-                  </a>
+                    {isLinking ? (language === 'en' ? 'Linking...' : 'ଲିଙ୍କ୍ ହେଉଛି...') : (language === 'en' ? 'Download PDF' : 'PDF ଡାଉନଲୋଡ୍')}
+                  </button>
                   <button 
                     onClick={() => {
                       OfflineService.saveTextbook(book.id, book);
@@ -4890,6 +5217,27 @@ function SkillGameView({ chapter, onBack }: { chapter?: any, onBack: () => void 
             <Shapes className="text-slate-500" /> Math Patterns
           </motion.button>
         </motion.div>
+        {showNotificationsModal && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowNotificationsModal(false)}>
+            <div className="bg-slate-900 border border-white/10 rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl" onClick={e => e.stopPropagation()}>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-white">Notifications</h2>
+                <button onClick={() => setShowNotificationsModal(false)} className="text-slate-400 hover:text-white"><X /></button>
+              </div>
+              <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+                {studentNotifications.length === 0 ? (
+                  <p className="text-slate-500 text-center py-8">No new notifications.</p>
+                ) : (
+                  studentNotifications.map((n: any) => (
+                    <div key={n.id} className="p-4 bg-white/5 rounded-2xl border border-white/5">
+                      <p className="text-white text-sm">{n.message}</p>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </motion.div>
   );

@@ -94,13 +94,13 @@ export const AuthView: React.FC<AuthViewProps> = ({
               className="absolute top-full right-0 mt-2 p-2 rounded-2xl bg-slate-900 border border-white/10 shadow-2xl min-w-[120px]"
             >
               <button 
-                onClick={() => { startPhoneAuth(); setShowLanguageToggle(false); }}
+                onClick={() => { setRegData({...regData, language: 'en'}); setShowLanguageToggle(false); }}
                 className={`w-full text-left px-4 py-2 rounded-xl text-xs font-bold transition-colors ${language === 'en' ? 'bg-emerald-500 text-white' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
               >
                 English
               </button>
               <button 
-                onClick={() => { startPhoneAuth(); setShowLanguageToggle(false); }}
+                onClick={() => { setRegData({...regData, language: 'or'}); setShowLanguageToggle(false); }}
                 className={`w-full text-left px-4 py-2 rounded-xl text-xs font-bold transition-colors ${language === 'or' ? 'bg-emerald-500 text-white' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
               >
                 ଓଡ଼ିଆ

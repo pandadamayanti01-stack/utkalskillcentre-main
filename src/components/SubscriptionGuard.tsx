@@ -1,10 +1,9 @@
 import React from 'react';
-import { motion } from 'motion/react';
 import { ArrowLeft, Send } from 'lucide-react';
-import { translations } from '../translations';
+import { translations } from '../App';
 
 interface SubscriptionGuardProps {
-  onSubscribe: (price: number, plan: 'monthly' | 'yearly') => void;
+  onSubscribe: (amount: number, type: 'monthly' | 'yearly') => void;
   language: 'en' | 'or';
   isPremium: boolean;
   user: any;

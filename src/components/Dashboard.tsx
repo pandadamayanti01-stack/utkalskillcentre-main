@@ -17,15 +17,16 @@ interface DashboardProps {
 
 export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, onChallengeComplete }: DashboardProps) {
   const t = translations[language];
-  const userRank = leaderboard.findIndex((s: any) => s.name === user.name) + 1 || '-';
+  const userRank = leaderboard.findIndex((s: any) => s.id === user.id) + 1;
+  const rankDisplay = userRank > 0 ? userRank : '-';
   
   const dailyGoal = 500;
   const dailyProgress = Math.min(((user?.points_today || 0) / dailyGoal) * 100, 100);
 
   const stats = [
     { label: t.pointsToday, value: user?.points_today || 0, icon: <Zap size={20} />, color: 'text-amber-500', bg: 'bg-amber-500/10' },
+    { label: t.rank, value: rankDisplay, icon: <Trophy size={20} />, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
     { label: t.currentStreak, value: `${user?.streak || 0} ${t.activeStreak}`, icon: <Flame size={20} />, color: 'text-orange-500', bg: 'bg-orange-500/10' },
-    { label: t.levelUp, value: `Lvl ${user?.level || 1}`, icon: <Trophy size={20} />, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
     { label: t.nextLeague, value: user?.league || 'Bronze', icon: <Award size={20} />, color: 'text-blue-500', bg: 'bg-blue-500/10' },
   ];
 

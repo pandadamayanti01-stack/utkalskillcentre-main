@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft, Trophy, Loader2, Lightbulb } from 'lucide-react';
-import { doc, getDoc, addDoc, collection, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
-import { db as firestore } from '../firebase';
+import { collection, addDoc, serverTimestamp, doc, getDoc, updateDoc, increment } from 'firebase/firestore';
+import { firestore } from '../firebase';
 
 interface QuizEngineProps {
   questions: any[];

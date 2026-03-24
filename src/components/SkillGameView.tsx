@@ -1,295 +1,299 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
-  Zap, 
+  ArrowLeft, 
   Trophy, 
-  Flame, 
   Star, 
   Clock, 
-  Target, 
-  Award, 
+  CheckCircle2, 
+  XCircle, 
   Sparkles,
-  ChevronRight,
-  Play,
-  RotateCcw,
-  Timer,
-  CheckCircle2,
-  XCircle,
   Brain,
-  Rocket
+  Zap,
+  Loader2
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
 import { translations } from '../translations';
 
 interface SkillGameViewProps {
-  language: 'en' | 'or';
-  onComplete: (score: number) => void;
+  chapter?: any;
+  onBack: () => void;
 }
 
-export const SkillGameView: React.FC<SkillGameViewProps> = ({ language, onComplete }) => {
-  const t = translations[language];
-  const [gameState, setGameState] = useState<'idle' | 'playing' | 'finished'>('idle');
+export function SkillGameView({ chapter, onBack }: SkillGameViewProps) {
+  const [gameState, setGameState] = useState<'start' | 'playing' | 'end'>('start');
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(60);
-  const [currentProblem, setCurrentProblem] = useState<{ q: string; a: number } | null>(null);
-  const [userInput, setUserInput] = useState('');
+  const [question, setQuestion] = useState<any>(null);
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
-  const [streak, setStreak] = useState(0);
-  const [highScore, setHighScore] = useState(0);
-
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  const generateProblem = () => {
-    const operators = ['+', '-', '*'];
-    const op = operators[Math.floor(Math.random() * operators.length)];
-    let n1, n2, a;
-
-    if (op === '+') {
-      n1 = Math.floor(Math.random() * 50) + 1;
-      n2 = Math.floor(Math.random() * 50) + 1;
-      a = n1 + n2;
-    } else if (op === '-') {
-      n1 = Math.floor(Math.random() * 50) + 20;
-      n2 = Math.floor(Math.random() * n1) + 1;
-      a = n1 - n2;
-    } else {
-      n1 = Math.floor(Math.random() * 12) + 1;
-      n2 = Math.floor(Math.random() * 12) + 1;
-      a = n1 * n2;
-    }
-
-    setCurrentProblem({ q: `${n1} ${op} ${n2}`, a });
-    setUserInput('');
-  };
-
-  const startGame = () => {
-    setGameState('playing');
-    setScore(0);
-    setTimeLeft(60);
-    setStreak(0);
-    generateProblem();
-    
-    timerRef.current = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev <= 1) {
-          clearInterval(timerRef.current!);
-          setGameState('finished');
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-  };
-
-  const handleInput = (val: string) => {
-    setUserInput(val);
-    if (currentProblem && parseInt(val) === currentProblem.a) {
-      setFeedback('correct');
-      setScore(prev => prev + 10 + (streak * 2));
-      setStreak(prev => prev + 1);
-      setTimeout(() => {
-        setFeedback(null);
-        generateProblem();
-      }, 300);
-    } else if (val.length >= currentProblem?.a.toString().length && parseInt(val) !== currentProblem?.a) {
-      setFeedback('wrong');
-      setStreak(0);
-      setTimeout(() => setFeedback(null), 500);
-    }
-  };
+  const [lang] = useState<'en' | 'or'>(localStorage.getItem('lang') as any || 'en');
+  const title = chapter?.title || "Skill Game";
 
   useEffect(() => {
-    if (gameState === 'finished') {
-      if (score > highScore) setHighScore(score);
-      onComplete(score);
+    if (gameState === 'playing') {
+      generateQuestion();
+      const timer = setInterval(() => {
+        setTimeLeft(prev => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            setGameState('end');
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
     }
   }, [gameState]);
 
+  const generateQuestion = () => {
+    const a = Math.floor(Math.random() * 20) + 1;
+    const b = Math.floor(Math.random() * 20) + 1;
+    const ops = ['+', '-', '*'];
+    const op = ops[Math.floor(Math.random() * ops.length)];
+    let ans = 0;
+    if (op === '+') ans = a + b;
+    else if (op === '-') ans = a - b;
+    else ans = a * b;
+
+    const options = [ans, ans + 2, ans - 2, ans + 5].sort(() => Math.random() - 0.5);
+    setQuestion({ q: `${a} ${op} ${b} = ?`, options, ans });
+  };
+
+  const handleAnswer = (ans: any) => {
+    if (ans === question.ans) {
+      setScore(prev => prev + 10);
+      setFeedback('correct');
+    } else {
+      setScore(prev => Math.max(0, prev - 5));
+      setFeedback('wrong');
+    }
+
+    setTimeout(() => {
+      setFeedback(null);
+      generateQuestion();
+    }, 500);
+  };
+
   return (
-    <div className="max-w-4xl mx-auto h-[calc(100vh-12rem)] flex flex-col items-center justify-center space-y-12">
-      <AnimatePresence mode="wait">
-        {gameState === 'idle' && (
-          <motion.div 
-            key="idle"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            className="text-center space-y-8"
-          >
-            <div className="relative">
-              <div className="w-32 h-32 bg-emerald-500/10 rounded-[2.5rem] flex items-center justify-center text-emerald-500 mx-auto border border-emerald-500/20 shadow-[0_0_50px_rgba(16,185,129,0.2)]">
-                <Brain size={64} />
-              </div>
-              <motion.div 
-                animate={{ rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                className="absolute -inset-4 border-2 border-dashed border-emerald-500/20 rounded-[3rem]"
-              ></motion.div>
-            </div>
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="min-h-screen bg-[#f8f9fa] text-slate-900 font-sans absolute inset-0 z-[100] overflow-y-auto"
+    >
+      {/* Header */}
+      <header className="bg-[#1e5b99] text-white px-6 py-4 flex items-center justify-between sticky top-0 z-50 shadow-md">
+        <div className="flex items-center gap-3">
+          <div className="bg-white p-1 rounded-md">
+            <Brain className="text-[#1e5b99]" size={24} />
+          </div>
+          <span className="text-xl font-bold tracking-tight">UtkalSkillCentre</span>
+        </div>
+        <div className="flex items-center gap-6">
+          <button onClick={onBack} className="font-medium hover:text-blue-200 transition-colors">Back to Chapter</button>
+          <button className="p-2 border-2 border-white/30 rounded hover:bg-white/10 transition-colors"><Brain size={20} /></button>
+        </div>
+      </header>
 
-            <div className="space-y-4">
-              <h1 className="text-5xl font-black text-white tracking-tight">Quick <span className="text-emerald-500">Calc</span></h1>
-              <p className="text-slate-400 text-sm font-medium uppercase tracking-[0.2em] max-w-xs mx-auto">
-                Solve as many math problems as you can in 60 seconds!
-              </p>
-            </div>
+      {/* Breadcrumbs */}
+      <div className="px-6 py-3 border-b border-slate-200 text-sm text-[#1e5b99] font-medium bg-white">
+        Odisha Board <span className="mx-2 text-slate-400">›</span> Mathematics <span className="mx-2 text-slate-400">›</span> {title}
+      </div>
 
-            <div className="flex items-center justify-center gap-12">
-              <div className="text-center">
-                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">High Score</p>
-                <p className="text-2xl font-black text-white">{highScore}</p>
-              </div>
-              <div className="w-px h-10 bg-white/10"></div>
-              <div className="text-center">
-                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">XP Reward</p>
-                <p className="text-2xl font-black text-emerald-500">Up to 500</p>
-              </div>
-            </div>
-
-            <button 
-              onClick={startGame}
-              className="px-12 py-5 rounded-[2rem] bg-emerald-500 text-white font-black uppercase tracking-[0.2em] transition-all shadow-[0_0_30px_rgba(16,185,129,0.4)] hover:scale-110 active:scale-95 flex items-center gap-3 mx-auto"
-            >
-              <Play size={24} fill="currentColor" />
-              Start Game
-            </button>
-          </motion.div>
-        )}
-
-        {gameState === 'playing' && (
-          <motion.div 
-            key="playing"
-            initial={{ opacity: 0, y: 20 }}
+      {/* Content */}
+      <div className="max-w-4xl mx-auto p-6 space-y-8 pb-20">
+        <div className="flex items-center justify-between">
+          <motion.h1 
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="w-full max-w-2xl space-y-12"
+            className="text-3xl font-bold text-slate-800"
           >
-            {/* Game Header */}
-            <div className="flex items-center justify-between px-8 py-4 glass-card neon-border rounded-[2rem] border border-white/5">
-              <div className="flex items-center gap-6">
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Score</span>
-                  <span className="text-3xl font-black text-white tabular-nums">{score}</span>
-                </div>
-                <div className="w-px h-10 bg-white/10"></div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Streak</span>
-                  <div className="flex items-center gap-2">
-                    <Flame size={20} className={streak > 5 ? 'text-orange-500 animate-bounce' : 'text-slate-600'} fill={streak > 5 ? "currentColor" : "none"} />
-                    <span className={`text-2xl font-black tabular-nums ${streak > 5 ? 'text-orange-500' : 'text-white'}`}>{streak}</span>
-                  </div>
-                </div>
+            {title} - Mind Game
+          </motion.h1>
+          
+          {gameState === 'playing' && (
+            <div className="flex items-center gap-6">
+              <div className="flex flex-col items-end">
+                <span className="text-[10px] text-slate-500 uppercase tracking-widest">{translations[lang].score}</span>
+                <span className="text-xl font-bold text-emerald-600">{score}</span>
               </div>
-
-              <div className={`flex items-center gap-4 px-6 py-3 rounded-2xl border transition-all ${timeLeft < 10 ? 'bg-red-500/10 border-red-500/20 text-red-500 animate-pulse' : 'bg-white/5 border-white/10 text-white'}`}>
-                <Timer size={24} />
-                <span className="text-3xl font-black tabular-nums">{timeLeft}s</span>
+              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-mono font-bold text-xl ${timeLeft < 10 ? 'bg-red-500/10 text-red-600 animate-pulse' : 'bg-slate-100 text-slate-700 border border-slate-200'}`}>
+                {timeLeft}
               </div>
             </div>
+          )}
+        </div>
 
-            {/* Problem Area */}
-            <div className="glass-card neon-border rounded-[3rem] p-16 text-center space-y-12 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none"></div>
+        <AnimatePresence mode="wait">
+          {gameState === 'start' ? (
+            <motion.div
+              key="start"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="relative aspect-[16/9] bg-sky-200 rounded-xl overflow-hidden border border-slate-300 shadow-md flex flex-col items-center justify-center"
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-sky-300 to-green-400 opacity-80"></div>
               
+              <div className="z-10 text-center space-y-8 p-12">
+                <div className="w-24 h-24 bg-white/20 rounded-[2.5rem] flex items-center justify-center text-white mx-auto backdrop-blur-sm">
+                  <Zap size={48} />
+                </div>
+                <div className="space-y-4">
+                  <h2 className="text-4xl font-bold text-white drop-shadow-md">{translations[lang].readyToPlay}</h2>
+                  <p className="text-white/90 max-w-md mx-auto font-medium">{translations[lang].gameInstructions}</p>
+                </div>
+                <button
+                  onClick={() => setGameState('playing')}
+                  className="px-12 py-4 bg-[#1e5b99] text-white rounded-2xl font-bold hover:bg-blue-800 transition-all shadow-xl"
+                >
+                  {translations[lang].startGame}
+                </button>
+              </div>
+            </motion.div>
+          ) : gameState === 'playing' ? (
+            <motion.div
+              key="playing"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="relative aspect-[16/9] bg-sky-200 rounded-xl overflow-hidden border border-slate-300 shadow-md flex flex-col items-center justify-center"
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-sky-300 to-green-400 opacity-80"></div>
+              
+              {/* Chalkboard */}
               <motion.div 
-                key={currentProblem?.q}
+                key={question?.q}
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="text-8xl font-black text-white tracking-tight"
+                className="z-10 bg-emerald-800 border-8 border-amber-700 rounded-lg p-8 shadow-2xl mb-12 relative"
               >
-                {currentProblem?.q}
+                <span className="text-6xl font-bold text-white font-mono tracking-widest">{question?.q}</span>
               </motion.div>
 
-              <div className="relative max-w-xs mx-auto">
-                <input 
-                  type="number" 
-                  autoFocus
-                  className={`w-full text-center text-6xl font-black bg-transparent border-b-4 focus:outline-none transition-all pb-4 ${feedback === 'correct' ? 'border-emerald-500 text-emerald-500' : feedback === 'wrong' ? 'border-red-500 text-red-500 animate-shake' : 'border-white/10 text-white focus:border-emerald-500/50'}`}
-                  value={userInput}
-                  onChange={(e) => handleInput(e.target.value)}
-                  placeholder="?"
-                />
-                <AnimatePresence>
-                  {feedback === 'correct' && (
-                    <motion.div 
-                      initial={{ opacity: 0, y: 0, scale: 0.5 }}
-                      animate={{ opacity: 1, y: -100, scale: 1.5 }}
-                      exit={{ opacity: 0 }}
-                      className="absolute top-0 left-1/2 -translate-x-1/2 text-emerald-500 font-black text-4xl pointer-events-none"
-                    >
-                      +{10 + (streak * 2)}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+              {/* Options */}
+              <div className="z-10 flex gap-4 absolute bottom-8">
+                {question?.options.map((opt: any, i: number) => (
+                  <motion.button 
+                    key={i} 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.1 }}
+                    whileHover={{ scale: 1.1, y: -5 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => handleAnswer(opt)}
+                    className="w-20 h-20 bg-gradient-to-b from-orange-400 to-orange-600 rounded-xl border-b-4 border-orange-700 text-white text-3xl font-bold shadow-lg transition-all"
+                  >
+                    {opt}
+                  </motion.button>
+                ))}
               </div>
-            </div>
 
-            {/* Numpad (Mobile Optimized) */}
-            <div className="grid grid-cols-3 gap-4 max-w-xs mx-auto md:hidden">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 'C', 0, '←'].map((key) => (
-                <button 
-                  key={key}
-                  onClick={() => {
-                    if (key === 'C') setUserInput('');
-                    else if (key === '←') setUserInput(prev => prev.slice(0, -1));
-                    else handleInput(userInput + key);
-                  }}
-                  className="h-16 rounded-2xl bg-white/5 border border-white/10 text-white font-black text-xl hover:bg-white/10 active:scale-95 transition-all"
-                >
-                  {key}
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        )}
+              <AnimatePresence>
+                {feedback && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.5 }}
+                    className={`absolute inset-0 flex items-center justify-center pointer-events-none z-50 ${feedback === 'correct' ? 'bg-emerald-500/20' : 'bg-red-500/20'}`}
+                  >
+                    {feedback === 'correct' ? (
+                      <CheckCircle2 size={120} className="text-emerald-400 drop-shadow-lg" />
+                    ) : (
+                      <XCircle size={120} className="text-red-400 drop-shadow-lg" />
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="end"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="relative aspect-[16/9] bg-sky-200 rounded-xl overflow-hidden border border-slate-300 shadow-md flex flex-col items-center justify-center"
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-sky-300 to-green-400 opacity-80"></div>
+              
+              <div className="z-10 text-center space-y-8 p-12">
+                <div className="w-24 h-24 bg-yellow-500/20 rounded-[2.5rem] flex items-center justify-center text-yellow-500 mx-auto backdrop-blur-sm">
+                  <Trophy size={48} />
+                </div>
+                <div className="space-y-4">
+                  <h2 className="text-4xl font-bold text-white drop-shadow-md">{translations[lang].gameOver}</h2>
+                  <div className="flex items-center justify-center gap-12">
+                    <div className="flex flex-col">
+                      <span className="text-xs text-white/70 uppercase tracking-widest font-bold">{translations[lang].finalScore}</span>
+                      <span className="text-5xl font-bold text-white">{score}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-xs text-white/70 uppercase tracking-widest font-bold">{translations[lang].xpEarned}</span>
+                      <span className="text-5xl font-bold text-yellow-400">+{score * 2}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center justify-center gap-4">
+                  <button
+                    onClick={() => setGameState('playing')}
+                    className="px-8 py-4 bg-white/20 text-white rounded-2xl font-bold hover:bg-white/30 transition-all backdrop-blur-sm"
+                  >
+                    {translations[lang].playAgain}
+                  </button>
+                  <button
+                    onClick={onBack}
+                    className="px-12 py-4 bg-[#1e5b99] text-white rounded-2xl font-bold hover:bg-blue-800 transition-all shadow-xl"
+                  >
+                    {translations[lang].finish}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        {gameState === 'finished' && (
-          <motion.div 
-            key="finished"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center space-y-12"
+        <motion.section 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm"
+        >
+          <h2 className="text-xl font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">Key Points</h2>
+          <ul className="list-disc list-inside space-y-2 text-slate-700 font-medium">
+            <li>Addition means combining two or more numbers.</li>
+            <li>Mental math helps you calculate faster.</li>
+            <li>Practice daily to improve your speed and accuracy.</li>
+          </ul>
+        </motion.section>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4"
+        >
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-[#1e5b99] text-white p-4 rounded-lg font-bold text-lg flex items-center justify-center gap-3 shadow-md hover:bg-blue-800 transition-colors"
           >
-            <div className="space-y-4">
-              <div className="w-24 h-24 bg-amber-500/10 rounded-[2rem] flex items-center justify-center text-amber-500 mx-auto border border-amber-500/20 shadow-[0_0_40px_rgba(245,158,11,0.2)]">
-                <Trophy size={48} />
-              </div>
-              <h2 className="text-4xl font-black text-white tracking-tight">Game Over!</h2>
-            </div>
-
-            <div className="grid grid-cols-2 gap-8 max-w-md mx-auto">
-              <div className="glass-card rounded-3xl p-8 border border-white/5 space-y-2">
-                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Final Score</p>
-                <p className="text-4xl font-black text-white">{score}</p>
-              </div>
-              <div className="glass-card rounded-3xl p-8 border border-white/5 space-y-2">
-                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Accuracy</p>
-                <p className="text-4xl font-black text-emerald-500">92%</p>
-              </div>
-            </div>
-
-            <div className="flex flex-col md:flex-row items-center justify-center gap-4">
-              <button 
-                onClick={startGame}
-                className="w-full md:w-auto px-12 py-5 rounded-[2rem] bg-emerald-500 text-white font-black uppercase tracking-[0.2em] transition-all shadow-[0_0_30px_rgba(16,185,129,0.4)] hover:scale-110 active:scale-95 flex items-center justify-center gap-3"
-              >
-                <RotateCcw size={24} />
-                Play Again
-              </button>
-              <button 
-                onClick={() => setGameState('idle')}
-                className="w-full md:w-auto px-12 py-5 rounded-[2rem] bg-white/5 border border-white/10 text-white font-black uppercase tracking-[0.2em] transition-all hover:bg-white/10"
-              >
-                Exit Game
-              </button>
-            </div>
-
-            <div className="flex items-center justify-center gap-3 text-slate-500">
-              <Sparkles size={16} className="text-amber-500" />
-              <span className="text-xs font-black uppercase tracking-widest">You earned 350 XP!</span>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+            <Star className="text-yellow-400" fill="currentColor" /> Mental Math
+          </motion.button>
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-slate-200 text-slate-700 p-4 rounded-lg font-bold text-lg flex items-center justify-center gap-3 shadow-sm hover:bg-slate-300 transition-colors"
+          >
+            <Hash className="text-slate-500" /> Number Puzzle
+          </motion.button>
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-slate-200 text-slate-700 p-4 rounded-lg font-bold text-lg flex items-center justify-center gap-3 shadow-sm hover:bg-slate-300 transition-colors"
+          >
+            <Shapes className="text-slate-500" /> Math Patterns
+          </motion.button>
+        </motion.div>
+      </div>
+    </motion.div>
   );
-};
+}

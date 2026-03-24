@@ -17,6 +17,7 @@ export interface Student {
   preferred_language: string;
   points: number;
   role: string;
+  phoneNumber?: string;
   avatar?: string;
   streak?: number;
   lastActiveDate?: string;

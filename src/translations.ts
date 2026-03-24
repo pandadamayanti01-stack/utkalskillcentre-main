@@ -85,6 +85,18 @@ export const translations: any = {
       analyzingPerformance: "Analyzing performance...",
       unlockInsights: "Take more quizzes to unlock AI-powered skill gap analysis and personalized learning paths."
     },
+    support: {
+      title: "Support",
+      contactAdmin: "Contact Admin",
+      whatsappSupport: "WhatsApp Support",
+      emailSupport: "Email Support",
+      callSupport: "Call Support",
+      ticketTitle: "Create a Ticket",
+      ticketDescription: "Describe your issue and we'll get back to you soon.",
+      submitTicket: "Submit Ticket",
+      success: "Ticket submitted successfully!",
+      error: "Failed to submit ticket. Please try again."
+    },
     bronze: "Bronze League",
     silver: "Silver League",
     gold: "Gold League",
@@ -355,6 +367,18 @@ export const translations: any = {
       noActivityYet: "ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି କାର୍ଯ୍ୟକଳାପ ରେକର୍ଡ ହୋଇନାହିଁ | ଆପଣଙ୍କ ପିଲାଙ୍କୁ କୁଇଜ୍ ଦେବାକୁ ଉତ୍ସାହିତ କରନ୍ତୁ!",
       analyzingPerformance: "ପ୍ରଦର୍ଶନ ବିଶ୍ଳେଷଣ କରାଯାଉଛି...",
       unlockInsights: "AI- ଆଧାରିତ ଦକ୍ଷତା ବ୍ୟବଧାନ ବିଶ୍ଳେଷଣ ଏବଂ ବ୍ୟକ୍ତିଗତ ଶିକ୍ଷା ପଥ ଅନଲକ୍ କରିବାକୁ ଅଧିକ କୁଇଜ୍ ଦିଅନ୍ତୁ |"
+    },
+    support: {
+      title: "ସହାୟତା",
+      contactAdmin: "ଆଡମିନ୍ ସହିତ ଯୋଗାଯୋଗ",
+      whatsappSupport: "WhatsApp ସହାୟତା",
+      emailSupport: "ଇମେଲ୍ ସହାୟତା",
+      callSupport: "କଲ୍ ସହାୟତା",
+      ticketTitle: "ଏକ ଟିକେଟ୍ ପ୍ରସ୍ତୁତ କରନ୍ତୁ",
+      ticketDescription: "ଆପଣଙ୍କ ସମସ୍ୟା ବର୍ଣ୍ଣନା କରନ୍ତୁ ଏବଂ ଆମେ ଶୀଘ୍ର ଆପଣଙ୍କ ସହିତ ଯୋଗାଯୋଗ କରିବୁ |",
+      submitTicket: "ଟିକେଟ୍ ଦାଖଲ କରନ୍ତୁ",
+      success: "ଟିକେଟ୍ ସଫଳତାର ସହିତ ଦାଖଲ ହୋଇଛି!",
+      error: "ଟିକେଟ୍ ଦାଖଲ କରିବାରେ ବିଫଳ ହୋଇଛି | ଦୟାକରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |"
     },
     bronze: "ବ୍ରୋଞ୍ଜ ଲିଗ୍",
     silver: "ସିଲଭର ଲିଗ୍",
