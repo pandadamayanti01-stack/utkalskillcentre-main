@@ -15,7 +15,7 @@ import {
 } from 'firebase/firestore';
 import { GoogleGenAI } from "@google/genai";
 import Markdown from 'react-markdown';
-import { db as firestore } from '../firebase';
+import { db as firestore, safeJsonStringify } from '../firebase';
 import { ProgressChart } from './ProgressChart';
 
 interface ParentDashboardProps {
@@ -62,7 +62,7 @@ export function ParentDashboard({ user, chapters, leaderboard, language, onBack,
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       const prompt = `Analyze these quiz results for a student named ${user.name} and provide 3-4 concise, actionable insights for their parent. 
-      Data: ${JSON.stringify(quizData.map(r => ({ chapter: r.chapterId, accuracy: r.accuracy, score: r.score, total: r.total })))}
+      Data: ${safeJsonStringify(quizData.map(r => ({ chapter: String(r.chapterId), accuracy: r.accuracy, score: r.score, total: r.total })))}
       Format the response as a short list of bullet points. Focus on strengths and areas for improvement.`;
 
       const response = await ai.models.generateContent({

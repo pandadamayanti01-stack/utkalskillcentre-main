@@ -68,7 +68,7 @@ import {
   generateTestQuestions
 } from '../services/aiService';
 
-type AdminTab = 'dashboard' | 'content' | 'monthly_tests' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup' | 'students' | 'support';
+type AdminTab = 'dashboard' | 'content' | 'monthly_tests' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup' | 'students' | 'subscriptions' | 'support';
 
 interface AdminDashboardProps {
   onExit: () => void;
@@ -288,6 +288,211 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
       unsubSupport();
     };
   }, []);
+
+  const [bulkIdentifiers, setBulkIdentifiers] = useState('');
+  const [bulkPlan, setBulkPlan] = useState<'annual' | 'lifetime'>('annual');
+
+  const handleBulkGrant = async () => {
+    if (!bulkIdentifiers.trim()) {
+      showNotification("Please enter emails or phone numbers", "error");
+      return;
+    }
+    
+    const ids = bulkIdentifiers.split('\n').map(id => id.trim()).filter(id => id);
+    setLoading(true);
+    let successCount = 0;
+    let failCount = 0;
+
+    for (const id of ids) {
+      try {
+        let userQuery;
+        if (id.includes('@')) {
+          userQuery = query(collection(firestore, 'users'), where('email', '==', id.toLowerCase()));
+        } else {
+          // Clean phone number
+          const cleanPhone = id.replace(/\D/g, '');
+          const phoneVariants = [cleanPhone];
+          if (!cleanPhone.startsWith('91')) {
+            phoneVariants.push(`91${cleanPhone}`);
+          }
+          if (!cleanPhone.startsWith('+')) {
+            phoneVariants.push(`+${cleanPhone}`);
+            if (!cleanPhone.startsWith('91')) {
+              phoneVariants.push(`+91${cleanPhone}`);
+            }
+          }
+          userQuery = query(collection(firestore, 'users'), where('phoneNumber', 'in', phoneVariants));
+        }
+        
+        const userSnap = await getDocs(userQuery);
+        if (userSnap.empty) {
+          console.warn(`User not found for: ${id}`);
+          failCount++;
+          continue;
+        }
+
+        const userId = userSnap.docs[0].id;
+        const subDocRef = doc(firestore, 'subscriptions', userId);
+        const expiresAt = bulkPlan === 'annual' 
+          ? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) 
+          : new Date(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000);
+        
+        await setDoc(subDocRef, {
+          active: true,
+          plan: bulkPlan,
+          expires_at: Timestamp.fromDate(expiresAt),
+          updatedAt: serverTimestamp(),
+          identifier: id // Store identifier for easy display
+        }, { merge: true });
+        successCount++;
+      } catch (err) {
+        console.error(`Failed to grant for ${id}:`, err);
+        failCount++;
+      }
+    }
+    setLoading(false);
+    showNotification(`Bulk grant complete: ${successCount} success, ${failCount} failed.`);
+    setBulkIdentifiers('');
+    fetchRecentSubscriptions();
+  };
+
+  const [recentSubscriptions, setRecentSubscriptions] = useState<any[]>([]);
+
+  const fetchRecentSubscriptions = async () => {
+    try {
+      const q = query(
+        collection(firestore, 'subscriptions'),
+        orderBy('updatedAt', 'desc'),
+        limit(10)
+      );
+      const snapshot = await getDocs(q);
+      setRecentSubscriptions(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    } catch (err) {
+      console.error("Error fetching recent subscriptions:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'subscriptions') {
+      fetchRecentSubscriptions();
+    }
+  }, [activeTab]);
+
+  const renderSubscriptions = () => (
+    <div className="space-y-6">
+      <div className="glass-card p-8 rounded-[2.5rem]">
+        <h2 className="text-2xl font-bold text-white mb-6">Bulk Subscription Grant</h2>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-400 mb-2">
+              Enter Emails or Phone Numbers (one per line)
+            </label>
+            <textarea
+              value={bulkIdentifiers}
+              onChange={(e) => setBulkIdentifiers(e.target.value)}
+              placeholder="example@gmail.com&#10;8926118509"
+              className="w-full h-40 bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:outline-none focus:border-emerald-500 transition-colors"
+            />
+          </div>
+          
+          <div className="flex flex-wrap gap-4 items-end">
+            <div className="flex-1 min-w-[200px]">
+              <label className="block text-sm font-medium text-slate-400 mb-2">Plan Type</label>
+              <select
+                value={bulkPlan}
+                onChange={(e) => setBulkPlan(e.target.value as any)}
+                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500"
+              >
+                <option value="annual">Annual (1 Year)</option>
+                <option value="lifetime">Lifetime (100 Years)</option>
+              </select>
+            </div>
+            <button
+              onClick={handleBulkGrant}
+              disabled={loading}
+              className="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold transition-all disabled:opacity-50"
+            >
+              {loading ? 'Processing...' : 'Grant Subscriptions'}
+            </button>
+          </div>
+
+          <div className="pt-6 border-t border-white/10">
+            <h3 className="text-sm font-bold text-slate-400 mb-4 uppercase tracking-wider">Quick Actions</h3>
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={() => {
+                  setBulkIdentifiers(`gyanaloka.panda@gmail.com\ngyanapd.ram@gmail.com\n8926118509\n8457811227\n6370487877`);
+                  setBulkPlan('lifetime');
+                }}
+                className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs text-slate-300 transition-all"
+              >
+                Load Requested Accounts (Lifetime)
+              </button>
+              <button
+                onClick={() => {
+                  setBulkIdentifiers(`gyanaloka.panda@gmail.com\ngyanapd.ram@gmail.com\n8926118509\n8457811227\n6370487877`);
+                  setBulkPlan('annual');
+                }}
+                className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs text-slate-300 transition-all"
+              >
+                Load Requested Accounts (Annual)
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="glass-card p-8 rounded-[2.5rem]">
+        <h2 className="text-2xl font-bold text-white mb-6">Recent Subscriptions</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-slate-300">
+            <thead>
+              <tr className="border-b border-white/10">
+                <th className="pb-4">User ID</th>
+                <th className="pb-4">Plan</th>
+                <th className="pb-4">Expires At</th>
+                <th className="pb-4">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recentSubscriptions.length === 0 ? (
+                <tr className="border-b border-white/5">
+                  <td colSpan={4} className="py-8 text-center text-slate-500 italic">
+                    No recent subscriptions found.
+                  </td>
+                </tr>
+              ) : (
+                recentSubscriptions.map((sub) => (
+                  <tr key={sub.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                    <td className="py-4">
+                      <div className="flex flex-col">
+                        <span className="text-white font-medium">{sub.identifier || 'Unknown'}</span>
+                        <span className="text-[10px] text-slate-500 font-mono">{sub.id}</span>
+                      </div>
+                    </td>
+                    <td className="py-4">
+                      <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest ${sub.plan === 'lifetime' ? 'bg-purple-500/20 text-purple-400' : 'bg-blue-500/20 text-blue-400'}`}>
+                        {sub.plan}
+                      </span>
+                    </td>
+                    <td className="py-4 text-sm">
+                      {sub.expires_at?.toDate().toLocaleDateString()}
+                    </td>
+                    <td className="py-4">
+                      <span className={`flex items-center gap-1 text-xs ${sub.active ? 'text-emerald-400' : 'text-red-400'}`}>
+                        <div className={`w-1.5 h-1.5 rounded-full ${sub.active ? 'bg-emerald-400' : 'bg-red-400'}`} />
+                        {sub.active ? 'Active' : 'Inactive'}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
 
   const renderDashboard = () => (
     <div className="space-y-6">
@@ -2485,6 +2690,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'support', label: 'Support Tickets', icon: HelpCircle },
     { id: 'students', label: 'Students', icon: Users },
+    { id: 'subscriptions', label: 'Subscriptions', icon: CreditCard },
     { id: 'settings', label: 'Settings', icon: Settings },
     { id: 'production_setup', label: 'Production Setup', icon: Rocket },
   ];
@@ -2610,6 +2816,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
             {activeTab === 'settings' && renderSettings()}
             {activeTab === 'production_setup' && renderProductionSetup()}
             {activeTab === 'students' && renderStudents()}
+            {activeTab === 'subscriptions' && renderSubscriptions()}
             {activeTab === 'support' && renderSupport()}
           </motion.div>
         </AnimatePresence>

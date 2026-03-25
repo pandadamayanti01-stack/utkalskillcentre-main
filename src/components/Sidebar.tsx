@@ -116,22 +116,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
 
           <nav className="flex-1 space-y-2 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
-            {menuItems.map((item) => (
-              <SidebarItem
-                key={item.id}
-                icon={item.icon}
-                label={item.label}
-                active={activeTab === item.id}
-                onClick={() => {
-                  setActiveTab(item.id);
-                  setSidebarOpen(false);
-                }}
-              />
-            ))}
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <SidebarItem
+                  key={item.id}
+                  icon={<Icon size={20} />}
+                  label={item.label}
+                  active={activeTab === item.id}
+                  onClick={() => {
+                    setActiveTab(item.id);
+                    setSidebarOpen(false);
+                  }}
+                />
+              );
+            })}
 
             {user?.role === 'admin' && (
               <SidebarItem
-                icon={Lock}
+                icon={<Lock size={20} />}
                 label={t.admin}
                 active={isAdminView}
                 onClick={() => {

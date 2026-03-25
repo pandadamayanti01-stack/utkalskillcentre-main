@@ -8,7 +8,7 @@ import {
 import { translations } from '../translations';
 import { MonthlyTest } from '../types';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { firestore } from '../firebase';
+import { db as firestore } from '../firebase';
 
 interface MonthlyTestEngineProps {
   test: MonthlyTest;

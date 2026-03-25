@@ -1,51 +1,76 @@
-// ===============================================================
-// Assumed Data Model
-// ===============================================================
-//
-// Collection: users
-// Document ID: userId (Firebase UID)
-// Fields:
-//   - id: string (required) - Firebase UID
-//   - name: string (required) - Full Name
-//   - email: string (optional) - Email Address
-//   - phoneNumber: string (optional) - Phone Number
-//   - class: int (optional) - Student Class (3-10)
-//   - board: string (optional) - Education Board
-//   - preferred_language: string (optional) - Preferred Language (en|or)
-//   - points: int (optional) - Learning points
-//   - role: string (required) - "student" or "admin"
-//   - createdAt: timestamp (optional)
-//
-// Collection: chapters
-// Document ID: chapterId
-// Fields:
-//   - class: int (required)
-//   - board: string (required)
-//   - language: string (required)
-//   - subject: string (required)
-//   - title: string (required)
-//   - status: string (optional) - "draft" or "published"
-//
-// Collection: public_profiles
-// Document ID: userId
-// Fields:
-//   - name: string (required)
-//   - points: int (required)
-//   - class: string (optional)
-//   - avatar: string (optional)
-//   - streak: int (optional)
-//
-// [Other collections follow similar patterns as defined in firebase-blueprint.json]
-//
-// ===============================================================
-
+rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: /users/{userId}
+    // Fields: id, name, email, phoneNumber, class, board, preferred_language, points, shareCount, statusShared, role, createdAt
+    //
+    // Collection: /chapters/{chapterId}
+    // Fields: class, board, language, subject, title, playlist_id, notes, status, practice_questions, quiz_questions, translationGroupId
+    //
+    // Collection: /questions/{questionId}
+    // Fields: chapterId, question, options, correctAnswer
+    //
+    // Collection: /test_results/{resultId}
+    // Fields: userId, chapterId, score, total, createdAt
+    //
+    // Collection: /quiz_results/{resultId}
+    // Fields: userId, chapterId, score, total, accuracy, timestamp
+    //
+    // Collection: /payments/{paymentId}
+    // Fields: userId, amount, status, razorpayOrderId, razorpayPaymentId, razorpaySignature, createdAt
+    //
+    // Collection: /transactions/{txId}
+    // Fields: userId, amount, status, createdAt
+    //
+    // Collection: /ai_usage/{logId}
+    // Fields: userId, question, date, cost
+    //
+    // Collection: /notifications/{notifId}
+    // Fields: message, audience, createdAt
+    //
+    // Collection: /public_profiles/{userId}
+    // Fields: name, points, class, avatar, streak
+    //
+    // Collection: /subscriptions/{userId}
+    // Fields: active, plan, expires_at
+    //
+    // Collection: /monthly_tests/{testId}
+    // Fields: subject, month, year, questions, status, results_published, translationGroupId, created_at
+    //
+    // Collection: /monthly_test_submissions/{submissionId}
+    // Fields: testId, userId, userName, answers, score, rank, submittedAt
+    //
+    // Collection: /textbooks/{textbookId}
+    // Fields: class, board, subject, title, download_url, thumbnail_url, status, created_at
+    //
+    // Collection: /system_settings/config
+    // Fields: enabledClasses, maintenanceMode
+    //
+    // Collection: /daily_challenges/{challengeId}
+    // Fields: date, question, options, correct_answer, points, language
+    //
+    // Collection: /user_progress/{progressId}
+    // Fields: userId, date, pointsEarned, accuracy, chaptersCompleted
+    //
+    // Collection: /friendships/{friendshipId}
+    // Fields: followerId, followingId, createdAt
+    //
+    // Collection: /user_locks/{phone}
+    // Fields: class, board
+    //
+    // Collection: /support_tickets/{ticketId}
+    // Fields: userId, userName, userPhone, userEmail, message, status, createdAt
+    //
+    // ===============================================================
 
     // ===============================================================
     // Helper Functions
     // ===============================================================
-
+    
     function isAuthenticated() {
       return request.auth != null;
     }
@@ -56,21 +81,20 @@ service cloud.firestore {
 
     function isAdmin() {
       return isAuthenticated() &&
-        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
           (request.auth.token.email == "pandadamayanti01@gmail.com" && request.auth.token.email_verified == true));
-    }
-
-    function hasRequiredFields(fields) {
-      return request.resource.data.keys().hasAll(fields);
     }
 
     function hasOnlyAllowedFields(fields) {
       return request.resource.data.keys().hasOnly(fields);
     }
 
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
     function isValidEmail(email) {
-      return email is string && (email == "" || email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"));
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
     }
 
     function isValidUrl(url) {
@@ -82,46 +106,30 @@ service cloud.firestore {
     // ===============================================================
 
     function isValidUser(data) {
-      return data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+      return hasRequiredFields(['id', 'name', 'role']) &&
+             data.id is string && data.id.size() > 0 && data.id.size() < 128 &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
              data.role in ['student', 'admin'] &&
              (!('email' in data) || isValidEmail(data.email)) &&
              (!('points' in data) || data.points is int) &&
-             (!('class' in data) || data.class is string || data.class is int) &&
-             (!('board' in data) || data.board is string) &&
-             (!('subjects' in data) || data.subjects is list) &&
-             (!('preferred_language' in data) || data.preferred_language is string) &&
-             (!('avatar' in data) || data.avatar is string) &&
-             (!('streak' in data) || data.streak is int) &&
-             (!('lastActiveDate' in data) || data.lastActiveDate is string) &&
-             (!('shareCount' in data) || data.shareCount is int) &&
-             (!('statusShared' in data) || data.statusShared is bool) &&
-             (!('phoneNumber' in data) || data.phoneNumber is string);
+             (!('class' in data) || data.class is int);
     }
 
     function isValidChapter(data) {
-      return data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
-             data.status in ['draft', 'published'] &&
-             (data.class is int || data.class is string) && data.subject is string;
+      return hasRequiredFields(['class', 'board', 'language', 'subject', 'title']) &&
+             data.class is int &&
+             data.board is string &&
+             data.language is string &&
+             data.subject is string &&
+             data.title is string && data.title.size() < 200 &&
+             (!('status' in data) || data.status in ['draft', 'published']);
     }
 
-    function isValidPublicProfile(data) {
-      return data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
-             data.points is int;
-    }
-
-    function isValidProgress(data) {
-      return data.userId is string && data.userId.size() < 50;
-    }
-
-    function isValidResult(data) {
-      return data.userId is string && data.userId.size() < 50;
-    }
-
-    function isValidSupportTicket(data) {
-      return data.userId is string &&
-             data.message is string && data.message.size() > 0 && data.message.size() < 2000 &&
-             data.status in ['open', 'closed'] &&
-             data.createdAt is timestamp;
+    function isValidSubmission(data) {
+      return hasRequiredFields(['testId', 'userId', 'answers']) &&
+             data.testId is string &&
+             data.userId is string &&
+             data.answers is list && data.answers.size() < 100;
     }
 
     // ===============================================================
@@ -133,88 +141,81 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
-    // User Profiles
     match /users/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
-      allow create: if isAuthenticated() && isOwner(userId) && isValidUser(request.resource.data) && 
-                      (request.resource.data.role == 'student' || isAdmin());
-      allow update: if isAuthenticated() && isOwner(userId) && isValidUser(request.resource.data) && 
-                      (request.resource.data.role == resource.data.role || isAdmin());
-      allow delete: if isAdmin();
-    }
-
-    // Public Profiles (Leaderboard)
-    match /public_profiles/{userId} {
       allow read: if isAuthenticated();
-      allow create, update: if isOwner(userId) && isValidPublicProfile(request.resource.data);
-      allow delete: if isAdmin();
+      allow create: if isAuthenticated() && isOwner(userId) && isValidUser(request.resource.data) && (request.resource.data.role == 'student' || isAdmin());
+      allow update: if isAuthenticated() && (isAdmin() || (isOwner(userId) && isValidUser(request.resource.data) && request.resource.data.role == resource.data.role));
     }
 
-    // Chapters
     match /chapters/{chapterId} {
       allow read: if isAuthenticated() && (resource.data.status == 'published' || isAdmin());
       allow write: if isAdmin() && isValidChapter(request.resource.data);
     }
 
-    // Questions
     match /questions/{questionId} {
       allow read: if isAuthenticated();
       allow write: if isAdmin();
     }
 
-    // Quiz Results
-    match /quiz_results/{resultId} {
-      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid && isValidResult(request.resource.data);
-      allow update, delete: if isAdmin();
-    }
-
-    // Test Results
     match /test_results/{resultId} {
-      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid && isValidResult(request.resource.data);
-      allow update, delete: if isAdmin();
+      allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
+      allow update: if isAdmin();
     }
 
-    // Monthly Tests
+    match /quiz_results/{resultId} {
+      allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
+      allow update: if isAdmin();
+    }
+
+    match /payments/{paymentId} {
+      allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
+      allow update: if isAdmin();
+    }
+
+    match /transactions/{txId} {
+      allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
+    }
+
+    match /ai_usage/{logId} {
+      allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
+    }
+
+    match /notifications/{notifId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /public_profiles/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId) || isAdmin();
+    }
+
+    match /subscriptions/{userId} {
+      allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      allow write: if isAdmin();
+    }
+
     match /monthly_tests/{testId} {
       allow read: if isAuthenticated() && (resource.data.status == 'published' || isAdmin());
       allow write: if isAdmin();
     }
 
-    // Monthly Test Submissions
     match /monthly_test_submissions/{submissionId} {
-      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid && isValidResult(request.resource.data);
-      allow update, delete: if isAdmin();
+      allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId) && isValidSubmission(request.resource.data);
+      allow update: if isAdmin();
     }
 
-    // Textbooks
     match /textbooks/{textbookId} {
       allow read: if isAuthenticated() && (resource.data.status == 'published' || isAdmin());
       allow write: if isAdmin();
     }
 
-    // Payments & Transactions
-    match /payments/{paymentId} {
-      allow read: if isOwner(resource.data.userId) || isAdmin();
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-      allow update, delete: if isAdmin();
-    }
-
-    match /transactions/{txId} {
-      allow read: if isOwner(resource.data.userId) || isAdmin();
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-      allow update, delete: if isAdmin();
-    }
-
-    // Subscriptions
-    match /subscriptions/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
-      allow write: if isAdmin();
-    }
-
-    // System Settings
     match /system_settings/config {
       allow read: if true;
       allow write: if isAdmin();
@@ -224,63 +225,33 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
 
-    // AI Usage
-    match /ai_usage/{logId} {
-      allow read: if isOwner(resource.data.userId) || isAdmin();
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-      allow update, delete: if isAdmin();
-    }
-
-    // Notifications
-    match /notifications/{notifId} {
-      allow read: if isAuthenticated();
-      allow write: if isAdmin();
-    }
-
-    // Daily Challenges
     match /daily_challenges/{challengeId} {
       allow read: if isAuthenticated();
       allow write: if isAdmin();
     }
 
-    // User Progress
     match /user_progress/{progressId} {
-      allow read: if isOwner(resource.data.userId) || isAdmin();
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid && isValidProgress(request.resource.data);
-      // FIX: Allow users to update their own progress, ensuring userId isn't hijacked
-      allow update: if isAuthenticated() && (
-        (resource.data.userId == request.auth.uid && request.resource.data.userId == request.auth.uid && isValidProgress(request.resource.data)) || 
-        isAdmin()
-      );
-      allow delete: if isAdmin();
+      allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
+      allow update: if isAdmin();
     }
 
-    // Friendships
     match /friendships/{friendshipId} {
       allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.followerId;
-      allow delete: if isAuthenticated() && request.auth.uid == resource.data.followerId;
+      allow create: if isAuthenticated() && isOwner(request.resource.data.followerId);
+      allow delete: if isAuthenticated() && isOwner(resource.data.followerId);
     }
 
-    // User Locks
     match /user_locks/{phone} {
-      allow read: if true;
-      allow write: if isAdmin() || (isAuthenticated() && request.auth.token.phone_number == phone);
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAdmin();
     }
 
-    // Support Tickets
     match /support_tickets/{ticketId} {
-      // Allows the ticket to be created ONLY if the userId in the data 
-      // matches the ID of the person currently logged in.
-      allow create: if request.auth != null && 
-                    request.resource.data.userId == request.auth.uid;
-      
-      // Allows you (the Admin) to read all tickets to help your students.
-      allow read: if request.auth != null && 
-                  (resource.data.userId == request.auth.uid || 
-                   request.auth.token.email == "pandadamayanti01@gmail.com");
-                   
-      allow update, delete: if request.auth != null && request.auth.token.email == "pandadamayanti01@gmail.com";
+      allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
+      allow update: if isAdmin();
     }
   }
 }

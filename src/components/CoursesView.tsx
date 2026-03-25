@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft, Clock, BookOpen, Shapes, Brain, Globe, PenTool, ChevronRight, Play, FileText, HelpCircle, CheckCircle2 } from 'lucide-react';
-import { translations } from '../App';
+import { translations } from '../translations';
+import { safeJsonStringify } from '../firebase';
 import { Chapter } from '../types';
 import { getYouTubeThumbnail, getYouTubeEmbedUrl } from '../utils/youtube';
 import { getLocalizedSubject } from '../utils/helpers';
@@ -42,13 +43,10 @@ export function CoursesView({ user, chapters, language, isPremium, onUpgrade, on
     
     // Update recently viewed
     const updatedIds = [chapter.id, ...recentlyViewed.map(c => c.id).filter(id => id !== chapter.id)].slice(0, 3);
-    localStorage.setItem(`recently_viewed_${user?.id}`, JSON.stringify(updatedIds));
+    localStorage.setItem(`recently_viewed_${user?.id}`, safeJsonStringify(updatedIds));
     
-    const recent = updatedIds.map(id => chapters.find(id => id === id)).filter(Boolean) as Chapter[];
-    // Wait, the line above has a bug in original code: `chapters.find(id => id === id)`
-    // It should be `chapters.find(c => c.id === id)`
-    const correctedRecent = updatedIds.map(id => chapters.find(c => c.id === id)).filter(Boolean) as Chapter[];
-    setRecentlyViewed(correctedRecent);
+    const recent = updatedIds.map(id => chapters.find(c => c.id === id)).filter(Boolean) as Chapter[];
+    setRecentlyViewed(recent);
   };
 
   const boardKey = useMemo(() => {

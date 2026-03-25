@@ -10,7 +10,9 @@ import {
   Sparkles,
   Brain,
   Zap,
-  Loader2
+  Loader2,
+  Hash,
+  Shapes
 } from 'lucide-react';
 import { translations } from '../translations';
 

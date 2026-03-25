@@ -50,12 +50,13 @@ import {
   UserCheck,
   TrendingUp,
   Award,
-  Bell
+  Bell,
+  Share
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
 import { GoogleGenAI } from "@google/genai";
-import { auth, db as firestore } from './firebase';
+import { auth, db as firestore, safeJsonStringify } from './firebase';
 import { 
   signInWithPopup, 
   GoogleAuthProvider, 
@@ -73,6 +74,7 @@ import {
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, query, where, getDocs, orderBy, limit, addDoc, updateDoc, increment, getCountFromServer, onSnapshot } from 'firebase/firestore';
 import { translations } from './translations';
+import { getDeferredPrompt, clearDeferredPrompt } from './pwa';
 import { solveMathDoubt } from './services/aiService';
 import { subjectTranslations } from './constants';
 import { getYouTubeId, getYouTubeEmbedUrl, getYouTubeThumbnail } from './utils/youtube';
@@ -325,57 +327,125 @@ const BigsanBranding = ({ className = "" }: { className?: string }) => {
 };
 
 
-let deferredPrompt: any = null;
+// Capture the beforeinstallprompt event globally to ensure it's not missed
+// This is now handled in pwa.ts
 
-const InstallPWA = () => {
-  const [supportsPWA, setSupportsPWA] = useState(!!deferredPrompt);
+const InstallPWA = ({ 
+  supportsPWA, 
+  isIOS, 
+  isStandalone,
+  handlePWAInstall, 
+  showIOSInstructions, 
+  setShowIOSInstructions, 
+  showManualInstructions, 
+  setShowManualInstructions 
+}: {
+  supportsPWA: boolean;
+  isIOS: boolean;
+  isStandalone: boolean;
+  handlePWAInstall: (e?: any) => Promise<void>;
+  showIOSInstructions: boolean;
+  setShowIOSInstructions: (show: boolean) => void;
+  showManualInstructions: boolean;
+  setShowManualInstructions: (show: boolean) => void;
+}) => {
+  console.log("InstallPWA: Rendering banner. supportsPWA:", supportsPWA, "isIOS:", isIOS, "isStandalone:", isStandalone);
 
-  useEffect(() => {
-    const handler = (e: any) => {
-      e.preventDefault(); // Stop the browser's default bar
-      deferredPrompt = e;
-      setSupportsPWA(true);
-    };
-    
-    if (deferredPrompt) {
-      setSupportsPWA(true);
-    }
-
-    window.addEventListener("beforeinstallprompt", handler);
-
-    return () => window.removeEventListener("beforeinstallprompt", handler);
-  }, []);
-
-  const onClick = async (e: any) => {
-    e.preventDefault();
-    if (!deferredPrompt) return;
-    
-    deferredPrompt.prompt();
-    
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      deferredPrompt = null;
-      setSupportsPWA(false);
-    }
-  };
-
-  if (!supportsPWA) return null;
+  if (isStandalone) return null;
 
   return (
-    <div className="install-banner">
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-          <Download size={20} />
+    <>
+      <div className="install-banner">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+            <Download size={20} />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-bold text-sm">Install Utkal App</span>
+            <span className="text-[10px] opacity-80">For a better learning experience</span>
+          </div>
         </div>
-        <div className="flex flex-col">
-          <span className="font-bold text-sm">Install Utkal App</span>
-          <span className="text-[10px] opacity-80">For a better learning experience</span>
-        </div>
+        <button className="install-button shadow-lg shadow-blue-900/20" onClick={handlePWAInstall}>
+          {isIOS ? 'How to Install' : (!supportsPWA ? 'Install App' : 'Install')}
+        </button>
       </div>
-      <button className="install-button shadow-lg shadow-blue-900/20" onClick={onClick}>
-        Install
-      </button>
-    </div>
+
+      {showManualInstructions && (
+        <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-[2000] flex items-center justify-center p-6" onClick={() => setShowManualInstructions(false)}>
+          <div className="bg-[#0B1221] border border-white/5 rounded-[3rem] p-10 max-w-sm w-full space-y-8 shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-center items-center w-full">
+              <div className="w-20 h-20 bg-blue-500/10 rounded-[2rem] flex items-center justify-center text-blue-500 shadow-inner">
+                <Download size={36} strokeWidth={2.5} />
+              </div>
+            </div>
+            <div className="space-y-3 text-center sm:text-left">
+              <h2 className="text-2xl font-bold text-white tracking-tight">Install Utkal App</h2>
+              <p className="text-slate-400 text-sm font-medium">
+                To install the app on your device:
+              </p>
+            </div>
+            <div className="space-y-6">
+              <div className="flex items-center gap-5 text-slate-300">
+                <div className="w-10 h-10 rounded-full bg-slate-800/50 flex-shrink-0 flex items-center justify-center text-sm font-bold border border-white/5">1</div>
+                <p className="text-[15px] leading-snug">Click the <span className="text-blue-400 font-bold">three dots</span> (⋮) or <span className="text-blue-400 font-bold">menu</span> in your browser</p>
+              </div>
+              <div className="flex items-center gap-5 text-slate-300">
+                <div className="w-10 h-10 rounded-full bg-slate-800/50 flex-shrink-0 flex items-center justify-center text-sm font-bold border border-white/5">2</div>
+                <p className="text-[15px] leading-snug">Select <span className="text-blue-400 font-bold">"Install App"</span> or <span className="text-blue-400 font-bold">"Add to Home Screen"</span></p>
+              </div>
+              <div className="flex items-center gap-5 text-slate-300">
+                <div className="w-10 h-10 rounded-full bg-slate-800/50 flex-shrink-0 flex items-center justify-center text-sm font-bold border border-white/5">3</div>
+                <p className="text-[15px] leading-snug">Confirm the installation</p>
+              </div>
+            </div>
+            <button 
+              onClick={() => setShowManualInstructions(false)}
+              className="w-full py-5 bg-[#1D61FF] hover:bg-blue-500 text-white rounded-[1.5rem] font-bold text-lg transition-all shadow-lg shadow-blue-900/40 active:scale-[0.98]"
+            >
+              Got it!
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showIOSInstructions && (
+        <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-[2000] flex items-center justify-center p-6" onClick={() => setShowIOSInstructions(false)}>
+          <div className="bg-[#0B1221] border border-white/5 rounded-[3rem] p-10 max-w-sm w-full space-y-8 shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-center items-center w-full">
+              <div className="w-20 h-20 bg-blue-500/10 rounded-[2rem] flex items-center justify-center text-blue-500 shadow-inner">
+                <Share size={36} strokeWidth={2.5} />
+              </div>
+            </div>
+            <div className="space-y-3 text-center sm:text-left">
+              <h2 className="text-2xl font-bold text-white tracking-tight">Install on iPhone</h2>
+              <p className="text-slate-400 text-sm font-medium">
+                To install the Utkal Skill Centre app on your iPhone:
+              </p>
+            </div>
+            <div className="space-y-6">
+              <div className="flex items-center gap-5 text-slate-300">
+                <div className="w-10 h-10 rounded-full bg-slate-800/50 flex-shrink-0 flex items-center justify-center text-sm font-bold border border-white/5">1</div>
+                <p className="text-[15px] leading-snug">Tap the <span className="text-blue-400 font-bold">Share</span> button in Safari</p>
+              </div>
+              <div className="flex items-center gap-5 text-slate-300">
+                <div className="w-10 h-10 rounded-full bg-slate-800/50 flex-shrink-0 flex items-center justify-center text-sm font-bold border border-white/5">2</div>
+                <p className="text-[15px] leading-snug">Scroll down and tap <span className="text-blue-400 font-bold">"Add to Home Screen"</span></p>
+              </div>
+              <div className="flex items-center gap-5 text-slate-300">
+                <div className="w-10 h-10 rounded-full bg-slate-800/50 flex-shrink-0 flex items-center justify-center text-sm font-bold border border-white/5">3</div>
+                <p className="text-[15px] leading-snug">Tap <span className="text-blue-400 font-bold">"Add"</span> in the top right corner</p>
+              </div>
+            </div>
+            <button 
+              onClick={() => setShowIOSInstructions(false)}
+              className="w-full py-5 bg-[#1D61FF] hover:bg-blue-500 text-white rounded-[1.5rem] font-bold text-lg transition-all shadow-lg shadow-blue-900/40 active:scale-[0.98]"
+            >
+              Got it!
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
@@ -384,10 +454,29 @@ export default function App() {
   const [user, setUser] = useState<Student | null>(null);
   const [isAdminView, setIsAdminView] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState(() => localStorage.getItem('activeTab') || 'dashboard');
+  const [activeTab, setActiveTab] = useState(() => {
+    const hash = window.location.hash.replace('#', '').split('/')[0];
+    return hash || localStorage.getItem('activeTab') || 'dashboard';
+  });
 
   useEffect(() => {
     localStorage.setItem('activeTab', activeTab);
+    // Sync hash with activeTab if it's not a sub-path
+    const currentHash = window.location.hash.replace('#', '').split('/')[0];
+    if (currentHash !== activeTab) {
+      window.location.hash = activeTab;
+    }
+  }, [activeTab]);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#', '').split('/')[0];
+      if (hash && hash !== activeTab) {
+        setActiveTab(hash);
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
   }, [activeTab]);
 
   useEffect(() => {
@@ -452,6 +541,91 @@ export default function App() {
   const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(null);
   const [monthlyTests, setMonthlyTests] = useState<MonthlyTest[]>([]);
   const [testSubmissions, setTestSubmissions] = useState<MonthlyTestSubmission[]>([]);
+
+  // PWA State
+  const [supportsPWA, setSupportsPWA] = useState(!!getDeferredPrompt());
+  const [isStandalone, setIsStandalone] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+  const [showIOSInstructions, setShowIOSInstructions] = useState(false);
+  const [showManualInstructions, setShowManualInstructions] = useState(false);
+
+  useEffect(() => {
+    // Check if already in standalone mode
+    const checkStandalone = () => {
+      const standalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
+      console.log("PWA: isStandalone check:", standalone);
+      if (standalone) {
+        setIsStandalone(true);
+      }
+    };
+
+    // Check if iOS
+    const checkIOS = () => {
+      const userAgent = window.navigator.userAgent.toLowerCase();
+      const isIOSDevice = /iphone|ipad|ipod/.test(userAgent);
+      setIsIOS(isIOSDevice);
+    };
+
+    checkStandalone();
+    checkIOS();
+
+    const handlePromptAvailable = () => {
+      setSupportsPWA(true);
+    };
+
+    window.addEventListener('pwa-prompt-available', handlePromptAvailable);
+    
+    if (getDeferredPrompt()) {
+      setSupportsPWA(true);
+    }
+
+    return () => {
+      window.removeEventListener('pwa-prompt-available', handlePromptAvailable);
+    };
+  }, []);
+
+  const handlePWAInstall = async (e?: any) => {
+    if (e) e.preventDefault();
+    const prompt = getDeferredPrompt();
+    const isInIframe = window.self !== window.top;
+    
+    console.log("PWA: handlePWAInstall called.", {
+      isIOS,
+      hasPrompt: !!prompt,
+      isInIframe,
+      isStandalone
+    });
+    
+    if (isIOS) {
+      setShowIOSInstructions(true);
+      return;
+    }
+
+    if (prompt) {
+      console.log("PWA: Triggering native prompt");
+      prompt.prompt();
+      
+      const { outcome } = await prompt.userChoice;
+      console.log(`PWA: User choice outcome: ${outcome}`);
+      
+      if (outcome === 'accepted') {
+        clearDeferredPrompt();
+        setSupportsPWA(false);
+      }
+      return;
+    }
+
+    // If no prompt, check if we are in an iframe
+    if (isInIframe) {
+      console.log("PWA: In an iframe, native prompt unavailable. Showing instructions.");
+      setShowManualInstructions(true);
+      return;
+    }
+
+    // If not in an iframe but still no prompt, show manual instructions as fallback
+    console.log("PWA: No deferredPrompt available, showing manual instructions as fallback");
+    setShowManualInstructions(true);
+  };
   const [activeTest, setActiveTest] = useState<MonthlyTest | null>(null);
   const [testAnswers, setTestAnswers] = useState<Record<number, string>>({});
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
@@ -503,7 +677,7 @@ export default function App() {
       operationType,
       path
     };
-    console.error('Firestore Error: ', JSON.stringify(errInfo));
+    console.error('Firestore Error: ', safeJsonStringify(errInfo));
     
     if (errInfo.error.includes('insufficient permissions')) {
       console.warn("Permission denied for path:", path, "Operation:", operationType);
@@ -521,7 +695,7 @@ export default function App() {
     setIsSendingOtp(false);
     
     // Throw error as required by the instructions for diagnosis
-    throw new Error(JSON.stringify(errInfo));
+    throw new Error(safeJsonStringify(errInfo));
   };
 
   useEffect(() => {
@@ -1216,7 +1390,7 @@ export default function App() {
         const orderData = await fetchJson('/api/payment/create-order', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: user.id, amount })
+          body: safeJsonStringify({ userId: user.id, amount })
         });
 
         console.log("Order created:", orderData);
@@ -1254,7 +1428,7 @@ export default function App() {
             const verifyData = await fetchJson('/api/payment/verify', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
+              body: safeJsonStringify({
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
@@ -1346,7 +1520,16 @@ export default function App() {
   if (dbError) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6 text-center">
-        <InstallPWA />
+        <InstallPWA 
+          supportsPWA={supportsPWA}
+          isIOS={isIOS}
+          isStandalone={isStandalone}
+          handlePWAInstall={handlePWAInstall}
+          showIOSInstructions={showIOSInstructions}
+          setShowIOSInstructions={setShowIOSInstructions}
+          showManualInstructions={showManualInstructions}
+          setShowManualInstructions={setShowManualInstructions}
+        />
         <div className="max-w-md w-full bg-slate-900 border border-white/10 rounded-[2.5rem] p-10 space-y-6 shadow-2xl">
           <div className="w-20 h-20 bg-red-500/10 rounded-3xl flex items-center justify-center text-red-500 mx-auto">
             <AlertCircle size={40} />
@@ -1373,7 +1556,16 @@ export default function App() {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6">
-        <InstallPWA />
+        <InstallPWA 
+          supportsPWA={supportsPWA}
+          isIOS={isIOS}
+          isStandalone={isStandalone}
+          handlePWAInstall={handlePWAInstall}
+          showIOSInstructions={showIOSInstructions}
+          setShowIOSInstructions={setShowIOSInstructions}
+          showManualInstructions={showManualInstructions}
+          setShowManualInstructions={setShowManualInstructions}
+        />
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -1411,8 +1603,6 @@ export default function App() {
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LCAyNTUsLCAyNTUsIDAuMDUpIi8+PC9zdmc+')] [mask-image:linear-gradient(to_bottom,white,transparent)] pointer-events-none"></div>
           <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-emerald-500/20 rounded-full blur-[120px] pointer-events-none"></div>
           <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-blue-500/20 rounded-full blur-[120px] pointer-events-none"></div>
-
-          <InstallPWA />
 
           {/* Left Content - Marketing / AI Focus */}
         <div className="hidden lg:flex flex-1 flex-col justify-center px-16 xl:px-24 relative z-10 border-r border-white/5 bg-slate-900/30 backdrop-blur-sm overflow-hidden">
@@ -1636,6 +1826,7 @@ export default function App() {
                       >
                         {language === 'en' ? 'Login with Phone' : 'ଫୋନ୍ ସହିତ ଲଗଇନ୍'}
                       </button>
+
                       {adminLoginError && (
                         <div className="text-red-400 text-xs text-center mt-2 p-3 bg-red-500/10 rounded-lg border border-red-500/20">
                           {adminLoginError}
@@ -1750,7 +1941,6 @@ export default function App() {
                       </div>
                     </div>
                   )}
-
                   <p className="text-[10px] text-slate-500 text-center mt-4">
                     {!isAdminLogin && (language === 'en' ? '* All fields are mandatory' : '* ସମସ୍ତ ତଥ୍ୟ ଦେବା ଅନିର୍ବାଯ୍ୟ')}
                   </p>
@@ -1815,6 +2005,7 @@ export default function App() {
             <BigsanBranding className="mt-8" />
           </motion.div>
         </div>
+      </div>
 
         {/* Configuration Error Modal */}
         <AnimatePresence>
@@ -1843,7 +2034,17 @@ export default function App() {
             </div>
           )}
         </AnimatePresence>
-        </div>
+        
+        <InstallPWA 
+          supportsPWA={supportsPWA}
+          isIOS={isIOS}
+          isStandalone={isStandalone}
+          handlePWAInstall={handlePWAInstall}
+          showIOSInstructions={showIOSInstructions}
+          setShowIOSInstructions={setShowIOSInstructions}
+          showManualInstructions={showManualInstructions}
+          setShowManualInstructions={setShowManualInstructions}
+        />
       </div>
     );
   }
@@ -1887,7 +2088,16 @@ export default function App() {
 
   return (
     <ErrorBoundary language={language}>
-      <InstallPWA />
+      <InstallPWA 
+        supportsPWA={supportsPWA}
+        isIOS={isIOS}
+        isStandalone={isStandalone}
+        handlePWAInstall={handlePWAInstall}
+        showIOSInstructions={showIOSInstructions}
+        setShowIOSInstructions={setShowIOSInstructions}
+        showManualInstructions={showManualInstructions}
+        setShowManualInstructions={setShowManualInstructions}
+      />
       {showLaunchPoster && <UtkalDivasPoster onClose={() => {
         setShowLaunchPoster(false);
         localStorage.setItem('utkalDivasSeen', 'true');
@@ -2069,6 +2279,29 @@ export default function App() {
       {/* AI Study Buddy */}
       {user && <StudyBuddy user={user} language={language} isPremium={isPremium} />}
 
+      {/* Notifications Modal */}
+      {showNotificationsModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowNotificationsModal(false)}>
+          <div className="bg-slate-900 border border-white/10 rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-white">Notifications</h2>
+              <button onClick={() => setShowNotificationsModal(false)} className="text-slate-400 hover:text-white"><X /></button>
+            </div>
+            <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+              {studentNotifications.length === 0 ? (
+                <p className="text-slate-500 text-center py-8">No new notifications.</p>
+              ) : (
+                studentNotifications.map((n: any) => (
+                  <div key={n.id} className="p-4 bg-white/5 rounded-2xl border border-white/5">
+                    <p className="text-white text-sm">{n.message}</p>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
     </ErrorBoundary>
   );
@@ -2109,7 +2342,7 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack, userPr
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       const prompt = `Analyze these quiz results for a student named ${user.name} and provide 3-4 concise, actionable insights for their parent. 
-      Data: ${JSON.stringify(quizData.map(r => ({ chapter: r.chapterId, accuracy: r.accuracy, score: r.score, total: r.total })))}
+      Data: ${safeJsonStringify(quizData.map(r => ({ chapter: String(r.chapterId), accuracy: r.accuracy, score: r.score, total: r.total })))}
       Format the response as a short list of bullet points. Focus on strengths and areas for improvement.`;
 
       const response = await ai.models.generateContent({
@@ -3167,6 +3400,31 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
   const [subjectFilter, setSubjectFilter] = useState<string>('all');
   const [recentlyViewed, setRecentlyViewed] = useState<Chapter[]>([]);
 
+  // Sync state with hash for back button support
+  useEffect(() => {
+    const handleHash = () => {
+      const parts = window.location.hash.replace('#', '').split('/');
+      if (parts[0] === 'courses') {
+        if (parts[1] === 'chapter' && parts[2]) {
+          const chapter = chapters.find((c: Chapter) => c.id === parts[2]);
+          if (chapter) {
+            setSelected(chapter);
+            setQuizMode(parts[3] === 'quiz');
+          } else {
+            setSelected(null);
+            setQuizMode(false);
+          }
+        } else {
+          setSelected(null);
+          setQuizMode(false);
+        }
+      }
+    };
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, [chapters]);
+
   // Load recently viewed from localStorage
   useEffect(() => {
     const saved = localStorage.getItem(`recently_viewed_${user?.id}`);
@@ -3182,11 +3440,11 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
   }, [chapters, user?.id]);
 
   const handleSelectChapter = (chapter: Chapter) => {
-    setSelected(chapter);
+    window.location.hash = `courses/chapter/${chapter.id}`;
     
     // Update recently viewed
     const updatedIds = [chapter.id, ...recentlyViewed.map(c => c.id).filter(id => id !== chapter.id)].slice(0, 3);
-    localStorage.setItem(`recently_viewed_${user?.id}`, JSON.stringify(updatedIds));
+    localStorage.setItem(`recently_viewed_${user?.id}`, safeJsonStringify(updatedIds));
     
     const recent = updatedIds.map(id => chapters.find(c => c.id === id)).filter(Boolean) as Chapter[];
     setRecentlyViewed(recent);
@@ -3263,7 +3521,7 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
     return (
       <QuizEngine 
         questions={selected.quiz_questions || []} 
-        onComplete={() => setQuizMode(false)} 
+        onComplete={() => window.location.hash = `courses/chapter/${selected.id}`} 
         language={language} 
         userId={user.id}
         chapterId={selected.id}
@@ -3275,8 +3533,8 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
     return (
       <TopicDetailView 
         topic={selected} 
-        onBack={() => setSelected(null)} 
-        onTakeQuiz={() => setQuizMode(true)} 
+        onBack={() => window.location.hash = 'courses'} 
+        onTakeQuiz={() => window.location.hash = `courses/chapter/${selected.id}/quiz`} 
         language={language} 
         isPremium={isPremium}
         onUpgrade={onUpgrade}
@@ -4359,7 +4617,7 @@ function OfflineNotesView({ language, onBack }: { language: 'or' | 'en', onBack:
                       onClick={() => {
                         const newNotes = { ...notes };
                         delete newNotes[id];
-                        localStorage.setItem('offline_notes', JSON.stringify(newNotes));
+                        localStorage.setItem('offline_notes', safeJsonStringify(newNotes));
                         setNotes(newNotes);
                       }}
                       className="p-2 text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
@@ -4408,7 +4666,7 @@ function OfflineNotesView({ language, onBack }: { language: 'or' | 'en', onBack:
                       onClick={() => {
                         const newBooks = { ...textbooks };
                         delete newBooks[id];
-                        localStorage.setItem('offline_textbooks', JSON.stringify(newBooks));
+                        localStorage.setItem('offline_textbooks', safeJsonStringify(newBooks));
                         setTextbooks(newBooks);
                       }}
                       className="p-3 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500/20 transition-all"
@@ -5086,160 +5344,4 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
   );
 }
 
-function SkillGameView({ chapter, onBack }: { chapter?: any, onBack: () => void }) {
-  const title = chapter?.title || "Skill Game";
-  
-  return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="min-h-screen bg-[#f8f9fa] text-slate-900 font-sans absolute inset-0 z-[100] overflow-y-auto"
-    >
-      {/* Header */}
-      <header className="bg-[#1e5b99] text-white px-6 py-4 flex items-center justify-between sticky top-0 z-50 shadow-md">
-        <div className="flex items-center gap-3">
-          <div className="bg-white p-1 rounded-md">
-            <BookOpen className="text-[#1e5b99]" size={24} />
-          </div>
-          <span className="text-xl font-bold tracking-tight">UtkalSkillCentre</span>
-        </div>
-        <div className="flex items-center gap-6">
-          <button onClick={onBack} className="font-medium hover:text-blue-200 transition-colors">Back to Chapter</button>
-          <button className="p-2 border-2 border-white/30 rounded hover:bg-white/10 transition-colors"><Menu size={20} /></button>
-        </div>
-      </header>
-
-      {/* Breadcrumbs */}
-      <div className="px-6 py-3 border-b border-slate-200 text-sm text-[#1e5b99] font-medium bg-white">
-        Odisha Board <span className="mx-2 text-slate-400">›</span> Mathematics <span className="mx-2 text-slate-400">›</span> {title}
-      </div>
-
-      {/* Content */}
-      <div className="max-w-4xl mx-auto p-6 space-y-8 pb-20">
-        <motion.h1 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-3xl font-bold text-slate-800"
-        >
-          {title} - Mind Game
-        </motion.h1>
-
-        {/* Game Canvas Area */}
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1 }}
-          className="relative aspect-[16/9] bg-sky-200 rounded-xl overflow-hidden border border-slate-300 shadow-md flex flex-col items-center justify-center"
-        >
-          {/* Background elements */}
-          <div className="absolute inset-0 bg-gradient-to-b from-sky-300 to-green-400 opacity-80"></div>
-          
-          {/* Top Bar */}
-          <div className="absolute top-4 left-4 flex bg-slate-800/80 text-white rounded-full overflow-hidden backdrop-blur-sm shadow-lg">
-            <div className="px-4 py-2 flex items-center gap-2 border-r border-white/20">
-              <Clock size={16} /> Time Left
-            </div>
-            <div className="px-4 py-2 font-bold text-xl bg-slate-900/50">4s</div>
-          </div>
-          
-          <div className="absolute top-4 right-4 bg-slate-800/80 text-white px-6 py-2 rounded-full font-bold text-xl backdrop-blur-sm shadow-lg">
-            Score: <span className="text-orange-400 ml-2">40</span>
-          </div>
-
-          {/* Chalkboard */}
-          <motion.div 
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", delay: 0.2 }}
-            className="z-10 bg-emerald-800 border-8 border-amber-700 rounded-lg p-8 shadow-2xl mb-12 relative"
-          >
-            <span className="text-6xl font-bold text-white font-mono tracking-widest">8 + 3 = ?</span>
-          </motion.div>
-
-          {/* Options */}
-          <div className="z-10 flex gap-4 absolute bottom-8">
-            {[10, 12, 11, 9].map((num, i) => (
-              <motion.button 
-                key={i} 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 + i * 0.1 }}
-                whileHover={{ scale: 1.1, y: -5 }}
-                whileTap={{ scale: 0.9 }}
-                className="w-20 h-20 bg-gradient-to-b from-orange-400 to-orange-600 rounded-xl border-b-4 border-orange-700 text-white text-3xl font-bold shadow-lg transition-all"
-              >
-                {num}
-              </motion.button>
-            ))}
-          </div>
-        </motion.div>
-
-        <motion.section 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="bg-slate-50 p-6 rounded-lg border border-slate-200 shadow-sm"
-        >
-          <h2 className="text-xl font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">Key Points</h2>
-          <ul className="list-disc list-inside space-y-2 text-slate-700 font-medium">
-            <li>Subtraction means taking away.</li>
-            <li>Start from the ones column.</li>
-            <li>Borrow if needed.</li>
-          </ul>
-        </motion.section>
-
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4"
-        >
-          <motion.button 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-[#1e5b99] text-white p-4 rounded-lg font-bold text-lg flex items-center justify-center gap-3 shadow-md hover:bg-blue-800 transition-colors"
-          >
-            <Star className="text-yellow-400" fill="currentColor" /> Mental Math
-          </motion.button>
-          <motion.button 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-slate-200 text-slate-700 p-4 rounded-lg font-bold text-lg flex items-center justify-center gap-3 shadow-sm hover:bg-slate-300 transition-colors"
-          >
-            <Hash className="text-slate-500" /> Number Puzzle
-          </motion.button>
-          <motion.button 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-slate-200 text-slate-700 p-4 rounded-lg font-bold text-lg flex items-center justify-center gap-3 shadow-sm hover:bg-slate-300 transition-colors"
-          >
-            <Shapes className="text-slate-500" /> Math Patterns
-          </motion.button>
-        </motion.div>
-        {showNotificationsModal && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowNotificationsModal(false)}>
-            <div className="bg-slate-900 border border-white/10 rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl" onClick={e => e.stopPropagation()}>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-white">Notifications</h2>
-                <button onClick={() => setShowNotificationsModal(false)} className="text-slate-400 hover:text-white"><X /></button>
-              </div>
-              <div className="space-y-4 max-h-[60vh] overflow-y-auto">
-                {studentNotifications.length === 0 ? (
-                  <p className="text-slate-500 text-center py-8">No new notifications.</p>
-                ) : (
-                  studentNotifications.map((n: any) => (
-                    <div key={n.id} className="p-4 bg-white/5 rounded-2xl border border-white/5">
-                      <p className="text-white text-sm">{n.message}</p>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    </motion.div>
-  );
-}
 

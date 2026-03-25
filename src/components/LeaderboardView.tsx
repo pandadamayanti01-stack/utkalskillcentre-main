@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft, Flame } from 'lucide-react';
-import { translations } from '../App';
+import { translations } from '../translations';
 
 type League = 'Bronze' | 'Silver' | 'Gold' | 'Platinum';
 

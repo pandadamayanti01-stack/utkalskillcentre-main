@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowLeft, Send } from 'lucide-react';
-import { translations } from '../App';
+import { translations } from '../translations';
 
 interface SubscriptionGuardProps {
   onSubscribe: (amount: number, type: 'monthly' | 'yearly') => void;

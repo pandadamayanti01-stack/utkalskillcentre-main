@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft, Trophy, Loader2, Lightbulb } from 'lucide-react';
 import { collection, addDoc, serverTimestamp, doc, getDoc, updateDoc, increment } from 'firebase/firestore';
-import { firestore } from '../firebase';
+import { db as firestore } from '../firebase';
 
 interface QuizEngineProps {
   questions: any[];

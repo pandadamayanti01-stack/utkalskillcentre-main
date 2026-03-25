@@ -10,7 +10,7 @@ import {
 import { translations } from '../translations';
 import { MonthlyTest } from '../types';
 import { MonthlyTestEngine } from './MonthlyTestEngine';
-import { getLocalizedSubject } from '../lib/utils';
+import { getLocalizedSubject } from '../utils/helpers';
 
 interface MonthlyTestsViewProps {
   tests: MonthlyTest[];

@@ -13,8 +13,11 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Utkal Skill Centre" />
     <meta name="twitter:description" content="Empowering students with essential skills for a brighter future. Access study materials, textbooks, and monthly tests." />
-    <meta name="theme-color" content="#ffffff">
-    <link rel="apple-touch-icon" href="/icon.svg">
+    <meta name="theme-color" content="#10b981">
+    <link rel="manifest" href="/manifest.json?v=8" crossorigin="use-credentials">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+    <link rel="apple-touch-icon" href="/icon-192.png">
     <script>
       // Suppress benign Vite websocket errors in the console
       window.addEventListener('unhandledrejection', function(event) {
@@ -30,6 +33,17 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').then(registration => {
+            console.log('SW registered: ', registration);
+          }).catch(registrationError => {
+            console.log('SW registration failed: ', registrationError);
+          });
+        });
+      }
+    </script>
   </body>
 </html>
 

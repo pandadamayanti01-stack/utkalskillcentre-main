@@ -1,4 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
+import { safeJsonStringify } from "../firebase";
 
 const getAI = () => {
   const apiKey = process.env.GEMINI_API_KEY || (import.meta as any).env?.VITE_GEMINI_API_KEY || (globalThis as any).API_KEY || "";
@@ -45,7 +46,7 @@ export async function translateContent(text: string | object, targetLanguage: 'e
   try {
     const ai = getAI();
     const isJson = typeof text === 'object';
-    const textPayload = isJson ? JSON.stringify(text) : text;
+    const textPayload = isJson ? safeJsonStringify(text) : text;
 
     let systemInstruction = targetLanguage === 'or' 
       ? "You are an expert translator. Translate the following educational content from English to Odia. Keep mathematical terms, numbers, and formatting intact."
@@ -65,7 +66,7 @@ export async function translateContent(text: string | object, targetLanguage: 'e
       },
     });
 
-    const translatedText = response.text || (typeof text === 'string' ? text : JSON.stringify(text));
+    const translatedText = response.text || (typeof text === 'string' ? text : safeJsonStringify(text));
     
     if (isJson) {
       try {

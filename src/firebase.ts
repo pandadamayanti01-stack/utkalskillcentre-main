@@ -7,7 +7,7 @@ import {
   onAuthStateChanged, 
   User as FirebaseUser, 
   setPersistence, 
-  browserSessionPersistence 
+  browserLocalPersistence 
 } from 'firebase/auth';
 import { 
   getFirestore, 
@@ -27,36 +27,11 @@ import {
 } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
-// Firebase configuration from AI Studio / Environment
-// @ts-ignore
-const injectedConfig = typeof __FIREBASE_CONFIG__ !== 'undefined' ? __FIREBASE_CONFIG__ : {};
-
-const firebaseConfig = {
-  apiKey: injectedConfig.apiKey || import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: injectedConfig.authDomain || import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: injectedConfig.projectId || import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: injectedConfig.storageBucket || import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: injectedConfig.messagingSenderId || import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: injectedConfig.appId || import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: injectedConfig.measurementId || import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
-  
-  // FIXED: Explicitly pointing to your AI Studio Database ID
-  firestoreDatabaseId: injectedConfig.firestoreDatabaseId || import.meta.env.VITE_FIREBASE_DATABASE_ID || 'ai-studio-2a24dfcb-5874-4b37-8e37-434f425283b9'
-};
+// Import the real Firebase configuration
+import { firebaseConfig } from './firebase-config';
 
 // Initialize Firebase SDK
-let app;
-try {
-  if (!firebaseConfig.apiKey || firebaseConfig.apiKey === 'TODO_KEYHERE' || firebaseConfig.apiKey === 'placeholder') {
-    console.warn("Firebase API Key missing or invalid. Using placeholder initialization.");
-    app = initializeApp({ apiKey: 'placeholder', projectId: 'placeholder' });
-  } else {
-    app = initializeApp(firebaseConfig);
-  }
-} catch (e) {
-  console.error("Firebase initialization failed:", e);
-  app = initializeApp({ apiKey: 'placeholder', projectId: 'placeholder' });
-}
+const app = initializeApp(firebaseConfig);
 
 // Initialize Services
 export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
@@ -64,8 +39,8 @@ export const auth = getAuth(app);
 export const storage = getStorage(app);
 export const googleProvider = new GoogleAuthProvider();
 
-// Set session-only persistence to prevent "stale session" bugs
-setPersistence(auth, browserSessionPersistence).catch((err) => {
+// Set local persistence so users stay logged in even after closing the app
+setPersistence(auth, browserLocalPersistence).catch((err) => {
   console.error("Auth persistence error:", err);
 });
 
@@ -106,6 +81,19 @@ export interface FirestoreErrorInfo {
   }
 }
 
+export function safeJsonStringify(obj: any) {
+  const cache = new Set();
+  return JSON.stringify(obj, (key, value) => {
+    if (typeof value === 'object' && value !== null) {
+      if (cache.has(value)) {
+        return '[Circular]';
+      }
+      cache.add(value);
+    }
+    return value;
+  });
+}
+
 export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
   const errInfo: FirestoreErrorInfo = {
     error: error instanceof Error ? error.message : String(error),
@@ -125,8 +113,8 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
       })) || []
     }
   };
-  console.error('Firestore Error Detailed: ', JSON.stringify(errInfo));
-  throw new Error(JSON.stringify(errInfo));
+  console.error('Firestore Error Detailed: ', safeJsonStringify(errInfo));
+  throw new Error(safeJsonStringify(errInfo));
 }
 
 // Connection Health Check

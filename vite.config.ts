@@ -24,7 +24,7 @@ export default defineConfig(({mode}) => {
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
-        injectRegister: 'auto',
+        injectRegister: false,
         workbox: {
           // CRITICAL: This prevents the service worker from caching your files
           globPatterns: [], 
@@ -37,6 +37,8 @@ export default defineConfig(({mode}) => {
           theme_color: '#ffffff',
           background_color: '#ffffff',
           display: 'standalone',
+          scope: '/',
+          start_url: '/',
           icons: [
             {
               src: 'icon.svg',
