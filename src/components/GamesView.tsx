@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { 
   Gamepad2, 
   ChevronRight, 
-  Brain, 
+  Zap, 
   Trophy, 
   Star, 
   Sparkles,
@@ -22,8 +22,8 @@ export function GamesView({ language, onBack, onSelectGame }: GamesViewProps) {
     {
       id: 'math-dash',
       title: language === 'en' ? "Math Dash" : "ଗଣିତ ଡ୍ୟାଶ୍",
-      desc: language === 'en' ? "Solve quick math problems to win!" : "ଜିତିବା ପାଇଁ ଶୀଘ୍ର ଗଣିତ ସମସ୍ୟା ସମାଧାନ କରନ୍ତୁ!",
-      icon: <Brain className="text-emerald-400" />,
+      desc: language === 'en' ? "Solve quick math problems to win!" : "ଜିତିବା ପାଇଁ ଶୀଭ୍ର ଗଣିତ ସମସ୍ୟା ସମାଧାନ କରନ୍ତୁ!",
+      icon: <Zap className="text-emerald-400" />,
       color: "emerald",
       difficulty: "Medium",
       points: 500
@@ -40,7 +40,7 @@ export function GamesView({ language, onBack, onSelectGame }: GamesViewProps) {
     {
       id: 'logic-quest',
       title: language === 'en' ? "Logic Quest" : "ଲଜିକ୍ କ୍ୱେଷ୍ଟ",
-      desc: language === 'en' ? "Test your brain with logic challenges." : "ଲଜିକ୍ ଚ୍ୟାଲେଞ୍ଜ ସହିତ ଆପଣଙ୍କ ମସ୍ତିଷ୍କକୁ ପରୀକ୍ଷା କରନ୍ତୁ |",
+      desc: language === 'en' ? "Test your skills with logic challenges." : "ଲଜିକ୍ ଚ୍ୟାଲେଞ୍ଜ ସହିତ ଆପଣଙ୍କ ଦକ୍ଷତାକୁ ପରୀକ୍ଷା କରନ୍ତୁ |",
       icon: <Trophy className="text-purple-400" />,
       color: "purple",
       difficulty: "Hard",

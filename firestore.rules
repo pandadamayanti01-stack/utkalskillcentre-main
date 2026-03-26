@@ -65,6 +65,9 @@ service cloud.firestore {
     // Collection: /support_tickets/{ticketId}
     // Fields: userId, userName, userPhone, userEmail, message, status, createdAt
     //
+    // Collection: /tutor_queries/{logId}
+    // Fields: userId, userName, userClass, question, answer, timestamp
+    //
     // ===============================================================
 
     // ===============================================================
@@ -110,14 +113,14 @@ service cloud.firestore {
              data.id is string && data.id.size() > 0 && data.id.size() < 128 &&
              data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
              data.role in ['student', 'admin'] &&
-             (!('email' in data) || isValidEmail(data.email)) &&
+             (!('email' in data) || data.email == "" || isValidEmail(data.email)) &&
              (!('points' in data) || data.points is int) &&
-             (!('class' in data) || data.class is int);
+             (!('class' in data) || data.class is string);
     }
 
     function isValidChapter(data) {
       return hasRequiredFields(['class', 'board', 'language', 'subject', 'title']) &&
-             data.class is int &&
+             data.class is string &&
              data.board is string &&
              data.language is string &&
              data.subject is string &&
@@ -130,6 +133,14 @@ service cloud.firestore {
              data.testId is string &&
              data.userId is string &&
              data.answers is list && data.answers.size() < 100;
+    }
+
+    function isValidTutorQuery(data) {
+      return hasRequiredFields(['userId', 'question', 'answer', 'timestamp']) &&
+             data.userId is string &&
+             data.question is string && data.question.size() < 2000 &&
+             data.answer is string && data.answer.size() < 5000 &&
+             data.timestamp is string;
     }
 
     // ===============================================================
@@ -244,14 +255,18 @@ service cloud.firestore {
 
     match /user_locks/{phone} {
       allow read: if isAuthenticated();
-      allow create: if isAuthenticated();
-      allow update: if isAdmin();
+      allow write: if isAuthenticated() && (isAdmin() || request.auth.token.phone_number == phone);
     }
 
     match /support_tickets/{ticketId} {
       allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
       allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
       allow update: if isAdmin();
+    }
+
+    match /tutor_queries/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAuthenticated() && (isOwner(request.resource.data.userId) || request.resource.data.userId == 'anonymous') && isValidTutorQuery(request.resource.data);
     }
   }
 }

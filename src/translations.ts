@@ -1,7 +1,7 @@
 export const translations: any = {
   en: {
     welcome: "Welcome to Utkal Skill Centre",
-    tagline: "Empowering Odisha's Future through AI-Based Learning",
+    tagline: "Empowering Odisha's Future through Personalized Learning",
     associate: "A Proud Associate of Bigsan Group",
     login: "Login to Start Learning",
     googleLogin: "Continue with Google",
@@ -39,7 +39,7 @@ export const translations: any = {
     },
     dashboard: "Dashboard",
     courses: "My Courses",
-    aiSolver: "AI Doubt Solver",
+    aiSolver: "Doubt Solver",
     games: "Mind Games",
     leaderboard: "Leaderboard",
     admin: "Admin Panel",
@@ -74,7 +74,7 @@ export const translations: any = {
       parentLeaderboardNote: "Allow parents to see your rank on the parent dashboard.",
       parentDashboard: "Parent Dashboard",
       parentDashboardTagline: "Track student progress & reports",
-      parentInsights: "AI-Powered Parent Insights",
+      parentInsights: "Parent Insights",
       skillGapAnalysis: "Skill Gap Analysis",
       strengths: "Key Strengths",
       areasToImprove: "Areas to Improve",
@@ -83,7 +83,7 @@ export const translations: any = {
       viewDetailedReport: "View Detailed Report",
       noActivityYet: "No activity recorded yet. Encourage your child to take a quiz!",
       analyzingPerformance: "Analyzing performance...",
-      unlockInsights: "Take more quizzes to unlock AI-powered skill gap analysis and personalized learning paths."
+      unlockInsights: "Take more quizzes to unlock skill gap analysis and personalized learning paths."
     },
     support: {
       title: "Support",
@@ -120,7 +120,7 @@ export const translations: any = {
     uploadImage: "Upload Image",
     takePhoto: "Take Photo",
     clearImage: "Clear Image",
-    askAi: "Ask your math doubt...",
+    askTutor: "Ask your study doubt...",
     solve: "Solve",
     takeTest: "Take Practice Test",
     submitTest: "Submit Test",
@@ -133,7 +133,7 @@ export const translations: any = {
     dailyGoal: "Daily Goal",
     pointsToday: "Points Today",
     proTip: "Pro Tip",
-    aiTutor: "AI Tutor",
+    studyBuddy: "Gundulu AI Tutor",
     levelUp: "Level Up!",
     nextLeague: "Next League",
     currentStreak: "Current Streak",
@@ -242,8 +242,8 @@ export const translations: any = {
     practice: "Practice",
     quiz: "Quiz",
     question: "Question",
-    askAiPremium: "Ask AI (Premium)",
-    aiExplanation: "AI Explanation",
+    askTutorPremium: "Ask Tutor (Premium)",
+    tutorExplanation: "Tutor Explanation",
     stepByStep: "Step-by-Step Solution",
     generating: "Generating solution...",
     pricing: {
@@ -259,20 +259,20 @@ export const translations: any = {
           "🏫 Leaderboard access"
         ]
       },
-      ai: {
-        name: "AI Plan",
+      premium: {
+        name: "Premium Plan",
         monthly: "Monthly",
         yearly: "Yearly",
         features: [
-          "🤖 AI Doubt Solver",
+          "🤖 Doubt Solver",
           "📸 Photo Question Solver",
           "🎤 Voice Assistance",
           "🎯 Personalized Practice",
-          "🧠 AI Tutor Chat",
+          "💬 Study Buddy Chat",
           "📊 Performance Analysis"
         ]
       },
-      upgradeNow: "Upgrade to AI Plan",
+      upgradeNow: "Upgrade to Premium Plan",
       currentPlan: "Current Plan",
       shareToUnlock: "Share with 5 friends on WhatsApp to unlock this offer",
       postStatusToUnlock: "Post to WhatsApp Status to unlock",
@@ -284,7 +284,7 @@ export const translations: any = {
   },
   or: {
     welcome: "ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରକୁ ସ୍ୱାଗତ",
-    tagline: "AI- ଆଧାରିତ ଶିକ୍ଷା ମାଧ୍ୟମରେ ଓଡିଶାର ଭବିଷ୍ୟତକୁ ସଶକ୍ତ କରିବା",
+    tagline: "ବ୍ୟକ୍ତିଗତ ଶିକ୍ଷା ମାଧ୍ୟମରେ ଓଡିଶାର ଭବିଷ୍ୟତକୁ ସଶକ୍ତ କରିବା",
     associate: "ବିଗସାନ୍ ଗ୍ରୁପ୍‌ର ଏକ ଗର୍ବିତ ସହଯୋଗୀ ସଂସ୍ଥା",
     login: "ଶିକ୍ଷା ଆରମ୍ଭ କରିବା ପାଇଁ ଲଗଇନ୍ କରନ୍ତୁ",
     googleLogin: "ଗୁଗଲ୍ ସହିତ ଆଗକୁ ବଢନ୍ତୁ",
@@ -322,7 +322,7 @@ export const translations: any = {
     },
     dashboard: "ଡ୍ୟାସବୋର୍ଡ",
     courses: "ମୋର ପାଠ୍ୟକ୍ରମ",
-    aiSolver: "AI ସନ୍ଦେହ ସମାଧାନ",
+    aiSolver: "ସନ୍ଦେହ ସମାଧାନ",
     games: "ମାନସିକ ଖେଳ",
     leaderboard: "ଲିଡରବୋର୍ଡ",
     admin: "ଆଡମିନ୍ ପ୍ୟାନେଲ୍",
@@ -357,7 +357,7 @@ export const translations: any = {
       parentLeaderboardNote: "ପିତାମାତାଙ୍କୁ ଆପଣଙ୍କର ର୍ୟାଙ୍କ ଦେଖିବାକୁ ଅନୁମତି ଦିଅନ୍ତୁ |",
       parentDashboard: "ପିତାମାତା ଡ୍ୟାସବୋର୍ଡ",
       parentDashboardTagline: "ଛାତ୍ରଙ୍କ ପ୍ରଗତି ଏବଂ ରିପୋର୍ଟ ଟ୍ରାକ୍ କରନ୍ତୁ",
-      parentInsights: "AI- ଆଧାରିତ ପିତାମାତା ଅନ୍ତର୍ନିହିତ ସୂଚନା",
+      parentInsights: "ପିତାମାତା ଅନ୍ତର୍ନିହିତ ସୂଚନା",
       skillGapAnalysis: "ଦକ୍ଷତା ବ୍ୟବଧାନ ବିଶ୍ଳେଷଣ",
       strengths: "ମୁଖ୍ୟ ଶକ୍ତି",
       areasToImprove: "ଉନ୍ନତି ପାଇଁ କ୍ଷେତ୍ର",
@@ -366,7 +366,7 @@ export const translations: any = {
       viewDetailedReport: "ବିସ୍ତୃତ ରିପୋର୍ଟ ଦେଖନ୍ତୁ",
       noActivityYet: "ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି କାର୍ଯ୍ୟକଳାପ ରେକର୍ଡ ହୋଇନାହିଁ | ଆପଣଙ୍କ ପିଲାଙ୍କୁ କୁଇଜ୍ ଦେବାକୁ ଉତ୍ସାହିତ କରନ୍ତୁ!",
       analyzingPerformance: "ପ୍ରଦର୍ଶନ ବିଶ୍ଳେଷଣ କରାଯାଉଛି...",
-      unlockInsights: "AI- ଆଧାରିତ ଦକ୍ଷତା ବ୍ୟବଧାନ ବିଶ୍ଳେଷଣ ଏବଂ ବ୍ୟକ୍ତିଗତ ଶିକ୍ଷା ପଥ ଅନଲକ୍ କରିବାକୁ ଅଧିକ କୁଇଜ୍ ଦିଅନ୍ତୁ |"
+      unlockInsights: "ଦକ୍ଷତା ବ୍ୟବଧାନ ବିଶ୍ଳେଷଣ ଏବଂ ବ୍ୟକ୍ତିଗତ ଶିକ୍ଷା ପଥ ଅନଲକ୍ କରିବାକୁ ଅଧିକ କୁଇଜ୍ ଦିଅନ୍ତୁ |"
     },
     support: {
       title: "ସହାୟତା",
@@ -403,7 +403,7 @@ export const translations: any = {
     uploadImage: "ଫଟୋ ଅପଲୋଡ୍ କରନ୍ତୁ",
     takePhoto: "ଫଟୋ ଉଠାନ୍ତୁ",
     clearImage: "ଫଟୋ ହଟାନ୍ତୁ",
-    askAi: "ଆପଣଙ୍କର ଗଣିତ ସନ୍ଦେହ ପଚାରନ୍ତୁ...",
+    askTutor: "ଆପଣଙ୍କର ପାଠପଢା ସନ୍ଦେହ ପଚାରନ୍ତୁ...",
     solve: "ସମାଧାନ କରନ୍ତୁ",
     takeTest: "ଅଭ୍ୟାସ ପରୀକ୍ଷା ଦିଅନ୍ତୁ",
     submitTest: "ପରୀକ୍ଷା ଦାଖଲ କରନ୍ତୁ",
@@ -416,7 +416,7 @@ export const translations: any = {
     dailyGoal: "ଦୈନିକ ଲକ୍ଷ୍ୟ",
     pointsToday: "ଆଜିର ପଏଣ୍ଟ",
     proTip: "ପ୍ରୋ ଟିପ୍",
-    aiTutor: "AI ଟ୍ୟୁଟର",
+    studyBuddy: "ଗୁଣ୍ଡୁଲୁ AI ଟିଉଟର",
     levelUp: "ଲେଭଲ୍ ଅପ୍!",
     nextLeague: "ପରବର୍ତ୍ତୀ ଲିଗ୍",
     currentStreak: "ସାମ୍ପ୍ରତିକ ଧାରା",
@@ -525,8 +525,8 @@ export const translations: any = {
     practice: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନ",
     quiz: "କ୍ୱିଜ୍",
     question: "ପ୍ରଶ୍ନ",
-    askAiPremium: "AI କୁ ପଚାରନ୍ତୁ (Premium)",
-    aiExplanation: "AI ସ୍ପଷ୍ଟୀକରଣ",
+    askTutorPremium: "ଟ୍ୟୁଟରକୁ ପଚାରନ୍ତୁ (Premium)",
+    tutorExplanation: "ଟ୍ୟୁଟର ସ୍ପଷ୍ଟୀକରଣ",
     stepByStep: "ପର୍ଯ୍ୟାୟ କ୍ରମିକ ସମାଧାନ",
     generating: "ସମାଧାନ ପ୍ରସ୍ତୁତ ହେଉଛି...",
     pricing: {
@@ -542,20 +542,20 @@ export const translations: any = {
           "🏫 ଲିଡରବୋର୍ଡ ଆକ୍ସେସ୍"
         ]
       },
-      ai: {
-        name: "AI ପ୍ଲାନ୍",
+      premium: {
+        name: "ପ୍ରିମିୟମ୍ ପ୍ଲାନ୍",
         monthly: "ମାସିକ",
         yearly: "ବାର୍ଷିକ",
         features: [
-          "🤖 AI ସନ୍ଦେହ ସମାଧାନ",
+          "🤖 ସନ୍ଦେହ ସମାଧାନ",
           "📸 ଫଟୋ ପ୍ରଶ୍ନ ସମାଧାନ",
           "🎤 ଭଏସ୍ ସହାୟତା",
           "🎯 ବ୍ୟକ୍ତିଗତ ଅଭ୍ୟାସ",
-          "🧠 AI ଟ୍ୟୁଟର ଚାଟ୍",
+          "💬 ଷ୍ଟଡି ବଡି ଚାଟ୍",
           "📊 ପ୍ରଦର୍ଶନ ବିଶ୍ଳେଷଣ"
         ]
       },
-      upgradeNow: "AI ପ୍ଲାନ୍‌କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ",
+      upgradeNow: "ପ୍ରିମିୟମ୍ ପ୍ଲାନ୍‌କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ",
       currentPlan: "ସାମ୍ପ୍ରତିକ ପ୍ଲାନ୍",
       shareToUnlock: "ଏହି ଅଫର୍ ଅନଲକ୍ କରିବାକୁ WhatsApp ରେ ୫ ଜଣ ସାଙ୍ଗଙ୍କ ସହିତ ସେୟାର୍ କରନ୍ତୁ",
       postStatusToUnlock: "ଅନଲକ୍ କରିବାକୁ WhatsApp ଷ୍ଟାଟସ୍‌ରେ ପୋଷ୍ଟ କରନ୍ତୁ",

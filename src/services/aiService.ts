@@ -1,10 +1,11 @@
 import { GoogleGenAI } from "@google/genai";
 import { safeJsonStringify } from "../firebase";
+import { GEMINI_API_KEY } from "../firebase-config";
 
-const getAI = () => {
-  const apiKey = process.env.GEMINI_API_KEY || (import.meta as any).env?.VITE_GEMINI_API_KEY || (globalThis as any).API_KEY || "";
+export const getAI = () => {
+  const apiKey = process.env.GEMINI_API_KEY || (import.meta as any).env?.VITE_GEMINI_API_KEY || (globalThis as any).API_KEY || GEMINI_API_KEY || "";
   if (!apiKey) {
-    console.warn("GEMINI_API_KEY is missing. AI features may not work.");
+    console.warn("GEMINI_API_KEY is missing. Some features may not work.");
   }
   return new GoogleGenAI({ apiKey });
 };
@@ -37,8 +38,8 @@ export async function solveMathDoubt(prompt: string, language: 'en' | 'or', imag
 
     return response.text || "Sorry, I couldn't solve that. Please try again.";
   } catch (error: any) {
-    console.error("AI Service Error:", error);
-    return "Error connecting to AI tutor. Please try again later.";
+    console.error("Study Buddy Service Error:", error);
+    return "Error connecting to Study Buddy. Please try again later.";
   }
 }
 
@@ -95,7 +96,7 @@ export async function generateChapterContent(title: string, subject: string, cla
       {
         "notes": "Detailed educational notes in Markdown format",
         "practice_questions": [
-          { "question": "Question text", "answer": "Detailed answer/explanation", "ai_answer": "A concise AI-style explanation" }
+          { "question": "Question text", "answer": "Detailed answer/explanation", "tutor_explanation": "A concise tutor-style explanation" }
         ],
         "quiz_questions": [
           { "question": "Question text", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "The correct option text", "hint": "A small hint" }
@@ -107,7 +108,7 @@ export async function generateChapterContent(title: string, subject: string, cla
     });
 
     if (!response || !response.text || response.text === "undefined") {
-      throw new Error("AI failed to generate a response.");
+      throw new Error("Failed to generate a response.");
     }
 
     return JSON.parse(response.text);
@@ -137,7 +138,7 @@ export async function generateTestContent(subject: string, className: string, mo
     });
 
     if (!response || !response.text || response.text === "undefined") {
-      throw new Error("AI failed to generate a response.");
+      throw new Error("Failed to generate a response.");
     }
 
     return JSON.parse(response.text);
@@ -169,7 +170,7 @@ export async function importPlaylistContent(playlistUrl: string) {
     });
 
     if (!response || !response.text || response.text === "undefined") {
-      throw new Error("AI failed to generate a response. The playlist might be private, unreachable, or the URL is invalid.");
+      throw new Error("Failed to generate a response. The playlist might be private, unreachable, or the URL is invalid.");
     }
 
     return JSON.parse(response.text);
@@ -206,7 +207,7 @@ export async function generateCurriculum(board: string, className: string) {
     });
 
     if (!response || !response.text || response.text === "undefined") {
-      throw new Error("AI failed to generate a response.");
+      throw new Error("Failed to generate a response.");
     }
 
     return JSON.parse(response.text);
@@ -237,7 +238,7 @@ export async function generateTestQuestions(subject: string, className: string, 
     });
 
     if (!response || !response.text || response.text === "undefined") {
-      throw new Error("AI failed to generate a response.");
+      throw new Error("Failed to generate a response.");
     }
 
     return JSON.parse(response.text);

@@ -29,7 +29,7 @@ export function SubscriptionGuard({ onSubscribe, language, isPremium, user, onSh
 
       <div className="text-center mb-12">
         <h2 className="text-4xl font-bold text-white mb-4">{p.title}</h2>
-        <p className="text-slate-400">Empowering your education with AI-driven intelligence</p>
+        <p className="text-slate-400">Empowering your education with personalized learning</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -57,7 +57,7 @@ export function SubscriptionGuard({ onSubscribe, language, isPremium, user, onSh
           </button>
         </div>
 
-        {/* AI Plan */}
+        {/* Premium Plan */}
         <div className="bg-gradient-to-br from-emerald-600/20 to-blue-600/20 border border-emerald-500/20 rounded-[2.5rem] p-8 flex flex-col relative overflow-hidden shadow-2xl shadow-emerald-500/10">
           {isPremium && (
             <div className="absolute top-4 right-4 bg-emerald-500 text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
@@ -65,14 +65,14 @@ export function SubscriptionGuard({ onSubscribe, language, isPremium, user, onSh
             </div>
           )}
           <div className="mb-8">
-            <h3 className="text-2xl font-bold text-white mb-2">{p.ai.name}</h3>
+            <h3 className="text-2xl font-bold text-white mb-2">{p.premium.name}</h3>
             <div className="space-y-1">
               <div className="text-4xl font-bold text-white">₹{monthlyPrice} / {language === 'en' ? 'month' : 'ମାସ'}</div>
               <div className="text-emerald-400 font-bold">₹{yearlyPrice} / {language === 'en' ? 'year' : 'ବର୍ଷ'} (Save 70%)</div>
             </div>
           </div>
           <ul className="space-y-4 mb-10 flex-1">
-            {p.ai.features.map((f: string, i: number) => (
+            {p.premium.features.map((f: string, i: number) => (
               <li key={i} className="flex items-center gap-3 text-white">
                 <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-[10px] text-white">✓</div>
                 {f}

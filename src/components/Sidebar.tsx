@@ -2,7 +2,6 @@ import React from 'react';
 import { 
   LayoutDashboard, 
   BookOpen, 
-  Brain, 
   Trophy, 
   Settings, 
   LogOut, 
@@ -77,17 +76,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const t = translations[language];
 
   const menuItems = [
+    { id: 'profile', icon: User, label: 'Profile' },
     { id: 'dashboard', icon: LayoutDashboard, label: t.dashboard },
+    { id: 'study_buddy', icon: Bot, label: t.studyBuddy || 'Study Buddy' },
+    { id: 'textbooks', icon: Book, label: 'Textbooks' },
     { id: 'courses', icon: BookOpen, label: t.courses },
-    { id: 'ai_solver', icon: Brain, label: t.aiSolver },
-    { id: 'study_buddy', icon: Bot, label: t.aiTutor || 'AI Tutor' },
     { id: 'monthly_tests', icon: Calendar, label: t.monthlyTests },
     { id: 'leaderboard', icon: Trophy, label: t.leaderboard },
-    { id: 'games', icon: Shapes, label: t.games },
-    { id: 'textbooks', icon: Book, label: 'Textbooks' },
-    { id: 'offline_notes', icon: Download, label: 'Offline' },
-    { id: 'profile', icon: User, label: 'Profile' },
+    { id: 'store', icon: ShoppingBag, label: language === 'en' ? 'Avatar Store' : 'ଅବତାର ଷ୍ଟୋର' },
     { id: 'subscription', icon: CreditCard, label: 'Subscription' },
+    { id: 'support', icon: HelpCircle, label: t.support.title },
   ];
 
   return (

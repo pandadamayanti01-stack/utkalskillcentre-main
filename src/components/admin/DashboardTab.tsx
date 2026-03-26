@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { gcpService } from '../../services/gcpService';
-import { LayoutDashboard, Users, Brain, CreditCard, BookOpen } from 'lucide-react';
+import { LayoutDashboard, Users, Bot, CreditCard, BookOpen } from 'lucide-react';
 
 export const DashboardTab: React.FC = () => {
   const [stats, setStats] = useState({
     totalStudents: 0,
     totalRevenue: 0,
-    aiQuestionsToday: 0,
+    tutorQueriesToday: 0,
     totalChapters: 0
   });
   const [loading, setLoading] = useState(true);
@@ -20,10 +20,10 @@ export const DashboardTab: React.FC = () => {
         // Total Revenue (assuming transactions collection)
         const transactionsCount = await gcpService.getCount('transactions');
         
-        // AI Questions Today
+        // Tutor Queries Today
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        const aiQuestionsToday = await gcpService.getCount('ai_usage', {
+        const tutorQueriesToday = await gcpService.getCount('ai_usage', {
           where: [{ field: 'timestamp', operator: '>=', value: today.toISOString() }]
         });
         
@@ -33,7 +33,7 @@ export const DashboardTab: React.FC = () => {
         setStats({
           totalStudents: studentsCount,
           totalRevenue: transactionsCount * 100, // Placeholder calculation
-          aiQuestionsToday: aiQuestionsToday,
+          tutorQueriesToday: tutorQueriesToday,
           totalChapters: totalChapters
         });
       } catch (error) {
@@ -51,7 +51,7 @@ export const DashboardTab: React.FC = () => {
   const cards = [
     { label: 'Total Students', value: stats.totalStudents, icon: Users, color: 'text-blue-500' },
     { label: 'Total Revenue', value: `₹${stats.totalRevenue}`, icon: CreditCard, color: 'text-emerald-500' },
-    { label: 'AI Questions Today', value: stats.aiQuestionsToday, icon: Brain, color: 'text-purple-500' },
+    { label: 'Tutor Queries Today', value: stats.tutorQueriesToday, icon: Bot, color: 'text-purple-500' },
     { label: 'Total Chapters', value: stats.totalChapters, icon: BookOpen, color: 'text-orange-500' },
   ];
 

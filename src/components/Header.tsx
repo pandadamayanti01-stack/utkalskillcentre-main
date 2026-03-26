@@ -64,12 +64,6 @@ export const Header: React.FC<HeaderProps> = ({
           {language === 'en' ? 'ଓଡ଼ିଆ' : 'English'}
         </button>
 
-        {isPremium && (
-          <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/20 to-indigo-500/20 rounded-2xl border border-purple-500/30 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.2)]">
-            <Sparkles size={16} className="fill-current" />
-            <span className="text-xs font-black uppercase tracking-widest">AI Pro</span>
-          </div>
-        )}
       </div>
     </header>
   );

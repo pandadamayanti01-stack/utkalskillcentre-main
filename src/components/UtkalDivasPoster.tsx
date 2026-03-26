@@ -70,7 +70,7 @@ export const UtkalDivasPoster: React.FC<UtkalDivasPosterProps> = ({ onClose }) =
 
           <div className="relative p-8 md:p-10 text-center flex flex-col items-center z-10">
             
-            {/* Child Studying Image with AI Tools */}
+            {/* Child Studying Image */}
             <div className="relative mb-8 mt-4 group">
               {/* Main Image */}
               <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-yellow-300 shadow-[0_0_30px_rgba(250,204,21,0.8)] overflow-hidden bg-orange-100 relative z-10">
@@ -85,34 +85,6 @@ export const UtkalDivasPoster: React.FC<UtkalDivasPosterProps> = ({ onClose }) =
               {/* Decorative rings */}
               <div className="absolute inset-0 rounded-full border-4 border-yellow-400/50 scale-110 animate-[ping_3s_linear_infinite]"></div>
               <div className="absolute inset-0 rounded-full border-4 border-orange-400/30 scale-125 animate-[ping_3s_linear_infinite_0.5s]"></div>
-
-              {/* ChatGPT Tool Badge */}
-              <motion.div 
-                animate={{ y: [0, -8, 0] }}
-                transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-                className="absolute -left-12 top-4 bg-white/90 backdrop-blur-md border-2 border-green-500/50 p-2 rounded-2xl shadow-xl flex items-center gap-2 z-20"
-              >
-                <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600">
-                  <MessageSquare size={16} className="fill-current" />
-                </div>
-                <div className="pr-2 hidden sm:block">
-                  <div className="text-[10px] font-black text-slate-800 uppercase tracking-wider">ChatGPT</div>
-                </div>
-              </motion.div>
-
-              {/* Gemini AI Tool Badge */}
-              <motion.div 
-                animate={{ y: [0, 8, 0] }}
-                transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 1 }}
-                className="absolute -right-12 bottom-4 bg-white/90 backdrop-blur-md border-2 border-blue-500/50 p-2 rounded-2xl shadow-xl flex items-center gap-2 z-20"
-              >
-                <div className="pl-2 hidden sm:block text-right">
-                  <div className="text-[10px] font-black text-slate-800 uppercase tracking-wider">Gemini AI</div>
-                </div>
-                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-                  <Sparkles size={16} className="fill-current" />
-                </div>
-              </motion.div>
             </div>
             
             <h1 className="text-3xl md:text-4xl font-black text-white drop-shadow-lg mb-4 leading-tight" style={{ textShadow: '0 4px 8px rgba(0,0,0,0.3)' }}>

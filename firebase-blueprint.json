@@ -9,7 +9,7 @@
         "name": { "type": "string", "description": "Full Name" },
         "email": { "type": "string", "description": "Email Address" },
         "phoneNumber": { "type": "string", "description": "Phone Number" },
-        "class": { "type": "integer", "description": "Student Class (3-10)" },
+        "class": { "type": "string", "description": "Student Class (e.g., class3, class10)" },
         "board": { "type": "string", "description": "Education Board" },
         "preferred_language": { "type": "string", "description": "Preferred Language (en|or)" },
         "points": { "type": "integer", "description": "Learning points" },
@@ -25,7 +25,7 @@
       "description": "Stores topics with video, notes, practice, and quiz.",
       "type": "object",
       "properties": {
-        "class": { "type": "integer" },
+        "class": { "type": "string" },
         "board": { "type": "string" },
         "language": { "type": "string" },
         "subject": { "type": "string" },
@@ -64,6 +64,7 @@
       "description": "Stores monthly test questions and answers.",
       "type": "object",
       "properties": {
+        "class": { "type": "string" },
         "subject": { "type": "string" },
         "month": { "type": "string" },
         "year": { "type": "integer" },
@@ -73,7 +74,7 @@
         "translationGroupId": { "type": "string", "description": "ID of the original document for translations" },
         "created_at": { "type": "string", "format": "date-time" }
       },
-      "required": ["subject", "month", "year", "status"]
+      "required": ["class", "subject", "month", "year", "status"]
     },
     "MonthlyTestSubmission": {
       "title": "Monthly Test Submission",
@@ -289,6 +290,20 @@
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["userId", "message", "status", "createdAt"]
+    },
+    "TutorQuery": {
+      "title": "AI Tutor Query",
+      "description": "Stores chat history with the AI Tutor.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userClass": { "type": "string" },
+        "question": { "type": "string" },
+        "answer": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "question", "answer", "timestamp"]
     }
   },
   "firestore": {
@@ -375,6 +390,10 @@
     "/support_tickets/{ticketId}": {
       "schema": "SupportTicket",
       "description": "User support requests."
+    },
+    "/tutor_queries/{logId}": {
+      "schema": "TutorQuery",
+      "description": "AI Tutor chat history logs."
     }
   }
 }

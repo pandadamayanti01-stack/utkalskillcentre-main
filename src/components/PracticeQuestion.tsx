@@ -52,9 +52,9 @@ export function PracticeQuestion({ question, isPremium, language, onUpgrade }: P
                 <CheckCircle2 size={16} />
                 <span>Correct Answer: {question.correct_answer}</span>
               </div>
-              <div className="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20">
-                <p className="text-xs font-bold text-blue-400 uppercase tracking-widest mb-2">Explanation</p>
-                <p className="text-blue-200/80 text-sm leading-relaxed">{question.explanation || 'No explanation provided.'}</p>
+              <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
+                <p className="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-2">Tutor Explanation</p>
+                <p className="text-emerald-200/80 text-sm leading-relaxed">{question.tutor_explanation || question.answer || 'No explanation provided.'}</p>
               </div>
             </div>
           </motion.div>

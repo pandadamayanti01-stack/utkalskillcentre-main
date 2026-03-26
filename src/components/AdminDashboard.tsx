@@ -31,10 +31,11 @@ import {
   Upload,
   File,
   Download,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Bot
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { db as firestore, auth, storage } from '../firebase';
+import { db as firestore, auth, storage, handleFirestoreError, OperationType } from '../firebase';
 import { signOut } from 'firebase/auth';
 import { 
   ref, 
@@ -89,6 +90,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
   const [aiLogs, setAiLogs] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [students, setStudents] = useState<any[]>([]);
+  const [allSubscriptions, setAllSubscriptions] = useState<Record<string, any>>({});
   const [supportTickets, setSupportTickets] = useState<any[]>([]);
   const [systemSettings, setSystemSettings] = useState<any>({});
   const [privateSettings, setPrivateSettings] = useState<any>({});
@@ -200,18 +202,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
       }
     });
 
-    const unsubAi = onSnapshot(collection(firestore, 'ai_usage'), (snapshot) => {
+    const unsubAi = onSnapshot(collection(firestore, 'tutor_queries'), (snapshot) => {
       const logs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setAiLogs(logs);
+      setAiLogs(logs.sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
       const today = new Date().toISOString().split('T')[0];
       setStats(prev => ({
         ...prev,
-        aiQuestionsToday: logs.filter((l: any) => l.date?.startsWith(today)).length
+        aiQuestionsToday: logs.filter((l: any) => l.timestamp?.startsWith(today)).length
       }));
     }, (err) => {
       console.error("Firestore AI Usage onSnapshot Error:", err);
       if (err.message.includes('insufficient permissions')) {
         showNotification("Permission denied for AI usage logs.", "error");
+        handleFirestoreError(err, OperationType.GET, 'tutor_queries');
       }
     });
 
@@ -269,6 +272,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
       }
     });
 
+    const unsubAllSubscriptions = onSnapshot(collection(firestore, 'subscriptions'), (snapshot) => {
+      const subs: Record<string, any> = {};
+      snapshot.docs.forEach(doc => {
+        subs[doc.id] = doc.data();
+      });
+      setAllSubscriptions(subs);
+    }, (err) => {
+      console.error("Firestore Subscriptions onSnapshot Error:", err);
+    });
+
     const unsubSupport = onSnapshot(query(collection(firestore, 'support_tickets'), orderBy('createdAt', 'desc')), (snapshot) => {
       setSupportTickets(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     }, (err) => {
@@ -285,6 +298,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
       unsubPrivateSettings();
       unsubTextbooks();
       unsubStudents();
+      unsubAllSubscriptions();
       unsubSupport();
     };
   }, []);
@@ -496,10 +510,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
 
   const renderDashboard = () => (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
         {[
           { label: 'Total Revenue', value: `₹${stats.totalRevenue}`, icon: CreditCard, color: 'text-amber-500' },
           { label: 'AI Questions Today', value: stats.aiQuestionsToday, icon: Brain, color: 'text-purple-500' },
+          { label: 'Subscription Conversion', value: '12%', icon: Users, color: 'text-emerald-500' },
         ].map((stat, i) => (
           <motion.div 
             key={i}
@@ -1949,39 +1964,110 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     </div>
   );
 
-  const renderAiUsage = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white/5 border border-white/10 p-6 rounded-2xl">
-          <div className="text-slate-500 text-xs uppercase mb-1">Total Questions Today</div>
-          <div className="text-3xl font-bold text-white">{stats.aiQuestionsToday}</div>
-        </div>
-        <div className="bg-white/5 border border-white/10 p-6 rounded-2xl">
-          <div className="text-slate-500 text-xs uppercase mb-1">Estimated Cost Today</div>
-          <div className="text-3xl font-bold text-white">₹{(stats.aiQuestionsToday * 0.03).toFixed(2)}</div>
-        </div>
-        <div className="bg-white/5 border border-white/10 p-6 rounded-2xl">
-          <div className="text-slate-500 text-xs uppercase mb-1">Avg. Response Time</div>
-          <div className="text-3xl font-bold text-white">1.2s</div>
-        </div>
-      </div>
+  const renderAiUsage = () => {
+    const class10Usage = aiLogs.filter(log => log.userClass === 'class10').length;
+    const class3Usage = aiLogs.filter(log => log.userClass === 'class3').length;
+    const gunduluRevenue = transactions.reduce((acc, curr: any) => acc + (curr.amount || 0), 0);
 
-      <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
-        <div className="p-4 border-b border-white/10 font-semibold text-white">Recent AI Queries</div>
-        <div className="divide-y divide-white/5">
-          {aiLogs.slice(0, 10).map((log, i) => (
-            <div key={i} className="p-4 flex items-center justify-between hover:bg-white/5 transition-colors">
-              <div className="flex-1">
-                <div className="text-sm text-white line-clamp-1">{log.question}</div>
-                <div className="text-xs text-slate-500">User ID: {log.userId} • {log.date}</div>
-              </div>
-              <div className="text-xs font-mono text-purple-400">₹{log.cost || 0.03}</div>
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+            <Bot className="text-[#10b981]" /> Gundulu AI Dashboard
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-white/5 border border-white/10 p-6 rounded-2xl">
+            <div className="text-slate-500 text-xs uppercase mb-1">Total Questions Today</div>
+            <div className="text-3xl font-bold text-white">{stats.aiQuestionsToday}</div>
+          </div>
+          <div className="bg-white/5 border border-white/10 p-6 rounded-2xl">
+            <div className="text-slate-500 text-xs uppercase mb-1">Usage by Class</div>
+            <div className="text-sm text-white mt-2">
+              <div className="flex justify-between mb-1"><span>Class 10:</span> <span className="font-bold text-[#10b981]">{class10Usage} queries</span></div>
+              <div className="flex justify-between"><span>Class 3:</span> <span className="font-bold text-blue-400">{class3Usage} queries</span></div>
             </div>
-          ))}
+          </div>
+          <div className="bg-white/5 border border-white/10 p-6 rounded-2xl">
+            <div className="text-slate-500 text-xs uppercase mb-1">Gundulu Revenue</div>
+            <div className="text-3xl font-bold text-[#10b981]">₹{gunduluRevenue.toLocaleString('en-IN')}</div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden flex flex-col">
+            <div className="p-4 border-b border-white/10 font-semibold text-white flex items-center justify-between">
+              <span>Latest 10 Questions</span>
+            </div>
+            <div className="divide-y divide-white/5 overflow-y-auto max-h-[400px]">
+              {aiLogs.slice(0, 10).map((log, i) => (
+                <div key={i} className="p-4 hover:bg-white/5 transition-colors">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-bold text-[#10b981]">{log.userName || 'Student'}</span>
+                    <span className="text-xs px-2 py-1 rounded bg-white/10 text-slate-300">{log.userClass || 'Unknown Class'}</span>
+                  </div>
+                  <div className="text-sm text-white mb-2">"{log.question}"</div>
+                  <div className="text-xs text-slate-400 line-clamp-2 bg-black/20 p-2 rounded border border-white/5">
+                    {log.answer}
+                  </div>
+                  <div className="text-[10px] text-slate-500 mt-2 text-right">
+                    {new Date(log.timestamp).toLocaleString()}
+                  </div>
+                </div>
+              ))}
+              {aiLogs.length === 0 && (
+                <div className="p-8 text-center text-slate-500">No questions asked yet.</div>
+              )}
+            </div>
+          </div>
+
+          <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden flex flex-col">
+            <div className="p-4 border-b border-white/10 font-semibold text-white flex items-center justify-between">
+              <span>Gundulu Prompt Editor</span>
+              <button 
+                onClick={handleSaveSettings}
+                className="px-3 py-1 bg-[#10b981] text-white text-xs font-bold rounded hover:bg-[#0ea5e9] transition-colors"
+              >
+                Save Changes
+              </button>
+            </div>
+            <div className="p-4 flex-1 flex flex-col">
+              <p className="text-xs text-slate-400 mb-4">
+                Tweak Gundulu's "brain" without touching code. This prompt is injected into the AI model before every chat.
+              </p>
+              <textarea 
+                className="w-full flex-1 bg-black/40 border border-white/10 rounded-xl p-4 text-sm text-emerald-400 font-mono focus:outline-none focus:border-[#10b981]/50 resize-none min-h-[300px]"
+                value={systemSettings.gunduluPrompt || `# ROLE:
+You are "Gundulu," the high-energy, genius 4-year-old baby AI Tutor for Utkal Skill Centre.
+
+# BRAND IDENTITY & VOICE:
+- Name: Your only name is Gundulu.
+- Greeting: Always start every new chat with: "Namaskar! ✨ I am Gundulu! I'm so happy to see you. What shall we learn today?"
+- Tone: Joyful, bouncy, and extremely talkative. Use a "Baby-Tutor" logic.
+- Language: Mix English with friendly Odia greetings.
+- Visuals: Use emojis in every 2nd sentence.
+
+# CORE WORKFLOW & LOGIC:
+1. SUBSCRIPTION GATEKEEPER:
+   - You only provide full tutoring to "Pro Subscribers."
+
+2. CLASS-BASED SEGREGATION:
+   - CLASS 3 (Junior): Use simple analogies.
+   - CLASS 10 (Board Prep): Become an "Exam Hero."
+
+3. TUTORING PROTOCOL:
+   - Never give the direct answer immediately. 
+   - Ask a leading question first.
+   - Break complex problems into 3 tiny, fun "Baby Steps."`}
+                onChange={(e) => setSystemSettings({...systemSettings, gunduluPrompt: e.target.value})}
+              />
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderPayments = () => (
     <div className="space-y-6">
@@ -2106,8 +2192,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
       const safeSystemSettings = {
         monthlyPrice: systemSettings.monthlyPrice || 199,
         yearlyPrice: systemSettings.yearlyPrice || 999,
+        class3MonthlyPrice: systemSettings.class3MonthlyPrice || 99,
+        class3YearlyPrice: systemSettings.class3YearlyPrice || 499,
+        class10MonthlyPrice: systemSettings.class10MonthlyPrice || 299,
+        class10YearlyPrice: systemSettings.class10YearlyPrice || 1499,
         leaderboardRules: systemSettings.leaderboardRules || '',
-        enabledClasses: systemSettings.enabledClasses || ["class1", "class2", "class3", "class4", "class5", "class6", "class7", "class8", "class9", "class10"]
+        enabledClasses: systemSettings.enabledClasses || ["class1", "class2", "class3", "class4", "class5", "class6", "class7", "class8", "class9", "class10"],
+        gunduluPrompt: systemSettings.gunduluPrompt || ''
       };
       const safePrivateSettings = {
         aiApiKey: privateSettings.aiApiKey || ''
@@ -2332,7 +2423,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Monthly Price (₹)</label>
+            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Default Monthly Price (₹)</label>
             <input 
               type="number" 
               value={systemSettings.monthlyPrice || 199}
@@ -2344,13 +2435,65 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
             />
           </div>
           <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Yearly Price (₹)</label>
+            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Default Yearly Price (₹)</label>
             <input 
               type="number" 
               value={systemSettings.yearlyPrice || 999}
               onChange={(e) => {
                 const val = e.target.value;
                 setSystemSettings({...systemSettings, yearlyPrice: val === "" ? "" : parseInt(val)});
+              }}
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500/50"
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class 3 Monthly Price (₹)</label>
+            <input 
+              type="number" 
+              value={systemSettings.class3MonthlyPrice || 99}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSystemSettings({...systemSettings, class3MonthlyPrice: val === "" ? "" : parseInt(val)});
+              }}
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500/50"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class 3 Yearly Price (₹)</label>
+            <input 
+              type="number" 
+              value={systemSettings.class3YearlyPrice || 499}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSystemSettings({...systemSettings, class3YearlyPrice: val === "" ? "" : parseInt(val)});
+              }}
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500/50"
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class 10 Monthly Price (₹)</label>
+            <input 
+              type="number" 
+              value={systemSettings.class10MonthlyPrice || 299}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSystemSettings({...systemSettings, class10MonthlyPrice: val === "" ? "" : parseInt(val)});
+              }}
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500/50"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class 10 Yearly Price (₹)</label>
+            <input 
+              type="number" 
+              value={systemSettings.class10YearlyPrice || 1499}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSystemSettings({...systemSettings, class10YearlyPrice: val === "" ? "" : parseInt(val)});
               }}
               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500/50"
             />
@@ -2835,31 +2978,49 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                 <th className="pb-4">Name</th>
                 <th className="pb-4">Email</th>
                 <th className="pb-4">Class</th>
-                <th className="pb-4">Board</th>
-                <th className="pb-4">Points</th>
+                <th className="pb-4">Plan</th>
+                <th className="pb-4">Expiry</th>
+                <th className="pb-4">Status</th>
                 <th className="pb-4">Role</th>
                 <th className="pb-4">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {students.map(student => (
-                <tr key={student.id} className="border-b border-white/5 hover:bg-white/5">
-                  <td className="py-4">{student.name || 'N/A'}</td>
-                  <td className="py-4">{student.email || 'N/A'}</td>
-                  <td className="py-4">{student.class || 'N/A'}</td>
-                  <td className="py-4">{student.board || 'N/A'}</td>
-                  <td className="py-4">{student.points ?? 'N/A'}</td>
-                  <td className="py-4">{student.role || 'N/A'}</td>
-                  <td className="py-4">
-                    <button 
-                      onClick={() => handleResetStudent(student.id)}
-                      className="text-red-400 hover:text-red-300 font-medium"
-                    >
-                      Reset Data
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {students.map(student => {
+                const sub = allSubscriptions[student.id];
+                const isLifetime = ['gyanaloka.panda@gmail.com', 'gyanapd.ram@gmail.com', 'pandadamayanti01@gmail.com', 'gyanalpanda@gmail.com'].includes(student.email?.toLowerCase()) || ['+918926118509', '8926118509', '+918457811227', '8457811227', '+916370487877', '6370487877'].includes(student.phoneNumber);
+                const plan = isLifetime ? 'Pro (Lifetime)' : (sub?.active ? 'Pro' : 'Free');
+                const expiry = isLifetime ? 'Never' : (sub?.expires_at ? (sub.expires_at.toDate ? sub.expires_at.toDate().toLocaleDateString() : new Date(sub.expires_at).toLocaleDateString()) : 'N/A');
+                const status = isLifetime ? 'Paid' : (sub?.active ? 'Paid' : 'Pending');
+
+                return (
+                  <tr key={student.id} className="border-b border-white/5 hover:bg-white/5">
+                    <td className="py-4">{student.name || 'N/A'}</td>
+                    <td className="py-4">{student.email || student.phoneNumber || 'N/A'}</td>
+                    <td className="py-4">{student.class || 'N/A'}</td>
+                    <td className="py-4">
+                      <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest ${plan.includes('Pro') ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-500/20 text-slate-400'}`}>
+                        {plan}
+                      </span>
+                    </td>
+                    <td className="py-4 text-sm">{expiry}</td>
+                    <td className="py-4">
+                      <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest ${status === 'Paid' ? 'bg-blue-500/20 text-blue-400' : 'bg-orange-500/20 text-orange-400'}`}>
+                        {status}
+                      </span>
+                    </td>
+                    <td className="py-4">{student.role || 'N/A'}</td>
+                    <td className="py-4">
+                      <button 
+                        onClick={() => handleResetStudent(student.id)}
+                        className="text-red-400 hover:text-red-300 font-medium"
+                      >
+                        Reset Data
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

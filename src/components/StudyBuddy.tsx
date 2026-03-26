@@ -16,6 +16,8 @@ import {
 import { GoogleGenAI } from "@google/genai";
 import Markdown from 'react-markdown';
 import { useVoiceSearch } from '../hooks/useVoiceSearch';
+import { GEMINI_API_KEY } from '../firebase-config';
+import { getAI } from '../services/aiService';
 
 interface StudyBuddyProps {
   user: any;
@@ -26,7 +28,7 @@ interface StudyBuddyProps {
 export function StudyBuddy({ user, language, isPremium }: StudyBuddyProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<any[]>([
-    { role: 'assistant', content: `Hi ${user.name}! I'm your AI Study Buddy. How can I help you today?` }
+    { role: 'assistant', content: `Hi ${user.name}! I'm your Study Buddy. How can I help you today?` }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -84,7 +86,7 @@ export function StudyBuddy({ user, language, isPremium }: StudyBuddyProps) {
     setLoading(true);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const ai = getAI();
       const parts: any[] = [];
       if (userMessage) parts.push({ text: userMessage });
       if (imageData) parts.push({ inlineData: { data: imageData.data, mimeType: imageData.mimeType } });
@@ -93,8 +95,8 @@ export function StudyBuddy({ user, language, isPremium }: StudyBuddyProps) {
         model: "gemini-3.1-flash-lite-preview",
         contents: { parts },
         config: {
-          systemInstruction: `You are a helpful AI Study Buddy for a student in Class ${user.class}. 
-          Your name is Gyanaloka AI. Keep your explanations simple, encouraging, and educational. 
+          systemInstruction: `You are a helpful Study Buddy for a student in Class ${user.class}. 
+          Keep your explanations simple, encouraging, and educational. 
           Use examples where possible. Respond in ${language === 'en' ? 'English' : 'Odia'}.`
         }
       });

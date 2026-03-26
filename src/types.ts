@@ -57,7 +57,7 @@ export interface Chapter {
   playlist_id: string;
   notes?: string;
   status?: 'draft' | 'published';
-  practice_questions?: { question: string; answer: string; ai_answer?: string }[];
+  practice_questions?: { question: string; answer: string; tutor_explanation?: string }[];
   quiz_questions?: { question: string; options: string[]; correct_answer: string; hint?: string }[];
   translationGroupId?: string;
 }

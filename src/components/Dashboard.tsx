@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Brain, BarChart3, CheckCircle2, Globe, Flame, Target, Trophy, Zap, Award, Sparkles, Star } from 'lucide-react';
+import { BarChart3, CheckCircle2, Globe, Flame, Target, Trophy, Zap, Award, Sparkles, Star } from 'lucide-react';
 import { translations } from '../translations';
 import { DailyChallenge } from './DailyChallenge';
 
@@ -13,9 +13,10 @@ interface DashboardProps {
   chapters: any[];
   dailyChallenge: any;
   onChallengeComplete?: () => void;
+  onOpenTutor?: () => void;
 }
 
-export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, onChallengeComplete }: DashboardProps) {
+export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, onChallengeComplete, onOpenTutor }: DashboardProps) {
   const t = translations[language];
   const userRank = leaderboard.findIndex((s: any) => s.id === user.id) + 1;
   const rankDisplay = userRank > 0 ? userRank : '-';
@@ -32,7 +33,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
   const proTips = [
     "Consistency is key! Try to maintain your streak for bonus XP.",
-    "Use the AI Solver for complex math problems to see step-by-step solutions.",
+    "Use the Study Buddy for complex math problems to see step-by-step solutions.",
     "Take a monthly test to evaluate your overall progress in each subject.",
     "Practice makes perfect! Use the practice questions after every chapter.",
     "Compete in the leaderboard to stay motivated and earn rewards."
@@ -60,82 +61,82 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       initial="hidden"
       animate="show"
       exit="exit"
-      className="space-y-8 pb-20"
+      className="space-y-6 pb-20"
     >
-      {/* Welcome Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="space-y-2">
-          <h1 className="text-4xl font-black text-white tracking-tight">
+      {/* Welcome Section - More Compact */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div className="space-y-0.5">
+          <h1 className="text-xl font-black text-white tracking-tight">
             {language === 'en' ? 'Welcome back,' : 'ସ୍ୱାଗତ,'} <span className="text-emerald-500">{user?.name || 'Student'}!</span>
           </h1>
-          <p className="text-slate-400 text-sm font-medium uppercase tracking-[0.2em]">
+          <p className="text-slate-400 text-[9px] font-medium uppercase tracking-[0.2em]">
             {t.keepGoing} • {new Date().toLocaleDateString(language === 'or' ? 'or-IN' : 'en-IN', { weekday: 'long', month: 'long', day: 'numeric' })}
           </p>
         </div>
         
-        <div className="flex items-center gap-4">
-          <div className="px-6 py-3 rounded-2xl bg-slate-900/50 border border-white/5 backdrop-blur-md flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          <div className="px-3 py-1.5 rounded-xl bg-slate-900/50 border border-white/5 backdrop-blur-md flex items-center gap-2.5">
             <div className="text-right">
-              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{t.dailyGoal}</p>
-              <p className="text-sm font-black text-white">{user?.points_today || 0} / {dailyGoal} XP</p>
+              <p className="text-[7px] font-black text-slate-500 uppercase tracking-widest">{t.dailyGoal}</p>
+              <p className="text-[10px] font-black text-white">{user?.points_today || 0} / {dailyGoal} XP</p>
             </div>
-            <div className="relative w-12 h-12">
+            <div className="relative w-8 h-8">
               <svg className="w-full h-full transform -rotate-90">
-                <circle cx="24" cy="24" r="20" stroke="currentColor" strokeWidth="4" fill="transparent" className="text-white/5" />
-                <circle cx="24" cy="24" r="20" stroke="currentColor" strokeWidth="4" fill="transparent" strokeDasharray={125.6} strokeDashoffset={125.6 - (125.6 * dailyProgress) / 100} className="text-emerald-500 transition-all duration-1000" />
+                <circle cx="16" cy="16" r="14" stroke="currentColor" strokeWidth="2.5" fill="transparent" className="text-white/5" />
+                <circle cx="16" cy="16" r="14" stroke="currentColor" strokeWidth="2.5" fill="transparent" strokeDasharray={88} strokeDashoffset={88 - (88 * dailyProgress) / 100} className="text-emerald-500 transition-all duration-1000" />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <Target size={14} className="text-emerald-500" />
+                <Target size={10} className="text-emerald-500" />
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+      {/* Stats Grid - Smaller */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {stats.map((stat, idx) => (
           <motion.div 
             key={idx}
             variants={itemVariants}
-            className="glass-card neon-border rounded-[2rem] p-6 flex flex-col items-center text-center space-y-3 group hover:scale-105 transition-all"
+            className="glass-card neon-border rounded-xl p-3 flex flex-col items-center text-center space-y-1.5 group hover:scale-105 transition-all"
           >
-            <div className={`w-12 h-12 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform`}>
-              {stat.icon}
+            <div className={`w-8 h-8 rounded-lg ${stat.bg} ${stat.color} flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform`}>
+              {React.cloneElement(stat.icon as any, { size: 16 })}
             </div>
             <div>
-              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{stat.label}</p>
-              <p className="text-xl font-black text-white">{stat.value}</p>
+              <p className="text-[7px] font-black text-slate-500 uppercase tracking-widest mb-0.5">{stat.label}</p>
+              <p className="text-base font-black text-white">{stat.value}</p>
             </div>
           </motion.div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Progress Section */}
-        <div className="lg:col-span-2 space-y-8">
-          <div className="glass-card neon-border rounded-[2.5rem] p-8 md:p-10 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none"></div>
+        <div className="lg:col-span-2 space-y-4">
+          <div className="glass-card neon-border rounded-3xl p-3 md:p-4 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/5 rounded-full blur-3xl -mr-24 -mt-24 pointer-events-none"></div>
             
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
-                  <BarChart3 size={24} />
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                  <BarChart3 size={16} />
                 </div>
-                <h3 className="text-xl font-black text-white tracking-tight">Learning Progress</h3>
+                <h3 className="text-sm font-black text-white tracking-tight">Learning Progress</h3>
               </div>
-              <button className="text-[10px] font-black text-emerald-500 uppercase tracking-widest hover:text-emerald-400 transition-colors">View Detailed Report</button>
+              <button className="text-[8px] font-black text-emerald-500 uppercase tracking-widest hover:text-emerald-400 transition-colors">View Detailed Report</button>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-2">
               {user?.subject_progress && Object.entries(user.subject_progress).length > 0 ? (
                 Object.entries(user.subject_progress).map(([subject, progress]: [string, any], idx) => (
-                  <div key={subject} className="space-y-2">
+                  <div key={subject} className="space-y-1">
                     <div className="flex justify-between items-end">
-                      <span className="text-sm font-black text-white uppercase tracking-widest">{translations[language].subjects?.[subject] || subject}</span>
-                      <span className="text-xs font-bold text-slate-500">{progress}% Complete</span>
+                      <span className="text-[10px] font-black text-white uppercase tracking-widest">{translations[language].subjects?.[subject] || subject}</span>
+                      <span className="text-[9px] font-bold text-slate-500">{progress}% Complete</span>
                     </div>
-                    <div className="h-3 bg-white/5 rounded-full overflow-hidden border border-white/5 p-0.5">
+                    <div className="h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5 p-0.5">
                       <motion.div 
                         initial={{ width: 0 }}
                         animate={{ width: `${progress}%` }}
@@ -146,30 +147,30 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   </div>
                 ))
               ) : (
-                <div className="text-center py-12 space-y-4">
-                  <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto text-slate-600">
-                    <BarChart3 size={32} />
+                <div className="text-center py-4 space-y-2">
+                  <div className="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center mx-auto text-slate-600">
+                    <BarChart3 size={20} />
                   </div>
-                  <p className="text-slate-500 font-mono text-sm max-w-xs mx-auto">No progress recorded yet. Start learning to see your progress!</p>
+                  <p className="text-slate-500 font-mono text-[10px] max-w-[180px] mx-auto">No progress recorded yet. Start learning to see your progress!</p>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Pro Tip Section */}
-          <div className="glass-card rounded-[2rem] p-8 border border-white/5 bg-gradient-to-br from-blue-500/10 to-transparent flex items-center gap-8">
-            <div className="w-16 h-16 rounded-2xl bg-blue-500/20 flex items-center justify-center text-blue-500 shrink-0">
-              <Sparkles size={32} />
+          {/* Pro Tip Section - Smaller */}
+          <div className="glass-card rounded-2xl p-3 border border-white/5 bg-gradient-to-br from-blue-500/10 to-transparent flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-500 shrink-0">
+              <Sparkles size={20} />
             </div>
             <div>
-              <h4 className="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em] mb-2">Pro Tip of the Day</h4>
-              <p className="text-white font-medium leading-relaxed italic">"{randomTip}"</p>
+              <h4 className="text-[7px] font-black text-blue-400 uppercase tracking-[0.2em] mb-0.5">Pro Tip of the Day</h4>
+              <p className="text-white text-[11px] font-medium leading-tight italic">"{randomTip}"</p>
             </div>
           </div>
         </div>
 
-        {/* Sidebar Sections */}
-        <div className="space-y-8">
+        {/* Sidebar Sections - More Compact */}
+        <div className="space-y-6">
           {/* Daily Challenge */}
           {dailyChallenge && (
             <motion.div variants={itemVariants}>
@@ -182,33 +183,33 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             </motion.div>
           )}
 
-          {/* Recent Badges */}
-          <div className="glass-card neon-border rounded-[2.5rem] p-8 space-y-6">
+          {/* Recent Badges - Smaller */}
+          <div className="glass-card neon-border rounded-3xl p-3 space-y-2">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500">
-                  <Award size={24} />
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-500">
+                  <Award size={14} />
                 </div>
-                <h3 className="text-xl font-black text-white tracking-tight">Achievements</h3>
+                <h3 className="text-sm font-black text-white tracking-tight">Achievements</h3>
               </div>
-              <button className="text-[10px] font-black text-slate-500 uppercase tracking-widest hover:text-white transition-colors">All</button>
+              <button className="text-[7px] font-black text-slate-500 uppercase tracking-widest hover:text-white transition-colors">All</button>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-2">
               {user?.stats?.badges && user.stats.badges.length > 0 ? (
                 user.stats.badges.slice(0, 3).map((badge: string, i: number) => (
-                  <div key={i} className="aspect-square rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center group cursor-help relative">
-                    <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
-                      <Star size={20} fill={i === 0 ? "currentColor" : "none"} />
+                  <div key={i} className="aspect-square rounded-xl bg-white/5 border border-white/5 flex items-center justify-center group cursor-help relative">
+                    <div className="w-7 h-7 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
+                      <Star size={14} fill={i === 0 ? "currentColor" : "none"} />
                     </div>
-                    <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg bg-slate-900 border border-white/10 text-[8px] font-black text-white uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                    <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 px-2 py-1 rounded-lg bg-slate-900 border border-white/10 text-[7px] font-black text-white uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                       {badge}
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="col-span-3 p-8 border border-dashed border-white/10 rounded-3xl text-center">
-                  <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest">No badges yet</p>
+                <div className="col-span-3 p-3 border border-dashed border-white/10 rounded-2xl text-center">
+                  <p className="text-slate-500 text-[7px] font-black uppercase tracking-widest">No badges yet</p>
                 </div>
               )}
             </div>

@@ -8,7 +8,7 @@ import {
   CheckCircle2, 
   XCircle, 
   Sparkles,
-  Brain,
+  Bot,
   Zap,
   Loader2,
   Hash,
@@ -87,13 +87,13 @@ export function SkillGameView({ chapter, onBack }: SkillGameViewProps) {
       <header className="bg-[#1e5b99] text-white px-6 py-4 flex items-center justify-between sticky top-0 z-50 shadow-md">
         <div className="flex items-center gap-3">
           <div className="bg-white p-1 rounded-md">
-            <Brain className="text-[#1e5b99]" size={24} />
+            <Bot className="text-[#1e5b99]" size={24} />
           </div>
           <span className="text-xl font-bold tracking-tight">UtkalSkillCentre</span>
         </div>
         <div className="flex items-center gap-6">
           <button onClick={onBack} className="font-medium hover:text-blue-200 transition-colors">Back to Chapter</button>
-          <button className="p-2 border-2 border-white/30 rounded hover:bg-white/10 transition-colors"><Brain size={20} /></button>
+          <button className="p-2 border-2 border-white/30 rounded hover:bg-white/10 transition-colors"><Bot size={20} /></button>
         </div>
       </header>
 

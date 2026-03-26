@@ -8,3 +8,5 @@ export const firebaseConfig = {
   messagingSenderId: "108736001473",
   measurementId: "G-Z2M2G8LL46"
 };
+
+export const GEMINI_API_KEY = "AIzaSyAQhgUZdCs6sqPPGkkuAWWslJIyxGe8VWU";

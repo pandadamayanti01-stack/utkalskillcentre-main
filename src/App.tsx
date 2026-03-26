@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   BookOpen, 
-  Brain, 
   MessageSquare, 
   Trophy, 
   Settings, 
@@ -56,6 +55,7 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
 import { GoogleGenAI } from "@google/genai";
+import { GEMINI_API_KEY } from './firebase-config';
 import { auth, db as firestore, safeJsonStringify } from './firebase';
 import { 
   signInWithPopup, 
@@ -74,8 +74,7 @@ import {
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, query, where, getDocs, orderBy, limit, addDoc, updateDoc, increment, getCountFromServer, onSnapshot } from 'firebase/firestore';
 import { translations } from './translations';
-import { getDeferredPrompt, clearDeferredPrompt } from './pwa';
-import { solveMathDoubt } from './services/aiService';
+import { solveMathDoubt, getAI } from './services/aiService';
 import { subjectTranslations } from './constants';
 import { getYouTubeId, getYouTubeEmbedUrl, getYouTubeThumbnail } from './utils/youtube';
 import { AdminDashboard } from './components/AdminDashboard';
@@ -87,6 +86,8 @@ import { DailyChallenge } from './components/DailyChallenge';
 import { ProgressChart } from './components/ProgressChart';
 import { useVoiceSearch } from './hooks/useVoiceSearch';
 import { OfflineService } from './services/offlineService';
+import { StudyBuddyView } from './components/StudyBuddyView';
+import { getDeferredPrompt, clearDeferredPrompt } from './pwa';
 
 
 const getLocalizedSubject = (subject: string, language: string) => {
@@ -219,7 +220,7 @@ interface Chapter {
   playlist_id: string;
   notes?: string;
   status?: 'draft' | 'published';
-  practice_questions?: { question: string; answer: string; ai_answer?: string }[];
+  practice_questions?: { question: string; answer: string; tutor_explanation?: string }[];
   quiz_questions?: { question: string; options: string[]; correct_answer: string; hint?: string }[];
   translationGroupId?: string;
 }
@@ -327,129 +328,6 @@ const BigsanBranding = ({ className = "" }: { className?: string }) => {
 };
 
 
-// Capture the beforeinstallprompt event globally to ensure it's not missed
-// This is now handled in pwa.ts
-
-const InstallPWA = ({ 
-  supportsPWA, 
-  isIOS, 
-  isStandalone,
-  handlePWAInstall, 
-  showIOSInstructions, 
-  setShowIOSInstructions, 
-  showManualInstructions, 
-  setShowManualInstructions 
-}: {
-  supportsPWA: boolean;
-  isIOS: boolean;
-  isStandalone: boolean;
-  handlePWAInstall: (e?: any) => Promise<void>;
-  showIOSInstructions: boolean;
-  setShowIOSInstructions: (show: boolean) => void;
-  showManualInstructions: boolean;
-  setShowManualInstructions: (show: boolean) => void;
-}) => {
-  console.log("InstallPWA: Rendering banner. supportsPWA:", supportsPWA, "isIOS:", isIOS, "isStandalone:", isStandalone);
-
-  if (isStandalone) return null;
-
-  return (
-    <>
-      <div className="install-banner">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-            <Download size={20} />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-bold text-sm">Install Utkal App</span>
-            <span className="text-[10px] opacity-80">For a better learning experience</span>
-          </div>
-        </div>
-        <button className="install-button shadow-lg shadow-blue-900/20" onClick={handlePWAInstall}>
-          {isIOS ? 'How to Install' : (!supportsPWA ? 'Install App' : 'Install')}
-        </button>
-      </div>
-
-      {showManualInstructions && (
-        <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-[2000] flex items-center justify-center p-6" onClick={() => setShowManualInstructions(false)}>
-          <div className="bg-[#0B1221] border border-white/5 rounded-[3rem] p-10 max-w-sm w-full space-y-8 shadow-2xl" onClick={e => e.stopPropagation()}>
-            <div className="flex justify-center items-center w-full">
-              <div className="w-20 h-20 bg-blue-500/10 rounded-[2rem] flex items-center justify-center text-blue-500 shadow-inner">
-                <Download size={36} strokeWidth={2.5} />
-              </div>
-            </div>
-            <div className="space-y-3 text-center sm:text-left">
-              <h2 className="text-2xl font-bold text-white tracking-tight">Install Utkal App</h2>
-              <p className="text-slate-400 text-sm font-medium">
-                To install the app on your device:
-              </p>
-            </div>
-            <div className="space-y-6">
-              <div className="flex items-center gap-5 text-slate-300">
-                <div className="w-10 h-10 rounded-full bg-slate-800/50 flex-shrink-0 flex items-center justify-center text-sm font-bold border border-white/5">1</div>
-                <p className="text-[15px] leading-snug">Click the <span className="text-blue-400 font-bold">three dots</span> (⋮) or <span className="text-blue-400 font-bold">menu</span> in your browser</p>
-              </div>
-              <div className="flex items-center gap-5 text-slate-300">
-                <div className="w-10 h-10 rounded-full bg-slate-800/50 flex-shrink-0 flex items-center justify-center text-sm font-bold border border-white/5">2</div>
-                <p className="text-[15px] leading-snug">Select <span className="text-blue-400 font-bold">"Install App"</span> or <span className="text-blue-400 font-bold">"Add to Home Screen"</span></p>
-              </div>
-              <div className="flex items-center gap-5 text-slate-300">
-                <div className="w-10 h-10 rounded-full bg-slate-800/50 flex-shrink-0 flex items-center justify-center text-sm font-bold border border-white/5">3</div>
-                <p className="text-[15px] leading-snug">Confirm the installation</p>
-              </div>
-            </div>
-            <button 
-              onClick={() => setShowManualInstructions(false)}
-              className="w-full py-5 bg-[#1D61FF] hover:bg-blue-500 text-white rounded-[1.5rem] font-bold text-lg transition-all shadow-lg shadow-blue-900/40 active:scale-[0.98]"
-            >
-              Got it!
-            </button>
-          </div>
-        </div>
-      )}
-
-      {showIOSInstructions && (
-        <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-[2000] flex items-center justify-center p-6" onClick={() => setShowIOSInstructions(false)}>
-          <div className="bg-[#0B1221] border border-white/5 rounded-[3rem] p-10 max-w-sm w-full space-y-8 shadow-2xl" onClick={e => e.stopPropagation()}>
-            <div className="flex justify-center items-center w-full">
-              <div className="w-20 h-20 bg-blue-500/10 rounded-[2rem] flex items-center justify-center text-blue-500 shadow-inner">
-                <Share size={36} strokeWidth={2.5} />
-              </div>
-            </div>
-            <div className="space-y-3 text-center sm:text-left">
-              <h2 className="text-2xl font-bold text-white tracking-tight">Install on iPhone</h2>
-              <p className="text-slate-400 text-sm font-medium">
-                To install the Utkal Skill Centre app on your iPhone:
-              </p>
-            </div>
-            <div className="space-y-6">
-              <div className="flex items-center gap-5 text-slate-300">
-                <div className="w-10 h-10 rounded-full bg-slate-800/50 flex-shrink-0 flex items-center justify-center text-sm font-bold border border-white/5">1</div>
-                <p className="text-[15px] leading-snug">Tap the <span className="text-blue-400 font-bold">Share</span> button in Safari</p>
-              </div>
-              <div className="flex items-center gap-5 text-slate-300">
-                <div className="w-10 h-10 rounded-full bg-slate-800/50 flex-shrink-0 flex items-center justify-center text-sm font-bold border border-white/5">2</div>
-                <p className="text-[15px] leading-snug">Scroll down and tap <span className="text-blue-400 font-bold">"Add to Home Screen"</span></p>
-              </div>
-              <div className="flex items-center gap-5 text-slate-300">
-                <div className="w-10 h-10 rounded-full bg-slate-800/50 flex-shrink-0 flex items-center justify-center text-sm font-bold border border-white/5">3</div>
-                <p className="text-[15px] leading-snug">Tap <span className="text-blue-400 font-bold">"Add"</span> in the top right corner</p>
-              </div>
-            </div>
-            <button 
-              onClick={() => setShowIOSInstructions(false)}
-              className="w-full py-5 bg-[#1D61FF] hover:bg-blue-500 text-white rounded-[1.5rem] font-bold text-lg transition-all shadow-lg shadow-blue-900/40 active:scale-[0.98]"
-            >
-              Got it!
-            </button>
-          </div>
-        </div>
-      )}
-    </>
-  );
-};
-
-
 export default function App() {
   const [user, setUser] = useState<Student | null>(null);
   const [isAdminView, setIsAdminView] = useState(false);
@@ -458,6 +336,7 @@ export default function App() {
     const hash = window.location.hash.replace('#', '').split('/')[0];
     return hash || localStorage.getItem('activeTab') || 'dashboard';
   });
+  const [openTutorInVoiceMode, setOpenTutorInVoiceMode] = useState(0);
 
   useEffect(() => {
     localStorage.setItem('activeTab', activeTab);
@@ -487,7 +366,7 @@ export default function App() {
     return () => window.removeEventListener('changeTab', handleTabChange);
   }, []);
 
-  const [language, _setLanguage] = useState<'en' | 'or'>(localStorage.getItem('lang') as any || 'en');
+  const [language, _setLanguage] = useState<'en' | 'or'>(localStorage.getItem('lang') as any || 'or');
   const languageRef = useRef(language);
   const setLanguage = async (lang: 'en' | 'or') => {
     languageRef.current = lang;
@@ -503,12 +382,14 @@ export default function App() {
   };
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
   const [dbError, setDbError] = useState<string | null>(null);
-  const [aiExplanations, setAiExplanations] = useState<Record<string, string>>({});
-  const [aiLoading, setAiLoading] = useState<Record<string, boolean>>({});
+  const [tutorExplanations, setTutorExplanations] = useState<Record<string, string>>({});
+  const [tutorLoading, setTutorLoading] = useState<Record<string, boolean>>({});
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [showConfigError, setShowConfigError] = useState<{title: string, message: string} | null>(null);
   const [showLaunchPoster, setShowLaunchPoster] = useState(() => !localStorage.getItem('utkalDivasSeen'));
+  const [showInstallBanner, setShowInstallBanner] = useState(false);
   
   // Auth State
   const [authStep, setAuthStep] = useState<'login' | 'otp'>('login');
@@ -542,90 +423,6 @@ export default function App() {
   const [monthlyTests, setMonthlyTests] = useState<MonthlyTest[]>([]);
   const [testSubmissions, setTestSubmissions] = useState<MonthlyTestSubmission[]>([]);
 
-  // PWA State
-  const [supportsPWA, setSupportsPWA] = useState(!!getDeferredPrompt());
-  const [isStandalone, setIsStandalone] = useState(false);
-  const [isIOS, setIsIOS] = useState(false);
-  const [showIOSInstructions, setShowIOSInstructions] = useState(false);
-  const [showManualInstructions, setShowManualInstructions] = useState(false);
-
-  useEffect(() => {
-    // Check if already in standalone mode
-    const checkStandalone = () => {
-      const standalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
-      console.log("PWA: isStandalone check:", standalone);
-      if (standalone) {
-        setIsStandalone(true);
-      }
-    };
-
-    // Check if iOS
-    const checkIOS = () => {
-      const userAgent = window.navigator.userAgent.toLowerCase();
-      const isIOSDevice = /iphone|ipad|ipod/.test(userAgent);
-      setIsIOS(isIOSDevice);
-    };
-
-    checkStandalone();
-    checkIOS();
-
-    const handlePromptAvailable = () => {
-      setSupportsPWA(true);
-    };
-
-    window.addEventListener('pwa-prompt-available', handlePromptAvailable);
-    
-    if (getDeferredPrompt()) {
-      setSupportsPWA(true);
-    }
-
-    return () => {
-      window.removeEventListener('pwa-prompt-available', handlePromptAvailable);
-    };
-  }, []);
-
-  const handlePWAInstall = async (e?: any) => {
-    if (e) e.preventDefault();
-    const prompt = getDeferredPrompt();
-    const isInIframe = window.self !== window.top;
-    
-    console.log("PWA: handlePWAInstall called.", {
-      isIOS,
-      hasPrompt: !!prompt,
-      isInIframe,
-      isStandalone
-    });
-    
-    if (isIOS) {
-      setShowIOSInstructions(true);
-      return;
-    }
-
-    if (prompt) {
-      console.log("PWA: Triggering native prompt");
-      prompt.prompt();
-      
-      const { outcome } = await prompt.userChoice;
-      console.log(`PWA: User choice outcome: ${outcome}`);
-      
-      if (outcome === 'accepted') {
-        clearDeferredPrompt();
-        setSupportsPWA(false);
-      }
-      return;
-    }
-
-    // If no prompt, check if we are in an iframe
-    if (isInIframe) {
-      console.log("PWA: In an iframe, native prompt unavailable. Showing instructions.");
-      setShowManualInstructions(true);
-      return;
-    }
-
-    // If not in an iframe but still no prompt, show manual instructions as fallback
-    console.log("PWA: No deferredPrompt available, showing manual instructions as fallback");
-    setShowManualInstructions(true);
-  };
   const [activeTest, setActiveTest] = useState<MonthlyTest | null>(null);
   const [testAnswers, setTestAnswers] = useState<Record<number, string>>({});
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
@@ -664,6 +461,31 @@ export default function App() {
     };
     testConnection();
   }, []);
+
+  useEffect(() => {
+    const handlePrompt = () => {
+      setShowInstallBanner(true);
+    };
+    window.addEventListener('pwa-prompt-available', handlePrompt);
+    
+    if (getDeferredPrompt()) {
+      setShowInstallBanner(true);
+    }
+
+    return () => window.removeEventListener('pwa-prompt-available', handlePrompt);
+  }, []);
+
+  const handleInstall = async () => {
+    const promptEvent = getDeferredPrompt();
+    if (!promptEvent) return;
+
+    promptEvent.prompt();
+    const { outcome } = await promptEvent.userChoice;
+    console.log(`User response to the install prompt: ${outcome}`);
+    
+    clearDeferredPrompt();
+    setShowInstallBanner(false);
+  };
 
   const handleFirestoreError = (error: any, operationType: OperationType, path: string | null) => {
     const errInfo = {
@@ -1333,27 +1155,27 @@ export default function App() {
       setUser(null);
       setIsPremium(false);
     }
-    setAiExplanations({});
+    setTutorExplanations({});
   };
 
-  const askAI = async (question: string, questionId: string) => {
+  const askTutor = async (question: string, questionId: string) => {
     if (!isPremium) {
       alert(translations[language].subscriptionRequired);
       return;
     }
 
-    setAiLoading(prev => ({ ...prev, [questionId]: true }));
+    setTutorLoading(prev => ({ ...prev, [questionId]: true }));
     try {
       const text = await solveMathDoubt(question, language as 'en' | 'or');
-      setAiExplanations(prev => ({ ...prev, [questionId]: text }));
+      setTutorExplanations(prev => ({ ...prev, [questionId]: text }));
     } catch (error) {
-      console.error("AI Error:", error);
+      console.error("Study Buddy Error:", error);
       const errorMessage = language === 'en' 
         ? "Error generating explanation. Please try again later." 
         : "ସ୍ପଷ୍ଟୀକରଣ ପ୍ରସ୍ତୁତ କରିବାରେ ତ୍ରୁଟି | ଦୟାକରି ପରେ ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |";
-      setAiExplanations(prev => ({ ...prev, [questionId]: errorMessage }));
+      setTutorExplanations(prev => ({ ...prev, [questionId]: errorMessage }));
     } finally {
-      setAiLoading(prev => ({ ...prev, [questionId]: false }));
+      setTutorLoading(prev => ({ ...prev, [questionId]: false }));
     }
   };
 
@@ -1419,7 +1241,7 @@ export default function App() {
         amount: orderData.amount,
         currency: orderData.currency,
         name: "Utkal Skill Centre",
-        description: "AI Plan Subscription",
+        description: "Premium Plan Subscription",
         order_id: orderData.id,
         handler: async function (response: any) {
           console.log("Payment response received:", response);
@@ -1460,7 +1282,7 @@ export default function App() {
               });
 
               setIsPremium(true);
-              alert("Payment Successful! Welcome to the AI Plan.");
+              alert("Payment Successful! Welcome to the Premium Plan.");
             }
           } catch (err: any) {
             console.error("Payment Verification Error:", err);
@@ -1497,7 +1319,7 @@ export default function App() {
 
   const handleShare = async () => {
     if (!user) return;
-    const text = `Join Utkal Skill Centre and unlock your potential with AI-based learning! 🚀 https://utkalskillcentre.com`;
+    const text = `Join Utkal Skill Centre and unlock your potential with personalized learning! 🚀 https://utkalskillcentre.com`;
     
     // Mark as shared immediately - set to 5 to unlock
     try {
@@ -1520,16 +1342,6 @@ export default function App() {
   if (dbError) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6 text-center">
-        <InstallPWA 
-          supportsPWA={supportsPWA}
-          isIOS={isIOS}
-          isStandalone={isStandalone}
-          handlePWAInstall={handlePWAInstall}
-          showIOSInstructions={showIOSInstructions}
-          setShowIOSInstructions={setShowIOSInstructions}
-          showManualInstructions={showManualInstructions}
-          setShowManualInstructions={setShowManualInstructions}
-        />
         <div className="max-w-md w-full bg-slate-900 border border-white/10 rounded-[2.5rem] p-10 space-y-6 shadow-2xl">
           <div className="w-20 h-20 bg-red-500/10 rounded-3xl flex items-center justify-center text-red-500 mx-auto">
             <AlertCircle size={40} />
@@ -1556,16 +1368,6 @@ export default function App() {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6">
-        <InstallPWA 
-          supportsPWA={supportsPWA}
-          isIOS={isIOS}
-          isStandalone={isStandalone}
-          handlePWAInstall={handlePWAInstall}
-          showIOSInstructions={showIOSInstructions}
-          setShowIOSInstructions={setShowIOSInstructions}
-          showManualInstructions={showManualInstructions}
-          setShowManualInstructions={setShowManualInstructions}
-        />
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -1586,17 +1388,41 @@ export default function App() {
   if (!user) {
     return (
       <div className="min-h-screen bg-[#0B0F19] flex flex-col relative overflow-hidden font-sans">
-        {/* AI Banner */}
-        <div className="bg-gradient-to-r from-emerald-500/20 via-cyan-500/20 to-emerald-500/20 border-b border-emerald-500/30 px-6 py-2 flex items-center justify-center gap-2 shrink-0 z-50 relative overflow-hidden w-full">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LCAyNTUsLCAyNTUsIDAuMDUpIi8+PC9zdmc+')] pointer-events-none"></div>
-          <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
-          <p className="text-sm font-medium text-emerald-100 hidden sm:block">
-            {language === 'en' ? 'Experience the new AI-powered learning tools!' : 'ନୂତନ AI-ଚାଳିତ ଶିକ୍ଷଣ ଉପକରଣଗୁଡ଼ିକର ଅନୁଭବ କରନ୍ତୁ!'}
-          </p>
-          <p className="text-sm font-medium text-emerald-100 sm:hidden">
-            {language === 'en' ? 'New AI tools!' : 'ନୂତନ AI ଉପକରଣଗୁଡ଼ିକ!'}
-          </p>
-        </div>
+        {/* PWA Install Banner */}
+        <AnimatePresence>
+          {showInstallBanner && (
+            <motion.div 
+              initial={{ y: 100, x: '-50%', opacity: 0 }}
+              animate={{ y: 0, x: '-50%', opacity: 1 }}
+              exit={{ y: 100, x: '-50%', opacity: 0 }}
+              className="install-banner"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                  <Download size={20} className="text-white" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-white">Install Utkal App</p>
+                  <p className="text-[10px] text-white/70 font-medium">Access learning tools faster!</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => setShowInstallBanner(false)}
+                  className="p-2 text-white/50 hover:text-white transition-colors"
+                >
+                  <X size={16} />
+                </button>
+                <button 
+                  onClick={handleInstall}
+                  className="install-button"
+                >
+                  Install Now
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <div className="flex-1 flex relative overflow-hidden">
           {/* Background Glows & Grid */}
@@ -1604,9 +1430,9 @@ export default function App() {
           <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-emerald-500/20 rounded-full blur-[120px] pointer-events-none"></div>
           <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-blue-500/20 rounded-full blur-[120px] pointer-events-none"></div>
 
-          {/* Left Content - Marketing / AI Focus */}
+          {/* Left Content - Marketing Focus */}
         <div className="hidden lg:flex flex-1 flex-col justify-center px-16 xl:px-24 relative z-10 border-r border-white/5 bg-slate-900/30 backdrop-blur-sm overflow-hidden">
-          {/* Abstract AI Network Background */}
+          {/* Abstract Network Background */}
           <div className="absolute inset-0 opacity-20 pointer-events-none">
             <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -1624,30 +1450,30 @@ export default function App() {
             transition={{ duration: 0.8 }}
             className="max-w-xl relative z-10"
           >
-            <Logo className="h-12 mb-8 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
+            <Logo className="h-10 mb-6 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
             
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-6">
-              <Sparkles size={14} />
-              AI-Powered Learning
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold uppercase tracking-wider mb-4">
+              <Sparkles size={12} />
+              Personalized Learning
             </div>
             
-            <h1 className="text-5xl xl:text-6xl font-black text-white leading-[1.1] mb-6 tracking-tight">
-              Master Your Future with <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">Intelligent AI</span>
+            <h1 className="text-4xl xl:text-5xl font-black text-white leading-[1.1] mb-4 tracking-tight">
+              Master Your Future with <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">Gundulu</span>
             </h1>
             
-            <p className="text-lg text-slate-400 mb-12 leading-relaxed">
-              Experience the next generation of education. Our AI tutor adapts to your learning style, providing real-time feedback and personalized pathways to success.
+            <p className="text-base text-slate-400 mb-8 leading-relaxed">
+              Experience the next generation of education. Our study buddy adapts to your learning style, providing real-time feedback and personalized pathways to success.
             </p>
 
-            {/* AI Interface Mockup / Floating Elements */}
+            {/* Interface Mockup / Floating Elements */}
             <div className="relative h-72 w-full mt-8">
-              {/* Main AI Core */}
+              {/* Main Core */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32">
                 <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-xl animate-pulse"></div>
                 <div className="absolute inset-0 border border-emerald-500/30 rounded-full animate-[spin_10s_linear_infinite]"></div>
                 <div className="absolute inset-2 border border-cyan-500/30 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
                 <div className="absolute inset-0 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm rounded-full border border-white/10 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
-                  <Brain className="text-emerald-400 w-12 h-12" />
+                  <Bot className="text-emerald-400 w-12 h-12" />
                 </div>
               </div>
 
@@ -1692,7 +1518,7 @@ export default function App() {
                   <Bot className="text-emerald-400 w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-xs text-slate-400">AI Analysis</div>
+                  <div className="text-xs text-slate-400">Learning Analysis</div>
                   <div className="text-sm font-bold text-white">98% Accuracy</div>
                 </div>
               </motion.div>
@@ -2034,17 +1860,6 @@ export default function App() {
             </div>
           )}
         </AnimatePresence>
-        
-        <InstallPWA 
-          supportsPWA={supportsPWA}
-          isIOS={isIOS}
-          isStandalone={isStandalone}
-          handlePWAInstall={handlePWAInstall}
-          showIOSInstructions={showIOSInstructions}
-          setShowIOSInstructions={setShowIOSInstructions}
-          showManualInstructions={showManualInstructions}
-          setShowManualInstructions={setShowManualInstructions}
-        />
       </div>
     );
   }
@@ -2088,16 +1903,6 @@ export default function App() {
 
   return (
     <ErrorBoundary language={language}>
-      <InstallPWA 
-        supportsPWA={supportsPWA}
-        isIOS={isIOS}
-        isStandalone={isStandalone}
-        handlePWAInstall={handlePWAInstall}
-        showIOSInstructions={showIOSInstructions}
-        setShowIOSInstructions={setShowIOSInstructions}
-        showManualInstructions={showManualInstructions}
-        setShowManualInstructions={setShowManualInstructions}
-      />
       {showLaunchPoster && <UtkalDivasPoster onClose={() => {
         setShowLaunchPoster(false);
         localStorage.setItem('utkalDivasSeen', 'true');
@@ -2136,14 +1941,14 @@ export default function App() {
               <>
                 <SidebarItem icon={<User size={20}/>} label="Profile" active={activeTab === 'profile'} onClick={() => { setActiveTab('profile'); setSidebarOpen(false); }} />
                 <SidebarItem icon={<BarChart3 size={20}/>} label={translations[language].dashboard} active={activeTab === 'dashboard'} onClick={() => { setActiveTab('dashboard'); setSidebarOpen(false); }} />
-                <SidebarItem icon={<BookOpen size={20}/>} label={translations[language].courses} active={activeTab === 'courses'} onClick={() => { setActiveTab('courses'); setSidebarOpen(false); }} />
+                <SidebarItem icon={isPremium ? <Bot size={20}/> : <Lock size={20} className="text-amber-500" />} label={translations[language].studyBuddy || 'Study Buddy'} active={activeTab === 'study_buddy'} onClick={() => { if (isPremium) { setOpenTutorInVoiceMode(Date.now()); setActiveTab('study_buddy'); } else { setShowPaywall(true); } setSidebarOpen(false); }} />
                 <SidebarItem icon={<Book size={20}/>} label={language === 'en' ? 'Textbooks' : 'ପାଠ୍ୟପୁସ୍ତକ'} active={activeTab === 'textbooks'} onClick={() => { setActiveTab('textbooks'); setSidebarOpen(false); }} />
+                <SidebarItem icon={<BookOpen size={20}/>} label={translations[language].courses} active={activeTab === 'courses'} onClick={() => { setActiveTab('courses'); setSidebarOpen(false); }} />
                 <SidebarItem icon={<Clock size={20}/>} label={translations[language].monthlyTests} active={activeTab === 'monthly_tests'} onClick={() => { setActiveTab('monthly_tests'); setSidebarOpen(false); }} />
-                <SidebarItem icon={<MessageSquare size={20}/>} label={translations[language].aiSolver} active={activeTab === 'ai'} onClick={() => { setActiveTab('ai'); setSidebarOpen(false); }} />
                 <SidebarItem icon={<Trophy size={20}/>} label={translations[language].leaderboard} active={activeTab === 'leaderboard'} onClick={() => { setActiveTab('leaderboard'); setSidebarOpen(false); }} />
                 <SidebarItem icon={<ShoppingBag size={20}/>} label={language === 'en' ? 'Avatar Store' : 'ଅବତାର ଷ୍ଟୋର'} active={activeTab === 'store'} onClick={() => { setActiveTab('store'); setSidebarOpen(false); }} />
-                <SidebarItem icon={<HelpCircle size={20}/>} label={translations[language].support.title} active={activeTab === 'support'} onClick={() => { setActiveTab('support'); setSidebarOpen(false); }} />
                 <SidebarItem icon={<CreditCard size={20}/>} label="Plans" active={activeTab === 'plans'} onClick={() => { setActiveTab('plans'); setSidebarOpen(false); }} />
+                <SidebarItem icon={<HelpCircle size={20}/>} label={translations[language].support.title} active={activeTab === 'support'} onClick={() => { setActiveTab('support'); setSidebarOpen(false); }} />
               </>
             )}
           </nav>
@@ -2170,26 +1975,6 @@ export default function App() {
 
       {/* Main Content */}
       <main className="flex-1 min-w-0 flex flex-col h-screen overflow-y-auto">
-        {/* AI Banner */}
-        {!isAdminView && (
-          <div className="bg-gradient-to-r from-emerald-500/20 via-cyan-500/20 to-emerald-500/20 border-b border-emerald-500/30 px-6 py-2 flex items-center justify-center gap-2 shrink-0 z-40 relative overflow-hidden">
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LCAyNTUsLCAyNTUsIDAuMDUpIi8+PC9zdmc+')] pointer-events-none"></div>
-            <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
-            <p className="text-sm font-medium text-emerald-100 hidden sm:block">
-              {language === 'en' ? 'Experience the new AI-powered learning tools!' : 'ନୂତନ AI-ଚାଳିତ ଶିକ୍ଷଣ ଉପକରଣଗୁଡ଼ିକର ଅନୁଭବ କରନ୍ତୁ!'}
-            </p>
-            <p className="text-sm font-medium text-emerald-100 sm:hidden">
-              {language === 'en' ? 'New AI tools!' : 'ନୂତନ AI ଉପକରଣଗୁଡ଼ିକ!'}
-            </p>
-            <button 
-              onClick={() => setActiveTab('ai')} 
-              className="text-xs bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-300 px-3 py-1 rounded-full transition-all ml-2 font-bold border border-emerald-500/30 hover:scale-105"
-            >
-              {language === 'en' ? 'Try Now' : 'ଚେଷ୍ଟା କରନ୍ତୁ'}
-            </button>
-          </div>
-        )}
-
         {/* Header */}
         <header className="h-20 flex items-center justify-between px-8 glass-panel border-b border-white/5 z-10">
           <div className="flex items-center gap-4">
@@ -2258,12 +2043,12 @@ export default function App() {
             </div>
           ) : (
             <AnimatePresence mode="wait">
-              {activeTab === 'dashboard' && <Dashboard user={user} leaderboard={leaderboard} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} chapters={chapters} dailyChallenge={dailyChallenge} />}
+              {activeTab === 'dashboard' && <Dashboard user={user} leaderboard={leaderboard} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} chapters={chapters} dailyChallenge={dailyChallenge} onOpenTutor={() => { setOpenTutorInVoiceMode(Date.now()); setActiveTab('study_buddy'); }} />}
               {activeTab === 'courses' && <CoursesView user={user} chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
               {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
               {activeTab === 'monthly_tests' && <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} onBack={() => setActiveTab('dashboard')} />}
-              {activeTab === 'ai' && (
-                isPremium ? <AiSolverView language={language} onBack={() => setActiveTab('dashboard')} /> : <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
+              {activeTab === 'study_buddy' && (
+                isPremium ? <StudyBuddyView language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} user={user} initialVoiceMode={openTutorInVoiceMode} onBack={() => setActiveTab('dashboard')} onLanguageChange={setLanguage} /> : <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
               )}
               {activeTab === 'profile' && <ProfileView user={user} language={language} onBack={() => setActiveTab('dashboard')} onParentAccess={() => setActiveTab('parent_dashboard')} setActiveTab={setActiveTab} />}
               {activeTab === 'parent_dashboard' && <ParentDashboard user={user} chapters={chapters} leaderboard={leaderboard} language={language} onBack={() => setActiveTab('profile')} userProgress={userProgress} />}
@@ -2275,10 +2060,7 @@ export default function App() {
           )}
         </div>
       </main>
-
-      {/* AI Study Buddy */}
-      {user && <StudyBuddy user={user} language={language} isPremium={isPremium} />}
-
+      
       {/* Notifications Modal */}
       {showNotificationsModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowNotificationsModal(false)}>
@@ -2310,7 +2092,7 @@ export default function App() {
 function ParentDashboard({ user, chapters, leaderboard, language, onBack, userProgress }: any) {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [aiInsights, setAiInsights] = useState<string>('');
+  const [learningInsights, setLearningInsights] = useState<string>('');
   const [generatingInsights, setGeneratingInsights] = useState(false);
 
   useEffect(() => {
@@ -2337,10 +2119,10 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack, userPr
   }, [user.id]);
 
   const generateInsights = async (quizData: any[]) => {
-    if (aiInsights || generatingInsights) return;
+    if (learningInsights || generatingInsights) return;
     setGeneratingInsights(true);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const ai = getAI();
       const prompt = `Analyze these quiz results for a student named ${user.name} and provide 3-4 concise, actionable insights for their parent. 
       Data: ${safeJsonStringify(quizData.map(r => ({ chapter: String(r.chapterId), accuracy: r.accuracy, score: r.score, total: r.total })))}
       Format the response as a short list of bullet points. Focus on strengths and areas for improvement.`;
@@ -2349,10 +2131,10 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack, userPr
         model: "gemini-3.1-flash-lite-preview",
         contents: prompt,
       });
-      setAiInsights(response.text || "No insights available yet.");
+      setLearningInsights(response.text || "No insights available yet.");
     } catch (err) {
-      console.error("Failed to generate AI insights:", err);
-      setAiInsights("Unable to generate AI insights at this time.");
+      console.error("Failed to generate learning insights:", err);
+      setLearningInsights("Unable to generate learning insights at this time.");
     } finally {
       setGeneratingInsights(false);
     }
@@ -2486,23 +2268,9 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack, userPr
             </>
           )}
 
-          <div className="p-6 rounded-3xl bg-gradient-to-br from-emerald-600/20 to-blue-600/20 border border-emerald-500/20">
-            <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
-              <Sparkles size={20} className="text-emerald-400" />
-              AI Insights
-            </h3>
-            {generatingInsights ? (
-              <div className="flex items-center gap-2 text-slate-400 text-xs py-4">
-                <Loader2 size={16} className="animate-spin" />
-                Analyzing performance...
-              </div>
-            ) : aiInsights ? (
-              <div className="text-xs text-slate-300 mb-4 leading-relaxed prose prose-invert prose-xs">
-                <Markdown>{aiInsights}</Markdown>
-              </div>
-            ) : (
-              <p className="text-xs text-slate-400 mb-4 leading-relaxed">Take more quizzes to unlock AI-powered skill gap analysis and personalized learning paths.</p>
-            )}
+          <div className="p-6 rounded-3xl bg-slate-900/50 border border-white/5">
+            <h3 className="text-lg font-bold text-white mb-2">Performance Report</h3>
+            <p className="text-xs text-slate-400 mb-4 leading-relaxed">Take more quizzes to unlock detailed skill gap analysis and personalized learning paths.</p>
             <button className="w-full py-3 rounded-xl bg-white text-slate-900 text-xs font-bold hover:bg-slate-100 transition-all">
               View Detailed Report
             </button>
@@ -3020,10 +2788,10 @@ function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: a
 
 // --- Sub-Views ---
 
-function StudyBuddy({ user, language }: any) {
+function StudyBuddy({ user, language, isPremium, showPaywall, setShowPaywall }: any) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<any[]>([
-    { role: 'assistant', content: `Hi ${user.name}! I'm your AI Study Buddy. How can I help you today?` }
+    { role: 'assistant', content: `Hi ${user.name}! I'm your Study Buddy. How can I help you today?` }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -3075,7 +2843,7 @@ function StudyBuddy({ user, language }: any) {
     setLoading(true);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const ai = getAI();
       const parts: any[] = [];
       if (userMessage) parts.push({ text: userMessage });
       if (imageData) parts.push({ inlineData: { data: imageData.data, mimeType: imageData.mimeType } });
@@ -3084,7 +2852,7 @@ function StudyBuddy({ user, language }: any) {
         model: "gemini-3.1-flash-lite-preview",
         contents: { parts },
         config: {
-          systemInstruction: `You are a helpful, encouraging AI Study Buddy for a student named ${user.name}. 
+          systemInstruction: `You are a helpful, encouraging Study Buddy for a student named ${user.name}. 
           Your goal is to explain educational concepts clearly, help with homework (without just giving answers), and motivate the student. 
           Keep your responses concise, friendly, and appropriate for a school-age student. 
           Use simple language and analogies where helpful.`
@@ -3106,16 +2874,53 @@ function StudyBuddy({ user, language }: any) {
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-28 right-8 w-16 h-16 rounded-full bg-emerald-500 text-white shadow-2xl shadow-emerald-500/40 flex items-center justify-center z-40 border-4 border-slate-950"
+        onClick={() => {
+          if (isPremium) {
+            setIsOpen(true);
+          } else {
+            setShowPaywall(true);
+          }
+        }}
+        className={`fixed bottom-28 right-8 w-16 h-16 rounded-full text-white shadow-2xl flex items-center justify-center z-40 border-4 border-slate-950 ${isPremium ? 'bg-emerald-500 shadow-emerald-500/40' : 'bg-slate-700 shadow-slate-700/40'}`}
       >
-        <Bot size={32} />
-        <motion.div 
-          animate={{ scale: [1, 1.2, 1] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="absolute -top-1 -right-1 w-5 h-5 bg-blue-500 rounded-full border-2 border-slate-950"
-        />
+        {isPremium ? <Bot size={32} /> : <Lock size={24} />}
+        {isPremium && (
+          <motion.div 
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+            className="absolute -top-1 -right-1 w-5 h-5 bg-blue-500 rounded-full border-2 border-slate-950"
+          />
+        )}
       </motion.button>
+
+      {/* Paywall Modal */}
+      <AnimatePresence>
+        {showPaywall && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowPaywall(false)}>
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-slate-900 border border-white/10 rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl text-center" 
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Bot size={40} className="text-emerald-500" />
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-4">Gundulu is taking a nap! 😴</h2>
+              <p className="text-slate-300 mb-8">
+                Only our Pro Students can wake him up. Ask your parents to upgrade your account to start the magic! ✨
+              </p>
+              <button 
+                onClick={() => setShowPaywall(false)}
+                className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-bold text-lg hover:opacity-90 transition-opacity"
+              >
+                Okay!
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Chat Window */}
       <AnimatePresence>
@@ -3134,7 +2939,7 @@ function StudyBuddy({ user, language }: any) {
                 </div>
                 <div>
                   <h3 className="text-white font-bold">Study Buddy</h3>
-                  <p className="text-white/70 text-[10px] uppercase font-bold tracking-widest">AI Tutor Online</p>
+                  <p className="text-white/70 text-[10px] uppercase font-bold tracking-widest">Study Buddy Online</p>
                 </div>
               </div>
               <button onClick={() => setIsOpen(false)} className="text-white/70 hover:text-white">
@@ -3251,12 +3056,12 @@ function SidebarItem({ icon, label, active, onClick }: any) {
       whileHover={{ scale: 1.02, x: 4 }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
-      className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all ${
+      className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl transition-all ${
         active ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'text-slate-400 hover:bg-white/5'
       }`}
     >
-      {icon}
-      <span className="font-medium">{label}</span>
+      {React.cloneElement(icon as any, { size: 18 })}
+      <span className="font-medium text-sm">{label}</span>
     </motion.button>
   );
 }
@@ -3265,8 +3070,20 @@ function SidebarItem({ icon, label, active, onClick }: any) {
 
 function SubscriptionGuard({ onSubscribe, language, isPremium, user, onShare, systemSettings, onBack }: any) {
   const p = translations[language].pricing;
-  const monthlyPrice = systemSettings?.monthlyPrice || 199;
-  const yearlyPrice = systemSettings?.yearlyPrice || 999;
+  
+  let monthlyPrice = systemSettings?.monthlyPrice || 199;
+  let yearlyPrice = systemSettings?.yearlyPrice || 999;
+  let planName = p.ai.name;
+
+  if (user?.class === 'class3') {
+    monthlyPrice = systemSettings?.class3MonthlyPrice || 99;
+    yearlyPrice = systemSettings?.class3YearlyPrice || 499;
+    planName = "Gundulu Junior Pro (Class 3)";
+  } else if (user?.class === 'class10') {
+    monthlyPrice = systemSettings?.class10MonthlyPrice || 299;
+    yearlyPrice = systemSettings?.class10YearlyPrice || 1499;
+    planName = "Gundulu Exam Hero Pro (Class 10)";
+  }
 
   return (
     <div className="max-w-6xl mx-auto py-8">
@@ -3280,7 +3097,10 @@ function SubscriptionGuard({ onSubscribe, language, isPremium, user, onShare, sy
 
       <div className="text-center mb-12">
         <h2 className="text-4xl font-bold text-white mb-4">{p.title}</h2>
-        <p className="text-slate-400">Empowering your education with AI-driven intelligence</p>
+        <p className="text-slate-400">Unlock Gundulu Premium for your specific class needs!</p>
+        <div className="mt-4 inline-block bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-2 rounded-full text-sm font-medium">
+          Pricing customized for {user?.class ? user.class.toUpperCase() : 'your class'}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -3308,7 +3128,7 @@ function SubscriptionGuard({ onSubscribe, language, isPremium, user, onShare, sy
           </button>
         </div>
 
-        {/* AI Plan */}
+        {/* Premium Plan */}
         <div className="bg-gradient-to-br from-emerald-600/20 to-blue-600/20 border border-emerald-500/20 rounded-[2.5rem] p-8 flex flex-col relative overflow-hidden shadow-2xl shadow-emerald-500/10">
           {isPremium && (
             <div className="absolute top-4 right-4 bg-emerald-500 text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
@@ -3316,9 +3136,9 @@ function SubscriptionGuard({ onSubscribe, language, isPremium, user, onShare, sy
             </div>
           )}
           <div className="mb-8">
-            <h3 className="text-2xl font-bold text-white mb-2">{p.ai.name}</h3>
+            <h3 className="text-2xl font-bold text-white mb-2">{planName}</h3>
             <div className="space-y-1">
-              <div className="text-4xl font-bold text-white">₹{monthlyPrice} / {language === 'en' ? 'month' : 'ମାସ'}</div>
+              <div className="text-4xl font-bold text-white">₹{monthlyPrice} <span className="text-lg font-normal text-slate-400">/ {language === 'en' ? 'month' : 'ମାସ'}</span></div>
               <div className="text-emerald-400 font-bold">₹{yearlyPrice} / {language === 'en' ? 'year' : 'ବର୍ଷ'} (Save 70%)</div>
             </div>
           </div>
@@ -3667,7 +3487,7 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
                 <div className="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-all pointer-events-none"></div>
                 <div className="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all text-emerald-500 relative z-10 shadow-lg">
                   {subject.toLowerCase().includes('math') ? <Shapes size={32} /> :
-                   subject.toLowerCase().includes('sci') ? <Brain size={32} /> :
+                   subject.toLowerCase().includes('sci') ? <BookOpen size={32} /> :
                    subject.toLowerCase().includes('eng') ? <Globe size={32} /> :
                    subject.toLowerCase().includes('odi') ? <PenTool size={32} /> :
                    <BookOpen size={32} />}
@@ -3864,189 +3684,6 @@ function TestEngine({ chapter, onComplete, language }: any) {
   );
 }
 
-function AiSolverView({ language, onBack }: any) {
-  const [prompt, setPrompt] = useState('');
-  const [response, setResponse] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [imageMimeType, setImageMimeType] = useState<string | null>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const cameraInputRef = useRef<HTMLInputElement>(null);
-  const { isListening, transcript, startListening, stopListening } = useVoiceSearch(language);
-
-  useEffect(() => {
-    if (transcript) {
-      setPrompt(prev => prev + (prev ? ' ' : '') + transcript);
-    }
-  }, [transcript]);
-
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        alert(language === 'en' ? "Image size should be less than 5MB" : "ଫଟୋର ଆକାର ୫ MB ରୁ କମ୍ ହେବା ଉଚିତ୍ |");
-        return;
-      }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = (reader.result as string).split(',')[1];
-        setSelectedImage(base64String);
-        setImageMimeType(file.type);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleSolve = async () => {
-    if (!prompt && !selectedImage) return;
-    setLoading(true);
-    try {
-      const imageData = selectedImage && imageMimeType ? { data: selectedImage, mimeType: imageMimeType } : undefined;
-      const result = await solveMathDoubt(prompt || (language === 'en' ? "Please solve this math problem." : "ଦୟାକରି ଏହି ଗଣିତ ସମସ୍ୟାର ସମାଧାନ କରନ୍ତୁ |"), language, imageData);
-      setResponse(result);
-    } catch (error) {
-      console.error("AI Error:", error);
-      setResponse(language === 'en' ? "Error generating solution. Please try again." : "ସମାଧାନ ପ୍ରସ୍ତୁତ କରିବାରେ ତ୍ରୁଟି | ଦୟାକରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="h-full flex flex-col max-w-4xl mx-auto"
-    >
-      <button 
-        onClick={onBack}
-        className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors w-fit"
-      >
-        <ArrowLeft size={20} />
-        <span>{translations[language].backToDashboard}</span>
-      </button>
-
-      <div className="flex-1 overflow-y-auto space-y-6 mb-6 pr-2" ref={scrollRef}>
-        {response ? (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-slate-900/50 border border-white/5 rounded-3xl p-8 text-slate-300 leading-relaxed whitespace-pre-wrap"
-          >
-            <div className="flex items-center gap-2 mb-4 text-emerald-400 font-bold">
-              <Sparkles size={20} />
-              <span>{translations[language].aiExplanation}</span>
-            </div>
-            {response}
-          </motion.div>
-        ) : (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="h-full flex flex-col items-center justify-center text-center text-slate-500 space-y-4"
-          >
-            <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center">
-              <MessageSquare size={32} />
-            </div>
-            <p>{translations[language].askAi}</p>
-          </motion.div>
-        )}
-      </div>
-
-      <div className="space-y-4">
-        {selectedImage && (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="relative w-32 h-32 rounded-2xl overflow-hidden border-2 border-emerald-500/30 group"
-          >
-            <img 
-              src={`data:${imageMimeType};base64,${selectedImage}`} 
-              alt="Selected" 
-              className="w-full h-full object-cover"
-            />
-            <button 
-              onClick={() => { setSelectedImage(null); setImageMimeType(null); }}
-              className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-1 hover:bg-red-500 transition-colors"
-            >
-              <X size={16} />
-            </button>
-          </motion.div>
-        )}
-
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="relative"
-        >
-          <textarea 
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            placeholder={translations[language].askAi}
-            className="w-full bg-slate-900 border border-white/10 rounded-3xl p-6 pr-44 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all resize-none h-32"
-          />
-          
-          <div className="absolute right-4 bottom-4 flex items-center gap-2">
-            <input 
-              type="file" 
-              accept="image/*" 
-              className="hidden" 
-              ref={fileInputRef}
-              onChange={handleImageSelect}
-            />
-            <input 
-              type="file" 
-              accept="image/*" 
-              capture="environment" 
-              className="hidden" 
-              ref={cameraInputRef}
-              onChange={handleImageSelect}
-            />
-            
-            <button 
-              onClick={() => cameraInputRef.current?.click()}
-              className="p-3 rounded-xl bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition-all"
-              title={translations[language].takePhoto}
-            >
-              <Camera size={20} />
-            </button>
-            
-            <button 
-              onClick={() => fileInputRef.current?.click()}
-              className="p-3 rounded-xl bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition-all"
-              title={translations[language].uploadImage}
-            >
-              <Image size={20} />
-            </button>
-
-            <button
-              onClick={isListening ? stopListening : startListening}
-              className={`p-3 rounded-xl transition-all ${
-                isListening 
-                  ? 'bg-red-500 text-white animate-pulse' 
-                  : 'bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white'
-              }`}
-              title="Voice Input"
-            >
-              {isListening ? <MicOff size={20} /> : <Mic size={20} />}
-            </button>
-
-            <button 
-              onClick={handleSolve}
-              disabled={loading || (!prompt && !selectedImage)}
-              className="p-3 rounded-xl bg-emerald-600 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-500/20"
-            >
-              {loading ? <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} className="w-4 h-4 border-2 border-white border-t-transparent rounded-full" /> : <Send size={20} />}
-            </button>
-          </div>
-        </motion.div>
-      </div>
-    </motion.div>
-  );
-}
-
 function GamesView({ language, onBack }: any) {
   const [gameState, setGameState] = useState<'idle' | 'playing' | 'over'>('idle');
   const [score, setScore] = useState(0);
@@ -4120,7 +3757,7 @@ function GamesView({ language, onBack }: any) {
             className="space-y-8"
           >
             <div className="w-24 h-24 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto">
-              <Brain size={48} className="text-emerald-400" />
+              <Bot size={48} className="text-emerald-400" />
             </div>
             <button onClick={startGame} className="w-full py-4 rounded-2xl bg-emerald-600 text-white font-bold text-xl hover:bg-emerald-500 transition-all">
               {translations[language].start}

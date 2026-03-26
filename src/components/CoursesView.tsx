@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'motion/react';
-import { ArrowLeft, Clock, BookOpen, Shapes, Brain, Globe, PenTool, ChevronRight, Play, FileText, HelpCircle, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Clock, BookOpen, Shapes, Globe, PenTool, ChevronRight, Play, FileText, HelpCircle, CheckCircle2 } from 'lucide-react';
 import { translations } from '../translations';
 import { safeJsonStringify } from '../firebase';
 import { Chapter } from '../types';
@@ -252,7 +252,7 @@ export function CoursesView({ user, chapters, language, isPremium, onUpgrade, on
                 <div className="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-all pointer-events-none"></div>
                 <div className="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all text-emerald-500 relative z-10 shadow-lg">
                   {subject.toLowerCase().includes('math') ? <Shapes size={32} /> :
-                   subject.toLowerCase().includes('sci') ? <Brain size={32} /> :
+                   subject.toLowerCase().includes('sci') ? <BookOpen size={32} /> :
                    subject.toLowerCase().includes('eng') ? <Globe size={32} /> :
                    subject.toLowerCase().includes('odi') ? <PenTool size={32} /> :
                    <BookOpen size={32} />}

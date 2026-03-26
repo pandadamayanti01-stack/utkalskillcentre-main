@@ -17,6 +17,8 @@ import { GoogleGenAI } from "@google/genai";
 import Markdown from 'react-markdown';
 import { db as firestore, safeJsonStringify } from '../firebase';
 import { ProgressChart } from './ProgressChart';
+import { GEMINI_API_KEY } from '../firebase-config';
+import { getAI } from '../services/aiService';
 
 interface ParentDashboardProps {
   user: any;
@@ -30,7 +32,7 @@ interface ParentDashboardProps {
 export function ParentDashboard({ user, chapters, leaderboard, language, onBack, userProgress }: ParentDashboardProps) {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [aiInsights, setAiInsights] = useState<string>('');
+  const [insights, setInsights] = useState<string>('');
   const [generatingInsights, setGeneratingInsights] = useState(false);
 
   useEffect(() => {
@@ -57,10 +59,10 @@ export function ParentDashboard({ user, chapters, leaderboard, language, onBack,
   }, [user.id]);
 
   const generateInsights = async (quizData: any[]) => {
-    if (aiInsights || generatingInsights) return;
+    if (insights || generatingInsights) return;
     setGeneratingInsights(true);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const ai = getAI();
       const prompt = `Analyze these quiz results for a student named ${user.name} and provide 3-4 concise, actionable insights for their parent. 
       Data: ${safeJsonStringify(quizData.map(r => ({ chapter: String(r.chapterId), accuracy: r.accuracy, score: r.score, total: r.total })))}
       Format the response as a short list of bullet points. Focus on strengths and areas for improvement.`;
@@ -69,10 +71,10 @@ export function ParentDashboard({ user, chapters, leaderboard, language, onBack,
         model: "gemini-3.1-flash-lite-preview",
         contents: prompt,
       });
-      setAiInsights(response.text || "No insights available yet.");
+      setInsights(response.text || "No insights available yet.");
     } catch (err) {
-      console.error("Failed to generate AI insights:", err);
-      setAiInsights("Unable to generate AI insights at this time.");
+      console.error("Failed to generate insights:", err);
+      setInsights("Unable to generate insights at this time.");
     } finally {
       setGeneratingInsights(false);
     }
@@ -209,19 +211,19 @@ export function ParentDashboard({ user, chapters, leaderboard, language, onBack,
           <div className="p-6 rounded-3xl bg-gradient-to-br from-emerald-600/20 to-blue-600/20 border border-emerald-500/20">
             <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
               <Sparkles size={20} className="text-emerald-400" />
-              AI Insights
+              Learning Insights
             </h3>
             {generatingInsights ? (
               <div className="flex items-center gap-2 text-slate-400 text-xs py-4">
                 <Loader2 size={16} className="animate-spin" />
                 Analyzing performance...
               </div>
-            ) : aiInsights ? (
+            ) : insights ? (
               <div className="text-xs text-slate-300 mb-4 leading-relaxed prose prose-invert prose-xs">
-                <Markdown>{aiInsights}</Markdown>
+                <Markdown>{insights}</Markdown>
               </div>
             ) : (
-              <p className="text-xs text-slate-400 mb-4 leading-relaxed">Take more quizzes to unlock AI-powered skill gap analysis and personalized learning paths.</p>
+              <p className="text-xs text-slate-400 mb-4 leading-relaxed">Take more quizzes to unlock skill gap analysis and personalized learning paths.</p>
             )}
             <button className="w-full py-3 rounded-xl bg-white text-slate-900 text-xs font-bold hover:bg-slate-100 transition-all">
               View Detailed Report
