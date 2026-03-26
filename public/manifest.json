@@ -11,19 +11,19 @@
   "scope": "/",
   "icons": [
     {
-      "src": "/gundulu.png",
+      "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/logo_utkal.png",
+      "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/logo_utkal.png",
+      "src": "/icon-maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -41,7 +41,6 @@
       "src": "https://picsum.photos/seed/utkal2/720/1280",
       "sizes": "720x1280",
       "type": "image/jpeg",
-      "form_factor": "narrow",
       "label": "Utkal Skill Centre Mobile"
     }
   ],

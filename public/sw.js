@@ -6,7 +6,8 @@ const ASSETS_TO_CACHE = [
   '/logo_utkal.png',
   '/logo_bigsan.png',
   '/icon-192.png',
-  '/icon-512.png'
+  '/icon-512.png',
+  '/icon-maskable.png'
 ];
 
 self.addEventListener('install', (event) => {

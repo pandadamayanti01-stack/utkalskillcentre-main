@@ -41,14 +41,22 @@ export default defineConfig(({mode}) => {
           start_url: '/',
           icons: [
             {
-              src: 'icon.svg',
+              src: '/icon-192.png',
               sizes: '192x192',
-              type: 'image/svg+xml'
+              type: 'image/png',
+              purpose: 'any'
             },
             {
-              src: 'icon.svg',
+              src: '/icon-512.png',
               sizes: '512x512',
-              type: 'image/svg+xml'
+              type: 'image/png',
+              purpose: 'any'
+            },
+            {
+              src: '/icon-maskable.png',
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'maskable'
             }
           ]
         }
@@ -65,6 +73,7 @@ export default defineConfig(({mode}) => {
         '@': path.resolve(__dirname, '.'),
       },
     },
+    publicDir: 'public',
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
