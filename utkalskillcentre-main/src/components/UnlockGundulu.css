@@ -1,0 +1,78 @@
+.popup-overlay {
+  background: rgba(0, 0, 0, 0.85); /* Sem-transparent background */
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  display: flex; justify-content: center; align-items: center;
+  color: white; z-index: 1000;
+}
+
+.popup-content {
+  background: #1a1a1a;
+  padding: 40px; border-radius: 20px; width: 90%; max-width: 500px;
+  border: 1px solid #10b981; /* Utkal Green */
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.5); /* Glowing effect */
+}
+
+.header-locked {
+  text-align: center; margin-bottom: 30px;
+}
+
+.locked-wrapper {
+  position: relative; display: inline-block;
+}
+
+.gundulu-locked {
+  width: 120px; height: 120px; border-radius: 50%;
+  border: 4px solid #333; /* Greyed out border */
+  filter: grayscale(1); /* Makes Gundulu look "Locked" */
+}
+
+.lock-icon {
+  position: absolute; bottom: 0; right: 0;
+  font-size: 30px; background: #1a1a1a; border-radius: 50%; padding: 5px;
+}
+
+.plan-selector {
+  display: flex; gap: 10px; margin-bottom: 25px;
+}
+
+.plan-tab {
+  flex: 1; padding: 10px; background: #262626; border: 1px solid #333;
+  color: #ccc; border-radius: 10px; cursor: pointer;
+}
+
+.plan-tab.active {
+  background: #10b981; color: white; border-color: #10b981;
+}
+
+.pricing-card {
+  background: #262626; padding: 25px; border-radius: 15px; margin-bottom: 30px;
+  position: relative; border: 1px solid #333;
+}
+
+.grade-tag {
+  position: absolute; top: -10px; left: 20px;
+  background: #10b981; padding: 5px 15px; border-radius: 15px;
+}
+
+.price-text {
+  font-size: 32px; font-weight: bold; color: #10b981; margin: 15px 0;
+}
+
+.feature-list {
+  list-style: none; padding: 0; text-align: left;
+}
+
+.cta-button {
+  width: 100%; padding: 15px; background: #10b981; color: white;
+  border: none; border-radius: 10px; font-weight: bold; cursor: pointer;
+}
+
+.pulse-btn {
+  animation: cta-pulse 1.5s infinite;
+}
+
+@keyframes cta-pulse {
+  0% { box-shadow: 0 0 0 rgba(16, 185, 129, 0); }
+  50% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.8); }
+  100% { box-shadow: 0 0 0 rgba(16, 185, 129, 0); }
+}

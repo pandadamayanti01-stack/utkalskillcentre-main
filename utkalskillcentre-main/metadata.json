@@ -1,0 +1,5 @@
+{
+  "name": "Utkal Skill Centre",
+  "description": "Utkal Skill Centre is an AI-powered educational platform providing high-quality skill development and training for students in Odisha. Features include step-by-step AI tutoring in Odia and English, practice quizzes, monthly tests, and a comprehensive curriculum for Class 3-10.",
+  "requestFramePermissions": ["camera", "microphone"]
+}
