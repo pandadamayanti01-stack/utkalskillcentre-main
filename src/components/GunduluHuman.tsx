@@ -4,10 +4,31 @@ import './GunduluHuman.css';
 const GunduluHuman = () => {
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [status, setStatus] = useState("Touch to Talk to Gundulu");
+  const [status, setStatus] = useState("ନମସ୍କାର, ମୁଁ ଗୁଣ୍ଡୁଲୁ। ଆଜି ଆମେ କଣ ପଢିବା?");
   const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
+    // Speak initial greeting with robust voice selection
+    const speakGreeting = () => {
+      const utterance = new SpeechSynthesisUtterance("ନମସ୍କାର, ମୁଁ ଗୁଣ୍ଡୁଲୁ। ଆଜି ଆମେ କଣ ପଢିବା?");
+      
+      const voices = window.speechSynthesis.getVoices();
+      // Try to find an Odia voice, fallback to system default
+      const odiaVoice = voices.find(v => v.lang.includes('or-IN') || v.lang.includes('or'));
+      
+      utterance.voice = odiaVoice || null;
+      utterance.lang = 'or-IN';
+      utterance.pitch = 1.8;
+      window.speechSynthesis.speak(utterance);
+    };
+
+    // Handle voices being loaded asynchronously
+    if (window.speechSynthesis.getVoices().length === 0) {
+      window.speechSynthesis.addEventListener('voiceschanged', speakGreeting, { once: true });
+    } else {
+      speakGreeting();
+    }
+
     // Initialize Web Speech API
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (SpeechRecognition) {
@@ -19,19 +40,19 @@ const GunduluHuman = () => {
 
       recognition.onstart = () => {
         setIsListening(true);
-        setStatus("Gundulu is Listening... 👂");
+        setStatus("ଗୁଣ୍ଡୁଲୁ ଶୁଣୁଛି... 👂");
       };
 
       recognition.onresult = (event: any) => {
         const transcript = event.results[0][0].transcript;
-        setStatus(`You said: "${transcript}"`);
+        setStatus(`ଆପଣ କହିଲେ: "${transcript}"`);
         // Send to Gemini
         processWithGemini(transcript);
       };
 
       recognition.onend = () => {
         setIsListening(false);
-        setStatus("Touch to Talk to Gundulu");
+        setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
       };
 
       recognitionRef.current = recognition;
@@ -39,13 +60,13 @@ const GunduluHuman = () => {
   }, []);
 
   const processWithGemini = async (transcript: string) => {
-    setStatus("Gundulu is thinking...");
+    setStatus("ଗୁଣ୍ଡୁଲୁ ଚିନ୍ତା କରୁଛି...");
     setIsListening(false);
     setIsSpeaking(true);
     
     // Simulate Gemini response
     setTimeout(() => {
-      const response = "Namaskar! That's a great question. Let me help you with that.";
+      const response = "ନମସ୍କାର! ଏହା ଏକ ଭଲ ପ୍ରଶ୍ନ। ମୁଁ ଆପଣଙ୍କୁ ଏଥିରେ ସାହାଯ୍ୟ କରିବି।";
       setStatus(response);
       speakResponse(response);
     }, 1500);
@@ -97,7 +118,7 @@ const GunduluHuman = () => {
         className={`connect-btn ${isListening ? 'active' : ''}`}
         onClick={toggleListening}
       >
-        {isListening ? "STOP" : "START"}
+        {isListening ? "ବନ୍ଦ କରନ୍ତୁ" : "ଆରମ୍ଭ କରନ୍ତୁ"}
       </button>
     </div>
   );
