@@ -5,7 +5,7 @@ const GunduluHuman = () => {
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isWaitingForInput, setIsWaitingForInput] = useState(false);
-  const [language, setLanguage] = useState<'en-US' | 'or-IN'>('en-US');
+  const [language, setLanguage] = useState<'en-US' | 'or-IN'>('or-IN');
   const [status, setStatus] = useState(language === 'en-US' ? "Namaskar! I am Gundulu. What shall we learn today?" : "ନମସ୍କାର, ମୁଁ ଗୁଣ୍ଡୁଲୁ। ଆଜି ଆମେ କଣ ପଢିବା?");
   const [subtitle, setSubtitle] = useState("");
   const recognitionRef = useRef<any>(null);
@@ -105,14 +105,6 @@ const GunduluHuman = () => {
 
   const toggleLanguage = () => {
     setLanguage(prev => prev === 'en-US' ? 'or-IN' : 'en-US');
-  };
-
-  const toggleListening = () => {
-    if (isListening) {
-      recognitionRef.current?.stop();
-    } else {
-      recognitionRef.current?.start();
-    }
   };
 
   return (

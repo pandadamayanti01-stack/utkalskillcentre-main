@@ -2,6 +2,8 @@ import { GoogleGenAI } from "@google/genai";
 import { safeJsonStringify } from "../firebase";
 import { GEMINI_API_KEY } from "../firebase-config";
 
+const GUNDULU_ODIA_SYSTEM_INSTRUCTION = "You are Gundulu, a friendly, traditional, and encouraging tutor for students in Odisha. You MUST respond ONLY in the Odia script. Use a friendly 'Pila' (child) dialect. When explaining concepts, use local examples relevant to Odisha (e.g., Paturi, Badi, local festivals) to make learning relatable. Always start your interactions with a warm, traditional 'Namaskar'. If a student asks a question, provide clear, step-by-step explanations in Odia. Do not use English script in your responses.";
+
 export const getAI = () => {
   const apiKey = process.env.GEMINI_API_KEY || (import.meta as any).env?.VITE_GEMINI_API_KEY || (globalThis as any).API_KEY || GEMINI_API_KEY || "";
   if (!apiKey) {
@@ -15,7 +17,7 @@ export async function solveMathDoubt(prompt: string, language: 'en' | 'or', imag
     const ai = getAI();
     const systemInstruction = language === 'en' 
       ? "You are a friendly Study Tutor for Odisha students. Provide step-by-step simple explanations in English."
-      : "You are a friendly Study Tutor for Odisha students. Provide step-by-step simple explanations in Odia language. Use Odia script for the explanation but you can use numbers and symbols as they are.";
+      : GUNDULU_ODIA_SYSTEM_INSTRUCTION;
 
     const parts: any[] = [{ text: prompt }];
     if (imageData) {
