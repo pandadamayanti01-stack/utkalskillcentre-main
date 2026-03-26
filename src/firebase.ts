@@ -82,16 +82,21 @@ export interface FirestoreErrorInfo {
 }
 
 export function safeJsonStringify(obj: any) {
-  const cache = new Set();
-  return JSON.stringify(obj, (key, value) => {
-    if (typeof value === 'object' && value !== null) {
-      if (cache.has(value)) {
-        return '[Circular]';
+  try {
+    const cache = new WeakSet();
+    return JSON.stringify(obj, (key, value) => {
+      if (typeof value === 'object' && value !== null) {
+        if (cache.has(value)) {
+          return '[Circular]';
+        }
+        cache.add(value);
       }
-      cache.add(value);
-    }
-    return value;
-  });
+      return value;
+    });
+  } catch (err) {
+    console.error("safeJsonStringify failed:", err);
+    return `[Serialization Error: ${err instanceof Error ? err.message : String(err)}]`;
+  }
 }
 
 export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {

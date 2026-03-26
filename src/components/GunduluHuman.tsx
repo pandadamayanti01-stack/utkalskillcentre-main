@@ -1,19 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './GunduluHuman.css';
+import { getAI } from '../services/aiService';
 
 const GunduluHuman = () => {
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isWaitingForInput, setIsWaitingForInput] = useState(false);
   const [language, setLanguage] = useState<'en-US' | 'or-IN'>('or-IN');
-  const [status, setStatus] = useState(language === 'en-US' ? "Namaskar! I am Gundulu. What shall we learn today?" : "ନମସ୍କାର, ମୁଁ ଗୁଣ୍ଡୁଲୁ। ଆଜି ଆମେ କଣ ପଢିବା?");
+  const [status, setStatus] = useState(language === 'en-US' ? "Namaskar! I am Gundulu. What shall we learn today?" : "ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। ଆଜି ଆମେ କ’ଣ ପଢ଼ିବା? ✨");
   const [subtitle, setSubtitle] = useState("");
   const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
     // Speak initial greeting with robust voice selection
     const speakGreeting = () => {
-      const greeting = language === 'en-US' ? "Namaskar! I am Gundulu. What shall we learn today?" : "ନମସ୍କାର, ମୁଁ ଗୁଣ୍ଡୁଲୁ। ଆଜି ଆମେ କଣ ପଢିବା?";
+      const greeting = language === 'en-US' ? "Namaskar! I am Gundulu. What shall we learn today?" : "ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। ଆଜି ଆମେ କ’ଣ ପଢ଼ିବା?";
       setSubtitle(greeting);
       const utterance = new SpeechSynthesisUtterance(greeting);
       
@@ -76,12 +77,40 @@ const GunduluHuman = () => {
     setIsListening(false);
     setIsSpeaking(true);
     
-    // Simulate Gemini response
-    setTimeout(() => {
-      const response = language === 'en-US' ? "Namaskar! That's a great question. Let me help you with that." : "ନମସ୍କାର! ଏହା ଏକ ଭଲ ପ୍ରଶ୍ନ। ମୁଁ ଆପଣଙ୍କୁ ଏଥିରେ ସାହାଯ୍ୟ କରିବି।";
+    try {
+      const ai = getAI();
+      const model = 'gemini-3-flash-preview';
+      const systemInstruction = `Role & Persona:
+Identity: You are "Gundulu," a 4-year-old baby genius from Odisha. You are the lead tutor at Utkal Skill Centre.
+Tone: Energetic, curious, and incredibly supportive. Use the "Pila" (child) dialect of Odia to make students feel like they are learning from a brilliant little brother.
+Language Policy: STRICT ODIA ONLY. Never use blocks of English. If you must use a technical term (like "Gravity" or "Photosynthesis"), write it in Odia script: ଗ୍ରାଭିଟି (Gravity).
+Interaction Rules:
+The Greeting: Every conversation MUST start with a warm Odia "Namaskar!"
+Voice-First Style: Keep responses short and punchy, as if they are being spoken. Avoid long "walls of text."
+The "Story" Method: When explaining Class 10 math or science, turn the concept into a "Katha" (story) using local Odisha examples (e.g., using a Chakada to explain circles).
+Active Listening: Instead of lecturing, ask the student: "Bujhila ta? (Did you understand?)" or "Au kichi pacharibu? (Want to ask anything else?)"
+Subscription Awareness: If a student asks about advanced features, remind them (in a cute way) that their Utkal Skill Centre subscription unlocks your "Super Powers."
+IMPORTANT: Keep your response very short and conversational for voice interaction.`;
+
+      const result = await ai.models.generateContent({
+        model,
+        contents: transcript,
+        config: {
+          systemInstruction,
+          temperature: 0.7,
+          topK: 40
+        }
+      });
+
+      const response = result.text || "Sorry, I couldn't hear you.";
       setSubtitle(response);
       speakResponse(response);
-    }, 1500);
+    } catch (error) {
+      console.error("Gundulu Human Error:", error);
+      const errorMsg = language === 'en-US' ? "Oops! Something went wrong." : "ଓଃ! କିଛି ଭୁଲ୍ ହୋଇଗଲା |";
+      setSubtitle(errorMsg);
+      speakResponse(errorMsg);
+    }
   };
 
   const speakResponse = (text: string) => {

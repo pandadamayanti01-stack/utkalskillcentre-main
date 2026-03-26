@@ -265,7 +265,7 @@ service cloud.firestore {
     }
 
     match /tutor_queries/{logId} {
-      allow read: if isAdmin();
+      allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
       allow create: if isAuthenticated() && (isOwner(request.resource.data.userId) || request.resource.data.userId == 'anonymous') && isValidTutorQuery(request.resource.data);
     }
   }
