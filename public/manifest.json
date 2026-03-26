@@ -1,26 +1,49 @@
 {
+  "id": "/",
   "name": "Utkal Skill Centre",
-  "short_name": "USC",
+  "short_name": "Utkal Skill",
+  "description": "Empowering students with essential skills for a brighter future. Access study materials, textbooks, and monthly tests.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#2563eb",
-  "theme_color": "#2563eb",
+  "background_color": "#0f172a",
+  "theme_color": "#10b981",
+  "orientation": "any",
+  "scope": "/",
   "icons": [
     {
-      "src": "/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
       "src": "/gundulu.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo_utkal.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo_utkal.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "screenshots": [
+    {
+      "src": "https://picsum.photos/seed/utkal1/1280/720",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Utkal Skill Centre Dashboard"
+    },
+    {
+      "src": "https://picsum.photos/seed/utkal2/720/1280",
+      "sizes": "720x1280",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Utkal Skill Centre Mobile"
+    }
+  ],
+  "categories": ["education", "books", "productivity"]
 }
