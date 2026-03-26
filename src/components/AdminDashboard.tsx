@@ -515,6 +515,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
           { label: 'Total Revenue', value: `₹${stats.totalRevenue}`, icon: CreditCard, color: 'text-amber-500' },
           { label: 'AI Questions Today', value: stats.aiQuestionsToday, icon: Brain, color: 'text-purple-500' },
           { label: 'Subscription Conversion', value: '12%', icon: Users, color: 'text-emerald-500' },
+          { label: 'Voice Duration', value: '124m', icon: Bot, color: 'text-blue-500' },
+          { label: 'Sentiment Score', value: '88%', icon: Sparkles, color: 'text-purple-500' },
         ].map((stat, i) => (
           <motion.div 
             key={i}
