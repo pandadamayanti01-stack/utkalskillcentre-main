@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { BarChart3, CheckCircle2, Globe, Flame, Target, Trophy, Zap, Award, Sparkles, Star } from 'lucide-react';
+import { Brain, BarChart3, CheckCircle2, Globe, Flame, Target, Trophy, Zap, Award, Sparkles, Star } from 'lucide-react';
 import { translations } from '../translations';
 import { DailyChallenge } from './DailyChallenge';
 
@@ -33,7 +33,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
   const proTips = [
     "Consistency is key! Try to maintain your streak for bonus XP.",
-    "Use the Study Buddy for complex math problems to see step-by-step solutions.",
+    "Use the AI Tutor for complex math problems to see step-by-step solutions.",
     "Take a monthly test to evaluate your overall progress in each subject.",
     "Practice makes perfect! Use the practice questions after every chapter.",
     "Compete in the leaderboard to stay motivated and earn rewards."
@@ -63,6 +63,33 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       exit="exit"
       className="space-y-6 pb-20"
     >
+      {/* AI Tutor Card - Compact & Top-Aligned */}
+      <motion.div 
+        variants={itemVariants}
+        onClick={onOpenTutor}
+        className="glass-card neon-border rounded-3xl p-4 md:p-5 relative overflow-hidden cursor-pointer group hover:border-emerald-500/50 transition-all bg-gradient-to-br from-emerald-500/10 to-transparent"
+      >
+        <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl -mr-24 -mt-24 pointer-events-none group-hover:bg-emerald-500/20 transition-colors"></div>
+        
+        <div className="flex items-center gap-4 relative z-10">
+          <div className="w-16 h-16 rounded-full bg-slate-900 border-2 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform overflow-hidden">
+            <img src="/gundulu.png" alt="Gundulu" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
+            <Brain size={28} className="text-emerald-500 hidden" />
+          </div>
+          <div className="flex-1 space-y-1">
+            <div className="flex items-center justify-between">
+              <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[8px] font-bold uppercase tracking-widest">
+                <Sparkles size={10} />
+                Voice Enabled
+              </div>
+              <Zap size={14} className="text-emerald-500 animate-pulse" />
+            </div>
+            <h3 className="text-lg font-black text-white tracking-tight">Talk to Gundulu</h3>
+            <p className="text-slate-400 text-[11px] font-medium line-clamp-1">Your AI tutor is ready to help. Tap to start a conversation!</p>
+          </div>
+        </div>
+      </motion.div>
+
       {/* Welcome Section - More Compact */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div className="space-y-0.5">

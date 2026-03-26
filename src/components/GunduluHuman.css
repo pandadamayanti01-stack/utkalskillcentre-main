@@ -53,6 +53,23 @@
 .bar:nth-child(5) { animation-delay: 0.4s; }
 .bar:nth-child(6) { animation-delay: 0.5s; }
 
+.button-container {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
+}
+
+.lang-toggle-btn {
+  padding: 10px 20px;
+  background: #333;
+  color: white;
+  border: 1px solid #10b981;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
 .connect-btn {
   padding: 15px 30px;
   background: #10b981;
@@ -65,3 +82,32 @@
 }
 
 .status-text { color: white; font-size: 1.5rem; text-align: center; }
+
+.subtitle-container {
+  position: absolute;
+  bottom: 15%;
+  width: 100%;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.subtitle-text {
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.waiting-glow {
+  animation: orangeGlow 1s infinite alternate;
+}
+
+@keyframes orangeGlow {
+  from { box-shadow: 0 0 10px #FF9800; }
+  to { box-shadow: 0 0 20px #FF9800; }
+}
+
+.avatar-wrapper.waiting {
+  border: 2px solid #FF9800;
+  box-shadow: 0 0 20px #FF9800;
+}
