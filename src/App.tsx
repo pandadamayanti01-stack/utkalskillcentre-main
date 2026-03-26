@@ -1977,7 +1977,11 @@ export default function App() {
       <main className="flex-1 min-w-0 flex flex-col h-screen overflow-y-auto">
         {/* Header */}
         <header className="h-20 flex items-center justify-between px-8 glass-panel border-b border-white/5 z-10">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 w-full">
+            <div className="flex justify-between items-center p-4 bg-white shadow-sm w-full rounded-lg">
+              <img src="/logo_utkal.png" alt="Utkal Skill Centre" className="h-14 w-auto object-contain" />
+              <img src="/logo_bigsan.png" alt="Bigsan Group" className="h-10 w-auto opacity-80 object-contain" />
+            </div>
             <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-slate-400"><Menu /></button>
             <div className="flex flex-col">
               <h2 className="text-xl font-semibold text-white">

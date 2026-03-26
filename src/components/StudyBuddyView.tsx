@@ -485,7 +485,7 @@ ${isVoiceModeRef.current ? '\nIMPORTANT: Keep your response short, conversationa
             )}
 
             <div className="relative z-10 w-[180px] h-[180px] rounded-full overflow-hidden border-2 border-transparent bg-slate-800 flex items-center justify-center shadow-[0_0_50px_rgba(16,185,129,0.2)]">
-              <img src="/gundulu.png.png" alt="Gundulu" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
+              <img src="/gundulu.png" alt="Gundulu" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
               <Bot size={80} className="text-[#10b981] hidden" />
             </div>
           </div>

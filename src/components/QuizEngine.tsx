@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft, Trophy, Loader2, Lightbulb } from 'lucide-react';
 import { collection, addDoc, serverTimestamp, doc, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { db as firestore } from '../firebase';
+import confetti from 'canvas-confetti';
 
 interface QuizEngineProps {
   questions: any[];
@@ -18,6 +19,17 @@ export function QuizEngine({ questions, onComplete, language, userId, chapterId 
   const [finished, setFinished] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (finished) {
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#10B981', '#3B82F6', '#F59E0B']
+      });
+    }
+  }, [finished]);
 
   const handleAnswer = (idx: number) => {
     const newAnswers = [...answers];

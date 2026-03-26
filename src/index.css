@@ -39,6 +39,10 @@
   .neon-border {
     @apply relative before:absolute before:-inset-[1px] before:rounded-[inherit] before:bg-gradient-to-r before:from-purple-500 before:via-fuchsia-500 before:to-blue-500 before:-z-10 before:opacity-50 before:blur-sm;
   }
+
+  .logo-glow {
+    filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.4));
+  }
 }
 
 /* Animated Background Orbs */

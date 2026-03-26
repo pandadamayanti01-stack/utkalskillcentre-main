@@ -73,7 +73,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         
         <div className="flex items-center gap-4 relative z-10">
           <div className="w-16 h-16 rounded-full bg-slate-900 border-2 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform overflow-hidden">
-            <img src="/gundulu.png" alt="Gundulu" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
+            <img src="/gundulu.png" alt="Gundulu" className="w-full h-full object-cover" onError={(e) => { console.error("Image failed to load:", e); e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
             <Brain size={28} className="text-emerald-500 hidden" />
           </div>
           <div className="flex-1 space-y-1">
