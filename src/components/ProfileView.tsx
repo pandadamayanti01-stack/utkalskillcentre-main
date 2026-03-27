@@ -33,9 +33,9 @@ interface ProfileViewProps {
 }
 
 export function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: ProfileViewProps) {
-  const [name, setName] = useState(user.name || '');
-  const [email, setEmail] = useState(user.email || '');
-  const [parentShowLeaderboard, setParentShowLeaderboard] = useState(user.parentShowLeaderboard ?? true);
+  const [name, setName] = useState(user?.name || '');
+  const [email, setEmail] = useState(user?.email || '');
+  const [parentShowLeaderboard, setParentShowLeaderboard] = useState(user?.parentShowLeaderboard ?? true);
   const [loading, setLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [showPinModal, setShowPinModal] = useState(false);
@@ -43,7 +43,7 @@ export function ProfileView({ user, language, onBack, onParentAccess, setActiveT
   const [error, setError] = useState('');
 
   const handleParentAccess = () => {
-    if (!user.parent_pin) {
+    if (!user?.parent_pin) {
       onParentAccess();
     } else {
       setShowPinModal(true);
@@ -51,7 +51,7 @@ export function ProfileView({ user, language, onBack, onParentAccess, setActiveT
   };
 
   const verifyPin = () => {
-    if (pin === user.parent_pin) {
+    if (pin === user?.parent_pin) {
       onParentAccess();
       setShowPinModal(false);
     } else {
@@ -69,12 +69,12 @@ export function ProfileView({ user, language, onBack, onParentAccess, setActiveT
   const handleSave = async () => {
     setLoading(true);
     try {
-      await updateDoc(doc(firestore, 'users', user.id), {
+      await updateDoc(doc(firestore, 'users', user?.id), {
         name,
         email,
-        role: user.role,
-        class: user.class || null,
-        board: user.board || null,
+        role: user?.role,
+        class: user?.class || null,
+        board: user?.board || null,
         parentShowLeaderboard
       });
       
@@ -241,7 +241,7 @@ export function ProfileView({ user, language, onBack, onParentAccess, setActiveT
           </p>
           <div className="flex gap-2">
             <a 
-              href={`https://wa.me/919337956168?text=${encodeURIComponent(`Namaskar Admin, I want to change my ${language === 'en' ? 'Class/Mobile Number' : 'ଶ୍ରେଣୀ/ମୋବାଇଲ୍ ନମ୍ବର'}. My Name: ${user.name}, Current Class: ${user.class}. Reason: `)}`}
+              href={`https://wa.me/919337956168?text=${encodeURIComponent(`Namaskar Admin, I want to change my ${language === 'en' ? 'Class/Mobile Number' : 'ଶ୍ରେଣୀ/ମୋବାଇଲ୍ ନମ୍ବର'}. My Name: ${user?.name}, Current Class: ${user?.class}. Reason: `)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 py-2 rounded-xl bg-emerald-500/10 text-emerald-500 text-[10px] font-bold hover:bg-emerald-500/20 transition-all flex items-center justify-center gap-2 border border-emerald-500/20"
@@ -250,7 +250,7 @@ export function ProfileView({ user, language, onBack, onParentAccess, setActiveT
               WhatsApp
             </a>
             <a 
-              href={`mailto:pandadamayanti01@gmail.com?subject=Profile Change Request&body=${encodeURIComponent(`Namaskar Admin,\n\nI want to change my Class or Mobile Number.\n\nName: ${user.name}\nPhone: ${user.phoneNumber || user.phone}\nCurrent Class: ${user.class}\n\nReason for change:\n`)}`}
+              href={`mailto:pandadamayanti01@gmail.com?subject=Profile Change Request&body=${encodeURIComponent(`Namaskar Admin,\n\nI want to change my Class or Mobile Number.\n\nName: ${user?.name}\nPhone: ${user?.phoneNumber || user?.phone}\nCurrent Class: ${user?.class}\n\nReason for change:\n`)}`}
               className="flex-1 py-2 rounded-xl bg-blue-500/10 text-blue-500 text-[10px] font-bold hover:bg-blue-500/20 transition-all flex items-center justify-center gap-2 border border-blue-500/20"
             >
               <Mail size={14} />
