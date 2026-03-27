@@ -35,6 +35,10 @@ export const useVoiceSearch = (language: 'en' | 'or') => {
         alert(language === 'or' 
           ? 'ମାଇକ୍ରୋଫୋନ୍ ଅନୁମତି ମିଳିଲା ନାହିଁ | ଦୟାକରି ଆପଣଙ୍କର ବ୍ରାଉଜର୍ ସେଟିଂସମୂହ ଯାଞ୍ଚ କରନ୍ତୁ |' 
           : 'Microphone permission denied. Please check your browser settings and allow microphone access.');
+      } else if (event.error === 'network') {
+        alert(language === 'or'
+          ? 'ନେଟୱାର୍କ ତ୍ରୁଟି | ଦୟାକରି ଆପଣଙ୍କର ଇଣ୍ଟରନେଟ୍ ସଂଯୋଗ ଯାଞ୍ଚ କରନ୍ତୁ କିମ୍ବା ଏହି ଆପ୍‌କୁ ଏକ ନୂତନ ଟ୍ୟାବ୍‌ରେ ଖୋଲନ୍ତୁ |'
+          : 'Network error. Please check your internet connection or try opening this app in a new tab to use voice search.');
       } else if (event.error === 'no-speech') {
         // Silently handle no-speech
       } else {
