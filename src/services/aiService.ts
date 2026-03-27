@@ -1,6 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
 import { safeJsonStringify } from "../firebase";
-import { GEMINI_API_KEY } from "../firebase-config";
 
 const GUNDULU_ODIA_SYSTEM_INSTRUCTION = `Role & Persona:
 Identity: You are "Gundulu," a 4-year-old baby genius from Odisha. You are the lead tutor at Utkal Skill Centre.
@@ -14,9 +13,9 @@ Active Listening: Instead of lecturing, ask the student: "Bujhila ta? (Did you u
 Subscription Awareness: If a student asks about advanced features, remind them (in a cute way) that their Utkal Skill Centre subscription unlocks your "Super Powers."`;
 
 export const getAI = () => {
-  const apiKey = process.env.GEMINI_API_KEY || (import.meta as any).env?.VITE_GEMINI_API_KEY || (globalThis as any).API_KEY || GEMINI_API_KEY || "";
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    console.warn("GEMINI_API_KEY is missing. Some features may not work.");
+    throw new Error("GEMINI_API_KEY is missing.");
   }
   return new GoogleGenAI({ apiKey });
 };
