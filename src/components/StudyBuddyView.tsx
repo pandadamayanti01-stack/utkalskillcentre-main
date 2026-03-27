@@ -315,7 +315,20 @@ ${isVoiceModeRef.current ? '\nIMPORTANT: Keep your response short, conversationa
     recognition.onerror = (event: any) => {
       console.error("Speech recognition error", event.error);
       setIsListening(false);
-      if (isVoiceModeRef.current) {
+      
+      if (event.error === 'not-allowed') {
+        const msg = language === 'en' 
+          ? 'Microphone permission denied. Please check your browser settings.' 
+          : 'ମାଇକ୍ରୋଫୋନ୍ ଅନୁମତି ମିଳିଲା ନାହିଁ | ଦୟାକରି ଆପଣଙ୍କର ବ୍ରାଉଜର୍ ସେଟିଂସମୂହ ଯାଞ୍ଚ କରନ୍ତୁ |';
+        if (isVoiceModeRef.current) setVoiceTranscript(msg);
+        else alert(msg);
+      } else if (event.error === 'network') {
+        const msg = language === 'en'
+          ? 'Network error. Please check your connection or try opening in a new tab.'
+          : 'ନେଟୱାର୍କ ତ୍ରୁଟି | ଦୟାକରି ଆପଣଙ୍କର ସଂଯୋଗ ଯାଞ୍ଚ କରନ୍ତୁ କିମ୍ବା ଏକ ନୂତନ ଟ୍ୟାବ୍‌ରେ ଖୋଲନ୍ତୁ |';
+        if (isVoiceModeRef.current) setVoiceTranscript(msg);
+        else alert(msg);
+      } else if (isVoiceModeRef.current) {
         setVoiceTranscript('Could not hear you. Try again!');
       }
     };
