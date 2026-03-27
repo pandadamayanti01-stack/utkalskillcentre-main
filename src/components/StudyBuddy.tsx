@@ -16,7 +16,6 @@ import {
 import { GoogleGenAI } from "@google/genai";
 import Markdown from 'react-markdown';
 import { useVoiceSearch } from '../hooks/useVoiceSearch';
-import { GEMINI_API_KEY } from '../firebase-config';
 import { getAI } from '../services/aiService';
 
 interface StudyBuddyProps {
