@@ -17,7 +17,6 @@ import { GoogleGenAI } from "@google/genai";
 import Markdown from 'react-markdown';
 import { db as firestore, safeJsonStringify } from '../firebase';
 import { ProgressChart } from './ProgressChart';
-import { GEMINI_API_KEY } from '../firebase-config';
 import { getAI } from '../services/aiService';
 
 interface ParentDashboardProps {
