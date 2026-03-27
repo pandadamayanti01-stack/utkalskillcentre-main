@@ -2031,7 +2031,7 @@ export default function App() {
                 {user.avatar ? (
                   <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-white font-bold">{user.name[0]}</span>
+                  <span className="text-white font-bold">{user.name?.[0] || 'S'}</span>
                 )}
               </div>
               <button 
@@ -3084,7 +3084,7 @@ function SubscriptionGuard({ onSubscribe, language, isPremium, user, onShare, sy
   
   let monthlyPrice = systemSettings?.monthlyPrice || 199;
   let yearlyPrice = systemSettings?.yearlyPrice || 999;
-  let planName = p.ai.name;
+  let planName = p.premium.name;
 
   if (user?.class === 'class3') {
     monthlyPrice = systemSettings?.class3MonthlyPrice || 99;
@@ -3154,7 +3154,7 @@ function SubscriptionGuard({ onSubscribe, language, isPremium, user, onShare, sy
             </div>
           </div>
           <ul className="space-y-4 mb-10 flex-1">
-            {p.ai.features.map((f: string, i: number) => (
+            {p.premium.features.map((f: string, i: number) => (
               <li key={i} className="flex items-center gap-3 text-white">
                 <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-[10px] text-white">✓</div>
                 {f}
@@ -3943,7 +3943,7 @@ function LeaderboardView({ leaderboard, language, onBack, following, user }: any
                         {student.avatar ? (
                           <img src={student.avatar} alt={student.name} className="w-full h-full object-cover" />
                         ) : (
-                          <span className="text-sm font-bold">{student.name[0]}</span>
+                          <span className="text-sm font-bold">{student.name?.[0] || 'S'}</span>
                         )}
                       </div>
                       <div className="flex flex-col">
