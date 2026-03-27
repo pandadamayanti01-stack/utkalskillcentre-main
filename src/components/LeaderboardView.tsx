@@ -136,7 +136,7 @@ export function LeaderboardView({ leaderboard, language, onBack, following, user
                         {student.avatar ? (
                           <img src={student.avatar} alt={student.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                         ) : (
-                          <span className="text-sm font-bold">{student.name[0]}</span>
+                          <span className="text-sm font-bold">{student.name?.[0] || 'S'}</span>
                         )}
                       </div>
                       <div className="flex flex-col">
