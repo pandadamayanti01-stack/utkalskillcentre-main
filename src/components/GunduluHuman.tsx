@@ -63,6 +63,27 @@ const GunduluHuman = () => {
         setStatus(language === 'en-US' ? "Touch to Talk to Gundulu" : "ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
       };
 
+      recognition.onerror = (event: any) => {
+        console.error("Speech recognition error", event.error);
+        setIsListening(false);
+        
+        let errorMsg = "";
+        if (event.error === 'not-allowed') {
+          errorMsg = language === 'en-US' 
+            ? "Microphone permission denied. Check settings." 
+            : "ମାଇକ୍ରୋଫୋନ୍ ଅନୁମତି ମିଳିଲା ନାହିଁ |";
+        } else if (event.error === 'network') {
+          errorMsg = language === 'en-US'
+            ? "Network error. Try opening in a new tab."
+            : "ନେଟୱାର୍କ ତ୍ରୁଟି | ନୂତନ ଟ୍ୟାବ୍‌ରେ ଖୋଲନ୍ତୁ |";
+        } else {
+          errorMsg = language === 'en-US' ? "Could not hear you. Try again!" : "ଶୁଣିପାରିଲି ନାହିଁ | ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |";
+        }
+        
+        setSubtitle(errorMsg);
+        setStatus(errorMsg);
+      };
+
       recognitionRef.current = recognition;
     }
   }, [language]);
