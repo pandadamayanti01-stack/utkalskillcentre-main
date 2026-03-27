@@ -6,10 +6,12 @@ import {
   Trophy,
   Zap,
   Target,
-  Sparkles
+  Sparkles,
+  Bot
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { translations } from '../translations';
+import { ChatbotModal } from './ChatbotModal';
 
 interface HeaderProps {
   language: 'en' | 'or';
@@ -17,6 +19,8 @@ interface HeaderProps {
   setSidebarOpen: (val: boolean) => void;
   user: any;
   isPremium: boolean;
+  showChatbot: boolean;
+  setShowChatbot: (val: boolean) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -24,12 +28,15 @@ export const Header: React.FC<HeaderProps> = ({
   setLanguage,
   setSidebarOpen,
   user,
-  isPremium
+  isPremium,
+  showChatbot,
+  setShowChatbot
 }) => {
   const t = translations[language];
 
   return (
     <header className="sticky top-0 z-30 bg-slate-950/80 backdrop-blur-xl border-b border-white/5 px-6 py-4 flex items-center justify-between">
+      {showChatbot && <ChatbotModal onClose={() => setShowChatbot(false)} user={user} isPremium={isPremium} language={language} />}
       <div className="flex items-center gap-4">
         <button 
           onClick={() => setSidebarOpen(true)}
@@ -44,6 +51,12 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       <div className="flex items-center gap-4">
+        <button 
+          onClick={() => setShowChatbot(true)}
+          className="p-2 bg-emerald-600 rounded-full shadow-lg text-white hover:bg-emerald-500 transition-all"
+        >
+          <Bot size={20} />
+        </button>
         <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 rounded-2xl border border-emerald-500/20 text-emerald-400">
           <Flame size={18} className="fill-current" />
           <span className="text-sm font-black">{user?.streak || 0}</span>
