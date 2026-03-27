@@ -16,19 +16,19 @@
   ],
   "icons": [
     {
-      "src": "public/utkal-192.png",
+      "src": "/utkal-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "bigsan-512.png",
+      "src": "/bigsan-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "public/usc-markable.png",
+      "src": "/usc-markable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -36,7 +36,7 @@
   ],
   "screenshots": [
     {
-      "src": "public/usc-markable.png",
+      "src": "/gundulu.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",

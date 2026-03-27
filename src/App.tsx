@@ -87,6 +87,7 @@ import { ProgressChart } from './components/ProgressChart';
 import { useVoiceSearch } from './hooks/useVoiceSearch';
 import { OfflineService } from './services/offlineService';
 import { StudyBuddyView } from './components/StudyBuddyView';
+import { ChatbotModal } from './components/ChatbotModal';
 import { getDeferredPrompt, clearDeferredPrompt } from './pwa';
 
 
@@ -390,6 +391,7 @@ export default function App() {
   const [showConfigError, setShowConfigError] = useState<{title: string, message: string} | null>(null);
   const [showLaunchPoster, setShowLaunchPoster] = useState(() => !localStorage.getItem('utkalDivasSeen'));
   const [showInstallBanner, setShowInstallBanner] = useState(false);
+  const [showChatbot, setShowChatbot] = useState(false);
   
   // Auth State
   const [authStep, setAuthStep] = useState<'login' | 'otp'>('login');
@@ -1565,6 +1567,15 @@ export default function App() {
               {/* Subtle inner glow */}
               <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-blue-500/5 pointer-events-none"></div>
               
+              {/* Chatbot Button */}
+              <button 
+                onClick={() => setShowChatbot(true)}
+                className="absolute top-6 left-6 z-20 p-2 bg-emerald-600 rounded-full shadow-lg text-white hover:bg-emerald-500 transition-all"
+              >
+                <Bot size={20} />
+              </button>
+              {showChatbot && <ChatbotModal onClose={() => setShowChatbot(false)} user={user} isPremium={isPremium} language={language} />}
+
               <div className="absolute top-6 right-6 z-20">
                 <button 
                   onClick={() => {

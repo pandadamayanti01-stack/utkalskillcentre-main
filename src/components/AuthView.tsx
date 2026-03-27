@@ -122,6 +122,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
         className="w-full max-w-md relative z-10"
       >
         <div className="flex flex-col items-center mb-10">
+          <img src="/utkal-192.png" alt="Utkal 192 Logo" className="h-16 w-16 mb-4" referrerPolicy="no-referrer" />
           <Logo className="h-16 mb-4" />
           <BigsanBranding />
         </div>
