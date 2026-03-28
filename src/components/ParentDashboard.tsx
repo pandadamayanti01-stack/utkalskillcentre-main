@@ -86,7 +86,7 @@ export function ParentDashboard({ user, chapters, leaderboard, language, onBack,
     totalChapters: chapters.length
   };
 
-  const userRank = leaderboard.findIndex((s: any) => s.name === user.name) + 1 || '-';
+  const userRank = leaderboard.findIndex((s: any) => s?.name === user.name) + 1 || '-';
 
   const containerVariants = {
     hidden: { opacity: 0 },
