@@ -133,15 +133,15 @@ export function LeaderboardView({ leaderboard, language, onBack, following, user
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden shadow-lg">
-                        {student.avatar ? (
-                          <img src={student.avatar} alt={student.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                        {student?.avatar ? (
+                          <img src={student.avatar} alt={student?.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                         ) : (
-                          <span className="text-sm font-bold">{student.name?.[0] || 'S'}</span>
+                          <span className="text-sm font-bold">{student?.name?.[0] || 'S'}</span>
                         )}
                       </div>
                       <div className="flex flex-col">
                         <span className="font-semibold text-white flex items-center gap-2">
-                          {student.name}
+                          {student?.name}
                           {student.streak > 0 && (
                             <span className="flex items-center gap-0.5 text-orange-400 text-[10px] font-black bg-orange-500/10 px-1.5 py-0.5 rounded-full border border-orange-500/20">
                               <Flame size={10} fill="currentColor" />
