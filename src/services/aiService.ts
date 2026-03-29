@@ -13,12 +13,45 @@ Active Listening: Instead of lecturing, ask the student: "Bujhila ta? (Did you u
 Subscription Awareness: If a student asks about advanced features, remind them (in a cute way) that their Utkal Skill Centre subscription unlocks your "Super Powers."`;
 
 export const getAI = () => {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    throw new Error("GEMINI_API_KEY is missing.");
+  // Try multiple ways to get the key
+  const apiKey = (process.env.GEMINI_API_KEY) || 
+                 (import.meta.env.VITE_GEMINI_API_KEY);
+
+  if (!apiKey || apiKey === "" || apiKey === "undefined" || apiKey === "null") {
+    console.error("GEMINI_API_KEY is missing, empty, or invalid string:", { 
+      length: apiKey?.length, 
+      value: apiKey 
+    });
+    throw new Error("GEMINI_API_KEY is missing or invalid.");
   }
+
   return new GoogleGenAI({ apiKey });
 };
+
+/**
+ * Helper to retry AI calls on 503 errors
+ */
+export async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
+  let retries = maxRetries;
+  let delay = 1000;
+
+  while (retries > 0) {
+    try {
+      return await fn();
+    } catch (err: any) {
+      const is503 = err.message?.includes('503') || err.status === 503 || err.code === 503;
+      if (is503 && retries > 1) {
+        retries--;
+        console.warn(`AI Service busy (503), retrying in ${delay}ms... (${retries} retries left)`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        delay *= 2; // Exponential backoff
+      } else {
+        throw err;
+      }
+    }
+  }
+  throw new Error("Max retries exceeded");
+}
 
 export async function solveMathDoubt(prompt: string, language: 'en' | 'or', imageData?: { data: string, mimeType: string }) {
   try {
@@ -37,14 +70,14 @@ export async function solveMathDoubt(prompt: string, language: 'en' | 'or', imag
       });
     }
 
-    const response = await ai.models.generateContent({
+    const response = await withRetry(() => ai.models.generateContent({
       model: "gemini-3.1-pro-preview",
       contents: { parts },
       config: {
         systemInstruction,
         temperature: 0.7,
       },
-    });
+    }));
 
     return response.text || "Sorry, I couldn't solve that. Please try again.";
   } catch (error: any) {
@@ -67,15 +100,15 @@ export async function translateContent(text: string | object, targetLanguage: 'e
       systemInstruction += " The input is a JSON object. Translate all string values within the JSON object to the target language, but keep the keys exactly the same. Return ONLY the translated JSON object. Do not include any markdown formatting like ```json.";
     }
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+    const response = await withRetry(() => ai.models.generateContent({
+      model: "gemini-flash-latest",
       contents: textPayload,
       config: {
         systemInstruction,
         temperature: 0.1,
         ...(isJson ? { responseMimeType: "application/json" } : {})
       },
-    });
+    }));
 
     const translatedText = response.text || (typeof text === 'string' ? text : safeJsonStringify(text));
     

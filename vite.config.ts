@@ -8,6 +8,8 @@ import { VitePWA } from 'vite-plugin-pwa';
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   
+  const geminiKey = process.env.VITE_GEMINI_API_KEY || env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY || process.env.API_KEY || env.GEMINI_API_KEY || env.API_KEY || "";
+  
   // Load Firebase config from JSON if it exists
   let firebaseConfig = {};
   const configPath = path.resolve(__dirname, 'firebase-applet-config.json');
@@ -64,7 +66,8 @@ export default defineConfig(({mode}) => {
     ],
     define: {
       'process.env.NODE_ENV': JSON.stringify(mode),
-      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY || process.env.GEMINI_API_KEY || env.API_KEY || process.env.API_KEY || ""),
+      'process.env.GEMINI_API_KEY': JSON.stringify(geminiKey),
+      'import.meta.env.VITE_GEMINI_API_KEY': JSON.stringify(geminiKey),
       'import.meta.env.VITE_RAZORPAY_KEY': JSON.stringify(env.VITE_RAZORPAY_KEY || process.env.VITE_RAZORPAY_KEY || "rzp_live_SSN1ujW6x6SBco"),
       '__FIREBASE_CONFIG__': JSON.stringify(firebaseConfig),
     },
