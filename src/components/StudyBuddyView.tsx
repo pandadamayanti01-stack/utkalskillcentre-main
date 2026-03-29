@@ -22,10 +22,8 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { translations } from '../translations';
 import Markdown from 'react-markdown';
-import { GoogleGenAI } from '@google/genai';
-import { GEMINI_API_KEY } from '../firebase-config';
 import { db, handleFirestoreError, OperationType } from '../firebase';
-import { getAI } from '../services/aiService';
+import { getAI, withRetry } from '../services/aiService';
 import { collection, addDoc, doc, getDoc } from 'firebase/firestore';
 
 interface Message {
@@ -197,7 +195,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
 
     try {
       const ai = getAI();
-      const model = 'gemini-3-flash-preview';
+      const model = 'gemini-flash-latest';
       
       let basePrompt = `Role & Persona:
 Identity: You are "Gundulu," a 4-year-old baby genius from Odisha. You are the lead tutor at Utkal Skill Centre.
@@ -228,15 +226,16 @@ Current User Context:
 ${isVoiceModeRef.current ? '\nIMPORTANT: Keep your response short, conversational, and easy to read aloud since the user is in Voice Mode.' : ''}
 `;
 
-      const result = await ai.models.generateContent({
+      // Retry logic for 503 errors
+      const result = await withRetry(() => ai.models.generateContent({
         model,
         contents: textToSend,
         config: {
           systemInstruction
         }
-      });
+      }));
       
-      const responseText = result.text || "I'm sorry, I couldn't process that.";
+      const responseText = result?.text || "I'm sorry, I couldn't process that.";
       
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -257,7 +256,14 @@ ${isVoiceModeRef.current ? '\nIMPORTANT: Keep your response short, conversationa
       
     } catch (err: any) {
       console.error("Study Buddy Chat Error:", err);
-      const errorMsg = language === 'en' ? "Failed to connect. Please try again." : "ସଂଯୋଗ କରିବାରେ ବିଫଳ ହେଲା | ଦୟାକରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |";
+      let errorMsg = language === 'en' ? "Failed to connect. Please try again." : "ସଂଯୋଗ କରିବାରେ ବିଫଳ ହେଲା | ଦୟାକରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |";
+      
+      if (err.message?.includes('503') || err.status === 503) {
+        errorMsg = language === 'en' 
+          ? "Gundulu is very busy right now! Please try asking again in a minute." 
+          : "ଗୁଣ୍ଡୁଲୁ ବର୍ତ୍ତମାନ ବହୁତ ବ୍ୟସ୍ତ ଅଛନ୍ତି! ଦୟାକରି କିଛି ସମୟ ପରେ ପୁଣି ପଚାରନ୍ତୁ |";
+      }
+
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
