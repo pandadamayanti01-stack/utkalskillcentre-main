@@ -108,9 +108,18 @@ async function startServer() {
     }
   });
 
+  // Helper to get price
+  function getPrice(userClass: number, planType: 'monthly' | 'yearly'): number {
+    if (userClass >= 1 && userClass <= 3) return planType === 'monthly' ? 99 : 499;
+    if (userClass >= 4 && userClass <= 7) return planType === 'monthly' ? 199 : 999;
+    if (userClass >= 8 && userClass <= 10) return planType === 'monthly' ? 299 : 1999;
+    return 999; // Default
+  }
+
   app.post('/api/payment/create-order', async (req, res) => {
     try {
-      const { amount, userId } = req.body;
+      const { userClass, planType, userId } = req.body;
+      const amount = getPrice(userClass, planType);
       const rzp = getRazorpay();
       
       if (!rzp) {
@@ -140,7 +149,7 @@ async function startServer() {
 
   app.post('/api/payment/verify', async (req, res) => {
     try {
-      const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+      const { razorpay_order_id, razorpay_payment_id, razorpay_signature, amount, userId, userClass } = req.body;
       
       const keySecret = process.env.RAZORPAY_KEY_SECRET;
       
@@ -154,6 +163,15 @@ async function startServer() {
       const generated_signature = hmac.digest('hex');
       
       if (generated_signature === razorpay_signature) {
+        // Log transaction to Firestore
+        await admin.firestore().collection('transactions').add({
+          payment_id: razorpay_payment_id,
+          order_id: razorpay_order_id,
+          amount: amount / 100,
+          userId,
+          class: userClass,
+          timestamp: admin.firestore.FieldValue.serverTimestamp()
+        });
         res.json({ success: true });
       } else {
         console.error('Invalid payment signature');

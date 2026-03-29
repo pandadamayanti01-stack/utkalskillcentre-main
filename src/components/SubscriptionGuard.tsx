@@ -3,7 +3,7 @@ import { ArrowLeft, Send } from 'lucide-react';
 import { translations } from '../translations';
 
 interface SubscriptionGuardProps {
-  onSubscribe: (amount: number, type: 'monthly' | 'yearly') => void;
+  onSubscribe: (amount: number, type: 'monthly' | 'yearly', userClass: number) => void;
   language: 'en' | 'or';
   isPremium: boolean;
   user: any;
@@ -82,7 +82,7 @@ export function SubscriptionGuard({ onSubscribe, language, isPremium, user, onSh
           {!isPremium ? (
             <div className="space-y-4">
               <button 
-                onClick={() => onSubscribe(monthlyPrice, 'monthly')}
+                onClick={() => onSubscribe(monthlyPrice, 'monthly', user?.class || 1)}
                 className="w-full py-4 rounded-2xl bg-emerald-600 text-white font-bold text-lg hover:bg-emerald-500 transition-all shadow-xl shadow-emerald-900/20"
               >
                 {language === 'en' ? `Subscribe Monthly (₹${monthlyPrice})` : `ମାସିକ ସବସ୍କ୍ରିପସନ୍ (₹${monthlyPrice})`}
@@ -118,7 +118,7 @@ export function SubscriptionGuard({ onSubscribe, language, isPremium, user, onSh
                 </div>
 
                 <button 
-                  onClick={() => onSubscribe(yearlyPrice, 'yearly')}
+                  onClick={() => onSubscribe(yearlyPrice, 'yearly', user?.class || 1)}
                   disabled={((user?.shareCount || 0) < 5)}
                   className={`w-full py-4 rounded-2xl font-bold text-lg transition-all ${
                     ((user?.shareCount || 0) >= 5)

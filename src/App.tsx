@@ -55,7 +55,7 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
 import { GoogleGenAI } from "@google/genai";
-import { GEMINI_API_KEY } from './firebase-config';
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 import { auth, db as firestore, safeJsonStringify } from './firebase';
 import { 
   signInWithPopup, 
@@ -1191,7 +1191,7 @@ export default function App() {
     });
   };
 
-  const handleSubscribe = async (amount: number, planType: 'monthly' | 'yearly' = 'monthly') => {
+  const handleSubscribe = async (amount: number, planType: 'monthly' | 'yearly' = 'monthly', userClass: number = 1) => {
     if (!user) return;
 
     if (planType === 'yearly') {
@@ -1214,7 +1214,7 @@ export default function App() {
         const orderData = await fetchJson('/api/payment/create-order', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: safeJsonStringify({ userId: user.id, amount })
+          body: safeJsonStringify({ userId: user.id, amount, userClass, planType })
         });
 
         console.log("Order created:", orderData);
@@ -1256,7 +1256,9 @@ export default function App() {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
-                userId: user.id
+                userId: user.id,
+                amount: amount,
+                userClass: userClass
               })
             });
 
