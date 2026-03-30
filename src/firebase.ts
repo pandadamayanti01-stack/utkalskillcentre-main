@@ -44,8 +44,8 @@ setPersistence(auth, browserLocalPersistence).catch((err) => {
   console.error("Auth persistence error:", err);
 });
 
-// Auth helper functions
 export const signInWithGoogle = () => signInWithPopup(auth, googleProvider);
+export { onAuthStateChanged } from 'firebase/auth';
 export const logout = () => {
   // Clear local cache on logout to ensure a clean state for the next user
   localStorage.clear();

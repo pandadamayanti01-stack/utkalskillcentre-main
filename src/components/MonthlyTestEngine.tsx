@@ -6,12 +6,12 @@ import {
   Loader2 
 } from 'lucide-react';
 import { translations } from '../translations';
-import { MonthlyTest } from '../types';
+import { Test } from '../types';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db as firestore } from '../firebase';
 
 interface MonthlyTestEngineProps {
-  test: MonthlyTest;
+  test: Test;
   onComplete: () => void;
   onBack: () => void;
   language: 'en' | 'or';
@@ -37,16 +37,14 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
         return acc + (selectedOption === test.questions[i].correct_answer ? 1 : 0);
       }, 0);
       
-      await addDoc(collection(firestore, 'monthly_test_submissions'), {
+      await addDoc(collection(firestore, 'test_submissions'), {
         testId: test.id,
         userId: user.uid,
         userName: user.displayName || 'Student',
-        class: user.class,
         answers,
         score,
         totalQuestions: test.questions.length,
         submittedAt: serverTimestamp(),
-        rank: null
       });
 
       onComplete();
@@ -96,18 +94,22 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
         <h2 className="text-2xl font-bold text-white mb-8 leading-relaxed">{q.question}</h2>
         
         <div className="grid grid-cols-1 gap-4">
-          {q.options.map((opt: string, idx: number) => (
-            <button 
-              key={idx}
-              onClick={() => handleAnswer(idx)}
-              className={`flex items-center gap-4 p-6 rounded-2xl border transition-all text-left ${answers[currentIdx] === idx ? 'bg-emerald-500/10 border-emerald-500 text-white' : 'bg-slate-800/50 border-white/5 text-slate-400 hover:border-white/20 hover:text-white'}`}
-            >
-              <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold ${answers[currentIdx] === idx ? 'bg-emerald-500 text-white' : 'bg-slate-700 text-slate-400'}`}>
-                {String.fromCharCode(65 + idx)}
-              </div>
-              <span className="text-lg font-medium">{opt}</span>
-            </button>
-          ))}
+          {Array.isArray(q.options) ? (
+            q.options.map((opt: string, idx: number) => (
+              <button 
+                key={idx}
+                onClick={() => handleAnswer(idx)}
+                className={`flex items-center gap-4 p-6 rounded-2xl border transition-all text-left ${answers[currentIdx] === idx ? 'bg-emerald-500/10 border-emerald-500 text-white' : 'bg-slate-800/50 border-white/5 text-slate-400 hover:border-white/20 hover:text-white'}`}
+              >
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold ${answers[currentIdx] === idx ? 'bg-emerald-500 text-white' : 'bg-slate-700 text-slate-400'}`}>
+                  {String.fromCharCode(65 + idx)}
+                </div>
+                <span className="text-lg font-medium">{opt}</span>
+              </button>
+            ))
+          ) : (
+            <div className="text-slate-500 text-sm italic">Options unavailable.</div>
+          )}
         </div>
       </div>
 

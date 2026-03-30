@@ -3,11 +3,11 @@ const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/logo_utkal.png',
-  '/logo_bigsan.png',
-  '/icon-192.png',
-  '/icon-512.png',
-  '/icon-maskable.png'
+  '/utkal-192.png',
+  '/bigsan-512.png',
+  '/utkal-192.png',
+  '/utkal-512.png',
+  '/usc-markable.png'
 ];
 
 self.addEventListener('install', (event) => {

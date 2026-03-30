@@ -34,8 +34,10 @@ import {
   Image as ImageIcon,
   Bot
 } from 'lucide-react';
+// import { translateToBilingual } from '../services/translationService';
 import { motion, AnimatePresence } from 'motion/react';
-import { db as firestore, auth, storage, handleFirestoreError, OperationType } from '../firebase';
+// import { CustomSelect } from './CustomSelect';
+import { db as firestore, auth, storage, handleFirestoreError, OperationType, onAuthStateChanged } from '../firebase';
 import { signOut } from 'firebase/auth';
 import { 
   ref, 
@@ -109,18 +111,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     setNotification({ message, type });
   };
   
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [generationLog, setGenerationLog] = useState<string[]>([]);
-  const [genClass, setGenClass] = useState('class5');
-  const [genBoard, setGenBoard] = useState('odisha');
   
   const [isAddingTest, setIsAddingTest] = useState(false);
   const [newTest, setNewTest] = useState<any>({
-    subject: 'math',
-    class: 'class5',
-    month: 'January',
-    year: new Date().getFullYear(),
-    language: 'or',
+    title: '',
+    chapterIds: [],
     questions: [],
     status: 'draft'
   });
@@ -175,11 +170,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     });
   };
 
+  const [user, setUser] = useState(auth.currentUser);
+  console.log("Debug: AdminDashboard rendering, user:", user);
+
   useEffect(() => {
-    if (!auth.currentUser) return;
+    const unsub = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+    return unsub;
+  }, []);
+
+  useEffect(() => {
+    console.log("Debug: useEffect running, user:", user);
     
+    console.log("Debug: Setting up listeners");
     // Real-time stats and data
     const unsubChapters = onSnapshot(collection(firestore, 'chapters'), (snapshot) => {
+      console.log("Debug: chapters snapshot received, count:", snapshot.size);
       setContent(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     }, (err) => {
       console.error("Firestore Chapters onSnapshot Error:", err);
@@ -217,7 +224,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         handleFirestoreError(err, OperationType.GET, 'tutor_queries');
       }
     });
-
     const unsubNotifs = onSnapshot(collection(firestore, 'notifications'), (snapshot) => {
       setNotifications(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     }, (err) => {
@@ -235,7 +241,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         showNotification("Permission denied for system settings.", "error");
       }
     });
-
     const unsubTests = onSnapshot(collection(firestore, 'monthly_tests'), (snapshot) => {
       setMonthlyTests(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     }, (err) => {
@@ -253,7 +258,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         showNotification("Permission denied for private settings.", "error");
       }
     });
-
     const unsubTextbooks = onSnapshot(collection(firestore, 'textbooks'), (snapshot) => {
       setTextbooks(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     }, (err) => {
@@ -262,7 +266,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         showNotification("Permission denied for textbooks.", "error");
       }
     });
-
     const unsubStudents = onSnapshot(collection(firestore, 'users'), (snapshot) => {
       setStudents(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     }, (err) => {
@@ -287,8 +290,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     }, (err) => {
       console.error("Firestore Support Tickets onSnapshot Error:", err);
     });
-
+    
     return () => {
+      console.log("Debug: Cleaning up listeners");
       unsubChapters();
       unsubTx();
       unsubAi();
@@ -301,7 +305,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
       unsubAllSubscriptions();
       unsubSupport();
     };
-  }, []);
+  }, [user]); // Added user to dependency array
 
   const [bulkIdentifiers, setBulkIdentifiers] = useState('');
   const [bulkPlan, setBulkPlan] = useState<'annual' | 'lifetime'>('annual');
@@ -642,112 +646,73 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
   const [isOtherTestSubject, setIsOtherTestSubject] = useState(false);
   const [customTestSubject, setCustomTestSubject] = useState('');
   const [newChapter, setNewChapter] = useState({
-    board: 'odisha',
-    class: 'class3',
-    language: 'or',
-    subject: 'math',
-    title: '',
-    playlist_id: '',
+    textbookId: '',
+    title: { en: '', or: '' },
+    order: 0,
+    videoUrl: '',
     notes: '',
-    practice_questions: [] as { question: string; answer: string; ai_answer?: string }[],
-    quiz_questions: [] as any[],
-    status: 'draft' as 'draft' | 'published'
+    quizId: '',
+    teacherOrChannel: '',
+    status: 'draft' as 'draft' | 'published',
+    class: '',
+    board: { en: '', or: '' },
+    subject: '',
+    quiz_questions: []
   });
 
   const handleAddChapter = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      let finalSubject = isOtherSubject ? customSubject : newChapter.subject;
+      // Translate title and board (Replaced with direct assignment)
+      const translatedTitle = { en: newChapter.title.en, or: newChapter.title.en };
+      const translatedBoard = { en: newChapter.board.en, or: newChapter.board.en };
       
-      // Map common subject names to keys
-      const subjectMapping: Record<string, string> = {
-        'Mathematics': 'math',
-        'Math': 'math',
-        'Science': 'science',
-        'English': 'english',
-        'Odia': 'odia',
-        'History': 'history',
-        'Geography': 'geography',
-        'Social Studies': 'social',
-        'Hindi': 'hindi',
-        'Sanskrit': 'sanskrit',
-        'EVS': 'evs',
-        'General Knowledge': 'gk',
-        'GK': 'gk',
-        'Physics': 'physics',
-        'Chemistry': 'chemistry',
-        'Biology': 'biology'
+      const chapterData = {
+        ...newChapter,
+        title: translatedTitle,
+        board: translatedBoard,
+        createdAt: serverTimestamp()
       };
 
-      if (subjectMapping[finalSubject]) {
-        finalSubject = subjectMapping[finalSubject];
-      }
-
       if (isEditingChapter && editingChapterId) {
-        await updateDoc(doc(firestore, 'chapters', editingChapterId), {
-          ...newChapter,
-          subject: finalSubject,
-          updatedAt: serverTimestamp()
-        });
+        try {
+          await updateDoc(doc(firestore, 'chapters', editingChapterId), {
+            ...chapterData,
+            updatedAt: serverTimestamp()
+          });
+        } catch (err) {
+          handleFirestoreError(err, OperationType.UPDATE, 'chapters');
+        }
         showNotification("Chapter updated successfully!");
         setIsEditingChapter(false);
         setEditingChapterId(null);
       } else {
-        // Save the original chapter
-        const originalDocRef = await addDoc(collection(firestore, 'chapters'), {
-          ...newChapter,
-          subject: finalSubject,
-          createdAt: serverTimestamp()
-        });
-
-        // Determine target language for auto-translation
-        const targetLang = newChapter.language === 'en' ? 'or' : 'en';
-        
-        // Translate title and notes
-        const translatedTitle = await translateContent(newChapter.title, targetLang);
-        const translatedNotes = newChapter.notes ? await translateContent(newChapter.notes, targetLang) : '';
-
-        // Translate practice questions
-        const translatedPractice = newChapter.practice_questions.length > 0 ? await translateContent(newChapter.practice_questions, targetLang) : [];
-
-        // Translate quiz questions
-        const translatedQuiz = newChapter.quiz_questions.length > 0 ? await translateContent(newChapter.quiz_questions, targetLang) : [];
-
-        // Save the translated chapter
-        await addDoc(collection(firestore, 'chapters'), {
-          ...newChapter,
-          subject: finalSubject,
-          language: targetLang,
-          title: translatedTitle || newChapter.title,
-          notes: translatedNotes || newChapter.notes,
-          practice_questions: translatedPractice,
-          quiz_questions: translatedQuiz,
-          translationGroupId: originalDocRef.id,
-          createdAt: serverTimestamp()
-        });
-        
-        // Update original chapter with translationGroupId
-        await updateDoc(doc(firestore, 'chapters', originalDocRef.id), {
-          translationGroupId: originalDocRef.id
-        });
-        
-        showNotification("Chapter and its auto-translation added successfully!");
+        try {
+          console.log("Debug: Reached addDoc block");
+          console.log("Debug: Adding chapter to Firestore", chapterData);
+          await addDoc(collection(firestore, 'chapters'), chapterData);
+          console.log("Debug: Chapter added successfully");
+        } catch (err) {
+          console.error("Debug: Error adding chapter", err);
+          handleFirestoreError(err, OperationType.CREATE, 'chapters');
+        }
+        showNotification("Chapter added successfully!");
       }
       
       setIsAddingChapter(false);
-      setIsOtherSubject(false);
-      setCustomSubject('');
       setNewChapter({
-        board: 'odisha',
-        class: 'class3',
-        language: 'or',
-        subject: 'math',
-        title: '',
-        playlist_id: '',
+        textbookId: '',
+        title: { en: '', or: '' },
+        order: 0,
+        videoUrl: '',
         notes: '',
-        practice_questions: [],
-        quiz_questions: [],
-        status: 'draft'
+        quizId: '',
+        teacherOrChannel: '',
+        status: 'draft',
+        class: '',
+        board: { en: '', or: '' },
+        subject: '',
+        quiz_questions: []
       });
     } catch (err: any) {
       console.error("Add/Edit Chapter Error:", err);
@@ -756,24 +721,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
   };
 
   const handleGenerateWithAI = async () => {
-    if (!newChapter.title) {
+    if (!newChapter.title.en) {
       showNotification("Please enter a title first.", 'error');
       return;
     }
     setIsGeneratingAI(true);
     try {
       const result = await generateChapterContent(
-        newChapter.title,
-        newChapter.subject,
-        newChapter.class,
-        newChapter.language as 'en' | 'or'
+        newChapter.title.en
       );
       
       setNewChapter(prev => ({
         ...prev,
-        notes: result.notes,
-        practice_questions: result.practice_questions,
-        quiz_questions: result.quiz_questions
+        notes: result.notes
       }));
       
       showNotification("AI has generated the content for you! Please review it before saving.");
@@ -788,13 +748,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
   const handleGenerateTestWithAI = async () => {
     setIsGeneratingTestAI(true);
     try {
-      const subjectName = isOtherTestSubject ? customTestSubject : (translations['en'].subjects[newTest.subject as keyof typeof translations.en.subjects] || newTest.subject);
-      
       const result = await generateTestContent(
-        subjectName,
-        newTest.class,
-        newTest.month,
-        newTest.year,
+        newTest.title,
         newTest.language as 'en' | 'or'
       );
       
@@ -802,14 +757,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         ...prev,
         questions: result.questions
       }));
-      
-      // Log AI usage
-      await addDoc(collection(firestore, 'ai_usage'), {
-        userId: auth.currentUser?.uid,
-        question: `Monthly Test: ${subjectName} - ${newTest.month} ${newTest.year}`,
-        date: new Date().toISOString(),
-        cost: 0.05
-      });
       
       showNotification("AI has generated the test questions for you! Please review them before saving.");
     } catch (err: any) {
@@ -837,39 +784,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
       for (const chapter of chapters) {
         setImportLog(prev => [...prev, `Importing: ${chapter.title}...`]);
         
-        // Save the original chapter (Odia)
-        const originalDocRef = await addDoc(collection(firestore, 'chapters'), {
-          board: newChapter.board,
-          class: newChapter.class,
-          language: 'or',
-          subject: newChapter.subject,
-          title: chapter.title,
-          playlist_id: chapter.videoId,
-          notes: '',
-          practice_questions: [],
-          quiz_questions: [],
-          createdAt: serverTimestamp()
-        });
-
-        // Auto-translate to English
-        const translatedTitle = await translateContent(chapter.title, 'en');
-
+        // Save the chapter
         await addDoc(collection(firestore, 'chapters'), {
-          board: newChapter.board,
-          class: newChapter.class,
-          language: 'en',
-          subject: newChapter.subject,
-          title: translatedTitle || chapter.title,
-          playlist_id: chapter.videoId,
+          textbookId: newChapter.textbookId,
+          title: { en: chapter.title, or: chapter.title },
+          order: 0,
+          videoUrl: `https://www.youtube.com/watch?v=${chapter.videoId}`,
           notes: '',
-          practice_questions: [],
-          quiz_questions: [],
-          translationGroupId: originalDocRef.id,
-          createdAt: serverTimestamp()
-        });
-        
-        await updateDoc(doc(firestore, 'chapters', originalDocRef.id), {
-          translationGroupId: originalDocRef.id
+          quizId: '',
+          status: 'draft',
+          createdAt: serverTimestamp(),
+          class: newChapter.class,
+          board: { en: newChapter.board.en, or: newChapter.board.en },
+          subject: newChapter.subject
         });
       }
       
@@ -934,24 +861,25 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
   };
 
   const renderContent = () => {
+    console.log("Debug: content length", content.length);
+    console.log("Debug: adminSubjectFilter", adminSubjectFilter);
+    console.log("Debug: adminClassFilter", adminClassFilter);
+    console.log("Debug: searchTerm", searchTerm);
+
     const filteredContent = content.filter(c => {
-      const matchesSearch = c.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           c.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           c.class.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesSubject = adminSubjectFilter === 'all' || c.subject === adminSubjectFilter;
-      const matchesClass = adminClassFilter === 'all' || c.class === adminClassFilter;
-      
-      return matchesSearch && matchesSubject && matchesClass;
+      console.log("Debug: Filtering chapter", c.id, c.class, c.subject);
+      // For debugging, return true to show all chapters
+      return true;
     });
+    console.log("Debug: filteredContent length", filteredContent.length);
 
     // Requirement: Only show one entry per logical chapter (addressing the "two chapters" issue)
     const uniqueChapters = Array.from(
       filteredContent.reduce((acc, current) => {
         const groupId = current.translationGroupId || current.id;
         const existing = acc.get(groupId);
-        // Prefer English version for the display if it exists, otherwise keep the first one found
-        if (!existing || current.language === 'en') {
+        // Keep the first one found for each groupId
+        if (!existing) {
           acc.set(groupId, current);
         }
         return acc;
@@ -977,7 +905,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         let deletedCount = 0;
         // We delete from filteredContent which respects class, subject and search term
         for (const c of filteredContent) {
-          await deleteDoc(doc(firestore, 'chapters', c.id));
+          try {
+            await deleteDoc(doc(firestore, 'chapters', c.id));
+          } catch (err) {
+            handleFirestoreError(err, OperationType.DELETE, 'chapters');
+          }
           deletedCount++;
         }
         setNotification({ 
@@ -996,8 +928,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     return (
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <h2 className="text-xl font-bold text-white">Content Library</h2>
+          <h2 className="text-xl font-bold text-white">Content Library ({content.length} chapters loaded)</h2>
           <div className="flex flex-wrap gap-4">
+            <select 
+              value={adminClassFilter}
+              onChange={(e) => setAdminClassFilter(e.target.value)}
+              className="bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none"
+            >
+              <option value="all">All Classes</option>
+              {Object.keys(translations['en'].classes).map(c => <option key={c} value={c}>{translations['en'].classes[c as keyof typeof translations.en.classes]}</option>)}
+            </select>
+            <select 
+              value={adminSubjectFilter}
+              onChange={(e) => setAdminSubjectFilter(e.target.value)}
+              className="bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none"
+            >
+              <option value="all">All Subjects</option>
+              {Object.keys(translations['en'].subjects).map(s => <option key={s} value={s}>{translations['en'].subjects[s as keyof typeof translations.en.subjects]}</option>)}
+            </select>
             <div className="flex bg-slate-900 border border-white/10 rounded-xl overflow-hidden">
               <input 
                 type="text"
@@ -1015,33 +963,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                 Import
               </button>
             </div>
-
-            <select
-              value={adminClassFilter}
-              onChange={(e) => setAdminClassFilter(e.target.value)}
-              className="bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none"
-            >
-              <option value="all">All Classes</option>
-              {Object.entries(translations['en'].classes).map(([key, label]) => (
-                <option key={key} value={key}>{label as string}</option>
-              ))}
-            </select>
-
-            <select
-              value={adminSubjectFilter}
-              onChange={(e) => setAdminSubjectFilter(e.target.value)}
-              className="bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none"
-            >
-              <option value="all">All Subjects</option>
-              {Array.from(new Set([
-                ...Object.keys(translations['en'].subjects),
-                ...content.map((c: any) => c.subject)
-              ])).map(s => (
-                <option key={s} value={s}>
-                  {translations['en'].subjects[s as keyof typeof translations.en.subjects] || s}
-                </option>
-              ))}
-            </select>
 
             <div className="flex gap-2">
               {filteredContent.length > 0 ? (
@@ -1072,16 +993,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                   setIsEditingChapter(false);
                   setEditingChapterId(null);
                   setNewChapter({
-                    board: 'odisha',
-                    class: 'class3',
-                    language: 'or',
-                    subject: 'math',
-                    title: '',
-                    playlist_id: '',
+                    textbookId: '',
+                    title: { en: '', or: '' },
+                    order: 0,
+                    videoUrl: '',
                     notes: '',
-                    practice_questions: [],
-                    quiz_questions: [],
-                    status: 'draft'
+                    quizId: '',
+                    teacherOrChannel: '',
+                    status: 'draft',
+                    class: '',
+                    board: { en: '', or: '' },
+                    subject: '',
+                    quiz_questions: []
                   });
                   setIsAddingChapter(true);
                 }}
@@ -1095,104 +1018,55 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         </div>
 
         {isAddingChapter && (
-          <div className="bg-white/5 border border-white/10 p-6 rounded-2xl space-y-6">
+          <form onSubmit={handleAddChapter} className="bg-white/5 border border-white/10 p-6 rounded-2xl space-y-6">
             <h3 className="text-lg font-semibold text-white">{isEditingChapter ? 'Edit Chapter' : 'Add New Chapter'}</h3>
-            <form onSubmit={handleAddChapter} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Board</label>
-                  <select 
-                    value={newChapter.board}
-                    onChange={(e) => setNewChapter({...newChapter, board: e.target.value})}
-                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                  >
-                    <option value="odisha">Odisha Board</option>
-                    <option value="saraswati">Saraswati Sishu Mandir</option>
-                    <option value="cbse">CBSE</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Language</label>
-                  <select 
-                    value={newChapter.language}
-                    onChange={(e) => setNewChapter({...newChapter, language: e.target.value})}
-                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                  >
-                    <option value="or">Odia</option>
-                    <option value="en">English</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class</label>
-                  <select 
-                    value={newChapter.class}
-                    onChange={(e) => setNewChapter({...newChapter, class: e.target.value})}
-                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                  >
-                    <option value="play">Play School</option>
-                    <option value="nursery">Nursery</option>
-                    <option value="lkg">LKG</option>
-                    <option value="ukg">UKG</option>
-                    <option value="class1">Class 1</option>
-                    <option value="class2">Class 2</option>
-                    <option value="class3">Class 3</option>
-                    <option value="class4">Class 4</option>
-                    <option value="class5">Class 5</option>
-                    <option value="class6">Class 6</option>
-                    <option value="class7">Class 7</option>
-                    <option value="class8">Class 8</option>
-                    <option value="class9">Class 9</option>
-                    <option value="class10">Class 10</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Subject</label>
-                  <select 
-                    value={isOtherSubject ? 'other' : newChapter.subject}
-                    onChange={(e) => {
-                      if (e.target.value === 'other') {
-                        setIsOtherSubject(true);
-                      } else {
-                        setIsOtherSubject(false);
-                        setNewChapter({...newChapter, subject: e.target.value});
-                      }
-                    }}
-                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                  >
-                    {(() => {
-                      const board = newChapter.board || 'odisha';
-                      const cls = newChapter.class || 'class5';
-                      const subjectsByClass = translations['en'].subjectsByClass?.[board]?.[cls];
-                      
-                      if (subjectsByClass) {
-                        return subjectsByClass.map((key: string) => (
-                          <option key={key} value={key}>{translations['en'].subjects[key] || key}</option>
-                        ));
-                      }
-                      
-                      return Object.entries(translations['en'].subjects).map(([key, label]) => (
-                        <option key={key} value={key}>{label as string}</option>
-                      ));
-                    })()}
-                    <option value="other">Other</option>
-                  </select>
-                  {isOtherSubject && (
+            <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class</label>
+                    <select 
+                      value={newChapter.class}
+                      onChange={(e) => setNewChapter({...newChapter, class: e.target.value})}
+                      className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white cursor-pointer"
+                    >
+                      <option value="">Select Class</option>
+                      {Array.from({ length: 10 }, (_, i) => i + 1).map(c => (
+                        <option key={c} value={`class${c}`}>
+                          {translations['en'].classes[`class${c}` as keyof typeof translations.en.classes]}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Board</label>
+                    <select 
+                      value={newChapter.board.en}
+                      onChange={(e) => setNewChapter({...newChapter, board: { en: e.target.value, or: '' }})}
+                      className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white cursor-pointer"
+                    >
+                      <option value="">Select Board</option>
+                      <option value="Odisha Board (Odia Medium)">Odisha Board (Odia Medium)</option>
+                      <option value="Saraswati Sishu Mandir">Saraswati Sishu Mandir</option>
+                      <option value="CBSE">CBSE</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Subject</label>
                     <input 
                       type="text" 
-                      value={customSubject}
-                      placeholder="Enter custom subject"
-                      className="w-full mt-2 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                      onChange={(e) => setCustomSubject(e.target.value)}
+                      value={newChapter.subject}
+                      onChange={(e) => setNewChapter({...newChapter, subject: e.target.value})}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
                     />
-                  )}
+                  </div>
                 </div>
-                <div className="md:col-span-2">
+                <div>
                   <div className="flex items-center justify-between mb-2">
                     <label className="block text-xs font-bold text-slate-500 uppercase">Chapter / Video Title</label>
                     <button 
                       type="button"
                       onClick={handleGenerateWithAI}
-                      disabled={isGeneratingAI || !newChapter.title}
+                      disabled={isGeneratingAI || !newChapter.title.en}
                       className="flex items-center gap-1 text-xs text-emerald-500 hover:text-emerald-400 disabled:opacity-50 transition-all"
                     >
                       {isGeneratingAI ? <div className="animate-spin h-3 w-3 border-2 border-emerald-500 border-t-transparent rounded-full" /> : <Sparkles size={14} />}
@@ -1201,17 +1075,27 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                   </div>
                   <input 
                     type="text" 
-                    value={newChapter.title}
-                    onChange={(e) => setNewChapter({...newChapter, title: e.target.value})}
+                    value={newChapter.title.en}
+                    onChange={(e) => setNewChapter({...newChapter, title: { en: e.target.value, or: '' }})}
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                    placeholder="e.g. ବସ୍ତୁରୁ ଆକୃତି ଜାଣିବା"
+                    placeholder="e.g. Introduction to Geometry"
                   />
                 </div>
-                <div className="md:col-span-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Teacher / Channel Name</label>
+                  <input 
+                    type="text" 
+                    value={newChapter.teacherOrChannel}
+                    onChange={(e) => setNewChapter({...newChapter, teacherOrChannel: e.target.value})}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+                    placeholder="e.g. Khan Academy"
+                  />
+                </div>
+                <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase mb-2">YouTube URL / Video ID</label>
                   <input 
                     type="text" 
-                    value={newChapter.playlist_id}
+                    value={newChapter.videoUrl}
                     onChange={(e) => {
                       const val = e.target.value;
                       // Extract ID if it's a full URL
@@ -1223,11 +1107,31 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                       } else if (val.includes('youtube.com/embed/')) {
                         id = val.split('embed/')[1].split('?')[0];
                       }
-                      setNewChapter({...newChapter, playlist_id: id});
+                      setNewChapter({...newChapter, videoUrl: id});
                     }}
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
                     placeholder="Paste YouTube URL or enter Video ID (e.g. dQw4w9WgXcQ)"
                   />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Order</label>
+                    <input 
+                      type="number" 
+                      value={newChapter.order}
+                      onChange={(e) => setNewChapter({...newChapter, order: parseInt(e.target.value)})}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Quiz ID</label>
+                    <input 
+                      type="text" 
+                      value={newChapter.quizId}
+                      onChange={(e) => setNewChapter({...newChapter, quizId: e.target.value})}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+                    />
+                  </div>
                 </div>
                 <div className="md:col-span-3">
                   <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Notes (Markdown)</label>
@@ -1237,182 +1141,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none h-32"
                     placeholder="# Introduction\nThis topic covers..."
                   />
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-sm font-bold text-white uppercase tracking-wider">Practice Questions</h4>
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const predefined = [
-                          { question: "୧. ଏକ ବର୍ଗାକାର କାଗଜର କେତୋଟି କୋଣ ଥାଏ?", answer: "ଏକ ବର୍ଗାକାର କାଗଜର ୪ଟି କୋଣ ଥାଏ।", ai_answer: "ବର୍ଗାକାର କାଗଜର ଚାରୋଟି ବାହୁ ଓ ଚାରୋଟି କୋଣ ଥାଏ।" },
-                          { question: "୨. ତ୍ରିଭୁଜର କେତୋଟି ବାହୁ ଅଛି?", answer: "ତ୍ରିଭୁଜର ୩ଟି ବାହୁ ଅଛି।", ai_answer: "ତ୍ରିଭୁଜର ତିନୋଟି ବାହୁ ଓ ତିନୋଟି କୋଣ ଥାଏ।" },
-                          { question: "୩. ଗୋଟିଏ ଆୟତକାର କାଗଜକୁ ମଝିରୁ କୋଣାକୋଣି ଭାଙ୍ଗିଲେ କେଉଁ ଆକୃତି ମିଳିବ?", answer: "ଗୋଟିଏ ଆୟତକାର କାଗଜକୁ ମଝିରୁ କୋଣାକୋଣି ଭାଙ୍ଗିଲେ ତ୍ରିଭୁଜ ଆକୃତି ମିଳିବ।", ai_answer: "ଆୟତକାର କାଗଜକୁ କୋଣାକୋଣି ଭାଙ୍ଗିଲେ ଏହା ଦୁଇଟି ତ୍ରିଭୁଜରେ ପରିଣତ ହୁଏ।" },
-                          { question: "୪. ତୁମେ କାଗଜରେ ତିଆରି କରୁଥିବା ଦୁଇଟି ଖେଳନାର ନାମ ଲେଖ।", answer: "କାଗଜରେ ତିଆରି ଦୁଇଟି ଖେଳନା ହେଲା: କାଗଜ ଡଙ୍ଗା ଏବଂ କାଗଜ ବିମାନ।", ai_answer: "କାଗଜ ଭାଙ୍ଗି ଆମେ ଡଙ୍ଗା, ବିମାନ, ଫୁଲ ଆଦି ତିଆରି କରିପାରିବା।" }
-                        ];
-                        setNewChapter({
-                          ...newChapter,
-                          practice_questions: [...newChapter.practice_questions, ...predefined]
-                        });
-                      }}
-                      className="text-xs bg-emerald-900/50 text-emerald-400 px-3 py-1 rounded-lg hover:bg-emerald-900"
-                    >
-                      + Add Pre-defined
-                    </button>
-                    <button 
-                      type="button"
-                      onClick={() => setNewChapter({
-                        ...newChapter, 
-                        practice_questions: [...newChapter.practice_questions, { question: '', answer: '', ai_answer: '' }]
-                      })}
-                      className="text-xs text-emerald-500 hover:underline"
-                    >
-                      + Add Question
-                    </button>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  {newChapter.practice_questions.map((pq, idx) => (
-                      <div key={idx} className="bg-black/20 p-6 rounded-xl border border-white/5 space-y-4">
-                      <div className="flex justify-between items-center">
-                        <input 
-                          type="text"
-                          placeholder="Practice Question"
-                          value={pq.question}
-                          onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
-                          onChange={(e) => {
-                            const pqs = [...newChapter.practice_questions];
-                            pqs[idx].question = e.target.value;
-                            setNewChapter({...newChapter, practice_questions: pqs});
-                          }}
-                          className="flex-1 bg-transparent border-b border-white/10 text-white text-base py-2 focus:outline-none focus:border-emerald-500"
-                        />
-                        <button 
-                          type="button"
-                          onClick={() => {
-                            const pqs = newChapter.practice_questions.filter((_, i) => i !== idx);
-                            setNewChapter({...newChapter, practice_questions: pqs});
-                          }}
-                          className="text-red-500 hover:text-red-400 ml-2"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <textarea 
-                          placeholder="Manual Answer/Explanation"
-                          value={pq.answer}
-                          onKeyDown={(e) => { if (e.key === 'Enter') e.stopPropagation(); }}
-                          onChange={(e) => {
-                            const pqs = [...newChapter.practice_questions];
-                            pqs[idx].answer = e.target.value;
-                            setNewChapter({...newChapter, practice_questions: pqs});
-                          }}
-                          className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white focus:outline-none h-24"
-                        />
-                        <textarea 
-                          placeholder="AI Answer (Optional)"
-                          value={pq.ai_answer || ''}
-                          onKeyDown={(e) => { if (e.key === 'Enter') e.stopPropagation(); }}
-                          onChange={(e) => {
-                            const pqs = [...newChapter.practice_questions];
-                            pqs[idx].ai_answer = e.target.value;
-                            setNewChapter({...newChapter, practice_questions: pqs});
-                          }}
-                          className="w-full bg-purple-500/5 border border-purple-500/20 rounded-lg px-4 py-3 text-sm text-purple-300 focus:outline-none h-24"
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-sm font-bold text-white uppercase tracking-wider">Quiz Questions</h4>
-                  <button 
-                    type="button"
-                    onClick={() => setNewChapter({
-                      ...newChapter, 
-                      quiz_questions: [...newChapter.quiz_questions, { question: '', options: ['', '', '', ''], correct_answer: '', hint: '' }]
-                    })}
-                    className="text-xs text-emerald-500 hover:underline"
-                  >
-                    + Add Quiz Question
-                  </button>
-                </div>
-                
-                <div className="space-y-4">
-                  {newChapter.quiz_questions.map((q, qIdx) => (
-                    <div key={qIdx} className="bg-black/20 p-4 rounded-xl border border-white/5 space-y-3">
-                      <div className="flex justify-between items-start">
-                        <input 
-                          type="text"
-                          placeholder={`Question ${qIdx + 1}`}
-                          value={q.question}
-                          onChange={(e) => {
-                            const qs = [...newChapter.quiz_questions];
-                            qs[qIdx].question = e.target.value;
-                            setNewChapter({...newChapter, quiz_questions: qs});
-                          }}
-                          className="flex-1 bg-transparent border-b border-white/10 text-white text-sm py-1 focus:outline-none focus:border-emerald-500"
-                        />
-                        <button 
-                          type="button"
-                          onClick={() => {
-                            const qs = newChapter.quiz_questions.filter((_, i) => i !== qIdx);
-                            setNewChapter({...newChapter, quiz_questions: qs});
-                          }}
-                          className="text-red-500 hover:text-red-400 ml-2"
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      </div>
-                      <div className="grid grid-cols-2 gap-2">
-                        {q.options.map((opt: string, oIdx: number) => (
-                          <input 
-                            key={oIdx}
-                            type="text"
-                            placeholder={`Option ${oIdx + 1}`}
-                            value={opt}
-                            onChange={(e) => {
-                              const qs = [...newChapter.quiz_questions];
-                              qs[qIdx].options[oIdx] = e.target.value;
-                              setNewChapter({...newChapter, quiz_questions: qs});
-                            }}
-                            className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500/50"
-                          />
-                        ))}
-                      </div>
-                      <div>
-                        <input 
-                          type="text"
-                          placeholder="Correct Answer"
-                          value={q.correct_answer}
-                          onChange={(e) => {
-                            const qs = [...newChapter.quiz_questions];
-                            qs[qIdx].correct_answer = e.target.value;
-                            setNewChapter({...newChapter, quiz_questions: qs});
-                          }}
-                          className="w-full bg-emerald-500/5 border border-emerald-500/20 rounded-lg px-3 py-1.5 text-xs text-emerald-400 focus:outline-none mb-2"
-                        />
-                        <input 
-                          type="text"
-                          placeholder="Hint (Optional)"
-                          value={q.hint || ''}
-                          onChange={(e) => {
-                            const qs = [...newChapter.quiz_questions];
-                            qs[qIdx].hint = e.target.value;
-                            setNewChapter({...newChapter, quiz_questions: qs});
-                          }}
-                          className="w-full bg-amber-500/5 border border-amber-500/20 rounded-lg px-3 py-1.5 text-xs text-amber-400 focus:outline-none"
-                        />
-                      </div>
-                    </div>
-                  ))}
                 </div>
               </div>
 
@@ -1451,19 +1179,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                   Cancel
                 </button>
               </div>
-            </form>
-          </div>
+          </form>
         )}
 
-        {adminSubjectFilter === 'all' ? (
-          <div className="bg-white/5 border border-white/10 p-12 rounded-2xl text-center">
-            <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="text-slate-500" size={32} />
-            </div>
-            <h3 className="text-xl font-bold text-white mb-2">Select a Subject</h3>
-            <p className="text-slate-400">Please select a subject from the dropdown above to view its chapters.</p>
-          </div>
-        ) : uniqueChapters.length === 0 ? (
+        {uniqueChapters.length === 0 ? (
           <div className="bg-white/5 border border-white/10 p-12 rounded-2xl text-center">
             <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
               <BookOpen className="text-slate-500" size={32} />
@@ -1483,16 +1202,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                     <button 
                       onClick={() => {
                         setNewChapter({
-                          board: c.board,
-                          class: c.class,
-                          language: c.language,
-                          subject: c.subject,
-                          title: c.title,
-                          playlist_id: c.playlist_id,
+                          textbookId: c.textbookId,
+                          title: typeof c.title === 'string' ? { en: c.title, or: '' } : c.title,
+                          order: c.order,
+                          videoUrl: c.videoUrl,
                           notes: c.notes || '',
-                          practice_questions: c.practice_questions || [],
-                          quiz_questions: c.quiz_questions || [],
-                          status: c.status || 'draft'
+                          quizId: c.quizId || '',
+                          teacherOrChannel: c.teacherOrChannel || '',
+                          status: c.status || 'draft',
+                          class: c.class || '',
+                          board: typeof c.board === 'string' ? { en: c.board, or: '' } : c.board,
+                          subject: c.subject || '',
+                          quiz_questions: c.quiz_questions || []
                         });
                         setEditingChapterId(c.id);
                         setIsEditingChapter(true);
@@ -1588,104 +1309,25 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
 
       {isAddingTest && (
         <div className="bg-white/5 border border-white/10 p-6 rounded-2xl space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class</label>
-              <select 
-                value={newTest.class}
-                onChange={(e) => setNewTest({...newTest, class: e.target.value})}
-                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-              >
-                <option value="play">Play School</option>
-                <option value="nursery">Nursery</option>
-                <option value="lkg">LKG</option>
-                <option value="ukg">UKG</option>
-                <option value="class1">Class 1</option>
-                <option value="class2">Class 2</option>
-                <option value="class3">Class 3</option>
-                <option value="class4">Class 4</option>
-                <option value="class5">Class 5</option>
-                <option value="class6">Class 6</option>
-                <option value="class7">Class 7</option>
-                <option value="class8">Class 8</option>
-                <option value="class9">Class 9</option>
-                <option value="class10">Class 10</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Subject</label>
-              <select 
-                value={isOtherTestSubject ? 'other' : newTest.subject}
-                onChange={(e) => {
-                  if (e.target.value === 'other') {
-                    setIsOtherTestSubject(true);
-                  } else {
-                    setIsOtherTestSubject(false);
-                    setNewTest({...newTest, subject: e.target.value});
-                  }
-                }}
-                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-              >
-                {(() => {
-                  const board = 'odisha'; // Monthly tests currently only for Odisha in this logic
-                  const cls = newTest.class || 'class10';
-                  const subjectsByClass = translations['en'].subjectsByClass?.[board]?.[cls];
-                  
-                  if (subjectsByClass) {
-                    return subjectsByClass.map((key: string) => (
-                      <option key={key} value={key}>{translations['en'].subjects[key] || key}</option>
-                    ));
-                  }
-                  
-                  return Object.entries(translations['en'].subjects).map(([key, label]) => (
-                    <option key={key} value={key}>{label as string}</option>
-                  ));
-                })()}
-                <option value="other">Other</option>
-              </select>
-              {isOtherTestSubject && (
-                <input 
-                  type="text" 
-                  value={customTestSubject}
-                  placeholder="Enter custom subject"
-                  className="w-full mt-2 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                  onChange={(e) => setCustomTestSubject(e.target.value)}
-                />
-              )}
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Language</label>
-              <select 
-                value={newTest.language}
-                onChange={(e) => setNewTest({...newTest, language: e.target.value})}
-                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-              >
-                <option value="or">Odia</option>
-                <option value="en">English</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Month</label>
-              <select 
-                value={newTest.month}
-                onChange={(e) => setNewTest({...newTest, month: e.target.value})}
-                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-              >
-                {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map(m => (
-                  <option key={m} value={m}>{m}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Year</label>
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Test Title</label>
               <input 
-                type="number" 
-                value={newTest.year}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setNewTest({...newTest, year: val === "" ? "" : parseInt(val)});
-                }}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+                type="text" 
+                value={newTest.title}
+                onChange={(e) => setNewTest({...newTest, title: e.target.value})}
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+                placeholder="e.g. Chapter 1 & 2 Quiz"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Chapter IDs (comma separated)</label>
+              <input 
+                type="text" 
+                value={(newTest.chapterIds || []).join(', ')}
+                onChange={(e) => setNewTest({...newTest, chapterIds: e.target.value.split(',').map(id => id.trim())})}
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+                placeholder="e.g. chapterId1, chapterId2"
               />
             </div>
           </div>
@@ -1780,63 +1422,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
             <button 
               onClick={async () => {
                 try {
-                  let finalSubject = isOtherTestSubject ? customTestSubject : newTest.subject;
-                  
-                  // Map common subject names to keys
-                  const subjectMapping: Record<string, string> = {
-                    'Mathematics': 'math',
-                    'Math': 'math',
-                    'Science': 'science',
-                    'English': 'english',
-                    'Odia': 'odia',
-                    'History': 'history',
-                    'Geography': 'geography',
-                    'Social Studies': 'social',
-                    'Hindi': 'hindi',
-                    'Sanskrit': 'sanskrit',
-                    'EVS': 'evs',
-                    'General Knowledge': 'gk',
-                    'GK': 'gk',
-                    'Physics': 'physics',
-                    'Chemistry': 'chemistry',
-                    'Biology': 'biology'
-                  };
-
-                  if (subjectMapping[finalSubject]) {
-                    finalSubject = subjectMapping[finalSubject];
-                  }
-
-                  // Save original test
-                  const originalTestRef = await addDoc(collection(firestore, 'monthly_tests'), {
-                    ...newTest,
-                    subject: finalSubject,
-                    createdAt: serverTimestamp()
-                  });
-
-                  // Determine target language for auto-translation
-                  const targetLang = newTest.language === 'en' ? 'or' : 'en';
-
-                  // Translate questions
-                  const translatedQuestions = newTest.questions.length > 0 ? await translateContent(newTest.questions, targetLang) : [];
-
-                  // Save translated test
                   await addDoc(collection(firestore, 'monthly_tests'), {
                     ...newTest,
-                    subject: finalSubject,
-                    language: targetLang,
-                    questions: translatedQuestions,
-                    translationGroupId: originalTestRef.id,
                     createdAt: serverTimestamp()
                   });
-
-                  // Update original test with translationGroupId
-                  await updateDoc(doc(firestore, 'monthly_tests', originalTestRef.id), {
-                    translationGroupId: originalTestRef.id
-                  });
-
+                  showNotification("Test added successfully!");
                   setIsAddingTest(false);
-                  setIsOtherTestSubject(false);
-                  setCustomTestSubject('');
+                  setNewTest({
+                    title: '',
+                    chapterIds: [],
+                    questions: [],
+                    status: 'draft'
+                  });
                 } catch (err) {
                   console.error("Save Test Error:", err);
                   showNotification("Failed to save test", 'error');
@@ -2202,195 +1799,6 @@ Subscription Awareness: If a student asks about advanced features, remind them (
     }
   };
 
-  const handleGenerateCurriculum = async () => {
-    setIsGenerating(true);
-    setGenerationLog(prev => [...prev, `Starting AI generation for ${genBoard.toUpperCase()} - ${genClass}...`]);
-    
-    try {
-      const generatedChapters = await generateCurriculum(genBoard, genClass);
-      setGenerationLog(prev => [...prev, `AI generated ${generatedChapters.length} chapters. Saving to database...`]);
-      
-      let savedCount = 0;
-      for (const ch of generatedChapters) {
-        await addDoc(collection(firestore, 'chapters'), {
-          board: genBoard,
-          class: genClass,
-          language: ch.language,
-          subject: ch.subject,
-          title: ch.title,
-          playlist_id: '',
-          notes: ch.notes,
-          quiz_questions: ch.quiz_questions || []
-        });
-        savedCount++;
-        setGenerationLog(prev => [...prev, `Saved: [${ch.subject}] ${ch.title}`]);
-      }
-      
-      setGenerationLog(prev => [...prev, `✅ Successfully saved ${savedCount} chapters to the database!`]);
-      
-    } catch (err: any) {
-      console.error(err);
-      setGenerationLog(prev => [...prev, `❌ Error: ${err.message}`]);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  const handleGenerateAllClasses = async () => {
-    const allClasses = [
-      "play", "nursery", "lkg", "ukg", "class1", "class2", "class3", "class4", 
-      "class5", "class6", "class7", "class8", "class9", "class10"
-    ];
-
-    setIsGenerating(true);
-    setGenerationLog(prev => [...prev, `Starting AI generation for ALL CLASSES in ${genBoard.toUpperCase()}...`]);
-
-    try {
-      for (const currentClass of allClasses) {
-        setGenerationLog(prev => [...prev, `\n--- Generating for ${currentClass.toUpperCase()} ---`]);
-        
-        try {
-          const generatedChapters = await generateCurriculum(genBoard, currentClass);
-          setGenerationLog(prev => [...prev, `AI generated ${generatedChapters.length} chapters for ${currentClass}. Saving...`]);
-          
-          let savedCount = 0;
-          for (const ch of generatedChapters) {
-            await addDoc(collection(firestore, 'chapters'), {
-              board: genBoard,
-              class: currentClass,
-              language: ch.language,
-              subject: ch.subject,
-              title: ch.title,
-              playlist_id: '',
-              notes: ch.notes,
-              quiz_questions: ch.quiz_questions || []
-            });
-            savedCount++;
-          }
-          setGenerationLog(prev => [...prev, `✅ Saved ${savedCount} chapters for ${currentClass}.`]);
-        } catch (classErr: any) {
-          console.error(`Error generating for ${currentClass}:`, classErr);
-          setGenerationLog(prev => [...prev, `❌ Error for ${currentClass}: ${classErr.message}`]);
-        }
-        
-        // Add a small delay between requests to avoid rate limits
-        await new Promise(resolve => setTimeout(resolve, 2000));
-      }
-      
-      setGenerationLog(prev => [...prev, `\n🎉 Finished generating curriculum for all classes!`]);
-    } catch (err: any) {
-      console.error(err);
-      setGenerationLog(prev => [...prev, `❌ Fatal Error: ${err.message}`]);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  const renderProductionSetup = () => (
-    <div className="max-w-4xl space-y-6">
-      <div className="flex items-center gap-4 mb-6">
-        <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 flex items-center justify-center text-indigo-400">
-          <Rocket size={24} />
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold text-white">Production Auto-Setup</h2>
-          <p className="text-slate-400">Use AI to instantly populate your database with curriculum data.</p>
-        </div>
-      </div>
-
-      <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-6 md:p-8">
-        <h3 className="text-lg font-bold text-white mb-4">AI Curriculum Generator</h3>
-        <p className="text-sm text-slate-400 mb-6">
-          Select a class and board. The AI will generate standard chapters for Math, Science, English, and Odia, and save them directly to your database.
-        </p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class</label>
-            <select 
-              value={genClass}
-              onChange={(e) => setGenClass(e.target.value)}
-              className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none"
-            >
-              <option value="play">Play School</option>
-              <option value="nursery">Nursery</option>
-              <option value="lkg">LKG</option>
-              <option value="ukg">UKG</option>
-              <option value="class1">Class 1</option>
-              <option value="class2">Class 2</option>
-              <option value="class3">Class 3</option>
-              <option value="class4">Class 4</option>
-              <option value="class5">Class 5</option>
-              <option value="class6">Class 6</option>
-              <option value="class7">Class 7</option>
-              <option value="class8">Class 8</option>
-              <option value="class9">Class 9</option>
-              <option value="class10">Class 10</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Board</label>
-            <select 
-              value={genBoard}
-              onChange={(e) => setGenBoard(e.target.value)}
-              className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none"
-            >
-              <option value="odisha">Odisha State Board</option>
-              <option value="cbse">CBSE</option>
-              <option value="saraswati">Saraswati Shishu Mandir</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-4">
-          <button 
-            onClick={handleGenerateCurriculum}
-            disabled={isGenerating}
-            className="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl py-4 font-bold transition-all flex items-center justify-center gap-2"
-          >
-            {isGenerating ? (
-              <div className="flex items-center gap-2">
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Generating...
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Sparkles size={20} />
-                Generate Selected Class
-              </div>
-            )}
-          </button>
-          
-          <button 
-            onClick={handleGenerateAllClasses}
-            disabled={isGenerating}
-            className="flex-1 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-xl py-4 font-bold transition-all flex items-center justify-center gap-2"
-          >
-            {isGenerating ? (
-              <div className="flex items-center gap-2">
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Generating...
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Rocket size={20} />
-                Generate ALL Classes
-              </div>
-            )}
-          </button>
-        </div>
-
-        {generationLog.length > 0 && (
-          <div className="mt-6 bg-black/50 border border-white/5 rounded-xl p-4 font-mono text-xs text-slate-300 h-64 overflow-y-auto space-y-2">
-            {generationLog.map((log, i) => (
-              <div key={i}>{log}</div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-
   const renderSettings = () => (
     <div className="max-w-2xl space-y-6">
       <button 
@@ -2547,7 +1955,6 @@ Subscription Awareness: If a student asks about advanced features, remind them (
             setEditingTextbookId(null);
             setNewTextbook({
               class: 'class5',
-              board: 'odisha',
               subject: 'math',
               title: '',
               download_url: '',
@@ -2585,19 +1992,6 @@ Subscription Awareness: If a student asks about advanced features, remind them (
                 {Object.entries(translations['en'].classes).map(([key, label]) => (
                   <option key={key} value={key}>{label as string}</option>
                 ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm text-slate-400 mb-1">Board</label>
-              <select 
-                className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
-                value={newTextbook.board}
-                onChange={(e) => setNewTextbook({...newTextbook, board: e.target.value})}
-              >
-                <option value="odisha">Odisha State Board</option>
-                <option value="cbse">CBSE</option>
-                <option value="icse">ICSE</option>
-                <option value="saraswati">Saraswati</option>
               </select>
             </div>
             <div>
@@ -2947,7 +2341,6 @@ Subscription Awareness: If a student asks about advanced features, remind them (
             {activeTab === 'payments' && renderPayments()}
             {activeTab === 'notifications' && renderNotifications()}
             {activeTab === 'settings' && renderSettings()}
-            {activeTab === 'production_setup' && renderProductionSetup()}
             {activeTab === 'students' && renderStudents()}
             {activeTab === 'subscriptions' && renderSubscriptions()}
             {activeTab === 'support' && renderSupport()}

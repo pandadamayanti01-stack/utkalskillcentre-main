@@ -62,21 +62,17 @@ export function TopicDetailView({
         <div className="p-6 md:p-10 relative z-10">
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8">
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-[10px] font-bold uppercase text-emerald-400 bg-emerald-500/10 px-4 py-1.5 rounded-full tracking-widest border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
-                  {getLocalizedSubject(topic.subject, language)}
-                </span>
-              </div>
-              <h1 className="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight">{topic.title}</h1>
+              <h1 className="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight">{typeof topic.title === 'string' ? topic.title : topic.title[language]}</h1>
+              {topic.teacherOrChannel && <p className="text-lg text-emerald-400 font-medium mt-2">{topic.teacherOrChannel}</p>}
             </div>
             
-            {topic.quiz_questions && topic.quiz_questions.length > 0 && (
+            {topic.quizId && (
               <button 
                 onClick={onTakeQuiz}
                 className="flex items-center justify-center gap-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-90 text-white px-8 py-4 rounded-2xl font-bold uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(16,185,129,0.4)] whitespace-nowrap border border-emerald-500/50"
               >
                 <Trophy size={20} />
-                <span>Take Basic Quiz</span>
+                <span>Take Quiz</span>
               </button>
             )}
           </div>
@@ -96,12 +92,12 @@ export function TopicDetailView({
                 <FileText size={16} /> {translations[language].notes}
               </button>
             )}
-            {topic.practice_questions && topic.practice_questions.length > 0 && (
+            {topic.quiz_questions && topic.quiz_questions.length > 0 && (
               <button 
                 onClick={() => setActiveSubTab('practice')}
                 className={`flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap ${activeSubTab === 'practice' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
               >
-                <HelpCircle size={16} /> {translations[language].practice}
+                <HelpCircle size={16} /> Practice
               </button>
             )}
             <button 
@@ -126,9 +122,9 @@ export function TopicDetailView({
                 exit={{ opacity: 0, y: -20 }}
                 className="aspect-video rounded-2xl overflow-hidden bg-black shadow-2xl flex items-center justify-center"
               >
-                {topic.playlist_id ? (
+                {topic.videoUrl ? (
                   <iframe 
-                    src={getYouTubeEmbedUrl(topic.playlist_id)}
+                    src={getYouTubeEmbedUrl(topic.videoUrl)}
                     className="w-full h-full border-0"
                     allowFullScreen
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -157,22 +153,22 @@ export function TopicDetailView({
                 </div>
               </motion.div>
             )}
-
-            {activeSubTab === 'practice' && (
+            
+            {activeSubTab === 'practice' && topic.quiz_questions && (
               <motion.div 
                 key="practice"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                className="space-y-6"
               >
-                {topic.practice_questions?.map((q, idx) => (
+                {(topic.quiz_questions || []).map((q, i) => (
                   <PracticeQuestion 
-                    key={idx} 
+                    key={i} 
                     question={q} 
                     isPremium={isPremium} 
                     language={language} 
-                    onUpgrade={onUpgrade}
+                    onUpgrade={onUpgrade} 
                   />
                 ))}
               </motion.div>
