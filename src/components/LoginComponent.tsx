@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { auth, signInWithGoogle } from '../firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, ArrowLeft, Shield, ChevronRight, Sparkles } from 'lucide-react';
+import { Loader2, ArrowLeft, Shield, ChevronRight, Sparkles, Download } from 'lucide-react';
 
 export default function Login({ language, translations, setLanguage }: any) {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -14,15 +14,34 @@ export default function Login({ language, translations, setLanguage }: any) {
   const [authStep, setAuthStep] = useState<'login' | 'otp'>('login');
   const [isAdminLogin, setIsAdminLogin] = useState(false);
   
+  // PWA Install State
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
   const recaptchaVerifier = useRef<any>(null);
   const t = translations[language];
 
-  // Fixes the "jump to bottom" issue on mobile load
-  useEffect(() => { window.scrollTo(0, 0); }, []);
+  useEffect(() => { 
+    window.scrollTo(0, 0); 
+    
+    // Listen for PWA Install Prompt
+    const handler = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') setDeferredPrompt(null);
+  };
 
   const onSmsSend = async () => {
     if (!phoneNumber || phoneNumber.length < 10) return alert("Valid phone required");
-    if (!isAdminLogin && (!selectedClass || !selectedBoard)) return alert("Select class and board");
+    if (!isAdminLogin && (!selectedClass || !selectedBoard)) return alert("Select class/board");
     
     setIsSending(true);
     if (!recaptchaVerifier.current) {
@@ -33,12 +52,10 @@ export default function Login({ language, translations, setLanguage }: any) {
       setVerificationId(confirmation);
       setAuthStep('otp');
     } catch (error) { 
-      console.error(error);
       alert("SMS limit reached or network error.");
     } finally { setIsSending(false); }
   };
 
-  // FIXED: This function is now explicitly defined for the button to find
   const verifyOtp = async () => {
     if (otp.length < 6) return alert("Enter 6-digit OTP");
     setIsSending(true);
@@ -52,12 +69,12 @@ export default function Login({ language, translations, setLanguage }: any) {
   return (
     <div className="digital-altar-bg h-[100dvh] w-full flex flex-col items-center justify-between p-6 overflow-hidden relative">
       
-      {/* 1. BACKGROUND LAYERS */}
+      {/* 1. BACKGROUND */}
       <div className="absolute inset-0 z-0 flex items-center justify-center opacity-[0.04] pointer-events-none">
         <img src="/temple-pattern.png" className="h-[80%] w-auto grayscale" alt="" />
       </div>
 
-      {/* 2. TOP UTILITY BAR */}
+      {/* 2. TOP NAV */}
       <div className="w-full flex justify-between items-center z-20">
         <div className="flex items-center gap-2">
           <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]" />
@@ -68,14 +85,13 @@ export default function Login({ language, translations, setLanguage }: any) {
         </button>
       </div>
 
-      {/* 3. MAIN INTERFACE */}
+      {/* 3. CENTER CONTENT */}
       <div className="flex-1 flex flex-col items-center justify-center w-full max-w-[340px] z-10">
-        
-        {/* LOGO (Fitsize Optimized) */}
         <div className="relative flex flex-col items-center mb-5 scale-90">
           <div className="absolute inset-0 bg-emerald-500/20 blur-[80px] rounded-full scale-150 pointer-events-none" />
           <img src="/utkal-512.png" className="h-16 w-auto" style={{ mixBlendMode: 'multiply', filter: 'brightness(1.2)' }} alt="Utkal" />
-          <h1 className="text-white text-2xl font-black tracking-tighter mt-1 uppercase">UTKAL</h1>
+          <h1 className="text-white text-2xl font-black tracking-tighter mt-1 uppercase leading-none">UTKAL</h1>
+          <p className="text-[#ffd700] text-[8px] font-bold tracking-[0.5em] uppercase opacity-40">Skill Centre</p>
         </div>
 
         <div className="w-full">
@@ -133,13 +149,28 @@ export default function Login({ language, translations, setLanguage }: any) {
         </div>
       </div>
 
-      {/* 4. FOOTER (Branding) */}
+      {/* 4. FOOTER (Branding & PWA Install) */}
       <div className="w-full flex flex-col items-center gap-3 z-10 pb-4 mt-auto">
         {!isAdminLogin && (
-          <button onClick={() => setIsAdminLogin(true)} className="flex items-center gap-2 px-4 py-1.5 rounded-xl bg-white/5 border border-white/5 text-[9px] font-black text-white/20 uppercase tracking-widest">
-            <Shield size={12} /> Admin Access
-          </button>
+          <div className="flex flex-col gap-3 w-full items-center">
+            {/* Show Install Button only if PWA prompt is available */}
+            {deferredPrompt && (
+              <motion.button 
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                onClick={handleInstallClick}
+                className="flex items-center gap-2 bg-[#ffd700] text-[#0b1719] px-6 py-2 rounded-full shadow-lg font-black text-[10px] uppercase tracking-widest"
+              >
+                <Download size={14} /> {language === 'en' ? 'Install App' : 'ଇନଷ୍ଟଲ୍ କରନ୍ତୁ'}
+              </motion.button>
+            )}
+
+            <button onClick={() => setIsAdminLogin(true)} className="flex items-center gap-2 px-4 py-1.5 rounded-xl bg-white/5 border border-white/5 text-[9px] font-black text-white/20 uppercase tracking-widest">
+              <Shield size={12} /> Admin Access
+            </button>
+          </div>
         )}
+        
         <div className="flex flex-col items-center opacity-40">
           <p className="text-[7px] font-black uppercase tracking-[0.5em] text-[#ffd700]">Proud Association of Bigsan Group</p>
         </div>
