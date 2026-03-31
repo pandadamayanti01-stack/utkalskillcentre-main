@@ -10,6 +10,7 @@ interface UtkalDivasPosterProps {
 export const UtkalDivasPoster: React.FC<UtkalDivasPosterProps> = ({ onClose }) => {
   const [isCutting, setIsCutting] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const clapAudioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     // Firecracker / Confetti celebration effect
@@ -51,8 +52,34 @@ export const UtkalDivasPoster: React.FC<UtkalDivasPosterProps> = ({ onClose }) =
     if (audioRef.current) {
       audioRef.current.pause();
     }
+    
+    // Play clap sound
+    if (clapAudioRef.current) {
+      clapAudioRef.current.play().catch(e => console.error("Clap audio playback failed:", e));
+    }
+
+    // Trigger treat animation
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10000 };
+    const treats = ['🍬', '🍫', '🍭', '🧁'];
+    
+    const fireTreats = () => {
+      confetti({
+        ...defaults,
+        particleCount: 40,
+        scalar: 2,
+        shapes: ['emoji'] as any,
+        shapeOptions: {
+          emoji: { value: treats[Math.floor(Math.random() * treats.length)] }
+        }
+      } as any);
+    };
+
+    fireTreats();
+    setTimeout(fireTreats, 500);
+    setTimeout(fireTreats, 1000);
+
     setIsCutting(true);
-    setTimeout(onClose, 2000);
+    setTimeout(onClose, 2500); // Increased delay to allow sound and animation
   };
 
   return (
@@ -173,6 +200,7 @@ export const UtkalDivasPoster: React.FC<UtkalDivasPosterProps> = ({ onClose }) =
             </button>
           </div>
           <audio ref={audioRef} src="/utkal-celebration.mpeg" />
+          <audio ref={clapAudioRef} src="/celebration-claps.aac" />
         </motion.div>
       </motion.div>
     </AnimatePresence>
