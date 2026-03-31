@@ -47,29 +47,33 @@ export interface Question {
   chapter_id?: string;
 }
 
-export interface Chapter {
-  id: string;
-  class: string;
-  board: string;
-  language: string;
-  subject: string;
-  title: string;
-  playlist_id: string;
-  notes?: string;
-  status?: 'draft' | 'published';
-  practice_questions?: { question: string; answer: string; tutor_explanation?: string }[];
-  quiz_questions?: { question: string; options: string[]; correct_answer: string; hint?: string }[];
-  translationGroupId?: string;
+export interface BilingualContent {
+  en: string;
+  or: string;
 }
 
-export interface MonthlyTest {
+export interface Chapter {
   id: string;
+  textbookId: string; // Link to Textbook
+  title: BilingualContent;
   class: string;
+  board: BilingualContent;
   subject: string;
-  month: string;
-  year: number;
-  language?: string;
-  questions: { question: string; options: string[]; correct_answer: string }[];
+  order: number;
+  videoUrl: string;
+  teacherOrChannel?: string;
+  notes?: string; // AI Context Source
+  quizId?: string; // Link to Test
+  status?: 'draft' | 'published';
+  translationGroupId?: string;
+  quiz_questions?: any[]; // Added quiz_questions
+}
+
+export interface Test {
+  id: string;
+  title: BilingualContent;
+  chapterIds: string[]; // Link to Chapters
+  questions: { question: string; options: string[]; correct_answer: string; tutor_explanation?: string }[];
   status: 'draft' | 'published';
   results_published: boolean;
   translationGroupId?: string;
@@ -91,9 +95,9 @@ export interface MonthlyTestSubmission {
 export interface Textbook {
   id: string;
   class: string;
-  board: string;
+  board: BilingualContent;
   subject: string;
-  title: string;
+  title: BilingualContent;
   download_url: string;
   thumbnail_url?: string;
   status?: 'draft' | 'published';
@@ -103,4 +107,13 @@ export interface Textbook {
 export interface SystemSettings {
   enabledClasses?: string[];
   maintenanceMode?: boolean;
+}
+
+declare global {
+  interface Window {
+    aistudio: {
+      hasSelectedApiKey: () => Promise<boolean>;
+      openSelectKey: () => Promise<void>;
+    };
+  }
 }

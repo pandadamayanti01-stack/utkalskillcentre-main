@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Sparkles, Scissors } from 'lucide-react';
+import { X, Sparkles, Scissors, Music } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 interface UtkalDivasPosterProps {
@@ -9,6 +9,7 @@ interface UtkalDivasPosterProps {
 
 export const UtkalDivasPoster: React.FC<UtkalDivasPosterProps> = ({ onClose }) => {
   const [isCutting, setIsCutting] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     // Firecracker / Confetti celebration effect
@@ -26,7 +27,6 @@ export const UtkalDivasPoster: React.FC<UtkalDivasPosterProps> = ({ onClose }) =
       }
 
       const particleCount = 50 * (timeLeft / duration);
-      // Since particles fall down, start a bit higher than random
       confetti({
         ...defaults, particleCount,
         colors: ['#ff0000', '#ffa500', '#ffff00', '#ffffff'],
@@ -39,10 +39,18 @@ export const UtkalDivasPoster: React.FC<UtkalDivasPosterProps> = ({ onClose }) =
       });
     }, 250);
 
+    // Start audio
+    if (audioRef.current) {
+      audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
+    }
+
     return () => clearInterval(interval);
   }, []);
 
   const handleCutRibbon = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
     setIsCutting(true);
     setTimeout(onClose, 2000);
   };
@@ -65,7 +73,6 @@ export const UtkalDivasPoster: React.FC<UtkalDivasPosterProps> = ({ onClose }) =
           <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-30 pointer-events-none rounded-[2rem]">
             <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-yellow-300 blur-3xl"></div>
             <div className="absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-red-900 blur-3xl"></div>
-            {/* Pattern overlay */}
             <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
           </div>
 
@@ -119,7 +126,6 @@ export const UtkalDivasPoster: React.FC<UtkalDivasPosterProps> = ({ onClose }) =
             
             {/* Child Studying Image */}
             <div className="relative mb-8 mt-4 group">
-              {/* Main Image */}
               <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-yellow-300 shadow-[0_0_30px_rgba(250,204,21,0.8)] overflow-hidden bg-orange-100 relative z-10">
                 <img 
                   src="/utkal-512.png" 
@@ -129,7 +135,6 @@ export const UtkalDivasPoster: React.FC<UtkalDivasPosterProps> = ({ onClose }) =
                 />
               </div>
               
-              {/* Decorative rings */}
               <div className="absolute inset-0 rounded-full border-4 border-yellow-400/50 scale-110 animate-[ping_3s_linear_infinite]"></div>
               <div className="absolute inset-0 rounded-full border-4 border-orange-400/30 scale-125 animate-[ping_3s_linear_infinite_0.5s]"></div>
             </div>
@@ -139,6 +144,10 @@ export const UtkalDivasPoster: React.FC<UtkalDivasPosterProps> = ({ onClose }) =
             </h1>
             
             <div className="w-24 h-1.5 bg-yellow-400 mx-auto mb-6 rounded-full shadow-lg"></div>
+            
+            <div className="mb-6 text-white font-bold flex items-center gap-2">
+              <Music size={16} /> Celebration Music Playing
+            </div>
             
             <p className="text-lg md:text-xl text-yellow-50 font-bold mb-3 drop-shadow-md">
               ଆଜି ଏହି ଶୁଭ ଅବସରରେ
@@ -163,6 +172,7 @@ export const UtkalDivasPoster: React.FC<UtkalDivasPosterProps> = ({ onClose }) =
               ଆଗକୁ ବଢନ୍ତୁ (Enter App)
             </button>
           </div>
+          <audio ref={audioRef} src="/utkal-celebration.mpeg" />
         </motion.div>
       </motion.div>
     </AnimatePresence>
