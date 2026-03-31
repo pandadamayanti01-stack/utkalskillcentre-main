@@ -45,9 +45,8 @@ import {
   TrendingUp,
   Award
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { translations } from '../translations';
-import { Logo } from './Branding';
 import { SidebarItem } from './SidebarItem';
 
 interface SidebarProps {
@@ -79,7 +78,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'profile', icon: User, label: 'Profile' },
     { id: 'dashboard', icon: LayoutDashboard, label: t.dashboard },
     { id: 'study_buddy', icon: Bot, label: t.studyBuddy || 'Study Buddy' },
-    { id: 'textbooks', icon: Book, label: 'Textbooks' },
+    { id: 'textbooks', icon: Book, label: language === 'en' ? 'Textbooks' : 'ପାଠ୍ୟପୁସ୍ତକ' },
     { id: 'courses', icon: BookOpen, label: t.courses },
     { id: 'monthly_tests', icon: Calendar, label: t.monthlyTests },
     { id: 'leaderboard', icon: Trophy, label: t.leaderboard },
@@ -97,31 +96,42 @@ export const Sidebar: React.FC<SidebarProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSidebarOpen(false)}
-            className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-40 lg:hidden"
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 lg:hidden"
           />
         )}
       </AnimatePresence>
 
       <motion.aside 
-        className={`fixed lg:static inset-y-0 left-0 w-72 bg-slate-900 border-r border-white/5 z-50 transform transition-transform duration-300 lg:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`fixed lg:static inset-y-0 left-0 w-72 bg-[#002d26] border-r border-white/5 z-50 transform transition-transform duration-300 lg:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <div className="h-full flex flex-col p-6">
-          <div className="flex items-center justify-between mb-10">
-            <Logo className="h-10" />
-            <button onClick={() => setSidebarOpen(false)} className="lg:hidden p-2 text-slate-400 hover:text-white transition-colors">
-              <X size={24} />
-            </button>
+          {/* BRANDING SECTION */}
+          <div className="p-2 flex flex-col gap-4 mb-4">
+            <div className="flex items-center gap-3">
+              {/* Chariot/Rath Crest */}
+              <img src="/gundulu-rath-crest.png" alt="Gundulu" className="h-12 w-auto drop-shadow-lg" />
+              <div className="flex flex-col">
+                 <span className="text-[#ffd700] font-black text-xl leading-none">ଏଆଈ-AI</span>
+                 <span className="text-[10px] font-bold text-white/40 tracking-widest uppercase">Gundulu Era</span>
+              </div>
+            </div>
+            {/* Utkal Logo in Sidebar */}
+            <img src="/utkal-192.png" alt="Utkal Skill Centre" className="h-8 w-fit opacity-90 brightness-110" />
           </div>
 
-          <nav className="flex-1 space-y-2 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+          {/* NAVIGATION */}
+          <nav className="flex-1 space-y-1 overflow-y-auto pr-2 scrollbar-hide pt-4">
             {menuItems.map((item) => {
               const Icon = item.icon;
+              const isActive = activeTab === item.id;
               return (
                 <SidebarItem
                   key={item.id}
                   icon={<Icon size={20} />}
                   label={item.label}
-                  active={activeTab === item.id}
+                  active={isActive}
+                  /* Applying the Terracotta theme for active items */
+                  className={isActive ? 'bg-[#b34d1f] text-white shadow-lg' : 'text-white/60 hover:bg-white/5'}
                   onClick={() => {
                     setActiveTab(item.id);
                     setSidebarOpen(false);
@@ -139,25 +149,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   setIsAdminView(true);
                   setSidebarOpen(false);
                 }}
-                className="mt-8 border-t border-white/5 pt-8 text-amber-400 hover:text-amber-300"
+                className={`mt-6 pt-6 border-t border-white/5 ${isAdminView ? 'text-[#ffd700]' : 'text-amber-500/60'}`}
               />
             )}
           </nav>
 
+          {/* USER INFO & LOGOUT */}
           <div className="mt-auto pt-6 border-t border-white/5 space-y-4">
             <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/5">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-500 font-bold">
+              <div className="w-10 h-10 rounded-xl bg-[#b34d1f]/20 flex items-center justify-center text-[#ffd700] font-black border border-[#b34d1f]/30">
                 {user?.name?.charAt(0) || 'S'}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold text-white truncate">{user?.name || 'Student'}</p>
-                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{user?.class ? t.classes[user.class] : 'No Class'}</p>
+                <p className="text-[10px] text-[#ffd700] font-bold uppercase tracking-widest opacity-70">
+                  {user?.class ? (t.classes[user.class] || user.class) : 'Odisha Board'}
+                </p>
               </div>
             </div>
             
             <button 
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 p-4 rounded-2xl text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-all font-bold text-sm group"
+              className="w-full flex items-center gap-3 p-4 rounded-2xl text-red-400/70 hover:bg-red-500/10 hover:text-red-400 transition-all font-bold text-sm group"
             >
               <LogOut size={20} className="group-hover:-translate-x-1 transition-transform" />
               {t.logout}

@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { translations } from '../translations';
-import { Logo, BigsanBranding } from './Branding';
+import { BigsanBranding } from './Branding';
 
 interface AuthViewProps {
   language: 'en' | 'or';
@@ -123,7 +123,6 @@ export const AuthView: React.FC<AuthViewProps> = ({
       >
         <div className="flex flex-col items-center mb-10">
           <img src="/utkal-192.png" alt="Utkal 192 Logo" className="h-16 w-16 mb-4" referrerPolicy="no-referrer" />
-          <Logo className="h-16 mb-4" />
           <BigsanBranding />
         </div>
 

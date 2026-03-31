@@ -21,13 +21,6 @@ export const AhasLogoSVG = ({ className = "h-6" }: { className?: string }) => (
   </svg>
 );
 
-export const Logo = ({ className = "h-12" }: { className?: string }) => (
-  <div className={`flex items-center ${className}`}>
-    {/* <UtkalLogoSVG className="h-full w-auto" /> */}
-    <img src="/utkal-192.png" alt="Utkal Skill Centre" className="h-full w-auto object-contain logo-glow" />
-  </div>
-);
-
 export const BigsanBranding = ({ className = "" }: { className?: string }) => {
   const [lang] = useState<'en' | 'or'>(localStorage.getItem('lang') as any || 'en');
   return (
@@ -35,10 +28,6 @@ export const BigsanBranding = ({ className = "" }: { className?: string }) => {
       <p className="text-[10px] uppercase tracking-widest text-slate-400 font-medium">
         {translations[lang]?.associate || 'Associate Partner'}
       </p>
-      <div className="opacity-80 grayscale hover:grayscale-0 transition-all logo-glow">
-        {/* <AhasLogoSVG className="h-6 w-auto" /> */}
-        <img src="/bigsan-512.png" alt="Bigan Group" className="h-6 w-auto object-contain" />
-      </div>
     </div>
   );
 };
