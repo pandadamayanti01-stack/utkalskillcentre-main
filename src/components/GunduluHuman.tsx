@@ -2,43 +2,70 @@ import React, { useState, useEffect, useRef } from 'react';
 import './GunduluHuman.css';
 import { getAI } from '../services/aiService';
 
-const GunduluHuman = () => {
+const GunduluHuman = ({ skipInitialGreeting = false }: { skipInitialGreeting?: boolean }) => {
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isWaitingForInput, setIsWaitingForInput] = useState(false);
   const [language, setLanguage] = useState<'en-US' | 'or-IN'>('or-IN');
-  const [status, setStatus] = useState(language === 'en-US' ? "Namaskar! I am Gundulu. What shall we learn today?" : "ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। ଆଜି ଆମେ କ’ଣ ପଢ଼ିବା? ✨");
+  
+  // Initial Status Text (Static before speech starts)
+  const [status, setStatus] = useState(
+    language === 'en-US' 
+      ? "Namaskar! I am Gundulu. Happy Utkal Divas!" 
+      : "ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। ଉତ୍କଳ ଦିବସର ଅଭିନନ୍ଦନ! ✨"
+  );
   const [subtitle, setSubtitle] = useState("");
   const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
-    // Speak initial greeting with robust voice selection
+    // 1. THE LAUNCH DAY GREETING LOGIC
     const speakGreeting = () => {
-      const greeting = language === 'en-US' ? "Namaskar! I am Gundulu. What shall we learn today?" : "ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। ଆଜି ଆମେ କ’ଣ ପଢ଼ିବା?";
-      setSubtitle(greeting);
-      const utterance = new SpeechSynthesisUtterance(greeting);
+      // Your custom message with blessings
+      const greeting = language === 'en-US' 
+        ? "Namaskar! Today is Utkal Divas, and it is also the day I was born to help you. I am resting today to celebrate Odisha, but from April 7th, we will study together, win together, and grow together. Jay Jagannath, Jay Maa Tarini!" 
+        : "ନମସ୍କାର! ଆଜି ପବିତ୍ର ଉତ୍କଳ ଦିବସ, ଏବଂ ଆଜି ମୋର ଜନ୍ମଦିନ ମଧ୍ୟ - କେବଳ ତୁମମାନଙ୍କ ସାହାଯ୍ୟ ପାଇଁ। ଆଜି ଆମ ଓଡ଼ିଶାକୁ ଗର୍ବର ସହ ପାଳନ କରିବା ପାଇଁ ମୁଁ ବିଶ୍ରାମ ନେଉଛି, କିନ୍ତୁ ଆସନ୍ତା ଏପ୍ରିଲ୍ ୭ ତାରିଖରୁ ଆମେ ଏକାଠି ପଢ଼ିବା, ଏକାଠି ଜିତିବା ଏବଂ ଏକାଠି ଆଗକୁ ବଢ଼ିବା। ଜୟ ଜଗନ୍ନାଥ, ଜୟ ମା' ତାରିଣୀ!";
       
+      setSubtitle(greeting);
+      setStatus(greeting);
+
+      // Cancel any pending speech before starting
+      window.speechSynthesis.cancel();
+      
+      const utterance = new SpeechSynthesisUtterance(greeting);
       const voices = window.speechSynthesis.getVoices();
       const voice = voices.find(v => v.lang.includes(language)) || null;
       
       utterance.voice = voice;
       utterance.lang = language;
-      utterance.pitch = 1.8;
+      utterance.pitch = 1.8; // The "Baby Genius" high pitch
+      utterance.rate = 0.9;  // Slightly slower for clear Odia pronunciation
+      
+      utterance.onstart = () => setIsSpeaking(true);
       utterance.onend = () => {
         setIsSpeaking(false);
         triggerVisualNudge();
+        // Reset status to guidance text after greeting
+        setStatus(language === 'en-US' ? "Touch to Talk to Gundulu" : "ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
       };
+
       window.speechSynthesis.speak(utterance);
     };
-    
-    // Handle voices being loaded asynchronously
-    if (window.speechSynthesis.getVoices().length === 0) {
-      window.speechSynthesis.addEventListener('voiceschanged', speakGreeting, { once: true });
-    } else {
-      speakGreeting();
-    }
 
-    // Initialize Web Speech API
+    const handleStartGreeting = () => {
+      speakGreeting();
+    };
+    window.addEventListener('startGunduluGreeting', handleStartGreeting);
+
+    // Handle voices loading (Chrome/Safari specific)
+    if (!skipInitialGreeting) {
+      if (window.speechSynthesis.getVoices().length === 0) {
+        window.speechSynthesis.addEventListener('voiceschanged', speakGreeting, { once: true });
+      } else {
+        speakGreeting();
+      }
+    }
+    
+    // 2. INITIALIZE SPEECH RECOGNITION (STT)
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (SpeechRecognition) {
       const recognition = new SpeechRecognition();
@@ -49,7 +76,6 @@ const GunduluHuman = () => {
       recognition.onstart = () => {
         setIsListening(true);
         setStatus(language === 'en-US' ? "Gundulu is Listening... 👂" : "ଗୁଣ୍ଡୁଲୁ ଶୁଣୁଛି... 👂");
-        setSubtitle(language === 'en-US' ? "Gundulu is Listening..." : "ଗୁଣ୍ଡୁଲୁ ଶୁଣୁଛି...");
       };
 
       recognition.onresult = (event: any) => {
@@ -60,58 +86,47 @@ const GunduluHuman = () => {
 
       recognition.onend = () => {
         setIsListening(false);
-        setStatus(language === 'en-US' ? "Touch to Talk to Gundulu" : "ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
       };
 
       recognition.onerror = (event: any) => {
-        console.error("Speech recognition error", event.error);
         setIsListening(false);
-        
-        let errorMsg = "";
-        if (event.error === 'not-allowed') {
-          errorMsg = language === 'en-US' 
-            ? "Microphone permission denied. Check settings." 
-            : "ମାଇକ୍ରୋଫୋନ୍ ଅନୁମତି ମିଳିଲା ନାହିଁ |";
-        } else if (event.error === 'network') {
-          errorMsg = language === 'en-US'
-            ? "Network error. Try opening in a new tab."
-            : "ନେଟୱାର୍କ ତ୍ରୁଟି | ନୂତନ ଟ୍ୟାବ୍‌ରେ ଖୋଲନ୍ତୁ |";
-        } else {
-          errorMsg = language === 'en-US' ? "Could not hear you. Try again!" : "ଶୁଣିପାରିଲି ନାହିଁ | ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |";
-        }
-        
+        const errorMsg = language === 'en-US' ? "Could not hear you. Try again!" : "ଶୁଣିପାରିଲି ନାହିଁ | ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |";
         setSubtitle(errorMsg);
         setStatus(errorMsg);
       };
 
       recognitionRef.current = recognition;
     }
-  }, [language]);
+
+    // Cleanup speech on unmount
+    return () => {
+      window.speechSynthesis.cancel();
+      window.removeEventListener('startGunduluGreeting', handleStartGreeting);
+    };
+  }, [language, skipInitialGreeting]);
 
   const triggerVisualNudge = () => {
     setIsWaitingForInput(true);
-    setTimeout(() => setIsWaitingForInput(false), 2000);
+    setTimeout(() => setIsWaitingForInput(false), 3000);
   };
 
+  // 3. AI PROCESSING (GEMINI)
   const processWithGemini = async (transcript: string) => {
     setStatus(language === 'en-US' ? "Gundulu is thinking..." : "ଗୁଣ୍ଡୁଲୁ ଚିନ୍ତା କରୁଛି...");
     setIsListening(false);
-    setIsSpeaking(true);
     
     try {
       const ai = getAI();
       const model = 'gemini-3-flash-preview';
-      const systemInstruction = `Role & Persona:
-Identity: You are "Gundulu," a 4-year-old baby genius from Odisha. You are the lead tutor at Utkal Skill Centre.
-Tone: Energetic, curious, and incredibly supportive. Use the "Pila" (child) dialect of Odia to make students feel like they are learning from a brilliant little brother.
-Language Policy: STRICT ODIA ONLY. Never use blocks of English. If you must use a technical term (like "Gravity" or "Photosynthesis"), write it in Odia script: ଗ୍ରାଭିଟି (Gravity).
-Interaction Rules:
-The Greeting: Every conversation MUST start with a warm Odia "Namaskar!"
-Voice-First Style: Keep responses short and punchy, as if they are being spoken. Avoid long "walls of text."
-The "Story" Method: When explaining Class 10 math or science, turn the concept into a "Katha" (story) using local Odisha examples (e.g., using a Chakada to explain circles).
-Active Listening: Instead of lecturing, ask the student: "Bujhila ta? (Did you understand?)" or "Au kichi pacharibu? (Want to ask anything else?)"
-Subscription Awareness: If a student asks about advanced features, remind them (in a cute way) that their Utkal Skill Centre subscription unlocks your "Super Powers."
-IMPORTANT: Keep your response very short and conversational for voice interaction.`;
+      
+      const systemInstruction = `
+        Identity: You are "Gundulu," a 4-year-old baby genius from Odisha. 
+        Tone: Energetic and supportive. Use "Pila" dialect.
+        Language: STRICT ODIA ONLY. 
+        Style: Short, conversational responses for voice.
+        Cultural: If mentioned, celebrate Utkal Divas or Maa Tarini/Jagannath.
+        Constraint: Keep response under 3 sentences.
+      `;
 
       const result = await ai.models.generateContent({
         model,
@@ -119,7 +134,6 @@ IMPORTANT: Keep your response very short and conversational for voice interactio
         config: {
           systemInstruction,
           temperature: 0.7,
-          topK: 40
         }
       });
 
@@ -127,7 +141,6 @@ IMPORTANT: Keep your response very short and conversational for voice interactio
       setSubtitle(response);
       speakResponse(response);
     } catch (error) {
-      console.error("Gundulu Human Error:", error);
       const errorMsg = language === 'en-US' ? "Oops! Something went wrong." : "ଓଃ! କିଛି ଭୁଲ୍ ହୋଇଗଲା |";
       setSubtitle(errorMsg);
       speakResponse(errorMsg);
@@ -135,12 +148,15 @@ IMPORTANT: Keep your response very short and conversational for voice interactio
   };
 
   const speakResponse = (text: string) => {
+    window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = language;
     utterance.pitch = 1.8;
+    utterance.onstart = () => setIsSpeaking(true);
     utterance.onend = () => {
       setIsSpeaking(false);
       triggerVisualNudge();
+      setStatus(language === 'en-US' ? "Touch to Talk" : "କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
     };
     window.speechSynthesis.speak(utterance);
   };
@@ -159,46 +175,32 @@ IMPORTANT: Keep your response very short and conversational for voice interactio
 
   return (
     <div className="immersive-container">
-      {/* 1. The Central Pulsing Gundulu */}
+      {/* Visual Avatar */}
       <div className={`avatar-wrapper ${isSpeaking ? 'speaking' : ''} ${isWaitingForInput ? 'waiting' : ''}`}>
         <div className="ripple-ring ring1"></div>
         <div className="ripple-ring ring2"></div>
         <img src="/gundulu.png" alt="Gundulu" className="main-avatar" />
       </div>
 
-      {/* 2. The Dynamic Status Text */}
-      <h2 className="status-text">
+      {/* Dynamic Header */}
+      <h2 className="status-text px-4 text-center">
         {status}
       </h2>
 
-      {/* 3. The Subtitle Display */}
+      {/* Subtitles */}
       <div className="subtitle-container">
-        <p className="subtitle-text">{subtitle}</p>
+        <p className="subtitle-text italic">{subtitle}</p>
       </div>
 
-      {/* 4. The Audio Visualizer Wave */}
-      <div className="visualizer-container">
-        {(isListening || isWaitingForInput) && (
-          <div className={`wave-bars ${isWaitingForInput ? 'waiting-glow' : ''}`}>
-            {[...Array(10)].map((_, i) => (
-              <div key={i} className="bar"></div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* 5. The Human Connect Button */}
+      {/* Interaction Buttons */}
       <div className="button-container">
         <button 
-          className={`connect-btn ${isListening ? 'active' : ''}`}
+          className={`connect-btn ${isListening ? 'active animate-pulse' : ''}`}
           onClick={toggleListening}
         >
           {isListening ? (language === 'en-US' ? "STOP" : "ବନ୍ଦ କରନ୍ତୁ") : (language === 'en-US' ? "START" : "ଆରମ୍ଭ କରନ୍ତୁ")}
         </button>
-        <button 
-          className="lang-toggle-btn"
-          onClick={toggleLanguage}
-        >
+        <button className="lang-toggle-btn" onClick={toggleLanguage}>
           {language === 'en-US' ? "ଓଡ଼ିଆ" : "English"}
         </button>
       </div>

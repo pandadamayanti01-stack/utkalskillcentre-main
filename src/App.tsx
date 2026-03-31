@@ -81,6 +81,7 @@ import { AdminDashboard } from './components/AdminDashboard';
 import { PracticeQuestion } from './components/PracticeQuestion';
 import { Dashboard } from './components/Dashboard';
 import { UtkalDivasPoster } from './components/UtkalDivasPoster';
+import GunduluHuman from './components/GunduluHuman';
 import { AvatarStore } from './components/AvatarStore';
 import { DailyChallenge } from './components/DailyChallenge';
 import { ProgressChart } from './components/ProgressChart';
@@ -335,6 +336,11 @@ export default function App() {
   });
   const [openTutorInVoiceMode, setOpenTutorInVoiceMode] = useState(0);
 
+  const handleUpgradeClick = () => {
+    setActiveTab('plans');
+    setSidebarOpen(false);
+  };
+
   useEffect(() => {
     localStorage.setItem('activeTab', activeTab);
     // Sync hash with activeTab if it's not a sub-path
@@ -388,6 +394,11 @@ export default function App() {
   const [showLaunchPoster, setShowLaunchPoster] = useState(() => !localStorage.getItem('utkalDivasSeen'));
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [showChatbot, setShowChatbot] = useState(false);
+  
+  const handleGunduluGreeting = () => {
+    // Logic to trigger Gundulu greeting
+    window.dispatchEvent(new CustomEvent('startGunduluGreeting'));
+  };
   
   // Auth State
   const [authStep, setAuthStep] = useState<'login' | 'otp'>('login');
@@ -1425,6 +1436,15 @@ export default function App() {
           )}
         </AnimatePresence>
 
+        {showLaunchPoster && (
+          <UtkalDivasPoster onClose={() => {
+            setShowLaunchPoster(false);
+            localStorage.setItem('utkalDivasSeen', 'true');
+            handleGunduluGreeting();
+          }} />
+        )}
+        <GunduluHuman skipInitialGreeting={showLaunchPoster} />
+
         <div className="flex-1 flex relative overflow-hidden">
           {/* Background Glows & Grid */}
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LCAyNTUsLCAyNTUsIDAuMDUpIi8+PC9zdmc+')] [mask-image:linear-gradient(to_bottom,white,transparent)] pointer-events-none"></div>
@@ -1693,27 +1713,34 @@ export default function App() {
         <div className="flex-1 overflow-y-auto p-4 md:p-8 scrollbar-hide relative z-10">
           <AnimatePresence mode="wait">
             {/* Your 10+ Tab components go here... */}
-            {activeTab === 'dashboard' && <Dashboard user={user} leaderboard={leaderboard} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} chapters={chapters} dailyChallenge={dailyChallenge} onOpenTutor={() => { setOpenTutorInVoiceMode(Date.now()); setActiveTab('study_buddy'); }} />}
+            {activeTab === 'dashboard' && <Dashboard user={user} leaderboard={leaderboard} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} chapters={chapters} dailyChallenge={dailyChallenge} onOpenTutor={() => { 
+  if (isPremium) {
+    setOpenTutorInVoiceMode(Date.now());
+    setActiveTab('study_buddy');
+  } else {
+    handleUpgradeClick();
+  }
+}} />}
             {activeTab === 'courses' && <CoursesView user={user} chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'monthly_tests' && <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'study_buddy' && (
-              isPremium ? <StudyBuddyView language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} user={user} initialVoiceMode={openTutorInVoiceMode} onBack={() => setActiveTab('dashboard')} onLanguageChange={setLanguage} /> : <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
+              isPremium ? <StudyBuddyView language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} user={user} initialVoiceMode={openTutorInVoiceMode} onBack={() => setActiveTab('dashboard')} onLanguageChange={setLanguage} /> : <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
             )}
             {activeTab === 'profile' && <ProfileView user={user} language={language} onBack={() => setActiveTab('dashboard')} onParentAccess={() => setActiveTab('parent_dashboard')} setActiveTab={setActiveTab} />}
             {activeTab === 'parent_dashboard' && <ParentDashboard user={user} chapters={chapters} leaderboard={leaderboard} language={language} onBack={() => setActiveTab('profile')} userProgress={userProgress} />}
             {activeTab === 'leaderboard' && <LeaderboardView leaderboard={leaderboard} language={language} onBack={() => setActiveTab('dashboard')} following={following} user={user} />}
             {activeTab === 'support' && <SupportView user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'store' && <AvatarStore user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
-            {activeTab === 'plans' && <SubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'plans' && <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />}
           </AnimatePresence>
 
           {/* --- FOOTER PLACE: BIGSAN BRANDING --- */}
           <footer className="mt-20 pb-10 flex flex-col items-center gap-4 opacity-40">
             <div className="h-px w-20 bg-white/10" />
             <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-center">Managed By</p>
-            <img src="/bigsan-512.png" className="h-8 w-auto grayscale brightness-200" alt="Bigsan Group" />
-            <p className="text-[9px] font-medium text-center">© 2026 Bigsan Group</p>
+            <img src="/bigsan.png" className="h-8 w-auto grayscale brightness-200" alt="Bigsan Group" />
+            <p className="text-[9px] font-medium text-center">© 2026 Bigsan Utkal Skill Centre</p>
           </footer>
         </div>
       </main>
@@ -2423,7 +2450,7 @@ function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: a
 
 // --- Sub-Views ---
 
-function StudyBuddy({ user, language, isPremium, showPaywall, setShowPaywall }: any) {
+function StudyBuddy({ user, language, isPremium, showPaywall, setShowPaywall, handleUpgradeClick }: any) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<any[]>([
     { role: 'assistant', content: `Hi ${user.name}! I'm your Study Buddy. How can I help you today?` }
@@ -2513,12 +2540,12 @@ function StudyBuddy({ user, language, isPremium, showPaywall, setShowPaywall }: 
           if (isPremium) {
             setIsOpen(true);
           } else {
-            setShowPaywall(true);
+            handleUpgradeClick();
           }
         }}
-        className={`fixed bottom-28 right-8 w-16 h-16 rounded-full text-white shadow-2xl flex items-center justify-center z-40 border-4 border-slate-950 ${isPremium ? 'bg-emerald-500 shadow-emerald-500/40' : 'bg-slate-700 shadow-slate-700/40'}`}
+        className={`fixed bottom-28 right-8 w-16 h-16 rounded-full text-white shadow-2xl flex items-center justify-center z-40 border-4 border-slate-950 ${isPremium ? 'bg-emerald-500 shadow-emerald-500/40' : 'bg-amber-500 shadow-amber-500/40'}`}
       >
-        {isPremium ? <Bot size={32} /> : <Lock size={24} />}
+        {isPremium ? <Bot size={32} /> : <Sparkles size={24} />}
         {isPremium && (
           <motion.div 
             animate={{ scale: [1, 1.2, 1] }}
@@ -2703,7 +2730,7 @@ function SidebarItem({ icon, label, active, onClick }: any) {
 
 
 
-function SubscriptionGuard({ onSubscribe, language, isPremium, user, onShare, systemSettings, onBack }: any) {
+function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShare, systemSettings, onBack }: any) {
   const p = translations[language].pricing;
   
   let monthlyPrice = systemSettings?.monthlyPrice || 199;

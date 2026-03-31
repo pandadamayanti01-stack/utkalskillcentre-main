@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Sparkles, Bot, MessageSquare } from 'lucide-react';
+import { X, Sparkles, Scissors } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 interface UtkalDivasPosterProps {
@@ -8,6 +8,8 @@ interface UtkalDivasPosterProps {
 }
 
 export const UtkalDivasPoster: React.FC<UtkalDivasPosterProps> = ({ onClose }) => {
+  const [isCutting, setIsCutting] = useState(false);
+
   useEffect(() => {
     // Firecracker / Confetti celebration effect
     const duration = 5 * 1000;
@@ -27,10 +29,12 @@ export const UtkalDivasPoster: React.FC<UtkalDivasPosterProps> = ({ onClose }) =
       // Since particles fall down, start a bit higher than random
       confetti({
         ...defaults, particleCount,
+        colors: ['#ff0000', '#ffa500', '#ffff00', '#ffffff'],
         origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
       });
       confetti({
         ...defaults, particleCount,
+        colors: ['#ff0000', '#ffa500', '#ffff00', '#ffffff'],
         origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
       });
     }, 250);
@@ -38,13 +42,18 @@ export const UtkalDivasPoster: React.FC<UtkalDivasPosterProps> = ({ onClose }) =
     return () => clearInterval(interval);
   }, []);
 
+  const handleCutRibbon = () => {
+    setIsCutting(true);
+    setTimeout(onClose, 2000);
+  };
+
   return (
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+        className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md antialiased"
       >
         <motion.div
           initial={{ scale: 0.8, opacity: 0, y: 20 }}
@@ -60,9 +69,47 @@ export const UtkalDivasPoster: React.FC<UtkalDivasPosterProps> = ({ onClose }) =
             <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
           </div>
 
+          {/* Ribbon */}
+          <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none rounded-[2rem] overflow-hidden">
+            <motion.div 
+              className="h-8 w-1/2 bg-red-600 border-y-4 border-red-800 flex items-center justify-end"
+              animate={isCutting ? { x: '-100%' } : { x: 0 }}
+              transition={{ duration: 0.8, ease: "easeInOut", delay: 0.5 }}
+            >
+              <div className="w-4 h-8 bg-red-700"></div>
+            </motion.div>
+            
+            {/* Bow */}
+            <motion.div 
+              className="absolute z-30 w-12 h-12 bg-yellow-400 rounded-full border-4 border-yellow-600 flex items-center justify-center shadow-lg"
+              animate={isCutting ? { scale: 0, opacity: 0 } : { scale: 1 }}
+              transition={{ duration: 0.3, delay: 0.5 }}
+            >
+              <div className="w-4 h-4 bg-red-600 rounded-full"></div>
+            </motion.div>
+
+            <motion.div 
+              className="h-8 w-1/2 bg-red-600 border-y-4 border-red-800 flex items-center justify-start"
+              animate={isCutting ? { x: '100%' } : { x: 0 }}
+              transition={{ duration: 0.8, ease: "easeInOut", delay: 0.5 }}
+            >
+              <div className="w-4 h-8 bg-red-700"></div>
+            </motion.div>
+          </div>
+
+          {/* Scissors */}
+          <motion.div
+            className="absolute z-40 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+            initial={{ opacity: 0, x: -100, rotate: -45 }}
+            animate={isCutting ? { opacity: 1, x: 0, rotate: 0 } : { opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Scissors size={48} className="text-white drop-shadow-lg" />
+          </motion.div>
+
           {/* Close Button */}
           <button
-            onClick={onClose}
+            onClick={handleCutRibbon}
             className="absolute -bottom-16 left-1/2 -translate-x-1/2 p-3 bg-white/20 hover:bg-white/40 text-white rounded-full backdrop-blur-md transition-colors z-10 border border-white/30"
           >
             <X size={28} />
@@ -75,8 +122,8 @@ export const UtkalDivasPoster: React.FC<UtkalDivasPosterProps> = ({ onClose }) =
               {/* Main Image */}
               <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-yellow-300 shadow-[0_0_30px_rgba(250,204,21,0.8)] overflow-hidden bg-orange-100 relative z-10">
                 <img 
-                  src="https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=400&auto=format&fit=crop" 
-                  alt="Child studying" 
+                  src="/utkal-512.png" 
+                  alt="Utkal Skill Centre Logo" 
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                   referrerPolicy="no-referrer"
                 />
@@ -110,7 +157,7 @@ export const UtkalDivasPoster: React.FC<UtkalDivasPosterProps> = ({ onClose }) =
             </p>
 
             <button
-              onClick={onClose}
+              onClick={handleCutRibbon}
               className="px-8 py-4 bg-yellow-400 hover:bg-yellow-300 text-red-900 font-black rounded-xl text-lg transition-transform hover:scale-105 shadow-[0_0_20px_rgba(250,204,21,0.4)] flex items-center gap-2"
             >
               ଆଗକୁ ବଢନ୍ତୁ (Enter App)
