@@ -26,10 +26,22 @@
       "type": "object",
       "properties": {
         "class": { "type": "string" },
-        "board": { "type": "string" },
+        "board": { 
+          "type": "object",
+          "properties": {
+            "en": { "type": "string" },
+            "or": { "type": "string" }
+          }
+        },
         "language": { "type": "string" },
         "subject": { "type": "string" },
-        "title": { "type": "string" },
+        "title": { 
+          "type": "object",
+          "properties": {
+            "en": { "type": "string" },
+            "or": { "type": "string" }
+          }
+        },
         "playlist_id": { "type": "string" },
         "notes": { "type": "string", "description": "Markdown content for notes" },
         "status": { "type": "string", "enum": ["draft", "published"], "description": "Visibility status" },
@@ -153,7 +165,6 @@
         "title": { "type": "string" },
         "download_url": { "type": "string" },
         "thumbnail_url": { "type": "string" },
-        "status": { "type": "string", "enum": ["draft", "published"], "description": "Visibility status" },
         "created_at": { "type": "string", "format": "date-time" }
       },
       "required": ["class", "board", "subject", "title", "download_url"]

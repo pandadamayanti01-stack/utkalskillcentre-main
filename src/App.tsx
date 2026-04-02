@@ -57,6 +57,7 @@ import Markdown from 'react-markdown';
 import { GoogleGenAI } from "@google/genai";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 import { auth, db as firestore, safeJsonStringify } from './firebase';
+import { Chapter, BilingualContent } from './types';
 import { 
   signInWithPopup, 
   GoogleAuthProvider, 
@@ -214,20 +215,6 @@ interface Question {
   chapter_id?: string;
 }
 
-interface Chapter {
-  id: string;
-  class: string;
-  board: string;
-  language: string;
-  subject: string;
-  title: string;
-  playlist_id: string;
-  notes?: string;
-  status?: 'draft' | 'published';
-  practice_questions?: { question: string; answer: string; tutor_explanation?: string }[];
-  quiz_questions?: { question: string; options: string[]; correct_answer: string; hint?: string }[];
-  translationGroupId?: string;
-}
 
 interface MonthlyTest {
   id: string;
@@ -345,6 +332,7 @@ export default function App() {
     localStorage.setItem('activeTab', activeTab);
     // Sync hash with activeTab if it's not a sub-path
     const currentHash = window.location.hash.replace('#', '').split('/')[0];
+    console.log("Debug: activeTab useEffect:", { activeTab, currentHash });
     if (currentHash !== activeTab) {
       window.location.hash = activeTab;
     }
@@ -717,14 +705,45 @@ export default function App() {
     }
 
     // Fetch all chapters for all roles to ensure consistency across student profiles as requested
+    console.log("Debug: Fetching chapters for user:", user);
     const chaptersQuery = user.role === 'admin' 
       ? collection(firestore, 'chapters')
-      : query(collection(firestore, 'chapters'), where('status', '==', 'published'));
+      : query(collection(firestore, 'chapters'), where('status', '==', 'published'), where('class', 'in', [user.class, user.class.replace('class', '')]));
+    console.log("Debug: chaptersQuery:", chaptersQuery);
 
     const unsubChapters = onSnapshot(chaptersQuery, (snapshot) => {
-      const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as Chapter[];
+      console.log("Debug: Fetched chapters snapshot size:", snapshot.size);
+      const allData = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as Chapter[];
+      console.log("Debug: All fetched chapters:", allData);
+      
+      const data = allData.filter(c => {
+        // 1. Check Class
+        const matchesClass = !user?.class || c.class === user.class;
+        
+        // 2. Check Board (Handles both String and Map formats)
+        const userBoard = (user?.board || '').toLowerCase();
+        
+        let chapterBoardStr = '';
+        if (typeof c.board === 'string') {
+          chapterBoardStr = c.board.toLowerCase();
+        } else if (c.board && typeof c.board === 'object') {
+          // If it's a map like {en: "...", or: "..."}
+          chapterBoardStr = ((c.board as any).en || (c.board as any).or || '').toLowerCase();
+        }
+        
+        const matchesBoard = !userBoard || chapterBoardStr.includes(userBoard) || userBoard.includes(chapterBoardStr);
+
+        if (!matchesClass || !matchesBoard) {
+            console.log("Debug: Chapter", c.id, "filtered out.", { matchesClass, matchesBoard, chapterClass: c.class, userClass: user.class, chapterBoard: c.board, userBoard: user.board });
+        }
+        return matchesClass && matchesBoard;
+      });
+      console.log("Debug: Filtered chapters:", data);
       setChapters(data);
-    }, (err) => handleFirestoreError(err, OperationType.GET, 'chapters'));
+    }, (err) => {
+      console.error("Debug: Chapter fetch error:", err);
+      handleFirestoreError(err, OperationType.GET, 'chapters');
+    });
 
     const unsubLeaderboard = onSnapshot(
       query(collection(firestore, 'public_profiles'), orderBy('points', 'desc'), limit(10)),
@@ -757,15 +776,20 @@ export default function App() {
 
     const textbooksQuery = user.role === 'admin'
       ? collection(firestore, 'textbooks')
-      : query(collection(firestore, 'textbooks'), where('status', '==', 'published'));
+      : query(collection(firestore, 'textbooks'), where('status', '==', 'published'), where('class', 'in', [user.class, user.class.replace('class', '')]));
 
+    console.log("Debug: Textbook query for user:", user, "Class:", user.class);
     const unsubTextbooks = onSnapshot(
       textbooksQuery,
       (snapshot) => {
         const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as Textbook[];
+        console.log("Debug: Fetched textbooks for class", user.class, ":", data);
         setTextbooks(data);
       },
-      (err) => handleFirestoreError(err, OperationType.GET, 'textbooks')
+      (err) => {
+        console.error("Debug: Textbook fetch error:", err);
+        handleFirestoreError(err, OperationType.GET, 'textbooks');
+      }
     );
 
     const today = new Date().toISOString().split('T')[0];
@@ -1578,7 +1602,7 @@ export default function App() {
         {/* Right Content - Login Form */}
         <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-12 relative z-10">
           {authStep === 'login' ? (
-            <LoginComponent language={language} translations={translations} setLanguage={setLanguage} />
+            <LoginComponent language={language} translations={translations} setLanguage={setLanguage} setRegData={setRegData} />
           ) : (
             <div className="text-white">OTP UI content here</div>
           )}
@@ -2878,6 +2902,9 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
 
 function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }: any) {
   const [selected, setSelected] = useState<Chapter | null>(null);
+  useEffect(() => {
+    console.log("Debug: CoursesView selected state changed:", selected);
+  }, [selected]);
   const [quizMode, setQuizMode] = useState(false);
   const [subjectFilter, setSubjectFilter] = useState<string>('all');
   const [recentlyViewed, setRecentlyViewed] = useState<Chapter[]>([]);
@@ -2885,18 +2912,25 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
   // Sync state with hash for back button support
   useEffect(() => {
     const handleHash = () => {
+      console.log("Debug: Full hash:", window.location.hash);
       const parts = window.location.hash.replace('#', '').split('/');
+      console.log("Debug: handleHash parts:", parts, "chapters length:", chapters.length);
       if (parts[0] === 'courses') {
         if (parts[1] === 'chapter' && parts[2]) {
+          console.log("Debug: Looking for chapter ID:", parts[2]);
           const chapter = chapters.find((c: Chapter) => c.id === parts[2]);
+          console.log("Debug: handleHash found chapter:", chapter);
           if (chapter) {
+            console.log("Debug: Calling setSelected with:", chapter.id);
             setSelected(chapter);
             setQuizMode(parts[3] === 'quiz');
           } else {
+            console.log("Debug: Chapter not found, setting selected to null");
             setSelected(null);
             setQuizMode(false);
           }
         } else {
+          console.log("Debug: No chapter ID found, setting selected to null");
           setSelected(null);
           setQuizMode(false);
         }
@@ -2909,6 +2943,7 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
 
   // Load recently viewed from localStorage
   useEffect(() => {
+    console.log("Debug: CoursesView selected:", selected);
     const saved = localStorage.getItem(`recently_viewed_${user?.id}`);
     if (saved) {
       try {
@@ -2922,6 +2957,7 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
   }, [chapters, user?.id]);
 
   const handleSelectChapter = (chapter: Chapter) => {
+    console.log("Debug: handleSelectChapter called with:", chapter.id, chapter.title);
     window.location.hash = `courses/chapter/${chapter.id}`;
     
     // Update recently viewed
@@ -2943,7 +2979,15 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
   const classFilteredChapters = React.useMemo(() => {
     return chapters.filter((c: Chapter) => {
       const matchesClass = !user?.class || c.class === user.class;
-      const matchesBoard = !user?.board || c.board === boardKey;
+      const userBoard = (user?.board || '') as string;
+      const matchesBoard = !userBoard || (
+        typeof c.board === 'string' 
+          ? (c.board as string).toLowerCase().includes(userBoard.toLowerCase()) 
+          : (
+            ((c.board as any)?.en as string || '').toLowerCase().includes(userBoard.toLowerCase()) || 
+            ((c.board as any)?.or as string || '').toLowerCase().includes(userBoard.toLowerCase())
+          )
+      );
       return matchesClass && matchesBoard;
     });
   }, [chapters, user?.class, user?.board, boardKey]);
@@ -2970,7 +3014,7 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
       filteredChapters.reduce((acc: Map<string, Chapter>, current: Chapter) => {
         const groupId = current.translationGroupId || current.id;
         const existing = acc.get(groupId);
-        if (!existing || current.language === 'en') {
+        if (!existing || current.board === user?.board) {
           acc.set(groupId, current);
         }
         return acc;
@@ -2990,10 +3034,17 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
 
   useEffect(() => {
     if (selected) {
-      const updatedSelected = chapters.find((c: Chapter) => c.id === selected.id || (c.translationGroupId && c.translationGroupId === selected.translationGroupId));
+      const updatedSelected = chapters.find((c: Chapter) => 
+        c.id === selected.id || 
+        (c.translationGroupId && c.translationGroupId === selected.translationGroupId)
+      );
+      
+      // Only update if we actually found something, 
+      // and DON'T reset to null if the chapters array is just loading.
       if (updatedSelected) {
         setSelected(updatedSelected);
-      } else {
+      } else if (chapters.length > 0) {
+        // Only set to null if chapters have actually loaded and the ID is truly gone
         setSelected(null);
       }
     }
@@ -3116,7 +3167,7 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
               >
                 <div className="w-16 h-10 rounded-lg bg-slate-800 overflow-hidden flex-shrink-0">
                   <img 
-                    src={getYouTubeThumbnail(chapter.playlist_id)} 
+                    src={getYouTubeThumbnail(chapter.videoUrl)} 
                     className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity"
                     alt={chapter.title}
                     referrerPolicy="no-referrer"
@@ -3126,7 +3177,11 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
                   <p className="text-[10px] font-bold text-emerald-500 uppercase truncate">
                     {getLocalizedSubject(chapter.subject, language)}
                   </p>
-                  <h4 className="text-sm font-semibold text-white truncate">{chapter.title}</h4>
+                  <h4 className="text-sm font-semibold text-white truncate">
+                    {typeof chapter.title === 'string' 
+                      ? chapter.title 
+                      : ((chapter.title as any)?.or || (chapter.title as any)?.en || "Untitled Chapter")}
+                  </h4>
                 </div>
               </motion.button>
             ))}
@@ -3188,16 +3243,19 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
       ) : (
         <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
           {uniqueChapters.map((chapter: Chapter) => (
-            <motion.button 
+            <motion.div 
               whileHover={{ y: -5 }}
               key={chapter.id}
-              onClick={() => handleSelectChapter(chapter)}
-              className="group text-left glass-card rounded-3xl p-6 hover:border-emerald-500/50 transition-all flex flex-col h-full relative overflow-hidden"
+              onClick={() => {
+                console.log("Debug: Chapter button clicked:", chapter.id);
+                handleSelectChapter(chapter);
+              }}
+              className="group text-left glass-card rounded-3xl p-6 hover:border-emerald-500/50 transition-all flex flex-col h-full relative overflow-hidden cursor-pointer"
             >
               <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-all pointer-events-none"></div>
               <div className="aspect-video rounded-2xl bg-slate-800 mb-4 overflow-hidden relative flex-shrink-0 z-10 shadow-lg">
                 <img 
-                  src={getYouTubeThumbnail(chapter.playlist_id)} 
+                  src={getYouTubeThumbnail(chapter.videoUrl)} 
                   className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform"
                   alt={chapter.title}
                   referrerPolicy="no-referrer"
@@ -3213,15 +3271,18 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
                   {getLocalizedSubject(chapter.subject, language)}
                 </span>
               </div>
-              <h3 className="text-xl font-bold text-white mb-1 line-clamp-2 min-h-[3.5rem] tracking-tight relative z-10">{chapter.title}</h3>
+              <h3 className="text-xl font-bold text-white mb-1 line-clamp-2 min-h-[3.5rem] tracking-tight relative z-10">
+                {typeof chapter.title === 'string' 
+                  ? chapter.title 
+                  : String((chapter.title as any)?.or || (chapter.title as any)?.en || "Untitled Chapter")}
+              </h3>
               
               <div className="flex items-center gap-4 mt-auto pt-4 border-t border-white/5 text-[10px] text-slate-400 font-bold uppercase tracking-wider relative z-10">
                 <div className="flex items-center gap-1"><Play size={12} className="text-emerald-500" /> Video</div>
                 {chapter.notes && <div className="flex items-center gap-1"><FileText size={12} className="text-blue-500" /> Notes</div>}
-                {chapter.practice_questions && chapter.practice_questions.length > 0 && <div className="flex items-center gap-1"><HelpCircle size={12} className="text-purple-500" /> Practice</div>}
                 {chapter.quiz_questions && chapter.quiz_questions.length > 0 && <div className="flex items-center gap-1"><CheckCircle2 size={12} className="text-orange-500" /> Quiz</div>}
               </div>
-            </motion.button>
+            </motion.div>
           ))}
         </motion.div>
       )}
@@ -3711,12 +3772,15 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
   }, [user?.board]);
 
   const filteredTextbooks = React.useMemo(() => {
-    return textbooks.filter((book: Textbook) => {
+    console.log("Debug: Filtering textbooks:", textbooks, "User:", user);
+    const filtered = textbooks.filter((book: Textbook) => {
       const matchesClass = !user?.class || book.class?.toLowerCase() === user.class.toLowerCase();
       const matchesBoard = !user?.board || book.board?.toLowerCase().includes(boardKey.toLowerCase()) || boardKey.toLowerCase().includes(book.board?.toLowerCase() || '');
       const matchesSubject = subjectFilter === 'all' || book.subject === subjectFilter;
       return matchesClass && matchesBoard && matchesSubject;
     });
+    console.log("Debug: Filtered textbooks:", filtered);
+    return filtered;
   }, [textbooks, user?.class, user?.board, boardKey, subjectFilter]);
 
   const availableSubjects = React.useMemo(() => {
@@ -3808,7 +3872,7 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
                 {book.thumbnail_url ? (
                   <img 
                     src={book.thumbnail_url} 
-                    alt={book.title} 
+                    alt={book.title[language as keyof BilingualContent]} 
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     referrerPolicy="no-referrer"
                   />
@@ -3820,7 +3884,7 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60" />
                 <div className="absolute bottom-4 left-4 right-4">
                   <span className="text-[10px] font-bold uppercase text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg border border-emerald-500/20 backdrop-blur-md">
-                    {translations[language].subjects[book.subject as keyof typeof translations.en.subjects] || book.subject}
+                    {book.subject}
                   </span>
                 </div>
               </div>
@@ -4014,6 +4078,15 @@ function TopicDetailView({
   onUpgrade: () => void
 }) {
   const [activeSubTab, setActiveSubTab] = useState<'video' | 'notes' | 'practice'>('video');
+  const [selectedVideoIndex, setSelectedVideoIndex] = useState(0);
+
+  const videos = topic.videos && topic.videos.length > 0 
+    ? topic.videos 
+    : [{ url: topic.videoUrl, teacherOrChannel: topic.teacherOrChannel || 'Default' }];
+
+  const selectedVideo = videos[selectedVideoIndex];
+  console.log("Debug: TopicDetailView selectedVideo:", selectedVideo);
+  console.log("Debug: TopicDetailView topic.notesUrl:", topic.notesUrl);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -4054,7 +4127,23 @@ function TopicDetailView({
                   {getLocalizedSubject(topic.subject, language)}
                 </span>
               </div>
-              <h1 className="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight">{topic.title}</h1>
+              <h1 className="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight">
+                {topic.title}
+              </h1>
+              {videos.length > 1 && (
+                <select 
+                  value={selectedVideoIndex}
+                  onChange={(e) => setSelectedVideoIndex(parseInt(e.target.value))}
+                  // Added z-index and relative to ensure it's clickable
+                  className="w-full md:w-64 bg-slate-900 border border-white/10 rounded-xl px-4 py-3 text-white mt-4 relative z-20"
+                >
+                  {videos.map((v: any, i: number) => (
+                    <option key={i} value={i} className="bg-slate-900 text-white">
+                      👨‍🏫 {v.teacherOrChannel || `Teacher ${i + 1}`}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
             
             {topic.quiz_questions?.length > 0 && (
@@ -4075,20 +4164,12 @@ function TopicDetailView({
             >
               <Play size={16} /> {translations[language].video}
             </button>
-            {topic.notes && (
+            {(topic.notes || topic.notesUrl) && (
               <button 
                 onClick={() => setActiveSubTab('notes')}
                 className={`flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap ${activeSubTab === 'notes' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
               >
                 <FileText size={16} /> {translations[language].notes}
-              </button>
-            )}
-            {topic.practice_questions?.length > 0 && (
-              <button 
-                onClick={() => setActiveSubTab('practice')}
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap ${activeSubTab === 'practice' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
-              >
-                <HelpCircle size={16} /> {translations[language].practice}
               </button>
             )}
             <button 
@@ -4113,9 +4194,9 @@ function TopicDetailView({
                 exit={{ opacity: 0, y: -20 }}
                 className="aspect-video rounded-2xl overflow-hidden bg-black shadow-2xl flex items-center justify-center"
               >
-                {topic.playlist_id ? (
+                {selectedVideo?.url ? (
                   <iframe 
-                    src={getYouTubeEmbedUrl(topic.playlist_id)}
+                    src={getYouTubeEmbedUrl(selectedVideo.url)}
                     className="w-full h-full border-0"
                     allowFullScreen
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -4137,11 +4218,34 @@ function TopicDetailView({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="bg-slate-800/30 rounded-2xl p-8 prose prose-invert max-w-none border border-white/5"
+                className="bg-slate-800/30 rounded-2xl p-8 min-h-[300px] border border-white/5 flex flex-col items-center justify-center text-center gap-6"
               >
-                <div className="markdown-body">
-                  <Markdown>{topic.notes}</Markdown>
-                </div>
+                {topic.notesUrl ? (
+                  <>
+                    <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-500">
+                      <FileText size={32} />
+                    </div>
+                    <div>
+                      <h3 className="text-white font-bold text-lg mb-1">Study Material Available</h3>
+                      <p className="text-slate-400 text-sm">You can view or download the notes for this chapter below.</p>
+                    </div>
+                    <a 
+                      href={topic.notesUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-emerald-900/40"
+                    >
+                      <Download size={18} />
+                      View PDF Notes
+                    </a>
+                  </>
+                ) : (
+                  <div className="prose prose-invert max-w-none">
+                    <div className="markdown-body">
+                      <Markdown>{topic.notes}</Markdown>
+                    </div>
+                  </div>
+                )}
               </motion.div>
             )}
 
@@ -4153,7 +4257,7 @@ function TopicDetailView({
                 exit={{ opacity: 0, y: -20 }}
                 className="grid grid-cols-1 md:grid-cols-2 gap-6"
               >
-                {topic.practice_questions?.map((q, idx) => (
+                {topic.quiz_questions?.map((q, idx) => (
                   <PracticeQuestion 
                     key={idx} 
                     question={q} 

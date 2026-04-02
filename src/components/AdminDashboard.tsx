@@ -62,6 +62,7 @@ import {
 } from 'firebase/firestore';
 
 import { translations } from '../translations';
+import { Chapter, VideoOption } from '../types';
 import { 
   translateContent, 
   generateChapterContent, 
@@ -117,7 +118,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     title: '',
     chapterIds: [],
     questions: [],
-    status: 'draft'
+    status: 'draft',
+    class: 'class5',
+    subject: 'math',
+    month: new Date().toLocaleString('default', { month: 'long' }),
+    year: new Date().getFullYear(),
+    language: 'or'
   });
 
   const [isAddingTextbook, setIsAddingTextbook] = useState(false);
@@ -126,12 +132,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [newTextbook, setNewTextbook] = useState<any>({
     class: 'class5',
-    board: 'odisha',
-    subject: 'math',
+    board: '',
+    subject: '',
     title: '',
     download_url: '',
-    thumbnail_url: '',
-    status: 'draft'
+    thumbnail_url: ''
   });
 
   const handleFileUpload = async (file: File, type: 'pdf' | 'thumbnail') => {
@@ -140,7 +145,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     setUploadingFile(type);
     setUploadProgress(0);
 
-    const storageRef = ref(storage, `textbooks/${Date.now()}_${file.name}`);
+    const extension = file.name.split('.').pop();
+    const sanitizedName = `${Date.now()}_document.${extension}`;
+    const storageRef = ref(storage, `textbooks/${sanitizedName}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
     return new Promise<string>((resolve, reject) => {
@@ -646,16 +653,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
   const [isOtherTestSubject, setIsOtherTestSubject] = useState(false);
   const [customTestSubject, setCustomTestSubject] = useState('');
   const [newChapter, setNewChapter] = useState({
-    textbookId: '',
-    title: { en: '', or: '' },
+    title: '',
     order: 0,
     videoUrl: '',
-    notes: '',
-    quizId: '',
     teacherOrChannel: '',
+    videos: [] as VideoOption[],
+    notes: '',
+    notesUrl: '',
+    quizId: '',
     status: 'draft' as 'draft' | 'published',
     class: '',
-    board: { en: '', or: '' },
+    board: '',
     subject: '',
     quiz_questions: []
   });
@@ -664,13 +672,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     e.preventDefault();
     try {
       // Translate title and board (Replaced with direct assignment)
-      const translatedTitle = { en: newChapter.title.en, or: newChapter.title.en };
-      const translatedBoard = { en: newChapter.board.en, or: newChapter.board.en };
+      const translatedTitle = newChapter.title;
+      const translatedBoard = newChapter.board;
       
       const chapterData = {
         ...newChapter,
-        title: translatedTitle,
-        board: translatedBoard,
+        videos: newChapter.videos.filter(v => v.url.trim() !== ''),
+        title: typeof newChapter.title === 'object' ? (newChapter.title as any).en : newChapter.title,
+        board: typeof newChapter.board === 'object' ? (newChapter.board as any).en : newChapter.board,
         createdAt: serverTimestamp()
       };
 
@@ -701,16 +710,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
       
       setIsAddingChapter(false);
       setNewChapter({
-        textbookId: '',
-        title: { en: '', or: '' },
+        title: '',
         order: 0,
         videoUrl: '',
-        notes: '',
-        quizId: '',
         teacherOrChannel: '',
+        videos: [] as VideoOption[],
+        notes: '',
+        notesUrl: '',
+        quizId: '',
         status: 'draft',
         class: '',
-        board: { en: '', or: '' },
+        board: '',
         subject: '',
         quiz_questions: []
       });
@@ -721,14 +731,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
   };
 
   const handleGenerateWithAI = async () => {
-    if (!newChapter.title.en) {
+    if (!newChapter.title) {
       showNotification("Please enter a title first.", 'error');
       return;
     }
     setIsGeneratingAI(true);
     try {
       const result = await generateChapterContent(
-        newChapter.title.en
+        newChapter.title,
+        newChapter.subject // Added missing subject argument
       );
       
       setNewChapter(prev => ({
@@ -748,12 +759,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
   const handleGenerateTestWithAI = async () => {
     setIsGeneratingTestAI(true);
     try {
-      const result = await generateTestContent(
-        newTest.title,
-        newTest.language as 'en' | 'or'
-      );
+      let result;
+      if (newTest.subject && newTest.class && newTest.month) {
+        result = await generateTestQuestions(
+          newTest.subject,
+          newTest.class,
+          `${newTest.month} ${newTest.year}`
+        );
+      } else {
+        result = await generateTestContent(
+          newTest.title,
+          newTest.language as 'en' | 'or'
+        );
+      }
       
-      setNewTest(prev => ({
+      setNewTest((prev: any) => ({
         ...prev,
         questions: result.questions
       }));
@@ -786,7 +806,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         
         // Save the chapter
         await addDoc(collection(firestore, 'chapters'), {
-          textbookId: newChapter.textbookId,
           title: { en: chapter.title, or: chapter.title },
           order: 0,
           videoUrl: `https://www.youtube.com/watch?v=${chapter.videoId}`,
@@ -795,7 +814,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
           status: 'draft',
           createdAt: serverTimestamp(),
           class: newChapter.class,
-          board: { en: newChapter.board.en, or: newChapter.board.en },
+          board: newChapter.board,
           subject: newChapter.subject
         });
       }
@@ -867,9 +886,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     console.log("Debug: searchTerm", searchTerm);
 
     const filteredContent = content.filter(c => {
-      console.log("Debug: Filtering chapter", c.id, c.class, c.subject);
-      // For debugging, return true to show all chapters
-      return true;
+      console.log("Debug: Filtering chapter", c.id, c.class, c.subject, c.status);
+      const matchesClass = adminClassFilter === 'all' || c.class === adminClassFilter;
+      const matchesSubject = adminSubjectFilter === 'all' || c.subject === adminSubjectFilter;
+      const matchesSearch = !searchTerm || c.title?.en?.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      console.log("Debug: Chapter", c.id, "matches:", { matchesClass, matchesSubject, matchesSearch });
+      return matchesClass && matchesSubject && matchesSearch;
     });
     console.log("Debug: filteredContent length", filteredContent.length);
 
@@ -938,14 +961,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
               <option value="all">All Classes</option>
               {Object.keys(translations['en'].classes).map(c => <option key={c} value={c}>{translations['en'].classes[c as keyof typeof translations.en.classes]}</option>)}
             </select>
-            <select 
-              value={adminSubjectFilter}
-              onChange={(e) => setAdminSubjectFilter(e.target.value)}
-              className="bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none"
-            >
-              <option value="all">All Subjects</option>
-              {Object.keys(translations['en'].subjects).map(s => <option key={s} value={s}>{translations['en'].subjects[s as keyof typeof translations.en.subjects]}</option>)}
-            </select>
             <div className="flex bg-slate-900 border border-white/10 rounded-xl overflow-hidden">
               <input 
                 type="text"
@@ -993,16 +1008,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                   setIsEditingChapter(false);
                   setEditingChapterId(null);
                   setNewChapter({
-                    textbookId: '',
-                    title: { en: '', or: '' },
+                    title: '',
                     order: 0,
                     videoUrl: '',
-                    notes: '',
-                    quizId: '',
                     teacherOrChannel: '',
+                    videos: [],
+                    notes: '',
+                    notesUrl: '',
+                    quizId: '',
                     status: 'draft',
                     class: '',
-                    board: { en: '', or: '' },
+                    board: '',
                     subject: '',
                     quiz_questions: []
                   });
@@ -1040,8 +1056,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                   <div>
                     <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Board</label>
                     <select 
-                      value={newChapter.board.en}
-                      onChange={(e) => setNewChapter({...newChapter, board: { en: e.target.value, or: '' }})}
+                      value={newChapter.board}
+                      onChange={(e) => setNewChapter({...newChapter, board: e.target.value})}
                       className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white cursor-pointer"
                     >
                       <option value="">Select Board</option>
@@ -1066,7 +1082,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                     <button 
                       type="button"
                       onClick={handleGenerateWithAI}
-                      disabled={isGeneratingAI || !newChapter.title.en}
+                      disabled={isGeneratingAI || !newChapter.title}
                       className="flex items-center gap-1 text-xs text-emerald-500 hover:text-emerald-400 disabled:opacity-50 transition-all"
                     >
                       {isGeneratingAI ? <div className="animate-spin h-3 w-3 border-2 border-emerald-500 border-t-transparent rounded-full" /> : <Sparkles size={14} />}
@@ -1075,43 +1091,59 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                   </div>
                   <input 
                     type="text" 
-                    value={newChapter.title.en}
-                    onChange={(e) => setNewChapter({...newChapter, title: { en: e.target.value, or: '' }})}
+                    value={newChapter.title}
+                    onChange={(e) => setNewChapter({...newChapter, title: e.target.value})}
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
                     placeholder="e.g. Introduction to Geometry"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Teacher / Channel Name</label>
-                  <input 
-                    type="text" 
-                    value={newChapter.teacherOrChannel}
-                    onChange={(e) => setNewChapter({...newChapter, teacherOrChannel: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                    placeholder="e.g. Khan Academy"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">YouTube URL / Video ID</label>
-                  <input 
-                    type="text" 
-                    value={newChapter.videoUrl}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      // Extract ID if it's a full URL
-                      let id = val;
-                      if (val.includes('youtube.com/watch?v=')) {
-                        id = val.split('v=')[1].split('&')[0];
-                      } else if (val.includes('youtu.be/')) {
-                        id = val.split('youtu.be/')[1].split('?')[0];
-                      } else if (val.includes('youtube.com/embed/')) {
-                        id = val.split('embed/')[1].split('?')[0];
-                      }
-                      setNewChapter({...newChapter, videoUrl: id});
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Videos</label>
+                  {newChapter.videos.map((video, index) => (
+                    <div key={index} className="flex gap-2 mb-2">
+                      <input
+                        type="text"
+                        value={video.url}
+                        onChange={(e) => {
+                          const newVideos = [...newChapter.videos];
+                          newVideos[index].url = e.target.value;
+                          setNewChapter({...newChapter, videos: newVideos});
+                        }}
+                        className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white"
+                        placeholder="YouTube URL"
+                      />
+                      <input
+                        type="text"
+                        value={video.teacherOrChannel}
+                        onChange={(e) => {
+                          const newVideos = [...newChapter.videos];
+                          newVideos[index].teacherOrChannel = e.target.value;
+                          setNewChapter({...newChapter, videos: newVideos});
+                        }}
+                        className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white"
+                        placeholder="Teacher/Channel"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newVideos = newChapter.videos.filter((_, i) => i !== index);
+                          setNewChapter({...newChapter, videos: newVideos});
+                        }}
+                        className="text-red-500"
+                      >
+                        <Trash2 size={20} />
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setNewChapter({...newChapter, videos: [...newChapter.videos, { url: '', teacherOrChannel: '' }]});
                     }}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                    placeholder="Paste YouTube URL or enter Video ID (e.g. dQw4w9WgXcQ)"
-                  />
+                    className="flex items-center gap-2 text-emerald-500 text-sm font-bold"
+                  >
+                    <Plus size={16} /> Add Video
+                  </button>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -1134,13 +1166,41 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                   </div>
                 </div>
                 <div className="md:col-span-3">
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Notes (Markdown)</label>
-                  <textarea 
-                    value={newChapter.notes}
-                    onChange={(e) => setNewChapter({...newChapter, notes: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none h-32"
-                    placeholder="# Introduction\nThis topic covers..."
-                  />
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Notes Document (PDF/Word)</label>
+                  <div className="flex flex-col gap-4">
+                    <input 
+                      type="text"
+                      value={newChapter.notesUrl}
+                      onChange={(e) => setNewChapter({...newChapter, notesUrl: e.target.value})}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+                      placeholder="Or paste Google Drive URL here"
+                    />
+                    <div className="flex items-center gap-4">
+                      <input 
+                        type="file" 
+                        accept=".pdf,.doc,.docx"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const url = await handleFileUpload(file, 'pdf');
+                            if (url) setNewChapter({...newChapter, notesUrl: url});
+                          }
+                        }}
+                        className="hidden"
+                        id="notes-upload"
+                      />
+                      <label 
+                        htmlFor="notes-upload"
+                        className="cursor-pointer flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl transition-all"
+                      >
+                        <Upload size={18} />
+                        {newChapter.notesUrl ? 'Change Document' : 'Upload Document'}
+                      </label>
+                      {newChapter.notesUrl && (
+                        <a href={newChapter.notesUrl} target="_blank" rel="noopener noreferrer" className="text-emerald-400 text-sm">View Document</a>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -1202,13 +1262,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                     <button 
                       onClick={() => {
                         setNewChapter({
-                          textbookId: c.textbookId,
                           title: typeof c.title === 'string' ? { en: c.title, or: '' } : c.title,
                           order: c.order,
-                          videoUrl: c.videoUrl,
-                          notes: c.notes || '',
-                          quizId: c.quizId || '',
+                          videoUrl: c.videoUrl || '',
                           teacherOrChannel: c.teacherOrChannel || '',
+                          videos: c.videos || [],
+                          notes: c.notes || '',
+                          notesUrl: c.notesUrl || '',
+                          quizId: c.quizId || '',
                           status: c.status || 'draft',
                           class: c.class || '',
                           board: typeof c.board === 'string' ? { en: c.board, or: '' } : c.board,
@@ -1255,7 +1316,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                     </button>
                   </div>
                 </div>
-                <h4 className="text-white font-semibold">{c.title}</h4>
+                <h4 className="text-white font-semibold">{typeof c.title === 'string' ? c.title : c.title.en}</h4>
                 <div className="text-xs text-slate-500 flex-grow">{translations['en'].subjects[c.subject] || c.subject}</div>
                 <div className="flex items-center gap-4 text-xs text-slate-400 pt-2 border-t border-white/5">
                   <div className="flex items-center gap-1"><Youtube size={14} /> Video</div>
@@ -1955,11 +2016,11 @@ Subscription Awareness: If a student asks about advanced features, remind them (
             setEditingTextbookId(null);
             setNewTextbook({
               class: 'class5',
-              subject: 'math',
+              board: '',
+              subject: '',
               title: '',
               download_url: '',
-              thumbnail_url: '',
-              status: 'draft'
+              thumbnail_url: ''
             });
           }}
           className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all"
@@ -1996,15 +2057,23 @@ Subscription Awareness: If a student asks about advanced features, remind them (
             </div>
             <div>
               <label className="block text-sm text-slate-400 mb-1">Subject</label>
-              <select 
+              <input 
+                type="text"
                 className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
+                placeholder="Enter subject"
                 value={newTextbook.subject}
                 onChange={(e) => setNewTextbook({...newTextbook, subject: e.target.value})}
-              >
-                {Object.entries(translations['en'].subjects).map(([key, label]) => (
-                  <option key={key} value={key}>{label as string}</option>
-                ))}
-              </select>
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-slate-400 mb-1">Board</label>
+              <input 
+                type="text"
+                className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
+                placeholder="Enter board"
+                value={newTextbook.board}
+                onChange={(e) => setNewTextbook({...newTextbook, board: e.target.value})}
+              />
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm text-slate-400 mb-1">Textbook PDF File</label>
@@ -2142,13 +2211,12 @@ Subscription Awareness: If a student asks about advanced features, remind them (
                   onClick={() => {
                     setEditingTextbookId(book.id);
                     setNewTextbook({
-                      class: book.class,
-                      board: book.board,
-                      subject: book.subject,
-                      title: book.title,
-                      download_url: book.download_url,
-                      thumbnail_url: book.thumbnail_url || '',
-                      status: book.status || 'draft'
+                      class: book.class || 'class5',
+                      board: typeof book.board === 'string' ? book.board : (book.board?.en || ''),
+                      subject: typeof book.subject === 'string' ? book.subject : (book.subject?.en || ''),
+                      title: typeof book.title === 'string' ? book.title : (book.title?.en || ''),
+                      download_url: book.download_url || '',
+                      thumbnail_url: book.thumbnail_url || ''
                     });
                     setIsAddingTextbook(true);
                   }}
@@ -2179,16 +2247,16 @@ Subscription Awareness: If a student asks about advanced features, remind them (
               </div>
             </div>
             <div className="p-4">
-              <h4 className="text-white font-semibold mb-1 truncate">{book.title || 'Untitled Textbook'}</h4>
+              <h4 className="text-white font-semibold mb-1 truncate">{typeof book.title === 'string' ? book.title : (book.title?.en || '')}</h4>
               <div className="flex flex-wrap items-center gap-2 mb-3">
                 <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20">
                   {book.class}
                 </span>
                 <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded-full border border-blue-500/20">
-                  {book.board}
+                  {typeof book.board === 'string' ? book.board : (book.board?.en || '')}
                 </span>
                 <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 bg-purple-500/10 text-purple-400 rounded-full border border-purple-500/20">
-                  {book.subject}
+                  {typeof book.subject === 'string' ? book.subject : (book.subject?.en || '')}
                 </span>
               </div>
               <a 
@@ -2211,7 +2279,6 @@ Subscription Awareness: If a student asks about advanced features, remind them (
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'content', label: 'Content Library', icon: BookOpen },
     { id: 'monthly_tests', label: 'Monthly Tests', icon: Calendar },
-    { id: 'textbooks', label: 'Textbooks', icon: Book },
     { id: 'ai_usage', label: 'AI Usage', icon: Brain },
     { id: 'payments', label: 'Payments', icon: CreditCard },
     { id: 'notifications', label: 'Notifications', icon: Bell },
@@ -2336,7 +2403,6 @@ Subscription Awareness: If a student asks about advanced features, remind them (
             {activeTab === 'dashboard' && renderDashboard()}
             {activeTab === 'content' && renderContent()}
             {activeTab === 'monthly_tests' && renderMonthlyTests()}
-            {activeTab === 'textbooks' && renderTextbooks()}
             {activeTab === 'ai_usage' && renderAiUsage()}
             {activeTab === 'payments' && renderPayments()}
             {activeTab === 'notifications' && renderNotifications()}

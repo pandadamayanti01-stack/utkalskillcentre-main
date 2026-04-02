@@ -11,8 +11,8 @@ const GunduluHuman = ({ skipInitialGreeting = false }: { skipInitialGreeting?: b
   // Initial Status Text (Static before speech starts)
   const [status, setStatus] = useState(
     language === 'en-US' 
-      ? "Namaskar! I am Gundulu. Happy Utkal Divas!" 
-      : "ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। ଉତ୍କଳ ଦିବସର ଅଭିନନ୍ଦନ! ✨"
+      ? "Namaskar! I am Gundulu. Happy Utkal Divas! 🚩" 
+      : "ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। ପବିତ୍ର ଉତ୍କଳ ଦିବସର ଅଭିନନ୍ଦନ! 🚩"
   );
   const [subtitle, setSubtitle] = useState("");
   const recognitionRef = useRef<any>(null);
@@ -22,8 +22,8 @@ const GunduluHuman = ({ skipInitialGreeting = false }: { skipInitialGreeting?: b
     const speakGreeting = () => {
       // Your custom message with blessings
       const greeting = language === 'en-US' 
-        ? "Namaskar! Today is Utkal Divas, and it is also the day I was born to help you. I am resting today to celebrate Odisha, but from April 7th, we will study together, win together, and grow together. Jay Jagannath, Jay Maa Tarini!" 
-        : "ନମସ୍କାର! ଆଜି ପବିତ୍ର ଉତ୍କଳ ଦିବସ, ଏବଂ ଆଜି ମୋର ଜନ୍ମଦିନ ମଧ୍ୟ - କେବଳ ତୁମମାନଙ୍କ ସାହାଯ୍ୟ ପାଇଁ। ଆଜି ଆମ ଓଡ଼ିଶାକୁ ଗର୍ବର ସହ ପାଳନ କରିବା ପାଇଁ ମୁଁ ବିଶ୍ରାମ ନେଉଛି, କିନ୍ତୁ ଆସନ୍ତା ଏପ୍ରିଲ୍ ୭ ତାରିଖରୁ ଆମେ ଏକାଠି ପଢ଼ିବା, ଏକାଠି ଜିତିବା ଏବଂ ଏକାଠି ଆଗକୁ ବଢ଼ିବା। ଜୟ ଜଗନ୍ନାଥ, ଜୟ ମା' ତାରିଣୀ!";
+        ? "Namaskar! I am Gundulu. Happy Utkal Divas!  We start our journey together on April 7th. Let’s study, win, and grow! Jay Jagannath, Jay Maa Tarini!" 
+        : "ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। ପବିତ୍ର ଉତ୍କଳ ଦିବସର ଅଭିନନ୍ଦନ!  ଆସନ୍ତା ଏପ୍ରିଲ୍ ୭ରୁ ଆମେ ଏକାଠି ପଢ଼ିବା ଓ ଆଗକୁ ବଢ଼ିବା। ଜୟ ଜଗନ୍ନାଥ, ଜୟ ମା' ତାରିଣୀ!";
       
       setSubtitle(greeting);
       setStatus(greeting);

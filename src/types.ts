@@ -52,17 +52,24 @@ export interface BilingualContent {
   or: string;
 }
 
+export interface VideoOption {
+  url: string;
+  teacherOrChannel: string;
+}
+
 export interface Chapter {
   id: string;
-  textbookId: string; // Link to Textbook
-  title: BilingualContent;
+  textbookId?: string; // Link to Textbook
+  title: string;
   class: string;
-  board: BilingualContent;
+  board: string;
   subject: string;
   order: number;
-  videoUrl: string;
-  teacherOrChannel?: string;
+  videoUrl: string; // Keep for backward compatibility
+  teacherOrChannel?: string; // Keep for backward compatibility
+  videos?: VideoOption[]; // New field
   notes?: string; // AI Context Source
+  notesUrl?: string; // New field for document URL
   quizId?: string; // Link to Test
   status?: 'draft' | 'published';
   translationGroupId?: string;
@@ -95,12 +102,11 @@ export interface MonthlyTestSubmission {
 export interface Textbook {
   id: string;
   class: string;
-  board: BilingualContent;
+  board: string;
   subject: string;
-  title: BilingualContent;
+  title: string;
   download_url: string;
   thumbnail_url?: string;
-  status?: 'draft' | 'published';
   created_at?: any;
 }
 

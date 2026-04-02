@@ -128,22 +128,15 @@ export async function translateContent(text: string | object, targetLanguage: 'e
   }
 }
 
-export async function generateChapterContent(title: string, subject: string, className: string, language: 'en' | 'or') {
+export async function generateChapterContent(title: string, subject: string) {
   try {
     const ai = getAI();
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
-      contents: `Generate educational content for a chapter titled "${title}" for subject "${subject}" and class "${className}".
-      The language should be "${language === 'or' ? 'Odia' : 'English'}".
+      contents: `Generate educational content for a chapter titled "${title}" in the subject of "${subject}".
       Provide the output in JSON format with the following structure:
       {
-        "notes": "Detailed educational notes in Markdown format",
-        "practice_questions": [
-          { "question": "Question text", "answer": "Detailed answer/explanation", "tutor_explanation": "A concise tutor-style explanation" }
-        ],
-        "quiz_questions": [
-          { "question": "Question text", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "The correct option text", "hint": "A small hint" }
-        ]
+        "notes": "Detailed educational notes in Markdown format"
       }`,
       config: {
         responseMimeType: "application/json",
@@ -161,12 +154,12 @@ export async function generateChapterContent(title: string, subject: string, cla
   }
 }
 
-export async function generateTestContent(subject: string, className: string, month: string, year: number, language: 'en' | 'or') {
+export async function generateTestContent(title: string, language: 'en' | 'or') {
   try {
     const ai = getAI();
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
-      contents: `Generate a monthly test for "${subject}" for class "${className}" for the month of "${month} ${year}".
+      contents: `Generate a test for a chapter titled "${title}".
       The language should be "${language === 'or' ? 'Odia' : 'English'}".
       Provide 10 multiple choice questions.
       Provide the output in JSON format with the following structure:
