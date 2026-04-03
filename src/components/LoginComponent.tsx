@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { auth, signInWithGoogle } from '../firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Phone, Loader2, Globe, ArrowLeft, Shield, ChevronRight, Sparkles } from 'lucide-react';
+import { Phone, Loader2, Globe, ArrowLeft, Shield, ChevronRight, Sparkles, Download } from 'lucide-react';
+import { getDeferredPrompt, clearDeferredPrompt } from '../pwa';
 
 export default function Login({ language, translations, setLanguage, setRegData }: { language: 'en' | 'or', translations: any, setLanguage: (lang: 'en' | 'or') => void, setRegData: (data: any) => void }) {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -21,8 +22,48 @@ export default function Login({ language, translations, setLanguage, setRegData 
   const [adminPassword, setAdminPassword] = useState('');
   const [adminLoginError, setAdminLoginError] = useState('');
   
+  // PWA Install State
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
   const recaptchaVerifier = useRef<any>(null);
   const t = translations[language];
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    
+    // Check for existing prompt
+    const existingPrompt = getDeferredPrompt();
+    if (existingPrompt) setDeferredPrompt(existingPrompt);
+
+    // Listen for PWA Install Prompt
+    const handler = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    
+    const pwaHandler = () => {
+      setDeferredPrompt(getDeferredPrompt());
+    };
+
+    window.addEventListener('beforeinstallprompt', handler);
+    window.addEventListener('pwa-prompt-available', pwaHandler);
+    
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handler);
+      window.removeEventListener('pwa-prompt-available', pwaHandler);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    const prompt = deferredPrompt || getDeferredPrompt();
+    if (!prompt) return;
+    prompt.prompt();
+    const { outcome } = await prompt.userChoice;
+    if (outcome === 'accepted') {
+      clearDeferredPrompt();
+      setDeferredPrompt(null);
+    }
+  };
 
   const handleGoogleLogin = async () => {
     try {
@@ -94,31 +135,40 @@ export default function Login({ language, translations, setLanguage, setRegData 
       </div>
 
       {/* 3. CENTER: The Altar Content */}
-      <div className="flex-1 flex flex-col items-center justify-center w-full max-w-[340px] z-10">
+      <div className="flex-1 flex flex-col items-center justify-center w-full max-w-[340px] z-10 gap-6">
         
-        {/* --- BRANDING SECTION --- */}
-        <div className="relative flex flex-col items-center mb-8">
-          {/* 1. THE SOUL GLOW (Centered behind the transparent logo) */}
+        {/* LOGO SECTION - Restored Size */}
+        <div className="relative flex flex-col items-center">
           <div className="absolute inset-0 bg-emerald-500/20 blur-[100px] rounded-full scale-150 pointer-events-none" />
+          <motion.img 
+            initial={{ scale: 0.8, opacity: 0 }} 
+            animate={{ scale: 1, opacity: 1 }}
+            src="/utkal-512.png" 
+            className="h-24 w-auto relative z-10 drop-shadow-[0_0_20px_rgba(255,215,0,0.2)]" 
+            style={{ mixBlendMode: 'multiply' }} 
+            alt="Utkal" 
+          />
+          <h1 className="text-white text-4xl font-black tracking-tighter mt-2 uppercase leading-none">UTKAL</h1>
+          <p className="text-[#ffd700] text-[9px] font-bold tracking-[0.6em] uppercase opacity-50 mt-1">Skill Centre</p>
+        </div>
 
-          <motion.div 
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            className="relative z-10"
-          >
-            {/* 2. THE LOGO (Now floating perfectly) */}
-            <img 
-              src="/utkal-512.png" 
-              className="h-32 w-auto drop-shadow-[0_0_30px_rgba(255,215,0,0.3)] filter brightness-110" 
-              alt="Utkal" 
-            />
-          </motion.div>
-          
-          {/* 3. THE TEXT (Aligned to the floating logo) */}
-          <div className="mt-4 text-center z-10">
-            <h1 className="text-white text-4xl font-black tracking-tighter leading-none">UTKAL</h1>
-            <p className="text-[#ffd700] text-[9px] font-bold tracking-[0.5em] uppercase opacity-70">Skill Centre</p>
-          </div>
+        {/* WELCOME MESSAGE - RESTORED */}
+        <div className="w-full text-center">
+          <AnimatePresence mode="wait">
+            <motion.div key={language} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+              <h2 className="text-white text-3xl font-[1000] leading-tight tracking-tight px-2">
+                {language === 'en' ? 'Join the ' : 'ସାମିଲ ହୁଅନ୍ତୁ ' }
+                <span className="text-transparent bg-clip-text bg-gradient-to-b from-[#ffd700] to-[#b34d1f]">
+                  {language === 'en' ? 'AI Era' : 'AI ଯୁଗରେ'}
+                </span>
+              </h2>
+              <p className="text-[#f8f1e7]/30 text-[9px] font-black uppercase tracking-[0.4em] mt-3 flex items-center justify-center gap-2">
+                <span className="h-[1px] w-4 bg-white/10" />
+                {language === 'en' ? 'Personalized Learning' : 'ଆପଣଙ୍କ ପାଇଁ ବ୍ୟକ୍ତିଗତ ଶିକ୍ଷା'}
+                <span className="h-[1px] w-4 bg-white/10" />
+              </p>
+            </motion.div>
+          </AnimatePresence>
         </div>
 
         {/* The Glass Inputs (Marble Style) */}
@@ -226,9 +276,20 @@ export default function Login({ language, translations, setLanguage, setRegData 
       {/* 4. FOOTER: Integrated & Tiny */}
       <div className="w-full flex flex-col items-center gap-4 z-10 pb-4">
         {!isAdminLogin && (
-          <button onClick={() => setIsAdminLogin(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-[8px] font-black text-white/20 uppercase tracking-[0.2em] hover:text-[#ffd700] transition-all">
-            <Shield size={10} /> Admin Portal
-          </button>
+          <div className="flex flex-col gap-3 items-center">
+            {deferredPrompt && (
+              <button 
+                onClick={handleInstallClick} 
+                className="flex items-center gap-2 bg-[#ffd700] text-[#0b1719] px-6 py-2.5 rounded-full shadow-lg font-black text-[10px] uppercase tracking-widest transition-all hover:scale-105 active:scale-95"
+              >
+                <Download size={14} /> {language === 'en' ? 'Install App' : 'ଇନଷ୍ଟଲ୍ କରନ୍ତୁ'}
+              </button>
+            )}
+            
+            <button onClick={() => setIsAdminLogin(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-[8px] font-black text-white/20 uppercase tracking-[0.2em] hover:text-[#ffd700] transition-all">
+              <Shield size={10} /> Admin Portal
+            </button>
+          </div>
         )}
         
         <div className="flex flex-col items-center opacity-20 scale-75">
