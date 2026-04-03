@@ -11,8 +11,8 @@ const GunduluHuman = ({ skipInitialGreeting = false }: { skipInitialGreeting?: b
   // Initial Status Text (Static before speech starts)
   const [status, setStatus] = useState(
     language === 'en-US' 
-      ? "Namaskar! I am Gundulu. Happy Utkal Divas! 🚩" 
-      : "ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। ପବିତ୍ର ଉତ୍କଳ ଦିବସର ଅଭିନନ୍ଦନ! 🚩"
+      ? "Namaskar! I am Gundulu. Happy Utkal Divas! " 
+      : "ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। ପବିତ୍ର ଉତ୍କଳ ଦିବସର ଅଭିନନ୍ଦନ! "
   );
   const [subtitle, setSubtitle] = useState("");
   const recognitionRef = useRef<any>(null);
@@ -22,8 +22,8 @@ const GunduluHuman = ({ skipInitialGreeting = false }: { skipInitialGreeting?: b
     const speakGreeting = () => {
       // Your custom message with blessings
       const greeting = language === 'en-US' 
-        ? "Namaskar! I am Gundulu. Happy Utkal Divas!  We start our journey together on April 7th. Let’s study, win, and grow! Jay Jagannath, Jay Maa Tarini!" 
-        : "ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। ପବିତ୍ର ଉତ୍କଳ ଦିବସର ଅଭିନନ୍ଦନ!  ଆସନ୍ତା ଏପ୍ରିଲ୍ ୭ରୁ ଆମେ ଏକାଠି ପଢ଼ିବା ଓ ଆଗକୁ ବଢ଼ିବା। ଜୟ ଜଗନ୍ନାଥ, ଜୟ ମା' ତାରିଣୀ!";
+        ? "Namaskar! I am Gundulu. Happy Utkal Divas! 🚩 We start our journey together on April 7th. Let’s study, win, and grow! Jay Jagannath, Jay Maa Tarini!" 
+        : "ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। ପବିତ୍ର ଉତ୍କଳ ଦିବସର ଅଭିନନ୍ଦନ! 🚩 ଆସନ୍ତା ଏପ୍ରିଲ୍ ୭ରୁ ଆମେ ଏକାଠି ପଢ଼ିବା ଓ ଆଗକୁ ବଢ଼ିବା। ଜୟ ଜଗନ୍ନାଥ, ଜୟ ମା' ତାରିଣୀ!";
       
       setSubtitle(greeting);
       setStatus(greeting);
@@ -57,6 +57,8 @@ const GunduluHuman = ({ skipInitialGreeting = false }: { skipInitialGreeting?: b
     window.addEventListener('startGunduluGreeting', handleStartGreeting);
 
     // Handle voices loading (Chrome/Safari specific)
+    // REMOVED: Automatic greeting on mount to comply with autoplay policy
+    /*
     if (!skipInitialGreeting) {
       if (window.speechSynthesis.getVoices().length === 0) {
         window.speechSynthesis.addEventListener('voiceschanged', speakGreeting, { once: true });
@@ -64,6 +66,7 @@ const GunduluHuman = ({ skipInitialGreeting = false }: { skipInitialGreeting?: b
         speakGreeting();
       }
     }
+    */
     
     // 2. INITIALIZE SPEECH RECOGNITION (STT)
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;

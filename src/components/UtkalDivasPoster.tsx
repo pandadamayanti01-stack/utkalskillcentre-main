@@ -9,6 +9,7 @@ interface UtkalDivasPosterProps {
 
 export const UtkalDivasPoster: React.FC<UtkalDivasPosterProps> = ({ onClose }) => {
   const [isCutting, setIsCutting] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const clapAudioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -40,13 +41,19 @@ export const UtkalDivasPoster: React.FC<UtkalDivasPosterProps> = ({ onClose }) =
       });
     }, 250);
 
-    // Start audio
-    if (audioRef.current) {
-      audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
-    }
-
     return () => clearInterval(interval);
   }, []);
+
+  const toggleMusic = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
 
   const handleCutRibbon = () => {
     if (audioRef.current) {
@@ -172,9 +179,14 @@ export const UtkalDivasPoster: React.FC<UtkalDivasPosterProps> = ({ onClose }) =
             
             <div className="w-24 h-1.5 bg-yellow-400 mx-auto mb-6 rounded-full shadow-lg"></div>
             
-            <div className="mb-6 text-white font-bold flex items-center gap-2">
-              <Music size={16} /> Celebration Music Playing
-            </div>
+            <motion.div 
+              className="mb-6 text-white font-bold flex items-center gap-2 cursor-pointer hover:text-yellow-300 transition-colors" 
+              onClick={toggleMusic}
+              animate={!isPlaying ? { scale: [1, 1.05, 1] } : {}}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <Music size={16} className={isPlaying ? "animate-spin" : ""} /> {isPlaying ? "Pause Music" : "Play Music"}
+            </motion.div>
             
             <p className="text-lg md:text-xl text-yellow-50 font-bold mb-3 drop-shadow-md">
               ଆଜି ଏହି ଶୁଭ ଅବସରରେ
