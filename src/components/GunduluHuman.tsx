@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { X, Image, Camera } from 'lucide-react';
 import './GunduluHuman.css';
 import { getAI } from '../services/aiService';
 
-const GunduluHuman = ({ skipInitialGreeting = false }: { skipInitialGreeting?: boolean }) => {
+const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGreeting?: boolean; onBack?: () => void }) => {
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isWaitingForInput, setIsWaitingForInput] = useState(false);
   const [language, setLanguage] = useState<'en-US' | 'or-IN'>('or-IN');
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [imageMimeType, setImageMimeType] = useState<string | null>(null);
   
   // Initial Status Text (Static before speech starts)
   const [status, setStatus] = useState(
@@ -16,6 +19,8 @@ const GunduluHuman = ({ skipInitialGreeting = false }: { skipInitialGreeting?: b
   );
   const [subtitle, setSubtitle] = useState("");
   const recognitionRef = useRef<any>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     // 1. THE LAUNCH DAY GREETING LOGIC
@@ -114,7 +119,7 @@ const GunduluHuman = ({ skipInitialGreeting = false }: { skipInitialGreeting?: b
   };
 
   // 3. AI PROCESSING (GEMINI)
-  const processWithGemini = async (transcript: string) => {
+  const processWithGemini = async (transcript: string, imageData?: { data: string, mimeType: string }) => {
     setStatus(language === 'en-US' ? "Gundulu is thinking..." : "ଗୁଣ୍ଡୁଲୁ ଚିନ୍ତା କରୁଛି...");
     setIsListening(false);
     
@@ -131,9 +136,13 @@ const GunduluHuman = ({ skipInitialGreeting = false }: { skipInitialGreeting?: b
         Constraint: Keep response under 3 sentences.
       `;
 
+      const parts: any[] = [];
+      if (transcript) parts.push({ text: transcript });
+      if (imageData) parts.push({ inlineData: { data: imageData.data, mimeType: imageData.mimeType } });
+
       const result = await ai.models.generateContent({
         model,
-        contents: transcript,
+        contents: { parts: parts.length ? parts : [{ text: language === 'en-US' ? 'Describe this image.' : 'ଏହି ଛବି ବର୍ଣ୍ଣନା କରନ୍ତୁ।' }] },
         config: {
           systemInstruction,
           temperature: 0.7,
@@ -176,8 +185,52 @@ const GunduluHuman = ({ skipInitialGreeting = false }: { skipInitialGreeting?: b
     setLanguage(prev => prev === 'en-US' ? 'or-IN' : 'en-US');
   };
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert(language === 'en-US' ? "Image size should be less than 5MB" : "ଫଟୋର ଆକାର ୫ MB ରୁ କମ୍ ହେବା ଉଚିତ୍ |");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = (reader.result as string).split(',')[1];
+      setSelectedImage(base64String);
+      setImageMimeType(file.type);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const clearSelectedImage = () => {
+    setSelectedImage(null);
+    setImageMimeType(null);
+  };
+
+  const handleImageSend = async () => {
+    if (!selectedImage || !imageMimeType) return;
+
+    const prompt = language === 'en-US'
+      ? "Please describe the picture and help me with the question."
+      : "ଦୟାକରି ଏହି ଛବି ବିବେଚନା କରନ୍ତୁ ଏବଂ ମତେ ସହାୟତା କରନ୍ତୁ।";
+
+    await processWithGemini(prompt, { data: selectedImage, mimeType: imageMimeType });
+  };
+
   return (
     <div className="immersive-container">
+      {/* Close/Back Button */}
+      {onBack && (
+        <button
+          onClick={onBack}
+          className="absolute top-6 right-6 z-50 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white"
+          title="Close Gundulu Chat"
+        >
+          <X size={24} />
+        </button>
+      )}
+
       {/* Visual Avatar */}
       <div className={`avatar-wrapper ${isSpeaking ? 'speaking' : ''} ${isWaitingForInput ? 'waiting' : ''}`}>
         <div className="ripple-ring ring1"></div>
@@ -195,6 +248,20 @@ const GunduluHuman = ({ skipInitialGreeting = false }: { skipInitialGreeting?: b
         <p className="subtitle-text italic">{subtitle}</p>
       </div>
 
+      {selectedImage && imageMimeType && (
+        <div className="image-preview-container">
+          <div className="image-preview-box">
+            <img src={`data:${imageMimeType};base64,${selectedImage}`} alt="Selected" className="image-preview" referrerPolicy="no-referrer" />
+            <button onClick={clearSelectedImage} className="image-clear-btn" title={language === 'en-US' ? 'Clear image' : 'ପ୍ରତିଛବି ହଟାନ୍ତୁ'}>
+              <X size={16} />
+            </button>
+          </div>
+          <button onClick={handleImageSend} className="send-image-btn">
+            {language === 'en-US' ? 'Send Image' : 'ଛବି ପଠାନ୍ତୁ'}
+          </button>
+        </div>
+      )}
+
       {/* Interaction Buttons */}
       <div className="button-container">
         <button 
@@ -203,10 +270,19 @@ const GunduluHuman = ({ skipInitialGreeting = false }: { skipInitialGreeting?: b
         >
           {isListening ? (language === 'en-US' ? "STOP" : "ବନ୍ଦ କରନ୍ତୁ") : (language === 'en-US' ? "START" : "ଆରମ୍ଭ କରନ୍ତୁ")}
         </button>
+        <button className="icon-btn" onClick={() => fileInputRef.current?.click()} title={language === 'en-US' ? 'Upload image' : 'ଛବି ଅପଲୋଡ୍ କରନ୍ତୁ'}>
+          <Image size={20} />
+        </button>
+        <button className="icon-btn" onClick={() => cameraInputRef.current?.click()} title={language === 'en-US' ? 'Use camera' : 'କ୍ୟାମେରା ବ୍ୟବହାର କରନ୍ତୁ'}>
+          <Camera size={20} />
+        </button>
         <button className="lang-toggle-btn" onClick={toggleLanguage}>
           {language === 'en-US' ? "ଓଡ଼ିଆ" : "English"}
         </button>
       </div>
+
+      <input type="file" ref={fileInputRef} onChange={handleImageSelect} accept="image/*" className="hidden" />
+      <input type="file" ref={cameraInputRef} onChange={handleImageSelect} accept="image/*" capture="environment" className="hidden" />
     </div>
   );
 };

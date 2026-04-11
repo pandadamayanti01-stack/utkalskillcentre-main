@@ -43,7 +43,8 @@ import {
   UserPlus,
   UserCheck,
   TrendingUp,
-  Award
+  Award,
+  Bell
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { translations } from '../translations';
@@ -77,13 +78,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const menuItems = [
     { id: 'profile', icon: User, label: 'Profile' },
     { id: 'dashboard', icon: LayoutDashboard, label: t.dashboard },
+    { id: 'notifications', icon: Bell, label: language === 'en' ? 'Notifications' : 'ବିଜ୍ଞପ୍ତି' },
     { id: 'study_buddy', icon: Bot, label: t.studyBuddy || 'Study Buddy' },
+    { id: 'gundulu', icon: Sparkles, label: language === 'en' ? '🎤 Gundulu Voice' : '🎤 ଗୁଣ୍ଡୁଲୁ ଭଏସ' },
     { id: 'textbooks', icon: Book, label: language === 'en' ? 'Textbooks' : 'ପାଠ୍ୟପୁସ୍ତକ' },
     { id: 'courses', icon: BookOpen, label: t.courses },
     { id: 'monthly_tests', icon: Calendar, label: t.monthlyTests },
     { id: 'leaderboard', icon: Trophy, label: t.leaderboard },
     { id: 'store', icon: ShoppingBag, label: language === 'en' ? 'Avatar Store' : 'ଅବତାର ଷ୍ଟୋର' },
-    { id: 'subscription', icon: CreditCard, label: 'Subscription' },
+    { id: 'plans', icon: CreditCard, label: language === 'en' ? 'Subscription' : 'ସବସ୍କ୍ରିପସନ୍' },
     { id: 'support', icon: HelpCircle, label: t.support.title },
   ];
 

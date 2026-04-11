@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { auth, signInWithGoogle } from '../firebase';
+import { auth, db, signInWithGoogle } from '../firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Phone, Loader2, Globe, ArrowLeft, Shield, ChevronRight, Sparkles, Download } from 'lucide-react';
+import { doc, getDoc } from 'firebase/firestore';
 import { getDeferredPrompt, clearDeferredPrompt } from '../pwa';
 
 export default function Login({ language, translations, setLanguage, setRegData }: { language: 'en' | 'or', translations: any, setLanguage: (lang: 'en' | 'or') => void, setRegData: (data: any) => void }) {
@@ -66,6 +67,10 @@ export default function Login({ language, translations, setLanguage, setRegData 
   };
 
   const handleGoogleLogin = async () => {
+    if (!selectedClass || !selectedBoard) {
+      alert(translations[language].requiredFieldsError);
+      return;
+    }
     try {
       await signInWithGoogle();
       console.log("Google login successful");
@@ -83,13 +88,42 @@ export default function Login({ language, translations, setLanguage, setRegData 
 
   const onSmsSend = async () => {
     if (!phoneNumber || phoneNumber.length < 10) return alert("Please enter valid phone");
-    if (!isAdminLogin && (!selectedClass || !selectedBoard)) return alert("Please select class and board");
+    if (!isAdminLogin && (!selectedClass || !selectedBoard)) return alert(translations[language].requiredFieldsError);
+
     setIsSending(true);
     if (!recaptchaVerifier.current) {
       recaptchaVerifier.current = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
     }
+
     try {
-      const confirmation = await signInWithPhoneNumber(auth, `+91${phoneNumber}`, recaptchaVerifier.current);
+      let formattedNumber = phoneNumber.trim();
+      formattedNumber = formattedNumber.replace(/[^
+\d+]/g, '');
+      if (!formattedNumber.startsWith('+')) {
+        if (formattedNumber.startsWith('0')) {
+          formattedNumber = formattedNumber.substring(1);
+        }
+        formattedNumber = '+91' + formattedNumber;
+      }
+
+      if (!isAdminLogin) {
+        const lockDoc = await getDoc(doc(db, 'user_locks', formattedNumber));
+        if (lockDoc.exists()) {
+          const lockData = lockDoc.data();
+          const dbClass = lockData.class;
+          const dbBoard = lockData.board;
+          if (selectedClass && selectedBoard && (dbClass !== selectedClass || dbBoard !== selectedBoard)) {
+            const classLabel = translations[language].classes[dbClass] || dbClass;
+            const boardLabel = translations[language].boards[dbBoard] || dbBoard;
+            alert(language === 'en'
+              ? `Your account is locked to ${classLabel} (${boardLabel}). Please select the correct class/board to login.`
+              : `ଆପଣଙ୍କ ଆକାଉଣ୍ଟ ${classLabel} (${boardLabel}) ପାଇଁ ଲକ୍ ହୋଇଛି | ଦୟାକରି ସଠିକ୍ ଶ୍ରେଣୀ/ବୋର୍ଡ ଚୟନ କରନ୍ତୁ |`);
+            return;
+          }
+        }
+      }
+
+      const confirmation = await signInWithPhoneNumber(auth, formattedNumber, recaptchaVerifier.current);
       setVerificationId(confirmation);
       setAuthStep('otp');
     } catch (error: any) {
@@ -223,7 +257,11 @@ export default function Login({ language, translations, setLanguage, setRegData 
                       </span>
                     </button>
 
-                    <button onClick={handleGoogleLogin} className="w-full py-3 rounded-2xl text-white/30 text-[9px] font-black uppercase tracking-widest hover:text-white transition-colors">
+                    <button
+                      onClick={handleGoogleLogin}
+                      disabled={!selectedClass || !selectedBoard}
+                      className={`w-full py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-colors ${!selectedClass || !selectedBoard ? 'text-white/20 bg-white/5 cursor-not-allowed' : 'text-white/30 hover:text-white'}`}
+                    >
                       {language === 'en' ? 'Continue with Google' : 'ଗୁଗଲ୍ ସହିତ ଆଗକୁ ବଢନ୍ତୁ'}
                     </button>
                   </>

@@ -72,7 +72,7 @@ import {
   generateTestQuestions
 } from '../services/aiService';
 
-type AdminTab = 'dashboard' | 'content' | 'monthly_tests' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup' | 'students' | 'subscriptions' | 'support';
+type AdminTab = 'dashboard' | 'content' | 'monthly_tests' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup' | 'students' | 'subscriptions' | 'support' | 'user_locks';
 
 interface AdminDashboardProps {
   onExit: () => void;
@@ -95,6 +95,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
   const [students, setStudents] = useState<any[]>([]);
   const [allSubscriptions, setAllSubscriptions] = useState<Record<string, any>>({});
   const [supportTickets, setSupportTickets] = useState<any[]>([]);
+  const [userLocks, setUserLocks] = useState<any[]>([]);
+  const [lockSearchQuery, setLockSearchQuery] = useState('');
+  const [editingLock, setEditingLock] = useState<any>(null);
+  const [newLockClass, setNewLockClass] = useState('');
+  const [newLockBoard, setNewLockBoard] = useState('');
   const [systemSettings, setSystemSettings] = useState<any>({});
   const [privateSettings, setPrivateSettings] = useState<any>({});
   const [confirmAction, setConfirmAction] = useState<string | null>(null);
@@ -282,6 +287,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
       }
     });
 
+    const unsubUserLocks = onSnapshot(collection(firestore, 'user_locks'), (snapshot) => {
+      setUserLocks(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }, (err) => {
+      console.error("Firestore User Locks onSnapshot Error:", err);
+      if (err.message.includes('insufficient permissions')) {
+        showNotification("Permission denied for user locks.", "error");
+      }
+    });
+
     const unsubAllSubscriptions = onSnapshot(collection(firestore, 'subscriptions'), (snapshot) => {
       const subs: Record<string, any> = {};
       snapshot.docs.forEach(doc => {
@@ -310,6 +324,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
       unsubTextbooks();
       unsubStudents();
       unsubAllSubscriptions();
+      unsubUserLocks();
       unsubSupport();
     };
   }, [user]); // Added user to dependency array
@@ -2279,6 +2294,7 @@ Subscription Awareness: If a student asks about advanced features, remind them (
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'content', label: 'Content Library', icon: BookOpen },
     { id: 'monthly_tests', label: 'Monthly Tests', icon: Calendar },
+    { id: 'textbooks', label: 'Textbooks', icon: Book },
     { id: 'ai_usage', label: 'AI Usage', icon: Brain },
     { id: 'payments', label: 'Payments', icon: CreditCard },
     { id: 'notifications', label: 'Notifications', icon: Bell },
@@ -2403,6 +2419,7 @@ Subscription Awareness: If a student asks about advanced features, remind them (
             {activeTab === 'dashboard' && renderDashboard()}
             {activeTab === 'content' && renderContent()}
             {activeTab === 'monthly_tests' && renderMonthlyTests()}
+            {activeTab === 'textbooks' && renderTextbooks()}
             {activeTab === 'ai_usage' && renderAiUsage()}
             {activeTab === 'payments' && renderPayments()}
             {activeTab === 'notifications' && renderNotifications()}

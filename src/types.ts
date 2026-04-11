@@ -104,9 +104,10 @@ export interface Textbook {
   class: string;
   board: string;
   subject: string;
-  title: string;
+  title: BilingualContent;
   download_url: string;
   thumbnail_url?: string;
+  status?: 'draft' | 'published';
   created_at?: any;
 }
 

@@ -13,18 +13,31 @@ Active Listening: Instead of lecturing, ask the student: "Bujhila ta? (Did you u
 Subscription Awareness: If a student asks about advanced features, remind them (in a cute way) that their Utkal Skill Centre subscription unlocks your "Super Powers."`;
 
 export const getAI = () => {
-  // Try multiple ways to get the key
-  const apiKey = (process.env.GEMINI_API_KEY) || 
-                 (import.meta.env.VITE_GEMINI_API_KEY);
+  // For Vite, use import.meta.env to access variables defined in .env files
+  // The vite.config.ts also exposes it via process.env.GEMINI_API_KEY through the define option
+  const apiKey = (import.meta.env.VITE_GEMINI_API_KEY as string) || 
+                 (import.meta.env.VITE_GEMINI_API_KEY as string);
+
+  // Debug logging
+  console.log("🔍 Gemini API Key Resolution:", {
+    envKey: (import.meta as any).env?.VITE_GEMINI_API_KEY ? "✅ Found" : "❌ Not Found",
+    keyPreview: apiKey?.substring(0, 15) + "..." || "N/A",
+    keyLength: apiKey?.length || 0
+  });
 
   if (!apiKey || apiKey === "" || apiKey === "undefined" || apiKey === "null") {
-    console.error("GEMINI_API_KEY is missing, empty, or invalid string:", { 
-      length: apiKey?.length, 
-      value: apiKey 
+    console.error("❌ GEMINI_API_KEY is missing or invalid");
+    console.error("Environment check:", {
+      VITE_GEMINI_API_KEY: (import.meta.env as any).VITE_GEMINI_API_KEY ? "defined" : "NOT FOUND"
     });
-    throw new Error("GEMINI_API_KEY is missing or invalid.");
+    throw new Error(
+      "GEMINI_API_KEY is missing or invalid. " +
+      "Make sure .env.local has VITE_GEMINI_API_KEY=your_key, " +
+      "then restart your dev server with: npm run dev"
+    );
   }
 
+  console.log("✅ Gemini API Key loaded successfully");
   return new GoogleGenAI({ apiKey });
 };
 

@@ -57,7 +57,7 @@ import Markdown from 'react-markdown';
 import { GoogleGenAI } from "@google/genai";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 import { auth, db as firestore, safeJsonStringify } from './firebase';
-import { Chapter, BilingualContent } from './types';
+import { Chapter, BilingualContent, Textbook } from './types';
 import { 
   signInWithPopup, 
   GoogleAuthProvider, 
@@ -73,7 +73,7 @@ import {
   sendPasswordResetEmail,
   linkWithPopup
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, query, where, getDocs, orderBy, limit, addDoc, updateDoc, increment, getCountFromServer, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, query, where, getDocs, orderBy, limit, addDoc, updateDoc, increment, getCountFromServer, onSnapshot, Timestamp } from 'firebase/firestore';
 import { translations } from './translations';
 import { solveMathDoubt, getAI } from './services/aiService';
 import { subjectTranslations } from './constants';
@@ -81,6 +81,7 @@ import { getYouTubeId, getYouTubeEmbedUrl, getYouTubeThumbnail } from './utils/y
 import { AdminDashboard } from './components/AdminDashboard';
 import { PracticeQuestion } from './components/PracticeQuestion';
 import { Dashboard } from './components/Dashboard';
+import { NotificationsView } from './components/NotificationsView';
 import { UtkalDivasPoster } from './components/UtkalDivasPoster';
 import GunduluHuman from './components/GunduluHuman';
 import { AvatarStore } from './components/AvatarStore';
@@ -186,18 +187,6 @@ interface MonthlyTestSubmission {
   totalQuestions: number;
   rank?: number;
   submittedAt: any;
-}
-
-interface Textbook {
-  id: string;
-  class: string;
-  board: string;
-  subject: string;
-  title: string;
-  download_url: string;
-  thumbnail_url?: string;
-  status?: 'draft' | 'published';
-  created_at?: any;
 }
 
 interface SystemSettings {
@@ -510,14 +499,36 @@ export default function App() {
               '+916370487877', '6370487877'
             ].includes(userPhone));
 
-          if (userDocSnap.exists() && !isAdmin && !isTestAccount) {
-            const dbClass = userDocSnap.data().class;
-            const dbBoard = userDocSnap.data().board;
-            const selectedClass = regDataRef.current.class;
-            const selectedBoard = regDataRef.current.board;
+          const selectedClass = regDataRef.current.class;
+          const selectedBoard = regDataRef.current.board;
 
-            if (selectedClass && selectedBoard && (dbClass !== selectedClass || dbBoard !== selectedBoard)) {
-              alert("Account already associated with another class/board. Please create a ticket or connect with admin on support.");
+          if (!isAdmin && !isTestAccount) {
+            const emailLockId = firebaseUser.email ? `email:${firebaseUser.email.toLowerCase()}` : null;
+            let emailLock: any = null;
+
+            if (emailLockId) {
+              const emailLockDoc = await getDoc(doc(firestore, 'user_locks', emailLockId));
+              if (emailLockDoc.exists()) {
+                emailLock = emailLockDoc.data();
+              }
+            }
+
+            if (userDocSnap.exists()) {
+              const dbClass = userDocSnap.data().class;
+              const dbBoard = userDocSnap.data().board;
+              if (selectedClass && selectedBoard && (dbClass !== selectedClass || dbBoard !== selectedBoard)) {
+                alert("Account already associated with another class/board. Please create a ticket or connect with admin on support.");
+                auth.signOut();
+                return;
+              }
+            }
+
+            if (emailLock && selectedClass && selectedBoard && (emailLock.class !== selectedClass || emailLock.board !== selectedBoard)) {
+              const classLabel = translations[language].classes[emailLock.class] || emailLock.class;
+              const boardLabel = translations[language].boards[emailLock.board] || emailLock.board;
+              alert(language === 'en'
+                ? `Your Google account is locked to ${classLabel} (${boardLabel}). Please choose the correct class/board.`
+                : `ଆପଣଙ୍କ Google ଆକାଉଣ୍ଟ ${classLabel} (${boardLabel}) ପାଇଁ ଲକ୍ ହୋଇଛି। ଦୟାକରି ସଠିକ୍ ଶ୍ରେଣୀ/ବୋର୍ଡ ଚୟନ କରନ୍ତୁ।`);
               auth.signOut();
               return;
             }
@@ -580,6 +591,14 @@ export default function App() {
               board: userData.board
             }, { merge: true });
           }
+
+          if (firebaseUser.email) {
+            const emailLockId = `email:${firebaseUser.email.toLowerCase()}`;
+            await setDoc(doc(firestore, 'user_locks', emailLockId), {
+              class: userData.class,
+              board: userData.board
+            }, { merge: true });
+          }
         } catch (fsErr) {
           handleFirestoreError(fsErr, OperationType.WRITE, `users/${firebaseUser.uid}`);
         }
@@ -599,9 +618,13 @@ export default function App() {
 
           if (subDocSnap.exists()) {
             const subData = subDocSnap.data();
+            console.log("Debug: Subscription data retrieved:", subData);
             const now = new Date();
             const expiresAt = subData.expires_at?.toDate ? subData.expires_at.toDate() : new Date(subData.expires_at);
-            setIsPremium(subData.active && expiresAt > now);
+            const isActive = subData.active === true;
+            const isNotExpired = expiresAt > now;
+            console.log("Debug: Subscription check - Active:", isActive, "Not Expired:", isNotExpired, "Expires At:", expiresAt);
+            setIsPremium(isActive && isNotExpired);
           } else {
             setIsPremium(false);
           }
@@ -776,7 +799,8 @@ export default function App() {
         console.log("Notifications received:", data);
         console.log("Current user class:", user?.class);
         const filteredData = data.filter((n: any) => {
-          const matches = !n.audience || n.audience === 'all' || n.audience === user?.class;
+          // For testing, show all notifications regardless of audience
+          const matches = true; // !n.audience || n.audience === 'all' || n.audience === user?.class;
           if (!matches) {
             console.log("Notification filtered out:", n, "Audience:", n.audience, "User Class:", user?.class);
           }
@@ -1260,7 +1284,7 @@ export default function App() {
                 active: true,
                 plan: 'premium',
                 type: planType,
-                expires_at: expiryDate.toISOString()
+                expires_at: Timestamp.fromDate(expiryDate)
               });
 
               setIsPremium(true);
@@ -1691,11 +1715,15 @@ export default function App() {
     handleUpgradeClick();
   }
 }} />}
+            {activeTab === 'notifications' && <NotificationsView notifications={studentNotifications} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'courses' && <CoursesView user={user} chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'monthly_tests' && <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'study_buddy' && (
               isPremium ? <StudyBuddyView language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} user={user} initialVoiceMode={openTutorInVoiceMode} onBack={() => setActiveTab('dashboard')} onLanguageChange={setLanguage} /> : <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
+            )}
+            {activeTab === 'gundulu' && (
+              isPremium ? <GunduluHuman onBack={() => setActiveTab('dashboard')} /> : <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
             )}
             {activeTab === 'profile' && <ProfileView user={user} language={language} onBack={() => setActiveTab('dashboard')} onParentAccess={() => setActiveTab('parent_dashboard')} setActiveTab={setActiveTab} />}
             {activeTab === 'parent_dashboard' && <ParentDashboard user={user} chapters={chapters} leaderboard={leaderboard} language={language} onBack={() => setActiveTab('profile')} userProgress={userProgress} />}
@@ -2910,7 +2938,7 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
     const updatedIds = [chapter.id, ...recentlyViewed.map(c => c.id).filter(id => id !== chapter.id)].slice(0, 3);
     localStorage.setItem(`recently_viewed_${user?.id}`, safeJsonStringify(updatedIds));
     
-    const recent = updatedIds.map(id => chapters.find(c => c.id === id)).filter(Boolean) as Chapter[];
+    const recent = updatedIds.map(id => chapters.find((c: Chapter) => c.id === id)).filter(Boolean) as Chapter[];
     setRecentlyViewed(recent);
   };
 
@@ -3732,11 +3760,11 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
   const availableSubjects = React.useMemo(() => {
     const subjects = new Set<string>(
       textbooks
-        .filter(b => 
+        .filter((b: Textbook) => 
           b.class?.toLowerCase() === user?.class?.toLowerCase() && 
           b.board?.toLowerCase() === boardKey.toLowerCase()
         )
-        .map(b => b.subject)
+        .map((b: Textbook) => b.subject)
     );
     return ['all', ...Array.from(subjects).filter(s => s && s !== 'all')];
   }, [textbooks, user?.class, boardKey]);
@@ -3818,7 +3846,7 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
                 {book.thumbnail_url ? (
                   <img 
                     src={book.thumbnail_url} 
-                    alt={book.title[language as keyof BilingualContent]} 
+                    alt={book.title[language as 'en' | 'or']} 
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     referrerPolicy="no-referrer"
                   />
@@ -3835,7 +3863,7 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
                 </div>
               </div>
               <div className="p-6 flex flex-col flex-1">
-                <h3 className="text-lg font-bold text-white mb-4 line-clamp-2 flex-1">{book.title}</h3>
+                <h3 className="text-lg font-bold text-white mb-4 line-clamp-2 flex-1">{book.title[language as 'en' | 'or']}</h3>
                 <div className="flex gap-2">
                   <button 
                     onClick={() => handleDownload(book)}
@@ -3858,8 +3886,8 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
                 <a 
                   href={`https://wa.me/?text=${encodeURIComponent(
                     language === 'en' 
-                      ? `Check out this textbook: ${book.title}\nDownload here: ${book.download_url}` 
-                      : `ଏହି ପାଠ୍ୟପୁସ୍ତକଟି ଦେଖନ୍ତୁ: ${book.title}\nଏଠାରୁ ଡାଉନଲୋଡ୍ କରନ୍ତୁ: ${book.download_url}`
+                      ? `Check out this textbook: ${book.title.en || book.title.or}\nDownload here: ${book.download_url}` 
+                      : `ଏହି ପାଠ୍ୟପୁସ୍ତକଟି ଦେଖନ୍ତୁ: ${book.title.or || book.title.en}\nଏଠାରୁ ଡାଉନଲୋଡ୍ କରନ୍ତୁ: ${book.download_url}`
                   )}`}
                   target="_blank" 
                   rel="noopener noreferrer"
@@ -3978,7 +4006,7 @@ function OfflineNotesView({ language, onBack }: { language: 'or' | 'en', onBack:
                       {book.thumbnail_url && <img src={book.thumbnail_url} className="w-full h-full object-cover" referrerPolicy="no-referrer" />}
                     </div>
                     <div>
-                      <h3 className="font-bold text-white">{book.title}</h3>
+                      <h3 className="font-bold text-white">{typeof book.title === 'string' ? book.title : (book.title[language as 'en' | 'or'] || book.title.en)}</h3>
                       <p className="text-xs text-slate-500 uppercase tracking-wider">{book.subject}</p>
                     </div>
                   </div>
@@ -4092,7 +4120,7 @@ function TopicDetailView({
               )}
             </div>
             
-            {topic.quiz_questions?.length > 0 && (
+            {(topic.quiz_questions?.length ?? 0) > 0 && (
               <button 
                 onClick={onTakeQuiz}
                 className="flex items-center justify-center gap-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-90 text-white px-8 py-4 rounded-2xl font-bold uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(16,185,129,0.4)] whitespace-nowrap border border-emerald-500/50"
