@@ -14,9 +14,14 @@ export const useVoiceSearch = (language: 'en' | 'or') => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
 
-    recognition.lang = language === 'or' ? 'or-IN' : 'en-US';
+    // Odia support availability differs by browser/OS. Start with Odia and fallback to Hindi/English.
+    const preferredLanguages = language === 'or'
+      ? ['or-IN', 'hi-IN', 'en-IN']
+      : ['en-US', 'en-IN'];
+    recognition.lang = preferredLanguages[0];
     recognition.continuous = false;
     recognition.interimResults = false;
+    recognition.maxAlternatives = 3;
 
     recognition.onstart = () => {
       setIsListening(true);
@@ -31,6 +36,15 @@ export const useVoiceSearch = (language: 'en' | 'or') => {
 
     recognition.onerror = (event: any) => {
       console.error('Speech recognition error:', event.error);
+      if ((event.error === 'language-not-supported' || event.error === 'bad-grammar') && preferredLanguages.length > 1) {
+        try {
+          recognition.lang = preferredLanguages[1];
+          recognition.start();
+          return;
+        } catch (retryErr) {
+          console.warn('Speech recognition fallback failed:', retryErr);
+        }
+      }
       if (event.error === 'not-allowed') {
         alert(language === 'or' 
           ? 'ମାଇକ୍ରୋଫୋନ୍ ଅନୁମତି ମିଳିଲା ନାହିଁ | ଦୟାକରି ଆପଣଙ୍କର ବ୍ରାଉଜର୍ ସେଟିଂସମୂହ ଯାଞ୍ଚ କରନ୍ତୁ |' 

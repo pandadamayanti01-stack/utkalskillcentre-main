@@ -7,13 +7,17 @@ import {
   Trash2,
   Zap,
   Star,
-  User
+  User,
+  Mic,
+  Volume2,
+  VolumeX
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
 import { db, handleFirestoreError, OperationType } from '../firebase';
 import { getAI, withRetry } from '../services/aiService';
 import { collection, addDoc, doc, getDoc } from 'firebase/firestore';
+import { useVoiceSearch } from '../hooks/useVoiceSearch';
 
 interface Message {
   id: string;
@@ -45,15 +49,68 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [autoSpeak, setAutoSpeak] = useState(language === 'or');
+  const messageListRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { isListening, transcript, startListening, stopListening } = useVoiceSearch(language);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  const stripMarkdownForSpeech = (text: string) => {
+    return text
+      .replace(/```[\s\S]*?```/g, ' ')
+      .replace(/`([^`]+)`/g, '$1')
+      .replace(/\*\*([^*]+)\*\*/g, '$1')
+      .replace(/\*([^*]+)\*/g, '$1')
+      .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1')
+      .replace(/[#>-]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  };
+
+  const speakText = (text: string) => {
+    if (!('speechSynthesis' in window) || !text?.trim()) return;
+    const utterance = new SpeechSynthesisUtterance(stripMarkdownForSpeech(text));
+    utterance.lang = language === 'or' ? 'or-IN' : 'en-IN';
+    utterance.rate = 0.95;
+    utterance.pitch = 1.05;
+
+    const voices = window.speechSynthesis.getVoices();
+    const preferred = language === 'or'
+      ? voices.find(v => /or(-|_)?IN|oriya|odia/i.test(`${v.lang} ${v.name}`))
+        || voices.find(v => /hi(-|_)?IN/i.test(v.lang))
+        || voices.find(v => /en(-|_)?IN/i.test(v.lang))
+      : voices.find(v => /en(-|_)?IN|en(-|_)?US/i.test(v.lang));
+    if (preferred) utterance.voice = preferred;
+
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
+    if (messageListRef.current) {
+      messageListRef.current.scrollTo({
+        top: messageListRef.current.scrollHeight,
+        behavior
+      });
+      return;
+    }
+    messagesEndRef.current?.scrollIntoView({ behavior });
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    scrollToBottom('auto');
+  }, []);
+
+  useEffect(() => {
+    scrollToBottom('smooth');
+  }, [messages, loading]);
+
+  useEffect(() => {
+    if (transcript) setInput(transcript);
+  }, [transcript]);
+
+  useEffect(() => {
+    setAutoSpeak(language === 'or');
+  }, [language]);
 
   const saveChatHistory = async (userMsg: string, aiMsg: string) => {
     const path = 'tutor_queries';
@@ -142,6 +199,7 @@ Current User Context:
       };
 
       setMessages(prev => [...prev, assistantMessage]);
+      if (autoSpeak) speakText(responseText);
       await saveChatHistory(textToSend, responseText);
     } catch (err: any) {
       console.error('Study Buddy Chat Error:', err);
@@ -200,6 +258,20 @@ Current User Context:
           </button>
           <div className="h-6 w-px bg-white/10 mx-1"></div>
           <button
+            onClick={() => setAutoSpeak(prev => !prev)}
+            className={`p-2.5 rounded-xl transition-all border ${autoSpeak ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400' : 'bg-white/5 border-white/5 text-slate-500 hover:text-emerald-400'}`}
+            title={language === 'en' ? (autoSpeak ? 'Voice On' : 'Voice Off') : (autoSpeak ? 'ଶବ୍ଦ ଚାଲୁ' : 'ଶବ୍ଦ ବନ୍ଦ')}
+          >
+            {autoSpeak ? <Volume2 size={18} /> : <VolumeX size={18} />}
+          </button>
+          <button
+            onClick={isListening ? stopListening : startListening}
+            className={`p-2.5 rounded-xl transition-all border ${isListening ? 'bg-red-500/15 border-red-500/30 text-red-400 animate-pulse' : 'bg-white/5 border-white/5 text-slate-500 hover:text-emerald-400'}`}
+            title={language === 'en' ? 'Voice Input' : 'ଭଏସ୍ ଇନପୁଟ୍'}
+          >
+            <Mic size={18} />
+          </button>
+          <button
             onClick={() => onLanguageChange?.(language === 'en' ? 'or' : 'en')}
             className="px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-black text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all uppercase tracking-widest"
           >
@@ -208,7 +280,7 @@ Current User Context:
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto pr-2 space-y-6 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+      <div ref={messageListRef} className="flex-1 overflow-y-auto pr-2 space-y-6 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
         <AnimatePresence initial={false}>
           {messages.map((msg) => (
             <motion.div

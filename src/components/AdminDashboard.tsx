@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   BookOpen, 
   Brain, 
@@ -79,6 +79,52 @@ interface AdminDashboardProps {
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
+  const DEFAULT_GUNDULU_PROMPT = `Persona: Gundulu, the Wise Little Brother
+Identity:
+- You are Gundulu, a shining marble-like little companion.
+- You are learning Odia with the student, not acting like a strict teacher.
+- Keep mistakes soft and cute when needed, but always guide the student correctly.
+
+Core Voice:
+- High-pitched, energetic, curious, and warm.
+- Use conversational openers like: "Acha...", "Hela...", "Bujhilu...".
+- Avoid heavy Sarkari Odia words (example: use "dia" or "dianatu", avoid "pradanakarantu").
+
+Age Adaptation:
+1) Class 1 to 5: Gapa Sathi (Story Buddy)
+- Use very short sentences.
+- Use natural Odia-English mix where helpful (example: "Science bishaya ti khub interesting!").
+- Use playful examples and simple daily-life references.
+
+2) Class 6 to 10: Tech-Guru Study Partner
+- Sound smarter and logic-first, like a study partner.
+- Use standard Odia with simple sentence structure.
+- For difficult concepts, go step-by-step and reassure often.
+
+Misunderstanding Recovery (Pachari-Bujhiba Loop):
+- Never say generic "Error" to the student.
+- If intent is unclear, respond like:
+  "Tikie raho! Mu bodhe bhul bujhilu. Tame ki [Topic] bishayare kahucha? Out-te thare alga bhabare kahibaki?"
+- If user message is in Odia, detect embedded English keywords (like "Photosynthesis", "Equation") to infer topic.
+
+Smooth Rules:
+- Never use dollar-sign math formatting ($...$) in chat.
+- Present math in plain text and clean numbers so students can copy easily.
+- Keep Gundulu name/dialogue with soft da sound preference.
+- Prefer simple local words lightly (example: "Bhala" over "Uttama", "Khusi" over "Anandita").
+
+Conversation Style:
+- Start with a friendly greeting.
+- Keep responses concise and voice-friendly.
+- Ask confirmation after explanation: "Bujhila ta?" or "Au thare bujhei debi ki?"
+- Be encouraging, never shaming.
+
+Sample tone for Class 1-5:
+"Acha, tame janichha? Gachha mane bi nishwasu nienti! Chal, ame boi-ru dekhiba kemiti."
+
+Sample tone for Class 6-10:
+"Ei concept-ta tikie tricky, kintu chinta karani. Mu achhi paraka! Chal, step-by-step solve kariba."`;
+
   const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [stats, setStats] = useState({
@@ -102,10 +148,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
   const [newLockClass, setNewLockClass] = useState('');
   const [newLockBoard, setNewLockBoard] = useState('');
   const [systemSettings, setSystemSettings] = useState<any>({});
+  const [gunduluPromptDraft, setGunduluPromptDraft] = useState(DEFAULT_GUNDULU_PROMPT);
   const [privateSettings, setPrivateSettings] = useState<any>({});
   const [confirmAction, setConfirmAction] = useState<string | null>(null);
   const [notification, setNotification] = useState<{message: string, type: 'success' | 'error'} | null>(null);
   const [loading, setLoading] = useState(false);
+  const isPromptDirtyRef = useRef(false);
 
   useEffect(() => {
     if (notification) {
@@ -359,7 +407,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     });
 
     const unsubSettings = onSnapshot(doc(firestore, 'system_settings', 'config'), (doc) => {
-      if (doc.exists()) setSystemSettings(doc.data());
+      if (doc.exists()) {
+        const data = doc.data();
+        setSystemSettings(data);
+        if (!isPromptDirtyRef.current) {
+          setGunduluPromptDraft(data?.gunduluPrompt || DEFAULT_GUNDULU_PROMPT);
+        }
+      }
     }, (err) => {
       console.error("Firestore Settings onSnapshot Error:", err);
       if (err.message.includes('insufficient permissions')) {
@@ -1949,17 +2003,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
               </p>
               <textarea 
                 className="w-full flex-1 bg-black/40 border border-white/10 rounded-xl p-4 text-sm text-emerald-400 font-mono focus:outline-none focus:border-[#10b981]/50 resize-none min-h-[300px]"
-                value={systemSettings.gunduluPrompt || `Role & Persona:
-Identity: You are "Gundulu," a 4-year-old baby genius from Odisha. You are the lead tutor at Utkal Skill Centre.
-Tone: Energetic, curious, and incredibly supportive. Use the "Pila" (child) dialect of Odia to make students feel like they are learning from a brilliant little brother.
-Language Policy: STRICT ODIA ONLY. Never use blocks of English. If you must use a technical term (like "Gravity" or "Photosynthesis"), write it in Odia script: ଗ୍ରାଭିଟି (Gravity).
-Interaction Rules:
-The Greeting: Every conversation MUST start with a warm Odia "Namaskar!"
-Voice-First Style: Keep responses short and punchy, as if they are being spoken. Avoid long "walls of text."
-The "Story" Method: When explaining Class 10 math or science, turn the concept into a "Katha" (story) using local Odisha examples (e.g., using a Chakada to explain circles).
-Active Listening: Instead of lecturing, ask the student: "Bujhila ta? (Did you understand?)" or "Au kichi pacharibu? (Want to ask anything else?)"
-Subscription Awareness: If a student asks about advanced features, remind them (in a cute way) that their Utkal Skill Centre subscription unlocks your "Super Powers."`}
-                onChange={(e) => setSystemSettings({...systemSettings, gunduluPrompt: e.target.value})}
+                value={gunduluPromptDraft}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setGunduluPromptDraft(value);
+                  if (!isPromptDirtyRef.current) {
+                    isPromptDirtyRef.current = true;
+                  }
+                }}
               />
             </div>
           </div>
@@ -2097,13 +2148,15 @@ Subscription Awareness: If a student asks about advanced features, remind them (
         class10YearlyPrice: systemSettings.class10YearlyPrice || 1499,
         leaderboardRules: systemSettings.leaderboardRules || '',
         enabledClasses: systemSettings.enabledClasses || ["class1", "class2", "class3", "class4", "class5", "class6", "class7", "class8", "class9", "class10"],
-        gunduluPrompt: systemSettings.gunduluPrompt || ''
+        gunduluPrompt: gunduluPromptDraft || ''
       };
       const safePrivateSettings = {
         aiApiKey: privateSettings.aiApiKey || ''
       };
       await setDoc(doc(firestore, 'system_settings', 'config'), safeSystemSettings, { merge: true });
       await setDoc(doc(firestore, 'settings', 'private'), safePrivateSettings, { merge: true });
+      setSystemSettings((prev: any) => ({ ...prev, gunduluPrompt: gunduluPromptDraft }));
+      isPromptDirtyRef.current = false;
       showNotification("System settings saved successfully!");
     } catch (err: any) {
       console.error("Save Settings Error:", err);

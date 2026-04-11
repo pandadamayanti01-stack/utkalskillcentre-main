@@ -272,6 +272,11 @@ export default function App() {
     if (currentHash !== activeTab) {
       window.location.hash = activeTab;
     }
+
+    // Ensure each tab opens from top, especially Study Buddy launched from Dashboard.
+    if (contentScrollRef.current) {
+      contentScrollRef.current.scrollTo({ top: 0, behavior: 'auto' });
+    }
   }, [activeTab]);
 
   useEffect(() => {
@@ -295,6 +300,7 @@ export default function App() {
 
   const [language, _setLanguage] = useState<'en' | 'or'>(localStorage.getItem('lang') as any || 'or');
   const languageRef = useRef(language);
+  const contentScrollRef = useRef<HTMLDivElement>(null);
   const setLanguage = async (lang: 'en' | 'or') => {
     languageRef.current = lang;
     _setLanguage(lang);
@@ -1735,7 +1741,7 @@ export default function App() {
         </header>
 
         {/* CONTENT AREA: This is the ONLY part that scrolls */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-8 scrollbar-hide relative z-10">
+        <div ref={contentScrollRef} className="flex-1 overflow-y-auto p-4 md:p-8 scrollbar-hide relative z-10">
           <AnimatePresence mode="wait">
             {/* Your 10+ Tab components go here... */}
             {activeTab === 'dashboard' && <Dashboard user={user} leaderboard={leaderboard} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} chapters={chapters} dailyChallenge={dailyChallenge} onOpenTutor={() => { 
