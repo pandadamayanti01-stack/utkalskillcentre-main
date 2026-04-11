@@ -86,6 +86,37 @@ export default function Login({ language, translations, setLanguage, setRegData 
     setAdminLoginError("Admin login not implemented yet.");
   };
 
+  const normalizePhoneNumber = (input: string) => {
+    const withPlus = input.trim().replace(/[^\d+]/g, '');
+    if (withPlus.startsWith('+')) return withPlus;
+
+    const digitsOnly = withPlus.replace(/\D/g, '');
+    if (digitsOnly.length === 10) return `+91${digitsOnly}`;
+    if (digitsOnly.length > 10) return `+${digitsOnly}`;
+    return `+91${digitsOnly}`;
+  };
+
+  const getOtpErrorMessage = (error: any) => {
+    switch (error?.code) {
+      case 'auth/invalid-phone-number':
+        return 'Invalid phone format. Use full number with country code (example: +91XXXXXXXXXX).';
+      case 'auth/too-many-requests':
+        return 'Too many OTP attempts. Please wait a few minutes and try again.';
+      case 'auth/operation-not-allowed':
+        return 'Phone sign-in is disabled. Enable Phone provider in Firebase Authentication.';
+      case 'auth/unauthorized-domain':
+        return 'This domain is not authorized in Firebase Authentication. Add your Vercel/Cloud Run domain in Authorized Domains.';
+      case 'auth/billing-not-enabled':
+        return 'Real SMS requires Firebase Blaze plan. For testing, add a phone test number in Firebase Auth and use its test OTP.';
+      case 'auth/captcha-check-failed':
+        return 'reCAPTCHA failed. Refresh the page and try again.';
+      case 'auth/network-request-failed':
+        return 'Network error while sending OTP. Check your internet and retry.';
+      default:
+        return error?.message || 'Failed to send OTP. Please verify Firebase Auth configuration.';
+    }
+  };
+
   const onSmsSend = async () => {
     if (!phoneNumber || phoneNumber.length < 10) return alert("Please enter valid phone");
     if (!isAdminLogin && (!selectedClass || !selectedBoard)) return alert(translations[language].requiredFieldsError);
@@ -96,28 +127,28 @@ export default function Login({ language, translations, setLanguage, setRegData 
     }
 
     try {
-      let formattedNumber = phoneNumber.trim();
-      formattedNumber = formattedNumber.replace(/[^\d+]/g, '');
-      if (!formattedNumber.startsWith('+')) {
-        if (formattedNumber.startsWith('0')) {
-          formattedNumber = formattedNumber.substring(1);
-        }
-        formattedNumber = '+91' + formattedNumber;
-      }
+      const formattedNumber = normalizePhoneNumber(phoneNumber);
 
       if (!isAdminLogin) {
-        const lockDoc = await getDoc(doc(db, 'user_locks', formattedNumber));
-        if (lockDoc.exists()) {
-          const lockData = lockDoc.data();
-          const dbClass = lockData.class;
-          const dbBoard = lockData.board;
-          if (selectedClass && selectedBoard && (dbClass !== selectedClass || dbBoard !== selectedBoard)) {
-            const classLabel = translations[language].classes[dbClass] || dbClass;
-            const boardLabel = translations[language].boards[dbBoard] || dbBoard;
-            alert(language === 'en'
-              ? `Your account is locked to ${classLabel} (${boardLabel}). Please select the correct class/board to login.`
-              : `ଆପଣଙ୍କ ଆକାଉଣ୍ଟ ${classLabel} (${boardLabel}) ପାଇଁ ଲକ୍ ହୋଇଛି | ଦୟାକରି ସଠିକ୍ ଶ୍ରେଣୀ/ବୋର୍ଡ ଚୟନ କରନ୍ତୁ |`);
-            return;
+        try {
+          const lockDoc = await getDoc(doc(db, 'user_locks', formattedNumber));
+          if (lockDoc.exists()) {
+            const lockData = lockDoc.data();
+            const dbClass = lockData.class;
+            const dbBoard = lockData.board;
+            if (selectedClass && selectedBoard && (dbClass !== selectedClass || dbBoard !== selectedBoard)) {
+              const classLabel = translations[language].classes[dbClass] || dbClass;
+              const boardLabel = translations[language].boards[dbBoard] || dbBoard;
+              alert(language === 'en'
+                ? `Your account is locked to ${classLabel} (${boardLabel}). Please select the correct class/board to login.`
+                : `ଆପଣଙ୍କ ଆକାଉଣ୍ଟ ${classLabel} (${boardLabel}) ପାଇଁ ଲକ୍ ହୋଇଛି | ଦୟାକରି ସଠିକ୍ ଶ୍ରେଣୀ/ବୋର୍ଡ ଚୟନ କରନ୍ତୁ |`);
+              return;
+            }
+          }
+        } catch (lockError: any) {
+          // user_locks may be protected before auth; continue OTP and enforce class/board after login.
+          if (lockError?.code !== 'permission-denied' && lockError?.code !== 'failed-precondition') {
+            console.warn('Lock check skipped due to read error:', lockError);
           }
         }
       }
@@ -127,7 +158,9 @@ export default function Login({ language, translations, setLanguage, setRegData 
       setAuthStep('otp');
     } catch (error: any) {
       console.error(error);
+      alert(getOtpErrorMessage(error));
       if (recaptchaVerifier.current) recaptchaVerifier.current.clear();
+      recaptchaVerifier.current = null;
     } finally {
       setIsSending(false);
     }

@@ -82,7 +82,6 @@ import { AdminDashboard } from './components/AdminDashboard';
 import { PracticeQuestion } from './components/PracticeQuestion';
 import { Dashboard } from './components/Dashboard';
 import { NotificationsView } from './components/NotificationsView';
-import { UtkalDivasPoster } from './components/UtkalDivasPoster';
 import GunduluHuman from './components/GunduluHuman';
 import { AvatarStore } from './components/AvatarStore';
 import { DailyChallenge } from './components/DailyChallenge';
@@ -94,6 +93,7 @@ import { StudyBuddyView } from './components/StudyBuddyView';
 import { ChatbotModal } from './components/ChatbotModal';
 import { Sidebar } from './components/Sidebar';
 import LoginComponent from './components/LoginComponent';
+import TestSeriesPoster from './components/TestSeriesPoster';
 import { getDeferredPrompt, clearDeferredPrompt } from './pwa';
 
 
@@ -315,6 +315,7 @@ export default function App() {
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [showConfigError, setShowConfigError] = useState<{title: string, message: string} | null>(null);
  // const [showLaunchPoster, setShowLaunchPoster] = useState(() => !localStorage.getItem('utkalDivasSeen'));
+  const [showTestSeriesPoster, setShowTestSeriesPoster] = useState(false);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [showChatbot, setShowChatbot] = useState(false);
   
@@ -631,10 +632,13 @@ export default function App() {
         }, (err) => {
           handleFirestoreError(err, OperationType.GET, `subscriptions/${firebaseUser.uid}`);
         });
+
+        setShowTestSeriesPoster(true);
         
         setLoading(false);
       } else {
         setUser(null);
+        setShowTestSeriesPoster(false);
         setIsPremium(false);
         setAuthStep('login');
         setIsAdminLogin(false);
@@ -1649,6 +1653,10 @@ export default function App() {
 
   return (
   <ErrorBoundary language={language}>
+    {showTestSeriesPoster && (
+      <TestSeriesPoster onClose={() => setShowTestSeriesPoster(false)} />
+    )}
+
     {/* Full screen container - NO SCROLL ALLOWED HERE */}
     <div className="h-screen w-full bg-[#002d26] flex relative overflow-hidden font-sans text-[#f8f1e7]">
       
