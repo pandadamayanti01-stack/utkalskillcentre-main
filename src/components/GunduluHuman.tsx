@@ -205,7 +205,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
       });
 
       const response = result.text || "ମୁଁ ଭଲଭାବେ ଶୁଣି ପାରିଲି ନାହିଁ, ଆଉଥରେ କହନ୍ତୁ।";
-  responseTurnRef.current += 1;
+        responseTurnRef.current += 1;
       setSubtitle(response);
       speakResponse(response);
     } catch (error) {

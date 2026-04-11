@@ -197,48 +197,59 @@ async function startServer() {
       }
 
       const model = process.env.GEMINI_TTS_MODEL || 'gemini-2.5-flash-preview-tts';
-      const voiceName = language === 'or-IN'
-        ? (process.env.GEMINI_TTS_VOICE_ODIA || 'Puck')
-        : (process.env.GEMINI_TTS_VOICE_EN || 'Aoede');
+      const odiaVoiceList = (process.env.GEMINI_TTS_VOICE_ODIA_LIST || 'Puck,Kore,Charon')
+        .split(',')
+        .map((v) => v.trim())
+        .filter(Boolean);
+      const voiceCandidates = language === 'or-IN'
+        ? [process.env.GEMINI_TTS_VOICE_ODIA, ...odiaVoiceList].filter(Boolean) as string[]
+        : [(process.env.GEMINI_TTS_VOICE_EN || 'Aoede')];
 
       const ttsPrompt = language === 'or-IN'
-        ? `ନିମ୍ନଲିଖିତ ଟେକ୍ସଟ୍‌ଟିକୁ ଓଡ଼ିଆରେ ସ୍ୱାଭାବିକ ଭାବେ, ମୃଦୁ ଏବଂ ସ୍ପଷ୍ଟ ଶୈଳୀରେ କହନ୍ତୁ:\n\n${text}`
+        ? `ନିମ୍ନଲିଖିତ ଟେକ୍ସଟ୍‌ଟିକୁ ଓଡ଼ିଆରେ ସ୍ୱାଭାବିକ, ଯୁବକ (ଭାଇ-ଟ୍ୟୁଟର) ଶବ୍ଦରେ, ସ୍ପଷ୍ଟ ଉଚ୍ଚାରଣ ଏବଂ ସ୍କୁଲ୍-ଫ୍ରେଣ୍ଡଲି ଗତିରେ କହନ୍ତୁ। ଓଡ଼ିଆ ଶବ୍ଦକୁ ବାକ୍ର ଉଚ୍ଚାରଣ କରିବେ ନାହିଁ।\n\n${text}`
         : `Speak this text in a warm, clear tutoring style for students in India:\n\n${text}`;
 
-      const ttsResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [{ role: 'user', parts: [{ text: ttsPrompt }] }],
-          generationConfig: {
-            responseModalities: ['AUDIO'],
-            speechConfig: {
-              voiceConfig: {
-                prebuiltVoiceConfig: { voiceName }
+      let lastError = 'Unknown TTS failure';
+      for (const voiceName of voiceCandidates) {
+        const ttsResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: [{ role: 'user', parts: [{ text: ttsPrompt }] }],
+            generationConfig: {
+              responseModalities: ['AUDIO'],
+              speechConfig: {
+                voiceConfig: {
+                  prebuiltVoiceConfig: { voiceName }
+                }
               }
             }
-          }
-        }),
-      });
+          }),
+        });
 
-      if (!ttsResponse.ok) {
-        const errText = await ttsResponse.text();
-        return res.status(ttsResponse.status).json({ error: `TTS failed: ${errText}` });
+        if (!ttsResponse.ok) {
+          lastError = await ttsResponse.text();
+          console.warn(`Gemini TTS failed for voice ${voiceName}: ${lastError}`);
+          continue;
+        }
+
+        const data = await ttsResponse.json();
+        const inlineData = data?.candidates?.[0]?.content?.parts?.find((p: any) => p?.inlineData)?.inlineData;
+        if (!inlineData?.data) {
+          lastError = `No audio payload for voice ${voiceName}`;
+          continue;
+        }
+
+        const mimeType = inlineData.mimeType || 'audio/wav';
+        const audioBuffer = Buffer.from(inlineData.data, 'base64');
+        res.setHeader('Content-Type', mimeType);
+        res.setHeader('Cache-Control', 'no-store');
+        return res.send(audioBuffer);
       }
 
-      const data = await ttsResponse.json();
-      const inlineData = data?.candidates?.[0]?.content?.parts?.find((p: any) => p?.inlineData)?.inlineData;
-      if (!inlineData?.data) {
-        return res.status(502).json({ error: 'Gemini TTS returned no audio payload' });
-      }
-
-      const mimeType = inlineData.mimeType || 'audio/wav';
-      const audioBuffer = Buffer.from(inlineData.data, 'base64');
-      res.setHeader('Content-Type', mimeType);
-      res.setHeader('Cache-Control', 'no-store');
-      return res.send(audioBuffer);
+      return res.status(502).json({ error: `Gemini TTS failed for all configured voices: ${lastError}` });
     } catch (error: any) {
       console.error('Gemini TTS Error:', error);
       return res.status(500).json({ error: error?.message || 'TTS generation failed' });
