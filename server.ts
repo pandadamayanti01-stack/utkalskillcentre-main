@@ -183,6 +183,68 @@ async function startServer() {
     }
   });
 
+  // Gemini TTS proxy (keeps GEMINI_API_KEY on server only)
+  app.post('/api/tts/gemini', async (req, res) => {
+    try {
+      const { text, language } = req.body || {};
+      if (!text || typeof text !== 'string') {
+        return res.status(400).json({ error: 'text is required' });
+      }
+
+      const geminiApiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+      if (!geminiApiKey) {
+        return res.status(503).json({ error: 'GEMINI_API_KEY is not configured' });
+      }
+
+      const model = process.env.GEMINI_TTS_MODEL || 'gemini-2.5-flash-preview-tts';
+      const voiceName = language === 'or-IN'
+        ? (process.env.GEMINI_TTS_VOICE_ODIA || 'Kore')
+        : (process.env.GEMINI_TTS_VOICE_EN || 'Aoede');
+
+      const ttsPrompt = language === 'or-IN'
+        ? `ନିମ୍ନଲିଖିତ ଟେକ୍ସଟ୍‌ଟିକୁ ଓଡ଼ିଆରେ ସ୍ୱାଭାବିକ ଭାବେ, ମୃଦୁ ଏବଂ ସ୍ପଷ୍ଟ ଶୈଳୀରେ କହନ୍ତୁ:\n\n${text}`
+        : `Speak this text in a warm, clear tutoring style for students in India:\n\n${text}`;
+
+      const ttsResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{ role: 'user', parts: [{ text: ttsPrompt }] }],
+          generationConfig: {
+            responseModalities: ['AUDIO'],
+            speechConfig: {
+              voiceConfig: {
+                prebuiltVoiceConfig: { voiceName }
+              }
+            }
+          }
+        }),
+      });
+
+      if (!ttsResponse.ok) {
+        const errText = await ttsResponse.text();
+        return res.status(ttsResponse.status).json({ error: `TTS failed: ${errText}` });
+      }
+
+      const data = await ttsResponse.json();
+      const inlineData = data?.candidates?.[0]?.content?.parts?.find((p: any) => p?.inlineData)?.inlineData;
+      if (!inlineData?.data) {
+        return res.status(502).json({ error: 'Gemini TTS returned no audio payload' });
+      }
+
+      const mimeType = inlineData.mimeType || 'audio/wav';
+      const audioBuffer = Buffer.from(inlineData.data, 'base64');
+      res.setHeader('Content-Type', mimeType);
+      res.setHeader('Cache-Control', 'no-store');
+      return res.send(audioBuffer);
+    } catch (error: any) {
+      console.error('Gemini TTS Error:', error);
+      return res.status(500).json({ error: error?.message || 'TTS generation failed' });
+    }
+  });
+
   // Vite middleware for development
   const distPath = path.join(process.cwd(), 'dist');
   const indexPath = path.join(distPath, 'index.html');

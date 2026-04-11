@@ -17,6 +17,73 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
   );
   const [subtitle, setSubtitle] = useState("");
   const recognitionRef = useRef<any>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioUrlRef = useRef<string | null>(null);
+
+  const stopCurrentAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+    if (audioUrlRef.current) {
+      URL.revokeObjectURL(audioUrlRef.current);
+      audioUrlRef.current = null;
+    }
+  };
+
+  const speakWithBrowserTtsFallback = (text: string, onDone?: () => void) => {
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = language;
+    utterance.pitch = 1.8;
+    utterance.rate = 0.9;
+    utterance.onstart = () => setIsSpeaking(true);
+    utterance.onend = () => {
+      setIsSpeaking(false);
+      onDone?.();
+    };
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const speakWithGeminiVoice = async (text: string, onDone?: () => void) => {
+    try {
+      stopCurrentAudio();
+      window.speechSynthesis.cancel();
+      setIsSpeaking(true);
+
+      const response = await fetch('/api/tts/gemini', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, language }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`TTS HTTP ${response.status}`);
+      }
+
+      const audioBlob = await response.blob();
+      const audioUrl = URL.createObjectURL(audioBlob);
+      audioUrlRef.current = audioUrl;
+
+      const audio = new Audio(audioUrl);
+      audioRef.current = audio;
+      audio.onended = () => {
+        setIsSpeaking(false);
+        stopCurrentAudio();
+        onDone?.();
+      };
+      audio.onerror = () => {
+        setIsSpeaking(false);
+        stopCurrentAudio();
+        speakWithBrowserTtsFallback(text, onDone);
+      };
+      await audio.play();
+    } catch (err) {
+      console.warn('Gemini voice unavailable, using browser TTS fallback.', err);
+      setIsSpeaking(false);
+      speakWithBrowserTtsFallback(text, onDone);
+    }
+  };
 
   useEffect(() => {
     // 1. THE LAUNCH DAY GREETING LOGIC
@@ -29,27 +96,10 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
       setSubtitle(greeting);
       setStatus(greeting);
 
-      // Cancel any pending speech before starting
-      window.speechSynthesis.cancel();
-      
-      const utterance = new SpeechSynthesisUtterance(greeting);
-      const voices = window.speechSynthesis.getVoices();
-      const voice = voices.find(v => v.lang.includes(language)) || null;
-      
-      utterance.voice = voice;
-      utterance.lang = language;
-      utterance.pitch = 1.8; // The "Baby Genius" high pitch
-      utterance.rate = 0.9;  // Slightly slower for clear Odia pronunciation
-      
-      utterance.onstart = () => setIsSpeaking(true);
-      utterance.onend = () => {
-        setIsSpeaking(false);
+      speakWithGeminiVoice(greeting, () => {
         triggerVisualNudge();
-        // Reset status to guidance text after greeting
         setStatus(language === 'en-US' ? "Touch to Talk to Gundulu" : "ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
-      };
-
-      window.speechSynthesis.speak(utterance);
+      });
     };
 
     const handleStartGreeting = () => {
@@ -105,6 +155,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
     // Cleanup speech on unmount
     return () => {
       window.speechSynthesis.cancel();
+      stopCurrentAudio();
       window.removeEventListener('startGunduluGreeting', handleStartGreeting);
     };
   }, [language, skipInitialGreeting]);
@@ -152,17 +203,10 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
   };
 
   const speakResponse = (text: string) => {
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = language;
-    utterance.pitch = 1.8;
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => {
-      setIsSpeaking(false);
+    speakWithGeminiVoice(text, () => {
       triggerVisualNudge();
       setStatus(language === 'en-US' ? "Touch to Talk" : "କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
-    };
-    window.speechSynthesis.speak(utterance);
+    });
   };
 
   const toggleListening = () => {
