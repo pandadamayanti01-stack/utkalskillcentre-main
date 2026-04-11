@@ -3,6 +3,54 @@ import { X } from 'lucide-react';
 import './GunduluHuman.css';
 import { getAI } from '../services/aiService';
 
+type SpeechInput = {
+  primary: string;
+  candidates: string[];
+  confidence?: number;
+};
+
+const normalizeTranscript = (raw: string): string => {
+  let text = (raw || '').trim();
+  if (!text) return text;
+
+  // Fix common mishears for Odisha place names in mixed Odia/English speech input.
+  const corrections: Array<[RegExp, string]> = [
+    [/(\bcanada\b|\bkanada\b|\bkenada\b)/gi, 'Keonjhar'],
+    [/(\bkendar\b|\bkendhar\b|\bkenjhar\b|\bkionjhar\b|\bkiyonjhar\b)/gi, 'Keonjhar'],
+    [/(\bkendujhar\b|\bkendu jhar\b|\bkendu jharh\b)/gi, 'Keonjhar'],
+    [/(\bbalasor\b|\bbalesor\b|\bbaleshwar\b|\bbalashore\b)/gi, 'Balasore'],
+    [/(\bmayurbanj\b|\bmoyurbhanj\b|\bmayurvhanj\b)/gi, 'Mayurbhanj'],
+    [/(\bkhorda\b|\bkhurda\b|\bkhordha\b)/gi, 'Khordha'],
+    [/(\bjajpur\b|\bjazpur\b|\bjajpor\b)/gi, 'Jajpur'],
+    [/(\bganjam\b|\bgunjam\b|\bgonjam\b)/gi, 'Ganjam'],
+    [/(\bcuttak\b|\bkatak\b|\bcuttack\b)/gi, 'Cuttack'],
+    [/(\bbhubanesor\b|\bbhubaneshor\b|\bbbsr\b)/gi, 'Bhubaneswar'],
+  ];
+
+  for (const [pattern, replacement] of corrections) {
+    text = text.replace(pattern, replacement);
+  }
+
+  return text;
+};
+
+const extractSpeechInput = (event: any): SpeechInput => {
+  const result = event?.results?.[0];
+  const candidates: string[] = [];
+  if (result && typeof result.length === 'number') {
+    for (let i = 0; i < result.length; i += 1) {
+      const candidate = normalizeTranscript(result[i]?.transcript || '');
+      if (candidate && !candidates.includes(candidate)) {
+        candidates.push(candidate);
+      }
+    }
+  }
+
+  const primary = candidates[0] || normalizeTranscript(result?.[0]?.transcript || '');
+  const confidence = result?.[0]?.confidence;
+  return { primary, candidates: candidates.slice(0, 3), confidence };
+};
+
 const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGreeting?: boolean; onBack?: () => void }) => {
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -140,9 +188,9 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
       };
 
       recognition.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        setSubtitle(`ଆପଣ କହିଲେ: "${transcript}"`);
-        processWithGemini(transcript);
+        const speechInput = extractSpeechInput(event);
+        setSubtitle(`ଆପଣ କହିଲେ: "${speechInput.primary}"`);
+        processWithGemini(speechInput);
       };
 
       recognition.onend = () => {
@@ -173,7 +221,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
   };
 
   // 3. AI PROCESSING (GEMINI)
-  const processWithGemini = async (transcript: string) => {
+  const processWithGemini = async (speechInput: SpeechInput) => {
     setStatus("ଗୁଣ୍ଡୁଲୁ ଚିନ୍ତା କରୁଛି...");
     setIsListening(false);
     
@@ -187,6 +235,9 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
         Tone: Energetic and supportive. Use natural "Pila" dialect.
         Language Policy: STRICT ODIA OUTPUT ONLY.
         Input Policy: User may speak in Odia or English. Always understand both, but always reply only in Odia.
+        ASR Rule: Speech-to-text can be wrong for Odisha names/words. Use context to auto-correct likely misheard words.
+        ASR Rule: Prefer Odisha school/local words (district names, subjects, textbook terms) when candidates are similar.
+        ASR Rule: If still unclear, ask ONE short clarification question in Odia.
         Style: Short, conversational voice responses.
         Conversation Rule: Greet only once at launch. For normal conversation, do NOT re-introduce yourself repeatedly.
         Conversation Rule: Do NOT repeat slogans like "Jay Jagannath" or "Jay Maa Tarini" unless the student explicitly asks for devotional/cultural greeting.
@@ -195,9 +246,17 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
         Constraint: Keep response under 3 sentences.
       `;
 
+      const inputPayload = `
+Primary speech transcript: ${speechInput.primary}
+Alternative transcripts: ${speechInput.candidates.join(' | ') || 'N/A'}
+ASR confidence: ${typeof speechInput.confidence === 'number' ? speechInput.confidence.toFixed(2) : 'unknown'}
+
+Understand user intent from these transcripts and respond in Odia only.
+      `.trim();
+
       const result = await ai.models.generateContent({
         model,
-        contents: transcript,
+        contents: inputPayload,
         config: {
           systemInstruction,
           temperature: 0.7,
