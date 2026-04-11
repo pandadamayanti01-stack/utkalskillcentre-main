@@ -8,13 +8,9 @@ import {
   Zap,
   Star,
   User,
-  Mic,
-  Volume2,
-  VolumeX,
   Camera,
   Image,
-  Copy,
-  RotateCcw,
+  Plus,
   X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -22,7 +18,6 @@ import Markdown from 'react-markdown';
 import { db, handleFirestoreError, OperationType } from '../firebase';
 import { getAI, withRetry } from '../services/aiService';
 import { collection, addDoc, doc, getDoc } from 'firebase/firestore';
-import { useVoiceSearch } from '../hooks/useVoiceSearch';
 
 interface Message {
   id: string;
@@ -48,7 +43,7 @@ interface StudyBuddyViewProps {
   onLanguageChange?: (lang: 'en' | 'or') => void;
 }
 
-export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPremium, onUpgrade, user, initialVoiceMode = 0, onBack, onLanguageChange }) => {
+export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPremium, onUpgrade, user, initialVoiceMode: _initialVoiceMode, onBack, onLanguageChange }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -61,15 +56,12 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [autoSpeak, setAutoSpeak] = useState(language === 'or');
   const [selectedImage, setSelectedImage] = useState<SelectedImage | null>(null);
+  const [attachmentMenuOpen, setAttachmentMenuOpen] = useState(false);
   const messageListRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [streamingId, setStreamingId] = useState<string | null>(null);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
-  const systemPromptRef = useRef<string | null>(null);
-  const { isListening, transcript, startListening, stopListening } = useVoiceSearch(language);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -82,39 +74,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
     };
     reader.readAsDataURL(file);
     e.target.value = '';
-  };
-
-  const cameraInputRef = useRef<HTMLInputElement>(null);
-
-  const stripMarkdownForSpeech = (text: string) => {
-    return text
-      .replace(/```[\s\S]*?```/g, ' ')
-      .replace(/`([^`]+)`/g, '$1')
-      .replace(/\*\*([^*]+)\*\*/g, '$1')
-      .replace(/\*([^*]+)\*/g, '$1')
-      .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1')
-      .replace(/[#>-]/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
-  };
-
-  const speakText = (text: string) => {
-    if (!('speechSynthesis' in window) || !text?.trim()) return;
-    const utterance = new SpeechSynthesisUtterance(stripMarkdownForSpeech(text));
-    utterance.lang = language === 'or' ? 'or-IN' : 'en-IN';
-    utterance.rate = 0.95;
-    utterance.pitch = 1.05;
-
-    const voices = window.speechSynthesis.getVoices();
-    const preferred = language === 'or'
-      ? voices.find(v => /or(-|_)?IN|oriya|odia/i.test(`${v.lang} ${v.name}`))
-        || voices.find(v => /hi(-|_)?IN/i.test(v.lang))
-        || voices.find(v => /en(-|_)?IN/i.test(v.lang))
-      : voices.find(v => /en(-|_)?IN|en(-|_)?US/i.test(v.lang));
-    if (preferred) utterance.voice = preferred;
-
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utterance);
+    setAttachmentMenuOpen(false);
   };
 
   const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
@@ -135,31 +95,6 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
   useEffect(() => {
     scrollToBottom('smooth');
   }, [messages, loading]);
-
-  useEffect(() => {
-    if (transcript) setInput(transcript);
-  }, [transcript]);
-
-  useEffect(() => {
-    setAutoSpeak(language === 'or');
-    systemPromptRef.current = null; // invalidate cache on language switch
-  }, [language]);
-
-  const fetchSystemInstruction = async (): Promise<string> => {
-    if (systemPromptRef.current) return systemPromptRef.current;
-    let basePrompt = `You are Gundulu, the Wise Little Brother AI tutor at Utkal Skill Centre.`;
-    try {
-      const settingsDoc = await getDoc(doc(db, 'system_settings', 'config'));
-      if (settingsDoc.exists() && settingsDoc.data().gunduluPrompt) {
-        basePrompt = settingsDoc.data().gunduluPrompt;
-      }
-    } catch (err) {
-      console.warn('Using default Gundulu prompt:', err);
-    }
-    const instruction = `${basePrompt}\n\nCurrent User Context:\n- Name: ${user?.name || 'Student'}\n- Class: ${user?.class || 'Unknown'}\n- Language Preference: ${language === 'or' ? 'Odia' : 'English'}`;
-    systemPromptRef.current = instruction;
-    return instruction;
-  };
 
   const saveChatHistory = async (userMsg: string, aiMsg: string) => {
     const path = 'tutor_queries';
@@ -259,7 +194,6 @@ Current User Context:
       };
 
       setMessages(prev => [...prev, assistantMessage]);
-      if (autoSpeak) speakText(responseText);
       await saveChatHistory(textToSend, responseText);
     } catch (err: any) {
       console.error('Study Buddy Chat Error:', err);
@@ -318,20 +252,6 @@ Current User Context:
           </button>
           <div className="h-6 w-px bg-white/10 mx-1"></div>
           <button
-            onClick={() => setAutoSpeak(prev => !prev)}
-            className={`p-2.5 rounded-xl transition-all border ${autoSpeak ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400' : 'bg-white/5 border-white/5 text-slate-500 hover:text-emerald-400'}`}
-            title={language === 'en' ? (autoSpeak ? 'Voice On' : 'Voice Off') : (autoSpeak ? 'ଶବ୍ଦ ଚାଲୁ' : 'ଶବ୍ଦ ବନ୍ଦ')}
-          >
-            {autoSpeak ? <Volume2 size={18} /> : <VolumeX size={18} />}
-          </button>
-          <button
-            onClick={isListening ? stopListening : startListening}
-            className={`p-2.5 rounded-xl transition-all border ${isListening ? 'bg-red-500/15 border-red-500/30 text-red-400 animate-pulse' : 'bg-white/5 border-white/5 text-slate-500 hover:text-emerald-400'}`}
-            title={language === 'en' ? 'Voice Input' : 'ଭଏସ୍ ଇନପୁଟ୍'}
-          >
-            <Mic size={18} />
-          </button>
-          <button
             onClick={() => onLanguageChange?.(language === 'en' ? 'or' : 'en')}
             className="px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-black text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all uppercase tracking-widest"
           >
@@ -366,21 +286,7 @@ Current User Context:
                   <div className={`p-5 rounded-[2rem] text-sm leading-relaxed shadow-xl relative ${msg.role === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'glass-card border border-[#10b981]/20 text-slate-200 rounded-tl-none'}`}>
                     <div className="prose prose-invert prose-sm max-w-none">
                       <Markdown>{msg.content}</Markdown>
-                      {streamingId === msg.id && (
-                        <span className="inline-block w-0.5 h-4 bg-emerald-400 animate-pulse ml-0.5 align-middle rounded-full" />
-                      )}
                     </div>
-                    {msg.role === 'assistant' && msg.content && streamingId !== msg.id && (
-                      <button
-                        onClick={() => { navigator.clipboard.writeText(msg.content); setCopiedId(msg.id); setTimeout(() => setCopiedId(null), 2000); }}
-                        className="absolute bottom-2 right-3 p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-600 hover:text-emerald-400 transition-all"
-                        title="Copy response"
-                      >
-                        {copiedId === msg.id
-                          ? <span className="text-[10px] font-black text-emerald-400">✓</span>
-                          : <Copy size={12} />}
-                      </button>
-                    )}
                   </div>
                   <p className={`text-[10px] font-bold text-slate-500 uppercase tracking-widest ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
                     {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -408,17 +314,6 @@ Current User Context:
               </div>
             </div>
           </motion.div>
-        )}
-        {!loading && streamingId === null && messages.length > 1 && messages[messages.length - 1].role === 'assistant' && messages[messages.length - 1].content && (
-          <div className="flex justify-center pt-1">
-            <button
-              onClick={regenerateLastMessage}
-              className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[11px] font-bold text-slate-500 hover:text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all"
-            >
-              <RotateCcw size={12} />
-              {language === 'or' ? 'ପୁଣି ଉତ୍ତର ଦାଅ' : 'Regenerate response'}
-            </button>
-          </div>
         )}
         <div ref={messagesEndRef} />
       </div>
@@ -472,24 +367,36 @@ Current User Context:
               className="hidden"
               onChange={handleImageSelect}
             />
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className={`p-2.5 rounded-xl transition-all border shrink-0 ${
-                selectedImage
+            <div className="relative shrink-0">
+              <button
+                onClick={() => setAttachmentMenuOpen((prev) => !prev)}
+                className={`p-2.5 rounded-xl transition-all border ${attachmentMenuOpen || selectedImage
                   ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
-                  : 'bg-white/5 border-white/5 text-slate-500 hover:text-emerald-400 hover:bg-emerald-500/10'
-              }`}
-              title={language === 'or' ? 'ଫଟୋ ଅପଲୋଡ୍ କରନ୍ତୁ' : 'Upload photo'}
-            >
-              <Image size={18} />
-            </button>
-            <button
-              onClick={() => cameraInputRef.current?.click()}
-              className="p-2.5 rounded-xl transition-all border shrink-0 bg-white/5 border-white/5 text-slate-500 hover:text-emerald-400 hover:bg-emerald-500/10"
-              title={language === 'or' ? 'କ୍ୟାମେରା ଖୋଲନ୍ତୁ' : 'Open camera'}
-            >
-              <Camera size={18} />
-            </button>
+                  : 'bg-white/5 border-white/5 text-slate-500 hover:text-emerald-400 hover:bg-emerald-500/10'}`}
+                title={language === 'or' ? 'ଫାଇଲ୍ ଯୋଡ଼ନ୍ତୁ' : 'Add attachment'}
+              >
+                <Plus size={18} />
+              </button>
+
+              {attachmentMenuOpen && (
+                <div className="absolute bottom-12 left-0 w-44 rounded-2xl border border-white/10 bg-slate-900/95 backdrop-blur-xl shadow-2xl overflow-hidden z-30">
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-full px-3 py-2.5 text-left text-xs text-slate-200 hover:bg-white/10 flex items-center gap-2"
+                  >
+                    <Image size={14} />
+                    {language === 'or' ? 'ଫଟୋ ଅପଲୋଡ୍' : 'Upload photo'}
+                  </button>
+                  <button
+                    onClick={() => cameraInputRef.current?.click()}
+                    className="w-full px-3 py-2.5 text-left text-xs text-slate-200 hover:bg-white/10 flex items-center gap-2 border-t border-white/5"
+                  >
+                    <Camera size={14} />
+                    {language === 'or' ? 'କ୍ୟାମେରା ବ୍ୟବହାର' : 'Use camera'}
+                  </button>
+                </div>
+              )}
+            </div>
             <input
               type="text"
               placeholder={language === 'en' ? 'Ask me anything about your studies...' : 'ଆପଣଙ୍କ ପାଠପଢା ବିଷୟରେ କିଛି ବି ପଚାରନ୍ତୁ...'}
