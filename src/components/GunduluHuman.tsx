@@ -8,12 +8,14 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isWaitingForInput, setIsWaitingForInput] = useState(false);
   const [language, setLanguage] = useState<'en-US' | 'or-IN'>('or-IN');
+  const hasPlayedGreetingRef = useRef(false);
+  const responseTurnRef = useRef(0);
   
   // Initial Status Text (Static before speech starts)
   const [status, setStatus] = useState(
     language === 'en-US' 
-      ? "Namaskar! I am Gundulu. Happy Utkal Divas! " 
-      : "ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। ପବିତ୍ର ଉତ୍କଳ ଦିବସର ଅଭିନନ୍ଦନ! "
+      ? "Touch to Talk to Gundulu" 
+      : "ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ"
   );
   const [subtitle, setSubtitle] = useState("");
   const recognitionRef = useRef<any>(null);
@@ -86,8 +88,16 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
   };
 
   useEffect(() => {
+    hasPlayedGreetingRef.current = false;
+    responseTurnRef.current = 0;
+    setStatus(language === 'en-US' ? "Touch to Talk to Gundulu" : "ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+    setSubtitle('');
+
     // 1. THE LAUNCH DAY GREETING LOGIC
     const speakGreeting = () => {
+      if (hasPlayedGreetingRef.current) return;
+      hasPlayedGreetingRef.current = true;
+
       // Your custom message with blessings
       const greeting = language === 'en-US' 
         ? "Namaskar! I am Gundulu. Happy Utkal Divas! 🚩 We start our journey together on April 7th. Let’s study, win, and grow! Jay Jagannath, Jay Maa Tarini!" 
@@ -173,13 +183,17 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
     try {
       const ai = getAI();
       const model = 'gemini-3-flash-preview';
+      const turn = responseTurnRef.current;
       
       const systemInstruction = `
         Identity: You are "Gundulu," a 4-year-old baby genius from Odisha. 
         Tone: Energetic and supportive. Use "Pila" dialect.
         Language: STRICT ODIA ONLY. 
         Style: Short, conversational responses for voice.
-        Cultural: If mentioned, celebrate Utkal Divas or Maa Tarini/Jagannath.
+        Conversation Rule: Greet only once at launch. For normal conversation, do NOT re-introduce yourself repeatedly.
+        Conversation Rule: Do NOT repeat slogans like "Jay Jagannath" or "Jay Maa Tarini" unless the student explicitly asks for devotional/cultural greeting.
+        Conversation Rule: Keep replies natural and lesson-focused after greeting.
+        Context: This is response turn number ${turn + 1}. If turn > 1, avoid intro lines and start directly with answer.
         Constraint: Keep response under 3 sentences.
       `;
 
@@ -193,6 +207,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
       });
 
       const response = result.text || "Sorry, I couldn't hear you.";
+  responseTurnRef.current += 1;
       setSubtitle(response);
       speakResponse(response);
     } catch (error) {
