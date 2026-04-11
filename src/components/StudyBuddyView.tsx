@@ -10,7 +10,11 @@ import {
   User,
   Mic,
   Volume2,
-  VolumeX
+  VolumeX,
+  Camera,
+  Copy,
+  RotateCcw,
+  X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
@@ -24,6 +28,13 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+  imageUrl?: string;
+}
+
+interface SelectedImage {
+  base64: string;
+  mimeType: string;
+  preview: string;
 }
 
 interface StudyBuddyViewProps {
@@ -50,9 +61,27 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [autoSpeak, setAutoSpeak] = useState(language === 'or');
+  const [selectedImage, setSelectedImage] = useState<SelectedImage | null>(null);
   const messageListRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [streamingId, setStreamingId] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const systemPromptRef = useRef<string | null>(null);
   const { isListening, transcript, startListening, stopListening } = useVoiceSearch(language);
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      const base64 = result.split(',')[1];
+      setSelectedImage({ base64, mimeType: file.type, preview: result });
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
 
   const stripMarkdownForSpeech = (text: string) => {
     return text
@@ -110,7 +139,24 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
 
   useEffect(() => {
     setAutoSpeak(language === 'or');
+    systemPromptRef.current = null; // invalidate cache on language switch
   }, [language]);
+
+  const fetchSystemInstruction = async (): Promise<string> => {
+    if (systemPromptRef.current) return systemPromptRef.current;
+    let basePrompt = `You are Gundulu, the Wise Little Brother AI tutor at Utkal Skill Centre.`;
+    try {
+      const settingsDoc = await getDoc(doc(db, 'system_settings', 'config'));
+      if (settingsDoc.exists() && settingsDoc.data().gunduluPrompt) {
+        basePrompt = settingsDoc.data().gunduluPrompt;
+      }
+    } catch (err) {
+      console.warn('Using default Gundulu prompt:', err);
+    }
+    const instruction = `${basePrompt}\n\nCurrent User Context:\n- Name: ${user?.name || 'Student'}\n- Class: ${user?.class || 'Unknown'}\n- Language Preference: ${language === 'or' ? 'Odia' : 'English'}`;
+    systemPromptRef.current = instruction;
+    return instruction;
+  };
 
   const saveChatHistory = async (userMsg: string, aiMsg: string) => {
     const path = 'tutor_queries';
@@ -134,21 +180,24 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
 
   const sendMessage = async (textOverride?: string) => {
     const textToSend = textOverride || input;
-    if (!textToSend.trim()) return;
+    if (!textToSend.trim() && !selectedImage) return;
     if (!isPremium) {
       onUpgrade();
       return;
     }
 
+    const imageSnapshot = selectedImage;
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
-      content: textToSend,
+      content: textToSend || (language === 'or' ? 'ଏହି ଫଟୋଟି ଦେଖ ଓ ବୁଝାଅ' : 'Please look at this image and explain'),
       timestamp: new Date(),
+      imageUrl: imageSnapshot?.preview,
     };
 
     setMessages(prev => [...prev, userMessage]);
     if (!textOverride) setInput('');
+    setSelectedImage(null);
     setLoading(true);
 
     try {
@@ -181,9 +230,17 @@ Current User Context:
 - Class: ${user?.class || 'Unknown'}
 - Language Preference: ${language === 'or' ? 'Odia' : 'English'}`;
 
+      const messageText = textToSend || (language === 'or' ? 'ଏହି ଫଟୋଟି ଦେଖ ଓ ବୁଝାଅ' : 'Please look at this image and explain');
+      const contents = imageSnapshot
+        ? [{ role: 'user', parts: [
+            { text: messageText },
+            { inlineData: { mimeType: imageSnapshot.mimeType, data: imageSnapshot.base64 } }
+          ] }]
+        : messageText;
+
       const result = await withRetry(() => ai.models.generateContent({
         model,
-        contents: textToSend,
+        contents,
         config: {
           systemInstruction,
         },
@@ -294,10 +351,33 @@ Current User Context:
                   {msg.role === 'user' ? <User size={20} /> : <Bot size={20} />}
                 </div>
                 <div className="space-y-2">
+                  {msg.imageUrl && (
+                    <div className={`${msg.role === 'user' ? 'flex justify-end' : ''}`}>
+                      <img
+                        src={msg.imageUrl}
+                        alt="attached"
+                        className="max-w-[220px] max-h-[180px] rounded-2xl border border-white/10 object-cover shadow-lg"
+                      />
+                    </div>
+                  )}
                   <div className={`p-5 rounded-[2rem] text-sm leading-relaxed shadow-xl relative ${msg.role === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'glass-card border border-[#10b981]/20 text-slate-200 rounded-tl-none'}`}>
                     <div className="prose prose-invert prose-sm max-w-none">
                       <Markdown>{msg.content}</Markdown>
+                      {streamingId === msg.id && (
+                        <span className="inline-block w-0.5 h-4 bg-emerald-400 animate-pulse ml-0.5 align-middle rounded-full" />
+                      )}
                     </div>
+                    {msg.role === 'assistant' && msg.content && streamingId !== msg.id && (
+                      <button
+                        onClick={() => { navigator.clipboard.writeText(msg.content); setCopiedId(msg.id); setTimeout(() => setCopiedId(null), 2000); }}
+                        className="absolute bottom-2 right-3 p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-600 hover:text-emerald-400 transition-all"
+                        title="Copy response"
+                      >
+                        {copiedId === msg.id
+                          ? <span className="text-[10px] font-black text-emerald-400">✓</span>
+                          : <Copy size={12} />}
+                      </button>
+                    )}
                   </div>
                   <p className={`text-[10px] font-bold text-slate-500 uppercase tracking-widest ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
                     {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -326,6 +406,17 @@ Current User Context:
             </div>
           </motion.div>
         )}
+        {!loading && streamingId === null && messages.length > 1 && messages[messages.length - 1].role === 'assistant' && messages[messages.length - 1].content && (
+          <div className="flex justify-center pt-1">
+            <button
+              onClick={regenerateLastMessage}
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[11px] font-bold text-slate-500 hover:text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all"
+            >
+              <RotateCcw size={12} />
+              {language === 'or' ? 'ପୁଣି ଉତ୍ତର ଦାଅ' : 'Regenerate response'}
+            </button>
+          </div>
+        )}
         <div ref={messagesEndRef} />
       </div>
 
@@ -346,7 +437,41 @@ Current User Context:
 
         <div className="relative group">
           <div className="absolute inset-0 bg-emerald-500/5 rounded-[2.5rem] blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none"></div>
+
+          {selectedImage && (
+            <div className="flex items-center gap-2 px-4 py-2 mb-2 bg-slate-800/60 rounded-2xl border border-white/10">
+              <img src={selectedImage.preview} alt="preview" className="w-14 h-14 rounded-xl object-cover border border-white/10" />
+              <span className="flex-1 text-xs text-slate-400 truncate">
+                {language === 'or' ? 'ଫଟୋ ଯୋଡ଼ା ହୋଇଛି' : 'Image attached'}
+              </span>
+              <button
+                onClick={() => setSelectedImage(null)}
+                className="p-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          )}
+
           <div className="relative flex items-center gap-3 p-3 bg-slate-900/60 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-2xl">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleImageSelect}
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className={`p-2.5 rounded-xl transition-all border shrink-0 ${
+                selectedImage
+                  ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
+                  : 'bg-white/5 border-white/5 text-slate-500 hover:text-emerald-400 hover:bg-emerald-500/10'
+              }`}
+              title={language === 'or' ? 'ଫଟୋ ଯୋଡ଼ନ୍ତୁ / କ୍ୟାମେରା' : 'Attach photo / Camera'}
+            >
+              <Camera size={18} />
+            </button>
             <input
               type="text"
               placeholder={language === 'en' ? 'Ask me anything about your studies...' : 'ଆପଣଙ୍କ ପାଠପଢା ବିଷୟରେ କିଛି ବି ପଚାରନ୍ତୁ...'}
@@ -357,8 +482,8 @@ Current User Context:
             />
             <button
               onClick={() => sendMessage()}
-              disabled={!input.trim() || loading}
-              className={`p-4 rounded-full bg-emerald-500 text-white shadow-lg shadow-emerald-500/20 transition-all ${(!input.trim() || loading) ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110 active:scale-95 hover:bg-emerald-400'}`}
+              disabled={(!input.trim() && !selectedImage) || loading}
+              className={`p-4 rounded-full bg-emerald-500 text-white shadow-lg shadow-emerald-500/20 transition-all ${((!input.trim() && !selectedImage) || loading) ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110 active:scale-95 hover:bg-emerald-400'}`}
             >
               {loading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
             </button>
