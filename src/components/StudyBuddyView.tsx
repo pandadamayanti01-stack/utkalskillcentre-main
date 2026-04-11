@@ -12,6 +12,7 @@ import {
   Volume2,
   VolumeX,
   Camera,
+  Image,
   Copy,
   RotateCcw,
   X
@@ -82,6 +83,8 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
     reader.readAsDataURL(file);
     e.target.value = '';
   };
+
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   const stripMarkdownForSpeech = (text: string) => {
     return text
@@ -461,6 +464,14 @@ Current User Context:
               className="hidden"
               onChange={handleImageSelect}
             />
+            <input
+              ref={cameraInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              className="hidden"
+              onChange={handleImageSelect}
+            />
             <button
               onClick={() => fileInputRef.current?.click()}
               className={`p-2.5 rounded-xl transition-all border shrink-0 ${
@@ -468,7 +479,14 @@ Current User Context:
                   ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
                   : 'bg-white/5 border-white/5 text-slate-500 hover:text-emerald-400 hover:bg-emerald-500/10'
               }`}
-              title={language === 'or' ? 'ଫଟୋ ଯୋଡ଼ନ୍ତୁ / କ୍ୟାମେରା' : 'Attach photo / Camera'}
+              title={language === 'or' ? 'ଫଟୋ ଅପଲୋଡ୍ କରନ୍ତୁ' : 'Upload photo'}
+            >
+              <Image size={18} />
+            </button>
+            <button
+              onClick={() => cameraInputRef.current?.click()}
+              className="p-2.5 rounded-xl transition-all border shrink-0 bg-white/5 border-white/5 text-slate-500 hover:text-emerald-400 hover:bg-emerald-500/10"
+              title={language === 'or' ? 'କ୍ୟାମେରା ଖୋଲନ୍ତୁ' : 'Open camera'}
             >
               <Camera size={18} />
             </button>
