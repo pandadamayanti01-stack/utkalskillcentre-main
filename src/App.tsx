@@ -141,6 +141,7 @@ interface Student {
   parent_pin?: string;
   completed_chapters?: string[];
   parentShowLeaderboard?: boolean;
+  phoneNumber?: string;
   stats?: {
     streak: number;
     level: number;
@@ -1185,8 +1186,8 @@ export default function App() {
 
       try {
         await addDoc(collection(firestore, 'tutor_queries'), {
-          userId: user?.id || user?.uid || 'anonymous',
-          userName: user?.name || user?.displayName || 'Student',
+          userId: user?.id || 'anonymous',
+          userName: user?.name || 'Student',
           userClass: user?.class || 'Unknown',
           userPhone: user?.phoneNumber || '',
           userEmail: user?.email || '',
@@ -2546,7 +2547,7 @@ function StudyBuddyLegacy({ user, language, isPremium, showPaywall, setShowPaywa
             language as 'en' | 'or',
             user.name,
             user.class,
-            systemSettings?.gunduluPrompt
+            undefined
           )
         }
       });
