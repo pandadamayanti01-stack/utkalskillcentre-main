@@ -32,7 +32,8 @@ import {
   File,
   Download,
   Image as ImageIcon,
-  Bot
+  Bot,
+  Lock
 } from 'lucide-react';
 // import { translateToBilingual } from '../services/translationService';
 import { motion, AnimatePresence } from 'motion/react';
@@ -170,9 +171,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
         async () => {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
           if (type === 'pdf') {
-            setNewTextbook(prev => ({ ...prev, download_url: downloadURL }));
+            setNewTextbook((prev: any) => ({ ...prev, download_url: downloadURL }));
           } else {
-            setNewTextbook(prev => ({ ...prev, thumbnail_url: downloadURL }));
+            setNewTextbook((prev: any) => ({ ...prev, thumbnail_url: downloadURL }));
           }
           setUploadingFile(null);
           showNotification(`${type === 'pdf' ? 'PDF' : 'Thumbnail'} uploaded successfully`);
@@ -2426,6 +2427,7 @@ Subscription Awareness: If a student asks about advanced features, remind them (
             {activeTab === 'notifications' && renderNotifications()}
             {activeTab === 'settings' && renderSettings()}
             {activeTab === 'students' && renderStudents()}
+            {activeTab === 'user_locks' && renderUserLocks()}
             {activeTab === 'subscriptions' && renderSubscriptions()}
             {activeTab === 'support' && renderSupport()}
           </motion.div>
@@ -2513,6 +2515,267 @@ Subscription Awareness: If a student asks about advanced features, remind them (
     } catch (err: any) {
       console.error("Reset Error:", err);
       showNotification("Failed to reset student: " + err.message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function renderUserLocks() {
+    const filteredLocks = userLocks.filter(lock => {
+      const query = lockSearchQuery.toLowerCase();
+      return lock.id.toLowerCase().includes(query) || 
+             lock.class?.toLowerCase().includes(query) ||
+             lock.board?.toLowerCase().includes(query);
+    });
+
+    return (
+      <div className="space-y-6">
+        <div className="glass-card p-8 rounded-[2.5rem]">
+          <h2 className="text-2xl font-bold text-white mb-6">User Locks Management</h2>
+          
+          {/* Search Bar */}
+          <div className="mb-6 flex gap-2">
+            <div className="flex-1 relative">
+              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
+              <input 
+                type="text"
+                placeholder="Search by phone/email, class, or board..."
+                value={lockSearchQuery}
+                onChange={(e) => setLockSearchQuery(e.target.value)}
+                className="w-full bg-white/5 border border-white/10 rounded-xl pl-12 pr-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50"
+              />
+            </div>
+          </div>
+
+          {/* Edit Mode */}
+          {editingLock && (
+            <div className="mb-6 bg-blue-500/10 border border-blue-500/30 p-6 rounded-2xl space-y-4">
+              <div className="flex justify-between items-start">
+                <h3 className="text-lg font-bold text-white">Edit Lock</h3>
+                <button 
+                  onClick={() => {
+                    setEditingLock(null);
+                    setNewLockClass('');
+                    setNewLockBoard('');
+                  }}
+                  className="text-slate-400 hover:text-white"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-300 mb-2">Phone/Email</label>
+                  <div className="px-4 py-3 bg-slate-900/50 border border-white/10 rounded-xl text-slate-400 text-sm">
+                    {editingLock.id}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-300 mb-2">Current Class</label>
+                  <div className="px-4 py-3 bg-slate-900/50 border border-white/10 rounded-xl text-slate-400 text-sm">
+                    {editingLock.class}
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-300 mb-2">New Class</label>
+                  <select 
+                    value={newLockClass}
+                    onChange={(e) => setNewLockClass(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50"
+                  >
+                    <option value="">Select Class</option>
+                    {Object.entries(translations['en'].classes).map(([key, label]) => (
+                      <option key={key} value={key}>{label as string}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-300 mb-2">New Board</label>
+                  <select 
+                    value={newLockBoard}
+                    onChange={(e) => setNewLockBoard(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50"
+                  >
+                    <option value="">Select Board</option>
+                    {Object.entries(translations['en'].boards).map(([key, label]) => (
+                      <option key={key} value={key}>{label as string}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => handleUpdateLock(editingLock.id)}
+                  disabled={!newLockClass || !newLockBoard}
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-700 text-white rounded-xl py-2 font-semibold transition-all flex items-center justify-center gap-2"
+                >
+                  <Edit size={16} /> Save Changes
+                </button>
+                <button 
+                  onClick={() => handleDeleteLock(editingLock.id)}
+                  className="flex-1 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-xl py-2 font-semibold transition-all flex items-center justify-center gap-2"
+                >
+                  <Trash2 size={16} /> Delete Lock
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Locks Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-slate-300">
+              <thead>
+                <tr className="border-b border-white/10">
+                  <th className="pb-4 text-xs font-bold uppercase">Phone/Email</th>
+                  <th className="pb-4 text-xs font-bold uppercase">Class</th>
+                  <th className="pb-4 text-xs font-bold uppercase">Board</th>
+                  <th className="pb-4 text-xs font-bold uppercase">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredLocks.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="py-8 text-center text-slate-500">
+                      No locks found
+                    </td>
+                  </tr>
+                ) : (
+                  filteredLocks.map(lock => (
+                    <tr key={lock.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                      <td className="py-4">
+                        <div className="flex items-center gap-2">
+                          <Lock size={16} className="text-amber-500" />
+                          <span className="font-mono text-sm">{lock.id}</span>
+                        </div>
+                      </td>
+                      <td className="py-4">
+                        <span className="px-2 py-1 bg-blue-500/10 text-blue-400 rounded text-xs font-bold">
+                          {lock.class || 'N/A'}
+                        </span>
+                      </td>
+                      <td className="py-4">
+                        <span className="px-2 py-1 bg-purple-500/10 text-purple-400 rounded text-xs font-bold">
+                          {lock.board || 'N/A'}
+                        </span>
+                      </td>
+                      <td className="py-4 flex gap-2">
+                        <button 
+                          onClick={() => {
+                            setEditingLock(lock);
+                            setNewLockClass(lock.class || '');
+                            setNewLockBoard(lock.board || '');
+                          }}
+                          className="px-3 py-1 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 rounded text-xs font-bold transition-all flex items-center gap-1"
+                        >
+                          <Edit size={14} /> Change
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          <p className="text-xs text-slate-500 mt-4 italic">
+            Total locks: {userLocks.length} | Filtered: {filteredLocks.length}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  async function handleUpdateLock(lockId: string) {
+    if (!newLockClass || !newLockBoard) {
+      showNotification("Please select both class and board", 'error');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      
+      // Update user lock
+      await setDoc(doc(firestore, 'user_locks', lockId), {
+        class: newLockClass,
+        board: newLockBoard,
+        updatedAt: new Date().toISOString(),
+        updatedBy: 'admin'
+      }, { merge: true });
+
+      // Create audit log
+      await addDoc(collection(firestore, 'lock_audit_log'), {
+        userId: lockId,
+        oldClass: editingLock.class,
+        oldBoard: editingLock.board,
+        newClass: newLockClass,
+        newBoard: newLockBoard,
+        changedAt: new Date().toISOString(),
+        changedBy: 'admin'
+      });
+
+      // Find and update user document if exists
+      if (lockId.startsWith('email:')) {
+        const email = lockId.substring(6);
+        const userQuery = query(collection(firestore, 'users'), where('email', '==', email));
+        const userDocs = await getDocs(userQuery);
+        if (!userDocs.empty) {
+          await updateDoc(doc(firestore, 'users', userDocs.docs[0].id), {
+            class: newLockClass,
+            board: newLockBoard
+          });
+        }
+      } else {
+        const phoneQuery = query(collection(firestore, 'users'), where('phoneNumber', '==', lockId));
+        const userDocs = await getDocs(phoneQuery);
+        if (!userDocs.empty) {
+          await updateDoc(doc(firestore, 'users', userDocs.docs[0].id), {
+            class: newLockClass,
+            board: newLockBoard
+          });
+        }
+      }
+
+      showNotification("Lock updated successfully!");
+      setEditingLock(null);
+      setNewLockClass('');
+      setNewLockBoard('');
+    } catch (err: any) {
+      console.error("Update Error:", err);
+      showNotification("Failed to update lock: " + err.message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleDeleteLock(lockId: string) {
+    if (!confirm("Are you sure you want to delete this lock? The user will be able to register with this phone/email again.")) return;
+
+    try {
+      setLoading(true);
+      
+      // Delete lock
+      await deleteDoc(doc(firestore, 'user_locks', lockId));
+
+      // Create audit log
+      await addDoc(collection(firestore, 'lock_audit_log'), {
+        userId: lockId,
+        action: 'deleted',
+        deletedAt: new Date().toISOString(),
+        deletedBy: 'admin'
+      });
+
+      showNotification("Lock deleted successfully!");
+      setEditingLock(null);
+      setNewLockClass('');
+      setNewLockBoard('');
+    } catch (err: any) {
+      console.error("Delete Error:", err);
+      showNotification("Failed to delete lock: " + err.message, 'error');
     } finally {
       setLoading(false);
     }

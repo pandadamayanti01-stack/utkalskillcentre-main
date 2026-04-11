@@ -16,7 +16,10 @@
     "start": "node server.ts",
     "preview": "vite preview",
     "clean": "rm -rf dist",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "deploy:rules": "npx firebase-tools deploy --only firestore:rules --project utkalskillcentre",
+    "deploy:hosting": "npm run build && npx firebase-tools deploy --only hosting --project utkalskillcentre",
+    "deploy": "npm run build && npx firebase-tools deploy --project utkalskillcentre"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",

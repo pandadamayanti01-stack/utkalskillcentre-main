@@ -256,7 +256,19 @@ service cloud.firestore {
 
     match /user_locks/{phone} {
       allow read: if isAuthenticated();
-      allow write: if isAuthenticated() && (isAdmin() || request.auth.token.phone_number == phone);
+      allow write: if isAuthenticated() && (
+        isAdmin() ||
+        request.auth.token.phone_number == phone ||
+        (
+          request.auth.token.email != null &&
+          request.auth.token.email_verified == true &&
+          phone == "email:" + request.auth.token.email.lower()
+        )
+      );
+    }
+
+    match /lock_audit_log/{logId} {
+      allow read, write: if isAdmin();
     }
 
     match /support_tickets/{ticketId} {

@@ -97,8 +97,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
 
     try {
       let formattedNumber = phoneNumber.trim();
-      formattedNumber = formattedNumber.replace(/[^
-\d+]/g, '');
+      formattedNumber = formattedNumber.replace(/[^\d+]/g, '');
       if (!formattedNumber.startsWith('+')) {
         if (formattedNumber.startsWith('0')) {
           formattedNumber = formattedNumber.substring(1);
