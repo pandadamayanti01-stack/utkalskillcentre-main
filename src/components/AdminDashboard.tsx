@@ -2300,6 +2300,7 @@ Subscription Awareness: If a student asks about advanced features, remind them (
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'support', label: 'Support Tickets', icon: HelpCircle },
     { id: 'students', label: 'Students', icon: Users },
+    { id: 'user_locks', label: 'User Locks', icon: Lock },
     { id: 'subscriptions', label: 'Subscriptions', icon: CreditCard },
     { id: 'settings', label: 'Settings', icon: Settings },
     { id: 'production_setup', label: 'Production Setup', icon: Rocket },
