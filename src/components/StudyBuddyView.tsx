@@ -59,11 +59,14 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
     const path = 'tutor_queries';
     try {
       await addDoc(collection(db, path), {
-        userId: user?.id || 'anonymous',
-        userName: user?.name || 'Student',
+        userId: user?.id || user?.uid || 'anonymous',
+        userName: user?.name || user?.displayName || 'Student',
         userClass: user?.class || 'Unknown',
+        userPhone: user?.phoneNumber || '',
+        userEmail: user?.email || '',
         question: userMsg,
         answer: aiMsg,
+        source: 'chatbot',
         timestamp: new Date().toISOString(),
       });
     } catch (error) {

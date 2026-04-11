@@ -1182,6 +1182,22 @@ export default function App() {
         systemSettings?.gunduluPrompt
       );
       setTutorExplanations(prev => ({ ...prev, [questionId]: text }));
+
+      try {
+        await addDoc(collection(firestore, 'tutor_queries'), {
+          userId: user?.id || user?.uid || 'anonymous',
+          userName: user?.name || user?.displayName || 'Student',
+          userClass: user?.class || 'Unknown',
+          userPhone: user?.phoneNumber || '',
+          userEmail: user?.email || '',
+          question,
+          answer: text,
+          source: 'askTutor',
+          timestamp: serverTimestamp()
+        });
+      } catch (logError) {
+        console.error('Failed to log askTutor usage:', logError);
+      }
     } catch (error) {
       console.error("Study Buddy Error:", error);
       const errorMessage = language === 'en' 

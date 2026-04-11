@@ -97,6 +97,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
   const [supportTickets, setSupportTickets] = useState<any[]>([]);
   const [userLocks, setUserLocks] = useState<any[]>([]);
   const [lockSearchQuery, setLockSearchQuery] = useState('');
+  const [aiLogFilter, setAiLogFilter] = useState<'today' | 'week' | 'month' | 'all'>('today');
   const [editingLock, setEditingLock] = useState<any>(null);
   const [newLockClass, setNewLockClass] = useState('');
   const [newLockBoard, setNewLockBoard] = useState('');
@@ -1757,12 +1758,57 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     const gunduluRevenue = transactions.reduce((acc, curr: any) => acc + (curr.amount || 0), 0);
     const todaysLogs = aiLogs.filter((log: any) => isTodayDate(log.parsedTimestamp || parseLogTimestamp(log.timestamp)));
 
-    const usersById = new Map(students.map((student: any) => [student.id, student]));
+    const now = new Date();
+    const filteredLogs = aiLogs.filter((log: any) => {
+      const ts = log.parsedTimestamp || parseLogTimestamp(log.timestamp);
+      if (!ts) return aiLogFilter === 'all';
+      if (aiLogFilter === 'today') return isTodayDate(ts);
+      if (aiLogFilter === 'week') {
+        const weekAgo = new Date(now); weekAgo.setDate(now.getDate() - 7);
+        return ts >= weekAgo;
+      }
+      if (aiLogFilter === 'month') {
+        const monthAgo = new Date(now); monthAgo.setMonth(now.getMonth() - 1);
+        return ts >= monthAgo;
+      }
+      return true; // 'all'
+    });
+
+    const normalizePhone = (value: string | undefined | null): string => {
+      if (!value) return '';
+      const digits = String(value).replace(/\D/g, '');
+      if (!digits) return '';
+      return digits.startsWith('91') && digits.length > 10 ? digits.slice(-10) : digits.slice(-10);
+    };
+
+    const usersById = new Map<string, any>();
+    const usersByEmail = new Map<string, any>();
+    const usersByPhone = new Map<string, any>();
+
+    students.forEach((student: any) => {
+      const sid = String(student?.id || student?.uid || '');
+      const suid = String(student?.uid || '');
+      const email = String(student?.email || '').toLowerCase();
+      const phone = normalizePhone(student?.phoneNumber);
+
+      if (sid) usersById.set(sid, student);
+      if (suid) usersById.set(suid, student);
+      if (email) usersByEmail.set(email, student);
+      if (phone) usersByPhone.set(phone, student);
+    });
+
     const activeTodayMap = new Map<string, { key: string; name: string; className: string; questions: number; lastAskedAt: Date | null }>();
 
     todaysLogs.forEach((log: any) => {
-      const student = log.userId ? usersById.get(log.userId) : null;
-      const key = log.userId || log.userPhone || log.userEmail || log.userName || log.id;
+      const logUserId = String(log.userId || log.uid || '');
+      const logEmail = String(log.userEmail || '').toLowerCase();
+      const logPhone = normalizePhone(log.userPhone || log.phoneNumber);
+
+      let student = logUserId ? usersById.get(logUserId) : null;
+      if (!student && logEmail) student = usersByEmail.get(logEmail);
+      if (!student && logPhone) student = usersByPhone.get(logPhone);
+
+      const key = String(student?.id || student?.uid || logUserId || logPhone || logEmail || log.userName || log.id);
       const displayName = log.userName || student?.name || student?.displayName || student?.phoneNumber || 'Student';
       const displayClass = log.userClass || student?.class || 'Unknown Class';
       const askedAt = log.parsedTimestamp || parseLogTimestamp(log.timestamp);
@@ -1847,11 +1893,26 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden flex flex-col">
-            <div className="p-4 border-b border-white/10 font-semibold text-white flex items-center justify-between">
-              <span>Latest 10 Questions</span>
+            <div className="p-4 border-b border-white/10 font-semibold text-white flex items-center justify-between flex-wrap gap-2">
+              <span>Questions Log <span className="text-xs text-slate-400 font-normal ml-2">{filteredLogs.length} records</span></span>
+              <div className="flex gap-1">
+                {(['today', 'week', 'month', 'all'] as const).map(f => (
+                  <button
+                    key={f}
+                    onClick={() => setAiLogFilter(f)}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${
+                      aiLogFilter === f
+                        ? 'bg-emerald-500 text-white'
+                        : 'bg-white/5 text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {f === 'today' ? 'Today' : f === 'week' ? '7 Days' : f === 'month' ? '30 Days' : 'All Time'}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="divide-y divide-white/5 overflow-y-auto max-h-[400px]">
-              {aiLogs.slice(0, 10).map((log, i) => (
+            <div className="divide-y divide-white/5 overflow-y-auto max-h-[480px]">
+              {filteredLogs.map((log: any, i: number) => (
                 <div key={i} className="p-4 hover:bg-white/5 transition-colors">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-bold text-[#10b981]">{log.userName || 'Student'}</span>
@@ -1866,8 +1927,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                   </div>
                 </div>
               ))}
-              {aiLogs.length === 0 && (
-                <div className="p-8 text-center text-slate-500">No questions asked yet.</div>
+              {filteredLogs.length === 0 && (
+                <div className="p-8 text-center text-slate-500">No questions for this period.</div>
               )}
             </div>
           </div>
