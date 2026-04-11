@@ -67,7 +67,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
   };
 
   const handleGoogleLogin = async () => {
-    if (!selectedClass || !selectedBoard) {
+    if (!isAdminLogin && (!selectedClass || !selectedBoard)) {
       alert(translations[language].requiredFieldsError);
       return;
     }

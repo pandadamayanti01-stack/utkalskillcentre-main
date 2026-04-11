@@ -31,7 +31,6 @@ import {
   Upload,
   File,
   Download,
-  Image as ImageIcon,
   Bot,
   Lock
 } from 'lucide-react';
@@ -134,7 +133,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
 
   const [isAddingTextbook, setIsAddingTextbook] = useState(false);
   const [editingTextbookId, setEditingTextbookId] = useState<string | null>(null);
-  const [uploadingFile, setUploadingFile] = useState<string | null>(null);
+  const [uploadingFile, setUploadingFile] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [newTextbook, setNewTextbook] = useState<any>({
     class: 'class5',
@@ -145,14 +144,89 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     thumbnail_url: ''
   });
 
-  const handleFileUpload = async (file: File, type: 'pdf' | 'thumbnail') => {
+  const parseLogTimestamp = (value: any): Date | null => {
+    if (!value) return null;
+    if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
+    if (typeof value?.toDate === 'function') {
+      const date = value.toDate();
+      return Number.isNaN(date?.getTime?.()) ? null : date;
+    }
+    if (typeof value === 'number') {
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? null : date;
+    }
+    if (typeof value === 'string') {
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? null : date;
+    }
+    if (typeof value === 'object' && typeof value.seconds === 'number') {
+      const millis = value.seconds * 1000 + Math.floor((value.nanoseconds || 0) / 1e6);
+      const date = new Date(millis);
+      return Number.isNaN(date.getTime()) ? null : date;
+    }
+    return null;
+  };
+
+  const isTodayDate = (date: Date | null): boolean => {
+    if (!date) return false;
+    const now = new Date();
+    return (
+      date.getFullYear() === now.getFullYear() &&
+      date.getMonth() === now.getMonth() &&
+      date.getDate() === now.getDate()
+    );
+  };
+
+  const uploadViaServer = (file: File) => {
+    return new Promise<string>((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/upload-textbook');
+
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const progress = (event.loaded / event.total) * 100;
+          setUploadProgress(progress);
+        }
+      };
+
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            const payload = JSON.parse(xhr.responseText || '{}');
+            const url = payload?.url;
+            if (!url) {
+              reject(new Error('Upload response missing URL'));
+              return;
+            }
+
+            setNewTextbook((prev: any) => ({ ...prev, download_url: url }));
+            resolve(url);
+          } catch (err) {
+            reject(err instanceof Error ? err : new Error('Invalid upload response'));
+          }
+          return;
+        }
+
+        reject(new Error(`Server upload failed (${xhr.status})`));
+      };
+
+      xhr.onerror = () => reject(new Error('Server upload request failed'));
+
+      const formData = new FormData();
+      formData.append('file', file, file.name);
+      xhr.send(formData);
+    });
+  };
+
+  const handleFileUpload = async (file: File) => {
     if (!file) return;
     
-    setUploadingFile(type);
+    setUploadingFile(true);
     setUploadProgress(0);
 
-    const extension = file.name.split('.').pop();
-    const sanitizedName = `${Date.now()}_document.${extension}`;
+    const extension = file.name.split('.').pop() || 'bin';
+
+    const sanitizedName = `${Date.now()}_pdf.${extension}`;
     const storageRef = ref(storage, `textbooks/${sanitizedName}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -162,21 +236,44 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           setUploadProgress(progress);
         }, 
-        (error) => {
+        async (error) => {
           console.error("Upload error:", error);
+
+          const msg = String(error?.message || '').toLowerCase();
+          const code = String(error?.code || '').toLowerCase();
+          const isBrowserBlocked =
+            msg.includes('net::err_failed') ||
+            msg.includes('cors') ||
+            msg.includes('status 0') ||
+            code.includes('storage/unknown') ||
+            code.includes('unknown');
+
+          if (isBrowserBlocked) {
+            try {
+              showNotification('Direct upload blocked, retrying via server...');
+              const url = await uploadViaServer(file);
+              setUploadingFile(false);
+              showNotification('PDF uploaded successfully');
+              resolve(url);
+              return;
+            } catch (serverErr: any) {
+              console.error('Server upload fallback failed:', serverErr);
+              showNotification(`Upload failed: ${serverErr?.message || error?.message || 'Unknown error'}`, 'error');
+              setUploadingFile(false);
+              reject(serverErr);
+              return;
+            }
+          }
+
           showNotification(`Upload failed: ${error.message}`, "error");
-          setUploadingFile(null);
+          setUploadingFile(false);
           reject(error);
         }, 
         async () => {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          if (type === 'pdf') {
-            setNewTextbook((prev: any) => ({ ...prev, download_url: downloadURL }));
-          } else {
-            setNewTextbook((prev: any) => ({ ...prev, thumbnail_url: downloadURL }));
-          }
-          setUploadingFile(null);
-          showNotification(`${type === 'pdf' ? 'PDF' : 'Thumbnail'} uploaded successfully`);
+          setNewTextbook((prev: any) => ({ ...prev, download_url: downloadURL }));
+          setUploadingFile(false);
+          showNotification('PDF uploaded successfully');
           resolve(downloadURL);
         }
       );
@@ -223,12 +320,26 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     });
 
     const unsubAi = onSnapshot(collection(firestore, 'tutor_queries'), (snapshot) => {
-      const logs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setAiLogs(logs.sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
-      const today = new Date().toISOString().split('T')[0];
+      const logs = snapshot.docs.map(doc => {
+        const raw = doc.data() as any;
+        const parsedTimestamp = parseLogTimestamp(raw.timestamp || raw.createdAt || raw.updatedAt);
+        return {
+          id: doc.id,
+          ...raw,
+          parsedTimestamp
+        };
+      });
+
+      const sortedLogs = logs.sort((a: any, b: any) => {
+        const aTime = a.parsedTimestamp ? a.parsedTimestamp.getTime() : 0;
+        const bTime = b.parsedTimestamp ? b.parsedTimestamp.getTime() : 0;
+        return bTime - aTime;
+      });
+
+      setAiLogs(sortedLogs);
       setStats(prev => ({
         ...prev,
-        aiQuestionsToday: logs.filter((l: any) => l.timestamp?.startsWith(today)).length
+        aiQuestionsToday: sortedLogs.filter((l: any) => isTodayDate(l.parsedTimestamp)).length
       }));
     }, (err) => {
       console.error("Firestore AI Usage onSnapshot Error:", err);
@@ -1198,7 +1309,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                         onChange={async (e) => {
                           const file = e.target.files?.[0];
                           if (file) {
-                            const url = await handleFileUpload(file, 'pdf');
+                            const url = await handleFileUpload(file);
                             if (url) setNewChapter({...newChapter, notesUrl: url});
                           }
                         }}
@@ -1644,6 +1755,43 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     const class10Usage = aiLogs.filter(log => log.userClass === 'class10').length;
     const class3Usage = aiLogs.filter(log => log.userClass === 'class3').length;
     const gunduluRevenue = transactions.reduce((acc, curr: any) => acc + (curr.amount || 0), 0);
+    const todaysLogs = aiLogs.filter((log: any) => isTodayDate(log.parsedTimestamp || parseLogTimestamp(log.timestamp)));
+
+    const usersById = new Map(students.map((student: any) => [student.id, student]));
+    const activeTodayMap = new Map<string, { key: string; name: string; className: string; questions: number; lastAskedAt: Date | null }>();
+
+    todaysLogs.forEach((log: any) => {
+      const student = log.userId ? usersById.get(log.userId) : null;
+      const key = log.userId || log.userPhone || log.userEmail || log.userName || log.id;
+      const displayName = log.userName || student?.name || student?.displayName || student?.phoneNumber || 'Student';
+      const displayClass = log.userClass || student?.class || 'Unknown Class';
+      const askedAt = log.parsedTimestamp || parseLogTimestamp(log.timestamp);
+
+      const existing = activeTodayMap.get(key);
+      if (existing) {
+        const hasNewerTime = askedAt && (!existing.lastAskedAt || askedAt.getTime() > existing.lastAskedAt.getTime());
+        activeTodayMap.set(key, {
+          ...existing,
+          questions: existing.questions + 1,
+          lastAskedAt: hasNewerTime ? askedAt : existing.lastAskedAt
+        });
+        return;
+      }
+
+      activeTodayMap.set(key, {
+        key,
+        name: displayName,
+        className: displayClass,
+        questions: 1,
+        lastAskedAt: askedAt
+      });
+    });
+
+    const activeTodayStudents = Array.from(activeTodayMap.values()).sort((a, b) => {
+      const aTime = a.lastAskedAt ? a.lastAskedAt.getTime() : 0;
+      const bTime = b.lastAskedAt ? b.lastAskedAt.getTime() : 0;
+      return bTime - aTime;
+    });
 
     return (
       <div className="space-y-6">
@@ -1671,6 +1819,32 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
           </div>
         </div>
 
+        <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+          <div className="p-4 border-b border-white/10 font-semibold text-white flex items-center justify-between">
+            <span>Students Active Today</span>
+            <span className="text-xs text-slate-400">{activeTodayStudents.length} students</span>
+          </div>
+          <div className="divide-y divide-white/5 max-h-[280px] overflow-y-auto">
+            {activeTodayStudents.map((student) => (
+              <div key={student.key} className="p-4 flex items-center justify-between hover:bg-white/5 transition-colors">
+                <div>
+                  <div className="text-sm font-bold text-white">{student.name}</div>
+                  <div className="text-xs text-slate-400">{student.className}</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm font-semibold text-emerald-400">{student.questions} questions</div>
+                  <div className="text-[10px] text-slate-500">
+                    {student.lastAskedAt ? student.lastAskedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'No time'}
+                  </div>
+                </div>
+              </div>
+            ))}
+            {activeTodayStudents.length === 0 && (
+              <div className="p-8 text-center text-slate-500">No AI usage by students today.</div>
+            )}
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden flex flex-col">
             <div className="p-4 border-b border-white/10 font-semibold text-white flex items-center justify-between">
@@ -1688,7 +1862,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                     {log.answer}
                   </div>
                   <div className="text-[10px] text-slate-500 mt-2 text-right">
-                    {new Date(log.timestamp).toLocaleString()}
+                    {(log.parsedTimestamp || parseLogTimestamp(log.timestamp))?.toLocaleString() || 'Unknown time'}
                   </div>
                 </div>
               ))}
@@ -2112,8 +2286,7 @@ Subscription Awareness: If a student asks about advanced features, remind them (
                       const file = e.target.files?.[0];
                       if (file) {
                         try {
-                          const url = await handleFileUpload(file, 'pdf');
-                          setNewTextbook({...newTextbook, download_url: url});
+                          await handleFileUpload(file);
                         } catch (err) {
                           showNotification("Upload failed", "error");
                         }
@@ -2122,34 +2295,6 @@ Subscription Awareness: If a student asks about advanced features, remind them (
                   />
                 </label>
               </div>
-            </div>
-            <div>
-              <label className="block text-sm text-slate-400 mb-1">Thumbnail Image</label>
-              <div className="flex gap-2">
-                <label className="w-full bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-xl cursor-pointer flex items-center justify-center gap-2 transition-all">
-                  <ImageIcon size={18} />
-                  <span>{newTextbook.thumbnail_url ? 'Change Thumbnail' : 'Upload Thumbnail'}</span>
-                  <input 
-                    type="file" 
-                    accept="image/*"
-                    className="hidden" 
-                    onChange={async (e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        try {
-                          const url = await handleFileUpload(file, 'thumbnail');
-                          setNewTextbook({...newTextbook, thumbnail_url: url});
-                        } catch (err) {
-                          showNotification("Upload failed", "error");
-                        }
-                      }
-                    }}
-                  />
-                </label>
-              </div>
-              {newTextbook.thumbnail_url && (
-                <img src={newTextbook.thumbnail_url} alt="Thumbnail preview" className="mt-2 h-20 w-auto rounded-lg border border-white/10" referrerPolicy="no-referrer" />
-              )}
             </div>
             <div>
               <label className="block text-sm text-slate-400 mb-1">Visibility Status</label>
@@ -2165,7 +2310,9 @@ Subscription Awareness: If a student asks about advanced features, remind them (
           </div>
           <div className="flex gap-3 justify-end mt-4">
             <button 
-              onClick={() => setIsAddingTextbook(false)}
+              onClick={() => {
+                setIsAddingTextbook(false);
+              }}
               className="px-4 py-2 text-slate-400 hover:text-white transition-all"
             >
               Cancel
@@ -2196,9 +2343,10 @@ Subscription Awareness: If a student asks about advanced features, remind them (
                   showNotification("Failed to save textbook", "error");
                 }
               }}
-              className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-xl font-semibold transition-all"
+                disabled={uploadingFile}
+                className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2 rounded-xl font-semibold transition-all"
             >
-              {editingTextbookId ? 'Update Textbook' : 'Save Textbook'}
+                {uploadingFile ? 'Uploading...' : (editingTextbookId ? 'Update Textbook' : 'Save Textbook')}
             </button>
           </div>
         </div>
@@ -2207,12 +2355,29 @@ Subscription Awareness: If a student asks about advanced features, remind them (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {textbooks.map((book) => (
           <div key={book.id} className="bg-slate-900/50 border border-white/10 rounded-2xl overflow-hidden group hover:border-emerald-500/50 transition-all">
-            <div className="aspect-[3/4] bg-slate-800 relative flex items-center justify-center overflow-hidden">
-              {book.thumbnail_url ? (
-                <img src={book.thumbnail_url} alt={book.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" referrerPolicy="no-referrer" />
-              ) : (
-                <Book size={48} className="text-slate-600" />
-              )}
+            <div className={`aspect-[3/4] relative flex items-center justify-center overflow-hidden bg-gradient-to-br ${
+              book.class === 'class1' ? 'from-rose-500/30 to-red-800/40' :
+              book.class === 'class2' ? 'from-orange-400/30 to-orange-800/40' :
+              book.class === 'class3' ? 'from-amber-400/30 to-yellow-800/40' :
+              book.class === 'class4' ? 'from-lime-400/30 to-green-800/40' :
+              book.class === 'class5' ? 'from-emerald-400/30 to-teal-800/40' :
+              book.class === 'class6' ? 'from-cyan-400/30 to-sky-800/40' :
+              book.class === 'class7' ? 'from-blue-400/30 to-indigo-800/40' :
+              book.class === 'class8' ? 'from-violet-400/30 to-purple-800/40' :
+              book.class === 'class9' ? 'from-fuchsia-400/30 to-pink-800/40' :
+              book.class === 'class10' ? 'from-slate-300/30 to-slate-800/50' :
+              'from-emerald-500/20 to-slate-800/60'
+            }`}>
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.15),transparent_45%)]" />
+              <div className="relative flex flex-col items-center gap-3 text-center px-4">
+                <img src="/gundulu-rath-crest.png" alt="Class cover" className="h-14 w-14 object-contain opacity-90 drop-shadow-md" />
+                <div className="text-[11px] font-black tracking-widest text-white/90">
+                  {translations['or']?.classes?.[book.class as keyof typeof translations.en.classes] || book.class}
+                </div>
+                <div className="text-[10px] font-semibold text-white/70 tracking-wide line-clamp-2">
+                  {typeof book.subject === 'string' ? book.subject : (book.subject?.en || '')}
+                </div>
+              </div>
               <div className="absolute top-3 left-3">
                 <span className={`text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full border ${
                   book.status === 'published' 
@@ -2224,7 +2389,8 @@ Subscription Awareness: If a student asks about advanced features, remind them (
               </div>
               <div className="absolute top-3 right-3 flex gap-2">
                 <button 
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     setEditingTextbookId(book.id);
                     setNewTextbook({
                       class: book.class || 'class5',
@@ -2241,7 +2407,8 @@ Subscription Awareness: If a student asks about advanced features, remind them (
                   <Edit2 size={16} />
                 </button>
                 <button 
-                  onClick={async () => {
+                  onClick={async (e) => {
+                    e.stopPropagation();
                     if (confirmAction === `delete-textbook-${book.id}`) {
                       try {
                         await deleteDoc(doc(firestore, 'textbooks', book.id));

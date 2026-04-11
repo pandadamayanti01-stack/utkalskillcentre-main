@@ -75,7 +75,7 @@ import {
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, query, where, getDocs, orderBy, limit, addDoc, updateDoc, increment, getCountFromServer, onSnapshot, Timestamp } from 'firebase/firestore';
 import { translations } from './translations';
-import { solveMathDoubt, getAI } from './services/aiService';
+import { solveMathDoubt, getAI, getStudyBuddySystemInstruction } from './services/aiService';
 import { subjectTranslations } from './constants';
 import { getYouTubeId, getYouTubeEmbedUrl, getYouTubeThumbnail } from './utils/youtube';
 import { AdminDashboard } from './components/AdminDashboard';
@@ -1174,7 +1174,13 @@ export default function App() {
 
     setTutorLoading(prev => ({ ...prev, [questionId]: true }));
     try {
-      const text = await solveMathDoubt(question, language as 'en' | 'or');
+      const text = await solveMathDoubt(
+        question,
+        language as 'en' | 'or',
+        undefined,
+        user?.class,
+        systemSettings?.gunduluPrompt
+      );
       setTutorExplanations(prev => ({ ...prev, [questionId]: text }));
     } catch (error) {
       console.error("Study Buddy Error:", error);
@@ -2520,10 +2526,12 @@ function StudyBuddyLegacy({ user, language, isPremium, showPaywall, setShowPaywa
         model: "gemini-3.1-flash-lite-preview",
         contents: { parts },
         config: {
-          systemInstruction: `You are a helpful, encouraging Study Buddy for a student named ${user.name}. 
-          Your goal is to explain educational concepts clearly, help with homework (without just giving answers), and motivate the student. 
-          Keep your responses concise, friendly, and appropriate for a school-age student. 
-          Use simple language and analogies where helpful.`
+          systemInstruction: getStudyBuddySystemInstruction(
+            language as 'en' | 'or',
+            user.name,
+            user.class,
+            systemSettings?.gunduluPrompt
+          )
         }
       });
 
@@ -3848,22 +3856,33 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
         </motion.div>
       ) : (
         <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredTextbooks.map((book: Textbook) => (
+          {filteredTextbooks.map((book: Textbook) => {
+            const bookTitle = typeof book.title === 'string'
+              ? book.title
+              : (book.title?.[language as 'en' | 'or'] || book.title?.en || book.title?.or || 'Untitled');
+
+            return (
             <motion.div whileHover={{ y: -5 }} key={book.id} className="group bg-slate-900/50 border border-white/5 rounded-3xl overflow-hidden hover:border-emerald-500/50 transition-all flex flex-col">
-              <div className="aspect-[3/4] bg-slate-800 relative overflow-hidden">
-                {book.thumbnail_url ? (
-                  <img 
-                    src={book.thumbnail_url} 
-                    alt={book.title[language as 'en' | 'or']} 
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    referrerPolicy="no-referrer"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-slate-600">
-                    <Book size={64} />
+              <div className={`aspect-[3/4] relative overflow-hidden bg-gradient-to-br ${
+                book.class === 'class1' ? 'from-rose-500/30 to-red-800/40' :
+                book.class === 'class2' ? 'from-orange-400/30 to-orange-800/40' :
+                book.class === 'class3' ? 'from-amber-400/30 to-yellow-800/40' :
+                book.class === 'class4' ? 'from-lime-400/30 to-green-800/40' :
+                book.class === 'class5' ? 'from-emerald-400/30 to-teal-800/40' :
+                book.class === 'class6' ? 'from-cyan-400/30 to-sky-800/40' :
+                book.class === 'class7' ? 'from-blue-400/30 to-indigo-800/40' :
+                book.class === 'class8' ? 'from-violet-400/30 to-purple-800/40' :
+                book.class === 'class9' ? 'from-fuchsia-400/30 to-pink-800/40' :
+                book.class === 'class10' ? 'from-slate-300/30 to-slate-800/50' :
+                'from-emerald-500/20 to-slate-800/60'
+              }`}>
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.16),transparent_45%)]" />
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center px-4">
+                  <img src="/gundulu-rath-crest.png" alt="Class cover" className="h-16 w-16 object-contain opacity-90 drop-shadow-md" />
+                  <div className="text-sm font-black tracking-widest text-white/90">
+                    {translations['or']?.classes?.[book.class as keyof typeof translations.en.classes] || book.class}
                   </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60" />
+                </div>
                 <div className="absolute bottom-4 left-4 right-4">
                   <span className="text-[10px] font-bold uppercase text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg border border-emerald-500/20 backdrop-blur-md">
                     {book.subject}
@@ -3871,7 +3890,7 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
                 </div>
               </div>
               <div className="p-6 flex flex-col flex-1">
-                <h3 className="text-lg font-bold text-white mb-4 line-clamp-2 flex-1">{book.title[language as 'en' | 'or']}</h3>
+                <h3 className="text-lg font-bold text-white mb-4 line-clamp-2 flex-1">{bookTitle}</h3>
                 <div className="flex gap-2">
                   <button 
                     onClick={() => handleDownload(book)}
@@ -3894,8 +3913,8 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
                 <a 
                   href={`https://wa.me/?text=${encodeURIComponent(
                     language === 'en' 
-                      ? `Check out this textbook: ${book.title.en || book.title.or}\nDownload here: ${book.download_url}` 
-                      : `ଏହି ପାଠ୍ୟପୁସ୍ତକଟି ଦେଖନ୍ତୁ: ${book.title.or || book.title.en}\nଏଠାରୁ ଡାଉନଲୋଡ୍ କରନ୍ତୁ: ${book.download_url}`
+                      ? `Check out this textbook: ${bookTitle}\nDownload here: ${book.download_url}` 
+                      : `ଏହି ପାଠ୍ୟପୁସ୍ତକଟି ଦେଖନ୍ତୁ: ${bookTitle}\nଏଠାରୁ ଡାଉନଲୋଡ୍ କରନ୍ତୁ: ${book.download_url}`
                   )}`}
                   target="_blank" 
                   rel="noopener noreferrer"
@@ -3906,7 +3925,8 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
                 </a>
               </div>
             </motion.div>
-          ))}
+            );
+          })}
         </motion.div>
       )}
     </motion.div>
