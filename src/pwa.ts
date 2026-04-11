@@ -1,4 +1,20 @@
+import { registerSW } from 'virtual:pwa-register';
+
 let deferredPrompt: any = null;
+
+// Register service worker updates and reload automatically when a new version is ready.
+const updateSW = registerSW({
+  immediate: true,
+  onNeedRefresh() {
+    const key = 'usc-sw-auto-reloaded';
+    if (sessionStorage.getItem(key) === '1') return;
+    sessionStorage.setItem(key, '1');
+    updateSW(true);
+  },
+  onRegisteredSW() {
+    sessionStorage.removeItem('usc-sw-auto-reloaded');
+  },
+});
 
 window.addEventListener('beforeinstallprompt', (e) => {
   // Prevent the mini-infobar from appearing on mobile

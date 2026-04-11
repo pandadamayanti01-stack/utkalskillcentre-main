@@ -28,9 +28,9 @@ export default defineConfig(({mode}) => {
         registerType: 'autoUpdate',
         injectRegister: false,
         workbox: {
-          // CRITICAL: This prevents the service worker from caching your files
-          globPatterns: [], 
-          runtimeCaching: [] 
+          cleanupOutdatedCaches: true,
+          clientsClaim: true,
+          skipWaiting: true,
         },
         manifest: {
           name: 'Utkal Skill Centre',
