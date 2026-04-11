@@ -198,7 +198,7 @@ async function startServer() {
 
       const model = process.env.GEMINI_TTS_MODEL || 'gemini-2.5-flash-preview-tts';
       const voiceName = language === 'or-IN'
-        ? (process.env.GEMINI_TTS_VOICE_ODIA || 'Kore')
+        ? (process.env.GEMINI_TTS_VOICE_ODIA || 'Puck')
         : (process.env.GEMINI_TTS_VOICE_EN || 'Aoede');
 
       const ttsPrompt = language === 'or-IN'

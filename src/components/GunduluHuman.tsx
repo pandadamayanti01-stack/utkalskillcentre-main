@@ -7,15 +7,13 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isWaitingForInput, setIsWaitingForInput] = useState(false);
-  const [language, setLanguage] = useState<'en-US' | 'or-IN'>('or-IN');
+  const language: 'or-IN' = 'or-IN';
   const hasPlayedGreetingRef = useRef(false);
   const responseTurnRef = useRef(0);
   
   // Initial Status Text (Static before speech starts)
   const [status, setStatus] = useState(
-    language === 'en-US' 
-      ? "Touch to Talk to Gundulu" 
-      : "ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ"
+    "ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ"
   );
   const [subtitle, setSubtitle] = useState("");
   const recognitionRef = useRef<any>(null);
@@ -90,7 +88,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
   useEffect(() => {
     hasPlayedGreetingRef.current = false;
     responseTurnRef.current = 0;
-    setStatus(language === 'en-US' ? "Touch to Talk to Gundulu" : "ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+    setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
     setSubtitle('');
 
     // 1. THE LAUNCH DAY GREETING LOGIC
@@ -99,16 +97,14 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
       hasPlayedGreetingRef.current = true;
 
       // Your custom message with blessings
-      const greeting = language === 'en-US' 
-        ? "Namaskar! I am Gundulu. Happy Utkal Divas! 🚩 We start our journey together on April 7th. Let’s study, win, and grow! Jay Jagannath, Jay Maa Tarini!" 
-        : "ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। ପବିତ୍ର ଉତ୍କଳ ଦିବସର ଅଭିନନ୍ଦନ! 🚩 ଆସନ୍ତା ଏପ୍ରିଲ୍ ୭ରୁ ଆମେ ଏକାଠି ପଢ଼ିବା ଓ ଆଗକୁ ବଢ଼ିବା। ଜୟ ଜଗନ୍ନାଥ, ଜୟ ମା' ତାରିଣୀ!";
+      const greeting = "ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। ଆସ, ଏବେ ଏକାଠି ପଢ଼ିବା ଓ ଆଗକୁ ବଢ଼ିବା।";
       
       setSubtitle(greeting);
       setStatus(greeting);
 
       speakWithGeminiVoice(greeting, () => {
         triggerVisualNudge();
-        setStatus(language === 'en-US' ? "Touch to Talk to Gundulu" : "ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+        setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
       });
     };
 
@@ -136,15 +132,16 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
       recognition.lang = language; 
       recognition.continuous = false;
       recognition.interimResults = false;
+      recognition.maxAlternatives = 3;
 
       recognition.onstart = () => {
         setIsListening(true);
-        setStatus(language === 'en-US' ? "Gundulu is Listening... 👂" : "ଗୁଣ୍ଡୁଲୁ ଶୁଣୁଛି... 👂");
+        setStatus("ଗୁଣ୍ଡୁଲୁ ଶୁଣୁଛି... 👂");
       };
 
       recognition.onresult = (event: any) => {
         const transcript = event.results[0][0].transcript;
-        setSubtitle(language === 'en-US' ? `You said: "${transcript}"` : `ଆପଣ କହିଲେ: "${transcript}"`);
+        setSubtitle(`ଆପଣ କହିଲେ: "${transcript}"`);
         processWithGemini(transcript);
       };
 
@@ -154,7 +151,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
 
       recognition.onerror = (event: any) => {
         setIsListening(false);
-        const errorMsg = language === 'en-US' ? "Could not hear you. Try again!" : "ଶୁଣିପାରିଲି ନାହିଁ | ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |";
+        const errorMsg = "ଶୁଣିପାରିଲି ନାହିଁ | ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |";
         setSubtitle(errorMsg);
         setStatus(errorMsg);
       };
@@ -177,7 +174,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
 
   // 3. AI PROCESSING (GEMINI)
   const processWithGemini = async (transcript: string) => {
-    setStatus(language === 'en-US' ? "Gundulu is thinking..." : "ଗୁଣ୍ଡୁଲୁ ଚିନ୍ତା କରୁଛି...");
+    setStatus("ଗୁଣ୍ଡୁଲୁ ଚିନ୍ତା କରୁଛି...");
     setIsListening(false);
     
     try {
@@ -187,9 +184,10 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
       
       const systemInstruction = `
         Identity: You are "Gundulu," a 4-year-old baby genius from Odisha. 
-        Tone: Energetic and supportive. Use "Pila" dialect.
-        Language: STRICT ODIA ONLY. 
-        Style: Short, conversational responses for voice.
+        Tone: Energetic and supportive. Use natural "Pila" dialect.
+        Language Policy: STRICT ODIA OUTPUT ONLY.
+        Input Policy: User may speak in Odia or English. Always understand both, but always reply only in Odia.
+        Style: Short, conversational voice responses.
         Conversation Rule: Greet only once at launch. For normal conversation, do NOT re-introduce yourself repeatedly.
         Conversation Rule: Do NOT repeat slogans like "Jay Jagannath" or "Jay Maa Tarini" unless the student explicitly asks for devotional/cultural greeting.
         Conversation Rule: Keep replies natural and lesson-focused after greeting.
@@ -206,12 +204,12 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
         }
       });
 
-      const response = result.text || "Sorry, I couldn't hear you.";
+      const response = result.text || "ମୁଁ ଭଲଭାବେ ଶୁଣି ପାରିଲି ନାହିଁ, ଆଉଥରେ କହନ୍ତୁ।";
   responseTurnRef.current += 1;
       setSubtitle(response);
       speakResponse(response);
     } catch (error) {
-      const errorMsg = language === 'en-US' ? "Oops! Something went wrong." : "ଓଃ! କିଛି ଭୁଲ୍ ହୋଇଗଲା |";
+      const errorMsg = "ଓଃ! କିଛି ଭୁଲ୍ ହୋଇଗଲା |";
       setSubtitle(errorMsg);
       speakResponse(errorMsg);
     }
@@ -220,7 +218,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
   const speakResponse = (text: string) => {
     speakWithGeminiVoice(text, () => {
       triggerVisualNudge();
-      setStatus(language === 'en-US' ? "Touch to Talk" : "କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+      setStatus("କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
     });
   };
 
@@ -230,10 +228,6 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
     } else {
       recognitionRef.current?.start();
     }
-  };
-
-  const toggleLanguage = () => {
-    setLanguage(prev => prev === 'en-US' ? 'or-IN' : 'en-US');
   };
 
   return (
@@ -272,10 +266,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
           className={`connect-btn ${isListening ? 'active animate-pulse' : ''}`}
           onClick={toggleListening}
         >
-          {isListening ? (language === 'en-US' ? "STOP" : "ବନ୍ଦ କରନ୍ତୁ") : (language === 'en-US' ? "START" : "ଆରମ୍ଭ କରନ୍ତୁ")}
-        </button>
-        <button className="lang-toggle-btn" onClick={toggleLanguage}>
-          {language === 'en-US' ? "ଓଡ଼ିଆ" : "English"}
+          {isListening ? "ବନ୍ଦ କରନ୍ତୁ" : "ଆରମ୍ଭ କରନ୍ତୁ"}
         </button>
       </div>
     </div>
