@@ -75,12 +75,19 @@ export default function Login({ language, translations, setLanguage, setRegData 
       setDeferredPrompt(getDeferredPrompt());
     };
 
+    const handleInstalled = () => {
+      clearDeferredPrompt();
+      setDeferredPrompt(null);
+    };
+
     window.addEventListener('beforeinstallprompt', handler);
     window.addEventListener('pwa-prompt-available', pwaHandler);
+    window.addEventListener('appinstalled', handleInstalled);
     
     return () => {
       window.removeEventListener('beforeinstallprompt', handler);
       window.removeEventListener('pwa-prompt-available', pwaHandler);
+      window.removeEventListener('appinstalled', handleInstalled);
     };
   }, []);
 

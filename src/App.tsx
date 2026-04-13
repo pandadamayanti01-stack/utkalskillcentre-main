@@ -253,6 +253,11 @@ export default function App() {
   const [user, setUser] = useState<Student | null>(null);
   const [isAdminView, setIsAdminView] = useState(false);
   const [loading, setLoading] = useState(true);
+  const resetPageScroll = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  };
   const [activeTab, setActiveTab] = useState(() => {
     const hash = window.location.hash.replace('#', '').split('/')[0];
     return hash || localStorage.getItem('activeTab') || 'dashboard';
@@ -263,6 +268,23 @@ export default function App() {
     setActiveTab('plans');
     setSidebarOpen(false);
   };
+
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+
+    resetPageScroll();
+
+    const handlePageRestore = () => {
+      requestAnimationFrame(() => resetPageScroll());
+    };
+
+    window.addEventListener('pageshow', handlePageRestore);
+    return () => {
+      window.removeEventListener('pageshow', handlePageRestore);
+    };
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('activeTab', activeTab);
@@ -277,6 +299,8 @@ export default function App() {
     if (contentScrollRef.current) {
       contentScrollRef.current.scrollTo({ top: 0, behavior: 'auto' });
     }
+
+    resetPageScroll();
   }, [activeTab]);
 
   useEffect(() => {

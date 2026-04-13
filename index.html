@@ -71,17 +71,6 @@
       Utkal Skill Centre helps Odisha students study in Odia and English with AI learning Odia support, textbooks, practice questions, and monthly tests for Class 3 to 10.
     </noscript>
     <script type="module" src="/src/main.tsx"></script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').then(registration => {
-            console.log('SW registered: ', registration);
-          }).catch(registrationError => {
-            console.log('SW registration failed: ', registrationError);
-          });
-        });
-      }
-    </script>
   </body>
 </html>
 
