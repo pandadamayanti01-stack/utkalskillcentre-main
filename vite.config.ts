@@ -34,7 +34,7 @@ export default defineConfig(({mode}) => {
         },
         manifest: {
           name: 'Utkal Skill Centre',
-          short_name: 'Utkal',
+          short_name: 'Utkal Skill Centre',
           description: 'Learning portal for students',
           theme_color: '#ffffff',
           background_color: '#ffffff',
