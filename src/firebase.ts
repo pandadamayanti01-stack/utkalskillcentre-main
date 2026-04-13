@@ -32,6 +32,7 @@ import { firebaseConfig } from './firebase-config';
 
 // Initialize Firebase SDK
 const app = initializeApp(firebaseConfig);
+const firestoreDatabaseId = firebaseConfig.firestoreDatabaseId || '(default)';
 
 // Initialize Services
 export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
@@ -127,10 +128,10 @@ async function verifyDatabaseConnection() {
   try {
     // Attempting a server-side fetch to bypass any local cache
     await getDocFromServer(doc(db, 'system_settings', 'config'));
-    console.log("✅ [Firebase] Success: Connected to AI Studio Database.");
+    console.log(`✅ [Firebase] Success: Connected to Firestore database ${firestoreDatabaseId}.`);
   } catch (error) {
     if (error instanceof Error && (error.message.includes('offline') || error.message.includes('not found'))) {
-      console.error("❌ [Firebase] Error: Could not reach Firestore. Check Database ID or Authorized Domains.");
+      console.error(`❌ [Firebase] Error: Could not reach Firestore database ${firestoreDatabaseId}. Check Database ID or Authorized Domains.`);
     }
   }
 }

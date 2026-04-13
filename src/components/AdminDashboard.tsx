@@ -62,7 +62,8 @@ import {
 } from 'firebase/firestore';
 
 import { translations } from '../translations';
-import { Chapter, VideoOption } from '../types';
+import { Chapter, DailyMcq, VideoOption } from '../types';
+import { DailyMcqTab } from './admin/DailyMcqTab';
 import { 
   translateContent, 
   generateChapterContent, 
@@ -72,7 +73,7 @@ import {
   generateTestQuestions
 } from '../services/aiService';
 
-type AdminTab = 'dashboard' | 'content' | 'monthly_tests' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup' | 'students' | 'subscriptions' | 'support' | 'user_locks';
+type AdminTab = 'dashboard' | 'content' | 'monthly_tests' | 'daily_mcqs' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup' | 'students' | 'subscriptions' | 'support' | 'user_locks';
 
 interface AdminDashboardProps {
   onExit: () => void;
@@ -134,6 +135,7 @@ Sample tone for Class 6-10:
 
   const [content, setContent] = useState<any[]>([]);
   const [monthlyTests, setMonthlyTests] = useState<any[]>([]);
+  const [dailyMcqs, setDailyMcqs] = useState<DailyMcq[]>([]);
   const [textbooks, setTextbooks] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [aiLogs, setAiLogs] = useState<any[]>([]);
@@ -165,6 +167,30 @@ Sample tone for Class 6-10:
   const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
     setNotification({ message, type });
   };
+
+  const availableDailyMcqSubjects = Object.entries(translations.en.subjects || {});
+  const normalizedDailyMcqRotation = Array.isArray(systemSettings.dailyMcqSubjectRotation)
+    ? systemSettings.dailyMcqSubjectRotation.map((item: string) => String(item || '').trim().toLowerCase()).filter(Boolean)
+    : String(systemSettings.dailyMcqSubjectRotation || '')
+        .split(',')
+        .map((item: string) => item.trim().toLowerCase())
+        .filter(Boolean);
+
+  const updateDailyMcqRotation = (subjects: string[]) => {
+    setSystemSettings({
+      ...systemSettings,
+      dailyMcqSubjectRotation: subjects,
+    });
+  };
+
+  const toggleDailyMcqRotationSubject = (subjectKey: string) => {
+    if (normalizedDailyMcqRotation.includes(subjectKey)) {
+      updateDailyMcqRotation(normalizedDailyMcqRotation.filter((item: string) => item !== subjectKey));
+      return;
+    }
+
+    updateDailyMcqRotation([...normalizedDailyMcqRotation, subjectKey]);
+  };
   
   
   const [isAddingTest, setIsAddingTest] = useState(false);
@@ -190,8 +216,23 @@ Sample tone for Class 6-10:
     subject: '',
     title: '',
     download_url: '',
+    driveFileId: '',
+    driveUrl: '',
     thumbnail_url: ''
   });
+
+  const extractDriveFileId = (value: string) => {
+    const rawValue = String(value || '').trim();
+    if (!rawValue) return '';
+    const directMatch = rawValue.match(/^[a-zA-Z0-9_-]{20,}$/);
+    if (directMatch) return directMatch[0];
+    const patterns = [/\/d\/([a-zA-Z0-9_-]+)/, /[?&]id=([a-zA-Z0-9_-]+)/, /folders\/([a-zA-Z0-9_-]+)/];
+    for (const pattern of patterns) {
+      const match = rawValue.match(pattern);
+      if (match?.[1]) return match[1];
+    }
+    return rawValue;
+  };
 
   const parseLogTimestamp = (value: any): Date | null => {
     if (!value) return null;
@@ -429,6 +470,22 @@ Sample tone for Class 6-10:
       }
     });
 
+    const unsubDailyMcqs = onSnapshot(collection(firestore, 'daily_mcqs'), (snapshot) => {
+      const data = snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .sort((left: any, right: any) => {
+          const leftDate = new Date(left.activeDate || 0).getTime();
+          const rightDate = new Date(right.activeDate || 0).getTime();
+          return rightDate - leftDate;
+        }) as DailyMcq[];
+      setDailyMcqs(data);
+    }, (err) => {
+      console.error("Firestore Daily MCQs onSnapshot Error:", err);
+      if (err.message.includes('insufficient permissions')) {
+        showNotification("Permission denied for daily MCQs.", "error");
+      }
+    });
+
     const unsubPrivateSettings = onSnapshot(doc(firestore, 'settings', 'private'), (doc) => {
       if (doc.exists()) setPrivateSettings(doc.data());
     }, (err) => {
@@ -487,6 +544,7 @@ Sample tone for Class 6-10:
       unsubNotifs();
       unsubSettings();
       unsubTests();
+      unsubDailyMcqs();
       unsubPrivateSettings();
       unsubTextbooks();
       unsubStudents();
@@ -2148,6 +2206,16 @@ Sample tone for Class 6-10:
         class10YearlyPrice: systemSettings.class10YearlyPrice || 1499,
         leaderboardRules: systemSettings.leaderboardRules || '',
         enabledClasses: systemSettings.enabledClasses || ["class1", "class2", "class3", "class4", "class5", "class6", "class7", "class8", "class9", "class10"],
+        dailyMcqAutomationEnabled: Boolean(systemSettings.dailyMcqAutomationEnabled),
+        dailyMcqAutomationTime: String(systemSettings.dailyMcqAutomationTime || '07:00'),
+        dailyMcqAutomationTimeZone: String(systemSettings.dailyMcqAutomationTimeZone || 'Asia/Kolkata'),
+        dailyMcqAutomationPublishMode: systemSettings.dailyMcqAutomationPublishMode === 'published' ? 'published' : 'draft',
+        dailyMcqSubjectRotation: Array.isArray(systemSettings.dailyMcqSubjectRotation)
+          ? systemSettings.dailyMcqSubjectRotation.map((item: string) => String(item || '').trim().toLowerCase()).filter(Boolean)
+          : String(systemSettings.dailyMcqSubjectRotation || '')
+              .split(',')
+              .map((item: string) => item.trim().toLowerCase())
+              .filter(Boolean),
         gunduluPrompt: gunduluPromptDraft || ''
       };
       const safePrivateSettings = {
@@ -2272,6 +2340,94 @@ Sample tone for Class 6-10:
           />
         </div>
         <div>
+          <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Daily MCQ Automation</label>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <label className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white">
+              <input
+                type="checkbox"
+                checked={Boolean(systemSettings.dailyMcqAutomationEnabled)}
+                onChange={(e) => setSystemSettings({
+                  ...systemSettings,
+                  dailyMcqAutomationEnabled: e.target.checked,
+                })}
+              />
+              <span className="text-sm">Enable 7 AM auto-generation</span>
+            </label>
+            <div>
+              <input
+                type="time"
+                value={systemSettings.dailyMcqAutomationTime || '07:00'}
+                onChange={(e) => setSystemSettings({
+                  ...systemSettings,
+                  dailyMcqAutomationTime: e.target.value,
+                })}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500/50"
+              />
+            </div>
+            <div>
+              <input
+                type="text"
+                value={systemSettings.dailyMcqAutomationTimeZone || 'Asia/Kolkata'}
+                onChange={(e) => setSystemSettings({
+                  ...systemSettings,
+                  dailyMcqAutomationTimeZone: e.target.value,
+                })}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500/50"
+                placeholder="Asia/Kolkata"
+              />
+            </div>
+          </div>
+          <div className="mt-3">
+            <select
+              value={systemSettings.dailyMcqAutomationPublishMode || 'draft'}
+              onChange={(e) => setSystemSettings({
+                ...systemSettings,
+                dailyMcqAutomationPublishMode: e.target.value,
+              })}
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500/50"
+            >
+              <option value="draft">Create as draft for admin review</option>
+              <option value="published">Publish immediately at schedule time</option>
+            </select>
+            <p className="text-[10px] text-slate-500 mt-2 italic">The server checks this every minute and generates daily MCQs from matching Google Drive textbook sources when the configured time is reached.</p>
+          </div>
+        </div>
+        <div>
+          <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Daily MCQ Subject Rotation</label>
+          <input
+            type="text"
+            value={Array.isArray(systemSettings.dailyMcqSubjectRotation) ? systemSettings.dailyMcqSubjectRotation.join(', ') : (systemSettings.dailyMcqSubjectRotation || 'math, english, science, odia, social')}
+            onChange={(e) => setSystemSettings({
+              ...systemSettings,
+              dailyMcqSubjectRotation: e.target.value
+                .split(',')
+                .map((item) => item.trim().toLowerCase())
+                .filter(Boolean)
+            })}
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500/50"
+            placeholder="math, english, science, odia, social"
+          />
+          <p className="text-[10px] text-slate-500 mt-2 italic">Used for daily set rotation order. You can include the same subject keys used in textbooks and content, such as evs, hindi, sanskrit, gk, social_science, vocational, art, and more.</p>
+          <div className="mt-4 space-y-2">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">Quick Add Subjects</p>
+            <div className="flex flex-wrap gap-2">
+              {availableDailyMcqSubjects.map(([subjectKey, subjectLabel]) => {
+                const isSelected = normalizedDailyMcqRotation.includes(subjectKey);
+                return (
+                  <button
+                    key={subjectKey}
+                    type="button"
+                    onClick={() => toggleDailyMcqRotationSubject(subjectKey)}
+                    className={`px-3 py-1.5 rounded-full border text-[10px] font-black uppercase tracking-[0.15em] transition-all ${isSelected ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-300' : 'border-white/10 bg-white/5 text-slate-300 hover:bg-white/10'}`}
+                  >
+                    {String(subjectLabel)}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+        <div>
           <label className="block text-xs font-bold text-slate-500 uppercase mb-4">Class Management (Enable/Disable)</label>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {Object.entries(translations['en'].classes).map(([key, label]) => {
@@ -2324,6 +2480,8 @@ Sample tone for Class 6-10:
               subject: '',
               title: '',
               download_url: '',
+              driveFileId: '',
+              driveUrl: '',
               thumbnail_url: ''
             });
           }}
@@ -2378,6 +2536,27 @@ Sample tone for Class 6-10:
                 value={newTextbook.board}
                 onChange={(e) => setNewTextbook({...newTextbook, board: e.target.value})}
               />
+            </div>
+            <div>
+              <label className="block text-sm text-slate-400 mb-1">Google Drive File ID</label>
+              <input 
+                type="text"
+                className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
+                placeholder="Paste Drive file ID"
+                value={newTextbook.driveFileId || ''}
+                onChange={(e) => setNewTextbook({...newTextbook, driveFileId: extractDriveFileId(e.target.value)})}
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-slate-400 mb-1">Google Drive Link</label>
+              <input 
+                type="text"
+                className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
+                placeholder="https://drive.google.com/file/d/... or folder link"
+                value={newTextbook.driveUrl || ''}
+                onChange={(e) => setNewTextbook({...newTextbook, driveUrl: e.target.value, driveFileId: newTextbook.driveFileId || extractDriveFileId(e.target.value)})}
+              />
+              <p className="text-[10px] text-slate-500 mt-2 italic">You can paste a single file link or a shared folder link. For folders, the server will try to pick the best matching file by class and subject name.</p>
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm text-slate-400 mb-1">Textbook PDF File</label>
@@ -2434,19 +2613,31 @@ Sample tone for Class 6-10:
             <button 
               onClick={async () => {
                 try {
-                  if (!newTextbook.title || !newTextbook.download_url) {
-                    showNotification("Title and Download URL are required", "error");
+                  const normalizedDriveFileId = extractDriveFileId(newTextbook.driveFileId || newTextbook.driveUrl || '');
+                  const normalizedDriveUrl = String(newTextbook.driveUrl || '').trim();
+                  const normalizedDownloadUrl = String(newTextbook.download_url || '').trim() || normalizedDriveUrl;
+
+                  if (!newTextbook.title || (!normalizedDownloadUrl && !normalizedDriveFileId)) {
+                    showNotification("Title and either Download URL or Google Drive source are required", "error");
                     return;
                   }
+
+                  const textbookPayload = {
+                    ...newTextbook,
+                    download_url: normalizedDownloadUrl,
+                    driveFileId: normalizedDriveFileId,
+                    driveUrl: normalizedDriveUrl,
+                  };
+
                   if (editingTextbookId) {
                     await updateDoc(doc(firestore, 'textbooks', editingTextbookId), {
-                      ...newTextbook,
+                      ...textbookPayload,
                       updated_at: serverTimestamp()
                     });
                     showNotification("Textbook updated successfully");
                   } else {
                     await addDoc(collection(firestore, 'textbooks'), {
-                      ...newTextbook,
+                      ...textbookPayload,
                       created_at: serverTimestamp()
                     });
                     showNotification("Textbook added successfully");
@@ -2512,6 +2703,8 @@ Sample tone for Class 6-10:
                       subject: typeof book.subject === 'string' ? book.subject : (book.subject?.en || ''),
                       title: typeof book.title === 'string' ? book.title : (book.title?.en || ''),
                       download_url: book.download_url || '',
+                      driveFileId: book.driveFileId || '',
+                      driveUrl: book.driveUrl || '',
                       thumbnail_url: book.thumbnail_url || ''
                     });
                     setIsAddingTextbook(true);
@@ -2555,9 +2748,14 @@ Sample tone for Class 6-10:
                 <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 bg-purple-500/10 text-purple-400 rounded-full border border-purple-500/20">
                   {typeof book.subject === 'string' ? book.subject : (book.subject?.en || '')}
                 </span>
+                {(book.driveFileId || book.driveUrl) && (
+                  <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 bg-cyan-500/10 text-cyan-300 rounded-full border border-cyan-500/20">
+                    Drive Source
+                  </span>
+                )}
               </div>
               <a 
-                href={book.download_url} 
+                href={book.download_url || book.driveUrl} 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-all text-sm"
@@ -2576,6 +2774,7 @@ Sample tone for Class 6-10:
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'content', label: 'Content Library', icon: BookOpen },
     { id: 'monthly_tests', label: 'Monthly Tests', icon: Calendar },
+    { id: 'daily_mcqs', label: 'Daily MCQs', icon: ListChecks },
     { id: 'textbooks', label: 'Textbooks', icon: Book },
     { id: 'ai_usage', label: 'AI Usage', icon: Brain },
     { id: 'payments', label: 'Payments', icon: CreditCard },
@@ -2702,6 +2901,7 @@ Sample tone for Class 6-10:
             {activeTab === 'dashboard' && renderDashboard()}
             {activeTab === 'content' && renderContent()}
             {activeTab === 'monthly_tests' && renderMonthlyTests()}
+            {activeTab === 'daily_mcqs' && <DailyMcqTab mcqs={dailyMcqs} textbooks={textbooks} subjectRotation={systemSettings?.dailyMcqSubjectRotation} showNotification={showNotification} />}
             {activeTab === 'textbooks' && renderTextbooks()}
             {activeTab === 'ai_usage' && renderAiUsage()}
             {activeTab === 'payments' && renderPayments()}
