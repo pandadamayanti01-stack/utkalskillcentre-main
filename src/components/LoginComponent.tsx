@@ -24,21 +24,23 @@ const PlayStoreIcon = ({ size = 12 }: { size?: number }) => (
   </svg>
 );
 
+const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/channel/UCVsuuu7DyRY4-qbn8PrVBhg';
+const WHATSAPP_CHANNEL_URL = 'https://whatsapp.com/channel/0029VbCvAH31iUxgGopHZ724';
+const INSTAGRAM_PROFILE_URL = 'https://www.instagram.com/utkalskillcentre?igsh=aDBwdnNwNzJndDAx';
+const FACEBOOK_PROFILE_URL = 'https://www.facebook.com/share/18URKVYWdm/';
+const SOCIAL_ORIGINS = [
+  new URL(YOUTUBE_CHANNEL_URL).origin,
+  new URL(WHATSAPP_CHANNEL_URL).origin,
+  new URL(INSTAGRAM_PROFILE_URL).origin,
+  new URL(FACEBOOK_PROFILE_URL).origin,
+];
+
 export default function Login({ language, translations, setLanguage, setRegData }: { language: 'en' | 'or', translations: any, setLanguage: (lang: 'en' | 'or') => void, setRegData: (data: any) => void }) {
-  const youtubeChannelUrl = 'https://www.youtube.com/channel/UCVsuuu7DyRY4-qbn8PrVBhg';
-  const whatsappChannelUrl = 'https://whatsapp.com/channel/0029VbCvAH31iUxgGopHZ724';
-  const instagramProfileUrl = 'https://www.instagram.com/utkalskillcentre?igsh=aDBwdnNwNzJndDAx';
-  const facebookProfileUrl = 'https://www.facebook.com/share/18URKVYWdm/';
-  const socialOrigins = [new URL(youtubeChannelUrl).origin, new URL(whatsappChannelUrl).origin, new URL(instagramProfileUrl).origin, new URL(facebookProfileUrl).origin];
   const [phoneNumber, setPhoneNumber] = useState('');
   const [verificationId, setVerificationId] = useState<any>(null);
   const [otp, setOtp] = useState('');
   const [selectedClass, setSelectedClass] = useState('');
   const [selectedBoard, setSelectedBoard] = useState('');
-
-  useEffect(() => {
-    setRegData({ class: selectedClass, board: selectedBoard });
-  }, [selectedClass, selectedBoard, setRegData]);
   const [isSending, setIsSending] = useState(false);
   const [authStep, setAuthStep] = useState<'login' | 'otp'>('login');
   const [isAdminLogin, setIsAdminLogin] = useState(false);
@@ -50,6 +52,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
 
   const recaptchaVerifier = useRef<any>(null);
+  const phoneInputRef = useRef<HTMLInputElement>(null);
   const t = translations[language];
   const isStandaloneMode = typeof window !== 'undefined' && (window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true);
   const isMobileDevice = typeof window !== 'undefined' && /Android|iPhone|iPad|iPod|Mobile|Windows Phone/i.test(window.navigator.userAgent);
@@ -92,7 +95,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
   }, []);
 
   useEffect(() => {
-    const injectedLinks = socialOrigins.flatMap((origin) => {
+    const injectedLinks = SOCIAL_ORIGINS.flatMap((origin) => {
       const preconnect = document.createElement('link');
       preconnect.rel = 'preconnect';
       preconnect.href = origin;
@@ -111,7 +114,11 @@ export default function Login({ language, translations, setLanguage, setRegData 
     return () => {
       injectedLinks.forEach((link) => link.remove());
     };
-  }, [socialOrigins]);
+  }, []);
+
+  const syncSelectedAcademicInfo = () => {
+    setRegData({ class: selectedClass, board: selectedBoard });
+  };
 
   const handleInstallClick = async () => {
     const prompt = deferredPrompt || getDeferredPrompt();
@@ -131,11 +138,16 @@ export default function Login({ language, translations, setLanguage, setRegData 
     }
   };
 
+  const getEnteredPhoneNumber = () => phoneInputRef.current?.value?.trim() || phoneNumber;
+
   const handleGoogleLogin = async () => {
     if (!isAdminLogin && (!selectedClass || !selectedBoard)) {
       alert(translations[language].requiredFieldsError);
       return;
     }
+
+    syncSelectedAcademicInfo();
+
     try {
       await signInWithGoogle();
       console.log("Google login successful");
@@ -183,8 +195,16 @@ export default function Login({ language, translations, setLanguage, setRegData 
   };
 
   const onSmsSend = async () => {
-    if (!phoneNumber || phoneNumber.length < 10) return alert("Please enter valid phone");
+    const enteredPhoneNumber = getEnteredPhoneNumber();
+
+    if (!enteredPhoneNumber || enteredPhoneNumber.length < 10) return alert("Please enter valid phone");
     if (!isAdminLogin && (!selectedClass || !selectedBoard)) return alert(translations[language].requiredFieldsError);
+
+    if (!isAdminLogin) {
+      syncSelectedAcademicInfo();
+    }
+
+    setPhoneNumber(enteredPhoneNumber);
 
     setIsSending(true);
     if (!recaptchaVerifier.current) {
@@ -192,7 +212,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
     }
 
     try {
-      const formattedNumber = normalizePhoneNumber(phoneNumber);
+      const formattedNumber = normalizePhoneNumber(enteredPhoneNumber);
 
       if (!isAdminLogin) {
         try {
@@ -263,7 +283,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
         <div className="flex flex-col items-end gap-3">
           <div className="flex items-center gap-2">
             <a
-              href={facebookProfileUrl}
+              href={FACEBOOK_PROFILE_URL}
               target={socialLinkTarget}
               rel={socialLinkRel}
               aria-label="Utkal Skill Centre Facebook page"
@@ -272,7 +292,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
               <Facebook size={18} />
             </a>
             <a
-              href={instagramProfileUrl}
+              href={INSTAGRAM_PROFILE_URL}
               target={socialLinkTarget}
               rel={socialLinkRel}
               aria-label="Utkal Skill Centre Instagram profile"
@@ -281,7 +301,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
               <Instagram size={18} />
             </a>
             <a
-              href={whatsappChannelUrl}
+              href={WHATSAPP_CHANNEL_URL}
               target={socialLinkTarget}
               rel={socialLinkRel}
               aria-label="Utkal Skill Centre WhatsApp channel"
@@ -290,7 +310,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
               <WhatsAppIcon size={18} />
             </a>
             <a
-              href={youtubeChannelUrl}
+              href={YOUTUBE_CHANNEL_URL}
               target={socialLinkTarget}
               rel={socialLinkRel}
               aria-label="Utkal Skill Centre YouTube channel"
@@ -393,9 +413,11 @@ export default function Login({ language, translations, setLanguage, setRegData 
                       <div className="glass-marble px-5 py-4 rounded-[1.5rem] text-[#ffd700] text-xs font-black">+91</div>
                       <input 
                         type="tel" 
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        ref={phoneInputRef}
+                        defaultValue={phoneNumber}
                         placeholder={t.enterPhone}
+                        inputMode="numeric"
+                        autoComplete="tel"
                         className="glass-marble flex-1 py-4 px-6 rounded-[1.5rem] text-white text-xs font-black outline-none placeholder:text-white/10" 
                       />
                     </div>
@@ -426,9 +448,11 @@ export default function Login({ language, translations, setLanguage, setRegData 
                       <div className="glass-marble px-5 py-4 rounded-[1.5rem] text-[#ffd700] text-xs font-black">+91</div>
                       <input 
                         type="tel" 
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        ref={phoneInputRef}
+                        defaultValue={phoneNumber}
                         placeholder="Phone Number" 
+                        inputMode="numeric"
+                        autoComplete="tel"
                         className="glass-marble flex-1 py-4 px-6 rounded-[1.5rem] text-white text-xs font-black outline-none placeholder:text-white/10" 
                       />
                     </div>
