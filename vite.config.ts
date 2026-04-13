@@ -27,10 +27,27 @@ export default defineConfig(({mode}) => {
       VitePWA({
         registerType: 'autoUpdate',
         injectRegister: false,
+        includeAssets: ['icon.svg'],
         workbox: {
           cleanupOutdatedCaches: true,
           clientsClaim: true,
           skipWaiting: true,
+          globPatterns: ['index.html', 'assets/*.{js,css}'],
+          globIgnores: [
+            'assets/AdminDashboard-*.js',
+            'assets/AvatarStore-*.js',
+            'assets/GunduluHuman-*.js',
+            'assets/GunduluHuman-*.css',
+            'assets/NotificationsView-*.js',
+            'assets/PracticeQuestion-*.js',
+            'assets/ProgressChart-*.js',
+            'assets/StudyBuddyView-*.js',
+            'assets/TestSeriesPoster-*.js',
+            'assets/ai-*.js',
+            'assets/charts-*.js',
+            'assets/gcpService-*.js',
+            'assets/markdown-*.js',
+          ],
         },
         manifest: {
           name: 'Utkal Skill Centre',
@@ -78,6 +95,22 @@ export default defineConfig(({mode}) => {
     },
     build: {
       rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (!id.includes('node_modules')) {
+              return;
+            }
+
+            if (id.includes('firebase')) return 'firebase';
+            if (id.includes('@google/genai')) return 'ai';
+            if (id.includes('framer-motion') || id.includes('/motion/')) return 'motion';
+            if (id.includes('react-markdown')) return 'markdown';
+            if (id.includes('recharts')) return 'charts';
+            if (id.includes('lucide-react')) return 'icons';
+
+            return 'vendor';
+          },
+        },
         input: {
           main: path.resolve(__dirname, 'index.html'),
           odishaLearningApp: path.resolve(__dirname, 'odisha-learning-app.html'),

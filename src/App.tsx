@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { 
   BookOpen, 
   MessageSquare, 
@@ -78,23 +78,33 @@ import { translations } from './translations';
 import { solveMathDoubt, getAI, getStudyBuddySystemInstruction } from './services/aiService';
 import { subjectTranslations } from './constants';
 import { getYouTubeId, getYouTubeEmbedUrl, getYouTubeThumbnail } from './utils/youtube';
-import { AdminDashboard } from './components/AdminDashboard';
-import { PracticeQuestion } from './components/PracticeQuestion';
-import { Dashboard } from './components/Dashboard';
-import { NotificationsView } from './components/NotificationsView';
-import GunduluHuman from './components/GunduluHuman';
-import { AvatarStore } from './components/AvatarStore';
-import { DailyChallenge } from './components/DailyChallenge';
-import { ProgressChart } from './components/ProgressChart';
 import { useVoiceSearch } from './hooks/useVoiceSearch';
 import { OfflineService } from './services/offlineService';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { StudyBuddyView } from './components/StudyBuddyView';
-import { ChatbotModal } from './components/ChatbotModal';
-import { Sidebar } from './components/Sidebar';
-import LoginComponent from './components/LoginComponent';
-import TestSeriesPoster from './components/TestSeriesPoster';
 import { getDeferredPrompt, clearDeferredPrompt } from './pwa';
+
+const AdminDashboard = lazy(() => import('./components/AdminDashboard').then((module) => ({ default: module.AdminDashboard })));
+const PracticeQuestion = lazy(() => import('./components/PracticeQuestion').then((module) => ({ default: module.PracticeQuestion })));
+const Dashboard = lazy(() => import('./components/Dashboard').then((module) => ({ default: module.Dashboard })));
+const NotificationsView = lazy(() => import('./components/NotificationsView').then((module) => ({ default: module.NotificationsView })));
+const GunduluHuman = lazy(() => import('./components/GunduluHuman'));
+const AvatarStore = lazy(() => import('./components/AvatarStore').then((module) => ({ default: module.AvatarStore })));
+const ProgressChart = lazy(() => import('./components/ProgressChart').then((module) => ({ default: module.ProgressChart })));
+const StudyBuddyView = lazy(() => import('./components/StudyBuddyView').then((module) => ({ default: module.StudyBuddyView })));
+const Sidebar = lazy(() => import('./components/Sidebar').then((module) => ({ default: module.Sidebar })));
+const LoginComponent = lazy(() => import('./components/LoginComponent'));
+const TestSeriesPoster = lazy(() => import('./components/TestSeriesPoster'));
+
+function ViewLoader({ fullHeight = false }: { fullHeight?: boolean }) {
+  return (
+    <div className={`flex ${fullHeight ? 'min-h-screen' : 'min-h-[30vh]'} items-center justify-center`}>
+      <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm font-bold text-white/80 backdrop-blur-sm">
+        <Loader2 size={18} className="animate-spin text-emerald-400" />
+        <span>Loading...</span>
+      </div>
+    </div>
+  );
+}
 
 
 const getLocalizedSubject = (subject: string, language: string) => {
@@ -1629,7 +1639,9 @@ export default function App() {
         {/* Right Content - Login Form */}
         <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-12 relative z-10">
           {authStep === 'login' ? (
-            <LoginComponent language={language} translations={translations} setLanguage={setLanguage} setRegData={setRegData} />
+            <Suspense fallback={<ViewLoader />}>
+              <LoginComponent language={language} translations={translations} setLanguage={setLanguage} setRegData={setRegData} />
+            </Suspense>
           ) : (
             <div className="text-white">OTP UI content here</div>
           )}
@@ -1669,7 +1681,11 @@ export default function App() {
 
   if (isAdminView && user?.role === 'admin') {
     console.log("Rendering AdminDashboard for user:", user.email, "role:", user.role, "isAdminView:", isAdminView);
-    return <AdminDashboard onExit={() => setIsAdminView(false)} />;
+    return (
+      <Suspense fallback={<ViewLoader fullHeight />}>
+        <AdminDashboard onExit={() => setIsAdminView(false)} />
+      </Suspense>
+    );
   }
 
   if (isAdminView) {
@@ -1707,7 +1723,9 @@ export default function App() {
   return (
   <ErrorBoundary language={language}>
     {showTestSeriesPoster && (
-      <TestSeriesPoster onClose={() => setShowTestSeriesPoster(false)} />
+      <Suspense fallback={null}>
+        <TestSeriesPoster onClose={() => setShowTestSeriesPoster(false)} />
+      </Suspense>
     )}
 
     {/* Full screen container - NO SCROLL ALLOWED HERE */}
@@ -1721,17 +1739,19 @@ export default function App() {
       <div className="bg-orb-terracotta bottom-[-10%] right-[-10%]" />
 
       {/* SIDEBAR Component */}
-      <Sidebar 
-        language={language}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        isSidebarOpen={isSidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-        user={user}
-        isAdminView={isAdminView}
-        setIsAdminView={setIsAdminView}
-        handleLogout={handleLogout}
-      />
+      <Suspense fallback={null}>
+        <Sidebar 
+          language={language}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          isSidebarOpen={isSidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          user={user}
+          isAdminView={isAdminView}
+          setIsAdminView={setIsAdminView}
+          handleLogout={handleLogout}
+        />
+      </Suspense>
 
       {/* MAIN VIEWPORT */}
       <main className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative">
@@ -1766,33 +1786,35 @@ export default function App() {
 
         {/* CONTENT AREA: This is the ONLY part that scrolls */}
         <div ref={contentScrollRef} className="flex-1 overflow-y-auto p-4 md:p-8 scrollbar-hide relative z-10">
-          <AnimatePresence mode="wait">
-            {/* Your 10+ Tab components go here... */}
-            {activeTab === 'dashboard' && <Dashboard user={user} leaderboard={leaderboard} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} chapters={chapters} dailyChallenge={dailyChallenge} onOpenTutor={() => { 
-  if (isPremium) {
-    setOpenTutorInVoiceMode(Date.now());
-    setActiveTab('study_buddy');
-  } else {
-    handleUpgradeClick();
-  }
-}} />}
-            {activeTab === 'notifications' && <NotificationsView notifications={studentNotifications} language={language} onBack={() => setActiveTab('dashboard')} />}
-            {activeTab === 'courses' && <CoursesView user={user} chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
-            {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
-            {activeTab === 'monthly_tests' && <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} onBack={() => setActiveTab('dashboard')} />}
-            {activeTab === 'study_buddy' && (
-              isPremium ? <StudyBuddyView language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} user={user} initialVoiceMode={openTutorInVoiceMode} onBack={() => setActiveTab('dashboard')} onLanguageChange={setLanguage} /> : <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
-            )}
-            {activeTab === 'gundulu' && (
-              isPremium ? <GunduluHuman onBack={() => setActiveTab('dashboard')} /> : <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
-            )}
-            {activeTab === 'profile' && <ProfileView user={user} language={language} onBack={() => setActiveTab('dashboard')} onParentAccess={() => setActiveTab('parent_dashboard')} setActiveTab={setActiveTab} />}
-            {activeTab === 'parent_dashboard' && <ParentDashboard user={user} chapters={chapters} leaderboard={leaderboard} language={language} onBack={() => setActiveTab('profile')} userProgress={userProgress} />}
-            {activeTab === 'leaderboard' && <LeaderboardView leaderboard={leaderboard} language={language} onBack={() => setActiveTab('dashboard')} following={following} user={user} />}
-            {activeTab === 'support' && <SupportView user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
-            {activeTab === 'store' && <AvatarStore user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
-            {activeTab === 'plans' && <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />}
-          </AnimatePresence>
+          <Suspense fallback={<ViewLoader />}>
+            <AnimatePresence mode="wait">
+              {/* Your 10+ Tab components go here... */}
+              {activeTab === 'dashboard' && <Dashboard user={user} leaderboard={leaderboard} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} chapters={chapters} dailyChallenge={dailyChallenge} onOpenTutor={() => { 
+    if (isPremium) {
+      setOpenTutorInVoiceMode(Date.now());
+      setActiveTab('study_buddy');
+    } else {
+      handleUpgradeClick();
+    }
+  }} />}
+              {activeTab === 'notifications' && <NotificationsView notifications={studentNotifications} language={language} onBack={() => setActiveTab('dashboard')} />}
+              {activeTab === 'courses' && <CoursesView user={user} chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
+              {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
+              {activeTab === 'monthly_tests' && <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} onBack={() => setActiveTab('dashboard')} />}
+              {activeTab === 'study_buddy' && (
+                isPremium ? <StudyBuddyView language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} user={user} initialVoiceMode={openTutorInVoiceMode} onBack={() => setActiveTab('dashboard')} onLanguageChange={setLanguage} /> : <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
+              )}
+              {activeTab === 'gundulu' && (
+                isPremium ? <GunduluHuman onBack={() => setActiveTab('dashboard')} /> : <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
+              )}
+              {activeTab === 'profile' && <ProfileView user={user} language={language} onBack={() => setActiveTab('dashboard')} onParentAccess={() => setActiveTab('parent_dashboard')} setActiveTab={setActiveTab} />}
+              {activeTab === 'parent_dashboard' && <ParentDashboard user={user} chapters={chapters} leaderboard={leaderboard} language={language} onBack={() => setActiveTab('profile')} userProgress={userProgress} />}
+              {activeTab === 'leaderboard' && <LeaderboardView leaderboard={leaderboard} language={language} onBack={() => setActiveTab('dashboard')} following={following} user={user} />}
+              {activeTab === 'support' && <SupportView user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
+              {activeTab === 'store' && <AvatarStore user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
+              {activeTab === 'plans' && <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />}
+            </AnimatePresence>
+          </Suspense>
 
           {/* --- FOOTER PLACE: BIGSAN BRANDING --- */}
           <footer className="mt-20 pb-10 flex flex-col items-center gap-4 opacity-40">
