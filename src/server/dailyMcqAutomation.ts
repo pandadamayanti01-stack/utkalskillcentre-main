@@ -4,17 +4,38 @@ import type { App } from 'firebase-admin/app';
 import { getFirestore as getAdminFirestore, FieldValue } from 'firebase-admin/firestore';
 import { getStorage as getAdminStorage } from 'firebase-admin/storage';
 import { google } from 'googleapis';
-import cron from 'node-cron';
-// PDF extraction helper for ESM/CJS interop
-let PDFParse: any;
-try {
-  PDFParse = require('pdf-parse');
-  if (PDFParse && PDFParse.default) PDFParse = PDFParse.default;
-} catch (e) {
+// import cron from 'node-cron';
+// // PDF extraction helper for ESM/CJS interop
+// let PDFParse: any;
+// try {
+//   PDFParse = require('pdf-parse');
+//   if (PDFParse && PDFParse.default) PDFParse = PDFParse.default;
+// } catch (e) {
+//   try {
+//     PDFParse = (await import('pdf-parse')).default || (await import('pdf-parse'));
+//   } catch (e2) {
+//     throw new Error('pdf-parse module could not be loaded');
+//   }
+// }
+import * as pdf from 'pdf-parse';
+
+// This consolidated function handles the PDF extraction and type safety
+async function extractPdfText(buffer: Buffer): Promise<string> {
   try {
-    PDFParse = (await import('pdf-parse')).default || (await import('pdf-parse'));
-  } catch (e2) {
-    throw new Error('pdf-parse module could not be loaded');
+    // We use 'any' here specifically to bypass the ESM/CJS interop mismatch 
+    // that causes the 'never' and 'default' errors in TypeScript.
+    const parseFunction = (pdf as any).default || pdf;
+    
+    if (typeof parseFunction !== 'function') {
+      console.error('pdf-parse initialization failed: Not a function');
+      return '';
+    }
+
+    const data = await parseFunction(buffer);
+    return data?.text || '';
+  } catch (error) {
+    console.error('Error during PDF text extraction:', error);
+    return '';
   }
 }
 
