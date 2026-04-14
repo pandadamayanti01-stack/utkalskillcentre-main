@@ -925,7 +925,7 @@ export default function App() {
   }, [dailyMcqRotation, language]);
 
   const handleShareDailyPractice = React.useCallback(() => {
-    const classLabel = translations[language].classes?.[user?.class] || user?.class;
+    const classLabel = user?.class ? (translations[language].classes?.[user.class] || user.class) : '';
     openDailyMcqWhatsAppShare({
       language,
       subjectLabel: todayDailySubject,
