@@ -16,7 +16,7 @@ import { getServiceAccountCredentials } from './src/server/googleCredentials';
 dotenv.config({ path: path.join(process.cwd(), '.env.local') });
 dotenv.config();
 
-const firestoreDatabaseId = process.env.FIRESTORE_DATABASE_ID || process.env.VITE_FIRESTORE_DATABASE_ID || 'gundulu2';
+const firestoreDatabaseId = process.env.FIRESTORE_DATABASE_ID || process.env.VITE_FIRESTORE_DATABASE_ID || 'ai-studio-2a24dfcb-5874-4b37-8e37-434f425283b9';
 
 function getInitializedAdminApp(): App | null {
   return getApps().length > 0 ? getApp() : null;

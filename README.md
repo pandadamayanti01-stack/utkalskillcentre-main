@@ -33,7 +33,7 @@ Example `.env.local`:
 ```env
 FIREBASE_PROJECT_ID=utkalskillcentre
 FIREBASE_STORAGE_BUCKET=utkalskillcentre.firebasestorage.app
-FIRESTORE_DATABASE_ID=gundulu2
+FIRESTORE_DATABASE_ID=ai-studio-2a24dfcb-5874-4b37-8e37-434f425283b9
 
 VITE_FIREBASE_PROJECT_ID=utkalskillcentre
 VITE_FIREBASE_APP_ID=

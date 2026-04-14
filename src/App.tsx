@@ -83,15 +83,8 @@ import { getYouTubeId, getYouTubeEmbedUrl, getYouTubeThumbnail } from './utils/y
 import { useVoiceSearch } from './hooks/useVoiceSearch';
 import { OfflineService } from './services/offlineService';
 import { ErrorBoundary } from './components/ErrorBoundary';
-<<<<<<< HEAD
-=======
-import { StudyBuddyView } from './components/StudyBuddyView';
 import { ChatbotModal } from './components/ChatbotModal';
 import { DailyMcqView } from './components/DailyMcqView';
-import { Sidebar } from './components/Sidebar';
-import LoginComponent from './components/LoginComponent';
-import TestSeriesPoster from './components/TestSeriesPoster';
->>>>>>> work/clone-main-20260413
 import { getDeferredPrompt, clearDeferredPrompt } from './pwa';
 
 const AdminDashboard = lazy(() => import('./components/AdminDashboard').then((module) => ({ default: module.AdminDashboard })));
@@ -1867,47 +1860,32 @@ export default function App() {
 
         {/* CONTENT AREA: This is the ONLY part that scrolls */}
         <div ref={contentScrollRef} className="flex-1 overflow-y-auto p-4 md:p-8 scrollbar-hide relative z-10">
-<<<<<<< HEAD
-          <Suspense fallback={<ViewLoader />}>
-            <AnimatePresence mode="wait">
-              {/* Your 10+ Tab components go here... */}
-              {activeTab === 'dashboard' && <Dashboard user={user} leaderboard={leaderboard} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} chapters={chapters} dailyChallenge={dailyChallenge} onOpenTutor={() => { 
-    if (isPremium) {
-      setOpenTutorInVoiceMode(Date.now());
-      setActiveTab('study_buddy');
-    } else {
-      handleUpgradeClick();
-    }
-  }} />}
-              {activeTab === 'notifications' && <NotificationsView notifications={studentNotifications} language={language} onBack={() => setActiveTab('dashboard')} />}
-              {activeTab === 'courses' && <CoursesView user={user} chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
-              {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
-              {activeTab === 'monthly_tests' && <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} onBack={() => setActiveTab('dashboard')} />}
-              {activeTab === 'study_buddy' && (
-                isPremium ? <StudyBuddyView language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} user={user} initialVoiceMode={openTutorInVoiceMode} onBack={() => setActiveTab('dashboard')} onLanguageChange={setLanguage} /> : <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
-              )}
-              {activeTab === 'gundulu' && (
-                isPremium ? <GunduluHuman onBack={() => setActiveTab('dashboard')} /> : <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
-              )}
-              {activeTab === 'profile' && <ProfileView user={user} language={language} onBack={() => setActiveTab('dashboard')} onParentAccess={() => setActiveTab('parent_dashboard')} setActiveTab={setActiveTab} />}
-              {activeTab === 'parent_dashboard' && <ParentDashboard user={user} chapters={chapters} leaderboard={leaderboard} language={language} onBack={() => setActiveTab('profile')} userProgress={userProgress} />}
-              {activeTab === 'leaderboard' && <LeaderboardView leaderboard={leaderboard} language={language} onBack={() => setActiveTab('dashboard')} following={following} user={user} />}
-              {activeTab === 'support' && <SupportView user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
-              {activeTab === 'store' && <AvatarStore user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
-              {activeTab === 'plans' && <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />}
-            </AnimatePresence>
-          </Suspense>
-=======
           <AnimatePresence mode="wait">
             {/* Your 10+ Tab components go here... */}
-            {activeTab === 'dashboard' && <Dashboard user={user} leaderboard={leaderboard} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} chapters={chapters} dailyChallenge={dailyChallenge} hasDailyPractice={dailyMcqs.length > 0} todayDailySubject={todayDailySubject} tomorrowDailySubject={tomorrowDailySubject} onOpenDailyPractice={() => setActiveTab('daily_mcqs')} onShareDailyPractice={handleShareDailyPractice} onOpenTutor={() => { 
-  if (isPremium) {
-    setOpenTutorInVoiceMode(Date.now());
-    setActiveTab('study_buddy');
-  } else {
-    handleUpgradeClick();
-  }
-}} />}
+            {activeTab === 'dashboard' && (
+              <Dashboard
+                user={user}
+                leaderboard={leaderboard}
+                language={language}
+                isPremium={isPremium}
+                onUpgrade={() => setActiveTab('plans')}
+                chapters={chapters}
+                dailyChallenge={dailyChallenge}
+                hasDailyPractice={dailyMcqs.length > 0}
+                todayDailySubject={todayDailySubject}
+                tomorrowDailySubject={tomorrowDailySubject}
+                onOpenDailyPractice={() => setActiveTab('daily_mcqs')}
+                onShareDailyPractice={handleShareDailyPractice}
+                onOpenTutor={() => {
+                  if (isPremium) {
+                    setOpenTutorInVoiceMode(Date.now());
+                    setActiveTab('study_buddy');
+                  } else {
+                    handleUpgradeClick();
+                  }
+                }}
+              />
+            )}
             {activeTab === 'notifications' && <NotificationsView notifications={studentNotifications} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'courses' && <CoursesView user={user} chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
@@ -1926,7 +1904,6 @@ export default function App() {
             {activeTab === 'store' && <AvatarStore user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'plans' && <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />}
           </AnimatePresence>
->>>>>>> work/clone-main-20260413
 
           {/* --- FOOTER PLACE: BIGSAN BRANDING --- */}
           <footer className="mt-20 pb-10 flex flex-col items-center gap-4 opacity-40">

@@ -193,8 +193,7 @@ service cloud.firestore {
 
     match /chapters/{chapterId} {
       allow read: if isAuthenticated() && (resource.data.status == 'published' || isAdmin());
-      allow create, update: if true; // Relaxing rules for debugging
-      allow delete: if isAdmin();
+      allow create, update, delete: if isAdmin();
     }
 
     match /questions/{questionId} {
@@ -262,7 +261,7 @@ service cloud.firestore {
     }
 
     match /system_settings/{document=**} {
-      allow read: if true;
+      allow read: if isAuthenticated();
       allow write: if isAdmin();
     }
 
@@ -276,7 +275,8 @@ service cloud.firestore {
     }
 
     match /daily_mcqs/{mcqId} {
-      allow read, write: if isAuthenticated();
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
     }
 
     match /daily_mcq_submissions/{submissionId} {
