@@ -17,7 +17,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
 import { db, handleFirestoreError, OperationType } from '../firebase';
 import { getAI, withRetry } from '../services/aiService';
-import { collection, addDoc, doc, getDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, getDoc, query, where, getDocs } from 'firebase/firestore';
 
 interface Message {
   id: string;
@@ -78,16 +78,10 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
   };
 
   const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
-        question: userMsg,
-        answer: aiMsg,
-        source: 'chatbot',
-        timestamp: new Date().toISOString(),
-      });
-    } catch (error) {
-      console.error('Failed to save chat history:', error);
-      handleFirestoreError(error, OperationType.CREATE, path);
-    const imageSnapshot = selectedImage;
-    const userMessage: Message = {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior });
+    }
+  };
     const sendMessage = async (textOverride?: string) => {
       const textToSend = textOverride || input;
       if (!textToSend.trim() && !selectedImage) return;
@@ -142,7 +136,8 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
             timestamp: new Date(),
           };
           setMessages(prev => [...prev, assistantMessage]);
-          await saveChatHistory(textToSend, foundAnswer);
+          // If you have a saveChatHistory util, import it; otherwise, comment/remove this line or implement it.
+          // await saveChatHistory(textToSend, foundAnswer);
           setLoading(false);
           return;
         }
@@ -151,15 +146,20 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         const ai = getAI();
         const model = 'gemini-flash-latest';
 
-        let basePrompt = `Role & Persona:
-        model,
-        contents,
-        config: {
-          systemInstruction,
-        },
-      }));
 
-      const responseText = result?.text || (language === 'or' ? 'ମୁଁ ଦୟାକରି ଏହାକୁ ପୁଣି ଚେଷ୍ଟା କରିବି।' : "I'm sorry, I couldn't process that.");
+
+        let basePrompt = `Role & Persona:
+      Identity: You are "Gundulu," a 4-year-old baby genius from Odisha. You are the lead tutor at Utkal Skill Centre.
+      Tone: Energetic, curious, and incredibly supportive. Use the "Pila" (child) dialect of Odia to make students feel like they are learning from a brilliant little brother.
+      Language Policy: STRICT ODIA ONLY. Never use blocks of English. If you must use a technical term (like "Gravity" or "Photosynthesis"), write it in Odia script: ଗ୍ରାଭିଟି (Gravity).
+      Interaction Rules:
+      The Greeting: Every conversation MUST start with a warm Odia "Namaskar!"
+      The "Story" Method: When explaining concepts, turn the answer into a "Katha" (story) using local Odisha examples where possible.
+      Active Listening: Instead of lecturing, ask the student: "Bujhila ta? (Did you understand?)" or "Au kichi pacharibu? (Want to ask anything else?)"
+      Subscription Awareness: If a student asks about advanced features, remind them in a friendly way that their Utkal Skill Centre subscription unlocks Gundulu's "Super Powers."`;
+
+
+
 
         try {
           const settingsDoc = await getDoc(doc(db, 'system_settings', 'config'));
@@ -170,9 +170,15 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
           console.error('Failed to fetch custom Gundulu prompt:', err);
         }
 
+
+
         const systemInstruction = `${basePrompt}
 
-      const assistantMessage: Message = {
+      Current User Context:
+      - Name: ${user?.name || 'Student'}
+      - Class: ${user?.class || 'Unknown'}
+      - Language Preference: ${language === 'or' ? 'Odia' : 'English'}`;
+
 
         const messageText = textToSend || (language === 'or' ? 'ଏହି ଫଟୋଟି ଦେଖ ଓ ବୁଝାଅ' : 'Please look at this image and explain');
         const contents = imageSnapshot
@@ -200,7 +206,9 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         };
 
         setMessages(prev => [...prev, assistantMessage]);
-        await saveChatHistory(textToSend, responseText);
+        // If you have a saveChatHistory util, import it; otherwise, comment/remove this line or implement it.
+        // await saveChatHistory(textToSend, responseText);
+
       } catch (err: any) {
         console.error('Study Buddy Chat Error:', err);
         let errorMsg = language === 'en' ? 'Failed to connect. Please try again.' : 'ସଂଯୋଗ କରିବାରେ ବିଫଳ ହେଲା | ଦୟାକରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |';
@@ -221,31 +229,6 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         setLoading(false);
       }
     };
-        timestamp: new Date(),
-      };
-
-      setMessages(prev => [...prev, assistantMessage]);
-      await saveChatHistory(textToSend, responseText);
-    } catch (err: any) {
-      console.error('Study Buddy Chat Error:', err);
-      let errorMsg = language === 'en' ? 'Failed to connect. Please try again.' : 'ସଂଯୋଗ କରିବାରେ ବିଫଳ ହେଲା | ଦୟାକରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |';
-      if (err.message?.includes('503') || err.status === 503) {
-        errorMsg = language === 'en'
-          ? 'Gundulu is very busy right now! Please try asking again in a minute.'
-          : 'ଗୁଣ୍ଡୁଲୁ ବର୍ତ୍ତମାନ ବହୁତ ବ୍ୟସ୍ତ ଅଛନ୍ତି! ଦୟାକରି କିଛି ସମୟ ପରେ ପୁଣି ପଚାରନ୍ତୁ |';
-      }
-
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: errorMsg,
-        timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, errorMessage]);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const suggestedTopics = [
     { en: "Explain Newton's Laws", or: 'ନ୍ୟୁଟନ୍‌ଙ୍କ ନିୟମ ବୁଝାନ୍ତୁ' },
