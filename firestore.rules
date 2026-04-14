@@ -143,6 +143,39 @@ service cloud.firestore {
              data.timestamp is string;
     }
 
+    function getDailyMcqRotation() {
+      return exists(/databases/$(database)/documents/system_settings/config) &&
+             get(/databases/$(database)/documents/system_settings/config).data.dailyMcqSubjectRotation is list
+        ? get(/databases/$(database)/documents/system_settings/config).data.dailyMcqSubjectRotation
+        : ['math', 'english', 'science', 'odia', 'social'];
+    }
+
+    function isValidDailyMcq(data) {
+      return hasRequiredFields(['title', 'class', 'subject', 'activeDate', 'questions', 'status']) &&
+             data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+             data.class is string &&
+             data.subject is string && data.subject in getDailyMcqRotation() &&
+             data.activeDate is string && data.activeDate.size() >= 10 &&
+             data.status in ['draft', 'published'] &&
+             data.questions is list && data.questions.size() == 5;
+    }
+
+    function isValidDailyMcqSubmission(data, submissionId) {
+      return hasRequiredFields(['mcqId', 'userId', 'answers', 'correctCount', 'totalQuestions', 'attemptReward', 'correctBonus', 'totalPointsEarned', 'submittedDate']) &&
+             data.mcqId is string && data.mcqId.size() > 0 &&
+             data.userId is string &&
+             submissionId == data.userId + '_' + data.mcqId &&
+             data.answers is list && data.answers.size() == 5 &&
+             data.correctCount is int && data.correctCount >= 0 && data.correctCount <= 5 &&
+             data.totalQuestions is int && data.totalQuestions == 5 &&
+             data.attemptReward is int && data.attemptReward == 1 &&
+             data.correctBonus is int && data.correctBonus >= 0 && data.correctBonus <= 5 &&
+             data.totalPointsEarned is int && data.totalPointsEarned == data.attemptReward + data.correctBonus &&
+             data.submittedDate is string &&
+             exists(/databases/$(database)/documents/daily_mcqs/$(data.mcqId)) &&
+             get(/databases/$(database)/documents/daily_mcqs/$(data.mcqId)).data.status == 'published';
+    }
+
     // ===============================================================
     // Rules
     // ===============================================================
@@ -240,6 +273,16 @@ service cloud.firestore {
     match /daily_challenges/{challengeId} {
       allow read: if isAuthenticated();
       allow write: if isAdmin();
+    }
+
+    match /daily_mcqs/{mcqId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    match /daily_mcq_submissions/{submissionId} {
+      allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId) && isValidDailyMcqSubmission(request.resource.data, submissionId);
+      allow update, delete: if isAdmin();
     }
 
     match /user_progress/{progressId} {

@@ -106,14 +106,65 @@ export interface Textbook {
   subject: string;
   title: BilingualContent;
   download_url: string;
+  driveFileId?: string;
+  driveUrl?: string;
   thumbnail_url?: string;
   status?: 'draft' | 'published';
   created_at?: any;
 }
 
+export interface DailyMcq {
+  id: string;
+  title: string;
+  class: string;
+  subject?: string;
+  source?: {
+    textbookId?: string;
+    textbookTitle?: string;
+    driveFileId?: string;
+    driveFileName?: string;
+    mimeType?: string;
+  };
+  questions?: DailyMcqQuestion[];
+  question?: string;
+  options?: string[];
+  correct_answer?: string;
+  explanation?: string;
+  activeDate: string;
+  status: 'draft' | 'published';
+  createdAt?: any;
+  updatedAt?: any;
+}
+
+export interface DailyMcqQuestion {
+  question: string;
+  options: string[];
+  correct_answer: string;
+  explanation?: string;
+}
+
+export interface DailyMcqSubmission {
+  id: string;
+  mcqId: string;
+  userId: string;
+  answers: string[];
+  correctCount: number;
+  totalQuestions: number;
+  attemptReward: number;
+  correctBonus: number;
+  totalPointsEarned: number;
+  submittedDate: string;
+  submittedAt?: any;
+}
+
 export interface SystemSettings {
   enabledClasses?: string[];
   maintenanceMode?: boolean;
+  dailyMcqSubjectRotation?: string[];
+  dailyMcqAutomationEnabled?: boolean;
+  dailyMcqAutomationTime?: string;
+  dailyMcqAutomationTimeZone?: string;
+  dailyMcqAutomationPublishMode?: 'draft' | 'published';
 }
 
 declare global {

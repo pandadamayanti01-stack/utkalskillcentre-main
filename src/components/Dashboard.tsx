@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Brain, BarChart3, CheckCircle2, Globe, Flame, Target, Trophy, Zap, Award, Sparkles, Star } from 'lucide-react';
+import { Brain, BarChart3, CheckCircle2, Globe, Flame, MessageCircle, Target, Trophy, Zap, Award, Sparkles, Star } from 'lucide-react';
 import { translations } from '../translations';
 import { DailyChallenge } from './DailyChallenge';
 
@@ -12,11 +12,16 @@ interface DashboardProps {
   onUpgrade: () => void;
   chapters: any[];
   dailyChallenge: any;
+  hasDailyPractice?: boolean;
+  todayDailySubject?: string;
+  tomorrowDailySubject?: string;
   onChallengeComplete?: () => void;
   onOpenTutor?: () => void;
+  onOpenDailyPractice?: () => void;
+  onShareDailyPractice?: () => void;
 }
 
-export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, onChallengeComplete, onOpenTutor }: DashboardProps) {
+export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, hasDailyPractice, todayDailySubject, tomorrowDailySubject, onChallengeComplete, onOpenTutor, onOpenDailyPractice, onShareDailyPractice }: DashboardProps) {
   const t = translations[language];
   const userRank = leaderboard.findIndex((s: any) => s.id === user.id) + 1;
   const rankDisplay = userRank > 0 ? userRank : '-';
@@ -142,6 +147,57 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Progress Section */}
         <div className="lg:col-span-2 space-y-4">
+          <div className="w-full text-left glass-card neon-border rounded-3xl p-4 md:p-5 relative overflow-hidden group hover:border-emerald-500/40 transition-all bg-gradient-to-br from-cyan-500/10 to-transparent">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-cyan-500/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none group-hover:bg-cyan-500/20 transition-colors"></div>
+            <div className="relative z-10 flex items-start justify-between gap-4">
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-[9px] font-black uppercase tracking-[0.2em]">
+                  <CheckCircle2 size={12} />
+                  Daily Practice
+                </div>
+                <h3 className="text-lg font-black text-white tracking-tight">
+                  {language === 'en' ? 'MCQ Practice for Your Class' : 'ଆପଣଙ୍କ ଶ୍ରେଣୀ ପାଇଁ MCQ ଅଭ୍ୟାସ'}
+                </h3>
+                <p className="text-slate-400 text-[11px] font-medium max-w-xl leading-relaxed">
+                  {hasDailyPractice
+                    ? (language === 'en' ? 'New class-wise questions are available. Practice today and keep the habit going.' : 'ଆପଣଙ୍କ ଶ୍ରେଣୀ ପାଇଁ ନୂଆ ପ୍ରଶ୍ନ ଉପଲବ୍ଧ ଅଛି | ଆଜିଠୁ ଅଭ୍ୟାସ ଜାରି ରଖନ୍ତୁ |')
+                    : (language === 'en' ? 'Open the practice tab to check whether today\'s question set has been published.' : 'ଆଜିର ପ୍ରଶ୍ନ ସେଟ୍ ପ୍ରକାଶିତ ହୋଇଛି କି ନାହିଁ ଦେଖିବାକୁ ଅଭ୍ୟାସ ଟ୍ୟାବ୍ ଖୋଲନ୍ତୁ |')}
+                </p>
+                {(todayDailySubject || tomorrowDailySubject) && (
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {todayDailySubject && (
+                      <span className="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-slate-200">
+                        {language === 'en' ? 'Today:' : 'ଆଜି:'} {todayDailySubject}
+                      </span>
+                    )}
+                    {tomorrowDailySubject && (
+                      <span className="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                        {language === 'en' ? 'Tomorrow:' : 'ଆସନ୍ତାକାଲି:'} {tomorrowDailySubject}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+              <div className="shrink-0 flex flex-col items-end gap-2">
+                <button
+                  type="button"
+                  onClick={onOpenDailyPractice}
+                  className="rounded-2xl bg-cyan-500/10 border border-cyan-500/20 px-3 py-2 text-cyan-300 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-cyan-500/20 transition-all"
+                >
+                  {language === 'en' ? 'Open Tab' : 'ଟ୍ୟାବ୍ ଖୋଲନ୍ତୁ'}
+                </button>
+                <button
+                  type="button"
+                  onClick={onShareDailyPractice}
+                  className="inline-flex items-center gap-2 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 px-3 py-2 text-emerald-300 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-emerald-500/20 transition-all"
+                >
+                  <MessageCircle size={12} />
+                  {language === 'en' ? 'Share Test' : 'ଟେଷ୍ଟ ଶେୟାର କରନ୍ତୁ'}
+                </button>
+              </div>
+            </div>
+          </div>
+
           <div className="glass-card neon-border rounded-3xl p-3 md:p-4 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/5 rounded-full blur-3xl -mr-24 -mt-24 pointer-events-none"></div>
             

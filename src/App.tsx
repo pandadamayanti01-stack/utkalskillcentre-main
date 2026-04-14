@@ -57,7 +57,7 @@ import Markdown from 'react-markdown';
 import { GoogleGenAI } from "@google/genai";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 import { auth, db as firestore, safeJsonStringify } from './firebase';
-import { Chapter, BilingualContent, Textbook } from './types';
+import { Chapter, BilingualContent, DailyMcq, DailyMcqSubmission, Textbook } from './types';
 import { 
   signInWithPopup, 
   GoogleAuthProvider, 
@@ -77,10 +77,21 @@ import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, que
 import { translations } from './translations';
 import { solveMathDoubt, getAI, getStudyBuddySystemInstruction } from './services/aiService';
 import { subjectTranslations } from './constants';
+import { getConfiguredDailyMcqSequence, getRotatingDailyMcqSubject, getTomorrowDateString } from './utils/dailyMcq';
+import { openDailyMcqWhatsAppShare } from './utils/dailyMcqShare';
 import { getYouTubeId, getYouTubeEmbedUrl, getYouTubeThumbnail } from './utils/youtube';
 import { useVoiceSearch } from './hooks/useVoiceSearch';
 import { OfflineService } from './services/offlineService';
 import { ErrorBoundary } from './components/ErrorBoundary';
+<<<<<<< HEAD
+=======
+import { StudyBuddyView } from './components/StudyBuddyView';
+import { ChatbotModal } from './components/ChatbotModal';
+import { DailyMcqView } from './components/DailyMcqView';
+import { Sidebar } from './components/Sidebar';
+import LoginComponent from './components/LoginComponent';
+import TestSeriesPoster from './components/TestSeriesPoster';
+>>>>>>> work/clone-main-20260413
 import { getDeferredPrompt, clearDeferredPrompt } from './pwa';
 
 const AdminDashboard = lazy(() => import('./components/AdminDashboard').then((module) => ({ default: module.AdminDashboard })));
@@ -203,6 +214,7 @@ interface MonthlyTestSubmission {
 interface SystemSettings {
   enabledClasses?: string[];
   maintenanceMode?: boolean;
+  dailyMcqSubjectRotation?: string[];
 }
 
 // --- Components ---
@@ -395,6 +407,8 @@ export default function App() {
   const [textbooks, setTextbooks] = useState<Textbook[]>([]);
   const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(null);
   const [monthlyTests, setMonthlyTests] = useState<MonthlyTest[]>([]);
+  const [dailyMcqs, setDailyMcqs] = useState<DailyMcq[]>([]);
+  const [dailyMcqSubmissions, setDailyMcqSubmissions] = useState<DailyMcqSubmission[]>([]);
   const [testSubmissions, setTestSubmissions] = useState<MonthlyTestSubmission[]>([]);
 
   const [activeTest, setActiveTest] = useState<MonthlyTest | null>(null);
@@ -408,7 +422,8 @@ export default function App() {
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
   const [systemSettings, setSystemSettings] = useState<any>({
     monthlyPrice: 199,
-    yearlyPrice: 999
+    yearlyPrice: 999,
+    dailyMcqSubjectRotation: ['math', 'english', 'science', 'odia', 'social']
   });
 
   enum OperationType {
@@ -714,6 +729,8 @@ export default function App() {
       setChapters([]);
       setLeaderboard([]);
       setMonthlyTests([]);
+      setDailyMcqs([]);
+      setDailyMcqSubmissions([]);
       setTestSubmissions([]);
       return;
     }
@@ -779,6 +796,36 @@ export default function App() {
       (err) => handleFirestoreError(err, OperationType.GET, 'monthly_tests')
     );
 
+    const today = new Date().toISOString().split('T')[0];
+    const dailyMcqsQuery = user.role === 'admin'
+      ? collection(firestore, 'daily_mcqs')
+      : query(collection(firestore, 'daily_mcqs'), where('status', '==', 'published'));
+
+    const unsubDailyMcqs = onSnapshot(
+      dailyMcqsQuery,
+      (snapshot) => {
+        const normalizedUserClass = String(user.class || '').toLowerCase();
+        const shortUserClass = normalizedUserClass.replace('class', '').trim();
+        const data = snapshot.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .filter((mcq: any) => {
+            if (user.role === 'admin') return true;
+            const mcqClass = String(mcq.class || '').toLowerCase();
+            const matchesClass = mcqClass === normalizedUserClass || mcqClass === shortUserClass || mcqClass === `class${shortUserClass}`;
+            const matchesToday = String(mcq.activeDate || '') === today;
+            return matchesClass && matchesToday;
+          })
+          .sort((left: any, right: any) => {
+            const leftDate = new Date(left.activeDate || 0).getTime();
+            const rightDate = new Date(right.activeDate || 0).getTime();
+            return rightDate - leftDate;
+          }) as DailyMcq[];
+
+        setDailyMcqs(data);
+      },
+      (err) => handleFirestoreError(err, OperationType.GET, 'daily_mcqs')
+    );
+
     const unsubSubmissions = onSnapshot(
       query(collection(firestore, 'monthly_test_submissions'), where('userId', '==', user.id)),
       (snapshot) => {
@@ -786,6 +833,15 @@ export default function App() {
         setTestSubmissions(data);
       },
       (err) => handleFirestoreError(err, OperationType.GET, 'monthly_test_submissions')
+    );
+
+    const unsubDailyMcqSubmissions = onSnapshot(
+      query(collection(firestore, 'daily_mcq_submissions'), where('userId', '==', user.id)),
+      (snapshot) => {
+        const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as DailyMcqSubmission[];
+        setDailyMcqSubmissions(data);
+      },
+      (err) => handleFirestoreError(err, OperationType.GET, 'daily_mcq_submissions')
     );
 
     const textbooksQuery = user.role === 'admin'
@@ -806,7 +862,6 @@ export default function App() {
       }
     );
 
-    const today = new Date().toISOString().split('T')[0];
     const unsubChallenge = onSnapshot(
       query(collection(firestore, 'daily_challenges'), where('date', '==', today)),
       (snapshot) => {
@@ -861,14 +916,40 @@ export default function App() {
       unsubChapters();
       unsubLeaderboard();
       unsubTests();
+      unsubDailyMcqs();
       unsubSubmissions();
+      unsubDailyMcqSubmissions();
       unsubTextbooks();
       unsubChallenge();
       unsubProgress();
       unsubFollowing();
       unsubNotifications();
     };
-  }, [user?.id]);
+  }, [user?.class, user?.id, user?.role]);
+
+  const dailyMcqRotation = React.useMemo(
+    () => getConfiguredDailyMcqSequence(systemSettings?.dailyMcqSubjectRotation),
+    [systemSettings?.dailyMcqSubjectRotation]
+  );
+
+  const todayDailySubject = React.useMemo(() => {
+    const subjectKey = getRotatingDailyMcqSubject(new Date().toISOString().split('T')[0], dailyMcqRotation);
+    return translations[language].subjects?.[subjectKey] || subjectKey;
+  }, [dailyMcqRotation, language]);
+
+  const tomorrowDailySubject = React.useMemo(() => {
+    const subjectKey = getRotatingDailyMcqSubject(getTomorrowDateString(), dailyMcqRotation);
+    return translations[language].subjects?.[subjectKey] || subjectKey;
+  }, [dailyMcqRotation, language]);
+
+  const handleShareDailyPractice = React.useCallback(() => {
+    const classLabel = user?.class ? (translations[language].classes?.[user.class] || user.class) : '';
+    openDailyMcqWhatsAppShare({
+      language,
+      subjectLabel: todayDailySubject,
+      classLabel,
+    });
+  }, [language, todayDailySubject, user?.class]);
 
   useEffect(() => {
     let interval: any;
@@ -1786,6 +1867,7 @@ export default function App() {
 
         {/* CONTENT AREA: This is the ONLY part that scrolls */}
         <div ref={contentScrollRef} className="flex-1 overflow-y-auto p-4 md:p-8 scrollbar-hide relative z-10">
+<<<<<<< HEAD
           <Suspense fallback={<ViewLoader />}>
             <AnimatePresence mode="wait">
               {/* Your 10+ Tab components go here... */}
@@ -1815,6 +1897,36 @@ export default function App() {
               {activeTab === 'plans' && <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />}
             </AnimatePresence>
           </Suspense>
+=======
+          <AnimatePresence mode="wait">
+            {/* Your 10+ Tab components go here... */}
+            {activeTab === 'dashboard' && <Dashboard user={user} leaderboard={leaderboard} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} chapters={chapters} dailyChallenge={dailyChallenge} hasDailyPractice={dailyMcqs.length > 0} todayDailySubject={todayDailySubject} tomorrowDailySubject={tomorrowDailySubject} onOpenDailyPractice={() => setActiveTab('daily_mcqs')} onShareDailyPractice={handleShareDailyPractice} onOpenTutor={() => { 
+  if (isPremium) {
+    setOpenTutorInVoiceMode(Date.now());
+    setActiveTab('study_buddy');
+  } else {
+    handleUpgradeClick();
+  }
+}} />}
+            {activeTab === 'notifications' && <NotificationsView notifications={studentNotifications} language={language} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'courses' && <CoursesView user={user} chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'monthly_tests' && <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'daily_mcqs' && <DailyMcqView mcqs={dailyMcqs} submissions={dailyMcqSubmissions} user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'study_buddy' && (
+              isPremium ? <StudyBuddyView language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} user={user} initialVoiceMode={openTutorInVoiceMode} onBack={() => setActiveTab('dashboard')} onLanguageChange={setLanguage} /> : <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
+            )}
+            {activeTab === 'gundulu' && (
+              isPremium ? <GunduluHuman onBack={() => setActiveTab('dashboard')} /> : <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
+            )}
+            {activeTab === 'profile' && <ProfileView user={user} language={language} onBack={() => setActiveTab('dashboard')} onParentAccess={() => setActiveTab('parent_dashboard')} setActiveTab={setActiveTab} />}
+            {activeTab === 'parent_dashboard' && <ParentDashboard user={user} chapters={chapters} leaderboard={leaderboard} language={language} onBack={() => setActiveTab('profile')} userProgress={userProgress} />}
+            {activeTab === 'leaderboard' && <LeaderboardView leaderboard={leaderboard} language={language} onBack={() => setActiveTab('dashboard')} following={following} user={user} />}
+            {activeTab === 'support' && <SupportView user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'store' && <AvatarStore user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'plans' && <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />}
+          </AnimatePresence>
+>>>>>>> work/clone-main-20260413
 
           {/* --- FOOTER PLACE: BIGSAN BRANDING --- */}
           <footer className="mt-20 pb-10 flex flex-col items-center gap-4 opacity-40">

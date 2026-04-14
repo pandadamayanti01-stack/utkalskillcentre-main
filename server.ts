@@ -1,15 +1,29 @@
 import express from 'express';
 import path from 'path';
-import 'dotenv/config';
+import dotenv from 'dotenv';
 import { createServer as createViteServer } from 'vite';
 import Razorpay from 'razorpay';
 import multer from 'multer';
-import * as admin from 'firebase-admin';
+import { App, applicationDefault, getApp, getApps, initializeApp } from 'firebase-admin/app';
+import { cert } from 'firebase-admin/app';
+import { getFirestore as getAdminFirestore } from 'firebase-admin/firestore';
+import { getStorage as getAdminStorage } from 'firebase-admin/storage';
 import fs from 'fs';
 import crypto from 'node:crypto';
+import { registerDailyMcqAutomation } from './src/server/dailyMcqAutomation';
+import { getServiceAccountCredentials } from './src/server/googleCredentials';
+
+dotenv.config({ path: path.join(process.cwd(), '.env.local') });
+dotenv.config();
+
+const firestoreDatabaseId = process.env.FIRESTORE_DATABASE_ID || process.env.VITE_FIRESTORE_DATABASE_ID || 'gundulu2';
+
+function getInitializedAdminApp(): App | null {
+  return getApps().length > 0 ? getApp() : null;
+}
 
 // Initialize Firebase Admin
-if (admin.apps && !admin.apps.length) {
+if (!getInitializedAdminApp()) {
   try {
     const configPath = path.join(process.cwd(), 'firebase-applet-config.json');
     let config: any = {};
@@ -25,12 +39,19 @@ if (admin.apps && !admin.apps.length) {
     }
 
     if (config.projectId) {
-      admin.initializeApp({
-        credential: admin.credential.applicationDefault(),
+      const serviceAccount = getServiceAccountCredentials();
+      initializeApp({
+        credential: serviceAccount
+          ? cert({
+              projectId: serviceAccount.projectId,
+              clientEmail: serviceAccount.clientEmail,
+              privateKey: serviceAccount.privateKey,
+            })
+          : applicationDefault(),
         projectId: config.projectId,
         storageBucket: config.storageBucket
       });
-      console.log("Firebase Admin initialized successfully with project:", config.projectId);
+      console.log("Firebase Admin initialized successfully with project:", config.projectId, "database:", firestoreDatabaseId);
     } else {
       console.error("Firebase Project ID missing. Firebase Admin features will be disabled.");
     }
@@ -101,11 +122,16 @@ async function startServer() {
   // API Routes
   app.post('/api/upload-textbook', upload.single('file'), async (req: any, res) => {
     try {
+      const adminApp = getInitializedAdminApp();
+      if (!adminApp) {
+        return res.status(503).json({ error: 'Firebase Admin is not initialized' });
+      }
+
       if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded' });
       }
 
-      const bucket = admin.storage().bucket();
+      const bucket = getAdminStorage(adminApp).bucket();
       const fileName = `textbooks/${Date.now()}_${req.file.originalname}`;
       const file = bucket.file(fileName);
 
@@ -181,14 +207,19 @@ async function startServer() {
       const generated_signature = hmac.digest('hex');
       
       if (generated_signature === razorpay_signature) {
+        const adminApp = getInitializedAdminApp();
+        if (!adminApp) {
+          return res.status(503).json({ success: false, message: 'Firebase Admin is not initialized' });
+        }
+
         // Log transaction to Firestore
-        await admin.firestore().collection('transactions').add({
+        await getAdminFirestore(adminApp, firestoreDatabaseId).collection('transactions').add({
           payment_id: razorpay_payment_id,
           order_id: razorpay_order_id,
           amount: amount / 100,
           userId,
           class: userClass,
-          timestamp: admin.firestore.FieldValue.serverTimestamp()
+          timestamp: new Date()
         });
         res.json({ success: true });
       } else {
@@ -273,6 +304,9 @@ async function startServer() {
       return res.status(500).json({ error: error?.message || 'TTS generation failed' });
     }
   });
+
+  const adminApp = getInitializedAdminApp();
+  registerDailyMcqAutomation(app, adminApp, firestoreDatabaseId);
 
   // Vite middleware for development
   const distPath = path.join(process.cwd(), 'dist');
