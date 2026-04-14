@@ -9,10 +9,9 @@ import cron from 'node-cron';
 let PDFParse: any;
 try {
   PDFParse = require('pdf-parse');
-  if (PDFParse && PDFParse.default) PDFParse = PDFParse.default;
 } catch (e) {
   try {
-    PDFParse = (await import('pdf-parse')).default || (await import('pdf-parse'));
+    PDFParse = await import('pdf-parse');
   } catch (e2) {
     throw new Error('pdf-parse module could not be loaded');
   }
