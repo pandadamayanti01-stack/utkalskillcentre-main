@@ -78,33 +78,6 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
   };
 
   const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
-    if (messageListRef.current) {
-      messageListRef.current.scrollTo({
-        top: messageListRef.current.scrollHeight,
-        behavior
-      });
-      return;
-    }
-    messagesEndRef.current?.scrollIntoView({ behavior });
-  };
-
-  useEffect(() => {
-    scrollToBottom('auto');
-  }, []);
-
-  useEffect(() => {
-    scrollToBottom('smooth');
-  }, [messages, loading]);
-
-  const saveChatHistory = async (userMsg: string, aiMsg: string) => {
-    const path = 'tutor_queries';
-    try {
-      await addDoc(collection(db, path), {
-        userId: user?.id || user?.uid || 'anonymous',
-        userName: user?.name || user?.displayName || 'Student',
-        userClass: user?.class || 'Unknown',
-        userPhone: user?.phoneNumber || '',
-        userEmail: user?.email || '',
         question: userMsg,
         answer: aiMsg,
         source: 'chatbot',
@@ -113,70 +86,72 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
     } catch (error) {
       console.error('Failed to save chat history:', error);
       handleFirestoreError(error, OperationType.CREATE, path);
-    }
-  };
-
-  const sendMessage = async (textOverride?: string) => {
-    const textToSend = textOverride || input;
-    if (!textToSend.trim() && !selectedImage) return;
-    if (!isPremium) {
-      onUpgrade();
-      return;
-    }
-
     const imageSnapshot = selectedImage;
     const userMessage: Message = {
-      id: Date.now().toString(),
-      role: 'user',
-      content: textToSend || (language === 'or' ? 'ଏହି ଫଟୋଟି ଦେଖ ଓ ବୁଝାଅ' : 'Please look at this image and explain'),
-      timestamp: new Date(),
-      imageUrl: imageSnapshot?.preview,
-    };
-
-    setMessages(prev => [...prev, userMessage]);
-    if (!textOverride) setInput('');
-    setSelectedImage(null);
-    setLoading(true);
-
-    try {
-      const ai = getAI();
-      const model = 'gemini-flash-latest';
-
-      let basePrompt = `Role & Persona:
-Identity: You are "Gundulu," a 4-year-old baby genius from Odisha. You are the lead tutor at Utkal Skill Centre.
-Tone: Energetic, curious, and incredibly supportive. Use the "Pila" (child) dialect of Odia to make students feel like they are learning from a brilliant little brother.
-Language Policy: STRICT ODIA ONLY. Never use blocks of English. If you must use a technical term (like "Gravity" or "Photosynthesis"), write it in Odia script: ଗ୍ରାଭିଟି (Gravity).
-Interaction Rules:
-The Greeting: Every conversation MUST start with a warm Odia "Namaskar!"
-The "Story" Method: When explaining concepts, turn the answer into a "Katha" (story) using local Odisha examples where possible.
-Active Listening: Instead of lecturing, ask the student: "Bujhila ta? (Did you understand?)" or "Au kichi pacharibu? (Want to ask anything else?)"
-Subscription Awareness: If a student asks about advanced features, remind them in a friendly way that their Utkal Skill Centre subscription unlocks Gundulu's "Super Powers."`;
-
-      try {
-        const settingsDoc = await getDoc(doc(db, 'system_settings', 'config'));
-        if (settingsDoc.exists() && settingsDoc.data().gunduluPrompt) {
-          basePrompt = settingsDoc.data().gunduluPrompt;
-        }
-      } catch (err) {
-        console.error('Failed to fetch custom Gundulu prompt:', err);
+    const sendMessage = async (textOverride?: string) => {
+      const textToSend = textOverride || input;
+      if (!textToSend.trim() && !selectedImage) return;
+      if (!isPremium) {
+        onUpgrade();
+        return;
       }
 
-      const systemInstruction = `${basePrompt}
+      const imageSnapshot = selectedImage;
+      const userMessage: Message = {
+        id: Date.now().toString(),
+        role: 'user',
+        content: textToSend || (language === 'or' ? 'ଏହି ଫଟୋଟି ଦେଖ ଓ ବୁଝାଅ' : 'Please look at this image and explain'),
+        timestamp: new Date(),
+        imageUrl: imageSnapshot?.preview,
+      };
 
-Current User Context:
-- Name: ${user?.name || 'Student'}
-- Class: ${user?.class || 'Unknown'}
-- Language Preference: ${language === 'or' ? 'Odia' : 'English'}`;
+      setMessages(prev => [...prev, userMessage]);
+      if (!textOverride) setInput('');
+      setSelectedImage(null);
+      setLoading(true);
 
-      const messageText = textToSend || (language === 'or' ? 'ଏହି ଫଟୋଟି ଦେଖ ଓ ବୁଝାଅ' : 'Please look at this image and explain');
-      const contents = imageSnapshot
-        ? [{ role: 'user', parts: [
-            { text: messageText },
-            { inlineData: { mimeType: imageSnapshot.mimeType, data: imageSnapshot.base64 } }
-          ] }]
-        : messageText;
+      try {
+        // 1. Try to answer from our bucket (tutor_queries) if subject matches
+        let foundAnswer: string | null = null;
+        let foundSubject: string | null = null;
+        if (user?.class && textToSend) {
+          try {
+            // Search for a matching question in tutor_queries for the user's class/subject
+            const q = query(
+              collection(db, 'tutor_queries'),
+              where('userClass', '==', user.class),
+              where('question', '==', textToSend)
+            );
+            const snapshot = await getDocs(q);
+            if (!snapshot.empty) {
+              const docData = snapshot.docs[0].data();
+              foundAnswer = docData.answer;
+              foundSubject = docData.userClass;
+            }
+          } catch (err) {
+            console.warn('Bucket search failed:', err);
+          }
+        }
 
-      const result = await withRetry(() => ai.models.generateContent({
+        if (foundAnswer && foundSubject === user?.class) {
+          // Answer from bucket
+          const assistantMessage: Message = {
+            id: (Date.now() + 1).toString(),
+            role: 'assistant',
+            content: foundAnswer,
+            timestamp: new Date(),
+          };
+          setMessages(prev => [...prev, assistantMessage]);
+          await saveChatHistory(textToSend, foundAnswer);
+          setLoading(false);
+          return;
+        }
+
+        // 2. If not found, fallback to global AI
+        const ai = getAI();
+        const model = 'gemini-flash-latest';
+
+        let basePrompt = `Role & Persona:
         model,
         contents,
         config: {
@@ -186,10 +161,66 @@ Current User Context:
 
       const responseText = result?.text || (language === 'or' ? 'ମୁଁ ଦୟାକରି ଏହାକୁ ପୁଣି ଚେଷ୍ଟା କରିବି।' : "I'm sorry, I couldn't process that.");
 
+        try {
+          const settingsDoc = await getDoc(doc(db, 'system_settings', 'config'));
+          if (settingsDoc.exists() && settingsDoc.data().gunduluPrompt) {
+            basePrompt = settingsDoc.data().gunduluPrompt;
+          }
+        } catch (err) {
+          console.error('Failed to fetch custom Gundulu prompt:', err);
+        }
+
+        const systemInstruction = `${basePrompt}
+
       const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: responseText,
+
+        const messageText = textToSend || (language === 'or' ? 'ଏହି ଫଟୋଟି ଦେଖ ଓ ବୁଝାଅ' : 'Please look at this image and explain');
+        const contents = imageSnapshot
+          ? [{ role: 'user', parts: [
+              { text: messageText },
+              { inlineData: { mimeType: imageSnapshot.mimeType, data: imageSnapshot.base64 } }
+            ] }]
+          : messageText;
+
+        const result = await withRetry(() => ai.models.generateContent({
+          model,
+          contents,
+          config: {
+            systemInstruction,
+          },
+        }));
+
+        const responseText = result?.text || (language === 'or' ? 'ମୁଁ ଦୟାକରି ଏହାକୁ ପୁଣି ଚେଷ୍ଟା କରିବି।' : "I'm sorry, I couldn't process that.");
+
+        const assistantMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: responseText,
+          timestamp: new Date(),
+        };
+
+        setMessages(prev => [...prev, assistantMessage]);
+        await saveChatHistory(textToSend, responseText);
+      } catch (err: any) {
+        console.error('Study Buddy Chat Error:', err);
+        let errorMsg = language === 'en' ? 'Failed to connect. Please try again.' : 'ସଂଯୋଗ କରିବାରେ ବିଫଳ ହେଲା | ଦୟାକରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |';
+        if (err.message?.includes('503') || err.status === 503) {
+          errorMsg = language === 'en'
+            ? 'Gundulu is very busy right now! Please try asking again in a minute.'
+            : 'ଗୁଣ୍ଡୁଲୁ ବର୍ତ୍ତମାନ ବହୁତ ବ୍ୟସ୍ତ ଅଛନ୍ତି! ଦୟାକରି କିଛି ସମୟ ପରେ ପୁଣି ପଚାରନ୍ତୁ |';
+        }
+
+        const errorMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: errorMsg,
+          timestamp: new Date(),
+        };
+        setMessages(prev => [...prev, errorMessage]);
+      } finally {
+        setLoading(false);
+      }
+    };
         timestamp: new Date(),
       };
 

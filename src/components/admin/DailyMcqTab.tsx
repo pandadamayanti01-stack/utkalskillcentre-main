@@ -162,7 +162,11 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
 
     setIsGeneratingFromDrive(true);
     try {
-      const response = await fetch('/api/admin/daily-mcqs/generate-from-drive', {
+      // Use full backend URL in production, relative in development
+      const apiBase = process.env.NODE_ENV === 'production'
+        ? (window.__API_ORIGIN__ || window.location.origin)
+        : '';
+      const response = await fetch(apiBase + '/api/admin/daily-mcqs/generate-from-drive', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -200,7 +204,11 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
   const handleRunAutoGeneration = async () => {
     setIsRunningAutoGeneration(true);
     try {
-      const response = await fetch('/api/admin/daily-mcqs/run-auto', {
+      // Use full backend URL in production, relative in development
+      const apiBase2 = process.env.NODE_ENV === 'production'
+        ? (window.__API_ORIGIN__ || window.location.origin)
+        : '';
+      const response = await fetch(apiBase2 + '/api/admin/daily-mcqs/run-auto', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
