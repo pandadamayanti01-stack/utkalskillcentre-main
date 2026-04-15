@@ -1,3 +1,21 @@
+// Helper: Split textbook text into chapters using regex
+function splitTextIntoChapters(text: string): { title: string, content: string }[] {
+  const chapterRegex = /(chapter\s*\d+|ch\.?\s*\d+|lesson\s*\d+|unit\s*\d+)/gi;
+  const matches = [...text.matchAll(chapterRegex)];
+  if (matches.length === 0) {
+    // If no chapters found, treat whole text as one chapter
+    return [{ title: 'Full Text', content: text }];
+  }
+  const chapters = [];
+  for (let i = 0; i < matches.length; i++) {
+    const start = matches[i].index!;
+    const end = i + 1 < matches.length ? matches[i + 1].index! : text.length;
+    const title = matches[i][0];
+    const content = text.slice(start, end).trim();
+    chapters.push({ title, content });
+  }
+  return chapters;
+}
 import { GoogleGenAI } from '@google/genai';
 import type { Express } from 'express';
 import type { App } from 'firebase-admin/app';
@@ -5,30 +23,20 @@ import { getFirestore as getAdminFirestore, FieldValue } from 'firebase-admin/fi
 import { getStorage as getAdminStorage } from 'firebase-admin/storage';
 import { google } from 'googleapis';
 import cron from 'node-cron';
-// PDF extraction helper for ESM/CJS interop
-let PDFParse: any;
-try {
-  PDFParse = require('pdf-parse');
-} catch (e) {
-  try {
-    PDFParse = await import('pdf-parse');
-  } catch (e2) {
-    throw new Error('pdf-parse module could not be loaded');
-  }
-}
+
+// Use createRequire to import pdf-parse in ESM
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const pdfParse = require('pdf-parse');
+
+
 
 async function extractPdfText(buffer: Buffer) {
-  // Try as function (CJS), then as constructor (ESM)
-  if (typeof PDFParse === 'function') {
-    const parsed = await PDFParse(buffer);
-    return parsed.text || '';
-  }
-  if (typeof PDFParse === 'object' && typeof PDFParse === 'function') {
-    const parser = new PDFParse({ data: buffer });
-    const parsed = await parser.getText();
-    return parsed.text || '';
-  }
-  throw new Error('pdf-parse is not a valid function or class');
+  // Use PDFParse class from pdf-parse v2.x
+  const { PDFParse } = await import('pdf-parse');
+  const parser = new PDFParse({ data: buffer });
+  const parsed = await parser.getText();
+  return parsed.text || '';
 }
 import { getRotatingDailyMcqSubject } from '../utils/dailyMcq';
 import { translations } from '../translations';
@@ -295,7 +303,7 @@ const SUBJECT_FILE_KEYWORDS: Record<string, string[]> = {
   // Language subjects
   odia: ['sahitya sudha', 'sahitya surabhi', 'bhasha mahak', 'bhasa nahak', 'jhulana', 'odia'],
   odia_grammar: ['odia grammar'],
-  english: ['pallavi', 'jasmine', 'english'],
+  english: ['pallavi', 'jasmine', 'english', 'jhulana'],
   english_grammar: ['english grammar'],
   hindi: ['hindi kalika', 'hindi manjari', 'hindi saurabh', 'hindi'],
   hindi_grammar: ['hindi grammar', 'hindi byakaran'],
@@ -331,11 +339,17 @@ async function loadTextbookFromBucket(adminApp: App, className: string, subject:
   const keywords = SUBJECT_FILE_KEYWORDS[subjectKey] || [subjectKey.replace(/_/g, ' '), getSubjectLabel(subject).toLowerCase()];
 
   try {
-    const bucket = getAdminStorage(adminApp).bucket(TEXTBOOK_BUCKET_NAME);
+    const bucket = getAdminStorage(adminApp).bucket('utkalskillcentre-admin');
     const [files] = await bucket.getFiles({ prefix: classFolder, maxResults: 100 });
+    console.log(`[Bucket Debug] Searching in bucket: utkalskillcentre-admin, classFolder: ${classFolder}, subject: ${subject}, keywords: ${JSON.stringify(keywords)}`);
+    console.log(`[Bucket Debug] Found files:`, files.map(f => f.name));
     const pdfFiles = files.filter((f) => f.name.toLowerCase().endsWith('.pdf'));
+    console.log(`[Bucket Debug] PDF files:`, pdfFiles.map(f => f.name));
 
-    if (!pdfFiles.length) return null;
+    if (!pdfFiles.length) {
+      console.warn(`[Bucket Debug] No PDF files found for ${className}/${subject} in utkalskillcentre-admin/${classFolder}`);
+      return null;
+    }
 
     // Score each file by keyword match (prefer more specific match)
     const scored = pdfFiles.map((f) => {
@@ -348,7 +362,11 @@ async function loadTextbookFromBucket(adminApp: App, className: string, subject:
     }).sort((a, b) => b.score - a.score);
 
     const best = scored[0];
-    if (best.score <= 0) return null;
+    console.log(`[Bucket Debug] Best match:`, best?.file?.name, 'Score:', best?.score);
+    if (!best || best.score <= 0) {
+      console.warn(`[Bucket Debug] No PDF file matched keywords for ${className}/${subject} in utkalskillcentre-admin/${classFolder}`);
+      return null;
+    }
 
     const [buffer] = await best.file.download();
     const text = await extractPdfText(buffer);
@@ -366,7 +384,7 @@ async function loadTextbookFromBucket(adminApp: App, className: string, subject:
       },
     };
   } catch (error: any) {
-    console.warn(`Bucket textbook load failed for ${className}/${subject}:`, error?.message);
+    console.warn(`[Bucket Debug] Bucket textbook load failed for ${className}/${subject}:`, error?.message);
     return null;
   }
 }
@@ -508,34 +526,41 @@ async function generateQuestionsFromText(input: {
   const ai = getGeminiClient();
   const subjectLabel = getSubjectLabel(input.subject);
   const classLabel = getClassLabel(input.className);
-  const trimmedSource = input.sourceText.replace(/\s+/g, ' ').trim().slice(0, MAX_SOURCE_TEXT_LENGTH);
-
-  if (!trimmedSource) {
-    throw new Error('No readable textbook content was extracted from the selected Drive file.');
+  const chapters = splitTextIntoChapters(input.sourceText);
+  const isSenior = /^class[6-9]$|^class10$/.test(input.className.toLowerCase());
+  const maxMcq = isSenior ? 30 : 15;
+  let allMcqs: DailyMcqQuestion[] = [];
+  for (const chapter of chapters) {
+    if (allMcqs.length >= maxMcq) break;
+    const trimmedSource = chapter.content.replace(/\s+/g, ' ').trim().slice(0, MAX_SOURCE_TEXT_LENGTH);
+    if (!trimmedSource) continue;
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.1-flash-lite-preview',
+      contents: `Create 5 daily multiple-choice questions for ${classLabel} on ${subjectLabel}${input.board ? ` for ${input.board}` : ''}, only from this chapter: ${chapter.title}. The questions must be based only on the chapter content below and suitable for school students. Keep options short, clear, and syllabus-aligned. Return strict JSON with this shape only: {"questions":[{"question":"...","options":["...","...","...","..."],"correct_answer":"...","explanation":"..."}]}. Chapter content: ${trimmedSource}`,
+      config: {
+        responseMimeType: 'application/json',
+        temperature: 0.4,
+      },
+    });
+    let rawText = response.text || '{}';
+    rawText = rawText.replace(/^```json?\s*/i, '').replace(/\s*```$/i, '').trim();
+    rawText = rawText.replace(/\\(?!["\\/bfnrtu])/g, '\\\\');
+    let parsed: any = {};
+    try {
+      parsed = JSON.parse(rawText);
+    } catch (e) {
+      continue;
+    }
+    const questions = cleanGeneratedQuestions(parsed.questions);
+    // Add up to 5 MCQs from this chapter, but don't exceed maxMcq
+    for (const q of questions) {
+      if (allMcqs.length < maxMcq) allMcqs.push(q);
+    }
   }
-
-  const response = await ai.models.generateContent({
-    model: 'gemini-3.1-flash-lite-preview',
-    contents: `Create 5 daily multiple-choice questions for ${classLabel} on ${subjectLabel}${input.board ? ` for ${input.board}` : ''}. The questions must be based only on the textbook content below and suitable for school students. Keep options short, clear, and syllabus-aligned. Return strict JSON with this shape only: {"questions":[{"question":"...","options":["...","...","...","..."],"correct_answer":"...","explanation":"..."}]}. Textbook content: ${trimmedSource}`,
-    config: {
-      responseMimeType: 'application/json',
-      temperature: 0.4,
-    },
-  });
-
-  let rawText = response.text || '{}';
-  // Strip markdown code fences if present
-  rawText = rawText.replace(/^```json?\s*/i, '').replace(/\s*```$/i, '').trim();
-  // Sanitise bad escape sequences that Gemini sometimes produces from Odia content
-  rawText = rawText.replace(/\\(?!["\\/bfnrtu])/g, '\\\\');
-  const parsed = JSON.parse(rawText);
-  const questions = cleanGeneratedQuestions(parsed.questions);
-
-  if (questions.length !== 5) {
-    throw new Error('The AI response did not return 5 valid MCQ questions.');
+  if (allMcqs.length === 0) {
+    throw new Error('No valid MCQs could be generated from the textbook chapters.');
   }
-
-  return questions;
+  return allMcqs;
 }
 
 async function findMatchingTextbookSource(adminApp: App, databaseId: string, params: { className: string; subject: string; board?: string }) {
