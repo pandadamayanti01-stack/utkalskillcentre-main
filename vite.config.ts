@@ -145,7 +145,7 @@ export default defineConfig(({mode}) => {
       hmr: false,
       proxy: {
         '/api': {
-          target: 'http://localhost:5000', // Update if your backend runs on a different port
+          target: 'http://localhost:3000', // Update if your backend runs on a different port
           changeOrigin: true,
           secure: false,
         },
