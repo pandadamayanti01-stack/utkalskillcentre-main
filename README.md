@@ -1,22 +1,4 @@
-..
-
-# Run and deploy your AI Studio app
-
-This contains everything you need to run your app locally.
-
-View your app in AI Studio: https://ai.studio/apps/2a24dfcb-5874-4b37-8e37-434f425283b9
-
-## Run Locally
-
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
-
+.
 ## Daily MCQ Automation Setup
 
 The Drive-based daily MCQ generator needs server-side credentials in addition to the normal frontend Firebase config.
