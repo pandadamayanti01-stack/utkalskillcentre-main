@@ -22,7 +22,6 @@ interface DashboardProps {
   onOpenDailyPractice?: () => void;
   onShareDailyPractice?: () => void;
 }
-
 export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, hasDailyPractice, todayDailySubject, tomorrowDailySubject, onChallengeComplete, onOpenTutor, onOpenDailyPractice, onShareDailyPractice }: DashboardProps) {
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const filteredLeaderboard = selectedDistrict
@@ -42,15 +41,38 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
     { label: t.nextLeague, value: user?.league || 'Bronze', icon: <Award size={20} />, color: 'text-blue-500', bg: 'bg-blue-500/10' },
   ];
 
-  const proTips = [
-    "Consistency is key! Try to maintain your streak for bonus XP.",
-    "Use the AI Tutor for complex math problems to see step-by-step solutions.",
-    "Take a monthly test to evaluate your overall progress in each subject.",
-    "Practice makes perfect! Use the practice questions after every chapter.",
-    "Compete in the leaderboard to stay motivated and earn rewards."
+
+  // Daily motivational quotes in English and Odia
+  const dailyQuotes = [
+    {
+      en: "Success is the sum of small efforts, repeated day in and day out.",
+      or: "ସଫଳତା ହେଉଛି ଛୋଟ ଛୋଟ ପ୍ରୟାସର ଯୋଗଫଳ, ଦିନକୁ ଦିନ ପୁନରାବୃତ୍ତି କର।"
+    },
+    {
+      en: "Believe in yourself and all that you are.",
+      or: "ନିଜେ ଉପରେ ଆସ୍ଥା ରଖନ୍ତୁ ଏବଂ ଆପଣ ଯାହା ଅଟୁଟ ରହନ୍ତୁ।"
+    },
+    {
+      en: "Every day is a new beginning. Take a deep breath and start again.",
+      or: "ପ୍ରତିଦିନ ଏକ ନୂତନ ଆରମ୍ଭ। ଗଭୀର ଶ୍ୱାସ ନିଅନ୍ତୁ ଏବଂ ପୁଣି ଆରମ୍ଭ କରନ୍ତୁ।"
+    },
+    {
+      en: "Hard work beats talent when talent doesn't work hard.",
+      or: "କଠିନ ପ୍ରୟାସ ଦକ୍ଷତାକୁ ଅଟୁଟ କରେ, ଯେତେବେଳେ ଦକ୍ଷତା କଠିନ ପ୍ରୟାସ କରେନାହିଁ।"
+    },
+    {
+      en: "Dream big, work hard, stay focused, and surround yourself with good people.",
+      or: "ବଡ଼ ସ୍ୱପ୍ନ ଦେଖନ୍ତୁ, କଠିନ ପ୍ରୟାସ କରନ୍ତୁ, ଏକାଗ୍ର ରୁହନ୍ତୁ ଏବଂ ଭଲ ଲୋକମାନେ ସହିତ ରୁହନ୍ତୁ।"
+    },
+    {
+      en: "Use the AI Tutor for complex math problems to see step-by-step solutions.",
+      or: "ଜଟିଳ ଗଣିତ ସମସ୍ୟା ପାଇଁ AI Tutor ବ୍ୟବହାର କରନ୍ତୁ ଏବଂ ପଦକ୍ଷେପ ଦରକ୍ଷେପ ସମାଧାନ ଦେଖନ୍ତୁ।"
+    }
   ];
 
-  const [randomTip] = React.useState(proTips[Math.floor(Math.random() * proTips.length)]);
+  // Pick quote based on day of year
+  const dayOfYear = Math.floor((new Date().getTime() - new Date(new Date().getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
+  const todayQuote = dailyQuotes[dayOfYear % dailyQuotes.length][language];
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -74,12 +96,6 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       exit="exit"
       className="space-y-6 pb-20"
     >
-      {/* District Leaderboard Filter */}
-      <DistrictLeaderboardFilter
-        selectedDistrict={selectedDistrict}
-        setSelectedDistrict={setSelectedDistrict}
-        language={language}
-      />
       {/* AI Tutor Card - Compact & Top-Aligned */}
       <motion.div 
         variants={itemVariants}
@@ -137,26 +153,64 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         </div>
       </div>
 
-      {/* Stats Grid - Smaller */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {stats.map((stat, idx) => (
-          <motion.div 
-            key={idx}
-            variants={itemVariants}
-            className="glass-card neon-border rounded-xl p-3 flex flex-col items-center text-center space-y-1.5 group hover:scale-105 transition-all"
-          >
-            <div className={`w-8 h-8 rounded-lg ${stat.bg} ${stat.color} flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform`}>
-              {React.cloneElement(stat.icon as any, { size: 16 })}
+
+
+
+      {/* Daily MCQ (Daily Practice) Card at Top */}
+      <div className="mt-8">
+        <div className="w-full text-left glass-card neon-border rounded-3xl p-4 md:p-5 relative overflow-hidden group hover:border-emerald-500/40 transition-all bg-gradient-to-br from-cyan-500/10 to-transparent">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-cyan-500/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none group-hover:bg-cyan-500/20 transition-colors"></div>
+          <div className="relative z-10 flex items-start justify-between gap-4">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-[9px] font-black uppercase tracking-[0.2em]">
+                <CheckCircle2 size={12} />
+                Daily Practice
+              </div>
+              <h3 className="text-lg font-black text-white tracking-tight">
+                {language === 'en' ? 'MCQ Practice for Your Class' : 'ଆପଣଙ୍କ ଶ୍ରେଣୀ ପାଇଁ MCQ ଅଭ୍ୟାସ'}
+              </h3>
+              <p className="text-slate-400 text-[11px] font-medium max-w-xl leading-relaxed">
+                {hasDailyPractice
+                  ? (language === 'en' ? 'New class-wise questions are available. Practice today and keep the habit going.' : 'ଆପଣଙ୍କ ଶ୍ରେଣୀ ପାଇଁ ନୂଆ ପ୍ରଶ୍ନ ଉପଲବ୍ଧ ଅଛି | ଆଜିଠୁ ଅଭ୍ୟାସ ଜାରି ରଖନ୍ତୁ |')
+                  : (language === 'en' ? 'Open the practice tab to check whether today\'s question set has been published.' : 'ଆଜିର ପ୍ରଶ୍ନ ସେଟ୍ ପ୍ରକାଶିତ ହୋଇଛି କି ନାହିଁ ଦେଖିବାକୁ ଅଭ୍ୟାସ ଟ୍ୟାବ୍ ଖୋଲନ୍ତୁ |')}
+              </p>
+              {(todayDailySubject || tomorrowDailySubject) && (
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {todayDailySubject && (
+                    <span className="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-slate-200">
+                      {language === 'en' ? 'Today:' : 'ଆଜି:'} {todayDailySubject}
+                    </span>
+                  )}
+                  {tomorrowDailySubject && (
+                    <span className="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                      {language === 'en' ? 'Tomorrow:' : 'ଆସନ୍ତାକାଲି:'} {tomorrowDailySubject}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
-            <div>
-              <p className="text-[7px] font-black text-slate-500 uppercase tracking-widest mb-0.5">{stat.label}</p>
-              <p className="text-base font-black text-white">{stat.value}</p>
+            <div className="shrink-0 flex flex-col items-end gap-2">
+              <button
+                type="button"
+                onClick={onOpenDailyPractice}
+                className="rounded-2xl bg-cyan-500/10 border border-cyan-500/20 px-3 py-2 text-cyan-300 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-cyan-500/20 transition-all"
+              >
+                {language === 'en' ? 'Open Tab' : 'ଟ୍ୟାବ୍ ଖୋଲନ୍ତୁ'}
+              </button>
+              <button
+                type="button"
+                onClick={onShareDailyPractice}
+                className="inline-flex items-center gap-2 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 px-3 py-2 text-emerald-300 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-emerald-500/20 transition-all"
+              >
+                <MessageCircle size={12} />
+                {language === 'en' ? 'Share Test' : 'ଟେଷ୍ଟ ଶେୟାର କରନ୍ତୁ'}
+              </button>
             </div>
-          </motion.div>
-        ))}
+          </div>
+        </div>
       </div>
 
-      {/* Leaderboard Section */}
+      {/* Leaderboard Section Below MCQ */}
       <div className="mt-8">
         <LeaderboardView
           leaderboard={filteredLeaderboard}
@@ -165,61 +219,18 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           following={user?.following || []}
           user={user}
         />
+        <div className="mt-4">
+          <DistrictLeaderboardFilter
+            selectedDistrict={selectedDistrict}
+            setSelectedDistrict={setSelectedDistrict}
+            language={language}
+          />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Progress Section */}
         <div className="lg:col-span-2 space-y-4">
-          <div className="w-full text-left glass-card neon-border rounded-3xl p-4 md:p-5 relative overflow-hidden group hover:border-emerald-500/40 transition-all bg-gradient-to-br from-cyan-500/10 to-transparent">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-cyan-500/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none group-hover:bg-cyan-500/20 transition-colors"></div>
-            <div className="relative z-10 flex items-start justify-between gap-4">
-              <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-[9px] font-black uppercase tracking-[0.2em]">
-                  <CheckCircle2 size={12} />
-                  Daily Practice
-                </div>
-                <h3 className="text-lg font-black text-white tracking-tight">
-                  {language === 'en' ? 'MCQ Practice for Your Class' : 'ଆପଣଙ୍କ ଶ୍ରେଣୀ ପାଇଁ MCQ ଅଭ୍ୟାସ'}
-                </h3>
-                <p className="text-slate-400 text-[11px] font-medium max-w-xl leading-relaxed">
-                  {hasDailyPractice
-                    ? (language === 'en' ? 'New class-wise questions are available. Practice today and keep the habit going.' : 'ଆପଣଙ୍କ ଶ୍ରେଣୀ ପାଇଁ ନୂଆ ପ୍ରଶ୍ନ ଉପଲବ୍ଧ ଅଛି | ଆଜିଠୁ ଅଭ୍ୟାସ ଜାରି ରଖନ୍ତୁ |')
-                    : (language === 'en' ? 'Open the practice tab to check whether today\'s question set has been published.' : 'ଆଜିର ପ୍ରଶ୍ନ ସେଟ୍ ପ୍ରକାଶିତ ହୋଇଛି କି ନାହିଁ ଦେଖିବାକୁ ଅଭ୍ୟାସ ଟ୍ୟାବ୍ ଖୋଲନ୍ତୁ |')}
-                </p>
-                {(todayDailySubject || tomorrowDailySubject) && (
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    {todayDailySubject && (
-                      <span className="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-slate-200">
-                        {language === 'en' ? 'Today:' : 'ଆଜି:'} {todayDailySubject}
-                      </span>
-                    )}
-                    {tomorrowDailySubject && (
-                      <span className="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-                        {language === 'en' ? 'Tomorrow:' : 'ଆସନ୍ତାକାଲି:'} {tomorrowDailySubject}
-                      </span>
-                    )}
-                  </div>
-                )}
-              </div>
-              <div className="shrink-0 flex flex-col items-end gap-2">
-                <button
-                  type="button"
-                  onClick={onOpenDailyPractice}
-                  className="rounded-2xl bg-cyan-500/10 border border-cyan-500/20 px-3 py-2 text-cyan-300 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-cyan-500/20 transition-all"
-                >
-                  {language === 'en' ? 'Open Tab' : 'ଟ୍ୟାବ୍ ଖୋଲନ୍ତୁ'}
-                </button>
-                <button
-                  type="button"
-                  onClick={onShareDailyPractice}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 px-3 py-2 text-emerald-300 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-emerald-500/20 transition-all"
-                >
-                  <MessageCircle size={12} />
-                  {language === 'en' ? 'Share Test' : 'ଟେଷ୍ଟ ଶେୟାର କରନ୍ତୁ'}
-                </button>
-              </div>
-            </div>
-          </div>
 
           <div className="glass-card neon-border rounded-3xl p-3 md:p-4 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/5 rounded-full blur-3xl -mr-24 -mt-24 pointer-events-none"></div>
@@ -269,8 +280,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               <Sparkles size={20} />
             </div>
             <div>
-              <h4 className="text-[7px] font-black text-blue-400 uppercase tracking-[0.2em] mb-0.5">Pro Tip of the Day</h4>
-              <p className="text-white text-[11px] font-medium leading-tight italic">"{randomTip}"</p>
+              <h4 className="text-[7px] font-black text-blue-400 uppercase tracking-[0.2em] mb-0.5">{language === 'en' ? 'Motivation of the Day' : 'ଆଜିର ପ୍ରେରଣା'}</h4>
+              <p className="text-white text-[11px] font-medium leading-tight italic">"{todayQuote}"</p>
             </div>
           </div>
         </div>
