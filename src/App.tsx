@@ -87,7 +87,16 @@ import { ChatbotModal } from './components/ChatbotModal';
 import { DailyMcqView } from './components/DailyMcqView';
 import { getDeferredPrompt, clearDeferredPrompt } from './pwa';
 
-const AdminDashboard = lazy(() => import('./components/AdminDashboard').then((module) => ({ default: module.AdminDashboard })));
+const AdminDashboard = lazy(() =>
+  import('./components/AdminDashboard')
+    .then((module) => ({ default: module.AdminDashboard }))
+    .catch((error) => {
+      if (error.message && error.message.includes('Failed to fetch dynamically imported module')) {
+        window.location.reload();
+      }
+      throw error;
+    })
+);
 const PracticeQuestion = lazy(() => import('./components/PracticeQuestion').then((module) => ({ default: module.PracticeQuestion })));
 const Dashboard = lazy(() => import('./components/Dashboard').then((module) => ({ default: module.Dashboard })));
 const NotificationsView = lazy(() => import('./components/NotificationsView').then((module) => ({ default: module.NotificationsView })));
@@ -920,9 +929,20 @@ export default function App() {
     };
   }, [user?.class, user?.id, user?.role]);
 
+
+  // --- Per-class MCQ subject rotation ---
+  const classSubjectList = React.useMemo(() => {
+    if (!user?.class || !user?.board) return null;
+    const boardKey = String(user.board).toLowerCase();
+    const classKey = String(user.class).toLowerCase();
+    // Try to get subjectsByClass for the board (e.g., odisha)
+    const boardSubjects = translations[boardKey]?.subjectsByClass?.[classKey];
+    return Array.isArray(boardSubjects) && boardSubjects.length > 0 ? boardSubjects : null;
+  }, [user?.class, user?.board]);
+
   const dailyMcqRotation = React.useMemo(
-    () => getConfiguredDailyMcqSequence(systemSettings?.dailyMcqSubjectRotation),
-    [systemSettings?.dailyMcqSubjectRotation]
+    () => getConfiguredDailyMcqSequence(classSubjectList),
+    [classSubjectList]
   );
 
   const todayDailySubject = React.useMemo(() => {

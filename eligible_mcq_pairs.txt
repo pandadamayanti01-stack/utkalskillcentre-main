@@ -1,0 +1,49 @@
+--- Today: MCQ selection for available subjects only ---
+
+--- All eligible class/subject pairs for all rotation subjects ---
+- class1 / math => Class 1/Math/Class_1_Math.pdf
+- class1 / odia => Class 1/Odia/Class_1_Odia.pdf
+- class2 / math => Class 2/Math/Class_2_Math.pdf
+- class2 / odia => Class 2/Odia/Class_2_Odia.pdf
+- class3 / math => Class 3/Math/Class_3_Math.pdf
+- class3 / english => Class 3/English/Class_3_English.pdf
+- class3 / odia => Class 3/Odia/Class_3_Odia.pdf
+- class4 / math => Class 4/Math/Class_4_Math.pdf
+- class4 / english => Class 4/English/Class_4_English.pdf
+- class5 / math => Class 5/Math/Class_5_Math.pdf
+- class5 / english => Class 5/English/Class_5_English.pdf
+- class5 / odia => Class 5/Odia/Class_5_Odia.pdf
+- class6 / math => Class 6/Math/Class_6_Math.pdf
+- class6 / english => Class 6/English/Class_6_English.pdf
+- class6 / science => Class 6/Science/Class_6_Science.pdf
+- class6 / odia => Class 6/Odia/Class_6_Odia.pdf
+- class7 / math => Class 7/Math/Class_7_Math.pdf
+- class7 / english => Class 7/English/Class_7_English.pdf
+- class7 / science => Class 7/Science/Class_7_Science.pdf
+- class7 / odia => Class 7/Odia/Class_7_Odia.pdf
+- class8 / math => Class 8/Math/Class_8_Math.pdf
+- class8 / english => Class 8/English/Class_8_English.pdf
+- class8 / science => Class 8/Science/Class_8_Science.pdf
+- class8 / odia => Class 8/Odia/Class_8_Odia.pdf
+- class8 / social => Class 8/Social_Science/Class_8_Social_Science.pdf
+- class9 / math => Class 9/Geometry/Class_9_Geometry.pdf
+- class9 / english => Class 9/English/Class_9_English.pdf
+- class9 / science => Class 9/Life_Science/Class_9_Life_Science.pdf
+- class9 / odia => Class 9/Odia/Class_9_Odia.pdf
+- class9 / social => Class 9/Social_Science/Class_9_Social_Science.pdf
+- class10 / math => Class 10/Geometry/Class_10_Geometry.pdf
+- class10 / english => Class 10/English/Class_10_English.pdf
+- class10 / science => Class 10/Life_Science/Class_10_Life_Science.pdf
+- class10 / odia => Class 10/Odia/Class_10_Odia.pdf
+- class10 / social => Class 10/Social_Science/Class_10_Social_Science.pdf
+Eligible class/subject pairs for MCQ generation:
+- class1 / math => Class 1/Math/Class_1_Math.pdf
+- class2 / math => Class 2/Math/Class_2_Math.pdf
+- class3 / math => Class 3/Math/Class_3_Math.pdf
+- class4 / math => Class 4/Math/Class_4_Math.pdf
+- class5 / math => Class 5/Math/Class_5_Math.pdf
+- class6 / math => Class 6/Math/Class_6_Math.pdf
+- class7 / math => Class 7/Math/Class_7_Math.pdf
+- class8 / math => Class 8/Math/Class_8_Math.pdf
+- class9 / math => Class 9/Geometry/Class_9_Geometry.pdf
+- class10 / math => Class 10/Geometry/Class_10_Geometry.pdf

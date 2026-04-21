@@ -1,5 +1,17 @@
 import { DailyMcq, DailyMcqQuestion } from '../types';
 
+/** Questions per daily MCQ set (kept in sync with Firestore rules + automation). */
+export const DAILY_MCQ_QUESTION_COUNT = 5;
+
+/** Never use `slice(0, MAYBE_UNDEFINED)` — that keeps the whole array. */
+export function capDailyMcqQuestionList<T>(questions: T[]): T[] {
+  const max =
+    typeof DAILY_MCQ_QUESTION_COUNT === 'number' && DAILY_MCQ_QUESTION_COUNT > 0
+      ? DAILY_MCQ_QUESTION_COUNT
+      : 5;
+  return questions.slice(0, max);
+}
+
 export const DAILY_MCQ_SUBJECT_SEQUENCE = ['math', 'english', 'science', 'odia', 'social'] as const;
 
 export type DailyMcqSubject = (typeof DAILY_MCQ_SUBJECT_SEQUENCE)[number];

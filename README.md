@@ -12,23 +12,24 @@ Example `.env.local`:
 
 ```env
 FIREBASE_PROJECT_ID=utkalskillcentre
-FIREBASE_STORAGE_BUCKET=utkalskillcentre.firebasestorage.app
+FIREBASE_STORAGE_BUCKET=utkalskillcentre-admin.firebasestorage.com
+TEXTBOOK_STORAGE_BUCKET=utkalskillcentre-admin
 FIRESTORE_DATABASE_ID=ai-studio-2a24dfcb-5874-4b37-8e37-434f425283b9
 
 VITE_FIREBASE_PROJECT_ID=utkalskillcentre
 VITE_FIREBASE_APP_ID=
 VITE_FIREBASE_API_KEY=
 VITE_FIREBASE_AUTH_DOMAIN=
-VITE_FIREBASE_DATABASE_ID=gundulu2
-VITE_FIREBASE_STORAGE_BUCKET=utkalskillcentre.firebasestorage.app
+VITE_FIREBASE_DATABASE_ID=ai-studio-2a24dfcb-5874-4b37-8e37-434f425283b9
+VITE_FIREBASE_STORAGE_BUCKET=utkalskillcentre-admin.firebasestorage.com
 VITE_FIREBASE_MESSAGING_SENDER_ID=
 VITE_FIREBASE_MEASUREMENT_ID=
 
 VITE_GEMINI_API_KEY=
 GEMINI_API_KEY=
 
-# Use one of these service-account options for Firebase Admin + Drive access
-FIREBASE_SERVICE_ACCOUNT_PATH=D:\BigsanGroup_UtkalSkillcentre\utkalskillcentre-main-clone\daily-mcq-automation.json
+# Use one of these service-account options for Firebase Admin + Storage + Drive access
+FIREBASE_SERVICE_ACCOUNT_PATH=./utkalskillcentre-ac892fb91655.json
 # FIREBASE_SERVICE_ACCOUNT_JSON={...}
 # GOOGLE_APPLICATION_CREDENTIALS=D:\BigsanGroup_UtkalSkillcentre\utkalskillcentre-main-clone\daily-mcq-automation.json
 

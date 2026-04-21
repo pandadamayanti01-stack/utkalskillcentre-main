@@ -115,7 +115,9 @@ service cloud.firestore {
              data.role in ['student', 'admin'] &&
              (!('email' in data) || data.email == "" || isValidEmail(data.email)) &&
              (!('points' in data) || data.points is int) &&
-             (!('class' in data) || data.class is string);
+             (!('class' in data) || data.class is string) &&
+             (!('district' in data) || data.district is string) &&
+             (!('school' in data) || data.school is string);
     }
 
     function isValidChapter(data) {
@@ -157,23 +159,24 @@ service cloud.firestore {
              data.subject is string && data.subject in getDailyMcqRotation() &&
              data.activeDate is string && data.activeDate.size() >= 10 &&
              data.status in ['draft', 'published'] &&
-             data.questions is list && data.questions.size() == 5;
+             data.questions is list && data.questions.size() == 10;
     }
 
     function isValidDailyMcqSubmission(data, submissionId) {
-      return hasRequiredFields(['mcqId', 'userId', 'answers', 'correctCount', 'totalQuestions', 'attemptReward', 'correctBonus', 'totalPointsEarned', 'submittedDate']) &&
-             data.mcqId is string && data.mcqId.size() > 0 &&
-             data.userId is string &&
-             submissionId == data.userId + '_' + data.mcqId &&
-             data.answers is list && data.answers.size() == 5 &&
-             data.correctCount is int && data.correctCount >= 0 && data.correctCount <= 5 &&
-             data.totalQuestions is int && data.totalQuestions == 5 &&
-             data.attemptReward is int && data.attemptReward == 1 &&
-             data.correctBonus is int && data.correctBonus >= 0 && data.correctBonus <= 5 &&
-             data.totalPointsEarned is int && data.totalPointsEarned == data.attemptReward + data.correctBonus &&
-             data.submittedDate is string &&
-             exists(/databases/$(database)/documents/daily_mcqs/$(data.mcqId)) &&
-             get(/databases/$(database)/documents/daily_mcqs/$(data.mcqId)).data.status == 'published';
+            return hasRequiredFields(['mcqId', 'userId', 'answers', 'correctCount', 'totalQuestions', 'attemptReward', 'correctBonus', 'totalPointsEarned', 'submittedDate']) &&
+              data.mcqId is string && data.mcqId.size() > 0 &&
+              data.userId is string &&
+              submissionId == data.userId + '_' + data.mcqId &&
+              data.answers is list &&
+              data.totalQuestions is int && data.totalQuestions == 5 &&
+              data.answers.size() == data.totalQuestions &&
+              data.correctCount is int && data.correctCount >= 0 && data.correctCount <= data.totalQuestions &&
+              data.attemptReward is int && data.attemptReward == 1 &&
+              data.correctBonus is int && data.correctBonus >= 0 && data.correctBonus <= data.totalQuestions &&
+              data.totalPointsEarned is int && data.totalPointsEarned == data.attemptReward + data.correctBonus &&
+              data.submittedDate is string &&
+              exists(/databases/$(database)/documents/daily_mcqs/$(data.mcqId)) &&
+              get(/databases/$(database)/documents/daily_mcqs/$(data.mcqId)).data.status == 'published';
     }
 
     // ===============================================================
@@ -280,7 +283,8 @@ service cloud.firestore {
     }
 
     match /daily_mcq_submissions/{submissionId} {
-      allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+      // Allow read if the document does not exist (for transaction existence check), or if the user is owner/admin
+      allow read: if !exists(/databases/$(database)/documents/daily_mcq_submissions/$(submissionId)) || (isAuthenticated() && (isOwner(resource.data.userId) || isAdmin()));
       allow create: if isAuthenticated() && isOwner(request.resource.data.userId) && isValidDailyMcqSubmission(request.resource.data, submissionId);
       allow update, delete: if isAdmin();
     }
@@ -323,6 +327,16 @@ service cloud.firestore {
     match /tutor_queries/{logId} {
       allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
       allow create: if isAuthenticated() && (isOwner(request.resource.data.userId) || request.resource.data.userId == 'anonymous') && isValidTutorQuery(request.resource.data);
+    }
+
+    // Allow users to create their own MCQ submissions
+    match /submissions/{submissionId} {
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+    }
+
+    // Allow users to create their own activity logs
+    match /activity/{activityId} {
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
     }
   }
 }

@@ -10,13 +10,17 @@ import { getFirestore as getAdminFirestore } from 'firebase-admin/firestore';
 import { getStorage as getAdminStorage } from 'firebase-admin/storage';
 import fs from 'fs';
 import crypto from 'node:crypto';
-import { registerDailyMcqAutomation } from './src/server/dailyMcqAutomation';
-import { getServiceAccountCredentials } from './src/server/googleCredentials';
+import { registerDailyMcqAutomation } from './src/server/dailyMcqAutomation.js';
+import { getServiceAccountCredentials } from './src/server/googleCredentials.js';
 
 dotenv.config({ path: path.join(process.cwd(), '.env.local') });
 dotenv.config();
 
-const firestoreDatabaseId = process.env.FIRESTORE_DATABASE_ID || process.env.VITE_FIRESTORE_DATABASE_ID || 'ai-studio-2a24dfcb-5874-4b37-8e37-434f425283b9';
+const firestoreDatabaseId =
+  process.env.FIRESTORE_DATABASE_ID ||
+  process.env.VITE_FIRESTORE_DATABASE_ID ||
+  process.env.VITE_FIREBASE_DATABASE_ID ||
+  'ai-studio-2a24dfcb-5874-4b37-8e37-434f425283b9';
 
 function getInitializedAdminApp(): App | null {
   return getApps().length > 0 ? getApp() : null;
@@ -29,7 +33,9 @@ if (!getInitializedAdminApp()) {
     let config: any = {};
     if (fs.existsSync(configPath)) {
       config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-      console.log("Firebase Admin initializing with config file.");
+      console.log("Firebase Admin initializing with config file. Loaded config:", config);
+      // Use project_id from service account JSON if present
+      config.projectId = config.projectId || config.project_id;
     } else {
       console.warn("firebase-applet-config.json not found. Using environment variables.");
       config = {

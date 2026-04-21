@@ -13,18 +13,41 @@ const normalizeTranscript = (raw: string): string => {
   let text = (raw || '').trim();
   if (!text) return text;
 
-  // Fix common mishears for Odisha place names in mixed Odia/English speech input.
+  // Expanded corrections for Odia phonetic/ASR errors and common Indian language mishears
   const corrections: Array<[RegExp, string]> = [
-    [/(\bcanada\b|\bkanada\b|\bkenada\b)/gi, 'Keonjhar'],
-    [/(\bkendar\b|\bkendhar\b|\bkenjhar\b|\bkionjhar\b|\bkiyonjhar\b)/gi, 'Keonjhar'],
-    [/(\bkendujhar\b|\bkendu jhar\b|\bkendu jharh\b)/gi, 'Keonjhar'],
-    [/(\bbalasor\b|\bbalesor\b|\bbaleshwar\b|\bbalashore\b)/gi, 'Balasore'],
-    [/(\bmayurbanj\b|\bmoyurbhanj\b|\bmayurvhanj\b)/gi, 'Mayurbhanj'],
-    [/(\bkhorda\b|\bkhurda\b|\bkhordha\b)/gi, 'Khordha'],
-    [/(\bjajpur\b|\bjazpur\b|\bjajpor\b)/gi, 'Jajpur'],
-    [/(\bganjam\b|\bgunjam\b|\bgonjam\b)/gi, 'Ganjam'],
-    [/(\bcuttak\b|\bkatak\b|\bcuttack\b)/gi, 'Cuttack'],
-    [/(\bbhubanesor\b|\bbhubaneshor\b|\bbbsr\b)/gi, 'Bhubaneswar'],
+    // Place names (existing)
+    [/\bcanada\b|\bkanada\b|\bkenada\b/gi, 'Keonjhar'],
+    [/\bkendar\b|\bkendhar\b|\bkenjhar\b|\bkionjhar\b|\bkiyonjhar\b/gi, 'Keonjhar'],
+    [/\bkendujhar\b|\bkendu jhar\b|\bkendu jharh\b/gi, 'Keonjhar'],
+    [/\bbalasor\b|\bbalesor\b|\bbaleshwar\b|\bbalashore\b/gi, 'Balasore'],
+    [/\bmayurbanj\b|\bmoyurbhanj\b|\bmayurvhanj\b/gi, 'Mayurbhanj'],
+    [/\bkhorda\b|\bkhurda\b|\bkhordha\b/gi, 'Khordha'],
+    [/\bjajpur\b|\bjazpur\b|\bjajpor\b/gi, 'Jajpur'],
+    [/\bganjam\b|\bgunjam\b|\bgonjam\b/gi, 'Ganjam'],
+    [/\bcuttak\b|\bkatak\b|\bcuttack\b/gi, 'Cuttack'],
+    [/\bbhubanesor\b|\bbhubaneshor\b|\bbbsr\b/gi, 'Bhubaneswar'],
+    // Odia phonetic/ASR errors
+    [/\bganita\b|\bganit\b|\bmaths?\b/gi, 'ଗଣିତ'],
+    [/\bbigyan\b|\bbigyaan\b|\bscience\b/gi, 'ବିଜ୍ଞାନ'],
+    [/\bodia\b|\bodisha\b|\bodia\b/gi, 'ଓଡ଼ିଆ'],
+    [/\benglish\b|\binglish\b/gi, 'ଇଂରାଜୀ'],
+    [/\bhindi\b|\bhindhi\b/gi, 'ହିନ୍ଦୀ'],
+    [/\bsanskrit\b|\bsanskruta\b/gi, 'ସଂସ୍କୃତ'],
+    [/\bparibesh\b|\bevs\b/gi, 'ପରିବେଶ'],
+    [/\bithihas\b|\bhistory\b/gi, 'ଇତିହାସ'],
+    [/\bbhugol\b|\bgeography\b/gi, 'ଭୂଗୋଳ'],
+    // Common Indian language mishears
+    [/\bshiksha\b|\bshikshya\b/gi, 'ଶିକ୍ଷା'],
+    [/\bkrushi\b|\bagriculture\b/gi, 'କୃଷି'],
+    [/\bparyatan\b|\btourism\b/gi, 'ପର୍ଯ୍ୟଟନ'],
+    [/\bvidyarthi\b|\bstudent\b/gi, 'ଛାତ୍ର'],
+    // Numbers (Hindi/English to Odia)
+    [/\bek\b|\bone\b/gi, '୧'],
+    [/\bdo\b|\btwo\b/gi, '୨'],
+    [/\bteen\b|\bthree\b/gi, '୩'],
+    [/\bchar\b|\bfour\b/gi, '୪'],
+    [/\bpaanch\b|\bfive\b/gi, '୫'],
+    // Add more as needed for your context
   ];
 
   for (const [pattern, replacement] of corrections) {
@@ -55,7 +78,10 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isWaitingForInput, setIsWaitingForInput] = useState(false);
-  const language: 'or-IN' = 'or-IN';
+  // Accept Odia, Hindi, and English input (always reply in Odia)
+  // Use 'hi-IN' for best Indian ASR, fallback to 'or-IN' if needed
+  const recognitionLanguages = ['or-IN', 'hi-IN', 'en-IN'];
+  const [inputLanguage, setInputLanguage] = useState('hi-IN'); // Default to Hindi for best recognition
   const hasPlayedGreetingRef = useRef(false);
   const responseTurnRef = useRef(0);
   
@@ -177,7 +203,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (SpeechRecognition) {
       const recognition = new SpeechRecognition();
-      recognition.lang = language; 
+      recognition.lang = inputLanguage; // Use selected input language
       recognition.continuous = false;
       recognition.interimResults = false;
       recognition.maxAlternatives = 3;
@@ -289,6 +315,19 @@ Understand user intent from these transcripts and respond in Odia only.
     }
   };
 
+  // Optional: UI for language selection (Odia, Hindi, English)
+  // You can style this as needed
+  const renderLanguageSelector = () => (
+    <div className="language-selector" style={{ textAlign: 'center', marginBottom: 8 }}>
+      <label style={{ marginRight: 8 }}>Voice Input Language:</label>
+      <select value={inputLanguage} onChange={e => setInputLanguage(e.target.value)}>
+        <option value="hi-IN">Hindi (best Indian ASR)</option>
+        <option value="or-IN">Odia</option>
+        <option value="en-IN">English (India)</option>
+      </select>
+    </div>
+  );
+
   return (
     <div className="immersive-container">
       {/* Close/Back Button */}
@@ -301,6 +340,9 @@ Understand user intent from these transcripts and respond in Odia only.
           <X size={24} />
         </button>
       )}
+
+      {/* Language Selector */}
+      {renderLanguageSelector()}
 
       {/* Visual Avatar */}
       <div className={`avatar-wrapper ${isSpeaking ? 'speaking' : ''} ${isWaitingForInput ? 'waiting' : ''}`}>

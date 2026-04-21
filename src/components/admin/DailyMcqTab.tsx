@@ -4,7 +4,7 @@ import { AlertTriangle, CheckCircle2, Eye, Plus, Trash2 } from 'lucide-react';
 import { db as firestore } from '../../firebase';
 import { DailyMcq, DailyMcqQuestion } from '../../types';
 import { translations } from '../../translations';
-import { getConfiguredDailyMcqSequence, getRotatingDailyMcqSubject, getTomorrowDateString, normalizeDailyMcqQuestions } from '../../utils/dailyMcq';
+import { DAILY_MCQ_QUESTION_COUNT, getConfiguredDailyMcqSequence, getRotatingDailyMcqSubject, getTomorrowDateString, normalizeDailyMcqQuestions } from '../../utils/dailyMcq';
 
 declare global {
   interface Window {
@@ -42,6 +42,12 @@ async function readJsonResponse(response: Response) {
   }
 }
 
+function apiFailureMessage(payload: Record<string, unknown> | null | undefined, fallback: string): string {
+  const msg = (typeof payload?.error === 'string' && payload.error.trim()) || fallback;
+  const hint = typeof payload?.hint === 'string' && payload.hint.trim() ? payload.hint.trim() : '';
+  return hint ? `${msg} — ${hint}` : msg;
+}
+
 const defaultMcq = (subjectRotation?: string[]): DailyMcqDraft => {
   const activeDate = new Date().toISOString().split('T')[0];
   return {
@@ -49,7 +55,7 @@ const defaultMcq = (subjectRotation?: string[]): DailyMcqDraft => {
     class: 'class5',
     subject: getRotatingDailyMcqSubject(activeDate, subjectRotation),
     activeDate,
-    questions: Array.from({ length: 5 }, () => createBlankQuestion()),
+    questions: Array.from({ length: DAILY_MCQ_QUESTION_COUNT }, () => createBlankQuestion()),
     status: 'draft',
   };
 };
@@ -128,9 +134,9 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
       explanation: question.explanation?.trim() || '',
     }));
 
-    const isInvalid = cleanedQuestions.length !== 5 || cleanedQuestions.some((question) => !question.question || question.options.length < 2 || !question.correct_answer || !question.options.includes(question.correct_answer));
+    const isInvalid = cleanedQuestions.length !== DAILY_MCQ_QUESTION_COUNT || cleanedQuestions.some((question) => !question.question || question.options.length < 2 || !question.correct_answer || !question.options.includes(question.correct_answer));
     if (isInvalid) {
-      showNotification('Please complete all 5 questions and ensure each correct answer matches one option.', 'error');
+      showNotification(`Please complete all ${DAILY_MCQ_QUESTION_COUNT} questions and ensure each correct answer matches one option.`, 'error');
       return;
     }
 
@@ -188,7 +194,7 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
 
       const payload = await readJsonResponse(response);
       if (!response.ok) {
-        throw new Error(payload?.error || 'Failed to generate daily MCQ from Drive.');
+        throw new Error(apiFailureMessage(payload as Record<string, unknown>, 'Failed to generate daily MCQ from Drive.'));
       }
 
       setNewMcq((prev) => ({
@@ -222,7 +228,7 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
       });
       const payload = await readJsonResponse(response);
       if (!response.ok) {
-        throw new Error(payload?.error || 'Failed to run daily auto-generation.');
+        throw new Error(apiFailureMessage(payload as Record<string, unknown>, 'Failed to run daily auto-generation.'));
       }
 
       const generatedCount = Array.isArray(payload.generated) ? payload.generated.length : 0;
@@ -241,7 +247,7 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
       <div className="flex justify-between items-center gap-4 flex-wrap">
         <div>
           <h3 className="text-xl font-bold text-white">Daily MCQ Practice</h3>
-          <p className="text-slate-400 text-sm">Create a 5-question daily set. The subject rotates automatically by date.</p>
+          <p className="text-slate-400 text-sm">Create a {DAILY_MCQ_QUESTION_COUNT}-question daily set. The subject rotates automatically by date.</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <button
@@ -360,7 +366,7 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <label className="block text-xs font-bold text-slate-500 uppercase">Daily Questions</label>
-              <span className="text-xs text-slate-500">5 questions required</span>
+              <span className="text-xs text-slate-500">{DAILY_MCQ_QUESTION_COUNT} questions required</span>
             </div>
 
             {newMcq.questions.map((question, questionIndex) => (

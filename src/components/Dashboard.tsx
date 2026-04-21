@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Brain, BarChart3, CheckCircle2, Globe, Flame, MessageCircle, Target, Trophy, Zap, Award, Sparkles, Star } from 'lucide-react';
 import { translations } from '../translations';
 import { DailyChallenge } from './DailyChallenge';
+import { LeaderboardView } from './LeaderboardView';
+import { DistrictLeaderboardFilter } from './DistrictLeaderboardFilter';
 
 interface DashboardProps {
   user: any;
@@ -22,6 +24,10 @@ interface DashboardProps {
 }
 
 export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, hasDailyPractice, todayDailySubject, tomorrowDailySubject, onChallengeComplete, onOpenTutor, onOpenDailyPractice, onShareDailyPractice }: DashboardProps) {
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const filteredLeaderboard = selectedDistrict
+    ? leaderboard.filter(u => u.district === selectedDistrict)
+    : leaderboard;
   const t = translations[language];
   const userRank = leaderboard.findIndex((s: any) => s.id === user.id) + 1;
   const rankDisplay = userRank > 0 ? userRank : '-';
@@ -68,6 +74,12 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       exit="exit"
       className="space-y-6 pb-20"
     >
+      {/* District Leaderboard Filter */}
+      <DistrictLeaderboardFilter
+        selectedDistrict={selectedDistrict}
+        setSelectedDistrict={setSelectedDistrict}
+        language={language}
+      />
       {/* AI Tutor Card - Compact & Top-Aligned */}
       <motion.div 
         variants={itemVariants}
@@ -142,6 +154,17 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             </div>
           </motion.div>
         ))}
+      </div>
+
+      {/* Leaderboard Section */}
+      <div className="mt-8">
+        <LeaderboardView
+          leaderboard={filteredLeaderboard}
+          language={language}
+          onBack={() => {}}
+          following={user?.following || []}
+          user={user}
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

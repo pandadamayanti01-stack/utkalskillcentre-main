@@ -43,7 +43,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
         earned: 'Earned',
         score: 'Score',
         submitSet: 'Submit Daily Set',
-        completeAll: 'Answer all 5 questions before submitting.',
+        completeAll: 'Answer every question in this set before submitting.',
         share: 'Share on WhatsApp',
         copyLink: 'Copy Link',
         copied: 'Copied',
@@ -68,7 +68,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
         earned: 'ଅର୍ଜନ',
         score: 'ସ୍କୋର',
         submitSet: 'ଦୈନିକ ସେଟ୍ ସବମିଟ୍ କରନ୍ତୁ',
-        completeAll: 'ସବମିଟ୍ ପୂର୍ବରୁ ସମସ୍ତ 5ଟି ପ୍ରଶ୍ନର ଉତ୍ତର ଦିଅନ୍ତୁ |',
+        completeAll: 'ସବମିଟ୍ ପୂର୍ବରୁ ଏହି ସେଟ୍‌ର ପ୍ରତ୍ୟେକ ପ୍ରଶ୍ନର ଉତ୍ତର ଦିଅନ୍ତୁ |',
         share: 'WhatsApp ରେ ଶେୟାର କରନ୍ତୁ',
         copyLink: 'ଲିଙ୍କ କପି କରନ୍ତୁ',
         copied: 'କପି ହେଲା',
@@ -132,6 +132,23 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
     const userRef = doc(firestore, 'users', user.id);
     const progressRef = doc(collection(firestore, 'user_progress'));
 
+    // Debug log for submission data
+    console.log('Submitting Daily MCQ:', {
+      submissionId: `${user.id}_${mcq.id}`,
+      mcqId: mcq.id,
+      userId: user.id,
+      answers,
+      correctCount,
+      totalQuestions: questions.length,
+      attemptReward: ATTEMPT_REWARD,
+      correctBonus: correctCount * CORRECT_BONUS,
+      totalPointsEarned,
+      submittedDate: today,
+      user,
+      mcq,
+      questions,
+      progressRef: progressRef.id,
+    });
     setSubmittingMcqId(mcq.id);
     try {
       await runTransaction(firestore, async (transaction) => {
@@ -141,8 +158,8 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
         }
 
         const userSnap = await transaction.get(userRef);
-        const currentPoints = userSnap.exists() ? Number(userSnap.data().points || 0) : 0;
-        const currentPointsToday = userSnap.exists() ? Number((userSnap.data() as any).points_today || 0) : 0;
+        const currentPoints = userSnap.exists() ? Math.floor(Number(userSnap.data().points || 0)) : 0;
+        const currentPointsToday = userSnap.exists() ? Math.floor(Number((userSnap.data() as any).points_today || 0)) : 0;
 
         transaction.set(submissionRef, {
           mcqId: mcq.id,
@@ -158,8 +175,8 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
         });
 
         transaction.set(userRef, {
-          points: currentPoints + totalPointsEarned,
-          points_today: currentPointsToday + totalPointsEarned,
+          points: currentPoints + Math.floor(totalPointsEarned),
+          points_today: currentPointsToday + Math.floor(totalPointsEarned),
           updatedAt: serverTimestamp(),
         }, { merge: true });
 

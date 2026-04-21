@@ -226,8 +226,8 @@ export const translations: any = {
         class6: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science_curiosity', 'social_science', 'vocational', 'art', 'physical_education'],
         class7: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science_curiosity', 'social_science', 'vocational', 'art', 'physical_education'],
         class8: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science_curiosity', 'social_science', 'vocational', 'art', 'physical_education'],
-        class9: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social_science', 'epe', 'aspirational'],
-        class10: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social_science', 'epe', 'aspirational'],
+        class9: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social_science', 'epe'],
+        class10: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social_science', 'epe'],
       }
     },
     totalStudents: "Total Students",

@@ -31,7 +31,7 @@
     "better-sqlite3": "^12.8.0",
     "browser-image-compression": "^2.0.2",
     "canvas-confetti": "^1.9.4",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.4.2",
     "express": "^4.21.2",
     "firebase": "^11.4.0",
     "firebase-admin": "^13.1.0",

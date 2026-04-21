@@ -16,6 +16,7 @@ function splitTextIntoChapters(text: string): { title: string, content: string }
   }
   return chapters;
 }
+
 import { GoogleGenAI } from '@google/genai';
 import type { Express } from 'express';
 import type { App } from 'firebase-admin/app';
@@ -29,6 +30,33 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const pdfParse = require('pdf-parse');
 
+// Language detection helpers
+function detectOdia(text: string) {
+  // Odia Unicode range: \u0B00-\u0B7F
+  return /[\u0B00-\u0B7F]/.test(text);
+}
+function detectHindi(text: string) {
+  // Devanagari Unicode range: \u0900-\u097F
+  return /[\u0900-\u097F]/.test(text);
+}
+function detectSanskrit(text: string) {
+  // Sanskrit is also Devanagari, but we can treat like Hindi for now
+  return detectHindi(text);
+}
+function detectEnglish(text: string) {
+  // Basic: contains mostly a-zA-Z and common punctuation
+  return /^[\x00-\x7F\s.,'"!?;:()\-]+$/.test(text);
+}
+
+function getExpectedLanguage(subject: string): 'odia' | 'english' | 'hindi' | 'sanskrit' | null {
+  const s = subject.toLowerCase();
+  if (s.includes('odia')) return 'odia';
+  if (s.includes('english')) return 'english';
+  if (s.includes('hindi')) return 'hindi';
+  if (s.includes('sanskrit')) return 'sanskrit';
+  return null;
+}
+
 
 
 async function extractPdfText(buffer: Buffer) {
@@ -38,9 +66,10 @@ async function extractPdfText(buffer: Buffer) {
   const parsed = await parser.getText();
   return parsed.text || '';
 }
-import { getRotatingDailyMcqSubject } from '../utils/dailyMcq';
+import { capDailyMcqQuestionList, DAILY_MCQ_QUESTION_COUNT, getRotatingDailyMcqSubject } from '../utils/dailyMcq';
 import { translations } from '../translations';
 import { createGoogleAuth } from './googleCredentials';
+import { generateMcqsWithGemini } from '../utils/geminiMcqGenerator';
 
 const DEFAULT_AUTOMATION_TIME = '07:00';
 const DEFAULT_AUTOMATION_TIME_ZONE = 'Asia/Kolkata';
@@ -297,89 +326,58 @@ async function loadUrlTextContent(url: string): Promise<DriveContentResult> {
   throw new Error(`Unsupported textbook URL content type for auto-generation: ${mimeType}`);
 }
 
-const TEXTBOOK_BUCKET_NAME = process.env.TEXTBOOK_STORAGE_BUCKET || 'run-sources-utkalskillcentre-us-central1';
+const TEXTBOOK_BUCKET_NAME = process.env.TEXTBOOK_STORAGE_BUCKET || 'utkalskillcentre-admin';
 
-const SUBJECT_FILE_KEYWORDS: Record<string, string[]> = {
-  // Language subjects
-  odia: ['sahitya sudha', 'sahitya surabhi', 'bhasha mahak', 'bhasa nahak', 'jhulana', 'odia'],
-  odia_grammar: ['odia grammar'],
-  english: ['pallavi', 'jasmine', 'english', 'jhulana'],
-  english_grammar: ['english grammar'],
-  hindi: ['hindi kalika', 'hindi manjari', 'hindi saurabh', 'hindi'],
-  hindi_grammar: ['hindi grammar', 'hindi byakaran'],
-  sanskrit: ['sanskruta kalika', 'sanaskruta kalika', 'sanskruta sourav', 'sanskruta', 'sanskrit'],
-  sanskrit_grammar: ['sanskrit grammar'],
-  // Math
-  math: ['ganita mela', 'ganita prakash', 'maja majare ganita', 'algebra', 'geometry', 'ganita', 'math'],
-  algebra: ['algebra'],
-  geometry: ['geometry'],
-  // Science
-  science: ['physical science', 'life science', 'science'],
-  science_curiosity: ['jingyasha', 'jigyansa'],
-  physical_science: ['physical science'],
-  life_science: ['life science'],
-  // Social
-  history: ['history'],
-  geography: ['geography'],
-  social_science: ['social science', 'samajika bigyan'],
-  // EVS (classes 3-5)
-  evs: ['bichitra pruthibi', 'ama bichitra biswa', 'bichitra biswa', 'evs'],
-  // Arts & physical
-  art: ['indradhanu', 'kalakunja', 'nabarasa', 'kruti', 'art'],
-  art_health: ['indradhanu', 'nabarasa', 'art', 'health'],
-  physical_education: ['khela o yoga', 'khelajoga', 'krida yoga', 'khel shikhya', 'khela sahitya', 'physical education'],
-  // Vocational
-  vocational: ['koshalbodha', 'kousalabodha', 'vocational'],
-};
+import { SUBJECT_FILE_KEYWORDS } from '../constants';
 
 async function loadTextbookFromBucket(adminApp: App, className: string, subject: string): Promise<{ driveContent: DriveContentResult; source: GeneratedDailyMcqResult['source'] } | null> {
   const classDigit = className.replace(/[^0-9]/g, '');
-  const classFolder = `Class ${classDigit}/`;
+  // Try both Class X and Class_X folder patterns
+  const possibleClassFolders = [`Class ${classDigit}/`, `Class_${classDigit}/`];
   const subjectKey = normalizeSubjectKey(subject);
-  const keywords = SUBJECT_FILE_KEYWORDS[subjectKey] || [subjectKey.replace(/_/g, ' '), getSubjectLabel(subject).toLowerCase()];
+  const keywords = SUBJECT_FILE_KEYWORDS[subjectKey] || [subjectKey.replace(/_/g, ' '), subjectKey.replace(/_/g, '')];
 
   try {
-    const bucket = getAdminStorage(adminApp).bucket('utkalskillcentre-admin');
-    const [files] = await bucket.getFiles({ prefix: classFolder, maxResults: 100 });
-    console.log(`[Bucket Debug] Searching in bucket: utkalskillcentre-admin, classFolder: ${classFolder}, subject: ${subject}, keywords: ${JSON.stringify(keywords)}`);
-    console.log(`[Bucket Debug] Found files:`, files.map(f => f.name));
-    const pdfFiles = files.filter((f) => f.name.toLowerCase().endsWith('.pdf'));
-    console.log(`[Bucket Debug] PDF files:`, pdfFiles.map(f => f.name));
-
-    if (!pdfFiles.length) {
-      console.warn(`[Bucket Debug] No PDF files found for ${className}/${subject} in utkalskillcentre-admin/${classFolder}`);
-      return null;
-    }
-
-    // Score each file by keyword match (prefer more specific match)
-    const scored = pdfFiles.map((f) => {
-      const lower = f.name.toLowerCase();
-      let score = 0;
-      for (const kw of keywords) {
-        if (lower.includes(kw.toLowerCase())) score += kw.split(' ').length + 1;
+    const bucket = getAdminStorage(adminApp).bucket(TEXTBOOK_BUCKET_NAME);
+    let bestScore = 0;
+    let bestFile = null;
+    let bestFileName = '';
+    let bestClassFolder = '';
+    for (const classFolder of possibleClassFolders) {
+      const [files] = await bucket.getFiles({ prefix: classFolder, maxResults: 100 });
+      const pdfFiles = files.filter((f) => f.name.toLowerCase().endsWith('.pdf'));
+      for (const f of pdfFiles) {
+        // Normalize for matching: lower, underscores/spaces, ignore case
+        const lower = f.name.toLowerCase().replace(/[_\s]+/g, '');
+        let score = 0;
+        for (const kw of keywords) {
+          const normKw = kw.toLowerCase().replace(/[_\s]+/g, '');
+          if (lower.includes(normKw)) score += normKw.length;
+        }
+        if (score > bestScore) {
+          bestScore = score;
+          bestFile = f;
+          bestFileName = f.name;
+          bestClassFolder = classFolder;
+        }
       }
-      return { file: f, score };
-    }).sort((a, b) => b.score - a.score);
-
-    const best = scored[0];
-    console.log(`[Bucket Debug] Best match:`, best?.file?.name, 'Score:', best?.score);
-    if (!best || best.score <= 0) {
-      console.warn(`[Bucket Debug] No PDF file matched keywords for ${className}/${subject} in utkalskillcentre-admin/${classFolder}`);
+    }
+    if (!bestFile || bestScore <= 0) {
+      console.warn(`[Bucket Debug] No PDF file matched keywords for ${className}/${subject} in ${TEXTBOOK_BUCKET_NAME}`);
       return null;
     }
-
-    const [buffer] = await best.file.download();
+    const [buffer] = await bestFile.download();
     const text = await extractPdfText(buffer);
     return {
       driveContent: {
         text,
-        fileName: best.file.name.split('/').pop() || best.file.name,
+        fileName: bestFileName.split('/').pop() || bestFileName,
         mimeType: 'application/pdf',
       },
       source: {
-        textbookId: `bucket:${best.file.name}`,
-        textbookTitle: best.file.name.split('/').pop() || best.file.name,
-        driveFileName: best.file.name,
+        textbookId: `bucket:${bestFileName}`,
+        textbookTitle: bestFileName.split('/').pop() || bestFileName,
+        driveFileName: bestFileName,
         mimeType: 'application/pdf',
       },
     };
@@ -502,18 +500,51 @@ async function getTextbookContentFromSource(textbook: TextbookSource, className:
   };
 }
 
-function cleanGeneratedQuestions(questions: any[]): DailyMcqQuestion[] {
-  return (Array.isArray(questions) ? questions : [])
-    .map((question) => ({
-      question: String(question?.question || '').trim(),
-      options: Array.isArray(question?.options)
-        ? question.options.map((option: any) => String(option || '').trim()).filter(Boolean)
-        : [],
-      correct_answer: String(question?.correct_answer || '').trim(),
-      explanation: String(question?.explanation || '').trim(),
-    }))
-    .filter((question) => question.question && question.options.length >= 2 && question.correct_answer && question.options.includes(question.correct_answer))
-    .slice(0, 5);
+const UNWANTED_KEYWORDS = [
+  'website', '.com', '.in', 'page', 'pages', 'author', 'publisher', 'publication',
+  'www', 'http', 'https', 'copyright', 'email', 'contact', 'phone', 'address', 'source', 'drive', 'file', 'download', 'upload', 'reference', 'question bank', 'syllabus', 'index', 'contents', 'schoolskill', 'utkalskillcentre', 'educationodisha', 'odishaskill', 'learningcentre', 'board', 'class', 'lesson', 'unit', 'chapter', 'of of', 'of 160', 'of 176', 'of 100', 'of 150', 'of 200'
+];
+
+function isValidQuestionText(text: string) {
+  const lower = text.toLowerCase();
+  return !UNWANTED_KEYWORDS.some(keyword => lower.includes(keyword));
+}
+
+function cleanGeneratedQuestions(questions: any[], subject?: string): DailyMcqQuestion[] {
+  const expectedLang = subject ? getExpectedLanguage(subject) : null;
+  function matchesExpectedLanguage(text: string) {
+    if (!expectedLang) return true;
+    if (expectedLang === 'odia') return detectOdia(text);
+    if (expectedLang === 'english') return detectEnglish(text);
+    if (expectedLang === 'hindi') return detectHindi(text);
+    if (expectedLang === 'sanskrit') return detectSanskrit(text);
+    return true;
+  }
+  const rawQuestions = Array.isArray(questions) ? questions : [];
+  const cleaned = [];
+  for (const q of rawQuestions) {
+    const question = String(q?.question || '').trim();
+    const options = Array.isArray(q?.options)
+      ? q.options.map((option: any) => String(option || '').trim()).filter(Boolean)
+      : [];
+    const correct_answer = String(q?.correct_answer || '').trim();
+    const explanation = String(q?.explanation || '').trim();
+    let reason = '';
+    if (!question) reason = 'Missing question text';
+    else if (options.length < 2) reason = 'Not enough options';
+    else if (!correct_answer) reason = 'Missing correct answer';
+    else if (!options.includes(correct_answer)) reason = 'Correct answer not in options';
+    else if (!isValidQuestionText(question)) reason = 'Invalid question text';
+    else if (!isValidQuestionText(explanation)) reason = 'Invalid explanation text';
+    else if (!matchesExpectedLanguage(question)) reason = 'Language mismatch';
+    if (reason) {
+      console.warn(`[MCQ-EXTRACT] Skipped question: "${question.slice(0, 80)}..." Reason: ${reason}`);
+      continue;
+    }
+    cleaned.push({ question, options, correct_answer, explanation });
+  }
+  console.log(`[MCQ-EXTRACT] Total valid questions: ${cleaned.length} / ${rawQuestions.length}`);
+  return capDailyMcqQuestionList(cleaned);
 }
 
 async function generateQuestionsFromText(input: {
@@ -523,44 +554,22 @@ async function generateQuestionsFromText(input: {
   activeDate: string;
   sourceText: string;
 }) {
-  const ai = getGeminiClient();
-  const subjectLabel = getSubjectLabel(input.subject);
-  const classLabel = getClassLabel(input.className);
-  const chapters = splitTextIntoChapters(input.sourceText);
-  const isSenior = /^class[6-9]$|^class10$/.test(input.className.toLowerCase());
-  const maxMcq = isSenior ? 30 : 15;
-  let allMcqs: DailyMcqQuestion[] = [];
-  for (const chapter of chapters) {
-    if (allMcqs.length >= maxMcq) break;
-    const trimmedSource = chapter.content.replace(/\s+/g, ' ').trim().slice(0, MAX_SOURCE_TEXT_LENGTH);
-    if (!trimmedSource) continue;
-    const response = await ai.models.generateContent({
-      model: 'gemini-3.1-flash-lite-preview',
-      contents: `Create 5 daily multiple-choice questions for ${classLabel} on ${subjectLabel}${input.board ? ` for ${input.board}` : ''}, only from this chapter: ${chapter.title}. The questions must be based only on the chapter content below and suitable for school students. Keep options short, clear, and syllabus-aligned. Return strict JSON with this shape only: {"questions":[{"question":"...","options":["...","...","...","..."],"correct_answer":"...","explanation":"..."}]}. Chapter content: ${trimmedSource}`,
-      config: {
-        responseMimeType: 'application/json',
-        temperature: 0.4,
-      },
-    });
-    let rawText = response.text || '{}';
-    rawText = rawText.replace(/^```json?\s*/i, '').replace(/\s*```$/i, '').trim();
-    rawText = rawText.replace(/\\(?!["\\/bfnrtu])/g, '\\\\');
-    let parsed: any = {};
-    try {
-      parsed = JSON.parse(rawText);
-    } catch (e) {
-      continue;
-    }
-    const questions = cleanGeneratedQuestions(parsed.questions);
-    // Add up to 5 MCQs from this chapter, but don't exceed maxMcq
-    for (const q of questions) {
-      if (allMcqs.length < maxMcq) allMcqs.push(q);
-    }
+  // Use the new Gemini MCQ generator utility with best-practice prompt
+  const target = DAILY_MCQ_QUESTION_COUNT;
+  const trimmedSource = input.sourceText.replace(/\s+/g, ' ').trim().slice(0, MAX_SOURCE_TEXT_LENGTH);
+  if (!trimmedSource) {
+    throw new Error('No textbook content available for MCQ generation.');
   }
-  if (allMcqs.length === 0) {
-    throw new Error('No valid MCQs could be generated from the textbook chapters.');
+  console.log('[DailyMCQ] GEMINI_API_KEY at MCQ generation:', process.env.GEMINI_API_KEY);
+  const mcqs = await generateMcqsWithGemini(trimmedSource);
+  // Validate and cap the MCQs
+  const questions = cleanGeneratedQuestions(mcqs, input.subject);
+  if (questions.length < target) {
+    throw new Error(
+      `Expected ${target} MCQs for the daily set but only ${questions.length} valid question(s) could be generated. Try more textbook content or retry generation.`,
+    );
   }
-  return allMcqs;
+  return questions;
 }
 
 async function findMatchingTextbookSource(adminApp: App, databaseId: string, params: { className: string; subject: string; board?: string }) {
@@ -604,21 +613,31 @@ async function upsertDailyMcq(adminApp: App, databaseId: string, result: Generat
     .where('activeDate', '==', result.activeDate)
     .get();
 
+  const questions = capDailyMcqQuestionList(result.questions);
   const payload = {
     title: result.title,
     class: result.class,
     subject: result.subject,
     activeDate: result.activeDate,
     status: result.status,
-    questions: result.questions,
+    questions,
     source: result.source,
     updatedAt: FieldValue.serverTimestamp(),
   };
 
   if (!existingSnapshot.empty) {
-    const target = existingSnapshot.docs[0];
-    await target.ref.set(payload, { merge: true });
-    return { id: target.id, ...payload };
+    const docRef = existingSnapshot.docs[0].ref;
+    await docRef.update({
+      title: payload.title,
+      class: payload.class,
+      subject: payload.subject,
+      activeDate: payload.activeDate,
+      status: payload.status,
+      questions: payload.questions,
+      source: payload.source,
+      updatedAt: FieldValue.serverTimestamp(),
+    });
+    return { id: docRef.id, ...payload };
   }
 
   const created = await db.collection('daily_mcqs').add({
@@ -697,17 +716,22 @@ async function runScheduledGeneration(adminApp: App, databaseId: string, dateStr
   const generated: Array<{ className: string; subject: string; id: string }> = [];
   const skipped: Array<{ className: string; reason: string }> = [];
 
+  console.log('[MCQ-AUTO] Starting MCQ generation for date:', activeDate);
+  console.log('[MCQ-AUTO] Effective classes:', effectiveClasses);
   for (const className of effectiveClasses) {
     try {
+      console.log(`[MCQ-AUTO] Processing class: ${className}`);
       const existing = await db.collection('daily_mcqs').where('class', '==', className).where('activeDate', '==', activeDate).get();
       if (!existing.empty) {
+        console.log(`[MCQ-AUTO] Skipped ${className}: Daily set already exists for this date.`);
         skipped.push({ className, reason: 'Daily set already exists for this class and date.' });
         continue;
       }
 
-      // Use class-specific subject list (Option A), unless admin overrode with a custom rotation
       const classSubjects = (!hasCustomRotation && subjectsByClass?.[className]) || undefined;
+      console.log(`[MCQ-AUTO] Subjects for ${className}:`, classSubjects || settings.dailyMcqSubjectRotation);
       const subject = getRotatingDailyMcqSubject(activeDate, classSubjects || settings.dailyMcqSubjectRotation);
+      console.log(`[MCQ-AUTO] Selected subject for ${className}:`, subject);
 
       const generatedSet = await buildGeneratedDailyMcq(adminApp, databaseId, {
         className,
@@ -715,13 +739,17 @@ async function runScheduledGeneration(adminApp: App, databaseId: string, dateStr
         activeDate,
         status,
       });
+      console.log(`[MCQ-AUTO] Generated MCQ set for ${className} ${subject}`);
       const saved = await upsertDailyMcq(adminApp, databaseId, generatedSet);
+      console.log(`[MCQ-AUTO] Saved MCQ for ${className} ${subject} with id ${String(saved.id)}`);
       generated.push({ className, subject, id: String(saved.id) });
     } catch (error: any) {
+      console.error(`[MCQ-AUTO] Error for class ${className}:`, error?.message || error);
       skipped.push({ className, reason: error?.message || 'Unknown generation error' });
     }
   }
 
+  console.log('[MCQ-AUTO] Generation complete. Generated:', generated, 'Skipped:', skipped);
   return { activeDate, generated, skipped };
 }
 
@@ -766,6 +794,45 @@ async function tickAutomation(adminApp: App, databaseId: string) {
   console.log('Daily MCQ automation completed:', result);
 }
 
+/** Firestore / gRPC errors expose numeric `code` (e.g. 7 PERMISSION_DENIED, 16 UNAUTHENTICATED). */
+function adminRouteErrorResponse(
+  error: unknown,
+  fallbackMessage: string
+): { status: number; body: Record<string, unknown> } {
+  const err = error as { code?: number; message?: string; details?: string };
+  const grpcCode = typeof err?.code === 'number' ? err.code : undefined;
+  const message =
+    (typeof err?.message === 'string' && err.message.trim()) ||
+    (error instanceof Error ? error.message : null) ||
+    fallbackMessage;
+
+  const base: Record<string, unknown> = { error: message };
+  if (grpcCode !== undefined) base.grpcCode = grpcCode;
+  if (typeof err?.details === 'string' && err.details) base.details = err.details;
+
+  if (grpcCode === 16) {
+    return {
+      status: 503,
+      body: {
+        ...base,
+        hint: 'Credentials were rejected. Verify GOOGLE_APPLICATION_CREDENTIALS points to an active JSON key for this GCP project.',
+      },
+    };
+  }
+  if (grpcCode === 7) {
+    return {
+      status: 403,
+      body: {
+        ...base,
+        hint:
+          'IAM: grant this service account at least roles/datastore.user (Cloud Datastore User) on the project, or a role that includes Firestore access for the database you use.',
+      },
+    };
+  }
+
+  return { status: 500, body: base };
+}
+
 export function registerDailyMcqAutomation(app: Express, adminApp: App | null, databaseId: string) {
   app.post('/api/admin/daily-mcqs/generate-from-drive', async (req, res) => {
     try {
@@ -794,9 +861,10 @@ export function registerDailyMcqAutomation(app: Express, adminApp: App | null, d
       });
 
       return res.json(generated);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Generate Daily MCQ From Drive Error:', error);
-      return res.status(500).json({ error: error?.message || 'Failed to generate daily MCQ from Drive.' });
+      const { status, body } = adminRouteErrorResponse(error, 'Failed to generate daily MCQ from Drive.');
+      return res.status(status).json(body);
     }
   });
 
@@ -809,9 +877,10 @@ export function registerDailyMcqAutomation(app: Express, adminApp: App | null, d
       const activeDate = String(req.body?.activeDate || '').trim() || undefined;
       const result = await runScheduledGeneration(adminApp, databaseId, activeDate);
       return res.json(result);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Run Daily MCQ Automation Error:', error);
-      return res.status(500).json({ error: error?.message || 'Failed to run daily MCQ automation.' });
+      const { status, body } = adminRouteErrorResponse(error, 'Failed to run daily MCQ automation.');
+      return res.status(status).json(body);
     }
   });
 

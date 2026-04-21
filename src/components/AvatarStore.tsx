@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { ODISHA_DISTRICTS } from '../constants/districts';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, ShoppingBag, Star, CheckCircle2, Lock, Sparkles, Coins } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Star, CheckCircle2, Lock, Sparkles, Coins, Globe, School as SchoolIcon } from 'lucide-react';
 import { gcpService } from '../services/gcpService';
 
 interface AvatarStoreProps {
@@ -20,9 +21,27 @@ const AVATARS = [
   { id: 'bot-8', name: 'Legendary USC', price: 10000, url: 'https://api.dicebear.com/7.x/bottts/svg?seed=USC' },
 ];
 
+
 export function AvatarStore({ user, language, onBack }: AvatarStoreProps) {
   const [purchasing, setPurchasing] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [district, setDistrict] = useState(user.district || '');
+  const [school, setSchool] = useState(user.school || '');
+  const [profileMsg, setProfileMsg] = useState<string | null>(null);
+
+  const handleProfileUpdate = async () => {
+    try {
+      await gcpService.updateDoc('users', user.id, {
+        district,
+        school,
+        updatedAt: new Date().toISOString()
+      });
+      setProfileMsg('Profile updated!');
+      setTimeout(() => setProfileMsg(null), 2000);
+    } catch (err) {
+      setProfileMsg('Error updating profile');
+    }
+  };
 
   const handlePurchase = async (avatar: typeof AVATARS[0]) => {
     if (user.points < avatar.price) return;
@@ -71,22 +90,68 @@ export function AvatarStore({ user, language, onBack }: AvatarStoreProps) {
       animate="show"
       className="max-w-6xl mx-auto space-y-10 pb-20"
     >
-      {/* Header */}
-      <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="flex items-center gap-4">
-          <button 
-            onClick={onBack}
-            className="p-3 bg-slate-800/50 border border-white/5 rounded-2xl text-slate-400 hover:text-white transition-all"
-          >
-            <ArrowLeft size={24} />
-          </button>
-          <div>
-            <h2 className="text-3xl font-black text-white tracking-tight">
-              {language === 'en' ? 'Avatar Store' : 'ଅବତାର ଷ୍ଟୋର'}
-            </h2>
-            <p className="text-emerald-400 font-bold uppercase tracking-widest text-xs">
-              {language === 'en' ? 'Customize your profile' : 'ଆପଣଙ୍କ ପ୍ରୋଫାଇଲ୍ କଷ୍ଟମାଇଜ୍ କରନ୍ତୁ'}
-            </p>
+      {/* Premium Profile Card */}
+      <motion.div variants={itemVariants} className="w-full flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="glass-card bg-gradient-to-br from-emerald-600/30 to-blue-700/20 border border-emerald-400/20 shadow-2xl rounded-3xl p-8 flex flex-col md:flex-row items-center gap-8 w-full">
+          {/* Glowing Avatar */}
+          <div className="relative flex flex-col items-center justify-center mb-6 md:mb-0">
+            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-emerald-400/40 to-blue-400/30 border-4 border-emerald-400 shadow-[0_0_40px_10px_rgba(16,185,129,0.3)] flex items-center justify-center overflow-hidden animate-pulse-slow">
+              <img src={user.avatar} alt="Avatar" className="w-28 h-28 rounded-full border-4 border-white/10 shadow-xl object-cover" />
+            </div>
+            <span className="mt-3 text-lg font-bold text-white bg-emerald-500/20 px-4 py-1 rounded-xl shadow">{user.name}</span>
+          </div>
+          {/* Profile Fields */}
+          <div className="flex-1 flex flex-col gap-4">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1">
+                <label className="block text-xs text-slate-200 font-bold mb-1 flex items-center gap-1">
+                  <Globe className="inline-block text-emerald-400" size={14} /> District
+                </label>
+                <select
+                  className="w-full p-3 rounded-xl bg-slate-900/80 text-white border-2 border-emerald-400/30 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/30 transition-all shadow"
+                  value={district}
+                  onChange={e => setDistrict(e.target.value)}
+                >
+                  <option value="">{language === 'en' ? 'Select District' : 'ଜିଲ୍ଲା ଚୟନ କରନ୍ତୁ'}</option>
+                  {ODISHA_DISTRICTS.map(d => (
+                    <option key={d.en} value={d.en}>
+                      {language === 'en' ? d.en : `${d.or} (${d.en})`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex-1">
+                <label className="block text-xs text-slate-200 font-bold mb-1 flex items-center gap-1">
+                  <SchoolIcon className="inline-block text-blue-400" size={14} /> School
+                </label>
+                <input
+                  className="w-full p-3 rounded-xl bg-slate-900/80 text-white border-2 border-blue-400/30 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 transition-all shadow"
+                  type="text"
+                  value={school}
+                  onChange={e => setSchool(e.target.value)}
+                  placeholder="Enter your school name"
+                />
+              </div>
+            </div>
+            <button
+              onClick={handleProfileUpdate}
+              className="mt-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-400 hover:to-blue-400 text-white font-bold rounded-2xl shadow-lg shadow-emerald-900/20 active:scale-95 transition-all flex items-center gap-2 justify-center text-lg"
+              type="button"
+            >
+              <CheckCircle2 className="animate-bounce" size={20} /> {language === 'en' ? 'Save Profile' : 'ସେଭ୍ କରନ୍ତୁ'}
+            </button>
+            <AnimatePresence>
+              {profileMsg && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="text-sm text-emerald-300 mt-2 flex items-center gap-2"
+                >
+                  <Sparkles className="animate-pulse" size={16} /> {profileMsg}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
 
