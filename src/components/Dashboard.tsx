@@ -251,6 +251,16 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 allowFullScreen
               ></iframe>
             </div>
+            {/* Custom Subscribe Button (always works) */}
+            <a
+              href="https://www.youtube.com/@UtkalSkillCenter?sub_confirmation=1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-4 py-2 rounded-lg bg-red-600 text-white font-bold text-xs shadow hover:bg-red-700 transition-colors mt-2"
+              style={{ textDecoration: 'none' }}
+            >
+              {language === 'en' ? 'Subscribe to our YouTube Channel' : 'ଆମ YouTube ଚ୍ୟାନେଲକୁ ସବସ୍କ୍ରାଇବ୍ କରନ୍ତୁ'}
+            </a>
           </div>
         </div>
       </div>
