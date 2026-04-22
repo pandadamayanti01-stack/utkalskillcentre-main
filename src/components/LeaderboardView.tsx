@@ -8,7 +8,7 @@ type League = 'Bronze' | 'Silver' | 'Gold' | 'Platinum';
 interface LeaderboardViewProps {
   leaderboard: any[];
   language: 'en' | 'or';
-  onBack: () => void;
+  onBack?: () => void;
   following: string[];
   user: any;
 }
@@ -50,14 +50,16 @@ export function LeaderboardView({ leaderboard, language, onBack, following, user
       animate="show"
       className="max-w-4xl mx-auto space-y-8"
     >
-      <motion.button 
-        variants={itemVariants}
-        onClick={onBack}
-        className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
-      >
-        <ArrowLeft size={20} />
-        <span>Back to Dashboard</span>
-      </motion.button>
+      {onBack && (
+        <motion.button 
+          variants={itemVariants}
+          onClick={onBack}
+          className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
+        >
+          <ArrowLeft size={20} />
+          <span>Back to Dashboard</span>
+        </motion.button>
+      )}
 
       <motion.div variants={itemVariants} className="text-center mb-10">
         <h2 className="text-3xl font-bold text-white mb-2">{translations[language].weeklyLeaderboard}</h2>

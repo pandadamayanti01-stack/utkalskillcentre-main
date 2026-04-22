@@ -23,6 +23,30 @@ interface DashboardProps {
   onShareDailyPractice?: () => void;
 }
 export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, hasDailyPractice, todayDailySubject, tomorrowDailySubject, onChallengeComplete, onOpenTutor, onOpenDailyPractice, onShareDailyPractice }: DashboardProps) {
+    // Map class to YouTube video URL (embed links)
+    const classVideoMap: Record<string, string> = {
+      '1': 'https://www.youtube.com/embed/DxouHyB-IA8',
+      '2': 'https://www.youtube.com/embed/Bg4niJioJDM',
+      '3': 'https://www.youtube.com/embed/V0QFi18XJD4',
+      '4': 'https://www.youtube.com/embed/d1VEPvR_nN8',
+      '5': 'https://www.youtube.com/embed/vafpnkmiIvg',
+      '6': 'https://www.youtube.com/embed/GZ1U75OV8DM',
+      '7': 'https://www.youtube.com/embed/IB_ThJ5oSwo',
+      '8': 'https://www.youtube.com/embed/DiM4A46XPf0',
+      '9': 'https://www.youtube.com/embed/WfK1GjRgSrk',
+      '10': 'https://www.youtube.com/embed/fEBhe2HLc6c',
+    };
+    // Normalize user.class to string number (handles 'Class 1', 1, '1', etc.)
+    let userClass = '10';
+    if (user?.class) {
+      if (typeof user.class === 'number') {
+        userClass = String(user.class);
+      } else if (typeof user.class === 'string') {
+        const match = user.class.match(/(\d+)/);
+        if (match) userClass = match[1];
+      }
+    }
+    const videoUrl = classVideoMap[userClass] || classVideoMap['10'];
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const filteredLeaderboard = selectedDistrict
     ? leaderboard.filter(u => u.district === selectedDistrict)
@@ -156,55 +180,76 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
 
 
-      {/* Daily MCQ (Daily Practice) Card at Top */}
+
+      {/* Daily MCQ (Daily Practice) Card + Class Video */}
       <div className="mt-8">
-        <div className="w-full text-left glass-card neon-border rounded-3xl p-4 md:p-5 relative overflow-hidden group hover:border-emerald-500/40 transition-all bg-gradient-to-br from-cyan-500/10 to-transparent">
-          <div className="absolute top-0 right-0 w-40 h-40 bg-cyan-500/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none group-hover:bg-cyan-500/20 transition-colors"></div>
-          <div className="relative z-10 flex items-start justify-between gap-4">
-            <div className="space-y-2">
-              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-[9px] font-black uppercase tracking-[0.2em]">
-                <CheckCircle2 size={12} />
-                Daily Practice
-              </div>
-              <h3 className="text-lg font-black text-white tracking-tight">
-                {language === 'en' ? 'MCQ Practice for Your Class' : 'ଆପଣଙ୍କ ଶ୍ରେଣୀ ପାଇଁ MCQ ଅଭ୍ୟାସ'}
-              </h3>
-              <p className="text-slate-400 text-[11px] font-medium max-w-xl leading-relaxed">
-                {hasDailyPractice
-                  ? (language === 'en' ? 'New class-wise questions are available. Practice today and keep the habit going.' : 'ଆପଣଙ୍କ ଶ୍ରେଣୀ ପାଇଁ ନୂଆ ପ୍ରଶ୍ନ ଉପଲବ୍ଧ ଅଛି | ଆଜିଠୁ ଅଭ୍ୟାସ ଜାରି ରଖନ୍ତୁ |')
-                  : (language === 'en' ? 'Open the practice tab to check whether today\'s question set has been published.' : 'ଆଜିର ପ୍ରଶ୍ନ ସେଟ୍ ପ୍ରକାଶିତ ହୋଇଛି କି ନାହିଁ ଦେଖିବାକୁ ଅଭ୍ୟାସ ଟ୍ୟାବ୍ ଖୋଲନ୍ତୁ |')}
-              </p>
-              {(todayDailySubject || tomorrowDailySubject) && (
-                <div className="flex flex-wrap gap-2 pt-1">
-                  {todayDailySubject && (
-                    <span className="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-slate-200">
-                      {language === 'en' ? 'Today:' : 'ଆଜି:'} {todayDailySubject}
-                    </span>
-                  )}
-                  {tomorrowDailySubject && (
-                    <span className="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-                      {language === 'en' ? 'Tomorrow:' : 'ଆସନ୍ତାକାଲି:'} {tomorrowDailySubject}
-                    </span>
-                  )}
+        <div className="flex flex-col md:flex-row gap-6">
+          {/* Daily MCQ Card */}
+          <div className="flex-1 w-full text-left glass-card neon-border rounded-3xl p-4 md:p-5 relative overflow-hidden group hover:border-emerald-500/40 transition-all bg-gradient-to-br from-cyan-500/10 to-transparent">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-cyan-500/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none group-hover:bg-cyan-500/20 transition-colors"></div>
+            <div className="relative z-10 flex flex-col gap-4">
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-[9px] font-black uppercase tracking-[0.2em]">
+                  <CheckCircle2 size={12} />
+                  Daily Practice
                 </div>
-              )}
+                <h3 className="text-lg font-black text-white tracking-tight">
+                  {language === 'en' ? 'MCQ Practice for Your Class' : 'ଆପଣଙ୍କ ଶ୍ରେଣୀ ପାଇଁ MCQ ଅଭ୍ୟାସ'}
+                </h3>
+                <p className="text-slate-400 text-[11px] font-medium max-w-xl leading-relaxed">
+                  {hasDailyPractice
+                    ? (language === 'en' ? 'New class-wise questions are available. Practice today and keep the habit going.' : 'ଆପଣଙ୍କ ଶ୍ରେଣୀ ପାଇଁ ନୂଆ ପ୍ରଶ୍ନ ଉପଲବ୍ଧ ଅଛି | ଆଜିଠୁ ଅଭ୍ୟାସ ଜାରି ରଖନ୍ତୁ |')
+                    : (language === 'en' ? 'Open the practice tab to check whether today\'s question set has been published.' : 'ଆଜିର ପ୍ରଶ୍ନ ସେଟ୍ ପ୍ରକାଶିତ ହୋଇଛି କି ନାହିଁ ଦେଖିବାକୁ ଅଭ୍ୟାସ ଟ୍ୟାବ୍ ଖୋଲନ୍ତୁ |')}
+                </p>
+                {(todayDailySubject || tomorrowDailySubject) && (
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {todayDailySubject && (
+                      <span className="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-slate-200">
+                        {language === 'en' ? 'Today:' : 'ଆଜି:'} {todayDailySubject}
+                      </span>
+                    )}
+                    {tomorrowDailySubject && (
+                      <span className="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                        {language === 'en' ? 'Tomorrow:' : 'ଆସନ୍ତାକାଲି:'} {tomorrowDailySubject}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+              <div className="shrink-0 flex flex-col items-end gap-2">
+                <button
+                  type="button"
+                  onClick={onOpenDailyPractice}
+                  className="rounded-2xl bg-cyan-500/10 border border-cyan-500/20 px-3 py-2 text-cyan-300 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-cyan-500/20 transition-all"
+                >
+                  {language === 'en' ? 'Open Tab' : 'ଟ୍ୟାବ୍ ଖୋଲନ୍ତୁ'}
+                </button>
+                <button
+                  type="button"
+                  onClick={onShareDailyPractice}
+                  className="inline-flex items-center gap-2 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 px-3 py-2 text-emerald-300 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-emerald-500/20 transition-all"
+                >
+                  <MessageCircle size={12} />
+                  {language === 'en' ? 'Share Test' : 'ଟେଷ୍ଟ ଶେୟାର କରନ୍ତୁ'}
+                </button>
+              </div>
             </div>
-            <div className="shrink-0 flex flex-col items-end gap-2">
-              <button
-                type="button"
-                onClick={onOpenDailyPractice}
-                className="rounded-2xl bg-cyan-500/10 border border-cyan-500/20 px-3 py-2 text-cyan-300 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-cyan-500/20 transition-all"
-              >
-                {language === 'en' ? 'Open Tab' : 'ଟ୍ୟାବ୍ ଖୋଲନ୍ତୁ'}
-              </button>
-              <button
-                type="button"
-                onClick={onShareDailyPractice}
-                className="inline-flex items-center gap-2 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 px-3 py-2 text-emerald-300 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-emerald-500/20 transition-all"
-              >
-                <MessageCircle size={12} />
-                {language === 'en' ? 'Share Test' : 'ଟେଷ୍ଟ ଶେୟାର କରନ୍ତୁ'}
-              </button>
+          </div>
+          {/* Class-wise YouTube Video */}
+          <div className="flex-1 w-full max-w-xl flex flex-col gap-2">
+            <div className="text-center font-bold text-cyan-400 text-sm mb-1">
+              {language === 'en' ? `Class ${userClass}` : `ଶ୍ରେଣୀ ${userClass}`}
+            </div>
+            <div className="aspect-w-16 aspect-h-9 rounded-2xl overflow-hidden border border-cyan-500/20 bg-black">
+              <iframe
+                width="100%"
+                height="100%"
+                src={videoUrl}
+                title={`Class ${userClass} Video`}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
             </div>
           </div>
         </div>
@@ -215,7 +260,6 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         <LeaderboardView
           leaderboard={filteredLeaderboard}
           language={language}
-          onBack={() => {}}
           following={user?.following || []}
           user={user}
         />
