@@ -2970,9 +2970,15 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
   const p = translations[language].pricing;
   
   // Subscription is a single flat monthly price for all classes.
+<<<<<<< HEAD
   const monthlyPrice = 99;
   const yearlyPrice = 999;
   const planName = p.premium.name;
+=======
+  let monthlyPrice = systemSettings?.monthlyPrice || 99;
+  let yearlyPrice = systemSettings?.yearlyPrice || 999;
+  let planName = p.premium.name;
+>>>>>>> 6fceec17636af6e9ed43c8e24b02266926a0869b
 
   // (Yearly pricing can still be configured via system settings if needed.)
 

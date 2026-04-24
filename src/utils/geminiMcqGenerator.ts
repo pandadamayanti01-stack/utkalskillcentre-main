@@ -13,16 +13,26 @@ export interface GeminiMcq {
   explanation: string;
 }
 
-export async function generateMcqsWithGemini(textbookContent: string): Promise<GeminiMcq[]> {
-  const prompt = `You are an expert teacher. Read the following textbook content and generate 5 multiple-choice questions (MCQs) for students. Each MCQ should:
-Be written in Odia (ଓଡ଼ିଆ), except for English subject content, which should remain in English.
-Cover all subjects present in the text.
-Have a mix of easy, medium, and high difficulty questions.
-Each question should have:
-  1 question
-  4 options (A, B, C, D)
-  The correct answer (as the option letter)
-  A brief explanation in the same language as the question
+export async function generateMcqsWithGemini(textbookContent: string, count: number = 15): Promise<GeminiMcq[]> {
+  const safeCount = Number.isFinite(count) && count > 0 ? Math.floor(count) : 15;
+  const prompt = `You are an expert teacher. Read the following textbook content and generate ${safeCount} multiple-choice questions (MCQs) for students.
+
+CRITICAL REQUIREMENTS (must follow exactly):
+- Return ONLY valid JSON (no markdown, no extra text).
+- Each MCQ must be in this exact schema:
+  {
+    "question": string,
+    "options": string[4],                // plain option text (NO "A.", "B.", etc)
+    "correct_answer": string,            // MUST exactly match one of the options
+    "explanation": string,
+    "difficulty": "easy" | "medium" | "hard" | "very_hard"
+  }
+- Language: Odia (ଓଡ଼ିଆ) for all subjects except English subject content which should remain in English.
+- Keep questions strictly from the given textbook content (avoid generic trivia).
+
+DIFFICULTY/MARKS STRUCTURE (for later scoring):
+- Create enough EASY questions so 7 can be used as 1-mark items.
+- Include some MEDIUM questions (for 2-mark), HARD (for 3-mark), VERY_HARD (for 5-mark).
 
 Textbook content:
 ${textbookContent}
@@ -30,18 +40,18 @@ ${textbookContent}
 Format your response as a JSON array, for example:
 [
   {
-    "subject": "ମାଥ୍ (Math)",
     "question": "୨ ଗୁଣିତ ୩ କେତେ?",
-    "options": ["A. ୬", "B. ୫", "C. ୪", "D. ୭"],
-    "correct_answer": "A",
-    "explanation": "୨ ଗୁଣିତ ୩ ହେଉଛି ୬।"
+    "options": ["୬", "୫", "୪", "୭"],
+    "correct_answer": "୬",
+    "explanation": "୨ ଗୁଣିତ ୩ ହେଉଛି ୬।",
+    "difficulty": "easy"
   },
   {
-    "subject": "English","
     "question": "What is the synonym of 'happy'?",
-    "options": ["A. Sad", "B. Joyful", "C. Angry", "D. Tired"],
-    "correct_answer": "B",
-    "explanation": "‘Joyful’ is a synonym for ‘happy’."
+    "options": ["Sad", "Joyful", "Angry", "Tired"],
+    "correct_answer": "Joyful",
+    "explanation": "‘Joyful’ is a synonym for ‘happy’.",
+    "difficulty": "easy"
   }
   // ...more questions
 ]

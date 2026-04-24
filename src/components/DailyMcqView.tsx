@@ -17,7 +17,6 @@ interface DailyMcqViewProps {
 }
 
 const ATTEMPT_REWARD = 1;
-const CORRECT_BONUS = 1;
 
 export function DailyMcqView({ mcqs, submissions, user, language, onBack }: DailyMcqViewProps) {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string[]>>({});
@@ -38,7 +37,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
         previousSet: 'Recent Practice',
         forClass: 'For',
         back: 'Dashboard',
-        rewardLine: 'Earn 1 point for the attempt and 1 point for each correct answer.',
+        rewardLine: 'Earn 1 point for the attempt, plus marks for each correct answer.',
         alreadySubmitted: 'Already attempted',
         earned: 'Earned',
         score: 'Score',
@@ -63,7 +62,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
         previousSet: 'ସମ୍ପ୍ରତିର ଅଭ୍ୟାସ',
         forClass: 'ପାଇଁ',
         back: 'ଡ୍ୟାସବୋର୍ଡ',
-        rewardLine: 'ଚେଷ୍ଟା ପାଇଁ 1 ପଏଣ୍ଟ ଏବଂ ପ୍ରତ୍ୟେକ ଠିକ୍ ଉତ୍ତର ପାଇଁ 1 ପଏଣ୍ଟ ମିଳିବ |',
+        rewardLine: 'ଚେଷ୍ଟା ପାଇଁ 1 ପଏଣ୍ଟ ଏବଂ ପ୍ରତ୍ୟେକ ଠିକ୍ ଉତ୍ତର ପାଇଁ ତାହାର ମାର୍କ ଅନୁଯାୟୀ ପଏଣ୍ଟ ମିଳିବ |',
         alreadySubmitted: 'ପୂର୍ବରୁ ଚେଷ୍ଟା କରାଯାଇଛି',
         earned: 'ଅର୍ଜନ',
         score: 'ସ୍କୋର',
@@ -127,7 +126,12 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
     }
 
     const correctCount = questions.reduce((count, question, index) => count + (answers[index] === question.correct_answer ? 1 : 0), 0);
-    const totalPointsEarned = ATTEMPT_REWARD + correctCount * CORRECT_BONUS;
+    const correctBonus = questions.reduce((sum, question, index) => {
+      if (answers[index] !== question.correct_answer) return sum;
+      const marks = typeof question.marks === 'number' ? question.marks : 1;
+      return sum + marks;
+    }, 0);
+    const totalPointsEarned = ATTEMPT_REWARD + correctBonus;
     const submissionRef = doc(firestore, 'daily_mcq_submissions', `${user.id}_${mcq.id}`);
     const userRef = doc(firestore, 'users', user.id);
     const progressRef = doc(collection(firestore, 'user_progress'));
@@ -141,7 +145,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
       correctCount,
       totalQuestions: questions.length,
       attemptReward: ATTEMPT_REWARD,
-      correctBonus: correctCount * CORRECT_BONUS,
+      correctBonus,
       totalPointsEarned,
       submittedDate: today,
       user,
@@ -168,7 +172,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
           correctCount,
           totalQuestions: questions.length,
           attemptReward: ATTEMPT_REWARD,
-          correctBonus: correctCount * CORRECT_BONUS,
+          correctBonus,
           totalPointsEarned,
           submittedDate: today,
           submittedAt: serverTimestamp(),

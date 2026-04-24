@@ -20,7 +20,7 @@ const UnlockGundulu = () => {
     board: {
       name: "Gundulu Pro",
       grades: "Class 10 (Board Prep)",
-      price: "₹299 / mo",
+      price: "₹99 / mo",
       features: [
         "✅ PYQ (Previous Year Questions) Help",
         "✅ Expert Physics & Math Theorems",

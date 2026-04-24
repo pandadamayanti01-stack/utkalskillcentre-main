@@ -66,7 +66,7 @@ async function extractPdfText(buffer: Buffer) {
   const parsed = await parser.getText();
   return parsed.text || '';
 }
-import { capDailyMcqQuestionList, DAILY_MCQ_QUESTION_COUNT, getRotatingDailyMcqSubject } from '../utils/dailyMcq';
+import { capDailyMcqQuestionList, DAILY_MCQ_QUESTION_COUNT, getDailyMcqMarksForIndex, getRotatingDailyMcqSubject } from '../utils/dailyMcq';
 import { translations } from '../translations';
 import { createGoogleAuth } from './googleCredentials';
 import { generateMcqsWithGemini } from '../utils/geminiMcqGenerator';
@@ -82,6 +82,7 @@ type DailyMcqQuestion = {
   options: string[];
   correct_answer: string;
   explanation?: string;
+  marks?: number;
 };
 
 type AutomationSettings = {
@@ -521,13 +522,22 @@ function cleanGeneratedQuestions(questions: any[], subject?: string): DailyMcqQu
     return true;
   }
   const rawQuestions = Array.isArray(questions) ? questions : [];
+  const normalizeOptionText = (value: string) => String(value || '')
+    .replace(/^\s*[A-Da-d]\s*[\.\)]\s*/g, '')
+    .trim();
   const cleaned = [];
   for (const q of rawQuestions) {
     const question = String(q?.question || '').trim();
     const options = Array.isArray(q?.options)
-      ? q.options.map((option: any) => String(option || '').trim()).filter(Boolean)
+      ? q.options.map((option: any) => normalizeOptionText(String(option || ''))).filter(Boolean)
       : [];
-    const correct_answer = String(q?.correct_answer || '').trim();
+    const rawCorrect = String(q?.correct_answer || '').trim();
+    let correct_answer = normalizeOptionText(rawCorrect);
+    // If Gemini returns "A"/"B"/"C"/"D", map it to the corresponding option text.
+    if (/^[A-Da-d]$/.test(correct_answer) && options.length >= 4) {
+      const index = correct_answer.toUpperCase().charCodeAt(0) - 65;
+      correct_answer = options[index] || correct_answer;
+    }
     const explanation = String(q?.explanation || '').trim();
     let reason = '';
     if (!question) reason = 'Missing question text';
@@ -544,7 +554,7 @@ function cleanGeneratedQuestions(questions: any[], subject?: string): DailyMcqQu
     cleaned.push({ question, options, correct_answer, explanation });
   }
   console.log(`[MCQ-EXTRACT] Total valid questions: ${cleaned.length} / ${rawQuestions.length}`);
-  return capDailyMcqQuestionList(cleaned);
+  return capDailyMcqQuestionList(cleaned).map((q, index) => ({ ...q, marks: getDailyMcqMarksForIndex(index) }));
 }
 
 async function generateQuestionsFromText(input: {
@@ -561,7 +571,8 @@ async function generateQuestionsFromText(input: {
     throw new Error('No textbook content available for MCQ generation.');
   }
   console.log('[DailyMCQ] GEMINI_API_KEY at MCQ generation:', process.env.GEMINI_API_KEY);
-  const mcqs = await generateMcqsWithGemini(trimmedSource);
+  // Generate extra questions so we can keep only the best valid ones.
+  const mcqs = await generateMcqsWithGemini(trimmedSource, Math.max(DAILY_MCQ_QUESTION_COUNT + 5, 15));
   // Validate and cap the MCQs
   const questions = cleanGeneratedQuestions(mcqs, input.subject);
   if (questions.length < target) {

@@ -78,6 +78,8 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isWaitingForInput, setIsWaitingForInput] = useState(false);
+  // Output language for TTS (Gundulu always replies in Odia).
+  const language = 'or-IN';
   // Accept Odia, Hindi, and English input (always reply in Odia)
   // Use 'hi-IN' for best Indian ASR, fallback to 'or-IN' if needed
   const recognitionLanguages = ['or-IN', 'hi-IN', 'en-IN'];

@@ -1,7 +1,27 @@
 import { DailyMcq, DailyMcqQuestion } from '../types';
 
 /** Questions per daily MCQ set (kept in sync with Firestore rules + automation). */
-export const DAILY_MCQ_QUESTION_COUNT = 5;
+export const DAILY_MCQ_QUESTION_COUNT = 10;
+
+/**
+ * Marks distribution for a daily set:
+ * - 7 questions of 1 mark
+ * - 1 question of 2 marks
+ * - 1 question of 3 marks
+ * - 1 question of 5 marks (can be changed to 4 if desired)
+ */
+export const DAILY_MCQ_MARKS_DISTRIBUTION: number[] = [1, 1, 1, 1, 1, 1, 1, 2, 3, 5];
+
+export function getDailyMcqMarksForIndex(index: number): number {
+  return DAILY_MCQ_MARKS_DISTRIBUTION[index] ?? 1;
+}
+
+export function withDailyMcqMarks(questions: DailyMcqQuestion[]): DailyMcqQuestion[] {
+  return questions.map((q, index) => ({
+    ...q,
+    marks: typeof q.marks === 'number' ? q.marks : getDailyMcqMarksForIndex(index),
+  }));
+}
 
 /** Never use `slice(0, MAYBE_UNDEFINED)` — that keeps the whole array. */
 export function capDailyMcqQuestionList<T>(questions: T[]): T[] {
@@ -45,18 +65,18 @@ export function getTomorrowDateString(dateString?: string): string {
 
 export function normalizeDailyMcqQuestions(mcq: DailyMcq): DailyMcqQuestion[] {
   if (Array.isArray(mcq.questions) && mcq.questions.length > 0) {
-    return mcq.questions;
+    return withDailyMcqMarks(mcq.questions);
   }
 
   if (mcq.question && Array.isArray(mcq.options) && mcq.correct_answer) {
-    return [
+    return withDailyMcqMarks([
       {
         question: mcq.question,
         options: mcq.options,
         correct_answer: mcq.correct_answer,
         explanation: mcq.explanation,
       },
-    ];
+    ]);
   }
 
   return [];

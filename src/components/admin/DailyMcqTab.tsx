@@ -4,7 +4,7 @@ import { AlertTriangle, CheckCircle2, Eye, Plus, Trash2 } from 'lucide-react';
 import { db as firestore } from '../../firebase';
 import { DailyMcq, DailyMcqQuestion } from '../../types';
 import { translations } from '../../translations';
-import { DAILY_MCQ_QUESTION_COUNT, getConfiguredDailyMcqSequence, getRotatingDailyMcqSubject, getTomorrowDateString, normalizeDailyMcqQuestions } from '../../utils/dailyMcq';
+import { DAILY_MCQ_QUESTION_COUNT, getConfiguredDailyMcqSequence, getDailyMcqMarksForIndex, getRotatingDailyMcqSubject, getTomorrowDateString, normalizeDailyMcqQuestions, withDailyMcqMarks } from '../../utils/dailyMcq';
 
 declare global {
   interface Window {
@@ -27,6 +27,7 @@ const createBlankQuestion = (): DailyMcqQuestion => ({
   options: ['', '', '', ''],
   correct_answer: '',
   explanation: '',
+  marks: 1,
 });
 
 async function readJsonResponse(response: Response) {
@@ -127,11 +128,12 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
   };
 
   const handleSave = async () => {
-    const cleanedQuestions = newMcq.questions.map((question) => ({
+    const cleanedQuestions = newMcq.questions.map((question, index) => ({
       question: question.question.trim(),
       options: question.options.map((option) => option.trim()).filter(Boolean),
       correct_answer: question.correct_answer.trim(),
       explanation: question.explanation?.trim() || '',
+      marks: getDailyMcqMarksForIndex(index),
     }));
 
     const isInvalid = cleanedQuestions.length !== DAILY_MCQ_QUESTION_COUNT || cleanedQuestions.some((question) => !question.question || question.options.length < 2 || !question.correct_answer || !question.options.includes(question.correct_answer));
@@ -201,7 +203,7 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
         ...prev,
         title: payload.title || prev.title,
         subject: payload.subject || prev.subject,
-        questions: Array.isArray(payload.questions) ? payload.questions : prev.questions,
+        questions: Array.isArray(payload.questions) ? withDailyMcqMarks(payload.questions) : prev.questions,
       }));
       showNotification(`Daily MCQ generated from ${payload?.source?.driveFileName || payload?.source?.textbookTitle || 'textbook source'}.`);
     } catch (error: any) {
@@ -371,7 +373,7 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
 
             {newMcq.questions.map((question, questionIndex) => (
               <div key={questionIndex} className="rounded-2xl border border-white/10 bg-black/20 p-4 space-y-4">
-                <p className="text-sm font-bold text-white">Question {questionIndex + 1}</p>
+                <p className="text-sm font-bold text-white">Question {questionIndex + 1} <span className="text-xs text-slate-400 font-semibold">({getDailyMcqMarksForIndex(questionIndex)} mark{getDailyMcqMarksForIndex(questionIndex) === 1 ? '' : 's'})</span></p>
                 <textarea
                   value={question.question}
                   onChange={(e) => handleQuestionChange(questionIndex, 'question', e.target.value)}
