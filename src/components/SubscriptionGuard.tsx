@@ -14,8 +14,8 @@ interface SubscriptionGuardProps {
 
 export function SubscriptionGuard({ onSubscribe, language, isPremium, user, onShare, systemSettings, onBack }: SubscriptionGuardProps) {
   const p = translations[language].pricing;
-  const monthlyPrice = systemSettings?.monthlyPrice || 199;
-  const yearlyPrice = systemSettings?.yearlyPrice || 999;
+  const monthlyPrice = 99;
+  const yearlyPrice = 999;
 
   return (
     <div className="max-w-6xl mx-auto py-8">
