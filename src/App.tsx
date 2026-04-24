@@ -224,17 +224,32 @@ interface SystemSettings {
 const fetchJson = async (url: string, options?: RequestInit) => {
   const res = await fetch(url, options);
   const contentType = res.headers.get("content-type");
+  
   if (!res.ok) {
     let errorMsg = `Error ${res.status}: ${res.statusText}`;
     if (contentType && contentType.includes("application/json")) {
       const errorData = await res.json();
       errorMsg = errorData.error || errorMsg;
+      if (errorData.details) {
+        errorMsg += ` (${errorData.details})`;
+      }
+    } else {
+      // If it's an HTML error page, try to get some text from it
+      const text = await res.text();
+      console.warn(`Non-JSON error response from ${url}:`, text.substring(0, 500));
+      if (res.status === 404) errorMsg = "Resource not found (404)";
+      else if (res.status === 500) errorMsg = "Server error (500). Please contact support.";
+      else if (res.status === 503) errorMsg = "Service unavailable (503). Server might be restarting or misconfigured.";
     }
     throw new Error(errorMsg);
   }
+
   if (!contentType || !contentType.includes("application/json")) {
-    throw new Error(`Expected JSON response but got ${contentType || 'unknown'}`);
+    const text = await res.text();
+    console.error(`Expected JSON response from ${url} but got ${contentType}:`, text.substring(0, 200));
+    throw new Error(`Server returned an unexpected response format (${contentType || 'unknown'}).`);
   }
+  
   return res.json();
 };
 
@@ -286,7 +301,22 @@ export default function App() {
     const hash = window.location.hash.replace('#', '').split('/')[0];
     return hash || localStorage.getItem('activeTab') || 'dashboard';
   });
+  const [razorpayLoaded, setRazorpayLoaded] = useState(false);
   const [openTutorInVoiceMode, setOpenTutorInVoiceMode] = useState(0);
+
+  useEffect(() => {
+    // Pre-load Razorpay script
+    const loadScript = async () => {
+      const res = await loadRazorpayScript();
+      if (res) {
+        console.log("Razorpay script loaded successfully");
+        setRazorpayLoaded(true);
+      } else {
+        console.warn("Razorpay script failed to load initially");
+      }
+    };
+    loadScript();
+  }, []);
 
   const handleUpgradeClick = () => {
     setActiveTab('plans');
@@ -1354,8 +1384,10 @@ export default function App() {
     });
   };
 
-  const handleSubscribe = async (amount: number, planType: 'monthly' | 'yearly' = 'monthly', userClass: number = 1) => {
+  const handleSubscribe = async (amount: number, planType: 'monthly' | 'yearly' = 'monthly', selectedClass?: number) => {
     if (!user) return;
+
+    const classToProcess = selectedClass || user.class || 1;
 
     if (planType === 'yearly') {
       const yearlyPrice = systemSettings?.yearlyPrice || 999;
@@ -1365,19 +1397,22 @@ export default function App() {
       }
     }
     
-    const res = await loadRazorpayScript();
-    if (!res) {
-      alert("Razorpay SDK failed to load. Are you online?");
-      return;
+    if (!razorpayLoaded) {
+      const res = await loadRazorpayScript();
+      if (!res) {
+        alert("Razorpay SDK failed to load. Please check your internet connection and try again.");
+        return;
+      }
+      setRazorpayLoaded(true);
     }
-
+    
       // 1. Create Order on Backend
       try {
-        console.log("Creating payment order...");
+        console.log("Creating payment order for class:", classToProcess);
         const orderData = await fetchJson('/api/payment/create-order', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: safeJsonStringify({ userId: user.id, amount, userClass, planType })
+          body: safeJsonStringify({ userId: user.id, amount, userClass: classToProcess, planType })
         });
 
         console.log("Order created:", orderData);
@@ -1388,7 +1423,7 @@ export default function App() {
 
         const razorpayKey = orderData.key;
         if (!razorpayKey) {
-          throw new Error("Razorpay Key ID not provided by server.");
+          throw new Error("Razorpay Key ID not found. Please set RAZORPAY_KEY_ID or VITE_RAZORPAY_KEY_ID in project settings.");
         }
 
         // Store pending payment in Firestore
@@ -1401,6 +1436,7 @@ export default function App() {
         });
 
         // 2. Open Razorpay Checkout
+        console.log("Preparing Razorpay options...");
       const options = {
         key: razorpayKey,
         amount: orderData.amount,
@@ -1409,7 +1445,7 @@ export default function App() {
         description: "Premium Plan Subscription",
         order_id: orderData.id,
         handler: async function (response: any) {
-          console.log("Payment response received:", response);
+          console.log("Payment SUCCESS response received:", response);
           // 3. Verify Payment on Backend
           try {
             const verifyData = await fetchJson('/api/payment/verify', {
@@ -1421,11 +1457,12 @@ export default function App() {
                 razorpay_signature: response.razorpay_signature,
                 userId: user.id,
                 amount: amount,
-                userClass: userClass
+                userClass: classToProcess
               })
             });
 
             if (verifyData.success) {
+              console.log("Payment verification SUCCESS");
               // Update payment status
               await updateDoc(doc(firestore, 'payments', response.razorpay_order_id), {
                 status: 'success',
@@ -1450,16 +1487,21 @@ export default function App() {
 
               setIsPremium(true);
               alert("Payment Successful! Welcome to the Premium Plan.");
+            } else {
+              console.error("Payment verification FAILED:", verifyData);
+              alert("Payment verification failed. Please contact support.");
             }
           } catch (err: any) {
             console.error("Payment Verification Error:", err);
-            alert("Payment Verification Failed: " + err.message);
+            alert("Payment Verification Failed: " + (err.message || 'Unknown error'));
           }
         },
         modal: {
           ondismiss: function() {
-            console.log("Checkout modal closed");
-          }
+            console.log("Checkout modal closed by user");
+          },
+          escape: true,
+          backdropclose: false
         },
         prefill: {
           name: user.name || "Student",
@@ -1471,12 +1513,14 @@ export default function App() {
         }
       };
 
-      console.log("Opening Razorpay checkout with options:", { ...options, key: "***" });
+      console.log("Opening Razorpay checkout now with options:", { ...options, key: "HIDDEN" });
       const rzp = new (window as any).Razorpay(options);
       rzp.on('payment.failed', function (response: any) {
-        console.error("Payment failed:", response.error);
+        console.error("Payment FAILED callback:", response.error);
         alert("Payment Failed: " + response.error.description);
       });
+      
+      console.log("Calling rzp.open()...");
       rzp.open();
     } catch (err: any) {
       console.error("Order Creation Error:", err);
@@ -2926,9 +2970,11 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
   const p = translations[language].pricing;
   
   // Subscription is a single flat monthly price for all classes.
+
   let monthlyPrice = systemSettings?.monthlyPrice || 99;
   let yearlyPrice = systemSettings?.yearlyPrice || 999;
   let planName = p.premium.name;
+
 
   // (Yearly pricing can still be configured via system settings if needed.)
 
@@ -2997,7 +3043,7 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
           {!isPremium ? (
             <div className="space-y-4">
               <button 
-                onClick={() => onSubscribe(monthlyPrice, 'monthly')}
+                onClick={() => onSubscribe(monthlyPrice, 'monthly', user?.class || 1)}
                 className="w-full py-4 rounded-2xl bg-emerald-600 text-white font-bold text-lg hover:bg-emerald-500 transition-all shadow-xl shadow-emerald-900/20"
               >
                 {language === 'en' ? `Subscribe Monthly (₹${monthlyPrice})` : `ମାସିକ ସବସ୍କ୍ରିପସନ୍ (₹${monthlyPrice})`}
@@ -3033,7 +3079,7 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
                 </div>
 
                 <button 
-                  onClick={() => onSubscribe(yearlyPrice, 'yearly')}
+                  onClick={() => onSubscribe(yearlyPrice, 'yearly', user?.class || 1)}
                   disabled={((user?.shareCount || 0) < 5)}
                   className={`w-full py-4 rounded-2xl font-bold text-lg transition-all ${
                     ((user?.shareCount || 0) >= 5)

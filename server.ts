@@ -75,11 +75,11 @@ let razorpay: Razorpay | null = null;
 
 function getRazorpay() {
   if (!razorpay) {
-    const keyId = process.env.RAZORPAY_KEY_ID || process.env.VITE_RAZORPAY_KEY;
+    const keyId = process.env.RAZORPAY_KEY_ID || process.env.VITE_RAZORPAY_KEY || process.env.VITE_RAZORPAY_KEY_ID;
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
     
     if (!keyId || !keySecret) {
-      console.error('Razorpay credentials missing. Payment features will be disabled.');
+      console.error('Razorpay credentials missing (RAZORPAY_KEY_ID/VITE_RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET required).');
       return null;
     }
 
@@ -160,26 +160,45 @@ async function startServer() {
 
   // Helper to get price
   function getPrice(userClass: number, planType: 'monthly' | 'yearly'): number {
-    if (userClass >= 1 && userClass <= 3) return planType === 'monthly' ? 99 : 499;
-    if (userClass >= 4 && userClass <= 7) return planType === 'monthly' ? 199 : 999;
-    if (userClass >= 8 && userClass <= 10) return planType === 'monthly' ? 299 : 1999;
-    return 999; // Default
+    return planType === 'monthly' ? 99 : 999;
   }
 
   app.post('/api/payment/create-order', async (req, res) => {
     try {
-      const { userClass, planType, userId } = req.body;
-      const amount = getPrice(userClass, planType);
+      const { userClass, planType, userId, amount: clientAmount } = req.body;
+      
+      // Better class parsing (extract number from strings like "class10")
+      let parsedClass = 1;
+      if (userClass !== undefined && userClass !== null) {
+        const classStr = userClass.toString();
+        const matches = classStr.match(/\d+/);
+        if (matches) {
+          parsedClass = parseInt(matches[0]);
+        } else {
+          // Keep as is if it's already a number or can be parsed directly
+          const directParse = parseInt(classStr);
+          if (!isNaN(directParse)) parsedClass = directParse;
+        }
+      }
+      
+      const amount = getPrice(parsedClass, planType);
+      
+      console.log(`Creating order for User: ${userId}, Class Input: ${userClass}, Parsed: ${parsedClass}, Plan: ${planType}, Computed Amount: ${amount}`);
+
       const rzp = getRazorpay();
       
       if (!rzp) {
-        return res.status(503).json({ error: 'Payment service is currently unavailable. Please contact support.' });
+        console.error('Razorpay initialization failed - check your environment variables (RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET)');
+        return res.status(503).json({ 
+          error: 'Payment service is currently unavailable. Please contact support.',
+          details: 'Razorpay credentials missing on server.'
+        });
       }
       
       const options = {
         amount: Math.round(amount * 100), // amount in smallest currency unit
         currency: "INR",
-        receipt: `rcpt_${Date.now().toString().slice(-6)}_${userId ? userId.substring(0, 10) : 'anon'}`
+        receipt: `rcpt_${Date.now().toString().slice(-6)}_${userId ? userId.toString().substring(0, 10) : 'anon'}`
       };
       
       const order = await rzp.orders.create(options);
@@ -188,12 +207,15 @@ async function startServer() {
         id: order.id,
         amount: order.amount,
         currency: order.currency,
-        key: process.env.RAZORPAY_KEY_ID || process.env.VITE_RAZORPAY_KEY
+        key: process.env.RAZORPAY_KEY_ID || process.env.VITE_RAZORPAY_KEY || process.env.VITE_RAZORPAY_KEY_ID
       });
     } catch (error: any) {
       console.error('Create Order Error:', error);
       const errorMessage = error?.error?.description || error?.message || 'Failed to create order';
-      res.status(500).json({ error: errorMessage });
+      res.status(500).json({ 
+        error: errorMessage,
+        details: 'Failed to create payment order on server.'
+      });
     }
   });
 
