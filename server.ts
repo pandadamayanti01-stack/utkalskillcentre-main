@@ -79,11 +79,13 @@ function getRazorpay() {
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
     
     if (!keyId || !keySecret) {
-      console.error('Razorpay credentials missing (RAZORPAY_KEY_ID/VITE_RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET required).');
+      console.error(`Razorpay credentials missing. ID present: ${!!keyId}, Secret present: ${!!keySecret}`);
+      console.error('Expected variables: RAZORPAY_KEY_ID/VITE_RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET');
       return null;
     }
 
     try {
+      console.log(`Initializing Razorpay with Key ID: ${keyId.substring(0, 7)}...`);
       razorpay = new Razorpay({
         key_id: keyId,
         key_secret: keySecret,
@@ -163,6 +165,22 @@ async function startServer() {
     return planType === 'monthly' ? 99 : 999;
   }
 
+  // API routes
+  app.get("/api/health", (req, res) => {
+    const rzp = getRazorpay();
+    const keyId = process.env.RAZORPAY_KEY_ID || process.env.VITE_RAZORPAY_KEY || process.env.VITE_RAZORPAY_KEY_ID;
+    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+    res.json({ 
+      status: "ok", 
+      message: "Server is internal and running.",
+      env: process.env.NODE_ENV,
+      razorpay: rzp ? "Initialized" : "Missing Credentials",
+      razorpayKeyId: keyId ? `${keyId.substring(0, 7)}...` : "Missing",
+      razorpaySecret: keySecret ? "Present (Hidden)" : "Missing",
+      timestamp: new Date().toISOString()
+    });
+  });
+
   app.post('/api/payment/create-order', async (req, res) => {
     try {
       const { userClass, planType, userId, amount: clientAmount } = req.body;
@@ -183,15 +201,15 @@ async function startServer() {
       
       const amount = getPrice(parsedClass, planType);
       
-      console.log(`Creating order for User: ${userId}, Class Input: ${userClass}, Parsed: ${parsedClass}, Plan: ${planType}, Computed Amount: ${amount}`);
+      console.log(`[API] Creating order: User=${userId}, Class=${parsedClass}, Plan=${planType}, Amount=${amount}`);
 
       const rzp = getRazorpay();
       
       if (!rzp) {
-        console.error('Razorpay initialization failed - check your environment variables (RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET)');
+        console.error('Razorpay initialization FAILED - Check RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in Settings.');
         return res.status(503).json({ 
-          error: 'Payment service is currently unavailable. Please contact support.',
-          details: 'Razorpay credentials missing on server.'
+          error: 'Payment service unavailable',
+          details: 'Razorpay credentials (Key and Secret) are missing on the production server. Please check the App Settings.'
         });
       }
       

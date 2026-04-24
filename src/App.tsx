@@ -237,9 +237,18 @@ const fetchJson = async (url: string, options?: RequestInit) => {
       // If it's an HTML error page, try to get some text from it
       const text = await res.text();
       console.warn(`Non-JSON error response from ${url}:`, text.substring(0, 500));
-      if (res.status === 404) errorMsg = "Resource not found (404)";
-      else if (res.status === 500) errorMsg = "Server error (500). Please contact support.";
-      else if (res.status === 503) errorMsg = "Service unavailable (503). Server might be restarting or misconfigured.";
+      
+      if (res.status === 404) {
+        errorMsg = "Server endpoint not found (404). If this is a Shared App, ensure the server has fully started.";
+      } else if (res.status === 503) {
+        errorMsg = "Service Unavailable (503). The server might be restarting or missing required credentials.";
+      } else {
+        errorMsg = `Server error (${res.status}).`;
+      }
+      
+      if (text.includes("Starting Server") || text.includes("NOT_FOUND")) {
+        errorMsg += " Use the 'Settings' menu to verify that RAZORPAY_KEY_SECRET is provided as an Environment Variable.";
+      }
     }
     throw new Error(errorMsg);
   }
@@ -247,7 +256,12 @@ const fetchJson = async (url: string, options?: RequestInit) => {
   if (!contentType || !contentType.includes("application/json")) {
     const text = await res.text();
     console.error(`Expected JSON response from ${url} but got ${contentType}:`, text.substring(0, 200));
-    throw new Error(`Server returned an unexpected response format (${contentType || 'unknown'}).`);
+    
+    let errorMsg = `Server returned an unexpected response format (${contentType || 'unknown'}).`;
+    if (text.trim().startsWith("<!doctype html>") || text.trim().startsWith("<html")) {
+      errorMsg += " This usually happens if the site is deployed as a static site (like Firebase Hosting) but requires a backend server to run. Ensure you are accessing the server-side deployment (e.g., Cloud Run).";
+    }
+    throw new Error(errorMsg);
   }
   
   return res.json();
