@@ -8,8 +8,8 @@ import { getFirestore as getAdminFirestore } from 'firebase-admin/firestore';
 import { getStorage as getAdminStorage } from 'firebase-admin/storage';
 import fs from 'fs';
 import crypto from 'node:crypto';
-import { registerDailyMcqAutomation } from './src/server/dailyMcqAutomation.js';
-import { getServiceAccountCredentials } from './src/server/googleCredentials.js';
+import { registerDailyMcqAutomation } from './src/server/dailyMcqAutomation';
+import { getServiceAccountCredentials } from './src/server/googleCredentials';
 
 dotenv.config({ path: path.join(process.cwd(), '.env.local') });
 dotenv.config();

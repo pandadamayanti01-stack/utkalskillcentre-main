@@ -77,10 +77,10 @@ async function extractPdfText(buffer: Buffer) {
     }
   }
 }
-import { capDailyMcqQuestionList, DAILY_MCQ_QUESTION_COUNT, getDailyMcqMarksForIndex, getRotatingDailyMcqSubject } from '../utils/dailyMcq.js';
-import { translations } from '../translations.js';
-import { createGoogleAuth } from './googleCredentials.js';
-import { generateMcqsWithGemini } from '../utils/geminiMcqGenerator.js';
+import { capDailyMcqQuestionList, DAILY_MCQ_QUESTION_COUNT, getDailyMcqMarksForIndex, getRotatingDailyMcqSubject } from '../utils/dailyMcq';
+import { translations } from '../translations';
+import { createGoogleAuth } from './googleCredentials';
+import { generateMcqsWithGemini } from '../utils/geminiMcqGenerator';
 
 const DEFAULT_AUTOMATION_TIME = '07:00';
 const DEFAULT_AUTOMATION_TIME_ZONE = 'Asia/Kolkata';
@@ -340,7 +340,7 @@ async function loadUrlTextContent(url: string): Promise<DriveContentResult> {
 
 const TEXTBOOK_BUCKET_NAME = process.env.TEXTBOOK_STORAGE_BUCKET || 'utkalskillcentre-admin';
 
-import { SUBJECT_FILE_KEYWORDS } from '../constants.js';
+import { SUBJECT_FILE_KEYWORDS } from '../constants';
 
 async function loadTextbookFromBucket(adminApp: App, className: string, subject: string): Promise<{ driveContent: DriveContentResult; source: GeneratedDailyMcqResult['source'] } | null> {
   const classDigit = className.replace(/[^0-9]/g, '');
@@ -906,7 +906,7 @@ export function registerDailyMcqAutomation(app: Express, adminApp: App | null, d
     }
   });
 
-  if (adminApp && !schedulerStarted) {
+  if (adminApp && !schedulerStarted && process.env.VERCEL !== '1') {
     schedulerStarted = true;
     cron.schedule('* * * * *', async () => {
       try {
@@ -916,5 +916,7 @@ export function registerDailyMcqAutomation(app: Express, adminApp: App | null, d
       }
     });
     console.log('Daily MCQ automation scheduler registered.');
+  } else if (process.env.VERCEL === '1') {
+    console.log('Daily MCQ automation scheduler skipped on Vercel (ephemeral environment). Use Vercel Cron jobs instead.');
   }
 }

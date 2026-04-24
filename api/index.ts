@@ -8,8 +8,10 @@ import { getFirestore as getAdminFirestore } from 'firebase-admin/firestore';
 import { getStorage as getAdminStorage } from 'firebase-admin/storage';
 import fs from 'fs';
 import crypto from 'node:crypto';
-import { registerDailyMcqAutomation } from '../src/server/dailyMcqAutomation.js';
-import { getServiceAccountCredentials } from '../src/server/googleCredentials.js';
+import { registerDailyMcqAutomation } from '../src/server/dailyMcqAutomation';
+import { getServiceAccountCredentials } from '../src/server/googleCredentials';
+
+console.log('API Initialization start...');
 
 dotenv.config();
 
@@ -28,8 +30,8 @@ function getInitializedAdminApp(): App | null {
 }
 
 // Initialize Firebase Admin
-if (!getInitializedAdminApp()) {
-  try {
+try {
+  if (!getInitializedAdminApp()) {
     const configPath = path.join(process.cwd(), 'firebase-applet-config.json');
     let config: any = {};
     if (fs.existsSync(configPath)) {
@@ -65,11 +67,12 @@ if (!getInitializedAdminApp()) {
 
       if (options.credential) {
         initializeApp(options);
+        console.log('Firebase Admin initialized.');
       }
     }
-  } catch (err) {
-    console.error("Error initializing Firebase Admin:", err);
   }
+} catch (err) {
+  console.error("Error during API setup (Firebase Admin):", err);
 }
 
 const upload = multer({ 
@@ -217,7 +220,12 @@ app.post('/api/tts/gemini', async (req, res) => {
 
 const adminApp = getInitializedAdminApp();
 if (adminApp) {
-  registerDailyMcqAutomation(app, adminApp, firestoreDatabaseId);
+  try {
+    registerDailyMcqAutomation(app, adminApp, firestoreDatabaseId);
+    console.log('Daily MCQ automation registered.');
+  } catch (err) {
+    console.error('Failed to register Daily MCQ automation:', err);
+  }
 }
 
 app.all('/api/*', (req, res) => {
