@@ -15,9 +15,13 @@ interface SubscriptionGuardProps {
 export function SubscriptionGuard({ onSubscribe, language, isPremium, user, onShare, systemSettings, onBack }: SubscriptionGuardProps) {
   const p = translations[language].pricing;
 <<<<<<< HEAD
+<<<<<<< HEAD
   const monthlyPrice = 99;
   const yearlyPrice = 999;
 =======
+=======
+
+>>>>>>> temp-fix
   const monthlyPrice = systemSettings?.monthlyPrice || 99;
   const yearlyPrice = systemSettings?.yearlyPrice || 999;
 >>>>>>> 6fceec17636af6e9ed43c8e24b02266926a0869b
