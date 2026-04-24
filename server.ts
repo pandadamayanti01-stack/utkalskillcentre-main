@@ -352,7 +352,22 @@ async function startServer() {
   });
 
   const adminApp = getInitializedAdminApp();
+  app.use('/api', (req, res, next) => {
+    console.log(`[API Request] ${req.method} ${req.url}`);
+    next();
+  });
+
   registerDailyMcqAutomation(app, adminApp, firestoreDatabaseId);
+
+  // Unhandled API routes catch-all
+  app.all('/api/*', (req, res) => {
+    console.warn(`[API] Unhandled route: ${req.method} ${req.path}`);
+    res.status(404).json({ 
+      error: 'Not Found', 
+      message: `The API endpoint ${req.method} ${req.path} does not exist on this server.`,
+      availableRoutes: ['/api/health', '/api/payment/create-order', '/api/payment/verify', '/api/tts/gemini', '/api/upload-textbook']
+    });
+  });
 
   // Vite middleware for development
   const distPath = path.join(process.cwd(), 'dist');

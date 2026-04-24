@@ -253,13 +253,15 @@ const fetchJson = async (url: string, options?: RequestInit) => {
     throw new Error(errorMsg);
   }
 
-  if (!contentType || !contentType.includes("application/json")) {
+    if (!contentType || !contentType.includes("application/json")) {
     const text = await res.text();
     console.error(`Expected JSON response from ${url} but got ${contentType}:`, text.substring(0, 200));
     
     let errorMsg = `Server returned an unexpected response format (${contentType || 'unknown'}).`;
-    if (text.trim().startsWith("<!doctype html>") || text.trim().startsWith("<html")) {
-      errorMsg += " This usually happens if the site is deployed as a static site (like Firebase Hosting) but requires a backend server to run. Ensure you are accessing the server-side deployment (e.g., Cloud Run).";
+    if (text.includes("Starting Server") || text.includes("<title>Starting Server")) {
+      errorMsg = "The application server is still starting up. This can take 30-60 seconds after a deployment. Please wait a moment and try again.";
+    } else if (text.trim().startsWith("<!doctype html>") || text.trim().startsWith("<html")) {
+      errorMsg += " This usually happens if the backend server is not running or missing required environment variables.";
     }
     throw new Error(errorMsg);
   }
@@ -1987,7 +1989,7 @@ export default function App() {
           <footer className="mt-20 pb-10 flex flex-col items-center gap-4 opacity-40">
             <div className="h-px w-20 bg-white/10" />
             <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-center">Managed By</p>
-            <img src="/bigsan.png" className="h-8 w-auto grayscale brightness-200" alt="Bigsan Group" />
+            <img src="/bigsan-512.png" className="h-8 w-auto grayscale brightness-200" alt="Bigsan Group" />
             <p className="text-[9px] font-medium text-center">© 2026 Bigsan Utkal Skill Centre</p>
           </footer>
         </div>
@@ -4989,4 +4991,5 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
     </motion.div>
   );
 }
+
 
