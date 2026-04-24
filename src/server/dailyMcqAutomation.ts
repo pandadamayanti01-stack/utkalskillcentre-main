@@ -60,16 +60,27 @@ function getExpectedLanguage(subject: string): 'odia' | 'english' | 'hindi' | 's
 
 
 async function extractPdfText(buffer: Buffer) {
-  // Use PDFParse class from pdf-parse v2.x
-  const { PDFParse } = await import('pdf-parse');
-  const parser = new PDFParse({ data: buffer });
-  const parsed = await parser.getText();
-  return parsed.text || '';
+  try {
+    // Standard pdf-parse v1.x/v2.x typically exports a function that returns a promise
+    const data = await pdfParse(buffer);
+    return data.text || '';
+  } catch (error) {
+    console.error('PDF Extraction Error:', error);
+    // Fallback or retry logic if it's a different API version
+    try {
+      const { PDFParse } = await import('pdf-parse');
+      const parser = new (PDFParse as any)({ data: buffer });
+      const parsed = await parser.getText();
+      return parsed.text || '';
+    } catch (innerError) {
+      return '';
+    }
+  }
 }
-import { capDailyMcqQuestionList, DAILY_MCQ_QUESTION_COUNT, getDailyMcqMarksForIndex, getRotatingDailyMcqSubject } from '../utils/dailyMcq';
-import { translations } from '../translations';
-import { createGoogleAuth } from './googleCredentials';
-import { generateMcqsWithGemini } from '../utils/geminiMcqGenerator';
+import { capDailyMcqQuestionList, DAILY_MCQ_QUESTION_COUNT, getDailyMcqMarksForIndex, getRotatingDailyMcqSubject } from '../utils/dailyMcq.js';
+import { translations } from '../translations.js';
+import { createGoogleAuth } from './googleCredentials.js';
+import { generateMcqsWithGemini } from '../utils/geminiMcqGenerator.js';
 
 const DEFAULT_AUTOMATION_TIME = '07:00';
 const DEFAULT_AUTOMATION_TIME_ZONE = 'Asia/Kolkata';
@@ -329,7 +340,7 @@ async function loadUrlTextContent(url: string): Promise<DriveContentResult> {
 
 const TEXTBOOK_BUCKET_NAME = process.env.TEXTBOOK_STORAGE_BUCKET || 'utkalskillcentre-admin';
 
-import { SUBJECT_FILE_KEYWORDS } from '../constants';
+import { SUBJECT_FILE_KEYWORDS } from '../constants.js';
 
 async function loadTextbookFromBucket(adminApp: App, className: string, subject: string): Promise<{ driveContent: DriveContentResult; source: GeneratedDailyMcqResult['source'] } | null> {
   const classDigit = className.replace(/[^0-9]/g, '');

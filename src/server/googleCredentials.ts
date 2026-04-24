@@ -30,12 +30,15 @@ function readJsonFile(filePath: string) {
 }
 
 export function getServiceAccountCredentials() {
-  const inlineJson = process.env.FIREBASE_SERVICE_ACCOUNT_JSON || process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+  const inlineJson = process.env.FIREBASE_SERVICE_ACCOUNT || process.env.FIREBASE_SERVICE_ACCOUNT_JSON || process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
   if (inlineJson) {
     try {
-      return normalizeServiceAccount(JSON.parse(inlineJson));
+      // If it's already an object (though usually env vars are strings)
+      const parsed = typeof inlineJson === 'object' ? inlineJson : JSON.parse(inlineJson);
+      return normalizeServiceAccount(parsed);
     } catch (error) {
-      throw new Error(`Failed to parse service-account JSON from env: ${error instanceof Error ? error.message : String(error)}`);
+      console.error("Error parsing service account JSON from env:", error);
+      return null;
     }
   }
 

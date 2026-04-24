@@ -8,10 +8,9 @@ import { getFirestore as getAdminFirestore } from 'firebase-admin/firestore';
 import { getStorage as getAdminStorage } from 'firebase-admin/storage';
 import fs from 'fs';
 import crypto from 'node:crypto';
-import { registerDailyMcqAutomation } from './src/server/dailyMcqAutomation.js';
-import { getServiceAccountCredentials } from './src/server/googleCredentials.js';
+import { registerDailyMcqAutomation } from '../src/server/dailyMcqAutomation.js';
+import { getServiceAccountCredentials } from '../src/server/googleCredentials.js';
 
-dotenv.config({ path: path.join(process.cwd(), '.env.local') });
 dotenv.config();
 
 const app = express();
@@ -35,10 +34,8 @@ if (!getInitializedAdminApp()) {
     let config: any = {};
     if (fs.existsSync(configPath)) {
       config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-      console.log("Firebase Admin initializing with config file. Loaded config:", config);
       config.projectId = config.projectId || config.project_id;
     } else {
-      console.warn("firebase-applet-config.json not found. Using environment variables.");
       config = {
         projectId: process.env.FIREBASE_PROJECT_ID || process.env.VITE_FIREBASE_PROJECT_ID,
         storageBucket: process.env.FIREBASE_STORAGE_BUCKET || process.env.VITE_FIREBASE_STORAGE_BUCKET
@@ -60,16 +57,14 @@ if (!getInitializedAdminApp()) {
         });
       } else {
         try {
-          // Only attempt default if we don't have service account to avoid crashes on Vercel
           options.credential = applicationDefault();
         } catch (e) {
-          console.warn("Firebase Admin: No credentials found. Some features may be disabled.");
+          console.warn("Firebase Admin: No credentials found.");
         }
       }
 
       if (options.credential) {
         initializeApp(options);
-        console.log("Firebase Admin initialized successfully with project:", config.projectId);
       }
     }
   } catch (err) {
@@ -94,26 +89,8 @@ function getRazorpay() {
   return razorpay;
 }
 
-app.use((req, res, next) => {
-  const isHttps = req.secure || req.headers['x-forwarded-proto'] === 'https';
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  if (isHttps) {
-    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
-  }
-  next();
-});
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.use((req, res, next) => {
-  if (req.url.startsWith('/api')) {
-    console.log(`[API REQUEST] ${new Date().toISOString()} - ${req.method} ${req.url}`);
-  }
-  next();
-});
 
 // API Routes
 app.post('/api/upload-textbook', upload.single('file'), async (req: any, res) => {
@@ -138,10 +115,8 @@ app.post('/api/upload-textbook', upload.single('file'), async (req: any, res) =>
 
 app.get("/api/health", (req, res) => {
   const rzp = getRazorpay();
-  const keyId = process.env.RAZORPAY_KEY_ID || process.env.VITE_RAZORPAY_KEY || process.env.VITE_RAZORPAY_KEY_ID;
   res.json({ 
     status: "ok", 
-    message: "Server is healthy.",
     razorpay: !!rzp,
     env: process.env.NODE_ENV,
     timestamp: new Date().toISOString()
@@ -175,13 +150,7 @@ app.post('/api/payment/create-order', async (req, res) => {
       key: process.env.RAZORPAY_KEY_ID || process.env.VITE_RAZORPAY_KEY || process.env.VITE_RAZORPAY_KEY_ID
     });
   } catch (error: any) {
-    console.error('Detailed Error:', error);
-    res.status(500).json({ 
-      error: "Internal Server Error", 
-      message: error.message,
-      stack: error.stack,
-      details: 'Failed to create payment order on server.'
-    });
+    res.status(500).json({ error: error.message, stack: error.stack });
   }
 });
 
@@ -212,12 +181,7 @@ app.post('/api/payment/verify', async (req, res) => {
       res.status(400).json({ success: false, message: 'Invalid signature' });
     }
   } catch (error: any) {
-    console.error('Verify Payment Detailed Error:', error);
-    res.status(500).json({ 
-      success: false, 
-      error: error.message,
-      stack: error.stack 
-    });
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
@@ -241,12 +205,9 @@ app.post('/api/tts/gemini', async (req, res) => {
     });
 
     if (!ttsResponse.ok) throw new Error('Gemini TTS failed');
-
     const data = await ttsResponse.json();
     const inlineData = data?.candidates?.[0]?.content?.parts?.find((p: any) => p.inlineData)?.inlineData;
-    
     if (!inlineData) throw new Error("TTS payload missing");
-
     res.setHeader('Content-Type', inlineData.mimeType || 'audio/wav');
     res.send(Buffer.from(inlineData.data, 'base64'));
   } catch (error: any) {
@@ -263,40 +224,4 @@ app.all('/api/*', (req, res) => {
   res.status(404).json({ error: 'Not Found', message: `Route ${req.url} not found` });
 });
 
-// Production Routing
-const distPath = path.join(process.cwd(), 'dist');
-const indexPath = path.join(distPath, 'index.html');
-
-if (process.env.NODE_ENV === 'production' && fs.existsSync(indexPath)) {
-  app.use(express.static(distPath));
-  app.get('*', (req, res) => {
-    if (!req.path.startsWith('/api')) {
-      res.sendFile(indexPath);
-    }
-  });
-} else if (process.env.NODE_ENV !== 'production' && process.env.VERCEL !== '1') {
-  // Vite Dev Setup
-  (async () => {
-    try {
-      const { createServer } = await import('vite');
-      const vite = await createServer({
-        server: { middlewareMode: true },
-        appType: 'spa',
-      });
-      app.use(vite.middlewares);
-    } catch (err) {
-      console.warn('Vite dev server failed to start:', err);
-    }
-  })();
-}
-
-// Export for Vercel
 export default app;
-
-// Listen if not on Vercel
-if (process.env.VERCEL !== '1') {
-  const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server listening on http://0.0.0.0:${PORT}`);
-  });
-}
