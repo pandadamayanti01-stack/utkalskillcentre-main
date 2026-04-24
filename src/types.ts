@@ -141,6 +141,8 @@ export interface DailyMcqQuestion {
   options: string[];
   correct_answer: string;
   explanation?: string;
+  /** Marks for this question (1..5). */
+  marks?: number;
 }
 
 export interface DailyMcqSubmission {

@@ -2198,11 +2198,11 @@ Sample tone for Class 6-10:
   const handleSaveSettings = async () => {
     try {
       const safeSystemSettings = {
-        monthlyPrice: systemSettings.monthlyPrice || 199,
+        monthlyPrice: systemSettings.monthlyPrice || 99,
         yearlyPrice: systemSettings.yearlyPrice || 999,
         class3MonthlyPrice: systemSettings.class3MonthlyPrice || 99,
         class3YearlyPrice: systemSettings.class3YearlyPrice || 499,
-        class10MonthlyPrice: systemSettings.class10MonthlyPrice || 299,
+        class10MonthlyPrice: systemSettings.class10MonthlyPrice || 99,
         class10YearlyPrice: systemSettings.class10YearlyPrice || 1499,
         leaderboardRules: systemSettings.leaderboardRules || '',
         enabledClasses: systemSettings.enabledClasses || ["class1", "class2", "class3", "class4", "class5", "class6", "class7", "class8", "class9", "class10"],
@@ -2257,7 +2257,7 @@ Sample tone for Class 6-10:
             <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Default Monthly Price (₹)</label>
             <input 
               type="number" 
-              value={systemSettings.monthlyPrice || 199}
+              value={systemSettings.monthlyPrice || 99}
               onChange={(e) => {
                 const val = e.target.value;
                 setSystemSettings({...systemSettings, monthlyPrice: val === "" ? "" : parseInt(val)});
@@ -2309,7 +2309,7 @@ Sample tone for Class 6-10:
             <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class 10 Monthly Price (₹)</label>
             <input 
               type="number" 
-              value={systemSettings.class10MonthlyPrice || 299}
+              value={systemSettings.class10MonthlyPrice || 99}
               onChange={(e) => {
                 const val = e.target.value;
                 setSystemSettings({...systemSettings, class10MonthlyPrice: val === "" ? "" : parseInt(val)});

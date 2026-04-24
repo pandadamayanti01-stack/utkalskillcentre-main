@@ -168,11 +168,12 @@ service cloud.firestore {
               data.userId is string &&
               submissionId == data.userId + '_' + data.mcqId &&
               data.answers is list &&
-              data.totalQuestions is int && data.totalQuestions == 5 &&
+              data.totalQuestions is int && data.totalQuestions == 10 &&
               data.answers.size() == data.totalQuestions &&
               data.correctCount is int && data.correctCount >= 0 && data.correctCount <= data.totalQuestions &&
               data.attemptReward is int && data.attemptReward == 1 &&
-              data.correctBonus is int && data.correctBonus >= 0 && data.correctBonus <= data.totalQuestions &&
+              // correctBonus now represents earned marks; the daily distribution sums to 17 marks (7x1 + 2 + 3 + 5).
+              data.correctBonus is int && data.correctBonus >= 0 && data.correctBonus <= 20 &&
               data.totalPointsEarned is int && data.totalPointsEarned == data.attemptReward + data.correctBonus &&
               data.submittedDate is string &&
               exists(/databases/$(database)/documents/daily_mcqs/$(data.mcqId)) &&

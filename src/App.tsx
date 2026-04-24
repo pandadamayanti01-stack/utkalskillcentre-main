@@ -423,7 +423,7 @@ export default function App() {
   const [studentNotifications, setStudentNotifications] = useState<any[]>([]);
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
   const [systemSettings, setSystemSettings] = useState<any>({
-    monthlyPrice: 199,
+    monthlyPrice: 99,
     yearlyPrice: 999,
     dailyMcqSubjectRotation: ['math', 'english', 'science', 'odia', 'social']
   });
@@ -2925,19 +2925,12 @@ function SidebarItem({ icon, label, active, onClick }: any) {
 function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShare, systemSettings, onBack }: any) {
   const p = translations[language].pricing;
   
-  let monthlyPrice = systemSettings?.monthlyPrice || 199;
+  // Subscription is a single flat monthly price for all classes.
+  let monthlyPrice = systemSettings?.monthlyPrice || 99;
   let yearlyPrice = systemSettings?.yearlyPrice || 999;
   let planName = p.premium.name;
 
-  if (user?.class === 'class3') {
-    monthlyPrice = systemSettings?.class3MonthlyPrice || 99;
-    yearlyPrice = systemSettings?.class3YearlyPrice || 499;
-    planName = "Gundulu Junior Pro (Class 3)";
-  } else if (user?.class === 'class10') {
-    monthlyPrice = systemSettings?.class10MonthlyPrice || 299;
-    yearlyPrice = systemSettings?.class10YearlyPrice || 1499;
-    planName = "Gundulu Exam Hero Pro (Class 10)";
-  }
+  // (Yearly pricing can still be configured via system settings if needed.)
 
   return (
     <div className="max-w-6xl mx-auto py-8">
@@ -2951,10 +2944,7 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
 
       <div className="text-center mb-12">
         <h2 className="text-4xl font-bold text-white mb-4">{p.title}</h2>
-        <p className="text-slate-400">Unlock Gundulu Premium for your specific class needs!</p>
-        <div className="mt-4 inline-block bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-2 rounded-full text-sm font-medium">
-          Pricing customized for {user?.class ? user.class.toUpperCase() : 'your class'}
-        </div>
+        <p className="text-slate-400">Unlock Gundulu Premium for unlimited learning!</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">

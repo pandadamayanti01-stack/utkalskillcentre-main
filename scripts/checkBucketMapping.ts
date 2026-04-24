@@ -1,6 +1,7 @@
 
 import dotenv from 'dotenv';
-import { getStorage as getAdminStorage, App } from 'firebase-admin/storage';
+import { getStorage as getAdminStorage } from 'firebase-admin/storage';
+import type { App } from 'firebase-admin/app';
 import { initializeApp, applicationDefault, getApps, getApp } from 'firebase-admin/app';
 import { SUBJECT_FILE_KEYWORDS } from '../src/constants';
 import path from 'path';
