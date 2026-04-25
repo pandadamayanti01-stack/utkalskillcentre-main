@@ -712,7 +712,7 @@ async function buildGeneratedDailyMcq(adminApp: App, databaseId: string, params:
   } satisfies GeneratedDailyMcqResult;
 }
 
-async function runScheduledGeneration(adminApp: App, databaseId: string, dateString?: string) {
+export async function runScheduledGeneration(adminApp: App, databaseId: string, dateString?: string) {
   const db = getDatabase(adminApp, databaseId);
   const settingsDoc = await db.collection('system_settings').doc('config').get();
   const settings = (settingsDoc.data() || {}) as AutomationSettings;

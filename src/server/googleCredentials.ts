@@ -39,7 +39,7 @@ export function getServiceAccountCredentials() {
     }
   }
 
-  const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH || process.env.GOOGLE_APPLICATION_CREDENTIALS;
+  const serviceAccountPath = (process.env.FIREBASE_SERVICE_ACCOUNT_PATH || process.env.GOOGLE_APPLICATION_CREDENTIALS || '').replace(/"/g, '').trim();
   if (serviceAccountPath) {
     const filePayload = readJsonFile(serviceAccountPath);
     if (!filePayload) {
