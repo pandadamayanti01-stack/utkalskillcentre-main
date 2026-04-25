@@ -11,6 +11,8 @@ import crypto from 'node:crypto';
 import { getServiceAccountCredentials } from '../src/server/googleCredentials';
 
 console.log('API (Vercel) Initialization start...');
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('VERCEL_REGION:', process.env.VERCEL_REGION);
 
 dotenv.config();
 
@@ -95,13 +97,14 @@ function getRazorpay() {
   
   if (keyId && keySecret) {
     try {
+      console.log('Initializing Razorpay with Key ID:', keyId.substring(0, 8) + '...');
       razorpay = new Razorpay({ key_id: keyId, key_secret: keySecret });
-      console.log('Razorpay initialized lazily.');
+      console.log('Razorpay initialized successfully.');
     } catch (err) {
       console.error('Razorpay init error:', err);
     }
   } else {
-    console.warn('Razorpay credentials missing during lazy init.');
+    console.warn('Razorpay credentials missing during lazy init. KeyID:', !!keyId, 'KeySecret:', !!keySecret);
   }
   
   razorpayInitTried = true;
@@ -183,8 +186,11 @@ app.post('/api/payment/create-order', async (req, res) => {
 
     const rzp = getRazorpay();
     if (!rzp) {
-      console.error('Razorpay credentials missing in environment.');
-      return res.status(503).json({ error: 'Razorpay Credentials Missing' });
+      console.error('Razorpay initialization failed. Check environment variables.');
+      return res.status(503).json({ 
+        error: 'Payment service unavailable',
+        details: 'The server could not initialize Razorpay. Please ensure RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET are set in the Vercel dashboard.'
+      });
     }
 
     const options = {
@@ -271,6 +277,16 @@ app.post('/api/tts/gemini', async (req, res) => {
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
+});
+
+// Error handling middleware
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error('Unhandled API Error:', err);
+  res.status(500).json({ 
+    error: 'Internal Server Error',
+    message: process.env.NODE_ENV === 'production' ? 'An unexpected error occurred' : err.message,
+    stack: process.env.NODE_ENV === 'production' ? undefined : err.stack
+  });
 });
 
 // Catch-all for API
