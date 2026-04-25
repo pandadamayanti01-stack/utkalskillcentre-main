@@ -271,6 +271,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
           >
             {language === 'en' ? 'English' : 'ଓଡ଼ିଆ'}
           </button>
+        </div>
       </div>
 
       <div ref={messageListRef} className="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-6 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
@@ -416,6 +417,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
              </div>
           </div>
         </div>
+      </div>
     </div>
   );
 };
