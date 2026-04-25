@@ -99,6 +99,16 @@ function getRazorpay() {
 }
 
 async function startServer() {
+  const distPath = path.join(process.cwd(), 'dist');
+  const indexPath = path.join(distPath, 'index.html');
+  
+  console.log('--- Server Startup Diagnostics ---');
+  console.log('NODE_ENV:', process.env.NODE_ENV);
+  console.log('CWD:', process.cwd());
+  console.log('Dist path:', distPath);
+  console.log('Index.html exists:', fs.existsSync(indexPath));
+  console.log('----------------------------------');
+
   const app = express();
   app.disable('x-powered-by');
   app.set('trust proxy', 1);
@@ -330,9 +340,6 @@ async function startServer() {
   registerDailyMcqAutomation(app, adminApp, firestoreDatabaseId);
 
   // Vite middleware for development
-  const distPath = path.join(process.cwd(), 'dist');
-  const indexPath = path.join(distPath, 'index.html');
-
   if (process.env.NODE_ENV !== 'production' || !fs.existsSync(indexPath)) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
