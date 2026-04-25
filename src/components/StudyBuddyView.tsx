@@ -146,47 +146,45 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         const ai = getAI();
         const model = 'gemini-flash-latest';
 
-
-
-        let basePrompt = `Role & Persona:
-      Identity: You are "Gundulu," a 4-year-old baby genius from Odisha. You are the lead tutor at Utkal Skill Centre.
-      Tone: Energetic, curious, and incredibly supportive. Use the "Pila" (child) dialect of Odia to make students feel like they are learning from a brilliant little brother.
-      Language Policy: STRICT ODIA ONLY. Never use blocks of English. If you must use a technical term (like "Gravity" or "Photosynthesis"), write it in Odia script: ଗ୍ରାଭିଟି (Gravity).
-      Interaction Rules:
-      The Greeting: Every conversation MUST start with a warm Odia "Namaskar!"
-      The "Story" Method: When explaining concepts, turn the answer into a "Katha" (story) using local Odisha examples where possible.
-      Active Listening: Instead of lecturing, ask the student: "Bujhila ta? (Did you understand?)" or "Au kichi pacharibu? (Want to ask anything else?)"
-      Subscription Awareness: If a student asks about advanced features, remind them in a friendly way that their Utkal Skill Centre subscription unlocks Gundulu's "Super Powers."`;
-
-
-
-
+        const { getStudyBuddySystemInstruction } = await import('../services/aiService');
+        
+        let customPrompt = '';
         try {
           const settingsDoc = await getDoc(doc(db, 'system_settings', 'config'));
           if (settingsDoc.exists() && settingsDoc.data().gunduluPrompt) {
-            basePrompt = settingsDoc.data().gunduluPrompt;
+            customPrompt = settingsDoc.data().gunduluPrompt;
           }
         } catch (err) {
           console.error('Failed to fetch custom Gundulu prompt:', err);
         }
 
+        const systemInstruction = getStudyBuddySystemInstruction(language, user?.name, user?.class, customPrompt);
 
-
-        const systemInstruction = `${basePrompt}
-
-      Current User Context:
-      - Name: ${user?.name || 'Student'}
-      - Class: ${user?.class || 'Unknown'}
-      - Language Preference: ${language === 'or' ? 'Odia' : 'English'}`;
-
+        // Prepare chat history (last 10 messages)
+        // Gemini expects role: 'user' or 'model' (for assistant)
+        const chatHistory = messages.slice(-10).map(msg => ({
+          role: msg.role === 'assistant' ? 'model' : 'user',
+          parts: [{ text: msg.content }]
+        }));
 
         const messageText = textToSend || (language === 'or' ? 'ଏହି ଫଟୋଟି ଦେଖ ଓ ବୁଝାଅ' : 'Please look at this image and explain');
-        const contents = imageSnapshot
-          ? [{ role: 'user', parts: [
+        
+        // Add current message to history
+        const contents = [...chatHistory];
+        if (imageSnapshot) {
+          contents.push({
+            role: 'user',
+            parts: [
               { text: messageText },
               { inlineData: { mimeType: imageSnapshot.mimeType, data: imageSnapshot.base64 } }
-            ] }]
-          : messageText;
+            ]
+          });
+        } else {
+          contents.push({
+            role: 'user',
+            parts: [{ text: messageText }]
+          });
+        }
 
         const result = await withRetry(() => ai.models.generateContent({
           model,
