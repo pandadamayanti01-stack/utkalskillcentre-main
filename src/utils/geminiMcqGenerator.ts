@@ -11,28 +11,32 @@ export interface GeminiMcq {
   options: string[];
   correct_answer: string;
   explanation: string;
+  difficulty: "easy" | "medium" | "hard" | "very_hard";
+  type: "mcq" | "subjective";
 }
 
 export async function generateMcqsWithGemini(textbookContent: string, count: number = 15): Promise<GeminiMcq[]> {
-  const safeCount = Number.isFinite(count) && count > 0 ? Math.floor(count) : 15;
-  const prompt = `You are an expert teacher. Read the following textbook content and generate ${safeCount} multiple-choice questions (MCQs) for students.
+  const safeCount = Number.isFinite(count) && count > 0 ? Math.floor(count) : 10;
+  const prompt = `You are an expert teacher. Read the following textbook content and generate a set of ${safeCount} practice questions for students.
+
+STRUCTURE REQUIREMENTS:
+- Total Questions: ${safeCount}
+- 7 Questions: Multiple Choice (MCQ) - These should be EASY (1-mark level).
+- 3 Questions: Subjective/Descriptive (Short Answer) - These should be MEDIUM/HARD (2, 3, or 5 mark level).
 
 CRITICAL REQUIREMENTS (must follow exactly):
 - Return ONLY valid JSON (no markdown, no extra text).
-- Each MCQ must be in this exact schema:
+- Each question must be in this exact schema:
   {
     "question": string,
-    "options": string[4],                // plain option text (NO "A.", "B.", etc)
-    "correct_answer": string,            // MUST exactly match one of the options
-    "explanation": string,
+    "type": "mcq" | "subjective",
+    "options": string[],                 // For MCQ: 4 options (NO "A.", "B.", etc). For subjective: EMPTY ARRAY [].
+    "correct_answer": string,            // For MCQ: exactly match one option. For subjective: a model short answer.
+    "explanation": string,               // Detailed logic or step-by-step solution.
     "difficulty": "easy" | "medium" | "hard" | "very_hard"
   }
 - Language: Odia (ଓଡ଼ିଆ) for all subjects except English subject content which should remain in English.
-- Keep questions strictly from the given textbook content (avoid generic trivia).
-
-DIFFICULTY/MARKS STRUCTURE (for later scoring):
-- Create enough EASY questions so 7 can be used as 1-mark items.
-- Include some MEDIUM questions (for 2-mark), HARD (for 3-mark), VERY_HARD (for 5-mark).
+- Keep questions strictly from the given textbook content.
 
 Textbook content:
 ${textbookContent}
@@ -41,19 +45,20 @@ Format your response as a JSON array, for example:
 [
   {
     "question": "୨ ଗୁଣିତ ୩ କେତେ?",
+    "type": "mcq",
     "options": ["୬", "୫", "୪", "୭"],
     "correct_answer": "୬",
     "explanation": "୨ ଗୁଣିତ ୩ ହେଉଛି ୬।",
     "difficulty": "easy"
   },
   {
-    "question": "What is the synonym of 'happy'?",
-    "options": ["Sad", "Joyful", "Angry", "Tired"],
-    "correct_answer": "Joyful",
-    "explanation": "‘Joyful’ is a synonym for ‘happy’.",
-    "difficulty": "easy"
+    "question": "ଦ୍ୟୁତି-ସଂଶ୍ଲେଷଣ (Photosynthesis) କହିଲେ କଣ ବୁଝ?",
+    "type": "subjective",
+    "options": [],
+    "correct_answer": "ସବୁଜ ଉଦ୍ଭିଦମାନେ ସୂର୍ଯ୍ୟାଲୋକ ଉପସ୍ଥିତିରେ ନିଜ ଖାଦ୍ୟ ପ୍ରସ୍ତୁତ କରିବା ପ୍ରକ୍ରିୟାକୁ ଦ୍ୟୁତି-ସଂଶ୍ଲେଷଣ କୁହାଯାଏ।",
+    "explanation": "ଏହି ପ୍ରକ୍ରିୟାରେ ଅଙ୍ଗାରକାମ୍ଳ ଏବଂ ଜଳ ବ୍ୟବହାର ହୁଏ।",
+    "difficulty": "medium"
   }
-  // ...more questions
 ]
 `;
 

@@ -539,11 +539,13 @@ function cleanGeneratedQuestions(questions: any[], subject?: string): DailyMcqQu
       correct_answer = options[index] || correct_answer;
     }
     const explanation = String(q?.explanation || '').trim();
+    const type = q?.type === 'subjective' ? 'subjective' : 'mcq';
+    
     let reason = '';
     if (!question) reason = 'Missing question text';
-    else if (options.length < 2) reason = 'Not enough options';
+    else if (type === 'mcq' && options.length < 2) reason = 'Not enough options';
     else if (!correct_answer) reason = 'Missing correct answer';
-    else if (!options.includes(correct_answer)) reason = 'Correct answer not in options';
+    else if (type === 'mcq' && !options.includes(correct_answer)) reason = 'Correct answer not in options';
     else if (!isValidQuestionText(question)) reason = 'Invalid question text';
     else if (!isValidQuestionText(explanation)) reason = 'Invalid explanation text';
     else if (!matchesExpectedLanguage(question)) reason = 'Language mismatch';
@@ -551,7 +553,7 @@ function cleanGeneratedQuestions(questions: any[], subject?: string): DailyMcqQu
       console.warn(`[MCQ-EXTRACT] Skipped question: "${question.slice(0, 80)}..." Reason: ${reason}`);
       continue;
     }
-    cleaned.push({ question, options, correct_answer, explanation });
+    cleaned.push({ question, options, correct_answer, explanation, type });
   }
   console.log(`[MCQ-EXTRACT] Total valid questions: ${cleaned.length} / ${rawQuestions.length}`);
   return capDailyMcqQuestionList(cleaned).map((q, index) => ({ ...q, marks: getDailyMcqMarksForIndex(index) }));

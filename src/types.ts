@@ -143,6 +143,8 @@ export interface DailyMcqQuestion {
   explanation?: string;
   /** Marks for this question (1..5). */
   marks?: number;
+  /** Style of the question. Defaults to 'mcq'. */
+  type?: 'mcq' | 'subjective';
 }
 
 export interface DailyMcqSubmission {

@@ -48,6 +48,9 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
         copied: 'Copied',
         shareHint: 'Share today\'s subject and class with friends so they can open the link, log in, and attempt the same test.',
         submitFailed: 'Could not submit your answer. Please try again.',
+        typeAnswer: 'Type your answer here...',
+        yourAnswer: 'Your Answer',
+        modelAnswer: 'Model Answer',
       }
     : {
         title: 'ଦୈନିକ MCQ ଅଭ୍ୟାସ',
@@ -73,6 +76,9 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
         copied: 'କପି ହେଲା',
         shareHint: 'ଆଜିର ବିଷୟ ଏବଂ ଶ୍ରେଣୀ ସହିତ ଏହାକୁ ଶେୟାର କରନ୍ତୁ, ଯେଉଁଠାରେ ଅନ୍ୟ ଛାତ୍ର ଲିଙ୍କ ଖୋଲି ଲଗିନ୍ କରି ସେହି ଟେଷ୍ଟ ଦେଇପାରିବେ |',
         submitFailed: 'ଆପଣଙ୍କ ଉତ୍ତର ସବମିଟ୍ ହୋଇପାରିଲା ନାହିଁ | ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |',
+        typeAnswer: 'ଏଠାରେ ଆପଣଙ୍କର ଉତ୍ତର ଲେଖନ୍ତୁ...',
+        yourAnswer: 'ଆପଣଙ୍କ ଉତ୍ତର',
+        modelAnswer: 'ସଠିକ୍ ଉତ୍ତର',
       };
 
   const today = new Date().toISOString().split('T')[0];
@@ -125,9 +131,17 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
       return;
     }
 
-    const correctCount = questions.reduce((count, question, index) => count + (answers[index] === question.correct_answer ? 1 : 0), 0);
+    const correctCount = questions.reduce((count, question, index) => {
+      if (question.type === 'subjective') return count + (answers[index]?.trim().length > 0 ? 1 : 0);
+      return count + (answers[index] === question.correct_answer ? 1 : 0);
+    }, 0);
+    
     const correctBonus = questions.reduce((sum, question, index) => {
-      if (answers[index] !== question.correct_answer) return sum;
+      const isCorrect = question.type === 'subjective' 
+        ? answers[index]?.trim().length > 0 
+        : answers[index] === question.correct_answer;
+        
+      if (!isCorrect) return sum;
       const marks = typeof question.marks === 'number' ? question.marks : 1;
       return sum + marks;
     }, 0);
@@ -304,35 +318,63 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
                           <p className="text-white text-base leading-relaxed">{question.question}</p>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-3">
-                          {question.options.map((option, optionIndex) => {
-                            const isSelected = selectedSetAnswers[questionIndex] === option;
-                            const isCorrectOption = option === question.correct_answer;
-                            const isWrongSelected = submission?.answers?.[questionIndex] === option && option !== question.correct_answer;
+                        {question.type === 'subjective' ? (
+                          <div className="space-y-3">
+                            <textarea
+                              disabled={isSubmitted}
+                              placeholder={t.typeAnswer}
+                              value={selectedSetAnswers[questionIndex] || ''}
+                              onChange={(e) => {
+                                const nextAnswers = [...selectedSetAnswers];
+                                nextAnswers[questionIndex] = e.target.value;
+                                setSelectedAnswers((prev) => ({ ...prev, [mcq.id]: nextAnswers }));
+                              }}
+                              className="w-full min-h-[100px] rounded-2xl border border-white/10 bg-white/5 p-4 text-slate-200 placeholder:text-slate-600 focus:border-cyan-400/40 focus:bg-white/10 transition-all outline-none resize-none"
+                            />
+                            {isSubmitted && (
+                              <div className="space-y-3 p-4 rounded-2xl bg-cyan-500/5 border border-cyan-500/10">
+                                <div>
+                                  <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-400/60 mb-1">{t.yourAnswer}</p>
+                                  <p className="text-sm text-slate-300">{submission?.answers?.[questionIndex]}</p>
+                                </div>
+                                <div className="pt-3 border-t border-white/5">
+                                  <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-400/60 mb-1">{t.modelAnswer}</p>
+                                  <p className="text-sm text-emerald-100">{question.correct_answer}</p>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-1 gap-3">
+                            {question.options.map((option, optionIndex) => {
+                              const isSelected = selectedSetAnswers[questionIndex] === option;
+                              const isCorrectOption = option === question.correct_answer;
+                              const isWrongSelected = submission?.answers?.[questionIndex] === option && option !== question.correct_answer;
 
-                            let optionClasses = 'border-white/10 bg-white/5 text-slate-200 hover:bg-white/10';
-                            if (isSelected) optionClasses = 'border-cyan-400/40 bg-cyan-500/10 text-white';
-                            if (isSubmitted && isCorrectOption) optionClasses = 'border-emerald-500/40 bg-emerald-500/15 text-emerald-100';
-                            if (isSubmitted && isWrongSelected) optionClasses = 'border-red-500/40 bg-red-500/15 text-red-100';
+                              let optionClasses = 'border-white/10 bg-white/5 text-slate-200 hover:bg-white/10';
+                              if (isSelected) optionClasses = 'border-cyan-400/40 bg-cyan-500/10 text-white';
+                              if (isSubmitted && isCorrectOption) optionClasses = 'border-emerald-500/40 bg-emerald-500/15 text-emerald-100';
+                              if (isSubmitted && isWrongSelected) optionClasses = 'border-red-500/40 bg-red-500/15 text-red-100';
 
-                            return (
-                              <button
-                                key={`${mcq.id}-${questionIndex}-${optionIndex}`}
-                                type="button"
-                                disabled={isSubmitted}
-                                onClick={() => {
-                                  const nextAnswers = [...selectedSetAnswers];
-                                  nextAnswers[questionIndex] = option;
-                                  setSelectedAnswers((prev) => ({ ...prev, [mcq.id]: nextAnswers }));
-                                }}
-                                className={`w-full text-left rounded-2xl border px-4 py-3 transition-all ${optionClasses} ${isSubmitted ? 'cursor-default' : ''}`}
-                              >
-                                <span className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 mr-3">{String.fromCharCode(65 + optionIndex)}</span>
-                                <span className="text-sm font-medium">{option}</span>
-                              </button>
-                            );
-                          })}
-                        </div>
+                              return (
+                                <button
+                                  key={`${mcq.id}-${questionIndex}-${optionIndex}`}
+                                  type="button"
+                                  disabled={isSubmitted}
+                                  onClick={() => {
+                                    const nextAnswers = [...selectedSetAnswers];
+                                    nextAnswers[questionIndex] = option;
+                                    setSelectedAnswers((prev) => ({ ...prev, [mcq.id]: nextAnswers }));
+                                  }}
+                                  className={`w-full text-left rounded-2xl border px-4 py-3 transition-all ${optionClasses} ${isSubmitted ? 'cursor-default' : ''}`}
+                                >
+                                  <span className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 mr-3">{String.fromCharCode(65 + optionIndex)}</span>
+                                  <span className="text-sm font-medium">{option}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
 
                         {isSubmitted && question.explanation && (
                           <div>
