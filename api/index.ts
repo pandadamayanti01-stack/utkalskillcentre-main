@@ -114,6 +114,14 @@ function getRazorpay() {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Ensure MCQ Automation is registered for all requests
+app.use(async (req, res, next) => {
+  if (req.path.startsWith('/api/')) {
+    await ensureMcqAutomation();
+  }
+  next();
+});
+
 // Dynamic MCQ Automation registration
 let mcqRegistered = false;
 async function ensureMcqAutomation() {
