@@ -2,6 +2,15 @@ import fs from 'fs';
 import path from 'path';
 import { google } from 'googleapis';
 
+// GLOBAL FIX: Windows environment variables sometimes include stray quotes.
+// This cleans them up for any library (like Firestore) that reads process.env directly.
+if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+  process.env.GOOGLE_APPLICATION_CREDENTIALS = process.env.GOOGLE_APPLICATION_CREDENTIALS.replace(/"/g, '').trim();
+}
+if (process.env.FIREBASE_SERVICE_ACCOUNT_PATH) {
+  process.env.FIREBASE_SERVICE_ACCOUNT_PATH = process.env.FIREBASE_SERVICE_ACCOUNT_PATH.replace(/"/g, '').trim();
+}
+
 type ServiceAccountLike = {
   project_id?: string;
   client_email?: string;
