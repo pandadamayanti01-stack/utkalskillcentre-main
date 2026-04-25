@@ -19,7 +19,7 @@ function splitTextIntoChapters(text: string): { title: string, content: string }
 
 import { GoogleGenAI } from '@google/genai';
 import type { Express } from 'express';
-import type { App } from 'firebase-admin/app';
+import { App, getApp as getAdminApp, getApps } from 'firebase-admin/app';
 import { getFirestore as getAdminFirestore, FieldValue } from 'firebase-admin/firestore';
 import { getStorage as getAdminStorage } from 'firebase-admin/storage';
 import { google } from 'googleapis';
@@ -846,11 +846,19 @@ function adminRouteErrorResponse(
   return { status: 500, body: base };
 }
 
-export function registerDailyMcqAutomation(app: Express, adminApp: App | null, databaseId: string) {
+export function registerDailyMcqAutomation(app: Express, providedAdminApp: App | null, databaseId: string) {
+  // Helper to get the admin app (either provided or initialized on demand)
+  const getApp = () => {
+    if (providedAdminApp) return providedAdminApp;
+    if (getApps().length > 0) return getAdminApp();
+    return null;
+  };
+
   app.post('/api/admin/daily-mcqs/generate-from-drive', async (req, res) => {
     try {
+      const adminApp = getApp();
       if (!adminApp) {
-        return res.status(503).json({ error: 'Firebase Admin is not initialized. Set FIREBASE_PROJECT_ID or provide firebase-applet-config.json on the server.' });
+        return res.status(503).json({ error: 'Firebase Admin is not initialized.' });
       }
 
       const className = String(req.body?.className || '').trim();
@@ -883,8 +891,9 @@ export function registerDailyMcqAutomation(app: Express, adminApp: App | null, d
 
   app.post('/api/admin/daily-mcqs/run-auto', async (req, res) => {
     try {
+      const adminApp = getApp();
       if (!adminApp) {
-        return res.status(503).json({ error: 'Firebase Admin is not initialized. Set FIREBASE_PROJECT_ID or provide firebase-applet-config.json on the server.' });
+        return res.status(503).json({ error: 'Firebase Admin is not initialized.' });
       }
 
       const activeDate = String(req.body?.activeDate || '').trim() || undefined;
@@ -897,11 +906,14 @@ export function registerDailyMcqAutomation(app: Express, adminApp: App | null, d
     }
   });
 
-  if (adminApp && !schedulerStarted) {
+  if (!schedulerStarted) {
     schedulerStarted = true;
     cron.schedule('* * * * *', async () => {
       try {
-        await tickAutomation(adminApp, databaseId);
+        const adminApp = getApp();
+        if (adminApp) {
+          await tickAutomation(adminApp, databaseId);
+        }
       } catch (error) {
         console.error('Daily MCQ scheduler tick failed:', error);
       }

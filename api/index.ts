@@ -14,6 +14,8 @@ console.log('API (Vercel) Initialization start...');
 console.log('NODE_ENV:', process.env.NODE_ENV);
 console.log('VERCEL_REGION:', process.env.VERCEL_REGION);
 
+import { registerDailyMcqAutomation } from '../src/server/dailyMcqAutomation.js';
+
 dotenv.config();
 
 const app = express();
@@ -114,32 +116,11 @@ function getRazorpay() {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Ensure MCQ Automation is registered for all requests
-app.use(async (req, res, next) => {
-  if (req.path.startsWith('/api/')) {
-    await ensureMcqAutomation();
-  }
-  next();
-});
+// Register MCQ Automation routes immediately so they are in the route table before the catch-all
+registerDailyMcqAutomation(app, null, firestoreDatabaseId);
 
-// Dynamic MCQ Automation registration
-let mcqRegistered = false;
-async function ensureMcqAutomation() {
-  if (mcqRegistered) return;
-  try {
-    const adminApp = getInitializedAdminApp();
-    if (adminApp) {
-      // Use dynamic import to avoid boot-time dependency issues
-      const { registerDailyMcqAutomation } = await import('../src/server/dailyMcqAutomation.js');
-      registerDailyMcqAutomation(app, adminApp, firestoreDatabaseId);
-      mcqRegistered = true;
-      console.log('Daily MCQ automation registered lazily.');
-    }
-  } catch (err) {
-    console.error('Lazy MCQ automation registration error:', err);
-    mcqRegistered = true; // Don't keep trying if it fails hard
-  }
-}
+// Middleware to inject the adminApp into the request context if needed
+// (Though the current implementation of registerDailyMcqAutomation handles its own adminApp check)
 
 // Routes
 app.post('/api/upload-textbook', upload.single('file'), async (req: any, res) => {
