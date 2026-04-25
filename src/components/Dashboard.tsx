@@ -34,7 +34,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       '7': 'https://www.youtube.com/embed/IB_ThJ5oSwo',
       '8': 'https://www.youtube.com/embed/DiM4A46XPf0',
       '9': 'https://www.youtube.com/embed/WfK1GjRgSrk',
-      '10': 'https://www.youtube.com/embed/fEBhe2HLc6c',
+      '10': 'https://www.youtube.com/embed/OZko767K-Eo',
     };
     // Normalize user.class to string number (handles 'Class 1', 1, '1', etc.)
     let userClass = '10';
