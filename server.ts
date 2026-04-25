@@ -185,7 +185,11 @@ async function startServer() {
       const rzp = getRazorpay();
       
       if (!rzp) {
-        return res.status(503).json({ error: 'Payment service is currently unavailable. Please contact support.' });
+        console.error('Razorpay initialization failed. Check environment variables.');
+        return res.status(503).json({ 
+          error: 'Payment service unavailable',
+          details: 'The server could not initialize Razorpay. Please ensure RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET are set in the production environment.'
+        });
       }
       
       console.log(`Creating Razorpay order for user: ${userId}, amount: ${amount}, class: ${userClass}, plan: ${planType}`);
@@ -366,9 +370,21 @@ async function startServer() {
   }
 
   const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on http://0.0.0.0:${PORT}`);
-  });
+  
+  // Only listen if not running as a serverless function (e.g., Vercel)
+  if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server running on http://0.0.0.0:${PORT}`);
+    });
+  }
+  
+  return app;
 }
 
-startServer();
+// Start the server and export for Vercel
+export const appPromise = startServer();
+// Default export for Vercel's standard function signature
+export default async (req: any, res: any) => {
+  const app = await appPromise;
+  return app(req, res);
+};
