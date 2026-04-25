@@ -4343,6 +4343,12 @@ function TopicDetailView({
               </button>
             )}
             <button 
+              onClick={() => setActiveSubTab('practice')}
+              className={`flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap ${activeSubTab === 'practice' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
+            >
+              <Trophy size={16} /> {language === 'en' ? 'Practice' : 'ଅଭ୍ୟାସ'}
+            </button>
+            <button 
               onClick={() => {
                 if (topic.notes) {
                   OfflineService.saveNote(topic.id, topic.notes);
@@ -4425,17 +4431,44 @@ function TopicDetailView({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                className="space-y-8"
               >
-                {topic.quiz_questions?.map((q, idx) => (
-                  <PracticeQuestion 
-                    key={idx} 
-                    question={q} 
-                    isPremium={isPremium} 
-                    language={language} 
-                    onUpgrade={onUpgrade}
-                  />
-                ))}
+                {topic.bulkQa && (
+                  <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-8 mb-8">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="p-2 rounded-lg bg-emerald-500/20 text-emerald-500">
+                        <BookOpen size={20} />
+                      </div>
+                      <h3 className="text-lg font-bold text-white">Textbook Q&A / Practice Section</h3>
+                    </div>
+                    <div className="prose prose-invert max-w-none prose-emerald">
+                      <div className="markdown-body">
+                        <Markdown>{topic.bulkQa}</Markdown>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {(topic.quiz_questions?.length ?? 0) > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {topic.quiz_questions?.map((q, idx) => (
+                      <PracticeQuestion 
+                        key={idx} 
+                        question={q} 
+                        isPremium={isPremium} 
+                        language={language} 
+                        onUpgrade={onUpgrade}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {!topic.bulkQa && (!topic.quiz_questions || topic.quiz_questions.length === 0) && (
+                  <div className="py-20 text-center bg-slate-900/30 rounded-3xl border border-dashed border-white/10">
+                    <HelpCircle size={48} className="text-slate-700 mx-auto mb-4" />
+                    <p className="text-slate-500 font-medium">No practice questions available for this chapter yet.</p>
+                  </div>
+                )}
               </motion.div>
             )}
           </AnimatePresence>

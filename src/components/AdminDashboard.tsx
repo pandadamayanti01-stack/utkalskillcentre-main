@@ -905,7 +905,8 @@ Sample tone for Class 6-10:
     class: '',
     board: '',
     subject: '',
-    quiz_questions: []
+    quiz_questions: [],
+    bulkQa: ''
   });
 
   const handleAddChapter = async (e: React.FormEvent) => {
@@ -962,7 +963,8 @@ Sample tone for Class 6-10:
         class: '',
         board: '',
         subject: '',
-        quiz_questions: []
+        quiz_questions: [],
+        bulkQa: ''
       });
     } catch (err: any) {
       console.error("Add/Edit Chapter Error:", err);
@@ -1260,7 +1262,8 @@ Sample tone for Class 6-10:
                     class: '',
                     board: '',
                     subject: '',
-                    quiz_questions: []
+                    quiz_questions: [],
+                    bulkQa: ''
                   });
                   setIsAddingChapter(true);
                 }}
@@ -1276,7 +1279,7 @@ Sample tone for Class 6-10:
         {isAddingChapter && (
           <form onSubmit={handleAddChapter} className="bg-white/5 border border-white/10 p-6 rounded-2xl space-y-6">
             <h3 className="text-lg font-semibold text-white">{isEditingChapter ? 'Edit Chapter' : 'Add New Chapter'}</h3>
-            <div className="space-y-6">
+            <div className="grid grid-cols-1 gap-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class</label>
@@ -1385,26 +1388,41 @@ Sample tone for Class 6-10:
                     <Plus size={16} /> Add Video
                   </button>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Order</label>
-                    <input 
-                      type="number" 
-                      value={newChapter.order}
-                      onChange={(e) => setNewChapter({...newChapter, order: parseInt(e.target.value)})}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Chapter Order</label>
+                  <input 
+                    type="number" 
+                    value={newChapter.order}
+                    onChange={(e) => setNewChapter({...newChapter, order: parseInt(e.target.value)})}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500/50"
+                    placeholder="e.g. 1"
+                  />
+                </div>
+                               <div className="space-y-4">
+                  <div className="bg-slate-900/30 border border-white/5 rounded-2xl p-6 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <label className="block text-xs font-bold text-emerald-500 uppercase tracking-widest">Magic Bulk Q&A Box (Textbook Questions & Answers)</label>
+                      <span className="text-[10px] text-slate-500 font-bold bg-white/5 px-2 py-1 rounded">FULL CHAPTER MODE</span>
+                    </div>
+                    <textarea 
+                      value={newChapter.bulkQa}
+                      onChange={(e) => setNewChapter({...newChapter, bulkQa: e.target.value})}
+                      placeholder={`Paste all 100+ questions and answers here... 
+Example:
+Q1: What is Physics?
+A1: Physics is the study of matter...
+
+Q2: ...`}
+                      className="w-full h-[600px] bg-white/5 border border-white/10 rounded-2xl px-6 py-6 text-white text-sm focus:outline-none focus:border-emerald-500/50 font-mono leading-relaxed custom-scrollbar"
                     />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Quiz ID</label>
-                    <input 
-                      type="text" 
-                      value={newChapter.quizId}
-                      onChange={(e) => setNewChapter({...newChapter, quizId: e.target.value})}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                    />
+                    <div className="flex items-center justify-between">
+                      <p className="text-[10px] text-slate-500 italic">Tip: Use Markdown (# for headings) to make it look beautiful for students.</p>
+                      <p className="text-[10px] text-emerald-500/50 font-bold uppercase">{newChapter.bulkQa?.length || 0} characters</p>
+                    </div>
                   </div>
                 </div>
+              
                 <div className="md:col-span-3">
                   <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Notes Document (PDF/Word)</label>
                   <div className="flex flex-col gap-4">
@@ -1439,12 +1457,12 @@ Sample tone for Class 6-10:
                       {newChapter.notesUrl && (
                         <a href={newChapter.notesUrl} target="_blank" rel="noopener noreferrer" className="text-emerald-400 text-sm">View Document</a>
                       )}
-                    </div>
-                  </div>
                 </div>
               </div>
-
-              <div className="mb-6">
+            </div>
+          </div>
+              
+          <div className="mb-6">
                 <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Visibility Status</label>
                 <div className="flex gap-4">
                   {['draft', 'published'].map((s) => (
@@ -1514,7 +1532,8 @@ Sample tone for Class 6-10:
                           class: c.class || '',
                           board: typeof c.board === 'string' ? { en: c.board, or: '' } : c.board,
                           subject: c.subject || '',
-                          quiz_questions: c.quiz_questions || []
+                          quiz_questions: c.quiz_questions || [],
+                          bulkQa: c.bulkQa || ''
                         });
                         setEditingChapterId(c.id);
                         setIsEditingChapter(true);

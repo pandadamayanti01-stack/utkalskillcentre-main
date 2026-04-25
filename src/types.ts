@@ -74,6 +74,7 @@ export interface Chapter {
   status?: 'draft' | 'published';
   translationGroupId?: string;
   quiz_questions?: any[]; // Added quiz_questions
+  bulkQa?: string; // Large block of pasted Q&A
 }
 
 export interface Test {

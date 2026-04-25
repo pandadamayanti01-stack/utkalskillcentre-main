@@ -21,18 +21,16 @@ export function PracticeQuestion({ question, isPremium, language, onUpgrade }: P
         <p className="text-white font-bold leading-relaxed flex-1">{question.question}</p>
       </div>
 
-      <div className="space-y-3 mb-6">
-        {Array.isArray(question.options) ? (
-          question.options.map((opt: string, i: number) => (
+      {Array.isArray(question.options) && question.options.length > 0 && (
+        <div className="space-y-3 mb-6">
+          {question.options.map((opt: string, i: number) => (
             <div key={i} className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/5 text-slate-400 text-sm">
               <div className="w-6 h-6 rounded-lg bg-slate-800 flex items-center justify-center font-bold text-[10px]">{String.fromCharCode(65 + i)}</div>
               <span>{opt}</span>
             </div>
-          ))
-        ) : (
-          <div className="text-slate-500 text-sm italic">Practice options unavailable.</div>
-        )}
-      </div>
+          ))}
+        </div>
+      )}
 
       <button 
         onClick={() => isPremium ? setShowAnswer(!showAnswer) : onUpgrade()}

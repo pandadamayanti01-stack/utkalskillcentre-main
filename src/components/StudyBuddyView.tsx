@@ -238,8 +238,8 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
   ];
 
   return (
-    <div className="max-w-4xl mx-auto h-[calc(100vh-12rem)] flex flex-col space-y-6">
-      <div className="flex items-center justify-between px-6 py-4 glass-card neon-border rounded-3xl border border-[#10b981]/30 bg-slate-900/40 backdrop-blur-xl shrink-0">
+    <div className="flex-1 flex flex-col min-h-0 bg-slate-950">
+      <div className="flex items-center justify-between px-6 py-3 border-b border-white/5 bg-slate-950/50 backdrop-blur-xl shrink-0">
         <div className="flex items-center gap-4">
           <div className="relative">
             <div className={`w-12 h-12 rounded-2xl bg-[#10b981]/10 flex items-center justify-center text-[#10b981] border border-[#10b981]/20 shadow-[0_0_15px_rgba(16,185,129,0.2)] overflow-hidden ${loading ? 'animate-pulse' : ''}`}>
@@ -271,10 +271,9 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
           >
             {language === 'en' ? 'English' : 'ଓଡ଼ିଆ'}
           </button>
-        </div>
       </div>
 
-      <div ref={messageListRef} className="flex-1 overflow-y-auto pr-2 space-y-6 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+      <div ref={messageListRef} className="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-6 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
         <AnimatePresence initial={false}>
           {messages.map((msg) => (
             <motion.div
@@ -332,120 +331,91 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="shrink-0 space-y-4">
-        {messages.length === 1 && (
-          <div className="flex flex-wrap gap-2 justify-center mb-4">
-            {suggestedTopics.map((topic, idx) => (
-              <button
-                key={idx}
-                onClick={() => { setInput(language === 'en' ? topic.en : topic.or); }}
-                className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all"
-              >
-                {language === 'en' ? topic.en : topic.or}
-              </button>
-            ))}
-          </div>
-        )}
-
-        <div className="relative group">
-          <div className="absolute inset-0 bg-emerald-500/5 rounded-[2.5rem] blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none"></div>
-
-          {selectedImage && (
-            <div className="flex items-center gap-2 px-4 py-2 mb-2 bg-slate-800/60 rounded-2xl border border-white/10">
-              <img src={selectedImage.preview} alt="preview" className="w-14 h-14 rounded-xl object-cover border border-white/10" />
-              <span className="flex-1 text-xs text-slate-400 truncate">
-                {language === 'or' ? 'ଫଟୋ ଯୋଡ଼ା ହୋଇଛି' : 'Image attached'}
-              </span>
-              <button
-                onClick={() => setSelectedImage(null)}
-                className="p-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all"
-              >
-                <X size={14} />
-              </button>
+      <div className="shrink-0 p-4 md:p-6 bg-gradient-to-t from-slate-950 via-slate-950 to-transparent">
+        <div className="max-w-3xl mx-auto">
+          {messages.length === 1 && (
+            <div className="flex flex-wrap gap-2 justify-center mb-6">
+              {suggestedTopics.map((topic, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => { setInput(language === 'en' ? topic.en : topic.or); }}
+                  className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all"
+                >
+                  {language === 'en' ? topic.en : topic.or}
+                </button>
+              ))}
             </div>
           )}
 
-          <div className="relative flex items-center gap-3 p-3 bg-slate-900/60 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-2xl">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleImageSelect}
-            />
-            <input
-              ref={cameraInputRef}
-              type="file"
-              accept="image/*"
-              capture="environment"
-              className="hidden"
-              onChange={handleImageSelect}
-            />
-            <div className="relative shrink-0">
+          <div className="relative group">
+            <div className="absolute inset-0 bg-emerald-500/5 rounded-[2rem] blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none"></div>
+
+            {selectedImage && (
+              <div className="flex items-center gap-2 px-4 py-2 mb-2 bg-slate-900 rounded-2xl border border-white/10">
+                <img src={selectedImage.preview} alt="preview" className="w-12 h-12 rounded-xl object-cover" />
+                <span className="flex-1 text-xs text-slate-400">Image ready</span>
+                <button onClick={() => setSelectedImage(null)} className="p-1 text-slate-500 hover:text-white"><X size={14} /></button>
+              </div>
+            )}
+
+            <div className="relative flex items-end gap-2 p-2 bg-slate-900 border border-white/10 rounded-[2rem] shadow-2xl focus-within:border-emerald-500/50 transition-all">
+              <div className="flex items-center mb-1 ml-1">
+                <button
+                  onClick={() => setAttachmentMenuOpen((prev) => !prev)}
+                  className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-all"
+                >
+                  <Plus size={20} />
+                </button>
+
+                {attachmentMenuOpen && (
+                  <div className="absolute bottom-14 left-0 w-48 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50">
+                    <button onClick={() => { fileInputRef.current?.click(); setAttachmentMenuOpen(false); }} className="w-full px-4 py-3 text-left text-sm text-slate-300 hover:bg-white/5 flex items-center gap-3">
+                      <Image size={16} /> Gallery
+                    </button>
+                    <button onClick={() => { cameraInputRef.current?.click(); setAttachmentMenuOpen(false); }} className="w-full px-4 py-3 text-left text-sm text-slate-300 hover:bg-white/5 flex items-center gap-3 border-t border-white/5">
+                      <Camera size={16} /> Camera
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <textarea
+                placeholder={language === 'en' ? 'Message Gundulu...' : 'ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହୁଅନ୍ତୁ...'}
+                className="flex-1 bg-transparent border-none focus:outline-none text-white text-sm py-3 px-2 resize-none max-h-32 min-h-[44px] custom-scrollbar"
+                rows={1}
+                value={input}
+                onChange={(e) => {
+                  setInput(e.target.value);
+                  e.target.style.height = 'auto';
+                  e.target.style.height = `${e.target.scrollHeight}px`;
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                  }
+                }}
+              />
+
               <button
-                onClick={() => setAttachmentMenuOpen((prev) => !prev)}
-                className={`p-2.5 rounded-xl transition-all border ${attachmentMenuOpen || selectedImage
-                  ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
-                  : 'bg-white/5 border-white/5 text-slate-500 hover:text-emerald-400 hover:bg-emerald-500/10'}`}
-                title={language === 'or' ? 'ଫାଇଲ୍ ଯୋଡ଼ନ୍ତୁ' : 'Add attachment'}
+                onClick={() => sendMessage()}
+                disabled={(!input.trim() && !selectedImage) || loading}
+                className="p-2.5 bg-emerald-500 text-slate-950 rounded-full disabled:bg-slate-800 disabled:text-slate-600 transition-all hover:scale-105 active:scale-95"
               >
-                <Plus size={18} />
+                {loading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
               </button>
-
-              {attachmentMenuOpen && (
-                <div className="absolute bottom-12 left-0 w-44 rounded-2xl border border-white/10 bg-slate-900/95 backdrop-blur-xl shadow-2xl overflow-hidden z-30">
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
-                    className="w-full px-3 py-2.5 text-left text-xs text-slate-200 hover:bg-white/10 flex items-center gap-2"
-                  >
-                    <Image size={14} />
-                    {language === 'or' ? 'ଫଟୋ ଅପଲୋଡ୍' : 'Upload photo'}
-                  </button>
-                  <button
-                    onClick={() => cameraInputRef.current?.click()}
-                    className="w-full px-3 py-2.5 text-left text-xs text-slate-200 hover:bg-white/10 flex items-center gap-2 border-t border-white/5"
-                  >
-                    <Camera size={14} />
-                    {language === 'or' ? 'କ୍ୟାମେରା ବ୍ୟବହାର' : 'Use camera'}
-                  </button>
-                </div>
-              )}
             </div>
-            <input
-              type="text"
-              placeholder={language === 'en' ? 'Ask me anything about your studies...' : 'ଆପଣଙ୍କ ପାଠପଢା ବିଷୟରେ କିଛି ବି ପଚାରନ୍ତୁ...'}
-              className="flex-1 bg-transparent border-none focus:outline-none text-white text-sm py-2 placeholder:text-slate-600"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-            />
-            <button
-              onClick={() => sendMessage()}
-              disabled={(!input.trim() && !selectedImage) || loading}
-              className={`p-4 rounded-full bg-emerald-500 text-white shadow-lg shadow-emerald-500/20 transition-all ${((!input.trim() && !selectedImage) || loading) ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110 active:scale-95 hover:bg-emerald-400'}`}
-            >
-              {loading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
-            </button>
           </div>
-        </div>
 
-        <div className="flex items-center justify-center gap-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">
-          <div className="flex items-center gap-1.5">
-            <Bot size={12} className="text-blue-500" />
-            Smart Learning
-          </div>
-          <div className="w-1 h-1 bg-slate-700 rounded-full"></div>
-          <div className="flex items-center gap-1.5">
-            <Zap size={12} className="text-amber-500" />
-            Real-time Help
-          </div>
-          <div className="w-1 h-1 bg-slate-700 rounded-full"></div>
-          <div className="flex items-center gap-1.5">
-            <Star size={12} className="text-purple-500" />
-            Personalized
+          <div className="mt-3 flex justify-center gap-6 opacity-40">
+             <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+               <Sparkles size={10} /> Smart AI
+             </div>
+             <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+               <Zap size={10} /> Fast Response
+             </div>
           </div>
         </div>
-      </div>
     </div>
   );
 };
