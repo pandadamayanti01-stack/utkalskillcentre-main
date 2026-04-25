@@ -60,11 +60,14 @@ function getExpectedLanguage(subject: string): 'odia' | 'english' | 'hindi' | 's
 
 
 async function extractPdfText(buffer: Buffer) {
-  // Use PDFParse class from pdf-parse v2.x
-  const { PDFParse } = await import('pdf-parse');
-  const parser = new PDFParse({ data: buffer });
-  const parsed = await parser.getText();
-  return parsed.text || '';
+  // Use the pdfParse function required at the top of the file
+  try {
+    const data = await pdfParse(buffer);
+    return data.text || '';
+  } catch (err) {
+    console.error('pdf-parse failed:', err);
+    return '';
+  }
 }
 import { capDailyMcqQuestionList, DAILY_MCQ_QUESTION_COUNT, getDailyMcqMarksForIndex, getRotatingDailyMcqSubject } from '../utils/dailyMcq.js';
 import { translations } from '../translations.js';

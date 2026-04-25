@@ -1,13 +1,15 @@
 import express from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
-import Razorpay from 'razorpay';
 import multer from 'multer';
 import { App, getApp, getApps, initializeApp, cert, applicationDefault } from 'firebase-admin/app';
 import { getFirestore as getAdminFirestore } from 'firebase-admin/firestore';
 import { getStorage as getAdminStorage } from 'firebase-admin/storage';
 import fs from 'fs';
-import crypto from 'node:crypto';
+import crypto from 'crypto';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const Razorpay = require('razorpay');
 import { getServiceAccountCredentials } from '../src/server/googleCredentials.js';
 
 console.log('API (Vercel) Initialization start...');
@@ -156,6 +158,10 @@ app.get("/api/health", async (req, res) => {
 
 app.post('/api/payment/create-order', async (req, res) => {
   try {
+    if (!req.body) {
+      console.error('Payment Request Error: Request body is missing');
+      return res.status(400).json({ error: 'Request body is missing' });
+    }
     const { userClass, planType, userId, amount: reqAmount } = req.body;
     console.log('Payment Order Request:', { userClass, planType, userId, reqAmount });
 
