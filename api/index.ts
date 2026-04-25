@@ -13,10 +13,8 @@ const Razorpay = require('razorpay');
 import { getServiceAccountCredentials } from '../src/server/googleCredentials.js';
 
 console.log('API (Vercel) Initialization start...');
-console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('VERCEL_REGION:', process.env.VERCEL_REGION);
-
-import { registerDailyMcqAutomation } from '../src/server/dailyMcqAutomation.js';
+// Lazy import automation to speed up boot
+let automationRegistered = false;
 
 dotenv.config();
 
@@ -118,11 +116,21 @@ function getRazorpay() {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Register MCQ Automation routes immediately so they are in the route table before the catch-all
-registerDailyMcqAutomation(app, null, firestoreDatabaseId);
-
-// Middleware to inject the adminApp into the request context if needed
-// (Though the current implementation of registerDailyMcqAutomation handles its own adminApp check)
+// Middleware to register automation lazily only if needed (or once on first request)
+app.use(async (req, res, next) => {
+  if (!automationRegistered && (req.path.startsWith('/api/admin') || req.path.includes('run-auto'))) {
+    try {
+      console.log('Lazily registering MCQ automation...');
+      const { registerDailyMcqAutomation } = await import('../src/server/dailyMcqAutomation.js');
+      registerDailyMcqAutomation(app, null, firestoreDatabaseId);
+      automationRegistered = true;
+      console.log('MCQ automation registered successfully.');
+    } catch (err) {
+      console.error('Failed to lazily register MCQ automation:', err);
+    }
+  }
+  next();
+});
 
 // Routes
 app.post('/api/upload-textbook', upload.single('file'), async (req: any, res) => {
