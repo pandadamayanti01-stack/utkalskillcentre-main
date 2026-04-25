@@ -90,7 +90,7 @@ const upload = multer({
   limits: { fileSize: 100 * 1024 * 1024 } 
 });
 
-let razorpay: Razorpay | null = null;
+let razorpay: any = null;
 let razorpayInitTried = false;
 function getRazorpay() {
   if (razorpay) return razorpay;
