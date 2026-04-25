@@ -145,12 +145,10 @@ app.post('/api/upload-textbook', upload.single('file'), async (req: any, res) =>
 
 app.get("/api/health", async (req, res) => {
   const rzp = getRazorpay();
-  await ensureMcqAutomation();
   res.json({ 
     status: "ok", 
     razorpay: !!rzp,
     firebaseAdmin: !!getInitializedAdminApp(),
-    mcqRegistered,
     env: process.env.NODE_ENV,
     timestamp: new Date().toISOString()
   });
