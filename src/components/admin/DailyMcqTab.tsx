@@ -128,15 +128,27 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
   };
 
   const handleSave = async () => {
-    const cleanedQuestions = newMcq.questions.map((question, index) => ({
-      question: question.question.trim(),
-      options: question.options.map((option) => option.trim()).filter(Boolean),
-      correct_answer: question.correct_answer.trim(),
-      explanation: question.explanation?.trim() || '',
-      marks: getDailyMcqMarksForIndex(index),
-    }));
+    const cleanedQuestions = newMcq.questions.map((question, index) => {
+      const marks = getDailyMcqMarksForIndex(index);
+      const isSubjective = marks > 1;
+      
+      return {
+        question: question.question.trim(),
+        options: isSubjective ? [] : question.options.map((option) => option.trim()).filter(Boolean),
+        correct_answer: question.correct_answer.trim(),
+        explanation: question.explanation?.trim() || '',
+        marks,
+        type: isSubjective ? 'subjective' : 'mcq',
+      };
+    });
 
-    const isInvalid = cleanedQuestions.length !== DAILY_MCQ_QUESTION_COUNT || cleanedQuestions.some((question) => !question.question || question.options.length < 2 || !question.correct_answer || !question.options.includes(question.correct_answer));
+    const isInvalid = cleanedQuestions.length !== DAILY_MCQ_QUESTION_COUNT || cleanedQuestions.some((question) => {
+      if (!question.question || !question.correct_answer) return true;
+      if (question.type === 'mcq') {
+        return question.options.length < 2 || !question.options.includes(question.correct_answer);
+      }
+      return false;
+    });
     if (isInvalid) {
       showNotification(`Please complete all ${DAILY_MCQ_QUESTION_COUNT} questions and ensure each correct answer matches one option.`, 'error');
       return;
@@ -382,30 +394,39 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
                   placeholder="Write the MCQ question here"
                 />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {question.options.map((option, optionIndex) => (
-                    <div key={optionIndex}>
-                      <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Option {optionIndex + 1}</label>
-                      <input
-                        type="text"
-                        value={option}
-                        onChange={(e) => handleOptionChange(questionIndex, optionIndex, e.target.value)}
-                        className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                        placeholder={`Option ${optionIndex + 1}`}
-                      />
-                    </div>
-                  ))}
-                </div>
+                {getDailyMcqMarksForIndex(questionIndex) === 1 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {question.options.map((option, optionIndex) => (
+                      <div key={optionIndex}>
+                        <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Option {optionIndex + 1}</label>
+                        <input
+                          type="text"
+                          value={option}
+                          onChange={(e) => handleOptionChange(questionIndex, optionIndex, e.target.value)}
+                          className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+                          placeholder={`Option ${optionIndex + 1}`}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-4 rounded-xl border border-dashed border-white/10 bg-white/5">
+                    <p className="text-xs font-bold text-cyan-400 uppercase tracking-widest">Subjective Question (No Options)</p>
+                    <p className="text-[11px] text-slate-400 mt-1">Students will see a text box to write their answer and compare it with your "Model Answer".</p>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Correct Answer</label>
+                    <label className="block text-xs font-bold text-slate-500 uppercase mb-2">
+                      {getDailyMcqMarksForIndex(questionIndex) === 1 ? 'Correct Answer' : 'Model Answer (Student will compare with this)'}
+                    </label>
                     <input
                       type="text"
                       value={question.correct_answer}
                       onChange={(e) => handleQuestionChange(questionIndex, 'correct_answer', e.target.value)}
-                      className="w-full bg-slate-900 border border-emerald-500/20 rounded-xl px-4 py-2 text-emerald-300 focus:outline-none"
-                      placeholder="Must match one option exactly"
+                      className={`w-full bg-slate-900 border rounded-xl px-4 py-2 focus:outline-none ${getDailyMcqMarksForIndex(questionIndex) === 1 ? 'border-emerald-500/20 text-emerald-300' : 'border-cyan-500/20 text-cyan-300'}`}
+                      placeholder={getDailyMcqMarksForIndex(questionIndex) === 1 ? 'Must match one option exactly' : 'Write the ideal answer here'}
                     />
                   </div>
                   <div>
