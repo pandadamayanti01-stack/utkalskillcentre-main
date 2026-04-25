@@ -1,0 +1,410 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Stores student profile information.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Firebase UID" },
+        "name": { "type": "string", "description": "Full Name" },
+        "email": { "type": "string", "description": "Email Address" },
+        "phoneNumber": { "type": "string", "description": "Phone Number" },
+        "class": { "type": "string", "description": "Student Class (e.g., class3, class10)" },
+        "board": { "type": "string", "description": "Education Board" },
+        "preferred_language": { "type": "string", "description": "Preferred Language (en|or)" },
+        "points": { "type": "integer", "description": "Learning points" },
+        "shareCount": { "type": "integer", "description": "Number of WhatsApp shares" },
+        "statusShared": { "type": "boolean", "description": "Whether WhatsApp status was shared" },
+        "role": { "type": "string", "enum": ["student", "admin"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "role"]
+    },
+    "Chapter": {
+      "title": "Learning Topic",
+      "description": "Stores topics with video, notes, practice, and quiz.",
+      "type": "object",
+      "properties": {
+        "class": { "type": "string" },
+        "board": { 
+          "type": "object",
+          "properties": {
+            "en": { "type": "string" },
+            "or": { "type": "string" }
+          }
+        },
+        "language": { "type": "string" },
+        "subject": { "type": "string" },
+        "title": { 
+          "type": "object",
+          "properties": {
+            "en": { "type": "string" },
+            "or": { "type": "string" }
+          }
+        },
+        "playlist_id": { "type": "string" },
+        "notes": { "type": "string", "description": "Markdown content for notes" },
+        "status": { "type": "string", "enum": ["draft", "published"], "description": "Visibility status" },
+        "practice_questions": { 
+          "type": "array", 
+          "items": { 
+            "type": "object",
+            "properties": {
+              "question": { "type": "string" },
+              "answer": { "type": "string" }
+            }
+          }
+        },
+        "quiz_questions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "question": { "type": "string" },
+              "options": { "type": "array", "items": { "type": "string" } },
+              "correct_answer": { "type": "string" },
+              "hint": { "type": "string" }
+            }
+          }
+        },
+        "translationGroupId": { "type": "string", "description": "ID of the original document for translations" }
+      },
+      "required": ["class", "board", "language", "subject", "title"]
+    },
+    "MonthlyTest": {
+      "title": "Monthly Test",
+      "description": "Stores monthly test questions and answers.",
+      "type": "object",
+      "properties": {
+        "class": { "type": "string" },
+        "subject": { "type": "string" },
+        "month": { "type": "string" },
+        "year": { "type": "integer" },
+        "questions": { "type": "array" },
+        "status": { "type": "string", "enum": ["draft", "published"] },
+        "results_published": { "type": "boolean" },
+        "translationGroupId": { "type": "string", "description": "ID of the original document for translations" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["class", "subject", "month", "year", "status"]
+    },
+    "MonthlyTestSubmission": {
+      "title": "Monthly Test Submission",
+      "description": "Stores student answers for monthly tests.",
+      "type": "object",
+      "properties": {
+        "testId": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "answers": { "type": "array" },
+        "score": { "type": "integer" },
+        "rank": { "type": "integer" },
+        "submittedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["testId", "userId", "answers"]
+    },
+    "Question": {
+      "title": "Quiz Question",
+      "description": "Stores questions for a chapter.",
+      "type": "object",
+      "properties": {
+        "chapterId": { "type": "string" },
+        "question": { "type": "string" },
+        "options": { "type": "array", "items": { "type": "string" } },
+        "correctAnswer": { "type": "string" }
+      },
+      "required": ["chapterId", "question", "options", "correctAnswer"]
+    },
+    "TestResult": {
+      "title": "Test Result",
+      "description": "Stores test results for students.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "chapterId": { "type": "string" },
+        "score": { "type": "integer" },
+        "total": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "chapterId", "score", "total"]
+    },
+    "Payment": {
+      "title": "Payment Transaction",
+      "description": "Stores Razorpay payment history.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "amount": { "type": "number" },
+        "status": { "type": "string" },
+        "razorpayOrderId": { "type": "string" },
+        "razorpayPaymentId": { "type": "string" },
+        "razorpaySignature": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "amount", "status", "razorpayOrderId"]
+    },
+    "Subscription": {
+      "title": "User Subscription",
+      "description": "Stores subscription status.",
+      "type": "object",
+      "properties": {
+        "active": { "type": "boolean" },
+        "plan": { "type": "string" },
+        "expires_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["active"]
+    },
+    "Textbook": {
+      "title": "Class Textbook",
+      "description": "Stores textbook information for download.",
+      "type": "object",
+      "properties": {
+        "class": { "type": "string" },
+        "board": { "type": "string" },
+        "subject": { "type": "string" },
+        "title": { "type": "string" },
+        "download_url": { "type": "string" },
+        "thumbnail_url": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["class", "board", "subject", "title", "download_url"]
+    },
+    "SystemSettings": {
+      "title": "System Settings",
+      "description": "Global application settings.",
+      "type": "object",
+      "properties": {
+        "enabledClasses": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of classes that are enabled for students (e.g., ['3', '4'])"
+        },
+        "maintenanceMode": { "type": "boolean" }
+      }
+    },
+    "DailyChallenge": {
+      "title": "Daily Micro-Challenge",
+      "description": "Stores the question of the day.",
+      "type": "object",
+      "properties": {
+        "date": { "type": "string", "format": "date" },
+        "question": { "type": "string" },
+        "options": { "type": "array", "items": { "type": "string" } },
+        "correct_answer": { "type": "string" },
+        "points": { "type": "integer" },
+        "language": { "type": "string" }
+      },
+      "required": ["date", "question", "options", "correct_answer", "points"]
+    },
+    "UserProgress": {
+      "title": "User Progress Snapshot",
+      "description": "Stores daily learning metrics for charts.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "pointsEarned": { "type": "integer" },
+        "accuracy": { "type": "number" },
+        "chaptersCompleted": { "type": "integer" }
+      },
+      "required": ["userId", "date", "pointsEarned"]
+    },
+    "Friendship": {
+      "title": "User Friendship",
+      "description": "Stores following relationships between students.",
+      "type": "object",
+      "properties": {
+        "followerId": { "type": "string" },
+        "followingId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["followerId", "followingId"]
+    },
+    "Transaction": {
+      "title": "Payment Transaction",
+      "description": "Stores payment history.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "amount": { "type": "number" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "AiUsage": {
+      "title": "AI Usage Log",
+      "description": "Stores AI generation history.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "question": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "cost": { "type": "number" }
+      }
+    },
+    "Notification": {
+      "title": "System Notification",
+      "description": "Stores broadcast notifications.",
+      "type": "object",
+      "properties": {
+        "message": { "type": "string" },
+        "audience": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "QuizResult": {
+      "title": "Quiz Result",
+      "description": "Stores quiz performance.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "chapterId": { "type": "string" },
+        "score": { "type": "integer" },
+        "total": { "type": "integer" },
+        "accuracy": { "type": "number" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      }
+    },
+    "PublicProfile": {
+      "title": "Public Profile",
+      "description": "Stores non-sensitive user data for leaderboard.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "points": { "type": "integer" },
+        "class": { "type": "string" },
+        "avatar": { "type": "string" },
+        "streak": { "type": "integer" }
+      }
+    },
+    "UserLock": {
+      "title": "User Class Lock",
+      "description": "Stores the class and board associated with a phone number to prevent multiple accounts.",
+      "type": "object",
+      "properties": {
+        "class": { "type": "string" },
+        "board": { "type": "string" }
+      },
+      "required": ["class", "board"]
+    },
+    "SupportTicket": {
+      "title": "Support Ticket",
+      "description": "Stores user support requests.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userPhone": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "message": { "type": "string" },
+        "status": { "type": "string", "enum": ["open", "closed"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "message", "status", "createdAt"]
+    },
+    "TutorQuery": {
+      "title": "AI Tutor Query",
+      "description": "Stores chat history with the AI Tutor.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userClass": { "type": "string" },
+        "question": { "type": "string" },
+        "answer": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "question", "answer", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Collection of user profiles."
+    },
+    "/chapters/{chapterId}": {
+      "schema": "Chapter",
+      "description": "Learning chapters."
+    },
+    "/questions/{questionId}": {
+      "schema": "Question",
+      "description": "Quiz questions."
+    },
+    "/test_results/{resultId}": {
+      "schema": "TestResult",
+      "description": "Test results."
+    },
+    "/quiz_results/{resultId}": {
+      "schema": "QuizResult",
+      "description": "Quiz results."
+    },
+    "/payments/{paymentId}": {
+      "schema": "Payment",
+      "description": "Payment records."
+    },
+    "/transactions/{txId}": {
+      "schema": "Transaction",
+      "description": "Payment transactions."
+    },
+    "/ai_usage/{logId}": {
+      "schema": "AiUsage",
+      "description": "AI usage logs."
+    },
+    "/notifications/{notifId}": {
+      "schema": "Notification",
+      "description": "System notifications."
+    },
+    "/public_profiles/{userId}": {
+      "schema": "PublicProfile",
+      "description": "Public user profiles."
+    },
+    "/subscriptions/{userId}": {
+      "schema": "Subscription",
+      "description": "User subscription status."
+    },
+    "/monthly_tests/{testId}": {
+      "schema": "MonthlyTest",
+      "description": "Monthly test definitions."
+    },
+    "/monthly_test_submissions/{submissionId}": {
+      "schema": "MonthlyTestSubmission",
+      "description": "Student submissions for monthly tests."
+    },
+    "/textbooks/{textbookId}": {
+      "schema": "Textbook",
+      "description": "Textbooks for students."
+    },
+    "/system_settings/config": {
+      "schema": "SystemSettings",
+      "description": "Global configuration."
+    },
+    "/settings/private": {
+      "schema": "object",
+      "description": "Private system settings."
+    },
+    "/daily_challenges/{challengeId}": {
+      "schema": "DailyChallenge",
+      "description": "Daily micro-challenges."
+    },
+    "/user_progress/{progressId}": {
+      "schema": "UserProgress",
+      "description": "Daily progress snapshots for analytics."
+    },
+    "/friendships/{friendshipId}": {
+      "schema": "Friendship",
+      "description": "Student following relationships."
+    },
+    "/user_locks/{phone}": {
+      "schema": "UserLock",
+      "description": "Maps phone numbers to their locked class/board."
+    },
+    "/support_tickets/{ticketId}": {
+      "schema": "SupportTicket",
+      "description": "User support requests."
+    },
+    "/tutor_queries/{logId}": {
+      "schema": "TutorQuery",
+      "description": "AI Tutor chat history logs."
+    }
+  }
+}

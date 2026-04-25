@@ -1,0 +1,343 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: /users/{userId}
+    // Fields: id, name, email, phoneNumber, class, board, preferred_language, points, shareCount, statusShared, role, createdAt
+    //
+    // Collection: /chapters/{chapterId}
+    // Fields: class, board, language, subject, title, playlist_id, notes, status, practice_questions, quiz_questions, translationGroupId
+    //
+    // Collection: /questions/{questionId}
+    // Fields: chapterId, question, options, correctAnswer
+    //
+    // Collection: /test_results/{resultId}
+    // Fields: userId, chapterId, score, total, createdAt
+    //
+    // Collection: /quiz_results/{resultId}
+    // Fields: userId, chapterId, score, total, accuracy, timestamp
+    //
+    // Collection: /payments/{paymentId}
+    // Fields: userId, amount, status, razorpayOrderId, razorpayPaymentId, razorpaySignature, createdAt
+    //
+    // Collection: /transactions/{txId}
+    // Fields: userId, amount, status, createdAt
+    //
+    // Collection: /ai_usage/{logId}
+    // Fields: userId, question, date, cost
+    //
+    // Collection: /notifications/{notifId}
+    // Fields: message, audience, createdAt
+    //
+    // Collection: /public_profiles/{userId}
+    // Fields: name, points, class, avatar, streak
+    //
+    // Collection: /subscriptions/{userId}
+    // Fields: active, plan, expires_at
+    //
+    // Collection: /monthly_tests/{testId}
+    // Fields: subject, month, year, questions, status, results_published, translationGroupId, created_at
+    //
+    // Collection: /monthly_test_submissions/{submissionId}
+    // Fields: testId, userId, userName, answers, score, rank, submittedAt
+    //
+    // Collection: /textbooks/{textbookId}
+    // Fields: class, board, subject, title, download_url, thumbnail_url, status, created_at
+    //
+    // Collection: /system_settings/config
+    // Fields: enabledClasses, maintenanceMode
+    //
+    // Collection: /daily_challenges/{challengeId}
+    // Fields: date, question, options, correct_answer, points, language
+    //
+    // Collection: /user_progress/{progressId}
+    // Fields: userId, date, pointsEarned, accuracy, chaptersCompleted
+    //
+    // Collection: /friendships/{friendshipId}
+    // Fields: followerId, followingId, createdAt
+    //
+    // Collection: /user_locks/{phone}
+    // Fields: class, board
+    //
+    // Collection: /support_tickets/{ticketId}
+    // Fields: userId, userName, userPhone, userEmail, message, status, createdAt
+    //
+    // Collection: /tutor_queries/{logId}
+    // Fields: userId, userName, userClass, question, answer, timestamp
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        ((exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin') ||
+          (request.auth.token.email == "pandadamayanti01@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function isValidUrl(url) {
+      return url is string && (url.matches("^https://.*") || url.matches("^http://.*"));
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidUser(data) {
+      return hasRequiredFields(['id', 'name', 'role']) &&
+             data.id is string && data.id.size() > 0 && data.id.size() < 128 &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             data.role in ['student', 'admin'] &&
+             (!('email' in data) || data.email == "" || isValidEmail(data.email)) &&
+             (!('points' in data) || data.points is int) &&
+             (!('class' in data) || data.class is string) &&
+             (!('district' in data) || data.district is string) &&
+             (!('school' in data) || data.school is string);
+    }
+
+    function isValidChapter(data) {
+      return hasRequiredFields(['class', 'board', 'language', 'subject', 'title']) &&
+             data.class is string &&
+             data.board is string &&
+             data.language is string &&
+             data.subject is string &&
+             data.title is string &&
+             true; // Relaxing validation for debugging
+    }
+
+    function isValidSubmission(data) {
+      return hasRequiredFields(['testId', 'userId', 'answers']) &&
+             data.testId is string &&
+             data.userId is string &&
+             data.answers is list && data.answers.size() < 100;
+    }
+
+    function isValidTutorQuery(data) {
+      return hasRequiredFields(['userId', 'question', 'answer', 'timestamp']) &&
+             data.userId is string &&
+             data.question is string && data.question.size() < 2000 &&
+             data.answer is string && data.answer.size() < 5000 &&
+             data.timestamp is string;
+    }
+
+    function getDailyMcqRotation() {
+      return exists(/databases/$(database)/documents/system_settings/config) &&
+             get(/databases/$(database)/documents/system_settings/config).data.dailyMcqSubjectRotation is list
+        ? get(/databases/$(database)/documents/system_settings/config).data.dailyMcqSubjectRotation
+        : ['math', 'english', 'science', 'odia', 'social'];
+    }
+
+    function isValidDailyMcq(data) {
+      return hasRequiredFields(['title', 'class', 'subject', 'activeDate', 'questions', 'status']) &&
+             data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+             data.class is string &&
+             data.subject is string && data.subject in getDailyMcqRotation() &&
+             data.activeDate is string && data.activeDate.size() >= 10 &&
+             data.status in ['draft', 'published'] &&
+             data.questions is list && data.questions.size() == 10;
+    }
+
+    function isValidDailyMcqSubmission(data, submissionId) {
+            return hasRequiredFields(['mcqId', 'userId', 'answers', 'correctCount', 'totalQuestions', 'attemptReward', 'correctBonus', 'totalPointsEarned', 'submittedDate']) &&
+              data.mcqId is string && data.mcqId.size() > 0 &&
+              data.userId is string &&
+              submissionId == data.userId + '_' + data.mcqId &&
+              data.answers is list &&
+              data.totalQuestions is int && data.totalQuestions == 10 &&
+              data.answers.size() == data.totalQuestions &&
+              data.correctCount is int && data.correctCount >= 0 && data.correctCount <= data.totalQuestions &&
+              data.attemptReward is int && data.attemptReward == 1 &&
+              // correctBonus now represents earned marks; the daily distribution sums to 17 marks (7x1 + 2 + 3 + 5).
+              data.correctBonus is int && data.correctBonus >= 0 && data.correctBonus <= 20 &&
+              data.totalPointsEarned is int && data.totalPointsEarned == data.attemptReward + data.correctBonus &&
+              data.submittedDate is string &&
+              exists(/databases/$(database)/documents/daily_mcqs/$(data.mcqId)) &&
+              get(/databases/$(database)/documents/daily_mcqs/$(data.mcqId)).data.status == 'published';
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isOwner(userId) && isValidUser(request.resource.data) && (request.resource.data.role == 'student' || isAdmin());
+      allow update: if isAuthenticated() && (isAdmin() || (isOwner(userId) && isValidUser(request.resource.data) && request.resource.data.role == resource.data.role));
+    }
+
+    match /chapters/{chapterId} {
+      allow read: if isAuthenticated() && (resource.data.status == 'published' || isAdmin());
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /questions/{questionId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /test_results/{resultId} {
+      allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
+      allow update: if isAdmin();
+    }
+
+    match /quiz_results/{resultId} {
+      allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
+      allow update: if isAdmin();
+    }
+
+    match /payments/{paymentId} {
+      allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
+      allow update: if isAdmin();
+    }
+
+    match /transactions/{txId} {
+      allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
+    }
+
+    match /ai_usage/{logId} {
+      allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
+    }
+
+    match /notifications/{notifId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /public_profiles/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId) || isAdmin();
+    }
+
+    match /subscriptions/{userId} {
+      allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    match /monthly_tests/{testId} {
+      allow read: if isAuthenticated() && (resource.data.status == 'published' || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    match /monthly_test_submissions/{submissionId} {
+      allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId) && isValidSubmission(request.resource.data);
+      allow update: if isAdmin();
+    }
+
+    match /textbooks/{textbookId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /system_settings/{document=**} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /settings/private {
+      allow read, write: if isAdmin();
+    }
+
+    match /daily_challenges/{challengeId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /daily_mcqs/{mcqId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /daily_mcq_submissions/{submissionId} {
+      // Allow read if the document does not exist (for transaction existence check), or if the user is owner/admin
+      allow read: if !exists(/databases/$(database)/documents/daily_mcq_submissions/$(submissionId)) || (isAuthenticated() && (isOwner(resource.data.userId) || isAdmin()));
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId) && isValidDailyMcqSubmission(request.resource.data, submissionId);
+      allow update, delete: if isAdmin();
+    }
+
+    match /user_progress/{progressId} {
+      allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
+      allow update: if isAdmin();
+    }
+
+    match /friendships/{friendshipId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isOwner(request.resource.data.followerId);
+      allow delete: if isAuthenticated() && isOwner(resource.data.followerId);
+    }
+
+    match /user_locks/{phone} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && (
+        isAdmin() ||
+        request.auth.token.phone_number == phone ||
+        (
+          request.auth.token.email != null &&
+          request.auth.token.email_verified == true &&
+          phone == "email:" + request.auth.token.email.lower()
+        )
+      );
+    }
+
+    match /lock_audit_log/{logId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /support_tickets/{ticketId} {
+      allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
+      allow update: if isAdmin();
+    }
+
+    match /tutor_queries/{logId} {
+      allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+      allow create: if isAuthenticated() && (isOwner(request.resource.data.userId) || request.resource.data.userId == 'anonymous') && isValidTutorQuery(request.resource.data);
+    }
+
+    // Allow users to create their own MCQ submissions
+    match /submissions/{submissionId} {
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+    }
+
+    // Allow users to create their own activity logs
+    match /activity/{activityId} {
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+    }
+  }
+}

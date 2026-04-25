@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Odia+Mukta:wght@400;700&family=Outfit:wght@600;800;900&display=swap');
+@import "tailwindcss";
+
+@layer base {
+  body {
+    min-height: 100vh;
+    overflow-x: hidden;
+    margin: 0;
+  }
+}
+
+@keyframes liquid-flow {
+  0% { stop-color: #ffd700; stop-opacity: 0.2; }
+  50% { stop-color: #b34d1f; stop-opacity: 0.8; }
+  100% { stop-color: #ffd700; stop-opacity: 0.2; }
+}
+
+.digital-altar-bg {
+  background: radial-gradient(circle at 50% 30%, #004d41 0%, #050a0b 100%);
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* This adds the 'impossible' depth */
+.glass-marble {
+  background: rgba(217, 211, 193, 0.05);
+  backdrop-filter: blur(25px) saturate(150%);
+  border: 1px solid rgba(255, 215, 0, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8), 
+              inset 0 0 15px rgba(255, 215, 0, 0.05);
+}
+
+.gold-text-glow {
+  color: #ffd700;
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.5), 0 0 30px rgba(179, 77, 31, 0.3);
+}
+
+

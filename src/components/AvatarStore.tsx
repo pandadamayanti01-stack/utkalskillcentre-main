@@ -1,0 +1,272 @@
+import React, { useState } from 'react';
+import { ODISHA_DISTRICTS } from '../constants/districts';
+import { motion, AnimatePresence } from 'motion/react';
+import { ArrowLeft, ShoppingBag, Star, CheckCircle2, Lock, Sparkles, Coins, Globe, School as SchoolIcon } from 'lucide-react';
+import { gcpService } from '../services/gcpService';
+
+interface AvatarStoreProps {
+  user: any;
+  language: 'en' | 'or';
+  onBack: () => void;
+}
+
+const AVATARS = [
+  { id: 'bot-1', name: 'Robo Buddy', price: 0, url: 'https://api.dicebear.com/7.x/bottts/svg?seed=Buddy' },
+  { id: 'bot-2', name: 'Cyber Cat', price: 100, url: 'https://api.dicebear.com/7.x/bottts/svg?seed=Felix' },
+  { id: 'bot-3', name: 'Neon Knight', price: 250, url: 'https://api.dicebear.com/7.x/bottts/svg?seed=Knight' },
+  { id: 'bot-4', name: 'Star Scout', price: 500, url: 'https://api.dicebear.com/7.x/bottts/svg?seed=Scout' },
+  { id: 'bot-5', name: 'Astro Bear', price: 1000, url: 'https://api.dicebear.com/7.x/bottts/svg?seed=Bear' },
+  { id: 'bot-6', name: 'Quantum Queen', price: 2500, url: 'https://api.dicebear.com/7.x/bottts/svg?seed=Queen' },
+  { id: 'bot-7', name: 'Void Voyager', price: 5000, url: 'https://api.dicebear.com/7.x/bottts/svg?seed=Voyager' },
+  { id: 'bot-8', name: 'Legendary USC', price: 10000, url: 'https://api.dicebear.com/7.x/bottts/svg?seed=USC' },
+];
+
+
+export function AvatarStore({ user, language, onBack }: AvatarStoreProps) {
+  const [purchasing, setPurchasing] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [district, setDistrict] = useState(user.district || '');
+  const [school, setSchool] = useState(user.school || '');
+  const [profileMsg, setProfileMsg] = useState<string | null>(null);
+
+  const handleProfileUpdate = async () => {
+    try {
+      await gcpService.updateDoc('users', user.id, {
+        district,
+        school,
+        updatedAt: new Date().toISOString()
+      });
+      setProfileMsg('Profile updated!');
+      setTimeout(() => setProfileMsg(null), 2000);
+    } catch (err) {
+      setProfileMsg('Error updating profile');
+    }
+  };
+
+  const handlePurchase = async (avatar: typeof AVATARS[0]) => {
+    if (user.points < avatar.price) return;
+    
+    setPurchasing(avatar.id);
+    try {
+      const newPoints = (user.points || 0) - avatar.price;
+      await gcpService.updateDoc('users', user.id, {
+        avatar: avatar.url,
+        points: newPoints,
+        updatedAt: new Date().toISOString()
+      });
+      
+      await gcpService.updateDoc('public_profiles', user.id, {
+        avatar: avatar.url,
+        points: newPoints,
+        updatedAt: new Date().toISOString()
+      });
+
+      setSuccess(avatar.id);
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (err) {
+      console.error("Purchase Error:", err);
+    } finally {
+      setPurchasing(null);
+    }
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.05 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
+
+  return (
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+      className="max-w-6xl mx-auto space-y-10 pb-20"
+    >
+      {/* Premium Profile Card */}
+      <motion.div variants={itemVariants} className="w-full flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="glass-card bg-gradient-to-br from-emerald-600/30 to-blue-700/20 border border-emerald-400/20 shadow-2xl rounded-3xl p-8 flex flex-col md:flex-row items-center gap-8 w-full">
+          {/* Glowing Avatar */}
+          <div className="relative flex flex-col items-center justify-center mb-6 md:mb-0">
+            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-emerald-400/40 to-blue-400/30 border-4 border-emerald-400 shadow-[0_0_40px_10px_rgba(16,185,129,0.3)] flex items-center justify-center overflow-hidden animate-pulse-slow">
+              <img src={user.avatar} alt="Avatar" className="w-28 h-28 rounded-full border-4 border-white/10 shadow-xl object-cover" />
+            </div>
+            <span className="mt-3 text-lg font-bold text-white bg-emerald-500/20 px-4 py-1 rounded-xl shadow">{user.name}</span>
+          </div>
+          {/* Profile Fields */}
+          <div className="flex-1 flex flex-col gap-4">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1">
+                <label className="block text-xs text-slate-200 font-bold mb-1 flex items-center gap-1">
+                  <Globe className="inline-block text-emerald-400" size={14} /> District
+                </label>
+                <select
+                  className="w-full p-3 rounded-xl bg-slate-900/80 text-white border-2 border-emerald-400/30 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/30 transition-all shadow"
+                  value={district}
+                  onChange={e => setDistrict(e.target.value)}
+                >
+                  <option value="">{language === 'en' ? 'Select District' : 'ଜିଲ୍ଲା ଚୟନ କରନ୍ତୁ'}</option>
+                  {ODISHA_DISTRICTS.map(d => (
+                    <option key={d.en} value={d.en}>
+                      {language === 'en' ? d.en : `${d.or} (${d.en})`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex-1">
+                <label className="block text-xs text-slate-200 font-bold mb-1 flex items-center gap-1">
+                  <SchoolIcon className="inline-block text-blue-400" size={14} /> School
+                </label>
+                <input
+                  className="w-full p-3 rounded-xl bg-slate-900/80 text-white border-2 border-blue-400/30 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 transition-all shadow"
+                  type="text"
+                  value={school}
+                  onChange={e => setSchool(e.target.value)}
+                  placeholder="Enter your school name"
+                />
+              </div>
+            </div>
+            <button
+              onClick={handleProfileUpdate}
+              className="mt-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-400 hover:to-blue-400 text-white font-bold rounded-2xl shadow-lg shadow-emerald-900/20 active:scale-95 transition-all flex items-center gap-2 justify-center text-lg"
+              type="button"
+            >
+              <CheckCircle2 className="animate-bounce" size={20} /> {language === 'en' ? 'Save Profile' : 'ସେଭ୍ କରନ୍ତୁ'}
+            </button>
+            <AnimatePresence>
+              {profileMsg && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="text-sm text-emerald-300 mt-2 flex items-center gap-2"
+                >
+                  <Sparkles className="animate-pulse" size={16} /> {profileMsg}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4 bg-slate-900/80 border border-emerald-500/30 px-6 py-3 rounded-2xl shadow-lg shadow-emerald-900/20 backdrop-blur-xl">
+          <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+            <Coins size={24} />
+          </div>
+          <div>
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Your Utkal Coins</p>
+            <p className="text-2xl font-black text-white tracking-tighter">{user.points}</p>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {AVATARS.map((avatar) => {
+          const isOwned = user.avatar === avatar.url;
+          const canAfford = user.points >= avatar.price;
+          
+          return (
+            <motion.div
+              key={avatar.id}
+              variants={itemVariants}
+              whileHover={{ y: -5 }}
+              className={`group relative glass-card rounded-[2.5rem] p-6 flex flex-col items-center text-center transition-all border-2 ${
+                isOwned ? 'border-emerald-500 bg-emerald-500/5' : 'border-white/5 hover:border-white/20'
+              }`}
+            >
+              {isOwned && (
+                <div className="absolute top-4 right-4 text-emerald-500 bg-emerald-500/10 p-1.5 rounded-full">
+                  <CheckCircle2 size={16} />
+                </div>
+              )}
+              
+              <div className="relative mb-6">
+                <div className={`w-32 h-32 rounded-[2rem] bg-slate-800/50 flex items-center justify-center overflow-hidden transition-all group-hover:scale-110 ${
+                  isOwned ? 'ring-4 ring-emerald-500/30' : ''
+                }`}>
+                  <img src={avatar.url} alt={avatar.name} className="w-24 h-24" />
+                </div>
+                {!canAfford && !isOwned && (
+                  <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-[2px] rounded-[2rem] flex items-center justify-center text-slate-400">
+                    <Lock size={32} />
+                  </div>
+                )}
+              </div>
+
+              <h3 className="text-lg font-bold text-white mb-1">{avatar.name}</h3>
+              <div className="flex items-center gap-1.5 mb-6">
+                <Coins size={14} className="text-emerald-400" />
+                <span className={`text-sm font-bold ${canAfford || isOwned ? 'text-emerald-400' : 'text-red-400'}`}>
+                  {avatar.price}
+                </span>
+              </div>
+
+              <button
+                disabled={isOwned || !canAfford || purchasing === avatar.id}
+                onClick={() => handlePurchase(avatar)}
+                className={`w-full py-3 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${
+                  isOwned 
+                    ? 'bg-emerald-500/20 text-emerald-400 cursor-default' 
+                    : canAfford 
+                      ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-900/20 active:scale-95' 
+                      : 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                }`}
+              >
+                {purchasing === avatar.id ? (
+                  <Sparkles className="animate-spin" size={18} />
+                ) : isOwned ? (
+                  'Equipped'
+                ) : (
+                  <>
+                    <ShoppingBag size={18} />
+                    {language === 'en' ? 'Unlock' : 'ଅନଲକ୍'}
+                  </>
+                )}
+              </button>
+
+              <AnimatePresence>
+                {success === avatar.id && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute -bottom-10 left-0 right-0 text-emerald-400 text-xs font-bold"
+                  >
+                    Successfully Equipped! ✨
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* Info Section */}
+      <motion.div variants={itemVariants} className="p-8 glass-card rounded-[2.5rem] bg-gradient-to-r from-emerald-500/10 to-blue-500/10 border border-white/10 flex flex-col md:flex-row items-center gap-8">
+        <div className="w-20 h-20 rounded-3xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 shadow-xl shadow-emerald-900/20">
+          <Star size={40} />
+        </div>
+        <div className="flex-1 text-center md:text-left">
+          <h4 className="text-xl font-bold text-white mb-2">Earn more Utkal Coins!</h4>
+          <p className="text-slate-400 text-sm leading-relaxed">
+            Complete daily quizzes, watch full chapters, and maintain your study streak to earn more coins. 
+            New legendary avatars are added every month!
+          </p>
+        </div>
+        <button 
+          onClick={onBack}
+          className="px-8 py-4 bg-white text-slate-900 font-bold rounded-2xl hover:bg-slate-200 transition-all shadow-xl"
+        >
+          Start Learning
+        </button>
+      </motion.div>
+    </motion.div>
+  );
+}
