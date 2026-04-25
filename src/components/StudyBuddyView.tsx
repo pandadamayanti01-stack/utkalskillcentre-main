@@ -237,6 +237,23 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
 
   return (
     <div className="flex-1 flex flex-col min-h-0 bg-slate-950">
+      {/* Hidden inputs for Image/Camera */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleImageSelect}
+        accept="image/*"
+        className="hidden"
+      />
+      <input
+        type="file"
+        ref={cameraInputRef}
+        onChange={handleImageSelect}
+        accept="image/*"
+        capture="environment"
+        className="hidden"
+      />
+
       <div className="flex items-center justify-between px-6 py-3 border-b border-white/5 bg-slate-950/50 backdrop-blur-xl shrink-0">
         <div className="flex items-center gap-4">
           <div className="relative">
