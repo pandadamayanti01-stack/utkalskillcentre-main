@@ -170,7 +170,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         const messageText = textToSend || (language === 'or' ? 'ଏହି ଫଟୋଟି ଦେଖ ଓ ବୁଝାଅ' : 'Please look at this image and explain');
         
         // Add current message to history
-        const contents = [...chatHistory];
+        const contents: any[] = [...chatHistory];
         if (imageSnapshot) {
           contents.push({
             role: 'user',
