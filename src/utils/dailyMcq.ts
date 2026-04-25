@@ -1,4 +1,4 @@
-import { DailyMcq, DailyMcqQuestion } from '../types';
+import { DailyMcq, DailyMcqQuestion } from '../types.js';
 
 /** Questions per daily MCQ set (kept in sync with Firestore rules + automation). */
 export const DAILY_MCQ_QUESTION_COUNT = 10;

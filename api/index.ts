@@ -8,7 +8,7 @@ import { getFirestore as getAdminFirestore } from 'firebase-admin/firestore';
 import { getStorage as getAdminStorage } from 'firebase-admin/storage';
 import fs from 'fs';
 import crypto from 'node:crypto';
-import { getServiceAccountCredentials } from '../src/server/googleCredentials';
+import { getServiceAccountCredentials } from '../src/server/googleCredentials.js';
 
 console.log('API (Vercel) Initialization start...');
 console.log('NODE_ENV:', process.env.NODE_ENV);
@@ -122,7 +122,7 @@ async function ensureMcqAutomation() {
     const adminApp = getInitializedAdminApp();
     if (adminApp) {
       // Use dynamic import to avoid boot-time dependency issues
-      const { registerDailyMcqAutomation } = await import('../src/server/dailyMcqAutomation');
+      const { registerDailyMcqAutomation } = await import('../src/server/dailyMcqAutomation.js');
       registerDailyMcqAutomation(app, adminApp, firestoreDatabaseId);
       mcqRegistered = true;
       console.log('Daily MCQ automation registered lazily.');
