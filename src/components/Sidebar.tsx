@@ -85,6 +85,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'textbooks', icon: Book, label: language === 'en' ? 'Textbooks' : 'ପାଠ୍ୟପୁସ୍ତକ' },
     { id: 'courses', icon: BookOpen, label: t.courses },
     { id: 'monthly_tests', icon: Calendar, label: t.monthlyTests },
+    { id: 'syllabus_tracker', icon: ListChecks, label: language === 'en' ? 'Syllabus Tracker' : 'ପାଠ୍ୟକ୍ରମ ଟ୍ରାକର୍' },
     { id: 'daily_mcqs', icon: ListChecks, label: language === 'en' ? 'Daily MCQ Practice' : 'ଦୈନିକ MCQ ଅଭ୍ୟାସ' },
     { id: 'leaderboard', icon: Trophy, label: t.leaderboard },
     { id: 'store', icon: ShoppingBag, label: language === 'en' ? 'Avatar Store' : 'ଅବତାର ଷ୍ଟୋର' },

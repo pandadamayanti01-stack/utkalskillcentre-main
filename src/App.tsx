@@ -108,6 +108,7 @@ const StudyBuddyView = lazy(() => import('./components/StudyBuddyView').then((mo
 const Sidebar = lazy(() => import('./components/Sidebar').then((module) => ({ default: module.Sidebar })));
 const LoginComponent = lazy(() => import('./components/LoginComponent'));
 const TestSeriesPoster = lazy(() => import('./components/TestSeriesPoster'));
+const SyllabusTracker = lazy(() => import('./components/SyllabusTracker').then((module) => ({ default: module.SyllabusTracker })));
 
 function ViewLoader({ fullHeight = false }: { fullHeight?: boolean }) {
   return (
@@ -1818,7 +1819,7 @@ export default function App() {
   return (
   <ErrorBoundary language={language}>
     <SEO 
-      subject={activeTab === 'study_buddy' ? 'AI Study Buddy' : activeTab === 'practice' ? 'Practice Set' : undefined}
+      subject={activeTab === 'study_buddy' ? 'AI Study Buddy' : activeTab === 'practice' ? 'Practice Set' : activeTab === 'syllabus_tracker' ? 'Syllabus Tracker' : undefined}
     />
     {showTestSeriesPoster && (
       <Suspense fallback={null}>
@@ -1914,6 +1915,7 @@ export default function App() {
             {activeTab === 'courses' && <CoursesView user={user} chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'monthly_tests' && <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'syllabus_tracker' && <SyllabusTracker language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'daily_mcqs' && <DailyMcqView mcqs={dailyMcqs} submissions={dailyMcqSubmissions} user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'study_buddy' && (
               isPremium ? <StudyBuddyView language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} user={user} initialVoiceMode={openTutorInVoiceMode} onBack={() => setActiveTab('dashboard')} onLanguageChange={setLanguage} /> : <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />

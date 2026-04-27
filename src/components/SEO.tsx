@@ -36,16 +36,39 @@ export const SEO: React.FC<SEOProps> = ({
   className = "Class 10" 
 }) => {
   const currentMonth = getMonthlyTestName();
+  const year = new Date().getFullYear();
   
-  // Dynamic Title Construction
+  // Dynamic Title Construction (Hinglish optimized)
   const seoTitle = title || (subject 
-    ? `${className} ${subject} Important MCQ 2026 | Odisha Board | Utkal Skill Centre`
-    : `Utkal Skill Centre | Utkal Skill Odisha AI Learning App for Students`);
+    ? `${className} ${subject} Selection Question ${year} | Odisha Board MCQ | Utkal Skill Centre`
+    : `Utkal Skill Centre | Odisha Board AI Learning App | Class 10 Selection Question`);
 
-  // Dynamic Description Construction
+  // Dynamic Description Construction (Hinglish optimized)
   const seoDescription = description || (subject
-    ? `Get the most important MCQs and subjective questions for ${className} ${subject}. Perfect for the ${currentMonth} monthly test. Download PDF notes in Odia medium.`
-    : `Utkal Skill Centre is a Utkal Skill Odisha learning platform for Class 3 to 10 students with Odia and English study support, AI learning Odia help, textbooks, practice questions, and monthly tests.`);
+    ? `Get important MCQs for ${className} ${subject} Odia medium. Perfect for your ${currentMonth} monthly test and Odisha Board Exam ${year}. Download PDF selection questions.`
+    : `Utkal Skill Centre is the #1 Odisha learning platform for Class 3 to 10. Get Odia medium notes, selection questions, and practice sets for May 5th monthly tests.`);
+
+  // JSON-LD Schema for Course/Educational Content
+  const schemaOrgJSONLD = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": seoTitle,
+    "description": seoDescription,
+    "provider": {
+      "@type": "Organization",
+      "name": "Utkal Skill Centre",
+      "sameAs": "https://utkalskillcentre.com"
+    },
+    "courseCode": subject || "OdishaBoard",
+    "hasCourseInstance": {
+      "@type": "CourseInstance",
+      "courseMode": "Online",
+      "instructor": {
+        "@type": "Person",
+        "name": "Gundulu AI"
+      }
+    }
+  };
 
   return (
     <Helmet>
@@ -60,10 +83,13 @@ export const SEO: React.FC<SEOProps> = ({
       <meta name="twitter:title" content={seoTitle} />
       <meta name="twitter:description" content={seoDescription} />
       
-      {/* Keywords update based on subject */}
-      {subject && (
-        <meta name="keywords" content={`${subject}, ${className}, Odisha Board, ${currentMonth} monthly test, selection questions, Odia medium, Utkal Skill Centre`} />
-      )}
+      {/* Hinglish Keywords Strategy */}
+      <meta name="keywords" content={`${subject || ''}, ${className}, Odisha Board, ${currentMonth} monthly test, selection question 2026, Odia medium notes, class 10 question paper PDF, BSE Odisha result date, Utkal Skill Centre`} />
+
+      {/* JSON-LD Schema */}
+      <script type="application/ld+json">
+        {JSON.stringify(schemaOrgJSONLD)}
+      </script>
     </Helmet>
   );
 };
