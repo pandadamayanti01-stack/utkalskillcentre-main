@@ -7,6 +7,7 @@ import { DailyMcq, DailyMcqSubmission } from '../types';
 import { translations } from '../translations';
 import { normalizeDailyMcqQuestions } from '../utils/dailyMcq';
 import { copyTextToClipboard, getDailyMcqShareUrl, openDailyMcqWhatsAppShare } from '../utils/dailyMcqShare';
+import { SEO } from './SEO';
 
 interface DailyMcqViewProps {
   mcqs: DailyMcq[];
@@ -226,6 +227,10 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
       animate={{ opacity: 1, y: 0 }}
       className="space-y-6 pb-20"
     >
+      <SEO 
+        subject="Daily MCQ Practice"
+        description="Master your daily MCQs and practice sets for Odisha State Board. Gundulu AI helps you learn faster with practice sets for your monthly exams."
+      />
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">{t.title}</h1>

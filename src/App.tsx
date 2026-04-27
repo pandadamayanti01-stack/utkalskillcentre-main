@@ -86,6 +86,7 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { ChatbotModal } from './components/ChatbotModal';
 import { DailyMcqView } from './components/DailyMcqView';
 import { getDeferredPrompt, clearDeferredPrompt } from './pwa';
+import { SEO } from './components/SEO';
 
 const AdminDashboard = lazy(() =>
   import('./components/AdminDashboard')
@@ -1816,6 +1817,9 @@ export default function App() {
 
   return (
   <ErrorBoundary language={language}>
+    <SEO 
+      subject={activeTab === 'study_buddy' ? 'AI Study Buddy' : activeTab === 'practice' ? 'Practice Set' : undefined}
+    />
     {showTestSeriesPoster && (
       <Suspense fallback={null}>
         <TestSeriesPoster onClose={() => setShowTestSeriesPoster(false)} />
