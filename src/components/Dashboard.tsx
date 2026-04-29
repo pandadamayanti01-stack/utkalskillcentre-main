@@ -31,10 +31,10 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       '4': 'https://www.youtube.com/embed/d1VEPvR_nN8',
       '5': 'https://www.youtube.com/embed/vafpnkmiIvg',
       '6': 'https://www.youtube.com/embed/GZ1U75OV8DM',
-      '7': 'https://www.youtube.com/embed/IB_ThJ5oSwo',
-      '8': 'https://www.youtube.com/embed/DiM4A46XPf0',
-      '9': 'https://www.youtube.com/embed/WfK1GjRgSrk',
-      '10': 'https://www.youtube.com/embed/OZko767K-Eo',
+      '7': 'https://www.youtube.com/embed/k_hco44HUxI',
+      '8': 'https://www.youtube.com/embed/le5ItqGPKCU',
+      '9': 'https://www.youtube.com/embed/0rfIj1MXzz4',
+      '10': 'https://www.youtube.com/embed/OtTttUFqbPQ',
     };
     // Normalize user.class to string number (handles 'Class 1', 1, '1', etc.)
     let userClass = '10';
