@@ -55,11 +55,7 @@ function getInitializedAdminApp(): App | null {
       };
 
       if (serviceAccount) {
-        options.credential = cert({
-          projectId: serviceAccount.projectId,
-          clientEmail: serviceAccount.clientEmail,
-          privateKey: serviceAccount.privateKey,
-        });
+        options.credential = cert(serviceAccount as any);
       } else {
         try {
           options.credential = applicationDefault();
@@ -221,7 +217,7 @@ app.post('/api/payment/create-order', async (req, res) => {
 
 app.post('/api/payment/verify', async (req, res) => {
   try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, amount, userId, userClass } = req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, amount, userId, userClass, planType } = req.body;
     const secret = process.env.RAZORPAY_KEY_SECRET;
     
     if (!secret) return res.status(500).json({ success: false, message: 'Secret missing' });
@@ -232,7 +228,10 @@ app.post('/api/payment/verify', async (req, res) => {
     if (hmac.digest('hex') === razorpay_signature) {
       const adminApp = getInitializedAdminApp();
       if (adminApp) {
-        await getAdminFirestore(adminApp, firestoreDatabaseId).collection('transactions').add({
+        const db = getAdminFirestore(adminApp, firestoreDatabaseId);
+        
+        // 1. Record the transaction
+        await db.collection('transactions').add({
           payment_id: razorpay_payment_id,
           order_id: razorpay_order_id,
           amount: (amount || 0) / 100,
@@ -240,6 +239,30 @@ app.post('/api/payment/verify', async (req, res) => {
           class: userClass,
           timestamp: new Date()
         });
+
+        // 2. Activate the subscription securely on the backend
+        const expiryDate = new Date();
+        if (planType === 'yearly') {
+          expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+        } else {
+          expiryDate.setMonth(expiryDate.getMonth() + 1);
+        }
+
+        await db.collection('subscriptions').doc(userId).set({
+          active: true,
+          plan: 'premium',
+          type: planType || 'monthly',
+          expires_at: expiryDate,
+          updatedAt: new Date()
+        }, { merge: true });
+        
+        // 3. Also mark the payment order as success
+        await db.collection('payments').doc(razorpay_order_id).set({
+          status: 'success',
+          razorpay_payment_id: razorpay_payment_id,
+          razorpay_signature: razorpay_signature,
+          updatedAt: new Date()
+        }, { merge: true });
       }
       res.json({ success: true });
     } else {

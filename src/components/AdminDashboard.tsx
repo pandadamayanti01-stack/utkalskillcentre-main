@@ -141,6 +141,8 @@ Sample tone for Class 6-10:
   const [aiLogs, setAiLogs] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [students, setStudents] = useState<any[]>([]);
+  const [studentSearch, setStudentSearch] = useState('');
+
   const [allSubscriptions, setAllSubscriptions] = useState<Record<string, any>>({});
   const [supportTickets, setSupportTickets] = useState<any[]>([]);
   const [userLocks, setUserLocks] = useState<any[]>([]);
@@ -2937,9 +2939,31 @@ Q2: ...`}
   );
 
   function renderStudents() {
+    const filteredStudents = students.filter(s => 
+      (s.name || '').toLowerCase().includes(studentSearch.toLowerCase()) ||
+      (s.email || '').toLowerCase().includes(studentSearch.toLowerCase()) ||
+      (s.phoneNumber || '').toLowerCase().includes(studentSearch.toLowerCase())
+    );
+
     return (
       <div className="glass-card p-8 rounded-[2.5rem]">
-        <h2 className="text-2xl font-bold text-white mb-6">Student Management</h2>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+          <div>
+            <h2 className="text-2xl font-bold text-white">Student Management</h2>
+            <p className="text-slate-400 text-sm mt-1">Total Students: {students.length} | Showing: {filteredStudents.length}</p>
+          </div>
+          <div className="relative w-full md:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+            <input 
+              type="text"
+              placeholder="Search by name, email or phone..."
+              value={studentSearch}
+              onChange={(e) => setStudentSearch(e.target.value)}
+              className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-white focus:outline-none focus:border-emerald-500/50 transition-all text-sm"
+            />
+          </div>
+        </div>
+
         <div className="overflow-x-auto">
           <table className="w-full text-left text-slate-300">
             <thead>
@@ -2955,7 +2979,7 @@ Q2: ...`}
               </tr>
             </thead>
             <tbody>
-              {students.map(student => {
+              {filteredStudents.map(student => {
                 const sub = allSubscriptions[student.id];
                 const isLifetime = ['gyanaloka.panda@gmail.com', 'gyanapd.ram@gmail.com', 'pandadamayanti01@gmail.com', 'gyanalpanda@gmail.com'].includes(student.email?.toLowerCase()) || ['+918926118509', '8926118509', '+918457811227', '8457811227', '+916370487877', '6370487877'].includes(student.phoneNumber);
                 const plan = isLifetime ? 'Pro (Lifetime)' : (sub?.active ? 'Pro' : 'Free');
@@ -2964,8 +2988,8 @@ Q2: ...`}
 
                 return (
                   <tr key={student.id} className="border-b border-white/5 hover:bg-white/5">
-                    <td className="py-4">{student.name || 'N/A'}</td>
-                    <td className="py-4">{student.email || student.phoneNumber || 'N/A'}</td>
+                    <td className="py-4 font-medium text-white">{student.name || 'N/A'}</td>
+                    <td className="py-4 text-sm text-slate-400 font-mono">{student.email || student.phoneNumber || 'N/A'}</td>
                     <td className="py-4">{student.class || 'N/A'}</td>
                     <td className="py-4">
                       <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest ${plan.includes('Pro') ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-500/20 text-slate-400'}`}>
@@ -2978,11 +3002,15 @@ Q2: ...`}
                         {status}
                       </span>
                     </td>
-                    <td className="py-4">{student.role || 'N/A'}</td>
+                    <td className="py-4">
+                      <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase ${student.role === 'admin' ? 'bg-purple-500/20 text-purple-400' : 'bg-slate-500/20 text-slate-400'}`}>
+                        {student.role || 'student'}
+                      </span>
+                    </td>
                     <td className="py-4">
                       <button 
                         onClick={() => handleResetStudent(student.id)}
-                        className="text-red-400 hover:text-red-300 font-medium"
+                        className="text-red-400 hover:text-red-300 font-medium text-sm transition-colors"
                       >
                         Reset Data
                       </button>
@@ -2990,11 +3018,19 @@ Q2: ...`}
                   </tr>
                 );
               })}
+              {filteredStudents.length === 0 && (
+                <tr>
+                  <td colSpan={8} className="py-10 text-center text-slate-500">
+                    {studentSearch ? "No students match your search." : "No students found in the database."}
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
       </div>
     );
+
   }
 
   async function handleResetStudent(studentId: string) {

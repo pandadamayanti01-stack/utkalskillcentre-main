@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { db } from '../../firebase';
+import { collection, getDocs, Timestamp } from 'firebase/firestore';
 import { gcpService } from '../../services/gcpService';
 import { LayoutDashboard, Users, Bot, CreditCard, BookOpen } from 'lucide-react';
 
@@ -17,14 +19,15 @@ export const DashboardTab: React.FC = () => {
         // Total Students
         const studentsCount = await gcpService.getCount('users');
         
-        // Total Revenue (assuming transactions collection)
-        const transactionsCount = await gcpService.getCount('transactions');
+        // Total Revenue (using payments collection)
+        const paymentsSnapshot = await getDocs(collection(db, 'payments'));
+        const totalRevenue = paymentsSnapshot.docs.reduce((acc, doc) => acc + (doc.data().amount || 0), 0);
         
         // Tutor Queries Today
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const tutorQueriesToday = await gcpService.getCount('ai_usage', {
-          where: [{ field: 'timestamp', operator: '>=', value: today.toISOString() }]
+        const startOfToday = new Date();
+        startOfToday.setHours(0, 0, 0, 0);
+        const tutorQueriesToday = await gcpService.getCount('tutor_queries', {
+          where: [{ field: 'timestamp', operator: '>=', value: Timestamp.fromDate(startOfToday) }]
         });
         
         // Total Chapters
@@ -32,7 +35,7 @@ export const DashboardTab: React.FC = () => {
 
         setStats({
           totalStudents: studentsCount,
-          totalRevenue: transactionsCount * 100, // Placeholder calculation
+          totalRevenue: totalRevenue,
           tutorQueriesToday: tutorQueriesToday,
           totalChapters: totalChapters
         });

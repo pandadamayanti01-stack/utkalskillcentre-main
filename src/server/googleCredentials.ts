@@ -23,9 +23,9 @@ function normalizeServiceAccount(input: ServiceAccountLike | null) {
   }
 
   return {
-    projectId: input.project_id,
-    clientEmail: input.client_email,
-    privateKey: String(input.private_key).replace(/\\n/g, '\n'),
+    project_id: input.project_id,
+    client_email: input.client_email,
+    private_key: String(input.private_key).replace(/\\n/g, '\n'),
   };
 }
 
@@ -48,11 +48,25 @@ export function getServiceAccountCredentials() {
     }
   }
 
-  const serviceAccountPath = (process.env.FIREBASE_SERVICE_ACCOUNT_PATH || process.env.GOOGLE_APPLICATION_CREDENTIALS || '').replace(/"/g, '').trim();
+  let serviceAccountPath = (process.env.FIREBASE_SERVICE_ACCOUNT_PATH || process.env.GOOGLE_APPLICATION_CREDENTIALS || '').replace(/"/g, '').trim();
+  
   if (serviceAccountPath) {
+    // If it's a relative path starting with ./ or ../, resolve it
+    if (serviceAccountPath.startsWith('.') || !path.isAbsolute(serviceAccountPath)) {
+      serviceAccountPath = path.resolve(process.cwd(), serviceAccountPath);
+    }
+    
     const filePayload = readJsonFile(serviceAccountPath);
     if (!filePayload) {
-      console.warn(`Service-account file not found at ${serviceAccountPath}. Falling back to default credentials.`);
+      console.warn(`Service-account file not found at ${serviceAccountPath}. Trying root fallback...`);
+      // Final fallback: try to find any .json file in the root that looks like a service account
+      const rootFiles = fs.readdirSync(process.cwd());
+      const jsonFile = rootFiles.find(f => f.endsWith('.json') && f.includes('utkalskillcentre'));
+      if (jsonFile) {
+        const fallbackPath = path.join(process.cwd(), jsonFile);
+        console.log(`Found fallback service account at: ${fallbackPath}`);
+        return normalizeServiceAccount(readJsonFile(fallbackPath));
+      }
       return null;
     }
     return normalizeServiceAccount(filePayload);
@@ -66,8 +80,8 @@ export function createGoogleAuth(scopes: string[]) {
   if (serviceAccount) {
     return new google.auth.GoogleAuth({
       credentials: {
-        client_email: serviceAccount.clientEmail,
-        private_key: serviceAccount.privateKey,
+        client_email: serviceAccount.client_email,
+        private_key: serviceAccount.private_key,
       },
       scopes,
     });

@@ -48,11 +48,7 @@ if (!getInitializedAdminApp()) {
       const serviceAccount = getServiceAccountCredentials();
       initializeApp({
         credential: serviceAccount
-          ? cert({
-              projectId: serviceAccount.projectId,
-              clientEmail: serviceAccount.clientEmail,
-              privateKey: serviceAccount.privateKey,
-            })
+          ? cert(serviceAccount as any)
           : applicationDefault(),
         projectId: config.projectId,
         storageBucket: config.storageBucket

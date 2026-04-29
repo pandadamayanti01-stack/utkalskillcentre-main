@@ -1423,33 +1423,13 @@ export default function App() {
                 razorpay_signature: response.razorpay_signature,
                 userId: user.id,
                 amount: amount,
-                userClass: userClass
+                userClass: userClass,
+                planType: planType
               })
             });
 
             if (verifyData.success) {
-              // Update payment status
-              await updateDoc(doc(firestore, 'payments', response.razorpay_order_id), {
-                status: 'success',
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature
-              });
-
-              // Update user subscription
-              const expiryDate = new Date();
-              if (planType === 'yearly') {
-                expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-              } else {
-                expiryDate.setMonth(expiryDate.getMonth() + 1);
-              }
-              
-              await setDoc(doc(firestore, 'subscriptions', user.id), {
-                active: true,
-                plan: 'premium',
-                type: planType,
-                expires_at: Timestamp.fromDate(expiryDate)
-              });
-
+              // The backend now securely handles creating the subscription and transaction
               setIsPremium(true);
               alert("Payment Successful! Welcome to the Premium Plan.");
             }
@@ -1932,11 +1912,11 @@ export default function App() {
           </AnimatePresence>
 
           {/* --- FOOTER PLACE: BIGSAN BRANDING --- */}
-          <footer className="mt-20 pb-10 flex flex-col items-center gap-4 opacity-40">
+          <footer className="mt-20 pb-10 flex flex-col items-center gap-4 opacity-60">
             <div className="h-px w-20 bg-white/10" />
-            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-center">Managed By</p>
-            <img src="/bigsan.png" className="h-8 w-auto grayscale brightness-200" alt="Bigsan Group" />
-            <p className="text-[9px] font-medium text-center">© 2026 Bigsan Utkal Skill Centre</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-center text-slate-400">Managed By</p>
+            <img src="/bigsan-512.png" className="h-10 w-auto opacity-80 hover:opacity-100 transition-opacity" alt="Bigsan Group" />
+            <p className="text-[9px] font-medium text-center text-slate-500">© 2026 Bigsan Utkal Skill Centre</p>
           </footer>
         </div>
       </main>
