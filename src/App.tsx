@@ -371,8 +371,7 @@ export default function App() {
   const [tutorLoading, setTutorLoading] = useState<Record<string, boolean>>({});
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [showConfigError, setShowConfigError] = useState<{title: string, message: string} | null>(null);
- // const [showLaunchPoster, setShowLaunchPoster] = useState(() => !localStorage.getItem('utkalDivasSeen'));
-  const [showTestSeriesPoster, setShowTestSeriesPoster] = useState(false);
+  const [showTestSeriesPoster, setShowTestSeriesPoster] = useState(() => !localStorage.getItem('testSeriesPosterSeen'));
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [showChatbot, setShowChatbot] = useState(false);
   
@@ -693,7 +692,7 @@ export default function App() {
           handleFirestoreError(err, OperationType.GET, `subscriptions/${firebaseUser.uid}`);
         });
 
-        setShowTestSeriesPoster(true);
+         // setShowTestSeriesPoster(true); // Moved to initial state for landing page visibility
         
         setLoading(false);
       } else {
@@ -1573,14 +1572,8 @@ export default function App() {
           )}
         </AnimatePresence>
 
-        {/* {showLaunchPoster && (
-          <UtkalDivasPoster onClose={() => {
-            setShowLaunchPoster(false);
-            localStorage.setItem('utkalDivasSeen', 'true');
-            handleGunduluGreeting();
-          }} />
-        )}
-         <GunduluHuman skipInitialGreeting={showLaunchPoster} /> */}
+          {/* Gundulu AI overlay removed from landing page for clean UI */}
+
 
         <div className="flex-1 flex relative overflow-hidden">
           {/* Background Glows & Grid */}
@@ -1803,7 +1796,11 @@ export default function App() {
     />
     {showTestSeriesPoster && (
       <Suspense fallback={null}>
-        <TestSeriesPoster onClose={() => setShowTestSeriesPoster(false)} />
+        <TestSeriesPoster onClose={() => {
+          setShowTestSeriesPoster(false);
+          localStorage.setItem('testSeriesPosterSeen', 'true');
+          handleGunduluGreeting();
+        }} />
       </Suspense>
     )}
 
