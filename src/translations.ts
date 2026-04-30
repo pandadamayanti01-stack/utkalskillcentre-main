@@ -31,7 +31,7 @@ export const translations: any = {
     boards: {
       odisha: "Odisha Board (Odia Medium)",
       saraswati: "Saraswati Sishu Mandir",
-      cbse: "CBSE"
+      aurobindo: "Sri Aurobindo centre of Integral Education ((SACIE))"
     },
     languages: {
       en: "English",
@@ -204,20 +204,32 @@ export const translations: any = {
         sanskrit: "Sanskrit",
         gk: "General Knowledge"
       },
-      cbse: {
+      aurobindo: {
         math: "Mathematics",
         science: "Science",
         english: "English",
+        odia: "Odia",
+        history: "History",
+        geography: "Geography",
         hindi: "Hindi",
-        evs: "EVS",
-        social: "Social Studies",
-        physics: "Physics",
-        chemistry: "Chemistry",
-        biology: "Biology"
+        sanskrit: "Sanskrit",
+        evs: "EVS"
       }
     },
     subjectsByClass: {
       odisha: {
+        class1: ['odia', 'math', 'english', 'art_health'],
+        class2: ['odia', 'math', 'english', 'art_health'],
+        class3: ['odia', 'english', 'math', 'evs', 'art', 'physical_education'],
+        class4: ['odia', 'english', 'math', 'evs', 'art', 'physical_education'],
+        class5: ['odia', 'english', 'math', 'evs', 'art', 'physical_education'],
+        class6: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science_curiosity', 'social_science', 'vocational', 'art', 'physical_education'],
+        class7: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science_curiosity', 'social_science', 'vocational', 'art', 'physical_education'],
+        class8: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science_curiosity', 'social_science', 'vocational', 'art', 'physical_education'],
+        class9: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social_science', 'epe'],
+        class10: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social_science', 'epe'],
+      },
+      aurobindo: {
         class1: ['odia', 'math', 'english', 'art_health'],
         class2: ['odia', 'math', 'english', 'art_health'],
         class3: ['odia', 'english', 'math', 'evs', 'art', 'physical_education'],
@@ -314,7 +326,7 @@ export const translations: any = {
     boards: {
       odisha: "ଓଡିଶା ବୋର୍ଡ (ଓଡିଆ ମାଧ୍ୟମ)",
       saraswati: "ସରସ୍ୱତୀ ଶିଶୁ ମନ୍ଦିର",
-      cbse: "CBSE"
+      aurobindo: "ଶ୍ରୀ ଅରବିନ୍ଦ ପୂର୍ଣ୍ଣାଙ୍ଗ ଶିକ୍ଷା କେନ୍ଦ୍ର ((SACIE))"
     },
     languages: {
       en: "ଇଂରାଜୀ",
@@ -487,20 +499,32 @@ export const translations: any = {
         sanskrit: "ସଂସ୍କୃତ",
         gk: "ସାଧାରଣ ଜ୍ଞାନ"
       },
-      cbse: {
-        math: "Mathematics",
-        science: "Science",
-        english: "English",
-        hindi: "Hindi",
-        evs: "EVS",
-        social: "Social Studies",
-        physics: "Physics",
-        chemistry: "Chemistry",
-        biology: "Biology"
+      aurobindo: {
+        math: "ଗଣିତ",
+        science: "ବିଜ୍ଞାନ",
+        english: "ଇଂରାଜୀ",
+        odia: "ଓଡ଼ିଆ",
+        history: "ଇତିହାସ",
+        geography: "ଭୂଗୋଳ",
+        hindi: "ହିନ୍ଦୀ",
+        sanskrit: "ସଂସ୍କୃତ",
+        evs: "ପରିବେଶ ବିଜ୍ଞାନ"
       }
     },
     subjectsByClass: {
       odisha: {
+        class1: ['odia', 'math', 'english', 'art_health'],
+        class2: ['odia', 'math', 'english', 'art_health'],
+        class3: ['odia', 'english', 'math', 'evs', 'art', 'physical_education'],
+        class4: ['odia', 'english', 'math', 'evs', 'art', 'physical_education'],
+        class5: ['odia', 'english', 'math', 'evs', 'art', 'physical_education'],
+        class6: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science_curiosity', 'social_science', 'vocational', 'art', 'physical_education'],
+        class7: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science_curiosity', 'social_science', 'vocational', 'art', 'physical_education'],
+        class8: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science_curiosity', 'social_science', 'vocational', 'art', 'physical_education'],
+        class9: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social_science', 'epe', 'aspirational'],
+        class10: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social_science', 'epe', 'aspirational'],
+      },
+      aurobindo: {
         class1: ['odia', 'math', 'english', 'art_health'],
         class2: ['odia', 'math', 'english', 'art_health'],
         class3: ['odia', 'english', 'math', 'evs', 'art', 'physical_education'],
