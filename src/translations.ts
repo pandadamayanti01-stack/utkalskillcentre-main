@@ -31,7 +31,8 @@ export const translations: any = {
     boards: {
       odisha: "Odisha Board (Odia Medium)",
       saraswati: "Saraswati Sishu Mandir",
-      aurobindo: "Sri Aurobindo centre of Integral Education ((SACIE))"
+      aurobindo: "Sri Aurobindo centre of Integral Education ((SACIE))",
+      oav: "Odisha Adarsha Vidyalaya (OAV)"
     },
     languages: {
       en: "English",
@@ -214,6 +215,17 @@ export const translations: any = {
         hindi: "Hindi",
         sanskrit: "Sanskrit",
         evs: "EVS"
+      },
+      oav: {
+        math: "Mathematics",
+        science: "Science",
+        english: "English",
+        odia: "Odia",
+        history: "History",
+        geography: "Geography",
+        hindi: "Hindi",
+        sanskrit: "Sanskrit",
+        social: "Social Studies"
       }
     },
     subjectsByClass: {
@@ -240,6 +252,18 @@ export const translations: any = {
         class8: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science_curiosity', 'social_science', 'vocational', 'art', 'physical_education'],
         class9: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social_science', 'epe'],
         class10: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social_science', 'epe'],
+      },
+      oav: {
+        class1: ['odia', 'math', 'english'],
+        class2: ['odia', 'math', 'english'],
+        class3: ['odia', 'english', 'math', 'evs'],
+        class4: ['odia', 'english', 'math', 'evs'],
+        class5: ['odia', 'english', 'math', 'evs'],
+        class6: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social'],
+        class7: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social'],
+        class8: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social'],
+        class9: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social'],
+        class10: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social'],
       }
     },
     totalStudents: "Total Students",
@@ -326,7 +350,8 @@ export const translations: any = {
     boards: {
       odisha: "ଓଡିଶା ବୋର୍ଡ (ଓଡିଆ ମାଧ୍ୟମ)",
       saraswati: "ସରସ୍ୱତୀ ଶିଶୁ ମନ୍ଦିର",
-      aurobindo: "ଶ୍ରୀ ଅରବିନ୍ଦ ପୂର୍ଣ୍ଣାଙ୍ଗ ଶିକ୍ଷା କେନ୍ଦ୍ର ((SACIE))"
+      aurobindo: "ଶ୍ରୀ ଅରବିନ୍ଦ ପୂର୍ଣ୍ଣାଙ୍ଗ ଶିକ୍ଷା କେନ୍ଦ୍ର ((SACIE))",
+      oav: "ଓଡ଼ିଶା ଆଦର୍ଶ ବିଦ୍ୟାଳୟ (OAV)"
     },
     languages: {
       en: "ଇଂରାଜୀ",
@@ -509,6 +534,17 @@ export const translations: any = {
         hindi: "ହିନ୍ଦୀ",
         sanskrit: "ସଂସ୍କୃତ",
         evs: "ପରିବେଶ ବିଜ୍ଞାନ"
+      },
+      oav: {
+        math: "ଗଣିତ",
+        science: "ବିଜ୍ଞାନ",
+        english: "ଇଂରାଜୀ",
+        odia: "ଓଡ଼ିଆ",
+        history: "ଇତିହାସ",
+        geography: "ଭୂଗୋଳ",
+        hindi: "ହିନ୍ଦୀ",
+        sanskrit: "ସଂସ୍କୃତ",
+        social: "ସାମାଜିକ ବିଜ୍ଞାନ"
       }
     },
     subjectsByClass: {
@@ -535,6 +571,18 @@ export const translations: any = {
         class8: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science_curiosity', 'social_science', 'vocational', 'art', 'physical_education'],
         class9: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social_science', 'epe', 'aspirational'],
         class10: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social_science', 'epe', 'aspirational'],
+      },
+      oav: {
+        class1: ['odia', 'math', 'english'],
+        class2: ['odia', 'math', 'english'],
+        class3: ['odia', 'english', 'math', 'evs'],
+        class4: ['odia', 'english', 'math', 'evs'],
+        class5: ['odia', 'english', 'math', 'evs'],
+        class6: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social'],
+        class7: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social'],
+        class8: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social'],
+        class9: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social'],
+        class10: ['odia', 'english', 'hindi', 'sanskrit', 'math', 'science', 'social'],
       }
     },
     totalStudents: "ସମୁଦାୟ ଛାତ୍ରଛାତ୍ରୀ",
