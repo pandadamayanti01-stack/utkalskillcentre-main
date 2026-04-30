@@ -147,8 +147,12 @@ export function TestSeriesRegistrationForm({ user, language, onClose }: TestSeri
                         onChange={e => setFormData({...formData, class: e.target.value})}
                         className="w-full bg-slate-900/50 border border-white/5 rounded-2xl py-4 pl-12 pr-6 text-white text-sm font-bold focus:border-amber-500/50 outline-none transition-all appearance-none"
                       >
-                        <option value="" disabled>Select Class</option>
-                        {[5, 6, 7, 8, 9, 10].map(c => <option key={c} value={c} className="bg-slate-900">Class {c}</option>)}
+                        <option value="" disabled>{language === 'en' ? 'Select Class' : 'ଶ୍ରେଣୀ ଚୟନ କରନ୍ତୁ'}</option>
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(c => (
+                          <option key={c} value={c} className="bg-slate-900">
+                            {language === 'en' ? `Class ${c}` : `ଶ୍ରେଣୀ ${c}`}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>
@@ -163,7 +167,7 @@ export function TestSeriesRegistrationForm({ user, language, onClose }: TestSeri
                         onChange={e => setFormData({...formData, district: e.target.value})}
                         className="w-full bg-slate-900/50 border border-white/5 rounded-2xl py-4 pl-12 pr-6 text-white text-sm font-bold focus:border-amber-500/50 outline-none transition-all appearance-none"
                       >
-                        <option value="" disabled>Select District</option>
+                        <option value="" disabled>{language === 'en' ? 'Select District' : 'ଜିଲ୍ଲା ଚୟନ କରନ୍ତୁ'}</option>
                         {districts.map(d => <option key={d} value={d} className="bg-slate-900">{d}</option>)}
                       </select>
                     </div>
