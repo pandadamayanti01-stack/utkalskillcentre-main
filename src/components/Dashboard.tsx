@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Brain, BarChart3, CheckCircle2, Globe, Flame, MessageCircle, Target, Trophy, Zap, Award, Sparkles, Star } from 'lucide-react';
 import { translations } from '../translations';
 import { DailyChallenge } from './DailyChallenge';
 import { LeaderboardView } from './LeaderboardView';
 import { DistrictLeaderboardFilter } from './DistrictLeaderboardFilter';
+import { TestSeriesRegistrationForm } from './TestSeriesRegistrationForm';
 
 interface DashboardProps {
   user: any;
@@ -48,6 +49,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
     }
     const videoUrl = classVideoMap[userClass] || classVideoMap['10'];
   const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const filteredLeaderboard = selectedDistrict
     ? leaderboard.filter(u => u.district === selectedDistrict)
     : leaderboard;
@@ -113,6 +115,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   };
 
   return (
+    <>
     <motion.div 
       variants={containerVariants}
       initial="hidden"
@@ -144,6 +147,39 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             <h3 className="text-lg font-black text-white tracking-tight">Talk to Gundulu</h3>
             <p className="text-slate-400 text-[11px] font-medium line-clamp-1">Your AI tutor is ready to help. Tap to start a conversation!</p>
           </div>
+        </div>
+      </motion.div>
+
+      {/* Test Series Registration Section */}
+      <motion.div 
+        variants={itemVariants}
+        className="glass-card neon-border rounded-3xl p-4 md:p-6 relative overflow-hidden group hover:border-amber-500/50 transition-all bg-gradient-to-br from-amber-500/10 to-transparent"
+      >
+        <div className="absolute top-0 right-0 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl -mr-24 -mt-24 pointer-events-none group-hover:bg-amber-500/20 transition-colors"></div>
+        <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
+          <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-amber-500/10 border-2 border-amber-500 flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+            <Trophy size={32} className="text-amber-500" />
+          </div>
+          <div className="flex-1 text-center md:text-left space-y-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[9px] font-black uppercase tracking-[0.2em]">
+              <Sparkles size={10} />
+              Registration Open
+            </div>
+            <h3 className="text-xl font-black text-white tracking-tight">
+              {language === 'en' ? 'Monthly Test Series - May 2026' : 'ମାସିକ ଟେଷ୍ଟ ସିରିଜ୍ - ମଇ ୨୦୨୬'}
+            </h3>
+            <p className="text-slate-400 text-xs font-medium leading-relaxed max-w-xl">
+              {language === 'en' 
+                ? 'Join thousands of students and compete for prizes worth ₹10,000. Limited slots available!' 
+                : 'ହଜାର ହଜାର ଛାତ୍ରଛାତ୍ରୀଙ୍କ ସହିତ ଯୋଗ ଦିଅନ୍ତୁ ଏବଂ ₹୧୦,୦୦୦ ମୂଲ୍ୟର ପୁରସ୍କାର ପାଇଁ ପ୍ରତିଯୋଗିତା କରନ୍ତୁ |'}
+            </p>
+          </div>
+          <button 
+            onClick={() => setShowRegistrationForm(true)}
+            className="w-full md:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 text-white font-black text-xs uppercase tracking-[0.2em] shadow-[0_15px_30px_rgba(245,158,11,0.3)] hover:scale-105 active:scale-95 transition-all"
+          >
+            {language === 'en' ? 'Register Now' : 'ବର୍ତ୍ତମାନ ପଞ୍ଜିକରଣ କରନ୍ତୁ'}
+          </button>
         </div>
       </motion.div>
 
@@ -388,6 +424,17 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         </div>
       </div>
     </motion.div>
+    
+    <AnimatePresence>
+      {showRegistrationForm && (
+        <TestSeriesRegistrationForm 
+          user={user} 
+          language={language} 
+          onClose={() => setShowRegistrationForm(false)} 
+        />
+      )}
+    </AnimatePresence>
+    </>
   );
 }
 
