@@ -330,6 +330,11 @@ service cloud.firestore {
       allow create: if isAuthenticated() && (isOwner(request.resource.data.userId) || request.resource.data.userId == 'anonymous') && isValidTutorQuery(request.resource.data);
     }
 
+    match /test_series_registrations/{registrationId} {
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+
     // Allow users to create their own MCQ submissions
     match /submissions/{submissionId} {
       allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
