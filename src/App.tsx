@@ -371,7 +371,8 @@ export default function App() {
   const [tutorLoading, setTutorLoading] = useState<Record<string, boolean>>({});
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [showConfigError, setShowConfigError] = useState<{title: string, message: string} | null>(null);
-  const [showTestSeriesPoster, setShowTestSeriesPoster] = useState(() => !localStorage.getItem('testSeriesPosterSeen'));
+ // const [showLaunchPoster, setShowLaunchPoster] = useState(() => !localStorage.getItem('utkalDivasSeen'));
+  const [showTestSeriesPoster, setShowTestSeriesPoster] = useState(false);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [showChatbot, setShowChatbot] = useState(false);
   
@@ -692,7 +693,7 @@ export default function App() {
           handleFirestoreError(err, OperationType.GET, `subscriptions/${firebaseUser.uid}`);
         });
 
-         // setShowTestSeriesPoster(true); // Moved to initial state for landing page visibility
+        setShowTestSeriesPoster(true);
         
         setLoading(false);
       } else {
@@ -1572,8 +1573,14 @@ export default function App() {
           )}
         </AnimatePresence>
 
-          {/* Gundulu AI overlay removed from landing page for clean UI */}
-
+        {/* {showLaunchPoster && (
+          <UtkalDivasPoster onClose={() => {
+            setShowLaunchPoster(false);
+            localStorage.setItem('utkalDivasSeen', 'true');
+            handleGunduluGreeting();
+          }} />
+        )}
+         <GunduluHuman skipInitialGreeting={showLaunchPoster} /> */}
 
         <div className="flex-1 flex relative overflow-hidden">
           {/* Background Glows & Grid */}
@@ -1796,11 +1803,7 @@ export default function App() {
     />
     {showTestSeriesPoster && (
       <Suspense fallback={null}>
-        <TestSeriesPoster onClose={() => {
-          setShowTestSeriesPoster(false);
-          localStorage.setItem('testSeriesPosterSeen', 'true');
-          handleGunduluGreeting();
-        }} />
+        <TestSeriesPoster onClose={() => setShowTestSeriesPoster(false)} />
       </Suspense>
     )}
 
