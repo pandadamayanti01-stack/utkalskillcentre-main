@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Bell, ArrowLeft, Calendar, AlertCircle } from 'lucide-react';
 import { translations } from '../translations';
+import { Timestamp } from 'firebase/firestore';
 
 interface NotificationsViewProps {
   notifications: any[];
@@ -74,7 +75,13 @@ export function NotificationsView({ notifications, language, onBack }: Notificat
                     </h3>
                     <div className="flex items-center gap-2 text-slate-400 text-xs">
                       <Calendar size={12} />
-                      {notification.timestamp ? new Date(notification.timestamp.toDate()).toLocaleDateString() : 'Recent'}
+                      {notification.createdAt ? (
+                        notification.createdAt instanceof Timestamp || (notification.createdAt && typeof notification.createdAt === 'object' && 'toDate' in notification.createdAt)
+                          ? new Date(notification.createdAt.toDate()).toLocaleDateString() 
+                          : new Date(notification.createdAt).toLocaleDateString()
+                      ) : (
+                        notification.timestamp ? new Date(notification.timestamp.toDate()).toLocaleDateString() : 'Recent'
+                      )}
                     </div>
                   </div>
                   <p className="text-slate-300 text-sm leading-relaxed">

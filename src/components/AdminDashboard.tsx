@@ -867,7 +867,7 @@ Sample tone for Class 6-10:
       await addDoc(collection(firestore, 'notifications'), {
         message: notificationMessage,
         audience: notificationAudience,
-        createdAt: new Date().toISOString()
+        createdAt: serverTimestamp()
       });
       showNotification("Notification broadcasted successfully!");
       setNotificationMessage('');

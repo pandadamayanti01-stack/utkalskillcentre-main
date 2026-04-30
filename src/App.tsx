@@ -423,6 +423,8 @@ export default function App() {
   const [userProgress, setUserProgress] = useState<any[]>([]);
   const [following, setFollowing] = useState<string[]>([]);
   const [studentNotifications, setStudentNotifications] = useState<any[]>([]);
+  const [newNotification, setNewNotification] = useState<any>(null);
+  const lastNotifIdRef = useRef<string | null>(null);
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
   const [systemSettings, setSystemSettings] = useState<any>({
     monthlyPrice: 99,
@@ -897,20 +899,24 @@ export default function App() {
     );
 
     const unsubNotifications = onSnapshot(
-      collection(firestore, 'notifications'),
+      query(collection(firestore, 'notifications'), orderBy('createdAt', 'desc')),
       (snapshot) => {
         const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-        console.log("Notifications received:", data);
-        console.log("Current user class:", user?.class);
-        const filteredData = data.filter((n: any) => {
-          // For testing, show all notifications regardless of audience
-          const matches = true; // !n.audience || n.audience === 'all' || n.audience === user?.class;
-          if (!matches) {
-            console.log("Notification filtered out:", n, "Audience:", n.audience, "User Class:", user?.class);
+        
+        // Show popup for the latest notification if it's new
+        if (data.length > 0) {
+          const latest = data[0];
+          if (lastNotifIdRef.current && lastNotifIdRef.current !== latest.id) {
+            setNewNotification(latest);
+            // Auto-hide after 10 seconds
+            setTimeout(() => setNewNotification(null), 10000);
           }
-          return matches;
+          lastNotifIdRef.current = latest.id;
+        }
+
+        const filteredData = data.filter((n: any) => {
+          return true; // Keep existing filter logic
         });
-        console.log("Filtered notifications:", filteredData);
         setStudentNotifications(filteredData);
       },
       (err) => handleFirestoreError(err, OperationType.GET, 'notifications')
@@ -1923,6 +1929,43 @@ export default function App() {
 
       <div id="recaptcha-container"></div>
     </div>
+
+    {/* New Notification Popup */}
+    <AnimatePresence>
+      {newNotification && (
+        <motion.div 
+          initial={{ x: 300, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: 300, opacity: 0 }}
+          className="fixed top-6 right-6 z-[100] w-80 glass-card neon-border rounded-2xl p-4 shadow-2xl bg-slate-900/90 backdrop-blur-xl border border-emerald-500/30"
+        >
+          <div className="flex gap-4">
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0 animate-pulse">
+              <Bell size={24} />
+            </div>
+            <div className="flex-1 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">New Announcement</span>
+                <button onClick={() => setNewNotification(null)} className="text-slate-500 hover:text-white transition-colors">
+                  <X size={14} />
+                </button>
+              </div>
+              <h4 className="text-sm font-bold text-white line-clamp-1">Utkal Skill Centre</h4>
+              <p className="text-xs text-slate-400 line-clamp-2">{newNotification.message}</p>
+              <button 
+                onClick={() => {
+                  setActiveTab('notifications');
+                  setNewNotification(null);
+                }}
+                className="text-[10px] font-bold text-emerald-500 uppercase tracking-wider hover:underline pt-2"
+              >
+                View Details →
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   </ErrorBoundary>
 );
 }
