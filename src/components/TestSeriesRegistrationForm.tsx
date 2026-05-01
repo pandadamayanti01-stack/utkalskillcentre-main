@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, User, School, MapPin, GraduationCap, Phone, CheckCircle2, Loader2, Sparkles, Trophy } from 'lucide-react';
 import { db } from '../firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, setDoc, doc, getDoc, serverTimestamp } from 'firebase/firestore';
 
 interface TestSeriesRegistrationFormProps {
   user: any;
@@ -21,6 +21,21 @@ export function TestSeriesRegistrationForm({ user, language, onClose }: TestSeri
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  React.useEffect(() => {
+    const checkRegistration = async () => {
+      if (!user?.uid && !user?.id) return;
+      const regRef = doc(db, 'test_series_registrations', `reg_${user.uid || user.id}`);
+      const regSnap = await getDoc(regRef);
+      if (regSnap.exists()) {
+        setAlreadyRegistered(true);
+      }
+      setIsLoading(false);
+    };
+    checkRegistration();
+  }, [user]);
 
   const districts = [
     "Angul", "Boudh", "Balangir", "Bargarh", "Balasore", "Bhadrak", "Cuttack", "Deogarh", "Dhenkanal", 
@@ -33,7 +48,8 @@ export function TestSeriesRegistrationForm({ user, language, onClose }: TestSeri
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await addDoc(collection(db, 'test_series_registrations'), {
+      const regId = `reg_${user?.uid || user?.id}`;
+      await setDoc(doc(db, 'test_series_registrations', regId), {
         ...formData,
         userId: user?.uid || user?.id,
         registeredAt: serverTimestamp(),
@@ -95,7 +111,28 @@ export function TestSeriesRegistrationForm({ user, language, onClose }: TestSeri
 
         <div className="p-8 md:p-10 relative z-10">
           <AnimatePresence mode="wait">
-            {!isSuccess ? (
+            {isLoading ? (
+              <motion.div key="loading" className="py-20 flex flex-col items-center gap-4">
+                <Loader2 className="animate-spin text-amber-500" size={40} />
+                <p className="text-white/40 text-[10px] font-black uppercase tracking-widest">Checking Status...</p>
+              </motion.div>
+            ) : alreadyRegistered || isSuccess ? (
+              <motion.div key="success" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="py-12 text-center space-y-6">
+                <div className="w-24 h-24 rounded-full bg-emerald-500/20 border-2 border-emerald-500 flex items-center justify-center mx-auto shadow-[0_0_50px_rgba(16,185,129,0.3)]">
+                  <CheckCircle2 size={48} className="text-emerald-500" />
+                </div>
+                <div className="space-y-2">
+                  <h2 className="text-3xl font-black text-white tracking-tight">
+                    {alreadyRegistered ? (language === 'en' ? 'Already Registered' : 'ପୂର୍ବରୁ ପଞ୍ଜିକୃତ') : t.success}
+                  </h2>
+                  <p className="text-slate-400 text-sm font-medium max-w-xs mx-auto leading-relaxed">
+                    {alreadyRegistered 
+                      ? (language === 'en' ? 'You have already registered for this test series. Stay tuned for updates!' : 'ଆପଣ ଏହି ଟେଷ୍ଟ ସିରିଜ୍ ପାଇଁ ପୂର୍ବରୁ ପଞ୍ଜିକରଣ କରିଛନ୍ତି | ଅପଡେଟ୍ ପାଇଁ ଅପେକ୍ଷା କରନ୍ତୁ |') 
+                      : t.successSub}
+                  </p>
+                </div>
+              </motion.div>
+            ) : (
               <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-8">
                 <div className="space-y-2">
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-black uppercase tracking-widest">
@@ -140,20 +177,13 @@ export function TestSeriesRegistrationForm({ user, language, onClose }: TestSeri
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">{t.class}</label>
                     <div className="relative group">
-                      <GraduationCap className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-amber-500 transition-colors" size={18} />
-                      <select 
-                        required
-                        value={formData.class}
-                        onChange={e => setFormData({...formData, class: e.target.value})}
-                        className="w-full bg-slate-900/50 border border-white/5 rounded-2xl py-4 pl-12 pr-6 text-white text-sm font-bold focus:border-amber-500/50 outline-none transition-all appearance-none"
-                      >
-                        <option value="" disabled>{language === 'en' ? 'Select Class' : 'ଶ୍ରେଣୀ ଚୟନ କରନ୍ତୁ'}</option>
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(c => (
-                          <option key={c} value={c} className="bg-slate-900">
-                            {language === 'en' ? `Class ${c}` : `ଶ୍ରେଣୀ ${c}`}
-                          </option>
-                        ))}
-                      </select>
+                      <GraduationCap className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 transition-colors" size={18} />
+                      <input 
+                        readOnly
+                        type="text" 
+                        value={language === 'en' ? `Class ${formData.class}` : `ଶ୍ରେଣୀ ${formData.class}`}
+                        className="w-full bg-slate-900/30 border border-white/5 rounded-2xl py-4 pl-12 pr-6 text-white/50 text-sm font-bold cursor-not-allowed outline-none"
+                      />
                     </div>
                   </div>
 
@@ -199,16 +229,6 @@ export function TestSeriesRegistrationForm({ user, language, onClose }: TestSeri
                     </span>
                   </button>
                 </form>
-              </motion.div>
-            ) : (
-              <motion.div key="success" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="py-12 text-center space-y-6">
-                <div className="w-24 h-24 rounded-full bg-emerald-500/20 border-2 border-emerald-500 flex items-center justify-center mx-auto shadow-[0_0_50px_rgba(16,185,129,0.3)]">
-                  <CheckCircle2 size={48} className="text-emerald-500" />
-                </div>
-                <div className="space-y-2">
-                  <h2 className="text-3xl font-black text-white tracking-tight">{t.success}</h2>
-                  <p className="text-slate-400 text-sm font-medium max-w-xs mx-auto leading-relaxed">{t.successSub}</p>
-                </div>
               </motion.div>
             )}
           </AnimatePresence>
