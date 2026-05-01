@@ -1075,9 +1075,12 @@ Sample tone for Class 6-10:
   };
 
   const getBoardKey = (board: string) => {
-    if (board === 'Odisha Board') return 'odisha';
-    if (board === 'Saraswati Sishu Mandir') return 'saraswati';
-    if (board === 'CBSE') return 'cbse';
+    if (!board) return 'odisha';
+    const b = board.toLowerCase();
+    if (b.includes('odisha')) return 'odisha';
+    if (b.includes('saraswati')) return 'saraswati';
+    if (b.includes('aurobindo') || b.includes('sacie')) return 'aurobindo';
+    if (b.includes('oav') || b.includes('adarsha')) return 'oav';
     return 'odisha';
   };
 
@@ -1306,9 +1309,9 @@ Sample tone for Class 6-10:
                       className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white cursor-pointer"
                     >
                       <option value="">Select Board</option>
-                      <option value="Odisha Board (Odia Medium)">Odisha Board (Odia Medium)</option>
-                      <option value="Saraswati Sishu Mandir">Saraswati Sishu Mandir</option>
-                      <option value="CBSE">CBSE</option>
+                      {Object.entries(translations['en'].boards).map(([key, label]) => (
+                        <option key={key} value={label as string}>{label as string}</option>
+                      ))}
                     </select>
                   </div>
                   <div>
@@ -2550,13 +2553,16 @@ Q2: ...`}
             </div>
             <div>
               <label className="block text-sm text-slate-400 mb-1">Board</label>
-              <input 
-                type="text"
+              <select 
                 className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
-                placeholder="Enter board"
                 value={newTextbook.board}
                 onChange={(e) => setNewTextbook({...newTextbook, board: e.target.value})}
-              />
+              >
+                <option value="">Select Board</option>
+                {Object.entries(translations['en'].boards).map(([key, label]) => (
+                  <option key={key} value={label as string}>{label as string}</option>
+                ))}
+              </select>
             </div>
             <div>
               <label className="block text-sm text-slate-400 mb-1">Google Drive File ID</label>

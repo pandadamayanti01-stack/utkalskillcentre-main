@@ -31,7 +31,7 @@ export const translations: any = {
     boards: {
       odisha: "Odisha Board (Odia Medium)",
       saraswati: "Saraswati Sishu Mandir",
-      aurobindo: "Sri Aurobindo centre of Integral Education ((SACIE))",
+      aurobindo: "Sri Aurobindo centre of Integral Education (SACIE)",
       oav: "Odisha Adarsha Vidyalaya (OAV)"
     },
     languages: {
@@ -350,7 +350,7 @@ export const translations: any = {
     boards: {
       odisha: "ଓଡିଶା ବୋର୍ଡ (ଓଡିଆ ମାଧ୍ୟମ)",
       saraswati: "ସରସ୍ୱତୀ ଶିଶୁ ମନ୍ଦିର",
-      aurobindo: "ଶ୍ରୀ ଅରବିନ୍ଦ ପୂର୍ଣ୍ଣାଙ୍ଗ ଶିକ୍ଷା କେନ୍ଦ୍ର ((SACIE))",
+      aurobindo: "ଶ୍ରୀ ଅରବିନ୍ଦ ପୂର୍ଣ୍ଣାଙ୍ଗ ଶିକ୍ଷା କେନ୍ଦ୍ର (SACIE)",
       oav: "ଓଡ଼ିଶା ଆଦର୍ଶ ବିଦ୍ୟାଳୟ (OAV)"
     },
     languages: {

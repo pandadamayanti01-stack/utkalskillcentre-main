@@ -3159,7 +3159,8 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
     if (!user?.board) return 'odisha';
     const b = user.board.toLowerCase();
     if (b.includes('saraswati')) return 'saraswati';
-    if (b.includes('cbse')) return 'cbse';
+    if (b.includes('aurobindo') || b.includes('sacie')) return 'aurobindo';
+    if (b.includes('oav') || b.includes('adarsha')) return 'oav';
     return 'odisha';
   }, [user?.board]);
 
@@ -3952,8 +3953,8 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
     if (!user?.board) return 'odisha';
     const b = user.board.toLowerCase();
     if (b.includes('saraswati')) return 'saraswati';
-    if (b.includes('cbse')) return 'cbse';
-    if (b.includes('icse')) return 'icse';
+    if (b.includes('aurobindo') || b.includes('sacie')) return 'aurobindo';
+    if (b.includes('oav') || b.includes('adarsha')) return 'oav';
     if (b.includes('odia') || b.includes('odisha')) return 'odisha';
     return b;
   }, [user?.board]);
