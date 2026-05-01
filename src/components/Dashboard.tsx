@@ -147,6 +147,28 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
+  const [dailyVideoId, setDailyVideoId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchLatestVideos = async () => {
+      try {
+        const response = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.youtube.com/feeds/videos.xml?channel_id=UCVsuuu7DyRY4-qbn8PrVBhg');
+        const data = await response.json();
+        if (data.status === 'ok' && data.items && data.items.length > 0) {
+          // Rotate based on the day of the month
+          const dayIndex = new Date().getDate() % data.items.length;
+          const videoUrl = data.items[dayIndex].link;
+          const videoId = videoUrl.split('v=')[1]?.split('&')[0];
+          if (videoId) {
+            setDailyVideoId(videoId);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching YouTube videos:', error);
+      }
+    };
+    fetchLatestVideos();
+  }, []);
 
   useEffect(() => {
     const checkRegistration = async () => {
@@ -445,8 +467,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 <iframe
                   width="100%"
                   height="100%"
-                  src={videoUrl}
-                  title={`Class ${userClass} Neural Feed`}
+                  src={dailyVideoId ? `https://www.youtube.com/embed/${dailyVideoId}?autoplay=0&rel=0` : videoUrl}
+                  title={`Daily Learning Feed`}
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
