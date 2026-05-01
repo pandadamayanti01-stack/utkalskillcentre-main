@@ -1,59 +1,5 @@
 import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
-import { 
-  BookOpen, 
-  MessageSquare, 
-  Trophy, 
-  Settings, 
-  LogOut, 
-  Play, 
-  CheckCircle2, 
-  ChevronRight, 
-  ChevronDown,
-  Menu, 
-  X, 
-  User, 
-  CreditCard, 
-  BarChart3, 
-  Globe,
-  Mail,
-  HelpCircle,
-  Clock,
-  Star,
-  Hash,
-  Shapes,
-  Bot,
-  Loader2,
-  Send,
-  PenTool,
-  FileText,
-  ArrowLeft,
-  ArrowRight,
-  Calendar,
-  Camera,
-  Image,
-  Lightbulb,
-  Sparkles,
-  Search,
-  AlertCircle,
-  Lock,
-  MessageCircle,
-  Book,
-  Download,
-  Save,
-  ShoppingBag,
-  Flame,
-  Phone,
-  Mic,
-  MicOff,
-  UserPlus,
-  UserCheck,
-  TrendingUp,
-  Award,
-  Bell,
-  Share,
-  XCircle,
-  ClipboardList
-} from 'lucide-react';
+import * as Lucide from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ResponsiveContainer, 
@@ -127,7 +73,7 @@ function ViewLoader({ fullHeight = false }: { fullHeight?: boolean }) {
   return (
     <div className={`flex ${fullHeight ? 'min-h-screen' : 'min-h-[30vh]'} items-center justify-center`}>
       <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm font-bold text-white/80 backdrop-blur-sm">
-        <Loader2 size={18} className="animate-spin text-emerald-400" />
+        <Lucide.Loader2 size={18} className="animate-spin text-emerald-400" />
         <span>Loading...</span>
       </div>
     </div>
@@ -713,8 +659,23 @@ export default function App() {
           handleFirestoreError(err, OperationType.GET, `subscriptions/${firebaseUser.uid}`);
         });
 
+        // Fetch system settings
+        const unsubSettings = onSnapshot(doc(firestore, 'system_settings', 'config'), (doc) => {
+          if (doc.exists()) {
+            setSystemSettings(doc.data() as SystemSettings);
+          }
+        }, (err: any) => {
+          if (err.code === 'permission-denied' || err.message?.toLowerCase().includes('permissions')) {
+            console.warn("Permission denied for system_settings/config. Ensure your Firestore rules allow read for authenticated users. Falling back to default settings.");
+          } else {
+            handleFirestoreError(err, OperationType.GET, 'system_settings/config');
+          }
+        });
+
+        // Add to global cleanup ref
+        (unsubscribe as any).unsubSettings = unsubSettings;
+
         setShowTestSeriesPoster(true);
-        
         setLoading(false);
       } else {
         setUser(null);
@@ -733,19 +694,8 @@ export default function App() {
       unsubscribe();
       if (unsubUser) unsubUser();
       if (unsubSub) unsubSub();
+      if ((unsubscribe as any).unsubSettings) (unsubscribe as any).unsubSettings();
     };
-  }, []);
-
-  useEffect(() => {
-    const unsubSettings = onSnapshot(doc(firestore, 'system_settings', 'config'), (doc) => {
-      if (doc.exists()) {
-        setSystemSettings(doc.data() as SystemSettings);
-      }
-    }, (err) => {
-      handleFirestoreError(err, OperationType.GET, 'system_settings/config');
-    });
-
-    return () => unsubSettings();
   }, []);
 
   useEffect(() => {
@@ -1517,7 +1467,7 @@ export default function App() {
       <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6 text-center">
         <div className="max-w-md w-full bg-slate-900 border border-white/10 rounded-[2.5rem] p-10 space-y-6 shadow-2xl">
           <div className="w-20 h-20 bg-red-500/10 rounded-3xl flex items-center justify-center text-red-500 mx-auto">
-            <AlertCircle size={40} />
+            <Lucide.AlertCircle size={40} />
           </div>
           <div className="space-y-2">
             <h1 className="text-2xl font-bold text-white">
@@ -1548,7 +1498,7 @@ export default function App() {
         >
           <img src="/utkal-192.png" className="h-20 w-auto" alt="Utkal" referrerPolicy="no-referrer" />
           <div className="flex flex-col items-center gap-3">
-            <Loader2 className="w-10 h-10 text-emerald-500 animate-spin" />
+            <Lucide.Loader2 className="w-10 h-10 text-emerald-500 animate-spin" />
             <p className="text-slate-400 text-sm font-medium tracking-widest uppercase animate-pulse">
               {language === 'en' ? "Loading Excellence..." : "ଶ୍ରେଷ୍ଠତା ଲୋଡ୍ ହେଉଛି..."}
             </p>
@@ -1584,11 +1534,11 @@ export default function App() {
                       }}
                       className="absolute top-6 right-6 p-2 rounded-full bg-white/5 text-white/40 hover:text-white transition-colors"
                     >
-                      <X size={20} />
+                      <Lucide.X size={20} />
                     </button>
 
                     <div className="w-20 h-20 rounded-[2rem] bg-emerald-500/10 border-2 border-emerald-500/20 flex items-center justify-center mx-auto mb-6 shadow-[0_0_40px_rgba(16,185,129,0.15)]">
-                      <Download size={32} className="text-emerald-500" />
+                      <Lucide.Download size={32} className="text-emerald-500" />
                     </div>
 
                     <h3 className="text-2xl font-black text-white tracking-tight mb-2 uppercase">Install Utkal App</h3>
@@ -1629,7 +1579,7 @@ export default function App() {
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-                      <Download size={20} className="text-white" />
+                      <Lucide.Download size={20} className="text-white" />
                     </div>
                     <div>
                       <p className="text-sm font-bold text-white">Install Utkal App</p>
@@ -1641,7 +1591,7 @@ export default function App() {
                       onClick={() => setShowInstallBanner(false)}
                       className="p-2 text-white/50 hover:text-white transition-colors"
                     >
-                      <X size={16} />
+                      <Lucide.X size={16} />
                     </button>
                     <button 
                       onClick={handleInstall}
@@ -1694,7 +1644,7 @@ export default function App() {
             <img src="/utkal-192.png" className="h-10 w-auto mb-6 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" alt="Utkal" referrerPolicy="no-referrer" />
             
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold uppercase tracking-wider mb-4">
-              <Sparkles size={12} />
+              <Lucide.Sparkles size={12} />
               Personalized Learning
             </div>
             
@@ -1714,7 +1664,7 @@ export default function App() {
                 <div className="absolute inset-0 border border-emerald-500/30 rounded-full animate-[spin_10s_linear_infinite]"></div>
                 <div className="absolute inset-2 border border-cyan-500/30 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
                 <div className="absolute inset-0 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm rounded-full border border-white/10 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
-                  <Bot className="text-emerald-400 w-12 h-12" />
+                  <Lucide.Bot className="text-emerald-400 w-12 h-12" />
                 </div>
               </div>
 
@@ -1756,7 +1706,7 @@ export default function App() {
                 className="absolute top-4 left-8 bg-slate-800/80 backdrop-blur-md border border-emerald-500/30 p-3 rounded-2xl shadow-lg flex items-center gap-3"
               >
                 <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                  <Bot className="text-emerald-400 w-4 h-4" />
+                  <Lucide.Bot className="text-emerald-400 w-4 h-4" />
                 </div>
                 <div>
                   <div className="text-xs text-slate-400">Learning Analysis</div>
@@ -1770,7 +1720,7 @@ export default function App() {
                 className="absolute top-8 right-4 bg-slate-800/80 backdrop-blur-md border border-cyan-500/30 p-3 rounded-2xl shadow-lg flex items-center gap-3"
               >
                 <div className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center">
-                  <Sparkles className="text-cyan-400 w-4 h-4" />
+                  <Lucide.Sparkles className="text-cyan-400 w-4 h-4" />
                 </div>
                 <div>
                   <div className="text-xs text-slate-400">Learning Path</div>
@@ -1784,7 +1734,7 @@ export default function App() {
                 className="absolute bottom-4 left-1/4 bg-slate-800/80 backdrop-blur-md border border-blue-500/30 p-3 rounded-2xl shadow-lg flex items-center gap-3"
               >
                 <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
-                  <Globe className="text-blue-400 w-4 h-4" />
+                  <Lucide.Globe className="text-blue-400 w-4 h-4" />
                 </div>
                 <div>
                   <div className="text-xs text-slate-400">Global Knowledge</div>
@@ -1818,7 +1768,7 @@ export default function App() {
                 className="w-full max-w-md bg-slate-900 border border-white/10 rounded-3xl p-8 shadow-2xl"
               >
                 <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-6 mx-auto">
-                  <Settings className="text-red-500" size={32} />
+                  <Lucide.Settings className="text-red-500" size={32} />
                 </div>
                 <h2 className="text-2xl font-bold text-white text-center mb-4">{showConfigError.title}</h2>
                 <div className="text-slate-300 text-sm whitespace-pre-line mb-8 bg-white/5 p-4 rounded-xl border border-white/5">
@@ -1862,7 +1812,7 @@ export default function App() {
       <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6 text-center">
         <div className="max-w-md space-y-6">
           <div className="w-24 h-24 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Lock size={48} className="text-amber-500" />
+            <Lucide.Lock size={48} className="text-amber-500" />
           </div>
           <h2 className="text-3xl font-bold text-white">
             {language === 'en' ? "Class Currently Disabled" : "ଶ୍ରେଣୀ ବର୍ତ୍ତମାନ ଅକ୍ଷମ ଅଛି"}
@@ -1926,7 +1876,7 @@ export default function App() {
         <header className="h-20 flex items-center justify-between px-6 bg-black/20 backdrop-blur-xl border-b border-white/5 flex-shrink-0 z-20">
           <div className="flex items-center gap-4">
             <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 text-[#f8f1e7]/60">
-              <Menu size={24} />
+              <Lucide.Menu size={24} />
             </button>
             <div className="flex items-center gap-3">
               {/* UTKAL LOGO used in Header */}
@@ -1942,7 +1892,7 @@ export default function App() {
             {/* User Stats Bubble */}
             <div className="flex items-center gap-4 bg-white/5 px-4 py-2 rounded-2xl border border-white/5">
               <div className="flex items-center gap-1.5 text-orange-400">
-                <Flame size={16} fill="currentColor" />
+                <Lucide.Flame size={16} fill="currentColor" />
                 <span className="text-sm font-black">{user.streak || 0}</span>
               </div>
               <div className="text-sm font-black text-[#ffd700]">{user.points || 0} PTS</div>
@@ -2022,13 +1972,13 @@ export default function App() {
         >
           <div className="flex gap-4">
             <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0 animate-pulse">
-              <Bell size={24} />
+              <Lucide.Bell size={24} />
             </div>
             <div className="flex-1 space-y-1">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">New Announcement</span>
                 <button onClick={() => setNewNotification(null)} className="text-slate-500 hover:text-white transition-colors">
-                  <X size={14} />
+                  <Lucide.X size={14} />
                 </button>
               </div>
               <h4 className="text-sm font-bold text-white line-clamp-1">Utkal Skill Centre</h4>
@@ -2118,7 +2068,7 @@ function ParentReportView({ user, results, tests, onBack, language }: any) {
 
         <div className="p-8 bg-slate-900 rounded-3xl text-white mb-12">
           <div className="flex items-center gap-3 mb-4">
-            <Sparkles className="text-emerald-400" size={24} />
+            <Lucide.Sparkles className="text-emerald-400" size={24} />
             <h3 className="text-lg font-black uppercase tracking-widest">Gundulu's Insight</h3>
           </div>
           <p className="text-slate-300 italic leading-relaxed">
@@ -2143,7 +2093,7 @@ function ParentReportView({ user, results, tests, onBack, language }: any) {
           onClick={handlePrint}
           className="bg-slate-900 hover:bg-slate-800 text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-2 shadow-xl shadow-slate-900/20"
         >
-          <Download size={20} /> Download Report (PDF)
+          <Lucide.Download size={20} /> Download Report (PDF)
         </button>
         <button 
           onClick={onBack}
@@ -2254,14 +2204,14 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack, userPr
           onClick={onBack}
           className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
         >
-          <ArrowLeft size={20} />
+          <Lucide.ArrowLeft size={20} />
           <span>Back to Profile</span>
         </button>
         <button 
           onClick={() => setViewingReport(true)}
           className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-widest flex items-center gap-2 shadow-lg shadow-emerald-500/20 transition-all"
         >
-          <FileText size={16} /> Get Full Progress Report
+          <Lucide.FileText size={16} /> Get Full Progress Report
         </button>
       </motion.div>
 
@@ -2290,7 +2240,7 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack, userPr
           
           {loading ? (
             <div className="flex justify-center py-12">
-              <Loader2 className="animate-spin text-emerald-500" size={32} />
+              <Lucide.Loader2 className="animate-spin text-emerald-500" size={32} />
             </div>
           ) : results.length === 0 ? (
             <div className="glass-card neon-border rounded-3xl p-12 text-center">
@@ -2400,7 +2350,7 @@ function SupportView({ user, language, onBack }: any) {
     >
       <div className="flex items-center gap-4">
         <button onClick={onBack} className="p-2 bg-slate-800/50 rounded-xl text-slate-400 hover:text-white">
-          <ArrowLeft size={20} />
+          <Lucide.ArrowLeft size={20} />
         </button>
         <h2 className="text-2xl font-bold text-white">{translations[language].support.title}</h2>
       </div>
@@ -2408,19 +2358,19 @@ function SupportView({ user, language, onBack }: any) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="https://wa.me/919337956168" target="_blank" className="p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-3xl flex flex-col items-center gap-3 hover:bg-emerald-500/20 transition-all">
           <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center text-white">
-            <MessageCircle size={24} />
+            <Lucide.MessageCircle size={24} />
           </div>
           <span className="text-white font-bold text-sm">{translations[language].support.whatsappSupport}</span>
         </a>
         <a href="mailto:gyanaloka.panda@gmail.com" className="p-6 bg-blue-500/10 border border-blue-500/20 rounded-3xl flex flex-col items-center gap-3 hover:bg-blue-500/20 transition-all">
           <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white">
-            <Mail size={24} />
+            <Lucide.Mail size={24} />
           </div>
           <span className="text-white font-bold text-sm">{translations[language].support.emailSupport}</span>
         </a>
         <a href="tel:+919337956168" className="p-6 bg-purple-500/10 border border-purple-500/20 rounded-3xl flex flex-col items-center gap-3 hover:bg-purple-500/20 transition-all">
           <div className="w-12 h-12 rounded-full bg-purple-500 flex items-center justify-center text-white">
-            <Phone size={24} />
+            <Lucide.Phone size={24} />
           </div>
           <span className="text-white font-bold text-sm">{translations[language].support.callSupport}</span>
         </a>
@@ -2450,7 +2400,7 @@ function SupportView({ user, language, onBack }: any) {
               disabled={loading || !ticket.trim()}
               className="w-full py-4 rounded-2xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              {loading ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}
+              {loading ? <Lucide.Loader2 className="animate-spin" size={20} /> : <Lucide.Send size={20} />}
               {translations[language].support.submitTicket}
             </button>
           </div>
@@ -2585,7 +2535,7 @@ function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: a
         onClick={onBack}
         className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
       >
-        <ArrowLeft size={20} />
+        <Lucide.ArrowLeft size={20} />
         <span>Back to Dashboard</span>
       </motion.button>
 
@@ -2602,7 +2552,7 @@ function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: a
             onClick={() => setActiveTab('store')}
             className="absolute -bottom-2 -right-2 p-2 bg-emerald-600 rounded-xl text-white shadow-lg hover:bg-emerald-500 transition-all border border-emerald-400/30"
           >
-            <ShoppingBag size={16} />
+            <Lucide.ShoppingBag size={16} />
           </button>
         </div>
         <div className="text-center">
@@ -2653,14 +2603,14 @@ function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: a
             <label className="block text-sm font-medium text-slate-400 mb-1">{translations[language].profile.phone}</label>
             <div className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-slate-400 flex items-center justify-between">
               <span className="text-sm">{user.phoneNumber || user.phone || 'N/A'}</span>
-              <Lock size={14} className="opacity-50" />
+              <Lucide.Lock size={14} className="opacity-50" />
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-400 mb-1">{translations[language].profile.class}</label>
             <div className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-slate-400 flex items-center justify-between">
               <span className="text-sm">{translations[language].classes[user.class] || user.class || 'N/A'}</span>
-              <Lock size={14} className="opacity-50" />
+              <Lucide.Lock size={14} className="opacity-50" />
             </div>
           </div>
         </div>
@@ -2676,14 +2626,14 @@ function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: a
               rel="noopener noreferrer"
               className="flex-1 py-2 rounded-xl bg-emerald-500/10 text-emerald-500 text-[10px] font-bold hover:bg-emerald-500/20 transition-all flex items-center justify-center gap-2 border border-emerald-500/20"
             >
-              <MessageCircle size={14} />
+              <Lucide.MessageCircle size={14} />
               WhatsApp
             </a>
             <a 
               href={`mailto:pandadamayanti01@gmail.com?subject=Profile Change Request&body=${encodeURIComponent(`Namaskar Admin,\n\nI want to change my Class or Mobile Number.\n\nName: ${user.name}\nPhone: ${user.phoneNumber || user.phone}\nCurrent Class: ${user.class}\n\nReason for change:\n`)}`}
               className="flex-1 py-2 rounded-xl bg-blue-500/10 text-blue-500 text-[10px] font-bold hover:bg-blue-500/20 transition-all flex items-center justify-center gap-2 border border-blue-500/20"
             >
-              <Mail size={14} />
+              <Lucide.Mail size={14} />
               Email
             </a>
           </div>
@@ -2693,7 +2643,7 @@ function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: a
         {!isGoogleLinked && (
           <div className="p-4 rounded-2xl bg-slate-800/50 border border-white/10 space-y-3">
             <div className="flex items-center gap-2 mb-2">
-              <Globe className="text-blue-400" size={18} />
+              <Lucide.Globe className="text-blue-400" size={18} />
               <h3 className="text-sm font-bold text-white">{language === 'en' ? 'Link Google Account' : 'Google ଆକାଉଣ୍ଟ୍ ଲିଙ୍କ୍ କରନ୍ତୁ'}</h3>
             </div>
             <p className="text-[10px] text-slate-400 leading-relaxed">
@@ -2760,14 +2710,14 @@ function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: a
           >
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-xl bg-blue-500 text-white">
-                <FileText size={20} />
+                <Lucide.FileText size={20} />
               </div>
               <div className="text-left">
                 <p className="font-bold">{language === 'en' ? 'Offline Notes' : 'ଅଫଲାଇନ୍ ନୋଟ୍'}</p>
                 <p className="text-[10px] opacity-70 uppercase tracking-wider">{language === 'en' ? 'Access saved study material' : 'ସେଭ୍ ହୋଇଥିବା ପାଠ୍ୟପଢା ସାମଗ୍ରୀ'}</p>
               </div>
             </div>
-            <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            <Lucide.ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
           </button>
 
           <button 
@@ -2776,14 +2726,14 @@ function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: a
           >
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-xl bg-emerald-500 text-white">
-                <Settings size={20} />
+                <Lucide.Settings size={20} />
               </div>
               <div className="text-left">
                 <p className="font-bold">{translations[language].profile.parentDashboard}</p>
                 <p className="text-[10px] opacity-70 uppercase tracking-wider">{translations[language].profile.parentDashboardTagline}</p>
               </div>
             </div>
-            <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            <Lucide.ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
           </button>
 
           <button 
@@ -2792,14 +2742,14 @@ function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: a
           >
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-xl bg-purple-500 text-white">
-                <HelpCircle size={20} />
+                <Lucide.HelpCircle size={20} />
               </div>
               <div className="text-left">
                 <p className="font-bold">{translations[language].support.title}</p>
                 <p className="text-[10px] opacity-70 uppercase tracking-wider">{translations[language].support.ticketDescription}</p>
               </div>
             </div>
-            <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            <Lucide.ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
 
@@ -2808,7 +2758,7 @@ function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: a
           disabled={loading}
           className="w-full py-4 rounded-2xl bg-emerald-600 text-white font-bold hover:bg-emerald-500 transition-all flex items-center justify-center gap-2"
         >
-          {loading ? <Loader2 className="animate-spin" size={20} /> : translations[language].profile.saveProfile}
+          {loading ? <Lucide.Loader2 className="animate-spin" size={20} /> : translations[language].profile.saveProfile}
         </button>
       </div>
     </motion.div>
@@ -2824,7 +2774,7 @@ function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: a
             className="bg-slate-900 border border-white/10 rounded-[2.5rem] p-8 w-full max-w-sm text-center"
           >
             <div className="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-500 mx-auto mb-6">
-              <Settings size={32} />
+              <Lucide.Settings size={32} />
             </div>
             <h3 className="text-2xl font-bold text-white mb-2">Parent Access</h3>
             <p className="text-slate-400 mb-6 text-sm">Enter your 4-digit parent PIN to continue</p>
@@ -2968,7 +2918,7 @@ function StudyBuddyLegacy({ user, language, isPremium, showPaywall, setShowPaywa
         }}
         className={`fixed bottom-28 right-8 w-16 h-16 rounded-full text-white shadow-2xl flex items-center justify-center z-40 border-4 border-slate-950 ${isPremium ? 'bg-emerald-500 shadow-emerald-500/40' : 'bg-amber-500 shadow-amber-500/40'}`}
       >
-        {isPremium ? <Bot size={32} /> : <Sparkles size={24} />}
+        {isPremium ? <Lucide.Bot size={32} /> : <Lucide.Sparkles size={24} />}
         {isPremium && (
           <motion.div 
             animate={{ scale: [1, 1.2, 1] }}
@@ -2990,7 +2940,7 @@ function StudyBuddyLegacy({ user, language, isPremium, showPaywall, setShowPaywa
               onClick={e => e.stopPropagation()}
             >
               <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Bot size={40} className="text-emerald-500" />
+                <Lucide.Bot size={40} className="text-emerald-500" />
               </div>
               <h2 className="text-2xl font-bold text-white mb-4">Gundulu is taking a nap! 😴</h2>
               <p className="text-slate-300 mb-8">
@@ -3020,7 +2970,7 @@ function StudyBuddyLegacy({ user, language, isPremium, showPaywall, setShowPaywa
             <div className="p-6 bg-gradient-to-r from-emerald-600 to-blue-600 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                  <Bot size={24} className="text-white" />
+                  <Lucide.Bot size={24} className="text-white" />
                 </div>
                 <div>
                   <h3 className="text-white font-bold">Study Buddy</h3>
@@ -3028,7 +2978,7 @@ function StudyBuddyLegacy({ user, language, isPremium, showPaywall, setShowPaywa
                 </div>
               </div>
               <button onClick={() => setIsOpen(false)} className="text-white/70 hover:text-white">
-                <X size={24} />
+                <Lucide.X size={24} />
               </button>
             </div>
 
@@ -3051,7 +3001,7 @@ function StudyBuddyLegacy({ user, language, isPremium, showPaywall, setShowPaywa
               {loading && (
                 <div className="flex justify-start">
                   <div className="bg-white/5 p-4 rounded-2xl rounded-tl-none border border-white/10">
-                    <Loader2 size={16} className="animate-spin text-emerald-500" />
+                    <Lucide.Loader2 size={16} className="animate-spin text-emerald-500" />
                   </div>
                 </div>
               )}
@@ -3066,7 +3016,7 @@ function StudyBuddyLegacy({ user, language, isPremium, showPaywall, setShowPaywa
                     onClick={() => { setSelectedImage(null); setImageMimeType(null); }}
                     className="absolute top-0 right-0 bg-black/60 text-white p-1"
                   >
-                    <X size={12} />
+                    <Lucide.X size={12} />
                   </button>
                 </div>
               )}
@@ -3091,13 +3041,13 @@ function StudyBuddyLegacy({ user, language, isPremium, showPaywall, setShowPaywa
                     onClick={() => cameraInputRef.current?.click()}
                     className="p-2 text-slate-400 hover:text-white transition-colors"
                   >
-                    <Camera size={18} />
+                    <Lucide.Camera size={18} />
                   </button>
                   <button 
                     onClick={() => fileInputRef.current?.click()}
                     className="p-2 text-slate-400 hover:text-white transition-colors"
                   >
-                    <Image size={18} />
+                    <Lucide.Image size={18} />
                   </button>
                 </div>
                 <div className="relative flex-1">
@@ -3113,7 +3063,7 @@ function StudyBuddyLegacy({ user, language, isPremium, showPaywall, setShowPaywa
                     onClick={handleSend}
                     className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center hover:bg-emerald-400 transition-all"
                   >
-                    <Send size={16} />
+                    <Lucide.Send size={16} />
                   </button>
                 </div>
                 <button
@@ -3124,7 +3074,7 @@ function StudyBuddyLegacy({ user, language, isPremium, showPaywall, setShowPaywa
                       : 'bg-white/5 text-slate-400 hover:bg-white/10'
                   }`}
                 >
-                  {isListening ? <MicOff size={20} /> : <Mic size={20} />}
+                  {isListening ? <Lucide.MicOff size={20} /> : <Lucide.Mic size={20} />}
                 </button>
               </div>
             </div>
@@ -3169,7 +3119,7 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
         onClick={onBack}
         className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
       >
-        <ArrowLeft size={20} />
+        <Lucide.ArrowLeft size={20} />
         <span>Back to Dashboard</span>
       </button>
 
@@ -3259,7 +3209,7 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
                     onClick={onShare}
                     className="w-full py-2 rounded-xl bg-emerald-500/10 text-emerald-500 text-xs font-bold hover:bg-emerald-500/20 transition-all border border-emerald-500/20 flex items-center justify-center gap-2"
                   >
-                    <Send size={14} /> {p.shareOnWhatsApp}
+                    <Lucide.Send size={14} /> {p.shareOnWhatsApp}
                   </button>
                 </div>
 
@@ -3492,7 +3442,7 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
             onClick={onBack}
             className="p-2 bg-slate-800/50 border border-white/5 rounded-xl text-slate-400 hover:text-white transition-all"
           >
-            <ArrowLeft size={20} />
+            <Lucide.ArrowLeft size={20} />
           </button>
           <div>
             <h2 className="text-2xl font-bold text-white">
@@ -3509,13 +3459,14 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
           {/* All Tab */}
           <button
             onClick={() => setSubjectFilter('all')}
-            className={`px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all border ${
+            className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-black uppercase tracking-widest transition-all border ${
               subjectFilter === 'all' 
-                ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20' 
-                : 'bg-slate-900/50 border-white/5 text-slate-400 hover:border-white/10 hover:text-white'
+                ? 'bg-emerald-600 border-emerald-500 text-white shadow-xl shadow-emerald-900/40' 
+                : 'bg-white/5 border-white/5 text-slate-500 hover:border-white/20 hover:text-white'
             }`}
           >
-            {translations[language].allSubjects}
+            <Lucide.LayoutGrid size={16} />
+            <span>{translations[language].allSubjects}</span>
           </button>
           
           <div className="w-px h-6 bg-white/10 mx-1" /> {/* Separator */}
@@ -3525,13 +3476,33 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
             <button
               key={s}
               onClick={() => setSubjectFilter(s)}
-              className={`px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all border ${
+              className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-black uppercase tracking-widest transition-all border ${
                 subjectFilter === s 
-                  ? 'bg-blue-500 border-blue-500 text-white shadow-lg shadow-blue-500/20' 
-                  : 'bg-slate-900/50 border-white/5 text-slate-400 hover:border-white/10 hover:text-white'
+                  ? 'bg-blue-600 border-blue-500 text-white shadow-xl shadow-blue-900/40' 
+                  : 'bg-white/5 border-white/5 text-slate-500 hover:border-white/20 hover:text-white'
               }`}
             >
-              {translations[language].subjects[s as keyof typeof translations.en.subjects] || s}
+              <div className="opacity-70 group-hover:opacity-100">
+                {s.toLowerCase().includes('math') ? <Lucide.Shapes size={16} /> :
+                 s.toLowerCase().includes('science_curiosity') ? <Lucide.Zap size={16} /> :
+                 s.toLowerCase().includes('sci') ? <Lucide.FlaskConical size={16} /> :
+                 s.toLowerCase().includes('eng') ? <Lucide.Languages size={16} /> :
+                 s.toLowerCase().includes('odi') ? <Lucide.PenTool size={16} /> :
+                 s.toLowerCase().includes('hist') ? <Lucide.History size={16} /> :
+                 s.toLowerCase().includes('geo') ? <Lucide.Globe size={16} /> :
+                 s.toLowerCase().includes('social_science') ? <Lucide.ShieldCheck size={16} /> :
+                 s.toLowerCase().includes('social') ? <Lucide.Users size={16} /> :
+                 s.toLowerCase().includes('hindi') ? <Lucide.Type size={16} /> :
+                 s.toLowerCase().includes('sanskrit') ? <Lucide.Library size={16} /> :
+                 s.toLowerCase().includes('evs') ? <Lucide.Leaf size={16} /> :
+                 s.toLowerCase().includes('art') ? <Lucide.Palette size={16} /> :
+                 s.toLowerCase().includes('physical') ? <Lucide.Activity size={16} /> :
+                 s.toLowerCase().includes('vocational') ? <Lucide.Hammer size={16} /> :
+                 s.toLowerCase().includes('epe') ? <Lucide.Wind size={16} /> :
+                 s.toLowerCase().includes('aspirational') ? <Lucide.Rocket size={16} /> :
+                 <Lucide.BookOpen size={16} />}
+              </div>
+              <span>{translations[language].subjects[s as keyof typeof translations.en.subjects] || s}</span>
             </button>
           ))}
         </div>
@@ -3541,7 +3512,7 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
       {subjectFilter === 'all' && recentlyViewed.length > 0 && (
         <motion.section variants={itemVariants} className="space-y-4">
           <div className="flex items-center gap-2 text-emerald-500">
-            <Clock size={18} />
+            <Lucide.Clock size={18} />
             <h3 className="text-lg font-bold text-white">
               {language === 'en' ? "Continue Learning" : "ପଢା ଜାରି ରଖନ୍ତୁ"}
             </h3>
@@ -3583,7 +3554,7 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
       {uniqueChapters.length === 0 ? (
         <motion.div variants={itemVariants} className="flex flex-col items-center justify-center py-20 text-center bg-slate-900/30 border border-white/5 rounded-3xl">
           <div className="w-24 h-24 bg-slate-800 rounded-full flex items-center justify-center mb-6">
-            <BookOpen size={48} className="text-slate-500" />
+            <Lucide.BookOpen size={48} className="text-slate-500" />
           </div>
           <h3 className="text-2xl font-bold text-white mb-2">{translations[language].noContent}</h3>
           <p className="text-slate-400 max-w-md mx-auto">
@@ -3600,30 +3571,55 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
             
             return (
               <motion.button
-                whileHover={{ scale: 1.05, y: -5 }}
+                whileHover={{ scale: 1.05, y: -8 }}
                 whileTap={{ scale: 0.95 }}
                 key={subject}
                 onClick={() => setSubjectFilter(subject)}
-                className="group relative flex flex-col items-center justify-center p-8 glass-card rounded-[2rem] hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all text-center overflow-hidden"
+                className="group relative flex flex-col items-center justify-center p-10 glass-card rounded-[2.5rem] border-white/5 hover:border-emerald-500/50 hover:bg-emerald-500/10 transition-all text-center overflow-hidden shadow-2xl"
               >
-                <div className="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-all pointer-events-none"></div>
-                <div className="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all text-emerald-500 relative z-10 shadow-lg">
-                  {subject.toLowerCase().includes('math') ? <Shapes size={32} /> :
-                   subject.toLowerCase().includes('sci') ? <BookOpen size={32} /> :
-                   subject.toLowerCase().includes('eng') ? <Globe size={32} /> :
-                   subject.toLowerCase().includes('odi') ? <PenTool size={32} /> :
-                   <BookOpen size={32} />}
-                </div>
-                <h3 className="text-xl font-black text-white mb-1 tracking-tight relative z-10">
-                  {translations[language].subjects[subject as keyof typeof translations.en.subjects] || subject}
-                </h3>
-                <p className="text-xs text-slate-500 font-bold uppercase tracking-widest relative z-10">
-                  {count} {language === 'en' ? 'Chapters' : 'ଅଧ୍ୟାୟ'}
-                </p>
+                {/* Background Accent */}
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute -right-6 -top-6 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-all pointer-events-none" />
                 
-                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                  <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]">
-                    <ChevronRight size={16} />
+                {/* Icon Container */}
+                <div className="w-20 h-20 rounded-3xl bg-slate-800/80 border border-white/5 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-emerald-500/20 group-hover:border-emerald-500/30 transition-all text-emerald-500 relative z-10 shadow-2xl">
+                {subject.toLowerCase().includes('math') ? <Lucide.Shapes size={40} /> :
+                 subject.toLowerCase().includes('science_curiosity') ? <Lucide.Zap size={40} /> :
+                 subject.toLowerCase().includes('sci') ? <Lucide.FlaskConical size={40} /> :
+                 subject.toLowerCase().includes('eng') ? <Lucide.Languages size={40} /> :
+                 subject.toLowerCase().includes('odi') ? <Lucide.PenTool size={40} /> :
+                 subject.toLowerCase().includes('hist') ? <Lucide.History size={40} /> :
+                 subject.toLowerCase().includes('geo') ? <Lucide.Globe size={40} /> :
+                 subject.toLowerCase().includes('social_science') ? <Lucide.ShieldCheck size={40} /> :
+                 subject.toLowerCase().includes('social') ? <Lucide.Users size={40} /> :
+                 subject.toLowerCase().includes('hindi') ? <Lucide.Type size={40} /> :
+                 subject.toLowerCase().includes('sanskrit') ? <Lucide.Library size={40} /> :
+                 subject.toLowerCase().includes('evs') ? <Lucide.Leaf size={40} /> :
+                 subject.toLowerCase().includes('art') ? <Lucide.Palette size={40} /> :
+                 subject.toLowerCase().includes('physical') ? <Lucide.Activity size={40} /> :
+                 subject.toLowerCase().includes('vocational') ? <Lucide.Hammer size={40} /> :
+                 subject.toLowerCase().includes('epe') ? <Lucide.Wind size={40} /> :
+                 subject.toLowerCase().includes('aspirational') ? <Lucide.Rocket size={40} /> :
+                 <Lucide.BookOpen size={40} />}
+                </div>
+
+                <div className="relative z-10">
+                  <h3 className="text-2xl font-black text-white mb-2 tracking-tighter uppercase group-hover:text-emerald-400 transition-colors">
+                    {translations[language].subjects[subject as keyof typeof translations.en.subjects] || subject}
+                  </h3>
+                  
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 group-hover:border-emerald-500/20 transition-all">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] group-hover:text-emerald-300 transition-colors">
+                      {count} {language === 'en' ? 'Modules' : 'ଅଧ୍ୟାୟ'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Hover Indicator */}
+                <div className="absolute bottom-6 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
+                  <div className="flex items-center gap-2 text-[10px] font-black text-emerald-500 uppercase tracking-widest">
+                    Initialize Neural Link <Lucide.ChevronRight size={14} />
                   </div>
                 </div>
               </motion.button>
@@ -3652,7 +3648,7 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-[0_0_20px_rgba(16,185,129,0.5)] group-hover:scale-110 transition-transform">
-                    <Play fill="currentColor" size={20} />
+                    <Lucide.Play fill="currentColor" size={20} />
                   </div>
                 </div>
               </div>
@@ -3668,9 +3664,9 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
               </h3>
               
               <div className="flex items-center gap-4 mt-auto pt-4 border-t border-white/5 text-[10px] text-slate-400 font-bold uppercase tracking-wider relative z-10">
-                <div className="flex items-center gap-1"><Play size={12} className="text-emerald-500" /> Video</div>
-                {chapter.notes && <div className="flex items-center gap-1"><FileText size={12} className="text-blue-500" /> Notes</div>}
-                {chapter.quiz_questions && chapter.quiz_questions.length > 0 && <div className="flex items-center gap-1"><CheckCircle2 size={12} className="text-orange-500" /> Quiz</div>}
+                <div className="flex items-center gap-1"><Lucide.Play size={12} className="text-emerald-500" /> Video</div>
+                {chapter.notes && <div className="flex items-center gap-1"><Lucide.FileText size={12} className="text-blue-500" /> Notes</div>}
+                {chapter.quiz_questions && chapter.quiz_questions.length > 0 && <div className="flex items-center gap-1"><Lucide.CheckCircle2 size={12} className="text-orange-500" /> Quiz</div>}
               </div>
             </motion.div>
           ))}
@@ -3868,7 +3864,7 @@ function GamesView({ language, onBack }: any) {
         onClick={onBack}
         className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
       >
-        <ArrowLeft size={20} />
+        <Lucide.ArrowLeft size={20} />
         <span>Back to Dashboard</span>
       </button>
 
@@ -3885,7 +3881,7 @@ function GamesView({ language, onBack }: any) {
             className="space-y-8"
           >
             <div className="w-24 h-24 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto">
-              <Bot size={48} className="text-emerald-400" />
+              <Lucide.Bot size={48} className="text-emerald-400" />
             </div>
             <button onClick={startGame} className="w-full py-4 rounded-2xl bg-emerald-600 text-white font-bold text-xl hover:bg-emerald-500 transition-all">
               {translations[language].start}
@@ -3979,7 +3975,7 @@ function LeaderboardView({ leaderboard, language, onBack, following, user }: any
         onClick={onBack}
         className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
       >
-        <ArrowLeft size={20} />
+        <Lucide.ArrowLeft size={20} />
         <span>Back to Dashboard</span>
       </motion.button>
 
@@ -4068,7 +4064,7 @@ function LeaderboardView({ leaderboard, language, onBack, following, user }: any
                           {student.name}
                           {student.streak > 0 && (
                             <span className="flex items-center gap-0.5 text-orange-400 text-[10px] font-black bg-orange-500/10 px-1.5 py-0.5 rounded-full border border-orange-500/20">
-                              <Flame size={10} fill="currentColor" />
+                              <Lucide.Flame size={10} fill="currentColor" />
                               {student.streak}
                             </span>
                           )}
@@ -4211,7 +4207,7 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
             onClick={onBack}
             className="p-2 bg-slate-800/50 border border-white/5 rounded-xl text-slate-400 hover:text-white transition-all"
           >
-            <ArrowLeft size={20} />
+            <Lucide.ArrowLeft size={20} />
           </button>
           <div>
             <h2 className="text-2xl font-bold text-white">
@@ -4243,7 +4239,7 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
       {filteredTextbooks.length === 0 ? (
         <motion.div variants={itemVariants} className="flex flex-col items-center justify-center py-20 text-center bg-slate-900/30 border border-white/5 rounded-3xl">
           <div className="w-24 h-24 bg-slate-800 rounded-full flex items-center justify-center mb-6">
-            <Book size={48} className="text-slate-500" />
+            <Lucide.Book size={48} className="text-slate-500" />
           </div>
           <h3 className="text-2xl font-bold text-white mb-2">
             {language === 'en' ? 'No Textbooks Found' : 'କୌଣସି ପାଠ୍ୟପୁସ୍ତକ ମିଳିଲା ନାହିଁ'}
@@ -4297,7 +4293,7 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
                     disabled={isLinking}
                     className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-900/20 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Download size={18} />
+                    <Lucide.Download size={18} />
                     {isLinking ? (language === 'en' ? 'Linking...' : 'ଲିଙ୍କ୍ ହେଉଛି...') : (language === 'en' ? 'Download PDF' : 'PDF ଡାଉନଲୋଡ୍')}
                   </button>
                   <button 
@@ -4307,7 +4303,7 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
                     }}
                     className="p-3 bg-white/5 border border-white/10 text-slate-400 hover:text-white rounded-xl transition-all"
                   >
-                    <Save size={18} />
+                    <Lucide.Save size={18} />
                   </button>
                 </div>
                 <a 
@@ -4320,7 +4316,7 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
                   rel="noopener noreferrer"
                   className="w-full py-3 mt-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 rounded-xl font-bold flex items-center justify-center gap-2 transition-all border border-emerald-500/20"
                 >
-                  <MessageCircle size={18} />
+                  <Lucide.MessageCircle size={18} />
                   {language === 'en' ? 'Share on WhatsApp' : 'WhatsApp ରେ ସେୟାର କରନ୍ତୁ'}
                 </a>
               </div>
@@ -4354,7 +4350,7 @@ function OfflineNotesView({ language, onBack }: { language: 'or' | 'en', onBack:
         onClick={onBack}
         className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
       >
-        <ArrowLeft size={20} />
+        <Lucide.ArrowLeft size={20} />
         <span className="font-bold uppercase tracking-widest text-xs">Back to Profile</span>
       </button>
 
@@ -4365,13 +4361,13 @@ function OfflineNotesView({ language, onBack }: { language: 'or' | 'en', onBack:
           onClick={() => setActiveTab('notes')}
           className={`flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${activeTab === 'notes' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
         >
-          <FileText size={16} /> {language === 'en' ? 'Notes' : 'ନୋଟ୍'}
+          <Lucide.FileText size={16} /> {language === 'en' ? 'Notes' : 'ନୋଟ୍'}
         </button>
         <button 
           onClick={() => setActiveTab('textbooks')}
           className={`flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${activeTab === 'textbooks' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
         >
-          <Book size={16} /> {language === 'en' ? 'Textbooks' : 'ପାଠ୍ୟପୁସ୍ତକ'}
+          <Lucide.Book size={16} /> {language === 'en' ? 'Textbooks' : 'ପାଠ୍ୟପୁସ୍ତକ'}
         </button>
       </div>
 
@@ -4402,7 +4398,7 @@ function OfflineNotesView({ language, onBack }: { language: 'or' | 'en', onBack:
                       }}
                       className="p-2 text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
                     >
-                      <X size={16} />
+                      <Lucide.X size={16} />
                     </button>
                   </div>
                   <div className="bg-slate-900/50 p-4 rounded-xl prose prose-invert max-w-none text-sm">
@@ -4440,7 +4436,7 @@ function OfflineNotesView({ language, onBack }: { language: 'or' | 'en', onBack:
                   </div>
                   <div className="flex gap-2">
                     <a href={book.download_url} target="_blank" rel="noopener noreferrer" className="p-3 bg-emerald-500/10 text-emerald-500 rounded-xl hover:bg-emerald-500/20 transition-all">
-                      <Download size={18} />
+                      <Lucide.Download size={18} />
                     </a>
                     <button 
                       onClick={() => {
@@ -4451,7 +4447,7 @@ function OfflineNotesView({ language, onBack }: { language: 'or' | 'en', onBack:
                       }}
                       className="p-3 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500/20 transition-all"
                     >
-                      <X size={18} />
+                      <Lucide.X size={18} />
                     </button>
                   </div>
                 </div>
@@ -4487,8 +4483,6 @@ function TopicDetailView({
     : [{ url: topic.videoUrl, teacherOrChannel: topic.teacherOrChannel || 'Default' }];
 
   const selectedVideo = videos[selectedVideoIndex];
-  console.log("Debug: TopicDetailView selectedVideo:", selectedVideo);
-  console.log("Debug: TopicDetailView topic.notesUrl:", topic.notesUrl);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -4499,7 +4493,7 @@ function TopicDetailView({
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 30 },
     show: { opacity: 1, y: 0 }
   };
 
@@ -4508,201 +4502,252 @@ function TopicDetailView({
       variants={containerVariants}
       initial="hidden"
       animate="show"
-      className="max-w-5xl mx-auto"
+      className="max-w-6xl mx-auto space-y-8 pb-20"
     >
-      <motion.button 
-        variants={itemVariants}
-        onClick={onBack}
-        className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
-      >
-        <ArrowLeft size={20} />
-        <span className="font-bold uppercase tracking-widest text-xs">Back to Topics</span>
-      </motion.button>
+      {/* Premium Header */}
+      <motion.div variants={itemVariants} className="flex items-center justify-between">
+        <button 
+          onClick={onBack}
+          className="group flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-slate-900/50 border border-white/5 text-slate-400 hover:text-white transition-all hover:border-white/10"
+        >
+          <Lucide.ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+          <span className="font-black uppercase tracking-[0.2em] text-[10px]">Neural Archive</span>
+        </button>
 
-      <motion.div variants={itemVariants} className="glass-card neon-border rounded-[2.5rem] overflow-hidden mb-8 relative">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl -mr-48 -mt-48 pointer-events-none"></div>
-        <div className="p-6 md:p-10 relative z-10">
-          <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-[10px] font-bold uppercase text-emerald-400 bg-emerald-500/10 px-4 py-1.5 rounded-full tracking-widest border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
-                  {getLocalizedSubject(topic.subject, language)}
-                </span>
+        <div className="flex items-center gap-4">
+          <div className="flex -space-x-2">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="w-8 h-8 rounded-full border-2 border-slate-950 bg-slate-800 flex items-center justify-center">
+                <div className="w-full h-full rounded-full bg-gradient-to-br from-emerald-500/20 to-transparent" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight">
-                {topic.title}
+            ))}
+          </div>
+          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+            1.2k Students learning this
+          </p>
+        </div>
+      </motion.div>
+
+      {/* Main Content Node */}
+      <motion.div variants={itemVariants} className="glass-card rounded-[3rem] border-white/5 overflow-hidden shadow-2xl relative">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-[120px] -mr-64 -mt-64 pointer-events-none" />
+        
+        <div className="p-8 md:p-12 relative z-10">
+          {/* Topic Hero Section */}
+          <div className="flex flex-col lg:flex-row gap-12 mb-12">
+            <div className="flex-1 space-y-6">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-[0.3em]">
+                <Lucide.Zap size={12} fill="currentColor" />
+                Knowledge Core
+              </div>
+              
+              <h1 className="text-4xl md:text-6xl font-black text-white leading-[1.1] tracking-tighter uppercase">
+                {typeof topic.title === 'string' ? topic.title : (topic.title as any).or || (topic.title as any).en}
               </h1>
-              {videos.length > 1 && (
-                <select 
-                  value={selectedVideoIndex}
-                  onChange={(e) => setSelectedVideoIndex(parseInt(e.target.value))}
-                  // Added z-index and relative to ensure it's clickable
-                  className="w-full md:w-64 bg-slate-900 border border-white/10 rounded-xl px-4 py-3 text-white mt-4 relative z-20"
-                >
-                  {videos.map((v: any, i: number) => (
-                    <option key={i} value={i} className="bg-slate-900 text-white">
-                      👨‍🏫 {v.teacherOrChannel || `Teacher ${i + 1}`}
-                    </option>
-                  ))}
-                </select>
-              )}
+
+              <div className="flex flex-wrap items-center gap-6 pt-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-400 border border-white/5">
+                    <Lucide.User size={18} />
+                  </div>
+                  <div>
+                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Architect</p>
+                    <p className="text-sm font-bold text-white">{selectedVideo?.teacherOrChannel || 'Utkal Mentor'}</p>
+                  </div>
+                </div>
+
+                <div className="w-px h-8 bg-white/5" />
+
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-400 border border-white/5">
+                    <Lucide.BookOpen size={18} />
+                  </div>
+                  <div>
+                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Subject</p>
+                    <p className="text-sm font-bold text-white">{getLocalizedSubject(topic.subject, language)}</p>
+                  </div>
+                </div>
+              </div>
             </div>
-            
-            {(topic.quiz_questions?.length ?? 0) > 0 && (
-              <button 
-                onClick={onTakeQuiz}
-                className="flex items-center justify-center gap-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-90 text-white px-8 py-4 rounded-2xl font-bold uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(16,185,129,0.4)] whitespace-nowrap border border-emerald-500/50"
-              >
-                <Trophy size={20} />
-                <span>Take Basic Quiz</span>
-              </button>
-            )}
+
+            <div className="lg:w-72 space-y-4">
+              {(topic.quiz_questions?.length ?? 0) > 0 && (
+                <button 
+                  onClick={onTakeQuiz}
+                  className="w-full flex items-center justify-between gap-4 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white p-6 rounded-[2rem] font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-amber-900/20 group text-[11px]"
+                >
+                  <div className="flex items-center gap-3">
+                    <Lucide.Trophy size={20} className="group-hover:scale-110 transition-transform" />
+                    <span>Cognitive Quiz</span>
+                  </div>
+                  <Lucide.ChevronRight size={16} />
+                </button>
+              )}
+              
+              <div className="p-6 rounded-[2rem] bg-white/5 border border-white/10 space-y-2">
+                <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Engagement Level</p>
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      animate={{ width: '85%' }}
+                      className="h-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
+                    />
+                  </div>
+                  <span className="text-[10px] font-black text-white">85%</span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="flex gap-2 bg-slate-900/50 p-2 rounded-2xl w-full md:w-fit mb-8 overflow-x-auto scrollbar-hide border border-white/5 backdrop-blur-md">
-            <button 
-              onClick={() => setActiveSubTab('video')}
-              className={`flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap ${activeSubTab === 'video' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
-            >
-              <Play size={16} /> {translations[language].video}
-            </button>
-            {(topic.notes || topic.notesUrl) && (
-              <button 
-                onClick={() => setActiveSubTab('notes')}
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap ${activeSubTab === 'notes' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
+          {/* Immersive Tabs */}
+          <div className="flex items-center gap-2 bg-slate-900/80 backdrop-blur-xl p-2 rounded-[2rem] border border-white/5 mb-10 w-fit mx-auto lg:mx-0">
+            {[
+              { id: 'video', icon: Lucide.Play, label: translations[language].video },
+              { id: 'notes', icon: Lucide.FileText, label: translations[language].notes, disabled: !topic.notes && !topic.notesUrl },
+              { id: 'practice', icon: Lucide.Trophy, label: language === 'en' ? 'Practice' : 'ଅଭ୍ୟାସ' }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                disabled={tab.disabled}
+                onClick={() => setActiveSubTab(tab.id as any)}
+                className={`flex items-center gap-3 px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all ${
+                  tab.disabled ? 'opacity-20 cursor-not-allowed' :
+                  activeSubTab === tab.id 
+                    ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20' 
+                    : 'text-slate-500 hover:text-white hover:bg-white/5'
+                }`}
               >
-                <FileText size={16} /> {translations[language].notes}
+                <tab.icon size={16} />
+                {tab.label}
               </button>
-            )}
-            <button 
-              onClick={() => setActiveSubTab('practice')}
-              className={`flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap ${activeSubTab === 'practice' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
-            >
-              <Trophy size={16} /> {language === 'en' ? 'Practice' : 'ଅଭ୍ୟାସ'}
-            </button>
-            <button 
-              onClick={() => {
-                if (topic.notes) {
-                  OfflineService.saveNote(topic.id, topic.notes);
-                  alert(language === 'en' ? 'Notes saved for offline!' : 'ନୋଟ୍ ଅଫଲାଇନ୍ ପାଇଁ ସେଭ୍ ହୋଇଛି!');
-                }
-              }}
-              className="flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap text-slate-400 hover:text-white hover:bg-white/5"
-            >
-              <Download size={16} /> {language === 'en' ? 'Save Offline' : 'ଅଫଲାଇନ୍ ସେଭ୍ କରନ୍ତୁ'}
-            </button>
+            ))}
           </div>
 
+          {/* Sub-tab Content Area */}
           <AnimatePresence mode="wait">
-            {activeSubTab === 'video' && (
-              <motion.div 
-                key="video"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="aspect-video rounded-2xl overflow-hidden bg-black shadow-2xl flex items-center justify-center"
-              >
-                {selectedVideo?.url ? (
-                  <iframe 
-                    src={getYouTubeEmbedUrl(selectedVideo.url)}
-                    className="w-full h-full border-0"
-                    allowFullScreen
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  />
-                ) : (
-                  <div className="text-center p-8">
-                    <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-500">
-                      <Play size={32} />
-                    </div>
-                    <p className="text-slate-400 font-medium">Video content is currently being updated.</p>
-                  </div>
-                )}
-              </motion.div>
-            )}
-
-            {activeSubTab === 'notes' && (
-              <motion.div 
-                key="notes"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="bg-slate-800/30 rounded-2xl p-8 min-h-[300px] border border-white/5 flex flex-col items-center justify-center text-center gap-6"
-              >
-                {topic.notesUrl ? (
-                  <>
-                    <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-500">
-                      <FileText size={32} />
-                    </div>
-                    <div>
-                      <h3 className="text-white font-bold text-lg mb-1">Study Material Available</h3>
-                      <p className="text-slate-400 text-sm">You can view or download the notes for this chapter below.</p>
-                    </div>
-                    <a 
-                      href={topic.notesUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-emerald-900/40"
-                    >
-                      <Download size={18} />
-                      View PDF Notes
-                    </a>
-                  </>
-                ) : (
-                  <div className="prose prose-invert max-w-none">
-                    <div className="markdown-body">
-                      <Markdown>{topic.notes}</Markdown>
-                    </div>
-                  </div>
-                )}
-              </motion.div>
-            )}
-
-            {activeSubTab === 'practice' && (
-              <motion.div 
-                key="practice"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="space-y-8"
-              >
-                {topic.bulkQa && (
-                  <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-8 mb-8">
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="p-2 rounded-lg bg-emerald-500/20 text-emerald-500">
-                        <BookOpen size={20} />
-                      </div>
-                      <h3 className="text-lg font-bold text-white">Textbook Q&A / Practice Section</h3>
-                    </div>
-                    <div className="prose prose-invert max-w-none prose-emerald">
-                      <div className="markdown-body">
-                        <Markdown>{topic.bulkQa}</Markdown>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {(topic.quiz_questions?.length ?? 0) > 0 && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {topic.quiz_questions?.map((q, idx) => (
-                      <PracticeQuestion 
-                        key={idx} 
-                        question={q} 
-                        isPremium={isPremium} 
-                        language={language} 
-                        onUpgrade={onUpgrade}
+            <motion.div 
+              key={activeSubTab}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {activeSubTab === 'video' && (
+                <div className="space-y-6">
+                  <div className="aspect-video rounded-[3rem] overflow-hidden bg-black shadow-2xl border-4 border-white/5 group relative">
+                    {selectedVideo?.url ? (
+                      <iframe 
+                        src={getYouTubeEmbedUrl(selectedVideo.url)}
+                        className="w-full h-full border-0"
+                        allowFullScreen
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       />
-                    ))}
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-full text-slate-500 gap-4">
+                        <Lucide.Loader2 size={48} className="animate-spin" />
+                        <p className="font-black uppercase tracking-widest text-[10px]">Initializing Stream...</p>
+                      </div>
+                    )}
                   </div>
-                )}
 
-                {!topic.bulkQa && (!topic.quiz_questions || topic.quiz_questions.length === 0) && (
-                  <div className="py-20 text-center bg-slate-900/30 rounded-3xl border border-dashed border-white/10">
-                    <HelpCircle size={48} className="text-slate-700 mx-auto mb-4" />
-                    <p className="text-slate-500 font-medium">No practice questions available for this chapter yet.</p>
-                  </div>
-                )}
-              </motion.div>
-            )}
+                  {videos.length > 1 && (
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {videos.map((v: any, i: number) => (
+                        <button
+                          key={i}
+                          onClick={() => setSelectedVideoIndex(i)}
+                          className={`p-4 rounded-2xl border transition-all text-left space-y-2 ${
+                            selectedVideoIndex === i 
+                              ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400' 
+                              : 'bg-slate-900/50 border-white/5 text-slate-500 hover:border-white/10 hover:text-slate-300'
+                          }`}
+                        >
+                          <p className="text-[8px] font-black uppercase tracking-widest">Mentor {i + 1}</p>
+                          <p className="text-xs font-bold truncate">{v.teacherOrChannel}</p>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {activeSubTab === 'notes' && (
+                <div className="bg-slate-950/50 rounded-[3rem] p-10 min-h-[400px] border border-white/5 relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500/50 to-cyan-500/50 opacity-30" />
+                  
+                  {topic.notesUrl ? (
+                    <div className="flex flex-col items-center justify-center h-full gap-8">
+                      <div className="w-24 h-24 bg-emerald-500/10 rounded-[2rem] border border-emerald-500/20 flex items-center justify-center text-emerald-500 shadow-2xl">
+                        <Lucide.FileText size={40} />
+                      </div>
+                      <div className="text-center space-y-2">
+                        <h3 className="text-2xl font-black text-white uppercase tracking-tighter">Scholastic Archive Unlocked</h3>
+                        <p className="text-slate-400 font-medium italic">High-fidelity study notes are ready for synchronization.</p>
+                      </div>
+                      <a 
+                        href={topic.notesUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="px-10 py-5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] transition-all shadow-xl shadow-emerald-900/40 active:scale-95"
+                      >
+                        Synchronize PDF Notes
+                      </a>
+                    </div>
+                  ) : (
+                    <div className="prose prose-invert max-w-none prose-emerald selection:bg-emerald-500/30">
+                      <div className="markdown-body">
+                        <Markdown>{topic.notes}</Markdown>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {activeSubTab === 'practice' && (
+                <div className="space-y-12">
+                  {topic.bulkQa && (
+                    <div className="glass-card rounded-[3rem] p-10 border-white/5">
+                      <div className="flex items-center gap-4 mb-8">
+                        <div className="p-3 rounded-2xl bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                          <Lucide.CheckCircle2 size={24} />
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-black text-white uppercase tracking-tighter">Conceptual Validation</h3>
+                          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Textbook Analysis & Practice</p>
+                        </div>
+                      </div>
+                      <div className="prose prose-invert max-w-none prose-amber">
+                        <div className="markdown-body">
+                          <Markdown>{topic.bulkQa}</Markdown>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {(topic.quiz_questions?.length ?? 0) > 0 && (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                      {topic.quiz_questions?.map((q, idx) => (
+                        <PracticeQuestion 
+                          key={idx} 
+                          question={q} 
+                          isPremium={isPremium} 
+                          language={language} 
+                          onUpgrade={onUpgrade}
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  {!topic.bulkQa && (!topic.quiz_questions || topic.quiz_questions.length === 0) && (
+                    <div className="py-24 text-center bg-slate-900/30 rounded-[3rem] border border-dashed border-white/10">
+                      <Lucide.HelpCircle size={48} className="text-slate-800 mx-auto mb-6" />
+                      <p className="text-slate-500 font-black uppercase tracking-[0.3em] text-[10px]">Awaiting Practice Data...</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </motion.div>
           </AnimatePresence>
         </div>
       </motion.div>
@@ -4725,12 +4770,10 @@ function QuizEngine({ questions, onComplete, language, userId, chapterId }: { qu
 
   const handleNext = () => {
     setCurrentIdx(prev => prev + 1);
-    setShowHint(false);
   };
 
   const handlePrev = () => {
     setCurrentIdx(prev => prev - 1);
-    setShowHint(false);
   };
 
   const score = answers.reduce((acc, ansIdx, i) => {
@@ -4741,7 +4784,6 @@ function QuizEngine({ questions, onComplete, language, userId, chapterId }: { qu
   const handleFinish = async () => {
     setSaving(true);
     try {
-      // Save quiz result to Firestore
       await addDoc(collection(firestore, 'quiz_results'), {
         userId,
         chapterId,
@@ -4751,7 +4793,6 @@ function QuizEngine({ questions, onComplete, language, userId, chapterId }: { qu
         accuracy: Math.round((score / questions.length) * 100)
       });
 
-      // Update user points and accuracy
       const userRef = doc(firestore, 'users', userId);
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
@@ -4770,7 +4811,7 @@ function QuizEngine({ questions, onComplete, language, userId, chapterId }: { qu
       setFinished(true);
     } catch (err) {
       console.error("Quiz Save Error:", err);
-      setFinished(true); // Still show finished screen even if save fails
+      setFinished(true);
     } finally {
       setSaving(false);
     }
@@ -4779,46 +4820,54 @@ function QuizEngine({ questions, onComplete, language, userId, chapterId }: { qu
   if (finished) {
     return (
       <motion.div 
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="max-w-2xl mx-auto text-center py-12"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="max-w-4xl mx-auto text-center py-12"
       >
-        <motion.div 
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: "spring", stiffness: 200, damping: 20 }}
-          className="w-24 h-24 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-emerald-500/20"
-        >
-          <Trophy size={48} className="text-white" />
-        </motion.div>
-        <h2 className="text-4xl font-bold text-white mb-4">Quiz Completed!</h2>
-        <p className="text-xl text-slate-400 mb-8">You scored {score} out of {questions.length}</p>
-        
-        <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-8 mb-8">
-          <div className="grid grid-cols-3 gap-4">
-            <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
-              <p className="text-2xl font-bold text-emerald-500">{score}</p>
-              <p className="text-[10px] font-bold uppercase text-slate-500">Correct</p>
-            </div>
-            <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20">
-              <p className="text-2xl font-bold text-red-500">{questions.length - score}</p>
-              <p className="text-[10px] font-bold uppercase text-slate-500">Wrong</p>
-            </div>
-            <div className="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20">
-              <p className="text-2xl font-bold text-blue-500">{Math.round((score / questions.length) * 100)}%</p>
-              <p className="text-[10px] font-bold uppercase text-slate-500">Accuracy</p>
-            </div>
+        <div className="glass-card rounded-[3rem] border-white/5 p-12 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-transparent opacity-30" />
+          
+          <motion.div 
+            initial={{ scale: 0, rotate: -45 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.2 }}
+            className="w-32 h-32 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-[2rem] flex items-center justify-center mx-auto mb-10 shadow-2xl shadow-emerald-900/40 relative z-10"
+          >
+            <Lucide.Trophy size={56} className="text-white" />
+          </motion.div>
+
+          <div className="relative z-10 space-y-4 mb-12">
+            <h2 className="text-5xl font-black text-white tracking-tighter uppercase">Assessment Synchronized</h2>
+            <p className="text-slate-400 font-medium italic">Neural pathways have been updated with your performance data.</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 relative z-10">
+            {[
+              { label: 'Neural Accuracy', value: `${Math.round((score / questions.length) * 100)}%`, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+              { label: 'Cognitive Score', value: `${score}/${questions.length}`, color: 'text-blue-400', bg: 'bg-blue-500/10' },
+              { label: 'Exp Gained', value: `+${score * 10}`, color: 'text-amber-400', bg: 'bg-amber-500/10' }
+            ].map((stat, i) => (
+              <div 
+                key={i} 
+                className={`p-8 rounded-[2rem] ${stat.bg} border border-white/5 backdrop-blur-sm`}
+              >
+                <p className={`text-4xl font-black mb-2 tracking-tighter ${stat.color}`}>{stat.value}</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-10">
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={onComplete}
+              className="px-12 py-5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] transition-all shadow-xl shadow-emerald-900/20"
+            >
+              Retract to Topic Detail
+            </motion.button>
           </div>
         </div>
-
-        <motion.button 
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={onComplete}
-          className="bg-emerald-500 hover:bg-emerald-600 text-white px-12 py-4 rounded-2xl font-bold transition-all"
-        >
-          Back to Topic
-        </motion.button>
       </motion.div>
     );
   }
@@ -4837,7 +4886,7 @@ function QuizEngine({ questions, onComplete, language, userId, chapterId }: { qu
           onClick={onComplete}
           className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
         >
-          <ArrowLeft size={20} />
+          <Lucide.ArrowLeft size={20} />
           <span>Quit Quiz</span>
         </button>
         <div className="flex items-center gap-4">
@@ -4888,7 +4937,7 @@ function QuizEngine({ questions, onComplete, language, userId, chapterId }: { qu
               disabled={answers[currentIdx] === undefined || saving}
               className="flex-[2] py-4 rounded-2xl bg-emerald-500 text-white font-bold hover:bg-emerald-600 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              {saving ? <Loader2 className="animate-spin" size={20} /> : 'Finish Quiz'}
+              {saving ? <Lucide.Loader2 className="animate-spin" size={20} /> : 'Finish Quiz'}
             </button>
           ) : (
             <button 
@@ -4908,11 +4957,11 @@ function QuizEngine({ questions, onComplete, language, userId, chapterId }: { qu
                 onClick={() => setShowHint(true)}
                 className="text-amber-500 hover:text-amber-400 text-sm font-bold flex items-center gap-2"
               >
-                <Lightbulb size={16} /> Show Hint
+                <Lucide.Lightbulb size={16} /> Show Hint
               </button>
             ) : (
               <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 flex gap-3">
-                <Lightbulb className="text-amber-500 shrink-0" size={20} />
+                <Lucide.Lightbulb className="text-amber-500 shrink-0" size={20} />
                 <p className="text-amber-200/80 text-sm">{q.hint}</p>
               </div>
             )}
@@ -4933,7 +4982,7 @@ function ResultsReviewView({ submission, test, onBack, language }: any) {
             <p className="text-slate-400 text-sm">Transparency Report & Model Answers</p>
           </div>
           <button onClick={onBack} className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-white">
-            <X size={24} />
+            <Lucide.X size={24} />
           </button>
         </div>
 
@@ -5000,8 +5049,8 @@ function ResultsReviewView({ submission, test, onBack, language }: any) {
                               {String.fromCharCode(65 + optIdx)}
                             </div>
                             <span className="font-medium">{opt}</span>
-                            {isCorrectOption && <CheckCircle2 size={16} className="ml-auto" />}
-                            {isStudentChoice && !isCorrectOption && <X size={16} className="ml-auto" />}
+                            {isCorrectOption && <Lucide.CheckCircle2 size={16} className="ml-auto" />}
+                            {isStudentChoice && !isCorrectOption && <Lucide.X size={16} className="ml-auto" />}
                           </div>
                         );
                       })}
@@ -5047,7 +5096,7 @@ function CertificateView({ submission, test, user, onBack, language }: any) {
           <div className="relative z-10 space-y-8">
             <div className="flex flex-col items-center">
               <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 mb-4">
-                <Trophy size={40} />
+                <Lucide.Trophy size={40} />
               </div>
               <h1 className="text-4xl font-serif font-black text-slate-900 tracking-tight uppercase">Certificate of Excellence</h1>
               <div className="w-48 h-1 bg-emerald-600 mt-4"></div>
@@ -5083,7 +5132,7 @@ function CertificateView({ submission, test, user, onBack, language }: any) {
                 <p className="text-[10px] font-bold text-slate-400 uppercase mt-1">Study Buddy (AI)</p>
               </div>
               <div className="w-24 h-24 bg-emerald-600/10 rounded-full flex items-center justify-center border-4 border-emerald-600/20">
-                <Award size={48} className="text-emerald-600" />
+                <Lucide.Award size={48} className="text-emerald-600" />
               </div>
               <div className="text-center">
                 <p className="font-serif font-bold text-slate-800 border-b border-slate-300 px-4">Director</p>
@@ -5101,7 +5150,7 @@ function CertificateView({ submission, test, user, onBack, language }: any) {
           onClick={handleDownload}
           className="bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-2 shadow-xl shadow-emerald-500/20"
         >
-          <Download size={20} /> Print/Save as PDF
+          <Lucide.Download size={20} /> Print/Save as PDF
         </button>
         <button 
           onClick={onBack}
@@ -5206,7 +5255,7 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack }: any) {
         onClick={onBack}
         className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
       >
-        <ArrowLeft size={20} />
+        <Lucide.ArrowLeft size={20} />
         <span>Back to Dashboard</span>
       </motion.button>
 
@@ -5226,7 +5275,7 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack }: any) {
             <motion.div whileHover={{ y: -5 }} key={test.id} className="bg-slate-900/50 border border-white/5 rounded-3xl p-8 hover:border-emerald-500/20 transition-all group">
               <div className="flex items-start justify-between mb-6">
                 <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
-                  <Calendar size={32} />
+                  <Lucide.Calendar size={32} />
                 </div>
                 {submission ? (
                   <span className="px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-500 text-xs font-bold uppercase tracking-wider">
@@ -5264,13 +5313,13 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack }: any) {
                             onClick={() => setReviewingResults({ submission, test })}
                             className="flex-1 py-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-center flex items-center justify-center gap-2 border border-white/5 transition-all"
                           >
-                            <ClipboardList size={18} /> Review Answers
+                            <Lucide.ClipboardList size={18} /> Review Answers
                           </button>
                           <button 
                             onClick={() => setViewingCertificate({ submission, test })}
                             className="flex-1 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-center flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20"
                           >
-                            <Award size={18} /> Certificate
+                            <Lucide.Award size={18} /> Certificate
                           </button>
                         </div>
                       </div>
@@ -5284,7 +5333,7 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack }: any) {
                     }}
                     className="w-full py-4 rounded-2xl bg-emerald-500 text-white font-bold hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
                   >
-                    <Play size={18} /> {translations[language].takeMonthlyTest}
+                    <Lucide.Play size={18} /> {translations[language].takeMonthlyTest}
                   </button>
                 )}
               </div>
@@ -5294,7 +5343,7 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack }: any) {
 
         {filteredTests.length === 0 && (
           <motion.div variants={itemVariants} className="md:col-span-2 flex flex-col items-center justify-center py-20 text-center bg-slate-900/30 rounded-3xl border border-dashed border-white/10">
-            <Clock size={48} className="text-slate-600 mb-4" />
+            <Lucide.Clock size={48} className="text-slate-600 mb-4" />
             <h3 className="text-xl font-bold text-white mb-2">No Tests Scheduled</h3>
             <p className="text-slate-500">Check back later for upcoming monthly assessments for your class and subjects.</p>
           </motion.div>
@@ -5455,19 +5504,19 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
           }}
           className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
         >
-          <ArrowLeft size={20} />
+          <Lucide.ArrowLeft size={20} />
           <span>Quit Test</span>
         </button>
         
         <div className="flex items-center gap-6">
           <div className={`flex items-center gap-2 px-4 py-2 rounded-2xl border font-mono font-bold transition-all ${timeLeft < 300 ? 'bg-red-500/20 border-red-500 text-red-500 animate-pulse' : 'bg-white/5 border-white/10 text-emerald-500'}`}>
-            <Clock size={18} />
+            <Lucide.Clock size={18} />
             <span>{formatTime(timeLeft)}</span>
           </div>
 
           {violations > 0 && (
             <div className="flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500 text-xs font-bold animate-pulse">
-              <XCircle size={14} /> {violations} Warning(s)
+              <Lucide.XCircle size={14} /> {violations} Warning(s)
             </div>
           )}
           <div className="flex items-center gap-4">
@@ -5493,7 +5542,7 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
             className="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-2xl text-red-200 text-sm font-medium flex items-center justify-between"
           >
             <div className="flex items-center gap-3">
-              <XCircle className="text-red-500" size={20} />
+              <Lucide.XCircle className="text-red-500" size={20} />
               <span>Warning: Do not leave the test screen. Next violation will lead to auto-submission.</span>
             </div>
             <button onClick={() => setShowWarning(false)} className="text-white hover:underline">I Understand</button>
@@ -5554,7 +5603,7 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
             onClick={() => setCurrentIdx(prev => prev - 1)}
             className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-white/5 text-slate-400 font-bold hover:bg-white/10 disabled:opacity-0 transition-all border border-white/5"
           >
-            <ArrowLeft size={18} />
+            <Lucide.ArrowLeft size={18} />
           </button>
           
           <button 
@@ -5578,7 +5627,7 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
             onClick={handleSubmit}
             className="w-full md:w-auto bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-90 text-white px-12 py-4 rounded-2xl font-bold transition-all shadow-xl shadow-emerald-500/20 disabled:opacity-50 flex items-center justify-center gap-3"
           >
-            {submitting ? <><Loader2 size={24} className="animate-spin" /> Submitting...</> : <><Trophy size={24} /> Submit Final Test</>}
+            {submitting ? <><Lucide.Loader2 size={24} className="animate-spin" /> Submitting...</> : <><Lucide.Trophy size={24} /> Submit Final Test</>}
           </button>
         ) : (
           <button 
@@ -5586,7 +5635,7 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
             onClick={() => setCurrentIdx(prev => prev + 1)}
             className="w-full md:w-auto flex items-center justify-center gap-3 bg-emerald-500 hover:bg-emerald-600 text-white px-10 py-4 rounded-2xl font-bold transition-all shadow-lg shadow-emerald-500/10 disabled:opacity-50"
           >
-            Next Question <ArrowRight size={20} />
+            Next Question <Lucide.ArrowRight size={20} />
           </button>
         )}
       </div>

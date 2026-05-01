@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Brain, BarChart3, CheckCircle2, Globe, Flame, MessageCircle, Target, Trophy, Zap, Award, Sparkles, Star, TrendingUp } from 'lucide-react';
+import * as Lucide from 'lucide-react';
 import { 
   ResponsiveContainer, 
   AreaChart, 
@@ -60,7 +60,7 @@ function PerformanceChart({ submissions, tests, language }: any) {
   if (chartData.length === 0) {
     return (
       <div className="glass-card neon-border rounded-[2.5rem] p-8 text-center bg-slate-900/30">
-        <TrendingUp size={48} className="mx-auto text-slate-700 mb-4 opacity-20" />
+        <Lucide.TrendingUp size={48} className="mx-auto text-slate-700 mb-4 opacity-20" />
         <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">No Progress Data Yet</p>
         <p className="text-slate-500 text-xs mt-2">Take monthly tests to see your growth chart!</p>
       </div>
@@ -75,7 +75,7 @@ function PerformanceChart({ submissions, tests, language }: any) {
           <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em]">Monthly Performance Analytics</p>
         </div>
         <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
-          <TrendingUp size={12} />
+          <Lucide.TrendingUp size={12} />
           {chartData.length > 1 && chartData[chartData.length-1].score >= chartData[chartData.length-2].score ? 'Improving' : 'Consistency is Key'}
         </div>
       </div>
@@ -218,10 +218,10 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   const dailyProgress = Math.min(((user?.points_today || 0) / dailyGoal) * 100, 100);
 
   const stats = [
-    { label: t.pointsToday, value: user?.points_today || 0, icon: <Zap size={20} />, color: 'text-amber-500', bg: 'bg-amber-500/10' },
-    { label: t.rank, value: rankDisplay, icon: <Trophy size={20} />, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-    { label: t.currentStreak, value: `${user?.streak || 0} ${t.activeStreak}`, icon: <Flame size={20} />, color: 'text-orange-500', bg: 'bg-orange-500/10' },
-    { label: t.nextLeague, value: user?.league || 'Bronze', icon: <Award size={20} />, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+    { label: t.pointsToday, value: user?.points_today || 0, icon: <Lucide.Zap size={20} />, color: 'text-amber-500', bg: 'bg-amber-500/10' },
+    { label: t.rank, value: rankDisplay, icon: <Lucide.Trophy size={20} />, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+    { label: t.currentStreak, value: `${user?.streak || 0} ${t.activeStreak}`, icon: <Lucide.Flame size={20} />, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+    { label: t.nextLeague, value: user?.league || 'Bronze', icon: <Lucide.Award size={20} />, color: 'text-blue-500', bg: 'bg-blue-500/10' },
   ];
 
 
@@ -307,7 +307,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 <circle cx="20" cy="20" r="18" stroke="currentColor" strokeWidth="3" fill="transparent" strokeDasharray={113} strokeDashoffset={113 - (113 * dailyProgress) / 100} className="text-emerald-500 transition-all duration-1000 shadow-[0_0_10px_#10b981]" />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <Target size={14} className="text-emerald-500 group-hover:scale-110 transition-transform" />
+                <Lucide.Target size={14} className="text-emerald-500 group-hover:scale-110 transition-transform" />
               </div>
             </div>
           </div>
@@ -341,7 +341,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   <img src="/gundulu.png" alt="Gundulu" className="w-full h-full object-cover relative z-10" />
                 </div>
                 <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-emerald-500 rounded-xl flex items-center justify-center text-white shadow-lg border-2 border-slate-900">
-                  <Brain size={16} />
+                  <Lucide.Brain size={16} />
                 </div>
               </div>
               
@@ -349,12 +349,12 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   <div className="flex flex-wrap items-center gap-4">
                     <div className="flex flex-wrap items-center gap-2">
                       <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em]">
-                        <Sparkles size={12} className="animate-pulse" />
+                        <Lucide.Sparkles size={12} className="animate-pulse" />
                         Neural Link Active
                       </div>
                       {!isPremium && (
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-black uppercase tracking-[0.2em]">
-                          <Zap size={12} className="animate-pulse" />
+                          <Lucide.Zap size={12} className="animate-pulse" />
                           Free Preview
                         </div>
                       )}
@@ -378,7 +378,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               
               <div className="shrink-0">
                 <div className="w-16 h-16 rounded-full border-2 border-white/5 flex items-center justify-center group-hover:border-emerald-500/30 transition-colors">
-                  <Zap size={24} className="text-emerald-500 group-hover:scale-125 transition-transform" />
+                  <Lucide.Zap size={24} className="text-emerald-500 group-hover:scale-125 transition-transform" />
                 </div>
               </div>
             </div>
@@ -393,11 +393,11 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent pointer-events-none"></div>
               <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
                 <div className="w-20 h-20 rounded-3xl bg-amber-500/10 border-2 border-amber-500/30 flex items-center justify-center shrink-0 shadow-[0_0_30px_rgba(245,158,11,0.1)] group-hover:rotate-12 transition-transform">
-                  <Trophy size={40} className="text-amber-500" />
+                  <Lucide.Trophy size={40} className="text-amber-500" />
                 </div>
                 <div className="flex-1 text-center md:text-left space-y-2">
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-black uppercase tracking-[0.2em]">
-                    <Sparkles size={12} />
+                    <Lucide.Sparkles size={12} />
                     {language === 'en' ? 'Registration Phase Open' : 'ପଞ୍ଜିକରଣ ଚାଲିଛି'}
                   </div>
                   <h3 className="text-2xl font-black text-white tracking-tighter uppercase">
@@ -427,7 +427,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               
               <div className="relative z-10 space-y-6">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-black uppercase tracking-[0.2em]">
-                  <CheckCircle2 size={14} />
+                  <Lucide.CheckCircle2 size={14} />
                   Knowledge Pulse
                 </div>
                 
@@ -471,41 +471,51 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   onClick={onShareDailyPractice}
                   className="px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-slate-400 hover:text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2"
                 >
-                  <MessageCircle size={14} />
+                  <Lucide.MessageCircle size={14} />
                   {language === 'en' ? 'Broadcast' : 'ଶେୟାର'}
                 </button>
               </div>
             </div>
 
             {/* Class-wise YouTube Matrix */}
-            <div className="glass-card rounded-[2.5rem] p-8 border-white/5 relative overflow-hidden group flex flex-col">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-[10px] font-black text-cyan-500 uppercase tracking-[0.3em]">
-                  {language === 'en' ? `Tier ${userClass} Archive` : `ଶ୍ରେଣୀ ${userClass} ଭିଡିଓ`}
-                </span>
-                <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
-              </div>
+            <div className="glass-card rounded-[2.5rem] p-8 border-white/5 relative overflow-hidden group flex flex-col justify-between">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-600/50 to-transparent" />
               
-              <div className="aspect-video rounded-2xl overflow-hidden border border-white/5 bg-black shadow-2xl group-hover:scale-[1.02] transition-transform duration-500">
-                <iframe
-                  width="100%"
-                  height="100%"
-                  src={dailyVideoId ? `https://www.youtube.com/embed/${dailyVideoId}?autoplay=0&rel=0` : videoUrl}
-                  title={`Daily Learning Feed`}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-              </div>
+              <div className="relative z-10 space-y-6">
+                <div className="flex items-center justify-between">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-black uppercase tracking-[0.2em]">
+                    <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                    Neural Feed • Tier {userClass}
+                  </div>
+                  <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                    {language === 'en' ? 'Live Archive' : 'ଭିଡିଓ ସଂଗ୍ରହ'}
+                  </div>
+                </div>
+                
+                <div className="aspect-video rounded-3xl overflow-hidden border border-white/10 bg-black shadow-2xl relative group-hover:scale-[1.02] transition-transform duration-500">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none z-10" />
+                  <iframe
+                    width="100%"
+                    height="100%"
+                    src={dailyVideoId ? `https://www.youtube.com/embed/${dailyVideoId}?autoplay=0&rel=0` : videoUrl}
+                    title={`Daily Learning Feed`}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="relative z-0"
+                  ></iframe>
+                </div>
 
-              <a
-                href="https://www.youtube.com/@UtkalSkillCenter?sub_confirmation=1"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-6 w-full py-4 rounded-2xl bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white border border-red-500/20 font-black text-[10px] uppercase tracking-[0.2em] text-center transition-all active:scale-95"
-              >
-                {language === 'en' ? 'Subscribe to Neural Feed' : 'YouTube ସବସ୍କ୍ରାଇବ୍ କରନ୍ତୁ'}
-              </a>
+                <a
+                  href="https://www.youtube.com/@UtkalSkillCenter?sub_confirmation=1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-3 w-full py-5 rounded-[1.5rem] bg-red-600 hover:bg-red-500 text-white font-black text-[10px] uppercase tracking-[0.3em] transition-all shadow-xl shadow-red-900/20 active:scale-95"
+                >
+                  <Lucide.Youtube size={16} />
+                  {language === 'en' ? 'Synchronize Subscription' : 'YouTube ସବସ୍କ୍ରାଇବ୍ କରନ୍ତୁ'}
+                </a>
+              </div>
             </div>
           </div>
 
@@ -526,7 +536,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
             <div className="flex items-start gap-5 relative z-10">
               <div className="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-500 shrink-0 shadow-lg">
-                <Sparkles size={28} />
+                <Lucide.Sparkles size={28} />
               </div>
               <div>
                 <h4 className="text-[10px] font-black text-blue-400 uppercase tracking-[0.3em] mb-3">{language === 'en' ? "Today's Inspiration" : 'ଆଜିର ପ୍ରେରଣା'}</h4>
@@ -542,11 +552,11 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-emerald-500/10 rounded-xl text-emerald-500 border border-emerald-500/20">
-                  <BarChart3 size={20} />
+                  <Lucide.BarChart3 size={20} />
                 </div>
                 <h3 className="text-lg font-black text-white tracking-tight">Subject Mastery</h3>
               </div>
-              <TrendingUp size={16} className="text-emerald-500" />
+              <Lucide.TrendingUp size={16} className="text-emerald-500" />
             </div>
 
             <div className="space-y-6">
@@ -569,7 +579,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 ))
               ) : (
                 <div className="text-center py-10 space-y-4 opacity-40">
-                  <BarChart3 size={40} className="mx-auto text-slate-600" />
+                  <Lucide.BarChart3 size={40} className="mx-auto text-slate-600" />
                   <p className="text-slate-500 font-black text-[10px] uppercase tracking-widest leading-relaxed">No data detected.<br/>Commence learning protocols.</p>
                 </div>
               )}
@@ -581,11 +591,11 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-purple-500/10 rounded-xl text-purple-500 border border-purple-500/20">
-                  <Award size={20} />
+                  <Lucide.Award size={20} />
                 </div>
                 <h3 className="text-lg font-black text-white tracking-tight">Achievements</h3>
               </div>
-              <Star size={16} className="text-purple-500" />
+              <Lucide.Star size={16} className="text-purple-500" />
             </div>
 
             <div className="grid grid-cols-3 gap-4">
@@ -593,7 +603,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 user.stats.badges.slice(0, 6).map((badge: string, i: number) => (
                   <div key={i} className="aspect-square rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center group cursor-help relative hover:border-purple-500/30 transition-all">
                     <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
-                      <Star size={18} fill={i === 0 ? "currentColor" : "none"} />
+                      <Lucide.Star size={18} fill={i === 0 ? "currentColor" : "none"} />
                     </div>
                     <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-[9px] font-black text-white uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all whitespace-nowrap z-50 pointer-events-none shadow-2xl">
                       {badge}

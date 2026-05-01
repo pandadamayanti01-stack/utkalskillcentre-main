@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { HelpCircle, ChevronDown, CheckCircle2, XCircle, Lock } from 'lucide-react';
+import * as Lucide from 'lucide-react';
 
 interface PracticeQuestionProps {
   question: any;
@@ -11,68 +11,128 @@ interface PracticeQuestionProps {
 
 export function PracticeQuestion({ question, isPremium, language, onUpgrade }: PracticeQuestionProps) {
   const [showAnswer, setShowAnswer] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
 
   return (
-    <div className="bg-slate-900/50 border border-white/5 rounded-[2rem] p-6 hover:bg-slate-800/50 transition-all relative overflow-hidden group">
-      <div className="flex items-start gap-4 mb-6">
-        <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500 group-hover:scale-110 transition-transform">
-          <HelpCircle size={20} />
+    <div className="glass-card rounded-[2.5rem] p-8 border-white/5 hover:border-emerald-500/30 transition-all relative overflow-hidden group">
+      {/* Question Header */}
+      <div className="flex items-start gap-5 mb-8">
+        <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all shadow-lg border border-emerald-500/20">
+          <Lucide.HelpCircle size={24} />
         </div>
-        <p className="text-white font-bold leading-relaxed flex-1">{question.question}</p>
+        <div className="flex-1 space-y-1">
+          <p className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em]">Cognitive Probe</p>
+          <h4 className="text-white font-black text-lg leading-relaxed tracking-tight">{question.question}</h4>
+        </div>
       </div>
 
+      {/* Options Matrix */}
       {Array.isArray(question.options) && question.options.length > 0 && (
-        <div className="space-y-3 mb-6">
-          {question.options.map((opt: string, i: number) => (
-            <div key={i} className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/5 text-slate-400 text-sm">
-              <div className="w-6 h-6 rounded-lg bg-slate-800 flex items-center justify-center font-bold text-[10px]">{String.fromCharCode(65 + i)}</div>
-              <span>{opt}</span>
-            </div>
-          ))}
+        <div className="grid grid-cols-1 gap-3 mb-8">
+          {question.options.map((opt: string, i: number) => {
+            const isCorrect = opt === question.correct_answer;
+            const isSelected = selectedOption === i;
+            
+            return (
+              <button 
+                key={i} 
+                onClick={() => setSelectedOption(i)}
+                className={`flex items-center gap-4 p-5 rounded-2xl border transition-all text-left relative overflow-hidden group/opt ${
+                  isSelected 
+                    ? (isCorrect ? 'bg-emerald-500/10 border-emerald-500/50 text-white' : 'bg-red-500/10 border-red-500/50 text-white')
+                    : 'bg-white/5 border-white/5 text-slate-400 hover:bg-white/10 hover:border-white/10'
+                }`}
+              >
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-[10px] transition-all ${
+                  isSelected 
+                    ? (isCorrect ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white')
+                    : 'bg-slate-800 text-slate-500 group-hover/opt:bg-slate-700 group-hover/opt:text-white'
+                }`}>
+                  {String.fromCharCode(65 + i)}
+                </div>
+                <span className="text-sm font-bold tracking-tight">{opt}</span>
+                
+                {isSelected && (
+                  <div className="absolute right-4">
+                    {isCorrect ? <Lucide.CheckCircle2 size={18} className="text-emerald-500" /> : <Lucide.XCircle size={18} className="text-red-500" />}
+                  </div>
+                )}
+              </button>
+            );
+          })}
         </div>
       )}
 
-      <button 
-        onClick={() => isPremium ? setShowAnswer(!showAnswer) : onUpgrade()}
-        className={`w-full py-4 rounded-xl font-bold text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${showAnswer ? 'bg-emerald-500 text-white shadow-lg' : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10'}`}
-      >
-        {!isPremium && <Lock size={14} />}
-        <span>{showAnswer ? 'Hide Answer' : 'Show Answer'}</span>
-        <ChevronDown size={14} className={`transition-transform ${showAnswer ? 'rotate-180' : ''}`} />
-      </button>
+      {/* Action Area */}
+      <div className="space-y-4">
+        <button 
+          onClick={() => isPremium ? setShowAnswer(!showAnswer) : onUpgrade()}
+          className={`w-full py-5 rounded-[1.5rem] font-black text-[10px] uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3 relative overflow-hidden group/btn ${
+            showAnswer 
+              ? 'bg-emerald-600 text-white shadow-xl shadow-emerald-900/20' 
+              : 'bg-slate-900/80 text-slate-400 hover:text-white hover:bg-slate-800 border border-white/5'
+          }`}
+        >
+          {!isPremium && <Lucide.Lock size={14} className="group-hover/btn:scale-110 transition-transform" />}
+          <span className="relative z-10">{showAnswer ? 'Retract Solution' : 'Request Logic Link'}</span>
+          <Lucide.ChevronDown size={14} className={`transition-transform relative z-10 ${showAnswer ? 'rotate-180' : ''}`} />
+          
+          {showAnswer && (
+            <motion.div 
+              layoutId="btn-bg"
+              className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-600"
+            />
+          )}
+        </button>
 
-      <AnimatePresence>
-        {showAnswer && isPremium && (
-          <motion.div 
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden"
-          >
-            <div className="mt-6 pt-6 border-t border-white/5 space-y-4">
-              <div className="flex items-center gap-2 text-emerald-500 font-bold text-sm">
-                <CheckCircle2 size={16} />
-                <span>Correct Answer: {question.correct_answer}</span>
+        <AnimatePresence>
+          {showAnswer && isPremium && (
+            <motion.div 
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="pt-6 space-y-4">
+                <div className="p-6 rounded-[2rem] bg-emerald-500/5 border border-emerald-500/20 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-4 opacity-10">
+                    <Lucide.Zap size={48} className="text-emerald-500" />
+                  </div>
+                  
+                  <div className="flex items-center gap-2 text-emerald-400 font-black text-[10px] uppercase tracking-[0.2em] mb-4">
+                    <Lucide.MessageSquare size={14} />
+                    <span>Neural Insights</span>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-black text-slate-500 uppercase tracking-widest">Validated Entry:</span>
+                      <span className="text-sm font-black text-emerald-400">{question.correct_answer}</span>
+                    </div>
+                    <p className="text-emerald-100/70 text-sm leading-relaxed italic font-medium">
+                      "{question.tutor_explanation || question.answer || 'No logical breakdown provided.'}"
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
-                <p className="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-2">Tutor Explanation</p>
-                <p className="text-emerald-200/80 text-sm leading-relaxed">{question.tutor_explanation || question.answer || 'No explanation provided.'}</p>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       {!isPremium && (
-        <div className="absolute inset-0 bg-slate-950/40 backdrop-blur-[1px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-          <div className="bg-slate-900 border border-white/10 p-4 rounded-2xl shadow-2xl text-center">
-            <Lock size={20} className="text-amber-500 mx-auto mb-2" />
-            <p className="text-[10px] font-bold text-white uppercase tracking-widest mb-2">Premium Feature</p>
+        <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500">
+          <div className="bg-slate-900 border border-white/10 p-8 rounded-[2.5rem] shadow-2xl text-center max-w-[80%] transform scale-90 group-hover:scale-100 transition-transform">
+            <div className="w-14 h-14 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-500 mx-auto mb-4 border border-amber-500/20">
+              <Lucide.Lock size={28} />
+            </div>
+            <h5 className="text-sm font-black text-white uppercase tracking-tighter mb-2">Neural Link Encrypted</h5>
+            <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-6">Upgrade to Premium to unlock solution protocols.</p>
             <button 
               onClick={onUpgrade}
-              className="text-emerald-500 text-[10px] font-bold uppercase tracking-widest hover:underline"
+              className="w-full py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-xl shadow-lg shadow-amber-900/40 hover:scale-105 active:scale-95 transition-all"
             >
-              Upgrade to Unlock
+              Initialize Upgrade
             </button>
           </div>
         </div>

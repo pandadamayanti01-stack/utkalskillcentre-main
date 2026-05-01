@@ -1,52 +1,5 @@
 import React from 'react';
-import { 
-  LayoutDashboard, 
-  BookOpen, 
-  Trophy, 
-  Settings, 
-  LogOut, 
-  Menu, 
-  X, 
-  User, 
-  CreditCard, 
-  BarChart3, 
-  Globe,
-  Mail,
-  HelpCircle,
-  Clock,
-  Star,
-  Hash,
-  Shapes,
-  Bot,
-  Loader2,
-  Send,
-  PenTool,
-  FileText,
-  ArrowLeft,
-  ArrowRight,
-  Calendar,
-  ListChecks,
-  Camera,
-  Image,
-  Lightbulb,
-  Sparkles,
-  Search,
-  AlertCircle,
-  Lock,
-  MessageCircle,
-  Book,
-  Download,
-  Save,
-  ShoppingBag,
-  Flame,
-  Mic,
-  MicOff,
-  UserPlus,
-  UserCheck,
-  TrendingUp,
-  Award,
-  Bell
-} from 'lucide-react';
+import * as Lucide from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { translations } from '../translations';
 import { SidebarItem } from './SidebarItem';
@@ -77,20 +30,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const t = translations[language];
 
   const menuItems = [
-    { id: 'profile', icon: User, label: 'Profile' },
-    { id: 'dashboard', icon: LayoutDashboard, label: t.dashboard },
-    { id: 'notifications', icon: Bell, label: language === 'en' ? 'Notifications' : 'ବିଜ୍ଞପ୍ତି' },
-    { id: 'study_buddy', icon: Bot, label: t.studyBuddy || 'Study Buddy' },
-    { id: 'gundulu', icon: Sparkles, label: language === 'en' ? '🎤 Gundulu Voice' : '🎤 ଗୁଣ୍ଡୁଲୁ ଭଏସ' },
-    { id: 'textbooks', icon: Book, label: language === 'en' ? 'Textbooks' : 'ପାଠ୍ୟପୁସ୍ତକ' },
-    { id: 'courses', icon: BookOpen, label: t.courses },
-    { id: 'monthly_tests', icon: Calendar, label: t.monthlyTests },
-    { id: 'syllabus_tracker', icon: ListChecks, label: language === 'en' ? 'Syllabus Tracker' : 'ପାଠ୍ୟକ୍ରମ ଟ୍ରାକର୍' },
-    { id: 'daily_mcqs', icon: ListChecks, label: language === 'en' ? 'Daily MCQ Practice' : 'ଦୈନିକ MCQ ଅଭ୍ୟାସ' },
-    { id: 'leaderboard', icon: Trophy, label: t.leaderboard },
-    { id: 'store', icon: ShoppingBag, label: language === 'en' ? 'Avatar Store' : 'ଅବତାର ଷ୍ଟୋର' },
-    { id: 'plans', icon: CreditCard, label: language === 'en' ? 'Subscription' : 'ସବସ୍କ୍ରିପସନ୍' },
-    { id: 'support', icon: HelpCircle, label: t.support.title },
+    { id: 'profile', icon: Lucide.User, label: 'Profile' },
+    { id: 'dashboard', icon: Lucide.LayoutDashboard, label: t.dashboard },
+    { id: 'notifications', icon: Lucide.Bell, label: language === 'en' ? 'Notifications' : 'ବିଜ୍ଞପ୍ତି' },
+    { id: 'study_buddy', icon: Lucide.Bot, label: t.studyBuddy || 'Study Buddy' },
+    { id: 'gundulu', icon: Lucide.Sparkles, label: language === 'en' ? '🎤 Gundulu Voice' : '🎤 ଗୁଣ୍ଡୁଲୁ ଭଏସ' },
+    { id: 'textbooks', icon: Lucide.Book, label: language === 'en' ? 'Textbooks' : 'ପାଠ୍ୟପୁସ୍ତକ' },
+    { id: 'courses', icon: Lucide.BookOpen, label: t.courses },
+    { id: 'monthly_tests', icon: Lucide.Calendar, label: t.monthlyTests },
+    { id: 'syllabus_tracker', icon: Lucide.ListChecks, label: language === 'en' ? 'Syllabus Tracker' : 'ପାଠ୍ୟକ୍ରମ ଟ୍ରାକର୍' },
+    { id: 'daily_mcqs', icon: Lucide.ListChecks, label: language === 'en' ? 'Daily MCQ Practice' : 'ଦୈନିକ MCQ ଅଭ୍ୟାସ' },
+    { id: 'leaderboard', icon: Lucide.Trophy, label: t.leaderboard },
+    { id: 'store', icon: Lucide.ShoppingBag, label: language === 'en' ? 'Avatar Store' : 'ଅବତାର ଷ୍ଟୋର' },
+    { id: 'plans', icon: Lucide.CreditCard, label: language === 'en' ? 'Subscription' : 'ସବସ୍କ୍ରିପସନ୍' },
+    { id: 'support', icon: Lucide.HelpCircle, label: t.support.title },
   ];
 
   return (
@@ -148,7 +101,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
             {user?.role === 'admin' && (
               <SidebarItem
-                icon={<Lock size={20} />}
+                icon={<Lucide.Lock size={20} />}
                 label={t.admin}
                 active={isAdminView}
                 onClick={() => {
@@ -178,7 +131,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onClick={handleLogout}
               className="w-full flex items-center gap-3 p-4 rounded-2xl text-red-400/70 hover:bg-red-500/10 hover:text-red-400 transition-all font-bold text-sm group"
             >
-              <LogOut size={20} className="group-hover:-translate-x-1 transition-transform" />
+              <Lucide.LogOut size={20} className="group-hover:-translate-x-1 transition-transform" />
               {t.logout}
             </button>
           </div>

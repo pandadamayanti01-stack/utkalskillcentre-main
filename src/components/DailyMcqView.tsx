@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { collection, doc, runTransaction, serverTimestamp } from 'firebase/firestore';
-import { AlertTriangle, ArrowLeft, Calendar, CheckCircle2, Coins, Copy, HelpCircle, Loader2, MessageCircle, Mic, MicOff, XCircle } from 'lucide-react';
+import * as Lucide from 'lucide-react';
 import { db as firestore } from '../firebase';
 import { DailyMcq, DailyMcqSubmission } from '../types';
 import { translations } from '../translations';
@@ -243,7 +243,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
           <h1 className="text-3xl font-bold text-white mb-2">{t.title}</h1>
           <p className="text-slate-400 max-w-2xl">{t.subtitle}</p>
           <div className="mt-3 flex items-center gap-2 text-[11px] font-medium text-amber-500/80 uppercase tracking-wider">
-            <AlertTriangle size={14} className="text-amber-500" />
+            <Lucide.AlertTriangle size={14} className="text-amber-500" />
             <span>AI can make mistakes. Please double-check answers.</span>
           </div>
         </div>
@@ -252,7 +252,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
           onClick={onBack}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/5 border border-white/10 text-slate-200 hover:bg-white/10 transition-all"
         >
-          <ArrowLeft size={16} />
+          <Lucide.ArrowLeft size={16} />
           {t.back}
         </button>
       </div>
@@ -260,7 +260,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
       {sortedMcqs.length === 0 ? (
         <div className="glass-card rounded-[2rem] border border-dashed border-white/10 p-10 text-center space-y-3">
           <div className="w-14 h-14 mx-auto rounded-2xl bg-white/5 flex items-center justify-center text-slate-500">
-            <HelpCircle size={24} />
+            <Lucide.HelpCircle size={24} />
           </div>
           <h2 className="text-xl font-bold text-white">{t.title}</h2>
           <p className="text-slate-400 max-w-lg mx-auto">{t.noItems}</p>
@@ -296,7 +296,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
                   </div>
                   <div className="flex flex-col items-end gap-2 shrink-0">
                     <div className="inline-flex items-center gap-2 text-xs text-slate-400 whitespace-nowrap">
-                      <Calendar size={14} />
+                      <Lucide.Calendar size={14} />
                       {formatDate(mcq.activeDate)}
                     </div>
                     <div className="flex flex-wrap items-center justify-end gap-2">
@@ -305,7 +305,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
                         onClick={() => handleCopyLink(mcq.id)}
                         className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-200 text-xs font-black uppercase tracking-[0.15em] hover:bg-white/10 transition-all"
                       >
-                        <Copy size={14} />
+                        <Lucide.Copy size={14} />
                         {copiedMcqId === mcq.id ? t.copied : t.copyLink}
                       </button>
                       <button
@@ -313,7 +313,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
                         onClick={() => handleShareOnWhatsApp(mcq)}
                         className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-black uppercase tracking-[0.15em] hover:bg-emerald-500/20 transition-all"
                       >
-                        <MessageCircle size={14} />
+                        <Lucide.MessageCircle size={14} />
                         {t.share}
                       </button>
                     </div>
@@ -322,7 +322,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
 
                 <div className="rounded-3xl bg-black/20 border border-white/5 p-5 space-y-5">
                   <p className="text-xs text-cyan-300 flex items-center gap-2">
-                    <Coins size={14} />
+                    <Lucide.Coins size={14} />
                     {t.rewardLine}
                   </p>
 
@@ -365,7 +365,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
                                 className={`absolute right-4 bottom-4 p-3 rounded-full transition-all ${isListening ? 'bg-red-500 animate-pulse text-white' : 'bg-white/5 text-slate-400 hover:text-cyan-400 hover:bg-white/10'}`}
                                 title="Hold to speak"
                               >
-                                {isListening ? <MicOff size={20} /> : <Mic size={20} />}
+                                {isListening ? <Lucide.MicOff size={20} /> : <Lucide.Mic size={20} />}
                               </button>
                             )}
                             {isSubmitted && (
@@ -432,7 +432,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
                         disabled={questions.length === 0 || selectedSetAnswers.length !== questions.length || selectedSetAnswers.some((answer) => !answer) || submittingMcqId === mcq.id}
                         className="w-full rounded-2xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3 transition-all flex items-center justify-center gap-2"
                       >
-                        {submittingMcqId === mcq.id ? <Loader2 size={16} className="animate-spin" /> : <Coins size={16} />}
+                        {submittingMcqId === mcq.id ? <Lucide.Loader2 size={16} className="animate-spin" /> : <Lucide.Coins size={16} />}
                         {t.submitSet}
                       </button>
                     </div>
@@ -440,11 +440,11 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
                     <div className={`rounded-2xl border p-4 space-y-3 ${submission.correctCount === submission.totalQuestions ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-amber-500/10 border-amber-500/20'}`}>
                       <div className="flex items-center justify-between gap-3 flex-wrap">
                         <div className={`flex items-center gap-2 font-bold ${submission.correctCount === submission.totalQuestions ? 'text-emerald-400' : 'text-amber-300'}`}>
-                          {submission.correctCount === submission.totalQuestions ? <CheckCircle2 size={18} /> : <XCircle size={18} />}
+                          {submission.correctCount === submission.totalQuestions ? <Lucide.CheckCircle2 size={18} /> : <Lucide.XCircle size={18} />}
                           {t.score}: {submission.correctCount}/{submission.totalQuestions}
                         </div>
                         <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 bg-black/20 text-amber-300 text-xs font-black uppercase tracking-[0.2em]">
-                          <Coins size={14} />
+                          <Lucide.Coins size={14} />
                           {t.earned} +{submission.totalPointsEarned}
                         </div>
                       </div>

@@ -27,12 +27,21 @@ export function TestSeriesRegistrationForm({ user, language, onClose }: TestSeri
   React.useEffect(() => {
     const checkRegistration = async () => {
       if (!user?.uid && !user?.id) return;
-      const regRef = doc(db, 'test_series_registrations', `reg_${user.uid || user.id}`);
-      const regSnap = await getDoc(regRef);
-      if (regSnap.exists()) {
-        setAlreadyRegistered(true);
+      try {
+        const regRef = doc(db, 'test_series_registrations', `reg_${user.uid || user.id}`);
+        const regSnap = await getDoc(regRef);
+        if (regSnap.exists()) {
+          setAlreadyRegistered(true);
+        }
+      } catch (error: any) {
+        if (error.code === 'permission-denied' || error.message?.toLowerCase().includes('permissions')) {
+          console.warn("Permission denied while checking test series registration. This usually means the user is not yet registered or rules need updating.");
+        } else {
+          console.error("Error checking registration status:", error);
+        }
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
     checkRegistration();
   }, [user]);
