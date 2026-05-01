@@ -152,13 +152,32 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   useEffect(() => {
     const fetchLatestVideos = async () => {
       try {
-        const response = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.youtube.com/feeds/videos.xml?channel_id=UCVsuuu7DyRY4-qbn8PrVBhg');
+        const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=https://www.youtube.com/feeds/videos.xml?channel_id=UCVsuuu7DyRY4-qbn8PrVBhg`);
         const data = await response.json();
         if (data.status === 'ok' && data.items && data.items.length > 0) {
-          // Rotate based on the day of the month
-          const dayIndex = new Date().getDate() % data.items.length;
-          const videoUrl = data.items[dayIndex].link;
+          // Filter videos by user class (e.g., "Class 10", "ଶ୍ରେଣୀ 10", or "ଦଶମ")
+          const odiaClassNames: Record<string, string> = {
+            '1': 'ପ୍ରଥମ', '2': 'ଦ୍ୱିତୀୟ', '3': 'ତୃତୀୟ', '4': 'ଚତୁର୍ଥ', '5': 'ପଞ୍ଚମ',
+            '6': 'ଷଷ୍ଠ', '7': 'ସପ୍ତମ', '8': 'ଅଷ୍ଟମ', '9': 'ନବମ', '10': 'ଦଶମ'
+          };
+          
+          const classSpecificVideos = data.items.filter((item: any) => {
+            const title = item.title.toLowerCase();
+            const odiaOrdinal = odiaClassNames[userClass];
+            
+            return title.includes(`class ${userClass}`) || 
+                   title.includes(`ଶ୍ରେଣୀ ${userClass}`) ||
+                   (odiaOrdinal && title.includes(odiaOrdinal)) ||
+                   title.includes(`chapter`) // General educational fallback
+          });
+
+          const targetList = classSpecificVideos.length > 0 ? classSpecificVideos : data.items;
+          
+          // Rotate based on day, looping back if list is small
+          const dayIndex = new Date().getDate() % targetList.length;
+          const videoUrl = targetList[dayIndex].link;
           const videoId = videoUrl.split('v=')[1]?.split('&')[0];
+          
           if (videoId) {
             setDailyVideoId(videoId);
           }
@@ -168,7 +187,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       }
     };
     fetchLatestVideos();
-  }, []);
+  }, [userClass]); // Re-fetch/re-filter if class changes
 
   useEffect(() => {
     const checkRegistration = async () => {
