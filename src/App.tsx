@@ -579,6 +579,7 @@ export default function App() {
             shareCount: userDocSnap.exists() ? (userDocSnap.data().shareCount ?? 0) : 0,
             statusShared: userDocSnap.exists() ? (userDocSnap.data().statusShared ?? false) : false,
             phoneNumber: userPhone || '',
+            uid: firebaseUser.uid,
             updatedAt: serverTimestamp()
           };
 
