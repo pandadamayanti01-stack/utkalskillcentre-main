@@ -255,7 +255,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
     
     try {
       const ai = getAI();
-      const model = 'gemini-1.5-flash';
+      const model = 'gemini-2.0-flash-exp';
       const turn = responseTurnRef.current;
       
       const systemInstruction = `

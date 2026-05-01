@@ -104,7 +104,7 @@ export async function solveMathDoubt(
     }
 
     const response = await withRetry(() => ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.0-flash-exp",
       contents: { parts },
       config: {
         systemInstruction,
@@ -192,7 +192,7 @@ export async function generateTestContent(title: string, language: 'en' | 'or') 
   try {
     const ai = getAI();
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.0-flash-exp",
       contents: `Generate a test for a chapter titled "${title}".
       The language should be "${language === 'or' ? 'Odia' : 'English'}".
       Provide 10 multiple choice questions.
@@ -222,7 +222,7 @@ export async function importPlaylistContent(playlistUrl: string) {
   try {
     const ai = getAI();
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.0-flash-exp",
       contents: `Extract all video titles and their YouTube video IDs from this playlist URL: ${playlistUrl}.
       This is for an educational app for Class 3 Odisha Board (Odia Medium).
       The subject is Mathematics.
@@ -269,7 +269,7 @@ export async function generateCurriculum(board: string, className: string) {
     Do not include any markdown formatting or extra text, just the raw JSON array.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.0-flash-exp",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
