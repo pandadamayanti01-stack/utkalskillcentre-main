@@ -216,3 +216,54 @@
   transform: scale(1.05);
   box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.3);
 }
+
+
+/* Gundulu Cinematic Trailer Styles */
+.trailer-overlay {
+  background: radial-gradient(circle at center, #0B0F19 0%, #000000 100%);
+  overflow: hidden;
+}
+
+.neural-particle {
+  position: absolute;
+  background: #10b981;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(1px);
+  box-shadow: 0 0 10px #10b981;
+}
+
+.glow-orb {
+  background: radial-gradient(circle at center, #10b981 0%, transparent 70%);
+  filter: blur(40px);
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.5); opacity: 0.6; }
+}
+
+.cinematic-text {
+  font-family: "Outfit", sans-serif;
+  background: linear-gradient(to bottom, #ffffff 0%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 30px rgba(16,185,129,0.3);
+}
+
+.trailer-scanline {
+  height: 2px;
+  background: linear-gradient(to right, transparent, rgba(16,185,129,0.2), transparent);
+  width: 100%;
+  position: absolute;
+  top: 0;
+  animation: scanline 8s linear infinite;
+}
+
+@keyframes scanline {
+  0% { top: -10%; }
+  100% { top: 110%; }
+}
+

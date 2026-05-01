@@ -17,6 +17,7 @@ import { DistrictLeaderboardFilter } from './DistrictLeaderboardFilter';
 import { TestSeriesRegistrationForm } from './TestSeriesRegistrationForm';
 import { db } from '../firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import { GunduluTrailer } from './GunduluTrailer';
 
 interface DashboardProps {
   user: any;
@@ -145,6 +146,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
+  const [showTrailer, setShowTrailer] = useState(false);
 
   useEffect(() => {
     const checkRegistration = async () => {
@@ -276,7 +278,13 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           {/* AI Tutor Card - Futuristic Neural Link */}
           <motion.div 
             variants={itemVariants}
-            onClick={onOpenTutor}
+            onClick={() => {
+              if (isPremium) {
+                onOpenTutor?.();
+              } else {
+                setShowTrailer(true);
+              }
+            }}
             className="glass-card rounded-[2.5rem] p-8 relative overflow-hidden cursor-pointer group hover:border-emerald-500/40 transition-all duration-500"
           >
             <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-[80px] -mr-32 -mt-32 pointer-events-none group-hover:bg-emerald-500/20 transition-all duration-700"></div>
@@ -582,6 +590,17 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           />
         )}
       </AnimatePresence>
+
+      {showTrailer && (
+        <GunduluTrailer 
+          language={language}
+          onClose={() => setShowTrailer(false)}
+          onSubscribe={() => {
+            setShowTrailer(false);
+            onUpgrade();
+          }}
+        />
+      )}
     </div>
   );
 }
