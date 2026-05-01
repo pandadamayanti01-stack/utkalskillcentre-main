@@ -2,7 +2,18 @@
 <html lang="or" class="notranslate">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="screen-orientation" content="portrait">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <script>
+      // Force orientation lock for PWA and Mobile Browsers if supported
+      try {
+        if (screen.orientation && screen.orientation.lock) {
+          screen.orientation.lock("portrait").catch(e => console.log("Orientation lock not supported on this device/browser"));
+        }
+      } catch (e) {}
+    </script>
     <meta name="google" content="notranslate" />
     <title>Utkal Skill Centre | Utkal Skill Odisha AI Learning App for Students</title>
     <meta name="description" content="Utkal Skill Centre is a Utkal Skill Odisha learning platform for Class 3 to 10 students with Odia and English study support, AI learning Odia help, textbooks, practice questions, and monthly tests." />
