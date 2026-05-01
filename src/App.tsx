@@ -1833,6 +1833,7 @@ export default function App() {
               </motion.div>
             </div>
           )}
+        </AnimatePresence>
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center opacity-30 pointer-events-none">
           <p className="text-[7px] font-black uppercase tracking-[0.6em] text-[#ffd700]">Pride Association of Bigsan Group</p>
           <p className="text-[6px] text-white/60 mt-1 uppercase tracking-widest">v2.1.0-Neural-Matrix • USC Platform</p>
