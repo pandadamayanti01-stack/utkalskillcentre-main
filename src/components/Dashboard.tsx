@@ -18,6 +18,8 @@ import { TestSeriesRegistrationForm } from './TestSeriesRegistrationForm';
 import { db } from '../firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { GunduluTrailer } from './GunduluTrailer';
+import NeuralBackground from './NeuralBackground';
+import OdishaLiveMap from './OdishaLiveMap';
 
 interface DashboardProps {
   user: any;
@@ -269,8 +271,9 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   };
 
   return (
-    <div className="relative">
-    <motion.div 
+    <div className="relative min-h-screen overflow-hidden">
+      <NeuralBackground />
+      <motion.div 
       variants={containerVariants}
       initial="hidden"
       animate="show"
@@ -530,6 +533,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               </div>
             </div>
           </div>
+
+          <OdishaLiveMap language={language} />
 
           {/* Learning Progress Matrix */}
           <div className="glass-card rounded-[2.5rem] p-8 border-white/5 space-y-6">

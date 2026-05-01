@@ -16,7 +16,7 @@ export const GunduluTrailer: React.FC<GunduluTrailerProps> = ({ onClose, onSubsc
   useEffect(() => {
     // Play Futuristic Startup Sound
     const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-    audio.volume = 0.3;
+    audio.volume = 0.6;
     audio.play().catch(e => console.log("Audio playback requires user interaction first"));
     
     const timer = setTimeout(() => {
@@ -25,7 +25,7 @@ export const GunduluTrailer: React.FC<GunduluTrailerProps> = ({ onClose, onSubsc
       } else {
         // Success Chime for Paywall
         const chime = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3');
-        chime.volume = 0.4;
+        chime.volume = 0.7;
         chime.play().catch(() => {});
         setShowPaywall(true);
       }
