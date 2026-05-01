@@ -291,27 +291,36 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             
             <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
               <div className="relative">
-                <div className="w-24 h-24 rounded-[2rem] bg-slate-900 border-2 border-emerald-500/30 shadow-[0_0_40px_rgba(16,185,129,0.2)] flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:rotate-3 transition-all duration-500 overflow-hidden">
-                  <img src="/gundulu.png" alt="Gundulu" className="w-full h-full object-cover" />
+                <div className="w-24 h-24 rounded-[2rem] bg-slate-900 border-2 border-emerald-500/30 shadow-[0_0_40px_rgba(16,185,129,0.2)] flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:rotate-3 transition-all duration-500 overflow-hidden relative">
+                  <div className="absolute inset-0 bg-emerald-500/10 animate-pulse" />
+                  <img src="/gundulu.png" alt="Gundulu" className="w-full h-full object-cover relative z-10" />
                 </div>
                 <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-emerald-500 rounded-xl flex items-center justify-center text-white shadow-lg border-2 border-slate-900">
                   <Brain size={16} />
                 </div>
               </div>
               
-              <div className="flex-1 text-center md:text-left space-y-3">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em]">
-                    <Sparkles size={12} className="animate-pulse" />
-                    Neural Voice Link Active
+                <div className="flex-1 text-center md:text-left space-y-3">
+                  <div className="flex flex-wrap items-center gap-4">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em]">
+                        <Sparkles size={12} className="animate-pulse" />
+                        Neural Link Active
+                      </div>
+                      {!isPremium && (
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-black uppercase tracking-[0.2em]">
+                          <Zap size={12} className="animate-pulse" />
+                          Free Preview
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></div>
+                      <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">
+                        {language === 'en' ? 'Online' : 'ଅନ୍‌ଲାଇନ୍'}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></div>
-                    <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">
-                      {language === 'en' ? 'Online' : 'ଅନ୍‌ଲାଇନ୍'}
-                    </span>
-                  </div>
-                </div>
                 <h3 className="text-3xl font-black text-white tracking-tighter">
                   {language === 'en' ? 'Talk to Gundulu' : 'ଗୁଣ୍ଡୁଲୁ ସହିତ କଥା ହୁଅନ୍ତୁ'}
                 </h3>
