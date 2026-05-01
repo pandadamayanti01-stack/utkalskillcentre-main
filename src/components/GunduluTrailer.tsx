@@ -14,10 +14,19 @@ export const GunduluTrailer: React.FC<GunduluTrailerProps> = ({ onClose, onSubsc
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
+    // Play Futuristic Startup Sound
+    const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    audio.volume = 0.3;
+    audio.play().catch(e => console.log("Audio playback requires user interaction first"));
+    
     const timer = setTimeout(() => {
       if (step < 3) {
         setStep(prev => prev + 1);
       } else {
+        // Success Chime for Paywall
+        const chime = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3');
+        chime.volume = 0.4;
+        chime.play().catch(() => {});
         setShowPaywall(true);
       }
     }, 4000);
