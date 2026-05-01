@@ -25,10 +25,8 @@ import { getStorage as getAdminStorage } from 'firebase-admin/storage';
 import { google } from 'googleapis';
 import cron from 'node-cron';
 
-// Use createRequire to import pdf-parse in ESM
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const pdfParse = require('pdf-parse');
+// Use the modern PDFParse class from the new pdf-parse package
+import { PDFParse } from 'pdf-parse';
 
 // Language detection helpers
 function detectOdia(text: string) {
@@ -59,13 +57,13 @@ function getExpectedLanguage(subject: string): 'odia' | 'english' | 'hindi' | 's
 
 
 
-async function extractPdfText(buffer: Buffer) {
-  // Use the pdfParse function required at the top of the file
+async function extractPdfText(buffer: Buffer): Promise<string> {
   try {
-    const data = await pdfParse(buffer);
-    return data.text || '';
-  } catch (err) {
-    console.error('pdf-parse failed:', err);
+    const parser = new PDFParse({ data: buffer });
+    const result = await parser.getText();
+    return result.text || '';
+  } catch (error) {
+    console.error('PDF extraction error:', error);
     return '';
   }
 }
@@ -77,7 +75,7 @@ import { generateMcqsWithGemini } from '../utils/geminiMcqGenerator.js';
 const DEFAULT_AUTOMATION_TIME = '07:00';
 const DEFAULT_AUTOMATION_TIME_ZONE = 'Asia/Kolkata';
 const DEFAULT_AUTOMATION_STATUS = 'draft';
-const MAX_SOURCE_TEXT_LENGTH = 18000;
+const MAX_SOURCE_TEXT_LENGTH = 100000; // Increased to ~80-100 pages to bypass long prefaces
 const DEFAULT_ENABLED_CLASSES = Array.from({ length: 10 }, (_, index) => `class${index + 1}`);
 
 type DailyMcqQuestion = {
@@ -129,6 +127,7 @@ type DriveContentResult = {
   text: string;
   fileName: string;
   mimeType: string;
+  buffer?: Buffer;
 };
 
 let lastAutomationRunKey = '';
@@ -244,11 +243,12 @@ async function loadDriveTextContent(fileId: string) {
       { fileId, mimeType: 'text/plain' },
       { responseType: 'arraybuffer' }
     );
-
+    const buffer = Buffer.from(exportResponse.data as ArrayBuffer);
     return {
-      text: Buffer.from(exportResponse.data as ArrayBuffer).toString('utf8'),
+      text: buffer.toString('utf8'),
       fileName,
       mimeType,
+      buffer,
     };
   }
 
@@ -260,9 +260,10 @@ async function loadDriveTextContent(fileId: string) {
 
   if (mimeType === 'application/pdf') {
     return {
-      text: await extractPdfText(fileBuffer),
+      text: '', // Skip extraction, we'll use vision
       fileName,
       mimeType,
+      buffer: fileBuffer,
     };
   }
 
@@ -271,6 +272,7 @@ async function loadDriveTextContent(fileId: string) {
       text: fileBuffer.toString('utf8'),
       fileName,
       mimeType,
+      buffer: fileBuffer,
     };
   }
 
@@ -302,7 +304,17 @@ function getFileNameFromUrl(url: string) {
 }
 
 async function loadUrlTextContent(url: string): Promise<DriveContentResult> {
-  const response = await fetch(url);
+  // Handle Google Drive links by converting them to direct download links
+  let downloadUrl = url;
+  if (url.includes('drive.google.com')) {
+    const fileId = extractDriveFileId(url);
+    if (fileId) {
+      // Use the direct download endpoint (may require file to be public or API key)
+      downloadUrl = `https://docs.google.com/uc?export=download&id=${fileId}`;
+    }
+  }
+
+  const response = await fetch(downloadUrl);
   if (!response.ok) {
     throw new Error(`Failed to fetch textbook source URL (${response.status}).`);
   }
@@ -346,37 +358,51 @@ async function loadTextbookFromBucket(adminApp: App, className: string, subject:
     let bestScore = 0;
     let bestFile = null;
     let bestFileName = '';
-    let bestClassFolder = '';
+    
+    // Build possible folder patterns based on your bucket structure: "Class X/Subject/"
+    const subjectFolder = subject.charAt(0).toUpperCase() + subject.slice(1);
+    const folderSearchPatterns = [];
     for (const classFolder of possibleClassFolders) {
-      const [files] = await bucket.getFiles({ prefix: classFolder, maxResults: 100 });
+      folderSearchPatterns.push(`${classFolder}${subjectFolder}/`);
+      folderSearchPatterns.push(classFolder); // Fallback to root of Class folder
+    }
+
+    for (const prefix of folderSearchPatterns) {
+      console.log(`[Bucket Search] Checking prefix: ${prefix}`);
+      const [files] = await bucket.getFiles({ prefix, maxResults: 50 });
       const pdfFiles = files.filter((f) => f.name.toLowerCase().endsWith('.pdf'));
+      
       for (const f of pdfFiles) {
-        // Normalize for matching: lower, underscores/spaces, ignore case
         const lower = f.name.toLowerCase().replace(/[_\s]+/g, '');
         let score = 0;
         for (const kw of keywords) {
           const normKw = kw.toLowerCase().replace(/[_\s]+/g, '');
           if (lower.includes(normKw)) score += normKw.length;
         }
+        
+        // Bonus for being in the correct subject subfolder
+        if (f.name.includes(`/${subjectFolder}/`)) score += 10;
+
         if (score > bestScore) {
           bestScore = score;
           bestFile = f;
           bestFileName = f.name;
-          bestClassFolder = classFolder;
         }
       }
+      if (bestFile && bestScore > 5) break; // Found a good match in the subject folder, stop searching
     }
+    
     if (!bestFile || bestScore <= 0) {
       console.warn(`[Bucket Debug] No PDF file matched keywords for ${className}/${subject} in ${TEXTBOOK_BUCKET_NAME}`);
       return null;
     }
     const [buffer] = await bestFile.download();
-    const text = await extractPdfText(buffer);
     return {
       driveContent: {
-        text,
+        text: '', 
         fileName: bestFileName.split('/').pop() || bestFileName,
         mimeType: 'application/pdf',
+        buffer,
       },
       source: {
         textbookId: `bucket:${bestFileName}`,
@@ -461,6 +487,33 @@ async function getFallbackDriveContent(className: string, subject: string) {
 
 async function getTextbookContentFromSource(textbook: TextbookSource, className: string, subject: string) {
   const sourceUrl = String(textbook.download_url || '').trim();
+  const driveFileId = extractDriveFileId(sourceUrl || textbook.driveFileId || textbook.driveUrl);
+
+  if (driveFileId) {
+    // If it's a Drive link (even in the download_url field), use the authenticated API
+    let driveContent: DriveContentResult;
+    try {
+      driveContent = await loadDriveTextContent(driveFileId);
+    } catch (error: any) {
+      if (typeof error?.message === 'string' && error.message.startsWith('FOLDER:')) {
+        driveContent = await loadDriveFolderBestMatch(driveFileId, className, subject);
+      } else {
+        throw error;
+      }
+    }
+    return {
+      driveContent,
+      source: {
+        textbookId: textbook.id,
+        textbookTitle: textbook.title,
+        driveFileId,
+        sourceUrl: sourceUrl || undefined,
+        driveFileName: driveContent.fileName,
+        mimeType: driveContent.mimeType,
+      },
+    };
+  }
+
   if (sourceUrl) {
     const urlContent = await loadUrlTextContent(sourceUrl);
     return {
@@ -475,91 +528,63 @@ async function getTextbookContentFromSource(textbook: TextbookSource, className:
     };
   }
 
-  const driveFileId = extractDriveFileId(textbook.driveFileId || textbook.driveUrl);
-  if (!driveFileId) {
-    throw new Error(`Textbook ${textbook.title || textbook.id} does not have a usable download URL or Drive source.`);
-  }
-
-  let driveContent: DriveContentResult;
-  try {
-    driveContent = await loadDriveTextContent(driveFileId);
-  } catch (error: any) {
-    if (typeof error?.message === 'string' && error.message.startsWith('FOLDER:')) {
-      driveContent = await loadDriveFolderBestMatch(driveFileId, className, subject);
-    } else {
-      throw error;
-    }
-  }
-
-  return {
-    driveContent,
-    source: {
-      textbookId: textbook.id,
-      textbookTitle: textbook.title,
-      driveFileId,
-      sourceUrl: String(textbook.driveUrl || '').trim() || undefined,
-      driveFileName: driveContent.fileName,
-      mimeType: driveContent.mimeType,
-    },
-  };
+  throw new Error(`Textbook ${textbook.title || textbook.id} does not have a usable download URL or Drive source.`);
 }
 
 const UNWANTED_KEYWORDS = [
-  'website', '.com', '.in', 'page', 'pages', 'author', 'publisher', 'publication',
-  'www', 'http', 'https', 'copyright', 'email', 'contact', 'phone', 'address', 'source', 'drive', 'file', 'download', 'upload', 'reference', 'question bank', 'syllabus', 'index', 'contents', 'schoolskill', 'utkalskillcentre', 'educationodisha', 'odishaskill', 'learningcentre', 'board', 'class', 'lesson', 'unit', 'chapter', 'of of', 'of 160', 'of 176', 'of 100', 'of 150', 'of 200'
+  'website', '.com', '.in', 'publisher', 'publication',
+  'www', 'http', 'https', 'copyright', 'email', 'contact', 'phone', 'address', 'utkalskillcentre'
 ];
 
 function isValidQuestionText(text: string) {
   const lower = text.toLowerCase();
+  // Only reject if it contains absolute "junk" keywords
   return !UNWANTED_KEYWORDS.some(keyword => lower.includes(keyword));
 }
 
 function cleanGeneratedQuestions(questions: any[], subject?: string): DailyMcqQuestion[] {
   const expectedLang = subject ? getExpectedLanguage(subject) : null;
-  function matchesExpectedLanguage(text: string) {
-    if (!expectedLang) return true;
-    if (expectedLang === 'odia') return detectOdia(text);
-    if (expectedLang === 'english') return detectEnglish(text);
-    if (expectedLang === 'hindi') return detectHindi(text);
-    if (expectedLang === 'sanskrit') return detectSanskrit(text);
-    return true;
-  }
   const rawQuestions = Array.isArray(questions) ? questions : [];
-  const normalizeOptionText = (value: string) => String(value || '')
-    .replace(/^\s*[A-Da-d]\s*[\.\)]\s*/g, '')
-    .trim();
   const cleaned = [];
+
   for (const q of rawQuestions) {
-    const question = String(q?.question || '').trim();
-    const options = Array.isArray(q?.options)
-      ? q.options.map((option: any) => normalizeOptionText(String(option || ''))).filter(Boolean)
+    // Handle potential key casing issues (question vs Question)
+    const question = String(q?.question || q?.Question || '').trim();
+    const options = Array.isArray(q?.options || q?.Options)
+      ? (q.options || q.Options).map((o: any) => String(o || '').trim()).filter(Boolean)
       : [];
-    const rawCorrect = String(q?.correct_answer || '').trim();
-    let correct_answer = normalizeOptionText(rawCorrect);
-    // If Gemini returns "A"/"B"/"C"/"D", map it to the corresponding option text.
-    if (/^[A-Da-d]$/.test(correct_answer) && options.length >= 4) {
-      const index = correct_answer.toUpperCase().charCodeAt(0) - 65;
-      correct_answer = options[index] || correct_answer;
-    }
-    const explanation = String(q?.explanation || '').trim();
-    const type = q?.type === 'subjective' ? 'subjective' : 'mcq';
+    const correct_answer = String(q?.correct_answer || q?.Correct_Answer || q?.answer || '').trim();
+    const explanation = String(q?.explanation || q?.Explanation || '').trim();
+    const type = (q?.type || q?.Type || '').toLowerCase() === 'subjective' ? 'subjective' : 'mcq';
+    const chapter = String(q?.chapter || q?.Chapter || '').trim();
     
     let reason = '';
     if (!question) reason = 'Missing question text';
-    else if (type === 'mcq' && options.length < 2) reason = 'Not enough options';
-    else if (!correct_answer) reason = 'Missing correct answer';
-    else if (type === 'mcq' && !options.includes(correct_answer)) reason = 'Correct answer not in options';
-    else if (!isValidQuestionText(question)) reason = 'Invalid question text';
-    else if (!isValidQuestionText(explanation)) reason = 'Invalid explanation text';
-    else if (!matchesExpectedLanguage(question)) reason = 'Language mismatch';
+    else if (type === 'mcq' && options.length < 2) reason = 'Not enough options (MCQ requires at least 2)';
+    else if (type === 'mcq' && !correct_answer) reason = 'Missing correct answer for MCQ';
+    else if (!isValidQuestionText(question)) reason = 'Invalid keywords in question';
+    else if (!isValidQuestionText(explanation)) reason = 'Invalid keywords in explanation';
+    
     if (reason) {
-      console.warn(`[MCQ-EXTRACT] Skipped question: "${question.slice(0, 80)}..." Reason: ${reason}`);
+      console.warn(`[MCQ-EXTRACT] Skipped question: "${question.slice(0, 50)}..." Reason: ${reason}`);
       continue;
     }
-    cleaned.push({ question, options, correct_answer, explanation, type });
+
+    cleaned.push({ 
+      question, 
+      options, 
+      correct_answer, 
+      explanation, 
+      type: type as "mcq" | "subjective",
+      chapter
+    });
   }
+  
   console.log(`[MCQ-EXTRACT] Total valid questions: ${cleaned.length} / ${rawQuestions.length}`);
-  return capDailyMcqQuestionList(cleaned).map((q, index) => ({ ...q, marks: getDailyMcqMarksForIndex(index) }));
+  return capDailyMcqQuestionList(cleaned).map((q, index) => ({ 
+    ...q, 
+    marks: getDailyMcqMarksForIndex(index) 
+  }));
 }
 
 async function generateQuestionsFromText(input: {
@@ -567,22 +592,22 @@ async function generateQuestionsFromText(input: {
   subject: string;
   board?: string;
   activeDate: string;
-  sourceText: string;
+  pdfBuffer: Buffer;
 }) {
-  // Use the new Gemini MCQ generator utility with best-practice prompt
   const target = DAILY_MCQ_QUESTION_COUNT;
-  const trimmedSource = input.sourceText.replace(/\s+/g, ' ').trim().slice(0, MAX_SOURCE_TEXT_LENGTH);
-  if (!trimmedSource) {
+  if (!input.pdfBuffer || input.pdfBuffer.length === 0) {
     throw new Error('No textbook content available for MCQ generation.');
   }
-  console.log('[DailyMCQ] GEMINI_API_KEY at MCQ generation:', process.env.GEMINI_API_KEY);
-  // Generate extra questions so we can keep only the best valid ones.
-  const mcqs = await generateMcqsWithGemini(trimmedSource, Math.max(DAILY_MCQ_QUESTION_COUNT + 5, 15));
+  
+  console.log('[DailyMCQ] Generating with Native PDF Vision...');
+  // Pass the raw buffer directly to our updated Gemini utility
+  const mcqs = await generateMcqsWithGemini(input.pdfBuffer, Math.max(DAILY_MCQ_QUESTION_COUNT + 5, 15), input.subject);
+  
   // Validate and cap the MCQs
   const questions = cleanGeneratedQuestions(mcqs, input.subject);
   if (questions.length < target) {
     throw new Error(
-      `Expected ${target} MCQs for the daily set but only ${questions.length} valid question(s) could be generated. Try more textbook content or retry generation.`,
+      `Expected ${target} MCQs for the daily set but only ${questions.length} valid question(s) could be generated.`,
     );
   }
   return questions;
@@ -671,37 +696,24 @@ async function buildGeneratedDailyMcq(adminApp: App, databaseId: string, params:
   title?: string;
   status?: 'draft' | 'published';
 }) {
-  let driveContent: DriveContentResult;
-  let source: GeneratedDailyMcqResult['source'];
-
-  // 1. Try loading from Firebase Storage bucket (preferred)
+  // 1. Strictly load from Firebase Storage bucket
   const bucketResult = await loadTextbookFromBucket(adminApp, params.className, params.subject);
-  if (bucketResult) {
-    driveContent = bucketResult.driveContent;
-    source = bucketResult.source;
-  } else {
-    // 2. Try Firestore textbook record (download_url or Drive link)
-    const textbook = await findMatchingTextbookSource(adminApp, databaseId, params);
-    if (textbook) {
-      const textbookSource = await getTextbookContentFromSource(textbook, params.className, params.subject);
-      driveContent = textbookSource.driveContent;
-      source = textbookSource.source;
-    } else {
-      // 3. Fallback to shared Drive folder
-      const fallback = await getFallbackDriveContent(params.className, params.subject);
-      if (!fallback) {
-        throw new Error(`No textbook source found for ${params.className} ${params.subject}. Upload PDFs to the storage bucket under "Class X/" folders, or add a textbook with a download URL in admin.`);
-      }
-      driveContent = fallback.driveContent;
-      source = fallback.source;
-    }
+  
+  if (!bucketResult) {
+    const classDigit = params.className.replace(/[^0-9]/g, '');
+    const subjectFolder = params.subject.charAt(0).toUpperCase() + params.subject.slice(1);
+    throw new Error(`No textbook found in bucket for ${params.className} ${params.subject}. Please upload a PDF to "Class ${classDigit}/${subjectFolder}/" in your storage bucket.`);
   }
+
+  const driveContent = bucketResult.driveContent;
+  const source = bucketResult.source;
+
   const questions = await generateQuestionsFromText({
     className: params.className,
     subject: params.subject,
     board: params.board || 'odisha',
     activeDate: params.activeDate,
-    sourceText: driveContent.text,
+    pdfBuffer: driveContent.buffer!,
   });
 
   return {
@@ -713,6 +725,38 @@ async function buildGeneratedDailyMcq(adminApp: App, databaseId: string, params:
     questions,
     source,
   } satisfies GeneratedDailyMcqResult;
+}
+
+async function getAvailableBucketSubjects(adminApp: App, className: string): Promise<string[]> {
+  try {
+    const bucket = getAdminStorage(adminApp).bucket(TEXTBOOK_BUCKET_NAME);
+    const classDigit = className.replace(/[^0-9]/g, '');
+    const possibleClassFolders = [`Class ${classDigit}/`, `Class_${classDigit}/`];
+    
+    const subjects = new Set<string>();
+    for (const prefix of possibleClassFolders) {
+      // List files with this prefix to identify subject subfolders
+      const [files] = await bucket.getFiles({ prefix, maxResults: 100 });
+      for (const file of files) {
+        // Expected path: "Class X/Subject/Book.pdf" or "Class X/Subject.pdf"
+        const relativePath = file.name.slice(prefix.length);
+        const parts = relativePath.split('/');
+        
+        if (parts.length >= 2 && parts[0].trim()) {
+          // It's in a subfolder, e.g. "Math/Algebra.pdf" -> subject is "Math"
+          subjects.add(parts[0].toLowerCase().trim());
+        } else if (file.name.toLowerCase().endsWith('.pdf')) {
+          // It's a file directly in the class folder, e.g. "Math.pdf" -> subject is "Math"
+          const fileName = parts[0].split('.')[0];
+          if (fileName) subjects.add(fileName.toLowerCase().trim());
+        }
+      }
+    }
+    return Array.from(subjects).filter(s => s && s !== 'textbooks' && !s.includes('vocational'));
+  } catch (error) {
+    console.error(`[MCQ-AUTO] Error scanning bucket for ${className}:`, error);
+    return [];
+  }
 }
 
 export async function runScheduledGeneration(adminApp: App, databaseId: string, dateString?: string) {
@@ -744,9 +788,15 @@ export async function runScheduledGeneration(adminApp: App, databaseId: string, 
         continue;
       }
 
-      const classSubjects = (!hasCustomRotation && subjectsByClass?.[className]) || undefined;
-      console.log(`[MCQ-AUTO] Subjects for ${className}:`, classSubjects || settings.dailyMcqSubjectRotation);
-      const subject = getRotatingDailyMcqSubject(activeDate, classSubjects || settings.dailyMcqSubjectRotation);
+      // Determine which subjects are actually available in the bucket for this class
+      const availableBucketSubjects = await getAvailableBucketSubjects(adminApp, className);
+      console.log(`[MCQ-AUTO] Available subjects in bucket for ${className}:`, availableBucketSubjects);
+
+      const classSubjects = (availableBucketSubjects.length > 0) 
+        ? availableBucketSubjects 
+        : ((!hasCustomRotation && subjectsByClass?.[className]) || settings.dailyMcqSubjectRotation);
+      
+      const subject = getRotatingDailyMcqSubject(activeDate, classSubjects);
       console.log(`[MCQ-AUTO] Selected subject for ${className}:`, subject);
 
       const generatedSet = await buildGeneratedDailyMcq(adminApp, databaseId, {

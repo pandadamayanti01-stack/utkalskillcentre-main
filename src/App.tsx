@@ -50,9 +50,22 @@ import {
   TrendingUp,
   Award,
   Bell,
-  Share
+  Share,
+  XCircle,
+  ClipboardList
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  ResponsiveContainer, 
+  LineChart, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  Tooltip, 
+  CartesianGrid,
+  Area,
+  AreaChart
+} from 'recharts';
 import Markdown from 'react-markdown';
 import { GoogleGenAI } from "@google/genai";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -1542,51 +1555,54 @@ export default function App() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#0B0F19] flex flex-col relative overflow-hidden font-sans">
-        {/* PWA Install Banner */}
-        <AnimatePresence>
-          {showInstallBanner && (
-            <motion.div 
-              initial={{ y: 100, x: '-50%', opacity: 0 }}
-              animate={{ y: 0, x: '-50%', opacity: 1 }}
-              exit={{ y: 100, x: '-50%', opacity: 0 }}
-              className="install-banner"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-                  <Download size={20} className="text-white" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-white">Install Utkal App</p>
-                  <p className="text-[10px] text-white/70 font-medium">Access learning tools faster!</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <button 
-                  onClick={() => setShowInstallBanner(false)}
-                  className="p-2 text-white/50 hover:text-white transition-colors"
+      <div className="h-screen bg-[#0B0F19] flex flex-col relative overflow-hidden font-sans">
+        <div className="absolute inset-x-0 top-0 z-[100] pointer-events-none">
+          <div className="pointer-events-auto">
+            <AnimatePresence>
+              {showInstallBanner && (
+                <motion.div 
+                  initial={{ y: 100, x: '-50%', opacity: 0 }}
+                  animate={{ y: 0, x: '-50%', opacity: 1 }}
+                  exit={{ y: 100, x: '-50%', opacity: 0 }}
+                  className="install-banner"
                 >
-                  <X size={16} />
-                </button>
-                <button 
-                  onClick={handleInstall}
-                  className="install-button"
-                >
-                  Install Now
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                      <Download size={20} className="text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-white">Install Utkal App</p>
+                      <p className="text-[10px] text-white/70 font-medium">Access learning tools faster!</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button 
+                      onClick={() => setShowInstallBanner(false)}
+                      className="p-2 text-white/50 hover:text-white transition-colors"
+                    >
+                      <X size={16} />
+                    </button>
+                    <button 
+                      onClick={handleInstall}
+                      className="install-button"
+                    >
+                      Install Now
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-        {/* {showLaunchPoster && (
-          <UtkalDivasPoster onClose={() => {
-            setShowLaunchPoster(false);
-            localStorage.setItem('utkalDivasSeen', 'true');
-            handleGunduluGreeting();
-          }} />
-        )}
-         <GunduluHuman skipInitialGreeting={showLaunchPoster} /> */}
+            {/* {showLaunchPoster && (
+              <UtkalDivasPoster onClose={() => {
+                setShowLaunchPoster(false);
+                localStorage.setItem('utkalDivasSeen', 'true');
+                handleGunduluGreeting();
+              }} />
+            )}
+             <GunduluHuman skipInitialGreeting={showLaunchPoster} /> */}
+          </div>
+        </div>
 
         <div className="flex-1 flex relative overflow-hidden">
           {/* Background Glows & Grid */}
@@ -1595,7 +1611,7 @@ export default function App() {
           <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-blue-500/20 rounded-full blur-[120px] pointer-events-none"></div>
 
           {/* Left Content - Marketing Focus */}
-        <div className="hidden lg:flex flex-1 flex-col justify-center px-16 xl:px-24 relative z-10 border-r border-white/5 bg-slate-900/30 backdrop-blur-sm overflow-hidden">
+        <div className="hidden lg:flex flex-1 flex-col justify-start pt-24 px-16 xl:px-24 relative z-10 border-r border-white/5 bg-slate-900/30 backdrop-blur-sm overflow-y-auto">
           {/* Abstract Network Background */}
           <div className="absolute inset-0 opacity-20 pointer-events-none">
             <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
@@ -1719,7 +1735,7 @@ export default function App() {
         </div>
 
         {/* Right Content - Login Form */}
-        <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-12 relative z-10">
+        <div className="flex-1 flex flex-col items-center justify-start pt-12 p-6 lg:p-12 relative z-10 overflow-y-auto">
           {authStep === 'login' ? (
             <Suspense fallback={<ViewLoader />}>
               <LoginComponent language={language} translations={translations} setLanguage={setLanguage} setRegData={setRegData} />
@@ -1970,11 +1986,117 @@ export default function App() {
 );
 }
 
+function ParentReportView({ user, results, tests, onBack, language }: any) {
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const avgAccuracy = results.length > 0 ? Math.round(results.reduce((acc: number, r: any) => acc + r.accuracy, 0) / results.length) : 0;
+
+  return (
+    <div className="fixed inset-0 z-[110] bg-white text-slate-900 overflow-y-auto p-4 md:p-12 print:p-0">
+      <div className="max-w-4xl mx-auto border-2 border-slate-200 rounded-3xl p-8 md:p-12 relative overflow-hidden print:border-0 print:m-0">
+        <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-12 border-b border-slate-100 pb-12">
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-black uppercase tracking-widest">
+              Official Progress Report
+            </div>
+            <h1 className="text-4xl font-black tracking-tight text-slate-900">Utkal Skill Centre</h1>
+            <div className="space-y-1">
+              <p className="text-xl font-bold text-slate-700">Student: {user.name}</p>
+              <p className="text-sm text-slate-500">Class: {user.class} | Board: {user.board}</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Generated On</p>
+            <p className="text-sm font-bold text-slate-700">{new Date().toLocaleDateString()}</p>
+            <div className="mt-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+              <p className="text-2xl font-black text-emerald-600">{avgAccuracy}%</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Overall Accuracy</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
+          <div className="space-y-6">
+            <h3 className="text-lg font-black text-slate-900 uppercase tracking-widest border-l-4 border-emerald-500 pl-4">Academic Summary</h3>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center p-4 bg-slate-50 rounded-2xl">
+                <span className="text-sm font-medium text-slate-600">Tests Attempted</span>
+                <span className="text-lg font-black text-slate-900">{results.length}</span>
+              </div>
+              <div className="flex justify-between items-center p-4 bg-slate-50 rounded-2xl">
+                <span className="text-sm font-medium text-slate-600">Chapters Completed</span>
+                <span className="text-lg font-black text-slate-900">{user.completed_chapters?.length || 0}</span>
+              </div>
+              <div className="flex justify-between items-center p-4 bg-slate-50 rounded-2xl">
+                <span className="text-sm font-medium text-slate-600">Total Reward Points</span>
+                <span className="text-lg font-black text-emerald-600">{user.points} XP</span>
+              </div>
+            </div>
+          </div>
+          <div className="space-y-6">
+            <h3 className="text-lg font-black text-slate-900 uppercase tracking-widest border-l-4 border-emerald-500 pl-4">Recent Performance</h3>
+            <div className="space-y-3">
+              {results.slice(0, 5).map((r: any, idx: number) => (
+                <div key={idx} className="flex justify-between items-center border-b border-slate-50 pb-2">
+                  <div>
+                    <p className="text-sm font-bold text-slate-800 line-clamp-1">{r.chapterName || 'General Assessment'}</p>
+                    <p className="text-[10px] text-slate-400 uppercase font-bold">{new Date(r.timestamp?.seconds * 1000).toLocaleDateString()}</p>
+                  </div>
+                  <span className={`text-sm font-black ${r.accuracy >= 80 ? 'text-emerald-500' : r.accuracy >= 50 ? 'text-amber-500' : 'text-red-500'}`}>{r.accuracy}%</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="p-8 bg-slate-900 rounded-3xl text-white mb-12">
+          <div className="flex items-center gap-3 mb-4">
+            <Sparkles className="text-emerald-400" size={24} />
+            <h3 className="text-lg font-black uppercase tracking-widest">Gundulu's Insight</h3>
+          </div>
+          <p className="text-slate-300 italic leading-relaxed">
+            "{user.name} is showing consistent improvement in their learning journey. We recommend focusing more on weekly practice to maintain their top rank in the district."
+          </p>
+        </div>
+
+        <div className="flex justify-between items-end border-t border-slate-100 pt-12 mt-12">
+          <div className="text-center">
+            <div className="w-32 h-1 bg-slate-100 mb-2"></div>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Guardian's Signature</p>
+          </div>
+          <div className="text-center">
+            <p className="font-serif font-black text-slate-900 text-xl mb-1 italic">Utkal Skill Centre</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">System Generated</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-12 flex justify-center gap-4 print:hidden">
+        <button 
+          onClick={handlePrint}
+          className="bg-slate-900 hover:bg-slate-800 text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-2 shadow-xl shadow-slate-900/20"
+        >
+          <Download size={20} /> Download Report (PDF)
+        </button>
+        <button 
+          onClick={onBack}
+          className="bg-slate-100 hover:bg-slate-200 text-slate-600 px-8 py-4 rounded-2xl font-bold"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function ParentDashboard({ user, chapters, leaderboard, language, onBack, userProgress }: any) {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [learningInsights, setLearningInsights] = useState<string>('');
   const [generatingInsights, setGeneratingInsights] = useState(false);
+  const [viewingReport, setViewingReport] = useState(false);
 
   useEffect(() => {
     const q = query(
@@ -2021,6 +2143,18 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack, userPr
     }
   };
 
+  if (viewingReport) {
+    return (
+      <ParentReportView 
+        user={user}
+        results={results}
+        tests={chapters}
+        language={language}
+        onBack={() => setViewingReport(false)}
+      />
+    );
+  }
+
   const stats = {
     totalQuizzes: results.length,
     avgScore: results.length > 0 ? Math.round(results.reduce((acc, r) => acc + r.accuracy, 0) / results.length) : 0,
@@ -2058,9 +2192,12 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack, userPr
           <ArrowLeft size={20} />
           <span>Back to Profile</span>
         </button>
-        <div className="px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-bold uppercase tracking-widest">
-          Parent Mode
-        </div>
+        <button 
+          onClick={() => setViewingReport(true)}
+          className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-widest flex items-center gap-2 shadow-lg shadow-emerald-500/20 transition-all"
+        >
+          <FileText size={16} /> Get Full Progress Report
+        </button>
       </motion.div>
 
       <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -4721,9 +4858,211 @@ function QuizEngine({ questions, onComplete, language, userId, chapterId }: { qu
   );
 }
 
+function ResultsReviewView({ submission, test, onBack, language }: any) {
+  return (
+    <div className="fixed inset-0 z-[80] bg-slate-950 overflow-y-auto p-6">
+      <div className="max-w-4xl mx-auto space-y-8">
+        <div className="flex items-center justify-between sticky top-0 bg-slate-950/80 backdrop-blur-md py-4 z-10 border-b border-white/5 mb-8">
+          <div>
+            <h2 className="text-2xl font-bold text-white">{test.month} {test.year} Results</h2>
+            <p className="text-slate-400 text-sm">Transparency Report & Model Answers</p>
+          </div>
+          <button onClick={onBack} className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-white">
+            <X size={24} />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-slate-900 border border-white/5 p-6 rounded-3xl text-center">
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Final Score</p>
+            <p className="text-3xl font-black text-emerald-500">{submission.finalScore || submission.score}/{submission.totalMaxMarks || submission.totalQuestions}</p>
+          </div>
+          <div className="bg-slate-900 border border-white/5 p-6 rounded-3xl text-center">
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Status</p>
+            <p className="text-xl font-bold text-blue-400">Graded & Verified</p>
+          </div>
+          <div className="bg-slate-900 border border-white/5 p-6 rounded-3xl text-center">
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Violations</p>
+            <p className={`text-xl font-bold ${submission.violations > 0 ? 'text-red-500' : 'text-emerald-500'}`}>{submission.violations || 0} Flags</p>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          {test.questions.map((q: any, i: number) => {
+            const studentAns = submission.answers[i];
+            const isMcq = q.type === 'mcq' || !q.type;
+            const isCorrect = isMcq 
+              ? (q.options[studentAns] === q.correct_answer || String(studentAns) === q.correct_answer)
+              : true; 
+            
+            const awardedMarks = q.type === 'subjective' 
+              ? (submission.subjectiveScores?.[i] || 0)
+              : (isCorrect ? (q.marks || 1) : 0);
+
+            return (
+              <div key={i} className={`bg-slate-900/50 border rounded-3xl p-6 md:p-8 ${isCorrect ? 'border-emerald-500/10' : 'border-red-500/10'}`}>
+                <div className="flex justify-between items-start mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-white font-bold text-sm">
+                      {i + 1}
+                    </div>
+                    <span className={`text-[10px] font-black uppercase px-3 py-1 rounded-full ${q.type === 'subjective' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20'}`}>
+                      {q.type === 'subjective' ? 'Subjective' : 'MCQ'} • {q.marks || 1} Marks
+                    </span>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Marks Obtained</p>
+                    <p className={`text-xl font-black ${awardedMarks > 0 ? 'text-emerald-500' : 'text-red-500'}`}>{awardedMarks}/{q.marks || 1}</p>
+                  </div>
+                </div>
+
+                <h3 className="text-lg md:text-xl font-bold text-white mb-6 leading-relaxed">{q.question}</h3>
+
+                <div className="grid grid-cols-1 gap-4">
+                  {isMcq ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {q.options.map((opt: string, optIdx: number) => {
+                        const isStudentChoice = studentAns === optIdx;
+                        const isCorrectOption = opt === q.correct_answer || String(optIdx) === q.correct_answer;
+                        
+                        let style = "bg-white/5 border-white/5 text-slate-500";
+                        if (isCorrectOption) style = "bg-emerald-500/20 border-emerald-500/50 text-emerald-400";
+                        else if (isStudentChoice && !isCorrectOption) style = "bg-red-500/20 border-red-500/50 text-red-400";
+
+                        return (
+                          <div key={optIdx} className={`p-4 rounded-xl border flex items-center gap-3 ${style}`}>
+                            <div className={`w-6 h-6 rounded flex items-center justify-center font-bold text-xs ${isCorrectOption ? 'bg-emerald-500 text-white' : isStudentChoice ? 'bg-red-500 text-white' : 'bg-slate-800 text-slate-600'}`}>
+                              {String.fromCharCode(65 + optIdx)}
+                            </div>
+                            <span className="font-medium">{opt}</span>
+                            {isCorrectOption && <CheckCircle2 size={16} className="ml-auto" />}
+                            {isStudentChoice && !isCorrectOption && <X size={16} className="ml-auto" />}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Your Answer:</p>
+                        <p className="text-slate-300 italic text-sm leading-relaxed">{studentAns || 'No answer provided.'}</p>
+                      </div>
+                      <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-5">
+                        <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-2">Model Answer / Evaluation Criteria:</p>
+                        <p className="text-emerald-200 text-sm leading-relaxed whitespace-pre-wrap">{q.correct_answer || 'Check textbook for detailed explanation.'}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CertificateView({ submission, test, user, onBack, language }: any) {
+  const certificateRef = useRef<HTMLDivElement>(null);
+
+  const handleDownload = async () => {
+    window.print();
+  };
+
+  const scorePercent = Math.round((submission.finalScore || submission.score) / (submission.totalMaxMarks || submission.totalQuestions) * 100);
+
+  return (
+    <div className="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-xl flex flex-col items-center justify-center p-4">
+      <div className="max-w-4xl w-full bg-white rounded-lg shadow-2xl p-1 relative overflow-hidden print:p-0 print:shadow-none print:m-0" ref={certificateRef}>
+        {/* Certificate Border */}
+        <div className="border-[12px] border-emerald-600 p-12 text-center relative">
+          <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#059669 2px, transparent 2px)', backgroundSize: '30px 30px' }}></div>
+          
+          <div className="relative z-10 space-y-8">
+            <div className="flex flex-col items-center">
+              <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 mb-4">
+                <Trophy size={40} />
+              </div>
+              <h1 className="text-4xl font-serif font-black text-slate-900 tracking-tight uppercase">Certificate of Excellence</h1>
+              <div className="w-48 h-1 bg-emerald-600 mt-4"></div>
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-slate-500 font-medium">This is to certify that</p>
+              <h2 className="text-5xl font-serif font-bold text-emerald-700 italic py-2">{submission.userName}</h2>
+              <p className="text-slate-500 font-medium">has successfully completed the</p>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-2xl font-bold text-slate-800 uppercase tracking-wide">{test.month} {test.year} Monthly Assessment</h3>
+              <p className="text-slate-500">Subject: <span className="font-bold text-slate-700 uppercase">{test.subject}</span> | Class: <span className="font-bold text-slate-700 uppercase">{submission.class}</span></p>
+            </div>
+
+            <div className="flex justify-center items-center gap-12 py-8">
+              <div className="text-center">
+                <p className="text-3xl font-black text-slate-900">{scorePercent}%</p>
+                <div className="w-24 h-0.5 bg-slate-200 mt-1 mb-1"></div>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Aggregate Score</p>
+              </div>
+              <div className="text-center">
+                <p className="text-3xl font-black text-slate-900">#{submission.rank || 'N/A'}</p>
+                <div className="w-24 h-0.5 bg-slate-200 mt-1 mb-1"></div>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">State Rank</p>
+              </div>
+            </div>
+
+            <div className="flex justify-between items-end mt-12 px-12 pt-8">
+              <div className="text-center">
+                <p className="font-serif font-bold text-slate-800 border-b border-slate-300 px-4">Gundulu</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase mt-1">Study Buddy (AI)</p>
+              </div>
+              <div className="w-24 h-24 bg-emerald-600/10 rounded-full flex items-center justify-center border-4 border-emerald-600/20">
+                <Award size={48} className="text-emerald-600" />
+              </div>
+              <div className="text-center">
+                <p className="font-serif font-bold text-slate-800 border-b border-slate-300 px-4">Director</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase mt-1">Utkal Skill Centre</p>
+              </div>
+            </div>
+            
+            <p className="text-[10px] text-slate-300 font-mono mt-8 italic">Verification ID: {submission.id?.slice(-8).toUpperCase()}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-12 flex gap-4 print:hidden">
+        <button 
+          onClick={handleDownload}
+          className="bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-2 shadow-xl shadow-emerald-500/20"
+        >
+          <Download size={20} /> Print/Save as PDF
+        </button>
+        <button 
+          onClick={onBack}
+          className="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-2xl font-bold"
+        >
+          Close
+        </button>
+      </div>
+      <p className="text-slate-500 text-xs mt-4 print:hidden">Tip: For best result, set Layout to "Landscape" and "Remove Margins" in print settings.</p>
+    </div>
+  );
+}
+
 function MonthlyTestsView({ tests, submissions, language, user, onBack }: any) {
-  const [selectedTest, setSelectedTest] = useState<MonthlyTest | null>(null);
+  const [selectedTest, setSelectedTest] = useState<any>(null);
   const [takingTest, setTakingTest] = useState(false);
+  const [viewingCertificate, setViewingCertificate] = useState<any>(null);
+  const [reviewingResults, setReviewingResults] = useState<any>(null);
+
+  const getSubmission = (test: any) => {
+    return submissions.find((s: any) => s.testId === test.id);
+  };
+
+  const getLocalizedSubject = (subject: string, lang: 'en' | 'or') => {
+    return translations[lang].subjects[subject] || subject;
+  };
 
   useEffect(() => {
     if (selectedTest) {
@@ -4737,13 +5076,6 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack }: any) {
     }
   }, [tests]);
 
-  const getSubmission = (test: MonthlyTest) => {
-    const groupTestIds = tests
-      .filter((t: MonthlyTest) => t.id === test.id || (t.translationGroupId && t.translationGroupId === test.translationGroupId))
-      .map((t: MonthlyTest) => t.id);
-    return submissions.find((s: any) => groupTestIds.includes(s.testId));
-  };
-
   if (takingTest && selectedTest) {
     return (
       <MonthlyTestEngine 
@@ -4755,6 +5087,29 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack }: any) {
         onBack={() => setTakingTest(false)}
         language={language} 
         user={user}
+      />
+    );
+  }
+
+  if (viewingCertificate) {
+    return (
+      <CertificateView 
+        submission={viewingCertificate.submission}
+        test={viewingCertificate.test}
+        user={user}
+        language={language}
+        onBack={() => setViewingCertificate(null)}
+      />
+    );
+  }
+
+  if (reviewingResults) {
+    return (
+      <ResultsReviewView 
+        submission={reviewingResults.submission}
+        test={reviewingResults.test}
+        language={language}
+        onBack={() => setReviewingResults(null)}
       />
     );
   }
@@ -4798,7 +5153,7 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack }: any) {
       </motion.div>
 
       <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {filteredTests.map((test: MonthlyTest) => {
+        {filteredTests.map((test: any) => {
           const submission = getSubmission(test);
           const resultsPublished = test.results_published;
 
@@ -4827,7 +5182,7 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack }: any) {
                   <>
                     <div className="grid grid-cols-2 gap-4 mb-2">
                       <div className="bg-slate-800/50 rounded-2xl p-4 text-center">
-                        <p className="text-xl font-bold text-white">{submission.score}</p>
+                        <p className="text-xl font-bold text-white">{submission.finalScore || submission.score}</p>
                         <p className="text-[10px] font-bold uppercase text-slate-500">Score</p>
                       </div>
                       <div className="bg-slate-800/50 rounded-2xl p-4 text-center">
@@ -4838,8 +5193,21 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack }: any) {
                       </div>
                     </div>
                     {resultsPublished && (
-                      <div className="w-full py-4 rounded-2xl bg-slate-800 text-white font-bold text-center flex items-center justify-center gap-2">
-                        <Trophy size={18} /> Results Published
+                      <div className="flex flex-col gap-2">
+                        <div className="flex gap-2">
+                          <button 
+                            onClick={() => setReviewingResults({ submission, test })}
+                            className="flex-1 py-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-center flex items-center justify-center gap-2 border border-white/5 transition-all"
+                          >
+                            <ClipboardList size={18} /> Review Answers
+                          </button>
+                          <button 
+                            onClick={() => setViewingCertificate({ submission, test })}
+                            className="flex-1 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-center flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20"
+                          >
+                            <Award size={18} /> Certificate
+                          </button>
+                        </div>
                       </div>
                     )}
                   </>
@@ -4873,35 +5241,126 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack }: any) {
 
 function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
   const [currentIdx, setCurrentIdx] = useState(0);
-  const [answers, setAnswers] = useState<number[]>([]);
+  const [answers, setAnswers] = useState<Record<number, any>>({});
   const [submitting, setSubmitting] = useState(false);
+  const [violations, setViolations] = useState(0);
+  const [showWarning, setShowWarning] = useState(false);
+  const [timeSpent, setTimeSpent] = useState<Record<number, number>>({});
+  const [timeLeft, setTimeLeft] = useState(90 * 60); // 1.5 hours in seconds
+  const startTimeRef = useRef<number>(Date.now());
 
-  const handleAnswer = (idx: number) => {
-    const newAnswers = [...answers];
-    newAnswers[currentIdx] = idx;
-    setAnswers(newAnswers);
+  // Countdown Timer Logic
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      alert("Time is up! Your test is being submitted automatically.");
+      handleSubmit();
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeLeft(prev => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
+  const formatTime = (seconds: number) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${h > 0 ? h + ':' : ''}${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
+  // Anti-Cheating: Tab Switching Detection
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        setViolations(prev => {
+          const next = prev + 1;
+          if (next >= 3) {
+            alert("Test auto-submitted due to multiple tab switches.");
+            handleSubmit();
+          } else {
+            setShowWarning(true);
+          }
+          return next;
+        });
+      }
+    };
+
+    const handleContextMenu = (e: MouseEvent) => e.preventDefault();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'v')) {
+        e.preventDefault();
+        alert("Copy/Paste is disabled during the test.");
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener('contextmenu', handleContextMenu);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.removeEventListener('contextmenu', handleContextMenu);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [violations]);
+
+  // Track time spent per question
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeSpent(prev => ({
+        ...prev,
+        [currentIdx]: (prev[currentIdx] || 0) + 1
+      }));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [currentIdx]);
+
+  const handleAnswer = (val: any) => {
+    setAnswers(prev => ({ ...prev, [currentIdx]: val }));
   };
 
   const handleSubmit = async () => {
+    if (submitting) return;
     setSubmitting(true);
     try {
-      const score = answers.reduce((acc, ansIdx, i) => {
-        const selectedOption = test.questions[i].options[ansIdx];
-        return acc + (selectedOption === test.questions[i].correct_answer ? 1 : 0);
-      }, 0);
+      const questions = test.questions;
+      let mcqScore = 0;
+      let totalMaxMarks = 0;
+
+      questions.forEach((q: any, i: number) => {
+        const studentAns = answers[i];
+        totalMaxMarks += (q.marks || 1);
+        
+        if (q.type === 'mcq' || !q.type) {
+          const options = q.options || [];
+          const selectedOption = options[studentAns];
+          if (selectedOption === q.correct_answer || String(studentAns) === q.correct_answer) {
+            mcqScore += (q.marks || 1);
+          }
+        }
+      });
       
       await addDoc(collection(firestore, 'monthly_test_submissions'), {
         testId: test.id,
         userId: user.uid,
         userName: user.displayName || 'Student',
+        userEmail: user.email || '',
         class: user.class,
         answers,
-        score,
-        totalQuestions: test.questions.length,
+        score: mcqScore, // This is only auto-gradable score
+        totalMaxMarks,
+        totalQuestions: questions.length,
+        violations,
+        timeSpent,
         submittedAt: serverTimestamp(),
-        rank: null
+        rank: null,
+        status: 'pending_review'
       });
 
+      alert(language === 'en' ? "Test submitted successfully!" : "ପରୀକ୍ଷା ସଫଳତାର ସହିତ ଦାଖଲ ହୋଇଛି!");
       onComplete();
     } catch (err) {
       console.error("Submit Test Error:", err);
@@ -4912,80 +5371,155 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
   };
 
   const q = test.questions[currentIdx];
+  const marks = q.marks || 1;
+  const isMcq = q.type === 'mcq' || !q.type;
 
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       key={currentIdx}
-      className="max-w-3xl mx-auto"
+      className="max-w-4xl mx-auto"
     >
-      <button 
-        onClick={onBack}
-        className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
-      >
-        <ArrowLeft size={20} />
-        <span>Back to Tests</span>
-      </button>
-
       <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white font-bold text-xl">
-            {currentIdx + 1}
+        <button 
+          onClick={() => {
+            if (confirm(language === 'en' ? "Are you sure you want to quit? Your progress will be lost." : "ଆପଣ ନିଶ୍ଚିତ କି ଆପଣ ଛାଡିବାକୁ ଚାହୁଁଛନ୍ତି?")) {
+              onBack();
+            }
+          }}
+          className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+        >
+          <ArrowLeft size={20} />
+          <span>Quit Test</span>
+        </button>
+        
+        <div className="flex items-center gap-6">
+          <div className={`flex items-center gap-2 px-4 py-2 rounded-2xl border font-mono font-bold transition-all ${timeLeft < 300 ? 'bg-red-500/20 border-red-500 text-red-500 animate-pulse' : 'bg-white/5 border-white/10 text-emerald-500'}`}>
+            <Clock size={18} />
+            <span>{formatTime(timeLeft)}</span>
           </div>
-          <div>
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Question {currentIdx + 1} of {test.questions.length}</p>
-            <div className="w-48 h-1.5 bg-slate-800 rounded-full mt-1 overflow-hidden">
-              <div 
-                className="h-full bg-emerald-500 transition-all duration-500" 
-                style={{ width: `${((currentIdx + 1) / test.questions.length) * 100}%` }}
-              />
+
+          {violations > 0 && (
+            <div className="flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500 text-xs font-bold animate-pulse">
+              <XCircle size={14} /> {violations} Warning(s)
+            </div>
+          )}
+          <div className="flex items-center gap-4">
+            <div className="text-right">
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Question {currentIdx + 1}/{test.questions.length}</p>
+              <div className="w-32 h-1 bg-slate-800 rounded-full mt-1 overflow-hidden">
+                <div 
+                  className="h-full bg-emerald-500 transition-all duration-500" 
+                  style={{ width: `${((currentIdx + 1) / test.questions.length) * 100}%` }}
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-8 mb-6">
-        <h2 className="text-2xl font-bold text-white mb-8 leading-relaxed">{q.question}</h2>
+      <AnimatePresence>
+        {showWarning && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-2xl text-red-200 text-sm font-medium flex items-center justify-between"
+          >
+            <div className="flex items-center gap-3">
+              <XCircle className="text-red-500" size={20} />
+              <span>Warning: Do not leave the test screen. Next violation will lead to auto-submission.</span>
+            </div>
+            <button onClick={() => setShowWarning(false)} className="text-white hover:underline">I Understand</button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="bg-slate-900/50 border border-white/5 rounded-[2.5rem] p-8 md:p-12 mb-8 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
         
-        <div className="grid grid-cols-1 gap-4">
-          {q.options.map((opt: string, idx: number) => (
-            <button 
-              key={idx}
-              onClick={() => handleAnswer(idx)}
-              className={`flex items-center gap-4 p-6 rounded-2xl border transition-all text-left ${answers[currentIdx] === idx ? 'bg-emerald-500/10 border-emerald-500 text-white' : 'bg-slate-800/50 border-white/5 text-slate-400 hover:border-white/20 hover:text-white'}`}
-            >
-              <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold ${answers[currentIdx] === idx ? 'bg-emerald-500 text-white' : 'bg-slate-700 text-slate-400'}`}>
-                {String.fromCharCode(65 + idx)}
-              </div>
-              <span className="text-lg font-medium">{opt}</span>
-            </button>
-          ))}
+        <div className="flex items-center gap-3 mb-8">
+          <span className="px-4 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase tracking-widest border border-emerald-500/20">
+            {marks} Mark{marks > 1 ? 's' : ''}
+          </span>
+          <span className="px-4 py-1 rounded-full bg-blue-500/10 text-blue-400 text-[10px] font-black uppercase tracking-widest border border-blue-500/20">
+            {isMcq ? 'Multiple Choice' : 'Subjective Answer'}
+          </span>
         </div>
+
+        <h2 className="text-2xl md:text-3xl font-bold text-white mb-10 leading-snug">
+          {q.question}
+        </h2>
+        
+        {isMcq ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {q.options.map((opt: string, idx: number) => (
+              <button 
+                key={idx}
+                onClick={() => handleAnswer(idx)}
+                className={`flex items-center gap-4 p-6 rounded-2xl border transition-all text-left group ${answers[currentIdx] === idx ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-white/5 border-white/5 text-slate-400 hover:border-white/20 hover:text-white'}`}
+              >
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-lg shrink-0 transition-colors ${answers[currentIdx] === idx ? 'bg-white text-emerald-500' : 'bg-white/10 text-slate-500 group-hover:text-white'}`}>
+                  {String.fromCharCode(65 + idx)}
+                </div>
+                <span className="text-lg font-medium">{opt}</span>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <textarea 
+              value={answers[currentIdx] || ''}
+              onChange={(e) => handleAnswer(e.target.value)}
+              placeholder="Type your detailed answer here..."
+              className="w-full h-64 bg-black/20 border border-white/10 rounded-3xl p-6 text-white focus:outline-none focus:border-emerald-500/50 transition-all resize-none leading-relaxed"
+            />
+            <p className="text-[10px] text-slate-500 uppercase font-bold text-right">
+              Word count: {String(answers[currentIdx] || '').split(/\s+/).filter(Boolean).length}
+            </p>
+          </div>
+        )}
       </div>
 
-      <div className="flex justify-between items-center">
-        <button 
-          disabled={currentIdx === 0}
-          onClick={() => setCurrentIdx(prev => prev - 1)}
-          className="flex items-center gap-2 text-slate-500 hover:text-white disabled:opacity-0 transition-colors"
-        >
-          <ArrowLeft size={20} /> Previous
-        </button>
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="flex gap-4 w-full md:w-auto">
+          <button 
+            disabled={currentIdx === 0}
+            onClick={() => setCurrentIdx(prev => prev - 1)}
+            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-white/5 text-slate-400 font-bold hover:bg-white/10 disabled:opacity-0 transition-all border border-white/5"
+          >
+            <ArrowLeft size={18} />
+          </button>
+          
+          <button 
+            onClick={() => {
+              if (answers[currentIdx] === undefined) {
+                handleAnswer(''); // Mark as skipped
+              }
+              if (currentIdx < test.questions.length - 1) {
+                setCurrentIdx(prev => prev + 1);
+              }
+            }}
+            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-white/5 text-amber-500 font-bold hover:bg-white/10 transition-all border border-amber-500/10"
+          >
+            Skip
+          </button>
+        </div>
         
         {currentIdx === test.questions.length - 1 ? (
           <button 
             disabled={answers[currentIdx] === undefined || submitting}
             onClick={handleSubmit}
-            className="bg-emerald-500 hover:bg-emerald-600 text-white px-12 py-4 rounded-2xl font-bold transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50 flex items-center gap-2"
+            className="w-full md:w-auto bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-90 text-white px-12 py-4 rounded-2xl font-bold transition-all shadow-xl shadow-emerald-500/20 disabled:opacity-50 flex items-center justify-center gap-3"
           >
-            {submitting ? <><Loader2 size={20} className="animate-spin" /> Submitting...</> : 'Submit Final Test'}
+            {submitting ? <><Loader2 size={24} className="animate-spin" /> Submitting...</> : <><Trophy size={24} /> Submit Final Test</>}
           </button>
         ) : (
           <button 
             disabled={answers[currentIdx] === undefined}
             onClick={() => setCurrentIdx(prev => prev + 1)}
-            className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-8 py-4 rounded-2xl font-bold transition-all disabled:opacity-50"
+            className="w-full md:w-auto flex items-center justify-center gap-3 bg-emerald-500 hover:bg-emerald-600 text-white px-10 py-4 rounded-2xl font-bold transition-all shadow-lg shadow-emerald-500/10 disabled:opacity-50"
           >
             Next Question <ArrowRight size={20} />
           </button>

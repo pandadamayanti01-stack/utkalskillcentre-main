@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Brain, BarChart3, CheckCircle2, Globe, Flame, MessageCircle, Target, Trophy, Zap, Award, Sparkles, Star } from 'lucide-react';
+import { Brain, BarChart3, CheckCircle2, Globe, Flame, MessageCircle, Target, Trophy, Zap, Award, Sparkles, Star, TrendingUp } from 'lucide-react';
+import { 
+  ResponsiveContainer, 
+  AreaChart, 
+  Area, 
+  XAxis, 
+  YAxis, 
+  Tooltip, 
+  CartesianGrid 
+} from 'recharts';
 import { translations } from '../translations';
 import { DailyChallenge } from './DailyChallenge';
 import { LeaderboardView } from './LeaderboardView';
@@ -25,6 +34,89 @@ interface DashboardProps {
   onOpenDailyPractice?: () => void;
   onShareDailyPractice?: () => void;
 }
+function PerformanceChart({ submissions, tests, language }: any) {
+  const chartData = React.useMemo(() => {
+    // Combine test data with submissions to get scores
+    // This is a simplified version, ideally we'd pass processed data
+    const data = submissions
+      .filter((s: any) => s.score !== undefined || s.finalScore !== undefined)
+      .sort((a: any, b: any) => (a.timestamp?.seconds || 0) - (b.timestamp?.seconds || 0))
+      .map((s: any) => {
+        const score = s.finalScore !== undefined ? s.finalScore : s.score;
+        const total = s.totalMaxMarks || s.totalQuestions || 25; // Default 25 for our new pattern
+        const percentage = Math.round((score / total) * 100);
+        
+        return {
+          name: s.month ? `${s.month.slice(0, 3)}` : 'Test',
+          score: percentage,
+        };
+      });
+    return data;
+  }, [submissions]);
+
+  if (chartData.length === 0) {
+    return (
+      <div className="glass-card neon-border rounded-[2.5rem] p-8 text-center bg-slate-900/30">
+        <TrendingUp size={48} className="mx-auto text-slate-700 mb-4 opacity-20" />
+        <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">No Progress Data Yet</p>
+        <p className="text-slate-500 text-xs mt-2">Take monthly tests to see your growth chart!</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="glass-card neon-border rounded-[2.5rem] p-6 md:p-8 bg-gradient-to-br from-emerald-500/5 to-transparent">
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h3 className="text-lg font-black text-white tracking-tight">Your Progress Graph</h3>
+          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em]">Monthly Performance Analytics</p>
+        </div>
+        <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+          <TrendingUp size={12} />
+          {chartData.length > 1 && chartData[chartData.length-1].score >= chartData[chartData.length-2].score ? 'Improving' : 'Consistency is Key'}
+        </div>
+      </div>
+      
+      <div className="h-[200px] w-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={chartData}>
+            <defs>
+              <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+            <XAxis 
+              dataKey="name" 
+              axisLine={false} 
+              tickLine={false} 
+              tick={{ fill: '#64748b', fontSize: 10, fontWeight: 700 }}
+              dy={10}
+            />
+            <YAxis hide domain={[0, 100]} />
+            <Tooltip 
+              contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+              itemStyle={{ color: '#10b981', fontWeight: 800, fontSize: '12px' }}
+              labelStyle={{ color: '#94a3b8', fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', marginBottom: '4px' }}
+              formatter={(value) => [`${value}%`, 'SCORE']}
+            />
+            <Area 
+              type="monotone" 
+              dataKey="score" 
+              stroke="#10b981" 
+              strokeWidth={3}
+              fillOpacity={1} 
+              fill="url(#colorScore)" 
+              animationDuration={1500}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
+
 export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, hasDailyPractice, todayDailySubject, tomorrowDailySubject, onChallengeComplete, onOpenTutor, onOpenDailyPractice, onShareDailyPractice }: DashboardProps) {
     // Map class to YouTube video URL (embed links)
     const classVideoMap: Record<string, string> = {
@@ -95,7 +187,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
     },
     {
       en: "Believe in yourself and all that you are.",
-      or: "ନିଜେ ଉପରେ ଆସ୍ଥା ରଖନ୍ତୁ ଏବଂ ଆପଣ ଯାହା ଅଟୁଟ ରହନ୍ତୁ।"
+      or: "ନିଜ ଉପରେ ବିଶ୍ୱାସ ରଖନ୍ତୁ ଏବଂ ନିଜର ସାମର୍ଥ୍ୟ ଉପରେ ଆସ୍ଥା ରଖନ୍ତୁ।"
     },
     {
       en: "Every day is a new beginning. Take a deep breath and start again.",
@@ -103,7 +195,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
     },
     {
       en: "Hard work beats talent when talent doesn't work hard.",
-      or: "କଠିନ ପ୍ରୟାସ ଦକ୍ଷତାକୁ ଅଟୁଟ କରେ, ଯେତେବେଳେ ଦକ୍ଷତା କଠିନ ପ୍ରୟାସ କରେନାହିଁ।"
+      or: "କଠିନ ପରିଶ୍ରମ ପ୍ରତିଭାକୁ ପଛରେ ପକାଇଦିଏ, ଯେତେବେଳେ ପ୍ରତିଭା କଠିନ ପରିଶ୍ରମ କରେନାହିଁ।"
     },
     {
       en: "Dream big, work hard, stay focused, and surround yourself with good people.",
@@ -134,331 +226,363 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   };
 
   return (
-    <>
+    <div className="relative">
     <motion.div 
       variants={containerVariants}
       initial="hidden"
       animate="show"
       exit="exit"
-      className="space-y-6 pb-20"
+      className="space-y-8 pb-24"
     >
-      {/* AI Tutor Card - Compact & Top-Aligned */}
-      <motion.div 
-        variants={itemVariants}
-        onClick={onOpenTutor}
-        className="glass-card neon-border rounded-3xl p-4 md:p-5 relative overflow-hidden cursor-pointer group hover:border-emerald-500/50 transition-all bg-gradient-to-br from-emerald-500/10 to-transparent"
-      >
-        <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl -mr-24 -mt-24 pointer-events-none group-hover:bg-emerald-500/20 transition-colors"></div>
-        
-        <div className="flex items-center gap-4 relative z-10">
-          <div className="w-16 h-16 rounded-full bg-slate-900 border-2 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform overflow-hidden">
-            <img src="/gundulu.png" alt="Gundulu" className="w-full h-full object-cover" onError={(e) => { console.error("Image failed to load:", e); e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
-            <Brain size={28} className="text-emerald-500 hidden" />
+      {/* Welcome Section - Premium Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="space-y-1">
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-8 bg-emerald-500 rounded-full shadow-[0_0_10px_#10b981]"></div>
+            <h1 className="text-3xl font-black text-white tracking-tighter">
+              {language === 'en' ? 'Welcome back,' : 'ସ୍ୱାଗତ,'} <span className="text-emerald-500">{user?.name || 'Scholar'}!</span>
+            </h1>
           </div>
-          <div className="flex-1 space-y-1">
-            <div className="flex items-center justify-between">
-              <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[8px] font-bold uppercase tracking-widest">
-                <Sparkles size={10} />
-                Voice Enabled
-              </div>
-              <Zap size={14} className="text-emerald-500 animate-pulse" />
-            </div>
-            <h3 className="text-lg font-black text-white tracking-tight">Talk to Gundulu</h3>
-            <p className="text-slate-400 text-[11px] font-medium line-clamp-1">Your AI tutor is ready to help. Tap to start a conversation!</p>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Test Series Registration Section */}
-      {!isRegistered && (
-        <motion.div 
-          variants={itemVariants}
-          className="glass-card neon-border rounded-3xl p-4 md:p-6 relative overflow-hidden group hover:border-amber-500/50 transition-all bg-gradient-to-br from-amber-500/10 to-transparent"
-        >
-          <div className="absolute top-0 right-0 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl -mr-24 -mt-24 pointer-events-none group-hover:bg-amber-500/20 transition-colors"></div>
-          <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
-            <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-amber-500/10 border-2 border-amber-500 flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(245,158,11,0.2)]">
-              <Trophy size={32} className="text-amber-500" />
-            </div>
-            <div className="flex-1 text-center md:text-left space-y-2">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[9px] font-black uppercase tracking-[0.2em]">
-                <Sparkles size={10} />
-                Registration Open
-              </div>
-              <h3 className="text-xl font-black text-white tracking-tight">
-                {language === 'en' ? 'Monthly Test Series - May 2026' : 'ମାସିକ ଟେଷ୍ଟ ସିରିଜ୍ - ମଇ ୨୦୨୬'}
-              </h3>
-              <p className="text-slate-400 text-xs font-medium leading-relaxed max-w-xl">
-                {language === 'en' 
-                  ? 'Join thousands of students and compete for prizes worth ₹10,000. Limited slots available!' 
-                  : 'ହଜାର ହଜାର ଛାତ୍ରଛାତ୍ରୀଙ୍କ ସହିତ ଯୋଗ ଦିଅନ୍ତୁ ଏବଂ ₹୧୦,୦୦୦ ମୂଲ୍ୟର ପୁରସ୍କାର ପାଇଁ ପ୍ରତିଯୋଗିତା କରନ୍ତୁ |'}
-              </p>
-            </div>
-            <button 
-              onClick={() => setShowRegistrationForm(true)}
-              className="w-full md:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 text-white font-black text-xs uppercase tracking-[0.2em] shadow-[0_15px_30px_rgba(245,158,11,0.3)] hover:scale-105 active:scale-95 transition-all"
-            >
-              {language === 'en' ? 'Register Now' : 'ବର୍ତ୍ତମାନ ପଞ୍ଜିକରଣ କରନ୍ତୁ'}
-            </button>
-          </div>
-        </motion.div>
-      )}
-
-      {/* Welcome Section - More Compact */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-        <div className="space-y-0.5">
-          <h1 className="text-xl font-black text-white tracking-tight">
-            {language === 'en' ? 'Welcome back,' : 'ସ୍ୱାଗତ,'} <span className="text-emerald-500">{user?.name || 'Student'}!</span>
-          </h1>
-          <p className="text-slate-400 text-[9px] font-medium uppercase tracking-[0.2em]">
+          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] pl-5">
             {t.keepGoing} • {new Date().toLocaleDateString(language === 'or' ? 'or-IN' : 'en-IN', { weekday: 'long', month: 'long', day: 'numeric' })}
           </p>
         </div>
         
-        <div className="flex items-center gap-3">
-          <div className="px-3 py-1.5 rounded-xl bg-slate-900/50 border border-white/5 backdrop-blur-md flex items-center gap-2.5">
+        <div className="flex items-center gap-4">
+          <div className="glass-card px-6 py-3 rounded-2xl flex items-center gap-4 border-white/5">
             <div className="text-right">
-              <p className="text-[7px] font-black text-slate-500 uppercase tracking-widest">{t.dailyGoal}</p>
-              <p className="text-[10px] font-black text-white">{user?.points_today || 0} / {dailyGoal} XP</p>
+              <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest">{t.dailyGoal}</p>
+              <p className="text-[12px] font-black text-white tracking-tight">{user?.points_today || 0} <span className="text-emerald-500">/ {dailyGoal} XP</span></p>
             </div>
-            <div className="relative w-8 h-8">
+            <div className="relative w-10 h-10 group">
               <svg className="w-full h-full transform -rotate-90">
-                <circle cx="16" cy="16" r="14" stroke="currentColor" strokeWidth="2.5" fill="transparent" className="text-white/5" />
-                <circle cx="16" cy="16" r="14" stroke="currentColor" strokeWidth="2.5" fill="transparent" strokeDasharray={88} strokeDashoffset={88 - (88 * dailyProgress) / 100} className="text-emerald-500 transition-all duration-1000" />
+                <circle cx="20" cy="20" r="18" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-white/5" />
+                <circle cx="20" cy="20" r="18" stroke="currentColor" strokeWidth="3" fill="transparent" strokeDasharray={113} strokeDashoffset={113 - (113 * dailyProgress) / 100} className="text-emerald-500 transition-all duration-1000 shadow-[0_0_10px_#10b981]" />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <Target size={10} className="text-emerald-500" />
+                <Target size={14} className="text-emerald-500 group-hover:scale-110 transition-transform" />
               </div>
             </div>
           </div>
         </div>
       </div>
 
-
-
-
-
-      {/* Daily MCQ (Daily Practice) Card + Class Video */}
-      <div className="mt-8">
-        <div className="flex flex-col md:flex-row gap-6">
-          {/* Daily MCQ Card */}
-          <div className="flex-1 w-full text-left glass-card neon-border rounded-3xl p-4 md:p-5 relative overflow-hidden group hover:border-emerald-500/40 transition-all bg-gradient-to-br from-cyan-500/10 to-transparent">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-cyan-500/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none group-hover:bg-cyan-500/20 transition-colors"></div>
-            <div className="relative z-10 flex flex-col gap-4">
-              <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-[9px] font-black uppercase tracking-[0.2em]">
-                  <CheckCircle2 size={12} />
-                  Daily Practice
+      {/* Main Grid Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        {/* Left Column - Core Interactions */}
+        <div className="lg:col-span-8 space-y-8">
+          
+          {/* AI Tutor Card - Futuristic Neural Link */}
+          <motion.div 
+            variants={itemVariants}
+            onClick={onOpenTutor}
+            className="glass-card rounded-[2.5rem] p-8 relative overflow-hidden cursor-pointer group hover:border-emerald-500/40 transition-all duration-500"
+          >
+            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-[80px] -mr-32 -mt-32 pointer-events-none group-hover:bg-emerald-500/20 transition-all duration-700"></div>
+            
+            <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
+              <div className="relative">
+                <div className="w-24 h-24 rounded-[2rem] bg-slate-900 border-2 border-emerald-500/30 shadow-[0_0_40px_rgba(16,185,129,0.2)] flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:rotate-3 transition-all duration-500 overflow-hidden">
+                  <img src="/gundulu.png" alt="Gundulu" className="w-full h-full object-cover" />
                 </div>
-                <h3 className="text-lg font-black text-white tracking-tight">
-                  {language === 'en' ? 'MCQ Practice for Your Class' : 'ଆପଣଙ୍କ ଶ୍ରେଣୀ ପାଇଁ MCQ ଅଭ୍ୟାସ'}
+                <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-emerald-500 rounded-xl flex items-center justify-center text-white shadow-lg border-2 border-slate-900">
+                  <Brain size={16} />
+                </div>
+              </div>
+              
+              <div className="flex-1 text-center md:text-left space-y-3">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em]">
+                    <Sparkles size={12} className="animate-pulse" />
+                    Neural Voice Link Active
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></div>
+                    <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">
+                      {language === 'en' ? 'Online' : 'ଅନ୍‌ଲାଇନ୍'}
+                    </span>
+                  </div>
+                </div>
+                <h3 className="text-3xl font-black text-white tracking-tighter">
+                  {language === 'en' ? 'Talk to Gundulu' : 'ଗୁଣ୍ଡୁଲୁ ସହିତ କଥା ହୁଅନ୍ତୁ'}
                 </h3>
-                <p className="text-slate-400 text-[11px] font-medium max-w-xl leading-relaxed">
-                  {hasDailyPractice
-                    ? (language === 'en' ? 'New class-wise questions are available. Practice today and keep the habit going.' : 'ଆପଣଙ୍କ ଶ୍ରେଣୀ ପାଇଁ ନୂଆ ପ୍ରଶ୍ନ ଉପଲବ୍ଧ ଅଛି | ଆଜିଠୁ ଅଭ୍ୟାସ ଜାରି ରଖନ୍ତୁ |')
-                    : (language === 'en' ? 'Open the practice tab to check whether today\'s question set has been published.' : 'ଆଜିର ପ୍ରଶ୍ନ ସେଟ୍ ପ୍ରକାଶିତ ହୋଇଛି କି ନାହିଁ ଦେଖିବାକୁ ଅଭ୍ୟାସ ଟ୍ୟାବ୍ ଖୋଲନ୍ତୁ |')}
+                <p className="text-slate-400 text-sm font-medium leading-relaxed max-w-lg">
+                  {language === 'en' 
+                    ? 'Initiate a deep learning session. Gundulu is optimized to resolve complex mathematical theorems and academic queries via voice interface.'
+                    : 'ଗୋଟିଏ ଗଭୀର ଶିକ୍ଷା ସେସନ୍ ଆରମ୍ଭ କରନ୍ତୁ | ଗୁଣ୍ଡୁଲୁ ଭଏସ୍ ଇଣ୍ଟରଫେସ୍ ମାଧ୍ୟମରେ ଜଟିଳ ଗାଣିତିକ ଏବଂ ଶିକ୍ଷାଗତ ପ୍ରଶ୍ନର ସମାଧାନ କରିବାକୁ ସକ୍ଷମ |'}
                 </p>
+              </div>
+              
+              <div className="shrink-0">
+                <div className="w-16 h-16 rounded-full border-2 border-white/5 flex items-center justify-center group-hover:border-emerald-500/30 transition-colors">
+                  <Zap size={24} className="text-emerald-500 group-hover:scale-125 transition-transform" />
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Test Series Registration - Premium Alert */}
+          {!isRegistered && (
+            <motion.div 
+              variants={itemVariants}
+              className="glass-card border-amber-500/20 rounded-[2.5rem] p-8 relative overflow-hidden group hover:border-amber-500/40 transition-all duration-500"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent pointer-events-none"></div>
+              <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
+                <div className="w-20 h-20 rounded-3xl bg-amber-500/10 border-2 border-amber-500/30 flex items-center justify-center shrink-0 shadow-[0_0_30px_rgba(245,158,11,0.1)] group-hover:rotate-12 transition-transform">
+                  <Trophy size={40} className="text-amber-500" />
+                </div>
+                <div className="flex-1 text-center md:text-left space-y-2">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-black uppercase tracking-[0.2em]">
+                    <Sparkles size={12} />
+                    {language === 'en' ? 'Registration Phase Open' : 'ପଞ୍ଜିକରଣ ଚାଲିଛି'}
+                  </div>
+                  <h3 className="text-2xl font-black text-white tracking-tighter uppercase">
+                    {language === 'en' ? 'Monthly Test Series' : 'ମାସିକ ଟେଷ୍ଟ ସିରିଜ୍'}
+                  </h3>
+                  <p className="text-slate-400 text-sm font-medium leading-relaxed max-w-xl italic">
+                    "{language === 'en' 
+                      ? 'Compete in the ultimate state-level examination. Scholar prizes up to ₹10,000 available for top-tier performers.' 
+                      : 'ରାଜ୍ୟ ସ୍ତରୀୟ ପରୀକ୍ଷାରେ ପ୍ରତିଯୋଗିତା କରନ୍ତୁ ଏବଂ ₹୧୦,୦୦୦ ପର୍ଯ୍ୟନ୍ତ ପୁରସ୍କାର ଜିତନ୍ତୁ |'}"
+                  </p>
+                </div>
+                <button 
+                  onClick={() => setShowRegistrationForm(true)}
+                  className="w-full md:w-auto px-10 py-5 rounded-2xl bg-gradient-to-r from-amber-600 to-orange-600 text-white font-black text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-amber-900/40 hover:scale-105 active:scale-95 transition-all"
+                >
+                  {language === 'en' ? 'Initialize Registration' : 'ପଞ୍ଜିକରଣ କରନ୍ତୁ'}
+                </button>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Daily Challenge & Video Matrix */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+            {/* Daily MCQ Card */}
+            <div className="glass-card rounded-[2.5rem] p-8 border-cyan-500/20 relative overflow-hidden group hover:border-cyan-500/40 transition-all duration-500 flex flex-col justify-between">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-cyan-500/10 rounded-full blur-[60px] -mr-24 -mt-24 pointer-events-none group-hover:bg-cyan-500/20 transition-all"></div>
+              
+              <div className="relative z-10 space-y-6">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-black uppercase tracking-[0.2em]">
+                  <CheckCircle2 size={14} />
+                  Knowledge Pulse
+                </div>
+                
+                <div>
+                  <h3 className="text-2xl font-black text-white tracking-tighter uppercase mb-2">
+                    {language === 'en' ? "Gundulu's Trial" : "ଗୁଣ୍ଡୁଲୁର ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ"}
+                  </h3>
+                  <p className="text-slate-400 text-sm font-medium leading-relaxed italic">
+                    {hasDailyPractice
+                      ? (language === 'en' ? 'New cognitive nodes are available for your current tier. Synchronize now.' : 'ଆପଣଙ୍କ ଶ୍ରେଣୀ ପାଇଁ ନୂଆ ପ୍ରଶ୍ନ ଉପଲବ୍ଧ ଅଛି | ବର୍ତ୍ତମାନ ସମାଧାନ କରନ୍ତୁ |')
+                      : (language === 'en' ? 'Daily challenge status: PENDING. Check the practice matrix for updates.' : 'ଆଜିର ପ୍ରଶ୍ନ ସେଟ୍ ପ୍ରକାଶିତ ହୋଇଛି କି ନାହିଁ ଦେଖିବାକୁ ଅଭ୍ୟାସ ଟ୍ୟାବ୍ ଖୋଲନ୍ତୁ |')}
+                  </p>
+                </div>
+
                 {(todayDailySubject || tomorrowDailySubject) && (
-                  <div className="flex flex-wrap gap-2 pt-1">
+                  <div className="flex flex-wrap gap-2 pt-2">
                     {todayDailySubject && (
-                      <span className="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-slate-200">
-                        {language === 'en' ? 'Today:' : 'ଆଜି:'} {todayDailySubject}
+                      <span className="px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-black uppercase tracking-widest text-cyan-300">
+                        {language === 'en' ? 'Current:' : 'ଆଜି:'} {todayDailySubject}
                       </span>
                     )}
                     {tomorrowDailySubject && (
-                      <span className="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-                        {language === 'en' ? 'Tomorrow:' : 'ଆସନ୍ତାକାଲି:'} {tomorrowDailySubject}
+                      <span className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                        {language === 'en' ? 'Next:' : 'ଆସନ୍ତାକାଲି:'} {tomorrowDailySubject}
                       </span>
                     )}
                   </div>
                 )}
               </div>
-              <div className="shrink-0 flex flex-col items-end gap-2">
+
+              <div className="relative z-10 flex flex-col sm:flex-row gap-4 mt-8">
                 <button
                   type="button"
                   onClick={onOpenDailyPractice}
-                  className="rounded-2xl bg-cyan-500/10 border border-cyan-500/20 px-3 py-2 text-cyan-300 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-cyan-500/20 transition-all"
+                  className="flex-1 px-6 py-4 rounded-2xl bg-cyan-600 hover:bg-cyan-500 text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-cyan-900/20 active:scale-95"
                 >
-                  {language === 'en' ? 'Open Tab' : 'ଟ୍ୟାବ୍ ଖୋଲନ୍ତୁ'}
+                  {language === 'en' ? "Commence Trial" : "ଆରମ୍ଭ କରନ୍ତୁ"}
                 </button>
                 <button
                   type="button"
                   onClick={onShareDailyPractice}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 px-3 py-2 text-emerald-300 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-emerald-500/20 transition-all"
+                  className="px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-slate-400 hover:text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2"
                 >
-                  <MessageCircle size={12} />
-                  {language === 'en' ? 'Share Test' : 'ଟେଷ୍ଟ ଶେୟାର କରନ୍ତୁ'}
+                  <MessageCircle size={14} />
+                  {language === 'en' ? 'Broadcast' : 'ଶେୟାର'}
                 </button>
               </div>
             </div>
-          </div>
-          {/* Class-wise YouTube Video */}
-          <div className="flex-1 w-full max-w-xl flex flex-col gap-2">
-            <div className="text-center font-bold text-cyan-400 text-sm mb-1">
-              {language === 'en' ? `Class ${userClass}` : `ଶ୍ରେଣୀ ${userClass}`}
-            </div>
-            <div className="aspect-w-16 aspect-h-9 rounded-2xl overflow-hidden border border-cyan-500/20 bg-black">
-              <iframe
-                width="100%"
-                height="100%"
-                src={videoUrl}
-                title={`Class ${userClass} Video`}
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            </div>
-            {/* Custom Subscribe Button (always works) */}
-            <a
-              href="https://www.youtube.com/@UtkalSkillCenter?sub_confirmation=1"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block px-4 py-2 rounded-lg bg-red-600 text-white font-bold text-xs shadow hover:bg-red-700 transition-colors mt-2"
-              style={{ textDecoration: 'none' }}
-            >
-              {language === 'en' ? 'Subscribe to our YouTube Channel' : 'ଆମ YouTube ଚ୍ୟାନେଲକୁ ସବସ୍କ୍ରାଇବ୍ କରନ୍ତୁ'}
-            </a>
-          </div>
-        </div>
-      </div>
 
-      {/* Leaderboard Section Below MCQ */}
-      <div className="mt-8">
-        <LeaderboardView
-          leaderboard={filteredLeaderboard}
-          language={language}
-          following={user?.following || []}
-          user={user}
-        />
-        <div className="mt-4">
-          <DistrictLeaderboardFilter
-            selectedDistrict={selectedDistrict}
-            setSelectedDistrict={setSelectedDistrict}
-            language={language}
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Progress Section */}
-        <div className="lg:col-span-2 space-y-4">
-
-          <div className="glass-card neon-border rounded-3xl p-3 md:p-4 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/5 rounded-full blur-3xl -mr-24 -mt-24 pointer-events-none"></div>
-            
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500">
-                  <BarChart3 size={16} />
-                </div>
-                <h3 className="text-sm font-black text-white tracking-tight">Learning Progress</h3>
+            {/* Class-wise YouTube Matrix */}
+            <div className="glass-card rounded-[2.5rem] p-8 border-white/5 relative overflow-hidden group flex flex-col">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[10px] font-black text-cyan-500 uppercase tracking-[0.3em]">
+                  {language === 'en' ? `Tier ${userClass} Archive` : `ଶ୍ରେଣୀ ${userClass} ଭିଡିଓ`}
+                </span>
+                <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
               </div>
-              <button className="text-[8px] font-black text-emerald-500 uppercase tracking-widest hover:text-emerald-400 transition-colors">View Detailed Report</button>
+              
+              <div className="aspect-video rounded-2xl overflow-hidden border border-white/5 bg-black shadow-2xl group-hover:scale-[1.02] transition-transform duration-500">
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src={videoUrl}
+                  title={`Class ${userClass} Neural Feed`}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              </div>
+
+              <a
+                href="https://www.youtube.com/@UtkalSkillCenter?sub_confirmation=1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-6 w-full py-4 rounded-2xl bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white border border-red-500/20 font-black text-[10px] uppercase tracking-[0.2em] text-center transition-all active:scale-95"
+              >
+                {language === 'en' ? 'Subscribe to Neural Feed' : 'YouTube ସବସ୍କ୍ରାଇବ୍ କରନ୍ତୁ'}
+              </a>
+            </div>
+          </div>
+
+          {/* Performance Analytics */}
+          <PerformanceChart 
+            submissions={user?.submissions || []} 
+            tests={chapters}
+            language={language} 
+          />
+
+        </div>
+
+        {/* Right Column - Stats & Global Rankings */}
+        <div className="lg:col-span-4 space-y-8">
+          
+          {/* Motivation Insight */}
+          <div className="glass-card rounded-[2rem] p-8 border-blue-500/20 bg-gradient-to-br from-blue-500/5 to-transparent relative overflow-hidden">
+            <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div className="flex items-start gap-5 relative z-10">
+              <div className="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-500 shrink-0 shadow-lg">
+                <Sparkles size={28} />
+              </div>
+              <div>
+                <h4 className="text-[10px] font-black text-blue-400 uppercase tracking-[0.3em] mb-3">{language === 'en' ? "Today's Inspiration" : 'ଆଜିର ପ୍ରେରଣା'}</h4>
+                <p className="text-white text-md font-bold leading-relaxed italic tracking-tight">"{todayQuote}"</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Learning Progress Matrix */}
+          <div className="glass-card rounded-[2.5rem] p-8 border-white/5 space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-emerald-500/10 rounded-xl text-emerald-500 border border-emerald-500/20">
+                  <BarChart3 size={20} />
+                </div>
+                <h3 className="text-lg font-black text-white tracking-tight">Subject Mastery</h3>
+              </div>
+              <TrendingUp size={16} className="text-emerald-500" />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-6">
               {user?.subject_progress && Object.entries(user.subject_progress).length > 0 ? (
                 Object.entries(user.subject_progress).map(([subject, progress]: [string, any], idx) => (
-                  <div key={subject} className="space-y-1">
+                  <div key={subject} className="space-y-2">
                     <div className="flex justify-between items-end">
                       <span className="text-[10px] font-black text-white uppercase tracking-widest">{translations[language].subjects?.[subject] || subject}</span>
-                      <span className="text-[9px] font-bold text-slate-500">{progress}% Complete</span>
+                      <span className="text-[10px] font-black text-emerald-400 tabular-nums">{progress}%</span>
                     </div>
-                    <div className="h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5 p-0.5">
+                    <div className="h-2 bg-white/5 rounded-full overflow-hidden border border-white/5 p-0.5">
                       <motion.div 
                         initial={{ width: 0 }}
                         animate={{ width: `${progress}%` }}
-                        transition={{ duration: 1, delay: idx * 0.2 }}
-                        className="h-full bg-gradient-to-r from-emerald-600 to-teal-400 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.3)]"
+                        transition={{ duration: 1.5, delay: idx * 0.1, ease: "circOut" }}
+                        className="h-full bg-gradient-to-r from-emerald-600 to-teal-400 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.3)]"
                       />
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="text-center py-4 space-y-2">
-                  <div className="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center mx-auto text-slate-600">
-                    <BarChart3 size={20} />
-                  </div>
-                  <p className="text-slate-500 font-mono text-[10px] max-w-[180px] mx-auto">No progress recorded yet. Start learning to see your progress!</p>
+                <div className="text-center py-10 space-y-4 opacity-40">
+                  <BarChart3 size={40} className="mx-auto text-slate-600" />
+                  <p className="text-slate-500 font-black text-[10px] uppercase tracking-widest leading-relaxed">No data detected.<br/>Commence learning protocols.</p>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Pro Tip Section - Smaller */}
-          <div className="glass-card rounded-2xl p-3 border border-white/5 bg-gradient-to-br from-blue-500/10 to-transparent flex items-center gap-4">
-            <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-500 shrink-0">
-              <Sparkles size={20} />
-            </div>
-            <div>
-              <h4 className="text-[7px] font-black text-blue-400 uppercase tracking-[0.2em] mb-0.5">{language === 'en' ? 'Motivation of the Day' : 'ଆଜିର ପ୍ରେରଣା'}</h4>
-              <p className="text-white text-[11px] font-medium leading-tight italic">"{todayQuote}"</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Sidebar Sections - More Compact */}
-        <div className="space-y-6">
-          {/* Daily Challenge */}
-          {dailyChallenge && (
-            <motion.div variants={itemVariants}>
-              <DailyChallenge 
-                challenge={dailyChallenge} 
-                user={user} 
-                language={language} 
-                onComplete={onChallengeComplete || (() => {})}
-              />
-            </motion.div>
-          )}
-
-          {/* Recent Badges - Smaller */}
-          <div className="glass-card neon-border rounded-3xl p-3 space-y-2">
+          {/* Achievement Nodes */}
+          <div className="glass-card rounded-[2.5rem] p-8 border-white/5 space-y-6">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-500">
-                  <Award size={14} />
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-purple-500/10 rounded-xl text-purple-500 border border-purple-500/20">
+                  <Award size={20} />
                 </div>
-                <h3 className="text-sm font-black text-white tracking-tight">Achievements</h3>
+                <h3 className="text-lg font-black text-white tracking-tight">Achievements</h3>
               </div>
-              <button className="text-[7px] font-black text-slate-500 uppercase tracking-widest hover:text-white transition-colors">All</button>
+              <Star size={16} className="text-purple-500" />
             </div>
 
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-4">
               {user?.stats?.badges && user.stats.badges.length > 0 ? (
-                user.stats.badges.slice(0, 3).map((badge: string, i: number) => (
-                  <div key={i} className="aspect-square rounded-xl bg-white/5 border border-white/5 flex items-center justify-center group cursor-help relative">
-                    <div className="w-7 h-7 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
-                      <Star size={14} fill={i === 0 ? "currentColor" : "none"} />
+                user.stats.badges.slice(0, 6).map((badge: string, i: number) => (
+                  <div key={i} className="aspect-square rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center group cursor-help relative hover:border-purple-500/30 transition-all">
+                    <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
+                      <Star size={18} fill={i === 0 ? "currentColor" : "none"} />
                     </div>
-                    <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 px-2 py-1 rounded-lg bg-slate-900 border border-white/10 text-[7px] font-black text-white uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                    <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-[9px] font-black text-white uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all whitespace-nowrap z-50 pointer-events-none shadow-2xl">
                       {badge}
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="col-span-3 p-3 border border-dashed border-white/10 rounded-2xl text-center">
-                  <p className="text-slate-500 text-[7px] font-black uppercase tracking-widest">No badges yet</p>
+                <div className="col-span-3 py-8 border border-dashed border-white/5 rounded-[2rem] text-center opacity-30">
+                  <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest italic">No nodes unlocked</p>
                 </div>
               )}
             </div>
           </div>
+
+          {/* Global Rankings Matrix */}
+          <div className="space-y-6">
+            <LeaderboardView
+              leaderboard={filteredLeaderboard}
+              language={language}
+              following={user?.following || []}
+              user={user}
+            />
+            <div className="px-2">
+              <DistrictLeaderboardFilter
+                selectedDistrict={selectedDistrict}
+                setSelectedDistrict={setSelectedDistrict}
+                language={language}
+              />
+            </div>
+          </div>
         </div>
       </div>
-    </motion.div>
-    
-    <AnimatePresence>
-      {showRegistrationForm && (
-        <TestSeriesRegistrationForm 
-          user={user} 
-          language={language} 
-          onClose={() => {
-            setShowRegistrationForm(false);
-            setIsRegistered(true);
-          }} 
-        />
-      )}
-    </AnimatePresence>
-    </>
+          {/* AI Disclaimer */}
+          <div className="max-w-7xl mx-auto px-6 mt-12 mb-8">
+            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em] text-center bg-white/5 py-3 rounded-2xl border border-white/5 backdrop-blur-md">
+              <span className="text-amber-500/80 mr-2">◆</span> AI systems can make mistakes. Please double-check critical information with your textbooks. <span className="text-amber-500/80 ml-2">◆</span>
+            </p>
+          </div>
+      </motion.div>
+
+      <AnimatePresence>
+        {showRegistrationForm && (
+          <TestSeriesRegistrationForm 
+            user={user} 
+            language={language} 
+            onClose={() => {
+              setShowRegistrationForm(false);
+              setIsRegistered(true);
+            }} 
+          />
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 

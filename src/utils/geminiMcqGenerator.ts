@@ -1,88 +1,118 @@
-import axios from 'axios';
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleAIFileManager, FileState } from "@google/generative-ai/server";
+import { PDFDocument } from 'pdf-lib';
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
 
-// Replace with your Gemini API endpoint and key
-const GEMINI_API_URL = process.env.GEMINI_API_URL || 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || '<YOUR_GEMINI_API_KEY>';
-console.log('[GeminiMCQ] Using GEMINI_API_KEY:', GEMINI_API_KEY);
-
-export interface GeminiMcq {
-  subject: string;
-  question: string;
-  options: string[];
-  correct_answer: string;
-  explanation: string;
-  difficulty: "easy" | "medium" | "hard" | "very_hard";
-  type: "mcq" | "subjective";
+function getTargetLanguage(subject: string): string {
+  const s = subject.toLowerCase();
+  if (s.includes('english')) return 'English';
+  if (s.includes('odia')) return 'Odia (ଓଡ଼ିଆ)';
+  if (s.includes('hindi')) return 'Hindi (ହିନ୍ଦୀ)';
+  if (s.includes('sanskrit')) return 'Sanskrit (ସଂସ୍କୃତ)';
+  return 'Odia (ଓଡ଼ିଆ)';
 }
 
-export async function generateMcqsWithGemini(textbookContent: string, count: number = 15): Promise<GeminiMcq[]> {
-  const safeCount = Number.isFinite(count) && count > 0 ? Math.floor(count) : 10;
-  const prompt = `You are an expert teacher. Read the following textbook content and generate a set of ${safeCount} practice questions for students.
-
-STRUCTURE REQUIREMENTS:
-- Total Questions: ${safeCount}
-- 7 Questions: Multiple Choice (MCQ) - These should be EASY (1-mark level).
-- 3 Questions: Subjective/Descriptive (Short Answer) - These should be MEDIUM/HARD (2, 3, or 5 mark level).
-
-CRITICAL REQUIREMENTS (must follow exactly):
-- Return ONLY valid JSON (no markdown, no extra text).
-- Each question must be in this exact schema:
-  {
-    "question": string,
-    "type": "mcq" | "subjective",
-    "options": string[],                 // For MCQ: 4 options (NO "A.", "B.", etc). For subjective: EMPTY ARRAY [].
-    "correct_answer": string,            // For MCQ: exactly match one option. For subjective: a model short answer.
-    "explanation": string,               // Detailed logic or step-by-step solution.
-    "difficulty": "easy" | "medium" | "hard" | "very_hard"
+/**
+ * Intelligent Slicing: If PDF is too large, extract a manageable range of pages.
+ */
+async function focusPdfContent(pdfBuffer: Buffer): Promise<Buffer> {
+  // If under 25MB, don't slice
+  if (pdfBuffer.length < 25 * 1024 * 1024) return pdfBuffer;
+  
+  console.log(`[GeminiMCQ] File too large (${(pdfBuffer.length/1024/1024).toFixed(1)}MB). Slicing pages for focus...`);
+  
+  try {
+    const pdfDoc = await PDFDocument.load(pdfBuffer);
+    const pageCount = pdfDoc.getPageCount();
+    
+    // Create a new document with only the first 80 pages (or less if it's smaller)
+    const newPdfDoc = await PDFDocument.create();
+    const pagesToCopy = Math.min(pageCount, 80);
+    const indices = Array.from({ length: pagesToCopy }, (_, i) => i);
+    
+    const copiedPages = await newPdfDoc.copyPages(pdfDoc, indices);
+    copiedPages.forEach(page => newPdfDoc.addPage(page));
+    
+    const slicedBuffer = Buffer.from(await newPdfDoc.save());
+    console.log(`[GeminiMCQ] Sliced PDF to ${pagesToCopy} pages. New size: ${(slicedBuffer.length/1024/1024).toFixed(1)}MB`);
+    return slicedBuffer;
+  } catch (err) {
+    console.error("[GeminiMCQ] Slicing failed, trying original buffer:", err);
+    return pdfBuffer;
   }
-- Language: Odia (ଓଡ଼ିଆ) for all subjects except English subject content which should remain in English.
-- Keep questions strictly from the given textbook content.
+}
 
-Textbook content:
-${textbookContent}
+export async function generateMcqsWithGemini(
+  pdfBuffer: Buffer,
+  count: number = 10,
+  subject: string = 'general',
+  mode: 'daily' | 'monthly' = 'daily',
+  difficulty: 'easy' | 'medium' | 'hard' = 'medium'
+): Promise<any[]> {
+  const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+  if (!apiKey) throw new Error('GEMINI_API_KEY is not set');
 
-Format your response as a JSON array, for example:
-[
-  {
-    "question": "୨ ଗୁଣିତ ୩ କେତେ?",
-    "type": "mcq",
-    "options": ["୬", "୫", "୪", "୭"],
-    "correct_answer": "୬",
-    "explanation": "୨ ଗୁଣିତ ୩ ହେଉଛି ୬।",
-    "difficulty": "easy"
-  },
-  {
-    "question": "ଦ୍ୟୁତି-ସଂଶ୍ଲେଷଣ (Photosynthesis) କହିଲେ କଣ ବୁଝ?",
-    "type": "subjective",
-    "options": [],
-    "correct_answer": "ସବୁଜ ଉଦ୍ଭିଦମାନେ ସୂର୍ଯ୍ୟାଲୋକ ଉପସ୍ଥିତିରେ ନିଜ ଖାଦ୍ୟ ପ୍ରସ୍ତୁତ କରିବା ପ୍ରକ୍ରିୟାକୁ ଦ୍ୟୁତି-ସଂଶ୍ଲେଷଣ କୁହାଯାଏ।",
-    "explanation": "ଏହି ପ୍ରକ୍ରିୟାରେ ଅଙ୍ଗାରକାମ୍ଳ ଏବଂ ଜଳ ବ୍ୟବହାର ହୁଏ।",
-    "difficulty": "medium"
-  }
-]
-`;
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const fileManager = new GoogleAIFileManager(apiKey);
+  const targetLanguage = getTargetLanguage(subject);
 
-  const requestBody = {
-    contents: [{ parts: [{ text: prompt }] }],
-  };
+  // Focus the content if it's a massive book
+  const processedBuffer = await focusPdfContent(pdfBuffer);
 
-  const url = `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`;
+  const tempPath = path.join(os.tmpdir(), `usc_gen_${Date.now()}.pdf`);
+  fs.writeFileSync(tempPath, processedBuffer);
 
   try {
-    const response = await axios.post(url, requestBody, {
-      headers: { 'Content-Type': 'application/json' },
+    const uploadResult = await fileManager.uploadFile(tempPath, {
+      mimeType: "application/pdf",
+      displayName: `Book_${subject}_Focused`,
     });
-    // Gemini's response may contain the JSON as a string in response.data.candidates[0].content.parts[0].text
-    const text = response.data?.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!text) throw new Error('No response from Gemini');
-    // Try to extract the JSON array from the response
-    const jsonStart = text.indexOf('[');
-    const jsonEnd = text.lastIndexOf(']') + 1;
-    const jsonString = text.substring(jsonStart, jsonEnd);
-    const mcqs: GeminiMcq[] = JSON.parse(jsonString);
-    return mcqs;
-  } catch (error) {
-    console.error('[GeminiMCQ] Error generating MCQs:', error);
-    throw error;
+
+    const file = uploadResult.file;
+    let activeFile = await fileManager.getFile(file.name);
+    let attempts = 0;
+    while (activeFile.state === FileState.PROCESSING && attempts < 40) {
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      activeFile = await fileManager.getFile(file.name);
+      attempts++;
+    }
+
+    if (activeFile.state !== FileState.ACTIVE) throw new Error("File focus failed.");
+    console.log("[GeminiMCQ] Focused File ACTIVE.");
+
+    const prompt = `You are a teacher. Generate exactly ${mode === 'monthly' ? 23 : count} questions from this book.
+       DIFFICULTY: ${difficulty.toUpperCase()}.
+       SCHEMA: Array of { "question": string, "options": string[], "correct_answer": string, "explanation": string, "type": "mcq" | "subjective", "chapter": string }.
+       Language: ${targetLanguage}.`;
+
+    // Priority model list
+    const models = ["gemini-flash-latest", "gemini-pro-latest", "gemini-3-flash-preview", "gemini-1.5-flash-latest"];
+    
+    for (const modelId of models) {
+      try {
+        console.log(`[GeminiMCQ] Prompting ${modelId}...`);
+        const model = genAI.getGenerativeModel({ 
+          model: modelId,
+          generationConfig: { responseMimeType: "application/json" }
+        });
+
+        const result = await model.generateContent([{ text: prompt }, { fileData: { mimeType: file.mimeType, fileUri: file.uri } }]);
+        const questions = JSON.parse(result.response.text());
+        
+        if (Array.isArray(questions) && questions.length > 0) {
+          console.log(`[GeminiMCQ] SUCCESS with ${modelId}!`);
+          return questions;
+        }
+      } catch (err: any) {
+        console.warn(`[GeminiMCQ] ${modelId} failed: ${err.message}`);
+      }
+    }
+
+    throw new Error("Focus mode failed to produce results. Try manual generation.");
+
+  } finally {
+    if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath);
   }
 }

@@ -1,12 +1,13 @@
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { collection, doc, runTransaction, serverTimestamp } from 'firebase/firestore';
-import { ArrowLeft, Calendar, CheckCircle2, Coins, Copy, HelpCircle, Loader2, MessageCircle, XCircle } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, Calendar, CheckCircle2, Coins, Copy, HelpCircle, Loader2, MessageCircle, Mic, MicOff, XCircle } from 'lucide-react';
 import { db as firestore } from '../firebase';
 import { DailyMcq, DailyMcqSubmission } from '../types';
 import { translations } from '../translations';
 import { normalizeDailyMcqQuestions } from '../utils/dailyMcq';
 import { copyTextToClipboard, getDailyMcqShareUrl, openDailyMcqWhatsAppShare } from '../utils/dailyMcqShare';
+import { useVoiceInput } from '../hooks/useVoiceInput';
 import { SEO } from './SEO';
 
 interface DailyMcqViewProps {
@@ -23,6 +24,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string[]>>({});
   const [submittingMcqId, setSubmittingMcqId] = useState<string | null>(null);
   const [copiedMcqId, setCopiedMcqId] = useState<string | null>(null);
+  const { isListening, startListening, stopListening } = useVoiceInput(language);
 
   const t = language === 'en'
     ? {
@@ -84,10 +86,15 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
 
   const today = new Date().toISOString().split('T')[0];
 
-  const sortedMcqs = useMemo(
-    () => [...mcqs].sort((left, right) => new Date(right.activeDate || 0).getTime() - new Date(left.activeDate || 0).getTime()),
-    [mcqs]
-  );
+  const sortedMcqs = useMemo(() => {
+    return [...mcqs]
+      .filter((mcq) => {
+        // Filter by board. Default to Odisha Board if not specified.
+        const mcqBoard = mcq.board || 'Odisha State Board';
+        return mcqBoard === (user?.board || 'Odisha State Board');
+      })
+      .sort((left, right) => new Date(right.activeDate || 0).getTime() - new Date(left.activeDate || 0).getTime());
+  }, [mcqs, user?.board]);
 
   const submissionMap = useMemo(
     () => Object.fromEntries(submissions.map((submission) => [submission.mcqId, submission])),
@@ -235,6 +242,10 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">{t.title}</h1>
           <p className="text-slate-400 max-w-2xl">{t.subtitle}</p>
+          <div className="mt-3 flex items-center gap-2 text-[11px] font-medium text-amber-500/80 uppercase tracking-wider">
+            <AlertTriangle size={14} className="text-amber-500" />
+            <span>AI can make mistakes. Please double-check answers.</span>
+          </div>
         </div>
         <button
           type="button"
@@ -324,7 +335,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
                         </div>
 
                         {question.type === 'subjective' ? (
-                          <div className="space-y-3">
+                          <div className="space-y-3 relative">
                             <textarea
                               disabled={isSubmitted}
                               placeholder={t.typeAnswer}
@@ -334,8 +345,29 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
                                 nextAnswers[questionIndex] = e.target.value;
                                 setSelectedAnswers((prev) => ({ ...prev, [mcq.id]: nextAnswers }));
                               }}
-                              className="w-full min-h-[100px] rounded-2xl border border-white/10 bg-white/5 p-4 text-slate-200 placeholder:text-slate-600 focus:border-cyan-400/40 focus:bg-white/10 transition-all outline-none resize-none"
+                              className="w-full min-h-[100px] rounded-2xl border border-white/10 bg-white/5 p-4 text-slate-200 placeholder:text-slate-600 focus:border-cyan-400/40 focus:bg-white/10 transition-all outline-none resize-none pr-12"
                             />
+                            {!isSubmitted && (
+                              <button
+                                type="button"
+                                onMouseDown={() => startListening((text) => {
+                                  const nextAnswers = [...selectedSetAnswers];
+                                  nextAnswers[questionIndex] = (nextAnswers[questionIndex] || '') + ' ' + text;
+                                  setSelectedAnswers((prev) => ({ ...prev, [mcq.id]: nextAnswers }));
+                                })}
+                                onMouseUp={stopListening}
+                                onTouchStart={() => startListening((text) => {
+                                  const nextAnswers = [...selectedSetAnswers];
+                                  nextAnswers[questionIndex] = (nextAnswers[questionIndex] || '') + ' ' + text;
+                                  setSelectedAnswers((prev) => ({ ...prev, [mcq.id]: nextAnswers }));
+                                })}
+                                onTouchEnd={stopListening}
+                                className={`absolute right-4 bottom-4 p-3 rounded-full transition-all ${isListening ? 'bg-red-500 animate-pulse text-white' : 'bg-white/5 text-slate-400 hover:text-cyan-400 hover:bg-white/10'}`}
+                                title="Hold to speak"
+                              >
+                                {isListening ? <MicOff size={20} /> : <Mic size={20} />}
+                              </button>
+                            )}
                             {isSubmitted && (
                               <div className="space-y-3 p-4 rounded-2xl bg-cyan-500/5 border border-cyan-500/10">
                                 <div>

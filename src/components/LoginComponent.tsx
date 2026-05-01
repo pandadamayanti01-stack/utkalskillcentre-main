@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { auth, db, signInWithGoogle } from '../firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Phone, Loader2, Globe, ArrowLeft, Shield, ChevronRight, Sparkles, Youtube, Instagram, Facebook } from 'lucide-react';
+import { Phone, Loader2, Globe, ArrowLeft, Shield, ChevronRight, Sparkles, Youtube, Instagram, Facebook, BookOpen } from 'lucide-react';
 import { doc, getDoc } from 'firebase/firestore';
 import { getDeferredPrompt, clearDeferredPrompt } from '../pwa';
 
@@ -263,7 +263,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
   };
 
   return (
-    <div className="digital-altar-bg w-full flex flex-col items-center justify-between p-6">
+    <div className="digital-altar-bg w-full min-h-full flex flex-col items-center justify-between p-6">
       
       {/* 1. THE IMPOSSIBLE BACKGROUND: Animated Temple Watermark */}
       <motion.div 
@@ -341,8 +341,24 @@ export default function Login({ language, translations, setLanguage, setRegData 
       {/* 3. CENTER: The Altar Content */}
       <div className="flex-1 flex flex-col items-center justify-center w-full max-w-[340px] z-10 gap-6">
         
-        {/* LOGO SECTION - Restored Size */}
-        <div className="relative flex flex-col items-center">
+        {/* LOGO SECTION - Restored Size with Hidden Admin Trigger */}
+        <div 
+          className="relative flex flex-col items-center cursor-pointer active:scale-95 transition-transform"
+          onClick={() => {
+            const now = Date.now();
+            const timeDiff = now - (window as any)._lastLogoClick || 0;
+            if (timeDiff < 500) {
+              (window as any)._logoClickCount = ((window as any)._logoClickCount || 0) + 1;
+              if ((window as any)._logoClickCount >= 3) {
+                setIsAdminLogin(true);
+                (window as any)._logoClickCount = 0;
+              }
+            } else {
+              (window as any)._logoClickCount = 1;
+            }
+            (window as any)._lastLogoClick = now;
+          }}
+        >
           <div className="absolute inset-0 bg-emerald-500/20 blur-[100px] rounded-full scale-150 pointer-events-none" />
           <motion.img 
             initial={{ scale: 0.8, opacity: 0 }} 
@@ -352,8 +368,8 @@ export default function Login({ language, translations, setLanguage, setRegData 
             style={{ mixBlendMode: 'multiply' }} 
             alt="Utkal" 
           />
-          <h1 className="text-white text-4xl font-black tracking-tighter mt-2 uppercase leading-none">UTKAL</h1>
-          <p className="text-[#ffd700] text-[9px] font-bold tracking-[0.6em] uppercase opacity-50 mt-1">Skill Centre</p>
+          <h1 className="text-white text-4xl font-black tracking-tighter mt-2 uppercase leading-none font-['Outfit']">UTKAL</h1>
+          <p className="text-[#ffd700] text-[9px] font-black tracking-[0.6em] uppercase opacity-70 mt-1 font-['Outfit']">Skill Centre</p>
         </div>
 
         {/* WELCOME MESSAGE - RESTORED */}
@@ -387,54 +403,92 @@ export default function Login({ language, translations, setLanguage, setRegData 
               >
                 {!isAdminLogin ? (
                   <>
-                    <motion.div whileTap={{ scale: 0.98 }}>
-                      <select 
-                        value={selectedClass} 
-                        onChange={(e) => setSelectedClass(e.target.value)}
-                        className="glass-marble w-full py-4 px-6 rounded-[1.5rem] text-white text-xs font-bold outline-none appearance-none"
-                      >
-                        <option className="bg-[#050a0b]">{t.selectClass} *</option>
-                        {Object.entries(t.classes).map(([k,v]) => <option key={k} value={k} className="bg-[#050a0b]">{v as string}</option>)}
-                      </select>
-                    </motion.div>
-
-                    <motion.div whileTap={{ scale: 0.98 }}>
-                      <select 
-                        value={selectedBoard} 
-                        onChange={(e) => setSelectedBoard(e.target.value)}
-                        className="glass-marble w-full py-4 px-6 rounded-[1.5rem] text-white text-xs font-bold outline-none appearance-none"
-                      >
-                        <option className="bg-[#050a0b]">{t.selectBoard} *</option>
-                        {t.boards && Object.entries(t.boards).map(([k,v]) => <option key={k} value={k} className="bg-[#050a0b]">{v as string}</option>)}
-                      </select>
-                    </motion.div>
-
-                    <div className="flex gap-3">
-                      <div className="glass-marble px-5 py-4 rounded-[1.5rem] text-[#ffd700] text-xs font-black">+91</div>
-                      <input 
-                        type="tel" 
-                        ref={phoneInputRef}
-                        defaultValue={phoneNumber}
-                        placeholder={t.enterPhone}
-                        inputMode="numeric"
-                        autoComplete="tel"
-                        className="glass-marble flex-1 py-4 px-6 rounded-[1.5rem] text-white text-xs font-black outline-none placeholder:text-white/10" 
-                      />
+                    <div className="space-y-1">
+                      <p className="text-[9px] font-black text-[#ffd700]/60 uppercase tracking-[0.2em] ml-4 mb-1">
+                        {language === 'en' ? 'Step 1: Select Class' : 'ପର୍ଯ୍ୟାୟ ୧: ଶ୍ରେଣୀ ବାଛନ୍ତୁ'}
+                      </p>
+                      <motion.div whileTap={{ scale: 0.98 }} className="relative group">
+                        <div className="absolute left-6 top-1/2 -translate-y-1/2 text-[#ffd700]/40 group-focus-within:text-[#ffd700] transition-colors">
+                          <BookOpen size={16} />
+                        </div>
+                        <select 
+                          value={selectedClass} 
+                          onChange={(e) => setSelectedClass(e.target.value)}
+                          className="glass-marble w-full py-4 pl-14 pr-6 rounded-[1.5rem] text-white text-xs font-bold outline-none appearance-none"
+                        >
+                          <option className="bg-[#050a0b]">{t.selectClass} *</option>
+                          {Object.entries(t.classes).map(([k,v]) => <option key={k} value={k} className="bg-[#050a0b]">{v as string}</option>)}
+                        </select>
+                      </motion.div>
                     </div>
 
-                    <button onClick={onSmsSend} disabled={isSending} className="w-full group relative py-4 rounded-[1.5rem] overflow-hidden transition-all active:scale-95 shadow-[0_20px_50px_rgba(179,77,31,0.3)]">
-                      <div className="absolute inset-0 bg-gradient-to-r from-[#b34d1f] via-[#d97706] to-[#b34d1f] group-hover:scale-110 transition-transform duration-500" />
+                    <div className="space-y-1">
+                      <p className="text-[9px] font-black text-[#ffd700]/60 uppercase tracking-[0.2em] ml-4 mb-1">
+                        {language === 'en' ? 'Step 2: Select Board' : 'ପର୍ଯ୍ୟାୟ ୨: ବୋର୍ଡ ବାଛନ୍ତୁ'}
+                      </p>
+                      <motion.div whileTap={{ scale: 0.98 }} className="relative group">
+                        <div className="absolute left-6 top-1/2 -translate-y-1/2 text-[#ffd700]/40 group-focus-within:text-[#ffd700] transition-colors">
+                          <Globe size={16} />
+                        </div>
+                        <select 
+                          value={selectedBoard} 
+                          onChange={(e) => setSelectedBoard(e.target.value)}
+                          className="glass-marble w-full py-4 pl-14 pr-6 rounded-[1.5rem] text-white text-xs font-bold outline-none appearance-none"
+                        >
+                          <option className="bg-[#050a0b]">{t.selectBoard} *</option>
+                          {t.boards && Object.entries(t.boards).map(([k,v]) => <option key={k} value={k} className="bg-[#050a0b]">{v as string}</option>)}
+                        </select>
+                      </motion.div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <p className="text-[9px] font-black text-[#ffd700]/60 uppercase tracking-[0.2em] ml-4 mb-1">
+                        {language === 'en' ? 'Step 3: Mobile Number' : 'ପର୍ଯ୍ୟାୟ ୩: ମୋବାଇଲ୍ ନମ୍ବର'}
+                      </p>
+                      <div className="flex gap-3">
+                        <div className="glass-marble px-5 py-4 rounded-[1.5rem] text-[#ffd700] text-xs font-black flex items-center gap-2">
+                          <Phone size={14} />
+                          <span>+91</span>
+                        </div>
+                        <input 
+                          type="tel" 
+                          ref={phoneInputRef}
+                          defaultValue={phoneNumber}
+                          placeholder={t.enterPhone}
+                          inputMode="numeric"
+                          autoComplete="tel"
+                          className="glass-marble flex-1 py-4 px-6 rounded-[1.5rem] text-white text-xs font-black outline-none placeholder:text-white/20" 
+                        />
+                      </div>
+                    </div>
+
+                    <button onClick={onSmsSend} disabled={isSending} className="w-full group relative py-4 rounded-[1.5rem] overflow-hidden transition-all active:scale-95 crystal-button-gold">
                       <span className="relative z-10 text-white font-black text-xs tracking-[0.2em] flex items-center justify-center gap-2 uppercase">
                         {isSending ? <Loader2 className="animate-spin" /> : <>{t.sendOtp || 'Continue'} <ChevronRight size={16} /></>}
                       </span>
                     </button>
 
+                    <div className="relative py-2 flex items-center justify-center">
+                      <div className="h-px bg-white/10 w-full" />
+                      <span className="absolute bg-[#0B0F19] px-4 text-[8px] font-black text-white/20 uppercase tracking-[0.3em]">
+                        {language === 'en' ? 'OR' : 'କିମ୍ବା'}
+                      </span>
+                    </div>
+
                     <button
                       onClick={handleGoogleLogin}
                       disabled={!selectedClass || !selectedBoard}
-                      className={`w-full py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-colors ${!selectedClass || !selectedBoard ? 'text-white/20 bg-white/5 cursor-not-allowed' : 'text-white/30 hover:text-white'}`}
+                      className={`w-full group relative py-4 rounded-[1.5rem] overflow-hidden transition-all active:scale-95 ${!selectedClass || !selectedBoard ? 'bg-white/5 border border-white/10 cursor-not-allowed' : 'crystal-button-sapphire'}`}
                     >
-                      {language === 'en' ? 'Continue with Google' : 'ଗୁଗଲ୍ ସହିତ ଆଗକୁ ବଢନ୍ତୁ'}
+                      <span className={`relative z-10 font-black text-xs tracking-[0.2em] flex items-center justify-center gap-2 uppercase ${!selectedClass || !selectedBoard ? 'text-white/20' : 'text-white'}`}>
+                        <svg className="w-4 h-4" viewBox="0 0 24 24">
+                          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+                          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        {language === 'en' ? 'Continue with Google' : 'ଗୁଗଲ୍ ସହିତ ଆଗକୁ ବଢନ୍ତୁ'}
+                      </span>
                     </button>
                   </>
                 ) : (
@@ -445,7 +499,10 @@ export default function Login({ language, translations, setLanguage, setRegData 
                     </button>
                     
                     <div className="flex gap-3">
-                      <div className="glass-marble px-5 py-4 rounded-[1.5rem] text-[#ffd700] text-xs font-black">+91</div>
+                      <div className="glass-marble px-5 py-4 rounded-[1.5rem] text-[#ffd700] text-xs font-black flex items-center gap-2">
+                        <Phone size={14} />
+                        <span>+91</span>
+                      </div>
                       <input 
                         type="tel" 
                         ref={phoneInputRef}
@@ -453,7 +510,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
                         placeholder="Phone Number" 
                         inputMode="numeric"
                         autoComplete="tel"
-                        className="glass-marble flex-1 py-4 px-6 rounded-[1.5rem] text-white text-xs font-black outline-none placeholder:text-white/10" 
+                        className="glass-marble flex-1 py-4 px-6 rounded-[1.5rem] text-white text-xs font-black outline-none placeholder:text-white/20" 
                       />
                     </div>
                     <button onClick={onSmsSend} disabled={isSending} className="w-full group relative py-4 rounded-[1.5rem] overflow-hidden transition-all active:scale-95 shadow-[0_20px_50px_rgba(179,77,31,0.3)]">
@@ -487,13 +544,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
 
       {/* 4. FOOTER: Integrated & Tiny */}
       <div className="w-full flex flex-col items-center gap-4 z-10 pb-4">
-        {!isAdminLogin && (
-          <div className="flex flex-col gap-3 items-center">
-            <button onClick={() => setIsAdminLogin(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-[8px] font-black text-white/20 uppercase tracking-[0.2em] hover:text-[#ffd700] transition-all">
-              <Shield size={10} /> Admin Portal
-            </button>
-          </div>
-        )}
+        <div className="w-full h-1" />
         
         <div className="flex flex-col items-center opacity-20 scale-75">
           <p className="text-[7px] font-black uppercase tracking-[0.6em] text-[#ffd700]">Pride Association of Bigsan Group</p>

@@ -32,7 +32,15 @@ import {
   File,
   Download,
   Bot,
-  Lock
+  Lock,
+  Link2,
+  Eye,
+  Zap,
+  Info,
+  Globe,
+  Shield,
+  Activity,
+  PieChart
 } from 'lucide-react';
 // import { translateToBilingual } from '../services/translationService';
 import { motion, AnimatePresence } from 'motion/react';
@@ -205,8 +213,14 @@ Sample tone for Class 6-10:
     subject: 'math',
     month: new Date().toLocaleString('default', { month: 'long' }),
     year: new Date().getFullYear(),
-    language: 'or'
+    language: 'or',
+    totalMarks: 0
   });
+
+  const [bulkTestQuestions, setBulkTestQuestions] = useState('');
+  const [isParsingBulk, setIsParsingBulk] = useState(false);
+  const [selectedTestIdForSubmissions, setSelectedTestIdForSubmissions] = useState<string | null>(null);
+  const [testSubmissions, setTestSubmissions] = useState<any[]>([]);
 
   const [isAddingTextbook, setIsAddingTextbook] = useState(false);
   const [editingTextbookId, setEditingTextbookId] = useState<string | null>(null);
@@ -761,31 +775,150 @@ Sample tone for Class 6-10:
     </div>
   );
 
+  const SidebarNavigation = () => (
+    <aside 
+      className={`fixed top-0 left-0 h-full bg-slate-950/40 backdrop-blur-3xl border-r border-white/5 z-[60] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${isSidebarOpen ? 'w-[280px]' : 'w-24'}`}
+      onMouseEnter={() => setIsSidebarOpen(true)}
+      onMouseLeave={() => setIsSidebarOpen(false)}
+    >
+      <div className="flex flex-col h-full py-8">
+        {/* Brand */}
+        <div className="px-6 mb-12 flex items-center gap-4 overflow-hidden">
+          <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+            <LayoutDashboard className="text-white" size={24} />
+          </div>
+          <motion.div 
+            animate={{ opacity: isSidebarOpen ? 1 : 0, x: isSidebarOpen ? 0 : -20 }}
+            className="whitespace-nowrap"
+          >
+            <h1 className="text-xl font-black text-white tracking-tighter">UTKAL <span className="text-emerald-500">ADMIN</span></h1>
+            <p className="text-[8px] font-black text-slate-500 uppercase tracking-[0.3em]">Neural Core v2.0</p>
+          </motion.div>
+        </div>
+
+        {/* Navigation Groups */}
+        <nav className="flex-1 px-4 space-y-8 custom-scrollbar overflow-y-auto">
+          {[
+            {
+              title: 'Command',
+              items: [
+                { id: 'dashboard', label: 'Overview', icon: Activity },
+                { id: 'ai_usage', label: 'Neural Logs', icon: Brain },
+                { id: 'daily_mcqs', label: 'Auto MCQs', icon: Zap },
+              ]
+            },
+            {
+              title: 'Vault',
+              items: [
+                { id: 'content', label: 'Chapters', icon: BookOpen },
+                { id: 'textbooks', label: 'Textbooks', icon: Book },
+                { id: 'monthly_tests', label: 'Test Matrix', icon: ClipboardList },
+              ]
+            },
+            {
+              title: 'Registry',
+              items: [
+                { id: 'students', label: 'Agents', icon: Users },
+                { id: 'subscriptions', label: 'Access Control', icon: Shield },
+                { id: 'payments', label: 'Ledger', icon: CreditCard },
+                { id: 'user_locks', label: 'Locks', icon: Lock },
+              ]
+            },
+            {
+              title: 'System',
+              items: [
+                { id: 'notifications', label: 'Broadcast', icon: Bell },
+                { id: 'settings', label: 'Config', icon: Settings },
+                { id: 'support', label: 'Support', icon: HelpCircle },
+              ]
+            }
+          ].map((group, idx) => (
+            <div key={idx} className="space-y-2">
+              {isSidebarOpen && (
+                <p className="px-4 text-[9px] font-black text-slate-600 uppercase tracking-widest mb-4">{group.title}</p>
+              )}
+              {group.items.map((item) => {
+                const isActive = activeTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id as AdminTab)}
+                    className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group relative ${
+                      isActive 
+                      ? 'bg-emerald-500/10 text-emerald-400' 
+                      : 'text-slate-500 hover:text-slate-200 hover:bg-white/5'
+                    }`}
+                  >
+                    {isActive && (
+                      <motion.div 
+                        layoutId="activeGlow"
+                        className="absolute left-0 w-1 h-6 bg-emerald-500 rounded-r-full shadow-[0_0_15px_#10b981]"
+                      />
+                    )}
+                    <item.icon size={20} className={`shrink-0 ${isActive ? 'drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'group-hover:scale-110 transition-transform'}`} />
+                    <motion.span 
+                      animate={{ opacity: isSidebarOpen ? 1 : 0, x: isSidebarOpen ? 0 : -10 }}
+                      className="text-xs font-bold whitespace-nowrap tracking-tight"
+                    >
+                      {item.label}
+                    </motion.span>
+                  </button>
+                );
+              })}
+            </div>
+          ))}
+        </nav>
+
+        {/* Footer */}
+        <div className="px-4 pt-8 mt-auto border-t border-white/5">
+          <button 
+            onClick={() => onExit()}
+            className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-red-400/60 hover:text-red-400 hover:bg-red-500/10 transition-all group"
+          >
+            <LogOut size={20} className="group-hover:rotate-180 transition-transform duration-500" />
+            <motion.span 
+              animate={{ opacity: isSidebarOpen ? 1 : 0 }}
+              className="text-xs font-black uppercase tracking-widest"
+            >
+              Terminate
+            </motion.span>
+          </button>
+        </div>
+      </div>
+    </aside>
+  );
+
   const renderDashboard = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
         {[
-          { label: 'Total Revenue', value: `₹${stats.totalRevenue}`, icon: CreditCard, color: 'text-amber-500' },
-          { label: 'AI Questions Today', value: stats.aiQuestionsToday, icon: Brain, color: 'text-purple-500' },
-          { label: 'Subscription Conversion', value: '12%', icon: Users, color: 'text-emerald-500' },
-          { label: 'Voice Duration', value: '124m', icon: Bot, color: 'text-blue-500' },
-          { label: 'Sentiment Score', value: '88%', icon: Sparkles, color: 'text-purple-500' },
+          { label: 'Total Revenue', value: `₹${stats.totalRevenue.toLocaleString('en-IN')}`, icon: CreditCard, color: 'text-amber-400', glow: 'rgba(251, 191, 36, 0.15)' },
+          { label: 'AI Queries', value: stats.aiQuestionsToday, icon: Brain, color: 'text-emerald-400', glow: 'rgba(16, 185, 129, 0.15)' },
+          { label: 'Conversion', value: '12.4%', icon: Users, color: 'text-indigo-400', glow: 'rgba(99, 102, 241, 0.15)' },
+          { label: 'AI Voice', value: '124m', icon: Bot, color: 'text-blue-400', glow: 'rgba(59, 130, 246, 0.15)' },
+          { label: 'Sentiment', value: '88%', icon: Sparkles, color: 'text-purple-400', glow: 'rgba(168, 85, 247, 0.15)' },
         ].map((stat, i) => (
           <motion.div 
             key={i}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="glass-card p-6 rounded-3xl relative overflow-hidden group hover:border-white/20 transition-all"
+            transition={{ delay: i * 0.1, duration: 0.5 }}
+            className="glass-card glass-card-hover p-6 rounded-[2rem] relative overflow-hidden group"
+            style={{ '--glow-color': stat.glow } as any}
           >
-            <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-all pointer-events-none"></div>
+            <div className="stat-card-glow" />
             <div className="flex items-center justify-between mb-4 relative z-10">
-              <div className="p-3 rounded-2xl bg-white/5 group-hover:bg-white/10 group-hover:scale-110 transition-all border border-white/5">
-                <stat.icon className={stat.color} size={24} />
+              <div className="p-3 rounded-2xl bg-white/5 border border-white/10 group-hover:scale-110 transition-transform duration-500">
+                <stat.icon className={stat.color} size={22} />
               </div>
+              <div className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity duration-500">Live Data</div>
             </div>
-            <div className="text-4xl font-black text-white tracking-tight relative z-10">{stat.value}</div>
-            <div className="text-xs text-slate-400 font-medium uppercase tracking-widest mt-2 relative z-10">{stat.label}</div>
+            <div className="text-3xl font-black text-white tracking-tight relative z-10 mb-1 group-hover:translate-x-1 transition-transform duration-500">
+              {stat.value}
+            </div>
+            <div className="text-[11px] text-slate-400 font-semibold uppercase tracking-widest relative z-10 group-hover:text-slate-300 transition-colors">
+              {stat.label}
+            </div>
           </motion.div>
         ))}
       </div>
@@ -907,6 +1040,7 @@ Sample tone for Class 6-10:
     class: '',
     board: '',
     subject: '',
+    language: 'or',
     quiz_questions: [],
     bulkQa: ''
   });
@@ -965,6 +1099,7 @@ Sample tone for Class 6-10:
         class: '',
         board: '',
         subject: '',
+        language: 'or',
         quiz_questions: [],
         bulkQa: ''
       });
@@ -983,7 +1118,8 @@ Sample tone for Class 6-10:
     try {
       const result = await generateChapterContent(
         newChapter.title,
-        newChapter.subject // Added missing subject argument
+        newChapter.subject,
+        newChapter.language as 'en' | 'or'
       );
       
       setNewChapter(prev => ({
@@ -1008,7 +1144,8 @@ Sample tone for Class 6-10:
         result = await generateTestQuestions(
           newTest.subject,
           newTest.class,
-          `${newTest.month} ${newTest.year}`
+          `${newTest.month} ${newTest.year}`,
+          newTest.language as 'en' | 'or'
         );
       } else {
         result = await generateTestContent(
@@ -1017,10 +1154,14 @@ Sample tone for Class 6-10:
         );
       }
       
-      setNewTest((prev: any) => ({
-        ...prev,
-        questions: result.questions
-      }));
+      setNewTest((prev: any) => {
+        const totalMarks = result.questions.reduce((acc: number, q: any) => acc + (q.marks || 1), 0);
+        return {
+          ...prev,
+          questions: result.questions,
+          totalMarks
+        };
+      });
       
       showNotification("AI has generated the test questions for you! Please review them before saving.");
     } catch (err: any) {
@@ -1028,6 +1169,79 @@ Sample tone for Class 6-10:
       showNotification("Failed to generate test with AI: " + err.message, 'error');
     } finally {
       setIsGeneratingTestAI(false);
+    }
+  };
+
+  const handleBulkParseQuestions = () => {
+    setIsParsingBulk(true);
+    try {
+      const lines = bulkTestQuestions.split('\n');
+      const questions: any[] = [];
+      let currentQ: any = null;
+
+      lines.forEach(line => {
+        const trimmed = line.trim();
+        if (!trimmed) return;
+
+        // Pattern matching for [Marks] Q: Question
+        const qMatch = trimmed.match(/^\[(\d+)\]\s*Q:\s*(.*)/i) || trimmed.match(/^Q:\s*(.*)/i);
+        if (qMatch) {
+          if (currentQ) questions.push(currentQ);
+          const marks = qMatch.length === 3 ? parseInt(qMatch[1]) : 1;
+          const question = qMatch.length === 3 ? qMatch[2] : qMatch[1];
+          currentQ = {
+            question,
+            marks,
+            type: marks === 1 ? 'mcq' : 'subjective',
+            options: marks === 1 ? ['', '', '', ''] : [],
+            correct_answer: '',
+            hint: ''
+          };
+          return;
+        }
+
+        if (currentQ) {
+          // Options pattern: A: text | B: text ...
+          if (currentQ.type === 'mcq') {
+            const optMatch = trimmed.match(/^([A-D]):\s*(.*)/i);
+            if (optMatch) {
+              const idx = optMatch[1].toUpperCase().charCodeAt(0) - 65;
+              currentQ.options[idx] = optMatch[2];
+              return;
+            }
+          }
+
+          // Answer pattern: Ans: text or Correct: text
+          const ansMatch = trimmed.match(/^(Ans|Correct):\s*(.*)/i);
+          if (ansMatch) {
+            currentQ.correct_answer = ansMatch[2];
+            return;
+          }
+
+          // Hint pattern: Hint: text
+          const hintMatch = trimmed.match(/^Hint:\s*(.*)/i);
+          if (hintMatch) {
+            currentQ.hint = hintMatch[1];
+            return;
+          }
+        }
+      });
+
+      if (currentQ) questions.push(currentQ);
+
+      const totalMarks = questions.reduce((acc, q) => acc + (q.marks || 0), 0);
+      setNewTest((prev: any) => ({
+        ...prev,
+        questions: [...prev.questions, ...questions],
+        totalMarks: (prev.totalMarks || 0) + totalMarks
+      }));
+      setBulkTestQuestions('');
+      showNotification(`Successfully parsed ${questions.length} questions!`);
+    } catch (err) {
+      console.error("Bulk Parse Error:", err);
+      showNotification("Failed to parse questions. Please check format.", "error");
+    } finally {
+      setIsParsingBulk(false);
     }
   };
 
@@ -1267,6 +1481,7 @@ Sample tone for Class 6-10:
                     class: '',
                     board: '',
                     subject: '',
+                    language: 'or',
                     quiz_questions: [],
                     bulkQa: ''
                   });
@@ -1282,162 +1497,159 @@ Sample tone for Class 6-10:
         </div>
 
         {isAddingChapter && (
-          <form onSubmit={handleAddChapter} className="bg-white/5 border border-white/10 p-6 rounded-2xl space-y-6">
-            <h3 className="text-lg font-semibold text-white">{isEditingChapter ? 'Edit Chapter' : 'Add New Chapter'}</h3>
-            <div className="grid grid-cols-1 gap-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class</label>
-                    <select 
-                      value={newChapter.class}
-                      onChange={(e) => setNewChapter({...newChapter, class: e.target.value})}
-                      className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white cursor-pointer"
-                    >
-                      <option value="">Select Class</option>
-                      {Array.from({ length: 10 }, (_, i) => i + 1).map(c => (
-                        <option key={c} value={`class${c}`}>
-                          {translations['en'].classes[`class${c}` as keyof typeof translations.en.classes]}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Board</label>
-                    <select 
-                      value={newChapter.board}
-                      onChange={(e) => setNewChapter({...newChapter, board: e.target.value})}
-                      className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white cursor-pointer"
-                    >
-                      <option value="">Select Board</option>
-                      {Object.entries(translations['en'].boards).map(([key, label]) => (
-                        <option key={key} value={label as string}>{label as string}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Subject</label>
-                    <input 
-                      type="text" 
-                      value={newChapter.subject}
-                      onChange={(e) => setNewChapter({...newChapter, subject: e.target.value})}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                    />
-                  </div>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-8 rounded-[2.5rem] relative overflow-hidden border-emerald-500/20">
+            <div className="absolute top-0 right-0 p-8 opacity-5">
+              <BookOpen size={120} />
+            </div>
+            <form onSubmit={handleAddChapter} className="space-y-8 relative z-10">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="text-2xl font-black text-white tracking-tighter">
+                  {isEditingChapter ? 'Modify Topic' : 'New Content Creation'}
+                </h4>
+                <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em] bg-emerald-500/10 px-4 py-1 rounded-full">Editor Active</span>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div>
+                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Target Class</label>
+                  <select 
+                    value={newChapter.class}
+                    onChange={(e) => setNewChapter({...newChapter, class: e.target.value})}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 cursor-pointer font-bold uppercase tracking-tighter"
+                  >
+                    <option value="">Select Class</option>
+                    {Object.entries(translations['en'].classes).map(([key, label]) => (
+                      <option key={key} value={key}>{label as string}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="block text-xs font-bold text-slate-500 uppercase">Chapter / Video Title</label>
-                    <button 
-                      type="button"
-                      onClick={handleGenerateWithAI}
-                      disabled={isGeneratingAI || !newChapter.title}
-                      className="flex items-center gap-1 text-xs text-emerald-500 hover:text-emerald-400 disabled:opacity-50 transition-all"
-                    >
-                      {isGeneratingAI ? <div className="animate-spin h-3 w-3 border-2 border-emerald-500 border-t-transparent rounded-full" /> : <Sparkles size={14} />}
-                      {isGeneratingAI ? 'Generating...' : 'AI Magic: Generate Content'}
-                    </button>
-                  </div>
-                  <input 
-                    type="text" 
-                    value={newChapter.title}
-                    onChange={(e) => setNewChapter({...newChapter, title: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                    placeholder="e.g. Introduction to Geometry"
-                  />
+                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Academic Board</label>
+                  <select 
+                    value={newChapter.board}
+                    onChange={(e) => setNewChapter({...newChapter, board: e.target.value})}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 cursor-pointer font-bold uppercase tracking-tighter"
+                  >
+                    <option value="">Select Board</option>
+                    {Object.entries(translations['en'].boards).map(([key, label]) => (
+                      <option key={key} value={label as string}>{label as string}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Videos</label>
-                  {newChapter.videos.map((video, index) => (
-                    <div key={index} className="flex gap-2 mb-2">
-                      <input
-                        type="text"
-                        value={video.url}
-                        onChange={(e) => {
-                          const newVideos = [...newChapter.videos];
-                          newVideos[index].url = e.target.value;
-                          setNewChapter({...newChapter, videos: newVideos});
-                        }}
-                        className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white"
-                        placeholder="YouTube URL"
-                      />
-                      <input
-                        type="text"
-                        value={video.teacherOrChannel}
-                        onChange={(e) => {
-                          const newVideos = [...newChapter.videos];
-                          newVideos[index].teacherOrChannel = e.target.value;
-                          setNewChapter({...newChapter, videos: newVideos});
-                        }}
-                        className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white"
-                        placeholder="Teacher/Channel"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const newVideos = newChapter.videos.filter((_, i) => i !== index);
-                          setNewChapter({...newChapter, videos: newVideos});
-                        }}
-                        className="text-red-500"
-                      >
-                        <Trash2 size={20} />
-                      </button>
-                    </div>
-                  ))}
+                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Academic Subject</label>
+                  <select 
+                    value={newChapter.subject}
+                    onChange={(e) => setNewChapter({...newChapter, subject: e.target.value})}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 cursor-pointer font-bold uppercase tracking-tighter"
+                  >
+                    <option value="">Select Subject</option>
+                    {Object.entries(translations['en'].subjects).map(([key, label]) => (
+                      <option key={key} value={key}>{label as string}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Display Language</label>
+                  <select 
+                    value={newChapter.language}
+                    onChange={(e) => setNewChapter({...newChapter, language: e.target.value})}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 cursor-pointer font-bold uppercase tracking-tighter"
+                  >
+                    <option value="or">Odia (Default)</option>
+                    <option value="en">English</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest">Topic Title</label>
+                  <button 
+                    type="button"
+                    onClick={handleGenerateWithAI}
+                    disabled={isGeneratingAI || !newChapter.title}
+                    className="flex items-center gap-2 text-[10px] font-black text-emerald-400 hover:text-emerald-300 uppercase tracking-widest transition-all bg-emerald-500/10 px-4 py-2 rounded-xl border border-emerald-500/20"
+                  >
+                    {isGeneratingAI ? <div className="animate-spin h-3 w-3 border-2 border-emerald-500 border-t-transparent rounded-full" /> : <Sparkles size={14} />}
+                    {isGeneratingAI ? 'Processing AI Magic...' : 'AI Magic: Generate Content'}
+                  </button>
+                </div>
+                <input 
+                  type="text" 
+                  value={newChapter.title}
+                  onChange={(e) => setNewChapter({...newChapter, title: e.target.value})}
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-emerald-500/30 font-bold text-lg tracking-tight"
+                  placeholder="e.g. Introduction to Organic Chemistry"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest">Lecture Resources (YouTube)</label>
+                  <div className="space-y-3">
+                    {newChapter.videos.map((video, index) => (
+                      <div key={index} className="flex gap-3 items-center group/item animate-in fade-in slide-in-from-left-2 duration-300">
+                        <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[10px] font-black text-slate-500 border border-white/10">{index + 1}</div>
+                        <input
+                          type="text"
+                          value={video.url}
+                          onChange={(e) => {
+                            const newVideos = [...newChapter.videos];
+                            newVideos[index].url = e.target.value;
+                            setNewChapter({...newChapter, videos: newVideos});
+                          }}
+                          className="flex-[2] bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none text-sm font-medium"
+                          placeholder="Video URL"
+                        />
+                        <input
+                          type="text"
+                          value={video.teacherOrChannel}
+                          onChange={(e) => {
+                            const newVideos = [...newChapter.videos];
+                            newVideos[index].teacherOrChannel = e.target.value;
+                            setNewChapter({...newChapter, videos: newVideos});
+                          }}
+                          className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none text-sm font-medium"
+                          placeholder="Instructor"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const newVideos = newChapter.videos.filter((_, i) => i !== index);
+                            setNewChapter({...newChapter, videos: newVideos});
+                          }}
+                          className="w-10 h-10 flex items-center justify-center text-red-400 hover:bg-red-500/10 rounded-xl transition-all"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                   <button
                     type="button"
                     onClick={() => {
                       setNewChapter({...newChapter, videos: [...newChapter.videos, { url: '', teacherOrChannel: '' }]});
                     }}
-                    className="flex items-center gap-2 text-emerald-500 text-sm font-bold"
+                    className="flex items-center gap-2 text-emerald-400 text-[10px] font-black uppercase tracking-widest bg-emerald-500/5 px-4 py-2 rounded-xl border border-emerald-500/10 hover:bg-emerald-500/10 transition-all"
                   >
-                    <Plus size={16} /> Add Video
+                    <Plus size={14} /> Append Resource
                   </button>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Chapter Order</label>
-                  <input 
-                    type="number" 
-                    value={newChapter.order}
-                    onChange={(e) => setNewChapter({...newChapter, order: parseInt(e.target.value)})}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500/50"
-                    placeholder="e.g. 1"
-                  />
-                </div>
-                               <div className="space-y-4">
-                  <div className="bg-slate-900/30 border border-white/5 rounded-2xl p-6 space-y-4">
-                    <div className="flex items-center justify-between">
-                      <label className="block text-xs font-bold text-emerald-500 uppercase tracking-widest">Magic Bulk Q&A Box (Textbook Questions & Answers)</label>
-                      <span className="text-[10px] text-slate-500 font-bold bg-white/5 px-2 py-1 rounded">FULL CHAPTER MODE</span>
+                <div className="space-y-4">
+                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest">Document Resources (PDF/Notes)</label>
+                  <div className="space-y-4">
+                    <div className="relative">
+                      <Link2 className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                      <input 
+                        type="text"
+                        value={newChapter.notesUrl}
+                        onChange={(e) => setNewChapter({...newChapter, notesUrl: e.target.value})}
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 text-sm font-medium"
+                        placeholder="External Resource Link (G-Drive/Cloud)"
+                      />
                     </div>
-                    <textarea 
-                      value={newChapter.bulkQa}
-                      onChange={(e) => setNewChapter({...newChapter, bulkQa: e.target.value})}
-                      placeholder={`Paste all 100+ questions and answers here... 
-Example:
-Q1: What is Physics?
-A1: Physics is the study of matter...
-
-Q2: ...`}
-                      className="w-full h-[600px] bg-white/5 border border-white/10 rounded-2xl px-6 py-6 text-white text-sm focus:outline-none focus:border-emerald-500/50 font-mono leading-relaxed custom-scrollbar"
-                    />
-                    <div className="flex items-center justify-between">
-                      <p className="text-[10px] text-slate-500 italic">Tip: Use Markdown (# for headings) to make it look beautiful for students.</p>
-                      <p className="text-[10px] text-emerald-500/50 font-bold uppercase">{newChapter.bulkQa?.length || 0} characters</p>
-                    </div>
-                  </div>
-                </div>
-              
-                <div className="md:col-span-3">
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Notes Document (PDF/Word)</label>
-                  <div className="flex flex-col gap-4">
-                    <input 
-                      type="text"
-                      value={newChapter.notesUrl}
-                      onChange={(e) => setNewChapter({...newChapter, notesUrl: e.target.value})}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                      placeholder="Or paste Google Drive URL here"
-                    />
                     <div className="flex items-center gap-4">
                       <input 
                         type="file" 
@@ -1454,99 +1666,139 @@ Q2: ...`}
                       />
                       <label 
                         htmlFor="notes-upload"
-                        className="cursor-pointer flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl transition-all"
+                        className="flex-1 cursor-pointer flex items-center justify-center gap-3 px-6 py-4 bg-white/5 hover:bg-white/10 text-white rounded-2xl border border-white/10 transition-all font-black text-[10px] uppercase tracking-widest"
                       >
-                        <Upload size={18} />
-                        {newChapter.notesUrl ? 'Change Document' : 'Upload Document'}
+                        <Upload size={18} className="text-emerald-500" />
+                        {newChapter.notesUrl ? 'Replace Repository File' : 'Upload Local Repository File'}
                       </label>
                       {newChapter.notesUrl && (
-                        <a href={newChapter.notesUrl} target="_blank" rel="noopener noreferrer" className="text-emerald-400 text-sm">View Document</a>
+                        <a href={newChapter.notesUrl} target="_blank" rel="noopener noreferrer" className="w-12 h-12 flex items-center justify-center bg-emerald-500/10 text-emerald-400 rounded-2xl border border-emerald-500/20 hover:bg-emerald-500/20 transition-all">
+                          <Eye size={20} />
+                        </a>
                       )}
-                </div>
-              </div>
-            </div>
-          </div>
-              
-          <div className="mb-6">
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Visibility Status</label>
-                <div className="flex gap-4">
-                  {['draft', 'published'].map((s) => (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => setNewChapter({...newChapter, status: s as 'draft' | 'published'})}
-                      className={`flex-1 py-2 rounded-xl border transition-all capitalize ${
-                        (newChapter.status || 'draft') === s 
-                        ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400' 
-                        : 'bg-slate-900 border-white/10 text-slate-500'
-                      }`}
-                    >
-                      {s}
-                    </button>
-                  ))}
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex gap-4">
-                <button 
-                  type="submit"
-                  className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl py-3 font-semibold transition-all"
-                >
-                  {isEditingChapter ? 'Update Topic' : 'Save Topic to Library'}
-                </button>
+              <div className="glass-card bg-black/20 border-white/5 rounded-[2rem] p-8 space-y-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-emerald-500/20 rounded-xl text-emerald-400">
+                      <Zap size={20} />
+                    </div>
+                    <div>
+                      <h5 className="font-black text-white tracking-tight">Full-Chapter Mastery (Bulk Q&A)</h5>
+                      <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Neural Engine Ingestion Mode</p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-bold text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 px-4 py-1 rounded-full uppercase tracking-widest">Active</span>
+                </div>
+                <textarea 
+                  value={newChapter.bulkQa}
+                  onChange={(e) => setNewChapter({...newChapter, bulkQa: e.target.value})}
+                  placeholder={`Format: Q1: Question? A1: Answer...`}
+                  className="w-full h-[400px] bg-black/40 border border-white/5 rounded-3xl px-8 py-8 text-emerald-50 font-mono text-sm focus:outline-none focus:border-emerald-500/20 transition-all leading-relaxed custom-scrollbar"
+                />
+                <div className="flex items-center justify-between px-2">
+                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest flex items-center gap-2">
+                    <Info size={14} className="text-emerald-500" />
+                    Supports Markdown for rich student interface presentation.
+                  </p>
+                  <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">{newChapter.bulkQa?.length || 0} characters ingested</p>
+                </div>
+              </div>
+
+              <div className="flex flex-col md:flex-row gap-6 pt-4">
+                <div className="flex-1 space-y-3">
+                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Visibility Matrix</label>
+                  <div className="flex gap-3">
+                    {['draft', 'published'].map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => setNewChapter({...newChapter, status: s as 'draft' | 'published'})}
+                        className={`flex-1 py-4 rounded-2xl border font-black text-[10px] uppercase tracking-[0.2em] transition-all duration-300 ${
+                          (newChapter.status || 'draft') === s 
+                          ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.1)]' 
+                          : 'bg-white/5 border-white/5 text-slate-500 hover:text-slate-400 hover:bg-white/10'
+                        }`}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex-1 space-y-3">
+                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Curriculum Sequence</label>
+                  <input 
+                    type="number" 
+                    value={newChapter.order}
+                    onChange={(e) => setNewChapter({...newChapter, order: parseInt(e.target.value)})}
+                    className="w-full bg-white/5 border border-white/5 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-emerald-500/30 font-black text-center"
+                    placeholder="Order ID"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-4 pt-8">
                 <button 
                   type="button"
                   onClick={() => setIsAddingChapter(false)}
-                  className="px-8 bg-white/5 hover:bg-white/10 text-white rounded-xl py-3 font-semibold transition-all"
+                  className="flex-1 bg-white/5 hover:bg-white/10 text-slate-400 py-5 rounded-[2rem] font-black text-[10px] uppercase tracking-[0.2em] transition-all border border-white/5"
                 >
-                  Cancel
+                  Discard Changes
+                </button>
+                <button 
+                  type="submit"
+                  className="flex-[2] bg-gradient-to-r from-emerald-600 to-teal-600 hover:scale-[1.02] text-white rounded-[2rem] py-5 font-black text-[12px] uppercase tracking-[0.3em] transition-all shadow-2xl shadow-emerald-600/40 active:scale-95"
+                >
+                  {isEditingChapter ? 'Update Topic Matrix' : 'Commence Topic Deployment'}
                 </button>
               </div>
-          </form>
+            </form>
+          </motion.div>
         )}
 
-        {uniqueChapters.length === 0 ? (
-          <div className="bg-white/5 border border-white/10 p-12 rounded-2xl text-center">
-            <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-              <BookOpen className="text-slate-500" size={32} />
+        {filteredContent.length === 0 ? (
+          <div className="glass-card p-20 text-center rounded-[3rem] border-white/5">
+            <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 border border-white/10">
+              <Search size={40} className="text-slate-700" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">No Chapters Found</h3>
-            <p className="text-slate-400">There are no chapters added for this subject yet.</p>
+            <h4 className="text-xl font-black text-white tracking-tight mb-2">No Content Found</h4>
+            <p className="text-slate-500 font-medium">Try adjusting your filters or search terms.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {uniqueChapters.map((c: any) => (
-              <div key={c.id} className="bg-white/5 border border-white/10 p-4 rounded-2xl flex flex-col h-full space-y-3 group hover:border-emerald-500/30 transition-all">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-full">
-                    {translations['en'].boards[getBoardKey(c.board)] || c.board} • {translations['en'].classes[c.class] || c.class} • {translations['en'].subjects[c.subject] || c.subject}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredContent.map((c: any, i: number) => (
+              <motion.div 
+                key={c.id} 
+                initial={{ opacity: 0, scale: 0.9 }} 
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.05 }}
+                className="glass-card p-6 rounded-[2.5rem] border-white/5 group hover:border-emerald-500/30 transition-all duration-500 flex flex-col"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <span className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border ${
+                    c.status === 'published' 
+                    ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' 
+                    : 'bg-amber-500/10 border-amber-500/20 text-amber-400'
+                  }`}>
+                    {c.status || 'draft'}
                   </span>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
                     <button 
                       onClick={() => {
                         setNewChapter({
-                          title: typeof c.title === 'string' ? { en: c.title, or: '' } : c.title,
-                          order: c.order,
-                          videoUrl: c.videoUrl || '',
-                          teacherOrChannel: c.teacherOrChannel || '',
-                          videos: c.videos || [],
-                          notes: c.notes || '',
-                          notesUrl: c.notesUrl || '',
-                          quizId: c.quizId || '',
-                          status: c.status || 'draft',
-                          class: c.class || '',
-                          board: typeof c.board === 'string' ? { en: c.board, or: '' } : c.board,
-                          subject: c.subject || '',
-                          quiz_questions: c.quiz_questions || [],
-                          bulkQa: c.bulkQa || ''
+                          ...c,
+                          videos: c.videos || [{ url: '', teacherOrChannel: '' }]
                         });
                         setEditingChapterId(c.id);
                         setIsEditingChapter(true);
                         setIsAddingChapter(true);
-                        // Scroll to form
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
-                      className="text-slate-500 hover:text-emerald-500"
+                      className="w-8 h-8 flex items-center justify-center bg-white/5 hover:bg-emerald-500/20 text-slate-400 hover:text-emerald-400 rounded-xl transition-all"
                     >
                       <Edit2 size={14} />
                     </button>
@@ -1555,17 +1807,16 @@ Q2: ...`}
                         if (confirmAction === `delete_topic_${c.id}`) {
                           try {
                             setLoading(true);
-                            // Delete both translations if they exist
                             const groupId = c.translationGroupId || c.id;
                             const related = content.filter((item: any) => item.translationGroupId === groupId || item.id === groupId);
                             for (const item of related) {
                               await deleteDoc(doc(firestore, 'chapters', item.id));
                             }
                             setConfirmAction(null);
-                            showNotification("Chapter deleted successfully!");
+                            showNotification("Topic purged successfully!");
                           } catch (err) {
-                            console.error("Delete Topic Error:", err);
-                            showNotification("Failed to delete chapter.", 'error');
+                            console.error("Purge Error:", err);
+                            showNotification("Purge failed.", 'error');
                           } finally {
                             setLoading(false);
                           }
@@ -1574,25 +1825,76 @@ Q2: ...`}
                           setTimeout(() => setConfirmAction(null), 5000);
                         }
                       }}
-                      className={confirmAction === `delete_topic_${c.id}` ? "text-red-500 font-bold text-xs bg-red-500/10 px-2 py-1 rounded" : "text-slate-500 hover:text-red-500 p-1"}
+                      className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all ${
+                        confirmAction === `delete_topic_${c.id}` 
+                        ? 'bg-red-500 text-white w-20 text-[10px] font-black uppercase' 
+                        : 'bg-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-400'
+                      }`}
                     >
-                      {confirmAction === `delete_topic_${c.id}` ? "Confirm?" : <Trash2 size={14} />}
+                      {confirmAction === `delete_topic_${c.id}` ? "PURGE?" : <Trash2 size={14} />}
                     </button>
                   </div>
                 </div>
-                <h4 className="text-white font-semibold">{typeof c.title === 'string' ? c.title : c.title.en}</h4>
-                <div className="text-xs text-slate-500 flex-grow">{translations['en'].subjects[c.subject] || c.subject}</div>
-                <div className="flex items-center gap-4 text-xs text-slate-400 pt-2 border-t border-white/5">
-                  <div className="flex items-center gap-1"><Youtube size={14} /> Video</div>
-                  {c.notes && <div className="flex items-center gap-1"><FileText size={14} /> Notes</div>}
-                  {c.quiz_questions?.length > 0 && <div className="flex items-center gap-1"><ListChecks size={14} /> Quiz</div>}
+                <div className="mb-4">
+                  <div className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em] mb-1">{translations['en'].classes[c.class as keyof typeof translations.en.classes] || c.class}</div>
+                  <h4 className="text-lg font-black text-white tracking-tight leading-tight line-clamp-2 group-hover:text-emerald-400 transition-colors">
+                    {typeof c.title === 'string' ? c.title : c.title.en}
+                  </h4>
                 </div>
-              </div>
+                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-6 flex-grow">
+                  {translations['en'].subjects[c.subject] || c.subject} • {c.board}
+                </div>
+                <div className="flex items-center gap-3 text-[9px] font-black text-slate-400 uppercase tracking-widest pt-6 border-t border-white/5">
+                  <div className="flex items-center gap-1.5"><Youtube size={14} className="text-red-500" /> {c.videos?.length || 0} Lectures</div>
+                  {c.notesUrl && <div className="flex items-center gap-1.5"><FileText size={14} className="text-blue-500" /> Repository</div>}
+                  {(c.quiz_questions?.length > 0 || c.bulkQa) && <div className="flex items-center gap-1.5"><Zap size={14} className="text-amber-500" /> Mastery</div>}
+                </div>
+              </motion.div>
             ))}
           </div>
         )}
       </div>
     );
+  };
+
+  const handlePullQuestionsFromChapters = async () => {
+    if (!newTest.chapterIds || newTest.chapterIds.length === 0) {
+      showNotification("Please enter at least one Chapter ID.", "error");
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      let pulledQuestions: any[] = [];
+      for (const id of newTest.chapterIds) {
+        const chapterDoc = await getDocs(query(collection(firestore, 'chapters'), where('id', '==', id)));
+        if (!chapterDoc.empty) {
+          const data = chapterDoc.docs[0].data();
+          if (data.quiz_questions && Array.isArray(data.quiz_questions)) {
+            pulledQuestions = [...pulledQuestions, ...data.quiz_questions.map((q: any) => ({
+              ...q,
+              marks: q.marks || 1,
+              type: q.type || 'mcq'
+            }))];
+          }
+        }
+      }
+      
+      if (pulledQuestions.length > 0) {
+        setNewTest((prev: any) => ({
+          ...prev,
+          questions: [...prev.questions, ...pulledQuestions]
+        }));
+        showNotification(`Pulled ${pulledQuestions.length} questions from chapters!`);
+      } else {
+        showNotification("No questions found in those chapters.", "error");
+      }
+    } catch (err) {
+      console.error("Pull Questions Error:", err);
+      showNotification("Failed to pull questions.", "error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const renderMonthlyTests = () => (
@@ -1615,13 +1917,16 @@ Q2: ...`}
           <button 
             onClick={() => {
               setNewTest({
-                subject: '',
+                title: '',
+                subject: 'math',
                 class: 'class5',
                 month: new Date().toLocaleString('default', { month: 'long' }),
                 year: new Date().getFullYear(),
                 language: 'or',
-                questions: [{ question: '', options: ['', '', '', ''], correct_answer: '' }],
-                status: 'draft'
+                questions: [],
+                status: 'draft',
+                chapterIds: [],
+                totalMarks: 0
               });
               setIsAddingTest(true);
             }}
@@ -1634,8 +1939,8 @@ Q2: ...`}
 
       {isAddingTest && (
         <div className="bg-white/5 border border-white/10 p-6 rounded-2xl space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="lg:col-span-2">
               <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Test Title</label>
               <input 
                 type="text" 
@@ -1646,20 +1951,106 @@ Q2: ...`}
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Chapter IDs (comma separated)</label>
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class</label>
+              <select 
+                value={newTest.class}
+                onChange={(e) => setNewTest({...newTest, class: e.target.value})}
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white cursor-pointer"
+              >
+                {Object.entries(translations['en'].classes).map(([key, label]) => (
+                  <option key={key} value={key}>{label as string}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Subject</label>
               <input 
                 type="text" 
-                value={(newTest.chapterIds || []).join(', ')}
-                onChange={(e) => setNewTest({...newTest, chapterIds: e.target.value.split(',').map(id => id.trim())})}
-                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                placeholder="e.g. chapterId1, chapterId2"
+                value={newTest.subject}
+                onChange={(e) => setNewTest({...newTest, subject: e.target.value})}
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white"
               />
             </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Test Language</label>
+              <select 
+                value={newTest.language}
+                onChange={(e) => setNewTest({...newTest, language: e.target.value})}
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white cursor-pointer"
+              >
+                <option value="or">Odia</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+             <div>
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Month</label>
+              <select 
+                value={newTest.month}
+                onChange={(e) => setNewTest({...newTest, month: e.target.value})}
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white"
+              >
+                {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map(m => (
+                  <option key={m} value={m}>{m}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Year</label>
+              <input 
+                type="number" 
+                value={newTest.year}
+                onChange={(e) => setNewTest({...newTest, year: parseInt(e.target.value)})}
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Chapter IDs (Optional)</label>
+              <div className="flex gap-2">
+                <input 
+                  type="text" 
+                  value={(newTest.chapterIds || []).join(', ')}
+                  onChange={(e) => setNewTest({...newTest, chapterIds: e.target.value.split(',').map(id => id.trim()).filter(Boolean)})}
+                  className="flex-1 bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+                  placeholder="ID1, ID2"
+                />
+                <button 
+                  onClick={handlePullQuestionsFromChapters}
+                  className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded-xl text-xs font-bold transition-all"
+                >
+                  Pull
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-slate-900/50 p-4 rounded-2xl border border-white/5 space-y-4">
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-bold text-emerald-500 uppercase">Magic Bulk Question Paste</label>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-slate-500">Format: [Marks] Q: ... A: ... B: ... Ans: ...</span>
+                <button 
+                  onClick={handleBulkParseQuestions}
+                  disabled={!bulkTestQuestions || isParsingBulk}
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-1.5 rounded-lg text-xs font-bold disabled:opacity-50"
+                >
+                  {isParsingBulk ? 'Parsing...' : 'Process Paste'}
+                </button>
+              </div>
+            </div>
+            <textarea 
+              value={bulkTestQuestions}
+              onChange={(e) => setBulkTestQuestions(e.target.value)}
+              className="w-full h-32 bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none font-mono"
+              placeholder="[1] Q: What is 5+5?&#10;A: 10 | B: 20 | C: 5 | D: 0&#10;Ans: 10&#10;&#10;[5] Q: Explain gravity?&#10;Ans: Gravity is a force..."
+            />
           </div>
 
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h4 className="text-sm font-bold text-white uppercase tracking-wider">Test Questions</h4>
+              <h4 className="text-sm font-bold text-white uppercase tracking-wider">Question List ({newTest.questions.length} Questions | Total: {newTest.totalMarks} Marks)</h4>
               <div className="flex gap-2">
                 <button 
                   type="button"
@@ -1668,28 +2059,31 @@ Q2: ...`}
                   className="flex items-center gap-1 text-xs text-emerald-500 hover:text-emerald-400 disabled:opacity-50 transition-all"
                 >
                   {isGeneratingTestAI ? <div className="animate-spin h-3 w-3 border-2 border-emerald-500 border-t-transparent rounded-full" /> : <Sparkles size={14} />}
-                  {isGeneratingTestAI ? 'Generating...' : 'AI Magic: Generate Test'}
+                  AI Magic
                 </button>
                 <button 
                   type="button"
-                  onClick={() => setNewTest({
-                    ...newTest, 
-                    questions: [...newTest.questions, { question: '', options: ['', '', '', ''], correct_answer: '' }]
-                  })}
+                  onClick={() => {
+                    const qs = [...newTest.questions, { question: '', options: ['', '', '', ''], correct_answer: '', marks: 1, type: 'mcq' }];
+                    setNewTest({...newTest, questions: qs, totalMarks: qs.reduce((acc, q) => acc + (q.marks || 0), 0)});
+                  }}
                   className="text-xs text-emerald-500 hover:underline"
                 >
-                  + Add Question
+                  + Add Manual
                 </button>
               </div>
             </div>
             
-            <div className="space-y-4">
+            <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
               {newTest.questions.map((q: any, qIdx: number) => (
-                <div key={qIdx} className="bg-black/20 p-4 rounded-xl border border-white/5 space-y-3">
-                  <div className="flex justify-between items-start">
+                <div key={qIdx} className="bg-black/20 p-4 rounded-xl border border-white/5 space-y-3 relative group">
+                  <div className="flex items-center gap-4">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center font-bold text-xs">
+                      {qIdx + 1}
+                    </div>
                     <input 
                       type="text"
-                      placeholder={`Question ${qIdx + 1}`}
+                      placeholder={`Question text...`}
                       value={q.question}
                       onChange={(e) => {
                         const qs = [...newTest.questions];
@@ -1698,51 +2092,82 @@ Q2: ...`}
                       }}
                       className="flex-1 bg-transparent border-b border-white/10 text-white text-sm py-1 focus:outline-none focus:border-emerald-500"
                     />
+                    <select 
+                      value={q.marks}
+                      onChange={(e) => {
+                        const marks = parseInt(e.target.value);
+                        const qs = [...newTest.questions];
+                        qs[qIdx].marks = marks;
+                        // Auto-set type based on marks as a default
+                        if (marks > 1) qs[qIdx].type = 'subjective';
+                        else qs[qIdx].type = 'mcq';
+                        setNewTest({...newTest, questions: qs, totalMarks: qs.reduce((acc, cur) => acc + (cur.marks || 0), 0)});
+                      }}
+                      className="bg-white/5 text-xs text-emerald-400 border border-emerald-500/30 rounded px-2 py-1 outline-none"
+                    >
+                      {[1, 2, 3, 5].map(m => <option key={m} value={m}>{m} Mark</option>)}
+                    </select>
+                    <select 
+                      value={q.type}
+                      onChange={(e) => {
+                        const qs = [...newTest.questions];
+                        qs[qIdx].type = e.target.value;
+                        if (e.target.value === 'subjective') qs[qIdx].options = [];
+                        else if (qs[qIdx].options.length === 0) qs[qIdx].options = ['', '', '', ''];
+                        setNewTest({...newTest, questions: qs});
+                      }}
+                      className="bg-white/5 text-[10px] text-slate-400 border border-white/10 rounded px-2 py-1 outline-none"
+                    >
+                      <option value="mcq">MCQ</option>
+                      <option value="subjective">Subjective</option>
+                    </select>
                     <button 
                       type="button"
                       onClick={() => {
                         const qs = newTest.questions.filter((_: any, i: number) => i !== qIdx);
-                        setNewTest({...newTest, questions: qs});
+                        setNewTest({...newTest, questions: qs, totalMarks: qs.reduce((acc, cur) => acc + (cur.marks || 0), 0)});
                       }}
-                      className="text-red-500 hover:text-red-400 ml-2"
+                      className="text-red-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       <Trash2 size={14} />
                     </button>
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    {q.options.map((opt: string, oIdx: number) => (
-                      <input 
-                        key={oIdx}
-                        type="text"
-                        placeholder={`Option ${oIdx + 1}`}
-                        value={opt}
-                        onChange={(e) => {
-                          const qs = [...newTest.questions];
-                          qs[qIdx].options[oIdx] = e.target.value;
-                          setNewTest({...newTest, questions: qs});
-                        }}
-                        className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500/50"
-                      />
-                    ))}
-                  </div>
-                  <div>
-                    <input 
-                      type="text"
-                      placeholder="Correct Answer"
+                  
+                  {q.type === 'mcq' && (
+                    <div className="grid grid-cols-2 gap-2 pl-12">
+                      {q.options.map((opt: string, oIdx: number) => (
+                        <input 
+                          key={oIdx}
+                          type="text"
+                          placeholder={`Option ${String.fromCharCode(65 + oIdx)}`}
+                          value={opt}
+                          onChange={(e) => {
+                            const qs = [...newTest.questions];
+                            qs[qIdx].options[oIdx] = e.target.value;
+                            setNewTest({...newTest, questions: qs});
+                          }}
+                          className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500/50"
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="pl-12">
+                    <textarea 
+                      placeholder={q.type === 'mcq' ? "Correct Answer (e.g. Option text or A/B/C/D)" : "Model Answer for Subjective Question"}
                       value={q.correct_answer}
                       onChange={(e) => {
                         const qs = [...newTest.questions];
                         qs[qIdx].correct_answer = e.target.value;
                         setNewTest({...newTest, questions: qs});
                       }}
-                      className="w-full bg-emerald-500/5 border border-emerald-500/20 rounded-lg px-3 py-1.5 text-xs text-emerald-400 focus:outline-none"
+                      className="w-full bg-emerald-500/5 border border-emerald-500/20 rounded-lg px-3 py-1.5 text-xs text-emerald-400 focus:outline-none min-h-[40px]"
                     />
                   </div>
                 </div>
               ))}
             </div>
           </div>
-
           <div className="flex gap-4">
             <button 
               onClick={async () => {
@@ -1757,7 +2182,13 @@ Q2: ...`}
                     title: '',
                     chapterIds: [],
                     questions: [],
-                    status: 'draft'
+                    status: 'draft',
+                    class: 'class5',
+                    subject: 'math',
+                    month: new Date().toLocaleString('default', { month: 'long' }),
+                    year: new Date().getFullYear(),
+                    language: 'or',
+                    totalMarks: 0
                   });
                 } catch (err) {
                   console.error("Save Test Error:", err);
@@ -1860,6 +2291,17 @@ Q2: ...`}
               )}
               <button 
                 onClick={async () => {
+                  setSelectedTestIdForSubmissions(test.id);
+                  const q = query(collection(firestore, 'monthly_test_submissions'), where('testId', '==', test.id));
+                  const snap = await getDocs(q);
+                  setTestSubmissions(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+                }}
+                className="flex-1 bg-purple-600/20 hover:bg-purple-600/30 text-purple-500 text-xs font-bold py-2 rounded-lg transition-all"
+              >
+                View Submissions
+              </button>
+              <button 
+                onClick={async () => {
                   if (confirmAction === `delete_test_${test.id}`) {
                     try {
                       setLoading(true);
@@ -1885,6 +2327,141 @@ Q2: ...`}
           </div>
         ))}
       </div>
+
+      {selectedTestIdForSubmissions && (
+        <div className="fixed inset-0 z-[60] bg-slate-950 flex flex-col p-6 overflow-y-auto">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h3 className="text-2xl font-bold text-white">Test Submissions</h3>
+              <p className="text-slate-400 text-sm">Reviewing results and anti-cheating logs</p>
+            </div>
+            <button 
+              onClick={() => setSelectedTestIdForSubmissions(null)}
+              className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-white transition-all"
+            >
+              <X size={24} />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6">
+            {testSubmissions.length === 0 ? (
+              <div className="text-center py-20 bg-white/5 rounded-3xl border border-white/10">
+                <Users className="mx-auto text-slate-700 mb-4" size={48} />
+                <p className="text-slate-500">No submissions yet for this test.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {testSubmissions.map((sub) => {
+                  const test = monthlyTests.find(t => t.id === sub.testId);
+                  return (
+                    <div key={sub.id} className="bg-white/5 border border-white/10 p-6 rounded-3xl space-y-6">
+                      <div className="flex flex-wrap items-center justify-between gap-4">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-xl font-bold text-white">
+                            {sub.userName?.[0] || 'S'}
+                          </div>
+                          <div>
+                            <h4 className="text-white font-bold">{sub.userName}</h4>
+                            <p className="text-xs text-slate-500">{sub.userEmail || sub.userId} • Class {sub.class}</p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-8">
+                          <div className="text-center">
+                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Auto Score</p>
+                            <p className="text-2xl font-black text-emerald-400">{sub.score}/{sub.totalMaxMarks || sub.totalQuestions}</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Final Score</p>
+                            <p className="text-2xl font-black text-blue-400">{sub.finalScore || sub.score}</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Violations</p>
+                            <p className={`text-2xl font-black ${sub.violations > 0 ? 'text-red-500' : 'text-slate-500'}`}>{sub.violations || 0}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="bg-black/20 p-4 rounded-2xl border border-white/5">
+                          <h5 className="text-xs font-black text-slate-500 uppercase tracking-widest mb-3">Time Analysis (Seconds)</h5>
+                          <div className="flex flex-wrap gap-2">
+                            {Object.entries(sub.timeSpent || {}).map(([qIdx, sec]: any) => (
+                              <div key={qIdx} className={`px-3 py-1 rounded-lg text-[10px] font-bold ${sec < 5 ? 'bg-red-500/20 text-red-500' : 'bg-white/5 text-slate-400'}`}>
+                                Q{parseInt(qIdx) + 1}: {sec}s
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="bg-black/20 p-4 rounded-2xl border border-white/5">
+                          <h5 className="text-xs font-black text-slate-500 uppercase tracking-widest mb-3">Anti-Cheating Status</h5>
+                          <div className="flex items-center gap-4">
+                            <div className={`flex items-center gap-2 text-xs font-bold ${sub.violations > 2 ? 'text-red-500' : sub.violations > 0 ? 'text-amber-500' : 'text-emerald-500'}`}>
+                              {sub.violations > 0 ? <XCircle size={14}/> : <CheckCircle2 size={14}/>}
+                              {sub.violations > 2 ? 'HIGH RISK' : sub.violations > 0 ? 'MODERATE RISK' : 'CLEAN'}
+                            </div>
+                            <div className="text-[10px] text-slate-500">
+                              Submitted: {sub.submittedAt?.toDate().toLocaleString()}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Subjective Answers Section */}
+                      <div className="space-y-4">
+                        <h5 className="text-xs font-black text-slate-500 uppercase tracking-widest border-b border-white/5 pb-2">Subjective Answers & Grading</h5>
+                        {test?.questions?.map((q: any, i: number) => {
+                          if (q.type !== 'subjective' && q.marks <= 1) return null;
+                          const studentAns = sub.answers[i];
+                          return (
+                            <div key={i} className="bg-white/5 p-5 rounded-2xl border border-white/10 space-y-3">
+                              <div className="flex justify-between items-start">
+                                <p className="text-sm text-white font-medium">Q{i + 1}: {q.question}</p>
+                                <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2 py-1 rounded">{q.marks} Marks</span>
+                              </div>
+                              <div className="bg-black/30 p-4 rounded-xl text-slate-300 text-sm italic">
+                                {studentAns || <span className="text-slate-600">No answer provided.</span>}
+                              </div>
+                              <div className="flex items-center gap-4 pt-2">
+                                <label className="text-[10px] font-bold text-slate-500 uppercase">Award Marks:</label>
+                                <div className="flex gap-2">
+                                  {[...Array((q.marks || 0) + 1)].map((_, mark) => (
+                                    <button 
+                                      key={mark}
+                                      onClick={async () => {
+                                        const newScores = { ...(sub.subjectiveScores || {}), [i]: mark };
+                                        const totalSubjective = Object.values(newScores).reduce((a: any, b: any) => (a as number) + (b as number), 0);
+                                        await updateDoc(doc(firestore, 'monthly_test_submissions', sub.id), {
+                                          subjectiveScores: newScores,
+                                          finalScore: (sub.score || 0) + (totalSubjective as number)
+                                        });
+                                        // Refresh local data
+                                        setTestSubmissions(prev => prev.map(s => s.id === sub.id ? { ...s, subjectiveScores: newScores, finalScore: (sub.score || 0) + (totalSubjective as number) } : s));
+                                      }}
+                                      className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold transition-all ${
+                                        (sub.subjectiveScores?.[i] === mark) 
+                                        ? 'bg-emerald-500 text-white' 
+                                        : 'bg-white/5 text-slate-500 hover:bg-white/10'
+                                      }`}
+                                    >
+                                      {mark}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 
@@ -1976,124 +2553,149 @@ Q2: ...`}
     });
 
     return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Bot className="text-[#10b981]" /> Gundulu AI Dashboard
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white/5 border border-white/10 p-6 rounded-2xl">
-            <div className="text-slate-500 text-xs uppercase mb-1">Total Questions Today</div>
-            <div className="text-3xl font-bold text-white">{stats.aiQuestionsToday}</div>
-          </div>
-          <div className="bg-white/5 border border-white/10 p-6 rounded-2xl">
-            <div className="text-slate-500 text-xs uppercase mb-1">Usage by Class</div>
-            <div className="text-sm text-white mt-2">
-              <div className="flex justify-between mb-1"><span>Class 10:</span> <span className="font-bold text-[#10b981]">{class10Usage} queries</span></div>
-              <div className="flex justify-between"><span>Class 3:</span> <span className="font-bold text-blue-400">{class3Usage} queries</span></div>
+      <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="glass-card p-6 rounded-[2rem] relative overflow-hidden group">
+            <div className="stat-card-glow" style={{ '--glow-color': 'rgba(16, 185, 129, 0.1)' } as any} />
+            <div className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1 relative z-10">Total Questions Today</div>
+            <div className="text-4xl font-black text-white relative z-10">{stats.aiQuestionsToday}</div>
+            <div className="absolute bottom-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+              <Brain size={64} />
             </div>
           </div>
-          <div className="bg-white/5 border border-white/10 p-6 rounded-2xl">
-            <div className="text-slate-500 text-xs uppercase mb-1">Gundulu Revenue</div>
-            <div className="text-3xl font-bold text-[#10b981]">₹{gunduluRevenue.toLocaleString('en-IN')}</div>
+          <div className="glass-card p-6 rounded-[2rem] relative overflow-hidden group">
+            <div className="stat-card-glow" style={{ '--glow-color': 'rgba(59, 130, 246, 0.1)' } as any} />
+            <div className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1 relative z-10">Usage by Class</div>
+            <div className="text-sm text-white mt-4 space-y-2 relative z-10">
+              <div className="flex justify-between items-center bg-white/5 p-2 rounded-xl border border-white/5">
+                <span className="font-bold text-slate-400">Class 10:</span> 
+                <span className="font-black text-emerald-400">{class10Usage} queries</span>
+              </div>
+              <div className="flex justify-between items-center bg-white/5 p-2 rounded-xl border border-white/5">
+                <span className="font-bold text-slate-400">Class 3:</span> 
+                <span className="font-black text-blue-400">{class3Usage} queries</span>
+              </div>
+            </div>
+          </div>
+          <div className="glass-card p-6 rounded-[2rem] relative overflow-hidden group">
+            <div className="stat-card-glow" style={{ '--glow-color': 'rgba(251, 191, 36, 0.1)' } as any} />
+            <div className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1 relative z-10">Gundulu Revenue</div>
+            <div className="text-4xl font-black text-emerald-400 relative z-10">₹{gunduluRevenue.toLocaleString('en-IN')}</div>
+            <div className="absolute bottom-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+              <CreditCard size={64} />
+            </div>
           </div>
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
-          <div className="p-4 border-b border-white/10 font-semibold text-white flex items-center justify-between">
-            <span>Students Active Today</span>
-            <span className="text-xs text-slate-400">{activeTodayStudents.length} students</span>
+        <div className="glass-card rounded-[2.5rem] overflow-hidden border-white/5">
+          <div className="p-8 border-b border-white/5 font-black text-white flex items-center justify-between bg-white/5">
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-8 bg-emerald-500 rounded-full shadow-[0_0_10px_#10b981]"></div>
+              <span className="text-xl tracking-tighter">Students Active Today</span>
+            </div>
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-white/5 px-3 py-1 rounded-full border border-white/10">{activeTodayStudents.length} students online</span>
           </div>
-          <div className="divide-y divide-white/5 max-h-[280px] overflow-y-auto">
+          <div className="divide-y divide-white/5 max-h-[350px] overflow-y-auto custom-scrollbar">
             {activeTodayStudents.map((student) => (
-              <div key={student.key} className="p-4 flex items-center justify-between hover:bg-white/5 transition-colors">
-                <div>
-                  <div className="text-sm font-bold text-white">{student.name}</div>
-                  <div className="text-xs text-slate-400">{student.className}</div>
+              <div key={student.key} className="p-6 flex items-center justify-between hover:bg-white/5 transition-all group">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xl font-black text-white group-hover:scale-110 transition-transform">
+                    {student.name[0]}
+                  </div>
+                  <div>
+                    <div className="text-lg font-black text-white tracking-tight">{student.name}</div>
+                    <div className="text-xs text-slate-500 font-bold uppercase tracking-widest">{student.className}</div>
+                  </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm font-semibold text-emerald-400">{student.questions} questions</div>
-                  <div className="text-[10px] text-slate-500">
-                    {student.lastAskedAt ? student.lastAskedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'No time'}
+                  <div className="text-xl font-black text-emerald-400">{student.questions} <span className="text-[10px] uppercase text-slate-500">questions</span></div>
+                  <div className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter mt-1">
+                    Last active: {student.lastAskedAt ? student.lastAskedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'No time'}
                   </div>
                 </div>
               </div>
             ))}
             {activeTodayStudents.length === 0 && (
-              <div className="p-8 text-center text-slate-500">No AI usage by students today.</div>
+              <div className="p-12 text-center text-slate-500 font-bold uppercase tracking-widest italic opacity-50">No AI usage by students today.</div>
             )}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden flex flex-col">
-            <div className="p-4 border-b border-white/10 font-semibold text-white flex items-center justify-between flex-wrap gap-2">
-              <span>Questions Log <span className="text-xs text-slate-400 font-normal ml-2">{filteredLogs.length} records</span></span>
-              <div className="flex gap-1">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="glass-card rounded-[2.5rem] overflow-hidden flex flex-col border-white/5">
+            <div className="p-8 border-b border-white/5 font-black text-white flex items-center justify-between flex-wrap gap-4 bg-white/5">
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-8 bg-indigo-500 rounded-full shadow-[0_0_10px_#6366f1]"></div>
+                <span className="text-xl tracking-tighter">Questions Log</span>
+              </div>
+              <div className="flex gap-2 p-1 bg-black/20 rounded-2xl border border-white/5">
                 {(['today', 'week', 'month', 'all'] as const).map(f => (
                   <button
                     key={f}
                     onClick={() => setAiLogFilter(f)}
-                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${
+                    className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
                       aiLogFilter === f
-                        ? 'bg-emerald-500 text-white'
-                        : 'bg-white/5 text-slate-400 hover:text-white'
+                        ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20'
+                        : 'text-slate-500 hover:text-white'
                     }`}
                   >
-                    {f === 'today' ? 'Today' : f === 'week' ? '7 Days' : f === 'month' ? '30 Days' : 'All Time'}
+                    {f === 'today' ? 'Today' : f === 'week' ? '7 Days' : f === 'month' ? '30 Days' : 'All'}
                   </button>
                 ))}
               </div>
             </div>
-            <div className="divide-y divide-white/5 overflow-y-auto max-h-[480px]">
+            <div className="divide-y divide-white/5 overflow-y-auto max-h-[600px] custom-scrollbar">
               {filteredLogs.map((log: any, i: number) => (
-                <div key={i} className="p-4 hover:bg-white/5 transition-colors">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-bold text-[#10b981]">{log.userName || 'Student'}</span>
-                    <span className="text-xs px-2 py-1 rounded bg-white/10 text-slate-300">{log.userClass || 'Unknown Class'}</span>
+                <div key={i} className="p-6 hover:bg-white/5 transition-all group">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-md font-black text-indigo-400 tracking-tight group-hover:translate-x-1 transition-transform">{log.userName || 'Student'}</span>
+                    <span className="text-[10px] px-3 py-1 rounded-full bg-white/5 border border-white/10 text-slate-400 font-bold uppercase tracking-widest">{log.userClass || 'Unknown Class'}</span>
                   </div>
-                  <div className="text-sm text-white mb-2">"{log.question}"</div>
-                  <div className="text-xs text-slate-400 line-clamp-2 bg-black/20 p-2 rounded border border-white/5">
+                  <div className="text-white text-md leading-relaxed mb-4 font-medium italic">"{log.question}"</div>
+                  <div className="text-sm text-slate-400 line-clamp-3 bg-black/40 p-4 rounded-2xl border border-white/5 leading-relaxed font-['Inter']">
                     {log.answer}
                   </div>
-                  <div className="text-[10px] text-slate-500 mt-2 text-right">
+                  <div className="text-[10px] text-slate-600 font-bold uppercase tracking-widest mt-4 text-right">
                     {(log.parsedTimestamp || parseLogTimestamp(log.timestamp))?.toLocaleString() || 'Unknown time'}
                   </div>
                 </div>
               ))}
               {filteredLogs.length === 0 && (
-                <div className="p-8 text-center text-slate-500">No questions for this period.</div>
+                <div className="p-12 text-center text-slate-500 font-bold uppercase tracking-widest italic opacity-50">No questions for this period.</div>
               )}
             </div>
           </div>
 
-          <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden flex flex-col">
-            <div className="p-4 border-b border-white/10 font-semibold text-white flex items-center justify-between">
-              <span>Gundulu Prompt Editor</span>
+          <div className="glass-card rounded-[2.5rem] overflow-hidden flex flex-col border-white/5">
+            <div className="p-8 border-b border-white/5 font-black text-white flex items-center justify-between bg-white/5">
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-8 bg-emerald-500 rounded-full shadow-[0_0_10px_#10b981]"></div>
+                <span className="text-xl tracking-tighter">Brain Editor</span>
+              </div>
               <button 
                 onClick={handleSaveSettings}
-                className="px-3 py-1 bg-[#10b981] text-white text-xs font-bold rounded hover:bg-[#0ea5e9] transition-colors"
+                className="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-emerald-600/20 active:scale-95"
               >
-                Save Changes
+                Sync Brain
               </button>
             </div>
-            <div className="p-4 flex-1 flex flex-col">
-              <p className="text-xs text-slate-400 mb-4">
-                Tweak Gundulu's "brain" without touching code. This prompt is injected into the AI model before every chat.
+            <div className="p-8 flex-1 flex flex-col">
+              <p className="text-xs text-slate-500 font-medium mb-6 leading-relaxed">
+                Configure Gundulu's core consciousness. The text below is the master prompt injected into every interaction. Use it to define personality, expertise, and behavioral guardrails.
               </p>
-              <textarea 
-                className="w-full flex-1 bg-black/40 border border-white/10 rounded-xl p-4 text-sm text-emerald-400 font-mono focus:outline-none focus:border-[#10b981]/50 resize-none min-h-[300px]"
-                value={gunduluPromptDraft}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setGunduluPromptDraft(value);
-                  if (!isPromptDirtyRef.current) {
-                    isPromptDirtyRef.current = true;
-                  }
-                }}
-              />
+              <div className="relative flex-1 min-h-[400px]">
+                <textarea 
+                  className="absolute inset-0 w-full h-full bg-black/40 border border-white/5 rounded-[2rem] p-6 text-sm text-emerald-400 font-mono focus:outline-none focus:border-emerald-500/30 transition-all resize-none custom-scrollbar leading-relaxed"
+                  value={gunduluPromptDraft}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setGunduluPromptDraft(value);
+                    if (!isPromptDirtyRef.current) {
+                      isPromptDirtyRef.current = true;
+                    }
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -2102,92 +2704,116 @@ Q2: ...`}
   };
 
   const renderPayments = () => (
-    <div className="space-y-6">
-      <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="border-bottom border-white/10 bg-white/5">
-              <th className="p-4 text-xs font-semibold text-slate-400 uppercase">User</th>
-              <th className="p-4 text-xs font-semibold text-slate-400 uppercase">Plan</th>
-              <th className="p-4 text-xs font-semibold text-slate-400 uppercase">Amount</th>
-              <th className="p-4 text-xs font-semibold text-slate-400 uppercase">Date</th>
-              <th className="p-4 text-xs font-semibold text-slate-400 uppercase">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions.map((tx, i) => (
-              <tr key={i} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                <td className="p-4 text-white font-medium">{tx.userName || tx.userId}</td>
-                <td className="p-4 text-slate-300 capitalize">{tx.plan}</td>
-                <td className="p-4 text-emerald-400 font-bold">₹{tx.amount}</td>
-                <td className="p-4 text-slate-400 text-sm">{tx.date?.split('T')[0]}</td>
-                <td className="p-4">
-                  <span className="px-2 py-1 rounded-full text-[10px] font-bold uppercase bg-emerald-500/20 text-emerald-500">
-                    Success
-                  </span>
-                </td>
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="flex items-center gap-3">
+        <div className="w-2 h-8 bg-emerald-500 rounded-full shadow-[0_0_10px_#10b981]"></div>
+        <h3 className="text-2xl font-black text-white tracking-tighter">Financial Ledger</h3>
+      </div>
+      <div className="glass-card rounded-[2.5rem] overflow-hidden border-white/5">
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-white/5 border-b border-white/5">
+                <th className="p-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">Student</th>
+                <th className="p-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">Plan Selection</th>
+                <th className="p-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">Amount</th>
+                <th className="p-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">Date</th>
+                <th className="p-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-white/5">
+              {transactions.map((tx: any, i: number) => (
+                <tr key={i} className="hover:bg-white/5 transition-all group">
+                  <td className="p-6 text-white font-black tracking-tight">{tx.userName || tx.userId}</td>
+                  <td className="p-6 text-slate-400 font-bold uppercase text-[10px] tracking-widest">{tx.plan}</td>
+                  <td className="p-6 text-emerald-400 font-black text-lg">₹{tx.amount}</td>
+                  <td className="p-6 text-slate-500 text-xs font-medium">{tx.date?.split('T')[0]}</td>
+                  <td className="p-6">
+                    <span className="px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                      Settled
+                    </span>
+                  </td>
+                </tr>
+              ))}
+              {transactions.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="p-20 text-center text-slate-500 font-bold uppercase tracking-widest italic opacity-50">No financial transactions recorded.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
 
   const renderNotifications = () => (
-    <div className="space-y-6">
-      <div className="bg-white/5 border border-white/10 p-6 rounded-2xl">
-        <h3 className="text-lg font-semibold text-white mb-4">Send New Notification</h3>
-        <div className="space-y-4">
-          <textarea 
-            placeholder="Type your message here..."
-            value={notificationMessage}
-            onChange={(e) => setNotificationMessage(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-emerald-500/50 h-32"
-          />
-          <div className="flex gap-4">
-            <select 
-              value={notificationAudience}
-              onChange={(e) => setNotificationAudience(e.target.value)}
-              className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-            >
-              <option value="all">All Users</option>
-              <option value="premium">Premium Only</option>
-              <option value="free">Free Only</option>
-            </select>
-            <button 
-              onClick={handleBroadcast}
-              disabled={loading}
-              className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl py-2 font-semibold transition-all disabled:opacity-50"
-            >
-              {loading ? 'Broadcasting...' : 'Broadcast Message'}
-            </button>
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="flex items-center gap-3">
+        <div className="w-2 h-8 bg-amber-500 rounded-full shadow-[0_0_10px_#f59e0b]"></div>
+        <h3 className="text-2xl font-black text-white tracking-tighter">Communication Hub</h3>
+      </div>
+
+      <div className="glass-card p-8 rounded-[2.5rem] relative overflow-hidden border-amber-500/20">
+        <div className="absolute top-0 right-0 p-8 opacity-5">
+          <Bell size={120} />
+        </div>
+        <div className="relative z-10 space-y-6">
+          <h4 className="text-xl font-black text-white tracking-tight">Deploy New Broadcast</h4>
+          <div className="space-y-4">
+            <textarea 
+              placeholder="Construct your message for the student body..."
+              value={notificationMessage}
+              onChange={(e) => setNotificationMessage(e.target.value)}
+              className="w-full bg-black/40 border border-white/5 rounded-3xl p-6 text-white focus:outline-none focus:border-amber-500/30 transition-all min-h-[150px] leading-relaxed font-medium"
+            />
+            <div className="flex flex-col md:flex-row gap-4">
+              <select 
+                value={notificationAudience}
+                onChange={(e) => setNotificationAudience(e.target.value)}
+                className="bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-amber-500/30 transition-all font-black text-[10px] uppercase tracking-widest cursor-pointer"
+              >
+                <option value="all">Entire Student Body</option>
+                <option value="premium">Premium Scholars Only</option>
+                <option value="free">Standard Tier Only</option>
+              </select>
+              <button 
+                onClick={handleBroadcast}
+                disabled={loading}
+                className="flex-1 bg-amber-600 hover:bg-amber-500 text-white rounded-2xl py-4 font-black text-[10px] uppercase tracking-[0.2em] transition-all shadow-xl shadow-amber-900/20 active:scale-95 disabled:opacity-50"
+              >
+                {loading ? 'Initializing Broadcast...' : 'Commence Global Broadcast'}
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
-        <div className="p-4 border-b border-white/10 font-semibold text-white flex justify-between items-center">
-          <span>Sent History</span>
+      <div className="glass-card rounded-[2.5rem] overflow-hidden border-white/5">
+        <div className="p-8 border-b border-white/5 font-black text-white flex justify-between items-center bg-white/5">
+          <div className="flex items-center gap-3">
+            <div className="w-1.5 h-6 bg-slate-500 rounded-full"></div>
+            <span className="text-lg tracking-tight">Broadcast Archives</span>
+          </div>
           {notifications.length > 0 && (
             <button 
               onClick={handleDeleteAllNotifications}
-              className={`text-xs font-bold flex items-center gap-1 ${
+              className={`text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-xl transition-all border ${
                 confirmAction === 'delete_all_notifications'
-                ? 'text-red-500 underline'
-                : 'text-red-500 hover:text-red-400'
+                ? 'bg-red-500 text-white border-red-400'
+                : 'bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20'
               }`}
             >
-              <Trash2 size={14} /> {confirmAction === 'delete_all_notifications' ? 'Confirm?' : 'Clear All'}
+              <Trash2 size={14} className="inline mr-2" /> {confirmAction === 'delete_all_notifications' ? 'Confirm Archives Purge?' : 'Purge All Records'}
             </button>
           )}
         </div>
-        <div className="divide-y divide-white/5">
+        <div className="divide-y divide-white/5 max-h-[500px] overflow-y-auto custom-scrollbar">
           {notifications.map((n, i) => (
-            <div key={i} className="p-4 flex items-center justify-between">
-              <div>
-                <div className="text-sm text-white">{n.message}</div>
-                <div className="text-xs text-slate-500">{n.createdAt}</div>
+            <div key={i} className="p-8 flex items-center justify-between hover:bg-white/5 transition-all group">
+              <div className="flex-1">
+                <div className="text-md text-white font-medium leading-relaxed mb-2 italic">"{n.message}"</div>
+                <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{n.createdAt}</div>
               </div>
               <button 
                 onClick={async () => {
@@ -2196,10 +2822,10 @@ Q2: ...`}
                       setLoading(true);
                       await deleteDoc(doc(firestore, 'notifications', n.id));
                       setConfirmAction(null);
-                      showNotification("Notification deleted successfully!");
+                      showNotification("Archive Entry Purged");
                     } catch (err) {
-                      console.error("Delete Notification Error:", err);
-                      showNotification("Failed to delete notification.", 'error');
+                      console.error("Purge Error:", err);
+                      showNotification("Purge Failed.", 'error');
                     } finally {
                       setLoading(false);
                     }
@@ -2208,12 +2834,15 @@ Q2: ...`}
                     setTimeout(() => setConfirmAction(null), 5000);
                   }
                 }}
-                className={`transition-all ${confirmAction === `delete_notif_${n.id}` ? "text-red-500 font-bold text-xs bg-red-500/10 px-2 py-1 rounded" : "text-slate-500 hover:text-red-500 p-1"}`}
+                className={`w-12 h-12 flex items-center justify-center rounded-2xl transition-all ${confirmAction === `delete_notif_${n.id}` ? "bg-red-500 text-white w-24 text-[9px] font-black uppercase tracking-widest" : "bg-white/5 text-slate-500 hover:text-red-400 border border-white/5"}`}
               >
-                {confirmAction === `delete_notif_${n.id}` ? "Confirm?" : <Trash2 size={16} />}
+                {confirmAction === `delete_notif_${n.id}` ? "PURGE?" : <Trash2 size={18} />}
               </button>
             </div>
           ))}
+          {notifications.length === 0 && (
+            <div className="p-20 text-center text-slate-500 font-bold uppercase tracking-widest italic opacity-50">No broadcast history found.</div>
+          )}
         </div>
       </div>
     </div>
@@ -2249,36 +2878,24 @@ Q2: ...`}
       await setDoc(doc(firestore, 'settings', 'private'), safePrivateSettings, { merge: true });
       setSystemSettings((prev: any) => ({ ...prev, gunduluPrompt: gunduluPromptDraft }));
       isPromptDirtyRef.current = false;
-      showNotification("System settings saved successfully!");
+      showNotification("Platform Configuration Synchronized!");
     } catch (err: any) {
       console.error("Save Settings Error:", err);
-      showNotification("Failed to save settings: " + err.message, 'error');
+      showNotification("Sync Failed: " + err.message, 'error');
     }
   };
 
   const renderSettings = () => (
-    <div className="max-w-2xl space-y-6">
-      <button 
-        onClick={() => setActiveTab('dashboard')}
-        className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
-      >
-        <ArrowLeft size={20} />
-        <span>Back to Dashboard</span>
-      </button>
-      <div className="bg-white/5 border border-white/10 p-6 rounded-2xl space-y-6">
-        <div>
-          <label className="block text-xs font-bold text-slate-500 uppercase mb-2">AI API Key (Private)</label>
-          <input 
-            type="password" 
-            value={privateSettings.aiApiKey || ''}
-            onChange={(e) => setPrivateSettings({...privateSettings, aiApiKey: e.target.value})}
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500/50"
-            placeholder="sk-..."
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-4">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="flex items-center gap-3">
+        <div className="w-2 h-8 bg-emerald-500 rounded-full shadow-[0_0_10px_#10b981]"></div>
+        <h3 className="text-2xl font-black text-white tracking-tighter">System Configuration</h3>
+      </div>
+
+      <div className="glass-card p-8 rounded-[2.5rem] space-y-8 border-white/5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Default Monthly Price (₹)</label>
+            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Global Monthly Price (₹)</label>
             <input 
               type="number" 
               value={systemSettings.monthlyPrice || 99}
@@ -2290,7 +2907,7 @@ Q2: ...`}
             />
           </div>
           <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Default Yearly Price (₹)</label>
+            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Global Yearly Price (₹)</label>
             <input 
               type="number" 
               value={systemSettings.yearlyPrice || 999}
@@ -2301,34 +2918,6 @@ Q2: ...`}
               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500/50"
             />
           </div>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class 3 Monthly Price (₹)</label>
-            <input 
-              type="number" 
-              value={systemSettings.class3MonthlyPrice || 99}
-              onChange={(e) => {
-                const val = e.target.value;
-                setSystemSettings({...systemSettings, class3MonthlyPrice: val === "" ? "" : parseInt(val)});
-              }}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500/50"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class 3 Yearly Price (₹)</label>
-            <input 
-              type="number" 
-              value={systemSettings.class3YearlyPrice || 499}
-              onChange={(e) => {
-                const val = e.target.value;
-                setSystemSettings({...systemSettings, class3YearlyPrice: val === "" ? "" : parseInt(val)});
-              }}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500/50"
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class 10 Monthly Price (₹)</label>
             <input 
@@ -2491,48 +3080,54 @@ Q2: ...`}
   );
 
   const renderTextbooks = () => (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold text-white">Textbooks Management</h2>
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div className="flex items-center gap-3">
+          <div className="w-2 h-8 bg-emerald-500 rounded-full shadow-[0_0_10px_#10b981]"></div>
+          <h3 className="text-2xl font-black text-white tracking-tighter">Textbook Library</h3>
+        </div>
         <button 
           onClick={() => {
-            setIsAddingTextbook(true);
             setEditingTextbookId(null);
             setNewTextbook({
               class: 'class5',
-              board: '',
-              subject: '',
+              board: 'Odisha State Board',
+              subject: 'math',
               title: '',
               download_url: '',
               driveFileId: '',
               driveUrl: '',
               thumbnail_url: ''
             });
+            setIsAddingTextbook(!isAddingTextbook);
           }}
-          className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all"
+          className="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all shadow-lg shadow-emerald-600/20 flex items-center gap-2"
         >
-          <Plus size={18} /> Add Textbook
+          {isAddingTextbook ? <X size={16} /> : <Plus size={16} />}
+          {isAddingTextbook ? 'Close Editor' : 'Register New Textbook'}
         </button>
       </div>
 
       {isAddingTextbook && (
-        <div className="bg-slate-900/50 border border-white/10 p-6 rounded-2xl space-y-4">
-          <h3 className="text-lg font-semibold text-white">{editingTextbookId ? 'Edit Textbook' : 'Add New Textbook'}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm text-slate-400 mb-1">Title</label>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-8 rounded-[2.5rem] relative overflow-hidden border-emerald-500/20">
+          <div className="absolute top-0 right-0 p-8 opacity-5">
+            <Book size={120} />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+            <div className="md:col-span-2">
+              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Textbook Display Title</label>
               <input 
-                type="text"
-                className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
-                placeholder="Enter textbook title"
+                type="text" 
+                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-emerald-500/30 font-bold text-lg tracking-tight"
+                placeholder="e.g. Class 10 Mathematics - Part 1"
                 value={newTextbook.title}
                 onChange={(e) => setNewTextbook({...newTextbook, title: e.target.value})}
               />
             </div>
             <div>
-              <label className="block text-sm text-slate-400 mb-1">Class</label>
+              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Academic Class</label>
               <select 
-                className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 cursor-pointer font-bold uppercase tracking-tighter"
                 value={newTextbook.class}
                 onChange={(e) => setNewTextbook({...newTextbook, class: e.target.value})}
               >
@@ -2542,19 +3137,21 @@ Q2: ...`}
               </select>
             </div>
             <div>
-              <label className="block text-sm text-slate-400 mb-1">Subject</label>
-              <input 
-                type="text"
-                className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
-                placeholder="Enter subject"
+              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Subject Category</label>
+              <select 
+                className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 cursor-pointer font-bold uppercase tracking-tighter"
                 value={newTextbook.subject}
                 onChange={(e) => setNewTextbook({...newTextbook, subject: e.target.value})}
-              />
+              >
+                {Object.entries(translations['en'].subjects).map(([key, label]) => (
+                  <option key={key} value={key}>{label as string}</option>
+                ))}
+              </select>
             </div>
             <div>
-              <label className="block text-sm text-slate-400 mb-1">Board</label>
+              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Academic Board</label>
               <select 
-                className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 cursor-pointer font-bold uppercase tracking-tighter"
                 value={newTextbook.board}
                 onChange={(e) => setNewTextbook({...newTextbook, board: e.target.value})}
               >
@@ -2565,39 +3162,47 @@ Q2: ...`}
               </select>
             </div>
             <div>
-              <label className="block text-sm text-slate-400 mb-1">Google Drive File ID</label>
-              <input 
-                type="text"
-                className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
-                placeholder="Paste Drive file ID"
-                value={newTextbook.driveFileId || ''}
-                onChange={(e) => setNewTextbook({...newTextbook, driveFileId: extractDriveFileId(e.target.value)})}
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-slate-400 mb-1">Google Drive Link</label>
-              <input 
-                type="text"
-                className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
-                placeholder="https://drive.google.com/file/d/... or folder link"
-                value={newTextbook.driveUrl || ''}
-                onChange={(e) => setNewTextbook({...newTextbook, driveUrl: e.target.value, driveFileId: newTextbook.driveFileId || extractDriveFileId(e.target.value)})}
-              />
-              <p className="text-[10px] text-slate-500 mt-2 italic">You can paste a single file link or a shared folder link. For folders, the server will try to pick the best matching file by class and subject name.</p>
-            </div>
-            <div className="md:col-span-2">
-              <label className="block text-sm text-slate-400 mb-1">Textbook PDF File</label>
-              <div className="flex gap-2">
+              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Google Drive Reference ID</label>
+              <div className="relative">
+                <Link2 className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                 <input 
                   type="text"
-                  className="flex-1 bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
-                  placeholder="Google Drive URL or Uploaded URL"
-                  value={newTextbook.download_url}
-                  onChange={(e) => setNewTextbook({...newTextbook, download_url: e.target.value})}
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 text-sm font-medium"
+                  placeholder="Paste Drive ID"
+                  value={newTextbook.driveFileId || ''}
+                  onChange={(e) => setNewTextbook({...newTextbook, driveFileId: extractDriveFileId(e.target.value)})}
                 />
-                <label className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-xl cursor-pointer flex items-center gap-2 transition-all">
-                  <Upload size={18} />
-                  <span>Upload PDF</span>
+              </div>
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Cloud Source URL (Drive or Folder)</label>
+              <div className="relative">
+                <Globe className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                <input 
+                  type="text"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 text-sm font-medium"
+                  placeholder="https://drive.google.com/..."
+                  value={newTextbook.driveUrl || ''}
+                  onChange={(e) => setNewTextbook({...newTextbook, driveUrl: e.target.value, driveFileId: newTextbook.driveFileId || extractDriveFileId(e.target.value)})}
+                />
+              </div>
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Master Repository PDF Link</label>
+              <div className="flex gap-3">
+                <div className="relative flex-1">
+                  <FileText className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                  <input 
+                    type="text"
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 text-sm font-medium"
+                    placeholder="Direct PDF URL"
+                    value={newTextbook.download_url}
+                    onChange={(e) => setNewTextbook({...newTextbook, download_url: e.target.value})}
+                  />
+                </div>
+                <label className="bg-white/5 hover:bg-white/10 text-white px-6 py-3 rounded-2xl cursor-pointer flex items-center gap-3 transition-all border border-white/10 font-black text-[10px] uppercase tracking-widest shadow-xl">
+                  <Upload size={18} className="text-emerald-500" />
+                  <span>Upload Local</span>
                   <input 
                     type="file" 
                     accept=".pdf"
@@ -2617,25 +3222,23 @@ Q2: ...`}
               </div>
             </div>
             <div>
-              <label className="block text-sm text-slate-400 mb-1">Visibility Status</label>
+              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Deployment Status</label>
               <select 
-                className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-white"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 cursor-pointer font-bold uppercase tracking-widest"
                 value={newTextbook.status || 'draft'}
                 onChange={(e) => setNewTextbook({...newTextbook, status: e.target.value})}
               >
                 <option value="draft">Draft (Hidden)</option>
-                <option value="published">Published (Visible)</option>
+                <option value="published">Published (Live)</option>
               </select>
             </div>
           </div>
-          <div className="flex gap-3 justify-end mt-4">
+          <div className="flex gap-4 justify-end mt-12 relative z-10">
             <button 
-              onClick={() => {
-                setIsAddingTextbook(false);
-              }}
-              className="px-4 py-2 text-slate-400 hover:text-white transition-all"
+              onClick={() => setIsAddingTextbook(false)}
+              className="px-8 py-4 text-slate-500 font-black text-[10px] uppercase tracking-widest hover:text-white transition-all bg-white/5 rounded-2xl border border-white/5"
             >
-              Cancel
+              Discard Changes
             </button>
             <button 
               onClick={async () => {
@@ -2645,7 +3248,7 @@ Q2: ...`}
                   const normalizedDownloadUrl = String(newTextbook.download_url || '').trim() || normalizedDriveUrl;
 
                   if (!newTextbook.title || (!normalizedDownloadUrl && !normalizedDriveFileId)) {
-                    showNotification("Title and either Download URL or Google Drive source are required", "error");
+                    showNotification("Title and Repository Source are required", "error");
                     return;
                   }
 
@@ -2661,65 +3264,74 @@ Q2: ...`}
                       ...textbookPayload,
                       updated_at: serverTimestamp()
                     });
-                    showNotification("Textbook updated successfully");
+                    showNotification("Textbook Matrix Updated");
                   } else {
                     await addDoc(collection(firestore, 'textbooks'), {
                       ...textbookPayload,
                       created_at: serverTimestamp()
                     });
-                    showNotification("Textbook added successfully");
+                    showNotification("Textbook Successfully Registered");
                   }
                   setIsAddingTextbook(false);
                 } catch (err) {
                   console.error("Error saving textbook:", err);
-                  showNotification("Failed to save textbook", "error");
+                  showNotification("Platform Sync Failed", "error");
                 }
               }}
                 disabled={uploadingFile}
-                className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2 rounded-xl font-semibold transition-all"
+                className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:scale-[1.02] text-white px-10 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] transition-all shadow-2xl shadow-emerald-600/40 active:scale-95 disabled:opacity-50"
             >
-                {uploadingFile ? 'Uploading...' : (editingTextbookId ? 'Update Textbook' : 'Save Textbook')}
+                {uploadingFile ? 'Deploying PDF...' : (editingTextbookId ? 'Apply Updates' : 'Commit to Library')}
             </button>
           </div>
-        </div>
+        </motion.div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {textbooks.map((book) => (
-          <div key={book.id} className="bg-slate-900/50 border border-white/10 rounded-2xl overflow-hidden group hover:border-emerald-500/50 transition-all">
+          <motion.div 
+            key={book.id} 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="glass-card rounded-[2.5rem] overflow-hidden group hover:border-emerald-500/30 transition-all duration-500 flex flex-col"
+          >
             <div className={`aspect-[3/4] relative flex items-center justify-center overflow-hidden bg-gradient-to-br ${
-              book.class === 'class1' ? 'from-rose-500/30 to-red-800/40' :
-              book.class === 'class2' ? 'from-orange-400/30 to-orange-800/40' :
-              book.class === 'class3' ? 'from-amber-400/30 to-yellow-800/40' :
-              book.class === 'class4' ? 'from-lime-400/30 to-green-800/40' :
-              book.class === 'class5' ? 'from-emerald-400/30 to-teal-800/40' :
-              book.class === 'class6' ? 'from-cyan-400/30 to-sky-800/40' :
-              book.class === 'class7' ? 'from-blue-400/30 to-indigo-800/40' :
-              book.class === 'class8' ? 'from-violet-400/30 to-purple-800/40' :
-              book.class === 'class9' ? 'from-fuchsia-400/30 to-pink-800/40' :
-              book.class === 'class10' ? 'from-slate-300/30 to-slate-800/50' :
-              'from-emerald-500/20 to-slate-800/60'
+              book.class === 'class1' ? 'from-rose-500/20 to-red-900/40' :
+              book.class === 'class2' ? 'from-orange-400/20 to-orange-900/40' :
+              book.class === 'class3' ? 'from-amber-400/20 to-yellow-900/40' :
+              book.class === 'class4' ? 'from-lime-400/20 to-green-900/40' :
+              book.class === 'class5' ? 'from-emerald-400/20 to-teal-900/40' :
+              book.class === 'class6' ? 'from-cyan-400/20 to-sky-900/40' :
+              book.class === 'class7' ? 'from-blue-400/20 to-indigo-900/40' :
+              book.class === 'class8' ? 'from-violet-400/20 to-purple-900/40' :
+              book.class === 'class9' ? 'from-fuchsia-400/20 to-pink-900/40' :
+              book.class === 'class10' ? 'from-slate-300/20 to-slate-900/50' :
+              'from-emerald-500/10 to-slate-900/60'
             }`}>
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.15),transparent_45%)]" />
-              <div className="relative flex flex-col items-center gap-3 text-center px-4">
-                <img src="/gundulu-rath-crest.png" alt="Class cover" className="h-14 w-14 object-contain opacity-90 drop-shadow-md" />
-                <div className="text-[11px] font-black tracking-widest text-white/90">
-                  {translations['or']?.classes?.[book.class as keyof typeof translations.en.classes] || book.class}
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.1),transparent_50%)]" />
+              <div className="relative flex flex-col items-center gap-4 text-center px-6 group-hover:scale-110 transition-transform duration-500">
+                <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center border border-white/20 shadow-2xl">
+                  <img src="/gundulu-rath-crest.png" alt="Class cover" className="h-12 w-12 object-contain drop-shadow-2xl" />
                 </div>
-                <div className="text-[10px] font-semibold text-white/70 tracking-wide line-clamp-2">
-                  {typeof book.subject === 'string' ? book.subject : (book.subject?.en || '')}
+                <div>
+                  <div className="text-[12px] font-black tracking-[0.3em] text-white uppercase mb-1">
+                    {translations['or']?.classes?.[book.class as keyof typeof translations.en.classes] || book.class}
+                  </div>
+                  <div className="text-[10px] font-bold text-white/60 tracking-wider line-clamp-2 uppercase">
+                    {typeof book.subject === 'string' ? book.subject : (book.subject?.en || '')}
+                  </div>
                 </div>
               </div>
-              <div className="absolute top-3 left-3">
-                <span className={`text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full border ${
+              <div className="absolute top-4 left-4">
+                <span className={`text-[9px] uppercase tracking-widest font-black px-3 py-1 rounded-full border shadow-lg ${
                   book.status === 'published' 
-                    ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' 
-                    : 'bg-amber-500/20 text-amber-400 border-amber-500/30'
+                    ? 'bg-emerald-500 text-white border-emerald-400' 
+                    : 'bg-amber-500 text-white border-amber-400'
                 }`}>
                   {book.status || 'draft'}
                 </span>
               </div>
-              <div className="absolute top-3 right-3 flex gap-2">
+              <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
@@ -2736,7 +3348,7 @@ Q2: ...`}
                     });
                     setIsAddingTextbook(true);
                   }}
-                  className="p-2 bg-slate-900/80 text-emerald-400 rounded-lg hover:bg-emerald-500 hover:text-white transition-all"
+                  className="w-10 h-10 bg-slate-900/90 text-emerald-400 rounded-2xl flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all border border-emerald-500/30"
                 >
                   <Edit2 size={16} />
                 </button>
@@ -2746,203 +3358,50 @@ Q2: ...`}
                     if (confirmAction === `delete-textbook-${book.id}`) {
                       try {
                         await deleteDoc(doc(firestore, 'textbooks', book.id));
-                        showNotification("Textbook deleted");
+                        showNotification("Repository Item Purged");
                         setConfirmAction(null);
                       } catch (err) {
                         console.error("Error deleting textbook:", err);
-                        showNotification("Failed to delete", "error");
+                        showNotification("Purge Failed", "error");
                         setConfirmAction(null);
                       }
                     } else {
                       setConfirmAction(`delete-textbook-${book.id}`);
                     }
                   }}
-                  className={`p-2 rounded-lg transition-all z-10 ${confirmAction === `delete-textbook-${book.id}` ? "bg-red-500/20 text-red-500 font-bold text-xs" : "bg-slate-900/80 text-red-400 hover:bg-red-500 hover:text-white"}`}
+                  className={`h-10 px-4 rounded-2xl transition-all z-10 border flex items-center justify-center ${confirmAction === `delete-textbook-${book.id}` ? "bg-red-500 text-white border-red-400 text-[10px] font-black uppercase tracking-widest" : "bg-slate-900/90 text-red-400 border-red-500/30 hover:bg-red-500 hover:text-white"}`}
                 >
-                  {confirmAction === `delete-textbook-${book.id}` ? "Confirm?" : <Trash2 size={16} className="pointer-events-none" />}
+                  {confirmAction === `delete-textbook-${book.id}` ? "PURGE?" : <Trash2 size={16} />}
                 </button>
               </div>
             </div>
-            <div className="p-4">
-              <h4 className="text-white font-semibold mb-1 truncate">{typeof book.title === 'string' ? book.title : (book.title?.en || '')}</h4>
-              <div className="flex flex-wrap items-center gap-2 mb-3">
-                <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20">
+            <div className="p-6">
+              <h4 className="text-white font-black text-lg tracking-tight mb-3 truncate group-hover:text-emerald-400 transition-colors">{typeof book.title === 'string' ? book.title : (book.title?.en || '')}</h4>
+              <div className="flex flex-wrap items-center gap-2 mb-6">
+                <span className="text-[9px] uppercase tracking-widest font-black px-3 py-1 bg-white/5 text-slate-400 rounded-full border border-white/10">
                   {book.class}
                 </span>
-                <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded-full border border-blue-500/20">
+                <span className="text-[9px] uppercase tracking-widest font-black px-3 py-1 bg-white/5 text-slate-400 rounded-full border border-white/10">
                   {typeof book.board === 'string' ? book.board : (book.board?.en || '')}
                 </span>
-                <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 bg-purple-500/10 text-purple-400 rounded-full border border-purple-500/20">
-                  {typeof book.subject === 'string' ? book.subject : (book.subject?.en || '')}
-                </span>
-                {(book.driveFileId || book.driveUrl) && (
-                  <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 bg-cyan-500/10 text-cyan-300 rounded-full border border-cyan-500/20">
-                    Drive Source
-                  </span>
-                )}
               </div>
               <a 
                 href={book.download_url || book.driveUrl} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-all text-sm"
+                className="w-full py-4 bg-emerald-600/10 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/20 rounded-[1.5rem] font-black text-[10px] uppercase tracking-[0.2em] flex items-center justify-center gap-3 transition-all shadow-xl shadow-emerald-900/20 group-hover:scale-[1.02]"
               >
                 <Download size={14} />
-                Download
+                Access Repository
               </a>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>
   );
 
-  const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'content', label: 'Content Library', icon: BookOpen },
-    { id: 'monthly_tests', label: 'Monthly Tests', icon: Calendar },
-    { id: 'daily_mcqs', label: 'Daily MCQs', icon: ListChecks },
-    { id: 'textbooks', label: 'Textbooks', icon: Book },
-    { id: 'ai_usage', label: 'AI Usage', icon: Brain },
-    { id: 'payments', label: 'Payments', icon: CreditCard },
-    { id: 'notifications', label: 'Notifications', icon: Bell },
-    { id: 'support', label: 'Support Tickets', icon: HelpCircle },
-    { id: 'students', label: 'Students', icon: Users },
-    { id: 'user_locks', label: 'User Locks', icon: Lock },
-    { id: 'subscriptions', label: 'Subscriptions', icon: CreditCard },
-    { id: 'settings', label: 'Settings', icon: Settings },
-    { id: 'production_setup', label: 'Production Setup', icon: Rocket },
-  ];
 
-  return (
-    <div className="min-h-screen bg-slate-950 flex">
-      {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-slate-900/80 backdrop-blur-md border-b border-white/10 z-40 flex items-center justify-between px-4">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center">
-            <Settings className="text-white" size={18} />
-          </div>
-          <span className="font-bold text-white">Admin Panel</span>
-        </div>
-        <button onClick={() => setIsSidebarOpen(true)} className="text-slate-400 hover:text-white">
-          <Menu size={24} />
-        </button>
-      </div>
-
-      {/* Sidebar Overlay */}
-      {isSidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-          onClick={() => setIsSidebarOpen(false)}
-        />
-      )}
-
-      {/* Sidebar */}
-      <div className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-slate-900/95 backdrop-blur-2xl border-r border-white/10 p-6 flex flex-col transform transition-transform duration-300 ease-in-out overflow-y-auto
-        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-        lg:translate-x-0 lg:static lg:bg-slate-900/50
-      `}>
-        <div className="flex items-center justify-between mb-10">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center">
-              <Settings className="text-white" size={24} />
-            </div>
-            <span className="text-xl font-bold text-white">Admin Panel</span>
-          </div>
-          <button onClick={() => setIsSidebarOpen(false)} className="lg:hidden text-slate-400 hover:text-white">
-            <X size={24} />
-          </button>
-        </div>
-
-        <nav className="flex-1 space-y-1">
-          {menuItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => {
-                setActiveTab(item.id as AdminTab);
-                setIsSidebarOpen(false);
-              }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                activeTab === item.id 
-                  ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20' 
-                  : 'text-slate-400 hover:bg-white/5 hover:text-white'
-              }`}
-            >
-              <item.icon size={20} />
-              <span className="font-medium">{item.label}</span>
-            </button>
-          ))}
-        </nav>
-
-        <div className="mt-auto pt-6 border-t border-white/10 space-y-2">
-          <button 
-            onClick={() => {
-              signOut(auth);
-              onExit();
-            }}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-all"
-          >
-            <LogOut size={20} />
-            <span className="font-medium">Logout</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 p-6 pt-24 lg:p-10 lg:pt-10 overflow-y-auto">
-        <AnimatePresence>
-          {notification && (
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className={`fixed top-6 right-6 z-50 px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border ${
-                notification.type === 'success' 
-                ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' 
-                : 'bg-red-500/10 border-red-500/20 text-red-400'
-              }`}
-            >
-              {notification.type === 'success' ? <CheckCircle2 size={20} /> : <XCircle size={20} />}
-              <span className="font-medium">{notification.message}</span>
-              <button onClick={() => setNotification(null)} className="ml-4 hover:opacity-70">
-                <X size={16} />
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <header className="mb-10">
-          <h1 className="text-3xl font-bold text-white capitalize">{activeTab.replace('_', ' ')}</h1>
-          <p className="text-slate-500">Manage your platform and monitor performance.</p>
-        </header>
-
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.2 }}
-          >
-            {activeTab === 'dashboard' && renderDashboard()}
-            {activeTab === 'content' && renderContent()}
-            {activeTab === 'monthly_tests' && renderMonthlyTests()}
-            {activeTab === 'daily_mcqs' && <DailyMcqTab mcqs={dailyMcqs} textbooks={textbooks} subjectRotation={systemSettings?.dailyMcqSubjectRotation} showNotification={showNotification} />}
-            {activeTab === 'textbooks' && renderTextbooks()}
-            {activeTab === 'ai_usage' && renderAiUsage()}
-            {activeTab === 'payments' && renderPayments()}
-            {activeTab === 'notifications' && renderNotifications()}
-            {activeTab === 'settings' && renderSettings()}
-            {activeTab === 'students' && renderStudents()}
-            {activeTab === 'user_locks' && renderUserLocks()}
-            {activeTab === 'subscriptions' && renderSubscriptions()}
-            {activeTab === 'support' && renderSupport()}
-          </motion.div>
-        </AnimatePresence>
-      </div>
-    </div>
-  );
 
   function renderStudents() {
     const filteredStudents = students.filter(s => 
@@ -3403,4 +3862,68 @@ Q2: ...`}
       </div>
     );
   }
+
+  return (
+    <div className="min-h-screen bg-[#020617] text-slate-200 font-['Inter'] selection:bg-cyan-500/30 selection:text-white overflow-x-hidden">
+      {/* Background Orbs */}
+      <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none animate-pulse" />
+      <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none animate-pulse" style={{ animationDelay: '2s' }} />
+
+      {/* Sidebar Navigation */}
+      <SidebarNavigation />
+
+      {/* Main Content Area */}
+      <main className={`transition-all duration-500 pt-24 pb-12 px-6 lg:px-10 ${isSidebarOpen ? 'lg:pl-[300px]' : 'lg:pl-32'}`}>
+        <div className="max-w-7xl mx-auto space-y-10">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+            >
+              {activeTab === 'dashboard' && renderDashboard()}
+              {activeTab === 'content' && renderContent()}
+              {activeTab === 'monthly_tests' && renderMonthlyTests()}
+              {activeTab === 'daily_mcqs' && <DailyMcqTab mcqs={dailyMcqs} textbooks={textbooks} subjectRotation={systemSettings.dailyMcqSubjectRotation} showNotification={showNotification} />}
+              {activeTab === 'textbooks' && renderTextbooks()}
+              {activeTab === 'ai_usage' && renderAiUsage()}
+              {activeTab === 'payments' && renderPayments()}
+              {activeTab === 'notifications' && renderNotifications()}
+              {activeTab === 'settings' && renderSettings()}
+              {activeTab === 'students' && renderStudents()}
+              {activeTab === 'user_locks' && renderUserLocks()}
+              {activeTab === 'support' && renderSupport()}
+              {activeTab === 'subscriptions' && renderSubscriptions()}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </main>
+
+      {/* Notification Toast */}
+      <AnimatePresence>
+        {notification && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 50, scale: 0.9 }}
+            className={`fixed bottom-10 right-10 z-[100] flex items-center gap-4 px-8 py-5 rounded-[2rem] border shadow-2xl backdrop-blur-2xl ${
+              notification.type === 'success' 
+                ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' 
+                : 'bg-red-500/10 border-red-500/20 text-red-400'
+            }`}
+          >
+            <div className={`p-2 rounded-xl ${notification.type === 'success' ? 'bg-emerald-500/20' : 'bg-red-500/20'}`}>
+              {notification.type === 'success' ? <CheckCircle2 size={24} /> : <XCircle size={24} />}
+            </div>
+            <div>
+              <p className="font-black text-white tracking-tight uppercase text-[10px]">System Notification</p>
+              <p className="font-bold text-xs uppercase tracking-widest">{notification.message}</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 };

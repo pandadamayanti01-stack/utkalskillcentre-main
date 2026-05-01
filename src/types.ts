@@ -118,6 +118,7 @@ export interface DailyMcq {
   id: string;
   title: string;
   class: string;
+  board?: string;
   subject?: string;
   source?: {
     textbookId?: string;
@@ -146,6 +147,8 @@ export interface DailyMcqQuestion {
   marks?: number;
   /** Style of the question. Defaults to 'mcq'. */
   type?: 'mcq' | 'subjective';
+  /** The chapter name or number this question belongs to. */
+  chapter?: string;
 }
 
 export interface DailyMcqSubmission {

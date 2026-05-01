@@ -25,7 +25,7 @@ function normalizeServiceAccount(input: ServiceAccountLike | null) {
   return {
     project_id: input.project_id,
     client_email: input.client_email,
-    private_key: String(input.private_key).replace(/\\n/g, '\n'),
+    private_key: String(input.private_key).replace(/\\n/g, '\n').trim(),
   };
 }
 
@@ -59,7 +59,6 @@ export function getServiceAccountCredentials() {
     const filePayload = readJsonFile(serviceAccountPath);
     if (!filePayload) {
       console.warn(`Service-account file not found at ${serviceAccountPath}. Trying root fallback...`);
-      // Final fallback: try to find any .json file in the root that looks like a service account
       const rootFiles = fs.readdirSync(process.cwd());
       const jsonFile = rootFiles.find(f => f.endsWith('.json') && f.includes('utkalskillcentre'));
       if (jsonFile) {
@@ -69,6 +68,7 @@ export function getServiceAccountCredentials() {
       }
       return null;
     }
+    console.log(`Firebase Admin: Loading credentials from ${serviceAccountPath}`);
     return normalizeServiceAccount(filePayload);
   }
 

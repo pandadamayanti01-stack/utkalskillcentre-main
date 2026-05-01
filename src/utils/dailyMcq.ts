@@ -1,6 +1,7 @@
 import { DailyMcq, DailyMcqQuestion } from '../types.js';
 
 /** Questions per daily MCQ set (kept in sync with Firestore rules + automation). */
+/** Questions per daily MCQ set (Original 10-question format). */
 export const DAILY_MCQ_QUESTION_COUNT = 10;
 
 /**
@@ -8,7 +9,7 @@ export const DAILY_MCQ_QUESTION_COUNT = 10;
  * - 7 questions of 1 mark
  * - 1 question of 2 marks
  * - 1 question of 3 marks
- * - 1 question of 5 marks (can be changed to 4 if desired)
+ * - 1 question of 5 marks
  */
 export const DAILY_MCQ_MARKS_DISTRIBUTION: number[] = [1, 1, 1, 1, 1, 1, 1, 2, 3, 5];
 

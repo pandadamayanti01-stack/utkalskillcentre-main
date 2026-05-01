@@ -1,6 +1,10 @@
-import express from 'express';
-import path from 'path';
 import dotenv from 'dotenv';
+import path from 'path';
+
+dotenv.config({ path: path.join(process.cwd(), '.env.local') });
+dotenv.config();
+
+import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import Razorpay from 'razorpay';
 import multer from 'multer';
@@ -12,9 +16,6 @@ import fs from 'fs';
 import crypto from 'node:crypto';
 import { registerDailyMcqAutomation } from './src/server/dailyMcqAutomation.js';
 import { getServiceAccountCredentials } from './src/server/googleCredentials.js';
-
-dotenv.config({ path: path.join(process.cwd(), '.env.local') });
-dotenv.config();
 
 const firestoreDatabaseId =
   process.env.FIRESTORE_DATABASE_ID ||
@@ -46,6 +47,11 @@ if (!getInitializedAdminApp()) {
 
     if (config.projectId) {
       const serviceAccount = getServiceAccountCredentials();
+      if (serviceAccount) {
+        console.log("Firebase Admin: Using service account object for project", serviceAccount.project_id);
+      } else {
+        console.warn("Firebase Admin: No service account object found, falling back to applicationDefault()");
+      }
       initializeApp({
         credential: serviceAccount
           ? cert(serviceAccount as any)

@@ -161,12 +161,13 @@ export async function translateContent(text: string | object, targetLanguage: 'e
   }
 }
 
-export async function generateChapterContent(title: string, subject: string) {
+export async function generateChapterContent(title: string, subject: string, language: 'en' | 'or' = 'or') {
   try {
     const ai = getAI();
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-flash-latest",
       contents: `Generate educational content for a chapter titled "${title}" in the subject of "${subject}".
+      The language should be ${language === 'or' ? 'Odia' : 'English'}.
       Provide the output in JSON format with the following structure:
       {
         "notes": "Detailed educational notes in Markdown format"
@@ -286,20 +287,35 @@ export async function generateCurriculum(board: string, className: string) {
   }
 }
 
-export async function generateTestQuestions(subject: string, className: string, month: string) {
+export async function generateTestQuestions(subject: string, className: string, month: string, language: 'en' | 'or' = 'or') {
   try {
     const ai = getAI();
-    const prompt = `Generate a monthly test for "${subject}" for class "${className}" for the month of "${month}".
-    Provide 10 multiple choice questions.
+    const prompt = `Generate a comprehensive monthly test for "${subject}" for class "${className}" for the month of "${month}".
+    The entire test (questions and options) must be written in ${language === 'or' ? 'Odia (using Odia script)' : 'English'}.
+    The test must follow this specific structure of 25 questions (Total 44 Marks):
+    1. 15 Questions: 1 Mark each (Objective/MCQ).
+    2. 5 Questions: 2 Marks each (Short Answer/Subjective).
+    3. 3 Questions: 3 Marks each (Long Answer/Subjective).
+    4. 2 Questions: 5 Marks each (Very Long Answer/Subjective).
+
+    For MCQ (1 Mark), provide 4 options and a correct_answer.
+    For Subjective (2, 3, 5 Marks), provide the question and a detailed "model_answer" in the "correct_answer" field.
+
     Provide the output in JSON format with the following structure:
     {
       "questions": [
-        { "question": "Question text", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "The correct option text" }
+        { 
+          "question": "Question text", 
+          "type": "mcq" | "subjective",
+          "marks": 1 | 2 | 3 | 5,
+          "options": ["A", "B", "C", "D"], // Only for MCQ, empty for subjective
+          "correct_answer": "Option text for MCQ or Model Answer for Subjective"
+        }
       ]
     }`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-3.1-pro-preview", // Using a better model for complex test structure
       contents: prompt,
       config: {
         responseMimeType: "application/json",

@@ -8,5 +8,6 @@ coverage/
 !.env.example
 # GCP service account JSON keys in repo root (private keys; keep local only)
 utkalskillcentre-*.json
+utkal-admin-sdk.json
 firebase-applet-config.json
 src/firebase-applet-config.json

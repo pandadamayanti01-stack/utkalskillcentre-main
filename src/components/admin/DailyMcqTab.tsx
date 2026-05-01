@@ -1,10 +1,12 @@
 import React, { useMemo, useState } from 'react';
+import { motion } from 'motion/react';
 import { addDoc, collection, deleteDoc, doc, serverTimestamp, updateDoc ,getDoc} from 'firebase/firestore';
-import { AlertTriangle, CheckCircle2, Eye, Plus, Trash2 } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Eye, FileDown, Plus, Trash2, Zap, Sparkles, Globe } from 'lucide-react';
 import { db as firestore } from '../../firebase';
 import { DailyMcq, DailyMcqQuestion } from '../../types';
 import { translations } from '../../translations';
 import { DAILY_MCQ_QUESTION_COUNT, getConfiguredDailyMcqSequence, getDailyMcqMarksForIndex, getRotatingDailyMcqSubject, getTomorrowDateString, normalizeDailyMcqQuestions, withDailyMcqMarks } from '../../utils/dailyMcq';
+import { exportDailyMcqToPdf } from '../../utils/dailyMcqPdfExport';
 
 declare global {
   interface Window {
@@ -58,6 +60,7 @@ const defaultMcq = (subjectRotation?: string[]): DailyMcqDraft => {
     activeDate,
     questions: Array.from({ length: DAILY_MCQ_QUESTION_COUNT }, () => createBlankQuestion()),
     status: 'draft',
+    board: 'Odisha State Board',
   };
 };
 
@@ -69,6 +72,7 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
   const [isSaving, setIsSaving] = useState(false);
   const [isGeneratingFromDrive, setIsGeneratingFromDrive] = useState(false);
   const [isRunningAutoGeneration, setIsRunningAutoGeneration] = useState(false);
+  const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>('medium');
 
   const sortedMcqs = useMemo(
     () => [...mcqs].sort((left, right) => new Date(right.activeDate || 0).getTime() - new Date(left.activeDate || 0).getTime()),
@@ -161,6 +165,7 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
       await addDoc(collection(firestore, 'daily_mcqs'), {
         title: newMcq.title.trim() || `${subjectLabel} Daily Practice`,
         class: newMcq.class,
+        board: newMcq.board || 'Odisha State Board',
         subject,
         activeDate: newMcq.activeDate,
         questions: cleanedQuestions,
@@ -203,6 +208,7 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
           board: matchingSourceTextbook.board || undefined,
           title: newMcq.title || undefined,
           status: newMcq.status,
+          difficulty: difficulty
         }),
       });
 
@@ -257,75 +263,86 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center gap-4 flex-wrap">
-        <div>
-          <h3 className="text-xl font-bold text-white">Daily MCQ Practice</h3>
-          <p className="text-slate-400 text-sm">Create a {DAILY_MCQ_QUESTION_COUNT}-question daily set. The subject rotates automatically by date.</p>
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div className="flex items-center gap-3">
+          <div className="w-2 h-8 bg-cyan-500 rounded-full shadow-[0_0_10px_#06b6d4]"></div>
+          <div>
+            <h3 className="text-2xl font-black text-white tracking-tighter">Daily Challenge Engine</h3>
+            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Orchestrating {DAILY_MCQ_QUESTION_COUNT} daily knowledge trials</p>
+          </div>
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-3 flex-wrap">
           <button
             type="button"
             onClick={handleRunAutoGeneration}
             disabled={isRunningAutoGeneration}
-            className="bg-cyan-600/80 hover:bg-cyan-500 disabled:opacity-60 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all"
+            className="px-6 py-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/20 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all flex items-center gap-2"
           >
-            <CheckCircle2 size={18} />
-            {isRunningAutoGeneration ? 'Running Auto...' : 'Run Today\'s Auto Generation'}
+            <CheckCircle2 size={16} />
+            {isRunningAutoGeneration ? 'Automated Pulse Active...' : 'Trigger Global Auto-Pulse'}
           </button>
           <button
             type="button"
             onClick={() => setIsCreating((prev) => !prev)}
-            className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all"
+            className="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all shadow-lg shadow-emerald-600/20 flex items-center gap-2"
           >
-            <Plus size={18} />
-            {isCreating ? 'Close Form' : 'Add Daily Set'}
+            {isCreating ? <Trash2 size={16} /> : <Plus size={16} />}
+            {isCreating ? 'Discard Draft' : 'Construct New Trial'}
           </button>
         </div>
       </div>
 
       {!hasPublishedSetForToday && (
-        <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 flex items-start gap-3 text-amber-200">
-          <AlertTriangle size={18} className="shrink-0 mt-0.5 text-amber-400" />
+        <div className="glass-card border-amber-500/20 bg-amber-500/5 p-6 rounded-[2rem] flex items-center gap-4 text-amber-200">
+          <div className="w-12 h-12 rounded-2xl bg-amber-500/20 flex items-center justify-center text-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+            <AlertTriangle size={24} />
+          </div>
           <div>
-            <p className="font-bold">Today&apos;s daily set is not published.</p>
-            <p className="text-sm text-amber-100/80">Students only see today&apos;s published set. Publish one for {today} to make practice visible.</p>
+            <p className="font-black tracking-tight text-lg leading-none">Visibility Gap Detected</p>
+            <p className="text-[10px] text-amber-200/60 font-bold uppercase tracking-widest mt-1">No published challenge exists for {today}. Students are currently in visual blackout.</p>
           </div>
         </div>
       )}
 
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-5 space-y-3">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <h4 className="text-white font-bold">Next 7 Days Rotation</h4>
-            <p className="text-slate-400 text-sm">Preview the configured subject order before publishing daily sets.</p>
+      <div className="glass-card p-8 rounded-[2.5rem] border-white/5 space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-white/5 rounded-xl text-slate-400">
+              <Eye size={20} />
+            </div>
+            <h4 className="text-xl font-black text-white tracking-tight">Temporal Rotation Preview</h4>
           </div>
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-white/5 px-3 py-1 rounded-full border border-white/10">7-Day Horizon</span>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
           {nextSevenDaysRotation.map((item, index) => (
-            <div key={item.date} className={`rounded-xl border px-4 py-3 ${index === 0 ? 'border-cyan-500/30 bg-cyan-500/10' : 'border-white/10 bg-black/20'}`}>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2">{index === 0 ? 'Today' : index === 1 ? 'Tomorrow' : item.date}</p>
-              <p className="text-sm font-bold text-white">{translations.en.subjects?.[item.subject] || item.subject}</p>
+            <div key={item.date} className={`rounded-[2rem] border px-6 py-5 transition-all group ${index === 0 ? 'border-cyan-500/30 bg-cyan-500/5 shadow-[0_0_30px_rgba(6,182,212,0.05)]' : 'border-white/5 bg-black/20 hover:border-white/10'}`}>
+              <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-3 group-hover:text-cyan-500 transition-colors">{index === 0 ? 'Active Now' : index === 1 ? 'Next Pulse' : item.date}</p>
+              <p className="text-md font-black text-white tracking-tight leading-none group-hover:translate-x-1 transition-transform">{translations.en.subjects?.[item.subject] || item.subject}</p>
             </div>
           ))}
         </div>
       </div>
 
       {isCreating && (
-        <div className="bg-white/5 border border-white/10 p-6 rounded-2xl space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Title</label>
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="glass-card p-10 rounded-[3rem] relative overflow-hidden border-emerald-500/20">
+          <div className="absolute top-0 right-0 p-10 opacity-5">
+            <Zap size={150} />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
+            <div className="lg:col-span-2">
+              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Trial Designation</label>
               <input
                 type="text"
                 value={newMcq.title}
                 onChange={(e) => setNewMcq((prev) => ({ ...prev, title: e.target.value }))}
-                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                placeholder="Optional title, otherwise auto-generated"
+                className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-emerald-500/30 font-bold text-lg tracking-tight"
+                placeholder="Leave blank for Neural Auto-Naming"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Active Date</label>
+              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Target Activation Date</label>
               <input
                 type="date"
                 value={newMcq.activeDate}
@@ -334,109 +351,150 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
                   activeDate: e.target.value,
                   subject: getRotatingDailyMcqSubject(e.target.value, effectiveRotation),
                 }))}
-                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+                className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-emerald-500/30 font-bold tracking-widest"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class</label>
+              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Academic Tier</label>
               <select
                 value={newMcq.class}
                 onChange={(e) => setNewMcq((prev) => ({ ...prev, class: e.target.value }))}
-                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
+                className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-emerald-500/30 font-black uppercase tracking-widest cursor-pointer"
               >
                 {Array.from({ length: 10 }, (_, index) => `class${index + 1}`).map((value) => (
-                  <option key={value} value={value}>{value}</option>
+                  <option key={value} value={value} className="bg-slate-900">{value.toUpperCase()}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Rotating Subject</label>
-              <div className="w-full bg-slate-900 border border-cyan-500/20 rounded-xl px-4 py-2 text-cyan-300 font-semibold">
+              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Governance Board</label>
+              <select
+                value={newMcq.board}
+                onChange={(e) => setNewMcq((prev) => ({ ...prev, board: e.target.value }))}
+                className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-emerald-500/30 font-black uppercase tracking-widest cursor-pointer"
+              >
+                <option value="Odisha State Board" className="bg-slate-900">BSE / CHSE ODISHA</option>
+                <option value="SACIE (Aurobindo)" className="bg-slate-900">SACIE (AUROBINDO)</option>
+                <option value="OAV (Adarsha)" className="bg-slate-900">OAV (ADARSHA)</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Neural Synced Subject</label>
+              <div className="w-full bg-emerald-500/10 border border-emerald-500/30 rounded-2xl px-6 py-4 text-emerald-400 font-black text-lg tracking-tight flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                 {translations.en.subjects?.[newMcq.subject || 'math'] || newMcq.subject}
               </div>
-              <p className="text-[11px] text-slate-500 mt-2">Rotation: {effectiveRotation.map((subject) => translations.en.subjects?.[subject] || subject).join(' -> ')}.</p>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-            <div>
-              <p className="text-sm font-bold text-white">Generate from Google Drive textbook</p>
-              <p className="text-xs text-cyan-100/80 mt-1">
-                {matchingSourceTextbook
-                  ? `Matched source: ${matchingSourceTextbook.title || 'Untitled textbook'}${matchingSourceTextbook.board ? ` • ${matchingSourceTextbook.board}` : ''}`
-                  : 'Add a textbook with the same class and subject, using either an uploaded bucket URL or a Google Drive file/link.'}
-              </p>
+          <div className="mt-12 p-8 rounded-[2.5rem] bg-cyan-500/5 border border-cyan-500/20 flex flex-col lg:flex-row items-center justify-between gap-8">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-cyan-500/20 rounded-2xl flex items-center justify-center text-cyan-400 border border-cyan-500/30">
+                <Sparkles size={24} />
+              </div>
+              <div>
+                <p className="text-xl font-black text-white tracking-tight">Neural Ingestion Engine</p>
+                <p className="text-[10px] text-cyan-500/60 font-bold uppercase tracking-widest mt-1">Generate questions from Cloud Repository</p>
+              </div>
             </div>
-            <button
-              type="button"
-              onClick={handleGenerateFromDrive}
-              disabled={!matchingSourceTextbook || isGeneratingFromDrive}
-              className="px-4 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 disabled:opacity-50 disabled:cursor-not-allowed text-cyan-100 font-semibold transition-all"
-            >
-              {isGeneratingFromDrive ? 'Generating...' : 'Generate From Source'}
-            </button>
+            <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto">
+              <div className="flex-1 lg:flex-none">
+                <select
+                  value={difficulty}
+                  onChange={(e) => setDifficulty(e.target.value as any)}
+                  className="w-full lg:w-32 bg-black/40 border border-white/10 rounded-2xl px-6 py-3 text-white focus:outline-none focus:border-cyan-500/30 font-black uppercase text-[10px] tracking-widest"
+                >
+                  <option value="easy" className="bg-slate-900">Easy</option>
+                  <option value="medium" className="bg-slate-900">Medium</option>
+                  <option value="hard" className="bg-slate-900">Hard</option>
+                </select>
+              </div>
+              <button
+                type="button"
+                onClick={handleGenerateFromDrive}
+                disabled={!matchingSourceTextbook || isGeneratingFromDrive}
+                className="flex-1 lg:flex-none px-10 py-3 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all shadow-xl shadow-cyan-900/20"
+              >
+                {isGeneratingFromDrive ? 'Synthesizing...' : 'Commence Generation'}
+              </button>
+            </div>
           </div>
 
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <label className="block text-xs font-bold text-slate-500 uppercase">Daily Questions</label>
-              <span className="text-xs text-slate-500">{DAILY_MCQ_QUESTION_COUNT} questions required</span>
+          <div className="mt-12 space-y-8">
+            <div className="flex items-center justify-between px-2">
+              <h5 className="text-xl font-black text-white tracking-tighter uppercase">Trial Data Matrix</h5>
+              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{DAILY_MCQ_QUESTION_COUNT} Nodes Required</span>
             </div>
 
             {newMcq.questions.map((question, questionIndex) => (
-              <div key={questionIndex} className="rounded-2xl border border-white/10 bg-black/20 p-4 space-y-4">
-                <p className="text-sm font-bold text-white">Question {questionIndex + 1} <span className="text-xs text-slate-400 font-semibold">({getDailyMcqMarksForIndex(questionIndex)} mark{getDailyMcqMarksForIndex(questionIndex) === 1 ? '' : 's'})</span></p>
+              <div key={questionIndex} className="glass-card bg-black/20 border-white/5 p-8 rounded-[2.5rem] space-y-6 group/node hover:border-emerald-500/20 transition-all duration-500">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-sm font-black text-emerald-400 group-hover/node:scale-110 transition-transform">
+                      {questionIndex + 1}
+                    </div>
+                    <div>
+                      <p className="text-sm font-black text-white tracking-tight uppercase">Knowledge Node</p>
+                      <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{getDailyMcqMarksForIndex(questionIndex)} Quantum Points</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${getDailyMcqMarksForIndex(questionIndex) === 1 ? 'bg-emerald-500 shadow-[0_0_10px_#10b981]' : 'bg-cyan-500 shadow-[0_0_10px_#06b6d4]'}`}></div>
+                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{getDailyMcqMarksForIndex(questionIndex) === 1 ? 'Standard Node' : 'Extended Node'}</span>
+                  </div>
+                </div>
+
                 <textarea
                   value={question.question}
                   onChange={(e) => handleQuestionChange(questionIndex, 'question', e.target.value)}
                   rows={3}
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none resize-none"
-                  placeholder="Write the MCQ question here"
+                  className="w-full bg-black/40 border border-white/5 rounded-3xl px-8 py-6 text-white focus:outline-none focus:border-emerald-500/20 transition-all resize-none font-medium leading-relaxed"
+                  placeholder="Input Node Question Data..."
                 />
 
                 {getDailyMcqMarksForIndex(questionIndex) === 1 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {question.options.map((option, optionIndex) => (
-                      <div key={optionIndex}>
-                        <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Option {optionIndex + 1}</label>
+                      <div key={optionIndex} className="relative group/option">
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-600 group-focus-within/option:text-emerald-500 transition-colors uppercase tracking-widest">{String.fromCharCode(65 + optionIndex)}</span>
                         <input
                           type="text"
                           value={option}
                           onChange={(e) => handleOptionChange(questionIndex, optionIndex, e.target.value)}
-                          className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                          placeholder={`Option ${optionIndex + 1}`}
+                          className="w-full bg-black/40 border border-white/5 rounded-2xl pl-12 pr-6 py-4 text-white focus:outline-none focus:border-emerald-500/20 transition-all text-sm font-medium"
+                          placeholder={`Option ${optionIndex + 1} Value`}
                         />
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="p-4 rounded-xl border border-dashed border-white/10 bg-white/5">
-                    <p className="text-xs font-bold text-cyan-400 uppercase tracking-widest">Subjective Question (No Options)</p>
-                    <p className="text-[11px] text-slate-400 mt-1">Students will see a text box to write their answer and compare it with your "Model Answer".</p>
+                  <div className="p-8 rounded-3xl border border-dashed border-cyan-500/20 bg-cyan-500/5 text-center">
+                    <p className="text-[10px] font-black text-cyan-400 uppercase tracking-[0.3em] mb-2">Extended Cognitive Response</p>
+                    <p className="text-xs text-slate-500 font-medium leading-relaxed">This node triggers an open-text response channel. Options are disabled for this mark weight.</p>
                   </div>
                 )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase mb-2">
-                      {getDailyMcqMarksForIndex(questionIndex) === 1 ? 'Correct Answer' : 'Model Answer (Student will compare with this)'}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4">
+                  <div className="space-y-3">
+                    <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">
+                      {getDailyMcqMarksForIndex(questionIndex) === 1 ? 'Master Key' : 'Reference Model Answer'}
                     </label>
                     <input
                       type="text"
                       value={question.correct_answer}
                       onChange={(e) => handleQuestionChange(questionIndex, 'correct_answer', e.target.value)}
-                      className={`w-full bg-slate-900 border rounded-xl px-4 py-2 focus:outline-none ${getDailyMcqMarksForIndex(questionIndex) === 1 ? 'border-emerald-500/20 text-emerald-300' : 'border-cyan-500/20 text-cyan-300'}`}
-                      placeholder={getDailyMcqMarksForIndex(questionIndex) === 1 ? 'Must match one option exactly' : 'Write the ideal answer here'}
+                      className={`w-full bg-black/40 border rounded-2xl px-6 py-4 text-sm font-black focus:outline-none transition-all ${getDailyMcqMarksForIndex(questionIndex) === 1 ? 'border-emerald-500/20 text-emerald-400 focus:border-emerald-500' : 'border-cyan-500/20 text-cyan-400 focus:border-cyan-500'}`}
+                      placeholder={getDailyMcqMarksForIndex(questionIndex) === 1 ? 'Exact Match Required' : 'Input Cognitive Reference Target'}
                     />
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Explanation</label>
+                  <div className="space-y-3">
+                    <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Supplemental Explanation</label>
                     <input
                       type="text"
                       value={question.explanation || ''}
                       onChange={(e) => handleQuestionChange(questionIndex, 'explanation', e.target.value)}
-                      className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-                      placeholder="Optional short explanation"
+                      className="w-full bg-black/40 border border-white/5 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-emerald-500/20 transition-all text-sm font-medium"
+                      placeholder="Optional logic breakdown..."
                     />
                   </div>
                 </div>
@@ -444,127 +502,165 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
             ))}
           </div>
 
-          <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Status</label>
-            <select
-              value={newMcq.status}
-              onChange={(e) => setNewMcq((prev) => ({ ...prev, status: e.target.value as 'draft' | 'published' }))}
-              className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
-            >
-              <option value="draft">draft</option>
-              <option value="published">published</option>
-            </select>
-          </div>
+          <div className="mt-12 space-y-6 pt-12 border-t border-white/5">
+            <div className="max-w-xs mx-auto">
+              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest text-center mb-4">Deployment Visibility</label>
+              <select
+                value={newMcq.status}
+                onChange={(e) => setNewMcq((prev) => ({ ...prev, status: e.target.value as 'draft' | 'published' }))}
+                className="w-full bg-black/40 border border-white/10 rounded-2xl px-8 py-4 text-white focus:outline-none focus:border-emerald-500/30 font-black uppercase tracking-[0.3em] text-center cursor-pointer transition-all"
+              >
+                <option value="draft" className="bg-slate-900">Encrypted Draft</option>
+                <option value="published" className="bg-slate-900">Live Deployment</option>
+              </select>
+            </div>
 
-          <div className="flex gap-4">
-            <button
-              type="button"
-              onClick={handleSave}
-              disabled={isSaving}
-              className="flex-1 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-60 text-white rounded-xl py-3 font-semibold transition-all"
-            >
-              {isSaving ? 'Saving...' : 'Save Daily Set'}
-            </button>
-            <button
-              type="button"
-              onClick={resetForm}
-              className="px-8 bg-white/5 hover:bg-white/10 text-white rounded-xl py-3 font-semibold transition-all"
-            >
-              Cancel
-            </button>
+            <div className="flex flex-col md:flex-row gap-6 pt-4">
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={isSaving}
+                className="flex-[2] bg-gradient-to-r from-emerald-600 to-teal-600 hover:scale-[1.02] text-white rounded-[2rem] py-6 font-black text-[12px] uppercase tracking-[0.3em] transition-all shadow-2xl shadow-emerald-900/40 active:scale-95 disabled:opacity-50"
+              >
+                {isSaving ? 'Synchronizing Node Matrix...' : 'Commence Trial Deployment'}
+              </button>
+              <button
+                type="button"
+                onClick={resetForm}
+                className="flex-1 bg-white/5 hover:bg-white/10 text-slate-500 py-6 rounded-[2rem] font-black text-[10px] uppercase tracking-[0.2em] transition-all border border-white/5"
+              >
+                Discard Trial
+              </button>
+            </div>
           </div>
-        </div>
+        </motion.div>
       )}
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-        {sortedMcqs.map((mcq) => {
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 pt-8">
+        {sortedMcqs.map((mcq, i) => {
           const questions = normalizeDailyMcqQuestions(mcq);
 
           return (
-            <div key={mcq.id} className="bg-white/5 border border-white/10 p-5 rounded-2xl space-y-4">
+            <motion.div 
+              key={mcq.id} 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className="glass-card p-8 rounded-[2.5rem] border-white/5 group hover:border-cyan-500/30 transition-all duration-500 space-y-6"
+            >
               <div className="flex justify-between items-start gap-4">
-                <div>
-                  <h4 className="text-white font-bold text-lg">{mcq.title}</h4>
-                  <p className="text-slate-400 text-sm">{mcq.class} • {translations.en.subjects?.[mcq.subject || 'math'] || mcq.subject || 'general'} • {mcq.activeDate}</p>
+                <div className="space-y-1">
+                  <h4 className="text-xl font-black text-white tracking-tight group-hover:text-cyan-400 transition-colors">{mcq.title}</h4>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{mcq.class}</span>
+                    <div className="w-1 h-1 rounded-full bg-slate-700"></div>
+                    <span className="text-[10px] font-black text-cyan-500 uppercase tracking-widest">{translations.en.subjects?.[mcq.subject || 'math'] || mcq.subject || 'general'}</span>
+                    <div className="w-1 h-1 rounded-full bg-slate-700"></div>
+                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{mcq.activeDate}</span>
+                  </div>
                 </div>
-                <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${mcq.status === 'published' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'}`}>
+                <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-lg ${
+                  mcq.status === 'published' 
+                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
+                  : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                }`}>
                   {mcq.status}
                 </span>
               </div>
 
-              <div className="bg-black/20 border border-white/5 rounded-xl p-4 space-y-3">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-white font-medium leading-relaxed">{questions[0]?.question || 'No questions available'}</p>
-                  <span className="text-xs uppercase tracking-[0.2em] text-cyan-300 whitespace-nowrap">{questions.length} questions</span>
+              <div className="glass-card bg-black/40 border-white/5 rounded-3xl p-6 space-y-6">
+                <div className="flex items-start justify-between gap-4">
+                  <p className="text-white font-medium leading-relaxed italic">"{questions[0]?.question || 'Node data corrupted or empty'}"</p>
+                  <div className="px-3 py-1 bg-white/5 rounded-full border border-white/10 text-[9px] font-black text-cyan-400 uppercase tracking-widest whitespace-nowrap">
+                    {questions.length} Matrix Nodes
+                  </div>
                 </div>
+                
                 {mcq.source?.driveFileName && (
-                  <p className="text-[11px] text-slate-500 uppercase tracking-[0.18em]">Source: {mcq.source.driveFileName}</p>
+                  <div className="flex items-center gap-2 px-3 py-1 bg-cyan-500/5 rounded-full border border-cyan-500/10 w-fit">
+                    <Globe size={10} className="text-cyan-500" />
+                    <p className="text-[9px] text-cyan-500 font-black uppercase tracking-widest">Ingested from: {mcq.source.driveFileName}</p>
+                  </div>
                 )}
+
                 <div className="grid grid-cols-1 gap-2">
                   {questions[0]?.options?.map((option, index) => (
-                    <div key={index} className={`rounded-xl px-3 py-2 text-sm border ${option === questions[0]?.correct_answer ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300' : 'border-white/10 bg-white/5 text-slate-300'}`}>
+                    <div key={index} className={`rounded-2xl px-5 py-3 text-sm font-medium border flex items-center gap-4 transition-all ${
+                      option === questions[0]?.correct_answer 
+                      ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.05)]' 
+                      : 'border-white/5 bg-white/5 text-slate-400'
+                    }`}>
+                      <span className={`text-[10px] font-black uppercase tracking-widest ${option === questions[0]?.correct_answer ? 'text-emerald-500' : 'text-slate-600'}`}>{String.fromCharCode(65 + index)}</span>
                       {option}
                     </div>
                   ))}
                 </div>
+                
                 {questions[0]?.explanation && (
-                  <div className="text-sm text-slate-400 border-t border-white/5 pt-3">
-                    <span className="text-slate-500 uppercase tracking-[0.2em] text-[10px] font-bold mr-2">Explanation</span>
-                    {questions[0].explanation}
+                  <div className="pt-4 border-t border-white/5 flex gap-4">
+                    <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest pt-1">Logic</div>
+                    <div className="text-xs text-slate-500 leading-relaxed font-medium italic">{questions[0].explanation}</div>
                   </div>
                 )}
               </div>
 
-              <div className="flex gap-2 pt-2">
+              <div className="flex gap-3 pt-4 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
                 <button
                   type="button"
                   onClick={async () => {
                     try {
-                      // Fetch the full MCQ document to ensure all required fields are present
                       const mcqRef = doc(firestore, 'daily_mcqs', mcq.id);
                       const mcqSnap = await getDoc(mcqRef);
                       const fullData = mcqSnap.data()|| mcq;
-                      if (!fullData) throw new Error('Could not fetch MCQ data');
                       await updateDoc(mcqRef, {
                         ...fullData,
                         status: mcq.status === 'published' ? 'draft' : 'published',
                         updatedAt: serverTimestamp(),
                       });
-                      showNotification(mcq.status === 'published' ? 'Daily set moved to draft.' : 'Daily set published successfully.');
+                      showNotification(mcq.status === 'published' ? 'Challenge encrypted (moved to draft).' : 'Challenge broadcasted successfully.');
                     } catch (error) {
-                      console.error('Toggle Daily MCQ Status Error:', error);
-                      showNotification('Failed to update daily set status.', 'error');
+                      console.error('Status Toggle Error:', error);
+                      showNotification('Failed to toggle visibility.', 'error');
                     }
                   }}
-                  className="flex-1 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-500 text-xs font-bold py-2 rounded-lg transition-all flex items-center justify-center gap-2"
+                  className="flex-[2] py-4 bg-emerald-600/10 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/20 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-xl active:scale-95"
                 >
-                  {mcq.status === 'published' ? <Eye size={14} /> : <CheckCircle2 size={14} />}
-                  {mcq.status === 'published' ? 'Move to Draft' : 'Publish'}
+                  {mcq.status === 'published' ? <Eye size={16} /> : <CheckCircle2 size={16} />}
+                  {mcq.status === 'published' ? 'Deactivate Node' : 'Activate Node'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => exportDailyMcqToPdf(mcq)}
+                  className="w-14 h-14 bg-blue-600/10 hover:bg-blue-600 text-blue-400 hover:text-white border border-blue-500/20 rounded-2xl flex items-center justify-center transition-all shadow-xl active:scale-95"
+                  title="Export Knowledge PDF"
+                >
+                  <FileDown size={20} />
                 </button>
                 <button
                   type="button"
                   onClick={async () => {
                     if (confirmDeleteId !== mcq.id) {
                       setConfirmDeleteId(mcq.id);
+                      setTimeout(() => setConfirmDeleteId(null), 5000);
                       return;
                     }
 
                     try {
                       await deleteDoc(doc(firestore, 'daily_mcqs', mcq.id));
                       setConfirmDeleteId(null);
-                      showNotification('Daily set deleted successfully.');
+                      showNotification('Node purged from temporal stream.');
                     } catch (error) {
-                      console.error('Delete Daily MCQ Error:', error);
-                      showNotification('Failed to delete daily set.', 'error');
+                      console.error('Purge Error:', error);
+                      showNotification('Purge execution failed.', 'error');
                     }
                   }}
-                  className={`px-4 text-xs font-bold py-2 rounded-lg transition-all flex items-center justify-center gap-2 ${confirmDeleteId === mcq.id ? 'bg-red-600 text-white' : 'bg-red-600/20 hover:bg-red-600/30 text-red-400'}`}
+                  className={`flex-1 h-14 rounded-2xl transition-all border flex items-center justify-center gap-2 font-black text-[10px] uppercase tracking-widest active:scale-95 ${confirmDeleteId === mcq.id ? 'bg-red-600 text-white border-red-400' : 'bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white border-red-500/20'}`}
                 >
-                  <Trash2 size={14} />
-                  {confirmDeleteId === mcq.id ? 'Confirm Delete' : 'Delete'}
+                  <Trash2 size={18} />
+                  {confirmDeleteId === mcq.id ? 'Confirm' : ''}
                 </button>
               </div>
-            </div>
+            </motion.div>
           );
         })}
       </div>

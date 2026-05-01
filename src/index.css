@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Odia+Mukta:wght@400;700&family=Outfit:wght@600;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Odia+Mukta:wght@400;700&family=Outfit:wght@600;800;900&family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @layer base {
@@ -6,33 +6,150 @@
     min-height: 100vh;
     overflow-x: hidden;
     margin: 0;
+    background-color: #020617;
+    color: #e2e8f0;
+    font-family: 'Inter', sans-serif;
   }
 }
 
-@keyframes liquid-flow {
-  0% { stop-color: #ffd700; stop-opacity: 0.2; }
-  50% { stop-color: #b34d1f; stop-opacity: 0.8; }
-  100% { stop-color: #ffd700; stop-opacity: 0.2; }
+/* Premium Design System Tokens */
+:root {
+  --primary-glow: rgba(16, 185, 129, 0.5);
+  --secondary-glow: rgba(99, 102, 241, 0.5);
+  --glass-bg: rgba(15, 23, 42, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
 }
 
-.digital-altar-bg {
-  background: radial-gradient(circle at 50% 30%, #004d41 0%, #050a0b 100%);
-  height: 100dvh;
-  overflow: hidden;
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
 }
 
-/* This adds the 'impossible' depth */
+.glass-card-hover {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card-hover:hover {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6);
+}
+
+.neon-border {
+  position: relative;
+}
+
+.neon-border::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(45deg, #10b981, #6366f1, #10b981);
+  background-size: 200% 200%;
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0.3;
+  transition: opacity 0.3s ease;
+  animation: border-flow 4s linear infinite;
+}
+
+.neon-border:hover::after {
+  opacity: 0.6;
+}
+
+@keyframes border-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.text-glow-emerald {
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+.text-glow-indigo {
+  text-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+}
+
+.sidebar-gradient {
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(2, 6, 23, 1) 100%);
+}
+
+.stat-card-glow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, var(--glow-color, rgba(16, 185, 129, 0.2)) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(20px);
+  z-index: 0;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
 .glass-marble {
-  background: rgba(217, 211, 193, 0.05);
-  backdrop-filter: blur(25px) saturate(150%);
-  border: 1px solid rgba(255, 215, 0, 0.1);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8), 
-              inset 0 0 15px rgba(255, 215, 0, 0.05);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.05),
+    0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.gold-text-glow {
-  color: #ffd700;
-  text-shadow: 0 0 15px rgba(255, 215, 0, 0.5), 0 0 30px rgba(179, 77, 31, 0.3);
+.glass-marble:focus-within {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 215, 0, 0.5);
+  box-shadow: 
+    0 0 25px rgba(255, 215, 0, 0.15),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.crystal-button-gold {
+  background: linear-gradient(135deg, #b34d1f 0%, #d97706 50%, #b34d1f 100%);
+  background-size: 200% auto;
+  box-shadow: 0 10px 30px rgba(180, 83, 9, 0.3);
+  transition: all 0.5s ease;
+}
+
+.crystal-button-gold:hover {
+  background-position: right center;
+  box-shadow: 0 15px 40px rgba(180, 83, 9, 0.4);
+}
+
+.crystal-button-sapphire {
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #1d4ed8 100%);
+  background-size: 200% auto;
+  box-shadow: 0 10px 30px rgba(30, 64, 175, 0.4);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.crystal-button-sapphire:hover {
+  background-position: right center;
+  box-shadow: 0 15px 40px rgba(37, 99, 235, 0.5);
+  transform: translateY(-2px);
 }
 
 
