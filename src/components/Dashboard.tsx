@@ -169,19 +169,20 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             
             return title.includes(`class ${userClass}`) || 
                    title.includes(`ଶ୍ରେଣୀ ${userClass}`) ||
-                   (odiaOrdinal && title.includes(odiaOrdinal)) ||
-                   title.includes(`chapter`) // General educational fallback
+                   (odiaOrdinal && title.includes(odiaOrdinal));
           });
 
-          const targetList = classSpecificVideos.length > 0 ? classSpecificVideos : data.items;
-          
-          // Rotate based on day, looping back if list is small
-          const dayIndex = new Date().getDate() % targetList.length;
-          const videoUrl = targetList[dayIndex].link;
-          const videoId = videoUrl.split('v=')[1]?.split('&')[0];
-          
-          if (videoId) {
-            setDailyVideoId(videoId);
+          if (classSpecificVideos.length > 0) {
+            // Rotate based on day, looping back if list is small
+            const dayIndex = new Date().getDate() % classSpecificVideos.length;
+            const videoUrl = classSpecificVideos[dayIndex].link;
+            const videoId = videoUrl.split('v=')[1]?.split('&')[0];
+            
+            if (videoId) {
+              setDailyVideoId(videoId);
+            }
+          } else {
+            setDailyVideoId(null); // Fallback to hardcoded classVideoMap
           }
         }
       } catch (error) {
