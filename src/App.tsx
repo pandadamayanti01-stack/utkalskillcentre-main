@@ -387,6 +387,7 @@ export default function App() {
  // const [showLaunchPoster, setShowLaunchPoster] = useState(() => !localStorage.getItem('utkalDivasSeen'));
   const [showTestSeriesPoster, setShowTestSeriesPoster] = useState(false);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
+  const [showInstallModal, setShowInstallModal] = useState(false);
   const [showChatbot, setShowChatbot] = useState(false);
   
   const handleGunduluGreeting = () => {
@@ -478,6 +479,10 @@ export default function App() {
     
     if (getDeferredPrompt()) {
       setShowInstallBanner(true);
+      // Auto-show modal only if not dismissed in this session
+      if (!sessionStorage.getItem('installModalDismissed')) {
+        setShowInstallModal(true);
+      }
     }
 
     return () => window.removeEventListener('pwa-prompt-available', handlePrompt);
@@ -1559,7 +1564,63 @@ export default function App() {
         <div className="absolute inset-x-0 top-0 z-[100] pointer-events-none">
           <div className="pointer-events-auto">
             <AnimatePresence>
-              {showInstallBanner && (
+              {showInstallModal && (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="install-modal-overlay"
+                >
+                  <motion.div 
+                    initial={{ scale: 0.9, y: 20 }}
+                    animate={{ scale: 1, y: 0 }}
+                    exit={{ scale: 0.9, y: 20 }}
+                    className="install-modal-content"
+                  >
+                    <button 
+                      onClick={() => {
+                        setShowInstallModal(false);
+                        sessionStorage.setItem('installModalDismissed', 'true');
+                      }}
+                      className="absolute top-6 right-6 p-2 rounded-full bg-white/5 text-white/40 hover:text-white transition-colors"
+                    >
+                      <X size={20} />
+                    </button>
+
+                    <div className="w-20 h-20 rounded-[2rem] bg-emerald-500/10 border-2 border-emerald-500/20 flex items-center justify-center mx-auto mb-6 shadow-[0_0_40px_rgba(16,185,129,0.15)]">
+                      <Download size={32} className="text-emerald-500" />
+                    </div>
+
+                    <h3 className="text-2xl font-black text-white tracking-tight mb-2 uppercase">Install Utkal App</h3>
+                    <p className="text-slate-400 text-sm font-medium leading-relaxed mb-8">
+                      Experience the full power of Utkal Skill Centre. Add to your home screen for instant access to all learning tools.
+                    </p>
+
+                    <div className="flex flex-col gap-3">
+                      <button 
+                        onClick={() => {
+                          handleInstall();
+                          setShowInstallModal(false);
+                        }}
+                        className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-black text-sm uppercase tracking-[0.2em] shadow-xl shadow-emerald-900/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                      >
+                        Install Now
+                      </button>
+                      <button 
+                        onClick={() => {
+                          setShowInstallModal(false);
+                          sessionStorage.setItem('installModalDismissed', 'true');
+                        }}
+                        className="w-full py-3 text-[10px] font-black text-white/20 uppercase tracking-[0.3em] hover:text-white/40 transition-colors"
+                      >
+                        Maybe Later
+                      </button>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              )}
+
+              {showInstallBanner && !showInstallModal && (
                 <motion.div 
                   initial={{ y: 100, x: '-50%', opacity: 0 }}
                   animate={{ y: 0, x: '-50%', opacity: 1 }}
