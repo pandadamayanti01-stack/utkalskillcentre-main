@@ -376,16 +376,25 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
                                 <button
                                   type="button"
                                   onMouseDown={() => startListening((text) => {
-                                    const nextAnswers = [...selectedSetAnswers];
-                                    nextAnswers[questionIndex] = (nextAnswers[questionIndex] || '') + ' ' + text;
-                                    setSelectedAnswers((prev) => ({ ...prev, [mcq.id]: nextAnswers }));
+                                    setSelectedAnswers((prev) => {
+                                      const currentAnswers = prev[mcq.id] || [];
+                                      const nextAnswers = [...currentAnswers];
+                                      nextAnswers[questionIndex] = (nextAnswers[questionIndex] || '').trim() + ' ' + text.trim();
+                                      return { ...prev, [mcq.id]: nextAnswers };
+                                    });
                                   })}
                                   onMouseUp={stopListening}
-                                  onTouchStart={() => startListening((text) => {
-                                    const nextAnswers = [...selectedSetAnswers];
-                                    nextAnswers[questionIndex] = (nextAnswers[questionIndex] || '') + ' ' + text;
-                                    setSelectedAnswers((prev) => ({ ...prev, [mcq.id]: nextAnswers }));
-                                  })}
+                                  onTouchStart={(e) => {
+                                    e.preventDefault(); // Prevent ghost clicks
+                                    startListening((text) => {
+                                      setSelectedAnswers((prev) => {
+                                        const currentAnswers = prev[mcq.id] || [];
+                                        const nextAnswers = [...currentAnswers];
+                                        nextAnswers[questionIndex] = (nextAnswers[questionIndex] || '').trim() + ' ' + text.trim();
+                                        return { ...prev, [mcq.id]: nextAnswers };
+                                      });
+                                    });
+                                  }}
                                   onTouchEnd={stopListening}
                                   className={`relative p-4 rounded-full transition-all ${isListening ? 'bg-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.4)]' : 'bg-white/5 text-slate-400 hover:text-emerald-400 hover:bg-white/10'}`}
                                   title="Hold to speak"
