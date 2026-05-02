@@ -5254,7 +5254,12 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack }: any) {
     );
   }
 
-  const filteredTests = tests; // Show all published tests to all students for consistency
+  const filteredTests = tests.filter((t: any) => {
+    if (!user?.class) return true;
+    const testClass = String(t.class || '').toLowerCase().trim();
+    const userClass = String(user.class || '').toLowerCase().trim();
+    return testClass === userClass || testClass === userClass.replace('class', '');
+  });
 
   const containerVariants = {
     hidden: { opacity: 0 },

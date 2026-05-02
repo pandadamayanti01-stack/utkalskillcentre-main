@@ -79,9 +79,14 @@ export interface Chapter {
 
 export interface Test {
   id: string;
-  title: BilingualContent;
-  chapterIds: string[]; // Link to Chapters
-  questions: { question: string; options: string[]; correct_answer: string; tutor_explanation?: string }[];
+  title?: BilingualContent;
+  class: string;
+  subject: string;
+  month: string;
+  year: number;
+  language?: string;
+  chapterIds?: string[]; // Link to Chapters
+  questions: { question: string; options: string[]; correct_answer: string; tutor_explanation?: string; marks?: number; type?: string }[];
   status: 'draft' | 'published';
   results_published: boolean;
   translationGroupId?: string;

@@ -37,10 +37,14 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
         return acc + (selectedOption === test.questions[i].correct_answer ? 1 : 0);
       }, 0);
       
-      await addDoc(collection(firestore, 'test_submissions'), {
+      await addDoc(collection(firestore, 'monthly_test_submissions'), {
         testId: test.id,
-        userId: user.uid,
-        userName: user.displayName || 'Student',
+        userId: user.id,
+        userName: user.name || user.displayName || 'Student',
+        class: user.class,
+        subject: test.subject,
+        month: test.month,
+        year: test.year,
         answers,
         score,
         totalQuestions: test.questions.length,
