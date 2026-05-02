@@ -82,7 +82,12 @@ export async function generateMcqsWithGemini(
     if (activeFile.state !== FileState.ACTIVE) throw new Error("File focus failed.");
     console.log("[GeminiMCQ] Focused File ACTIVE.");
 
-    const prompt = `You are a teacher. Generate exactly ${mode === 'monthly' ? 23 : count} questions from this book.
+    const prompt = `You are a teacher. Generate exactly ${mode === 'monthly' ? 23 : count} questions from this book for a Daily Practice set.
+       MIX: 
+       - First 4 questions: simple 1-mark MCQs.
+       - Next 3 questions: short 2-mark MCQs or simple subjective.
+       - Next 2 questions: medium 3-mark subjective questions.
+       - Last 1 question: detailed 5-mark subjective question.
        DIFFICULTY: ${difficulty.toUpperCase()}.
        SCHEMA: Array of { "question": string, "options": string[], "correct_answer": string, "explanation": string, "type": "mcq" | "subjective", "chapter": string }.
        Language: ${targetLanguage}.`;

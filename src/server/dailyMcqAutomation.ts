@@ -74,7 +74,7 @@ import { generateMcqsWithGemini } from '../utils/geminiMcqGenerator.js';
 
 const DEFAULT_AUTOMATION_TIME = '07:00';
 const DEFAULT_AUTOMATION_TIME_ZONE = 'Asia/Kolkata';
-const DEFAULT_AUTOMATION_STATUS = 'draft';
+const DEFAULT_AUTOMATION_STATUS = 'published';
 const MAX_SOURCE_TEXT_LENGTH = 100000; // Increased to ~80-100 pages to bypass long prefaces
 const DEFAULT_ENABLED_CLASSES = Array.from({ length: 10 }, (_, index) => `class${index + 1}`);
 
@@ -110,6 +110,7 @@ type GeneratedDailyMcqResult = {
   title: string;
   class: string;
   subject: string;
+  board: string;
   activeDate: string;
   status: 'draft' | 'published';
   questions: DailyMcqQuestion[];
@@ -659,6 +660,7 @@ async function upsertDailyMcq(adminApp: App, databaseId: string, result: Generat
     title: result.title,
     class: result.class,
     subject: result.subject,
+    board: result.board || 'odisha',
     activeDate: result.activeDate,
     status: result.status,
     questions,
@@ -720,6 +722,7 @@ async function buildGeneratedDailyMcq(adminApp: App, databaseId: string, params:
     title: params.title?.trim() || `${getSubjectLabel(params.subject)} Daily Practice`,
     class: params.className,
     subject: params.subject,
+    board: params.board || 'odisha',
     activeDate: params.activeDate,
     status: params.status || 'draft',
     questions,

@@ -84,14 +84,28 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
         modelAnswer: 'ସଠିକ୍ ଉତ୍ତର',
       };
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
 
   const sortedMcqs = useMemo(() => {
     return [...mcqs]
-      .filter((mcq) => {
-        // Filter by board. Default to Odisha Board if not specified.
-        const mcqBoard = mcq.board || 'Odisha State Board';
-        return mcqBoard === (user?.board || 'Odisha State Board');
+      .filter((mcq: any) => {
+        // Map short keys to full names for backward compatibility
+        const boardMap: Record<string, string> = {
+          'odisha': 'Odisha State Board',
+          'oav': 'OAV (Adarsha)',
+          'aurobindo': 'SACIE (Aurobindo)',
+          'saraswati': 'Saraswati Sishu Mandir'
+        };
+
+        const mcqBoard = String(mcq.board || 'Odisha State Board').trim();
+        const userBoardRaw = String(user?.board || 'odisha').trim();
+        const userBoardFull = boardMap[userBoardRaw] || userBoardRaw;
+
+        // Check if it matches the key, the full name, or if the board is 'Odisha Board (Odia Medium)'
+        return mcqBoard === userBoardFull || 
+               mcqBoard === userBoardRaw || 
+               mcqBoard.includes('Odisha Board') ||
+               (userBoardRaw === 'odisha' && mcqBoard === 'Odisha State Board');
       })
       .sort((left, right) => new Date(right.activeDate || 0).getTime() - new Date(left.activeDate || 0).getTime());
   }, [mcqs, user?.board]);

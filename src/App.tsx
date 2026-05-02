@@ -771,10 +771,9 @@ export default function App() {
       (err) => handleFirestoreError(err, OperationType.GET, 'monthly_tests')
     );
 
-    const today = new Date().toISOString().split('T')[0];
-    const dailyMcqsQuery = user.role === 'admin'
-      ? collection(firestore, 'daily_mcqs')
-      : query(collection(firestore, 'daily_mcqs'), where('status', '==', 'published'));
+    const todayRaw = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+    const today = todayRaw.replace(/\//g, '-').trim();
+    const dailyMcqsQuery = collection(firestore, 'daily_mcqs');
 
     const unsubDailyMcqs = onSnapshot(
       dailyMcqsQuery,
@@ -784,11 +783,20 @@ export default function App() {
         const data = snapshot.docs
           .map(d => ({ id: d.id, ...d.data() }))
           .filter((mcq: any) => {
-            if (user.role === 'admin') return true;
-            const mcqClass = String(mcq.class || '').toLowerCase();
-            const matchesClass = mcqClass === normalizedUserClass || mcqClass === shortUserClass || mcqClass === `class${shortUserClass}`;
-            const matchesToday = String(mcq.activeDate || '') === today;
-            return matchesClass && matchesToday;
+            const mcqClass = String(mcq.class || '').toLowerCase().trim();
+            const mcqDate = String(mcq.activeDate || '').replace(/\//g, '-').trim();
+            const mcqStatus = String(mcq.status || '').toLowerCase().trim();
+
+            const matchesClass = user.role === 'admin' || 
+                                mcqClass === normalizedUserClass || 
+                                mcqClass === shortUserClass || 
+                                mcqClass === `class${shortUserClass}` ||
+                                mcqClass.includes(shortUserClass);
+                                
+            const matchesToday = user.role === 'admin' || mcqDate === today;
+            const matchesStatus = user.role === 'admin' || mcqStatus === 'published';
+
+            return matchesClass && matchesToday && matchesStatus;
           })
           .sort((left: any, right: any) => {
             const leftDate = new Date(left.activeDate || 0).getTime();

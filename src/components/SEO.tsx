@@ -41,12 +41,12 @@ export const SEO: React.FC<SEOProps> = ({
   // Dynamic Title Construction (Hinglish optimized)
   const seoTitle = title || (subject 
     ? `${className} ${subject} Selection Question ${year} | Odisha Board MCQ | Utkal Skill Centre`
-    : `Utkal Skill Centre | Odisha Board AI Learning App | Class 10 Selection Question`);
+    : `BSE Odisha 10th Result 2026 Today (LIVE) | Check Matric Result Link`);
 
   // Dynamic Description Construction (Hinglish optimized)
   const seoDescription = description || (subject
     ? `Get important MCQs for ${className} ${subject} Odia medium. Perfect for your ${currentMonth} monthly test and Odisha Board Exam ${year}. Download PDF selection questions.`
-    : `Utkal Skill Centre is the #1 Odisha learning platform for Class 3 to 10. Get Odia medium notes, selection questions, and practice sets for May 5th monthly tests.`);
+    : `BSE Odisha 10th Result 2026 published today. Check your Odisha Matric result live link, marksheet, and pass percentage here. Join Utkal Skill Centre for next-step career guidance.`);
 
   // JSON-LD Schema for Course/Educational Content
   const schemaOrgJSONLD = {
@@ -84,7 +84,7 @@ export const SEO: React.FC<SEOProps> = ({
       <meta name="twitter:description" content={seoDescription} />
       
       {/* Hinglish Keywords Strategy */}
-      <meta name="keywords" content={`${subject || ''}, ${className}, Odisha Board, ${currentMonth} monthly test, selection question 2026, Odia medium notes, class 10 question paper PDF, BSE Odisha result date, Utkal Skill Centre`} />
+      <meta name="keywords" content={`${subject || ''}, ${className}, Odisha Board 10th result 2026, matric result odisha today, BSE Odisha result link, check 10th result Odisha, orissaresults.nic.in, ${currentMonth} monthly test, selection question 2026, Odia medium notes, class 10 question paper PDF, Utkal Skill Centre`} />
 
       {/* JSON-LD Schema */}
       <script type="application/ld+json">

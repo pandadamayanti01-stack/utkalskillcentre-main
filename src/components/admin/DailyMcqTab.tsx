@@ -373,9 +373,9 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
                 onChange={(e) => setNewMcq((prev) => ({ ...prev, board: e.target.value }))}
                 className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-emerald-500/30 font-black uppercase tracking-widest cursor-pointer"
               >
-                <option value="Odisha State Board" className="bg-slate-900">BSE / CHSE ODISHA</option>
-                <option value="SACIE (Aurobindo)" className="bg-slate-900">SACIE (AUROBINDO)</option>
-                <option value="OAV (Adarsha)" className="bg-slate-900">OAV (ADARSHA)</option>
+                <option value="odisha" className="bg-slate-900">BSE / CHSE ODISHA</option>
+                <option value="aurobindo" className="bg-slate-900">SACIE (AUROBINDO)</option>
+                <option value="oav" className="bg-slate-900">OAV (ADARSHA)</option>
               </select>
             </div>
             <div>

@@ -11,7 +11,7 @@ export const DAILY_MCQ_QUESTION_COUNT = 10;
  * - 1 question of 3 marks
  * - 1 question of 5 marks
  */
-export const DAILY_MCQ_MARKS_DISTRIBUTION: number[] = [1, 1, 1, 1, 1, 1, 1, 2, 3, 5];
+export const DAILY_MCQ_MARKS_DISTRIBUTION: number[] = [1, 1, 1, 1, 2, 2, 2, 3, 3, 5];
 
 export function getDailyMcqMarksForIndex(index: number): number {
   return DAILY_MCQ_MARKS_DISTRIBUTION[index] ?? 1;
@@ -65,20 +65,27 @@ export function getTomorrowDateString(dateString?: string): string {
 }
 
 export function normalizeDailyMcqQuestions(mcq: DailyMcq): DailyMcqQuestion[] {
-  if (Array.isArray(mcq.questions) && mcq.questions.length > 0) {
-    return withDailyMcqMarks(mcq.questions);
-  }
+  const rawQuestions = Array.isArray(mcq.questions) && mcq.questions.length > 0
+    ? mcq.questions
+    : (mcq.question && Array.isArray(mcq.options) && mcq.correct_answer
+      ? [{
+          question: mcq.question,
+          options: mcq.options,
+          correct_answer: mcq.correct_answer,
+          explanation: mcq.explanation,
+        }]
+      : []);
 
-  if (mcq.question && Array.isArray(mcq.options) && mcq.correct_answer) {
-    return withDailyMcqMarks([
-      {
-        question: mcq.question,
-        options: mcq.options,
-        correct_answer: mcq.correct_answer,
-        explanation: mcq.explanation,
-      },
-    ]);
-  }
-
-  return [];
+  return rawQuestions.map((q, index) => {
+    const marks = typeof q.marks === 'number' ? q.marks : getDailyMcqMarksForIndex(index);
+    // Auto-detect subjective type based on marks if missing
+    const type = q.type || (marks > 1 ? 'subjective' : 'mcq');
+    
+    return {
+      ...q,
+      marks,
+      type: type as 'mcq' | 'subjective',
+      options: Array.isArray(q.options) ? q.options : []
+    };
+  });
 }
