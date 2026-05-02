@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useRef, useState, useCallback } from 'react';
 import * as Lucide from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -39,6 +39,7 @@ import { subjectTranslations } from './constants';
 import { getConfiguredDailyMcqSequence, getRotatingDailyMcqSubject, getTomorrowDateString } from './utils/dailyMcq';
 import { openDailyMcqWhatsAppShare } from './utils/dailyMcqShare';
 import { getYouTubeId, getYouTubeEmbedUrl, getYouTubeThumbnail } from './utils/youtube';
+import { useVoiceInput } from './hooks/useVoiceInput';
 import { useVoiceSearch } from './hooks/useVoiceSearch';
 import { OfflineService } from './services/offlineService';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -2842,13 +2843,11 @@ function StudyBuddyLegacy({ user, language, isPremium, showPaywall, setShowPaywa
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
-  const { isListening, transcript, startListening, stopListening } = useVoiceSearch(language);
+  const { isListening, startListening, stopListening } = useVoiceInput(language);
 
-  useEffect(() => {
-    if (transcript) {
-      setInput(prev => prev + (prev ? ' ' : '') + transcript);
-    }
-  }, [transcript]);
+  const handleVoiceInput = useCallback((text: string) => {
+    setInput(prev => (prev.trim() + ' ' + text.trim()).trim());
+  }, []);
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -2891,7 +2890,7 @@ function StudyBuddyLegacy({ user, language, isPremium, showPaywall, setShowPaywa
       if (imageData) parts.push({ inlineData: { data: imageData.data, mimeType: imageData.mimeType } });
 
       const response = await ai.models.generateContent({
-        model: "gemini-3.1-flash-lite-preview",
+        model: "gemini-1.5-flash",
         contents: { parts },
         config: {
           systemInstruction: getStudyBuddySystemInstruction(
@@ -3076,28 +3075,31 @@ function StudyBuddyLegacy({ user, language, isPremium, showPaywall, setShowPaywa
                   </button>
                 </div>
                 <button
-                  onClick={isListening ? stopListening : startListening}
+                  onMouseDown={() => startListening(handleVoiceInput)}
+                  onMouseUp={stopListening}
+                  onTouchStart={(e) => { e.preventDefault(); startListening(handleVoiceInput); }}
+                  onTouchEnd={stopListening}
                   className={`relative w-11 h-11 rounded-xl flex items-center justify-center transition-all ${
                     isListening 
-                      ? 'bg-red-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.4)]' 
+                      ? 'bg-emerald-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.4)]' 
                       : 'bg-white/5 text-slate-400 hover:bg-white/10'
                   }`}
                 >
                   {isListening && (
                     <>
-                      <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-red-500 text-white text-[8px] font-black uppercase rounded shadow-lg animate-bounce whitespace-nowrap">
+                      <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-emerald-500 text-white text-[8px] font-black uppercase rounded shadow-lg animate-bounce whitespace-nowrap">
                         {language === 'en' ? 'Listening...' : 'ଶୁଣୁଛି...'}
                       </div>
                       <motion.div 
                         initial={{ scale: 1, opacity: 0.5 }}
                         animate={{ scale: 1.8, opacity: 0 }}
                         transition={{ repeat: Infinity, duration: 1.5 }}
-                        className="absolute inset-0 rounded-xl bg-red-500"
+                        className="absolute inset-0 rounded-xl bg-emerald-500"
                       />
                     </>
                   )}
                   <div className="relative z-10">
-                    {isListening ? <Lucide.MicOff size={20} className="animate-pulse" /> : <Lucide.Mic size={20} />}
+                    {isListening ? <Lucide.Mic size={20} className="animate-pulse" /> : <Lucide.Mic size={20} />}
                   </div>
                 </button>
               </div>

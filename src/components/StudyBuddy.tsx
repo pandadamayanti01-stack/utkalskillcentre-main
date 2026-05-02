@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   MessageCircle, 
@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 import Markdown from 'react-markdown';
-import { useVoiceSearch } from '../hooks/useVoiceSearch';
+import { useVoiceInput } from '../hooks/useVoiceInput';
 import { getAI } from '../services/aiService';
 
 interface StudyBuddyProps {
@@ -36,13 +36,7 @@ export function StudyBuddy({ user, language, isPremium }: StudyBuddyProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
-  const { isListening, transcript, startListening, stopListening } = useVoiceSearch(language);
-
-  useEffect(() => {
-    if (transcript) {
-      setInput(prev => prev + (prev ? ' ' : '') + transcript);
-    }
-  }, [transcript]);
+  const { isListening, startListening, stopListening } = useVoiceInput(language);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -66,6 +60,10 @@ export function StudyBuddy({ user, language, isPremium }: StudyBuddyProps) {
       reader.readAsDataURL(file);
     }
   };
+
+  const handleVoiceInput = useCallback((text: string) => {
+    setInput(prev => (prev.trim() + ' ' + text.trim()).trim());
+  }, []);
 
   const handleSend = async () => {
     if (!input.trim() && !selectedImage || loading) return;
@@ -91,7 +89,7 @@ export function StudyBuddy({ user, language, isPremium }: StudyBuddyProps) {
       if (imageData) parts.push({ inlineData: { data: imageData.data, mimeType: imageData.mimeType } });
 
       const response = await ai.models.generateContent({
-        model: "gemini-3.1-flash-lite-preview",
+        model: "gemini-1.5-flash",
         contents: { parts },
         config: {
           systemInstruction: `You are a helpful Study Buddy for a student in Class ${user.class}. 
@@ -166,7 +164,7 @@ export function StudyBuddy({ user, language, isPremium }: StudyBuddyProps) {
                       {msg.image && (
                         <img src={msg.image} alt="Sent" className="max-w-full rounded-lg mb-2 border border-white/10" />
                       )}
-                      <div className="prose prose-invert prose-sm max-w-none">
+                      <div className="prose prose-invert prose-sm max-w-none text-slate-200">
                         <Markdown>{msg.content}</Markdown>
                       </div>
                     </div>
@@ -228,20 +226,21 @@ export function StudyBuddy({ user, language, isPremium }: StudyBuddyProps) {
                         <Camera size={18} />
                       </button>
                       <button 
-                        onClick={isListening ? stopListening : startListening}
-                        className={`relative p-2 transition-all rounded-lg ${isListening ? 'bg-red-500/20 text-red-500' : 'text-slate-400 hover:text-emerald-400'}`}
+                        onMouseDown={() => startListening(handleVoiceInput)}
+                        onMouseUp={stopListening}
+                        onTouchStart={(e) => { e.preventDefault(); startListening(handleVoiceInput); }}
+                        onTouchEnd={stopListening}
+                        className={`relative p-2 transition-all rounded-lg ${isListening ? 'bg-emerald-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.4)]' : 'text-slate-400 hover:text-emerald-400'}`}
                       >
                         {isListening && (
-                          <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-2 py-1 bg-red-500 text-white text-[8px] font-black uppercase rounded-lg shadow-xl animate-bounce">
-                            Listening
-                          </div>
-                        )}
-                        {isListening ? (
                           <>
-                            <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }} transition={{ repeat: Infinity, duration: 1.5 }} className="absolute inset-0 bg-red-500 rounded-lg opacity-20" />
-                            <MicOff size={18} />
+                            <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-emerald-500 text-white text-[8px] font-black uppercase rounded shadow-lg animate-bounce whitespace-nowrap z-50">
+                              {language === 'en' ? 'Listening...' : 'ଶୁଣୁଛି...'}
+                            </div>
+                            <motion.div initial={{ scale: 1, opacity: 0.5 }} animate={{ scale: 2, opacity: 0 }} transition={{ repeat: Infinity, duration: 1.5 }} className="absolute inset-0 bg-emerald-500 rounded-lg" />
                           </>
-                        ) : <Mic size={18} />}
+                        )}
+                        <Mic size={18} className={isListening ? 'animate-pulse relative z-10' : ''} />
                       </button>
                     </div>
                     <button
