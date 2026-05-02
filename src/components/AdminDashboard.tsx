@@ -40,7 +40,8 @@ import {
   Globe,
   Shield,
   Activity,
-  PieChart
+  PieChart,
+  ExternalLink,
 } from 'lucide-react';
 // import { translateToBilingual } from '../services/translationService';
 import { motion, AnimatePresence } from 'motion/react';
@@ -2408,40 +2409,67 @@ Sample tone for Class 6-10:
                         </div>
                       </div>
 
-                      {/* Subjective Answers Section */}
+                      {/* All Questions & Manual Marking Section */}
                       <div className="space-y-4">
-                        <h5 className="text-xs font-black text-slate-500 uppercase tracking-widest border-b border-white/5 pb-2">Subjective Answers & Grading</h5>
+                        <h5 className="text-xs font-black text-slate-500 uppercase tracking-widest border-b border-white/5 pb-2">Question-wise Review & Grading</h5>
                         {test?.questions?.map((q: any, i: number) => {
-                          if (q.type !== 'subjective' && q.marks <= 1) return null;
                           const studentAns = sub.answers[i];
+                          const isObjectAns = typeof studentAns === 'object' && studentAns !== null;
+                          const answerText = isObjectAns ? studentAns.text : (q.type === 'mcq' ? q.options[studentAns] : studentAns);
+                          const imageUrl = isObjectAns ? studentAns.imageUrl : null;
+
                           return (
-                            <div key={i} className="bg-white/5 p-5 rounded-2xl border border-white/10 space-y-3">
+                            <div key={i} className="bg-white/5 p-5 rounded-2xl border border-white/10 space-y-4">
                               <div className="flex justify-between items-start">
-                                <p className="text-sm text-white font-medium">Q{i + 1}: {q.question}</p>
-                                <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2 py-1 rounded">{q.marks} Marks</span>
+                                <div className="space-y-1">
+                                  <p className="text-sm text-white font-medium">Q{i + 1}: {q.question}</p>
+                                  <div className="flex gap-2">
+                                    <span className="text-[10px] font-bold text-slate-500 bg-white/5 px-2 py-0.5 rounded uppercase">Type: {q.type || 'MCQ'}</span>
+                                    {q.type === 'mcq' && <span className="text-[10px] font-bold text-emerald-500/80 bg-emerald-500/5 px-2 py-0.5 rounded uppercase">Correct: {q.correct_answer}</span>}
+                                  </div>
+                                </div>
+                                <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2 py-1 rounded shrink-0">{q.marks || 1} Marks</span>
                               </div>
-                              <div className="bg-black/30 p-4 rounded-xl text-slate-300 text-sm italic">
-                                {studentAns || <span className="text-slate-600">No answer provided.</span>}
+
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="bg-black/30 p-4 rounded-xl text-slate-300 text-sm italic min-h-[60px] flex items-center">
+                                  {answerText || <span className="text-slate-600">No text answer provided.</span>}
+                                </div>
+                                {imageUrl && (
+                                  <a href={imageUrl} target="_blank" rel="noopener noreferrer" className="relative group aspect-video rounded-xl overflow-hidden border border-white/5 bg-black/20 block">
+                                    <img src={imageUrl} alt="Student Work" className="w-full h-full object-contain" />
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
+                                      <span className="text-white text-xs font-bold flex items-center gap-2">
+                                        <ExternalLink size={14} /> View Full Image
+                                      </span>
+                                    </div>
+                                  </a>
+                                )}
                               </div>
-                              <div className="flex items-center gap-4 pt-2">
+
+                              <div className="flex flex-wrap items-center gap-4 pt-2 border-t border-white/5">
                                 <label className="text-[10px] font-bold text-slate-500 uppercase">Award Marks:</label>
-                                <div className="flex gap-2">
-                                  {[...Array((q.marks || 0) + 1)].map((_, mark) => (
+                                <div className="flex flex-wrap gap-2">
+                                  {[...Array((q.marks || 1) + 1)].map((_, mark) => (
                                     <button 
                                       key={mark}
                                       onClick={async () => {
                                         const newScores = { ...(sub.subjectiveScores || {}), [i]: mark };
-                                        const totalSubjective = Object.values(newScores).reduce((a: any, b: any) => (a as number) + (b as number), 0);
+                                        const totalManual = Object.values(newScores).reduce((a: any, b: any) => (a as number) + (b as number), 0);
+                                        
+                                        // Calculate base auto-score for other questions if they are MCQs?
+                                        // Actually, let's keep sub.score as the base auto-score and finalScore as the overridden sum.
+                                        
                                         await updateDoc(doc(firestore, 'monthly_test_submissions', sub.id), {
                                           subjectiveScores: newScores,
-                                          finalScore: (sub.score || 0) + (totalSubjective as number)
+                                          finalScore: (sub.score || 0) + (totalManual as number)
                                         });
                                         // Refresh local data
-                                        setTestSubmissions(prev => prev.map(s => s.id === sub.id ? { ...s, subjectiveScores: newScores, finalScore: (sub.score || 0) + (totalSubjective as number) } : s));
+                                        setTestSubmissions(prev => prev.map(s => s.id === sub.id ? { ...s, subjectiveScores: newScores, finalScore: (sub.score || 0) + (totalManual as number) } : s));
                                       }}
                                       className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold transition-all ${
                                         (sub.subjectiveScores?.[i] === mark) 
-                                        ? 'bg-emerald-500 text-white' 
+                                        ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20 scale-110' 
                                         : 'bg-white/5 text-slate-500 hover:bg-white/10'
                                       }`}
                                     >

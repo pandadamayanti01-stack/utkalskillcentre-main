@@ -15,7 +15,8 @@ import {
 import Markdown from 'react-markdown';
 import { GoogleGenAI } from "@google/genai";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-import { auth, db as firestore, safeJsonStringify } from './firebase';
+import { auth, db as firestore, storage, safeJsonStringify } from './firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Chapter, BilingualContent, DailyMcq, DailyMcqSubmission, Textbook } from './types';
 import { 
   signInWithPopup, 
@@ -5391,6 +5392,7 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
   const [violations, setViolations] = useState(0);
   const [showWarning, setShowWarning] = useState(false);
   const [timeSpent, setTimeSpent] = useState<Record<number, number>>({});
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [timeLeft, setTimeLeft] = useState(45 * 60); // 45 minutes in seconds
   const startTimeRef = useRef<number>(Date.now());
 
@@ -5465,6 +5467,29 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
 
   const handleAnswer = (val: any) => {
     setAnswers(prev => ({ ...prev, [currentIdx]: val }));
+  };
+
+  const handleImageUpload = async (file: File) => {
+    if (!file) return;
+    setUploadingImage(true);
+    try {
+      const storageRef = ref(storage, `monthly_test_evidence/${user.uid}/${test.id}/${currentIdx}_${Date.now()}`);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      
+      // Update answer to include image URL
+      const currentVal = answers[currentIdx] || '';
+      const newVal = typeof currentVal === 'object' 
+        ? { ...currentVal, imageUrl: url }
+        : { text: currentVal, imageUrl: url };
+      
+      handleAnswer(newVal);
+    } catch (err) {
+      console.error("Image upload error:", err);
+      alert("Failed to upload image. Please try again.");
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   const handleSubmit = async () => {
@@ -5617,14 +5642,57 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
           </div>
         ) : (
           <div className="space-y-4">
+            <div className="flex justify-between items-center mb-2">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Answer / Calculation</label>
+              <label className="cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 rounded-xl text-xs font-bold text-white flex items-center gap-2 transition-all">
+                {uploadingImage ? <Lucide.Loader2 size={14} className="animate-spin" /> : <Lucide.Camera size={14} />}
+                {uploadingImage ? 'Uploading...' : 'Upload Photo of Working'}
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  className="hidden" 
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleImageUpload(file);
+                  }}
+                  disabled={uploadingImage}
+                />
+              </label>
+            </div>
+
             <textarea 
-              value={answers[currentIdx] || ''}
-              onChange={(e) => handleAnswer(e.target.value)}
-              placeholder="Type your detailed answer here..."
-              className="w-full h-64 bg-black/20 border border-white/10 rounded-3xl p-6 text-white focus:outline-none focus:border-emerald-500/50 transition-all resize-none leading-relaxed"
+              value={typeof answers[currentIdx] === 'object' ? answers[currentIdx].text : (answers[currentIdx] || '')}
+              onChange={(e) => {
+                const currentVal = answers[currentIdx];
+                const newVal = typeof currentVal === 'object' 
+                  ? { ...currentVal, text: e.target.value }
+                  : e.target.value;
+                handleAnswer(newVal);
+              }}
+              placeholder="Type your answer or explain your working here..."
+              className="w-full h-48 bg-black/20 border border-white/10 rounded-3xl p-6 text-white focus:outline-none focus:border-emerald-500/50 transition-all resize-none leading-relaxed"
             />
+
+            {answers[currentIdx]?.imageUrl && (
+              <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black/20">
+                <img src={answers[currentIdx].imageUrl} alt="Working Evidence" className="w-full h-full object-contain" />
+                <button 
+                  onClick={() => {
+                    const currentVal = answers[currentIdx];
+                    if (typeof currentVal === 'object') {
+                      const { imageUrl, ...rest } = currentVal;
+                      handleAnswer(rest);
+                    }
+                  }}
+                  className="absolute top-2 right-2 p-2 bg-red-500/80 text-white rounded-lg hover:bg-red-500 transition-all"
+                >
+                  <Lucide.Trash2 size={14} />
+                </button>
+              </div>
+            )}
+
             <p className="text-[10px] text-slate-500 uppercase font-bold text-right">
-              Word count: {String(answers[currentIdx] || '').split(/\s+/).filter(Boolean).length}
+              {language === 'en' ? 'Submission includes text and optional photo evidence' : 'ଉତ୍ତର ସହିତ ଫଟୋ ପ୍ରମାଣ ସଂଲଗ୍ନ କରାଯାଇପାରିବ'}
             </p>
           </div>
         )}
