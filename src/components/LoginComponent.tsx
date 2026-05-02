@@ -387,6 +387,15 @@ export default function Login({ language, translations, setLanguage, setRegData 
                 {language === 'en' ? 'Personalized Learning' : 'ଆପଣଙ୍କ ପାଇଁ ବ୍ୟକ୍ତିଗତ ଶିକ୍ଷା'}
                 <span className="h-[1px] w-4 bg-white/10" />
               </p>
+
+              {/* Congratulatory Message */}
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="mt-4 text-[#ffd700] text-[10px] font-bold text-center px-4"
+              >
+                🎊 {t.congratsMessage} 🎓
+              </motion.p>
             </motion.div>
           </AnimatePresence>
         </div>
