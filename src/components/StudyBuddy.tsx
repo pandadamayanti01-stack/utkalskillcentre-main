@@ -229,9 +229,19 @@ export function StudyBuddy({ user, language, isPremium }: StudyBuddyProps) {
                       </button>
                       <button 
                         onClick={isListening ? stopListening : startListening}
-                        className={`p-2 transition-colors ${isListening ? 'text-red-500 animate-pulse' : 'text-slate-400 hover:text-emerald-400'}`}
+                        className={`relative p-2 transition-all rounded-lg ${isListening ? 'bg-red-500/20 text-red-500' : 'text-slate-400 hover:text-emerald-400'}`}
                       >
-                        {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+                        {isListening && (
+                          <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-2 py-1 bg-red-500 text-white text-[8px] font-black uppercase rounded-lg shadow-xl animate-bounce">
+                            Listening
+                          </div>
+                        )}
+                        {isListening ? (
+                          <>
+                            <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }} transition={{ repeat: Infinity, duration: 1.5 }} className="absolute inset-0 bg-red-500 rounded-lg opacity-20" />
+                            <MicOff size={18} />
+                          </>
+                        ) : <Mic size={18} />}
                       </button>
                     </div>
                     <button

@@ -362,25 +362,58 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
                               className="w-full min-h-[100px] rounded-2xl border border-white/10 bg-white/5 p-4 text-slate-200 placeholder:text-slate-600 focus:border-cyan-400/40 focus:bg-white/10 transition-all outline-none resize-none pr-12"
                             />
                             {!isSubmitted && (
-                              <button
-                                type="button"
-                                onMouseDown={() => startListening((text) => {
-                                  const nextAnswers = [...selectedSetAnswers];
-                                  nextAnswers[questionIndex] = (nextAnswers[questionIndex] || '') + ' ' + text;
-                                  setSelectedAnswers((prev) => ({ ...prev, [mcq.id]: nextAnswers }));
-                                })}
-                                onMouseUp={stopListening}
-                                onTouchStart={() => startListening((text) => {
-                                  const nextAnswers = [...selectedSetAnswers];
-                                  nextAnswers[questionIndex] = (nextAnswers[questionIndex] || '') + ' ' + text;
-                                  setSelectedAnswers((prev) => ({ ...prev, [mcq.id]: nextAnswers }));
-                                })}
-                                onTouchEnd={stopListening}
-                                className={`absolute right-4 bottom-4 p-3 rounded-full transition-all ${isListening ? 'bg-red-500 animate-pulse text-white' : 'bg-white/5 text-slate-400 hover:text-cyan-400 hover:bg-white/10'}`}
-                                title="Hold to speak"
-                              >
-                                {isListening ? <Lucide.MicOff size={20} /> : <Lucide.Mic size={20} />}
-                              </button>
+                              <div className="absolute right-4 bottom-4 flex flex-col items-center gap-3">
+                                {isListening && (
+                                  <motion.div 
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    className="px-3 py-1.5 rounded-full bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-lg shadow-emerald-500/20"
+                                  >
+                                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+                                    {language === 'en' ? 'Listening...' : 'ଶୁଣୁଛି...'}
+                                  </motion.div>
+                                )}
+                                <button
+                                  type="button"
+                                  onMouseDown={() => startListening((text) => {
+                                    const nextAnswers = [...selectedSetAnswers];
+                                    nextAnswers[questionIndex] = (nextAnswers[questionIndex] || '') + ' ' + text;
+                                    setSelectedAnswers((prev) => ({ ...prev, [mcq.id]: nextAnswers }));
+                                  })}
+                                  onMouseUp={stopListening}
+                                  onTouchStart={() => startListening((text) => {
+                                    const nextAnswers = [...selectedSetAnswers];
+                                    nextAnswers[questionIndex] = (nextAnswers[questionIndex] || '') + ' ' + text;
+                                    setSelectedAnswers((prev) => ({ ...prev, [mcq.id]: nextAnswers }));
+                                  })}
+                                  onTouchEnd={stopListening}
+                                  className={`relative p-4 rounded-full transition-all ${isListening ? 'bg-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.4)]' : 'bg-white/5 text-slate-400 hover:text-emerald-400 hover:bg-white/10'}`}
+                                  title="Hold to speak"
+                                >
+                                  {isListening && (
+                                    <>
+                                      <motion.div 
+                                        initial={{ scale: 1, opacity: 0.5 }}
+                                        animate={{ scale: 1.8, opacity: 0 }}
+                                        transition={{ repeat: Infinity, duration: 1.5 }}
+                                        className="absolute inset-0 rounded-full bg-emerald-500"
+                                      />
+                                      <motion.div 
+                                        initial={{ scale: 1, opacity: 0.5 }}
+                                        animate={{ scale: 2.5, opacity: 0 }}
+                                        transition={{ repeat: Infinity, duration: 1.5, delay: 0.5 }}
+                                        className="absolute inset-0 rounded-full bg-emerald-500"
+                                      />
+                                    </>
+                                  )}
+                                  <div className="relative z-10">
+                                    {isListening ? <Lucide.Mic size={22} className="animate-pulse" /> : <Lucide.Mic size={22} />}
+                                  </div>
+                                </button>
+                                <p className={`text-[8px] font-bold uppercase tracking-tighter transition-opacity ${isListening ? 'opacity-100 text-emerald-400' : 'opacity-40 text-slate-500'}`}>
+                                  {language === 'en' ? 'Hold to speak' : 'ଧରି ରଖନ୍ତୁ'}
+                                </p>
+                              </div>
                             )}
                             {isSubmitted && (
                               <div className="space-y-3 p-4 rounded-2xl bg-cyan-500/5 border border-cyan-500/10">

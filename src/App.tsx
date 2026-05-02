@@ -3077,13 +3077,28 @@ function StudyBuddyLegacy({ user, language, isPremium, showPaywall, setShowPaywa
                 </div>
                 <button
                   onClick={isListening ? stopListening : startListening}
-                  className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${
+                  className={`relative w-11 h-11 rounded-xl flex items-center justify-center transition-all ${
                     isListening 
-                      ? 'bg-red-500 text-white animate-pulse' 
+                      ? 'bg-red-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.4)]' 
                       : 'bg-white/5 text-slate-400 hover:bg-white/10'
                   }`}
                 >
-                  {isListening ? <Lucide.MicOff size={20} /> : <Lucide.Mic size={20} />}
+                  {isListening && (
+                    <>
+                      <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-red-500 text-white text-[8px] font-black uppercase rounded shadow-lg animate-bounce whitespace-nowrap">
+                        {language === 'en' ? 'Listening...' : 'ଶୁଣୁଛି...'}
+                      </div>
+                      <motion.div 
+                        initial={{ scale: 1, opacity: 0.5 }}
+                        animate={{ scale: 1.8, opacity: 0 }}
+                        transition={{ repeat: Infinity, duration: 1.5 }}
+                        className="absolute inset-0 rounded-xl bg-red-500"
+                      />
+                    </>
+                  )}
+                  <div className="relative z-10">
+                    {isListening ? <Lucide.MicOff size={20} className="animate-pulse" /> : <Lucide.Mic size={20} />}
+                  </div>
                 </button>
               </div>
             </div>
