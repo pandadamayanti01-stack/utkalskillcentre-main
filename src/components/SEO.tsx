@@ -40,14 +40,14 @@ export const SEO: React.FC<SEOProps> = ({
   const currentMonth = getMonthlyTestName();
   const year = 2026; // Fixed for current focus
   
-  // 2026 Optimized Title (Hinglish + Latest Pattern)
+  // 2026 Optimized Title (Bilingual: English + Odia)
   const seoTitle = title || (subject 
-    ? `${className} ${subject} Selection Question 2026 | Latest Odisha Board Pattern MCQ | Utkal Skill Centre`
-    : `BSE Odisha 10th Result 2026 Today (LIVE) | Check Matric Result Link Online | orissaresults.nic.in`);
+    ? `${className} ${subject} Selection Question 2026 | BSE Odisha Board MCQ (ଓଡ଼ିଆ ମାଧ୍ୟମ) | Utkal Skill Centre`
+    : `BSE Odisha 10th Result 2026 Today (LIVE) | ୧୦ମ ଶ୍ରେଣୀ ମାଟ୍ରିକ ରେଜଲ୍ଟ ୨୦୨୬ | orissaresults.nic.in`);
 
   const seoDescription = description || (subject
-    ? `Get 100% selection MCQs for ${className} ${subject} Odia medium. Perfect for ${currentMonth} monthly test and Odisha Board Exam ${year}. Download Latest PDF questions based on new board pattern.`
-    : `BSE Odisha 10th Result 2026 published today. Check your Odisha Matric result live link, marksheet, and pass percentage here. Join Utkal Skill Centre for Class 11-12 preparation and career guidance.`);
+    ? `Get 100% selection MCQs for ${className} ${subject} Odia medium. BSE Odisha State Board Exam ${year}. ୨୦୨୬ ମାସିକ ପରୀକ୍ଷା ସିଲେକ୍ସନ ପ୍ରଶ୍ନ | Download Latest PDF.`
+    : `BSE Odisha 10th Result 2026 published today. Check your Odisha Matric result (ଓଡ଼ିଶା ୧୦ମ ଶ୍ରେଣୀ ରେଜଲ୍ଟ) live link and marksheet here. Join Utkal Skill Centre for Class 11 preparation.`);
 
   // Construct Schemas
   let schemaData: any = {
@@ -113,7 +113,7 @@ export const SEO: React.FC<SEOProps> = ({
       <meta name="twitter:title" content={seoTitle} />
       <meta name="twitter:description" content={seoDescription} />
       
-      <meta name="keywords" content={`${subject || ''}, ${className}, Odisha Board 10th result 2026, matric result odisha today, BSE Odisha result link, check 10th result Odisha, orissaresults.nic.in, ${currentMonth} monthly test, selection question 2026, Odia medium notes, class 10 question paper PDF, Utkal Skill Centre, Latest Odisha Board Pattern`} />
+      <meta name="keywords" content={`${subject || ''}, ${className}, BSE Odisha 10th result 2026, matric result odisha today, BSE Odisha link, ୧୦ମ ଶ୍ରେଣୀ ରେଜଲ୍ଟ, Odisha State Board result, orissaresults.nic.in, ${currentMonth} monthly test, selection question 2026, Odia medium notes, Class 10 question paper PDF, Utkal Skill Centre, Latest Odisha Board Pattern, ସିଲେକ୍ସନ ପ୍ରଶ୍ନ`} />
 
       <script type="application/ld+json">
         {JSON.stringify(schemaData, null, 2)}

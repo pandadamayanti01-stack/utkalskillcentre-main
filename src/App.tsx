@@ -1538,8 +1538,8 @@ export default function App() {
     return (
       <div className="h-screen bg-[#0B0F19] flex flex-col relative overflow-hidden font-sans">
         <SEO 
-          title="Utkal Skill Centre | Best Learning Platform for Odisha Board Class 5-10"
-          description="Odisha's top digital learning platform for Class 5-10. Get AI-powered doubt solving with Gundulu, monthly test series, and latest board pattern MCQs."
+          title="Utkal Skill Centre | BSE Odisha 10th Result 2026 & Latest Board Pattern MCQs (ଓଡ଼ିଆ ମାଧ୍ୟମ)"
+          description="Odisha's top digital learning platform for Class 5-10. Get BSE Odisha result updates, AI-powered doubt solving with Gundulu, and latest board pattern selection questions."
           schemaType="FAQPage"
           faqs={landingFaqs}
         />
