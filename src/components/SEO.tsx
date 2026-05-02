@@ -59,6 +59,14 @@ export const SEO: React.FC<SEOProps> = ({
       "@type": "Organization",
       "name": "Utkal Skill Centre",
       "url": "https://utkalskillcentre.com"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Utkal Skill Centre",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://utkalskillcentre.com/utkal-192.png"
+      }
     }
   };
 
@@ -108,7 +116,7 @@ export const SEO: React.FC<SEOProps> = ({
       <meta name="keywords" content={`${subject || ''}, ${className}, Odisha Board 10th result 2026, matric result odisha today, BSE Odisha result link, check 10th result Odisha, orissaresults.nic.in, ${currentMonth} monthly test, selection question 2026, Odia medium notes, class 10 question paper PDF, Utkal Skill Centre, Latest Odisha Board Pattern`} />
 
       <script type="application/ld+json">
-        {JSON.stringify(schemaData)}
+        {JSON.stringify(schemaData, null, 2)}
       </script>
     </Helmet>
   );

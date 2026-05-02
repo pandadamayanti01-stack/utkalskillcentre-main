@@ -1520,8 +1520,29 @@ export default function App() {
   }
 
   if (!user) {
+    const landingFaqs = [
+      {
+        question: "What is Utkal Skill Centre?",
+        answer: "Utkal Skill Centre is Odisha's leading AI-powered digital learning platform for Class 5 to 10 students, focusing on the latest Odisha State Board pattern."
+      },
+      {
+        question: "Does it support the latest Odisha Board pattern for 2026?",
+        answer: "Yes, all our study materials, MCQs, and monthly tests are strictly based on the 2026 syllabus and latest question pattern issued by the Odisha Board."
+      },
+      {
+        question: "What is Gundulu AI study buddy?",
+        answer: "Gundulu is our personalized AI study buddy that helps students solve doubts, provides explanation in Odia, and tracks their progress."
+      }
+    ];
+
     return (
       <div className="h-screen bg-[#0B0F19] flex flex-col relative overflow-hidden font-sans">
+        <SEO 
+          title="Utkal Skill Centre | Best Learning Platform for Odisha Board Class 5-10"
+          description="Odisha's top digital learning platform for Class 5-10. Get AI-powered doubt solving with Gundulu, monthly test series, and latest board pattern MCQs."
+          schemaType="FAQPage"
+          faqs={landingFaqs}
+        />
         <div className="absolute inset-x-0 top-0 z-[100] pointer-events-none">
           <div className="pointer-events-auto">
             <AnimatePresence>
@@ -1678,6 +1699,19 @@ export default function App() {
                   <Lucide.Bot className="text-emerald-400 w-12 h-12" />
                 </div>
               </div>
+              
+              {/* Internal Link for SEO */}
+              <motion.a 
+                href="/bse-odisha-10th-result-2026.html"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.5 }}
+                className="absolute -bottom-4 left-0 right-0 mx-auto w-fit px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold text-slate-400 hover:text-white hover:bg-white/10 transition-all flex items-center gap-2 backdrop-blur-sm"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                Latest: BSE Odisha 10th Result 2026 Live
+                <Lucide.ExternalLink size={10} />
+              </motion.a>
 
               {/* Connecting Lines & Nodes */}
               <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: -1 }}>
