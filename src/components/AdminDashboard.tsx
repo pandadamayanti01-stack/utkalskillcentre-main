@@ -79,7 +79,8 @@ import {
   generateTestContent, 
   importPlaylistContent,
   generateCurriculum,
-  generateTestQuestions
+  generateTestQuestions,
+  gradeSubjectiveAnswer
 } from '../services/aiService';
 
 type AdminTab = 'dashboard' | 'content' | 'monthly_tests' | 'daily_mcqs' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup' | 'students' | 'subscriptions' | 'support' | 'user_locks';
@@ -222,7 +223,7 @@ Sample tone for Class 6-10:
   const [isParsingBulk, setIsParsingBulk] = useState(false);
   const [selectedTestIdForSubmissions, setSelectedTestIdForSubmissions] = useState<string | null>(null);
   const [testSubmissions, setTestSubmissions] = useState<any[]>([]);
-
+  const [filterPending, setFilterPending] = useState(false);
   const [isAddingTextbook, setIsAddingTextbook] = useState(false);
   const [editingTextbookId, setEditingTextbookId] = useState<string | null>(null);
   const [uploadingFile, setUploadingFile] = useState(false);
@@ -2336,12 +2337,24 @@ Sample tone for Class 6-10:
               <h3 className="text-2xl font-bold text-white">Test Submissions</h3>
               <p className="text-slate-400 text-sm">Reviewing results and anti-cheating logs</p>
             </div>
-            <button 
-              onClick={() => setSelectedTestIdForSubmissions(null)}
-              className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-white transition-all"
-            >
-              <X size={24} />
-            </button>
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={() => setFilterPending(!filterPending)}
+                className={`px-6 py-3 rounded-2xl text-sm font-bold transition-all border ${
+                  filterPending 
+                  ? 'bg-amber-500/20 border-amber-500 text-amber-500 shadow-lg shadow-amber-500/20' 
+                  : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
+                }`}
+              >
+                {filterPending ? 'Showing: Pending Review' : 'Filter: Needs Review'}
+              </button>
+              <button 
+                onClick={() => setSelectedTestIdForSubmissions(null)}
+                className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-white transition-all border border-white/10"
+              >
+                <X size={24} />
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 gap-6">
@@ -2352,8 +2365,17 @@ Sample tone for Class 6-10:
               </div>
             ) : (
               <div className="space-y-4">
-                {testSubmissions.map((sub) => {
-                  const test = monthlyTests.find(t => t.id === sub.testId);
+                {testSubmissions
+                  .filter(sub => {
+                    if (!filterPending) return true;
+                    // Find if any subjective question (marks > 1) is not graded
+                    const test = monthlyTests.find(t => t.id === sub.testId);
+                    return test?.questions?.some((q: any, i: number) => 
+                      (q.type === 'subjective' || q.marks > 1) && sub.subjectiveScores?.[i] === undefined
+                    );
+                  })
+                  .map((sub) => {
+                    const test = monthlyTests.find(t => t.id === sub.testId);
                   return (
                     <div key={sub.id} className="bg-white/5 border border-white/10 p-6 rounded-3xl space-y-6">
                       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -2447,36 +2469,76 @@ Sample tone for Class 6-10:
                                 )}
                               </div>
 
-                              <div className="flex flex-wrap items-center gap-4 pt-2 border-t border-white/5">
-                                <label className="text-[10px] font-bold text-slate-500 uppercase">Award Marks:</label>
-                                <div className="flex flex-wrap gap-2">
-                                  {[...Array((q.marks || 1) + 1)].map((_, mark) => (
-                                    <button 
-                                      key={mark}
-                                      onClick={async () => {
-                                        const newScores = { ...(sub.subjectiveScores || {}), [i]: mark };
-                                        const totalManual = Object.values(newScores).reduce((a: any, b: any) => (a as number) + (b as number), 0);
+                              <div className="flex flex-col gap-3 pt-2 border-t border-white/5">
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-4">
+                                    <label className="text-[10px] font-bold text-slate-500 uppercase">Award Marks:</label>
+                                    <div className="flex flex-wrap gap-2">
+                                      {[...Array((q.marks || 1) + 1)].map((_, mark) => (
+                                        <button 
+                                          key={mark}
+                                          onClick={async () => {
+                                            const newScores = { ...(sub.subjectiveScores || {}), [i]: mark };
+                                            const totalManual = Object.values(newScores).reduce((a: any, b: any) => (a as number) + (b as number), 0);
+                                            await updateDoc(doc(firestore, 'monthly_test_submissions', sub.id), {
+                                              subjectiveScores: newScores,
+                                              finalScore: (sub.score || 0) + (totalManual as number)
+                                            });
+                                            setTestSubmissions(prev => prev.map(s => s.id === sub.id ? { ...s, subjectiveScores: newScores, finalScore: (sub.score || 0) + (totalManual as number) } : s));
+                                          }}
+                                          className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold transition-all ${
+                                            (sub.subjectiveScores?.[i] === mark) 
+                                            ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20 scale-110' 
+                                            : 'bg-white/5 text-slate-500 hover:bg-white/10'
+                                          }`}
+                                        >
+                                          {mark}
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+
+                                  <button 
+                                    onClick={async () => {
+                                      try {
+                                        // Set loading state (we could use a local state but for now just console)
+                                        console.log("AI Grading starting...");
+                                        const result = await gradeSubjectiveAnswer(
+                                          q.question,
+                                          q.correct_answer || '',
+                                          answerText,
+                                          imageUrl,
+                                          q.marks || 1,
+                                          'or'
+                                        );
                                         
-                                        // Calculate base auto-score for other questions if they are MCQs?
-                                        // Actually, let's keep sub.score as the base auto-score and finalScore as the overridden sum.
-                                        
-                                        await updateDoc(doc(firestore, 'monthly_test_submissions', sub.id), {
-                                          subjectiveScores: newScores,
-                                          finalScore: (sub.score || 0) + (totalManual as number)
-                                        });
-                                        // Refresh local data
-                                        setTestSubmissions(prev => prev.map(s => s.id === sub.id ? { ...s, subjectiveScores: newScores, finalScore: (sub.score || 0) + (totalManual as number) } : s));
-                                      }}
-                                      className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold transition-all ${
-                                        (sub.subjectiveScores?.[i] === mark) 
-                                        ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20 scale-110' 
-                                        : 'bg-white/5 text-slate-500 hover:bg-white/10'
-                                      }`}
-                                    >
-                                      {mark}
-                                    </button>
-                                  ))}
+                                        if (result.suggestedMark !== undefined) {
+                                          if (confirm(`AI suggests ${result.suggestedMark} marks.\nJustification: ${result.justification}\n\nApply this mark?`)) {
+                                            const newScores = { ...(sub.subjectiveScores || {}), [i]: result.suggestedMark };
+                                            const totalManual = Object.values(newScores).reduce((a: any, b: any) => (a as number) + (b as number), 0);
+                                            await updateDoc(doc(firestore, 'monthly_test_submissions', sub.id), {
+                                              subjectiveScores: newScores,
+                                              aiJustifications: { ...(sub.aiJustifications || {}), [i]: result.justification },
+                                              finalScore: (sub.score || 0) + (totalManual as number)
+                                            });
+                                            setTestSubmissions(prev => prev.map(s => s.id === sub.id ? { ...s, subjectiveScores: newScores, finalScore: (sub.score || 0) + (totalManual as number) } : s));
+                                          }
+                                        }
+                                      } catch (err) {
+                                        console.error("AI Grading Error:", err);
+                                        alert("AI Assistant failed to grade. Please try again.");
+                                      }
+                                    }}
+                                    className="px-4 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 rounded-xl text-[10px] font-black uppercase tracking-widest border border-emerald-500/20 flex items-center gap-2 transition-all"
+                                  >
+                                    <Sparkles size={14} /> AI Suggest Mark
+                                  </button>
                                 </div>
+                                {sub.aiJustifications?.[i] && (
+                                  <p className="text-[10px] text-slate-500 italic bg-white/5 p-2 rounded-lg border border-white/5">
+                                    AI Note: {sub.aiJustifications[i]}
+                                  </p>
+                                )}
                               </div>
                             </div>
                           );

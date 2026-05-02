@@ -332,3 +332,73 @@ export async function generateTestQuestions(subject: string, className: string, 
     throw error;
   }
 }
+
+export async function gradeSubjectiveAnswer(
+  question: string,
+  modelAnswer: string,
+  studentAnswerText: string,
+  studentAnswerImageUrl: string | null,
+  maxMarks: number,
+  language: 'en' | 'or' = 'or'
+) {
+  try {
+    const ai = getAI();
+    
+    let prompt = `You are an expert teacher grading a student's answer for the following question.
+    
+    Question: "${question}"
+    Model Answer: "${modelAnswer}"
+    Maximum Marks: ${maxMarks}
+    
+    Student's Typed Answer: "${studentAnswerText || 'No text provided.'}"
+    ${studentAnswerImageUrl ? "Student also provided a photo of their working/calculation. Please analyze it carefully." : ""}
+    
+    Instructions:
+    1. Compare the student's answer (text and image if provided) with the model answer.
+    2. Award marks (from 0 to ${maxMarks}) based on accuracy, steps, and clarity.
+    3. Be fair but strict. Give partial marks for correct steps.
+    4. Provide the result in JSON format:
+       {
+         "suggestedMark": number,
+         "justification": "A brief 1-sentence explanation in ${language === 'or' ? 'Odia' : 'English'}"
+       }
+    Return ONLY the JSON object.`;
+
+    const parts: any[] = [{ text: prompt }];
+
+    if (studentAnswerImageUrl) {
+      try {
+        const response = await fetch(studentAnswerImageUrl);
+        const blob = await response.blob();
+        const base64 = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.readAsDataURL(blob);
+        });
+        
+        parts.push({
+          inlineData: {
+            data: base64.split(',')[1],
+            mimeType: blob.type
+          }
+        });
+      } catch (e) {
+        console.error("Failed to fetch/convert image for grading:", e);
+      }
+    }
+
+    const response = await withRetry(() => ai.models.generateContent({
+      model: "gemini-1.5-flash",
+      contents: { parts },
+      config: {
+        responseMimeType: "application/json",
+        temperature: 0.2,
+      },
+    }));
+
+    return JSON.parse(response.text || '{}');
+  } catch (error) {
+    console.error("AI Grading Error:", error);
+    return { suggestedMark: 0, justification: "Error connecting to AI Assistant." };
+  }
+}
