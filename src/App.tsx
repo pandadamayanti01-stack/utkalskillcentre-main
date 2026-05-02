@@ -5391,7 +5391,7 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
   const [violations, setViolations] = useState(0);
   const [showWarning, setShowWarning] = useState(false);
   const [timeSpent, setTimeSpent] = useState<Record<number, number>>({});
-  const [timeLeft, setTimeLeft] = useState(90 * 60); // 1.5 hours in seconds
+  const [timeLeft, setTimeLeft] = useState(45 * 60); // 45 minutes in seconds
   const startTimeRef = useRef<number>(Date.now());
 
   // Countdown Timer Logic
@@ -5490,10 +5490,13 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
       
       await addDoc(collection(firestore, 'monthly_test_submissions'), {
         testId: test.id,
-        userId: user.uid,
-        userName: user.displayName || 'Student',
+        userId: user.uid || user.id,
+        userName: user.displayName || user.name || 'Student',
         userEmail: user.email || '',
         class: user.class,
+        subject: test.subject,
+        month: test.month,
+        year: test.year,
         answers,
         score: mcqScore, // This is only auto-gradable score
         totalMaxMarks,
@@ -5507,9 +5510,9 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
 
       alert(language === 'en' ? "Test submitted successfully!" : "ପରୀକ୍ଷା ସଫଳତାର ସହିତ ଦାଖଲ ହୋଇଛି!");
       onComplete();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Submit Test Error:", err);
-      alert("Failed to submit test. Please try again.");
+      alert(`Failed to submit test: ${err.message || "Unknown error"}. Please check your connection and try again.`);
     } finally {
       setSubmitting(false);
     }
