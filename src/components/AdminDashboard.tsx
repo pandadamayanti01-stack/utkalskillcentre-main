@@ -42,6 +42,7 @@ import {
   Activity,
   PieChart,
   ExternalLink,
+  RefreshCw,
 } from 'lucide-react';
 // import { translateToBilingual } from '../services/translationService';
 import { motion, AnimatePresence } from 'motion/react';
@@ -2277,9 +2278,11 @@ Sample tone for Class 6-10:
                         for (const tid of groupTestIds) {
                           await updateDoc(doc(firestore, 'monthly_tests', tid), { results_published: true });
                         }
+                        showNotification("Results published and ranks assigned successfully!", 'success');
                         setConfirmAction(null);
                       } catch (err) {
                         console.error("Publish Results Error:", err);
+                        showNotification("Failed to publish results", 'error');
                       }
                     } else {
                       setConfirmAction(`publish_results_${test.id}`);
@@ -2291,12 +2294,36 @@ Sample tone for Class 6-10:
                   {confirmAction === `publish_results_${test.id}` ? "Confirm Publish?" : "Publish Results"}
                 </button>
               )}
+              {test.results_published && (
+                <div className="flex-1 bg-blue-500/10 border border-blue-500/20 text-blue-500 text-[10px] font-black uppercase tracking-widest py-2 rounded-lg text-center">
+                  Results Published
+                </div>
+              )}
               <button 
                 onClick={async () => {
                   setSelectedTestIdForSubmissions(test.id);
                   const q = query(collection(firestore, 'monthly_test_submissions'), where('testId', '==', test.id));
                   const snap = await getDocs(q);
-                  setTestSubmissions(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+                  const subs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                  
+                  // Fetch unique user IDs from submissions
+                  const userIds = Array.from(new Set(subs.map((s: any) => s.userId)));
+                  const userProfiles: Record<string, any> = {};
+                  
+                  // Fetch user profiles in batches (max 10 for 'in' query)
+                  for (let i = 0; i < userIds.length; i += 10) {
+                    const batch = userIds.slice(i, i + 10);
+                    const userQ = query(collection(firestore, 'users'), where('__name__', 'in', batch));
+                    const userSnap = await getDocs(userQ);
+                    userSnap.forEach(doc => {
+                      userProfiles[doc.id] = doc.data();
+                    });
+                  }
+                  
+                  setTestSubmissions(subs.map((s: any) => ({
+                    ...s,
+                    currentProfileName: userProfiles[s.userId]?.name || userProfiles[s.userId]?.displayName || 'N/A'
+                  })));
                 }}
                 className="flex-1 bg-purple-600/20 hover:bg-purple-600/30 text-purple-500 text-xs font-bold py-2 rounded-lg transition-all"
               >
@@ -2350,9 +2377,10 @@ Sample tone for Class 6-10:
               </button>
               <button 
                 onClick={() => setSelectedTestIdForSubmissions(null)}
-                className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-white transition-all border border-white/10"
+                className="flex items-center gap-2 px-5 py-3 bg-white/5 hover:bg-white/10 rounded-2xl text-slate-400 hover:text-white transition-all border border-white/10 group"
               >
-                <X size={24} />
+                <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+                <span className="text-xs font-black uppercase tracking-widest">Back</span>
               </button>
             </div>
           </div>
@@ -2384,8 +2412,39 @@ Sample tone for Class 6-10:
                             {sub.userName?.[0] || 'S'}
                           </div>
                           <div>
-                            <h4 className="text-white font-bold">{sub.userName}</h4>
+                            <div className="flex items-center gap-2">
+                              <h4 className="text-white font-bold">{sub.userName}</h4>
+                              {sub.currentProfileName && sub.currentProfileName !== 'N/A' && sub.currentProfileName !== sub.userName && (
+                                <div className="flex items-center gap-2">
+                                  <span className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-500 text-[9px] font-bold uppercase tracking-widest border border-amber-500/20">
+                                    Mismatch
+                                  </span>
+                                  <button 
+                                    onClick={async () => {
+                                      if (confirm(`Change name on certificate from "${sub.userName}" to "${sub.currentProfileName}"?`)) {
+                                        try {
+                                          await updateDoc(doc(firestore, 'monthly_test_submissions', sub.id), {
+                                            userName: sub.currentProfileName
+                                          });
+                                          setTestSubmissions(prev => prev.map(s => s.id === sub.id ? { ...s, userName: sub.currentProfileName } : s));
+                                          showNotification("Name updated on certificate", 'success');
+                                        } catch (err) {
+                                          showNotification("Failed to update name", 'error');
+                                        }
+                                      }
+                                    }}
+                                    className="p-1 hover:bg-emerald-500/10 text-emerald-500 rounded transition-all group"
+                                    title={`Sync to profile name: ${sub.currentProfileName}`}
+                                  >
+                                    <RefreshCw size={12} className="group-hover:rotate-180 transition-transform duration-500" />
+                                  </button>
+                                </div>
+                              )}
+                            </div>
                             <p className="text-xs text-slate-500">{sub.userEmail || sub.userId} • Class {sub.class}</p>
+                            {sub.currentProfileName && sub.currentProfileName !== 'N/A' && sub.currentProfileName !== sub.userName && (
+                              <p className="text-[9px] text-slate-500 italic mt-0.5">Profile Name: {sub.currentProfileName}</p>
+                            )}
                           </div>
                         </div>
 

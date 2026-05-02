@@ -1942,7 +1942,7 @@ export default function App() {
             {activeTab === 'notifications' && <NotificationsView notifications={studentNotifications} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'courses' && <CoursesView user={user} chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
-            {activeTab === 'monthly_tests' && <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'monthly_tests' && <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} setActiveTab={setActiveTab} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'syllabus_tracker' && <SyllabusTracker language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'daily_mcqs' && <DailyMcqView mcqs={dailyMcqs} submissions={dailyMcqSubmissions} user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'study_buddy' && (
@@ -5004,13 +5004,15 @@ function ResultsReviewView({ submission, test, onBack, language }: any) {
     <div className="fixed inset-0 z-[80] bg-slate-950 overflow-y-auto p-6">
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="flex items-center justify-between sticky top-0 bg-slate-950/80 backdrop-blur-md py-4 z-10 border-b border-white/5 mb-8">
-          <div>
-            <h2 className="text-2xl font-bold text-white">{test.month} {test.year} Results</h2>
-            <p className="text-slate-400 text-sm">Transparency Report & Model Answers</p>
-          </div>
-          <button onClick={onBack} className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-white">
-            <Lucide.X size={24} />
+          <button onClick={onBack} className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
+            <Lucide.ArrowLeft size={20} />
+            <span className="font-bold uppercase tracking-widest text-xs">Back</span>
           </button>
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-white">{test.month} {test.year} Results</h2>
+            <p className="text-slate-400 text-xs">Transparency Report & Model Answers</p>
+          </div>
+          <div className="w-20"></div> {/* Spacer for symmetry */}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -5099,6 +5101,16 @@ function ResultsReviewView({ submission, test, onBack, language }: any) {
             );
           })}
         </div>
+
+        <div className="flex justify-center pb-20">
+          <button 
+            onClick={onBack}
+            className="px-12 py-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-3xl text-white font-bold transition-all flex items-center gap-3 group"
+          >
+            <Lucide.ArrowLeft className="group-hover:-translate-x-1 transition-transform" />
+            Back to Monthly Tests
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -5115,6 +5127,14 @@ function CertificateView({ submission, test, user, onBack, language }: any) {
 
   return (
     <div className="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-xl flex flex-col items-center justify-center p-4">
+      <button 
+        onClick={onBack}
+        className="fixed top-6 left-6 flex items-center gap-2 text-slate-400 hover:text-white transition-colors z-[110] print:hidden"
+      >
+        <Lucide.ArrowLeft size={24} />
+        <span className="font-black uppercase tracking-[0.2em] text-sm">Back</span>
+      </button>
+      
       <div className="max-w-4xl w-full bg-white rounded-lg shadow-2xl p-1 relative overflow-hidden print:p-0 print:shadow-none print:m-0" ref={certificateRef}>
         {/* Certificate Border */}
         <div className="border-[12px] border-emerald-600 p-12 text-center relative">
@@ -5191,7 +5211,7 @@ function CertificateView({ submission, test, user, onBack, language }: any) {
   );
 }
 
-function MonthlyTestsView({ tests, submissions, language, user, onBack }: any) {
+function MonthlyTestsView({ tests, submissions, language, user, onBack, setActiveTab }: any) {
   const [selectedTest, setSelectedTest] = useState<any>(null);
   const [takingTest, setTakingTest] = useState(false);
   const [viewingCertificate, setViewingCertificate] = useState<any>(null);
@@ -5357,16 +5377,42 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack }: any) {
                       </div>
                     )}
                   </>
+                ) : resultsPublished ? (
+                  <div className="w-full py-4 rounded-2xl bg-slate-900 border border-white/5 text-slate-500 font-bold text-center flex flex-col items-center justify-center gap-1">
+                    <Lucide.Clock size={18} />
+                    <span>Test Ended</span>
+                    <p className="text-[10px] font-medium opacity-60">Results have been published</p>
+                  </div>
                 ) : (
-                  <button 
-                    onClick={() => {
-                      setSelectedTest(test);
-                      setTakingTest(true);
-                    }}
-                    className="w-full py-4 rounded-2xl bg-emerald-500 text-white font-bold hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
-                  >
-                    <Lucide.Play size={18} /> {translations[language].takeMonthlyTest}
-                  </button>
+                  <div className="space-y-4">
+                    <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400">
+                          <Lucide.User size={16} />
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Certificate Name</p>
+                          <p className="text-sm font-bold text-white">{user.displayName || user.name || 'Student'}</p>
+                        </div>
+                      </div>
+                      <button 
+                        onClick={() => setActiveTab('profile')}
+                        className="text-[10px] font-black text-emerald-500 uppercase tracking-widest hover:underline"
+                      >
+                        Change
+                      </button>
+                    </div>
+
+                    <button 
+                      onClick={() => {
+                        setSelectedTest(test);
+                        setTakingTest(true);
+                      }}
+                      className="w-full py-4 rounded-2xl bg-emerald-500 text-white font-bold hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
+                    >
+                      <Lucide.Play size={18} /> {translations[language].takeMonthlyTest}
+                    </button>
+                  </div>
                 )}
               </div>
             </motion.div>
@@ -5395,6 +5441,14 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
   const [uploadingImage, setUploadingImage] = useState(false);
   const [timeLeft, setTimeLeft] = useState(45 * 60); // 45 minutes in seconds
   const startTimeRef = useRef<number>(Date.now());
+
+  // Handle real-time test termination if results are published
+  useEffect(() => {
+    if (test.results_published) {
+      alert(language === 'en' ? "This test session has ended as results have been published." : "ଫଳାଫଳ ପ୍ରକାଶିତ ହୋଇଥିବାରୁ ଏହି ପରୀକ୍ଷା ଶେଷ ହୋଇଛି |");
+      onBack();
+    }
+  }, [test.results_published, language, onBack]);
 
   // Countdown Timer Logic
   useEffect(() => {
