@@ -36,10 +36,10 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
         const selectedOption = test.questions[i].options[ansIdx];
         return acc + (selectedOption === test.questions[i].correct_answer ? 1 : 0);
       }, 0);
-      
-      await addDoc(collection(firestore, 'monthly_test_submissions'), {
+
+      const submissionData = {
         testId: test.id,
-        userId: user.id,
+        userId: user.id || user.uid,
         userName: user.name || user.displayName || 'Student',
         class: user.class,
         subject: test.subject,
@@ -49,12 +49,16 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
         score,
         totalQuestions: test.questions.length,
         submittedAt: serverTimestamp(),
-      });
+      };
+
+      console.log("Debug: Submitting Monthly Test:", submissionData);
+      
+      await addDoc(collection(firestore, 'monthly_test_submissions'), submissionData);
 
       onComplete();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Submit Test Error:", err);
-      alert("Failed to submit test. Please try again.");
+      alert(`Failed to submit test: ${err.message || "Unknown error"}. Please check your connection and try again.`);
     } finally {
       setSubmitting(false);
     }
