@@ -5295,6 +5295,21 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack, setActiv
     show: { opacity: 1, y: 0 }
   };
 
+  const testFaqs = [
+    {
+      question: "What is the pattern of the Monthly Test Series 2026?",
+      answer: "The Utkal Skill Centre Monthly Test Series follows the latest Odisha Board (BSE/CHSE) pattern with a mix of MCQ and subjective questions to ensure complete board exam readiness."
+    },
+    {
+      question: "How can I download the Class 10 Selection Question PDF?",
+      answer: "Students can participate in the online test series and download their performance report and selection questions directly from the student dashboard."
+    },
+    {
+      question: "Is this test series based on the latest Odisha Board syllabus?",
+      answer: "Yes, all tests are strictly based on the reduced syllabus and latest question pattern issued by the Odisha Board for the 2026 academic year."
+    }
+  ];
+
   return (
     <motion.div 
       variants={containerVariants}
@@ -5302,6 +5317,12 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack, setActiv
       animate="show"
       className="space-y-8"
     >
+      <SEO 
+        title={`Class 10 Monthly Test Series 2026 | Latest Odisha Board Selection Questions`}
+        description="Participate in the latest Odisha Board pattern monthly test series. Get Class 10 selection questions, MCQ practice, and instant certificates."
+        schemaType="FAQPage"
+        faqs={testFaqs}
+      />
       <motion.button 
         variants={itemVariants}
         onClick={onBack}

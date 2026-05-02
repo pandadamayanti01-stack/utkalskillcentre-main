@@ -6,11 +6,12 @@ interface SEOProps {
   description?: string;
   subject?: string;
   className?: string;
+  schemaType?: 'Course' | 'FAQPage' | 'HowTo';
+  faqs?: Array<{ question: string; answer: string }>;
 }
 
 /**
  * Utility to get the current or upcoming monthly test name.
- * On or after the 6th of the month, it points to the NEXT month's test.
  */
 const getMonthlyTestName = () => {
   const now = new Date();
@@ -20,7 +21,6 @@ const getMonthlyTestName = () => {
     "July", "August", "September", "October", "November", "December"
   ];
   
-  // If it's the 6th or later, students are looking for next month's test
   let targetMonthIndex = now.getMonth();
   if (day >= 6) {
     targetMonthIndex = (targetMonthIndex + 1) % 12;
@@ -33,23 +33,24 @@ export const SEO: React.FC<SEOProps> = ({
   title, 
   description, 
   subject,
-  className = "Class 10" 
+  className = "Class 10",
+  schemaType = 'Course',
+  faqs
 }) => {
   const currentMonth = getMonthlyTestName();
-  const year = new Date().getFullYear();
+  const year = 2026; // Fixed for current focus
   
-  // Dynamic Title Construction (Hinglish optimized)
+  // 2026 Optimized Title (Hinglish + Latest Pattern)
   const seoTitle = title || (subject 
-    ? `${className} ${subject} Selection Question ${year} | Odisha Board MCQ | Utkal Skill Centre`
-    : `BSE Odisha 10th Result 2026 Today (LIVE) | Check Matric Result Link`);
+    ? `${className} ${subject} Selection Question 2026 | Latest Odisha Board Pattern MCQ | Utkal Skill Centre`
+    : `BSE Odisha 10th Result 2026 Today (LIVE) | Check Matric Result Link Online | orissaresults.nic.in`);
 
-  // Dynamic Description Construction (Hinglish optimized)
   const seoDescription = description || (subject
-    ? `Get important MCQs for ${className} ${subject} Odia medium. Perfect for your ${currentMonth} monthly test and Odisha Board Exam ${year}. Download PDF selection questions.`
-    : `BSE Odisha 10th Result 2026 published today. Check your Odisha Matric result live link, marksheet, and pass percentage here. Join Utkal Skill Centre for next-step career guidance.`);
+    ? `Get 100% selection MCQs for ${className} ${subject} Odia medium. Perfect for ${currentMonth} monthly test and Odisha Board Exam ${year}. Download Latest PDF questions based on new board pattern.`
+    : `BSE Odisha 10th Result 2026 published today. Check your Odisha Matric result live link, marksheet, and pass percentage here. Join Utkal Skill Centre for Class 11-12 preparation and career guidance.`);
 
-  // JSON-LD Schema for Course/Educational Content
-  const schemaOrgJSONLD = {
+  // Construct Schemas
+  let schemaData: any = {
     "@context": "https://schema.org",
     "@type": "Course",
     "name": seoTitle,
@@ -57,18 +58,36 @@ export const SEO: React.FC<SEOProps> = ({
     "provider": {
       "@type": "Organization",
       "name": "Utkal Skill Centre",
-      "sameAs": "https://utkalskillcentre.com"
-    },
-    "courseCode": subject || "OdishaBoard",
-    "hasCourseInstance": {
-      "@type": "CourseInstance",
-      "courseMode": "Online",
-      "instructor": {
-        "@type": "Person",
-        "name": "Gundulu AI"
-      }
+      "url": "https://utkalskillcentre.com"
     }
   };
+
+  if (schemaType === 'FAQPage' && faqs) {
+    schemaData = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": faqs.map(f => ({
+        "@type": "Question",
+        "name": f.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": f.answer
+        }
+      }))
+    };
+  } else if (schemaType === 'HowTo') {
+    schemaData = {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": `How to check BSE Odisha 10th Result 2026`,
+      "step": [
+        { "@type": "HowToStep", "text": "Visit orissaresults.nic.in or bseodisha.ac.in" },
+        { "@type": "HowToStep", "text": "Click on 'Annual H.S.C Examination Result 2026'" },
+        { "@type": "HowToStep", "text": "Enter your Roll Number and Date of Birth" },
+        { "@type": "HowToStep", "text": "Click 'Submit' to view your marksheet" }
+      ]
+    };
+  }
 
   return (
     <Helmet>
@@ -78,17 +97,18 @@ export const SEO: React.FC<SEOProps> = ({
       {/* Open Graph / Facebook */}
       <meta property="og:title" content={seoTitle} />
       <meta property="og:description" content={seoDescription} />
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content="https://utkalskillcentre.com" />
       
       {/* Twitter */}
+      <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={seoTitle} />
       <meta name="twitter:description" content={seoDescription} />
       
-      {/* Hinglish Keywords Strategy */}
-      <meta name="keywords" content={`${subject || ''}, ${className}, Odisha Board 10th result 2026, matric result odisha today, BSE Odisha result link, check 10th result Odisha, orissaresults.nic.in, ${currentMonth} monthly test, selection question 2026, Odia medium notes, class 10 question paper PDF, Utkal Skill Centre`} />
+      <meta name="keywords" content={`${subject || ''}, ${className}, Odisha Board 10th result 2026, matric result odisha today, BSE Odisha result link, check 10th result Odisha, orissaresults.nic.in, ${currentMonth} monthly test, selection question 2026, Odia medium notes, class 10 question paper PDF, Utkal Skill Centre, Latest Odisha Board Pattern`} />
 
-      {/* JSON-LD Schema */}
       <script type="application/ld+json">
-        {JSON.stringify(schemaOrgJSONLD)}
+        {JSON.stringify(schemaData)}
       </script>
     </Helmet>
   );

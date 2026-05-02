@@ -241,6 +241,21 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
     }
   };
 
+  const mcqFaqs = [
+    {
+      question: "Are these Daily MCQs free for all students?",
+      answer: "Yes, the Daily MCQ Practice sets at Utkal Skill Centre are free for all registered students to help them prepare for their Odisha Board exams."
+    },
+    {
+      question: "How can I earn points by solving daily practice questions?",
+      answer: "Students earn 1 point for every attempt and additional points for each correct answer. These points help in improving your state-wide effort ranking."
+    },
+    {
+      question: "Can I use voice input to answer subjective questions?",
+      answer: "Yes, our AI-powered dashboard supports voice input in both Odia and English. Simply hold the microphone icon to speak your answer."
+    }
+  ];
+
   return (
     <motion.div
       key="daily-mcq-view"
@@ -249,8 +264,10 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
       className="space-y-6 pb-20"
     >
       <SEO 
-        subject="Daily MCQ Practice"
+        title={`Daily MCQ Practice 2026 | Odisha Board Latest Pattern Questions`}
         description="Master your daily MCQs and practice sets for Odisha State Board. Gundulu AI helps you learn faster with practice sets for your monthly exams."
+        schemaType="FAQPage"
+        faqs={mcqFaqs}
       />
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
