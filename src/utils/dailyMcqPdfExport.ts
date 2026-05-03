@@ -1,84 +1,229 @@
-import { jsPDF } from 'jspdf';
 import { DailyMcq } from '../types';
+import { translations } from '../translations';
 
 /**
- * Generates a professional PDF exam paper for a Daily MCQ set.
+ * Generates a professional printable exam paper for a Daily MCQ set.
+ * Uses native browser printing to perfectly support Odia and other scripts.
  */
 export async function exportDailyMcqToPdf(mcq: DailyMcq) {
-  const doc = new jsPDF();
-  const margin = 20;
-  const pageWidth = doc.internal.pageSize.getWidth();
-  let y = 20;
-
-  // 1. Header
-  doc.setFontSize(22);
-  doc.setTextColor(0, 102, 204); // Premium Blue
-  doc.text("UTKAL SKILL CENTRE", pageWidth / 2, y, { align: 'center' });
+  const language = 'or'; // Default to Odia for exam papers as requested
+  const t = translations[language];
   
-  y += 10;
-  doc.setFontSize(14);
-  doc.setTextColor(100);
-  doc.text("EXAMINATION DEPARTMENT", pageWidth / 2, y, { align: 'center' });
+  // Create a hidden iframe for printing
+  const iframe = document.createElement('iframe');
+  iframe.style.position = 'fixed';
+  iframe.style.right = '0';
+  iframe.style.bottom = '0';
+  iframe.style.width = '0';
+  iframe.style.height = '0';
+  iframe.style.border = '0';
+  document.body.appendChild(iframe);
 
-  y += 15;
-  doc.setDrawColor(200);
-  doc.line(margin, y, pageWidth - margin, y);
+  const doc = iframe.contentWindow?.document;
+  if (!doc) return;
 
-  // 2. Exam Info
-  y += 10;
-  doc.setFontSize(12);
-  doc.setTextColor(0);
-  doc.setFont('helvetica', 'bold');
-  doc.text(`SUBJECT: ${mcq.subject?.toUpperCase() || 'GENERAL'}`, margin, y);
-  doc.text(`DATE: ${mcq.activeDate}`, pageWidth - margin, y, { align: 'right' });
-  
-  y += 7;
-  doc.text(`CLASS: ${mcq.class.toUpperCase()}`, margin, y);
-  doc.text(`MARKS: 50`, pageWidth - margin, y, { align: 'right' });
+  const subjectLabel = mcq.subject ? (t.subjects?.[mcq.subject] || mcq.subject) : 'General';
+  const classLabel = t.classes?.[mcq.class] || mcq.class;
 
-  y += 10;
-  doc.line(margin, y, pageWidth - margin, y);
+  // Question HTML
+  const questionsHtml = mcq.questions.map((q, i) => `
+    <div class="question">
+      <div class="q-header">
+        <span class="q-num">${i + 1}.</span>
+        <span class="q-text">${q.question}</span>
+        <span class="q-marks">(${q.marks || 1} Mark)</span>
+      </div>
+      ${q.type === 'mcq' && q.options ? `
+        <div class="options">
+          ${q.options.map((opt, optIdx) => `
+            <div class="option">
+              <span class="opt-label">${String.fromCharCode(65 + optIdx)})</span>
+              <span class="opt-text">${opt}</span>
+            </div>
+          `).join('')}
+        </div>
+      ` : `
+        <div class="subjective-space"></div>
+      `}
+    </div>
+  `).join('');
 
-  // 3. Questions
-  y += 15;
-  if (!mcq.questions) return;
+  const content = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>USC Exam - ${mcq.class} - ${mcq.subject}</title>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+Oriya:wght@400;700&display=swap');
+        
+        body {
+          font-family: 'Noto Sans Oriya', 'Inter', sans-serif;
+          color: #1a1a1a;
+          margin: 0;
+          padding: 40px;
+          line-height: 1.5;
+        }
+        
+        .header {
+          text-align: center;
+          border-bottom: 2px solid #000;
+          padding-bottom: 20px;
+          margin-bottom: 30px;
+          position: relative;
+        }
 
-  mcq.questions.forEach((q, index) => {
-    // Check for page break
-    if (y > 270) {
-      doc.addPage();
-      y = 20;
-    }
+        .logo-box {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 60px;
+          height: 60px;
+        }
 
-    doc.setFont('helvetica', 'bold');
-    const qText = `${index + 1}. ${q.question} (${q.marks || 1} Mark)`;
-    const splitQ = doc.splitTextToSize(qText, pageWidth - (margin * 2));
-    doc.text(splitQ, margin, y);
-    y += (splitQ.length * 7);
+        .logo-box img {
+          width: 100%;
+          height: 100%;
+          object-contain: contain;
+        }
+        
+        .school-name {
+          font-size: 28px;
+          font-weight: 900;
+          color: #000;
+          margin: 0;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        }
+        
+        .dept-name {
+          font-size: 14px;
+          font-weight: 700;
+          color: #666;
+          margin: 5px 0 0 0;
+          letter-spacing: 2px;
+        }
+        
+        .exam-meta {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 30px;
+          font-weight: 700;
+          font-size: 14px;
+          background: #f9f9f9;
+          padding: 15px 20px;
+          border-radius: 8px;
+        }
 
-    if (q.type === 'mcq' && q.options) {
-      doc.setFont('helvetica', 'normal');
-      q.options.forEach((opt, optIdx) => {
-        const prefix = String.fromCharCode(65 + optIdx) + ")";
-        doc.text(`${prefix} ${opt}`, margin + 10, y);
-        y += 7;
-      });
-    } else {
-      // Space for subjective answer
-      y += 15; 
-      doc.setDrawColor(240);
-      doc.line(margin + 10, y, pageWidth - margin, y);
-      y += 10;
-    }
+        .meta-item span {
+          color: #666;
+          text-transform: uppercase;
+          font-size: 10px;
+          display: block;
+          margin-bottom: 2px;
+        }
+        
+        .question {
+          margin-bottom: 25px;
+          page-break-inside: avoid;
+        }
+        
+        .q-header {
+          display: flex;
+          gap: 10px;
+          font-weight: 700;
+          font-size: 16px;
+          margin-bottom: 12px;
+        }
+        
+        .q-num { min-width: 25px; }
+        .q-text { flex: 1; }
+        .q-marks { font-size: 12px; color: #666; white-space: nowrap; }
+        
+        .options {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 10px 40px;
+          padding-left: 35px;
+        }
+        
+        .option {
+          display: flex;
+          gap: 8px;
+          font-size: 14px;
+        }
+        
+        .opt-label { font-weight: 700; color: #444; }
+        
+        .subjective-space {
+          height: 80px;
+          border-bottom: 1px dashed #ccc;
+          margin-left: 35px;
+        }
+        
+        .footer {
+          margin-top: 50px;
+          text-align: center;
+          font-size: 10px;
+          color: #999;
+          border-top: 1px solid #eee;
+          padding-top: 20px;
+        }
 
-    y += 5; // Gap between questions
-  });
+        @media print {
+          body { padding: 0; }
+          .exam-meta { background: none; border: 1px solid #eee; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <div class="logo-box">
+          <img src="/utkal-512.png" alt="Logo">
+        </div>
+        <h1 class="school-name">UTKAL SKILL CENTRE</h1>
+        <p class="dept-name">EXAMINATION DEPARTMENT - 2026</p>
+      </div>
+      
+      <div class="exam-meta">
+        <div class="meta-item">
+          <span>Subject / ବିଷୟ</span>
+          ${subjectLabel}
+        </div>
+        <div class="meta-item">
+          <span>Class / ଶ୍ରେଣୀ</span>
+          ${classLabel.toUpperCase()}
+        </div>
+        <div class="meta-item" style="text-align: right;">
+          <span>Date / ତାରିଖ</span>
+          ${mcq.activeDate}
+        </div>
+        <div class="meta-item" style="text-align: right;">
+          <span>Max Marks / ମୋଟ ନମ୍ବର</span>
+          50
+        </div>
+      </div>
+      
+      <div class="questions">
+        ${questionsHtml}
+      </div>
+      
+      <div class="footer">
+        Generated by Utkal Skill Centre AI Engine | Digital Education for Odisha
+      </div>
 
-  // 4. Footer
-  doc.setFontSize(10);
-  doc.setTextColor(150);
-  doc.text("Generated by Utkal Skill Centre AI Engine", pageWidth / 2, 285, { align: 'center' });
+      <script>
+        window.onload = () => {
+          window.print();
+          setTimeout(() => {
+            window.parent.document.body.removeChild(window.frameElement);
+          }, 1000);
+        };
+      </script>
+    </body>
+    </html>
+  `;
 
-  // Save the PDF
-  doc.save(`USC_Exam_${mcq.class}_${mcq.subject}_${mcq.activeDate}.pdf`);
+  doc.open();
+  doc.write(content);
+  doc.close();
 }
