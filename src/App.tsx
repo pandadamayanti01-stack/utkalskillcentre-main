@@ -5366,10 +5366,29 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack, setActiv
         <span>Back to Dashboard</span>
       </motion.button>
 
-      <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2">{translations[language].monthlyTests}</h1>
-          <p className="text-slate-400">Participate in monthly assessments for {translations[language].classes[user?.class as keyof typeof translations.en.classes] || user?.class} and track your progress.</p>
+      <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 p-8 rounded-[2.5rem] border border-white/5 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 blur-[80px] -mr-32 -mt-32 rounded-full" />
+        <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+          <div className="w-20 h-20 rounded-3xl bg-white p-3 shadow-2xl shadow-emerald-500/20">
+            <img src="/utkal-512.png" alt="Utkal Logo" className="w-full h-full object-contain" />
+          </div>
+          <div>
+            <h1 className="text-4xl font-black text-white mb-2 tracking-tight">
+              {translations[language].monthlyTests}
+            </h1>
+            <p className="text-slate-400 max-w-md">
+              Participate in premium assessments for {translations[language].classes[user?.class as keyof typeof translations.en.classes] || user?.class} designed by expert educators.
+            </p>
+          </div>
+        </div>
+        <div className="relative z-10 flex items-center gap-4 bg-black/20 backdrop-blur-md px-6 py-4 rounded-3xl border border-white/5">
+          <div className="text-right">
+            <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Active Status</p>
+            <p className="text-sm font-black text-white">Board Pattern 2026</p>
+          </div>
+          <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+            <Lucide.Shield size={20} />
+          </div>
         </div>
       </motion.div>
 
@@ -5379,18 +5398,27 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack, setActiv
           const resultsPublished = test.results_published;
 
           return (
-            <motion.div whileHover={{ y: -5 }} key={test.id} className="bg-slate-900/50 border border-white/5 rounded-3xl p-8 hover:border-emerald-500/20 transition-all group">
-              <div className="flex items-start justify-between mb-6">
-                <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
-                  <Lucide.Calendar size={32} />
+            <motion.div 
+              whileHover={{ y: -8, scale: 1.01 }} 
+              key={test.id} 
+              className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2rem] p-8 hover:border-emerald-500/30 transition-all group relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-3xl rounded-full -mr-16 -mt-16 group-hover:bg-emerald-500/10 transition-colors" />
+              
+              <div className="flex items-start justify-between mb-8">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20 group-hover:scale-110 transition-transform">
+                  <Lucide.FileText size={32} />
                 </div>
                 {submission ? (
-                  <span className="px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-500 text-xs font-bold uppercase tracking-wider">
-                    Completed
-                  </span>
+                  <div className="flex flex-col items-end gap-1">
+                    <span className="px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] border border-emerald-500/20">
+                      Completed
+                    </span>
+                    <span className="text-[10px] text-slate-500 font-medium">Attempted on {new Date(submission.submittedAt?.toDate?.() || submission.submittedAt).toLocaleDateString()}</span>
+                  </div>
                 ) : (
-                  <span className="px-4 py-1.5 rounded-full bg-blue-500/10 text-blue-500 text-xs font-bold uppercase tracking-wider">
-                    Available
+                  <span className="px-4 py-1.5 rounded-full bg-blue-500/10 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] border border-blue-500/20 animate-pulse">
+                    Open Now
                   </span>
                 )}
               </div>
