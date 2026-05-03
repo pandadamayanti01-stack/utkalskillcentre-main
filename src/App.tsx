@@ -5176,48 +5176,63 @@ function CertificateView({ submission, test, user, onBack, language }: any) {
           
           <div className="relative z-10 space-y-8">
             <div className="flex flex-col items-center">
-              <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 mb-4">
-                <Lucide.Trophy size={40} />
+              <div className="w-24 h-24 mb-6 relative">
+                <div className="absolute inset-0 bg-emerald-500/10 rounded-full blur-xl"></div>
+                <img src="/utkal-512.png" alt="Utkal Logo" className="w-full h-full object-contain relative z-10" />
               </div>
               <h1 className="text-4xl font-serif font-black text-slate-900 tracking-tight uppercase">Certificate of Excellence</h1>
-              <div className="w-48 h-1 bg-emerald-600 mt-4"></div>
+              <div className="w-48 h-1 bg-gradient-to-r from-transparent via-emerald-600 to-transparent mt-4"></div>
+              <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-[0.4em] mt-2">Utkal Skill Centre Academic Achievement</p>
             </div>
 
-            <div className="space-y-2">
-              <p className="text-slate-500 font-medium">This is to certify that</p>
-              <h2 className="text-5xl font-serif font-bold text-emerald-700 italic py-2">{submission.userName}</h2>
-              <p className="text-slate-500 font-medium">has successfully completed the</p>
+            <div className="space-y-4 pt-4">
+              <p className="text-slate-500 font-serif italic text-lg">This is to certify that</p>
+              <h2 className="text-5xl font-serif font-bold text-slate-900 border-b-2 border-emerald-100 pb-2 px-8 inline-block">{submission.userName}</h2>
+              <p className="text-slate-500 font-medium">has demonstrated exceptional performance in the</p>
             </div>
 
-            <div className="space-y-2">
-              <h3 className="text-2xl font-bold text-slate-800 uppercase tracking-wide">{test.month} {test.year} Monthly Assessment</h3>
-              <p className="text-slate-500">Subject: <span className="font-bold text-slate-700 uppercase">{test.subject}</span> | Class: <span className="font-bold text-slate-700 uppercase">{submission.class}</span></p>
+            <div className="space-y-2 py-4">
+              <h3 className="text-2xl font-bold text-emerald-800 uppercase tracking-[0.1em]">{test.month} {test.year} Monthly Assessment</h3>
+              <div className="flex items-center justify-center gap-3 text-slate-500">
+                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>Subject: <span className="font-bold text-slate-800">{test.subject}</span></span>
+                <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                <span>Class: <span className="font-bold text-slate-800">{submission.class}</span></span>
+              </div>
             </div>
 
-            <div className="flex justify-center items-center gap-12 py-8">
+            <div className="flex justify-center items-center gap-16 py-8 relative">
+              <img src="/utkal-512.png" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 opacity-[0.03] pointer-events-none" alt="" />
               <div className="text-center">
-                <p className="text-3xl font-black text-slate-900">{scorePercent}%</p>
-                <div className="w-24 h-0.5 bg-slate-200 mt-1 mb-1"></div>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Aggregate Score</p>
+                <p className="text-4xl font-black text-slate-900 leading-none">{scorePercent}%</p>
+                <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-2">Aggregate Score</p>
               </div>
               <div className="text-center">
-                <p className="text-3xl font-black text-slate-900">#{submission.rank || 'N/A'}</p>
-                <div className="w-24 h-0.5 bg-slate-200 mt-1 mb-1"></div>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">State Rank</p>
+                <p className="text-4xl font-black text-slate-900 leading-none">#{submission.rank || 'N/A'}</p>
+                <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-2">State Rank</p>
               </div>
             </div>
 
             <div className="flex justify-between items-end mt-12 px-12 pt-8">
               <div className="text-center">
-                <p className="font-serif font-bold text-slate-800 border-b border-slate-300 px-4">Gundulu</p>
-                <p className="text-[10px] font-bold text-slate-400 uppercase mt-1">Study Buddy (AI)</p>
+                <div className="w-32 border-b-2 border-slate-900 mb-2 mx-auto" />
+                <p className="font-serif font-bold text-slate-900">Gundulu</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">AI Learning Advisor</p>
               </div>
-              <div className="w-24 h-24 bg-emerald-600/10 rounded-full flex items-center justify-center border-4 border-emerald-600/20">
-                <Lucide.Award size={48} className="text-emerald-600" />
+              <div className="relative">
+                <div className="w-28 h-28 bg-emerald-600/5 rounded-full flex items-center justify-center border-2 border-emerald-600/10">
+                  <div className="w-24 h-24 bg-emerald-600/10 rounded-full flex items-center justify-center border-2 border-emerald-600/20">
+                    <Lucide.Award size={56} className="text-emerald-600 opacity-80" />
+                  </div>
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <p className="text-[8px] font-black text-emerald-600/20 uppercase tracking-[0.3em] rotate-12">Verified Utkal Cert</p>
+                </div>
               </div>
               <div className="text-center">
-                <p className="font-serif font-bold text-slate-800 border-b border-slate-300 px-4">Director</p>
-                <p className="text-[10px] font-bold text-slate-400 uppercase mt-1">Utkal Skill Centre</p>
+                <div className="w-32 border-b-2 border-slate-900 mb-2 mx-auto" />
+                <p className="font-serif font-bold text-slate-900">Director</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Utkal Skill Centre</p>
               </div>
             </div>
             
