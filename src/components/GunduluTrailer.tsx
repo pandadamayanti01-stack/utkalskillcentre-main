@@ -14,9 +14,9 @@ export const GunduluTrailer: React.FC<GunduluTrailerProps> = ({ onClose, onSubsc
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    // Play Futuristic Startup Sound
-    const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-    audio.volume = 0.6;
+    // Play Natural Flute / Odisha-inspired Startup Sound
+    const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/1105/1105-preview.mp3'); // A soft, airy flute sound
+    audio.volume = 0.4;
     audio.play().catch(e => console.log("Audio playback requires user interaction first"));
     
     const timer = setTimeout(() => {
@@ -36,23 +36,23 @@ export const GunduluTrailer: React.FC<GunduluTrailerProps> = ({ onClose, onSubsc
 
   const steps = [
     {
-      en: "Initializing Neural Matrix v2...",
-      or: "Neural Matrix v2 ପ୍ରାରମ୍ଭ ହେଉଛି...",
+      en: "From the land of Konark, wisdom awakens...",
+      or: "କୋଣାର୍କର ଏହି ପବିତ୍ର ମାଟିରୁ, ଜ୍ଞାନର ଜାଗରଣ...",
       icon: <Zap className="text-emerald-500" size={40} />
     },
     {
-      en: "Connecting to Gundulu's Core...",
-      or: "ଗୁଣ୍ଡୁଲୁ କୋର ସହିତ ସଂଯୋଗ ହେଉଛି...",
+      en: "Learning as deep as the waters of Chilika...",
+      or: "ଚିଲିକାର ନୀଳ ଜଳରାଶି ପରି ଗଭୀର ଶିକ୍ଷା...",
       icon: <Bot className="text-cyan-400" size={40} />
     },
     {
-      en: "Syncing Personalized Learning Path...",
-      or: "ଆପଣଙ୍କ ପାଇଁ ବ୍ୟକ୍ତିଗତ ଶିକ୍ଷା ପଥ ସିଙ୍କ୍ ହେଉଛି...",
+      en: "Connecting Odisha's bright minds to Gundulu...",
+      or: "ଓଡ଼ିଶାର ମେଧାବୀ ଛାତ୍ରଙ୍କୁ ଗୁଣ୍ଡୁଲୁ ସହ ସଂଯୋଗ କରୁଛି...",
       icon: <Sparkles className="text-amber-400" size={40} />
     },
     {
-      en: "Gundulu is Ready to Solve Your Doubts.",
-      or: "ଗୁଣ୍ଡୁଲୁ ଆପଣଙ୍କ ସନ୍ଦେହ ଦୂର କରିବାକୁ ପ୍ରସ୍ତୁତ |",
+      en: "Your Odia Study Buddy is Ready.",
+      or: "ଆପଣଙ୍କ ଓଡ଼ିଆ ଷ୍ଟଡ଼ି ବଡ଼ି ଏବେ ପ୍ରସ୍ତୁତ |",
       icon: <ShieldCheck className="text-emerald-400" size={40} />
     }
   ];
@@ -61,9 +61,18 @@ export const GunduluTrailer: React.FC<GunduluTrailerProps> = ({ onClose, onSubsc
     <div className="fixed inset-0 z-[1000] trailer-overlay flex items-center justify-center">
       <div className="trailer-scanline" />
       
-      {/* Advanced Neural Particle Network */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMTYsIDE4NSwgMTI5LCAwLjEpIi8+PC9zdmc+')] opacity-50" />
+      {/* Odisha Cultural Background (Mandala Pattern) */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
+        <motion.div 
+          animate={{ rotate: 360 }}
+          transition={{ duration: 100, repeat: Infinity, ease: "linear" }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] border border-emerald-500/10 rounded-full"
+          style={{ 
+            backgroundImage: 'radial-gradient(circle, transparent 20%, rgba(16, 185, 129, 0.05) 21%, transparent 21%, transparent 40%, rgba(16, 185, 129, 0.05) 41%, transparent 41%)',
+            backgroundSize: '100px 100px'
+          }}
+        />
+      </div>
         
         {[...Array(30)].map((_, i) => (
           <motion.div
@@ -114,7 +123,6 @@ export const GunduluTrailer: React.FC<GunduluTrailerProps> = ({ onClose, onSubsc
             }}
           />
         ))}
-      </div>
 
       <button 
         onClick={onClose}
