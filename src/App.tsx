@@ -236,10 +236,153 @@ const BigsanBranding = ({ className = "" }: { className?: string }) => {
 };
 
 
+function SundayLockout({ language, onAdminBypass }: { language: 'en' | 'or', onAdminBypass: () => void }) {
+  const [doorsClosed, setDoorsClosed] = useState(false);
+
+  useEffect(() => {
+    // Majestic Palace Gate Sound (Heavy wood slam)
+    const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    audio.volume = 0.7;
+    audio.play().catch(() => {});
+    
+    const timer = setTimeout(() => setDoorsClosed(true), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className="fixed inset-0 z-[2000] bg-black flex items-center justify-center overflow-hidden perspective-[2000px]">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Oriya:wght@400;700;900&display=swap');
+        .oriya-font { font-family: 'Noto Sans Oriya', sans-serif !important; }
+        .palace-gate {
+          background: linear-gradient(to right, #4a2c11, #6b4018, #4a2c11);
+          box-shadow: inset 0 0 100px rgba(0,0,0,0.5);
+        }
+      `}</style>
+
+      {/* Left Majestic Gate */}
+      <motion.div 
+        initial={{ rotateY: -90, originX: 0 }}
+        animate={{ rotateY: 0 }}
+        transition={{ duration: 1.5, ease: [0.45, 0, 0.55, 1] }}
+        className="absolute top-0 left-0 w-1/2 h-full z-20 palace-gate border-r-8 border-[#d4af37]/30 flex items-center justify-end pr-12"
+      >
+        <div className="absolute inset-0 opacity-40 bg-[url('https://www.transparenttextures.com/patterns/wood-pattern.png')]" />
+        <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/temple.png')]" />
+        
+        {/* Brass Studs & Carvings */}
+        <div className="relative h-4/5 w-1 bg-gradient-to-b from-transparent via-[#d4af37]/40 to-transparent" />
+        <div className="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col gap-12">
+           {[...Array(6)].map((_, i) => (
+             <div key={i} className="w-6 h-6 rounded-full bg-gradient-to-br from-[#ffd700] to-[#b8860b] shadow-xl border border-black/20" />
+           ))}
+        </div>
+      </motion.div>
+
+      {/* Right Majestic Gate */}
+      <motion.div 
+        initial={{ rotateY: 90, originX: 1 }}
+        animate={{ rotateY: 0 }}
+        transition={{ duration: 1.5, ease: [0.45, 0, 0.55, 1] }}
+        className="absolute top-0 right-0 w-1/2 h-full z-20 palace-gate border-l-8 border-[#d4af37]/30 flex items-center justify-start pl-12"
+      >
+        <div className="absolute inset-0 opacity-40 bg-[url('https://www.transparenttextures.com/patterns/wood-pattern.png')]" />
+        <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/temple.png')]" />
+        
+        {/* Brass Studs & Carvings */}
+        <div className="relative h-4/5 w-1 bg-gradient-to-b from-transparent via-[#d4af37]/40 to-transparent" />
+        <div className="absolute left-6 top-1/2 -translate-y-1/2 flex flex-col gap-12">
+           {[...Array(6)].map((_, i) => (
+             <div key={i} className="w-6 h-6 rounded-full bg-gradient-to-br from-[#ffd700] to-[#b8860b] shadow-xl border border-black/20" />
+           ))}
+        </div>
+      </motion.div>
+
+      {/* Content that appears after gates shut */}
+      <AnimatePresence>
+        {doorsClosed && (
+          <motion.div 
+            initial={{ opacity: 0, z: -100 }}
+            animate={{ opacity: 1, z: 0 }}
+            transition={{ delay: 0.5 }}
+            className="relative z-30 max-w-lg w-full p-4 mx-4"
+          >
+            <div className="glass-card neon-border rounded-[3rem] overflow-hidden bg-[#1a0f05]/95 backdrop-blur-3xl border-[#d4af37]/20 shadow-[0_0_100px_rgba(0,0,0,1)]">
+              {/* Illustration Header - Refined Position */}
+              <div className="h-52 relative overflow-hidden bg-[#1a0f05]">
+                <img 
+                  src="/sunday_break_illustration_1777798536113.png" 
+                  alt="Sunday Break" 
+                  className="w-full h-full object-cover opacity-40 contrast-125 brightness-75 scale-105"
+                />
+                {/* Deep Royal Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#1a0f05]" />
+                
+                {/* Centered Lock Badge */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <motion.div 
+                    initial={{ scale: 0, rotate: -45 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.8 }}
+                    className="w-20 h-20 bg-gradient-to-br from-[#ffd700] to-[#b8860b] rounded-[2rem] flex items-center justify-center border-4 border-[#1a0f05] shadow-[0_0_50px_rgba(184,134,11,0.5)]"
+                  >
+                    <Lucide.Lock size={40} className="text-[#1a0f05]" />
+                  </motion.div>
+                </div>
+                
+                {/* Decorative Crown/Top detail */}
+                <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-[#ffd700]/30 to-transparent" />
+              </div>
+
+              <div className="p-8 md:p-10 text-center space-y-6">
+                <div className="space-y-3">
+                  <h2 className={`text-3xl md:text-4xl font-black text-[#ffd700] tracking-tight leading-tight ${language === 'or' ? 'oriya-font' : ''}`}>
+                    {language === 'en' ? "Sunday: Royal Rest" : "ରବିବାର: ରାଜକୀୟ ବିଶ୍ରାମ"}
+                  </h2>
+                  <div className="flex items-center justify-center gap-4">
+                    <div className="h-px w-12 bg-gradient-to-r from-transparent to-[#d4af37]/50" />
+                    <p className="text-[10px] text-[#d4af37] font-black uppercase tracking-[0.5em]">Gate Sealed</p>
+                    <div className="h-px w-12 bg-gradient-to-l from-transparent to-[#d4af37]/50" />
+                  </div>
+                </div>
+
+                <p className={`text-[#f8f1e7]/80 text-base md:text-lg font-medium leading-relaxed px-2 ${language === 'or' ? 'oriya-font' : ''}`}>
+                  {language === 'en' 
+                    ? "Enjoy your Sunday with friends! Take a royal break and recharge. See you tomorrow!" 
+                    : "ସାଙ୍ଗମାନଙ୍କ ସହିତ ରବିବାରର ମଜା ନିଅନ୍ତୁ! ଆଜି ଟିକେ ବିଶ୍ରାମ କରନ୍ତୁ ଏବଂ ଖେଳକୁଦ କରନ୍ତୁ | କାଲି ଦେଖାହେବା!"}
+                </p>
+
+                <div className="bg-[#d4af37]/10 rounded-2xl p-4 border border-[#d4af37]/20">
+                  <p className={`text-[#ffd700] font-black text-xs uppercase tracking-widest leading-relaxed ${language === 'or' ? 'oriya-font' : ''}`}>
+                    {language === 'en' 
+                      ? "Doors Open Monday Morning" 
+                      : "ସୋମବାର ସକାଳୁ ଦ୍ୱାର ପୁଣି ଖୋଲିବ"}
+                  </p>
+                </div>
+
+                <div className="pt-4 border-t border-white/5">
+                  <button 
+                    onClick={onAdminBypass}
+                    className="text-[9px] font-black text-[#d4af37]/20 hover:text-[#ffd700] uppercase tracking-[0.3em] transition-all"
+                  >
+                    Enter Royal Portal (Admin)
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 export default function App() {
   const [user, setUser] = useState<Student | null>(null);
   const [isAdminView, setIsAdminView] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [sundayBypassed, setSundayBypassed] = useState(false);
+  const [showSundayLockout, setShowSundayLockout] = useState(false);
   const resetPageScroll = () => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     document.documentElement.scrollTop = 0;
@@ -1519,6 +1662,13 @@ export default function App() {
     );
   }
 
+  const isSunday = new Date().getDay() === 0 || window.location.search.includes('test_lock=true');
+  const isLocked = isSunday && showSundayLockout && !sundayBypassed && (!user || user.role !== 'admin' || window.location.search.includes('test_lock=true'));
+
+  if (isLocked) {
+    return <SundayLockout language={language} onAdminBypass={() => setSundayBypassed(true)} />;
+  }
+
   if (!user) {
     const landingFaqs = [
       {
@@ -1880,6 +2030,17 @@ export default function App() {
 
   return (
   <ErrorBoundary language={language}>
+    <div 
+      className="contents"
+      onClickCapture={(e) => {
+        if (isSunday && !sundayBypassed && (!user || user.role !== 'admin' || window.location.search.includes('test_lock=true')) && !showSundayLockout) {
+          // Catch the first interaction on Sunday to trigger the "Door Slam"
+          e.preventDefault();
+          e.stopPropagation();
+          setShowSundayLockout(true);
+        }
+      }}
+    >
     <SEO 
       subject={activeTab === 'study_buddy' ? 'AI Study Buddy' : activeTab === 'practice' ? 'Practice Set' : activeTab === 'syllabus_tracker' ? 'Syllabus Tracker' : undefined}
     />
@@ -2042,6 +2203,7 @@ export default function App() {
         </motion.div>
       )}
     </AnimatePresence>
+    </div>
   </ErrorBoundary>
 );
 }
