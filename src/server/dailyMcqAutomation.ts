@@ -17,7 +17,7 @@ function splitTextIntoChapters(text: string): { title: string, content: string }
   return chapters;
 }
 
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import type { Express } from 'express';
 import { App, getApp as getAdminApp, getApps } from 'firebase-admin/app';
 import { getFirestore as getAdminFirestore, FieldValue } from 'firebase-admin/firestore';
@@ -144,7 +144,7 @@ function getGeminiClient() {
     throw new Error('GEMINI_API_KEY is not configured on the server.');
   }
 
-  return new GoogleGenAI({ apiKey });
+  return new GoogleGenerativeAI(apiKey);
 }
 
 function getDriveAuth() {

@@ -43,6 +43,7 @@ import {
   PieChart,
   ExternalLink,
   RefreshCw,
+  Flag,
 } from 'lucide-react';
 // import { translateToBilingual } from '../services/translationService';
 import { motion, AnimatePresence } from 'motion/react';
@@ -216,6 +217,7 @@ Sample tone for Class 6-10:
     subject: 'math',
     month: new Date().toLocaleString('default', { month: 'long' }),
     year: new Date().getFullYear(),
+    scheduledDate: new Date().toISOString().split('T')[0],
     language: 'or',
     totalMarks: 0
   });
@@ -1967,12 +1969,15 @@ Sample tone for Class 6-10:
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Subject</label>
-              <input 
-                type="text" 
+              <select 
                 value={newTest.subject}
                 onChange={(e) => setNewTest({...newTest, subject: e.target.value})}
-                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white"
-              />
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white cursor-pointer"
+              >
+                {Object.entries(translations['en'].subjects).map(([key, label]) => (
+                  <option key={key} value={key}>{label as string}</option>
+                ))}
+              </select>
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Test Language</label>
@@ -2006,6 +2011,15 @@ Sample tone for Class 6-10:
                 type="number" 
                 value={newTest.year}
                 onChange={(e) => setNewTest({...newTest, year: parseInt(e.target.value)})}
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Scheduled Date (Goes live on this day)</label>
+              <input 
+                type="date" 
+                value={newTest.scheduledDate}
+                onChange={(e) => setNewTest({...newTest, scheduledDate: e.target.value})}
                 className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white"
               />
             </div>
@@ -2110,6 +2124,18 @@ Sample tone for Class 6-10:
                     >
                       {[1, 2, 3, 5].map(m => <option key={m} value={m}>{m} Mark</option>)}
                     </select>
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        const qs = [...newTest.questions];
+                        qs[qIdx].isGrace = !qs[qIdx].isGrace;
+                        setNewTest({...newTest, questions: qs});
+                      }}
+                      className={`text-[10px] font-bold px-2 py-1 rounded transition-all flex items-center gap-1 ${q.isGrace ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' : 'bg-white/5 text-slate-500 hover:text-amber-500'}`}
+                    >
+                      <Sparkles size={10} />
+                      {q.isGrace ? 'Grace Active' : 'Grace?'}
+                    </button>
                     <select 
                       value={q.type}
                       onChange={(e) => {
@@ -2190,6 +2216,7 @@ Sample tone for Class 6-10:
                     subject: 'math',
                     month: new Date().toLocaleString('default', { month: 'long' }),
                     year: new Date().getFullYear(),
+                    scheduledDate: new Date().toISOString().split('T')[0],
                     language: 'or',
                     totalMarks: 0
                   });
@@ -2384,6 +2411,34 @@ Sample tone for Class 6-10:
               </button>
             </div>
           </div>
+
+          {/* Report Statistics Summary */}
+          {Object.keys(testSubmissions.reduce((acc, sub) => ({...acc, ...(sub.reports || {})}), {})).length > 0 && (
+            <div className="bg-amber-500/10 border border-amber-500/20 p-6 rounded-3xl mb-8">
+              <div className="flex items-center gap-3 mb-4">
+                <Flag className="text-amber-500" size={20} />
+                <h4 className="text-white font-bold">Out of Chapter Reports</h4>
+              </div>
+              <div className="flex flex-wrap gap-4">
+                {Object.entries(testSubmissions.reduce((acc: Record<number, number>, sub: any) => {
+                  if (sub.reports) {
+                    Object.entries(sub.reports).forEach(([qIdx, isReported]) => {
+                      if (isReported) {
+                        const idx = parseInt(qIdx);
+                        acc[idx] = (acc[idx] || 0) + 1;
+                      }
+                    });
+                  }
+                  return acc;
+                }, {})).map(([qIdx, count]: any) => (
+                  <div key={qIdx} className="bg-slate-900/50 px-4 py-2 rounded-xl border border-white/5">
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Question {parseInt(qIdx) + 1}</p>
+                    <p className="text-lg font-black text-amber-500">{count} Reports</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 gap-6">
             {testSubmissions.length === 0 ? (

@@ -3,12 +3,17 @@ import { motion } from 'motion/react';
 import { 
   ArrowLeft, 
   ArrowRight, 
-  Loader2 
+  Loader2,
+  Camera,
+  Image as ImageIcon,
+  CheckCircle2,
+  Paperclip
 } from 'lucide-react';
 import { translations } from '../translations';
 import { Test } from '../types';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { db as firestore } from '../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db as firestore, storage } from '../firebase';
 
 interface MonthlyTestEngineProps {
   test: Test;
@@ -21,7 +26,76 @@ interface MonthlyTestEngineProps {
 export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: MonthlyTestEngineProps) {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
+  const [roughNotes, setRoughNotes] = useState<Record<number, string>>({});
+  const [uploadingNote, setUploadingNote] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  // Image compression utility to speed up uploads
+  const compressImage = (file: File): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          // Max dimension 1200px
+          const MAX_SIZE = 1200;
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height *= MAX_SIZE / width;
+              width = MAX_SIZE;
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width *= MAX_SIZE / height;
+              height = MAX_SIZE;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          canvas.toBlob((blob) => {
+            if (blob) resolve(blob);
+            else reject(new Error('Canvas to Blob failed'));
+          }, 'image/jpeg', 0.7); // 70% quality
+        };
+      };
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const handleNoteUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingNote(currentIdx);
+    try {
+      // 1. Compress
+      const compressedBlob = await compressImage(file);
+      
+      // 2. Upload
+      const fileName = `rough_notes/${user.id || user.uid}_${test.id}_q${currentIdx}_${Date.now()}.jpg`;
+      const storageRef = ref(storage, fileName);
+      await uploadBytes(storageRef, compressedBlob);
+      
+      // 3. Get URL
+      const url = await getDownloadURL(storageRef);
+      setRoughNotes(prev => ({ ...prev, [currentIdx]: url }));
+    } catch (err) {
+      console.error("Upload Error:", err);
+      alert("Failed to upload note. Please try again.");
+    } finally {
+      setUploadingNote(null);
+    }
+  };
 
   const handleAnswer = (idx: number) => {
     const newAnswers = [...answers];
@@ -46,6 +120,7 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
         month: test.month,
         year: test.year,
         answers,
+        roughNotes,
         score,
         totalQuestions: test.questions.length,
         submittedAt: serverTimestamp(),
@@ -153,6 +228,56 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
               ) : (
                 <div className="text-slate-500 text-sm italic p-8 text-center bg-white/5 rounded-3xl">Options unavailable.</div>
               )}
+            </div>
+
+            {/* Rough Note Upload Section */}
+            <div className="pt-8 border-t border-white/5">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6 bg-white/5 p-6 rounded-[2rem] border border-white/5">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500">
+                    <Paperclip size={24} />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-white">Upload Rough Note</h4>
+                    <p className="text-[10px] text-slate-400 uppercase tracking-widest">Optional • Step-by-step working</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  {roughNotes[currentIdx] ? (
+                    <div className="flex items-center gap-3 bg-emerald-500/10 px-4 py-2 rounded-xl border border-emerald-500/20">
+                      <CheckCircle2 className="text-emerald-500" size={16} />
+                      <span className="text-xs font-bold text-emerald-500">Uploaded</span>
+                      <button 
+                        onClick={() => window.open(roughNotes[currentIdx], '_blank')}
+                        className="text-[10px] uppercase font-black text-white/40 hover:text-white underline ml-2"
+                      >
+                        View
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <label className="cursor-pointer flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">
+                        <Camera size={14} />
+                        Camera
+                        <input type="file" accept="image/*" capture="environment" className="hidden" onChange={handleNoteUpload} />
+                      </label>
+                      <label className="cursor-pointer flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">
+                        <ImageIcon size={14} />
+                        Gallery
+                        <input type="file" accept="image/*" className="hidden" onChange={handleNoteUpload} />
+                      </label>
+                    </div>
+                  )}
+
+                  {uploadingNote === currentIdx && (
+                    <div className="flex items-center gap-2 text-amber-500">
+                      <Loader2 size={16} className="animate-spin" />
+                      <span className="text-[10px] font-bold uppercase">Compressing...</span>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </motion.div>
         </div>

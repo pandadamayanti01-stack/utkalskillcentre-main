@@ -13,10 +13,10 @@ import {
   User, 
   Sparkles 
 } from 'lucide-react';
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import Markdown from 'react-markdown';
 import { useVoiceInput } from '../hooks/useVoiceInput';
-import { getAI } from '../services/aiService';
+import { getAI, withRetry } from '../services/aiService';
 
 interface StudyBuddyProps {
   user: any;
@@ -88,17 +88,21 @@ export function StudyBuddy({ user, language, isPremium }: StudyBuddyProps) {
       if (userMessage) parts.push({ text: userMessage });
       if (imageData) parts.push({ inlineData: { data: imageData.data, mimeType: imageData.mimeType } });
 
-      const response = await ai.models.generateContent({
-        model: "gemini-1.5-flash",
-        contents: { parts },
-        config: {
+      const responseText = await withRetry(async (modelName, apiVersion) => {
+        const model = ai.getGenerativeModel({ 
+          model: modelName,
           systemInstruction: `You are a helpful Study Buddy for a student in Class ${user.class}. 
-          Keep your explanations simple, encouraging, and educational. 
-          Use examples where possible. Respond in ${language === 'en' ? 'English' : 'Odia'}.`
-        }
-      });
+            Keep your explanations simple, encouraging, and educational. 
+            Use examples where possible. Respond in ${language === 'en' ? 'English' : 'Odia'}.`
+        }, { apiVersion });
 
-      setMessages(prev => [...prev, { role: 'assistant', content: response.text || "I couldn't generate a response." }]);
+        const result = await model.generateContent({
+          contents: [{ role: 'user', parts }]
+        });
+        return result.response.text();
+      }, 'flash');
+
+      setMessages(prev => [...prev, { role: 'assistant', content: responseText || "I couldn't generate a response." }]);
     } catch (err) {
       console.error("Study Buddy Error:", err);
       setMessages(prev => [...prev, { role: 'assistant', content: "Sorry, I encountered an error. Please try again." }]);

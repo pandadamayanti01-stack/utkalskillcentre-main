@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { safeJsonStringify } from "../firebase";
 
 const GUNDULU_ODIA_SYSTEM_INSTRUCTION = `Role & Persona:
@@ -28,16 +28,31 @@ export const getStudyBuddySystemInstruction = (
   return `${base}${nameHint}${classHint}`;
 };
 
+/**
+ * Safely parse JSON from AI response, handling markdown code blocks
+ */
+function safeJsonParse(text: string) {
+  try {
+    // Remove markdown code blocks if present
+    const cleaned = text.replace(/```json\n?|```/g, '').trim();
+    return JSON.parse(cleaned);
+  } catch (e) {
+    console.error("Failed to parse JSON from AI:", text);
+    throw e;
+  }
+}
+
 export const getAI = () => {
   // For Vite, use import.meta.env to access variables defined in .env files
   // The vite.config.ts also exposes it via process.env.GEMINI_API_KEY through the define option
   const apiKey = (import.meta.env.VITE_GEMINI_API_KEY as string) || 
-                 (import.meta.env.VITE_GEMINI_API_KEY as string);
+                 (window as any).VITE_GEMINI_API_KEY;
 
   // Debug logging
   console.log("🔍 Gemini API Key Resolution:", {
-    envKey: (import.meta as any).env?.VITE_GEMINI_API_KEY ? "✅ Found" : "❌ Not Found",
-    keyPreview: apiKey?.substring(0, 15) + "..." || "N/A",
+    envKey: import.meta.env.VITE_GEMINI_API_KEY ? "✅ Found in import.meta" : "❌ Not Found",
+    windowKey: (window as any).VITE_GEMINI_API_KEY ? "✅ Found in window" : "❌ Not Found",
+    keyPreview: apiKey?.substring(0, 10) + "..." || "N/A",
     keyLength: apiKey?.length || 0
   });
 
@@ -54,32 +69,70 @@ export const getAI = () => {
   }
 
   console.log("✅ Gemini API Key loaded successfully");
-  return new GoogleGenAI({ apiKey });
+  return new GoogleGenerativeAI(apiKey);
 };
 
+const FLASH_MODELS = [
+  "gemini-flash-latest",
+  "gemini-flash-lite-latest",
+  "gemini-2.5-flash-lite",
+  "gemini-2.5-flash-image",
+  "gemini-3.1-flash-lite-preview",
+  "gemini-1.5-flash",
+  "gemini-2.0-flash"
+];
+
+const PRO_MODELS = [
+  "gemini-pro-latest",
+  "gemini-3.1-pro-preview",
+  "gemini-1.5-pro",
+  "gemini-2.0-pro"
+];
+
 /**
- * Helper to retry AI calls on 503 errors
+ * Helper to retry AI calls on 503 errors and 404 model mismatches
  */
-export async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
+export async function withRetry<T>(
+  fn: (modelName: string, apiVersion: "v1beta" | "v1") => Promise<T>, 
+  modelType: 'flash' | 'pro' = 'flash',
+  maxRetries = 3
+): Promise<T> {
+  const models = modelType === 'flash' ? FLASH_MODELS : PRO_MODELS;
+  let modelIndex = 0;
   let retries = maxRetries;
   let delay = 1000;
 
-  while (retries > 0) {
-    try {
-      return await fn();
-    } catch (err: any) {
-      const is503 = err.message?.includes('503') || err.status === 503 || err.code === 503;
-      if (is503 && retries > 1) {
-        retries--;
-        console.warn(`AI Service busy (503), retrying in ${delay}ms... (${retries} retries left)`);
-        await new Promise(resolve => setTimeout(resolve, delay));
-        delay *= 2; // Exponential backoff
-      } else {
-        throw err;
+  while (modelIndex < models.length) {
+    const currentModel = models[modelIndex];
+    // Try both v1beta and v1
+    const apiVersions: ("v1beta" | "v1")[] = ["v1beta", "v1"];
+    
+    for (const apiVersion of apiVersions) {
+      try {
+        console.log(`🤖 Attempting ${currentModel} via ${apiVersion}...`);
+        return await fn(currentModel, apiVersion);
+      } catch (err: any) {
+        const is503 = err.message?.includes('503') || err.status === 503 || err.code === 503;
+        const is404 = err.message?.includes('404') || err.status === 404 || err.code === 404;
+        const isAuthError = err.message?.includes('403') || err.message?.includes('401') || 
+                           err.status === 403 || err.status === 401;
+
+        if (isAuthError) {
+          console.error("❌ Gemini API Authentication Error. Please check your API Key and billing status.");
+          throw new Error("Gemini API Authentication Failed. Please contact Admin.");
+        }
+
+        if (is404) {
+          console.warn(`Model ${currentModel} not found on ${apiVersion} (404).`);
+          continue; // Try next API version
+        }
+
+        console.error(`❌ Model Attempt Failed: ${currentModel} (${apiVersion})`, err.message);
       }
     }
+    modelIndex++;
   }
-  throw new Error("Max retries exceeded");
+  throw new Error("All available AI models failed or were not found on any API version.");
 }
 
 export async function solveMathDoubt(
@@ -103,16 +156,22 @@ export async function solveMathDoubt(
       });
     }
 
-    const response = await withRetry(() => ai.models.generateContent({
-      model: "gemini-1.5-flash",
-      contents: { parts },
-      config: {
-        systemInstruction,
-        temperature: 0.7,
-      },
-    }));
+    const responseText = await withRetry(async (modelName, apiVersion) => {
+      const model = ai.getGenerativeModel({ 
+        model: modelName,
+        systemInstruction
+      }, { apiVersion });
 
-    return response.text || "Sorry, I couldn't solve that. Please try again.";
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts }],
+        generationConfig: {
+          temperature: 0.7,
+        },
+      });
+      return result.response.text();
+    }, 'flash');
+
+    return responseText || "Sorry, I couldn't solve that. Please try again.";
   } catch (error: any) {
     console.error("Study Buddy Service Error:", error);
     return "Error connecting to Study Buddy. Please try again later.";
@@ -133,21 +192,25 @@ export async function translateContent(text: string | object, targetLanguage: 'e
       systemInstruction += " The input is a JSON object. Translate all string values within the JSON object to the target language, but keep the keys exactly the same. Return ONLY the translated JSON object. Do not include any markdown formatting like ```json.";
     }
 
-    const response = await withRetry(() => ai.models.generateContent({
-      model: "gemini-flash-latest",
-      contents: textPayload,
-      config: {
-        systemInstruction,
-        temperature: 0.1,
-        ...(isJson ? { responseMimeType: "application/json" } : {})
-      },
-    }));
+    const translatedText = await withRetry(async (modelName, apiVersion) => {
+      const model = ai.getGenerativeModel({ 
+        model: modelName,
+        systemInstruction
+      }, { apiVersion });
 
-    const translatedText = response.text || (typeof text === 'string' ? text : safeJsonStringify(text));
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: textPayload }] }],
+        generationConfig: {
+          temperature: 0.1,
+          ...(isJson ? { responseMimeType: "application/json" } : {})
+        },
+      });
+      return result.response.text();
+    }, 'flash');
     
     if (isJson) {
       try {
-        return JSON.parse(translatedText);
+        return safeJsonParse(translatedText);
       } catch (e) {
         console.error("Failed to parse translated JSON", e);
         return text; // Fallback to original if parsing fails
@@ -164,24 +227,27 @@ export async function translateContent(text: string | object, targetLanguage: 'e
 export async function generateChapterContent(title: string, subject: string, language: 'en' | 'or' = 'or') {
   try {
     const ai = getAI();
-    const response = await ai.models.generateContent({
-      model: "gemini-flash-latest",
-      contents: `Generate educational content for a chapter titled "${title}" in the subject of "${subject}".
-      The language should be ${language === 'or' ? 'Odia' : 'English'}.
-      Provide the output in JSON format with the following structure:
-      {
-        "notes": "Detailed educational notes in Markdown format"
-      }`,
-      config: {
-        responseMimeType: "application/json",
-      },
-    });
+    const responseText = await withRetry(async (modelName, apiVersion) => {
+      const model = ai.getGenerativeModel({ model: modelName }, { apiVersion });
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: `Generate educational content for a chapter titled "${title}" in the subject of "${subject}".
+        The language should be ${language === 'or' ? 'Odia' : 'English'}.
+        Provide the output in JSON format with the following structure:
+        {
+          "notes": "Detailed educational notes in Markdown format"
+        }` }] }],
+        generationConfig: {
+          ...(apiVersion === 'v1beta' ? { responseMimeType: "application/json" } : {}),
+        },
+      });
+      return result.response.text();
+    }, 'flash');
 
-    if (!response || !response.text || response.text === "undefined") {
+    if (!responseText) {
       throw new Error("Failed to generate a response.");
     }
 
-    return JSON.parse(response.text);
+    return safeJsonParse(responseText);
   } catch (error) {
     console.error("Chapter Generation Error:", error);
     throw error;
@@ -191,27 +257,30 @@ export async function generateChapterContent(title: string, subject: string, lan
 export async function generateTestContent(title: string, language: 'en' | 'or') {
   try {
     const ai = getAI();
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash-exp",
-      contents: `Generate a test for a chapter titled "${title}".
-      The language should be "${language === 'or' ? 'Odia' : 'English'}".
-      Provide 10 multiple choice questions.
-      Provide the output in JSON format with the following structure:
-      {
-        "questions": [
-          { "question": "Question text", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "The correct option text" }
-        ]
-      }`,
-      config: {
-        responseMimeType: "application/json",
-      },
-    });
+    const responseText = await withRetry(async (modelName, apiVersion) => {
+      const model = ai.getGenerativeModel({ model: modelName }, { apiVersion });
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: `Generate a test for a chapter titled "${title}".
+        The language should be "${language === 'or' ? 'Odia' : 'English'}".
+        Provide 10 multiple choice questions.
+        Provide the output in JSON format with the following structure:
+        {
+          "questions": [
+            { "question": "Question text", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "The correct option text" }
+          ]
+        }` }] }],
+        generationConfig: {
+          ...(apiVersion === 'v1beta' ? { responseMimeType: "application/json" } : {}),
+        },
+      });
+      return result.response.text();
+    }, 'flash');
 
-    if (!response || !response.text || response.text === "undefined") {
+    if (!responseText) {
       throw new Error("Failed to generate a response.");
     }
 
-    return JSON.parse(response.text);
+    return safeJsonParse(responseText);
   } catch (error) {
     console.error("Test Generation Error:", error);
     throw error;
@@ -221,29 +290,31 @@ export async function generateTestContent(title: string, language: 'en' | 'or') 
 export async function importPlaylistContent(playlistUrl: string) {
   try {
     const ai = getAI();
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash-exp",
-      contents: `Extract all video titles and their YouTube video IDs from this playlist URL: ${playlistUrl}.
-      This is for an educational app for Class 3 Odisha Board (Odia Medium).
-      The subject is Mathematics.
-      Please read the content of the URL and provide the list of chapters.
-      Provide the output in JSON format:
-      {
-        "chapters": [
-          { "title": "Video Title", "videoId": "VideoID" }
-        ]
-      }`,
-      config: {
-        tools: [{ urlContext: {} }, { googleSearch: {} }],
-        responseMimeType: "application/json",
-      }
-    });
+    const responseText = await withRetry(async (modelName, apiVersion) => {
+      const model = ai.getGenerativeModel({ model: modelName }, { apiVersion });
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: `Extract all video titles and their YouTube video IDs from this playlist URL: ${playlistUrl}.
+        This is for an educational app for Class 3 Odisha Board (Odia Medium).
+        The subject is Mathematics.
+        Please read the content of the URL and provide the list of chapters.
+        Provide the output in JSON format:
+        {
+          "chapters": [
+            { "title": "Video Title", "videoId": "VideoID" }
+          ]
+        }` }] }],
+        generationConfig: {
+          ...(apiVersion === 'v1beta' ? { responseMimeType: "application/json" } : {}),
+        }
+      });
+      return result.response.text();
+    }, 'flash');
 
-    if (!response || !response.text || response.text === "undefined") {
+    if (!responseText) {
       throw new Error("Failed to generate a response. The playlist might be private, unreachable, or the URL is invalid.");
     }
 
-    return JSON.parse(response.text);
+    return safeJsonParse(responseText);
   } catch (error) {
     console.error("Playlist Import Error:", error);
     throw error;
@@ -268,19 +339,22 @@ export async function generateCurriculum(board: string, className: string) {
       - "correctAnswer": number (index of the correct option, 0-3)
     Do not include any markdown formatting or extra text, just the raw JSON array.`;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash-exp",
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-      },
-    });
+    const responseText = await withRetry(async (modelName, apiVersion) => {
+      const model = ai.getGenerativeModel({ model: modelName }, { apiVersion });
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        generationConfig: {
+          ...(apiVersion === 'v1beta' ? { responseMimeType: "application/json" } : {}),
+        },
+      });
+      return result.response.text();
+    }, 'flash');
 
-    if (!response || !response.text || response.text === "undefined") {
+    if (!responseText) {
       throw new Error("Failed to generate a response.");
     }
 
-    return JSON.parse(response.text);
+    return safeJsonParse(responseText);
   } catch (error) {
     console.error("Curriculum Generation Error:", error);
     throw error;
@@ -314,19 +388,22 @@ export async function generateTestQuestions(subject: string, className: string, 
       ]
     }`;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3.1-pro-preview", // Using a better model for complex test structure
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-      },
-    });
+    const responseText = await withRetry(async (modelName, apiVersion) => {
+      const model = ai.getGenerativeModel({ model: modelName }, { apiVersion });
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        generationConfig: {
+          ...(apiVersion === 'v1beta' ? { responseMimeType: "application/json" } : {}),
+        },
+      });
+      return result.response.text();
+    }, 'pro');
 
-    if (!response || !response.text || response.text === "undefined") {
+    if (!responseText) {
       throw new Error("Failed to generate a response.");
     }
 
-    return JSON.parse(response.text);
+    return safeJsonParse(responseText);
   } catch (error) {
     console.error("Test Questions Generation Error:", error);
     throw error;
@@ -387,16 +464,19 @@ export async function gradeSubjectiveAnswer(
       }
     }
 
-    const response = await withRetry(() => ai.models.generateContent({
-      model: "gemini-1.5-flash",
-      contents: { parts },
-      config: {
-        responseMimeType: "application/json",
-        temperature: 0.2,
-      },
-    }));
+    const resultText = await withRetry(async (modelName, apiVersion) => {
+      const model = ai.getGenerativeModel({ model: modelName }, { apiVersion });
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts }],
+        generationConfig: {
+          ...(apiVersion === 'v1beta' ? { responseMimeType: "application/json" } : {}),
+          temperature: 0.2,
+        },
+      });
+      return result.response.text();
+    }, 'flash');
 
-    return JSON.parse(response.text || '{}');
+    return safeJsonParse(resultText || '{}');
   } catch (error) {
     console.error("AI Grading Error:", error);
     return { suggestedMark: 0, justification: "Error connecting to AI Assistant." };

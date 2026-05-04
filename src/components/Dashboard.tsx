@@ -36,6 +36,8 @@ interface DashboardProps {
   onOpenTutor?: () => void;
   onOpenDailyPractice?: () => void;
   onShareDailyPractice?: () => void;
+  isRegistered?: boolean;
+  onRegistrationComplete?: () => void;
 }
 function PerformanceChart({ submissions, tests, language }: any) {
   const chartData = React.useMemo(() => {
@@ -120,7 +122,7 @@ function PerformanceChart({ submissions, tests, language }: any) {
   );
 }
 
-export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, hasDailyPractice, todayDailySubject, tomorrowDailySubject, onChallengeComplete, onOpenTutor, onOpenDailyPractice, onShareDailyPractice }: DashboardProps) {
+export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, hasDailyPractice, todayDailySubject, tomorrowDailySubject, onChallengeComplete, onOpenTutor, onOpenDailyPractice, onShareDailyPractice, isRegistered = false, onRegistrationComplete }: DashboardProps) {
     // Map class to YouTube video URL (embed links)
     const classVideoMap: Record<string, string> = {
       '1': 'https://www.youtube.com/embed/DxouHyB-IA8',
@@ -147,7 +149,6 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
     const videoUrl = classVideoMap[userClass] || classVideoMap['10'];
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
-  const [isRegistered, setIsRegistered] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
   const [dailyVideoId, setDailyVideoId] = useState<string | null>(null);
 
@@ -192,21 +193,6 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
     fetchLatestVideos();
   }, [userClass]); // Re-fetch/re-filter if class changes
 
-  useEffect(() => {
-    const checkRegistration = async () => {
-      if (!user?.uid) return;
-      try {
-        const q = query(collection(db, 'test_series_registrations'), where('userId', '==', user.uid));
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
-          setIsRegistered(true);
-        }
-      } catch (error) {
-        console.error("Error checking registration:", error);
-      }
-    };
-    checkRegistration();
-  }, [user]);
   const filteredLeaderboard = selectedDistrict
     ? leaderboard.filter(u => u.district === selectedDistrict)
     : leaderboard;
@@ -651,7 +637,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             language={language} 
             onClose={() => {
               setShowRegistrationForm(false);
-              setIsRegistered(true);
+              onRegistrationComplete?.();
             }} 
           />
         )}

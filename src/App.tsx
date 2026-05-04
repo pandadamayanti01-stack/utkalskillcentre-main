@@ -13,8 +13,6 @@ import {
   AreaChart
 } from 'recharts';
 import Markdown from 'react-markdown';
-import { GoogleGenAI } from "@google/genai";
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 import { auth, db as firestore, storage, safeJsonStringify } from './firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Chapter, BilingualContent, DailyMcq, DailyMcqSubmission, Textbook } from './types';
@@ -35,7 +33,7 @@ import {
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, query, where, getDocs, orderBy, limit, addDoc, updateDoc, increment, getCountFromServer, onSnapshot, Timestamp } from 'firebase/firestore';
 import { translations } from './translations';
-import { solveMathDoubt, getAI, getStudyBuddySystemInstruction } from './services/aiService';
+import { solveMathDoubt, getAI, getStudyBuddySystemInstruction, withRetry } from './services/aiService';
 import { subjectTranslations } from './constants';
 import { getConfiguredDailyMcqSequence, getRotatingDailyMcqSubject, getTomorrowDateString } from './utils/dailyMcq';
 import { openDailyMcqWhatsAppShare } from './utils/dailyMcqShare';
@@ -348,15 +346,15 @@ function SundayLockout({ language, onAdminBypass }: { language: 'en' | 'or', onA
 
                 <p className={`text-[#f8f1e7]/80 text-base md:text-lg font-medium leading-relaxed px-2 ${language === 'or' ? 'oriya-font' : ''}`}>
                   {language === 'en' 
-                    ? "Enjoy your Sunday with friends! Take a royal break and recharge. See you tomorrow!" 
-                    : "ସାଙ୍ଗମାନଙ୍କ ସହିତ ରବିବାରର ମଜା ନିଅନ୍ତୁ! ଆଜି ଟିକେ ବିଶ୍ରାମ କରନ୍ତୁ ଏବଂ ଖେଳକୁଦ କରନ୍ତୁ | କାଲି ଦେଖାହେବା!"}
+                    ? "Time to close the textbooks! 📚 Go out and play, explore with your friends, and enjoy precious family time. Recharge your mind for a great week ahead!" 
+                    : "ପାଠପଢ଼ା ବହି ବନ୍ଦ କରିବାର ସମୟ ଆସିଯାଇଛି! 📚 ବାହାରକୁ ଯାଆନ୍ତୁ ଏବଂ ଖେଳନ୍ତୁ, ସାଙ୍ଗମାନଙ୍କ ସହିତ ସମୟ ବିତାନ୍ତୁ ଏବଂ ପରିବାର ସହିତ ମଜା କରନ୍ତୁ | କାଲି ଦେଖାହେବା!"}
                 </p>
 
                 <div className="bg-[#d4af37]/10 rounded-2xl p-4 border border-[#d4af37]/20">
                   <p className={`text-[#ffd700] font-black text-xs uppercase tracking-widest leading-relaxed ${language === 'or' ? 'oriya-font' : ''}`}>
                     {language === 'en' 
-                      ? "Doors Open Monday Morning" 
-                      : "ସୋମବାର ସକାଳୁ ଦ୍ୱାର ପୁଣି ଖୋଲିବ"}
+                      ? "Academic Doors Reopen Monday" 
+                      : "ସୋମବାର ସକାଳୁ ପାଠପଢ଼ା ପୁଣି ଆରମ୍ଭ ହେବ"}
                   </p>
                 </div>
 
@@ -392,6 +390,7 @@ export default function App() {
     const hash = window.location.hash.replace('#', '').split('/')[0];
     return hash || localStorage.getItem('activeTab') || 'dashboard';
   });
+  const [isRegisteredForTestSeries, setIsRegisteredForTestSeries] = useState(false);
   const [openTutorInVoiceMode, setOpenTutorInVoiceMode] = useState(0);
 
   const handleUpgradeClick = () => {
@@ -750,6 +749,15 @@ export default function App() {
           }
 
           await setDoc(userDocRef, userData, { merge: true });
+          
+          // Check test series registration
+          try {
+            const q = query(collection(firestore, 'test_series_registrations'), where('userId', '==', firebaseUser.uid));
+            const querySnapshot = await getDocs(q);
+            setIsRegisteredForTestSeries(!querySnapshot.empty);
+          } catch (regErr) {
+            console.error("Error checking test series registration:", regErr);
+          }
           await setDoc(doc(firestore, 'public_profiles', firebaseUser.uid), {
             name: userData.name,
             points: userData.points,
@@ -1663,7 +1671,7 @@ export default function App() {
   }
 
   const isSunday = new Date().getDay() === 0 || window.location.search.includes('test_lock=true');
-  const isLocked = isSunday && showSundayLockout && !sundayBypassed && (!user || user.role !== 'admin' || window.location.search.includes('test_lock=true'));
+  const isLocked = isSunday && showSundayLockout && !sundayBypassed;
 
   if (isLocked) {
     return <SundayLockout language={language} onAdminBypass={() => setSundayBypassed(true)} />;
@@ -2033,7 +2041,7 @@ export default function App() {
     <div 
       className="contents"
       onClickCapture={(e) => {
-        if (isSunday && !sundayBypassed && (!user || user.role !== 'admin' || window.location.search.includes('test_lock=true')) && !showSundayLockout) {
+        if (isSunday && !sundayBypassed && !showSundayLockout) {
           // Catch the first interaction on Sunday to trigger the "Door Slam"
           e.preventDefault();
           e.stopPropagation();
@@ -2072,6 +2080,7 @@ export default function App() {
           isAdminView={isAdminView}
           setIsAdminView={setIsAdminView}
           handleLogout={handleLogout}
+          isRegisteredForTestSeries={isRegisteredForTestSeries}
         />
       </Suspense>
 
@@ -2124,6 +2133,8 @@ export default function App() {
                 tomorrowDailySubject={tomorrowDailySubject}
                 onOpenDailyPractice={() => setActiveTab('daily_mcqs')}
                 onShareDailyPractice={handleShareDailyPractice}
+                isRegistered={isRegisteredForTestSeries}
+                onRegistrationComplete={() => setIsRegisteredForTestSeries(true)}
                 onOpenTutor={() => {
                   if (isPremium) {
                     setOpenTutorInVoiceMode(Date.now());
@@ -2137,7 +2148,27 @@ export default function App() {
             {activeTab === 'notifications' && <NotificationsView notifications={studentNotifications} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'courses' && <CoursesView user={user} chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
-            {activeTab === 'monthly_tests' && <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} setActiveTab={setActiveTab} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'monthly_tests' && (
+              isRegisteredForTestSeries || user?.role === 'admin' ? (
+                <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} setActiveTab={setActiveTab} onBack={() => setActiveTab('dashboard')} />
+              ) : (
+                <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-8 space-y-6">
+                  <div className="w-24 h-24 bg-amber-500/10 rounded-[2rem] flex items-center justify-center border-2 border-amber-500/20">
+                    <Lucide.Lock size={48} className="text-amber-500" />
+                  </div>
+                  <div className="space-y-2">
+                    <h2 className="text-3xl font-black text-white tracking-tighter uppercase">Registration Required</h2>
+                    <p className="text-slate-400 max-w-md mx-auto italic">"You must register for the Monthly Test Series to access the state-level examination portal."</p>
+                  </div>
+                  <button 
+                    onClick={() => setActiveTab('dashboard')}
+                    className="px-10 py-5 bg-amber-600 hover:bg-amber-500 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-amber-900/40 transition-all"
+                  >
+                    Go to Dashboard to Register
+                  </button>
+                </div>
+              )
+            )}
             {activeTab === 'syllabus_tracker' && <SyllabusTracker language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'daily_mcqs' && <DailyMcqView mcqs={dailyMcqs} submissions={dailyMcqSubmissions} user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'study_buddy' && (
@@ -2352,11 +2383,15 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack, userPr
       Data: ${safeJsonStringify(quizData.map(r => ({ chapter: String(r.chapterId), accuracy: r.accuracy, score: r.score, total: r.total })))}
       Format the response as a short list of bullet points. Focus on strengths and areas for improvement.`;
 
-      const response = await ai.models.generateContent({
-        model: "gemini-3.1-flash-lite-preview",
-        contents: prompt,
-      });
-      setLearningInsights(response.text || "No insights available yet.");
+      const responseText = await withRetry(async (modelName, apiVersion) => {
+        const model = ai.getGenerativeModel({ model: modelName }, { apiVersion });
+        const result = await model.generateContent({
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        });
+        return result.response.text();
+      }, 'flash');
+
+      setLearningInsights(responseText || "No insights available yet.");
     } catch (err) {
       console.error("Failed to generate learning insights:", err);
       setLearningInsights("Unable to generate learning insights at this time.");
@@ -3086,20 +3121,24 @@ function StudyBuddyLegacy({ user, language, isPremium, showPaywall, setShowPaywa
       if (userMessage) parts.push({ text: userMessage });
       if (imageData) parts.push({ inlineData: { data: imageData.data, mimeType: imageData.mimeType } });
 
-      const response = await ai.models.generateContent({
-        model: "gemini-1.5-flash",
-        contents: { parts },
-        config: {
+      const responseText = await withRetry(async (modelName, apiVersion) => {
+        const model = ai.getGenerativeModel({ 
+          model: modelName,
           systemInstruction: getStudyBuddySystemInstruction(
             language as 'en' | 'or',
             user.name,
             user.class,
             undefined
           )
-        }
-      });
+        }, { apiVersion });
 
-      setMessages(prev => [...prev, { role: 'assistant', content: response.text }]);
+        const result = await model.generateContent({
+          contents: [{ role: 'user', parts }]
+        });
+        return result.response.text();
+      }, 'flash');
+
+      setMessages(prev => [...prev, { role: 'assistant', content: responseText }]);
     } catch (err) {
       console.error("Study Buddy Error:", err);
       setMessages(prev => [...prev, { role: 'assistant', content: "Oops! I'm having a little trouble thinking right now. Can we try again?" }]);
@@ -5230,28 +5269,37 @@ function ResultsReviewView({ submission, test, onBack, language }: any) {
           {test.questions.map((q: any, i: number) => {
             const studentAns = submission.answers[i];
             const isMcq = q.type === 'mcq' || !q.type;
-            const isCorrect = isMcq 
+            const isCorrect = q.isGrace || (isMcq 
               ? (q.options[studentAns] === q.correct_answer || String(studentAns) === q.correct_answer)
-              : true; 
+              : true); 
             
-            const awardedMarks = q.type === 'subjective' 
-              ? (submission.subjectiveScores?.[i] || 0)
-              : (isCorrect ? (q.marks || 1) : 0);
+            const awardedMarks = q.isGrace 
+              ? (q.marks || 1)
+              : (q.type === 'subjective' 
+                ? (submission.subjectiveScores?.[i] || 0)
+                : (isCorrect ? (q.marks || 1) : 0));
 
             return (
-              <div key={i} className={`bg-slate-900/50 border rounded-3xl p-6 md:p-8 ${isCorrect ? 'border-emerald-500/10' : 'border-red-500/10'}`}>
+              <div key={i} className={`bg-slate-900/50 border rounded-3xl p-6 md:p-8 ${isCorrect ? (q.isGrace ? 'border-amber-500/20' : 'border-emerald-500/10') : 'border-red-500/10'}`}>
                 <div className="flex justify-between items-start mb-6">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-white font-bold text-sm">
                       {i + 1}
                     </div>
-                    <span className={`text-[10px] font-black uppercase px-3 py-1 rounded-full ${q.type === 'subjective' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20'}`}>
-                      {q.type === 'subjective' ? 'Subjective' : 'MCQ'} • {q.marks || 1} Marks
-                    </span>
+                    <div className="flex flex-col gap-1">
+                      <span className={`text-[10px] font-black uppercase px-3 py-1 rounded-full ${q.type === 'subjective' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20'}`}>
+                        {q.type === 'subjective' ? 'Subjective' : 'MCQ'} • {q.marks || 1} Marks
+                      </span>
+                      {q.isGrace && (
+                        <span className="bg-amber-500/10 text-amber-500 text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border border-amber-500/20 flex items-center gap-1">
+                          <Lucide.Sparkles size={8} /> Grace Mark Awarded
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <div className="text-right">
                     <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Marks Obtained</p>
-                    <p className={`text-xl font-black ${awardedMarks > 0 ? 'text-emerald-500' : 'text-red-500'}`}>{awardedMarks}/{q.marks || 1}</p>
+                    <p className={`text-xl font-black ${awardedMarks > 0 ? (q.isGrace ? 'text-amber-500' : 'text-emerald-500') : 'text-red-500'}`}>{awardedMarks}/{q.marks || 1}</p>
                   </div>
                 </div>
 
@@ -5487,10 +5535,23 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack, setActiv
   }
 
   const filteredTests = tests.filter((t: any) => {
-    if (!user?.class) return true;
-    const testClass = String(t.class || '').toLowerCase().trim();
-    const userClass = String(user.class || '').toLowerCase().trim();
-    return testClass === userClass || testClass === userClass.replace('class', '');
+    // 1. Class matching
+    if (user?.class) {
+      const testClass = String(t.class || '').toLowerCase().trim();
+      const userClass = String(user.class || '').toLowerCase().trim();
+      if (!(testClass === userClass || testClass === userClass.replace('class', ''))) return false;
+    }
+
+    // 2. Admin sees everything
+    if (user?.role === 'admin') return true;
+
+    // 3. Scheduling logic: visible if scheduledDate <= today
+    if (t.scheduledDate) {
+      const today = new Date().toISOString().split('T')[0];
+      return t.scheduledDate <= today;
+    }
+
+    return true; // Default show if no scheduledDate (backward compatibility)
   });
 
   const containerVariants = {
@@ -5699,8 +5760,51 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
   const [showWarning, setShowWarning] = useState(false);
   const [timeSpent, setTimeSpent] = useState<Record<number, number>>({});
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [reports, setReports] = useState<Record<number, boolean>>({});
   const [timeLeft, setTimeLeft] = useState(45 * 60); // 45 minutes in seconds
   const startTimeRef = useRef<number>(Date.now());
+
+  // Image compression utility to speed up uploads
+  const compressImage = (file: File): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          // Max dimension 1200px
+          const MAX_SIZE = 1200;
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height *= MAX_SIZE / width;
+              width = MAX_SIZE;
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width *= MAX_SIZE / height;
+              height = MAX_SIZE;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          canvas.toBlob((blob) => {
+            if (blob) resolve(blob);
+            else reject(new Error('Canvas to Blob failed'));
+          }, 'image/jpeg', 0.7); // 70% quality
+        };
+      };
+      reader.onerror = (error) => reject(error);
+    });
+  };
 
   // Handle real-time test termination if results are published
   useEffect(() => {
@@ -5787,8 +5891,12 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
     if (!file) return;
     setUploadingImage(true);
     try {
-      const storageRef = ref(storage, `monthly_test_evidence/${user.uid}/${test.id}/${currentIdx}_${Date.now()}`);
-      await uploadBytes(storageRef, file);
+      // 1. Compress
+      const compressedBlob = await compressImage(file);
+      
+      // 2. Upload
+      const storageRef = ref(storage, `monthly_test_evidence/${user.uid}/${test.id}/${currentIdx}_${Date.now()}.jpg`);
+      await uploadBytes(storageRef, compressedBlob);
       const url = await getDownloadURL(storageRef);
       
       // Update answer to include image URL
@@ -5818,7 +5926,9 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
         const studentAns = answers[i];
         totalMaxMarks += (q.marks || 1);
         
-        if (q.type === 'mcq' || !q.type) {
+        if (q.isGrace) {
+          mcqScore += (q.marks || 1);
+        } else if (q.type === 'mcq' || !q.type) {
           const options = q.options || [];
           const selectedOption = options[studentAns];
           if (selectedOption === q.correct_answer || String(studentAns) === q.correct_answer) {
@@ -5841,6 +5951,7 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
         totalMaxMarks,
         totalQuestions: questions.length,
         violations,
+        reports,
         timeSpent,
         submittedAt: serverTimestamp(),
         rank: null,
@@ -5889,9 +6000,18 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
 
           {violations > 0 && (
             <div className="flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500 text-xs font-bold animate-pulse">
-              <Lucide.XCircle size={14} /> {violations} Warning(s)
+              <Lucide.AlertTriangle size={14} />
+              <span>{violations} Flagged</span>
             </div>
           )}
+
+          <button 
+            onClick={() => setReports(prev => ({...prev, [currentIdx]: !prev[currentIdx]}))}
+            className={`flex items-center gap-2 px-4 py-2 rounded-2xl border font-bold transition-all text-xs ${reports[currentIdx] ? 'bg-amber-500 border-amber-500 text-white shadow-lg shadow-amber-500/20' : 'bg-white/5 border-white/10 text-slate-400 hover:text-amber-500'}`}
+          >
+            <Lucide.Flag size={14} />
+            <span>{language === 'en' ? 'Out of Chapter?' : 'ଅଧ୍ୟାୟ ବାହାରେ?'}</span>
+          </button>
           <div className="flex items-center gap-4">
             <div className="text-right">
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Question {currentIdx + 1}/{test.questions.length}</p>
@@ -5958,20 +6078,37 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
           <div className="space-y-4">
             <div className="flex justify-between items-center mb-2">
               <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Answer / Calculation</label>
-              <label className="cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 rounded-xl text-xs font-bold text-white flex items-center gap-2 transition-all">
-                {uploadingImage ? <Lucide.Loader2 size={14} className="animate-spin" /> : <Lucide.Camera size={14} />}
-                {uploadingImage ? 'Uploading...' : 'Upload Photo of Working'}
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  className="hidden" 
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) handleImageUpload(file);
-                  }}
-                  disabled={uploadingImage}
-                />
-              </label>
+              <div className="flex gap-2">
+                <label className="cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 rounded-xl text-xs font-bold text-white flex items-center gap-2 transition-all">
+                  {uploadingImage ? <Lucide.Loader2 size={14} className="animate-spin" /> : <Lucide.Camera size={14} />}
+                  {uploadingImage ? 'Uploading...' : 'Camera'}
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    capture="environment"
+                    className="hidden" 
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleImageUpload(file);
+                    }}
+                    disabled={uploadingImage}
+                  />
+                </label>
+                <label className="cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 rounded-xl text-xs font-bold text-white flex items-center gap-2 transition-all">
+                  <Lucide.Image size={14} />
+                  Gallery
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    className="hidden" 
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleImageUpload(file);
+                    }}
+                    disabled={uploadingImage}
+                  />
+                </label>
+              </div>
             </div>
 
             <textarea 
