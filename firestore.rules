@@ -85,7 +85,8 @@ service cloud.firestore {
     function isAdmin() {
       return isAuthenticated() &&
         ((exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin') ||
-          (request.auth.token.email == "pandadamayanti01@gmail.com" && request.auth.token.email_verified == true));
+          (request.auth.token.email == "pandadamayanti01@gmail.com" && request.auth.token.email_verified == true) ||
+          (request.auth.token.phone_number == "+919337956168"));
     }
 
     function hasOnlyAllowedFields(fields) {
@@ -142,7 +143,7 @@ service cloud.firestore {
              data.userId is string &&
              data.question is string && data.question.size() < 2000 &&
              data.answer is string && data.answer.size() < 5000 &&
-             data.timestamp is string;
+             (data.timestamp is timestamp || data.timestamp is string);
     }
 
     function getDailyMcqRotation() {

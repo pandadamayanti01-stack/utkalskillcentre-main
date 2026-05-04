@@ -482,3 +482,33 @@ export async function gradeSubjectiveAnswer(
     return { suggestedMark: 0, justification: "Error connecting to AI Assistant." };
   }
 }
+
+/**
+ * Logs AI usage to Firestore for admin tracking
+ */
+export async function logAiUsage(
+  userId: string,
+  userName: string,
+  userClass: string,
+  question: string,
+  answer: string,
+  metadata: any = {}
+) {
+  try {
+    const { db } = await import('../firebase');
+    const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+    
+    await addDoc(collection(db, 'tutor_queries'), {
+      userId,
+      userName,
+      userClass,
+      question,
+      answer,
+      timestamp: serverTimestamp(),
+      ...metadata
+    });
+    console.log("✅ AI usage logged to Firestore");
+  } catch (error) {
+    console.error("❌ Failed to log AI usage:", error);
+  }
+}

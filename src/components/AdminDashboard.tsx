@@ -150,6 +150,7 @@ Sample tone for Class 6-10:
   const [dailyMcqs, setDailyMcqs] = useState<DailyMcq[]>([]);
   const [textbooks, setTextbooks] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
+  const [payments, setPayments] = useState<any[]>([]);
   const [aiLogs, setAiLogs] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [students, setStudents] = useState<any[]>([]);
@@ -419,14 +420,20 @@ Sample tone for Class 6-10:
     const unsubTx = onSnapshot(collection(firestore, 'transactions'), (snapshot) => {
       const txs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setTransactions(txs);
-      setStats(prev => ({
-        ...prev,
-        totalRevenue: txs.reduce((acc, curr: any) => acc + (curr.amount || 0), 0)
-      }));
     }, (err) => {
       console.error("Firestore Transactions onSnapshot Error:", err);
       if (err.message.includes('insufficient permissions')) {
-        showNotification("Permission denied for transactions. Please ensure you are logged in as admin.", "error");
+        showNotification("Permission denied for transactions.", "error");
+      }
+    });
+
+    const unsubPayments = onSnapshot(collection(firestore, 'payments'), (snapshot) => {
+      const pms = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setPayments(pms);
+    }, (err) => {
+      console.error("Firestore Payments onSnapshot Error:", err);
+      if (err.message.includes('insufficient permissions')) {
+        showNotification("Permission denied for payments.", "error");
       }
     });
 
@@ -561,6 +568,7 @@ Sample tone for Class 6-10:
       console.log("Debug: Cleaning up listeners");
       unsubChapters();
       unsubTx();
+      unsubPayments();
       unsubAi();
       unsubNotifs();
       unsubSettings();
@@ -573,7 +581,19 @@ Sample tone for Class 6-10:
       unsubUserLocks();
       unsubSupport();
     };
-  }, [user]); // Added user to dependency array
+  }, [user]);
+
+  // Combined stats calculation
+  useEffect(() => {
+    const txRevenue = transactions.reduce((acc, curr: any) => acc + (curr.amount || 0), 0);
+    const successPayments = payments.filter(p => p.status === 'success');
+    const paymentRevenue = successPayments.reduce((acc, curr: any) => acc + (curr.amount || 0), 0);
+    
+    setStats(prev => ({
+      ...prev,
+      totalRevenue: txRevenue + paymentRevenue
+    }));
+  }, [transactions, payments]);
 
   const [bulkIdentifiers, setBulkIdentifiers] = useState('');
   const [bulkPlan, setBulkPlan] = useState<'annual' | 'lifetime'>('annual');
@@ -808,8 +828,8 @@ Sample tone for Class 6-10:
               title: 'Command',
               items: [
                 { id: 'dashboard', label: 'Overview', icon: Activity },
-                { id: 'ai_usage', label: 'Neural Logs', icon: Brain },
-                { id: 'daily_mcqs', label: 'Auto MCQs', icon: Zap },
+                { id: 'ai_usage', label: 'AI Usage Logs', icon: Brain },
+                { id: 'daily_mcqs', label: 'Daily MCQs', icon: Zap },
               ]
             },
             {
@@ -817,24 +837,24 @@ Sample tone for Class 6-10:
               items: [
                 { id: 'content', label: 'Chapters', icon: BookOpen },
                 { id: 'textbooks', label: 'Textbooks', icon: Book },
-                { id: 'monthly_tests', label: 'Test Matrix', icon: ClipboardList },
+                { id: 'monthly_tests', label: 'Monthly Tests', icon: ClipboardList },
               ]
             },
             {
               title: 'Registry',
               items: [
-                { id: 'students', label: 'Agents', icon: Users },
-                { id: 'subscriptions', label: 'Access Control', icon: Shield },
-                { id: 'payments', label: 'Ledger', icon: CreditCard },
-                { id: 'user_locks', label: 'Locks', icon: Lock },
+                { id: 'students', label: 'Students', icon: Users },
+                { id: 'subscriptions', label: 'Subscriptions', icon: Shield },
+                { id: 'payments', label: 'Payments', icon: CreditCard },
+                { id: 'user_locks', label: 'User Locks', icon: Lock },
               ]
             },
             {
               title: 'System',
               items: [
-                { id: 'notifications', label: 'Broadcast', icon: Bell },
-                { id: 'settings', label: 'Config', icon: Settings },
-                { id: 'support', label: 'Support', icon: HelpCircle },
+                { id: 'notifications', label: 'Broadcasts', icon: Bell },
+                { id: 'settings', label: 'Settings', icon: Settings },
+                { id: 'support', label: 'Support Tickets', icon: HelpCircle },
               ]
             }
           ].map((group, idx) => (
@@ -2672,7 +2692,7 @@ Sample tone for Class 6-10:
   const renderAiUsage = () => {
     const class10Usage = aiLogs.filter(log => log.userClass === 'class10').length;
     const class3Usage = aiLogs.filter(log => log.userClass === 'class3').length;
-    const gunduluRevenue = transactions.reduce((acc, curr: any) => acc + (curr.amount || 0), 0);
+    const gunduluRevenue = stats.totalRevenue;
     const todaysLogs = aiLogs.filter((log: any) => isTodayDate(log.parsedTimestamp || parseLogTimestamp(log.timestamp)));
 
     const now = new Date();
@@ -2830,9 +2850,9 @@ Sample tone for Class 6-10:
             <div className="p-8 border-b border-white/5 font-black text-white flex items-center justify-between flex-wrap gap-4 bg-white/5">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-8 bg-indigo-500 rounded-full shadow-[0_0_10px_#6366f1]"></div>
-                <span className="text-xl tracking-tighter">Questions Log</span>
+                <span className="text-xl tracking-tighter">AI Interaction History</span>
               </div>
-              <div className="flex gap-2 p-1 bg-black/20 rounded-2xl border border-white/5">
+              <div className="flex gap-2 p-1 bg-black/20 rounded-2xl border border-white/5 flex-wrap">
                 {(['today', 'week', 'month', 'all'] as const).map(f => (
                   <button
                     key={f}
@@ -2846,6 +2866,14 @@ Sample tone for Class 6-10:
                     {f === 'today' ? 'Today' : f === 'week' ? '7 Days' : f === 'month' ? '30 Days' : 'All'}
                   </button>
                 ))}
+                {aiLogs.length > 0 && (
+                  <button
+                    onClick={handleClearAllAiLogs}
+                    className="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-red-500/60 hover:text-red-400 hover:bg-red-500/10 transition-all border border-red-500/10"
+                  >
+                    Clear History
+                  </button>
+                )}
               </div>
             </div>
             <div className="divide-y divide-white/5 overflow-y-auto max-h-[600px] custom-scrollbar">
@@ -2853,7 +2881,16 @@ Sample tone for Class 6-10:
                 <div key={i} className="p-6 hover:bg-white/5 transition-all group">
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-md font-black text-indigo-400 tracking-tight group-hover:translate-x-1 transition-transform">{log.userName || 'Student'}</span>
-                    <span className="text-[10px] px-3 py-1 rounded-full bg-white/5 border border-white/10 text-slate-400 font-bold uppercase tracking-widest">{log.userClass || 'Unknown Class'}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] px-3 py-1 rounded-full bg-white/5 border border-white/10 text-slate-400 font-bold uppercase tracking-widest">{log.userClass || 'Unknown Class'}</span>
+                      <button 
+                        onClick={() => handleDeleteAiLog(log.id)}
+                        className="w-8 h-8 flex items-center justify-center rounded-xl bg-white/5 text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100"
+                        title="Delete this log"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                   </div>
                   <div className="text-white text-md leading-relaxed mb-4 font-medium italic">"{log.question}"</div>
                   <div className="text-sm text-slate-400 line-clamp-3 bg-black/40 p-4 rounded-2xl border border-white/5 leading-relaxed font-['Inter']">
@@ -2907,49 +2944,74 @@ Sample tone for Class 6-10:
     );
   };
 
-  const renderPayments = () => (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="flex items-center gap-3">
-        <div className="w-2 h-8 bg-emerald-500 rounded-full shadow-[0_0_10px_#10b981]"></div>
-        <h3 className="text-2xl font-black text-white tracking-tighter">Financial Ledger</h3>
-      </div>
-      <div className="glass-card rounded-[2.5rem] overflow-hidden border-white/5">
-        <div className="overflow-x-auto custom-scrollbar">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-white/5 border-b border-white/5">
-                <th className="p-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">Student</th>
-                <th className="p-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">Plan Selection</th>
-                <th className="p-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">Amount</th>
-                <th className="p-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">Date</th>
-                <th className="p-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              {transactions.map((tx: any, i: number) => (
-                <tr key={i} className="hover:bg-white/5 transition-all group">
-                  <td className="p-6 text-white font-black tracking-tight">{tx.userName || tx.userId}</td>
-                  <td className="p-6 text-slate-400 font-bold uppercase text-[10px] tracking-widest">{tx.plan}</td>
-                  <td className="p-6 text-emerald-400 font-black text-lg">₹{tx.amount}</td>
-                  <td className="p-6 text-slate-500 text-xs font-medium">{tx.date?.split('T')[0]}</td>
-                  <td className="p-6">
-                    <span className="px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                      Settled
-                    </span>
-                  </td>
+  const renderPayments = () => {
+    const allFinancials = [
+      ...transactions.map(t => ({ ...t, source: 'transaction' })),
+      ...payments.map(p => ({ ...p, source: 'payment' }))
+    ].sort((a, b) => {
+      const aTime = parseLogTimestamp(a.timestamp || a.createdAt || a.created_at || a.date)?.getTime() || 0;
+      const bTime = parseLogTimestamp(b.timestamp || b.createdAt || b.created_at || b.date)?.getTime() || 0;
+      return bTime - aTime;
+    });
+
+    return (
+      <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="flex items-center gap-3">
+          <div className="w-2 h-8 bg-emerald-500 rounded-full shadow-[0_0_10px_#10b981]"></div>
+          <h3 className="text-2xl font-black text-white tracking-tighter">Financial Ledger</h3>
+        </div>
+        <div className="glass-card rounded-[2.5rem] overflow-hidden border-white/5">
+          <div className="overflow-x-auto custom-scrollbar">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-white/5 border-b border-white/5">
+                  <th className="p-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">Student</th>
+                  <th className="p-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">Plan Selection</th>
+                  <th className="p-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">Amount</th>
+                  <th className="p-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">Date</th>
+                  <th className="p-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">Status</th>
                 </tr>
-              ))}
-              {transactions.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="p-20 text-center text-slate-500 font-bold uppercase tracking-widest italic opacity-50">No financial transactions recorded.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {allFinancials.map((tx: any, i: number) => {
+                  const studentName = tx.userName || tx.userId || 'Student';
+                  const planName = tx.plan || tx.planType || 'Premium';
+                  const amount = tx.amount || 0;
+                  const rawDate = tx.timestamp || tx.createdAt || tx.created_at || tx.date;
+                  const displayDate = parseLogTimestamp(rawDate)?.toLocaleDateString() || 'Unknown';
+                  const isSuccess = tx.status === 'success' || tx.source === 'transaction';
+                  const isPending = tx.status === 'pending';
+
+                  return (
+                    <tr key={i} className="hover:bg-white/5 transition-all group">
+                      <td className="p-6 text-white font-black tracking-tight">{studentName}</td>
+                      <td className="p-6 text-slate-400 font-bold uppercase text-[10px] tracking-widest">{planName}</td>
+                      <td className="p-6 text-emerald-400 font-black text-lg">₹{amount}</td>
+                      <td className="p-6 text-slate-500 text-xs font-medium">{displayDate}</td>
+                      <td className="p-6">
+                        <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${
+                          isSuccess ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 
+                          isPending ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
+                          'bg-red-500/10 text-red-400 border-red-500/20'
+                        }`}>
+                          {isSuccess ? 'Settled' : isPending ? 'Pending' : (tx.status || 'Failed')}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+                {allFinancials.length === 0 && (
+                  <tr>
+                    <td colSpan={5} className="p-20 text-center text-slate-500 font-bold uppercase tracking-widest italic opacity-50">No financial transactions recorded.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderNotifications = () => (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -3981,6 +4043,39 @@ Sample tone for Class 6-10:
     } catch (err: any) {
       console.error("Delete Error:", err);
       showNotification("Failed to delete lock: " + err.message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleDeleteAiLog(logId: string) {
+    if (!confirm("Are you sure you want to delete this interaction log?")) return;
+    try {
+      setLoading(true);
+      await deleteDoc(doc(firestore, 'tutor_queries', logId));
+      showNotification("Interaction log purged.");
+    } catch (err: any) {
+      console.error("Delete AI Log Error:", err);
+      showNotification("Failed to delete log: " + err.message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleClearAllAiLogs() {
+    if (!confirm("CRITICAL ACTION: Are you sure you want to DELETE ALL AI logs? This cannot be undone.")) return;
+    try {
+      setLoading(true);
+      let count = 0;
+      // We process all current logs. For large collections, this might need batching, 
+      // but for tutor queries it should be manageable initially.
+      const promises = aiLogs.map(log => deleteDoc(doc(firestore, 'tutor_queries', log.id)));
+      await Promise.all(promises);
+      count = aiLogs.length;
+      showNotification(`Successfully purged ${count} logs.`);
+    } catch (err: any) {
+      console.error("Clear All AI Logs Error:", err);
+      showNotification("Failed to clear all logs. Some items may still remain.", 'error');
     } finally {
       setLoading(false);
     }

@@ -727,6 +727,12 @@ export default function App() {
             updatedAt: serverTimestamp()
           };
 
+          // Sync admin email and phone for the primary admin account
+          if (isAdmin && (userEmail === 'pandadamayanti01@gmail.com' || userPhone === '+919337956168' || userPhone === '9337956168')) {
+            userData.email = 'pandadamayanti01@gmail.com';
+            userData.phoneNumber = '+919337956168';
+          }
+
           // Update Streak Logic
           const today = new Date().toISOString().split('T')[0];
           if (userData.lastActiveDate !== today) {

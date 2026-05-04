@@ -16,7 +16,7 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
 import { db, handleFirestoreError, OperationType } from '../firebase';
-import { getAI, withRetry } from '../services/aiService';
+import { getAI, withRetry, logAiUsage } from '../services/aiService';
 import { collection, addDoc, doc, getDoc, query, where, getDocs } from 'firebase/firestore';
 
 interface Message {
@@ -136,8 +136,15 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
             timestamp: new Date(),
           };
           setMessages(prev => [...prev, assistantMessage]);
-          // If you have a saveChatHistory util, import it; otherwise, comment/remove this line or implement it.
           // await saveChatHistory(textToSend, foundAnswer);
+          await logAiUsage(
+            user?.uid || 'anonymous',
+            user?.name || user?.displayName || 'Student',
+            user?.class || 'Unknown',
+            textToSend,
+            foundAnswer,
+            { isFromBucket: true }
+          );
           setLoading(false);
           return;
         }
@@ -186,15 +193,17 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
           });
         }
 
-        const result = await withRetry(() => ai.models.generateContent({
-          model,
-          contents,
-          config: {
-            systemInstruction,
-          },
-        }));
-
-        const responseText = result?.text || (language === 'or' ? 'ମୁଁ ଦୟାକରି ଏହାକୁ ପୁଣି ଚେଷ୍ଟା କରିବି।' : "I'm sorry, I couldn't process that.");
+        const responseText = await withRetry(async (modelName, apiVersion) => {
+          const genModel = ai.getGenerativeModel({ 
+            model: modelName,
+            systemInstruction 
+          }, { apiVersion });
+          
+          const result = await genModel.generateContent({
+            contents,
+          });
+          return result.response.text();
+        }, 'flash') || (language === 'or' ? 'ମୁଁ ଦୟାକରି ଏହାକୁ ପୁଣି ଚେଷ୍ଟା କରିବି।' : "I'm sorry, I couldn't process that.");
 
         const assistantMessage: Message = {
           id: (Date.now() + 1).toString(),
@@ -204,8 +213,15 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         };
 
         setMessages(prev => [...prev, assistantMessage]);
-        // If you have a saveChatHistory util, import it; otherwise, comment/remove this line or implement it.
         // await saveChatHistory(textToSend, responseText);
+        await logAiUsage(
+          user?.uid || 'anonymous',
+          user?.name || user?.displayName || 'Student',
+          user?.class || 'Unknown',
+          textToSend,
+          responseText,
+          { isFromBucket: false, language }
+        );
 
       } catch (err: any) {
         console.error('Study Buddy Chat Error:', err);
