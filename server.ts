@@ -221,7 +221,7 @@ async function startServer() {
 
   app.post('/api/payment/verify', async (req, res) => {
     try {
-      const { razorpay_order_id, razorpay_payment_id, razorpay_signature, amount, userId, userClass } = req.body;
+      const { razorpay_order_id, razorpay_payment_id, razorpay_signature, amount, userId, userClass, planType } = req.body;
       
       const keySecret = process.env.RAZORPAY_KEY_SECRET;
       
@@ -240,15 +240,37 @@ async function startServer() {
           return res.status(503).json({ success: false, message: 'Firebase Admin is not initialized' });
         }
 
-        // Log transaction to Firestore
-        await getAdminFirestore(adminApp, firestoreDatabaseId).collection('transactions').add({
+        const firestore = getAdminFirestore(adminApp, firestoreDatabaseId);
+
+        // 1. Log transaction to Firestore
+        await firestore.collection('transactions').add({
           payment_id: razorpay_payment_id,
           order_id: razorpay_order_id,
-          amount: amount / 100,
+          amount: amount, // Frontend already sends correct INR amount
           userId,
           class: userClass,
+          planType,
           timestamp: new Date()
         });
+
+        // 2. Automatically Activate Subscription
+        const expiresAt = new Date();
+        if (planType === 'yearly') {
+          expiresAt.setFullYear(expiresAt.getFullYear() + 1);
+        } else {
+          expiresAt.setMonth(expiresAt.getMonth() + 1);
+        }
+
+        await firestore.collection('subscriptions').doc(userId).set({
+          active: true,
+          plan: planType || 'monthly',
+          expires_at: expiresAt,
+          updatedAt: new Date(),
+          userId: userId
+        }, { merge: true });
+
+        console.log(`[Payment] Success! Activated ${planType} plan for user ${userId}. Expires: ${expiresAt.toLocaleDateString()}`);
+        
         res.json({ success: true });
       } else {
         console.error('Invalid payment signature');

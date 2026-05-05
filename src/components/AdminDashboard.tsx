@@ -603,7 +603,7 @@ Sample tone for Class 6-10:
   }, [transactions, payments]);
 
   const [bulkIdentifiers, setBulkIdentifiers] = useState('');
-  const [bulkPlan, setBulkPlan] = useState<'annual' | 'lifetime'>('annual');
+  const [bulkPlan, setBulkPlan] = useState<'monthly' | 'annual' | 'lifetime'>('annual');
 
   const handleBulkGrant = async () => {
     if (!bulkIdentifiers.trim()) {
@@ -646,9 +646,11 @@ Sample tone for Class 6-10:
 
         const userId = userSnap.docs[0].id;
         const subDocRef = doc(firestore, 'subscriptions', userId);
-        const expiresAt = bulkPlan === 'annual' 
-          ? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) 
-          : new Date(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000);
+        const expiresAt = bulkPlan === 'monthly'
+          ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+          : bulkPlan === 'annual' 
+            ? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) 
+            : new Date(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000);
         
         await setDoc(subDocRef, {
           active: true,
@@ -716,6 +718,7 @@ Sample tone for Class 6-10:
                 onChange={(e) => setBulkPlan(e.target.value as any)}
                 className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500"
               >
+                <option value="monthly">Monthly (30 Days)</option>
                 <option value="annual">Annual (1 Year)</option>
                 <option value="lifetime">Lifetime (100 Years)</option>
               </select>
@@ -744,12 +747,22 @@ Sample tone for Class 6-10:
               <button
                 onClick={() => {
                   setBulkIdentifiers(`gyanaloka.panda@gmail.com\ngyanapd.ram@gmail.com\n8926118509\n8457811227\n6370487877`);
+                  setBulkPlan('monthly');
+                }}
+                className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs text-slate-300 transition-all"
+              >
+                Load Requested Accounts (Monthly)
+              </button>
+              <button
+                onClick={() => {
+                  setBulkIdentifiers(`gyanaloka.panda@gmail.com\ngyanapd.ram@gmail.com\n8926118509\n8457811227\n6370487877`);
                   setBulkPlan('annual');
                 }}
                 className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs text-slate-300 transition-all"
               >
                 Load Requested Accounts (Annual)
               </button>
+
             </div>
           </div>
         </div>
@@ -3751,13 +3764,22 @@ Sample tone for Class 6-10:
                       </span>
                     </td>
                     <td className="py-4">
-                      <button 
-                        onClick={() => handleResetStudent(student.id)}
-                        className="text-red-400 hover:text-red-300 font-medium text-sm transition-colors"
-                      >
-                        Reset Data
-                      </button>
+                      <div className="flex items-center gap-3">
+                        <button 
+                          onClick={() => handleGrantOneMonth(student.id, student.name || student.email || student.phoneNumber)}
+                          className="text-emerald-400 hover:text-emerald-300 font-medium text-sm transition-colors"
+                        >
+                          Grant 1 Month
+                        </button>
+                        <button 
+                          onClick={() => handleResetStudent(student.id)}
+                          className="text-red-400 hover:text-red-300 font-medium text-sm transition-colors"
+                        >
+                          Reset Data
+                        </button>
+                      </div>
                     </td>
+
                   </tr>
                 );
               })}
@@ -3774,6 +3796,41 @@ Sample tone for Class 6-10:
       </div>
     );
 
+  }
+
+  async function handleGrantOneMonth(studentId: string, identifier: string) {
+    if (!confirm(`Grant 1 month of Pro access to ${identifier}?`)) return;
+    
+    try {
+      setLoading(true);
+      const subDocRef = doc(firestore, 'subscriptions', studentId);
+      const currentSub = allSubscriptions[studentId];
+      
+      let baseDate = new Date();
+      if (currentSub?.active && currentSub?.expires_at) {
+        const currentExpiry = parseLogTimestamp(currentSub.expires_at);
+        if (currentExpiry && currentExpiry > new Date()) {
+          baseDate = currentExpiry;
+        }
+      }
+      
+      const newExpiry = new Date(baseDate.getTime() + 30 * 24 * 60 * 60 * 1000);
+      
+      await setDoc(subDocRef, {
+        active: true,
+        plan: 'monthly',
+        expires_at: Timestamp.fromDate(newExpiry),
+        updatedAt: serverTimestamp(),
+        identifier: identifier
+      }, { merge: true });
+      
+      showNotification(`Successfully granted 1 month access to ${identifier}`);
+    } catch (err: any) {
+      console.error("Grant Error:", err);
+      showNotification("Failed to grant access: " + err.message, 'error');
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleResetStudent(studentId: string) {
