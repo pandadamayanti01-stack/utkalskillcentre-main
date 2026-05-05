@@ -31,10 +31,11 @@ export default function TestSeriesPoster({ onClose }: TestSeriesPosterProps) {
           </button>
 
           <img
-            src="/usc-mt1.png"
-            alt="Test Series 1 Poster"
+            src="/mts-1may.png"
+            alt="Monthly Test May 2026 Poster"
             className="w-full h-auto rounded-2xl shadow-2xl border border-white/20"
           />
+
         </motion.div>
       </motion.div>
     </AnimatePresence>

@@ -32,6 +32,7 @@ import {
   linkWithPopup
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, query, where, getDocs, orderBy, limit, addDoc, updateDoc, increment, getCountFromServer, onSnapshot, Timestamp } from 'firebase/firestore';
+import { createSupportSession, endSupportSession } from './services/supportService';
 import { translations } from './translations';
 import { solveMathDoubt, getAI, getStudyBuddySystemInstruction, withRetry } from './services/aiService';
 import { subjectTranslations } from './constants';
@@ -375,6 +376,80 @@ function SundayLockout({ language, onAdminBypass }: { language: 'en' | 'or', onA
   );
 }
 
+function SupportOverlay({ session, onEnd }: { session: any, onEnd: () => void }) {
+  const [pointer, setPointer] = useState<{ x: number, y: number } | null>(null);
+
+  useEffect(() => {
+    if (!session?.id) return;
+    const unsub = onSnapshot(doc(firestore, 'remote_support', session.id), (snap) => {
+      if (snap.exists()) {
+        const data = snap.data();
+        if (data.pointer) setPointer(data.pointer);
+        if (data.status === 'ended') onEnd();
+        
+        // Handle Remote Commands (Navigation)
+        if (data.lastCommand) {
+          const cmd = data.lastCommand;
+          const now = Date.now();
+          // Only execute if command is fresh (within last 2 seconds)
+          if (now - cmd.timestamp < 2000) {
+            if (cmd.type === 'navigate') {
+              window.location.hash = cmd.target;
+              // Force tab change event
+              window.dispatchEvent(new CustomEvent('changeTab', { detail: cmd.target.replace('#', '') }));
+            }
+          }
+        }
+      } else {
+        onEnd();
+      }
+    });
+    return () => unsub();
+  }, [session?.id, onEnd]);
+
+  if (!pointer) return (
+    <div className="fixed top-4 right-4 z-[9999] flex flex-col items-end gap-2">
+      <div className="bg-emerald-600 text-white px-4 py-2 rounded-2xl shadow-2xl border border-emerald-400/30 text-xs font-black animate-pulse flex items-center gap-2">
+        <Lucide.ShieldCheck size={14} />
+        LIVE SUPPORT ACTIVE ({session.id})
+      </div>
+      <button onClick={onEnd} className="bg-red-500 text-white p-2 rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-xl">End Session</button>
+    </div>
+  );
+
+  return (
+    <>
+      <div className="fixed top-4 right-4 z-[9999] flex flex-col items-end gap-2">
+        <div className="bg-emerald-600 text-white px-4 py-2 rounded-2xl shadow-2xl border border-emerald-400/30 text-xs font-black animate-pulse flex items-center gap-2">
+          <Lucide.ShieldCheck size={14} />
+          LIVE SUPPORT ACTIVE ({session.id})
+        </div>
+        <button onClick={onEnd} className="bg-red-500 text-white p-2 rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-xl">End Session</button>
+      </div>
+
+      {/* The Virtual Pointer */}
+      <motion.div
+        animate={{ 
+          x: (pointer.x * window.innerWidth) / 100, 
+          y: (pointer.y * window.innerHeight) / 100 
+        }}
+        transition={{ type: 'spring', damping: 20, stiffness: 150 }}
+        className="fixed top-0 left-0 w-12 h-12 pointer-events-none z-[10000]"
+      >
+        <div className="relative">
+          <div className="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-50"></div>
+          <div className="w-6 h-6 bg-red-500 rounded-full border-4 border-white shadow-2xl flex items-center justify-center">
+             <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+          </div>
+          <div className="absolute top-8 left-8 bg-black/80 text-white text-[10px] px-2 py-1 rounded-lg border border-white/10 whitespace-nowrap font-bold">
+            ADMIN POINTER
+          </div>
+        </div>
+      </motion.div>
+    </>
+  );
+}
+
 export default function App() {
   const [user, setUser] = useState<Student | null>(null);
   const [isAdminView, setIsAdminView] = useState(false);
@@ -392,6 +467,34 @@ export default function App() {
   });
   const [isRegisteredForTestSeries, setIsRegisteredForTestSeries] = useState(false);
   const [openTutorInVoiceMode, setOpenTutorInVoiceMode] = useState(0);
+  const [supportSession, setSupportSession] = useState<any>(null);
+
+  // Support Session Cleanup
+  useEffect(() => {
+    const saved = sessionStorage.getItem('supportSession');
+    if (saved) setSupportSession(JSON.parse(saved));
+  }, []);
+
+  const startSupport = async () => {
+    if (!user) return;
+    try {
+      const code = await createSupportSession(user.id, user.name);
+      const session = { id: code, studentUid: user.id };
+      setSupportSession(session);
+      sessionStorage.setItem('supportSession', JSON.stringify(session));
+    } catch (err) {
+      console.error("Failed to start support", err);
+      alert("Failed to initiate support session. Please try again.");
+    }
+  };
+
+  const endSupport = async () => {
+    if (supportSession) {
+      await endSupportSession(supportSession.id);
+      setSupportSession(null);
+      sessionStorage.removeItem('supportSession');
+    }
+  };
 
   const handleUpgradeClick = () => {
     setActiveTab('plans');
@@ -2155,26 +2258,9 @@ export default function App() {
             {activeTab === 'courses' && <CoursesView user={user} chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'monthly_tests' && (
-              isRegisteredForTestSeries || user?.role === 'admin' ? (
-                <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} setActiveTab={setActiveTab} onBack={() => setActiveTab('dashboard')} />
-              ) : (
-                <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-8 space-y-6">
-                  <div className="w-24 h-24 bg-amber-500/10 rounded-[2rem] flex items-center justify-center border-2 border-amber-500/20">
-                    <Lucide.Lock size={48} className="text-amber-500" />
-                  </div>
-                  <div className="space-y-2">
-                    <h2 className="text-3xl font-black text-white tracking-tighter uppercase">Registration Required</h2>
-                    <p className="text-slate-400 max-w-md mx-auto italic">"You must register for the Monthly Test Series to access the state-level examination portal."</p>
-                  </div>
-                  <button 
-                    onClick={() => setActiveTab('dashboard')}
-                    className="px-10 py-5 bg-amber-600 hover:bg-amber-500 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-amber-900/40 transition-all"
-                  >
-                    Go to Dashboard to Register
-                  </button>
-                </div>
-              )
+              <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} setActiveTab={setActiveTab} onBack={() => setActiveTab('dashboard')} />
             )}
+
             {activeTab === 'syllabus_tracker' && <SyllabusTracker language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'daily_mcqs' && <DailyMcqView mcqs={dailyMcqs} submissions={dailyMcqSubmissions} user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'study_buddy' && (
@@ -2240,6 +2326,22 @@ export default function App() {
         </motion.div>
       )}
     </AnimatePresence>
+    {/* Remote Support UI */}
+    {supportSession && (
+      <SupportOverlay session={supportSession} onEnd={endSupport} />
+    )}
+    
+    {!isAdminView && user && !supportSession && (
+      <button 
+        onClick={startSupport}
+        className="fixed bottom-24 right-6 z-[90] w-14 h-14 bg-blue-600 text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-all group"
+      >
+        <Lucide.LifeBuoy size={24} className="group-hover:rotate-12 transition-transform" />
+        <div className="absolute right-full mr-3 bg-black/80 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-white/10 pointer-events-none">
+          Live Support
+        </div>
+      </button>
+    )}
     </div>
   </ErrorBoundary>
 );

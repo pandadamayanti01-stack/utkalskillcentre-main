@@ -349,5 +349,11 @@ service cloud.firestore {
     match /activity/{activityId} {
       allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
     }
+    match /remote_support/{sessionId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated() && (resource.data.studentUid == request.auth.uid || isAdmin());
+    }
   }
 }

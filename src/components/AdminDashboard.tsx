@@ -44,6 +44,7 @@ import {
   ExternalLink,
   RefreshCw,
   Flag,
+  Monitor,
 } from 'lucide-react';
 // import { translateToBilingual } from '../services/translationService';
 import { motion, AnimatePresence } from 'motion/react';
@@ -84,6 +85,7 @@ import {
   generateTestQuestions,
   gradeSubjectiveAnswer
 } from '../services/aiService';
+import { joinSupportSession, sendRemoteCommand, updatePointer, endSupportSession } from '../services/supportService';
 
 type AdminTab = 'dashboard' | 'content' | 'monthly_tests' | 'daily_mcqs' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup' | 'students' | 'subscriptions' | 'support' | 'user_locks';
 
@@ -171,6 +173,11 @@ Sample tone for Class 6-10:
   const [notification, setNotification] = useState<{message: string, type: 'success' | 'error'} | null>(null);
   const [loading, setLoading] = useState(false);
   const isPromptDirtyRef = useRef(false);
+
+  // Remote Support States
+  const [remoteCode, setRemoteCode] = useState('');
+  const [isRemoteActive, setIsRemoteActive] = useState(false);
+  const [remoteSession, setRemoteSession] = useState<any>(null);
 
   useEffect(() => {
     if (notification) {
@@ -782,7 +789,10 @@ Sample tone for Class 6-10:
                       </span>
                     </td>
                     <td className="py-4 text-sm">
-                      {sub.expires_at?.toDate().toLocaleDateString()}
+                      <p className="text-xs text-white font-black tracking-tight">{sub.planId}</p>
+                      <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">
+                        Expires: {parseLogTimestamp(sub.expires_at)?.toLocaleDateString() || 'N/A'}
+                      </p>
                     </td>
                     <td className="py-4">
                       <span className={`flex items-center gap-1 text-xs ${sub.active ? 'text-emerald-400' : 'text-red-400'}`}>
@@ -2558,8 +2568,8 @@ Sample tone for Class 6-10:
                               {sub.violations > 0 ? <XCircle size={14}/> : <CheckCircle2 size={14}/>}
                               {sub.violations > 2 ? 'HIGH RISK' : sub.violations > 0 ? 'MODERATE RISK' : 'CLEAN'}
                             </div>
-                            <div className="text-[10px] text-slate-500">
-                              Submitted: {sub.submittedAt?.toDate().toLocaleString()}
+                            <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest">
+                              Submitted: {parseLogTimestamp(sub.submittedAt)?.toLocaleString() || 'N/A'}
                             </div>
                           </div>
                         </div>
@@ -3079,7 +3089,9 @@ Sample tone for Class 6-10:
             <div key={i} className="p-8 flex items-center justify-between hover:bg-white/5 transition-all group">
               <div className="flex-1">
                 <div className="text-md text-white font-medium leading-relaxed mb-2 italic">"{n.message}"</div>
-                <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{n.createdAt}</div>
+                <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest">
+                  {parseLogTimestamp(n.createdAt)?.toLocaleString() || 'Recently'}
+                </div>
               </div>
               <button 
                 onClick={async () => {
@@ -4081,83 +4093,279 @@ Sample tone for Class 6-10:
     }
   }
 
+  async function handleJoinSupport() {
+    if (!remoteCode || remoteCode.length !== 6) {
+      showNotification("Please enter a valid 6-digit code", "error");
+      return;
+    }
+    setLoading(true);
+    try {
+      await joinSupportSession(remoteCode, auth.currentUser?.uid || '');
+      setIsRemoteActive(true);
+      showNotification("Connected to student session!");
+    } catch (err: any) {
+      showNotification(err.message, "error");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Effect to listen to active session
+  useEffect(() => {
+    if (!isRemoteActive || !remoteCode) return;
+    const unsub = onSnapshot(doc(firestore, 'remote_support', remoteCode), (snap) => {
+      if (snap.exists()) setRemoteSession(snap.data());
+      else {
+        setIsRemoteActive(false);
+        setRemoteSession(null);
+      }
+    });
+    return () => unsub();
+  }, [isRemoteActive, remoteCode]);
+
+  async function handleRemoteNavigate(target: string) {
+    if (!isRemoteActive || !remoteCode) return;
+    try {
+      await sendRemoteCommand(remoteCode, { type: 'navigate', target, timestamp: Date.now() });
+      showNotification(`Command Sent: Navigate to ${target}`);
+    } catch (err) {
+      console.error("Failed to send command", err);
+    }
+  }
+
+  function handleMouseMoveOnPad(e: React.MouseEvent<HTMLDivElement>) {
+    if (!isRemoteActive || !remoteCode) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    updatePointer(remoteCode, x, y);
+  }
+
   function renderSupport() {
+    const [supportSubTab, setSupportSubTab] = useState<'tickets' | 'remote'>('tickets');
+
     return (
-      <div className="space-y-6">
+      <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-white">Support Tickets</h2>
-          <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-full text-xs font-bold">
-            {supportTickets.filter(t => t.status === 'open').length} Open
-          </span>
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-8 bg-blue-500 rounded-full shadow-[0_0_10px_#3b82f6]"></div>
+            <h3 className="text-2xl font-black text-white tracking-tighter">Support Center</h3>
+          </div>
+          <div className="flex bg-white/5 p-1 rounded-2xl border border-white/5">
+            <button 
+              onClick={() => setSupportSubTab('tickets')}
+              className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${supportSubTab === 'tickets' ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
+            >
+              Tickets
+            </button>
+            <button 
+              onClick={() => setSupportSubTab('remote')}
+              className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${supportSubTab === 'remote' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
+            >
+              Remote Assist
+            </button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4">
-          {supportTickets.length === 0 ? (
-            <div className="glass-card p-12 rounded-3xl text-center">
-              <p className="text-slate-500">No support tickets found.</p>
+        {supportSubTab === 'tickets' ? (
+          <div className="grid grid-cols-1 gap-4">
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="text-sm font-black text-slate-500 uppercase tracking-widest">Active Tickets</h4>
+              <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-full text-[10px] font-black uppercase">
+                {supportTickets.filter(t => t.status === 'open').length} Open
+              </span>
             </div>
-          ) : (
-            supportTickets.map((ticket) => (
-              <motion.div 
-                key={ticket.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="glass-card p-6 rounded-3xl border border-white/5 hover:border-white/10 transition-all"
-              >
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div className="space-y-2">
+            {supportTickets.length === 0 ? (
+              <div className="glass-card p-12 rounded-3xl text-center">
+                <HelpCircle className="mx-auto text-slate-700 mb-4" size={48} />
+                <p className="text-slate-500 font-bold">No support tickets found.</p>
+              </div>
+            ) : (
+              supportTickets.map((ticket) => (
+                <motion.div 
+                  key={ticket.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="glass-card p-6 rounded-3xl border border-white/5 hover:border-white/10 transition-all group"
+                >
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="space-y-3 flex-1">
+                      <div className="flex items-center gap-3">
+                        <span className={`px-2 py-1 rounded-md text-[9px] font-black uppercase tracking-wider border ${ticket.status === 'open' ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'}`}>
+                          {ticket.status}
+                        </span>
+                        <h4 className="text-white font-black tracking-tight">{ticket.userName}</h4>
+                        <span className="text-slate-500 text-[10px] font-bold uppercase">{ticket.userPhone || ticket.userEmail}</span>
+                      </div>
+                      <p className="text-slate-300 text-sm leading-relaxed font-medium">{ticket.message}</p>
+                      <div className="text-[10px] text-slate-500 flex items-center gap-2 font-bold uppercase tracking-widest">
+                        <Calendar size={10} />
+                        {parseLogTimestamp(ticket.createdAt)?.toLocaleString() || 'Recently'}
+                      </div>
+                    </div>
                     <div className="flex items-center gap-3">
-                      <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${ticket.status === 'open' ? 'bg-amber-500/10 text-amber-500' : 'bg-emerald-500/10 text-emerald-500'}`}>
-                        {ticket.status}
-                      </span>
-                      <h4 className="text-white font-bold">{ticket.userName}</h4>
-                      <span className="text-slate-500 text-xs">{ticket.userPhone || ticket.userEmail}</span>
-                    </div>
-                    <p className="text-slate-300 text-sm leading-relaxed">{ticket.message}</p>
-                    <div className="text-[10px] text-slate-500 flex items-center gap-2">
-                      <Calendar size={10} />
-                      {ticket.createdAt?.toDate ? ticket.createdAt.toDate().toLocaleString() : new Date(ticket.createdAt).toLocaleString()}
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {ticket.status === 'open' ? (
+                      {ticket.status === 'open' ? (
+                        <button 
+                          onClick={async () => {
+                            await updateDoc(doc(firestore, 'support_tickets', ticket.id), { status: 'closed' });
+                            showNotification("Ticket marked as closed");
+                          }}
+                          className="px-6 py-2.5 bg-emerald-600/10 text-emerald-400 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-emerald-600 hover:text-white transition-all border border-emerald-500/20"
+                        >
+                          Resolve
+                        </button>
+                      ) : (
+                        <button 
+                          onClick={async () => {
+                            await updateDoc(doc(firestore, 'support_tickets', ticket.id), { status: 'open' });
+                            showNotification("Ticket reopened");
+                          }}
+                          className="px-6 py-2.5 bg-slate-800 text-slate-400 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-700 hover:text-white transition-all border border-white/5"
+                        >
+                          Reopen
+                        </button>
+                      )}
                       <button 
                         onClick={async () => {
-                          await updateDoc(doc(firestore, 'support_tickets', ticket.id), { status: 'closed' });
-                          showNotification("Ticket marked as closed");
+                          if (window.confirm("Are you sure you want to delete this ticket?")) {
+                            await deleteDoc(doc(firestore, 'support_tickets', ticket.id));
+                            showNotification("Ticket deleted");
+                          }
                         }}
-                        className="px-4 py-2 bg-emerald-600/20 text-emerald-400 rounded-xl text-xs font-bold hover:bg-emerald-600/30 transition-all border border-emerald-500/20"
+                        className="p-3 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all border border-red-500/20"
                       >
-                        Mark as Closed
+                        <Trash2 size={16} />
                       </button>
-                    ) : (
-                      <button 
-                        onClick={async () => {
-                          await updateDoc(doc(firestore, 'support_tickets', ticket.id), { status: 'open' });
-                          showNotification("Ticket reopened");
-                        }}
-                        className="px-4 py-2 bg-slate-800 text-slate-400 rounded-xl text-xs font-bold hover:bg-slate-700 transition-all border border-white/5"
-                      >
-                        Reopen
-                      </button>
-                    )}
-                    <button 
-                      onClick={async () => {
-                        if (window.confirm("Are you sure you want to delete this ticket?")) {
-                          await deleteDoc(doc(firestore, 'support_tickets', ticket.id));
-                          showNotification("Ticket deleted");
-                        }
-                      }}
-                      className="p-2 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500/20 transition-all border border-red-500/20"
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            ))
-          )}
-        </div>
+                </motion.div>
+              ))
+            )}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="glass-card p-8 rounded-[2.5rem] border border-emerald-500/10 space-y-8 relative overflow-hidden">
+               <div className="absolute top-0 right-0 p-8 opacity-5">
+                 <Zap size={160} />
+               </div>
+               
+               <div className="relative z-10 space-y-6">
+                 <div>
+                   <h4 className="text-xl font-black text-white tracking-tight mb-2">Establish Connection</h4>
+                   <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Enter the 6-digit session ID from the student</p>
+                 </div>
+
+                 <div className="flex gap-4">
+                   <input 
+                     type="text"
+                     maxLength={6}
+                     value={remoteCode}
+                     onChange={(e) => setRemoteCode(e.target.value.replace(/\D/g, ''))}
+                     placeholder="000 000"
+                     className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white text-3xl font-black tracking-[0.5em] focus:outline-none focus:border-emerald-500 transition-all text-center"
+                   />
+                   <button 
+                     onClick={handleJoinSupport}
+                     disabled={loading || isRemoteActive}
+                     className="px-8 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-black uppercase tracking-widest transition-all shadow-lg shadow-emerald-600/20 disabled:opacity-50"
+                   >
+                     {isRemoteActive ? 'Connected' : 'Join'}
+                   </button>
+                 </div>
+
+                 {isRemoteActive && remoteSession && (
+                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-6 border-t border-white/5 space-y-6">
+                     <div className="flex items-center justify-between">
+                       <div className="flex items-center gap-3">
+                         <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+                           <Users size={20} />
+                         </div>
+                         <div>
+                           <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Active Client</p>
+                           <p className="text-white font-bold">{remoteSession.studentName || 'Student'}</p>
+                         </div>
+                       </div>
+                       <button 
+                         onClick={() => {
+                           endSupportSession(remoteCode);
+                           setIsRemoteActive(false);
+                           setRemoteSession(null);
+                         }}
+                         className="px-4 py-2 bg-red-500/10 text-red-500 border border-red-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all"
+                       >
+                         Disconnect
+                       </button>
+                     </div>
+
+                     <div className="space-y-4">
+                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Remote Navigation Commands</p>
+                        <div className="grid grid-cols-2 gap-3">
+                          {[
+                            { label: 'Dashboard', target: '#dashboard', icon: LayoutDashboard },
+                            { label: 'Study Buddy', target: '#study-buddy', icon: Brain },
+                            { label: 'Test Series', target: '#monthly-tests', icon: ClipboardList },
+                            { label: 'Daily MCQs', target: '#daily-mcqs', icon: ListChecks },
+                            { label: 'Profile', target: '#profile', icon: Users },
+                            { label: 'Textbooks', target: '#textbooks', icon: BookOpen }
+                          ].map((cmd) => (
+                            <button 
+                              key={cmd.target}
+                              onClick={() => handleRemoteNavigate(cmd.target)}
+                              className="flex items-center gap-3 p-4 bg-white/5 border border-white/5 rounded-2xl hover:border-blue-500/30 hover:bg-blue-500/5 transition-all text-left group"
+                            >
+                              <cmd.icon size={18} className="text-slate-500 group-hover:text-blue-400 transition-colors" />
+                              <span className="text-xs font-bold text-slate-300 group-hover:text-white">{cmd.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                     </div>
+                   </motion.div>
+                 )}
+               </div>
+            </div>
+
+            <div className="glass-card p-8 rounded-[2.5rem] border border-blue-500/10 flex flex-col items-center justify-center text-center space-y-6 relative overflow-hidden group">
+               {isRemoteActive ? (
+                 <>
+                   <div 
+                     onMouseMove={handleMouseMoveOnPad}
+                     className="w-full aspect-[9/16] max-w-[280px] bg-slate-900/50 border-4 border-white/10 rounded-[3rem] relative cursor-none overflow-hidden shadow-2xl"
+                   >
+                     <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-transparent"></div>
+                     <div className="absolute top-4 left-1/2 -translate-x-1/2 w-16 h-1 bg-white/20 rounded-full"></div>
+                     
+                     <div className="absolute inset-0 flex flex-col items-center justify-center opacity-20 group-hover:opacity-40 transition-opacity">
+                        <Zap size={48} className="text-blue-500 mb-2" />
+                        <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Virtual Mousepad</p>
+                     </div>
+
+                     {/* The Remote Pointer Visualizer */}
+                     {remoteSession?.pointer && (
+                       <motion.div 
+                         animate={{ x: `${remoteSession.pointer.x}%`, y: `${remoteSession.pointer.y}%` }}
+                         className="absolute top-0 left-0 w-8 h-8 -ml-4 -mt-4 pointer-events-none"
+                       >
+                         <div className="w-full h-full bg-blue-500/30 rounded-full animate-ping absolute inset-0"></div>
+                         <div className="w-full h-full bg-blue-500 rounded-full border-2 border-white shadow-xl flex items-center justify-center">
+                            <div className="w-1 h-1 bg-white rounded-full"></div>
+                         </div>
+                       </motion.div>
+                     )}
+                   </div>
+                   <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Move mouse above to guide student</p>
+                 </>
+               ) : (
+                 <>
+                   <div className="w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center text-slate-700 mb-4">
+                    <Monitor size={40} />
+                   </div>
+                   <h4 className="text-xl font-black text-slate-400 tracking-tight">No Active Remote Session</h4>
+                   <p className="text-slate-600 text-xs max-w-[240px] leading-relaxed">Connect using a session ID to remotely guide students through the platform.</p>
+                 </>
+               )}
+            </div>
+          </div>
+        )}
       </div>
     );
   }

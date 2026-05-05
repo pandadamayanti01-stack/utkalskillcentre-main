@@ -46,12 +46,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'store', icon: Lucide.ShoppingBag, label: language === 'en' ? 'Avatar Store' : 'ଅବତାର ଷ୍ଟୋର' },
     { id: 'plans', icon: Lucide.CreditCard, label: language === 'en' ? 'Subscription' : 'ସବସ୍କ୍ରିପସନ୍' },
     { id: 'support', icon: Lucide.HelpCircle, label: t.support.title },
-  ].filter(item => {
-    if (item.id === 'monthly_tests') {
-      return isRegisteredForTestSeries || user?.role === 'admin';
-    }
-    return true;
-  });
+  ];
+
+
 
   return (
     <>
