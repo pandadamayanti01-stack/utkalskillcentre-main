@@ -295,8 +295,8 @@ app.post('/api/tts/gemini', async (req, res) => {
       : [(process.env.GEMINI_TTS_VOICE_EN || 'Aoede')];
 
     const ttsPrompt = language === 'or-IN'
-      ? `ନିମ୍ନଲିଖିତ ଟେକ୍ସଟ୍‌ଟିକୁ ଓଡ଼ିଆରେ ସ୍ୱାଭାବିକ, ଯୁବକ (ଭାଇ-ଟ୍ୟୁଟର) ଶବ୍ଦରେ, ସ୍ପଷ୍ଟ ଉଚ୍ଚାରଣ ଏବଂ ସ୍କୁଲ୍-ଫ୍ରେଣ୍ଡଲି ଗତିରେ କହନ୍ତୁ। ଓଡ଼ିଆ ଶବ୍ଦକୁ ବାକ୍ର ଉଚ୍ଚାରଣ କରିବେ ନାହିଁ।\n\n${text}`
-      : `Speak this text in a warm, clear tutoring style for students in India:\n\n${text}`;
+      ? `ନିମ୍ନଲିଖିତ ଓଡ଼ିଆ ଲେଖାକୁ ଅତ୍ୟନ୍ତ ସ୍ପଷ୍ଟ ଭାବରେ, ଗୋଟି ଗୋଟି କରି ଧୀର ଏବଂ ମଧୁର ସ୍ୱରରେ ଛୋଟ ପିଲାଙ୍କୁ ବୁଝାଇବା ଶୈଳୀରେ କହନ୍ତୁ। ପ୍ରତ୍ୟେକ ଓଡ଼ିଆ ଶବ୍ଦର ଉଚ୍ଚାରଣ ସ୍ପଷ୍ଟ ଏବଂ ସ୍ୱାଭାବିକ ହେବା ଉଚିତ। କୌଣସି ବିଦେଶୀ ଉଚ୍ଚାରଣ ବ୍ୟବହାର କରନ୍ତୁ ନାହିଁ।\n\n${text}`
+      : `Speak this text in a warm, extremely clear, slow-paced, and friendly tutoring style for children in India. Articulate each word slowly and clearly:\n\n${text}`;
 
     let lastError = 'Unknown TTS failure';
     for (const voiceName of voiceCandidates) {

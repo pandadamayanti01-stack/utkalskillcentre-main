@@ -220,10 +220,10 @@
 }
 
 
-/* THE AVATAR GLASS ORB */
+/* THE AVATAR GLASS ORB WITH DYNAMIC FLOAT & TILT */
 .avatar-sphere {
-  width: 160px;
-  height: 160px;
+  width: 170px;
+  height: 170px;
   border-radius: 50%;
   position: relative;
   z-index: 5;
@@ -231,27 +231,42 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(255, 255, 255, 0.03);
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.02) 60%, rgba(0, 0, 0, 0.4) 100%);
   box-shadow: 
-    0 10px 40px rgba(0, 0, 0, 0.5),
-    inset 0 0 20px rgba(255, 255, 255, 0.05);
-  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    0 20px 50px rgba(0, 0, 0, 0.65),
+    inset 0 0 25px rgba(255, 255, 255, 0.1);
+  transform-style: preserve-3d;
+  transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.6s ease;
+  animation: floatSphere 4s ease-in-out infinite;
 }
 
-.avatar-sphere:hover {
-  transform: scale(1.05);
-  box-shadow: 
-    0 15px 50px rgba(0, 0, 0, 0.6),
-    inset 0 0 30px rgba(255, 255, 255, 0.1);
+@keyframes floatSphere {
+  0% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
+  50% { transform: translateY(-8px) rotateX(2deg) rotateY(-2deg); }
+  100% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
+}
+
+.avatar-glass-shine {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 50%);
+  z-index: 4;
+  pointer-events: none;
 }
 
 .avatar-img-3d {
-  width: 140px;
-  height: 140px;
+  width: 154px;
+  height: 154px;
   border-radius: 50%;
   object-fit: cover;
   transition: all 0.6s ease;
   z-index: 2;
+  transform: translateZ(20px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .avatar-sphere-border {

@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import * as Lucide from 'lucide-react';
 import './GunduluHuman.css';
 import { getAI } from '../services/aiService';
+import { db } from '../firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 type SpeechInput = {
   primary: string;
@@ -69,13 +71,35 @@ const extractSpeechInput = (event: any): SpeechInput => {
   return { primary, candidates: candidates.slice(0, 3), confidence };
 };
 
-const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGreeting?: boolean; onBack?: () => void }) => {
+const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skipInitialGreeting?: boolean; userClass?: string; onBack?: () => void }) => {
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isWaitingForInput, setIsWaitingForInput] = useState(false);
   
   // Call Timer State
   const [callDuration, setCallDuration] = useState(0);
+
+  const [chapters, setChapters] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (userClass) {
+      const loadChapters = async () => {
+        try {
+          const q = query(
+            collection(db, 'chapters'),
+            where('class', '==', userClass)
+          );
+          const snapshot = await getDocs(q);
+          const list = snapshot.docs.map(doc => doc.data());
+          setChapters(list);
+          console.log(`[Gundulu RAG] Successfully loaded ${list.length} chapters for class ${userClass}`);
+        } catch (err) {
+          console.error('[Gundulu RAG] Failed to load chapters:', err);
+        }
+      };
+      loadChapters();
+    }
+  }, [userClass]);
 
   // Output language for TTS (Gundulu always replies in Odia).
   const language = 'or-IN';
@@ -90,6 +114,8 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
   
   const hasPlayedGreetingRef = useRef(false);
   const responseTurnRef = useRef(0);
+  const silenceTimeoutRef = useRef<any>(null);
+  const transcriptBufferRef = useRef<string>('');
   
   // Immersive Status States
   const [status, setStatus] = useState("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
@@ -97,6 +123,42 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
   const recognitionRef = useRef<any>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioUrlRef = useRef<string | null>(null);
+  const sphereRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const sphere = sphereRef.current;
+    if (!sphere) return;
+
+    const handleMove = (e: MouseEvent | TouchEvent) => {
+      const rect = sphere.getBoundingClientRect();
+      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+      const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+
+      const x = clientX - rect.left - rect.width / 2;
+      const y = clientY - rect.top - rect.height / 2;
+
+      const tiltX = -(y / (rect.height / 2)) * 20;
+      const tiltY = (x / (rect.width / 2)) * 20;
+
+      sphere.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(1.06)`;
+    };
+
+    const handleLeave = () => {
+      sphere.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
+    };
+
+    sphere.addEventListener('mousemove', handleMove);
+    sphere.addEventListener('mouseleave', handleLeave);
+    sphere.addEventListener('touchmove', handleMove);
+    sphere.addEventListener('touchend', handleLeave);
+
+    return () => {
+      sphere.removeEventListener('mousemove', handleMove);
+      sphere.removeEventListener('mouseleave', handleLeave);
+      sphere.removeEventListener('touchmove', handleMove);
+      sphere.removeEventListener('touchend', handleLeave);
+    };
+  }, []);
 
   const stopCurrentAudio = () => {
     if (audioRef.current) {
@@ -207,19 +269,51 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
     if (SpeechRecognition) {
       const recognition = new SpeechRecognition();
       recognition.lang = inputLanguage;
-      recognition.continuous = false;
-      recognition.interimResults = false;
+      recognition.continuous = true;
+      recognition.interimResults = true;
       recognition.maxAlternatives = 3;
 
       recognition.onstart = () => {
         setIsListening(true);
         setStatus("ଗୁଣ୍ଡୁଲୁ ଶୁଣୁଛି... 👂");
+        transcriptBufferRef.current = '';
       };
 
       recognition.onresult = (event: any) => {
-        const speechInput = extractSpeechInput(event);
-        setSubtitle(`ଆପଣ କହିଲେ: "${speechInput.primary}"`);
-        processWithGemini(speechInput);
+        if (silenceTimeoutRef.current) {
+          clearTimeout(silenceTimeoutRef.current);
+          silenceTimeoutRef.current = null;
+        }
+
+        let interimTranscript = '';
+        let finalTranscript = '';
+
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          const text = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += text + ' ';
+          } else {
+            interimTranscript += text;
+          }
+        }
+
+        if (finalTranscript) {
+          transcriptBufferRef.current += normalizeTranscript(finalTranscript);
+        }
+
+        const currentDisplay = (transcriptBufferRef.current + interimTranscript).trim();
+        if (currentDisplay) {
+          setSubtitle(`ଆପଣ କହିଲେ: "${currentDisplay}"`);
+        }
+
+        // Auto-submit after 2.5 seconds of silence
+        silenceTimeoutRef.current = setTimeout(() => {
+          recognition.stop();
+          const finalText = transcriptBufferRef.current.trim();
+          if (finalText) {
+            processWithGemini({ primary: finalText, candidates: [finalText] });
+          }
+        }, 2500);
       };
 
       recognition.onend = () => {
@@ -228,6 +322,14 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
 
       recognition.onerror = (event: any) => {
         setIsListening(false);
+        if (silenceTimeoutRef.current) {
+          clearTimeout(silenceTimeoutRef.current);
+          silenceTimeoutRef.current = null;
+        }
+        if (event.error === 'no-speech') {
+          setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+          return;
+        }
         const errorMsg = "ଶୁଣିପାରିଲି ନାହିଁ | ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |";
         setSubtitle(errorMsg);
         setStatus("ମୁଁ ଶୁଣିପାରିଲି ନାହିଁ");
@@ -239,6 +341,9 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
     return () => {
       window.speechSynthesis.cancel();
       stopCurrentAudio();
+      if (silenceTimeoutRef.current) {
+        clearTimeout(silenceTimeoutRef.current);
+      }
       window.removeEventListener('startGunduluGreeting', handleStartGreeting);
     };
   }, [language, skipInitialGreeting, inputLanguage]);
@@ -256,6 +361,33 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
       const ai = getAI();
       const modelName = 'gemini-2.5-flash';
       const turn = responseTurnRef.current;
+
+      // Dynamic Textbook RAG matching based on school curriculum chapters
+      let textbookContext = '';
+      if (chapters && chapters.length > 0 && speechInput.primary) {
+        const spokenLower = speechInput.primary.toLowerCase();
+        
+        // Scan for matching chapters based on title, subject, or content keywords
+        const matchingChapters = chapters.filter(ch => {
+          const title = (ch.title || '').toLowerCase();
+          const subject = (ch.subject || '').toLowerCase();
+          const notes = (ch.notes || '').toLowerCase();
+          
+          const words = spokenLower.split(/\s+/).filter((w: string) => w.length > 3);
+          const hasKeywordMatch = words.some((w: string) => title.includes(w) || subject.includes(w) || notes.includes(w));
+          return hasKeywordMatch;
+        });
+
+        const selectedChapters = matchingChapters.length > 0 
+          ? matchingChapters.slice(0, 3) 
+          : chapters.slice(0, 3);
+
+        textbookContext = selectedChapters.map(ch => 
+          `[Textbook Chapter: ${ch.title} | Subject: ${ch.subject}]\nVerified Lesson Notes: ${ch.notes || 'No specific textbook notes available.'}`
+        ).join('\n\n');
+        
+        console.log(`[Gundulu RAG] Matching chapters selected:`, selectedChapters.map(ch => ch.title));
+      }
       
       const systemInstruction = `
         Identity: You are "Gundulu," a 4-year-old baby genius from Odisha. 
@@ -271,6 +403,13 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
         Conversation Rule: Keep replies natural and lesson-focused after greeting.
         Context: This is response turn number ${turn + 1}. If turn > 1, avoid intro lines and start directly with answer.
         Constraint: Keep response under 3 sentences.
+
+        ${textbookContext ? `
+        Verified Textbook Context:
+        Use the following official textbook notes/context to answer the student's question accurately. Do not invent facts outside this curriculum unless necessary for answering:
+        
+        ${textbookContext}
+        ` : ''}
       `;
 
       const inputPayload = `
@@ -313,8 +452,18 @@ Understand user intent from these transcripts and respond in Odia only.
 
   const toggleListening = () => {
     if (isListening) {
+      if (silenceTimeoutRef.current) {
+        clearTimeout(silenceTimeoutRef.current);
+        silenceTimeoutRef.current = null;
+      }
       recognitionRef.current?.stop();
+      
+      const finalCompiled = transcriptBufferRef.current.trim();
+      if (finalCompiled) {
+        processWithGemini({ primary: finalCompiled, candidates: [finalCompiled] });
+      }
     } else {
+      transcriptBufferRef.current = '';
       recognitionRef.current?.start();
     }
   };
@@ -379,8 +528,11 @@ Understand user intent from these transcripts and respond in Odia only.
           <div className="glow-aura"></div>
 
           {/* Central Avatar Orb */}
-          <div className="avatar-sphere" onClick={toggleListening}>
+          <div ref={sphereRef} className="avatar-sphere" onClick={toggleListening}>
             <img src="/gundulu.png" alt="Gundulu" className="avatar-img-3d" />
+            
+            {/* Glossy glass reflection cover */}
+            <div className="avatar-glass-shine"></div>
             
             {/* Soft border ring overlay */}
             <div className="avatar-sphere-border"></div>

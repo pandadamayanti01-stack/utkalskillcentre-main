@@ -2533,7 +2533,7 @@ export default function App() {
               isPremium ? <StudyBuddyView language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} user={user} initialVoiceMode={openTutorInVoiceMode} onBack={() => setActiveTab('dashboard')} onLanguageChange={setLanguage} /> : <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
             )}
             {activeTab === 'gundulu' && (
-              isPremium ? <GunduluHuman onBack={() => setActiveTab('dashboard')} /> : <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
+              isPremium ? <GunduluHuman userClass={user?.class} onBack={() => setActiveTab('dashboard')} /> : <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
             )}
             {activeTab === 'profile' && <ProfileView user={user} language={language} onBack={() => setActiveTab('dashboard')} onParentAccess={() => setActiveTab('parent_dashboard')} setActiveTab={setActiveTab} />}
             {activeTab === 'parent_dashboard' && <ParentDashboard user={user} chapters={chapters} leaderboard={leaderboard} language={language} onBack={() => setActiveTab('profile')} userProgress={userProgress} />}
