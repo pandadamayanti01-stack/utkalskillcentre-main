@@ -285,7 +285,7 @@ app.post('/api/tts/gemini', async (req, res) => {
       return res.status(503).json({ error: 'GEMINI_API_KEY is not configured' });
     }
 
-    const model = process.env.GEMINI_TTS_MODEL || 'gemini-3.1-flash-tts-preview';
+    const model = 'gemini-3.1-flash-tts-preview';
     const odiaVoiceList = (process.env.GEMINI_TTS_VOICE_ODIA_LIST || 'Puck,Kore,Charon')
       .split(',')
       .map((v) => v.trim())
