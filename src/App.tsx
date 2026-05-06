@@ -6213,6 +6213,10 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
   // Anti-Cheating: Tab Switching Detection
   useEffect(() => {
     const handleVisibilityChange = () => {
+      if ((window as any).isUploadingRoughNote) {
+        console.log("[Anti-Cheating] Visibility change ignored due to active camera/gallery rough note upload.");
+        return;
+      }
       if (document.visibilityState === 'hidden') {
         setViolations(prev => {
           const next = prev + 1;

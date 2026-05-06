@@ -72,6 +72,22 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
     });
   };
 
+  const flagUploadStart = () => {
+    (window as any).isUploadingRoughNote = true;
+    console.log("[Anti-Cheating] Upload dialog triggered, setting exemption flag.");
+    
+    const handleWindowFocus = () => {
+      console.log("[Anti-Cheating] Window focused back, scheduling exemption reset.");
+      setTimeout(() => {
+        (window as any).isUploadingRoughNote = false;
+        console.log("[Anti-Cheating] Exemption reset completed.");
+      }, 1500); // 1.5s delay is extremely safe to let tab visibility settle
+      window.removeEventListener('focus', handleWindowFocus);
+    };
+    
+    window.addEventListener('focus', handleWindowFocus);
+  };
+
   const handleNoteUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -290,12 +306,12 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
                       <label className="cursor-pointer flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">
                         <Camera size={14} />
                         Camera
-                        <input type="file" accept="image/*" capture="environment" className="hidden" onChange={handleNoteUpload} />
+                        <input type="file" accept="image/*" capture="environment" className="hidden" onChange={handleNoteUpload} onClick={flagUploadStart} />
                       </label>
                       <label className="cursor-pointer flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">
                         <ImageIcon size={14} />
                         Gallery
-                        <input type="file" accept="image/*" className="hidden" onChange={handleNoteUpload} />
+                        <input type="file" accept="image/*" className="hidden" onChange={handleNoteUpload} onClick={flagUploadStart} />
                       </label>
                     </div>
                   )}
