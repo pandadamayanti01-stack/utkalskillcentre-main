@@ -682,6 +682,7 @@ export default function App() {
   const [isRegisteredForTestSeries, setIsRegisteredForTestSeries] = useState(false);
   const [openTutorInVoiceMode, setOpenTutorInVoiceMode] = useState(0);
   const [supportSession, setSupportSession] = useState<any>(null);
+  const contentScrollRef = useRef<HTMLDivElement>(null);
 
   // Support Session Cleanup
   useEffect(() => {
@@ -822,7 +823,6 @@ export default function App() {
 
   const [language, _setLanguage] = useState<'en' | 'or'>(localStorage.getItem('lang') as any || 'or');
   const languageRef = useRef(language);
-  const contentScrollRef = useRef<HTMLDivElement>(null);
   const setLanguage = async (lang: 'en' | 'or') => {
     languageRef.current = lang;
     _setLanguage(lang);
