@@ -29,6 +29,8 @@ export interface SupportSession {
   adminUid?: string;
   lastCommand?: RemoteCommand;
   pointer?: { x: number, y: number };
+  currentPage?: string;
+  scrollPct?: number;
   createdAt: any;
 }
 

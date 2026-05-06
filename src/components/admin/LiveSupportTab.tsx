@@ -256,10 +256,100 @@ export const LiveSupportTab: React.FC<LiveSupportTabProps> = ({ user }) => {
                 </div>
               </div>
             ) : (
-              <div className="space-y-4 max-w-sm">
-                <Lucide.MonitorOff size={48} className="mx-auto text-slate-600 opacity-50" />
-                <h4 className="text-lg font-bold text-slate-400">Screen Mirror Inactive</h4>
-                <p className="text-xs text-slate-500">Ask the student to allow screen mirroring to see what they are looking at in real-time.</p>
+              <div className="w-full flex flex-col h-full space-y-6">
+                {/* Header */}
+                <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">Co-Browsing Telemetry HUD</h4>
+                  </div>
+                  <div className="text-[10px] bg-slate-850 text-slate-300 px-2 py-0.5 rounded-full font-black uppercase">
+                    PWA State Sync Active
+                  </div>
+                </div>
+
+                {/* Dashboard grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
+                  
+                  {/* Current Page Telemetry */}
+                  <div className="bg-slate-900/40 border border-white/5 p-6 rounded-2xl flex flex-col justify-between space-y-4">
+                    <div className="space-y-2">
+                      <div className="text-xs font-black text-slate-500 uppercase tracking-wider">📍 Student Current View</div>
+                      <div className="flex items-center gap-3 mt-2">
+                        <div className="w-10 h-10 bg-[#ffd700]/10 rounded-xl flex items-center justify-center border border-[#ffd700]/20 text-[#ffd700]">
+                          {activeSession.currentPage === 'study_buddy' ? (
+                            <Lucide.Bot size={20} />
+                          ) : activeSession.currentPage === 'daily_mcqs' ? (
+                            <Lucide.HelpCircle size={20} />
+                          ) : activeSession.currentPage === 'avatar_store' ? (
+                            <Lucide.UserCircle2 size={20} />
+                          ) : activeSession.currentPage === 'practice' ? (
+                            <Lucide.ClipboardList size={20} />
+                          ) : activeSession.currentPage === 'syllabus_tracker' ? (
+                            <Lucide.TrendingUp size={20} />
+                          ) : (
+                            <Lucide.Home size={20} />
+                          )}
+                        </div>
+                        <div>
+                          <p className="text-lg font-black text-white capitalize">
+                            {activeSession.currentPage ? activeSession.currentPage.replace('_', ' ') : 'Dashboard'}
+                          </p>
+                          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                            Active App Tab
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="text-[11px] text-slate-400 leading-normal bg-white/5 p-3 rounded-xl border border-white/5">
+                      💡 Use **Force Navigation** in the right-hand panel to teleport this student to any other feature!
+                    </div>
+                  </div>
+
+                  {/* Scroll Depth Telemetry */}
+                  <div className="bg-slate-900/40 border border-white/5 p-6 rounded-2xl flex flex-col justify-between space-y-4">
+                    <div className="space-y-2">
+                      <div className="text-xs font-black text-slate-500 uppercase tracking-wider">📜 Live Scroll Position</div>
+                      <div className="mt-4 space-y-3">
+                        <div className="flex justify-between items-end">
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Scroll depth</span>
+                          <span className="text-md font-black text-emerald-400">{activeSession.scrollPct ?? 0}%</span>
+                        </div>
+                        {/* Progress track */}
+                        <div className="w-full h-3 bg-slate-950 rounded-full overflow-hidden border border-white/5 p-0.5">
+                          <div 
+                            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]"
+                            style={{ width: `${activeSession.scrollPct ?? 0}%` }}
+                          />
+                        </div>
+                        <p className="text-[10px] text-slate-400 italic">
+                          {activeSession.scrollPct === undefined || activeSession.scrollPct === 0 
+                            ? "Reading top of the page" 
+                            : activeSession.scrollPct > 80 
+                            ? "Reached bottom of the page" 
+                            : `Reading middle of the page`}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="text-[11px] text-slate-400 leading-normal bg-white/5 p-3 rounded-xl border border-white/5">
+                      💡 When they scroll up or down on their mobile phone, this bar moves in **real-time**!
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* Mobile screen mirror advice alert */}
+                <div className="p-4 bg-slate-900/60 border border-white/5 rounded-2xl flex items-center gap-4">
+                  <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0 border border-blue-500/20 text-blue-400">
+                    <Lucide.Smartphone size={16} />
+                  </div>
+                  <div className="text-[11px] leading-relaxed text-slate-300">
+                    <span className="font-bold text-white block mb-0.5">Mobile-Friendly Optimization Active</span>
+                    To conserve the student's mobile data and run smoothly on 4G networks in Odisha, we are syncing telemetry instead of capturing video. You can see their exact position, scroll depth, and direct pointer coordinates seamlessly.
+                  </div>
+                </div>
               </div>
             )}
           </div>

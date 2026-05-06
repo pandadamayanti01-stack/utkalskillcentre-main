@@ -752,7 +752,54 @@ export default function App() {
     }
 
     resetPageScroll();
-  }, [activeTab]);
+
+    // LIVE STATE SYNC: Update active support session with the student's current page/tab!
+    if (supportSession?.id) {
+      updateDoc(doc(firestore, 'remote_support', supportSession.id), {
+        currentPage: activeTab,
+        lastActivityTimestamp: Date.now()
+      }).catch(err => console.warn("PWA activeTab sync error:", err));
+    }
+  }, [activeTab, supportSession?.id]);
+
+  // LIVE STATE SYNC: Throttled scroll percentage sync to conserve mobile data
+  useEffect(() => {
+    if (!supportSession?.id) return;
+
+    let lastSync = 0;
+    const handleScroll = (e: any) => {
+      const now = Date.now();
+      if (now - lastSync < 1000) return; // Sync at most once per second to conserve data
+      
+      const target = e.target === document ? document.documentElement : e.target;
+      if (!target) return;
+
+      const scrollTop = target.scrollTop || window.scrollY || 0;
+      const scrollHeight = target.scrollHeight || document.documentElement.scrollHeight || 1;
+      const clientHeight = target.clientHeight || window.innerHeight || 1;
+      
+      const pct = Math.min(100, Math.max(0, Math.round((scrollTop / (scrollHeight - clientHeight)) * 100)));
+
+      lastSync = now;
+      updateDoc(doc(firestore, 'remote_support', supportSession.id), {
+        scrollPct: pct,
+        lastActivityTimestamp: Date.now()
+      }).catch(err => console.warn("PWA scroll sync error:", err));
+    };
+
+    const scrollContainer = contentScrollRef.current;
+    if (scrollContainer) {
+      scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      if (scrollContainer) {
+        scrollContainer.removeEventListener('scroll', handleScroll);
+      }
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [supportSession?.id, contentScrollRef.current]);
 
   useEffect(() => {
     const handleHashChange = () => {
