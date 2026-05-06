@@ -273,6 +273,33 @@ app.post('/api/payment/verify', async (req, res) => {
   }
 });
 
+// Helper to prepend standard WAV header to raw PCM audio/l16 buffer
+function pcmToWav(pcmBuffer: any, sampleRate: number = 24000): any {
+  const numChannels = 1;
+  const bitsPerSample = 16;
+  const blockAlign = numChannels * (bitsPerSample / 8);
+  const byteRate = sampleRate * blockAlign;
+  const subChunk2Size = pcmBuffer.length;
+  const chunkSize = 36 + subChunk2Size;
+
+  const header = Buffer.alloc(44);
+  header.write('RIFF', 0);
+  header.writeUInt32LE(chunkSize, 4);
+  header.write('WAVE', 8);
+  header.write('fmt ', 12);
+  header.writeUInt32LE(16, 16);
+  header.writeUInt16LE(1, 20); // PCM Format
+  header.writeUInt16LE(numChannels, 22);
+  header.writeUInt32LE(sampleRate, 24);
+  header.writeUInt32LE(byteRate, 28);
+  header.writeUInt16LE(blockAlign, 32);
+  header.writeUInt16LE(bitsPerSample, 34);
+  header.write('data', 36);
+  header.writeUInt32LE(subChunk2Size, 40);
+
+  return Buffer.concat([header, pcmBuffer]);
+}
+
 app.post('/api/tts/gemini', async (req, res) => {
   try {
     const { text, language } = req.body || {};
@@ -333,8 +360,17 @@ app.post('/api/tts/gemini', async (req, res) => {
         }
 
         const mimeType = inlineData.mimeType || 'audio/wav';
-        const audioBuffer = Buffer.from(inlineData.data, 'base64');
-        res.setHeader('Content-Type', mimeType);
+        let audioBuffer = Buffer.from(inlineData.data, 'base64');
+        let finalMimeType = 'audio/wav';
+
+        // Convert raw 16-bit linear PCM (audio/l16) to fully compatible audio/wav
+        if (mimeType.toLowerCase().includes('l16') || mimeType.toLowerCase().includes('pcm')) {
+          audioBuffer = pcmToWav(audioBuffer, 24000);
+        } else {
+          finalMimeType = mimeType;
+        }
+
+        res.setHeader('Content-Type', finalMimeType);
         res.setHeader('Cache-Control', 'no-store');
         return res.send(audioBuffer);
       } catch (innerErr: any) {

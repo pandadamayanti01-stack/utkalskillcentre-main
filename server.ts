@@ -282,6 +282,33 @@ async function startServer() {
     }
   });
 
+  // Helper to prepend standard WAV header to raw PCM audio/l16 buffer
+  function pcmToWav(pcmBuffer: any, sampleRate: number = 24000): any {
+    const numChannels = 1;
+    const bitsPerSample = 16;
+    const blockAlign = numChannels * (bitsPerSample / 8);
+    const byteRate = sampleRate * blockAlign;
+    const subChunk2Size = pcmBuffer.length;
+    const chunkSize = 36 + subChunk2Size;
+
+    const header = Buffer.alloc(44);
+    header.write('RIFF', 0);
+    header.writeUInt32LE(chunkSize, 4);
+    header.write('WAVE', 8);
+    header.write('fmt ', 12);
+    header.writeUInt32LE(16, 16);
+    header.writeUInt16LE(1, 20); // PCM Format
+    header.writeUInt16LE(numChannels, 22);
+    header.writeUInt32LE(sampleRate, 24);
+    header.writeUInt32LE(byteRate, 28);
+    header.writeUInt16LE(blockAlign, 32);
+    header.writeUInt16LE(bitsPerSample, 34);
+    header.write('data', 36);
+    header.writeUInt32LE(subChunk2Size, 40);
+
+    return Buffer.concat([header, pcmBuffer]);
+  }
+
   // Gemini TTS proxy (keeps GEMINI_API_KEY on server only)
   app.post('/api/tts/gemini', async (req, res) => {
     try {
@@ -305,7 +332,7 @@ async function startServer() {
         : [(process.env.GEMINI_TTS_VOICE_EN || 'Aoede')];
 
       const ttsPrompt = language === 'or-IN'
-        ? `ନିମ୍ନଲିଖିତ ଓଡ଼ିଆ ଲେଖାକୁ ଅତ୍ୟନ୍ତ ସ୍ପଷ୍ଟ ଭାବରେ, ଗୋଟି ଗୋଟି କରି ଧୀର ଏବଂ ମଧୁର ସ୍ୱରରେ ଛୋଟ ପିଲାଙ୍କୁ ବୁଝାଇବା ଶୈଳୀରେ କହନ୍ତୁ। ପ୍ରତ୍ୟେକ ଓଡ଼ିଆ ଶବ୍ଦର ଉଚ୍ଚାରଣ ସ୍ପଷ୍ଟ ଏବଂ ସ୍ୱାଭାବିକ ହେବା ଉଚିତ। କୌଣସି ବିଦେଶୀ ଉଚ୍ଚାରଣ ବ୍ୟବହାର କରନ୍ତୁ ନାହିଁ।\n\n${text}`
+        ? `ନିମ୍ନଲିଖିତ ଓଡ଼ିଆ ଲେଖାକୁ ଅତ୍ୟନ୍ତ ସ୍ପଷ୍ଟ ଭାବରେ, ଗୋଟି ଗୋଟି କରି ଧୀର ଏବଂ ମଧୁର ସ୍ୱରରେ ଛୋଟ ପିଲାଙ୍କু ବୁଝାଇବା ଶୈଳୀରେ କହନ୍ତୁ। ପ୍ରତ୍ୟେକ ଓଡ଼ିଆ ଶବ୍ଦର ଉଚ୍ଚାରଣ ସ୍ପଷ୍ଟ ଏବଂ ସ୍ୱାଭାବିକ ହେବା ଉଚିତ। କୌଣସି ବିଦେଶୀ ଉଚ୍ଚାରଣ ବ୍ୟବହାର କରନ୍ତୁ ନାହିଁ।\n\n${text}`
         : `Speak this text in a warm, extremely clear, slow-paced, and friendly tutoring style for children in India. Articulate each word slowly and clearly:\n\n${text}`;
 
       let lastError = 'Unknown TTS failure';
@@ -342,8 +369,17 @@ async function startServer() {
         }
 
         const mimeType = inlineData.mimeType || 'audio/wav';
-        const audioBuffer = Buffer.from(inlineData.data, 'base64');
-        res.setHeader('Content-Type', mimeType);
+        let audioBuffer = Buffer.from(inlineData.data, 'base64');
+        let finalMimeType = 'audio/wav';
+
+        // Convert raw 16-bit linear PCM (audio/l16) to fully compatible audio/wav
+        if (mimeType.toLowerCase().includes('l16') || mimeType.toLowerCase().includes('pcm')) {
+          audioBuffer = pcmToWav(audioBuffer, 24000);
+        } else {
+          finalMimeType = mimeType;
+        }
+
+        res.setHeader('Content-Type', finalMimeType);
         res.setHeader('Cache-Control', 'no-store');
         return res.send(audioBuffer);
       }
