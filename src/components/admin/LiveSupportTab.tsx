@@ -434,14 +434,30 @@ export const LiveSupportTab: React.FC<LiveSupportTabProps> = ({ user }) => {
             {/* FORCE NAVIGATION */}
             <div className="p-6 bg-slate-800/50 rounded-3xl border border-white/5 space-y-4">
               <div>
-                <h4 className="text-md font-bold text-white mb-1">Force Navigation</h4>
-                <p className="text-xs text-slate-400">Send the student instantly to a specific page.</p>
+                <h4 className="text-md font-bold text-white mb-1">Force Navigation Teleport</h4>
+                <p className="text-xs text-slate-400">Instantly redirect the student's screen to any tab.</p>
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <button onClick={() => handleForceNavigate('dashboard')} className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-xs font-bold text-white text-left">Dashboard</button>
-                <button onClick={() => handleForceNavigate('study_buddy')} className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-xs font-bold text-white text-left">Study Buddy</button>
-                <button onClick={() => handleForceNavigate('store')} className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-xs font-bold text-white text-left">Avatar Store</button>
-                <button onClick={() => handleForceNavigate('monthly_tests')} className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-xs font-bold text-white text-left">Monthly Tests</button>
+              <div className="grid grid-cols-2 gap-2.5">
+                {[
+                  { target: 'dashboard', label: 'Dashboard', icon: Lucide.Home, color: 'text-blue-400 hover:bg-blue-500/10' },
+                  { target: 'study_buddy', label: 'Study Buddy', icon: Lucide.Bot, color: 'text-purple-400 hover:bg-purple-500/10' },
+                  { target: 'daily_mcqs', label: 'Daily MCQs', icon: Lucide.Zap, color: 'text-amber-400 hover:bg-amber-500/10' },
+                  { target: 'practice', label: 'Practice Hub', icon: Lucide.ClipboardList, color: 'text-emerald-400 hover:bg-emerald-500/10' },
+                  { target: 'textbooks', label: 'Textbooks', icon: Lucide.BookOpen, color: 'text-cyan-400 hover:bg-cyan-500/10' },
+                  { target: 'monthly_tests', label: 'Monthly Tests', icon: Lucide.HelpCircle, color: 'text-pink-400 hover:bg-pink-500/10' },
+                  { target: 'avatar_store', label: 'Avatar Store', icon: Lucide.UserCircle2, color: 'text-orange-400 hover:bg-orange-500/10' },
+                  { target: 'syllabus_tracker', label: 'Syllabus', icon: Lucide.TrendingUp, color: 'text-teal-400 hover:bg-teal-500/10' },
+                  { target: 'support', label: 'Live Support', icon: Lucide.Shield, color: 'text-rose-400 hover:bg-rose-500/10' },
+                ].map((item) => (
+                  <button 
+                    key={item.target}
+                    onClick={() => handleForceNavigate(item.target)} 
+                    className={`p-3 bg-white/5 rounded-xl text-[10px] font-black uppercase tracking-wider text-white text-left flex items-center gap-2 transition-all border border-white/5 active:scale-95 hover:border-white/10 ${item.color}`}
+                  >
+                    <item.icon size={13} className="shrink-0" />
+                    <span>{item.label}</span>
+                  </button>
+                ))}
               </div>
             </div>
 
