@@ -2442,7 +2442,7 @@ Sample tone for Class 6-10:
       </div>
 
       {selectedTestIdForSubmissions && (
-        <div className="fixed inset-0 z-[60] bg-slate-950 flex flex-col p-6 overflow-y-auto">
+        <div className={`fixed inset-0 z-[60] bg-slate-950 flex flex-col pt-6 pb-6 pr-6 pl-6 md:pl-8 lg:pr-10 ${isSidebarOpen ? 'lg:pl-[300px]' : 'lg:pl-32'} overflow-y-auto`}>
           <div className="flex items-center justify-between mb-8">
             <div>
               <h3 className="text-2xl font-bold text-white">Test Submissions</h3>
