@@ -762,14 +762,16 @@ async function getAvailableBucketSubjects(adminApp: App, className: string): Pro
   }
 }
 
-export async function runScheduledGeneration(adminApp: App, databaseId: string, dateString?: string) {
+export async function runScheduledGeneration(adminApp: App, databaseId: string, dateString?: string, specificClassName?: string) {
   const db = getDatabase(adminApp, databaseId);
   const settingsDoc = await db.collection('system_settings').doc('config').get();
   const settings = (settingsDoc.data() || {}) as AutomationSettings;
   const activeDate = dateString || new Date().toISOString().split('T')[0];
-  const effectiveClasses = Array.isArray(settings.enabledClasses) && settings.enabledClasses.length > 0
-    ? settings.enabledClasses
-    : DEFAULT_ENABLED_CLASSES;
+  const effectiveClasses = specificClassName
+    ? [specificClassName]
+    : (Array.isArray(settings.enabledClasses) && settings.enabledClasses.length > 0
+      ? settings.enabledClasses
+      : DEFAULT_ENABLED_CLASSES);
   const hasCustomRotation = Array.isArray(settings.dailyMcqSubjectRotation) && settings.dailyMcqSubjectRotation.length > 0;
   const status = settings.dailyMcqAutomationPublishMode === 'published' ? 'published' : DEFAULT_AUTOMATION_STATUS;
 
@@ -953,7 +955,8 @@ export function registerDailyMcqAutomation(app: Express, providedAdminApp: App |
       }
 
       const activeDate = String(req.body?.activeDate || '').trim() || undefined;
-      const result = await runScheduledGeneration(adminApp, databaseId, activeDate);
+      const className = String(req.body?.className || '').trim() || undefined;
+      const result = await runScheduledGeneration(adminApp, databaseId, activeDate, className);
       return res.json(result);
     } catch (error: unknown) {
       console.error('Run Daily MCQ Automation Error:', error);

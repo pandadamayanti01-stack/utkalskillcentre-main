@@ -72,6 +72,7 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
   const [isSaving, setIsSaving] = useState(false);
   const [isGeneratingFromDrive, setIsGeneratingFromDrive] = useState(false);
   const [isRunningAutoGeneration, setIsRunningAutoGeneration] = useState(false);
+  const [autoGenClass, setAutoGenClass] = useState<string>('all');
   const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>('medium');
 
   const sortedMcqs = useMemo(
@@ -244,7 +245,7 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ activeDate: today }),
+        body: JSON.stringify({ activeDate: today, className: autoGenClass === 'all' ? undefined : autoGenClass }),
       });
       const payload = await readJsonResponse(response);
       if (!response.ok) {
@@ -273,15 +274,27 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
           </div>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
-          <button
-            type="button"
-            onClick={handleRunAutoGeneration}
-            disabled={isRunningAutoGeneration}
-            className="px-6 py-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/20 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all flex items-center gap-2"
-          >
-            <CheckCircle2 size={16} />
-            {isRunningAutoGeneration ? 'Automated Pulse Active...' : 'Trigger Global Auto-Pulse'}
-          </button>
+          <div className="flex items-center gap-2">
+            <select
+              value={autoGenClass}
+              onChange={(e) => setAutoGenClass(e.target.value)}
+              className="bg-black/40 border border-cyan-500/20 text-cyan-400 rounded-xl px-4 py-2 font-bold text-[10px] uppercase tracking-widest focus:outline-none focus:border-cyan-500/50"
+            >
+              <option value="all">All Classes</option>
+              {Array.from({ length: 10 }, (_, index) => `class${index + 1}`).map((value) => (
+                <option key={value} value={value}>{value.toUpperCase()}</option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={handleRunAutoGeneration}
+              disabled={isRunningAutoGeneration}
+              className="px-6 py-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/20 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all flex items-center gap-2"
+            >
+              <CheckCircle2 size={16} />
+              {isRunningAutoGeneration ? 'Automated Pulse Active...' : autoGenClass === 'all' ? 'Trigger Global Auto-Pulse' : 'Trigger Auto-Pulse'}
+            </button>
+          </div>
           <button
             type="button"
             onClick={() => setIsCreating((prev) => !prev)}

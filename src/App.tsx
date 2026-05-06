@@ -6003,7 +6003,8 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
       const compressedBlob = await compressImage(file);
       
       // 2. Upload
-      const storageRef = ref(storage, `monthly_test_evidence/${user.uid}/${test.id}/${currentIdx}_${Date.now()}.jpg`);
+      const safeUserId = user?.uid || user?.id || 'anonymous';
+      const storageRef = ref(storage, `monthly_test_evidence/${safeUserId}/${test.id}/${currentIdx}_${Date.now()}.jpg`);
       await uploadBytes(storageRef, compressedBlob);
       const url = await getDownloadURL(storageRef);
       
@@ -6014,9 +6015,9 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
         : { text: currentVal, imageUrl: url };
       
       handleAnswer(newVal);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Image upload error:", err);
-      alert("Failed to upload image. Please try again.");
+      alert(`Failed to upload image: ${err.message || "Unknown error"}. Please check your connection and try again.`);
     } finally {
       setUploadingImage(false);
     }
@@ -6198,6 +6199,7 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
                     onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (file) handleImageUpload(file);
+                      e.target.value = ''; // Reset input
                     }}
                     disabled={uploadingImage}
                   />
@@ -6212,6 +6214,7 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
                     onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (file) handleImageUpload(file);
+                      e.target.value = ''; // Reset input
                     }}
                     disabled={uploadingImage}
                   />
