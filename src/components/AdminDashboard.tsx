@@ -76,6 +76,7 @@ import {
 import { translations } from '../translations';
 import { Chapter, DailyMcq, VideoOption } from '../types';
 import { DailyMcqTab } from './admin/DailyMcqTab';
+import { LiveSupportTab } from './admin/LiveSupportTab';
 import { 
   translateContent, 
   generateChapterContent, 
@@ -141,6 +142,7 @@ Sample tone for Class 6-10:
 "Ei concept-ta tikie tricky, kintu chinta karani. Mu achhi paraka! Chal, step-by-step solve kariba."`;
 
   const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
+  const [supportSubTab, setSupportSubTab] = useState<'tickets' | 'remote'>('tickets');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [stats, setStats] = useState({
     totalRevenue: 0,
@@ -824,11 +826,19 @@ Sample tone for Class 6-10:
   );
 
   const SidebarNavigation = () => (
-    <aside 
-      className={`fixed top-0 left-0 h-full bg-slate-950/40 backdrop-blur-3xl border-r border-white/5 z-[60] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${isSidebarOpen ? 'w-[280px]' : 'w-24'}`}
-      onMouseEnter={() => setIsSidebarOpen(true)}
-      onMouseLeave={() => setIsSidebarOpen(false)}
-    >
+    <>
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[65] lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+      <aside 
+        className={`fixed top-0 left-0 h-full bg-slate-950/95 lg:bg-slate-950/40 backdrop-blur-3xl border-r border-white/5 z-[70] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${isSidebarOpen ? 'translate-x-0 w-[280px]' : '-translate-x-full lg:translate-x-0 lg:w-24'}`}
+        onMouseEnter={() => { if (window.innerWidth >= 1024) setIsSidebarOpen(true); }}
+        onMouseLeave={() => { if (window.innerWidth >= 1024) setIsSidebarOpen(false); }}
+      >
       <div className="flex flex-col h-full py-8">
         {/* Brand */}
         <div className="px-6 mb-12 flex items-center gap-4 overflow-hidden">
@@ -890,7 +900,10 @@ Sample tone for Class 6-10:
                 return (
                   <button
                     key={item.id}
-                    onClick={() => setActiveTab(item.id as AdminTab)}
+                    onClick={() => {
+                      setActiveTab(item.id as AdminTab);
+                      if (window.innerWidth < 1024) setIsSidebarOpen(false);
+                    }}
                     className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group relative ${
                       isActive 
                       ? 'bg-emerald-500/10 text-emerald-400' 
@@ -934,6 +947,7 @@ Sample tone for Class 6-10:
         </div>
       </div>
     </aside>
+    </>
   );
 
   const renderDashboard = () => (
@@ -4199,8 +4213,6 @@ Sample tone for Class 6-10:
   }
 
   function renderSupport() {
-    const [supportSubTab, setSupportSubTab] = useState<'tickets' | 'remote'>('tickets');
-
     return (
       <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <div className="flex items-center justify-between">
@@ -4300,128 +4312,7 @@ Sample tone for Class 6-10:
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="glass-card p-8 rounded-[2.5rem] border border-emerald-500/10 space-y-8 relative overflow-hidden">
-               <div className="absolute top-0 right-0 p-8 opacity-5">
-                 <Zap size={160} />
-               </div>
-               
-               <div className="relative z-10 space-y-6">
-                 <div>
-                   <h4 className="text-xl font-black text-white tracking-tight mb-2">Establish Connection</h4>
-                   <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Enter the 6-digit session ID from the student</p>
-                 </div>
-
-                 <div className="flex gap-4">
-                   <input 
-                     type="text"
-                     maxLength={6}
-                     value={remoteCode}
-                     onChange={(e) => setRemoteCode(e.target.value.replace(/\D/g, ''))}
-                     placeholder="000 000"
-                     className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white text-3xl font-black tracking-[0.5em] focus:outline-none focus:border-emerald-500 transition-all text-center"
-                   />
-                   <button 
-                     onClick={handleJoinSupport}
-                     disabled={loading || isRemoteActive}
-                     className="px-8 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-black uppercase tracking-widest transition-all shadow-lg shadow-emerald-600/20 disabled:opacity-50"
-                   >
-                     {isRemoteActive ? 'Connected' : 'Join'}
-                   </button>
-                 </div>
-
-                 {isRemoteActive && remoteSession && (
-                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-6 border-t border-white/5 space-y-6">
-                     <div className="flex items-center justify-between">
-                       <div className="flex items-center gap-3">
-                         <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
-                           <Users size={20} />
-                         </div>
-                         <div>
-                           <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Active Client</p>
-                           <p className="text-white font-bold">{remoteSession.studentName || 'Student'}</p>
-                         </div>
-                       </div>
-                       <button 
-                         onClick={() => {
-                           endSupportSession(remoteCode);
-                           setIsRemoteActive(false);
-                           setRemoteSession(null);
-                         }}
-                         className="px-4 py-2 bg-red-500/10 text-red-500 border border-red-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all"
-                       >
-                         Disconnect
-                       </button>
-                     </div>
-
-                     <div className="space-y-4">
-                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Remote Navigation Commands</p>
-                        <div className="grid grid-cols-2 gap-3">
-                          {[
-                            { label: 'Dashboard', target: '#dashboard', icon: LayoutDashboard },
-                            { label: 'Study Buddy', target: '#study-buddy', icon: Brain },
-                            { label: 'Test Series', target: '#monthly-tests', icon: ClipboardList },
-                            { label: 'Daily MCQs', target: '#daily-mcqs', icon: ListChecks },
-                            { label: 'Profile', target: '#profile', icon: Users },
-                            { label: 'Textbooks', target: '#textbooks', icon: BookOpen }
-                          ].map((cmd) => (
-                            <button 
-                              key={cmd.target}
-                              onClick={() => handleRemoteNavigate(cmd.target)}
-                              className="flex items-center gap-3 p-4 bg-white/5 border border-white/5 rounded-2xl hover:border-blue-500/30 hover:bg-blue-500/5 transition-all text-left group"
-                            >
-                              <cmd.icon size={18} className="text-slate-500 group-hover:text-blue-400 transition-colors" />
-                              <span className="text-xs font-bold text-slate-300 group-hover:text-white">{cmd.label}</span>
-                            </button>
-                          ))}
-                        </div>
-                     </div>
-                   </motion.div>
-                 )}
-               </div>
-            </div>
-
-            <div className="glass-card p-8 rounded-[2.5rem] border border-blue-500/10 flex flex-col items-center justify-center text-center space-y-6 relative overflow-hidden group">
-               {isRemoteActive ? (
-                 <>
-                   <div 
-                     onMouseMove={handleMouseMoveOnPad}
-                     className="w-full aspect-[9/16] max-w-[280px] bg-slate-900/50 border-4 border-white/10 rounded-[3rem] relative cursor-none overflow-hidden shadow-2xl"
-                   >
-                     <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-transparent"></div>
-                     <div className="absolute top-4 left-1/2 -translate-x-1/2 w-16 h-1 bg-white/20 rounded-full"></div>
-                     
-                     <div className="absolute inset-0 flex flex-col items-center justify-center opacity-20 group-hover:opacity-40 transition-opacity">
-                        <Zap size={48} className="text-blue-500 mb-2" />
-                        <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Virtual Mousepad</p>
-                     </div>
-
-                     {/* The Remote Pointer Visualizer */}
-                     {remoteSession?.pointer && (
-                       <motion.div 
-                         animate={{ x: `${remoteSession.pointer.x}%`, y: `${remoteSession.pointer.y}%` }}
-                         className="absolute top-0 left-0 w-8 h-8 -ml-4 -mt-4 pointer-events-none"
-                       >
-                         <div className="w-full h-full bg-blue-500/30 rounded-full animate-ping absolute inset-0"></div>
-                         <div className="w-full h-full bg-blue-500 rounded-full border-2 border-white shadow-xl flex items-center justify-center">
-                            <div className="w-1 h-1 bg-white rounded-full"></div>
-                         </div>
-                       </motion.div>
-                     )}
-                   </div>
-                   <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Move mouse above to guide student</p>
-                 </>
-               ) : (
-                 <>
-                   <div className="w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center text-slate-700 mb-4">
-                    <Monitor size={40} />
-                   </div>
-                   <h4 className="text-xl font-black text-slate-400 tracking-tight">No Active Remote Session</h4>
-                   <p className="text-slate-600 text-xs max-w-[240px] leading-relaxed">Connect using a session ID to remotely guide students through the platform.</p>
-                 </>
-               )}
-            </div>
-          </div>
+          <LiveSupportTab user={user} />
         )}
       </div>
     );
@@ -4433,11 +4324,27 @@ Sample tone for Class 6-10:
       <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none animate-pulse" />
       <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none animate-pulse" style={{ animationDelay: '2s' }} />
 
+      {/* Mobile Header */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-[#020617]/90 backdrop-blur-xl border-b border-white/5 z-[50] flex items-center justify-between px-6">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+            <LayoutDashboard className="text-white" size={16} />
+          </div>
+          <span className="font-black text-white text-lg tracking-tight">UTKAL <span className="text-emerald-500">ADMIN</span></span>
+        </div>
+        <button 
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
+          className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
+        >
+          {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
+      </div>
+
       {/* Sidebar Navigation */}
       <SidebarNavigation />
 
       {/* Main Content Area */}
-      <main className={`transition-all duration-500 pt-24 pb-12 px-6 lg:px-10 ${isSidebarOpen ? 'lg:pl-[300px]' : 'lg:pl-32'}`}>
+      <main className={`transition-all duration-500 pt-24 lg:pt-24 pb-12 px-4 md:px-6 lg:px-10 ${isSidebarOpen ? 'lg:pl-[300px]' : 'lg:pl-32'}`}>
         <div className="max-w-7xl mx-auto space-y-10">
           <AnimatePresence mode="wait">
             <motion.div

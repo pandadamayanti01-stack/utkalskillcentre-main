@@ -6,7 +6,11 @@ import {
   updateDoc, 
   deleteDoc, 
   serverTimestamp,
-  getDoc
+  getDoc,
+  query,
+  where,
+  orderBy,
+  addDoc
 } from 'firebase/firestore';
 import { db } from '../firebase';
 
@@ -96,5 +100,73 @@ export const updatePointer = async (code: string, x: number, y: number) => {
  */
 export const endSupportSession = async (code: string) => {
   const sessionDoc = doc(db, 'remote_support', code);
-  await deleteDoc(sessionDoc);
+  await updateDoc(sessionDoc, { status: 'ended' });
 };
+
+/**
+ * Subscribes to the queue position for a pending session
+ */
+export const subscribeToQueuePosition = (
+  sessionCreatedAt: any, 
+  callback: (position: number) => void
+) => {
+  if (!sessionCreatedAt) {
+    callback(0);
+    return () => {};
+  }
+  
+  const q = query(
+    collection(db, 'remote_support'),
+    where('status', '==', 'pending'),
+    orderBy('createdAt', 'asc')
+  );
+
+  return onSnapshot(q, (snap) => {
+    let position = 1;
+    for (const doc of snap.docs) {
+      const data = doc.data();
+      // If this document was created before our session, we are behind it in queue
+      if (data.createdAt && sessionCreatedAt && data.createdAt.toMillis() < sessionCreatedAt.toMillis()) {
+        position++;
+      } else if (data.createdAt && sessionCreatedAt && data.createdAt.toMillis() === sessionCreatedAt.toMillis()) {
+        break; // Found our session
+      }
+    }
+    callback(position);
+  });
+};
+
+/**
+ * Requests the student to start screen sharing
+ */
+export const requestScreenShare = async (code: string) => {
+  const sessionDoc = doc(db, 'remote_support', code);
+  await updateDoc(sessionDoc, {
+    screenShareRequested: true,
+    screenShareStatus: 'requested'
+  });
+};
+
+/**
+ * Updates the screen share status
+ */
+export const updateScreenShareStatus = async (code: string, status: 'inactive' | 'requested' | 'streaming' | 'failed') => {
+  const sessionDoc = doc(db, 'remote_support', code);
+  await updateDoc(sessionDoc, {
+    screenShareStatus: status
+  });
+};
+
+/**
+ * Stops screen sharing on both ends
+ */
+export const stopScreenShare = async (code: string) => {
+  const sessionDoc = doc(db, 'remote_support', code);
+  await updateDoc(sessionDoc, {
+    screenShareRequested: false,
+    screenShareStatus: 'inactive',
+    webrtc_offer: null,
+    webrtc_answer: null
+  });
+};
+

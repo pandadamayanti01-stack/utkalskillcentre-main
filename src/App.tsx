@@ -31,8 +31,8 @@ import {
   sendPasswordResetEmail,
   linkWithPopup
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, query, where, getDocs, orderBy, limit, addDoc, updateDoc, increment, getCountFromServer, onSnapshot, Timestamp } from 'firebase/firestore';
-import { createSupportSession, endSupportSession } from './services/supportService';
+import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, query, where, getDocs, orderBy, limit, addDoc, updateDoc, increment, getCountFromServer, onSnapshot, Timestamp, deleteDoc } from 'firebase/firestore';
+import { createSupportSession, endSupportSession, subscribeToQueuePosition } from './services/supportService';
 import { translations } from './translations';
 import { solveMathDoubt, getAI, getStudyBuddySystemInstruction, withRetry } from './services/aiService';
 import { subjectTranslations } from './constants';
@@ -379,13 +379,153 @@ function SundayLockout({ language, onAdminBypass }: { language: 'en' | 'or', onA
 function SupportOverlay({ session, onEnd }: { session: any, onEnd: () => void }) {
   const [pointer, setPointer] = useState<{ x: number, y: number } | null>(null);
 
+  const [queuePosition, setQueuePosition] = useState<number | null>(null);
+  const [status, setStatus] = useState<'pending' | 'active' | 'ended'>('pending');
+  const [shareRequested, setShareRequested] = useState(false);
+  const [streamActive, setStreamActive] = useState(false);
+
+  const pcRef = useRef<RTCPeerConnection | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const unsubAnswerRef = useRef<(() => void) | null>(null);
+  const unsubCandidatesRef = useRef<(() => void) | null>(null);
+
+  const stopStreaming = async () => {
+    if (unsubAnswerRef.current) unsubAnswerRef.current();
+    if (unsubCandidatesRef.current) unsubCandidatesRef.current();
+
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    setStreamActive(false);
+
+    if (pcRef.current) {
+      pcRef.current.close();
+      pcRef.current = null;
+    }
+
+    try {
+      await updateDoc(doc(firestore, 'remote_support', session.id), {
+        screenShareRequested: false,
+        screenShareStatus: 'inactive',
+        webrtc_offer: null,
+        webrtc_answer: null
+      });
+    } catch (e) {
+      // Ignored if session is deleted
+    }
+  };
+
+  const handleAcceptShare = async () => {
+    setShareRequested(false);
+    try {
+      const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      streamRef.current = screenStream;
+      setStreamActive(true);
+
+      const servers = {
+        iceServers: [
+          { urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] }
+        ]
+      };
+      const peerConnection = new RTCPeerConnection(servers);
+      pcRef.current = peerConnection;
+
+      screenStream.getTracks().forEach((track) => {
+        peerConnection.addTrack(track, screenStream);
+      });
+
+      peerConnection.onicecandidate = async (event) => {
+        if (event.candidate) {
+          await addDoc(
+            collection(firestore, 'remote_support', session.id, 'student_candidates'),
+            event.candidate.toJSON()
+          );
+        }
+      };
+
+      const offerDescription = await peerConnection.createOffer();
+      await peerConnection.setLocalDescription(offerDescription);
+
+      const offer = {
+        sdp: offerDescription.sdp,
+        type: offerDescription.type
+      };
+
+      await updateDoc(doc(firestore, 'remote_support', session.id), {
+        webrtc_offer: offer,
+        screenShareStatus: 'streaming'
+      });
+
+      const unsubAnswer = onSnapshot(doc(firestore, 'remote_support', session.id), (snap) => {
+        const data = snap.data();
+        if (data?.webrtc_answer && peerConnection.signalingState !== 'stable') {
+          const answerDescription = new RTCSessionDescription(data.webrtc_answer);
+          peerConnection.setRemoteDescription(answerDescription);
+        }
+      });
+
+      const unsubAdminCandidates = onSnapshot(
+        collection(firestore, 'remote_support', session.id, 'admin_candidates'),
+        (snap) => {
+          snap.docChanges().forEach((change) => {
+            if (change.type === 'added') {
+              const candidate = new RTCIceCandidate(change.doc.data());
+              peerConnection.addIceCandidate(candidate);
+            }
+          });
+        }
+      );
+
+      screenStream.getVideoTracks()[0].onended = () => {
+        stopStreaming();
+      };
+
+      unsubAnswerRef.current = unsubAnswer;
+      unsubCandidatesRef.current = unsubAdminCandidates;
+
+    } catch (err) {
+      console.error("Screen Share Failed:", err);
+      await updateDoc(doc(firestore, 'remote_support', session.id), {
+        screenShareStatus: 'failed',
+        screenShareRequested: false
+      });
+      setStreamActive(false);
+      alert("Screen sharing failed. Please ensure you granted permissions.");
+    }
+  };
+
   useEffect(() => {
     if (!session?.id) return;
+    let unsubQueue = () => {};
+    
     const unsub = onSnapshot(doc(firestore, 'remote_support', session.id), (snap) => {
       if (snap.exists()) {
         const data = snap.data();
         if (data.pointer) setPointer(data.pointer);
+        if (data.status) setStatus(data.status);
         if (data.status === 'ended') onEnd();
+        
+        if (data.status === 'pending' && data.createdAt) {
+          unsubQueue = subscribeToQueuePosition(data.createdAt, (pos) => setQueuePosition(pos));
+        }
+
+        // WebRTC Screen Share State Hooks
+        if (data.screenShareRequested && data.screenShareStatus === 'requested') {
+          setShareRequested(true);
+        } else if (!data.screenShareRequested) {
+          setShareRequested(false);
+          if (streamRef.current) {
+            // Stop tracks
+            streamRef.current.getTracks().forEach(track => track.stop());
+            streamRef.current = null;
+            setStreamActive(false);
+          }
+          if (pcRef.current) {
+            pcRef.current.close();
+            pcRef.current = null;
+          }
+        }
         
         // Handle Remote Commands (Navigation)
         if (data.lastCommand) {
@@ -404,18 +544,40 @@ function SupportOverlay({ session, onEnd }: { session: any, onEnd: () => void })
         onEnd();
       }
     });
-    return () => unsub();
+    return () => {
+      unsub();
+      unsubQueue();
+      if (unsubAnswerRef.current) unsubAnswerRef.current();
+      if (unsubCandidatesRef.current) unsubCandidatesRef.current();
+      if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop());
+      if (pcRef.current) pcRef.current.close();
+    };
   }, [session?.id, onEnd]);
 
-  if (!pointer) return (
-    <div className="fixed top-4 right-4 z-[9999] flex flex-col items-end gap-2">
-      <div className="bg-emerald-600 text-white px-4 py-2 rounded-2xl shadow-2xl border border-emerald-400/30 text-xs font-black animate-pulse flex items-center gap-2">
-        <Lucide.ShieldCheck size={14} />
-        LIVE SUPPORT ACTIVE ({session.id})
+  if (status === 'pending') {
+    return (
+      <div className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="bg-[#002d26] border border-white/10 rounded-3xl p-8 max-w-sm w-full text-center space-y-6">
+          <div className="w-20 h-20 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto border border-blue-500/30 animate-pulse">
+            <Lucide.Clock size={32} className="text-blue-400" />
+          </div>
+          <div>
+            <h3 className="text-2xl font-bold text-white mb-2">Waiting Room</h3>
+            <p className="text-slate-400 text-sm">Please wait while an admin connects to your screen.</p>
+          </div>
+          
+          <div className="bg-black/30 rounded-2xl p-6 border border-white/5">
+            <p className="text-xs text-slate-500 uppercase font-bold tracking-widest mb-1">Your Queue Position</p>
+            <p className="text-4xl font-black text-[#ffd700]">#{queuePosition !== null ? queuePosition : '...'}</p>
+          </div>
+          
+          <button onClick={onEnd} className="w-full py-4 rounded-xl border border-red-500/30 text-red-400 font-bold hover:bg-red-500/10 transition-colors">
+            Cancel Request
+          </button>
+        </div>
       </div>
-      <button onClick={onEnd} className="bg-red-500 text-white p-2 rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-xl">End Session</button>
-    </div>
-  );
+    );
+  }
 
   return (
     <>
@@ -424,28 +586,72 @@ function SupportOverlay({ session, onEnd }: { session: any, onEnd: () => void })
           <Lucide.ShieldCheck size={14} />
           LIVE SUPPORT ACTIVE ({session.id})
         </div>
-        <button onClick={onEnd} className="bg-red-500 text-white p-2 rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-xl">End Session</button>
+        {streamActive && (
+          <div className="bg-blue-600 text-white px-4 py-2 rounded-2xl shadow-2xl border border-blue-400/30 text-[10px] font-black animate-pulse flex items-center gap-2">
+            <Lucide.Monitor size={12} />
+            SCREEN MIRRORING ON
+          </div>
+        )}
+        <button onClick={onEnd} className="bg-red-500 hover:bg-red-600 text-white p-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-xl transition-colors">End Session</button>
       </div>
 
-      {/* The Virtual Pointer */}
-      <motion.div
-        animate={{ 
-          x: (pointer.x * window.innerWidth) / 100, 
-          y: (pointer.y * window.innerHeight) / 100 
-        }}
-        transition={{ type: 'spring', damping: 20, stiffness: 150 }}
-        className="fixed top-0 left-0 w-12 h-12 pointer-events-none z-[10000]"
-      >
-        <div className="relative">
-          <div className="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-50"></div>
-          <div className="w-6 h-6 bg-red-500 rounded-full border-4 border-white shadow-2xl flex items-center justify-center">
-             <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
-          </div>
-          <div className="absolute top-8 left-8 bg-black/80 text-white text-[10px] px-2 py-1 rounded-lg border border-white/10 whitespace-nowrap font-bold">
-            ADMIN POINTER
+      {/* Screen Mirroring Prompt */}
+      {shareRequested && (
+        <div className="fixed inset-0 z-[10001] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-white/10 rounded-3xl p-8 max-w-sm w-full text-center space-y-6 animate-in fade-in zoom-in-95 duration-300">
+            <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto border border-emerald-500/30 animate-pulse">
+              <Lucide.Monitor size={32} className="text-emerald-400" />
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold text-white mb-2">Allow Mirroring</h3>
+              <p className="text-slate-400 text-sm leading-relaxed">The instructor wants to view your screen to guide you. No files or personal data will be collected.</p>
+            </div>
+            
+            <div className="flex gap-4">
+              <button 
+                onClick={async () => {
+                  setShareRequested(false);
+                  await updateDoc(doc(firestore, 'remote_support', session.id), {
+                    screenShareRequested: false,
+                    screenShareStatus: 'failed'
+                  });
+                }}
+                className="flex-1 py-3 bg-white/5 hover:bg-white/10 text-slate-300 font-bold rounded-xl transition-colors"
+              >
+                Decline
+              </button>
+              <button 
+                onClick={handleAcceptShare}
+                className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-emerald-600/20"
+              >
+                Allow
+              </button>
+            </div>
           </div>
         </div>
-      </motion.div>
+      )}
+
+      {/* The Virtual Pointer */}
+      {pointer && (
+        <motion.div
+          animate={{ 
+            x: (pointer.x * window.innerWidth) / 100, 
+            y: (pointer.y * window.innerHeight) / 100 
+          }}
+          transition={{ type: 'spring', damping: 20, stiffness: 150 }}
+          className="fixed top-0 left-0 w-12 h-12 pointer-events-none z-[10000]"
+        >
+          <div className="relative">
+            <div className="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-50"></div>
+            <div className="w-6 h-6 bg-red-500 rounded-full border-4 border-white shadow-2xl flex items-center justify-center">
+               <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+            </div>
+            <div className="absolute top-8 left-8 bg-black/80 text-white text-[10px] px-2 py-1 rounded-lg border border-white/10 whitespace-nowrap font-bold">
+              ADMIN POINTER
+            </div>
+          </div>
+        </motion.div>
+      )}
     </>
   );
 }
@@ -490,7 +696,12 @@ export default function App() {
 
   const endSupport = async () => {
     if (supportSession) {
-      await endSupportSession(supportSession.id);
+      try {
+        const sessionDoc = doc(firestore, 'remote_support', supportSession.id);
+        await deleteDoc(sessionDoc);
+      } catch (err) {
+        console.error("Error deleting support session document", err);
+      }
       setSupportSession(null);
       sessionStorage.removeItem('supportSession');
     }
