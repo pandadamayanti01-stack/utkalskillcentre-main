@@ -116,6 +116,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
   const responseTurnRef = useRef(0);
   const silenceTimeoutRef = useRef<any>(null);
   const transcriptBufferRef = useRef<string>('');
+  const chatHistoryRef = useRef<any[]>([]);
   
   // Immersive Status States
   const [status, setStatus] = useState("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
@@ -243,6 +244,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
   useEffect(() => {
     hasPlayedGreetingRef.current = false;
     responseTurnRef.current = 0;
+    chatHistoryRef.current = []; // Reset previous chat history on mount
     setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
     setSubtitle('');
 
@@ -440,19 +442,32 @@ ASR confidence: ${typeof speechInput.confidence === 'number' ? speechInput.confi
 Understand user intent from these transcripts and respond in Odia only.
       `.trim();
 
+      // 1. Append user payload to chat history
+      const userContent = { role: 'user', parts: [{ text: inputPayload }] };
+      chatHistoryRef.current.push(userContent);
+
+      // 2. Limit history to keep up to last 6 entries (3 complete turns back)
+      if (chatHistoryRef.current.length > 6) {
+        chatHistoryRef.current = chatHistoryRef.current.slice(-6);
+      }
+
       const modelInstance = ai.getGenerativeModel({
         model: modelName,
         systemInstruction,
       });
 
       const result = await modelInstance.generateContent({
-        contents: [{ role: 'user', parts: [{ text: inputPayload }] }],
+        contents: chatHistoryRef.current,
         generationConfig: {
           temperature: 0.7,
         },
       });
 
       const response = result.response.text() || "ମୁଁ ଭଲଭାବେ ଶୁଣି ପାରିଲି ନାହିଁ, ଆଉଥରେ କହନ୍ତୁ।";
+      
+      // 3. Append model response to chat history
+      chatHistoryRef.current.push({ role: 'model', parts: [{ text: response }] });
+
       responseTurnRef.current += 1;
       setSubtitle(response);
       speakResponse(response);
@@ -500,6 +515,22 @@ Understand user intent from these transcripts and respond in Odia only.
     const currentIndex = recognitionLanguages.findIndex(l => l.code === inputLanguage);
     const nextIndex = (currentIndex + 1) % recognitionLanguages.length;
     setInputLanguage(recognitionLanguages[nextIndex].code);
+  };
+
+  // Cleanly terminates all Web Speech, audio play, and listening elements on click "End" / Hang up
+  const handleHangUp = () => {
+    window.speechSynthesis.cancel();
+    stopCurrentAudio();
+    try {
+      if (recognitionRef.current) {
+        recognitionRef.current.abort(); // Immediately abort microphone listening
+      }
+    } catch (e) {
+      console.warn('Error aborting speech recognition:', e);
+    }
+    setIsSpeaking(false);
+    setIsListening(false);
+    if (onBack) onBack();
   };
 
   // Get current active status state classes
@@ -655,7 +686,7 @@ Understand user intent from these transcripts and respond in Odia only.
         {onBack && (
           <button 
             className="hud-action-btn hang-up-btn" 
-            onClick={onBack}
+            onClick={handleHangUp}
             title="End Voice Session"
           >
             <Lucide.PhoneOff size={24} className="text-white" />
