@@ -513,6 +513,13 @@ Understand user intent from these transcripts and respond in Odia only.
   return (
     <div className={`immersive-call-container ${getCallStateClass()}`}>
       
+      {/* Dynamic Swirling Siri-Style Background Aura Blobs */}
+      <div className="bg-glow-blobs">
+        <div className="glow-blob blob-violet"></div>
+        <div className="glow-blob blob-emerald"></div>
+        <div className="glow-blob blob-amber"></div>
+      </div>
+      
       {/* 1. TOP STATS STATUS HUD */}
       <div className="call-top-hud">
         <div className="hud-left">
@@ -543,6 +550,15 @@ Understand user intent from these transcripts and respond in Odia only.
           <div className="orbital-ring ring-outer"></div>
           <div className="orbital-ring ring-mid"></div>
           <div className="orbital-ring ring-inner"></div>
+
+          {/* Glowing Siri Waves (Rippling Around the Central Glass Orb) */}
+          {(isListening || isSpeaking) && (
+            <div className="neon-siri-waves">
+              <div className="siri-wave wave-1"></div>
+              <div className="siri-wave wave-2"></div>
+              <div className="siri-wave wave-3"></div>
+            </div>
+          )}
 
           {/* Glowing background aurorafield */}
           <div className="glow-aura"></div>

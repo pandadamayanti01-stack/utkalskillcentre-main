@@ -567,16 +567,187 @@
     height: 104px;
   }
   
-  .call-subtitles-hud {
-    min-height: 60px;
-    margin-bottom: 12px;
-  }
-  
-  .caption-bubble {
-    padding: 12px 18px;
-  }
-  
   .caption-text {
     font-size: 1rem;
   }
+}
+
+/* ==========================================
+   SIRI-STYLE VOICE OVERHAUL (EXTREME WOW)
+   ========================================== */
+
+/* 1. SWIRLING BACKGROUND GLOW BLOBS */
+.bg-glow-blobs {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.glow-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(140px);
+  opacity: 0.28;
+  mix-blend-mode: screen;
+  transition: all 1.5s ease-in-out;
+}
+
+.blob-violet {
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, #7c3aed 0%, rgba(124, 58, 237, 0) 70%);
+  top: -10%;
+  left: -10%;
+  animation: floatBlob1 25s ease-in-out infinite alternate;
+}
+
+.blob-emerald {
+  width: 440px;
+  height: 440px;
+  background: radial-gradient(circle, #059669 0%, rgba(5, 150, 105, 0) 70%);
+  bottom: -15%;
+  right: -10%;
+  animation: floatBlob2 20s ease-in-out infinite alternate;
+}
+
+.blob-amber {
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, #d97706 0%, rgba(217, 119, 6, 0) 70%);
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: floatBlob3 30s ease-in-out infinite alternate;
+}
+
+@keyframes floatBlob1 {
+  0% { transform: translate(0px, 0px) scale(1); }
+  50% { transform: translate(60px, 40px) scale(1.15); }
+  100% { transform: translate(-30px, 80px) scale(0.9); }
+}
+
+@keyframes floatBlob2 {
+  0% { transform: translate(0px, 0px) scale(1.1); }
+  50% { transform: translate(-80px, -60px) scale(0.85); }
+  100% { transform: translate(40px, 20px) scale(1.05); }
+}
+
+@keyframes floatBlob3 {
+  0% { transform: translate(-50%, -50%) scale(0.9); }
+  50% { transform: translate(-30%, -40%) scale(1.2); }
+  100% { transform: translate(-70%, -60%) scale(0.95); }
+}
+
+/* State-based background shifting */
+.listening .blob-emerald {
+  opacity: 0.45;
+  filter: blur(110px);
+  transform: scale(1.3);
+}
+
+.speaking .blob-amber {
+  opacity: 0.4;
+  filter: blur(110px);
+  transform: scale(1.3);
+}
+
+.thinking .blob-violet {
+  opacity: 0.45;
+  filter: blur(110px);
+  transform: scale(1.3);
+}
+
+/* 2. NEON SIRI-STYLE RIPPLE WAVES */
+.neon-siri-waves {
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.siri-wave {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  box-sizing: border-box;
+}
+
+/* Multi-colored glowing bezier waves wrapping the sphere */
+.wave-1 {
+  border-top: 2px solid rgba(16, 185, 129, 0.45);
+  border-bottom: 2px solid rgba(139, 92, 246, 0.45);
+  animation: spinSiriWave1 4s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite;
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+}
+
+.wave-2 {
+  border-left: 2px solid rgba(245, 158, 11, 0.45);
+  border-right: 2px solid rgba(59, 130, 246, 0.45);
+  width: 112%;
+  height: 112%;
+  animation: spinSiriWave2 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+}
+
+.wave-3 {
+  border-top: 2.5px solid rgba(239, 68, 68, 0.4);
+  border-right: 2.5px solid rgba(16, 185, 129, 0.4);
+  width: 124%;
+  height: 124%;
+  animation: spinSiriWave3 5s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.15);
+}
+
+@keyframes spinSiriWave1 {
+  0% { transform: rotate(0deg) scale(0.92); opacity: 0.6; }
+  50% { transform: rotate(180deg) scale(1.06); opacity: 0.95; }
+  100% { transform: rotate(360deg) scale(0.92); opacity: 0.6; }
+}
+
+@keyframes spinSiriWave2 {
+  0% { transform: rotate(360deg) scale(1.05); opacity: 0.8; }
+  50% { transform: rotate(180deg) scale(0.94); opacity: 0.5; }
+  100% { transform: rotate(0deg) scale(1.05); opacity: 0.8; }
+}
+
+@keyframes spinSiriWave3 {
+  0% { transform: rotate(0deg) scale(0.9); opacity: 0.5; }
+  50% { transform: rotate(-180deg) scale(1.15); opacity: 0.9; }
+  100% { transform: rotate(-360deg) scale(0.9); opacity: 0.5; }
+}
+
+/* 3. TRANSFORMATION OF SUBTITLES */
+.call-subtitles-hud {
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+}
+
+.caption-bubble {
+  border: 1.5px solid rgba(255, 255, 255, 0.09) !important;
+  background: rgba(10, 5, 28, 0.55) !important;
+  box-shadow: 
+    0 15px 45px rgba(0, 0, 0, 0.55),
+    inset 0 0 15px rgba(255, 255, 255, 0.05) !important;
+}
+
+.caption-text {
+  background: linear-gradient(120deg, #ffffff 0%, #dcd7ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 600;
+  text-shadow: none !important;
 }
