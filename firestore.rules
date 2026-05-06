@@ -197,7 +197,7 @@ service cloud.firestore {
     }
 
     match /chapters/{chapterId} {
-      allow read: if isAuthenticated() && (resource.data.status == 'published' || isAdmin());
+      allow read: if isAuthenticated();
       allow create, update, delete: if isAdmin();
     }
 
