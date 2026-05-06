@@ -121,7 +121,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
     window.speechSynthesis.speak(utterance);
   };
 
-  const speakWithGeminiVoice = async (text: string, onDone?: () => void) => {
+  const speakWithGeminiVoice = async (text: string, onDone?: () => void, retries = 2): Promise<void> => {
     try {
       stopCurrentAudio();
       window.speechSynthesis.cancel();
@@ -155,6 +155,13 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
       };
       await audio.play();
     } catch (err) {
+      if (retries > 0) {
+        // Use exponential backoff (e.g., 2s, 4s) instead of a constant 1s
+        const delay = (3 - retries) * 2000; 
+        console.warn(`Gemini TTS error. Retrying in ${delay}ms... (${retries} attempts left)`, err);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        return speakWithGeminiVoice(text, onDone, retries - 1);
+      }
       console.warn('Gemini voice unavailable, using browser TTS fallback.', err);
       setIsSpeaking(false);
       speakWithBrowserTtsFallback(text, onDone);
@@ -255,7 +262,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, onBack }: { skipInitialGree
     
     try {
       const ai = getAI();
-      const model = 'gemini-2.0-flash-exp';
+      const modelName = 'gemini-2.5-flash';
       const turn = responseTurnRef.current;
       
       const systemInstruction = `
@@ -282,16 +289,19 @@ ASR confidence: ${typeof speechInput.confidence === 'number' ? speechInput.confi
 Understand user intent from these transcripts and respond in Odia only.
       `.trim();
 
-      const result = await ai.models.generateContent({
-        model,
-        contents: inputPayload,
-        config: {
-          systemInstruction,
-          temperature: 0.7,
-        }
+      const modelInstance = ai.getGenerativeModel({
+        model: modelName,
+        systemInstruction,
       });
 
-      const response = result.text || "ମୁଁ ଭଲଭାବେ ଶୁଣି ପାରିଲି ନାହିଁ, ଆଉଥରେ କହନ୍ତୁ।";
+      const result = await modelInstance.generateContent({
+        contents: [{ role: 'user', parts: [{ text: inputPayload }] }],
+        generationConfig: {
+          temperature: 0.7,
+        },
+      });
+
+      const response = result.response.text() || "ମୁଁ ଭଲଭାବେ ଶୁଣି ପାରିଲି ନାହିଁ, ଆଉଥରେ କହନ୍ତୁ।";
         responseTurnRef.current += 1;
       setSubtitle(response);
       speakResponse(response);
