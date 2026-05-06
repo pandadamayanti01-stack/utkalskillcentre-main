@@ -20,15 +20,19 @@ export const LiveSupportTab: React.FC<LiveSupportTabProps> = ({ user }) => {
   const unsubSessionRef = useRef<(() => void) | null>(null);
   const unsubStudentCandidatesRef = useRef<(() => void) | null>(null);
 
-  const stopMirroring = async () => {
+  const stopMirroring = async (isManualStop = false) => {
     if (unsubStudentCandidatesRef.current) unsubStudentCandidatesRef.current();
     if (pcRef.current) {
       pcRef.current.close();
       pcRef.current = null;
     }
     setStream(null);
-    if (activeSession) {
-      await stopScreenShare(activeSession.id);
+    if (activeSession && isManualStop) {
+      try {
+        await stopScreenShare(activeSession.id);
+      } catch (err) {
+        console.warn("Mirroring document already ended or cleaned up.", err);
+      }
     }
   };
 
@@ -230,7 +234,7 @@ export const LiveSupportTab: React.FC<LiveSupportTabProps> = ({ user }) => {
                     <h4 className="text-md font-bold text-white uppercase tracking-wider text-xs">Live Screen Mirror</h4>
                   </div>
                   <button 
-                    onClick={stopMirroring}
+                    onClick={() => stopMirroring(true)}
                     className="text-xs text-red-400 hover:text-red-300 font-bold uppercase flex items-center gap-1.5"
                   >
                     <Lucide.XCircle size={14} /> Stop Stream
@@ -286,7 +290,7 @@ export const LiveSupportTab: React.FC<LiveSupportTabProps> = ({ user }) => {
 
               {screenShareState === 'streaming' && (
                 <button 
-                  onClick={stopMirroring}
+                  onClick={() => stopMirroring(true)}
                   className="w-full py-4 bg-red-600/20 hover:bg-red-600/30 text-red-400 font-bold rounded-2xl transition-all flex items-center justify-center gap-2 border border-red-500/10"
                 >
                   <Lucide.MonitorX size={20} />

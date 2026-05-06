@@ -354,6 +354,10 @@ service cloud.firestore {
       allow create: if isAuthenticated();
       allow update: if isAuthenticated();
       allow delete: if isAuthenticated() && (resource.data.studentUid == request.auth.uid || isAdmin());
+
+      match /{document=**} {
+        allow read, write: if isAuthenticated();
+      }
     }
   }
 }
