@@ -300,48 +300,53 @@ app.post('/api/tts/gemini', async (req, res) => {
 
     let lastError = 'Unknown TTS failure';
     for (const voiceName of voiceCandidates) {
-      const ttsResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [{ role: 'user', parts: [{ text: ttsPrompt }] }],
-          generationConfig: {
-            responseModalities: ['AUDIO'],
-            speechConfig: {
-              voiceConfig: {
-                prebuiltVoiceConfig: { voiceName }
+      try {
+        const ttsResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: [{ role: 'user', parts: [{ text: ttsPrompt }] }],
+            generationConfig: {
+              responseModalities: ['AUDIO'],
+              speechConfig: {
+                voiceConfig: {
+                  prebuiltVoiceConfig: { voiceName }
+                }
               }
             }
-          }
-        }),
-      });
+          }),
+        });
 
-      if (!ttsResponse.ok) {
-        lastError = await ttsResponse.text();
-        console.warn(`Gemini TTS failed for voice ${voiceName}: ${lastError}`);
-        continue;
+        if (!ttsResponse.ok) {
+          lastError = await ttsResponse.text();
+          console.warn(`Gemini TTS failed for voice ${voiceName}: ${lastError}`);
+          continue;
+        }
+
+        const data = await ttsResponse.json();
+        const inlineData = data?.candidates?.[0]?.content?.parts?.find((p: any) => p?.inlineData)?.inlineData;
+        if (!inlineData?.data) {
+          lastError = `No audio payload for voice ${voiceName}`;
+          continue;
+        }
+
+        const mimeType = inlineData.mimeType || 'audio/wav';
+        const audioBuffer = Buffer.from(inlineData.data, 'base64');
+        res.setHeader('Content-Type', mimeType);
+        res.setHeader('Cache-Control', 'no-store');
+        return res.send(audioBuffer);
+      } catch (innerErr: any) {
+        lastError = innerErr.message || 'Fetch connection failed';
+        console.error(`Gemini TTS connection error for voice ${voiceName}:`, innerErr);
       }
-
-      const data = await ttsResponse.json();
-      const inlineData = data?.candidates?.[0]?.content?.parts?.find((p: any) => p?.inlineData)?.inlineData;
-      if (!inlineData?.data) {
-        lastError = `No audio payload for voice ${voiceName}`;
-        continue;
-      }
-
-      const mimeType = inlineData.mimeType || 'audio/wav';
-      const audioBuffer = Buffer.from(inlineData.data, 'base64');
-      res.setHeader('Content-Type', mimeType);
-      res.setHeader('Cache-Control', 'no-store');
-      return res.send(audioBuffer);
     }
 
     return res.status(502).json({ error: `Gemini TTS failed for all configured voices: ${lastError}` });
   } catch (error: any) {
     console.error('Gemini TTS Error:', error);
-    return res.status(500).json({ error: error?.message || 'TTS generation failed' });
+    return res.status(500).json({ error: error?.message || 'TTS generation failed', stack: error?.stack });
   }
 });
 
