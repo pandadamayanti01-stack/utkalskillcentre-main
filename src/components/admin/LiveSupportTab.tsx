@@ -13,7 +13,7 @@ export const LiveSupportTab: React.FC<LiveSupportTabProps> = ({ user }) => {
   const [activeSession, setActiveSession] = useState<SupportSession | null>(null);
   const [pointerActive, setPointerActive] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
-  const [screenShareState, setScreenShareState] = useState<'inactive' | 'requested' | 'streaming' | 'failed'>('inactive');
+  const [screenShareState, setScreenShareState] = useState<'inactive' | 'requested' | 'streaming' | 'failed' | 'unsupported'>('inactive');
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const pcRef = useRef<RTCPeerConnection | null>(null);
@@ -302,7 +302,7 @@ export const LiveSupportTab: React.FC<LiveSupportTabProps> = ({ user }) => {
                 <div className="space-y-3">
                   <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3 text-red-400">
                     <Lucide.AlertTriangle size={20} className="shrink-0" />
-                    <p className="text-xs font-bold leading-normal">Request declined or unsupported on device.</p>
+                    <p className="text-xs font-bold leading-normal">Request declined by user.</p>
                   </div>
                   <button 
                     onClick={() => requestScreenShare(activeSession.id)}
@@ -310,6 +310,16 @@ export const LiveSupportTab: React.FC<LiveSupportTabProps> = ({ user }) => {
                   >
                     <Lucide.RefreshCw size={16} /> Retry Screen Share
                   </button>
+                </div>
+              )}
+
+              {screenShareState === 'unsupported' && (
+                <div className="p-4 bg-orange-500/10 border border-orange-500/20 rounded-2xl flex items-start gap-3 text-orange-400">
+                  <Lucide.Smartphone size={20} className="shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-xs font-bold leading-normal mb-1">📱 Mobile Sandbox Restricted</p>
+                    <p className="text-[10px] text-slate-300 leading-normal">Screen sharing is restricted by iOS and Android mobile web sandboxes. You can still guide them using the **Virtual Pointer** and **Force Navigation**!</p>
+                  </div>
                 </div>
               )}
             </div>

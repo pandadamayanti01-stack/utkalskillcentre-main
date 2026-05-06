@@ -512,7 +512,15 @@ function SupportOverlay({ session, onEnd }: { session: any, onEnd: () => void })
 
         // WebRTC Screen Share State Hooks
         if (data.screenShareRequested && data.screenShareStatus === 'requested') {
-          setShareRequested(true);
+          const isSupported = !!(navigator?.mediaDevices?.getDisplayMedia);
+          if (!isSupported) {
+            updateDoc(doc(firestore, 'remote_support', session.id), {
+              screenShareRequested: false,
+              screenShareStatus: 'unsupported'
+            });
+          } else {
+            setShareRequested(true);
+          }
         } else if (!data.screenShareRequested) {
           setShareRequested(false);
           if (streamRef.current) {
