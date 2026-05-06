@@ -4344,7 +4344,7 @@ Sample tone for Class 6-10:
       <SidebarNavigation />
 
       {/* Main Content Area */}
-      <main className={`transition-all duration-500 pt-24 lg:pt-24 pb-12 px-4 md:px-6 lg:px-10 ${isSidebarOpen ? 'lg:pl-[300px]' : 'lg:pl-32'}`}>
+      <main className={`transition-all duration-500 pt-24 lg:pt-24 pb-12 pl-4 pr-4 md:pl-6 md:pr-6 lg:pr-10 ${isSidebarOpen ? 'lg:pl-[300px]' : 'lg:pl-32'}`}>
         <div className="max-w-7xl mx-auto space-y-10">
           <AnimatePresence mode="wait">
             <motion.div
