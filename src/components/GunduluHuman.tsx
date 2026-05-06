@@ -362,22 +362,39 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
       const modelName = 'gemini-2.5-flash';
       const turn = responseTurnRef.current;
 
-      // Dynamic Textbook RAG matching based on school curriculum chapters
+      // Dynamic Textbook RAG matching based on school curriculum chapters with Weighted Keyword Intersection Scoring
       let textbookContext = '';
       if (chapters && chapters.length > 0 && speechInput.primary) {
-        const spokenLower = speechInput.primary.toLowerCase();
-        
-        // Scan for matching chapters based on title, subject, or content keywords
-        const matchingChapters = chapters.filter(ch => {
+        const spokenWords = speechInput.primary
+          .toLowerCase()
+          .replace(/[?.!,:;()]/g, '')
+          .split(/\s+/)
+          .filter((w: string) => w.length > 3);
+
+        const scoredChapters = chapters.map(ch => {
           const title = (ch.title || '').toLowerCase();
           const subject = (ch.subject || '').toLowerCase();
           const notes = (ch.notes || '').toLowerCase();
           
-          const words = spokenLower.split(/\s+/).filter((w: string) => w.length > 3);
-          const hasKeywordMatch = words.some((w: string) => title.includes(w) || subject.includes(w) || notes.includes(w));
-          return hasKeywordMatch;
+          let score = 0;
+          for (const word of spokenWords) {
+            // Highly value matches in Title (weight 10)
+            if (title.includes(word)) score += 10;
+            // Value matches in Subject (weight 5)
+            if (subject.includes(word)) score += 5;
+            // Value matches in Notes content (weight 2)
+            if (notes.includes(word)) score += 2;
+          }
+          return { chapter: ch, score };
         });
 
+        // Filter chapters with score > 0 and sort by score descending
+        const matchingChapters = scoredChapters
+          .filter(item => item.score > 0)
+          .sort((a, b) => b.score - a.score)
+          .map(item => item.chapter);
+
+        // Fallback to first 3 chapters only if there are no search hits at all
         const selectedChapters = matchingChapters.length > 0 
           ? matchingChapters.slice(0, 3) 
           : chapters.slice(0, 3);
@@ -386,27 +403,30 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
           `[Textbook Chapter: ${ch.title} | Subject: ${ch.subject}]\nVerified Lesson Notes: ${ch.notes || 'No specific textbook notes available.'}`
         ).join('\n\n');
         
-        console.log(`[Gundulu RAG] Matching chapters selected:`, selectedChapters.map(ch => ch.title));
+        console.log(`[Gundulu RAG] Matching chapters selected by relevance score:`, selectedChapters.map(ch => ch.title));
       }
       
       const systemInstruction = `
-        Identity: You are "Gundulu," a 4-year-old baby genius from Odisha. 
-        Tone: Energetic and supportive. Use natural "Pila" dialect.
+        Identity & Persona: You are "Gundulu," a warm, highly interactive, and brilliant virtual tutor from Odisha (personality of a sweet, encouraging elder sibling tutor).
+        Pedagogical Tone: Speak with immense warmth and encouragement. Use phrases like "Aree wah!", "Bahut bhala prashna!", "Raha mu tamaku thik re bujhei deuchi" (Let me explain to you simply and properly).
+        Teacher Behavior Rules:
+          1. Actively encourage the student when they ask a question. Praise their curiosity.
+          2. Break down complex scientific or mathematical concepts into small, easy step-by-step examples.
+          3. When mentioning technical English terms (e.g., Photosynthesis, Gravity, Friction), translate them to their standard Odia names so students learn both.
+          4. Never read raw text robotic-style. Explain it like a passionate, friendly private home tutor.
+          5. Conclude your answer with a highly engaging, sweet follow-up question (e.g., "Bujhiparlu ta? Na au thare kahibi?" / "Bala lagila ta? Au kichi prashna achi?").
         Language Policy: STRICT ODIA OUTPUT ONLY.
         Input Policy: User may speak in Odia or English. Always understand both, but always reply only in Odia.
         ASR Rule: Speech-to-text can be wrong for Odisha names/words. Use context to auto-correct likely misheard words.
         ASR Rule: Prefer Odisha school/local words (district names, subjects, textbook terms) when candidates are similar.
-        ASR Rule: If still unclear, ask ONE short clarification question in Odia.
-        Style: Short, conversational voice responses.
+        Style: Conversational, friendly private tutor voice.
         Conversation Rule: Greet only once at launch. For normal conversation, do NOT re-introduce yourself repeatedly.
-        Conversation Rule: Do NOT repeat slogans like "Jay Jagannath" or "Jay Maa Tarini" unless the student explicitly asks for devotional/cultural greeting.
-        Conversation Rule: Keep replies natural and lesson-focused after greeting.
         Context: This is response turn number ${turn + 1}. If turn > 1, avoid intro lines and start directly with answer.
-        Constraint: Keep response under 3 sentences.
+        Constraint: Keep response under 3 sentences for easy listening.
 
         ${textbookContext ? `
-        Verified Textbook Context:
-        Use the following official textbook notes/context to answer the student's question accurately. Do not invent facts outside this curriculum unless necessary for answering:
+        Verified Textbook Context (Primary Source of Knowledge):
+        You MUST use the following official textbook notes/context to answer the student's question accurately. Translate and adapt these academic notes into a super sweet, simple, and friendly tutoring explanation:
         
         ${textbookContext}
         ` : ''}
