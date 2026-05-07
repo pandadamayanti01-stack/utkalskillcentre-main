@@ -929,6 +929,14 @@ export default function App() {
   const [userProgress, setUserProgress] = useState<any[]>([]);
   const [following, setFollowing] = useState<string[]>([]);
   const [studentNotifications, setStudentNotifications] = useState<any[]>([]);
+  const [readNotifIds, setReadNotifIds] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('read_notification_ids');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const [newNotification, setNewNotification] = useState<any>(null);
   const lastNotifIdRef = useRef<string | null>(null);
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
@@ -990,6 +998,18 @@ export default function App() {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, [showChatbot, isSidebarOpen, showInstallModal, activeTest, selectedChapter, activeTab]);
+
+  useEffect(() => {
+    if (activeTab === 'notifications' && studentNotifications.length > 0) {
+      const allIds = studentNotifications.map(n => n.id).filter(Boolean) as string[];
+      const uniqueNewIds = allIds.filter(id => !readNotifIds.includes(id));
+      if (uniqueNewIds.length > 0) {
+        const updatedIds = [...readNotifIds, ...uniqueNewIds];
+        setReadNotifIds(updatedIds);
+        localStorage.setItem('read_notification_ids', JSON.stringify(updatedIds));
+      }
+    }
+  }, [activeTab, studentNotifications, readNotifIds]);
 
   useEffect(() => {
     const handlePrompt = () => {
@@ -2605,7 +2625,7 @@ export default function App() {
                 }}
               />
             )}
-            {activeTab === 'notifications' && <NotificationsView notifications={studentNotifications} language={language} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'notifications' && <NotificationsView notifications={studentNotifications} language={language} readNotifIds={readNotifIds} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'courses' && <CoursesView user={user} chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'monthly_tests' && (
@@ -2638,14 +2658,14 @@ export default function App() {
         </div>
 
         {/* Bottom Floating Navigation Bar for Mobile */}
-        {user && !isAdminView && (
+        {user && !isAdminView && activeTab !== 'gundulu' && (
           <BottomNavBar
             language={language}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             setSidebarOpen={setSidebarOpen}
             isSidebarOpen={isSidebarOpen}
-            unreadNotificationsCount={studentNotifications.length}
+            unreadNotificationsCount={studentNotifications.filter(n => n.id && !readNotifIds.includes(n.id)).length}
           />
         )}
       </main>

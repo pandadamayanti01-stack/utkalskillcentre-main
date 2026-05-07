@@ -8,9 +8,10 @@ interface NotificationsViewProps {
   notifications: any[];
   language: 'en' | 'or';
   onBack: () => void;
+  readNotifIds?: string[];
 }
 
-export function NotificationsView({ notifications, language, onBack }: NotificationsViewProps) {
+export function NotificationsView({ notifications, language, onBack, readNotifIds = [] }: NotificationsViewProps) {
   const t = translations[language];
 
   const containerVariants = {
@@ -69,9 +70,12 @@ export function NotificationsView({ notifications, language, onBack }: Notificat
                   <Bell size={20} />
                 </div>
                 <div className="flex-1 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-black text-white tracking-tight">
+                  <div className="flex items-center justify-between gap-4">
+                    <h3 className="text-lg font-black text-white tracking-tight flex items-center gap-2">
                       {notification.title || (language === 'en' ? 'System Notification' : 'ସିଷ୍ଟମ୍ ବିଜ୍ଞପ୍ତି')}
+                      {!readNotifIds.includes(notification.id) && (
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399] animate-pulse shrink-0" />
+                      )}
                     </h3>
                     <div className="flex items-center gap-2 text-slate-400 text-xs">
                       <Calendar size={12} />
