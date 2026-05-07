@@ -121,10 +121,19 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
   // Immersive Status States
   const [status, setStatus] = useState("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
   const [subtitle, setSubtitle] = useState("");
+  const subtitleContainerRef = useRef<HTMLDivElement>(null);
+  const activeSubtitleIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const recognitionRef = useRef<any>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioUrlRef = useRef<string | null>(null);
   const sphereRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll subtitle container to bottom whenever subtitle updates
+  useEffect(() => {
+    if (subtitleContainerRef.current) {
+      subtitleContainerRef.current.scrollTop = subtitleContainerRef.current.scrollHeight;
+    }
+  }, [subtitle]);
 
   useEffect(() => {
     const sphere = sphereRef.current;
@@ -162,6 +171,10 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
   }, []);
 
   const stopCurrentAudio = () => {
+    if (activeSubtitleIntervalRef.current) {
+      clearInterval(activeSubtitleIntervalRef.current);
+      activeSubtitleIntervalRef.current = null;
+    }
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current = null;
@@ -172,13 +185,45 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
     }
   };
 
+  const animateSubtitle = (text: string, isBrowserTts: boolean = false) => {
+    if (activeSubtitleIntervalRef.current) {
+      clearInterval(activeSubtitleIntervalRef.current);
+      activeSubtitleIntervalRef.current = null;
+    }
+    setSubtitle('');
+    if (!text) return;
+
+    const words = text.split(/\s+/);
+    let currentWordIndex = 0;
+    let currentText = '';
+    
+    // Naturally time the appearance of words:
+    const wordInterval = isBrowserTts ? 320 : 280;
+
+    activeSubtitleIntervalRef.current = setInterval(() => {
+      if (currentWordIndex < words.length) {
+        currentText += (currentWordIndex === 0 ? '' : ' ') + words[currentWordIndex];
+        setSubtitle(currentText);
+        currentWordIndex++;
+      } else {
+        if (activeSubtitleIntervalRef.current) {
+          clearInterval(activeSubtitleIntervalRef.current);
+          activeSubtitleIntervalRef.current = null;
+        }
+      }
+    }, wordInterval);
+  };
+
   const speakWithBrowserTtsFallback = (text: string, onDone?: () => void) => {
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = language;
     utterance.pitch = 1.8;
     utterance.rate = 0.9;
-    utterance.onstart = () => setIsSpeaking(true);
+    utterance.onstart = () => {
+      setIsSpeaking(true);
+      animateSubtitle(text, true);
+    };
     utterance.onend = () => {
       setIsSpeaking(false);
       onDone?.();
@@ -218,6 +263,8 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
         stopCurrentAudio();
         speakWithBrowserTtsFallback(text, onDone);
       };
+      
+      animateSubtitle(text, false);
       await audio.play();
     } catch (err) {
       if (retries > 0) {
@@ -253,12 +300,21 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
       hasPlayedGreetingRef.current = true;
 
       const greeting = "ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। ଆସ, ଏବେ ଏକାଠି ପଢ଼ିବା ଓ ଆଗକୁ ବଢ଼ିବା।";
-      setSubtitle(greeting);
       setStatus("ଗୁଣ୍ଡୁଲୁ କହୁଛି...");
 
       speakWithGeminiVoice(greeting, () => {
         triggerVisualNudge();
-        setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+        if (recognitionRef.current && !isListeningRef.current) {
+          transcriptBufferRef.current = '';
+          try {
+            recognitionRef.current.start();
+          } catch (e) {
+            console.warn("Speech recognition failed to auto-start after greeting:", e);
+            setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+          }
+        } else {
+          setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+        }
       });
     };
 
@@ -473,11 +529,9 @@ Understand user intent from these transcripts and respond in Odia only.
       chatHistoryRef.current.push({ role: 'model', parts: [{ text: response }] });
 
       responseTurnRef.current += 1;
-      setSubtitle(response);
       speakResponse(response);
     } catch (error) {
       const errorMsg = "ଓଃ! କିଛି ଭୁଲ୍ ହୋଇଗଲା |";
-      setSubtitle(errorMsg);
       speakResponse(errorMsg);
     }
   };
@@ -664,7 +718,7 @@ Understand user intent from these transcripts and respond in Odia only.
       {/* 4. SUBTITLE CAPTIONS DISPLAY */}
       <div className="call-subtitles-hud">
         {subtitle && (
-          <div className="caption-bubble">
+          <div ref={subtitleContainerRef} className="caption-bubble">
             <p className="caption-text">{subtitle}</p>
           </div>
         )}
