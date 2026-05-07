@@ -75,6 +75,11 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isWaitingForInput, setIsWaitingForInput] = useState(false);
+
+  const isListeningRef = useRef(false);
+  useEffect(() => {
+    isListeningRef.current = isListening;
+  }, [isListening]);
   
   // Call Timer State
   const [callDuration, setCallDuration] = useState(0);
