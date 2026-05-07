@@ -85,6 +85,11 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
   const [callDuration, setCallDuration] = useState(0);
 
   const [chapters, setChapters] = useState<any[]>([]);
+  const [activeChapter, setActiveChapter] = useState<any>({
+    title: "ସ୍ୱାଗତମ୍ (Welcome to Gundulu Voice!)",
+    subject: "GUNDULU AI TUTOR",
+    notes: "ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। ଆସ, ଏବେ ଏକାଠି ପଢ଼ିବା ଓ ଆଗକୁ ବଢ଼ିବା।"
+  });
 
   useEffect(() => {
     if (userClass) {
@@ -217,6 +222,111 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
         }
       }
     }, wordInterval);
+  };
+
+  const renderTextbookVisual = (chapter: any) => {
+    const title = (chapter.title || '').toLowerCase();
+    
+    // 1. Check if the chapter has a real database image URL
+    if (chapter.imageUrl) {
+      return <img src={chapter.imageUrl} alt={chapter.title} className="textbook-slide-img" />;
+    }
+    
+    // 2. Integers (Number Line Diagram)
+    if (title.includes('integer') || title.includes('ପୂର୍ଣ୍ଣ')) {
+      return (
+        <div className="interactive-diagram integer-line">
+          <div className="diagram-title-label">ପୂର୍ଣ୍ଣ ସଂଖ୍ୟା ରେଖା (Integers Number Line)</div>
+          <svg viewBox="0 0 400 100" className="w-full h-auto">
+            {/* Axis line */}
+            <line x1="20" y1="50" x2="380" y2="50" stroke="#a78bfa" strokeWidth="3" strokeLinecap="round" />
+            <polygon points="380,45 390,50 380,55" fill="#a78bfa" />
+            <polygon points="20,45 10,50 20,55" fill="#a78bfa" />
+            
+            {/* Ticks and values */}
+            {[-3, -2, -1, 0, 1, 2, 3].map((val, idx) => {
+              const x = 50 + idx * 50;
+              const isZero = val === 0;
+              const isPositive = val > 0;
+              return (
+                <g key={val} className="animate-pulse">
+                  <line x1={x} y1="42" x2={x} y2="58" stroke={isZero ? '#10b981' : (isPositive ? '#60a5fa' : '#f87171')} strokeWidth="2" />
+                  <circle cx={x} cy="50" r="4" fill={isZero ? '#10b981' : (isPositive ? '#3b82f6' : '#ef4444')} />
+                  <text x={x} y="80" textAnchor="middle" fill="#ffffff" fontSize="12" fontWeight="700">
+                    {val}
+                  </text>
+                </g>
+              );
+            })}
+          </svg>
+          <div className="diagram-legend">
+            <span className="legend-item text-red-400">ଋଣାତ୍ମକ (-)</span>
+            <span className="legend-item text-emerald-400">ଶୂନ (୦)</span>
+            <span className="legend-item text-blue-400">ଧନାତ୍ମକ (+)</span>
+          </div>
+        </div>
+      );
+    }
+
+    // 3. Fractions & Decimals (Circle Pie Chart Diagram)
+    if (title.includes('fraction') || title.includes('decimal') || title.includes('ଭଗ୍ନାଂଶ')) {
+      return (
+        <div className="interactive-diagram fraction-circle">
+          <div className="diagram-title-label">ଭଗ୍ନାଂଶ ଚିତ୍ର (Fraction Circle Representation - 3/4)</div>
+          <svg viewBox="0 0 200 200" className="w-32 h-32 mx-auto">
+            {/* Circle sections */}
+            <path d="M100,100 L100,20 A80,80 0 0,1 180,100 Z" fill="#3b82f6" stroke="#0e0a29" strokeWidth="2" opacity="0.85" />
+            <path d="M100,100 L180,100 A80,80 0 0,1 100,180 Z" fill="#3b82f6" stroke="#0e0a29" strokeWidth="2" opacity="0.85" />
+            <path d="M100,100 L100,180 A80,80 0 0,1 20,100 Z" fill="#3b82f6" stroke="#0e0a29" strokeWidth="2" opacity="0.85" />
+            <path d="M100,100 L20,100 A80,80 0 0,1 100,20 Z" fill="rgba(255,255,255,0.15)" stroke="#a78bfa" strokeWidth="2" strokeDasharray="4" />
+            <circle cx="100" cy="100" r="6" fill="#10b981" />
+          </svg>
+          <div className="diagram-fraction-label">୩ / ୪ (Three-Fourths)</div>
+        </div>
+      );
+    }
+
+    // 4. Geometry (Triangle Diagram)
+    if (title.includes('geometry') || title.includes('triangle') || title.includes('ଜ୍ୟାମିତି') || title.includes('ତ୍ରିଭୁଜ')) {
+      return (
+        <div className="interactive-diagram geometry-triangle">
+          <div className="diagram-title-label">ସମକୋଣୀ ତ୍ରିଭୁଜ (Right Angle Triangle)</div>
+          <svg viewBox="0 0 200 160" className="w-36 h-auto mx-auto">
+            <polygon points="40,30 40,130 160,130" fill="rgba(139, 92, 246, 0.15)" stroke="#8b5cf6" strokeWidth="3" strokeLinejoin="round" />
+            <path d="M40,118 L52,118 L52,130" fill="none" stroke="#10b981" strokeWidth="2" />
+            <text x="30" y="80" fill="#f87171" fontSize="12" fontWeight="700">A (ଉଚ୍ଚତା)</text>
+            <text x="100" y="145" fill="#60a5fa" fontSize="12" fontWeight="700">B (ଭୂମି)</text>
+            <text x="110" y="75" fill="#fbbf24" fontSize="12" fontWeight="700">C (ଅତିଭୁଜ)</text>
+          </svg>
+        </div>
+      );
+    }
+
+    // 5. Default/Welcome concept card
+    const isWelcome = title.includes('welcome') || title.includes('ସ୍ୱାଗତମ୍');
+    return (
+      <div className="interactive-diagram abstract-diagram">
+        {isWelcome ? (
+          <div className="welcome-concept-slide">
+            <div className="welcome-avatar-ripple">
+              <img src="/gundulu.png" alt="Welcome Gundulu" className="welcome-card-avatar" />
+            </div>
+            <p className="welcome-card-text">ଆସ ଏକାଠି ପାଠ ପଢିବା!</p>
+          </div>
+        ) : (
+          <div className="abstract-math-slide">
+            <svg viewBox="0 0 200 100" className="w-full h-16 opacity-70">
+              <path d="M10,50 Q50,10 100,50 T190,50" fill="none" stroke="#60a5fa" strokeWidth="2" />
+              <path d="M10,50 Q50,90 100,50 T190,50" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeDasharray="3" />
+            </svg>
+            <div className="math-formulas">
+              <span className="formula-badge">x = (-b ± √D) / 2a</span>
+              <span className="formula-badge">A = πr²</span>
+            </div>
+          </div>
+        )}
+      </div>
+    );
   };
 
   const speakWithBrowserTtsFallback = (text: string, onDone?: () => void) => {
@@ -462,6 +572,10 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
           ? matchingChapters.slice(0, 3) 
           : chapters.slice(0, 3);
 
+        if (matchingChapters.length > 0) {
+          setActiveChapter(matchingChapters[0]);
+        }
+
         textbookContext = selectedChapters.map(ch => 
           `[Textbook Chapter: ${ch.title} | Subject: ${ch.subject}]\nVerified Lesson Notes: ${ch.notes || 'No specific textbook notes available.'}`
         ).join('\n\n');
@@ -620,7 +734,7 @@ Understand user intent from these transcripts and respond in Odia only.
   };
 
   return (
-    <div className={`immersive-call-container ${getCallStateClass()}`}>
+    <div className={`immersive-call-container ${getCallStateClass()} ${activeChapter ? 'has-visual-card' : ''}`}>
       
       {/* Dynamic Swirling Siri-Style Background Aura Blobs */}
       <div className="bg-glow-blobs">
@@ -629,55 +743,77 @@ Understand user intent from these transcripts and respond in Odia only.
         <div className="glow-blob blob-amber"></div>
       </div>
       
-      {/* 2. MAIN 3D AVATAR SPHERE SECTION */}
-      <div className="call-main-sphere">
-        <div className="avatar-3d-orbit">
-          
-          {/* Orbital 3D perspective concentric rings */}
-          <div className="orbital-ring ring-outer"></div>
-          <div className="orbital-ring ring-mid"></div>
-          <div className="orbital-ring ring-inner"></div>
+      {/* 2. DUAL WORKSPACE: 3D AVATAR + VISUAL TEXTBOOK CARD */}
+      <div className="call-visual-workspace">
+        
+        {/* Left/Top: Main 3D Avatar sphere */}
+        <div className="call-main-sphere">
+          <div className="avatar-3d-orbit">
+            
+            {/* Orbital 3D perspective concentric rings */}
+            <div className="orbital-ring ring-outer"></div>
+            <div className="orbital-ring ring-mid"></div>
+            <div className="orbital-ring ring-inner"></div>
 
-          {/* Glowing Siri Waves (Rippling Around the Central Glass Orb) */}
-          {(isListening || isSpeaking) && (
-            <div className="neon-siri-waves">
-              <div className="siri-wave wave-1"></div>
-              <div className="siri-wave wave-2"></div>
-              <div className="siri-wave wave-3"></div>
+            {/* Glowing Siri Waves (Rippling Around the Central Glass Orb) */}
+            {(isListening || isSpeaking) && (
+              <div className="neon-siri-waves">
+                <div className="siri-wave wave-1"></div>
+                <div className="siri-wave wave-2"></div>
+                <div className="siri-wave wave-3"></div>
+              </div>
+            )}
+
+            {/* Glowing background aurorafield */}
+            <div className="glow-aura"></div>
+
+            {/* Central Avatar Orb */}
+            <div ref={sphereRef} className="avatar-sphere" onClick={toggleListening}>
+              <img src="/gundulu.png" alt="Gundulu" className="avatar-img-3d" />
+              
+              {/* Glossy glass reflection cover */}
+              <div className="avatar-glass-shine"></div>
+              
+              {/* Soft border ring overlay */}
+              <div className="avatar-sphere-border"></div>
+              
+              {/* Interactive mic ripples inside sphere */}
+              {isListening && (
+                <div className="mic-ripple-inner">
+                  <Lucide.Mic size={36} className="text-emerald-400" />
+                </div>
+              )}
             </div>
-          )}
 
-          {/* Glowing background aurorafield */}
-          <div className="glow-aura"></div>
-
-          {/* Central Avatar Orb */}
-          <div ref={sphereRef} className="avatar-sphere" onClick={toggleListening}>
-            <img src="/gundulu.png" alt="Gundulu" className="avatar-img-3d" />
-            
-            {/* Glossy glass reflection cover */}
-            <div className="avatar-glass-shine"></div>
-            
-            {/* Soft border ring overlay */}
-            <div className="avatar-sphere-border"></div>
-            
-            {/* Interactive mic ripples inside sphere */}
-            {isListening && (
-              <div className="mic-ripple-inner">
-                <Lucide.Mic size={36} className="text-emerald-400" />
+            {/* Speak visualizer particles orbiting around */}
+            {isSpeaking && (
+              <div className="fluid-orbit-particles">
+                <span className="particle p1"></span>
+                <span className="particle p2"></span>
+                <span className="particle p3"></span>
+                <span className="particle p4"></span>
               </div>
             )}
           </div>
-
-          {/* Speak visualizer particles orbiting around */}
-          {isSpeaking && (
-            <div className="fluid-orbit-particles">
-              <span className="particle p1"></span>
-              <span className="particle p2"></span>
-              <span className="particle p3"></span>
-              <span className="particle p4"></span>
-            </div>
-          )}
         </div>
+
+        {/* Right/Bottom: Interactive Textbook Pictorial Lesson Card */}
+        {activeChapter && (
+          <div className="textbook-visual-card animate-fade-in">
+            <div className="card-glass-header">
+              <span className="chapter-badge">{activeChapter.subject || "GUNDULU AI TUTOR"}</span>
+              <h3 className="chapter-card-title">{activeChapter.title}</h3>
+            </div>
+            <div className="card-visual-body">
+              {renderTextbookVisual(activeChapter)}
+            </div>
+            <div className="card-notes-preview">
+              <p className="notes-heading">ପାଠ୍ୟକ୍ରମ ବିବରଣୀ (Lesson Overview):</p>
+              <p className="notes-text">{activeChapter.notes || "ନମସ୍କାର! ଗୁଣ୍ଡୁଲୁ ସହ ପଢିବା ପାଇଁ ଆପଣଙ୍କ ସ୍ୱାଗତ।"}</p>
+            </div>
+          </div>
+        )}
+
       </div>
 
       {/* 3. CALL STATUS DISPLAY */}
