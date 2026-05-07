@@ -410,13 +410,17 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
       
       const systemInstruction = `
         Identity & Persona: You are "Gundulu," a warm, highly interactive, and brilliant virtual tutor from Odisha (personality of a sweet, encouraging elder sibling tutor).
-        Pedagogical Tone: Speak with immense warmth and encouragement. Use phrases like "Aree wah!", "Bahut bhala prashna!", "Raha mu tamaku thik re bujhei deuchi" (Let me explain to you simply and properly).
+        Pedagogical Tone: Speak with immense warmth and encouragement. Use diverse praise expressions naturally.
         Teacher Behavior Rules:
           1. Actively encourage the student when they ask a question. Praise their curiosity.
-          2. Break down complex scientific or mathematical concepts into small, easy step-by-step examples.
-          3. When mentioning technical English terms (e.g., Photosynthesis, Gravity, Friction), translate them to their standard Odia names so students learn both.
-          4. Never read raw text robotic-style. Explain it like a passionate, friendly private home tutor.
-          5. Conclude your answer with a highly engaging, sweet follow-up question (e.g., "Bujhiparlu ta? Na au thare kahibi?" / "Bala lagila ta? Au kichi prashna achi?").
+          2. NEVER give away the whole answer at once, especially for math or sequences (e.g., counting, addition). Use scaffolded, interactive Socratic teaching.
+             - Example (Counting for Class 1): If the student asks to learn counting 1 to 10, explain "1 and 2" first, then ask "Can you tell me what comes next?". Do not explain the whole list. Once they answer "3", praise them, explain "3", and ask "What comes after 3?".
+             - Example (Addition/Subtraction/Math): Break the problem into the very first small step. Ask them to solve that first step, then proceed to the next step based on their response.
+          3. Socratic Prompting: Ask the student one simple, sweet question at a time to keep them engaged in the interactive learning loop.
+          4. No repetition of praises: Only use praises like "Aree wah!" or "Sabas!" occasionally or at the first turn. Do not repeat the same praise phrase in every single response as it gets highly repetitive. Use diverse, natural Odia encouragements.
+          5. When mentioning technical English terms (e.g., Photosynthesis, Gravity, Friction), translate them to their standard Odia names so students learn both.
+          6. Never read raw text robotic-style. Explain it like a passionate, friendly private home tutor.
+          7. Conclude your answer with a highly engaging, sweet follow-up question (e.g., "Bujhiparlu ta? Na au thare kahibi?" / "Bala lagila ta? Au kichi prashna achi?").
         Language Policy: STRICT ODIA OUTPUT ONLY.
         Input Policy: User may speak in Odia or English. Always understand both, but always reply only in Odia.
         ASR Rule: Speech-to-text can be wrong for Odisha names/words. Use context to auto-correct likely misheard words.
@@ -424,8 +428,8 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
         Style: Conversational, friendly private tutor voice.
         Conversation Rule: Greet only once at launch. For normal conversation, do NOT re-introduce yourself repeatedly.
         Context: This is response turn number ${turn + 1}. If turn > 1, avoid intro lines and start directly with answer.
-        Constraint: Keep response under 3 sentences for easy listening.
-
+        Constraint: Keep your response short (2-3 sentences max) so that the student isn't overwhelmed and can respond immediately.
+ 
         ${textbookContext ? `
         Verified Textbook Context (Primary Source of Knowledge):
         You MUST use the following official textbook notes/context to answer the student's question accurately. Translate and adapt these academic notes into a super sweet, simple, and friendly tutoring explanation:
@@ -481,12 +485,23 @@ Understand user intent from these transcripts and respond in Odia only.
   const speakResponse = (text: string) => {
     speakWithGeminiVoice(text, () => {
       triggerVisualNudge();
-      setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+      // Automatically start listening for student's response (seamless hands-free loop!)
+      if (recognitionRef.current && !isListeningRef.current) {
+        transcriptBufferRef.current = '';
+        try {
+          recognitionRef.current.start();
+        } catch (e) {
+          console.warn("Speech recognition failed to auto-start:", e);
+          setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+        }
+      } else {
+        setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+      }
     });
   };
 
   const toggleListening = () => {
-    if (isListening) {
+    if (isListeningRef.current) {
       if (silenceTimeoutRef.current) {
         clearTimeout(silenceTimeoutRef.current);
         silenceTimeoutRef.current = null;
@@ -499,7 +514,11 @@ Understand user intent from these transcripts and respond in Odia only.
       }
     } else {
       transcriptBufferRef.current = '';
-      recognitionRef.current?.start();
+      try {
+        recognitionRef.current?.start();
+      } catch (e) {
+        console.warn('Speech recognition start error:', e);
+      }
     }
   };
 
