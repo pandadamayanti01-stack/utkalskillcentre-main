@@ -35,25 +35,18 @@ async function ingest() {
   try {
     const bucket = admin.storage().bucket();
     
-    // List all files in the bucket under 'Rag Text Book/'
-    console.log("Listing all files in bucket under 'Rag Text Book/'...");
-    const [files] = await bucket.getFiles({ prefix: 'Rag Text Book/' });
+    // List all files in the bucket
+    console.log("Listing all files in bucket...");
+    const [files] = await bucket.getFiles();
     
-    // Filter out only PDF or TXT files
+    // Filter out only PDF or TXT files inside textbook folders
     const textbookFiles = files.filter(f => 
-      f.name.toLowerCase().endsWith('.pdf') || 
-      f.name.toLowerCase().endsWith('.txt')
+      (f.name.startsWith('Rag Text Book/') || f.name.startsWith('Chapter Wise Text Book/')) &&
+      (f.name.toLowerCase().endsWith('.pdf') || f.name.toLowerCase().endsWith('.txt'))
     );
     
     if (textbookFiles.length === 0) {
-      console.log("❌ No PDF or TXT files found inside the 'Rag Text Book/' directory on Firebase Storage.");
-      console.log("\n💡 Recommended Bucket Directory Structure:");
-      console.log("Rag Text Book/");
-      console.log("  ├── Class 10/");
-      console.log("  │    ├── Mathematics/");
-      console.log("  │    │    └── Sarala_Saha_Samikarana.pdf");
-      console.log("  │    └── Science/");
-      console.log("  └── Class 7/");
+      console.log("❌ No PDF or TXT files found inside 'Rag Text Book/' or 'Chapter Wise Text Book/' on Firebase Storage.");
       return;
     }
     
