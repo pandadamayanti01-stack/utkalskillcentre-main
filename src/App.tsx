@@ -6357,6 +6357,15 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
       }
     };
 
+    const handleWindowFocus = () => {
+      // Give 3 seconds grace period for upload to initiate on returning focus
+      setTimeout(() => {
+        if (!uploadingImage) {
+          (window as any).isUploadingRoughNote = false;
+        }
+      }, 3000);
+    };
+
     const handleContextMenu = (e: MouseEvent) => e.preventDefault();
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'v')) {
@@ -6366,15 +6375,17 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
     };
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleWindowFocus);
     document.addEventListener('contextmenu', handleContextMenu);
     document.addEventListener('keydown', handleKeyDown);
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleWindowFocus);
       document.removeEventListener('contextmenu', handleContextMenu);
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [violations]);
+  }, [violations, uploadingImage]);
 
   // Track time spent per question
   useEffect(() => {
@@ -6394,8 +6405,12 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
   };
 
   const handleImageUpload = async (file: File) => {
-    if (!file) return;
+    if (!file) {
+      (window as any).isUploadingRoughNote = false;
+      return;
+    }
     setUploadingImage(true);
+    (window as any).isUploadingRoughNote = true;
     try {
       // 1. Compress
       const compressedBlob = await compressImage(file);
@@ -6418,6 +6433,10 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
       alert(`Failed to upload image: ${err.message || "Unknown error"}. Please check your connection and try again.`);
     } finally {
       setUploadingImage(false);
+      // Wait a short delay to ensure any delayed browser focus/visibility events have resolved
+      setTimeout(() => {
+        (window as any).isUploadingRoughNote = false;
+      }, 1000);
     }
   };
 
@@ -6588,7 +6607,12 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
             <div className="flex justify-between items-center mb-2">
               <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Answer / Calculation</label>
               <div className="flex gap-2">
-                <label className="cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 rounded-xl text-xs font-bold text-white flex items-center gap-2 transition-all">
+                <label 
+                  onClick={() => {
+                    (window as any).isUploadingRoughNote = true;
+                  }}
+                  className="cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 rounded-xl text-xs font-bold text-white flex items-center gap-2 transition-all"
+                >
                   {uploadingImage ? <Lucide.Loader2 size={14} className="animate-spin" /> : <Lucide.Camera size={14} />}
                   {uploadingImage ? 'Uploading...' : 'Camera'}
                   <input 
@@ -6597,14 +6621,21 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
                     capture="environment"
                     className="hidden" 
                     onChange={(e) => {
+                      (window as any).isUploadingRoughNote = true;
                       const file = e.target.files?.[0];
                       if (file) handleImageUpload(file);
+                      else (window as any).isUploadingRoughNote = false;
                       e.target.value = ''; // Reset input
                     }}
                     disabled={uploadingImage}
                   />
                 </label>
-                <label className="cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 rounded-xl text-xs font-bold text-white flex items-center gap-2 transition-all">
+                <label 
+                  onClick={() => {
+                    (window as any).isUploadingRoughNote = true;
+                  }}
+                  className="cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 rounded-xl text-xs font-bold text-white flex items-center gap-2 transition-all"
+                >
                   <Lucide.Image size={14} />
                   Gallery
                   <input 
@@ -6612,8 +6643,10 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
                     accept="image/*" 
                     className="hidden" 
                     onChange={(e) => {
+                      (window as any).isUploadingRoughNote = true;
                       const file = e.target.files?.[0];
                       if (file) handleImageUpload(file);
+                      else (window as any).isUploadingRoughNote = false;
                       e.target.value = ''; // Reset input
                     }}
                     disabled={uploadingImage}
