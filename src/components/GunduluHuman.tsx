@@ -624,28 +624,6 @@ Understand user intent from these transcripts and respond in Odia only.
         <div className="glow-blob blob-amber"></div>
       </div>
       
-      {/* 1. TOP STATS STATUS HUD */}
-      <div className="call-top-hud">
-        <div className="hud-left">
-          <div className="live-pill animate-pulse"></div>
-          <span className="hud-title">ଗୁଣ୍ଡୁଲୁ LIVE CALL</span>
-        </div>
-        <div className="hud-center">
-          <div className="timer-badge">
-            <Lucide.Clock size={14} className="mr-1 text-emerald-400" />
-            <span>{formatTimer(callDuration)}</span>
-          </div>
-        </div>
-        <div className="hud-right">
-          <div className="network-signal">
-            <span className="signal-bar active"></span>
-            <span className="signal-bar active"></span>
-            <span className="signal-bar active"></span>
-            <span className="signal-bar active"></span>
-          </div>
-        </div>
-      </div>
-
       {/* 2. MAIN 3D AVATAR SPHERE SECTION */}
       <div className="call-main-sphere">
         <div className="avatar-3d-orbit">
@@ -724,45 +702,15 @@ Understand user intent from these transcripts and respond in Odia only.
         )}
       </div>
 
-      {/* 5. BOTTOM CALL HUD ACTIONS PANEL */}
-      <div className="call-bottom-hud-panel">
-        
-        {/* Toggle Speech Input Language */}
-        <button 
-          className="hud-action-btn glass-btn" 
-          onClick={rotateLanguage}
-          title="Change Speech Input Language"
-        >
-          <Lucide.Globe size={20} className="text-blue-300" />
-          <span className="hud-btn-label">
-            {recognitionLanguages.find(l => l.code === inputLanguage)?.label.split(' ')[0]}
-          </span>
-        </button>
-
-        {/* Core Mute/Listen Action Toggle Button */}
-        <button 
-          className={`hud-action-btn main-mic-btn ${isListening ? 'active-listening' : ''}`}
-          onClick={toggleListening}
-          title={isListening ? "Mute Microphone" : "Tap to Speak"}
-        >
-          {isListening ? (
-            <Lucide.Mic size={28} className="text-white animate-bounce" />
-          ) : (
-            <Lucide.MicOff size={28} className="text-white/60" />
-          )}
-          <span className="hud-btn-label">
-            {isListening ? "ଶୁଣୁଛି..." : "କହନ୍ତୁ"}
-          </span>
-        </button>
-
-        {/* Hang Up/End Call Button */}
+      {/* 5. BOTTOM CALL HUD ACTIONS PANEL - Ultra-clean SINGLE STOP BUTTON */}
+      <div className="call-bottom-hud-panel single-stop-hud">
         {onBack && (
           <button 
             className="hud-action-btn hang-up-btn" 
             onClick={handleHangUp}
             title="End Voice Session"
           >
-            <Lucide.PhoneOff size={24} className="text-white" />
+            <Lucide.PhoneOff size={28} className="text-white" />
             <span className="hud-btn-label">କାଟନ୍ତୁ</span>
           </button>
         )}
