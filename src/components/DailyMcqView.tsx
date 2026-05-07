@@ -9,6 +9,7 @@ import { normalizeDailyMcqQuestions } from '../utils/dailyMcq';
 import { copyTextToClipboard, getDailyMcqShareUrl, openDailyMcqWhatsAppShare } from '../utils/dailyMcqShare';
 import { useVoiceInput } from '../hooks/useVoiceInput';
 import { SEO } from './SEO';
+import { vibrate, playSuccessChime } from '../pwa';
 
 interface DailyMcqViewProps {
   mcqs: DailyMcq[];
@@ -231,6 +232,17 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
           createdAt: serverTimestamp(),
         });
       });
+      
+      // Dynamic mobile app haptics and sound alerts on successful MCQ submission
+      const allCorrect = correctCount === questions.length;
+      playSuccessChime(correctCount > 0); // Play upward success major chime or warning chord
+      if (allCorrect) {
+        vibrate([50, 30, 100]); // Fast double vibration for 100% correct score!
+      } else if (correctCount > 0) {
+        vibrate(60); // Clean success pulse
+      } else {
+        vibrate([120, 60, 120]); // Gentle correction double pulse
+      }
     } catch (error) {
       if (!(error instanceof Error) || error.message !== 'already-submitted') {
         console.error('Daily MCQ submit error:', error);
@@ -472,6 +484,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
                                   type="button"
                                   disabled={isSubmitted}
                                   onClick={() => {
+                                    vibrate(12);
                                     const nextAnswers = [...selectedSetAnswers];
                                     nextAnswers[questionIndex] = option;
                                     setSelectedAnswers((prev) => ({ ...prev, [mcq.id]: nextAnswers }));

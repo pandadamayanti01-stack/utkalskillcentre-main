@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { translations } from '../translations';
 import { Test } from '../types';
+import { vibrate, requestScreenWakeLock, releaseScreenWakeLock, playSuccessChime } from '../pwa';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { db as firestore, storage } from '../firebase';
@@ -29,6 +30,14 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
   const [roughNotes, setRoughNotes] = useState<Record<number, string>>({});
   const [uploadingNote, setUploadingNote] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  // Keep screen awake during Monthly Test study session (PWA native feature)
+  React.useEffect(() => {
+    requestScreenWakeLock();
+    return () => {
+      void releaseScreenWakeLock();
+    };
+  }, []);
 
   // Image compression utility to speed up uploads
   const compressImage = (file: File): Promise<Blob> => {
@@ -144,6 +153,7 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
   };
 
   const handleAnswer = (idx: number) => {
+    vibrate(12); // Tactile micro-vibration on option select
     const newAnswers = [...answers];
     newAnswers[currentIdx] = idx;
     setAnswers(newAnswers);
@@ -176,6 +186,8 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
 
       await addDoc(collection(firestore, 'monthly_test_submissions'), submissionData);
 
+      vibrate([60, 40, 120]); // Victory heartbeat vibration on test completion!
+      playSuccessChime(true); // G5 -> C6 high-pitch ascending chime!
       onComplete();
     } catch (err: any) {
       console.error("Submit Test Error:", err);

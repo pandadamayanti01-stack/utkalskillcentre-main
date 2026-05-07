@@ -45,8 +45,9 @@ import { OfflineService } from './services/offlineService';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ChatbotModal } from './components/ChatbotModal';
 import { DailyMcqView } from './components/DailyMcqView';
-import { getDeferredPrompt, clearDeferredPrompt } from './pwa';
+import { getDeferredPrompt, clearDeferredPrompt, vibrate, requestScreenWakeLock, releaseScreenWakeLock, shareNative, playSuccessChime, playClickSound } from './pwa';
 import { SEO } from './components/SEO';
+import { BottomNavBar } from './components/BottomNavBar';
 
 const AdminDashboard = lazy(() =>
   import('./components/AdminDashboard')
@@ -682,7 +683,18 @@ export default function App() {
   const [isRegisteredForTestSeries, setIsRegisteredForTestSeries] = useState(false);
   const [openTutorInVoiceMode, setOpenTutorInVoiceMode] = useState(0);
   const [supportSession, setSupportSession] = useState<any>(null);
+  const [confirmSupport, setConfirmSupport] = useState(false);
+  const confirmTimeoutRef = useRef<any>(null);
   const contentScrollRef = useRef<HTMLDivElement>(null);
+
+  // Clean up confirmation timer on unmount
+  useEffect(() => {
+    return () => {
+      if (confirmTimeoutRef.current) {
+        clearTimeout(confirmTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Support Session Cleanup
   useEffect(() => {
@@ -700,6 +712,27 @@ export default function App() {
     } catch (err) {
       console.error("Failed to start support", err);
       alert("Failed to initiate support session. Please try again.");
+    }
+  };
+
+  const handleSupportClick = () => {
+    playClickSound();
+    if (vibrate) vibrate(40);
+
+    if (!confirmSupport) {
+      setConfirmSupport(true);
+      if (confirmTimeoutRef.current) {
+        clearTimeout(confirmTimeoutRef.current);
+      }
+      confirmTimeoutRef.current = setTimeout(() => {
+        setConfirmSupport(false);
+      }, 5000); // 5 seconds reset timeout
+    } else {
+      if (confirmTimeoutRef.current) {
+        clearTimeout(confirmTimeoutRef.current);
+      }
+      setConfirmSupport(false);
+      startSupport();
     }
   };
 
@@ -929,6 +962,34 @@ export default function App() {
     };
     testConnection();
   }, []);
+
+  // Android Back Button PopState Interception
+  useEffect(() => {
+    const modalsOpen = showChatbot || isSidebarOpen || showInstallModal || activeTest !== null || selectedChapter !== null;
+    if (modalsOpen) {
+      window.history.pushState({ modalOpen: true }, '');
+    }
+  }, [showChatbot, isSidebarOpen, showInstallModal, activeTest, selectedChapter]);
+
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      const modalsOpen = showChatbot || isSidebarOpen || showInstallModal || activeTest !== null || selectedChapter !== null;
+      if (modalsOpen) {
+        setShowChatbot(false);
+        setSidebarOpen(false);
+        setShowInstallModal(false);
+        setActiveTest(null);
+        setSelectedChapter(null);
+        window.history.pushState(null, '', `#${activeTab}`);
+      } else if (activeTab !== 'dashboard') {
+        setActiveTab('dashboard');
+        window.history.pushState(null, '', '#dashboard');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [showChatbot, isSidebarOpen, showInstallModal, activeTest, selectedChapter, activeTab]);
 
   useEffect(() => {
     const handlePrompt = () => {
@@ -2479,6 +2540,30 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Live Support Button in Odia (Top Right Header Alignment) */}
+            {!isAdminView && user && !supportSession && (
+              <button
+                onClick={handleSupportClick}
+                className={`flex items-center gap-1.5 p-2 sm:px-3.5 sm:py-2 text-white rounded-2xl shadow-lg transition-all cursor-pointer z-30 ${
+                  confirmSupport 
+                    ? 'bg-gradient-to-r from-red-600 via-rose-600 to-pink-500 hover:from-red-500 hover:via-rose-500 hover:to-pink-400 shadow-rose-900/40 border border-rose-500/50 scale-105 animate-pulse' 
+                    : 'bg-gradient-to-r from-red-600 via-orange-600 to-amber-500 hover:from-red-500 hover:via-orange-500 hover:to-amber-400 shadow-red-900/20 border border-red-500/30 hover:scale-105 active:scale-95'
+                }`}
+                title={
+                  confirmSupport 
+                    ? (language === 'or' ? 'ନିଶ୍ଚିତ କରନ୍ତୁ?' : 'Confirm Connection?') 
+                    : (language === 'or' ? 'ଲାଇଭ୍ ସହାୟତା' : 'Live Support')
+                }
+              >
+                <Lucide.LifeBuoy size={16} className={`${confirmSupport ? 'animate-spin text-white' : 'animate-spin-slow text-white'}`} />
+                <span className="text-[11px] font-black tracking-wider leading-none hidden sm:inline-block">
+                  {confirmSupport 
+                    ? (language === 'or' ? 'ନିଶ୍ଚିତ କରନ୍ତୁ?' : 'Confirm?') 
+                    : 'ଲାଇଭ୍ ସହାୟତା'}
+                </span>
+              </button>
+            )}
+
             {/* User Stats Bubble */}
             <div className="flex items-center gap-4 bg-white/5 px-4 py-2 rounded-2xl border border-white/5">
               <div className="flex items-center gap-1.5 text-orange-400">
@@ -2491,7 +2576,7 @@ export default function App() {
         </header>
 
         {/* CONTENT AREA: This is the ONLY part that scrolls */}
-        <div ref={contentScrollRef} className="flex-1 overflow-y-auto p-4 md:p-8 scrollbar-hide relative z-10">
+        <div ref={contentScrollRef} className="flex-1 overflow-y-auto p-4 md:p-8 pb-28 lg:pb-8 scrollbar-hide relative z-10">
           <AnimatePresence mode="wait">
             {/* Your 10+ Tab components go here... */}
             {activeTab === 'dashboard' && (
@@ -2551,6 +2636,18 @@ export default function App() {
             <p className="text-[9px] font-medium text-center text-slate-500">© 2026 Bigsan Utkal Skill Centre</p>
           </footer>
         </div>
+
+        {/* Bottom Floating Navigation Bar for Mobile */}
+        {user && !isAdminView && (
+          <BottomNavBar
+            language={language}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            setSidebarOpen={setSidebarOpen}
+            isSidebarOpen={isSidebarOpen}
+            unreadNotificationsCount={studentNotifications.length}
+          />
+        )}
       </main>
 
       <div id="recaptcha-container"></div>
@@ -2596,18 +2693,7 @@ export default function App() {
     {supportSession && (
       <SupportOverlay session={supportSession} onEnd={endSupport} />
     )}
-    
-    {!isAdminView && user && !supportSession && (
-      <button 
-        onClick={startSupport}
-        className="fixed bottom-24 right-6 z-[90] w-14 h-14 bg-blue-600 text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-all group"
-      >
-        <Lucide.LifeBuoy size={24} className="group-hover:rotate-12 transition-transform" />
-        <div className="absolute right-full mr-3 bg-black/80 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-white/10 pointer-events-none">
-          Live Support
-        </div>
-      </button>
-    )}
+
     </div>
   </ErrorBoundary>
 );
@@ -3879,6 +3965,18 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
   const [selected, setSelected] = useState<Chapter | null>(null);
   useEffect(() => {
     console.log("Debug: CoursesView selected state changed:", selected);
+  }, [selected]);
+
+  // Keep screen awake during chapter study reading session (PWA native feature)
+  useEffect(() => {
+    if (selected !== null) {
+      requestScreenWakeLock();
+    } else {
+      void releaseScreenWakeLock();
+    }
+    return () => {
+      void releaseScreenWakeLock();
+    };
   }, [selected]);
   const [quizMode, setQuizMode] = useState(false);
   const [subjectFilter, setSubjectFilter] = useState<string>('all');
@@ -6138,6 +6236,14 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
   const [timeLeft, setTimeLeft] = useState(45 * 60); // 45 minutes in seconds
   const startTimeRef = useRef<number>(Date.now());
 
+  // Keep screen awake during Monthly Test study session (PWA native feature)
+  useEffect(() => {
+    requestScreenWakeLock();
+    return () => {
+      void releaseScreenWakeLock();
+    };
+  }, []);
+
   // Image compression utility to speed up uploads
   const compressImage = (file: File): Promise<Blob> => {
     return new Promise((resolve, reject) => {
@@ -6262,6 +6368,8 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
   }, [currentIdx]);
 
   const handleAnswer = (val: any) => {
+    vibrate(12);
+    playClickSound();
     setAnswers(prev => ({ ...prev, [currentIdx]: val }));
   };
 
@@ -6337,6 +6445,8 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
         status: 'pending_review'
       });
 
+      vibrate([60, 40, 120]); // Victory heartbeat vibration on test completion!
+      playSuccessChime(true); // Ascending major notes chime!
       alert(language === 'en' ? "Test submitted successfully!" : "ପରୀକ୍ଷା ସଫଳତାର ସହିତ ଦାଖଲ ହୋଇଛି!");
       onComplete();
     } catch (err: any) {
