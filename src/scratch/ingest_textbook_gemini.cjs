@@ -1,4 +1,5 @@
 const admin = require('firebase-admin');
+const { getFirestore } = require('firebase-admin/firestore');
 const fs = require('fs');
 const path = require('path');
 const { PDFParse } = require('pdf-parse');
@@ -12,13 +13,13 @@ const serviceAccount = require(serviceAccountPath);
 const dbId = 'ai-studio-2a24dfcb-5874-4b37-8e37-434f425283b9';
 const bucketName = 'utkalskillcentre.firebasestorage.app';
 
-admin.initializeApp({
+const app = admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  projectId: dbId,
+  projectId: "utkalskillcentre",
   storageBucket: bucketName
 });
 
-const db = admin.firestore();
+const db = getFirestore(app, dbId);
 const apiKey = process.env.VITE_GEMINI_API_KEY;
 
 if (!apiKey) {

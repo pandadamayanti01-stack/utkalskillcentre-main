@@ -26,10 +26,11 @@ async function run() {
       const [files] = await bucket.getFiles();
       
       const matches = files.filter(f => 
-        f.name.toLowerCase().includes('sarala') || 
-        f.name.toLowerCase().includes('saha') || 
-        f.name.toLowerCase().includes('samikarana') ||
-        f.name.toLowerCase().includes('chapter')
+        f.name.toLowerCase().includes('class 9') || 
+        f.name.toLowerCase().includes('class9') || 
+        f.name.toLowerCase().includes('c9_') ||
+        f.name.toLowerCase().includes('algebra') ||
+        f.name.toLowerCase().includes('geometry')
       );
       
       console.log(`✅ Success! Found ${matches.length} matching file(s) inside:`);
