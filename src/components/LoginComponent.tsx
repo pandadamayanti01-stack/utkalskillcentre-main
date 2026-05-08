@@ -318,8 +318,12 @@ export default function Login({ language, translations, setLanguage, setRegData 
             >
               <Youtube size={18} />
             </a>
-            <button onClick={() => setLanguage(language === 'en' ? 'or' : 'en')} className="glass-marble px-4 py-2 rounded-full text-[10px] font-black text-[#ffd700]">
-              {language === 'en' ? 'ENGLISH' : 'ଓଡ଼ିଆ'}
+            <button 
+              onClick={() => setLanguage(language === 'en' ? 'or' : 'en')} 
+              className="glass-marble px-4 py-2 rounded-full text-[10px] font-black text-[#ffd700] flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-transform"
+            >
+              <Globe size={12} className="text-[#ffd700]" />
+              {language === 'en' ? 'ଓଡ଼ିଆ' : 'ENGLISH'}
             </button>
           </div>
 

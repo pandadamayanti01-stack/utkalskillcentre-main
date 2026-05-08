@@ -6,6 +6,7 @@ import { SidebarItem } from './SidebarItem';
 
 interface SidebarProps {
   language: 'en' | 'or';
+  setLanguage: (lang: 'en' | 'or') => void;
   activeTab: string;
   setActiveTab: (tab: string) => void;
   isSidebarOpen: boolean;
@@ -19,6 +20,7 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({
   language,
+  setLanguage,
   activeTab,
   setActiveTab,
   isSidebarOpen,
@@ -128,6 +130,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <p className="text-[10px] text-[#ffd700] font-bold uppercase tracking-widest opacity-70">
                   {user?.class ? (t.classes[user.class] || user.class) : 'Odisha Board'}
                 </p>
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
+              <div className="flex items-center gap-2 text-white/60">
+                <Lucide.Globe size={18} className="text-emerald-400" />
+                <span className="text-xs font-bold">{language === 'en' ? 'Language' : 'ଭାଷା'}</span>
+              </div>
+              <div className="flex gap-1 bg-black/40 p-1 rounded-xl border border-white/5">
+                <button 
+                  onClick={() => setLanguage('en')}
+                  className={`px-2.5 py-1 rounded-lg text-[10px] font-black transition-all ${language === 'en' ? 'bg-[#b34d1f] text-white shadow-md' : 'text-white/40 hover:text-white/70'}`}
+                >
+                  EN
+                </button>
+                <button 
+                  onClick={() => setLanguage('or')}
+                  className={`px-2.5 py-1 rounded-lg text-[10px] font-black transition-all ${language === 'or' ? 'bg-[#b34d1f] text-white shadow-md' : 'text-white/40 hover:text-white/70'}`}
+                >
+                  ଓଡ଼ିଆ
+                </button>
               </div>
             </div>
             

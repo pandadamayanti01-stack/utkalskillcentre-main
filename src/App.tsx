@@ -854,7 +854,7 @@ export default function App() {
     return () => window.removeEventListener('changeTab', handleTabChange);
   }, []);
 
-  const [language, _setLanguage] = useState<'en' | 'or'>(localStorage.getItem('lang') as any || 'or');
+  const [language, _setLanguage] = useState<'en' | 'or'>(localStorage.getItem('lang') as any || 'en');
   const languageRef = useRef(language);
   const setLanguage = async (lang: 'en' | 'or') => {
     languageRef.current = lang;
@@ -2528,6 +2528,7 @@ export default function App() {
       <Suspense fallback={null}>
         <Sidebar 
           language={language}
+          setLanguage={setLanguage}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           isSidebarOpen={isSidebarOpen}
