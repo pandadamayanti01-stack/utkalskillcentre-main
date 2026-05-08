@@ -187,3 +187,82 @@ export const playSuccessChime = (success: boolean) => {
 };
 
 
+// --- Native Push Notifications Helpers ---
+
+const VAPID_PUBLIC_KEY = 'BHk1uroqx4HMHX1c3ldVPuO3AYWBGByuqlYBjWPW2YttFtiurT8cI731ckrp7K_Q491TtgpAkZL7ioLvVKtmtJo';
+
+// Helper to convert base64 VAPID key to Uint8Array required by push manager
+function urlBase64ToUint8Array(base64String: string) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/\-/g, '+')
+    .replace(/_/g, '/');
+
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
+
+// Request permission and subscribe browser/mobile to push notifications
+export const subscribeUserToPush = async (userId: string): Promise<boolean> => {
+  if (typeof window === 'undefined' || !('serviceWorker' in navigator) || !('PushManager' in window)) {
+    console.warn('Push messaging is not supported in this environment.');
+    return false;
+  }
+
+  try {
+    // 1. Request user permission
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      console.warn('Notification permission was denied by the user.');
+      return false;
+    }
+
+    // 2. Retrieve active registration
+    const registration = await navigator.serviceWorker.ready;
+
+    // 3. Subscribe user
+    const subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+    });
+
+    console.log('Successfully subscribed user inside browser:', subscription);
+
+    // 4. Save to our backend server
+    const response = await fetch('/api/notifications/subscribe', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId,
+        subscription
+      })
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Server subscription sync failed: ${errText}`);
+    }
+
+    return true;
+  } catch (err) {
+    console.error('Error subscribing to web push:', err);
+    return false;
+  }
+};
+
+// Check if notification permission is already granted
+export const checkPushPermission = (): 'granted' | 'denied' | 'default' => {
+  if (typeof window !== 'undefined' && 'Notification' in window) {
+    return Notification.permission;
+  }
+  return 'denied';
+};
+
+

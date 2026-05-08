@@ -14,6 +14,7 @@ import { getFirestore as getAdminFirestore } from 'firebase-admin/firestore';
 import { getStorage as getAdminStorage } from 'firebase-admin/storage';
 import fs from 'fs';
 import crypto from 'node:crypto';
+import webpush from 'web-push';
 import { registerDailyMcqAutomation } from './src/server/dailyMcqAutomation.js';
 import { getServiceAccountCredentials } from './src/server/googleCredentials.js';
 
@@ -22,6 +23,22 @@ const firestoreDatabaseId =
   process.env.VITE_FIRESTORE_DATABASE_ID ||
   process.env.VITE_FIREBASE_DATABASE_ID ||
   'ai-studio-2a24dfcb-5874-4b37-8e37-434f425283b9';
+
+const vapidPublicKey = process.env.VAPID_PUBLIC_KEY || 'BHk1uroqx4HMHX1c3ldVPuO3AYWBGByuqlYBjWPW2YttFtiurT8cI731ckrp7K_Q491TtgpAkZL7ioLvVKtmtJo';
+const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY || 'YGxwRzEnUaPqPygwknmuurDPEQVAwrEobKosW18pGVA';
+
+if (vapidPublicKey && vapidPrivateKey) {
+  try {
+    webpush.setVapidDetails(
+      'mailto:support@utkalskillcentre.com',
+      vapidPublicKey,
+      vapidPrivateKey
+    );
+    console.log('Web Push VAPID details initialized successfully.');
+  } catch (err) {
+    console.error('Failed to configure web-push VAPID details:', err);
+  }
+}
 
 function getInitializedAdminApp(): App | null {
   return getApps().length > 0 ? getApp() : null;
@@ -169,6 +186,78 @@ async function startServer() {
     } catch (error: any) {
       console.error('Upload Error:', error);
       res.status(500).json({ error: error.message || 'Upload failed' });
+    }
+  });
+
+  // Web Push Notifications - Subscribe User
+  app.post('/api/notifications/subscribe', async (req, res) => {
+    try {
+      const { userId, subscription } = req.body;
+      if (!userId || !subscription) {
+        return res.status(400).json({ error: 'userId and subscription are required' });
+      }
+
+      const adminApp = getInitializedAdminApp();
+      if (!adminApp) {
+        return res.status(503).json({ error: 'Firebase Admin is not initialized' });
+      }
+
+      const firestore = getAdminFirestore(adminApp, firestoreDatabaseId);
+      await firestore.collection('users').doc(userId).set({
+        pushSubscription: subscription
+      }, { merge: true });
+
+      console.log(`[Web Push] Successfully saved push subscription for student ${userId}`);
+      res.json({ success: true });
+    } catch (err: any) {
+      console.error('[Web Push] Error saving subscription:', err);
+      res.status(500).json({ error: err.message || 'Failed to save subscription' });
+    }
+  });
+
+  // Web Push Notifications - Dispatch Test Push
+  app.post('/api/notifications/send-test', async (req, res) => {
+    try {
+      const { userId, title, body, url } = req.body;
+      if (!userId) {
+        return res.status(400).json({ error: 'userId is required' });
+      }
+
+      const adminApp = getInitializedAdminApp();
+      if (!adminApp) {
+        return res.status(503).json({ error: 'Firebase Admin is not initialized' });
+      }
+
+      const firestore = getAdminFirestore(adminApp, firestoreDatabaseId);
+      const userDoc = await firestore.collection('users').doc(userId).get();
+
+      if (!userDoc.exists) {
+        return res.status(404).json({ error: 'User does not exist in database' });
+      }
+
+      const userData = userDoc.data();
+      const subscription = userData?.pushSubscription;
+
+      if (!subscription || !subscription.endpoint) {
+        return res.status(400).json({ 
+          error: 'Push subscription not found. Student has not enabled notifications on their device.' 
+        });
+      }
+
+      const notificationPayload = JSON.stringify({
+        title: title || 'Test Notification',
+        body: body || 'This is a test mobile alert from Utkal Skill Centre!',
+        url: url || '/'
+      });
+
+      console.log(`[Web Push] Sending push payload to endpoint: ${subscription.endpoint}`);
+      await webpush.sendNotification(subscription, notificationPayload);
+      
+      console.log(`[Web Push] Test push successfully sent to user ${userId}`);
+      res.json({ success: true });
+    } catch (err: any) {
+      console.error('[Web Push] Error dispatching push:', err);
+      res.status(500).json({ error: err.message || 'Failed to send test notification' });
     }
   });
 

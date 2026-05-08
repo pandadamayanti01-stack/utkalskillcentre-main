@@ -45,7 +45,7 @@ import { OfflineService } from './services/offlineService';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ChatbotModal } from './components/ChatbotModal';
 import { DailyMcqView } from './components/DailyMcqView';
-import { getDeferredPrompt, clearDeferredPrompt, vibrate, requestScreenWakeLock, releaseScreenWakeLock, shareNative, playSuccessChime, playClickSound } from './pwa';
+import { getDeferredPrompt, clearDeferredPrompt, vibrate, requestScreenWakeLock, releaseScreenWakeLock, shareNative, playSuccessChime, playClickSound, subscribeUserToPush } from './pwa';
 import { SEO } from './components/SEO';
 import { BottomNavBar } from './components/BottomNavBar';
 
@@ -3142,6 +3142,23 @@ function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: a
   const [showPinModal, setShowPinModal] = useState(false);
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
+  const [isPushSubscribed, setIsPushSubscribed] = useState(() => {
+    return typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted';
+  });
+  const [subscribingPush, setSubscribingPush] = useState(false);
+
+  const handlePushSubscription = async () => {
+    setSubscribingPush(true);
+    const success = await subscribeUserToPush(user.id);
+    setSubscribingPush(false);
+    if (success) {
+      setIsPushSubscribed(true);
+      playSuccessChime(true);
+      alert(language === 'en' ? "Notifications enabled successfully!" : "ନୋଟିଫିକେସନ୍ ସଫଳତାର ସହ ସକ୍ରିୟ ହୋଇଛି!");
+    } else {
+      alert(language === 'en' ? "Failed to enable notifications. Please make sure notifications are allowed in your browser/app settings." : "ନୋଟିଫିକେସନ୍ ସକ୍ରିୟ କରିବାରେ ବିଫଳ ହୋଇଛି | ଦୟାକରି ଆପଣଙ୍କ ବ୍ରାଉଜର୍/ଆପ୍ ସେଟିଂସରେ ଅନୁମତି ଯାଞ୍ଚ କରନ୍ତୁ |");
+    }
+  };
 
   const handleParentAccess = () => {
     if (!user.parent_pin) {
@@ -3473,6 +3490,41 @@ function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: a
               </div>
             </div>
             <Lucide.ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+          </button>
+
+          {/* Native Web Push Notification Toggle Card */}
+          <button 
+            type="button"
+            onClick={handlePushSubscription}
+            disabled={subscribingPush}
+            className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all group mt-4 border ${isPushSubscribed ? 'bg-teal-500/10 border-teal-500/20 text-teal-400' : 'bg-amber-500/10 border-amber-500/20 text-amber-500 hover:bg-amber-500/20'}`}
+          >
+            <div className="flex items-center gap-3">
+              <div className={`p-2 rounded-xl text-white ${isPushSubscribed ? 'bg-teal-500' : 'bg-amber-500 animate-pulse'}`}>
+                <Lucide.Bell size={20} />
+              </div>
+              <div className="text-left">
+                <p className="font-bold">
+                  {isPushSubscribed 
+                    ? (language === 'en' ? 'App Notifications Active' : 'ଆପ୍ ନୋଟିଫିକେସନ୍ ସକ୍ରିୟ') 
+                    : (language === 'en' ? 'Enable App Notifications' : 'ଆପ୍ ନୋଟିଫିକେସନ୍ ସକ୍ରିୟ କରନ୍ତୁ')}
+                </p>
+                <p className="text-[10px] opacity-70 uppercase tracking-wider">
+                  {isPushSubscribed 
+                    ? (language === 'en' ? 'Receiving native mobile updates' : 'ମୋବାଇଲ୍ ଅପଡେଟ୍ ସଫଳତାର ସହ ମିଳୁଛି') 
+                    : (language === 'en' ? 'Get important study & test alerts' : 'ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂଚନା ଏବଂ ଟେଷ୍ଟ୍ ବିଷୟରେ ଜାଣନ୍ତୁ')}
+                </p>
+              </div>
+            </div>
+            {subscribingPush ? (
+              <Lucide.Loader2 className="animate-spin text-amber-400" size={20} />
+            ) : (
+              isPushSubscribed ? (
+                <Lucide.CheckCircle size={20} className="text-teal-400" />
+              ) : (
+                <Lucide.ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+              )
+            )}
           </button>
         </div>
 

@@ -29,6 +29,7 @@ export default defineConfig(({mode}) => {
         injectRegister: false,
         includeAssets: ['icon.svg'],
         workbox: {
+          importScripts: ['/push-worker.js'],
           cleanupOutdatedCaches: true,
           clientsClaim: true,
           skipWaiting: true,
