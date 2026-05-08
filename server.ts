@@ -261,6 +261,75 @@ async function startServer() {
     }
   });
 
+  // Web Push Notifications - Broadcast Push to Audience
+  app.post('/api/notifications/broadcast', async (req, res) => {
+    try {
+      const { message, audience } = req.body;
+      if (!message) {
+        return res.status(400).json({ error: 'message is required' });
+      }
+
+      const adminApp = getInitializedAdminApp();
+      if (!adminApp) {
+        return res.status(503).json({ error: 'Firebase Admin is not initialized' });
+      }
+
+      const firestore = getAdminFirestore(adminApp, firestoreDatabaseId);
+      
+      // Query users who have registered a pushSubscription
+      const usersSnapshot = await firestore.collection('users')
+        .where('pushSubscription', '!=', null)
+        .get();
+
+      if (usersSnapshot.empty) {
+        return res.json({ success: true, count: 0, message: 'No devices subscribed yet.' });
+      }
+
+      const payload = JSON.stringify({
+        title: 'Utkal Skill Centre 🔔',
+        body: message,
+        url: '/'
+      });
+
+      let sentCount = 0;
+      const sendPromises = [];
+
+      for (const docSnapshot of usersSnapshot.docs) {
+        const userData = docSnapshot.data();
+        const subscription = userData.pushSubscription;
+
+        // Apply audience filtering if needed
+        if (audience === 'premium' && !userData.isPremium) continue;
+        if (audience === 'free' && userData.isPremium) continue;
+
+        if (subscription && subscription.endpoint) {
+          sendPromises.push(
+            webpush.sendNotification(subscription, payload)
+              .then(() => { sentCount++; })
+              .catch((err: any) => {
+                console.error(`[Web Push] Failed to send to user ${docSnapshot.id}:`, err.message);
+                // If subscription has expired or is invalid, automatically clear it from Firestore DB
+                if (err.statusCode === 410 || err.statusCode === 404) {
+                  firestore.collection('users').doc(docSnapshot.id).update({
+                    pushSubscription: null
+                  }).catch(() => {});
+                }
+              })
+          );
+        }
+      }
+
+      // Wait for all dispatches to finish
+      await Promise.allSettled(sendPromises);
+
+      console.log(`[Web Push] Global broadcast dispatched to ${sentCount} devices.`);
+      res.json({ success: true, count: sentCount });
+    } catch (err: any) {
+      console.error('[Web Push] Broadcast error:', err);
+      res.status(500).json({ error: err.message || 'Failed to dispatch broadcast' });
+    }
+  });
+
   // Helper to get price
   function getPrice(userClass: number, planType: 'monthly' | 'yearly'): number {
     if (userClass >= 1 && userClass <= 3) return planType === 'monthly' ? 99 : 499;

@@ -1064,6 +1064,23 @@ Sample tone for Class 6-10:
         audience: notificationAudience,
         createdAt: serverTimestamp()
       });
+
+      // Dispatch real-time native Web Push to active student devices
+      try {
+        await fetch('/api/notifications/broadcast', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            message: notificationMessage,
+            audience: notificationAudience
+          })
+        });
+      } catch (pushErr) {
+        console.warn("Database notice sent, but push dispatch failed:", pushErr);
+      }
+
       showNotification("Notification broadcasted successfully!");
       setNotificationMessage('');
     } catch (err: any) {
