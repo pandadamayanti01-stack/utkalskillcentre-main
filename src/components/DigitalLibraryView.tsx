@@ -200,6 +200,8 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
   const [selectedSubject, setSelectedSubject] = useState<string>('');
   const [selectedChapter, setSelectedChapter] = useState<any | null>(null);
 
+  const effectivePdfUrl = selectedChapter ? (selectedChapter.pdfUrl || selectedChapter.download_url || selectedChapter.driveUrl || '') : '';
+
   // Material reader settings
   const [readerMode, setReaderMode] = useState<'notes' | 'pdf'>('notes');
   const [personalNotes, setPersonalNotes] = useState<string>('');
@@ -601,7 +603,7 @@ Instructions:
                     onClick={() => {
                       setSelectedChapter(chap);
                       setCurrentView('reader');
-                      setReaderMode(chap.pdfUrl ? 'pdf' : 'notes');
+                      setReaderMode((chap.pdfUrl || chap.download_url || chap.driveUrl) ? 'pdf' : 'notes');
                     }}
                     className="p-5 rounded-2xl bg-slate-900/40 border border-white/5 flex items-center justify-between cursor-pointer group transition-all"
                   >
@@ -616,7 +618,7 @@ Instructions:
                           {chap.title}
                         </h4>
                         <div className="flex items-center gap-3 mt-1.5 text-xs text-slate-400">
-                          {chap.pdfUrl && (
+                          {(chap.pdfUrl || chap.download_url || chap.driveUrl) && (
                             <span className="flex items-center gap-1 text-sky-400 font-bold bg-sky-400/5 px-1.5 py-0.5 rounded-md border border-sky-400/10">
                               <Lucide.FileText size={10} />
                               <span>PDF</span>
@@ -668,14 +670,14 @@ Instructions:
 
                   <button
                     onClick={() => {
-                      if (selectedChapter.pdfUrl) {
+                      if (effectivePdfUrl) {
                         setReaderMode('pdf');
                       } else {
                         alert(language === 'en' ? 'Original PDF not uploaded yet. Please use the AI Study Guide!' : 'ଏହି ବିଷୟର ମୂଳ PDF ଏପର୍ଯ୍ୟନ୍ତ ଅପଲୋଡ୍ ହୋଇନାହିଁ। ଦୟାକରି AI ଟିପ୍ପଣୀ ପଢ଼ନ୍ତୁ!');
                       }
                     }}
                     className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold tracking-wider transition-all ${
-                      !selectedChapter.pdfUrl ? 'opacity-40 cursor-not-allowed' : ''
+                      !effectivePdfUrl ? 'opacity-40 cursor-not-allowed' : ''
                     } ${
                       readerMode === 'pdf'
                         ? 'bg-[#b34d1f] text-white shadow-lg'
@@ -805,7 +807,7 @@ Instructions:
                 ) : (
                   <div className="w-full h-[60vh] rounded-2xl overflow-hidden bg-slate-950 border border-white/5 flex flex-col justify-between">
                     <iframe
-                      src={`${selectedChapter.pdfUrl}#toolbar=0&navpanes=0`}
+                      src={`${effectivePdfUrl}#toolbar=0&navpanes=0`}
                       className="w-full flex-1"
                       title={selectedChapter.title}
                     />
@@ -814,7 +816,7 @@ Instructions:
                         {language === 'en' ? 'Having trouble viewing? Open original PDF directly:' : 'ଦେଖିବାରେ ସମସ୍ୟା ହେଉଛି? ସିଧାସଳଖ PDF ଓପନ କରନ୍ତୁ:'}
                       </span>
                       <a
-                        href={selectedChapter.pdfUrl}
+                        href={effectivePdfUrl}
                         target="_blank"
                         rel="noreferrer"
                         className="flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-black text-xs transition-all active:scale-95"
@@ -1153,7 +1155,7 @@ Instructions:
                 ) : (
                   <div className="w-full h-full rounded-2xl overflow-hidden bg-slate-900 border border-white/5 flex flex-col justify-between">
                     <iframe
-                      src={`${selectedChapter.pdfUrl}#toolbar=0&navpanes=0`}
+                      src={`${effectivePdfUrl}#toolbar=0&navpanes=0`}
                       className="w-full flex-1"
                       title={selectedChapter.title}
                     />
@@ -1162,7 +1164,7 @@ Instructions:
                         {language === 'en' ? 'Original PDF Textbook Reader' : 'ମୂଳ ପାଠ୍ୟପୁସ୍ତକ ପାଠକ'}
                       </span>
                       <a
-                        href={selectedChapter.pdfUrl}
+                        href={effectivePdfUrl}
                         target="_blank"
                         rel="noreferrer"
                         className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs transition-all active:scale-95"

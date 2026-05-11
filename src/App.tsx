@@ -2673,7 +2673,7 @@ export default function App() {
             {activeTab === 'digital_library' && (
               <DigitalLibraryView
                 user={user}
-                chapters={chapters}
+                chapters={textbooks}
                 language={language}
                 isPremium={isPremium}
                 onUpgrade={() => setActiveTab('plans')}
@@ -5432,7 +5432,7 @@ function TopicDetailView({
   isPremium: boolean,
   onUpgrade: () => void
 }) {
-  const [activeSubTab, setActiveSubTab] = useState<'video' | 'notes' | 'practice'>('video');
+  const [activeSubTab, setActiveSubTab] = useState<'video' | 'notes'>('notes');
   const [selectedVideoIndex, setSelectedVideoIndex] = useState(0);
 
   const videos = topic.videos && topic.videos.length > 0 
@@ -5528,19 +5528,6 @@ function TopicDetailView({
             </div>
 
             <div className="lg:w-72 space-y-4">
-              {(topic.quiz_questions?.length ?? 0) > 0 && (
-                <button 
-                  onClick={onTakeQuiz}
-                  className="w-full flex items-center justify-between gap-4 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white p-6 rounded-[2rem] font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-amber-900/20 group text-[11px]"
-                >
-                  <div className="flex items-center gap-3">
-                    <Lucide.Trophy size={20} className="group-hover:scale-110 transition-transform" />
-                    <span>Cognitive Quiz</span>
-                  </div>
-                  <Lucide.ChevronRight size={16} />
-                </button>
-              )}
-              
               <div className="p-6 rounded-[2rem] bg-white/5 border border-white/10 space-y-2">
                 <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Engagement Level</p>
                 <div className="flex items-center gap-2">
@@ -5560,9 +5547,8 @@ function TopicDetailView({
           {/* Immersive Tabs */}
           <div className="flex items-center gap-2 bg-slate-900/80 backdrop-blur-xl p-2 rounded-[2rem] border border-white/5 mb-10 w-fit mx-auto lg:mx-0">
             {[
-              { id: 'video', icon: Lucide.Play, label: translations[language].video },
               { id: 'notes', icon: Lucide.FileText, label: translations[language].notes, disabled: !topic.notes && !topic.notesUrl },
-              { id: 'practice', icon: Lucide.Trophy, label: language === 'en' ? 'Practice' : 'ଅଭ୍ୟାସ' }
+              { id: 'video', icon: Lucide.Play, label: translations[language].video }
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -5656,50 +5642,6 @@ function TopicDetailView({
                       <div className="markdown-body">
                         <Markdown>{topic.notes}</Markdown>
                       </div>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {activeSubTab === 'practice' && (
-                <div className="space-y-12">
-                  {topic.bulkQa && (
-                    <div className="glass-card rounded-[3rem] p-10 border-white/5">
-                      <div className="flex items-center gap-4 mb-8">
-                        <div className="p-3 rounded-2xl bg-amber-500/10 text-amber-500 border border-amber-500/20">
-                          <Lucide.CheckCircle2 size={24} />
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-black text-white uppercase tracking-tighter">Conceptual Validation</h3>
-                          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Textbook Analysis & Practice</p>
-                        </div>
-                      </div>
-                      <div className="prose prose-invert max-w-none prose-amber">
-                        <div className="markdown-body">
-                          <Markdown>{topic.bulkQa}</Markdown>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {(topic.quiz_questions?.length ?? 0) > 0 && (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                      {topic.quiz_questions?.map((q, idx) => (
-                        <PracticeQuestion 
-                          key={idx} 
-                          question={q} 
-                          isPremium={isPremium} 
-                          language={language} 
-                          onUpgrade={onUpgrade}
-                        />
-                      ))}
-                    </div>
-                  )}
-
-                  {!topic.bulkQa && (!topic.quiz_questions || topic.quiz_questions.length === 0) && (
-                    <div className="py-24 text-center bg-slate-900/30 rounded-[3rem] border border-dashed border-white/10">
-                      <Lucide.HelpCircle size={48} className="text-slate-800 mx-auto mb-6" />
-                      <p className="text-slate-500 font-black uppercase tracking-[0.3em] text-[10px]">Awaiting Practice Data...</p>
                     </div>
                   )}
                 </div>
