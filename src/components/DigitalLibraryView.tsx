@@ -1011,7 +1011,7 @@ Instructions:
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
                       placeholder={language === 'en' ? 'Ask Gundulu about this chapter...' : 'ଏହି ଅଧ୍ୟାୟ ବିଷୟରେ ଗຸଣ୍ଡୁଲୁକୁ ପଚାରନ୍ତୁ...'}
-                      className="flex-1 bg-slate-900 border border-white/5 rounded-2xl px-4 py-2.5 text-xs font-semibold text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/30"
+                      className="gundulu-chat-input flex-1 bg-slate-900 border border-white/5 rounded-2xl px-4 py-2.5 text-xs font-semibold text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/30"
                     />
                     <button
                       type="submit"

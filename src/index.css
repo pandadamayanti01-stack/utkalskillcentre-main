@@ -574,4 +574,26 @@ body.theme-daybreak .gundulu-chat-bubble * {
   color: #6ee7b7 !important;
 }
 
+/* Gundulu Chat Input Contrast overrides */
+.gundulu-chat-input {
+  background-color: #090d16 !important;
+  color: #f1f5f9 !important;
+  border-color: rgba(16, 185, 129, 0.25) !important;
+}
+
+.gundulu-chat-input::placeholder {
+  color: #475569 !important;
+}
+
+body.theme-daybreak .gundulu-chat-input {
+  background-color: #090d16 !important;
+  color: #f1f5f9 !important;
+  border-color: rgba(16, 185, 129, 0.25) !important;
+}
+
+body.theme-daybreak .gundulu-chat-input::placeholder {
+  color: #475569 !important;
+}
+
+
 
