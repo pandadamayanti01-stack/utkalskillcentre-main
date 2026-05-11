@@ -29,6 +29,17 @@ service firebase.storage {
       );
     }
 
+    // Allow reading and writing of textbook chapter covers (reads are public, writes restricted to authenticated admins)
+    match /chapters_covers/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null && (
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+        request.auth.token.email == 'pandadamayanti01@gmail.com' ||
+        request.auth.token.phone_number == '+919337956168' ||
+        request.auth.token.phone_number == '9337956168'
+      );
+    }
+
     // Default deny for everything else (or fallback to authenticated)
     match /{allPaths=**} {
       allow read: if true; // Just in case there are public assets
