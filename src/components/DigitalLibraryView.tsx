@@ -709,6 +709,33 @@ Instructions:
             {/* LEFT / MAIN WORKSPACE PANEL (Reader Tab & Content Panel) */}
             <div className="flex-1 flex flex-col bg-slate-900/20 border border-white/5 rounded-3xl overflow-hidden p-6 relative">
               
+              {/* Premium Chapter Title Banner with Cover Thumbnail */}
+              <div className="flex items-center gap-4 pb-5 mb-5 border-b border-white/5">
+                <div className="relative h-16 w-12 rounded-xl overflow-hidden bg-slate-950 border border-white/10 shadow-md flex-shrink-0">
+                  <img
+                    src={selectedChapter.coverUrl || SUBJECT_METADATA[selectedSubject]?.coverImage}
+                    alt="Chapter Cover"
+                    onError={(e) => {
+                      e.currentTarget.src = getSubjectFallbackImage(selectedSubject);
+                    }}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest bg-emerald-400/5 px-2 py-0.5 rounded-md border border-emerald-400/10">
+                      {language === 'en' ? 'BSE Textbook' : 'ବିଦ୍ୟାଳୟ ପାଠ୍ୟପୁସ୍ତକ'}
+                    </span>
+                    <span className="text-[10px] font-bold text-slate-500 uppercase">
+                      {SUBJECT_METADATA[selectedSubject] ? (language === 'en' ? SUBJECT_METADATA[selectedSubject].labelEn : SUBJECT_METADATA[selectedSubject].labelOr) : ''}
+                    </span>
+                  </div>
+                  <h2 className="text-base md:text-lg font-black text-white leading-tight mt-1">
+                    {selectedChapter.title}
+                  </h2>
+                </div>
+              </div>
+
               {/* Material Sub-header Control Tabs */}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-6 border-b border-white/5">
                 <div className="flex items-center gap-2 bg-slate-950 p-1 rounded-2xl border border-white/5">
