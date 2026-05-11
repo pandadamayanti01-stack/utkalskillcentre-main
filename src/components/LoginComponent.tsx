@@ -24,7 +24,7 @@ const PlayStoreIcon = ({ size = 12 }: { size?: number }) => (
   </svg>
 );
 
-const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/channel/UCVsuuu7DyRY4-qbn8PrVBhg';
+const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/@UtkalSkillCenter';
 const WHATSAPP_CHANNEL_URL = 'https://whatsapp.com/channel/0029VbCvAH31iUxgGopHZ724';
 const INSTAGRAM_PROFILE_URL = 'https://www.instagram.com/utkalskillcentre?igsh=aDBwdnNwNzJndDAx';
 const FACEBOOK_PROFILE_URL = 'https://www.facebook.com/share/18URKVYWdm/';
