@@ -1353,6 +1353,11 @@ export default function App() {
       console.log("Debug: All fetched chapters:", allData);
       
       const data = allData.filter(c => {
+        // Keep all digital library chapters regardless of global board/class restriction
+        if ((c as any).isLibraryChapter || (c as any).pdfUrl) {
+          return true;
+        }
+
         // 1. Check Class
         const cleanClass = (cls: string) => {
           if (!cls) return '';
