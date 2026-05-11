@@ -215,6 +215,7 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
   const [inputValue, setInputValue] = useState<string>('');
   const [isAiLoading, setIsAiLoading] = useState<boolean>(false);
   const chatBottomRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   // Load / Save student notes in real-time
   useEffect(() => {
@@ -251,7 +252,12 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
 
   // Scroll chat to bottom
   useEffect(() => {
-    chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
   }, [chatMessages, isAiLoading]);
 
   // Filter Chapters based on selectedSubject and Student Class
@@ -834,7 +840,7 @@ Instructions:
               ) : (
                 <>
                   {/* GUNDULU CONVERSATION WATERFALL */}
-                  <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-emerald-500/10">
+                  <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-emerald-500/10">
                     {chatMessages.map((msg) => (
                       <div
                         key={msg.id}
