@@ -623,6 +623,13 @@ body.theme-daybreak .prose-invert code {
   background-color: rgba(15, 23, 42, 0.05) !important;
 }
 
+/* Full-screen mode overrides to hide navigation and footer layouts */
+body.fullscreen-mode .fixed.bottom-0,
+body.fullscreen-mode footer,
+body.fullscreen-mode .bottom-nav-gradient {
+  display: none !important;
+}
+
 
 
 

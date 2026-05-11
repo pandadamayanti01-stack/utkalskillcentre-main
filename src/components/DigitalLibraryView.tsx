@@ -370,6 +370,18 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [currentView, selectedSubject, selectedChapter]);
 
+  // Hide bottom tab bar in full screen modes to prevent overlays/double-scrolling
+  useEffect(() => {
+    if (isPdfFullScreen || isChatFullScreen) {
+      document.body.classList.add('fullscreen-mode');
+    } else {
+      document.body.classList.remove('fullscreen-mode');
+    }
+    return () => {
+      document.body.classList.remove('fullscreen-mode');
+    };
+  }, [isPdfFullScreen, isChatFullScreen]);
+
   // Handle auto-saving notes after short typing delays (debounce)
   useEffect(() => {
     if (!selectedChapter) return;
@@ -1455,6 +1467,47 @@ Instructions:
                   >
                     <ReactMarkdown>{cleanMathNotation(selectedChapter.notes || '*No study materials added yet.*')}</ReactMarkdown>
                   </div>
+                ) : readerMode === 'video' ? (
+                  /* Full-screen video mode canvas helper */
+                  (() => {
+                    const getYouTubeEmbedUrl = (url: string) => {
+                      if (!url) return '';
+                      if (url.includes('list=')) {
+                        const match = url.match(/[?&]list=([^#\&\?]+)/);
+                        if (match) {
+                          return `https://www.youtube.com/embed/videoseries?list=${match[1]}&autoplay=1`;
+                        }
+                      }
+                      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                      const match = url.match(regExp);
+                      if (match && match[2].length === 11) {
+                        return `https://www.youtube.com/embed/${match[2]}?rel=0&modestbranding=1&autoplay=1`;
+                      }
+                      return '';
+                    };
+                    const embedUrl = getYouTubeEmbedUrl(selectedChapter.videoUrl);
+
+                    return embedUrl ? (
+                      <div className="w-full h-full rounded-2xl overflow-hidden bg-slate-950 border border-white/5 flex flex-col relative shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+                        <iframe
+                          src={embedUrl}
+                          title={selectedChapter.title}
+                          className="w-full flex-1 object-cover border-0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center p-12 text-center bg-slate-900/30 border border-white/5 rounded-3xl h-[45vh] space-y-4">
+                        <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center text-red-400">
+                          <Lucide.Youtube size={32} />
+                        </div>
+                        <h4 className="text-lg font-black text-white">
+                          {language === 'en' ? 'No video loaded' : 'ଭିଡିଓ ମିଳିଲା ନାହିଁ'}
+                        </h4>
+                      </div>
+                    );
+                  })()
                 ) : (
                   <div className="w-full h-full rounded-2xl overflow-hidden bg-slate-900 border border-white/5 flex flex-col justify-center">
                     {isMobileDevice() ? (
