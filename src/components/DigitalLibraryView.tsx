@@ -21,63 +21,621 @@ interface Message {
   text: string;
 }
 
-// Map standard subjects to gorgeous, premium gradient card metadata
-const SUBJECT_METADATA: Record<string, {
+// Map Class level state board textbooks to gorgeous, premium gradient card metadata
+const CLASS_SUBJECTS: Record<string, Array<{
+  key: string;
   labelEn: string;
   labelOr: string;
   gradient: string;
   icon: any;
   color: string;
   coverImage: string;
-}> = {
-  math: {
-    labelEn: "Mathematics",
-    labelOr: "ଗଣିତ",
-    gradient: "from-teal-500 via-emerald-600 to-amber-500",
-    icon: Lucide.Binary,
-    color: "#34d399",
-    coverImage: "/math_cover.png"
-  },
-  science: {
-    labelEn: "General Science",
-    labelOr: "ବିଜ୍ଞାନ",
-    gradient: "from-cyan-500 via-blue-600 to-indigo-600",
-    icon: Lucide.Atom,
-    color: "#38bdf8",
-    coverImage: "/science_cover.png"
-  },
-  social_science: {
-    labelEn: "Social Science",
-    labelOr: "ସାମାଜିକ ବିଜ୍ଞାନ",
-    gradient: "from-amber-500 via-orange-600 to-red-600",
-    icon: Lucide.Globe,
-    color: "#f59e0b",
-    coverImage: "/social_science_cover.png"
-  },
-  english: {
-    labelEn: "English Literature",
-    labelOr: "ଇଂରାଜୀ",
-    gradient: "from-purple-500 via-pink-600 to-rose-600",
-    icon: Lucide.BookOpen,
-    color: "#c084fc",
-    coverImage: "/english_cover.png"
-  },
-  odia: {
-    labelEn: "Odia Literature",
-    labelOr: "ଓଡ଼ିଆ",
-    gradient: "from-orange-400 via-red-500 to-amber-600",
-    icon: Lucide.Scroll,
-    color: "#fb923c",
-    coverImage: "/odia_cover.png"
-  },
-  epe: {
-    labelEn: "Art & Health",
-    labelOr: "କଳା ଓ ସ୍ୱାସ୍ଥ୍ୟ",
-    gradient: "from-emerald-400 via-teal-600 to-cyan-600",
-    icon: Lucide.Heart,
-    color: "#34d399",
-    coverImage: "/epe_cover.png"
-  }
+}>> = {
+  class1: [
+    {
+      key: "ganita_khela",
+      labelEn: "Ganita Khela",
+      labelOr: "ଗଣିତ ଖେଳ",
+      gradient: "from-teal-500 via-emerald-600 to-amber-500",
+      icon: Lucide.Binary,
+      color: "#34d399",
+      coverImage: "/math_cover.png"
+    },
+    {
+      key: "jhulana_1",
+      labelEn: "Jhulana 1",
+      labelOr: "ଝୁଲଣା ୧",
+      gradient: "from-orange-400 via-red-500 to-amber-600",
+      icon: Lucide.Scroll,
+      color: "#fb923c",
+      coverImage: "/odia_cover.png"
+    }
+  ],
+  class2: [
+    {
+      key: "maja_majare_ganita",
+      labelEn: "Maja Majare Ganita",
+      labelOr: "ମଜା ମଜାରେ ଗଣିତ",
+      gradient: "from-teal-500 via-emerald-600 to-amber-500",
+      icon: Lucide.Binary,
+      color: "#34d399",
+      coverImage: "/math_cover.png"
+    },
+    {
+      key: "jhulana_2",
+      labelEn: "Jhulana 2",
+      labelOr: "ଝୁଲଣା ୨",
+      gradient: "from-orange-400 via-red-500 to-amber-600",
+      icon: Lucide.Scroll,
+      color: "#fb923c",
+      coverImage: "/odia_cover.png"
+    }
+  ],
+  class3: [
+    {
+      key: "bhasa_mahak_1",
+      labelEn: "Bhasa Mahak 1",
+      labelOr: "ଭାଷା ମହକ ୧",
+      gradient: "from-orange-400 via-red-500 to-amber-600",
+      icon: Lucide.Scroll,
+      color: "#fb923c",
+      coverImage: "/odia_cover.png"
+    },
+    {
+      key: "ganita_mela",
+      labelEn: "Ganita Mela",
+      labelOr: "ଗଣିତ ମେଳା",
+      gradient: "from-teal-500 via-emerald-600 to-amber-500",
+      icon: Lucide.Binary,
+      color: "#34d399",
+      coverImage: "/math_cover.png"
+    },
+    {
+      key: "paribesa_patha",
+      labelEn: "Paribesa Patha",
+      labelOr: "ପରିବେଶ ପାଠ",
+      gradient: "from-cyan-500 via-blue-600 to-indigo-600",
+      icon: Lucide.Atom,
+      color: "#38bdf8",
+      coverImage: "/science_cover.png"
+    },
+    {
+      key: "pallavi",
+      labelEn: "Pallavi English",
+      labelOr: "Pallavi",
+      gradient: "from-purple-500 via-pink-600 to-rose-600",
+      icon: Lucide.BookOpen,
+      color: "#c084fc",
+      coverImage: "/english_cover.png"
+    },
+    {
+      key: "kala_sikhya",
+      labelEn: "Art Education",
+      labelOr: "କଳା ଶିକ୍ଷା",
+      gradient: "from-emerald-400 via-teal-600 to-cyan-600",
+      icon: Lucide.Palette,
+      color: "#34d399",
+      coverImage: "/epe_cover.png"
+    },
+    {
+      key: "sharirika_sikhya",
+      labelEn: "Physical Ed & Wellness",
+      labelOr: "ଶାରୀରିକ ଶିକ୍ଷା ଏବଂ ସୁସ୍ଥତା",
+      gradient: "from-rose-500 via-pink-600 to-orange-500",
+      icon: Lucide.Heart,
+      color: "#f43f5e",
+      coverImage: "/epe_cover.png"
+    }
+  ],
+  class4: [
+    {
+      key: "ganita_mela",
+      labelEn: "Ganita Mela",
+      labelOr: "ଗଣିତ ମେଳା",
+      gradient: "from-teal-500 via-emerald-600 to-amber-500",
+      icon: Lucide.Binary,
+      color: "#34d399",
+      coverImage: "/math_cover.png"
+    },
+    {
+      key: "bhasa_mahak_2",
+      labelEn: "Bhasa Mahak 2",
+      labelOr: "ଭାଷା ମହକ ୨",
+      gradient: "from-orange-400 via-red-500 to-amber-600",
+      icon: Lucide.Scroll,
+      color: "#fb923c",
+      coverImage: "/odia_cover.png"
+    },
+    {
+      key: "paribesa_patha",
+      labelEn: "Paribesa Patha",
+      labelOr: "ପରିବେଶ ପାଠ",
+      gradient: "from-cyan-500 via-blue-600 to-indigo-600",
+      icon: Lucide.Atom,
+      color: "#38bdf8",
+      coverImage: "/science_cover.png"
+    },
+    {
+      key: "pallavi",
+      labelEn: "Pallavi English",
+      labelOr: "Pallavi",
+      gradient: "from-purple-500 via-pink-600 to-rose-600",
+      icon: Lucide.BookOpen,
+      color: "#c084fc",
+      coverImage: "/english_cover.png"
+    },
+    {
+      key: "kala_sikhya",
+      labelEn: "Art Education",
+      labelOr: "କଳା ଶିକ୍ଷା",
+      gradient: "from-emerald-400 via-teal-600 to-cyan-600",
+      icon: Lucide.Palette,
+      color: "#34d399",
+      coverImage: "/epe_cover.png"
+    },
+    {
+      key: "krida_yoga",
+      labelEn: "Sports & Yoga",
+      labelOr: "କ୍ରୀଡ଼ା ଓ ଯୋଗ",
+      gradient: "from-rose-500 via-pink-600 to-orange-500",
+      icon: Lucide.Heart,
+      color: "#f43f5e",
+      coverImage: "/epe_cover.png"
+    }
+  ],
+  class5: [
+    {
+      key: "ganita_mela",
+      labelEn: "Ganita Mela",
+      labelOr: "ଗଣିତ ମେଳା",
+      gradient: "from-teal-500 via-emerald-600 to-amber-500",
+      icon: Lucide.Binary,
+      color: "#34d399",
+      coverImage: "/math_cover.png"
+    },
+    {
+      key: "bhasa_mahak_3",
+      labelEn: "Bhasa Mahak 3",
+      labelOr: "ଭାଷା ମହକ ୩",
+      gradient: "from-orange-400 via-red-500 to-amber-600",
+      icon: Lucide.Scroll,
+      color: "#fb923c",
+      coverImage: "/odia_cover.png"
+    },
+    {
+      key: "ama_chaturbaswara_pruthibi",
+      labelEn: "Our Surrounding World",
+      labelOr: "ଆମ ଚର୍ତୁର୍ପାଶ୍ଵର ପୃଥିବୀ",
+      gradient: "from-cyan-500 via-blue-600 to-indigo-600",
+      icon: Lucide.Atom,
+      color: "#38bdf8",
+      coverImage: "/science_cover.png"
+    },
+    {
+      key: "pallavi",
+      labelEn: "Pallavi English",
+      labelOr: "Pallavi",
+      gradient: "from-purple-500 via-pink-600 to-rose-600",
+      icon: Lucide.BookOpen,
+      color: "#c084fc",
+      coverImage: "/english_cover.png"
+    },
+    {
+      key: "kala_sikhya",
+      labelEn: "Art Education",
+      labelOr: "କଳା ଶିକ୍ଷା",
+      gradient: "from-emerald-400 via-teal-600 to-cyan-600",
+      icon: Lucide.Palette,
+      color: "#34d399",
+      coverImage: "/epe_cover.png"
+    },
+    {
+      key: "sharirika_yoga",
+      labelEn: "Physical Yoga & Wellness",
+      labelOr: "ଶାରୀରିକ ଯୋଗ ଓ ସୁସ୍ଥତା",
+      gradient: "from-rose-500 via-pink-600 to-orange-500",
+      icon: Lucide.Heart,
+      color: "#f43f5e",
+      coverImage: "/epe_cover.png"
+    }
+  ],
+  class6: [
+    {
+      key: "ganita_prakas",
+      labelEn: "Ganita Prakas",
+      labelOr: "ଗଣିତ ପ୍ରକାଶ",
+      gradient: "from-teal-500 via-emerald-600 to-amber-500",
+      icon: Lucide.Binary,
+      color: "#34d399",
+      coverImage: "/math_cover.png"
+    },
+    {
+      key: "sahitya_sudha",
+      labelEn: "Sahitya Sudha",
+      labelOr: "ସାହିତ୍ୟ ସୁଧା",
+      gradient: "from-orange-400 via-red-500 to-amber-600",
+      icon: Lucide.Scroll,
+      color: "#fb923c",
+      coverImage: "/odia_cover.png"
+    },
+    {
+      key: "jigyasa",
+      labelEn: "Jigyasa Science",
+      labelOr: "ଜିଜ୍ଞାସା",
+      gradient: "from-cyan-500 via-blue-600 to-indigo-600",
+      icon: Lucide.Atom,
+      color: "#38bdf8",
+      coverImage: "/science_cover.png"
+    },
+    {
+      key: "samajika_bignana",
+      labelEn: "Social Science Study",
+      labelOr: "ସାମାଜିକ ବିଜ୍ଞାନ ଅଧ୍ୟୟନ ଭାରତ ଓ ଆମ ପୃଥିବୀ",
+      gradient: "from-amber-500 via-orange-600 to-red-600",
+      icon: Lucide.Globe,
+      color: "#f59e0b",
+      coverImage: "/social_science_cover.png"
+    },
+    {
+      key: "jasmine",
+      labelEn: "JASMINE English",
+      labelOr: "JASMINE",
+      gradient: "from-purple-500 via-pink-600 to-rose-600",
+      icon: Lucide.BookOpen,
+      color: "#c084fc",
+      coverImage: "/english_cover.png"
+    },
+    {
+      key: "talas",
+      labelEn: "Talash Hindi",
+      labelOr: "ତଲାଶ୍",
+      gradient: "from-pink-500 via-red-500 to-amber-500",
+      icon: Lucide.Languages,
+      color: "#ec4899",
+      coverImage: "/hindi_cover.png"
+    },
+    {
+      key: "hindi_kalika",
+      labelEn: "Hindi Kalika",
+      labelOr: "ହିନ୍ଦୀ କଳିକା",
+      gradient: "from-rose-400 via-pink-500 to-red-600",
+      icon: Lucide.Languages,
+      color: "#f43f5e",
+      coverImage: "/hindi_cover.png"
+    },
+    {
+      key: "sanskritakalika_1",
+      labelEn: "Sanskritakalika Part 1",
+      labelOr: "ସଂସ୍କୃତକଳିକା ଭାଗ - ୧",
+      gradient: "from-amber-600 via-orange-500 to-yellow-600",
+      icon: Lucide.Award,
+      color: "#d97706",
+      coverImage: "/sanskrit_cover.png"
+    },
+    {
+      key: "kausala_bodha",
+      labelEn: "Kausala Bodha",
+      labelOr: "କୌଶଳ ବୋଧ",
+      gradient: "from-indigo-500 via-purple-600 to-pink-600",
+      icon: Lucide.Cpu,
+      color: "#6366f1",
+      coverImage: "/skill_cover.png"
+    },
+    {
+      key: "kalakunja",
+      labelEn: "Kalakunja Art",
+      labelOr: "କଳାକୁଞ୍ଜ",
+      gradient: "from-emerald-400 via-teal-600 to-cyan-600",
+      icon: Lucide.Palette,
+      color: "#34d399",
+      coverImage: "/epe_cover.png"
+    },
+    {
+      key: "khela_sikhya",
+      labelEn: "Sports Education",
+      labelOr: "ଖେଳ ଶିକ୍ଷା",
+      gradient: "from-rose-500 via-pink-600 to-orange-500",
+      icon: Lucide.Heart,
+      color: "#f43f5e",
+      coverImage: "/epe_cover.png"
+    }
+  ],
+  class7: [
+    {
+      key: "ganita_prakas",
+      labelEn: "Ganita Prakas",
+      labelOr: "ଗଣିତ ପ୍ରକାଶ",
+      gradient: "from-teal-500 via-emerald-600 to-amber-500",
+      icon: Lucide.Binary,
+      color: "#34d399",
+      coverImage: "/math_cover.png"
+    },
+    {
+      key: "sahitya_suman",
+      labelEn: "Sahitya Suman",
+      labelOr: "ସାହିତ୍ୟ ସୁମନ",
+      gradient: "from-orange-400 via-red-500 to-amber-600",
+      icon: Lucide.Scroll,
+      color: "#fb923c",
+      coverImage: "/odia_cover.png"
+    },
+    {
+      key: "jigyasa",
+      labelEn: "Jigyasa Science",
+      labelOr: "ଜିଜ୍ଞାସା",
+      gradient: "from-cyan-500 via-blue-600 to-indigo-600",
+      icon: Lucide.Atom,
+      color: "#38bdf8",
+      coverImage: "/science_cover.png"
+    },
+    {
+      key: "samajika_bignana",
+      labelEn: "Social Science Study",
+      labelOr: "ସାମାଜିକ ବିଜ୍ଞାନ ଅଧ୍ୟୟନ ଭାରତ ଓ ଆମ ପୃଥିବୀ",
+      gradient: "from-amber-500 via-orange-600 to-red-600",
+      icon: Lucide.Globe,
+      color: "#f59e0b",
+      coverImage: "/social_science_cover.png"
+    },
+    {
+      key: "jasmine",
+      labelEn: "JASMINE English",
+      labelOr: "JASMINE",
+      gradient: "from-purple-500 via-pink-600 to-rose-600",
+      icon: Lucide.BookOpen,
+      color: "#c084fc",
+      coverImage: "/english_cover.png"
+    },
+    {
+      key: "talas",
+      labelEn: "Talash Hindi",
+      labelOr: "ତଲାଶ୍",
+      gradient: "from-pink-500 via-red-500 to-amber-500",
+      icon: Lucide.Languages,
+      color: "#ec4899",
+      coverImage: "/hindi_cover.png"
+    },
+    {
+      key: "hindi_kalika",
+      labelEn: "Hindi Kalika",
+      labelOr: "ହିନ୍ଦୀ କଳିକା",
+      gradient: "from-rose-400 via-pink-500 to-red-600",
+      icon: Lucide.Languages,
+      color: "#f43f5e",
+      coverImage: "/hindi_cover.png"
+    },
+    {
+      key: "sanskritakalika_2",
+      labelEn: "Sanskritakalika Part 2",
+      labelOr: "ସଂସ୍କୃତକଳିକା ଭାଗ - ୨",
+      gradient: "from-amber-600 via-orange-500 to-yellow-600",
+      icon: Lucide.Award,
+      color: "#d97706",
+      coverImage: "/sanskrit_cover.png"
+    },
+    {
+      key: "kausala_bodha",
+      labelEn: "Kausala Bodha",
+      labelOr: "କୌଶଳ ବୋଧ",
+      gradient: "from-indigo-500 via-purple-600 to-pink-600",
+      icon: Lucide.Cpu,
+      color: "#6366f1",
+      coverImage: "/skill_cover.png"
+    },
+    {
+      key: "kalakruti",
+      labelEn: "Kalakruti Art",
+      labelOr: "କଳାକୃତି",
+      gradient: "from-emerald-400 via-teal-600 to-cyan-600",
+      icon: Lucide.Palette,
+      color: "#34d399",
+      coverImage: "/epe_cover.png"
+    },
+    {
+      key: "khela_sikhya",
+      labelEn: "Sports Education",
+      labelOr: "ଖେଳ ଶିକ୍ଷା",
+      gradient: "from-rose-500 via-pink-600 to-orange-500",
+      icon: Lucide.Heart,
+      color: "#f43f5e",
+      coverImage: "/epe_cover.png"
+    }
+  ],
+  class8: [
+    {
+      key: "ganita_prakas",
+      labelEn: "Ganita Prakas",
+      labelOr: "ଗଣିତ ପ୍ରକାଶ",
+      gradient: "from-teal-500 via-emerald-600 to-amber-500",
+      icon: Lucide.Binary,
+      color: "#34d399",
+      coverImage: "/math_cover.png"
+    },
+    {
+      key: "sahitya_surabhi",
+      labelEn: "Sahitya Surabhi",
+      labelOr: "ସାହିତ୍ୟ ସୁରଭି",
+      gradient: "from-orange-400 via-red-500 to-amber-600",
+      icon: Lucide.Scroll,
+      color: "#fb923c",
+      coverImage: "/odia_cover.png"
+    },
+    {
+      key: "jigyasa",
+      labelEn: "Jigyasa Science",
+      labelOr: "ଜିଜ୍ଞାସା",
+      gradient: "from-cyan-500 via-blue-600 to-indigo-600",
+      icon: Lucide.Atom,
+      color: "#38bdf8",
+      coverImage: "/science_cover.png"
+    },
+    {
+      key: "samajika_bignana",
+      labelEn: "Social Science Study",
+      labelOr: "ସାମାଜିକ ବିଜ୍ଞାନ ଅଧ୍ୟୟନ ଭାରତ ଓ ଆମ ପୃଥିବୀ",
+      gradient: "from-amber-500 via-orange-600 to-red-600",
+      icon: Lucide.Globe,
+      color: "#f59e0b",
+      coverImage: "/social_science_cover.png"
+    },
+    {
+      key: "jasmine",
+      labelEn: "JASMINE English",
+      labelOr: "JASMINE",
+      gradient: "from-purple-500 via-pink-600 to-rose-600",
+      icon: Lucide.BookOpen,
+      color: "#c084fc",
+      coverImage: "/english_cover.png"
+    },
+    {
+      key: "talas",
+      labelEn: "Talash Hindi",
+      labelOr: "ତଲାଶ୍",
+      gradient: "from-pink-500 via-red-500 to-amber-500",
+      icon: Lucide.Languages,
+      color: "#ec4899",
+      coverImage: "/hindi_cover.png"
+    },
+    {
+      key: "hindi_kalika",
+      labelEn: "Hindi Kalika",
+      labelOr: "ହିନ୍ଦୀ କଳିକା",
+      gradient: "from-rose-400 via-pink-500 to-red-600",
+      icon: Lucide.Languages,
+      color: "#f43f5e",
+      coverImage: "/hindi_cover.png"
+    },
+    {
+      key: "sanskritakalika_3",
+      labelEn: "Sanskritakalika Part 3",
+      labelOr: "ସଂସ୍କୃତକଳିକା ଭାଗ - ୩",
+      gradient: "from-amber-600 via-orange-500 to-yellow-600",
+      icon: Lucide.Award,
+      color: "#d97706",
+      coverImage: "/sanskrit_cover.png"
+    },
+    {
+      key: "kausala_bodha",
+      labelEn: "Kausala Bodha",
+      labelOr: "କୌଶଳ ବୋଧ",
+      gradient: "from-indigo-500 via-purple-600 to-pink-600",
+      icon: Lucide.Cpu,
+      color: "#6366f1",
+      coverImage: "/skill_cover.png"
+    },
+    {
+      key: "kruti",
+      labelEn: "Kruti Art",
+      labelOr: "କୃତି",
+      gradient: "from-emerald-400 via-teal-600 to-cyan-600",
+      icon: Lucide.Palette,
+      color: "#34d399",
+      coverImage: "/skill_cover.png"
+    },
+    {
+      key: "khela_sikhya",
+      labelEn: "Sports Education",
+      labelOr: "ଖେଳ ଶିକ୍ଷା",
+      gradient: "from-rose-500 via-pink-600 to-orange-500",
+      icon: Lucide.Heart,
+      color: "#f43f5e",
+      coverImage: "/epe_cover.png"
+    }
+  ],
+  class9: [
+    {
+      key: "math",
+      labelEn: "Mathematics",
+      labelOr: "ଗଣିତ",
+      gradient: "from-teal-500 via-emerald-600 to-amber-500",
+      icon: Lucide.Binary,
+      color: "#34d399",
+      coverImage: "/math_cover.png"
+    },
+    {
+      key: "science",
+      labelEn: "General Science",
+      labelOr: "ବିଜ୍ଞାନ",
+      gradient: "from-cyan-500 via-blue-600 to-indigo-600",
+      icon: Lucide.Atom,
+      color: "#38bdf8",
+      coverImage: "/science_cover.png"
+    },
+    {
+      key: "social_science",
+      labelEn: "Social Science",
+      labelOr: "ସାମାଜିକ ବିଜ୍ଞାନ",
+      gradient: "from-amber-500 via-orange-600 to-red-600",
+      icon: Lucide.Globe,
+      color: "#f59e0b",
+      coverImage: "/social_science_cover.png"
+    },
+    {
+      key: "english",
+      labelEn: "English Literature",
+      labelOr: "ଇଂରାଜୀ",
+      gradient: "from-purple-500 via-pink-600 to-rose-600",
+      icon: Lucide.BookOpen,
+      color: "#c084fc",
+      coverImage: "/english_cover.png"
+    },
+    {
+      key: "odia",
+      labelEn: "Odia Literature",
+      labelOr: "ଓଡ଼ିଆ",
+      gradient: "from-orange-400 via-red-500 to-amber-600",
+      icon: Lucide.Scroll,
+      color: "#fb923c",
+      coverImage: "/odia_cover.png"
+    }
+  ],
+  class10: [
+    {
+      key: "math",
+      labelEn: "Mathematics",
+      labelOr: "ଗଣିତ",
+      gradient: "from-teal-500 via-emerald-600 to-amber-500",
+      icon: Lucide.Binary,
+      color: "#34d399",
+      coverImage: "/math_cover.png"
+    },
+    {
+      key: "science",
+      labelEn: "General Science",
+      labelOr: "ବିଜ୍ଞାନ",
+      gradient: "from-cyan-500 via-blue-600 to-indigo-600",
+      icon: Lucide.Atom,
+      color: "#38bdf8",
+      coverImage: "/science_cover.png"
+    },
+    {
+      key: "social_science",
+      labelEn: "Social Science",
+      labelOr: "ସାମାଜିକ ବିଜ୍ଞାନ",
+      gradient: "from-amber-500 via-orange-600 to-red-600",
+      icon: Lucide.Globe,
+      color: "#f59e0b",
+      coverImage: "/social_science_cover.png"
+    },
+    {
+      key: "english",
+      labelEn: "English Literature",
+      labelOr: "ଇଂରାଜୀ",
+      gradient: "from-purple-500 via-pink-600 to-rose-600",
+      icon: Lucide.BookOpen,
+      color: "#c084fc",
+      coverImage: "/english_cover.png"
+    },
+    {
+      key: "odia",
+      labelEn: "Odia Literature",
+      labelOr: "ଓଡ଼ିଆ",
+      gradient: "from-orange-400 via-red-500 to-amber-600",
+      icon: Lucide.Scroll,
+      color: "#fb923c",
+      coverImage: "/odia_cover.png"
+    }
+  ]
 };
 
 const getSubjectFallbackImage = (subKey: string): string => {
@@ -99,7 +657,35 @@ const getClassCode = (cls: string): string => {
 };
 
 const getGenerativeBookCover = (subjectKey: string, title: string, idx: number, classCode?: string): string => {
-  const meta = SUBJECT_METADATA[subjectKey.toLowerCase()] || SUBJECT_METADATA.math;
+  let meta = {
+    gradient: "from-teal-500 via-emerald-600 to-amber-500",
+    color: "#34d399"
+  };
+
+  const code = classCode || 'class10';
+  const subjectsForClass = CLASS_SUBJECTS[code] || CLASS_SUBJECTS.class10;
+  const found = subjectsForClass.find(sub => sub.key === subjectKey.toLowerCase() || sub.labelEn.toLowerCase() === subjectKey.toLowerCase() || sub.labelOr.toLowerCase() === subjectKey.toLowerCase());
+  
+  if (found) {
+    meta = {
+      gradient: found.gradient,
+      color: found.color
+    };
+  } else {
+    // Fallback if subjectKey is generic like math, science
+    if (subjectKey.includes('math') || subjectKey.includes('ganita')) {
+      meta = { gradient: "from-teal-500 via-emerald-600 to-amber-500", color: "#34d399" };
+    } else if (subjectKey.includes('science') || subjectKey.includes('jigyasa') || subjectKey.includes('bignana')) {
+      meta = { gradient: "from-cyan-500 via-blue-600 to-indigo-600", color: "#38bdf8" };
+    } else if (subjectKey.includes('social') || subjectKey.includes('samajika')) {
+      meta = { gradient: "from-amber-500 via-orange-600 to-red-600", color: "#f59e0b" };
+    } else if (subjectKey.includes('english') || subjectKey.includes('pallavi') || subjectKey.includes('jasmine')) {
+      meta = { gradient: "from-purple-500 via-pink-600 to-rose-600", color: "#c084fc" };
+    } else if (subjectKey.includes('odia') || subjectKey.includes('sahitya') || subjectKey.includes('bhasa') || subjectKey.includes('jhulana')) {
+      meta = { gradient: "from-orange-400 via-red-500 to-amber-600", color: "#fb923c" };
+    }
+  }
+
   const gradientId = `grad_${subjectKey}_${idx}`;
   
   const getOdiaNum = (val: string): string => {
@@ -332,6 +918,12 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
     return '10';
   });
 
+  // Dynamic list of active textbooks/subjects based on selected class
+  const activeClassCode = `class${selectedClass}`;
+  const activeSubjects = useMemo(() => {
+    return CLASS_SUBJECTS[activeClassCode] || CLASS_SUBJECTS.class10;
+  }, [selectedClass]);
+
   // Keep selectedClass synchronized with user's registered class profile for students (admins can switch classes)
   useEffect(() => {
     if (user?.class && user.role !== 'admin') {
@@ -436,11 +1028,43 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
       };
       const targetClass = selectedClass || (user?.class ? cleanClass(user.class) : '10');
       const classMatches = cleanClass(c.class) === targetClass;
-      const subjectMatches = c.subject?.toLowerCase() === selectedSubject.toLowerCase();
+      if (!classMatches) return false;
+
+      // Robust subject matching matching either direct keys, english names, or odia titles
+      const cleanSub = (s: string) => s?.toLowerCase().trim().replace(/[\s\-_]+/g, '') || '';
+      const cSub = cleanSub(c.subject);
+      
+      const matchedMeta = activeSubjects.find(sub => sub.key === selectedSubject);
+      if (!matchedMeta) return false;
+      
+      const matchesSubjectName = 
+        cSub === cleanSub(matchedMeta.key) ||
+        cSub === cleanSub(matchedMeta.labelEn) ||
+        cSub === cleanSub(matchedMeta.labelOr);
+
+      // Parent category fallback matching:
+      let matchesGenericFallback = false;
+      if (matchedMeta.key.includes('ganita') || matchedMeta.key.includes('math')) {
+        matchesGenericFallback = cSub === 'math' || cSub === 'mathematics' || cSub === 'ganitakhela' || cSub === 'majama jareganita' || cSub === 'ganitamela' || cSub === 'ganitaprakas';
+      } else if (matchedMeta.key.includes('jigyasa') || matchedMeta.key.includes('science') || matchedMeta.key.includes('paribesa') || matchedMeta.key.includes('bignana')) {
+        matchesGenericFallback = cSub === 'science' || cSub === 'generalscience' || cSub === 'paribesapatha' || cSub === 'jigyasa' || cSub === 'bignana';
+      } else if (matchedMeta.key.includes('samajika') || matchedMeta.key.includes('social')) {
+        matchesGenericFallback = cSub === 'socialscience' || cSub === 'social_science' || cSub === 'social';
+      } else if (matchedMeta.key.includes('sahitya') || matchedMeta.key.includes('jhulana') || matchedMeta.key.includes('bhasa') || matchedMeta.key.includes('odia')) {
+        matchesGenericFallback = cSub === 'odia' || cSub === 'odialiterature' || cSub === 'jhulana' || cSub === 'bhasamahak' || cSub === 'sahityasudha' || cSub === 'sahityasuman' || cSub === 'sahityasurabhi';
+      } else if (matchedMeta.key.includes('pallavi') || matchedMeta.key.includes('jasmine') || matchedMeta.key.includes('english')) {
+        matchesGenericFallback = cSub === 'english' || cSub === 'englishliterature' || cSub === 'pallavi' || cSub === 'jasmine';
+      } else if (matchedMeta.key.includes('sanskrit')) {
+        matchesGenericFallback = cSub === 'sanskrit' || cSub === 'sanskritakalika';
+      } else if (matchedMeta.key.includes('talas') || matchedMeta.key.includes('hindi')) {
+        matchesGenericFallback = cSub === 'hindi' || cSub === 'talas' || cSub === 'hindikalika';
+      }
+
+      const subjectMatches = matchesSubjectName || matchesGenericFallback;
       // Ensure only published ones show
-      return classMatches && subjectMatches && c.status === 'published';
+      return subjectMatches && c.status === 'published';
     });
-  }, [chapters, selectedSubject, selectedClass, user?.class]);
+  }, [chapters, selectedSubject, selectedClass, user?.class, activeSubjects]);
 
   // AI Notes Generator states & handler
   const [generatedNotes, setGeneratedNotes] = useState<string>('');
@@ -553,7 +1177,7 @@ Instructions:
         let schemaData: any = null;
 
         if (selectedSubject && !selectedChapter) {
-          const subMeta = SUBJECT_METADATA[selectedSubject.toLowerCase()];
+          const subMeta = activeSubjects.find(sub => sub.key === selectedSubject);
           const subjectLabel = subMeta ? (language === 'en' ? subMeta.labelEn : subMeta.labelOr) : selectedSubject;
           title = `Class ${grade} ${subjectLabel} Odia Medium Textbook Solutions & Tests | Utkal Skill Centre`;
           desc = language === 'en'
@@ -714,8 +1338,9 @@ Instructions:
 
             {/* SUBJECT GRID */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {Object.entries(SUBJECT_METADATA).map(([subKey, meta]) => {
+              {activeSubjects.map((meta) => {
                 const Icon = meta.icon;
+                const subKey = meta.key;
                 const targetClassCode = `class${selectedClass}`;
                 const classSpecificCover = `/${targetClassCode}_${subKey}_cover.png`;
 
@@ -793,35 +1418,42 @@ Instructions:
             exit={{ opacity: 0, x: -15 }}
             className="flex-1 flex flex-col"
           >
-            {/* Subject Banner */}
-            <div className={`w-full rounded-3xl p-6 md:p-8 bg-gradient-to-r ${SUBJECT_METADATA[selectedSubject]?.gradient || 'from-emerald-600 to-teal-800'} mb-8 shadow-lg relative overflow-hidden`}>
-              <div className="absolute right-6 bottom-[-20%] opacity-15 text-white pointer-events-none">
-                {React.createElement(SUBJECT_METADATA[selectedSubject]?.icon || Lucide.BookOpen, { size: 160 })}
-              </div>
-              <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <span className="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest bg-white/10 border border-white/20 text-white">
-                    {user?.class ? user.class.toUpperCase() : 'BSE ODISHA'}
-                  </span>
-                  <h2 className="text-2xl md:text-4xl font-extrabold text-white mt-3">
-                    {language === 'en' 
-                      ? SUBJECT_METADATA[selectedSubject]?.labelEn 
-                      : SUBJECT_METADATA[selectedSubject]?.labelOr}
-                  </h2>
-                  <p className="text-xs md:text-sm text-white/80 mt-1 font-medium">
-                    {language === 'en' 
-                      ? 'Read textbook chapters or use custom bilingually simplified interactive notes.' 
-                      : 'ମୂଳ ବିଷୟବସ୍ତୁ ପଢ଼ନ୍ତୁ କିମ୍ବା ଆମର ସରଳୀକୃତ ଦ୍ୱିଭାଷୀ ଟିପ୍ପଣୀ ବ୍ୟବହାର କରନ୍ତୁ।'}
-                  </p>
+            {(() => {
+              const currentMeta = activeSubjects.find(sub => sub.key === selectedSubject) || {
+                gradient: 'from-emerald-600 to-teal-800',
+                icon: Lucide.BookOpen,
+                labelEn: 'Textbook',
+                labelOr: 'ପାଠ୍ୟପୁସ୍ତକ'
+              };
+              return (
+                <div className={`w-full rounded-3xl p-6 md:p-8 bg-gradient-to-r ${currentMeta.gradient} mb-8 shadow-lg relative overflow-hidden`}>
+                  <div className="absolute right-6 bottom-[-20%] opacity-15 text-white pointer-events-none">
+                    {React.createElement(currentMeta.icon, { size: 160 })}
+                  </div>
+                  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                      <span className="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest bg-white/10 border border-white/20 text-white">
+                        {user?.class ? user.class.toUpperCase() : 'BSE ODISHA'}
+                      </span>
+                      <h2 className="text-2xl md:text-4xl font-extrabold text-white mt-3">
+                        {language === 'en' ? currentMeta.labelEn : currentMeta.labelOr}
+                      </h2>
+                      <p className="text-xs md:text-sm text-white/80 mt-1 font-medium">
+                        {language === 'en' 
+                          ? 'Read textbook chapters or use custom bilingually simplified interactive notes.' 
+                          : 'ମୂଳ ବିଷୟବସ୍ତୁ ପଢ଼ନ୍ତୁ କିମ୍ବା ଆମର ସରଳୀକୃତ ଦ୍ୱିଭାଷୀ ଟିପ୍ପଣୀ ବ୍ୟବହାର କରନ୍ତୁ।'}
+                      </p>
+                    </div>
+                    <div className="text-left md:text-right">
+                      <span className="text-3xl font-black text-white">{filteredChapters.length}</span>
+                      <p className="text-[10px] text-white/70 uppercase font-bold tracking-widest mt-1">
+                        {language === 'en' ? 'Chapters Live' : 'ଅଧ୍ୟାୟ ପ୍ରକାଶିତ'}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-left md:text-right">
-                  <span className="text-3xl font-black text-white">{filteredChapters.length}</span>
-                  <p className="text-[10px] text-white/70 uppercase font-bold tracking-widest mt-1">
-                    {language === 'en' ? 'Chapters Live' : 'ଅଧ୍ୟାୟ ପ୍ରକାଶିତ'}
-                  </p>
-                </div>
-              </div>
-            </div>
+              );
+            })()}
 
             {/* CHAPTERS DIRECTORY CONTAINER */}
             {filteredChapters.length === 0 ? (
@@ -925,9 +1557,10 @@ Instructions:
                     <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest bg-emerald-400/5 px-2 py-0.5 rounded-md border border-emerald-400/10">
                       {language === 'en' ? 'BSE Textbook' : 'ବିଦ୍ୟାଳୟ ପାଠ୍ୟପୁସ୍ତକ'}
                     </span>
-                    <span className="text-[10px] font-bold text-slate-500 uppercase">
-                      {SUBJECT_METADATA[selectedSubject] ? (language === 'en' ? SUBJECT_METADATA[selectedSubject].labelEn : SUBJECT_METADATA[selectedSubject].labelOr) : ''}
-                    </span>
+                      {(() => {
+                        const currentMeta = activeSubjects.find(sub => sub.key === selectedSubject);
+                        return currentMeta ? (language === 'en' ? currentMeta.labelEn : currentMeta.labelOr) : '';
+                      })()}
                   </div>
                   <h2 className="text-base md:text-lg font-black text-white leading-tight mt-1">
                     {selectedChapter.title}

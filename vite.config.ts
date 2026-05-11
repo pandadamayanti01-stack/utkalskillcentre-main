@@ -53,12 +53,18 @@ export default defineConfig(({mode}) => {
         manifest: {
           name: 'Utkal Skill Centre',
           short_name: 'Utkal Skill Centre',
-          description: 'Learning portal for students',
-          theme_color: '#ffffff',
-          background_color: '#ffffff',
+          description: 'Empowering students with essential skills for a brighter future. Access study materials, textbooks, and monthly tests.',
+          theme_color: '#10b981',
+          background_color: '#0f172a',
           display: 'standalone',
+          orientation: 'portrait',
           scope: '/',
-          start_url: '/',
+          start_url: '/#dashboard',
+          categories: [
+            'education',
+            'books',
+            'productivity'
+          ],
           icons: [
             {
               src: '/utkal-192.png',
@@ -77,6 +83,22 @@ export default defineConfig(({mode}) => {
               sizes: '512x512',
               type: 'image/png',
               purpose: 'maskable'
+            }
+          ],
+          screenshots: [
+            {
+              src: '/gundulu.png',
+              sizes: '1006x1920',
+              type: 'image/png',
+              form_factor: 'narrow',
+              label: 'Gundulu AI Tutor - Learning Dashboard'
+            },
+            {
+              src: '/mts-1may.png',
+              sizes: '2752x1536',
+              type: 'image/png',
+              form_factor: 'wide',
+              label: 'Utkal Skill Centre - Mock Tests & Dashboard'
             }
           ]
         }
