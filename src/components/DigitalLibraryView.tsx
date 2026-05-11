@@ -290,7 +290,6 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
     setChatMessages(prev => [...prev, userMsg]);
     setInputValue('');
     setIsAiLoading(true);
-
     try {
       // Construct background context from current chapter notes
       const chapterContext = `
@@ -303,7 +302,7 @@ Instructions:
 1. You are Gundulu, the friendly AI tutor of Utkal Skill Centre.
 2. Tutor the student step-by-step based primarily on the chapter reference guide above.
 3. Keep your answers supportive, visual, and highly academic. Use bilingual friendly explanations.
-4. If the student asks you for a quiz question, pick or formulate one from the notes and wait for their answer!
+4. If the student asks you for an MCQ test or quiz, start an interactive, engaging quiz: ask exactly one premium MCQ question at a time (with options labeled a, b, c, d), wait for their answer, provide friendly feedback on whether they got it right or wrong with a quick educational explanation, and then proceed to ask the next unique question. Do NOT repeat any questions that are already present in the chat history.
 `;
       
       const response = await solveMathDoubt(
@@ -311,7 +310,8 @@ Instructions:
         language,
         undefined,
         user?.class || 'Class 10',
-        chapterContext
+        chapterContext,
+        chatMessages
       );
 
       const gMsg: Message = {
@@ -946,7 +946,7 @@ Instructions:
                           className={`max-w-[80%] rounded-2xl p-3.5 leading-relaxed shadow-sm border ${
                             msg.sender === 'user'
                               ? 'bg-gradient-to-br from-emerald-500 to-teal-600 border-transparent text-white rounded-br-none text-xs font-semibold'
-                              : 'bg-slate-900/90 border-emerald-500/20 text-slate-100 rounded-bl-none text-[13px] font-semibold tracking-wide [&_strong]:text-emerald-400 [&_strong]:font-bold [&_code]:bg-slate-950 [&_code]:text-emerald-300 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:font-mono [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_li]:mb-1'
+                              : 'gundulu-chat-bubble bg-slate-900/90 border-emerald-500/20 text-slate-100 rounded-bl-none text-[13px] font-semibold tracking-wide [&_strong]:text-emerald-400 [&_strong]:font-bold [&_code]:bg-slate-950 [&_code]:text-emerald-300 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:font-mono [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_li]:mb-1'
                           }`}
                         >
                           <ReactMarkdown>{cleanMathNotation(msg.text)}</ReactMarkdown>

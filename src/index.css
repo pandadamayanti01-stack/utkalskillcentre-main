@@ -546,3 +546,32 @@ body.theme-daybreak header svg {
   100% { top: 110%; }
 }
 
+/* Gundulu Interactive Chat Bubble Styling & Contrast Override */
+.gundulu-chat-bubble {
+  background-color: rgba(15, 23, 42, 0.95) !important;
+  color: #f1f5f9 !important;
+  border-color: rgba(16, 185, 129, 0.25) !important;
+}
+
+body.theme-daybreak .gundulu-chat-bubble,
+body.theme-daybreak .gundulu-chat-bubble * {
+  color: #f1f5f9 !important;
+}
+
+.gundulu-chat-bubble p,
+.gundulu-chat-bubble span,
+.gundulu-chat-bubble li {
+  color: #f1f5f9 !important;
+}
+
+.gundulu-chat-bubble strong {
+  color: #34d399 !important;
+  font-weight: 700 !important;
+}
+
+.gundulu-chat-bubble code {
+  background-color: #020617 !important;
+  color: #6ee7b7 !important;
+}
+
+

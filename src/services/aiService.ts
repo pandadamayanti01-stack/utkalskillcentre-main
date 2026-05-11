@@ -172,7 +172,8 @@ export async function solveMathDoubt(
   language: 'en' | 'or',
   imageData?: { data: string, mimeType: string },
   studentClass?: string,
-  customPrompt?: string
+  customPrompt?: string,
+  history?: { sender: string; text: string }[]
 ) {
   try {
     const ai = getAI();
@@ -188,15 +189,30 @@ export async function solveMathDoubt(
       });
     }
 
+    // Build the contents list with chat memory
+    const contents: any[] = [];
+    if (history && history.length > 0) {
+      // Send the last 10 messages for fast, lightweight contextual tracking
+      const recentHistory = history.slice(-10);
+      recentHistory.forEach((msg) => {
+        contents.push({
+          role: msg.sender === 'user' ? 'user' : 'model',
+          parts: [{ text: msg.text }]
+        });
+      });
+    }
+    // Add the current prompt
+    contents.push({ role: 'user', parts });
+
     const responseText = await withRetry(async (modelName, apiVersion) => {
-      const model = ai.getGenerativeModel({ 
+      const model = ai.getGenerativeModel({
         model: modelName,
         systemInstruction,
         safetySettings: gunduluSafetySettings
       }, { apiVersion });
 
       const result = await model.generateContent({
-        contents: [{ role: 'user', parts }],
+        contents,
         generationConfig: {
           temperature: 0.7,
         },
