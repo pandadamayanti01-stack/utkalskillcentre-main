@@ -191,6 +191,11 @@ const getGenerativeBookCover = (subjectKey: string, title: string, idx: number, 
 
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 };
+
+const isMobileDevice = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+};
 export const cleanMathNotation = (text: string): string => {
   if (!text) return "";
 
@@ -982,12 +987,47 @@ Instructions:
                     <ReactMarkdown>{cleanMathNotation(selectedChapter.notes || '*No study materials added yet.*')}</ReactMarkdown>
                   </div>
                 ) : (
-                  <div className="w-full h-[60vh] rounded-2xl overflow-hidden bg-slate-950 border border-white/5 flex flex-col justify-between">
-                    <iframe
-                      src={`${effectivePdfUrl}#toolbar=0&navpanes=0`}
-                      className="w-full flex-1"
-                      title={selectedChapter.title}
-                    />
+                  <div className="w-full h-[60vh] rounded-2xl overflow-hidden bg-slate-950 border border-white/5 flex flex-col justify-center">
+                    {isMobileDevice() ? (
+                      /* Beautiful glowing mobile book launcher card */
+                      <div className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-6 bg-slate-950">
+                        {/* 3D-like book image scaled */}
+                        <div className="w-28 h-36 rounded-xl overflow-hidden border border-white/10 shadow-[0_12px_24px_rgba(0,0,0,0.5)] transform hover:scale-105 transition-all relative shrink-0">
+                          <img 
+                            src={selectedChapter.coverUrl || getGenerativeBookCover(selectedSubject, selectedChapter.title, 1, getClassCode(user?.class))}
+                            alt="Book Cover"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+
+                        <div className="space-y-1.5 max-w-xs">
+                          <h4 className="text-xs font-black text-white leading-tight">
+                            {selectedChapter.title}
+                          </h4>
+                          <p className="text-[10px] text-slate-400 font-bold leading-normal">
+                            {language === 'en' 
+                              ? 'Read this textbook chapter in full-screen mobile comfort.'
+                              : 'ମୋବାଇଲ୍ ଅଧ୍ୟୟନ ପାଇଁ ତଳ ବଟନ୍ କ୍ଲିକ୍ କରି ପାଠ୍ୟପୁସ୍ତକ ପଢ଼ନ୍ତୁ।'}
+                          </p>
+                        </div>
+
+                        <a
+                          href={effectivePdfUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black text-[10px] tracking-wider uppercase transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
+                        >
+                          <Lucide.BookOpen size={12} />
+                          <span>{language === 'en' ? 'Open Textbook Chapter' : 'ପାଠ୍ୟପୁସ୍ତକ ଓପନ୍ କରନ୍ତୁ'}</span>
+                        </a>
+                      </div>
+                    ) : (
+                      <iframe
+                        src={`${effectivePdfUrl}#toolbar=0&navpanes=0`}
+                        className="w-full flex-1"
+                        title={selectedChapter.title}
+                      />
+                    )}
                     <div className="p-4 bg-slate-900/60 border-t border-white/5 flex items-center justify-between">
                       <span className="text-xs text-slate-400">
                         {language === 'en' ? 'Having trouble viewing? Open original PDF directly:' : 'ଦେଖିବାରେ ସମସ୍ୟା ହେଉଛି? ସିଧାସଳଖ PDF ଓପନ କରନ୍ତୁ:'}
@@ -1341,12 +1381,47 @@ Instructions:
                     <ReactMarkdown>{cleanMathNotation(selectedChapter.notes || '*No study materials added yet.*')}</ReactMarkdown>
                   </div>
                 ) : (
-                  <div className="w-full h-full rounded-2xl overflow-hidden bg-slate-900 border border-white/5 flex flex-col justify-between">
-                    <iframe
-                      src={`${effectivePdfUrl}#toolbar=0&navpanes=0`}
-                      className="w-full flex-1"
-                      title={selectedChapter.title}
-                    />
+                  <div className="w-full h-full rounded-2xl overflow-hidden bg-slate-900 border border-white/5 flex flex-col justify-center">
+                    {isMobileDevice() ? (
+                      /* Beautiful glowing mobile book launcher card in full screen */
+                      <div className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-6 bg-slate-900">
+                        {/* 3D-like book image scaled */}
+                        <div className="w-28 h-36 rounded-xl overflow-hidden border border-white/10 shadow-[0_12px_24px_rgba(0,0,0,0.5)] transform hover:scale-105 transition-all relative shrink-0">
+                          <img 
+                            src={selectedChapter.coverUrl || getGenerativeBookCover(selectedSubject, selectedChapter.title, 1, getClassCode(user?.class))}
+                            alt="Book Cover"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+
+                        <div className="space-y-1.5 max-w-xs">
+                          <h4 className="text-xs font-black text-white leading-tight">
+                            {selectedChapter.title}
+                          </h4>
+                          <p className="text-[10px] text-slate-400 font-bold leading-normal">
+                            {language === 'en' 
+                              ? 'Read this textbook chapter in full-screen mobile comfort.'
+                              : 'ମୋବାଇଲ୍ ଅଧ୍ୟୟନ ପାଇଁ ତଳ ବଟନ୍ କ୍ଲିକ୍ କରି ପାଠ୍ୟପୁସ୍ତକ ପଢ଼ନ୍ତୁ।'}
+                          </p>
+                        </div>
+
+                        <a
+                          href={effectivePdfUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black text-[10px] tracking-wider uppercase transition-all active:scale-95 shadow-lg shadow-emerald-500/20 animate-pulse"
+                        >
+                          <Lucide.BookOpen size={12} />
+                          <span>{language === 'en' ? 'Open Full-Screen Textbook' : 'ପୂର୍ଣ୍ଣ ସ୍କ୍ରିନ୍ ପାଠ୍ୟପୁସ୍ତକ ଓପନ୍'}</span>
+                        </a>
+                      </div>
+                    ) : (
+                      <iframe
+                        src={`${effectivePdfUrl}#toolbar=0&navpanes=0`}
+                        className="w-full flex-1"
+                        title={selectedChapter.title}
+                      />
+                    )}
                     <div className="p-4 bg-slate-950 border-t border-white/5 flex items-center justify-between">
                       <span className="text-xs text-slate-400">
                         {language === 'en' ? 'Original PDF Textbook Reader' : 'ମୂଳ ପାଠ୍ୟପୁସ୍ତକ ପାଠକ'}
