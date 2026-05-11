@@ -25,7 +25,12 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
   const currentDay = new Date().getDate();
   const isTestWindowActive = currentDay >= 1 && currentDay <= 10;
 
-  const navItems = [
+  const navItems: {
+    id: string;
+    icon: React.ComponentType<any>;
+    label: string;
+    badge?: string | number;
+  }[] = [
     isTestWindowActive
       ? {
           id: 'monthly_tests',
@@ -48,10 +53,9 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
       label: language === 'en' ? 'Daily MCQ' : 'ଦୈନିକ MCQ'
     },
     {
-      id: 'notifications',
-      icon: Lucide.Bell,
-      label: language === 'en' ? 'Alerts' : 'ବିଜ୍ଞପ୍ତି',
-      badge: unreadNotificationsCount > 0 ? unreadNotificationsCount : undefined
+      id: 'digital_library',
+      icon: Lucide.Library,
+      label: language === 'en' ? 'Library' : 'ଲାଇବ୍ରେରୀ'
     }
   ];
 
@@ -74,7 +78,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/90 to-transparent -z-10 pointer-events-none h-28 translate-y-4" />
       
       {/* Floating container with enhanced borders and ambient back-glow */}
-      <div className="mx-auto max-w-md w-full bg-[#011e1a]/95 border border-emerald-500/30 backdrop-blur-2xl rounded-[2rem] p-2.5 flex items-center justify-between shadow-[0_-12px_45px_rgba(0,0,0,0.8),0_0_30px_rgba(16,185,129,0.1)] pointer-events-auto transition-all duration-300">
+      <div className="mx-auto max-w-md w-full bottom-nav-gradient backdrop-blur-2xl rounded-[2rem] p-2.5 flex items-center justify-between shadow-[0_-12px_45px_rgba(0,0,0,0.8),0_0_30px_rgba(16,185,129,0.1)] pointer-events-auto transition-all duration-300">
         
         {navItems.map((item) => {
           const Icon = item.icon;

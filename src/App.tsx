@@ -70,6 +70,7 @@ const Sidebar = lazy(() => import('./components/Sidebar').then((module) => ({ de
 const LoginComponent = lazy(() => import('./components/LoginComponent'));
 const TestSeriesPoster = lazy(() => import('./components/TestSeriesPoster'));
 const SyllabusTracker = lazy(() => import('./components/SyllabusTracker').then((module) => ({ default: module.SyllabusTracker })));
+const DigitalLibraryView = lazy(() => import('./components/DigitalLibraryView').then((module) => ({ default: module.DigitalLibraryView })));
 
 function ViewLoader({ fullHeight = false }: { fullHeight?: boolean }) {
   return (
@@ -686,6 +687,15 @@ export default function App() {
   const [confirmSupport, setConfirmSupport] = useState(false);
   const confirmTimeoutRef = useRef<any>(null);
   const contentScrollRef = useRef<HTMLDivElement>(null);
+
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('theme') || 'slate';
+  });
+
+  useEffect(() => {
+    document.body.classList.remove('theme-slate', 'theme-forest', 'theme-navy', 'theme-daybreak');
+    document.body.classList.add(`theme-${theme}`);
+  }, [theme]);
 
   // Clean up confirmation timer on unmount
   useEffect(() => {
@@ -1333,7 +1343,11 @@ export default function App() {
       
       const data = allData.filter(c => {
         // 1. Check Class
-        const matchesClass = !user?.class || c.class === user.class;
+        const cleanClass = (cls: string) => {
+          if (!cls) return '';
+          return cls.toLowerCase().replace(/\s+/g, '').replace('class', '').replace('th', '');
+        };
+        const matchesClass = !user?.class || cleanClass(c.class) === cleanClass(user.class);
         
         // 2. Check Board (Handles both String and Map formats)
         const userBoard = (user?.board || '').toLowerCase();
@@ -2515,7 +2529,7 @@ export default function App() {
     )}
 
     {/* Full screen container - NO SCROLL ALLOWED HERE */}
-    <div className="h-screen w-full bg-[#002d26] flex relative overflow-hidden font-sans text-[#f8f1e7]">
+    <div className="h-screen w-full app-viewport-container flex relative overflow-hidden font-sans">
       
       {/* Background Pattern Layer */}
       <div className="temple-bg-overlay" />
@@ -2627,6 +2641,16 @@ export default function App() {
               />
             )}
             {activeTab === 'notifications' && <NotificationsView notifications={studentNotifications} language={language} readNotifIds={readNotifIds} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'digital_library' && (
+              <DigitalLibraryView
+                user={user}
+                chapters={chapters}
+                language={language}
+                isPremium={isPremium}
+                onUpgrade={() => setActiveTab('plans')}
+                onBack={() => setActiveTab('dashboard')}
+              />
+            )}
             {activeTab === 'courses' && <CoursesView user={user} chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'monthly_tests' && (
@@ -2641,7 +2665,7 @@ export default function App() {
             {activeTab === 'gundulu' && (
               isPremium ? <GunduluHuman userClass={user?.class} onBack={() => setActiveTab('dashboard')} /> : <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
             )}
-            {activeTab === 'profile' && <ProfileView user={user} language={language} onBack={() => setActiveTab('dashboard')} onParentAccess={() => setActiveTab('parent_dashboard')} setActiveTab={setActiveTab} />}
+            {activeTab === 'profile' && <ProfileView user={user} language={language} theme={theme} setTheme={setTheme} onBack={() => setActiveTab('dashboard')} onParentAccess={() => setActiveTab('parent_dashboard')} setActiveTab={setActiveTab} />}
             {activeTab === 'parent_dashboard' && <ParentDashboard user={user} chapters={chapters} leaderboard={leaderboard} language={language} onBack={() => setActiveTab('profile')} userProgress={userProgress} />}
             {activeTab === 'leaderboard' && <LeaderboardView leaderboard={leaderboard} language={language} onBack={() => setActiveTab('dashboard')} following={following} user={user} />}
             {activeTab === 'support' && <SupportView user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
@@ -3133,7 +3157,7 @@ function SupportView({ user, language, onBack }: any) {
   );
 }
 
-function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: any) {
+function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, setActiveTab }: any) {
   const [name, setName] = useState(user.name || '');
   const [email, setEmail] = useState(user.email || '');
   const [parentShowLeaderboard, setParentShowLeaderboard] = useState(user.parentShowLeaderboard ?? true);
@@ -3526,6 +3550,99 @@ function ProfileView({ user, language, onBack, onParentAccess, setActiveTab }: a
               )
             )}
           </button>
+        </div>
+
+        {/* Visual Theme Settings Card */}
+        <div className="p-5 rounded-2xl bg-slate-800/40 border border-white/5 space-y-4">
+          <div className="flex items-center gap-2">
+            <Lucide.Palette size={18} className="text-emerald-400" />
+            <h3 className="text-sm font-extrabold text-white">
+              {language === 'en' ? 'App Display Theme' : 'ଆପ୍ ଥିମ୍ ସେଟିଂ'}
+            </h3>
+          </div>
+          <p className="text-[10px] text-slate-400 leading-relaxed">
+            {language === 'en' 
+              ? 'Choose your learning atmosphere. Night modes are easy on the eyes, while Daybreak is perfect for bright daylight study.' 
+              : 'ଆପଣଙ୍କର ପଢ଼ିବା ପରିବେଶ ବାଛନ୍ତୁ | ରାତି ମୋଡ୍ ଆଖି ପାଇଁ ଆରାମଦାୟକ ଏବଂ ଦିନ ମୋଡ୍ ଦିନରେ ପଢ଼ିବା ପାଇଁ ସର୍ବୋତ୍ତମ ଅଟେ |'}
+          </p>
+          
+          <div className="grid grid-cols-2 gap-3 pt-1">
+            {/* Theme Slate */}
+            <button
+              type="button"
+              onClick={() => {
+                setTheme('slate');
+                localStorage.setItem('theme', 'slate');
+              }}
+              className={`p-3 rounded-xl border text-left transition-all relative overflow-hidden group ${
+                theme === 'slate' 
+                  ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400' 
+                  : 'border-white/5 bg-slate-900/40 text-slate-400 hover:border-white/10'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-[#020617] border border-white/20" />
+                <span className="text-xs font-bold">Midnight Slate</span>
+              </div>
+            </button>
+
+            {/* Theme Forest */}
+            <button
+              type="button"
+              onClick={() => {
+                setTheme('forest');
+                localStorage.setItem('theme', 'forest');
+              }}
+              className={`p-3 rounded-xl border text-left transition-all relative overflow-hidden group ${
+                theme === 'forest' 
+                  ? 'border-[#10b981] bg-[#10b981]/10 text-[#34d399]' 
+                  : 'border-white/5 bg-slate-900/40 text-slate-400 hover:border-white/10'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-[#04120c] border border-white/20" />
+                <span className="text-xs font-bold">Forest Emerald</span>
+              </div>
+            </button>
+
+            {/* Theme Navy */}
+            <button
+              type="button"
+              onClick={() => {
+                setTheme('navy');
+                localStorage.setItem('theme', 'navy');
+              }}
+              className={`p-3 rounded-xl border text-left transition-all relative overflow-hidden group ${
+                theme === 'navy' 
+                  ? 'border-blue-500 bg-blue-500/10 text-blue-400' 
+                  : 'border-white/5 bg-slate-900/40 text-slate-400 hover:border-white/10'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-[#050b1d] border border-white/20" />
+                <span className="text-xs font-bold">Royal Navy</span>
+              </div>
+            </button>
+
+            {/* Theme Daybreak (Light) */}
+            <button
+              type="button"
+              onClick={() => {
+                setTheme('daybreak');
+                localStorage.setItem('theme', 'daybreak');
+              }}
+              className={`p-3 rounded-xl border text-left transition-all relative overflow-hidden group ${
+                theme === 'daybreak' 
+                  ? 'border-amber-500 bg-amber-500/10 text-amber-500' 
+                  : 'border-white/5 bg-slate-900/40 text-slate-400 hover:border-white/10'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-[#f8fafc] border border-slate-300" />
+                <span className="text-xs font-bold">Daybreak Light</span>
+              </div>
+            </button>
+          </div>
         </div>
 
         <button 
@@ -5907,6 +6024,14 @@ function ResultsReviewView({ submission, test, onBack, language }: any) {
 
 function CertificateView({ submission, test, user, onBack, language }: any) {
   const certificateRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (containerRef.current) {
+      containerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, []);
 
   const handleDownload = async () => {
     window.print();
@@ -5915,102 +6040,105 @@ function CertificateView({ submission, test, user, onBack, language }: any) {
   const scorePercent = Math.round((submission.finalScore || submission.score) / (submission.totalMaxMarks || submission.totalQuestions) * 100);
 
   return (
-    <div className="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-xl flex flex-col items-center justify-center p-4">
+    <div 
+      ref={containerRef}
+      className="fixed inset-0 z-[99999] bg-slate-950/95 backdrop-blur-xl overflow-y-auto p-4 md:p-8 flex flex-col items-center justify-start scroll-smooth"
+    >
       <button 
         onClick={onBack}
-        className="fixed top-6 left-6 flex items-center gap-2 text-slate-400 hover:text-white transition-colors z-[110] print:hidden"
+        className="fixed top-4 left-4 flex items-center gap-2 text-slate-400 hover:text-white transition-colors z-[110] print:hidden bg-slate-900/85 px-4 py-2.5 rounded-xl border border-white/5 backdrop-blur-md shadow-lg"
       >
-        <Lucide.ArrowLeft size={24} />
-        <span className="font-black uppercase tracking-[0.2em] text-sm">Back</span>
+        <Lucide.ArrowLeft size={18} />
+        <span className="font-black uppercase tracking-[0.2em] text-xs">Back</span>
       </button>
       
-      <div className="max-w-4xl w-full bg-white rounded-lg shadow-2xl p-1 relative overflow-hidden print:p-0 print:shadow-none print:m-0" ref={certificateRef}>
+      <div className="max-w-4xl w-full bg-white rounded-lg shadow-2xl p-1 relative overflow-hidden print:p-0 print:shadow-none print:m-0 mt-14 sm:mt-0" ref={certificateRef}>
         {/* Certificate Border */}
-        <div className="border-[12px] border-emerald-600 p-12 text-center relative">
+        <div className="border-4 sm:border-[12px] border-emerald-600 p-4 sm:p-12 text-center relative">
           <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#059669 2px, transparent 2px)', backgroundSize: '30px 30px' }}></div>
           
-          <div className="relative z-10 space-y-8">
+          <div className="relative z-10 space-y-4 sm:space-y-8">
             <div className="flex flex-col items-center">
-              <div className="w-24 h-24 mb-6 relative">
+              <div className="w-14 h-14 sm:w-24 sm:h-24 mb-2 sm:mb-6 relative">
                 <div className="absolute inset-0 bg-emerald-500/10 rounded-full blur-xl"></div>
                 <img src="/utkal-512.png" alt="Utkal Logo" className="w-full h-full object-contain relative z-10" />
               </div>
-              <h1 className="text-4xl font-serif font-black text-slate-900 tracking-tight uppercase">Certificate of Excellence</h1>
-              <div className="w-48 h-1 bg-gradient-to-r from-transparent via-emerald-600 to-transparent mt-4"></div>
-              <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-[0.4em] mt-2">Utkal Skill Centre Academic Achievement</p>
+              <h1 className="text-xl sm:text-4xl font-serif font-black text-slate-900 tracking-tight uppercase">Certificate of Excellence</h1>
+              <div className="w-24 sm:w-48 h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-emerald-600 to-transparent mt-2 sm:mt-4"></div>
+              <p className="text-[7px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-[0.3em] sm:tracking-[0.4em] mt-1 sm:mt-2">Utkal Skill Centre Academic Achievement</p>
             </div>
 
-            <div className="space-y-4 pt-4">
-              <p className="text-slate-500 font-serif italic text-lg">This is to certify that</p>
-              <h2 className="text-5xl font-serif font-bold text-slate-900 border-b-2 border-emerald-100 pb-2 px-8 inline-block">{submission.userName}</h2>
-              <p className="text-slate-500 font-medium">has demonstrated exceptional performance in the</p>
+            <div className="space-y-2 sm:space-y-4 pt-2 sm:pt-4">
+              <p className="text-slate-500 font-serif italic text-xs sm:text-lg">This is to certify that</p>
+              <h2 className="text-xl sm:text-5xl font-serif font-bold text-slate-900 border-b border-emerald-100 pb-1 sm:pb-2 px-4 sm:px-8 inline-block">{submission.userName}</h2>
+              <p className="text-slate-500 text-[10px] sm:text-base font-medium">has demonstrated exceptional performance in the</p>
             </div>
 
-            <div className="space-y-2 py-4">
-              <h3 className="text-2xl font-bold text-emerald-800 uppercase tracking-[0.1em]">{test.month} {test.year} Monthly Assessment</h3>
-              <div className="flex items-center justify-center gap-3 text-slate-500">
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <div className="space-y-1 sm:space-y-2 py-2 sm:py-4">
+              <h3 className="text-sm sm:text-2xl font-bold text-emerald-800 uppercase tracking-[0.05em] sm:tracking-[0.1em]">{test.month} {test.year} Monthly Assessment</h3>
+              <div className="flex items-center justify-center gap-1.5 sm:gap-3 text-slate-500 text-[10px] sm:text-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                 <span>Subject: <span className="font-bold text-slate-800">{test.subject}</span></span>
                 <span className="w-1 h-1 rounded-full bg-slate-300"></span>
                 <span>Class: <span className="font-bold text-slate-800">{submission.class}</span></span>
               </div>
             </div>
 
-            <div className="flex justify-center items-center gap-16 py-8 relative">
-              <img src="/utkal-512.png" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 opacity-[0.03] pointer-events-none" alt="" />
+            <div className="flex justify-center items-center gap-6 sm:gap-16 py-3 sm:py-8 relative">
+              <img src="/utkal-512.png" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 sm:w-64 opacity-[0.03] pointer-events-none" alt="" />
               <div className="text-center">
-                <p className="text-4xl font-black text-slate-900 leading-none">{scorePercent}%</p>
-                <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-2">Aggregate Score</p>
+                <p className="text-xl sm:text-4xl font-black text-slate-900 leading-none">{scorePercent}%</p>
+                <p className="text-[8px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1 sm:mt-2">Aggregate Score</p>
               </div>
               <div className="text-center">
-                <p className="text-4xl font-black text-slate-900 leading-none">#{submission.rank || 'N/A'}</p>
-                <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-2">State Rank</p>
+                <p className="text-xl sm:text-4xl font-black text-slate-900 leading-none">#{submission.rank || 'N/A'}</p>
+                <p className="text-[8px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1 sm:mt-2">State Rank</p>
               </div>
             </div>
 
-            <div className="flex justify-between items-end mt-12 px-12 pt-8">
+            <div className="flex justify-between items-end mt-6 sm:mt-12 px-2 sm:px-12 pt-4 sm:pt-8">
               <div className="text-center">
-                <div className="w-32 border-b-2 border-slate-900 mb-2 mx-auto" />
-                <p className="font-serif font-bold text-slate-900">Gundulu</p>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">AI Learning Advisor</p>
+                <div className="w-16 sm:w-32 border-b border-slate-900 mb-1 sm:mb-2 mx-auto" />
+                <p className="font-serif font-bold text-slate-900 text-[10px] sm:text-base">Gundulu</p>
+                <p className="text-[8px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-tighter">AI Learning Advisor</p>
               </div>
               <div className="relative">
-                <div className="w-28 h-28 bg-emerald-600/5 rounded-full flex items-center justify-center border-2 border-emerald-600/10">
-                  <div className="w-24 h-24 bg-emerald-600/10 rounded-full flex items-center justify-center border-2 border-emerald-600/20">
-                    <Lucide.Award size={56} className="text-emerald-600 opacity-80" />
+                <div className="w-14 h-14 sm:w-28 sm:h-28 bg-emerald-600/5 rounded-full flex items-center justify-center border border-emerald-600/10">
+                  <div className="w-12 h-12 sm:w-24 sm:h-24 bg-emerald-600/10 rounded-full flex items-center justify-center border border-emerald-600/20">
+                    <Lucide.Award className="w-6 h-6 sm:w-14 sm:h-14 text-emerald-600 opacity-80" />
                   </div>
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <p className="text-[8px] font-black text-emerald-600/20 uppercase tracking-[0.3em] rotate-12">Verified Utkal Cert</p>
+                  <p className="text-[5px] sm:text-[8px] font-black text-emerald-600/20 uppercase tracking-[0.2em] sm:tracking-[0.3em] rotate-12">Verified Utkal Cert</p>
                 </div>
               </div>
               <div className="text-center">
-                <div className="w-32 border-b-2 border-slate-900 mb-2 mx-auto" />
-                <p className="font-serif font-bold text-slate-900">Director</p>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Utkal Skill Centre</p>
+                <div className="w-16 sm:w-32 border-b border-slate-900 mb-1 sm:mb-2 mx-auto" />
+                <p className="font-serif font-bold text-slate-900 text-[10px] sm:text-base">Director</p>
+                <p className="text-[8px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Utkal Skill Centre</p>
               </div>
             </div>
             
-            <p className="text-[10px] text-slate-300 font-mono mt-8 italic">Verification ID: {submission.id?.slice(-8).toUpperCase()}</p>
+            <p className="text-[8px] sm:text-[10px] text-slate-300 font-mono mt-4 sm:mt-8 italic">Verification ID: {submission.id?.slice(-8).toUpperCase()}</p>
           </div>
         </div>
       </div>
 
-      <div className="mt-12 flex gap-4 print:hidden">
+      <div className="mt-8 sm:mt-12 flex gap-4 print:hidden flex-wrap sm:flex-nowrap justify-center">
         <button 
           onClick={handleDownload}
-          className="bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-2 shadow-xl shadow-emerald-500/20"
+          className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-bold flex items-center gap-2 shadow-xl shadow-emerald-500/20 text-sm"
         >
-          <Lucide.Download size={20} /> Print/Save as PDF
+          <Lucide.Download size={18} /> Print/Save as PDF
         </button>
         <button 
           onClick={onBack}
-          className="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-2xl font-bold"
+          className="bg-white/10 hover:bg-white/20 text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-bold text-sm"
         >
           Close
         </button>
       </div>
-      <p className="text-slate-500 text-xs mt-4 print:hidden">Tip: For best result, set Layout to "Landscape" and "Remove Margins" in print settings.</p>
+      <p className="text-slate-500 text-[10px] sm:text-xs mt-4 print:hidden text-center pb-8">Tip: For best result, set Layout to "Landscape" and "Remove Margins" in print settings.</p>
     </div>
   );
 }

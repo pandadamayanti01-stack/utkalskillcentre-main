@@ -7,6 +7,7 @@ import { DailyMcq, DailyMcqQuestion } from '../../types';
 import { translations } from '../../translations';
 import { DAILY_MCQ_QUESTION_COUNT, getConfiguredDailyMcqSequence, getDailyMcqMarksForIndex, getRotatingDailyMcqSubject, getTomorrowDateString, normalizeDailyMcqQuestions, withDailyMcqMarks } from '../../utils/dailyMcq';
 import { exportDailyMcqToPdf } from '../../utils/dailyMcqPdfExport';
+import { cleanMathNotation } from '../DigitalLibraryView';
 
 declare global {
   interface Window {
@@ -579,11 +580,9 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
                 }`}>
                   {mcq.status}
                 </span>
-              </div>
-
-              <div className="glass-card bg-black/40 border-white/5 rounded-3xl p-6 space-y-6">
+              </div>               <div className="glass-card bg-black/40 border-white/5 rounded-3xl p-6 space-y-6">
                 <div className="flex items-start justify-between gap-4">
-                  <p className="text-white font-medium leading-relaxed italic">"{questions[0]?.question || 'Node data corrupted or empty'}"</p>
+                  <p className="text-white font-medium leading-relaxed italic">"{cleanMathNotation(questions[0]?.question || 'Node data corrupted or empty')}"</p>
                   <div className="px-3 py-1 bg-white/5 rounded-full border border-white/10 text-[9px] font-black text-cyan-400 uppercase tracking-widest whitespace-nowrap">
                     {questions.length} Matrix Nodes
                   </div>
@@ -604,7 +603,7 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
                       : 'border-white/5 bg-white/5 text-slate-400'
                     }`}>
                       <span className={`text-[10px] font-black uppercase tracking-widest ${option === questions[0]?.correct_answer ? 'text-emerald-500' : 'text-slate-600'}`}>{String.fromCharCode(65 + index)}</span>
-                      {option}
+                      {cleanMathNotation(option)}
                     </div>
                   ))}
                 </div>
@@ -612,7 +611,7 @@ export function DailyMcqTab({ mcqs, textbooks, subjectRotation, showNotification
                 {questions[0]?.explanation && (
                   <div className="pt-4 border-t border-white/5 flex gap-4">
                     <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest pt-1">Logic</div>
-                    <div className="text-xs text-slate-500 leading-relaxed font-medium italic">{questions[0].explanation}</div>
+                    <div className="text-xs text-slate-500 leading-relaxed font-medium italic">{cleanMathNotation(questions[0].explanation)}</div>
                   </div>
                 )}
               </div>

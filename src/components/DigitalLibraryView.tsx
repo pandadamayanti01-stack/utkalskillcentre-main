@@ -1,0 +1,1092 @@
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import * as Lucide from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
+import { db } from '../firebase';
+import { solveMathDoubt } from '../services/aiService';
+
+interface DigitalLibraryViewProps {
+  user: any;
+  chapters: any[];
+  language: 'en' | 'or';
+  isPremium: boolean;
+  onUpgrade?: () => void;
+  onBack: () => void;
+}
+
+interface Message {
+  id: string;
+  sender: 'user' | 'gundulu';
+  text: string;
+}
+
+// Map standard subjects to gorgeous, premium gradient card metadata
+const SUBJECT_METADATA: Record<string, {
+  labelEn: string;
+  labelOr: string;
+  gradient: string;
+  icon: any;
+  color: string;
+}> = {
+  math: {
+    labelEn: "Mathematics",
+    labelOr: "ଗଣିତ",
+    gradient: "from-teal-500 via-emerald-600 to-amber-500",
+    icon: Lucide.Binary,
+    color: "#34d399"
+  },
+  science: {
+    labelEn: "General Science",
+    labelOr: "ବିଜ୍ଞାନ",
+    gradient: "from-cyan-500 via-blue-600 to-indigo-600",
+    icon: Lucide.Atom,
+    color: "#38bdf8"
+  },
+  social_science: {
+    labelEn: "Social Science",
+    labelOr: "ସାମାଜିକ ବିଜ୍ଞାନ",
+    gradient: "from-amber-500 via-orange-600 to-red-600",
+    icon: Lucide.Globe,
+    color: "#f59e0b"
+  },
+  english: {
+    labelEn: "English Literature",
+    labelOr: "ଇଂରାଜୀ",
+    gradient: "from-purple-500 via-pink-600 to-rose-600",
+    icon: Lucide.BookOpen,
+    color: "#c084fc"
+  },
+  odia: {
+    labelEn: "Odia Literature",
+    labelOr: "ଓଡ଼ିଆ",
+    gradient: "from-orange-400 via-red-500 to-amber-600",
+    icon: Lucide.Scroll,
+    color: "#fb923c"
+  },
+  epe: {
+    labelEn: "Art & Health",
+    labelOr: "କଳା ଓ ସ୍ୱାସ୍ଥ୍ୟ",
+    gradient: "from-emerald-400 via-teal-600 to-cyan-600",
+    icon: Lucide.Heart,
+    color: "#34d399"
+  }
+};
+export const cleanMathNotation = (text: string): string => {
+  if (!text) return "";
+
+  let cleaned = text;
+
+  // 1. Replace block math markers $$ ... $$ with bold formulas in blockquotes
+  cleaned = cleaned.replace(/\$\$(.*?)\$\$/gs, (_, formula) => {
+    return `\n> **${formula.trim()}**\n`;
+  });
+
+  // 2. Replace inline math markers $ ... $ with simple bold formulas
+  cleaned = cleaned.replace(/\$(.*?)\$/g, (_, formula) => {
+    return `**${formula.trim()}**`;
+  });
+
+  // 3. Clean up LaTeX formatting commands
+  cleaned = cleaned.replace(/\\times/g, "×");
+  cleaned = cleaned.replace(/\\div/g, "÷");
+  cleaned = cleaned.replace(/\\pm/g, "±");
+  cleaned = cleaned.replace(/\\theta/g, "θ");
+  cleaned = cleaned.replace(/\\pi/g, "π");
+  cleaned = cleaned.replace(/\\alpha/g, "α");
+  cleaned = cleaned.replace(/\\beta/g, "β");
+  cleaned = cleaned.replace(/\\gamma/g, "γ");
+  cleaned = cleaned.replace(/\\delta/g, "δ");
+  cleaned = cleaned.replace(/\\lambda/g, "λ");
+  cleaned = cleaned.replace(/\\mu/g, "μ");
+  cleaned = cleaned.replace(/\\sigma/g, "σ");
+  cleaned = cleaned.replace(/\\phi/g, "φ");
+  cleaned = cleaned.replace(/\\omega/g, "ω");
+  cleaned = cleaned.replace(/\\Omega/g, "Ω");
+  cleaned = cleaned.replace(/\\Sigma/g, "Σ");
+  cleaned = cleaned.replace(/\\Delta/g, "Δ");
+  cleaned = cleaned.replace(/\\triangle/g, "Δ");
+  cleaned = cleaned.replace(/\\cdot/g, "·");
+  cleaned = cleaned.replace(/\\sqrt\{(.*?)\}/g, "√$1");
+  cleaned = cleaned.replace(/\\sqrt/g, "√");
+  cleaned = cleaned.replace(/\\le/g, "≤");
+  cleaned = cleaned.replace(/\\ge/g, "≥");
+  cleaned = cleaned.replace(/\\neq/g, "≠");
+  cleaned = cleaned.replace(/\\approx/g, "≈");
+  cleaned = cleaned.replace(/\\infty/g, "∞");
+  cleaned = cleaned.replace(/\^\\circ/g, "°");
+  cleaned = cleaned.replace(/\\circ/g, "°");
+
+  // LaTeX math spacing
+  cleaned = cleaned.replace(/\\quad/g, "   ");
+  cleaned = cleaned.replace(/\\qquad/g, "      ");
+  cleaned = cleaned.replace(/\\[,;!]/g, " ");
+
+  // LaTeX Fraction conversions
+  cleaned = cleaned.replace(/\\frac\{(.*?)\}\{(.*?)\}/g, (_, num, den) => {
+    const numClean = num.trim();
+    const denClean = den.trim();
+    const needsParens = (str: string) => /[\s+\-*/=<>]/g.test(str);
+    const nStr = needsParens(numClean) ? `(${numClean})` : numClean;
+    const dStr = needsParens(denClean) ? `(${denClean})` : denClean;
+    return `${nStr}/${dStr}`;
+  });
+
+  // 4. Handle curly-braced exponents like 1^{2} or x^{10} to unicode superscripts
+  cleaned = cleaned.replace(/(\w+|\([^)]+\))\^\{(.*?)\}/g, (_, base, exp) => {
+    const unicodeSuperscripts: Record<string, string> = {
+      '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴',
+      '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹',
+      '+': '⁺', '-': '⁻', '=': '⁼', 'n': 'ⁿ', 'x': 'ˣ', 'y': 'ʸ'
+    };
+    let mappedExp = "";
+    for (let char of exp) {
+      mappedExp += unicodeSuperscripts[char] || char;
+    }
+    return `${base}${mappedExp}`;
+  });
+
+  // 5. Handle simple exponents like x^2 or 1^2 to unicode superscripts
+  cleaned = cleaned.replace(/(\w+|\([^)]+\))\^([0-9+\-nxy])/g, (_, base, exp) => {
+    const unicodeSuperscripts: Record<string, string> = {
+      '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴',
+      '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹',
+      '+': '⁺', '-': '⁻', 'n': 'ⁿ', 'x': 'ˣ', 'y': 'ʸ'
+    };
+    return `${base}${unicodeSuperscripts[exp] || ('^' + exp)}`;
+  });
+
+  // 6. Handle curly-braced subscripts like a_{1} or x_{2} or a_{n} to unicode subscripts
+  cleaned = cleaned.replace(/(\w+)_\{(.*?)\}/g, (_, base, sub) => {
+    const unicodeSubscripts: Record<string, string> = {
+      '0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄',
+      '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉',
+      '+': '₊', '-': '₋', '=': '₌', 'n': 'ₙ', 'i': 'ᵢ',
+      'j': 'ⱼ', 'k': 'ₖ', 'x': 'ₓ', 'y': 'ᵧ'
+    };
+    let mappedSub = "";
+    for (let char of sub) {
+      mappedSub += unicodeSubscripts[char] || char;
+    }
+    return `${base}${mappedSub}`;
+  });
+
+  // 7. Handle simple subscripts like a_1 or x_2 or S_n to unicode subscripts
+  cleaned = cleaned.replace(/(\w+)_([0-9nixy])/g, (_, base, sub) => {
+    const unicodeSubscripts: Record<string, string> = {
+      '0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄',
+      '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉',
+      'n': 'ₙ', 'i': 'ᵢ', 'x': 'ₓ', 'y': 'ᵧ'
+    };
+    return `${base}${unicodeSubscripts[sub] || sub}`;
+  });
+
+  // 8. Clean up remaining standalone backslashes or math formatting symbols
+  cleaned = cleaned.replace(/\\{/g, "{").replace(/\\}/g, "}");
+
+  return cleaned;
+};
+
+export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
+  user,
+  chapters,
+  language,
+  isPremium,
+  onUpgrade,
+  onBack
+}) => {
+  // Navigation states: 'subjects' -> 'chapters' -> 'reader'
+  const [currentView, setCurrentView] = useState<'subjects' | 'chapters' | 'reader'>('subjects');
+  const [selectedSubject, setSelectedSubject] = useState<string>('');
+  const [selectedChapter, setSelectedChapter] = useState<any | null>(null);
+
+  // Material reader settings
+  const [readerMode, setReaderMode] = useState<'notes' | 'pdf'>('notes');
+  const [personalNotes, setPersonalNotes] = useState<string>('');
+  const [isNotepadSaved, setIsNotepadSaved] = useState<boolean>(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+  
+  // Eye Care States
+  const [eyeCareMode, setEyeCareMode] = useState<'off' | 'sepia' | 'dim'>('off');
+  const [fontSize, setFontSize] = useState<'normal' | 'large' | 'xlarge'>('normal');
+  const [isPdfFullScreen, setIsPdfFullScreen] = useState<boolean>(false);
+
+  // Gundulu chat states
+  const [chatMessages, setChatMessages] = useState<Message[]>([]);
+  const [inputValue, setInputValue] = useState<string>('');
+  const [isAiLoading, setIsAiLoading] = useState<boolean>(false);
+  const chatBottomRef = useRef<HTMLDivElement>(null);
+
+  // Load / Save student notes in real-time
+  useEffect(() => {
+    if (selectedChapter) {
+      const savedNotes = localStorage.getItem(`digilib_notes_${user?.id}_${selectedChapter.id}`);
+      setPersonalNotes(savedNotes || '');
+      setIsNotepadSaved(true);
+
+      // Reset chatbot to initial greeting
+      const greetEn = `Namaskar! Mu Gundulu. 🦜 I am your AI study companion for this chapter: "${selectedChapter.title}". Ask me any math formulas, definitions, or click the suggestions below! How can I help you today? ✨`;
+      const greetOr = `ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। 🦜 ଆଜି ଆମେ ଏହି ଅଧ୍ୟାୟ ପଢ଼ିବା: "${selectedChapter.title}"। ଏହି ଅଧ୍ୟାୟର କୌଣସି ପ୍ରଶ୍ନ ବା ସୂତ୍ର ବୁଝିବା ପାଇଁ ମୋତେ ପଚାରନ୍ତୁ, ମୁଁ ସାହାଯ୍ୟ କରିବି! ✨`;
+      setChatMessages([
+        {
+          id: 'initial',
+          sender: 'gundulu',
+          text: language === 'en' ? greetEn : greetOr
+        }
+      ]);
+    }
+  }, [selectedChapter, language, user?.id]);
+
+  // Handle auto-saving notes after short typing delays (debounce)
+  useEffect(() => {
+    if (!selectedChapter) return;
+    setIsNotepadSaved(false);
+
+    const saveTimeout = setTimeout(() => {
+      localStorage.setItem(`digilib_notes_${user?.id}_${selectedChapter.id}`, personalNotes);
+      setIsNotepadSaved(true);
+    }, 1000);
+
+    return () => clearTimeout(saveTimeout);
+  }, [personalNotes]);
+
+  // Scroll chat to bottom
+  useEffect(() => {
+    chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatMessages, isAiLoading]);
+
+  // Filter Chapters based on selectedSubject and Student Class
+  const filteredChapters = useMemo(() => {
+    if (!selectedSubject) return [];
+    return chapters.filter((c: any) => {
+      // Robust class matching (e.g., matching 'class10', '10', 'Class 10', '10th')
+      const cleanClass = (cls: string) => {
+        if (!cls) return '';
+        return cls.toLowerCase().replace(/\s+/g, '').replace('class', '').replace('th', '');
+      };
+      const classMatches = !user?.class || cleanClass(c.class) === cleanClass(user.class);
+      const subjectMatches = c.subject?.toLowerCase() === selectedSubject.toLowerCase();
+      // Ensure only published ones show
+      return classMatches && subjectMatches && c.status === 'published';
+    });
+  }, [chapters, selectedSubject, user?.class]);
+
+  // Send message to Gundulu AI Tutor
+  const handleSendToGundulu = async (text: string) => {
+    if (!text.trim() || isAiLoading || !selectedChapter) return;
+
+    const userMsg: Message = {
+      id: Date.now().toString(),
+      sender: 'user',
+      text
+    };
+
+    setChatMessages(prev => [...prev, userMsg]);
+    setInputValue('');
+    setIsAiLoading(true);
+
+    try {
+      // Construct background context from current chapter notes
+      const chapterContext = `
+The student is currently reading the chapter: "${selectedChapter.title}".
+Here is the official reference study guide for this chapter:
+---
+${selectedChapter.notes || 'No reference content uploaded.'}
+---
+Instructions:
+1. You are Gundulu, the friendly AI tutor of Utkal Skill Centre.
+2. Tutor the student step-by-step based primarily on the chapter reference guide above.
+3. Keep your answers supportive, visual, and highly academic. Use bilingual friendly explanations.
+4. If the student asks you for a quiz question, pick or formulate one from the notes and wait for their answer!
+`;
+      
+      const response = await solveMathDoubt(
+        text,
+        language,
+        undefined,
+        user?.class || 'Class 10',
+        chapterContext
+      );
+
+      const gMsg: Message = {
+        id: (Date.now() + 1).toString(),
+        sender: 'gundulu',
+        text: response
+      };
+      setChatMessages(prev => [...prev, gMsg]);
+    } catch (e) {
+      console.error(e);
+      setChatMessages(prev => [...prev, {
+        id: Date.now().toString() + '_err',
+        sender: 'gundulu',
+        text: language === 'en' 
+          ? "Oops! I hit a small speedbump trying to fetch that answer. Could you ask me again? 🐾"
+          : "ଓହୋ! ମୋର ସର୍ଭର କନେକ୍ସନରେ ସାମାନ୍ୟ ସମସ୍ୟା ହେଲା। ଦୟାକରି ଆଉଥରେ ପଚାରନ୍ତୁ! 🐾"
+      }]);
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
+
+  return (
+    <div className="w-full flex flex-col pb-24 font-sans relative overflow-x-hidden">
+      {/* Background Ornaments */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40rem] h-[40rem] rounded-full bg-emerald-950/10 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40rem] h-[40rem] rounded-full bg-teal-950/10 blur-[120px] pointer-events-none" />
+
+      {/* HEADER BAR */}
+      <div className="w-full max-w-7xl mx-auto px-4 py-6 flex items-center justify-between border-b border-white/5 relative z-10">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+            <Lucide.Library size={24} className="animate-pulse" />
+          </div>
+          <div>
+            <h1 className="text-xl md:text-2xl font-black bg-gradient-to-r from-emerald-400 via-teal-400 to-amber-300 bg-clip-text text-transparent">
+              {language === 'en' ? 'Digital Library' : 'ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀ'}
+            </h1>
+            <p className="text-[10px] md:text-xs text-slate-400 font-bold uppercase tracking-wider">
+              {language === 'en' ? 'Official School Textbooks & AI Study Buddies' : 'ସମସ୍ତ ପାଠ୍ୟପୁସ୍ତକ ଓ ଏଆଇ ଅଧ୍ୟୟନ ସାଥୀ'}
+            </p>
+          </div>
+        </div>
+
+        {currentView !== 'subjects' && (
+          <button
+            onClick={() => {
+              if (currentView === 'reader') {
+                setCurrentView('chapters');
+                setSelectedChapter(null);
+              } else {
+                setCurrentView('subjects');
+                setSelectedSubject('');
+              }
+            }}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 text-xs font-black transition-all active:scale-95"
+          >
+            <Lucide.ArrowLeft size={16} />
+            <span>{language === 'en' ? 'Go Back' : 'ଫେରିଯାଆନ୍ତୁ'}</span>
+          </button>
+        )}
+      </div>
+
+      {/* VIEW CONTAINER */}
+      <div className="w-full max-w-7xl mx-auto px-4 py-8 flex-1 flex flex-col relative z-10">
+        
+        {/* VIEW 1: SUBJECT TEXTBOOK SELECTOR */}
+        {currentView === 'subjects' && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            className="flex-1 flex flex-col"
+          >
+            <div className="text-center max-w-2xl mx-auto mb-10">
+              <span className="px-3.5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-sm">
+                {language === 'en' ? 'Academic Year 2026' : 'ଶିକ୍ଷା ବର୍ଷ ୨୦୨୬'}
+              </span>
+              <h2 className="text-2xl md:text-4xl font-black mt-4 text-white">
+                {language === 'en' ? 'Choose a Subject Textbook' : 'ଆପଣଙ୍କର ପାଠ୍ୟପୁସ୍ତକ ବାଛନ୍ତୁ'}
+              </h2>
+              <p className="text-sm text-slate-400 mt-2">
+                {language === 'en' 
+                  ? 'Access original textbooks instantly, read simplified AI notes, and practice interactive questions with Gundulu.' 
+                  : 'ସିଧାସଳଖ ମୂଳ ବହି ପଢ଼ନ୍ତୁ, ଏଆଇ ସଂକ୍ଷିପ୍ତ ସୂତ୍ର ଦେଖନ୍ତୁ ଏବଂ ଗୁଣ୍ଡୁଲୁ ସହ ପ୍ରଶ୍ନୋତ୍ତର ଅଭ୍ୟାସ କରନ୍ତୁ।'}
+              </p>
+            </div>
+
+            {/* SUBJECT GRID */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {Object.entries(SUBJECT_METADATA).map(([subKey, meta]) => {
+                const Icon = meta.icon;
+                return (
+                  <motion.div
+                    key={subKey}
+                    whileHover={{ scale: 1.03, y: -5 }}
+                    onClick={() => {
+                      setSelectedSubject(subKey);
+                      setCurrentView('chapters');
+                    }}
+                    className="relative rounded-3xl bg-slate-900/40 border border-white/5 p-6 flex flex-col justify-between cursor-pointer group hover:border-emerald-500/30 overflow-hidden shadow-lg shadow-black/40 transition-all duration-300"
+                  >
+                    {/* Glowing Aura Hover background */}
+                    <div className={`absolute -right-16 -top-16 w-36 h-36 rounded-full bg-gradient-to-br ${meta.gradient} opacity-0 group-hover:opacity-25 blur-3xl transition-opacity duration-500`} />
+                    
+                    {/* Cover Header Graphic */}
+                    <div className="flex items-start justify-between">
+                      <div className={`p-4 rounded-2xl bg-gradient-to-br ${meta.gradient} text-white shadow-md shadow-black/20`}>
+                        <Icon size={24} />
+                      </div>
+                      <span className="text-[10px] font-black text-slate-500 group-hover:text-emerald-400 transition-colors uppercase tracking-widest">
+                        {language === 'en' ? 'Textbook' : 'ପାଠ୍ୟପୁସ୍ତକ'}
+                      </span>
+                    </div>
+
+                    {/* Cover Title */}
+                    <div className="mt-8">
+                      <h3 className="text-xl font-extrabold text-white group-hover:text-emerald-300 transition-colors">
+                        {language === 'en' ? meta.labelEn : meta.labelOr}
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-1 uppercase font-bold tracking-wider">
+                        {language === 'en' ? meta.labelOr : meta.labelEn}
+                      </p>
+                    </div>
+
+                    {/* Footer Progress & Enter Button */}
+                    <div className="mt-10 pt-4 border-t border-white/5 flex items-center justify-between">
+                      <span className="text-xs text-slate-500 group-hover:text-slate-300 transition-colors flex items-center gap-1">
+                        <Lucide.BookOpen size={14} />
+                        <span>{language === 'en' ? 'BSE Curriculum' : 'BSE ସିଲାବସ୍'}</span>
+                      </span>
+                      <div className="p-2 rounded-full bg-slate-800 text-slate-400 group-hover:bg-emerald-500 group-hover:text-white transition-all">
+                        <Lucide.ChevronRight size={16} />
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+
+        {/* VIEW 2: CHAPTERS DIRECTORY LIST */}
+        {currentView === 'chapters' && (
+          <motion.div
+            initial={{ opacity: 0, x: 15 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -15 }}
+            className="flex-1 flex flex-col"
+          >
+            {/* Subject Banner */}
+            <div className={`w-full rounded-3xl p-6 md:p-8 bg-gradient-to-r ${SUBJECT_METADATA[selectedSubject]?.gradient || 'from-emerald-600 to-teal-800'} mb-8 shadow-lg relative overflow-hidden`}>
+              <div className="absolute right-6 bottom-[-20%] opacity-15 text-white pointer-events-none">
+                {React.createElement(SUBJECT_METADATA[selectedSubject]?.icon || Lucide.BookOpen, { size: 160 })}
+              </div>
+              <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <span className="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest bg-white/10 border border-white/20 text-white">
+                    {user?.class ? user.class.toUpperCase() : 'BSE ODISHA'}
+                  </span>
+                  <h2 className="text-2xl md:text-4xl font-extrabold text-white mt-3">
+                    {language === 'en' 
+                      ? SUBJECT_METADATA[selectedSubject]?.labelEn 
+                      : SUBJECT_METADATA[selectedSubject]?.labelOr}
+                  </h2>
+                  <p className="text-xs md:text-sm text-white/80 mt-1 font-medium">
+                    {language === 'en' 
+                      ? 'Read textbook chapters or use custom bilingually simplified interactive notes.' 
+                      : 'ମୂଳ ବିଷୟବସ୍ତୁ ପଢ଼ନ୍ତୁ କିମ୍ବା ଆମର ସରଳୀକୃତ ଦ୍ୱିଭାଷୀ ଟିପ୍ପଣୀ ବ୍ୟବହାର କରନ୍ତୁ।'}
+                  </p>
+                </div>
+                <div className="text-left md:text-right">
+                  <span className="text-3xl font-black text-white">{filteredChapters.length}</span>
+                  <p className="text-[10px] text-white/70 uppercase font-bold tracking-widest mt-1">
+                    {language === 'en' ? 'Chapters Live' : 'ଅଧ୍ୟାୟ ପ୍ରକାଶିତ'}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* CHAPTERS DIRECTORY CONTAINER */}
+            {filteredChapters.length === 0 ? (
+              <div className="w-full py-16 flex flex-col items-center justify-center text-center bg-slate-900/20 border border-dashed border-white/5 rounded-3xl">
+                <div className="p-4 rounded-full bg-slate-800 text-slate-500 mb-4">
+                  <Lucide.BookOpenCheck size={32} />
+                </div>
+                <h3 className="text-lg font-black text-slate-300">
+                  {language === 'en' ? 'Chapters Uploading Soon!' : 'ଅଧ୍ୟାୟ ଶୀଘ୍ର ଉପଲବ୍ଧ ହେବ!'}
+                </h3>
+                <p className="text-xs text-slate-500 mt-2 max-w-sm">
+                  {language === 'en'
+                    ? 'Our teachers are currently preparing premium bilingually mapped materials for this textbook.'
+                    : 'ଏହି ପାଠ୍ୟପୁସ୍ତକ ପାଇଁ ଆମର ଶିକ୍ଷକମାନେ ଖୁବ୍ ଶୀଘ୍ର ସରଳ ଦ୍ୱିଭାଷୀ ଅଧ୍ୟାୟ ପ୍ରକାଶ କରିବାକୁ ଯାଉଛନ୍ତି।'}
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {filteredChapters.map((chap, idx) => (
+                  <motion.div
+                    key={chap.id}
+                    whileHover={{ scale: 1.01, border: '1px solid rgba(16,185,129,0.3)' }}
+                    onClick={() => {
+                      setSelectedChapter(chap);
+                      setCurrentView('reader');
+                      setReaderMode(chap.pdfUrl ? 'pdf' : 'notes');
+                    }}
+                    className="p-5 rounded-2xl bg-slate-900/40 border border-white/5 flex items-center justify-between cursor-pointer group transition-all"
+                  >
+                    <div className="flex items-center gap-4">
+                      {/* Round Index Stamp */}
+                      <div className="h-12 w-12 rounded-xl bg-slate-800 border border-white/5 flex flex-col items-center justify-center text-slate-400 group-hover:bg-emerald-500 group-hover:text-white transition-all font-black">
+                        <span className="text-[9px] font-bold text-slate-500 group-hover:text-white/80 leading-none">CH</span>
+                        <span className="text-lg leading-none mt-1">{idx + 1}</span>
+                      </div>
+                      <div>
+                        <h4 className="font-extrabold text-white text-sm md:text-base group-hover:text-emerald-400 transition-colors">
+                          {chap.title}
+                        </h4>
+                        <div className="flex items-center gap-3 mt-1.5 text-xs text-slate-400">
+                          {chap.pdfUrl && (
+                            <span className="flex items-center gap-1 text-sky-400 font-bold bg-sky-400/5 px-1.5 py-0.5 rounded-md border border-sky-400/10">
+                              <Lucide.FileText size={10} />
+                              <span>PDF</span>
+                            </span>
+                          )}
+                          <span className="flex items-center gap-1 text-emerald-400 font-bold bg-emerald-400/5 px-1.5 py-0.5 rounded-md border border-emerald-400/10">
+                            <Lucide.Bot size={10} />
+                            <span>AI Companion</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-md active:scale-95">
+                      <Lucide.ArrowRight size={18} />
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        )}
+
+        {/* VIEW 3: IMMERSIVE DUAL-PANE READER & AI CHAT ROOM */}
+        {currentView === 'reader' && selectedChapter && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex-1 flex flex-col lg:flex-row gap-6 relative"
+          >
+            {/* LEFT / MAIN WORKSPACE PANEL (Reader Tab & Content Panel) */}
+            <div className="flex-1 flex flex-col bg-slate-900/20 border border-white/5 rounded-3xl overflow-hidden p-6 relative">
+              
+              {/* Material Sub-header Control Tabs */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-6 border-b border-white/5">
+                <div className="flex items-center gap-2 bg-slate-950 p-1 rounded-2xl border border-white/5">
+                  <button
+                    onClick={() => setReaderMode('notes')}
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold tracking-wider transition-all ${
+                      readerMode === 'notes'
+                        ? 'bg-[#b34d1f] text-white shadow-lg'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <Lucide.Sparkles size={14} />
+                    <span>{language === 'en' ? 'AI Study Guide' : 'AI ଟିପ୍ପଣୀ'}</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      if (selectedChapter.pdfUrl) {
+                        setReaderMode('pdf');
+                      } else {
+                        alert(language === 'en' ? 'Original PDF not uploaded yet. Please use the AI Study Guide!' : 'ଏହି ବିଷୟର ମୂଳ PDF ଏପର୍ଯ୍ୟନ୍ତ ଅପଲୋଡ୍ ହୋଇନାହିଁ। ଦୟାକରି AI ଟିପ୍ପଣୀ ପଢ଼ନ୍ତୁ!');
+                      }
+                    }}
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold tracking-wider transition-all ${
+                      !selectedChapter.pdfUrl ? 'opacity-40 cursor-not-allowed' : ''
+                    } ${
+                      readerMode === 'pdf'
+                        ? 'bg-[#b34d1f] text-white shadow-lg'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <Lucide.BookOpen size={14} />
+                    <span>{language === 'en' ? 'Original Textbook' : 'ମୂଳ ପାଠ୍ୟପୁସ୍ତକ'}</span>
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                  <button
+                    onClick={() => setIsPdfFullScreen(true)}
+                    className="px-4 py-2.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400 text-xs font-black flex items-center justify-center gap-2 active:scale-95"
+                  >
+                    <Lucide.Maximize2 size={14} />
+                    <span>{language === 'en' ? 'Full Screen' : 'ପୂର୍ଣ୍ଣ ସ୍କ୍ରିନ୍'}</span>
+                  </button>
+
+                  <button
+                    onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                    className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 text-xs font-black flex items-center justify-center gap-2 active:scale-95"
+                  >
+                    <Lucide.Notebook size={14} />
+                    <span>{isSidebarOpen ? (language === 'en' ? 'Hide Notepad' : 'ନୋଟପ୍ୟାଡ୍ ଲୁଚାନ୍ତୁ') : (language === 'en' ? 'Open Notepad' : 'ନୋଟପ୍ୟାଡ୍ ଦେଖନ୍ତୁ')}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* SLICK COMFORT EYE SHIELD & ZOOM TOOLBAR */}
+              <div className="flex items-center justify-between gap-4 mt-3 px-3 py-1.5 rounded-xl bg-slate-950/60 border border-white/5 relative z-10 flex-nowrap text-xs">
+                {/* Left side: Compact logo & title */}
+                <div className="flex items-center gap-1.5">
+                  <Lucide.Eye size={13} className="text-amber-400 shrink-0" />
+                  <span className="font-extrabold text-[10px] sm:text-xs text-slate-400 leading-none tracking-wide">
+                    {language === 'en' ? 'Eye Care' : 'ନେତ୍ର ରକ୍ଷା'}
+                  </span>
+                </div>
+
+                {/* Right side: Filter & Zoom Buttons in one row */}
+                <div className="flex items-center gap-2 sm:gap-3 shrink-0 flex-nowrap">
+                  {/* Eye care mode filters */}
+                  <div className="flex items-center gap-1 bg-slate-900/60 p-0.5 rounded-lg border border-white/5 flex-nowrap">
+                    <button
+                      onClick={() => setEyeCareMode('off')}
+                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all ${
+                        eyeCareMode === 'off' ? 'bg-slate-800 text-white shadow' : 'text-slate-500 hover:text-slate-300'
+                      }`}
+                    >
+                      {language === 'en' ? 'Off' : 'ନର୍ମାଲ୍'}
+                    </button>
+                    <button
+                      onClick={() => setEyeCareMode('sepia')}
+                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all flex items-center gap-0.5 ${
+                        eyeCareMode === 'sepia' ? 'bg-amber-600/20 text-amber-300 border border-amber-500/10' : 'text-slate-500 hover:text-slate-300'
+                      }`}
+                    >
+                      <span className="w-1 h-1 rounded-full bg-amber-500" />
+                      {language === 'en' ? 'Shield' : 'ସୁରକ୍ଷା'}
+                    </button>
+                    <button
+                      onClick={() => setEyeCareMode('dim')}
+                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all flex items-center gap-0.5 ${
+                        eyeCareMode === 'dim' ? 'bg-purple-600/20 text-purple-300 border border-purple-500/10' : 'text-slate-500 hover:text-slate-300'
+                      }`}
+                    >
+                      <Lucide.Moon size={8} />
+                      {language === 'en' ? 'Night' : 'ରାତି'}
+                    </button>
+                  </div>
+
+                  {/* Zoom controls with - indicator + */}
+                  {readerMode === 'notes' && (
+                    <div className="flex items-center bg-slate-900/60 rounded-lg border border-white/5 p-0.5 flex-nowrap">
+                      <button
+                        onClick={() => {
+                          if (fontSize === 'xlarge') setFontSize('large');
+                          else if (fontSize === 'large') setFontSize('normal');
+                        }}
+                        disabled={fontSize === 'normal'}
+                        className="w-5 h-5 rounded flex items-center justify-center text-[10px] font-black text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                        title={language === 'en' ? 'Zoom Out' : 'ଛୋଟ କରନ୍ତୁ'}
+                      >
+                        -
+                      </button>
+                      <span className="px-1 text-[8px] font-bold text-slate-500 uppercase select-none tracking-widest font-mono">
+                        {fontSize === 'normal' ? '1x' : fontSize === 'large' ? '1.5x' : '2x'}
+                      </span>
+                      <button
+                        onClick={() => {
+                          if (fontSize === 'normal') setFontSize('large');
+                          else if (fontSize === 'large') setFontSize('xlarge');
+                        }}
+                        disabled={fontSize === 'xlarge'}
+                        className="w-5 h-5 rounded flex items-center justify-center text-[10px] font-black text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                        title={language === 'en' ? 'Zoom In' : 'ବଡ଼ କରନ୍ତୁ'}
+                      >
+                        +
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* ACTIVE READING CANVAS */}
+              <div className="flex-1 mt-6 overflow-y-auto max-h-[60vh] pr-2 scrollbar-thin scrollbar-thumb-emerald-500/10">
+                {readerMode === 'notes' ? (
+                  <div 
+                    className={`prose max-w-none p-4 md:p-6 rounded-2xl border transition-all duration-300 ${
+                      eyeCareMode === 'sepia'
+                        ? 'prose-stone border-amber-900/10'
+                        : 'prose-invert border-white/5 bg-slate-900/20 text-slate-200'
+                    } ${
+                      fontSize === 'normal' ? 'text-base leading-relaxed' :
+                      fontSize === 'large' ? 'text-lg md:text-xl leading-loose font-medium' :
+                      'text-xl md:text-2xl leading-loose font-semibold'
+                    }`}
+                    style={{
+                      backgroundColor: eyeCareMode === 'sepia' ? '#fbf0d9' : undefined,
+                      color: eyeCareMode === 'sepia' ? '#433422' : undefined,
+                      filter: eyeCareMode === 'dim' ? 'brightness(0.7)' : undefined,
+                    }}
+                  >
+                    <ReactMarkdown>{cleanMathNotation(selectedChapter.notes || '*No study materials added yet.*')}</ReactMarkdown>
+                  </div>
+                ) : (
+                  <div className="w-full h-[60vh] rounded-2xl overflow-hidden bg-slate-950 border border-white/5 flex flex-col justify-between">
+                    <iframe
+                      src={`${selectedChapter.pdfUrl}#toolbar=0&navpanes=0`}
+                      className="w-full flex-1"
+                      title={selectedChapter.title}
+                    />
+                    <div className="p-4 bg-slate-900/60 border-t border-white/5 flex items-center justify-between">
+                      <span className="text-xs text-slate-400">
+                        {language === 'en' ? 'Having trouble viewing? Open original PDF directly:' : 'ଦେଖିବାରେ ସମସ୍ୟା ହେଉଛି? ସିଧାସଳଖ PDF ଓପନ କରନ୍ତୁ:'}
+                      </span>
+                      <a
+                        href={selectedChapter.pdfUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-black text-xs transition-all active:scale-95"
+                      >
+                        <Lucide.ExternalLink size={14} />
+                        <span>{language === 'en' ? 'Open PDF' : 'PDF ଓପନ୍'}</span>
+                      </a>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* BOTTOM STUDENT NOTEPAD WORKSPACE */}
+              <AnimatePresence>
+                {isSidebarOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="border-t border-white/5 mt-6 pt-4 flex flex-col overflow-hidden"
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <Lucide.PenTool size={16} className="text-emerald-400 animate-pulse" />
+                        <span className="text-xs font-black text-slate-300">
+                          {language === 'en' ? 'Personal Study Notes' : 'ମୋର ଅଧ୍ୟୟନ ଟିପ୍ପଣୀ (ସ୍ୱତନ୍ତ୍ର)'}
+                        </span>
+                      </div>
+
+                      {/* Saving Indicator */}
+                      <span className="flex items-center gap-1.5 text-[10px] font-bold">
+                        <span className={`h-2 w-2 rounded-full ${isNotepadSaved ? 'bg-emerald-400 shadow-[0_0_8px_#34d399]' : 'bg-amber-400 shadow-[0_0_8px_#f59e0b] animate-ping'}`} />
+                        <span className={isNotepadSaved ? 'text-slate-500' : 'text-amber-400'}>
+                          {isNotepadSaved ? (language === 'en' ? 'Saved' : 'ସଂରକ୍ଷିତ') : (language === 'en' ? 'Drafting...' : 'ସଂରକ୍ଷଣ ହେଉଛି...')}
+                        </span>
+                      </span>
+                    </div>
+
+                    <textarea
+                      value={personalNotes}
+                      onChange={(e) => setPersonalNotes(e.target.value)}
+                      placeholder={language === 'en' ? 'Write down important formulas, shortcuts, questions or hints here...' : 'ଅଧ୍ୟାୟର ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ପ୍ରଶ୍ନ କିମ୍ବା ହିଣ୍ଟ୍ ଏଠାରେ ଲେଖନ୍ତୁ...'}
+                      className="w-full h-32 bg-slate-950 border border-white/5 rounded-2xl p-4 text-xs font-medium text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/30 resize-none scrollbar-none"
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* RIGHT PANEL - GUNDULU FLOATING STUDY ASSISTANT CHATBOX */}
+            <div className="w-full lg:w-96 flex flex-col bg-slate-900/40 border border-white/5 rounded-3xl overflow-hidden shadow-lg h-[65vh] lg:h-auto">
+              
+              {/* Gundulu Chat Header */}
+              <div className="p-4 bg-gradient-to-r from-emerald-950/60 to-slate-900 border-b border-white/5 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <img
+                      src="/gundulu.png"
+                      alt="Gundulu Avatar"
+                      className="h-10 w-10 rounded-full border border-emerald-400/30 object-cover bg-emerald-950/20 shadow-md shadow-emerald-500/10"
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png'; // Fallback vector
+                      }}
+                    />
+                    <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-400 border border-[#011e1a] shadow-[0_0_8px_#34d399]" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-black text-white flex items-center gap-1">
+                      <span>{language === 'en' ? 'Gundulu AI Tutor' : 'ଗୁଣ୍ଡୁଲୁ ଏଆଈ ସାଥୀ'}</span>
+                    </h3>
+                    <p className="text-[10px] text-emerald-400 font-extrabold uppercase tracking-wider">
+                      {language === 'en' ? 'Online Helper' : 'ସର୍ବଦା ପ୍ରସ୍ତୁତ'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {!isPremium ? (
+                /* GUNDULU SUBSCRIPTION LOCK OVERLAY */
+                <div className="flex-1 flex flex-col items-center justify-center p-6 text-center bg-slate-950/60 backdrop-blur-md space-y-6">
+                  <div className="h-16 w-16 rounded-3xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shadow-lg shadow-emerald-500/5 animate-pulse">
+                    <Lucide.Lock size={28} />
+                  </div>
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-extrabold text-white">
+                      {language === 'en' ? 'Unlock Gundulu AI Tutor' : 'ଗୁଣ୍ଡୁଲୁ AI ଟ୍ୟୁଟର ଅନଲକ୍ କରନ୍ତୁ'}
+                    </h4>
+                    <p className="text-xs text-slate-400 leading-relaxed max-w-[240px] mx-auto">
+                      {language === 'en' 
+                        ? 'Chat with Gundulu to solve doubts, explain formulas, and get custom practice tests!' 
+                        : 'ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହୋଇ ସବୁ ଗଣିତ ପ୍ରଶ୍ନର ସମାଧାନ, ସୂତ୍ର ଏବଂ ସ୍ପେସାଲ୍ ଟେଷ୍ଟ ପାଆନ୍ତୁ!'}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (onUpgrade) {
+                        onUpgrade();
+                      } else {
+                        alert(language === 'en' ? 'Please upgrade your plan from the profile dashboard!' : 'ଦୟାକରି ଆପଣଙ୍କ ପ୍ରୋଫାଇଲ୍ ଡ୍ୟାସବୋର୍ଡରୁ ପ୍ଲାନ୍ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ!');
+                      }
+                    }}
+                    className="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-xs font-black tracking-wider uppercase transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
+                  >
+                    <Lucide.Sparkles size={14} />
+                    <span>{language === 'en' ? 'Unlock Premium Now' : 'ପ୍ରିମିୟମ୍ ଅନଲକ୍ କରନ୍ତୁ'}</span>
+                  </button>
+                </div>
+              ) : (
+                <>
+                  {/* GUNDULU CONVERSATION WATERFALL */}
+                  <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-emerald-500/10">
+                    {chatMessages.map((msg) => (
+                      <div
+                        key={msg.id}
+                        className={`flex items-end gap-2.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                      >
+                        {msg.sender === 'gundulu' && (
+                          <img
+                            src="/gundulu.png"
+                            alt="Gundulu"
+                            className="h-6.5 w-6.5 rounded-full border border-emerald-500/10 shadow-sm"
+                            onError={(e) => {
+                              e.currentTarget.src = 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png';
+                            }}
+                          />
+                        )}
+                        <div
+                          className={`max-w-[80%] rounded-2xl p-3.5 text-xs font-medium leading-relaxed shadow-sm ${
+                            msg.sender === 'user'
+                              ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-br-none'
+                              : 'bg-slate-950 border border-white/5 text-slate-200 rounded-bl-none'
+                          }`}
+                        >
+                          <ReactMarkdown>{cleanMathNotation(msg.text)}</ReactMarkdown>
+                        </div>
+                      </div>
+                    ))}
+
+                    {isAiLoading && (
+                      <div className="flex items-end gap-2.5 justify-start">
+                        <img
+                          src="/gundulu.png"
+                          alt="Gundulu"
+                          className="h-6.5 w-6.5 rounded-full animate-bounce"
+                          onError={(e) => {
+                            e.currentTarget.src = 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png';
+                          }}
+                        />
+                        <div className="bg-slate-950 border border-white/5 rounded-2xl rounded-bl-none p-3.5 shadow-sm">
+                          <div className="flex gap-1">
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    <div ref={chatBottomRef} />
+                  </div>
+
+                  {/* QUICK CHIPS SUGGESTIONS */}
+                  <div className="p-3 bg-slate-950/60 border-t border-white/5 flex gap-2 overflow-x-auto scrollbar-none whitespace-nowrap">
+                    <button
+                      onClick={() => handleSendToGundulu(language === 'en' ? "Summarize this chapter for me." : "ଏହି ଅଧ୍ୟାୟର ଏକ ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଦିଅ।")}
+                      className="px-3 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 border border-white/5 text-[10px] font-bold text-slate-300 active:scale-95 transition-all"
+                    >
+                      📝 {language === 'en' ? 'Summarize Guide' : 'ସାରାଂଶ'}
+                    </button>
+                    <button
+                      onClick={() => handleSendToGundulu(language === 'en' ? "Give me an MCQ test based on this chapter notes." : "ଏହି ଅଧ୍ୟାୟରୁ ମୋତେ ଗୋଟିଏ MCQ ଟେଷ୍ଟ ପ୍ରଶ୍ନ ପଚାର।")}
+                      className="px-3 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 border border-white/5 text-[10px] font-bold text-slate-300 active:scale-95 transition-all"
+                    >
+                      ⚡ {language === 'en' ? 'Ask me MCQ' : 'MCQ ପ୍ରଶ୍ନ'}
+                    </button>
+                    <button
+                      onClick={() => handleSendToGundulu(language === 'en' ? "Explain the most important formulas of this chapter." : "ଏହି ଅଧ୍ୟାୟର ସବୁଠାରୁ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ରଗୁଡ଼ିକ ବୁଝାଅ।")}
+                      className="px-3 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 border border-white/5 text-[10px] font-bold text-slate-300 active:scale-95 transition-all"
+                    >
+                      📐 {language === 'en' ? 'Explain Formulas' : 'ମୁଖ୍ୟ ସୂତ୍ର'}
+                    </button>
+                  </div>
+
+                  {/* Gundulu Chat Input Form */}
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleSendToGundulu(inputValue);
+                    }}
+                    className="p-3 bg-slate-950 border-t border-white/5 flex items-center gap-2"
+                  >
+                    <input
+                      type="text"
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      placeholder={language === 'en' ? 'Ask Gundulu about this chapter...' : 'ଏହି ଅଧ୍ୟାୟ ବିଷୟରେ ଗຸଣ୍ଡୁଲୁକୁ ପଚାରନ୍ତୁ...'}
+                      className="flex-1 bg-slate-900 border border-white/5 rounded-2xl px-4 py-2.5 text-xs font-semibold text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/30"
+                    />
+                    <button
+                      type="submit"
+                      disabled={!inputValue.trim() || isAiLoading}
+                      className="p-2.5 rounded-2xl bg-emerald-500 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-emerald-600 active:scale-95 transition-all flex items-center justify-center"
+                    >
+                      <Lucide.Send size={16} />
+                    </button>
+                  </form>
+                </>
+              )}
+            </div>
+          </motion.div>
+        )}
+
+        {/* ULTRA-PREMIUM IMMERSIVE FULL-SCREEN READER OVERLAY */}
+        <AnimatePresence>
+          {isPdfFullScreen && selectedChapter && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-[99999] bg-slate-950 flex flex-col p-4 md:p-6 font-sans overflow-hidden"
+              style={{
+                filter: eyeCareMode === 'dim' ? 'brightness(0.7)' : undefined,
+              }}
+            >
+              {/* Header Panel */}
+              <div className="flex items-center justify-between gap-4 pb-4 border-b border-white/10 flex-shrink-0 flex-wrap md:flex-nowrap">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400">
+                    <Lucide.BookOpen size={18} />
+                  </div>
+                  <div>
+                    <span className="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest leading-none block">
+                      {selectedChapter.subject} • {language === 'en' ? 'Chapter' : 'ଅଧ୍ୟାୟ'} {selectedChapter.chapterIndex || 1}
+                    </span>
+                    <h2 className="text-sm md:text-lg font-black text-white mt-1 leading-tight">
+                      {selectedChapter.title}
+                    </h2>
+                  </div>
+                </div>
+
+                {/* Real-time Inline Eye Care controls in Full Screen! */}
+                <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                  {/* Eye care toggles */}
+                  <div className="flex items-center gap-1 bg-slate-900 p-0.5 rounded-lg border border-white/5">
+                    <button
+                      onClick={() => setEyeCareMode('off')}
+                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all ${
+                        eyeCareMode === 'off' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'
+                      }`}
+                    >
+                      {language === 'en' ? 'Off' : 'ନର୍ମାଲ୍'}
+                    </button>
+                    <button
+                      onClick={() => setEyeCareMode('sepia')}
+                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all flex items-center gap-0.5 ${
+                        eyeCareMode === 'sepia' ? 'bg-amber-600/20 text-amber-300 border border-amber-500/15' : 'text-slate-500 hover:text-slate-300'
+                      }`}
+                    >
+                      <span className="w-1 h-1 rounded-full bg-amber-500" />
+                      {language === 'en' ? 'Shield' : 'ସୁରକ୍ଷା'}
+                    </button>
+                    <button
+                      onClick={() => setEyeCareMode('dim')}
+                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all flex items-center gap-0.5 ${
+                        eyeCareMode === 'dim' ? 'bg-purple-600/20 text-purple-300 border border-purple-500/15' : 'text-slate-500 hover:text-slate-300'
+                      }`}
+                    >
+                      <Lucide.Moon size={8} />
+                      {language === 'en' ? 'Night' : 'ରାତି'}
+                    </button>
+                  </div>
+
+                  {/* Font scale toggles */}
+                  {readerMode === 'notes' && (
+                    <div className="flex items-center bg-slate-900 rounded-lg border border-white/5 p-0.5">
+                      <button
+                        onClick={() => {
+                          if (fontSize === 'xlarge') setFontSize('large');
+                          else if (fontSize === 'large') setFontSize('normal');
+                        }}
+                        disabled={fontSize === 'normal'}
+                        className="w-5 h-5 rounded flex items-center justify-center text-[10px] font-black text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                        title={language === 'en' ? 'Zoom Out' : 'ଛୋଟ କରନ୍ତୁ'}
+                      >
+                        -
+                      </button>
+                      <span className="px-1 text-[8px] font-bold text-slate-500 uppercase select-none tracking-widest font-mono">
+                        {fontSize === 'normal' ? '1x' : fontSize === 'large' ? '1.5x' : '2x'}
+                      </span>
+                      <button
+                        onClick={() => {
+                          if (fontSize === 'normal') setFontSize('large');
+                          else if (fontSize === 'large') setFontSize('xlarge');
+                        }}
+                        disabled={fontSize === 'xlarge'}
+                        className="w-5 h-5 rounded flex items-center justify-center text-[10px] font-black text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                        title={language === 'en' ? 'Zoom In' : 'ବଡ଼ କରନ୍ତୁ'}
+                      >
+                        +
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Exit fullscreen button */}
+                  <button
+                    onClick={() => setIsPdfFullScreen(false)}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white font-black text-xs transition-all active:scale-95 border border-red-500/10 shadow-lg"
+                  >
+                    <Lucide.Minimize2 size={14} />
+                    <span>{language === 'en' ? 'Exit' : 'ବନ୍ଦ କରନ୍ତୁ'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Fullscreen Reading Canvas */}
+              <div className="flex-1 overflow-y-auto mt-6 pr-2 scrollbar-thin scrollbar-thumb-emerald-500/10">
+                {readerMode === 'notes' ? (
+                  <div 
+                    className={`prose max-w-none p-6 md:p-10 rounded-2xl border transition-all duration-300 ${
+                      eyeCareMode === 'sepia'
+                        ? 'prose-stone border-amber-900/10 shadow-lg shadow-amber-950/5'
+                        : 'prose-invert border-white/5 bg-slate-900/20 text-slate-200'
+                    } ${
+                      fontSize === 'normal' ? 'text-base leading-relaxed' :
+                      fontSize === 'large' ? 'text-lg md:text-xl leading-loose font-medium' :
+                      'text-xl md:text-2xl leading-loose font-semibold'
+                    }`}
+                    style={{
+                      backgroundColor: eyeCareMode === 'sepia' ? '#fbf0d9' : undefined,
+                      color: eyeCareMode === 'sepia' ? '#433422' : undefined,
+                    }}
+                  >
+                    <ReactMarkdown>{cleanMathNotation(selectedChapter.notes || '*No study materials added yet.*')}</ReactMarkdown>
+                  </div>
+                ) : (
+                  <div className="w-full h-full rounded-2xl overflow-hidden bg-slate-900 border border-white/5 flex flex-col justify-between">
+                    <iframe
+                      src={`${selectedChapter.pdfUrl}#toolbar=0&navpanes=0`}
+                      className="w-full flex-1"
+                      title={selectedChapter.title}
+                    />
+                    <div className="p-4 bg-slate-950 border-t border-white/5 flex items-center justify-between">
+                      <span className="text-xs text-slate-400">
+                        {language === 'en' ? 'Original PDF Textbook Reader' : 'ମୂଳ ପାଠ୍ୟପୁସ୍ତକ ପାଠକ'}
+                      </span>
+                      <a
+                        href={selectedChapter.pdfUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs transition-all active:scale-95"
+                      >
+                        <Lucide.ExternalLink size={14} />
+                        <span>{language === 'en' ? 'Download Original' : 'ମୂଳ PDF ଡାଉନଲୋଡ୍'}</span>
+                      </a>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+      </div>
+    </div>
+  );
+};

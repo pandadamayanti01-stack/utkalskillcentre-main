@@ -10,6 +10,7 @@ import { copyTextToClipboard, getDailyMcqShareUrl, openDailyMcqWhatsAppShare } f
 import { useVoiceInput } from '../hooks/useVoiceInput';
 import { SEO } from './SEO';
 import { vibrate, playSuccessChime } from '../pwa';
+import { cleanMathNotation } from './DigitalLibraryView';
 
 interface DailyMcqViewProps {
   mcqs: DailyMcq[];
@@ -374,7 +375,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
                       <div key={`${mcq.id}-question-${questionIndex}`} className="space-y-3 rounded-2xl border border-white/5 bg-slate-950/40 p-4">
                         <div>
                           <p className="text-sm font-bold uppercase tracking-[0.2em] text-slate-500 mb-2">Question {questionIndex + 1}</p>
-                          <p className="text-white text-base leading-relaxed">{question.question}</p>
+                          <p className="text-white text-base leading-relaxed">{cleanMathNotation(question.question)}</p>
                         </div>
 
                         {question.type === 'subjective' ? (
@@ -461,7 +462,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
                                 </div>
                                 <div className="pt-3 border-t border-white/5">
                                   <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-400/60 mb-1">{t.modelAnswer}</p>
-                                  <p className="text-sm text-emerald-100">{question.correct_answer}</p>
+                                  <p className="text-sm text-emerald-100">{cleanMathNotation(question.correct_answer)}</p>
                                 </div>
                               </div>
                             )}
@@ -492,7 +493,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
                                   className={`w-full text-left rounded-2xl border px-4 py-3 transition-all ${optionClasses} ${isSubmitted ? 'cursor-default' : ''}`}
                                 >
                                   <span className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 mr-3">{String.fromCharCode(65 + optionIndex)}</span>
-                                  <span className="text-sm font-medium">{option}</span>
+                                  <span className="text-sm font-medium">{cleanMathNotation(option)}</span>
                                 </button>
                               );
                             })}
@@ -502,7 +503,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
                         {isSubmitted && question.explanation && (
                           <div>
                             <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 mb-2">{t.explanation}</p>
-                            <p className="text-sm text-slate-200 leading-relaxed">{question.explanation}</p>
+                            <p className="text-sm text-slate-200 leading-relaxed">{cleanMathNotation(question.explanation)}</p>
                           </div>
                         )}
                       </div>

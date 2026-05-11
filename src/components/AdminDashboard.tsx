@@ -6,6 +6,7 @@ import {
   Bell, 
   Settings, 
   Users,
+  Library,
   Plus, 
   Trash2, 
   XCircle,
@@ -88,7 +89,7 @@ import {
 } from '../services/aiService';
 import { joinSupportSession, sendRemoteCommand, updatePointer, endSupportSession } from '../services/supportService';
 
-type AdminTab = 'dashboard' | 'content' | 'monthly_tests' | 'daily_mcqs' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup' | 'students' | 'subscriptions' | 'support' | 'user_locks';
+type AdminTab = 'dashboard' | 'content' | 'monthly_tests' | 'daily_mcqs' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup' | 'students' | 'subscriptions' | 'support' | 'user_locks' | 'digital_library_upload';
 
 interface AdminDashboardProps {
   onExit: () => void;
@@ -175,6 +176,19 @@ Sample tone for Class 6-10:
   const [notification, setNotification] = useState<{message: string, type: 'success' | 'error'} | null>(null);
   const [loading, setLoading] = useState(false);
   const isPromptDirtyRef = useRef(false);
+
+  // Library Manager Upload States
+  const [libClassFilter, setLibClassFilter] = useState('class10');
+  const [libSubjectFilter, setLibSubjectFilter] = useState('math');
+  const [isLibModalOpen, setIsLibModalOpen] = useState(false);
+  const [libEditingChapter, setLibEditingChapter] = useState<any | null>(null);
+  const [libFormTitle, setLibFormTitle] = useState('');
+  const [libFormClass, setLibFormClass] = useState('class10');
+  const [libFormSubject, setLibFormSubject] = useState('math');
+  const [libFormNotes, setLibFormNotes] = useState('');
+  const [libFormPdfUrl, setLibFormPdfUrl] = useState('');
+  const [pdfUploadProgress, setPdfUploadProgress] = useState<number | null>(null);
+  const [isLibSaving, setIsLibSaving] = useState(false);
 
   // Remote Support States
   const [remoteCode, setRemoteCode] = useState('');
@@ -869,6 +883,7 @@ Sample tone for Class 6-10:
               title: 'Vault',
               items: [
                 { id: 'content', label: 'Chapters', icon: BookOpen },
+                { id: 'digital_library_upload', label: 'Library Manager', icon: Library },
                 { id: 'textbooks', label: 'Textbooks', icon: Book },
                 { id: 'monthly_tests', label: 'Monthly Tests', icon: ClipboardList },
               ]
@@ -4335,6 +4350,435 @@ Sample tone for Class 6-10:
     );
   }
 
+  function renderDigitalLibraryUpload() {
+    const filteredContent = content.filter((c: any) => {
+      const matchesClass = libClassFilter === 'all' || c.class === libClassFilter;
+      const matchesSubject = libSubjectFilter === 'all' || c.subject === libSubjectFilter;
+      return matchesClass && matchesSubject;
+    });
+
+    const handleOpenAddModal = () => {
+      setLibEditingChapter(null);
+      setLibFormTitle('');
+      setLibFormClass(libClassFilter === 'all' ? 'class10' : libClassFilter);
+      setLibFormSubject(libSubjectFilter === 'all' ? 'math' : libSubjectFilter);
+      setLibFormNotes('');
+      setLibFormPdfUrl('');
+      setPdfUploadProgress(null);
+      setIsLibModalOpen(true);
+    };
+
+    const handleOpenEditModal = (chapter: any) => {
+      setLibEditingChapter(chapter);
+      setLibFormTitle(chapter.title || '');
+      setLibFormClass(chapter.class || 'class10');
+      setLibFormSubject(chapter.subject || 'math');
+      setLibFormNotes(chapter.notes || '');
+      setLibFormPdfUrl(chapter.pdfUrl || '');
+      setPdfUploadProgress(null);
+      setIsLibModalOpen(true);
+    };
+
+    const handlePdfFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      if (file.type !== 'application/pdf') {
+        alert("Please upload a valid PDF file.");
+        return;
+      }
+
+      setPdfUploadProgress(0);
+      const uniqueFilename = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+      const storageRef = ref(storage, `chapters_pdf/${uniqueFilename}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setPdfUploadProgress(Math.round(progress));
+        },
+        (error) => {
+          console.error("PDF upload error:", error);
+          alert("Failed to upload original textbook PDF. Try again.");
+          setPdfUploadProgress(null);
+        },
+        async () => {
+          const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+          setLibFormPdfUrl(downloadUrl);
+          showNotification("PDF file uploaded successfully!");
+          setPdfUploadProgress(null);
+        }
+      );
+    };
+
+    const handleSaveChapter = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!libFormTitle.trim()) {
+        alert("Please enter a chapter title.");
+        return;
+      }
+
+      setIsLibSaving(true);
+      try {
+        const chapterPayload = {
+          title: libFormTitle,
+          class: libFormClass,
+          subject: libFormSubject,
+          notes: libFormNotes,
+          pdfUrl: libFormPdfUrl,
+          status: 'published',
+          updatedAt: new Date()
+        };
+
+        if (libEditingChapter) {
+          await updateDoc(doc(firestore, 'chapters', libEditingChapter.id), chapterPayload);
+          showNotification("Chapter updated successfully!");
+        } else {
+          // Check if board needs standard odisha board tag (helpful for matching filtering in App.tsx)
+          const addedPayload = {
+            ...chapterPayload,
+            board: "Odisha Board (Odia Medium)",
+            createdAt: new Date()
+          };
+          await addDoc(collection(firestore, 'chapters'), addedPayload);
+          showNotification("New chapter added successfully!");
+        }
+
+        setIsLibModalOpen(false);
+      } catch (err) {
+        console.error("Save chapter error:", err);
+        alert("Failed to save chapter.");
+      } finally {
+        setIsLibSaving(false);
+      }
+    };
+
+    const handleDeleteChapter = async (chapterId: string) => {
+      if (window.confirm("Are you sure you want to delete this chapter? This cannot be undone.")) {
+        try {
+          await deleteDoc(doc(firestore, 'chapters', chapterId));
+          showNotification("Chapter deleted successfully");
+        } catch (err) {
+          console.error("Delete chapter error:", err);
+          alert("Failed to delete chapter.");
+        }
+      }
+    };
+
+    return (
+      <div className="space-y-8">
+        {/* Banner */}
+        <div className="glass-card p-8 rounded-[2.5rem] bg-gradient-to-r from-emerald-950/20 to-slate-900 border border-white/5 relative overflow-hidden">
+          <div className="absolute right-10 top-1/2 -translate-y-1/2 text-emerald-500/10 pointer-events-none">
+            <Library size={120} />
+          </div>
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+              <h2 className="text-3xl font-black text-white tracking-tight">Library Manager</h2>
+              <p className="text-slate-400 text-sm mt-2 max-w-xl">
+                Upload and organize interactive textbooks, study notes, and PDF chapters. Students can view original PDFs side-by-side with your AI-powered study materials.
+              </p>
+            </div>
+            <button
+              onClick={handleOpenAddModal}
+              className="flex items-center gap-2 px-6 py-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-emerald-900/30 self-start md:self-auto"
+            >
+              <Plus size={16} />
+              <span>Add New Chapter</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Filters and Search */}
+        <div className="glass-card p-6 rounded-[2rem] border border-white/5 bg-slate-900/20 flex flex-col sm:flex-row items-center gap-4">
+          <div className="w-full sm:w-auto flex flex-col gap-1.5 flex-1">
+            <label className="text-[10px] uppercase font-black text-slate-500 tracking-wider">Class Filter</label>
+            <select
+              value={libClassFilter}
+              onChange={(e) => setLibClassFilter(e.target.value)}
+              className="w-full bg-[#090d16] border border-white/5 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-500/30"
+            >
+              <option value="all">All Classes</option>
+              <option value="class10">Class 10</option>
+              <option value="class9">Class 9</option>
+              <option value="class8">Class 8</option>
+              <option value="class7">Class 7</option>
+              <option value="class6">Class 6</option>
+            </select>
+          </div>
+
+          <div className="w-full sm:w-auto flex flex-col gap-1.5 flex-1">
+            <label className="text-[10px] uppercase font-black text-slate-500 tracking-wider">Subject Filter</label>
+            <select
+              value={libSubjectFilter}
+              onChange={(e) => setLibSubjectFilter(e.target.value)}
+              className="w-full bg-[#090d16] border border-white/5 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-500/30"
+            >
+              <option value="all">All Subjects</option>
+              <option value="math">Mathematics</option>
+              <option value="science">General Science</option>
+              <option value="social_science">Social Science</option>
+              <option value="english">English</option>
+              <option value="odia">Odia</option>
+              <option value="epe">Art & Health</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Chapters Table */}
+        <div className="glass-card rounded-[2.5rem] border border-white/5 bg-slate-900/20 overflow-hidden">
+          {filteredContent.length === 0 ? (
+            <div className="p-16 text-center">
+              <Library className="mx-auto text-slate-600 mb-4" size={48} />
+              <h3 className="text-lg font-black text-white">No chapters found</h3>
+              <p className="text-xs text-slate-500 mt-1">Try selecting a different filter or create a new chapter.</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-white/5 bg-slate-950/40">
+                    <th className="p-5 text-[10px] uppercase tracking-wider font-black text-slate-500">Chapter Title</th>
+                    <th className="p-5 text-[10px] uppercase tracking-wider font-black text-slate-500">Subject</th>
+                    <th className="p-5 text-[10px] uppercase tracking-wider font-black text-slate-500">Class</th>
+                    <th className="p-5 text-[10px] uppercase tracking-wider font-black text-slate-500">Status</th>
+                    <th className="p-5 text-[10px] uppercase tracking-wider font-black text-slate-500 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {filteredContent.map((chapter: any) => (
+                    <tr key={chapter.id} className="hover:bg-white/5 transition-colors group">
+                      <td className="p-5">
+                        <div className="font-extrabold text-white text-sm group-hover:text-emerald-400 transition-colors">
+                          {chapter.title}
+                        </div>
+                      </td>
+                      <td className="p-5">
+                        <span className="text-xs font-bold uppercase text-slate-400">{chapter.subject}</span>
+                      </td>
+                      <td className="p-5">
+                        <span className="text-xs font-black text-slate-400 uppercase">{chapter.class}</span>
+                      </td>
+                      <td className="p-5">
+                        {chapter.pdfUrl ? (
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                            <span className="h-1.5 w-1.5 bg-emerald-400 rounded-full animate-pulse" />
+                            PDF Active
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-500/10 border border-amber-500/20 text-amber-500">
+                            Notes Only
+                          </span>
+                        )}
+                      </td>
+                      <td className="p-5 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => handleOpenEditModal(chapter)}
+                            className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 text-slate-400 hover:text-white transition-all active:scale-95"
+                            title="Edit Chapter"
+                          >
+                            <Edit size={14} />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteChapter(chapter.id)}
+                            className="p-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-all active:scale-95"
+                            title="Delete Chapter"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        {/* FORM MODAL OVERLAY */}
+        <AnimatePresence>
+          {isLibModalOpen && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+              {/* Blur background */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsLibModalOpen(false)}
+                className="absolute inset-0 bg-[#020617]/80 backdrop-blur-md"
+              />
+
+              {/* Form Card */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="relative w-full max-w-4xl max-h-[90vh] bg-[#070b13] border border-white/10 rounded-[2.5rem] overflow-hidden flex flex-col shadow-2xl"
+              >
+                {/* Modal Header */}
+                <div className="p-6 border-b border-white/5 bg-slate-950/60 flex items-center justify-between">
+                  <div>
+                    <h3 className="text-xl font-black text-white tracking-tight">
+                      {libEditingChapter ? "Edit Textbook Chapter" : "Create Textbook Chapter"}
+                    </h3>
+                    <p className="text-slate-500 text-xs mt-1">Fill in the fields below to update the student library.</p>
+                  </div>
+                  <button
+                    onClick={() => setIsLibModalOpen(false)}
+                    className="p-2.5 bg-white/5 hover:bg-white/10 rounded-full border border-white/5 text-slate-400 hover:text-white transition-all"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+
+                {/* Form Body */}
+                <form onSubmit={handleSaveChapter} className="flex-1 overflow-y-auto p-6 space-y-6">
+                  {/* Title */}
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs uppercase font-black tracking-widest text-slate-400">Chapter Title</label>
+                    <input
+                      type="text"
+                      required
+                      value={libFormTitle}
+                      onChange={(e) => setLibFormTitle(e.target.value)}
+                      placeholder="e.g. ସରଳ ସହସମୀକରଣ (Linear Simultaneous Equations)"
+                      className="w-full bg-slate-950 border border-white/5 rounded-2xl px-5 py-4 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/30"
+                    />
+                  </div>
+
+                  {/* Grid Class & Subject */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="flex flex-col gap-2">
+                      <label className="text-xs uppercase font-black tracking-widest text-slate-400">Class Target</label>
+                      <select
+                        value={libFormClass}
+                        onChange={(e) => setLibFormClass(e.target.value)}
+                        className="w-full bg-slate-950 border border-white/5 rounded-2xl px-5 py-4 text-sm text-slate-200 focus:outline-none focus:border-emerald-500/30"
+                      >
+                        <option value="class10">Class 10</option>
+                        <option value="class9">Class 9</option>
+                        <option value="class8">Class 8</option>
+                        <option value="class7">Class 7</option>
+                        <option value="class6">Class 6</option>
+                      </select>
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      <label className="text-xs uppercase font-black tracking-widest text-slate-400">Subject Cover</label>
+                      <select
+                        value={libFormSubject}
+                        onChange={(e) => setLibFormSubject(e.target.value)}
+                        className="w-full bg-slate-950 border border-white/5 rounded-2xl px-5 py-4 text-sm text-slate-200 focus:outline-none focus:border-emerald-500/30"
+                      >
+                        <option value="math">Mathematics</option>
+                        <option value="science">General Science</option>
+                        <option value="social_science">Social Science</option>
+                        <option value="english">English</option>
+                        <option value="odia">Odia</option>
+                        <option value="epe">Art & Health</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* PDF Upload Field */}
+                  <div className="glass-card p-6 rounded-[2rem] border border-white/5 bg-slate-950/40 flex flex-col gap-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="text-sm font-black text-white">Original Textbook PDF</h4>
+                        <p className="text-slate-500 text-xs mt-0.5">Upload scanned textbook chapters directly from your local system.</p>
+                      </div>
+
+                      <div className="relative">
+                        <input
+                          type="file"
+                          accept="application/pdf"
+                          onChange={handlePdfFileChange}
+                          id="pdf-upload-input"
+                          className="hidden"
+                          disabled={pdfUploadProgress !== null}
+                        />
+                        <label
+                          htmlFor="pdf-upload-input"
+                          className={`flex items-center gap-2 px-5 py-3 bg-slate-900 border border-white/5 hover:border-emerald-500/30 text-white rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer active:scale-95 transition-all ${
+                            pdfUploadProgress !== null ? 'opacity-40 cursor-not-allowed' : ''
+                          }`}
+                        >
+                          <Upload size={14} />
+                          <span>{pdfUploadProgress !== null ? "Uploading..." : "Select File"}</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Progress Bar */}
+                    {pdfUploadProgress !== null && (
+                      <div className="space-y-2 mt-2">
+                        <div className="flex items-center justify-between text-xs font-bold text-emerald-400">
+                          <span>Uploading chapter PDF to Firebase Storage...</span>
+                          <span>{pdfUploadProgress}%</span>
+                        </div>
+                        <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-emerald-500 transition-all duration-300"
+                            style={{ width: `${pdfUploadProgress}%` }}
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Current File Binding */}
+                    {libFormPdfUrl && (
+                      <div className="flex items-center gap-2 text-xs font-bold text-sky-400 mt-2 bg-sky-400/5 px-4 py-2.5 rounded-xl border border-sky-400/10">
+                        <FileText size={14} />
+                        <span className="truncate flex-1">Attached: {libFormPdfUrl}</span>
+                        <a href={libFormPdfUrl} target="_blank" rel="noreferrer" className="text-sky-300 hover:underline font-black">View File</a>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Study Notes Markdown Area */}
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs uppercase font-black tracking-widest text-slate-400">Interactive Notes / Study Guide (Markdown)</label>
+                      <span className="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Supports Markdown formatting</span>
+                    </div>
+                    <textarea
+                      value={libFormNotes}
+                      onChange={(e) => setLibFormNotes(e.target.value)}
+                      placeholder="# Title of Study Guide&#10;&#10;## Important Formulas&#10;- Formula 1: a + b = c&#10;&#10;## Solved Practice Questions&#10;1. Question text..."
+                      className="w-full h-72 bg-slate-950 border border-white/5 rounded-2xl p-5 text-sm font-medium text-slate-200 placeholder-slate-700 focus:outline-none focus:border-emerald-500/30 resize-none font-mono"
+                    />
+                  </div>
+
+                  {/* Modal Footer Controls */}
+                  <div className="pt-6 border-t border-white/5 flex items-center justify-end gap-4 bg-[#070b13]">
+                    <button
+                      type="button"
+                      onClick={() => setIsLibModalOpen(false)}
+                      className="px-6 py-4 bg-slate-900 hover:bg-slate-800 border border-white/5 text-slate-400 hover:text-white rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isLibSaving || pdfUploadProgress !== null}
+                      className="px-8 py-4 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-30 text-white rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-emerald-900/20"
+                    >
+                      {isLibSaving ? "Saving..." : "Save Chapter"}
+                    </button>
+                  </div>
+                </form>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#020617] text-slate-200 font-['Inter'] selection:bg-cyan-500/30 selection:text-white overflow-x-hidden">
       {/* Background Orbs */}
@@ -4373,6 +4817,7 @@ Sample tone for Class 6-10:
             >
               {activeTab === 'dashboard' && renderDashboard()}
               {activeTab === 'content' && renderContent()}
+              {activeTab === 'digital_library_upload' && renderDigitalLibraryUpload()}
               {activeTab === 'monthly_tests' && renderMonthlyTests()}
               {activeTab === 'daily_mcqs' && <DailyMcqTab mcqs={dailyMcqs} textbooks={textbooks} subjectRotation={systemSettings.dailyMcqSubjectRotation} showNotification={showNotification} />}
               {activeTab === 'textbooks' && renderTextbooks()}

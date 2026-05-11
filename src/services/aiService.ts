@@ -6,11 +6,32 @@ Identity: You are "Gundulu," a helpful and friendly AI Study Buddy for Odisha st
 Tone: Supportive, clear, and encouraging. Use standard, polite Odia that is easy for students to understand.
 Language Policy: STRICT ODIA ONLY. Never use blocks of English. If you must use a technical term, write it in Odia script.
 Greeting: Always start your first response with "Namaskar! Mu Gundulu. Aaji ame kana padhiba? ✨"
-Instructions: Explain school concepts step-by-step. If a student asks a doubt, provide a clear and simple explanation.`;
+Instructions: Explain school concepts step-by-step. If a student asks a doubt, provide a clear and simple explanation.
+SAFETY & GUARDRAILS: You are an educational tutor designed for young school children. Under no circumstances should you discuss adult topics, violence, self-harm, hate speech, politics, romance, nudity, or inappropriate themes. If a student tries to ask about non-educational, unnecessary, harmful, or inappropriate topics, politely decline and redirect them back to their school lessons.`;
 
 const GUNDULU_EN_SYSTEM_INSTRUCTION = `You are a helpful and friendly AI Study Buddy for Odisha students.
 Explain concepts clearly in simple steps. Be supportive and encouraging.
-Greeting: Always start your first response with "Namaskar! I am Gundulu. What shall we learn today? ✨"`;
+Greeting: Always start your first response with "Namaskar! I am Gundulu. What shall we learn today? ✨"
+SAFETY & GUARDRAILS: You are an educational tutor designed for young school children. Under no circumstances should you discuss adult topics, violence, self-harm, hate speech, politics, romance, nudity, or inappropriate themes. If a student tries to ask about non-educational, unnecessary, harmful, or inappropriate topics, politely decline and redirect them back to their school lessons.`;
+
+export const gunduluSafetySettings = [
+  {
+    category: "HARM_CATEGORY_SEXUALLY_EXPLICIT" as any,
+    threshold: "BLOCK_LOW_AND_ABOVE" as any,
+  },
+  {
+    category: "HARM_CATEGORY_HARASSMENT" as any,
+    threshold: "BLOCK_LOW_AND_ABOVE" as any,
+  },
+  {
+    category: "HARM_CATEGORY_HATE_SPEECH" as any,
+    threshold: "BLOCK_LOW_AND_ABOVE" as any,
+  },
+  {
+    category: "HARM_CATEGORY_DANGEROUS_CONTENT" as any,
+    threshold: "BLOCK_LOW_AND_ABOVE" as any,
+  }
+];
 
 export const getStudyBuddySystemInstruction = (
   language: 'en' | 'or',
@@ -73,20 +94,23 @@ export const getAI = () => {
 };
 
 const FLASH_MODELS = [
+  "gemini-1.5-flash",
+  "gemini-2.0-flash",
+  "gemini-2.5-flash",
+  "gemini-1.5-flash-8b",
   "gemini-flash-latest",
   "gemini-flash-lite-latest",
   "gemini-2.5-flash-lite",
   "gemini-2.5-flash-image",
-  "gemini-3.1-flash-lite-preview",
-  "gemini-1.5-flash",
-  "gemini-2.0-flash"
+  "gemini-3.1-flash-lite-preview"
 ];
 
 const PRO_MODELS = [
-  "gemini-pro-latest",
-  "gemini-3.1-pro-preview",
   "gemini-1.5-pro",
-  "gemini-2.0-pro"
+  "gemini-2.0-pro",
+  "gemini-2.5-pro",
+  "gemini-pro-latest",
+  "gemini-3.1-pro-preview"
 ];
 
 /**
@@ -97,7 +121,15 @@ export async function withRetry<T>(
   modelType: 'flash' | 'pro' = 'flash',
   maxRetries = 3
 ): Promise<T> {
-  const models = modelType === 'flash' ? FLASH_MODELS : PRO_MODELS;
+  let models = modelType === 'flash' ? [...FLASH_MODELS] : [...PRO_MODELS];
+
+  // Dynamic fallback: if asking for 'pro' models, append 'flash' models to the end
+  // of the search array. This prevents total failure if project/billing limits
+  // have reached their caps for the premium 'pro' tier models.
+  if (modelType === 'pro') {
+    models = [...models, ...FLASH_MODELS];
+  }
+
   let modelIndex = 0;
   let retries = maxRetries;
   let delay = 1000;
@@ -159,7 +191,8 @@ export async function solveMathDoubt(
     const responseText = await withRetry(async (modelName, apiVersion) => {
       const model = ai.getGenerativeModel({ 
         model: modelName,
-        systemInstruction
+        systemInstruction,
+        safetySettings: gunduluSafetySettings
       }, { apiVersion });
 
       const result = await model.generateContent({

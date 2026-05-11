@@ -16,7 +16,7 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
 import { db, handleFirestoreError, OperationType } from '../firebase';
-import { getAI, withRetry, logAiUsage } from '../services/aiService';
+import { getAI, withRetry, logAiUsage, gunduluSafetySettings } from '../services/aiService';
 import { collection, addDoc, doc, getDoc, query, where, getDocs } from 'firebase/firestore';
 
 interface Message {
@@ -196,7 +196,8 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         const responseText = await withRetry(async (modelName, apiVersion) => {
           const genModel = ai.getGenerativeModel({ 
             model: modelName,
-            systemInstruction 
+            systemInstruction,
+            safetySettings: gunduluSafetySettings
           }, { apiVersion });
           
           const result = await genModel.generateContent({

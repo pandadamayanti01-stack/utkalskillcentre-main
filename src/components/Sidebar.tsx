@@ -39,6 +39,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'notifications', icon: Lucide.Bell, label: language === 'en' ? 'Notifications' : 'ବିଜ୍ଞପ୍ତି' },
     { id: 'study_buddy', icon: Lucide.Bot, label: t.studyBuddy || 'Study Buddy' },
     { id: 'gundulu', icon: Lucide.Sparkles, label: language === 'en' ? '🎤 Gundulu Voice' : '🎤 ଗୁଣ୍ଡୁଲୁ ଭଏସ' },
+    { id: 'digital_library', icon: Lucide.Library, label: language === 'en' ? 'Digital Library' : 'ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀ' },
     { id: 'textbooks', icon: Lucide.Book, label: language === 'en' ? 'Textbooks' : 'ପାଠ୍ୟପୁସ୍ତକ' },
     { id: 'courses', icon: Lucide.BookOpen, label: t.courses },
     { id: 'monthly_tests', icon: Lucide.Calendar, label: t.monthlyTests },
@@ -67,7 +68,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </AnimatePresence>
 
       <motion.aside 
-        className={`fixed lg:static inset-y-0 left-0 w-72 bg-[#002d26] border-r border-white/5 z-50 transform transition-transform duration-300 lg:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`fixed lg:static inset-y-0 left-0 w-72 sidebar-gradient z-50 transform transition-transform duration-300 lg:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <div className="h-full flex flex-col p-6">
           {/* BRANDING SECTION */}
