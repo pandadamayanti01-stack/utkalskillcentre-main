@@ -4774,6 +4774,74 @@ Sample tone for Class 6-10:
                     )}
                   </div>
 
+                  {/* Chapter Cover Image Upload Field */}
+                  <div className="glass-card p-6 rounded-[2rem] border border-white/5 bg-slate-950/40 flex flex-col gap-4">
+                    <div className="flex items-center justify-between flex-wrap gap-4">
+                      <div>
+                        <h4 className="text-sm font-black text-white">Chapter Cover Image</h4>
+                        <p className="text-slate-500 text-xs mt-0.5">Upload a custom thumbnail cover for this specific chapter textbook.</p>
+                      </div>
+
+                      <div className="relative">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleCoverFileChange}
+                          id="cover-upload-input"
+                          className="hidden"
+                          disabled={coverUploadProgress !== null}
+                        />
+                        <label
+                          htmlFor="cover-upload-input"
+                          className={`flex items-center gap-2 px-5 py-3 bg-slate-900 border border-white/5 hover:border-emerald-500/30 text-white rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer active:scale-95 transition-all ${coverUploadProgress !== null ? 'opacity-40 cursor-not-allowed' : ''
+                            }`}
+                        >
+                          <Image size={14} />
+                          <span>{coverUploadProgress !== null ? "Uploading..." : "Select Cover"}</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Progress Bar */}
+                    {coverUploadProgress !== null && (
+                      <div className="space-y-2 mt-2">
+                        <div className="flex items-center justify-between text-xs font-bold text-emerald-400">
+                          <span>Uploading cover image...</span>
+                          <span>{coverUploadProgress}%</span>
+                        </div>
+                        <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-emerald-500 transition-all duration-300"
+                            style={{ width: `${coverUploadProgress}%` }}
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Current File Binding / Image Preview */}
+                    {libFormCoverUrl && (
+                      <div className="flex items-center gap-4 mt-2 bg-emerald-500/5 p-4 rounded-2xl border border-emerald-500/10">
+                        <img 
+                          src={libFormCoverUrl} 
+                          alt="Cover Thumbnail" 
+                          className="w-16 h-16 rounded-xl object-cover border border-white/10"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-black text-white uppercase tracking-wider">Cover Selected</p>
+                          <span className="text-[10px] text-slate-400 truncate block mt-0.5">{libFormCoverUrl}</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setLibFormCoverUrl('')}
+                          className="p-2 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white rounded-lg transition-all"
+                          title="Remove Cover Image"
+                        >
+                          <Trash2 size={12} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
                   {/* Study Notes Markdown Area */}
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center justify-between">

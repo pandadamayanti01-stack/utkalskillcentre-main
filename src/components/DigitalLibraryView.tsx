@@ -28,49 +28,68 @@ const SUBJECT_METADATA: Record<string, {
   gradient: string;
   icon: any;
   color: string;
+  coverImage: string;
 }> = {
   math: {
     labelEn: "Mathematics",
     labelOr: "ଗଣିତ",
     gradient: "from-teal-500 via-emerald-600 to-amber-500",
     icon: Lucide.Binary,
-    color: "#34d399"
+    color: "#34d399",
+    coverImage: "/math_cover.png"
   },
   science: {
     labelEn: "General Science",
     labelOr: "ବିଜ୍ଞାନ",
     gradient: "from-cyan-500 via-blue-600 to-indigo-600",
     icon: Lucide.Atom,
-    color: "#38bdf8"
+    color: "#38bdf8",
+    coverImage: "/science_cover.png"
   },
   social_science: {
     labelEn: "Social Science",
     labelOr: "ସାମାଜିକ ବିଜ୍ଞାନ",
     gradient: "from-amber-500 via-orange-600 to-red-600",
     icon: Lucide.Globe,
-    color: "#f59e0b"
+    color: "#f59e0b",
+    coverImage: "/social_science_cover.png"
   },
   english: {
     labelEn: "English Literature",
     labelOr: "ଇଂରାଜୀ",
     gradient: "from-purple-500 via-pink-600 to-rose-600",
     icon: Lucide.BookOpen,
-    color: "#c084fc"
+    color: "#c084fc",
+    coverImage: "/english_cover.png"
   },
   odia: {
     labelEn: "Odia Literature",
     labelOr: "ଓଡ଼ିଆ",
     gradient: "from-orange-400 via-red-500 to-amber-600",
     icon: Lucide.Scroll,
-    color: "#fb923c"
+    color: "#fb923c",
+    coverImage: "/odia_cover.png"
   },
   epe: {
     labelEn: "Art & Health",
     labelOr: "କଳା ଓ ସ୍ୱାସ୍ଥ୍ୟ",
     gradient: "from-emerald-400 via-teal-600 to-cyan-600",
     icon: Lucide.Heart,
-    color: "#34d399"
+    color: "#34d399",
+    coverImage: "/epe_cover.png"
   }
+};
+
+const getSubjectFallbackImage = (subKey: string): string => {
+  const fallbacks: Record<string, string> = {
+    math: "https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=400&auto=format&fit=crop",
+    science: "https://images.unsplash.com/photo-1507668077129-56e32842fceb?q=80&w=400&auto=format&fit=crop",
+    social_science: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=400&auto=format&fit=crop",
+    english: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?q=80&w=400&auto=format&fit=crop",
+    odia: "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?q=80&w=400&auto=format&fit=crop",
+    epe: "https://images.unsplash.com/photo-1505232458627-a727264d7272?q=80&w=400&auto=format&fit=crop"
+  };
+  return fallbacks[subKey.toLowerCase()] || "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=400&auto=format&fit=crop";
 };
 export const cleanMathNotation = (text: string): string => {
   if (!text) return "";
@@ -500,39 +519,50 @@ Instructions:
                       setSelectedSubject(subKey);
                       setCurrentView('chapters');
                     }}
-                    className="relative rounded-3xl bg-slate-900/40 border border-white/5 p-6 flex flex-col justify-between cursor-pointer group hover:border-emerald-500/30 overflow-hidden shadow-lg shadow-black/40 transition-all duration-300"
+                    className="relative rounded-3xl bg-slate-900/40 border border-white/5 flex flex-col cursor-pointer group hover:border-emerald-500/30 overflow-hidden shadow-lg shadow-black/40 transition-all duration-300 min-h-[340px]"
                   >
-                    {/* Glowing Aura Hover background */}
-                    <div className={`absolute -right-16 -top-16 w-36 h-36 rounded-full bg-gradient-to-br ${meta.gradient} opacity-0 group-hover:opacity-25 blur-3xl transition-opacity duration-500`} />
-                    
-                    {/* Cover Header Graphic */}
-                    <div className="flex items-start justify-between">
-                      <div className={`p-4 rounded-2xl bg-gradient-to-br ${meta.gradient} text-white shadow-md shadow-black/20`}>
-                        <Icon size={24} />
+                    {/* Cover Image Top Section */}
+                    <div className="h-44 w-full relative overflow-hidden bg-slate-950">
+                      <img
+                        src={meta.coverImage}
+                        alt={meta.labelEn}
+                        onError={(e) => {
+                          e.currentTarget.src = getSubjectFallbackImage(subKey);
+                        }}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-60 group-hover:opacity-85"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f19] via-transparent to-black/30" />
+                      
+                      {/* Floating Subject Icon Badge */}
+                      <div className={`absolute bottom-4 left-6 p-3.5 rounded-2xl bg-gradient-to-br ${meta.gradient} text-white shadow-lg`}>
+                        <Icon size={20} />
                       </div>
-                      <span className="text-[10px] font-black text-slate-500 group-hover:text-emerald-400 transition-colors uppercase tracking-widest">
-                        {language === 'en' ? 'Textbook' : 'ପାଠ୍ୟପୁସ୍ତକ'}
-                      </span>
                     </div>
 
-                    {/* Cover Title */}
-                    <div className="mt-8">
-                      <h3 className="text-xl font-extrabold text-white group-hover:text-emerald-300 transition-colors">
-                        {language === 'en' ? meta.labelEn : meta.labelOr}
-                      </h3>
-                      <p className="text-xs text-slate-400 mt-1 uppercase font-bold tracking-wider">
-                        {language === 'en' ? meta.labelOr : meta.labelEn}
-                      </p>
-                    </div>
+                    {/* Content Section */}
+                    <div className="p-6 flex-1 flex flex-col justify-between">
+                      {/* Cover Title */}
+                      <div>
+                        <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">
+                          {language === 'en' ? 'Digital Textbook' : 'ଡିଜିଟାଲ୍ ପାଠ୍ୟପୁସ୍ତକ'}
+                        </span>
+                        <h3 className="text-lg font-extrabold text-white group-hover:text-emerald-300 transition-colors mt-1">
+                          {language === 'en' ? meta.labelEn : meta.labelOr}
+                        </h3>
+                        <p className="text-xs text-slate-400 mt-0.5 font-bold">
+                          {language === 'en' ? meta.labelOr : meta.labelEn}
+                        </p>
+                      </div>
 
-                    {/* Footer Progress & Enter Button */}
-                    <div className="mt-10 pt-4 border-t border-white/5 flex items-center justify-between">
-                      <span className="text-xs text-slate-500 group-hover:text-slate-300 transition-colors flex items-center gap-1">
-                        <Lucide.BookOpen size={14} />
-                        <span>{language === 'en' ? 'BSE Curriculum' : 'BSE ସିଲାବସ୍'}</span>
-                      </span>
-                      <div className="p-2 rounded-full bg-slate-800 text-slate-400 group-hover:bg-emerald-500 group-hover:text-white transition-all">
-                        <Lucide.ChevronRight size={16} />
+                      {/* Footer Progress & Enter Button */}
+                      <div className="pt-4 border-t border-white/5 flex items-center justify-between">
+                        <span className="text-xs text-slate-500 group-hover:text-slate-300 transition-colors flex items-center gap-1.5 font-bold">
+                          <Lucide.BookOpen size={14} className="text-slate-500" />
+                          <span>{language === 'en' ? 'BSE Odisha' : 'BSE ଓଡ଼ିଶା'}</span>
+                        </span>
+                        <div className="p-2 rounded-full bg-slate-800 text-slate-400 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-md">
+                          <Lucide.ChevronRight size={14} />
+                        </div>
                       </div>
                     </div>
                   </motion.div>
@@ -609,11 +639,22 @@ Instructions:
                     className="p-5 rounded-2xl bg-slate-900/40 border border-white/5 flex items-center justify-between cursor-pointer group transition-all"
                   >
                     <div className="flex items-center gap-4">
-                      {/* Round Index Stamp */}
-                      <div className="h-12 w-12 rounded-xl bg-slate-800 border border-white/5 flex flex-col items-center justify-center text-slate-400 group-hover:bg-emerald-500 group-hover:text-white transition-all font-black">
-                        <span className="text-[9px] font-bold text-slate-500 group-hover:text-white/80 leading-none">CH</span>
-                        <span className="text-lg leading-none mt-1">{idx + 1}</span>
+                      {/* Chapter Thumbnail Book Cover */}
+                      <div className="relative h-16 w-12 rounded-xl overflow-hidden bg-slate-950 border border-white/5 flex-shrink-0 group-hover:border-emerald-500/20 transition-colors shadow-md">
+                        <img
+                          src={chap.coverUrl || SUBJECT_METADATA[selectedSubject]?.coverImage}
+                          alt="Book Cover"
+                          onError={(e) => {
+                            e.currentTarget.src = getSubjectFallbackImage(selectedSubject);
+                          }}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300 opacity-80 group-hover:opacity-100"
+                        />
+                        {/* Overlay floating chapter index badge */}
+                        <div className="absolute top-1 left-1 px-1.5 py-0.5 rounded-md bg-black/80 backdrop-blur-sm text-[8px] font-black text-emerald-400">
+                          CH {idx + 1}
+                        </div>
                       </div>
+
                       <div>
                         <h4 className="font-extrabold text-white text-sm md:text-base group-hover:text-emerald-400 transition-colors">
                           {chap.title}
