@@ -146,13 +146,25 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         if (match) userClass = match[1];
       }
     }
-    const videoUrl = classVideoMap[userClass] || classVideoMap['10'];
+    // Special Promotion Period: Till June 19th, 2026 (inclusive). No rotation.
+    const isSpecialPromoPeriod = new Date() < new Date('2026-06-20T00:00:00');
+    const promoVideoUrl = 'https://www.youtube.com/embed/RJv0UJDSWlk';
+    const videoUrl = isSpecialPromoPeriod 
+      ? promoVideoUrl 
+      : (classVideoMap[userClass] || classVideoMap['10']);
+
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
-  const [dailyVideoId, setDailyVideoId] = useState<string | null>(null);
+  const [dailyVideoId, setDailyVideoId] = useState<string | null>(isSpecialPromoPeriod ? 'RJv0UJDSWlk' : null);
 
   useEffect(() => {
+    // If in the special promotional period, lock the video ID and skip rotation
+    if (new Date() < new Date('2026-06-20T00:00:00')) {
+      setDailyVideoId('RJv0UJDSWlk');
+      return;
+    }
+
     const fetchLatestVideos = async () => {
       try {
         const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=https://www.youtube.com/feeds/videos.xml?channel_id=UCVsuuu7DyRY4-qbn8PrVBhg`);
