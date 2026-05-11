@@ -71,6 +71,7 @@ const LoginComponent = lazy(() => import('./components/LoginComponent'));
 const TestSeriesPoster = lazy(() => import('./components/TestSeriesPoster'));
 const SyllabusTracker = lazy(() => import('./components/SyllabusTracker').then((module) => ({ default: module.SyllabusTracker })));
 const DigitalLibraryView = lazy(() => import('./components/DigitalLibraryView').then((module) => ({ default: module.DigitalLibraryView })));
+const DigitalLibraryLaunchPopup = lazy(() => import('./components/DigitalLibraryLaunchPopup'));
 
 function ViewLoader({ fullHeight = false }: { fullHeight?: boolean }) {
   return (
@@ -689,7 +690,7 @@ export default function App() {
   const contentScrollRef = useRef<HTMLDivElement>(null);
 
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('theme') || 'slate';
+    return localStorage.getItem('theme') || 'daybreak';
   });
 
   useEffect(() => {
@@ -888,6 +889,7 @@ export default function App() {
   const [showConfigError, setShowConfigError] = useState<{title: string, message: string} | null>(null);
  // const [showLaunchPoster, setShowLaunchPoster] = useState(() => !localStorage.getItem('utkalDivasSeen'));
   const [showTestSeriesPoster, setShowTestSeriesPoster] = useState(false);
+  const [showLibraryPopup, setShowLibraryPopup] = useState(false);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [showInstallModal, setShowInstallModal] = useState(false);
   const [showChatbot, setShowChatbot] = useState(false);
@@ -1295,11 +1297,13 @@ export default function App() {
         // Add to global cleanup ref
         (unsubscribe as any).unsubSettings = unsubSettings;
 
-        setShowTestSeriesPoster(true);
+        setShowTestSeriesPoster(false);
+        setShowLibraryPopup(true);
         setLoading(false);
       } else {
         setUser(null);
         setShowTestSeriesPoster(false);
+        setShowLibraryPopup(false);
         setIsPremium(false);
         setAuthStep('login');
         setIsAdminLogin(false);
@@ -2525,6 +2529,20 @@ export default function App() {
     {showTestSeriesPoster && (
       <Suspense fallback={null}>
         <TestSeriesPoster onClose={() => setShowTestSeriesPoster(false)} />
+      </Suspense>
+    )}
+
+    {showLibraryPopup && user && (
+      <Suspense fallback={null}>
+        <DigitalLibraryLaunchPopup 
+          userId={user.id}
+          language={language}
+          onClose={() => setShowLibraryPopup(false)}
+          onEnterLibrary={() => {
+            setActiveTab('digital_library');
+            setShowLibraryPopup(false);
+          }}
+        />
       </Suspense>
     )}
 
