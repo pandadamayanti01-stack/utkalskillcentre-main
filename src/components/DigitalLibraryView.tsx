@@ -324,6 +324,14 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
   const [selectedSubject, setSelectedSubject] = useState<string>('');
   const [selectedChapter, setSelectedChapter] = useState<any | null>(null);
 
+  // Selected class (Classes 1 to 10), defaulting to student's profile class or Class 10
+  const [selectedClass, setSelectedClass] = useState<string>(() => {
+    if (user?.class) {
+      return user.class.toString().toLowerCase().replace(/\s+/g, '').replace('class', '').replace('th', '');
+    }
+    return '10';
+  });
+
   const effectivePdfUrl = selectedChapter ? (selectedChapter.pdfUrl || selectedChapter.download_url || selectedChapter.driveUrl || '') : '';
 
   // Material reader settings
@@ -409,7 +417,7 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
     }
   }, [chatMessages, isAiLoading]);
 
-  // Filter Chapters based on selectedSubject and Student Class
+  // Filter Chapters based on selectedSubject and Selected Class (Classes 1 to 10)
   const filteredChapters = useMemo(() => {
     if (!selectedSubject) return [];
     return chapters.filter((c: any) => {
@@ -418,12 +426,13 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
         if (!cls) return '';
         return cls.toLowerCase().replace(/\s+/g, '').replace('class', '').replace('th', '');
       };
-      const classMatches = !user?.class || cleanClass(c.class) === cleanClass(user.class);
+      const targetClass = selectedClass || (user?.class ? cleanClass(user.class) : '10');
+      const classMatches = cleanClass(c.class) === targetClass;
       const subjectMatches = c.subject?.toLowerCase() === selectedSubject.toLowerCase();
       // Ensure only published ones show
       return classMatches && subjectMatches && c.status === 'published';
     });
-  }, [chapters, selectedSubject, user?.class]);
+  }, [chapters, selectedSubject, selectedClass, user?.class]);
 
   // Send message to Gundulu AI Tutor
   const handleSendToGundulu = async (text: string) => {
@@ -619,7 +628,7 @@ Instructions:
             exit={{ opacity: 0, y: -15 }}
             className="flex-1 flex flex-col"
           >
-            <div className="text-center max-w-2xl mx-auto mb-10">
+            <div className="text-center max-w-2xl mx-auto mb-6">
               <span className="px-3.5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-sm">
                 {language === 'en' ? 'Academic Year 2026' : 'ଶିକ୍ଷା ବର୍ଷ ୨୦୨୬'}
               </span>
@@ -633,12 +642,33 @@ Instructions:
               </p>
             </div>
 
+            {/* Premium Class Selector Pill-Bar */}
+            <div className="flex items-center justify-start md:justify-center gap-2 overflow-x-auto pb-4 mb-8 max-w-5xl mx-auto scrollbar-thin scrollbar-thumb-emerald-500/10 scrollbar-track-transparent">
+              {['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].map((clsNum) => {
+                const isActive = selectedClass === clsNum;
+                return (
+                  <button
+                    key={clsNum}
+                    type="button"
+                    onClick={() => setSelectedClass(clsNum)}
+                    className={`shrink-0 px-4 py-2.5 rounded-2xl text-[11px] font-black tracking-wide transition-all duration-200 active:scale-95 border ${
+                      isActive
+                        ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/25 border-emerald-400/20'
+                        : 'bg-slate-900/40 hover:bg-slate-900 text-slate-400 hover:text-white border-white/5 hover:border-emerald-500/25'
+                    }`}
+                  >
+                    {language === 'en' ? `Class ${clsNum}` : `${clsNum} ଶ୍ରେଣୀ`}
+                  </button>
+                );
+              })}
+            </div>
+
             {/* SUBJECT GRID */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {Object.entries(SUBJECT_METADATA).map(([subKey, meta]) => {
                 const Icon = meta.icon;
-                const userClassCode = getClassCode(user?.class);
-                const classSpecificCover = `/${userClassCode}_${subKey}_cover.png`;
+                const targetClassCode = `class${selectedClass}`;
+                const classSpecificCover = `/${targetClassCode}_${subKey}_cover.png`;
 
                 return (
                   <motion.div
@@ -660,7 +690,7 @@ Instructions:
                           if (e.currentTarget.src !== genericUrl) {
                             e.currentTarget.src = genericUrl;
                           } else {
-                            e.currentTarget.src = getGenerativeBookCover(subKey, meta.labelEn, 1, userClassCode);
+                            e.currentTarget.src = getGenerativeBookCover(subKey, meta.labelEn, 1, targetClassCode);
                           }
                         }}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-60 group-hover:opacity-85"
@@ -833,10 +863,10 @@ Instructions:
               <div className="flex items-center gap-4 pb-5 mb-5 border-b border-white/5">
                 <div className="relative h-16 w-12 rounded-xl overflow-hidden bg-slate-950 border border-white/10 shadow-md flex-shrink-0">
                   <img
-                    src={selectedChapter.coverUrl || getGenerativeBookCover(selectedSubject, selectedChapter.title, 1, getClassCode(user?.class))}
+                    src={selectedChapter.coverUrl || getGenerativeBookCover(selectedSubject, selectedChapter.title, 1, getClassCode(selectedClass))}
                     alt="Chapter Cover"
                     onError={(e) => {
-                      e.currentTarget.src = getGenerativeBookCover(selectedSubject, selectedChapter.title, 1, getClassCode(user?.class));
+                      e.currentTarget.src = getGenerativeBookCover(selectedSubject, selectedChapter.title, 1, getClassCode(selectedClass));
                     }}
                     className="w-full h-full object-cover"
                   />
@@ -1520,7 +1550,7 @@ Instructions:
                         {/* 3D-like book image scaled */}
                         <div className="w-28 h-36 rounded-xl overflow-hidden border border-white/10 shadow-[0_12px_24px_rgba(0,0,0,0.5)] transform hover:scale-105 transition-all relative shrink-0">
                           <img 
-                            src={selectedChapter.coverUrl || getGenerativeBookCover(selectedSubject, selectedChapter.title, 1, getClassCode(user?.class))}
+                            src={selectedChapter.coverUrl || getGenerativeBookCover(selectedSubject, selectedChapter.title, 1, getClassCode(selectedClass))}
                             alt="Book Cover"
                             className="w-full h-full object-cover"
                           />
