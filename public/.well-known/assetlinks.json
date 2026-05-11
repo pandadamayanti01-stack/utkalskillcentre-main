@@ -5,9 +5,9 @@
     ],
     "target": {
       "namespace": "android_app",
-      "package_name": "YOUR_ANDROID_PACKAGE_NAME",
+      "package_name": "com.utkalskillcentre.app",
       "sha256_cert_fingerprints": [
-        "YOUR_SHA256_CERT_FINGERPRINT_GOES_HERE"
+        "EC:E3:6C:BD:6E:77:B1:05:DA:B9:FC:D4:EB:07:C2:DA:1B:B1:3D:EF:A6:EC:F6:63:53:6C:69:3B:5B:76:B5:46"
       ]
     }
   }
