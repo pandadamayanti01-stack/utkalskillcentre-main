@@ -434,6 +434,45 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
     });
   }, [chapters, selectedSubject, selectedClass, user?.class]);
 
+  // AI Notes Generator states & handler
+  const [generatedNotes, setGeneratedNotes] = useState<string>('');
+  const [isGeneratingNotes, setIsGeneratingNotes] = useState<boolean>(false);
+
+  // Clear generated notes when selected chapter changes
+  useEffect(() => {
+    setGeneratedNotes('');
+  }, [selectedChapter]);
+
+  const handleGenerateAiNotes = async () => {
+    if (!selectedChapter) return;
+    setIsGeneratingNotes(true);
+    try {
+      const prompt = `Please generate high-quality, comprehensive, and clear student study notes for the textbook chapter: "${selectedChapter.title}" in the subject of "${selectedChapter.subject || selectedSubject || 'Mathematics'}". 
+Include:
+1. Core concepts explained simply with bullet points.
+2. Crucial formulas, theorems, or laws clearly highlighted in LaTeX / markdown format.
+3. At least 2 step-by-step worked out example problems.
+4. Quick revision shortcuts or hints.
+
+Write the notes primarily in beautiful, structured markdown, and make them bilingual-friendly (Odia and English mixed) so that an Odia medium student can easily understand all terms. Start directly with the chapter header and notes.`;
+      
+      const response = await solveMathDoubt(
+        prompt,
+        language,
+        undefined,
+        `Class ${selectedClass}`,
+        `You are Gundulu, the expert educational content writer for Utkal Skill Centre. Generate beautifully-structured academic notes.`,
+        []
+      );
+      setGeneratedNotes(response);
+    } catch (err) {
+      console.error("AI Notes generation failed:", err);
+      alert("Failed to generate AI notes. Please try again!");
+    } finally {
+      setIsGeneratingNotes(false);
+    }
+  };
+
   // Send message to Gundulu AI Tutor
   const handleSendToGundulu = async (text: string) => {
     if (!text.trim() || isAiLoading || !selectedChapter) return;
@@ -1055,7 +1094,50 @@ Instructions:
                       filter: eyeCareMode === 'dim' ? 'brightness(0.7)' : undefined,
                     }}
                   >
-                    <ReactMarkdown>{cleanMathNotation(selectedChapter.notes || '*No study materials added yet.*')}</ReactMarkdown>
+                    {selectedChapter.notes ? (
+                      <ReactMarkdown>{cleanMathNotation(selectedChapter.notes)}</ReactMarkdown>
+                    ) : generatedNotes ? (
+                      <ReactMarkdown>{cleanMathNotation(generatedNotes)}</ReactMarkdown>
+                    ) : (
+                      /* Stunning Glowing AI Notes Generation CTA Card */
+                      <div className="flex flex-col items-center justify-center p-8 text-center bg-slate-900/40 border border-white/5 rounded-3xl space-y-6 max-w-lg mx-auto">
+                        <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20 relative animate-pulse shadow-lg">
+                          <Lucide.Sparkles size={28} />
+                          <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500"></span>
+                          </span>
+                        </div>
+                        <div className="space-y-2">
+                          <h4 className="text-sm font-black text-white">
+                            {language === 'en' ? 'AI Notes Generator Ready' : 'AI ପାଠ୍ୟକ୍ରମ ନୋଟ୍ସ ଚିଠା ପ୍ରସ୍ତୁତ'}
+                          </h4>
+                          <p className="text-xs text-slate-400 leading-relaxed font-bold">
+                            {language === 'en' 
+                              ? "Official revision notes are not uploaded yet. Click below to let Gundulu AI generate comprehensive chapter notes, revision formulas, and laws instantly!" 
+                              : "ଏହି ଅଧ୍ୟାୟର ଅଫିସିଆଲ୍ ନୋଟ୍ସ ଏପର୍ଯ୍ୟନ୍ତ ଯୋଡ଼ା ଯାଇନାହିଁ। କିନ୍ତୁ ଆପଣଙ୍କ ପାଇଁ ଗୁଣ୍ଡୁଲୁ AI ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଏବଂ ଉଦାହରଣ ପ୍ରସ୍ତୁତ କରିବାକୁ ପ୍ରସ୍ତୁତ ଅଛି!"}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          disabled={isGeneratingNotes}
+                          onClick={handleGenerateAiNotes}
+                          className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white text-xs font-black flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-wait shadow-lg shadow-emerald-500/20"
+                        >
+                          {isGeneratingNotes ? (
+                            <>
+                              <Lucide.Loader2 size={14} className="animate-spin" />
+                              <span>{language === 'en' ? 'Generating Notes...' : 'ପ୍ରସ୍ତୁତ କରାଯାଉଛି...'}</span>
+                            </>
+                          ) : (
+                            <>
+                              <Lucide.Sparkles size={14} className="animate-bounce" />
+                              <span>{language === 'en' ? 'Generate AI Study Notes ✨' : 'AI ନୋଟ୍ସ ପ୍ରସ୍ତୁତ କରନ୍ତୁ ✨'}</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ) : readerMode === 'video' ? (
                   /* Gorgeous Embedded YouTube Player with animations */
@@ -1499,7 +1581,50 @@ Instructions:
                       color: eyeCareMode === 'sepia' ? '#433422' : undefined,
                     }}
                   >
-                    <ReactMarkdown>{cleanMathNotation(selectedChapter.notes || '*No study materials added yet.*')}</ReactMarkdown>
+                    {selectedChapter.notes ? (
+                      <ReactMarkdown>{cleanMathNotation(selectedChapter.notes)}</ReactMarkdown>
+                    ) : generatedNotes ? (
+                      <ReactMarkdown>{cleanMathNotation(generatedNotes)}</ReactMarkdown>
+                    ) : (
+                      /* Stunning Glowing AI Notes Generation CTA Card */
+                      <div className="flex flex-col items-center justify-center p-8 text-center bg-slate-900/40 border border-white/5 rounded-3xl space-y-6 max-w-lg mx-auto">
+                        <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20 relative animate-pulse shadow-lg">
+                          <Lucide.Sparkles size={28} />
+                          <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500"></span>
+                          </span>
+                        </div>
+                        <div className="space-y-2">
+                          <h4 className="text-sm font-black text-white">
+                            {language === 'en' ? 'AI Notes Generator Ready' : 'AI ପାଠ୍ୟକ୍ରମ ନୋଟ୍ସ ଚିଠା ପ୍ରସ୍ତୁତ'}
+                          </h4>
+                          <p className="text-xs text-slate-400 leading-relaxed font-bold">
+                            {language === 'en' 
+                              ? "Official revision notes are not uploaded yet. Click below to let Gundulu AI generate comprehensive chapter notes, revision formulas, and laws instantly!" 
+                              : "ଏହି ଅଧ୍ୟାୟର ଅଫିସିଆଲ୍ ନୋଟ୍ସ ଏପର୍ଯ୍ୟନ୍ତ ଯୋଡ଼ା ଯାଇନାହିଁ। କିନ୍ତୁ ଆପଣଙ୍କ ପାଇଁ ଗୁଣ୍ଡୁଲୁ AI ଗୁרୁତ୍ୱପୂર્ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଏବଂ ଉଦାହରଣ ପ୍ରସ୍ତୁତ କରିବାକୁ ପ୍ରସ୍ତୁତ ଅଛି!"}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          disabled={isGeneratingNotes}
+                          onClick={handleGenerateAiNotes}
+                          className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white text-xs font-black flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-wait shadow-lg shadow-emerald-500/20"
+                        >
+                          {isGeneratingNotes ? (
+                            <>
+                              <Lucide.Loader2 size={14} className="animate-spin" />
+                              <span>{language === 'en' ? 'Generating Notes...' : 'ପ୍ରସ୍ତୁତ କରାଯାଉଛି...'}</span>
+                            </>
+                          ) : (
+                            <>
+                              <Lucide.Sparkles size={14} className="animate-bounce" />
+                              <span>{language === 'en' ? 'Generate AI Study Notes ✨' : 'AI ନୋଟ୍ସ ପ୍ରସ୍ତୁତ କରନ୍ତୁ ✨'}</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ) : readerMode === 'video' ? (
                   /* Full-screen video mode canvas helper */
