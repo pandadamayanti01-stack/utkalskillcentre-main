@@ -1,4 +1,9 @@
+# https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Allow: /
+Allow: /digital-library
+Disallow: /admin/
+Disallow: /profile/
+Disallow: /dashboard/
 
 Sitemap: https://utkalskillcentre.com/sitemap.xml

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import * as Lucide from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
+import { Helmet } from 'react-helmet-async';
 import { db } from '../firebase';
 import { solveMathDoubt } from '../services/aiService';
 
@@ -335,6 +336,91 @@ Instructions:
 
   return (
     <div className="w-full flex flex-col pb-24 font-sans relative overflow-x-hidden">
+      {/* Dynamic SEO Metadata */}
+      {(() => {
+        const grade = user?.class || '10'; // Fallback to Class 10 if not logged in or class not defined
+        const gradeInt = parseInt(grade.toString().toLowerCase().replace(/\s+/g, '').replace('class', '').replace('th', ''), 10) || 10;
+        
+        let title = language === 'en' ? 'Digital Library | Utkal Skill Centre' : 'ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀ | ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର';
+        let desc = language === 'en' 
+          ? `Access complete school textbooks, chapter solutions, MCQs, study notes, and AI support for Classes 1 to 10 in Odia on Utkal Skill Centre.`
+          : `ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରରେ ୧ ରୁ ୧୦ ଶ୍ରେଣୀ ପାଇଁ ଓଡ଼ିଆ ମିଡିୟମ୍ ସ୍କୁଲ୍ ବହି, ସମାଧାନ, MCQ ଏବଂ ଏଆଇ ଶିକ୍ଷକ ଗୁଣ୍ଡୁଲୁ ସହ ପାଠପଢ଼ନ୍ତୁ।`;
+
+        let schemaData: any = null;
+
+        if (selectedSubject && !selectedChapter) {
+          const subMeta = SUBJECT_METADATA[selectedSubject.toLowerCase()];
+          const subjectLabel = subMeta ? (language === 'en' ? subMeta.labelEn : subMeta.labelOr) : selectedSubject;
+          title = `Class ${grade} ${subjectLabel} Odia Medium Textbook Solutions & Tests | Utkal Skill Centre`;
+          desc = language === 'en'
+            ? `Study Class ${grade} ${subjectLabel} on Utkal Skill Centre. Includes interactive Odia medium chapter guides, mock tests, and daily MCQs.`
+            : `ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରରେ ଶ୍ରେଣୀ ${grade} ${subjectLabel} ବହି, ପ୍ରଶ୍ନର ଉତ୍ତର, ମକ ଟେଷ୍ଟ ଏବଂ MCQ ଅଭ୍ୟାସ କରନ୍ତୁ।`;
+
+          schemaData = {
+            "@context": "https://schema.org",
+            "@type": "Course",
+            "name": `Class ${grade} ${subjectLabel} - Odia Medium`,
+            "description": desc,
+            "provider": {
+              "@type": "EducationalOrganization",
+              "name": "Utkal Skill Centre",
+              "sameAs": "https://utkalskillcentre.com"
+            },
+            "educationalLevel": `Class ${grade}`,
+            "typicalAgeRange": gradeInt <= 5 ? "6-11" : gradeInt <= 8 ? "11-14" : "14-16"
+          };
+        } else if (selectedChapter) {
+          const subjectLabel = selectedChapter.subject || selectedSubject || '';
+          title = `Class ${grade} ${subjectLabel} - ${selectedChapter.title} Guides & MCQs | Utkal Skill Centre`;
+          desc = language === 'en'
+            ? `Free solutions, textbook chapters, mock tests, and AI tutor support for Class ${grade} ${subjectLabel} Chapter: ${selectedChapter.title} on Utkal Skill Centre.`
+            : `ଶ୍ରେଣୀ ${grade} ${subjectLabel} ଅଧ୍ୟାୟ: ${selectedChapter.title} ସମାଧାନ, ପରୀକ୍ଷା ପ୍ରଶ୍ନ ଏବଂ ଏଆଇ ଶିକ୍ଷକ ଗୁଣ୍ଡୁଲୁର ସାହାଯ୍ୟ ପାଆନ୍ତୁ।`;
+
+          schemaData = {
+            "@context": "https://schema.org",
+            "@type": "Book",
+            "name": `Class ${grade} ${subjectLabel} Solutions - ${selectedChapter.title}`,
+            "bookFormat": "https://schema.org/EBook",
+            "publisher": {
+              "@type": "EducationalOrganization",
+              "name": "Utkal Skill Centre"
+            },
+            "educationalAlignment": {
+              "@type": "AlignmentObject",
+              "alignmentType": "educationalLevel",
+              "educationalFramework": "Odisha School Education Board",
+              "targetName": `Class ${grade}`
+            },
+            "typicalAgeRange": gradeInt === 1 ? "6-7" : gradeInt === 2 ? "7-8" : gradeInt === 3 ? "8-9" : gradeInt === 4 ? "9-10" : gradeInt === 5 ? "10-11" : gradeInt === 6 ? "11-12" : gradeInt === 7 ? "12-13" : gradeInt === 8 ? "13-14" : gradeInt === 9 ? "14-15" : "15-16"
+          };
+        } else {
+          // General library listing page
+          schemaData = {
+            "@context": "https://schema.org",
+            "@type": "EducationalWebSite",
+            "name": "Utkal Skill Centre Digital Library",
+            "description": desc,
+            "url": "https://utkalskillcentre.com/digital-library",
+            "educationalLevel": "Classes 1 to 10"
+          };
+        }
+
+        return (
+          <Helmet>
+            <title>{title}</title>
+            <meta name="description" content={desc} />
+            <meta property="og:title" content={title} />
+            <meta property="og:description" content={desc} />
+            <meta property="og:type" content="website" />
+            <meta property="og:url" content={window.location.href} />
+            {schemaData && (
+              <script type="application/ld+json">
+                {JSON.stringify(schemaData)}
+              </script>
+            )}
+          </Helmet>
+        );
+      })()}
       {/* Background Ornaments */}
       <div className="absolute top-[-10%] left-[-10%] w-[40rem] h-[40rem] rounded-full bg-emerald-950/10 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40rem] h-[40rem] rounded-full bg-teal-950/10 blur-[120px] pointer-events-none" />
