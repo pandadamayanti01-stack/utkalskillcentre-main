@@ -595,5 +595,26 @@ body.theme-daybreak .gundulu-chat-input::placeholder {
   color: #475569 !important;
 }
 
+/* Light mode prose-invert override to ensure maximum text visibility */
+body.theme-daybreak .prose-invert,
+body.theme-daybreak .prose-invert p,
+body.theme-daybreak .prose-invert li,
+body.theme-daybreak .prose-invert strong,
+body.theme-daybreak .prose-invert h1,
+body.theme-daybreak .prose-invert h2,
+body.theme-daybreak .prose-invert h3,
+body.theme-daybreak .prose-invert h4,
+body.theme-daybreak .prose-invert span,
+body.theme-daybreak .prose-invert ul,
+body.theme-daybreak .prose-invert ol {
+  color: #1e293b !important;
+}
+
+body.theme-daybreak .prose-invert code {
+  color: #0f172a !important;
+  background-color: rgba(15, 23, 42, 0.05) !important;
+}
+
+
 
 
