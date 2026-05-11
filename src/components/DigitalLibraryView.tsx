@@ -91,6 +91,12 @@ const getSubjectFallbackImage = (subKey: string): string => {
   };
   return fallbacks[subKey.toLowerCase()] || "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=400&auto=format&fit=crop";
 };
+
+const getClassCode = (cls: string): string => {
+  if (!cls) return "class10";
+  const num = cls.toLowerCase().replace(/\s+/g, '').replace('class', '').replace('th', '');
+  return `class${num}`;
+};
 export const cleanMathNotation = (text: string): string => {
   if (!text) return "";
 
@@ -511,6 +517,9 @@ Instructions:
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {Object.entries(SUBJECT_METADATA).map(([subKey, meta]) => {
                 const Icon = meta.icon;
+                const userClassCode = getClassCode(user?.class);
+                const classSpecificCover = `/${userClassCode}_${subKey}_cover.png`;
+
                 return (
                   <motion.div
                     key={subKey}
@@ -524,10 +533,15 @@ Instructions:
                     {/* Cover Image Top Section */}
                     <div className="h-44 w-full relative overflow-hidden bg-slate-950">
                       <img
-                        src={meta.coverImage}
+                        src={classSpecificCover}
                         alt={meta.labelEn}
                         onError={(e) => {
-                          e.currentTarget.src = getSubjectFallbackImage(subKey);
+                          const genericUrl = window.location.origin + meta.coverImage;
+                          if (e.currentTarget.src !== genericUrl) {
+                            e.currentTarget.src = genericUrl;
+                          } else {
+                            e.currentTarget.src = getSubjectFallbackImage(subKey);
+                          }
                         }}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-60 group-hover:opacity-85"
                       />
