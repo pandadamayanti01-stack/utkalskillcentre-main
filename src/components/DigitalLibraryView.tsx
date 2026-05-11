@@ -857,10 +857,10 @@ Instructions:
                           />
                         )}
                         <div
-                          className={`max-w-[80%] rounded-2xl p-3.5 text-xs font-medium leading-relaxed shadow-sm ${
+                          className={`max-w-[80%] rounded-2xl p-3.5 leading-relaxed shadow-sm border ${
                             msg.sender === 'user'
-                              ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-br-none'
-                              : 'bg-slate-950 border border-white/5 text-slate-200 rounded-bl-none'
+                              ? 'bg-gradient-to-br from-emerald-500 to-teal-600 border-transparent text-white rounded-br-none text-xs font-semibold'
+                              : 'bg-slate-900/90 border-emerald-500/20 text-slate-100 rounded-bl-none text-[13px] font-semibold tracking-wide [&_strong]:text-emerald-400 [&_strong]:font-bold [&_code]:bg-slate-950 [&_code]:text-emerald-300 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:font-mono [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_li]:mb-1'
                           }`}
                         >
                           <ReactMarkdown>{cleanMathNotation(msg.text)}</ReactMarkdown>
