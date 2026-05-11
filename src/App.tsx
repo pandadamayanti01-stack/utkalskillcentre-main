@@ -1341,7 +1341,7 @@ export default function App() {
     console.log("Debug: Fetching chapters for user:", user);
     const chaptersQuery = user.role === 'admin' 
       ? collection(firestore, 'chapters')
-      : query(collection(firestore, 'chapters'), where('status', '==', 'published'), where('class', 'in', [user.class, user.class.replace('class', '')]));
+      : query(collection(firestore, 'chapters'), where('status', '==', 'published'));
     console.log("Debug: chaptersQuery:", chaptersQuery);
 
     const unsubChapters = onSnapshot(chaptersQuery, (snapshot) => {
@@ -4270,8 +4270,12 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
   }, [user?.board]);
 
   const classFilteredChapters = React.useMemo(() => {
+    const cleanClass = (cls: string) => {
+      if (!cls) return '';
+      return cls.toLowerCase().replace(/\s+/g, '').replace('class', '').replace('th', '');
+    };
     return chapters.filter((c: Chapter) => {
-      const matchesClass = !user?.class || c.class === user.class;
+      const matchesClass = !user?.class || cleanClass(c.class) === cleanClass(user.class);
       const userBoard = (user?.board || '') as string;
       const matchesBoard = !userBoard || (
         typeof c.board === 'string' 
