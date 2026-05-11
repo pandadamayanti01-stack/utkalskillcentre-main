@@ -327,7 +327,7 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
   const effectivePdfUrl = selectedChapter ? (selectedChapter.pdfUrl || selectedChapter.download_url || selectedChapter.driveUrl || '') : '';
 
   // Material reader settings
-  const [readerMode, setReaderMode] = useState<'notes' | 'pdf'>('notes');
+  const [readerMode, setReaderMode] = useState<'notes' | 'pdf' | 'video'>('notes');
   const [personalNotes, setPersonalNotes] = useState<string>('');
   const [isNotepadSaved, setIsNotepadSaved] = useState<boolean>(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
@@ -837,7 +837,7 @@ Instructions:
 
               {/* Material Sub-header Control Tabs */}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-6 border-b border-white/5">
-                <div className="flex items-center gap-2 bg-slate-950 p-1 rounded-2xl border border-white/5">
+                <div className="flex items-center gap-2 bg-slate-950 p-1 rounded-2xl border border-white/5 flex-wrap sm:flex-nowrap">
                   <button
                     onClick={() => setReaderMode('notes')}
                     className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold tracking-wider transition-all ${
@@ -868,6 +868,26 @@ Instructions:
                   >
                     <Lucide.BookOpen size={14} />
                     <span>{language === 'en' ? 'Original Textbook' : 'ମୂଳ ପାଠ୍ୟପୁସ୍ତକ'}</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      if (selectedChapter.videoUrl) {
+                        setReaderMode('video');
+                      } else {
+                        alert(language === 'en' ? 'Concept videos are not added for this chapter yet. Our team is working on it!' : 'ଏହି ଅଧ୍ୟାୟ ପାଇଁ ଭିଡିଓ କ୍ଲାସ ଏପର୍ଯ୍ୟନ୍ତ ଯୋଡ଼ା ହୋଇନାହିଁ। ଶୀଘ୍ର ପ୍ରସ୍ତୁତ ହେବ!');
+                      }
+                    }}
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold tracking-wider transition-all ${
+                      !selectedChapter.videoUrl ? 'opacity-40 cursor-not-allowed' : ''
+                    } ${
+                      readerMode === 'video'
+                        ? 'bg-[#b34d1f] text-white shadow-lg'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <Lucide.Youtube size={14} />
+                    <span>{language === 'en' ? 'Concept Videos' : 'ଭିଡିଓ କ୍ଲାସ'}</span>
                   </button>
                 </div>
 
@@ -986,6 +1006,56 @@ Instructions:
                   >
                     <ReactMarkdown>{cleanMathNotation(selectedChapter.notes || '*No study materials added yet.*')}</ReactMarkdown>
                   </div>
+                ) : readerMode === 'video' ? (
+                  /* Gorgeous Embedded YouTube Player with animations */
+                  (() => {
+                    const getYouTubeEmbedUrl = (url: string) => {
+                      if (!url) return '';
+                      if (url.includes('list=')) {
+                        const match = url.match(/[?&]list=([^#\&\?]+)/);
+                        if (match) {
+                          return `https://www.youtube.com/embed/videoseries?list=${match[1]}&autoplay=1`;
+                        }
+                      }
+                      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                      const match = url.match(regExp);
+                      if (match && match[2].length === 11) {
+                        return `https://www.youtube.com/embed/${match[2]}?rel=0&modestbranding=1&autoplay=1`;
+                      }
+                      return '';
+                    };
+                    const embedUrl = getYouTubeEmbedUrl(selectedChapter.videoUrl);
+
+                    return embedUrl ? (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="w-full h-[55vh] rounded-3xl overflow-hidden bg-slate-950 border border-white/5 flex flex-col relative shadow-[0_20px_50px_rgba(0,0,0,0.5)] animate-glow"
+                      >
+                        <iframe
+                          src={embedUrl}
+                          title={selectedChapter.title}
+                          className="w-full h-full object-cover border-0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                        />
+                      </motion.div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center p-12 text-center bg-slate-900/30 border border-white/5 rounded-3xl h-[45vh] space-y-4">
+                        <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center text-red-400">
+                          <Lucide.Youtube size={32} />
+                        </div>
+                        <h4 className="text-lg font-black text-white">
+                          {language === 'en' ? 'No video loaded' : 'ଭିଡିଓ ମିଳିଲା ନାହିଁ'}
+                        </h4>
+                        <p className="text-slate-400 text-xs max-w-sm">
+                          {language === 'en' 
+                            ? 'The video URL for this chapter is invalid or not uploaded. Please try other reading guides!' 
+                            : 'ଏହି ଅଧ୍ୟାୟର ଭିଡିଓ ଲିଙ୍କ ଅପଲୋଡ୍ ହୋଇନାହିଁ। ଦୟାକରି AI ପାଠ୍ୟପୁସ୍ତକ ଅଭ୍ୟାସ କରନ୍ତୁ!'}
+                        </p>
+                      </div>
+                    );
+                  })()
                 ) : (
                   <div className="w-full h-[60vh] rounded-2xl overflow-hidden bg-slate-950 border border-white/5 flex flex-col justify-center">
                     {isMobileDevice() ? (

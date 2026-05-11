@@ -190,6 +190,7 @@ Sample tone for Class 6-10:
   const [libFormPdfUrl, setLibFormPdfUrl] = useState('');
   const [pdfUploadProgress, setPdfUploadProgress] = useState<number | null>(null);
   const [libFormCoverUrl, setLibFormCoverUrl] = useState('');
+  const [libFormVideoUrl, setLibFormVideoUrl] = useState('');
   const [coverUploadProgress, setCoverUploadProgress] = useState<number | null>(null);
   const [isLibSaving, setIsLibSaving] = useState(false);
 
@@ -1444,7 +1445,7 @@ Sample tone for Class 6-10:
 
     const filteredContent = content.filter(c => {
       // Exclude library chapters from Course content manager
-      const isLib = c.isLibraryChapter || c.pdfUrl || c.board === "Odisha Board (Odia Medium)";
+      const isLib = c.isLibraryChapter || !!c.pdfUrl;
       if (isLib) return false;
 
       console.log("Debug: Filtering chapter", c.id, c.class, c.subject, c.status);
@@ -4344,7 +4345,7 @@ Sample tone for Class 6-10:
 
   function renderDigitalLibraryUpload() {
     const filteredContent = content.filter((c: any) => {
-      const isLib = c.isLibraryChapter || c.pdfUrl || c.board === "Odisha Board (Odia Medium)";
+      const isLib = c.isLibraryChapter || !!c.pdfUrl;
       if (!isLib) return false;
 
       const matchesClass = libClassFilter === 'all' || c.class === libClassFilter;
@@ -4360,6 +4361,7 @@ Sample tone for Class 6-10:
       setLibFormNotes('');
       setLibFormPdfUrl('');
       setLibFormCoverUrl('');
+      setLibFormVideoUrl('');
       setPdfUploadProgress(null);
       setCoverUploadProgress(null);
       setIsLibModalOpen(true);
@@ -4373,6 +4375,7 @@ Sample tone for Class 6-10:
       setLibFormNotes(chapter.notes || '');
       setLibFormPdfUrl(chapter.pdfUrl || '');
       setLibFormCoverUrl(chapter.coverUrl || '');
+      setLibFormVideoUrl(chapter.videoUrl || '');
       setPdfUploadProgress(null);
       setCoverUploadProgress(null);
       setIsLibModalOpen(true);
@@ -4463,6 +4466,7 @@ Sample tone for Class 6-10:
           notes: libFormNotes,
           pdfUrl: libFormPdfUrl,
           coverUrl: libFormCoverUrl,
+          videoUrl: libFormVideoUrl,
           isLibraryChapter: true,
           status: 'published',
           updatedAt: new Date()
@@ -4840,6 +4844,26 @@ Sample tone for Class 6-10:
                         </button>
                       </div>
                     )}
+                  </div>
+
+                  {/* YouTube Video URL Field */}
+                  <div className="glass-card p-6 rounded-[2rem] border border-white/5 bg-slate-950/40 flex flex-col gap-4">
+                    <div>
+                      <h4 className="text-sm font-black text-white">YouTube Concept Video URL</h4>
+                      <p className="text-slate-500 text-xs mt-0.5">Add a YouTube video link or playlist link for high-yield student visualization.</p>
+                    </div>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-slate-500">
+                        <Youtube size={16} />
+                      </div>
+                      <input
+                        type="url"
+                        value={libFormVideoUrl}
+                        onChange={(e) => setLibFormVideoUrl(e.target.value)}
+                        placeholder="e.g. https://www.youtube.com/watch?v=..."
+                        className="w-full bg-slate-950/80 border border-white/5 rounded-2xl pl-12 pr-4 py-3 text-sm text-slate-200 placeholder-slate-700 focus:outline-none focus:border-emerald-500/30"
+                      />
+                    </div>
                   </div>
 
                   {/* Study Notes Markdown Area */}

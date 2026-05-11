@@ -1366,7 +1366,8 @@ export default function App() {
         const matchesClass = !user?.class || cleanClass(c.class) === cleanClass(user.class);
         
         // 2. Check Board (Handles both String and Map formats)
-        const userBoard = (user?.board || '').toLowerCase();
+        const userBoardRaw = user?.board || '';
+        const userBoard = (userBoardRaw === 'undefined' ? '' : userBoardRaw).toLowerCase();
         
         let chapterBoardStr = '';
         if (typeof c.board === 'string') {
@@ -4293,7 +4294,8 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
     };
     return chapters.filter((c: Chapter) => {
       const matchesClass = !user?.class || cleanClass(c.class) === cleanClass(user.class);
-      const userBoard = (user?.board || '') as string;
+      const userBoardRaw = user?.board || '';
+      const userBoard = userBoardRaw === 'undefined' ? '' : userBoardRaw;
       const matchesBoard = !userBoard || (
         typeof c.board === 'string' 
           ? (c.board as string).toLowerCase().includes(userBoard.toLowerCase()) 
