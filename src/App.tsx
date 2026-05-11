@@ -1006,8 +1006,11 @@ export default function App() {
         setSelectedChapter(null);
         window.history.pushState(null, '', `#${activeTab}`);
       } else if (activeTab !== 'dashboard') {
-        setActiveTab('dashboard');
-        window.history.pushState(null, '', '#dashboard');
+        const currentHash = window.location.hash.replace('#', '').split('/')[0];
+        if (!currentHash || currentHash === 'dashboard') {
+          setActiveTab('dashboard');
+          window.history.pushState(null, '', '#dashboard');
+        }
       }
     };
 
@@ -2673,7 +2676,7 @@ export default function App() {
             {activeTab === 'digital_library' && (
               <DigitalLibraryView
                 user={user}
-                chapters={chapters.filter((c: any) => c.isLibraryChapter || c.pdfUrl || c.board === "Odisha Board (Odia Medium)")}
+                chapters={chapters.filter((c: any) => c.isLibraryChapter || c.pdfUrl)}
                 language={language}
                 isPremium={isPremium}
                 onUpgrade={() => setActiveTab('plans')}
@@ -2683,7 +2686,7 @@ export default function App() {
             {activeTab === 'courses' && (
               <CoursesView 
                 user={user} 
-                chapters={chapters.filter((c: any) => !c.isLibraryChapter && !c.pdfUrl && c.board !== "Odisha Board (Odia Medium)")} 
+                chapters={chapters.filter((c: any) => !c.isLibraryChapter && !c.pdfUrl)} 
                 language={language} 
                 isPremium={isPremium} 
                 onUpgrade={() => setActiveTab('plans')} 

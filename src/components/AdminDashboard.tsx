@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  BookOpen, 
-  Brain, 
-  CreditCard, 
-  Bell, 
-  Settings, 
+import {
+  BookOpen,
+  Brain,
+  CreditCard,
+  Bell,
+  Settings,
   Users,
   Library,
-  Plus, 
-  Trash2, 
+  Plus,
+  Trash2,
   XCircle,
   LogOut,
   LayoutDashboard,
@@ -30,6 +30,7 @@ import {
   Book,
   Edit,
   Upload,
+  Image,
   File,
   Download,
   Bot,
@@ -52,20 +53,20 @@ import { motion, AnimatePresence } from 'motion/react';
 // import { CustomSelect } from './CustomSelect';
 import { db as firestore, auth, storage, handleFirestoreError, OperationType, onAuthStateChanged } from '../firebase';
 import { signOut } from 'firebase/auth';
-import { 
-  ref, 
-  uploadBytesResumable, 
-  getDownloadURL 
+import {
+  ref,
+  uploadBytesResumable,
+  getDownloadURL
 } from 'firebase/storage';
-import { 
-  collection, 
-  query, 
-  getDocs, 
-  doc, 
-  updateDoc, 
+import {
+  collection,
+  query,
+  getDocs,
+  doc,
+  updateDoc,
   setDoc,
-  addDoc, 
-  deleteDoc, 
+  addDoc,
+  deleteDoc,
   onSnapshot,
   orderBy,
   limit,
@@ -78,10 +79,10 @@ import { translations } from '../translations';
 import { Chapter, DailyMcq, VideoOption } from '../types';
 import { DailyMcqTab } from './admin/DailyMcqTab';
 import { LiveSupportTab } from './admin/LiveSupportTab';
-import { 
-  translateContent, 
-  generateChapterContent, 
-  generateTestContent, 
+import {
+  translateContent,
+  generateChapterContent,
+  generateTestContent,
   importPlaylistContent,
   generateCurriculum,
   generateTestQuestions,
@@ -173,7 +174,7 @@ Sample tone for Class 6-10:
   const [gunduluPromptDraft, setGunduluPromptDraft] = useState(DEFAULT_GUNDULU_PROMPT);
   const [privateSettings, setPrivateSettings] = useState<any>({});
   const [confirmAction, setConfirmAction] = useState<string | null>(null);
-  const [notification, setNotification] = useState<{message: string, type: 'success' | 'error'} | null>(null);
+  const [notification, setNotification] = useState<{ message: string, type: 'success' | 'error' } | null>(null);
   const [loading, setLoading] = useState(false);
   const isPromptDirtyRef = useRef(false);
 
@@ -188,6 +189,8 @@ Sample tone for Class 6-10:
   const [libFormNotes, setLibFormNotes] = useState('');
   const [libFormPdfUrl, setLibFormPdfUrl] = useState('');
   const [pdfUploadProgress, setPdfUploadProgress] = useState<number | null>(null);
+  const [libFormCoverUrl, setLibFormCoverUrl] = useState('');
+  const [coverUploadProgress, setCoverUploadProgress] = useState<number | null>(null);
   const [isLibSaving, setIsLibSaving] = useState(false);
 
   // Remote Support States
@@ -210,9 +213,9 @@ Sample tone for Class 6-10:
   const normalizedDailyMcqRotation = Array.isArray(systemSettings.dailyMcqSubjectRotation)
     ? systemSettings.dailyMcqSubjectRotation.map((item: string) => String(item || '').trim().toLowerCase()).filter(Boolean)
     : String(systemSettings.dailyMcqSubjectRotation || '')
-        .split(',')
-        .map((item: string) => item.trim().toLowerCase())
-        .filter(Boolean);
+      .split(',')
+      .map((item: string) => item.trim().toLowerCase())
+      .filter(Boolean);
 
   const updateDailyMcqRotation = (subjects: string[]) => {
     setSystemSettings({
@@ -229,8 +232,8 @@ Sample tone for Class 6-10:
 
     updateDailyMcqRotation([...normalizedDailyMcqRotation, subjectKey]);
   };
-  
-  
+
+
   const [isAddingTest, setIsAddingTest] = useState(false);
   const [newTest, setNewTest] = useState<any>({
     title: '',
@@ -355,7 +358,7 @@ Sample tone for Class 6-10:
 
   const handleFileUpload = async (file: File) => {
     if (!file) return;
-    
+
     setUploadingFile(true);
     setUploadProgress(0);
 
@@ -366,11 +369,11 @@ Sample tone for Class 6-10:
     const uploadTask = uploadBytesResumable(storageRef, file);
 
     return new Promise<string>((resolve, reject) => {
-      uploadTask.on('state_changed', 
+      uploadTask.on('state_changed',
         (snapshot) => {
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           setUploadProgress(progress);
-        }, 
+        },
         async (error) => {
           console.error("Upload error:", error);
 
@@ -403,7 +406,7 @@ Sample tone for Class 6-10:
           showNotification(`Upload failed: ${error.message}`, "error");
           setUploadingFile(false);
           reject(error);
-        }, 
+        },
         async () => {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
           setNewTextbook((prev: any) => ({ ...prev, download_url: downloadURL }));
@@ -427,7 +430,7 @@ Sample tone for Class 6-10:
 
   useEffect(() => {
     console.log("Debug: useEffect running, user:", user);
-    
+
     console.log("Debug: Setting up listeners");
     // Real-time stats and data
     const unsubChapters = onSnapshot(collection(firestore, 'chapters'), (snapshot) => {
@@ -586,7 +589,7 @@ Sample tone for Class 6-10:
     }, (err) => {
       console.error("Firestore Support Tickets onSnapshot Error:", err);
     });
-    
+
     return () => {
       console.log("Debug: Cleaning up listeners");
       unsubChapters();
@@ -611,7 +614,7 @@ Sample tone for Class 6-10:
     const txRevenue = transactions.reduce((acc, curr: any) => acc + (curr.amount || 0), 0);
     const successPayments = payments.filter(p => p.status === 'success');
     const paymentRevenue = successPayments.reduce((acc, curr: any) => acc + (curr.amount || 0), 0);
-    
+
     setStats(prev => ({
       ...prev,
       totalRevenue: txRevenue + paymentRevenue
@@ -626,7 +629,7 @@ Sample tone for Class 6-10:
       showNotification("Please enter emails or phone numbers", "error");
       return;
     }
-    
+
     const ids = bulkIdentifiers.split('\n').map(id => id.trim()).filter(id => id);
     setLoading(true);
     let successCount = 0;
@@ -652,7 +655,7 @@ Sample tone for Class 6-10:
           }
           userQuery = query(collection(firestore, 'users'), where('phoneNumber', 'in', phoneVariants));
         }
-        
+
         const userSnap = await getDocs(userQuery);
         if (userSnap.empty) {
           console.warn(`User not found for: ${id}`);
@@ -664,10 +667,10 @@ Sample tone for Class 6-10:
         const subDocRef = doc(firestore, 'subscriptions', userId);
         const expiresAt = bulkPlan === 'monthly'
           ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-          : bulkPlan === 'annual' 
-            ? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) 
+          : bulkPlan === 'annual'
+            ? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
             : new Date(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000);
-        
+
         await setDoc(subDocRef, {
           active: true,
           plan: bulkPlan,
@@ -725,7 +728,7 @@ Sample tone for Class 6-10:
               className="w-full h-40 bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:outline-none focus:border-emerald-500 transition-colors"
             />
           </div>
-          
+
           <div className="flex flex-wrap gap-4 items-end">
             <div className="flex-1 min-w-[200px]">
               <label className="block text-sm font-medium text-slate-400 mb-2">Plan Type</label>
@@ -843,125 +846,124 @@ Sample tone for Class 6-10:
     <>
       {/* Mobile Overlay */}
       {isSidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[65] lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
-      <aside 
+      <aside
         className={`fixed top-0 left-0 h-full bg-slate-950/95 lg:bg-slate-950/40 backdrop-blur-3xl border-r border-white/5 z-[70] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${isSidebarOpen ? 'translate-x-0 w-[280px]' : '-translate-x-full lg:translate-x-0 lg:w-24'}`}
         onMouseEnter={() => { if (window.innerWidth >= 1024) setIsSidebarOpen(true); }}
         onMouseLeave={() => { if (window.innerWidth >= 1024) setIsSidebarOpen(false); }}
       >
-      <div className="flex flex-col h-full py-8">
-        {/* Brand */}
-        <div className="px-6 mb-12 flex items-center gap-4 overflow-hidden">
-          <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
-            <LayoutDashboard className="text-white" size={24} />
-          </div>
-          <motion.div 
-            animate={{ opacity: isSidebarOpen ? 1 : 0, x: isSidebarOpen ? 0 : -20 }}
-            className="whitespace-nowrap"
-          >
-            <h1 className="text-xl font-black text-white tracking-tighter">UTKAL <span className="text-emerald-500">ADMIN</span></h1>
-            <p className="text-[8px] font-black text-slate-500 uppercase tracking-[0.3em]">Neural Core v2.0</p>
-          </motion.div>
-        </div>
-
-        {/* Navigation Groups */}
-        <nav className="flex-1 px-4 space-y-8 custom-scrollbar overflow-y-auto">
-          {[
-            {
-              title: 'Command',
-              items: [
-                { id: 'dashboard', label: 'Overview', icon: Activity },
-                { id: 'ai_usage', label: 'AI Usage Logs', icon: Brain },
-                { id: 'daily_mcqs', label: 'Daily MCQs', icon: Zap },
-              ]
-            },
-            {
-              title: 'Vault',
-              items: [
-                { id: 'content', label: 'Chapters', icon: BookOpen },
-                { id: 'digital_library_upload', label: 'Library Manager', icon: Library },
-                { id: 'textbooks', label: 'Textbooks', icon: Book },
-                { id: 'monthly_tests', label: 'Monthly Tests', icon: ClipboardList },
-              ]
-            },
-            {
-              title: 'Registry',
-              items: [
-                { id: 'students', label: 'Students', icon: Users },
-                { id: 'subscriptions', label: 'Subscriptions', icon: Shield },
-                { id: 'payments', label: 'Payments', icon: CreditCard },
-                { id: 'user_locks', label: 'User Locks', icon: Lock },
-              ]
-            },
-            {
-              title: 'System',
-              items: [
-                { id: 'notifications', label: 'Broadcasts', icon: Bell },
-                { id: 'settings', label: 'Settings', icon: Settings },
-                { id: 'support', label: 'Support Tickets', icon: HelpCircle },
-              ]
-            }
-          ].map((group, idx) => (
-            <div key={idx} className="space-y-2">
-              {isSidebarOpen && (
-                <p className="px-4 text-[9px] font-black text-slate-600 uppercase tracking-widest mb-4">{group.title}</p>
-              )}
-              {group.items.map((item) => {
-                const isActive = activeTab === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      setActiveTab(item.id as AdminTab);
-                      if (window.innerWidth < 1024) setIsSidebarOpen(false);
-                    }}
-                    className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group relative ${
-                      isActive 
-                      ? 'bg-emerald-500/10 text-emerald-400' 
-                      : 'text-slate-500 hover:text-slate-200 hover:bg-white/5'
-                    }`}
-                  >
-                    {isActive && (
-                      <motion.div 
-                        layoutId="activeGlow"
-                        className="absolute left-0 w-1 h-6 bg-emerald-500 rounded-r-full shadow-[0_0_15px_#10b981]"
-                      />
-                    )}
-                    <item.icon size={20} className={`shrink-0 ${isActive ? 'drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'group-hover:scale-110 transition-transform'}`} />
-                    <motion.span 
-                      animate={{ opacity: isSidebarOpen ? 1 : 0, x: isSidebarOpen ? 0 : -10 }}
-                      className="text-xs font-bold whitespace-nowrap tracking-tight"
-                    >
-                      {item.label}
-                    </motion.span>
-                  </button>
-                );
-              })}
+        <div className="flex flex-col h-full py-8">
+          {/* Brand */}
+          <div className="px-6 mb-12 flex items-center gap-4 overflow-hidden">
+            <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+              <LayoutDashboard className="text-white" size={24} />
             </div>
-          ))}
-        </nav>
-
-        {/* Footer */}
-        <div className="px-4 pt-8 mt-auto border-t border-white/5">
-          <button 
-            onClick={() => onExit()}
-            className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-red-400/60 hover:text-red-400 hover:bg-red-500/10 transition-all group"
-          >
-            <LogOut size={20} className="group-hover:rotate-180 transition-transform duration-500" />
-            <motion.span 
-              animate={{ opacity: isSidebarOpen ? 1 : 0 }}
-              className="text-xs font-black uppercase tracking-widest"
+            <motion.div
+              animate={{ opacity: isSidebarOpen ? 1 : 0, x: isSidebarOpen ? 0 : -20 }}
+              className="whitespace-nowrap"
             >
-              Terminate
-            </motion.span>
-          </button>
+              <h1 className="text-xl font-black text-white tracking-tighter">UTKAL <span className="text-emerald-500">ADMIN</span></h1>
+              <p className="text-[8px] font-black text-slate-500 uppercase tracking-[0.3em]">Neural Core v2.0</p>
+            </motion.div>
+          </div>
+
+          {/* Navigation Groups */}
+          <nav className="flex-1 px-4 space-y-8 custom-scrollbar overflow-y-auto">
+            {[
+              {
+                title: 'Command',
+                items: [
+                  { id: 'dashboard', label: 'Overview', icon: Activity },
+                  { id: 'ai_usage', label: 'AI Usage Logs', icon: Brain },
+                  { id: 'daily_mcqs', label: 'Daily MCQs', icon: Zap },
+                ]
+              },
+              {
+                title: 'Vault',
+                items: [
+                  { id: 'content', label: 'Chapters', icon: BookOpen },
+                  { id: 'digital_library_upload', label: 'Library Manager', icon: Library },
+                  { id: 'textbooks', label: 'Textbooks', icon: Book },
+                  { id: 'monthly_tests', label: 'Monthly Tests', icon: ClipboardList },
+                ]
+              },
+              {
+                title: 'Registry',
+                items: [
+                  { id: 'students', label: 'Students', icon: Users },
+                  { id: 'subscriptions', label: 'Subscriptions', icon: Shield },
+                  { id: 'payments', label: 'Payments', icon: CreditCard },
+                  { id: 'user_locks', label: 'User Locks', icon: Lock },
+                ]
+              },
+              {
+                title: 'System',
+                items: [
+                  { id: 'notifications', label: 'Broadcasts', icon: Bell },
+                  { id: 'settings', label: 'Settings', icon: Settings },
+                  { id: 'support', label: 'Support Tickets', icon: HelpCircle },
+                ]
+              }
+            ].map((group, idx) => (
+              <div key={idx} className="space-y-2">
+                {isSidebarOpen && (
+                  <p className="px-4 text-[9px] font-black text-slate-600 uppercase tracking-widest mb-4">{group.title}</p>
+                )}
+                {group.items.map((item) => {
+                  const isActive = activeTab === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        setActiveTab(item.id as AdminTab);
+                        if (window.innerWidth < 1024) setIsSidebarOpen(false);
+                      }}
+                      className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group relative ${isActive
+                          ? 'bg-emerald-500/10 text-emerald-400'
+                          : 'text-slate-500 hover:text-slate-200 hover:bg-white/5'
+                        }`}
+                    >
+                      {isActive && (
+                        <motion.div
+                          layoutId="activeGlow"
+                          className="absolute left-0 w-1 h-6 bg-emerald-500 rounded-r-full shadow-[0_0_15px_#10b981]"
+                        />
+                      )}
+                      <item.icon size={20} className={`shrink-0 ${isActive ? 'drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'group-hover:scale-110 transition-transform'}`} />
+                      <motion.span
+                        animate={{ opacity: isSidebarOpen ? 1 : 0, x: isSidebarOpen ? 0 : -10 }}
+                        className="text-xs font-bold whitespace-nowrap tracking-tight"
+                      >
+                        {item.label}
+                      </motion.span>
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
+          </nav>
+
+          {/* Footer */}
+          <div className="px-4 pt-8 mt-auto border-t border-white/5">
+            <button
+              onClick={() => onExit()}
+              className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-red-400/60 hover:text-red-400 hover:bg-red-500/10 transition-all group"
+            >
+              <LogOut size={20} className="group-hover:rotate-180 transition-transform duration-500" />
+              <motion.span
+                animate={{ opacity: isSidebarOpen ? 1 : 0 }}
+                className="text-xs font-black uppercase tracking-widest"
+              >
+                Terminate
+              </motion.span>
+            </button>
+          </div>
         </div>
-      </div>
-    </aside>
+      </aside>
     </>
   );
 
@@ -975,7 +977,7 @@ Sample tone for Class 6-10:
           { label: 'AI Voice', value: '124m', icon: Bot, color: 'text-blue-400', glow: 'rgba(59, 130, 246, 0.15)' },
           { label: 'Sentiment', value: '88%', icon: Sparkles, color: 'text-purple-400', glow: 'rgba(168, 85, 247, 0.15)' },
         ].map((stat, i) => (
-          <motion.div 
+          <motion.div
             key={i}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -1009,27 +1011,27 @@ Sample tone for Class 6-10:
           <h3 className="text-2xl font-black text-white tracking-tight">Quick AI Test Generator</h3>
         </div>
         <p className="text-slate-400 text-sm mb-8 relative z-10 font-medium">Generate a complete monthly test with AI in seconds. Just select the class and subject.</p>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 relative z-10">
-          <select 
+          <select
             value={newTest.class}
-            onChange={(e) => setNewTest({...newTest, class: e.target.value})}
+            onChange={(e) => setNewTest({ ...newTest, class: e.target.value })}
             className="bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50 transition-all"
           >
             {Object.entries(translations['en'].classes).map(([key, label]) => (
               <option key={key} value={key}>{label as string}</option>
             ))}
           </select>
-          <select 
+          <select
             value={newTest.subject}
-            onChange={(e) => setNewTest({...newTest, subject: e.target.value})}
+            onChange={(e) => setNewTest({ ...newTest, subject: e.target.value })}
             className="bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50 transition-all"
           >
             {Object.entries(translations['en'].subjects).map(([key, label]) => (
               <option key={key} value={key}>{label as string}</option>
             ))}
           </select>
-          <button 
+          <button
             onClick={() => {
               setActiveTab('monthly_tests');
               setIsAddingTest(true);
@@ -1053,7 +1055,7 @@ Sample tone for Class 6-10:
           <h3 className="text-2xl font-black text-white tracking-tight">Restore Deleted Chapters</h3>
         </div>
         <p className="text-slate-400 text-sm mb-8 relative z-10 font-medium">If you accidentally deleted chapters, you can use AI to re-generate the standard curriculum for all classes (Play to Class 10).</p>
-        <button 
+        <button
           onClick={() => setActiveTab('production_setup')}
           className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-90 text-white rounded-2xl px-8 py-4 font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg border border-indigo-500/50 relative z-10"
         >
@@ -1145,7 +1147,7 @@ Sample tone for Class 6-10:
       // Translate title and board (Replaced with direct assignment)
       const translatedTitle = newChapter.title;
       const translatedBoard = newChapter.board;
-      
+
       const chapterData = {
         ...newChapter,
         videos: newChapter.videos.filter(v => v.url.trim() !== ''),
@@ -1178,7 +1180,7 @@ Sample tone for Class 6-10:
         }
         showNotification("Chapter added successfully!");
       }
-      
+
       setIsAddingChapter(false);
       setNewChapter({
         title: '',
@@ -1215,12 +1217,12 @@ Sample tone for Class 6-10:
         newChapter.subject,
         newChapter.language as 'en' | 'or'
       );
-      
+
       setNewChapter(prev => ({
         ...prev,
         notes: result.notes
       }));
-      
+
       showNotification("AI has generated the content for you! Please review it before saving.");
     } catch (err: any) {
       console.error("AI Generation Error:", err);
@@ -1247,7 +1249,7 @@ Sample tone for Class 6-10:
           newTest.language as 'en' | 'or'
         );
       }
-      
+
       setNewTest((prev: any) => {
         const totalMarks = result.questions.reduce((acc: number, q: any) => acc + (q.marks || 1), 0);
         return {
@@ -1256,7 +1258,7 @@ Sample tone for Class 6-10:
           totalMarks
         };
       });
-      
+
       showNotification("AI has generated the test questions for you! Please review them before saving.");
     } catch (err: any) {
       console.error("AI Test Generation Error:", err);
@@ -1346,16 +1348,16 @@ Sample tone for Class 6-10:
     }
     setIsImportingPlaylist(true);
     setImportLog(["Starting import..."]);
-    
+
     try {
       const result = await importPlaylistContent(playlistUrl);
       const chapters = result.chapters;
-      
+
       setImportLog(prev => [...prev, `Found ${chapters.length} chapters. Importing...`]);
-      
+
       for (const chapter of chapters) {
         setImportLog(prev => [...prev, `Importing: ${chapter.title}...`]);
-        
+
         // Save the chapter
         await addDoc(collection(firestore, 'chapters'), {
           title: { en: chapter.title, or: chapter.title },
@@ -1370,7 +1372,7 @@ Sample tone for Class 6-10:
           subject: newChapter.subject
         });
       }
-      
+
       setImportLog(prev => [...prev, "Import completed successfully!"]);
       showNotification(`Successfully imported ${chapters.length} chapters!`);
     } catch (err: any) {
@@ -1397,7 +1399,7 @@ Sample tone for Class 6-10:
       setConfirmAction('delete_all_tests');
       return;
     }
-    
+
     try {
       setLoading(true);
       for (const t of monthlyTests) {
@@ -1418,7 +1420,7 @@ Sample tone for Class 6-10:
       setConfirmAction('delete_all_notifications');
       return;
     }
-    
+
     try {
       setLoading(true);
       for (const n of notifications) {
@@ -1449,7 +1451,7 @@ Sample tone for Class 6-10:
       const matchesClass = adminClassFilter === 'all' || c.class === adminClassFilter;
       const matchesSubject = adminSubjectFilter === 'all' || c.subject === adminSubjectFilter;
       const matchesSearch = !searchTerm || c.title?.en?.toLowerCase().includes(searchTerm.toLowerCase());
-      
+
       console.log("Debug: Chapter", c.id, "matches:", { matchesClass, matchesSubject, matchesSearch });
       return matchesClass && matchesSubject && matchesSearch;
     });
@@ -1472,8 +1474,8 @@ Sample tone for Class 6-10:
       const filterDesc = [];
       if (adminClassFilter !== 'all') filterDesc.push(translations['en'].classes[adminClassFilter as keyof typeof translations.en.classes] || adminClassFilter);
       if (adminSubjectFilter !== 'all') filterDesc.push(translations['en'].subjects[adminSubjectFilter as keyof typeof translations.en.subjects] || adminSubjectFilter);
-      
-      const confirmMsg = filterDesc.length > 0 
+
+      const confirmMsg = filterDesc.length > 0
         ? `delete_filtered_chapters_${adminClassFilter}_${adminSubjectFilter}`
         : 'delete_all_chapters';
 
@@ -1481,7 +1483,7 @@ Sample tone for Class 6-10:
         setConfirmAction(confirmMsg);
         return;
       }
-      
+
       try {
         setLoading(true);
         let deletedCount = 0;
@@ -1494,9 +1496,9 @@ Sample tone for Class 6-10:
           }
           deletedCount++;
         }
-        setNotification({ 
-          message: `${deletedCount} chapters cleared successfully!`, 
-          type: 'success' 
+        setNotification({
+          message: `${deletedCount} chapters cleared successfully!`,
+          type: 'success'
         });
         setConfirmAction(null);
       } catch (err) {
@@ -1512,7 +1514,7 @@ Sample tone for Class 6-10:
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <h2 className="text-xl font-bold text-white">Content Library ({content.length} chapters loaded)</h2>
           <div className="flex flex-wrap gap-4">
-            <select 
+            <select
               value={adminClassFilter}
               onChange={(e) => setAdminClassFilter(e.target.value)}
               className="bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none"
@@ -1521,14 +1523,14 @@ Sample tone for Class 6-10:
               {Object.keys(translations['en'].classes).map(c => <option key={c} value={c}>{translations['en'].classes[c as keyof typeof translations.en.classes]}</option>)}
             </select>
             <div className="flex bg-slate-900 border border-white/10 rounded-xl overflow-hidden">
-              <input 
+              <input
                 type="text"
                 placeholder="YouTube Playlist URL"
                 value={playlistUrl}
                 onChange={(e) => setPlaylistUrl(e.target.value)}
                 className="bg-transparent px-4 py-2 text-sm text-white focus:outline-none w-48 md:w-64"
               />
-              <button 
+              <button
                 onClick={handleImportPlaylist}
                 disabled={isImportingPlaylist || !playlistUrl}
                 className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 text-sm font-bold disabled:opacity-50 transition-all flex items-center gap-2"
@@ -1540,21 +1542,20 @@ Sample tone for Class 6-10:
 
             <div className="flex gap-2">
               {filteredContent.length > 0 ? (
-                <button 
+                <button
                   onClick={handleDeleteFiltered}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${
-                    confirmAction?.startsWith('delete_filtered_chapters') || confirmAction === 'delete_all_chapters'
-                    ? 'bg-red-600 text-white font-bold' 
-                    : 'bg-red-600/20 hover:bg-red-600/30 text-red-500 border border-red-500/20'
-                  }`}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${confirmAction?.startsWith('delete_filtered_chapters') || confirmAction === 'delete_all_chapters'
+                      ? 'bg-red-600 text-white font-bold'
+                      : 'bg-red-600/20 hover:bg-red-600/30 text-red-500 border border-red-500/20'
+                    }`}
                 >
                   <Trash2 size={18} />
-                  {confirmAction?.startsWith('delete_filtered_chapters') || confirmAction === 'delete_all_chapters' 
-                    ? 'Confirm Delete Filtered?' 
+                  {confirmAction?.startsWith('delete_filtered_chapters') || confirmAction === 'delete_all_chapters'
+                    ? 'Confirm Delete Filtered?'
                     : (adminClassFilter === 'all' && adminSubjectFilter === 'all' ? 'Clear All Chapters' : 'Clear Filtered Chapters')}
                 </button>
               ) : (
-                <button 
+                <button
                   onClick={() => setActiveTab('production_setup')}
                   className="flex items-center gap-2 px-4 py-2 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 rounded-xl transition-all"
                 >
@@ -1562,7 +1563,7 @@ Sample tone for Class 6-10:
                   Restore Default Curriculum (AI)
                 </button>
               )}
-              <button 
+              <button
                 onClick={() => {
                   setIsEditingChapter(false);
                   setEditingChapterId(null);
@@ -1606,13 +1607,13 @@ Sample tone for Class 6-10:
                 </h4>
                 <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em] bg-emerald-500/10 px-4 py-1 rounded-full">Editor Active</span>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div>
                   <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Target Class</label>
-                  <select 
+                  <select
                     value={newChapter.class}
-                    onChange={(e) => setNewChapter({...newChapter, class: e.target.value})}
+                    onChange={(e) => setNewChapter({ ...newChapter, class: e.target.value })}
                     className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 cursor-pointer font-bold uppercase tracking-tighter"
                   >
                     <option value="">Select Class</option>
@@ -1623,9 +1624,9 @@ Sample tone for Class 6-10:
                 </div>
                 <div>
                   <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Academic Board</label>
-                  <select 
+                  <select
                     value={newChapter.board}
-                    onChange={(e) => setNewChapter({...newChapter, board: e.target.value})}
+                    onChange={(e) => setNewChapter({ ...newChapter, board: e.target.value })}
                     className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 cursor-pointer font-bold uppercase tracking-tighter"
                   >
                     <option value="">Select Board</option>
@@ -1636,9 +1637,9 @@ Sample tone for Class 6-10:
                 </div>
                 <div>
                   <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Academic Subject</label>
-                  <select 
+                  <select
                     value={newChapter.subject}
-                    onChange={(e) => setNewChapter({...newChapter, subject: e.target.value})}
+                    onChange={(e) => setNewChapter({ ...newChapter, subject: e.target.value })}
                     className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 cursor-pointer font-bold uppercase tracking-tighter"
                   >
                     <option value="">Select Subject</option>
@@ -1649,9 +1650,9 @@ Sample tone for Class 6-10:
                 </div>
                 <div>
                   <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Display Language</label>
-                  <select 
+                  <select
                     value={newChapter.language}
-                    onChange={(e) => setNewChapter({...newChapter, language: e.target.value})}
+                    onChange={(e) => setNewChapter({ ...newChapter, language: e.target.value })}
                     className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 cursor-pointer font-bold uppercase tracking-tighter"
                   >
                     <option value="or">Odia (Default)</option>
@@ -1663,7 +1664,7 @@ Sample tone for Class 6-10:
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest">Topic Title</label>
-                  <button 
+                  <button
                     type="button"
                     onClick={handleGenerateWithAI}
                     disabled={isGeneratingAI || !newChapter.title}
@@ -1673,10 +1674,10 @@ Sample tone for Class 6-10:
                     {isGeneratingAI ? 'Processing AI Magic...' : 'AI Magic: Generate Content'}
                   </button>
                 </div>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={newChapter.title}
-                  onChange={(e) => setNewChapter({...newChapter, title: e.target.value})}
+                  onChange={(e) => setNewChapter({ ...newChapter, title: e.target.value })}
                   className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-emerald-500/30 font-bold text-lg tracking-tight"
                   placeholder="e.g. Introduction to Organic Chemistry"
                 />
@@ -1695,7 +1696,7 @@ Sample tone for Class 6-10:
                           onChange={(e) => {
                             const newVideos = [...newChapter.videos];
                             newVideos[index].url = e.target.value;
-                            setNewChapter({...newChapter, videos: newVideos});
+                            setNewChapter({ ...newChapter, videos: newVideos });
                           }}
                           className="flex-[2] bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none text-sm font-medium"
                           placeholder="Video URL"
@@ -1706,7 +1707,7 @@ Sample tone for Class 6-10:
                           onChange={(e) => {
                             const newVideos = [...newChapter.videos];
                             newVideos[index].teacherOrChannel = e.target.value;
-                            setNewChapter({...newChapter, videos: newVideos});
+                            setNewChapter({ ...newChapter, videos: newVideos });
                           }}
                           className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none text-sm font-medium"
                           placeholder="Instructor"
@@ -1715,7 +1716,7 @@ Sample tone for Class 6-10:
                           type="button"
                           onClick={() => {
                             const newVideos = newChapter.videos.filter((_, i) => i !== index);
-                            setNewChapter({...newChapter, videos: newVideos});
+                            setNewChapter({ ...newChapter, videos: newVideos });
                           }}
                           className="w-10 h-10 flex items-center justify-center text-red-400 hover:bg-red-500/10 rounded-xl transition-all"
                         >
@@ -1727,7 +1728,7 @@ Sample tone for Class 6-10:
                   <button
                     type="button"
                     onClick={() => {
-                      setNewChapter({...newChapter, videos: [...newChapter.videos, { url: '', teacherOrChannel: '' }]});
+                      setNewChapter({ ...newChapter, videos: [...newChapter.videos, { url: '', teacherOrChannel: '' }] });
                     }}
                     className="flex items-center gap-2 text-emerald-400 text-[10px] font-black uppercase tracking-widest bg-emerald-500/5 px-4 py-2 rounded-xl border border-emerald-500/10 hover:bg-emerald-500/10 transition-all"
                   >
@@ -1740,29 +1741,29 @@ Sample tone for Class 6-10:
                   <div className="space-y-4">
                     <div className="relative">
                       <Link2 className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
-                      <input 
+                      <input
                         type="text"
                         value={newChapter.notesUrl}
-                        onChange={(e) => setNewChapter({...newChapter, notesUrl: e.target.value})}
+                        onChange={(e) => setNewChapter({ ...newChapter, notesUrl: e.target.value })}
                         className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 text-sm font-medium"
                         placeholder="External Resource Link (G-Drive/Cloud)"
                       />
                     </div>
                     <div className="flex items-center gap-4">
-                      <input 
-                        type="file" 
+                      <input
+                        type="file"
                         accept=".pdf,.doc,.docx"
                         onChange={async (e) => {
                           const file = e.target.files?.[0];
                           if (file) {
                             const url = await handleFileUpload(file);
-                            if (url) setNewChapter({...newChapter, notesUrl: url});
+                            if (url) setNewChapter({ ...newChapter, notesUrl: url });
                           }
                         }}
                         className="hidden"
                         id="notes-upload"
                       />
-                      <label 
+                      <label
                         htmlFor="notes-upload"
                         className="flex-1 cursor-pointer flex items-center justify-center gap-3 px-6 py-4 bg-white/5 hover:bg-white/10 text-white rounded-2xl border border-white/10 transition-all font-black text-[10px] uppercase tracking-widest"
                       >
@@ -1792,9 +1793,9 @@ Sample tone for Class 6-10:
                   </div>
                   <span className="text-[10px] font-bold text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 px-4 py-1 rounded-full uppercase tracking-widest">Active</span>
                 </div>
-                <textarea 
+                <textarea
                   value={newChapter.bulkQa}
-                  onChange={(e) => setNewChapter({...newChapter, bulkQa: e.target.value})}
+                  onChange={(e) => setNewChapter({ ...newChapter, bulkQa: e.target.value })}
                   placeholder={`Format: Q1: Question? A1: Answer...`}
                   className="w-full h-[400px] bg-black/40 border border-white/5 rounded-3xl px-8 py-8 text-emerald-50 font-mono text-sm focus:outline-none focus:border-emerald-500/20 transition-all leading-relaxed custom-scrollbar"
                 />
@@ -1815,12 +1816,11 @@ Sample tone for Class 6-10:
                       <button
                         key={s}
                         type="button"
-                        onClick={() => setNewChapter({...newChapter, status: s as 'draft' | 'published'})}
-                        className={`flex-1 py-4 rounded-2xl border font-black text-[10px] uppercase tracking-[0.2em] transition-all duration-300 ${
-                          (newChapter.status || 'draft') === s 
-                          ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.1)]' 
-                          : 'bg-white/5 border-white/5 text-slate-500 hover:text-slate-400 hover:bg-white/10'
-                        }`}
+                        onClick={() => setNewChapter({ ...newChapter, status: s as 'draft' | 'published' })}
+                        className={`flex-1 py-4 rounded-2xl border font-black text-[10px] uppercase tracking-[0.2em] transition-all duration-300 ${(newChapter.status || 'draft') === s
+                            ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.1)]'
+                            : 'bg-white/5 border-white/5 text-slate-500 hover:text-slate-400 hover:bg-white/10'
+                          }`}
                       >
                         {s}
                       </button>
@@ -1829,10 +1829,10 @@ Sample tone for Class 6-10:
                 </div>
                 <div className="flex-1 space-y-3">
                   <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Curriculum Sequence</label>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     value={newChapter.order}
-                    onChange={(e) => setNewChapter({...newChapter, order: parseInt(e.target.value)})}
+                    onChange={(e) => setNewChapter({ ...newChapter, order: parseInt(e.target.value) })}
                     className="w-full bg-white/5 border border-white/5 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-emerald-500/30 font-black text-center"
                     placeholder="Order ID"
                   />
@@ -1840,14 +1840,14 @@ Sample tone for Class 6-10:
               </div>
 
               <div className="flex gap-4 pt-8">
-                <button 
+                <button
                   type="button"
                   onClick={() => setIsAddingChapter(false)}
                   className="flex-1 bg-white/5 hover:bg-white/10 text-slate-400 py-5 rounded-[2rem] font-black text-[10px] uppercase tracking-[0.2em] transition-all border border-white/5"
                 >
                   Discard Changes
                 </button>
-                <button 
+                <button
                   type="submit"
                   className="flex-[2] bg-gradient-to-r from-emerald-600 to-teal-600 hover:scale-[1.02] text-white rounded-[2rem] py-5 font-black text-[12px] uppercase tracking-[0.3em] transition-all shadow-2xl shadow-emerald-600/40 active:scale-95"
                 >
@@ -1869,23 +1869,22 @@ Sample tone for Class 6-10:
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredContent.map((c: any, i: number) => (
-              <motion.div 
-                key={c.id} 
-                initial={{ opacity: 0, scale: 0.9 }} 
+              <motion.div
+                key={c.id}
+                initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: i * 0.05 }}
                 className="glass-card p-6 rounded-[2.5rem] border-white/5 group hover:border-emerald-500/30 transition-all duration-500 flex flex-col"
               >
                 <div className="flex items-center justify-between mb-4">
-                  <span className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border ${
-                    c.status === 'published' 
-                    ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' 
-                    : 'bg-amber-500/10 border-amber-500/20 text-amber-400'
-                  }`}>
+                  <span className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border ${c.status === 'published'
+                      ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                      : 'bg-amber-500/10 border-amber-500/20 text-amber-400'
+                    }`}>
                     {c.status || 'draft'}
                   </span>
                   <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                    <button 
+                    <button
                       onClick={() => {
                         setNewChapter({
                           ...c,
@@ -1900,7 +1899,7 @@ Sample tone for Class 6-10:
                     >
                       <Edit2 size={14} />
                     </button>
-                    <button 
+                    <button
                       onClick={async () => {
                         if (confirmAction === `delete_topic_${c.id}`) {
                           try {
@@ -1923,11 +1922,10 @@ Sample tone for Class 6-10:
                           setTimeout(() => setConfirmAction(null), 5000);
                         }
                       }}
-                      className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all ${
-                        confirmAction === `delete_topic_${c.id}` 
-                        ? 'bg-red-500 text-white w-20 text-[10px] font-black uppercase' 
-                        : 'bg-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-400'
-                      }`}
+                      className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all ${confirmAction === `delete_topic_${c.id}`
+                          ? 'bg-red-500 text-white w-20 text-[10px] font-black uppercase'
+                          : 'bg-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-400'
+                        }`}
                     >
                       {confirmAction === `delete_topic_${c.id}` ? "PURGE?" : <Trash2 size={14} />}
                     </button>
@@ -1960,7 +1958,7 @@ Sample tone for Class 6-10:
       showNotification("Please enter at least one Chapter ID.", "error");
       return;
     }
-    
+
     setLoading(true);
     try {
       let pulledQuestions: any[] = [];
@@ -1977,7 +1975,7 @@ Sample tone for Class 6-10:
           }
         }
       }
-      
+
       if (pulledQuestions.length > 0) {
         setNewTest((prev: any) => ({
           ...prev,
@@ -2001,18 +1999,17 @@ Sample tone for Class 6-10:
         <h3 className="text-xl font-bold text-white">Monthly Tests Management</h3>
         <div className="flex gap-2">
           {monthlyTests.length > 0 && (
-            <button 
+            <button
               onClick={handleDeleteAllTests}
-              className={`px-4 py-2 rounded-xl flex items-center gap-2 transition-all ${
-                confirmAction === 'delete_all_tests'
-                ? 'bg-red-600 text-white font-bold'
-                : 'bg-red-600/20 hover:bg-red-600/30 text-red-500 border border-red-500/20'
-              }`}
+              className={`px-4 py-2 rounded-xl flex items-center gap-2 transition-all ${confirmAction === 'delete_all_tests'
+                  ? 'bg-red-600 text-white font-bold'
+                  : 'bg-red-600/20 hover:bg-red-600/30 text-red-500 border border-red-500/20'
+                }`}
             >
               <Trash2 size={18} /> {confirmAction === 'delete_all_tests' ? 'Confirm Delete All Tests?' : 'Clear All Tests'}
             </button>
           )}
-          <button 
+          <button
             onClick={() => {
               setNewTest({
                 title: '',
@@ -2040,19 +2037,19 @@ Sample tone for Class 6-10:
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="lg:col-span-2">
               <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Test Title</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={newTest.title}
-                onChange={(e) => setNewTest({...newTest, title: e.target.value})}
+                onChange={(e) => setNewTest({ ...newTest, title: e.target.value })}
                 className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
                 placeholder="e.g. Chapter 1 & 2 Quiz"
               />
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class</label>
-              <select 
+              <select
                 value={newTest.class}
-                onChange={(e) => setNewTest({...newTest, class: e.target.value})}
+                onChange={(e) => setNewTest({ ...newTest, class: e.target.value })}
                 className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white cursor-pointer"
               >
                 {Object.entries(translations['en'].classes).map(([key, label]) => (
@@ -2062,9 +2059,9 @@ Sample tone for Class 6-10:
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Subject</label>
-              <select 
+              <select
                 value={newTest.subject}
-                onChange={(e) => setNewTest({...newTest, subject: e.target.value})}
+                onChange={(e) => setNewTest({ ...newTest, subject: e.target.value })}
                 className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white cursor-pointer"
               >
                 {Object.entries(translations['en'].subjects).map(([key, label]) => (
@@ -2074,9 +2071,9 @@ Sample tone for Class 6-10:
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Test Language</label>
-              <select 
+              <select
                 value={newTest.language}
-                onChange={(e) => setNewTest({...newTest, language: e.target.value})}
+                onChange={(e) => setNewTest({ ...newTest, language: e.target.value })}
                 className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white cursor-pointer"
               >
                 <option value="or">Odia</option>
@@ -2086,11 +2083,11 @@ Sample tone for Class 6-10:
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-             <div>
+            <div>
               <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Month</label>
-              <select 
+              <select
                 value={newTest.month}
-                onChange={(e) => setNewTest({...newTest, month: e.target.value})}
+                onChange={(e) => setNewTest({ ...newTest, month: e.target.value })}
                 className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white"
               >
                 {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map(m => (
@@ -2100,33 +2097,33 @@ Sample tone for Class 6-10:
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Year</label>
-              <input 
-                type="number" 
+              <input
+                type="number"
                 value={newTest.year}
-                onChange={(e) => setNewTest({...newTest, year: parseInt(e.target.value)})}
+                onChange={(e) => setNewTest({ ...newTest, year: parseInt(e.target.value) })}
                 className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white"
               />
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Scheduled Date (Goes live on this day)</label>
-              <input 
-                type="date" 
+              <input
+                type="date"
                 value={newTest.scheduledDate}
-                onChange={(e) => setNewTest({...newTest, scheduledDate: e.target.value})}
+                onChange={(e) => setNewTest({ ...newTest, scheduledDate: e.target.value })}
                 className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white"
               />
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Chapter IDs (Optional)</label>
               <div className="flex gap-2">
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={(newTest.chapterIds || []).join(', ')}
-                  onChange={(e) => setNewTest({...newTest, chapterIds: e.target.value.split(',').map(id => id.trim()).filter(Boolean)})}
+                  onChange={(e) => setNewTest({ ...newTest, chapterIds: e.target.value.split(',').map(id => id.trim()).filter(Boolean) })}
                   className="flex-1 bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none"
                   placeholder="ID1, ID2"
                 />
-                <button 
+                <button
                   onClick={handlePullQuestionsFromChapters}
                   className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded-xl text-xs font-bold transition-all"
                 >
@@ -2141,7 +2138,7 @@ Sample tone for Class 6-10:
               <label className="block text-xs font-bold text-emerald-500 uppercase">Magic Bulk Question Paste</label>
               <div className="flex items-center gap-2">
                 <span className="text-[10px] text-slate-500">Format: [Marks] Q: ... A: ... B: ... Ans: ...</span>
-                <button 
+                <button
                   onClick={handleBulkParseQuestions}
                   disabled={!bulkTestQuestions || isParsingBulk}
                   className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-1.5 rounded-lg text-xs font-bold disabled:opacity-50"
@@ -2150,7 +2147,7 @@ Sample tone for Class 6-10:
                 </button>
               </div>
             </div>
-            <textarea 
+            <textarea
               value={bulkTestQuestions}
               onChange={(e) => setBulkTestQuestions(e.target.value)}
               className="w-full h-32 bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none font-mono"
@@ -2162,7 +2159,7 @@ Sample tone for Class 6-10:
             <div className="flex items-center justify-between">
               <h4 className="text-sm font-bold text-white uppercase tracking-wider">Question List ({newTest.questions.length} Questions | Total: {newTest.totalMarks} Marks)</h4>
               <div className="flex gap-2">
-                <button 
+                <button
                   type="button"
                   onClick={handleGenerateTestWithAI}
                   disabled={isGeneratingTestAI}
@@ -2171,11 +2168,11 @@ Sample tone for Class 6-10:
                   {isGeneratingTestAI ? <div className="animate-spin h-3 w-3 border-2 border-emerald-500 border-t-transparent rounded-full" /> : <Sparkles size={14} />}
                   AI Magic
                 </button>
-                <button 
+                <button
                   type="button"
                   onClick={() => {
                     const qs = [...newTest.questions, { question: '', options: ['', '', '', ''], correct_answer: '', marks: 1, type: 'mcq' }];
-                    setNewTest({...newTest, questions: qs, totalMarks: qs.reduce((acc, q) => acc + (q.marks || 0), 0)});
+                    setNewTest({ ...newTest, questions: qs, totalMarks: qs.reduce((acc, q) => acc + (q.marks || 0), 0) });
                   }}
                   className="text-xs text-emerald-500 hover:underline"
                 >
@@ -2183,7 +2180,7 @@ Sample tone for Class 6-10:
                 </button>
               </div>
             </div>
-            
+
             <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
               {newTest.questions.map((q: any, qIdx: number) => (
                 <div key={qIdx} className="bg-black/20 p-4 rounded-xl border border-white/5 space-y-3 relative group">
@@ -2191,18 +2188,18 @@ Sample tone for Class 6-10:
                     <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center font-bold text-xs">
                       {qIdx + 1}
                     </div>
-                    <input 
+                    <input
                       type="text"
                       placeholder={`Question text...`}
                       value={q.question}
                       onChange={(e) => {
                         const qs = [...newTest.questions];
                         qs[qIdx].question = e.target.value;
-                        setNewTest({...newTest, questions: qs});
+                        setNewTest({ ...newTest, questions: qs });
                       }}
                       className="flex-1 bg-transparent border-b border-white/10 text-white text-sm py-1 focus:outline-none focus:border-emerald-500"
                     />
-                    <select 
+                    <select
                       value={q.marks}
                       onChange={(e) => {
                         const marks = parseInt(e.target.value);
@@ -2211,54 +2208,54 @@ Sample tone for Class 6-10:
                         // Auto-set type based on marks as a default
                         if (marks > 1) qs[qIdx].type = 'subjective';
                         else qs[qIdx].type = 'mcq';
-                        setNewTest({...newTest, questions: qs, totalMarks: qs.reduce((acc, cur) => acc + (cur.marks || 0), 0)});
+                        setNewTest({ ...newTest, questions: qs, totalMarks: qs.reduce((acc, cur) => acc + (cur.marks || 0), 0) });
                       }}
                       className="bg-white/5 text-xs text-emerald-400 border border-emerald-500/30 rounded px-2 py-1 outline-none"
                     >
                       {[1, 2, 3, 5].map(m => <option key={m} value={m}>{m} Mark</option>)}
                     </select>
-                    <button 
+                    <button
                       type="button"
                       onClick={() => {
                         const qs = [...newTest.questions];
                         qs[qIdx].isGrace = !qs[qIdx].isGrace;
-                        setNewTest({...newTest, questions: qs});
+                        setNewTest({ ...newTest, questions: qs });
                       }}
                       className={`text-[10px] font-bold px-2 py-1 rounded transition-all flex items-center gap-1 ${q.isGrace ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' : 'bg-white/5 text-slate-500 hover:text-amber-500'}`}
                     >
                       <Sparkles size={10} />
                       {q.isGrace ? 'Grace Active' : 'Grace?'}
                     </button>
-                    <select 
+                    <select
                       value={q.type}
                       onChange={(e) => {
                         const qs = [...newTest.questions];
                         qs[qIdx].type = e.target.value;
                         if (e.target.value === 'subjective') qs[qIdx].options = [];
                         else if (qs[qIdx].options.length === 0) qs[qIdx].options = ['', '', '', ''];
-                        setNewTest({...newTest, questions: qs});
+                        setNewTest({ ...newTest, questions: qs });
                       }}
                       className="bg-white/5 text-[10px] text-slate-400 border border-white/10 rounded px-2 py-1 outline-none"
                     >
                       <option value="mcq">MCQ</option>
                       <option value="subjective">Subjective</option>
                     </select>
-                    <button 
+                    <button
                       type="button"
                       onClick={() => {
                         const qs = newTest.questions.filter((_: any, i: number) => i !== qIdx);
-                        setNewTest({...newTest, questions: qs, totalMarks: qs.reduce((acc, cur) => acc + (cur.marks || 0), 0)});
+                        setNewTest({ ...newTest, questions: qs, totalMarks: qs.reduce((acc, cur) => acc + (cur.marks || 0), 0) });
                       }}
                       className="text-red-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       <Trash2 size={14} />
                     </button>
                   </div>
-                  
+
                   {q.type === 'mcq' && (
                     <div className="grid grid-cols-2 gap-2 pl-12">
                       {q.options.map((opt: string, oIdx: number) => (
-                        <input 
+                        <input
                           key={oIdx}
                           type="text"
                           placeholder={`Option ${String.fromCharCode(65 + oIdx)}`}
@@ -2266,7 +2263,7 @@ Sample tone for Class 6-10:
                           onChange={(e) => {
                             const qs = [...newTest.questions];
                             qs[qIdx].options[oIdx] = e.target.value;
-                            setNewTest({...newTest, questions: qs});
+                            setNewTest({ ...newTest, questions: qs });
                           }}
                           className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500/50"
                         />
@@ -2275,13 +2272,13 @@ Sample tone for Class 6-10:
                   )}
 
                   <div className="pl-12">
-                    <textarea 
+                    <textarea
                       placeholder={q.type === 'mcq' ? "Correct Answer (e.g. Option text or A/B/C/D)" : "Model Answer for Subjective Question"}
                       value={q.correct_answer}
                       onChange={(e) => {
                         const qs = [...newTest.questions];
                         qs[qIdx].correct_answer = e.target.value;
-                        setNewTest({...newTest, questions: qs});
+                        setNewTest({ ...newTest, questions: qs });
                       }}
                       className="w-full bg-emerald-500/5 border border-emerald-500/20 rounded-lg px-3 py-1.5 text-xs text-emerald-400 focus:outline-none min-h-[40px]"
                     />
@@ -2291,7 +2288,7 @@ Sample tone for Class 6-10:
             </div>
           </div>
           <div className="flex gap-4">
-            <button 
+            <button
               onClick={async () => {
                 try {
                   await addDoc(collection(firestore, 'monthly_tests'), {
@@ -2322,7 +2319,7 @@ Sample tone for Class 6-10:
             >
               Save Monthly Test
             </button>
-            <button 
+            <button
               onClick={() => setIsAddingTest(false)}
               className="px-8 bg-white/5 hover:bg-white/10 text-white rounded-xl py-3 font-semibold transition-all"
             >
@@ -2340,9 +2337,8 @@ Sample tone for Class 6-10:
                 <h4 className="text-white font-bold text-lg">{translations['en'].subjects[test.subject] || test.subject}</h4>
                 <p className="text-slate-400 text-sm">{test.class} • {test.month} {test.year}</p>
               </div>
-              <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${
-                test.status === 'published' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'
-              }`}>
+              <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${test.status === 'published' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'
+                }`}>
                 {test.status}
               </span>
             </div>
@@ -2354,7 +2350,7 @@ Sample tone for Class 6-10:
 
             <div className="flex gap-2 pt-2">
               {test.status === 'draft' && (
-                <button 
+                <button
                   onClick={async () => {
                     try {
                       await updateDoc(doc(firestore, 'monthly_tests', test.id), { status: 'published' });
@@ -2368,7 +2364,7 @@ Sample tone for Class 6-10:
                 </button>
               )}
               {!test.results_published && test.status === 'published' && (
-                <button 
+                <button
                   onClick={async () => {
                     if (confirmAction === `publish_results_${test.id}`) {
                       try {
@@ -2376,11 +2372,11 @@ Sample tone for Class 6-10:
                         const groupTestIds = monthlyTests
                           .filter((t: any) => t.id === test.id || (t.translationGroupId && t.translationGroupId === test.translationGroupId))
                           .map((t: any) => t.id);
-                        
+
                         const q = query(collection(firestore, 'monthly_test_submissions'), where('testId', 'in', groupTestIds));
                         const snap = await getDocs(q);
                         const submissions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                        
+
                         // Sort by score desc, then time asc
                         submissions.sort((a: any, b: any) => {
                           if (b.score !== a.score) return b.score - a.score;
@@ -2419,17 +2415,17 @@ Sample tone for Class 6-10:
                   Results Published
                 </div>
               )}
-              <button 
+              <button
                 onClick={async () => {
                   setSelectedTestIdForSubmissions(test.id);
                   const q = query(collection(firestore, 'monthly_test_submissions'), where('testId', '==', test.id));
                   const snap = await getDocs(q);
                   const subs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                  
+
                   // Fetch unique user IDs from submissions
                   const userIds = Array.from(new Set(subs.map((s: any) => s.userId)));
                   const userProfiles: Record<string, any> = {};
-                  
+
                   // Fetch user profiles in batches (max 10 for 'in' query)
                   for (let i = 0; i < userIds.length; i += 10) {
                     const batch = userIds.slice(i, i + 10);
@@ -2439,7 +2435,7 @@ Sample tone for Class 6-10:
                       userProfiles[doc.id] = doc.data();
                     });
                   }
-                  
+
                   setTestSubmissions(subs.map((s: any) => ({
                     ...s,
                     currentProfileName: userProfiles[s.userId]?.name || userProfiles[s.userId]?.displayName || 'N/A'
@@ -2449,7 +2445,7 @@ Sample tone for Class 6-10:
               >
                 View Submissions
               </button>
-              <button 
+              <button
                 onClick={async () => {
                   if (confirmAction === `delete_test_${test.id}`) {
                     try {
@@ -2485,17 +2481,16 @@ Sample tone for Class 6-10:
               <p className="text-slate-400 text-sm">Reviewing results and anti-cheating logs</p>
             </div>
             <div className="flex items-center gap-4">
-              <button 
+              <button
                 onClick={() => setFilterPending(!filterPending)}
-                className={`px-6 py-3 rounded-2xl text-sm font-bold transition-all border ${
-                  filterPending 
-                  ? 'bg-amber-500/20 border-amber-500 text-amber-500 shadow-lg shadow-amber-500/20' 
-                  : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
-                }`}
+                className={`px-6 py-3 rounded-2xl text-sm font-bold transition-all border ${filterPending
+                    ? 'bg-amber-500/20 border-amber-500 text-amber-500 shadow-lg shadow-amber-500/20'
+                    : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
+                  }`}
               >
                 {filterPending ? 'Showing: Pending Review' : 'Filter: Needs Review'}
               </button>
-              <button 
+              <button
                 onClick={() => setSelectedTestIdForSubmissions(null)}
                 className="flex items-center gap-2 px-5 py-3 bg-white/5 hover:bg-white/10 rounded-2xl text-slate-400 hover:text-white transition-all border border-white/10 group"
               >
@@ -2506,7 +2501,7 @@ Sample tone for Class 6-10:
           </div>
 
           {/* Report Statistics Summary */}
-          {Object.keys(testSubmissions.reduce((acc, sub) => ({...acc, ...(sub.reports || {})}), {})).length > 0 && (
+          {Object.keys(testSubmissions.reduce((acc, sub) => ({ ...acc, ...(sub.reports || {}) }), {})).length > 0 && (
             <div className="bg-amber-500/10 border border-amber-500/20 p-6 rounded-3xl mb-8">
               <div className="flex items-center gap-3 mb-4">
                 <Flag className="text-amber-500" size={20} />
@@ -2546,214 +2541,213 @@ Sample tone for Class 6-10:
                     if (!filterPending) return true;
                     // Find if any subjective question (marks > 1) is not graded
                     const test = monthlyTests.find(t => t.id === sub.testId);
-                    return test?.questions?.some((q: any, i: number) => 
+                    return test?.questions?.some((q: any, i: number) =>
                       (q.type === 'subjective' || q.marks > 1) && sub.subjectiveScores?.[i] === undefined
                     );
                   })
                   .map((sub) => {
                     const test = monthlyTests.find(t => t.id === sub.testId);
-                  return (
-                    <div key={sub.id} className="bg-white/5 border border-white/10 p-6 rounded-3xl space-y-6">
-                      <div className="flex flex-wrap items-center justify-between gap-4">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-xl font-bold text-white">
-                            {sub.userName?.[0] || 'S'}
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <h4 className="text-white font-bold">{sub.userName}</h4>
-                              {sub.currentProfileName && sub.currentProfileName !== 'N/A' && sub.currentProfileName !== sub.userName && (
-                                <div className="flex items-center gap-2">
-                                  <span className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-500 text-[9px] font-bold uppercase tracking-widest border border-amber-500/20">
-                                    Mismatch
-                                  </span>
-                                  <button 
-                                    onClick={async () => {
-                                      if (confirm(`Change name on certificate from "${sub.userName}" to "${sub.currentProfileName}"?`)) {
-                                        try {
-                                          await updateDoc(doc(firestore, 'monthly_test_submissions', sub.id), {
-                                            userName: sub.currentProfileName
-                                          });
-                                          setTestSubmissions(prev => prev.map(s => s.id === sub.id ? { ...s, userName: sub.currentProfileName } : s));
-                                          showNotification("Name updated on certificate", 'success');
-                                        } catch (err) {
-                                          showNotification("Failed to update name", 'error');
-                                        }
-                                      }
-                                    }}
-                                    className="p-1 hover:bg-emerald-500/10 text-emerald-500 rounded transition-all group"
-                                    title={`Sync to profile name: ${sub.currentProfileName}`}
-                                  >
-                                    <RefreshCw size={12} className="group-hover:rotate-180 transition-transform duration-500" />
-                                  </button>
-                                </div>
-                              )}
-                            </div>
-                            <p className="text-xs text-slate-500">{sub.userEmail || sub.userId} • Class {sub.class}</p>
-                            {sub.currentProfileName && sub.currentProfileName !== 'N/A' && sub.currentProfileName !== sub.userName && (
-                              <p className="text-[9px] text-slate-500 italic mt-0.5">Profile Name: {sub.currentProfileName}</p>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-8">
-                          <div className="text-center">
-                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Auto Score</p>
-                            <p className="text-2xl font-black text-emerald-400">{sub.score}/{sub.totalMaxMarks || sub.totalQuestions}</p>
-                          </div>
-                          <div className="text-center">
-                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Final Score</p>
-                            <p className="text-2xl font-black text-blue-400">{sub.finalScore || sub.score}</p>
-                          </div>
-                          <div className="text-center">
-                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Violations</p>
-                            <p className={`text-2xl font-black ${sub.violations > 0 ? 'text-red-500' : 'text-slate-500'}`}>{sub.violations || 0}</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="bg-black/20 p-4 rounded-2xl border border-white/5">
-                          <h5 className="text-xs font-black text-slate-500 uppercase tracking-widest mb-3">Time Analysis (Seconds)</h5>
-                          <div className="flex flex-wrap gap-2">
-                            {Object.entries(sub.timeSpent || {}).map(([qIdx, sec]: any) => (
-                              <div key={qIdx} className={`px-3 py-1 rounded-lg text-[10px] font-bold ${sec < 5 ? 'bg-red-500/20 text-red-500' : 'bg-white/5 text-slate-400'}`}>
-                                Q{parseInt(qIdx) + 1}: {sec}s
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="bg-black/20 p-4 rounded-2xl border border-white/5">
-                          <h5 className="text-xs font-black text-slate-500 uppercase tracking-widest mb-3">Anti-Cheating Status</h5>
+                    return (
+                      <div key={sub.id} className="bg-white/5 border border-white/10 p-6 rounded-3xl space-y-6">
+                        <div className="flex flex-wrap items-center justify-between gap-4">
                           <div className="flex items-center gap-4">
-                            <div className={`flex items-center gap-2 text-xs font-bold ${sub.violations > 2 ? 'text-red-500' : sub.violations > 0 ? 'text-amber-500' : 'text-emerald-500'}`}>
-                              {sub.violations > 0 ? <XCircle size={14}/> : <CheckCircle2 size={14}/>}
-                              {sub.violations > 2 ? 'HIGH RISK' : sub.violations > 0 ? 'MODERATE RISK' : 'CLEAN'}
+                            <div className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-xl font-bold text-white">
+                              {sub.userName?.[0] || 'S'}
                             </div>
-                            <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest">
-                              Submitted: {parseLogTimestamp(sub.submittedAt)?.toLocaleString() || 'N/A'}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* All Questions & Manual Marking Section */}
-                      <div className="space-y-4">
-                        <h5 className="text-xs font-black text-slate-500 uppercase tracking-widest border-b border-white/5 pb-2">Question-wise Review & Grading</h5>
-                        {test?.questions?.map((q: any, i: number) => {
-                          const studentAns = sub.answers[i];
-                          const isObjectAns = typeof studentAns === 'object' && studentAns !== null;
-                          const answerText = isObjectAns ? studentAns.text : (q.type === 'mcq' ? q.options[studentAns] : studentAns);
-                          const imageUrl = isObjectAns ? studentAns.imageUrl : null;
-
-                          return (
-                            <div key={i} className="bg-white/5 p-5 rounded-2xl border border-white/10 space-y-4">
-                              <div className="flex justify-between items-start">
-                                <div className="space-y-1">
-                                  <p className="text-sm text-white font-medium">Q{i + 1}: {q.question}</p>
-                                  <div className="flex gap-2">
-                                    <span className="text-[10px] font-bold text-slate-500 bg-white/5 px-2 py-0.5 rounded uppercase">Type: {q.type || 'MCQ'}</span>
-                                    {q.type === 'mcq' && <span className="text-[10px] font-bold text-emerald-500/80 bg-emerald-500/5 px-2 py-0.5 rounded uppercase">Correct: {q.correct_answer}</span>}
-                                  </div>
-                                </div>
-                                <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2 py-1 rounded shrink-0">{q.marks || 1} Marks</span>
-                              </div>
-
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="bg-black/30 p-4 rounded-xl text-slate-300 text-sm italic min-h-[60px] flex items-center">
-                                  {answerText || <span className="text-slate-600">No text answer provided.</span>}
-                                </div>
-                                {imageUrl && (
-                                  <a href={imageUrl} target="_blank" rel="noopener noreferrer" className="relative group aspect-video rounded-xl overflow-hidden border border-white/5 bg-black/20 block">
-                                    <img src={imageUrl} alt="Student Work" className="w-full h-full object-contain" />
-                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
-                                      <span className="text-white text-xs font-bold flex items-center gap-2">
-                                        <ExternalLink size={14} /> View Full Image
-                                      </span>
-                                    </div>
-                                  </a>
-                                )}
-                              </div>
-
-                              <div className="flex flex-col gap-3 pt-2 border-t border-white/5">
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-4">
-                                    <label className="text-[10px] font-bold text-slate-500 uppercase">Award Marks:</label>
-                                    <div className="flex flex-wrap gap-2">
-                                      {[...Array((q.marks || 1) + 1)].map((_, mark) => (
-                                        <button 
-                                          key={mark}
-                                          onClick={async () => {
-                                            const newScores = { ...(sub.subjectiveScores || {}), [i]: mark };
-                                            const totalManual = Object.values(newScores).reduce((a: any, b: any) => (a as number) + (b as number), 0);
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <h4 className="text-white font-bold">{sub.userName}</h4>
+                                {sub.currentProfileName && sub.currentProfileName !== 'N/A' && sub.currentProfileName !== sub.userName && (
+                                  <div className="flex items-center gap-2">
+                                    <span className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-500 text-[9px] font-bold uppercase tracking-widest border border-amber-500/20">
+                                      Mismatch
+                                    </span>
+                                    <button
+                                      onClick={async () => {
+                                        if (confirm(`Change name on certificate from "${sub.userName}" to "${sub.currentProfileName}"?`)) {
+                                          try {
                                             await updateDoc(doc(firestore, 'monthly_test_submissions', sub.id), {
-                                              subjectiveScores: newScores,
-                                              finalScore: (sub.score || 0) + (totalManual as number)
+                                              userName: sub.currentProfileName
                                             });
-                                            setTestSubmissions(prev => prev.map(s => s.id === sub.id ? { ...s, subjectiveScores: newScores, finalScore: (sub.score || 0) + (totalManual as number) } : s));
-                                          }}
-                                          className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold transition-all ${
-                                            (sub.subjectiveScores?.[i] === mark) 
-                                            ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20 scale-110' 
-                                            : 'bg-white/5 text-slate-500 hover:bg-white/10'
-                                          }`}
-                                        >
-                                          {mark}
-                                        </button>
-                                      ))}
-                                    </div>
-                                  </div>
-
-                                  <button 
-                                    onClick={async () => {
-                                      try {
-                                        // Set loading state (we could use a local state but for now just console)
-                                        console.log("AI Grading starting...");
-                                        const result = await gradeSubjectiveAnswer(
-                                          q.question,
-                                          q.correct_answer || '',
-                                          answerText,
-                                          imageUrl,
-                                          q.marks || 1,
-                                          'or'
-                                        );
-                                        
-                                        if (result.suggestedMark !== undefined) {
-                                          if (confirm(`AI suggests ${result.suggestedMark} marks.\nJustification: ${result.justification}\n\nApply this mark?`)) {
-                                            const newScores = { ...(sub.subjectiveScores || {}), [i]: result.suggestedMark };
-                                            const totalManual = Object.values(newScores).reduce((a: any, b: any) => (a as number) + (b as number), 0);
-                                            await updateDoc(doc(firestore, 'monthly_test_submissions', sub.id), {
-                                              subjectiveScores: newScores,
-                                              aiJustifications: { ...(sub.aiJustifications || {}), [i]: result.justification },
-                                              finalScore: (sub.score || 0) + (totalManual as number)
-                                            });
-                                            setTestSubmissions(prev => prev.map(s => s.id === sub.id ? { ...s, subjectiveScores: newScores, finalScore: (sub.score || 0) + (totalManual as number) } : s));
+                                            setTestSubmissions(prev => prev.map(s => s.id === sub.id ? { ...s, userName: sub.currentProfileName } : s));
+                                            showNotification("Name updated on certificate", 'success');
+                                          } catch (err) {
+                                            showNotification("Failed to update name", 'error');
                                           }
                                         }
-                                      } catch (err) {
-                                        console.error("AI Grading Error:", err);
-                                        alert("AI Assistant failed to grade. Please try again.");
-                                      }
-                                    }}
-                                    className="px-4 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 rounded-xl text-[10px] font-black uppercase tracking-widest border border-emerald-500/20 flex items-center gap-2 transition-all"
-                                  >
-                                    <Sparkles size={14} /> AI Suggest Mark
-                                  </button>
-                                </div>
-                                {sub.aiJustifications?.[i] && (
-                                  <p className="text-[10px] text-slate-500 italic bg-white/5 p-2 rounded-lg border border-white/5">
-                                    AI Note: {sub.aiJustifications[i]}
-                                  </p>
+                                      }}
+                                      className="p-1 hover:bg-emerald-500/10 text-emerald-500 rounded transition-all group"
+                                      title={`Sync to profile name: ${sub.currentProfileName}`}
+                                    >
+                                      <RefreshCw size={12} className="group-hover:rotate-180 transition-transform duration-500" />
+                                    </button>
+                                  </div>
                                 )}
                               </div>
+                              <p className="text-xs text-slate-500">{sub.userEmail || sub.userId} • Class {sub.class}</p>
+                              {sub.currentProfileName && sub.currentProfileName !== 'N/A' && sub.currentProfileName !== sub.userName && (
+                                <p className="text-[9px] text-slate-500 italic mt-0.5">Profile Name: {sub.currentProfileName}</p>
+                              )}
                             </div>
-                          );
-                        })}
+                          </div>
+
+                          <div className="flex items-center gap-8">
+                            <div className="text-center">
+                              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Auto Score</p>
+                              <p className="text-2xl font-black text-emerald-400">{sub.score}/{sub.totalMaxMarks || sub.totalQuestions}</p>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Final Score</p>
+                              <p className="text-2xl font-black text-blue-400">{sub.finalScore || sub.score}</p>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Violations</p>
+                              <p className={`text-2xl font-black ${sub.violations > 0 ? 'text-red-500' : 'text-slate-500'}`}>{sub.violations || 0}</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="bg-black/20 p-4 rounded-2xl border border-white/5">
+                            <h5 className="text-xs font-black text-slate-500 uppercase tracking-widest mb-3">Time Analysis (Seconds)</h5>
+                            <div className="flex flex-wrap gap-2">
+                              {Object.entries(sub.timeSpent || {}).map(([qIdx, sec]: any) => (
+                                <div key={qIdx} className={`px-3 py-1 rounded-lg text-[10px] font-bold ${sec < 5 ? 'bg-red-500/20 text-red-500' : 'bg-white/5 text-slate-400'}`}>
+                                  Q{parseInt(qIdx) + 1}: {sec}s
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="bg-black/20 p-4 rounded-2xl border border-white/5">
+                            <h5 className="text-xs font-black text-slate-500 uppercase tracking-widest mb-3">Anti-Cheating Status</h5>
+                            <div className="flex items-center gap-4">
+                              <div className={`flex items-center gap-2 text-xs font-bold ${sub.violations > 2 ? 'text-red-500' : sub.violations > 0 ? 'text-amber-500' : 'text-emerald-500'}`}>
+                                {sub.violations > 0 ? <XCircle size={14} /> : <CheckCircle2 size={14} />}
+                                {sub.violations > 2 ? 'HIGH RISK' : sub.violations > 0 ? 'MODERATE RISK' : 'CLEAN'}
+                              </div>
+                              <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest">
+                                Submitted: {parseLogTimestamp(sub.submittedAt)?.toLocaleString() || 'N/A'}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* All Questions & Manual Marking Section */}
+                        <div className="space-y-4">
+                          <h5 className="text-xs font-black text-slate-500 uppercase tracking-widest border-b border-white/5 pb-2">Question-wise Review & Grading</h5>
+                          {test?.questions?.map((q: any, i: number) => {
+                            const studentAns = sub.answers[i];
+                            const isObjectAns = typeof studentAns === 'object' && studentAns !== null;
+                            const answerText = isObjectAns ? studentAns.text : (q.type === 'mcq' ? q.options[studentAns] : studentAns);
+                            const imageUrl = isObjectAns ? studentAns.imageUrl : null;
+
+                            return (
+                              <div key={i} className="bg-white/5 p-5 rounded-2xl border border-white/10 space-y-4">
+                                <div className="flex justify-between items-start">
+                                  <div className="space-y-1">
+                                    <p className="text-sm text-white font-medium">Q{i + 1}: {q.question}</p>
+                                    <div className="flex gap-2">
+                                      <span className="text-[10px] font-bold text-slate-500 bg-white/5 px-2 py-0.5 rounded uppercase">Type: {q.type || 'MCQ'}</span>
+                                      {q.type === 'mcq' && <span className="text-[10px] font-bold text-emerald-500/80 bg-emerald-500/5 px-2 py-0.5 rounded uppercase">Correct: {q.correct_answer}</span>}
+                                    </div>
+                                  </div>
+                                  <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2 py-1 rounded shrink-0">{q.marks || 1} Marks</span>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  <div className="bg-black/30 p-4 rounded-xl text-slate-300 text-sm italic min-h-[60px] flex items-center">
+                                    {answerText || <span className="text-slate-600">No text answer provided.</span>}
+                                  </div>
+                                  {imageUrl && (
+                                    <a href={imageUrl} target="_blank" rel="noopener noreferrer" className="relative group aspect-video rounded-xl overflow-hidden border border-white/5 bg-black/20 block">
+                                      <img src={imageUrl} alt="Student Work" className="w-full h-full object-contain" />
+                                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
+                                        <span className="text-white text-xs font-bold flex items-center gap-2">
+                                          <ExternalLink size={14} /> View Full Image
+                                        </span>
+                                      </div>
+                                    </a>
+                                  )}
+                                </div>
+
+                                <div className="flex flex-col gap-3 pt-2 border-t border-white/5">
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-4">
+                                      <label className="text-[10px] font-bold text-slate-500 uppercase">Award Marks:</label>
+                                      <div className="flex flex-wrap gap-2">
+                                        {[...Array((q.marks || 1) + 1)].map((_, mark) => (
+                                          <button
+                                            key={mark}
+                                            onClick={async () => {
+                                              const newScores = { ...(sub.subjectiveScores || {}), [i]: mark };
+                                              const totalManual = Object.values(newScores).reduce((a: any, b: any) => (a as number) + (b as number), 0);
+                                              await updateDoc(doc(firestore, 'monthly_test_submissions', sub.id), {
+                                                subjectiveScores: newScores,
+                                                finalScore: (sub.score || 0) + (totalManual as number)
+                                              });
+                                              setTestSubmissions(prev => prev.map(s => s.id === sub.id ? { ...s, subjectiveScores: newScores, finalScore: (sub.score || 0) + (totalManual as number) } : s));
+                                            }}
+                                            className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold transition-all ${(sub.subjectiveScores?.[i] === mark)
+                                                ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20 scale-110'
+                                                : 'bg-white/5 text-slate-500 hover:bg-white/10'
+                                              }`}
+                                          >
+                                            {mark}
+                                          </button>
+                                        ))}
+                                      </div>
+                                    </div>
+
+                                    <button
+                                      onClick={async () => {
+                                        try {
+                                          // Set loading state (we could use a local state but for now just console)
+                                          console.log("AI Grading starting...");
+                                          const result = await gradeSubjectiveAnswer(
+                                            q.question,
+                                            q.correct_answer || '',
+                                            answerText,
+                                            imageUrl,
+                                            q.marks || 1,
+                                            'or'
+                                          );
+
+                                          if (result.suggestedMark !== undefined) {
+                                            if (confirm(`AI suggests ${result.suggestedMark} marks.\nJustification: ${result.justification}\n\nApply this mark?`)) {
+                                              const newScores = { ...(sub.subjectiveScores || {}), [i]: result.suggestedMark };
+                                              const totalManual = Object.values(newScores).reduce((a: any, b: any) => (a as number) + (b as number), 0);
+                                              await updateDoc(doc(firestore, 'monthly_test_submissions', sub.id), {
+                                                subjectiveScores: newScores,
+                                                aiJustifications: { ...(sub.aiJustifications || {}), [i]: result.justification },
+                                                finalScore: (sub.score || 0) + (totalManual as number)
+                                              });
+                                              setTestSubmissions(prev => prev.map(s => s.id === sub.id ? { ...s, subjectiveScores: newScores, finalScore: (sub.score || 0) + (totalManual as number) } : s));
+                                            }
+                                          }
+                                        } catch (err) {
+                                          console.error("AI Grading Error:", err);
+                                          alert("AI Assistant failed to grade. Please try again.");
+                                        }
+                                      }}
+                                      className="px-4 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 rounded-xl text-[10px] font-black uppercase tracking-widest border border-emerald-500/20 flex items-center gap-2 transition-all"
+                                    >
+                                      <Sparkles size={14} /> AI Suggest Mark
+                                    </button>
+                                  </div>
+                                  {sub.aiJustifications?.[i] && (
+                                    <p className="text-[10px] text-slate-500 italic bg-white/5 p-2 rounded-lg border border-white/5">
+                                      AI Note: {sub.aiJustifications[i]}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
               </div>
             )}
           </div>
@@ -2865,11 +2859,11 @@ Sample tone for Class 6-10:
             <div className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1 relative z-10">Usage by Class</div>
             <div className="text-sm text-white mt-4 space-y-2 relative z-10">
               <div className="flex justify-between items-center bg-white/5 p-2 rounded-xl border border-white/5">
-                <span className="font-bold text-slate-400">Class 10:</span> 
+                <span className="font-bold text-slate-400">Class 10:</span>
                 <span className="font-black text-emerald-400">{class10Usage} queries</span>
               </div>
               <div className="flex justify-between items-center bg-white/5 p-2 rounded-xl border border-white/5">
-                <span className="font-bold text-slate-400">Class 3:</span> 
+                <span className="font-bold text-slate-400">Class 3:</span>
                 <span className="font-black text-blue-400">{class3Usage} queries</span>
               </div>
             </div>
@@ -2930,11 +2924,10 @@ Sample tone for Class 6-10:
                   <button
                     key={f}
                     onClick={() => setAiLogFilter(f)}
-                    className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                      aiLogFilter === f
+                    className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${aiLogFilter === f
                         ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20'
                         : 'text-slate-500 hover:text-white'
-                    }`}
+                      }`}
                   >
                     {f === 'today' ? 'Today' : f === 'week' ? '7 Days' : f === 'month' ? '30 Days' : 'All'}
                   </button>
@@ -2956,7 +2949,7 @@ Sample tone for Class 6-10:
                     <span className="text-md font-black text-indigo-400 tracking-tight group-hover:translate-x-1 transition-transform">{log.userName || 'Student'}</span>
                     <div className="flex items-center gap-2">
                       <span className="text-[10px] px-3 py-1 rounded-full bg-white/5 border border-white/10 text-slate-400 font-bold uppercase tracking-widest">{log.userClass || 'Unknown Class'}</span>
-                      <button 
+                      <button
                         onClick={() => handleDeleteAiLog(log.id)}
                         className="w-8 h-8 flex items-center justify-center rounded-xl bg-white/5 text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100"
                         title="Delete this log"
@@ -2986,7 +2979,7 @@ Sample tone for Class 6-10:
                 <div className="w-2 h-8 bg-emerald-500 rounded-full shadow-[0_0_10px_#10b981]"></div>
                 <span className="text-xl tracking-tighter">Brain Editor</span>
               </div>
-              <button 
+              <button
                 onClick={handleSaveSettings}
                 className="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-emerald-600/20 active:scale-95"
               >
@@ -2998,7 +2991,7 @@ Sample tone for Class 6-10:
                 Configure Gundulu's core consciousness. The text below is the master prompt injected into every interaction. Use it to define personality, expertise, and behavioral guardrails.
               </p>
               <div className="relative flex-1 min-h-[400px]">
-                <textarea 
+                <textarea
                   className="absolute inset-0 w-full h-full bg-black/40 border border-white/5 rounded-[2rem] p-6 text-sm text-emerald-400 font-mono focus:outline-none focus:border-emerald-500/30 transition-all resize-none custom-scrollbar leading-relaxed"
                   value={gunduluPromptDraft}
                   onChange={(e) => {
@@ -3062,11 +3055,10 @@ Sample tone for Class 6-10:
                       <td className="p-6 text-emerald-400 font-black text-lg">₹{amount}</td>
                       <td className="p-6 text-slate-500 text-xs font-medium">{displayDate}</td>
                       <td className="p-6">
-                        <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${
-                          isSuccess ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 
-                          isPending ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
-                          'bg-red-500/10 text-red-400 border-red-500/20'
-                        }`}>
+                        <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${isSuccess ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
+                            isPending ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
+                              'bg-red-500/10 text-red-400 border-red-500/20'
+                          }`}>
                           {isSuccess ? 'Settled' : isPending ? 'Pending' : (tx.status || 'Failed')}
                         </span>
                       </td>
@@ -3100,14 +3092,14 @@ Sample tone for Class 6-10:
         <div className="relative z-10 space-y-6">
           <h4 className="text-xl font-black text-white tracking-tight">Deploy New Broadcast</h4>
           <div className="space-y-4">
-            <textarea 
+            <textarea
               placeholder="Construct your message for the student body..."
               value={notificationMessage}
               onChange={(e) => setNotificationMessage(e.target.value)}
               className="w-full bg-black/40 border border-white/5 rounded-3xl p-6 text-white focus:outline-none focus:border-amber-500/30 transition-all min-h-[150px] leading-relaxed font-medium"
             />
             <div className="flex flex-col md:flex-row gap-4">
-              <select 
+              <select
                 value={notificationAudience}
                 onChange={(e) => setNotificationAudience(e.target.value)}
                 className="bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-amber-500/30 transition-all font-black text-[10px] uppercase tracking-widest cursor-pointer"
@@ -3116,7 +3108,7 @@ Sample tone for Class 6-10:
                 <option value="premium">Premium Scholars Only</option>
                 <option value="free">Standard Tier Only</option>
               </select>
-              <button 
+              <button
                 onClick={handleBroadcast}
                 disabled={loading}
                 className="flex-1 bg-amber-600 hover:bg-amber-500 text-white rounded-2xl py-4 font-black text-[10px] uppercase tracking-[0.2em] transition-all shadow-xl shadow-amber-900/20 active:scale-95 disabled:opacity-50"
@@ -3135,13 +3127,12 @@ Sample tone for Class 6-10:
             <span className="text-lg tracking-tight">Broadcast Archives</span>
           </div>
           {notifications.length > 0 && (
-            <button 
+            <button
               onClick={handleDeleteAllNotifications}
-              className={`text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-xl transition-all border ${
-                confirmAction === 'delete_all_notifications'
-                ? 'bg-red-500 text-white border-red-400'
-                : 'bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20'
-              }`}
+              className={`text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-xl transition-all border ${confirmAction === 'delete_all_notifications'
+                  ? 'bg-red-500 text-white border-red-400'
+                  : 'bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20'
+                }`}
             >
               <Trash2 size={14} className="inline mr-2" /> {confirmAction === 'delete_all_notifications' ? 'Confirm Archives Purge?' : 'Purge All Records'}
             </button>
@@ -3156,7 +3147,7 @@ Sample tone for Class 6-10:
                   {parseLogTimestamp(n.createdAt)?.toLocaleString() || 'Recently'}
                 </div>
               </div>
-              <button 
+              <button
                 onClick={async () => {
                   if (confirmAction === `delete_notif_${n.id}`) {
                     try {
@@ -3207,9 +3198,9 @@ Sample tone for Class 6-10:
         dailyMcqSubjectRotation: Array.isArray(systemSettings.dailyMcqSubjectRotation)
           ? systemSettings.dailyMcqSubjectRotation.map((item: string) => String(item || '').trim().toLowerCase()).filter(Boolean)
           : String(systemSettings.dailyMcqSubjectRotation || '')
-              .split(',')
-              .map((item: string) => item.trim().toLowerCase())
-              .filter(Boolean),
+            .split(',')
+            .map((item: string) => item.trim().toLowerCase())
+            .filter(Boolean),
         gunduluPrompt: gunduluPromptDraft || ''
       };
       const safePrivateSettings = {
@@ -3237,48 +3228,48 @@ Sample tone for Class 6-10:
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Global Monthly Price (₹)</label>
-            <input 
-              type="number" 
+            <input
+              type="number"
               value={systemSettings.monthlyPrice || 99}
               onChange={(e) => {
                 const val = e.target.value;
-                setSystemSettings({...systemSettings, monthlyPrice: val === "" ? "" : parseInt(val)});
+                setSystemSettings({ ...systemSettings, monthlyPrice: val === "" ? "" : parseInt(val) });
               }}
               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500/50"
             />
           </div>
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Global Yearly Price (₹)</label>
-            <input 
-              type="number" 
+            <input
+              type="number"
               value={systemSettings.yearlyPrice || 999}
               onChange={(e) => {
                 const val = e.target.value;
-                setSystemSettings({...systemSettings, yearlyPrice: val === "" ? "" : parseInt(val)});
+                setSystemSettings({ ...systemSettings, yearlyPrice: val === "" ? "" : parseInt(val) });
               }}
               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500/50"
             />
           </div>
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class 10 Monthly Price (₹)</label>
-            <input 
-              type="number" 
+            <input
+              type="number"
               value={systemSettings.class10MonthlyPrice || 99}
               onChange={(e) => {
                 const val = e.target.value;
-                setSystemSettings({...systemSettings, class10MonthlyPrice: val === "" ? "" : parseInt(val)});
+                setSystemSettings({ ...systemSettings, class10MonthlyPrice: val === "" ? "" : parseInt(val) });
               }}
               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500/50"
             />
           </div>
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Class 10 Yearly Price (₹)</label>
-            <input 
-              type="number" 
+            <input
+              type="number"
               value={systemSettings.class10YearlyPrice || 1499}
               onChange={(e) => {
                 const val = e.target.value;
-                setSystemSettings({...systemSettings, class10YearlyPrice: val === "" ? "" : parseInt(val)});
+                setSystemSettings({ ...systemSettings, class10YearlyPrice: val === "" ? "" : parseInt(val) });
               }}
               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500/50"
             />
@@ -3286,11 +3277,11 @@ Sample tone for Class 6-10:
         </div>
         <div>
           <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Leaderboard Rules</label>
-          <textarea 
+          <textarea
             className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-emerald-500/50 h-24"
             placeholder="Points calculation logic..."
             value={systemSettings.leaderboardRules || ''}
-            onChange={(e) => setSystemSettings({...systemSettings, leaderboardRules: e.target.value})}
+            onChange={(e) => setSystemSettings({ ...systemSettings, leaderboardRules: e.target.value })}
           />
         </div>
         <div>
@@ -3391,16 +3382,15 @@ Sample tone for Class 6-10:
                   key={key}
                   onClick={() => {
                     const current = systemSettings.enabledClasses || [];
-                    const next = isEnabled 
+                    const next = isEnabled
                       ? current.filter((c: string) => c !== key)
                       : [...current, key];
-                    setSystemSettings({...systemSettings, enabledClasses: next});
+                    setSystemSettings({ ...systemSettings, enabledClasses: next });
                   }}
-                  className={`flex items-center justify-between px-4 py-3 rounded-xl border transition-all ${
-                    isEnabled 
-                    ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400' 
-                    : 'bg-slate-900 border-white/10 text-slate-500'
-                  }`}
+                  className={`flex items-center justify-between px-4 py-3 rounded-xl border transition-all ${isEnabled
+                      ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400'
+                      : 'bg-slate-900 border-white/10 text-slate-500'
+                    }`}
                 >
                   <span className="text-sm font-medium">{label as string}</span>
                   {isEnabled ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
@@ -3410,7 +3400,7 @@ Sample tone for Class 6-10:
           </div>
           <p className="text-[10px] text-slate-500 mt-2 italic">* Disabled classes will be hidden from the student dashboard.</p>
         </div>
-        <button 
+        <button
           onClick={handleSaveSettings}
           className="w-full bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl py-3 font-semibold transition-all"
         >
@@ -3427,7 +3417,7 @@ Sample tone for Class 6-10:
           <div className="w-2 h-8 bg-emerald-500 rounded-full shadow-[0_0_10px_#10b981]"></div>
           <h3 className="text-2xl font-black text-white tracking-tighter">Textbook Library</h3>
         </div>
-        <button 
+        <button
           onClick={() => {
             setEditingTextbookId(null);
             setNewTextbook({
@@ -3457,20 +3447,20 @@ Sample tone for Class 6-10:
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
             <div className="md:col-span-2">
               <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Textbook Display Title</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-emerald-500/30 font-bold text-lg tracking-tight"
                 placeholder="e.g. Class 10 Mathematics - Part 1"
                 value={newTextbook.title}
-                onChange={(e) => setNewTextbook({...newTextbook, title: e.target.value})}
+                onChange={(e) => setNewTextbook({ ...newTextbook, title: e.target.value })}
               />
             </div>
             <div>
               <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Academic Class</label>
-              <select 
+              <select
                 className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 cursor-pointer font-bold uppercase tracking-tighter"
                 value={newTextbook.class}
-                onChange={(e) => setNewTextbook({...newTextbook, class: e.target.value})}
+                onChange={(e) => setNewTextbook({ ...newTextbook, class: e.target.value })}
               >
                 {Object.entries(translations['en'].classes).map(([key, label]) => (
                   <option key={key} value={key}>{label as string}</option>
@@ -3479,10 +3469,10 @@ Sample tone for Class 6-10:
             </div>
             <div>
               <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Subject Category</label>
-              <select 
+              <select
                 className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 cursor-pointer font-bold uppercase tracking-tighter"
                 value={newTextbook.subject}
-                onChange={(e) => setNewTextbook({...newTextbook, subject: e.target.value})}
+                onChange={(e) => setNewTextbook({ ...newTextbook, subject: e.target.value })}
               >
                 {Object.entries(translations['en'].subjects).map(([key, label]) => (
                   <option key={key} value={key}>{label as string}</option>
@@ -3491,10 +3481,10 @@ Sample tone for Class 6-10:
             </div>
             <div>
               <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Academic Board</label>
-              <select 
+              <select
                 className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 cursor-pointer font-bold uppercase tracking-tighter"
                 value={newTextbook.board}
-                onChange={(e) => setNewTextbook({...newTextbook, board: e.target.value})}
+                onChange={(e) => setNewTextbook({ ...newTextbook, board: e.target.value })}
               >
                 <option value="">Select Board</option>
                 {Object.entries(translations['en'].boards).map(([key, label]) => (
@@ -3506,12 +3496,12 @@ Sample tone for Class 6-10:
               <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Google Drive Reference ID</label>
               <div className="relative">
                 <Link2 className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
-                <input 
+                <input
                   type="text"
                   className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 text-sm font-medium"
                   placeholder="Paste Drive ID"
                   value={newTextbook.driveFileId || ''}
-                  onChange={(e) => setNewTextbook({...newTextbook, driveFileId: extractDriveFileId(e.target.value)})}
+                  onChange={(e) => setNewTextbook({ ...newTextbook, driveFileId: extractDriveFileId(e.target.value) })}
                 />
               </div>
             </div>
@@ -3519,12 +3509,12 @@ Sample tone for Class 6-10:
               <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Cloud Source URL (Drive or Folder)</label>
               <div className="relative">
                 <Globe className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
-                <input 
+                <input
                   type="text"
                   className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 text-sm font-medium"
                   placeholder="https://drive.google.com/..."
                   value={newTextbook.driveUrl || ''}
-                  onChange={(e) => setNewTextbook({...newTextbook, driveUrl: e.target.value, driveFileId: newTextbook.driveFileId || extractDriveFileId(e.target.value)})}
+                  onChange={(e) => setNewTextbook({ ...newTextbook, driveUrl: e.target.value, driveFileId: newTextbook.driveFileId || extractDriveFileId(e.target.value) })}
                 />
               </div>
             </div>
@@ -3533,21 +3523,21 @@ Sample tone for Class 6-10:
               <div className="flex gap-3">
                 <div className="relative flex-1">
                   <FileText className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
-                  <input 
+                  <input
                     type="text"
                     className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 text-sm font-medium"
                     placeholder="Direct PDF URL"
                     value={newTextbook.download_url}
-                    onChange={(e) => setNewTextbook({...newTextbook, download_url: e.target.value})}
+                    onChange={(e) => setNewTextbook({ ...newTextbook, download_url: e.target.value })}
                   />
                 </div>
                 <label className="bg-white/5 hover:bg-white/10 text-white px-6 py-3 rounded-2xl cursor-pointer flex items-center gap-3 transition-all border border-white/10 font-black text-[10px] uppercase tracking-widest shadow-xl">
                   <Upload size={18} className="text-emerald-500" />
                   <span>Upload Local</span>
-                  <input 
-                    type="file" 
+                  <input
+                    type="file"
                     accept=".pdf"
-                    className="hidden" 
+                    className="hidden"
                     onChange={async (e) => {
                       const file = e.target.files?.[0];
                       if (file) {
@@ -3564,10 +3554,10 @@ Sample tone for Class 6-10:
             </div>
             <div>
               <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Deployment Status</label>
-              <select 
+              <select
                 className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/30 cursor-pointer font-bold uppercase tracking-widest"
                 value={newTextbook.status || 'draft'}
-                onChange={(e) => setNewTextbook({...newTextbook, status: e.target.value})}
+                onChange={(e) => setNewTextbook({ ...newTextbook, status: e.target.value })}
               >
                 <option value="draft">Draft (Hidden)</option>
                 <option value="published">Published (Live)</option>
@@ -3575,13 +3565,13 @@ Sample tone for Class 6-10:
             </div>
           </div>
           <div className="flex gap-4 justify-end mt-12 relative z-10">
-            <button 
+            <button
               onClick={() => setIsAddingTextbook(false)}
               className="px-8 py-4 text-slate-500 font-black text-[10px] uppercase tracking-widest hover:text-white transition-all bg-white/5 rounded-2xl border border-white/5"
             >
               Discard Changes
             </button>
-            <button 
+            <button
               onClick={async () => {
                 try {
                   const normalizedDriveFileId = extractDriveFileId(newTextbook.driveFileId || newTextbook.driveUrl || '');
@@ -3619,10 +3609,10 @@ Sample tone for Class 6-10:
                   showNotification("Platform Sync Failed", "error");
                 }
               }}
-                disabled={uploadingFile}
-                className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:scale-[1.02] text-white px-10 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] transition-all shadow-2xl shadow-emerald-600/40 active:scale-95 disabled:opacity-50"
+              disabled={uploadingFile}
+              className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:scale-[1.02] text-white px-10 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] transition-all shadow-2xl shadow-emerald-600/40 active:scale-95 disabled:opacity-50"
             >
-                {uploadingFile ? 'Deploying PDF...' : (editingTextbookId ? 'Apply Updates' : 'Commit to Library')}
+              {uploadingFile ? 'Deploying PDF...' : (editingTextbookId ? 'Apply Updates' : 'Commit to Library')}
             </button>
           </div>
         </motion.div>
@@ -3630,25 +3620,24 @@ Sample tone for Class 6-10:
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {textbooks.map((book) => (
-          <motion.div 
-            key={book.id} 
+          <motion.div
+            key={book.id}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="glass-card rounded-[2.5rem] overflow-hidden group hover:border-emerald-500/30 transition-all duration-500 flex flex-col"
           >
-            <div className={`aspect-[3/4] relative flex items-center justify-center overflow-hidden bg-gradient-to-br ${
-              book.class === 'class1' ? 'from-rose-500/20 to-red-900/40' :
-              book.class === 'class2' ? 'from-orange-400/20 to-orange-900/40' :
-              book.class === 'class3' ? 'from-amber-400/20 to-yellow-900/40' :
-              book.class === 'class4' ? 'from-lime-400/20 to-green-900/40' :
-              book.class === 'class5' ? 'from-emerald-400/20 to-teal-900/40' :
-              book.class === 'class6' ? 'from-cyan-400/20 to-sky-900/40' :
-              book.class === 'class7' ? 'from-blue-400/20 to-indigo-900/40' :
-              book.class === 'class8' ? 'from-violet-400/20 to-purple-900/40' :
-              book.class === 'class9' ? 'from-fuchsia-400/20 to-pink-900/40' :
-              book.class === 'class10' ? 'from-slate-300/20 to-slate-900/50' :
-              'from-emerald-500/10 to-slate-900/60'
-            }`}>
+            <div className={`aspect-[3/4] relative flex items-center justify-center overflow-hidden bg-gradient-to-br ${book.class === 'class1' ? 'from-rose-500/20 to-red-900/40' :
+                book.class === 'class2' ? 'from-orange-400/20 to-orange-900/40' :
+                  book.class === 'class3' ? 'from-amber-400/20 to-yellow-900/40' :
+                    book.class === 'class4' ? 'from-lime-400/20 to-green-900/40' :
+                      book.class === 'class5' ? 'from-emerald-400/20 to-teal-900/40' :
+                        book.class === 'class6' ? 'from-cyan-400/20 to-sky-900/40' :
+                          book.class === 'class7' ? 'from-blue-400/20 to-indigo-900/40' :
+                            book.class === 'class8' ? 'from-violet-400/20 to-purple-900/40' :
+                              book.class === 'class9' ? 'from-fuchsia-400/20 to-pink-900/40' :
+                                book.class === 'class10' ? 'from-slate-300/20 to-slate-900/50' :
+                                  'from-emerald-500/10 to-slate-900/60'
+              }`}>
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.1),transparent_50%)]" />
               <div className="relative flex flex-col items-center gap-4 text-center px-6 group-hover:scale-110 transition-transform duration-500">
                 <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center border border-white/20 shadow-2xl">
@@ -3664,16 +3653,15 @@ Sample tone for Class 6-10:
                 </div>
               </div>
               <div className="absolute top-4 left-4">
-                <span className={`text-[9px] uppercase tracking-widest font-black px-3 py-1 rounded-full border shadow-lg ${
-                  book.status === 'published' 
-                    ? 'bg-emerald-500 text-white border-emerald-400' 
+                <span className={`text-[9px] uppercase tracking-widest font-black px-3 py-1 rounded-full border shadow-lg ${book.status === 'published'
+                    ? 'bg-emerald-500 text-white border-emerald-400'
                     : 'bg-amber-500 text-white border-amber-400'
-                }`}>
+                  }`}>
                   {book.status || 'draft'}
                 </span>
               </div>
               <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                <button 
+                <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setEditingTextbookId(book.id);
@@ -3693,7 +3681,7 @@ Sample tone for Class 6-10:
                 >
                   <Edit2 size={16} />
                 </button>
-                <button 
+                <button
                   onClick={async (e) => {
                     e.stopPropagation();
                     if (confirmAction === `delete-textbook-${book.id}`) {
@@ -3726,9 +3714,9 @@ Sample tone for Class 6-10:
                   {typeof book.board === 'string' ? book.board : (book.board?.en || '')}
                 </span>
               </div>
-              <a 
-                href={book.download_url || book.driveUrl} 
-                target="_blank" 
+              <a
+                href={book.download_url || book.driveUrl}
+                target="_blank"
                 rel="noopener noreferrer"
                 className="w-full py-4 bg-emerald-600/10 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/20 rounded-[1.5rem] font-black text-[10px] uppercase tracking-[0.2em] flex items-center justify-center gap-3 transition-all shadow-xl shadow-emerald-900/20 group-hover:scale-[1.02]"
               >
@@ -3745,7 +3733,7 @@ Sample tone for Class 6-10:
 
 
   function renderStudents() {
-    const filteredStudents = students.filter(s => 
+    const filteredStudents = students.filter(s =>
       (s.name || '').toLowerCase().includes(studentSearch.toLowerCase()) ||
       (s.email || '').toLowerCase().includes(studentSearch.toLowerCase()) ||
       (s.phoneNumber || '').toLowerCase().includes(studentSearch.toLowerCase())
@@ -3760,7 +3748,7 @@ Sample tone for Class 6-10:
           </div>
           <div className="relative w-full md:w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
-            <input 
+            <input
               type="text"
               placeholder="Search by name, email or phone..."
               value={studentSearch}
@@ -3815,13 +3803,13 @@ Sample tone for Class 6-10:
                     </td>
                     <td className="py-4">
                       <div className="flex items-center gap-3">
-                        <button 
+                        <button
                           onClick={() => handleGrantOneMonth(student.id, student.name || student.email || student.phoneNumber)}
                           className="text-emerald-400 hover:text-emerald-300 font-medium text-sm transition-colors"
                         >
                           Grant 1 Month
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleResetStudent(student.id)}
                           className="text-red-400 hover:text-red-300 font-medium text-sm transition-colors"
                         >
@@ -3850,12 +3838,12 @@ Sample tone for Class 6-10:
 
   async function handleGrantOneMonth(studentId: string, identifier: string) {
     if (!confirm(`Grant 1 month of Pro access to ${identifier}?`)) return;
-    
+
     try {
       setLoading(true);
       const subDocRef = doc(firestore, 'subscriptions', studentId);
       const currentSub = allSubscriptions[studentId];
-      
+
       let baseDate = new Date();
       if (currentSub?.active && currentSub?.expires_at) {
         const currentExpiry = parseLogTimestamp(currentSub.expires_at);
@@ -3863,9 +3851,9 @@ Sample tone for Class 6-10:
           baseDate = currentExpiry;
         }
       }
-      
+
       const newExpiry = new Date(baseDate.getTime() + 30 * 24 * 60 * 60 * 1000);
-      
+
       await setDoc(subDocRef, {
         active: true,
         plan: 'monthly',
@@ -3873,7 +3861,7 @@ Sample tone for Class 6-10:
         updatedAt: serverTimestamp(),
         identifier: identifier
       }, { merge: true });
-      
+
       showNotification(`Successfully granted 1 month access to ${identifier}`);
     } catch (err: any) {
       console.error("Grant Error:", err);
@@ -3909,21 +3897,21 @@ Sample tone for Class 6-10:
   function renderUserLocks() {
     const filteredLocks = userLocks.filter(lock => {
       const query = lockSearchQuery.toLowerCase();
-      return lock.id.toLowerCase().includes(query) || 
-             lock.class?.toLowerCase().includes(query) ||
-             lock.board?.toLowerCase().includes(query);
+      return lock.id.toLowerCase().includes(query) ||
+        lock.class?.toLowerCase().includes(query) ||
+        lock.board?.toLowerCase().includes(query);
     });
 
     return (
       <div className="space-y-6">
         <div className="glass-card p-8 rounded-[2.5rem]">
           <h2 className="text-2xl font-bold text-white mb-6">User Locks Management</h2>
-          
+
           {/* Search Bar */}
           <div className="mb-6 flex gap-2">
             <div className="flex-1 relative">
               <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
-              <input 
+              <input
                 type="text"
                 placeholder="Search by phone/email, class, or board..."
                 value={lockSearchQuery}
@@ -3938,7 +3926,7 @@ Sample tone for Class 6-10:
             <div className="mb-6 bg-blue-500/10 border border-blue-500/30 p-6 rounded-2xl space-y-4">
               <div className="flex justify-between items-start">
                 <h3 className="text-lg font-bold text-white">Edit Lock</h3>
-                <button 
+                <button
                   onClick={() => {
                     setEditingLock(null);
                     setNewLockClass('');
@@ -3949,7 +3937,7 @@ Sample tone for Class 6-10:
                   <X size={20} />
                 </button>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-300 mb-2">Phone/Email</label>
@@ -3968,7 +3956,7 @@ Sample tone for Class 6-10:
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-300 mb-2">New Class</label>
-                  <select 
+                  <select
                     value={newLockClass}
                     onChange={(e) => setNewLockClass(e.target.value)}
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50"
@@ -3981,7 +3969,7 @@ Sample tone for Class 6-10:
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-300 mb-2">New Board</label>
-                  <select 
+                  <select
                     value={newLockBoard}
                     onChange={(e) => setNewLockBoard(e.target.value)}
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50"
@@ -3995,14 +3983,14 @@ Sample tone for Class 6-10:
               </div>
 
               <div className="flex gap-2">
-                <button 
+                <button
                   onClick={() => handleUpdateLock(editingLock.id)}
                   disabled={!newLockClass || !newLockBoard}
                   className="flex-1 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-700 text-white rounded-xl py-2 font-semibold transition-all flex items-center justify-center gap-2"
                 >
                   <Edit size={16} /> Save Changes
                 </button>
-                <button 
+                <button
                   onClick={() => handleDeleteLock(editingLock.id)}
                   className="flex-1 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-xl py-2 font-semibold transition-all flex items-center justify-center gap-2"
                 >
@@ -4050,7 +4038,7 @@ Sample tone for Class 6-10:
                         </span>
                       </td>
                       <td className="py-4 flex gap-2">
-                        <button 
+                        <button
                           onClick={() => {
                             setEditingLock(lock);
                             setNewLockClass(lock.class || '');
@@ -4084,7 +4072,7 @@ Sample tone for Class 6-10:
 
     try {
       setLoading(true);
-      
+
       // Update user lock
       await setDoc(doc(firestore, 'user_locks', lockId), {
         class: newLockClass,
@@ -4143,7 +4131,7 @@ Sample tone for Class 6-10:
 
     try {
       setLoading(true);
-      
+
       // Delete lock
       await deleteDoc(doc(firestore, 'user_locks', lockId));
 
@@ -4257,13 +4245,13 @@ Sample tone for Class 6-10:
             <h3 className="text-2xl font-black text-white tracking-tighter">Support Center</h3>
           </div>
           <div className="flex bg-white/5 p-1 rounded-2xl border border-white/5">
-            <button 
+            <button
               onClick={() => setSupportSubTab('tickets')}
               className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${supportSubTab === 'tickets' ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
             >
               Tickets
             </button>
-            <button 
+            <button
               onClick={() => setSupportSubTab('remote')}
               className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${supportSubTab === 'remote' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
             >
@@ -4287,7 +4275,7 @@ Sample tone for Class 6-10:
               </div>
             ) : (
               supportTickets.map((ticket) => (
-                <motion.div 
+                <motion.div
                   key={ticket.id}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -4310,7 +4298,7 @@ Sample tone for Class 6-10:
                     </div>
                     <div className="flex items-center gap-3">
                       {ticket.status === 'open' ? (
-                        <button 
+                        <button
                           onClick={async () => {
                             await updateDoc(doc(firestore, 'support_tickets', ticket.id), { status: 'closed' });
                             showNotification("Ticket marked as closed");
@@ -4320,7 +4308,7 @@ Sample tone for Class 6-10:
                           Resolve
                         </button>
                       ) : (
-                        <button 
+                        <button
                           onClick={async () => {
                             await updateDoc(doc(firestore, 'support_tickets', ticket.id), { status: 'open' });
                             showNotification("Ticket reopened");
@@ -4330,7 +4318,7 @@ Sample tone for Class 6-10:
                           Reopen
                         </button>
                       )}
-                      <button 
+                      <button
                         onClick={async () => {
                           if (window.confirm("Are you sure you want to delete this ticket?")) {
                             await deleteDoc(doc(firestore, 'support_tickets', ticket.id));
@@ -4371,7 +4359,9 @@ Sample tone for Class 6-10:
       setLibFormSubject(libSubjectFilter === 'all' ? 'math' : libSubjectFilter);
       setLibFormNotes('');
       setLibFormPdfUrl('');
+      setLibFormCoverUrl('');
       setPdfUploadProgress(null);
+      setCoverUploadProgress(null);
       setIsLibModalOpen(true);
     };
 
@@ -4382,7 +4372,9 @@ Sample tone for Class 6-10:
       setLibFormSubject(chapter.subject || 'math');
       setLibFormNotes(chapter.notes || '');
       setLibFormPdfUrl(chapter.pdfUrl || '');
+      setLibFormCoverUrl(chapter.coverUrl || '');
       setPdfUploadProgress(null);
+      setCoverUploadProgress(null);
       setIsLibModalOpen(true);
     };
 
@@ -4420,6 +4412,41 @@ Sample tone for Class 6-10:
       );
     };
 
+    const handleCoverFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+      if (!allowedTypes.includes(file.type)) {
+        alert("Please upload a valid image file (PNG, JPG, WEBP).");
+        return;
+      }
+
+      setCoverUploadProgress(0);
+      const uniqueFilename = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+      const storageRef = ref(storage, `chapters_covers/${uniqueFilename}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setCoverUploadProgress(Math.round(progress));
+        },
+        (error) => {
+          console.error("Cover upload error:", error);
+          alert("Failed to upload cover image. Try again.");
+          setCoverUploadProgress(null);
+        },
+        async () => {
+          const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+          setLibFormCoverUrl(downloadUrl);
+          showNotification("Cover image uploaded successfully!");
+          setCoverUploadProgress(null);
+        }
+      );
+    };
+
     const handleSaveChapter = async (e: React.FormEvent) => {
       e.preventDefault();
       if (!libFormTitle.trim()) {
@@ -4435,6 +4462,7 @@ Sample tone for Class 6-10:
           subject: libFormSubject,
           notes: libFormNotes,
           pdfUrl: libFormPdfUrl,
+          coverUrl: libFormCoverUrl,
           isLibraryChapter: true,
           status: 'published',
           updatedAt: new Date()
@@ -4711,9 +4739,8 @@ Sample tone for Class 6-10:
                         />
                         <label
                           htmlFor="pdf-upload-input"
-                          className={`flex items-center gap-2 px-5 py-3 bg-slate-900 border border-white/5 hover:border-emerald-500/30 text-white rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer active:scale-95 transition-all ${
-                            pdfUploadProgress !== null ? 'opacity-40 cursor-not-allowed' : ''
-                          }`}
+                          className={`flex items-center gap-2 px-5 py-3 bg-slate-900 border border-white/5 hover:border-emerald-500/30 text-white rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer active:scale-95 transition-all ${pdfUploadProgress !== null ? 'opacity-40 cursor-not-allowed' : ''
+                            }`}
                         >
                           <Upload size={14} />
                           <span>{pdfUploadProgress !== null ? "Uploading..." : "Select File"}</span>
@@ -4801,8 +4828,8 @@ Sample tone for Class 6-10:
           </div>
           <span className="font-black text-white text-lg tracking-tight">UTKAL <span className="text-emerald-500">ADMIN</span></span>
         </div>
-        <button 
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
+        <button
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
         >
           {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
@@ -4849,11 +4876,10 @@ Sample tone for Class 6-10:
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.9 }}
-            className={`fixed bottom-10 right-10 z-[100] flex items-center gap-4 px-8 py-5 rounded-[2rem] border shadow-2xl backdrop-blur-2xl ${
-              notification.type === 'success' 
-                ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' 
+            className={`fixed bottom-10 right-10 z-[100] flex items-center gap-4 px-8 py-5 rounded-[2rem] border shadow-2xl backdrop-blur-2xl ${notification.type === 'success'
+                ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
                 : 'bg-red-500/10 border-red-500/20 text-red-400'
-            }`}
+              }`}
           >
             <div className={`p-2 rounded-xl ${notification.type === 'success' ? 'bg-emerald-500/20' : 'bg-red-500/20'}`}>
               {notification.type === 'success' ? <CheckCircle2 size={24} /> : <XCircle size={24} />}
