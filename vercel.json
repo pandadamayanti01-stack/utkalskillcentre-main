@@ -21,7 +21,7 @@
       "destination": "/api/index.ts"
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!\\.well-known).*)" ,
       "destination": "/index.html"
     }
   ]
