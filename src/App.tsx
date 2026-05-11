@@ -2673,14 +2673,23 @@ export default function App() {
             {activeTab === 'digital_library' && (
               <DigitalLibraryView
                 user={user}
-                chapters={textbooks}
+                chapters={chapters.filter((c: any) => c.isLibraryChapter || c.pdfUrl || c.board === "Odisha Board (Odia Medium)")}
                 language={language}
                 isPremium={isPremium}
                 onUpgrade={() => setActiveTab('plans')}
                 onBack={() => setActiveTab('dashboard')}
               />
             )}
-            {activeTab === 'courses' && <CoursesView user={user} chapters={chapters} language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'courses' && (
+              <CoursesView 
+                user={user} 
+                chapters={chapters.filter((c: any) => !c.isLibraryChapter && !c.pdfUrl && c.board !== "Odisha Board (Odia Medium)")} 
+                language={language} 
+                isPremium={isPremium} 
+                onUpgrade={() => setActiveTab('plans')} 
+                onBack={() => setActiveTab('dashboard')} 
+              />
+            )}
             {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'monthly_tests' && (
               <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} setActiveTab={setActiveTab} onBack={() => setActiveTab('dashboard')} />

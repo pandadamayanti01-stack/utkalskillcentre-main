@@ -1441,6 +1441,10 @@ Sample tone for Class 6-10:
     console.log("Debug: searchTerm", searchTerm);
 
     const filteredContent = content.filter(c => {
+      // Exclude library chapters from Course content manager
+      const isLib = c.isLibraryChapter || c.pdfUrl || c.board === "Odisha Board (Odia Medium)";
+      if (isLib) return false;
+
       console.log("Debug: Filtering chapter", c.id, c.class, c.subject, c.status);
       const matchesClass = adminClassFilter === 'all' || c.class === adminClassFilter;
       const matchesSubject = adminSubjectFilter === 'all' || c.subject === adminSubjectFilter;
@@ -4352,6 +4356,9 @@ Sample tone for Class 6-10:
 
   function renderDigitalLibraryUpload() {
     const filteredContent = content.filter((c: any) => {
+      const isLib = c.isLibraryChapter || c.pdfUrl || c.board === "Odisha Board (Odia Medium)";
+      if (!isLib) return false;
+
       const matchesClass = libClassFilter === 'all' || c.class === libClassFilter;
       const matchesSubject = libSubjectFilter === 'all' || c.subject === libSubjectFilter;
       return matchesClass && matchesSubject;
@@ -4428,6 +4435,7 @@ Sample tone for Class 6-10:
           subject: libFormSubject,
           notes: libFormNotes,
           pdfUrl: libFormPdfUrl,
+          isLibraryChapter: true,
           status: 'published',
           updatedAt: new Date()
         };
