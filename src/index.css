@@ -125,9 +125,17 @@ body.theme-daybreak .bg-slate-900,
 body.theme-daybreak .bg-slate-950,
 body.theme-daybreak .bg-\[\#011e1a\],
 body.theme-daybreak .bg-slate-900\/95,
-body.theme-daybreak .bg-slate-950\/95 {
+body.theme-daybreak .bg-slate-950\/95,
+body.theme-daybreak .bg-\[\#090d16\],
+body.theme-daybreak .bg-\[\#070b13\] {
   background-color: #ffffff !important;
   border-color: rgba(15, 23, 42, 0.08) !important;
+  color: #0f172a !important;
+}
+
+body.theme-daybreak .bg-\[\#020617\],
+body.theme-daybreak .bg-\[\#020617\]\/90 {
+  background-color: #f8fafc !important;
   color: #0f172a !important;
 }
 
