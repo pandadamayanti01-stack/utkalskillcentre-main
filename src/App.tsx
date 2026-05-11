@@ -695,8 +695,12 @@ export default function App() {
 
   useEffect(() => {
     document.body.classList.remove('theme-slate', 'theme-forest', 'theme-navy', 'theme-daybreak');
-    document.body.classList.add(`theme-${theme}`);
-  }, [theme]);
+    if (!user) {
+      document.body.classList.add('theme-slate');
+    } else {
+      document.body.classList.add(`theme-${theme}`);
+    }
+  }, [theme, user]);
 
   // Clean up confirmation timer on unmount
   useEffect(() => {
@@ -2524,7 +2528,13 @@ export default function App() {
       }}
     >
     <SEO 
-      subject={activeTab === 'study_buddy' ? 'AI Study Buddy' : activeTab === 'practice' ? 'Practice Set' : activeTab === 'syllabus_tracker' ? 'Syllabus Tracker' : undefined}
+      subject={
+        activeTab === 'study_buddy' ? 'AI Study Buddy' : 
+        activeTab === 'practice' ? 'Practice Set' : 
+        activeTab === 'syllabus_tracker' ? 'Syllabus Tracker' : 
+        activeTab === 'digital_library' ? 'AI Digital Library' : 
+        undefined
+      }
     />
     {showTestSeriesPoster && (
       <Suspense fallback={null}>
