@@ -365,6 +365,11 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
     }
   }, [selectedChapter, language, user?.id]);
 
+  // Scroll window to top on view changes (prevent SPA bottom landing)
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [currentView, selectedSubject, selectedChapter]);
+
   // Handle auto-saving notes after short typing delays (debounce)
   useEffect(() => {
     if (!selectedChapter) return;
