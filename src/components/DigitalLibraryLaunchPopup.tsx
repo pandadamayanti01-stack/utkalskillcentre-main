@@ -90,10 +90,10 @@ export default function DigitalLibraryLaunchPopup({
             <h2 style={{ color: styles.title }} className="text-xl sm:text-2xl font-black leading-tight">
               {language === 'en' ? 'AI Digital Library is Live! 📚✨' : 'AI ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀ ଏବେ ଲାଇଭ୍! 📚✨'}
             </h2>
-            <p style={{ color: styles.description }} className="text-xs mt-1.5 max-w-sm mx-auto font-medium leading-relaxed">
+            <p style={{ color: styles.description }} className="text-xs mt-1.5 max-w-sm mx-auto font-bold leading-relaxed text-emerald-500/90 dark:text-emerald-400">
               {language === 'en' 
-                ? 'Your ultimate math learning companion is finally here! Unleash smart textbooks and AI doubts tutor.' 
-                : 'ଆପଣଙ୍କର ସର୍ବୋତ୍ତମ ଗଣିତ ପଢ଼ା ସାଥୀ ଏବେ ପ୍ରସ୍ତୁତ! ଏବେ ପାଆନ୍ତୁ ସ୍ମାର୍ଟ୍ ବହି ଏବଂ AI ପ୍ରଶ୍ନ ସମାଧାନ।'}
+                ? 'Class 1 to 10 Digital Library is launched! Currently, Mathematics is available. Soon you will get all other subjects! Stay tuned! 🌟' 
+                : 'ଶ୍ରେଣୀ ୧ ରୁ ୧୦ ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀ ଶୁଭାରମ୍ଭ ହେଲା! ବର୍ତ୍ତମାନ ଗଣିତ (Mathematics) ଉପଲବ୍ଧ ଅଛି, ଶୀଘ୍ର ଅନ୍ୟ ସମସ୍ତ ବିଷୟ ଆସିବାକୁ ଯାଉଛି! 🌟'}
             </p>
           </div>
 
@@ -106,12 +106,12 @@ export default function DigitalLibraryLaunchPopup({
               </div>
               <div>
                 <h4 style={{ color: styles.featureTitle }} className="text-xs font-black leading-none">
-                  {language === 'en' ? 'Class 10 Math Textbooks & Notes' : 'ଦଶମ ଶ୍ରେଣୀ ଗଣିତ ପୁସ୍ତକ ଓ ନୋଟ୍ସ'}
+                  {language === 'en' ? 'Class 1 to 10 Math & Notes' : '୧ ରୁ ୧୦ ଶ୍ରେଣୀ ଗଣିତ ପୁସ୍ତକ ଓ ନୋଟ୍ସ'}
                 </h4>
                 <p style={{ color: styles.featureDesc }} className="text-[10px] mt-1.5 leading-snug">
                   {language === 'en' 
-                    ? 'Official state board chapters beautifully formatted with instant topic guides.' 
-                    : 'ଅଫିସିଆଲ୍ ଓଡ଼ିଶା ବୋର୍ଡ ପାଠ୍ୟକ୍ରମ ଅନୁଯାୟୀ ସମସ୍ତ ଅଧ୍ୟାୟର ଗାଇଡ୍।'}
+                    ? 'Mathematics textbook chapters formatted beautifully with active AI study helpers.' 
+                    : 'ଗଣିତ ପାଠ୍ୟକ୍ରମର ସମସ୍ତ ଅଧ୍ୟାୟ ସ୍ୱତନ୍ତ୍ର AI ଅଧ୍ୟୟନ ସହାୟକ ସହିତ ଉପଲବ୍ଧ।'}
                 </p>
               </div>
             </div>
