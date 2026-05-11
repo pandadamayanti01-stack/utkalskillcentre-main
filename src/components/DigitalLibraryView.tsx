@@ -97,6 +97,88 @@ const getClassCode = (cls: string): string => {
   const num = cls.toLowerCase().replace(/\s+/g, '').replace('class', '').replace('th', '');
   return `class${num}`;
 };
+
+const getGenerativeBookCover = (subjectKey: string, title: string, idx: number, classCode?: string): string => {
+  const meta = SUBJECT_METADATA[subjectKey.toLowerCase()] || SUBJECT_METADATA.math;
+  const gradientId = `grad_${subjectKey}_${idx}`;
+  
+  const classNum = classCode ? classCode.replace('class', '') : '10';
+  const displayClass = `CLASS ${classNum}`;
+  const displayTitle = title.length > 22 ? title.substring(0, 19) + "..." : title;
+  
+  let decorativePattern = "";
+  if (subjectKey === 'math') {
+    decorativePattern = `
+      <g stroke="white" stroke-opacity="0.08" stroke-width="1.5" fill="none">
+        <circle cx="200" cy="180" r="140" />
+        <circle cx="200" cy="180" r="90" />
+        <line x1="200" y1="40" x2="200" y2="320" />
+        <line x1="60" y1="180" x2="340" y2="180" />
+        <path d="M 100,80 L 300,280 M 100,280 L 300,80" />
+      </g>
+    `;
+  } else if (subjectKey === 'science') {
+    decorativePattern = `
+      <g stroke="white" stroke-opacity="0.08" stroke-width="1.5" fill="none">
+        <ellipse cx="200" cy="170" rx="130" ry="50" transform="rotate(30 200 170)" />
+        <ellipse cx="200" cy="170" rx="130" ry="50" transform="rotate(-30 200 170)" />
+        <circle cx="200" cy="170" r="12" fill="white" fill-opacity="0.1" />
+        <circle cx="200" cy="170" r="5" fill="white" />
+      </g>
+    `;
+  } else if (subjectKey === 'social_science') {
+    decorativePattern = `
+      <g stroke="white" stroke-opacity="0.08" stroke-width="1.5" fill="none">
+        <circle cx="200" cy="170" r="100" />
+        <ellipse cx="200" cy="170" rx="100" ry="35" />
+        <ellipse cx="200" cy="170" rx="35" ry="100" />
+      </g>
+    `;
+  } else {
+    decorativePattern = `
+      <g stroke="white" stroke-opacity="0.08" stroke-width="1.5" fill="none">
+        <circle cx="200" cy="170" r="120" stroke-dasharray="4,4" />
+        <circle cx="200" cy="170" r="80" />
+        <path d="M 140,180 Q 200,160 200,200 Q 200,160 260,180" />
+      </g>
+    `;
+  }
+
+  const colors = meta.gradient.replace('from-', '').replace('via-', '').replace('to-', '').split(' ');
+  const startColor = colors[0] === 'teal-500' ? '#0d9488' : colors[0] === 'cyan-500' ? '#0891b2' : colors[0] === 'amber-500' ? '#d97706' : colors[0] === 'purple-500' ? '#9333ea' : colors[0] === 'orange-400' ? '#fb923c' : '#10b981';
+  const midColor = colors[1] === 'emerald-600' ? '#059669' : colors[1] === 'blue-600' ? '#2563eb' : colors[1] === 'orange-600' ? '#ea580c' : colors[1] === 'pink-600' ? '#db2777' : colors[1] === 'red-500' ? '#ef4444' : '#047857';
+  const endColor = colors[2] === 'amber-500' ? '#f59e0b' : colors[2] === 'indigo-600' ? '#4f46e5' : colors[2] === 'red-600' ? '#dc2626' : colors[2] === 'rose-600' ? '#e11d48' : colors[2] === 'amber-600' ? '#d97706' : '#0e7490';
+
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 533" width="100%" height="100%">
+      <defs>
+        <linearGradient id="${gradientId}" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="${startColor}" />
+          <stop offset="50%" stop-color="${midColor}" />
+          <stop offset="100%" stop-color="${endColor}" />
+        </linearGradient>
+      </defs>
+
+      <rect width="400" height="533" rx="24" fill="url(#${gradientId})" />
+      <rect width="25" height="533" fill="black" fill-opacity="0.15" />
+      <line x1="25" y1="0" x2="25" y2="533" stroke="white" stroke-opacity="0.08" stroke-width="1" />
+
+      ${decorativePattern}
+
+      <rect x="40" y="320" width="320" height="170" rx="20" fill="#020617" fill-opacity="0.8" stroke="white" stroke-opacity="0.08" stroke-width="1" />
+
+      <rect x="60" y="345" width="80" height="20" rx="10" fill="white" fill-opacity="0.08" />
+      <text x="100" y="359" fill="#34d399" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="900" letter-spacing="1" text-anchor="middle">${displayClass}</text>
+
+      <text x="320" y="359" fill="white" fill-opacity="0.4" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="900" text-anchor="end">CHAP ${idx}</text>
+
+      <text x="60" y="410" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="900" letter-spacing="-0.5">${displayTitle}</text>
+      <text x="60" y="460" fill="white" fill-opacity="0.3" font-family="system-ui, -apple-system, sans-serif" font-size="8" font-weight="900" letter-spacing="2">UTKAL DIGITAL LIBRARY</text>
+    </svg>
+  `;
+
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+};
 export const cleanMathNotation = (text: string): string => {
   if (!text) return "";
 
@@ -540,7 +622,7 @@ Instructions:
                           if (e.currentTarget.src !== genericUrl) {
                             e.currentTarget.src = genericUrl;
                           } else {
-                            e.currentTarget.src = getSubjectFallbackImage(subKey);
+                            e.currentTarget.src = getGenerativeBookCover(subKey, meta.labelEn, 1, userClassCode);
                           }
                         }}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-60 group-hover:opacity-85"
@@ -656,10 +738,10 @@ Instructions:
                       {/* Chapter Thumbnail Book Cover */}
                       <div className="relative h-16 w-12 rounded-xl overflow-hidden bg-slate-950 border border-white/5 flex-shrink-0 group-hover:border-emerald-500/20 transition-colors shadow-md">
                         <img
-                          src={chap.coverUrl || SUBJECT_METADATA[selectedSubject]?.coverImage}
+                          src={chap.coverUrl || getGenerativeBookCover(selectedSubject, chap.title, idx + 1, getClassCode(user?.class))}
                           alt="Book Cover"
                           onError={(e) => {
-                            e.currentTarget.src = getSubjectFallbackImage(selectedSubject);
+                            e.currentTarget.src = getGenerativeBookCover(selectedSubject, chap.title, idx + 1, getClassCode(user?.class));
                           }}
                           className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300 opacity-80 group-hover:opacity-100"
                         />
@@ -713,10 +795,10 @@ Instructions:
               <div className="flex items-center gap-4 pb-5 mb-5 border-b border-white/5">
                 <div className="relative h-16 w-12 rounded-xl overflow-hidden bg-slate-950 border border-white/10 shadow-md flex-shrink-0">
                   <img
-                    src={selectedChapter.coverUrl || SUBJECT_METADATA[selectedSubject]?.coverImage}
+                    src={selectedChapter.coverUrl || getGenerativeBookCover(selectedSubject, selectedChapter.title, 1, getClassCode(user?.class))}
                     alt="Chapter Cover"
                     onError={(e) => {
-                      e.currentTarget.src = getSubjectFallbackImage(selectedSubject);
+                      e.currentTarget.src = getGenerativeBookCover(selectedSubject, selectedChapter.title, 1, getClassCode(user?.class));
                     }}
                     className="w-full h-full object-cover"
                   />
