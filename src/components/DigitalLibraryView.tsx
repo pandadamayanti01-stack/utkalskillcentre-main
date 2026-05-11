@@ -102,8 +102,20 @@ const getGenerativeBookCover = (subjectKey: string, title: string, idx: number, 
   const meta = SUBJECT_METADATA[subjectKey.toLowerCase()] || SUBJECT_METADATA.math;
   const gradientId = `grad_${subjectKey}_${idx}`;
   
+  const getOdiaNum = (val: string): string => {
+    const odiaDigits: Record<string, string> = {
+      '0': '୦', '1': '୧', '2': '୨', '3': '୩', '4': '୪',
+      '5': '୫', '6': '୬', '7': '୭', '8': '୮', '9': '୯'
+    };
+    return val.split('').map(char => odiaDigits[char] || char).join('');
+  };
+
   const classNum = classCode ? classCode.replace('class', '') : '10';
-  const displayClass = `CLASS ${classNum}`;
+  const odiaClassNum = getOdiaNum(classNum);
+  const displayClass = `CLASS ${classNum} • ଶ୍ରେଣୀ ${odiaClassNum}`;
+  
+  const odiaChapNum = getOdiaNum(String(idx));
+  const displayChap = `CH ${idx} • ଅଧ୍ୟାୟ ${odiaChapNum}`;
   const displayTitle = title.length > 22 ? title.substring(0, 19) + "..." : title;
   
   let decorativePattern = "";
@@ -167,13 +179,13 @@ const getGenerativeBookCover = (subjectKey: string, title: string, idx: number, 
 
       <rect x="40" y="320" width="320" height="170" rx="20" fill="#020617" fill-opacity="0.8" stroke="white" stroke-opacity="0.08" stroke-width="1" />
 
-      <rect x="60" y="345" width="80" height="20" rx="10" fill="white" fill-opacity="0.08" />
-      <text x="100" y="359" fill="#34d399" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="900" letter-spacing="1" text-anchor="middle">${displayClass}</text>
+      <rect x="55" y="345" width="135" height="20" rx="10" fill="white" fill-opacity="0.08" stroke="white" stroke-opacity="0.1" stroke-width="1" />
+      <text x="122.5" y="358" fill="#34d399" font-family="system-ui, -apple-system, sans-serif" font-size="8" font-weight="900" text-anchor="middle">${displayClass}</text>
 
-      <text x="320" y="359" fill="white" fill-opacity="0.4" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="900" text-anchor="end">CHAP ${idx}</text>
+      <text x="325" y="358" fill="white" fill-opacity="0.5" font-family="system-ui, -apple-system, sans-serif" font-size="8" font-weight="900" text-anchor="end">${displayChap}</text>
 
       <text x="60" y="410" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="900" letter-spacing="-0.5">${displayTitle}</text>
-      <text x="60" y="460" fill="white" fill-opacity="0.3" font-family="system-ui, -apple-system, sans-serif" font-size="8" font-weight="900" letter-spacing="2">UTKAL DIGITAL LIBRARY</text>
+      <text x="60" y="460" fill="white" fill-opacity="0.3" font-family="system-ui, -apple-system, sans-serif" font-size="8" font-weight="900" letter-spacing="1.5">UTKAL LIBRARY • ଉତ୍କଳ ଲାଇବ୍ରେରୀ</text>
     </svg>
   `;
 
