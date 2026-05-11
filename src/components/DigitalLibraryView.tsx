@@ -1205,7 +1205,7 @@ Instructions:
                   <button
                     type="button"
                     onClick={() => setIsChatFullScreen(true)}
-                    className="p-2 rounded-xl bg-white/5 hover:bg-emerald-500/10 text-slate-400 hover:text-emerald-400 border border-white/5 hover:border-emerald-500/20 transition-all active:scale-95"
+                    className="p-2.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-white border border-emerald-500/30 hover:border-emerald-500 transition-all active:scale-95 shadow-[0_0_15px_rgba(16,185,129,0.2)] flex items-center justify-center animate-pulse"
                     title={language === 'en' ? 'Maximize Chat' : 'ଚାଟ୍ ବଡ଼ କରନ୍ତୁ'}
                   >
                     <Lucide.Maximize2 size={16} />
