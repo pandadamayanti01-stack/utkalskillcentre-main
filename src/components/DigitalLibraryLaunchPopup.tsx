@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as Lucide from 'lucide-react';
 import { subscribeUserToPush } from '../pwa';
@@ -8,16 +8,34 @@ interface DigitalLibraryLaunchPopupProps {
   userId: string;
   onEnterLibrary: () => void;
   language: 'en' | 'or';
+  theme: string;
 }
 
 export default function DigitalLibraryLaunchPopup({
   onClose,
   userId,
   onEnterLibrary,
-  language
+  language,
+  theme
 }: DigitalLibraryLaunchPopupProps) {
   const [subscribing, setSubscribing] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
+
+  const isLight = theme === 'daybreak';
+
+  const styles = {
+    cardBg: isLight ? '#ffffff' : '#0f172a',
+    cardBorder: isLight ? 'rgba(16, 185, 129, 0.4)' : 'rgba(16, 185, 129, 0.2)',
+    title: isLight ? '#0f172a' : '#ffffff',
+    subtitle: isLight ? '#059669' : '#10b981',
+    description: isLight ? '#475569' : '#94a3b8',
+    featureBoxBg: isLight ? '#f8fafc' : 'rgba(2, 6, 23, 0.4)',
+    featureBoxBorder: isLight ? '#e2e8f0' : 'rgba(16, 185, 129, 0.15)',
+    featureTitle: isLight ? '#0f172a' : '#ffffff',
+    featureDesc: isLight ? '#5c697a' : '#94a3b8',
+    closeBg: isLight ? '#f1f5f9' : '#1e293b',
+    closeText: isLight ? '#64748b' : '#94a3b8',
+  };
 
   const handleSubscribe = async () => {
     setSubscribing(true);
@@ -35,42 +53,44 @@ export default function DigitalLibraryLaunchPopup({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[99999] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+      <div className="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
         <motion.div
           initial={{ scale: 0.9, opacity: 0, y: 30 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.9, opacity: 0, y: 30 }}
           transition={{ duration: 0.35, ease: 'easeOut' }}
-          className="w-full max-w-lg bg-slate-900 border border-emerald-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden neon-border"
+          style={{ backgroundColor: styles.cardBg, borderColor: styles.cardBorder }}
+          className="w-full max-w-lg border rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden neon-border"
         >
           {/* Sparkly background glow elements */}
-          <div className="absolute top-0 left-1/4 w-32 h-32 bg-emerald-500/20 rounded-full filter blur-3xl pointer-events-none animate-pulse" />
-          <div className="absolute bottom-0 right-1/4 w-32 h-32 bg-indigo-500/20 rounded-full filter blur-3xl pointer-events-none" />
+          <div className="absolute top-0 left-1/4 w-32 h-32 bg-emerald-500/10 rounded-full filter blur-3xl pointer-events-none animate-pulse" />
+          <div className="absolute bottom-0 right-1/4 w-32 h-32 bg-indigo-500/10 rounded-full filter blur-3xl pointer-events-none" />
 
           {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 z-20 h-8 w-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors border border-white/5 active:scale-95"
+            style={{ backgroundColor: styles.closeBg, color: styles.closeText }}
+            className="absolute top-4 right-4 z-20 h-8 w-8 rounded-full flex items-center justify-center transition-colors active:scale-95 shadow-sm border border-slate-200/10"
           >
             <Lucide.X size={16} />
           </button>
 
           {/* Main Visual Header */}
           <div className="text-center relative z-10 mb-6">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-400/10 text-emerald-400 mb-4 border border-emerald-500/20 relative">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-500 mb-4 border border-emerald-500/20 relative">
               <Lucide.BookOpen size={32} className="animate-pulse" />
               <div className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-amber-500 rounded-full flex items-center justify-center border-2 border-slate-900 animate-bounce">
                 <span className="w-1.5 h-1.5 rounded-full bg-slate-900" />
               </div>
             </div>
 
-            <span className="block text-[10px] uppercase font-black tracking-[0.2em] text-emerald-500 mb-1">
+            <span style={{ color: styles.subtitle }} className="block text-[10px] uppercase font-black tracking-[0.2em] mb-1">
               {language === 'en' ? 'New Launch Announcement' : 'ନୂତନ ଶୁଭାରମ୍ଭ ସୂଚନା'}
             </span>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-tight">
+            <h2 style={{ color: styles.title }} className="text-xl sm:text-2xl font-black leading-tight">
               {language === 'en' ? 'AI Digital Library is Live! 📚✨' : 'AI ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀ ଏବେ ଲାଇଭ୍! 📚✨'}
             </h2>
-            <p className="text-slate-500 dark:text-slate-400 text-xs mt-1.5 max-w-sm mx-auto font-medium">
+            <p style={{ color: styles.description }} className="text-xs mt-1.5 max-w-sm mx-auto font-medium leading-relaxed">
               {language === 'en' 
                 ? 'Your ultimate math learning companion is finally here! Unleash smart textbooks and AI doubts tutor.' 
                 : 'ଆପଣଙ୍କର ସର୍ବୋତ୍ତମ ଗଣିତ ପଢ଼ା ସାଥୀ ଏବେ ପ୍ରସ୍ତୁତ! ଏବେ ପାଆନ୍ତୁ ସ୍ମାର୍ଟ୍ ବହି ଏବଂ AI ପ୍ରଶ୍ନ ସମାଧାନ।'}
@@ -78,17 +98,17 @@ export default function DigitalLibraryLaunchPopup({
           </div>
 
           {/* Features highlight block */}
-          <div className="space-y-3 mb-6 relative z-10 bg-slate-950/20 dark:bg-slate-950/40 p-4 rounded-2xl border border-emerald-500/10">
+          <div style={{ backgroundColor: styles.featureBoxBg, borderColor: styles.featureBoxBorder }} className="space-y-3.5 mb-6 relative z-10 p-5 rounded-2xl border">
             {/* Feature 1 */}
             <div className="flex items-start gap-3">
               <div className="p-1 rounded-lg bg-emerald-500/10 text-emerald-500 mt-0.5">
                 <Lucide.CheckCircle2 size={14} />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-slate-900 dark:text-white leading-none">
+                <h4 style={{ color: styles.featureTitle }} className="text-xs font-black leading-none">
                   {language === 'en' ? 'Class 10 Math Textbooks & Notes' : 'ଦଶମ ଶ୍ରେଣୀ ଗଣିତ ପୁସ୍ତକ ଓ ନୋଟ୍ସ'}
                 </h4>
-                <p className="text-[10px] text-slate-500 mt-1 leading-snug">
+                <p style={{ color: styles.featureDesc }} className="text-[10px] mt-1.5 leading-snug">
                   {language === 'en' 
                     ? 'Official state board chapters beautifully formatted with instant topic guides.' 
                     : 'ଅଫିସିଆଲ୍ ଓଡ଼ିଶା ବୋର୍ଡ ପାଠ୍ୟକ୍ରମ ଅନୁଯାୟୀ ସମସ୍ତ ଅଧ୍ୟାୟର ଗାଇଡ୍।'}
@@ -102,10 +122,10 @@ export default function DigitalLibraryLaunchPopup({
                 <Lucide.Eye size={14} />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-slate-900 dark:text-white leading-none">
+                <h4 style={{ color: styles.featureTitle }} className="text-xs font-black leading-none">
                   {language === 'en' ? 'Comfort Eye Care Shield' : 'ଆଖି ସୁରକ୍ଷା କବଚ (Comfort Eye Care)'}
                 </h4>
-                <p className="text-[10px] text-slate-500 mt-1 leading-snug">
+                <p style={{ color: styles.featureDesc }} className="text-[10px] mt-1.5 leading-snug">
                   {language === 'en' 
                     ? 'Protect your vision on mobile with Sepia Shields and late-night dim screen overlays.' 
                     : 'ମୋବାଇଲ୍ ସ୍କ୍ରିନରୁ ଆଖିର ସୁରକ୍ଷା ପାଇଁ ସ୍ୱତନ୍ତ୍ର ସେପିଆ ଏବଂ ଡିମ୍ ଫିଲ୍ଟର୍ସ।'}
@@ -119,10 +139,10 @@ export default function DigitalLibraryLaunchPopup({
                 <Lucide.Compass size={14} />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-slate-900 dark:text-white leading-none">
+                <h4 style={{ color: styles.featureTitle }} className="text-xs font-black leading-none">
                   {language === 'en' ? 'Immersive Full Screen Canvas' : 'ସଂପୂର୍ଣ୍ଣ ସ୍କ୍ରିନ୍ ମୋଡ୍ (Full Screen)'}
                 </h4>
-                <p className="text-[10px] text-slate-500 mt-1 leading-snug">
+                <p style={{ color: styles.featureDesc }} className="text-[10px] mt-1.5 leading-snug">
                   {language === 'en' 
                     ? 'Read uninterrupted! Hides sidebar and bottom tabs for perfect vertical focus.' 
                     : 'ଶାନ୍ତରେ ପଢ଼ିବା ପାଇଁ ସାଇଡ୍‌ବାର୍ ଏବଂ ତଳ ମେନୁ ବାର୍‌କୁ ସଂପୂର୍ଣ୍ଣ ଲୁଚାଇ ପଢ଼ନ୍ତୁ।'}
@@ -136,10 +156,10 @@ export default function DigitalLibraryLaunchPopup({
                 <Lucide.Sparkles size={14} />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-slate-900 dark:text-white leading-none">
+                <h4 style={{ color: styles.featureTitle }} className="text-xs font-black leading-none">
                   {language === 'en' ? 'Gundulu AI Doubt Solver' : 'ଗୁଣ୍ଡୁଲୁ AI ପ୍ରଶ୍ନ ସମାଧାନକାରୀ'}
                 </h4>
-                <p className="text-[10px] text-slate-500 mt-1 leading-snug">
+                <p style={{ color: styles.featureDesc }} className="text-[10px] mt-1.5 leading-snug">
                   {language === 'en' 
                     ? 'Ask Gundulu direct math questions and get step-by-step explanations in polite Odia!' 
                     : 'ପାଠ୍ୟକ୍ରମ ସମ୍ବନ୍ୟୀୟ ଯେକୌଣସି ପ୍ରଶ୍ନର ସରଳ ଓଡ଼ିଆରେ ଉତ୍ତର ପାଆନ୍ତୁ।'}
@@ -155,8 +175,8 @@ export default function DigitalLibraryLaunchPopup({
               <button
                 onClick={handleSubscribe}
                 disabled={subscribing}
-                style={{ color: '#ffffff' }}
-                className="w-full bg-amber-500 hover:bg-amber-600 text-white py-3.5 px-4 rounded-2xl font-extrabold text-xs transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 border border-amber-400/20 disabled:opacity-75 disabled:cursor-wait"
+                style={{ color: '#ffffff', backgroundColor: '#f59e0b' }}
+                className="w-full hover:bg-amber-600 text-white py-3.5 px-4 rounded-2xl font-black text-xs transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 border border-amber-400/20 disabled:opacity-75 disabled:cursor-wait cursor-pointer"
               >
                 {subscribing ? (
                   <>
@@ -175,9 +195,9 @@ export default function DigitalLibraryLaunchPopup({
                 )}
               </button>
             ) : (
-              <div className="w-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 py-3 px-4 rounded-2xl text-center font-extrabold text-xs flex items-center justify-center gap-1.5">
-                <Lucide.BellRing size={14} className="animate-ping text-emerald-500" />
-                <span className="text-emerald-500">
+              <div className="w-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 py-3.5 px-4 rounded-2xl text-center font-black text-xs flex items-center justify-center gap-1.5 shadow-sm">
+                <Lucide.BellRing size={14} className="animate-ping" />
+                <span>
                   {language === 'en' 
                     ? 'Notifications Activated! 🌟' 
                     : 'ନୋଟିଫିକେସନ୍ ଚାଲୁ ହୋଇଗଲା! 🌟'}
@@ -191,8 +211,8 @@ export default function DigitalLibraryLaunchPopup({
                 onEnterLibrary();
                 onClose();
               }}
-              style={{ color: '#ffffff' }}
-              className="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3.5 px-4 rounded-2xl font-black text-xs transition-all active:scale-[0.98] flex items-center justify-center gap-1.5 shadow-xl shadow-emerald-500/10 border border-emerald-400/20"
+              style={{ color: '#ffffff', backgroundColor: '#059669' }}
+              className="w-full hover:bg-emerald-500 text-white py-3.5 px-4 rounded-2xl font-black text-xs transition-all active:scale-[0.98] flex items-center justify-center gap-1.5 shadow-xl shadow-emerald-500/10 border border-emerald-400/20 cursor-pointer"
             >
               <Lucide.ArrowRightCircle size={16} />
               <span>

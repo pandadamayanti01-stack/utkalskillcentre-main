@@ -2537,6 +2537,7 @@ export default function App() {
         <DigitalLibraryLaunchPopup 
           userId={user.id}
           language={language}
+          theme={theme}
           onClose={() => setShowLibraryPopup(false)}
           onEnterLibrary={() => {
             setActiveTab('digital_library');
