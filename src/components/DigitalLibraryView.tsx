@@ -332,6 +332,14 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
     return '10';
   });
 
+  // Keep selectedClass synchronized with user's registered class profile for students (admins can switch classes)
+  useEffect(() => {
+    if (user?.class && user.role !== 'admin') {
+      const cleanCls = user.class.toString().toLowerCase().replace(/\s+/g, '').replace('class', '').replace('th', '');
+      setSelectedClass(cleanCls);
+    }
+  }, [user?.class, user?.role]);
+
   const effectivePdfUrl = selectedChapter ? (selectedChapter.pdfUrl || selectedChapter.download_url || selectedChapter.driveUrl || '') : '';
 
   // Material reader settings
@@ -681,26 +689,28 @@ Instructions:
               </p>
             </div>
 
-            {/* Premium Class Selector Pill-Bar */}
-            <div className="flex items-center justify-start md:justify-center gap-2 overflow-x-auto pb-4 mb-8 max-w-5xl mx-auto scrollbar-thin scrollbar-thumb-emerald-500/10 scrollbar-track-transparent">
-              {['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].map((clsNum) => {
-                const isActive = selectedClass === clsNum;
-                return (
-                  <button
-                    key={clsNum}
-                    type="button"
-                    onClick={() => setSelectedClass(clsNum)}
-                    className={`shrink-0 px-4 py-2.5 rounded-2xl text-[11px] font-black tracking-wide transition-all duration-200 active:scale-95 border ${
-                      isActive
-                        ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/25 border-emerald-400/20'
-                        : 'bg-slate-900/40 hover:bg-slate-900 text-slate-400 hover:text-white border-white/5 hover:border-emerald-500/25'
-                    }`}
-                  >
-                    {language === 'en' ? `Class ${clsNum}` : `${clsNum} ଶ୍ରେଣୀ`}
-                  </button>
-                );
-              })}
-            </div>
+            {/* Premium Class Selector Pill-Bar (Only visible to Admins) */}
+            {user?.role === 'admin' && (
+              <div className="flex items-center justify-start md:justify-center gap-2 overflow-x-auto pb-4 mb-8 max-w-5xl mx-auto scrollbar-thin scrollbar-thumb-emerald-500/10 scrollbar-track-transparent">
+                {['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].map((clsNum) => {
+                  const isActive = selectedClass === clsNum;
+                  return (
+                    <button
+                      key={clsNum}
+                      type="button"
+                      onClick={() => setSelectedClass(clsNum)}
+                      className={`shrink-0 px-4 py-2.5 rounded-2xl text-[11px] font-black tracking-wide transition-all duration-200 active:scale-95 border ${
+                        isActive
+                          ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/25 border-emerald-400/20'
+                          : 'bg-slate-900/40 hover:bg-slate-900 text-slate-400 hover:text-white border-white/5 hover:border-emerald-500/25'
+                      }`}
+                    >
+                      {language === 'en' ? `Class ${clsNum}` : `${clsNum} ଶ୍ରେଣୀ`}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
 
             {/* SUBJECT GRID */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
