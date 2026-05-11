@@ -212,6 +212,7 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
   const [eyeCareMode, setEyeCareMode] = useState<'off' | 'sepia' | 'dim'>('off');
   const [fontSize, setFontSize] = useState<'normal' | 'large' | 'xlarge'>('normal');
   const [isPdfFullScreen, setIsPdfFullScreen] = useState<boolean>(false);
+  const [isChatFullScreen, setIsChatFullScreen] = useState<boolean>(false);
 
   // Gundulu chat states
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
@@ -892,6 +893,17 @@ Instructions:
                     </p>
                   </div>
                 </div>
+
+                {isPremium && (
+                  <button
+                    type="button"
+                    onClick={() => setIsChatFullScreen(true)}
+                    className="p-2 rounded-xl bg-white/5 hover:bg-emerald-500/10 text-slate-400 hover:text-emerald-400 border border-white/5 hover:border-emerald-500/20 transition-all active:scale-95"
+                    title={language === 'en' ? 'Maximize Chat' : 'ଚାଟ୍ ବଡ଼ କରନ୍ତୁ'}
+                  >
+                    <Lucide.Maximize2 size={16} />
+                  </button>
+                )}
               </div>
 
               {!isPremium ? (
@@ -1175,6 +1187,231 @@ Instructions:
                     </div>
                   </div>
                 )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* ULTRA-PREMIUM IMMERSIVE FULL-SCREEN GUNDULU CHAT OVERLAY */}
+        <AnimatePresence>
+          {isChatFullScreen && selectedChapter && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-[99999] bg-slate-950 flex flex-col p-4 md:p-6 font-sans overflow-hidden"
+              style={{
+                filter: eyeCareMode === 'dim' ? 'brightness(0.7)' : undefined,
+              }}
+            >
+              {/* Header Panel */}
+              <div className="flex items-center justify-between gap-4 pb-4 border-b border-white/10 flex-shrink-0 flex-wrap md:flex-nowrap">
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <img
+                      src="/gundulu.png"
+                      alt="Gundulu Avatar"
+                      className="h-10 w-10 rounded-full border border-emerald-400/30 object-cover bg-emerald-950/20 shadow-md shadow-emerald-500/10"
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png';
+                      }}
+                    />
+                    <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-400 border border-[#011e1a] shadow-[0_0_8px_#34d399]" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm md:text-lg font-black text-white leading-tight flex items-center gap-2">
+                      <span>{language === 'en' ? 'Gundulu AI Chat Room' : 'ଗୁଣ୍ଡୁଲୁ ଏଆଈ ଚାଟ୍ ରୁମ୍'}</span>
+                      <span className="hidden sm:inline-block px-2.5 py-0.5 rounded-full text-[9px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 uppercase tracking-widest font-black">
+                        {language === 'en' ? 'Active' : 'ସକ୍ରିୟ'}
+                      </span>
+                    </h2>
+                    <p className="text-[10px] md:text-xs text-slate-400 font-bold mt-1">
+                      {language === 'en' ? 'Topic:' : 'ଅଧ୍ୟାୟ:'} {selectedChapter.title}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Controls in Full Screen Chat */}
+                <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                  {/* Eye care toggles */}
+                  <div className="flex items-center gap-1 bg-slate-900 p-0.5 rounded-lg border border-white/5">
+                    <button
+                      onClick={() => setEyeCareMode('off')}
+                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all ${
+                        eyeCareMode === 'off' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'
+                      }`}
+                    >
+                      {language === 'en' ? 'Off' : 'ନର୍ମାଲ୍'}
+                    </button>
+                    <button
+                      onClick={() => setEyeCareMode('sepia')}
+                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all flex items-center gap-0.5 ${
+                        eyeCareMode === 'sepia' ? 'bg-amber-600/20 text-amber-300 border border-amber-500/15' : 'text-slate-500 hover:text-slate-300'
+                      }`}
+                    >
+                      <span className="w-1 h-1 rounded-full bg-amber-500" />
+                      {language === 'en' ? 'Shield' : 'ସୁରକ୍ଷା'}
+                    </button>
+                    <button
+                      onClick={() => setEyeCareMode('dim')}
+                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all flex items-center gap-0.5 ${
+                        eyeCareMode === 'dim' ? 'bg-purple-600/20 text-purple-300 border border-purple-500/15' : 'text-slate-500 hover:text-slate-300'
+                      }`}
+                    >
+                      <Lucide.Moon size={8} />
+                      {language === 'en' ? 'Night' : 'ରାତି'}
+                    </button>
+                  </div>
+
+                  {/* Exit fullscreen chat button */}
+                  <button
+                    onClick={() => setIsChatFullScreen(false)}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white font-black text-xs transition-all active:scale-95 border border-red-500/10 shadow-lg"
+                  >
+                    <Lucide.Minimize2 size={14} />
+                    <span>{language === 'en' ? 'Exit Chat' : 'ଚାଟ୍ ବନ୍ଦ କରନ୍ତୁ'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Main Split workspace */}
+              <div className="flex-1 flex gap-6 mt-6 overflow-hidden min-h-0">
+                {/* Left study guide panel */}
+                <div 
+                  className={`hidden lg:flex flex-col w-[35%] rounded-3xl border p-6 overflow-y-auto transition-all duration-300 ${
+                    eyeCareMode === 'sepia'
+                      ? 'prose-stone border-amber-900/10 shadow-lg'
+                      : 'border-white/5 bg-slate-900/20'
+                  }`}
+                  style={{
+                    backgroundColor: eyeCareMode === 'sepia' ? '#fbf0d9' : undefined,
+                  }}
+                >
+                  <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/5">
+                    <Lucide.Sparkles size={16} className="text-emerald-400" />
+                    <span className={`text-xs font-black ${eyeCareMode === 'sepia' ? 'text-amber-900' : 'text-slate-300'}`}>
+                      {language === 'en' ? 'Chapter Study Notes Reference' : 'ଅଧ୍ୟାୟ ଅଧ୍ୟୟନ ନୋଟ୍'}
+                    </span>
+                  </div>
+                  <div 
+                    className={`prose max-w-none ${
+                      eyeCareMode === 'sepia' ? 'prose-stone text-amber-950' : 'prose-invert text-slate-300'
+                    } text-xs leading-relaxed`}
+                  >
+                    <ReactMarkdown>{cleanMathNotation(selectedChapter.notes || '*No study materials added yet.*')}</ReactMarkdown>
+                  </div>
+                </div>
+
+                {/* Right Chat panel */}
+                <div className="flex-1 flex flex-col bg-slate-900/20 border border-white/5 rounded-3xl overflow-hidden shadow-2xl relative h-full">
+                  {/* Chat messages waterfall */}
+                  <div 
+                    className="flex-1 overflow-y-auto p-6 space-y-4 scrollbar-thin scrollbar-thumb-emerald-500/10"
+                    style={{
+                      backgroundColor: eyeCareMode === 'sepia' ? '#f5e9ce' : undefined,
+                    }}
+                  >
+                    {chatMessages.map((msg) => (
+                      <div
+                        key={msg.id}
+                        className={`flex items-end gap-2.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                      >
+                        {msg.sender === 'gundulu' && (
+                          <img
+                            src="/gundulu.png"
+                            alt="Gundulu"
+                            className="h-8 w-8 rounded-full border border-emerald-500/10 shadow-sm"
+                            onError={(e) => {
+                              e.currentTarget.src = 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png';
+                            }}
+                          />
+                        )}
+                        <div
+                          className={`max-w-[75%] rounded-2xl p-4 leading-relaxed shadow-sm border ${
+                            msg.sender === 'user'
+                              ? 'bg-gradient-to-br from-emerald-500 to-teal-600 border-transparent text-white rounded-br-none text-xs font-semibold'
+                              : `gundulu-chat-bubble border-emerald-500/20 rounded-bl-none text-sm font-semibold tracking-wide [&_strong]:text-emerald-400 [&_strong]:font-bold [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:font-mono [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_li]:mb-1 ${
+                                  eyeCareMode === 'sepia' 
+                                    ? 'bg-amber-100 text-amber-950 border-amber-900/15 [&_code]:bg-amber-200 [&_code]:text-emerald-800' 
+                                    : 'bg-slate-900/90 text-slate-100 [&_code]:bg-slate-950 [&_code]:text-emerald-300'
+                                }`
+                          }`}
+                        >
+                          <ReactMarkdown>{cleanMathNotation(msg.text)}</ReactMarkdown>
+                        </div>
+                      </div>
+                    ))}
+
+                    {isAiLoading && (
+                      <div className="flex items-end gap-2.5 justify-start">
+                        <img
+                          src="/gundulu.png"
+                          alt="Gundulu"
+                          className="h-8 w-8 rounded-full animate-bounce"
+                          onError={(e) => {
+                            e.currentTarget.src = 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png';
+                          }}
+                        />
+                        <div className={`border rounded-2xl rounded-bl-none p-4 shadow-sm ${
+                          eyeCareMode === 'sepia' ? 'bg-amber-100 border-amber-900/10' : 'bg-slate-950 border-white/5'
+                        }`}>
+                          <div className="flex gap-1">
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* QUICK CHIPS SUGGESTIONS */}
+                  <div className="p-4 bg-slate-950 border-t border-white/5 flex gap-2 overflow-x-auto scrollbar-none whitespace-nowrap">
+                    <button
+                      onClick={() => handleSendToGundulu(language === 'en' ? "Summarize this chapter for me." : "ଏହି ଅଧ୍ୟାୟର ଏକ ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଦିଅ।")}
+                      className="px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 border border-white/5 text-xs font-bold text-slate-300 active:scale-95 transition-all"
+                    >
+                      📝 {language === 'en' ? 'Summarize Guide' : 'ସାରାଂଶ'}
+                    </button>
+                    <button
+                      onClick={() => handleSendToGundulu(language === 'en' ? "Give me an MCQ test based on this chapter notes." : "ଏହି ଅଧ୍ୟାୟରୁ ମୋତେ ଗୋଟିଏ MCQ ଟେଷ୍ଟ ପ୍ରଶ୍ନ ପଚାର।")}
+                      className="px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 border border-white/5 text-xs font-bold text-slate-300 active:scale-95 transition-all"
+                    >
+                      ⚡ {language === 'en' ? 'Ask me MCQ' : 'MCQ ପ୍ରଶ୍ନ'}
+                    </button>
+                    <button
+                      onClick={() => handleSendToGundulu(language === 'en' ? "Explain the most important formulas of this chapter." : "ଏହି ଅଧ୍ୟାୟର ସବୁଠାରୁ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ରଗୁଡ଼ିକ ବୁଝାଅ।")}
+                      className="px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 border border-white/5 text-xs font-bold text-slate-300 active:scale-95 transition-all"
+                    >
+                      📐 {language === 'en' ? 'Explain Formulas' : 'ମୁଖ୍ୟ ସୂତ୍ର'}
+                    </button>
+                  </div>
+
+                  {/* Chat Input Form */}
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleSendToGundulu(inputValue);
+                    }}
+                    className="p-4 bg-slate-950 border-t border-white/5 flex items-center gap-3"
+                  >
+                    <input
+                      type="text"
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      placeholder={language === 'en' ? 'Ask Gundulu about this chapter...' : 'ଏହି ଅଧ୍ୟାୟ ବିଷୟରେ ଗୁଣ୍ଡୁଲୁକୁ ପଚାରନ୍ତୁ...'}
+                      className="flex-1 bg-slate-900 border border-white/5 rounded-2xl px-5 py-3 text-sm font-semibold text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/30"
+                    />
+                    <button
+                      type="submit"
+                      disabled={!inputValue.trim() || isAiLoading}
+                      className="p-3.5 rounded-2xl bg-emerald-500 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-emerald-600 active:scale-95 transition-all flex items-center justify-center shadow-lg"
+                    >
+                      <Lucide.Send size={18} />
+                    </button>
+                  </form>
+                </div>
               </div>
             </motion.div>
           )}
