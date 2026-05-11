@@ -365,9 +365,13 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
     }
   }, [selectedChapter, language, user?.id]);
 
-  // Scroll window to top on view changes (prevent SPA bottom landing)
+  // Scroll window and scrollable dashboard containers to top on view changes (prevent SPA bottom landing)
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
+    const scrollableContainers = document.querySelectorAll('.overflow-y-auto, .scrollbar-hide');
+    scrollableContainers.forEach(container => {
+      container.scrollTop = 0;
+    });
   }, [currentView, selectedSubject, selectedChapter]);
 
   // Hide bottom tab bar in full screen modes to prevent overlays/double-scrolling
