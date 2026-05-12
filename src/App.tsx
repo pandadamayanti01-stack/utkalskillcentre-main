@@ -49,6 +49,7 @@ import { DailyMcqView } from './components/DailyMcqView';
 import { getDeferredPrompt, clearDeferredPrompt, vibrate, requestScreenWakeLock, releaseScreenWakeLock, shareNative, playSuccessChime, playClickSound, subscribeUserToPush } from './pwa';
 import { SEO } from './components/SEO';
 import { BottomNavBar } from './components/BottomNavBar';
+import ReactMarkdown from 'react-markdown';
 
 const AdminDashboard = lazy(() =>
   import('./components/AdminDashboard')
@@ -2178,6 +2179,265 @@ export default function App() {
   }
 
   if (!user) {
+    const searchParams = new URLSearchParams(window.location.search);
+    const previewKey = searchParams.get('preview') || searchParams.get('chapter');
+    
+    if (previewKey) {
+      const cleanKey = previewKey.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+      
+      const previewDatabase: Record<string, { title: string; content: string; description: string }> = {
+        quadraticequations: {
+          title: "Class 10 Quadratic Equations Revision Notes (ଦ୍ୱିଘାତ ସମୀକରଣ)",
+          description: "Get complete formula sheets, textbook solutions, and standard exam-pattern revision notes for Class 10 Algebra Chapter 2 - Quadratic Equations in Odia Medium.",
+          content: `## Algebra Chapter 2: Quadratic Equations (ଦ୍ୱିଘାତ ସମୀକରଣ)
+
+### 1. Introduction & Standard Form (ସଂଜ୍ଞା ଏବଂ ସାଧାରଣ ରୂପ)
+An equation containing a single variable of degree 2 is known as a **Quadratic Equation**. 
+ଯେଉଁ ସମୀକରଣରେ ଗୋଟିଏ ମାତ୍ର ଅଜ୍ଞาତ ରାଶି ଥାଏ ଏବଂ ଏହାର ସର୍ବାଧିକ ଘାତ ୨ ହୋଇଥାଏ, ତାହାକୁ **ଦ୍ୱିଘାତ ସମୀକରଣ** କୁହାଯାଏ।
+
+**Standard Form / ସାଧାରଣ ସୂତ୍ର:**
+$$ax^2 + bx + c = 0$$
+Where $a, b, c$ are real numbers (ବାସ୍ତବ ସଂଖ୍ୟା) and $a \\neq 0$.
+
+---
+
+### 2. Nature of Roots (ବୀଜଦ୍ୱୟର ସ୍ୱରୂପ)
+The roots of the quadratic equation $ax^2 + bx + c = 0$ are given by:
+$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$
+
+The term **$D = b^2 - 4ac$** is called the **Discriminant (ପ୍ରଭେଦକ)**.
+* **If $D > 0$**: Roots are Real & Distinct (ବାସ୍ତବ ଏବଂ ଅସମାନ).
+* **If $D = 0$**: Roots are Real & Equal (ବାସ୍ତବ ଏବଂ ସମାନ). $x = \\frac{-b}{2a}$.
+* **If $D < 0$**: Roots are Imaginary (ଅବାସ୍ତବ ବା କାଳ୍ପନିକ).
+
+---
+
+### 3. Key Formulations & Relations (ମୁଖ୍ୟ ସୂତ୍ରାବଳୀ)
+If $\\alpha$ and $\\beta$ are the roots:
+* **Sum of Roots (ବୀଜଦ୍ୱୟର ସମଷ୍ଟି)**: $\\alpha + \\beta = -\\frac{b}{a}$
+* **Product of Roots (ବୀଜଦ୍ୱୟର ଗୁଣଫଳ)**: $\\alpha \\cdot \\beta = \\frac{c}{a}$`
+        },
+        trigonometricidentities: {
+          title: "Class 10 Trigonometry Formulas & Notes (ତ୍ରିକୋଣମିତି)",
+          description: "Download Class 10 Trigonometry formulas, identities proofs, and solved textbook exercises for BSE Odisha Odia Medium standard exams.",
+          content: `## Mathematics Chapter 4: Trigonometric Identities (ତ୍ରିକୋଣମିତି ସୂତ୍ରାବଳୀ)
+
+### 1. Fundamental Trigonometric Ratios (ତ୍ରିକୋଣମିତିକ ଅନୁପାତ)
+For a right-angled triangle (ସମକୋଣୀ ତ୍ରିଭୁଜ):
+* $\\sin \\theta = \\frac{\\text{Perpendicular (ଲମ୍ବ)}}{\\text{Hypotenuse (କର୍ଣ୍ଣ)}} = \\frac{p}{h}$
+* $\\cos \\theta = \\frac{\\text{Base (ଭୂମି)}}{\\text{Hypotenuse (କର୍ଣ୍ଣ)}} = \\frac{b}{h}$
+* $\\tan \\theta = \\frac{p}{b}$
+* $\\cot \\theta = \\frac{b}{p}$
+* $\\sec \\theta = \\frac{h}{b}$
+* $\\csc \\theta = \\frac{h}{p}$
+
+---
+
+### 2. Standard Trigonometric Identities (ମୁଖ୍ୟ ସର୍ବସମତା)
+1. $$\\sin^2 \\theta + \\cos^2 \\theta = 1$$
+2. $$1 + \\tan^2 \\theta = \\sec^2 \\theta \\implies \\sec^2 \\theta - \\tan^2 \\theta = 1$$
+3. $$1 + \\cot^2 \\theta = \\csc^2 \\theta \\implies \\csc^2 \\theta - \\cot^2 \\theta = 1$$
+
+---
+
+### 3. Complementary Angle Relations (ପରିପୂରକ କୋଣ ସମ୍ପର୍କ)
+* $\\sin(90^\\circ - \\theta) = \\cos \\theta$
+* $\\cos(90^\\circ - \\theta) = \\sin \\theta$
+* $\\tan(90^\\circ - \\theta) = \\cot \\theta$
+* $\\cot(90^\\circ - \\theta) = \\tan \\theta$
+* $\\sec(90^\\circ - \\theta) = \\csc \\theta$
+* $\\csc(90^\\circ - \\theta) = \\sec \\theta$`
+        },
+        forceandmotion: {
+          title: "Class 10 Physical Science: Force & Laws of Motion (ବଳ ଏବଂ ଗତି ନିୟମ)",
+          description: "Read Class 10 Physical Science Chapter 3 - Force and Laws of Motion notes in Odia medium. Learn Newton's Laws and Momentum with Gundulu AI.",
+          content: `## Physical Science Chapter 3: Force & Laws of Motion (ବଳ ଏବଂ ଗତିର ନିୟମ)
+
+### 1. Concept of Force (ବଳର ସଂଜ୍ଞା)
+A push or pull acting on an object which changes or tends to change its state of rest or uniform motion is called **Force**. 
+କୌଣସି ବସ୍ତୁର ସ୍ଥିରାବସ୍ଥା ବା ସମଗତିର ପରିବର୍ତ୍ତନ କରିବାକୁ ବ୍ୟବହୃତ ପ୍ରେରଣା ବା ଟାଣିବା କ୍ରିୟାକୁ **ବଳ** କୁହାଯାଏ।
+
+* **SI Unit / ଏସ.ଆଇ. ଏକକ**: Newton (N) / ନିଉଟନ୍
+* **Formula / ସୂତ୍ର**: $F = m \\cdot a$ (Force = Mass $\\times$ Acceleration)
+
+---
+
+### 2. Newton's Laws of Motion (ନିଉଟନ୍‌ଙ୍କ ଗତି ସମ୍ବନ୍ଧୀୟ ନିୟମ)
+
+#### First Law (ପ୍ରଥମ ନିୟମ) - Law of Inertia (ଜଡ଼ତା ନିୟମ)
+An object remains in its state of rest or uniform motion unless acted upon by an external unbalanced force.
+ବାହ୍ୟ ବଳ ପ୍ରୟୋଗ ନହେବା ପର୍ଯ୍ୟନ୍ତ ପ୍ରତ୍ୟେକ ବସ୍ତୁ ନିଜର ସ୍ଥିରାବସ୍ଥା ବା ସମଗତି ଅବସ୍ଥାରେ ଅପରିବର୍ତ୍ତିତ ରହେ।
+
+#### Second Law (ଦ୍ୱିତୀୟ ନିୟମ)
+The rate of change of momentum of an object is proportional to the applied unbalanced force in the direction of force.
+ବସ୍ତୁର ସଂବେଗ ପରିବର୍ତ୍ତନର ହାର, ପ୍ରୟୋଗ କରାଯାଇଥିବା ବଳ ସହିତ ସମାନୁପାତୀ।
+
+#### Third Law (ତୃତୀୟ ନିୟମ)
+To every action, there is an equal and opposite reaction.
+ପ୍ରତ୍ୟେକ କ୍ରିୟାର ଏକ ସମାନ ଏବଂ ବିପରୀତ ପ୍ରତିକ୍ରିୟା ରହିଛି।`
+        },
+        carboncompounds: {
+          title: "Class 10 Carbon & its Compounds Notes (କାର୍ବନ ଓ ଏହାର ଯୌଗିକ)",
+          description: "Bilingual study notes for Class 10 Chemistry Chapter 4 - Carbon and its Compounds. Free covalent bonding tables in Odia Medium.",
+          content: `## Chemistry Chapter 4: Carbon & its Compounds (କାର୍ବନ ଓ ଏହାର ଯୌଗିକ)
+
+### 1. Versatile Nature of Carbon (କାର୍ବନର ବହୁମୁଖୀ ପ୍ରକୃତି)
+Carbon forms a vast number of compounds due to two unique properties:
+କାର୍ବନର ଦୁଇଟି ମୁଖ୍ୟ ପ୍ରକୃତି ଯୋଗୁଁ ଏହାର ଅସଂଖ୍ୟ ଯୌଗିକ ଗଠିତ ହୋଇଥାଏ:
+
+1. **Catenation (ଶୃଙ୍ଖଳନ ପ୍ରକୃତି)**: The unique ability of carbon atoms to form covalent bonds with other carbon atoms to form long chains or rings.
+କାର୍ବନ ପରମାଣୁଗୁଡ଼ିକ ମଧ୍ୟରେ ସହ-ସଂଯୋଜକ ବନ୍ଧନ ଗଠନ କରି ଏକ ଦୀର୍ଘ ଶୃଙ୍ଖଳା ସୃଷ୍ଟି କରିବାର କ୍ଷମତା।
+2. **Tetravalency (ଚତୁଃ-ସଂଯୋଜ୍ୟତା)**: Carbon has 4 valence electrons, allowing it to bond with four other mono-valent atoms.
+କାର୍ବନର ସଂଯୋଜକ କକ୍ଷରେ ୪ଟି ଇଲେକ୍ଟ୍ରନ୍ ଥାଏ, ଯାହା ଅନ୍ୟ ୪ଟି ଏକ-ସଂଯୋଜକ ପରମାଣୁ ସହ ବନ୍ଧନ ଗଠନରେ ସାହାଯ୍ୟ କରେ।
+
+---
+
+### 2. Hydrocarbons (ହାଇଡ୍ରୋକାର୍ବନ୍)
+Compounds containing only Carbon and Hydrogen are called **Hydrocarbons**.
+* **Saturated (ସନ୍ତୃପ୍ତ)**: Single carbon-carbon bonds (Alkanes / ଆଲକେନ୍). Formula: $C_nH_{2n+2}$
+* **Unsaturated (ଅସନ୍ତୃପ୍ତ)**: Double or triple bonds (Alkenes / ଆଲକିନ୍ & Alkynes / ଆଲକାଇନ୍).
+  * Alkenes (ଡବଲ୍ ବନ୍ଧ): $C_nH_{2n}$
+  * Alkynes (ଟ୍ରିପଲ୍ ବନ୍ଧ): $C_nH_{2n-2}$`
+        },
+        lifeprocesses: {
+          title: "Class 10 Life Science: Life Processes (ଜୀବନ ପ୍ରକ୍ରିୟା - ପୋଷଣ)",
+          description: "Get Class 10 Biology Chapter 1 Nutrition and Respiration summary study notes bilingually in Odia medium for BSE exams.",
+          content: `## Life Science Chapter 1: Life Processes (ଜୀବନ ପ୍ରକ୍ରିୟା)
+
+### 1. Introduction to Nutrition (ପୋଷଣ କଣ?)
+The process of taking in food and converting it into energy and other vital nutrients required for life is called **Nutrition**.
+ଜୀବନ ରକ୍ଷା ପାଇଁ ଆବଶ୍ୟକ ଖାଦ୍ୟ ଗ୍ରହଣ ଏବଂ ଏହାର ବିନିଯୋଗ ପ୍ରକ୍ରିୟାକୁ **ପୋଷଣ** କୁହାଯାଏ।
+
+There are two major modes of nutrition:
+1. **Autotrophic Nutrition (ସ୍ୱଭୋଜୀ ପୋଷଣ)**: Organisms manufacture their own food (e.g. green plants via Photosynthesis).
+ନିଜର ଖାଦ୍ୟ ନିଜେ ପ୍ରସ୍ତୁତ କରନ୍ତି (ଯେପରିକି ସବୁଜ ଉଦ୍ଭିଦ ଆଲୋକଶ୍ଳେଷଣ ଦ୍ୱାରା)।
+2. **Heterotrophic Nutrition (ପରଭୋଜୀ ପୋଷଣ)**: Organisms depend on other plants or animals for nutrition.
+ଖାଦ୍ୟ ପାଇଁ ଅନ୍ୟମାନଙ୍କ ଉପରେ ନିର୍ଭର କରନ୍ତି।
+
+---
+
+### 2. Photosynthesis Equation (ଆଲୋକଶ୍ଳେଷଣର ରାସାୟନିକ ସମୀକରଣ)
+$$6CO_2 + 12H_2O \\xrightarrow[\\text{Chlorophyll}]{\\text{Sunlight}} C_6H_{12}O_6 + 6O_2 + 6H_2O$$`
+        }
+      };
+
+      const selectedPreview = previewDatabase[cleanKey] || {
+        title: `${previewKey.replace(/([A-Z])/g, ' $1').trim()} Revision Guide (BSE Odisha)`,
+        description: `Get free study guides and selection questions for ${previewKey} in Odia medium. Access free school learning books on Utkal Skill Centre.`,
+        content: `## ${previewKey.replace(/([A-Z])/g, ' $1').trim()}
+
+Welcome to the **Utkal Skill Centre** digital study revision portal. This chapter guide provides important exam-focused points, formulas, and textbook summaries.
+
+---
+
+### Key Takeaways (ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ)
+* Designed bilingually in English and standard Odia (ଓଡ଼ିଆ ମାଧ୍ୟମ) to facilitate easy reading.
+* Full study notes, syllabus tracking, and chapter-wise mock examinations are unlocked inside the dashboard.
+* Ask any academic doubt instantly with Gundulu AI tutor.`
+      };
+
+      const handleClearPreview = () => {
+        window.location.search = '';
+      };
+
+      return (
+        <div className="min-h-screen bg-[#060913] text-slate-200 relative overflow-hidden font-sans p-4 sm:p-8 flex flex-col items-center">
+          <SEO 
+            title={selectedPreview.title}
+            description={selectedPreview.description}
+            subject={previewKey}
+          />
+          
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 via-purple-500 to-indigo-500" />
+          <div className="absolute top-10 right-10 w-96 h-96 bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute bottom-10 left-10 w-96 h-96 bg-purple-500/5 rounded-full blur-[100px] pointer-events-none" />
+
+          {/* Premium Logo Header */}
+          <div className="w-full max-w-4xl flex justify-between items-center py-6 border-b border-white/5 mb-8">
+            <div className="flex items-center gap-3 cursor-pointer" onClick={handleClearPreview}>
+              <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center font-black text-emerald-400 text-lg shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+                U
+              </div>
+              <div>
+                <h1 className="text-md font-black text-white leading-none tracking-tight">UTKAL</h1>
+                <span className="text-[8px] text-slate-500 font-bold uppercase tracking-[0.2em]">Skill Centre</span>
+              </div>
+            </div>
+            <button 
+              onClick={handleClearPreview}
+              className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-black uppercase tracking-wider text-slate-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+            >
+              Sign Up For Free ➔
+            </button>
+          </div>
+
+          {/* Content Body */}
+          <main className="w-full max-w-4xl space-y-8 flex-1">
+            <div className="glass-card rounded-[32px] p-6 sm:p-10 border border-white/5 relative overflow-hidden shadow-2xl bg-slate-900/40 backdrop-blur-xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-wider mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                Free Public Lesson Preview (ଓଡ଼ିଆ ମାଧ୍ୟମ)
+              </div>
+              
+              <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-8">
+                {selectedPreview.title}
+              </h2>
+
+              <div className="prose prose-invert max-w-none text-slate-300 font-medium leading-relaxed space-y-6">
+                <ReactMarkdown>{selectedPreview.content}</ReactMarkdown>
+              </div>
+
+              {/* Conversion sticky loop box */}
+              <div className="mt-12 p-8 rounded-3xl border border-emerald-500/20 bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-indigo-500/10 text-center space-y-5 relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12 animate-pulse" style={{ animationDuration: '6s' }} />
+                
+                <h3 className="text-lg sm:text-xl font-black text-white leading-tight">
+                  Join 1 Lakh+ Odisha Medium Students! 🏆
+                </h3>
+                <p className="text-xs text-slate-400 max-w-2xl mx-auto leading-relaxed font-bold">
+                  Get instant access to complete textbooks, bilingual revision cards, daily selection MCQs, and resolve all your math & science doubts instantly with your personalized AI study buddy **Gundulu**!
+                </p>
+                <button
+                  onClick={handleClearPreview}
+                  className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-slate-950 font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-emerald-500/20 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                >
+                  Unlock Full Chapter & AI Buddy Free! 🟢
+                </button>
+              </div>
+            </div>
+
+            {/* Related guides list - High density SEO internal linker web */}
+            <div className="space-y-4">
+              <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.25em]">Popular Odia Medium Chapters</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {[
+                  { key: 'QuadraticEquations', name: 'Quadratic Equations / ଦ୍ୱିଘାତ ସମୀକରଣ' },
+                  { key: 'TrigonometricIdentities', name: 'Trigonometric Identities / ତ୍ରିକୋଣମିତି' },
+                  { key: 'ForceAndMotion', name: 'Force & Motion / ବଳ ଏବଂ ଗତି ନିୟମ' },
+                  { key: 'CarbonCompounds', name: 'Carbon Compounds / କାର୍ବନ ଯୌଗିକ' },
+                  { key: 'LifeProcesses', name: 'Life Processes / ପୋଷଣ ଏବଂ ଗତି' }
+                ]
+                .filter(item => item.key.toLowerCase() !== cleanKey)
+                .map((item) => (
+                  <a
+                    key={item.key}
+                    href={`?preview=${item.key}`}
+                    className="p-4 rounded-2xl border border-white/5 bg-white/2 hover:border-emerald-500/30 hover:bg-emerald-500/5 transition-all font-bold text-xs text-slate-400 hover:text-white"
+                  >
+                    {item.name} ➔
+                  </a>
+                ))}
+              </div>
+            </div>
+          </main>
+
+          <footer className="w-full max-w-4xl py-12 text-center text-[10px] text-slate-600 font-bold uppercase tracking-[0.2em] border-t border-white/5 mt-16">
+            © 2026 Utkal Skill Centre • Built for Odisha State Board Class 1 to 10
+          </footer>
+        </div>
+      );
+    }
+
     const landingFaqs = [
       {
         question: "What is Utkal Skill Centre?",

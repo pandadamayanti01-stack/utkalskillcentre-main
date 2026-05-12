@@ -561,3 +561,42 @@ export async function logAiUsage(
     console.error("❌ Failed to log AI usage:", error);
   }
 }
+
+export async function generateHomeworkSheet(
+  className: string,
+  subjectName: string,
+  chapterTitle: string,
+  difficulty: 'easy' | 'medium' | 'hard',
+  qCount: number,
+  language: 'en' | 'or' = 'or'
+) {
+  try {
+    const ai = getAI();
+    const prompt = `Generate a standard school homework worksheet with exactly ${qCount} questions and a separate complete answer key on the topic of "${chapterTitle}" in the subject "${subjectName}" for standard "${className}".
+    Difficulty level: "${difficulty.toUpperCase()}".
+    The worksheet should be bilingual, containing the question clearly written in both English and clean Odia.
+    Provide the output in beautiful structured Markdown containing:
+    1. A premium header saying: "UTKAL SKILL CENTRE • AI WORKsheet" with Class, Subject, and Chapter name fields.
+    2. The list of ${qCount} questions clearly numbered.
+    3. A clear separator page break.
+    4. An "ANSWER KEY / MODEL SOLUTIONS" section with step-by-step detailed explanations for each question.
+    
+    Make it highly educational and standard for schools. Keep the output clean, do not wrap in JSON, return ONLY the raw Markdown text.`;
+
+    const responseText = await withRetry(async (modelName, apiVersion) => {
+      const model = ai.getGenerativeModel({ model: modelName }, { apiVersion });
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.7,
+        },
+      });
+      return result.response.text();
+    }, 'flash');
+
+    return responseText || "Failed to generate homework sheet. Please try again.";
+  } catch (error) {
+    console.error("Homework Generation Error:", error);
+    throw error;
+  }
+}

@@ -20,6 +20,8 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import { GunduluTrailer } from './GunduluTrailer';
 import NeuralBackground from './NeuralBackground';
 import OdishaLiveMap from './OdishaLiveMap';
+import ReactMarkdown from 'react-markdown';
+import { generateHomeworkSheet } from '../services/aiService';
 
 interface DashboardProps {
   user: any;
@@ -157,6 +159,15 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
   const [dailyVideoId, setDailyVideoId] = useState<string | null>(isSpecialPromoPeriod ? 'KTnuVBnVlu0' : null);
+
+  const [showHomeworkModal, setShowHomeworkModal] = useState(false);
+  const [homeworkClass, setHomeworkClass] = useState(userClass || '10');
+  const [homeworkSubject, setHomeworkSubject] = useState('math');
+  const [homeworkChapter, setHomeworkChapter] = useState('');
+  const [homeworkDifficulty, setHomeworkDifficulty] = useState<'easy' | 'medium' | 'hard'>('medium');
+  const [homeworkQCount, setHomeworkQCount] = useState(10);
+  const [isGeneratingHomework, setIsGeneratingHomework] = useState(false);
+  const [generatedHomework, setGeneratedHomework] = useState('');
 
   useEffect(() => {
     // If in the special promotional period, lock the video ID and skip rotation
@@ -357,6 +368,44 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   {language === 'en' 
                     ? 'Initiate a deep learning session. Gundulu is optimized to resolve complex mathematical theorems and academic queries via voice interface.'
                     : 'ଗୋଟିଏ ଗଭୀର ଶିକ୍ଷା ସେସନ୍ ଆରମ୍ଭ କରନ୍ତୁ | ଗୁଣ୍ଡୁଲୁ ଭଏସ୍ ଇଣ୍ଟରଫେସ୍ ମାଧ୍ୟମରେ ଜଟିଳ ଗାଣିତିକ ଏବଂ ଶିକ୍ଷାଗତ ପ୍ରଶ୍ନର ସମାଧାନ କରିବାକୁ ସକ୍ଷମ |'}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* AI Homework Sheet & Test Generator Card */}
+          <motion.div 
+            variants={itemVariants}
+            onClick={() => setShowHomeworkModal(true)}
+            className="glass-card rounded-3xl p-5 md:p-6 lg:p-8 relative overflow-hidden cursor-pointer group hover:border-purple-500/40 transition-all duration-500 bg-gradient-to-br from-purple-500/5 via-transparent to-indigo-500/5 border-purple-500/10"
+          >
+            <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-[80px] -mr-32 -mt-32 pointer-events-none group-hover:bg-purple-500/20 transition-all duration-700"></div>
+            
+            <div className="flex flex-col sm:flex-row items-center gap-5 md:gap-6 relative z-10 w-full">
+              <div className="relative shrink-0">
+                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-slate-900 border-2 border-purple-500/40 shadow-[0_0_25px_rgba(168,85,247,0.2)] flex items-center justify-center shrink-0 group-hover:scale-105 transition-all duration-500 overflow-hidden relative">
+                  <div className="absolute inset-0 bg-purple-500/10 animate-pulse" />
+                  <span className="text-3xl">📝</span>
+                </div>
+                <div className="absolute -bottom-1 -right-0.5 w-6 h-6 md:w-7 md:h-7 bg-purple-500 rounded-full flex items-center justify-center text-white shadow-[0_0_10px_rgba(168,85,247,0.5)] border-2 border-slate-900">
+                  <Lucide.Printer size={12} className="md:size-3.5" />
+                </div>
+              </div>
+              
+              <div className="flex-1 text-center sm:text-left space-y-2.5 min-w-0">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[10px] font-black uppercase tracking-wider">
+                    <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse"></span>
+                    {language === 'en' ? 'School Partnership Loop' : 'ସ୍କୁଲ୍ ପାର୍ଟନରସିପ୍ ଲୁପ୍'}
+                  </div>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                  {language === 'en' ? 'AI Homework & test Sheet Generator' : 'AI ପ୍ରଶ୍ନପତ୍ର ଓ ହୋମୱାର୍କ ପ୍ରସ୍ତୁତକାରୀ'}
+                </h3>
+                <p className="text-slate-400 text-xs md:text-sm font-medium leading-normal max-w-lg hidden sm:block">
+                  {language === 'en' 
+                    ? 'Instantly generate bilingual school-standard homework worksheets, mock test sheets, and step-by-step answer keys with Gundulu AI.'
+                    : 'ଗୁଣ୍ଡୁଲୁ AI ଦ୍ୱାରା ଦ୍ୱିଭାଷୀ ବିଦ୍ୟାଳୟ-ମାନକ ହୋମୱାର୍କ ସିଟ୍, ମକ୍ ଟେଷ୍ଟ ଏବଂ ସମାଧାନ ଚାବି ତୁରନ୍ତ ପ୍ରସ୍ତୁତ କରନ୍ତୁ।'}
                 </p>
               </div>
             </div>
@@ -632,6 +681,276 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               onRegistrationComplete?.();
             }} 
           />
+        )}
+
+        {showHomeworkModal && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-slate-900/90 border border-purple-500/20 rounded-[32px] w-full max-w-3xl p-6 sm:p-8 relative shadow-2xl my-8 overflow-hidden max-h-[90vh] flex flex-col"
+            >
+              <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/5 rounded-full blur-[80px] -mr-32 -mt-32 pointer-events-none" />
+              
+              <div className="flex items-center justify-between mb-6 shrink-0">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">📝</span>
+                  <div>
+                    <h3 className="text-xl font-black text-white">
+                      {language === 'en' ? 'Gundulu AI Homework Maker' : 'ଗୁଣ୍ଡୁଲୁ AI ପ୍ରଶ୍ନପତ୍ର ନିର୍ମାତା'}
+                    </h3>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">
+                      Create printable school worksheets instantly
+                    </p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => {
+                    setShowHomeworkModal(false);
+                    setGeneratedHomework('');
+                  }}
+                  className="p-2 rounded-full bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                >
+                  <Lucide.X size={20} />
+                </button>
+              </div>
+
+              {!generatedHomework ? (
+                <div className="space-y-6 overflow-y-auto pr-2 flex-1">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Select Class */}
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Class / Standard</label>
+                      <select 
+                        value={homeworkClass}
+                        onChange={(e) => setHomeworkClass(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-white/10 text-white font-bold focus:border-purple-500 outline-none"
+                      >
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                          <option key={num} value={num}>Class {num}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Select Subject */}
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Subject</label>
+                      <select 
+                        value={homeworkSubject}
+                        onChange={(e) => setHomeworkSubject(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-white/10 text-white font-bold focus:border-purple-500 outline-none"
+                      >
+                        <option value="math">Mathematics (ଗଣିତ)</option>
+                        <option value="science">Science (ବିଜ୍ଞାନ)</option>
+                        <option value="english">English (ଇଂରାଜୀ)</option>
+                        <option value="odia">Odia (ଓଡ଼ିଆ)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Chapter Select / Type */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Select or Type Chapter Title</label>
+                    {chapters && chapters.filter(c => String(c.class || '').replace(/\D/g, '') === String(homeworkClass) && (c.subject || '').toLowerCase() === homeworkSubject).length > 0 ? (
+                      <select
+                        value={homeworkChapter}
+                        onChange={(e) => setHomeworkChapter(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-white/10 text-white font-bold focus:border-purple-500 outline-none"
+                      >
+                        <option value="">-- Choose Chapter --</option>
+                        {chapters
+                          .filter(c => String(c.class || '').replace(/\D/g, '') === String(homeworkClass) && (c.subject || '').toLowerCase() === homeworkSubject)
+                          .map((c, i) => (
+                            <option key={i} value={c.title}>{c.title}</option>
+                          ))
+                        }
+                      </select>
+                    ) : (
+                      <input 
+                        type="text"
+                        placeholder="e.g. Quadratic Equations, Linear Motion, Pronouns..."
+                        value={homeworkChapter}
+                        onChange={(e) => setHomeworkChapter(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-white/10 text-white font-bold focus:border-purple-500 outline-none placeholder:text-slate-700"
+                      />
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Select Difficulty */}
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Difficulty Level</label>
+                      <div className="grid grid-cols-3 gap-2">
+                        {['easy', 'medium', 'hard'].map((diff) => (
+                          <button
+                            key={diff}
+                            type="button"
+                            onClick={() => setHomeworkDifficulty(diff as any)}
+                            className={`py-3 rounded-xl border text-xs font-black uppercase tracking-wider transition-all ${
+                              homeworkDifficulty === diff 
+                                ? 'bg-purple-600 border-purple-500 text-white shadow-lg shadow-purple-900/30' 
+                                : 'bg-slate-950 border-white/10 text-slate-400 hover:text-white'
+                            }`}
+                          >
+                            {diff}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Question Count */}
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Number of Questions</label>
+                      <div className="grid grid-cols-3 gap-2">
+                        {[5, 10, 15].map((count) => (
+                          <button
+                            key={count}
+                            type="button"
+                            onClick={() => setHomeworkQCount(count)}
+                            className={`py-3 rounded-xl border text-xs font-black uppercase tracking-wider transition-all ${
+                              homeworkQCount === count 
+                                ? 'bg-purple-600 border-purple-500 text-white shadow-lg shadow-purple-900/30' 
+                                : 'bg-slate-950 border-white/10 text-slate-400 hover:text-white'
+                            }`}
+                          >
+                            {count} Qs
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 shrink-0">
+                    <button
+                      type="button"
+                      disabled={isGeneratingHomework || !homeworkChapter}
+                      onClick={async () => {
+                        setIsGeneratingHomework(true);
+                        try {
+                          const sheet = await generateHomeworkSheet(
+                            `Class ${homeworkClass}`,
+                            homeworkSubject.toUpperCase(),
+                            homeworkChapter,
+                            homeworkDifficulty,
+                            homeworkQCount,
+                            language
+                          );
+                          setGeneratedHomework(sheet);
+                        } catch (err) {
+                          alert('Failed to generate. Please try again!');
+                        } finally {
+                          setIsGeneratingHomework(false);
+                        }
+                      }}
+                      className="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-purple-900/30 transition-all transform hover:scale-102 active:scale-95 disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+                    >
+                      {isGeneratingHomework ? (
+                        <>
+                          <Lucide.Loader2 size={16} className="animate-spin" />
+                          <span>Gundulu AI is Compiling Worksheet...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Lucide.Sparkles size={16} />
+                          <span>Generate Homework Sheet ✨</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex-1 flex flex-col overflow-hidden">
+                  <div className="flex-1 overflow-y-auto border border-white/5 rounded-2xl p-6 bg-slate-950/50 mb-6 relative">
+                    <div id="printable-homework-sheet" className="prose prose-invert max-w-none text-slate-300 font-medium">
+                      <style>{`
+                        @media print {
+                          body * {
+                            visibility: hidden;
+                          }
+                          #printable-homework-sheet, #printable-homework-sheet * {
+                            visibility: visible;
+                          }
+                          #printable-homework-sheet {
+                            position: absolute;
+                            left: 0;
+                            top: 0;
+                            width: 100%;
+                            background: white !important;
+                            color: black !important;
+                            padding: 40px !important;
+                          }
+                          .print-hidden {
+                            display: none !important;
+                          }
+                        }
+                      `}</style>
+                      
+                      <ReactMarkdown>{generatedHomework}</ReactMarkdown>
+
+                      {/* Viral Growth Inviter block (Printed on Worksheet) */}
+                      <div className="mt-12 pt-8 border-t-2 border-dashed border-slate-500 text-center space-y-4">
+                        <div className="inline-flex items-center gap-3 bg-purple-500/10 border border-purple-500/20 px-5 py-3 rounded-2xl text-purple-400">
+                          <Lucide.Sparkles size={18} className="animate-pulse" />
+                          <span className="text-xs font-black uppercase tracking-widest">Verified by Utkal Skill Centre AI</span>
+                        </div>
+                        <h4 className="text-md font-black text-white leading-snug">
+                          {language === 'en' 
+                            ? 'Students! Check step-by-step interactive solutions on the App!' 
+                            : 'ଛାତ୍ରଛାତ୍ରୀମାନେ! ଆପ୍ ରେ ପଦକ୍ଷେପ-କ୍ରମିକ ସମାଧାନ ଏବଂ ସନ୍ଦେହ ମୋଚନ ଦେଖନ୍ତୁ!'}
+                        </h4>
+                        <p className="text-xs text-slate-400 max-w-lg mx-auto">
+                          {language === 'en'
+                            ? 'Scan this worksheets custom invitation to ask Gundulu AI, practice daily MCQs, and access bilingual textbooks for FREE!'
+                            : 'ମାଗଣାରେ ଗୁଣ୍ଡୁଲୁ AI କୁ ପ୍ରଶ୍ନ ପଚାରିବା, ଦୈନିକ MCQ ଟେଷ୍ଟ ଦେବା ଏବଂ ପାଠ୍ୟପୁସ୍ତକ ପାଇଁ ଆପ୍ ଡାଉନଲୋଡ୍ କରନ୍ତୁ!'}
+                        </p>
+                        
+                        {/* Interactive Vector Mock QR Code block */}
+                        <div className="w-40 h-40 bg-white p-3 rounded-2xl mx-auto flex flex-col justify-between shadow-xl">
+                          <div className="flex justify-between h-[30%]">
+                            <div className="w-[30%] h-full bg-purple-600 rounded" />
+                            <div className="w-[30%] h-full bg-purple-600 rounded" />
+                          </div>
+                          <div className="flex justify-between items-center h-[30%]">
+                            <div className="w-[30%] h-full flex items-center justify-center font-black text-[9px] text-purple-600 uppercase tracking-tighter">UTKAL</div>
+                            <div className="w-[30%] h-full bg-purple-600 rounded" />
+                          </div>
+                          <div className="flex justify-between h-[30%]">
+                            <div className="w-[30%] h-full bg-purple-600 rounded" />
+                            <div className="w-[30%] h-full bg-purple-600 rounded" />
+                          </div>
+                        </div>
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-purple-400">www.utkalskillcentre.com</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setGeneratedHomework('')}
+                      className="flex-1 py-3.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white font-black text-xs uppercase tracking-wider transition-all"
+                    >
+                      {language === 'en' ? 'Create Another Worksheet' : 'ଆଉ ଏକ ପ୍ରସ୍ତୁତ କରନ୍ତୁ'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => window.print()}
+                      className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-slate-950 font-black text-xs uppercase tracking-wider transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
+                    >
+                      <Lucide.Printer size={16} />
+                      <span>{language === 'en' ? 'Print Worksheet / Save PDF' : 'ପ୍ରିଣ୍ଟ କରନ୍ତୁ / PDF ସେଭ୍ କରନ୍ତୁ'}</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
 
