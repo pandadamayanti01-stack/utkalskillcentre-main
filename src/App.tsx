@@ -1423,7 +1423,9 @@ export default function App() {
 
     const todayRaw = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
     const today = todayRaw.replace(/\//g, '-').trim();
-    const dailyMcqsQuery = collection(firestore, 'daily_mcqs');
+    const dailyMcqsQuery = user.role === 'admin'
+      ? collection(firestore, 'daily_mcqs')
+      : query(collection(firestore, 'daily_mcqs'), where('activeDate', '==', today));
 
     const unsubDailyMcqs = onSnapshot(
       dailyMcqsQuery,
@@ -1526,7 +1528,7 @@ export default function App() {
     );
 
     const unsubNotifications = onSnapshot(
-      query(collection(firestore, 'notifications'), orderBy('createdAt', 'desc')),
+      query(collection(firestore, 'notifications'), orderBy('createdAt', 'desc'), limit(15)),
       (snapshot) => {
         const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
         
