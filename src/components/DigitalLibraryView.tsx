@@ -285,15 +285,7 @@ const CLASS_SUBJECTS: Record<string, Array<{
       color: "#c084fc",
       coverImage: "/english_cover.png"
     },
-    {
-      key: "talas",
-      labelEn: "Talash Hindi",
-      labelOr: "ତଲାଶ୍",
-      gradient: "from-pink-500 via-red-500 to-amber-500",
-      icon: Lucide.Languages,
-      color: "#ec4899",
-      coverImage: "/hindi_cover.png"
-    },
+
     {
       key: "hindi_kalika",
       labelEn: "Hindi Kalika",
@@ -386,15 +378,7 @@ const CLASS_SUBJECTS: Record<string, Array<{
       color: "#c084fc",
       coverImage: "/english_cover.png"
     },
-    {
-      key: "talas",
-      labelEn: "Talash Hindi",
-      labelOr: "ତଲାଶ୍",
-      gradient: "from-pink-500 via-red-500 to-amber-500",
-      icon: Lucide.Languages,
-      color: "#ec4899",
-      coverImage: "/hindi_cover.png"
-    },
+
     {
       key: "hindi_kalika",
       labelEn: "Hindi Kalika",
@@ -487,15 +471,7 @@ const CLASS_SUBJECTS: Record<string, Array<{
       color: "#c084fc",
       coverImage: "/english_cover.png"
     },
-    {
-      key: "talas",
-      labelEn: "Talash Hindi",
-      labelOr: "ତଲାଶ୍",
-      gradient: "from-pink-500 via-red-500 to-amber-500",
-      icon: Lucide.Languages,
-      color: "#ec4899",
-      coverImage: "/hindi_cover.png"
-    },
+
     {
       key: "hindi_kalika",
       labelEn: "Hindi Kalika",
