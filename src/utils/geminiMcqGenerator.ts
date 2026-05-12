@@ -93,7 +93,7 @@ export async function generateMcqsWithGemini(
        Language: ${targetLanguage}.`;
 
     // Priority model list
-    const models = ["gemini-3.1-flash", "gemini-3.1-pro"];
+    const models = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-2.5-pro", "gemini-1.5-pro"];
     
     for (const modelId of models) {
       try {
