@@ -4,46 +4,46 @@ export type SubjectKey = keyof typeof SUBJECT_FILE_KEYWORDS;
 
 export const SUBJECT_FILE_KEYWORDS: Record<string, string[]> = {
   // Grammar (High Priority to avoid falling into general Language folders)
-  odia_grammar: ['odia grammar'],
+  odia_grammar: ['odia grammar', 'ଓଡ଼ିଆ ବ୍ୟାକରଣ'],
   english_grammar: ['english grammar'],
   hindi_grammar: ['hindi grammar', 'hindi byakaran', 'byakaran aur prayog'],
   sanskrit_grammar: ['sanskrit grammar'],
 
   // Language subjects
-  odia: ['sahitya sudha', 'sahitya surabhi', 'bhasha mahak', 'bhasa nahak', 'jhulana', 'odia'],
+  odia: ['sahitya sudha', 'sahitya surabhi', 'bhasha mahak', 'bhasa nahak', 'jhulana', 'odia', 'ଝୁଲଣା', 'ଭାଷା ମହକ', 'ସାହିତ୍ୟ ସୁଧା', 'ସାହିତ୍ୟ ସୁମନ', 'ସାହିତ୍ୟ ସୁରଭି'],
   english: ['pallavi', 'jasmine', 'english'],
-  hindi: ['hindi kalika', 'hindi manjari', 'hindi saurabh', 'hindi'],
-  sanskrit: ['sanskruta kalika', 'sanaskruta kalika', 'sanskruta sourav', 'sanskruta', 'sanskrit'],
+  hindi: ['hindi kalika', 'hindi manjari', 'hindi saurabh', 'hindi', 'ହିନ୍ଦୀ କଳିକା'],
+  sanskrit: ['sanskruta kalika', 'sanaskruta kalika', 'sanskruta sourav', 'sanskruta', 'sanskrit', 'ସଂସ୍କୃତକଳିକା ଭାଗ'],
 
   // Math - Split to match Class 9/10 folders
   algebra: ['algebra'],
   geometry: ['geometry'],
-  math: ['ganita mela', 'ganita prakash', 'maja majare ganita', 'ganita', 'math', 'algebra', 'geometry'],
+  math: ['ganita mela', 'ganita prakash', 'maja majare ganita', 'ganita', 'math', 'algebra', 'geometry', 'ଗଣିତ ଖେଳ', 'ମଜା ମଜାରେ ଗଣିତ', 'ଗଣିତ ମେଳା', 'ଗଣିତ ପ୍ରକାଶ'],
 
   // Science - Split to match Class 9/10 folders
   physical_science: ['physical science'],
   life_science: ['life science'],
-  science_curiosity: ['jingyasha', 'jigyansa'],
+  science_curiosity: ['jingyasha', 'jigyansa', 'ଜିଜ୍ଞାସା'],
   science: ['science'],
 
   // Social Science
   history: ['history'],
   geography: ['geography'],
-  social_science: ['social science', 'samajika bigyan'],
+  social_science: ['social science', 'samajika bigyan', 'ସାମାଜିକ ବିଜ୍ଞାନ ଅଧ୍ୟୟନ ଭାରତ ଓ ଆମ ପୃଥିବୀ'],
 
   // EVS (Classes 3-5)
-  evs: ['bichitra pruthibi', 'ama bichitra biswa', 'bichitra biswa', 'evs'],
+  evs: ['bichitra pruthibi', 'ama bichitra biswa', 'bichitra biswa', 'evs', 'ପରିବେଶ ପାଠ', 'ଆମ ଚର୍ତୁର୍ପାଶ୍ଵର ପୃଥିବୀ'],
 
   // Arts & Physical
-  art: ['indradhanu', 'kalakunja', 'nabarasa', 'kruti', 'art'],
-  physical_education: ['khela o yoga', 'khelajoga', 'krida yoga', 'khel shikhya', 'khela sahitya', 'physical education'],
+  art: ['indradhanu', 'kalakunja', 'nabarasa', 'kruti', 'art', 'କଳା ଶିକ୍ଷା', 'କଳାକୁଞ୍ଜ', 'କଳାକୃତି', 'କୃତି'],
+  physical_education: ['khela o yoga', 'khelajoga', 'krida yoga', 'khel shikhya', 'khela sahitya', 'physical education', 'ଶାରୀରିକ ଶିକ୍ଷା ଏବଂ ସୁସ୍ଥତା', 'କ୍ରୀଡ଼ା ଓ ଯୋଗ', 'ଶାରୀରିକ ଯୋଗ ଓ ସୁସ୍ଥତା', 'ଖେଳ ଶିକ୍ଷା'],
 
   // Vocational (Explicitly matched to your Class 10 image)
   vocational_agriculture: ['agriculture'],
   vocational_automotive: ['automotive'],
   vocational_tourism: ['tourism'],
   vocational_electronics: ['electronics'],
-  vocational: ['koshalbodha', 'kousalabodha', 'vocational'],
+  vocational: ['koshalbodha', 'kousalabodha', 'vocational', 'କୌଶଳ ବୋଧ'],
 };
 
 export const subjectTranslations: Record<string, string> = {
