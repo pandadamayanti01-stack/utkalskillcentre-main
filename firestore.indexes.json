@@ -1,0 +1,19 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "daily_mcqs",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "class",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "activeDate",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
