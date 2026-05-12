@@ -17,12 +17,12 @@ async function trigger() {
 
   const app = getApps().length === 0 
     ? initializeApp({
-        credential: cert(serviceAccount),
-        projectId: serviceAccount.projectId
+        credential: cert(serviceAccount as any),
+        projectId: serviceAccount.project_id
       })
     : getApp();
 
-  const databaseId = process.env.FIRESTORE_DATABASE_ID || 'ai-studio-2a24dfcb-5874-4b37-8e37-434f425283b9';
+  const databaseId = process.env.FIRESTORE_DATABASE_ID || 'utkal-prod';
   
   // Use today's date
   const today = new Date().toISOString().split('T')[0];

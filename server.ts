@@ -22,7 +22,7 @@ const firestoreDatabaseId =
   process.env.FIRESTORE_DATABASE_ID ||
   process.env.VITE_FIRESTORE_DATABASE_ID ||
   process.env.VITE_FIREBASE_DATABASE_ID ||
-  'ai-studio-2a24dfcb-5874-4b37-8e37-434f425283b9';
+  'utkal-prod';
 
 const vapidPublicKey = process.env.VAPID_PUBLIC_KEY || 'BHk1uroqx4HMHX1c3ldVPuO3AYWBGByuqlYBjWPW2YttFtiurT8cI731ckrp7K_Q491TtgpAkZL7ioLvVKtmtJo';
 const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY || 'YGxwRzEnUaPqPygwknmuurDPEQVAwrEobKosW18pGVA';

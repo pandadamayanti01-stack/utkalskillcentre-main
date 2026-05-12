@@ -26,7 +26,7 @@ const firestoreDatabaseId =
   process.env.FIRESTORE_DATABASE_ID ||
   process.env.VITE_FIRESTORE_DATABASE_ID ||
   process.env.VITE_FIREBASE_DATABASE_ID ||
-  'ai-studio-2a24dfcb-5874-4b37-8e37-434f425283b9';
+  'utkal-prod';
 
 let adminAppInitialized = false;
 function getInitializedAdminApp(): App | null {
