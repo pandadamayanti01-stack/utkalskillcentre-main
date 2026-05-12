@@ -5,7 +5,7 @@ const path = require('path');
 const serviceAccountPath = path.join(__dirname, '..', '..', 'utkal-admin-sdk.json');
 const serviceAccount = require(serviceAccountPath);
 
-const dbId = 'ai-studio-2a24dfcb-5874-4b37-8e37-434f425283b9';
+const dbId = 'utkal-prod';
 
 const app = admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),

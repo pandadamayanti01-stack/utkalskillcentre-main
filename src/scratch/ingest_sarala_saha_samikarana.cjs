@@ -114,30 +114,21 @@ async function run() {
     
     const chaptersCol = db.collection('chapters');
     
-    // Check if the chapter already exists to prevent duplicate entries
-    const existingQuery = await chaptersCol
-      .where('class', '==', 'class10')
-      .where('title', '==', 'Sarala Saha Samikarana - ସରଳ ସହସମୀକରଣ')
-      .get();
-      
-    if (existingQuery.size > 0) {
-      const docId = existingQuery.docs[0].id;
-      await chaptersCol.doc(docId).update({
-        notes: chapterDoc.notes,
-        subject: 'Mathematics',
-        class: 'class10'
-      });
-      console.log(`✅ Updated existing chapter document in Firestore (ID: ${docId})`);
-    } else {
-      const newDoc = await chaptersCol.add({
-        class: 'class10',
-        subject: 'Mathematics',
-        title: chapterDoc.title,
-        notes: chapterDoc.notes,
-        createdAt: admin.firestore.FieldValue.serverTimestamp()
-      });
-      console.log(`✅ Created brand new chapter document in Firestore (ID: ${newDoc.id})`);
-    }
+    const docId = 'class10_math_chapter_1';
+    await chaptersCol.doc(docId).set({
+      id: docId,
+      class: 'class10',
+      subject: 'math',
+      title: chapterDoc.title,
+      notes: chapterDoc.notes,
+      order: 1,
+      chapterIndex: 1,
+      board: 'Odisha Board (Odia Medium)',
+      isLibraryChapter: true,
+      status: 'published',
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    console.log(`✅ Wrote/Updated Chapter 1 Firestore Document (ID: ${docId})`);
     
     console.log("🌟 Chapter 1 (Sarala Saha Samikarana) is fully active on the platform!");
   } catch (err) {

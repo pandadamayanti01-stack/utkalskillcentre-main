@@ -649,14 +649,12 @@ async function findMatchingTextbookSource(adminApp: App, databaseId: string, par
 
 async function upsertDailyMcq(adminApp: App, databaseId: string, result: GeneratedDailyMcqResult) {
   const db = getDatabase(adminApp, databaseId);
-  const existingSnapshot = await db
-    .collection('daily_mcqs')
-    .where('class', '==', result.class)
-    .where('activeDate', '==', result.activeDate)
-    .get();
+  const docId = `${result.class}_${result.activeDate}`;
+  const docRef = db.collection('daily_mcqs').doc(docId);
 
   const questions = capDailyMcqQuestionList(result.questions);
   const payload = {
+    id: docId,
     title: result.title,
     class: result.class,
     subject: result.subject,
@@ -668,26 +666,8 @@ async function upsertDailyMcq(adminApp: App, databaseId: string, result: Generat
     updatedAt: FieldValue.serverTimestamp(),
   };
 
-  if (!existingSnapshot.empty) {
-    const docRef = existingSnapshot.docs[0].ref;
-    await docRef.update({
-      title: payload.title,
-      class: payload.class,
-      subject: payload.subject,
-      activeDate: payload.activeDate,
-      status: payload.status,
-      questions: payload.questions,
-      source: payload.source,
-      updatedAt: FieldValue.serverTimestamp(),
-    });
-    return { id: docRef.id, ...payload };
-  }
-
-  const created = await db.collection('daily_mcqs').add({
-    ...payload,
-    createdAt: FieldValue.serverTimestamp(),
-  });
-  return { id: created.id, ...payload };
+  await docRef.set(payload, { merge: true });
+  return { id: docId, ...payload };
 }
 
 async function buildGeneratedDailyMcq(adminApp: App, databaseId: string, params: {

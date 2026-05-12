@@ -167,32 +167,19 @@ async function ingest() {
         const classStr = ch.class.startsWith('class') ? ch.class : `class${ch.class}`;
         console.log(`- Writing chapter: "${ch.title}" (Subject: ${ch.subject}, Class: ${classStr})...`);
         
-        // Look if this chapter title already exists to avoid duplication
-        const existingQuery = await chaptersCol
-          .where('class', '==', classStr)
-          .where('title', '==', ch.title)
-          .get();
-          
-        if (existingQuery.size > 0) {
-          // Update existing
-          const docId = existingQuery.docs[0].id;
-          await chaptersCol.doc(docId).update({
-            notes: ch.notes,
-            subject: ch.subject,
-            class: classStr
-          });
-          console.log(`  └─ Updated existing chapter document (ID: ${docId})`);
-        } else {
-          // Add new
-          const newDoc = await chaptersCol.add({
-            class: classStr,
-            subject: ch.subject,
-            title: ch.title,
-            notes: ch.notes,
-            createdAt: admin.firestore.FieldValue.serverTimestamp()
-          });
-          console.log(`  └─ Created new chapter document (ID: ${newDoc.id})`);
-        }
+        const slugTitle = ch.title.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+        const docId = `${classStr}_${ch.subject.toLowerCase()}_${slugTitle}`;
+        
+        await chaptersCol.doc(docId).set({
+          id: docId,
+          class: classStr,
+          subject: ch.subject,
+          title: ch.title,
+          notes: ch.notes,
+          status: 'published',
+          updatedAt: admin.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+        console.log(`  └─ Wrote/Updated chapter document (ID: ${docId})`);
       }
     }
     

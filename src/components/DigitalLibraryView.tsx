@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import { Helmet } from 'react-helmet-async';
 import { db } from '../firebase';
+import { doc, updateDoc } from 'firebase/firestore';
 import { solveMathDoubt } from '../services/aiService';
 
 interface DigitalLibraryViewProps {
@@ -996,7 +997,7 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
   // Filter Chapters based on selectedSubject and Selected Class (Classes 1 to 10)
   const filteredChapters = useMemo(() => {
     if (!selectedSubject) return [];
-    return chapters.filter((c: any) => {
+    const matched = chapters.filter((c: any) => {
       // Robust class matching (e.g., matching 'class10', '10', 'Class 10', '10th')
       const cleanClass = (cls: string) => {
         if (!cls) return '';
@@ -1040,6 +1041,22 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
       // Ensure only published ones show
       return subjectMatches && c.status === 'published';
     });
+
+    // Remove duplicates based on ID first, then title (case insensitive and trimmed)
+    const seenIds = new Set<string>();
+    const seenTitles = new Set<string>();
+    return matched.filter((c: any) => {
+      if (!c.id || seenIds.has(c.id)) return false;
+      seenIds.add(c.id);
+
+      const normalizedTitle = c.title?.toLowerCase().trim() || '';
+      if (normalizedTitle && seenTitles.has(normalizedTitle)) {
+        console.log("Debug: Filtering out duplicate chapter by title:", c.title, "ID:", c.id);
+        return false;
+      }
+      seenTitles.add(normalizedTitle);
+      return true;
+    });
   }, [chapters, selectedSubject, selectedClass, user?.class, activeSubjects]);
 
   // AI Notes Generator states & handler
@@ -1072,10 +1089,19 @@ Write the notes primarily in beautiful, structured markdown, and make them bilin
         `You are Gundulu, the expert educational content writer for Utkal Skill Centre. Generate beautifully-structured academic notes.`,
         []
       );
+      
+      // Save directly to Firestore under chapters collection
+      const chapterDoc = doc(db, 'chapters', selectedChapter.id);
+      await updateDoc(chapterDoc, { notes: response });
+      
+      // Update local state and the selected chapter reference locally as well
       setGeneratedNotes(response);
+      selectedChapter.notes = response;
+      
+      alert(language === 'en' ? 'AI Notes Generated and Saved successfully for all students! ✨' : 'AI ନୋଟ୍ସ ସଫଳତାର ସହ ପ୍ରସ୍ତୁତ ଏବଂ ସମସ୍ତ ଛାତ୍ରଛାତ୍ରୀଙ୍କ ପାଇଁ ସେଭ୍ ହୋଇଗଲା! ✨');
     } catch (err) {
       console.error("AI Notes generation failed:", err);
-      alert("Failed to generate AI notes. Please try again!");
+      alert("Failed to generate and save AI notes. Please try again!");
     } finally {
       setIsGeneratingNotes(false);
     }
@@ -1245,23 +1271,33 @@ Instructions:
           </div>
         </div>
 
-        {currentView !== 'subjects' && (
+        <div className="flex items-center gap-3">
+          {currentView !== 'subjects' && (
+            <button
+              onClick={() => {
+                if (currentView === 'reader') {
+                  setCurrentView('chapters');
+                  setSelectedChapter(null);
+                } else {
+                  setCurrentView('subjects');
+                  setSelectedSubject('');
+                }
+              }}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 text-slate-300 text-xs font-black transition-all active:scale-95"
+            >
+              <Lucide.ArrowLeft size={16} />
+              <span>{language === 'en' ? 'Go Back' : 'ଫେରିଯାଆନ୍ତୁ'}</span>
+            </button>
+          )}
+
           <button
-            onClick={() => {
-              if (currentView === 'reader') {
-                setCurrentView('chapters');
-                setSelectedChapter(null);
-              } else {
-                setCurrentView('subjects');
-                setSelectedSubject('');
-              }
-            }}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 text-xs font-black transition-all active:scale-95"
+            onClick={onBack}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-rose-500/10 to-red-500/10 hover:from-rose-500/20 hover:to-red-500/20 border border-red-500/20 hover:border-red-500/40 text-red-400 text-xs font-black transition-all active:scale-95 shadow-md"
           >
-            <Lucide.ArrowLeft size={16} />
-            <span>{language === 'en' ? 'Go Back' : 'ଫେରିଯାଆନ୍ତୁ'}</span>
+            <Lucide.LogOut size={16} />
+            <span>{language === 'en' ? 'Exit Library' : 'ଲାଇଭ୍ ଡାସବୋର୍ଡ'}</span>
           </button>
-        )}
+        </div>
       </div>
 
       {/* VIEW CONTAINER */}
@@ -1717,8 +1753,8 @@ Instructions:
                       <ReactMarkdown>{cleanMathNotation(selectedChapter.notes)}</ReactMarkdown>
                     ) : generatedNotes ? (
                       <ReactMarkdown>{cleanMathNotation(generatedNotes)}</ReactMarkdown>
-                    ) : (
-                      /* Stunning Glowing AI Notes Generation CTA Card */
+                    ) : user?.role === 'admin' ? (
+                      /* Stunning Glowing AI Notes Generation CTA Card (Only visible to Administrators) */
                       <div className="flex flex-col items-center justify-center p-8 text-center bg-slate-900/40 border border-white/5 rounded-3xl space-y-6 max-w-lg mx-auto">
                         <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20 relative animate-pulse shadow-lg">
                           <Lucide.Sparkles size={28} />
@@ -1729,12 +1765,12 @@ Instructions:
                         </div>
                         <div className="space-y-2">
                           <h4 className="text-sm font-black text-white">
-                            {language === 'en' ? 'AI Notes Generator Ready' : 'AI ପାଠ୍ୟକ୍ରମ ନୋଟ୍ସ ଚିଠା ପ୍ରସ୍ତୁତ'}
+                            {language === 'en' ? 'Admin AI Notes Generator Ready' : 'AI ପାଠ୍ୟକ୍ରମ ନୋଟ୍ସ ପ୍ରସ୍ତୁତକାରୀ'}
                           </h4>
                           <p className="text-xs text-slate-400 leading-relaxed font-bold">
                             {language === 'en' 
-                              ? "Official revision notes are not uploaded yet. Click below to let Gundulu AI generate comprehensive chapter notes, revision formulas, and laws instantly!" 
-                              : "ଏହି ଅଧ୍ୟାୟର ଅଫିସିଆଲ୍ ନୋଟ୍ସ ଏପର୍ଯ୍ୟନ୍ତ ଯୋଡ଼ା ଯାଇନାହିଁ। କିନ୍ତୁ ଆପଣଙ୍କ ପାଇଁ ଗୁଣ୍ଡୁଲୁ AI ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଏବଂ ଉଦାହରଣ ପ୍ରସ୍ତୁତ କରିବାକୁ ପ୍ରସ୍ତୁତ ଅଛି!"}
+                              ? "Official revision notes are blank. Click below to let Gundulu AI generate & save comprehensive chapter notes and revision formulas directly to Firestore for all students!" 
+                              : "ଏହି ଅଧ୍ୟାୟର ନୋଟ୍ସ ଖାଲି ଅଛି। ଗୁଣ୍ଡୁଲୁ AI ଦ୍ୱାରା ନୂତନ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଏବଂ ଉଦାହରଣ ପ୍ରସ୍ତուତ କରି ସିଧାସଳଖ ଡାଟାବେସରେ ସେଭ୍ କରିବା ପାଇଁ ତଳେ କ୍ଲିକ୍ କରନ୍ତୁ!"}
                           </p>
                         </div>
                         <button
@@ -1746,15 +1782,32 @@ Instructions:
                           {isGeneratingNotes ? (
                             <>
                               <Lucide.Loader2 size={14} className="animate-spin" />
-                              <span>{language === 'en' ? 'Generating Notes...' : 'ପ୍ରସ୍ତୁତ କରାଯାଉଛି...'}</span>
+                              <span>{language === 'en' ? 'Generating & Saving...' : 'ପ୍ରସ୍ତୁତ ଓ ସେଭ୍ ହେଉଛି...'}</span>
                             </>
                           ) : (
                             <>
                               <Lucide.Sparkles size={14} className="animate-bounce" />
-                              <span>{language === 'en' ? 'Generate AI Study Notes ✨' : 'AI ନୋଟ୍ସ ପ୍ରସ୍ତୁତ କରନ୍ତୁ ✨'}</span>
+                              <span>{language === 'en' ? 'Generate & Save AI Notes ✨' : 'AI ନୋଟ୍ସ ପ୍ରସ୍ତୁତ ଓ ସେଭ୍ କରନ୍ତୁ ✨'}</span>
                             </>
                           )}
                         </button>
+                      </div>
+                    ) : (
+                      /* Elegant placeholder card for students */
+                      <div className="flex flex-col items-center justify-center p-8 text-center bg-slate-900/40 border border-white/5 rounded-3xl space-y-4 max-w-lg mx-auto">
+                        <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-400 border border-amber-500/20 shadow-lg">
+                          <Lucide.BookOpen size={24} className="animate-pulse" />
+                        </div>
+                        <div className="space-y-1.5">
+                          <h4 className="text-sm font-black text-white">
+                            {language === 'en' ? 'Notes Coming Soon' : 'ନୋଟ୍ସ ଖୁବ୍ Śୀଘ୍ର ଆସୁଛି'}
+                          </h4>
+                          <p className="text-xs text-slate-400 leading-relaxed font-bold">
+                            {language === 'en' 
+                              ? "Revision notes, key formulas, and practice answers for this chapter are being prepared and will be uploaded soon. Stay tuned! 🌟" 
+                              : "ଏହି ଅଧ୍ୟାୟର ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଏବଂ ଅଧ୍ୟୟନ ଟିପ୍ପଣୀ ଖୁବ୍ ଶୀଘ୍ର ଅପଲୋଡ୍ ହେବାକୁ ଯାଉଛି। ଅପେକ୍ଷା କରନ୍ତୁ! 🌟"}
+                          </p>
+                        </div>
                       </div>
                     )}
                   </div>

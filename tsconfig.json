@@ -23,5 +23,14 @@
     "types": ["vite/client", "vite-plugin-pwa/client"],
     "noEmit": true,
     "allowImportingTsExtensions": true,
-  }
+  },
+  "include": [
+    "src/**/*",
+    "server.ts",
+    "api/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

@@ -60,7 +60,7 @@ export default function DigitalLibraryLaunchPopup({
           exit={{ scale: 0.9, opacity: 0, y: 30 }}
           transition={{ duration: 0.35, ease: 'easeOut' }}
           style={{ backgroundColor: styles.cardBg, borderColor: styles.cardBorder }}
-          className="w-full max-w-lg border rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden neon-border"
+          className="w-full max-w-sm border rounded-3xl p-5 sm:p-6 shadow-2xl relative overflow-hidden neon-border"
         >
           {/* Sparkly background glow elements */}
           <div className="absolute top-0 left-1/4 w-32 h-32 bg-emerald-500/10 rounded-full filter blur-3xl pointer-events-none animate-pulse" />
@@ -76,127 +76,89 @@ export default function DigitalLibraryLaunchPopup({
           </button>
 
           {/* Main Visual Header */}
-          <div className="text-center relative z-10 mb-6">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-500 mb-4 border border-emerald-500/20 relative">
-              <Lucide.BookOpen size={32} className="animate-pulse" />
+          <div className="text-center relative z-10 mb-5">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-500 mb-3 border border-emerald-500/20 relative">
+              <Lucide.BookOpen size={26} className="animate-pulse" />
               <div className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-amber-500 rounded-full flex items-center justify-center border-2 border-slate-900 animate-bounce">
                 <span className="w-1.5 h-1.5 rounded-full bg-slate-900" />
               </div>
             </div>
 
-            <span style={{ color: styles.subtitle }} className="block text-[10px] uppercase font-black tracking-[0.2em] mb-1">
+            <span style={{ color: styles.subtitle }} className="block text-[9px] uppercase font-black tracking-[0.2em] mb-1">
               {language === 'en' ? 'New Launch Announcement' : 'ନୂତନ ଶୁଭାରମ୍ଭ ସୂଚନା'}
             </span>
-            <h2 style={{ color: styles.title }} className="text-xl sm:text-2xl font-black leading-tight">
-              {language === 'en' ? 'AI Digital Library is Live! 📚✨' : 'AI ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀ ଏବେ ଲାଇଭ୍! 📚✨'}
+            <h2 style={{ color: styles.title }} className="text-lg sm:text-xl font-black leading-tight">
+              {language === 'en' ? 'AI Digital Library is Live! 📚✨' : 'AI ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀ ଲାଇଭ୍! 📚✨'}
             </h2>
-            <p style={{ color: styles.description }} className="text-xs mt-1.5 max-w-sm mx-auto font-bold leading-relaxed text-emerald-500/90 dark:text-emerald-400">
+            <p style={{ color: styles.description }} className="text-xs mt-1.5 max-w-xs mx-auto font-bold leading-relaxed text-emerald-500/90 dark:text-emerald-400">
               {language === 'en' 
-                ? 'Class 1 to 10 Digital Library is launched! Currently, Mathematics is available. Soon you will get all other subjects! Stay tuned! 🌟' 
-                : 'ଶ୍ରେଣୀ ୧ ରୁ ୧୦ ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀ ଶୁଭାରମ୍ଭ ହେଲା! ବର୍ତ୍ତମାନ ଗଣିତ (Mathematics) ଉପଲବ୍ଧ ଅଛି, ଶୀଘ୍ର ଅନ୍ୟ ସମସ୍ତ ବିଷୟ ଆସିବାକୁ ଯାଉଛି! 🌟'}
+                ? 'Class 1 to 10 Mathematics is now live! Beautiful textbooks with active AI helpers. 🌟' 
+                : '୧ ରୁ ୧୦ ଶ୍ରେଣୀ ଗଣିତ ଏବେ ଲାଇଭ୍! AI ସହଯୋଗୀ ସହିତ ପାଠ୍ୟପୁସ୍ତକ ସହଜରେ ପଢ଼ନ୍ତୁ। 🌟'}
             </p>
           </div>
 
           {/* Features highlight block */}
-          <div style={{ backgroundColor: styles.featureBoxBg, borderColor: styles.featureBoxBorder }} className="space-y-3.5 mb-6 relative z-10 p-5 rounded-2xl border">
+          <div style={{ backgroundColor: styles.featureBoxBg, borderColor: styles.featureBoxBorder }} className="space-y-3 mb-5 relative z-10 p-4 rounded-2xl border">
             {/* Feature 1 */}
-            <div className="flex items-start gap-3">
-              <div className="p-1 rounded-lg bg-emerald-500/10 text-emerald-500 mt-0.5">
+            <div className="flex items-center gap-3">
+              <div className="p-1 rounded-lg bg-emerald-500/10 text-emerald-500">
                 <Lucide.CheckCircle2 size={14} />
               </div>
-              <div>
-                <h4 style={{ color: styles.featureTitle }} className="text-xs font-black leading-none">
-                  {language === 'en' ? 'Class 1 to 10 Math & Notes' : '୧ ରୁ ୧୦ ଶ୍ରେଣୀ ଗଣିତ ପୁସ୍ତକ ଓ ନୋଟ୍ସ'}
-                </h4>
-                <p style={{ color: styles.featureDesc }} className="text-[10px] mt-1.5 leading-snug">
-                  {language === 'en' 
-                    ? 'Mathematics textbook chapters formatted beautifully with active AI study helpers.' 
-                    : 'ଗଣିତ ପାଠ୍ୟକ୍ରମର ସମସ୍ତ ଅଧ୍ୟାୟ ସ୍ୱତନ୍ତ୍ର AI ଅଧ୍ୟୟନ ସହାୟକ ସହିତ ଉପଲବ୍ଧ।'}
-                </p>
-              </div>
+              <h4 style={{ color: styles.featureTitle }} className="text-xs font-black">
+                {language === 'en' ? 'Class 1 to 10 Math & Notes' : '୧-୧୦ ଶ୍ରେଣୀ ଗଣିତ ପୁସ୍ତକ ଓ ନୋଟ୍ସ'}
+              </h4>
             </div>
 
             {/* Feature 2 */}
-            <div className="flex items-start gap-3">
-              <div className="p-1 rounded-lg bg-amber-500/10 text-amber-500 mt-0.5">
+            <div className="flex items-center gap-3">
+              <div className="p-1 rounded-lg bg-amber-500/10 text-amber-500">
                 <Lucide.Eye size={14} />
               </div>
-              <div>
-                <h4 style={{ color: styles.featureTitle }} className="text-xs font-black leading-none">
-                  {language === 'en' ? 'Comfort Eye Care Shield' : 'ଆଖି ସୁରକ୍ଷା କବଚ (Comfort Eye Care)'}
-                </h4>
-                <p style={{ color: styles.featureDesc }} className="text-[10px] mt-1.5 leading-snug">
-                  {language === 'en' 
-                    ? 'Protect your vision on mobile with Sepia Shields and late-night dim screen overlays.' 
-                    : 'ମୋବାଇଲ୍ ସ୍କ୍ରିନରୁ ଆଖିର ସୁରକ୍ଷା ପାଇଁ ସ୍ୱତନ୍ତ୍ର ସେପିଆ ଏବଂ ଡିମ୍ ଫିଲ୍ଟର୍ସ।'}
-                </p>
-              </div>
+              <h4 style={{ color: styles.featureTitle }} className="text-xs font-black">
+                {language === 'en' ? 'Comfort Eye Care Shield' : 'ଆଖି ସୁରକ୍ଷା ପାଇଁ ସେପିଆ ମୋଡ୍'}
+              </h4>
             </div>
 
             {/* Feature 3 */}
-            <div className="flex items-start gap-3">
-              <div className="p-1 rounded-lg bg-indigo-500/10 text-indigo-500 mt-0.5">
-                <Lucide.Compass size={14} />
-              </div>
-              <div>
-                <h4 style={{ color: styles.featureTitle }} className="text-xs font-black leading-none">
-                  {language === 'en' ? 'Immersive Full Screen Canvas' : 'ସଂପୂର୍ଣ୍ଣ ସ୍କ୍ରିନ୍ ମୋଡ୍ (Full Screen)'}
-                </h4>
-                <p style={{ color: styles.featureDesc }} className="text-[10px] mt-1.5 leading-snug">
-                  {language === 'en' 
-                    ? 'Read uninterrupted! Hides sidebar and bottom tabs for perfect vertical focus.' 
-                    : 'ଶାନ୍ତରେ ପଢ଼ିବା ପାଇଁ ସାଇଡ୍‌ବାର୍ ଏବଂ ତଳ ମେନୁ ବାର୍‌କୁ ସଂପୂର୍ଣ୍ଣ ଲୁଚାଇ ପଢ଼ନ୍ତୁ।'}
-                </p>
-              </div>
-            </div>
-
-            {/* Feature 4 */}
-            <div className="flex items-start gap-3">
-              <div className="p-1 rounded-lg bg-purple-500/10 text-purple-500 mt-0.5">
+            <div className="flex items-center gap-3">
+              <div className="p-1 rounded-lg bg-purple-500/10 text-purple-500">
                 <Lucide.Sparkles size={14} />
               </div>
-              <div>
-                <h4 style={{ color: styles.featureTitle }} className="text-xs font-black leading-none">
-                  {language === 'en' ? 'Gundulu AI Doubt Solver' : 'ଗୁଣ୍ଡୁଲୁ AI ପ୍ରଶ୍ନ ସମାଧାନକାରୀ'}
-                </h4>
-                <p style={{ color: styles.featureDesc }} className="text-[10px] mt-1.5 leading-snug">
-                  {language === 'en' 
-                    ? 'Ask Gundulu direct math questions and get step-by-step explanations in polite Odia!' 
-                    : 'ପାଠ୍ୟକ୍ରମ ସମ୍ବନ୍ୟୀୟ ଯେକୌଣସି ପ୍ରଶ୍ନର ସରଳ ଓଡ଼ିଆରେ ଉତ୍ତର ପାଆନ୍ତୁ।'}
-                </p>
-              </div>
+              <h4 style={{ color: styles.featureTitle }} className="text-xs font-black">
+                {language === 'en' ? 'Gundulu AI Doubt Solver' : 'ଗୁଣ୍ଡୁଲୁ AI ପ୍ରଶ୍ନ ସମାଧାନକାରୀ'}
+              </h4>
             </div>
           </div>
 
           {/* Call-to-actions */}
-          <div className="space-y-3 relative z-10">
+          <div className="space-y-2.5 relative z-10">
             {/* Push notification subscribe CTA */}
             {!isSubscribed ? (
               <button
                 onClick={handleSubscribe}
                 disabled={subscribing}
                 style={{ color: '#ffffff', backgroundColor: '#f59e0b' }}
-                className="w-full hover:bg-amber-600 text-white py-3.5 px-4 rounded-2xl font-black text-xs transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 border border-amber-400/20 disabled:opacity-75 disabled:cursor-wait cursor-pointer"
+                className="w-full hover:bg-amber-600 text-white py-3 px-4 rounded-xl font-black text-xs transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-md shadow-amber-500/20 border border-amber-400/20 disabled:opacity-75 disabled:cursor-wait cursor-pointer"
               >
                 {subscribing ? (
                   <>
-                    <Lucide.Loader2 size={16} className="animate-spin" />
+                    <Lucide.Loader2 size={14} className="animate-spin" />
                     <span>{language === 'en' ? 'Subscribing...' : 'ସଂଯୋଗ କରାଯାଉଛି...'}</span>
                   </>
                 ) : (
                   <>
-                    <Lucide.Bell size={16} className="animate-bounce" />
+                    <Lucide.Bell size={14} className="animate-bounce" />
                     <span>
                       {language === 'en' 
-                        ? 'Turn On Push Notifications for Live Alerts! 🔔' 
+                        ? 'Enable Push Alerts! 🔔' 
                         : 'ଲାଇଭ୍ ନୋଟିଫିକେସନ୍ ଚାଲୁ କରନ୍ତୁ! 🔔'}
                     </span>
                   </>
                 )}
               </button>
             ) : (
-              <div className="w-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 py-3.5 px-4 rounded-2xl text-center font-black text-xs flex items-center justify-center gap-1.5 shadow-sm">
-                <Lucide.BellRing size={14} className="animate-ping" />
+              <div className="w-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 py-3 px-4 rounded-xl text-center font-black text-xs flex items-center justify-center gap-1.5 shadow-sm">
+                <Lucide.BellRing size={12} className="animate-ping" />
                 <span>
                   {language === 'en' 
                     ? 'Notifications Activated! 🌟' 
@@ -212,9 +174,9 @@ export default function DigitalLibraryLaunchPopup({
                 onClose();
               }}
               style={{ color: '#ffffff', backgroundColor: '#059669' }}
-              className="w-full hover:bg-emerald-500 text-white py-3.5 px-4 rounded-2xl font-black text-xs transition-all active:scale-[0.98] flex items-center justify-center gap-1.5 shadow-xl shadow-emerald-500/10 border border-emerald-400/20 cursor-pointer"
+              className="w-full hover:bg-emerald-500 text-white py-3 px-4 rounded-xl font-black text-xs transition-all active:scale-[0.98] flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/10 border border-emerald-400/20 cursor-pointer"
             >
-              <Lucide.ArrowRightCircle size={16} />
+              <Lucide.ArrowRightCircle size={14} />
               <span>
                 {language === 'en' ? 'Open Digital Library 📚' : 'ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀ ଖୋଲନ୍ତୁ 📚'}
               </span>
