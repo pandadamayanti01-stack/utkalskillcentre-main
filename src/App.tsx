@@ -1,5 +1,6 @@
 import React, { Suspense, lazy, useEffect, useRef, useState, useCallback } from 'react';
 import * as Lucide from 'lucide-react';
+import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ResponsiveContainer, 
@@ -4946,12 +4947,12 @@ function LeaderboardView({ leaderboard, language, onBack, following, user }: any
   const [activeFilter, setActiveFilter] = useState<'league' | 'friends'>('league');
   const [activeLeague, setActiveLeague] = useState<League>('Bronze');
   const leagues: League[] = ['Bronze', 'Silver', 'Gold', 'Platinum'];
+  const [isGeneratingCard, setIsGeneratingCard] = useState(false);
 
   const filteredLeaderboard = leaderboard.filter((s: any) => {
     if (activeFilter === 'friends') {
       return following.includes(s.id) || s.id === user.id;
     }
-    // In a real app, this would be based on student.stats.league
     const idx = leaderboard.indexOf(s);
     if (idx < 10) return activeLeague === 'Platinum';
     if (idx < 25) return activeLeague === 'Gold';
@@ -4970,6 +4971,199 @@ function LeaderboardView({ leaderboard, language, onBack, following, user }: any
   const itemVariants = {
     hidden: { opacity: 0, y: 10 },
     show: { opacity: 1, y: 0 }
+  };
+
+  const handleGenerateRankCard = async () => {
+    if (isGeneratingCard) return;
+    setIsGeneratingCard(true);
+
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = 800;
+      canvas.height = 1200;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      const currentRank = leaderboard.findIndex((s: any) => s.id === user.id) + 1 || 'No.1';
+      const pointsVal = leaderboard.find((s: any) => s.id === user.id)?.points || user?.points || 120;
+      const currentStreak = user?.streak || 3;
+      const userName = user?.name || 'Utkal Scholar';
+      const className = translations[language].classes[user?.class] || user?.class || 'Class 10';
+
+      // 1. Draw premium gradient background
+      const grad = ctx.createRadialGradient(400, 600, 100, 400, 600, 800);
+      grad.addColorStop(0, '#0f172a'); // slate-900
+      grad.addColorStop(1, '#020617'); // slate-950
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 800, 1200);
+
+      // 2. Draw futuristic gold neon laser border
+      const borderGrad = ctx.createLinearGradient(0, 0, 800, 1200);
+      borderGrad.addColorStop(0, '#fbbf24'); // gold
+      borderGrad.addColorStop(0.5, '#f59e0b'); // amber
+      borderGrad.addColorStop(1, '#10b981'); // emerald
+      ctx.strokeStyle = borderGrad;
+      ctx.lineWidth = 16;
+      ctx.strokeRect(30, 30, 740, 1140);
+
+      // 3. Draw subtle background geometric sparkles
+      ctx.strokeStyle = 'rgba(251, 191, 36, 0.05)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 20; i++) {
+        ctx.beginPath();
+        ctx.arc(400 + Math.sin(i) * 200, 600 + Math.cos(i) * 300, 50 + i * 10, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // 4. Header metadata labels
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#94a3b8'; // slate-400
+      ctx.font = 'bold 14px "Outfit", "Inter", sans-serif';
+      ctx.fillText('UTKAL SKILL CENTRE • ACADEMIC RECORD', 400, 120);
+
+      // 5. Draw big gold crown trophy emoji
+      ctx.fillStyle = '#fbbf24';
+      ctx.font = '48px "Outfit", sans-serif';
+      ctx.fillText('🏆', 400, 200);
+
+      // 6. Draw certificate title
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 36px "Outfit", sans-serif';
+      ctx.fillText('CERTIFICATE OF ACHIEVEMENT', 400, 270);
+
+      ctx.fillStyle = '#f59e0b'; // amber
+      ctx.font = '900 20px "Outfit", sans-serif';
+      ctx.fillText('STATEWIDE WEEKLY LEADERBOARD', 400, 310);
+
+      // 7. Golden divider
+      const divGrad = ctx.createLinearGradient(150, 0, 650, 0);
+      divGrad.addColorStop(0, 'rgba(245, 158, 11, 0)');
+      divGrad.addColorStop(0.5, 'rgba(245, 158, 11, 0.8)');
+      divGrad.addColorStop(1, 'rgba(245, 158, 11, 0)');
+      ctx.fillStyle = divGrad;
+      ctx.fillRect(150, 340, 500, 3);
+
+      // 8. Certification description
+      ctx.fillStyle = '#64748b'; // slate-500
+      ctx.font = 'italic 18px "Outfit", sans-serif';
+      ctx.fillText('This certifies that the student scholar', 400, 400);
+
+      // 9. Student's name (High emphasis)
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '900 48px "Outfit", "Inter", sans-serif';
+      ctx.fillText(userName, 400, 470);
+
+      // 10. Class / Grade details
+      ctx.fillStyle = '#94a3b8'; // slate-400
+      ctx.font = 'normal 18px "Outfit", sans-serif';
+      ctx.fillText(`of ${className} has achieved exemplary status on our platform`, 400, 520);
+
+      // 11. State Rank display box
+      ctx.fillStyle = 'rgba(16, 185, 129, 0.08)'; // emerald-500/8% bg
+      ctx.strokeStyle = 'rgba(16, 185, 129, 0.3)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(150, 580, 500, 180, 24);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#10b981'; // emerald-500
+      ctx.font = '900 68px "Outfit", sans-serif';
+      ctx.fillText(`ODISHA RANK #${currentRank}`, 400, 675);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '900 18px "Outfit", sans-serif';
+      ctx.fillText(`WEEKLY EFFORT LEADERBOARD`, 400, 725);
+
+      // 12. Effort Points & Streak boxes
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+      ctx.beginPath();
+      ctx.roundRect(150, 800, 230, 100, 16);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = 'bold 14px "Outfit", sans-serif';
+      ctx.fillText('EFFORT POINTS', 265, 835);
+
+      ctx.fillStyle = '#fbbf24'; // gold
+      ctx.font = '900 28px "Outfit", sans-serif';
+      ctx.fillText(`${pointsVal} pts`, 265, 875);
+
+      // Streak box
+      ctx.beginPath();
+      ctx.roundRect(420, 800, 230, 100, 16);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = 'bold 14px "Outfit", sans-serif';
+      ctx.fillText('LEARNING STREAK', 535, 835);
+
+      ctx.fillStyle = '#f97316'; // orange
+      ctx.font = '900 28px "Outfit", sans-serif';
+      ctx.fillText(`🔥 ${currentStreak} Days`, 535, 875);
+
+      // 13. High-tech QR Code block with CTA details
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+      ctx.beginPath();
+      ctx.roundRect(150, 940, 500, 130, 20);
+      ctx.fill();
+
+      // Mock QR design elements
+      ctx.fillStyle = '#fbbf24';
+      ctx.fillRect(180, 965, 80, 80);
+      ctx.fillStyle = '#020617';
+      ctx.fillRect(190, 975, 60, 60);
+      ctx.fillStyle = '#fbbf24';
+      ctx.fillRect(205, 990, 30, 30);
+
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 16px "Outfit", sans-serif';
+      ctx.fillText("Join Odisha's #1 Learning Community!", 285, 995);
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = 'normal 14px "Outfit", sans-serif';
+      ctx.fillText("Scan QR to download the Utkal Skill Centre App", 285, 1020);
+      ctx.fillText("Read textbooks, view AI notes, and practice for exams.", 285, 1040);
+
+      // Convert canvas to base64 URL and share/download
+      const dataUrl = canvas.toDataURL('image/png');
+      const blob = await (await fetch(dataUrl)).blob();
+      const file = new File([blob], 'utkal_rank_certificate.png', { type: 'image/png' });
+
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: 'My Utkal Skill Centre Rank Card!',
+          text: `Hey friends! I ranked #${currentRank} in Odisha on the Utkal Skill Centre Weekly Leaderboard! 🏆 Join our learning community for free here: https://utkalskillcentre.com`
+        });
+      } else {
+        const link = document.createElement('a');
+        link.href = dataUrl;
+        link.download = `${userName.replace(/\s+/g, '_')}_utkal_rank_card.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        alert(language === 'en' 
+          ? 'Downloaded Rank Card successfully! 🏆 Post it to your WhatsApp status to inspire your friends!' 
+          : 'ର୍ୟାଙ୍କ୍ କାର୍ଡ଼ ସଫଳତାର ସହ ଡାଉନଲୋଡ୍ ହୋଇଗଲା! 🏆 ନିଜ ସାଙ୍ଗମାନଙ୍କୁ ପ୍ରେରିତ କରିବା ପାଇଁ ଏହାକୁ ନିଜ WhatsApp ଷ୍ଟାଟସ୍‌ରେ ପୋଷ୍ଟ କରନ୍ତୁ!');
+      }
+
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+
+    } catch (err) {
+      console.error('Failed to generate canvas rank card:', err);
+      alert('Failed to generate your Rank Card. Please try again!');
+    } finally {
+      setIsGeneratingCard(false);
+    }
   };
 
   return (
@@ -5103,10 +5297,48 @@ function LeaderboardView({ leaderboard, language, onBack, following, user }: any
         </table>
       </motion.div>
       
-      <motion.div variants={itemVariants} className="p-6 bg-emerald-500/5 border border-emerald-500/10 rounded-3xl text-center">
-        <p className="text-emerald-400 text-sm font-medium">
-          🌟 You are in the top 15% of effort makers this week! Keep it up!
-        </p>
+      {/* Premium Gilded Achievement & Rank Sharing Card */}
+      <motion.div 
+        variants={itemVariants} 
+        className="relative p-8 rounded-[36px] border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-yellow-500/5 to-emerald-500/10 text-center overflow-hidden shadow-2xl"
+      >
+        <div className="absolute top-0 -left-full w-1/2 h-full bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12 animate-pulse" style={{ animationDuration: '6s' }} />
+        
+        <div className="flex flex-col items-center space-y-4 relative">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-amber-500/20 to-yellow-500/20 flex items-center justify-center text-amber-400 border border-amber-500/30 shadow-lg relative animate-bounce">
+            <Lucide.Trophy size={28} />
+          </div>
+          
+          <div className="space-y-1.5 max-w-xl">
+            <h3 className="text-xl font-black text-white leading-tight">
+              {language === 'en' ? 'Your Odisha Rank Certificate is Ready! 🏆' : 'ଆପଣଙ୍କ ଓଡ଼ିଶା ର୍ୟାଙ୍କ୍ ପ୍ରମାଣପତ୍ର ପ୍ରସ୍ତୁତ! 🏆'}
+            </h3>
+            <p className="text-xs text-slate-400 leading-relaxed font-bold">
+              {language === 'en'
+                ? 'Get a premium, high-definition digital certificate detailing your state rank, points, and effort streak. Share it directly to WhatsApp Status to inspire your classmates!'
+                : 'ଆପଣଙ୍କ ରାଜ୍ୟ ର୍ୟାଙ୍କ୍, ପଏଣ୍ଟ ଏବଂ ପ୍ରୟାସ ଷ୍ଟ୍ରିକ୍ ସହିତ ଏକ ପ୍ରିମିୟମ୍ ଡିଜିଟାଲ୍ ପ୍ରମାଣପତ୍ର ଡାଉନଲୋଡ୍ କରନ୍ତୁ। ନିଜ WhatsApp ଷ୍ଟାଟସ୍‌ରେ ଏହାକୁ ଶେୟାର କରନ୍ତୁ!'}
+            </p>
+          </div>
+          
+          <button
+            type="button"
+            disabled={isGeneratingCard}
+            onClick={handleGenerateRankCard}
+            className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-slate-950 text-sm font-black flex items-center justify-center gap-3 transition-all transform hover:scale-105 active:scale-95 shadow-xl shadow-amber-500/20 cursor-pointer disabled:opacity-50 disabled:cursor-wait"
+          >
+            {isGeneratingCard ? (
+              <>
+                <Lucide.Loader2 size={18} className="animate-spin" />
+                <span>{language === 'en' ? 'Generating Certificate...' : 'ପ୍ରମାଣପତ୍ର ପ୍ରସ୍ତୁତ ହେଉଛି...'}</span>
+              </>
+            ) : (
+              <>
+                <Lucide.Share2 size={18} />
+                <span>{language === 'en' ? 'Share My Odisha Rank Card 🏆' : 'ମୋର ଓଡ଼ିଶା ର୍ୟାଙ୍କ୍ କାର୍ଡ଼ ଶେୟାର କରନ୍ତୁ 🏆'}</span>
+              </>
+            )}
+          </button>
+        </div>
       </motion.div>
     </motion.div>
   );

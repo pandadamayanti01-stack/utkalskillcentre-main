@@ -6,6 +6,8 @@ import { Helmet } from 'react-helmet-async';
 import { db } from '../firebase';
 import { doc, updateDoc } from 'firebase/firestore';
 import { solveMathDoubt } from '../services/aiService';
+import confetti from 'canvas-confetti';
+
 
 interface DigitalLibraryViewProps {
   user: any;
@@ -916,6 +918,7 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
   const [personalNotes, setPersonalNotes] = useState<string>('');
   const [isNotepadSaved, setIsNotepadSaved] = useState<boolean>(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+  const [isChapterNotesUnlocked, setIsChapterNotesUnlocked] = useState<boolean>(false);
   
   // Eye Care States
   const [eyeCareMode, setEyeCareMode] = useState<'off' | 'sepia' | 'dim'>('off');
@@ -930,12 +933,50 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
   const chatBottomRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
+  const handleShareToUnlock = async () => {
+    if (!selectedChapter) return;
+    
+    const inviteText = language === 'en'
+      ? `Hey friends! I am revising "${selectedChapter.title}" in our Digital Library on the Utkal Skill Centre app! 📚 Gundulu AI explains everything so easily with beautiful notes & formulas! Check it out here: https://utkalskillcentre.com`
+      : `ହେଲୋ ସାଙ୍ଗମାନେ! ମୁଁ ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍ ଆପ୍‌ରେ ଆମର ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀରୁ "${selectedChapter.title}" ର ନୋଟ୍ସ ପଢୁଛି! 📚 ଗୁଣ୍ଡୁଲୁ AI ବହୁତ ସହଜରେ ସବୁ ସୂତ୍ର ଏବଂ ସାରାଂଶ ବୁଝାଇ ଦେଉଛି। ମାଗଣାରେ ପଢ଼ିବା ପାଇଁ ଏଠାରେ କ୍ଲିକ୍ କରନ୍ତୁ: https://utkalskillcentre.com`;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: selectedChapter.title,
+          text: inviteText,
+          url: 'https://utkalskillcentre.com'
+        });
+      } else {
+        const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(inviteText)}`;
+        window.open(whatsappUrl, '_blank');
+      }
+      
+      // Mark as unlocked
+      localStorage.setItem(`unlocked_notes_${selectedChapter.id}`, 'true');
+      setIsChapterNotesUnlocked(true);
+      
+      // Blast celebratory premium confetti
+      confetti({
+        particleCount: 150,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: ['#10b981', '#3b82f6', '#fbbf24', '#ec4899', '#f43f5e']
+      });
+    } catch (err) {
+      console.log("Sharing failed or cancelled:", err);
+    }
+  };
+
   // Load / Save student notes in real-time
   useEffect(() => {
     if (selectedChapter) {
       const savedNotes = localStorage.getItem(`digilib_notes_${user?.id}_${selectedChapter.id}`);
       setPersonalNotes(savedNotes || '');
       setIsNotepadSaved(true);
+
+      const notesUnlocked = localStorage.getItem(`unlocked_notes_${selectedChapter.id}`) === 'true';
+      setIsChapterNotesUnlocked(notesUnlocked);
 
       // Reset chatbot to initial greeting
       const greetEn = `Namaskar! Mu Gundulu. 🦜 I am your AI study companion for this chapter: "${selectedChapter.title}". Ask me any math formulas, definitions, or click the suggestions below! How can I help you today? ✨`;
@@ -1750,9 +1791,113 @@ Instructions:
                     }}
                   >
                     {selectedChapter.notes ? (
-                      <ReactMarkdown>{cleanMathNotation(selectedChapter.notes)}</ReactMarkdown>
+                      (() => {
+                        const isUnlocked = isChapterNotesUnlocked || user?.role === 'admin';
+                        const originalNotes = selectedChapter.notes;
+                        const finalNotes = isUnlocked ? originalNotes : (originalNotes.length > 350 ? originalNotes.substring(0, 350) + "..." : originalNotes);
+                        
+                        return (
+                          <div className="relative">
+                            <ReactMarkdown>{cleanMathNotation(finalNotes)}</ReactMarkdown>
+                            
+                            {!isUnlocked && (
+                              <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent pointer-events-none" />
+                            )}
+                            
+                            {!isUnlocked && (
+                              <div className="mt-8 p-6 md:p-8 rounded-3xl border border-emerald-500/30 bg-slate-950/85 backdrop-blur-md text-center space-y-6 shadow-2xl relative overflow-hidden">
+                                {/* Floating background glow effect */}
+                                <div className="absolute -top-10 -left-10 w-40 h-40 rounded-full bg-emerald-500/10 blur-3xl animate-pulse" />
+                                <div className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full bg-blue-500/10 blur-3xl animate-pulse" />
+                                
+                                <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500/10 to-teal-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20 shadow-lg mx-auto relative animate-bounce">
+                                  <Lucide.Lock size={28} />
+                                </div>
+                                
+                                <div className="space-y-3 max-w-lg mx-auto">
+                                  <h4 className="text-lg font-black text-white leading-tight">
+                                    {language === 'en' 
+                                      ? 'Unlock Full Chapter Notes & Solutions For Free! 🌟' 
+                                      : 'ସମ୍ପୂର୍ଣ୍ଣ ଅଧ୍ୟାୟ ନୋଟ୍ସ ମାଗଣାରେ ଅନଲକ୍ କରନ୍ତୁ! 🌟'}
+                                  </h4>
+                                  <p className="text-xs text-slate-400 leading-relaxed font-bold">
+                                    {language === 'en'
+                                      ? 'Sharing is caring! Share this premium study material to one of your WhatsApp school/tuition groups to instantly unlock the entire guide.'
+                                      : 'ଏହି ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ପାଠକୁ ଆପଣଙ୍କ ସ୍କୁଲ୍ WhatsApp ଗ୍ରୁପ୍‌ରେ ଶେୟାର କରନ୍ତୁ ଏବଂ ସମସ୍ତ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଓ ଟିପ୍ପଣୀ ତୁରନ୍ତ ପଢ଼ନ୍ତୁ।'}
+                                  </p>
+                                </div>
+                                
+                                <button
+                                  type="button"
+                                  onClick={handleShareToUnlock}
+                                  className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white text-sm font-black flex items-center justify-center gap-3 transition-all transform hover:scale-105 active:scale-95 shadow-xl shadow-emerald-500/20 cursor-pointer"
+                                >
+                                  <Lucide.Share2 size={18} className="animate-pulse" />
+                                  <span>
+                                    {language === 'en'
+                                      ? 'Share on WhatsApp to Unlock 🟢'
+                                      : 'WhatsApp ରେ ଶେୟାର କରି ଅନଲକ୍ କରନ୍ତୁ 🟢'}
+                                  </span>
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })()
                     ) : generatedNotes ? (
-                      <ReactMarkdown>{cleanMathNotation(generatedNotes)}</ReactMarkdown>
+                      (() => {
+                        const isUnlocked = isChapterNotesUnlocked || user?.role === 'admin';
+                        const originalNotes = generatedNotes;
+                        const finalNotes = isUnlocked ? originalNotes : (originalNotes.length > 350 ? originalNotes.substring(0, 350) + "..." : originalNotes);
+                        
+                        return (
+                          <div className="relative">
+                            <ReactMarkdown>{cleanMathNotation(finalNotes)}</ReactMarkdown>
+                            
+                            {!isUnlocked && (
+                              <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent pointer-events-none" />
+                            )}
+                            
+                            {!isUnlocked && (
+                              <div className="mt-8 p-6 md:p-8 rounded-3xl border border-emerald-500/30 bg-slate-950/85 backdrop-blur-md text-center space-y-6 shadow-2xl relative overflow-hidden">
+                                {/* Floating background glow effect */}
+                                <div className="absolute -top-10 -left-10 w-40 h-40 rounded-full bg-emerald-500/10 blur-3xl animate-pulse" />
+                                <div className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full bg-blue-500/10 blur-3xl animate-pulse" />
+                                
+                                <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500/10 to-teal-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20 shadow-lg mx-auto relative animate-bounce">
+                                  <Lucide.Lock size={28} />
+                                </div>
+                                
+                                <div className="space-y-3 max-w-lg mx-auto">
+                                  <h4 className="text-lg font-black text-white leading-tight">
+                                    {language === 'en' 
+                                      ? 'Unlock Full Chapter Notes & Solutions For Free! 🌟' 
+                                      : 'ସମ୍ପୂର୍ଣ୍ଣ ଅଧ୍ୟାୟ ନୋଟ୍ସ ମାଗଣାରେ ଅନଲକ୍ କରନ୍ତୁ! 🌟'}
+                                  </h4>
+                                  <p className="text-xs text-slate-400 leading-relaxed font-bold">
+                                    {language === 'en'
+                                      ? 'Sharing is caring! Share this premium study material to one of your WhatsApp school/tuition groups to instantly unlock the entire guide.'
+                                      : 'ଏହି ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ପାଠକୁ ଆପଣଙ୍କ ସ୍କୁଲ୍ WhatsApp ଗ୍ରୁପ୍‌ରେ ଶେୟାର କରନ୍ତୁ ଏବଂ ସମସ୍ତ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଓ ଟିପ୍ପଣୀ ତୁରନ୍ତ ପଢ଼ନ୍ତୁ।'}
+                                  </p>
+                                </div>
+                                
+                                <button
+                                  type="button"
+                                  onClick={handleShareToUnlock}
+                                  className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white text-sm font-black flex items-center justify-center gap-3 transition-all transform hover:scale-105 active:scale-95 shadow-xl shadow-emerald-500/20 cursor-pointer"
+                                >
+                                  <Lucide.Share2 size={18} className="animate-pulse" />
+                                  <span>
+                                    {language === 'en'
+                                      ? 'Share on WhatsApp to Unlock 🟢'
+                                      : 'WhatsApp ରେ ଶେୟାର କରି ଅନଲକ୍ କରନ୍ତୁ 🟢'}
+                                  </span>
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })()
                     ) : user?.role === 'admin' ? (
                       /* Stunning Glowing AI Notes Generation CTA Card (Only visible to Administrators) */
                       <div className="flex flex-col items-center justify-center p-8 text-center bg-slate-900/40 border border-white/5 rounded-3xl space-y-6 max-w-lg mx-auto">
