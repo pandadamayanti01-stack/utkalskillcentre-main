@@ -904,6 +904,17 @@ export const cleanMathNotation = (text: string): string => {
   return cleaned;
 };
 
+const forceGpuCompositingStyle: React.CSSProperties = {
+  WebkitBackfaceVisibility: 'hidden',
+  backfaceVisibility: 'hidden',
+  WebkitTransformStyle: 'preserve-3d',
+  transformStyle: 'preserve-3d',
+  WebkitPerspective: 1000,
+  perspective: 1000,
+  WebkitTransform: 'translate3d(0,0,0)',
+  transform: 'translate3d(0,0,0)',
+};
+
 export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
   user,
   chapters,
@@ -1233,7 +1244,7 @@ Instructions:
   };
 
   return (
-    <div className="w-full flex flex-col pb-24 font-sans relative overflow-x-hidden">
+    <div style={forceGpuCompositingStyle} className="w-full flex flex-col pb-24 font-sans relative overflow-x-hidden">
       {/* Dynamic SEO Metadata */}
       {(() => {
         const grade = user?.class || '10'; // Fallback to Class 10 if not logged in or class not defined
@@ -1365,7 +1376,7 @@ Instructions:
         
         {/* VIEW 1: SUBJECT TEXTBOOK SELECTOR */}
         {currentView === 'subjects' && (
-          <div className="flex-1 flex flex-col">
+          <div style={forceGpuCompositingStyle} className="flex-1 flex flex-col">
             {/* Elegant Compact Digital Library Header */}
             <div className="text-center max-w-2xl mx-auto mb-8">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-400 text-[10px] font-black uppercase tracking-widest mb-4 shadow-sm">
@@ -1478,7 +1489,7 @@ Instructions:
 
         {/* VIEW 2: CHAPTERS DIRECTORY LIST */}
         {currentView === 'chapters' && (
-          <div className="flex-1 flex flex-col">
+          <div style={forceGpuCompositingStyle} className="flex-1 flex flex-col">
             {(() => {
               const currentMeta = activeSubjects.find(sub => sub.key === selectedSubject) || {
                 gradient: 'from-emerald-600 to-teal-800',
@@ -1602,7 +1613,7 @@ Instructions:
 
         {/* VIEW 3: IMMERSIVE DUAL-PANE READER & AI CHAT ROOM */}
         {currentView === 'reader' && selectedChapter && (
-          <div className="flex-1 flex flex-col lg:flex-row gap-6 relative">
+          <div style={forceGpuCompositingStyle} className="flex-1 flex flex-col lg:flex-row gap-6 relative">
             {/* LEFT / MAIN WORKSPACE PANEL (Reader Tab & Content Panel) */}
             <div className="flex-1 flex flex-col bg-slate-900/20 border border-white/5 rounded-3xl overflow-hidden p-6 relative">
               
