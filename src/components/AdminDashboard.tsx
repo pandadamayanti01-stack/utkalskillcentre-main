@@ -4553,6 +4553,11 @@ Sample tone for Class 6-10:
               <option value="class8">Class 8</option>
               <option value="class7">Class 7</option>
               <option value="class6">Class 6</option>
+              <option value="class5">Class 5</option>
+              <option value="class4">Class 4</option>
+              <option value="class3">Class 3</option>
+              <option value="class2">Class 2</option>
+              <option value="class1">Class 1</option>
             </select>
           </div>
 
@@ -4566,9 +4571,18 @@ Sample tone for Class 6-10:
               <option value="all">All Subjects</option>
               <option value="math">Mathematics</option>
               <option value="science">General Science</option>
+              <option value="physical_science">Physical Science</option>
+              <option value="life_science">Life Science</option>
               <option value="social_science">Social Science</option>
               <option value="english">English</option>
+              <option value="english_grammar">English Grammar</option>
               <option value="odia">Odia</option>
+              <option value="odia_grammar">Odia Grammar</option>
+              <option value="sanskrit">Sanskrit</option>
+              <option value="sanskrit_grammar">Sanskrit Grammar</option>
+              <option value="hindi">Hindi</option>
+              <option value="hindi_grammar">Hindi Grammar</option>
+              <option value="vocational">Vocational</option>
               <option value="epe">Art & Health</option>
             </select>
           </div>
@@ -4711,6 +4725,11 @@ Sample tone for Class 6-10:
                         <option value="class8">Class 8</option>
                         <option value="class7">Class 7</option>
                         <option value="class6">Class 6</option>
+                        <option value="class5">Class 5</option>
+                        <option value="class4">Class 4</option>
+                        <option value="class3">Class 3</option>
+                        <option value="class2">Class 2</option>
+                        <option value="class1">Class 1</option>
                       </select>
                     </div>
 
@@ -4723,9 +4742,18 @@ Sample tone for Class 6-10:
                       >
                         <option value="math">Mathematics</option>
                         <option value="science">General Science</option>
+                        <option value="physical_science">Physical Science</option>
+                        <option value="life_science">Life Science</option>
                         <option value="social_science">Social Science</option>
                         <option value="english">English</option>
+                        <option value="english_grammar">English Grammar</option>
                         <option value="odia">Odia</option>
+                        <option value="odia_grammar">Odia Grammar</option>
+                        <option value="sanskrit">Sanskrit</option>
+                        <option value="sanskrit_grammar">Sanskrit Grammar</option>
+                        <option value="hindi">Hindi</option>
+                        <option value="hindi_grammar">Hindi Grammar</option>
+                        <option value="vocational">Vocational</option>
                         <option value="epe">Art & Health</option>
                       </select>
                     </div>
