@@ -2067,7 +2067,7 @@ Instructions:
                         </div>
 
                         <a
-                          href={effectivePdfUrl}
+                          href={`https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(effectivePdfUrl)}`}
                           target="_blank"
                           rel="noreferrer"
                           className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black text-[10px] tracking-wider uppercase transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
@@ -2078,23 +2078,23 @@ Instructions:
                       </div>
                     ) : (
                       <iframe
-                        src={`${effectivePdfUrl}#toolbar=0&navpanes=0`}
+                        src={`https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(effectivePdfUrl)}`}
                         className="w-full flex-1"
                         title={selectedChapter.title}
                       />
                     )}
                     <div className="p-4 bg-slate-900/60 border-t border-white/5 flex items-center justify-between">
                       <span className="text-xs text-slate-400">
-                        {language === 'en' ? 'Having trouble viewing? Open original PDF directly:' : 'ଦେଖିବାରେ ସମସ୍ୟା ହେଉଛି? ସିଧାସଳଖ PDF ଓପନ କରନ୍ତୁ:'}
+                        {language === 'en' ? 'Having trouble viewing? Open online viewer directly:' : 'ଦେଖିବାରେ ସମସ୍ୟା ହେଉଛି? ସିଧାସଳଖ ଅନଲାଇନ୍ ଭ୍ୟୁଅର୍ ଓପନ୍ କରନ୍ତୁ:'}
                       </span>
                       <a
-                        href={effectivePdfUrl}
+                        href={`https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(effectivePdfUrl)}`}
                         target="_blank"
                         rel="noreferrer"
                         className="flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-black text-xs transition-all active:scale-95"
                       >
                         <Lucide.ExternalLink size={14} />
-                        <span>{language === 'en' ? 'Open PDF' : 'PDF ଓପନ୍'}</span>
+                        <span>{language === 'en' ? 'Open Viewer' : 'ଭ୍ୟୁଅର୍ ଓପନ୍'}</span>
                       </a>
                     </div>
                   </div>
@@ -2545,7 +2545,7 @@ Instructions:
                         </div>
 
                         <a
-                          href={effectivePdfUrl}
+                          href={`https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(effectivePdfUrl)}`}
                           target="_blank"
                           rel="noreferrer"
                           className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black text-[10px] tracking-wider uppercase transition-all active:scale-95 shadow-lg shadow-emerald-500/20 animate-pulse"
@@ -2556,23 +2556,23 @@ Instructions:
                       </div>
                     ) : (
                       <iframe
-                        src={`${effectivePdfUrl}#toolbar=0&navpanes=0`}
+                        src={`https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(effectivePdfUrl)}`}
                         className="w-full flex-1"
                         title={selectedChapter.title}
                       />
                     )}
                     <div className="p-4 bg-slate-950 border-t border-white/5 flex items-center justify-between">
                       <span className="text-xs text-slate-400">
-                        {language === 'en' ? 'Original PDF Textbook Reader' : 'ମୂଳ ପାଠ୍ୟପୁସ୍ତକ ପାଠକ'}
+                        {language === 'en' ? 'Online PDF Textbook Reader' : 'ଅନଲାଇନ୍ ପାଠ୍ୟପୁସ୍ତକ ପାଠକ'}
                       </span>
                       <a
-                        href={effectivePdfUrl}
+                        href={`https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(effectivePdfUrl)}`}
                         target="_blank"
                         rel="noreferrer"
                         className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs transition-all active:scale-95"
                       >
                         <Lucide.ExternalLink size={14} />
-                        <span>{language === 'en' ? 'Download Original' : 'ମୂଳ PDF ଡାଉନଲୋଡ୍'}</span>
+                        <span>{language === 'en' ? 'Open in Viewer' : 'ଭ୍ୟୁଅର୍‌ରେ ଦେଖନ୍ତୁ'}</span>
                       </a>
                     </div>
                   </div>
