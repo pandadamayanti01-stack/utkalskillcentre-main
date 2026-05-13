@@ -1357,7 +1357,28 @@ export default function App() {
 
     const unsubChapters = onSnapshot(chaptersQuery, (snapshot) => {
       console.log("Debug: Fetched chapters snapshot size:", snapshot.size);
-      const allData = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as Chapter[];
+      const allDataRaw = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      const allData: Chapter[] = [];
+      
+      allDataRaw.forEach((d: any) => {
+        if (d.isParentTextbook && Array.isArray(d.chaptersList)) {
+          d.chaptersList.forEach((ch: any) => {
+            allData.push({
+              id: `${d.id}_ch${ch.number}`,
+              class: d.class,
+              subject: d.subject,
+              title: ch.title,
+              pdfUrl: ch.pdfUrl,
+              notes: ch.notes,
+              status: d.status,
+              isLibraryChapter: true,
+              updatedAt: d.updatedAt
+            } as any);
+          });
+        } else {
+          allData.push(d as Chapter);
+        }
+      });
       console.log("Debug: All fetched chapters:", allData);
       
       const data = allData.filter(c => {
