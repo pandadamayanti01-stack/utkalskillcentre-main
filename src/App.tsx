@@ -2846,80 +2846,76 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
       <div className="bg-orb-terracotta bottom-[-10%] right-[-10%]" />
 
       {/* SIDEBAR Component */}
-      {activeTab !== 'digital_library' && (
-        <Suspense fallback={null}>
-          <Sidebar 
-            language={language}
-            setLanguage={setLanguage}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            isSidebarOpen={isSidebarOpen}
-            setSidebarOpen={setSidebarOpen}
-            user={user}
-            isAdminView={isAdminView}
-            setIsAdminView={setIsAdminView}
-            handleLogout={handleLogout}
-            isRegisteredForTestSeries={isRegisteredForTestSeries}
-          />
-        </Suspense>
-      )}
+      <Suspense fallback={null}>
+        <Sidebar 
+          language={language}
+          setLanguage={setLanguage}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          isSidebarOpen={isSidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          user={user}
+          isAdminView={isAdminView}
+          setIsAdminView={setIsAdminView}
+          handleLogout={handleLogout}
+          isRegisteredForTestSeries={isRegisteredForTestSeries}
+        />
+      </Suspense>
 
       {/* MAIN VIEWPORT */}
       <main className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative">
         
         {/* HEADER: Sticky at top */}
-        {activeTab !== 'digital_library' && (
-          <header className="h-20 flex items-center justify-between px-6 bg-black/20 backdrop-blur-xl border-b border-white/5 flex-shrink-0 z-20">
-            <div className="flex items-center gap-4">
-              <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 text-[#f8f1e7]/60">
-                <Lucide.Menu size={24} />
-              </button>
-              <div className="flex items-center gap-3">
-                {/* UTKAL LOGO used in Header */}
-                <img src="/utkal-192.png" className="h-10 w-auto drop-shadow-md" alt="Utkal Skill Centre" />
-                <div className="h-8 w-px bg-white/10 hidden md:block" />
-                <h2 className="text-lg font-black text-white hidden md:block uppercase tracking-tight">
-                  {activeTab.replace('_', ' ')}
-                </h2>
-              </div>
-            </div>
-
+        <header className="h-20 flex items-center justify-between px-6 bg-black/20 backdrop-blur-xl border-b border-white/5 flex-shrink-0 z-20">
+          <div className="flex items-center gap-4">
+            <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 text-[#f8f1e7]/60">
+              <Lucide.Menu size={24} />
+            </button>
             <div className="flex items-center gap-3">
-              {/* Live Support Button in Odia (Top Right Header Alignment) */}
-              {!isAdminView && user && !supportSession && (
-                <button
-                  onClick={handleSupportClick}
-                  className={`flex items-center gap-1.5 p-2 sm:px-3.5 sm:py-2 text-white rounded-2xl shadow-lg transition-all cursor-pointer z-30 ${
-                    confirmSupport 
-                      ? 'bg-gradient-to-r from-red-600 via-rose-600 to-pink-500 hover:from-red-500 hover:via-rose-500 hover:to-pink-400 shadow-rose-900/40 border border-rose-500/50 scale-105 animate-pulse' 
-                      : 'bg-gradient-to-r from-red-600 via-orange-600 to-amber-500 hover:from-red-500 hover:via-orange-500 hover:to-amber-400 shadow-red-900/20 border border-red-500/30 hover:scale-105 active:scale-95'
-                  }`}
-                  title={
-                    confirmSupport 
-                      ? (language === 'or' ? 'ନିଶ୍ଚିତ କରନ୍ତୁ?' : 'Confirm Connection?') 
-                      : (language === 'or' ? 'ଲାଇଭ୍ ସହାୟତା' : 'Live Support')
-                  }
-                >
-                  <Lucide.LifeBuoy size={16} className={`${confirmSupport ? 'animate-spin text-white' : 'animate-spin-slow text-white'}`} />
-                  <span className="text-[11px] font-black tracking-wider leading-none hidden sm:inline-block">
-                    {confirmSupport 
-                      ? (language === 'or' ? 'ନିଶ୍ଚିତ କରନ୍ତୁ?' : 'Confirm?') 
-                      : 'ଲାଇଭ୍ ସହାୟତା'}
-                  </span>
-                </button>
-              )}
-
-              {/* User Stats Bubble */}
-              <div className="flex items-center gap-4 bg-white/5 px-4 py-2 rounded-2xl border border-white/5">
-                <div className="flex items-center gap-1.5 text-orange-400">
-                  <Lucide.Flame size={16} fill="currentColor" />
-                  <span className="text-sm font-black">{user.streak || 0}</span>
-                </div>
-                <div className="text-sm font-black text-[#ffd700]">{user.points || 0} PTS</div>
-              </div>
+              {/* UTKAL LOGO used in Header */}
+              <img src="/utkal-192.png" className="h-10 w-auto drop-shadow-md" alt="Utkal Skill Centre" />
+              <div className="h-8 w-px bg-white/10 hidden md:block" />
+              <h2 className="text-lg font-black text-white hidden md:block uppercase tracking-tight">
+                {activeTab.replace('_', ' ')}
+              </h2>
             </div>
-          </header>
-        )}
+          </div>
+
+          <div className="flex items-center gap-3">
+            {/* Live Support Button in Odia (Top Right Header Alignment) */}
+            {!isAdminView && user && !supportSession && (
+              <button
+                onClick={handleSupportClick}
+                className={`flex items-center gap-1.5 p-2 sm:px-3.5 sm:py-2 text-white rounded-2xl shadow-lg transition-all cursor-pointer z-30 ${
+                  confirmSupport 
+                    ? 'bg-gradient-to-r from-red-600 via-rose-600 to-pink-500 hover:from-red-500 hover:via-rose-500 hover:to-pink-400 shadow-rose-900/40 border border-rose-500/50 scale-105 animate-pulse' 
+                    : 'bg-gradient-to-r from-red-600 via-orange-600 to-amber-500 hover:from-red-500 hover:via-orange-500 hover:to-amber-400 shadow-red-900/20 border border-red-500/30 hover:scale-105 active:scale-95'
+                }`}
+                title={
+                  confirmSupport 
+                    ? (language === 'or' ? 'ନିଶ୍ଚିତ କରନ୍ତୁ?' : 'Confirm Connection?') 
+                    : (language === 'or' ? 'ଲାଇଭ୍ ସହାୟତା' : 'Live Support')
+                }
+              >
+                <Lucide.LifeBuoy size={16} className={`${confirmSupport ? 'animate-spin text-white' : 'animate-spin-slow text-white'}`} />
+                <span className="text-[11px] font-black tracking-wider leading-none hidden sm:inline-block">
+                  {confirmSupport 
+                    ? (language === 'or' ? 'ନିଶ୍ଚିତ କରନ୍ତୁ?' : 'Confirm?') 
+                    : 'ଲାଇଭ୍ ସହାୟତା'}
+                </span>
+              </button>
+            )}
+
+            {/* User Stats Bubble */}
+            <div className="flex items-center gap-4 bg-white/5 px-4 py-2 rounded-2xl border border-white/5">
+              <div className="flex items-center gap-1.5 text-orange-400">
+                <Lucide.Flame size={16} fill="currentColor" />
+                <span className="text-sm font-black">{user.streak || 0}</span>
+              </div>
+              <div className="text-sm font-black text-[#ffd700]">{user.points || 0} PTS</div>
+            </div>
+          </div>
+        </header>
 
         {/* CONTENT AREA: This is the ONLY part that scrolls */}
         <div 
