@@ -985,7 +985,7 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
 
   // Scroll window and scrollable dashboard containers to top on view changes (prevent SPA bottom landing)
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    window.scrollTo(0, 0);
     const scrollableContainers = document.querySelectorAll('.overflow-y-auto, .scrollbar-hide');
     scrollableContainers.forEach(container => {
       container.scrollTop = 0;
