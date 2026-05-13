@@ -1714,14 +1714,6 @@ Instructions:
 
                 <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
                   <button
-                    onClick={() => setIsPdfFullScreen(true)}
-                    className="px-4 py-2.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400 text-xs font-black flex items-center justify-center gap-2 active:scale-95"
-                  >
-                    <Lucide.Maximize2 size={14} />
-                    <span>{language === 'en' ? 'Full Screen' : 'ପୂର୍ଣ୍ଣ ସ୍କ୍ରିନ୍'}</span>
-                  </button>
-
-                  <button
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                     className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 text-xs font-black flex items-center justify-center gap-2 active:scale-95"
                   >
@@ -2165,16 +2157,6 @@ Instructions:
                   </div>
                 </div>
 
-                {isPremium && (
-                  <button
-                    type="button"
-                    onClick={() => setIsChatFullScreen(true)}
-                    className="p-2.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-white border border-emerald-500/30 hover:border-emerald-500 transition-all active:scale-95 shadow-[0_0_15px_rgba(16,185,129,0.2)] flex items-center justify-center animate-pulse"
-                    title={language === 'en' ? 'Maximize Chat' : 'ଚାଟ୍ ବଡ଼ କରନ୍ତୁ'}
-                  >
-                    <Lucide.Maximize2 size={16} />
-                  </button>
-                )}
               </div>
 
               {!isPremium ? (
@@ -2314,7 +2296,7 @@ Instructions:
 
         {/* ULTRA-PREMIUM IMMERSIVE FULL-SCREEN READER OVERLAY */}
         <AnimatePresence>
-          {isPdfFullScreen && selectedChapter && (
+          {false && isPdfFullScreen && selectedChapter && (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -2584,7 +2566,7 @@ Instructions:
 
         {/* ULTRA-PREMIUM IMMERSIVE FULL-SCREEN GUNDULU CHAT OVERLAY */}
         <AnimatePresence>
-          {isChatFullScreen && selectedChapter && (
+          {false && isChatFullScreen && selectedChapter && (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
