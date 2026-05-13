@@ -941,16 +941,8 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
       : `ହେଲୋ ସାଙ୍ଗମାନେ! ମୁଁ ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍ ଆପ୍‌ରେ ଆମର ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀରୁ "${selectedChapter.title}" ର ନୋଟ୍ସ ପଢୁଛି! 📚 ଗୁଣ୍ଡୁଲୁ AI ବହୁତ ସହଜରେ ସବୁ ସୂତ୍ର ଏବଂ ସାରାଂଶ ବୁଝାଇ ଦେଉଛି। ମାଗଣାରେ ପଢ଼ିବା ପାଇଁ ଏଠାରେ କ୍ଲିକ୍ କରନ୍ତୁ: https://utkalskillcentre.com`;
 
     try {
-      if (navigator.share) {
-        await navigator.share({
-          title: selectedChapter.title,
-          text: inviteText,
-          url: 'https://utkalskillcentre.com'
-        });
-      } else {
-        const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(inviteText)}`;
-        window.open(whatsappUrl, '_blank');
-      }
+      const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(inviteText)}`;
+      window.open(whatsappUrl, '_blank');
       
       // Mark as unlocked
       localStorage.setItem(`unlocked_notes_${selectedChapter.id}`, 'true');
