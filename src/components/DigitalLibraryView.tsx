@@ -1169,7 +1169,7 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
     // Remove duplicates based on ID first, then title (case insensitive and trimmed)
     const seenIds = new Set<string>();
     const seenTitles = new Set<string>();
-    return matched.filter((c: any) => {
+    const uniqueChapters = matched.filter((c: any) => {
       if (!c.id || seenIds.has(c.id)) return false;
       seenIds.add(c.id);
 
@@ -1187,6 +1187,37 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
       }
       seenTitles.add(normalizedTitle);
       return true;
+    });
+
+    const getChapterNumber = (c: any): number => {
+      if (typeof c.number === 'number') return c.number;
+      if (typeof c.chapterNumber === 'number') return c.chapterNumber;
+      if (typeof c.index === 'number') return c.index;
+
+      const idMatch = String(c.id).match(/_ch(\d+)/i) || String(c.id).match(/ch(\d+)/i);
+      if (idMatch) return parseInt(idMatch[1], 10);
+
+      const urlStr = String(c.pdfUrl || c.download_url || c.driveUrl || '');
+      const decodedUrl = decodeURIComponent(urlStr);
+      const urlMatch = decodedUrl.match(/Chapter_(\d+)/i) || decodedUrl.match(/Ch_(\d+)/i) || decodedUrl.match(/Ch(\d+)/i);
+      if (urlMatch) return parseInt(urlMatch[1], 10);
+
+      const titleStr = typeof c.title === 'string' ? c.title : (c.title?.en || c.title?.or || '');
+      const titleMatch = titleStr.match(/Chapter\s*(\d+)/i) || titleStr.match(/Ch\s*(\d+)/i);
+      if (titleMatch) return parseInt(titleMatch[1], 10);
+
+      return 999;
+    };
+
+    return uniqueChapters.sort((a, b) => {
+      const numA = getChapterNumber(a);
+      const numB = getChapterNumber(b);
+      if (numA !== numB) {
+        return numA - numB;
+      }
+      const titleA = (typeof a.title === 'string' ? a.title : (a.title?.en || a.title?.or || '')).toLowerCase();
+      const titleB = (typeof b.title === 'string' ? b.title : (b.title?.en || b.title?.or || '')).toLowerCase();
+      return titleA.localeCompare(titleB);
     });
   }, [chapters, selectedSubject, selectedClass, user?.class, activeSubjects]);
 
