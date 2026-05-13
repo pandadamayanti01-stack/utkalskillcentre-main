@@ -972,6 +972,11 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
   const [currentView, setCurrentView] = useState<'subjects' | 'chapters' | 'reader'>('subjects');
   const [selectedSubject, setSelectedSubject] = useState<string>('');
   const [selectedChapter, setSelectedChapter] = useState<any | null>(null);
+  const [useDirectViewer, setUseDirectViewer] = useState<boolean>(false);
+
+  useEffect(() => {
+    setUseDirectViewer(false);
+  }, [selectedChapter]);
 
   // Selected class (Classes 1 to 10), defaulting to student's profile class or Class 10
   const [selectedClass, setSelectedClass] = useState<string>(() => {
@@ -2117,7 +2122,7 @@ Instructions:
                         </div>
 
                         <a
-                          href={`https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(effectivePdfUrl)}`}
+                          href={useDirectViewer ? effectivePdfUrl : `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(effectivePdfUrl)}`}
                           target="_blank"
                           rel="noreferrer"
                           className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black text-[10px] tracking-wider uppercase transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
@@ -2128,17 +2133,31 @@ Instructions:
                       </div>
                     ) : (
                       <iframe
-                        src={`https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(effectivePdfUrl)}`}
+                        src={useDirectViewer ? effectivePdfUrl : `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(effectivePdfUrl)}`}
                         className="w-full flex-1"
                         title={selectedChapter.title}
                       />
                     )}
-                    <div className="p-4 bg-slate-900/60 border-t border-white/5 flex items-center justify-between">
-                      <span className="text-xs text-slate-400">
-                        {language === 'en' ? 'Having trouble viewing? Open online viewer directly:' : 'ଦେଖିବାରେ ସମସ୍ୟା ହେଉଛି? ସିଧାସଳଖ ଅନଲାଇନ୍ ଭ୍ୟୁଅର୍ ଓପନ୍ କରନ୍ତୁ:'}
-                      </span>
+                    <div className="p-4 bg-slate-900/60 border-t border-white/5 flex flex-wrap gap-3 items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-slate-400 font-bold">
+                          {language === 'en' ? 'Trouble loading or file is too large?' : 'ଫାଇଲ୍ ଲୋଡ୍ ହେଉନାହିଁ କିମ୍ବା ବଡ଼ ଅଛି?'}
+                        </span>
+                        <button
+                          onClick={() => setUseDirectViewer(!useDirectViewer)}
+                          className={`px-3 py-1.5 rounded-lg font-black text-[9px] tracking-wide uppercase transition-all active:scale-95 border ${
+                            useDirectViewer 
+                              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 font-black' 
+                              : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'
+                          }`}
+                        >
+                          {useDirectViewer 
+                            ? (language === 'en' ? 'Using Direct Reader' : 'ଦ୍ରୁତ ପିଡିଏଫ୍ ସକ୍ରିୟ') 
+                            : (language === 'en' ? 'Use Direct PDF Reader' : 'ଦ୍ରୁତ ପିଡିଏଫ୍ ମୋଡ୍')}
+                        </button>
+                      </div>
                       <a
-                        href={`https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(effectivePdfUrl)}`}
+                        href={useDirectViewer ? effectivePdfUrl : `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(effectivePdfUrl)}`}
                         target="_blank"
                         rel="noreferrer"
                         className="flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-black text-xs transition-all active:scale-95"
@@ -2597,7 +2616,7 @@ Instructions:
                         </div>
 
                         <a
-                          href={`https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(effectivePdfUrl)}`}
+                          href={useDirectViewer ? effectivePdfUrl : `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(effectivePdfUrl)}`}
                           target="_blank"
                           rel="noreferrer"
                           className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black text-[10px] tracking-wider uppercase transition-all active:scale-95 shadow-lg shadow-emerald-500/20 animate-pulse"
@@ -2608,17 +2627,31 @@ Instructions:
                       </div>
                     ) : (
                       <iframe
-                        src={`https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(effectivePdfUrl)}`}
+                        src={useDirectViewer ? effectivePdfUrl : `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(effectivePdfUrl)}`}
                         className="w-full flex-1"
                         title={selectedChapter.title}
                       />
                     )}
-                    <div className="p-4 bg-slate-950 border-t border-white/5 flex items-center justify-between">
-                      <span className="text-xs text-slate-400">
-                        {language === 'en' ? 'Online PDF Textbook Reader' : 'ଅନଲାଇନ୍ ପାଠ୍ୟପୁସ୍ତକ ପାଠକ'}
-                      </span>
+                    <div className="p-4 bg-slate-950 border-t border-white/5 flex flex-wrap gap-3 items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-slate-400 font-bold">
+                          {language === 'en' ? 'Trouble loading or file is too large?' : 'ଫାଇଲ୍ ଲୋଡ୍ ହେଉନାହିଁ କିମ୍ବା ବଡ଼ ଅଛି?'}
+                        </span>
+                        <button
+                          onClick={() => setUseDirectViewer(!useDirectViewer)}
+                          className={`px-3 py-1.5 rounded-lg font-black text-[9px] tracking-wide uppercase transition-all active:scale-95 border ${
+                            useDirectViewer 
+                              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 font-black' 
+                              : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'
+                          }`}
+                        >
+                          {useDirectViewer 
+                            ? (language === 'en' ? 'Using Direct Reader' : 'ଦ୍ରୁତ ପିଡିଏଫ୍ ସକ୍ରିୟ') 
+                            : (language === 'en' ? 'Use Direct PDF Reader' : 'ଦ୍ରୁତ ପିଡିଏଫ୍ ମୋଡ୍')}
+                        </button>
+                      </div>
                       <a
-                        href={`https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(effectivePdfUrl)}`}
+                        href={useDirectViewer ? effectivePdfUrl : `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(effectivePdfUrl)}`}
                         target="_blank"
                         rel="noreferrer"
                         className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs transition-all active:scale-95"
