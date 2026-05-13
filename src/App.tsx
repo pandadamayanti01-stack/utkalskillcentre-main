@@ -2917,12 +2917,9 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
           </div>
         </header>
 
-        {/* CONTENT AREA: This is the ONLY part that scrolls */}
         <div 
           ref={contentScrollRef} 
-          className={`flex-1 overflow-y-auto p-4 md:p-8 scrollbar-hide relative z-10 ${
-            activeTab === 'digital_library' ? 'pb-8' : 'pb-28 lg:pb-8'
-          }`}
+          className="flex-1 overflow-y-auto p-4 md:p-8 scrollbar-hide relative z-10 pb-28 lg:pb-8"
         >
           <AnimatePresence mode="wait">
             {/* Your 10+ Tab components go here... */}
@@ -3004,7 +3001,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
         </div>
 
         {/* Bottom Floating Navigation Bar for Mobile */}
-        {user && !isAdminView && activeTab !== 'gundulu' && activeTab !== 'digital_library' && (
+        {user && !isAdminView && activeTab !== 'gundulu' && (
           <BottomNavBar
             language={language}
             activeTab={activeTab}
