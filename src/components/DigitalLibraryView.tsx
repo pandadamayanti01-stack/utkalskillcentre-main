@@ -1232,12 +1232,18 @@ Instructions:
     }
   };
 
+  const isMobile = isMobileDevice();
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="fixed inset-0 z-[55] bg-[#020617] flex flex-col p-4 md:p-8 pb-24 font-sans overflow-y-auto overflow-x-hidden"
+      className={
+        isMobile 
+          ? "w-full flex flex-col pb-24 font-sans relative overflow-x-hidden" 
+          : "fixed inset-0 z-[55] bg-[#020617] flex flex-col p-4 md:p-8 pb-24 font-sans overflow-y-auto overflow-x-hidden"
+      }
     >
       {/* Dynamic SEO Metadata */}
       {(() => {
