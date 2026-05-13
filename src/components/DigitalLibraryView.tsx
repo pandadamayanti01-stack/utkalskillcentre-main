@@ -1090,7 +1090,14 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
       if (!c.id || seenIds.has(c.id)) return false;
       seenIds.add(c.id);
 
-      const normalizedTitle = c.title?.toLowerCase().trim() || '';
+      let titleStr = '';
+      if (typeof c.title === 'string') {
+        titleStr = c.title;
+      } else if (c.title && typeof c.title === 'object') {
+        titleStr = c.title.en || c.title.or || '';
+      }
+
+      const normalizedTitle = titleStr.toLowerCase().trim();
       if (normalizedTitle && seenTitles.has(normalizedTitle)) {
         console.log("Debug: Filtering out duplicate chapter by title:", c.title, "ID:", c.id);
         return false;

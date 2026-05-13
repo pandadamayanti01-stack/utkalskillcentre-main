@@ -1461,7 +1461,14 @@ Sample tone for Class 6-10:
     // Requirement: Only show one entry per logical chapter (addressing the "two chapters" issue)
     const uniqueChapters = Array.from(
       filteredContent.reduce((acc, current) => {
-        const groupId = current.translationGroupId || current.id;
+        let titleStr = '';
+        if (typeof current.title === 'string') {
+          titleStr = current.title;
+        } else if (current.title && typeof current.title === 'object') {
+          titleStr = current.title.en || current.title.or || '';
+        }
+        const cleanTitle = titleStr.toLowerCase().trim();
+        const groupId = current.translationGroupId || cleanTitle || current.id;
         const existing = acc.get(groupId);
         // Keep the first one found for each groupId
         if (!existing) {
@@ -1859,7 +1866,7 @@ Sample tone for Class 6-10:
           </motion.div>
         )}
 
-        {filteredContent.length === 0 ? (
+        {uniqueChapters.length === 0 ? (
           <div className="glass-card p-20 text-center rounded-[3rem] border-white/5">
             <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 border border-white/10">
               <Search size={40} className="text-slate-700" />
@@ -1869,7 +1876,7 @@ Sample tone for Class 6-10:
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredContent.map((c: any, i: number) => (
+            {uniqueChapters.map((c: any, i: number) => (
               <motion.div
                 key={c.id}
                 initial={{ opacity: 0, scale: 0.9 }}
