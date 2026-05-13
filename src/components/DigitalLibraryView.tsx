@@ -1356,18 +1356,39 @@ Instructions:
             exit={{ opacity: 0, y: -15 }}
             className="flex-1 flex flex-col"
           >
-            <div className="text-center max-w-2xl mx-auto mb-6">
-              <span className="px-3.5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-sm">
-                {language === 'en' ? 'Academic Year 2026' : 'ଶିକ୍ଷା ବର୍ଷ ୨୦୨୬'}
-              </span>
-              <h2 className="text-2xl md:text-4xl font-black mt-4 text-white">
-                {language === 'en' ? 'Choose a Subject Textbook' : 'ଆପଣଙ୍କର ପାଠ୍ୟପୁସ୍ତକ ବାଛନ୍ତୁ'}
-              </h2>
-              <p className="text-sm text-slate-400 mt-2">
-                {language === 'en' 
-                  ? 'Access original textbooks instantly, read simplified AI notes, and practice interactive questions with Gundulu.' 
-                  : 'ସିଧାସଳଖ ମୂଳ ବହି ପଢ଼ନ୍ତୁ, ଏଆଇ ସଂକ୍ଷିପ୍ତ ସୂତ୍ର ଦେଖନ୍ତୁ ଏବଂ ଗୁଣ୍ଡୁଲୁ ସହ ପ୍ରଶ୍ନୋତ୍ତର ଅଭ୍ୟାସ କରନ୍ତୁ।'}
-              </p>
+            {/* Majestic Integrated Golden Library Theme Welcome Banner */}
+            <div className="w-full max-w-4xl mx-auto mb-8 rounded-[2rem] bg-gradient-to-r from-amber-500/10 via-emerald-500/5 to-cyan-500/10 border border-amber-500/20 p-5 md:p-6 shadow-[0_8px_32px_rgba(245,158,11,0.05)] relative overflow-hidden backdrop-blur-md">
+              {/* Decorative top-right gold accent glow */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+              
+              <div className="flex flex-col md:flex-row items-center gap-5 relative z-10">
+                {/* Glowing emblem medallion */}
+                <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-gradient-to-br from-amber-300 via-yellow-500 to-amber-600 p-[1px] shadow-[0_0_25px_rgba(245,158,11,0.2)] shrink-0 animate-bounce-subtle">
+                  <div className="h-full w-full rounded-full bg-slate-950/90 flex items-center justify-center">
+                    <Lucide.BookOpen className="text-amber-400 h-8 w-8 md:h-10 md:w-10" />
+                  </div>
+                </div>
+
+                <div className="flex-1 text-center md:text-left space-y-2">
+                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
+                    <span className="px-3 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                      {language === 'en' ? 'USC Digital Library' : 'ଉତ୍କଳ ଡିଜିଟାଲ୍ ପାଠାଗାର'}
+                    </span>
+                    <span className="px-3 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                      {language === 'en' ? 'Academic Year 2026' : 'ଶିକ୍ଷା ବର୍ଷ ୨୦୨୬'}
+                    </span>
+                  </div>
+
+                  <h2 className="text-xl md:text-2xl font-black text-slate-100">
+                    {language === 'en' ? 'Welcome to your Gateway of Knowledge' : 'ଜ୍ଞାନ ଦ୍ୱାରକୁ ଆପଣଙ୍କୁ ସ୍ୱାଗତ'}
+                  </h2>
+                  <p className="text-xs md:text-sm text-slate-400 font-semibold leading-relaxed">
+                    {language === 'en'
+                      ? 'Study Class-wise original school textbooks, read simplified AI notes, check formula sheets, and ask AI Gundulu to explain concepts!'
+                      : 'ଶ୍ରେଣୀ ଅନୁଯାୟୀ ଓଡ଼ିଆ ମିଡିୟମ୍ ସ୍କୁଲ୍ ବହି ପଢ଼ନ୍ତୁ, ସରଳ ସଂକ୍ଷିପ୍ତ ଏଆଇ ନୋଟ୍ସ ଦେଖନ୍ତୁ ଏବଂ କୌଣସି ପ୍ରଶ୍ନର ଉତ୍ତର ଗୁଣ୍ଡୁଲୁ ଏଆଇ ଶିକ୍ଷକଙ୍କୁ ପଚାରନ୍ତୁ!'}
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Premium Class Selector Pill-Bar (Only visible to Admins) */}

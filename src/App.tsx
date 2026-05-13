@@ -685,8 +685,6 @@ export default function App() {
     const hash = window.location.hash.replace('#', '').split('/')[0];
     return hash || localStorage.getItem('activeTab') || 'dashboard';
   });
-  const [showLibraryGate, setShowLibraryGate] = useState(false);
-  const [isLibraryUnlocked, setIsLibraryUnlocked] = useState(false);
   const [lastTab, setLastTab] = useState('dashboard');
   const [isRegisteredForTestSeries, setIsRegisteredForTestSeries] = useState(false);
   const [openTutorInVoiceMode, setOpenTutorInVoiceMode] = useState(0);
@@ -700,14 +698,8 @@ export default function App() {
   });
 
   useEffect(() => {
-    if (activeTab === 'digital_library' && lastTab !== 'digital_library') {
-      setShowLibraryGate(true);
-      setIsLibraryUnlocked(false);
-    } else if (activeTab !== 'digital_library') {
-      setIsLibraryUnlocked(false);
-    }
     setLastTab(activeTab);
-  }, [activeTab, lastTab]);
+  }, [activeTab]);
 
   useEffect(() => {
     document.body.classList.remove('theme-slate', 'theme-forest', 'theme-navy', 'theme-daybreak');
@@ -2965,7 +2957,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
               />
             )}
             {activeTab === 'notifications' && <NotificationsView notifications={studentNotifications} language={language} readNotifIds={readNotifIds} onBack={() => setActiveTab('dashboard')} />}
-            {activeTab === 'digital_library' && isLibraryUnlocked && (
+            {activeTab === 'digital_library' && (
               <DigitalLibraryView
                 user={user}
                 chapters={chapters.filter((c: any) => c.isLibraryChapter || c.pdfUrl)}
@@ -3072,16 +3064,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
       <SupportOverlay session={supportSession} onEnd={endSupport} />
     )}
 
-    {/* Cinematic Digital Library Portal Gate */}
-      {showLibraryGate && (
-        <LibraryPortalGate 
-          language={language} 
-          onComplete={() => {
-            setShowLibraryGate(false);
-            setIsLibraryUnlocked(true);
-          }} 
-        />
-      )}
+
 
     </div>
   </ErrorBoundary>
