@@ -66,7 +66,7 @@ export default function LibraryPortalGate({ language, onComplete }: LibraryPorta
       </div>
 
       {/* CENTRAL GLOWING EMBLEM & LOCK CONTROLS */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center z-30 pointer-events-none">
+      <div className="absolute inset-0 flex flex-col items-center justify-center z-30 pointer-events-auto">
         <AnimatePresence>
           {!isOpening && (
             <motion.div
