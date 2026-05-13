@@ -1205,7 +1205,12 @@ Instructions:
   };
 
   return (
-    <div className="w-full flex flex-col pb-24 font-sans relative overflow-x-hidden">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="w-full flex flex-col pb-24 font-sans relative overflow-x-hidden"
+    >
       {/* Dynamic SEO Metadata */}
       {(() => {
         const grade = user?.class || '10'; // Fallback to Class 10 if not logged in or class not defined
@@ -2772,6 +2777,6 @@ Instructions:
         </AnimatePresence>
 
       </div>
-    </div>
+    </motion.div>
   );
 };

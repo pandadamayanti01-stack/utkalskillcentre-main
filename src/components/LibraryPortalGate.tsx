@@ -30,7 +30,11 @@ export default function LibraryPortalGate({ language, onComplete }: LibraryPorta
   };
 
   return (
-    <div className="fixed inset-0 z-[999999] bg-[#020617] flex items-center justify-center overflow-hidden select-none">
+    <div 
+      className={`fixed inset-0 z-[999999] bg-[#020617] flex items-center justify-center overflow-hidden select-none transition-opacity duration-700 ease-in-out ${
+        isOpening ? 'opacity-0 pointer-events-none' : 'opacity-100'
+      }`}
+    >
       {/* Background Portal Portal Glow (revealed as doors slide open) */}
       <div className="absolute inset-0 bg-slate-950 flex flex-col items-center justify-center pointer-events-none">
         <div className="w-80 h-80 bg-emerald-500/20 rounded-full blur-[100px] animate-pulse" />
