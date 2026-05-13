@@ -1233,12 +1233,7 @@ Instructions:
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
-      className="w-full flex flex-col pb-24 font-sans relative overflow-x-hidden"
-    >
+    <div className="w-full flex flex-col pb-24 font-sans relative overflow-x-hidden">
       {/* Dynamic SEO Metadata */}
       {(() => {
         const grade = user?.class || '10'; // Fallback to Class 10 if not logged in or class not defined
@@ -1365,10 +1360,10 @@ Instructions:
 
           <button
             onClick={onBack}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-rose-500/10 to-red-500/10 hover:from-rose-500/20 hover:to-red-500/20 border border-red-500/20 hover:border-red-500/40 text-red-400 text-xs font-black transition-all active:scale-95 shadow-md"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 text-slate-300 text-xs font-black transition-all active:scale-95"
           >
-            <Lucide.LogOut size={16} />
-            <span>{language === 'en' ? 'Exit Library' : 'ଲାଇଭ୍ ଡାସବୋର୍ଡ'}</span>
+            <Lucide.ArrowLeft size={16} />
+            <span>{language === 'en' ? 'Back' : 'ଫେରିଯାଆନ୍ତୁ'}</span>
           </button>
         </div>
       </div>
@@ -1378,12 +1373,7 @@ Instructions:
         
         {/* VIEW 1: SUBJECT TEXTBOOK SELECTOR */}
         {currentView === 'subjects' && (
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            className="flex-1 flex flex-col"
-          >
+          <div className="flex-1 flex flex-col">
             {/* Elegant Compact Digital Library Header */}
             <div className="text-center max-w-2xl mx-auto mb-8">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-400 text-[10px] font-black uppercase tracking-widest mb-4 shadow-sm">
@@ -1495,17 +1485,12 @@ Instructions:
                 );
               })}
             </div>
-          </motion.div>
+          </div>
         )}
 
         {/* VIEW 2: CHAPTERS DIRECTORY LIST */}
         {currentView === 'chapters' && (
-          <motion.div
-            initial={{ opacity: 0, x: 15 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -15 }}
-            className="flex-1 flex flex-col"
-          >
+          <div className="flex-1 flex flex-col">
             {(() => {
               const currentMeta = activeSubjects.find(sub => sub.key === selectedSubject) || {
                 gradient: 'from-emerald-600 to-teal-800',
@@ -1614,17 +1599,12 @@ Instructions:
                 ))}
               </div>
             )}
-          </motion.div>
+          </div>
         )}
 
         {/* VIEW 3: IMMERSIVE DUAL-PANE READER & AI CHAT ROOM */}
         {currentView === 'reader' && selectedChapter && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="flex-1 flex flex-col lg:flex-row gap-6 relative"
-          >
+          <div className="flex-1 flex flex-col lg:flex-row gap-6 relative">
             {/* LEFT / MAIN WORKSPACE PANEL (Reader Tab & Content Panel) */}
             <div className="flex-1 flex flex-col bg-slate-900/20 border border-white/5 rounded-3xl overflow-hidden p-6 relative">
               
@@ -2291,7 +2271,7 @@ Instructions:
                 </>
               )}
             </div>
-          </motion.div>
+          </div>
         )}
 
         {/* ULTRA-PREMIUM IMMERSIVE FULL-SCREEN READER OVERLAY */}
@@ -2790,6 +2770,6 @@ Instructions:
         </AnimatePresence>
 
       </div>
-    </motion.div>
+    </div>
   );
 };
