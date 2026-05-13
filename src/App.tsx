@@ -686,6 +686,7 @@ export default function App() {
     return hash || localStorage.getItem('activeTab') || 'dashboard';
   });
   const [showLibraryGate, setShowLibraryGate] = useState(false);
+  const [isLibraryUnlocked, setIsLibraryUnlocked] = useState(false);
   const [lastTab, setLastTab] = useState('dashboard');
   const [isRegisteredForTestSeries, setIsRegisteredForTestSeries] = useState(false);
   const [openTutorInVoiceMode, setOpenTutorInVoiceMode] = useState(0);
@@ -701,6 +702,9 @@ export default function App() {
   useEffect(() => {
     if (activeTab === 'digital_library' && lastTab !== 'digital_library') {
       setShowLibraryGate(true);
+      setIsLibraryUnlocked(false);
+    } else if (activeTab !== 'digital_library') {
+      setIsLibraryUnlocked(false);
     }
     setLastTab(activeTab);
   }, [activeTab, lastTab]);
@@ -2961,7 +2965,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
               />
             )}
             {activeTab === 'notifications' && <NotificationsView notifications={studentNotifications} language={language} readNotifIds={readNotifIds} onBack={() => setActiveTab('dashboard')} />}
-            {activeTab === 'digital_library' && (
+            {activeTab === 'digital_library' && isLibraryUnlocked && (
               <DigitalLibraryView
                 user={user}
                 chapters={chapters.filter((c: any) => c.isLibraryChapter || c.pdfUrl)}
@@ -3069,14 +3073,15 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
     )}
 
     {/* Cinematic Digital Library Portal Gate */}
-    <AnimatePresence>
       {showLibraryGate && (
         <LibraryPortalGate 
           language={language} 
-          onComplete={() => setShowLibraryGate(false)} 
+          onComplete={() => {
+            setShowLibraryGate(false);
+            setIsLibraryUnlocked(true);
+          }} 
         />
       )}
-    </AnimatePresence>
 
     </div>
   </ErrorBoundary>
