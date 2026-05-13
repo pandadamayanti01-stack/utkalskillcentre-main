@@ -1340,26 +1340,18 @@ Instructions:
         </div>
 
         <div className="flex items-center gap-3">
-          {currentView !== 'subjects' && (
-            <button
-              onClick={() => {
-                if (currentView === 'reader') {
-                  setCurrentView('chapters');
-                  setSelectedChapter(null);
-                } else {
-                  setCurrentView('subjects');
-                  setSelectedSubject('');
-                }
-              }}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 text-slate-300 text-xs font-black transition-all active:scale-95"
-            >
-              <Lucide.ArrowLeft size={16} />
-              <span>{language === 'en' ? 'Go Back' : 'ଫେରିଯାଆନ୍ତୁ'}</span>
-            </button>
-          )}
-
           <button
-            onClick={onBack}
+            onClick={() => {
+              if (currentView === 'reader') {
+                setCurrentView('chapters');
+                setSelectedChapter(null);
+              } else if (currentView === 'chapters') {
+                setCurrentView('subjects');
+                setSelectedSubject('');
+              } else {
+                onBack();
+              }
+            }}
             className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 text-slate-300 text-xs font-black transition-all active:scale-95"
           >
             <Lucide.ArrowLeft size={16} />
@@ -1437,9 +1429,6 @@ Instructions:
                           if (step === '0') {
                             img.setAttribute('data-err-step', '1');
                             img.src = window.location.origin + meta.coverImage;
-                          } else if (step === '1') {
-                            img.setAttribute('data-err-step', '2');
-                            img.src = getGenerativeBookCover(subKey, meta.labelEn, 1, targetClassCode);
                           } else {
                             img.onerror = null;
                             img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
@@ -1558,20 +1547,31 @@ Instructions:
                   >
                     <div className="flex items-center gap-4">
                       {/* Chapter Thumbnail Book Cover */}
-                      <div className="relative h-16 w-12 rounded-xl overflow-hidden bg-slate-950 border border-white/5 flex-shrink-0 group-hover:border-emerald-500/20 transition-colors shadow-md">
-                        <img
-                          src={chap.coverUrl || getGenerativeBookCover(selectedSubject, chap.title, idx + 1, getClassCode(user?.class))}
-                          alt="Book Cover"
-                          onError={(e) => {
-                            handleImageError(e, getGenerativeBookCover(selectedSubject, chap.title, idx + 1, getClassCode(user?.class)));
-                          }}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300 opacity-80 group-hover:opacity-100"
-                        />
-                        {/* Overlay floating chapter index badge */}
-                        <div className="absolute top-1 left-1 px-1.5 py-0.5 rounded-md bg-black/80 backdrop-blur-sm text-[8px] font-black text-emerald-400">
-                          CH {idx + 1}
+                      {chap.coverUrl ? (
+                        <div className="relative h-16 w-12 rounded-xl overflow-hidden bg-slate-950 border border-white/5 flex-shrink-0 group-hover:border-emerald-500/20 transition-colors shadow-md">
+                          <img
+                            src={chap.coverUrl}
+                            alt="Book Cover"
+                            onError={(e) => {
+                              handleImageError(e, '');
+                            }}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300 opacity-80 group-hover:opacity-100"
+                          />
+                          {/* Overlay floating chapter index badge */}
+                          <div className="absolute top-1 left-1 px-1.5 py-0.5 rounded-md bg-black/80 backdrop-blur-sm text-[8px] font-black text-emerald-400">
+                            CH {idx + 1}
+                          </div>
                         </div>
-                      </div>
+                      ) : (
+                        /* Beautiful lightweight CSS gradient thumbnail */
+                        <div className="relative h-16 w-12 rounded-xl overflow-hidden bg-gradient-to-br from-emerald-500/20 to-teal-600/20 border border-white/10 flex-shrink-0 flex items-center justify-center shadow-md">
+                          <Lucide.BookOpen size={16} className="text-emerald-400 opacity-80" />
+                          {/* Overlay floating chapter index badge */}
+                          <div className="absolute top-1 left-1 px-1.5 py-0.5 rounded-md bg-black/80 backdrop-blur-sm text-[8px] font-black text-emerald-400">
+                            CH {idx + 1}
+                          </div>
+                        </div>
+                      )}
 
                       <div>
                         <h4 className="font-extrabold text-white text-sm md:text-base group-hover:text-emerald-400 transition-colors">
@@ -1610,16 +1610,23 @@ Instructions:
               
               {/* Premium Chapter Title Banner with Cover Thumbnail */}
               <div className="flex items-center gap-4 pb-5 mb-5 border-b border-white/5">
-                <div className="relative h-16 w-12 rounded-xl overflow-hidden bg-slate-950 border border-white/10 shadow-md flex-shrink-0">
-                  <img
-                    src={selectedChapter.coverUrl || getGenerativeBookCover(selectedSubject, selectedChapter.title, 1, getClassCode(selectedClass))}
-                    alt="Chapter Cover"
-                    onError={(e) => {
-                      handleImageError(e, getGenerativeBookCover(selectedSubject, selectedChapter.title, 1, getClassCode(selectedClass)));
-                    }}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+                {selectedChapter.coverUrl ? (
+                  <div className="relative h-16 w-12 rounded-xl overflow-hidden bg-slate-950 border border-white/10 shadow-md flex-shrink-0">
+                    <img
+                      src={selectedChapter.coverUrl}
+                      alt="Chapter Cover"
+                      onError={(e) => {
+                        handleImageError(e, '');
+                      }}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  /* Beautiful lightweight native CSS gradient book shape */
+                  <div className="relative h-16 w-12 rounded-xl overflow-hidden bg-gradient-to-br from-emerald-500 to-teal-600 border border-white/10 shadow-md flex-shrink-0 flex items-center justify-center">
+                    <Lucide.BookOpen size={16} className="text-white opacity-85" />
+                  </div>
+                )}
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest bg-emerald-400/5 px-2 py-0.5 rounded-md border border-emerald-400/10">
@@ -2019,13 +2026,30 @@ Instructions:
                       /* Beautiful glowing mobile book launcher card */
                       <div className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-6 bg-slate-950">
                         {/* 3D-like book image scaled */}
-                        <div className="w-28 h-36 rounded-xl overflow-hidden border border-white/10 shadow-[0_12px_24px_rgba(0,0,0,0.5)] transform hover:scale-105 transition-all relative shrink-0">
-                          <img 
-                            src={selectedChapter.coverUrl || getGenerativeBookCover(selectedSubject, selectedChapter.title, 1, getClassCode(user?.class))}
-                            alt="Book Cover"
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
+                        {selectedChapter.coverUrl ? (
+                          <div className="w-28 h-36 rounded-xl overflow-hidden border border-white/10 shadow-[0_12px_24px_rgba(0,0,0,0.5)] transform hover:scale-105 transition-all relative shrink-0">
+                            <img 
+                              src={selectedChapter.coverUrl}
+                              alt="Book Cover"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ) : (
+                          /* Ultra-premium 3D-like pure CSS Book Shape card */
+                          <div className="w-28 h-36 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 border border-white/20 shadow-[0_12px_24px_rgba(0,0,0,0.5)] transform hover:scale-105 transition-all relative shrink-0 flex flex-col justify-between p-3.5 overflow-hidden">
+                            {/* Gold bookbinding border overlay */}
+                            <div className="absolute left-0 top-0 bottom-0 w-2.5 bg-black/15 border-r border-white/5" />
+                            <div className="flex justify-end relative z-10">
+                              <Lucide.Sparkles size={14} className="text-amber-300 animate-pulse" />
+                            </div>
+                            <div className="flex flex-col items-start gap-1 ml-2.5 relative z-10">
+                              <Lucide.BookOpen size={24} className="text-white opacity-95" />
+                              <span className="text-[8px] font-black uppercase text-emerald-200 tracking-widest leading-none">
+                                BSE Odisha
+                              </span>
+                            </div>
+                          </div>
+                        )}
 
                         <div className="space-y-1.5 max-w-xs">
                           <h4 className="text-xs font-black text-white leading-tight">
@@ -2487,13 +2511,30 @@ Instructions:
                       /* Beautiful glowing mobile book launcher card in full screen */
                       <div className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-6 bg-slate-900">
                         {/* 3D-like book image scaled */}
-                        <div className="w-28 h-36 rounded-xl overflow-hidden border border-white/10 shadow-[0_12px_24px_rgba(0,0,0,0.5)] transform hover:scale-105 transition-all relative shrink-0">
-                          <img 
-                            src={selectedChapter.coverUrl || getGenerativeBookCover(selectedSubject, selectedChapter.title, 1, getClassCode(selectedClass))}
-                            alt="Book Cover"
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
+                        {selectedChapter.coverUrl ? (
+                          <div className="w-28 h-36 rounded-xl overflow-hidden border border-white/10 shadow-[0_12px_24px_rgba(0,0,0,0.5)] transform hover:scale-105 transition-all relative shrink-0">
+                            <img 
+                              src={selectedChapter.coverUrl}
+                              alt="Book Cover"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ) : (
+                          /* Ultra-premium 3D-like pure CSS Book Shape card */
+                          <div className="w-28 h-36 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 border border-white/20 shadow-[0_12px_24px_rgba(0,0,0,0.5)] transform hover:scale-105 transition-all relative shrink-0 flex flex-col justify-between p-3.5 overflow-hidden">
+                            {/* Gold bookbinding border overlay */}
+                            <div className="absolute left-0 top-0 bottom-0 w-2.5 bg-black/15 border-r border-white/5" />
+                            <div className="flex justify-end relative z-10">
+                              <Lucide.Sparkles size={14} className="text-amber-300 animate-pulse" />
+                            </div>
+                            <div className="flex flex-col items-start gap-1 ml-2.5 relative z-10">
+                              <Lucide.BookOpen size={24} className="text-white opacity-95" />
+                              <span className="text-[8px] font-black uppercase text-emerald-200 tracking-widest leading-none">
+                                BSE Odisha
+                              </span>
+                            </div>
+                          </div>
+                        )}
 
                         <div className="space-y-1.5 max-w-xs">
                           <h4 className="text-xs font-black text-white leading-tight">
