@@ -1409,14 +1409,13 @@ Instructions:
                 const classSpecificCover = `/${targetClassCode}_${subKey}_cover.png`;
 
                 return (
-                  <motion.div
+                  <div
                     key={subKey}
-                    whileHover={{ scale: 1.03, y: -5 }}
                     onClick={() => {
                       setSelectedSubject(subKey);
                       setCurrentView('chapters');
                     }}
-                    className="relative rounded-3xl bg-slate-900/40 border border-white/5 flex flex-col cursor-pointer group hover:border-emerald-500/30 overflow-hidden shadow-lg shadow-black/40 transition-all duration-300 min-h-[340px]"
+                    className="relative rounded-3xl bg-slate-900/40 border border-white/5 flex flex-col cursor-pointer group hover:border-emerald-500/30 hover:-translate-y-1 hover:scale-[1.02] overflow-hidden shadow-lg shadow-black/40 transition-all duration-300 min-h-[340px]"
                   >
                     {/* Cover Image Top Section */}
                     <div className="h-44 w-full relative overflow-hidden bg-slate-950">
@@ -1470,7 +1469,7 @@ Instructions:
                         </div>
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 );
               })}
             </div>
@@ -1535,15 +1534,14 @@ Instructions:
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {filteredChapters.map((chap, idx) => (
-                  <motion.div
+                  <div
                     key={chap.id}
-                    whileHover={{ scale: 1.01, border: '1px solid rgba(16,185,129,0.3)' }}
                     onClick={() => {
                       setSelectedChapter(chap);
                       setCurrentView('reader');
                       setReaderMode((chap.pdfUrl || chap.download_url || chap.driveUrl) ? 'pdf' : 'notes');
                     }}
-                    className="p-5 rounded-2xl bg-slate-900/40 border border-white/5 flex items-center justify-between cursor-pointer group transition-all"
+                    className="p-5 rounded-2xl bg-slate-900/40 border border-white/5 hover:border-emerald-500/20 flex items-center justify-between cursor-pointer group transition-all"
                   >
                     <div className="flex items-center gap-4">
                       {/* Chapter Thumbnail Book Cover */}
@@ -1595,7 +1593,7 @@ Instructions:
                     <div className="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-md active:scale-95">
                       <Lucide.ArrowRight size={18} />
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             )}
@@ -1991,9 +1989,7 @@ Instructions:
                     const embedUrl = getYouTubeEmbedUrl(selectedChapter.videoUrl);
 
                     return embedUrl ? (
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
+                      <div
                         className="w-full h-[55vh] rounded-3xl overflow-hidden bg-slate-950 border border-white/5 flex flex-col relative shadow-[0_20px_50px_rgba(0,0,0,0.5)] animate-glow"
                       >
                         <iframe
@@ -2003,7 +1999,7 @@ Instructions:
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                           allowFullScreen
                         />
-                      </motion.div>
+                      </div>
                     ) : (
                       <div className="flex flex-col items-center justify-center p-12 text-center bg-slate-900/30 border border-white/5 rounded-3xl h-[45vh] space-y-4">
                         <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center text-red-400">
@@ -2098,40 +2094,35 @@ Instructions:
               </div>
 
               {/* BOTTOM STUDENT NOTEPAD WORKSPACE */}
-              <AnimatePresence>
-                {isSidebarOpen && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    className="border-t border-white/5 mt-6 pt-4 flex flex-col overflow-hidden"
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <Lucide.PenTool size={16} className="text-emerald-400 animate-pulse" />
-                        <span className="text-xs font-black text-slate-300">
-                          {language === 'en' ? 'Personal Study Notes' : 'ମୋର ଅଧ୍ୟୟନ ଟିପ୍ପଣୀ (ସ୍ୱତନ୍ତ୍ର)'}
-                        </span>
-                      </div>
-
-                      {/* Saving Indicator */}
-                      <span className="flex items-center gap-1.5 text-[10px] font-bold">
-                        <span className={`h-2 w-2 rounded-full ${isNotepadSaved ? 'bg-emerald-400 shadow-[0_0_8px_#34d399]' : 'bg-amber-400 shadow-[0_0_8px_#f59e0b] animate-ping'}`} />
-                        <span className={isNotepadSaved ? 'text-slate-500' : 'text-amber-400'}>
-                          {isNotepadSaved ? (language === 'en' ? 'Saved' : 'ସଂରକ୍ଷିତ') : (language === 'en' ? 'Drafting...' : 'ସଂରକ୍ଷଣ ହେଉଛି...')}
-                        </span>
+              {isSidebarOpen && (
+                <div
+                  className="border-t border-white/5 mt-6 pt-4 flex flex-col overflow-hidden"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <Lucide.PenTool size={16} className="text-emerald-400 animate-pulse" />
+                      <span className="text-xs font-black text-slate-300">
+                        {language === 'en' ? 'Personal Study Notes' : 'ମୋର ଅଧ୍ୟୟନ ଟିପ୍ପଣୀ (ସ୍ୱତନ୍ତ୍ର)'}
                       </span>
                     </div>
 
-                    <textarea
-                      value={personalNotes}
-                      onChange={(e) => setPersonalNotes(e.target.value)}
-                      placeholder={language === 'en' ? 'Write down important formulas, shortcuts, questions or hints here...' : 'ଅଧ୍ୟାୟର ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ପ୍ରଶ୍ନ କିମ୍ବା ହିଣ୍ଟ୍ ଏଠାରେ ଲେଖନ୍ତୁ...'}
-                      className="w-full h-32 bg-slate-950 border border-white/5 rounded-2xl p-4 text-xs font-medium text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/30 resize-none scrollbar-none"
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                    {/* Saving Indicator */}
+                    <span className="flex items-center gap-1.5 text-[10px] font-bold">
+                      <span className={`h-2 w-2 rounded-full ${isNotepadSaved ? 'bg-emerald-400 shadow-[0_0_8px_#34d399]' : 'bg-amber-400 shadow-[0_0_8px_#f59e0b] animate-ping'}`} />
+                      <span className={isNotepadSaved ? 'text-slate-500' : 'text-amber-400'}>
+                        {isNotepadSaved ? (language === 'en' ? 'Saved' : 'ସଂରକ୍ଷିତ') : (language === 'en' ? 'Drafting...' : 'ସଂରକ୍ଷଣ ହେଉଛି...')}
+                      </span>
+                    </span>
+                  </div>
+
+                  <textarea
+                    value={personalNotes}
+                    onChange={(e) => setPersonalNotes(e.target.value)}
+                    placeholder={language === 'en' ? 'Write down important formulas, shortcuts, questions or hints here...' : 'ଅଧ୍ୟାୟର ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ପ୍ରଶ୍ନ କିମ୍ବା ହିଣ୍ଟ୍ ଏଠାରେ ଲେଖନ୍ତୁ...'}
+                    className="w-full h-32 bg-slate-950 border border-white/5 rounded-2xl p-4 text-xs font-medium text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/30 resize-none scrollbar-none"
+                  />
+                </div>
+              )}
             </div>
 
             {/* RIGHT PANEL - GUNDULU FLOATING STUDY ASSISTANT CHATBOX */}
