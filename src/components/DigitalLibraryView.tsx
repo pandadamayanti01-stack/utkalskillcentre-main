@@ -754,12 +754,40 @@ const getGenerativeBookCover = (subjectKey: string, title: string, idx: number, 
     </svg>
   `;
 
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+  // Base64 encode the SVG to support non-ASCII characters (e.g. Odia scripts) and older mobile web browsers safely
+  try {
+    const utf8Bytes = encodeURIComponent(svg).replace(/%([0-9A-F]{2})/g, (_, p1) => {
+      return String.fromCharCode(parseInt(p1, 16));
+    });
+    const base64Svg = btoa(utf8Bytes);
+    return `data:image/svg+xml;base64,${base64Svg}`;
+  } catch (e) {
+    console.error("Failed to base64 encode SVG book cover:", e);
+    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+  }
 };
 
 const isMobileDevice = (): boolean => {
   if (typeof window === 'undefined') return false;
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+};
+
+const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, fallbackUrl?: string) => {
+  const img = e.currentTarget;
+  const currentStep = img.getAttribute('data-err-step') || '0';
+  
+  if (currentStep === '0') {
+    img.setAttribute('data-err-step', '1');
+    if (fallbackUrl) {
+      img.src = fallbackUrl;
+    } else {
+      img.onerror = null;
+      img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+    }
+  } else {
+    img.onerror = null;
+    img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+  }
 };
 export const cleanMathNotation = (text: string): string => {
   if (!text) return "";
@@ -1414,11 +1442,17 @@ Instructions:
                         src={classSpecificCover}
                         alt={meta.labelEn}
                         onError={(e) => {
-                          const genericUrl = window.location.origin + meta.coverImage;
-                          if (e.currentTarget.src !== genericUrl) {
-                            e.currentTarget.src = genericUrl;
+                          const img = e.currentTarget;
+                          const step = img.getAttribute('data-err-step') || '0';
+                          if (step === '0') {
+                            img.setAttribute('data-err-step', '1');
+                            img.src = window.location.origin + meta.coverImage;
+                          } else if (step === '1') {
+                            img.setAttribute('data-err-step', '2');
+                            img.src = getGenerativeBookCover(subKey, meta.labelEn, 1, targetClassCode);
                           } else {
-                            e.currentTarget.src = getGenerativeBookCover(subKey, meta.labelEn, 1, targetClassCode);
+                            img.onerror = null;
+                            img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
                           }
                         }}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-60 group-hover:opacity-85"
@@ -1544,7 +1578,7 @@ Instructions:
                           src={chap.coverUrl || getGenerativeBookCover(selectedSubject, chap.title, idx + 1, getClassCode(user?.class))}
                           alt="Book Cover"
                           onError={(e) => {
-                            e.currentTarget.src = getGenerativeBookCover(selectedSubject, chap.title, idx + 1, getClassCode(user?.class));
+                            handleImageError(e, getGenerativeBookCover(selectedSubject, chap.title, idx + 1, getClassCode(user?.class)));
                           }}
                           className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300 opacity-80 group-hover:opacity-100"
                         />
@@ -1601,7 +1635,7 @@ Instructions:
                     src={selectedChapter.coverUrl || getGenerativeBookCover(selectedSubject, selectedChapter.title, 1, getClassCode(selectedClass))}
                     alt="Chapter Cover"
                     onError={(e) => {
-                      e.currentTarget.src = getGenerativeBookCover(selectedSubject, selectedChapter.title, 1, getClassCode(selectedClass));
+                      handleImageError(e, getGenerativeBookCover(selectedSubject, selectedChapter.title, 1, getClassCode(selectedClass)));
                     }}
                     className="w-full h-full object-cover"
                   />
@@ -2116,7 +2150,7 @@ Instructions:
                       alt="Gundulu Avatar"
                       className="h-10 w-10 rounded-full border border-emerald-400/30 object-cover bg-emerald-950/20 shadow-md shadow-emerald-500/10"
                       onError={(e) => {
-                        e.currentTarget.src = 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png'; // Fallback vector
+                        handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
                       }}
                     />
                     <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-400 border border-[#011e1a] shadow-[0_0_8px_#34d399]" />
@@ -2189,7 +2223,7 @@ Instructions:
                             alt="Gundulu"
                             className="h-6.5 w-6.5 rounded-full border border-emerald-500/10 shadow-sm"
                             onError={(e) => {
-                              e.currentTarget.src = 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png';
+                              handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
                             }}
                           />
                         )}
@@ -2212,7 +2246,7 @@ Instructions:
                           alt="Gundulu"
                           className="h-6.5 w-6.5 rounded-full animate-bounce"
                           onError={(e) => {
-                            e.currentTarget.src = 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png';
+                            handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
                           }}
                         />
                         <div className="bg-slate-950 border border-white/5 rounded-2xl rounded-bl-none p-3.5 shadow-sm">
@@ -2570,7 +2604,7 @@ Instructions:
                       alt="Gundulu Avatar"
                       className="h-10 w-10 rounded-full border border-emerald-400/30 object-cover bg-emerald-950/20 shadow-md shadow-emerald-500/10"
                       onError={(e) => {
-                        e.currentTarget.src = 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png';
+                        handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
                       }}
                     />
                     <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-400 border border-[#011e1a] shadow-[0_0_8px_#34d399]" />
@@ -2679,7 +2713,7 @@ Instructions:
                             alt="Gundulu"
                             className="h-8 w-8 rounded-full border border-emerald-500/10 shadow-sm"
                             onError={(e) => {
-                              e.currentTarget.src = 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png';
+                              handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
                             }}
                           />
                         )}
@@ -2706,7 +2740,7 @@ Instructions:
                           alt="Gundulu"
                           className="h-8 w-8 rounded-full animate-bounce"
                           onError={(e) => {
-                            e.currentTarget.src = 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png';
+                            handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
                           }}
                         />
                         <div className={`border rounded-2xl rounded-bl-none p-4 shadow-sm ${
