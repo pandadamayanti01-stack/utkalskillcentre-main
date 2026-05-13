@@ -1,11 +1,25 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import * as Lucide from 'lucide-react';
+import { BookOpen, Sparkles } from 'lucide-react';
 
 interface LibraryPortalGateProps {
   language: 'en' | 'or';
   onComplete: () => void;
 }
+
+// Pre-defined static particle properties to avoid calling Math.random() inside the render cycle
+// This prevents infinite render recalculation loops, browser crashes and high CPU thread starvation on low-end phones
+const staticParticles = [
+  { x: -120, delay: 0.1, duration: 1.6, scale: 0.8 },
+  { x: -80, delay: 0.3, duration: 1.4, scale: 0.6 },
+  { x: -40, delay: 0.5, duration: 1.8, scale: 0.9 },
+  { x: 0, delay: 0.2, duration: 1.5, scale: 0.7 },
+  { x: 40, delay: 0.4, duration: 1.7, scale: 0.5 },
+  { x: 80, delay: 0.1, duration: 1.3, scale: 0.8 },
+  { x: 120, delay: 0.3, duration: 1.6, scale: 0.6 },
+  { x: -100, delay: 0.2, duration: 1.5, scale: 0.75 },
+  { x: 100, delay: 0.4, duration: 1.4, scale: 0.85 }
+];
 
 export default function LibraryPortalGate({ language, onComplete }: LibraryPortalGateProps) {
   useEffect(() => {
@@ -36,24 +50,24 @@ export default function LibraryPortalGate({ language, onComplete }: LibraryPorta
         </svg>
       </div>
 
-      {/* Floating Sparkles & Particles */}
-      {[...Array(15)].map((_, i) => (
+      {/* Floating Sparkles & Particles - Highly optimized static render */}
+      {staticParticles.map((p, i) => (
         <motion.div
           key={i}
           initial={{ 
             opacity: 0, 
             y: 100, 
-            x: (Math.random() - 0.5) * 300, 
-            scale: Math.random() * 0.5 + 0.5 
+            x: p.x, 
+            scale: p.scale 
           }}
           animate={{ 
             opacity: [0, 1, 0], 
             y: -150, 
-            x: (Math.random() - 0.5) * 400 
+            x: p.x + (i % 2 === 0 ? 30 : -30)
           }}
           transition={{ 
-            duration: 1.5, 
-            delay: Math.random() * 0.3, 
+            duration: p.duration, 
+            delay: p.delay, 
             repeat: Infinity, 
             ease: "easeOut" 
           }}
@@ -114,7 +128,7 @@ export default function LibraryPortalGate({ language, onComplete }: LibraryPorta
             transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
             className="relative z-10 text-emerald-400"
           >
-            <Lucide.BookOpen size={56} strokeWidth={1.5} />
+            <BookOpen size={56} strokeWidth={1.5} />
           </motion.div>
 
           <motion.div
@@ -136,7 +150,7 @@ export default function LibraryPortalGate({ language, onComplete }: LibraryPorta
           className="space-y-3"
         >
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[9px] font-black uppercase tracking-widest">
-            <Lucide.Sparkles size={12} className="animate-spin-slow" />
+            <Sparkles size={12} className="animate-spin" />
             {language === 'en' ? 'Gundulu AI Engine' : 'ଗୁଣ୍ଡୁଲୁ ଏଆଇ ଇଞ୍ଜିନ'}
           </div>
 

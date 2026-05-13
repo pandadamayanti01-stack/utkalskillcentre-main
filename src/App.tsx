@@ -50,6 +50,7 @@ import { getDeferredPrompt, clearDeferredPrompt, vibrate, requestScreenWakeLock,
 import { SEO } from './components/SEO';
 import { BottomNavBar } from './components/BottomNavBar';
 import ReactMarkdown from 'react-markdown';
+import LibraryPortalGate from './components/LibraryPortalGate';
 
 const AdminDashboard = lazy(() =>
   import('./components/AdminDashboard')
@@ -74,7 +75,6 @@ const TestSeriesPoster = lazy(() => import('./components/TestSeriesPoster'));
 const SyllabusTracker = lazy(() => import('./components/SyllabusTracker').then((module) => ({ default: module.SyllabusTracker })));
 const DigitalLibraryView = lazy(() => import('./components/DigitalLibraryView').then((module) => ({ default: module.DigitalLibraryView })));
 const DigitalLibraryLaunchPopup = lazy(() => import('./components/DigitalLibraryLaunchPopup'));
-const LibraryPortalGate = lazy(() => import('./components/LibraryPortalGate'));
 
 function ViewLoader({ fullHeight = false }: { fullHeight?: boolean }) {
   return (
@@ -3071,12 +3071,10 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
     {/* Cinematic Digital Library Portal Gate */}
     <AnimatePresence>
       {showLibraryGate && (
-        <Suspense fallback={null}>
-          <LibraryPortalGate 
-            language={language} 
-            onComplete={() => setShowLibraryGate(false)} 
-          />
-        </Suspense>
+        <LibraryPortalGate 
+          language={language} 
+          onComplete={() => setShowLibraryGate(false)} 
+        />
       )}
     </AnimatePresence>
 
