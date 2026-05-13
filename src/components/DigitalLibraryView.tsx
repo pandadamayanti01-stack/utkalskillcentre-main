@@ -1139,21 +1139,21 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
       // Parent category fallback matching:
       let matchesGenericFallback = false;
       if (matchedMeta.key.includes('ganita') || matchedMeta.key.includes('math')) {
-        matchesGenericFallback = cSub === 'math' || cSub === 'mathematics' || cSub === 'ganitakhela' || cSub === 'majama jareganita' || cSub === 'ganitamela' || cSub === 'ganitaprakas' || cSub === 'algebra' || cSub === 'geometry' || cSub === 'algebraicequations';
+        matchesGenericFallback = cSub.includes('math') || cSub.includes('ganita') || cSub === 'algebra' || cSub === 'geometry' || cSub === 'algebraicequations';
       } else if (matchedMeta.key.includes('jigyasa') || matchedMeta.key.includes('science') || matchedMeta.key.includes('paribesa') || matchedMeta.key.includes('bignana')) {
-        matchesGenericFallback = cSub === 'science' || cSub === 'generalscience' || cSub === 'paribesapatha' || cSub === 'jigyasa' || cSub === 'bignana' || cSub === 'physicalscience' || cSub === 'lifescience' || cSub === 'science_curiosity';
+        matchesGenericFallback = cSub.includes('science') || cSub.includes('bignana') || cSub === 'paribesapatha' || cSub === 'jigyasa' || cSub === 'physicalscience' || cSub === 'lifescience' || cSub === 'science_curiosity';
       } else if (matchedMeta.key.includes('samajika') || matchedMeta.key.includes('social')) {
-        matchesGenericFallback = cSub === 'socialscience' || cSub === 'social_science' || cSub === 'social' || cSub === 'geography' || cSub === 'history';
+        matchesGenericFallback = cSub.includes('social') || cSub === 'geography' || cSub === 'history';
       } else if (matchedMeta.key.includes('sahitya') || matchedMeta.key.includes('jhulana') || matchedMeta.key.includes('bhasa') || matchedMeta.key.includes('odia')) {
-        matchesGenericFallback = cSub === 'odia' || cSub === 'odialiterature' || cSub === 'jhulana' || cSub === 'bhasamahak' || cSub === 'sahityasudha' || cSub === 'sahityasuman' || cSub === 'sahityasurabhi' || cSub === 'odiagrammar' || cSub === 'sahitya';
+        matchesGenericFallback = cSub.includes('odia') || cSub === 'jhulana' || cSub === 'bhasamahak' || cSub.includes('sahitya');
       } else if (matchedMeta.key.includes('pallavi') || matchedMeta.key.includes('jasmine') || matchedMeta.key.includes('english')) {
-        matchesGenericFallback = cSub === 'english' || cSub === 'englishliterature' || cSub === 'pallavi' || cSub === 'jasmine' || cSub === 'englishgrammar';
+        matchesGenericFallback = cSub.includes('english') || cSub === 'pallavi' || cSub === 'jasmine';
       } else if (matchedMeta.key.includes('sanskrit')) {
-        matchesGenericFallback = cSub === 'sanskrit' || cSub === 'sanskritakalika' || cSub === 'sanskritgrammar' || cSub === 'sanskrutasourav';
+        matchesGenericFallback = cSub.includes('sanskrit') || cSub === 'sanskrutasourav';
       } else if (matchedMeta.key.includes('talas') || matchedMeta.key.includes('hindi')) {
-        matchesGenericFallback = cSub === 'hindi' || cSub === 'talas' || cSub === 'hindikalika' || cSub === 'hindigrammar' || cSub === 'hindisaurabh';
+        matchesGenericFallback = cSub.includes('hindi') || cSub === 'talas';
       } else if (matchedMeta.key.includes('vocational') || matchedMeta.key.includes('kausala')) {
-        matchesGenericFallback = cSub === 'vocational' || cSub === 'vocationaltourism' || cSub === 'kausalabodha';
+        matchesGenericFallback = cSub.includes('vocational') || cSub.includes('kausala');
       }
 
       const subjectMatches = matchesSubjectName || matchesGenericFallback;
