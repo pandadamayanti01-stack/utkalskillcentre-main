@@ -1639,7 +1639,7 @@ Instructions:
                   >
                     <div className="flex items-center gap-4">
                       {/* Chapter Thumbnail Book Cover */}
-                      {chap.coverUrl ? (
+                      {chap.coverUrl && chap.coverUrl !== 'none' ? (
                         <div className="relative h-16 w-12 rounded-xl overflow-hidden bg-slate-950 border border-white/5 flex-shrink-0 group-hover:border-emerald-500/20 transition-colors shadow-md">
                           <img
                             src={chap.coverUrl}
@@ -1702,7 +1702,7 @@ Instructions:
               
               {/* Premium Chapter Title Banner with Cover Thumbnail */}
               <div className="flex items-center gap-4 pb-5 mb-5 border-b border-white/5">
-                {selectedChapter.coverUrl ? (
+                {selectedChapter.coverUrl && selectedChapter.coverUrl !== 'none' ? (
                   <div className="relative h-16 w-12 rounded-xl overflow-hidden bg-slate-950 border border-white/10 shadow-md flex-shrink-0">
                     <img
                       src={selectedChapter.coverUrl}
@@ -2116,7 +2116,7 @@ Instructions:
                       /* Beautiful glowing mobile book launcher card */
                       <div className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-6 bg-slate-950">
                         {/* 3D-like book image scaled */}
-                        {selectedChapter.coverUrl ? (
+                        {selectedChapter.coverUrl && selectedChapter.coverUrl !== 'none' ? (
                           <div className="w-28 h-36 rounded-xl overflow-hidden border border-white/10 shadow-[0_12px_24px_rgba(0,0,0,0.5)] transform hover:scale-105 transition-all relative shrink-0">
                             <img 
                               src={selectedChapter.coverUrl}
