@@ -281,15 +281,18 @@ export default function Login({ language, translations, setLanguage, setRegData 
   };
 
   return (
-    <div className="digital-altar-bg w-full min-h-full flex flex-col items-center justify-between p-6">
+    <div className="w-full flex-1 flex flex-col items-center justify-between p-6 relative overflow-hidden">
       
+      {/* AMBIENT GOLDEN LIGHTING AURA */}
+      <div className="absolute inset-0 bg-gradient-to-b from-amber-500/10 via-emerald-500/5 to-transparent blur-3xl pointer-events-none" />
+
       {/* 1. THE IMPOSSIBLE BACKGROUND: Animated Temple Watermark */}
       <motion.div 
-        animate={{ scale: [1, 1.05, 1], opacity: [0.05, 0.08, 0.05] }}
+        animate={{ scale: [1, 1.05, 1], opacity: [0.15, 0.22, 0.15] }}
         transition={{ duration: 10, repeat: Infinity }}
-        className="absolute inset-0 z-0 flex items-center justify-center"
+        className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none"
       >
-        <img src="/temple-pattern.png" className="h-[90%] w-auto grayscale sepia" alt="" />
+        <img src="/temple-pattern.png" className="h-[95%] w-auto object-contain opacity-40 drop-shadow-[0_0_25px_rgba(255,215,0,0.2)]" alt="" />
       </motion.div>
 
       {/* 2. TOP: Minimalist Utility Bar */}
