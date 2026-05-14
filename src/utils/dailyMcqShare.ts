@@ -7,19 +7,14 @@ export interface DailyMcqShareOptions {
 
 export const getDailyMcqShareUrl = () => `${window.location.origin}${window.location.pathname}#daily_mcqs`;
 
-export const getDailyMcqShareText = ({ language, subjectLabel, classLabel, scoreText }: DailyMcqShareOptions) => {
-  const subjectPart = subjectLabel ? `Subject: ${subjectLabel}. ` : '';
-  const classPart = classLabel ? `Class: ${classLabel}. ` : '';
-  const scorePart = scoreText ? `🏆 I just scored ${scoreText}! Can you beat my score? ` : '';
+export const getDailyMcqShareText = ({ subjectLabel, classLabel, scoreText }: DailyMcqShareOptions) => {
+  const odiaSubject = subjectLabel ? `ବିଷୟ (Subject): ${subjectLabel} | ` : '';
+  const odiaClass = classLabel ? `ଶ୍ରେଣୀ (Class): ${classLabel} | ` : '';
+  const scoreMsg = scoreText 
+    ? `🏆 ମୁଁ ଆଜିର ଟେଷ୍ଟରେ ${scoreText} ସ୍କୋର କରିଛି! (I scored ${scoreText}!)\nତୁମେ ମୋଠାରୁ ଅଧିକ ସ୍କୋର କରିପାରିବ କି? (Can you beat my score?)\n\n`
+    : '';
 
-  if (language === 'or') {
-    const odiaSubjectPart = subjectLabel ? `ବିଷୟ: ${subjectLabel} | ` : '';
-    const odiaClassPart = classLabel ? `ଶ୍ରେଣୀ: ${classLabel} | ` : '';
-    const odiaScorePart = scoreText ? `🏆 ମୁଁ ଆଜିର ଟେଷ୍ଟରେ ${scoreText} ସ୍କୋର କରିଛି! ତୁମେ ମୋଠାରୁ ଅଧିକ ସ୍କୋର କରିପାରିବ କି? ` : '';
-    return `${odiaScorePart}ଆଜିର Utkal Skill Centre daily test ଦିଅ | ${odiaSubjectPart}${odiaClassPart}ଲିଙ୍କ ଖୋଲି ଲଗିନ୍ କରି ତୁମେ ମଧ୍ୟ ଟେଷ୍ଟ ଦିଅ: ${getDailyMcqShareUrl()}`;
-  }
-
-  return `${scorePart}Try today's Utkal Skill Centre daily test. ${subjectPart}${classPart}Open the link, log in, and attempt it here: ${getDailyMcqShareUrl()}`;
+  return `${scoreMsg}👉 ଆଜିର Utkal Skill Centre Daily Test ଦିଅ!\n${odiaSubject}${odiaClass}\nଲିଙ୍କ ଖୋଲି ଲଗିନ୍ କରି ତୁମେ ମଧ୍ୟ ଟେଷ୍ଟ ଦିଅ (Open link & attempt now):\n${getDailyMcqShareUrl()}`;
 };
 
 export const openDailyMcqWhatsAppShare = (options: DailyMcqShareOptions) => {
