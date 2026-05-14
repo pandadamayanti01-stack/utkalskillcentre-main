@@ -53,7 +53,7 @@ export default defineConfig(({mode}) => {
         manifest: {
           name: 'Utkal Skill Centre',
           short_name: 'Utkal Skill Centre',
-          description: 'Empowering students with essential skills for a brighter future. Access study materials, textbooks, and monthly tests.',
+          description: 'Learn with official BSE Odisha textbooks, mapped MCQs, and your AI tutor Gundulu.',
           theme_color: '#10b981',
           background_color: '#0f172a',
           display: 'standalone',
