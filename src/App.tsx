@@ -3717,9 +3717,15 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-400 mb-1">{translations[language].profile.class}</label>
-            <div className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-slate-400 flex items-center justify-between">
-              <span className="text-sm">{translations[language].classes[user.class] || user.class || 'N/A'}</span>
+            <label className="block text-sm font-medium text-slate-400 mb-1">
+              {user.role === 'teacher' ? (language === 'en' ? 'Account Role' : 'ଆକାଉଣ୍ଟ୍ ରୋଲ୍') : translations[language].profile.class}
+            </label>
+            <div className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-slate-400 flex items-center justify-between font-bold">
+              <span className={user.role === 'teacher' ? 'text-amber-400' : 'text-slate-400'}>
+                {user.role === 'teacher' 
+                  ? (language === 'en' ? 'Educator (All Classes Unlocked)' : 'ଶିକ୍ଷକ ଆକ୍ସେସ୍') 
+                  : (translations[language].classes[user.class] || user.class || 'N/A')}
+              </span>
               <Lucide.Lock size={14} className="opacity-50" />
             </div>
           </div>
