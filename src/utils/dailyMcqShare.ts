@@ -2,21 +2,24 @@ export interface DailyMcqShareOptions {
   language: 'en' | 'or';
   subjectLabel?: string;
   classLabel?: string;
+  scoreText?: string;
 }
 
 export const getDailyMcqShareUrl = () => `${window.location.origin}${window.location.pathname}#daily_mcqs`;
 
-export const getDailyMcqShareText = ({ language, subjectLabel, classLabel }: DailyMcqShareOptions) => {
+export const getDailyMcqShareText = ({ language, subjectLabel, classLabel, scoreText }: DailyMcqShareOptions) => {
   const subjectPart = subjectLabel ? `Subject: ${subjectLabel}. ` : '';
   const classPart = classLabel ? `Class: ${classLabel}. ` : '';
+  const scorePart = scoreText ? `🏆 I just scored ${scoreText}! Can you beat my score? ` : '';
 
   if (language === 'or') {
     const odiaSubjectPart = subjectLabel ? `ବିଷୟ: ${subjectLabel} | ` : '';
     const odiaClassPart = classLabel ? `ଶ୍ରେଣୀ: ${classLabel} | ` : '';
-    return `ଆଜିର Utkal Skill Centre daily test ଦିଅ | ${odiaSubjectPart}${odiaClassPart}ଲିଙ୍କ ଖୋଲି ଲଗିନ୍ କରି ତୁମେ ମଧ୍ୟ ଟେଷ୍ଟ ଦିଅ: ${getDailyMcqShareUrl()}`;
+    const odiaScorePart = scoreText ? `🏆 ମୁଁ ଆଜିର ଟେଷ୍ଟରେ ${scoreText} ସ୍କୋର କରିଛି! ତୁମେ ମୋଠାରୁ ଅଧିକ ସ୍କୋର କରିପାରିବ କି? ` : '';
+    return `${odiaScorePart}ଆଜିର Utkal Skill Centre daily test ଦିଅ | ${odiaSubjectPart}${odiaClassPart}ଲିଙ୍କ ଖୋଲି ଲଗିନ୍ କରି ତୁମେ ମଧ୍ୟ ଟେଷ୍ଟ ଦିଅ: ${getDailyMcqShareUrl()}`;
   }
 
-  return `Try today's Utkal Skill Centre daily test. ${subjectPart}${classPart}Open the link, log in, and attempt it here: ${getDailyMcqShareUrl()}`;
+  return `${scorePart}Try today's Utkal Skill Centre daily test. ${subjectPart}${classPart}Open the link, log in, and attempt it here: ${getDailyMcqShareUrl()}`;
 };
 
 export const openDailyMcqWhatsAppShare = (options: DailyMcqShareOptions) => {

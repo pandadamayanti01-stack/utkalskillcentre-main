@@ -129,9 +129,11 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
   };
 
   const handleShareOnWhatsApp = (mcq: DailyMcq) => {
+    const submission = submissionMap[mcq.id];
+    const scoreText = submission ? `${submission.correctCount}/${submission.totalQuestions}` : undefined;
     const subjectLabel = mcq.subject ? (translations[language].subjects?.[mcq.subject] || mcq.subject) : undefined;
     const classLabel = translations[language].classes?.[mcq.class] || mcq.class;
-    openDailyMcqWhatsAppShare({ language, subjectLabel, classLabel });
+    openDailyMcqWhatsAppShare({ language, subjectLabel, classLabel, scoreText });
   };
 
   const handleCopyLink = async (mcqId: string) => {
