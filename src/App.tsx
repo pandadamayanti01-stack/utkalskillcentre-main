@@ -5613,6 +5613,7 @@ function LeaderboardView({ leaderboard, language, onBack, following, user }: any
 
 function TextbooksView({ user, textbooks, language, onBack }: any) {
   const [subjectFilter, setSubjectFilter] = useState('all');
+  const [teacherClassFilter, setTeacherClassFilter] = useState('all');
   const [isLinking, setIsLinking] = useState(false);
 
   const handleDownload = async (book: Textbook) => {
@@ -5668,6 +5669,11 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
   const filteredTextbooks = React.useMemo(() => {
     console.log("Debug: Filtering textbooks:", textbooks, "User:", user);
     const filtered = textbooks.filter((book: Textbook) => {
+      if (user?.role === 'teacher') {
+        const matchesClass = teacherClassFilter === 'all' || book.class?.toLowerCase() === teacherClassFilter.toLowerCase() || book.class?.toLowerCase() === `class${teacherClassFilter}`;
+        const matchesSubject = subjectFilter === 'all' || book.subject === subjectFilter;
+        return matchesClass && matchesSubject;
+      }
       const matchesClass = !user?.class || book.class?.toLowerCase() === user.class.toLowerCase();
       const matchesBoard = !user?.board || book.board?.toLowerCase().includes(boardKey.toLowerCase()) || boardKey.toLowerCase().includes(book.board?.toLowerCase() || '');
       const matchesSubject = subjectFilter === 'all' || book.subject === subjectFilter;
@@ -5675,9 +5681,17 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
     });
     console.log("Debug: Filtered textbooks:", filtered);
     return filtered;
-  }, [textbooks, user?.class, user?.board, boardKey, subjectFilter]);
+  }, [textbooks, user?.class, user?.board, boardKey, subjectFilter, user?.role, teacherClassFilter]);
 
   const availableSubjects = React.useMemo(() => {
+    if (user?.role === 'teacher') {
+      const subjects = new Set<string>(
+        textbooks
+          .filter((b: Textbook) => teacherClassFilter === 'all' || b.class?.toLowerCase() === teacherClassFilter.toLowerCase() || b.class?.toLowerCase() === `class${teacherClassFilter}`)
+          .map((b: Textbook) => b.subject)
+      );
+      return ['all', ...Array.from(subjects).filter(s => s && s !== 'all')];
+    }
     const subjects = new Set<string>(
       textbooks
         .filter((b: Textbook) => 
@@ -5687,7 +5701,7 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
         .map((b: Textbook) => b.subject)
     );
     return ['all', ...Array.from(subjects).filter(s => s && s !== 'all')];
-  }, [textbooks, user?.class, boardKey]);
+  }, [textbooks, user?.class, boardKey, user?.role, teacherClassFilter]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -5719,13 +5733,34 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
           </button>
           <div>
             <h2 className="text-2xl font-bold text-white">
-              {language === 'en' ? 'Textbooks' : 'ପାଠ୍ୟପୁସ୍ତକ'}
+              {language === 'en' ? 'Textbooks Library' : 'ପାଠ୍ୟପୁସ୍ତକ ସମୂହ'}
             </h2>
             <p className="text-xs text-slate-500 uppercase tracking-wider font-bold">
-              {translations[language].classes[user?.class as keyof typeof translations.en.classes] || user?.class} • {user?.board}
+              {user?.role === 'teacher' ? (language === 'en' ? 'Educator Access (All Classes)' : 'ଶିକ୍ଷକ ଆକ୍ସେସ୍') : `${translations[language].classes[user?.class as keyof typeof translations.en.classes] || user?.class} • ${user?.board}`}
             </p>
           </div>
         </div>
+
+        {user?.role === 'teacher' && (
+          <div className="space-y-2">
+            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Filter by Class</label>
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+              {['all', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1'].map((cls) => (
+                <button
+                  key={cls}
+                  onClick={() => setTeacherClassFilter(cls)}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                    teacherClassFilter === cls
+                      ? 'bg-amber-500 border-amber-500 text-slate-950 shadow-lg shadow-amber-500/20'
+                      : 'bg-slate-900/50 border-white/5 text-slate-400 hover:border-white/10 hover:text-white'
+                  }`}
+                >
+                  {cls === 'all' ? (language === 'en' ? 'All Classes' : 'ସବୁ ଶ୍ରେଣୀ') : `Class ${cls}`}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
           {availableSubjects.map((s: string) => (
