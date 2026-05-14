@@ -1350,11 +1350,13 @@ export default function App() {
       return;
     }
 
-    // Fetch all chapters for all roles to ensure consistency across student profiles as requested
+    // Fetch chapters optimized by class to drastically reduce Firestore read billing
     console.log("Debug: Fetching chapters for user:", user);
     const chaptersQuery = user.role === 'admin' 
       ? collection(firestore, 'chapters')
-      : query(collection(firestore, 'chapters'), where('status', '==', 'published'));
+      : (user.role === 'student' && user.class
+          ? query(collection(firestore, 'chapters'), where('status', '==', 'published'), where('class', '==', user.class))
+          : query(collection(firestore, 'chapters'), where('status', '==', 'published')));
     console.log("Debug: chaptersQuery:", chaptersQuery);
 
     const unsubChapters = onSnapshot(chaptersQuery, (snapshot) => {
