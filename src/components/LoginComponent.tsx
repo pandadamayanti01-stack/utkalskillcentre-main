@@ -225,20 +225,28 @@ export default function Login({ language, translations, setLanguage, setRegData 
     try {
       const formattedNumber = normalizePhoneNumber(enteredPhoneNumber);
 
-      if (!isAdminLogin && userRole === 'student') {
+      if (!isAdminLogin) {
         try {
           const lockDoc = await getDoc(doc(db, 'user_locks', formattedNumber));
           if (lockDoc.exists()) {
             const lockData = lockDoc.data();
-            const dbClass = lockData.class;
-            const dbBoard = lockData.board;
-            if (selectedClass && selectedBoard && (dbClass !== selectedClass || dbBoard !== selectedBoard)) {
-              const classLabel = translations[language].classes[dbClass] || dbClass;
-              const boardLabel = translations[language].boards[dbBoard] || dbBoard;
+            if (lockData.role && lockData.role !== userRole) {
               alert(language === 'en'
-                ? `Your account is locked to ${classLabel} (${boardLabel}). Please select the correct class/board to login.`
-                : `ଆପଣଙ୍କ ଆକାଉଣ୍ଟ ${classLabel} (${boardLabel}) ପାଇଁ ଲକ୍ ହୋଇଛି | ଦୟାକରି ସଠିକ୍ ଶ୍ରେଣୀ/ବୋର୍ଡ ଚୟନ କରନ୍ତୁ |`);
+                ? `This phone number is already registered as a ${lockData.role === 'teacher' ? 'Teacher' : 'Student'}. Please switch your role on the login screen.`
+                : `ଏହି ଫୋନ୍ ନମ୍ବର ପୂର୍ବରୁ ${lockData.role === 'teacher' ? 'ଶିକ୍ଷକ' : 'ଛାତ୍ର'} ଭାବରେ ପଞ୍ଜିକୃତ ହୋଇଛି |`);
               return;
+            }
+            if (userRole === 'student') {
+              const dbClass = lockData.class;
+              const dbBoard = lockData.board;
+              if (selectedClass && selectedBoard && (dbClass !== selectedClass || dbBoard !== selectedBoard)) {
+                const classLabel = translations[language].classes[dbClass] || dbClass;
+                const boardLabel = translations[language].boards[dbBoard] || dbBoard;
+                alert(language === 'en'
+                  ? `Your account is locked to ${classLabel} (${boardLabel}). Please select the correct class/board to login.`
+                  : `ଆପଣଙ୍କ ଆକାଉଣ୍ଟ ${classLabel} (${boardLabel}) ପାଇଁ ଲକ୍ ହୋଇଛି | ଦୟାକରି ସଠିକ୍ ଶ୍ରେଣୀ/ବୋର୍ଡ ଚୟନ କରନ୍ତୁ |`);
+                return;
+              }
             }
           }
         } catch (lockError: any) {

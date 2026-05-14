@@ -3751,8 +3751,8 @@ Sample tone for Class 6-10:
       <div className="glass-card p-8 rounded-[2.5rem]">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-white">Student Management</h2>
-            <p className="text-slate-400 text-sm mt-1">Total Students: {students.length} | Showing: {filteredStudents.length}</p>
+            <h2 className="text-2xl font-bold text-white">Users & Teachers Management</h2>
+            <p className="text-slate-400 text-sm mt-1">Total Users: {students.length} | Showing: {filteredStudents.length}</p>
           </div>
           <div className="relative w-full md:w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
@@ -3771,7 +3771,7 @@ Sample tone for Class 6-10:
             <thead>
               <tr className="border-b border-white/10">
                 <th className="pb-4">Name</th>
-                <th className="pb-4">Email</th>
+                <th className="pb-4">Email / Phone</th>
                 <th className="pb-4">Class</th>
                 <th className="pb-4">Plan</th>
                 <th className="pb-4">Expiry</th>
@@ -3805,7 +3805,7 @@ Sample tone for Class 6-10:
                       </span>
                     </td>
                     <td className="py-4">
-                      <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase ${student.role === 'admin' ? 'bg-purple-500/20 text-purple-400' : 'bg-slate-500/20 text-slate-400'}`}>
+                      <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase ${student.role === 'admin' ? 'bg-purple-500/20 text-purple-400' : (student.role === 'teacher' ? 'bg-amber-500/20 text-amber-400' : 'bg-slate-500/20 text-slate-400')}`}>
                         {student.role || 'student'}
                       </span>
                     </td>
