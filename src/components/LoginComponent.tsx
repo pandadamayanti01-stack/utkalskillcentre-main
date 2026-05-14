@@ -8,29 +8,17 @@ import { getDeferredPrompt, clearDeferredPrompt } from '../pwa';
 
 const WhatsAppIcon = ({ size = 18 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path
-      fill="currentColor"
-      d="M20.52 3.48A11.9 11.9 0 0 0 12.05 0C5.5 0 .16 5.33.16 11.88c0 2.1.55 4.14 1.6 5.95L0 24l6.36-1.67a11.84 11.84 0 0 0 5.68 1.44h.01c6.55 0 11.89-5.33 11.89-11.89 0-3.17-1.23-6.15-3.42-8.4ZM12.05 21.77h-.01a9.84 9.84 0 0 1-5.02-1.38l-.36-.21-3.78.99 1.01-3.69-.23-.38a9.8 9.8 0 0 1-1.5-5.22C2.16 6.43 6.59 2 12.05 2c2.63 0 5.1 1.02 6.96 2.89a9.79 9.79 0 0 1 2.88 6.98c0 5.45-4.44 9.9-9.84 9.9Zm5.42-7.39c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.95 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.39-1.47-.88-.79-1.48-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.5h-.57c-.2 0-.52.07-.8.37-.27.3-1.05 1.02-1.05 2.5 0 1.47 1.08 2.9 1.23 3.1.15.2 2.12 3.24 5.13 4.54.72.31 1.28.5 1.72.64.72.23 1.38.2 1.9.12.58-.09 1.77-.72 2.02-1.42.25-.7.25-1.29.17-1.42-.07-.12-.27-.2-.57-.35Z"
-    />
+    <path fill="currentColor" d="M19.05 4.91A9.816 9.816 0 0 0 12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.8 3.08 1.22 4.79 1.22 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.02Zm-7.01 15.24c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.264 8.264 0 0 1-1.26-4.38c0-4.58 3.73-8.31 8.31-8.31 2.22 0 4.31.87 5.88 2.44 1.57 1.57 2.43 3.66 2.43 5.88 0 4.58-3.73 8.31-8.31 8.31Zm4.56-6.22c-.25-.12-1.48-.73-1.71-.82-.23-.08-.4-.12-.57.12-.17.25-.65.82-.8 1-.15.17-.3.2-.55.08-.25-.12-1.06-.39-2.02-1.25-.75-.67-1.26-1.5-1.41-1.75-.15-.25-.02-.38.1-.51.11-.11.25-.29.38-.44.12-.15.17-.25.25-.41.08-.17.04-.33-.02-.45-.06-.12-.57-1.38-.78-1.89-.2-.5-.41-.43-.57-.44-.15-.01-.33-.01-.5-.01-.17 0-.45.06-.69.32-.25.25-.96.94-.96 2.3s.98 2.68 1.12 2.86c.14.18 1.95 2.98 4.72 4.18.66.28 1.17.45 1.57.58.66.21 1.26.18 1.74.11.54-.08 1.48-.61 1.69-1.2.21-.59.21-1.1.15-1.2-.06-.1-.23-.16-.48-.28Z"/>
   </svg>
 );
 
-const PlayStoreIcon = ({ size = 12 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path d="M3.5 2.5 13.9 12 3.5 21.5" fill="#34A853" />
-    <path d="M13.9 12 18 8.25c1.46 1 2.42 1.67 2.42 1.67.78.55.78 1.6 0 2.16 0 0-.96.67-2.42 1.67L13.9 12Z" fill="#FBBC04" />
-    <path d="M3.5 2.5 18 8.25 13.9 12 3.5 2.5Z" fill="#4285F4" />
-    <path d="M3.5 21.5 13.9 12 18 15.75 3.5 21.5Z" fill="#EA4335" />
-  </svg>
-);
-
+const YOUTUBE_ORIGIN = 'https://www.youtube-nocookie.com';
+const INSTAGRAM_PROFILE_URL = 'https://www.instagram.com/utkalskillcentre/';
+const FACEBOOK_PROFILE_URL = 'https://www.facebook.com/share/1JAq6DY6Sq/';
 const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/@UtkalSkillCenter';
-const WHATSAPP_CHANNEL_URL = 'https://whatsapp.com/channel/0029VbCvAH31iUxgGopHZ724';
-const INSTAGRAM_PROFILE_URL = 'https://www.instagram.com/utkalskillcentre?igsh=aDBwdnNwNzJndDAx';
-const FACEBOOK_PROFILE_URL = 'https://www.facebook.com/share/18URKVYWdm/';
+
 const SOCIAL_ORIGINS = [
-  new URL(YOUTUBE_CHANNEL_URL).origin,
-  new URL(WHATSAPP_CHANNEL_URL).origin,
+  YOUTUBE_ORIGIN,
   new URL(INSTAGRAM_PROFILE_URL).origin,
   new URL(FACEBOOK_PROFILE_URL).origin,
 ];
@@ -41,13 +29,10 @@ export default function Login({ language, translations, setLanguage, setRegData 
   const [otp, setOtp] = useState('');
   const [selectedClass, setSelectedClass] = useState('');
   const [selectedBoard, setSelectedBoard] = useState('');
-  const [userRole, setUserRole] = useState<'student' | 'teacher'>('student');
+  const [userRole, setUserRole] = useState<'student' | 'teacher' | 'admin'>('student');
   const [isSending, setIsSending] = useState(false);
   const [authStep, setAuthStep] = useState<'login' | 'otp'>('login');
-  const [isAdminLogin, setIsAdminLogin] = useState(false);
-  const [adminEmail, setAdminEmail] = useState('');
-  const [adminPassword, setAdminPassword] = useState('');
-  const [adminLoginError, setAdminLoginError] = useState('');
+  const [showAdminPill, setShowAdminPill] = useState(false);
   
   // PWA Install State
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -60,39 +45,23 @@ export default function Login({ language, translations, setLanguage, setRegData 
   const isMobileDevice = typeof window !== 'undefined' && /Android|iPhone|iPad|iPod|Mobile|Windows Phone/i.test(window.navigator.userAgent);
   const socialLinkTarget = isStandaloneMode || isMobileDevice ? '_self' : '_blank';
   const socialLinkRel = socialLinkTarget === '_blank' ? 'noopener noreferrer' : undefined;
-  const shouldShowInstallButton = !isAdminLogin && !isStandaloneMode;
+  const shouldShowInstallButton = !isStandaloneMode;
   const canInstallApp = Boolean(deferredPrompt || getDeferredPrompt());
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-    
-    // Check for existing prompt
-    const existingPrompt = getDeferredPrompt();
-    if (existingPrompt) setDeferredPrompt(existingPrompt);
-
-    // Listen for PWA Install Prompt
-    const handler = (e: any) => {
+    const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e);
     };
-    
-    const pwaHandler = () => {
-      setDeferredPrompt(getDeferredPrompt());
-    };
 
-    const handleInstalled = () => {
-      clearDeferredPrompt();
-      setDeferredPrompt(null);
-    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    const existingPrompt = getDeferredPrompt();
+    if (existingPrompt) {
+      setDeferredPrompt(existingPrompt);
+    }
 
-    window.addEventListener('beforeinstallprompt', handler);
-    window.addEventListener('pwa-prompt-available', pwaHandler);
-    window.addEventListener('appinstalled', handleInstalled);
-    
     return () => {
-      window.removeEventListener('beforeinstallprompt', handler);
-      window.removeEventListener('pwa-prompt-available', pwaHandler);
-      window.removeEventListener('appinstalled', handleInstalled);
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     };
   }, []);
 
@@ -120,8 +89,8 @@ export default function Login({ language, translations, setLanguage, setRegData 
 
   const syncSelectedAcademicInfo = () => {
     setRegData({ 
-      class: userRole === 'teacher' && !selectedClass ? '10' : selectedClass, 
-      board: userRole === 'teacher' && !selectedBoard ? 'BSE Odisha' : selectedBoard,
+      class: userRole === 'student' ? selectedClass : '10', 
+      board: userRole === 'student' ? selectedBoard : 'BSE Odisha',
       role: userRole 
     });
   };
@@ -147,7 +116,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
   const getEnteredPhoneNumber = () => phoneInputRef.current?.value?.trim() || phoneNumber;
 
   const handleGoogleLogin = async () => {
-    if (!isAdminLogin && userRole === 'student' && (!selectedClass || !selectedBoard)) {
+    if (userRole === 'student' && (!selectedClass || !selectedBoard)) {
       alert(translations[language].requiredFieldsError);
       return;
     }
@@ -161,12 +130,6 @@ export default function Login({ language, translations, setLanguage, setRegData 
       console.error("Google login error:", error);
       alert("Google login failed.");
     }
-  };
-
-  const handleAdminEmailLogin = async () => {
-    // Admin login logic placeholder
-    console.log("Admin login attempt", adminEmail, adminPassword);
-    setAdminLoginError("Admin login not implemented yet.");
   };
 
   const normalizePhoneNumber = (input: string) => {
@@ -206,11 +169,9 @@ export default function Login({ language, translations, setLanguage, setRegData 
     const enteredPhoneNumber = getEnteredPhoneNumber();
 
     if (!enteredPhoneNumber || enteredPhoneNumber.length < 10) return alert("Please enter valid phone");
-    if (!isAdminLogin && userRole === 'student' && (!selectedClass || !selectedBoard)) return alert(translations[language].requiredFieldsError);
+    if (userRole === 'student' && (!selectedClass || !selectedBoard)) return alert(translations[language].requiredFieldsError);
 
-    if (!isAdminLogin) {
-      syncSelectedAcademicInfo();
-    }
+    syncSelectedAcademicInfo();
 
     setPhoneNumber(enteredPhoneNumber);
 
@@ -225,34 +186,32 @@ export default function Login({ language, translations, setLanguage, setRegData 
     try {
       const formattedNumber = normalizePhoneNumber(enteredPhoneNumber);
 
-      if (!isAdminLogin) {
-        try {
-          const lockDoc = await getDoc(doc(db, 'user_locks', formattedNumber));
-          if (lockDoc.exists()) {
-            const lockData = lockDoc.data();
-            if (lockData.role && lockData.role !== userRole) {
+      try {
+        const lockDoc = await getDoc(doc(db, 'user_locks', formattedNumber));
+        if (lockDoc.exists()) {
+          const lockData = lockDoc.data();
+          if (lockData.role && lockData.role !== userRole) {
+            alert(language === 'en'
+              ? `This phone number is already registered as a ${lockData.role.toUpperCase()}. Please switch your role on the login screen.`
+              : `ଏହି ଫୋନ୍ ନମ୍ବର ପୂର୍ବରୁ ${lockData.role.toUpperCase()} ଭାବରେ ପଞ୍ଜିକୃତ ହୋଇଛି |`);
+            return;
+          }
+          if (userRole === 'student') {
+            const dbClass = lockData.class;
+            const dbBoard = lockData.board;
+            if (selectedClass && selectedBoard && (dbClass !== selectedClass || dbBoard !== selectedBoard)) {
+              const classLabel = translations[language].classes[dbClass] || dbClass;
+              const boardLabel = translations[language].boards[dbBoard] || dbBoard;
               alert(language === 'en'
-                ? `This phone number is already registered as a ${lockData.role === 'teacher' ? 'Teacher' : 'Student'}. Please switch your role on the login screen.`
-                : `ଏହି ଫୋନ୍ ନମ୍ବର ପୂର୍ବରୁ ${lockData.role === 'teacher' ? 'ଶିକ୍ଷକ' : 'ଛାତ୍ର'} ଭାବରେ ପଞ୍ଜିକୃତ ହୋଇଛି |`);
+                ? `Your account is locked to ${classLabel} (${boardLabel}). Please select the correct class/board to login.`
+                : `ଆପଣଙ୍କ ଆକାଉଣ୍ଟ ${classLabel} (${boardLabel}) ପାଇଁ ଲକ୍ ହୋଇଛି | ଦୟାକରି ସଠିକ୍ ଶ୍ରେଣୀ/ବୋର୍ଡ ଚୟନ କରନ୍ତୁ |`);
               return;
             }
-            if (userRole === 'student') {
-              const dbClass = lockData.class;
-              const dbBoard = lockData.board;
-              if (selectedClass && selectedBoard && (dbClass !== selectedClass || dbBoard !== selectedBoard)) {
-                const classLabel = translations[language].classes[dbClass] || dbClass;
-                const boardLabel = translations[language].boards[dbBoard] || dbBoard;
-                alert(language === 'en'
-                  ? `Your account is locked to ${classLabel} (${boardLabel}). Please select the correct class/board to login.`
-                  : `ଆପଣଙ୍କ ଆକାଉଣ୍ଟ ${classLabel} (${boardLabel}) ପାଇଁ ଲକ୍ ହୋଇଛି | ଦୟାକରି ସଠିକ୍ ଶ୍ରେଣୀ/ବୋର୍ଡ ଚୟନ କରନ୍ତୁ |`);
-                return;
-              }
-            }
           }
-        } catch (lockError: any) {
-          if (lockError?.code !== 'permission-denied' && lockError?.code !== 'failed-precondition') {
-            console.warn('Lock check skipped due to read error:', lockError);
-          }
+        }
+      } catch (lockError: any) {
+        if (lockError?.code !== 'permission-denied' && lockError?.code !== 'failed-precondition') {
+          console.warn('Lock check skipped due to read error:', lockError);
         }
       }
 
@@ -281,98 +240,49 @@ export default function Login({ language, translations, setLanguage, setRegData 
   };
 
   return (
-    <div className="digital-altar-bg w-full min-h-full flex flex-col items-center justify-between p-6">
+    <div className="relative w-full h-screen flex flex-col items-center justify-between p-3 sm:p-4 overflow-y-auto overflow-x-hidden bg-[#020617]">
       
-      {/* 1. THE IMPOSSIBLE BACKGROUND: Animated Temple Watermark */}
-      <motion.div 
-        animate={{ scale: [1, 1.05, 1], opacity: [0.05, 0.08, 0.05] }}
-        transition={{ duration: 10, repeat: Infinity }}
-        className="absolute inset-0 z-0 flex items-center justify-center"
-      >
-        <img src="/temple-pattern.png" className="h-[90%] w-auto grayscale sepia" alt="" />
-      </motion.div>
-
-      {/* 2. TOP: Minimalist Utility Bar */}
-      <div className="w-full flex justify-between items-start z-20">
-        <div className="flex items-center gap-2">
-          <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_#10b981]" />
-          <span className="text-white/30 text-[8px] font-black tracking-[0.4em] uppercase">System Online</span>
-        </div>
-        <div className="flex flex-col items-end gap-3">
-          <div className="flex items-center gap-2">
-            <a
-              href={FACEBOOK_PROFILE_URL}
-              target={socialLinkTarget}
-              rel={socialLinkRel}
-              aria-label="Utkal Skill Centre Facebook page"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-400/25 bg-blue-500/15 text-blue-200 transition-all hover:bg-blue-500/25 hover:text-white"
-            >
-              <Facebook size={18} />
-            </a>
-            <a
-              href={INSTAGRAM_PROFILE_URL}
-              target={socialLinkTarget}
-              rel={socialLinkRel}
-              aria-label="Utkal Skill Centre Instagram profile"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-pink-400/25 bg-pink-500/15 text-pink-200 transition-all hover:bg-pink-500/25 hover:text-white"
-            >
-              <Instagram size={18} />
-            </a>
-            <a
-              href={WHATSAPP_CHANNEL_URL}
-              target={socialLinkTarget}
-              rel={socialLinkRel}
-              aria-label="Utkal Skill Centre WhatsApp channel"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-emerald-400/25 bg-emerald-500/15 text-emerald-200 transition-all hover:bg-emerald-500/25 hover:text-white"
-            >
-              <WhatsAppIcon size={18} />
-            </a>
-            <a
-              href={YOUTUBE_CHANNEL_URL}
-              target={socialLinkTarget}
-              rel={socialLinkRel}
-              aria-label="Utkal Skill Centre YouTube channel"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-red-400/25 bg-red-500/15 text-red-200 transition-all hover:bg-red-500/25 hover:text-white"
-            >
-              <Youtube size={18} />
-            </a>
-            <button 
-              onClick={() => setLanguage(language === 'en' ? 'or' : 'en')} 
-              className="glass-marble px-4 py-2 rounded-full text-[10px] font-black text-[#ffd700] flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-transform"
-            >
-              <Globe size={12} className="text-[#ffd700]" />
-              {language === 'en' ? 'ଓଡ଼ିଆ' : 'ENGLISH'}
-            </button>
-          </div>
-
-          {shouldShowInstallButton && (
-            <button
-              onClick={handleInstallClick}
-              title={canInstallApp ? 'Install app' : 'Install prompt will appear when supported by the browser'}
-              className={`flex items-center gap-2 rounded-full border border-slate-200/80 bg-white px-4 py-2 text-[9px] font-black uppercase tracking-[0.14em] text-[#000033] shadow-[0_10px_30px_rgba(255,255,255,0.18)] transition-all hover:scale-105 hover:border-slate-300 hover:text-[#000022] hover:shadow-[0_14px_36px_rgba(255,255,255,0.24)] active:scale-95 ${canInstallApp ? '' : 'opacity-85'}`}
-            >
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-100">
-                <PlayStoreIcon size={12} />
-              </span>
-              {language === 'en' ? 'Install App' : 'ଇନଷ୍ଟଲ୍ କରନ୍ତୁ'}
-            </button>
-          )}
+      {/* 1. STUNNING AMBIENT MESH GLOW BACKGROUND */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        {/* Emerald Glow Orb */}
+        <motion.div 
+          animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[-10%] right-[-10%] w-[70vw] sm:w-[500px] h-[70vw] sm:h-[500px] rounded-full bg-emerald-500/20 blur-[120px]"
+        />
+        {/* Amber Glow Orb */}
+        <motion.div 
+          animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.3, 0.2] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 4 }}
+          className="absolute bottom-[-10%] left-[-10%] w-[70vw] sm:w-[500px] h-[70vw] sm:h-[500px] rounded-full bg-amber-500/20 blur-[120px]"
+        />
+        {/* Odia Temple Pattern Watermark Overlay */}
+        <div className="absolute inset-0 opacity-5 flex items-center justify-center">
+          <img src="/temple-pattern.png" className="w-[120%] sm:w-[80%] h-auto object-contain filter grayscale" alt="" />
         </div>
       </div>
 
-      {/* 3. CENTER: The Altar Content */}
-      <div className="flex-1 flex flex-col items-center justify-center w-full max-w-[340px] z-10 gap-6">
-        
-        {/* LOGO SECTION - Restored Size with Hidden Admin Trigger */}
-        <div 
-          className="relative flex flex-col items-center cursor-pointer active:scale-95 transition-transform"
+      {/* 2. TOP: Sleek Premium Utility Bar */}
+      <header className="w-full max-w-md flex justify-between items-center z-20 pt-1">
+        {/* UTKAL LOGO WITH TRIPLE CLICK ADMIN TRIGGER & HIDE TOGGLE */}
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }} 
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-center gap-2 cursor-pointer group"
           onClick={() => {
+            if (showAdminPill) {
+              setShowAdminPill(false);
+              if (userRole === 'admin') setUserRole('student');
+              (window as any)._logoClickCount = 0;
+              return;
+            }
             const now = Date.now();
-            const timeDiff = now - (window as any)._lastLogoClick || 0;
+            const timeDiff = now - ((window as any)._lastLogoClick || 0);
             if (timeDiff < 500) {
               (window as any)._logoClickCount = ((window as any)._logoClickCount || 0) + 1;
               if ((window as any)._logoClickCount >= 3) {
-                setIsAdminLogin(true);
+                setShowAdminPill(true);
+                setUserRole('admin');
                 (window as any)._logoClickCount = 0;
               }
             } else {
@@ -381,238 +291,288 @@ export default function Login({ language, translations, setLanguage, setRegData 
             (window as any)._lastLogoClick = now;
           }}
         >
-          <div className="absolute inset-0 bg-emerald-500/20 blur-[100px] rounded-full scale-150 pointer-events-none" />
-          <motion.img 
-            initial={{ scale: 0.8, opacity: 0 }} 
-            animate={{ scale: 1, opacity: 1 }}
-            src="/utkal-512.png" 
-            className="h-24 w-auto relative z-10 drop-shadow-[0_0_20px_rgba(255,215,0,0.2)]" 
-            style={{ mixBlendMode: 'multiply' }} 
-            alt="Utkal" 
-          />
-          <h1 className="text-white text-4xl font-black tracking-tighter mt-2 uppercase leading-none font-['Outfit']">UTKAL</h1>
-          <p className="text-[#ffd700] text-[9px] font-black tracking-[0.6em] uppercase opacity-70 mt-1 font-['Outfit']">Skill Centre</p>
-        </div>
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-tr from-amber-500 to-emerald-500 rounded-xl blur-md opacity-40 group-hover:opacity-75 transition-opacity" />
+            <img 
+              src="/utkal-512.png" 
+              className="h-9 w-auto relative z-10 drop-shadow-lg" 
+              alt="Utkal" 
+            />
+          </div>
+          <div className="flex flex-col">
+            <h1 className="text-white text-base font-black tracking-tighter uppercase leading-none font-['Outfit']">UTKAL</h1>
+            <p className="text-amber-400 text-[7px] font-black tracking-[0.3em] uppercase opacity-90 mt-0.5 font-['Outfit']">Skill Centre</p>
+          </div>
+        </motion.div>
 
-        {/* WELCOME MESSAGE */}
-        <div className="w-full text-center">
-          <AnimatePresence mode="wait">
-            <motion.div key={language} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-              <h2 className="text-white text-3xl font-[1000] leading-tight tracking-tight px-2">
-                {language === 'en' ? 'Join the ' : 'ସାମିଲ ହୁଅନ୍ତୁ ' }
-                <span className="text-transparent bg-clip-text bg-gradient-to-b from-[#ffd700] to-[#b34d1f]">
-                  {language === 'en' ? 'AI Era' : 'AI ଯୁଗରେ'}
-                </span>
-              </h2>
-              <p className="text-[#f8f1e7]/30 text-[9px] font-black uppercase tracking-[0.4em] mt-3 flex items-center justify-center gap-2">
-                <span className="h-[1px] w-4 bg-white/10" />
-                {language === 'en' ? 'Personalized Learning' : 'ଆପଣଙ୍କ ପାଇଁ ବ୍ୟକ୍ତିଗତ ଶିକ୍ଷା'}
-                <span className="h-[1px] w-4 bg-white/10" />
-              </p>
-
-              {/* Congratulatory Message */}
-              <motion.p 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="mt-4 text-[#ffd700] text-[10px] font-bold text-center px-4"
-              >
-                🎊 {t.congratsMessage} 🎓
-              </motion.p>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        {/* ROLE SELECTOR TABS */}
-        <div className="w-full grid grid-cols-2 gap-2 bg-white/5 p-1 rounded-2xl border border-white/10">
-          <button
-            type="button"
-            onClick={() => setUserRole('student')}
-            className={`py-3 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
-              userRole === 'student' 
-                ? 'bg-gradient-to-r from-[#b34d1f] to-[#d97706] text-white shadow-lg shadow-[#b34d1f]/30' 
-                : 'text-white/40 hover:text-white hover:bg-white/5'
-            }`}
+        {/* CONTROLS: LANGUAGE & PWA WHATSAPP INSTALL */}
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-2">
+          <button 
+            onClick={() => setLanguage(language === 'en' ? 'or' : 'en')} 
+            className="px-2.5 py-1 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-[9px] font-black text-amber-400 flex items-center gap-1 shadow-lg backdrop-blur-md transition-all active:scale-95"
           >
-            👨‍🎓 {language === 'en' ? 'Student' : 'ଛାତ୍ର'}
+            <Globe size={12} className="text-amber-400 animate-spin-slow" />
+            {language === 'en' ? 'ଓଡ଼ିଆ' : 'ENGLISH'}
           </button>
-          <button
-            type="button"
-            onClick={() => setUserRole('teacher')}
-            className={`py-3 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
-              userRole === 'teacher' 
-                ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-900/30' 
-                : 'text-white/40 hover:text-white hover:bg-white/5'
-            }`}
-          >
-            👨‍🏫 {language === 'en' ? 'Teacher' : 'ଶିକ୍ଷକ'}
-          </button>
-        </div>
 
-        {/* The Glass Inputs (Marble Style) */}
-        <div className="w-full space-y-4">
-          <div id="recaptcha-container" ref={recaptchaDomRef} className="my-3 flex justify-center w-full overflow-hidden"></div>
-          <AnimatePresence mode="wait">
-            {authStep === 'login' ? (
-              <motion.div 
-                key="login" 
-                initial={{ opacity: 0, y: 20 }} 
-                animate={{ opacity: 1, y: 0 }} 
-                className="w-full space-y-4"
+          {shouldShowInstallButton && (
+            <button
+              onClick={handleInstallClick}
+              title={canInstallApp ? 'Install app' : 'Install prompt will appear when supported by the browser'}
+              className={`flex items-center gap-1 rounded-xl border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 px-2.5 py-1 text-[9px] font-black uppercase tracking-wider text-emerald-300 shadow-[0_0_20px_rgba(16,185,129,0.25)] backdrop-blur-md transition-all hover:scale-105 active:scale-95 ${canInstallApp ? '' : 'opacity-85'}`}
+            >
+              <span className="text-emerald-400 flex items-center justify-center">
+                <WhatsAppIcon size={12} />
+              </span>
+              {language === 'en' ? 'Install' : 'ଇନଷ୍ଟଲ୍'}
+            </button>
+          )}
+        </motion.div>
+      </header>
+
+      {/* 3. CENTER: Ultra-Premium Glassmorphic Altar Form */}
+      <main className="flex-1 flex flex-col items-center justify-center w-full max-w-md z-10 my-auto py-2">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full bg-slate-900/60 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-5 sm:p-6 shadow-[0_20px_60px_rgba(0,0,0,0.6)] space-y-4 sm:space-y-5 relative overflow-hidden"
+        >
+          {/* Subtle top edge specular highlight */}
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+
+          {/* WELCOME BANNER (Slightly Up) */}
+          <div className="w-full text-center space-y-1 pb-1">
+            <AnimatePresence mode="wait">
+              <motion.div key={language} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }}>
+                <h2 className="text-white text-3xl sm:text-4xl font-black tracking-tight font-['Outfit']">
+                  {language === 'en' ? 'Join the ' : 'ସାମିଲ ହୁଅନ୍ତୁ ' }
+                  <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-emerald-400 bg-clip-text text-transparent">
+                    {language === 'en' ? 'AI Era' : 'AI ଯୁଗରେ'}
+                  </span>
+                </h2>
+                <p className="text-slate-400 text-[9px] font-black uppercase tracking-[0.3em] mt-1.5 flex items-center justify-center gap-2">
+                  <span className="h-px w-4 bg-slate-700" />
+                  {language === 'en' ? 'Personalized Learning' : 'ଆପଣଙ୍କ ପାଇଁ ବ୍ୟକ୍ତିଗତ ଶିକ୍ଷା'}
+                  <span className="h-px w-4 bg-slate-700" />
+                </p>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* ROLE SWITCHER PILLS (STUDENT / TEACHER / ADMIN) */}
+          <div className={`w-full grid ${showAdminPill ? 'grid-cols-3' : 'grid-cols-2'} gap-1.5 p-1 bg-black/40 rounded-xl border border-white/5`}>
+            <button
+              type="button"
+              onClick={() => setUserRole('student')}
+              className={`py-3 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${
+                userRole === 'student' 
+                  ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-lg shadow-amber-900/40 scale-[1.02]' 
+                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              👨‍🎓 {language === 'en' ? 'Student' : 'ଛାତ୍ର'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setUserRole('teacher')}
+              className={`py-3 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${
+                userRole === 'teacher' 
+                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-900/40 scale-[1.02]' 
+                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              👨‍🏫 {language === 'en' ? 'Teacher' : 'ଶିକ୍ଷକ'}
+            </button>
+            {showAdminPill && (
+              <button
+                type="button"
+                onClick={() => setUserRole('admin')}
+                className={`py-3 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 relative ${
+                  userRole === 'admin' 
+                    ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg shadow-emerald-900/40 scale-[1.02]' 
+                    : 'text-slate-400 hover:text-white hover:bg-white/5'
+                }`}
               >
-                {!isAdminLogin ? (
-                  <>
-                    {userRole === 'student' && (
-                      <>
-                        <div className="space-y-1">
-                          <p className="text-[9px] font-black text-[#ffd700]/60 uppercase tracking-[0.2em] ml-4 mb-1">
-                            {language === 'en' ? 'Step 1: Select Class' : 'ପର୍ଯ୍ୟାୟ ୧: ଶ୍ରେଣୀ ବାଛନ୍ତୁ'}
-                          </p>
-                          <motion.div whileTap={{ scale: 0.98 }} className="relative group">
-                            <div className="absolute left-6 top-1/2 -translate-y-1/2 text-[#ffd700]/40 group-focus-within:text-[#ffd700] transition-colors">
-                              <BookOpen size={16} />
-                            </div>
-                            <select 
-                              value={selectedClass} 
-                              onChange={(e) => setSelectedClass(e.target.value)}
-                              className="glass-marble w-full py-4 pl-14 pr-6 rounded-[1.5rem] text-white text-xs font-bold outline-none appearance-none"
-                            >
-                              <option className="bg-[#050a0b]">{t.selectClass} *</option>
-                              {Object.entries(t.classes).map(([k,v]) => <option key={k} value={k} className="bg-[#050a0b]">{v as string}</option>)}
-                            </select>
-                          </motion.div>
-                        </div>
+                🛡️ {language === 'en' ? 'Admin' : 'ପ୍ରଶାସକ'}
+                <div 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowAdminPill(false);
+                    if (userRole === 'admin') setUserRole('student');
+                  }}
+                  title="Hide Admin Mode"
+                  className="absolute right-1 top-1 w-4 h-4 rounded-full bg-black/40 hover:bg-red-500/80 flex items-center justify-center text-[8px] text-slate-300 hover:text-white transition-colors"
+                >
+                  ✕
+                </div>
+              </button>
+            )}
+          </div>
 
-                        <div className="space-y-1">
-                          <p className="text-[9px] font-black text-[#ffd700]/60 uppercase tracking-[0.2em] ml-4 mb-1">
-                            {language === 'en' ? 'Step 2: Select Board' : 'ପର୍ଯ୍ୟାୟ ୨: ବୋର୍ଡ ବାଛନ୍ତୁ'}
-                          </p>
-                          <motion.div whileTap={{ scale: 0.98 }} className="relative group">
-                            <div className="absolute left-6 top-1/2 -translate-y-1/2 text-[#ffd700]/40 group-focus-within:text-[#ffd700] transition-colors">
-                              <Globe size={16} />
-                            </div>
-                            <select 
-                              value={selectedBoard} 
-                              onChange={(e) => setSelectedBoard(e.target.value)}
-                              className="glass-marble w-full py-4 pl-14 pr-6 rounded-[1.5rem] text-white text-xs font-bold outline-none appearance-none"
-                            >
-                              <option className="bg-[#050a0b]">{t.selectBoard} *</option>
-                              {t.boards && Object.entries(t.boards).map(([k,v]) => <option key={k} value={k} className="bg-[#050a0b]">{v as string}</option>)}
-                            </select>
-                          </motion.div>
+          {/* RECAPTCHA & INPUT FLOW */}
+          <div className="w-full space-y-3.5">
+            <div id="recaptcha-container" ref={recaptchaDomRef} className="my-1 flex justify-center w-full overflow-hidden"></div>
+            
+            <AnimatePresence mode="wait">
+              {authStep === 'login' ? (
+                <motion.div 
+                  key="login" 
+                  initial={{ opacity: 0, y: 10 }} 
+                  animate={{ opacity: 1, y: 0 }} 
+                  exit={{ opacity: 0, y: -10 }}
+                  className="w-full space-y-3.5"
+                >
+                  {userRole === 'student' && (
+                    <div className="space-y-3">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-black text-amber-400 uppercase tracking-widest pl-3 flex items-center gap-1.5">
+                          <BookOpen size={12} /> {language === 'en' ? 'Select Class' : 'ଶ୍ରେଣୀ ବାଛନ୍ତୁ'}
+                        </label>
+                        <div className="relative group">
+                          <select 
+                            value={selectedClass} 
+                            onChange={(e) => setSelectedClass(e.target.value)}
+                            className="w-full py-3.5 pl-4 pr-10 bg-black/40 border border-white/10 rounded-2xl text-white text-xs font-bold outline-none focus:border-amber-400/80 focus:shadow-[0_0_20px_rgba(245,158,11,0.2)] appearance-none transition-all cursor-pointer"
+                          >
+                            <option className="bg-[#0b0f19]">{t.selectClass} *</option>
+                            {Object.entries(t.classes).map(([k,v]) => <option key={k} value={k} className="bg-[#0b0f19]">{v as string}</option>)}
+                          </select>
+                          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 group-focus-within:text-amber-400 transition-colors">
+                            <ChevronRight size={16} className="transform rotate-90" />
+                          </div>
                         </div>
-                      </>
-                    )}
+                      </div>
 
-                    <div className="space-y-1">
-                      <p className="text-[9px] font-black text-[#ffd700]/60 uppercase tracking-[0.2em] ml-4 mb-1">
-                        {userRole === 'student' ? (language === 'en' ? 'Step 3: Mobile Number' : 'ପର୍ଯ୍ୟାୟ ୩: ମୋବାଇଲ୍ ନମ୍ବର') : (language === 'en' ? 'Enter Mobile Number' : 'ମୋବାଇଲ୍ ନମ୍ବର ଦିଅନ୍ତୁ')}
-                      </p>
-                      <div className="flex gap-3">
-                        <div className="glass-marble px-5 py-4 rounded-[1.5rem] text-[#ffd700] text-xs font-black flex items-center gap-2">
-                          <Phone size={14} />
-                          <span>+91</span>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-black text-amber-400 uppercase tracking-widest pl-3 flex items-center gap-1.5">
+                          <Globe size={12} /> {language === 'en' ? 'Select Board' : 'ବୋର୍ଡ ବାଛନ୍ତୁ'}
+                        </label>
+                        <div className="relative group">
+                          <select 
+                            value={selectedBoard} 
+                            onChange={(e) => setSelectedBoard(e.target.value)}
+                            className="w-full py-3.5 pl-4 pr-10 bg-black/40 border border-white/10 rounded-2xl text-white text-xs font-bold outline-none focus:border-amber-400/80 focus:shadow-[0_0_20px_rgba(245,158,11,0.2)] appearance-none transition-all cursor-pointer"
+                          >
+                            <option className="bg-[#0b0f19]">{t.selectBoard} *</option>
+                            {t.boards && Object.entries(t.boards).map(([k,v]) => <option key={k} value={k} className="bg-[#0b0f19]">{v as string}</option>)}
+                          </select>
+                          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 group-focus-within:text-amber-400 transition-colors">
+                            <ChevronRight size={16} className="transform rotate-90" />
+                          </div>
                         </div>
-                        <input 
-                          type="tel" 
-                          ref={phoneInputRef}
-                          defaultValue={phoneNumber}
-                          placeholder={t.enterPhone}
-                          inputMode="numeric"
-                          autoComplete="tel"
-                          className="glass-marble flex-1 py-4 px-6 rounded-[1.5rem] text-white text-xs font-black outline-none placeholder:text-white/20" 
-                        />
                       </div>
                     </div>
+                  )}
 
-                    <button onClick={onSmsSend} disabled={isSending} className={`w-full group relative py-4 rounded-[1.5rem] overflow-hidden transition-all active:scale-95 ${userRole === 'teacher' ? 'bg-purple-600 hover:bg-purple-500 shadow-lg shadow-purple-900/30' : 'crystal-button-gold'}`}>
-                      <span className="relative z-10 text-white font-black text-xs tracking-[0.2em] flex items-center justify-center gap-2 uppercase">
-                        {isSending ? <Loader2 className="animate-spin" /> : <>{t.sendOtp || 'Continue'} <ChevronRight size={16} /></>}
-                      </span>
-                    </button>
-
-                    <div className="relative py-2 flex items-center justify-center">
-                      <div className="h-px bg-white/10 w-full" />
-                      <span className="absolute bg-[#0B0F19] px-4 text-[8px] font-black text-white/20 uppercase tracking-[0.3em]">
-                        {language === 'en' ? 'OR' : 'କିମ୍ବା'}
-                      </span>
-                    </div>
-
-                    <button
-                      onClick={handleGoogleLogin}
-                      disabled={userRole === 'student' && (!selectedClass || !selectedBoard)}
-                      className={`w-full group relative py-4 rounded-[1.5rem] overflow-hidden transition-all active:scale-95 ${userRole === 'student' && (!selectedClass || !selectedBoard) ? 'bg-white/5 border border-white/10 cursor-not-allowed' : 'crystal-button-sapphire'}`}
-                    >
-                      <span className={`relative z-10 font-black text-xs tracking-[0.2em] flex items-center justify-center gap-2 uppercase ${userRole === 'student' && (!selectedClass || !selectedBoard) ? 'text-white/20' : 'text-white'}`}>
-                        <svg className="w-4 h-4" viewBox="0 0 24 24">
-                          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
-                          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                        </svg>
-                        {language === 'en' ? 'Continue with Google' : 'ଗୁଗଲ୍ ସହିତ ଆଗକୁ ବଢନ୍ତୁ'}
-                      </span>
-                    </button>
-                  </>
-                ) : (
-                  <div className="space-y-3">
-                    <button onClick={handleGoogleLogin} className="w-full group relative py-4 rounded-[1.5rem] overflow-hidden transition-all active:scale-95 shadow-[0_20px_50px_rgba(179,77,31,0.3)]">
-                      <div className="absolute inset-0 bg-gradient-to-r from-[#b34d1f] via-[#d97706] to-[#b34d1f] group-hover:scale-110 transition-transform duration-500" />
-                      <span className="relative z-10 text-white font-black text-xs tracking-[0.2em] flex items-center justify-center gap-2 uppercase">Login with Google</span>
-                    </button>
-                    
-                    <div className="flex gap-3">
-                      <div className="glass-marble px-5 py-4 rounded-[1.5rem] text-[#ffd700] text-xs font-black flex items-center gap-2">
-                        <Phone size={14} />
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black text-amber-400 uppercase tracking-widest pl-3 flex items-center gap-1.5">
+                      <Phone size={12} /> {language === 'en' ? 'Mobile Number' : 'ମୋବାଇଲ୍ ନମ୍ବର'}
+                    </label>
+                    <div className="flex gap-2.5">
+                      <div className="px-4 py-3.5 bg-black/40 border border-white/10 rounded-2xl text-amber-400 text-xs font-black flex items-center justify-center shadow-inner">
                         <span>+91</span>
                       </div>
                       <input 
                         type="tel" 
                         ref={phoneInputRef}
                         defaultValue={phoneNumber}
-                        placeholder="Phone Number" 
+                        placeholder={t.enterPhone}
                         inputMode="numeric"
                         autoComplete="tel"
-                        className="glass-marble flex-1 py-4 px-6 rounded-[1.5rem] text-white text-xs font-black outline-none placeholder:text-white/20" 
+                        className="flex-1 py-3.5 px-5 bg-black/40 border border-white/10 rounded-2xl text-white text-xs font-black outline-none focus:border-amber-400/80 focus:shadow-[0_0_20px_rgba(245,158,11,0.2)] placeholder:text-slate-600 transition-all shadow-inner" 
                       />
                     </div>
-
-                    <button onClick={onSmsSend} disabled={isSending} className="w-full group relative py-4 rounded-[1.5rem] overflow-hidden transition-all active:scale-95 shadow-[0_20px_50px_rgba(179,77,31,0.3)]">
-                      <div className="absolute inset-0 bg-gradient-to-r from-[#b34d1f] via-[#d97706] to-[#b34d1f] group-hover:scale-110 transition-transform duration-500" />
-                      <span className="relative z-10 text-white font-black text-xs tracking-[0.2em] flex items-center justify-center gap-2 uppercase">
-                        {isSending ? <Loader2 className="animate-spin" /> : 'Send OTP'}
-                      </span>
-                    </button>
-
-                    <button onClick={() => setIsAdminLogin(false)} className="w-full py-3 rounded-2xl border border-white/20 text-white font-bold text-xs uppercase tracking-widest hover:bg-white/10 transition-colors">Back to Student</button>
                   </div>
-                )}
-              </motion.div>
-            ) : (
-              <motion.div key="otp" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full space-y-6 text-center">
-                <Sparkles className="text-[#ffd700] mx-auto animate-pulse" size={48} />
-                <h2 className="text-white text-2xl font-black">Verify OTP</h2>
-                <input type="text" maxLength={6} value={otp} onChange={(e) => setOtp(e.target.value)} placeholder="000000" className="glass-marble w-full py-4 px-6 rounded-[1.5rem] text-center text-2xl font-black text-white outline-none" />
-                <button onClick={verifyOtp} className="w-full group relative py-4 rounded-[1.5rem] overflow-hidden transition-all active:scale-95 shadow-[0_20px_50px_rgba(179,77,31,0.3)]">
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#b34d1f] via-[#d97706] to-[#b34d1f] group-hover:scale-110 transition-transform duration-500" />
-                  <span className="relative z-10 text-white font-black text-xs tracking-[0.2em] flex items-center justify-center gap-2 uppercase">VERIFY</span>
-                </button>
-                <button onClick={() => setAuthStep('login')} className="text-[10px] text-white/40 font-bold flex items-center gap-1 mx-auto hover:text-white transition-colors">
-                  <ArrowLeft size={10} /> Back
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
 
-      {/* 4. FOOTER: Integrated & Tiny */}
-      <div className="w-full flex flex-col items-center gap-4 z-10 pb-4">
-        <div className="w-full h-1" />
-        
-        <div className="flex flex-col items-center opacity-20 scale-75">
-          <p className="text-[7px] font-black uppercase tracking-[0.6em] text-[#ffd700]">Pride Association of Bigsan Group</p>
+                  <button 
+                    onClick={onSmsSend} 
+                    disabled={isSending} 
+                    className={`w-full group py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2 ${
+                      userRole === 'admin' 
+                        ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-emerald-900/40' 
+                        : userRole === 'teacher' 
+                        ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-purple-900/40' 
+                        : 'bg-gradient-to-r from-amber-600 via-orange-600 to-amber-600 hover:from-amber-500 hover:to-orange-500 text-white shadow-amber-900/40'
+                    }`}
+                  >
+                    {isSending ? <Loader2 className="animate-spin" size={18} /> : <>{t.sendOtp || 'Continue'} <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" /></>}
+                  </button>
+
+                  <div className="relative py-1 flex items-center justify-center">
+                    <div className="h-px bg-white/10 w-full" />
+                    <span className="absolute bg-[#0f172a] px-4 text-[9px] font-black text-slate-500 uppercase tracking-widest rounded-full border border-white/10 py-1">
+                      {language === 'en' ? 'OR' : 'କିମ୍ବା'}
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={handleGoogleLogin}
+                    className="w-full py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-3 crystal-button-sapphire text-white shadow-xl hover:shadow-blue-500/30 active:scale-95 cursor-pointer group"
+                  >
+                    <div className="bg-white p-1 rounded-full flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                      <svg className="w-4 h-4" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                      </svg>
+                    </div>
+                    <span className="tracking-[0.15em]">{language === 'en' ? 'Continue with Google' : 'ଗୁଗଲ୍ ସହିତ ଆଗକୁ ବଢନ୍ତୁ'}</span>
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.div key="otp" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full space-y-6 text-center">
+                  <Sparkles className="text-amber-400 mx-auto animate-pulse" size={48} />
+                  <h2 className="text-white text-2xl font-black tracking-tight font-['Outfit']">Verify Security Code</h2>
+                  <p className="text-xs text-slate-400">Code dispatched to <span className="text-amber-400 font-bold">{phoneNumber}</span></p>
+                  <input 
+                    type="text" 
+                    maxLength={6} 
+                    value={otp} 
+                    onChange={(e) => setOtp(e.target.value)} 
+                    placeholder="••••••" 
+                    className="w-full py-4 px-6 bg-black/40 border border-amber-500/40 rounded-2xl text-center text-2xl font-black text-amber-400 tracking-widest outline-none focus:border-amber-400 focus:shadow-[0_0_20px_rgba(245,158,11,0.2)]" 
+                  />
+                  <button 
+                    onClick={verifyOtp} 
+                    disabled={isSending}
+                    className="w-full py-4 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-amber-900/40 active:scale-95 transition-all flex items-center justify-center gap-2"
+                  >
+                    {isSending ? <Loader2 className="animate-spin" size={18} /> : 'Verify Code'}
+                  </button>
+                  <button onClick={() => setAuthStep('login')} className="text-[10px] text-slate-500 font-bold flex items-center gap-1.5 mx-auto hover:text-slate-300 transition-colors">
+                    <ArrowLeft size={12} /> Change Phone Number
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+      </main>
+
+      {/* 4. FOOTER: Social Media & Glowing System Online Status */}
+      <footer className="w-full max-w-md flex flex-col items-center gap-3 z-20 pb-1">
+        {/* Social Media Links */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-4">
+          <a href={YOUTUBE_CHANNEL_URL} target={socialLinkTarget} rel={socialLinkRel} className="w-8 h-8 rounded-xl bg-white/5 hover:bg-red-500/10 border border-white/10 hover:border-red-500/30 flex items-center justify-center text-slate-400 hover:text-red-500 transition-all shadow-md active:scale-95">
+            <Youtube size={16} />
+          </a>
+          <a href={INSTAGRAM_PROFILE_URL} target={socialLinkTarget} rel={socialLinkRel} className="w-8 h-8 rounded-xl bg-white/5 hover:bg-pink-500/10 border border-white/10 hover:border-pink-500/30 flex items-center justify-center text-slate-400 hover:text-pink-500 transition-all shadow-md active:scale-95">
+            <Instagram size={16} />
+          </a>
+          <a href={FACEBOOK_PROFILE_URL} target={socialLinkTarget} rel={socialLinkRel} className="w-8 h-8 rounded-xl bg-white/5 hover:bg-blue-500/10 border border-white/10 hover:border-blue-500/30 flex items-center justify-center text-slate-400 hover:text-blue-500 transition-all shadow-md active:scale-95">
+            <Facebook size={16} />
+          </a>
+        </motion.div>
+
+        {/* Emerald Live Indicator */}
+        <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.15)] backdrop-blur-md">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
+          <span className="text-[9px] font-black tracking-[0.25em] text-emerald-400 uppercase font-['Outfit']">Utkal System Online</span>
         </div>
-      </div>
+      </footer>
+
     </div>
   );
 }

@@ -1139,6 +1139,10 @@ export default function App() {
                           userPhone === '+919337956168' || 
                           userPhone === '9337956168';
           
+          if (isAdmin) {
+            setIsAdminView(true);
+          }
+
           const isTestAccount = 
             (userEmail && ['gaynapd.ram@gmail.com', 'gyanaloka.panda@gmail.com', 'gyanalpanda@gmail.com'].includes(userEmail)) ||
             (userPhone && [
@@ -1149,10 +1153,14 @@ export default function App() {
               '+916370487877', '6370487877'
             ].includes(userPhone));
 
+          if (isAdmin || regDataRef.current.role === 'admin' || (userDocSnap.exists() && userDocSnap.data().role === 'admin')) {
+            setIsAdminView(true);
+          }
+
           const selectedClass = regDataRef.current.class;
           const selectedBoard = regDataRef.current.board;
 
-          if (!isAdmin && !isTestAccount && regDataRef.current.role !== 'teacher') {
+          if (!isAdmin && !isTestAccount && regDataRef.current.role !== 'teacher' && regDataRef.current.role !== 'admin') {
             const emailLockId = firebaseUser.email ? `email:${firebaseUser.email.toLowerCase()}` : null;
             let emailLock: any = null;
 
@@ -1184,7 +1192,7 @@ export default function App() {
             }
           }
 
-          const role = isAdmin ? 'admin' : (regDataRef.current.role === 'teacher' ? 'teacher' : (userDocSnap.exists() ? (userDocSnap.data().role || 'student') : 'student'));
+          const role = isAdmin ? 'admin' : (regDataRef.current.role === 'admin' ? 'admin' : (regDataRef.current.role === 'teacher' ? 'teacher' : (userDocSnap.exists() ? (userDocSnap.data().role || 'student') : 'student')));
           
           const userData: any = {
             id: firebaseUser.uid,
@@ -2204,6 +2212,15 @@ export default function App() {
     return <SundayLockout language={language} onAdminBypass={() => setSundayBypassed(true)} />;
   }
 
+  if (isAdminView) {
+    console.log("Rendering AdminDashboard for user:", user?.email, "role:", user?.role, "isAdminView:", isAdminView);
+    return (
+      <Suspense fallback={<ViewLoader fullHeight />}>
+        <AdminDashboard onExit={() => setIsAdminView(false)} />
+      </Suspense>
+    );
+  }
+
   if (!user) {
     const searchParams = new URLSearchParams(window.location.search);
     const previewKey = searchParams.get('preview') || searchParams.get('chapter');
@@ -2735,7 +2752,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
         </div>
 
         {/* Right Content - Login Form */}
-        <div className="flex-1 flex flex-col items-center justify-start pt-12 p-6 lg:p-12 relative z-10 overflow-y-auto">
+        <div className="flex-1 flex flex-col items-center justify-center p-0 relative z-10 overflow-hidden">
           {authStep === 'login' ? (
             <Suspense fallback={<ViewLoader />}>
               <LoginComponent language={language} translations={translations} setLanguage={setLanguage} setRegData={setRegData} />
@@ -2781,18 +2798,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
     );
   }
 
-  if (isAdminView && user?.role === 'admin') {
-    console.log("Rendering AdminDashboard for user:", user.email, "role:", user.role, "isAdminView:", isAdminView);
-    return (
-      <Suspense fallback={<ViewLoader fullHeight />}>
-        <AdminDashboard onExit={() => setIsAdminView(false)} />
-      </Suspense>
-    );
-  }
 
-  if (isAdminView) {
-    console.warn("isAdminView is true but user role is not admin:", user?.role);
-  }
 
   const isClassEnabled = true; // Restriction removed
 
