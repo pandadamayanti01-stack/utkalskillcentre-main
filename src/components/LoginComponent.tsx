@@ -450,6 +450,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
 
         {/* The Glass Inputs (Marble Style) */}
         <div className="w-full space-y-4">
+          <div id="recaptcha-container" ref={recaptchaDomRef} className="my-3 flex justify-center w-full overflow-hidden"></div>
           <AnimatePresence mode="wait">
             {authStep === 'login' ? (
               <motion.div 
@@ -574,8 +575,6 @@ export default function Login({ language, translations, setLanguage, setRegData 
                         className="glass-marble flex-1 py-4 px-6 rounded-[1.5rem] text-white text-xs font-black outline-none placeholder:text-white/20" 
                       />
                     </div>
-
-                    <div id="recaptcha-container" ref={recaptchaDomRef} className="my-3 flex justify-center w-full overflow-hidden"></div>
 
                     <button onClick={onSmsSend} disabled={isSending} className="w-full group relative py-4 rounded-[1.5rem] overflow-hidden transition-all active:scale-95 shadow-[0_20px_50px_rgba(179,77,31,0.3)]">
                       <div className="absolute inset-0 bg-gradient-to-r from-[#b34d1f] via-[#d97706] to-[#b34d1f] group-hover:scale-110 transition-transform duration-500" />
