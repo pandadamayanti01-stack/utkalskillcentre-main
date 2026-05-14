@@ -3436,7 +3436,8 @@ Sample tone for Class 6-10:
               download_url: '',
               driveFileId: '',
               driveUrl: '',
-              thumbnail_url: ''
+              thumbnail_url: '',
+              status: 'published'
             });
             setIsAddingTextbook(!isAddingTextbook);
           }}
@@ -3596,6 +3597,7 @@ Sample tone for Class 6-10:
                     download_url: normalizedDownloadUrl,
                     driveFileId: normalizedDriveFileId,
                     driveUrl: normalizedDriveUrl,
+                    status: newTextbook.status || 'published',
                   };
 
                   if (editingTextbookId) {

@@ -1502,9 +1502,7 @@ export default function App() {
       (err) => handleFirestoreError(err, OperationType.GET, 'daily_mcq_submissions')
     );
 
-    const textbooksQuery = user.role === 'admin'
-      ? collection(firestore, 'textbooks')
-      : query(collection(firestore, 'textbooks'), where('status', '==', 'published'), where('class', 'in', [user.class, user.class.replace('class', '')]));
+    const textbooksQuery = collection(firestore, 'textbooks');
 
     console.log("Debug: Textbook query for user:", user, "Class:", user.class);
     const unsubTextbooks = onSnapshot(
@@ -5669,6 +5667,7 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
   const filteredTextbooks = React.useMemo(() => {
     console.log("Debug: Filtering textbooks:", textbooks, "User:", user);
     const filtered = textbooks.filter((book: Textbook) => {
+      if (book.status === 'draft') return false;
       if (user?.role === 'teacher') {
         const matchesClass = teacherClassFilter === 'all' || book.class?.toLowerCase() === teacherClassFilter.toLowerCase() || book.class?.toLowerCase() === `class${teacherClassFilter}`;
         const matchesSubject = subjectFilter === 'all' || book.subject === subjectFilter;
