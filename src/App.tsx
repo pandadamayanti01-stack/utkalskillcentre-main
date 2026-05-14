@@ -1552,21 +1552,28 @@ export default function App() {
       query(collection(firestore, 'notifications'), orderBy('createdAt', 'desc'), limit(15)),
       (snapshot) => {
         const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-        
-        // Show popup for the latest notification if it's new
-        if (data.length > 0) {
-          const latest = data[0];
+
+        const filteredData = data.filter((n: any) => {
+          if (!n.audience || n.audience === 'all') return true;
+          if (user?.role === 'teacher') {
+            return n.audience === 'teachers';
+          }
+          if (n.audience === 'teachers') return false;
+          if (n.audience === 'students') return true;
+          if (n.audience === 'premium') return Boolean(isPremium);
+          if (n.audience === 'free') return !isPremium;
+          return true;
+        });
+
+        if (filteredData.length > 0) {
+          const latest = filteredData[0];
           if (lastNotifIdRef.current && lastNotifIdRef.current !== latest.id) {
             setNewNotification(latest);
-            // Auto-hide after 10 seconds
             setTimeout(() => setNewNotification(null), 10000);
           }
           lastNotifIdRef.current = latest.id;
         }
 
-        const filteredData = data.filter((n: any) => {
-          return true; // Keep existing filter logic
-        });
         setStudentNotifications(filteredData);
       },
       (err) => handleFirestoreError(err, OperationType.GET, 'notifications')

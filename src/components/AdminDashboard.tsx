@@ -3112,7 +3112,9 @@ Sample tone for Class 6-10:
                 onChange={(e) => setNotificationAudience(e.target.value)}
                 className="bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-amber-500/30 transition-all font-black text-[10px] uppercase tracking-widest cursor-pointer"
               >
-                <option value="all">Entire Student Body</option>
+                <option value="all">Everyone (Students & Teachers)</option>
+                <option value="students">All Students Only</option>
+                <option value="teachers">Educators / Teachers Only</option>
                 <option value="premium">Premium Scholars Only</option>
                 <option value="free">Standard Tier Only</option>
               </select>
@@ -3151,8 +3153,19 @@ Sample tone for Class 6-10:
             <div key={i} className="p-8 flex items-center justify-between hover:bg-white/5 transition-all group">
               <div className="flex-1">
                 <div className="text-md text-white font-medium leading-relaxed mb-2 italic">"{n.message}"</div>
-                <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest">
-                  {parseLogTimestamp(n.createdAt)?.toLocaleString() || 'Recently'}
+                <div className="flex items-center gap-3">
+                  <span className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md border ${
+                    n.audience === 'teachers' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
+                    n.audience === 'students' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
+                    n.audience === 'premium' ? 'bg-purple-500/10 text-purple-400 border-purple-500/20' :
+                    n.audience === 'free' ? 'bg-slate-500/10 text-slate-400 border-slate-500/20' :
+                    'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                  }`}>
+                    Target: {n.audience || 'all'}
+                  </span>
+                  <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">
+                    {parseLogTimestamp(n.createdAt)?.toLocaleString() || 'Recently'}
+                  </span>
                 </div>
               </div>
               <button
