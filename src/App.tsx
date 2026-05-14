@@ -3782,43 +3782,47 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
           </div>
         )}
 
-        <div>
-          <label className="block text-sm font-medium text-slate-400 mb-1">{translations[language].profile.parentPin}</label>
-          <input 
-            type="password"
-            maxLength={4}
-            placeholder="Set a 4-digit PIN for parent access"
-            value={user.parent_pin || ''}
-            onChange={async (e) => {
-              const val = e.target.value.replace(/\D/g, '');
-              if (val.length <= 4) {
-                await updateDoc(doc(firestore, 'users', user.id), {
-                  parent_pin: val
-                });
-              }
-            }}
-            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
-          />
-          <p className="text-[10px] text-slate-500 mt-1">{translations[language].profile.parentPinNote}</p>
-        </div>
-
-        <div className="pt-2">
-          <label className="flex items-center gap-3 cursor-pointer group">
-            <div className="relative inline-flex items-center">
+        {user.role !== 'teacher' && (
+          <>
+            <div>
+              <label className="block text-sm font-medium text-slate-400 mb-1">{translations[language].profile.parentPin}</label>
               <input 
-                type="checkbox" 
-                checked={parentShowLeaderboard}
-                onChange={(e) => setParentShowLeaderboard(e.target.checked)}
-                className="sr-only peer"
+                type="password"
+                maxLength={4}
+                placeholder="Set a 4-digit PIN for parent access"
+                value={user.parent_pin || ''}
+                onChange={async (e) => {
+                  const val = e.target.value.replace(/\D/g, '');
+                  if (val.length <= 4) {
+                    await updateDoc(doc(firestore, 'users', user.id), {
+                      parent_pin: val
+                    });
+                  }
+                }}
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
               />
-              <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+              <p className="text-[10px] text-slate-500 mt-1">{translations[language].profile.parentPinNote}</p>
             </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-medium text-white group-hover:text-emerald-400 transition-colors">{translations[language].profile.parentLeaderboard}</span>
-              <span className="text-[10px] text-slate-500">{translations[language].profile.parentLeaderboardNote}</span>
+
+            <div className="pt-2">
+              <label className="flex items-center gap-3 cursor-pointer group">
+                <div className="relative inline-flex items-center">
+                  <input 
+                    type="checkbox" 
+                    checked={parentShowLeaderboard}
+                    onChange={(e) => setParentShowLeaderboard(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium text-white group-hover:text-emerald-400 transition-colors">{translations[language].profile.parentLeaderboard}</span>
+                  <span className="text-[10px] text-slate-500">{translations[language].profile.parentLeaderboardNote}</span>
+                </div>
+              </label>
             </div>
-          </label>
-        </div>
+          </>
+        )}
         <div className="pt-6 border-t border-white/5">
           <button 
             onClick={() => setShowOfflineNotes(true)}
@@ -3836,21 +3840,23 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
             <Lucide.ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
           </button>
 
-          <button 
-            onClick={handleParentAccess}
-            className="w-full flex items-center justify-between p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/20 transition-all group"
-          >
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-emerald-500 text-white">
-                <Lucide.Settings size={20} />
+          {user.role !== 'teacher' && (
+            <button 
+              onClick={handleParentAccess}
+              className="w-full flex items-center justify-between p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/20 transition-all group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-xl bg-emerald-500 text-white">
+                  <Lucide.Settings size={20} />
+                </div>
+                <div className="text-left">
+                  <p className="font-bold">{translations[language].profile.parentDashboard}</p>
+                  <p className="text-[10px] opacity-70 uppercase tracking-wider">{translations[language].profile.parentDashboardTagline}</p>
+                </div>
               </div>
-              <div className="text-left">
-                <p className="font-bold">{translations[language].profile.parentDashboard}</p>
-                <p className="text-[10px] opacity-70 uppercase tracking-wider">{translations[language].profile.parentDashboardTagline}</p>
-              </div>
-            </div>
-            <Lucide.ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
-          </button>
+              <Lucide.ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            </button>
+          )}
 
           <button 
             onClick={() => setActiveTab('support')}
