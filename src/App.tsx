@@ -75,6 +75,7 @@ const TestSeriesPoster = lazy(() => import('./components/TestSeriesPoster'));
 const SyllabusTracker = lazy(() => import('./components/SyllabusTracker').then((module) => ({ default: module.SyllabusTracker })));
 const DigitalLibraryView = lazy(() => import('./components/DigitalLibraryView').then((module) => ({ default: module.DigitalLibraryView })));
 const DigitalLibraryLaunchPopup = lazy(() => import('./components/DigitalLibraryLaunchPopup'));
+const TeacherDashboard = lazy(() => import('./components/TeacherDashboard').then((module) => ({ default: module.TeacherDashboard })));
 
 function ViewLoader({ fullHeight = false }: { fullHeight?: boolean }) {
   return (
@@ -928,7 +929,8 @@ export default function App() {
     class: '' as string, 
     board: '', 
     subjects: [] as string[],
-    preferred_language: 'or' 
+    preferred_language: 'or',
+    role: 'student' as string
   });
   const regDataRef = useRef(regData);
   const setRegData = (data: any) => {
@@ -1150,7 +1152,7 @@ export default function App() {
           const selectedClass = regDataRef.current.class;
           const selectedBoard = regDataRef.current.board;
 
-          if (!isAdmin && !isTestAccount) {
+          if (!isAdmin && !isTestAccount && regDataRef.current.role !== 'teacher') {
             const emailLockId = firebaseUser.email ? `email:${firebaseUser.email.toLowerCase()}` : null;
             let emailLock: any = null;
 
@@ -1164,7 +1166,7 @@ export default function App() {
             if (userDocSnap.exists()) {
               const dbClass = userDocSnap.data().class;
               const dbBoard = userDocSnap.data().board;
-              if (selectedClass && selectedBoard && (dbClass !== selectedClass || dbBoard !== selectedBoard)) {
+              if (dbClass && dbBoard && selectedClass && selectedBoard && (dbClass !== selectedClass || dbBoard !== selectedBoard)) {
                 alert("Account already associated with another class/board. Please create a ticket or connect with admin on support.");
                 auth.signOut();
                 return;
@@ -1182,14 +1184,14 @@ export default function App() {
             }
           }
 
-          const role = isAdmin ? 'admin' : (userDocSnap.exists() ? (userDocSnap.data().role || 'student') : 'student');
+          const role = isAdmin ? 'admin' : (regDataRef.current.role === 'teacher' ? 'teacher' : (userDocSnap.exists() ? (userDocSnap.data().role || 'student') : 'student'));
           
           const userData: any = {
             id: firebaseUser.uid,
-            name: firebaseUser.displayName || (userDocSnap.exists() ? userDocSnap.data().name : regDataRef.current.name) || 'Student',
+            name: firebaseUser.displayName || (userDocSnap.exists() && userDocSnap.data().name !== 'Student' ? userDocSnap.data().name : regDataRef.current.name) || (role === 'teacher' ? 'Educator' : 'Student'),
             email: firebaseUser.email || (userDocSnap.exists() ? userDocSnap.data().email : regDataRef.current.email) || '',
-            class: (userDocSnap.exists() && userDocSnap.data().class) ? userDocSnap.data().class : (regDataRef.current.class || ''),
-            board: (userDocSnap.exists() && userDocSnap.data().board) ? userDocSnap.data().board : (regDataRef.current.board || ''),
+            class: (role === 'teacher') ? (regDataRef.current.class || '10') : ((userDocSnap.exists() && userDocSnap.data().class) ? userDocSnap.data().class : (regDataRef.current.class || '10')),
+            board: (role === 'teacher') ? (regDataRef.current.board || 'BSE Odisha') : ((userDocSnap.exists() && userDocSnap.data().board) ? userDocSnap.data().board : (regDataRef.current.board || 'BSE Odisha')),
             subjects: (userDocSnap.exists() && userDocSnap.data().subjects?.length > 0) ? userDocSnap.data().subjects : (regDataRef.current.subjects || []),
             preferred_language: (userDocSnap.exists() && userDocSnap.data().preferred_language) ? userDocSnap.data().preferred_language : (languageRef.current || 'or'),
             role: role,
@@ -2945,30 +2947,34 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
           <AnimatePresence mode="wait">
             {/* Your 10+ Tab components go here... */}
             {activeTab === 'dashboard' && (
-              <Dashboard
-                user={user}
-                leaderboard={leaderboard}
-                language={language}
-                isPremium={isPremium}
-                onUpgrade={() => setActiveTab('plans')}
-                chapters={chapters}
-                dailyChallenge={dailyChallenge}
-                hasDailyPractice={dailyMcqs.length > 0}
-                todayDailySubject={todayDailySubject}
-                tomorrowDailySubject={tomorrowDailySubject}
-                onOpenDailyPractice={() => setActiveTab('daily_mcqs')}
-                onShareDailyPractice={handleShareDailyPractice}
-                isRegistered={isRegisteredForTestSeries}
-                onRegistrationComplete={() => setIsRegisteredForTestSeries(true)}
-                onOpenTutor={() => {
-                  if (isPremium) {
-                    setOpenTutorInVoiceMode(Date.now());
-                    setActiveTab('study_buddy');
-                  } else {
-                    handleUpgradeClick();
-                  }
-                }}
-              />
+              user?.role === 'teacher' ? (
+                <TeacherDashboard user={user} language={language} chapters={chapters} />
+              ) : (
+                <Dashboard
+                  user={user}
+                  leaderboard={leaderboard}
+                  language={language}
+                  isPremium={isPremium}
+                  onUpgrade={() => setActiveTab('plans')}
+                  chapters={chapters}
+                  dailyChallenge={dailyChallenge}
+                  hasDailyPractice={dailyMcqs.length > 0}
+                  todayDailySubject={todayDailySubject}
+                  tomorrowDailySubject={tomorrowDailySubject}
+                  onOpenDailyPractice={() => setActiveTab('daily_mcqs')}
+                  onShareDailyPractice={handleShareDailyPractice}
+                  isRegistered={isRegisteredForTestSeries}
+                  onRegistrationComplete={() => setIsRegisteredForTestSeries(true)}
+                  onOpenTutor={() => {
+                    if (isPremium) {
+                      setOpenTutorInVoiceMode(Date.now());
+                      setActiveTab('study_buddy');
+                    } else {
+                      handleUpgradeClick();
+                    }
+                  }}
+                />
+              )
             )}
             {activeTab === 'notifications' && <NotificationsView notifications={studentNotifications} language={language} readNotifIds={readNotifIds} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'digital_library' && (
@@ -3030,11 +3036,10 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             setSidebarOpen={setSidebarOpen}
             isSidebarOpen={isSidebarOpen}
             unreadNotificationsCount={studentNotifications.filter(n => n.id && !readNotifIds.includes(n.id)).length}
+            userRole={user.role}
           />
         )}
       </main>
-
-      <div id="recaptcha-container"></div>
     </div>
 
     {/* New Notification Popup */}

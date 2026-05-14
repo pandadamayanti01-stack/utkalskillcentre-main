@@ -104,37 +104,37 @@ export function TestSeriesRegistrationForm({ user, language, onClose }: TestSeri
   }[language];
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
       <motion.div 
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="w-full max-w-xl glass-card neon-border rounded-[2.5rem] overflow-hidden relative"
+        className="w-full max-w-md glass-card neon-border rounded-3xl overflow-hidden relative my-4"
       >
         {/* Decorative elements */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-[100px] -mr-32 -mt-32 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-[100px] -ml-32 -mb-32 pointer-events-none" />
 
-        <button onClick={onClose} className="absolute top-6 right-6 p-2 rounded-full bg-white/5 hover:bg-white/10 text-white/50 hover:text-white transition-all z-20">
-          <X size={20} />
+        <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/10 text-white/50 hover:text-white transition-all z-20">
+          <X size={18} />
         </button>
 
-        <div className="p-8 md:p-10 relative z-10">
+        <div className="p-6 sm:p-8 relative z-10 max-h-[85vh] overflow-y-auto">
           <AnimatePresence mode="wait">
             {isLoading ? (
-              <motion.div key="loading" className="py-20 flex flex-col items-center gap-4">
-                <Loader2 className="animate-spin text-amber-500" size={40} />
+              <motion.div key="loading" className="py-12 flex flex-col items-center gap-4">
+                <Loader2 className="animate-spin text-amber-500" size={32} />
                 <p className="text-white/40 text-[10px] font-black uppercase tracking-widest">Checking Status...</p>
               </motion.div>
             ) : alreadyRegistered || isSuccess ? (
-              <motion.div key="success" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="py-12 text-center space-y-6">
-                <div className="w-24 h-24 rounded-full bg-emerald-500/20 border-2 border-emerald-500 flex items-center justify-center mx-auto shadow-[0_0_50px_rgba(16,185,129,0.3)]">
-                  <CheckCircle2 size={48} className="text-emerald-500" />
+              <motion.div key="success" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="py-8 text-center space-y-4">
+                <div className="w-20 h-20 rounded-full bg-emerald-500/20 border-2 border-emerald-500 flex items-center justify-center mx-auto shadow-[0_0_30px_rgba(16,185,129,0.3)]">
+                  <CheckCircle2 size={40} className="text-emerald-500" />
                 </div>
                 <div className="space-y-2">
-                  <h2 className="text-3xl font-black text-white tracking-tight">
+                  <h2 className="text-2xl font-black text-white tracking-tight">
                     {alreadyRegistered ? (language === 'en' ? 'Already Registered' : 'ପୂର୍ବରୁ ପଞ୍ଜିକୃତ') : t.success}
                   </h2>
-                  <p className="text-slate-400 text-sm font-medium max-w-xs mx-auto leading-relaxed">
+                  <p className="text-slate-400 text-xs font-medium max-w-xs mx-auto leading-relaxed">
                     {alreadyRegistered 
                       ? (language === 'en' ? 'You have already registered for this test series. Stay tuned for updates!' : 'ଆପଣ ଏହି ଟେଷ୍ଟ ସିରିଜ୍ ପାଇଁ ପୂର୍ବରୁ ପଞ୍ଜିକରଣ କରିଛନ୍ତି | ଅପଡେଟ୍ ପାଇଁ ଅପେକ୍ଷା କରନ୍ତୁ |') 
                       : t.successSub}
@@ -142,69 +142,69 @@ export function TestSeriesRegistrationForm({ user, language, onClose }: TestSeri
                 </div>
               </motion.div>
             ) : (
-              <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-8">
-                <div className="space-y-2">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-black uppercase tracking-widest">
-                    <Trophy size={12} />
+              <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-6">
+                <div className="space-y-1.5">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[9px] font-black uppercase tracking-widest">
+                    <Trophy size={10} />
                     {t.prizes}
                   </div>
-                  <h2 className="text-3xl font-black text-white tracking-tight leading-none">{t.title}</h2>
-                  <p className="text-slate-400 text-sm font-medium">{t.subtitle}</p>
+                  <h2 className="text-2xl font-black text-white tracking-tight leading-tight">{t.title}</h2>
+                  <p className="text-slate-400 text-xs font-medium">{t.subtitle}</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">{t.name}</label>
+                <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="space-y-1 sm:col-span-2">
+                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1">{t.name}</label>
                     <div className="relative group">
-                      <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-amber-500 transition-colors" size={18} />
+                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-amber-500 transition-colors" size={16} />
                       <input 
                         required
                         type="text" 
                         value={formData.name}
                         onChange={e => setFormData({...formData, name: e.target.value})}
-                        className="w-full bg-slate-900/50 border border-white/5 rounded-2xl py-4 pl-12 pr-6 text-white text-sm font-bold focus:border-amber-500/50 outline-none transition-all"
+                        className="w-full bg-slate-900/50 border border-white/5 rounded-xl py-3 pl-10 pr-4 text-white text-xs font-bold focus:border-amber-500/50 outline-none transition-all"
                         placeholder="e.g. Rahul Kumar"
                       />
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">{t.phone}</label>
+                  <div className="space-y-1 sm:col-span-2">
+                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1">{t.phone}</label>
                     <div className="relative group">
-                      <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-amber-500 transition-colors" size={18} />
+                      <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-amber-500 transition-colors" size={16} />
                       <input 
                         required
                         type="tel" 
                         value={formData.phone}
                         onChange={e => setFormData({...formData, phone: e.target.value})}
-                        className="w-full bg-slate-900/50 border border-white/5 rounded-2xl py-4 pl-12 pr-6 text-white text-sm font-bold focus:border-amber-500/50 outline-none transition-all"
+                        className="w-full bg-slate-900/50 border border-white/5 rounded-xl py-3 pl-10 pr-4 text-white text-xs font-bold focus:border-amber-500/50 outline-none transition-all"
                         placeholder="+91 XXXXX XXXXX"
                       />
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">{t.class}</label>
+                  <div className="space-y-1">
+                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1">{t.class}</label>
                     <div className="relative group">
-                      <GraduationCap className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 transition-colors" size={18} />
+                      <GraduationCap className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 transition-colors" size={16} />
                       <input 
                         readOnly
                         type="text" 
                         value={language === 'en' ? `Class ${formData.class}` : `ଶ୍ରେଣୀ ${formData.class}`}
-                        className="w-full bg-slate-900/30 border border-white/5 rounded-2xl py-4 pl-12 pr-6 text-white/50 text-sm font-bold cursor-not-allowed outline-none"
+                        className="w-full bg-slate-900/30 border border-white/5 rounded-xl py-3 pl-10 pr-4 text-white/50 text-xs font-bold cursor-not-allowed outline-none"
                       />
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">{t.district}</label>
+                  <div className="space-y-1">
+                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1">{t.district}</label>
                     <div className="relative group">
-                      <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-amber-500 transition-colors" size={18} />
+                      <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-amber-500 transition-colors" size={16} />
                       <select 
                         required
                         value={formData.district}
                         onChange={e => setFormData({...formData, district: e.target.value})}
-                        className="w-full bg-slate-900/50 border border-white/5 rounded-2xl py-4 pl-12 pr-6 text-white text-sm font-bold focus:border-amber-500/50 outline-none transition-all appearance-none"
+                        className="w-full bg-slate-900/50 border border-white/5 rounded-xl py-3 pl-10 pr-4 text-white text-xs font-bold focus:border-amber-500/50 outline-none transition-all appearance-none"
                       >
                         <option value="" disabled>{language === 'en' ? 'Select District' : 'ଜିଲ୍ଲା ଚୟନ କରନ୍ତୁ'}</option>
                         {districts.map(d => <option key={d} value={d} className="bg-slate-900">{d}</option>)}
@@ -212,16 +212,16 @@ export function TestSeriesRegistrationForm({ user, language, onClose }: TestSeri
                     </div>
                   </div>
 
-                  <div className="md:col-span-2 space-y-2">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">{t.school}</label>
+                  <div className="sm:col-span-2 space-y-1">
+                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1">{t.school}</label>
                     <div className="relative group">
-                      <School className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-amber-500 transition-colors" size={18} />
+                      <School className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-amber-500 transition-colors" size={16} />
                       <input 
                         required
                         type="text" 
                         value={formData.school}
                         onChange={e => setFormData({...formData, school: e.target.value})}
-                        className="w-full bg-slate-900/50 border border-white/5 rounded-2xl py-4 pl-12 pr-6 text-white text-sm font-bold focus:border-amber-500/50 outline-none transition-all"
+                        className="w-full bg-slate-900/50 border border-white/5 rounded-xl py-3 pl-10 pr-4 text-white text-xs font-bold focus:border-amber-500/50 outline-none transition-all"
                         placeholder="e.g. Govt. High School, Bhubaneswar"
                       />
                     </div>
@@ -230,11 +230,11 @@ export function TestSeriesRegistrationForm({ user, language, onClose }: TestSeri
                   <button 
                     type="submit" 
                     disabled={isSubmitting}
-                    className="md:col-span-2 mt-4 group relative py-4 rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(245,158,11,0.2)]"
+                    className="sm:col-span-2 mt-2 group relative py-3 rounded-xl overflow-hidden shadow-[0_10px_30px_rgba(245,158,11,0.2)]"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-amber-600 via-orange-500 to-amber-600 group-hover:scale-110 transition-transform duration-500" />
-                    <span className="relative z-10 text-white font-black text-sm tracking-widest flex items-center justify-center gap-3 uppercase">
-                      {isSubmitting ? <Loader2 className="animate-spin" /> : <>{t.submit} <Sparkles size={18} /></>}
+                    <span className="relative z-10 text-white font-black text-xs tracking-widest flex items-center justify-center gap-2 uppercase">
+                      {isSubmitting ? <Loader2 className="animate-spin" size={16} /> : <>{t.submit} <Sparkles size={16} /></>}
                     </span>
                   </button>
                 </form>

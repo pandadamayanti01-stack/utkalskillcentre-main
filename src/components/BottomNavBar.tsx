@@ -10,6 +10,7 @@ interface BottomNavBarProps {
   setSidebarOpen: (val: boolean) => void;
   isSidebarOpen: boolean;
   unreadNotificationsCount?: number;
+  userRole?: string;
 }
 
 export const BottomNavBar: React.FC<BottomNavBarProps> = ({
@@ -18,12 +19,13 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
   setActiveTab,
   setSidebarOpen,
   isSidebarOpen,
-  unreadNotificationsCount = 0
+  unreadNotificationsCount = 0,
+  userRole
 }) => {
   const t = translations[language];
 
   const currentDay = new Date().getDate();
-  const isTestWindowActive = currentDay >= 1 && currentDay <= 10;
+  const isTestWindowActive = currentDay >= 1 && currentDay <= 10 && userRole !== 'teacher';
 
   const navItems: {
     id: string;
@@ -47,11 +49,18 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
       icon: Lucide.Bot,
       label: language === 'en' ? 'Study Buddy' : 'AI ବନ୍ଧୁ'
     },
-    {
-      id: 'daily_mcqs',
-      icon: Lucide.ListChecks,
-      label: language === 'en' ? 'Daily MCQ' : 'ଦୈନିକ MCQ'
-    },
+    userRole === 'teacher'
+      ? {
+          id: 'notifications',
+          icon: Lucide.Bell,
+          label: language === 'en' ? 'Alerts' : 'ସୂଚନା',
+          badge: unreadNotificationsCount > 0 ? unreadNotificationsCount : undefined
+        }
+      : {
+          id: 'daily_mcqs',
+          icon: Lucide.ListChecks,
+          label: language === 'en' ? 'Daily MCQ' : 'ଦୈନିକ MCQ'
+        },
     {
       id: 'digital_library',
       icon: Lucide.Library,

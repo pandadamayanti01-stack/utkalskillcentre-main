@@ -35,12 +35,13 @@ const SOCIAL_ORIGINS = [
   new URL(FACEBOOK_PROFILE_URL).origin,
 ];
 
-export default function Login({ language, translations, setLanguage, setRegData }: { language: 'en' | 'or', translations: any, setLanguage: (lang: 'en' | 'or') => void, setRegData: (data: any) => void }) {
+export default function Login({ language, translations, setLanguage, setRegData }: { language: 'en' | 'or', translations: any, setLanguage: (lang: 'en' | 'or') => void, setRegData: (data: any) => void }): React.ReactElement {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [verificationId, setVerificationId] = useState<any>(null);
   const [otp, setOtp] = useState('');
   const [selectedClass, setSelectedClass] = useState('');
   const [selectedBoard, setSelectedBoard] = useState('');
+  const [userRole, setUserRole] = useState<'student' | 'teacher'>('student');
   const [isSending, setIsSending] = useState(false);
   const [authStep, setAuthStep] = useState<'login' | 'otp'>('login');
   const [isAdminLogin, setIsAdminLogin] = useState(false);
@@ -52,6 +53,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
 
   const recaptchaVerifier = useRef<any>(null);
+  const recaptchaDomRef = useRef<HTMLDivElement>(null);
   const phoneInputRef = useRef<HTMLInputElement>(null);
   const t = translations[language];
   const isStandaloneMode = typeof window !== 'undefined' && (window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true);
@@ -117,7 +119,11 @@ export default function Login({ language, translations, setLanguage, setRegData 
   }, []);
 
   const syncSelectedAcademicInfo = () => {
-    setRegData({ class: selectedClass, board: selectedBoard });
+    setRegData({ 
+      class: userRole === 'teacher' && !selectedClass ? '10' : selectedClass, 
+      board: userRole === 'teacher' && !selectedBoard ? 'BSE Odisha' : selectedBoard,
+      role: userRole 
+    });
   };
 
   const handleInstallClick = async () => {
@@ -141,7 +147,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
   const getEnteredPhoneNumber = () => phoneInputRef.current?.value?.trim() || phoneNumber;
 
   const handleGoogleLogin = async () => {
-    if (!isAdminLogin && (!selectedClass || !selectedBoard)) {
+    if (!isAdminLogin && userRole === 'student' && (!selectedClass || !selectedBoard)) {
       alert(translations[language].requiredFieldsError);
       return;
     }
@@ -183,6 +189,8 @@ export default function Login({ language, translations, setLanguage, setRegData 
         return 'Phone sign-in is disabled. Enable Phone provider in Firebase Authentication.';
       case 'auth/unauthorized-domain':
         return 'This domain is not authorized in Firebase Authentication. Add your Vercel/Cloud Run domain in Authorized Domains.';
+      case 'auth/invalid-app-credential':
+        return 'Firebase app verification failed. Add your domain to Authorized Domains in Firebase Console Authentication settings.';
       case 'auth/billing-not-enabled':
         return 'Real SMS requires Firebase Blaze plan. For testing, add a phone test number in Firebase Auth and use its test OTP.';
       case 'auth/captcha-check-failed':
@@ -198,7 +206,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
     const enteredPhoneNumber = getEnteredPhoneNumber();
 
     if (!enteredPhoneNumber || enteredPhoneNumber.length < 10) return alert("Please enter valid phone");
-    if (!isAdminLogin && (!selectedClass || !selectedBoard)) return alert(translations[language].requiredFieldsError);
+    if (!isAdminLogin && userRole === 'student' && (!selectedClass || !selectedBoard)) return alert(translations[language].requiredFieldsError);
 
     if (!isAdminLogin) {
       syncSelectedAcademicInfo();
@@ -207,14 +215,17 @@ export default function Login({ language, translations, setLanguage, setRegData 
     setPhoneNumber(enteredPhoneNumber);
 
     setIsSending(true);
-    if (!recaptchaVerifier.current) {
-      recaptchaVerifier.current = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
+    if (!recaptchaVerifier.current && recaptchaDomRef.current) {
+      recaptchaVerifier.current = new RecaptchaVerifier(auth, recaptchaDomRef.current, { 
+        'size': 'normal',
+        'callback': (_response: any) => { /* reCAPTCHA solved */ }
+      });
     }
 
     try {
       const formattedNumber = normalizePhoneNumber(enteredPhoneNumber);
 
-      if (!isAdminLogin) {
+      if (!isAdminLogin && userRole === 'student') {
         try {
           const lockDoc = await getDoc(doc(db, 'user_locks', formattedNumber));
           if (lockDoc.exists()) {
@@ -231,7 +242,6 @@ export default function Login({ language, translations, setLanguage, setRegData 
             }
           }
         } catch (lockError: any) {
-          // user_locks may be protected before auth; continue OTP and enforce class/board after login.
           if (lockError?.code !== 'permission-denied' && lockError?.code !== 'failed-precondition') {
             console.warn('Lock check skipped due to read error:', lockError);
           }
@@ -376,7 +386,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
           <p className="text-[#ffd700] text-[9px] font-black tracking-[0.6em] uppercase opacity-70 mt-1 font-['Outfit']">Skill Centre</p>
         </div>
 
-        {/* WELCOME MESSAGE - RESTORED */}
+        {/* WELCOME MESSAGE */}
         <div className="w-full text-center">
           <AnimatePresence mode="wait">
             <motion.div key={language} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
@@ -404,6 +414,32 @@ export default function Login({ language, translations, setLanguage, setRegData 
           </AnimatePresence>
         </div>
 
+        {/* ROLE SELECTOR TABS */}
+        <div className="w-full grid grid-cols-2 gap-2 bg-white/5 p-1 rounded-2xl border border-white/10">
+          <button
+            type="button"
+            onClick={() => setUserRole('student')}
+            className={`py-3 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
+              userRole === 'student' 
+                ? 'bg-gradient-to-r from-[#b34d1f] to-[#d97706] text-white shadow-lg shadow-[#b34d1f]/30' 
+                : 'text-white/40 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            👨‍🎓 {language === 'en' ? 'Student' : 'ଛାତ୍ର'}
+          </button>
+          <button
+            type="button"
+            onClick={() => setUserRole('teacher')}
+            className={`py-3 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
+              userRole === 'teacher' 
+                ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-900/30' 
+                : 'text-white/40 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            👨‍🏫 {language === 'en' ? 'Teacher' : 'ଶିକ୍ଷକ'}
+          </button>
+        </div>
+
         {/* The Glass Inputs (Marble Style) */}
         <div className="w-full space-y-4">
           <AnimatePresence mode="wait">
@@ -416,47 +452,51 @@ export default function Login({ language, translations, setLanguage, setRegData 
               >
                 {!isAdminLogin ? (
                   <>
-                    <div className="space-y-1">
-                      <p className="text-[9px] font-black text-[#ffd700]/60 uppercase tracking-[0.2em] ml-4 mb-1">
-                        {language === 'en' ? 'Step 1: Select Class' : 'ପର୍ଯ୍ୟାୟ ୧: ଶ୍ରେଣୀ ବାଛନ୍ତୁ'}
-                      </p>
-                      <motion.div whileTap={{ scale: 0.98 }} className="relative group">
-                        <div className="absolute left-6 top-1/2 -translate-y-1/2 text-[#ffd700]/40 group-focus-within:text-[#ffd700] transition-colors">
-                          <BookOpen size={16} />
+                    {userRole === 'student' && (
+                      <>
+                        <div className="space-y-1">
+                          <p className="text-[9px] font-black text-[#ffd700]/60 uppercase tracking-[0.2em] ml-4 mb-1">
+                            {language === 'en' ? 'Step 1: Select Class' : 'ପର୍ଯ୍ୟାୟ ୧: ଶ୍ରେଣୀ ବାଛନ୍ତୁ'}
+                          </p>
+                          <motion.div whileTap={{ scale: 0.98 }} className="relative group">
+                            <div className="absolute left-6 top-1/2 -translate-y-1/2 text-[#ffd700]/40 group-focus-within:text-[#ffd700] transition-colors">
+                              <BookOpen size={16} />
+                            </div>
+                            <select 
+                              value={selectedClass} 
+                              onChange={(e) => setSelectedClass(e.target.value)}
+                              className="glass-marble w-full py-4 pl-14 pr-6 rounded-[1.5rem] text-white text-xs font-bold outline-none appearance-none"
+                            >
+                              <option className="bg-[#050a0b]">{t.selectClass} *</option>
+                              {Object.entries(t.classes).map(([k,v]) => <option key={k} value={k} className="bg-[#050a0b]">{v as string}</option>)}
+                            </select>
+                          </motion.div>
                         </div>
-                        <select 
-                          value={selectedClass} 
-                          onChange={(e) => setSelectedClass(e.target.value)}
-                          className="glass-marble w-full py-4 pl-14 pr-6 rounded-[1.5rem] text-white text-xs font-bold outline-none appearance-none"
-                        >
-                          <option className="bg-[#050a0b]">{t.selectClass} *</option>
-                          {Object.entries(t.classes).map(([k,v]) => <option key={k} value={k} className="bg-[#050a0b]">{v as string}</option>)}
-                        </select>
-                      </motion.div>
-                    </div>
+
+                        <div className="space-y-1">
+                          <p className="text-[9px] font-black text-[#ffd700]/60 uppercase tracking-[0.2em] ml-4 mb-1">
+                            {language === 'en' ? 'Step 2: Select Board' : 'ପର୍ଯ୍ୟାୟ ୨: ବୋର୍ଡ ବାଛନ୍ତୁ'}
+                          </p>
+                          <motion.div whileTap={{ scale: 0.98 }} className="relative group">
+                            <div className="absolute left-6 top-1/2 -translate-y-1/2 text-[#ffd700]/40 group-focus-within:text-[#ffd700] transition-colors">
+                              <Globe size={16} />
+                            </div>
+                            <select 
+                              value={selectedBoard} 
+                              onChange={(e) => setSelectedBoard(e.target.value)}
+                              className="glass-marble w-full py-4 pl-14 pr-6 rounded-[1.5rem] text-white text-xs font-bold outline-none appearance-none"
+                            >
+                              <option className="bg-[#050a0b]">{t.selectBoard} *</option>
+                              {t.boards && Object.entries(t.boards).map(([k,v]) => <option key={k} value={k} className="bg-[#050a0b]">{v as string}</option>)}
+                            </select>
+                          </motion.div>
+                        </div>
+                      </>
+                    )}
 
                     <div className="space-y-1">
                       <p className="text-[9px] font-black text-[#ffd700]/60 uppercase tracking-[0.2em] ml-4 mb-1">
-                        {language === 'en' ? 'Step 2: Select Board' : 'ପର୍ଯ୍ୟାୟ ୨: ବୋର୍ଡ ବାଛନ୍ତୁ'}
-                      </p>
-                      <motion.div whileTap={{ scale: 0.98 }} className="relative group">
-                        <div className="absolute left-6 top-1/2 -translate-y-1/2 text-[#ffd700]/40 group-focus-within:text-[#ffd700] transition-colors">
-                          <Globe size={16} />
-                        </div>
-                        <select 
-                          value={selectedBoard} 
-                          onChange={(e) => setSelectedBoard(e.target.value)}
-                          className="glass-marble w-full py-4 pl-14 pr-6 rounded-[1.5rem] text-white text-xs font-bold outline-none appearance-none"
-                        >
-                          <option className="bg-[#050a0b]">{t.selectBoard} *</option>
-                          {t.boards && Object.entries(t.boards).map(([k,v]) => <option key={k} value={k} className="bg-[#050a0b]">{v as string}</option>)}
-                        </select>
-                      </motion.div>
-                    </div>
-
-                    <div className="space-y-1">
-                      <p className="text-[9px] font-black text-[#ffd700]/60 uppercase tracking-[0.2em] ml-4 mb-1">
-                        {language === 'en' ? 'Step 3: Mobile Number' : 'ପର୍ଯ୍ୟାୟ ୩: ମୋବାଇଲ୍ ନମ୍ବର'}
+                        {userRole === 'student' ? (language === 'en' ? 'Step 3: Mobile Number' : 'ପର୍ଯ୍ୟାୟ ୩: ମୋବାଇଲ୍ ନମ୍ବର') : (language === 'en' ? 'Enter Mobile Number' : 'ମୋବାଇଲ୍ ନମ୍ବର ଦିଅନ୍ତୁ')}
                       </p>
                       <div className="flex gap-3">
                         <div className="glass-marble px-5 py-4 rounded-[1.5rem] text-[#ffd700] text-xs font-black flex items-center gap-2">
@@ -475,7 +515,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
                       </div>
                     </div>
 
-                    <button onClick={onSmsSend} disabled={isSending} className="w-full group relative py-4 rounded-[1.5rem] overflow-hidden transition-all active:scale-95 crystal-button-gold">
+                    <button onClick={onSmsSend} disabled={isSending} className={`w-full group relative py-4 rounded-[1.5rem] overflow-hidden transition-all active:scale-95 ${userRole === 'teacher' ? 'bg-purple-600 hover:bg-purple-500 shadow-lg shadow-purple-900/30' : 'crystal-button-gold'}`}>
                       <span className="relative z-10 text-white font-black text-xs tracking-[0.2em] flex items-center justify-center gap-2 uppercase">
                         {isSending ? <Loader2 className="animate-spin" /> : <>{t.sendOtp || 'Continue'} <ChevronRight size={16} /></>}
                       </span>
@@ -490,10 +530,10 @@ export default function Login({ language, translations, setLanguage, setRegData 
 
                     <button
                       onClick={handleGoogleLogin}
-                      disabled={!selectedClass || !selectedBoard}
-                      className={`w-full group relative py-4 rounded-[1.5rem] overflow-hidden transition-all active:scale-95 ${!selectedClass || !selectedBoard ? 'bg-white/5 border border-white/10 cursor-not-allowed' : 'crystal-button-sapphire'}`}
+                      disabled={userRole === 'student' && (!selectedClass || !selectedBoard)}
+                      className={`w-full group relative py-4 rounded-[1.5rem] overflow-hidden transition-all active:scale-95 ${userRole === 'student' && (!selectedClass || !selectedBoard) ? 'bg-white/5 border border-white/10 cursor-not-allowed' : 'crystal-button-sapphire'}`}
                     >
-                      <span className={`relative z-10 font-black text-xs tracking-[0.2em] flex items-center justify-center gap-2 uppercase ${!selectedClass || !selectedBoard ? 'text-white/20' : 'text-white'}`}>
+                      <span className={`relative z-10 font-black text-xs tracking-[0.2em] flex items-center justify-center gap-2 uppercase ${userRole === 'student' && (!selectedClass || !selectedBoard) ? 'text-white/20' : 'text-white'}`}>
                         <svg className="w-4 h-4" viewBox="0 0 24 24">
                           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                           <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -526,6 +566,9 @@ export default function Login({ language, translations, setLanguage, setRegData 
                         className="glass-marble flex-1 py-4 px-6 rounded-[1.5rem] text-white text-xs font-black outline-none placeholder:text-white/20" 
                       />
                     </div>
+
+                    <div id="recaptcha-container" ref={recaptchaDomRef} className="my-3 flex justify-center w-full overflow-hidden"></div>
+
                     <button onClick={onSmsSend} disabled={isSending} className="w-full group relative py-4 rounded-[1.5rem] overflow-hidden transition-all active:scale-95 shadow-[0_20px_50px_rgba(179,77,31,0.3)]">
                       <div className="absolute inset-0 bg-gradient-to-r from-[#b34d1f] via-[#d97706] to-[#b34d1f] group-hover:scale-110 transition-transform duration-500" />
                       <span className="relative z-10 text-white font-black text-xs tracking-[0.2em] flex items-center justify-center gap-2 uppercase">
@@ -563,9 +606,6 @@ export default function Login({ language, translations, setLanguage, setRegData 
           <p className="text-[7px] font-black uppercase tracking-[0.6em] text-[#ffd700]">Pride Association of Bigsan Group</p>
         </div>
       </div>
-
-      {/* Recaptcha container hidden */}
-      <div id="recaptcha-container"></div>
     </div>
   );
 }

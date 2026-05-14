@@ -3818,10 +3818,16 @@ Sample tone for Class 6-10:
                           Grant 1 Month
                         </button>
                         <button
-                          onClick={() => handleResetStudent(student.id)}
-                          className="text-red-400 hover:text-red-300 font-medium text-sm transition-colors"
+                          onClick={() => handleResetStudent(student)}
+                          className="text-amber-400 hover:text-amber-300 font-medium text-sm transition-colors"
                         >
                           Reset Data
+                        </button>
+                        <button
+                          onClick={() => handleWipeStudent(student)}
+                          className="text-red-400 hover:text-red-300 font-medium text-sm transition-colors"
+                        >
+                          Wipe Account
                         </button>
                       </div>
                     </td>
@@ -3879,24 +3885,56 @@ Sample tone for Class 6-10:
     }
   }
 
-  async function handleResetStudent(studentId: string) {
-    if (!confirm("Are you sure you want to reset this student's data? This cannot be undone.")) return;
+  async function handleResetStudent(student: any) {
+    if (!confirm("Are you sure you want to reset this student's data and unlock their account? This cannot be undone.")) return;
     try {
       setLoading(true);
-      // Reset student data
-      await updateDoc(doc(firestore, 'users', studentId), {
+      // Reset student data and clear class/board bindings
+      await updateDoc(doc(firestore, 'users', student.id), {
         points: 0,
         streak: 0,
+        class: '',
+        board: '',
         stats: {
           accuracy: 0,
           league: 'Bronze',
           badges: []
         }
       });
-      showNotification("Student data reset successfully!");
+
+      if (student.phoneNumber) {
+        await deleteDoc(doc(firestore, 'user_locks', student.phoneNumber)).catch(() => {});
+      }
+      if (student.email) {
+        await deleteDoc(doc(firestore, 'user_locks', `email:${student.email.toLowerCase()}`)).catch(() => {});
+      }
+
+      showNotification("Student data reset and account fully unlocked!");
     } catch (err: any) {
       console.error("Reset Error:", err);
       showNotification("Failed to reset student: " + err.message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleWipeStudent(student: any) {
+    if (!confirm("CRITICAL: Are you sure you want to COMPLETELY WIPE this account from Firestore? They will start as a 100% brand new account.")) return;
+    try {
+      setLoading(true);
+      await deleteDoc(doc(firestore, 'users', student.id));
+
+      if (student.phoneNumber) {
+        await deleteDoc(doc(firestore, 'user_locks', student.phoneNumber)).catch(() => {});
+      }
+      if (student.email) {
+        await deleteDoc(doc(firestore, 'user_locks', `email:${student.email.toLowerCase()}`)).catch(() => {});
+      }
+
+      showNotification("Account completely wiped and ready for fresh testing!");
+    } catch (err: any) {
+      console.error("Wipe Error:", err);
+      showNotification("Failed to wipe account: " + err.message, 'error');
     } finally {
       setLoading(false);
     }

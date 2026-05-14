@@ -33,9 +33,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const t = translations[language];
 
-  const menuItems = [
+  const allMenuItems = [
     { id: 'profile', icon: Lucide.User, label: 'Profile' },
-    { id: 'dashboard', icon: Lucide.LayoutDashboard, label: t.dashboard },
+    { id: 'dashboard', icon: Lucide.LayoutDashboard, label: user?.role === 'teacher' ? (language === 'en' ? 'Educator Studio' : 'ଶିକ୍ଷକ ଷ୍ଟୁଡିଓ') : t.dashboard },
     { id: 'notifications', icon: Lucide.Bell, label: language === 'en' ? 'Notifications' : 'ବିଜ୍ଞପ୍ତି' },
     { id: 'study_buddy', icon: Lucide.Bot, label: t.studyBuddy || 'Study Buddy' },
     { id: 'gundulu', icon: Lucide.Sparkles, label: language === 'en' ? '🎤 Gundulu Voice' : '🎤 ଗୁଣ୍ଡୁଲୁ ଭଏସ' },
@@ -50,6 +50,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'plans', icon: Lucide.CreditCard, label: language === 'en' ? 'Subscription' : 'ସବସ୍କ୍ରିପସନ୍' },
     { id: 'support', icon: Lucide.HelpCircle, label: t.support.title },
   ];
+
+  const teacherExcludedIds = ['store', 'leaderboard', 'daily_mcqs', 'syllabus_tracker', 'monthly_tests', 'courses', 'plans'];
+  const menuItems = user?.role === 'teacher' 
+    ? allMenuItems.filter(item => !teacherExcludedIds.includes(item.id))
+    : allMenuItems;
 
 
 
@@ -124,12 +129,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="mt-auto pt-6 border-t border-white/5 space-y-4">
             <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/5">
               <div className="w-10 h-10 rounded-xl bg-[#b34d1f]/20 flex items-center justify-center text-[#ffd700] font-black border border-[#b34d1f]/30">
-                {user?.name?.charAt(0) || 'S'}
+                {user?.role === 'teacher' ? 'E' : (user?.name?.charAt(0) || 'S')}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-white truncate">{user?.name || 'Student'}</p>
+                <p className="text-sm font-bold text-white truncate">{user?.role === 'teacher' && user?.name === 'Student' ? 'Educator' : (user?.name || 'Student')}</p>
                 <p className="text-[10px] text-[#ffd700] font-bold uppercase tracking-widest opacity-70">
-                  {user?.class ? (t.classes[user.class] || user.class) : 'Odisha Board'}
+                  {user?.role === 'teacher' ? 'Educator Mode' : (user?.class ? (t.classes[user.class] || user.class) : 'Odisha Board')}
                 </p>
               </div>
             </div>
