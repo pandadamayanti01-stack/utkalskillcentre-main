@@ -9,9 +9,11 @@ interface TeacherDashboardProps {
   user: any;
   language: 'en' | 'or';
   chapters: any[];
+  setActiveTab?: (tab: string) => void;
+  textbooksCount?: number;
 }
 
-export function TeacherDashboard({ user, language, chapters }: TeacherDashboardProps) {
+export function TeacherDashboard({ user, language, chapters, setActiveTab, textbooksCount = 0 }: TeacherDashboardProps) {
   const [showHomeworkModal, setShowHomeworkModal] = useState(false);
   const [homeworkClass, setHomeworkClass] = useState('10');
   const [homeworkSubject, setHomeworkSubject] = useState('math');
@@ -127,7 +129,7 @@ export function TeacherDashboard({ user, language, chapters }: TeacherDashboardP
       </motion.div>
 
       {/* 3. Tuition Batch / Student Management Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <motion.div variants={itemVariants} className="glass-card rounded-3xl p-6 border border-white/10 space-y-6 bg-slate-900/40">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -182,6 +184,45 @@ export function TeacherDashboard({ user, language, chapters }: TeacherDashboardP
             <Lucide.BarChart2 size={40} className="mx-auto text-emerald-400 opacity-80" />
             <p className="text-sm font-bold text-white">Average Batch Accuracy: <span className="text-emerald-400">84%</span></p>
             <p className="text-xs text-slate-400">Top Performing Topic: Quadratic Equations</p>
+          </div>
+        </motion.div>
+
+        {/* 5. Quick Access: Textbooks Library */}
+        <motion.div variants={itemVariants} className="glass-card rounded-3xl p-6 border border-amber-500/20 space-y-6 bg-gradient-to-br from-slate-900/40 via-amber-500/5 to-transparent flex flex-col justify-between">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                  <Lucide.Book size={20} />
+                </div>
+                <h3 className="text-lg font-black text-white">
+                  {language === 'en' ? 'Textbooks Library' : 'ପାଠ୍ୟପୁସ୍ତକ ସମୂହ'}
+                </h3>
+              </div>
+              <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-black uppercase tracking-widest border border-amber-500/30">
+                All Classes
+              </span>
+            </div>
+            <p className="text-slate-400 text-xs leading-relaxed">
+              {language === 'en' 
+                ? 'Full access to school textbooks across Play class to Class 10 for lesson preparation.' 
+                : 'ପାଠପଢ଼ା ପ୍ରସ୍ତୁତି ପାଇଁ ସମସ୍ତ ଶ୍ରେଣୀର ପାଠ୍ୟପୁସ୍ତକ ଡାଉନଲୋଡ୍ କରନ୍ତୁ।'}
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl bg-white/5 border border-white/5 text-center space-y-4">
+            <div className="flex items-baseline justify-center gap-1">
+              <span className="text-3xl font-black text-amber-400">{textbooksCount}</span>
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Books Loaded</span>
+            </div>
+            
+            <button
+              type="button"
+              onClick={() => setActiveTab && setActiveTab('textbooks')}
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black text-xs uppercase tracking-wider transition-all shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2"
+            >
+              <span>{language === 'en' ? 'Browse All Textbooks →' : 'ସମସ୍ତ ପୁସ୍ତକ ଦେଖନ୍ତୁ →'}</span>
+            </button>
           </div>
         </motion.div>
       </div>

@@ -2950,7 +2950,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             {/* Your 10+ Tab components go here... */}
             {activeTab === 'dashboard' && (
               user?.role === 'teacher' ? (
-                <TeacherDashboard user={user} language={language} chapters={chapters} />
+                <TeacherDashboard user={user} language={language} chapters={chapters} setActiveTab={setActiveTab} textbooksCount={textbooks.length} />
               ) : (
                 <Dashboard
                   user={user}
