@@ -4408,7 +4408,8 @@ Sample tone for Class 6-10:
       const isLib = c.isLibraryChapter || !!c.pdfUrl;
       if (!isLib) return false;
 
-      const matchesClass = libClassFilter === 'all' || c.class === libClassFilter;
+      const cleanClass = (cls: string) => (cls || '').toLowerCase().replace(/\s+/g, '').replace('class', '').replace('th', '');
+      const matchesClass = libClassFilter === 'all' || cleanClass(c.class) === cleanClass(libClassFilter);
       const matchesSubject = libSubjectFilter === 'all' || c.subject === libSubjectFilter;
       return matchesClass && matchesSubject;
     });
