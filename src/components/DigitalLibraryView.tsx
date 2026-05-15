@@ -581,7 +581,7 @@ const getGenerativeBookCover = (subjectKey: string, title: string, idx: number, 
   const code = classCode || 'class10';
   const subjectsForClass = CLASS_SUBJECTS[code] || CLASS_SUBJECTS.class10;
   const found = subjectsForClass.find(sub => sub.key === subjectKey.toLowerCase() || sub.labelEn.toLowerCase() === subjectKey.toLowerCase() || sub.labelOr.toLowerCase() === subjectKey.toLowerCase());
-  
+
   if (found) {
     meta = {
       gradient: found.gradient,
@@ -603,7 +603,7 @@ const getGenerativeBookCover = (subjectKey: string, title: string, idx: number, 
   }
 
   const gradientId = `grad_${subjectKey}_${idx}`;
-  
+
   const getOdiaNum = (val: string): string => {
     const odiaDigits: Record<string, string> = {
       '0': '୦', '1': '୧', '2': '୨', '3': '୩', '4': '୪',
@@ -615,11 +615,11 @@ const getGenerativeBookCover = (subjectKey: string, title: string, idx: number, 
   const classNum = classCode ? classCode.replace('class', '') : '10';
   const odiaClassNum = getOdiaNum(classNum);
   const displayClass = `CLASS ${classNum} • ଶ୍ରେଣୀ ${odiaClassNum}`;
-  
+
   const odiaChapNum = getOdiaNum(String(idx));
   const displayChap = `CH ${idx} • ଅଧ୍ୟାୟ ${odiaChapNum}`;
   const displayTitle = title.length > 22 ? title.substring(0, 19) + "..." : title;
-  
+
   let decorativePattern = "";
   if (subjectKey === 'math') {
     decorativePattern = `
@@ -712,7 +712,7 @@ const isMobileDevice = (): boolean => {
 const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, fallbackUrl?: string) => {
   const img = e.currentTarget;
   const currentStep = img.getAttribute('data-err-step') || '0';
-  
+
   if (currentStep === '0') {
     img.setAttribute('data-err-step', '1');
     if (fallbackUrl) {
@@ -900,7 +900,7 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
   const [isNotepadSaved, setIsNotepadSaved] = useState<boolean>(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const [isChapterNotesUnlocked, setIsChapterNotesUnlocked] = useState<boolean>(false);
-  
+
   // Eye Care States
   const [eyeCareMode, setEyeCareMode] = useState<'off' | 'sepia' | 'dim'>('off');
   const [fontSize, setFontSize] = useState<'normal' | 'large' | 'xlarge'>('normal');
@@ -916,7 +916,7 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
 
   const handleShareToUnlock = async () => {
     if (!selectedChapter) return;
-    
+
     const inviteText = language === 'en'
       ? `Hey friends! I am revising "${selectedChapter.title}" in our Digital Library on the Utkal Skill Centre app! 📚 Gundulu AI explains everything so easily with beautiful notes & formulas! Check it out here: https://utkalskillcentre.com`
       : `ହେଲୋ ସାଙ୍ଗମାନେ! ମୁଁ ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍ ଆପ୍‌ରେ ଆମର ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀରୁ "${selectedChapter.title}" ର ନୋଟ୍ସ ପଢୁଛି! 📚 ଗୁଣ୍ଡୁଲୁ AI ବହୁତ ସହଜରେ ସବୁ ସୂତ୍ର ଏବଂ ସାରାଂଶ ବୁଝାଇ ଦେଉଛି। ମାଗଣାରେ ପଢ଼ିବା ପାଇଁ ଏଠାରେ କ୍ଲିକ୍ କରନ୍ତୁ: https://utkalskillcentre.com`;
@@ -924,11 +924,11 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
     try {
       const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(inviteText)}`;
       window.open(whatsappUrl, '_blank');
-      
+
       // Mark as unlocked
       localStorage.setItem(`unlocked_notes_${selectedChapter.id}`, 'true');
       setIsChapterNotesUnlocked(true);
-      
+
       // Blast celebratory premium confetti
       confetti({
         particleCount: 150,
@@ -1024,20 +1024,20 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
       // Robust subject matching matching either direct keys, english names, or odia titles
       const cleanSub = (s: string) => s?.toLowerCase().trim().replace(/[\s\-_]+/g, '') || '';
       const cSub = cleanSub(c.subject);
-      
+
       const matchedMeta = activeSubjects.find(sub => sub.key === selectedSubject);
       if (!matchedMeta) return false;
-      
-      const matchesSubjectName = 
+
+      const matchesSubjectName =
         cSub === cleanSub(matchedMeta.key) ||
         cSub === cleanSub(matchedMeta.labelEn) ||
         cSub === cleanSub(matchedMeta.labelOr);
 
       // Parent category fallback matching:
       let matchesGenericFallback = false;
-      if (matchedMeta.key.includes('ganita') || matchedMeta.key.includes('math')) {
+      if (matchedMeta.key.includes('ganita') || matchedMeta.key.includes('math') || matchedMeta.key.includes('algebra') || matchedMeta.key.includes('geometry')) {
         matchesGenericFallback = cSub.includes('math') || cSub.includes('ganita') || cSub === 'algebra' || cSub === 'geometry' || cSub === 'algebraicequations';
-      } else if (matchedMeta.key.includes('jigyasa') || matchedMeta.key.includes('science') || matchedMeta.key.includes('paribesa') || matchedMeta.key.includes('bignana')) {
+      } else if (matchedMeta.key.includes('jigyasa') || matchedMeta.key.includes('science') || matchedMeta.key.includes('paribesa') || matchedMeta.key.includes('bignana') || matchedMeta.key.includes('physical') || matchedMeta.key.includes('life')) {
         matchesGenericFallback = cSub.includes('science') || cSub.includes('bignana') || cSub === 'paribesapatha' || cSub === 'jigyasa' || cSub === 'physicalscience' || cSub === 'lifescience' || cSub === 'science_curiosity';
       } else if (matchedMeta.key.includes('samajika') || matchedMeta.key.includes('social')) {
         matchesGenericFallback = cSub.includes('social') || cSub === 'geography' || cSub === 'history';
@@ -1134,7 +1134,7 @@ Include:
 4. Quick revision shortcuts or hints.
 
 Write the notes primarily in beautiful, structured markdown, and make them bilingual-friendly (Odia and English mixed) so that an Odia medium student can easily understand all terms. Start directly with the chapter header and notes.`;
-      
+
       const response = await solveMathDoubt(
         prompt,
         language,
@@ -1143,15 +1143,15 @@ Write the notes primarily in beautiful, structured markdown, and make them bilin
         `You are Gundulu, the expert educational content writer for Utkal Skill Centre. Generate beautifully-structured academic notes.`,
         []
       );
-      
+
       // Save directly to Firestore under chapters collection
       const chapterDoc = doc(db, 'chapters', selectedChapter.id);
       await updateDoc(chapterDoc, { notes: response });
-      
+
       // Update local state and the selected chapter reference locally as well
       setGeneratedNotes(response);
       selectedChapter.notes = response;
-      
+
       alert(language === 'en' ? 'AI Notes Generated and Saved successfully for all students! ✨' : 'AI ନୋଟ୍ସ ସଫଳତାର ସହ ପ୍ରସ୍ତୁତ ଏବଂ ସମସ୍ତ ଛାତ୍ରଛାତ୍ରୀଙ୍କ ପାଇଁ ସେଭ୍ ହୋଇଗଲା! ✨');
     } catch (err) {
       console.error("AI Notes generation failed:", err);
@@ -1188,7 +1188,7 @@ Instructions:
 3. Keep your answers supportive, visual, and highly academic. Use bilingual friendly explanations.
 4. If the student asks you for an MCQ test or quiz, start an interactive, engaging quiz: ask exactly one premium MCQ question at a time (with options labeled a, b, c, d), wait for their answer, provide friendly feedback on whether they got it right or wrong with a quick educational explanation, and then proceed to ask the next unique question. Do NOT repeat any questions that are already present in the chat history.
 `;
-      
+
       const response = await solveMathDoubt(
         text,
         language,
@@ -1209,7 +1209,7 @@ Instructions:
       setChatMessages(prev => [...prev, {
         id: Date.now().toString() + '_err',
         sender: 'gundulu',
-        text: language === 'en' 
+        text: language === 'en'
           ? "Oops! I hit a small speedbump trying to fetch that answer. Could you ask me again? 🐾"
           : "ଓହୋ! ମୋର ସର୍ଭର କନେକ୍ସନରେ ସାମାନ୍ୟ ସମସ୍ୟା ହେଲା। ଦୟାକରି ଆଉଥରେ ପଚାରନ୍ତୁ! 🐾"
       }]);
@@ -1224,9 +1224,9 @@ Instructions:
       {(() => {
         const grade = user?.class || '10'; // Fallback to Class 10 if not logged in or class not defined
         const gradeInt = parseInt(grade.toString().toLowerCase().replace(/\s+/g, '').replace('class', '').replace('th', ''), 10) || 10;
-        
+
         let title = language === 'en' ? 'Digital Library | Utkal Skill Centre' : 'ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀ | ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର';
-        let desc = language === 'en' 
+        let desc = language === 'en'
           ? `Access complete school textbooks, chapter solutions, MCQs, study notes, and AI support for Classes 1 to 10 in Odia on Utkal Skill Centre.`
           : `ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରରେ ୧ ରୁ ୧୦ ଶ୍ରେଣୀ ପାଇଁ ଓଡ଼ିଆ ମିଡିୟମ୍ ସ୍କୁଲ୍ ବହି, ସମାଧାନ, MCQ ଏବଂ ଏଆଇ ଶିକ୍ଷକ ଗୁଣ୍ଡୁଲୁ ସହ ପାଠପଢ଼ନ୍ତୁ।`;
 
@@ -1348,7 +1348,7 @@ Instructions:
 
       {/* VIEW CONTAINER */}
       <div className="w-full max-w-7xl mx-auto px-4 py-8 flex-1 flex flex-col relative z-10">
-        
+
         {/* VIEW 1: SUBJECT TEXTBOOK SELECTOR */}
         {currentView === 'subjects' && (
           <div style={forceGpuCompositingStyle} className="flex-1 flex flex-col">
@@ -1373,11 +1373,10 @@ Instructions:
                       key={clsNum}
                       type="button"
                       onClick={() => setSelectedClass(clsNum)}
-                      className={`shrink-0 px-4 py-2.5 rounded-2xl text-[11px] font-black tracking-wide transition-all duration-200 active:scale-95 border ${
-                        isActive
-                          ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/25 border-emerald-400/20'
-                          : 'bg-slate-900/40 hover:bg-slate-900 text-slate-400 hover:text-white border-white/5 hover:border-emerald-500/25'
-                      }`}
+                      className={`shrink-0 px-4 py-2.5 rounded-2xl text-[11px] font-black tracking-wide transition-all duration-200 active:scale-95 border ${isActive
+                        ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/25 border-emerald-400/20'
+                        : 'bg-slate-900/40 hover:bg-slate-900 text-slate-400 hover:text-white border-white/5 hover:border-emerald-500/25'
+                        }`}
                     >
                       {language === 'en' ? `Class ${clsNum}` : `${clsNum} ଶ୍ରେଣୀ`}
                     </button>
@@ -1422,7 +1421,7 @@ Instructions:
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-60 group-hover:opacity-85"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f19] via-transparent to-black/30" />
-                      
+
                       {/* Floating Subject Icon Badge */}
                       <div className={`absolute bottom-4 left-6 p-3.5 rounded-2xl bg-gradient-to-br ${meta.gradient} text-white shadow-lg`}>
                         <Icon size={20} />
@@ -1486,8 +1485,8 @@ Instructions:
                         {language === 'en' ? currentMeta.labelEn : currentMeta.labelOr}
                       </h2>
                       <p className="text-xs md:text-sm text-white/80 mt-1 font-medium">
-                        {language === 'en' 
-                          ? 'Read textbook chapters or use custom bilingually simplified interactive notes.' 
+                        {language === 'en'
+                          ? 'Read textbook chapters or use custom bilingually simplified interactive notes.'
                           : 'ମୂଳ ବିଷୟବସ୍ତୁ ପଢ଼ନ୍ତୁ କିମ୍ବା ଆମର ସରଳୀକୃତ ଦ୍ୱିଭାଷୀ ଟିପ୍ପଣୀ ବ୍ୟବହାର କରନ୍ତୁ।'}
                       </p>
                     </div>
@@ -1575,7 +1574,7 @@ Instructions:
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-md active:scale-95">
                       <Lucide.ArrowRight size={18} />
                     </div>
@@ -1591,7 +1590,7 @@ Instructions:
           <div style={forceGpuCompositingStyle} className="flex-1 flex flex-col lg:flex-row gap-6 relative">
             {/* LEFT / MAIN WORKSPACE PANEL (Reader Tab & Content Panel) */}
             <div className="flex-1 flex flex-col bg-slate-900/20 border border-white/5 rounded-3xl overflow-hidden p-6 relative">
-              
+
               {/* Premium Chapter Title Banner with Cover Thumbnail */}
               <div className="flex items-center gap-4 pb-5 mb-5 border-b border-white/5">
                 {selectedChapter.coverUrl && selectedChapter.coverUrl !== 'none' ? (
@@ -1616,10 +1615,10 @@ Instructions:
                     <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest bg-emerald-400/5 px-2 py-0.5 rounded-md border border-emerald-400/10">
                       {language === 'en' ? 'BSE Textbook' : 'ବିଦ୍ୟାଳୟ ପାଠ୍ୟପୁସ୍ତକ'}
                     </span>
-                      {(() => {
-                        const currentMeta = activeSubjects.find(sub => sub.key === selectedSubject);
-                        return currentMeta ? (language === 'en' ? currentMeta.labelEn : currentMeta.labelOr) : '';
-                      })()}
+                    {(() => {
+                      const currentMeta = activeSubjects.find(sub => sub.key === selectedSubject);
+                      return currentMeta ? (language === 'en' ? currentMeta.labelEn : currentMeta.labelOr) : '';
+                    })()}
                   </div>
                   <h2 className="text-base md:text-lg font-black text-white leading-tight mt-1">
                     {selectedChapter.title}
@@ -1632,11 +1631,10 @@ Instructions:
                 <div className="flex items-center gap-2 bg-slate-950 p-1 rounded-2xl border border-white/5 flex-wrap sm:flex-nowrap">
                   <button
                     onClick={() => setReaderMode('notes')}
-                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold tracking-wider transition-all ${
-                      readerMode === 'notes'
-                        ? 'bg-[#b34d1f] text-white shadow-lg'
-                        : 'text-slate-400 hover:text-white'
-                    }`}
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold tracking-wider transition-all ${readerMode === 'notes'
+                      ? 'bg-[#b34d1f] text-white shadow-lg'
+                      : 'text-slate-400 hover:text-white'
+                      }`}
                   >
                     <Lucide.Sparkles size={14} />
                     <span>{language === 'en' ? 'AI Study Guide' : 'AI ଟିପ୍ପଣୀ'}</span>
@@ -1650,13 +1648,11 @@ Instructions:
                         alert(language === 'en' ? 'Original PDF not uploaded yet. Please use the AI Study Guide!' : 'ଏହି ବିଷୟର ମୂଳ PDF ଏପର୍ଯ୍ୟନ୍ତ ଅପଲୋଡ୍ ହୋଇନାହିଁ। ଦୟାକରି AI ଟିପ୍ପଣୀ ପଢ଼ନ୍ତୁ!');
                       }
                     }}
-                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold tracking-wider transition-all ${
-                      !effectivePdfUrl ? 'opacity-40 cursor-not-allowed' : ''
-                    } ${
-                      readerMode === 'pdf'
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold tracking-wider transition-all ${!effectivePdfUrl ? 'opacity-40 cursor-not-allowed' : ''
+                      } ${readerMode === 'pdf'
                         ? 'bg-[#b34d1f] text-white shadow-lg'
                         : 'text-slate-400 hover:text-white'
-                    }`}
+                      }`}
                   >
                     <Lucide.BookOpen size={14} />
                     <span>{language === 'en' ? 'Original Textbook' : 'ମୂଳ ପାଠ୍ୟପୁସ୍ତକ'}</span>
@@ -1670,13 +1666,11 @@ Instructions:
                         alert(language === 'en' ? 'Concept videos are not added for this chapter yet. Our team is working on it!' : 'ଏହି ଅଧ୍ୟାୟ ପାଇଁ ଭିଡିଓ କ୍ଲାସ ଏପର୍ଯ୍ୟନ୍ତ ଯୋଡ଼ା ହୋଇନାହିଁ। ଶୀଘ୍ର ପ୍ରସ୍ତୁତ ହେବ!');
                       }
                     }}
-                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold tracking-wider transition-all ${
-                      !selectedChapter.videoUrl ? 'opacity-40 cursor-not-allowed' : ''
-                    } ${
-                      readerMode === 'video'
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold tracking-wider transition-all ${!selectedChapter.videoUrl ? 'opacity-40 cursor-not-allowed' : ''
+                      } ${readerMode === 'video'
                         ? 'bg-[#b34d1f] text-white shadow-lg'
                         : 'text-slate-400 hover:text-white'
-                    }`}
+                      }`}
                   >
                     <Lucide.Youtube size={14} />
                     <span>{language === 'en' ? 'Concept Videos' : 'ଭିଡିଓ କ୍ଲାସ'}</span>
@@ -1710,26 +1704,23 @@ Instructions:
                   <div className="flex items-center gap-1 bg-slate-900/60 p-0.5 rounded-lg border border-white/5 flex-nowrap">
                     <button
                       onClick={() => setEyeCareMode('off')}
-                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all ${
-                        eyeCareMode === 'off' ? 'bg-slate-800 text-white shadow' : 'text-slate-500 hover:text-slate-300'
-                      }`}
+                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all ${eyeCareMode === 'off' ? 'bg-slate-800 text-white shadow' : 'text-slate-500 hover:text-slate-300'
+                        }`}
                     >
                       {language === 'en' ? 'Off' : 'ନର୍ମାଲ୍'}
                     </button>
                     <button
                       onClick={() => setEyeCareMode('sepia')}
-                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all flex items-center gap-0.5 ${
-                        eyeCareMode === 'sepia' ? 'bg-amber-600/20 text-amber-300 border border-amber-500/10' : 'text-slate-500 hover:text-slate-300'
-                      }`}
+                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all flex items-center gap-0.5 ${eyeCareMode === 'sepia' ? 'bg-amber-600/20 text-amber-300 border border-amber-500/10' : 'text-slate-500 hover:text-slate-300'
+                        }`}
                     >
                       <span className="w-1 h-1 rounded-full bg-amber-500" />
                       {language === 'en' ? 'Shield' : 'ସୁରକ୍ଷା'}
                     </button>
                     <button
                       onClick={() => setEyeCareMode('dim')}
-                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all flex items-center gap-0.5 ${
-                        eyeCareMode === 'dim' ? 'bg-purple-600/20 text-purple-300 border border-purple-500/10' : 'text-slate-500 hover:text-slate-300'
-                      }`}
+                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all flex items-center gap-0.5 ${eyeCareMode === 'dim' ? 'bg-purple-600/20 text-purple-300 border border-purple-500/10' : 'text-slate-500 hover:text-slate-300'
+                        }`}
                     >
                       <Lucide.Moon size={8} />
                       {language === 'en' ? 'Night' : 'ରାତି'}
@@ -1772,16 +1763,14 @@ Instructions:
               {/* ACTIVE READING CANVAS */}
               <div className="flex-1 mt-6 overflow-y-auto max-h-[60vh] pr-2 scrollbar-thin scrollbar-thumb-emerald-500/10">
                 {readerMode === 'notes' ? (
-                  <div 
-                    className={`prose max-w-none p-4 md:p-6 rounded-2xl border transition-all duration-300 ${
-                      eyeCareMode === 'sepia'
-                        ? 'prose-stone border-amber-900/10'
-                        : 'prose-invert border-white/5 bg-slate-900/20 text-slate-200'
-                    } ${
-                      fontSize === 'normal' ? 'text-base leading-relaxed' :
-                      fontSize === 'large' ? 'text-lg md:text-xl leading-loose font-medium' :
-                      'text-xl md:text-2xl leading-loose font-semibold'
-                    }`}
+                  <div
+                    className={`prose max-w-none p-4 md:p-6 rounded-2xl border transition-all duration-300 ${eyeCareMode === 'sepia'
+                      ? 'prose-stone border-amber-900/10'
+                      : 'prose-invert border-white/5 bg-slate-900/20 text-slate-200'
+                      } ${fontSize === 'normal' ? 'text-base leading-relaxed' :
+                        fontSize === 'large' ? 'text-lg md:text-xl leading-loose font-medium' :
+                          'text-xl md:text-2xl leading-loose font-semibold'
+                      }`}
                     style={{
                       backgroundColor: eyeCareMode === 'sepia' ? '#fbf0d9' : undefined,
                       color: eyeCareMode === 'sepia' ? '#433422' : undefined,
@@ -1793,29 +1782,29 @@ Instructions:
                         const isUnlocked = isChapterNotesUnlocked || user?.role === 'admin';
                         const originalNotes = selectedChapter.notes;
                         const finalNotes = isUnlocked ? originalNotes : (originalNotes.length > 350 ? originalNotes.substring(0, 350) + "..." : originalNotes);
-                        
+
                         return (
                           <div className="relative">
                             <ReactMarkdown>{cleanMathNotation(finalNotes)}</ReactMarkdown>
-                            
+
                             {!isUnlocked && (
                               <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent pointer-events-none" />
                             )}
-                            
+
                             {!isUnlocked && (
                               <div className="mt-8 p-6 md:p-8 rounded-3xl border border-emerald-500/30 bg-slate-950/85 backdrop-blur-md text-center space-y-6 shadow-2xl relative overflow-hidden">
                                 {/* Floating background glow effect */}
                                 <div className="absolute -top-10 -left-10 w-40 h-40 rounded-full bg-emerald-500/10 blur-3xl animate-pulse" />
                                 <div className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full bg-blue-500/10 blur-3xl animate-pulse" />
-                                
+
                                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500/10 to-teal-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20 shadow-lg mx-auto relative animate-bounce">
                                   <Lucide.Lock size={28} />
                                 </div>
-                                
+
                                 <div className="space-y-3 max-w-lg mx-auto">
                                   <h4 className="text-lg font-black text-white leading-tight">
-                                    {language === 'en' 
-                                      ? 'Unlock Full Chapter Notes & Solutions For Free! 🌟' 
+                                    {language === 'en'
+                                      ? 'Unlock Full Chapter Notes & Solutions For Free! 🌟'
                                       : 'ସମ୍ପୂର୍ଣ୍ଣ ଅଧ୍ୟାୟ ନୋଟ୍ସ ମାଗଣାରେ ଅନଲକ୍ କରନ୍ତୁ! 🌟'}
                                   </h4>
                                   <p className="text-xs text-slate-400 leading-relaxed font-bold">
@@ -1824,7 +1813,7 @@ Instructions:
                                       : 'ଏହି ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ପାଠକୁ ଆପଣଙ୍କ ସ୍କୁଲ୍ WhatsApp ଗ୍ରୁପ୍‌ରେ ଶେୟାର କରନ୍ତୁ ଏବଂ ସମସ୍ତ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଓ ଟିପ୍ପଣୀ ତୁରନ୍ତ ପଢ଼ନ୍ତୁ।'}
                                   </p>
                                 </div>
-                                
+
                                 <button
                                   type="button"
                                   onClick={handleShareToUnlock}
@@ -1847,29 +1836,29 @@ Instructions:
                         const isUnlocked = isChapterNotesUnlocked || user?.role === 'admin';
                         const originalNotes = generatedNotes;
                         const finalNotes = isUnlocked ? originalNotes : (originalNotes.length > 350 ? originalNotes.substring(0, 350) + "..." : originalNotes);
-                        
+
                         return (
                           <div className="relative">
                             <ReactMarkdown>{cleanMathNotation(finalNotes)}</ReactMarkdown>
-                            
+
                             {!isUnlocked && (
                               <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent pointer-events-none" />
                             )}
-                            
+
                             {!isUnlocked && (
                               <div className="mt-8 p-6 md:p-8 rounded-3xl border border-emerald-500/30 bg-slate-950/85 backdrop-blur-md text-center space-y-6 shadow-2xl relative overflow-hidden">
                                 {/* Floating background glow effect */}
                                 <div className="absolute -top-10 -left-10 w-40 h-40 rounded-full bg-emerald-500/10 blur-3xl animate-pulse" />
                                 <div className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full bg-blue-500/10 blur-3xl animate-pulse" />
-                                
+
                                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500/10 to-teal-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20 shadow-lg mx-auto relative animate-bounce">
                                   <Lucide.Lock size={28} />
                                 </div>
-                                
+
                                 <div className="space-y-3 max-w-lg mx-auto">
                                   <h4 className="text-lg font-black text-white leading-tight">
-                                    {language === 'en' 
-                                      ? 'Unlock Full Chapter Notes & Solutions For Free! 🌟' 
+                                    {language === 'en'
+                                      ? 'Unlock Full Chapter Notes & Solutions For Free! 🌟'
                                       : 'ସମ୍ପୂର୍ଣ୍ଣ ଅଧ୍ୟାୟ ନୋଟ୍ସ ମାଗଣାରେ ଅନଲକ୍ କରନ୍ତୁ! 🌟'}
                                   </h4>
                                   <p className="text-xs text-slate-400 leading-relaxed font-bold">
@@ -1878,7 +1867,7 @@ Instructions:
                                       : 'ଏହି ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ପାଠକୁ ଆପଣଙ୍କ ସ୍କୁଲ୍ WhatsApp ଗ୍ରୁପ୍‌ରେ ଶେୟାର କରନ୍ତୁ ଏବଂ ସମସ୍ତ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଓ ଟିପ୍ପଣୀ ତୁରନ୍ତ ପଢ଼ନ୍ତୁ।'}
                                   </p>
                                 </div>
-                                
+
                                 <button
                                   type="button"
                                   onClick={handleShareToUnlock}
@@ -1911,8 +1900,8 @@ Instructions:
                             {language === 'en' ? 'Admin AI Notes Generator Ready' : 'AI ପାଠ୍ୟକ୍ରମ ନୋଟ୍ସ ପ୍ରସ୍ତୁତକାରୀ'}
                           </h4>
                           <p className="text-xs text-slate-400 leading-relaxed font-bold">
-                            {language === 'en' 
-                              ? "Official revision notes are blank. Click below to let Gundulu AI generate & save comprehensive chapter notes and revision formulas directly to Firestore for all students!" 
+                            {language === 'en'
+                              ? "Official revision notes are blank. Click below to let Gundulu AI generate & save comprehensive chapter notes and revision formulas directly to Firestore for all students!"
                               : "ଏହି ଅଧ୍ୟାୟର ନୋଟ୍ସ ଖାଲି ଅଛି। ଗୁଣ୍ଡୁଲୁ AI ଦ୍ୱାରା ନୂତନ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଏବଂ ଉଦାହରଣ ପ୍ରସ୍ତուତ କରି ସିଧାସଳଖ ଡାଟାବେସରେ ସେଭ୍ କରିବା ପାଇଁ ତଳେ କ୍ଲିକ୍ କରନ୍ତୁ!"}
                           </p>
                         </div>
@@ -1946,8 +1935,8 @@ Instructions:
                             {language === 'en' ? 'Notes Coming Soon' : 'ନୋଟ୍ସ ଖୁବ୍ Śୀଘ୍ର ଆସୁଛି'}
                           </h4>
                           <p className="text-xs text-slate-400 leading-relaxed font-bold">
-                            {language === 'en' 
-                              ? "Revision notes, key formulas, and practice answers for this chapter are being prepared and will be uploaded soon. Stay tuned! 🌟" 
+                            {language === 'en'
+                              ? "Revision notes, key formulas, and practice answers for this chapter are being prepared and will be uploaded soon. Stay tuned! 🌟"
                               : "ଏହି ଅଧ୍ୟାୟର ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଏବଂ ଅଧ୍ୟୟନ ଟିପ୍ପଣୀ ଖୁବ୍ ଶୀଘ୍ର ଅପଲୋଡ୍ ହେବାକୁ ଯାଉଛି। ଅପେକ୍ଷା କରନ୍ତୁ! 🌟"}
                           </p>
                         </div>
@@ -1995,8 +1984,8 @@ Instructions:
                           {language === 'en' ? 'No video loaded' : 'ଭିଡିଓ ମିଳିଲା ନାହିଁ'}
                         </h4>
                         <p className="text-slate-400 text-xs max-w-sm">
-                          {language === 'en' 
-                            ? 'The video URL for this chapter is invalid or not uploaded. Please try other reading guides!' 
+                          {language === 'en'
+                            ? 'The video URL for this chapter is invalid or not uploaded. Please try other reading guides!'
                             : 'ଏହି ଅଧ୍ୟାୟର ଭିଡିଓ ଲିଙ୍କ ଅପଲୋଡ୍ ହୋଇନାହିଁ। ଦୟାକରି AI ପାଠ୍ୟପୁସ୍ତକ ଅଭ୍ୟାସ କରନ୍ତୁ!'}
                         </p>
                       </div>
@@ -2010,7 +1999,7 @@ Instructions:
                         {/* 3D-like book image scaled */}
                         {selectedChapter.coverUrl && selectedChapter.coverUrl !== 'none' ? (
                           <div className="w-28 h-36 rounded-xl overflow-hidden border border-white/10 shadow-[0_12px_24px_rgba(0,0,0,0.5)] transform hover:scale-105 transition-all relative shrink-0">
-                            <img 
+                            <img
                               src={selectedChapter.coverUrl}
                               alt="Book Cover"
                               className="w-full h-full object-cover"
@@ -2038,7 +2027,7 @@ Instructions:
                             {selectedChapter.title}
                           </h4>
                           <p className="text-[10px] text-slate-400 font-bold leading-normal">
-                            {language === 'en' 
+                            {language === 'en'
                               ? 'Read this textbook chapter in full-screen mobile comfort.'
                               : 'ମୋବାଇଲ୍ ଅଧ୍ୟୟନ ପାଇଁ ତଳ ବଟନ୍ କ୍ଲିକ୍ କରି ପାଠ୍ୟପୁସ୍ତକ ପଢ଼ନ୍ତୁ।'}
                           </p>
@@ -2068,14 +2057,13 @@ Instructions:
                         </span>
                         <button
                           onClick={() => setUseDirectViewer(!useDirectViewer)}
-                          className={`px-3 py-1.5 rounded-lg font-black text-[9px] tracking-wide uppercase transition-all active:scale-95 border ${
-                            useDirectViewer 
-                              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 font-black' 
-                              : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'
-                          }`}
+                          className={`px-3 py-1.5 rounded-lg font-black text-[9px] tracking-wide uppercase transition-all active:scale-95 border ${useDirectViewer
+                            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 font-black'
+                            : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'
+                            }`}
                         >
-                          {useDirectViewer 
-                            ? (language === 'en' ? 'Using Direct Reader' : 'ଦ୍ରୁତ ପିଡିଏଫ୍ ସକ୍ରିୟ') 
+                          {useDirectViewer
+                            ? (language === 'en' ? 'Using Direct Reader' : 'ଦ୍ରୁତ ପିଡିଏଫ୍ ସକ୍ରିୟ')
                             : (language === 'en' ? 'Use Direct PDF Reader' : 'ଦ୍ରୁତ ପିଡିଏଫ୍ ମୋଡ୍')}
                         </button>
                       </div>
@@ -2127,7 +2115,7 @@ Instructions:
 
             {/* RIGHT PANEL - GUNDULU FLOATING STUDY ASSISTANT CHATBOX */}
             <div className="w-full lg:w-96 flex flex-col bg-slate-900/40 border border-white/5 rounded-3xl overflow-hidden shadow-lg h-[65vh] lg:h-auto">
-              
+
               {/* Gundulu Chat Header */}
               <div className="p-4 bg-gradient-to-r from-emerald-950/60 to-slate-900 border-b border-white/5 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -2165,8 +2153,8 @@ Instructions:
                       {language === 'en' ? 'Unlock Gundulu AI Tutor' : 'ଗୁଣ୍ଡୁଲୁ AI ଟ୍ୟୁଟର ଅନଲକ୍ କରନ୍ତୁ'}
                     </h4>
                     <p className="text-xs text-slate-400 leading-relaxed max-w-[240px] mx-auto">
-                      {language === 'en' 
-                        ? 'Chat with Gundulu to solve doubts, explain formulas, and get custom practice tests!' 
+                      {language === 'en'
+                        ? 'Chat with Gundulu to solve doubts, explain formulas, and get custom practice tests!'
                         : 'ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହୋଇ ସବୁ ଗଣିତ ପ୍ରଶ୍ନର ସମାଧାନ, ସୂତ୍ର ଏବଂ ସ୍ପେସାଲ୍ ଟେଷ୍ଟ ପାଆନ୍ତୁ!'}
                     </p>
                   </div>
@@ -2205,11 +2193,10 @@ Instructions:
                           />
                         )}
                         <div
-                          className={`max-w-[80%] rounded-2xl p-3.5 leading-relaxed shadow-sm border ${
-                            msg.sender === 'user'
-                              ? 'bg-gradient-to-br from-emerald-500 to-teal-600 border-transparent text-white rounded-br-none text-xs font-semibold'
-                              : 'gundulu-chat-bubble bg-slate-900/90 border-emerald-500/20 text-slate-100 rounded-bl-none text-[13px] font-semibold tracking-wide [&_strong]:text-emerald-400 [&_strong]:font-bold [&_code]:bg-slate-950 [&_code]:text-emerald-300 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:font-mono [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_li]:mb-1'
-                          }`}
+                          className={`max-w-[80%] rounded-2xl p-3.5 leading-relaxed shadow-sm border ${msg.sender === 'user'
+                            ? 'bg-gradient-to-br from-emerald-500 to-teal-600 border-transparent text-white rounded-br-none text-xs font-semibold'
+                            : 'gundulu-chat-bubble bg-slate-900/90 border-emerald-500/20 text-slate-100 rounded-bl-none text-[13px] font-semibold tracking-wide [&_strong]:text-emerald-400 [&_strong]:font-bold [&_code]:bg-slate-950 [&_code]:text-emerald-300 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:font-mono [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_li]:mb-1'
+                            }`}
                         >
                           <ReactMarkdown>{cleanMathNotation(msg.text)}</ReactMarkdown>
                         </div>
@@ -2324,26 +2311,23 @@ Instructions:
                   <div className="flex items-center gap-1 bg-slate-900 p-0.5 rounded-lg border border-white/5">
                     <button
                       onClick={() => setEyeCareMode('off')}
-                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all ${
-                        eyeCareMode === 'off' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'
-                      }`}
+                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all ${eyeCareMode === 'off' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'
+                        }`}
                     >
                       {language === 'en' ? 'Off' : 'ନର୍ମାଲ୍'}
                     </button>
                     <button
                       onClick={() => setEyeCareMode('sepia')}
-                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all flex items-center gap-0.5 ${
-                        eyeCareMode === 'sepia' ? 'bg-amber-600/20 text-amber-300 border border-amber-500/15' : 'text-slate-500 hover:text-slate-300'
-                      }`}
+                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all flex items-center gap-0.5 ${eyeCareMode === 'sepia' ? 'bg-amber-600/20 text-amber-300 border border-amber-500/15' : 'text-slate-500 hover:text-slate-300'
+                        }`}
                     >
                       <span className="w-1 h-1 rounded-full bg-amber-500" />
                       {language === 'en' ? 'Shield' : 'ସୁରକ୍ଷା'}
                     </button>
                     <button
                       onClick={() => setEyeCareMode('dim')}
-                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all flex items-center gap-0.5 ${
-                        eyeCareMode === 'dim' ? 'bg-purple-600/20 text-purple-300 border border-purple-500/15' : 'text-slate-500 hover:text-slate-300'
-                      }`}
+                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all flex items-center gap-0.5 ${eyeCareMode === 'dim' ? 'bg-purple-600/20 text-purple-300 border border-purple-500/15' : 'text-slate-500 hover:text-slate-300'
+                        }`}
                     >
                       <Lucide.Moon size={8} />
                       {language === 'en' ? 'Night' : 'ରାତି'}
@@ -2395,16 +2379,14 @@ Instructions:
               {/* Fullscreen Reading Canvas */}
               <div className="flex-1 overflow-y-auto mt-6 pr-2 scrollbar-thin scrollbar-thumb-emerald-500/10">
                 {readerMode === 'notes' ? (
-                  <div 
-                    className={`prose max-w-none p-6 md:p-10 rounded-2xl border transition-all duration-300 ${
-                      eyeCareMode === 'sepia'
-                        ? 'prose-stone border-amber-900/10 shadow-lg shadow-amber-950/5'
-                        : 'prose-invert border-white/5 bg-slate-900/20 text-slate-200'
-                    } ${
-                      fontSize === 'normal' ? 'text-base leading-relaxed' :
-                      fontSize === 'large' ? 'text-lg md:text-xl leading-loose font-medium' :
-                      'text-xl md:text-2xl leading-loose font-semibold'
-                    }`}
+                  <div
+                    className={`prose max-w-none p-6 md:p-10 rounded-2xl border transition-all duration-300 ${eyeCareMode === 'sepia'
+                      ? 'prose-stone border-amber-900/10 shadow-lg shadow-amber-950/5'
+                      : 'prose-invert border-white/5 bg-slate-900/20 text-slate-200'
+                      } ${fontSize === 'normal' ? 'text-base leading-relaxed' :
+                        fontSize === 'large' ? 'text-lg md:text-xl leading-loose font-medium' :
+                          'text-xl md:text-2xl leading-loose font-semibold'
+                      }`}
                     style={{
                       backgroundColor: eyeCareMode === 'sepia' ? '#fbf0d9' : undefined,
                       color: eyeCareMode === 'sepia' ? '#433422' : undefined,
@@ -2429,8 +2411,8 @@ Instructions:
                             {language === 'en' ? 'AI Notes Generator Ready' : 'AI ପାଠ୍ୟକ୍ରମ ନୋଟ୍ସ ଚିଠା ପ୍ରସ୍ତୁତ'}
                           </h4>
                           <p className="text-xs text-slate-400 leading-relaxed font-bold">
-                            {language === 'en' 
-                              ? "Official revision notes are not uploaded yet. Click below to let Gundulu AI generate comprehensive chapter notes, revision formulas, and laws instantly!" 
+                            {language === 'en'
+                              ? "Official revision notes are not uploaded yet. Click below to let Gundulu AI generate comprehensive chapter notes, revision formulas, and laws instantly!"
                               : "ଏହି ଅଧ୍ୟାୟର ଅଫିସିଆଲ୍ ନୋଟ୍ସ ଏପର୍ଯ୍ୟନ୍ତ ଯୋଡ଼ା ଯାଇନାହିଁ। କିନ୍ତୁ ଆପଣଙ୍କ ପାଇଁ ଗୁଣ୍ଡୁଲୁ AI ଗୁרୁତ୍ୱପୂર્ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଏବଂ ଉଦାହରଣ ପ୍ରସ୍ତୁତ କରିବାକୁ ପ୍ରସ୍ତୁତ ଅଛି!"}
                           </p>
                         </div>
@@ -2504,7 +2486,7 @@ Instructions:
                         {/* 3D-like book image scaled */}
                         {selectedChapter.coverUrl ? (
                           <div className="w-28 h-36 rounded-xl overflow-hidden border border-white/10 shadow-[0_12px_24px_rgba(0,0,0,0.5)] transform hover:scale-105 transition-all relative shrink-0">
-                            <img 
+                            <img
                               src={selectedChapter.coverUrl}
                               alt="Book Cover"
                               className="w-full h-full object-cover"
@@ -2532,7 +2514,7 @@ Instructions:
                             {selectedChapter.title}
                           </h4>
                           <p className="text-[10px] text-slate-400 font-bold leading-normal">
-                            {language === 'en' 
+                            {language === 'en'
                               ? 'Read this textbook chapter in full-screen mobile comfort.'
                               : 'ମୋବାଇଲ୍ ଅଧ୍ୟୟନ ପାଇଁ ତଳ ବଟନ୍ କ୍ଲିକ୍ କରି ପାଠ୍ୟପୁସ୍ତକ ପଢ଼ନ୍ତୁ।'}
                           </p>
@@ -2562,14 +2544,13 @@ Instructions:
                         </span>
                         <button
                           onClick={() => setUseDirectViewer(!useDirectViewer)}
-                          className={`px-3 py-1.5 rounded-lg font-black text-[9px] tracking-wide uppercase transition-all active:scale-95 border ${
-                            useDirectViewer 
-                              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 font-black' 
-                              : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'
-                          }`}
+                          className={`px-3 py-1.5 rounded-lg font-black text-[9px] tracking-wide uppercase transition-all active:scale-95 border ${useDirectViewer
+                            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 font-black'
+                            : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'
+                            }`}
                         >
-                          {useDirectViewer 
-                            ? (language === 'en' ? 'Using Direct Reader' : 'ଦ୍ରୁତ ପିଡିଏଫ୍ ସକ୍ରିୟ') 
+                          {useDirectViewer
+                            ? (language === 'en' ? 'Using Direct Reader' : 'ଦ୍ରୁତ ପିଡିଏଫ୍ ସକ୍ରିୟ')
                             : (language === 'en' ? 'Use Direct PDF Reader' : 'ଦ୍ରୁତ ପିଡିଏଫ୍ ମୋଡ୍')}
                         </button>
                       </div>
@@ -2636,26 +2617,23 @@ Instructions:
                   <div className="flex items-center gap-1 bg-slate-900 p-0.5 rounded-lg border border-white/5">
                     <button
                       onClick={() => setEyeCareMode('off')}
-                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all ${
-                        eyeCareMode === 'off' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'
-                      }`}
+                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all ${eyeCareMode === 'off' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'
+                        }`}
                     >
                       {language === 'en' ? 'Off' : 'ନର୍ମାଲ୍'}
                     </button>
                     <button
                       onClick={() => setEyeCareMode('sepia')}
-                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all flex items-center gap-0.5 ${
-                        eyeCareMode === 'sepia' ? 'bg-amber-600/20 text-amber-300 border border-amber-500/15' : 'text-slate-500 hover:text-slate-300'
-                      }`}
+                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all flex items-center gap-0.5 ${eyeCareMode === 'sepia' ? 'bg-amber-600/20 text-amber-300 border border-amber-500/15' : 'text-slate-500 hover:text-slate-300'
+                        }`}
                     >
                       <span className="w-1 h-1 rounded-full bg-amber-500" />
                       {language === 'en' ? 'Shield' : 'ସୁରକ୍ଷା'}
                     </button>
                     <button
                       onClick={() => setEyeCareMode('dim')}
-                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all flex items-center gap-0.5 ${
-                        eyeCareMode === 'dim' ? 'bg-purple-600/20 text-purple-300 border border-purple-500/15' : 'text-slate-500 hover:text-slate-300'
-                      }`}
+                      className={`px-2 py-1 rounded-md text-[9px] font-extrabold uppercase transition-all flex items-center gap-0.5 ${eyeCareMode === 'dim' ? 'bg-purple-600/20 text-purple-300 border border-purple-500/15' : 'text-slate-500 hover:text-slate-300'
+                        }`}
                     >
                       <Lucide.Moon size={8} />
                       {language === 'en' ? 'Night' : 'ରାତି'}
@@ -2676,12 +2654,11 @@ Instructions:
               {/* Main Split workspace */}
               <div className="flex-1 flex gap-6 mt-6 overflow-hidden min-h-0">
                 {/* Left study guide panel */}
-                <div 
-                  className={`hidden lg:flex flex-col w-[35%] rounded-3xl border p-6 overflow-y-auto transition-all duration-300 ${
-                    eyeCareMode === 'sepia'
-                      ? 'prose-stone border-amber-900/10 shadow-lg'
-                      : 'border-white/5 bg-slate-900/20'
-                  }`}
+                <div
+                  className={`hidden lg:flex flex-col w-[35%] rounded-3xl border p-6 overflow-y-auto transition-all duration-300 ${eyeCareMode === 'sepia'
+                    ? 'prose-stone border-amber-900/10 shadow-lg'
+                    : 'border-white/5 bg-slate-900/20'
+                    }`}
                   style={{
                     backgroundColor: eyeCareMode === 'sepia' ? '#fbf0d9' : undefined,
                   }}
@@ -2692,10 +2669,9 @@ Instructions:
                       {language === 'en' ? 'Chapter Study Notes Reference' : 'ଅଧ୍ୟାୟ ଅଧ୍ୟୟନ ନୋଟ୍'}
                     </span>
                   </div>
-                  <div 
-                    className={`prose max-w-none ${
-                      eyeCareMode === 'sepia' ? 'prose-stone text-amber-950' : 'prose-invert text-slate-300'
-                    } text-xs leading-relaxed`}
+                  <div
+                    className={`prose max-w-none ${eyeCareMode === 'sepia' ? 'prose-stone text-amber-950' : 'prose-invert text-slate-300'
+                      } text-xs leading-relaxed`}
                   >
                     <ReactMarkdown>{cleanMathNotation(selectedChapter.notes || '*No study materials added yet.*')}</ReactMarkdown>
                   </div>
@@ -2704,7 +2680,7 @@ Instructions:
                 {/* Right Chat panel */}
                 <div className="flex-1 flex flex-col bg-slate-900/20 border border-white/5 rounded-3xl overflow-hidden shadow-2xl relative h-full">
                   {/* Chat messages waterfall */}
-                  <div 
+                  <div
                     className="flex-1 overflow-y-auto p-6 space-y-4 scrollbar-thin scrollbar-thumb-emerald-500/10"
                     style={{
                       backgroundColor: eyeCareMode === 'sepia' ? '#f5e9ce' : undefined,
@@ -2726,15 +2702,13 @@ Instructions:
                           />
                         )}
                         <div
-                          className={`max-w-[75%] rounded-2xl p-4 leading-relaxed shadow-sm border ${
-                            msg.sender === 'user'
-                              ? 'bg-gradient-to-br from-emerald-500 to-teal-600 border-transparent text-white rounded-br-none text-xs font-semibold'
-                              : `gundulu-chat-bubble border-emerald-500/20 rounded-bl-none text-sm font-semibold tracking-wide [&_strong]:text-emerald-400 [&_strong]:font-bold [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:font-mono [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_li]:mb-1 ${
-                                  eyeCareMode === 'sepia' 
-                                    ? 'bg-amber-100 text-amber-950 border-amber-900/15 [&_code]:bg-amber-200 [&_code]:text-emerald-800' 
-                                    : 'bg-slate-900/90 text-slate-100 [&_code]:bg-slate-950 [&_code]:text-emerald-300'
-                                }`
-                          }`}
+                          className={`max-w-[75%] rounded-2xl p-4 leading-relaxed shadow-sm border ${msg.sender === 'user'
+                            ? 'bg-gradient-to-br from-emerald-500 to-teal-600 border-transparent text-white rounded-br-none text-xs font-semibold'
+                            : `gundulu-chat-bubble border-emerald-500/20 rounded-bl-none text-sm font-semibold tracking-wide [&_strong]:text-emerald-400 [&_strong]:font-bold [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:font-mono [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_li]:mb-1 ${eyeCareMode === 'sepia'
+                              ? 'bg-amber-100 text-amber-950 border-amber-900/15 [&_code]:bg-amber-200 [&_code]:text-emerald-800'
+                              : 'bg-slate-900/90 text-slate-100 [&_code]:bg-slate-950 [&_code]:text-emerald-300'
+                            }`
+                            }`}
                         >
                           <ReactMarkdown>{cleanMathNotation(msg.text)}</ReactMarkdown>
                         </div>
@@ -2751,9 +2725,8 @@ Instructions:
                             handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
                           }}
                         />
-                        <div className={`border rounded-2xl rounded-bl-none p-4 shadow-sm ${
-                          eyeCareMode === 'sepia' ? 'bg-amber-100 border-amber-900/10' : 'bg-slate-950 border-white/5'
-                        }`}>
+                        <div className={`border rounded-2xl rounded-bl-none p-4 shadow-sm ${eyeCareMode === 'sepia' ? 'bg-amber-100 border-amber-900/10' : 'bg-slate-950 border-white/5'
+                          }`}>
                           <div className="flex gap-1">
                             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '0ms' }} />
                             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '150ms' }} />
