@@ -1035,21 +1035,33 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
 
       // Parent category fallback matching:
       let matchesGenericFallback = false;
-      if (matchedMeta.key.includes('ganita') || matchedMeta.key.includes('math') || matchedMeta.key.includes('algebra') || matchedMeta.key.includes('geometry')) {
+      const mKey = matchedMeta.key;
+      
+      if (mKey === 'algebra') {
+        matchesGenericFallback = cSub === 'algebra' || cSub === 'algebraicequations';
+      } else if (mKey === 'geometry') {
+        matchesGenericFallback = cSub === 'geometry';
+      } else if (mKey === 'physical_science') {
+        matchesGenericFallback = cSub === 'physicalscience';
+      } else if (mKey === 'life_science') {
+        matchesGenericFallback = cSub === 'lifescience';
+      } else if (mKey.includes('grammar')) {
+        matchesGenericFallback = cSub.includes(mKey.replace('_', ''));
+      } else if (mKey.includes('ganita') || mKey.includes('math')) {
         matchesGenericFallback = cSub.includes('math') || cSub.includes('ganita') || cSub === 'algebra' || cSub === 'geometry' || cSub === 'algebraicequations';
-      } else if (matchedMeta.key.includes('jigyasa') || matchedMeta.key.includes('science') || matchedMeta.key.includes('paribesa') || matchedMeta.key.includes('bignana') || matchedMeta.key.includes('physical') || matchedMeta.key.includes('life')) {
-        matchesGenericFallback = cSub.includes('science') || cSub.includes('bignana') || cSub === 'paribesapatha' || cSub === 'jigyasa' || cSub === 'physicalscience' || cSub === 'lifescience' || cSub === 'science_curiosity';
-      } else if (matchedMeta.key.includes('samajika') || matchedMeta.key.includes('social')) {
+      } else if (mKey.includes('jigyasa') || mKey.includes('science') || mKey.includes('paribesa') || mKey.includes('bignana')) {
+        matchesGenericFallback = (cSub.includes('science') || cSub.includes('bignana') || cSub === 'paribesapatha' || cSub === 'jigyasa' || cSub === 'physicalscience' || cSub === 'lifescience' || cSub === 'science_curiosity') && !cSub.includes('social');
+      } else if (mKey.includes('samajika') || mKey.includes('social')) {
         matchesGenericFallback = cSub.includes('social') || cSub === 'geography' || cSub === 'history';
-      } else if (matchedMeta.key.includes('sahitya') || matchedMeta.key.includes('jhulana') || matchedMeta.key.includes('bhasa') || matchedMeta.key.includes('odia')) {
-        matchesGenericFallback = cSub.includes('odia') || cSub === 'jhulana' || cSub === 'bhasamahak' || cSub.includes('sahitya');
-      } else if (matchedMeta.key.includes('pallavi') || matchedMeta.key.includes('jasmine') || matchedMeta.key.includes('english')) {
-        matchesGenericFallback = cSub.includes('english') || cSub === 'pallavi' || cSub === 'jasmine';
-      } else if (matchedMeta.key.includes('sanskrit')) {
-        matchesGenericFallback = cSub.includes('sanskrit') || cSub === 'sanskrutasourav';
-      } else if (matchedMeta.key.includes('talas') || matchedMeta.key.includes('hindi')) {
-        matchesGenericFallback = cSub.includes('hindi') || cSub === 'talas';
-      } else if (matchedMeta.key.includes('vocational') || matchedMeta.key.includes('kausala')) {
+      } else if (mKey.includes('sahitya') || mKey.includes('jhulana') || mKey.includes('bhasa') || mKey.includes('odia')) {
+        matchesGenericFallback = (cSub.includes('odia') || cSub === 'jhulana' || cSub === 'bhasamahak' || cSub.includes('sahitya')) && !cSub.includes('grammar');
+      } else if (mKey.includes('pallavi') || mKey.includes('jasmine') || mKey.includes('english')) {
+        matchesGenericFallback = (cSub.includes('english') || cSub === 'pallavi' || cSub === 'jasmine') && !cSub.includes('grammar');
+      } else if (mKey.includes('sanskrit')) {
+        matchesGenericFallback = (cSub.includes('sanskrit') || cSub === 'sanskrutasourav') && !cSub.includes('grammar');
+      } else if (mKey.includes('talas') || mKey.includes('hindi')) {
+        matchesGenericFallback = (cSub.includes('hindi') || cSub === 'talas') && !cSub.includes('grammar');
+      } else if (mKey.includes('vocational') || mKey.includes('kausala')) {
         matchesGenericFallback = cSub.includes('vocational') || cSub.includes('kausala');
       }
 

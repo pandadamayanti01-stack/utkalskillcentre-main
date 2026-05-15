@@ -375,6 +375,8 @@ export function TeacherDashboard({ user, language, chapters, setActiveTab, textb
                         className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-white/10 text-white font-bold focus:border-purple-500 outline-none"
                       >
                         <option value="math">Mathematics (ଗଣିତ)</option>
+                        <option value="algebra">Algebra (ବୀଜଗଣିତ)</option>
+                        <option value="geometry">Geometry (ଜ୍ୟାମିତି)</option>
                         <option value="science">Science (ବିଜ୍ଞାନ)</option>
                         <option value="english">English (ଇଂରାଜୀ)</option>
                         <option value="odia">Odia (ଓଡ଼ିଆ)</option>

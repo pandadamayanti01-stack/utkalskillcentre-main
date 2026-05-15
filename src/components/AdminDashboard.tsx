@@ -4623,6 +4623,8 @@ Sample tone for Class 6-10:
             >
               <option value="all">All Subjects</option>
               <option value="math">Mathematics</option>
+              <option value="algebra">Algebra (Class 9/10)</option>
+              <option value="geometry">Geometry (Class 9/10)</option>
               <option value="science">General Science</option>
               <option value="physical_science">Physical Science</option>
               <option value="life_science">Life Science</option>
@@ -4794,6 +4796,8 @@ Sample tone for Class 6-10:
                         className="w-full bg-slate-950 border border-white/5 rounded-2xl px-5 py-4 text-sm text-slate-200 focus:outline-none focus:border-emerald-500/30"
                       >
                         <option value="math">Mathematics</option>
+                        <option value="algebra">Algebra (Class 9/10)</option>
+                        <option value="geometry">Geometry (Class 9/10)</option>
                         <option value="science">General Science</option>
                         <option value="physical_science">Physical Science</option>
                         <option value="life_science">Life Science</option>
