@@ -522,143 +522,35 @@ const CLASS_SUBJECTS: Record<string, Array<{
     }
   ],
   class9: [
-    {
-      key: "math",
-      labelEn: "Mathematics",
-      labelOr: "ଗଣିତ",
-      gradient: "from-teal-500 via-emerald-600 to-amber-500",
-      icon: Lucide.Binary,
-      color: "#34d399",
-      coverImage: "/math_cover.png"
-    },
-    {
-      key: "science",
-      labelEn: "General Science",
-      labelOr: "ବିଜ୍ଞାନ",
-      gradient: "from-cyan-500 via-blue-600 to-indigo-600",
-      icon: Lucide.Atom,
-      color: "#38bdf8",
-      coverImage: "/science_cover.png"
-    },
-    {
-      key: "social_science",
-      labelEn: "Social Science",
-      labelOr: "ସାମାଜିକ ବିଜ୍ଞାନ",
-      gradient: "from-amber-500 via-orange-600 to-red-600",
-      icon: Lucide.Globe,
-      color: "#f59e0b",
-      coverImage: "/social_science_cover.png"
-    },
-    {
-      key: "english",
-      labelEn: "English Literature",
-      labelOr: "ଇଂରାଜୀ",
-      gradient: "from-purple-500 via-pink-600 to-rose-600",
-      icon: Lucide.BookOpen,
-      color: "#c084fc",
-      coverImage: "/english_cover.png"
-    },
-    {
-      key: "odia",
-      labelEn: "Odia Literature",
-      labelOr: "ଓଡ଼ିଆ",
-      gradient: "from-orange-400 via-red-500 to-amber-600",
-      icon: Lucide.Scroll,
-      color: "#fb923c",
-      coverImage: "/odia_cover.png"
-    },
-    {
-      key: "sanskrit",
-      labelEn: "Sanskrit",
-      labelOr: "ସଂସ୍କୃତ",
-      gradient: "from-amber-600 via-orange-500 to-yellow-600",
-      icon: Lucide.Award,
-      color: "#d97706",
-      coverImage: "/sanskrit_cover.png"
-    },
-    {
-      key: "hindi",
-      labelEn: "Hindi",
-      labelOr: "ହିନ୍ଦୀ",
-      gradient: "from-rose-400 via-pink-500 to-red-600",
-      icon: Lucide.Languages,
-      color: "#f43f5e",
-      coverImage: "/hindi_cover.png"
-    }
+    { key: "algebra", labelEn: "Algebra", labelOr: "ବୀଜଗଣିତ", gradient: "from-teal-500 via-emerald-600 to-amber-500", icon: Lucide.Binary, color: "#34d399", coverImage: "/math_cover.png" },
+    { key: "geometry", labelEn: "Geometry", labelOr: "ଜ୍ୟାମିତି", gradient: "from-teal-500 via-emerald-600 to-amber-500", icon: Lucide.Compass, color: "#34d399", coverImage: "/math_cover.png" },
+    { key: "physical_science", labelEn: "Physical Science", labelOr: "ଭୌତିକ ବିଜ୍ଞାନ", gradient: "from-cyan-500 via-blue-600 to-indigo-600", icon: Lucide.Atom, color: "#38bdf8", coverImage: "/science_cover.png" },
+    { key: "life_science", labelEn: "Life Science", labelOr: "ଜୀବ ବିଜ୍ଞାନ", gradient: "from-cyan-500 via-blue-600 to-indigo-600", icon: Lucide.Leaf, color: "#38bdf8", coverImage: "/science_cover.png" },
+    { key: "social_science", labelEn: "Social Science", labelOr: "ସାମାଜିକ ବିଜ୍ଞାନ", gradient: "from-amber-500 via-orange-600 to-red-600", icon: Lucide.Globe, color: "#f59e0b", coverImage: "/social_science_cover.png" },
+    { key: "english", labelEn: "English Literature", labelOr: "ଇଂରାଜୀ", gradient: "from-purple-500 via-pink-600 to-rose-600", icon: Lucide.BookOpen, color: "#c084fc", coverImage: "/english_cover.png" },
+    { key: "english_grammar", labelEn: "English Grammar", labelOr: "ଇଂରାଜୀ ବ୍ୟାକରଣ", gradient: "from-purple-500 via-pink-600 to-rose-600", icon: Lucide.PenTool, color: "#c084fc", coverImage: "/english_cover.png" },
+    { key: "odia", labelEn: "Odia Literature", labelOr: "ଓଡ଼ିଆ", gradient: "from-orange-400 via-red-500 to-amber-600", icon: Lucide.Scroll, color: "#fb923c", coverImage: "/odia_cover.png" },
+    { key: "odia_grammar", labelEn: "Odia Grammar", labelOr: "ଓଡ଼ିଆ ବ୍ୟାକରଣ", gradient: "from-orange-400 via-red-500 to-amber-600", icon: Lucide.PenTool, color: "#fb923c", coverImage: "/odia_cover.png" },
+    { key: "sanskrit", labelEn: "Sanskrit", labelOr: "ସଂସ୍କୃତ", gradient: "from-amber-600 via-orange-500 to-yellow-600", icon: Lucide.Award, color: "#d97706", coverImage: "/sanskrit_cover.png" },
+    { key: "sanskrit_grammar", labelEn: "Sanskrit Grammar", labelOr: "ସଂସ୍କୃତ ବ୍ୟାକରଣ", gradient: "from-amber-600 via-orange-500 to-yellow-600", icon: Lucide.PenTool, color: "#d97706", coverImage: "/sanskrit_cover.png" },
+    { key: "hindi", labelEn: "Hindi", labelOr: "ହିନ୍ଦୀ", gradient: "from-rose-400 via-pink-500 to-red-600", icon: Lucide.Languages, color: "#f43f5e", coverImage: "/hindi_cover.png" },
+    { key: "hindi_grammar", labelEn: "Hindi Grammar", labelOr: "ହିନ୍ଦୀ ବ୍ୟାକରଣ", gradient: "from-rose-400 via-pink-500 to-red-600", icon: Lucide.PenTool, color: "#f43f5e", coverImage: "/hindi_cover.png" }
   ],
   class10: [
-    {
-      key: "math",
-      labelEn: "Mathematics",
-      labelOr: "ଗଣିତ",
-      gradient: "from-teal-500 via-emerald-600 to-amber-500",
-      icon: Lucide.Binary,
-      color: "#34d399",
-      coverImage: "/math_cover.png"
-    },
-    {
-      key: "science",
-      labelEn: "General Science",
-      labelOr: "ବିଜ୍ଞାନ",
-      gradient: "from-cyan-500 via-blue-600 to-indigo-600",
-      icon: Lucide.Atom,
-      color: "#38bdf8",
-      coverImage: "/science_cover.png"
-    },
-    {
-      key: "social_science",
-      labelEn: "Social Science",
-      labelOr: "ସାମାଜିକ ବିଜ୍ଞାନ",
-      gradient: "from-amber-500 via-orange-600 to-red-600",
-      icon: Lucide.Globe,
-      color: "#f59e0b",
-      coverImage: "/social_science_cover.png"
-    },
-    {
-      key: "english",
-      labelEn: "English Literature",
-      labelOr: "ଇଂରାଜୀ",
-      gradient: "from-purple-500 via-pink-600 to-rose-600",
-      icon: Lucide.BookOpen,
-      color: "#c084fc",
-      coverImage: "/english_cover.png"
-    },
-    {
-      key: "odia",
-      labelEn: "Odia Literature",
-      labelOr: "ଓଡ଼ିଆ",
-      gradient: "from-orange-400 via-red-500 to-amber-600",
-      icon: Lucide.Scroll,
-      color: "#fb923c",
-      coverImage: "/odia_cover.png"
-    },
-    {
-      key: "sanskrit",
-      labelEn: "Sanskrit",
-      labelOr: "ସଂସ୍କୃତ",
-      gradient: "from-amber-600 via-orange-500 to-yellow-600",
-      icon: Lucide.Award,
-      color: "#d97706",
-      coverImage: "/sanskrit_cover.png"
-    },
-    {
-      key: "hindi",
-      labelEn: "Hindi",
-      labelOr: "ହିନ୍ଦୀ",
-      gradient: "from-rose-400 via-pink-500 to-red-600",
-      icon: Lucide.Languages,
-      color: "#f43f5e",
-      coverImage: "/hindi_cover.png"
-    },
-    {
-      key: "vocational",
-      labelEn: "Vocational Studies",
-      labelOr: "ବ୍ୟାବସାୟିକ ଶିକ୍ଷା",
-      gradient: "from-indigo-500 via-purple-600 to-pink-600",
-      icon: Lucide.Cpu,
-      color: "#6366f1",
-      coverImage: "/skill_cover.png"
-    }
+    { key: "algebra", labelEn: "Algebra", labelOr: "ବୀଜଗଣିତ", gradient: "from-teal-500 via-emerald-600 to-amber-500", icon: Lucide.Binary, color: "#34d399", coverImage: "/math_cover.png" },
+    { key: "geometry", labelEn: "Geometry", labelOr: "ଜ୍ୟାମିତି", gradient: "from-teal-500 via-emerald-600 to-amber-500", icon: Lucide.Compass, color: "#34d399", coverImage: "/math_cover.png" },
+    { key: "physical_science", labelEn: "Physical Science", labelOr: "ଭୌତିକ ବିଜ୍ଞାନ", gradient: "from-cyan-500 via-blue-600 to-indigo-600", icon: Lucide.Atom, color: "#38bdf8", coverImage: "/science_cover.png" },
+    { key: "life_science", labelEn: "Life Science", labelOr: "ଜୀବ ବିଜ୍ଞାନ", gradient: "from-cyan-500 via-blue-600 to-indigo-600", icon: Lucide.Leaf, color: "#38bdf8", coverImage: "/science_cover.png" },
+    { key: "social_science", labelEn: "Social Science", labelOr: "ସାମାଜିକ ବିଜ୍ଞାନ", gradient: "from-amber-500 via-orange-600 to-red-600", icon: Lucide.Globe, color: "#f59e0b", coverImage: "/social_science_cover.png" },
+    { key: "english", labelEn: "English Literature", labelOr: "ଇଂରାଜୀ", gradient: "from-purple-500 via-pink-600 to-rose-600", icon: Lucide.BookOpen, color: "#c084fc", coverImage: "/english_cover.png" },
+    { key: "english_grammar", labelEn: "English Grammar", labelOr: "ଇଂରାଜୀ ବ୍ୟାକରଣ", gradient: "from-purple-500 via-pink-600 to-rose-600", icon: Lucide.PenTool, color: "#c084fc", coverImage: "/english_cover.png" },
+    { key: "odia", labelEn: "Odia Literature", labelOr: "ଓଡ଼ିଆ", gradient: "from-orange-400 via-red-500 to-amber-600", icon: Lucide.Scroll, color: "#fb923c", coverImage: "/odia_cover.png" },
+    { key: "odia_grammar", labelEn: "Odia Grammar", labelOr: "ଓଡ଼ିଆ ବ୍ୟାକରଣ", gradient: "from-orange-400 via-red-500 to-amber-600", icon: Lucide.PenTool, color: "#fb923c", coverImage: "/odia_cover.png" },
+    { key: "sanskrit", labelEn: "Sanskrit", labelOr: "ସଂସ୍କୃତ", gradient: "from-amber-600 via-orange-500 to-yellow-600", icon: Lucide.Award, color: "#d97706", coverImage: "/sanskrit_cover.png" },
+    { key: "sanskrit_grammar", labelEn: "Sanskrit Grammar", labelOr: "ସଂସ୍କୃତ ବ୍ୟାକରଣ", gradient: "from-amber-600 via-orange-500 to-yellow-600", icon: Lucide.PenTool, color: "#d97706", coverImage: "/sanskrit_cover.png" },
+    { key: "hindi", labelEn: "Hindi", labelOr: "ହିନ୍ଦୀ", gradient: "from-rose-400 via-pink-500 to-red-600", icon: Lucide.Languages, color: "#f43f5e", coverImage: "/hindi_cover.png" },
+    { key: "hindi_grammar", labelEn: "Hindi Grammar", labelOr: "ହିନ୍ଦୀ ବ୍ୟାକରଣ", gradient: "from-rose-400 via-pink-500 to-red-600", icon: Lucide.PenTool, color: "#f43f5e", coverImage: "/hindi_cover.png" },
+    { key: "vocational", labelEn: "Vocational Studies", labelOr: "ବ୍ୟାବସାୟିକ ଶିକ୍ଷା", gradient: "from-indigo-500 via-purple-600 to-pink-600", icon: Lucide.Cpu, color: "#6366f1", coverImage: "/skill_cover.png" }
   ]
 };
 
