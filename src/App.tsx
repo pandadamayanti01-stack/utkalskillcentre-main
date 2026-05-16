@@ -75,7 +75,6 @@ const TestSeriesPoster = lazy(() => import('./components/TestSeriesPoster'));
 const SyllabusTracker = lazy(() => import('./components/SyllabusTracker').then((module) => ({ default: module.SyllabusTracker })));
 const DigitalLibraryView = lazy(() => import('./components/DigitalLibraryView').then((module) => ({ default: module.DigitalLibraryView })));
 const DigitalLibraryLaunchPopup = lazy(() => import('./components/DigitalLibraryLaunchPopup'));
-const PlayStoreCelebration = lazy(() => import('./components/PlayStoreCelebration').then(module => ({ default: module.PlayStoreCelebration })));
 const TeacherDashboard = lazy(() => import('./components/TeacherDashboard').then((module) => ({ default: module.TeacherDashboard })));
 
 function ViewLoader({ fullHeight = false }: { fullHeight?: boolean }) {
@@ -678,17 +677,6 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [sundayBypassed, setSundayBypassed] = useState(false);
   const [showSundayLockout, setShowSundayLockout] = useState(false);
-  const [showPlayStoreCelebration, setShowPlayStoreCelebration] = useState(false);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('launch') === 'playstore' || params.get('celebrate') === 'playstore') {
-      setShowPlayStoreCelebration(true);
-      // Clean up URL so it doesn't pop up again on refresh
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-  }, []);
-
   const resetPageScroll = () => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     document.documentElement.scrollTop = 0;
@@ -2806,11 +2794,6 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
           <p className="text-[7px] font-black uppercase tracking-[0.6em] text-[#ffd700]">Pride Association of Bigsan Group</p>
           <p className="text-[6px] text-white/60 mt-1 uppercase tracking-widest">v2.1.0-Neural-Matrix • USC Platform</p>
         </div>
-        {showPlayStoreCelebration && (
-          <Suspense fallback={null}>
-            <PlayStoreCelebration onClose={() => setShowPlayStoreCelebration(false)} language={language} />
-          </Suspense>
-        )}
       </div>
     );
   }
@@ -2870,12 +2853,6 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
     {showTestSeriesPoster && (
       <Suspense fallback={null}>
         <TestSeriesPoster onClose={() => setShowTestSeriesPoster(false)} />
-      </Suspense>
-    )}
-
-    {showPlayStoreCelebration && (
-      <Suspense fallback={null}>
-        <PlayStoreCelebration onClose={() => setShowPlayStoreCelebration(false)} language={language} />
       </Suspense>
     )}
 
