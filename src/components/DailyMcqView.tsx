@@ -42,6 +42,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
         previousSet: 'Recent Practice',
         forClass: 'For',
         back: 'Dashboard',
+        scheduleNotice: 'New Daily MCQs are published everyday at 9 AM. Keep studying!',
         rewardLine: 'Earn 1 point for the attempt, plus marks for each correct answer.',
         alreadySubmitted: 'Already attempted',
         earned: 'Earned',
@@ -70,6 +71,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
         previousSet: 'ସମ୍ପ୍ରତିର ଅଭ୍ୟାସ',
         forClass: 'ପାଇଁ',
         back: 'ଡ୍ୟାସବୋର୍ଡ',
+        scheduleNotice: 'ପ୍ରତିଦିନ ସକାଳ ୯ ଟାରେ ନୂଆ ଦୈନିକ MCQ ଆସେ। ନିଜର ପଢା ଜାରି ରଖନ୍ତୁ।',
         rewardLine: 'ଚେଷ୍ଟା ପାଇଁ 1 ପଏଣ୍ଟ ଏବଂ ପ୍ରତ୍ୟେକ ଠିକ୍ ଉତ୍ତର ପାଇଁ ତାହାର ମାର୍କ ଅନୁଯାୟୀ ପଏଣ୍ଟ ମିଳିବ |',
         alreadySubmitted: 'ପୂର୍ବରୁ ଚେଷ୍ଟା କରାଯାଇଛି',
         earned: 'ଅର୍ଜନ',
@@ -288,6 +290,10 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">{t.title}</h1>
           <p className="text-slate-400 max-w-2xl">{t.subtitle}</p>
+          <div className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-xl shadow-inner">
+            <Lucide.Clock size={16} />
+            <span>{t.scheduleNotice}</span>
+          </div>
           <div className="mt-3 flex items-center gap-2 text-[11px] font-medium text-amber-500/80 uppercase tracking-wider">
             <Lucide.AlertTriangle size={14} className="text-amber-500" />
             <span>AI can make mistakes. Please double-check answers.</span>

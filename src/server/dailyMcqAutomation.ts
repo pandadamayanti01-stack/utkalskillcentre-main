@@ -23,7 +23,6 @@ import { App, getApp as getAdminApp, getApps } from 'firebase-admin/app';
 import { getFirestore as getAdminFirestore, FieldValue } from 'firebase-admin/firestore';
 import { getStorage as getAdminStorage } from 'firebase-admin/storage';
 import { google } from 'googleapis';
-import cron from 'node-cron';
 
 // Use the modern PDFParse class from the new pdf-parse package
 import { PDFParse } from 'pdf-parse';
@@ -130,9 +129,6 @@ type DriveContentResult = {
   mimeType: string;
   buffer?: Buffer;
 };
-
-let lastAutomationRunKey = '';
-let schedulerStarted = false;
 
 function getDatabase(adminApp: App, databaseId: string) {
   return getAdminFirestore(adminApp, databaseId);
@@ -804,47 +800,6 @@ export async function runScheduledGeneration(adminApp: App, databaseId: string, 
   return { activeDate, generated, skipped };
 }
 
-function getTimePartsInZone(timeZone: string) {
-  const formatter = new Intl.DateTimeFormat('en-CA', {
-    timeZone,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  });
-
-  const parts = formatter.formatToParts(new Date());
-  const map = Object.fromEntries(parts.map((part) => [part.type, part.value]));
-  return {
-    dateKey: `${map.year}-${map.month}-${map.day}`,
-    time: `${map.hour}:${map.minute}`,
-  };
-}
-
-async function tickAutomation(adminApp: App, databaseId: string) {
-  const db = getDatabase(adminApp, databaseId);
-  const settingsDoc = await db.collection('system_settings').doc('config').get();
-  const settings = (settingsDoc.data() || {}) as AutomationSettings;
-  if (!settings.dailyMcqAutomationEnabled) {
-    return;
-  }
-
-  const timeZone = settings.dailyMcqAutomationTimeZone || DEFAULT_AUTOMATION_TIME_ZONE;
-  const desiredTime = settings.dailyMcqAutomationTime || DEFAULT_AUTOMATION_TIME;
-  const current = getTimePartsInZone(timeZone);
-  const runKey = `${current.dateKey}@${desiredTime}@${timeZone}`;
-
-  if (current.time !== desiredTime || lastAutomationRunKey === runKey) {
-    return;
-  }
-
-  lastAutomationRunKey = runKey;
-  const result = await runScheduledGeneration(adminApp, databaseId, current.dateKey);
-  console.log('Daily MCQ automation completed:', result);
-}
-
 /** Firestore / gRPC errors expose numeric `code` (e.g. 7 PERMISSION_DENIED, 16 UNAUTHENTICATED). */
 function adminRouteErrorResponse(
   error: unknown,
@@ -927,15 +882,23 @@ export function registerDailyMcqAutomation(app: Express, providedAdminApp: App |
     }
   });
 
-  app.post('/api/admin/daily-mcqs/run-auto', async (req, res) => {
+  app.all('/api/admin/daily-mcqs/run-auto', async (req, res) => {
     try {
+      // Vercel Cron sends HTTP GET. We accept both GET and POST.
+      const authHeader = req.headers.authorization;
+      if (req.method === 'GET' && process.env.CRON_SECRET) {
+        if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+          return res.status(401).json({ error: 'Unauthorized Cron Request' });
+        }
+      }
+
       const adminApp = getApp();
       if (!adminApp) {
         return res.status(503).json({ error: 'Firebase Admin is not initialized.' });
       }
 
-      const activeDate = String(req.body?.activeDate || '').trim() || undefined;
-      const className = String(req.body?.className || '').trim() || undefined;
+      const activeDate = String(req.body?.activeDate || req.query?.activeDate || '').trim() || undefined;
+      const className = String(req.body?.className || req.query?.className || '').trim() || undefined;
       const result = await runScheduledGeneration(adminApp, databaseId, activeDate, className);
       return res.json(result);
     } catch (error: unknown) {
@@ -945,18 +908,4 @@ export function registerDailyMcqAutomation(app: Express, providedAdminApp: App |
     }
   });
 
-  if (!schedulerStarted) {
-    schedulerStarted = true;
-    cron.schedule('* * * * *', async () => {
-      try {
-        const adminApp = getApp();
-        if (adminApp) {
-          await tickAutomation(adminApp, databaseId);
-        }
-      } catch (error) {
-        console.error('Daily MCQ scheduler tick failed:', error);
-      }
-    });
-    console.log('Daily MCQ automation scheduler registered.');
-  }
 }

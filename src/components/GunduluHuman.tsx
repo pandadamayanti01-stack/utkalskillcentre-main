@@ -85,11 +85,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
   const [callDuration, setCallDuration] = useState(0);
 
   const [chapters, setChapters] = useState<any[]>([]);
-  const [activeChapter, setActiveChapter] = useState<any>({
-    title: "ସ୍ୱାଗତମ୍ (Welcome to Gundulu Voice!)",
-    subject: "GUNDULU AI TUTOR",
-    notes: "ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। ଆସ, ଏବେ ଏକାଠି ପଢ଼ିବା ଓ ଆଗକୁ ବଢ଼ିବା।"
-  });
+  const [activeChapter, setActiveChapter] = useState<any>(null);
 
   useEffect(() => {
     if (userClass) {
