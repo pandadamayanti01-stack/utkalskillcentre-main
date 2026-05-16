@@ -15,12 +15,7 @@
       ]
     }
   ],
-  "crons": [
-    {
-      "path": "/api/admin/daily-mcqs/run-auto",
-      "schedule": "30 3 * * *"
-    }
-  ],
+
   "rewrites": [
     {
       "source": "/api/(.*)",
