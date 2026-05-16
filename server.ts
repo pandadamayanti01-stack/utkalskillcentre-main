@@ -480,7 +480,7 @@ async function startServer() {
         return res.status(503).json({ error: 'GEMINI_API_KEY is not configured' });
       }
 
-      const model = 'gemini-3.1-flash-tts-preview';
+      const models = ['gemini-3.1-flash-tts-preview', 'gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-flash-latest'];
       const odiaVoiceList = (process.env.GEMINI_TTS_VOICE_ODIA_LIST || 'Puck,Kore,Charon')
         .split(',')
         .map((v) => v.trim())
@@ -494,55 +494,63 @@ async function startServer() {
         : `Speak this text in a warm, extremely clear, slow-paced, and friendly tutoring style for children in India. Articulate each word slowly and clearly:\n\n${text}`;
 
       let lastError = 'Unknown TTS failure';
-      for (const voiceName of voiceCandidates) {
-        const ttsResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            contents: [{ role: 'user', parts: [{ text: ttsPrompt }] }],
-            generationConfig: {
-              responseModalities: ['AUDIO'],
-              speechConfig: {
-                voiceConfig: {
-                  prebuiltVoiceConfig: { voiceName }
+      
+      for (const model of models) {
+        for (const voiceName of voiceCandidates) {
+          try {
+            const ttsResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                contents: [{ role: 'user', parts: [{ text: ttsPrompt }] }],
+                generationConfig: {
+                  responseModalities: ['AUDIO'],
+                  speechConfig: {
+                    voiceConfig: {
+                      prebuiltVoiceConfig: { voiceName }
+                    }
+                  }
                 }
-              }
+              }),
+            });
+
+            if (!ttsResponse.ok) {
+              lastError = await ttsResponse.text();
+              console.warn(`Gemini TTS failed for model ${model}, voice ${voiceName}: ${lastError}`);
+              continue;
             }
-          }),
-        });
 
-        if (!ttsResponse.ok) {
-          lastError = await ttsResponse.text();
-          console.warn(`Gemini TTS failed for voice ${voiceName}: ${lastError}`);
-          continue;
+            const data = await ttsResponse.json();
+            const inlineData = data?.candidates?.[0]?.content?.parts?.find((p: any) => p?.inlineData)?.inlineData;
+            if (!inlineData?.data) {
+              lastError = `No audio payload for model ${model}, voice ${voiceName}`;
+              continue;
+            }
+
+            const mimeType = inlineData.mimeType || 'audio/wav';
+            let audioBuffer = Buffer.from(inlineData.data, 'base64');
+            let finalMimeType = 'audio/wav';
+
+            // Convert raw 16-bit linear PCM (audio/l16) to fully compatible audio/wav
+            if (mimeType.toLowerCase().includes('l16') || mimeType.toLowerCase().includes('pcm')) {
+              audioBuffer = pcmToWav(audioBuffer, 24000);
+            } else {
+              finalMimeType = mimeType;
+            }
+
+            res.setHeader('Content-Type', finalMimeType);
+            res.setHeader('Cache-Control', 'no-store');
+            return res.send(audioBuffer);
+          } catch (error: any) {
+             lastError = error?.message || 'Network error fetching TTS';
+             console.warn(`Fetch error for model ${model}, voice ${voiceName}: ${lastError}`);
+          }
         }
-
-        const data = await ttsResponse.json();
-        const inlineData = data?.candidates?.[0]?.content?.parts?.find((p: any) => p?.inlineData)?.inlineData;
-        if (!inlineData?.data) {
-          lastError = `No audio payload for voice ${voiceName}`;
-          continue;
-        }
-
-        const mimeType = inlineData.mimeType || 'audio/wav';
-        let audioBuffer = Buffer.from(inlineData.data, 'base64');
-        let finalMimeType = 'audio/wav';
-
-        // Convert raw 16-bit linear PCM (audio/l16) to fully compatible audio/wav
-        if (mimeType.toLowerCase().includes('l16') || mimeType.toLowerCase().includes('pcm')) {
-          audioBuffer = pcmToWav(audioBuffer, 24000);
-        } else {
-          finalMimeType = mimeType;
-        }
-
-        res.setHeader('Content-Type', finalMimeType);
-        res.setHeader('Cache-Control', 'no-store');
-        return res.send(audioBuffer);
       }
 
-      return res.status(502).json({ error: `Gemini TTS failed for all configured voices: ${lastError}` });
+      return res.status(502).json({ error: `Gemini TTS failed for all configured models and voices: ${lastError}` });
     } catch (error: any) {
       console.error('Gemini TTS Error:', error);
       return res.status(500).json({ error: error?.message || 'TTS generation failed' });
