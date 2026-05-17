@@ -2,8 +2,8 @@ name: Daily MCQ Generation
 
 on:
   schedule:
-    # 00:30 AM UTC is 6:00 AM IST
-    - cron: '30 0 * * *'
+    # 00:30 AM UTC is 6:00 AM IST (Monday to Saturday, skipping Sunday)
+    - cron: '30 0 * * 1-6'
   workflow_dispatch: # Allows you to manually trigger the workflow from the GitHub UI
 
 jobs:
