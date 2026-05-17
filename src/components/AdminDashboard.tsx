@@ -62,6 +62,7 @@ import {
   collection,
   query,
   getDocs,
+  getDoc,
   doc,
   updateDoc,
   setDoc,
@@ -429,103 +430,69 @@ Sample tone for Class 6-10:
     return unsub;
   }, []);
 
-  useEffect(() => {
-    console.log("Debug: useEffect running, user:", user);
-
-    console.log("Debug: Setting up listeners");
-    // Real-time stats and data
-    const unsubChapters = onSnapshot(collection(firestore, 'chapters'), (snapshot) => {
-      console.log("Debug: chapters snapshot received, count:", snapshot.size);
+  const loadDashboardData = async () => {
+    console.log("Debug: Fetching dashboard data...");
+    
+    // chapters
+    getDocs(collection(firestore, 'chapters')).then(snapshot => {
       setContent(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    }, (err) => {
-      console.error("Firestore Chapters onSnapshot Error:", err);
-      if (err.message.includes('insufficient permissions')) {
-        showNotification("Permission denied for chapters.", "error");
-      }
+    }).catch(err => {
+      console.error("Firestore Chapters Error:", err);
+      if (err.message.includes('insufficient permissions')) showNotification("Permission denied for chapters.", "error");
     });
+    
+    // tx
+    getDocs(collection(firestore, 'transactions')).then(snapshot => {
+      setTransactions(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }).catch(err => console.error("Firestore Transactions Error:", err));
 
-    const unsubTx = onSnapshot(collection(firestore, 'transactions'), (snapshot) => {
-      const txs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setTransactions(txs);
-    }, (err) => {
-      console.error("Firestore Transactions onSnapshot Error:", err);
-      if (err.message.includes('insufficient permissions')) {
-        showNotification("Permission denied for transactions.", "error");
-      }
-    });
+    // payments
+    getDocs(collection(firestore, 'payments')).then(snapshot => {
+      setPayments(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }).catch(err => console.error("Firestore Payments Error:", err));
 
-    const unsubPayments = onSnapshot(collection(firestore, 'payments'), (snapshot) => {
-      const pms = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setPayments(pms);
-    }, (err) => {
-      console.error("Firestore Payments onSnapshot Error:", err);
-      if (err.message.includes('insufficient permissions')) {
-        showNotification("Permission denied for payments.", "error");
-      }
-    });
-
-    const unsubAi = onSnapshot(collection(firestore, 'tutor_queries'), (snapshot) => {
+    // tutor_queries
+    getDocs(collection(firestore, 'tutor_queries')).then(snapshot => {
       const logs = snapshot.docs.map(doc => {
         const raw = doc.data() as any;
         const parsedTimestamp = parseLogTimestamp(raw.timestamp || raw.createdAt || raw.updatedAt);
-        return {
-          id: doc.id,
-          ...raw,
-          parsedTimestamp
-        };
+        return { id: doc.id, ...raw, parsedTimestamp };
       });
-
       const sortedLogs = logs.sort((a: any, b: any) => {
         const aTime = a.parsedTimestamp ? a.parsedTimestamp.getTime() : 0;
         const bTime = b.parsedTimestamp ? b.parsedTimestamp.getTime() : 0;
         return bTime - aTime;
       });
-
       setAiLogs(sortedLogs);
       setStats(prev => ({
         ...prev,
         aiQuestionsToday: sortedLogs.filter((l: any) => isTodayDate(l.parsedTimestamp)).length
       }));
-    }, (err) => {
-      console.error("Firestore AI Usage onSnapshot Error:", err);
-      if (err.message.includes('insufficient permissions')) {
-        showNotification("Permission denied for AI usage logs.", "error");
-        handleFirestoreError(err, OperationType.GET, 'tutor_queries');
-      }
-    });
-    const unsubNotifs = onSnapshot(collection(firestore, 'notifications'), (snapshot) => {
-      setNotifications(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    }, (err) => {
-      console.error("Firestore Notifications onSnapshot Error:", err);
-      if (err.message.includes('insufficient permissions')) {
-        showNotification("Permission denied for notifications.", "error");
-      }
-    });
+    }).catch(err => console.error("Firestore AI Usage Error:", err));
 
-    const unsubSettings = onSnapshot(doc(firestore, 'system_settings', 'config'), (doc) => {
-      if (doc.exists()) {
-        const data = doc.data();
+    // notifications
+    getDocs(collection(firestore, 'notifications')).then(snapshot => {
+      setNotifications(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }).catch(err => console.error("Firestore Notifications Error:", err));
+
+    // system_settings
+    getDoc(doc(firestore, 'system_settings', 'config')).then(docSnap => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
         setSystemSettings(data);
         if (!isPromptDirtyRef.current) {
           setGunduluPromptDraft(data?.gunduluPrompt || DEFAULT_GUNDULU_PROMPT);
         }
       }
-    }, (err) => {
-      console.error("Firestore Settings onSnapshot Error:", err);
-      if (err.message.includes('insufficient permissions')) {
-        showNotification("Permission denied for system settings.", "error");
-      }
-    });
-    const unsubTests = onSnapshot(collection(firestore, 'monthly_tests'), (snapshot) => {
-      setMonthlyTests(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    }, (err) => {
-      console.error("Firestore Monthly Tests onSnapshot Error:", err);
-      if (err.message.includes('insufficient permissions')) {
-        showNotification("Permission denied for monthly tests.", "error");
-      }
-    });
+    }).catch(err => console.error("Firestore Settings Error:", err));
 
-    const unsubDailyMcqs = onSnapshot(collection(firestore, 'daily_mcqs'), (snapshot) => {
+    // monthly_tests
+    getDocs(collection(firestore, 'monthly_tests')).then(snapshot => {
+      setMonthlyTests(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }).catch(err => console.error("Firestore Monthly Tests Error:", err));
+
+    // daily_mcqs
+    getDocs(collection(firestore, 'daily_mcqs')).then(snapshot => {
       const data = snapshot.docs
         .map(doc => ({ id: doc.id, ...doc.data() }))
         .sort((left: any, right: any) => {
@@ -534,80 +501,43 @@ Sample tone for Class 6-10:
           return rightDate - leftDate;
         }) as DailyMcq[];
       setDailyMcqs(data);
-    }, (err) => {
-      console.error("Firestore Daily MCQs onSnapshot Error:", err);
-      if (err.message.includes('insufficient permissions')) {
-        showNotification("Permission denied for daily MCQs.", "error");
-      }
-    });
+    }).catch(err => console.error("Firestore Daily MCQs Error:", err));
 
-    const unsubPrivateSettings = onSnapshot(doc(firestore, 'settings', 'private'), (doc) => {
-      if (doc.exists()) setPrivateSettings(doc.data());
-    }, (err) => {
-      console.error("Firestore Private Settings onSnapshot Error:", err);
-      if (err.message.includes('insufficient permissions')) {
-        showNotification("Permission denied for private settings.", "error");
-      }
-    });
-    const unsubTextbooks = onSnapshot(collection(firestore, 'textbooks'), (snapshot) => {
+    // private settings
+    getDoc(doc(firestore, 'settings', 'private')).then(docSnap => {
+      if (docSnap.exists()) setPrivateSettings(docSnap.data());
+    }).catch(err => console.error("Firestore Private Settings Error:", err));
+
+    // textbooks
+    getDocs(collection(firestore, 'textbooks')).then(snapshot => {
       setTextbooks(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    }, (err) => {
-      console.error("Firestore Textbooks onSnapshot Error:", err);
-      if (err.message.includes('insufficient permissions')) {
-        showNotification("Permission denied for textbooks.", "error");
-      }
-    });
-    const unsubStudents = onSnapshot(collection(firestore, 'users'), (snapshot) => {
+    }).catch(err => console.error("Firestore Textbooks Error:", err));
+
+    // users
+    getDocs(collection(firestore, 'users')).then(snapshot => {
       setStudents(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    }, (err) => {
-      console.error("Firestore Students onSnapshot Error:", err);
-      if (err.message.includes('insufficient permissions')) {
-        showNotification("Permission denied for students.", "error");
-      }
-    });
+    }).catch(err => console.error("Firestore Students Error:", err));
 
-    const unsubUserLocks = onSnapshot(collection(firestore, 'user_locks'), (snapshot) => {
+    // user_locks
+    getDocs(collection(firestore, 'user_locks')).then(snapshot => {
       setUserLocks(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    }, (err) => {
-      console.error("Firestore User Locks onSnapshot Error:", err);
-      if (err.message.includes('insufficient permissions')) {
-        showNotification("Permission denied for user locks.", "error");
-      }
-    });
+    }).catch(err => console.error("Firestore User Locks Error:", err));
 
-    const unsubAllSubscriptions = onSnapshot(collection(firestore, 'subscriptions'), (snapshot) => {
+    // subscriptions
+    getDocs(collection(firestore, 'subscriptions')).then(snapshot => {
       const subs: Record<string, any> = {};
-      snapshot.docs.forEach(doc => {
-        subs[doc.id] = doc.data();
-      });
+      snapshot.docs.forEach(doc => { subs[doc.id] = doc.data(); });
       setAllSubscriptions(subs);
-    }, (err) => {
-      console.error("Firestore Subscriptions onSnapshot Error:", err);
-    });
+    }).catch(err => console.error("Firestore Subscriptions Error:", err));
 
-    const unsubSupport = onSnapshot(query(collection(firestore, 'support_tickets'), orderBy('createdAt', 'desc')), (snapshot) => {
+    // support_tickets
+    getDocs(query(collection(firestore, 'support_tickets'), orderBy('createdAt', 'desc'))).then(snapshot => {
       setSupportTickets(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    }, (err) => {
-      console.error("Firestore Support Tickets onSnapshot Error:", err);
-    });
+    }).catch(err => console.error("Firestore Support Tickets Error:", err));
+  };
 
-    return () => {
-      console.log("Debug: Cleaning up listeners");
-      unsubChapters();
-      unsubTx();
-      unsubPayments();
-      unsubAi();
-      unsubNotifs();
-      unsubSettings();
-      unsubTests();
-      unsubDailyMcqs();
-      unsubPrivateSettings();
-      unsubTextbooks();
-      unsubStudents();
-      unsubAllSubscriptions();
-      unsubUserLocks();
-      unsubSupport();
-    };
+  useEffect(() => {
+    loadDashboardData();
   }, [user]);
 
   // Combined stats calculation
@@ -949,7 +879,19 @@ Sample tone for Class 6-10:
           </nav>
 
           {/* Footer */}
-          <div className="px-4 pt-8 mt-auto border-t border-white/5">
+          <div className="px-4 pt-8 mt-auto border-t border-white/5 space-y-2">
+            <button
+              onClick={loadDashboardData}
+              className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 transition-all group"
+            >
+              <RefreshCw size={20} className="group-hover:rotate-180 transition-transform duration-500" />
+              <motion.span
+                animate={{ opacity: isSidebarOpen ? 1 : 0 }}
+                className="text-xs font-black uppercase tracking-widest"
+              >
+                Refresh Data
+              </motion.span>
+            </button>
             <button
               onClick={() => onExit()}
               className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-red-400/60 hover:text-red-400 hover:bg-red-500/10 transition-all group"
@@ -5013,12 +4955,17 @@ Sample tone for Class 6-10:
           </div>
           <span className="font-black text-white text-lg tracking-tight">UTKAL <span className="text-emerald-500">ADMIN</span></span>
         </div>
-        <button
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
-        >
-          {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
+        <div className="flex items-center gap-4">
+          <button onClick={loadDashboardData} className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 hover:bg-emerald-500/20 transition-colors" title="Refresh Data">
+            <RefreshCw size={18} />
+          </button>
+          <button
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
+          >
+            {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
       </div>
 
       {/* Sidebar Navigation */}

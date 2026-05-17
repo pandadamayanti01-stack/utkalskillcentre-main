@@ -1365,7 +1365,7 @@ export default function App() {
           : query(collection(firestore, 'chapters'), where('status', '==', 'published')));
     console.log("Debug: chaptersQuery:", chaptersQuery);
 
-    const unsubChapters = onSnapshot(chaptersQuery, (snapshot) => {
+    getDocs(chaptersQuery).then((snapshot) => {
       console.log("Debug: Fetched chapters snapshot size:", snapshot.size);
       const allDataRaw = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
       const allData: Chapter[] = [];
@@ -1425,7 +1425,7 @@ export default function App() {
       });
       console.log("Debug: Filtered chapters:", data);
       setChapters(data);
-    }, (err) => {
+    }).catch((err) => {
       console.error("Debug: Chapter fetch error:", err);
       handleFirestoreError(err, OperationType.GET, 'chapters');
     });
@@ -1441,14 +1441,12 @@ export default function App() {
       (err) => handleFirestoreError(err, OperationType.GET, 'public_profiles')
     );
 
-    const unsubTests = onSnapshot(
-      query(collection(firestore, 'monthly_tests'), where('status', '==', 'published')),
-      (snapshot) => {
+    getDocs(query(collection(firestore, 'monthly_tests'), where('status', '==', 'published')))
+      .then((snapshot) => {
         const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as MonthlyTest[];
         setMonthlyTests(data);
-      },
-      (err) => handleFirestoreError(err, OperationType.GET, 'monthly_tests')
-    );
+      })
+      .catch((err) => handleFirestoreError(err, OperationType.GET, 'monthly_tests'));
 
     const todayRaw = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
     const today = todayRaw.replace(/\//g, '-').trim();
@@ -1456,9 +1454,8 @@ export default function App() {
       ? collection(firestore, 'daily_mcqs')
       : query(collection(firestore, 'daily_mcqs'), where('activeDate', '==', today));
 
-    const unsubDailyMcqs = onSnapshot(
-      dailyMcqsQuery,
-      (snapshot) => {
+    getDocs(dailyMcqsQuery)
+      .then((snapshot) => {
         const normalizedUserClass = String(user.class || '').toLowerCase();
         const shortUserClass = normalizedUserClass.replace('class', '').trim();
         const data = snapshot.docs
@@ -1486,9 +1483,8 @@ export default function App() {
           }) as DailyMcq[];
 
         setDailyMcqs(data);
-      },
-      (err) => handleFirestoreError(err, OperationType.GET, 'daily_mcqs')
-    );
+      })
+      .catch((err) => handleFirestoreError(err, OperationType.GET, 'daily_mcqs'));
 
     const unsubSubmissions = onSnapshot(
       query(collection(firestore, 'monthly_test_submissions'), where('userId', '==', user.id)),
@@ -1511,18 +1507,16 @@ export default function App() {
     const textbooksQuery = collection(firestore, 'textbooks');
 
     console.log("Debug: Textbook query for user:", user, "Class:", user.class);
-    const unsubTextbooks = onSnapshot(
-      textbooksQuery,
-      (snapshot) => {
+    getDocs(textbooksQuery)
+      .then((snapshot) => {
         const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as Textbook[];
         console.log("Debug: Fetched textbooks for class", user.class, ":", data);
         setTextbooks(data);
-      },
-      (err) => {
+      })
+      .catch((err) => {
         console.error("Debug: Textbook fetch error:", err);
         handleFirestoreError(err, OperationType.GET, 'textbooks');
-      }
-    );
+      });
 
     const unsubChallenge = onSnapshot(
       query(collection(firestore, 'daily_challenges'), where('date', '==', today)),
@@ -1586,13 +1580,9 @@ export default function App() {
     );
 
     return () => {
-      unsubChapters();
       unsubLeaderboard();
-      unsubTests();
-      unsubDailyMcqs();
       unsubSubmissions();
       unsubDailyMcqSubmissions();
-      unsubTextbooks();
       unsubChallenge();
       unsubProgress();
       unsubFollowing();
