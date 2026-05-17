@@ -4629,7 +4629,7 @@ Sample tone for Class 6-10:
               <option value="science">General Science</option>
               <option value="physical_science">Physical Science</option>
               <option value="life_science">Life Science</option>
-              <option value="social_science">Social Science</option>
+              <option value="social_science">History</option>
               <option value="english">English</option>
               <option value="english_grammar">English Grammar</option>
               <option value="odia">Odia</option>
@@ -4802,7 +4802,7 @@ Sample tone for Class 6-10:
                         <option value="science">General Science</option>
                         <option value="physical_science">Physical Science</option>
                         <option value="life_science">Life Science</option>
-                        <option value="social_science">Social Science</option>
+                        <option value="social_science">History</option>
                         <option value="english">English</option>
                         <option value="english_grammar">English Grammar</option>
                         <option value="odia">Odia</option>

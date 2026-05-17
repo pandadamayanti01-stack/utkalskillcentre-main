@@ -64,7 +64,6 @@ export const subjectTranslations: Record<string, string> = {
   'History': 'ଇତିହାସ',
   'Geography': 'ଭୂଗୋଳ',
   'Social Studies': 'ସାମାଜିକ ବିଜ୍ଞାନ',
-  'Social Science': 'ସାମାଜିକ ବିଜ୍ଞାନ',
   'EVS': 'ପରିବେଶ ବିଜ୍ଞାନ',
 
   // Vocational (Specific Trades)
