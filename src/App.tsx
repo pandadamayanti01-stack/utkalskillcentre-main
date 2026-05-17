@@ -342,38 +342,34 @@ function SundayLockout({ language, onAdminBypass }: { language: 'en' | 'or', onA
 
               <div className="p-8 md:p-10 text-center space-y-6">
                 <div className="space-y-3">
-                  <h2 className={`text-3xl md:text-4xl font-black text-[#ffd700] tracking-tight leading-tight ${language === 'or' ? 'oriya-font' : ''}`}>
-                    {language === 'en' ? "Sunday: Royal Rest" : "ରବିବାର: ରାଜକୀୟ ବିଶ୍ରାମ"}
+                  <h2 className="text-3xl md:text-4xl font-black text-[#ffd700] tracking-tight leading-tight oriya-font">
+                    ରବିବାର: ରାଜକୀୟ ବିଶ୍ରାମ
                   </h2>
                   <div className="flex items-center justify-center gap-4">
                     <div className="h-px w-12 bg-gradient-to-r from-transparent to-[#d4af37]/50" />
-                    <p className={`text-[10px] text-[#d4af37] font-black uppercase tracking-[0.5em] ${language === 'or' ? 'oriya-font' : ''}`}>
-                      {language === 'en' ? "Gate Sealed" : "ଦ୍ୱାର ବନ୍ଦ ହୋଇଛି"}
+                    <p className="text-[10px] text-[#d4af37] font-black uppercase tracking-[0.5em] oriya-font">
+                      ଦ୍ୱାର ବନ୍ଦ ହୋଇଛି
                     </p>
                     <div className="h-px w-12 bg-gradient-to-l from-transparent to-[#d4af37]/50" />
                   </div>
                 </div>
 
-                <p className={`text-[#f8f1e7]/80 text-base md:text-lg font-medium leading-relaxed px-2 ${language === 'or' ? 'oriya-font' : ''}`}>
-                  {language === 'en' 
-                    ? "Time to close the textbooks! 📚 Go out and play, explore with your friends, and enjoy precious family time. Recharge your mind for a great week ahead!" 
-                    : "ପାଠପଢ଼ା ବହି ବନ୍ଦ କରିବାର ସମୟ ଆସିଯାଇଛି! 📚 ବାହାରକୁ ଯାଆନ୍ତୁ ଏବଂ ଖେଳନ୍ତୁ, ସାଙ୍ଗମାନଙ୍କ ସହିତ ସମୟ ବିତାନ୍ତୁ ଏବଂ ପରିବାର ସହିତ ମଜା କରନ୍ତୁ | କାଲି ଦେଖାହେବା!"}
+                <p className="text-[#f8f1e7]/80 text-base md:text-lg font-medium leading-relaxed px-2 oriya-font">
+                  ପାଠପଢ଼ା ବହି ବନ୍ଦ କରିବାର ସମୟ ଆସିଯାଇଛି! 📚 ବାହାରକୁ ଯାଆନ୍ତୁ ଏବଂ ଖେଳନ୍ତୁ, ସାଙ୍ଗମାନଙ୍କ ସହିତ ସମୟ ବିତାନ୍ତୁ ଏବଂ ପରିବାର ସହିତ ମଜା କରନ୍ତୁ | ସୋମବାର ଦେଖାହେବା!
                 </p>
 
                 <div className="bg-[#d4af37]/10 rounded-2xl p-4 border border-[#d4af37]/20">
-                  <p className={`text-[#ffd700] font-black text-xs uppercase tracking-widest leading-relaxed ${language === 'or' ? 'oriya-font' : ''}`}>
-                    {language === 'en' 
-                      ? "Academic Doors Reopen Monday" 
-                      : "ସୋମବାର ସକାଳୁ ପାଠପଢ଼ା ପୁଣି ଆରମ୍ଭ ହେବ"}
+                  <p className="text-[#ffd700] font-black text-xs uppercase tracking-widest leading-relaxed oriya-font">
+                    ସୋମବାର ସକାଳୁ ପାଠପଢ଼ା ପୁଣି ଆରମ୍ଭ ହେବ
                   </p>
                 </div>
 
                 <div className="pt-4 border-t border-white/5">
                   <button 
                     onClick={onAdminBypass}
-                    className={`text-[9px] font-black text-[#d4af37]/20 hover:text-[#ffd700] uppercase tracking-[0.3em] transition-all ${language === 'or' ? 'oriya-font' : ''}`}
+                    className="text-[9px] font-black text-[#d4af37]/20 hover:text-[#ffd700] uppercase tracking-[0.3em] transition-all oriya-font"
                   >
-                    {language === 'en' ? "Enter Royal Portal (Admin)" : "ଆଡମିନ୍ ପ୍ରବେଶ"}
+                    ଆଡମିନ୍ ପ୍ରବେଶ
                   </button>
                 </div>
               </div>
