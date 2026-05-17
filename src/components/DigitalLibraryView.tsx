@@ -1052,7 +1052,7 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
       } else if (mKey.includes('ganita') || mKey.includes('math')) {
         matchesGenericFallback = cSub.includes('math') || cSub.includes('ganita') || cSub === 'algebra' || cSub === 'geometry' || cSub === 'algebraicequations';
       } else if (mKey.includes('samajika') || mKey.includes('social')) {
-        matchesGenericFallback = cSub.includes('social') || cSub === 'geography' || cSub === 'history';
+        matchesGenericFallback = cSub.includes('social') || cSub === 'history';
       } else if (mKey.includes('jigyasa') || mKey.includes('science') || mKey.includes('paribesa') || mKey.includes('bignana')) {
         matchesGenericFallback = (cSub.includes('science') || cSub.includes('bignana') || cSub === 'paribesapatha' || cSub === 'jigyasa' || cSub === 'physicalscience' || cSub === 'lifescience' || cSub === 'science_curiosity') && !cSub.includes('social');
       } else if (mKey.includes('sahitya') || mKey.includes('jhulana') || mKey.includes('bhasa') || mKey.includes('odia')) {

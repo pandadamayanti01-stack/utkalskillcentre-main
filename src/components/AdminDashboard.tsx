@@ -446,8 +446,12 @@ Sample tone for Class 6-10:
           const lowerUrl = urlStr.toLowerCase();
           
           if (lowerTitle.includes('physical') || lowerUrl.includes('physical')) {
-            console.log("Fixing chapter:", titleStr);
+            console.log("Fixing chapter:", titleStr, "to physical_science");
             await updateDoc(docSnap.ref, { subject: 'physical_science' });
+            fixed++;
+          } else if (lowerTitle.includes('geography') || lowerUrl.includes('geography')) {
+            console.log("Fixing chapter:", titleStr, "to geography");
+            await updateDoc(docSnap.ref, { subject: 'geography' });
             fixed++;
           }
         }
