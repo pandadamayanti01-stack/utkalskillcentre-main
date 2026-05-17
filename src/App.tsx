@@ -347,7 +347,9 @@ function SundayLockout({ language, onAdminBypass }: { language: 'en' | 'or', onA
                   </h2>
                   <div className="flex items-center justify-center gap-4">
                     <div className="h-px w-12 bg-gradient-to-r from-transparent to-[#d4af37]/50" />
-                    <p className="text-[10px] text-[#d4af37] font-black uppercase tracking-[0.5em]">Gate Sealed</p>
+                    <p className={`text-[10px] text-[#d4af37] font-black uppercase tracking-[0.5em] ${language === 'or' ? 'oriya-font' : ''}`}>
+                      {language === 'en' ? "Gate Sealed" : "ଦ୍ୱାର ବନ୍ଦ ହୋଇଛି"}
+                    </p>
                     <div className="h-px w-12 bg-gradient-to-l from-transparent to-[#d4af37]/50" />
                   </div>
                 </div>
@@ -369,9 +371,9 @@ function SundayLockout({ language, onAdminBypass }: { language: 'en' | 'or', onA
                 <div className="pt-4 border-t border-white/5">
                   <button 
                     onClick={onAdminBypass}
-                    className="text-[9px] font-black text-[#d4af37]/20 hover:text-[#ffd700] uppercase tracking-[0.3em] transition-all"
+                    className={`text-[9px] font-black text-[#d4af37]/20 hover:text-[#ffd700] uppercase tracking-[0.3em] transition-all ${language === 'or' ? 'oriya-font' : ''}`}
                   >
-                    Enter Royal Portal (Admin)
+                    {language === 'en' ? "Enter Royal Portal (Admin)" : "ଆଡମିନ୍ ପ୍ରବେଶ"}
                   </button>
                 </div>
               </div>
