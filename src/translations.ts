@@ -185,7 +185,7 @@ export const translations: any = {
       epe: "Environmental & Population Education",
       aspirational: "Aspirational Components",
       science_curiosity: "Science (Jigyansa)",
-      social_science: "Social Science"
+      social_science: "History"
     },
     subjectsByBoard: {
       odisha: {
@@ -213,7 +213,7 @@ export const translations: any = {
         epe: "EPE",
         aspirational: "Aspirational Components",
         science_curiosity: "Science (Jigyansa)",
-        social_science: "Social Science"
+
       },
       saraswati: {
         math: "Mathematics",
@@ -527,7 +527,7 @@ export const translations: any = {
       epe: "ପରିବେଶ ଏବଂ ଜନସଂଖ୍ୟା ଶିକ୍ଷା",
       aspirational: "ଆକାଂକ୍ଷାମୂଳକ ଉପାଦାନ",
       science_curiosity: "ବିଜ୍ଞାନ (ଜିଜ୍ଞାସା)",
-      social_science: "ସାମାଜିକ ବିଜ୍ଞାନ"
+      social_science: "ଇତିହାସ"
     },
     subjectsByBoard: {
       odisha: {
@@ -555,7 +555,7 @@ export const translations: any = {
         epe: "EPE",
         aspirational: "ଆକାଂକ୍ଷାମୂଳକ ଉପାଦାନ",
         science_curiosity: "ବିଜ୍ଞାନ (ଜିଜ୍ଞାସା)",
-        social_science: "ସାମାଜିକ ବିଜ୍ଞାନ"
+        social_science: "ଇତିହାସ"
       },
       saraswati: {
         math: "ଗଣିତ",
