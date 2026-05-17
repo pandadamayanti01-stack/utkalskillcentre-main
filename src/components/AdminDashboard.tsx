@@ -430,6 +430,35 @@ Sample tone for Class 6-10:
     return unsub;
   }, []);
 
+  // TEMPORARY FIX: Correct Physical Science chapters mapped to social_science
+  useEffect(() => {
+    const fixChapters = async () => {
+      try {
+        console.log("Running temporary fix for Physical Science chapters...");
+        const q = query(collection(firestore, 'chapters'), where('subject', '==', 'social_science'));
+        const snapshot = await getDocs(q);
+        let fixed = 0;
+        for (const docSnap of snapshot.docs) {
+          const data = docSnap.data();
+          const titleStr = typeof data.title === 'string' ? data.title : (data.title?.en || data.title?.or || '');
+          const urlStr = data.pdfUrl || data.download_url || data.videoUrl || '';
+          const lowerTitle = titleStr.toLowerCase();
+          const lowerUrl = urlStr.toLowerCase();
+          
+          if (lowerTitle.includes('physical') || lowerUrl.includes('physical')) {
+            console.log("Fixing chapter:", titleStr);
+            await updateDoc(docSnap.ref, { subject: 'physical_science' });
+            fixed++;
+          }
+        }
+        console.log(`Fixed ${fixed} chapters.`);
+      } catch (err) {
+        console.error("Error running fix:", err);
+      }
+    };
+    fixChapters();
+  }, []);
+
   const loadDashboardData = async () => {
     console.log("Debug: Fetching dashboard data...");
     
