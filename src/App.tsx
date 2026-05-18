@@ -3068,7 +3068,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
         </div>
 
         {/* Bottom Floating Navigation Bar for Mobile */}
-        {user && !isAdminView && activeTab !== 'gundulu' && activeTab !== 'study_buddy' && (
+        {user && !isAdminView && activeTab !== 'gundulu' && activeTab !== 'study_buddy' && activeTab !== 'digital_library' && (
           <BottomNavBar
             language={language}
             activeTab={activeTab}

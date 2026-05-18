@@ -908,6 +908,7 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
   const [fontSize, setFontSize] = useState<'normal' | 'large' | 'xlarge'>('normal');
   const [isPdfFullScreen, setIsPdfFullScreen] = useState<boolean>(false);
   const [isChatFullScreen, setIsChatFullScreen] = useState<boolean>(false);
+  const [isGunduluOpen, setIsGunduluOpen] = useState<boolean>(false);
 
   // Gundulu chat states
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
@@ -1270,10 +1271,7 @@ Instructions:
         } else if (selectedChapter) {
           const subjectLabel = selectedChapter.subject || selectedSubject || '';
           title = `Class ${grade} ${subjectLabel} - ${selectedChapter.title} Guides & MCQs | Utkal Skill Centre`;
-          desc = language === 'en'
-            ? `Free solutions, textbook chapters, mock tests, and AI tutor support for Class ${grade} ${subjectLabel} Chapter: ${selectedChapter.title} on Utkal Skill Centre.`
-            : `ଶ୍ରେଣୀ ${grade} ${subjectLabel} ଅଧ୍ୟାୟ: ${selectedChapter.title} ସମାଧାନ, ପରୀକ୍ଷା ପ୍ରଶ୍ନ ଏବଂ ଏଆଇ ଶିକ୍ଷକ ଗୁଣ୍ଡୁଲୁର ସାହାଯ୍ୟ ପାଆନ୍ତୁ।`;
-
+          
           schemaData = {
             "@context": "https://schema.org",
             "@type": "Book",
@@ -1324,7 +1322,7 @@ Instructions:
       <div className="absolute bottom-[-10%] right-[-10%] w-[40rem] h-[40rem] rounded-full bg-teal-950/10 blur-[60px] md:blur-[120px] pointer-events-none" />
 
       {/* HEADER BAR */}
-      <div className="w-full max-w-7xl mx-auto px-4 py-6 flex items-center justify-between border-b border-white/5 relative z-10">
+      <div className="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between border-b border-white/5 relative z-10">
         <div className="flex items-center gap-3">
           <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
             <Lucide.Library size={24} className="animate-pulse" />
@@ -1333,9 +1331,7 @@ Instructions:
             <h1 className="text-xl md:text-2xl font-black bg-gradient-to-r from-emerald-400 via-teal-400 to-amber-300 bg-clip-text text-transparent">
               {language === 'en' ? 'Digital Library' : 'ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀ'}
             </h1>
-            <p className="text-[10px] md:text-xs text-slate-400 font-bold uppercase tracking-wider">
-              {language === 'en' ? 'Official School Textbooks & AI Study Buddies' : 'ସମସ୍ତ ପାଠ୍ୟପୁସ୍ତକ ଓ ଏଆଇ ଅଧ୍ୟୟନ ସାଥୀ'}
-            </p>
+            
           </div>
         </div>
 
@@ -1361,13 +1357,13 @@ Instructions:
       </div>
 
       {/* VIEW CONTAINER */}
-      <div className="w-full max-w-7xl mx-auto px-4 py-8 flex-1 flex flex-col relative z-10">
+      <div className="w-full max-w-7xl mx-auto px-4 py-4 flex-1 flex flex-col relative z-10">
 
         {/* VIEW 1: SUBJECT TEXTBOOK SELECTOR */}
         {currentView === 'subjects' && (
           <div style={forceGpuCompositingStyle} className="flex-1 flex flex-col">
             {/* Elegant Compact Digital Library Header */}
-            <div className="text-center max-w-2xl mx-auto mb-8">
+            <div className="text-center max-w-2xl mx-auto mb-4">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-400 text-[10px] font-black uppercase tracking-widest mb-4 shadow-sm">
                 <Lucide.Sparkles size={12} className="text-amber-400 animate-pulse" />
                 <span>{language === 'en' ? 'USC Digital Library' : 'ଉତ୍କଳ ଡିଜିଟାଲ୍ ପାଠାଗାର'}</span>
@@ -1419,7 +1415,7 @@ Instructions:
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.5, delay: index * 0.1 }}
                       whileHover={{ scale: 1.05, rotateY: 5, rotateX: 2, y: -10 }}
-                      className="snap-center shrink-0 w-72 md:w-80 relative rounded-3xl bg-white/[0.02] backdrop-blur-md md:backdrop-blur-xl border border-white/10 flex flex-col cursor-pointer group hover:border-emerald-500/50 hover:shadow-xl md:shadow-[0_0_40px_rgba(16,185,129,0.2)] overflow-hidden shadow-2xl transition-colors min-h-[380px]"
+                      className="snap-center shrink-0 w-72 md:w-80 relative rounded-3xl bg-[#0b0f19] border border-white/10 flex flex-col cursor-pointer group hover:border-emerald-500/50 transition-all duration-300 min-h-[380px]"
                       onClick={() => {
                         setSelectedSubject(subKey);
                         setCurrentView('chapters');
@@ -1461,10 +1457,10 @@ Instructions:
                           <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20 shadow-sm inline-block">
                             {language === 'en' ? 'Digital Textbook' : 'ଡିଜିଟାଲ୍ ପାଠ୍ୟପୁସ୍ତକ'}
                           </span>
-                          <h3 className="text-xl font-extrabold text-white group-hover:text-emerald-300 transition-colors mt-3 leading-tight">
+                          <h3 className="text-xl font-extrabold !text-white group-hover:!text-emerald-300 transition-colors mt-3 leading-tight">
                             {language === 'en' ? meta.labelEn : meta.labelOr}
                           </h3>
-                          <p className="text-sm text-slate-400 mt-1 font-bold">
+                          <p className="text-sm !text-slate-300 mt-1 font-bold">
                             {language === 'en' ? meta.labelOr : meta.labelEn}
                           </p>
                         </div>
@@ -1725,7 +1721,7 @@ Instructions:
                       }`}
                   >
                     <Lucide.Youtube size={14} />
-                    <span>{language === 'en' ? 'Concept Videos' : 'ଭିଡିଓ କ୍ଲାସ'}</span>
+                    <span>{language === 'en' ? 'AI Video' : 'ଏଆଇ ଭିଡିଓ'}</span>
                   </button>
                 </div>
 
@@ -2295,19 +2291,19 @@ Instructions:
                   <div className="p-3 bg-slate-950/80 backdrop-blur-md md:backdrop-blur-xl border-t border-white/5 flex gap-2 overflow-x-auto scrollbar-none whitespace-nowrap">
                     <button
                       onClick={() => handleSendToGundulu(language === 'en' ? "Summarize this chapter for me." : "ଏହି ଅଧ୍ୟାୟର ଏକ ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଦିଅ।")}
-                      className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-emerald-500/20 border border-white/10 hover:border-emerald-500/30 text-xs font-bold text-slate-300 hover:text-emerald-300 active:scale-95 transition-all shadow-sm"
+                      className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-emerald-500/20 border border-white/10 hover:border-emerald-500/30 text-xs font-bold !text-white hover:text-emerald-300 active:scale-95 transition-all shadow-sm"
                     >
                       📝 {language === 'en' ? 'Summarize Guide' : 'ସାରାଂଶ'}
                     </button>
                     <button
                       onClick={() => handleSendToGundulu(language === 'en' ? "Give me an MCQ test based on this chapter notes." : "ଏହି ଅଧ୍ୟାୟରୁ ମୋତେ ଗୋଟିଏ MCQ ଟେଷ୍ଟ ପ୍ରଶ୍ନ ପଚାର।")}
-                      className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-amber-500/20 border border-white/10 hover:border-amber-500/30 text-xs font-bold text-slate-300 hover:text-amber-300 active:scale-95 transition-all shadow-sm"
+                      className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-amber-500/20 border border-white/10 hover:border-amber-500/30 text-xs font-bold !text-white hover:text-amber-300 active:scale-95 transition-all shadow-sm"
                     >
                       ⚡ {language === 'en' ? 'Ask me MCQ' : 'MCQ ପ୍ରଶ୍ନ'}
                     </button>
                     <button
                       onClick={() => handleSendToGundulu(language === 'en' ? "Explain the most important formulas of this chapter." : "ଏହି ଅଧ୍ୟାୟର ସବୁଠାରୁ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ରଗୁଡ଼ିକ ବୁଝାଅ।")}
-                      className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-purple-500/20 border border-white/10 hover:border-purple-500/30 text-xs font-bold text-slate-300 hover:text-purple-300 active:scale-95 transition-all shadow-sm"
+                      className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-purple-500/20 border border-white/10 hover:border-purple-500/30 text-xs font-bold !text-white hover:text-purple-300 active:scale-95 transition-all shadow-sm"
                     >
                       📐 {language === 'en' ? 'Explain Formulas' : 'ମୁଖ୍ୟ ସୂତ୍ର'}
                     </button>
@@ -2807,19 +2803,19 @@ Instructions:
                   <div className="p-4 bg-slate-950 border-t border-white/5 flex gap-2 overflow-x-auto scrollbar-none whitespace-nowrap">
                     <button
                       onClick={() => handleSendToGundulu(language === 'en' ? "Summarize this chapter for me." : "ଏହି ଅଧ୍ୟାୟର ଏକ ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଦିଅ।")}
-                      className="px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 border border-white/5 text-xs font-bold text-slate-300 active:scale-95 transition-all"
+                      className="px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 border border-white/5 text-xs font-bold !text-white active:scale-95 transition-all"
                     >
                       📝 {language === 'en' ? 'Summarize Guide' : 'ସାରାଂଶ'}
                     </button>
                     <button
                       onClick={() => handleSendToGundulu(language === 'en' ? "Give me an MCQ test based on this chapter notes." : "ଏହି ଅଧ୍ୟାୟରୁ ମୋତେ ଗୋଟିଏ MCQ ଟେଷ୍ଟ ପ୍ରଶ୍ନ ପଚାର।")}
-                      className="px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 border border-white/5 text-xs font-bold text-slate-300 active:scale-95 transition-all"
+                      className="px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 border border-white/5 text-xs font-bold !text-white active:scale-95 transition-all"
                     >
                       ⚡ {language === 'en' ? 'Ask me MCQ' : 'MCQ ପ୍ରଶ୍ନ'}
                     </button>
                     <button
                       onClick={() => handleSendToGundulu(language === 'en' ? "Explain the most important formulas of this chapter." : "ଏହି ଅଧ୍ୟାୟର ସବୁଠାରୁ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ରଗୁଡ଼ିକ ବୁଝାଅ।")}
-                      className="px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 border border-white/5 text-xs font-bold text-slate-300 active:scale-95 transition-all"
+                      className="px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 border border-white/5 text-xs font-bold !text-white active:scale-95 transition-all"
                     >
                       📐 {language === 'en' ? 'Explain Formulas' : 'ମୁଖ୍ୟ ସୂତ୍ର'}
                     </button>
@@ -2858,4 +2854,5 @@ Instructions:
     </div>
   );
 };
+
 
