@@ -2191,7 +2191,7 @@ export default function App() {
             <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-xl scale-125 animate-pulse" />
             <motion.img 
               src="/utkal-192.png" 
-              className="h-24 w-auto relative z-10" 
+              className="h-24 w-auto relative z-10 rounded-full border border-emerald-500/20" 
               alt="Utkal" 
               referrerPolicy="no-referrer"
               animate={{ y: [0, -10, 0] }}
