@@ -1357,7 +1357,7 @@ Instructions:
       </div>
 
       {/* VIEW CONTAINER */}
-      <div className="w-full max-w-7xl mx-auto px-4 py-4 flex-1 flex flex-col relative z-10">
+      <div className="w-full max-w-7xl mx-auto px-4 py-4 flex-1 flex flex-col justify-center relative z-10">
 
         {/* VIEW 1: SUBJECT TEXTBOOK SELECTOR */}
         {currentView === 'subjects' && (
@@ -1415,7 +1415,7 @@ Instructions:
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.5, delay: index * 0.1 }}
                       whileHover={{ scale: 1.05, rotateY: 5, rotateX: 2, y: -10 }}
-                      className="snap-center shrink-0 w-72 md:w-80 relative rounded-3xl bg-[#0b0f19] border border-white/10 flex flex-col cursor-pointer group hover:border-emerald-500/50 transition-all duration-300 min-h-[380px]"
+                      className="snap-center shrink-0 w-72 md:w-80 relative rounded-3xl border-2 border-amber-500/30 flex flex-col cursor-pointer group hover:border-amber-500 transition-all duration-300 min-h-[380px]"
                       onClick={() => {
                         setSelectedSubject(subKey);
                         setCurrentView('chapters');
@@ -1445,10 +1445,11 @@ Instructions:
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f19] via-[#0b0f19]/40 to-transparent pointer-events-none" />
 
-                        {/* Floating Subject Icon Badge */}
-                        <div className={`absolute -bottom-6 left-6 p-4 rounded-2xl bg-gradient-to-br ${meta.gradient} text-white shadow-[0_10px_20px_rgba(0,0,0,0.5)] ring-4 ring-[#0b0f19] transform group-hover:scale-110 transition-transform duration-500`}>
-                          <Icon size={24} />
                         </div>
+
+                      {/* Floating Subject Icon Badge */}
+                      <div className={`absolute top-[164px] left-6 p-4 rounded-2xl bg-gradient-to-br ${meta.gradient} text-white shadow-[0_10px_20px_rgba(0,0,0,0.5)] ring-4 ring-[#0b0f19] transform group-hover:scale-110 transition-transform duration-500 z-20`}>
+                        <Icon size={24} />
                       </div>
 
                       {/* Content Section */}
@@ -1457,10 +1458,10 @@ Instructions:
                           <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20 shadow-sm inline-block">
                             {language === 'en' ? 'Digital Textbook' : 'ଡିଜିଟାଲ୍ ପାଠ୍ୟପୁସ୍ତକ'}
                           </span>
-                          <h3 className="text-xl font-extrabold !text-white group-hover:!text-emerald-300 transition-colors mt-3 leading-tight">
+                          <h3 className="text-xl font-extrabold !text-slate-900 group-hover:!text-emerald-600 transition-colors mt-3 leading-tight">
                             {language === 'en' ? meta.labelEn : meta.labelOr}
                           </h3>
-                          <p className="text-sm !text-slate-300 mt-1 font-bold">
+                          <p className="text-sm !text-slate-600 mt-1 font-bold">
                             {language === 'en' ? meta.labelOr : meta.labelEn}
                           </p>
                         </div>
