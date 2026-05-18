@@ -306,7 +306,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         </div>
       </div>
 
-      <div ref={messageListRef} className="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-6 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+      <div ref={messageListRef} className="flex-1 overflow-y-auto min-h-0 px-4 md:px-8 py-6 space-y-6 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
         <AnimatePresence initial={false}>
           {messages.map((msg) => (
             <motion.div

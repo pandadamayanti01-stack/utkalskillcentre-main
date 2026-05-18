@@ -2943,7 +2943,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
 
         <div 
           ref={contentScrollRef} 
-          className={`flex-1 ${(activeTab === 'study_buddy' || activeTab === 'gundulu') ? 'overflow-hidden p-0 flex flex-col' : 'overflow-y-auto p-4 md:p-8 pb-28 lg:pb-8'} scrollbar-hide relative z-10`}
+          className={`flex-1 ${(activeTab === 'study_buddy' || activeTab === 'gundulu') ? 'overflow-hidden p-0 flex flex-col min-h-0' : 'overflow-y-auto p-4 md:p-8 pb-28 lg:pb-8'} scrollbar-hide relative z-10`}
         >
           <AnimatePresence mode="wait">
             {/* Your 10+ Tab components go here... */}
