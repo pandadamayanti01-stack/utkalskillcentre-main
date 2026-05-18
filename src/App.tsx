@@ -5458,7 +5458,7 @@ function LeaderboardView({ leaderboard, language, onBack, following, user }: any
         document.body.removeChild(link);
         alert(language === 'en' 
           ? 'Downloaded Rank Card successfully! 🏆 Post it to your WhatsApp status to inspire your friends!' 
-          : 'ର୍ୟାଙ୍କ୍ କାର୍ଡ଼ ସଫଳତାର ସହ ଡାଉନଲୋଡ୍ ହୋଇଗଲା! 🏆 ନିଜ ସାଙ୍ଗମାନଙ୍କୁ ପ୍ରେରିତ କରିବା ପାଇଁ ଏହାକୁ ନିଜ WhatsApp ଷ୍ଟାଟସ୍‌ରେ ପୋଷ୍ଟ କରନ୍ତୁ!');
+          : 'ରାଙ୍କ କାର୍ଡ ସଫଳତାର ସହ ଡାଉନଲୋଡ୍ ହୋଇଗଲା! 🏆 ନିଜ ସାଙ୍ଗମାନଙ୍କୁ ପ୍ରେରିତ କରିବା ପାଇଁ ଏହାକୁ ନିଜ WhatsApp ଷ୍ଟାଟସ୍‌ରେ ପୋଷ୍ଟ କରନ୍ତୁ!');
       }
 
       confetti({
