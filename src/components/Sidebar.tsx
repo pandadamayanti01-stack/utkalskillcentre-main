@@ -38,7 +38,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'dashboard', icon: Lucide.LayoutDashboard, label: user?.role === 'teacher' ? (language === 'en' ? 'Educator Studio' : 'ଶିକ୍ଷକ ଷ୍ଟୁଡିଓ') : t.dashboard },
     { id: 'notifications', icon: Lucide.Bell, label: language === 'en' ? 'Notifications' : 'ବିଜ୍ଞପ୍ତି' },
     { id: 'study_buddy', icon: Lucide.Bot, label: t.studyBuddy || 'Study Buddy' },
-    { id: 'gundulu', icon: Lucide.Sparkles, label: language === 'en' ? '🎤 Gundulu Voice' : '🎤 ଗୁଣ୍ଡୁଲୁ ଭଏସ' },
+    { id: 'gundulu', icon: Lucide.Sparkles, label: language === 'en' ? '🎤 Gundulu AI Tutor' : '🎤 ଗୁଣ୍ଡୁଲୁ AI ଟ୍ୟୁଟର' },
     { id: 'digital_library', icon: Lucide.Library, label: language === 'en' ? 'Digital Library' : 'ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀ' },
     { id: 'textbooks', icon: Lucide.Book, label: language === 'en' ? 'Textbooks' : 'ପାଠ୍ୟପୁସ୍ତକ' },
     { id: 'courses', icon: Lucide.BookOpen, label: t.courses },
@@ -52,7 +52,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   const teacherExcludedIds = ['store', 'leaderboard', 'daily_mcqs', 'syllabus_tracker', 'monthly_tests', 'courses', 'plans'];
-  const menuItems = user?.role === 'teacher' 
+  const menuItems = user?.role === 'teacher'
     ? allMenuItems.filter(item => !teacherExcludedIds.includes(item.id))
     : allMenuItems;
 
@@ -62,7 +62,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     <>
       <AnimatePresence>
         {isSidebarOpen && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -72,7 +72,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         )}
       </AnimatePresence>
 
-      <motion.aside 
+      <motion.aside
         className={`fixed lg:static inset-y-0 left-0 w-72 sidebar-gradient z-50 transform transition-transform duration-300 lg:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <div className="h-full flex flex-col p-6">
@@ -82,8 +82,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
               {/* Chariot/Rath Crest */}
               <img src="/gundulu-rath-crest.png" alt="Gundulu" className="h-12 w-auto drop-shadow-lg" />
               <div className="flex flex-col">
-                 <span className="text-[#ffd700] font-black text-xl leading-none">ଏଆଈ-AI</span>
-                 <span className="text-[10px] font-bold text-white/40 tracking-widest uppercase">Gundulu Era</span>
+                <span className="text-[#ffd700] font-black text-xl leading-none">ଏଆଈ-AI</span>
+                <span className="text-[10px] font-bold text-white/40 tracking-widest uppercase">Gundulu Era</span>
               </div>
             </div>
             {/* Utkal Logo in Sidebar */}
@@ -138,20 +138,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
               <div className="flex items-center gap-2 text-white/60">
                 <Lucide.Globe size={18} className="text-emerald-400" />
                 <span className="text-xs font-bold">{language === 'en' ? 'Language' : 'ଭାଷା'}</span>
               </div>
               <div className="flex gap-1 bg-black/40 p-1 rounded-xl border border-white/5">
-                <button 
+                <button
                   onClick={() => setLanguage('en')}
                   className={`px-2.5 py-1 rounded-lg text-[10px] font-black transition-all ${language === 'en' ? 'bg-[#b34d1f] text-white shadow-md' : 'text-white/40 hover:text-white/70'}`}
                 >
                   EN
                 </button>
-                <button 
+                <button
                   onClick={() => setLanguage('or')}
                   className={`px-2.5 py-1 rounded-lg text-[10px] font-black transition-all ${language === 'or' ? 'bg-[#b34d1f] text-white shadow-md' : 'text-white/40 hover:text-white/70'}`}
                 >
@@ -159,8 +159,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </button>
               </div>
             </div>
-            
-            <button 
+
+            <button
               onClick={handleLogout}
               className="w-full flex items-center gap-3 p-4 rounded-2xl text-red-400/70 hover:bg-red-500/10 hover:text-red-400 transition-all font-bold text-sm group"
             >

@@ -138,7 +138,7 @@ export const translations: any = {
     dailyMcq: "Gundulu's Daily Challenge",
     takeDailyMcq: "Solve Today's Challenge",
     proTip: "Pro Tip",
-    studyBuddy: "Gundulu AI Tutor",
+    studyBuddy: "Gundulu Homework Helper",
     levelUp: "Level Up!",
     nextLeague: "Next League",
     currentStreak: "Current Streak",
