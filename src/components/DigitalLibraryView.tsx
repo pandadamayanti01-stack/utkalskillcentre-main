@@ -25,7 +25,7 @@ interface Message {
 }
 
 // Map Class level state board textbooks to gorgeous, premium gradient card metadata
-const CLASS_SUBJECTS: Record<string, Array<{
+export const CLASS_SUBJECTS: Record<string, Array<{
   key: string;
   labelEn: string;
   labelOr: string;
@@ -1320,8 +1320,8 @@ Instructions:
         );
       })()}
       {/* Background Ornaments */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40rem] h-[40rem] rounded-full bg-emerald-950/10 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40rem] h-[40rem] rounded-full bg-teal-950/10 blur-[120px] pointer-events-none" />
+      <div className="absolute top-[-10%] left-[-10%] w-[40rem] h-[40rem] rounded-full bg-emerald-950/10 blur-[60px] md:blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40rem] h-[40rem] rounded-full bg-teal-950/10 blur-[60px] md:blur-[120px] pointer-events-none" />
 
       {/* HEADER BAR */}
       <div className="w-full max-w-7xl mx-auto px-4 py-6 flex items-center justify-between border-b border-white/5 relative z-10">
@@ -1399,78 +1399,91 @@ Instructions:
               </div>
             )}
 
-            {/* SUBJECT GRID */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {activeSubjects.map((meta) => {
-                const Icon = meta.icon;
-                const subKey = meta.key;
-                const targetClassCode = `class${selectedClass}`;
-                const classSpecificCover = `/${targetClassCode}_${subKey}_cover.png`;
+            {/* HOLOGRAPHIC SUBJECT CAROUSEL */}
+            <div className="relative w-full pb-8">
+              {/* Fade masks for edges */}
+              <div className="absolute top-0 bottom-0 left-0 w-8 bg-gradient-to-r from-[#0b0f19] to-transparent z-10 pointer-events-none" />
+              <div className="absolute top-0 bottom-0 right-0 w-8 bg-gradient-to-l from-[#0b0f19] to-transparent z-10 pointer-events-none" />
+              
+              <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-none px-4 md:px-8 pt-4 pb-12 w-full mx-auto" style={{ scrollBehavior: 'smooth' }}>
+                {activeSubjects.map((meta, index) => {
+                  const Icon = meta.icon;
+                  const subKey = meta.key;
+                  const targetClassCode = `class${selectedClass}`;
+                  const classSpecificCover = `/${targetClassCode}_${subKey}_cover.png`;
 
-                return (
-                  <div
-                    key={subKey}
-                    onClick={() => {
-                      setSelectedSubject(subKey);
-                      setCurrentView('chapters');
-                    }}
-                    className="relative rounded-3xl bg-slate-900/40 border border-white/5 flex flex-col cursor-pointer group hover:border-emerald-500/30 hover:-translate-y-1 hover:scale-[1.02] overflow-hidden shadow-lg shadow-black/40 transition-all duration-300 min-h-[340px]"
-                  >
-                    {/* Cover Image Top Section */}
-                    <div className="h-44 w-full relative overflow-hidden bg-slate-950">
-                      <img
-                        src={classSpecificCover}
-                        alt={meta.labelEn}
-                        onError={(e) => {
-                          const img = e.currentTarget;
-                          const step = img.getAttribute('data-err-step') || '0';
-                          if (step === '0') {
-                            img.setAttribute('data-err-step', '1');
-                            img.src = window.location.origin + meta.coverImage;
-                          } else {
-                            img.onerror = null;
-                            img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
-                          }
-                        }}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-60 group-hover:opacity-85"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f19] via-transparent to-black/30" />
+                  return (
+                    <motion.div
+                      key={subKey}
+                      initial={{ opacity: 0, x: 50 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      whileHover={{ scale: 1.05, rotateY: 5, rotateX: 2, y: -10 }}
+                      className="snap-center shrink-0 w-72 md:w-80 relative rounded-3xl bg-white/[0.02] backdrop-blur-md md:backdrop-blur-xl border border-white/10 flex flex-col cursor-pointer group hover:border-emerald-500/50 hover:shadow-xl md:shadow-[0_0_40px_rgba(16,185,129,0.2)] overflow-hidden shadow-2xl transition-colors min-h-[380px]"
+                      onClick={() => {
+                        setSelectedSubject(subKey);
+                        setCurrentView('chapters');
+                      }}
+                      style={{ perspective: 1000 }}
+                    >
+                      {/* Holographic Inner Glow */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                      
+                      {/* Cover Image Top Section */}
+                      <div className="h-48 w-full relative overflow-hidden bg-slate-950/50 rounded-t-3xl border-b border-white/5">
+                        <img
+                          src={classSpecificCover}
+                          alt={meta.labelEn}
+                          onError={(e) => {
+                            const img = e.currentTarget;
+                            const step = img.getAttribute('data-err-step') || '0';
+                            if (step === '0') {
+                              img.setAttribute('data-err-step', '1');
+                              img.src = window.location.origin + meta.coverImage;
+                            } else {
+                              img.onerror = null;
+                              img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+                            }
+                          }}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out opacity-70 group-hover:opacity-100"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f19] via-[#0b0f19]/40 to-transparent pointer-events-none" />
 
-                      {/* Floating Subject Icon Badge */}
-                      <div className={`absolute bottom-4 left-6 p-3.5 rounded-2xl bg-gradient-to-br ${meta.gradient} text-white shadow-lg`}>
-                        <Icon size={20} />
-                      </div>
-                    </div>
-
-                    {/* Content Section */}
-                    <div className="p-6 flex-1 flex flex-col justify-between">
-                      {/* Cover Title */}
-                      <div>
-                        <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">
-                          {language === 'en' ? 'Digital Textbook' : 'ଡିଜିଟାଲ୍ ପାଠ୍ୟପୁସ୍ତକ'}
-                        </span>
-                        <h3 className="text-lg font-extrabold text-white group-hover:text-emerald-300 transition-colors mt-1">
-                          {language === 'en' ? meta.labelEn : meta.labelOr}
-                        </h3>
-                        <p className="text-xs text-slate-400 mt-0.5 font-bold">
-                          {language === 'en' ? meta.labelOr : meta.labelEn}
-                        </p>
-                      </div>
-
-                      {/* Footer Progress & Enter Button */}
-                      <div className="pt-4 border-t border-white/5 flex items-center justify-between">
-                        <span className="text-xs text-slate-500 group-hover:text-slate-300 transition-colors flex items-center gap-1.5 font-bold">
-                          <Lucide.BookOpen size={14} className="text-slate-500" />
-                          <span>{language === 'en' ? 'BSE Odisha' : 'BSE ଓଡ଼ିଶା'}</span>
-                        </span>
-                        <div className="p-2 rounded-full bg-slate-800 text-slate-400 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-md">
-                          <Lucide.ChevronRight size={14} />
+                        {/* Floating Subject Icon Badge */}
+                        <div className={`absolute -bottom-6 left-6 p-4 rounded-2xl bg-gradient-to-br ${meta.gradient} text-white shadow-[0_10px_20px_rgba(0,0,0,0.5)] ring-4 ring-[#0b0f19] transform group-hover:scale-110 transition-transform duration-500`}>
+                          <Icon size={24} />
                         </div>
                       </div>
-                    </div>
-                  </div>
-                );
-              })}
+
+                      {/* Content Section */}
+                      <div className="p-6 pt-10 flex-1 flex flex-col justify-between relative z-10">
+                        <div>
+                          <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20 shadow-sm inline-block">
+                            {language === 'en' ? 'Digital Textbook' : 'ଡିଜିଟାଲ୍ ପାଠ୍ୟପୁସ୍ତକ'}
+                          </span>
+                          <h3 className="text-xl font-extrabold text-white group-hover:text-emerald-300 transition-colors mt-3 leading-tight">
+                            {language === 'en' ? meta.labelEn : meta.labelOr}
+                          </h3>
+                          <p className="text-sm text-slate-400 mt-1 font-bold">
+                            {language === 'en' ? meta.labelOr : meta.labelEn}
+                          </p>
+                        </div>
+
+                        {/* Footer Progress & Enter Button */}
+                        <div className="pt-5 mt-4 border-t border-white/5 flex items-center justify-between">
+                          <span className="text-xs text-slate-500 group-hover:text-slate-300 transition-colors flex items-center gap-1.5 font-bold">
+                            <Lucide.BookOpen size={14} className="text-emerald-500/50 group-hover:text-emerald-400 transition-colors" />
+                            <span>{language === 'en' ? 'BSE Odisha' : 'BSE ଓଡ଼ିଶା'}</span>
+                          </span>
+                          <div className="p-3 rounded-2xl bg-white/5 text-slate-400 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-md group-hover:shadow-[0_0_15px_rgba(16,185,129,0.4)]">
+                            <Lucide.ChevronRight size={16} />
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         )}
@@ -1486,27 +1499,40 @@ Instructions:
                 labelOr: 'ପାଠ୍ୟପୁସ୍ତକ'
               };
               return (
-                <div className={`w-full rounded-3xl p-6 md:p-8 bg-gradient-to-r ${currentMeta.gradient} mb-8 shadow-lg relative overflow-hidden`}>
-                  <div className="absolute right-6 bottom-[-20%] opacity-15 text-white pointer-events-none">
-                    {React.createElement(currentMeta.icon, { size: 160 })}
+                <div className={`w-full rounded-3xl p-6 md:p-10 bg-gradient-to-br ${currentMeta.gradient} mb-8 shadow-2xl relative overflow-hidden ring-1 ring-white/10`}>
+                  {/* Holographic glowing orbs */}
+                  <motion.div 
+                    animate={{ x: [0, 20, 0], y: [0, -20, 0] }}
+                    transition={{ repeat: Infinity, duration: 8, ease: "easeInOut" }}
+                    className="absolute -top-20 -left-20 w-64 h-64 bg-white/20 rounded-full blur-[40px] md:blur-[80px] pointer-events-none" 
+                  />
+                  <motion.div 
+                    animate={{ x: [0, -30, 0], y: [0, 30, 0] }}
+                    transition={{ repeat: Infinity, duration: 10, ease: "easeInOut", delay: 1 }}
+                    className="absolute -bottom-20 -right-20 w-80 h-80 bg-black/20 rounded-full blur-[40px] md:blur-[80px] pointer-events-none" 
+                  />
+                  
+                  <div className="absolute right-6 bottom-[-20%] opacity-20 text-white pointer-events-none transform -rotate-12">
+                    {React.createElement(currentMeta.icon, { size: 180 })}
                   </div>
-                  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  
+                  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 backdrop-blur-sm">
                     <div>
-                      <span className="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest bg-white/10 border border-white/20 text-white">
+                      <span className="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-black/20 border border-white/20 text-white shadow-inner backdrop-blur-md">
                         {user?.class ? user.class.toUpperCase() : 'BSE ODISHA'}
                       </span>
-                      <h2 className="text-2xl md:text-4xl font-extrabold text-white mt-3">
+                      <h2 className="text-3xl md:text-5xl font-black text-white mt-4 tracking-tight" style={{ textShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>
                         {language === 'en' ? currentMeta.labelEn : currentMeta.labelOr}
                       </h2>
-                      <p className="text-xs md:text-sm text-white/80 mt-1 font-medium">
+                      <p className="text-sm md:text-base text-white/90 mt-2 font-medium max-w-lg leading-relaxed">
                         {language === 'en'
-                          ? 'Read textbook chapters or use custom bilingually simplified interactive notes.'
+                          ? 'Immersive holographic chapters & AI study guides await.'
                           : 'ମୂଳ ବିଷୟବସ୍ତୁ ପଢ଼ନ୍ତୁ କିମ୍ବା ଆମର ସରଳୀକୃତ ଦ୍ୱିଭାଷୀ ଟିପ୍ପଣୀ ବ୍ୟବହାର କରନ୍ତୁ।'}
                       </p>
                     </div>
-                    <div className="text-left md:text-right">
-                      <span className="text-3xl font-black text-white">{filteredChapters.length}</span>
-                      <p className="text-[10px] text-white/70 uppercase font-bold tracking-widest mt-1">
+                    <div className="text-left md:text-right bg-black/10 p-4 rounded-2xl border border-white/10 backdrop-blur-md">
+                      <span className="text-4xl md:text-5xl font-black text-white" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.2)' }}>{filteredChapters.length}</span>
+                      <p className="text-[10px] text-white/80 uppercase font-black tracking-widest mt-1">
                         {language === 'en' ? 'Chapters Live' : 'ଅଧ୍ୟାୟ ପ୍ରକାଶିତ'}
                       </p>
                     </div>
@@ -1517,82 +1543,94 @@ Instructions:
 
             {/* CHAPTERS DIRECTORY CONTAINER */}
             {filteredChapters.length === 0 ? (
-              <div className="w-full py-16 flex flex-col items-center justify-center text-center bg-slate-900/20 border border-dashed border-white/5 rounded-3xl">
-                <div className="p-4 rounded-full bg-slate-800 text-slate-500 mb-4">
-                  <Lucide.BookOpenCheck size={32} />
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="w-full py-20 flex flex-col items-center justify-center text-center bg-slate-900/40 border border-dashed border-white/10 rounded-3xl backdrop-blur-md"
+              >
+                <div className="p-5 rounded-3xl bg-slate-800 text-slate-500 mb-5 shadow-inner">
+                  <Lucide.BookOpenCheck size={40} />
                 </div>
-                <h3 className="text-lg font-black text-slate-300">
+                <h3 className="text-xl font-black text-slate-300">
                   {language === 'en' ? 'Chapters Uploading Soon!' : 'ଅଧ୍ୟାୟ ଶୀଘ୍ର ଉପଲବ୍ଧ ହେବ!'}
                 </h3>
-                <p className="text-xs text-slate-500 mt-2 max-w-sm">
+                <p className="text-sm text-slate-500 mt-2 max-w-sm">
                   {language === 'en'
                     ? 'Our teachers are currently preparing premium bilingually mapped materials for this textbook.'
                     : 'ଏହି ପାଠ୍ୟପୁସ୍ତକ ପାଇଁ ଆମର ଶିକ୍ଷକମାନେ ଖୁବ୍ ଶୀଘ୍ର ସରଳ ଦ୍ୱିଭାଷୀ ଅଧ୍ୟାୟ ପ୍ରକାଶ କରିବାକୁ ଯାଉଛନ୍ତି।'}
                 </p>
-              </div>
+              </motion.div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pb-10">
                 {filteredChapters.map((chap, idx) => (
-                  <div
+                  <motion.div
                     key={chap.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.05, type: 'spring', stiffness: 300, damping: 24 }}
+                    whileHover={{ scale: 1.02, y: -2 }}
                     onClick={() => {
                       setSelectedChapter(chap);
                       setCurrentView('reader');
                       setReaderMode((chap.pdfUrl || chap.download_url || chap.driveUrl) ? 'pdf' : 'notes');
                     }}
-                    className="p-5 rounded-2xl bg-slate-900/40 border border-white/5 hover:border-emerald-500/20 flex items-center justify-between cursor-pointer group transition-all"
+                    className="p-5 rounded-3xl bg-slate-900/60 backdrop-blur-md md:backdrop-blur-xl border border-white/5 hover:border-emerald-500/30 flex items-center justify-between cursor-pointer group transition-all shadow-lg hover:shadow-[0_10px_30px_rgba(16,185,129,0.15)] relative overflow-hidden"
                   >
-                    <div className="flex items-center gap-4">
+                    {/* Hover Glow Background */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 via-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                    <div className="flex items-center gap-5 relative z-10">
                       {/* Chapter Thumbnail Book Cover */}
                       {chap.coverUrl && chap.coverUrl !== 'none' ? (
-                        <div className="relative h-16 w-12 rounded-xl overflow-hidden bg-slate-950 border border-white/5 flex-shrink-0 group-hover:border-emerald-500/20 transition-colors shadow-md">
+                        <div className="relative h-20 w-14 rounded-xl overflow-hidden bg-slate-950 border border-white/10 flex-shrink-0 group-hover:border-emerald-500/30 transition-colors shadow-lg">
                           <img
                             src={chap.coverUrl}
                             alt="Book Cover"
                             onError={(e) => {
                               handleImageError(e, '');
                             }}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300 opacity-80 group-hover:opacity-100"
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-80 group-hover:opacity-100"
                           />
+                          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
                           {/* Overlay floating chapter index badge */}
-                          <div className="absolute top-1 left-1 px-1.5 py-0.5 rounded-md bg-black/80 backdrop-blur-sm text-[8px] font-black text-emerald-400">
+                          <div className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded border border-emerald-500/30 bg-black/80 backdrop-blur-sm text-[9px] font-black text-emerald-400">
                             CH {idx + 1}
                           </div>
                         </div>
                       ) : (
                         /* Beautiful lightweight CSS gradient thumbnail */
-                        <div className="relative h-16 w-12 rounded-xl overflow-hidden bg-gradient-to-br from-emerald-500/20 to-teal-600/20 border border-white/10 flex-shrink-0 flex items-center justify-center shadow-md">
-                          <Lucide.BookOpen size={16} className="text-emerald-400 opacity-80" />
+                        <div className="relative h-20 w-14 rounded-xl overflow-hidden bg-gradient-to-br from-emerald-500/20 to-teal-600/20 border border-white/10 flex-shrink-0 flex items-center justify-center shadow-lg group-hover:border-emerald-500/30 transition-colors">
+                          <Lucide.BookOpen size={20} className="text-emerald-400 opacity-80" />
                           {/* Overlay floating chapter index badge */}
-                          <div className="absolute top-1 left-1 px-1.5 py-0.5 rounded-md bg-black/80 backdrop-blur-sm text-[8px] font-black text-emerald-400">
+                          <div className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded border border-emerald-500/30 bg-black/80 backdrop-blur-sm text-[9px] font-black text-emerald-400">
                             CH {idx + 1}
                           </div>
                         </div>
                       )}
 
                       <div>
-                        <h4 className="font-extrabold text-white text-sm md:text-base group-hover:text-emerald-400 transition-colors">
+                        <h4 className="font-extrabold text-white text-base group-hover:text-emerald-400 transition-colors leading-tight">
                           {chap.title}
                         </h4>
-                        <div className="flex items-center gap-3 mt-1.5 text-xs text-slate-400">
+                        <div className="flex items-center gap-2 mt-2 text-xs text-slate-400 flex-wrap">
                           {(chap.pdfUrl || chap.download_url || chap.driveUrl) && (
-                            <span className="flex items-center gap-1 text-sky-400 font-bold bg-sky-400/5 px-1.5 py-0.5 rounded-md border border-sky-400/10">
+                            <span className="flex items-center gap-1 text-sky-400 font-bold bg-sky-400/10 px-2 py-0.5 rounded border border-sky-400/20">
                               <Lucide.FileText size={10} />
-                              <span>PDF</span>
+                              <span>PDF Text</span>
                             </span>
                           )}
-                          <span className="flex items-center gap-1 text-emerald-400 font-bold bg-emerald-400/5 px-1.5 py-0.5 rounded-md border border-emerald-400/10">
-                            <Lucide.Bot size={10} />
-                            <span>AI Companion</span>
+                          <span className="flex items-center gap-1 text-amber-400 font-bold bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20 shadow-[0_0_10px_rgba(251,191,36,0.2)]">
+                            <Lucide.Sparkles size={10} className="animate-pulse" />
+                            <span>AI Study</span>
                           </span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-md active:scale-95">
-                      <Lucide.ArrowRight size={18} />
+                    <div className="relative z-10 h-12 w-12 rounded-full bg-slate-800/80 border border-white/5 flex items-center justify-center text-slate-400 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-lg shadow-black/20 group-hover:shadow-[0_0_15px_rgba(16,185,129,0.5)]">
+                      <Lucide.ChevronRight size={20} className="transform group-hover:translate-x-0.5 transition-transform" />
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             )}
@@ -2128,47 +2166,58 @@ Instructions:
             </div>
 
             {/* RIGHT PANEL - GUNDULU FLOATING STUDY ASSISTANT CHATBOX */}
-            <div className="w-full lg:w-96 flex flex-col bg-slate-900/40 border border-white/5 rounded-3xl overflow-hidden shadow-lg h-[65vh] lg:h-auto">
-
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+              className="w-full lg:w-[400px] flex flex-col bg-slate-950/60 backdrop-blur-lg md:backdrop-blur-2xl border border-white/10 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] ring-1 ring-white/5 h-[70vh] lg:h-auto lg:sticky lg:top-6 z-40"
+            >
               {/* Gundulu Chat Header */}
-              <div className="p-4 bg-gradient-to-r from-emerald-950/60 to-slate-900 border-b border-white/5 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="relative">
+              <div className="p-4 bg-gradient-to-r from-emerald-500/20 to-teal-900/40 border-b border-white/10 flex items-center justify-between backdrop-blur-md relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/20 rounded-full blur-[40px] pointer-events-none" />
+                
+                <div className="flex items-center gap-3 relative z-10">
+                  <div className="relative group cursor-pointer">
                     <img
                       src="/gundulu.png"
                       alt="Gundulu Avatar"
-                      className="h-10 w-10 rounded-full border border-emerald-400/30 object-cover bg-emerald-950/20 shadow-md shadow-emerald-500/10"
+                      className="h-12 w-12 rounded-full border-2 border-emerald-400/50 object-cover bg-emerald-950/40 shadow-[0_0_15px_rgba(52,211,153,0.4)] group-hover:scale-110 transition-transform duration-300"
                       onError={(e) => {
                         handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
                       }}
                     />
-                    <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-400 border border-[#011e1a] shadow-[0_0_8px_#34d399]" />
+                    <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-400 border-2 border-slate-900 shadow-[0_0_10px_#34d399] animate-pulse" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-black text-white flex items-center gap-1">
+                    <h3 className="text-sm font-black text-white flex items-center gap-1.5">
                       <span>{language === 'en' ? 'Gundulu AI Tutor' : 'ଗୁଣ୍ଡୁଲୁ ଏଆଈ ସାଥୀ'}</span>
+                      <Lucide.Sparkles size={12} className="text-amber-400" />
                     </h3>
-                    <p className="text-[10px] text-emerald-400 font-extrabold uppercase tracking-wider">
-                      {language === 'en' ? 'Online Helper' : 'ସର୍ବଦା ପ୍ରସ୍ତୁତ'}
+                    <p className="text-[10px] text-emerald-400 font-extrabold uppercase tracking-widest flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                      {language === 'en' ? 'Online & Ready' : 'ସର୍ବଦା ପ୍ରସ୍ତୁତ'}
                     </p>
                   </div>
                 </div>
-
               </div>
 
               {!isPremium ? (
                 /* GUNDULU SUBSCRIPTION LOCK OVERLAY */
-                <div className="flex-1 flex flex-col items-center justify-center p-6 text-center bg-slate-950/60 backdrop-blur-md space-y-6">
-                  <div className="h-16 w-16 rounded-3xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shadow-lg shadow-emerald-500/5 animate-pulse">
-                    <Lucide.Lock size={28} />
-                  </div>
-                  <div className="space-y-2">
-                    <h4 className="text-sm font-extrabold text-white">
+                <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-950/40 space-y-6">
+                  <motion.div 
+                    animate={{ scale: [1, 1.1, 1] }}
+                    transition={{ repeat: Infinity, duration: 2 }}
+                    className="h-20 w-20 rounded-full bg-gradient-to-tr from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.2)] backdrop-blur-md"
+                  >
+                    <Lucide.Lock size={32} />
+                  </motion.div>
+                  <div className="space-y-3">
+                    <h4 className="text-base font-black text-white">
                       {language === 'en' ? 'Unlock Gundulu AI Tutor' : 'ଗୁଣ୍ଡୁଲୁ AI ଟ୍ୟୁଟର ଅନଲକ୍ କରନ୍ତୁ'}
                     </h4>
-                    <p className="text-xs text-slate-400 leading-relaxed max-w-[240px] mx-auto">
+                    <p className="text-xs text-slate-400 font-medium leading-relaxed max-w-[260px] mx-auto">
                       {language === 'en'
-                        ? 'Chat with Gundulu to solve doubts, explain formulas, and get custom practice tests!'
+                        ? 'Chat with Gundulu to solve doubts, explain complex formulas, and get custom interactive practice tests instantly!'
                         : 'ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହୋଇ ସବୁ ଗଣିତ ପ୍ରଶ୍ନର ସମାଧାନ, ସୂତ୍ର ଏବଂ ସ୍ପେସାଲ୍ ଟେଷ୍ଟ ପାଆନ୍ତୁ!'}
                     </p>
                   </div>
@@ -2181,57 +2230,60 @@ Instructions:
                         alert(language === 'en' ? 'Please upgrade your plan from the profile dashboard!' : 'ଦୟାକରି ଆପଣଙ୍କ ପ୍ରୋଫାଇଲ୍ ଡ୍ୟାସବୋର୍ଡରୁ ପ୍ଲାନ୍ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ!');
                       }
                     }}
-                    className="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-xs font-black tracking-wider uppercase transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
+                    className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white text-xs font-black tracking-widest uppercase transition-all shadow-[0_10px_20px_rgba(16,185,129,0.3)] hover:shadow-[0_15px_30px_rgba(16,185,129,0.5)] active:scale-95 flex items-center justify-center gap-2"
                   >
-                    <Lucide.Sparkles size={14} />
+                    <Lucide.Sparkles size={16} />
                     <span>{language === 'en' ? 'Unlock Premium Now' : 'ପ୍ରିମିୟମ୍ ଅନଲକ୍ କରନ୍ତୁ'}</span>
                   </button>
                 </div>
               ) : (
                 <>
                   {/* GUNDULU CONVERSATION WATERFALL */}
-                  <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-emerald-500/10">
-                    {chatMessages.map((msg) => (
-                      <div
+                  <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-5 space-y-5 scrollbar-thin scrollbar-thumb-emerald-500/20 scrollbar-track-transparent">
+                    {chatMessages.map((msg, idx) => (
+                      <motion.div
                         key={msg.id}
-                        className={`flex items-end gap-2.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className={`flex items-end gap-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                       >
                         {msg.sender === 'gundulu' && (
                           <img
                             src="/gundulu.png"
                             alt="Gundulu"
-                            className="h-6.5 w-6.5 rounded-full border border-emerald-500/10 shadow-sm"
+                            className="h-8 w-8 rounded-full border border-emerald-500/20 shadow-lg shadow-emerald-500/10 shrink-0"
                             onError={(e) => {
                               handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
                             }}
                           />
                         )}
                         <div
-                          className={`max-w-[80%] rounded-2xl p-3.5 leading-relaxed shadow-sm border ${msg.sender === 'user'
-                            ? 'bg-gradient-to-br from-emerald-500 to-teal-600 border-transparent text-white rounded-br-none text-xs font-semibold'
-                            : 'gundulu-chat-bubble bg-slate-900/90 border-emerald-500/20 text-slate-100 rounded-bl-none text-[13px] font-semibold tracking-wide [&_strong]:text-emerald-400 [&_strong]:font-bold [&_code]:bg-slate-950 [&_code]:text-emerald-300 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:font-mono [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_li]:mb-1'
+                          className={`max-w-[85%] rounded-3xl p-4 leading-relaxed shadow-lg border backdrop-blur-sm ${msg.sender === 'user'
+                            ? 'bg-gradient-to-br from-emerald-500 to-teal-600 border-emerald-400/30 text-white rounded-br-sm text-sm font-medium shadow-emerald-500/20'
+                            : 'gundulu-chat-bubble bg-slate-900/80 border-emerald-500/20 text-slate-100 rounded-bl-sm text-sm font-medium tracking-wide [&_strong]:text-emerald-400 [&_strong]:font-bold [&_code]:bg-black/50 [&_code]:text-emerald-300 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded-md [&_code]:font-mono [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_li]:mb-1'
                             }`}
                         >
                           <ReactMarkdown>{cleanMathNotation(msg.text)}</ReactMarkdown>
                         </div>
-                      </div>
+                      </motion.div>
                     ))}
 
                     {isAiLoading && (
-                      <div className="flex items-end gap-2.5 justify-start">
+                      <div className="flex items-end gap-3 justify-start">
                         <img
                           src="/gundulu.png"
                           alt="Gundulu"
-                          className="h-6.5 w-6.5 rounded-full animate-bounce"
+                          className="h-8 w-8 rounded-full shadow-lg shadow-emerald-500/20 animate-pulse border border-emerald-500/30 shrink-0"
                           onError={(e) => {
                             handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
                           }}
                         />
-                        <div className="bg-slate-950 border border-white/5 rounded-2xl rounded-bl-none p-3.5 shadow-sm">
-                          <div className="flex gap-1">
-                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+                        <div className="bg-slate-900/80 backdrop-blur-md border border-emerald-500/20 rounded-3xl rounded-bl-sm p-4 shadow-lg">
+                          <div className="flex gap-1.5 items-center h-4">
+                            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+                            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+                            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '300ms' }} />
                           </div>
                         </div>
                       </div>
@@ -2240,22 +2292,22 @@ Instructions:
                   </div>
 
                   {/* QUICK CHIPS SUGGESTIONS */}
-                  <div className="p-3 bg-slate-950/60 border-t border-white/5 flex gap-2 overflow-x-auto scrollbar-none whitespace-nowrap">
+                  <div className="p-3 bg-slate-950/80 backdrop-blur-md md:backdrop-blur-xl border-t border-white/5 flex gap-2 overflow-x-auto scrollbar-none whitespace-nowrap">
                     <button
                       onClick={() => handleSendToGundulu(language === 'en' ? "Summarize this chapter for me." : "ଏହି ଅଧ୍ୟାୟର ଏକ ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଦିଅ।")}
-                      className="px-3 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 border border-white/5 text-[10px] font-bold text-slate-300 active:scale-95 transition-all"
+                      className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-emerald-500/20 border border-white/10 hover:border-emerald-500/30 text-xs font-bold text-slate-300 hover:text-emerald-300 active:scale-95 transition-all shadow-sm"
                     >
                       📝 {language === 'en' ? 'Summarize Guide' : 'ସାରାଂଶ'}
                     </button>
                     <button
                       onClick={() => handleSendToGundulu(language === 'en' ? "Give me an MCQ test based on this chapter notes." : "ଏହି ଅଧ୍ୟାୟରୁ ମୋତେ ଗୋଟିଏ MCQ ଟେଷ୍ଟ ପ୍ରଶ୍ନ ପଚାର।")}
-                      className="px-3 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 border border-white/5 text-[10px] font-bold text-slate-300 active:scale-95 transition-all"
+                      className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-amber-500/20 border border-white/10 hover:border-amber-500/30 text-xs font-bold text-slate-300 hover:text-amber-300 active:scale-95 transition-all shadow-sm"
                     >
                       ⚡ {language === 'en' ? 'Ask me MCQ' : 'MCQ ପ୍ରଶ୍ନ'}
                     </button>
                     <button
                       onClick={() => handleSendToGundulu(language === 'en' ? "Explain the most important formulas of this chapter." : "ଏହି ଅଧ୍ୟାୟର ସବୁଠାରୁ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ରଗୁଡ଼ିକ ବୁଝାଅ।")}
-                      className="px-3 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 border border-white/5 text-[10px] font-bold text-slate-300 active:scale-95 transition-all"
+                      className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-purple-500/20 border border-white/10 hover:border-purple-500/30 text-xs font-bold text-slate-300 hover:text-purple-300 active:scale-95 transition-all shadow-sm"
                     >
                       📐 {language === 'en' ? 'Explain Formulas' : 'ମୁଖ୍ୟ ସୂତ୍ର'}
                     </button>
@@ -2267,26 +2319,26 @@ Instructions:
                       e.preventDefault();
                       handleSendToGundulu(inputValue);
                     }}
-                    className="p-3 bg-slate-950 border-t border-white/5 flex items-center gap-2"
+                    className="p-4 bg-slate-950 backdrop-blur-lg md:backdrop-blur-2xl border-t border-white/10 flex items-center gap-3 relative z-10"
                   >
                     <input
                       type="text"
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
-                      placeholder={language === 'en' ? 'Ask Gundulu about this chapter...' : 'ଏହି ଅଧ୍ୟାୟ ବିଷୟରେ ଗຸଣ୍ଡୁଲୁକୁ ପଚାରନ୍ତୁ...'}
-                      className="gundulu-chat-input flex-1 bg-slate-900 border border-white/5 rounded-2xl px-4 py-2.5 text-xs font-semibold text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/30"
+                      placeholder={language === 'en' ? 'Ask Gundulu anything...' : 'ଏହି ଅଧ୍ୟାୟ ବିଷୟରେ ଗୁଣ୍ଡୁଲୁକୁ ପଚାରନ୍ତୁ...'}
+                      className="gundulu-chat-input flex-1 bg-slate-900 border border-white/10 rounded-2xl px-5 py-3 text-sm font-semibold text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 shadow-inner transition-all"
                     />
                     <button
                       type="submit"
                       disabled={!inputValue.trim() || isAiLoading}
-                      className="p-2.5 rounded-2xl bg-emerald-500 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-emerald-600 active:scale-95 transition-all flex items-center justify-center"
+                      className="p-3 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white disabled:opacity-40 disabled:cursor-not-allowed hover:from-emerald-400 hover:to-teal-500 active:scale-95 transition-all flex items-center justify-center shadow-lg shadow-emerald-500/20"
                     >
-                      <Lucide.Send size={16} />
+                      <Lucide.Send size={18} />
                     </button>
                   </form>
                 </>
               )}
-            </div>
+            </motion.div>
           </div>
         )}
 
@@ -2806,3 +2858,4 @@ Instructions:
     </div>
   );
 };
+
