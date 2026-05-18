@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as Lucide from 'lucide-react';
-import { subscribeUserToPush } from '../pwa';
 
 interface DigitalLibraryLaunchPopupProps {
   onClose: () => void;
@@ -18,9 +17,6 @@ export default function DigitalLibraryLaunchPopup({
   language,
   theme
 }: DigitalLibraryLaunchPopupProps) {
-  const [subscribing, setSubscribing] = useState(false);
-  const [isSubscribed, setIsSubscribed] = useState(false);
-
   const isLight = theme === 'daybreak';
 
   const styles = {
@@ -35,20 +31,6 @@ export default function DigitalLibraryLaunchPopup({
     featureDesc: isLight ? '#5c697a' : '#94a3b8',
     closeBg: isLight ? '#f1f5f9' : '#1e293b',
     closeText: isLight ? '#64748b' : '#94a3b8',
-  };
-
-  const handleSubscribe = async () => {
-    setSubscribing(true);
-    try {
-      const success = await subscribeUserToPush(userId);
-      if (success) {
-        setIsSubscribed(true);
-      }
-    } catch (err) {
-      console.error('Push subscription failed inside launch popup:', err);
-    } finally {
-      setSubscribing(false);
-    }
   };
 
   return (
@@ -132,40 +114,22 @@ export default function DigitalLibraryLaunchPopup({
 
           {/* Call-to-actions */}
           <div className="space-y-2.5 relative z-10">
-            {/* Push notification subscribe CTA */}
-            {!isSubscribed ? (
-              <button
-                onClick={handleSubscribe}
-                disabled={subscribing}
-                style={{ color: '#ffffff', backgroundColor: '#f59e0b' }}
-                className="w-full hover:bg-amber-600 text-white py-3 px-4 rounded-xl font-black text-xs transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-md shadow-amber-500/20 border border-amber-400/20 disabled:opacity-75 disabled:cursor-wait cursor-pointer"
-              >
-                {subscribing ? (
-                  <>
-                    <Lucide.Loader2 size={14} className="animate-spin" />
-                    <span>{language === 'en' ? 'Subscribing...' : 'ସଂଯୋଗ କରାଯାଉଛି...'}</span>
-                  </>
-                ) : (
-                  <>
-                    <Lucide.Bell size={14} className="animate-bounce" />
-                    <span>
-                      {language === 'en' 
-                        ? 'Enable Push Alerts! 🔔' 
-                        : 'ଲାଇଭ୍ ନୋଟିଫିକେସନ୍ ଚାଲୁ କରନ୍ତୁ! 🔔'}
-                    </span>
-                  </>
-                )}
-              </button>
-            ) : (
-              <div className="w-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 py-3 px-4 rounded-xl text-center font-black text-xs flex items-center justify-center gap-1.5 shadow-sm">
-                <Lucide.BellRing size={12} className="animate-ping" />
-                <span>
-                  {language === 'en' 
-                    ? 'Notifications Activated! 🌟' 
-                    : 'ନୋଟିଫିକେସନ୍ ଚାଲୁ ହୋଇଗଲା! 🌟'}
+            {/* Play Store Launch Announcement */}
+            <div className="w-full bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border border-emerald-500/20 py-3 px-4 rounded-xl flex items-center justify-between gap-3 shadow-sm group">
+              <div className="flex flex-col text-left">
+                <span className="text-[10px] uppercase font-black tracking-wider text-emerald-600 dark:text-emerald-400">
+                  {language === 'en' ? 'Coming Soon' : 'ଖୁବ୍ ଶୀଘ୍ର ଆସୁଛି'}
+                </span>
+                <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                  {language === 'en' ? 'Official Android App on' : 'ଅଫିସିଆଲ୍ ଆଣ୍ଡ୍ରଏଡ୍ ଆପ୍'} <strong className="text-emerald-600 dark:text-emerald-400">1st June</strong>
                 </span>
               </div>
-            )}
+              <img 
+                src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" 
+                alt="Get it on Google Play" 
+                className="h-8 object-contain group-hover:scale-105 transition-transform"
+              />
+            </div>
 
             {/* Enter digital library CTA */}
             <button
