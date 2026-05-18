@@ -67,15 +67,13 @@ export default function DigitalLibraryLaunchPopup({
             </div>
 
             <span style={{ color: styles.subtitle }} className="block text-[9px] uppercase font-black tracking-[0.2em] mb-1">
-              {language === 'en' ? 'New Launch Announcement' : 'ନୂତନ ଶୁଭାରମ୍ଭ ସୂଚନା'}
+              ନୂତନ ଶୁଭାରମ୍ଭ ସୂଚନା
             </span>
             <h2 style={{ color: styles.title }} className="text-lg sm:text-xl font-black leading-tight">
-              {language === 'en' ? 'AI Digital Library is Live! 📚✨' : 'AI ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀ ଲାଇଭ୍! 📚✨'}
+              AI ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀ ଲାଇଭ୍! 📚✨
             </h2>
             <p style={{ color: styles.description }} className="text-xs mt-1.5 max-w-xs mx-auto font-bold leading-relaxed text-emerald-500/90 dark:text-emerald-400">
-              {language === 'en' 
-                ? 'Class 1 to 10 Mathematics is now live! Beautiful textbooks with active AI helpers. 🌟' 
-                : '୧ ରୁ ୧୦ ଶ୍ରେଣୀ ଗଣିତ ଏବେ ଲାଇଭ୍! AI ସହଯୋଗୀ ସହିତ ପାଠ୍ୟପୁସ୍ତକ ସହଜରେ ପଢ଼ନ୍ତୁ। 🌟'}
+              ୧ ରୁ ୧୦ ଶ୍ରେଣୀ ଗଣିତ ଏବେ ଲାଇଭ୍! AI ସହଯୋଗୀ ସହିତ ପାଠ୍ୟପୁସ୍ତକ ସହଜରେ ପଢ଼ନ୍ତୁ। 🌟
             </p>
           </div>
 
@@ -87,7 +85,7 @@ export default function DigitalLibraryLaunchPopup({
                 <Lucide.CheckCircle2 size={14} />
               </div>
               <h4 style={{ color: styles.featureTitle }} className="text-xs font-black">
-                {language === 'en' ? 'Class 1 to 10 Math & Notes' : '୧-୧୦ ଶ୍ରେଣୀ ଗଣିତ ପୁସ୍ତକ ଓ ନୋଟ୍ସ'}
+                ୧-୧୦ ଶ୍ରେଣୀ ଗଣିତ ପୁସ୍ତକ ଓ ନୋଟ୍ସ
               </h4>
             </div>
 
@@ -97,7 +95,7 @@ export default function DigitalLibraryLaunchPopup({
                 <Lucide.Eye size={14} />
               </div>
               <h4 style={{ color: styles.featureTitle }} className="text-xs font-black">
-                {language === 'en' ? 'Comfort Eye Care Shield' : 'ଆଖି ସୁରକ୍ଷା ପାଇଁ ସେପିଆ ମୋଡ୍'}
+                ଆଖି ସୁରକ୍ଷା ପାଇଁ ସେପିଆ ମୋଡ୍
               </h4>
             </div>
 
@@ -107,7 +105,7 @@ export default function DigitalLibraryLaunchPopup({
                 <Lucide.Sparkles size={14} />
               </div>
               <h4 style={{ color: styles.featureTitle }} className="text-xs font-black">
-                {language === 'en' ? 'Gundulu AI Doubt Solver' : 'ଗୁଣ୍ଡୁଲୁ AI ପ୍ରଶ୍ନ ସମାଧାନକାରୀ'}
+                ଗୁଣ୍ଡୁଲୁ AI ପ୍ରଶ୍ନ ସମାଧାନକାରୀ
               </h4>
             </div>
           </div>
@@ -118,10 +116,10 @@ export default function DigitalLibraryLaunchPopup({
             <div className="w-full bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border border-emerald-500/20 py-3 px-4 rounded-xl flex items-center justify-between gap-3 shadow-sm group">
               <div className="flex flex-col text-left">
                 <span className="text-[10px] uppercase font-black tracking-wider text-emerald-600 dark:text-emerald-400">
-                  {language === 'en' ? 'Coming Soon' : 'ଖୁବ୍ ଶୀଘ୍ର ଆସୁଛି'}
+                  ଖୁବ୍ ଶୀଘ୍ର ଆସୁଛି
                 </span>
                 <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                  {language === 'en' ? 'Official Android App on' : 'ଅଫିସିଆଲ୍ ଆଣ୍ଡ୍ରଏଡ୍ ଆପ୍'} <strong className="text-emerald-600 dark:text-emerald-400">1st June</strong>
+                  ଅଫିସିଆଲ୍ ଆଣ୍ଡ୍ରଏଡ୍ ଆପ୍ <strong className="text-emerald-600 dark:text-emerald-400">୧ ଜୁନ୍</strong> ରୁ
                 </span>
               </div>
               <img 
@@ -142,7 +140,7 @@ export default function DigitalLibraryLaunchPopup({
             >
               <Lucide.ArrowRightCircle size={14} />
               <span>
-                {language === 'en' ? 'Open Digital Library 📚' : 'ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀ ଖୋଲନ୍ତୁ 📚'}
+                ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀ ଖୋଲନ୍ତୁ 📚
               </span>
             </button>
           </div>
