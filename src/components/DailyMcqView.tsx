@@ -289,15 +289,12 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">{t.title}</h1>
-          <p className="text-slate-400 max-w-2xl">{t.subtitle}</p>
+
           <div className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-xl shadow-inner">
             <Lucide.Clock size={16} />
             <span>{t.scheduleNotice}</span>
           </div>
-          <div className="mt-3 flex items-center gap-2 text-[11px] font-medium text-amber-500/80 uppercase tracking-wider">
-            <Lucide.AlertTriangle size={14} className="text-amber-500" />
-            <span>AI can make mistakes. Please double-check answers.</span>
-          </div>
+
         </div>
         <button
           type="button"
@@ -552,6 +549,12 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
           })}
         </div>
       )}
+
+      {/* Disclaimer at the bottom */}
+      <div className="flex items-center justify-center gap-2 text-[11px] font-medium text-slate-500/60 uppercase tracking-wider mt-8">
+        <Lucide.AlertTriangle size={12} />
+        <span>In DailyMCQ AI can make mistake</span>
+      </div>
     </motion.div>
   );
 }
