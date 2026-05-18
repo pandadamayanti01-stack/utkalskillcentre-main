@@ -2943,7 +2943,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
 
         <div 
           ref={contentScrollRef} 
-          className={`flex-1 ${(activeTab === 'study_buddy' || activeTab === 'gundulu') ? 'overflow-hidden p-0' : 'overflow-y-auto p-4 md:p-8 pb-28 lg:pb-8'} scrollbar-hide relative z-10`}
+          className={`flex-1 ${(activeTab === 'study_buddy' || activeTab === 'gundulu') ? 'overflow-hidden p-0 flex flex-col' : 'overflow-y-auto p-4 md:p-8 pb-28 lg:pb-8'} scrollbar-hide relative z-10`}
         >
           <AnimatePresence mode="wait">
             {/* Your 10+ Tab components go here... */}
@@ -3020,12 +3020,14 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
           </AnimatePresence>
 
           {/* --- FOOTER PLACE: BIGSAN BRANDING --- */}
-          <footer className="mt-20 pb-10 flex flex-col items-center gap-4 opacity-60">
-            <div className="h-px w-20 bg-white/10" />
-            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-center text-slate-400">Managed By</p>
-            <img src="/bigsan-512.png" className="h-10 w-auto opacity-80 hover:opacity-100 transition-opacity" alt="Bigsan Group" />
-            <p className="text-[9px] font-medium text-center text-slate-500">© 2026 Bigsan Utkal Skill Centre</p>
-          </footer>
+          {!(activeTab === 'study_buddy' || activeTab === 'gundulu') && (
+            <footer className="mt-20 pb-10 flex flex-col items-center gap-4 opacity-60">
+              <div className="h-px w-20 bg-white/10" />
+              <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-center text-slate-400">Managed By</p>
+              <img src="/bigsan-512.png" className="h-10 w-auto opacity-80 hover:opacity-100 transition-opacity" alt="Bigsan Group" />
+              <p className="text-[9px] font-medium text-center text-slate-500">© 2026 Bigsan Utkal Skill Centre</p>
+            </footer>
+          )}
         </div>
 
         {/* Bottom Floating Navigation Bar for Mobile */}
