@@ -3003,6 +3003,29 @@ Sample tone for Class 6-10:
       return bTime - aTime;
     });
 
+    const handleApprovePayment = async (txId: string, userId: string) => {
+      if (!window.confirm("Approve this payment and upgrade the user to Premium?")) return;
+      try {
+        await updateDoc(doc(firestore, 'payments', txId), { status: 'success' });
+        await updateDoc(doc(firestore, 'users', userId), { isPremium: true });
+        showNotification("Payment approved and user upgraded!");
+      } catch (err) {
+        console.error(err);
+        showNotification("Error approving payment", "error");
+      }
+    };
+
+    const handleRejectPayment = async (txId: string) => {
+      if (!window.confirm("Reject this payment?")) return;
+      try {
+        await updateDoc(doc(firestore, 'payments', txId), { status: 'failed' });
+        showNotification("Payment rejected");
+      } catch (err) {
+        console.error(err);
+        showNotification("Error rejecting payment", "error");
+      }
+    };
+
     return (
       <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <div className="flex items-center gap-3">
@@ -3015,10 +3038,10 @@ Sample tone for Class 6-10:
               <thead>
                 <tr className="bg-white/5 border-b border-white/5">
                   <th className="p-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">Student</th>
-                  <th className="p-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">Plan Selection</th>
+                  <th className="p-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">Plan & UTR</th>
                   <th className="p-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">Amount</th>
                   <th className="p-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">Date</th>
-                  <th className="p-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">Status</th>
+                  <th className="p-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">Status / Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
@@ -3030,20 +3053,43 @@ Sample tone for Class 6-10:
                   const displayDate = parseLogTimestamp(rawDate)?.toLocaleDateString() || 'Unknown';
                   const isSuccess = tx.status === 'success' || tx.source === 'transaction';
                   const isPending = tx.status === 'pending';
+                  const isPendingManual = tx.status === 'pending_manual';
 
                   return (
                     <tr key={i} className="hover:bg-white/5 transition-all group">
                       <td className="p-6 text-white font-black tracking-tight">{studentName}</td>
-                      <td className="p-6 text-slate-400 font-bold uppercase text-[10px] tracking-widest">{planName}</td>
+                      <td className="p-6 text-slate-400 font-bold uppercase text-[10px] tracking-widest">
+                        {planName}
+                        {tx.method === 'manual_upi' && tx.utr && (
+                          <div className="text-emerald-400 mt-1">UTR: {tx.utr}</div>
+                        )}
+                      </td>
                       <td className="p-6 text-emerald-400 font-black text-lg">₹{amount}</td>
                       <td className="p-6 text-slate-500 text-xs font-medium">{displayDate}</td>
                       <td className="p-6">
-                        <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${isSuccess ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
-                            isPending ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
-                              'bg-red-500/10 text-red-400 border-red-500/20'
-                          }`}>
-                          {isSuccess ? 'Settled' : isPending ? 'Pending' : (tx.status || 'Failed')}
-                        </span>
+                        {isPendingManual ? (
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => handleApprovePayment(tx.id, tx.userId)}
+                              className="px-3 py-1.5 bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-white rounded-lg text-[10px] font-black uppercase tracking-widest transition-all"
+                            >
+                              Approve
+                            </button>
+                            <button
+                              onClick={() => handleRejectPayment(tx.id)}
+                              className="px-3 py-1.5 bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white rounded-lg text-[10px] font-black uppercase tracking-widest transition-all"
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        ) : (
+                          <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${isSuccess ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
+                              isPending ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
+                                'bg-red-500/10 text-red-400 border-red-500/20'
+                            }`}>
+                            {isSuccess ? 'Settled' : isPending ? 'Pending' : (tx.status || 'Failed')}
+                          </span>
+                        )}
                       </td>
                     </tr>
                   );
@@ -3060,6 +3106,7 @@ Sample tone for Class 6-10:
       </div>
     );
   };
+
 
   const renderNotifications = () => (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">

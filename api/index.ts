@@ -234,7 +234,7 @@ app.post('/api/payment/verify', async (req, res) => {
         await db.collection('transactions').add({
           payment_id: razorpay_payment_id,
           order_id: razorpay_order_id,
-          amount: (amount || 0) / 100,
+          amount: (amount || 0), // Frontend sends amount in rupees directly
           userId,
           class: userClass,
           timestamp: new Date()
@@ -256,12 +256,19 @@ app.post('/api/payment/verify', async (req, res) => {
           updatedAt: new Date()
         }, { merge: true });
         
-        // 3. Also mark the payment order as success
+        // 3. Mark the payment order as success
         await db.collection('payments').doc(razorpay_order_id).set({
           status: 'success',
           razorpay_payment_id: razorpay_payment_id,
           razorpay_signature: razorpay_signature,
           updatedAt: new Date()
+        }, { merge: true });
+
+        // 4. Update the user document to reflect premium status for frontend UI
+        await db.collection('users').doc(userId).set({
+          isPremium: true,
+          premiumSince: new Date(),
+          premiumType: planType || 'monthly'
         }, { merge: true });
       }
       res.json({ success: true });

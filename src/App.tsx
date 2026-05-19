@@ -2018,13 +2018,7 @@ export default function App() {
   const handleSubscribe = async (amount: number, planType: 'monthly' | 'yearly' = 'monthly', userClass: number = 1) => {
     if (!user) return;
 
-    if (planType === 'yearly') {
-      const yearlyPrice = systemSettings?.yearlyPrice || 999;
-      if ((user.shareCount || 0) < 5) {
-        alert(language === 'en' ? "Please complete the share requirements to unlock this offer." : "ଏହି ଅଫର୍ ଅନଲକ୍ କରିବାକୁ ଦୟାକରି ସେୟାର୍ ସର୍ତ୍ତଗୁଡିକ ପୂରଣ କରନ୍ତୁ |");
-        return;
-      }
-    }
+    // The yearly plan restriction has been removed. All users can access it.
     
     const res = await loadRazorpayScript();
     if (!res) {
@@ -4406,6 +4400,13 @@ function SidebarItem({ icon, label, active, onClick }: any) {
 
 
 function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShare, systemSettings, onBack }: any) {
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedPlanAmount, setSelectedPlanAmount] = useState<number>(0);
+  const [selectedPlanType, setSelectedPlanType] = useState<'monthly'|'yearly'>('monthly');
+  const [paymentMethod, setPaymentMethod] = useState<'selection'|'upi'>('selection');
+  const [utrNumber, setUtrNumber] = useState('');
+  const [isSubmittingUtr, setIsSubmittingUtr] = useState(false);
+
   const p = translations[language].pricing;
   
   // Subscription is a single flat monthly price for all classes.
@@ -4413,7 +4414,44 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
   let yearlyPrice = systemSettings?.yearlyPrice || 999;
   let planName = p.premium.name;
 
-  // (Yearly pricing can still be configured via system settings if needed.)
+  const handleOpenPayment = (amount: number, type: 'monthly'|'yearly') => {
+    setSelectedPlanAmount(amount);
+    setSelectedPlanType(type);
+    setPaymentMethod('selection');
+    setUtrNumber('');
+    setShowPaymentModal(true);
+  };
+
+  const handleSubmitUtr = async () => {
+    if (!utrNumber.trim()) {
+      alert(language === 'en' ? "Please enter your UTR / Transaction ID" : "ଦୟାକରି ଆପଣଙ୍କର UTR / Transaction ID ପ୍ରବେଶ କରନ୍ତୁ");
+      return;
+    }
+    setIsSubmittingUtr(true);
+    try {
+      await setDoc(doc(firestore, 'payments', `${user.id}_manual_${Date.now()}`), {
+        userId: user.id,
+        userName: user.name || 'Unknown',
+        userPhone: user.phoneNumber || '',
+        amount: selectedPlanAmount,
+        planType: selectedPlanType,
+        status: 'pending_manual',
+        method: 'manual_upi',
+        utr: utrNumber.trim(),
+        createdAt: new Date().toISOString(),
+        timestamp: serverTimestamp()
+      });
+      alert(language === 'en' 
+        ? "Payment submitted successfully! An admin will verify and activate your account shortly." 
+        : "ପେମେଣ୍ଟ ସଫଳତାର ସହ ଦାଖଲ ହୋଇଛି! ଜଣେ ଆଡମିନ୍ ଶୀଘ୍ର ଆପଣଙ୍କ ଆକାଉଣ୍ଟ୍ ଯାଞ୍ଚ ଏବଂ ସକ୍ରିୟ କରିବେ |");
+      setShowPaymentModal(false);
+    } catch (err: any) {
+      console.error("Error submitting manual payment:", err);
+      alert("Error: " + err.message);
+    } finally {
+      setIsSubmittingUtr(false);
+    }
+  };
 
   return (
     <div className="max-w-6xl mx-auto py-8">
@@ -4480,7 +4518,7 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
           {!isPremium ? (
             <div className="space-y-4">
               <button 
-                onClick={() => onSubscribe(monthlyPrice, 'monthly')}
+                onClick={() => handleOpenPayment(monthlyPrice, 'monthly')}
                 className="w-full py-4 rounded-2xl bg-emerald-600 text-white font-bold text-lg hover:bg-emerald-500 transition-all shadow-xl shadow-emerald-900/20"
               >
                 {language === 'en' ? `Subscribe Monthly (₹${monthlyPrice})` : `ମାସିକ ସବସ୍କ୍ରିପସନ୍ (₹${monthlyPrice})`}
@@ -4488,45 +4526,15 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
               
               <div className="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-4">
                 <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-400">
-                  <span>{language === 'en' ? `Unlock Yearly Offer (₹${yearlyPrice})` : `ବାର୍ଷିକ ଅଫର୍ ଅନଲକ୍ କରନ୍ତୁ (₹${yearlyPrice})`}</span>
-                  {((user?.shareCount || 0) >= 5) ? (
-                    <span className="text-emerald-500">Unlocked!</span>
-                  ) : (
-                    <span className="text-orange-500">Locked</span>
-                  )}
+                  <span>{language === 'en' ? `Best Value Offer` : `ସର୍ବୋତ୍ତମ ମୂଲ୍ୟ ଅଫର୍`}</span>
+                  <span className="text-emerald-500">Available</span>
                 </div>
                 
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-xs text-slate-300">
-                    <span>{p.shareToUnlock}</span>
-                    <span>{user?.shareCount || 0}/5</span>
-                  </div>
-                  <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-emerald-500 transition-all" 
-                      style={{ width: `${Math.min(((user?.shareCount || 0) / 5) * 100, 100)}%` }}
-                    />
-                  </div>
-                  <button 
-                    onClick={onShare}
-                    className="w-full py-2 rounded-xl bg-emerald-500/10 text-emerald-500 text-xs font-bold hover:bg-emerald-500/20 transition-all border border-emerald-500/20 flex items-center justify-center gap-2"
-                  >
-                    <Lucide.Send size={14} /> {p.shareOnWhatsApp}
-                  </button>
-                </div>
-
                 <button 
-                  onClick={() => onSubscribe(yearlyPrice, 'yearly')}
-                  disabled={((user?.shareCount || 0) < 5)}
-                  className={`w-full py-4 rounded-2xl font-bold text-lg transition-all ${
-                    ((user?.shareCount || 0) >= 5)
-                    ? 'bg-white text-slate-900 hover:bg-slate-100'
-                    : 'bg-white/5 text-slate-500 cursor-not-allowed'
-                  }`}
+                  onClick={() => handleOpenPayment(yearlyPrice, 'yearly')}
+                  className="w-full py-4 rounded-2xl font-bold text-lg transition-all bg-white text-slate-900 hover:bg-slate-100"
                 >
-                  {((user?.shareCount || 0) >= 5) 
-                    ? (language === 'en' ? `Offer Unlocked! Pay ₹${yearlyPrice} Now` : `ଅଫର୍ ଅନଲକ୍ ହୋଇଛି! ଏବେ ₹${yearlyPrice} ପେମେଣ୍ଟ କରନ୍ତୁ`)
-                    : (language === 'en' ? `Subscribe Yearly (₹${yearlyPrice})` : `ବାର୍ଷିକ ସବସ୍କ୍ରିପସନ୍ (₹${yearlyPrice})`)}
+                  {language === 'en' ? `Subscribe Yearly (₹${yearlyPrice})` : `ବାର୍ଷିକ ସବସ୍କ୍ରିପସନ୍ (₹${yearlyPrice})`}
                 </button>
               </div>
             </div>
@@ -4537,6 +4545,85 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
           )}
         </div>
       </div>
+      {showPaymentModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-white/10 rounded-3xl p-6 max-w-md w-full relative">
+            <button 
+              onClick={() => setShowPaymentModal(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white bg-white/5 rounded-full p-2"
+            >
+              <Lucide.X size={20} />
+            </button>
+
+            <h3 className="text-2xl font-bold text-white mb-6 text-center">
+              {language === 'en' ? 'Select Payment Method' : 'ପେମେଣ୍ଟ ପଦ୍ଧତି ଚୟନ କରନ୍ତୁ'}
+            </h3>
+
+            {paymentMethod === 'selection' ? (
+              <div className="space-y-4">
+                <button
+                  onClick={() => {
+                    setShowPaymentModal(false);
+                    onSubscribe(selectedPlanAmount, selectedPlanType);
+                  }}
+                  className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold p-4 rounded-2xl flex items-center justify-center gap-3 transition-all"
+                >
+                  <Lucide.CreditCard size={24} />
+                  <span>{language === 'en' ? 'Pay Online (Cards/NetBanking)' : 'ଅନଲାଇନ୍ ପେମେଣ୍ଟ କରନ୍ତୁ'}</span>
+                </button>
+                <div className="relative flex py-2 items-center">
+                  <div className="flex-grow border-t border-white/10"></div>
+                  <span className="flex-shrink-0 mx-4 text-slate-500 text-sm font-bold uppercase">OR</span>
+                  <div className="flex-grow border-t border-white/10"></div>
+                </div>
+                <button
+                  onClick={() => setPaymentMethod('upi')}
+                  className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold p-4 rounded-2xl flex items-center justify-center gap-3 transition-all"
+                >
+                  <Lucide.QrCode size={24} />
+                  <span>{language === 'en' ? 'Scan & Pay (Fast UPI)' : 'ସ୍କାନ୍ ଏବଂ ପେ (UPI)'}</span>
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-6 text-center">
+                <p className="text-slate-300">
+                  {language === 'en' ? `Scan the QR code to pay ₹${selectedPlanAmount}` : `₹${selectedPlanAmount} ପେମେଣ୍ଟ କରିବାକୁ QR କୋଡ୍ ସ୍କାନ୍ କରନ୍ତୁ`}
+                </p>
+                <div className="bg-white p-4 rounded-2xl mx-auto w-48 h-64 border-[6px] border-emerald-500 flex items-center justify-center overflow-hidden">
+                  <img src="/upi_qr.jpg" alt="UPI QR Code" className="w-full h-full object-contain" />
+                </div>
+                <div className="space-y-3">
+                  <label className="block text-left text-sm font-bold text-slate-400 uppercase">
+                    {language === 'en' ? 'Enter UTR / Transaction ID after payment' : 'ପେମେଣ୍ଟ ପରେ UTR ନମ୍ବର ପ୍ରବେଶ କରନ୍ତୁ'}
+                  </label>
+                  <input
+                    type="text"
+                    value={utrNumber}
+                    onChange={(e) => setUtrNumber(e.target.value)}
+                    placeholder="e.g. 312345678901"
+                    className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors text-center font-mono text-lg tracking-widest"
+                  />
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setPaymentMethod('selection')}
+                    className="flex-1 px-4 py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl font-bold transition-all"
+                  >
+                    Back
+                  </button>
+                  <button
+                    onClick={handleSubmitUtr}
+                    disabled={isSubmittingUtr}
+                    className="flex-[2] px-4 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold transition-all disabled:opacity-50"
+                  >
+                    {isSubmittingUtr ? 'Submitting...' : 'Submit Payment'}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
