@@ -35,7 +35,7 @@ export const Header: React.FC<HeaderProps> = ({
   const t = translations[language];
 
   return (
-    <header className="sticky top-0 z-30 bg-slate-950/80 backdrop-blur-xl border-b border-white/5 px-6 py-4 flex items-center justify-between">
+    <header className="sticky top-0 z-30 bg-slate-950/80 backdrop-blur-xl border-b border-white/5 px-6 pt-[calc(1rem+env(safe-area-inset-top))] pb-4 flex items-center justify-between">
       {showChatbot && <ChatbotModal onClose={() => setShowChatbot(false)} user={user} isPremium={isPremium} language={language} />}
       <div className="flex items-center gap-4">
         <button 

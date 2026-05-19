@@ -82,7 +82,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
   };
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-40 lg:hidden px-4 pb-4 pt-1 pointer-events-none">
+    <div className="fixed bottom-0 inset-x-0 z-40 lg:hidden px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-1 pointer-events-none">
       {/* Dynamic ambient color glow behind the floating bar */}
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/90 to-transparent -z-10 pointer-events-none h-28 translate-y-4" />
       

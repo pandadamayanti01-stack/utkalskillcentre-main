@@ -630,6 +630,35 @@ body.fullscreen-mode .bottom-nav-gradient {
   display: none !important;
 }
 
+/* --- Native App Touch & UI Mechanics --- */
+
+/* Remove default highlight on mobile when clicking elements */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent native pull-to-refresh on main container while allowing scroll */
+.app-viewport-container {
+  overscroll-behavior-y: none;
+}
+
+/* Prevent text selection on interactive elements (mimic native feel) */
+button, a, .glass-card, .prevent-select, .bottom-nav-gradient, header {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Hide scrollbars for slick native look */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+
 
 
 
