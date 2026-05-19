@@ -92,12 +92,11 @@ export async function generateMcqsWithGemini(
        SCHEMA: Array of { "question": string, "options": string[], "correct_answer": string, "explanation": string, "type": "mcq" | "subjective", "chapter": string }.
        Language: ${targetLanguage}.`;
 
-    // Priority model list: 1.5-flash-latest has 1500 RPD free tier, 2.5-flash has 20 RPD
+    // Priority model list: 1.5 and 2.0 models are disabled for this specific API key.
     const models = [
-      "gemini-1.5-flash-latest",
-      "gemini-1.5-flash-002", 
-      "gemini-2.5-flash", 
-      "gemini-1.5-pro-latest"
+      "gemini-2.5-flash",
+      "gemini-flash-latest",
+      "gemini-pro-latest"
     ];
     
     for (const modelId of models) {
