@@ -24,12 +24,14 @@ async function trigger() {
 
   const databaseId = process.env.FIRESTORE_DATABASE_ID || 'utkal-prod';
   
-  // Use today's date
-  const today = new Date().toISOString().split('T')[0];
-  console.log(`Generating for date: ${today}`);
+  // Generate for tomorrow to maintain a 1-day buffer
+  const date = new Date();
+  date.setDate(date.getDate() + 1);
+  const targetDate = date.toISOString().split('T')[0];
+  console.log(`Generating for date: ${targetDate}`);
 
   try {
-    const result = await runScheduledGeneration(app, databaseId, today);
+    const result = await runScheduledGeneration(app, databaseId, targetDate);
     console.log('--- Result ---');
     console.log('Generated:', result.generated);
     console.log('Skipped:', result.skipped);
