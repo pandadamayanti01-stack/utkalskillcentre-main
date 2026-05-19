@@ -92,8 +92,13 @@ export async function generateMcqsWithGemini(
        SCHEMA: Array of { "question": string, "options": string[], "correct_answer": string, "explanation": string, "type": "mcq" | "subjective", "chapter": string }.
        Language: ${targetLanguage}.`;
 
-    // Priority model list
-    const models = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-2.5-pro", "gemini-1.5-pro"];
+    // Priority model list: 1.5-flash-latest has 1500 RPD free tier, 2.5-flash has 20 RPD
+    const models = [
+      "gemini-1.5-flash-latest",
+      "gemini-1.5-flash-002", 
+      "gemini-2.5-flash", 
+      "gemini-1.5-pro-latest"
+    ];
     
     for (const modelId of models) {
       try {
