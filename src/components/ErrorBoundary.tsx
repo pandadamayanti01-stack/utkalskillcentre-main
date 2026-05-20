@@ -23,6 +23,28 @@ export class ErrorBoundary extends React.Component<Props, State> {
 
   componentDidCatch(error: any, errorInfo: any) {
     console.error("ErrorBoundary caught an error", error, errorInfo);
+    
+    const errorStr = error?.toString() || '';
+    const errorMsg = error?.message || '';
+    const isChunkLoadError = 
+      error?.name === 'ChunkLoadError' || 
+      /ChunkLoadError|Failed to fetch dynamically imported module/i.test(errorStr || errorMsg);
+      
+    if (isChunkLoadError) {
+      console.warn("Dynamic import failed (ChunkLoadError). Performing a hard reload to fetch the latest assets.");
+      
+      const reloadKey = 'usc-chunk-reload-count';
+      const reloadCount = parseInt(sessionStorage.getItem(reloadKey) || '0', 10);
+      if (reloadCount < 3) {
+        sessionStorage.setItem(reloadKey, (reloadCount + 1).toString());
+        window.location.reload();
+      }
+    }
+  }
+
+  componentDidMount() {
+    // Reset reload count on successful mount
+    sessionStorage.removeItem('usc-chunk-reload-count');
   }
 
   render() {
