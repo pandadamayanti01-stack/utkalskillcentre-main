@@ -9,7 +9,7 @@ export async function translateToBilingual(text: string): Promise<{ en: string; 
   try {
     const ai = getAI();
     const model = ai.getGenerativeModel({ 
-      model: "gemini-3.1-flash" 
+      model: "gemini-2.5-flash" 
     });
 
     const response = await model.generateContent({

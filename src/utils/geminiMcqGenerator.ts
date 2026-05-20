@@ -95,8 +95,8 @@ export async function generateMcqsWithGemini(
     // Priority model list: 1.5 and 2.0 models are disabled for this specific API key.
     const models = [
       "gemini-2.5-flash",
-      "gemini-flash-latest",
-      "gemini-pro-latest"
+      "gemini-2.5-flash",
+      "gemini-2.5-flash"
     ];
     
     for (const modelId of models) {

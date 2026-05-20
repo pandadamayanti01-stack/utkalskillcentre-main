@@ -151,7 +151,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
 
         // 2. If not found, fallback to global AI
         const ai = getAI();
-        const model = 'gemini-flash-latest';
+        const model = 'gemini-2.5-flash';
 
         const { getStudyBuddySystemInstruction } = await import('../services/aiService');
         
