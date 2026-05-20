@@ -1597,9 +1597,10 @@ export default function App() {
     const boardKey = String(user.board).toLowerCase();
     const classKey = String(user.class).toLowerCase();
     // Try to get subjectsByClass for the board (e.g., odisha)
-    const boardSubjects = translations[boardKey]?.subjectsByClass?.[classKey];
+    const boardMapKey = boardKey.includes('oav') ? 'oav' : (boardKey.includes('cbse') ? 'cbse' : (boardKey.includes('aurobindo') ? 'aurobindo' : 'odisha'));
+    const boardSubjects = translations[language]?.subjectsByClass?.[boardMapKey]?.[classKey];
     return Array.isArray(boardSubjects) && boardSubjects.length > 0 ? boardSubjects : null;
-  }, [user?.class, user?.board]);
+  }, [user?.class, user?.board, language]);
 
   const dailyMcqRotation = React.useMemo(
     () => getConfiguredDailyMcqSequence(classSubjectList),
