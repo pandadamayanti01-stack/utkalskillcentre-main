@@ -61,6 +61,8 @@ export interface Chapter {
   id: string;
   textbookId?: string; // Link to Textbook
   title: string;
+  title_en?: string; // Bilingual translation (English)
+  title_or?: string; // Bilingual translation (Odia)
   class: string;
   board: string;
   subject: string;

@@ -221,7 +221,10 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
   };
 
   const renderTextbookVisual = (chapter: any) => {
-    const title = (chapter.title || '').toLowerCase();
+    const chapterTitleStr = typeof chapter.title === 'string' 
+      ? (chapter.title_or || chapter.title) 
+      : ((chapter.title as any)?.or || (chapter.title as any)?.en || '');
+    const title = (chapterTitleStr || '').toLowerCase();
     
     // 1. Check if the chapter has a real database image URL
     if (chapter.imageUrl) {
@@ -798,7 +801,11 @@ Understand user intent from these transcripts and respond in Odia only.
           <div className="textbook-visual-card animate-fade-in">
             <div className="card-glass-header">
               <span className="chapter-badge">{activeChapter.subject || "GUNDULU AI TUTOR"}</span>
-              <h3 className="chapter-card-title">{activeChapter.title}</h3>
+              <h3 className="chapter-card-title">
+                {typeof activeChapter.title === 'string'
+                  ? (activeChapter.title_or || activeChapter.title)
+                  : ((activeChapter.title as any)?.or || (activeChapter.title as any)?.en || "Untitled Chapter")}
+              </h3>
             </div>
             <div className="card-visual-body">
               {renderTextbookVisual(activeChapter)}

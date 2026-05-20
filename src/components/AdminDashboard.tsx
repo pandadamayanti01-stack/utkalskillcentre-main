@@ -4542,8 +4542,45 @@ Sample tone for Class 6-10:
 
       setIsLibSaving(true);
       try {
+        let parsedEn = '';
+        let parsedOr = '';
+        const titleStr = libFormTitle.trim();
+        
+        const parenMatch = titleStr.match(/([^(]+)\(([^)]+)\)/);
+        if (parenMatch) {
+          const part1 = parenMatch[1].trim();
+          const part2 = parenMatch[2].trim();
+          const isPart1En = /^[A-Za-z0-9\s\-,.?:'’"()&]+$/.test(part1);
+          if (isPart1En) {
+            parsedEn = part1;
+            parsedOr = part2;
+          } else {
+            parsedOr = part1;
+            parsedEn = part2;
+          }
+        } else {
+          const dashMatch = titleStr.split('-');
+          if (dashMatch.length === 2) {
+            const part1 = dashMatch[0].trim();
+            const part2 = dashMatch[1].trim();
+            const isPart1En = /^[A-Za-z0-9\s\-,.?:'’"()&]+$/.test(part1);
+            if (isPart1En) {
+              parsedEn = part1;
+              parsedOr = part2;
+            } else {
+              parsedOr = part1;
+              parsedEn = part2;
+            }
+          }
+        }
+        
+        if (!parsedEn) parsedEn = titleStr;
+        if (!parsedOr) parsedOr = titleStr;
+
         const chapterPayload = {
           title: libFormTitle,
+          title_en: parsedEn,
+          title_or: parsedOr,
           class: libFormClass,
           subject: libFormSubject,
           notes: libFormNotes,
@@ -4691,7 +4728,11 @@ Sample tone for Class 6-10:
                     <tr key={chapter.id} className="hover:bg-white/5 transition-colors group">
                       <td className="p-5">
                         <div className="font-extrabold text-white text-sm group-hover:text-emerald-400 transition-colors">
-                          {chapter.title}
+                          {typeof chapter.title === 'string'
+                            ? ((chapter.title_en && chapter.title_or)
+                              ? `${chapter.title_en} (${chapter.title_or})`
+                              : (chapter.title_en || chapter.title_or || chapter.title))
+                            : ((chapter.title as any)?.en || (chapter.title as any)?.or || "Untitled Chapter")}
                         </div>
                       </td>
                       <td className="p-5">

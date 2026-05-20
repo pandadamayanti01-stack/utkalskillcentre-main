@@ -4946,8 +4946,8 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
                   </p>
                   <h4 className="text-sm font-semibold text-white truncate">
                     {typeof chapter.title === 'string' 
-                      ? chapter.title 
-                      : ((chapter.title as any)?.or || (chapter.title as any)?.en || "Untitled Chapter")}
+                      ? ((language === 'en' ? chapter.title_en : chapter.title_or) || chapter.title)
+                      : ((chapter.title as any)?.[language] || (chapter.title as any)?.or || (chapter.title as any)?.en || "Untitled Chapter")}
                   </h4>
                 </div>
               </motion.button>
@@ -5065,7 +5065,7 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
               </div>
               <h3 className="text-xl font-bold text-white mb-1 line-clamp-2 min-h-[3.5rem] tracking-tight relative z-10">
                 {typeof chapter.title === 'string' 
-                  ? chapter.title 
+                  ? ((language === 'en' ? chapter.title_en : chapter.title_or) || chapter.title)
                   : String((chapter.title as any)?.or || (chapter.title as any)?.en || "Untitled Chapter")}
               </h3>
               

@@ -1607,7 +1607,9 @@ Instructions:
 
                       <div>
                         <h4 className="font-extrabold text-white text-base group-hover:text-emerald-400 transition-colors leading-tight">
-                          {chap.title}
+                          {typeof chap.title === 'string'
+                            ? ((language === 'en' ? chap.title_en : chap.title_or) || chap.title)
+                            : ((chap.title as any)?.[language] || (chap.title as any)?.or || (chap.title as any)?.en || "Untitled Chapter")}
                         </h4>
                         <div className="flex items-center gap-2 mt-2 text-xs text-slate-400 flex-wrap">
                           {(chap.pdfUrl || chap.download_url || chap.driveUrl) && (
@@ -1670,7 +1672,9 @@ Instructions:
                     })()}
                   </div>
                   <h2 className="text-base md:text-lg font-black text-white leading-tight mt-1">
-                    {selectedChapter.title}
+                    {typeof selectedChapter.title === 'string'
+                      ? ((language === 'en' ? selectedChapter.title_en : selectedChapter.title_or) || selectedChapter.title)
+                      : ((selectedChapter.title as any)?.[language] || (selectedChapter.title as any)?.or || (selectedChapter.title as any)?.en || "Untitled Chapter")}
                   </h2>
                 </div>
               </div>
