@@ -1,5 +1,17 @@
-.
-## Daily MCQ Automation Setup
+# Utkal Skill Centre - Digital Library & AI Platform
+
+Welcome to the **Utkal Skill Centre** Digital Library! This platform provides an immersive, bilingual (English & Odia) e-learning experience specifically designed for students.
+
+## ✨ Key Features
+- **Bilingual Interface:** Seamlessly toggle between English and Odia.
+- **Digital Library:** Interactive 3D glassmorphism UI to browse subjects and chapters for Classes 1 to 10.
+- **AI Study Guide (Gundulu):** An integrated AI assistant that generates chapter summaries, important formulas, and MCQs.
+- **Kindle-Style Reader:** Swipe-to-read horizontal pagination for AI study notes.
+- **Daily MCQ Automation:** Automatically generate and test students using Google Drive integrated textbooks.
+
+---
+
+## ⚙️ Daily MCQ Automation Setup
 
 The Drive-based daily MCQ generator needs server-side credentials in addition to the normal frontend Firebase config.
 
