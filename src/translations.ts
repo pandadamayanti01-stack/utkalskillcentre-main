@@ -480,7 +480,7 @@ export const translations: any = {
     dailyGoal: "ଦୈନିକ ଲକ୍ଷ୍ୟ",
     pointsToday: "ଆଜିର ପଏଣ୍ଟ",
     proTip: "ପ୍ରୋ ଟିପ୍",
-    studyBuddy: "ଗୁଣ୍ଡୁଲୁ AI ଟିଉଟର",
+    studyBuddy: "ଗୁଣ୍ଡୁଲୁ ହୋମୱର୍କ ହେଲ୍ପର",
     levelUp: "ଲେଭଲ୍ ଅପ୍!",
     nextLeague: "ପରବର୍ତ୍ତୀ ଲିଗ୍",
     currentStreak: "ସାମ୍ପ୍ରତିକ ଧାରା",
