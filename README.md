@@ -79,3 +79,5 @@ Cause: no service-account credentials available to the server
 
 3. `No Google Drive textbook source found`
 Cause: textbook exists in Firestore but has no `driveFileId` or `driveUrl` for the matching class and subject
+
+<!-- Force rebuild to clear PWA cache -->
