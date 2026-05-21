@@ -360,5 +360,11 @@ service cloud.firestore {
         allow read, write: if isAuthenticated();
       }
     }
+
+    // Curated Videos Collection
+    match /curated_videos/{videoId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
   }
 }

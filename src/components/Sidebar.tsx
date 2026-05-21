@@ -41,7 +41,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'gundulu', icon: Lucide.Sparkles, label: language === 'en' ? '🎤 Gundulu AI Tutor' : '🎤 ଗୁଣ୍ଡୁଲୁ AI ଟ୍ୟୁଟର' },
     { id: 'digital_library', icon: Lucide.Library, label: language === 'en' ? 'Digital Library' : 'ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀ' },
     { id: 'textbooks', icon: Lucide.Book, label: language === 'en' ? 'Textbooks' : 'ପାଠ୍ୟପୁସ୍ତକ' },
-    { id: 'courses', icon: Lucide.BookOpen, label: t.courses },
+    { id: 'smart_classes', icon: Lucide.Youtube, label: language === 'en' ? 'Smart Classes' : 'ସ୍ମାର୍ଟ କ୍ଲାସ' },
     { id: 'monthly_tests', icon: Lucide.Calendar, label: t.monthlyTests },
     { id: 'syllabus_tracker', icon: Lucide.ListChecks, label: language === 'en' ? 'Syllabus Tracker' : 'ପାଠ୍ୟକ୍ରମ ଟ୍ରାକର୍' },
     { id: 'daily_mcqs', icon: Lucide.ListChecks, label: language === 'en' ? 'Daily MCQ Practice' : 'ଦୈନିକ MCQ ଅଭ୍ୟାସ' },
@@ -51,7 +51,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'support', icon: Lucide.HelpCircle, label: t.support.title },
   ];
 
-  const teacherExcludedIds = ['store', 'leaderboard', 'daily_mcqs', 'syllabus_tracker', 'monthly_tests', 'courses', 'plans'];
+  const teacherExcludedIds = ['store', 'leaderboard', 'daily_mcqs', 'syllabus_tracker', 'monthly_tests', 'smart_classes', 'plans'];
   const menuItems = user?.role === 'teacher'
     ? allMenuItems.filter(item => !teacherExcludedIds.includes(item.id))
     : allMenuItems;

@@ -74,6 +74,7 @@ const LoginComponent = lazy(() => import('./components/LoginComponent'));
 const TestSeriesPoster = lazy(() => import('./components/TestSeriesPoster'));
 const SyllabusTracker = lazy(() => import('./components/SyllabusTracker').then((module) => ({ default: module.SyllabusTracker })));
 const DigitalLibraryView = lazy(() => import('./components/DigitalLibraryView').then((module) => ({ default: module.DigitalLibraryView })));
+const SmartClassesView = lazy(() => import('./components/SmartClassesView').then((module) => ({ default: module.SmartClassesView })));
 const DigitalLibraryLaunchPopup = lazy(() => import('./components/DigitalLibraryLaunchPopup'));
 const TeacherDashboard = lazy(() => import('./components/TeacherDashboard').then((module) => ({ default: module.TeacherDashboard })));
 
@@ -3052,14 +3053,13 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                 onBack={() => setActiveTab('dashboard')}
               />
             )}
-            {activeTab === 'courses' && (
-              <CoursesView 
+            {activeTab === 'smart_classes' && (
+              <SmartClassesView 
                 user={user} 
-                chapters={chapters.filter((c: any) => !c.isLibraryChapter && !c.pdfUrl)} 
                 language={language} 
                 isPremium={isPremium} 
-                onUpgrade={() => setActiveTab('plans')} 
-                onBack={() => setActiveTab('dashboard')} 
+                onUpgrade={() => setActiveTab('plans')}
+                onBack={() => setActiveTab('dashboard')}
               />
             )}
             {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
@@ -4328,7 +4328,7 @@ function StudyBuddyLegacy({ user, language, isPremium, showPaywall, setShowPaywa
                   <p className="text-white/70 text-[10px] uppercase font-bold tracking-widest">Study Buddy Online</p>
                 </div>
               </div>
-              <button onClick={() => setIsOpen(false)} className="text-white/70 hover:text-white">
+              <button onClick={() => setIsOpen(false)} className="bg-black/20 hover:bg-red-500/80 p-2 rounded-full text-white transition-all shadow-md">
                 <Lucide.X size={24} />
               </button>
             </div>
@@ -4885,7 +4885,7 @@ function CoursesView({ user, chapters, language, isPremium, onUpgrade, onBack }:
     return (
       <TopicDetailView 
         topic={selected} 
-        onBack={() => window.location.hash = 'courses'} 
+        onBack={() => window.location.hash = 'smart_classes'} 
         onTakeQuiz={() => window.location.hash = `courses/chapter/${selected.id}/quiz`} 
         language={language} 
         isPremium={isPremium}

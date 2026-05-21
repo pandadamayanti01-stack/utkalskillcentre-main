@@ -80,6 +80,7 @@ import { translations } from '../translations';
 import { Chapter, DailyMcq, VideoOption } from '../types';
 import { DailyMcqTab } from './admin/DailyMcqTab';
 import { LiveSupportTab } from './admin/LiveSupportTab';
+import { VideoCuratorTab } from './admin/VideoCuratorTab';
 import {
   translateContent,
   generateChapterContent,
@@ -91,7 +92,7 @@ import {
 } from '../services/aiService';
 import { joinSupportSession, sendRemoteCommand, updatePointer, endSupportSession } from '../services/supportService';
 
-type AdminTab = 'dashboard' | 'content' | 'monthly_tests' | 'daily_mcqs' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup' | 'students' | 'teachers' | 'subscriptions' | 'support' | 'user_locks' | 'digital_library_upload';
+type AdminTab = 'dashboard' | 'smart_classes' | 'content' | 'monthly_tests' | 'daily_mcqs' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup' | 'students' | 'teachers' | 'subscriptions' | 'support' | 'user_locks' | 'digital_library_upload';
 
 interface AdminDashboardProps {
   onExit: () => void;
@@ -849,6 +850,7 @@ Sample tone for Class 6-10:
               {
                 title: 'Vault',
                 items: [
+                  { id: 'smart_classes', label: 'Smart Classes (Videos)', icon: Youtube },
                   { id: 'content', label: 'Chapters', icon: BookOpen },
                   { id: 'digital_library_upload', label: 'Library Manager', icon: Library },
                   { id: 'textbooks', label: 'Textbooks', icon: Book },
@@ -5133,6 +5135,7 @@ Sample tone for Class 6-10:
               transition={{ duration: 0.3 }}
             >
               {activeTab === 'dashboard' && renderDashboard()}
+              {activeTab === 'smart_classes' && <VideoCuratorTab />}
               {activeTab === 'content' && renderContent()}
               {activeTab === 'digital_library_upload' && renderDigitalLibraryUpload()}
               {activeTab === 'monthly_tests' && renderMonthlyTests()}
