@@ -104,7 +104,7 @@ export function CinematicPlayer({ chapterName, videos, onClose }: CinematicPlaye
       <div className="w-full h-full max-w-[1600px] mx-auto flex flex-col lg:flex-row pt-24 pb-8 px-4 lg:pl-[304px] lg:pr-8 gap-8">
         
         {/* Main Video Area */}
-        <div className="flex-1 rounded-[2rem] overflow-hidden bg-black border border-white/10 shadow-2xl relative group">
+        <div className="w-full aspect-video lg:flex-1 rounded-[2rem] overflow-hidden bg-black border border-white/10 shadow-2xl relative group shrink-0">
           <iframe
             key={youtubeId}
             width="100%"
@@ -166,7 +166,7 @@ export function CinematicPlayer({ chapterName, videos, onClose }: CinematicPlaye
         </div>
 
         {/* Playlist Sidebar */}
-        <div className="w-full lg:w-80 xl:w-96 flex flex-col gap-4 min-h-0 h-full">
+        <div className="w-full lg:w-80 xl:w-96 flex flex-col gap-4 min-h-0 flex-1 lg:h-full">
           <div className="glass-card rounded-[2rem] p-5 lg:p-6 bg-slate-900/50 border border-white/10 flex-1 flex flex-col min-h-0 overflow-hidden">
             <div className="flex items-center justify-between mb-6 shrink-0">
               <h3 className="text-white font-bold text-lg flex items-center gap-2">
