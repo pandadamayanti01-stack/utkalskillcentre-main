@@ -6,6 +6,13 @@ import { collection, getDocs, addDoc, deleteDoc, doc, serverTimestamp, query, or
 import { translations } from '../../translations';
 import { CHAPTERS_MAP } from '../../data/chaptersMap';
 
+function formatChapterName(rawName: string) {
+  let name = rawName.replace(/^Class\d+_/i, '');
+  name = name.replace(/_/g, ' ');
+  name = name.replace(/^(Chapter\s*\d+)\s+([^-])/i, '$1 - $2');
+  return name.trim();
+}
+
 interface CuratedVideo {
   id: string;
   classStr: string;
@@ -230,7 +237,7 @@ export function VideoCuratorTab() {
               >
                 <option value="" disabled>Select Chapter</option>
                 {((CHAPTERS_MAP[selectedClass] || {})[selectedSubject] || []).map((ch: string) => (
-                  <option key={ch} value={ch}>{ch}</option>
+                  <option key={ch} value={ch}>{formatChapterName(ch)}</option>
                 ))}
               </select>
             </div>

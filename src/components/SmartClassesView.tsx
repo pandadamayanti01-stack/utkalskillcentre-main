@@ -6,6 +6,13 @@ import { collection, getDocs, getDocsFromServer, query, where } from 'firebase/f
 import { CinematicPlayer } from './SmartClasses/CinematicPlayer';
 import { CHAPTERS_MAP } from '../data/chaptersMap';
 
+export function formatChapterName(rawName: string) {
+  let name = rawName.replace(/^Class\d+_/i, '');
+  name = name.replace(/_/g, ' ');
+  name = name.replace(/^(Chapter\s*\d+)\s+([^-])/i, '$1 - $2');
+  return name.trim();
+}
+
 export function SmartClassesView({ user, language, isPremium, onUpgrade, onBack }: any) {
   const [videos, setVideos] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -92,9 +99,10 @@ export function SmartClassesView({ user, language, isPremium, onUpgrade, onBack 
           <div className="col-span-full py-20 text-center text-slate-500">No chapters found for this subject.</div>
         ) : (
           chaptersForSubject.map((ch: string, idx: number) => {
-            const chapterVideos = videos.filter(v => v.chapter === ch && v.subject === selectedSubject);
+            const chapterVideos = videos.filter(v => v.chapter === ch);
             const hasVideos = chapterVideos.length > 0;
             const isLocked = !isPremium && idx > 2; // Freemium model: lock after 3 chapters
+            const formattedName = formatChapterName(ch);
 
             return (
               <div key={ch} className="glass-card rounded-[2rem] p-6 border border-white/5 relative overflow-hidden group hover:border-red-500/30 transition-all flex flex-col">
@@ -114,7 +122,12 @@ export function SmartClassesView({ user, language, isPremium, onUpgrade, onBack 
                   </div>
                   
                   <div>
-                    <h3 className="text-white font-bold text-lg leading-tight line-clamp-3">{ch}</h3>
+                    <p className="text-sm text-red-400 font-black tracking-widest uppercase mb-1">
+                      {formattedName.split('-')[0] || 'CHAPTER'}
+                    </p>
+                    <h3 className="text-xl font-bold text-white group-hover:text-red-400 transition-colors line-clamp-2">
+                      {formattedName.split('-').slice(1).join('-') || formattedName}
+                    </h3>
                     <p className="text-slate-400 text-xs mt-2 flex items-center gap-2">
                       <Clock size={12} /> Approx 45 mins
                     </p>
