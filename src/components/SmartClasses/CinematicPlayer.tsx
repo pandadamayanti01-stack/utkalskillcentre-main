@@ -49,6 +49,37 @@ export function CinematicPlayer({ chapterName, videos, onClose }: CinematicPlaye
     }
   };
 
+  // Handle automatic landscape orientation when entering fullscreen
+  useEffect(() => {
+    const handleFullscreenChange = async () => {
+      if (document.fullscreenElement || (document as any).webkitFullscreenElement) {
+        try {
+          if (screen.orientation && screen.orientation.lock) {
+            await screen.orientation.lock('landscape');
+          }
+        } catch (err) {
+          console.warn("Could not lock orientation", err);
+        }
+      } else {
+        try {
+          if (screen.orientation && screen.orientation.unlock) {
+            screen.orientation.unlock();
+          }
+        } catch (err) {
+          console.warn("Could not unlock orientation", err);
+        }
+      }
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+    };
+  }, []);
+
   // Reset summary when video changes
   useEffect(() => {
     setSummaryText('');
