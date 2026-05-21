@@ -32,7 +32,7 @@ export function SmartClassesView({ user, language, isPremium, onUpgrade, onBack 
     }
   };
 
-  const subjects = Object.keys(CHAPTERS_MAP[studentClassStr] || {});
+  const subjects = Object.keys(CHAPTERS_MAP[studentClassStr] || {}).filter(sub => sub.toLowerCase() !== 'algebra');
   
   // Set default subject if none selected
   useEffect(() => {

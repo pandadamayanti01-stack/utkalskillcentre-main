@@ -24,7 +24,7 @@ export function VideoCuratorTab() {
 
   // Form State
   const [selectedClass, setSelectedClass] = useState('10');
-  const [selectedSubject, setSelectedSubject] = useState(Object.keys(CHAPTERS_MAP['10'] || {})[0] || 'math');
+  const [selectedSubject, setSelectedSubject] = useState(Object.keys(CHAPTERS_MAP['10'] || {}).filter(sub => sub.toLowerCase() !== 'algebra')[0] || 'math');
   const [chapterName, setChapterName] = useState('');
   const [videoTitle, setVideoTitle] = useState('Part 1');
   const [youtubeUrl, setYoutubeUrl] = useState('');
@@ -195,7 +195,7 @@ export function VideoCuratorTab() {
                   value={selectedClass} 
                   onChange={(e) => {
                     setSelectedClass(e.target.value);
-                    const subjects = Object.keys(CHAPTERS_MAP[e.target.value] || {});
+                    const subjects = Object.keys(CHAPTERS_MAP[e.target.value] || {}).filter(sub => sub.toLowerCase() !== 'algebra');
                     if (subjects.length > 0) setSelectedSubject(subjects[0]);
                   }}
                   className="w-full px-4 py-3 rounded-xl bg-slate-900/50 border border-white/10 text-white font-bold focus:border-red-500 outline-none"
@@ -213,7 +213,7 @@ export function VideoCuratorTab() {
                   }}
                   className="w-full px-4 py-3 rounded-xl bg-slate-900/50 border border-white/10 text-white font-bold focus:border-red-500 outline-none capitalize"
                 >
-                  {(Object.keys(CHAPTERS_MAP[selectedClass] || {})).map(sub => (
+                  {(Object.keys(CHAPTERS_MAP[selectedClass] || {})).filter(sub => sub.toLowerCase() !== 'algebra').map(sub => (
                     <option key={sub} value={sub}>{sub.replace('_', ' ')}</option>
                   ))}
                 </select>
