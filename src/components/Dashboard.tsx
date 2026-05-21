@@ -642,7 +642,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Utkal Skill Centre Facebook page"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-400/25 bg-blue-500/15 text-blue-200 transition-all hover:bg-blue-500/25 hover:text-white hover:scale-110 active:scale-95"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-400/25 bg-blue-500/10 text-blue-500 transition-all hover:bg-blue-500 hover:text-white hover:scale-110 active:scale-95"
               >
                 <Lucide.Facebook size={18} />
               </a>
@@ -651,7 +651,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Utkal Skill Centre Instagram profile"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-pink-400/25 bg-pink-500/15 text-pink-200 transition-all hover:bg-pink-500/25 hover:text-white hover:scale-110 active:scale-95"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-pink-400/25 bg-pink-500/10 text-pink-500 transition-all hover:bg-pink-500 hover:text-white hover:scale-110 active:scale-95"
               >
                 <Lucide.Instagram size={18} />
               </a>
@@ -660,7 +660,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Utkal Skill Centre WhatsApp channel"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-emerald-400/25 bg-emerald-500/15 text-emerald-200 transition-all hover:bg-emerald-500/25 hover:text-white hover:scale-110 active:scale-95"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-emerald-400/25 bg-emerald-500/10 text-emerald-500 transition-all hover:bg-emerald-500 hover:text-white hover:scale-110 active:scale-95"
               >
                 <Lucide.MessageSquare size={18} />
               </a>
@@ -669,7 +669,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Utkal Skill Centre YouTube channel"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-red-400/25 bg-red-500/15 text-red-200 transition-all hover:bg-red-500/25 hover:text-white hover:scale-110 active:scale-95"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-red-400/25 bg-red-500/10 text-red-500 transition-all hover:bg-red-500 hover:text-white hover:scale-110 active:scale-95"
               >
                 <Lucide.Youtube size={18} />
               </a>
