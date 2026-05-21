@@ -96,7 +96,7 @@ export function CinematicPlayer({ chapterName, videos, onClose }: CinematicPlaye
         </div>
         <button 
           onClick={onClose}
-          className="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all hover:rotate-90 hover:scale-110"
+          className="p-3 bg-red-600 hover:bg-red-700 rounded-full text-white transition-all shadow-lg hover:scale-105 backdrop-blur-md"
         >
           <X size={24} />
         </button>
