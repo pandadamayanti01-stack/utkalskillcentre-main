@@ -91,7 +91,7 @@ import {
 } from '../services/aiService';
 import { joinSupportSession, sendRemoteCommand, updatePointer, endSupportSession } from '../services/supportService';
 
-type AdminTab = 'dashboard' | 'content' | 'monthly_tests' | 'daily_mcqs' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup' | 'students' | 'subscriptions' | 'support' | 'user_locks' | 'digital_library_upload';
+type AdminTab = 'dashboard' | 'content' | 'monthly_tests' | 'daily_mcqs' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup' | 'students' | 'teachers' | 'subscriptions' | 'support' | 'user_locks' | 'digital_library_upload';
 
 interface AdminDashboardProps {
   onExit: () => void;
@@ -859,6 +859,7 @@ Sample tone for Class 6-10:
                 title: 'Registry',
                 items: [
                   { id: 'students', label: 'Students', icon: Users },
+                  { id: 'teachers', label: 'Teachers', icon: Users },
                   { id: 'subscriptions', label: 'Subscriptions', icon: Shield },
                   { id: 'payments', label: 'Payments', icon: CreditCard },
                   { id: 'user_locks', label: 'User Locks', icon: Lock },
@@ -3776,9 +3777,26 @@ Sample tone for Class 6-10:
   );
 
 
+  const handleRoleChange = async (userId: string, currentRole: string, newRole: string) => {
+    if (currentRole === newRole) return;
+    try {
+      await updateDoc(doc(firestore, 'users', userId), { role: newRole });
+      setStudents(prev => prev.map(u => u.id === userId ? { ...u, role: newRole } : u));
+      showNotification(`User role successfully updated to ${newRole}`);
+    } catch (err: any) {
+      console.error(err);
+      showNotification('Failed to update user role', 'error');
+    }
+  };
 
   function renderStudents() {
-    const filteredStudents = students.filter(s =>
+    const isTeacherView = activeTab === 'teachers';
+    const filteredStudents = students.filter(s => {
+      const role = s.role || 'student';
+      if (isTeacherView && role !== 'teacher') return false;
+      if (!isTeacherView && role === 'teacher') return false;
+      return true;
+    }).filter(s =>
       (s.name || '').toLowerCase().includes(studentSearch.toLowerCase()) ||
       (s.email || '').toLowerCase().includes(studentSearch.toLowerCase()) ||
       (s.phoneNumber || '').toLowerCase().includes(studentSearch.toLowerCase())
@@ -3788,7 +3806,7 @@ Sample tone for Class 6-10:
       <div className="glass-card p-8 rounded-[2.5rem]">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-white">Users & Teachers Management</h2>
+            <h2 className="text-2xl font-bold text-white">{isTeacherView ? 'Teachers Management' : 'Students Management'}</h2>
             <p className="text-slate-400 text-sm mt-1">Total Users: {students.length} | Showing: {filteredStudents.length}</p>
           </div>
           <div className="relative w-full md:w-64">
@@ -3847,7 +3865,16 @@ Sample tone for Class 6-10:
                       </span>
                     </td>
                     <td className="py-4">
-                      <div className="flex items-center gap-3">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <select
+                          value={student.role || 'student'}
+                          onChange={(e) => handleRoleChange(student.id, student.role || 'student', e.target.value)}
+                          className="bg-white/10 text-white text-xs rounded border border-white/20 px-2 py-1 outline-none focus:border-emerald-500 cursor-pointer"
+                        >
+                          <option value="student" className="bg-slate-800">Student</option>
+                          <option value="teacher" className="bg-slate-800">Teacher</option>
+                          <option value="admin" className="bg-slate-800">Admin</option>
+                        </select>
                         <button
                           onClick={() => handleGrantOneMonth(student.id, student.name || student.email || student.phoneNumber)}
                           className="text-emerald-400 hover:text-emerald-300 font-medium text-sm transition-colors"
@@ -3875,7 +3902,9 @@ Sample tone for Class 6-10:
               {filteredStudents.length === 0 && (
                 <tr>
                   <td colSpan={8} className="py-10 text-center text-slate-500">
-                    {studentSearch ? "No students match your search." : "No students found in the database."}
+                    {studentSearch 
+                      ? `No ${isTeacherView ? 'teachers' : 'students'} match your search.` 
+                      : `No ${isTeacherView ? 'teachers' : 'students'} found in the database.`}
                   </td>
                 </tr>
               )}
@@ -5113,7 +5142,7 @@ Sample tone for Class 6-10:
               {activeTab === 'payments' && renderPayments()}
               {activeTab === 'notifications' && renderNotifications()}
               {activeTab === 'settings' && renderSettings()}
-              {activeTab === 'students' && renderStudents()}
+              {(activeTab === 'students' || activeTab === 'teachers') && renderStudents()}
               {activeTab === 'user_locks' && renderUserLocks()}
               {activeTab === 'support' && renderSupport()}
               {activeTab === 'subscriptions' && renderSubscriptions()}
