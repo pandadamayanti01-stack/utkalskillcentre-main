@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Play, MonitorPlay, Maximize2, SkipForward, Library, Youtube, Sparkles, Loader2 } from 'lucide-react';
 import { getAI, withRetry } from '../../services/aiService';
@@ -80,7 +81,7 @@ export function CinematicPlayer({ chapterName, videos, onClose }: CinematicPlaye
   if (!currentVideo) return null;
   const youtubeId = extractYoutubeId(currentVideo.youtubeUrl);
 
-  return (
+  const playerContent = (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-3xl animate-in fade-in duration-500">
       
       <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-black/80 to-transparent flex items-center justify-between px-8 lg:pl-[304px] z-10">
@@ -120,9 +121,9 @@ export function CinematicPlayer({ chapterName, videos, onClose }: CinematicPlaye
           {/* AI Magic Button (Floating over video) */}
           <button 
             onClick={() => generateSummary(currentVideo.title)}
-            className="absolute bottom-8 right-8 z-20 px-6 py-3 rounded-full bg-slate-900/80 backdrop-blur-md border border-amber-500/30 text-amber-400 font-bold flex items-center gap-2 hover:bg-slate-800/90 transition-all shadow-[0_0_30px_rgba(245,158,11,0.2)] hover:scale-105 group"
+            className="absolute bottom-4 right-4 lg:bottom-8 lg:right-8 z-20 px-3 py-1.5 lg:px-6 lg:py-3 rounded-full bg-slate-900/80 backdrop-blur-md border border-amber-500/30 text-amber-400 font-bold flex items-center gap-2 hover:bg-slate-800/90 transition-all shadow-[0_0_30px_rgba(245,158,11,0.2)] hover:scale-105 group text-[10px] lg:text-base"
           >
-            <Sparkles size={18} className="group-hover:animate-pulse" />
+            <Sparkles size={14} className="group-hover:animate-pulse lg:size-[18px]" />
             AI Summary (Odia)
           </button>
 
@@ -242,4 +243,10 @@ export function CinematicPlayer({ chapterName, videos, onClose }: CinematicPlaye
       </div>
     </div>
   );
+
+  // Mount the cinematic player at the document body to escape all z-index stacking contexts
+  if (typeof document !== 'undefined') {
+    return createPortal(playerContent, document.body);
+  }
+  return playerContent;
 }
