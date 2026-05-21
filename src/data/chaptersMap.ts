@@ -16,6 +16,21 @@ export const CHAPTERS_MAP: Record<string, Record<string, string[]>> = {
       "Chapter 8 - ସଂଖ୍ୟାର ମଜା",
       "Chapter 9 - ଆମ ପର୍ବପର୍ବାଣୀ"
     ],
+    "algebra": [
+      "Chapter 1 - ଚୁଲବୁଲି ବିଲେଇକୁ ଖୋଜିବା",
+      "Chapter 10 - ମୋର ଗୋଟିଏ ଦିବସର କାମ",
+      "Chapter 11 - କେତେ ଥର ମିଶିଲା",
+      "Chapter 12 - ଆସ କିଣାବିକା କରିବା",
+      "Chapter 13 - ବାଃ ଏତେଗୁଡ଼ିଏ ଖେଳଣା",
+      "Chapter 2 - କେଉଁଟି ଲମ୍ବା କେଉଁଟି ଗୋଲ",
+      "Chapter 3 - ଆମ୍ବ ଭୋଜି",
+      "Chapter 4 - ଆସ ୧୦ ତିଆରି କରିବା",
+      "Chapter 5 - ସଂଖ୍ୟାଟି କେତେ",
+      "Chapter 6 - ପନିପରିବା ବଗିଚା",
+      "Chapter 7 - ଲୀନାର ପରିବାର",
+      "Chapter 8 - ସଂଖ୍ୟାର ମଜା",
+      "Chapter 9 - ଆମ ପର୍ବପର୍ବାଣୀ"
+    ],
     "odia": [
       "Class1_Ch01_Aasa_Chitra_Dekhi",
       "Class1_Ch02_Chakuli_Kala_Chen",
@@ -49,6 +64,19 @@ export const CHAPTERS_MAP: Record<string, Record<string, string[]>> = {
   },
   "2": {
     "math": [
+      "Chapter 1 - ସମୁଦ୍ର କୂଳରେ ଦିନଟିଏ",
+      "Chapter 10 - ମେଳାରେ ମଜା",
+      "Chapter 11 - ତଥ୍ୟ ପରିଚାଳନା",
+      "Chapter 2 - ଆମ ଚାରିପାଖରେ ଥିବା ଆକୃତି",
+      "Chapter 3 - ସଂଖ୍ୟା ସହିତ ମଜା",
+      "Chapter 4 - ଛାୟାର କାହାଣୀ",
+      "Chapter 5 - ଗାର ସହିତ ଖେଳିବା",
+      "Chapter 6 - ପର୍ବ ପାଇଁ ସାଜସଜ୍ଜା",
+      "Chapter 7 - ରାଣୀଙ୍କ ଉପହାର",
+      "Chapter 8 - ଏକାଠି କରିବା ଓ ବାଣ୍ଟିବା",
+      "Chapter 9 - ଋତୁ ପସରା"
+    ],
+    "algebra": [
       "Chapter 1 - ସମୁଦ୍ର କୂଳରେ ଦିନଟିଏ",
       "Chapter 10 - ମେଳାରେ ମଜା",
       "Chapter 11 - ତଥ୍ୟ ପରିଚାଳନା",
@@ -160,6 +188,23 @@ export const CHAPTERS_MAP: Record<string, Record<string, string[]>> = {
       "Chapter 8 - ରାକ୍ଷୀ ପୂର୍ଣ୍ଣିମା",
       "Chapter 9 - ସମବଣ୍ଟନ"
     ],
+    "algebra": [
+      "Chapter 1 - ନାମରେ କ'ଣ ଅଛି",
+      "Chapter 10 - ଶ୍ରେଣୀରେ ମଜା",
+      "Chapter 11 - ଭରିବା ଓ ଉଠାଇବା",
+      "Chapter 12 - ଦେବା ଓ ନେବା",
+      "Chapter 13 - ସମୟ ଗଡ଼ିଚାଲେ",
+      "Chapter 14 - ଯୋରନ୍ଦା ମେଳା",
+      "Chapter 15 - ଶିକ୍ଷଣ ସାମଗ୍ରୀ",
+      "Chapter 2 - ଖେଳନାର ମଜା",
+      "Chapter 3 - ଦ୍ବିଶତକ",
+      "Chapter 4 - ଛୁଟିରେ ଆଈମା’ଙ୍କ ସହ",
+      "Chapter 5 - ଆକୃତିର ମଜା",
+      "Chapter 6 - ଶହେର ଘର-୧",
+      "Chapter 7 - ଶହେର ଘର- 2",
+      "Chapter 8 - ରାକ୍ଷୀ ପୂର୍ଣ୍ଣିମା",
+      "Chapter 9 - ସମବଣ୍ଟନ"
+    ],
     "odia": [
       "Chapter 1 - Our School",
       "Class3_Ch01_Kehi_Nuhen_Ta_Sari",
@@ -248,6 +293,23 @@ export const CHAPTERS_MAP: Record<string, Record<string, string[]>> = {
       "Class4_EVS_Ch10_Unit5_Ch10_Aama_Akasha"
     ],
     "math": [
+      "Chapter 1 - ଆମ ଚାରିପାଖର ଆକୃତି",
+      "Chapter 10 - ଆମେ ସବୁ ଏକା ଦଳର",
+      "Chapter 11 - ପ୍ରତିସମତାର ମଜା",
+      "Chapter 12 - ଘଣ୍ଟା ଚାଲେ ଟିକ୍ ଟିକ୍, କ୍ୟାଲେଣ୍ଡର କହେ ଠିକ୍ ଠିକ୍",
+      "Chapter 13 - ପରିବହନ ସଂଗ୍ରହାଳୟ",
+      "Chapter 14 - ତଥ୍ୟ ପରିଚାଳନା",
+      "Chapter 15 - ଶିକ୍ଷଣ ସାମଗ୍ରୀ",
+      "Chapter 2 - ଲୁଚକାଳି ଖେଳ",
+      "Chapter 3 - ଆମ ଚାରିପାଖର ସଂରଚନା",
+      "Chapter 4 - ହଜାରର ପରିଚୟ",
+      "Chapter 5 - ବାଣ୍ଟିବା ଓ ମାପିବା",
+      "Chapter 6 - ଦୈର୍ଘ୍ୟ ମାପିବା",
+      "Chapter 7 - ସବୁଠାରୁ ସ୍ୱଚ୍ଛ ଗ୍ରାମ",
+      "Chapter 8 - ମାପିବା ଓ ଭରିବା",
+      "Chapter 9 - ହାତୀ, ହରିଣ, ମାଙ୍କଡ ମେଳି"
+    ],
+    "algebra": [
       "Chapter 1 - ଆମ ଚାରିପାଖର ଆକୃତି",
       "Chapter 10 - ଆମେ ସବୁ ଏକା ଦଳର",
       "Chapter 11 - ପ୍ରତିସମତାର ମଜା",
@@ -371,6 +433,24 @@ export const CHAPTERS_MAP: Record<string, Record<string, string[]>> = {
       "Chapter_8_ଓଜନ ଓ ଧାରକତ୍ୱ",
       "Chapter_9_ନଡ଼ିଆ ବଗିଚା"
     ],
+    "algebra": [
+      "Chapter_10_ପ୍ରତିସମ ଚିତ୍ର",
+      "Chapter_11_ଜେଜେମାଙ୍କ କମ୍ବଳ",
+      "Chapter_12_ସମୟର ମାପ",
+      "Chapter_13_ପ୍ରାଣୀ ଡିଆଁ",
+      "Chapter_14_ମାନଚିତ୍ର ଓ ଅବସ୍ଥାନ",
+      "Chapter_15_ଚିତ୍ର ମାଧ୍ୟମରେ ତଥ୍ୟ",
+      "Chapter_16_ଶିକ୍ଷଣ ସାମଗ୍ରୀ ଫର୍ଦ୍ଦ",
+      "Chapter_1_ଆମେ ସମସ୍ତେ ଯାତ୍ରୀ-୧",
+      "Chapter_2_ଭଗ୍ନ ସଂଖ୍ୟା",
+      "Chapter_3_ଦୃଷ୍ଟିର କୋଣ",
+      "Chapter_4_ଆମେ ସମସ୍ତେ ଯାତ୍ରୀ-୨",
+      "Chapter_5_ପାଖ ଓ ଦୂର",
+      "Chapter_6_ବୃତ୍ତ ଉତ୍ପାଦନ କେନ୍ଦ୍ର",
+      "Chapter_7_ଆକୃତି ଓ ସଂରଚନା",
+      "Chapter_8_ଓଜନ ଓ ଧାରକତ୍ୱ",
+      "Chapter_9_ନଡ଼ିଆ ବଗିଚା"
+    ],
     "odia": [
       "Class5_Ch01_Gachha_Kahani",
       "Class5_Ch02_Kotikare_Gotie",
@@ -444,6 +524,19 @@ export const CHAPTERS_MAP: Record<string, Record<string, string[]>> = {
       "Class6_Chapter_8_ଜ୍ୟାମିତିକ ଅଙ୍କନ",
       "Class6_Chapter_9_ପ୍ରତିସମତା"
     ],
+    "algebra": [
+      "Class6_Chapter_10_ପୂର୍ଣ୍ଣ ସଂଖ୍ୟା",
+      "Class6_Chapter_11_ଶିକ୍ଷଣ ସାମଗ୍ରୀ ଫର୍ଦ୍ଦ",
+      "Class6_Chapter_1_ଗଣିତରେ ସଂରଚନା",
+      "Class6_Chapter_2_ରେଖା ଏବଂ କୋଣ",
+      "Class6_Chapter_3_ସଂଖ୍ୟା ଖେଳ",
+      "Class6_Chapter_4_ତଥ୍ୟ ଉପସ୍ଥାପନା ଓ ପରିଚାଳନା",
+      "Class6_Chapter_5_ମୌଳିକ ସଂଖ୍ୟା",
+      "Class6_Chapter_6_ପରିସୀମା ଓ କ୍ଷେତ୍ରଫଳ",
+      "Class6_Chapter_7_ଭଗ୍ନାଂଶ",
+      "Class6_Chapter_8_ଜ୍ୟାମିତିକ ଅଙ୍କନ",
+      "Class6_Chapter_9_ପ୍ରତିସମତା"
+    ],
     "odia": [
       "Class6_Ch01_Janmabhumi",
       "Class6_Ch02_Eka_Desha_Eka_Mati",
@@ -466,6 +559,16 @@ export const CHAPTERS_MAP: Record<string, Record<string, string[]>> = {
   },
   "7": {
     "math": [
+      "Class7_Chapter_1_ଆମ ଚାରିପଟେ ଥିବା ବଡ଼ ସଂଖ୍ୟା",
+      "Class7_Chapter_2_ପାଟୀଗାଣିତିକ ପରିପ୍ରକାଶ",
+      "Class7_Chapter_3_ସଂଖ୍ୟାର ମଝିରେ ବିନ୍ଦୁର କମାଲ",
+      "Class7_Chapter_4_ଅକ୍ଷର ଓ ସଂଖ୍ୟା ମାଧ୍ୟମରେ ଗାଣିତିକ ପରିପ୍ରକାଶ",
+      "Class7_Chapter_5_ସମାନ୍ତର ସରଳ ରେଖା ଓ ଛେଦକ",
+      "Class7_Chapter_6_ସଂଖ୍ୟା ଖେଳ",
+      "Class7_Chapter_7_ତିନୋଟି ପରସ୍ପର ଛେଦୀ ସରଳ ରେଖାର କଥା",
+      "Class7_Chapter_8_ଭଗ୍ନସଂଖ୍ୟାର ବ୍ୟବହାର"
+    ],
+    "algebra": [
       "Class7_Chapter_1_ଆମ ଚାରିପଟେ ଥିବା ବଡ଼ ସଂଖ୍ୟା",
       "Class7_Chapter_2_ପାଟୀଗାଣିତିକ ପରିପ୍ରକାଶ",
       "Class7_Chapter_3_ସଂଖ୍ୟାର ମଝିରେ ବିନ୍ଦୁର କମାଲ",
@@ -500,6 +603,15 @@ export const CHAPTERS_MAP: Record<string, Record<string, string[]>> = {
   },
   "8": {
     "math": [
+      "Class8_Chapter_1_ବର୍ଗ ଓ ଘନ",
+      "Class8_Chapter_2_ଘାତର ଖେଳ",
+      "Class8_Chapter_3_ସଂଖ୍ୟାର କାହାଣୀ",
+      "Class8_Chapter_4_ଚତୁର୍ଭୁଜ",
+      "Class8_Chapter_5_ସଂଖ୍ୟା ଖେଳ",
+      "Class8_Chapter_6_ବାଣ୍ଟିଲେ ପଢ଼େ",
+      "Class8_Chapter_7_ସମାନୁପାତିକ ଯୁକ୍ତି-୧"
+    ],
+    "algebra": [
       "Class8_Chapter_1_ବର୍ଗ ଓ ଘନ",
       "Class8_Chapter_2_ଘାତର ଖେଳ",
       "Class8_Chapter_3_ସଂଖ୍ୟାର କାହାଣୀ",
@@ -543,6 +655,17 @@ export const CHAPTERS_MAP: Record<string, Record<string, string[]>> = {
       "Class9_Eng_Ch16_The_Portrait_of_a_Lady"
     ],
     "math": [
+      "Chapter 1 - Set Theory",
+      "Chapter 2 - Real Numbers",
+      "Chapter 3 - Algebraic Expressions",
+      "Chapter 4 - Algebraic Equations",
+      "Chapter 5 - Coordinate Geometry",
+      "Chapter 6 - Ratio and Proportion",
+      "Chapter 7 - Statistics",
+      "Chapter 8 - Probability",
+      "Chapter 9-Answer Key"
+    ],
+    "algebra": [
       "Chapter 1 - Set Theory",
       "Chapter 2 - Real Numbers",
       "Chapter 3 - Algebraic Expressions",
@@ -718,6 +841,15 @@ export const CHAPTERS_MAP: Record<string, Record<string, string[]>> = {
       "Class10_LifeSci_Ch11_Covid_19_Management"
     ],
     "math": [
+      "Chapter 1 - Sarala Saha Samikarana",
+      "Chapter 2 - Dwighata Samikarana",
+      "Chapter 3 - Arithmetic Progression",
+      "Chapter 4 - Probability",
+      "Chapter 5 - Statistics",
+      "Chapter 6 - Coordinate Geometry",
+      "Chapter 7 - Answer Key"
+    ],
+    "algebra": [
       "Chapter 1 - Sarala Saha Samikarana",
       "Chapter 2 - Dwighata Samikarana",
       "Chapter 3 - Arithmetic Progression",
