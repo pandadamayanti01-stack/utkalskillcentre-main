@@ -718,6 +718,38 @@ export default function App() {
     };
   }, []);
 
+  // Active Study Time Tracker
+  useEffect(() => {
+    if (!user || user.role !== 'student') return;
+
+    let isActive = !document.hidden;
+
+    const handleVisibilityChange = () => {
+      isActive = !document.hidden;
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    const interval = setInterval(async () => {
+      if (isActive) {
+        try {
+          const userRef = doc(firestore, 'users', user.id);
+          await updateDoc(userRef, {
+            totalStudyMinutes: increment(1)
+          });
+          setUser(prev => prev ? { ...prev, totalStudyMinutes: (prev.totalStudyMinutes || 0) + 1 } : prev);
+        } catch (error) {
+          console.error("Failed to sync study time:", error);
+        }
+      }
+    }, 60000); // 1 minute
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      clearInterval(interval);
+    };
+  }, [user?.id, user?.role]);
+
   // Support Session Cleanup
   useEffect(() => {
     const saved = sessionStorage.getItem('supportSession');
@@ -3299,6 +3331,14 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack, userPr
 
   const userRank = leaderboard.findIndex((s: any) => s.name === user.name) + 1 || '-';
 
+  const formatStudyTime = (minutes: number) => {
+    if (!minutes) return '0m';
+    if (minutes < 60) return `${minutes}m`;
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    return m > 0 ? `${h}h ${m}m` : `${h}h`;
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -3335,18 +3375,25 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack, userPr
         </button>
       </motion.div>
 
-      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8">
         <div className="glass-card neon-border rounded-3xl p-6 text-center">
-          <div className="text-3xl font-bold text-white mb-1">{stats.chaptersCompleted} / {stats.totalChapters}</div>
-          <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Chapters Completed</p>
+          <div className="text-2xl md:text-3xl font-bold text-white mb-1">{stats.chaptersCompleted} / {stats.totalChapters}</div>
+          <p className="text-[10px] md:text-xs text-slate-500 uppercase font-bold tracking-wider">Chapters Done</p>
         </div>
         <div className="glass-card neon-border rounded-3xl p-6 text-center">
-          <div className="text-3xl font-bold text-emerald-500 mb-1">{stats.avgScore}%</div>
-          <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Average Accuracy</p>
+          <div className="text-2xl md:text-3xl font-bold text-emerald-500 mb-1">{stats.avgScore}%</div>
+          <p className="text-[10px] md:text-xs text-slate-500 uppercase font-bold tracking-wider">Avg Accuracy</p>
         </div>
         <div className="glass-card neon-border rounded-3xl p-6 text-center">
-          <div className="text-3xl font-bold text-blue-500 mb-1">{stats.totalQuizzes}</div>
-          <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Quizzes Taken</p>
+          <div className="text-2xl md:text-3xl font-bold text-blue-500 mb-1">{stats.totalQuizzes}</div>
+          <p className="text-[10px] md:text-xs text-slate-500 uppercase font-bold tracking-wider">Quizzes Taken</p>
+        </div>
+        <div className="glass-card neon-border rounded-3xl p-6 text-center border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-transparent">
+          <div className="text-2xl md:text-3xl font-bold text-amber-400 mb-1 flex items-center justify-center gap-1.5">
+            <Lucide.Clock size={20} className="md:w-6 md:h-6" />
+            {formatStudyTime(user.totalStudyMinutes || 0)}
+          </div>
+          <p className="text-[10px] md:text-xs text-slate-500 uppercase font-bold tracking-wider">Active Time</p>
         </div>
       </motion.div>
 
@@ -3421,11 +3468,36 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack, userPr
             </>
           )}
 
-          <div className="p-6 rounded-3xl bg-slate-900/50 border border-white/5">
-            <h3 className="text-lg font-bold text-white mb-2">Performance Report</h3>
-            <p className="text-xs text-slate-400 mb-4 leading-relaxed">Take more quizzes to unlock detailed skill gap analysis and personalized learning paths.</p>
-            <button className="w-full py-3 rounded-xl bg-white text-slate-900 text-xs font-bold hover:bg-slate-100 transition-all">
-              View Detailed Report
+          <div className="p-6 rounded-3xl bg-slate-900/80 border border-emerald-500/20 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-all"></div>
+            
+            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <Lucide.Sparkles className="text-emerald-400" size={18} /> 
+              AI Learning Insights
+            </h3>
+            
+            <div className="min-h-[100px] mb-6 relative z-10">
+              {generatingInsights ? (
+                <div className="flex flex-col items-center justify-center h-full py-4 opacity-70">
+                  <Lucide.Loader2 className="animate-spin text-emerald-500 mb-2" size={24} />
+                  <p className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest">Analyzing Student Data...</p>
+                </div>
+              ) : learningInsights && learningInsights !== "No insights available yet." ? (
+                <div className="text-sm text-slate-300 leading-relaxed prose prose-invert prose-emerald max-w-none prose-p:my-1 prose-li:my-0.5">
+                  <ReactMarkdown>{learningInsights}</ReactMarkdown>
+                </div>
+              ) : (
+                <p className="text-xs text-slate-400 leading-relaxed text-center py-4">
+                  Take more quizzes to unlock detailed AI skill gap analysis and personalized learning paths.
+                </p>
+              )}
+            </div>
+
+            <button 
+              onClick={() => setViewingReport(true)}
+              className="relative z-10 w-full py-3 rounded-xl bg-white text-slate-900 text-xs font-bold hover:bg-slate-100 hover:shadow-lg hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+            >
+              <Lucide.FileBarChart2 size={16} /> View Detailed Report
             </button>
           </div>
         </motion.div>
@@ -5643,11 +5715,11 @@ function LeaderboardView({ leaderboard, language, onBack, following, user }: any
                 >
                   <td className="px-8 py-6">
                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold ${
-                      leaderboard.indexOf(student) === 0 ? 'bg-yellow-500 text-slate-900' : 
-                      leaderboard.indexOf(student) === 1 ? 'bg-slate-300 text-slate-900' : 
-                      leaderboard.indexOf(student) === 2 ? 'bg-orange-500 text-slate-900' : 'text-slate-500'
+                      i === 0 ? 'bg-yellow-500 text-slate-900 shadow-[0_0_15px_#eab308]' : 
+                      i === 1 ? 'bg-slate-300 text-slate-900 shadow-[0_0_15px_#cbd5e1]' : 
+                      i === 2 ? 'bg-orange-500 text-slate-900 shadow-[0_0_15px_#f97316]' : 'text-slate-500'
                     }`}>
-                      {leaderboard.indexOf(student) + 1}
+                      {i + 1}
                     </div>
                   </td>
                   <td className="px-8 py-6">

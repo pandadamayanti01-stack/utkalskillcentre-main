@@ -125,11 +125,11 @@ export function LeaderboardView({ leaderboard, language, onBack, following, user
                 >
                   <td className="px-8 py-6">
                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold ${
-                      leaderboard.indexOf(student) === 0 ? 'bg-yellow-500 text-slate-900' : 
-                      leaderboard.indexOf(student) === 1 ? 'bg-slate-300 text-slate-900' : 
-                      leaderboard.indexOf(student) === 2 ? 'bg-orange-500 text-slate-900' : 'text-slate-500'
+                      i === 0 ? 'bg-yellow-500 text-slate-900 shadow-[0_0_15px_#eab308]' : 
+                      i === 1 ? 'bg-slate-300 text-slate-900 shadow-[0_0_15px_#cbd5e1]' : 
+                      i === 2 ? 'bg-orange-500 text-slate-900 shadow-[0_0_15px_#f97316]' : 'text-slate-500'
                     }`}>
-                      {leaderboard.indexOf(student) + 1}
+                      {i + 1}
                     </div>
                   </td>
                   <td className="px-8 py-6">
