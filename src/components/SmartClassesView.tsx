@@ -48,7 +48,9 @@ export function SmartClassesView({ user, language, isPremium, onUpgrade, onBack 
     }
   }, [subjects, selectedSubject]);
 
-  const chaptersForSubject = selectedSubject ? (CHAPTERS_MAP[studentClassStr][selectedSubject] || []) : [];
+  const chaptersForSubject = subjects.length > 0 && selectedSubject 
+    ? [...(CHAPTERS_MAP[studentClassStr]?.[selectedSubject] || [])].sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
+    : [];
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">

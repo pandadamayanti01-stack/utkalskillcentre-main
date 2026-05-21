@@ -236,7 +236,9 @@ export function VideoCuratorTab() {
                 className="w-full px-4 py-3 rounded-xl bg-slate-900/50 border border-white/10 text-white font-bold focus:border-red-500 outline-none"
               >
                 <option value="" disabled>Select Chapter</option>
-                {((CHAPTERS_MAP[selectedClass] || {})[selectedSubject] || []).map((ch: string) => (
+                {((CHAPTERS_MAP[selectedClass] || {})[selectedSubject] || [])
+                  .sort((a: string, b: string) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
+                  .map((ch: string) => (
                   <option key={ch} value={ch}>{formatChapterName(ch)}</option>
                 ))}
               </select>
