@@ -151,7 +151,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
     }
     // Special Promotion Period: Till June 20th, 2026 (inclusive). No rotation.
     const isSpecialPromoPeriod = new Date() < new Date('2026-06-21T00:00:00');
-    const promoVideoUrl = 'https://www.youtube.com/embed/KTnuVBnVlu0';
+    const promoVideoUrl = 'https://www.youtube.com/embed/Ml-_dY7FXrs';
     const videoUrl = isSpecialPromoPeriod 
       ? promoVideoUrl 
       : (classVideoMap[userClass] || classVideoMap['10']);
@@ -159,7 +159,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
-  const [dailyVideoId, setDailyVideoId] = useState<string | null>(isSpecialPromoPeriod ? 'KTnuVBnVlu0' : null);
+  const [dailyVideoId, setDailyVideoId] = useState<string | null>(isSpecialPromoPeriod ? 'Ml-_dY7FXrs' : null);
 
   const [showHomeworkModal, setShowHomeworkModal] = useState(false);
   const [homeworkClass, setHomeworkClass] = useState(userClass || '10');
@@ -173,7 +173,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   useEffect(() => {
     // If in the special promotional period, lock the video ID and skip rotation
     if (new Date() < new Date('2026-06-21T00:00:00')) {
-      setDailyVideoId('KTnuVBnVlu0');
+      setDailyVideoId('Ml-_dY7FXrs');
       return;
     }
 
