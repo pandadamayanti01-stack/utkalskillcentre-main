@@ -291,33 +291,39 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       exit="exit"
       className="space-y-5 sm:space-y-6 md:space-y-8 pb-24"
     >
-      {/* Welcome Section - Premium Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6">
-        <div className="space-y-1">
-          <div className="flex items-center gap-3">
-            <div className="w-1.5 h-6 bg-emerald-500 rounded-full shadow-[0_0_10px_#10b981]"></div>
-            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tighter">
-              {language === 'en' ? 'Welcome back,' : 'ସ୍ୱାଗତ,'} <span className="text-emerald-500">{user?.name || 'Scholar'}!</span>
+      {/* Welcome Section - Hyper Premium Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-20">
+        <div className="space-y-2 relative">
+          <div className="absolute -left-12 -top-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+          <div className="flex items-center gap-4">
+            <div className="w-2 h-10 md:h-12 bg-gradient-to-b from-emerald-400 to-teal-600 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.5)]"></div>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-slate-400 tracking-tighter">
+              {language === 'en' ? 'Welcome back,' : 'ସ୍ୱାଗତ,'} <br className="sm:hidden" /><span className="text-emerald-400 drop-shadow-lg">{user?.name || 'Scholar'}!</span>
             </h1>
           </div>
-          <p className="text-slate-500 text-[9px] font-black uppercase tracking-[0.2em] pl-4">
-            {t.keepGoing} • {new Date().toLocaleDateString(language === 'or' ? 'or-IN' : 'en-IN', { weekday: 'long', month: 'long', day: 'numeric' })}
+          <p className="text-slate-400 text-[10px] md:text-xs font-black uppercase tracking-[0.3em] pl-6 flex items-center gap-2">
+            <Lucide.Calendar size={12} className="text-emerald-500" />
+            {new Date().toLocaleDateString(language === 'or' ? 'or-IN' : 'en-IN', { weekday: 'long', month: 'long', day: 'numeric' })}
           </p>
         </div>
         
         <div className="flex items-center gap-4">
-          <div className="glass-card px-5 py-2.5 rounded-2xl flex items-center gap-4 border border-white/5 hover:border-emerald-500/25 hover:scale-102 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300">
+          <div className="bg-slate-900/60 backdrop-blur-2xl px-6 py-4 rounded-[2rem] flex items-center gap-5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_10px_40px_rgba(0,0,0,0.5)] hover:border-emerald-500/30 transition-all duration-500 group cursor-default">
             <div className="text-right">
-              <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest">{t.dailyGoal}</p>
-              <p className="text-[12px] font-black text-white tracking-tight">{user?.points_today || 0} <span className="text-emerald-500">/ {dailyGoal} XP</span></p>
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">{t.dailyGoal}</p>
+              <div className="flex items-baseline gap-1 justify-end">
+                <p className="text-2xl font-black text-white tracking-tighter">{user?.points_today || 0}</p>
+                <p className="text-xs font-bold text-emerald-500">/ {dailyGoal} XP</p>
+              </div>
             </div>
-            <div className="relative w-9 h-9 group">
-              <svg className="w-full h-full transform -rotate-90">
-                <circle cx="18" cy="18" r="16" stroke="currentColor" strokeWidth="2" fill="transparent" className="text-white/5" />
-                <circle cx="18" cy="18" r="16" stroke="currentColor" strokeWidth="2.5" fill="transparent" strokeDasharray={100} strokeDashoffset={100 - (100 * dailyProgress) / 100} className="text-emerald-400 transition-all duration-1000 drop-shadow-[0_0_5px_#10b981]" />
+            <div className="relative w-14 h-14 group">
+              <div className="absolute inset-0 bg-emerald-500/10 rounded-full blur-md group-hover:bg-emerald-500/20 transition-all duration-500"></div>
+              <svg className="w-full h-full transform -rotate-90 relative z-10" viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="16" stroke="currentColor" strokeWidth="2.5" fill="transparent" className="text-slate-800" />
+                <circle cx="18" cy="18" r="16" stroke="currentColor" strokeWidth="3" strokeLinecap="round" fill="transparent" strokeDasharray={100} strokeDashoffset={100 - (100 * dailyProgress) / 100} className="text-emerald-400 transition-all duration-1000 drop-shadow-[0_0_8px_#10b981]" />
               </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Lucide.Target size={12} className="text-emerald-400 group-hover:scale-115 transition-transform" />
+              <div className="absolute inset-0 flex items-center justify-center z-20">
+                <Lucide.Zap size={18} className="text-emerald-300 drop-shadow-md group-hover:scale-110 group-hover:text-white transition-transform duration-300" />
               </div>
             </div>
           </div>
@@ -330,7 +336,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         {/* Left Column - Core Interactions */}
         <div className="lg:col-span-8 space-y-8">
           
-          {/* AI Tutor Card - Futuristic Neural Link */}
+          {/* AI Tutor Card - Hyper Premium Banner */}
           <motion.div 
             variants={itemVariants}
             onClick={() => {
@@ -340,36 +346,43 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 setShowTrailer(true);
               }
             }}
-            className="glass-card rounded-3xl p-5 md:p-6 lg:p-8 relative overflow-hidden cursor-pointer group hover:border-emerald-500/30 transition-all duration-500"
+            className="bg-slate-900/60 backdrop-blur-2xl rounded-[2.5rem] p-6 md:p-8 lg:p-10 relative overflow-hidden cursor-pointer group border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_20px_60px_-15px_rgba(0,0,0,0.7)] hover:border-emerald-500/40 hover:-translate-y-1 transition-all duration-500"
           >
-            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-[80px] -mr-32 -mt-32 pointer-events-none group-hover:bg-emerald-500/20 transition-all duration-700"></div>
+            {/* Edge-to-edge gradients */}
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-teal-900/20 opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[100px] -mr-[200px] -mt-[200px] pointer-events-none group-hover:bg-emerald-500/20 group-hover:scale-110 transition-all duration-1000"></div>
+            <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
             
-            <div className="flex flex-col sm:flex-row items-center gap-5 md:gap-6 relative z-10 w-full">
+            <div className="flex flex-col sm:flex-row items-center gap-6 md:gap-8 relative z-10 w-full">
               <div className="relative shrink-0">
-                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-slate-900 border-2 border-emerald-500/40 shadow-[0_0_25px_rgba(16,185,129,0.2)] flex items-center justify-center shrink-0 group-hover:scale-105 transition-all duration-500 overflow-hidden relative">
+                <div className="w-20 h-20 md:w-28 md:h-28 rounded-full bg-slate-950 border-[3px] border-emerald-500/30 shadow-[0_0_40px_rgba(16,185,129,0.3)] flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:border-emerald-400 transition-all duration-500 overflow-hidden relative group-hover:shadow-[0_0_60px_rgba(16,185,129,0.5)]">
                   <div className="absolute inset-0 bg-emerald-500/10 animate-pulse" />
                   <img src="/gundulu.png" alt="Gundulu" className="w-full h-full object-cover relative z-10" />
                 </div>
-                <div className="absolute -bottom-1 -right-0.5 w-6 h-6 md:w-7 md:h-7 bg-emerald-500 rounded-full flex items-center justify-center text-white shadow-[0_0_10px_rgba(16,185,129,0.5)] border-2 border-slate-900">
-                  <Lucide.Brain size={12} className="md:size-3.5" />
+                <div className="absolute -bottom-2 -right-2 w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-full flex items-center justify-center text-white shadow-[0_0_15px_rgba(16,185,129,0.6)] border-2 border-slate-900 group-hover:scale-110 transition-transform">
+                  <Lucide.Sparkles size={16} className="md:size-4" />
                 </div>
               </div>
               
-              <div className="flex-1 text-center sm:text-left space-y-2.5 min-w-0">
+              <div className="flex-1 text-center sm:text-left space-y-3 min-w-0">
                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-wider">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    {language === 'en' ? 'Gundulu Active' : 'ଗୁଣ୍ଡୁଲୁ ସକ୍ରିୟ'}
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] shadow-[inset_0_0_10px_rgba(16,185,129,0.1)]">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_5px_#34d399] animate-pulse"></span>
+                    {language === 'en' ? 'Gundulu AI Active' : 'ଗୁଣ୍ଡୁଲୁ AI ସକ୍ରିୟ'}
                   </div>
                 </div>
-                <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300 tracking-tighter group-hover:text-white transition-colors">
                   {language === 'en' ? 'Talk to Gundulu' : 'ଗୁଣ୍ଡୁଲୁ ସହିତ କଥା ହୁଅନ୍ତୁ'}
                 </h3>
-                <p className="text-slate-400 text-xs md:text-sm font-medium leading-normal max-w-lg hidden sm:block">
+                <p className="text-slate-400 text-xs md:text-sm font-bold leading-relaxed max-w-lg hidden sm:block group-hover:text-slate-300 transition-colors">
                   {language === 'en' 
-                    ? 'Initiate a deep learning session. Gundulu is optimized to resolve complex mathematical theorems and academic queries via voice interface.'
-                    : 'ଗୋଟିଏ ଗଭୀର ଶିକ୍ଷା ସେସନ୍ ଆରମ୍ଭ କରନ୍ତୁ | ଗୁଣ୍ଡୁଲୁ ଭଏସ୍ ଇଣ୍ଟରଫେସ୍ ମାଧ୍ୟମରେ ଜଟିଳ ଗାଣିତିକ ଏବଂ ଶିକ୍ଷାଗତ ପ୍ରଶ୍ନର ସମାଧାନ କରିବାକୁ ସକ୍ଷମ |'}
+                    ? 'Initiate a deep learning session. Ask complex questions and get instant, step-by-step voice answers.'
+                    : 'ଗୋଟିଏ ଗଭୀର ଶିକ୍ଷା ସେସନ୍ ଆରମ୍ଭ କରନ୍ତୁ | ଗୁଣ୍ଡୁଲୁ ଭଏସ୍ ଇଣ୍ଟରଫେସ୍ ମାଧ୍ୟମରେ ଜଟିଳ ପ୍ରଶ୍ନର ସମାଧାନ କରିବାକୁ ସକ୍ଷମ |'}
                 </p>
+              </div>
+              
+              <div className="hidden lg:flex shrink-0 w-12 h-12 rounded-full bg-white/5 border border-white/10 items-center justify-center text-slate-400 group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-400 transition-all duration-300">
+                <Lucide.ChevronRight size={20} />
               </div>
             </div>
           </motion.div>
@@ -412,22 +425,23 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           )}
 
           {/* Daily Challenge & Video Matrix */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-            {/* Daily MCQ Card */}
-            <div className="glass-card rounded-3xl p-5 md:p-6 lg:p-8 border-cyan-500/20 relative overflow-hidden group hover:border-cyan-500/40 transition-all duration-500 flex flex-col justify-between">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
+            {/* Daily MCQ Card - Gamified */}
+            <div className="bg-slate-900/40 backdrop-blur-xl rounded-[2rem] p-6 md:p-8 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_15px_40px_-10px_rgba(0,0,0,0.5)] relative overflow-hidden group hover:border-cyan-500/30 hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between">
               <div className="absolute top-0 right-0 w-48 h-48 bg-cyan-500/10 rounded-full blur-[60px] -mr-24 -mt-24 pointer-events-none group-hover:bg-cyan-500/20 transition-all"></div>
+              <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-600/0 via-cyan-500/50 to-cyan-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               
-              <div className="relative z-10 space-y-4">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[9px] font-black uppercase tracking-wider">
-                  <Lucide.CheckCircle2 size={12} />
+              <div className="relative z-10 space-y-5">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[9px] font-black uppercase tracking-[0.2em]">
+                  <Lucide.CheckCircle2 size={12} className="drop-shadow-md" />
                   Knowledge Pulse
                 </div>
                 
                 <div>
-                  <h3 className="text-xl font-black text-white tracking-tight uppercase mb-1.5">
+                  <h3 className="text-2xl font-black text-white tracking-tighter mb-2 group-hover:text-cyan-50 transition-colors">
                     {language === 'en' ? "Gundulu's Trial" : "ଗୁଣ୍ଡୁଲୁର ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ"}
                   </h3>
-                  <p className="text-slate-400 text-xs font-medium leading-relaxed italic">
+                  <p className="text-slate-400 text-xs md:text-sm font-bold leading-relaxed">
                     {hasDailyPractice
                       ? (language === 'en' ? 'New cognitive nodes are available for your current tier. Synchronize now.' : 'ଆପଣଙ୍କ ଶ୍ରେଣୀ ପାଇଁ ନୂଆ ପ୍ରଶ୍ନ ଉପଲବ୍ଧ ଅଛି | ବର୍ତ୍ତମାନ ସମାଧାନ କରନ୍ତୁ |')
                       : (language === 'en' ? 'Daily challenge status: PENDING. Check the practice matrix for updates.' : 'ଆଜିର ପ୍ରଶ୍ନ ସେଟ୍ ପ୍ରକାଶିତ ହୋଇଛି କି ନାହିଁ ଦେଖିବାକୁ ଅଭ୍ୟାସ ଟ୍ୟାବ୍ ଖୋଲନ୍ତୁ |')}
@@ -435,14 +449,14 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 </div>
 
                 {(todayDailySubject || tomorrowDailySubject) && (
-                  <div className="flex flex-wrap gap-2 pt-1">
+                  <div className="flex flex-wrap gap-2 pt-2">
                     {todayDailySubject && (
-                      <span className="px-2.5 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-[9px] font-black uppercase tracking-wider text-cyan-300">
+                      <span className="px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-[9px] font-black uppercase tracking-widest text-cyan-300">
                         {language === 'en' ? 'Current:' : 'ଆଜି:'} {todayDailySubject}
                       </span>
                     )}
                     {tomorrowDailySubject && (
-                      <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-[9px] font-black uppercase tracking-wider text-slate-500">
+                      <span className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-[9px] font-black uppercase tracking-widest text-slate-400">
                         {language === 'en' ? 'Next:' : 'ଆସନ୍ତାକାଲି:'} {tomorrowDailySubject}
                       </span>
                     )}
@@ -450,33 +464,34 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 )}
               </div>
 
-              <div className="relative z-10 flex flex-col sm:flex-row gap-3 mt-6">
+              <div className="relative z-10 flex flex-col sm:flex-row gap-3 mt-8">
                 <button
                   type="button"
                   onClick={onOpenDailyPractice}
-                  className="flex-1 px-5 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-[10px] font-black uppercase tracking-[0.15em] transition-all shadow-xl shadow-cyan-900/20 active:scale-95"
+                  className="flex-1 px-5 py-4 rounded-xl bg-gradient-to-b from-cyan-400 to-cyan-600 hover:from-cyan-300 hover:to-cyan-500 text-white text-[11px] font-black uppercase tracking-[0.2em] transition-all shadow-[0_10px_20px_-10px_rgba(6,182,212,0.8)] active:scale-95 border-t border-cyan-300"
                 >
                   {language === 'en' ? "Commence Trial" : "ଆରମ୍ଭ କରନ୍ତୁ"}
                 </button>
                 <button
                   type="button"
                   onClick={onShareDailyPractice}
-                  className="px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white text-[10px] font-black uppercase tracking-[0.15em] transition-all flex items-center justify-center gap-1.5"
+                  className="px-5 py-4 rounded-xl bg-slate-800/80 border border-white/10 text-slate-300 hover:text-white hover:bg-slate-700 text-[11px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2"
                 >
-                  <Lucide.MessageCircle size={12} />
+                  <Lucide.MessageCircle size={14} />
                   {language === 'en' ? 'Broadcast' : 'ଶେୟାର'}
                 </button>
               </div>
             </div>
 
-            {/* Class-wise YouTube Matrix */}
-            <div className="glass-card rounded-3xl p-5 md:p-6 lg:p-8 border-white/5 relative overflow-hidden group flex flex-col justify-between">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-600/50 to-transparent" />
+            {/* Class-wise YouTube Matrix - Cinema Style */}
+            <div className="bg-slate-900/40 backdrop-blur-xl rounded-[2rem] p-6 md:p-8 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_15px_40px_-10px_rgba(0,0,0,0.5)] relative overflow-hidden group hover:border-red-500/30 hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-red-500/5 rounded-full blur-[60px] -mr-24 -mt-24 pointer-events-none group-hover:bg-red-500/10 transition-all"></div>
+              <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-red-600/0 via-red-500/50 to-red-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               
-              <div className="relative z-10 space-y-4">
+              <div className="relative z-10 space-y-5">
                 <div className="flex items-center justify-between">
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 text-[9px] font-black uppercase tracking-wider">
-                    <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[9px] font-black uppercase tracking-[0.2em]">
+                    <div className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_5px_#ef4444] animate-pulse" />
                     Neural Feed • Tier {userClass}
                   </div>
                   <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest">
@@ -484,7 +499,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   </div>
                 </div>
                 
-                <div className="aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black shadow-2xl relative group-hover:scale-[1.01] transition-transform duration-500">
+                <div className="aspect-video rounded-xl overflow-hidden border border-white/10 bg-black shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative group-hover:scale-[1.02] group-hover:shadow-[0_10px_40px_rgba(239,68,68,0.2)] transition-all duration-500">
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none z-10" />
                   <iframe
                     width="100%"
@@ -502,9 +517,9 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   href="https://www.youtube.com/@UtkalSkillCenter?sub_confirmation=1"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2.5 w-full py-3.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black text-[10px] uppercase tracking-wider transition-all shadow-xl shadow-red-900/20 active:scale-95"
+                  className="flex items-center justify-center gap-3 w-full py-4 rounded-xl bg-gradient-to-b from-red-500 to-red-700 hover:from-red-400 hover:to-red-600 text-white font-black text-[11px] uppercase tracking-[0.2em] transition-all shadow-[0_10px_20px_-10px_rgba(239,68,68,0.8)] active:scale-95 border-t border-red-400"
                 >
-                  <Lucide.Youtube size={14} />
+                  <Lucide.Youtube size={16} />
                   {language === 'en' ? 'Synchronize Subscription' : 'YouTube ସବସ୍କ୍ରାଇବ୍ କରନ୍ତୁ'}
                 </a>
               </div>
