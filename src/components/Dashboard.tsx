@@ -310,27 +310,92 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       className="space-y-5 sm:space-y-6 md:space-y-8 pb-20 lg:pb-8"
     >
       {/* Welcome Section - Hyper Premium Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-20">
+      <div className="flex flex-row items-start md:items-center justify-between gap-4 md:gap-6 relative z-20">
         
-        <div className="space-y-2 relative z-10 flex-1">
-          <div className="absolute -left-12 -top-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none"></div>
-          <div className="flex items-center gap-4">
-            <div className="w-2 h-10 md:h-12 bg-gradient-to-b from-emerald-400 to-teal-600 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.5)]"></div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-slate-800 via-slate-700 to-slate-500 dark:from-white dark:via-white dark:to-slate-400 tracking-tighter">
-              {language === 'en' ? 'Welcome back,' : 'ସ୍ୱାଗତ,'} <br className="sm:hidden" /><span className="text-emerald-500 drop-shadow-sm">{user?.name || 'Student'}!</span>
-            </h1>
+        {/* Left Side: Welcome Text + XP Badge */}
+        <div className="flex flex-col gap-6 md:gap-4 relative z-10 flex-1 lg:flex-none lg:w-[350px] min-w-0">
+          
+          {/* Welcome Text */}
+          <div className="space-y-2">
+            <div className="absolute -left-12 -top-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="w-1.5 h-8 md:w-2 md:h-12 bg-gradient-to-b from-emerald-400 to-teal-600 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.5)] shrink-0"></div>
+              <h1 className="text-2xl sm:text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-slate-800 via-slate-700 to-slate-500 dark:from-white dark:via-white dark:to-slate-400 tracking-tighter truncate">
+                {language === 'en' ? 'Welcome back,' : 'ସ୍ୱାଗତ,'} <br className="sm:hidden" /><span className="text-emerald-500 drop-shadow-sm leading-tight">{user?.name || 'Student'}!</span>
+              </h1>
+            </div>
+            <p className="text-slate-500 dark:text-slate-400 text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] pl-4 sm:pl-6 flex items-center gap-1.5 sm:gap-2 truncate">
+              <Lucide.Calendar size={10} className="text-emerald-500 sm:w-3 sm:h-3 shrink-0" />
+              {new Date().toLocaleDateString(language === 'or' ? 'or-IN' : 'en-IN', { weekday: 'long', month: 'long', day: 'numeric' })}
+            </p>
           </div>
-          <p className="text-slate-500 dark:text-slate-400 text-[10px] md:text-xs font-black uppercase tracking-[0.3em] pl-6 flex items-center gap-2">
-            <Lucide.Calendar size={12} className="text-emerald-500" />
-            {new Date().toLocaleDateString(language === 'or' ? 'or-IN' : 'en-IN', { weekday: 'long', month: 'long', day: 'numeric' })}
-          </p>
+
+          {/* XP Badge */}
+          <div className="flex items-center justify-start">
+            <div className="bg-slate-900/60 backdrop-blur-2xl px-4 md:px-6 py-3 md:py-4 rounded-3xl md:rounded-[2rem] flex items-center gap-3 md:gap-5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_10px_40px_rgba(0,0,0,0.5)] hover:border-emerald-500/30 transition-all duration-500 group cursor-default max-w-max">
+              <div className="text-right">
+                <div className="flex items-center justify-end gap-2 md:gap-3 mb-0.5">
+                  <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">{t.dailyGoal}</p>
+                  <div className="flex items-center gap-1 text-orange-400" title="Current Streak">
+                    <Lucide.Flame size={10} className="md:w-3 md:h-3" fill="currentColor" />
+                    <span className="text-[9px] md:text-[10px] font-black">{user?.streak || 0}</span>
+                  </div>
+                </div>
+                <div className="flex items-baseline gap-1 justify-end">
+                  <p className="text-xl md:text-2xl font-black text-white tracking-tighter">{user?.points_today || 0}</p>
+                  <p className="text-[10px] md:text-xs font-bold text-emerald-500">/ {dailyGoal} XP</p>
+                </div>
+              </div>
+              <div className="relative w-10 h-10 md:w-14 md:h-14 group">
+                <div className="absolute inset-0 bg-emerald-500/10 rounded-full blur-md group-hover:bg-emerald-500/20 transition-all duration-500"></div>
+                <svg className="w-full h-full transform -rotate-90 relative z-10" viewBox="0 0 36 36">
+                  <circle cx="18" cy="18" r="16" stroke="currentColor" strokeWidth="2.5" fill="transparent" className="text-slate-800" />
+                  <circle cx="18" cy="18" r="16" stroke="currentColor" strokeWidth="3" strokeLinecap="round" fill="transparent" strokeDasharray={100} strokeDashoffset={100 - (100 * dailyProgress) / 100} className="text-emerald-400 transition-all duration-1000 drop-shadow-[0_0_8px_#10b981]" />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center z-20">
+                  <Lucide.Zap size={14} className="md:w-[18px] md:h-[18px] text-emerald-300 drop-shadow-md group-hover:scale-110 group-hover:text-white transition-transform duration-300" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Animated Gundulu Mascot Video (Center) */}
-        <div className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 pointer-events-auto group shrink-0 mx-auto md:mx-0">
+        {/* Middle Section: Desktop Only - Neural Sync Status */}
+        <div className="hidden lg:flex flex-1 max-w-xl xl:max-w-2xl mx-4 relative group">
+          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-cyan-500/5 to-emerald-500/5 rounded-[2rem] blur-xl opacity-50 group-hover:opacity-100 transition-opacity"></div>
+          <div className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-emerald-500/10 rounded-[2rem] p-5 flex items-center gap-6 w-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_10px_30px_-10px_rgba(16,185,129,0.15)] transition-all duration-500 hover:border-emerald-500/30">
+            
+            <div className="relative shrink-0 w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-700 rounded-full flex items-center justify-center text-white shadow-[0_0_20px_rgba(16,185,129,0.4)] group-hover:scale-105 transition-transform duration-500">
+              <div className="absolute inset-0 rounded-full border-2 border-emerald-400/50 animate-ping" style={{ animationDuration: '3s' }}></div>
+              <Lucide.Target size={24} />
+            </div>
+
+            <div className="flex-1 space-y-2.5">
+              <div className="flex justify-between items-end">
+                <h4 className="text-[11px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                  {language === 'en' ? 'Daily Target Sync' : 'ଦୈନିକ ଲକ୍ଷ୍ୟ'}
+                </h4>
+                <span className="text-[12px] font-black text-emerald-600 dark:text-emerald-400">{Math.round(dailyProgress)}%</span>
+              </div>
+              <div className="h-2.5 w-full bg-slate-200/50 dark:bg-slate-800/50 rounded-full overflow-hidden border border-white/20 shadow-inner relative">
+                <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-400 to-teal-500 shadow-[0_0_10px_rgba(16,185,129,0.8)] rounded-full transition-all duration-1000" style={{ width: `${dailyProgress}%` }}>
+                  <div className="absolute top-0 right-0 bottom-0 w-20 bg-gradient-to-r from-transparent to-white/30 skew-x-12 animate-[shimmer_2s_infinite]"></div>
+                </div>
+              </div>
+              <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 italic truncate">
+                {language === 'en' ? 'Keep learning to maintain your streak and unlock rewards.' : 'ଆପଣଙ୍କର ଦୈନିକ ଲକ୍ଷ୍ୟ ପୂରଣ କରନ୍ତୁ |'}
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        {/* Animated Gundulu Mascot Video (Right Side) */}
+        <div className="relative w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48 pointer-events-auto group shrink-0 -mt-2 md:mt-0">
           <video 
             ref={videoRef}
             src="/gundulu%202.1.mp4" 
+            poster="/gundulu.png"
             loop 
             playsInline
             className="w-full h-full object-contain relative z-10" 
@@ -342,7 +407,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           
           <button 
             onClick={togglePlay}
-            className="absolute bottom-0 right-0 z-20 w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-600 border border-emerald-300/30 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:from-emerald-500 hover:to-teal-700 hover:scale-110 shadow-[0_4px_15px_rgba(16,185,129,0.4)] cursor-pointer"
+            className="absolute bottom-2 right-0 md:bottom-4 z-20 w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-600 border border-emerald-300/30 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:from-emerald-500 hover:to-teal-700 hover:scale-110 shadow-[0_4px_15px_rgba(16,185,129,0.4)] cursor-pointer"
             title={isPlaying ? "Pause Video" : "Play Video"}
           >
             {isPlaying ? (
@@ -351,34 +416,6 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               <Lucide.Play size={16} className="fill-white ml-0.5" />
             )}
           </button>
-        </div>
-
-        <div className="flex items-center gap-4 flex-1 justify-end">
-          <div className="bg-slate-900/60 backdrop-blur-2xl px-6 py-4 rounded-[2rem] flex items-center gap-5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_10px_40px_rgba(0,0,0,0.5)] hover:border-emerald-500/30 transition-all duration-500 group cursor-default">
-            <div className="text-right">
-              <div className="flex items-center justify-end gap-3 mb-0.5">
-                <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">{t.dailyGoal}</p>
-                <div className="flex items-center gap-1 text-orange-400" title="Current Streak">
-                  <Lucide.Flame size={12} fill="currentColor" />
-                  <span className="text-[10px] font-black">{user?.streak || 0}</span>
-                </div>
-              </div>
-              <div className="flex items-baseline gap-1 justify-end">
-                <p className="text-2xl font-black text-white tracking-tighter">{user?.points_today || 0}</p>
-                <p className="text-xs font-bold text-emerald-500">/ {dailyGoal} XP</p>
-              </div>
-            </div>
-            <div className="relative w-14 h-14 group">
-              <div className="absolute inset-0 bg-emerald-500/10 rounded-full blur-md group-hover:bg-emerald-500/20 transition-all duration-500"></div>
-              <svg className="w-full h-full transform -rotate-90 relative z-10" viewBox="0 0 36 36">
-                <circle cx="18" cy="18" r="16" stroke="currentColor" strokeWidth="2.5" fill="transparent" className="text-slate-800" />
-                <circle cx="18" cy="18" r="16" stroke="currentColor" strokeWidth="3" strokeLinecap="round" fill="transparent" strokeDasharray={100} strokeDashoffset={100 - (100 * dailyProgress) / 100} className="text-emerald-400 transition-all duration-1000 drop-shadow-[0_0_8px_#10b981]" />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center z-20">
-                <Lucide.Zap size={18} className="text-emerald-300 drop-shadow-md group-hover:scale-110 group-hover:text-white transition-transform duration-300" />
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
