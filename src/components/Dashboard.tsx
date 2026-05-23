@@ -394,14 +394,10 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             src="/gundulu%202.1.mp4" 
             poster="/gundu2.0.png"
             autoPlay
-            muted={isMuted}
+            muted
             loop 
             playsInline
             className="w-full h-full object-contain relative z-10" 
-            style={{ 
-              WebkitMaskImage: 'radial-gradient(circle at center, black 30%, transparent 65%)',
-              maskImage: 'radial-gradient(circle at center, black 30%, transparent 65%)'
-            }}
           />
           
           <button 
