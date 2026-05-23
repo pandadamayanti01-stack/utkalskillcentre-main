@@ -2957,53 +2957,40 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
         {/* HEADER: Sticky at top */}
         <header className="h-20 flex items-center justify-between px-6 bg-black/20 backdrop-blur-xl border-b border-white/5 flex-shrink-0 z-20">
           <div className="flex items-center gap-4">
-            <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 text-[#f8f1e7]/60">
-              <Lucide.Menu size={24} />
-            </button>
             <div className="flex items-center gap-3">
               {/* UTKAL LOGO used in Header */}
-              <img src="/utkal-192.png" className="h-10 w-auto drop-shadow-md" alt="Utkal Skill Centre" />
-              <div className="h-8 w-px bg-white/10 hidden md:block" />
-              <h2 className="text-lg font-black text-white hidden md:block uppercase tracking-tight">
-                {activeTab.replace('_', ' ')}
-              </h2>
+              <img src="/utkal-192.png" className="h-10 w-10 rounded-full object-cover drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" alt="Utkal Skill Centre" />
+              <h1 className="text-base sm:text-lg font-black bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-400 tracking-tight ml-2 font-serif whitespace-nowrap">
+                Utkal Skill Centre
+              </h1>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* Live Support Button in Odia (Top Right Header Alignment) */}
-            {!isAdminView && user && !supportSession && (
-              <button
-                onClick={handleSupportClick}
-                className={`flex items-center gap-1.5 p-2 sm:px-3.5 sm:py-2 text-white rounded-2xl shadow-lg transition-all cursor-pointer z-30 ${
-                  confirmSupport 
-                    ? 'bg-gradient-to-r from-red-600 via-rose-600 to-pink-500 hover:from-red-500 hover:via-rose-500 hover:to-pink-400 shadow-rose-900/40 border border-rose-500/50 scale-105 animate-pulse' 
-                    : 'bg-gradient-to-r from-red-600 via-orange-600 to-amber-500 hover:from-red-500 hover:via-orange-500 hover:to-amber-400 shadow-red-900/20 border border-red-500/30 hover:scale-105 active:scale-95'
-                }`}
-                title={
-                  confirmSupport 
-                    ? (language === 'or' ? 'ନିଶ୍ଚିତ କରନ୍ତୁ?' : 'Confirm Connection?') 
-                    : (language === 'or' ? 'ଲାଇଭ୍ ସହାୟତା' : 'Live Support')
-                }
-              >
-                <Lucide.LifeBuoy size={16} className={`${confirmSupport ? 'animate-spin text-white' : 'animate-spin-slow text-white'}`} />
-                <span className="text-[11px] font-black tracking-wider leading-none hidden sm:inline-block">
-                  {confirmSupport 
-                    ? (language === 'or' ? 'ନିଶ୍ଚିତ କରନ୍ତୁ?' : 'Confirm?') 
-                    : 'ଲାଇଭ୍ ସହାୟତା'}
-                </span>
-              </button>
-            )}
-
-            {/* User Stats Bubble */}
-            <div className="flex items-center gap-4 bg-white/5 px-4 py-2 rounded-2xl border border-white/5">
-              <div className="flex items-center gap-1.5 text-orange-400">
-                <Lucide.Flame size={16} fill="currentColor" />
-                <span className="text-sm font-black">{user.streak || 0}</span>
-              </div>
-              <div className="text-sm font-black text-[#ffd700]">{user.points || 0} PTS</div>
-            </div>
+          <div className="flex items-center gap-4">
+            {/* Notification Bell */}
+            <button
+              onClick={() => setActiveTab('notifications')}
+              className="relative p-2 text-slate-400 hover:text-white transition-colors rounded-full hover:bg-white/5"
+            >
+              <Lucide.Bell size={22} />
+              {studentNotifications.filter(n => n.id && !readNotifIds.includes(n.id)).length > 0 && (
+                <span className="absolute top-1 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-black/20"></span>
+              )}
+            </button>
+            
+            {/* User Profile */}
+            <button
+              onClick={() => setActiveTab('profile')}
+              className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/10 hover:border-emerald-500/50 transition-colors shrink-0"
+            >
+              <img 
+                src={user?.avatar || "https://api.dicebear.com/7.x/bottts/svg?seed=default"} 
+                alt="Profile" 
+                className="w-full h-full object-cover bg-slate-800" 
+              />
+            </button>
           </div>
+
         </header>
 
         <div 
@@ -3078,7 +3065,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             {activeTab === 'profile' && <ProfileView user={user} language={language} theme={theme} setTheme={setTheme} onBack={() => setActiveTab('dashboard')} onParentAccess={() => setActiveTab('parent_dashboard')} setActiveTab={setActiveTab} />}
             {activeTab === 'parent_dashboard' && <ParentDashboard user={user} chapters={chapters} leaderboard={leaderboard} language={language} onBack={() => setActiveTab('profile')} userProgress={userProgress} />}
             {activeTab === 'leaderboard' && <LeaderboardView leaderboard={leaderboard} language={language} onBack={() => setActiveTab('dashboard')} following={following} user={user} />}
-            {activeTab === 'support' && <SupportView user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'support' && <SupportView user={user} language={language} onBack={() => setActiveTab('dashboard')} handleSupportClick={handleSupportClick} confirmSupport={confirmSupport} supportSession={supportSession} />}
             {activeTab === 'store' && <AvatarStore user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'plans' && <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />}
           </AnimatePresence>
@@ -3096,6 +3083,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             isSidebarOpen={isSidebarOpen}
             unreadNotificationsCount={studentNotifications.filter(n => n.id && !readNotifIds.includes(n.id)).length}
             userRole={user.role}
+            user={user}
           />
         )}
       </main>
@@ -3506,7 +3494,7 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack, userPr
   );
 }
 
-function SupportView({ user, language, onBack }: any) {
+function SupportView({ user, language, onBack, handleSupportClick, confirmSupport, supportSession }: any) {
   const [ticket, setTicket] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -3547,24 +3535,42 @@ function SupportView({ user, language, onBack }: any) {
         <h2 className="text-2xl font-bold text-white">{translations[language].support.title}</h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Live Support Remote Access */}
+        {!supportSession && handleSupportClick && (
+          <button 
+            onClick={handleSupportClick} 
+            className={`p-6 border rounded-3xl flex flex-col items-center justify-center gap-3 transition-all ${
+              confirmSupport 
+                ? 'bg-rose-500/20 border-rose-500/50 hover:bg-rose-500/30 animate-pulse' 
+                : 'bg-red-500/10 border-red-500/20 hover:bg-red-500/20'
+            }`}
+          >
+            <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white ${confirmSupport ? 'bg-rose-500' : 'bg-red-500'}`}>
+              <Lucide.LifeBuoy size={24} className={`${confirmSupport ? 'animate-spin' : 'animate-spin-slow'}`} />
+            </div>
+            <span className="text-white font-bold text-sm text-center">
+              {confirmSupport ? (language === 'or' ? 'ନିଶ୍ଚିତ କରନ୍ତୁ?' : 'Confirm Connection?') : (language === 'or' ? 'ଲାଇଭ୍ ସହାୟତା' : 'Live Support')}
+            </span>
+          </button>
+        )}
         <a href="https://wa.me/919337956168" target="_blank" className="p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-3xl flex flex-col items-center gap-3 hover:bg-emerald-500/20 transition-all">
           <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center text-white">
             <Lucide.MessageCircle size={24} />
           </div>
-          <span className="text-white font-bold text-sm">{translations[language].support.whatsappSupport}</span>
+          <span className="text-white font-bold text-sm text-center">{translations[language].support.whatsappSupport}</span>
         </a>
         <a href="mailto:gyanaloka.panda@gmail.com" className="p-6 bg-blue-500/10 border border-blue-500/20 rounded-3xl flex flex-col items-center gap-3 hover:bg-blue-500/20 transition-all">
           <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white">
             <Lucide.Mail size={24} />
           </div>
-          <span className="text-white font-bold text-sm">{translations[language].support.emailSupport}</span>
+          <span className="text-white font-bold text-sm text-center">{translations[language].support.emailSupport}</span>
         </a>
         <a href="tel:+919337956168" className="p-6 bg-purple-500/10 border border-purple-500/20 rounded-3xl flex flex-col items-center gap-3 hover:bg-purple-500/20 transition-all">
           <div className="w-12 h-12 rounded-full bg-purple-500 flex items-center justify-center text-white">
             <Lucide.Phone size={24} />
           </div>
-          <span className="text-white font-bold text-sm">{translations[language].support.callSupport}</span>
+          <span className="text-white font-bold text-sm text-center">{translations[language].support.callSupport}</span>
         </a>
       </div>
 
@@ -3615,6 +3621,7 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
     return typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted';
   });
   const [subscribingPush, setSubscribingPush] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   const handlePushSubscription = async () => {
     setSubscribingPush(true);
@@ -3653,6 +3660,41 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
   if (showOfflineNotes) {
     return <OfflineNotesView language={language} onBack={() => setShowOfflineNotes(false)} />;
   }
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    if (!file.type.startsWith('image/')) {
+      alert(language === 'en' ? "Please upload a valid image file." : "ଦୟାକରି ଏକ ବୈଧ ଫଟୋ ଅପଲୋଡ୍ କରନ୍ତୁ |");
+      return;
+    }
+    
+    if (file.size > 5 * 1024 * 1024) {
+      alert(language === 'en' ? "Image size must be less than 5MB." : "ଫଟୋ ସାଇଜ୍ 5MB ରୁ କମ୍ ହେବା ଆବଶ୍ୟକ |");
+      return;
+    }
+    
+    setUploadingAvatar(true);
+    try {
+      const fileExt = file.name.split('.').pop() || 'jpg';
+      const storageRef = ref(storage, `profile_pictures/${user.id}/${Date.now()}.${fileExt}`);
+      
+      await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(storageRef);
+      
+      await updateDoc(doc(firestore, 'users', user.id), {
+        avatar: downloadURL
+      });
+      
+      alert(language === 'en' ? "Profile photo updated successfully!" : "ପ୍ରୋଫାଇଲ୍ ଫଟୋ ସଫଳତାର ସହ ଅପଡେଟ୍ ହେଲା!");
+    } catch (err) {
+      console.error("Avatar Upload Error:", err);
+      alert(language === 'en' ? "Failed to upload photo." : "ଫଟୋ ଅପଲୋଡ୍ କରିବାରେ ବିଫଳ |");
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
 
   const handleSave = async () => {
     setLoading(true);
@@ -3754,12 +3796,29 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
       >
       <div className="flex flex-col items-center gap-4 mb-6">
         <div className="relative group">
-          <div className="w-24 h-24 rounded-[2rem] bg-slate-800/50 border-2 border-emerald-500/30 p-2 flex items-center justify-center shadow-2xl overflow-hidden">
-            <img src={user.avatar || 'https://api.dicebear.com/7.x/bottts/svg?seed=default'} alt="Avatar" className="w-full h-full group-hover:scale-110 transition-transform" />
+          <div className="w-24 h-24 rounded-[2rem] bg-slate-800/50 border-2 border-emerald-500/30 p-2 flex items-center justify-center shadow-2xl overflow-hidden relative">
+            {uploadingAvatar ? (
+              <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center z-10">
+                <Lucide.Loader className="animate-spin text-emerald-400" size={24} />
+              </div>
+            ) : null}
+            <img src={user.avatar || 'https://api.dicebear.com/7.x/bottts/svg?seed=default'} alt="Avatar" className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+            
+            <label className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-20">
+              <Lucide.Upload size={20} className="text-white mb-1" />
+              <span className="text-[9px] font-black uppercase tracking-widest text-white">Upload</span>
+              <input 
+                type="file" 
+                accept="image/*" 
+                className="hidden" 
+                onChange={handleAvatarUpload}
+                disabled={uploadingAvatar}
+              />
+            </label>
           </div>
           <button 
             onClick={() => setActiveTab('store')}
-            className="absolute -bottom-2 -right-2 p-2 bg-emerald-600 rounded-xl text-white shadow-lg hover:bg-emerald-500 transition-all border border-emerald-400/30"
+            className="absolute -bottom-2 -right-2 p-2 bg-emerald-600 rounded-xl text-white shadow-lg hover:bg-emerald-500 transition-all border border-emerald-400/30 z-30"
           >
             <Lucide.ShoppingBag size={16} />
           </button>
@@ -4527,7 +4586,8 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
   };
 
   return (
-    <div className="max-w-6xl mx-auto py-8">
+    <div className="w-full h-full overflow-y-auto custom-scrollbar">
+      <div className="max-w-6xl mx-auto pt-8 pb-32 px-4">
       <button 
         onClick={onBack}
         className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
@@ -4697,6 +4757,7 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

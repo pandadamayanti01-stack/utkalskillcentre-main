@@ -303,6 +303,18 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
           >
             {language === 'en' ? 'English' : 'ଓଡ଼ିଆ'}
           </button>
+          {onBack && (
+            <>
+              <div className="h-6 w-px bg-white/10 mx-1"></div>
+              <button
+                onClick={onBack}
+                className="p-2.5 rounded-xl bg-white/5 text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all border border-white/5"
+                title={language === 'en' ? 'Close' : 'ବନ୍ଦ କରନ୍ତୁ'}
+              >
+                <X size={18} />
+              </button>
+            </>
+          )}
         </div>
       </div>
 

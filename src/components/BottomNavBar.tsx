@@ -22,146 +22,115 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
   unreadNotificationsCount = 0,
   userRole
 }) => {
-  const t = translations[language];
-
   const currentDay = new Date().getDate();
   const isTestWindowActive = currentDay >= 1 && currentDay <= 10 && userRole !== 'teacher';
 
-  const navItems: {
-    id: string;
-    icon: React.ComponentType<any>;
-    label: string;
-    badge?: string | number;
-  }[] = [
+  const navItems = [
     isTestWindowActive
-      ? {
-          id: 'monthly_tests',
-          icon: Lucide.ClipboardCheck,
-          label: language === 'en' ? 'Monthly Test' : 'ମାସିକ ଟେଷ୍ଟ'
-        }
-      : {
-          id: 'dashboard',
-          icon: Lucide.LayoutDashboard,
-          label: language === 'en' ? 'Home' : 'ମୂଳ ପୃଷ୍ଠା'
-        },
+      ? { id: 'monthly_tests', icon: Lucide.Home, label: language === 'en' ? 'Home' : 'ମୂଳ ପୃଷ୍ଠା' }
+      : { id: 'dashboard', icon: Lucide.Home, label: language === 'en' ? 'Home' : 'ମୂଳ ପୃଷ୍ଠା' },
     {
       id: 'study_buddy',
-      icon: Lucide.Bot,
+      icon: Lucide.Users,
       label: language === 'en' ? 'Study Buddy' : 'AI ବନ୍ଧୁ'
     },
-    userRole === 'teacher'
-      ? {
-          id: 'notifications',
-          icon: Lucide.Bell,
-          label: language === 'en' ? 'Alerts' : 'ସୂଚନା',
-          badge: unreadNotificationsCount > 0 ? unreadNotificationsCount : undefined
-        }
-      : {
-          id: 'daily_mcqs',
-          icon: Lucide.ListChecks,
-          label: language === 'en' ? 'Daily MCQ' : 'ଦୈନିକ MCQ'
-        },
     {
       id: 'digital_library',
-      icon: Lucide.Library,
-      label: language === 'en' ? 'Library' : 'ଲାଇବ୍ରେରୀ'
+      icon: Lucide.Grid,
+      label: language === 'en' ? 'Library' : 'ଲାଇବ୍ରେରୀ',
+      isCenter: true
+    },
+    {
+      id: 'smart_classes',
+      icon: Lucide.MonitorPlay,
+      label: language === 'en' ? 'Smart Class' : 'ସ୍ମାର୍ଟ କ୍ଲାସ୍'
+    },
+    {
+      id: 'menu',
+      icon: Lucide.User,
+      label: language === 'en' ? 'Profile' : 'ପ୍ରୋଫାଇଲ୍'
     }
   ];
 
   const handleTabClick = (tabId: string) => {
-    vibrate(12); // Tactile micro-vibration
-    playClickSound(); // Clean click audio feedback
-    setActiveTab(tabId);
-    setSidebarOpen(false);
-  };
-
-  const handleMenuClick = () => {
-    vibrate(15); // Distinct vibration pulse
-    playClickSound(); // Distinct sound click
-    setSidebarOpen(!isSidebarOpen);
+    vibrate(12);
+    playClickSound();
+    
+    if (tabId === 'menu') {
+      setSidebarOpen(!isSidebarOpen);
+    } else {
+      setActiveTab(tabId);
+      setSidebarOpen(false);
+    }
   };
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-40 lg:hidden px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-1 pointer-events-none">
-      {/* Dynamic ambient color glow behind the floating bar */}
-      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/90 to-transparent -z-10 pointer-events-none h-28 translate-y-4" />
+    <div className="fixed bottom-0 inset-x-0 z-40 lg:hidden pointer-events-none pb-[env(safe-area-inset-bottom)]">
       
-      {/* Floating container with enhanced borders and ambient back-glow */}
-      <div className="mx-auto max-w-md w-full bottom-nav-gradient backdrop-blur-2xl rounded-[2rem] p-2.5 flex items-center justify-between shadow-[0_-12px_45px_rgba(0,0,0,0.8),0_0_30px_rgba(16,185,129,0.1)] pointer-events-auto transition-all duration-300">
+      {/* Edge-to-Edge Navigation Bar Background */}
+      <div className="absolute inset-x-0 bottom-0 h-16 bg-white border-t border-slate-100 shadow-[0_-10px_40px_rgba(0,0,0,0.03)] pointer-events-auto flex items-center justify-between px-2">
         
-        {navItems.map((item) => {
+        {navItems.map((item, index) => {
           const Icon = item.icon;
-          const isActive = activeTab === item.id || 
+          const isActive = 
+            (activeTab === item.id) || 
+            (item.id === 'menu' && isSidebarOpen) ||
             (item.id === 'monthly_tests' && activeTab === 'dashboard' && isTestWindowActive) ||
             (item.id === 'dashboard' && activeTab === 'monthly_tests' && !isTestWindowActive);
           
+          if (item.isCenter) {
+            return (
+              <div key={item.id} className="relative flex-1 flex justify-center pointer-events-auto h-full">
+                <button
+                  onClick={() => handleTabClick(item.id)}
+                  className="absolute -top-6 flex flex-col items-center justify-center transition-transform active:scale-95 hover:scale-105 group"
+                >
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-400 to-[#1A8055] flex items-center justify-center shadow-lg shadow-emerald-500/30 border-4 border-white group-hover:shadow-emerald-500/50 transition-all duration-300">
+                    <Icon size={24} color="white" strokeWidth={2.5} />
+                  </div>
+                  <span className="text-[9px] font-black text-[#1A8055] mt-1 tracking-wide">
+                    {item.label}
+                  </span>
+                </button>
+              </div>
+            );
+          }
+
           return (
             <button
               key={item.id}
               onClick={() => handleTabClick(item.id)}
-              className="relative flex-1 py-1 flex flex-col items-center justify-center transition-all duration-300"
+              className="relative flex-1 flex flex-col items-center justify-center h-full pointer-events-auto active:scale-95 transition-all duration-200"
             >
-              {/* Premium top active indicator dot - Emerald Glowing Halo */}
-              {isActive && (
-                <span className="absolute -top-1 w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_12px_#34d399] animate-pulse" />
-              )}
-              
-              <div 
-                className={`relative flex items-center justify-center p-2 rounded-2xl transition-all duration-300 ${
-                  isActive 
-                    ? 'bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 text-white shadow-lg shadow-emerald-500/30 border border-emerald-400/20 scale-108 -translate-y-1' 
-                    : 'text-slate-400/80 active:scale-95 hover:text-white/90'
-                }`}
-              >
-                <Icon size={20} className={isActive ? 'animate-bounce-subtle' : ''} />
+              <div className={`flex flex-col items-center justify-center transition-all duration-300 ${isActive ? '-translate-y-0.5' : ''}`}>
                 
-                {item.badge !== undefined && (
-                  <span className={`absolute -top-1 -right-2 flex items-center justify-center font-black text-white border border-[#011e1a] ${
-                    String(item.badge) === "NEW"
-                      ? "px-1.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 text-[7px] text-black shadow-[0_0_10px_rgba(245,158,11,0.6)] animate-pulse"
-                      : "h-4.5 w-4.5 rounded-full bg-red-500 text-[8px] shadow-[0_0_10px_rgba(239,68,68,0.6)]"
-                  }`}>
-                    {item.badge}
-                  </span>
-                )}
+                {/* Premium Active Pill Background */}
+                <div className={`relative flex items-center justify-center transition-all duration-300 ${
+                  isActive ? 'bg-[#1A8055]/10 px-4 py-1 rounded-2xl' : 'px-4 py-1'
+                }`}>
+                  <Icon 
+                    size={20} 
+                    className={`transition-colors duration-300 ${isActive ? 'text-[#1A8055]' : 'text-slate-400 group-hover:text-slate-500'}`} 
+                    strokeWidth={isActive ? 2.5 : 2} 
+                  />
+                  
+                  {/* Notification Badge */}
+                  {item.id === 'smart_classes' && unreadNotificationsCount > 0 && (
+                    <span className="absolute top-0 right-1 flex items-center justify-center px-1 py-0.5 min-w-[14px] h-[14px] rounded-full bg-red-500 text-[8px] font-black text-white shadow-[0_2px_4px_rgba(239,68,68,0.4)]">
+                      {unreadNotificationsCount > 9 ? '9+' : unreadNotificationsCount}
+                    </span>
+                  )}
+                </div>
+
+                <span className={`text-[9px] font-bold tracking-wide transition-colors duration-300 mt-0.5 ${
+                  isActive ? 'text-[#1A8055]' : 'text-slate-400'
+                }`}>
+                  {item.label}
+                </span>
               </div>
-              <span 
-                className={`text-[8.5px] uppercase tracking-widest mt-1.5 transition-all duration-300 ${
-                  isActive ? 'text-emerald-400 font-black scale-102 opacity-100' : 'text-slate-400/60 font-bold opacity-80'
-                }`}
-              >
-                {item.label}
-              </span>
             </button>
           );
         })}
-
-        {/* Menu Toggle Button - Sleek Accent Switch */}
-        <button
-          onClick={handleMenuClick}
-          className="relative flex-1 py-1 flex flex-col items-center justify-center transition-all duration-300"
-        >
-          {isSidebarOpen && (
-            <span className="absolute -top-1 w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_12px_#34d399] animate-pulse" />
-          )}
-          
-          <div 
-            className={`flex items-center justify-center p-2 rounded-2xl transition-all duration-300 ${
-              isSidebarOpen 
-                ? 'bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 text-white shadow-lg shadow-emerald-500/30 border border-emerald-400/20 scale-108 -translate-y-1' 
-                : 'text-slate-400/80 active:scale-95 hover:text-white/90'
-            }`}
-          >
-            <Lucide.Menu size={20} />
-          </div>
-          <span 
-            className={`text-[8.5px] uppercase tracking-widest mt-1.5 transition-all duration-300 ${
-              isSidebarOpen ? 'text-emerald-400 font-black scale-102 opacity-100' : 'text-slate-400/60 font-bold opacity-80'
-            }`}
-          >
-            {language === 'en' ? 'More' : 'ଅଧିକ'}
-          </span>
-        </button>
       </div>
     </div>
   );

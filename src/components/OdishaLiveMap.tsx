@@ -20,22 +20,22 @@ const OdishaLiveMap: React.FC<{ language: 'en' | 'or' }> = ({ language }) => {
   }, []);
 
   return (
-    <div className="glass-card rounded-[2rem] p-8 border-emerald-500/20 relative overflow-hidden h-[300px]">
+    <div className="glass-card rounded-[2rem] p-4 sm:p-6 lg:p-8 border-emerald-500/20 relative overflow-hidden h-[250px] sm:h-[300px] flex flex-col hover:border-emerald-500/40 hover:-translate-y-1 transition-all duration-500">
       <div className="absolute inset-0 bg-emerald-500/5 opacity-50" />
       
       <div className="relative z-10 flex flex-col h-full">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h4 className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.3em] mb-1">
+        <div className="flex items-center justify-between mb-2 sm:mb-6">
+          <div className="truncate pr-2">
+            <h4 className="text-[7px] sm:text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] sm:tracking-[0.3em] mb-0.5 sm:mb-1 truncate">
               {language === 'en' ? 'Live Neural Grid' : 'ଲାଇଭ୍ ଲର୍ଣ୍ଣିଂ ଗ୍ରିଡ୍'}
             </h4>
-            <h3 className="text-lg font-black text-white uppercase tracking-tighter">
+            <h3 className="text-[11px] sm:text-lg font-black text-white uppercase tracking-tighter truncate">
               {language === 'en' ? 'Odisha Activity' : 'ଓଡ଼ିଶା ଗତିବିଧି'}
             </h3>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-            <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Live</span>
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0 bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/20">
+            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500 animate-ping" />
+            <span className="text-[7px] sm:text-[10px] font-bold text-emerald-500 uppercase tracking-widest hidden sm:block">Live</span>
           </div>
         </div>
 

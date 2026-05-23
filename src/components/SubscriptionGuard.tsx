@@ -18,7 +18,8 @@ export function SubscriptionGuard({ onSubscribe, language, isPremium, user, onSh
   const yearlyPrice = systemSettings?.yearlyPrice || 999;
 
   return (
-    <div className="max-w-6xl mx-auto py-8">
+    <div className="w-full h-full overflow-y-auto custom-scrollbar">
+      <div className="max-w-6xl mx-auto pt-8 pb-32 px-4">
       <button 
         onClick={onBack}
         className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
@@ -139,6 +140,7 @@ export function SubscriptionGuard({ onSubscribe, language, isPremium, user, onSh
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 }
