@@ -5,6 +5,32 @@ import { db } from '../firebase';
 import { collection, getDocs, getDocsFromServer, query, where } from 'firebase/firestore';
 import { CinematicPlayer } from './SmartClasses/CinematicPlayer';
 import { CHAPTERS_MAP } from '../data/chaptersMap';
+import { CLASS_SUBJECTS } from './DigitalLibraryView';
+
+export function getSubjectDisplayName(classCode: string, subjectKey: string, lang: 'en' | 'or') {
+  const subjects = CLASS_SUBJECTS[`class${classCode}`] || CLASS_SUBJECTS.class10;
+  
+  // Direct match (for class 9, 10)
+  let found = subjects.find(s => s.key === subjectKey);
+  if (found) return lang === 'or' ? found.labelOr : found.labelEn;
+
+  // Pattern matching for class 1-8
+  const keyMap: Record<string, string[]> = {
+    'math': ['ganita', 'math'],
+    'odia': ['bhasa', 'sahitya', 'odia', 'jhulana'],
+    'evs': ['paribesa', 'chaturbaswara', 'science', 'evs', 'jigyasa'],
+    'english': ['english', 'pallavi', 'jasmine'],
+    'art': ['kala', 'art', 'kruti'],
+    'physical_education': ['sharirika', 'khela', 'krida', 'sports', 'yoga']
+  };
+
+  const patterns = keyMap[subjectKey] || [];
+  found = subjects.find(s => patterns.some(p => s.key.toLowerCase().includes(p)));
+  
+  if (found) return lang === 'or' ? found.labelOr : found.labelEn;
+  
+  return subjectKey.replace('_', ' ').toUpperCase();
+}
 
 export function formatChapterName(rawName: string) {
   let name = rawName.replace(/^Class\d+_/i, '');
@@ -87,7 +113,7 @@ export function SmartClassesView({ user, language, isPremium, onUpgrade, onBack 
                   : 'bg-slate-900/50 text-slate-400 hover:text-slate-200 hover:bg-white/10'
               }`}
             >
-              {sub.replace('_', ' ').toUpperCase()}
+              {getSubjectDisplayName(studentClassStr, sub, language).toUpperCase()}
             </button>
           );
         })}
