@@ -87,20 +87,31 @@ export function LeaderboardView({ leaderboard, language, onBack, following, user
         </div>
 
         {activeFilter === 'league' && (
-          <div className="flex justify-center gap-2 p-1 bg-slate-900/50 border border-white/5 rounded-2xl w-fit mx-auto">
-            {leagues.map((league) => (
-              <button
-                key={league}
-                onClick={() => setActiveLeague(league)}
-                className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${
-                  activeLeague === league 
-                    ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20' 
-                    : 'text-slate-500 hover:text-slate-300'
-                }`}
-              >
-                {translations[language][league.toLowerCase()]}
-              </button>
-            ))}
+          <div className="flex flex-wrap justify-center gap-2 p-1 bg-slate-900/50 border border-white/5 rounded-2xl w-fit mx-auto">
+            {leagues.map((league) => {
+              const gradients: Record<League, string> = {
+                Bronze: 'from-orange-700 to-amber-800 shadow-orange-900/30',
+                Silver: 'from-slate-200 to-slate-400 shadow-slate-900/30 text-slate-900',
+                Gold: 'from-yellow-300 to-amber-500 shadow-yellow-900/30 text-slate-900',
+                Platinum: 'from-cyan-300 to-blue-500 shadow-cyan-900/30 text-slate-900'
+              };
+              const isActive = activeLeague === league;
+              const isDarkText = league !== 'Bronze';
+              
+              return (
+                <button
+                  key={league}
+                  onClick={() => setActiveLeague(league)}
+                  className={`px-6 py-2 rounded-xl text-sm font-bold transition-all duration-300 ${
+                    isActive 
+                      ? `bg-gradient-to-br ${gradients[league]} shadow-lg scale-105 ${isDarkText ? 'text-slate-900' : 'text-white'}` 
+                      : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'
+                  }`}
+                >
+                  {translations[language][league.toLowerCase()]}
+                </button>
+              );
+            })}
           </div>
         )}
       </motion.div>
@@ -117,13 +128,20 @@ export function LeaderboardView({ leaderboard, language, onBack, following, user
           </thead>
           <tbody>
             {filteredLeaderboard.length > 0 ? (
-              filteredLeaderboard.map((student: any, i: number) => (
-                <motion.tr 
-                  variants={itemVariants}
-                  key={i} 
-                  className="border-b border-white/5 hover:bg-white/5 transition-all"
-                >
-                  <td className="px-8 py-6">
+              filteredLeaderboard.map((student: any, i: number) => {
+                const isPromotionZone = i < 5 && activeLeague !== 'Platinum';
+                const isDemotionZone = i >= filteredLeaderboard.length - 5 && activeLeague !== 'Bronze' && filteredLeaderboard.length >= 10;
+                
+                return (
+                  <motion.tr 
+                    variants={itemVariants}
+                    key={i} 
+                    className={`border-b border-white/5 hover:bg-white/10 hover:scale-[1.01] hover:shadow-2xl hover:shadow-white/5 transition-all duration-300 relative group z-0 hover:z-10 bg-slate-900/20 ${
+                      isPromotionZone ? 'border-l-4 border-l-emerald-500/80 bg-gradient-to-r from-emerald-500/5 to-transparent' : 
+                      isDemotionZone ? 'border-l-4 border-l-red-500/80 bg-gradient-to-r from-red-500/5 to-transparent' : 'border-l-4 border-l-transparent'
+                    }`}
+                  >
+                    <td className="px-8 py-6">
                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold ${
                       i === 0 ? 'bg-yellow-500 text-slate-900 shadow-[0_0_15px_#eab308]' : 
                       i === 1 ? 'bg-slate-300 text-slate-900 shadow-[0_0_15px_#cbd5e1]' : 
@@ -162,9 +180,10 @@ export function LeaderboardView({ leaderboard, language, onBack, following, user
                       ))}
                     </div>
                   </td>
-                  <td className="px-8 py-6 text-right font-mono text-emerald-400 font-bold">{student.points}</td>
+                  <td className="px-8 py-6 text-right font-mono text-emerald-400 font-bold group-hover:scale-110 transition-transform origin-right">{student.points}</td>
                 </motion.tr>
-              ))
+              );
+            })
             ) : (
               <tr>
                 <td colSpan={4} className="px-8 py-20 text-center text-slate-500">
