@@ -398,6 +398,16 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             loop 
             playsInline
             className="w-full h-full object-contain relative z-10" 
+            style={{ 
+              WebkitMaskImage: 'radial-gradient(closest-side, black 60%, transparent 100%)',
+              maskImage: 'radial-gradient(closest-side, black 60%, transparent 100%)',
+              WebkitMaskSize: '100% 100%',
+              maskSize: '100% 100%',
+              WebkitMaskPosition: 'center',
+              maskPosition: 'center',
+              WebkitMaskRepeat: 'no-repeat',
+              maskRepeat: 'no-repeat'
+            }}
           />
           
           <button 
