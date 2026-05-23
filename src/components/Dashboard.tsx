@@ -312,35 +312,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       {/* Welcome Section - Hyper Premium Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-20">
         
-        {/* Animated Gundulu Mascot Video (Right Side Empty Space) */}
-        <div className="absolute -right-2 md:-right-4 top-2 md:top-6 w-48 md:w-64 h-48 md:h-64 pointer-events-auto group">
-          <video 
-            ref={videoRef}
-            src="/gundulu%202.1.mp4" 
-            loop 
-            playsInline
-            className="w-full h-full object-contain relative z-10" 
-            style={{ 
-              WebkitMaskImage: 'radial-gradient(circle at center, black 30%, transparent 65%)',
-              maskImage: 'radial-gradient(circle at center, black 30%, transparent 65%)'
-            }}
-          />
-          
-          {/* Play/Pause Button Overlay */}
-          <button 
-            onClick={togglePlay}
-            className="absolute bottom-2 right-2 z-20 w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-600 border border-emerald-300/30 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:from-emerald-500 hover:to-teal-700 hover:scale-110 shadow-[0_4px_15px_rgba(16,185,129,0.4)] cursor-pointer"
-            title={isPlaying ? "Pause Video" : "Play Video"}
-          >
-            {isPlaying ? (
-              <Lucide.Pause size={18} className="fill-white" />
-            ) : (
-              <Lucide.Play size={18} className="fill-white ml-0.5" />
-            )}
-          </button>
-        </div>
-
-        <div className="space-y-2 relative z-10">
+        <div className="space-y-2 relative z-10 flex-1">
           <div className="absolute -left-12 -top-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none"></div>
           <div className="flex items-center gap-4">
             <div className="w-2 h-10 md:h-12 bg-gradient-to-b from-emerald-400 to-teal-600 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.5)]"></div>
@@ -353,8 +325,35 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             {new Date().toLocaleDateString(language === 'or' ? 'or-IN' : 'en-IN', { weekday: 'long', month: 'long', day: 'numeric' })}
           </p>
         </div>
-        
-        <div className="flex items-center gap-4">
+
+        {/* Animated Gundulu Mascot Video (Center) */}
+        <div className="relative w-32 h-32 md:w-40 md:h-40 pointer-events-auto group shrink-0 hidden sm:block">
+          <video 
+            ref={videoRef}
+            src="/gundulu%202.1.mp4" 
+            loop 
+            playsInline
+            className="w-full h-full object-contain relative z-10" 
+            style={{ 
+              WebkitMaskImage: 'radial-gradient(circle at center, black 30%, transparent 65%)',
+              maskImage: 'radial-gradient(circle at center, black 30%, transparent 65%)'
+            }}
+          />
+          
+          <button 
+            onClick={togglePlay}
+            className="absolute bottom-0 right-0 z-20 w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-600 border border-emerald-300/30 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:from-emerald-500 hover:to-teal-700 hover:scale-110 shadow-[0_4px_15px_rgba(16,185,129,0.4)] cursor-pointer"
+            title={isPlaying ? "Pause Video" : "Play Video"}
+          >
+            {isPlaying ? (
+              <Lucide.Pause size={16} className="fill-white" />
+            ) : (
+              <Lucide.Play size={16} className="fill-white ml-0.5" />
+            )}
+          </button>
+        </div>
+
+        <div className="flex items-center gap-4 flex-1 justify-end">
           <div className="bg-slate-900/60 backdrop-blur-2xl px-6 py-4 rounded-[2rem] flex items-center gap-5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_10px_40px_rgba(0,0,0,0.5)] hover:border-emerald-500/30 transition-all duration-500 group cursor-default">
             <div className="text-right">
               <div className="flex items-center justify-end gap-3 mb-0.5">
@@ -519,8 +518,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
           </div>
 
-          {/* Registration Half-Width Container */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 lg:gap-8 w-full">
+          {/* Middle Row: Registration & Video Matrix */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-6 lg:gap-8 w-full">
             {/* Test Series Registration - Premium Alert (Half Size Layout) */}
             {!isRegistered && (
               <motion.div 
@@ -567,12 +566,9 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 </div>
               </motion.div>
             )}
-          </div>
 
-          {/* Video Matrix Full Width */}
-          <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:gap-8 max-w-2xl mx-auto w-full">
             {/* Class-wise YouTube Matrix - Cinema Style */}
-            <div className="bg-slate-900/40 backdrop-blur-xl rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_15px_40px_-10px_rgba(0,0,0,0.5)] relative overflow-hidden group hover:border-red-500/30 hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between">
+            <div className="bg-slate-900/40 backdrop-blur-xl rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_15px_40px_-10px_rgba(0,0,0,0.5)] relative overflow-hidden group hover:border-red-500/30 hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between h-full">
               <div className="absolute top-0 right-0 w-32 sm:w-48 h-32 sm:h-48 bg-red-500/5 rounded-full blur-[60px] -mr-16 sm:-mr-24 -mt-16 sm:-mt-24 pointer-events-none group-hover:bg-red-500/10 transition-all"></div>
               <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-red-600/0 via-red-500/50 to-red-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               
