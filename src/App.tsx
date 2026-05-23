@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useRef, useState, useCallback } from 'react';
+import React, { Suspense, lazy, useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import * as Lucide from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -7043,6 +7043,26 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack, setActiv
     return true; // Default show if no scheduledDate (backward compatibility)
   });
 
+  // Group published submissions by month and year
+  const publishedSubmissionsByMonth = useMemo(() => {
+    const groups: Record<string, { submissions: any[], tests: any[], totalScore: number, totalMax: number }> = {};
+    
+    filteredTests.forEach((test: any) => {
+      if (test.results_published) {
+        const sub = getSubmission(test);
+        if (sub) {
+          const key = `${test.month} ${test.year}`;
+          if (!groups[key]) groups[key] = { submissions: [], tests: [], totalScore: 0, totalMax: 0 };
+          groups[key].submissions.push(sub);
+          groups[key].tests.push(test);
+          groups[key].totalScore += (sub.finalScore ?? sub.score ?? 0);
+          groups[key].totalMax += (sub.totalMaxMarks ?? sub.totalQuestions ?? 0);
+        }
+      }
+    });
+    return groups;
+  }, [filteredTests, submissions]);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -7118,6 +7138,51 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack, setActiv
           </div>
         </div>
       </motion.div>
+
+      {Object.entries(publishedSubmissionsByMonth).map(([monthYear, data]) => {
+        if (data.submissions.length === 0) return null;
+        
+        return (
+          <motion.div key={monthYear} variants={itemVariants} className="bg-gradient-to-br from-indigo-500/10 to-blue-500/10 border border-indigo-500/20 rounded-[2rem] p-8 relative overflow-hidden mb-8">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 blur-[80px] -mr-32 -mt-32 rounded-full pointer-events-none" />
+            
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-8 relative z-10">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+                  <Lucide.Trophy size={28} />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-black text-white">{monthYear} Series Report</h3>
+                  <p className="text-slate-400 text-sm">Overall Performance Across All Subjects</p>
+                </div>
+              </div>
+              <div className="bg-indigo-500/20 border border-indigo-500/30 px-6 py-4 rounded-2xl text-center min-w-[150px]">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-400 mb-1">Total Score</p>
+                <p className="text-3xl font-black text-white">{data.totalScore} <span className="text-lg text-slate-400">/ {data.totalMax}</span></p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 relative z-10">
+              {data.tests.map((test, idx) => {
+                const sub = data.submissions[idx];
+                const score = sub.finalScore ?? sub.score ?? 0;
+                const max = sub.totalMaxMarks ?? sub.totalQuestions ?? 0;
+                const percentage = max > 0 ? Math.round((score / max) * 100) : 0;
+                
+                return (
+                  <div key={test.id} className="bg-black/20 border border-white/5 rounded-xl p-4">
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">{getLocalizedSubject(test.subject, language)}</p>
+                    <div className="flex items-end justify-between">
+                      <p className="text-xl font-bold text-white">{score}<span className="text-xs text-slate-500">/{max}</span></p>
+                      <p className={`text-xs font-bold ${percentage >= 80 ? 'text-emerald-500' : percentage >= 40 ? 'text-amber-500' : 'text-red-500'}`}>{percentage}%</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
+        );
+      })}
 
       <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {filteredTests.map((test: any) => {
@@ -7249,6 +7314,10 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
   const [showWarning, setShowWarning] = useState(false);
   const [timeSpent, setTimeSpent] = useState<Record<number, number>>({});
   const [uploadingImage, setUploadingImage] = useState(false);
+  const uploadingImageRef = useRef(false);
+  useEffect(() => {
+    uploadingImageRef.current = uploadingImage;
+  }, [uploadingImage]);
   const [reports, setReports] = useState<Record<number, boolean>>({});
   const [timeLeft, setTimeLeft] = useState(45 * 60); // 45 minutes in seconds
   const startTimeRef = useRef<number>(Date.now());
@@ -7355,12 +7424,13 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
     };
 
     const handleWindowFocus = () => {
-      // Give 3 seconds grace period for upload to initiate on returning focus
+      // Give 10 seconds grace period for upload to initiate on returning focus
+      // (some Android devices take very long to process high-res camera images before returning them to browser)
       setTimeout(() => {
-        if (!uploadingImage) {
+        if (!uploadingImageRef.current) {
           (window as any).isUploadingRoughNote = false;
         }
-      }, 3000);
+      }, 10000);
     };
 
     const handleContextMenu = (e: MouseEvent) => e.preventDefault();
@@ -7382,7 +7452,7 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
       document.removeEventListener('contextmenu', handleContextMenu);
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [violations, uploadingImage]);
+  }, [violations]); // Removing uploadingImage dependency to prevent stale closure timeouts
 
   // Track time spent per question
   useEffect(() => {

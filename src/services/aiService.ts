@@ -421,7 +421,8 @@ export async function gradeSubjectiveAnswer(
     1. Compare the student's answer (text and image if provided) with the model answer.
     2. Award marks (from 0 to ${maxMarks}) based on accuracy, steps, and clarity.
     3. Be fair but strict. Give partial marks for correct steps.
-    4. Provide the result in JSON format:
+    4. CRITICAL RULE FOR MISSING ROUGH WORK: If the question is purely factual (e.g., "What is the capital of India?"), give full marks if the answer is correct, even without rough work. However, if the question involves mathematical calculations, logical deductions, or derivations, and the student provides the correct final answer BUT NO rough work image and NO detailed steps in the text, you MUST deduct at least 50% of the maximum marks. Board exam rules strictly require steps for full marks in such subjects.
+    5. Provide the result in JSON format:
        {
          "suggestedMark": number,
          "justification": "A brief 1-sentence explanation in ${language === 'or' ? 'Odia' : 'English'}"

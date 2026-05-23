@@ -260,6 +260,7 @@ Sample tone for Class 6-10:
   const [bulkTestQuestions, setBulkTestQuestions] = useState('');
   const [isParsingBulk, setIsParsingBulk] = useState(false);
   const [selectedTestIdForSubmissions, setSelectedTestIdForSubmissions] = useState<string | null>(null);
+  const [isEvaluatingAll, setIsEvaluatingAll] = useState(false);
   const [testSubmissions, setTestSubmissions] = useState<any[]>([]);
   const [filterPending, setFilterPending] = useState(false);
   const [isAddingTextbook, setIsAddingTextbook] = useState(false);
@@ -2478,6 +2479,77 @@ Sample tone for Class 6-10:
             </div>
             <div className="flex items-center gap-4">
               <button
+                onClick={async () => {
+                  if (isEvaluatingAll) return;
+                  setIsEvaluatingAll(true);
+                  try {
+                    const test = monthlyTests.find(t => t.id === selectedTestIdForSubmissions);
+                    if (!test) throw new Error("Test not found");
+
+                    const pendingSubs = testSubmissions.filter(sub => sub.status === 'pending_review');
+                    let evaluatedCount = 0;
+
+                    for (const sub of pendingSubs) {
+                      const newSubjectiveScores = { ...(sub.subjectiveScores || {}) };
+                      const newAiJustifications = { ...(sub.aiJustifications || {}) };
+
+                      for (let i = 0; i < test.questions.length; i++) {
+                        const q = test.questions[i];
+                        if (q.type === 'subjective') {
+                          const studentAnsText = sub.answers[i]?.text || (typeof sub.answers[i] === 'string' ? sub.answers[i] : '');
+                          const studentAnsImg = sub.answers[i]?.imageUrl || null;
+                          
+                          // Only evaluate if there's no score yet
+                          if (newSubjectiveScores[i] === undefined) {
+                            try {
+                              const result = await gradeSubjectiveAnswer(
+                                q.question,
+                                q.correct_answer,
+                                studentAnsText,
+                                studentAnsImg,
+                                q.marks || 1,
+                                test.language as 'en' | 'or'
+                              );
+                              newSubjectiveScores[i] = result.suggestedMark;
+                              newAiJustifications[i] = result.justification;
+                            } catch (err) {
+                              console.error(`Failed to evaluate question ${i} for user ${sub.userId}`, err);
+                            }
+                          }
+                        }
+                      }
+
+                      // Update Firestore for this submission
+                      await updateDoc(doc(firestore, 'monthly_test_submissions', sub.id), {
+                        subjectiveScores: newSubjectiveScores,
+                        aiJustifications: newAiJustifications,
+                        status: 'reviewed'
+                      });
+                      
+                      // Update local state so it reflects immediately
+                      setTestSubmissions(prev => prev.map(s => s.id === sub.id ? {
+                        ...s,
+                        subjectiveScores: newSubjectiveScores,
+                        aiJustifications: newAiJustifications,
+                        status: 'reviewed'
+                      } : s));
+                      
+                      evaluatedCount++;
+                    }
+                    showNotification(`Successfully auto-evaluated ${evaluatedCount} submissions!`, 'success');
+                  } catch (err: any) {
+                    showNotification(`Auto-evaluation failed: ${err.message}`, 'error');
+                  } finally {
+                    setIsEvaluatingAll(false);
+                  }
+                }}
+                disabled={isEvaluatingAll}
+                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-2xl text-sm font-bold shadow-lg shadow-purple-500/20 transition-all disabled:opacity-50"
+              >
+                {isEvaluatingAll ? <RefreshCw size={18} className="animate-spin" /> : <Bot size={18} />}
+                {isEvaluatingAll ? 'Evaluating...' : 'Auto-Evaluate All'}
+              </button>
+              <button
                 onClick={() => setFilterPending(!filterPending)}
                 className={`px-6 py-3 rounded-2xl text-sm font-bold transition-all border ${filterPending
                     ? 'bg-amber-500/20 border-amber-500 text-amber-500 shadow-lg shadow-amber-500/20'
@@ -2652,8 +2724,13 @@ Sample tone for Class 6-10:
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                  <div className="bg-black/30 p-4 rounded-xl text-slate-300 text-sm italic min-h-[60px] flex items-center">
-                                    {answerText || <span className="text-slate-600">No text answer provided.</span>}
+                                  <div className="bg-black/30 p-4 rounded-xl text-slate-300 text-sm italic min-h-[60px] flex flex-col justify-center gap-2">
+                                    <p>{answerText || <span className="text-slate-600">No text answer provided.</span>}</p>
+                                    {sub.aiJustifications?.[i] && (
+                                      <p className="text-xs text-indigo-400 font-bold bg-indigo-500/10 p-2 rounded-lg border border-indigo-500/20">
+                                        🤖 AI Notes: {sub.aiJustifications[i]}
+                                      </p>
+                                    )}
                                   </div>
                                   {imageUrl && (
                                     <a href={imageUrl} target="_blank" rel="noopener noreferrer" className="relative group aspect-video rounded-xl overflow-hidden border border-white/5 bg-black/20 block">
