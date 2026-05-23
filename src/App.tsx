@@ -34,6 +34,7 @@ import {
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, query, where, getDocs, orderBy, limit, addDoc, updateDoc, increment, getCountFromServer, onSnapshot, Timestamp, deleteDoc } from 'firebase/firestore';
 import { createSupportSession, endSupportSession, subscribeToQueuePosition } from './services/supportService';
+import { ODISHA_DISTRICTS } from './constants/districts';
 import { translations } from './translations';
 import { solveMathDoubt, getAI, getStudyBuddySystemInstruction, withRetry } from './services/aiService';
 import { subjectTranslations } from './constants';
