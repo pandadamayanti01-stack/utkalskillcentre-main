@@ -1,9 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
-const getAI = () => {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-  return new GoogleGenerativeAI(apiKey);
-};
+import { getAI } from "./aiService";
 
 export async function translateToBilingual(text: string): Promise<{ en: string; or: string }> {
   try {

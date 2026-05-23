@@ -1,4 +1,5 @@
 import express from 'express';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import path from 'path';
 import dotenv from 'dotenv';
 import multer from 'multer';
@@ -11,6 +12,25 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const Razorpay = require('razorpay');
 import { getServiceAccountCredentials } from '../src/server/googleCredentials.js';
+
+const gunduluSafetySettings = [
+  {
+    category: "HARM_CATEGORY_SEXUALLY_EXPLICIT" as any,
+    threshold: "BLOCK_LOW_AND_ABOVE" as any,
+  },
+  {
+    category: "HARM_CATEGORY_HARASSMENT" as any,
+    threshold: "BLOCK_LOW_AND_ABOVE" as any,
+  },
+  {
+    category: "HARM_CATEGORY_HATE_SPEECH" as any,
+    threshold: "BLOCK_LOW_AND_ABOVE" as any,
+  },
+  {
+    category: "HARM_CATEGORY_DANGEROUS_CONTENT" as any,
+    threshold: "BLOCK_LOW_AND_ABOVE" as any,
+  }
+];
 
 console.log('API (Vercel) Initialization start...');
 // Lazy import automation to speed up boot
@@ -109,8 +129,8 @@ function getRazorpay() {
   return razorpay;
 }
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Middleware to register automation lazily only if needed (or once on first request)
 app.use(async (req, res, next) => {
@@ -306,6 +326,66 @@ function pcmToWav(pcmBuffer: any, sampleRate: number = 24000): any {
 
   return Buffer.concat([header, pcmBuffer]);
 }
+
+app.post('/api/ai/generate', async (req, res) => {
+  try {
+    const { contents, systemInstruction, modelType, generationConfig } = req.body;
+    
+    const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+    if (!apiKey) return res.status(503).json({ error: 'GEMINI_API_KEY is not configured on the server' });
+
+    const ai = new GoogleGenerativeAI(apiKey);
+
+    const FLASH_MODELS = [
+      "gemini-1.5-flash", "gemini-2.0-flash", "gemini-2.5-flash", "gemini-1.5-flash-8b",
+      "gemini-flash-latest", "gemini-flash-lite-latest", "gemini-2.5-flash-lite", "gemini-2.5-flash-image"
+    ];
+    const PRO_MODELS = [
+      "gemini-1.5-pro", "gemini-2.0-pro", "gemini-2.5-pro", "gemini-pro-latest", "gemini-3.1-pro-preview"
+    ];
+    
+    let models = modelType === 'pro' ? [...PRO_MODELS, ...FLASH_MODELS] : [...FLASH_MODELS];
+
+    let lastError = null;
+    for (const modelName of models) {
+      for (const apiVersion of ["v1beta", "v1"]) {
+        try {
+          console.log(`Backend AI: Attempting ${modelName} via ${apiVersion}...`);
+          const model = ai.getGenerativeModel({
+            model: modelName,
+            systemInstruction,
+            safetySettings: gunduluSafetySettings
+          }, { apiVersion: apiVersion as any });
+          
+          const result = await model.generateContent({ contents, generationConfig });
+          return res.json({ text: result.response.text() });
+        } catch(err: any) {
+          lastError = err;
+          const is503 = err.message?.includes('503') || err.status === 503 || err.code === 503;
+          const is404 = err.message?.includes('404') || err.status === 404 || err.code === 404;
+          const isAuthError = err.message?.includes('403') || err.message?.includes('401') || 
+                             err.status === 403 || err.status === 401;
+
+          if (isAuthError) {
+            console.error("Backend AI Auth Error:", err.message);
+            return res.status(403).json({ error: "Gemini API Authentication Failed." });
+          }
+
+          if (is404) {
+            continue; // Try next API version
+          }
+          console.error(`Model Attempt Failed: ${modelName} (${apiVersion})`, err.message);
+        }
+      }
+    }
+    
+    throw lastError || new Error("All AI models failed");
+
+  } catch(error: any) {
+    console.error("Backend AI Generic Error:", error);
+    res.status(500).json({ error: error.message || 'AI Generation failed' });
+  }
+});
 
 app.post('/api/tts/gemini', async (req, res) => {
   try {

@@ -1,4 +1,3 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { safeJsonStringify } from "../firebase";
 
 const GUNDULU_ODIA_SYSTEM_INSTRUCTION = `Role & Persona:
@@ -64,107 +63,46 @@ function safeJsonParse(text: string) {
 }
 
 export const getAI = () => {
-  // For Vite, use import.meta.env to access variables defined in .env files
-  // The vite.config.ts also exposes it via process.env.GEMINI_API_KEY through the define option
-  const apiKey = (import.meta.env.VITE_GEMINI_API_KEY as string) || 
-                 (window as any).VITE_GEMINI_API_KEY;
-
-  // Debug logging
-  console.log("🔍 Gemini API Key Resolution:", {
-    envKey: import.meta.env.VITE_GEMINI_API_KEY ? "✅ Found in import.meta" : "❌ Not Found",
-    windowKey: (window as any).VITE_GEMINI_API_KEY ? "✅ Found in window" : "❌ Not Found",
-    keyPreview: apiKey?.substring(0, 10) + "..." || "N/A",
-    keyLength: apiKey?.length || 0
-  });
-
-  if (!apiKey || apiKey === "" || apiKey === "undefined" || apiKey === "null") {
-    console.error("❌ GEMINI_API_KEY is missing or invalid");
-    console.error("Environment check:", {
-      VITE_GEMINI_API_KEY: (import.meta.env as any).VITE_GEMINI_API_KEY ? "defined" : "NOT FOUND"
-    });
-    throw new Error(
-      "GEMINI_API_KEY is missing or invalid. " +
-      "Make sure .env.local has VITE_GEMINI_API_KEY=your_key, " +
-      "then restart your dev server with: npm run dev"
-    );
-  }
-
-  console.log("✅ Gemini API Key loaded successfully");
-  return new GoogleGenerativeAI(apiKey);
+  console.log("✅ Routing AI through Secure Backend Proxy");
+  return {
+    getGenerativeModel: (opts: any) => {
+      return {
+        generateContent: async (params: any) => {
+           const isPro = opts.model && opts.model.includes('pro');
+           const modelType = isPro ? 'pro' : 'flash';
+           
+           const response = await fetch('/api/ai/generate', {
+             method: 'POST',
+             headers: { 'Content-Type': 'application/json' },
+             body: JSON.stringify({ 
+               contents: params.contents, 
+               systemInstruction: opts.systemInstruction, 
+               modelType: modelType, 
+               generationConfig: params.generationConfig 
+             })
+           });
+           
+           if (!response.ok) {
+             const err = await response.json().catch(() => ({}));
+             throw new Error(err.error || 'Backend AI generation failed');
+           }
+           
+           const data = await response.json();
+           return { response: { text: () => data.text } };
+        }
+      };
+    }
+  };
 };
 
-const FLASH_MODELS = [
-  "gemini-1.5-flash",
-  "gemini-2.0-flash",
-  "gemini-2.5-flash",
-  "gemini-1.5-flash-8b",
-  "gemini-flash-latest",
-  "gemini-flash-lite-latest",
-  "gemini-2.5-flash-lite",
-  "gemini-2.5-flash-image",
-  "gemini-3.1-flash-lite-preview"
-];
-
-const PRO_MODELS = [
-  "gemini-1.5-pro",
-  "gemini-2.0-pro",
-  "gemini-2.5-pro",
-  "gemini-pro-latest",
-  "gemini-3.1-pro-preview"
-];
-
-/**
- * Helper to retry AI calls on 503 errors and 404 model mismatches
- */
 export async function withRetry<T>(
   fn: (modelName: string, apiVersion: "v1beta" | "v1") => Promise<T>, 
   modelType: 'flash' | 'pro' = 'flash',
   maxRetries = 3
 ): Promise<T> {
-  let models = modelType === 'flash' ? [...FLASH_MODELS] : [...PRO_MODELS];
-
-  // Dynamic fallback: if asking for 'pro' models, append 'flash' models to the end
-  // of the search array. This prevents total failure if project/billing limits
-  // have reached their caps for the premium 'pro' tier models.
-  if (modelType === 'pro') {
-    models = [...models, ...FLASH_MODELS];
-  }
-
-  let modelIndex = 0;
-  let retries = maxRetries;
-  let delay = 1000;
-
-  while (modelIndex < models.length) {
-    const currentModel = models[modelIndex];
-    // Try both v1beta and v1
-    const apiVersions: ("v1beta" | "v1")[] = ["v1beta", "v1"];
-    
-    for (const apiVersion of apiVersions) {
-      try {
-        console.log(`🤖 Attempting ${currentModel} via ${apiVersion}...`);
-        return await fn(currentModel, apiVersion);
-      } catch (err: any) {
-        const is503 = err.message?.includes('503') || err.status === 503 || err.code === 503;
-        const is404 = err.message?.includes('404') || err.status === 404 || err.code === 404;
-        const isAuthError = err.message?.includes('403') || err.message?.includes('401') || 
-                           err.status === 403 || err.status === 401;
-
-        if (isAuthError) {
-          console.error("❌ Gemini API Authentication Error. Please check your API Key and billing status.");
-          throw new Error("Gemini API Authentication Failed. Please contact Admin.");
-        }
-
-        if (is404) {
-          console.warn(`Model ${currentModel} not found on ${apiVersion} (404).`);
-          continue; // Try next API version
-        }
-
-        console.error(`❌ Model Attempt Failed: ${currentModel} (${apiVersion})`, err.message);
-      }
-    }
-    modelIndex++;
-  }
-  throw new Error("All available AI models failed or were not found on any API version.");
+  // Retry and model fallback logic is now handled strictly on the backend for security and speed.
+  // We simply pass the modelType through to the backend proxy.
+  return await fn(modelType, "v1beta");
 }
 
 export async function solveMathDoubt(
