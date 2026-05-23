@@ -389,26 +389,18 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
         {/* Animated Gundulu Mascot Video (Right Side) */}
         <div className="relative w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48 pointer-events-auto group shrink-0 -mt-2 md:mt-0">
-          <video 
-            ref={videoRef}
-            src="/gundulu%202.1.mp4" 
-            poster="/gundu2.0.png"
-            autoPlay
-            muted
-            loop 
-            playsInline
-            className="w-full h-full object-contain relative z-10" 
-            style={{ 
-              WebkitMaskImage: 'radial-gradient(closest-side, black 60%, transparent 100%)',
-              maskImage: 'radial-gradient(closest-side, black 60%, transparent 100%)',
-              WebkitMaskSize: '100% 100%',
-              maskSize: '100% 100%',
-              WebkitMaskPosition: 'center',
-              maskPosition: 'center',
-              WebkitMaskRepeat: 'no-repeat',
-              maskRepeat: 'no-repeat'
-            }}
-          />
+          <div className="absolute inset-0 rounded-full overflow-hidden shadow-[0_0_30px_rgba(16,185,129,0.2)] ring-2 ring-emerald-500/20 bg-black">
+            <video 
+              ref={videoRef}
+              src="/gundulu.mp4" 
+              poster="/gundu2.0.png"
+              autoPlay
+              muted
+              loop 
+              playsInline
+              className="w-full h-full object-cover scale-[1.1] relative z-10" 
+            />
+          </div>
           
           <button 
             onClick={toggleMute}
