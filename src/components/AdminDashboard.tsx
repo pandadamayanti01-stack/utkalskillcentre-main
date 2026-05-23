@@ -73,7 +73,10 @@ import {
   limit,
   where,
   Timestamp,
-  serverTimestamp
+  serverTimestamp,
+  getCountFromServer,
+  getAggregateFromServer,
+  sum
 } from 'firebase/firestore';
 
 import { translations } from '../translations';
@@ -151,7 +154,8 @@ Sample tone for Class 6-10:
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [stats, setStats] = useState({
     totalRevenue: 0,
-    aiQuestionsToday: 0
+    aiQuestionsToday: 0,
+    totalStudents: 0
   });
 
   const [content, setContent] = useState<any[]>([]);
@@ -477,17 +481,17 @@ Sample tone for Class 6-10:
     });
     
     // tx
-    getDocs(collection(firestore, 'transactions')).then(snapshot => {
+    getDocs(query(collection(firestore, 'transactions'), orderBy('createdAt', 'desc'), limit(100))).then(snapshot => {
       setTransactions(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     }).catch(err => console.error("Firestore Transactions Error:", err));
 
     // payments
-    getDocs(collection(firestore, 'payments')).then(snapshot => {
+    getDocs(query(collection(firestore, 'payments'), orderBy('createdAt', 'desc'), limit(100))).then(snapshot => {
       setPayments(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     }).catch(err => console.error("Firestore Payments Error:", err));
 
     // tutor_queries
-    getDocs(collection(firestore, 'tutor_queries')).then(snapshot => {
+    getDocs(query(collection(firestore, 'tutor_queries'), orderBy('timestamp', 'desc'), limit(100))).then(snapshot => {
       const logs = snapshot.docs.map(doc => {
         const raw = doc.data() as any;
         const parsedTimestamp = parseLogTimestamp(raw.timestamp || raw.createdAt || raw.updatedAt);
@@ -506,7 +510,7 @@ Sample tone for Class 6-10:
     }).catch(err => console.error("Firestore AI Usage Error:", err));
 
     // notifications
-    getDocs(collection(firestore, 'notifications')).then(snapshot => {
+    getDocs(query(collection(firestore, 'notifications'), orderBy('createdAt', 'desc'), limit(100))).then(snapshot => {
       setNotifications(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     }).catch(err => console.error("Firestore Notifications Error:", err));
 
@@ -549,43 +553,47 @@ Sample tone for Class 6-10:
     }).catch(err => console.error("Firestore Textbooks Error:", err));
 
     // users
-    getDocs(collection(firestore, 'users')).then(snapshot => {
+    getDocs(query(collection(firestore, 'users'), orderBy('createdAt', 'desc'), limit(100))).then(snapshot => {
       setStudents(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     }).catch(err => console.error("Firestore Students Error:", err));
 
     // user_locks
-    getDocs(collection(firestore, 'user_locks')).then(snapshot => {
+    getDocs(query(collection(firestore, 'user_locks'), limit(100))).then(snapshot => {
       setUserLocks(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     }).catch(err => console.error("Firestore User Locks Error:", err));
 
     // subscriptions
-    getDocs(collection(firestore, 'subscriptions')).then(snapshot => {
+    getDocs(query(collection(firestore, 'subscriptions'), limit(100))).then(snapshot => {
       const subs: Record<string, any> = {};
       snapshot.docs.forEach(doc => { subs[doc.id] = doc.data(); });
       setAllSubscriptions(subs);
     }).catch(err => console.error("Firestore Subscriptions Error:", err));
 
     // support_tickets
-    getDocs(query(collection(firestore, 'support_tickets'), orderBy('createdAt', 'desc'))).then(snapshot => {
+    getDocs(query(collection(firestore, 'support_tickets'), orderBy('createdAt', 'desc'), limit(100))).then(snapshot => {
       setSupportTickets(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     }).catch(err => console.error("Firestore Support Tickets Error:", err));
+
+    // SERVER AGGREGATES FOR DASHBOARD STATS
+    getCountFromServer(collection(firestore, 'users')).then(snap => {
+      setStats(prev => ({ ...prev, totalStudents: snap.data().count }));
+    }).catch(err => console.error("Total students count error:", err));
+
+    Promise.all([
+      getAggregateFromServer(collection(firestore, 'transactions'), { total: sum('amount') }),
+      getAggregateFromServer(query(collection(firestore, 'payments'), where('status', '==', 'success')), { total: sum('amount') })
+    ]).then(([txSnap, pSnap]) => {
+      const txTotal = txSnap.data().total || 0;
+      const pTotal = pSnap.data().total || 0;
+      setStats(prev => ({ ...prev, totalRevenue: txTotal + pTotal }));
+    }).catch(err => console.error("Revenue aggregate error:", err));
   };
 
   useEffect(() => {
     loadDashboardData();
   }, [user]);
 
-  // Combined stats calculation
-  useEffect(() => {
-    const txRevenue = transactions.reduce((acc, curr: any) => acc + (curr.amount || 0), 0);
-    const successPayments = payments.filter(p => p.status === 'success');
-    const paymentRevenue = successPayments.reduce((acc, curr: any) => acc + (curr.amount || 0), 0);
-
-    setStats(prev => ({
-      ...prev,
-      totalRevenue: txRevenue + paymentRevenue
-    }));
-  }, [transactions, payments]);
+  // Removed local combined stats calculation for revenue to use server aggregate instead
 
   const [bulkIdentifiers, setBulkIdentifiers] = useState('');
   const [bulkPlan, setBulkPlan] = useState<'monthly' | 'annual' | 'lifetime'>('annual');
@@ -3806,23 +3814,65 @@ Sample tone for Class 6-10:
       (s.phoneNumber || '').toLowerCase().includes(studentSearch.toLowerCase())
     );
 
+    const handleRemoteUserSearch = async (e?: React.FormEvent) => {
+      if (e) e.preventDefault();
+      if (!studentSearch.trim()) {
+        showNotification("Reloading latest 100 users...");
+        getDocs(query(collection(firestore, 'users'), orderBy('createdAt', 'desc'), limit(100))).then(snapshot => {
+          setStudents(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        });
+        return;
+      }
+      
+      setLoading(true);
+      const term = studentSearch.trim();
+      try {
+        const phoneQuery = query(collection(firestore, 'users'), where('phoneNumber', '==', term));
+        const emailQuery = query(collection(firestore, 'users'), where('email', '==', term));
+        
+        const [phoneSnap, emailSnap] = await Promise.all([getDocs(phoneQuery), getDocs(emailQuery)]);
+        const combined = [...phoneSnap.docs, ...emailSnap.docs].map(d => ({ id: d.id, ...d.data() }));
+        
+        if (combined.length > 0) {
+          const unique = Array.from(new Map(combined.map(item => [(item as any).id, item])).values());
+          setStudents(unique);
+          showNotification(`Found ${unique.length} user(s)!`);
+        } else {
+          showNotification("No user found with exact phone/email. Try exact match.", "error");
+        }
+      } catch(err) {
+        console.error(err);
+        showNotification("Search failed", "error");
+      } finally {
+        setLoading(false);
+      }
+    };
+
     return (
       <div className="glass-card p-8 rounded-[2.5rem]">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
           <div>
             <h2 className="text-2xl font-bold text-white">{isTeacherView ? 'Teachers Management' : 'Students Management'}</h2>
-            <p className="text-slate-400 text-sm mt-1">Total Users: {students.length} | Showing: {filteredStudents.length}</p>
+            <p className="text-slate-400 text-sm mt-1">Total Users: {stats.totalStudents} | Showing: {filteredStudents.length}</p>
           </div>
-          <div className="relative w-full md:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
-            <input
-              type="text"
-              placeholder="Search by name, email or phone..."
-              value={studentSearch}
-              onChange={(e) => setStudentSearch(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-white focus:outline-none focus:border-emerald-500/50 transition-all text-sm"
-            />
-          </div>
+          <form onSubmit={handleRemoteUserSearch} className="relative w-full md:w-80 flex gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+              <input
+                type="text"
+                placeholder="Search exact phone or email..."
+                value={studentSearch}
+                onChange={(e) => setStudentSearch(e.target.value)}
+                className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-white focus:outline-none focus:border-emerald-500/50 transition-all text-sm"
+              />
+            </div>
+            <button 
+              type="submit" 
+              className="px-4 py-2 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-xl text-sm font-medium hover:bg-emerald-500/30 transition-all"
+            >
+              Find
+            </button>
+          </form>
         </div>
 
         <div className="overflow-x-auto">

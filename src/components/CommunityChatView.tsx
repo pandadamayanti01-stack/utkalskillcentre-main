@@ -73,7 +73,8 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
       collection(db, 'community'),
       where('class', '==', student.class),
       where('timestamp', '>=', Timestamp.fromDate(tenDaysAgo)),
-      orderBy('timestamp', 'asc')
+      orderBy('timestamp', 'desc'),
+      limit(50)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -81,7 +82,8 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
       snapshot.forEach((doc) => {
         msgs.push({ id: doc.id, ...doc.data() } as ChatMessage);
       });
-      setMessages(msgs);
+      // Reverse array because we fetched desc (newest first) but want to display asc (oldest at top)
+      setMessages(msgs.reverse());
       setIsLoading(false);
     }, (error) => {
       console.error("Error fetching community chat:", error);
