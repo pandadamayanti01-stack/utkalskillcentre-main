@@ -144,16 +144,13 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
     
     // Video controls state
     const videoRef = useRef<HTMLVideoElement>(null);
-    const [isPlaying, setIsPlaying] = useState(false);
+    const [isMuted, setIsMuted] = useState(true);
 
-    const togglePlay = () => {
+    const toggleMute = () => {
       if (videoRef.current) {
-        if (isPlaying) {
-          videoRef.current.pause();
-        } else {
-          videoRef.current.play();
-        }
-        setIsPlaying(!isPlaying);
+        const newMutedState = !videoRef.current.muted;
+        videoRef.current.muted = newMutedState;
+        setIsMuted(newMutedState);
       }
     };
 
@@ -395,7 +392,9 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           <video 
             ref={videoRef}
             src="/gundulu%202.1.mp4" 
-            poster="/gundulu.png"
+            poster="/gundu2.0.png"
+            autoPlay
+            muted={isMuted}
             loop 
             playsInline
             className="w-full h-full object-contain relative z-10" 
@@ -406,14 +405,14 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           />
           
           <button 
-            onClick={togglePlay}
+            onClick={toggleMute}
             className="absolute bottom-2 right-0 md:bottom-4 z-20 w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-600 border border-emerald-300/30 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:from-emerald-500 hover:to-teal-700 hover:scale-110 shadow-[0_4px_15px_rgba(16,185,129,0.4)] cursor-pointer"
-            title={isPlaying ? "Pause Video" : "Play Video"}
+            title={isMuted ? "Unmute Sound" : "Mute Sound"}
           >
-            {isPlaying ? (
-              <Lucide.Pause size={16} className="fill-white" />
+            {isMuted ? (
+              <Lucide.VolumeX size={16} className="fill-white" />
             ) : (
-              <Lucide.Play size={16} className="fill-white ml-0.5" />
+              <Lucide.Volume2 size={16} className="fill-white" />
             )}
           </button>
         </div>
