@@ -75,6 +75,31 @@ export function StudyBuddy({ user, language, isPremium }: StudyBuddyProps) {
     setSelectedImage(null);
     setImageMimeType(null);
     
+    setLoading(true);
+
+    const getUsageLimit = () => isPremium ? 50 : 5;
+    const getUsageKey = () => `ai_usage_${user?.id || 'guest'}_${new Date().toISOString().split('T')[0]}`;
+    const currentUsage = parseInt(localStorage.getItem(getUsageKey()) || '0', 10);
+
+    if (currentUsage >= getUsageLimit()) {
+      setMessages(prev => [...prev, { 
+        role: 'user', 
+        content: userMessage || (language === 'en' ? "Sent an image" : "ଏକ ଫଟୋ ପଠାଗଲା"),
+        image: imageData ? `data:${imageData.mimeType};base64,${imageData.data}` : undefined
+      }, { 
+        role: 'assistant', 
+        content: language === 'en' 
+          ? `You have reached your daily limit of ${getUsageLimit()} questions. ${!isPremium ? 'Upgrade to Premium for more!' : 'Please try again tomorrow.'}`
+          : `ଆପଣ ଆଜିର ସୀମା (${getUsageLimit()} ପ୍ରଶ୍ନ) ଅତିକ୍ରମ କରିଛନ୍ତି | ${!isPremium ? 'ଅଧିକ ପାଇଁ ପ୍ରିମିୟମ୍ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ!' : 'ଦୟାକରି ଆସନ୍ତାକାଲି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |'}`
+      }]);
+      setLoading(false);
+      return;
+    }
+
+    localStorage.setItem(getUsageKey(), (currentUsage + 1).toString());
+    setSelectedImage(null);
+    setImageMimeType(null);
+    
     setMessages(prev => [...prev, { 
       role: 'user', 
       content: userMessage || (language === 'en' ? "Sent an image" : "ଏକ ଫଟୋ ପଠାଗଲା"),

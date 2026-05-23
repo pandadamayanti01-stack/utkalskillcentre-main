@@ -1465,16 +1465,14 @@ export default function App() {
       handleFirestoreError(err, OperationType.GET, 'chapters');
     });
 
-    const unsubLeaderboard = onSnapshot(
-      query(collection(firestore, 'public_profiles'), orderBy('points', 'desc'), limit(10)),
-      (snapshot) => {
+    getDocs(query(collection(firestore, 'public_profiles'), orderBy('points', 'desc'), limit(10)))
+      .then((snapshot) => {
         const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
         const testingNumbers = ['9556086560', '+919556086560', '6370487877', '+916370487877', '9337956168', '+919337956168', '8926118509', '+918926118509', '8457811227', '+918457811227', '7735118243', '+917735118243'];
         const filteredData = data.filter((s: any) => !testingNumbers.includes(s.phoneNumber));
         setLeaderboard(filteredData);
-      },
-      (err) => handleFirestoreError(err, OperationType.GET, 'public_profiles')
-    );
+      })
+      .catch((err) => handleFirestoreError(err, OperationType.GET, 'public_profiles'));
 
     getDocs(query(collection(firestore, 'monthly_tests'), where('status', '==', 'published')))
       .then((snapshot) => {
@@ -1521,23 +1519,19 @@ export default function App() {
       })
       .catch((err) => handleFirestoreError(err, OperationType.GET, 'daily_mcqs'));
 
-    const unsubSubmissions = onSnapshot(
-      query(collection(firestore, 'monthly_test_submissions'), where('userId', '==', user.id)),
-      (snapshot) => {
+    getDocs(query(collection(firestore, 'monthly_test_submissions'), where('userId', '==', user.id)))
+      .then((snapshot) => {
         const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as MonthlyTestSubmission[];
         setTestSubmissions(data);
-      },
-      (err) => handleFirestoreError(err, OperationType.GET, 'monthly_test_submissions')
-    );
+      })
+      .catch((err) => handleFirestoreError(err, OperationType.GET, 'monthly_test_submissions'));
 
-    const unsubDailyMcqSubmissions = onSnapshot(
-      query(collection(firestore, 'daily_mcq_submissions'), where('userId', '==', user.id)),
-      (snapshot) => {
+    getDocs(query(collection(firestore, 'daily_mcq_submissions'), where('userId', '==', user.id)))
+      .then((snapshot) => {
         const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as DailyMcqSubmission[];
         setDailyMcqSubmissions(data);
-      },
-      (err) => handleFirestoreError(err, OperationType.GET, 'daily_mcq_submissions')
-    );
+      })
+      .catch((err) => handleFirestoreError(err, OperationType.GET, 'daily_mcq_submissions'));
 
     const textbooksQuery = collection(firestore, 'textbooks');
 
@@ -1553,39 +1547,32 @@ export default function App() {
         handleFirestoreError(err, OperationType.GET, 'textbooks');
       });
 
-    const unsubChallenge = onSnapshot(
-      query(collection(firestore, 'daily_challenges'), where('date', '==', today)),
-      (snapshot) => {
+    getDocs(query(collection(firestore, 'daily_challenges'), where('date', '==', today)))
+      .then((snapshot) => {
         if (!snapshot.empty) {
           setDailyChallenge({ id: snapshot.docs[0].id, ...snapshot.docs[0].data() });
         } else {
           setDailyChallenge(null);
         }
-      },
-      (err) => handleFirestoreError(err, OperationType.GET, 'daily_challenges')
-    );
+      })
+      .catch((err) => handleFirestoreError(err, OperationType.GET, 'daily_challenges'));
 
-    const unsubProgress = onSnapshot(
-      query(collection(firestore, 'user_progress'), where('userId', '==', user.id), orderBy('date', 'desc'), limit(30)),
-      (snapshot) => {
+    getDocs(query(collection(firestore, 'user_progress'), where('userId', '==', user.id), orderBy('date', 'desc'), limit(30)))
+      .then((snapshot) => {
         const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })).reverse();
         setUserProgress(data);
-      },
-      (err) => handleFirestoreError(err, OperationType.GET, 'user_progress')
-    );
+      })
+      .catch((err) => handleFirestoreError(err, OperationType.GET, 'user_progress'));
 
-    const unsubFollowing = onSnapshot(
-      query(collection(firestore, 'friendships'), where('followerId', '==', user.id)),
-      (snapshot) => {
+    getDocs(query(collection(firestore, 'friendships'), where('followerId', '==', user.id)))
+      .then((snapshot) => {
         const data = snapshot.docs.map(d => (d.data() as any).followingId);
         setFollowing(data);
-      },
-      (err) => handleFirestoreError(err, OperationType.GET, 'friendships')
-    );
+      })
+      .catch((err) => handleFirestoreError(err, OperationType.GET, 'friendships'));
 
-    const unsubNotifications = onSnapshot(
-      query(collection(firestore, 'notifications'), orderBy('createdAt', 'desc'), limit(15)),
-      (snapshot) => {
+    getDocs(query(collection(firestore, 'notifications'), orderBy('createdAt', 'desc'), limit(15)))
+      .then((snapshot) => {
         const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
         const filteredData = data.filter((n: any) => {
@@ -1610,18 +1597,11 @@ export default function App() {
         }
 
         setStudentNotifications(filteredData);
-      },
-      (err) => handleFirestoreError(err, OperationType.GET, 'notifications')
-    );
+      })
+      .catch((err) => handleFirestoreError(err, OperationType.GET, 'notifications'));
 
     return () => {
-      unsubLeaderboard();
-      unsubSubmissions();
-      unsubDailyMcqSubmissions();
-      unsubChallenge();
-      unsubProgress();
-      unsubFollowing();
-      unsubNotifications();
+      // Unsub functions removed
     };
   }, [user?.class, user?.id, user?.role]);
 
