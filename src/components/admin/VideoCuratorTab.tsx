@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Youtube, Search, Plus, Trash2, CheckCircle2, PlayCircle, Loader2 } from 'lucide-react';
 import { db } from '../../firebase';
-import { collection, getDocs, addDoc, deleteDoc, doc, serverTimestamp, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, addDoc, deleteDoc, doc, serverTimestamp, query, orderBy, limit } from 'firebase/firestore';
 import { translations } from '../../translations';
 import { CHAPTERS_MAP } from '../../data/chaptersMap';
 
@@ -50,7 +50,7 @@ export function VideoCuratorTab() {
   const fetchVideos = async () => {
     setIsLoading(true);
     try {
-      const q = query(collection(db, 'curated_videos'), orderBy('createdAt', 'desc'));
+      const q = query(collection(db, 'curated_videos'), orderBy('createdAt', 'desc'), limit(100));
       const snap = await getDocs(q);
       const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as CuratedVideo));
       setVideos(data);

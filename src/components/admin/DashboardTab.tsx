@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
-import { collection, getDocs, Timestamp } from 'firebase/firestore';
+import { collection, getAggregateFromServer, sum, Timestamp } from 'firebase/firestore';
 import { gcpService } from '../../services/gcpService';
 import { LayoutDashboard, Users, Bot, CreditCard, BookOpen } from 'lucide-react';
 
@@ -20,8 +20,10 @@ export const DashboardTab: React.FC = () => {
         const studentsCount = await gcpService.getCount('users');
         
         // Total Revenue (using payments collection)
-        const paymentsSnapshot = await getDocs(collection(db, 'payments'));
-        const totalRevenue = paymentsSnapshot.docs.reduce((acc, doc) => acc + (doc.data().amount || 0), 0);
+        const aggSnapshot = await getAggregateFromServer(collection(db, 'payments'), {
+          totalRevenue: sum('amount')
+        });
+        const totalRevenue = aggSnapshot.data().totalRevenue || 0;
         
         // Tutor Queries Today
         const startOfToday = new Date();

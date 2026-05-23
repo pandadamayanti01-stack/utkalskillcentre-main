@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, orderBy, onSnapshot, deleteDoc, doc, getDocs, where, Timestamp } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, deleteDoc, doc, getDocs, where, Timestamp, limit } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { ChatMessage } from '../../types';
 import { Trash2, Shield, Search, AlertCircle, RefreshCw } from 'lucide-react';
@@ -18,7 +18,8 @@ export const CommunityModerationTab: React.FC = () => {
     const q = query(
       collection(db, 'community'),
       where('class', '==', selectedClass),
-      orderBy('timestamp', 'desc')
+      orderBy('timestamp', 'desc'),
+      limit(100)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
