@@ -41,6 +41,7 @@ interface DashboardProps {
   onShareDailyPractice?: () => void;
   isRegistered?: boolean;
   onRegistrationComplete?: () => void;
+  onOpenCommunity?: () => void;
 }
 function PerformanceChart({ submissions, tests, language }: any) {
   const chartData = React.useMemo(() => {
@@ -127,7 +128,7 @@ function PerformanceChart({ submissions, tests, language }: any) {
   );
 }
 
-export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, hasDailyPractice, todayDailySubject, tomorrowDailySubject, onChallengeComplete, onOpenTutor, onOpenDailyPractice, onShareDailyPractice, isRegistered = false, onRegistrationComplete }: DashboardProps) {
+export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, hasDailyPractice, todayDailySubject, tomorrowDailySubject, onChallengeComplete, onOpenTutor, onOpenDailyPractice, onShareDailyPractice, isRegistered = false, onRegistrationComplete, onOpenCommunity }: DashboardProps) {
     // Map class to YouTube video URL (embed links)
     const classVideoMap: Record<string, string> = {
       '1': 'https://www.youtube.com/embed/DxouHyB-IA8',
@@ -600,6 +601,45 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 </div>
               </motion.div>
             )}
+
+            {/* Class Community Chat Card */}
+            <motion.div 
+              variants={itemVariants}
+              onClick={onOpenCommunity}
+              className="bg-slate-900/60 backdrop-blur-2xl border border-indigo-500/30 rounded-[2rem] p-6 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_20px_60px_-15px_rgba(0,0,0,0.5)] cursor-pointer group hover:border-indigo-400/50 hover:-translate-y-1 transition-all duration-500 relative overflow-hidden flex flex-col justify-between h-full"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-violet-900/20 opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
+              <div className="absolute -top-24 -right-24 w-64 h-64 bg-indigo-500/20 rounded-full blur-[80px] group-hover:bg-indigo-400/30 transition-colors duration-1000 pointer-events-none"></div>
+              
+              <div className="flex flex-col h-full relative z-10 justify-between">
+                <div className="flex flex-row items-center gap-4">
+                  <div className="relative shrink-0">
+                    <div className="absolute inset-0 bg-indigo-500 blur-md opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                    <div className="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)] group-hover:rotate-12 group-hover:scale-110 transition-transform duration-500">
+                      <Lucide.MessageCircle size={20} className="text-indigo-400 drop-shadow-[0_0_8px_rgba(99,102,241,0.8)]" />
+                    </div>
+                  </div>
+                  <div className="flex-1 text-left">
+                    <div className="inline-flex items-center gap-1 mb-1 px-2.5 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-[10px] font-black uppercase tracking-widest shadow-[0_0_10px_rgba(99,102,241,0.2)]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 shadow-[0_0_5px_#818cf8] animate-pulse"></span>
+                      {language === 'en' ? 'Live Chat' : 'ଲାଇଭ୍ ଚାଟ୍'}
+                    </div>
+                    <h3 className="text-lg sm:text-xl font-black text-white tracking-tight uppercase drop-shadow-md mt-1">
+                      {language === 'en' ? `Class ${user?.class} Community` : `ଶ୍ରେଣୀ ${user?.class} କମ୍ୟୁନିଟି`}
+                    </h3>
+                  </div>
+                </div>
+                <p className="text-slate-400 text-[10px] sm:text-xs font-bold leading-relaxed mt-4 group-hover:text-slate-300 transition-colors">
+                  {language === 'en' ? 'Join the discussion. Help your classmates, ask questions, and share knowledge in real-time!' : 'ଆଲୋଚନାରେ ଯୋଗ ଦିଅନ୍ତୁ | ସାଙ୍ଗମାନଙ୍କୁ ସାହାଯ୍ୟ କରନ୍ତୁ ଏବଂ ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ!'}
+                </p>
+                <div className="mt-4 flex -space-x-2 overflow-hidden">
+                  <div className="inline-block h-6 w-6 rounded-full ring-2 ring-slate-900 bg-emerald-500 flex items-center justify-center text-[8px] font-bold text-white">1</div>
+                  <div className="inline-block h-6 w-6 rounded-full ring-2 ring-slate-900 bg-blue-500 flex items-center justify-center text-[8px] font-bold text-white">2</div>
+                  <div className="inline-block h-6 w-6 rounded-full ring-2 ring-slate-900 bg-amber-500 flex items-center justify-center text-[8px] font-bold text-white">3</div>
+                  <div className="inline-block h-6 w-6 rounded-full ring-2 ring-slate-900 bg-slate-700 flex items-center justify-center text-[8px] font-bold text-white">+</div>
+                </div>
+              </div>
+            </motion.div>
 
             {/* Class-wise YouTube Matrix - Cinema Style */}
             <div className="bg-slate-900/40 backdrop-blur-xl rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_15px_40px_-10px_rgba(0,0,0,0.5)] relative overflow-hidden group hover:border-red-500/30 hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between h-full">

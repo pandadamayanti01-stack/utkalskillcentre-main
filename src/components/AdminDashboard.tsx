@@ -81,6 +81,7 @@ import { Chapter, DailyMcq, VideoOption } from '../types';
 import { DailyMcqTab } from './admin/DailyMcqTab';
 import { LiveSupportTab } from './admin/LiveSupportTab';
 import { VideoCuratorTab } from './admin/VideoCuratorTab';
+import { CommunityModerationTab } from './admin/CommunityModerationTab';
 import {
   translateContent,
   generateChapterContent,
@@ -92,7 +93,7 @@ import {
 } from '../services/aiService';
 import { joinSupportSession, sendRemoteCommand, updatePointer, endSupportSession } from '../services/supportService';
 
-type AdminTab = 'dashboard' | 'smart_classes' | 'content' | 'monthly_tests' | 'daily_mcqs' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup' | 'students' | 'teachers' | 'subscriptions' | 'support' | 'user_locks' | 'digital_library_upload';
+type AdminTab = 'dashboard' | 'smart_classes' | 'content' | 'monthly_tests' | 'daily_mcqs' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup' | 'students' | 'teachers' | 'subscriptions' | 'support' | 'user_locks' | 'digital_library_upload' | 'community_chats';
 
 interface AdminDashboardProps {
   onExit: () => void;
@@ -845,6 +846,7 @@ Sample tone for Class 6-10:
                   { id: 'dashboard', label: 'Overview', icon: Activity },
                   { id: 'ai_usage', label: 'AI Usage Logs', icon: Brain },
                   { id: 'daily_mcqs', label: 'Daily MCQs', icon: Zap },
+                  { id: 'community_chats', label: 'Community Chats', icon: Shield },
                 ]
               },
               {
@@ -5149,6 +5151,7 @@ Sample tone for Class 6-10:
               {activeTab === 'user_locks' && renderUserLocks()}
               {activeTab === 'support' && renderSupport()}
               {activeTab === 'subscriptions' && renderSubscriptions()}
+              {activeTab === 'community_chats' && <CommunityModerationTab />}
             </motion.div>
           </AnimatePresence>
         </div>

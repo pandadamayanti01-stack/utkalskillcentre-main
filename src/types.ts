@@ -21,6 +21,7 @@ export interface Student {
   avatar?: string;
   streak?: number;
   lastActiveDate?: string;
+  lastActiveAt?: any;
   shareCount?: number;
   statusShared?: boolean;
   parent_pin?: string;
@@ -180,6 +181,17 @@ export interface SystemSettings {
   dailyMcqAutomationTime?: string;
   dailyMcqAutomationTimeZone?: string;
   dailyMcqAutomationPublishMode?: 'draft' | 'published';
+}
+
+export interface ChatMessage {
+  id: string;
+  text: string;
+  userId: string;
+  userName: string;
+  userAvatar?: string;
+  class: string;
+  role: string;
+  timestamp: any;
 }
 
 declare global {

@@ -77,6 +77,7 @@ const DigitalLibraryView = lazy(() => import('./components/DigitalLibraryView').
 const SmartClassesView = lazy(() => import('./components/SmartClassesView').then((module) => ({ default: module.SmartClassesView })));
 const DigitalLibraryLaunchPopup = lazy(() => import('./components/DigitalLibraryLaunchPopup'));
 const TeacherDashboard = lazy(() => import('./components/TeacherDashboard').then((module) => ({ default: module.TeacherDashboard })));
+const CommunityChatView = lazy(() => import('./components/CommunityChatView').then((module) => ({ default: module.CommunityChatView })));
 
 function ViewLoader({ fullHeight = false }: { fullHeight?: boolean }) {
   return (
@@ -937,6 +938,7 @@ export default function App() {
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [showInstallModal, setShowInstallModal] = useState(false);
   const [showChatbot, setShowChatbot] = useState(false);
+  const [showCommunityChat, setShowCommunityChat] = useState(false);
   
   const handleGunduluGreeting = () => {
     // Logic to trigger Gundulu greeting
@@ -3026,6 +3028,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                       handleUpgradeClick();
                     }
                   }}
+                  onOpenCommunity={() => setShowCommunityChat(true)}
                 />
               )
             )}
@@ -3130,7 +3133,15 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
       <SupportOverlay session={supportSession} onEnd={endSupport} />
     )}
 
-
+    {showCommunityChat && user && (
+      <Suspense fallback={<ViewLoader fullHeight />}>
+        <CommunityChatView 
+          language={language}
+          student={user}
+          onClose={() => setShowCommunityChat(false)}
+        />
+      </Suspense>
+    )}
 
     </div>
   </ErrorBoundary>
