@@ -3600,6 +3600,9 @@ function SupportView({ user, language, onBack, handleSupportClick, confirmSuppor
 }
 
 function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, setActiveTab }: any) {
+  const [activeProfileTab, setActiveProfileTab] = useState<'student' | 'parent'>('student');
+  const [district, setDistrict] = useState(user.district || '');
+  const [school, setSchool] = useState(user.school || '');
   const [name, setName] = useState(user.name || '');
   const [email, setEmail] = useState(user.email || '');
   const [parentShowLeaderboard, setParentShowLeaderboard] = useState(user.parentShowLeaderboard ?? true);
@@ -3696,7 +3699,9 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
         role: user.role,
         class: user.class || null,
         board: user.board || null,
-        parentShowLeaderboard
+        parentShowLeaderboard,
+        district,
+        school
       });
       
       if (auth.currentUser && email && email !== auth.currentUser.email) {
@@ -3821,243 +3826,333 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
           </p>
         </div>
       </div>
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-slate-400 mb-1">{translations[language].name}</label>
-          <input 
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+<div className="space-y-4">
+        {/* Animated Toggle Switch */}
+        <div className="relative flex w-full p-1 bg-slate-900/50 border border-white/5 rounded-2xl mb-8 shadow-inner">
+          <button
+            onClick={() => setActiveProfileTab('student')}
+            className={`relative flex-1 py-3 text-sm font-bold z-10 transition-colors ${activeProfileTab === 'student' ? 'text-white' : 'text-slate-500 hover:text-slate-300'}`}
+          >
+            {language === 'en' ? 'Student Profile' : 'ଛାତ୍ର ପ୍ରୋଫାଇଲ୍'}
+          </button>
+          <button
+            onClick={() => setActiveProfileTab('parent')}
+            className={`relative flex-1 py-3 text-sm font-bold z-10 transition-colors ${activeProfileTab === 'parent' ? 'text-white' : 'text-slate-500 hover:text-slate-300'}`}
+          >
+            {language === 'en' ? 'Parent Controls' : 'ପିତାମାତାଙ୍କ ନିୟନ୍ତ୍ରଣ'}
+          </button>
+          <motion.div
+            className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-emerald-600 rounded-xl shadow-lg shadow-emerald-900/20 z-0"
+            animate={{ left: activeProfileTab === 'student' ? '4px' : 'calc(50% + 0px)' }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
           />
         </div>
-        <div>
-          <label className="block text-sm font-medium text-slate-400 mb-1">{translations[language].email}</label>
-          <div className="flex gap-2">
-            <input 
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
-            />
-            {email && email === auth.currentUser?.email && !isEmailVerified && (
-              <button 
-                onClick={handleVerifyEmail}
-                disabled={verifying}
-                className="px-4 py-3 rounded-xl bg-blue-600/20 text-blue-400 font-medium hover:bg-blue-600/30 transition-all border border-blue-500/20 whitespace-nowrap"
-              >
-                {verifying ? 'Sending...' : 'Verify'}
-              </button>
-            )}
-            {email && email === auth.currentUser?.email && isEmailVerified && (
-              <div className="px-4 py-3 rounded-xl bg-emerald-600/20 text-emerald-400 font-medium border border-emerald-500/20 flex items-center whitespace-nowrap">
-                Verified
+
+        <AnimatePresence mode="wait">
+          {activeProfileTab === 'student' && (
+            <motion.div
+              key="student"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-4"
+            >
+              {/* STUDENT FIELDS */}
+              <div>
+                <label className="block text-sm font-medium text-slate-400 mb-1">{translations[language].name}</label>
+                <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50" />
               </div>
-            )}
-          </div>
-        </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-slate-400 mb-1">{translations[language].email}</label>
+                <div className="flex gap-2">
+                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50" />
+                  {email && email === auth.currentUser?.email && !isEmailVerified && (
+                    <button onClick={handleVerifyEmail} disabled={verifying} className="px-4 py-3 rounded-xl bg-blue-600/20 text-blue-400 font-medium hover:bg-blue-600/30 transition-all border border-blue-500/20 whitespace-nowrap">
+                      {verifying ? 'Sending...' : 'Verify'}
+                    </button>
+                  )}
+                  {email && email === auth.currentUser?.email && isEmailVerified && (
+                    <div className="px-4 py-3 rounded-xl bg-emerald-600/20 text-emerald-400 font-medium border border-emerald-500/20 flex items-center whitespace-nowrap">
+                      Verified
+                    </div>
+                  )}
+                </div>
+              </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-400 mb-1">{translations[language].profile.phone}</label>
-            <div className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-slate-400 flex items-center justify-between">
-              <span className="text-sm">{user.phoneNumber || user.phone || 'N/A'}</span>
-              <Lucide.Lock size={14} className="opacity-50" />
-            </div>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-400 mb-1">
-              {user.role === 'teacher' ? (language === 'en' ? 'Account Role' : 'ଆକାଉଣ୍ଟ୍ ରୋଲ୍') : translations[language].profile.class}
-            </label>
-            <div className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-slate-400 flex items-center justify-between font-bold">
-              <span className={user.role === 'teacher' ? 'text-amber-400' : 'text-slate-400'}>
-                {user.role === 'teacher' 
-                  ? (language === 'en' ? 'Educator (All Classes Unlocked)' : 'ଶିକ୍ଷକ ଆକ୍ସେସ୍') 
-                  : (translations[language].classes[user.class] || user.class || 'N/A')}
-              </span>
-              <Lucide.Lock size={14} className="opacity-50" />
-            </div>
-          </div>
-        </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-400 mb-1">{translations[language].profile.phone}</label>
+                  <div className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-slate-400 flex items-center justify-between">
+                    <span className="text-sm">{user.phoneNumber || user.phone || 'N/A'}</span>
+                    <Lucide.Lock size={14} className="opacity-50" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-400 mb-1">
+                    {user.role === 'teacher' ? (language === 'en' ? 'Account Role' : 'ଆକାଉଣ୍ଟ୍ ରୋଲ୍') : translations[language].profile.class}
+                  </label>
+                  <div className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-slate-400 flex items-center justify-between font-bold">
+                    <span className={user.role === 'teacher' ? 'text-amber-400' : 'text-slate-400'}>
+                      {user.role === 'teacher' 
+                        ? (language === 'en' ? 'Educator (All Classes Unlocked)' : 'ଶିକ୍ଷକ ଆକ୍ସେସ୍') 
+                        : (translations[language].classes[user.class] || user.class || 'N/A')}
+                    </span>
+                    <Lucide.Lock size={14} className="opacity-50" />
+                  </div>
+                </div>
+              </div>
 
-        <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10 space-y-3">
-          <p className="text-[10px] text-slate-400 leading-relaxed">
-            {translations[language].profile.requestChangeNote}
-          </p>
-          <div className="flex gap-2">
-            <a 
-              href={`https://wa.me/919337956168?text=${encodeURIComponent(`Namaskar Admin, I want to change my ${language === 'en' ? 'Class/Mobile Number' : 'ଶ୍ରେଣୀ/ମୋବାଇଲ୍ ନମ୍ବର'}. My Name: ${user.name}, Current Class: ${user.class}. Reason: `)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 py-2 rounded-xl bg-emerald-500/10 text-emerald-500 text-[10px] font-bold hover:bg-emerald-500/20 transition-all flex items-center justify-center gap-2 border border-emerald-500/20"
-            >
-              <Lucide.MessageCircle size={14} />
-              WhatsApp
-            </a>
-            <a 
-              href={`mailto:pandadamayanti01@gmail.com?subject=Profile Change Request&body=${encodeURIComponent(`Namaskar Admin,\n\nI want to change my Class or Mobile Number.\n\nName: ${user.name}\nPhone: ${user.phoneNumber || user.phone}\nCurrent Class: ${user.class}\n\nReason for change:\n`)}`}
-              className="flex-1 py-2 rounded-xl bg-blue-500/10 text-blue-500 text-[10px] font-bold hover:bg-blue-500/20 transition-all flex items-center justify-center gap-2 border border-blue-500/20"
-            >
-              <Lucide.Mail size={14} />
-              Email
-            </a>
-          </div>
-        </div>
-
-        {/* Account Linking Section */}
-        {!isGoogleLinked && (
-          <div className="p-4 rounded-2xl bg-slate-800/50 border border-white/10 space-y-3">
-            <div className="flex items-center gap-2 mb-2">
-              <Lucide.Globe className="text-blue-400" size={18} />
-              <h3 className="text-sm font-bold text-white">{language === 'en' ? 'Link Google Account' : 'Google ଆକାଉଣ୍ଟ୍ ଲିଙ୍କ୍ କରନ୍ତୁ'}</h3>
-            </div>
-            <p className="text-[10px] text-slate-400 leading-relaxed">
-              {language === 'en' 
-                ? 'Link your Google account to prevent data loss and log in easily with either your phone number or Google.' 
-                : 'ଡାଟା ହରାଇବା ରୋକିବା ପାଇଁ ଆପଣଙ୍କର Google ଆକାଉଣ୍ଟ୍ ଲିଙ୍କ୍ କରନ୍ତୁ ଏବଂ ଆପଣଙ୍କର ଫୋନ୍ ନମ୍ବର କିମ୍ବା Google ସହିତ ସହଜରେ ଲଗଇନ୍ କରନ୍ତୁ |'}
-            </p>
-            <button 
-              onClick={handleLinkGoogle}
-              className="w-full py-2.5 rounded-xl bg-white text-slate-900 text-xs font-bold hover:bg-slate-200 transition-all flex items-center justify-center gap-2 shadow-lg"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-              </svg>
-              {language === 'en' ? 'Link Google Account' : 'Google ସହିତ ଲିଙ୍କ୍ କରନ୍ତୁ'}
-            </button>
-          </div>
-        )}
-
-        {user.role !== 'teacher' && (
-          <>
-            <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">{translations[language].profile.parentPin}</label>
-              <input 
-                type="password"
-                maxLength={4}
-                placeholder="Set a 4-digit PIN for parent access"
-                value={user.parent_pin || ''}
-                onChange={async (e) => {
-                  const val = e.target.value.replace(/\D/g, '');
-                  if (val.length <= 4) {
-                    await updateDoc(doc(firestore, 'users', user.id), {
-                      parent_pin: val
-                    });
-                  }
-                }}
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
-              />
-              <p className="text-[10px] text-slate-500 mt-1">{translations[language].profile.parentPinNote}</p>
-            </div>
-
-            <div className="pt-2">
-              <label className="flex items-center gap-3 cursor-pointer group">
-                <div className="relative inline-flex items-center">
-                  <input 
-                    type="checkbox" 
-                    checked={parentShowLeaderboard}
-                    onChange={(e) => setParentShowLeaderboard(e.target.checked)}
-                    className="sr-only peer"
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-400 mb-1">
+                    <Lucide.Globe className="inline-block text-emerald-400 mr-1" size={14} /> 
+                    {language === 'en' ? 'District' : 'ଜିଲ୍ଲା'}
+                  </label>
+                  <select
+                    className="w-full p-3 rounded-xl bg-slate-900/80 text-white border-2 border-white/10 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/30 transition-all"
+                    value={district}
+                    onChange={e => setDistrict(e.target.value)}
+                  >
+                    <option value="" className="bg-slate-900">{language === 'en' ? 'Select District' : 'ଜିଲ୍ଲା ଚୟନ କରନ୍ତୁ'}</option>
+                    {ODISHA_DISTRICTS.map(d => (
+                      <option key={d.en} value={d.en} className="bg-slate-900">
+                        {language === 'en' ? d.en : `${d.or} (${d.en})`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-400 mb-1">
+                    <Lucide.School className="inline-block text-blue-400 mr-1" size={14} /> 
+                    {language === 'en' ? 'School' : 'ବିଦ୍ୟାଳୟ'}
+                  </label>
+                  <input
+                    className="w-full p-3 rounded-xl bg-slate-900/80 text-white border-2 border-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 transition-all"
+                    type="text"
+                    value={school}
+                    onChange={e => setSchool(e.target.value)}
+                    placeholder={language === 'en' ? 'Enter your school name' : 'ବିଦ୍ୟାଳୟ ନାମ ଲେଖନ୍ତୁ'}
                   />
-                  <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium text-white group-hover:text-emerald-400 transition-colors">{translations[language].profile.parentLeaderboard}</span>
-                  <span className="text-[10px] text-slate-500">{translations[language].profile.parentLeaderboardNote}</span>
-                </div>
-              </label>
-            </div>
-          </>
-        )}
-        <div className="pt-6 border-t border-white/5">
-          <button 
-            onClick={() => setShowOfflineNotes(true)}
-            className="w-full flex items-center justify-between p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-500 hover:bg-blue-500/20 transition-all group mb-4"
-          >
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-blue-500 text-white">
-                <Lucide.FileText size={20} />
               </div>
-              <div className="text-left">
-                <p className="font-bold">{language === 'en' ? 'Offline Notes' : 'ଅଫଲାଇନ୍ ନୋଟ୍'}</p>
-                <p className="text-[10px] opacity-70 uppercase tracking-wider">{language === 'en' ? 'Access saved study material' : 'ସେଭ୍ ହୋଇଥିବା ପାଠ୍ୟପଢା ସାମଗ୍ରୀ'}</p>
-              </div>
-            </div>
-            <Lucide.ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
-          </button>
 
-          {user.role !== 'teacher' && (
-            <button 
-              onClick={handleParentAccess}
-              className="w-full flex items-center justify-between p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/20 transition-all group"
-            >
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-emerald-500 text-white">
-                  <Lucide.Settings size={20} />
-                </div>
-                <div className="text-left">
-                  <p className="font-bold">{translations[language].profile.parentDashboard}</p>
-                  <p className="text-[10px] opacity-70 uppercase tracking-wider">{translations[language].profile.parentDashboardTagline}</p>
+              <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10 space-y-3">
+                <p className="text-[10px] text-slate-400 leading-relaxed">
+                  {translations[language].profile.requestChangeNote}
+                </p>
+                <div className="flex gap-2">
+                  <a 
+                    href={`https://wa.me/919337956168?text=${encodeURIComponent(`Namaskar Admin, I want to change my ${language === 'en' ? 'Class/Mobile Number' : 'ଶ୍ରେଣୀ/ମୋବାଇଲ୍ ନମ୍ବର'}. My Name: ${user.name}, Current Class: ${user.class}. Reason: `)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-2 rounded-xl bg-emerald-500/10 text-emerald-500 text-[10px] font-bold hover:bg-emerald-500/20 transition-all flex items-center justify-center gap-2 border border-emerald-500/20"
+                  >
+                    <Lucide.MessageCircle size={14} />
+                    WhatsApp
+                  </a>
+                  <a 
+                    href={`mailto:pandadamayanti01@gmail.com?subject=Profile Change Request&body=${encodeURIComponent(`Namaskar Admin,\n\nI want to change my Class or Mobile Number.\n\nName: ${user.name}\nPhone: ${user.phoneNumber || user.phone}\nCurrent Class: ${user.class}\n\nReason for change:\n`)}`}
+                    className="flex-1 py-2 rounded-xl bg-blue-500/10 text-blue-500 text-[10px] font-bold hover:bg-blue-500/20 transition-all flex items-center justify-center gap-2 border border-blue-500/20"
+                  >
+                    <Lucide.Mail size={14} />
+                    Email
+                  </a>
                 </div>
               </div>
-              <Lucide.ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
-            </button>
+
+              {/* Account Linking Section */}
+              {!isGoogleLinked && (
+                <div className="p-4 rounded-2xl bg-slate-800/50 border border-white/10 space-y-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Lucide.Globe className="text-blue-400" size={18} />
+                    <h3 className="text-sm font-bold text-white">{language === 'en' ? 'Link Google Account' : 'Google ଆକାଉଣ୍ଟ୍ ଲିଙ୍କ୍ କରନ୍ତୁ'}</h3>
+                  </div>
+                  <p className="text-[10px] text-slate-400 leading-relaxed">
+                    {language === 'en' 
+                      ? 'Link your Google account to prevent data loss and log in easily with either your phone number or Google.' 
+                      : 'ଡାଟା ହରାଇବା ରୋକିବା ପାଇଁ ଆପଣଙ୍କର Google ଆକାଉଣ୍ଟ୍ ଲିଙ୍କ୍ କରନ୍ତୁ ଏବଂ ଆପଣଙ୍କର ଫୋନ୍ ନମ୍ବର କିମ୍ବା Google ସହିତ ସହଜରେ ଲଗଇନ୍ କରନ୍ତୁ |'}
+                  </p>
+                  <button 
+                    onClick={handleLinkGoogle}
+                    className="w-full py-2.5 rounded-xl bg-white text-slate-900 text-xs font-bold hover:bg-slate-200 transition-all flex items-center justify-center gap-2 shadow-lg"
+                  >
+                    <svg className="w-4 h-4" viewBox="0 0 24 24">
+                      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    {language === 'en' ? 'Link Google Account' : 'Google ସହିତ ଲିଙ୍କ୍ କରନ୍ତୁ'}
+                  </button>
+                </div>
+              )}
+
+              <div className="pt-6 border-t border-white/5">
+                <button 
+                  onClick={() => setShowOfflineNotes(true)}
+                  className="w-full flex items-center justify-between p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-500 hover:bg-blue-500/20 transition-all group mb-4"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-xl bg-blue-500 text-white">
+                      <Lucide.FileText size={20} />
+                    </div>
+                    <div className="text-left">
+                      <p className="font-bold">{language === 'en' ? 'Offline Notes' : 'ଅଫଲାଇନ୍ ନୋଟ୍'}</p>
+                      <p className="text-[10px] opacity-70 uppercase tracking-wider">{language === 'en' ? 'Access saved study material' : 'ସେଭ୍ ହୋଇଥିବା ପାଠ୍ୟପଢା ସାମଗ୍ରୀ'}</p>
+                    </div>
+                  </div>
+                  <Lucide.ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                </button>
+
+                <button 
+                  onClick={() => setActiveTab('support')}
+                  className="w-full flex items-center justify-between p-4 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-500 hover:bg-purple-500/20 transition-all group mt-4"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-xl bg-purple-500 text-white">
+                      <Lucide.HelpCircle size={20} />
+                    </div>
+                    <div className="text-left">
+                      <p className="font-bold">{translations[language].support.title}</p>
+                      <p className="text-[10px] opacity-70 uppercase tracking-wider">{translations[language].support.ticketDescription}</p>
+                    </div>
+                  </div>
+                  <Lucide.ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                </button>
+
+                {/* Native Web Push Notification Toggle Card */}
+                <button 
+                  type="button"
+                  onClick={handlePushSubscription}
+                  disabled={subscribingPush}
+                  className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all group mt-4 border ${isPushSubscribed ? 'bg-teal-500/10 border-teal-500/20 text-teal-400' : 'bg-amber-500/10 border-amber-500/20 text-amber-500 hover:bg-amber-500/20'}`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`p-2 rounded-xl text-white ${isPushSubscribed ? 'bg-teal-500' : 'bg-amber-500 animate-pulse'}`}>
+                      <Lucide.Bell size={20} />
+                    </div>
+                    <div className="text-left">
+                      <p className="font-bold">
+                        {isPushSubscribed 
+                          ? (language === 'en' ? 'App Notifications Active' : 'ଆପ୍ ନୋଟିଫିକେସନ୍ ସକ୍ରିୟ') 
+                          : (language === 'en' ? 'Enable App Notifications' : 'ଆପ୍ ନୋଟିଫିକେସନ୍ ସକ୍ରିୟ କରନ୍ତୁ')}
+                      </p>
+                      <p className="text-[10px] opacity-70 uppercase tracking-wider">
+                        {isPushSubscribed 
+                          ? (language === 'en' ? 'Receiving native mobile updates' : 'ମୋବାଇଲ୍ ଅପଡେଟ୍ ସଫଳତାର ସହ ମିଳୁଛି') 
+                          : (language === 'en' ? 'Get important study & test alerts' : 'ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂଚନା ଏବଂ ଟେଷ୍ଟ୍ ବିଷୟରେ ଜାଣନ୍ତୁ')}
+                      </p>
+                    </div>
+                  </div>
+                  {subscribingPush ? (
+                    <Lucide.Loader2 className="animate-spin text-amber-400" size={20} />
+                  ) : (
+                    isPushSubscribed ? (
+                      <Lucide.CheckCircle size={20} className="text-teal-400" />
+                    ) : (
+                      <Lucide.ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                    )
+                  )}
+                </button>
+              </div>
+            </motion.div>
           )}
 
-          <button 
-            onClick={() => setActiveTab('support')}
-            className="w-full flex items-center justify-between p-4 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-500 hover:bg-purple-500/20 transition-all group mt-4"
-          >
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-purple-500 text-white">
-                <Lucide.HelpCircle size={20} />
-              </div>
-              <div className="text-left">
-                <p className="font-bold">{translations[language].support.title}</p>
-                <p className="text-[10px] opacity-70 uppercase tracking-wider">{translations[language].support.ticketDescription}</p>
-              </div>
-            </div>
-            <Lucide.ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
-          </button>
+          {activeProfileTab === 'parent' && (
+            <motion.div
+              key="parent"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-6"
+            >
+              {user.role !== 'teacher' ? (
+                <>
+                  <div className="p-6 bg-slate-900/50 border border-white/10 rounded-3xl space-y-4">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl">
+                        <Lucide.Lock size={24} />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-white text-lg">Security PIN</h3>
+                        <p className="text-xs text-slate-400">Protect parent controls</p>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-400 mb-2">{translations[language].profile.parentPin}</label>
+                      <input 
+                        type="password"
+                        maxLength={4}
+                        placeholder="Set a 4-digit PIN for parent access"
+                        value={user.parent_pin || ''}
+                        onChange={async (e) => {
+                          const val = e.target.value.replace(/\D/g, '');
+                          if (val.length <= 4) {
+                            await updateDoc(doc(firestore, 'users', user.id), {
+                              parent_pin: val
+                            });
+                          }
+                        }}
+                        className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 text-center tracking-[1em] font-mono text-xl"
+                      />
+                      <p className="text-[10px] text-slate-500 mt-2 text-center">{translations[language].profile.parentPinNote}</p>
+                    </div>
+                  </div>
 
-          {/* Native Web Push Notification Toggle Card */}
-          <button 
-            type="button"
-            onClick={handlePushSubscription}
-            disabled={subscribingPush}
-            className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all group mt-4 border ${isPushSubscribed ? 'bg-teal-500/10 border-teal-500/20 text-teal-400' : 'bg-amber-500/10 border-amber-500/20 text-amber-500 hover:bg-amber-500/20'}`}
-          >
-            <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-xl text-white ${isPushSubscribed ? 'bg-teal-500' : 'bg-amber-500 animate-pulse'}`}>
-                <Lucide.Bell size={20} />
-              </div>
-              <div className="text-left">
-                <p className="font-bold">
-                  {isPushSubscribed 
-                    ? (language === 'en' ? 'App Notifications Active' : 'ଆପ୍ ନୋଟିଫିକେସନ୍ ସକ୍ରିୟ') 
-                    : (language === 'en' ? 'Enable App Notifications' : 'ଆପ୍ ନୋଟିଫିକେସନ୍ ସକ୍ରିୟ କରନ୍ତୁ')}
-                </p>
-                <p className="text-[10px] opacity-70 uppercase tracking-wider">
-                  {isPushSubscribed 
-                    ? (language === 'en' ? 'Receiving native mobile updates' : 'ମୋବାଇଲ୍ ଅପଡେଟ୍ ସଫଳତାର ସହ ମିଳୁଛି') 
-                    : (language === 'en' ? 'Get important study & test alerts' : 'ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂଚନା ଏବଂ ଟେଷ୍ଟ୍ ବିଷୟରେ ଜାଣନ୍ତୁ')}
-                </p>
-              </div>
-            </div>
-            {subscribingPush ? (
-              <Lucide.Loader2 className="animate-spin text-amber-400" size={20} />
-            ) : (
-              isPushSubscribed ? (
-                <Lucide.CheckCircle size={20} className="text-teal-400" />
+                  <div className="p-6 bg-slate-900/50 border border-white/10 rounded-3xl space-y-4">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-3 bg-blue-500/10 text-blue-400 rounded-xl">
+                        <Lucide.BarChart3 size={24} />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-white text-lg">Analytics</h3>
+                        <p className="text-xs text-slate-400">Monitor student progress</p>
+                      </div>
+                    </div>
+
+                    <button 
+                      onClick={handleParentAccess}
+                      className="w-full flex items-center justify-between p-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-900 transition-all group shadow-lg shadow-emerald-900/20"
+                    >
+                      <div className="text-left">
+                        <p className="font-black text-lg">{translations[language].profile.parentDashboard}</p>
+                        <p className="text-xs opacity-80 uppercase tracking-wider">{translations[language].profile.parentDashboardTagline}</p>
+                      </div>
+                      <div className="bg-white/20 p-2 rounded-full">
+                        <Lucide.ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </button>
+
+                    <label className="flex items-center gap-3 cursor-pointer group pt-4 border-t border-white/5 mt-4">
+                      <div className="relative inline-flex items-center">
+                        <input 
+                          type="checkbox" 
+                          checked={parentShowLeaderboard}
+                          onChange={(e) => setParentShowLeaderboard(e.target.checked)}
+                          className="sr-only peer"
+                        />
+                        <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium text-white group-hover:text-emerald-400 transition-colors">{translations[language].profile.parentLeaderboard}</span>
+                        <span className="text-[10px] text-slate-500">{translations[language].profile.parentLeaderboardNote}</span>
+                      </div>
+                    </label>
+                  </div>
+                </>
               ) : (
-                <Lucide.ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
-              )
-            )}
-          </button>
-        </div>
+                <div className="p-8 text-center bg-slate-900/50 border border-white/10 rounded-3xl">
+                  <Lucide.ShieldCheck size={48} className="mx-auto text-emerald-500 mb-4 opacity-50" />
+                  <h3 className="text-xl font-bold text-white mb-2">Educator Account</h3>
+                  <p className="text-slate-400 text-sm">Parent controls are not applicable for educator accounts.</p>
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Visual Theme Settings Card */}
         <div className="p-5 rounded-2xl bg-slate-800/40 border border-white/5 space-y-4">
