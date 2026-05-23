@@ -625,7 +625,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                       {language === 'en' ? 'Live Chat' : 'ଲାଇଭ୍ ଚାଟ୍'}
                     </div>
                     <h3 className="text-lg sm:text-xl font-black text-white tracking-tight uppercase drop-shadow-md mt-1">
-                      {language === 'en' ? `Class ${user?.class} Community` : `ଶ୍ରେଣୀ ${user?.class} କମ୍ୟୁନିଟି`}
+                      {language === 'en' ? `CLASS ${userClass} COMMUNITY` : `ଶ୍ରେଣୀ ${userClass} କମ୍ୟୁନିଟି`}
                     </h3>
                   </div>
                 </div>
