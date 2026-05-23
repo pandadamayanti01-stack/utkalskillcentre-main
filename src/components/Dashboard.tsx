@@ -327,7 +327,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         </div>
 
         {/* Animated Gundulu Mascot Video (Center) */}
-        <div className="relative w-32 h-32 md:w-40 md:h-40 pointer-events-auto group shrink-0 hidden sm:block">
+        <div className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 pointer-events-auto group shrink-0 mx-auto md:mx-0">
           <video 
             ref={videoRef}
             src="/gundulu%202.1.mp4" 
