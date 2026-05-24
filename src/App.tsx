@@ -1121,23 +1121,41 @@ export default function App() {
 
   const loadLeaderboard = useCallback(async () => {
     if (!user) return;
-    const cacheKey = 'leaderboard';
+    const cacheKey = `leaderboard_${user.class || 'global'}`;
     const cached = getCachedData<any[]>(cacheKey, 300000); // 5 mins
     if (cached) {
       setLeaderboard(cached);
       return;
     }
     try {
-      const snapshot = await getDocs(query(collection(firestore, 'public_profiles'), orderBy('points', 'desc'), limit(10)));
+      const snapshot = await getDocs(query(
+        collection(firestore, 'public_profiles'),
+        where('class', '==', user.class),
+        orderBy('points', 'desc'),
+        limit(50)
+      ));
       const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
       const testingNumbers = ['9556086560', '+919556086560', '6370487877', '+916370487877', '9337956168', '+919337956168', '8926118509', '+918926118509', '8457811227', '+918457811227', '7735118243', '+917735118243'];
       const filteredData = data.filter((s: any) => !testingNumbers.includes(s.phoneNumber));
       setLeaderboard(filteredData);
       setCachedData(cacheKey, filteredData);
     } catch (err) {
-      handleFirestoreError(err, OperationType.GET, 'public_profiles');
+      console.warn("Class-wise leaderboard query failed (composite index class + points might be missing), falling back to global query:", err);
+      try {
+        const snapshot = await getDocs(query(
+          collection(firestore, 'public_profiles'),
+          orderBy('points', 'desc'),
+          limit(50)
+        ));
+        const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        const testingNumbers = ['9556086560', '+919556086560', '6370487877', '+916370487877', '9337956168', '+919337956168', '8926118509', '+918926118509', '8457811227', '+918457811227', '7735118243', '+917735118243'];
+        const filteredData = data.filter((s: any) => !testingNumbers.includes(s.phoneNumber));
+        setLeaderboard(filteredData);
+      } catch (err2) {
+        handleFirestoreError(err2, OperationType.GET, 'public_profiles');
+      }
     }
-  }, [user?.id]);
+  }, [user?.id, user?.class]);
 
   const loadMonthlyTests = useCallback(async () => {
     if (!user) return;
