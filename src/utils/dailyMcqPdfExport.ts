@@ -26,6 +26,9 @@ export async function exportDailyMcqToPdf(mcq: DailyMcq) {
   const subjectLabel = mcq.subject ? (t.subjects?.[mcq.subject] || mcq.subject) : 'General';
   const classLabel = t.classes?.[mcq.class] || mcq.class;
 
+  const subjectName = mcq.subject ? (mcq.subject.charAt(0).toUpperCase() + mcq.subject.slice(1)) : 'General';
+  const className = mcq.class ? (mcq.class.startsWith('class') ? `Class ${mcq.class.substring(5)}` : mcq.class) : '';
+
   const questions = normalizeDailyMcqQuestions(mcq);
   const totalMaxMarks = questions.reduce((sum, q) => sum + (q.marks || 1), 0);
 
@@ -56,7 +59,7 @@ export async function exportDailyMcqToPdf(mcq: DailyMcq) {
     <!DOCTYPE html>
     <html>
     <head>
-      <title>USC Exam - ${mcq.class} - ${mcq.subject}</title>
+      <title>USC-MCQ-${subjectName} - ${className}</title>
       <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+Oriya:wght@400;700&display=swap');
         
