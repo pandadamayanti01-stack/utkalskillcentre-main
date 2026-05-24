@@ -72,7 +72,7 @@ export async function exportDailyMcqToPdf(mcq: DailyMcq) {
           font-family: 'Noto Sans Oriya', 'Inter', sans-serif;
           color: #1a1a1a;
           margin: 0;
-          padding: 20mm 15mm;
+          padding: 40px;
           line-height: 1.5;
         }
         
