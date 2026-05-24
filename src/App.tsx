@@ -5748,21 +5748,53 @@ function GamesView({ language, onBack }: any) {
 }
 
 function LeaderboardView({ leaderboard, language, onBack, following, user }: any) {
-  const [activeFilter, setActiveFilter] = useState<'league' | 'friends'>('league');
+  const [activeFilter, setActiveFilter] = useState<'league' | 'class' | 'friends'>('league');
   const [activeLeague, setActiveLeague] = useState<League>('Bronze');
   const leagues: League[] = ['Bronze', 'Silver', 'Gold', 'Platinum'];
   const [isGeneratingCard, setIsGeneratingCard] = useState(false);
+  const [classLeaderboard, setClassLeaderboard] = useState<any[]>([]);
+  const [loadingClass, setLoadingClass] = useState(false);
 
-  const filteredLeaderboard = leaderboard.filter((s: any) => {
-    if (activeFilter === 'friends') {
-      return following.includes(s.id) || s.id === user.id;
+  useEffect(() => {
+    if (activeFilter !== 'class' || !user?.class) return;
+    const fetchClassLeaderboard = async () => {
+      setLoadingClass(true);
+      try {
+        const q = query(
+          collection(firestore, 'public_profiles'),
+          where('class', '==', user.class),
+          orderBy('points', 'desc'),
+          limit(10)
+        );
+        const snapshot = await getDocs(q);
+        const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        const testingNumbers = ['9556086560', '+919556086560', '6370487877', '+916370487877', '9337956168', '+919337956168', '8926118509', '+918926118509', '8457811227', '+918457811227', '7735118243', '+917735118243'];
+        const filteredData = data.filter((s: any) => !testingNumbers.includes(s.phoneNumber));
+        setClassLeaderboard(filteredData);
+      } catch (err) {
+        console.error("Failed to fetch class leaderboard:", err);
+      } finally {
+        setLoadingClass(false);
+      }
+    };
+    fetchClassLeaderboard();
+  }, [activeFilter, user?.class]);
+
+  const filteredLeaderboard = useMemo(() => {
+    if (activeFilter === 'class') {
+      return classLeaderboard.length > 0 ? classLeaderboard : leaderboard.filter((s: any) => s.class === user.class);
     }
-    const idx = leaderboard.indexOf(s);
-    if (idx < 10) return activeLeague === 'Platinum';
-    if (idx < 25) return activeLeague === 'Gold';
-    if (idx < 50) return activeLeague === 'Silver';
-    return activeLeague === 'Bronze';
-  });
+    if (activeFilter === 'friends') {
+      return leaderboard.filter((s: any) => following.includes(s.id) || s.id === user.id);
+    }
+    return leaderboard.filter((s: any) => {
+      const idx = leaderboard.indexOf(s);
+      if (idx < 10) return activeLeague === 'Platinum';
+      if (idx < 25) return activeLeague === 'Gold';
+      if (idx < 50) return activeLeague === 'Silver';
+      return activeLeague === 'Bronze';
+    });
+  }, [activeFilter, activeLeague, leaderboard, classLeaderboard, following, user?.id, user?.class]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -5999,7 +6031,15 @@ function LeaderboardView({ leaderboard, language, onBack, following, user }: any
               activeFilter === 'league' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-slate-300'
             }`}
           >
-            {translations[language].leagues}
+            {translations[language].leagues || 'Leagues'}
+          </button>
+          <button
+            onClick={() => setActiveFilter('class')}
+            className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${
+              activeFilter === 'class' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-slate-300'
+            }`}
+          >
+            {language === 'en' ? 'My Class' : 'ମୋ ଶ୍ରେଣୀ'}
           </button>
           <button
             onClick={() => setActiveFilter('friends')}
@@ -6007,7 +6047,7 @@ function LeaderboardView({ leaderboard, language, onBack, following, user }: any
               activeFilter === 'friends' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-slate-300'
             }`}
           >
-            {translations[language].friends}
+            {translations[language].friends || 'Friends'}
           </button>
         </div>
 
@@ -6041,7 +6081,14 @@ function LeaderboardView({ leaderboard, language, onBack, following, user }: any
             </tr>
           </thead>
           <tbody>
-            {filteredLeaderboard.length > 0 ? (
+            {loadingClass ? (
+              <tr>
+                <td colSpan={4} className="px-8 py-20 text-center text-slate-500">
+                  <Lucide.Loader2 className="animate-spin text-emerald-500 mx-auto mb-2" size={32} />
+                  {language === 'en' ? 'Loading class ranking...' : 'ଶ୍ରେଣୀ ମାନ୍ୟତା ଲୋଡ୍ ହେଉଛି...'}
+                </td>
+              </tr>
+            ) : filteredLeaderboard.length > 0 ? (
               filteredLeaderboard.map((student: any, i: number) => (
                 <motion.tr 
                   variants={itemVariants}
