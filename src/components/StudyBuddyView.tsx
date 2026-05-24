@@ -129,14 +129,27 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         let foundSubject: string | null = null;
         if (user?.class && textToSend && textToSend.trim().length > 10) {
           try {
+            const normalized = textToSend.toLowerCase().replace(/[?.!]/g, '').replace(/\s+/g, ' ').trim();
             // Search for a matching question in tutor_queries for the user's class/subject
             const q = query(
               collection(db, 'tutor_queries'),
               where('userClass', '==', user.class),
-              where('question', '==', textToSend),
+              where('normalizedQuestion', '==', normalized),
               limit(1)
             );
-            const snapshot = await getDocs(q);
+            let snapshot = await getDocs(q);
+            
+            // Fallback for legacy queries that don't have normalizedQuestion field
+            if (snapshot.empty) {
+              const fallbackQ = query(
+                collection(db, 'tutor_queries'),
+                where('userClass', '==', user.class),
+                where('question', '==', textToSend),
+                limit(1)
+              );
+              snapshot = await getDocs(fallbackQ);
+            }
+
             if (!snapshot.empty) {
               const docData = snapshot.docs[0].data();
               foundAnswer = docData.answer;
@@ -183,7 +196,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         // Prepare chat history (last 10 messages)
         // Gemini expects role: 'user' or 'model' (for assistant) and turns must alternate, starting with 'user'.
         const chatHistory: any[] = [];
-        const slicedMessages = messages.slice(-10);
+        const slicedMessages = messages.slice(-6);
         for (const msg of slicedMessages) {
           const role = msg.role === 'assistant' ? 'model' : 'user';
           if (chatHistory.length === 0) {

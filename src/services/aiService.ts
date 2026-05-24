@@ -130,8 +130,8 @@ export async function solveMathDoubt(
     // Build the contents list with chat memory
     const contents: any[] = [];
     if (history && history.length > 0) {
-      // Send the last 10 messages for fast, lightweight contextual tracking
-      const recentHistory = history.slice(-10);
+      // Send the last 6 messages for fast, lightweight contextual tracking
+      const recentHistory = history.slice(-6);
       recentHistory.forEach((msg) => {
         const role = msg.sender === 'user' ? 'user' : 'model';
         if (contents.length === 0) {
@@ -499,11 +499,14 @@ export async function logAiUsage(
     const { db } = await import('../firebase');
     const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
     
+    const normalizedQuestion = question.toLowerCase().replace(/[?.!]/g, '').replace(/\s+/g, ' ').trim();
+
     await addDoc(collection(db, 'tutor_queries'), {
       userId,
       userName,
       userClass,
       question,
+      normalizedQuestion,
       answer,
       timestamp: serverTimestamp(),
       ...metadata
