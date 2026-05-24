@@ -1,5 +1,6 @@
 import { DailyMcq } from '../types';
 import { translations } from '../translations';
+import { normalizeDailyMcqQuestions } from './dailyMcq';
 
 /**
  * Generates a professional printable exam paper for a Daily MCQ set.
@@ -25,13 +26,16 @@ export async function exportDailyMcqToPdf(mcq: DailyMcq) {
   const subjectLabel = mcq.subject ? (t.subjects?.[mcq.subject] || mcq.subject) : 'General';
   const classLabel = t.classes?.[mcq.class] || mcq.class;
 
+  const questions = normalizeDailyMcqQuestions(mcq);
+  const totalMaxMarks = questions.reduce((sum, q) => sum + (q.marks || 1), 0);
+
   // Question HTML
-  const questionsHtml = mcq.questions.map((q, i) => `
+  const questionsHtml = questions.map((q, i) => `
     <div class="question">
       <div class="q-header">
         <span class="q-num">${i + 1}.</span>
         <span class="q-text">${q.question}</span>
-        <span class="q-marks">(${q.marks || 1} Mark)</span>
+        <span class="q-marks">(${q.marks || 1} Mark${(q.marks || 1) > 1 ? 's' : ''})</span>
       </div>
       ${q.type === 'mcq' && q.options ? `
         <div class="options">
@@ -199,7 +203,7 @@ export async function exportDailyMcqToPdf(mcq: DailyMcq) {
         </div>
         <div class="meta-item" style="text-align: right;">
           <span>Max Marks / ମୋଟ ନମ୍ବର</span>
-          50
+          ${totalMaxMarks}
         </div>
       </div>
       
