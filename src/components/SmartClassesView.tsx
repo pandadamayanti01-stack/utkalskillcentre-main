@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, Youtube, PlayCircle, BookOpen, Clock, Lock, Sparkles } from 'lucide-react';
 import { db } from '../firebase';
-import { collection, getDocs, getDocsFromServer, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { CinematicPlayer } from './SmartClasses/CinematicPlayer';
 import { CHAPTERS_MAP } from '../data/chaptersMap';
 import { CLASS_SUBJECTS } from './DigitalLibraryView';
@@ -55,7 +55,7 @@ export function SmartClassesView({ user, language, isPremium, onUpgrade, onBack 
     setIsLoading(true);
     try {
       const q = query(collection(db, 'curated_videos'), where('classStr', '==', studentClassStr));
-      const snap = await getDocsFromServer(q);
+      const snap = await getDocs(q);
       const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setVideos(data);
     } catch (err) {

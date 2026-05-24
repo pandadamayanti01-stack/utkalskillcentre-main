@@ -17,7 +17,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
 import { db, handleFirestoreError, OperationType } from '../firebase';
 import { getAI, withRetry, logAiUsage, gunduluSafetySettings } from '../services/aiService';
-import { collection, addDoc, doc, getDoc, query, where, getDocs } from 'firebase/firestore';
+import { collection, addDoc, doc, getDoc, query, where, getDocs, limit } from 'firebase/firestore';
 
 interface Message {
   id: string;
@@ -41,9 +41,10 @@ interface StudyBuddyViewProps {
   initialVoiceMode?: number;
   onBack?: () => void;
   onLanguageChange?: (lang: 'en' | 'or') => void;
+  systemSettings?: any;
 }
 
-export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPremium, onUpgrade, user, initialVoiceMode: _initialVoiceMode, onBack, onLanguageChange }) => {
+export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPremium, onUpgrade, user, initialVoiceMode: _initialVoiceMode, onBack, onLanguageChange, systemSettings }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -90,6 +91,24 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         return;
       }
 
+      const today = new Date().toISOString().split('T')[0];
+      const getUsageKey = () => `ai_usage_${user?.uid || user?.id || 'guest'}_${today}`;
+      const currentUsage = parseInt(localStorage.getItem(getUsageKey()) || '0', 10);
+      const usageLimit = 100;
+
+      if (currentUsage >= usageLimit) {
+        const assistantMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: language === 'en' 
+            ? `You have reached your daily premium limit of ${usageLimit} questions. Please try again tomorrow.`
+            : `ଆପଣ ଆଜିର ପ୍ରିମିୟମ୍ ସୀମା (${usageLimit} ପ୍ରଶ୍ନ) ଅତିକ୍ରମ କରିଛନ୍ତି | ଦୟାକରି ଆସନ୍ତାକାଲି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |`,
+          timestamp: new Date(),
+        };
+        setMessages(prev => [...prev, assistantMessage]);
+        return;
+      }
+
       const imageSnapshot = selectedImage;
       const userMessage: Message = {
         id: Date.now().toString(),
@@ -108,13 +127,14 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         // 1. Try to answer from our bucket (tutor_queries) if subject matches
         let foundAnswer: string | null = null;
         let foundSubject: string | null = null;
-        if (user?.class && textToSend) {
+        if (user?.class && textToSend && textToSend.trim().length > 10) {
           try {
             // Search for a matching question in tutor_queries for the user's class/subject
             const q = query(
               collection(db, 'tutor_queries'),
               where('userClass', '==', user.class),
-              where('question', '==', textToSend)
+              where('question', '==', textToSend),
+              limit(1)
             );
             const snapshot = await getDocs(q);
             if (!snapshot.empty) {
@@ -150,20 +170,13 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         }
 
         // 2. If not found, fallback to global AI
+        localStorage.setItem(getUsageKey(), (currentUsage + 1).toString());
         const ai = getAI();
         const model = 'gemini-2.5-flash';
 
         const { getStudyBuddySystemInstruction } = await import('../services/aiService');
         
-        let customPrompt = '';
-        try {
-          const settingsDoc = await getDoc(doc(db, 'system_settings', 'config'));
-          if (settingsDoc.exists() && settingsDoc.data().gunduluPrompt) {
-            customPrompt = settingsDoc.data().gunduluPrompt;
-          }
-        } catch (err) {
-          console.error('Failed to fetch custom Gundulu prompt:', err);
-        }
+        const customPrompt = systemSettings?.gunduluPrompt || '';
 
         const systemInstruction = getStudyBuddySystemInstruction(language, user?.name, user?.class, customPrompt);
 

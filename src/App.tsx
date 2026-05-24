@@ -672,6 +672,61 @@ function SupportOverlay({ session, onEnd }: { session: any, onEnd: () => void })
   );
 }
 
+// Reconstitute Firestore Timestamps recursively from cached JSON objects
+function reconstituteTimestamps(obj: any): any {
+  if (obj === null || obj === undefined) return obj;
+  if (typeof obj !== 'object') return obj;
+  if (Array.isArray(obj)) {
+    return obj.map(reconstituteTimestamps);
+  }
+  if (
+    typeof obj.seconds === 'number' &&
+    typeof obj.nanoseconds === 'number' &&
+    Object.keys(obj).length === 2
+  ) {
+    return {
+      seconds: obj.seconds,
+      nanoseconds: obj.nanoseconds,
+      toDate() {
+        return new Date(this.seconds * 1000 + this.nanoseconds / 1000000);
+      }
+    };
+  }
+  const reconstituted: any = {};
+  for (const key of Object.keys(obj)) {
+    reconstituted[key] = reconstituteTimestamps(obj[key]);
+  }
+  return reconstituted;
+}
+
+// Helper to cache data in LocalStorage with TTL (Time-to-Live)
+function getCachedData<T>(key: string, ttlMs: number): T | null {
+  try {
+    const raw = localStorage.getItem(`fs_cache_${key}`);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (Date.now() - parsed.timestamp > ttlMs) {
+      localStorage.removeItem(`fs_cache_${key}`);
+      return null;
+    }
+    return reconstituteTimestamps(parsed.data) as T;
+  } catch (e) {
+    console.warn(`Cache read error for ${key}:`, e);
+    return null;
+  }
+}
+
+function setCachedData<T>(key: string, data: T): void {
+  try {
+    localStorage.setItem(`fs_cache_${key}`, JSON.stringify({
+      timestamp: Date.now(),
+      data
+    }));
+  } catch (e) {
+    console.warn(`Cache write error for ${key}:`, e);
+  }
+}
+
 export default function App() {
   const [user, setUser] = useState<Student | null>(null);
   const [isAdminView, setIsAdminView] = useState(false);
@@ -1005,6 +1060,295 @@ export default function App() {
     yearlyPrice: 999,
     dailyMcqSubjectRotation: ['math', 'english', 'science', 'odia', 'social']
   });
+
+  const loadChapters = useCallback(async () => {
+    if (!user) return;
+    const chaptersCacheKey = `chapters_${user.role}_${user.class || 'all'}_${user.board || 'all'}`;
+    const cached = getCachedData<Chapter[]>(chaptersCacheKey, 1800000); // 30 mins
+    if (cached) {
+      setChapters(cached);
+      return;
+    }
+    try {
+      const chaptersQuery = user.role === 'admin' 
+        ? collection(firestore, 'chapters')
+        : (user.role === 'student' && user.class
+            ? query(collection(firestore, 'chapters'), where('status', '==', 'published'), where('class', '==', user.class))
+            : query(collection(firestore, 'chapters'), where('status', '==', 'published')));
+      const snapshot = await getDocs(chaptersQuery);
+      const allDataRaw = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      const allData: Chapter[] = [];
+      allDataRaw.forEach((d: any) => {
+        if (d.isParentTextbook && Array.isArray(d.chaptersList)) {
+          d.chaptersList.forEach((ch: any) => {
+            allData.push({
+              id: `${d.id}_ch${ch.number}`,
+              class: d.class,
+              subject: d.subject,
+              title: ch.title,
+              pdfUrl: ch.pdfUrl,
+              notes: ch.notes,
+              status: d.status,
+              isLibraryChapter: true,
+              updatedAt: d.updatedAt
+            } as any);
+          });
+        } else {
+          allData.push(d as Chapter);
+        }
+      });
+      const data = allData.filter(c => {
+        if ((c as any).isLibraryChapter || (c as any).pdfUrl) return true;
+        const cleanClass = (cls: string) => (cls || '').toLowerCase().replace(/\s+/g, '').replace('class', '').replace('th', '');
+        const matchesClass = !user?.class || cleanClass(c.class) === cleanClass(user.class);
+        const userBoardRaw = user?.board || '';
+        const userBoard = (userBoardRaw === 'undefined' ? '' : userBoardRaw).toLowerCase();
+        let chapterBoardStr = '';
+        if (typeof c.board === 'string') {
+          chapterBoardStr = c.board.toLowerCase();
+        } else if (c.board && typeof c.board === 'object') {
+          chapterBoardStr = ((c.board as any).en || (c.board as any).or || '').toLowerCase();
+        }
+        const matchesBoard = !userBoard || chapterBoardStr.includes(userBoard) || userBoard.includes(chapterBoardStr);
+        return matchesClass && matchesBoard;
+      });
+      setChapters(data);
+      setCachedData(chaptersCacheKey, data);
+    } catch (err) {
+      handleFirestoreError(err, OperationType.GET, 'chapters');
+    }
+  }, [user?.id, user?.class, user?.role, user?.board]);
+
+  const loadLeaderboard = useCallback(async () => {
+    if (!user) return;
+    const cacheKey = 'leaderboard';
+    const cached = getCachedData<any[]>(cacheKey, 300000); // 5 mins
+    if (cached) {
+      setLeaderboard(cached);
+      return;
+    }
+    try {
+      const snapshot = await getDocs(query(collection(firestore, 'public_profiles'), orderBy('points', 'desc'), limit(10)));
+      const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      const testingNumbers = ['9556086560', '+919556086560', '6370487877', '+916370487877', '9337956168', '+919337956168', '8926118509', '+918926118509', '8457811227', '+918457811227', '7735118243', '+917735118243'];
+      const filteredData = data.filter((s: any) => !testingNumbers.includes(s.phoneNumber));
+      setLeaderboard(filteredData);
+      setCachedData(cacheKey, filteredData);
+    } catch (err) {
+      handleFirestoreError(err, OperationType.GET, 'public_profiles');
+    }
+  }, [user?.id]);
+
+  const loadMonthlyTests = useCallback(async () => {
+    if (!user) return;
+    const cacheKey = 'monthly_tests';
+    const cached = getCachedData<MonthlyTest[]>(cacheKey, 900000); // 15 mins
+    if (cached) {
+      setMonthlyTests(cached);
+      return;
+    }
+    try {
+      const snapshot = await getDocs(query(collection(firestore, 'monthly_tests'), where('status', '==', 'published')));
+      const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as MonthlyTest[];
+      setMonthlyTests(data);
+      setCachedData(cacheKey, data);
+    } catch (err) {
+      handleFirestoreError(err, OperationType.GET, 'monthly_tests');
+    }
+  }, [user?.id]);
+
+  const loadDailyMcqs = useCallback(async () => {
+    if (!user) return;
+    const todayRaw = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+    const today = todayRaw.replace(/\//g, '-').trim();
+    const cacheKey = `daily_mcqs_${user.role}_${user.class || 'all'}_${today}`;
+    const cached = getCachedData<DailyMcq[]>(cacheKey, 1800000); // 30 mins
+    if (cached) {
+      setDailyMcqs(cached);
+      return;
+    }
+    try {
+      const dailyMcqsQuery = user.role === 'admin'
+        ? collection(firestore, 'daily_mcqs')
+        : query(collection(firestore, 'daily_mcqs'), where('activeDate', '==', today));
+      const snapshot = await getDocs(dailyMcqsQuery);
+      const normalizedUserClass = String(user.class || '').toLowerCase();
+      const shortUserClass = normalizedUserClass.replace('class', '').trim();
+      const data = snapshot.docs
+        .map(d => ({ id: d.id, ...d.data() }))
+        .filter((mcq: any) => {
+          const mcqClass = String(mcq.class || '').toLowerCase().trim();
+          const mcqDate = String(mcq.activeDate || '').replace(/\//g, '-').trim();
+          const mcqStatus = String(mcq.status || '').toLowerCase().trim();
+          const matchesClass = user.role === 'admin' || 
+                              mcqClass === normalizedUserClass || 
+                              mcqClass === shortUserClass || 
+                              mcqClass === `class${shortUserClass}` ||
+                              mcqClass.includes(shortUserClass);
+          const matchesToday = user.role === 'admin' || mcqDate === today;
+          const matchesStatus = user.role === 'admin' || mcqStatus === 'published';
+          return matchesClass && matchesToday && matchesStatus;
+        })
+        .sort((left: any, right: any) => {
+          const leftDate = new Date(left.activeDate || 0).getTime();
+          const rightDate = new Date(right.activeDate || 0).getTime();
+          return rightDate - leftDate;
+        }) as DailyMcq[];
+      setDailyMcqs(data);
+      setCachedData(cacheKey, data);
+    } catch (err) {
+      handleFirestoreError(err, OperationType.GET, 'daily_mcqs');
+    }
+  }, [user?.id, user?.class, user?.role]);
+
+  const loadTestSubmissions = useCallback(async () => {
+    if (!user) return;
+    const cacheKey = `test_subs_${user.id}`;
+    const cached = getCachedData<MonthlyTestSubmission[]>(cacheKey, 600000); // 10 mins
+    if (cached) {
+      setTestSubmissions(cached);
+      return;
+    }
+    try {
+      const snapshot = await getDocs(query(collection(firestore, 'monthly_test_submissions'), where('userId', '==', user.id)));
+      const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as MonthlyTestSubmission[];
+      setTestSubmissions(data);
+      setCachedData(cacheKey, data);
+    } catch (err) {
+      handleFirestoreError(err, OperationType.GET, 'monthly_test_submissions');
+    }
+  }, [user?.id]);
+
+  const loadDailyMcqSubmissions = useCallback(async () => {
+    if (!user) return;
+    const cacheKey = `mcq_subs_${user.id}`;
+    const cached = getCachedData<DailyMcqSubmission[]>(cacheKey, 600000); // 10 mins
+    if (cached) {
+      setDailyMcqSubmissions(cached);
+      return;
+    }
+    try {
+      const snapshot = await getDocs(query(collection(firestore, 'daily_mcq_submissions'), where('userId', '==', user.id)));
+      const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as DailyMcqSubmission[];
+      setDailyMcqSubmissions(data);
+      setCachedData(cacheKey, data);
+    } catch (err) {
+      handleFirestoreError(err, OperationType.GET, 'daily_mcq_submissions');
+    }
+  }, [user?.id]);
+
+  const loadTextbooks = useCallback(async () => {
+    if (!user) return;
+    const cacheKey = 'textbooks';
+    const cached = getCachedData<Textbook[]>(cacheKey, 1800000); // 30 mins
+    if (cached) {
+      setTextbooks(cached);
+      return;
+    }
+    try {
+      const snapshot = await getDocs(collection(firestore, 'textbooks'));
+      const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as Textbook[];
+      setTextbooks(data);
+      setCachedData(cacheKey, data);
+    } catch (err) {
+      handleFirestoreError(err, OperationType.GET, 'textbooks');
+    }
+  }, [user?.id]);
+
+  const loadDailyChallenge = useCallback(async () => {
+    if (!user) return;
+    const todayRaw = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+    const today = todayRaw.replace(/\//g, '-').trim();
+    const cacheKey = `daily_challenge_${today}`;
+    const cached = getCachedData<any>(cacheKey, 1800000); // 30 mins
+    if (cached) {
+      setDailyChallenge(cached);
+      return;
+    }
+    try {
+      const snapshot = await getDocs(query(collection(firestore, 'daily_challenges'), where('date', '==', today)));
+      if (!snapshot.empty) {
+        const data = { id: snapshot.docs[0].id, ...snapshot.docs[0].data() };
+        setDailyChallenge(data);
+        setCachedData(cacheKey, data);
+      } else {
+        setDailyChallenge(null);
+      }
+    } catch (err) {
+      handleFirestoreError(err, OperationType.GET, 'daily_challenges');
+    }
+  }, [user?.id]);
+
+  const loadUserProgress = useCallback(async () => {
+    if (!user) return;
+    const cacheKey = `user_progress_${user.id}`;
+    const cached = getCachedData<any[]>(cacheKey, 300000); // 5 mins
+    if (cached) {
+      setUserProgress(cached);
+      return;
+    }
+    try {
+      const snapshot = await getDocs(query(collection(firestore, 'user_progress'), where('userId', '==', user.id), orderBy('date', 'desc'), limit(30)));
+      const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })).reverse();
+      setUserProgress(data);
+      setCachedData(cacheKey, data);
+    } catch (err) {
+      handleFirestoreError(err, OperationType.GET, 'user_progress');
+    }
+  }, [user?.id]);
+
+  const loadFollowing = useCallback(async () => {
+    if (!user) return;
+    const cacheKey = `following_${user.id}`;
+    const cached = getCachedData<string[]>(cacheKey, 1800000); // 30 mins
+    if (cached) {
+      setFollowing(cached);
+      return;
+    }
+    try {
+      const snapshot = await getDocs(query(collection(firestore, 'friendships'), where('followerId', '==', user.id)));
+      const data = snapshot.docs.map(d => (d.data() as any).followingId);
+      setFollowing(data);
+      setCachedData(cacheKey, data);
+    } catch (err) {
+      handleFirestoreError(err, OperationType.GET, 'friendships');
+    }
+  }, [user?.id]);
+
+  const loadNotifications = useCallback(async () => {
+    if (!user) return;
+    const cacheKey = `notifications_${user.role}_${isPremium}`;
+    const cached = getCachedData<any[]>(cacheKey, 300000); // 5 mins
+    if (cached) {
+      setStudentNotifications(cached);
+      return;
+    }
+    try {
+      const snapshot = await getDocs(query(collection(firestore, 'notifications'), orderBy('createdAt', 'desc'), limit(15)));
+      const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      const filteredData = data.filter((n: any) => {
+        if (!n.audience || n.audience === 'all') return true;
+        if (user?.role === 'teacher') return n.audience === 'teachers';
+        if (n.audience === 'teachers') return false;
+        if (n.audience === 'students') return true;
+        if (n.audience === 'premium') return Boolean(isPremium);
+        if (n.audience === 'free') return !isPremium;
+        return true;
+      });
+      if (filteredData.length > 0) {
+        const latest = filteredData[0];
+        if (lastNotifIdRef.current && lastNotifIdRef.current !== latest.id) {
+          setNewNotification(latest);
+          setTimeout(() => setNewNotification(null), 10000);
+        }
+        lastNotifIdRef.current = latest.id;
+      }
+      setStudentNotifications(filteredData);
+      setCachedData(cacheKey, filteredData);
+    } catch (err) {
+      handleFirestoreError(err, OperationType.GET, 'notifications');
+    }
+  }, [user?.id, user?.role, isPremium]);
 
   enum OperationType {
     CREATE = 'create',
@@ -1392,219 +1736,37 @@ export default function App() {
       return;
     }
 
-    // Fetch chapters optimized by class to drastically reduce Firestore read billing
-    console.log("Debug: Fetching chapters for user:", user);
-    const chaptersQuery = user.role === 'admin' 
-      ? collection(firestore, 'chapters')
-      : (user.role === 'student' && user.class
-          ? query(collection(firestore, 'chapters'), where('status', '==', 'published'), where('class', '==', user.class))
-          : query(collection(firestore, 'chapters'), where('status', '==', 'published')));
-    console.log("Debug: chaptersQuery:", chaptersQuery);
+    // Immediate load dashboard-critical features
+    loadLeaderboard();
+    loadDailyMcqs();
+    loadDailyChallenge();
+    loadUserProgress();
+    loadNotifications();
+  }, [user?.id, user?.class, user?.role, loadLeaderboard, loadDailyMcqs, loadDailyChallenge, loadUserProgress, loadNotifications]);
 
-    getDocs(chaptersQuery).then((snapshot) => {
-      console.log("Debug: Fetched chapters snapshot size:", snapshot.size);
-      const allDataRaw = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-      const allData: Chapter[] = [];
-      
-      allDataRaw.forEach((d: any) => {
-        if (d.isParentTextbook && Array.isArray(d.chaptersList)) {
-          d.chaptersList.forEach((ch: any) => {
-            allData.push({
-              id: `${d.id}_ch${ch.number}`,
-              class: d.class,
-              subject: d.subject,
-              title: ch.title,
-              pdfUrl: ch.pdfUrl,
-              notes: ch.notes,
-              status: d.status,
-              isLibraryChapter: true,
-              updatedAt: d.updatedAt
-            } as any);
-          });
-        } else {
-          allData.push(d as Chapter);
-        }
-      });
-      console.log("Debug: All fetched chapters:", allData);
-      
-      const data = allData.filter(c => {
-        // Keep all digital library chapters regardless of global board/class restriction
-        if ((c as any).isLibraryChapter || (c as any).pdfUrl) {
-          return true;
-        }
-
-        // 1. Check Class
-        const cleanClass = (cls: string) => {
-          if (!cls) return '';
-          return cls.toLowerCase().replace(/\s+/g, '').replace('class', '').replace('th', '');
-        };
-        const matchesClass = !user?.class || cleanClass(c.class) === cleanClass(user.class);
-        
-        // 2. Check Board (Handles both String and Map formats)
-        const userBoardRaw = user?.board || '';
-        const userBoard = (userBoardRaw === 'undefined' ? '' : userBoardRaw).toLowerCase();
-        
-        let chapterBoardStr = '';
-        if (typeof c.board === 'string') {
-          chapterBoardStr = c.board.toLowerCase();
-        } else if (c.board && typeof c.board === 'object') {
-          // If it's a map like {en: "...", or: "..."}
-          chapterBoardStr = ((c.board as any).en || (c.board as any).or || '').toLowerCase();
-        }
-        
-        const matchesBoard = !userBoard || chapterBoardStr.includes(userBoard) || userBoard.includes(chapterBoardStr);
-
-        if (!matchesClass || !matchesBoard) {
-            console.log("Debug: Chapter", c.id, "filtered out.", { matchesClass, matchesBoard, chapterClass: c.class, userClass: user.class, chapterBoard: c.board, userBoard: user.board });
-        }
-        return matchesClass && matchesBoard;
-      });
-      console.log("Debug: Filtered chapters:", data);
-      setChapters(data);
-    }).catch((err) => {
-      console.error("Debug: Chapter fetch error:", err);
-      handleFirestoreError(err, OperationType.GET, 'chapters');
-    });
-
-    getDocs(query(collection(firestore, 'public_profiles'), orderBy('points', 'desc'), limit(10)))
-      .then((snapshot) => {
-        const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-        const testingNumbers = ['9556086560', '+919556086560', '6370487877', '+916370487877', '9337956168', '+919337956168', '8926118509', '+918926118509', '8457811227', '+918457811227', '7735118243', '+917735118243'];
-        const filteredData = data.filter((s: any) => !testingNumbers.includes(s.phoneNumber));
-        setLeaderboard(filteredData);
-      })
-      .catch((err) => handleFirestoreError(err, OperationType.GET, 'public_profiles'));
-
-    getDocs(query(collection(firestore, 'monthly_tests'), where('status', '==', 'published')))
-      .then((snapshot) => {
-        const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as MonthlyTest[];
-        setMonthlyTests(data);
-      })
-      .catch((err) => handleFirestoreError(err, OperationType.GET, 'monthly_tests'));
-
-    const todayRaw = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
-    const today = todayRaw.replace(/\//g, '-').trim();
-    const dailyMcqsQuery = user.role === 'admin'
-      ? collection(firestore, 'daily_mcqs')
-      : query(collection(firestore, 'daily_mcqs'), where('activeDate', '==', today));
-
-    getDocs(dailyMcqsQuery)
-      .then((snapshot) => {
-        const normalizedUserClass = String(user.class || '').toLowerCase();
-        const shortUserClass = normalizedUserClass.replace('class', '').trim();
-        const data = snapshot.docs
-          .map(d => ({ id: d.id, ...d.data() }))
-          .filter((mcq: any) => {
-            const mcqClass = String(mcq.class || '').toLowerCase().trim();
-            const mcqDate = String(mcq.activeDate || '').replace(/\//g, '-').trim();
-            const mcqStatus = String(mcq.status || '').toLowerCase().trim();
-
-            const matchesClass = user.role === 'admin' || 
-                                mcqClass === normalizedUserClass || 
-                                mcqClass === shortUserClass || 
-                                mcqClass === `class${shortUserClass}` ||
-                                mcqClass.includes(shortUserClass);
-                                
-            const matchesToday = user.role === 'admin' || mcqDate === today;
-            const matchesStatus = user.role === 'admin' || mcqStatus === 'published';
-
-            return matchesClass && matchesToday && matchesStatus;
-          })
-          .sort((left: any, right: any) => {
-            const leftDate = new Date(left.activeDate || 0).getTime();
-            const rightDate = new Date(right.activeDate || 0).getTime();
-            return rightDate - leftDate;
-          }) as DailyMcq[];
-
-        setDailyMcqs(data);
-      })
-      .catch((err) => handleFirestoreError(err, OperationType.GET, 'daily_mcqs'));
-
-    getDocs(query(collection(firestore, 'monthly_test_submissions'), where('userId', '==', user.id)))
-      .then((snapshot) => {
-        const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as MonthlyTestSubmission[];
-        setTestSubmissions(data);
-      })
-      .catch((err) => handleFirestoreError(err, OperationType.GET, 'monthly_test_submissions'));
-
-    getDocs(query(collection(firestore, 'daily_mcq_submissions'), where('userId', '==', user.id)))
-      .then((snapshot) => {
-        const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as DailyMcqSubmission[];
-        setDailyMcqSubmissions(data);
-      })
-      .catch((err) => handleFirestoreError(err, OperationType.GET, 'daily_mcq_submissions'));
-
-    const textbooksQuery = collection(firestore, 'textbooks');
-
-    console.log("Debug: Textbook query for user:", user, "Class:", user.class);
-    getDocs(textbooksQuery)
-      .then((snapshot) => {
-        const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as Textbook[];
-        console.log("Debug: Fetched textbooks for class", user.class, ":", data);
-        setTextbooks(data);
-      })
-      .catch((err) => {
-        console.error("Debug: Textbook fetch error:", err);
-        handleFirestoreError(err, OperationType.GET, 'textbooks');
-      });
-
-    getDocs(query(collection(firestore, 'daily_challenges'), where('date', '==', today)))
-      .then((snapshot) => {
-        if (!snapshot.empty) {
-          setDailyChallenge({ id: snapshot.docs[0].id, ...snapshot.docs[0].data() });
-        } else {
-          setDailyChallenge(null);
-        }
-      })
-      .catch((err) => handleFirestoreError(err, OperationType.GET, 'daily_challenges'));
-
-    getDocs(query(collection(firestore, 'user_progress'), where('userId', '==', user.id), orderBy('date', 'desc'), limit(30)))
-      .then((snapshot) => {
-        const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })).reverse();
-        setUserProgress(data);
-      })
-      .catch((err) => handleFirestoreError(err, OperationType.GET, 'user_progress'));
-
-    getDocs(query(collection(firestore, 'friendships'), where('followerId', '==', user.id)))
-      .then((snapshot) => {
-        const data = snapshot.docs.map(d => (d.data() as any).followingId);
-        setFollowing(data);
-      })
-      .catch((err) => handleFirestoreError(err, OperationType.GET, 'friendships'));
-
-    getDocs(query(collection(firestore, 'notifications'), orderBy('createdAt', 'desc'), limit(15)))
-      .then((snapshot) => {
-        const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-
-        const filteredData = data.filter((n: any) => {
-          if (!n.audience || n.audience === 'all') return true;
-          if (user?.role === 'teacher') {
-            return n.audience === 'teachers';
-          }
-          if (n.audience === 'teachers') return false;
-          if (n.audience === 'students') return true;
-          if (n.audience === 'premium') return Boolean(isPremium);
-          if (n.audience === 'free') return !isPremium;
-          return true;
-        });
-
-        if (filteredData.length > 0) {
-          const latest = filteredData[0];
-          if (lastNotifIdRef.current && lastNotifIdRef.current !== latest.id) {
-            setNewNotification(latest);
-            setTimeout(() => setNewNotification(null), 10000);
-          }
-          lastNotifIdRef.current = latest.id;
-        }
-
-        setStudentNotifications(filteredData);
-      })
-      .catch((err) => handleFirestoreError(err, OperationType.GET, 'notifications'));
-
-    return () => {
-      // Unsub functions removed
-    };
-  }, [user?.class, user?.id, user?.role]);
+  // Lazy loaders based on active Tab
+  useEffect(() => {
+    if (!user) return;
+    
+    if (['digital_library', 'smart_classes', 'parent_dashboard', 'syllabus_tracker'].includes(activeTab) || user.role === 'teacher') {
+      loadChapters();
+    }
+    if (['digital_library', 'textbooks'].includes(activeTab)) {
+      loadTextbooks();
+    }
+    if (['monthly_tests', 'parent_dashboard'].includes(activeTab)) {
+      loadTestSubmissions();
+    }
+    if (['daily_mcqs'].includes(activeTab)) {
+      loadDailyMcqSubmissions();
+    }
+    if (['leaderboard'].includes(activeTab)) {
+      loadFollowing();
+    }
+    if (['monthly_tests'].includes(activeTab)) {
+      loadMonthlyTests();
+    }
+  }, [user?.id, activeTab, user?.role, loadChapters, loadTextbooks, loadTestSubmissions, loadDailyMcqSubmissions, loadFollowing, loadMonthlyTests]);
 
 
   // --- Per-class MCQ subject rotation ---
@@ -2241,7 +2403,8 @@ export default function App() {
     );
   }
 
-  const isSunday = new Date().getDay() === 0 || window.location.search.includes('test_lock=true');
+  const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const isSunday = (new Date().getDay() === 0 && !isLocalhost) || window.location.search.includes('test_lock=true');
   const isLocked = isSunday && showSundayLockout && !sundayBypassed;
 
   if (isLocked) {
@@ -3039,9 +3202,9 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             )}
 
             {activeTab === 'syllabus_tracker' && <SyllabusTracker language={language} onBack={() => setActiveTab('dashboard')} />}
-            {activeTab === 'daily_mcqs' && <DailyMcqView mcqs={dailyMcqs} submissions={dailyMcqSubmissions} user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'daily_mcqs' && <DailyMcqView mcqs={dailyMcqs} submissions={dailyMcqSubmissions} user={user} language={language} onBack={() => setActiveTab('dashboard')} onSubmissionSuccess={loadDailyMcqSubmissions} />}
             {activeTab === 'study_buddy' && (
-              isPremium ? <StudyBuddyView language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} user={user} initialVoiceMode={openTutorInVoiceMode} onBack={() => setActiveTab('dashboard')} onLanguageChange={setLanguage} /> : <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
+              isPremium ? <StudyBuddyView language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} user={user} initialVoiceMode={openTutorInVoiceMode} onBack={() => setActiveTab('dashboard')} onLanguageChange={setLanguage} systemSettings={systemSettings} /> : <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
             )}
             {activeTab === 'gundulu' && (
               isPremium ? <GunduluHuman userClass={user?.class} onBack={() => setActiveTab('dashboard')} /> : <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
@@ -3240,6 +3403,29 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack, userPr
   const [learningInsights, setLearningInsights] = useState<string>('');
   const [generatingInsights, setGeneratingInsights] = useState(false);
   const [viewingReport, setViewingReport] = useState(false);
+  const [classLeaderboard, setClassLeaderboard] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!user?.class) return;
+    const fetchClassLeaderboard = async () => {
+      try {
+        const q = query(
+          collection(firestore, 'public_profiles'),
+          where('class', '==', user.class),
+          orderBy('points', 'desc'),
+          limit(10)
+        );
+        const snapshot = await getDocs(q);
+        const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        const testingNumbers = ['9556086560', '+919556086560', '6370487877', '+916370487877', '9337956168', '+919337956168', '8926118509', '+918926118509', '8457811227', '+918457811227', '7735118243', '+917735118243'];
+        const filteredData = data.filter((s: any) => !testingNumbers.includes(s.phoneNumber));
+        setClassLeaderboard(filteredData);
+      } catch (err) {
+        console.error("Failed to fetch class leaderboard:", err);
+      }
+    };
+    fetchClassLeaderboard();
+  }, [user.class]);
 
   useEffect(() => {
     const q = query(
@@ -3309,7 +3495,8 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack, userPr
     totalChapters: chapters.length
   };
 
-  const userRank = leaderboard.findIndex((s: any) => s.name === user.name) + 1 || '-';
+  const displayLeaderboard = classLeaderboard.length > 0 ? classLeaderboard : leaderboard;
+  const userRank = displayLeaderboard.findIndex((s: any) => s.id === user.id || s.name === user.name) + 1 || '-';
 
   const formatStudyTime = (minutes: number) => {
     if (!minutes) return '0m';
@@ -3433,7 +3620,7 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack, userPr
               </div>
               <div className="glass-card neon-border rounded-3xl p-6 overflow-hidden">
                 <div className="space-y-4">
-                  {leaderboard.slice(0, 5).map((student: any, i: number) => (
+                  {displayLeaderboard.slice(0, 5).map((student: any, i: number) => (
                     <div key={i} className={`flex items-center justify-between ${student.name === user.name ? 'bg-emerald-500/10 -mx-6 px-6 py-2 border-y border-emerald-500/20' : ''}`}>
                       <div className="flex items-center gap-3">
                         <span className={`w-6 text-xs font-bold ${i < 3 ? 'text-yellow-500' : 'text-slate-500'}`}>{i + 1}</span>
@@ -7088,6 +7275,7 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack, setActiv
         onComplete={() => {
           setTakingTest(false);
           setSelectedTest(null);
+          loadTestSubmissions();
         }} 
         onBack={() => setTakingTest(false)}
         language={language} 
@@ -7647,6 +7835,11 @@ function MonthlyTestEngine({ test, onComplete, onBack, language, user }: any) {
         status: 'pending_review'
       });
 
+      try {
+        localStorage.removeItem(`fs_cache_test_subs_${user.uid || user.id}`);
+      } catch (cacheErr) {
+        console.warn("Failed to clear test submissions cache:", cacheErr);
+      }
       vibrate([60, 40, 120]); // Victory heartbeat vibration on test completion!
       playSuccessChime(true); // Ascending major notes chime!
       alert(language === 'en' ? "Test submitted successfully!" : "ପରୀକ୍ଷା ସଫଳତାର ସହିତ ଦାଖଲ ହୋଇଛି!");

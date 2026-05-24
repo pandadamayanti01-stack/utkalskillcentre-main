@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { collection, doc, runTransaction, serverTimestamp } from 'firebase/firestore';
 import * as Lucide from 'lucide-react';
@@ -18,14 +18,20 @@ interface DailyMcqViewProps {
   user: any;
   language: 'en' | 'or';
   onBack: () => void;
+  onSubmissionSuccess?: () => void;
 }
 
 const ATTEMPT_REWARD = 1;
 
-export function DailyMcqView({ mcqs, submissions, user, language, onBack }: DailyMcqViewProps) {
+export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubmissionSuccess }: DailyMcqViewProps) {
+  const [localSubmissions, setLocalSubmissions] = useState<DailyMcqSubmission[]>(submissions);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string[]>>({});
   const [submittingMcqId, setSubmittingMcqId] = useState<string | null>(null);
   const [copiedMcqId, setCopiedMcqId] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLocalSubmissions(submissions);
+  }, [submissions]);
   const { isListening, startListening, stopListening } = useVoiceInput(language);
 
   const t = language === 'en'
@@ -115,8 +121,8 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
   }, [mcqs, user?.board]);
 
   const submissionMap = useMemo(
-    () => Object.fromEntries(submissions.map((submission) => [submission.mcqId, submission])),
-    [submissions]
+    () => Object.fromEntries(localSubmissions.map((submission) => [submission.mcqId, submission])),
+    [localSubmissions]
   );
 
   const formatDate = (value: string) => {
@@ -237,6 +243,22 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack }: Dail
           createdAt: serverTimestamp(),
         });
       });
+
+      const newSubmission: DailyMcqSubmission = {
+        id: `${user.id}_${mcq.id}`,
+        mcqId: mcq.id,
+        userId: user.id,
+        answers,
+        correctCount,
+        totalQuestions: questions.length,
+        attemptReward: ATTEMPT_REWARD,
+        correctBonus,
+        totalPointsEarned,
+        submittedDate: today,
+        submittedAt: new Date() as any,
+      };
+      setLocalSubmissions(prev => [...prev, newSubmission]);
+      onSubmissionSuccess?.();
       
       // Dynamic mobile app haptics and sound alerts on successful MCQ submission
       const allCorrect = correctCount === questions.length;
