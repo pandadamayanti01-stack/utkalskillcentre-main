@@ -63,11 +63,16 @@ export async function exportDailyMcqToPdf(mcq: DailyMcq) {
       <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+Oriya:wght@400;700&display=swap');
         
+        @page {
+          size: auto;
+          margin: 0;
+        }
+        
         body {
           font-family: 'Noto Sans Oriya', 'Inter', sans-serif;
           color: #1a1a1a;
           margin: 0;
-          padding: 40px;
+          padding: 20mm 15mm;
           line-height: 1.5;
         }
         
