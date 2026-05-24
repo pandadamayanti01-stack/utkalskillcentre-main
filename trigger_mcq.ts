@@ -24,9 +24,20 @@ async function trigger() {
 
   const databaseId = process.env.FIRESTORE_DATABASE_ID || 'utkal-prod';
   
-  // Generate for tomorrow to maintain a 1-day buffer
+  // Generate for tomorrow to maintain a 1-day buffer.
+  // If today is Saturday (IST), we skip Sunday and generate for Monday (+2 days).
   const date = new Date();
-  date.setDate(date.getDate() + 1);
+  const istDateString = date.toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+  const localDate = new Date(istDateString);
+  const dayOfWeek = localDate.getDay(); // 0 = Sunday, 6 = Saturday in IST
+
+  if (dayOfWeek === 6) {
+    console.log('Today is Saturday (IST). Skipping Sunday and generating for Monday.');
+    date.setDate(date.getDate() + 2);
+  } else {
+    date.setDate(date.getDate() + 1);
+  }
+  
   const targetDate = date.toISOString().split('T')[0];
   console.log(`Generating for date: ${targetDate}`);
 
