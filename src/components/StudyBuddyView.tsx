@@ -181,28 +181,40 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         const systemInstruction = getStudyBuddySystemInstruction(language, user?.name, user?.class, customPrompt);
 
         // Prepare chat history (last 10 messages)
-        // Gemini expects role: 'user' or 'model' (for assistant)
-        const chatHistory = messages.slice(-10).map(msg => ({
-          role: msg.role === 'assistant' ? 'model' : 'user',
-          parts: [{ text: msg.content }]
-        }));
+        // Gemini expects role: 'user' or 'model' (for assistant) and turns must alternate, starting with 'user'.
+        const chatHistory: any[] = [];
+        const slicedMessages = messages.slice(-10);
+        for (const msg of slicedMessages) {
+          const role = msg.role === 'assistant' ? 'model' : 'user';
+          if (chatHistory.length === 0) {
+            if (role === 'user') {
+              chatHistory.push({ role, parts: [{ text: msg.content }] });
+            }
+          } else {
+            const lastTurn = chatHistory[chatHistory.length - 1];
+            if (lastTurn.role === role) {
+              lastTurn.parts[0].text += '\n' + msg.content;
+            } else {
+              chatHistory.push({ role, parts: [{ text: msg.content }] });
+            }
+          }
+        }
 
         const messageText = textToSend || (language === 'or' ? 'ଏହି ଫଟୋଟି ଦେଖ ଓ ବୁଝାଅ' : 'Please look at this image and explain');
         
         // Add current message to history
         const contents: any[] = [...chatHistory];
+        const newParts: any[] = [{ text: messageText }];
         if (imageSnapshot) {
-          contents.push({
-            role: 'user',
-            parts: [
-              { text: messageText },
-              { inlineData: { mimeType: imageSnapshot.mimeType, data: imageSnapshot.base64 } }
-            ]
-          });
+          newParts.push({ inlineData: { mimeType: imageSnapshot.mimeType, data: imageSnapshot.base64 } });
+        }
+
+        if (contents.length > 0 && contents[contents.length - 1].role === 'user') {
+          contents[contents.length - 1].parts.push(...newParts);
         } else {
           contents.push({
             role: 'user',
-            parts: [{ text: messageText }]
+            parts: newParts
           });
         }
 

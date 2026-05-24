@@ -498,10 +498,16 @@ async function startServer() {
             const is404 = err.message?.includes('404') || err.status === 404 || err.code === 404;
             const isAuthError = err.message?.includes('403') || err.message?.includes('401') || 
                                err.status === 403 || err.status === 401;
+            const isBadRequest = err.message?.includes('400') || err.status === 400 || err.code === 400;
 
             if (isAuthError) {
               console.error("Backend AI Auth Error:", err.message);
               return res.status(403).json({ error: "Gemini API Authentication Failed." });
+            }
+
+            if (isBadRequest) {
+              console.error("Backend AI Bad Request:", err.message);
+              return res.status(400).json({ error: err.message || "Invalid request parameters." });
             }
 
             if (is404) {

@@ -133,14 +133,27 @@ export async function solveMathDoubt(
       // Send the last 10 messages for fast, lightweight contextual tracking
       const recentHistory = history.slice(-10);
       recentHistory.forEach((msg) => {
-        contents.push({
-          role: msg.sender === 'user' ? 'user' : 'model',
-          parts: [{ text: msg.text }]
-        });
+        const role = msg.sender === 'user' ? 'user' : 'model';
+        if (contents.length === 0) {
+          if (role === 'user') {
+            contents.push({ role, parts: [{ text: msg.text }] });
+          }
+        } else {
+          const lastTurn = contents[contents.length - 1];
+          if (lastTurn.role === role) {
+            lastTurn.parts[0].text += '\n' + msg.text;
+          } else {
+            contents.push({ role, parts: [{ text: msg.text }] });
+          }
+        }
       });
     }
     // Add the current prompt
-    contents.push({ role: 'user', parts });
+    if (contents.length > 0 && contents[contents.length - 1].role === 'user') {
+      contents[contents.length - 1].parts.push(...parts);
+    } else {
+      contents.push({ role: 'user', parts });
+    }
 
     const responseText = await withRetry(async (modelName, apiVersion) => {
       const model = ai.getGenerativeModel({
