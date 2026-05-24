@@ -470,11 +470,11 @@ async function startServer() {
       const ai = new GoogleGenerativeAI(apiKey);
 
       const FLASH_MODELS = [
-        "gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-flash-8b",
+        "gemini-3.5-flash", "gemini-2.5-flash", "gemini-2.0-flash", "gemini-3.1-flash-lite",
         "gemini-flash-latest", "gemini-flash-lite-latest", "gemini-2.5-flash-lite", "gemini-2.5-flash-image"
       ];
       const PRO_MODELS = [
-        "gemini-2.5-pro", "gemini-2.0-pro", "gemini-1.5-pro", "gemini-pro-latest", "gemini-3.1-pro-preview"
+        "gemini-3.1-pro-preview", "gemini-3-pro-preview", "gemini-2.5-pro", "gemini-pro-latest"
       ];
       
       let models = modelType === 'pro' ? [...PRO_MODELS, ...FLASH_MODELS] : [...FLASH_MODELS];
