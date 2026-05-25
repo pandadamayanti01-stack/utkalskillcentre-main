@@ -3219,7 +3219,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
               <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} setActiveTab={setActiveTab} onBack={() => setActiveTab('dashboard')} />
             )}
 
-            {activeTab === 'syllabus_tracker' && <SyllabusTracker language={language} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'syllabus_tracker' && <SyllabusTracker user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'daily_mcqs' && <DailyMcqView mcqs={dailyMcqs} submissions={dailyMcqSubmissions} user={user} language={language} onBack={() => setActiveTab('dashboard')} onSubmissionSuccess={loadDailyMcqSubmissions} />}
             {activeTab === 'study_buddy' && (
               isPremium ? <StudyBuddyView language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} user={user} initialVoiceMode={openTutorInVoiceMode} onBack={() => setActiveTab('dashboard')} onLanguageChange={setLanguage} systemSettings={systemSettings} /> : <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />

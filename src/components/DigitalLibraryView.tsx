@@ -1101,17 +1101,19 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
       if (typeof c.chapterNumber === 'number') return c.chapterNumber;
       if (typeof c.index === 'number') return c.index;
 
-      const idMatch = String(c.id).match(/ch[_\-\s]?(\d+)/i);
-      if (idMatch) return parseInt(idMatch[1], 10);
+      const titleStr = typeof c.title === 'string' ? c.title : (c.title?.en || c.title?.or || '');
+      const titleMatch = titleStr.match(/Chapter[_\-\s]?\s*(\d+)/i) || titleStr.match(/Ch[_\-\s]?\s*(\d+)/i);
+      if (titleMatch) return parseInt(titleMatch[1], 10);
 
       const urlStr = String(c.pdfUrl || c.download_url || c.driveUrl || '');
       const decodedUrl = decodeURIComponent(urlStr);
       const urlMatch = decodedUrl.match(/Chapter[_\-\s]?(\d+)/i) || decodedUrl.match(/Ch[_\-\s]?(\d+)/i);
       if (urlMatch) return parseInt(urlMatch[1], 10);
 
-      const titleStr = typeof c.title === 'string' ? c.title : (c.title?.en || c.title?.or || '');
-      const titleMatch = titleStr.match(/Chapter[_\-\s]?\s*(\d+)/i) || titleStr.match(/Ch[_\-\s]?\s*(\d+)/i);
-      if (titleMatch) return parseInt(titleMatch[1], 10);
+      if (c.id && !/^[a-zA-Z0-9]{20}$/.test(c.id)) {
+        const idMatch = String(c.id).match(/ch[_\-\s]?(\d+)/i);
+        if (idMatch) return parseInt(idMatch[1], 10);
+      }
 
       return 999;
     };

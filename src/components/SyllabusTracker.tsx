@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Map, Compass, BookOpen, X, Filter, Flag, Trophy, Cloud, Star } from 'lucide-react';
 import { SEO } from './SEO';
-import { ROADMAP_DATA } from '../data/roadmapData';
+import { ROADMAP_DATA, ROADMAP_DATA_9 } from '../data/roadmapData';
 import { translations } from '../translations';
 
 interface SyllabusTrackerProps {
+  user: any;
   language: 'en' | 'or';
   onBack: () => void;
 }
 
-export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ language, onBack }) => {
+export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language, onBack }) => {
   const [selectedMonth, setSelectedMonth] = useState<any | null>(null);
   const [optionalFilter, setOptionalFilter] = useState<'All' | 'Hindi' | 'Sanskrit' | 'Vocational'>('All');
   const [currentMonth, setCurrentMonth] = useState<string>('');
@@ -72,6 +73,9 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ language, onBa
     return rawSubject.replace(/_/g, ' ');
   };
 
+  const studentClassStr = (user?.class || 'class10').toLowerCase().replace('class', '').trim();
+  const activeRoadmap = studentClassStr === '9' ? ROADMAP_DATA_9 : ROADMAP_DATA;
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -79,8 +83,11 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ language, onBa
       className="space-y-8 pb-32"
     >
       <SEO 
-        title={translate("Gundulu's Journey - 9 Month Roadmap | Class 10", "ଗୁଣ୍ଡୁଲୁର ଯାତ୍ରା - ୯ ମାସର ରୋଡମ୍ୟାପ୍ | ୧୦ମ ଶ୍ରେଣୀ")}
-        description="Follow Gundulu on a 9-month epic journey to master the entire Class 10 syllabus!"
+        title={translate(
+          `Gundulu's Journey - 9 Month Roadmap | Class ${studentClassStr}`,
+          `ଗୁଣ୍ଡୁଲୁର ଯାତ୍ରା - ୯ ମାସର ରୋଡମ୍ୟାପ୍ | ${studentClassStr === '9' ? '୯ମ' : '୧୦ମ'} ଶ୍ରେଣୀ`
+        )}
+        description={`Follow Gundulu on a 9-month epic journey to master the entire Class ${studentClassStr} syllabus!`}
       />
 
       {/* Header */}
@@ -150,7 +157,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ language, onBa
         </div>
 
         <div className="flex flex-col gap-16 md:gap-20 relative z-10 py-16">
-          {ROADMAP_DATA.map((monthData, idx) => {
+          {activeRoadmap.map((monthData, idx) => {
             const visibleCount = monthData.chapters.filter(c => isVisibleChapter(c.subject)).length;
             const isLeft = idx % 2 === 0;
             const isCurrentMonth = monthData.month === currentMonth;
@@ -264,7 +271,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ language, onBa
                     let rawTitle = typeof chapter.title === 'string' ? chapter.title : (language === 'or' && chapter.title?.or ? chapter.title.or : (chapter.title?.en || ''));
                     
                     const cleanTitle = rawTitle
-                      .replace(/Class\s*10/ig, '')
+                      .replace(/Class\s*\d+/ig, '')
                       .replace(/Ch\s*\d+/ig, '')
                       .replace(/Chapter\s*\d+/ig, '')
                       .replace(/Ready/ig, '')

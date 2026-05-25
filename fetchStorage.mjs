@@ -9,6 +9,90 @@ const fetchUrl = (url) => new Promise((resolve, reject) => {
   }).on('error', reject);
 });
 
+function formatChapterTitle(rawName) {
+  // If it's already in the correct format, return it as-is
+  if (rawName.startsWith('Chapter ') && rawName.includes(' - ')) {
+    return rawName;
+  }
+
+  // Extract chapter number
+  let chNum = null;
+  const chMatch = rawName.match(/Ch[_\-\s]?(\d+)/i);
+  if (chMatch) {
+    chNum = parseInt(chMatch[1], 10);
+  } else {
+    const fallbackMatch = rawName.match(/Chapter[_\-\s]?\s*(\d+)/i);
+    if (fallbackMatch) {
+      chNum = parseInt(fallbackMatch[1], 10);
+    }
+  }
+
+  // List of prefixes to clean, ordered from longest to shortest to prevent partial matches
+  const prefixes = [
+    /Class\d+[_]?/gi,
+    /C9_[a-zA-Z]+[_]?/gi,
+    /Chapter\s*\d+/gi,
+    /Ch\d+/gi,
+    /Ch\s*\d+/gi,
+    /L\d+/gi,
+    /L\s*\d+/gi,
+    /Sanskrit_Grammar/gi,
+    /SanskritGrammar/gi,
+    /English_Grammar/gi,
+    /EnglishGrammar/gi,
+    /Physical_science/gi,
+    /PhysicalScience/gi,
+    /Physical_Science/gi,
+    /Hindi_Grammar/gi,
+    /HindiGrammar/gi,
+    /Odia_Grammar/gi,
+    /OdiaGrammar/gi,
+    /Sanskrit/gi,
+    /SanGram/gi,
+    /Life_Science/gi,
+    /LifeScience/gi,
+    /LifeSci/gi,
+    /Physical/gi,
+    /PhySci/gi,
+    /Geometry/gi,
+    /Geography/gi,
+    /History/gi,
+    /HistPol/gi,
+    /GeoEco/gi,
+    /HindiGram/gi,
+    /OdiaGram/gi,
+    /EngGram/gi,
+    /English/gi,
+    /HindiLit/gi,
+    /Algebra/gi,
+    /Hindi/gi,
+    /Odia/gi,
+    /Eng/gi,
+    /Geo/gi,
+    /Pol/gi,
+    /Eco/gi,
+    /Hist/gi,
+    /Ready/gi
+  ];
+
+  let cleanTitle = rawName;
+  for (const regex of prefixes) {
+    cleanTitle = cleanTitle.replace(regex, '');
+  }
+
+  // Replace underscores and clean spaces
+  cleanTitle = cleanTitle.replace(/_/g, ' ').replace(/\s+/g, ' ').trim();
+  
+  // Clean leading/trailing clutter
+  cleanTitle = cleanTitle.replace(/^[^a-zA-Z0-9(]+/, '').replace(/[^a-zA-Z0-9)]+$/, '').trim();
+
+  // Reconstruct in Class 10 style: "Chapter X - Title"
+  if (chNum !== null) {
+    return `Chapter ${chNum} - ${cleanTitle}`;
+  }
+  return cleanTitle;
+}
+
 async function main() {
   try {
     const data = await fetchUrl('https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o');
@@ -32,6 +116,11 @@ async function main() {
         let fileName = parts[3];
         let chapterName = fileName.replace(/\.pdf$/i, '').trim();
         if (chapterName === '.placeholder') return; // Skip placeholders
+
+        // Format Class 9 names for premium appearance matching Class 10
+        if (className === '9') {
+          chapterName = formatChapterTitle(chapterName);
+        }
 
         if (!structure[className]) structure[className] = {};
         
