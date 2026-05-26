@@ -397,7 +397,7 @@ export async function generateTestQuestions(subject: string, className: string, 
         },
       });
       return result.response.text();
-    }, 'pro');
+    }, 'flash');
 
     if (!responseText) {
       throw new Error("Failed to generate a response.");

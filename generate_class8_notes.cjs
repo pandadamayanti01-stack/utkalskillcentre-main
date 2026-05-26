@@ -5,12 +5,14 @@ const { getFirestore } = require('firebase-admin/firestore');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const API_KEYS = [
-  process.env.GEMINI_API_KEY,
   'AIzaSyC7UINWWpHpFLH7luNA1rKpVwxTZ4ttT-0',
-  'AIzaSyCjFw3zD4VHNeT6qwpfRrpk89gjIuc7yrY',
+  'AIzaSyD4haloAGFX1ygDIIHri5oi9n_A36m5FA4',
   'AIzaSyAUBYWNdOUmVUJ3FoJMqBEopEwGC0s937U',
-  'AIzaSyC8T2sZ0a6pjqFi5qRNiWDWwGvUXLBKTwo'
-].filter(Boolean);
+  'AIzaSyCdZFXZ0U5QSxNQk00mQA3NtaSS-ji6BkQ',
+  'AIzaSyBIkzsQX5PZ5DyNubS0mc77vjllewzwAks',
+  'AIzaSyCEg16z4_O5fx-0h8FO7M8y9cE4pK_J1Ws'
+];
+
 
 const app = admin.apps.length ? admin.app() : admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
