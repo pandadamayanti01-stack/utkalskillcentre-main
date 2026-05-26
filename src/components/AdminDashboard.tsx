@@ -168,6 +168,7 @@ Sample tone for Class 6-10:
   const [notifications, setNotifications] = useState<any[]>([]);
   const [students, setStudents] = useState<any[]>([]);
   const [studentSearch, setStudentSearch] = useState('');
+  const [studentSortBy, setStudentSortBy] = useState<'createdAt' | 'totalStudyMinutes'>('createdAt');
 
   const [allSubscriptions, setAllSubscriptions] = useState<Record<string, any>>({});
   const [supportTickets, setSupportTickets] = useState<any[]>([]);
@@ -553,10 +554,7 @@ Sample tone for Class 6-10:
       setTextbooks(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     }).catch(err => console.error("Firestore Textbooks Error:", err));
 
-    // users
-    getDocs(query(collection(firestore, 'users'), orderBy('createdAt', 'desc'), limit(100))).then(snapshot => {
-      setStudents(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    }).catch(err => console.error("Firestore Students Error:", err));
+    // users are loaded via dedicated useEffect below to support dynamic sorting
 
     // user_locks
     getDocs(query(collection(firestore, 'user_locks'), limit(100))).then(snapshot => {
@@ -593,6 +591,17 @@ Sample tone for Class 6-10:
   useEffect(() => {
     loadDashboardData();
   }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+    setLoading(true);
+    getDocs(query(collection(firestore, 'users'), orderBy(studentSortBy, 'desc'), limit(100)))
+      .then(snapshot => {
+        setStudents(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      })
+      .catch(err => console.error("Firestore Students Fetch Error:", err))
+      .finally(() => setLoading(false));
+  }, [studentSortBy, user]);
 
   // Removed local combined stats calculation for revenue to use server aggregate instead
 
@@ -3932,8 +3941,16 @@ Sample tone for Class 6-10:
             <h2 className="text-2xl font-bold text-white">{isTeacherView ? 'Teachers Management' : 'Students Management'}</h2>
             <p className="text-slate-400 text-sm mt-1">Total Users: {stats.totalStudents} | Showing: {filteredStudents.length}</p>
           </div>
-          <form onSubmit={handleRemoteUserSearch} className="relative w-full md:w-80 flex gap-2">
-            <div className="relative flex-1">
+          <form onSubmit={handleRemoteUserSearch} className="relative w-full md:w-auto flex flex-wrap gap-2">
+            <select
+              value={studentSortBy}
+              onChange={(e) => setStudentSortBy(e.target.value as any)}
+              className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-sm focus:outline-none cursor-pointer focus:border-emerald-500/50"
+            >
+              <option value="createdAt" className="bg-slate-800">Newest Registered</option>
+              <option value="totalStudyMinutes" className="bg-slate-800">Most Study Time</option>
+            </select>
+            <div className="relative flex-1 min-w-[200px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
               <input
                 type="text"
@@ -3959,6 +3976,7 @@ Sample tone for Class 6-10:
                 <th className="pb-4">Name</th>
                 <th className="pb-4">Email / Phone</th>
                 <th className="pb-4">Class</th>
+                <th className="pb-4">Study Time</th>
                 <th className="pb-4">Plan</th>
                 <th className="pb-4">Expiry</th>
                 <th className="pb-4">Status</th>
@@ -3979,6 +3997,14 @@ Sample tone for Class 6-10:
                     <td className="py-4 font-medium text-white">{student.name || 'N/A'}</td>
                     <td className="py-4 text-sm text-slate-400 font-mono">{student.email || student.phoneNumber || 'N/A'}</td>
                     <td className="py-4">{student.class || 'N/A'}</td>
+                    <td className="py-4 text-sm font-mono text-emerald-400 font-bold">
+                      {(() => {
+                        const mins = student.totalStudyMinutes || 0;
+                        const hrs = Math.floor(mins / 60);
+                        const m = mins % 60;
+                        return `${hrs}h ${m}m`;
+                      })()}
+                    </td>
                     <td className="py-4">
                       <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest ${plan.includes('Pro') ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-500/20 text-slate-400'}`}>
                         {plan}

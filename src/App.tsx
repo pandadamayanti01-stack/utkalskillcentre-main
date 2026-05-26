@@ -137,6 +137,7 @@ interface Student {
   completed_chapters?: string[];
   parentShowLeaderboard?: boolean;
   phoneNumber?: string;
+  totalStudyMinutes?: number;
   stats?: {
     streak: number;
     level: number;
@@ -1132,7 +1133,7 @@ export default function App() {
         collection(firestore, 'public_profiles'),
         where('class', '==', user.class),
         orderBy('points', 'desc'),
-        limit(50)
+        limit(100)
       ));
       const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
       const testingNumbers = ['9556086560', '+919556086560', '6370487877', '+916370487877', '9337956168', '+919337956168', '8926118509', '+918926118509', '8457811227', '+918457811227', '7735118243', '+917735118243'];
@@ -1145,7 +1146,7 @@ export default function App() {
         const snapshot = await getDocs(query(
           collection(firestore, 'public_profiles'),
           orderBy('points', 'desc'),
-          limit(50)
+          limit(100)
         ));
         const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
         const testingNumbers = ['9556086560', '+919556086560', '6370487877', '+916370487877', '9337956168', '+919337956168', '8926118509', '+918926118509', '8457811227', '+918457811227', '7735118243', '+917735118243'];
@@ -1332,6 +1333,43 @@ export default function App() {
       handleFirestoreError(err, OperationType.GET, 'friendships');
     }
   }, [user?.id]);
+
+  const handleToggleFollow = async (targetUserId: string) => {
+    if (!user) return;
+    const isFollowing = following.includes(targetUserId);
+    try {
+      if (isFollowing) {
+        // Unfollow
+        const q = query(
+          collection(firestore, 'friendships'),
+          where('followerId', '==', user.id),
+          where('followingId', '==', targetUserId)
+        );
+        const snap = await getDocs(q);
+        for (const doc of snap.docs) {
+          await deleteDoc(doc.ref);
+        }
+        setFollowing(prev => prev.filter(id => id !== targetUserId));
+      } else {
+        // Follow
+        await addDoc(collection(firestore, 'friendships'), {
+          followerId: user.id,
+          followingId: targetUserId,
+          createdAt: new Date().toISOString()
+        });
+        setFollowing(prev => [...prev, targetUserId]);
+      }
+      
+      // Update cache
+      const cacheKey = `following_${user.id}`;
+      const updatedFollowing = isFollowing 
+        ? following.filter(id => id !== targetUserId)
+        : [...following, targetUserId];
+      setCachedData(cacheKey, updatedFollowing);
+    } catch (err) {
+      console.error("Failed to toggle follow status:", err);
+    }
+  };
 
   const loadNotifications = useCallback(async () => {
     if (!user) return;
@@ -1760,7 +1798,8 @@ export default function App() {
     loadDailyChallenge();
     loadUserProgress();
     loadNotifications();
-  }, [user?.id, user?.class, user?.role, loadLeaderboard, loadDailyMcqs, loadDailyChallenge, loadUserProgress, loadNotifications]);
+    loadFollowing();
+  }, [user?.id, user?.class, user?.role, loadLeaderboard, loadDailyMcqs, loadDailyChallenge, loadUserProgress, loadNotifications, loadFollowing]);
 
   // Lazy loaders based on active Tab
   useEffect(() => {
@@ -3191,6 +3230,8 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                     }
                   }}
                   onOpenCommunity={() => setShowCommunityChat(true)}
+                  following={following}
+                  onToggleFollow={handleToggleFollow}
                 />
               )
             )}
@@ -3216,7 +3257,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             )}
             {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'monthly_tests' && (
-              <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} setActiveTab={setActiveTab} onBack={() => setActiveTab('dashboard')} />
+              <MonthlyTestsView tests={monthlyTests} submissions={testSubmissions} language={language} user={user} setActiveTab={setActiveTab} onBack={() => setActiveTab('dashboard')} loadTestSubmissions={loadTestSubmissions} />
             )}
 
             {activeTab === 'syllabus_tracker' && <SyllabusTracker user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
@@ -3229,7 +3270,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             )}
             {activeTab === 'profile' && <ProfileView user={user} language={language} theme={theme} setTheme={setTheme} onBack={() => setActiveTab('dashboard')} onParentAccess={() => setActiveTab('parent_dashboard')} setActiveTab={setActiveTab} />}
             {activeTab === 'parent_dashboard' && <ParentDashboard user={user} chapters={chapters} leaderboard={leaderboard} language={language} onBack={() => setActiveTab('profile')} userProgress={userProgress} />}
-            {activeTab === 'leaderboard' && <LeaderboardView leaderboard={leaderboard} language={language} onBack={() => setActiveTab('dashboard')} following={following} user={user} />}
+            {activeTab === 'leaderboard' && <LeaderboardView leaderboard={leaderboard} language={language} onBack={() => setActiveTab('dashboard')} following={following} user={user} onToggleFollow={handleToggleFollow} />}
             {activeTab === 'support' && <SupportView user={user} language={language} onBack={() => setActiveTab('dashboard')} handleSupportClick={handleSupportClick} confirmSupport={confirmSupport} supportSession={supportSession} />}
             {activeTab === 'store' && <AvatarStore user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'plans' && <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />}
@@ -3248,7 +3289,6 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             isSidebarOpen={isSidebarOpen}
             unreadNotificationsCount={studentNotifications.filter(n => n.id && !readNotifIds.includes(n.id)).length}
             userRole={user.role}
-            user={user}
           />
         )}
       </main>
@@ -5765,13 +5805,15 @@ function GamesView({ language, onBack }: any) {
   );
 }
 
-function LeaderboardView({ leaderboard, language, onBack, following, user }: any) {
+function LeaderboardView({ leaderboard, language, onBack, following, user, onToggleFollow }: any) {
   const [activeFilter, setActiveFilter] = useState<'league' | 'class' | 'friends'>('league');
   const [activeLeague, setActiveLeague] = useState<League>('Bronze');
   const leagues: League[] = ['Bronze', 'Silver', 'Gold', 'Platinum'];
   const [isGeneratingCard, setIsGeneratingCard] = useState(false);
   const [classLeaderboard, setClassLeaderboard] = useState<any[]>([]);
   const [loadingClass, setLoadingClass] = useState(false);
+  const [friendProfiles, setFriendProfiles] = useState<any[]>([]);
+  const [loadingFriends, setLoadingFriends] = useState(false);
 
   useEffect(() => {
     if (activeFilter !== 'class' || !user?.class) return;
@@ -5798,12 +5840,43 @@ function LeaderboardView({ leaderboard, language, onBack, following, user }: any
     fetchClassLeaderboard();
   }, [activeFilter, user?.class]);
 
+  useEffect(() => {
+    if (activeFilter !== 'friends' || following.length === 0) {
+      setFriendProfiles([]);
+      return;
+    }
+    const fetchFriendsProfiles = async () => {
+      setLoadingFriends(true);
+      try {
+        const missingIds = following.filter(id => !leaderboard.some((s: any) => s.id === id));
+        if (missingIds.length === 0) {
+          setFriendProfiles([]);
+          return;
+        }
+        const promises = missingIds.map(id => getDoc(doc(firestore, 'public_profiles', id)));
+        const snaps = await Promise.all(promises);
+        const fetched = snaps
+          .filter(snap => snap.exists())
+          .map(snap => ({ id: snap.id, ...snap.data() }));
+        setFriendProfiles(fetched);
+      } catch (err) {
+        console.error("Failed to fetch friend profiles:", err);
+      } finally {
+        setLoadingFriends(false);
+      }
+    };
+    fetchFriendsProfiles();
+  }, [activeFilter, following, leaderboard]);
+
   const filteredLeaderboard = useMemo(() => {
     if (activeFilter === 'class') {
       return classLeaderboard.length > 0 ? classLeaderboard : leaderboard.filter((s: any) => s.class === user.class);
     }
     if (activeFilter === 'friends') {
-      return leaderboard.filter((s: any) => following.includes(s.id) || s.id === user.id);
+      const localFriends = leaderboard.filter((s: any) => following.includes(s.id) || s.id === user.id);
+      const localFriendIds = new Set(localFriends.map(f => f.id));
+      const extraFriends = friendProfiles.filter(f => !localFriendIds.has(f.id));
+      return [...localFriends, ...extraFriends].sort((a, b) => (b.points || 0) - (a.points || 0));
     }
     return leaderboard.filter((s: any) => {
       const idx = leaderboard.indexOf(s);
@@ -5812,7 +5885,7 @@ function LeaderboardView({ leaderboard, language, onBack, following, user }: any
       if (idx < 50) return activeLeague === 'Silver';
       return activeLeague === 'Bronze';
     });
-  }, [activeFilter, activeLeague, leaderboard, classLeaderboard, following, user?.id, user?.class]);
+  }, [activeFilter, activeLeague, leaderboard, classLeaderboard, following, friendProfiles, user?.id, user?.class]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -6088,22 +6161,25 @@ function LeaderboardView({ leaderboard, language, onBack, following, user }: any
         )}
       </motion.div>
 
-      <motion.div variants={itemVariants} className="bg-slate-900/50 border border-white/5 rounded-[40px] overflow-hidden">
-        <table className="w-full text-left">
+      <motion.div variants={itemVariants} className="bg-slate-900/50 border border-white/5 rounded-[40px] overflow-x-auto custom-scrollbar">
+        <table className="w-full text-left min-w-[600px]">
           <thead>
             <tr className="border-b border-white/5 bg-white/5">
-              <th className="px-8 py-6 text-xs uppercase tracking-widest text-slate-500 font-bold">Rank</th>
-              <th className="px-8 py-6 text-xs uppercase tracking-widest text-slate-500 font-bold">Student</th>
-              <th className="px-8 py-6 text-xs uppercase tracking-widest text-slate-500 font-bold">Consistency</th>
-              <th className="px-8 py-6 text-xs uppercase tracking-widest text-slate-500 font-bold text-right">{translations[language].effortPoints}</th>
+              <th className="px-3 sm:px-8 py-4 sm:py-6 text-xs uppercase tracking-widest text-slate-500 font-bold">Rank</th>
+              <th className="px-3 sm:px-8 py-4 sm:py-6 text-xs uppercase tracking-widest text-slate-500 font-bold">Student</th>
+              <th className="px-3 sm:px-8 py-4 sm:py-6 text-xs uppercase tracking-widest text-slate-500 font-bold">Consistency</th>
+              <th className="px-3 sm:px-8 py-4 sm:py-6 text-xs uppercase tracking-widest text-slate-500 font-bold text-right">{translations[language].effortPoints}</th>
+              <th className="px-3 sm:px-8 py-4 sm:py-6 text-xs uppercase tracking-widest text-slate-500 font-bold text-right">Action</th>
             </tr>
           </thead>
           <tbody>
-            {loadingClass ? (
+            {loadingClass || loadingFriends ? (
               <tr>
-                <td colSpan={4} className="px-8 py-20 text-center text-slate-500">
+                <td colSpan={5} className="px-3 sm:px-8 py-20 text-center text-slate-500">
                   <Lucide.Loader2 className="animate-spin text-emerald-500 mx-auto mb-2" size={32} />
-                  {language === 'en' ? 'Loading class ranking...' : 'ଶ୍ରେଣୀ ମାନ୍ୟତା ଲୋଡ୍ ହେଉଛି...'}
+                  {loadingClass 
+                    ? (language === 'en' ? 'Loading class ranking...' : 'ଶ୍ରେଣୀ ମାନ୍ୟତା ଲୋଡ୍ ହେଉଛି...')
+                    : (language === 'en' ? 'Loading friends...' : 'ସାଙ୍ଗମାନଙ୍କ ମାନ୍ୟତା ଲୋଡ୍ ହେଉଛି...')}
                 </td>
               </tr>
             ) : filteredLeaderboard.length > 0 ? (
@@ -6113,7 +6189,7 @@ function LeaderboardView({ leaderboard, language, onBack, following, user }: any
                   key={i} 
                   className="border-b border-white/5 hover:bg-white/5 transition-all"
                 >
-                  <td className="px-8 py-6">
+                  <td className="px-3 sm:px-8 py-4 sm:py-6">
                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold ${
                       i === 0 ? 'bg-yellow-500 text-slate-900 shadow-[0_0_15px_#eab308]' : 
                       i === 1 ? 'bg-slate-300 text-slate-900 shadow-[0_0_15px_#cbd5e1]' : 
@@ -6122,7 +6198,7 @@ function LeaderboardView({ leaderboard, language, onBack, following, user }: any
                       {i + 1}
                     </div>
                   </td>
-                  <td className="px-8 py-6">
+                  <td className="px-3 sm:px-8 py-4 sm:py-6">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden shadow-lg">
                         {student.avatar ? (
@@ -6145,19 +6221,33 @@ function LeaderboardView({ leaderboard, language, onBack, following, user }: any
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-6">
+                  <td className="px-3 sm:px-8 py-4 sm:py-6">
                     <div className="flex items-center gap-1">
                       {[1, 2, 3, 4, 5].map((day) => (
                         <div key={day} className={`w-2 h-2 rounded-full ${day <= (i % 5 + 1) ? 'bg-emerald-500' : 'bg-white/10'}`} />
                       ))}
                     </div>
                   </td>
-                  <td className="px-8 py-6 text-right font-mono text-emerald-400 font-bold">{student.points}</td>
+                  <td className="px-3 sm:px-8 py-4 sm:py-6 text-right font-mono text-emerald-400 font-bold">{student.points}</td>
+                  <td className="px-3 sm:px-8 py-4 sm:py-6 text-right">
+                    {student.id !== user.id && (
+                      <button
+                        onClick={() => onToggleFollow?.(student.id)}
+                        className={`px-3 py-1.5 rounded-full text-[10px] font-black tracking-wider uppercase transition-all shadow-md active:scale-95 cursor-pointer ${
+                          following.includes(student.id)
+                            ? 'bg-slate-800 hover:bg-red-950/80 hover:text-red-400 hover:border-red-500/20 text-slate-400 border border-slate-700'
+                            : 'bg-emerald-500/10 hover:bg-emerald-500 hover:text-slate-950 hover:shadow-emerald-500/30 text-emerald-400 border border-emerald-500/20'
+                        }`}
+                      >
+                        {following.includes(student.id) ? (language === 'en' ? 'Following' : 'ଅନୁସରଣ') : (language === 'en' ? '+ Follow' : '+ ଅନୁସରଣ')}
+                      </button>
+                    )}
+                  </td>
                 </motion.tr>
               ))
             ) : (
               <tr>
-                <td colSpan={4} className="px-8 py-20 text-center text-slate-500">
+                <td colSpan={5} className="px-3 sm:px-8 py-20 text-center text-slate-500">
                   No students in this league yet. Keep practicing to move up!
                 </td>
               </tr>
@@ -7307,7 +7397,7 @@ function CertificateView({ submission, test, user, onBack, language }: any) {
   );
 }
 
-function MonthlyTestsView({ tests, submissions, language, user, onBack, setActiveTab }: any) {
+function MonthlyTestsView({ tests, submissions, language, user, onBack, setActiveTab, loadTestSubmissions }: any) {
   const [selectedTest, setSelectedTest] = useState<any>(null);
   const [takingTest, setTakingTest] = useState(false);
   const [viewingCertificate, setViewingCertificate] = useState<any>(null);

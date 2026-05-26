@@ -17,7 +17,7 @@ import { LeaderboardView } from './LeaderboardView';
 import { DistrictLeaderboardFilter } from './DistrictLeaderboardFilter';
 import { TestSeriesRegistrationForm } from './TestSeriesRegistrationForm';
 import { db } from '../firebase';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
 import { GunduluTrailer } from './GunduluTrailer';
 import NeuralBackground from './NeuralBackground';
 import OdishaLiveMap from './OdishaLiveMap';
@@ -42,6 +42,8 @@ interface DashboardProps {
   isRegistered?: boolean;
   onRegistrationComplete?: () => void;
   onOpenCommunity?: () => void;
+  following?: string[];
+  onToggleFollow?: (targetUserId: string) => void;
 }
 function PerformanceChart({ submissions, tests, language }: any) {
   const chartData = React.useMemo(() => {
@@ -128,7 +130,7 @@ function PerformanceChart({ submissions, tests, language }: any) {
   );
 }
 
-export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, hasDailyPractice, todayDailySubject, tomorrowDailySubject, onChallengeComplete, onOpenTutor, onOpenDailyPractice, onShareDailyPractice, isRegistered = false, onRegistrationComplete, onOpenCommunity }: DashboardProps) {
+export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, hasDailyPractice, todayDailySubject, tomorrowDailySubject, onChallengeComplete, onOpenTutor, onOpenDailyPractice, onShareDailyPractice, isRegistered = false, onRegistrationComplete, onOpenCommunity, following = [], onToggleFollow }: DashboardProps) {
     // Map class to YouTube video URL (embed links)
     const classVideoMap: Record<string, string> = {
       '1': 'https://www.youtube.com/embed/DxouHyB-IA8',
@@ -185,6 +187,65 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   const [homeworkQCount, setHomeworkQCount] = useState(10);
   const [isGeneratingHomework, setIsGeneratingHomework] = useState(false);
   const [generatedHomework, setGeneratedHomework] = useState('');
+
+  const [topStudyStudents, setTopStudyStudents] = useState<any[]>([]);
+  const [displayedStudent, setDisplayedStudent] = useState<any | null>(null);
+  const [activeRank, setActiveRank] = useState<number | null>(null);
+  const [isSundayClosed, setIsSundayClosed] = useState(false);
+
+  useEffect(() => {
+    const fetchTopStudyStudents = async () => {
+      try {
+        let docs: any[] = [];
+        if (user?.class) {
+          const q = query(
+            collection(db, 'users'),
+            where('class', '==', user.class)
+          );
+          const snapshot = await getDocs(q);
+          docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        }
+        
+        // If we didn't find any or class is not specified, fall back to global
+        if (docs.length === 0) {
+          const q = query(collection(db, 'users'));
+          const snapshot = await getDocs(q);
+          docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        }
+
+        const sorted = docs
+          .filter((u: any) => u.role !== 'admin' && (u.totalStudyMinutes || 0) > 0)
+          .sort((a: any, b: any) => (b.totalStudyMinutes || 0) - (a.totalStudyMinutes || 0))
+          .slice(0, 6);
+
+        setTopStudyStudents(sorted);
+      } catch (err) {
+        console.error("Error fetching top study students:", err);
+      }
+    };
+    fetchTopStudyStudents();
+  }, [user?.class]);
+
+  useEffect(() => {
+    const dayOfWeek = new Date().getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+    if (dayOfWeek === 0) {
+      setIsSundayClosed(true);
+      setDisplayedStudent(null);
+      setActiveRank(null);
+    } else {
+      setIsSundayClosed(false);
+      // Monday (1) = index 5 (Rank 6), Tuesday (2) = index 4 (Rank 5), ..., Saturday (6) = index 0 (Rank 1)
+      const targetRank = 7 - dayOfWeek;
+      const targetIndex = 6 - dayOfWeek;
+      
+      setActiveRank(targetRank);
+      if (topStudyStudents.length >= targetRank) {
+        setDisplayedStudent(topStudyStudents[targetIndex]);
+      } else {
+        setDisplayedStudent(null);
+      }
+    }
+  }, [topStudyStudents]);
 
   useEffect(() => {
     // If in the special promotional period, lock the video ID and skip rotation
@@ -685,24 +746,180 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           </div>
 
           {/* Performance & Motivation Grid */}
-          <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:gap-8">
-            {/* Performance Analytics */}
-            <PerformanceChart 
-              submissions={user?.submissions || []} 
-              tests={chapters}
-              language={language} 
-            />
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
+            <div className="md:col-span-2">
+              {/* Performance Analytics */}
+              <PerformanceChart 
+                submissions={user?.submissions || []} 
+                tests={chapters}
+                language={language} 
+              />
+            </div>
+
+            {/* Study Champion Card */}
+            <div className="md:col-span-1">
+              <div className={`glass-card rounded-[2rem] p-5 border relative overflow-hidden flex flex-col justify-between h-full hover:-translate-y-1 transition-all duration-500 ${
+                isSundayClosed
+                  ? 'border-white/5 bg-slate-950/20 opacity-80'
+                  : displayedStudent?.id === user?.id 
+                    ? 'border-yellow-500/30 bg-gradient-to-br from-yellow-500/10 via-slate-900/40 to-amber-950/20 shadow-[0_10px_30px_rgba(234,179,8,0.1)] hover:border-yellow-500/50' 
+                    : displayedStudent
+                      ? 'border-white/10 bg-slate-900/40 hover:border-emerald-500/30'
+                      : 'border-dashed border-white/10 bg-slate-950/10'
+              }`}>
+                {displayedStudent?.id === user?.id && !isSundayClosed && (
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-500/5 rounded-full blur-[40px] -mr-12 -mt-12 pointer-events-none animate-pulse"></div>
+                )}
+                
+                <div className="flex flex-col h-full justify-between relative z-10">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h4 className="text-[8px] sm:text-[10px] font-black text-yellow-500 uppercase tracking-widest">
+                        {isSundayClosed
+                          ? (language === 'en' ? 'Calculations In Progress' : 'ହିସାବ ଚାଲିଛି')
+                          : displayedStudent
+                            ? (language === 'en' ? `Study Champion (Rank ${activeRank})` : `ପଠନ ଚାମ୍ପିଅନ୍ (Rank ${activeRank})`)
+                            : (language === 'en' ? `Study Champion (Rank ${activeRank})` : `ପଠନ ଚାମ୍ପିଅନ୍ (Rank ${activeRank})`)}
+                      </h4>
+                      <p className="text-[7px] sm:text-[9px] text-slate-500 font-bold uppercase tracking-wider mt-0.5">
+                        {isSundayClosed 
+                          ? (language === 'en' ? 'Sunday Reset' : 'ରବିବାର ରିସେଟ୍')
+                          : (language === 'en' ? 'Top Study Time This Week' : 'ସପ୍ତାହର ସର୍ବାଧିକ ପଠନ')}
+                      </p>
+                    </div>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center border shadow-lg shrink-0 ${
+                      isSundayClosed
+                        ? 'bg-slate-800 border-slate-700 text-slate-500'
+                        : displayedStudent?.id === user?.id
+                          ? 'bg-yellow-500/20 border-yellow-500/30 text-yellow-400'
+                          : 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400'
+                    }`}>
+                      {isSundayClosed ? (
+                        <Lucide.Timer size={14} />
+                      ) : (
+                        <Lucide.Trophy size={14} className={displayedStudent?.id === user?.id ? 'animate-bounce' : ''} />
+                      )}
+                    </div>
+                  </div>
+
+                  {isSundayClosed ? (
+                    <div className="my-6 text-center space-y-2">
+                      <Lucide.Hourglass className="mx-auto text-yellow-500/60 animate-spin" size={24} />
+                      <p className="text-[9px] font-bold text-slate-400 leading-relaxed uppercase tracking-wider">
+                        {language === 'en' 
+                          ? 'Weekly Leaderboard is resetting. Check back tomorrow for the new lineup!' 
+                          : 'ରବିବାର ପାଇଁ ମାନ୍ୟତା ତାଲିକା ରିସେଟ୍ ହେଉଛି। ଆସନ୍ତାକାଲି ନୂଆ ତାଲିକା ଦେଖନ୍ତୁ!'}
+                      </p>
+                    </div>
+                  ) : displayedStudent ? (
+                    <div className="flex items-center gap-3 my-3">
+                      <div className="relative shrink-0">
+                        <div className={`w-12 h-12 rounded-full border flex items-center justify-center overflow-hidden bg-white/5 shadow-md ${
+                          displayedStudent.id === user.id ? 'border-yellow-500/50 ring-4 ring-yellow-500/10' : 'border-white/10'
+                        }`}>
+                          {displayedStudent.avatar ? (
+                            <img 
+                              src={displayedStudent.avatar} 
+                              alt={displayedStudent.name} 
+                              className="w-full h-full object-cover" 
+                              referrerPolicy="no-referrer" 
+                            />
+                          ) : (
+                            <span className="text-sm font-black text-white">
+                              {(displayedStudent.name || 'S')[0]}
+                            </span>
+                          )}
+                        </div>
+                        {displayedStudent.id === user.id && (
+                          <div className="absolute -top-1.5 -right-1 bg-yellow-500 text-slate-950 p-0.5 rounded-full shadow-[0_0_8px_#eab308]">
+                            <Lucide.Crown size={8} />
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex-1 text-left min-w-0">
+                        <h3 className="text-xs font-bold text-white truncate flex items-center gap-1.5">
+                          {displayedStudent.id === user.id 
+                            ? (language === 'en' ? 'You! (Study Champion)' : 'ଆପଣ! (ଚାମ୍ପିଅନ୍)')
+                            : displayedStudent.name
+                          }
+                        </h3>
+                        {displayedStudent.school && (
+                          <p className="text-[9px] text-slate-400 truncate font-semibold flex items-center gap-1 mt-0.5">
+                            <Lucide.School size={10} className="text-slate-500 shrink-0" />
+                            {displayedStudent.school}
+                          </p>
+                        )}
+                        {displayedStudent.district && (
+                          <p className="text-[9px] text-slate-400 truncate font-semibold flex items-center gap-1 mt-0.5">
+                            <Lucide.MapPin size={10} className="text-slate-500 shrink-0" />
+                            {displayedStudent.district}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="my-6 text-center space-y-2 py-2 border border-dashed border-white/5 rounded-2xl bg-white/5">
+                      <Lucide.UserPlus className="mx-auto text-slate-500 animate-pulse" size={20} />
+                      <p className="text-[8px] sm:text-[9.5px] font-black text-slate-400 leading-normal uppercase tracking-wider">
+                        {language === 'en' ? 'Spot Available!' : 'ସ୍ଥାନ ଖାଲି ଅଛି!'}
+                      </p>
+                      <p className="text-[7px] text-slate-500 max-w-[80%] mx-auto leading-tight">
+                        {language === 'en' 
+                          ? 'Study more to claim this rank this week!' 
+                          : 'ଏହି ସ୍ଥାନ ହାସଲ କରିବା ପାଇଁ ଅଧିକ ପାଠ ପଢନ୍ତୁ!'}
+                      </p>
+                    </div>
+                  )}
+
+                  {!isSundayClosed && (
+                    <>
+                      <div className="mt-2 pt-3 border-t border-white/5 flex items-center justify-between">
+                        <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">
+                          {language === 'en' ? 'Study Time' : 'ପଠନ ସମୟ'}
+                        </span>
+                        <span className="text-xs font-black text-emerald-400 font-mono">
+                          {(() => {
+                            const mins = displayedStudent?.totalStudyMinutes || 0;
+                            const hrs = Math.floor(mins / 60);
+                            const m = mins % 60;
+                            return `${hrs}h ${m}m`;
+                          })()}
+                        </span>
+                      </div>
+
+                      <p className="text-[8px] sm:text-[9.5px] font-bold text-slate-400 leading-relaxed mt-3">
+                        {displayedStudent
+                          ? displayedStudent.id === user?.id
+                            ? (language === 'en' 
+                                ? "Amazing! You are leading the charts. Keep it up! 🌟" 
+                                : "ଚମତ୍କାର! ଆପଣ ସବୁଠୁ ଆଗରେ ଅଛନ୍ତି | ଏମିତି ପଢା ଜାରି ରଖନ୍ତୁ! 🌟")
+                            : (language === 'en'
+                                ? `Rank ${activeRank} Champion. Keep studying to beat them! 💪`
+                                : `Rank ${activeRank} ଚାମ୍ପିଅନ୍। ସେମାନଙ୍କୁ ପଛରେ ପକାଇବା ପାଇଁ ପଢା ଜାରି ରଖନ୍ତୁ! 💪`)
+                          : (language === 'en'
+                              ? "Become the next Study Champion! Keep studying hard! 💪"
+                              : "ପରବର୍ତ୍ତୀ ଚାମ୍ପିଅନ୍ ହେବା ପାଇଁ ପାଠପଢ଼ା ଜାରି ରଖନ୍ତୁ! 💪")
+                        }
+                      </p>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
 
             {/* Motivation Insight */}
-            <div className="glass-card rounded-[2rem] p-4 sm:p-6 border-blue-500/20 bg-slate-900/40 relative overflow-hidden flex flex-col justify-center h-full hover:border-blue-500/40 hover:-translate-y-1 transition-all duration-500">
-              <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl pointer-events-none"></div>
-              <div className="flex flex-col items-center text-center gap-2 sm:gap-3 relative z-10">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shrink-0 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
-                  <Lucide.Sparkles size={16} className="sm:w-5 sm:h-5" />
-                </div>
-                <div className="space-y-1 sm:space-y-2">
-                  <h4 className="text-[7px] sm:text-[9px] font-black text-blue-400 uppercase tracking-wider">{language === 'en' ? "Today's Inspiration" : 'ଆଜିର ପ୍ରେରଣା'}</h4>
-                  <p className="text-slate-300 text-[9px] sm:text-xs font-bold leading-relaxed italic tracking-tight line-clamp-4">"{todayQuote}"</p>
+            <div className="md:col-span-1">
+              <div className="glass-card rounded-[2rem] p-4 sm:p-6 border-blue-500/20 bg-slate-900/40 relative overflow-hidden flex flex-col justify-center h-full hover:border-blue-500/40 hover:-translate-y-1 transition-all duration-500">
+                <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div className="flex flex-col items-center text-center gap-2 sm:gap-3 relative z-10">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shrink-0 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+                    <Lucide.Sparkles size={16} className="sm:w-5 sm:h-5" />
+                  </div>
+                  <div className="space-y-1 sm:space-y-2">
+                    <h4 className="text-[7px] sm:text-[9px] font-black text-blue-400 uppercase tracking-wider">{language === 'en' ? "Today's Inspiration" : 'ଆଜିର ପ୍ରେରଣା'}</h4>
+                    <p className="text-slate-300 text-[9px] sm:text-xs font-bold leading-relaxed italic tracking-tight line-clamp-4">"{todayQuote}"</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -797,8 +1014,9 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             <LeaderboardView
               leaderboard={filteredLeaderboard}
               language={language}
-              following={user?.following || []}
+              following={following}
               user={user}
+              onToggleFollow={onToggleFollow}
             />
             <div className="px-2">
               <DistrictLeaderboardFilter

@@ -54,8 +54,8 @@ export function CinematicPlayer({ chapterName, videos, onClose }: CinematicPlaye
     const handleFullscreenChange = async () => {
       if (document.fullscreenElement || (document as any).webkitFullscreenElement) {
         try {
-          if (screen.orientation && screen.orientation.lock) {
-            await screen.orientation.lock('landscape');
+          if (screen.orientation && (screen.orientation as any).lock) {
+            await (screen.orientation as any).lock('landscape');
           }
         } catch (err) {
           console.warn("Could not lock orientation", err);

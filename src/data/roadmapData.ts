@@ -1427,6 +1427,12 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
+        "id": "ICHNkSfQx0UjqdDakxKN",
+        "title": "Chapter 2 - WW1 Causes Effects",
+        "subject": "social_science",
+        "thumbnail": null
+      },
+      {
         "id": "y0XGJudDuhw7ls0m5mi8",
         "title": "Chapter 1 - Barna",
         "subject": "sanskrit_grammar",
@@ -1504,14 +1510,14 @@ export const ROADMAP_DATA_9 = [
     "month": "July 2026",
     "chapters": [
       {
-        "id": "ICHNkSfQx0UjqdDakxKN",
-        "title": "Chapter 2 - WW1 Causes Effects",
+        "id": "2mEA3WeAUGKjhMFRPUX7",
+        "title": "Chapter 3 - Russian Revolution",
         "subject": "social_science",
         "thumbnail": null
       },
       {
-        "id": "2mEA3WeAUGKjhMFRPUX7",
-        "title": "Chapter 3 - Russian Revolution",
+        "id": "lHklp4vwTIHqXU4Jc9jz",
+        "title": "Chapter 4 - League of Nations",
         "subject": "social_science",
         "thumbnail": null
       },
@@ -1598,12 +1604,6 @@ export const ROADMAP_DATA_9 = [
   {
     "month": "August 2026",
     "chapters": [
-      {
-        "id": "lHklp4vwTIHqXU4Jc9jz",
-        "title": "Chapter 4 - League of Nations",
-        "subject": "social_science",
-        "thumbnail": null
-      },
       {
         "id": "IQkasymIxvsf9sr3g1iW",
         "title": "Chapter 5 - Fascism Nazism",
@@ -1786,6 +1786,12 @@ export const ROADMAP_DATA_9 = [
       {
         "id": "ARHuWpOYXeuejwvZAkxL",
         "title": "Chapter 10 - Non Aligned Movement",
+        "subject": "social_science",
+        "thumbnail": null
+      },
+      {
+        "id": "GrpdciU3Su1nFaIovzgS",
+        "title": "Chapter 11 - Dissolution of Soviet Union",
         "subject": "social_science",
         "thumbnail": null
       },
@@ -1999,12 +2005,6 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
-        "id": "lokWbUXNv1TiWTClrKb9",
-        "title": "Chapter 17 - Fundamental Duties",
-        "subject": "social_science",
-        "thumbnail": null
-      },
-      {
         "id": "mB63nNs5bVFL0m0BK0cE",
         "title": "Chapter 6 - Sattwabidhi",
         "subject": "sanskrit_grammar",
@@ -2189,6 +2189,12 @@ export const ROADMAP_DATA_9 = [
   {
     "month": "November 2026",
     "chapters": [
+      {
+        "id": "lokWbUXNv1TiWTClrKb9",
+        "title": "Chapter 17 - Fundamental Duties",
+        "subject": "social_science",
+        "thumbnail": null
+      },
       {
         "id": "yE8x3NYSmbIOJHWthyZt",
         "title": "Chapter 18 - Directive Principles",

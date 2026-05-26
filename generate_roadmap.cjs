@@ -32,7 +32,7 @@ function isAnswerKey(title) {
     t.includes('answer') ||
     t.includes('key') ||
     t.includes('uttaramala') ||
-    t.includes('solution') ||
+    (t.includes('solution') && !t.includes('dissolution') && !t.includes('resolution')) ||
     t.includes('uttar')
   );
 }

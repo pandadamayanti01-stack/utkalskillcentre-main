@@ -65,7 +65,7 @@ function safeJsonParse(text: string) {
 export const getAI = () => {
   console.log("✅ Routing AI through Secure Backend Proxy");
   return {
-    getGenerativeModel: (opts: any) => {
+    getGenerativeModel: (opts: any, requestOptions?: any) => {
       return {
         generateContent: async (params: any) => {
            const isPro = opts.model && opts.model.includes('pro');

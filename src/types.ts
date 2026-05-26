@@ -24,9 +24,10 @@ export interface Student {
   lastActiveAt?: any;
   shareCount?: number;
   statusShared?: boolean;
-  parent_pin?: string;
+parent_pin?: string;
   completed_chapters?: string[];
   parentShowLeaderboard?: boolean;
+  totalStudyMinutes?: number;
   stats?: {
     streak: number;
     level: number;
