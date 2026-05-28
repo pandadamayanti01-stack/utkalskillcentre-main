@@ -79,6 +79,7 @@ const SmartClassesView = lazy(() => import('./components/SmartClassesView').then
 const DigitalLibraryLaunchPopup = lazy(() => import('./components/DigitalLibraryLaunchPopup'));
 const TeacherDashboard = lazy(() => import('./components/TeacherDashboard').then((module) => ({ default: module.TeacherDashboard })));
 const CommunityChatView = lazy(() => import('./components/CommunityChatView').then((module) => ({ default: module.CommunityChatView })));
+const LaunchCelebration = lazy(() => import('./components/LaunchCelebration'));
 
 function ViewLoader({ fullHeight = false }: { fullHeight?: boolean }) {
   return (
@@ -990,6 +991,7 @@ export default function App() {
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [showConfigError, setShowConfigError] = useState<{title: string, message: string} | null>(null);
  // const [showLaunchPoster, setShowLaunchPoster] = useState(() => !localStorage.getItem('utkalDivasSeen'));
+  const [showLaunchEvent, setShowLaunchEvent] = useState(() => !localStorage.getItem('utkalPlayStoreLaunchSeen'));
   const [showTestSeriesPoster, setShowTestSeriesPoster] = useState(false);
   const [showLibraryPopup, setShowLibraryPopup] = useState(false);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
@@ -2861,6 +2863,17 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
               }} />
             )}
              <GunduluHuman skipInitialGreeting={showLaunchPoster} /> */}
+
+            {showLaunchEvent && (
+              <Suspense fallback={<ViewLoader />}>
+                <LaunchCelebration
+                  onClose={() => setShowLaunchEvent(false)}
+                  user={user}
+                  language={language}
+                  theme={theme}
+                />
+              </Suspense>
+            )}
           </div>
         </div>
 
