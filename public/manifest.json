@@ -5,6 +5,10 @@
   "description": "Learn with official BSE Odisha textbooks, mapped MCQs, and your AI tutor Gundulu.",
   "start_url": "/#dashboard",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
   "background_color": "#0f172a",
   "theme_color": "#10b981",
   "orientation": "portrait",

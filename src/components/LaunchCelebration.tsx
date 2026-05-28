@@ -57,12 +57,18 @@ export default function LaunchCelebration({
   const [balloons, setBalloons] = useState<Balloon[]>([]);
   const [emittedSymbols, setEmittedSymbols] = useState<EmittedSymbol[]>([]);
   const [isClaiming, setIsClaiming] = useState(false);
-  const [claimed, setClaimed] = useState(false);
+  const [claimed, setClaimed] = useState(() => !!user?.claimedLaunchReward);
   const [showClaimSuccess, setShowClaimSuccess] = useState(false);
   
   const containerRef = useRef<HTMLDivElement>(null);
   const celebrationAudioRef = useRef<HTMLAudioElement | null>(null);
   const clapAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    if (user?.claimedLaunchReward) {
+      setClaimed(true);
+    }
+  }, [user]);
   
   // Synthesize a cute, high-quality pop sound using Web Audio API
   const playPopSound = () => {
@@ -256,8 +262,12 @@ export default function LaunchCelebration({
             key="box-phase"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.5, opacity: 0, rotate: [0, -10, 10, -10, 0] }}
-            transition={{ type: 'spring', damping: 15 }}
+            exit={{ scale: 0.5, opacity: 0, rotate: [0, -15, 15, -15, 0] }}
+            transition={{
+              scale: { type: 'spring', damping: 15 },
+              opacity: { type: 'tween', duration: 0.3 },
+              rotate: { type: 'tween', duration: 0.5 }
+            }}
             className="text-center max-w-sm flex flex-col items-center"
           >
             <div className="relative mb-6">
@@ -290,20 +300,24 @@ export default function LaunchCelebration({
               </motion.div>
             </div>
 
-            <h2 className="text-2xl font-black text-amber-400 drop-shadow-md leading-tight mb-2">
-              {language === 'or' ? 'ଗୁଣ୍ଡୁଲୁର ସ୍ପେଶାଲ୍ ଉପହାର! 🐿️' : "Gundulu's Special Gift! 🐿️"}
+            <h2 className="text-2xl font-black text-amber-400 drop-shadow-md leading-tight mb-1">
+              ଗୁଣ୍ଡୁଲୁର ସ୍ପେଶାଲ୍ ଉପହାର! 🐿️
             </h2>
-            <p className="text-slate-300 text-sm font-bold max-w-xs leading-relaxed mb-6">
-              {language === 'or' 
-                ? 'ଗୁଗଲ୍ ପ୍ଲେ ଷ୍ଟୋର୍‌ରେ ଆପ୍ ଲାଇଭ୍ ହେବା ଖୁସିରେ ଆପଣଙ୍କ ପାଇଁ ଏକ ସିକ୍ରେଟ୍ ଗିଫ୍ଟ ଅଛି। ଖୋଲିବା ପାଇଁ ବାକ୍ସ ଉପରେ କ୍ଲିକ୍ କରନ୍ତୁ!'
-                : 'To celebrate our launch on Google Play Store, Gundulu brought a secret gift. Tap the box to unwrap it!'}
+            <span className="text-[10px] uppercase tracking-widest font-black text-amber-500/70 block mb-4">
+              Gundulu's Special Gift!
+            </span>
+            <p className="text-slate-300 text-xs font-bold max-w-xs leading-relaxed mb-2 px-2">
+              ଗୁଗଲ୍ ପ୍ଲେ ଷ୍ଟୋର୍‌ରେ ଆପ୍ ଲାଇଭ୍ ହେବା ଖୁସିରେ ଗୁଣ୍ଡୁଲୁ ଆପଣଙ୍କ ପାଇଁ ଏକ ସିକ୍ରେଟ୍ ଗିଫ୍ଟ ଆଣିଛି।
+            </p>
+            <p className="text-slate-400 text-[10px] font-bold max-w-xs leading-relaxed mb-6 italic">
+              To celebrate our launch on Google Play Store, Gundulu has brought a secret gift!
             </p>
             
             <button
               onClick={startBalloons}
-              className="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black rounded-2xl text-xs uppercase tracking-widest shadow-xl shadow-amber-500/10 cursor-pointer animate-[pulse_2.5s_infinite]"
+              className="px-6 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black rounded-2xl text-xs uppercase tracking-widest shadow-xl shadow-amber-500/10 cursor-pointer animate-[pulse_2.5s_infinite]"
             >
-              {language === 'or' ? 'ଉପହାର ଖୋଲନ୍ତୁ 🎁' : 'Open Gift 🎁'}
+              ଉପହାର ଖୋଲନ୍ତୁ 🎁 <span className="text-[10px] opacity-75 font-black ml-1">(Open Gift)</span>
             </button>
           </motion.div>
         )}
@@ -318,15 +332,18 @@ export default function LaunchCelebration({
             className="absolute inset-0 w-full h-full"
           >
             {/* Top Stats Banner */}
-            <div className="absolute top-6 inset-x-0 mx-auto text-center z-50">
-              <span className="px-5 py-2.5 rounded-full bg-slate-900/80 border border-slate-700/50 backdrop-blur-md text-xs font-black text-white inline-flex items-center gap-2 shadow-lg">
-                <Lucide.MousePointerClick size={14} className="text-amber-400 animate-bounce" />
-                {language === 'or' 
-                  ? 'ସମସ୍ତ ବେଲୁନ୍ ପପ୍ କରି ଲଞ୍ଚ ଗିଫ୍ଟ ଅନ୍‌ଲକ୍ କରନ୍ତୁ! 🎈' 
-                  : 'Pop all balloons to unlock the launch gift! 🎈'}
-                <span className="ml-2 font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">
-                  {balloons.filter(b => !b.popped).length} Remaining
-                </span>
+            <div className="absolute top-6 inset-x-0 mx-auto text-center z-50 px-4">
+              <span className="px-5 py-3 rounded-full bg-slate-900/90 border border-slate-700/50 backdrop-blur-md text-xs font-black text-white flex flex-col sm:flex-row items-center justify-center gap-2 shadow-lg max-w-lg mx-auto">
+                <div className="flex items-center gap-1.5">
+                  <Lucide.MousePointerClick size={14} className="text-amber-400 animate-bounce" />
+                  <span>ସମସ୍ତ ବେଲୁନ୍ ପପ୍ କରି ଲଞ୍ଚ ଗିଫ୍ଟ ଅନ୍‌ଲକ୍ କରନ୍ତୁ! 🎈</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[9px] text-slate-400 font-bold">(Pop all balloons to unlock)</span>
+                  <span className="font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">
+                    {balloons.filter(b => !b.popped).length} ବାକି ଅଛି (Remaining)
+                  </span>
+                </div>
               </span>
             </div>
 
@@ -435,13 +452,16 @@ export default function LaunchCelebration({
                 </div>
                 
                 <span className="text-[9px] uppercase tracking-[0.3em] font-black text-amber-500/90 mb-1">
-                  OFFICIAL PLAY STORE LAUNCH
+                  ଗୁଗଲ୍ ପ୍ଲେ ଷ୍ଟୋର୍ ଅଫିସିଆଲ୍ ଶୁଭାରମ୍ଭ
                 </span>
                 
                 {/* Holographic Ticket Title */}
-                <h1 className="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-200 uppercase tracking-tight mb-4 drop-shadow">
-                  {language === 'or' ? 'ପ୍ରତିଷ୍ଠାତା ସଦସ୍ୟ ସ୍ୱର୍ଣ୍ଣ ଟିକେଟ୍' : 'FOUNDING MEMBER GOLDEN TICKET'}
+                <h1 className="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-200 uppercase tracking-tight leading-tight mb-1 drop-shadow">
+                  ପ୍ରତିଷ୍ଠାତା ସଦସ୍ୟ ସ୍ୱର୍ଣ୍ଣ ଟିକେଟ୍
                 </h1>
+                <span className="text-[9px] font-black text-amber-400/80 uppercase tracking-wider block mb-4">
+                  FOUNDING MEMBER GOLDEN TICKET
+                </span>
                 
                 {/* Dashed separator */}
                 <div className="w-full flex items-center gap-1.5 mb-5 px-4">
@@ -453,16 +473,16 @@ export default function LaunchCelebration({
                 {/* Student Details Plate */}
                 <div className="w-full py-3.5 px-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 mb-5 text-left">
                   <div className="flex justify-between items-center mb-1">
-                    <span className="text-[9px] uppercase text-slate-500 font-bold">{language === 'or' ? 'ଛାତ୍ରଙ୍କ ନାମ' : 'STUDENT NAME'}</span>
-                    <span className="text-[9px] font-bold text-amber-400 font-mono">VIP PIONEER</span>
+                    <span className="text-[9px] uppercase text-slate-500 font-bold">ଛାତ୍ରଙ୍କ ନାମ (STUDENT NAME)</span>
+                    <span className="text-[9px] font-bold text-amber-400 font-mono">ଭିଆଇପି ସଦସ୍ୟ (VIP)</span>
                   </div>
                   <h3 className="text-sm font-black text-white mb-2 truncate">
-                    {user?.name || (language === 'or' ? 'ଅତିଥି ଛାତ୍ର' : 'Pioneer Guest Student')}
+                    {user?.name || 'ଅତିଥି ଛାତ୍ର (Guest Student)'}
                   </h3>
 
                   <div className="flex justify-between items-center text-[10px] text-slate-400 font-bold">
-                    <span>{language === 'or' ? 'ଶ୍ରେଣୀ' : 'CLASS'}: {user?.class || 'N/A'}</span>
-                    <span>ID: {user?.id?.substring(0, 8).toUpperCase() || 'PIONEER'}</span>
+                    <span>ଶ୍ରେଣୀ (CLASS): {user?.class || 'N/A'}</span>
+                    <span>ଆଇଡି (ID): {user?.id?.substring(0, 8).toUpperCase() || 'PIONEER'}</span>
                   </div>
                 </div>
 
@@ -476,7 +496,7 @@ export default function LaunchCelebration({
                         className="py-3 px-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-black text-xs flex items-center justify-center gap-2"
                       >
                         <Lucide.CheckCircle size={16} />
-                        <span>{language === 'or' ? '୫୦୦ XP ଦାବି ହୋଇସାରିଛି! 🏆' : '500 XP Claimed Successfully! 🏆'}</span>
+                        <span>୫୦୦ XP ଦାବି ହୋଇସାରିଛି! 🏆 (500 XP Claimed)</span>
                       </motion.div>
                     ) : (
                       <button
@@ -492,16 +512,15 @@ export default function LaunchCelebration({
                         ) : (
                           <>
                             <Lucide.Gift size={16} className="animate-bounce" />
-                            <span>{language === 'or' ? '୫୦୦ XP ଶୁଭାରମ୍ଭ ଉପହାର ଦାବି କରନ୍ତୁ' : 'Claim +500 XP Launch Bonus'}</span>
+                            <span>୫୦୦ XP ଶୁଭାରମ୍ଭ ଉପହାର ଦାବି କରନ୍ତୁ 🎁</span>
                           </>
                         )}
                       </button>
                     )
                   ) : (
-                    <div className="py-3 px-4 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 font-bold text-xs">
-                      {language === 'or' 
-                        ? '୫୦୦ XP ଶୁଭାରମ୍ଭ ବୋନସ୍ ପାଇଁ ଲଗ୍‌ଇନ୍/ରଜିଷ୍ଟର କରନ୍ତୁ 🔑' 
-                        : 'Log in / Register to claim your +500 XP bonus! 🔑'}
+                    <div className="py-3 px-4 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 font-bold text-[10px] text-center leading-relaxed">
+                      <div>୫୦୦ XP ଶୁଭାରମ୍ଭ ବୋନସ୍ ପାଇଁ ଲଗ୍‌ଇନ୍ କରନ୍ତୁ 🔑</div>
+                      <div className="text-[8px] opacity-60 mt-0.5">(Log in to claim your +500 XP bonus)</div>
                     </div>
                   )}
                 </div>
@@ -514,13 +533,16 @@ export default function LaunchCelebration({
                     rel="noopener noreferrer"
                     className="block group/btn"
                   >
-                    <div className="w-full py-3.5 px-4 bg-gradient-to-r from-slate-900 to-slate-950 hover:from-slate-800 hover:to-slate-900 border border-slate-800 rounded-xl flex items-center justify-between gap-3 shadow-md transition-all active:scale-[0.98]">
+                    <div className="w-full py-3 px-4 bg-gradient-to-r from-slate-900 to-slate-950 hover:from-slate-800 hover:to-slate-900 border border-slate-800 rounded-xl flex items-center justify-between gap-3 shadow-md transition-all active:scale-[0.98]">
                       <div className="flex flex-col text-left">
                         <span className="text-[9px] uppercase font-black text-amber-500 tracking-wider">
-                          {language === 'or' ? 'ଗୁଗଲ୍ ପ୍ଲେ ଷ୍ଟୋର୍' : 'DOWNLOAD ANDROID APP'}
+                          ଗୁଗଲ୍ ପ୍ଲେ ଷ୍ଟୋର୍ (GOOGLE PLAY)
                         </span>
-                        <span className="text-[11px] font-black text-white">
-                          {language === 'or' ? 'ଆଣ୍ଡ୍ରଏଡ୍ ଆପ୍ ଡାଉନଲୋଡ୍ କରନ୍ତୁ' : 'Official Play Store Release'}
+                        <span className="text-xs font-black text-white mt-0.5">
+                          ଆଣ୍ଡ୍ରଏଡ୍ ଆପ୍ ଡାଉନଲୋଡ୍ କରନ୍ତୁ
+                        </span>
+                        <span className="text-[8px] font-bold text-slate-400 italic">
+                          Official Android App Download
                         </span>
                       </div>
                       <img 
@@ -538,13 +560,13 @@ export default function LaunchCelebration({
                       className="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[10px] rounded-xl uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <Lucide.Share2 size={12} />
-                      <span>{language === 'or' ? 'ହ୍ୱାଟସ୍‌ଆପ୍' : 'Share'}</span>
+                      <span>ସେୟାର୍ (Share 📲)</span>
                     </button>
                     <button
                       onClick={handleComplete}
                       className="py-2.5 px-3 bg-slate-900 hover:bg-slate-800 text-amber-400 hover:text-amber-300 border border-slate-800 font-black text-[10px] rounded-xl uppercase tracking-wider transition-all cursor-pointer"
                     >
-                      {language === 'or' ? 'ୱେବସାଇଟ୍ ପ୍ରବେଶ' : 'Enter Web App'}
+                      ୱେବ୍ ପ୍ରବେଶ (Enter Web)
                     </button>
                   </div>
                 </div>

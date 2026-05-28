@@ -358,7 +358,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
       });
 
       if (!response.ok) {
-        throw new Error(`TTS HTTP ${response.status}`);
+        throw { status: response.status, message: `TTS HTTP ${response.status}` };
       }
 
       const audioBlob = await response.blob();
@@ -380,14 +380,17 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
       
       animateSubtitle(text, false);
       await audio.play();
-    } catch (err) {
-      if (retries > 0) {
+    } catch (err: any) {
+      const isQuotaExceeded = err?.status === 429;
+      
+      if (retries > 0 && !isQuotaExceeded) {
         const delay = (3 - retries) * 2000; 
         console.warn(`Gemini TTS error. Retrying in ${delay}ms... (${retries} attempts left)`, err);
         await new Promise(resolve => setTimeout(resolve, delay));
         return speakWithGeminiVoice(text, onDone, retries - 1);
       }
-      console.warn('Gemini voice unavailable, using browser TTS fallback.', err);
+      
+      console.warn(isQuotaExceeded ? 'Gemini TTS quota exceeded, falling back to browser TTS immediately.' : 'Gemini voice unavailable, using browser TTS fallback.', err);
       setIsSpeaking(false);
       speakWithBrowserTtsFallback(text, onDone);
     }

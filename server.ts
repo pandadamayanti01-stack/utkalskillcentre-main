@@ -551,9 +551,7 @@ async function startServer() {
     header.writeUInt32LE(subChunk2Size, 40);
 
     return Buffer.concat([header, pcmBuffer]);
-  }
-
-  // Gemini TTS proxy (keeps GEMINI_API_KEY on server only)
+  }  // Gemini TTS proxy (keeps GEMINI_API_KEY on server only)
   app.post('/api/tts/gemini', async (req, res) => {
     try {
       const { text, language } = req.body || {};
@@ -566,17 +564,25 @@ async function startServer() {
         return res.status(503).json({ error: 'GEMINI_API_KEY is not configured' });
       }
 
-      const models = ['gemini-2.5-flash-native-audio-latest', 'gemini-3.1-flash-tts-preview', 'gemini-2.0-flash', 'gemini-flash-latest'];
-      const odiaVoiceList = (process.env.GEMINI_TTS_VOICE_ODIA_LIST || 'Puck,Kore,Charon')
-        .split(',')
-        .map((v) => v.trim())
-        .filter(Boolean);
-      const voiceCandidates = language === 'or-IN'
-        ? [process.env.GEMINI_TTS_VOICE_ODIA, ...odiaVoiceList].filter(Boolean) as string[]
-        : [(process.env.GEMINI_TTS_VOICE_EN || 'Aoede')];
+      // Determine target models & voice candidates dynamically based on language to avoid quota waste:
+      // - For English: gemini-2.5-flash-preview-tts is preferred (has high free tier quota), with gemini-3.1-flash-tts-preview as fallback.
+      // - For Odia: Only gemini-3.1-flash-tts-preview works. (2.5 flash blocks Odia text returning OTHER finishReason).
+      const isOdia = language === 'or-IN';
+      const models = isOdia 
+        ? ['gemini-3.1-flash-tts-preview'] 
+        : ['gemini-2.5-flash-preview-tts', 'gemini-3.1-flash-tts-preview'];
 
-      const ttsPrompt = language === 'or-IN'
-        ? `ନିମ୍ନଲିଖିତ ଓଡ଼ିଆ ଲେଖାକୁ ଅତ୍ୟନ୍ତ ସ୍ପଷ୍ଟ ଭାବରେ, ଗୋଟି ଗୋଟି କରି ଧୀର ଏବଂ ମଧୁର ସ୍ୱରରେ ଛୋଟ ପିଲାଙ୍କু ବୁଝାଇବା ଶୈଳୀରେ କହନ୍ତୁ। ପ୍ରତ୍ୟେକ ଓଡ଼ିଆ ଶବ୍ଦର ଉଚ୍ଚାରଣ ସ୍ପଷ୍ଟ ଏବଂ ସ୍ୱାଭାବିକ ହେବା ଉଚିତ। କୌଣସି ବିଦେଶୀ ଉଚ୍ଚାରଣ ବ୍ୟବହାର କରନ୍ତୁ ନାହିଁ।\n\n${text}`
+      // Select the best voice. We only try one preferred voice first, and optionally one fallback.
+      // This prevents hitting the 3 RPM limit from redundant voice loops on the free tier.
+      const preferredVoice = isOdia 
+        ? (process.env.GEMINI_TTS_VOICE_ODIA || 'Puck') 
+        : (process.env.GEMINI_TTS_VOICE_EN || 'Aoede');
+
+      const fallbackVoice = isOdia ? 'Kore' : 'Charon';
+      const voiceCandidates = [preferredVoice, fallbackVoice];
+
+      const ttsPrompt = isOdia
+        ? `ନିମ୍ନଲିଖିତ ଓଡ଼ିଆ ଲେଖାକୁ ଅତ୍ୟନ୍ତ ସ୍ପଷ୍ଟ ଭାବରେ, ଗୋଟି ଗୋଟି କରି ଧୀର ଏବଂ ମଧୁର ସ୍ୱରରେ ଛୋଟ ପିଲାଙ୍କୁ ବୁଝାଇବା ଶୈଳୀରେ କହନ୍ତୁ। ପ୍ରତ୍ୟେକ ଓଡ଼ିଆ ଶବ୍ଦର ଉଚ୍ଚାରଣ ସ୍ପଷ୍ଟ ଏବଂ ସ୍ୱାଭାବିକ ହେବା ଉଚିତ। କୌଣସି ବିଦେଶୀ ଉଚ୍ଚାରଣ ବ୍ୟବହାର କରନ୍ତୁ ନାହିଁ।\n\n${text}`
         : `Speak this text in a warm, extremely clear, slow-paced, and friendly tutoring style for children in India. Articulate each word slowly and clearly:\n\n${text}`;
 
       let lastError = 'Unknown TTS failure';
@@ -584,6 +590,7 @@ async function startServer() {
       for (const model of models) {
         for (const voiceName of voiceCandidates) {
           try {
+            console.log(`TTS proxy: Querying ${model} with voice ${voiceName}...`);
             const ttsResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`, {
               method: 'POST',
               headers: {
@@ -603,13 +610,33 @@ async function startServer() {
             });
 
             if (!ttsResponse.ok) {
-              lastError = await ttsResponse.text();
-              console.warn(`Gemini TTS failed for model ${model}, voice ${voiceName}: ${lastError}`);
+              const errText = await ttsResponse.text();
+              lastError = errText;
+              console.warn(`Gemini TTS failed for model ${model}, voice ${voiceName}: ${errText}`);
+              
+              // If we hit quota limits, don't keep looping to avoid lockouts
+              if (ttsResponse.status === 429) {
+                if (errText.includes('quota') || errText.includes('limit')) {
+                  return res.status(429).json({
+                    error: 'Gemini TTS free tier quota exceeded. Please enable billing on your Google AI Studio account to lift this limit.',
+                    details: errText
+                  });
+                }
+              }
               continue;
             }
 
             const data = await ttsResponse.json();
-            const inlineData = data?.candidates?.[0]?.content?.parts?.find((p: any) => p?.inlineData)?.inlineData;
+            const candidate = data?.candidates?.[0];
+            const finishReason = candidate?.finishReason;
+            
+            if (finishReason === 'OTHER' || !candidate?.content?.parts) {
+              lastError = `Generation blocked or finished unexpectedly. Finish reason: ${finishReason}`;
+              console.warn(`Gemini TTS generation ended unexpectedly for model ${model}, voice ${voiceName}: ${lastError}`);
+              continue;
+            }
+
+            const inlineData = candidate.content.parts.find((p: any) => p?.inlineData)?.inlineData;
             if (!inlineData?.data) {
               lastError = `No audio payload for model ${model}, voice ${voiceName}`;
               continue;
@@ -639,7 +666,6 @@ async function startServer() {
       return res.status(502).json({ error: `Gemini TTS failed for all configured models and voices: ${lastError}` });
     } catch (error: any) {
       console.error('Gemini TTS Error:', error);
-      return res.status(500).json({ error: error?.message || 'TTS generation failed' });
     }
   });
 

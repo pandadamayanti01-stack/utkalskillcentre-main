@@ -991,6 +991,7 @@ export default function App() {
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [showConfigError, setShowConfigError] = useState<{title: string, message: string} | null>(null);
  // const [showLaunchPoster, setShowLaunchPoster] = useState(() => !localStorage.getItem('utkalDivasSeen'));
+  // Feature Flag: Set to true (or localstorage check) to enable the Google Play Store Launch Celebration Event
   const [showLaunchEvent, setShowLaunchEvent] = useState(() => !localStorage.getItem('utkalPlayStoreLaunchSeen'));
   const [showTestSeriesPoster, setShowTestSeriesPoster] = useState(false);
   const [showLibraryPopup, setShowLibraryPopup] = useState(false);
@@ -3136,6 +3137,17 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             setActiveTab('digital_library');
             setShowLibraryPopup(false);
           }}
+        />
+      </Suspense>
+    )}
+
+    {showLaunchEvent && (
+      <Suspense fallback={<ViewLoader />}>
+        <LaunchCelebration
+          onClose={() => setShowLaunchEvent(false)}
+          user={user}
+          language={language}
+          theme={theme}
         />
       </Suspense>
     )}

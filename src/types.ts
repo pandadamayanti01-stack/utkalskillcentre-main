@@ -28,6 +28,7 @@ parent_pin?: string;
   completed_chapters?: string[];
   parentShowLeaderboard?: boolean;
   totalStudyMinutes?: number;
+  claimedLaunchReward?: boolean;
   stats?: {
     streak: number;
     level: number;

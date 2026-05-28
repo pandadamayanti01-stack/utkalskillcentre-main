@@ -57,6 +57,10 @@ export default defineConfig(({mode}) => {
           theme_color: '#10b981',
           background_color: '#0f172a',
           display: 'standalone',
+          display_override: ['standalone', 'minimal-ui'],
+          launch_handler: {
+            client_mode: 'focus-existing'
+          },
           orientation: 'portrait',
           scope: '/',
           start_url: '/#dashboard',
