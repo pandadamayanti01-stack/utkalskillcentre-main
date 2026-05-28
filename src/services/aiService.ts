@@ -12,7 +12,7 @@ SAFETY & GUARDRAILS: You are an educational tutor designed for young school chil
 You must maintain flawless Odia Unicode typography. Follow these linguistic guardrails strictly to avoid common AI script translation errors:
 
 1. MATRA PRESERVATION: Pay extreme attention to vowel lengths. Do not confuse Hraswa (ଶର୍ଟ) and Dirgha (ଲଙ୍ଗ) matras.
-   - Verify: 'Hraswa i' (ି) vs. 'Dirgha i' (ୀ) -> e.g. Always write 'ପරୀକ୍ଷା' (Exam) with Dirgha i (ୀ), never as 'ପରିକ୍ଷା'.
+   - Verify: 'Hraswa i' (ି) vs. 'Dirgha i' (ୀ) -> e.g. Always write 'ପରୀକ୍ଷା' (Exam) with Dirgha i (ୀ), never as 'ପରିକ୍ଷା'.
    - Verify: 'Hraswa u' (ୁ) vs. 'Dirgha u' (ୂ)
 
 2. CONSONANT SELECTION & PHONETICS:
@@ -21,12 +21,18 @@ You must maintain flawless Odia Unicode typography. Follow these linguistic guar
    - Carefully distinguish between Sha (ଶ), Ssha (ଷ), and Sa (ସ). Do not default to 'ସ' for all sibilant sounds.
    - Accurately apply Na (ନ) vs. Nna (ଣ).
 
-3. JUKTAKSHYARA (CONJUNCT CLUSTERS): Do not split or break complex conjuncts (e.g., ନ୍ଧ, ନ୍ତ୍ର, ଦ୍ଧ, ଙ୍ଖ, ଶ୍ଚ, କ୍ଷ). Ensure they render as a single, authentic Unicode glyph block (e.g. 'ଶିକ୍ଷା', 'ପ୍ରଶ୍ନ', 'ବନ୍ଧୁ'), not as separate characters with a halanta.`;
+3. JUKTAKSHYARA (CONJUNCT CLUSTERS): Do not split or break complex conjuncts (e.g., ନ୍ଧ, ନ୍ତ୍ର, ଦ୍ଧ, ଙ୍ଖ, ଶ୍ଚ, କ୍ଷ). Ensure they render as a single, authentic Unicode glyph block (e.g. 'ଶିକ୍ଷା', 'ପ୍ରଶ୍ନ', 'ବନ୍ଧୁ'), not as separate characters with a halanta.
+
+4. NO LATEX MATHEMATICAL DELIMITERS OR MARKUP:
+   - NEVER output LaTeX math expressions, formulas, or delimiters (DO NOT write $, $$, \\[, \\], \\(, \\), \\frac, \\sqrt, \\times, \\div). Write all mathematical equations, fractions, and calculations using plain text and standard Unicode characters (e.g., use +, -, ×, ÷, =, /, √, π, ^) that school students and parents can easily read.`;
 
 const GUNDULU_EN_SYSTEM_INSTRUCTION = `You are a helpful and friendly AI Study Buddy for Odisha students.
 Explain concepts clearly in simple steps. Be supportive and encouraging.
 Greeting: Always start your first response with "Namaskar! I am Gundulu. What shall we learn today? ✨"
-SAFETY & GUARDRAILS: You are an educational tutor designed for young school children. Under no circumstances should you discuss adult topics, violence, self-harm, hate speech, politics, romance, nudity, or inappropriate themes. If a student tries to ask about non-educational, unnecessary, harmful, or inappropriate topics, politely decline and redirect them back to their school lessons.`;
+SAFETY & GUARDRAILS: You are an educational tutor designed for young school children. Under no circumstances should you discuss adult topics, violence, self-harm, hate speech, politics, romance, nudity, or inappropriate themes. If a student tries to ask about non-educational, unnecessary, harmful, or inappropriate topics, politely decline and redirect them back to their school lessons.
+
+### CRITICAL MATH LAYOUT RULES
+- NEVER output LaTeX math expressions, formulas, or delimiters (DO NOT write $, $$, \\[, \\], \\(, \\), \\frac, \\sqrt, \\times, \\div). Write all mathematical equations, fractions, and calculations using plain text and standard Unicode characters (e.g., use +, -, ×, ÷, =, /, √, π, ^) that school students and parents can easily read.`;
 
 export const gunduluSafetySettings = [
   {
@@ -616,6 +622,33 @@ export function cleanOdiaOrthography(text: string): string {
   for (const [incorrect, correct] of Object.entries(correctionMap)) {
     correctedText = correctedText.replaceAll(incorrect, correct);
   }
+
+  // 5. LaTeX and mathematical formatting cleanup
+  // Replace LaTeX mathematical commands with standard Unicode characters
+  correctedText = correctedText
+    .replace(/\\div/g, '÷')
+    .replace(/\\times/g, '×')
+    .replace(/\\pm/g, '±')
+    .replace(/\\approx/g, '≈')
+    .replace(/\\neq/g, '≠')
+    .replace(/\\leq/g, '≤')
+    .replace(/\\geq/g, '≥')
+    .replace(/\\infty/g, '∞')
+    .replace(/\\cdot/g, '•')
+    .replace(/\\alpha/g, 'α')
+    .replace(/\\beta/g, 'β')
+    .replace(/\\theta/g, 'θ')
+    .replace(/\\pi/g, 'π')
+    .replace(/\\sqrt/g, '√');
+
+  // Strip all standard LaTeX math block delimiters: $$, $, \[, \], \(, \)
+  correctedText = correctedText
+    .replace(/\$\$/g, '')
+    .replace(/\$/g, '')
+    .replace(/\\\[/g, '')
+    .replace(/\\\]/g, '')
+    .replace(/\\\(/g, '')
+    .replace(/\\\)/g, '');
 
   return correctedText;
 }
