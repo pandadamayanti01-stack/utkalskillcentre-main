@@ -12,6 +12,7 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const Razorpay = require('razorpay');
 import { getServiceAccountCredentials } from '../src/server/googleCredentials.js';
+import { google } from 'googleapis';
 
 const gunduluSafetySettings = [
   {
@@ -331,6 +332,76 @@ app.post('/api/ai/generate', async (req, res) => {
   try {
     const { contents, systemInstruction, modelType, generationConfig } = req.body;
     
+    const useVertex = process.env.USE_VERTEX_AI === 'true';
+    
+    if (useVertex) {
+      try {
+        console.log("Backend AI: Attempting Vertex AI route...");
+        const credentialsPath = path.resolve(process.cwd(), 'utkal-admin-sdk.json');
+        if (fs.existsSync(credentialsPath)) {
+          const creds = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
+          const vertexAuth = new google.auth.JWT({
+            email: creds.client_email,
+            key: creds.private_key,
+            scopes: ['https://www.googleapis.com/auth/cloud-platform']
+          });
+          
+          const authClient = await vertexAuth.authorize();
+          const accessToken = authClient.access_token;
+          
+          if (accessToken) {
+            // Map models to standard Vertex AI model names
+            const vertexModel = modelType === 'pro' ? 'gemini-1.5-pro' : 'gemini-1.5-flash';
+            const region = process.env.VERTEX_AI_REGION || 'us-central1';
+            
+            console.log(`Backend AI: Calling Vertex AI model ${vertexModel} in ${region}...`);
+            const vertexUrl = `https://${region}-aiplatform.googleapis.com/v1/projects/${creds.project_id}/locations/${region}/publishers/google/models/${vertexModel}:generateContent`;
+            
+            // Format system instruction for Vertex REST API
+            const formattedSystemInstruction = systemInstruction 
+              ? { parts: [{ text: systemInstruction }] } 
+              : undefined;
+
+            const response = await fetch(vertexUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+              },
+              body: JSON.stringify({
+                contents,
+                systemInstruction: formattedSystemInstruction,
+                generationConfig: {
+                  ...generationConfig,
+                  safetySettings: [
+                    { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_LOW_AND_ABOVE" },
+                    { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_LOW_AND_ABOVE" },
+                    { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_LOW_AND_ABOVE" },
+                    { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_LOW_AND_ABOVE" }
+                  ]
+                }
+              })
+            });
+            
+            if (response.ok) {
+              const data = await response.json();
+              const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+              if (text) {
+                console.log("Backend AI: Vertex AI response successful!");
+                return res.json({ text });
+              }
+            } else {
+              const errText = await response.text();
+              console.warn(`Backend AI: Vertex AI request failed: ${response.status} - ${errText}`);
+            }
+          }
+        }
+      } catch (vertexErr: any) {
+        console.warn("Backend AI: Vertex AI fallback route encountered error:", vertexErr.message);
+      }
+      console.log("Backend AI: Falling back to Google AI Studio standard route.");
+    }
+
     const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
     if (!apiKey) return res.status(503).json({ error: 'GEMINI_API_KEY is not configured on the server' });
 
