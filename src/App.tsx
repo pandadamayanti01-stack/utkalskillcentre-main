@@ -992,7 +992,7 @@ export default function App() {
   const [showConfigError, setShowConfigError] = useState<{title: string, message: string} | null>(null);
  // const [showLaunchPoster, setShowLaunchPoster] = useState(() => !localStorage.getItem('utkalDivasSeen'));
   // Feature Flag: Set to true (or localstorage check) to enable the Google Play Store Launch Celebration Event
-  const [showLaunchEvent, setShowLaunchEvent] = useState(() => !localStorage.getItem('utkalPlayStoreLaunchSeen'));
+  const [showLaunchEvent, setShowLaunchEvent] = useState(false);
   const [showTestSeriesPoster, setShowTestSeriesPoster] = useState(false);
   const [showLibraryPopup, setShowLibraryPopup] = useState(false);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
