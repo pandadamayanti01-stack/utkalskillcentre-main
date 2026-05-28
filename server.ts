@@ -158,14 +158,7 @@ async function startServer() {
     next();
   });
 
-  app.get('/api/debug/code', (req, res) => {
-    try {
-      const code = fs.readFileSync(path.join(process.cwd(), 'server.ts'), 'utf8');
-      res.type('text/plain').send(code);
-    } catch (e: any) {
-      res.status(500).send(e.message);
-    }
-  });
+
 
   // API Routes
   app.post('/api/upload-textbook', upload.single('file'), async (req: any, res) => {
