@@ -410,10 +410,6 @@ app.post('/api/ai/generate', async (req, res) => {
           } else {
             const errText = await response.text();
             console.warn(`Backend AI: Vertex AI request failed: ${response.status} - ${errText}`);
-            return res.status(response.status).json({ 
-              error: "Vertex AI generation failed", 
-              details: errText 
-            });
           }
         } else {
           console.warn("Backend AI: Could not resolve service account or ADC access token for Vertex AI.");
@@ -455,11 +451,9 @@ app.post('/api/ai/generate', async (req, res) => {
         }
       } catch (vertexErr: any) {
         console.error("Backend AI: Vertex AI execution error:", vertexErr.message);
-        return res.status(500).json({ error: "Vertex AI execution error", details: vertexErr.message });
       }
       
-      console.log("Backend AI: Strictly Vertex AI is active. Bypassing standard Studio fallbacks.");
-      return res.status(503).json({ error: "Vertex AI service is currently unavailable or unauthenticated." });
+      console.log("Backend AI: Vertex AI failed. Falling back to Google AI Studio standard developer key route.");
     }
 
     const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;

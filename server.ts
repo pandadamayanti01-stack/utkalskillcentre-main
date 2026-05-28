@@ -466,6 +466,7 @@ async function startServer() {
       const { contents, systemInstruction, modelType, generationConfig } = req.body;
       
       const useVertex = process.env.USE_VERTEX_AI === 'true';
+      let vertexErrorText = '';
       
       if (useVertex) {
         try {
@@ -537,62 +538,28 @@ async function startServer() {
                 return res.json({ text });
               }
             } else {
-              const errText = await response.text();
-              console.warn(`Backend AI (Server): Vertex AI API returned error: ${response.status} - ${errText}`);
-              return res.status(response.status).json({ 
-                error: "Vertex AI generation failed", 
-                details: errText 
-              });
+              vertexErrorText = await response.text();
+              console.warn(`Backend AI (Server): Vertex AI API returned error: ${response.status} - ${vertexErrorText}`);
             }
           } else {
             console.warn("Backend AI (Server): Could not resolve service account or ADC access token for Vertex AI.");
-            // Fall back to Vertex API Key if provided as a direct developer key URL bypass
-            const vertexKey = process.env.VERTEX_API_KEY || process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
-            if (vertexKey) {
-              console.log("Backend AI (Server): Attempting to call Vertex endpoints using direct developer key...");
-              const apiKeyModel = modelType === 'pro' ? 'gemini-1.5-pro' : 'gemini-1.5-flash';
-              const vertexKeyUrl = `https://generativelanguage.googleapis.com/v1beta/models/${apiKeyModel}:generateContent?key=${vertexKey}`;
-              
-              const response = await fetch(vertexKeyUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  contents,
-                  systemInstruction: systemInstruction ? { parts: [{ text: systemInstruction }] } : undefined,
-                  generationConfig,
-                  safetySettings: [
-                    { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_LOW_AND_ABOVE" },
-                    { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_LOW_AND_ABOVE" },
-                    { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_LOW_AND_ABOVE" },
-                    { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_LOW_AND_ABOVE" }
-                  ]
-                })
-              });
-
-              if (response.ok) {
-                const data = await response.json();
-                const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (text) {
-                  console.log("Backend AI (Server): Vertex AI key-based request successful!");
-                  return res.json({ text });
-                }
-              } else {
-                const errText = await response.text();
-                console.warn(`Backend AI (Server): Developer key fallback returned error: ${response.status} - ${errText}`);
-              }
-            }
           }
         } catch (vertexErr: any) {
-          console.error("Backend AI (Server): Vertex AI execution error:", vertexErr.message);
-          return res.status(500).json({ error: "Vertex AI execution error", details: vertexErr.message });
+          vertexErrorText = vertexErr.message;
+          console.warn("Backend AI (Server): Vertex AI execution error:", vertexErr.message);
         }
         
-        console.log("Backend AI (Server): Strictly Vertex AI is active. Bypassing standard Studio fallbacks.");
-        return res.status(503).json({ error: "Vertex AI service is currently unavailable or unauthenticated." });
+        console.log("Backend AI (Server): Vertex AI failed. Falling back to Google AI Studio standard developer key route.");
       }
 
       const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
-      if (!apiKey) return res.status(503).json({ error: 'GEMINI_API_KEY is not configured on the server' });
+      if (!apiKey) {
+        return res.status(503).json({ 
+          error: 'GEMINI_API_KEY is not configured on the server',
+          details: 'Vertex AI was tried but failed, and Google AI Studio backup API key is missing.',
+          vertexError: vertexErrorText || undefined
+        });
+      }
 
       const ai = new GoogleGenerativeAI(apiKey);
 
