@@ -332,19 +332,26 @@ export default function LaunchCelebration({
             className="absolute inset-0 w-full h-full"
           >
             {/* Top Stats Banner */}
-            <div className="absolute top-6 inset-x-0 mx-auto text-center z-50 px-4">
-              <span className="px-5 py-3 rounded-full bg-slate-900/90 border border-slate-700/50 backdrop-blur-md text-xs font-black text-white flex flex-col sm:flex-row items-center justify-center gap-2 shadow-lg max-w-lg mx-auto">
-                <div className="flex items-center gap-1.5">
-                  <Lucide.MousePointerClick size={14} className="text-amber-400 animate-bounce" />
-                  <span>ସମସ୍ତ ବେଲୁନ୍ ପପ୍ କରି ଲଞ୍ଚ ଗିଫ୍ଟ ଅନ୍‌ଲକ୍ କରନ୍ତୁ! 🎈</span>
+            <div className="absolute top-8 inset-x-0 mx-auto text-center z-50 px-4">
+              <div className="inline-flex flex-col items-center justify-center px-6 py-4 rounded-3xl bg-slate-900/95 border-2 border-amber-400 shadow-[0_0_30px_rgba(245,158,11,0.5)] backdrop-blur-md max-w-lg mx-auto animate-[pulse_2s_infinite]">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Lucide.MousePointerClick size={18} className="text-yellow-400 animate-bounce" />
+                  <span className="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-300 drop-shadow-sm">
+                    🎈 ବେଲୁନ୍ ଉପରେ ଟ୍ୟାପ୍ କରି ଫୁଟାନ୍ତୁ!
+                  </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[9px] text-slate-400 font-bold">(Pop all balloons to unlock)</span>
-                  <span className="font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">
+                <div className="text-xs font-black text-amber-200/90 mb-2">
+                  ସମସ୍ତ ବେଲୁନ୍ ଫୁଟାଇ ଉପହାର ଅନ୍‌ଲକ୍ କରନ୍ତୁ!
+                </div>
+                <div className="flex items-center justify-center gap-3 flex-wrap">
+                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                    (Tap & Pop all balloons to unlock gift!)
+                  </span>
+                  <span className="font-mono text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-black animate-pulse">
                     {balloons.filter(b => !b.popped).length} ବାକି ଅଛି (Remaining)
                   </span>
                 </div>
-              </span>
+              </div>
             </div>
 
             {/* Balloon elements */}
