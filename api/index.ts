@@ -338,8 +338,12 @@ app.post('/api/ai/generate', async (req, res) => {
       try {
         console.log("Backend AI: Attempting Vertex AI route...");
         const credentialsPath = path.resolve(process.cwd(), 'utkal-admin-sdk.json');
+        let accessToken: string | null | undefined = null;
+        let projectId = process.env.FIREBASE_PROJECT_ID || 'utkalskillcentre';
+
         if (fs.existsSync(credentialsPath)) {
           const creds = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
+          projectId = creds.project_id || projectId;
           const vertexAuth = new google.auth.JWT({
             email: creds.client_email,
             key: creds.private_key,
@@ -347,30 +351,87 @@ app.post('/api/ai/generate', async (req, res) => {
           });
           
           const authClient = await vertexAuth.authorize();
-          const accessToken = authClient.access_token;
+          accessToken = authClient.access_token;
+        } else {
+          // Attempt Application Default Credentials (ADC) for ambient serverless environments
+          try {
+            const auth = new google.auth.GoogleAuth({
+              scopes: ['https://www.googleapis.com/auth/cloud-platform']
+            });
+            const authClient = await auth.getClient();
+            const tokenResponse = await authClient.getAccessToken();
+            accessToken = tokenResponse.token;
+            projectId = await auth.getProjectId() || projectId;
+            console.log("Backend AI: Successfully fetched ambient cloud access token for project:", projectId);
+          } catch (adcErr: any) {
+            console.warn("Backend AI: Ambient ADC authentication failed:", adcErr.message);
+          }
+        }
+        
+        if (accessToken) {
+          // Map models to standard Vertex AI model names
+          const vertexModel = modelType === 'pro' ? 'gemini-1.5-pro' : 'gemini-1.5-flash';
+          const region = process.env.VERTEX_AI_REGION || 'us-central1';
           
-          if (accessToken) {
-            // Map models to standard Vertex AI model names
-            const vertexModel = modelType === 'pro' ? 'gemini-1.5-pro' : 'gemini-1.5-flash';
-            const region = process.env.VERTEX_AI_REGION || 'us-central1';
-            
-            console.log(`Backend AI: Calling Vertex AI model ${vertexModel} in ${region}...`);
-            const vertexUrl = `https://${region}-aiplatform.googleapis.com/v1/projects/${creds.project_id}/locations/${region}/publishers/google/models/${vertexModel}:generateContent`;
-            
-            // Format system instruction for Vertex REST API
-            const formattedSystemInstruction = systemInstruction 
-              ? { parts: [{ text: systemInstruction }] } 
-              : undefined;
+          console.log(`Backend AI: Calling Vertex AI model ${vertexModel} in region ${region} for project ${projectId}...`);
+          const vertexUrl = `https://${region}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${region}/publishers/google/models/${vertexModel}:generateContent`;
+          
+          // Format system instruction for Vertex REST API
+          const formattedSystemInstruction = systemInstruction 
+            ? { parts: [{ text: systemInstruction }] } 
+            : undefined;
 
-            const response = await fetch(vertexUrl, {
+          const response = await fetch(vertexUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${accessToken}`
+            },
+            body: JSON.stringify({
+              contents,
+              systemInstruction: formattedSystemInstruction,
+              generationConfig: {
+                ...generationConfig,
+                safetySettings: [
+                  { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_LOW_AND_ABOVE" },
+                  { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_LOW_AND_ABOVE" },
+                  { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_LOW_AND_ABOVE" },
+                  { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_LOW_AND_ABOVE" }
+                ]
+              }
+            })
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (text) {
+              console.log("Backend AI: Vertex AI response successful!");
+              return res.json({ text });
+            }
+          } else {
+            const errText = await response.text();
+            console.warn(`Backend AI: Vertex AI request failed: ${response.status} - ${errText}`);
+            return res.status(response.status).json({ 
+              error: "Vertex AI generation failed", 
+              details: errText 
+            });
+          }
+        } else {
+          console.warn("Backend AI: Could not resolve service account or ADC access token for Vertex AI.");
+          // Fall back to Vertex API Key if provided as a direct developer key URL bypass
+          const vertexKey = process.env.VERTEX_API_KEY || process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+          if (vertexKey) {
+            console.log("Backend AI: Attempting to call Vertex endpoints using direct developer key...");
+            const apiKeyModel = modelType === 'pro' ? 'gemini-1.5-pro' : 'gemini-1.5-flash';
+            const vertexKeyUrl = `https://generativelanguage.googleapis.com/v1beta/models/${apiKeyModel}:generateContent?key=${vertexKey}`;
+            
+            const response = await fetch(vertexKeyUrl, {
               method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}`
-              },
+              headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 contents,
-                systemInstruction: formattedSystemInstruction,
+                systemInstruction: systemInstruction ? { parts: [{ text: systemInstruction }] } : undefined,
                 generationConfig: {
                   ...generationConfig,
                   safetySettings: [
@@ -382,24 +443,27 @@ app.post('/api/ai/generate', async (req, res) => {
                 }
               })
             });
-            
+
             if (response.ok) {
               const data = await response.json();
               const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
               if (text) {
-                console.log("Backend AI: Vertex AI response successful!");
+                console.log("Backend AI: Vertex AI key-based request successful!");
                 return res.json({ text });
               }
             } else {
               const errText = await response.text();
-              console.warn(`Backend AI: Vertex AI request failed: ${response.status} - ${errText}`);
+              console.warn(`Backend AI: Developer key fallback returned error: ${response.status} - ${errText}`);
             }
           }
         }
       } catch (vertexErr: any) {
-        console.warn("Backend AI: Vertex AI fallback route encountered error:", vertexErr.message);
+        console.error("Backend AI: Vertex AI execution error:", vertexErr.message);
+        return res.status(500).json({ error: "Vertex AI execution error", details: vertexErr.message });
       }
-      console.log("Backend AI: Falling back to Google AI Studio standard route.");
+      
+      console.log("Backend AI: Strictly Vertex AI is active. Bypassing standard Studio fallbacks.");
+      return res.status(503).json({ error: "Vertex AI service is currently unavailable or unauthenticated." });
     }
 
     const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
