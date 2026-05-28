@@ -43,6 +43,15 @@ const app = express();
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
 
+app.get('/api/debug/code', (req, res) => {
+  try {
+    const code = fs.readFileSync(path.join(process.cwd(), 'api/index.ts'), 'utf8');
+    res.type('text/plain').send(code);
+  } catch (e: any) {
+    res.status(500).send(e.message);
+  }
+});
+
 const firestoreDatabaseId =
   process.env.FIRESTORE_DATABASE_ID ||
   process.env.VITE_FIRESTORE_DATABASE_ID ||
