@@ -4,9 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import { Helmet } from 'react-helmet-async';
 import { db } from '../firebase';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { solveMathDoubt } from '../services/aiService';
 import confetti from 'canvas-confetti';
+import { CHAPTERS_MAP } from '../data/chaptersMap';
 
 
 interface DigitalLibraryViewProps {
@@ -854,6 +855,90 @@ const forceGpuCompositingStyle: React.CSSProperties = {
   transform: 'translate3d(0,0,0)',
 };
 
+const reverseKeyMap = (subKey: string): string => {
+  const keyMap: Record<string, string[]> = {
+    'math': ['ganita', 'math'],
+    'odia': ['bhasa', 'sahitya', 'odia', 'jhulana'],
+    'evs': ['paribesa', 'chaturbaswara', 'science', 'evs', 'jigyasa'],
+    'english': ['english', 'pallavi', 'jasmine'],
+    'art': ['kala', 'art', 'kruti'],
+    'physical_education': ['sharirika', 'khela', 'krida', 'sports', 'yoga']
+  };
+  
+  const subLower = subKey.toLowerCase();
+  for (const [genericKey, patterns] of Object.entries(keyMap)) {
+    if (patterns.some(p => subLower.includes(p))) {
+      return genericKey;
+    }
+  }
+  return subKey;
+};
+
+const getSmartClassChapterName = (chap: any, subKey: string, classStr: string) => {
+  if (!chap) return '';
+  
+  let lookupSub = subKey.toLowerCase();
+  
+  if (classStr === '9' || classStr === '10') {
+    if (lookupSub === 'social_science') {
+      lookupSub = 'history';
+    }
+  } else if (parseInt(classStr, 10) <= 7) {
+    lookupSub = reverseKeyMap(lookupSub);
+  }
+  
+  const classChapters = CHAPTERS_MAP[classStr]?.[lookupSub] || [];
+  
+  const getChapterNumber = (c: any): number => {
+    if (typeof c.number === 'number') return c.number;
+    if (typeof c.chapterNumber === 'number') return c.chapterNumber;
+    if (typeof c.index === 'number') return c.index;
+
+    const titleStr = typeof c.title === 'string' ? c.title : (c.title?.en || c.title?.or || '');
+    const titleMatch = titleStr.match(/Chapter[_\-\s]?\s*(\d+)/i) || titleStr.match(/Ch[_\-\s]?\s*(\d+)/i);
+    if (titleMatch) return parseInt(titleMatch[1], 10);
+
+    const urlStr = String(c.pdfUrl || c.download_url || c.driveUrl || '');
+    const decodedUrl = decodeURIComponent(urlStr);
+    const urlMatch = decodedUrl.match(/Chapter[_\-\s]?(\d+)/i) || decodedUrl.match(/Ch[_\-\s]?(\d+)/i);
+    if (urlMatch) return parseInt(urlMatch[1], 10);
+
+    if (c.id && !/^[a-zA-Z0-9]{20}$/.test(c.id)) {
+      const idMatch = String(c.id).match(/ch[_\-\s]?(\d+)/i);
+      if (idMatch) return parseInt(idMatch[1], 10);
+    }
+    
+    // Fallbacks matching generate_roadmap.cjs
+    if (titleStr.includes('ସରଳ ସହସମୀକରଣ')) return 1;
+    if (titleStr.includes('ଦ୍ଵିଘାତ ସମୀକରଣ')) return 2;
+    if (titleStr.includes('ସମାନ୍ତର ପ୍ରଗତି')) return 3;
+    if (titleStr.includes('ସ୍ଥାନାଙ୍କ ଜ୍ୟାମିତି')) return 4;
+    if (titleStr.includes('ସମ୍ଭାବ୍ୟତା')) return 5;
+    if (titleStr.includes('ପରିସଂଖ୍ୟାନ')) return 6;
+    
+    if (titleStr.includes('ଜ୍ୟାମିତିରେ ସାଦୃଶ୍ୟ')) return 1;
+    if (titleStr.includes('Circle') || titleStr.includes('ବୃତ୍ତ')) return 2;
+    if (titleStr.includes('Construction') || titleStr.includes('ଅଙ୍କନ')) return 3;
+    if (titleStr.includes('Mensuration') || titleStr.includes('ପରିମିତି')) return 4;
+
+    return 999;
+  };
+
+  const chapNum = getChapterNumber(chap);
+  if (chapNum === 999) return '';
+
+  const foundChapter = classChapters.find(chName => {
+    const chMatch = chName.match(/^Chapter\s*(\d+)/i) || chName.match(/^Class\d+_Ch(\d+)/i) || chName.match(/_Ch(\d+)/i);
+    if (chMatch) {
+      return parseInt(chMatch[1], 10) === chapNum;
+    }
+    return false;
+  });
+
+  return foundChapter || '';
+};
+
+
 export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
   user,
   chapters,
@@ -902,6 +987,9 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
   const [isNotepadSaved, setIsNotepadSaved] = useState<boolean>(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const [isChapterNotesUnlocked, setIsChapterNotesUnlocked] = useState<boolean>(false);
+  const [chapterVideos, setChapterVideos] = useState<any[]>([]);
+  const [isVideosLoading, setIsVideosLoading] = useState<boolean>(false);
+  const [activeVideoIdx, setActiveVideoIdx] = useState<number>(0);
 
   // Eye Care States
   const [eyeCareMode, setEyeCareMode] = useState<'off' | 'sepia' | 'dim'>('off');
@@ -950,13 +1038,14 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
       const savedNotes = localStorage.getItem(`digilib_notes_${user?.id}_${selectedChapter.id}`);
       setPersonalNotes(savedNotes || '');
       setIsNotepadSaved(true);
+      setActiveVideoIdx(0);
 
       const notesUnlocked = localStorage.getItem(`unlocked_notes_${selectedChapter.id}`) === 'true';
       setIsChapterNotesUnlocked(notesUnlocked);
 
       // Reset chatbot to initial greeting
       const greetEn = `Namaskar! Mu Gundulu. 🦜 I am your AI study companion for this chapter: "${selectedChapter.title}". Ask me any math formulas, definitions, or click the suggestions below! How can I help you today? ✨`;
-      const greetOr = `ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। 🦜 ଆଜି ଆମେ ଏହି ଅଧ୍ୟାୟ ପଢ଼ିବା: "${selectedChapter.title}"। ଏହି ଅଧ୍ୟାୟର କୌଣସି ପ୍ରଶ୍ନ ବା ସୂତ୍ର ବୁଝିବା ପାଇଁ ମୋତେ ପଚାରନ୍ତୁ, ମୁଁ ସାହାଯ୍ୟ କରିବି! ✨`;
+      const greetOr = `ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। 🦜 ଆଜି ଆମେ ଏହି ଅଧ୍ୟาୟ ପଢ଼ିବା: "${selectedChapter.title}"। ଏହି ଅଧ୍ୟାୟର କୌଣସି ପ୍ରଶ୍ନ ବା ସୂତ୍ର ବୁଝିବା ପାଇଁ ମୋତେ ପଚାରନ୍ତୁ, ମୁଁ ସାହାଯ୍ୟ କରିବି! ✨`;
       setChatMessages([
         {
           id: 'initial',
@@ -966,6 +1055,42 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
       ]);
     }
   }, [selectedChapter, language, user?.id]);
+
+  useEffect(() => {
+    if (!selectedChapter) {
+      setChapterVideos([]);
+      return;
+    }
+    
+    const fetchChapterVideos = async () => {
+      setIsVideosLoading(true);
+      try {
+        const smartChapterName = getSmartClassChapterName(selectedChapter, selectedSubject, selectedClass);
+        if (!smartChapterName) {
+          setChapterVideos([]);
+          setIsVideosLoading(false);
+          return;
+        }
+
+        const q = query(
+          collection(db, 'curated_videos'),
+          where('classStr', '==', selectedClass),
+          where('subject', '==', selectedSubject),
+          where('chapter', '==', smartChapterName)
+        );
+        const snap = await getDocs(q);
+        const videoList = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        videoList.sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
+        setChapterVideos(videoList);
+      } catch (err) {
+        console.error("Failed to fetch chapter videos from curated_videos:", err);
+      } finally {
+        setIsVideosLoading(false);
+      }
+    };
+
+    fetchChapterVideos();
+  }, [selectedChapter, selectedSubject, selectedClass]);
 
   // Scroll window and scrollable dashboard containers to top on view changes (prevent SPA bottom landing)
   useEffect(() => {
@@ -1025,7 +1150,14 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
       if (!classMatches) return false;
 
       // Robust subject matching matching either direct keys, english names, or odia titles
-      const cleanSub = (s: string) => s?.toLowerCase().trim().replace(/[\s\-_]+/g, '') || '';
+      const cleanSub = (s: string) => {
+        if (!s) return '';
+        let cleaned = s.toLowerCase();
+        // Remove brackets, parentheses and any contents inside them
+        cleaned = cleaned.replace(/\[[^\]]*\]/g, '');
+        cleaned = cleaned.replace(/\([^)]*\)/g, '');
+        return cleaned.trim().replace(/[\s\-_]+/g, '') || '';
+      };
       const cSub = cleanSub(c.subject);
 
       const matchedMeta = activeSubjects.find(sub => sub.key === selectedSubject);
@@ -1999,7 +2131,7 @@ Instructions:
                     )}
                   </div>
                 ) : readerMode === 'video' ? (
-                  /* Gorgeous Embedded YouTube Player with animations */
+                  /* Gorgeous Embedded YouTube Player with smart class videos */
                   (() => {
                     const getYouTubeEmbedUrl = (url: string) => {
                       if (!url) return '';
@@ -2016,7 +2148,86 @@ Instructions:
                       }
                       return '';
                     };
-                    const embedUrl = getYouTubeEmbedUrl(selectedChapter.videoUrl);
+
+                    if (isVideosLoading) {
+                      return (
+                        <div className="flex flex-col items-center justify-center p-12 text-center bg-slate-900/30 border border-white/5 rounded-3xl h-[45vh] space-y-4">
+                          <Lucide.Loader2 size={32} className="animate-spin text-emerald-500" />
+                          <p className="text-slate-400 text-xs">{language === 'en' ? 'Loading video playlist...' : 'ଭିଡିଓ ପ୍ଲେଲିଷ୍ଟ ଲୋଡ୍ ହେଉଛି...'}</p>
+                        </div>
+                      );
+                    }
+
+                    if (chapterVideos.length > 0) {
+                      const activeVideo = chapterVideos[activeVideoIdx] || chapterVideos[0];
+                      const embedUrl = getYouTubeEmbedUrl(activeVideo.youtubeUrl);
+                      
+                      return (
+                        <div className="flex flex-col gap-6">
+                          {/* Video Player */}
+                          {embedUrl ? (
+                            <div className="w-full h-[45vh] md:h-[50vh] rounded-3xl overflow-hidden bg-slate-950 border border-white/5 flex flex-col relative shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+                              <iframe
+                                src={embedUrl}
+                                title={activeVideo.title}
+                                className="w-full h-full object-cover border-0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowFullScreen
+                              />
+                            </div>
+                          ) : (
+                            <div className="flex flex-col items-center justify-center p-12 text-center bg-slate-900/30 border border-white/5 rounded-3xl h-[45vh] space-y-4">
+                              <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center text-red-400">
+                                <Lucide.Youtube size={32} />
+                              </div>
+                              <h4 className="text-lg font-black text-white">{language === 'en' ? 'Invalid Video Link' : 'ଭୁଲ୍ ଭିଡିଓ ଲିଙ୍କ'}</h4>
+                            </div>
+                          )}
+
+                          {/* Playlist selector */}
+                          <div className="space-y-3">
+                            <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                              <Lucide.Library size={14} className="text-emerald-400" />
+                              <span>{language === 'en' ? 'Smart Class Playlist' : 'ଭିଡିଓ ପାର୍ଟ ସମୂହ (Smart Class)'}</span>
+                            </h4>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                              {chapterVideos.map((vid, idx) => {
+                                const isActive = idx === activeVideoIdx;
+                                return (
+                                  <button
+                                    key={vid.id}
+                                    onClick={() => setActiveVideoIdx(idx)}
+                                    className={`p-3 rounded-2xl flex items-center gap-3 transition-all text-left border ${
+                                      isActive 
+                                        ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400 shadow-md' 
+                                        : 'bg-white/5 border-white/5 hover:bg-white/10 text-slate-300'
+                                    }`}
+                                  >
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                                      isActive ? 'bg-emerald-500 text-white' : 'bg-slate-800 text-slate-400'
+                                    }`}>
+                                      <Lucide.Play size={12} fill="currentColor" />
+                                    </div>
+                                    <div className="truncate flex-1">
+                                      <div className="text-[9px] font-black uppercase text-slate-500 tracking-wider">
+                                        Part {idx + 1}
+                                      </div>
+                                      <div className="text-xs font-bold truncate">
+                                        {vid.title}
+                                      </div>
+                                    </div>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    // Fallback to single videoUrl in chapter metadata if no curated_videos
+                    const fallbackUrl = selectedChapter.videoUrl;
+                    const embedUrl = getYouTubeEmbedUrl(fallbackUrl);
 
                     return embedUrl ? (
                       <div
@@ -2040,8 +2251,8 @@ Instructions:
                         </h4>
                         <p className="text-slate-400 text-xs max-w-sm">
                           {language === 'en'
-                            ? 'The video URL for this chapter is invalid or not uploaded. Please try other reading guides!'
-                            : 'ଏହି ଅଧ୍ୟାୟର ଭିଡିଓ ଲିଙ୍କ ଅପଲୋଡ୍ ହୋଇନାହିଁ। ଦୟାକରି AI ପାଠ୍ୟପୁସ୍ତକ ଅଭ୍ୟାସ କରନ୍ତୁ!'}
+                            ? 'The video lessons for this chapter are currently being curated. Check back soon or study with AI Notes!'
+                            : 'ଏହି ଅଧ୍ୟାୟର ଭିଡିଓ ଲିଙ୍କ ସଂରକ୍ଷିତ ହୋଇନାହିଁ। ଦୟାକରି AI ପାଠ୍ୟପୁସ୍ତକ ଅଭ୍ୟାସ କରନ୍ତୁ!'}
                         </p>
                       </div>
                     );
@@ -2524,7 +2735,85 @@ Instructions:
                       }
                       return '';
                     };
-                    const embedUrl = getYouTubeEmbedUrl(selectedChapter.videoUrl);
+
+                    if (isVideosLoading) {
+                      return (
+                        <div className="flex flex-col items-center justify-center p-12 text-center bg-slate-900/30 border border-white/5 rounded-3xl h-full space-y-4">
+                          <Lucide.Loader2 size={32} className="animate-spin text-emerald-500" />
+                          <p className="text-slate-400 text-xs">{language === 'en' ? 'Loading video playlist...' : 'ଭିଡିଓ ପ୍ଲେଲିଷ୍ଟ ଲୋଡ୍ ହେଉଛି...'}</p>
+                        </div>
+                      );
+                    }
+
+                    if (chapterVideos.length > 0) {
+                      const activeVideo = chapterVideos[activeVideoIdx] || chapterVideos[0];
+                      const embedUrl = getYouTubeEmbedUrl(activeVideo.youtubeUrl);
+                      
+                      return (
+                        <div className="flex flex-col gap-6 h-full min-h-0">
+                          {/* Video Player */}
+                          {embedUrl ? (
+                            <div className="w-full flex-1 rounded-2xl overflow-hidden bg-slate-950 border border-white/5 flex flex-col relative shadow-[0_20px_50px_rgba(0,0,0,0.5)] min-h-[30vh]">
+                              <iframe
+                                src={embedUrl}
+                                title={activeVideo.title}
+                                className="w-full h-full object-cover border-0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowFullScreen
+                              />
+                            </div>
+                          ) : (
+                            <div className="flex flex-col items-center justify-center p-12 text-center bg-slate-900/30 border border-white/5 rounded-3xl flex-1 min-h-[30vh] space-y-4">
+                              <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center text-red-400">
+                                <Lucide.Youtube size={32} />
+                              </div>
+                              <h4 className="text-lg font-black text-white">{language === 'en' ? 'Invalid Video Link' : 'ଭୁଲ୍ ଭିଡିଓ ଲିଙ୍କ'}</h4>
+                            </div>
+                          )}
+
+                          {/* Playlist selector */}
+                          <div className="space-y-3 shrink-0">
+                            <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                              <Lucide.Library size={14} className="text-emerald-400" />
+                              <span>{language === 'en' ? 'Smart Class Playlist' : 'ଭିଡିଓ ପାର୍ଟ ସମୂହ (Smart Class)'}</span>
+                            </h4>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                              {chapterVideos.map((vid, idx) => {
+                                const isActive = idx === activeVideoIdx;
+                                return (
+                                  <button
+                                    key={vid.id}
+                                    onClick={() => setActiveVideoIdx(idx)}
+                                    className={`p-3 rounded-2xl flex items-center gap-3 transition-all text-left border ${
+                                      isActive 
+                                        ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400 shadow-md' 
+                                        : 'bg-white/5 border-white/5 hover:bg-white/10 text-slate-300'
+                                    }`}
+                                  >
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                                      isActive ? 'bg-emerald-500 text-white' : 'bg-slate-800 text-slate-400'
+                                    }`}>
+                                      <Lucide.Play size={12} fill="currentColor" />
+                                    </div>
+                                    <div className="truncate flex-1">
+                                      <div className="text-[9px] font-black uppercase text-slate-500 tracking-wider">
+                                        Part {idx + 1}
+                                      </div>
+                                      <div className="text-xs font-bold truncate">
+                                        {vid.title}
+                                      </div>
+                                    </div>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    const fallbackUrl = selectedChapter.videoUrl;
+                    const embedUrl = getYouTubeEmbedUrl(fallbackUrl);
 
                     return embedUrl ? (
                       <div className="w-full h-full rounded-2xl overflow-hidden bg-slate-950 border border-white/5 flex flex-col relative shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
@@ -2537,7 +2826,7 @@ Instructions:
                         />
                       </div>
                     ) : (
-                      <div className="flex flex-col items-center justify-center p-12 text-center bg-slate-900/30 border border-white/5 rounded-3xl h-[45vh] space-y-4">
+                      <div className="flex flex-col items-center justify-center p-12 text-center bg-slate-900/30 border border-white/5 rounded-3xl h-full space-y-4">
                         <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center text-red-400">
                           <Lucide.Youtube size={32} />
                         </div>

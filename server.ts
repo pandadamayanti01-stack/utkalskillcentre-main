@@ -566,7 +566,7 @@ async function startServer() {
         return res.status(503).json({ error: 'GEMINI_API_KEY is not configured' });
       }
 
-      const models = ['gemini-3.1-flash-tts-preview', 'gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-flash-latest'];
+      const models = ['gemini-2.5-flash-native-audio-latest', 'gemini-3.1-flash-tts-preview', 'gemini-2.0-flash', 'gemini-flash-latest'];
       const odiaVoiceList = (process.env.GEMINI_TTS_VOICE_ODIA_LIST || 'Puck,Kore,Charon')
         .split(',')
         .map((v) => v.trim())

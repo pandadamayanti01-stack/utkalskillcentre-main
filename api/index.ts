@@ -405,7 +405,7 @@ app.post('/api/tts/gemini', async (req, res) => {
       return res.status(503).json({ error: 'GEMINI_API_KEY is not configured' });
     }
 
-    const model = 'gemini-3.1-flash-tts-preview';
+    const models = ['gemini-2.5-flash-native-audio-latest', 'gemini-3.1-flash-tts-preview', 'gemini-2.0-flash', 'gemini-flash-latest'];
     const odiaVoiceList = (process.env.GEMINI_TTS_VOICE_ODIA_LIST || 'Puck,Kore,Charon')
       .split(',')
       .map((v) => v.trim())
@@ -415,29 +415,30 @@ app.post('/api/tts/gemini', async (req, res) => {
       : [(process.env.GEMINI_TTS_VOICE_EN || 'Aoede')];
 
     const ttsPrompt = language === 'or-IN'
-      ? `ନିମ୍ନଲିଖିତ ଓଡ଼ିଆ ଲେଖାକୁ ଅତ୍ୟନ୍ତ ସ୍ପଷ୍ଟ ଭାବରେ, ଗୋଟି ଗୋଟି କରି ଧୀର ଏବଂ ମଧୁର ସ୍ୱରରେ ଛୋଟ ପିଲାଙ୍କୁ ବୁଝାଇବା ଶୈଳୀରେ କହନ୍ତୁ। ପ୍ରତ୍ୟେକ ଓଡ଼ିଆ ଶବ୍ଦର ଉଚ୍ଚାରଣ ସ୍ପଷ୍ଟ ଏବଂ ସ୍ୱାଭାବିକ ହେବା ଉଚିତ। କୌଣସି ବିଦେଶୀ ଉଚ୍ଚାରଣ ବ୍ୟବହାର କରନ୍ତୁ ନାହିଁ।\n\n${text}`
+      ? `ନିମ୍ନଲିଖିତ ଓଡ଼ିଆ ଲେଖାକୁ ଅତ୍ୟନ୍ତ ସ୍ପଷ୍ଟ ଭାବରେ, ଗୋଟି ଗୋଟି କରି ଧୀର ଏବଂ ମଧୁର ସ୍ୱରରେ ଛୋଟ ପିଲାଙ୍କু ବୁଝାଇବା ଶୈଳୀରେ କହନ୍ତୁ। ପ୍ରତ୍ୟେକ ଓଡ଼ିଆ ଶବ୍ଦର ଉଚ୍ଚାରଣ ସ୍ପଷ୍ଟ ଏବଂ ସ୍ୱାଭାବିକ ହେବା ଉଚିତ। କୌଣସି ବିଦେଶୀ ଉଚ୍ଚାରଣ ବ୍ୟବହାର କରନ୍ତୁ ନାହିଁ।\n\n${text}`
       : `Speak this text in a warm, extremely clear, slow-paced, and friendly tutoring style for children in India. Articulate each word slowly and clearly:\n\n${text}`;
 
     let lastError = 'Unknown TTS failure';
-    for (const voiceName of voiceCandidates) {
-      try {
-        const ttsResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            contents: [{ role: 'user', parts: [{ text: ttsPrompt }] }],
-            generationConfig: {
-              responseModalities: ['AUDIO'],
-              speechConfig: {
-                voiceConfig: {
-                  prebuiltVoiceConfig: { voiceName }
+    for (const model of models) {
+      for (const voiceName of voiceCandidates) {
+        try {
+          const ttsResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              contents: [{ role: 'user', parts: [{ text: ttsPrompt }] }],
+              generationConfig: {
+                responseModalities: ['AUDIO'],
+                speechConfig: {
+                  voiceConfig: {
+                    prebuiltVoiceConfig: { voiceName }
+                  }
                 }
               }
-            }
-          }),
-        });
+            }),
+          });
 
         if (!ttsResponse.ok) {
           lastError = await ttsResponse.text();
@@ -471,6 +472,7 @@ app.post('/api/tts/gemini', async (req, res) => {
         console.error(`Gemini TTS connection error for voice ${voiceName}:`, innerErr);
       }
     }
+  }
 
     return res.status(502).json({ error: `Gemini TTS failed for all configured voices: ${lastError}` });
   } catch (error: any) {

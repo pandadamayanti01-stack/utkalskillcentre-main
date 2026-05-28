@@ -5,12 +5,65 @@ import { db } from '../../firebase';
 import { collection, getDocs, addDoc, deleteDoc, doc, serverTimestamp, query, orderBy, limit } from 'firebase/firestore';
 import { translations } from '../../translations';
 import { CHAPTERS_MAP } from '../../data/chaptersMap';
+import { getSubjectDisplayName } from '../SmartClassesView';
+
+const getSubjectsForClass = (classStr: string) => {
+  const rawSubjects = Object.keys(CHAPTERS_MAP[classStr] || {});
+  if (classStr === '9' || classStr === '10') {
+    return rawSubjects
+      .map(sub => {
+        if (sub === 'math') return 'algebra';
+        if (sub === 'history') return 'social_science';
+        return sub;
+      })
+      .filter((sub, idx, self) => self.indexOf(sub) === idx && sub !== 'math');
+  }
+  return rawSubjects.filter(sub => sub.toLowerCase() !== 'algebra');
+};
 
 function formatChapterName(rawName: string) {
-  let name = rawName.replace(/^Class\d+_/i, '');
-  name = name.replace(/_/g, ' ');
-  name = name.replace(/^(Chapter\s*\d+)\s+([^-])/i, '$1 - $2');
-  return name.trim();
+  // 1. If it already contains a hyphen (e.g. "Chapter 1 - ..."), it is already in standard format
+  if (rawName.includes(' - ')) {
+    return rawName.trim();
+  }
+
+  // 2. Extract chapter number
+  let chapterNum = 1;
+  const numMatch = rawName.match(/Chapter[_\-\s]?\s*(\d+)/i) || rawName.match(/Ch[_\-\s]?\s*(\d+)/i);
+  if (numMatch) {
+    chapterNum = parseInt(numMatch[1], 10);
+  }
+
+  // 3. Clean up the title part
+  // Remove Class prefix (e.g. Class4_ or Class3_)
+  let titlePart = rawName.replace(/^Class\d+_/i, '');
+  
+  // Remove Subject prefix (e.g. KalaSikhya_, KalaKruti_, PE_, Pallavi_, EVS_)
+  titlePart = titlePart.replace(/^(KalaSikhya|KalaKruti|PE|Pallavi|EVS|Odia|Mathematics|Evs|Physical_education)_[A-Za-z0-9]+_/i, '');
+  titlePart = titlePart.replace(/^(KalaSikhya|KalaKruti|PE|Pallavi|EVS|Odia|Mathematics|Evs|Physical_education)_/i, '');
+  
+  // Remove Chapter prefix (e.g. Ch01_ or Chapter01_)
+  titlePart = titlePart.replace(/^Ch[_\-\s]?\d+_/i, '');
+  titlePart = titlePart.replace(/^Chapter[_\-\s]?\d+_/i, '');
+  
+  // Remove Unit/Theme/Music/Dance/VisualArts keywords (e.g. VisualArts_Ch01_, Unit1_Ch1_, Music_Ch06_, Dance_Ch11_, Drama_Ch05_)
+  titlePart = titlePart.replace(/^(Unit\d+|VisualArts|Music|Dance|Drama|Theatre|Theme\d+)_Ch\d+_/i, '');
+  titlePart = titlePart.replace(/^(Unit\d+|VisualArts|Music|Dance|Drama|Theatre|Theme\d+)_Ch0\d+_/i, '');
+  titlePart = titlePart.replace(/^(Unit\d+|VisualArts|Music|Dance|Drama|Theatre|Theme\d+)_/i, '');
+  
+  // Just in case, clean up any remaining ChXX prefix
+  titlePart = titlePart.replace(/^Ch\d+_/i, '');
+
+  // Replace underscores with spaces
+  titlePart = titlePart.replace(/_/g, ' ').trim();
+
+  // Capitalize first letter of each word for beauty
+  titlePart = titlePart.split(' ').map(word => {
+    if (!word) return '';
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  }).join(' ');
+
+  return `Chapter ${chapterNum} - ${titlePart}`;
 }
 
 interface CuratedVideo {
@@ -31,10 +84,14 @@ export function VideoCuratorTab() {
 
   // Form State
   const [selectedClass, setSelectedClass] = useState('10');
-  const [selectedSubject, setSelectedSubject] = useState(Object.keys(CHAPTERS_MAP['10'] || {}).filter(sub => sub.toLowerCase() !== 'algebra')[0] || 'math');
+  const [selectedSubject, setSelectedSubject] = useState(() => {
+    const subjects = getSubjectsForClass('10');
+    return subjects.includes('algebra') ? 'algebra' : (subjects[0] || 'math');
+  });
   const [chapterName, setChapterName] = useState('');
   const [videoTitle, setVideoTitle] = useState('Part 1');
   const [youtubeUrl, setYoutubeUrl] = useState('');
+  const [videoOrder, setVideoOrder] = useState<number>(1);
 
   const [previewId, setPreviewId] = useState('');
   
@@ -47,12 +104,41 @@ export function VideoCuratorTab() {
     fetchVideos();
   }, []);
 
+  // Update order and title when chapter selection changes
+  useEffect(() => {
+    if (chapterName) {
+      const existingVideos = videos.filter(v => v.classStr === selectedClass && v.subject === selectedSubject && v.chapter === chapterName);
+      const nextOrder = existingVideos.length + 1;
+      setVideoOrder(nextOrder);
+      setVideoTitle(`Part ${nextOrder}`);
+    } else {
+      setVideoOrder(1);
+      setVideoTitle('Part 1');
+    }
+  }, [chapterName, selectedClass, selectedSubject, videos.length]);
+
   const fetchVideos = async () => {
     setIsLoading(true);
     try {
-      const q = query(collection(db, 'curated_videos'), orderBy('createdAt', 'desc'), limit(100));
+      const q = query(collection(db, 'curated_videos'));
       const snap = await getDocs(q);
       const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as CuratedVideo));
+      
+      // Sort by classStr, subject, chapter, and order
+      data.sort((a, b) => {
+        const classA = parseInt(a.classStr, 10) || 0;
+        const classB = parseInt(b.classStr, 10) || 0;
+        if (classA !== classB) return classA - classB;
+        
+        const subA = (a.subject || '').localeCompare(b.subject || '');
+        if (subA !== 0) return subA;
+        
+        const chapA = (a.chapter || '').localeCompare(b.chapter || '');
+        if (chapA !== 0) return chapA;
+        
+        return (a.order || 0) - (b.order || 0);
+      });
+      
       setVideos(data);
     } catch (err) {
       console.error("Failed to fetch curated videos:", err);
@@ -86,7 +172,8 @@ export function VideoCuratorTab() {
     
     setIsAutoCurating(true);
     try {
-      const query = `Class ${selectedClass} ${selectedSubject} ${chapterName} Odia Medium BSE Odisha`;
+      const subjectName = getSubjectDisplayName(selectedClass, selectedSubject, 'en');
+      const query = `Class ${selectedClass} ${subjectName} ${chapterName} Odia Medium BSE Odisha`;
       const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&key=AIzaSyCAI8kQ9j2oLwHbVF8eUtTAaQGzLqOcgeI&maxResults=15&order=relevance`);
       const data = await res.json();
       
@@ -129,7 +216,7 @@ export function VideoCuratorTab() {
         chapter: chapterName,
         youtubeUrl: youtubeUrl,
         title: videoTitle,
-        order: videos.filter(v => v.chapter === chapterName).length + 1,
+        order: Number(videoOrder) || 1,
         createdAt: serverTimestamp(),
       };
       
@@ -139,7 +226,6 @@ export function VideoCuratorTab() {
       setYoutubeUrl('');
       setPreviewId('');
       setSearchResults([]);
-      setVideoTitle(`Part ${videos.filter(v => v.chapter === chapterName).length + 2}`);
       
       fetchVideos();
       alert("Video Curated Successfully!");
@@ -201,9 +287,13 @@ export function VideoCuratorTab() {
                 <select 
                   value={selectedClass} 
                   onChange={(e) => {
-                    setSelectedClass(e.target.value);
-                    const subjects = Object.keys(CHAPTERS_MAP[e.target.value] || {}).filter(sub => sub.toLowerCase() !== 'algebra');
-                    if (subjects.length > 0) setSelectedSubject(subjects[0]);
+                    const cls = e.target.value;
+                    setSelectedClass(cls);
+                    const subjects = getSubjectsForClass(cls);
+                    if (subjects.length > 0) {
+                      setSelectedSubject(subjects.includes('algebra') ? 'algebra' : subjects[0]);
+                    }
+                    setChapterName('');
                   }}
                   className="w-full px-4 py-3 rounded-xl bg-slate-900/50 border border-white/10 text-white font-bold focus:border-red-500 outline-none"
                 >
@@ -218,10 +308,10 @@ export function VideoCuratorTab() {
                     setSelectedSubject(e.target.value);
                     setChapterName('');
                   }}
-                  className="w-full px-4 py-3 rounded-xl bg-slate-900/50 border border-white/10 text-white font-bold focus:border-red-500 outline-none capitalize"
+                  className="w-full px-4 py-3 rounded-xl bg-slate-900/50 border border-white/10 text-white font-bold focus:border-red-500 outline-none"
                 >
-                  {(Object.keys(CHAPTERS_MAP[selectedClass] || {})).filter(sub => sub.toLowerCase() !== 'algebra').map(sub => (
-                    <option key={sub} value={sub}>{sub.replace('_', ' ')}</option>
+                  {getSubjectsForClass(selectedClass).map(sub => (
+                    <option key={sub} value={sub}>{getSubjectDisplayName(selectedClass, sub, 'en')}</option>
                   ))}
                 </select>
               </div>
@@ -236,24 +326,44 @@ export function VideoCuratorTab() {
                 className="w-full px-4 py-3 rounded-xl bg-slate-900/50 border border-white/10 text-white font-bold focus:border-red-500 outline-none"
               >
                 <option value="" disabled>Select Chapter</option>
-                {((CHAPTERS_MAP[selectedClass] || {})[selectedSubject] || [])
-                  .sort((a: string, b: string) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
-                  .map((ch: string) => (
-                  <option key={ch} value={ch}>{formatChapterName(ch)}</option>
-                ))}
+                {(() => {
+                  const chaptersMapKey = (selectedSubject === 'algebra' && (selectedClass === '9' || selectedClass === '10'))
+                    ? 'algebra'
+                    : (selectedSubject === 'social_science' && (selectedClass === '9' || selectedClass === '10'))
+                      ? 'history'
+                      : selectedSubject;
+                  return ((CHAPTERS_MAP[selectedClass] || {})[chaptersMapKey] || [])
+                    .sort((a: string, b: string) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
+                    .map((ch: string) => (
+                    <option key={ch} value={ch}>{formatChapterName(ch)}</option>
+                  ));
+                })()}
               </select>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Video Title</label>
-              <input 
-                type="text" 
-                required
-                placeholder="e.g. Part 1: Basics"
-                value={videoTitle}
-                onChange={(e) => setVideoTitle(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-slate-900/50 border border-white/10 text-white font-bold focus:border-red-500 outline-none"
-              />
+            <div className="grid grid-cols-3 gap-4">
+              <div className="col-span-2 space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Video Title</label>
+                <input 
+                  type="text" 
+                  required
+                  placeholder="e.g. Part 1: Basics"
+                  value={videoTitle}
+                  onChange={(e) => setVideoTitle(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl bg-slate-900/50 border border-white/10 text-white font-bold focus:border-red-500 outline-none"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Serial Order</label>
+                <input 
+                  type="number" 
+                  required
+                  min="1"
+                  value={videoOrder}
+                  onChange={(e) => setVideoOrder(parseInt(e.target.value, 10) || 1)}
+                  className="w-full px-4 py-3 rounded-xl bg-slate-900/50 border border-white/10 text-white font-bold focus:border-red-500 outline-none"
+                />
+              </div>
             </div>
 
             <div className="space-y-2 pt-4 border-t border-white/5">
@@ -347,7 +457,7 @@ export function VideoCuratorTab() {
                     <p className="text-xs text-slate-400 truncate">{vid.chapter}</p>
                     <div className="flex gap-2 mt-1">
                       <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">Class {vid.classStr}</span>
-                      <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 capitalize">{vid.subject}</span>
+                      <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 capitalize">{getSubjectDisplayName(vid.classStr, vid.subject, 'en')}</span>
                     </div>
                   </div>
                   <button onClick={() => handleDelete(vid.id)} className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all self-center">

@@ -81,6 +81,7 @@ import {
 
 import { translations } from '../translations';
 import { Chapter, DailyMcq, VideoOption } from '../types';
+import { CLASS_SUBJECTS } from './DigitalLibraryView';
 import { DailyMcqTab } from './admin/DailyMcqTab';
 import { LiveSupportTab } from './admin/LiveSupportTab';
 import { VideoCuratorTab } from './admin/VideoCuratorTab';
@@ -188,7 +189,7 @@ Sample tone for Class 6-10:
 
   // Library Manager Upload States
   const [libClassFilter, setLibClassFilter] = useState('class10');
-  const [libSubjectFilter, setLibSubjectFilter] = useState('math');
+  const [libSubjectFilter, setLibSubjectFilter] = useState('all');
   const [isLibModalOpen, setIsLibModalOpen] = useState(false);
   const [libEditingChapter, setLibEditingChapter] = useState<any | null>(null);
   const [libFormTitle, setLibFormTitle] = useState('');
@@ -4612,21 +4613,171 @@ Sample tone for Class 6-10:
   }
 
   function renderDigitalLibraryUpload() {
+    const language = (localStorage.getItem('lang') as 'en' | 'or') || 'en';
+    const cleanSub = (s: string) => {
+      if (!s) return '';
+      let cleaned = s.toLowerCase();
+      cleaned = cleaned.replace(/\[[^\]]*\]/g, ''); // Remove content in []
+      cleaned = cleaned.replace(/\([^)]*\)/g, ''); // Remove content in ()
+      return cleaned.trim().replace(/[\s\-_]+/g, '') || '';
+    };
+
+    const isMatchingSubject = (chapterSubject: string, filterSubject: string) => {
+      if (filterSubject === 'all') return true;
+      const chapSub = cleanSub(chapterSubject);
+      const filtSub = cleanSub(filterSubject);
+      if (chapSub === filtSub) return true;
+
+      const genericMapping: Record<string, string[]> = {
+        math: ['ganitakhela', 'majamajareganita', 'ganitamela', 'ganitaprakas', 'algebra', 'geometry'],
+        science: ['paribesapatha', 'jigyasa', 'physicalscience', 'lifescience', 'amachaturbaswarapruthibi'],
+        physical_science: ['bhautikabignana', 'physicalscience'],
+        life_science: ['jibabignana', 'lifescience'],
+        social_science: ['samajikabignana', 'geography', 'history', 'itihasarajniti', 'bhugolaarathaniti'],
+        english: ['pallavi', 'jasmine', 'englishskills', 'learningenglishgrammar', 'englishgrammar'],
+        english_grammar: ['englishgrammar', 'learningenglishgrammar'],
+        odia: ['jhulana1', 'jhulana2', 'bhasamahak1', 'bhasamahak2', 'bhasamahak3', 'sahityasudha', 'sahityasuman', 'sahityasurabhi', 'sahityadhara'],
+        odia_grammar: ['odiagrammar', 'madhyamikabyakarana'],
+        sanskrit: ['sanskritakalika1', 'sanskritakalika2', 'sanskritakalika3', 'sanskritprabha'],
+        sanskrit_grammar: ['sanskritgrammar', 'sanskritbyakarana'],
+        hindi: ['hindikalika', 'hindisaurabh'],
+        hindi_grammar: ['hindigrammar', 'madhyamikahindibyakarana'],
+        vocational: ['kausalabodha', 'vocational'],
+        art: ['kalasikhya', 'kalakunja', 'kalakruti', 'kruti'],
+        physical_education: ['sharirikasikhya', 'kridayoga', 'sharirikayoga', 'khelasikhya'],
+        epe: ['kalasikhya', 'sharirikasikhya', 'kridayoga', 'sharirikayoga', 'kalakunja', 'khelasikhya', 'kalakruti', 'kruti', 'arthealth']
+      };
+
+      const mappedList = genericMapping[filtSub];
+      if (mappedList && mappedList.includes(chapSub)) {
+        return true;
+      }
+
+      if (filtSub === 'math' && chapSub.includes('math')) return true;
+      if (filtSub === 'science' && (chapSub.includes('science') || chapSub.includes('bignana') || chapSub.includes('jigyasa'))) return true;
+      if (filtSub === 'odia' && (chapSub.includes('odia') || chapSub.includes('sahitya') || chapSub.includes('jhulana') || chapSub.includes('bhasa'))) return true;
+      if (filtSub === 'english' && (chapSub.includes('english') || chapSub.includes('jasmine') || chapSub.includes('pallavi'))) return true;
+
+      return false;
+    };
+
+    const getSpecificSubjectKey = (genericSubject: string, classStr: string) => {
+      const classNum = classStr.toLowerCase().replace('class', '').trim();
+      const specificMap: Record<string, Record<string, string>> = {
+        '1': { math: 'ganita_khela', odia: 'jhulana_1' },
+        '2': { math: 'maja_majare_ganita', odia: 'jhulana_2' },
+        '3': { odia: 'bhasa_mahak_1', math: 'ganita_mela', science: 'paribesa_patha', english: 'pallavi', epe: 'kala_sikhya', art: 'kala_sikhya', physical_education: 'sharirika_sikhya' },
+        '4': { math: 'ganita_mela', odia: 'bhasa_mahak_2', science: 'paribesa_patha', english: 'pallavi', epe: 'kala_sikhya', art: 'kala_sikhya', physical_education: 'krida_yoga' },
+        '5': { math: 'ganita_mela', odia: 'bhasa_mahak_3', science: 'ama_chaturbaswara_pruthibi', english: 'pallavi', epe: 'kala_sikhya', art: 'kala_sikhya', physical_education: 'sharirika_yoga' },
+        '6': { math: 'ganita_prakas', odia: 'sahitya_sudha', science: 'jigyasa', social_science: 'samajika_bignana', english: 'jasmine', hindi: 'hindi_kalika', sanskrit: 'sanskritakalika_1', vocational: 'kausala_bodha', epe: 'kalakunja', art: 'kalakunja', physical_education: 'khela_sikhya' },
+        '7': { math: 'ganita_prakas', odia: 'sahitya_suman', science: 'jigyasa', social_science: 'samajika_bignana', english: 'jasmine', hindi: 'hindi_kalika', sanskrit: 'sanskritakalika_2', vocational: 'kausala_bodha', epe: 'kalakruti', art: 'kalakruti', physical_education: 'khela_sikhya' },
+        '8': { math: 'ganita_prakas', odia: 'sahitya_surabhi', science: 'jigyasa', social_science: 'samajika_bignana', english: 'jasmine', hindi: 'hindi_kalika', sanskrit: 'sanskritakalika_3', vocational: 'kausala_bodha', epe: 'kruti', art: 'kruti', physical_education: 'khela_sikhya' }
+      };
+      const classMapping = specificMap[classNum];
+      if (classMapping && classMapping[genericSubject]) {
+        return classMapping[genericSubject];
+      }
+      return genericSubject;
+    };
+
+    const getGenericSubjectKey = (specificSubject: string) => {
+      const spec = cleanSub(specificSubject);
+      if (!spec) return 'math';
+
+      const reverseMap: Record<string, string> = {
+        ganitakhela: 'math',
+        majamajareganita: 'math',
+        ganitamela: 'math',
+        ganitaprakas: 'math',
+        jhulana1: 'odia',
+        jhulana2: 'odia',
+        bhasamahak1: 'odia',
+        bhasamahak2: 'odia',
+        bhasamahak3: 'odia',
+        sahityasudha: 'odia',
+        sahityasuman: 'odia',
+        sahityasurabhi: 'odia',
+        sahityadhara: 'odia',
+        paribesapatha: 'science',
+        jigyasa: 'science',
+        amachaturbaswarapruthibi: 'science',
+        pallavi: 'english',
+        jasmine: 'english',
+        sanskritakalika1: 'sanskrit',
+        sanskritakalika2: 'sanskrit',
+        sanskritakalika3: 'sanskrit',
+        hindikalika: 'hindi',
+        kausalabodha: 'vocational',
+        kalasikhya: 'art',
+        sharirikasikhya: 'physical_education',
+        kridayoga: 'physical_education',
+        sharirikayoga: 'physical_education',
+        kalakunja: 'art',
+        khelasikhya: 'physical_education',
+        kalakruti: 'art',
+        kruti: 'art',
+        algebra: 'algebra',
+        geometry: 'geometry',
+        physicalscience: 'physical_science',
+        lifescience: 'life_science',
+        socialscience: 'social_science',
+        geography: 'geography',
+        englishgrammar: 'english_grammar',
+        odiagrammar: 'odia_grammar',
+        sanskritgrammar: 'sanskrit_grammar',
+        hindigrammar: 'hindi_grammar'
+      };
+
+      if (spec.includes('math') || spec.includes('ganita')) return 'math';
+      if (spec.includes('science') || spec.includes('jigyasa') || spec.includes('bignana')) {
+        if (spec.includes('physical')) return 'physical_science';
+        if (spec.includes('life') || spec.includes('jiba')) return 'life_science';
+        return 'science';
+      }
+      if (spec.includes('social') || spec.includes('samajika') || spec.includes('history') || spec.includes('itihasa')) return 'social_science';
+      if (spec.includes('geography') || spec.includes('bhugola')) return 'geography';
+      if (spec.includes('odia') || spec.includes('sahitya') || spec.includes('jhulana') || spec.includes('bhasa')) {
+        if (spec.includes('grammar') || spec.includes('byakarana')) return 'odia_grammar';
+        return 'odia';
+      }
+      if (spec.includes('english') || spec.includes('jasmine') || spec.includes('pallavi')) {
+        if (spec.includes('grammar')) return 'english_grammar';
+        return 'english';
+      }
+      if (spec.includes('sanskrit')) {
+        if (spec.includes('grammar') || spec.includes('byakarana')) return 'sanskrit_grammar';
+        return 'sanskrit';
+      }
+      if (spec.includes('hindi')) {
+        if (spec.includes('grammar') || spec.includes('byakarana')) return 'hindi_grammar';
+        return 'hindi';
+      }
+      if (spec.includes('vocational') || spec.includes('kausala')) return 'vocational';
+      if (spec.includes('art') || spec.includes('kala') || spec.includes('kruti')) return 'art';
+      if (spec.includes('physical') || spec.includes('khela') || spec.includes('yoga')) return 'physical_education';
+
+      return reverseMap[spec] || spec;
+    };
+
     const filteredContent = content.filter((c: any) => {
       const isLib = c.isLibraryChapter || !!c.pdfUrl;
       if (!isLib) return false;
 
       const cleanClass = (cls: string) => (cls || '').toLowerCase().replace(/\s+/g, '').replace('class', '').replace('th', '');
       const matchesClass = libClassFilter === 'all' || cleanClass(c.class) === cleanClass(libClassFilter);
-      const matchesSubject = libSubjectFilter === 'all' || c.subject === libSubjectFilter;
+      const matchesSubject = isMatchingSubject(c.subject, libSubjectFilter);
       return matchesClass && matchesSubject;
     });
 
     const handleOpenAddModal = () => {
       setLibEditingChapter(null);
       setLibFormTitle('');
-      setLibFormClass(libClassFilter === 'all' ? 'class10' : libClassFilter);
-      setLibFormSubject(libSubjectFilter === 'all' ? 'math' : libSubjectFilter);
+      const targetClass = libClassFilter === 'all' ? 'class10' : libClassFilter;
+      setLibFormClass(targetClass);
+      
+      const classSubjects = CLASS_SUBJECTS[targetClass] || CLASS_SUBJECTS.class10;
+      setLibFormSubject(classSubjects[0]?.key || 'math');
+      
       setLibFormNotes('');
       setLibFormPdfUrl('');
       setLibFormCoverUrl('');
@@ -4639,8 +4790,18 @@ Sample tone for Class 6-10:
     const handleOpenEditModal = (chapter: any) => {
       setLibEditingChapter(chapter);
       setLibFormTitle(chapter.title || '');
-      setLibFormClass(chapter.class || 'class10');
-      setLibFormSubject(chapter.subject || 'math');
+      const classCode = chapter.class || 'class10';
+      setLibFormClass(classCode);
+      
+      const specificKey = getSpecificSubjectKey(chapter.subject, classCode);
+      const textbooks = CLASS_SUBJECTS[classCode] || CLASS_SUBJECTS.class10;
+      const matchedTextbook = textbooks.find(sub => 
+        cleanSub(sub.key) === cleanSub(specificKey) ||
+        cleanSub(sub.labelEn) === cleanSub(specificKey) ||
+        cleanSub(sub.labelOr) === cleanSub(specificKey)
+      );
+      
+      setLibFormSubject(matchedTextbook ? matchedTextbook.key : specificKey);
       setLibFormNotes(chapter.notes || '');
       setLibFormPdfUrl(chapter.pdfUrl || '');
       setLibFormCoverUrl(chapter.coverUrl || '');
@@ -4763,12 +4924,13 @@ Sample tone for Class 6-10:
         if (!parsedEn) parsedEn = titleStr;
         if (!parsedOr) parsedOr = titleStr;
 
+        const finalSubjectKey = getSpecificSubjectKey(libFormSubject, libFormClass);
         const chapterPayload = {
           title: libFormTitle,
           title_en: parsedEn,
           title_or: parsedOr,
           class: libFormClass,
-          subject: libFormSubject,
+          subject: finalSubjectKey,
           notes: libFormNotes,
           pdfUrl: libFormPdfUrl,
           coverUrl: libFormCoverUrl,
@@ -4843,7 +5005,10 @@ Sample tone for Class 6-10:
             <label className="text-[10px] uppercase font-black text-slate-500 tracking-wider">Class Filter</label>
             <select
               value={libClassFilter}
-              onChange={(e) => setLibClassFilter(e.target.value)}
+              onChange={(e) => {
+                setLibClassFilter(e.target.value);
+                setLibSubjectFilter('all');
+              }}
               className="w-full bg-[#090d16] border border-white/5 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-500/30"
             >
               <option value="all">All Classes</option>
@@ -4868,23 +5033,35 @@ Sample tone for Class 6-10:
               className="w-full bg-[#090d16] border border-white/5 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-500/30"
             >
               <option value="all">All Subjects</option>
-              <option value="math">Mathematics</option>
-              <option value="algebra">Algebra (Class 9/10)</option>
-              <option value="geometry">Geometry (Class 9/10)</option>
-              <option value="science">General Science</option>
-              <option value="physical_science">Physical Science</option>
-              <option value="life_science">Life Science</option>
-              <option value="social_science">History</option>
-              <option value="english">English</option>
-              <option value="english_grammar">English Grammar</option>
-              <option value="odia">Odia</option>
-              <option value="odia_grammar">Odia Grammar</option>
-              <option value="sanskrit">Sanskrit</option>
-              <option value="sanskrit_grammar">Sanskrit Grammar</option>
-              <option value="hindi">Hindi</option>
-              <option value="hindi_grammar">Hindi Grammar</option>
-              <option value="vocational">Vocational</option>
-              <option value="epe">Art & Health</option>
+              {libClassFilter === 'all' ? (
+                <>
+                  <option value="math">Mathematics</option>
+                  <option value="science">General Science</option>
+                  <option value="social_science">Social Studies / History</option>
+                  <option value="english">English</option>
+                  <option value="odia">Odia</option>
+                  <option value="sanskrit">Sanskrit</option>
+                  <option value="hindi">Hindi</option>
+                  <option value="vocational">Vocational</option>
+                  <option value="art">Art Education</option>
+                  <option value="physical_education">Physical Education & Sports</option>
+                  <option value="algebra">Algebra (Class 9/10)</option>
+                  <option value="geometry">Geometry (Class 9/10)</option>
+                  <option value="physical_science">Physical Science (Class 9/10)</option>
+                  <option value="life_science">Life Science (Class 9/10)</option>
+                  <option value="geography">Geography (Class 9/10)</option>
+                  <option value="english_grammar">English Grammar (Class 9/10)</option>
+                  <option value="odia_grammar">Odia Grammar (Class 9/10)</option>
+                  <option value="sanskrit_grammar">Sanskrit Grammar (Class 9/10)</option>
+                  <option value="hindi_grammar">Hindi Grammar (Class 9/10)</option>
+                </>
+              ) : (
+                (CLASS_SUBJECTS[libClassFilter] || []).map((sub: any) => (
+                  <option key={sub.key} value={sub.key}>
+                    {language === 'en' ? sub.labelEn : sub.labelOr}
+                  </option>
+                ))
+              )}
             </select>
           </div>
         </div>
@@ -5045,23 +5222,11 @@ Sample tone for Class 6-10:
                         onChange={(e) => setLibFormSubject(e.target.value)}
                         className="w-full bg-slate-950 border border-white/5 rounded-2xl px-5 py-4 text-sm text-slate-200 focus:outline-none focus:border-emerald-500/30"
                       >
-                        <option value="math">Mathematics</option>
-                        <option value="algebra">Algebra (Class 9/10)</option>
-                        <option value="geometry">Geometry (Class 9/10)</option>
-                        <option value="science">General Science</option>
-                        <option value="physical_science">Physical Science</option>
-                        <option value="life_science">Life Science</option>
-                        <option value="social_science">History</option>
-                        <option value="english">English</option>
-                        <option value="english_grammar">English Grammar</option>
-                        <option value="odia">Odia</option>
-                        <option value="odia_grammar">Odia Grammar</option>
-                        <option value="sanskrit">Sanskrit</option>
-                        <option value="sanskrit_grammar">Sanskrit Grammar</option>
-                        <option value="hindi">Hindi</option>
-                        <option value="hindi_grammar">Hindi Grammar</option>
-                        <option value="vocational">Vocational</option>
-                        <option value="epe">Art & Health</option>
+                        {(CLASS_SUBJECTS[libFormClass] || CLASS_SUBJECTS.class10).map((sub: any) => (
+                          <option key={sub.key} value={sub.key}>
+                            {language === 'en' ? sub.labelEn : sub.labelOr}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>

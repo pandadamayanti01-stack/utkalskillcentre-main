@@ -28,12 +28,26 @@ for (let w of WEIGHTS) {
 
 function isAnswerKey(title) {
   const t = String(title).toLowerCase();
+  if (t.includes('hockey')) {
+    return false;
+  }
   return (
     t.includes('answer') ||
     t.includes('key') ||
     t.includes('uttaramala') ||
+    t.includes('ଉତ୍ତରମାଳା') ||
+    t.includes('ପରିଶିଷ୍ଟ') ||
+    t.includes('parisistha') ||
+    t.includes('parisista') ||
     (t.includes('solution') && !t.includes('dissolution') && !t.includes('resolution')) ||
-    t.includes('uttar')
+    t.includes('uttar') ||
+    t.includes('teacher') ||
+    t.includes('guideline') ||
+    t.includes('guide') ||
+    t.includes('appendix') ||
+    t.includes('apprentix') ||
+    t.includes('template') ||
+    t.includes('assessment')
   );
 }
 
@@ -76,82 +90,88 @@ async function run() {
   console.log("Fetching all chapters from Firestore...");
   const snap = await db.collection('chapters').get();
   
-  let class10ChaptersBySubject = {};
-  let class9ChaptersBySubject = {};
+  const chaptersByClassAndSubject = {};
 
   snap.forEach(doc => {
     const data = doc.data();
-    const classId = (data.class || '').toLowerCase().trim();
-    const title = data.title || '';
+    const classIdRaw = (data.class || '').toLowerCase().trim();
     
-    // Skip answer keys / solutions
-    if (isAnswerKey(title)) return;
+    // Normalize class name (e.g. "class4" -> "4", "Class 4" -> "4")
+    const classMatch = classIdRaw.match(/\d+/);
+    if (!classMatch) return;
+    const classNum = classMatch[0]; // "1" to "10"
+    
+    const title = data.title || '';
+    const titleEn = data.title_en || '';
+    const titleOr = data.title_or || '';
+    if (isAnswerKey(title) || isAnswerKey(titleEn) || isAnswerKey(titleOr)) return;
     if (typeof title === 'object' && (isAnswerKey(title.en || '') || isAnswerKey(title.or || ''))) return;
 
     const sub = data.subject || 'other';
     const chapObj = {
       id: doc.id,
       title: title,
+      title_en: data.title_en || null,
+      title_or: data.title_or || null,
       subject: sub,
       thumbnail: data.thumbnail || null
     };
 
-    if (classId === '10' || classId === 'class10') {
-      if (!class10ChaptersBySubject[sub]) class10ChaptersBySubject[sub] = [];
-      class10ChaptersBySubject[sub].push(chapObj);
-    } else if (classId === '9' || classId === 'class9') {
-      if (!class9ChaptersBySubject[sub]) class9ChaptersBySubject[sub] = [];
-      class9ChaptersBySubject[sub].push(chapObj);
+    if (!chaptersByClassAndSubject[classNum]) {
+      chaptersByClassAndSubject[classNum] = {};
     }
+    if (!chaptersByClassAndSubject[classNum][sub]) {
+      chaptersByClassAndSubject[classNum][sub] = [];
+    }
+    chaptersByClassAndSubject[classNum][sub].push(chapObj);
   });
 
-  // 1. Build Class 10 Roadmap (Even Distribution)
-  const roadmap10 = MONTHS.map(m => ({ month: m, chapters: [] }));
-  Object.keys(class10ChaptersBySubject).forEach(subject => {
-    const chapters = class10ChaptersBySubject[subject];
-    chapters.sort((a, b) => {
-      const numA = getChapterNumber(a);
-      const numB = getChapterNumber(b);
-      if (numA !== numB) return numA - numB;
-      return a.title.localeCompare(b.title);
-    });
-    chapters.forEach((chap, idx) => {
-      const monthIndex = idx % 9;
-      roadmap10[monthIndex].chapters.push(chap);
-    });
-  });
+  const roadmaps = {};
+  for (let c = 1; c <= 10; c++) {
+    const classStr = String(c);
+    const roadmap = MONTHS.map(m => ({ month: m, chapters: [] }));
+    const subjectsMap = chaptersByClassAndSubject[classStr] || {};
 
-  // 2. Build Class 9 Roadmap (Weighted Distribution)
-  const roadmap9 = MONTHS.map(m => ({ month: m, chapters: [] }));
-  Object.keys(class9ChaptersBySubject).forEach(subject => {
-    const chapters = class9ChaptersBySubject[subject];
-    chapters.sort((a, b) => {
-      const numA = getChapterNumber(a);
-      const numB = getChapterNumber(b);
-      if (numA !== numB) return numA - numB;
-      return a.title.localeCompare(b.title);
-    });
-    
-    const N = chapters.length;
-    chapters.forEach((chap, j) => {
-      // Calculate normalized relative position of chapter j in the sequence
-      const position = (j + 0.5) / N;
-      
-      // Determine the month bucket based on cumulative weights
-      let monthIndex = 0;
-      while (monthIndex < 8 && position > CUMULATIVE_WEIGHTS[monthIndex]) {
-        monthIndex++;
+    Object.keys(subjectsMap).forEach(subject => {
+      const chapters = subjectsMap[subject];
+      chapters.sort((a, b) => {
+        const numA = getChapterNumber(a);
+        const numB = getChapterNumber(b);
+        if (numA !== numB) return numA - numB;
+        return a.title.localeCompare(b.title);
+      });
+
+      if (c === 8 || c === 9 || c === 10) {
+        // Use weighted workload for Class 8, 9, 10
+        const N = chapters.length;
+        chapters.forEach((chap, j) => {
+          const position = (j + 0.5) / N;
+          let monthIndex = 0;
+          while (monthIndex < 8 && position > CUMULATIVE_WEIGHTS[monthIndex]) {
+            monthIndex++;
+          }
+          roadmap[monthIndex].chapters.push(chap);
+        });
+      } else {
+        // Even distribution
+        chapters.forEach((chap, idx) => {
+          const monthIndex = idx % 9;
+          roadmap[monthIndex].chapters.push(chap);
+        });
       }
-      roadmap9[monthIndex].chapters.push(chap);
     });
-  });
+    roadmaps[classStr] = roadmap;
+  }
 
-  const tsContent = `// Auto-generated 9-Month Roadmap for Class 10
-export const ROADMAP_DATA = ${JSON.stringify(roadmap10, null, 2)};
-
-// Auto-generated 9-Month Roadmap for Class 9 (Weighted Workload)
-export const ROADMAP_DATA_9 = ${JSON.stringify(roadmap9, null, 2)};
-`;
+  let tsContent = '';
+  for (let c = 1; c <= 10; c++) {
+    const varName = c === 10 ? 'ROADMAP_DATA' : `ROADMAP_DATA_${c}`;
+    tsContent += `// Auto-generated 9-Month Roadmap for Class ${c}\n`;
+    tsContent += `export const ${varName} = ${JSON.stringify(roadmaps[String(c)], null, 2)};\n\n`;
+  }
+  
+  // For backwards compatibility, export ROADMAP_DATA_10 as well
+  tsContent += `export const ROADMAP_DATA_10 = ROADMAP_DATA;\n`;
 
   if (!fs.existsSync('./src/data')) {
     fs.mkdirSync('./src/data');

@@ -2,7 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Map, Compass, BookOpen, X, Filter, Flag, Trophy, Cloud, Star } from 'lucide-react';
 import { SEO } from './SEO';
-import { ROADMAP_DATA, ROADMAP_DATA_9 } from '../data/roadmapData';
+import {
+  ROADMAP_DATA,
+  ROADMAP_DATA_1,
+  ROADMAP_DATA_2,
+  ROADMAP_DATA_3,
+  ROADMAP_DATA_4,
+  ROADMAP_DATA_5,
+  ROADMAP_DATA_6,
+  ROADMAP_DATA_7,
+  ROADMAP_DATA_8,
+  ROADMAP_DATA_9,
+  ROADMAP_DATA_10
+} from '../data/roadmapData';
 import { translations } from '../translations';
 
 interface SyllabusTrackerProps {
@@ -16,6 +28,8 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
   const [optionalFilter, setOptionalFilter] = useState<'All' | 'Hindi' | 'Sanskrit' | 'Vocational'>('All');
   const [currentMonth, setCurrentMonth] = useState<string>('');
 
+  const studentClassStr = (user?.class || 'class10').toLowerCase().replace('class', '').trim();
+
   useEffect(() => {
     // Detect current real-world month and year
     const now = new Date();
@@ -23,20 +37,31 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
     setCurrentMonth(monthYear);
   }, []);
 
+  // Reset optional subject filter when class changes
+  useEffect(() => {
+    setOptionalFilter('All');
+  }, [studentClassStr]);
+
   const translate = (enText: string, orText: string) => language === 'en' ? enText : orText;
 
-  // Helper to determine if a chapter is an optional subject and should be hidden
   const isVisibleChapter = (subject: string) => {
+    // If it's not class 9 or 10, there are no optional subjects/filters to apply
+    if (studentClassStr !== '9' && studentClassStr !== '10') return true;
+
     const sub = subject.toLowerCase();
     
     // Core subjects that are always visible
-    const coreSubjects = ['odia', 'english', 'math', 'algebra', 'geometry', 'science', 'physical_science', 'life_science', 'social_science', 'history', 'geography', 'odia_grammar', 'english_grammar'];
+    const coreSubjects = [
+      'odia', 'english', 'math', 'algebra', 'geometry', 'science', 'physical_science', 'life_science', 
+      'social_science', 'history', 'geography', 'odia_grammar', 'english_grammar',
+      'ganita_prakas', 'sahitya_surabhi', 'jigyasa', 'samajika_bignana', 'jasmine', 'kruti', 'khela_sikhya', 'kausala_bodha'
+    ];
     if (coreSubjects.some(c => sub.includes(c))) return true;
 
     // Optional subject filtering
     if (optionalFilter === 'All') return true;
-    if (optionalFilter === 'Hindi' && (sub.includes('hindi') || sub.includes('hindi_grammar'))) return true;
-    if (optionalFilter === 'Sanskrit' && (sub.includes('sanskrit') || sub.includes('sanskrit_grammar'))) return true;
+    if (optionalFilter === 'Hindi' && (sub.includes('hindi') || sub.includes('hindi_grammar') || sub.includes('hindi_kalika'))) return true;
+    if (optionalFilter === 'Sanskrit' && (sub.includes('sanskrit') || sub.includes('sanskrit_grammar') || sub.includes('sanskritakalika'))) return true;
     if (optionalFilter === 'Vocational' && sub.includes('vocational')) return true;
 
     return false; // Hide other optional subjects
@@ -51,8 +76,9 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
 
     const subKey = rawSubject.toLowerCase().replace(/\s+/g, '_');
     
-    // Check class overrides (Class 10 override for social_science -> history)
-    const overrides = translations[language]?.classSubjectOverrides?.class10 as Record<string, string>;
+    // Check class overrides (Respecting specific class overrides)
+    const classKey = `class${studentClassStr}`;
+    const overrides = translations[language]?.classSubjectOverrides?.[classKey] as Record<string, string>;
     if (overrides && overrides[subKey]) {
       return overrides[subKey];
     }
@@ -73,8 +99,39 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
     return rawSubject.replace(/_/g, ' ');
   };
 
-  const studentClassStr = (user?.class || 'class10').toLowerCase().replace('class', '').trim();
-  const activeRoadmap = studentClassStr === '9' ? ROADMAP_DATA_9 : ROADMAP_DATA;
+  const getRoadmapForClass = (classStr: string) => {
+    switch (classStr) {
+      case '1': return ROADMAP_DATA_1;
+      case '2': return ROADMAP_DATA_2;
+      case '3': return ROADMAP_DATA_3;
+      case '4': return ROADMAP_DATA_4;
+      case '5': return ROADMAP_DATA_5;
+      case '6': return ROADMAP_DATA_6;
+      case '7': return ROADMAP_DATA_7;
+      case '8': return ROADMAP_DATA_8;
+      case '9': return ROADMAP_DATA_9;
+      case '10': return ROADMAP_DATA_10;
+      default: return ROADMAP_DATA; // fallback to Class 10 (ROADMAP_DATA)
+    }
+  };
+
+  const getOdiaClassStr = (classStr: string) => {
+    switch (classStr) {
+      case '1': return '୧ମ';
+      case '2': return '୨ୟ';
+      case '3': return '୩ୟ';
+      case '4': return '୪ର୍ଥ';
+      case '5': return '୫ମ';
+      case '6': return '୬ଷ୍ଠ';
+      case '7': return '୭ମ';
+      case '8': return '୮ମ';
+      case '9': return '୯ମ';
+      case '10': return '୧୦ମ';
+      default: return classStr;
+    }
+  };
+
+  const activeRoadmap = getRoadmapForClass(studentClassStr);
 
   return (
     <motion.div 
@@ -85,7 +142,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
       <SEO 
         title={translate(
           `Gundulu's Journey - 9 Month Roadmap | Class ${studentClassStr}`,
-          `ଗୁଣ୍ଡୁଲୁର ଯାତ୍ରା - ୯ ମାସର ରୋଡମ୍ୟାପ୍ | ${studentClassStr === '9' ? '୯ମ' : '୧୦ମ'} ଶ୍ରେଣୀ`
+          `ଗୁଣ୍ଡୁଲୁର ଯାତ୍ରା - ୯ ମାସର ରୋଡମ୍ୟାପ୍ | ${getOdiaClassStr(studentClassStr)} ଶ୍ରେଣୀ`
         )}
         description={`Follow Gundulu on a 9-month epic journey to master the entire Class ${studentClassStr} syllabus!`}
       />
@@ -114,25 +171,27 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
       </div>
 
       {/* Filter Section */}
-      <div className="flex items-center gap-3 overflow-x-auto pb-2 custom-scrollbar">
-        <div className="flex items-center gap-2 text-slate-500 font-bold text-sm bg-slate-100 px-4 py-2.5 rounded-xl border border-slate-200">
-          <Filter size={16} />
-          {translate('Select Optional Subject:', 'ବୈକଳ୍ପିକ ବିଷୟ ବାଛନ୍ତୁ:')}
+      {(studentClassStr === '9' || studentClassStr === '10') && (
+        <div className="flex items-center gap-3 overflow-x-auto pb-2 custom-scrollbar">
+          <div className="flex items-center gap-2 text-slate-500 font-bold text-sm bg-slate-100 px-4 py-2.5 rounded-xl border border-slate-200">
+            <Filter size={16} />
+            {translate('Select Optional Subject:', 'ବୈକଳ୍ପିକ ବିଷୟ ବାଛନ୍ତୁ:')}
+          </div>
+          {(studentClassStr === '9' ? ['All', 'Hindi', 'Sanskrit'] : ['All', 'Hindi', 'Sanskrit', 'Vocational']).map((opt) => (
+            <button
+              key={opt}
+              onClick={() => setOptionalFilter(opt as any)}
+              className={`px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap transition-all border ${
+                optionalFilter === opt 
+                  ? 'bg-emerald-500 text-white border-emerald-500 shadow-md shadow-emerald-500/20' 
+                  : 'bg-white text-slate-600 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50'
+              }`}
+            >
+              {opt === 'All' ? translate('Show All', 'ସବୁ ଦେଖାନ୍ତୁ') : opt}
+            </button>
+          ))}
         </div>
-        {['All', 'Hindi', 'Sanskrit', 'Vocational'].map((opt) => (
-          <button
-            key={opt}
-            onClick={() => setOptionalFilter(opt as any)}
-            className={`px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap transition-all border ${
-              optionalFilter === opt 
-                ? 'bg-emerald-500 text-white border-emerald-500 shadow-md shadow-emerald-500/20' 
-                : 'bg-white text-slate-600 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50'
-            }`}
-          >
-            {opt === 'All' ? translate('Show All', 'ସବୁ ଦେଖାନ୍ତୁ') : opt}
-          </button>
-        ))}
-      </div>
+      )}
 
       {/* Gamified Map Area */}
       <div className="relative w-full max-w-4xl mx-auto overflow-hidden rounded-[3rem] border-4 border-emerald-100 bg-gradient-to-b from-emerald-50/80 to-cyan-50/50 p-6 md:p-12 shadow-2xl">
@@ -268,7 +327,9 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {selectedMonth.chapters.filter((c: any) => isVisibleChapter(c.subject)).map((chapter: any, idx: number) => {
                     // Clean up ugly file name artifacts from the title
-                    let rawTitle = typeof chapter.title === 'string' ? chapter.title : (language === 'or' && chapter.title?.or ? chapter.title.or : (chapter.title?.en || ''));
+                    let rawTitle = typeof chapter.title === 'string'
+                      ? ((language === 'en' ? chapter.title_en : chapter.title_or) || chapter.title)
+                      : ((chapter.title as any)?.[language] || (chapter.title as any)?.or || (chapter.title as any)?.en || "Untitled Chapter");
                     
                     const cleanTitle = rawTitle
                       .replace(/Class\s*\d+/ig, '')
