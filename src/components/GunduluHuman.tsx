@@ -54,6 +54,41 @@ const normalizeTranscript = (raw: string): string => {
   return text;
 };
 
+const sanitizeTextForTTS = (text: string): string => {
+  if (!text) return "";
+  
+  let clean = text;
+  
+  // 1. Remove all emojis (they cause speech engines to glitch or read code names)
+  clean = clean.replace(/[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD00-\uDFFF]/g, '');
+  
+  // 2. Remove all markdown symbols (*, **, #, -, _, `)
+  clean = clean.replace(/\*\*|\*|__|_|#|`|-/g, '');
+  
+  // 3. Remove English translations inside brackets like "(Integers)" or "(Photosynthesis)"
+  clean = clean.replace(/\([a-zA-Z\s]+\)/g, '');
+  clean = clean.replace(/\(\)/g, ''); // Clean empty brackets
+  
+  // 4. Translate numbers bilingually so they are read properly by the synthesizer
+  const numberMap: Record<string, string> = {
+    '0': '୦', '1': '୧', '2': '୨', '3': '୩', '4': '୪',
+    '5': '୫', '6': '୬', '7': '୭', '8': '୮', '9': '୯'
+  };
+  for (const [eng, odia] of Object.entries(numberMap)) {
+    clean = clean.replaceAll(eng, odia);
+  }
+
+  // 5. Replace common math symbols with standard spoken words
+  clean = clean
+    .replaceAll('+', ' ଯୁକ୍ତ ')
+    .replaceAll('-', ' ବିୟୋଗ ')
+    .replaceAll('=', ' ସମାନ ')
+    .replaceAll('/', ' ବିଭକ୍ତ ')
+    .replaceAll('*', ' ଗୁଣନ ');
+
+  return clean.trim();
+};
+
 const extractSpeechInput = (event: any): SpeechInput => {
   const result = event?.results?.[0];
   const candidates: string[] = [];
@@ -507,7 +542,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
       setStatus("ଗୁନ୍ଦୁଲୁ କହୁଛି...");
 
       const speakFn = usePremiumVoice ? speakWithGeminiVoice : speakWithBrowserTtsFallback;
-      speakFn(greeting, () => {
+      speakFn(sanitizeTextForTTS(greeting), () => {
         triggerVisualNudge();
         if (recognitionRef.current && !isListeningRef.current) {
           transcriptBufferRef.current = '';
@@ -704,7 +739,9 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
  
         ${textbookContext ? `
         Verified Textbook Context (Primary Source of Knowledge):
-        You MUST use the following official textbook notes/context to answer the student's question accurately. Translate and adapt these academic notes into a super sweet, simple, and friendly tutoring explanation:
+        You MUST answer the student's question using ONLY the facts and details provided in the official textbook notes below. 
+        - STRICT RULE: Do NOT invent or assume any facts, dates, characters, or formulas that are not explicitly written in the context below. 
+        - STRICT RULE: If the student asks a question about this chapter that is not covered in the textbook notes below, politely explain in Odia: "I can only teach what is in our Class textbook lesson. Let's look at this part together!"
         
         ${textbookContext}
         ` : ''}
@@ -754,7 +791,8 @@ Understand user intent from these transcripts and respond in Odia only.
 
   const speakResponse = (text: string) => {
     const speakFn = usePremiumVoice ? speakWithGeminiVoice : speakWithBrowserTtsFallback;
-    speakFn(text, () => {
+    const sanitized = sanitizeTextForTTS(text);
+    speakFn(sanitized, () => {
       triggerVisualNudge();
       // Automatically start listening for student's response (seamless hands-free loop!)
       if (recognitionRef.current && !isListeningRef.current) {
