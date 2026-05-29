@@ -1589,7 +1589,7 @@ export default function App() {
               '+918457811227', '8457811227',
               '+916370487877', '6370487877',
               '+911010101010', '1010101010',
-              '+91101010', '101010'
+              '+911234567890', '1234567890'
             ].includes(userPhone));
 
           if (isAdmin || regDataRef.current.role === 'admin' || (userDocSnap.exists() && userDocSnap.data().role === 'admin')) {
@@ -2087,7 +2087,7 @@ export default function App() {
           '+918457811227', '8457811227',
           '+916370487877', '6370487877',
           '+911010101010', '1010101010',
-          '+91101010', '101010'
+          '+911234567890', '1234567890'
         ].includes(formattedNumber);
         
         if (!isTestAccount) {
