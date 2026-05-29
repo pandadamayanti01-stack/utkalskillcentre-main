@@ -116,7 +116,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
     { code: 'hi-IN', label: 'हिंदी (Hindi)' },
     { code: 'en-IN', label: 'English' }
   ];
-  const [inputLanguage, setInputLanguage] = useState('hi-IN'); // Default to Hindi for best Indian voice model ASR
+  const [inputLanguage, setInputLanguage] = useState('or-IN'); // Default to Odia for maximum syllabus and regional pronunciation accuracy
   
   const hasPlayedGreetingRef = useRef(false);
   const responseTurnRef = useRef(0);
@@ -556,14 +556,14 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
           setSubtitle(`ଆପଣ କହିଲେ: "${currentDisplay}"`);
         }
 
-        // Auto-submit after 2.5 seconds of silence
+        // Auto-submit after 1.2 seconds of silence for snappy, WhatsApp-call style responsiveness
         silenceTimeoutRef.current = setTimeout(() => {
           recognition.stop();
           const finalText = transcriptBufferRef.current.trim();
           if (finalText) {
             processWithGemini({ primary: finalText, candidates: [finalText] });
           }
-        }, 2500);
+        }, 1200);
       };
 
       recognition.onend = () => {
@@ -686,9 +686,8 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
         ASR Rule: Speech-to-text can be wrong for Odisha names/words. Use context to auto-correct likely misheard words.
         ASR Rule: Prefer Odisha school/local words (district names, subjects, textbook terms) when candidates are similar.
         Style: Conversational, friendly private tutor voice.
-        Conversation Rule: Greet only once at launch. For normal conversation, do NOT re-introduce yourself repeatedly.
         Context: This is response turn number ${turn + 1}. If turn > 1, avoid intro lines and start directly with answer.
-        Constraint: Keep your response short (2-3 sentences max) so that the student isn't overwhelmed and can respond immediately.
+        Constraint: Keep your response extremely brief, simple, and conversational (maximum 1-2 short sentences, under 30 words) so that the student isn't overwhelmed and the voice synthesis is nearly instantaneous (like a real WhatsApp voice call!). Never give long list-style lectures.
  
         ${textbookContext ? `
         Verified Textbook Context (Primary Source of Knowledge):
