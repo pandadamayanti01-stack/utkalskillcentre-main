@@ -546,6 +546,46 @@ async function startServer() {
           } else {
             console.warn("Backend AI (Server): Could not resolve service account or ADC access token for Vertex AI.");
           }
+
+          // Fall back to Vertex API Key if provided as a direct developer key URL bypass
+          const vertexKey = process.env.VERTEX_API_KEY || process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+          if (vertexKey) {
+            console.log("Backend AI (Server): Attempting to call Vertex endpoints using direct developer key...");
+            const apiKeyModel = modelType === 'pro' ? 'gemini-2.5-pro' : 'gemini-2.5-flash';
+            const isVertexKey = vertexKey.startsWith('AQ.');
+            const region = process.env.VERTEX_AI_REGION || 'us-central1';
+            const vertexKeyUrl = isVertexKey
+              ? `https://${region}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${region}/publishers/google/models/${apiKeyModel}:generateContent?key=${vertexKey}`
+              : `https://generativelanguage.googleapis.com/v1beta/models/${apiKeyModel}:generateContent?key=${vertexKey}`;
+
+            const response = await fetch(vertexKeyUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents,
+                systemInstruction: systemInstruction ? { parts: [{ text: systemInstruction }] } : undefined,
+                generationConfig,
+                safetySettings: [
+                  { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_LOW_AND_ABOVE" },
+                  { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_LOW_AND_ABOVE" },
+                  { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_LOW_AND_ABOVE" },
+                  { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_LOW_AND_ABOVE" }
+                ]
+              })
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+              if (text) {
+                console.log("Backend AI (Server): Vertex AI key-based request successful!");
+                return res.json({ text });
+              }
+            } else {
+              const errText = await response.text();
+              console.warn(`Backend AI (Server): Developer key fallback returned error: ${response.status} - ${errText}`);
+            }
+          }
         } catch (vertexErr: any) {
           vertexErrorText = vertexErr.message;
           console.warn("Backend AI (Server): Vertex AI execution error:", vertexErr.message);

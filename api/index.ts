@@ -420,7 +420,11 @@ app.post('/api/ai/generate', async (req, res) => {
           if (vertexKey) {
             console.log("Backend AI: Attempting to call Vertex endpoints using direct developer key...");
             const apiKeyModel = modelType === 'pro' ? 'gemini-2.5-pro' : 'gemini-2.5-flash';
-            const vertexKeyUrl = `https://generativelanguage.googleapis.com/v1beta/models/${apiKeyModel}:generateContent?key=${vertexKey}`;
+            const isVertexKey = vertexKey.startsWith('AQ.');
+            const region = process.env.VERTEX_AI_REGION || 'us-central1';
+            const vertexKeyUrl = isVertexKey
+              ? `https://${region}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${region}/publishers/google/models/${apiKeyModel}:generateContent?key=${vertexKey}`
+              : `https://generativelanguage.googleapis.com/v1beta/models/${apiKeyModel}:generateContent?key=${vertexKey}`;
             
             const response = await fetch(vertexKeyUrl, {
               method: 'POST',
