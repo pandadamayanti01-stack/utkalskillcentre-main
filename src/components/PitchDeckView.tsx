@@ -122,15 +122,15 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
         speakerNotes: "Hello judges! Welcome to Utkal Skill Centre. We are building the future of accessible, bilingual education in India. By combining native Odia curriculum tutoring with state-of-the-art conversational AI, we are bringing an elite personal tutor directly to the fingertips of millions of students in rural Odisha, completely in their mother tongue, removing linguistic and economic barriers."
       },
       {
-        title: "The Massive Rural EdTech Void",
-        subtitle: "Neglected State Board Students & Affordability Barriers",
-        tagline: "MARKET SIZE & OPPORTUNITY",
+        title: "Our Journey & Active Launch Milestones",
+        subtitle: "Bridging the rural EdTech gap starting April 1st (Utkal Divas)",
+        tagline: "OUR STORY & ANCHOR DATES",
         bullets: [
-          { title: "Language Exclusion", desc: "95% of major EdTech platforms are English-only, alienating Odia-medium students." },
-          { title: "Astronomical Costs", desc: "Traditional services charge ₹15,000+ annually, impossible for rural agricultural budgets." },
-          { title: "Mobile Parent Ecosystem", desc: "Replaces email registrations with basic Firebase OTP Phone login for zero-barrier onboarding." }
+          { title: "🌸 April 1st Launch", desc: "Successfully launched our official platform on Odisha Day to celebrate our students' heritage." },
+          { title: "📱 Progressive Web App (PWA)", desc: "Quickly rolled out our fast, offline-precached PWA, optimized for rural household mobile browsers." },
+          { title: "🎒 Core Syllabus Coverage", desc: "Dedicated specifically to Odia-medium school children ignored by traditional English-only platforms." }
         ],
-        speakerNotes: "The current EdTech landscape in India completely ignores state-board students. Over 6.2 million students in Odisha study in Odia-medium government schools. They cannot use English-centric platforms, and their families cannot afford legacy subscriptions. We are targeting this massive, underserved market of 3.5 million smartphone-enabled school kids with an affordable, bilingual tier."
+        speakerNotes: "Hello judges. Our journey is deeply personal. We officially launched Utkal Skill Centre on April 1st—Utkal Divas—to celebrate Odisha's heritage and support Odia-medium students. Shortly after, we successfully launched our fully offline Progressive Web App (PWA) to ensure that even families with basic smartphones on slow rural connections have instant access to lessons."
       },
       {
         title: "A Magical, Gamified Learning Portal",
@@ -157,14 +157,14 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
       },
       {
         title: "Business Viability & Future AI Roadmap",
-        subtitle: "High margins, Live Pilot Traction & Gemma-SFT Tuning",
+        subtitle: "Proven Demand, Virtually $0.00 Overhead & Native Speed Conversations",
         tagline: "GROWTH, TRACTION & SUSTAINABILITY",
         bullets: [
-          { title: "Live Pilot Traction", desc: "434 students onboarded in rural school pilots, with 5 active paying premium subscribers." },
-          { title: "Highly Scalable margins", desc: "Delivering Class 3-10 syllabus roadmaps statically means ₹99/month subscriptions are highly profitable." },
-          { title: "3-Phase Gundulu Roadmap", desc: "Transitioning from RAG Search to fine-tuning Google's Gemma-2B/7B on localized Odia learning logs." }
+          { title: "Proven Pilot Traction", desc: "Successfully onboarded 434 active students with 5 paying premium subscribers." },
+          { title: "Highly Scalable margins", desc: "Serving syllabus guides statically keeps operational cost at $0.00, enabling ₹99/mo subscriptions." },
+          { title: "Future Specialized AI Tutor", desc: "Transitioning to training lightweight Google AI models specifically on Odia educational transcripts for native speech speeds." }
         ],
-        speakerNotes: "We have already proven commercial viability, onboarding 434 pilot students and securing 5 paying premium subscribers on our ₹99/month tier. Serving notes statically keeps our hosting overhead almost non-existent. Our future roadmap is highly structured: we are moving from basic RAG models to fine-tuning Gemma-2B on our bilingual school dialogue logs, creating the world's fastest mother-tongue tutor."
+        speakerNotes: "We have already proven commercial demand, onboarding 434 pilot students and securing 5 paying premium subscribers on our ₹99/month tier. Our serverless setup keeps operational costs near-zero. In the future, we plan to train lightweight Google AI models specifically on Odia educational transcripts, enabling Gundulu to speak with native speed and zero API overhead!"
       }
     ],
     or: [
@@ -180,15 +180,15 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
         speakerNotes: "ପ୍ରଣାମ ବିଚାରକ ମଣ୍ଡଳୀ! ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରକୁ ଆପଣମାନଙ୍କୁ ସ୍ୱାଗତ। ଆମେ ଓଡ଼ିଶାର ସରକାରୀ ବିଦ୍ୟାଳୟର ପିଲାମାନଙ୍କ ପାଇଁ ମାତୃଭାଷାରେ ବିଶ୍ୱସ୍ତରୀୟ ଏଆଇ ଶିକ୍ଷା ସାଥୀ ତିଆରି କରିଛୁ। ଓଡ଼ିଆ ଭାଷା ଓ ସରକାରୀ ପାଠ୍ୟକ୍ରମକୁ ଏକାଠି କରି ଆମେ ପିଲାମାନଙ୍କ ମୋବାଇଲ୍ ରେ ଗୁନ୍ଦୁଲୁ ଏଆଇ ଟ୍ୟୁଟର ପହଞ୍ଚାଇଛୁ, ଯାହା ସେମାନଙ୍କୁ ସମ୍ପୂର୍ଣ୍ଣ ମାତୃଭାଷାରେ ଏକ ବଡ଼ ଭଉଣୀ ଭଳି ଗାଇଡ୍ କରୁଛି।"
       },
       {
-        title: "ଗ୍ରାମାଞ୍ଚଳ ଶିକ୍ଷାରେ ଏକ ବଡ଼ ଅଭାବ",
-        subtitle: "ଓଡ଼ିଶା ବୋର୍ଡ ଛାତ୍ରଛାତ୍ରୀଙ୍କୁ ଅଣଦେଖା ଏବଂ ମହଙ୍ଗା ଫିସ୍ ର ସମସ୍ୟା",
-        tagline: "ବଜାର ଆକାର ଏବଂ ସୁଯୋଗ",
+        title: "ଆମର ଯାତ୍ରା ଏବଂ ଶୁଭାରମ୍ଭ ମାଇଲଖୁଣ୍ଟ",
+        subtitle: "ଏପ୍ରିଲ୍ ୧ (ଉତ୍କଳ ଦିବସ) ରୁ ଆରମ୍ଭ ਹੋଇଥିବା ଶିକ୍ଷା ସେବା",
+        tagline: "ଆମର ସଂଳାପ ଏବଂ ମାଇଲଖୁଣ୍ଟ",
         bullets: [
-          { title: "ଭାଷାର ପ୍ରତିବନ୍ଧକ", desc: "୯୫% ପ୍ରମୁଖ ଶିକ୍ଷା ଆପ୍ କେବଳ ଇଂରାଜୀରେ ଥାଏ, ଯାହା ଓଡ଼ିଆ ମାଧ୍ୟମ ପିଲାଙ୍କ ପାଇଁ କଷ୍ଟକର।" },
-          { title: "ଅତ୍ୟଧିକ ଦେୟ ସମସ୍ୟା", desc: "ଅନ୍ୟ ପ୍ଲାଟଫର୍ମଗୁଡିକ ବାର୍ଷିକ ୧୫,୦୦୦ ଟଙ୍କା ନିଅନ୍ତି, ଯାହା ଗରିବ ପରିବାର ପାଇଁ ଅସମ୍ଭବ।" },
-          { title: "ମୋବାଇଲ୍-ଆଧାରିତ ପରିବେଶ", desc: "ଇମେଲ୍ ବଦଳରେ ସହଜ ମୋବାଇଲ୍ ନମ୍ବର ଏବଂ ଓଟିପି (OTP) ଲଗଇନ୍ ର ବ୍ୟବସ୍ଥା।" }
+          { title: "🌸 ଏପ୍ରିଲ୍ ୧ ଶୁଭାରମ୍ଭ", desc: "ଓଡ଼ିଶାର ଗର୍ବ ଓ ଗୌରବର ଦିନ ଉତ୍କଳ ଦିବସରେ ଆମର ଅଫିସିଆଲ୍ ପ୍ଲାଟଫର୍ମ ଆରମ୍ଭ କରିଥିଲୁ।" },
+          { title: "📱 ପ୍ରୋଗ୍ରେସିଭ୍ ୱେବ୍ ଆପ୍ (PWA)", desc: "ଗ୍ରାମାଞ୍ଚଳର ମୋବାଇଲ୍ ବ୍ରାଉଜର୍ ଗୁଡ଼ିକ ପାଇଁ ଏକ ଦ୍ରୁତ, ଅଫଲାଇନ୍-ଅପ୍ଟିମାଇଜ୍ଡ୍ PWA ଆପ୍ ପ୍ରସ୍ତୁତ କଲୁ।" },
+          { title: "🎒 ଓଡ଼ିଆ ମାଧ୍ୟମ ପିଲାଙ୍କ ଲକ୍ଷ୍ୟ", desc: "ଇଂରାଜୀ ଆପ୍ ଦ୍ୱାରା ଅଣଦେଖା ହୋଇଥିବା ସରକାରୀ ବିଦ୍ୟାଳୟର ପିଲାମାନଙ୍କୁ ସାହାଯ୍ୟ କରିବା।" }
         ],
-        speakerNotes: "ଆଜିର ଡିଜିଟାଲ୍ ଶିକ୍ଷା ଓଡ଼ିଆ ମାଧ୍ୟମ ପିଲାମାନଙ୍କୁ ସମ୍ପୂର୍ଣ୍ଣ ଅଣଦେଖା କରିଛି। ଓଡ଼ିଶାରେ ପ୍ରାୟ ୬୨ ଲକ୍ଷରୁ ଅଧିକ ପିଲା ଓଡ଼ିଆ ମାଧ୍ୟମରେ ପଢ଼ନ୍ତି। ସେମାନଙ୍କ ପରିବାର ମହଙ୍ଗା ସବସ୍କ୍ରିପସନ୍ ଖର୍ଚ୍ଚ କରିପାରିବେ ନାହିଁ। ଆମେ ଏହି ୩୫ ଲକ୍ଷ ସ୍ମାର୍ଟଫୋନ୍ ବ୍ୟବହାର କରୁଥିବା ପିଲାମାନଙ୍କ ପାଇଁ ସ୍ୱଳ୍ପ ମୂଲ୍ୟରେ ଏହି ଓଡ଼ିଆ ଶିକ୍ଷା ସେବା ଆଣିଛୁ।"
+        speakerNotes: "ଆମର ଶିକ୍ଷା ଯାତ୍ରା ଅତି ନିଆରା। ଓଡ଼ିଶାର ପିଲାମାନଙ୍କ ସ୍ୱାର୍ଥ ରକ୍ଷା ପାଇଁ ଏପ୍ରିଲ୍ ୧ - ଉତ୍କଳ ଦିବସରେ ଆମେ ଆମର ୱେବସାଇଟ୍ ଶୁଭାରମ୍ଭ କରିଥିଲୁ। ଏହା ପରେ ଗ୍ରାମାଞ୍ଚଳରେ ଧିମା ଇଣ୍ଟରନେଟ୍ ରେ ପାଠପଢ଼ାକୁ ସହଜ କରିବାକୁ ଆମେ ଆମର PWA ଆପ୍ ପ୍ରସ୍ତୁତ କଲୁ, ଯାହା ସ୍ୱଳ୍ପ ବ୍ୟାଣ୍ଡୱିଡଥ୍ ରେ ମଧ୍ୟ ବିନା ରୋକଟୋକରେ ଚାଲିପାରୁଛି।"
       },
       {
         title: "ମନୋରଞ୍ଜନ ଓ ଗେମିଂ ସହ ପାଠପଢ଼ା",
@@ -215,14 +215,14 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
       },
       {
         title: "ବ୍ୟବସାୟିକ ସଫଳତା ଏବଂ ଏଆଇ ରୋଡ୍ ମ୍ୟାପ୍",
-        subtitle: "ଉଚ୍ଚ ଲାଭ, ଲାଇଭ୍ ଉପଭୋକ୍ତା ଏବଂ ଗେମ୍ମା (Gemma) ଏଆଇ ମଡେଲ୍ ର ଟ୍ରେନିଂ",
+        subtitle: "ଉଚ୍ଚ ଲାଭ, ସକ୍ରିୟ ଛାତ୍ର ଏବଂ ଦ୍ରୁତତମ ଏଆଇ (AI) ର ପ୍ରଶିକ୍ଷଣ",
         tagline: "ବୃଦ୍ଧି, ଆକର୍ଷଣ ଏବଂ ସ୍ଥିରତା",
         bullets: [
-          { title: "୪୩୪ ରୁ ଅଧିକ ସକ୍ରିୟ ଛାତ୍ର", desc: "ଆମର ପାଇଲଟ୍ ପ୍ରୋଜେକ୍ଟ ରେ ୪୩୪ ଜଣ ପିଲା ଯୋଡ଼ି ହୋଇସାରିଛନ୍ତି ଏବଂ ୫ ଜଣ ପ୍ରିମିୟମ୍ ସଦସ୍ୟ ଅଛନ୍ତି।" },
-          { title: "ମାତ୍ର ୯୯ ଟଙ୍କାର ସବସ୍କ୍ରିପସନ୍", desc: "ଷ୍ଟାଟିକ୍ ଫାଇଲ୍ ଡିଷ୍ଟ୍ରିବ୍ୟୁସନ୍ କାରଣରୁ ବହୁତ କମ୍ ଖର୍ଚ୍ଚ ଏବଂ ଅତି ସହଜ ସ୍କେଲିଂ ମଡେଲ୍।" },
-          { title: "ଗୁନ୍ଦୁଲୁ ଏଆଇ ର ଭବିଷ୍ୟତ", desc: "ପରବର୍ତ୍ତୀ ୬ ମାସରେ ଗୁଗଲ୍ ଗେମ୍ମା (Gemma-2B) କୁ ଓଡ଼ିଆ କଥୋପକଥନ ଉପରେ ସୁପରଭାଇଜ୍ଡ୍ ଫାଇନ୍ ଟ୍ୟୁନିଂ କରିବା।" }
+          { title: "ସକ୍ରିୟ ଛାତ୍ରଛାତ୍ରୀ", desc: "ପାଇଲଟ୍ ପର୍ଯ୍ୟାୟରେ ମାତ୍ର କିଛି ଦିନରେ ୪୩୪ ଜଣ ସକ୍ରିୟ ଛାତ୍ର ଏବଂ ୫ ଜଣ ପ୍ରିମିୟମ୍ ସଦସ୍ୟ ଯୋଡ଼ିଛୁ।" },
+          { title: "ମାସିକ ମାତ୍ର ୯୯ ଟଙ୍କା", desc: "ଷ୍ଟାଟିକ୍ ବ୍ରାଉଜର୍ ହୋଷ୍ଟିଂ ଏବଂ ପିଲାଙ୍କ ମୋବାଇଲ୍ ଟିଟିଏସ୍ ବ୍ୟବହାର ହେତୁ ସର୍ଭର ଖର୍ଚ୍ଚ ପ୍ରାୟ ଶୂନ ଟଙ୍କା।" },
+          { title: "ଓଡ଼ିଆ ଏଆଇ ମଡେଲ୍ ର ରୂପରେଖ", desc: "ଭବିଷ୍ୟତରେ ଗୁଗଲ୍ ର ହାଲୁକା ଏଆଇ ମଡେଲକୁ ଆମ ଓଡ଼ିଆ ପାଠ୍ୟକ୍ରମରେ ଟ୍ରେନିଂ କରି ଦ୍ରୁତ ଗତିରେ କଥା କହିବା।" }
         ],
-        speakerNotes: "ଆମେ ଆମର ପାଇଲଟ୍ ପର୍ଯ୍ୟାୟରେ ମାତ୍ର କିଛି ଦିନରେ ୪୩୪ ଜଣ ସକ୍ରିୟ ଛାତ୍ରଛାତ୍ରୀଙ୍କୁ ଯୋଡ଼ିଛୁ ଏବଂ ୫ ଜଣ ପ୍ରିମିୟମ୍ ସଦସ୍ୟ ମାସିକ ୯୯ ଟଙ୍କା ଦେଇ ପଢୁଛନ୍ତି। ଆମର ସ୍କେଲିଂ ଖର୍ଚ୍ଚ ଅତି ନଗଣ୍ୟ। ଆମର ପରବର୍ତ୍ତୀ ଲକ୍ଷ୍ୟ ହେଉଛି ଗୁଗଲ୍ ଗେମ୍ମା ୨ ବି (Gemma-2B) ଏଆଇ କୁ ଆମ ଓଡ଼ିଆ ଶିକ୍ଷା ସଂଳାପରେ ଫାଇନ୍ ଟ୍ୟୁନ୍ କରିବା, ଯାହା ବିଶ୍ୱର ସବୁଠୁ ଦ୍ରୁତତମ ଓଡ଼ିଆ ଟ୍ୟୁଟର୍ ହେବ। ଧନ୍ୟବାଦ।"
+        speakerNotes: "ଆମେ ଆମର ପାଇଲଟ୍ ପର୍ଯ୍ୟାୟରେ ମାତ୍ର କିଛି ଦିନରେ ୪୩୪ ଜଣ ସକ୍ରିୟ ଛାତ୍ରଛାତ୍ରୀଙ୍କୁ ଯୋଡ଼ିଛୁ ଏବଂ ୫ ଜଣ ପ୍ରିମିୟମ୍ ସଦସ୍ୟ ମାସିକ ୯୯ ଟଙ୍କା ଦେଇ ପଢୁଛନ୍ତି। ଆମର ସ୍କେଲିଂ ଖର୍ଚ୍ଚ ଅତି ନଗଣ୍ୟ। ଆମର ପରବର୍ତ୍ତୀ ଲକ୍ଷ୍ୟ ହେଉଛି ଗୁଗଲ୍ ର ଓପନ୍ ଏଆଇ ମଡେଲ୍ ଗୁଡ଼ିକୁ ଆମ ଓଡ଼ିଆ ଶିକ୍ଷା ସଂଳାପରେ ପ୍ରଶିକ୍ଷିତ (Fine-Tune) କରିବା, ଯାହା ବିଶ୍ୱର ସବୁଠୁ ଶସ୍ତା ଓ ଦ୍ରୁତତମ ଓଡ଼ିଆ ଏଆଇ ଟ୍ୟୁଟର୍ ହେବ। ଧନ୍ୟବାଦ।"
       }
     ]
   };
@@ -443,49 +443,94 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                 </motion.div>
               )}
 
-              {/* SLIDE 2 SHOWCASE: TAM / SAM / SOM Beautiful Dynamic Gauges */}
+              {/* SLIDE 2 SHOWCASE: Beautiful Bilingual Milestone Timeline */}
               {currentSlide === 1 && (
-                <div className="w-full grid grid-cols-1 gap-4 max-w-md">
-                  {/* TAM */}
-                  <div className="bg-slate-900/80 border border-white/5 p-4 rounded-2xl space-y-2 hover:border-[#b34d1f]/30 transition-all">
-                    <div className="flex justify-between text-xs font-bold text-slate-400">
-                      <span>TAM (Total Addressable Market)</span>
-                      <span className="text-amber-400">6.2 Million</span>
+                <div className="w-full max-w-md flex flex-col gap-4">
+                  {/* Timeline Title Banner */}
+                  <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 p-3 rounded-2xl flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400">
+                      <Lucide.Sparkles size={16} />
                     </div>
-                    <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
-                      <div className="h-full bg-amber-400 rounded-full" style={{ width: '100%' }} />
+                    <div>
+                      <h4 className="text-xs font-black text-amber-300">
+                        {deckLanguage === 'or' ? 'ଆମର ବିକାଶ ଯାତ୍ରାର ମାଇଲଖୁଣ୍ଟ' : 'FOUNDER LAUNCH MILESTONES'}
+                      </h4>
+                      <p className="text-[9px] text-slate-400">
+                        {deckLanguage === 'or' ? 'ଓଡ଼ିଶା ଦିବସରୁ ଆରମ୍ଭ ਹੋଇଥିବା ଗ୍ରାମୀଣ ଶିକ୍ଷା ବିପ୍ଳବ' : 'Empowering state-board students since Day 1'}
+                      </p>
                     </div>
-                    <span className="text-[10px] text-slate-500 block">
-                      {deckLanguage === 'or' ? 'ଓଡ଼ିଶାର ସମସ୍ତ ଓଡ଼ିଆ ମାଧ୍ୟମ ସରକାରୀ ବିଦ୍ୟାଳୟ ଛାତ୍ର' : 'All Odia-medium state-board students in Odisha school system'}
-                    </span>
                   </div>
 
-                  {/* SAM */}
-                  <div className="bg-slate-900/80 border border-white/5 p-4 rounded-2xl space-y-2 hover:border-[#b34d1f]/30 transition-all">
-                    <div className="flex justify-between text-xs font-bold text-slate-400">
-                      <span>SAM (Serviceable Addressable Market)</span>
-                      <span className="text-orange-400">3.5 Million</span>
-                    </div>
-                    <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
-                      <div className="h-full bg-orange-400 rounded-full" style={{ width: '56.4%' }} />
-                    </div>
-                    <span className="text-[10px] text-slate-500 block">
-                      {deckLanguage === 'or' ? 'ଶ୍ରେଣୀ ୩-୧୦ ରେ ମୋବାଇଲ୍ ବ୍ୟବହାରକାରୀ ପରିବାର' : 'Class 3-10 kids with family access to basic budget smartphones'}
-                    </span>
-                  </div>
+                  {/* Timeline Cards Container */}
+                  <div className="relative pl-6 space-y-4">
+                    {/* Vertical Connector Line */}
+                    <div className="absolute left-2.5 top-2 bottom-2 w-0.5 bg-gradient-to-b from-amber-500 via-cyan-500 to-emerald-500 opacity-30"></div>
 
-                  {/* SOM */}
-                  <div className="bg-slate-900/80 border border-white/5 p-4 rounded-2xl space-y-2 hover:border-[#b34d1f]/30 transition-all">
-                    <div className="flex justify-between text-xs font-bold text-slate-400">
-                      <span>SOM (Serviceable Obtainable Market)</span>
-                      <span className="text-emerald-400">350,000 (10% SAM)</span>
+                    {/* Step 1: April 1st Launch */}
+                    <div className="relative bg-slate-900/80 border border-white/5 p-3.5 rounded-2xl hover:border-amber-500/30 transition-all group">
+                      {/* Timeline dot */}
+                      <div className="absolute -left-6 top-4 w-5.5 h-5.5 rounded-full bg-slate-950 border-2 border-amber-500 flex items-center justify-center text-[10px] group-hover:scale-110 transition-transform">
+                        🌸
+                      </div>
+                      <div className="flex justify-between items-start">
+                        <span className="text-[10px] font-black tracking-wider text-amber-400 uppercase">
+                          {deckLanguage === 'or' ? '🌸 ଏପ୍ରିଲ୍ ୧ ଶୁଭାରମ୍ଭ' : '🌸 APRIL 1ST LAUNCH'}
+                        </span>
+                        <span className="text-[8px] font-mono text-slate-500 bg-white/5 px-1.5 py-0.5 rounded">
+                          {deckLanguage === 'or' ? 'ଉତ୍କଳ ଦିବସ' : 'Utkal Divas'}
+                        </span>
+                      </div>
+                      <h4 className="text-xs font-bold text-white mt-1">
+                        {deckLanguage === 'or' ? 'ଓଡ଼ିଆ ମାଧ୍ୟମ ଅଫିସିଆଲ୍ ପ୍ଲାଟଫର୍ମ' : 'Official Bilingual Portal Live'}
+                      </h4>
+                      <p className="text-[10px] text-slate-400 mt-1 leading-relaxed">
+                        {deckLanguage === 'or' ? 'ଓଡ଼ିଶାର ଗର୍ବ ଓ ଐତିହ୍ୟକୁ ସମ୍ମାନ ଜଣାଇ ଉତ୍କଳ ଦିବସରେ ଆମର ୱେବସାଇଟ୍ ଲାଇଭ୍ ହୋଇଥିଲା।' : 'Launched on Odisha Day to integrate regional pride directly into our learning framework.'}
+                      </p>
                     </div>
-                    <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
-                      <div className="h-full bg-emerald-400 rounded-full" style={{ width: '10%' }} />
+
+                    {/* Step 2: PWA Rollout */}
+                    <div className="relative bg-slate-900/80 border border-white/5 p-3.5 rounded-2xl hover:border-cyan-500/30 transition-all group">
+                      {/* Timeline dot */}
+                      <div className="absolute -left-6 top-4 w-5.5 h-5.5 rounded-full bg-slate-950 border-2 border-cyan-500 flex items-center justify-center text-[10px] group-hover:scale-110 transition-transform">
+                        📱
+                      </div>
+                      <div className="flex justify-between items-start">
+                        <span className="text-[10px] font-black tracking-wider text-cyan-400 uppercase">
+                          {deckLanguage === 'or' ? '📱 PWA ଆପ୍ ଶୁଭାରମ୍ଭ' : '📱 PWA APP ROLLOUT'}
+                        </span>
+                        <span className="text-[8px] font-mono text-slate-500 bg-white/5 px-1.5 py-0.5 rounded">
+                          {deckLanguage === 'or' ? 'ଅଫଲାଇନ୍ ରେଡି' : 'Offline Ready'}
+                        </span>
+                      </div>
+                      <h4 className="text-xs font-bold text-white mt-1">
+                        {deckLanguage === 'or' ? 'ମୋବାଇଲ୍ ବ୍ରାଉଜର୍ ପାଇଁ PWA ଆପ୍' : 'High-Speed Progressive Web App'}
+                      </h4>
+                      <p className="text-[10px] text-slate-400 mt-1 leading-relaxed">
+                        {deckLanguage === 'or' ? 'ମୋବାଇଲ୍ ବ୍ରାଉଜର୍ ରେ ଅତି ସହଜରେ ବିନା ରୋକଟୋକରେ ଚାଲୁଥିବା ସୁପର-ଲାଇଟ୍ ଆପ୍ ପ୍ରସ୍ତուତ।' : 'Offline-precaching enables zero-buffering tutorial access on basic family smartphones with slow networks.'}
+                      </p>
                     </div>
-                    <span className="text-[10px] text-slate-500 block">
-                      {deckLanguage === 'or' ? 'ଆମର ପ୍ରଥମ ୧୮-ମାସର ଲକ୍ଷ୍ୟ (ସୁଲଭ ସବସ୍କ୍ରିପସନ୍)' : 'Our realistic 18-month conversion target with premium tier ₹99/mo'}
-                    </span>
+
+                    {/* Step 3: Syllabus Coverage */}
+                    <div className="relative bg-slate-900/80 border border-white/5 p-3.5 rounded-2xl hover:border-emerald-500/30 transition-all group">
+                      {/* Timeline dot */}
+                      <div className="absolute -left-6 top-4 w-5.5 h-5.5 rounded-full bg-slate-950 border-2 border-emerald-500 flex items-center justify-center text-[10px] group-hover:scale-110 transition-transform">
+                        🎒
+                      </div>
+                      <div className="flex justify-between items-start">
+                        <span className="text-[10px] font-black tracking-wider text-emerald-400 uppercase">
+                          {deckLanguage === 'or' ? '🎒 ସିଲାବସ୍ ମ୍ୟାପିଂ' : '🎒 SYLLABUS COVERAGE'}
+                        </span>
+                        <span className="text-[8px] font-mono text-slate-500 bg-white/5 px-1.5 py-0.5 rounded">
+                          {deckLanguage === 'or' ? '୧୦୦% ବୋର୍ଡ ଆଲାଇନ୍ଡ' : '100% Board Aligned'}
+                        </span>
+                      </div>
+                      <h4 className="text-xs font-bold text-white mt-1">
+                        {deckLanguage === 'or' ? 'ଓଡ଼ିଶା ଷ୍ଟେଟ୍ ବୋର୍ଡ ପାଠ୍ୟକ୍ରମ' : 'Colloquial state-board curriculum'}
+                      </h4>
+                      <p className="text-[10px] text-slate-400 mt-1 leading-relaxed">
+                        {deckLanguage === 'or' ? 'ଇଂରାଜୀ ଆପ୍ ଦ୍ୱାରା ଅଣଦେଖା ହେଉଥିବା ଆମ ସରକାରୀ ବିଦ୍ୟାଳୟ ପିଲାଙ୍କ ପାଇଁ ସ୍ୱତନ୍ତ୍ର ପାଠ୍ୟକ୍ରମ।' : 'Specifically aligned to regional board books, keeping explanations close to their native village dialect.'}
+                      </p>
+                    </div>
                   </div>
                 </div>
               )}
@@ -700,9 +745,21 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                       <div className="absolute top-4 left-4 right-4 h-0.5 bg-white/10 z-0" />
                       
                       {[
-                        { phase: 1, title: 'Phase 1: RAG', label: 'Active Textbook Search' },
-                        { phase: 2, title: 'Phase 2: Gemma SFT', label: 'Fine-tuned dialogue (6M)' },
-                        { phase: 3, title: 'Phase 3: SFT Voice', label: 'Full Audio Automation (12M)' }
+                        { 
+                          phase: 1, 
+                          title: deckLanguage === 'or' ? 'ପର୍ଯ୍ୟାୟ ୧: ସିଲାବସ୍ ସର୍ଚ୍ଚ' : 'Phase 1: Syllabus Search', 
+                          label: deckLanguage === 'or' ? 'ପାଠ୍ୟ ବହି ସର୍ଚ୍ଚ' : 'Active Textbook Search' 
+                        },
+                        { 
+                          phase: 2, 
+                          title: deckLanguage === 'or' ? 'ପର୍ଯ୍ୟାୟ ୨: ଓଡ଼ିଆ AI' : 'Phase 2: Fast Odia AI', 
+                          label: deckLanguage === 'or' ? 'ସ୍ପିଡ୍ ଓଡ଼ିଆ AI' : 'Fluent Native Tutoring' 
+                        },
+                        { 
+                          phase: 3, 
+                          title: deckLanguage === 'or' ? 'ପର୍ଯ୍ୟାୟ ୩: ସ୍ୱୟଂଚାଳିତ ଭଏସ୍' : 'Phase 3: Automated Voice', 
+                          label: deckLanguage === 'or' ? 'ସ୍ୱୟଂଚାଳିତ ଭଏସ୍' : 'Voice-to-Voice AI' 
+                        }
                       ].map((item, idx) => {
                         const isSelected = activeRoadmapPhase === idx;
                         return (
@@ -718,7 +775,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                             }`}>
                               {idx + 1}
                             </div>
-                            <span className={`text-[9px] font-bold mt-1 text-center truncate w-full ${
+                            <span className={`text-[9px] font-bold mt-1 text-center truncate w-full px-1 ${
                               isSelected ? 'text-amber-400' : 'text-slate-400'
                             }`}>
                               {item.title}
@@ -739,14 +796,26 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                           className="space-y-0.5 text-center"
                         >
                           <span className="text-[8px] font-black text-amber-500 uppercase tracking-widest">
-                            {activeRoadmapPhase === 0 && 'Current Active Architecture'}
-                            {activeRoadmapPhase === 1 && 'Medium-Term Goal (Next 6 Months)'}
-                            {activeRoadmapPhase === 2 && 'Long-Term Vision (Next 12 Months)'}
+                            {activeRoadmapPhase === 0 && (deckLanguage === 'or' ? 'ବର୍ତ୍ତମାନର ସକ୍ରିୟ ବ୍ୟବସ୍ଥା' : 'Current Active Architecture')}
+                            {activeRoadmapPhase === 1 && (deckLanguage === 'or' ? 'ମଧ୍ୟମ-ମିଆଦି ଲକ୍ଷ୍ୟ (ଆଗାମୀ ୬ ମାସ)' : 'Medium-Term Goal (Next 6 Months)')}
+                            {activeRoadmapPhase === 2 && (deckLanguage === 'or' ? 'ଦୀର୍ଘମିଆଦି ରୂପରେଖ (ଆଗାମୀ ୧୨ ମାସ)' : 'Long-Term Vision (Next 12 Months)')}
                           </span>
-                          <p className="text-[11px] text-slate-300 leading-normal">
-                            {activeRoadmapPhase === 0 && 'Uses semantic embeddings of Odia textbooks stored in Firestore. Highly precise retrieval of question answers.'}
-                            {activeRoadmapPhase === 1 && 'Fine-tuning Google Gemma-2B/7B models locally on student study dialogue transcripts to deliver native speed tutor conversations.'}
-                            {activeRoadmapPhase === 2 && 'Direct end-to-end speech SFT synthesis, enabling Gundulu to assess oral language pronunciation and dialogue dynamically.'}
+                          <p className="text-[10px] text-slate-300 leading-normal mt-0.5">
+                            {activeRoadmapPhase === 0 && (
+                              deckLanguage === 'or' 
+                                ? 'ଓଡ଼ିଶା ଷ୍ଟେଟ୍ ବୋର୍ଡ ପାଠ୍ୟକ୍ରମର ତୁରନ୍ତ ଖୋଜିବା ପାଇଁ Firestore ଏବଂ RAG ବ୍ୟବସ୍ଥା। ଏହା ଛାତ୍ରଙ୍କୁ ସଠିକ୍ ପାଠ ସାରାଂଶ ଓ ପ୍ରଶ୍ନୋତ୍ତର ଦିଏ।'
+                                : 'Uses highly precise semantic search of Odisha State Board textbook lessons stored in Google Firestore for real-time accurate answer retrieval.'
+                            )}
+                            {activeRoadmapPhase === 1 && (
+                              deckLanguage === 'or'
+                                ? 'ଓଡ଼ିଆ ଭାଷାରେ ଅତି ସ୍ପିଡ୍ ଓ ସହଜରେ କଥା ହେବା ପାଇଁ ହାଲୁକା ଗୁଗଲ୍ ଏଆଇ ମଡେଲକୁ ଓଡ଼ିଆ ଶିକ୍ଷା ସଂଳାପ ଆଧାରରେ ପ୍ରଶିକ୍ଷିତ (Fine-Tune) କରିବା।'
+                                : 'Fine-tuning lightweight Google AI models specifically on school curriculum transcripts to deliver low-latency native colloquial Odia dialogue.'
+                            )}
+                            {activeRoadmapPhase === 2 && (
+                              deckLanguage === 'or'
+                                ? 'ସ୍ୱୟଂଚାଳିତ ଭଏସ୍-ଟୁ-ଭଏସ୍ ଏଆଇ ବ୍ୟବସ୍ଥା, ଯାହା ଗୁନ୍ଦୁଲୁକୁ ସମ୍ପୂର୍ଣ୍ଣ କଥାବାର୍ତ୍ତା ମାଧ୍ୟମରେ ପିଲାଙ୍କ ଉଚ୍ଚାରଣ ପରୀକ୍ଷା ଓ ଶିକ୍ଷା ଦେବାକୁ ସକ୍ଷମ କରିବ।'
+                                : 'Full end-to-end voice-to-voice synthesis, enabling Gundulu mascot to natively hold spoken dialogs and instantly evaluate students\' oral reading speed.'
+                            )}
                           </p>
                         </motion.div>
                       </AnimatePresence>
