@@ -19,12 +19,12 @@ To demonstrate the commercial viability and profound social footprint of Utkal S
 *   **📊 Project Current Status & Real-time Traction**:
     *   **Pilot User Base**: Successfully onboarded **434 active students** during our initial pilot phase, with **5 active paying premium subscribers** (validating the ₹99/month commercial interest).
     *   **Launch Targets**: 
-        *   *Short-term (Next 3 Months)*: Target **20,000+ onboarded students** once the official Google Play Store application goes live (currently in pre-launch with high student anticipation).
+        *   *Short-term (Next 3 Months)*: Target **20,000+ onboarded students** (our Progressive Web App is fully live and serving real state-board students, with high user anticipation for the upcoming Play Store release).
         *   *Mid-term (Year 1)*: Target **100,000+ (1 Lakh+) onboarded students** across Odisha.
     *   **100% Core Curriculum Aligned**: Standardized and populated curriculum roadmaps from **Class 1 to Class 10** in Firestore.
     *   **Full Study Notes Coverage**: Exposes premium bilingual study notes for all **448 chapters** across all school grades.
     *   **Smart Classes Open Library**: Fully integrated YouTube lesson curator, making curated video education 100% free and unlocked for all students.
-    *   **PWA / Play Store Ready**: Fully configured as an offline-preached Progressive Web App, ready for Google Play Store release as a Trusted Web Activity (TWA).
+    *   **PWA Deployed & Fully Live**: Fully configured, compiled, and deployed as a fast, offline-precached Progressive Web App on our custom domain, optimized for basic mobile devices and ready as a Trusted Web Activity (TWA).
 *   **🛠️ Gundulu AI Technical Evolution & Future Roadmap**:
     *   **Phase 1 (Current - RAG)**: Exposes textbook note repositories and video metadata through dynamic **Retrieval-Augmented Generation (RAG)** context injections, guaranteeing 100% syllabus accuracy.
     *   **Phase 2 (Mid-term - RAG + SFT)**: Transitioning to a hybrid **RAG + Supervised Fine-Tuning (SFT)** architecture. We plan to fine-tune lightweight open-source models (such as *Gemma-2B/7B*) on high-quality Odia dialogue logs to drastically lower latency and increase natural Odia conversations.
@@ -34,7 +34,8 @@ To demonstrate the commercial viability and profound social footprint of Utkal S
 
 ## 🚀 Hackathon Submission Quick Links
 
-*   **Live App URL**: [https://utkalskillcentre.com](https://utkalskillcentre.com) (or your Cloud Run / custom domain URL)
+*   **Live App URL**: [https://utkalskillcentre.com](https://utkalskillcentre.com)
+*   **✨ Interactive Judge Showcase Link**: [https://utkalskillcentre.com?showcase=true](https://utkalskillcentre.com?showcase=true) *(Loads the landing page in English by default, dynamically exposing the gold pulsing presentation launcher button for non-logged-in judges and permanent sessions in the sidebar!)*
 *   **Judge Demo Credentials (OTP Bypass)**:
     *   **Phone Number**: `1234567890` (configured in Firebase Console)
     *   **OTP Verification Code**: `123456`
