@@ -950,7 +950,16 @@ Sample tone for Class 6-10:
               </motion.span>
             </button>
             <button
-              onClick={() => onExit()}
+              onClick={async () => {
+                try {
+                  await signOut(auth);
+                  localStorage.clear();
+                  window.location.href = '/';
+                } catch (err) {
+                  console.error("Sign out error:", err);
+                  onExit();
+                }
+              }}
               className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-red-400/60 hover:text-red-400 hover:bg-red-500/10 transition-all group"
             >
               <LogOut size={20} className="group-hover:rotate-180 transition-transform duration-500" />
