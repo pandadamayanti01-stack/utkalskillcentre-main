@@ -426,7 +426,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                           <span className="text-amber-400">VIP</span>
                         </div>
                         <h3 className="text-xs font-black text-white truncate">
-                          {deckLanguage === 'or' ? 'ସୌମ୍ୟରଞ୍ଜନ ମହାପାତ୍ର' : 'Soumyaranjan Mohapatra'}
+                          {deckLanguage === 'or' ? 'ଅନୁରାଧା ପଣ୍ଡା' : 'Anuradha Panda'}
                         </h3>
                         <div className="flex justify-between items-center text-[8px] text-slate-400 font-bold mt-1">
                           <span>CLASS: 10 (ଓଡ଼ିଆ ବୋର୍ଡ)</span>
