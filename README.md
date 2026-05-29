@@ -9,10 +9,10 @@ Utkal Skill Centre is a bilingual educational PWA designed to bridge the digital
 ## 🚀 Hackathon Submission Quick Links
 
 *   **Live App URL**: [https://utkalskillcentre.com](https://utkalskillcentre.com) (or your Cloud Run / custom domain URL)
-*   **Judge Demo Credentials**:
-    *   **Username (Email)**: `judge@utkal.com`
-    *   **Password**: `JudgePassword123`
-    *   *(Note: This account is pre-registered in Firebase and pre-configured for Class 10 to instantly access state-board materials and AI Gundulu).*
+*   **Judge Demo Credentials (OTP Bypass)**:
+    *   **Phone Number**: `+91 99999 99999` (or any custom test number configured in Firebase Console)
+    *   **OTP Verification Code**: `123456`
+    *   *(Note: Simply enter the test phone number on the main login screen, select BSE Odisha / Class 10, and enter the bypass code `123456` when prompted. This allows judges to experience the exact same seamless mobile OTP flow that standard students in rural Odisha see, keeping the login flow 100% authentic without email/password fields.)*
 *   **FastMCP Server Source**: [scratch/hackathon_mcp_server.py](file:///d:/WebApp/utkalskillcentre-main/scratch/hackathon_mcp_server.py)
 
 ---
