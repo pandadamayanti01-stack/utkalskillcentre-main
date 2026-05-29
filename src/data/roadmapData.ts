@@ -5427,51 +5427,6 @@ export const ROADMAP_DATA_8 = [
         "thumbnail": null
       },
       {
-        "id": "gUmteSMlbYUAyHXcHhaA",
-        "title": "Chapter 1 - Drama Shabdaku Jibanta Kariba",
-        "title_en": "Making Words Alive",
-        "title_or": "ଶବ୍ଦକୁ ଜୀବନ୍ତ କରିବା",
-        "subject": "kruti",
-        "thumbnail": null
-      },
-      {
-        "id": "qUePXHPcBd32PjtGeivU",
-        "title": "Chapter 1 - Kabir ke Dohe Padyam",
-        "title_en": "Kabir ke Dohe (Padyam)",
-        "title_or": "କବୀରଙ୍କ ଦୋହା (ପଦ୍ୟ)",
-        "subject": "hindi_kalika",
-        "thumbnail": null
-      },
-      {
-        "id": "3kJOOcP3NEGAmH1vV2oi",
-        "title": "Chapter 1 - Aasa Utkaliya",
-        "title_en": "Come, O' Odia!",
-        "title_or": "ଆସ ଉତ୍କଳୀୟ",
-        "subject": "sahitya_surabhi",
-        "thumbnail": null
-      },
-      {
-        "id": "qiInqLIlt8BQdtxVxi4x",
-        "title": "Chapter 1 - Eng The Wit that Won Hes",
-        "title_en": "The Wit that Won Hearts",
-        "title_or": "ହୃଦୟ ଜିତିଥିବା ବୁଦ୍ଧି",
-        "subject": "jasmine",
-        "thumbnail": null
-      },
-      {
-        "id": "wTnfiVB0fW46HBTCYSO4",
-        "title": "Chapter 1 - Bhedabhavho Na Kabyah",
-        "title_en": "Discrimination Should Not Be Done",
-        "title_or": "ଭେଦଭାବଃ ନ କର୍ତ୍ତବ୍ୟଃ",
-        "subject": "sanskritakalika_3",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "July 2026",
-    "chapters": [
-      {
         "id": "qg5wbWsywFbEKqQZHjFO",
         "title": "Chapter 2 - Anujiba Jagata",
         "title_en": "Microbial World",
@@ -5485,6 +5440,14 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Natural Resources and Their Use",
         "title_or": "ପ୍ରାକୃତିକ ସମ୍ପଦ ଓ ତାହାର ବ୍ୟବହାର",
         "subject": "samajika_bignana",
+        "thumbnail": null
+      },
+      {
+        "id": "gUmteSMlbYUAyHXcHhaA",
+        "title": "Chapter 1 - Drama Shabdaku Jibanta Kariba",
+        "title_en": "Making Words Alive",
+        "title_or": "ଶବ୍ଦକୁ ଜୀବନ୍ତ କରିବା",
+        "subject": "kruti",
         "thumbnail": null
       },
       {
@@ -5512,6 +5475,14 @@ export const ROADMAP_DATA_8 = [
         "thumbnail": null
       },
       {
+        "id": "qUePXHPcBd32PjtGeivU",
+        "title": "Chapter 1 - Kabir ke Dohe Padyam",
+        "title_en": "Kabir ke Dohe (Padyam)",
+        "title_or": "କବୀରଙ୍କ ଦୋହା (ପଦ୍ୟ)",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
         "id": "Q99MflI3ut7wcOsb6Ypu",
         "title": "Chapter 2 - Ek Tokri Bhar Mitti Gadyam",
         "title_en": "Ek Tokri Bhar Mitti (Gadyam)",
@@ -5520,11 +5491,11 @@ export const ROADMAP_DATA_8 = [
         "thumbnail": null
       },
       {
-        "id": "6M6xPKuDJwfBTuwnEmR9",
-        "title": "Chapter 3 - Bana Do Madhur Mera Jeevan Padyam",
-        "title_en": "Bana Do Madhur Mera Jeevan (Padyam)",
-        "title_or": "ମୋ ଜୀବନକୁ ମଧୁର କରିଦିଅ (ପଦ୍ୟ)",
-        "subject": "hindi_kalika",
+        "id": "3kJOOcP3NEGAmH1vV2oi",
+        "title": "Chapter 1 - Aasa Utkaliya",
+        "title_en": "Come, O' Odia!",
+        "title_or": "ଆସ ଉତ୍କଳୀୟ",
+        "subject": "sahitya_surabhi",
         "thumbnail": null
       },
       {
@@ -5533,6 +5504,14 @@ export const ROADMAP_DATA_8 = [
         "title_en": "The Bird's Revolution",
         "title_or": "ବିହଙ୍ଗ ବିପ୍ଳବ",
         "subject": "sahitya_surabhi",
+        "thumbnail": null
+      },
+      {
+        "id": "qiInqLIlt8BQdtxVxi4x",
+        "title": "Chapter 1 - Eng The Wit that Won Hes",
+        "title_en": "The Wit that Won Hearts",
+        "title_or": "ହୃଦୟ ଜିତିଥିବା ବୁଦ୍ଧି",
+        "subject": "jasmine",
         "thumbnail": null
       },
       {
@@ -5560,6 +5539,14 @@ export const ROADMAP_DATA_8 = [
         "thumbnail": null
       },
       {
+        "id": "wTnfiVB0fW46HBTCYSO4",
+        "title": "Chapter 1 - Bhedabhavho Na Kabyah",
+        "title_en": "Discrimination Should Not Be Done",
+        "title_or": "ଭେଦଭାବଃ ନ କର୍ତ୍ତବ୍ୟଃ",
+        "subject": "sanskritakalika_3",
+        "thumbnail": null
+      },
+      {
         "id": "EoQZEBzY2A6znJYP6eb6",
         "title": "Chapter 2 - Yah Kriyaban Sah Panditah",
         "title_en": "He Who Acts Is Wise",
@@ -5570,21 +5557,13 @@ export const ROADMAP_DATA_8 = [
     ]
   },
   {
-    "month": "August 2026",
+    "month": "July 2026",
     "chapters": [
       {
         "id": "iqryqoQM09RWpcEkvghv",
         "title": "Chapter 3 - Swasthya Hi Sampada",
         "title_en": "Health is Wealth",
         "title_or": "ସ୍ୱାସ୍ଥ୍ୟ ହିଁ ସମ୍ପଦ",
-        "subject": "jigyasa",
-        "thumbnail": null
-      },
-      {
-        "id": "kJIZC7bUpZ5JPNo9rTIc",
-        "title": "Chapter 4 - Bidyutara Chumbakiya O Tapiya Prabhaba",
-        "title_en": "Magnetic and Thermal Effects of Electricity",
-        "title_or": "ବିଦ୍ୟୁତର ଚୁମ୍ବକୀୟ ଓ ତାପୀୟ ପ୍ରଭାବ",
         "subject": "jigyasa",
         "thumbnail": null
       },
@@ -5613,19 +5592,19 @@ export const ROADMAP_DATA_8 = [
         "thumbnail": null
       },
       {
-        "id": "neWQPkFPhE6xDSyq3la4",
-        "title": "Chapter 6 - Music Sangeetamaya Badyajantra",
-        "title_en": "Musical Instruments",
-        "title_or": "ସଙ୍ଗୀତମୟ ବାଦ୍ୟଯନ୍ତ୍ର",
-        "subject": "kruti",
-        "thumbnail": null
-      },
-      {
         "id": "lBLuk7Zlvq9nuxq7xK5L",
         "title": "Chapter 2 - KousalaBodha P1 Project02 Care And Feed Domestic Animals",
         "title_en": "Care and Feeding of Domestic Animals",
         "title_or": "ଗୃହପାଳିତ ପଶୁଙ୍କ ଯତ୍ନ ଓ ଖାଦ୍ୟ",
         "subject": "kausala_bodha",
+        "thumbnail": null
+      },
+      {
+        "id": "6M6xPKuDJwfBTuwnEmR9",
+        "title": "Chapter 3 - Bana Do Madhur Mera Jeevan Padyam",
+        "title_en": "Bana Do Madhur Mera Jeevan (Padyam)",
+        "title_or": "ମୋ ଜୀବନକୁ ମଧୁର କରିଦିଅ (ପଦ୍ୟ)",
+        "subject": "hindi_kalika",
         "thumbnail": null
       },
       {
@@ -5637,26 +5616,10 @@ export const ROADMAP_DATA_8 = [
         "thumbnail": null
       },
       {
-        "id": "mMOaS0WE2SK1MoIfw2L7",
-        "title": "Chapter 5 - Beti Padyam",
-        "title_en": "Beti (Padyam)",
-        "title_or": "ଝିଅ (ପଦ୍ୟ)",
-        "subject": "hindi_kalika",
-        "thumbnail": null
-      },
-      {
         "id": "bfrNyJe7eCAKcOaastWF",
         "title": "Chapter 3 - Shapatha",
         "title_en": "Oath",
         "title_or": "ଶପଥ",
-        "subject": "sahitya_surabhi",
-        "thumbnail": null
-      },
-      {
-        "id": "lq1G0y9q8Rv6mTdX0gSq",
-        "title": "Chapter 4 - Damkach",
-        "title_en": "Damkach",
-        "title_or": "ଦମକଚ",
         "subject": "sahitya_surabhi",
         "thumbnail": null
       },
@@ -5673,14 +5636,6 @@ export const ROADMAP_DATA_8 = [
         "title": "Chapter 4 - Eng A Tale of Valour",
         "title_en": "A Tale of Valour",
         "title_or": "ଏକ ବୀରତ୍ୱର କାହାଣୀ",
-        "subject": "jasmine",
-        "thumbnail": null
-      },
-      {
-        "id": "UFlowMVaGmmNBSfcbejd",
-        "title": "Chapter 5 - Eng Somebodys Mother",
-        "title_en": "Somebody's Mother",
-        "title_or": "କାହାର ମାଆ",
         "subject": "jasmine",
         "thumbnail": null
       },
@@ -5719,6 +5674,99 @@ export const ROADMAP_DATA_8 = [
     ]
   },
   {
+    "month": "August 2026",
+    "chapters": [
+      {
+        "id": "kJIZC7bUpZ5JPNo9rTIc",
+        "title": "Chapter 4 - Bidyutara Chumbakiya O Tapiya Prabhaba",
+        "title_en": "Magnetic and Thermal Effects of Electricity",
+        "title_or": "ବିଦ୍ୟୁତର ଚୁମ୍ବକୀୟ ଓ ତାପୀୟ ପ୍ରଭାବ",
+        "subject": "jigyasa",
+        "thumbnail": null
+      },
+      {
+        "id": "IFj0oMjo59w0bfJhdUkO",
+        "title": "Chapter 3 - SocSci Hist Maratha Samrajyara Udthana",
+        "title_en": "Rise of the Maratha Empire",
+        "title_or": "ମରାଠା ସାମ୍ରାଜ୍ୟର ଉତ୍ଥାନ",
+        "subject": "samajika_bignana",
+        "thumbnail": null
+      },
+      {
+        "id": "neWQPkFPhE6xDSyq3la4",
+        "title": "Chapter 6 - Music Sangeetamaya Badyajantra",
+        "title_en": "Musical Instruments",
+        "title_or": "ସଙ୍ଗୀତମୟ ବାଦ୍ୟଯନ୍ତ୍ର",
+        "subject": "kruti",
+        "thumbnail": null
+      },
+      {
+        "id": "36v8qNOveQOzg9RJDQHK",
+        "title": "Chapter 7 - Music Bharatiya Shastriya Sangeeta",
+        "title_en": "Indian Classical Music",
+        "title_or": "ଭାରତୀୟ ଶାସ୍ତ୍ରୀୟ ସଙ୍ଗୀତ",
+        "subject": "kruti",
+        "thumbnail": null
+      },
+      {
+        "id": "fHXYEFl3A7LSve9E7lNs",
+        "title": "Chapter 3 - KousalaBodha P2 Project03 Wood And Bamboo Work",
+        "title_en": "Wood and Bamboo Work",
+        "title_or": "କାଠ ଓ ବାଉଁଶ କାର୍ଯ୍ୟ",
+        "subject": "kausala_bodha",
+        "thumbnail": null
+      },
+      {
+        "id": "mMOaS0WE2SK1MoIfw2L7",
+        "title": "Chapter 5 - Beti Padyam",
+        "title_en": "Beti (Padyam)",
+        "title_or": "ଝିଅ (ପଦ୍ୟ)",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
+        "id": "87DI6rpBb5oLTKT8cqxy",
+        "title": "Chapter 6 - Bhakt Kavi Balram Das Gadyam",
+        "title_en": "Bhakt Kavi Balram Das (Gadyam)",
+        "title_or": "ଭକ୍ତ କବି ବଳରାମ ଦାସ (ଗଦ୍ୟ)",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
+        "id": "lq1G0y9q8Rv6mTdX0gSq",
+        "title": "Chapter 4 - Damkach",
+        "title_en": "Damkach",
+        "title_or": "ଦମକଚ",
+        "subject": "sahitya_surabhi",
+        "thumbnail": null
+      },
+      {
+        "id": "UFlowMVaGmmNBSfcbejd",
+        "title": "Chapter 5 - Eng Somebodys Mother",
+        "title_en": "Somebody's Mother",
+        "title_or": "କାହାର ମାଆ",
+        "subject": "jasmine",
+        "thumbnail": null
+      },
+      {
+        "id": "RkebiH5rqWq3FvSUIMWc",
+        "title": "Chapter 3 - Chapter 3",
+        "title_en": "Story of Numbers",
+        "title_or": "ସଂଖ୍ୟାର କାହାଣୀ",
+        "subject": "ganita_prakas",
+        "thumbnail": null
+      },
+      {
+        "id": "LMt93U9d6ZJKWI6ky9bj",
+        "title": "Chapter 5 - Utkalamani Gopabandhuh",
+        "title_en": "Utkalamani Gopabandhu",
+        "title_or": "ଉତ୍କଳମଣି ଗୋପବନ୍ଧୁଃ",
+        "subject": "sanskritakalika_3",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
     "month": "September 2026",
     "chapters": [
       {
@@ -5738,19 +5786,11 @@ export const ROADMAP_DATA_8 = [
         "thumbnail": null
       },
       {
-        "id": "IFj0oMjo59w0bfJhdUkO",
-        "title": "Chapter 3 - SocSci Hist Maratha Samrajyara Udthana",
-        "title_en": "Rise of the Maratha Empire",
-        "title_or": "ମରାଠା ସାମ୍ରାଜ୍ୟର ଉତ୍ଥାନ",
+        "id": "w3R1AqvBnDtog9phbgJt",
+        "title": "Chapter 4 - SocSci Hist Bharatare Oupanibesika Yuga",
+        "title_en": "Colonial Era in India",
+        "title_or": "ଭାରତରେ ଉପନିବେଶିକ ଯୁଗ",
         "subject": "samajika_bignana",
-        "thumbnail": null
-      },
-      {
-        "id": "36v8qNOveQOzg9RJDQHK",
-        "title": "Chapter 7 - Music Bharatiya Shastriya Sangeeta",
-        "title_en": "Indian Classical Music",
-        "title_or": "ଭାରତୀୟ ଶାସ୍ତ୍ରୀୟ ସଙ୍ଗୀତ",
-        "subject": "kruti",
         "thumbnail": null
       },
       {
@@ -5770,19 +5810,11 @@ export const ROADMAP_DATA_8 = [
         "thumbnail": null
       },
       {
-        "id": "fHXYEFl3A7LSve9E7lNs",
-        "title": "Chapter 3 - KousalaBodha P2 Project03 Wood And Bamboo Work",
-        "title_en": "Wood and Bamboo Work",
-        "title_or": "କାଠ ଓ ବାଉଁଶ କାର୍ଯ୍ୟ",
+        "id": "8LHS8I93vAWxEA1GcZJS",
+        "title": "Chapter 4 - KousalaBodha P2 Project04 Automated Sm Home",
+        "title_en": "Automated Smart Home",
+        "title_or": "ସ୍ୱୟଂଚାଳିତ ସ୍ମାର୍ଟ ହୋମ୍",
         "subject": "kausala_bodha",
-        "thumbnail": null
-      },
-      {
-        "id": "87DI6rpBb5oLTKT8cqxy",
-        "title": "Chapter 6 - Bhakt Kavi Balram Das Gadyam",
-        "title_en": "Bhakt Kavi Balram Das (Gadyam)",
-        "title_or": "ଭକ୍ତ କବି ବଳରାମ ଦାସ (ଗଦ୍ୟ)",
-        "subject": "hindi_kalika",
         "thumbnail": null
       },
       {
@@ -5834,10 +5866,10 @@ export const ROADMAP_DATA_8 = [
         "thumbnail": null
       },
       {
-        "id": "RkebiH5rqWq3FvSUIMWc",
-        "title": "Chapter 3 - Chapter 3",
-        "title_en": "Story of Numbers",
-        "title_or": "ସଂଖ୍ୟାର କାହାଣୀ",
+        "id": "5L5edZ4whoKapY9QDJx1",
+        "title": "Chapter 4 - Chapter 4",
+        "title_en": "Quadrilateral",
+        "title_or": "ଚତୁର୍ଭୁଜ",
         "subject": "ganita_prakas",
         "thumbnail": null
       },
@@ -5847,14 +5879,6 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Basic Skills of Sports: Athletics",
         "title_or": "କ୍ରୀଡ଼ାର ମୌଳିକ କୌଶଳ: ଆଥଲେଟିକ୍ସ",
         "subject": "khela_sikhya",
-        "thumbnail": null
-      },
-      {
-        "id": "LMt93U9d6ZJKWI6ky9bj",
-        "title": "Chapter 5 - Utkalamani Gopabandhuh",
-        "title_en": "Utkalamani Gopabandhu",
-        "title_or": "ଉତ୍କଳମଣି ଗୋପବନ୍ଧୁଃ",
-        "subject": "sanskritakalika_3",
         "thumbnail": null
       },
       {
@@ -5887,30 +5911,6 @@ export const ROADMAP_DATA_8 = [
         "thumbnail": null
       },
       {
-        "id": "cD6vsWeWITTGBsfqMsrS",
-        "title": "Chapter 8 - Padhara Pra Maulik Jougil Misrana",
-        "title_en": "Nature of Matter: Elements, Compounds, Mixtures",
-        "title_or": "ପଦାର୍ଥର ପ୍ରକୃତି: ମୌଳିକ, ଯୌଗିକ, ମିଶ୍ରଣ",
-        "subject": "jigyasa",
-        "thumbnail": null
-      },
-      {
-        "id": "w3R1AqvBnDtog9phbgJt",
-        "title": "Chapter 4 - SocSci Hist Bharatare Oupanibesika Yuga",
-        "title_en": "Colonial Era in India",
-        "title_or": "ଭାରତରେ ଉପନିବେଶିକ ଯୁଗ",
-        "subject": "samajika_bignana",
-        "thumbnail": null
-      },
-      {
-        "id": "C2RPpxIzAMqCoMEzFEJe",
-        "title": "Chapter 5 - SocSci Civ Sarbojanina Matadana O Nirbachana Byabastha",
-        "title_en": "Universal Suffrage and Electoral System",
-        "title_or": "ସାର୍ବଜନୀନ ମତଦାନ ଓ ନିର୍ବାଚନ ବ୍ୟବସ୍ଥା",
-        "subject": "samajika_bignana",
-        "thumbnail": null
-      },
-      {
         "id": "vY7YmlBf3OcrloVk0C7y",
         "title": "Chapter 10 - Dance Nrityara Abhyantarina Gatibidhi",
         "title_en": "Internal Movements of Dance",
@@ -5924,38 +5924,6 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Pan-Indian Dance Styles",
         "title_or": "ସର୍ବଭାରତୀୟ ନୃତ୍ୟଶୈଳୀ",
         "subject": "kruti",
-        "thumbnail": null
-      },
-      {
-        "id": "eJxYZ0YeS70gh9iytBep",
-        "title": "Chapter 12 - Dance Susthata Pain Nritya",
-        "title_en": "Dance for Wellness",
-        "title_or": "ସୁସ୍ଥତା ପାଇଁ ନୃତ୍ୟ",
-        "subject": "kruti",
-        "thumbnail": null
-      },
-      {
-        "id": "7toQnWUpQFnzMmCgwuOs",
-        "title": "Chapter 13 - Dance Abhinaba Samabesa O Paribana",
-        "title_en": "Innovative Inclusion and Change",
-        "title_or": "ଅଭିନବ ସମାବେଶ ଓ ପରିବର୍ତ୍ତନ",
-        "subject": "kruti",
-        "thumbnail": null
-      },
-      {
-        "id": "8LHS8I93vAWxEA1GcZJS",
-        "title": "Chapter 4 - KousalaBodha P2 Project04 Automated Sm Home",
-        "title_en": "Automated Smart Home",
-        "title_or": "ସ୍ୱୟଂଚାଳିତ ସ୍ମାର୍ଟ ହୋମ୍",
-        "subject": "kausala_bodha",
-        "thumbnail": null
-      },
-      {
-        "id": "sXyVXbgyn6fH92HDHbWB",
-        "title": "Chapter 5 - KousalaBodha P3 Project05 Water Management Review",
-        "title_en": "Water Management Review",
-        "title_or": "ଜଳ ପରିଚାଳନା ସମୀକ୍ଷା",
-        "subject": "kausala_bodha",
         "thumbnail": null
       },
       {
@@ -5975,26 +5943,10 @@ export const ROADMAP_DATA_8 = [
         "thumbnail": null
       },
       {
-        "id": "9hvNt5FbXKleVMI93rqJ",
-        "title": "Chapter 11 - Ek Aashirvaad Padyam",
-        "title_en": "Ek Aashirvaad (Padyam)",
-        "title_or": "ଏକ ଆଶୀର୍ବାଦ (ପଦ୍ୟ)",
-        "subject": "hindi_kalika",
-        "thumbnail": null
-      },
-      {
         "id": "UrzIzJUUa8gIxOeloHH1",
         "title": "Chapter 7 - Swapnila Bihanga",
         "title_en": "Dreamy Bird",
         "title_or": "ସ୍ୱପ୍ନିଳ ବିହଙ୍ଗ",
-        "subject": "sahitya_surabhi",
-        "thumbnail": null
-      },
-      {
-        "id": "i0mskISkcrdhNQJ2W8Dj",
-        "title": "Chapter 8 - Ahuti",
-        "title_en": "Offering",
-        "title_or": "ଆହୁତି",
         "subject": "sahitya_surabhi",
         "thumbnail": null
       },
@@ -6015,30 +5967,6 @@ export const ROADMAP_DATA_8 = [
         "thumbnail": null
       },
       {
-        "id": "ggS29zh199m5fY60kbYJ",
-        "title": "Chapter 10 - Eng The Cherry Tree",
-        "title_en": "The Cherry Tree",
-        "title_or": "ଚେରି ଗଛ",
-        "subject": "jasmine",
-        "thumbnail": null
-      },
-      {
-        "id": "5L5edZ4whoKapY9QDJx1",
-        "title": "Chapter 4 - Chapter 4",
-        "title_en": "Quadrilateral",
-        "title_or": "ଚତୁର୍ଭୁଜ",
-        "subject": "ganita_prakas",
-        "thumbnail": null
-      },
-      {
-        "id": "mHjUCUJZBrEd77BiiN1n",
-        "title": "Chapter 5 - Chapter 5",
-        "title_en": "Number Game",
-        "title_or": "ସଂଖ୍ୟା ଖେଳ",
-        "subject": "ganita_prakas",
-        "thumbnail": null
-      },
-      {
         "id": "01Yzlwy8LA0vJqE4N7AF",
         "title": "Chapter 4 - Sikhya Kridara Moulika Kausala TableTennis",
         "title_en": "Basic Skills of Sports: Table Tennis",
@@ -6053,6 +5981,91 @@ export const ROADMAP_DATA_8 = [
         "title_or": "କୁଷ୍ମାଣ୍ଡଭୋଜନଳୟଃ",
         "subject": "sanskritakalika_3",
         "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "November 2026",
+    "chapters": [
+      {
+        "id": "cD6vsWeWITTGBsfqMsrS",
+        "title": "Chapter 8 - Padhara Pra Maulik Jougil Misrana",
+        "title_en": "Nature of Matter: Elements, Compounds, Mixtures",
+        "title_or": "ପଦାର୍ଥର ପ୍ରକୃତି: ମୌଳିକ, ଯୌଗିକ, ମିଶ୍ରଣ",
+        "subject": "jigyasa",
+        "thumbnail": null
+      },
+      {
+        "id": "C2RPpxIzAMqCoMEzFEJe",
+        "title": "Chapter 5 - SocSci Civ Sarbojanina Matadana O Nirbachana Byabastha",
+        "title_en": "Universal Suffrage and Electoral System",
+        "title_or": "ସାର୍ବଜନୀନ ମତଦାନ ଓ ନିର୍ବାଚନ ବ୍ୟବସ୍ଥା",
+        "subject": "samajika_bignana",
+        "thumbnail": null
+      },
+      {
+        "id": "eJxYZ0YeS70gh9iytBep",
+        "title": "Chapter 12 - Dance Susthata Pain Nritya",
+        "title_en": "Dance for Wellness",
+        "title_or": "ସୁସ୍ଥତା ପାଇଁ ନୃତ୍ୟ",
+        "subject": "kruti",
+        "thumbnail": null
+      },
+      {
+        "id": "7toQnWUpQFnzMmCgwuOs",
+        "title": "Chapter 13 - Dance Abhinaba Samabesa O Paribana",
+        "title_en": "Innovative Inclusion and Change",
+        "title_or": "ଅଭିନବ ସମାବେଶ ଓ ପରିବର୍ତ୍ତନ",
+        "subject": "kruti",
+        "thumbnail": null
+      },
+      {
+        "id": "sXyVXbgyn6fH92HDHbWB",
+        "title": "Chapter 5 - KousalaBodha P3 Project05 Water Management Review",
+        "title_en": "Water Management Review",
+        "title_or": "ଜଳ ପରିଚାଳନା ସମୀକ୍ଷା",
+        "subject": "kausala_bodha",
+        "thumbnail": null
+      },
+      {
+        "id": "9hvNt5FbXKleVMI93rqJ",
+        "title": "Chapter 11 - Ek Aashirvaad Padyam",
+        "title_en": "Ek Aashirvaad (Padyam)",
+        "title_or": "ଏକ ଆଶୀର୍ବାଦ (ପଦ୍ୟ)",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
+        "id": "E8hnDqQ0K8Xu5RzHaR1G",
+        "title": "Chapter 12 - Paramparik Nritya Chhau Gadyam",
+        "title_en": "Traditional Chhau Dance",
+        "title_or": "ପାରମ୍ପରିକ ଛଉ ନୃତ୍ୟ",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
+        "id": "i0mskISkcrdhNQJ2W8Dj",
+        "title": "Chapter 8 - Ahuti",
+        "title_en": "Offering",
+        "title_or": "ଆହୁତି",
+        "subject": "sahitya_surabhi",
+        "thumbnail": null
+      },
+      {
+        "id": "ggS29zh199m5fY60kbYJ",
+        "title": "Chapter 10 - Eng The Cherry Tree",
+        "title_en": "The Cherry Tree",
+        "title_or": "ଚେରି ଗଛ",
+        "subject": "jasmine",
+        "thumbnail": null
+      },
+      {
+        "id": "mHjUCUJZBrEd77BiiN1n",
+        "title": "Chapter 5 - Chapter 5",
+        "title_en": "Number Game",
+        "title_or": "ସଂଖ୍ୟା ଖେଳ",
+        "subject": "ganita_prakas",
+        "thumbnail": null
       },
       {
         "id": "7gVPxYW5mZYOguLRRo3c",
@@ -6061,11 +6074,19 @@ export const ROADMAP_DATA_8 = [
         "title_or": "ଡିଜି ଭାରତମ୍",
         "subject": "sanskritakalika_3",
         "thumbnail": null
+      },
+      {
+        "id": "yhkbPJt9OPd7TfQNh69n",
+        "title": "Chapter 10 - Subhasitarasah Padyam",
+        "title_en": "The Essence of Good Sayings",
+        "title_or": "ସୁଭାଷିତରସଃ",
+        "subject": "sanskritakalika_3",
+        "thumbnail": null
       }
     ]
   },
   {
-    "month": "November 2026",
+    "month": "December 2026",
     "chapters": [
       {
         "id": "NeEicgy1wZbM7io51fZs",
@@ -6108,27 +6129,11 @@ export const ROADMAP_DATA_8 = [
         "thumbnail": null
       },
       {
-        "id": "RIGghMi66zW2k9QJ2z6D",
-        "title": "Chapter 16 - Visuals Sthira Bastu Chitranare Rangara Prayoga",
-        "title_en": "Application of Color in Still Life Painting",
-        "title_or": "ସ୍ଥିର ବସ୍ତୁ ଚିତ୍ରଣରେ ରଙ୍ଗର ପ୍ରୟୋଗ",
-        "subject": "kruti",
-        "thumbnail": null
-      },
-      {
         "id": "nrVCRGicUp3TzNKD8Z3u",
         "title": "Chapter 6 - KousalaBodha P3 Project06 Advertisement Preparation",
         "title_en": "Advertisement Preparation",
         "title_or": "ବିଜ୍ଞାପନ ପ୍ରସ୍ତୁତି",
         "subject": "kausala_bodha",
-        "thumbnail": null
-      },
-      {
-        "id": "E8hnDqQ0K8Xu5RzHaR1G",
-        "title": "Chapter 12 - Paramparik Nritya Chhau Gadyam",
-        "title_en": "Traditional Chhau Dance",
-        "title_or": "ପାରମ୍ପରିକ ଛଉ ନୃତ୍ୟ",
-        "subject": "hindi_kalika",
         "thumbnail": null
       },
       {
@@ -6196,33 +6201,17 @@ export const ROADMAP_DATA_8 = [
         "thumbnail": null
       },
       {
-        "id": "yhkbPJt9OPd7TfQNh69n",
-        "title": "Chapter 10 - Subhasitarasah Padyam",
-        "title_en": "The Essence of Good Sayings",
-        "title_or": "ସୁଭାଷିତରସଃ",
-        "subject": "sanskritakalika_3",
-        "thumbnail": null
-      },
-      {
         "id": "Zd9gJvts8UFdsj4y0vzW",
         "title": "Chapter 11 - Priyam Me Bharatabarsam",
         "title_en": "My Beloved India",
         "title_or": "ପ୍ରିୟଂ ମେ ଭାରତବର୍ଷମ୍",
         "subject": "sanskritakalika_3",
         "thumbnail": null
-      },
-      {
-        "id": "Kxdyx66UeCoH4Y1vHduR",
-        "title": "Chapter 12 - Navabarsam Subhamastu",
-        "title_en": "Happy New Year",
-        "title_or": "ନବବର୍ଷଂ ଶୁଭମସ୍ତୁ",
-        "subject": "sanskritakalika_3",
-        "thumbnail": null
       }
     ]
   },
   {
-    "month": "December 2026",
+    "month": "January 2027",
     "chapters": [
       {
         "id": "hav34cwpAJZciwdaLQHx",
@@ -6233,11 +6222,35 @@ export const ROADMAP_DATA_8 = [
         "thumbnail": null
       },
       {
+        "id": "EYdMQJxd3j8efzyuxj03",
+        "title": "Chapter 7 - SocSci Eco Utpadanara Karaka",
+        "title_en": "Factors of Production",
+        "title_or": "ଉତ୍ପାଦନର କାରକ",
+        "subject": "samajika_bignana",
+        "thumbnail": null
+      },
+      {
+        "id": "RIGghMi66zW2k9QJ2z6D",
+        "title": "Chapter 16 - Visuals Sthira Bastu Chitranare Rangara Prayoga",
+        "title_en": "Application of Color in Still Life Painting",
+        "title_or": "ସ୍ଥିର ବସ୍ତୁ ଚିତ୍ରଣରେ ରଙ୍ଗର ପ୍ରୟୋଗ",
+        "subject": "kruti",
+        "thumbnail": null
+      },
+      {
         "id": "5kA0hO0keJ6J5hbQoRqh",
         "title": "Chapter 17 - Visuals Bibhibna Sthanagudikare Lokamane",
         "title_en": "People in Different Places",
         "title_or": "ବିଭିନ୍ନ ସ୍ଥାନଗୁଡିକରେ ଲୋକମାନେ",
         "subject": "kruti",
+        "thumbnail": null
+      },
+      {
+        "id": "suw2Mk8fApB3N4wktuBI",
+        "title": "Chapter 7 - KousalaBodha P3 Planning For Skill Fair",
+        "title_en": "Planning for Skill Fair",
+        "title_or": "ଦକ୍ଷତା ମେଳା ପାଇଁ ଯୋଜନା",
+        "subject": "kausala_bodha",
         "thumbnail": null
       },
       {
@@ -6281,6 +6294,30 @@ export const ROADMAP_DATA_8 = [
         "thumbnail": null
       },
       {
+        "id": "uaqbpOUe3xFmStqXqqv3",
+        "title": "Chapter 7 - Chapter 7",
+        "title_en": "Proportional Reasoning - 1",
+        "title_or": "ସମାନୁପାତିକ ଯୁକ୍ତି-୧",
+        "subject": "ganita_prakas",
+        "thumbnail": null
+      },
+      {
+        "id": "ECZl0zUGOELMif3HnaVC",
+        "title": "Chapter 6 - Sikhya Yoga Complete",
+        "title_en": "Yoga",
+        "title_or": "ଯୋଗ",
+        "subject": "khela_sikhya",
+        "thumbnail": null
+      },
+      {
+        "id": "Kxdyx66UeCoH4Y1vHduR",
+        "title": "Chapter 12 - Navabarsam Subhamastu",
+        "title_en": "Happy New Year",
+        "title_or": "ନବବର୍ଷଂ ଶୁଭମସ୍ତୁ",
+        "subject": "sanskritakalika_3",
+        "thumbnail": null
+      },
+      {
         "id": "XlPfeLr3aTVIOiER82Je",
         "title": "Chapter 13 - Pitamahasya Patram",
         "title_en": "Grandfather's Letter",
@@ -6291,7 +6328,7 @@ export const ROADMAP_DATA_8 = [
     ]
   },
   {
-    "month": "January 2027",
+    "month": "February 2027",
     "chapters": [
       {
         "id": "pawyQEXVa6qArDfgU0iI",
@@ -6299,14 +6336,6 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Our Earth: A Unique Planet",
         "title_or": "ଆମ ପୃଥିବୀ: ଅନନ୍ୟ ଗ୍ରହ",
         "subject": "jigyasa",
-        "thumbnail": null
-      },
-      {
-        "id": "EYdMQJxd3j8efzyuxj03",
-        "title": "Chapter 7 - SocSci Eco Utpadanara Karaka",
-        "title_en": "Factors of Production",
-        "title_or": "ଉତ୍ପାଦନର କାରକ",
-        "subject": "samajika_bignana",
         "thumbnail": null
       },
       {
@@ -6323,14 +6352,6 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Promotion and Dissemination for Art Awareness",
         "title_or": "କଳା ସଚେତନତା ପାଇଁ ପ୍ରଚାର ପ୍ରସାରଣ",
         "subject": "kruti",
-        "thumbnail": null
-      },
-      {
-        "id": "suw2Mk8fApB3N4wktuBI",
-        "title": "Chapter 7 - KousalaBodha P3 Planning For Skill Fair",
-        "title_en": "Planning for Skill Fair",
-        "title_or": "ଦକ୍ଷତା ମେଳା ପାଇଁ ଯୋଜନା",
-        "subject": "kausala_bodha",
         "thumbnail": null
       },
       {
@@ -6358,22 +6379,6 @@ export const ROADMAP_DATA_8 = [
         "thumbnail": null
       },
       {
-        "id": "uaqbpOUe3xFmStqXqqv3",
-        "title": "Chapter 7 - Chapter 7",
-        "title_en": "Proportional Reasoning - 1",
-        "title_or": "ସମାନୁପାତିକ ଯୁକ୍ତି-୧",
-        "subject": "ganita_prakas",
-        "thumbnail": null
-      },
-      {
-        "id": "ECZl0zUGOELMif3HnaVC",
-        "title": "Chapter 6 - Sikhya Yoga Complete",
-        "title_en": "Yoga",
-        "title_or": "ଯୋଗ",
-        "subject": "khela_sikhya",
-        "thumbnail": null
-      },
-      {
         "id": "2LxFddYDwunV2VdhRWt7",
         "title": "Chapter 14 - Bharatagitika Padyam",
         "title_en": "Bharatagitika Verse",
@@ -6382,10 +6387,6 @@ export const ROADMAP_DATA_8 = [
         "thumbnail": null
       }
     ]
-  },
-  {
-    "month": "February 2027",
-    "chapters": []
   }
 ];
 
@@ -6411,10 +6412,26 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
+        "id": "2mEA3WeAUGKjhMFRPUX7",
+        "title": "Chapter 3 - ଋଷ୍ ବିପ୍ଳବ (Russian Revolution)",
+        "title_en": "Russian Revolution",
+        "title_or": "ଋଷ୍ ବିପ୍ଳବ",
+        "subject": "social_science",
+        "thumbnail": null
+      },
+      {
         "id": "y0XGJudDuhw7ls0m5mi8",
         "title": "Chapter 1 - ବର୍ଣ୍ଣ ଓ ଉଚ୍ଚାରଣ (Alphabet and Pronunciation)",
         "title_en": "Alphabet and Pronunciation",
         "title_or": "ବର୍ଣ୍ଣ ଓ ଉଚ୍ଚାରଣ",
+        "subject": "sanskrit_grammar",
+        "thumbnail": null
+      },
+      {
+        "id": "lIazLK6OKL3rDk7YFjlh",
+        "title": "Chapter 2 - ସନ୍ଧି (Sandhi)",
+        "title_en": "Sandhi",
+        "title_or": "ସନ୍ଧି",
         "subject": "sanskrit_grammar",
         "thumbnail": null
       },
@@ -6435,10 +6452,34 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
+        "id": "Lw4tIVKP91Dd0Iy3oUF8",
+        "title": "Chapter 2 - ସନ୍ଧି (Sandhi)",
+        "title_en": "Sandhi",
+        "title_or": "ସନ୍ଧି",
+        "subject": "odia_grammar",
+        "thumbnail": null
+      },
+      {
         "id": "yKY36WWkb8CdIuBCQ1hO",
         "title": "Chapter 1 - କାହା ମୁଖ ଅନାଇ ବଞ୍ଚିବି (Kaha Mukha Anai Banchibi)",
         "title_en": "Kaha Mukha Anai Banchibi",
         "title_or": "କାହା ମୁଖ ଅନାଇ ବଞ୍ଚିବି",
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "Jr6OIbv86jTvqRn5rxx5",
+        "title": "Chapter 2 - ପଦ୍ମ (Padma)",
+        "title_en": "Padma",
+        "title_or": "ପଦ୍ମ",
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "WqNinhXVwTwhO06s3viH",
+        "title": "Chapter 3 - ହେ ମୋର କଲମ (He Mora Kalama)",
+        "title_en": "He Mora Kalama",
+        "title_or": "ହେ ମୋର କଲମ",
         "subject": "odia",
         "thumbnail": null
       },
@@ -6459,119 +6500,10 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
-        "id": "rGUm6hTj7T1LCHHY5TGX",
-        "title": "Chapter 1 - ଅନମୋଲ ମୋତି (Anmol Moti)",
-        "title_en": "Anmol Moti",
-        "title_or": "ଅନମୋଲ ମୋତି",
-        "subject": "hindi",
-        "thumbnail": null
-      },
-      {
-        "id": "fyiknKsHDeWfQwvtXj4f",
-        "title": "Chapter 1 - ଭାରତ: ଆକାର ଓ ଅବସ୍ଥିତି (India: Size and Location)",
-        "title_en": "India: Size and Location",
-        "title_or": "ଭାରତ: ଆକାର ଓ ଅବସ୍ଥିତି",
-        "subject": "geography",
-        "thumbnail": null
-      },
-      {
-        "id": "cdv35i9pdX4ECOo0p5gK",
-        "title": "Chapter 1 - ବ୍ୟାକରଣ କ୍ୟୁଁ (Vyakaran Kyon)",
-        "title_en": "Vyakaran Kyon",
-        "title_or": "ବ୍ୟାକରଣ କ୍ୟୁଁ",
-        "subject": "hindi_grammar",
-        "thumbnail": null
-      },
-      {
-        "id": "iZLgi16I9AgPQhNXSi9C",
-        "title": "Chapter 1 - ଅମୂଲ୍ୟ ଉପହାର (The Priceless Gift)",
-        "title_en": "The Priceless Gift",
-        "title_or": "ଅମୂଲ୍ୟ ଉପହାର",
-        "subject": "english",
-        "thumbnail": null
-      },
-      {
-        "id": "gBf1RAvCLU15TTO2jQ1a",
-        "title": "Chapter 1 - ବାକ୍ୟର ବିଭିନ୍ନ ଅଂଶ (Parts of a Sentence)",
-        "title_en": "Parts of a Sentence",
-        "title_or": "ବାକ୍ୟର ବିଭିନ୍ନ ଅଂଶ",
-        "subject": "english_grammar",
-        "thumbnail": null
-      },
-      {
-        "id": "rEwPDUZHAwzJA0ZEEEp9",
-        "title": "Chapter 1 - ସେଟ୍ ପ୍ରକ୍ରିୟା ଏବଂ ସେଟ୍ର ପ୍ରୟୋଗ (Set Operations and Application)",
-        "title_en": "Set Operations and Application",
-        "title_or": "ସେଟ୍ ପ୍ରକ୍ରିୟା ଏବଂ ସେଟ୍ର ପ୍ରୟୋଗ",
-        "subject": "algebra",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "July 2026",
-    "chapters": [
-      {
-        "id": "2mEA3WeAUGKjhMFRPUX7",
-        "title": "Chapter 3 - ଋଷ୍ ବିପ୍ଳବ (Russian Revolution)",
-        "title_en": "Russian Revolution",
-        "title_or": "ଋଷ୍ ବିପ୍ଳବ",
-        "subject": "social_science",
-        "thumbnail": null
-      },
-      {
-        "id": "lHklp4vwTIHqXU4Jc9jz",
-        "title": "Chapter 4 - ରାଷ୍ଟ୍ରସଂଘ (League of Nations)",
-        "title_en": "League of Nations",
-        "title_or": "ରାଷ୍ଟ୍ରସଂଘ",
-        "subject": "social_science",
-        "thumbnail": null
-      },
-      {
-        "id": "lIazLK6OKL3rDk7YFjlh",
-        "title": "Chapter 2 - ସନ୍ଧି (Sandhi)",
-        "title_en": "Sandhi",
-        "title_or": "ସନ୍ଧି",
-        "subject": "sanskrit_grammar",
-        "thumbnail": null
-      },
-      {
-        "id": "Lw4tIVKP91Dd0Iy3oUF8",
-        "title": "Chapter 2 - ସନ୍ଧି (Sandhi)",
-        "title_en": "Sandhi",
-        "title_or": "ସନ୍ଧି",
-        "subject": "odia_grammar",
-        "thumbnail": null
-      },
-      {
-        "id": "Jr6OIbv86jTvqRn5rxx5",
-        "title": "Chapter 2 - ପଦ୍ମ (Padma)",
-        "title_en": "Padma",
-        "title_or": "ପଦ୍ମ",
-        "subject": "odia",
-        "thumbnail": null
-      },
-      {
-        "id": "WqNinhXVwTwhO06s3viH",
-        "title": "Chapter 3 - ହେ ମୋର କଲମ (He Mora Kalama)",
-        "title_en": "He Mora Kalama",
-        "title_or": "ହେ ମୋର କଲମ",
-        "subject": "odia",
-        "thumbnail": null
-      },
-      {
         "id": "fk2sQqUlVO353XQRdPId",
         "title": "Chapter 3 - ସତ୍ୟମ୍ (Satyam)",
         "title_en": "Satyam",
         "title_or": "ସତ୍ୟମ୍",
-        "subject": "sanskrit",
-        "thumbnail": null
-      },
-      {
-        "id": "iMszk3rwT4xG08FrG2Tz",
-        "title": "Chapter 4 - ଆତ୍ମଗୁଣବିକାସନମ୍ (Atmagunavikashanam)",
-        "title_en": "Atmagunavikashanam",
-        "title_or": "ଆତ୍ମଗୁଣବିକାସନମ୍",
         "subject": "sanskrit",
         "thumbnail": null
       },
@@ -6584,11 +6516,27 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
+        "id": "rGUm6hTj7T1LCHHY5TGX",
+        "title": "Chapter 1 - ଅନମୋଲ ମୋତି (Anmol Moti)",
+        "title_en": "Anmol Moti",
+        "title_or": "ଅନମୋଲ ମୋତି",
+        "subject": "hindi",
+        "thumbnail": null
+      },
+      {
         "id": "JBthtDAGoOki4cB8nGWj",
         "title": "Chapter 2 - ପ୍ରିୟତମ (Priyatam)",
         "title_en": "Priyatam",
         "title_or": "ପ୍ରିୟତମ",
         "subject": "hindi",
+        "thumbnail": null
+      },
+      {
+        "id": "fyiknKsHDeWfQwvtXj4f",
+        "title": "Chapter 1 - ଭାରତ: ଆକାର ଓ ଅବସ୍ଥିତି (India: Size and Location)",
+        "title_en": "India: Size and Location",
+        "title_or": "ଭାରତ: ଆକାର ଓ ଅବସ୍ଥିତି",
+        "subject": "geography",
         "thumbnail": null
       },
       {
@@ -6600,6 +6548,14 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
+        "id": "cdv35i9pdX4ECOo0p5gK",
+        "title": "Chapter 1 - ବ୍ୟାକରଣ କ୍ୟୁଁ (Vyakaran Kyon)",
+        "title_en": "Vyakaran Kyon",
+        "title_or": "ବ୍ୟାକରଣ କ୍ୟୁଁ",
+        "subject": "hindi_grammar",
+        "thumbnail": null
+      },
+      {
         "id": "PpuUH6k8Zd4ZDsjumAPm",
         "title": "Chapter 2 - ଧ୍ୱନି ଓ ବର୍ଣ୍ଣ (Dhwani aur Varna)",
         "title_en": "Dhwani aur Varna",
@@ -6608,11 +6564,27 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
+        "id": "iZLgi16I9AgPQhNXSi9C",
+        "title": "Chapter 1 - ଅମୂଲ୍ୟ ଉପହାର (The Priceless Gift)",
+        "title_en": "The Priceless Gift",
+        "title_or": "ଅମୂଲ୍ୟ ଉପହାର",
+        "subject": "english",
+        "thumbnail": null
+      },
+      {
         "id": "GvuaRVweENJ0IQxt61aR",
         "title": "Chapter 2 - ଦି ସ୍ୱିମର୍ ହୁ ଡଜ୍ ନଟ୍ ନିଡ୍ ହର୍ ଲେଗ୍ସ! (The Swimmer Who Does Not Need Her Legs!)",
         "title_en": "The Swimmer Who Does Not Need Her Legs!",
         "title_or": "ଦି ସ୍ୱିମର୍ ହୁ ଡଜ୍ ନଟ୍ ନିଡ୍ ହର୍ ଲେଗ୍ସ!",
         "subject": "english",
+        "thumbnail": null
+      },
+      {
+        "id": "gBf1RAvCLU15TTO2jQ1a",
+        "title": "Chapter 1 - ବାକ୍ୟର ବିଭିନ୍ନ ଅଂଶ (Parts of a Sentence)",
+        "title_en": "Parts of a Sentence",
+        "title_or": "ବାକ୍ୟର ବିଭିନ୍ନ ଅଂଶ",
+        "subject": "english_grammar",
         "thumbnail": null
       },
       {
@@ -6630,12 +6602,28 @@ export const ROADMAP_DATA_9 = [
         "title_or": "ଜୈବ ବିବିଧତା",
         "subject": "life_science",
         "thumbnail": null
+      },
+      {
+        "id": "rEwPDUZHAwzJA0ZEEEp9",
+        "title": "Chapter 1 - ସେଟ୍ ପ୍ରକ୍ରିୟା ଏବଂ ସେଟ୍ର ପ୍ରୟୋଗ (Set Operations and Application)",
+        "title_en": "Set Operations and Application",
+        "title_or": "ସେଟ୍ ପ୍ରକ୍ରିୟା ଏବଂ ସେଟ୍ର ପ୍ରୟୋଗ",
+        "subject": "algebra",
+        "thumbnail": null
       }
     ]
   },
   {
-    "month": "August 2026",
+    "month": "July 2026",
     "chapters": [
+      {
+        "id": "lHklp4vwTIHqXU4Jc9jz",
+        "title": "Chapter 4 - ରାଷ୍ଟ୍ରସଂଘ (League of Nations)",
+        "title_en": "League of Nations",
+        "title_or": "ରାଷ୍ଟ୍ରସଂଘ",
+        "subject": "social_science",
+        "thumbnail": null
+      },
       {
         "id": "IQkasymIxvsf9sr3g1iW",
         "title": "Chapter 5 - ଫାସୀବାଦ ଓ ନାଜୀବାଦ (Fascism and Nazism)",
@@ -6653,14 +6641,6 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
-        "id": "XcRhkYqY94jx6vDTvHvp",
-        "title": "Chapter 7 - ଏସିଆ ଓ ଆଫ୍ରିକାରେ ଜାତୀୟତାବାଦୀ ଆନ୍ଦୋଳନ (Nationalist Movement in Asia and Africa)",
-        "title_en": "Nationalist Movement in Asia and Africa",
-        "title_or": "ଏସିଆ ଓ ଆଫ୍ରିକାରେ ଜାତୀୟତାବାଦୀ ଆନ୍ଦୋଳନ",
-        "subject": "social_science",
-        "thumbnail": null
-      },
-      {
         "id": "YOW4E9RoWcw8eUDrkRRo",
         "title": "Chapter 3 - ପଦ ପ୍ରକରଣ (Pada Prakarana)",
         "title_en": "Pada Prakarana",
@@ -6673,14 +6653,6 @@ export const ROADMAP_DATA_9 = [
         "title": "Chapter 2 - ଆମ ଚାରିପାଖରେ ଥିବା ପଦାର୍ଥ ବିଶୁଦ୍ଧ କି ? (Is Matter Around us Pure ?)",
         "title_en": "Is Matter Around us Pure ?",
         "title_or": "ଆମ ଚାରିପାଖରେ ଥିବା ପଦାର୍ଥ ବିଶୁଦ୍ଧ କି ?",
-        "subject": "physical_science",
-        "thumbnail": null
-      },
-      {
-        "id": "7N752CSW8XbfdUppZXDj",
-        "title": "Chapter 3 - ପରମାଣୁ ଓ ଅଣୁ (Atoms and Molecules)",
-        "title_en": "Atoms and Molecules",
-        "title_or": "ପରମାଣୁ ଓ ଅଣୁ",
         "subject": "physical_science",
         "thumbnail": null
       },
@@ -6709,11 +6681,11 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
-        "id": "1N7VM22WVz084JMZirSR",
-        "title": "Chapter 6 - ପାଇକବଧୂର ଉଦ୍ବୋଧନ (Paikabadhura Udbodhana)",
-        "title_en": "Paikabadhura Udbodhana",
-        "title_or": "ପାଇକବଧୂର ଉଦ୍ବୋଧନ",
-        "subject": "odia",
+        "id": "iMszk3rwT4xG08FrG2Tz",
+        "title": "Chapter 4 - ଆତ୍ମଗୁଣବିକାସନମ୍ (Atmagunavikashanam)",
+        "title_en": "Atmagunavikashanam",
+        "title_or": "ଆତ୍ମଗୁଣବିକାସନମ୍",
+        "subject": "sanskrit",
         "thumbnail": null
       },
       {
@@ -6729,22 +6701,6 @@ export const ROADMAP_DATA_9 = [
         "title": "Chapter 6 - ସମୟାନୁବର୍ତ୍ତିତା (Samayanuvartita)",
         "title_en": "Samayanuvartita",
         "title_or": "ସମୟାନୁବର୍ତ୍ତିତା",
-        "subject": "sanskrit",
-        "thumbnail": null
-      },
-      {
-        "id": "OMQbWlwORSGVEtSzY9RQ",
-        "title": "Chapter 7 - ମୂଢଃ ସହାୟକଃ (Mudhah Sahayakah)",
-        "title_en": "Mudhah Sahayakah",
-        "title_or": "ମୂଢଃ ସହାୟକଃ",
-        "subject": "sanskrit",
-        "thumbnail": null
-      },
-      {
-        "id": "jQB36mhrinIF75k0PUrC",
-        "title": "Chapter 8 - ସମ୍ଭାଷଣମ୍ (ପ୍ରଥମମ୍) (Sambhashanam - 1)",
-        "title_en": "Sambhashanam - 1",
-        "title_or": "ସମ୍ଭାଷଣମ୍ (ପ୍ରଥମମ୍)",
         "subject": "sanskrit",
         "thumbnail": null
       },
@@ -6769,14 +6725,6 @@ export const ROADMAP_DATA_9 = [
         "title": "Chapter 3 - ବିପତ୍ତି ଓ ବିପର୍ଯ୍ୟୟ (Hazards and Disasters)",
         "title_en": "Hazards and Disasters",
         "title_or": "ବିପତ୍ତି ଓ ବିପର୍ଯ୍ୟୟ",
-        "subject": "geography",
-        "thumbnail": null
-      },
-      {
-        "id": "O9nsm2MEgV0ILr73DZRE",
-        "title": "Chapter 4 - ଭାରତର ନଦୀନଦୀ (Rivers of India)",
-        "title_en": "Rivers of India",
-        "title_or": "ଭାରତର ନଦୀନଦୀ",
         "subject": "geography",
         "thumbnail": null
       },
@@ -6813,26 +6761,10 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
-        "id": "ZhnFwn2Lt2wFhYmGaHNf",
-        "title": "Chapter 5 - ଏ ହିରୋ (A Hero)",
-        "title_en": "A Hero",
-        "title_or": "ଏ ହିରୋ",
-        "subject": "english",
-        "thumbnail": null
-      },
-      {
         "id": "BHwUb0J9ifDW3kp7PvM3",
         "title": "Chapter 3 - ସମୟ ଓ କାଳ (Time and Tense)",
         "title_en": "Time and Tense",
         "title_or": "ସମୟ ଓ କାଳ",
-        "subject": "english_grammar",
-        "thumbnail": null
-      },
-      {
-        "id": "eabduSMZCWgHyK6qziSX",
-        "title": "Chapter 4 - ସହାୟକ କ୍ରିୟା (Auxiliaries)",
-        "title_en": "Auxiliaries",
-        "title_or": "ସହାୟକ କ୍ରିୟା",
         "subject": "english_grammar",
         "thumbnail": null
       },
@@ -6855,8 +6787,16 @@ export const ROADMAP_DATA_9 = [
     ]
   },
   {
-    "month": "September 2026",
+    "month": "August 2026",
     "chapters": [
+      {
+        "id": "XcRhkYqY94jx6vDTvHvp",
+        "title": "Chapter 7 - ଏସିଆ ଓ ଆଫ୍ରିକାରେ ଜାତୀୟତାବାଦୀ ଆନ୍ଦୋଳନ (Nationalist Movement in Asia and Africa)",
+        "title_en": "Nationalist Movement in Asia and Africa",
+        "title_or": "ଏସିଆ ଓ ଆଫ୍ରିକାରେ ଜାତୀୟତାବାଦୀ ଆନ୍ଦୋଳନ",
+        "subject": "social_science",
+        "thumbnail": null
+      },
       {
         "id": "U0ShrSvguGfnh2JYBA5N",
         "title": "Chapter 8 - ଶୀତଳ ଯୁଦ୍ଧ (Cold War)",
@@ -6865,6 +6805,139 @@ export const ROADMAP_DATA_9 = [
         "subject": "social_science",
         "thumbnail": null
       },
+      {
+        "id": "IzXG8bBzzMYjmFqWmWmB",
+        "title": "Chapter 4 - ଲିଙ୍ଗ, ବଚନ ଓ ପୁରୁଷ (Gender, Number and Person)",
+        "title_en": "Gender, Number and Person",
+        "title_or": "ଲିଙ୍ଗ, ବଚନ ଓ ପୁରୁଷ",
+        "subject": "sanskrit_grammar",
+        "thumbnail": null
+      },
+      {
+        "id": "7N752CSW8XbfdUppZXDj",
+        "title": "Chapter 3 - ପରମାଣୁ ଓ ଅଣୁ (Atoms and Molecules)",
+        "title_en": "Atoms and Molecules",
+        "title_or": "ପରମାଣୁ ଓ ଅଣୁ",
+        "subject": "physical_science",
+        "thumbnail": null
+      },
+      {
+        "id": "vEGRwCrWdEIHquuxbeYs",
+        "title": "Chapter 4 - ଉପସର୍ଗ (Upasarga)",
+        "title_en": "Upasarga",
+        "title_or": "ଉପସର୍ଗ",
+        "subject": "odia_grammar",
+        "thumbnail": null
+      },
+      {
+        "id": "1N7VM22WVz084JMZirSR",
+        "title": "Chapter 6 - ପାଇକବଧୂର ଉଦ୍ବୋଧନ (Paikabadhura Udbodhana)",
+        "title_en": "Paikabadhura Udbodhana",
+        "title_or": "ପାଇକବଧୂର ଉଦ୍ବୋଧନ",
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "KMCqES4FdGCdqTdO92vL",
+        "title": "Chapter 7 - ମାଟିର ମଣିଷ (Matira Manisha)",
+        "title_en": "Matira Manisha",
+        "title_or": "ମାଟିର ମଣିଷ",
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "OMQbWlwORSGVEtSzY9RQ",
+        "title": "Chapter 7 - ମୂଢଃ ସହାୟକଃ (Mudhah Sahayakah)",
+        "title_en": "Mudhah Sahayakah",
+        "title_or": "ମୂଢଃ ସହାୟକଃ",
+        "subject": "sanskrit",
+        "thumbnail": null
+      },
+      {
+        "id": "jQB36mhrinIF75k0PUrC",
+        "title": "Chapter 8 - ସମ୍ଭାଷଣମ୍ (ପ୍ରଥମମ୍) (Sambhashanam - 1)",
+        "title_en": "Sambhashanam - 1",
+        "title_or": "ସମ୍ଭାଷଣମ୍ (ପ୍ରଥମମ୍)",
+        "subject": "sanskrit",
+        "thumbnail": null
+      },
+      {
+        "id": "rEUrbOixH7CfDLYBkByE",
+        "title": "Chapter 9 - ସମ୍ଭାଷଣମ୍ (ଦ୍ୱିତୀୟମ୍) (Sambhashanam - 2)",
+        "title_en": "Sambhashanam - 2",
+        "title_or": "ସମ୍ଭାଷଣମ୍ (ଦ୍ୱିତୀୟମ୍)",
+        "subject": "sanskrit",
+        "thumbnail": null
+      },
+      {
+        "id": "5YsDHmIIyx9cWlSRkMtz",
+        "title": "Chapter 3 - ଚତୁର୍ଭୁଜ (Quadrilaterals)",
+        "title_en": "Quadrilaterals",
+        "title_or": "ଚତୁର୍ଭୁଜ",
+        "subject": "geometry",
+        "thumbnail": null
+      },
+      {
+        "id": "DrHRFzklM1fDyiE9jpYF",
+        "title": "Chapter 4 - ଫିର୍ ମହାନ ବନ୍ (Phir Mahan Ban)",
+        "title_en": "Phir Mahan Ban",
+        "title_or": "ଫିର୍ ମହାନ ବନ୍",
+        "subject": "hindi",
+        "thumbnail": null
+      },
+      {
+        "id": "O9nsm2MEgV0ILr73DZRE",
+        "title": "Chapter 4 - ଭାରତର ନଦୀନଦୀ (Rivers of India)",
+        "title_en": "Rivers of India",
+        "title_or": "ଭାରତର ନଦୀନଦୀ",
+        "subject": "geography",
+        "thumbnail": null
+      },
+      {
+        "id": "0nC1xq4nA4PAbSpm9HmF",
+        "title": "Chapter 5 - ସଂଜ୍ଞା (Sangya)",
+        "title_en": "Sangya",
+        "title_or": "ସଂଜ୍ଞା",
+        "subject": "hindi_grammar",
+        "thumbnail": null
+      },
+      {
+        "id": "ZhnFwn2Lt2wFhYmGaHNf",
+        "title": "Chapter 5 - ଏ ହିରୋ (A Hero)",
+        "title_en": "A Hero",
+        "title_or": "ଏ ହିରୋ",
+        "subject": "english",
+        "thumbnail": null
+      },
+      {
+        "id": "mNFf275kL1ZKnLf3PF9H",
+        "title": "Chapter 6 - ହୋମ ଆଣ୍ଡ ଲଭ (Home and Love)",
+        "title_en": "Home and Love",
+        "title_or": "ହୋମ ଆଣ୍ଡ ଲଭ",
+        "subject": "english",
+        "thumbnail": null
+      },
+      {
+        "id": "eabduSMZCWgHyK6qziSX",
+        "title": "Chapter 4 - ସହାୟକ କ୍ରିୟା (Auxiliaries)",
+        "title_en": "Auxiliaries",
+        "title_or": "ସହାୟକ କ୍ରିୟା",
+        "subject": "english_grammar",
+        "thumbnail": null
+      },
+      {
+        "id": "vnVRu3EZt43dfDmC52hC",
+        "title": "Chapter 3 - ବୀଜଗାଣିତିକ ପରିପ୍ରକାଶ ଓ ଅଭେଦ (Algebraic Expressions and Identities)",
+        "title_en": "Algebraic Expressions and Identities",
+        "title_or": "ବୀଜଗାଣିତିକ ପରିପ୍ରକାଶ ଓ ଅଭେଦ",
+        "subject": "algebra",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "September 2026",
+    "chapters": [
       {
         "id": "2C1U9w0qENS5V1PHtfd7",
         "title": "Chapter 9 - ସାମରିକ ମେଣ୍ଟ ଓ ଅସ୍ତ୍ରଶସ୍ତ୍ର ପ୍ରତିଯୋଗିତା (Military Alliances and Armaments)",
@@ -6890,22 +6963,6 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
-        "id": "8SzSMjSR5pk4aAOuOXBN",
-        "title": "Chapter 12 - ଭାରତୀୟ ସଂସ୍କୃତି: ଏକତା ଓ ବିବିଧତା (Indian Culture: Unity and Diversity)",
-        "title_en": "Indian Culture: Unity and Diversity",
-        "title_or": "ଭାରତୀୟ ସଂସ୍କୃତି: ଏକତା ଓ ବିବିଧତା",
-        "subject": "social_science",
-        "thumbnail": null
-      },
-      {
-        "id": "IzXG8bBzzMYjmFqWmWmB",
-        "title": "Chapter 4 - ଲିଙ୍ଗ, ବଚନ ଓ ପୁରୁଷ (Gender, Number and Person)",
-        "title_en": "Gender, Number and Person",
-        "title_or": "ଲିଙ୍ଗ, ବଚନ ଓ ପୁରୁଷ",
-        "subject": "sanskrit_grammar",
-        "thumbnail": null
-      },
-      {
         "id": "PrFKKnmQE0oEIhPFlGKi",
         "title": "Chapter 5 - ଣତ୍ୱବିଧି (Nattwabidhi)",
         "title_en": "Nattwabidhi",
@@ -6922,27 +6979,11 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
-        "id": "vEGRwCrWdEIHquuxbeYs",
-        "title": "Chapter 4 - ଉପସର୍ଗ (Upasarga)",
-        "title_en": "Upasarga",
-        "title_or": "ଉପସର୍ଗ",
-        "subject": "odia_grammar",
-        "thumbnail": null
-      },
-      {
         "id": "CK2TuzmX7UJBmbEZ4frc",
         "title": "Chapter 5 - କୃଦନ୍ତ (Krudanta)",
         "title_en": "Krudanta",
         "title_or": "କୃଦନ୍ତ",
         "subject": "odia_grammar",
-        "thumbnail": null
-      },
-      {
-        "id": "KMCqES4FdGCdqTdO92vL",
-        "title": "Chapter 7 - ମାଟିର ମଣିଷ (Matira Manisha)",
-        "title_en": "Matira Manisha",
-        "title_or": "ମାଟିର ମଣିଷ",
-        "subject": "odia",
         "thumbnail": null
       },
       {
@@ -6959,14 +7000,6 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Bhasha O Jatiyata",
         "title_or": "ଭାଷା ଓ ଜାତୀୟତା",
         "subject": "odia",
-        "thumbnail": null
-      },
-      {
-        "id": "rEUrbOixH7CfDLYBkByE",
-        "title": "Chapter 9 - ସମ୍ଭାଷଣମ୍ (ଦ୍ୱିତୀୟମ୍) (Sambhashanam - 2)",
-        "title_en": "Sambhashanam - 2",
-        "title_or": "ସମ୍ଭାଷଣମ୍ (ଦ୍ୱିତୀୟମ୍)",
-        "subject": "sanskrit",
         "thumbnail": null
       },
       {
@@ -6994,27 +7027,11 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
-        "id": "ZuRNrqdwpq0BFFrEB0wn",
-        "title": "Chapter 13 - ପ୍ରହେଲିକାଃ (Prahelikah)",
-        "title_en": "Prahelikah",
-        "title_or": "ପ୍ରହେଲିକାଃ",
-        "subject": "sanskrit",
-        "thumbnail": null
-      },
-      {
-        "id": "5YsDHmIIyx9cWlSRkMtz",
-        "title": "Chapter 3 - ଚତୁର୍ଭୁଜ (Quadrilaterals)",
-        "title_en": "Quadrilaterals",
-        "title_or": "ଚତୁର୍ଭୁଜ",
+        "id": "waFHMnnjvCtoedjA4dkq",
+        "title": "Chapter 4 - କ୍ଷେତ୍ରଫଳ (Area)",
+        "title_en": "Area",
+        "title_or": "କ୍ଷେତ୍ରଫଳ",
         "subject": "geometry",
-        "thumbnail": null
-      },
-      {
-        "id": "DrHRFzklM1fDyiE9jpYF",
-        "title": "Chapter 4 - ଫିର୍ ମହାନ ବନ୍ (Phir Mahan Ban)",
-        "title_en": "Phir Mahan Ban",
-        "title_or": "ଫିର୍ ମହାନ ବନ୍",
-        "subject": "hindi",
         "thumbnail": null
       },
       {
@@ -7042,14 +7059,6 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
-        "id": "0nC1xq4nA4PAbSpm9HmF",
-        "title": "Chapter 5 - ସଂଜ୍ଞା (Sangya)",
-        "title_en": "Sangya",
-        "title_or": "ସଂଜ୍ଞା",
-        "subject": "hindi_grammar",
-        "thumbnail": null
-      },
-      {
         "id": "dPAB8D4AxQ8mIsDr9fNI",
         "title": "Chapter 6 - ଲିଙ୍ଗ (Ling)",
         "title_en": "Ling",
@@ -7063,14 +7072,6 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Vachan",
         "title_or": "ବଚନ",
         "subject": "hindi_grammar",
-        "thumbnail": null
-      },
-      {
-        "id": "mNFf275kL1ZKnLf3PF9H",
-        "title": "Chapter 6 - ହୋମ ଆଣ୍ଡ ଲଭ (Home and Love)",
-        "title_en": "Home and Love",
-        "title_or": "ହୋମ ଆଣ୍ଡ ଲଭ",
-        "subject": "english",
         "thumbnail": null
       },
       {
@@ -7114,14 +7115,6 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
-        "id": "vnVRu3EZt43dfDmC52hC",
-        "title": "Chapter 3 - ବୀଜଗାଣିତିକ ପରିପ୍ରକାଶ ଓ ଅଭେଦ (Algebraic Expressions and Identities)",
-        "title_en": "Algebraic Expressions and Identities",
-        "title_or": "ବୀଜଗାଣିତିକ ପରିପ୍ରକାଶ ଓ ଅଭେଦ",
-        "subject": "algebra",
-        "thumbnail": null
-      },
-      {
         "id": "3930hm9apoZ0o85WBnGZ",
         "title": "Chapter 4 - ବୀଜଗାଣିତିକ ସମୀକରଣ (Algebraic Equations)",
         "title_en": "Algebraic Equations",
@@ -7134,6 +7127,14 @@ export const ROADMAP_DATA_9 = [
   {
     "month": "October 2026",
     "chapters": [
+      {
+        "id": "8SzSMjSR5pk4aAOuOXBN",
+        "title": "Chapter 12 - ଭାରତୀୟ ସଂସ୍କୃତି: ଏକତା ଓ ବିବିଧତା (Indian Culture: Unity and Diversity)",
+        "title_en": "Indian Culture: Unity and Diversity",
+        "title_or": "ଭାରତୀୟ ସଂସ୍କୃତି: ଏକତା ଓ ବିବିଧତା",
+        "subject": "social_science",
+        "thumbnail": null
+      },
       {
         "id": "ezSz2DNgPXyHXBkbhgnO",
         "title": "Chapter 13 - ଭାରତୀୟ ପରମ୍ପରା (Indian Traditions)",
@@ -7151,22 +7152,6 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
-        "id": "AL057xKhnihUo6breKCh",
-        "title": "Chapter 15 - ଓଡ଼ିଶାର ସାଂସ୍କୃତିକ ଐତିହ୍ୟ (Heritage of Odisha)",
-        "title_en": "Heritage of Odisha",
-        "title_or": "ଓଡ଼ିଶାର ସାଂସ୍କୃତିକ ଐତିହ୍ୟ",
-        "subject": "social_science",
-        "thumbnail": null
-      },
-      {
-        "id": "YWsO8IRQ9KjVUQRSghjN",
-        "title": "Chapter 16 - ମୌଳିକ ଅଧିକାର (Fundamental Rights)",
-        "title_en": "Fundamental Rights",
-        "title_or": "මୌଳିକ ଅଧିକାର",
-        "subject": "social_science",
-        "thumbnail": null
-      },
-      {
         "id": "mB63nNs5bVFL0m0BK0cE",
         "title": "Chapter 6 - ଷତ୍ୱବିଧି (Sattwabidhi)",
         "title_en": "Sattwabidhi",
@@ -7175,26 +7160,10 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
-        "id": "yo6YAGb2MOKkAOaqD3iI",
-        "title": "Chapter 7 - ସନ୍ଧି ପ୍ରକରଣ (Sandhi Prakarana)",
-        "title_en": "Sandhi Prakarana",
-        "title_or": "ସନ୍ଧି ପ୍ରକରଣ",
-        "subject": "sanskrit_grammar",
-        "thumbnail": null
-      },
-      {
         "id": "zbMkQBkvgCwKK4TlL7QY",
         "title": "Chapter 5 - ଗତି (Motion)",
         "title_en": "Motion",
         "title_or": "ଗତି",
-        "subject": "physical_science",
-        "thumbnail": null
-      },
-      {
-        "id": "8V7Nu4EgwZC2Hh40VBTm",
-        "title": "Chapter 6 - ବଳ ଓ ଗତି ନିୟମ (Force and Laws of Motion)",
-        "title_en": "Force and Laws of Motion",
-        "title_or": "ବଳ ଓ ଗତି ନିୟମ",
         "subject": "physical_science",
         "thumbnail": null
       },
@@ -7231,19 +7200,11 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
-        "id": "tfqX4rqjRQZrnMYhJEyv",
-        "title": "Chapter 12 - ସମୂହ ଦୃଷ୍ଟି (Samuha Drusti)",
-        "title_en": "Samuha Drusti",
-        "title_or": "ସମୂହ ଦୃଷ୍ଟି",
-        "subject": "odia",
-        "thumbnail": null
-      },
-      {
-        "id": "7FyobyANPW6btXvwqWmM",
-        "title": "Chapter 13 - ଶକ୍ତି ଓ ଜ୍ଞାନ (Sakti O Jnana)",
-        "title_en": "Sakti O Jnana",
-        "title_or": "ଶକ୍ତି ଓ ଜ୍ଞାନ",
-        "subject": "odia",
+        "id": "ZuRNrqdwpq0BFFrEB0wn",
+        "title": "Chapter 13 - ପ୍ରହେଲିକାଃ (Prahelikah)",
+        "title_en": "Prahelikah",
+        "title_or": "ପ୍ରହେଲିକାଃ",
+        "subject": "sanskrit",
         "thumbnail": null
       },
       {
@@ -7260,6 +7221,123 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Vasumati",
         "title_or": "ବସୁମତୀ",
         "subject": "sanskrit",
+        "thumbnail": null
+      },
+      {
+        "id": "Y3kl8JjkwJZ4PPOqGBQk",
+        "title": "Chapter 6 - ସାଥୀ! ଦୁଃଖ ସେ ଘବରାତା ହୈ? (Sathi! Dukh se ghabrata hai?)",
+        "title_en": "Sathi! Dukh se ghabrata hai?",
+        "title_or": "ସାଥୀ! ଦୁଃଖ ସେ ଘବରାତା ହୈ?",
+        "subject": "hindi",
+        "thumbnail": null
+      },
+      {
+        "id": "703O1CdFmxgu7zoXgfkY",
+        "title": "Chapter 7 - ବନ୍ୟପ୍ରାଣୀ (Wildlife)",
+        "title_en": "Wildlife",
+        "title_or": "ବନ୍ୟପ୍ରାଣୀ",
+        "subject": "geography",
+        "thumbnail": null
+      },
+      {
+        "id": "Rj89kApl3YAVx2YvVMwW",
+        "title": "Chapter 8 - କାରକ (Karak)",
+        "title_en": "Karak",
+        "title_or": "କାରକ",
+        "subject": "hindi_grammar",
+        "thumbnail": null
+      },
+      {
+        "id": "ajqUzzqR1L9RTIN52mYd",
+        "title": "Chapter 9 - Nନୋ ମେନ ଆର ଫରେନ (No Men are Foreign)",
+        "title_en": "No Men are Foreign",
+        "title_or": "ନୋ ମେନ ଆର ଫରେନ",
+        "subject": "english",
+        "thumbnail": null
+      },
+      {
+        "id": "ubvJNXKPQuDkPH5Piwy0",
+        "title": "Chapter 7 - ଗଣନୀୟ ଓ ଅଗଣନୀୟ (Countables and Uncountables)",
+        "title_en": "Countables and Uncountables",
+        "title_or": "ଗଣନୀୟ ଓ ଅଗଣନୀୟ",
+        "subject": "english_grammar",
+        "thumbnail": null
+      },
+      {
+        "id": "0xrFdXfec6cLmqLdRElB",
+        "title": "Chapter 4 - ଖାଦ୍ୟ ସଂପଦର ଉନ୍ନତୀକରଣ (Improvement of Food Resources)",
+        "title_en": "Improvement of Food Resources",
+        "title_or": "ଖାଦ୍ୟ ସଂପଦର ଉନ୍ନତୀକରଣ",
+        "subject": "life_science",
+        "thumbnail": null
+      },
+      {
+        "id": "VWBNp0Z84ZMc7Cj5PsvO",
+        "title": "Chapter 5 - ସ୍ଥାନାଙ୍କ ଜ୍ୟାମିତି (Coordinate Geometry)",
+        "title_en": "Coordinate Geometry",
+        "title_or": "ସ୍ଥାନାଙ୍କ ଜ୍ୟାମିତି",
+        "subject": "algebra",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "November 2026",
+    "chapters": [
+      {
+        "id": "AL057xKhnihUo6breKCh",
+        "title": "Chapter 15 - ଓଡ଼ିଶାର ସାଂସ୍କୃତିକ ଐତିହ୍ୟ (Heritage of Odisha)",
+        "title_en": "Heritage of Odisha",
+        "title_or": "ଓଡ଼ିଶାର ସାଂସ୍କୃତିକ ଐତିହ୍ୟ",
+        "subject": "social_science",
+        "thumbnail": null
+      },
+      {
+        "id": "YWsO8IRQ9KjVUQRSghjN",
+        "title": "Chapter 16 - ମୌଳିକ ଅଧିକାର (Fundamental Rights)",
+        "title_en": "Fundamental Rights",
+        "title_or": "මୌଳିକ ଅଧିକାର",
+        "subject": "social_science",
+        "thumbnail": null
+      },
+      {
+        "id": "yo6YAGb2MOKkAOaqD3iI",
+        "title": "Chapter 7 - ସନ୍ଧି ପ୍ରକରଣ (Sandhi Prakarana)",
+        "title_en": "Sandhi Prakarana",
+        "title_or": "ସନ୍ଧି ପ୍ରକରଣ",
+        "subject": "sanskrit_grammar",
+        "thumbnail": null
+      },
+      {
+        "id": "8V7Nu4EgwZC2Hh40VBTm",
+        "title": "Chapter 6 - ବଳ ଓ ଗତି ନିୟମ (Force and Laws of Motion)",
+        "title_en": "Force and Laws of Motion",
+        "title_or": "ବଳ ଓ ଗତି ନିୟମ",
+        "subject": "physical_science",
+        "thumbnail": null
+      },
+      {
+        "id": "tP6MzQ0FlzU57M3bqBAS",
+        "title": "Chapter 8 - ବିଭକ୍ତି (Vibhakti)",
+        "title_en": "Vibhakti",
+        "title_or": "ବିଭକ୍ତି",
+        "subject": "odia_grammar",
+        "thumbnail": null
+      },
+      {
+        "id": "tfqX4rqjRQZrnMYhJEyv",
+        "title": "Chapter 12 - ସମୂହ ଦୃଷ୍ଟି (Samuha Drusti)",
+        "title_en": "Samuha Drusti",
+        "title_or": "ସମୂହ ଦୃଷ୍ଟି",
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "7FyobyANPW6btXvwqWmM",
+        "title": "Chapter 13 - ଶକ୍ତି ଓ ଜ୍ଞାନ (Sakti O Jnana)",
+        "title_en": "Sakti O Jnana",
+        "title_or": "ଶକ୍ତି ଓ ଜ୍ଞାନ",
+        "subject": "odia",
         "thumbnail": null
       },
       {
@@ -7287,27 +7365,11 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
-        "id": "waFHMnnjvCtoedjA4dkq",
-        "title": "Chapter 4 - କ୍ଷେତ୍ରଫଳ (Area)",
-        "title_en": "Area",
-        "title_or": "କ୍ଷେତ୍ରଫଳ",
-        "subject": "geometry",
-        "thumbnail": null
-      },
-      {
         "id": "CN2vF71fvpISYZQdSyo7",
         "title": "Chapter 5 - ପରିମିତି (Mensuration)",
         "title_en": "Mensuration",
         "title_or": "ପରିମିତି",
         "subject": "geometry",
-        "thumbnail": null
-      },
-      {
-        "id": "Y3kl8JjkwJZ4PPOqGBQk",
-        "title": "Chapter 6 - ସାଥୀ! ଦୁଃଖ ସେ ଘବରାତା ହୈ? (Sathi! Dukh se ghabrata hai?)",
-        "title_en": "Sathi! Dukh se ghabrata hai?",
-        "title_or": "ସାଥୀ! ଦୁଃଖ ସେ ଘବରାତା ହୈ?",
-        "subject": "hindi",
         "thumbnail": null
       },
       {
@@ -7319,27 +7381,11 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
-        "id": "703O1CdFmxgu7zoXgfkY",
-        "title": "Chapter 7 - ବନ୍ୟପ୍ରାଣୀ (Wildlife)",
-        "title_en": "Wildlife",
-        "title_or": "ବନ୍ୟପ୍ରାଣୀ",
-        "subject": "geography",
-        "thumbnail": null
-      },
-      {
         "id": "8qoKhfND9rO037ad2t0U",
         "title": "Chapter 8 - ଜନସଂଖ୍ୟା (Population)",
         "title_en": "Population",
         "title_or": "ଜନସଂଖ୍ୟା",
         "subject": "geography",
-        "thumbnail": null
-      },
-      {
-        "id": "Rj89kApl3YAVx2YvVMwW",
-        "title": "Chapter 8 - କାରକ (Karak)",
-        "title_en": "Karak",
-        "title_or": "କାରକ",
-        "subject": "hindi_grammar",
         "thumbnail": null
       },
       {
@@ -7351,11 +7397,11 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
-        "id": "ajqUzzqR1L9RTIN52mYd",
-        "title": "Chapter 9 - Nନୋ ମେନ ଆର ଫରେନ (No Men are Foreign)",
-        "title_en": "No Men are Foreign",
-        "title_or": "ନୋ ମେନ ଆର ଫରେନ",
-        "subject": "english",
+        "id": "uZAz2Q6dN6DyT1Q9V0lf",
+        "title": "Chapter 10 - ବିଶେଷଣ (Visheshan)",
+        "title_en": "Visheshan",
+        "title_or": "ବିଶେଷଣ",
+        "subject": "hindi_grammar",
         "thumbnail": null
       },
       {
@@ -7375,14 +7421,6 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
-        "id": "ubvJNXKPQuDkPH5Piwy0",
-        "title": "Chapter 7 - ଗଣନୀୟ ଓ ଅଗଣନୀୟ (Countables and Uncountables)",
-        "title_en": "Countables and Uncountables",
-        "title_or": "ଗଣନୀୟ ଓ ଅଗଣନୀୟ",
-        "subject": "english_grammar",
-        "thumbnail": null
-      },
-      {
         "id": "a3FM9EUPq77pzz3uFUYw",
         "title": "Chapter 8 - ନିର୍ଦ୍ଧାରକ (Determiners)",
         "title_en": "Determiners",
@@ -7391,25 +7429,17 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
-        "id": "0xrFdXfec6cLmqLdRElB",
-        "title": "Chapter 4 - ଖାଦ୍ୟ ସଂପଦର ଉନ୍ନତୀକରଣ (Improvement of Food Resources)",
-        "title_en": "Improvement of Food Resources",
-        "title_or": "ଖାଦ୍ୟ ସଂପଦର ଉନ୍ନତୀକରଣ",
-        "subject": "life_science",
-        "thumbnail": null
-      },
-      {
-        "id": "VWBNp0Z84ZMc7Cj5PsvO",
-        "title": "Chapter 5 - ସ୍ଥାନାଙ୍କ ଜ୍ୟାମିତି (Coordinate Geometry)",
-        "title_en": "Coordinate Geometry",
-        "title_or": "ସ୍ଥାନାଙ୍କ ଜ୍ୟାମିତି",
+        "id": "8espf73Ro8U4dlairG2N",
+        "title": "Chapter 6 - ଅନୁପାତ ଓ ସମାନୁପାତ (Ratio and Proportion)",
+        "title_en": "Ratio and Proportion",
+        "title_or": "ଅନୁପାତ ଓ ସମାନୁପାତ",
         "subject": "algebra",
         "thumbnail": null
       }
     ]
   },
   {
-    "month": "November 2026",
+    "month": "December 2026",
     "chapters": [
       {
         "id": "lokWbUXNv1TiWTClrKb9",
@@ -7436,14 +7466,6 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
-        "id": "Xr55vDovpG9aQG9FoCYE",
-        "title": "Chapter 20 - ସୂଚନା ଅଧିକାର ଆଇନ (Right to Information Act)",
-        "title_en": "Right to Information Act",
-        "title_or": "ସୂଚନା ଅଧିକାର ଆଇନ",
-        "subject": "social_science",
-        "thumbnail": null
-      },
-      {
         "id": "NSlIitLiAqzqlfyMXUB7",
         "title": "Chapter 8 - ଶବ୍ଦରୂପ (Word Declensions)",
         "title_en": "Word Declensions",
@@ -7457,14 +7479,6 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Gravitation",
         "title_or": "ମହାକର୍ଷଣ",
         "subject": "physical_science",
-        "thumbnail": null
-      },
-      {
-        "id": "tP6MzQ0FlzU57M3bqBAS",
-        "title": "Chapter 8 - ବିଭକ୍ତି (Vibhakti)",
-        "title_en": "Vibhakti",
-        "title_or": "ବିଭକ୍ତି",
-        "subject": "odia_grammar",
         "thumbnail": null
       },
       {
@@ -7488,14 +7502,6 @@ export const ROADMAP_DATA_9 = [
         "title": "Chapter 15 - ବୁଢ଼ା ଶଙ୍ଖାରି (Budha Sankhari)",
         "title_en": "Budha Sankhari",
         "title_or": "ବୁଢ଼ା ଶଙ୍ଖାରି",
-        "subject": "odia",
-        "thumbnail": null
-      },
-      {
-        "id": "rCld0xIyy8pnBqOAMmKa",
-        "title": "Chapter 16 - ପତାକା ଉତ୍ତୋଳନ (Pataka Uttolana)",
-        "title_en": "Pataka Uttolana",
-        "title_or": "ପତାକା ଉତ୍ତୋଳନ",
         "subject": "odia",
         "thumbnail": null
       },
@@ -7556,26 +7562,10 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
-        "id": "uZAz2Q6dN6DyT1Q9V0lf",
-        "title": "Chapter 10 - ବିଶେଷଣ (Visheshan)",
-        "title_en": "Visheshan",
-        "title_or": "ବିଶେଷଣ",
-        "subject": "hindi_grammar",
-        "thumbnail": null
-      },
-      {
         "id": "KYfj672DWB12DywHIS6G",
         "title": "Chapter 11 - କ୍ରିୟା (Kriya)",
         "title_en": "Kriya",
         "title_or": "କ୍ରିୟା",
-        "subject": "hindi_grammar",
-        "thumbnail": null
-      },
-      {
-        "id": "wmxW9qnrhFmWrvCT78Kx",
-        "title": "Chapter 12 - ଅବ୍ୟୟ (Avyaya)",
-        "title_en": "Avyaya",
-        "title_or": "ଅବ୍ୟୟ",
         "subject": "hindi_grammar",
         "thumbnail": null
       },
@@ -7620,14 +7610,6 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
-        "id": "8espf73Ro8U4dlairG2N",
-        "title": "Chapter 6 - ଅନୁପାତ ଓ ସମାନୁପାତ (Ratio and Proportion)",
-        "title_en": "Ratio and Proportion",
-        "title_or": "ଅନୁପାତ ଓ ସମାନୁପାତ",
-        "subject": "algebra",
-        "thumbnail": null
-      },
-      {
         "id": "JUK8CDGUs0lHEmEpQjv3",
         "title": "Chapter 7 - ପରିସଂଖ୍ୟାନ (Statistics)",
         "title_en": "Statistics",
@@ -7638,8 +7620,16 @@ export const ROADMAP_DATA_9 = [
     ]
   },
   {
-    "month": "December 2026",
+    "month": "January 2027",
     "chapters": [
+      {
+        "id": "Xr55vDovpG9aQG9FoCYE",
+        "title": "Chapter 20 - ସୂଚନା ଅଧିକାର ଆଇନ (Right to Information Act)",
+        "title_en": "Right to Information Act",
+        "title_or": "ସୂଚନା ଅଧିକାର ଆଇନ",
+        "subject": "social_science",
+        "thumbnail": null
+      },
       {
         "id": "HMXSJcDpabg4x730Xf5A",
         "title": "Chapter 21 - ଭାରତୀୟ ଜାତୀୟତାବାଦ (Indian Nationalism)",
@@ -7681,6 +7671,14 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
+        "id": "rCld0xIyy8pnBqOAMmKa",
+        "title": "Chapter 16 - ପତାକା ଉତ୍ତୋଳନ (Pataka Uttolana)",
+        "title_en": "Pataka Uttolana",
+        "title_or": "ପତାକା ଉତ୍ତୋଳନ",
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
         "id": "t6VtHOd0Ik4cjvSF7iK4",
         "title": "Chapter 17 - ଲକ୍ଷ୍ମୀର ଅଭିସାର (Lakshmira Abhisara)",
         "title_en": "Lakshmira Abhisara",
@@ -7713,6 +7711,14 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
+        "id": "yjYuvfGmjWGdhkca3gIB",
+        "title": "Chapter 7 - ତ୍ରିକୋଣମିତି (Trigonometry)",
+        "title_en": "Trigonometry",
+        "title_or": "ତ୍ରିକୋଣମିତି",
+        "subject": "geometry",
+        "thumbnail": null
+      },
+      {
         "id": "19Rm5C8WfJ3SVvhuinbr",
         "title": "Chapter 9 - ଜେଲ୍ ମେଁ ମେରେ ମିତ୍ର (My Friends in Jail)",
         "title_en": "My Friends in Jail",
@@ -7726,6 +7732,14 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Sustainable Development",
         "title_or": "ଧାରଣୀୟ ବିକାଶ",
         "subject": "geography",
+        "thumbnail": null
+      },
+      {
+        "id": "wmxW9qnrhFmWrvCT78Kx",
+        "title": "Chapter 12 - ଅବ୍ୟୟ (Avyaya)",
+        "title_en": "Avyaya",
+        "title_or": "ଅବ୍ୟୟ",
+        "subject": "hindi_grammar",
         "thumbnail": null
       },
       {
@@ -7759,17 +7773,41 @@ export const ROADMAP_DATA_9 = [
         "title_or": "ନକାରାତ୍ମକ ଓ ପ୍ରଶ୍ନବାଚକ",
         "subject": "english_grammar",
         "thumbnail": null
+      },
+      {
+        "id": "YtGyhKwlZXAghDyWFRtt",
+        "title": "Chapter 6 - ପ୍ରାକୃତିକ ସଂପଦ ଓ ତାହାର ପ୍ରଦୂଷଣ (Natural Resources & Its Pollution)",
+        "title_en": "Natural Resources & Its Pollution",
+        "title_or": "ପ୍ରାକୃତିକ ସଂପଦ ଓ ତାହାର ପ୍ରଦୂଷଣ",
+        "subject": "life_science",
+        "thumbnail": null
+      },
+      {
+        "id": "0iyOSoLXnySiCj8Hvzdp",
+        "title": "Chapter 8 - ସମ୍ଭାବ୍ୟତା (Probability)",
+        "title_en": "Probability",
+        "title_or": "ସମ୍ଭାବ୍ୟତା",
+        "subject": "algebra",
+        "thumbnail": null
       }
     ]
   },
   {
-    "month": "January 2027",
+    "month": "February 2027",
     "chapters": [
       {
         "id": "s9qKxFagtGp0Zto0RBdv",
         "title": "Chapter 23 - ଗଣତାନ୍ତ୍ରିକ ମୂଲ୍ୟବୋଧ (Democratic Values)",
         "title_en": "Democratic Values",
         "title_or": "ଗଣତାନ୍ତ୍ରିକ ମୂଲ୍ୟବୋଧ",
+        "subject": "social_science",
+        "thumbnail": null
+      },
+      {
+        "id": "YSweIvu1TSCytXm6lYBJ",
+        "title": "Chapter 24 - ସଂଯୁକ୍ତ ରାଷ୍ଟ୍ରସଂଘ ଓ ଭାରତ (United Nations and India)",
+        "title_en": "United Nations and India",
+        "title_or": "ସଂଯୁକ୍ତ ରାଷ୍ଟ୍ରସଂଘ ଓ ଭାରତ",
         "subject": "social_science",
         "thumbnail": null
       },
@@ -7822,11 +7860,11 @@ export const ROADMAP_DATA_9 = [
         "thumbnail": null
       },
       {
-        "id": "yjYuvfGmjWGdhkca3gIB",
-        "title": "Chapter 7 - ତ୍ରିକୋଣମିତି (Trigonometry)",
-        "title_en": "Trigonometry",
-        "title_or": "ତ୍ରିକୋଣମିତି",
-        "subject": "geometry",
+        "id": "3nOIxxrxzzZZVyb3xqLT",
+        "title": "Chapter 26 - ଚିତ୍ରବିଭାଗଃ (Picture Section)",
+        "title_en": "Picture Section",
+        "title_or": "ଚିତ୍ରବିଭାଗଃ",
+        "subject": "sanskrit",
         "thumbnail": null
       },
       {
@@ -7868,43 +7906,6 @@ export const ROADMAP_DATA_9 = [
         "title_or": "ବିଧେୟ ପଦବନ୍ଧ",
         "subject": "english_grammar",
         "thumbnail": null
-      },
-      {
-        "id": "YtGyhKwlZXAghDyWFRtt",
-        "title": "Chapter 6 - ପ୍ରାକୃତିକ ସଂପଦ ଓ ତାହାର ପ୍ରଦୂଷଣ (Natural Resources & Its Pollution)",
-        "title_en": "Natural Resources & Its Pollution",
-        "title_or": "ପ୍ରାକୃତିକ ସଂପଦ ଓ ତାହାର ପ୍ରଦୂଷଣ",
-        "subject": "life_science",
-        "thumbnail": null
-      },
-      {
-        "id": "0iyOSoLXnySiCj8Hvzdp",
-        "title": "Chapter 8 - ସମ୍ଭାବ୍ୟତା (Probability)",
-        "title_en": "Probability",
-        "title_or": "ସମ୍ଭାବ୍ୟତା",
-        "subject": "algebra",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "February 2027",
-    "chapters": [
-      {
-        "id": "YSweIvu1TSCytXm6lYBJ",
-        "title": "Chapter 24 - ସଂଯୁକ୍ତ ରାଷ୍ଟ୍ରସଂଘ ଓ ଭାରତ (United Nations and India)",
-        "title_en": "United Nations and India",
-        "title_or": "ସଂଯୁକ୍ତ ରାଷ୍ଟ୍ରସଂଘ ଓ ଭାରତ",
-        "subject": "social_science",
-        "thumbnail": null
-      },
-      {
-        "id": "3nOIxxrxzzZZVyb3xqLT",
-        "title": "Chapter 26 - ଚିତ୍ରବିଭାଗଃ (Picture Section)",
-        "title_en": "Picture Section",
-        "title_or": "ଚିତ୍ରବିଭାଗଃ",
-        "subject": "sanskrit",
-        "thumbnail": null
       }
     ]
   }
@@ -7920,6 +7921,14 @@ export const ROADMAP_DATA = [
         "title": "Chapter 1 - ଭୀମଙ୍କ ସିଂଘନାଦ ରଡ଼ି (Bhimanka Singhanada Radi)",
         "title_en": "Bhimanka Singhanada Radi",
         "title_or": "ଭୀମଙ୍କ ସିଂଘନାଦ ରଡ଼ି",
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "WJx36nRZJ0INsq7PIOma",
+        "title": "Chapter 2 - ରାଘବଙ୍କ ଲଙ୍କା ଯାତ୍ରାନୁକୂଳ (Raghabanka Lanka Jatranukula)",
+        "title_en": "Raghabanka Lanka Jatranukula",
+        "title_or": "ରାଘବଙ୍କ ଲଙ୍କା ଯାତ୍ରାନୁକୂଳ",
         "subject": "odia",
         "thumbnail": null
       },
@@ -7940,6 +7949,22 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
+        "id": "hidhAbSnwqVdU0YLK6KA",
+        "title": "Chapter 3 - ଭାରତରେ ଆଇନ ଅମାନ୍ୟ ଆନ୍ଦୋଳନ ଏବଂ ଏଥିରେ ଓଡ଼ିଶାର ଭୂମିକା (Civil Disobedience Movement in India and the role of Odisha in it)",
+        "title_en": "Civil Disobedience Movement in India and the role of Odisha in it",
+        "title_or": "ଭାରତରେ ଆଇନ ଅମାନ୍ୟ ଆନ୍ଦୋଳନ ଏବଂ ଏଥିରେ ଓଡ଼ିଶାର ଭୂମିକା",
+        "subject": "social_science",
+        "thumbnail": null
+      },
+      {
+        "id": "mKClBmBGmqPPBXBUMBea",
+        "title": "Anubada Prakarana",
+        "title_en": "Translation",
+        "title_or": "ଅନୁବାଦ ପ୍ରକରଣ",
+        "subject": "odia_grammar",
+        "thumbnail": null
+      },
+      {
         "id": "NTRImG9Zt18wGXzkNdoE",
         "title": "Chapter 1 - ଭାରତଗୀତିକା (Bharatagitika)",
         "title_en": "Bharatagitika",
@@ -7956,10 +7981,42 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
+        "id": "8Aic8Rbe715HhcUvdRb7",
+        "title": "Chapter 3 - ଉପଦେଶାମୃତମ୍ (Upadeshamrutam)",
+        "title_en": "Upadeshamrutam",
+        "title_or": "ଉପଦେଶାମୃତମ୍",
+        "subject": "sanskrit",
+        "thumbnail": null
+      },
+      {
+        "id": "Tb1Vumwx11BS8fzXU8b8",
+        "title": "Chapter 4 - ସୁଶିଷ୍ୟ ଉପମନ୍ୟୁଃ (Sushishyah Upamanyuh)",
+        "title_en": "Sushishyah Upamanyuh",
+        "title_or": "ସୁଶିଷ୍ୟ ଉପମନ୍ୟୁଃ",
+        "subject": "sanskrit",
+        "thumbnail": null
+      },
+      {
+        "id": "class10_sanskrit_grammar",
+        "title": "ସଂସ୍କୃତ ବ୍ୟାକରଣ (Class 10 Sanskrit Grammar)",
+        "title_en": "Class 10 Sanskrit Grammar",
+        "title_or": "ସଂସ୍କୃତ ବ୍ୟାକରଣ",
+        "subject": "Sanskrit",
+        "thumbnail": null
+      },
+      {
         "id": "vj31M0Mavg8DJajjqz2g",
         "title": "AGrainAsBigAsAHen sEgg Ready",
         "title_en": "A Grain As Big As A Hen's Egg",
         "title_or": "କୁକୁଡ଼ା ଅଣ୍ଡା ପରି ଏକ ଶସ୍ୟ",
+        "subject": "english",
+        "thumbnail": null
+      },
+      {
+        "id": "eEp8FUOklA6eNKU9V1XK",
+        "title": "AGreatSonOfIndia Ready",
+        "title_en": "A Great Son of India",
+        "title_or": "ଭାରତର ଜଣେ ମହାନ ପୁତ୍ର",
         "subject": "english",
         "thumbnail": null
       },
@@ -7972,6 +8029,14 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
+        "id": "tV23aNM5otdokzL0l501",
+        "title": "Atmanepada Vidhana",
+        "title_en": "Atmanepada Rules",
+        "title_or": "ଆତ୍ମନେପଦ ବିଧାନ",
+        "subject": "sanskrit_grammar",
+        "thumbnail": null
+      },
+      {
         "id": "CFYagyWavUlIHZBay0q7",
         "title": "Adverb Clauses",
         "title_en": "Adverb Clauses",
@@ -7980,10 +8045,34 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
+        "id": "5SuzqhklTz5pPn4wTv2E",
+        "title": "Direct and Indirect Speech",
+        "title_en": "Direct and Indirect Speech",
+        "title_or": "ପ୍ରତ୍ୟକ୍ଷ ଓ ପରୋକ୍ଷ ଉକ୍ତି",
+        "subject": "english_grammar",
+        "thumbnail": null
+      },
+      {
+        "id": "Vx3FQK8ZAl67KwvDi1Iy",
+        "title": "ପୋଷଣ (Nutrition)",
+        "title_en": "Nutrition",
+        "title_or": "ପୋଷଣ",
+        "subject": " ଜୀବବିଜ୍ଞାନ(Life Science)",
+        "thumbnail": null
+      },
+      {
         "id": "yEpFBOFHNX07NnGyz7k3",
         "title": "Conservation of Natural Resources",
         "title_en": "Conservation of Natural Resources",
         "title_or": "ପ୍ରାକୃତିକ ସମ୍ବଳର ସଂରକ୍ଷଣ",
+        "subject": "life_science",
+        "thumbnail": null
+      },
+      {
+        "id": "PVqIhNgzghFKacVchjs1",
+        "title": "Control and Coordination",
+        "title_en": "Control and Coordination",
+        "title_or": "ନିୟନ୍ତ୍ରଣ ଓ ସମନ୍ୱୟ",
         "subject": "life_science",
         "thumbnail": null
       },
@@ -7996,10 +8085,42 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
+        "id": "FN8FhsHoupXuZ30AMsCV",
+        "title": "Chapter 2 - ଭୂ ସମ୍ବଳ (Land Resources)",
+        "title_en": "Land Resources",
+        "title_or": "ଭୂ ସମ୍ବଳ",
+        "subject": "geography",
+        "thumbnail": null
+      },
+      {
+        "id": "7EEftwwhRxF503aiQ0Nb",
+        "title": "Tense Revisit",
+        "title_en": "Tense Revisit",
+        "title_or": "କାଳର ପୁନରାଲୋଚନା",
+        "subject": "English Grammar",
+        "thumbnail": null
+      },
+      {
+        "id": "TeYE3hAY504TO4x6zDiD",
+        "title": "Chapter 1 - ଗ୍ରାହକ କେନ୍ଦ୍ରିତ ସେବା (Customer Centric Service)",
+        "title_en": "Customer Centric Service",
+        "title_or": "ଗ୍ରାହକ କେନ୍ଦ୍ରିତ ସେବା",
+        "subject": "vocational",
+        "thumbnail": null
+      },
+      {
         "id": "r7qUHdqGQqYx26Xyh6H2",
         "title": "Chapter 1 - ଅନମୋଲ ବାଣୀ (Anmol Vani)",
         "title_en": "Anmol Vani",
         "title_or": "ଅନମୋଲ ବାଣୀ",
+        "subject": "hindi",
+        "thumbnail": null
+      },
+      {
+        "id": "Ocse7UkAtzq4TDN7oX1a",
+        "title": "Chapter 2 - ମନୁଷ୍ୟତା (Manushyata)",
+        "title_en": "Manushyata",
+        "title_or": "ମନୁଷ୍ୟତା",
         "subject": "hindi",
         "thumbnail": null
       },
@@ -8020,136 +8141,19 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "GEJMS5Ed5K6EsbwcRFdR",
-        "title": "All Things Bright and Beautiful ",
-        "title_en": "All Things Bright and Beautiful",
-        "title_or": "ସବୁ ଉଜ୍ଜ୍ୱଳ ଓ ସୁନ୍ଦର ବସ୍ତୁ",
-        "subject": "English",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "July 2026",
-    "chapters": [
-      {
-        "id": "WJx36nRZJ0INsq7PIOma",
-        "title": "Chapter 2 - ରାଘବଙ୍କ ଲଙ୍କା ଯାତ୍ରାନୁକୂଳ (Raghabanka Lanka Jatranukula)",
-        "title_en": "Raghabanka Lanka Jatranukula",
-        "title_or": "ରାଘବଙ୍କ ଲଙ୍କା ଯାତ୍ରାନୁକୂଳ",
-        "subject": "odia",
-        "thumbnail": null
-      },
-      {
-        "id": "hidhAbSnwqVdU0YLK6KA",
-        "title": "Chapter 3 - ଭାରତରେ ଆଇନ ଅମାନ୍ୟ ଆନ୍ଦୋଳନ ଏବଂ ଏଥିରେ ଓଡ଼ିଶାର ଭୂମିକା (Civil Disobedience Movement in India and the role of Odisha in it)",
-        "title_en": "Civil Disobedience Movement in India and the role of Odisha in it",
-        "title_or": "ଭାରତରେ ଆଇନ ଅମାନ୍ୟ ଆନ୍ଦୋଳନ ଏବଂ ଏଥିରେ ଓଡ଼ିଶାର ଭୂମିକା",
-        "subject": "social_science",
-        "thumbnail": null
-      },
-      {
-        "id": "it6lInKbY6uyMB8Or05j",
-        "title": "Chapter 4 - ଭାରତ ଛାଡ଼ ଆନ୍ଦୋଳନ ଏବଂ ଏଥିରେ ଓଡ଼ିଶାର ଭୂମିକା (Quit India Movement and the role of Odisha in it)",
-        "title_en": "Quit India Movement and the role of Odisha in it",
-        "title_or": "ଭାରତ ଛାଡ଼ ଆନ୍ଦୋଳନ ଏବଂ ଏଥିରେ ଓଡ଼ିଶାର ଭୂମିକା",
-        "subject": "social_science",
-        "thumbnail": null
-      },
-      {
-        "id": "mKClBmBGmqPPBXBUMBea",
-        "title": "Anubada Prakarana",
-        "title_en": "Translation",
-        "title_or": "ଅନୁବାଦ ପ୍ରକରଣ",
-        "subject": "odia_grammar",
-        "thumbnail": null
-      },
-      {
-        "id": "8Aic8Rbe715HhcUvdRb7",
-        "title": "Chapter 3 - ଉପଦେଶାମୃତମ୍ (Upadeshamrutam)",
-        "title_en": "Upadeshamrutam",
-        "title_or": "ଉପଦେଶାମୃତମ୍",
-        "subject": "sanskrit",
-        "thumbnail": null
-      },
-      {
-        "id": "Tb1Vumwx11BS8fzXU8b8",
-        "title": "Chapter 4 - ସୁଶିଷ୍ୟ ଉପମନ୍ୟୁଃ (Sushishyah Upamanyuh)",
-        "title_en": "Sushishyah Upamanyuh",
-        "title_or": "ସୁଶିଷ୍ୟ ଉପମନ୍ୟୁଃ",
-        "subject": "sanskrit",
-        "thumbnail": null
-      },
-      {
-        "id": "eEp8FUOklA6eNKU9V1XK",
-        "title": "AGreatSonOfIndia Ready",
-        "title_en": "A Great Son of India",
-        "title_or": "ଭାରତର ଜଣେ ମହାନ ପୁତ୍ର",
-        "subject": "english",
-        "thumbnail": null
-      },
-      {
-        "id": "tV23aNM5otdokzL0l501",
-        "title": "Atmanepada Vidhana",
-        "title_en": "Atmanepada Rules",
-        "title_or": "ଆତ୍ମନେପଦ ବିଧାନ",
-        "subject": "sanskrit_grammar",
-        "thumbnail": null
-      },
-      {
-        "id": "5SuzqhklTz5pPn4wTv2E",
-        "title": "Direct and Indirect Speech",
-        "title_en": "Direct and Indirect Speech",
-        "title_or": "ପ୍ରତ୍ୟକ୍ଷ ଓ ପରୋକ୍ଷ ଉକ୍ତି",
-        "subject": "english_grammar",
-        "thumbnail": null
-      },
-      {
-        "id": "PVqIhNgzghFKacVchjs1",
-        "title": "Control and Coordination",
-        "title_en": "Control and Coordination",
-        "title_or": "ନିୟନ୍ତ୍ରଣ ଓ ସମନ୍ୱୟ",
-        "subject": "life_science",
-        "thumbnail": null
-      },
-      {
-        "id": "FN8FhsHoupXuZ30AMsCV",
-        "title": "Chapter 2 - ଭୂ ସମ୍ବଳ (Land Resources)",
-        "title_en": "Land Resources",
-        "title_or": "ଭୂ ସମ୍ବଳ",
-        "subject": "geography",
-        "thumbnail": null
-      },
-      {
-        "id": "S5mmJU9l8kSVlYwIRhyr",
-        "title": "Chapter 3 - ମୃତ୍ତିକା ସମ୍ବଳ (Soil Resources)",
-        "title_en": "Soil Resources",
-        "title_or": "ମୃତ୍ତିକା ସମ୍ବଳ",
-        "subject": "geography",
-        "thumbnail": null
-      },
-      {
-        "id": "TeYE3hAY504TO4x6zDiD",
-        "title": "Chapter 1 - ଗ୍ରାହକ କେନ୍ଦ୍ରିତ ସେବା (Customer Centric Service)",
-        "title_en": "Customer Centric Service",
-        "title_or": "ଗ୍ରାହକ କେନ୍ଦ୍ରିତ ସେବା",
-        "subject": "vocational",
-        "thumbnail": null
-      },
-      {
-        "id": "Ocse7UkAtzq4TDN7oX1a",
-        "title": "Chapter 2 - ମନୁଷ୍ୟତା (Manushyata)",
-        "title_en": "Manushyata",
-        "title_or": "ମନୁଷ୍ୟତା",
-        "subject": "hindi",
-        "thumbnail": null
-      },
-      {
         "id": "smGn2FhZOvWvOynHoyTA",
         "title": "Chapter 2 - ହିନ୍ଦୀ ଧ୍ୱନି ଓ ବର୍ଣ୍ଣମାଳା (Hindi Dhwaniyan aur Varnamala)",
         "title_en": "Hindi Dhwaniyan aur Varnamala",
         "title_or": "ହିନ୍ଦୀ ଧ୍ୱନି ଓ ବର୍ଣ୍ଣମାଳା",
         "subject": "hindi_grammar",
+        "thumbnail": null
+      },
+      {
+        "id": "GEJMS5Ed5K6EsbwcRFdR",
+        "title": "All Things Bright and Beautiful ",
+        "title_en": "All Things Bright and Beautiful",
+        "title_or": "ସବୁ ଉଜ୍ଜ୍ୱଳ ଓ ସୁନ୍ଦର ବସ୍ତୁ",
+        "subject": "English",
         "thumbnail": null
       },
       {
@@ -8169,17 +8173,57 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
+        "id": "class10_vocational_tourism",
+        "title": "ବ୍ୟାବସାୟିକ ପର୍ଯ୍ୟଟନ (Class 10 Vocational Tourism)",
+        "title_en": "Class 10 Vocational Tourism",
+        "title_or": "ବ୍ୟାବସାୟିକ ପର୍ଯ୍ୟଟନ",
+        "subject": "Vocational",
+        "thumbnail": null
+      },
+      {
+        "id": "class10_hindi_grammar",
+        "title": "हिन्दी व्याकरण (Class 10 Hindi Grammar)",
+        "title_en": "हिन्दी व्याकरण",
+        "title_or": "Class 10 Hindi Grammar",
+        "subject": "Hindi",
+        "thumbnail": null
+      },
+      {
         "id": "lw9n7sG7qxnfbwm4kLY9",
         "title": "Chapter 1 - ସରଳ ସହସମୀକରଣ (Linear Simultaneous Equations)",
         "title_en": "Linear Simultaneous Equations",
         "title_or": "ସରଳ ସହସମୀକରଣ",
         "subject": "algebra",
         "thumbnail": null
+      },
+      {
+        "id": "x0or0kBIRph6tfIFj7xF",
+        "title": "ବାକ୍ୟ ବିଚାର",
+        "title_en": "Sentence Analysis",
+        "title_or": "ବାକ୍ୟ ବିଚାର",
+        "subject": "ଓଡ଼ିଆ ବ୍ୟାକରଣ (Odia Grammar)",
+        "thumbnail": null
+      },
+      {
+        "id": "HlfuVAm9dcK1gGpNkpuq",
+        "title": "ଜ୍ୟାମିତିରେ ସାଦୃଶ୍ୟ",
+        "title_en": "Similarity in Geometry",
+        "title_or": "ଜ୍ୟାମିତିରେ ସାଦୃଶ୍ୟ",
+        "subject": "Geometry",
+        "thumbnail": null
+      },
+      {
+        "id": "DJO5ghl1p9F3C6FLYFct",
+        "title": "ରାଘବଙ୍କ ଲଙ୍କା ଯାତ୍ରାନୁକୂଳ ",
+        "title_en": null,
+        "title_or": null,
+        "subject": "ସାହିତ୍ୟ",
+        "thumbnail": null
       }
     ]
   },
   {
-    "month": "August 2026",
+    "month": "July 2026",
     "chapters": [
       {
         "id": "xOZCdoyyy46eJqRv1aRJ",
@@ -8198,11 +8242,11 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "806nwqnsrDByCqCck3QV",
-        "title": "Chapter 5 - ଜାଗ ବନ୍ଧନହରା (Jaga Bandhanahara)",
-        "title_en": "Jaga Bandhanahara",
-        "title_or": "ଜାଗ ବନ୍ଧନହରା",
-        "subject": "odia",
+        "id": "it6lInKbY6uyMB8Or05j",
+        "title": "Chapter 4 - ଭାରତ ଛାଡ଼ ଆନ୍ଦୋଳନ ଏବଂ ଏଥିରେ ଓଡ଼ିଶାର ଭୂମିକା (Quit India Movement and the role of Odisha in it)",
+        "title_en": "Quit India Movement and the role of Odisha in it",
+        "title_or": "ଭାରତ ଛାଡ଼ ଆନ୍ଦୋଳନ ଏବଂ ଏଥିରେ ଓଡ଼ିଶାର ଭୂମିକା",
+        "subject": "social_science",
         "thumbnail": null
       },
       {
@@ -8218,22 +8262,6 @@ export const ROADMAP_DATA = [
         "title": "Chapter 6 - ଭାରତ ସ୍ଵାଧୀନତା ଆଇନ, ଭାରତ ବିଭାଜନ ଓ ସ୍ଵାଧୀନତା (Indian Independence Act, Partition of India and Independence)",
         "title_en": "Indian Independence Act, Partition of India and Independence",
         "title_or": "ଭାରତ ସ୍ଵାଧୀନତା ଆଇନ, ଭାରତ ବିଭାଜନ ଓ ସ୍ଵାଧୀନତା",
-        "subject": "social_science",
-        "thumbnail": null
-      },
-      {
-        "id": "0xPOBJuCH4LoFyvGR1J5",
-        "title": "Chapter 7 - ସ୍ବତନ୍ତ୍ର ଓଡ଼ିଶା ପ୍ରଦେଶ ଗଠନ (Formation of Separate Odisha Province)",
-        "title_en": "Formation of Separate Odisha Province",
-        "title_or": "ସ୍ବତନ୍ତ୍ର ଓଡ଼ିଶା ପ୍ରଦେଶ ଗଠନ",
-        "subject": "social_science",
-        "thumbnail": null
-      },
-      {
-        "id": "TpCW4PZaIe2JjqQSknqr",
-        "title": "Chapter 8 - ଉତ୍କଳ ସମ୍ମିଳନୀର ଗଠନ (Formation of Utkal Sammilani)",
-        "title_en": "Formation of Utkal Sammilani",
-        "title_or": "ଉତ୍କଳ ସମ୍ମିଳନୀର ଗଠନ",
         "subject": "social_science",
         "thumbnail": null
       },
@@ -8270,22 +8298,6 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "BvNQwxnTmLMWjAp278ee",
-        "title": "Chapter 8 - ଜନ୍ମବର୍ବରକଥା (Janmavarvarakatha)",
-        "title_en": "Janmavarvarakatha",
-        "title_or": "ଜନ୍ମବର୍ବରକଥା",
-        "subject": "sanskrit",
-        "thumbnail": null
-      },
-      {
-        "id": "class10_sanskrit_grammar",
-        "title": "ସଂସ୍କୃତ ବ୍ୟାକରଣ (Class 10 Sanskrit Grammar)",
-        "title_en": "Class 10 Sanskrit Grammar",
-        "title_or": "ସଂସ୍କୃତ ବ୍ୟାକରଣ",
-        "subject": "Sanskrit",
-        "thumbnail": null
-      },
-      {
         "id": "oIZWnuRA5uerdUx6ixMZ",
         "title": "AirPollutionAHiddenMenace Ready",
         "title_en": null,
@@ -8298,14 +8310,6 @@ export const ROADMAP_DATA = [
         "title": "ALetterToGod Ready",
         "title_en": "A Letter to God",
         "title_or": "ଭଗବାନଙ୍କୁ ଏକ ଚିଠି",
-        "subject": "english",
-        "thumbnail": null
-      },
-      {
-        "id": "rlh2LCv1oPp08CXV0KGm",
-        "title": "AllThingsBrightAndBeautiful Ready",
-        "title_en": "All Things Bright and Beautiful",
-        "title_or": "ସମସ୍ତ ଉଜ୍ଜ୍ୱଳ ଓ ସୁନ୍ଦର ବସ୍ତୁ",
         "subject": "english",
         "thumbnail": null
       },
@@ -8342,18 +8346,18 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "9bAXsQDwicPrXFs4TeR0",
-        "title": "Chapter 4 - ଅରଣ୍ୟ ସମ୍ବଳ (Forest Resources)",
-        "title_en": "Forest Resources",
-        "title_or": "ଅରଣ୍ୟ ସମ୍ବଳ",
+        "id": "S5mmJU9l8kSVlYwIRhyr",
+        "title": "Chapter 3 - ମୃତ୍ତିକା ସମ୍ବଳ (Soil Resources)",
+        "title_en": "Soil Resources",
+        "title_or": "ମୃତ୍ତିକା ସମ୍ବଳ",
         "subject": "geography",
         "thumbnail": null
       },
       {
-        "id": "ZPtKirnDPw2XrvXmWKjA",
-        "title": "Chapter 5 - ବନ୍ୟ ପ୍ରାଣୀ ସମ୍ବଳ (Wildlife Resources)",
-        "title_en": "Wildlife Resources",
-        "title_or": "ବନ୍ୟ ପ୍ରାଣୀ ସମ୍ବଳ",
+        "id": "9bAXsQDwicPrXFs4TeR0",
+        "title": "Chapter 4 - ଅରଣ୍ୟ ସମ୍ବଳ (Forest Resources)",
+        "title_en": "Forest Resources",
+        "title_or": "ଅରଣ୍ୟ ସମ୍ବଳ",
         "subject": "geography",
         "thumbnail": null
       },
@@ -8382,26 +8386,10 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "hN2uO4iyaCERFcPLmran",
-        "title": "Chapter 3 - ଧାତୁ ଓ ଅଧାତୁ (Metals and Non-Metals)",
-        "title_en": "Metals and Non-Metals",
-        "title_or": "ଧାତୁ ଓ ଅଧାତୁ",
-        "subject": "physical_science",
-        "thumbnail": null
-      },
-      {
         "id": "7BOrXipBSKlbjyiTYdw1",
         "title": "Chapter 3 - ଲେଖନ (ବର୍ତ୍ତନୀ) (Lekhan - Vartani / Spelling)",
         "title_en": "Lekhan - Vartani / Spelling",
         "title_or": "ଲେଖନ (ବର୍ତ୍ତନୀ)",
-        "subject": "hindi_grammar",
-        "thumbnail": null
-      },
-      {
-        "id": "xUCwgb2VnLdf0MAN22l5",
-        "title": "Chapter 4 - ଶବ୍ଦ-ବିଚାର (Shabd-Vichar - Word Analysis)",
-        "title_en": "Shabd-Vichar - Word Analysis",
-        "title_or": "ଶବ୍ଦ-ବିଚାର",
         "subject": "hindi_grammar",
         "thumbnail": null
       },
@@ -8414,27 +8402,11 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "F2D4CKuEkoyogm3kjPs5",
-        "title": "School's Goodbye - Farewell and Future Paths | ବିଦ୍ୟାଳୟର ବିଦାୟ - ଭବିଷ୍ୟତ ପାଇଁ ପ୍ରସ୍ତୁତି",
-        "title_en": "School's Goodbye",
-        "title_or": "Farewell and Future Paths | ବିଦ୍ୟାଳୟର ବିଦାୟ - ଭବିଷ୍ୟତ ପାଇଁ ପ୍ରସ୍ତୁତି",
-        "subject": "English",
-        "thumbnail": null
-      },
-      {
         "id": "bq9cINIoZgSaIWag7JLM",
         "title": "Chapter 2 - ବୃତ୍ତ (Circles)",
         "title_en": "Circles",
         "title_or": "ବୃତ୍ତ",
         "subject": "geometry",
-        "thumbnail": null
-      },
-      {
-        "id": "class10_hindi_grammar",
-        "title": "हिन्दी व्याकरण (Class 10 Hindi Grammar)",
-        "title_en": "हिन्दी व्याकरण",
-        "title_or": "Class 10 Hindi Grammar",
-        "subject": "Hindi",
         "thumbnail": null
       },
       {
@@ -8448,8 +8420,16 @@ export const ROADMAP_DATA = [
     ]
   },
   {
-    "month": "September 2026",
+    "month": "August 2026",
     "chapters": [
+      {
+        "id": "806nwqnsrDByCqCck3QV",
+        "title": "Chapter 5 - ଜାଗ ବନ୍ଧନହରା (Jaga Bandhanahara)",
+        "title_en": "Jaga Bandhanahara",
+        "title_or": "ଜାଗ ବନ୍ଧନହରା",
+        "subject": "odia",
+        "thumbnail": null
+      },
       {
         "id": "050OFWWLYZ9HcVNXPlDg",
         "title": "Chapter 6 - ସର୍ବଂସହା ମାଟି (Sarbansaha Mati)",
@@ -8458,6 +8438,163 @@ export const ROADMAP_DATA = [
         "subject": "odia",
         "thumbnail": null
       },
+      {
+        "id": "0xPOBJuCH4LoFyvGR1J5",
+        "title": "Chapter 7 - ସ୍ବତନ୍ତ୍ର ଓଡ଼ିଶା ପ୍ରଦେଶ ଗଠନ (Formation of Separate Odisha Province)",
+        "title_en": "Formation of Separate Odisha Province",
+        "title_or": "ସ୍ବତନ୍ତ୍ର ଓଡ଼ିଶା ପ୍ରଦେଶ ଗଠନ",
+        "subject": "social_science",
+        "thumbnail": null
+      },
+      {
+        "id": "TpCW4PZaIe2JjqQSknqr",
+        "title": "Chapter 8 - ଉତ୍କଳ ସମ୍ମିଳନୀର ଗଠନ (Formation of Utkal Sammilani)",
+        "title_en": "Formation of Utkal Sammilani",
+        "title_or": "ଉତ୍କଳ ସମ୍ମିଳନୀର ଗଠନ",
+        "subject": "social_science",
+        "thumbnail": null
+      },
+      {
+        "id": "WB6De31pzTVtVaAQCxS9",
+        "title": "Chapter 9 - ୧୯୩୬ ମସିହା ପର୍ଯ୍ୟନ୍ତ ଓଡ଼ିଆ ଆନ୍ଦୋଳନ ଓ ସ୍ଵତନ୍ତ୍ର ଓଡ଼ିଶା ପ୍ରଦେଶ ଗଠନ (Odia Movement till 1936 and Formation of Separate Odisha Province)",
+        "title_en": "Odia Movement till 1936 and Formation of Separate Odisha Province",
+        "title_or": "୧୯୩୬ ମସିହା ପର୍ଯ୍ୟନ୍ତ ଓଡ଼ିଆ ଆନ୍ଦୋଳନ ଓ ସ୍ଵତନ୍ତ୍ର ଓଡ଼ିଶା ପ୍ରଦେଶ ଗଠନ",
+        "subject": "social_science",
+        "thumbnail": null
+      },
+      {
+        "id": "BmrPG6YsY0WeoqZoUFzk",
+        "title": "Chhanda O Alankara",
+        "title_en": "Prosody and Figures of Speech",
+        "title_or": "ଛନ୍ଦ ଓ ଅଳଙ୍କାର",
+        "subject": "odia_grammar",
+        "thumbnail": null
+      },
+      {
+        "id": "BvNQwxnTmLMWjAp278ee",
+        "title": "Chapter 8 - ଜନ୍ମବର୍ବରକଥା (Janmavarvarakatha)",
+        "title_en": "Janmavarvarakatha",
+        "title_or": "ଜନ୍ମବର୍ବରକଥା",
+        "subject": "sanskrit",
+        "thumbnail": null
+      },
+      {
+        "id": "G3TfWt0iAKomJmf5VmzX",
+        "title": "Chapter 9 - ବଳୀୟସୀ କେବଳମୀଶ୍ୱରେଚ୍ଛା (Baliyasi Kevalamishvarechha)",
+        "title_en": "Baliyasi Kevalamishvarechha",
+        "title_or": "ବଳୀୟସୀ କେବଳମୀଶ୍ୱରେଚ୍ଛା",
+        "subject": "sanskrit",
+        "thumbnail": null
+      },
+      {
+        "id": "iBuhW5PeoGRE0FtOEir0",
+        "title": "Chapter 10 - ସ୍ୱାମୀ ବିବେକାନନ୍ଦଃ (Swami Vivekanandah)",
+        "title_en": "Swami Vivekanandah",
+        "title_or": "ସ୍ୱାମୀ ବିବେକାନନ୍ଦଃ",
+        "subject": "sanskrit",
+        "thumbnail": null
+      },
+      {
+        "id": "rlh2LCv1oPp08CXV0KGm",
+        "title": "AllThingsBrightAndBeautiful Ready",
+        "title_en": "All Things Bright and Beautiful",
+        "title_or": "ସମସ୍ତ ଉଜ୍ଜ୍ୱଳ ଓ ସୁନ୍ଦର ବସ୍ତୁ",
+        "subject": "english",
+        "thumbnail": null
+      },
+      {
+        "id": "NSkPtovh2SRgyFgkNoa6",
+        "title": "Namadhatu",
+        "title_en": "Denominative Roots",
+        "title_or": "ନାମଧାତୁ",
+        "subject": "sanskrit_grammar",
+        "thumbnail": null
+      },
+      {
+        "id": "GkmzoNORwf9iZNsQ39sN",
+        "title": "Noun Clauses and Relative Clauses",
+        "title_en": "Noun Clauses and Relative Clauses",
+        "title_or": "ବିଶେଷ୍ୟ ଉପବାକ୍ୟ ଏବଂ ସମ୍ବନ୍ଧବାଚକ ଉପବାକ୍ୟ",
+        "subject": "english_grammar",
+        "thumbnail": null
+      },
+      {
+        "id": "fNy21816t8C3EMrsdP4S",
+        "title": "Excretion",
+        "title_en": "Excretion",
+        "title_or": "ରେଚନ",
+        "subject": "life_science",
+        "thumbnail": null
+      },
+      {
+        "id": "ZPtKirnDPw2XrvXmWKjA",
+        "title": "Chapter 5 - ବନ୍ୟ ପ୍ରାଣୀ ସମ୍ବଳ (Wildlife Resources)",
+        "title_en": "Wildlife Resources",
+        "title_or": "ବନ୍ୟ ପ୍ରାଣୀ ସମ୍ବଳ",
+        "subject": "geography",
+        "thumbnail": null
+      },
+      {
+        "id": "UeZElffwwGostNzfcHeo",
+        "title": "Chapter 6 - ଜଳ ସମ୍ବଳ (Water Resources)",
+        "title_en": "Water Resources",
+        "title_or": "ଜଳ ସମ୍ବଳ",
+        "subject": "geography",
+        "thumbnail": null
+      },
+      {
+        "id": "MDyaRgkWMTnqEZbPTxc4",
+        "title": "Chapter 3 - ଲିଙ୍ଗ ଓ ସମ୍ମାନ ସମ୍ବେଦନଶୀଳତା (Gender and Respect Sensitivity)",
+        "title_en": "Gender and Respect Sensitivity",
+        "title_or": "ଲିଙ୍ଗ ଓ ସମ୍ମାନ ସମ୍ବେଦନଶୀଳତା",
+        "subject": "vocational",
+        "thumbnail": null
+      },
+      {
+        "id": "s2PPYxrCapQkiIK4NA5S",
+        "title": "Chapter 4 - ଚାନ୍ଦ କା ଝିଙ୍ଗୋଲା (Chand Ka Jhingola)",
+        "title_en": "Chand Ka Jhingola",
+        "title_or": "ଚାନ୍ଦ କା ଝିଙ୍ଗୋଲା",
+        "subject": "hindi",
+        "thumbnail": null
+      },
+      {
+        "id": "hN2uO4iyaCERFcPLmran",
+        "title": "Chapter 3 - ଧାତୁ ଓ ଅଧାତୁ (Metals and Non-Metals)",
+        "title_en": "Metals and Non-Metals",
+        "title_or": "ଧାତୁ ଓ ଅଧାତୁ",
+        "subject": "physical_science",
+        "thumbnail": null
+      },
+      {
+        "id": "xUCwgb2VnLdf0MAN22l5",
+        "title": "Chapter 4 - ଶବ୍ଦ-ବିଚାର (Shabd-Vichar - Word Analysis)",
+        "title_en": "Shabd-Vichar - Word Analysis",
+        "title_or": "ଶବ୍ଦ-ବିଚାର",
+        "subject": "hindi_grammar",
+        "thumbnail": null
+      },
+      {
+        "id": "F2D4CKuEkoyogm3kjPs5",
+        "title": "School's Goodbye - Farewell and Future Paths | ବିଦ୍ୟାଳୟର ବିଦାୟ - ଭବିଷ୍ୟତ ପାଇଁ ପ୍ରସ୍ତୁତି",
+        "title_en": "School's Goodbye",
+        "title_or": "Farewell and Future Paths | ବିଦ୍ୟାଳୟର ବିଦାୟ - ଭବିଷ୍ୟତ ପାଇଁ ପ୍ରସ୍ତୁତି",
+        "subject": "English",
+        "thumbnail": null
+      },
+      {
+        "id": "2KW4iX3mVHfTXSlZG64b",
+        "title": "Seeds of Revenge: The Bullocks' Fate - ପ୍ରତିଶୋଧର ବୀଜ: ବଳଦମାନଙ୍କ ଭାଗ୍ୟ",
+        "title_en": "Seeds of Revenge: The Bullocks' Fate",
+        "title_or": "ପ୍ରତିଶୋଧର ବୀଜ: ବଳଦମାନଙ୍କ ଭାଗ୍ୟ",
+        "subject": "English",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "September 2026",
+    "chapters": [
       {
         "id": "2RogACOuyxWuQRJIaGii",
         "title": "Chapter 7 - ଜନ୍ମଭୂମି (Janmabhumi)",
@@ -8472,14 +8609,6 @@ export const ROADMAP_DATA = [
         "title_en": "Sabhyata O Bijnana",
         "title_or": "ସଭ୍ୟତା ଓ ବିଜ୍ଞାନ",
         "subject": "odia",
-        "thumbnail": null
-      },
-      {
-        "id": "WB6De31pzTVtVaAQCxS9",
-        "title": "Chapter 9 - ୧୯୩୬ ମସିହା ପର୍ଯ୍ୟନ୍ତ ଓଡ଼ିଆ ଆନ୍ଦୋଳନ ଓ ସ୍ଵତନ୍ତ୍ର ଓଡ଼ିଶା ପ୍ରଦେଶ ଗଠନ (Odia Movement till 1936 and Formation of Separate Odisha Province)",
-        "title_en": "Odia Movement till 1936 and Formation of Separate Odisha Province",
-        "title_or": "୧୯୩୬ ମସିହା ପର୍ଯ୍ୟନ୍ତ ଓଡ଼ିଆ ଆନ୍ଦୋଳନ ଓ ସ୍ଵତନ୍ତ୍ର ଓଡ଼ିଶା ପ୍ରଦେଶ ଗଠନ",
-        "subject": "social_science",
         "thumbnail": null
       },
       {
@@ -8507,35 +8636,11 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "EwPG1yUPysycbDHiHsNW",
-        "title": "Chapter 13 - ଗୋଆ ଓ ପୁଦୁଚେରୀର ମୁକ୍ତି (Liberation of Goa and Puducherry)",
-        "title_en": "Liberation of Goa and Puducherry",
-        "title_or": "ଗୋଆ ଓ ପୁଦୁଚେରୀର ମୁକ୍ତି",
-        "subject": "social_science",
-        "thumbnail": null
-      },
-      {
-        "id": "BmrPG6YsY0WeoqZoUFzk",
-        "title": "Chhanda O Alankara",
-        "title_en": "Prosody and Figures of Speech",
-        "title_or": "ଛନ୍ଦ ଓ ଅଳଙ୍କାର",
+        "id": "bSKzdhrG8X2718jemnbO",
+        "title": "Natwa Satwa Bidhi O Asuddhi",
+        "title_en": "Natwa Vidhi, Shatwa Vidhi, and Common Errors",
+        "title_or": "‘ଣତ୍ବ’ ବିଧୂ, ‘ଷତ୍ବ’ ବିଧୂ ଓ ସାଧାରଣ ଅଶୁଦ୍ଧି",
         "subject": "odia_grammar",
-        "thumbnail": null
-      },
-      {
-        "id": "G3TfWt0iAKomJmf5VmzX",
-        "title": "Chapter 9 - ବଳୀୟସୀ କେବଳମୀଶ୍ୱରେଚ୍ଛା (Baliyasi Kevalamishvarechha)",
-        "title_en": "Baliyasi Kevalamishvarechha",
-        "title_or": "ବଳୀୟସୀ କେବଳମୀଶ୍ୱରେଚ୍ଛା",
-        "subject": "sanskrit",
-        "thumbnail": null
-      },
-      {
-        "id": "iBuhW5PeoGRE0FtOEir0",
-        "title": "Chapter 10 - ସ୍ୱାମୀ ବିବେକାନନ୍ଦଃ (Swami Vivekanandah)",
-        "title_en": "Swami Vivekanandah",
-        "title_or": "ସ୍ୱାମୀ ବିବେକାନନ୍ଦଃ",
-        "subject": "sanskrit",
         "thumbnail": null
       },
       {
@@ -8563,14 +8668,6 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "gXHG1bbogfLx7Xki26Wb",
-        "title": "Chapter 14 - ଦେହି ପଦପଲ୍ଲବମୁଦାରମ୍ (Dehi Padapallavamudaram)",
-        "title_en": "Dehi Padapallavamudaram",
-        "title_or": "ଦେହି ପଦପଲ୍ଲବମୁଦାରମ୍",
-        "subject": "sanskrit",
-        "thumbnail": null
-      },
-      {
         "id": "CpNpm4NDo8pEQLSHCYm1",
         "title": "ATigerInTheHouse Ready",
         "title_en": null,
@@ -8584,14 +8681,6 @@ export const ROADMAP_DATA = [
         "title_en": "Kapil Dev",
         "title_or": "କପିଳ ଦେବ",
         "subject": "english",
-        "thumbnail": null
-      },
-      {
-        "id": "NSkPtovh2SRgyFgkNoa6",
-        "title": "Namadhatu",
-        "title_en": "Denominative Roots",
-        "title_or": "ନାମଧାତୁ",
-        "subject": "sanskrit_grammar",
         "thumbnail": null
       },
       {
@@ -8611,14 +8700,6 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "GkmzoNORwf9iZNsQ39sN",
-        "title": "Noun Clauses and Relative Clauses",
-        "title_en": "Noun Clauses and Relative Clauses",
-        "title_or": "ବିଶେଷ୍ୟ ଉପବାକ୍ୟ ଏବଂ ସମ୍ବନ୍ଧବାଚକ ଉପବାକ୍ୟ",
-        "subject": "english_grammar",
-        "thumbnail": null
-      },
-      {
         "id": "DlgkbWBs9ap13bfs8LJn",
         "title": "Phrasal Verbs",
         "title_en": "Phrasal Verbs",
@@ -8627,27 +8708,11 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "fNy21816t8C3EMrsdP4S",
-        "title": "Excretion",
-        "title_en": "Excretion",
-        "title_or": "ରେଚନ",
-        "subject": "life_science",
-        "thumbnail": null
-      },
-      {
         "id": "zti7Pcoic1HhlnFlsGxK",
         "title": "Heredity and Evolution",
         "title_en": "Heredity and Evolution",
         "title_or": "ବଂଶାନୁକ୍ରମ ଓ ଅଭିବ୍ୟକ୍ତି",
         "subject": "life_science",
-        "thumbnail": null
-      },
-      {
-        "id": "UeZElffwwGostNzfcHeo",
-        "title": "Chapter 6 - ଜଳ ସମ୍ବଳ (Water Resources)",
-        "title_en": "Water Resources",
-        "title_or": "ଜଳ ସମ୍ବଳ",
-        "subject": "geography",
         "thumbnail": null
       },
       {
@@ -8667,27 +8732,11 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "1jmH72jocqaxorAsUSWO",
-        "title": "Chapter 9 - କୃଷି (Agriculture)",
-        "title_en": "Agriculture",
-        "title_or": "କୃଷି",
-        "subject": "geography",
-        "thumbnail": null
-      },
-      {
-        "id": "MDyaRgkWMTnqEZbPTxc4",
-        "title": "Chapter 3 - ଲିଙ୍ଗ ଓ ସମ୍ମାନ ସମ୍ବେଦନଶୀଳତା (Gender and Respect Sensitivity)",
-        "title_en": "Gender and Respect Sensitivity",
-        "title_or": "ଲିଙ୍ଗ ଓ ସମ୍ମାନ ସମ୍ବେଦନଶୀଳତା",
+        "id": "B6nLhX1BTCLG222BnbQG",
+        "title": "Chapter 4 - ସମ୍ପତ୍ତି ଅଧିକାର, ସଂଗଠନ ଓ ଗ୍ରାହକ (Asset Rights, Organization and Customer)",
+        "title_en": "Asset Rights, Organization and Customer",
+        "title_or": "ସମ୍ପତ୍ତି ଅଧିକାର, ସଂଗଠନ ଓ ଗ୍ରାହକ",
         "subject": "vocational",
-        "thumbnail": null
-      },
-      {
-        "id": "s2PPYxrCapQkiIK4NA5S",
-        "title": "Chapter 4 - ଚାନ୍ଦ କା ଝିଙ୍ଗୋଲା (Chand Ka Jhingola)",
-        "title_en": "Chand Ka Jhingola",
-        "title_or": "ଚାନ୍ଦ କା ଝିଙ୍ଗୋଲା",
-        "subject": "hindi",
         "thumbnail": null
       },
       {
@@ -8720,14 +8769,6 @@ export const ROADMAP_DATA = [
         "title_en": "Roop-Vichar - Form Analysis",
         "title_or": "ରୂପ-ବିଚାର",
         "subject": "hindi_grammar",
-        "thumbnail": null
-      },
-      {
-        "id": "2KW4iX3mVHfTXSlZG64b",
-        "title": "Seeds of Revenge: The Bullocks' Fate - ପ୍ରତିଶୋଧର ବୀଜ: ବଳଦମାନଙ୍କ ଭାଗ୍ୟ",
-        "title_en": "Seeds of Revenge: The Bullocks' Fate",
-        "title_or": "ପ୍ରତିଶୋଧର ବୀଜ: ବଳଦମାନଙ୍କ ଭାଗ୍ୟ",
-        "subject": "English",
         "thumbnail": null
       },
       {
@@ -8768,19 +8809,11 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "zoS0Hx5ehtbb9cUUpUaN",
-        "title": "Chapter 10 - ନରେନ୍ରୁ ବିବେକାନନ୍ଦ (Naren ru Vivekananda)",
-        "title_en": "Naren ru Vivekananda",
-        "title_or": "ନରେନ୍ରୁ ବିବେକାନନ୍ଦ",
-        "subject": "odia",
-        "thumbnail": null
-      },
-      {
-        "id": "pP8cBauCfw0n0JIWflaj",
-        "title": "Chapter 11 - ଓଡ଼ିଆ ସାହିତ୍ୟ କଥା (Odia Sahitya Katha)",
-        "title_en": "Odia Sahitya Katha",
-        "title_or": "ଓଡ଼ିଆ ସାହିତ୍ୟ କଥା",
-        "subject": "odia",
+        "id": "EwPG1yUPysycbDHiHsNW",
+        "title": "Chapter 13 - ଗୋଆ ଓ ପୁଦୁଚେରୀର ମୁକ୍ତି (Liberation of Goa and Puducherry)",
+        "title_en": "Liberation of Goa and Puducherry",
+        "title_or": "ଗୋଆ ଓ ପୁଦୁଚେରୀର ମୁକ୍ତି",
+        "subject": "social_science",
         "thumbnail": null
       },
       {
@@ -8800,43 +8833,11 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "BbXcUAtLrYxvRd2iM1ht",
-        "title": "Chapter 16 - ସାମାଜିକ ବିକାଶ (Social Development)",
-        "title_en": "Social Development",
-        "title_or": "ସାମାଜିକ ବିକାଶ",
-        "subject": "social_science",
-        "thumbnail": null
-      },
-      {
-        "id": "k9JDUP4Wtlsr4FPdDxaI",
-        "title": "Chapter 17 - ଶିକ୍ଷାର ବିକାଶ (Educational Development)",
-        "title_en": "Educational Development",
-        "title_or": "ଶିକ୍ଷାର ବିକାଶ",
-        "subject": "social_science",
-        "thumbnail": null
-      },
-      {
-        "id": "DGWPPQGqNXNOhaBlZEwb",
-        "title": "Chapter 18 - କୃଷିର ବିକାଶ (Agricultural Development)",
-        "title_en": "Agricultural Development",
-        "title_or": "କୃଷିର ବିକାଶ",
-        "subject": "social_science",
-        "thumbnail": null
-      },
-      {
-        "id": "bSKzdhrG8X2718jemnbO",
-        "title": "Natwa Satwa Bidhi O Asuddhi",
-        "title_en": "Natwa Vidhi, Shatwa Vidhi, and Common Errors",
-        "title_or": "‘ଣତ୍ବ’ ବିଧୂ, ‘ଷତ୍ବ’ ବିଧୂ ଓ ସାଧାରଣ ଅଶୁଦ୍ଧି",
-        "subject": "odia_grammar",
-        "thumbnail": null
-      },
-      {
-        "id": "qwNARHd5y1yYwoOE0YJK",
-        "title": "Rudhi O Lokabani",
-        "title_en": "Idioms and Proverbs",
-        "title_or": "ରୂଢ଼ି ଓ ଲୋକବାଣୀ",
-        "subject": "odia_grammar",
+        "id": "gXHG1bbogfLx7Xki26Wb",
+        "title": "Chapter 14 - ଦେହି ପଦପଲ୍ଲବମୁଦାରମ୍ (Dehi Padapallavamudaram)",
+        "title_en": "Dehi Padapallavamudaram",
+        "title_or": "ଦେହି ପଦପଲ୍ଲବମୁଦାରମ୍",
+        "subject": "sanskrit",
         "thumbnail": null
       },
       {
@@ -8856,27 +8857,11 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "6Fv1QQ7heAcLjsKwSfRy",
-        "title": "Chapter 17 - ମୋହମୁଦ୍ଗରଃ (Mohamudgarah)",
-        "title_en": "Mohamudgarah",
-        "title_or": "ମୋହମୁଦ୍ଗରଃ",
-        "subject": "sanskrit",
-        "thumbnail": null
-      },
-      {
-        "id": "QsL9fqpqDWxtiEMgqCgj",
-        "title": "Chapter 18 - ଜନନୀ ଗରୀୟସୀ (Janani Gariyasi)",
-        "title_en": "Janani Gariyasi",
-        "title_or": "ଜନନୀ ଗରୀୟସୀ",
-        "subject": "sanskrit",
-        "thumbnail": null
-      },
-      {
-        "id": "K4DkLzrrZxlLdMhO8OvN",
-        "title": "Chapter 19 - ଅସାଧ୍ୟସାଧନମ୍ (Asadhyasadhanam)",
-        "title_en": "Asadhyasadhanam",
-        "title_or": "ଅସାଧ୍ୟସାଧନମ୍",
-        "subject": "sanskrit",
+        "id": "class10_sanskrit_literature",
+        "title": "ସଂସ୍କୃତ ସାହିତ୍ୟ ମଞ୍ଜରୀ (Class 10 Sanskrit Literature)",
+        "title_en": "Class 10 Sanskrit Literature",
+        "title_or": "ସଂସ୍କୃତ ସାହିତ୍ୟ ମଞ୍ଜରୀ",
+        "subject": "Sanskrit",
         "thumbnail": null
       },
       {
@@ -8896,26 +8881,10 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "25orOHbkJ8aVraDlwPIu",
-        "title": "TheBrook Ready",
-        "title_en": "The Brook",
-        "title_or": "ଝରଣା",
-        "subject": "english",
-        "thumbnail": null
-      },
-      {
         "id": "JPhWK5yJvwxmsS6pG8YL",
         "title": "Practical Vocabulary",
         "title_en": "Practical Vocabulary",
         "title_or": "ବ୍ୟାବହାରିକ ଶବ୍ଦାବଳୀ",
-        "subject": "sanskrit_grammar",
-        "thumbnail": null
-      },
-      {
-        "id": "tpioTGaUyNQlDeQRXPBw",
-        "title": "Samasa",
-        "title_en": null,
-        "title_or": null,
         "subject": "sanskrit_grammar",
         "thumbnail": null
       },
@@ -8925,22 +8894,6 @@ export const ROADMAP_DATA = [
         "title_en": "Prepositions",
         "title_or": "ପୂର୍ବସର୍ଗ",
         "subject": "english_grammar",
-        "thumbnail": null
-      },
-      {
-        "id": "4Sq0hC4lYY5D13a5JfwL",
-        "title": "Subject Verb Agreement",
-        "title_en": "Subject Verb Agreement",
-        "title_or": "କର୍ତ୍ତା-କ୍ରିୟା ସମନ୍ୱୟ",
-        "subject": "english_grammar",
-        "thumbnail": null
-      },
-      {
-        "id": "Vx3FQK8ZAl67KwvDi1Iy",
-        "title": "ପୋଷଣ (Nutrition)",
-        "title_en": "Nutrition",
-        "title_or": "ପୋଷଣ",
-        "subject": " ଜୀବବିଜ୍ଞାନ(Life Science)",
         "thumbnail": null
       },
       {
@@ -8960,51 +8913,19 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
+        "id": "1jmH72jocqaxorAsUSWO",
+        "title": "Chapter 9 - କୃଷି (Agriculture)",
+        "title_en": "Agriculture",
+        "title_or": "କୃଷି",
+        "subject": "geography",
+        "thumbnail": null
+      },
+      {
         "id": "KCsa47tJoVBty27ucEv6",
         "title": "Chapter 10 - ବିନିର୍ମାଣ ଉଦ୍ୟୋଗ (Manufacturing Industries)",
         "title_en": "Manufacturing Industries",
         "title_or": "ବିନିର୍ମାଣ ଉଦ୍ୟୋଗ",
         "subject": "geography",
-        "thumbnail": null
-      },
-      {
-        "id": "gGZsJbeTp8L5qGOk4NC0",
-        "title": "Chapter 11 - ପରିବହନ, ଯୋଗାଯୋଗ ଏବଂ ବାଣିଜ୍ୟ (Transport, Communication and Trade)",
-        "title_en": "Transport, Communication and Trade",
-        "title_or": "ପରିବହନ, ଯୋଗାଯୋଗ ଏବଂ ବାଣିଜ୍ୟ",
-        "subject": "geography",
-        "thumbnail": null
-      },
-      {
-        "id": "QISTLcWQrEA1Ly13noYM",
-        "title": "Chapter 12 - ଆର୍ଥନୀତିକ ବିକାଶ (Economic Development)",
-        "title_en": "Economic Development",
-        "title_or": "ଆର୍ଥନୀତିକ ବିକାଶ",
-        "subject": "geography",
-        "thumbnail": null
-      },
-      {
-        "id": "7EEftwwhRxF503aiQ0Nb",
-        "title": "Tense Revisit",
-        "title_en": "Tense Revisit",
-        "title_or": "କାଳର ପୁନରାଲୋଚନା",
-        "subject": "English Grammar",
-        "thumbnail": null
-      },
-      {
-        "id": "B6nLhX1BTCLG222BnbQG",
-        "title": "Chapter 4 - ସମ୍ପତ୍ତି ଅଧିକାର, ସଂଗଠନ ଓ ଗ୍ରାହକ (Asset Rights, Organization and Customer)",
-        "title_en": "Asset Rights, Organization and Customer",
-        "title_or": "ସମ୍ପତ୍ତି ଅଧିକାର, ସଂଗଠନ ଓ ଗ୍ରାହକ",
-        "subject": "vocational",
-        "thumbnail": null
-      },
-      {
-        "id": "NFRvIs9SY2qHuUk5GpKU",
-        "title": "Chapter 5 - ସ୍ୱାସ୍ଥ୍ୟ ଓ ପରିମଳ (Health and Hygiene)",
-        "title_en": "Health and Hygiene",
-        "title_or": "ସ୍ୱାସ୍ଥ୍ୟ ଓ ପରିମଳ",
-        "subject": "vocational",
         "thumbnail": null
       },
       {
@@ -9032,26 +8953,10 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "RCcFvgtfQscdEfx2ppWB",
-        "title": "Chapter 6 - ଆଲୋକ– ପ୍ରତିଫଳନ ଓ ପ୍ରତିସରଣ (Light - Reflection and Refraction)",
-        "title_en": "Light - Reflection and Refraction",
-        "title_or": "ଆଲୋକ– ପ୍ରତିଫଳନ ଓ ପ୍ରତିସରଣ",
-        "subject": "physical_science",
-        "thumbnail": null
-      },
-      {
         "id": "cTJS71eJCUrRonP7a9jN",
         "title": "Chapter 7 - ବାକ୍ୟ - ବିଚାର (Vakya-Vichar - Sentence Analysis)",
         "title_en": "Vakya-Vichar - Sentence Analysis",
         "title_or": "ବାକ୍ୟ - ବିଚାର",
-        "subject": "hindi_grammar",
-        "thumbnail": null
-      },
-      {
-        "id": "U9CEWL4QPAb14ZXUAzqH",
-        "title": "Chapter 8 - ବିରାମ ଚିହ୍ନ (Viram Chinh - Punctuation Marks)",
-        "title_en": "Viram Chinh - Punctuation Marks",
-        "title_or": "ବିରାମ ଚିହ୍ନ",
         "subject": "hindi_grammar",
         "thumbnail": null
       },
@@ -9072,14 +8977,6 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "fkyI0tF9qhaRVpaSr67X",
-        "title": "The Second Judgment: Reconciliation and Wisdom - ଦ୍ୱିତୀୟ ରାୟ: ମେଳ ଓ ଜ୍ଞାନ",
-        "title_en": "The Second Judgment: Reconciliation and Wisdom",
-        "title_or": "ଦ୍ୱିତୀୟ ରାୟ: ମେଳ ଓ ଜ୍ଞାନ",
-        "subject": "English",
-        "thumbnail": null
-      },
-      {
         "id": "cHD1xEpJvTclMfvi5ZJH",
         "title": "Chapter 4 - ତ୍ରିକୋଣମିତି (Trigonometry)",
         "title_en": "Trigonometry",
@@ -9088,11 +8985,11 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "class10_vocational_tourism",
-        "title": "ବ୍ୟାବସାୟିକ ପର୍ଯ୍ୟଟନ (Class 10 Vocational Tourism)",
-        "title_en": "Class 10 Vocational Tourism",
-        "title_or": "ବ୍ୟାବସାୟିକ ପର୍ଯ୍ୟଟନ",
-        "subject": "Vocational",
+        "id": "class10_hindi_literature",
+        "title": "हिन्दी सौरभ (Class 10 Hindi Literature)",
+        "title_en": "हिन्दी सौरभ",
+        "title_or": "Class 10 Hindi Literature",
+        "subject": "Hindi",
         "thumbnail": null
       },
       {
@@ -9102,35 +8999,184 @@ export const ROADMAP_DATA = [
         "title_or": "ସମ୍ଭାବ୍ୟତା",
         "subject": "algebra",
         "thumbnail": null
-      },
-      {
-        "id": "x0or0kBIRph6tfIFj7xF",
-        "title": "ବାକ୍ୟ ବିଚାର",
-        "title_en": "Sentence Analysis",
-        "title_or": "ବାକ୍ୟ ବିଚାର",
-        "subject": "ଓଡ଼ିଆ ବ୍ୟାକରଣ (Odia Grammar)",
-        "thumbnail": null
-      },
-      {
-        "id": "HlfuVAm9dcK1gGpNkpuq",
-        "title": "ଜ୍ୟାମିତିରେ ସାଦୃଶ୍ୟ",
-        "title_en": "Similarity in Geometry",
-        "title_or": "ଜ୍ୟାମିତିରେ ସାଦୃଶ୍ୟ",
-        "subject": "Geometry",
-        "thumbnail": null
-      },
-      {
-        "id": "DJO5ghl1p9F3C6FLYFct",
-        "title": "ରାଘବଙ୍କ ଲଙ୍କା ଯାତ୍ରାନୁକୂଳ ",
-        "title_en": null,
-        "title_or": null,
-        "subject": "ସାହିତ୍ୟ",
-        "thumbnail": null
       }
     ]
   },
   {
     "month": "November 2026",
+    "chapters": [
+      {
+        "id": "zoS0Hx5ehtbb9cUUpUaN",
+        "title": "Chapter 10 - ନରେନ୍ରୁ ବିବେକାନନ୍ଦ (Naren ru Vivekananda)",
+        "title_en": "Naren ru Vivekananda",
+        "title_or": "ନରେନ୍ରୁ ବିବେକାନନ୍ଦ",
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "pP8cBauCfw0n0JIWflaj",
+        "title": "Chapter 11 - ଓଡ଼ିଆ ସାହିତ୍ୟ କଥା (Odia Sahitya Katha)",
+        "title_en": "Odia Sahitya Katha",
+        "title_or": "ଓଡ଼ିଆ ସାହିତ୍ୟ କଥା",
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "BbXcUAtLrYxvRd2iM1ht",
+        "title": "Chapter 16 - ସାମାଜିକ ବିକାଶ (Social Development)",
+        "title_en": "Social Development",
+        "title_or": "ସାମାଜିକ ବିକାଶ",
+        "subject": "social_science",
+        "thumbnail": null
+      },
+      {
+        "id": "k9JDUP4Wtlsr4FPdDxaI",
+        "title": "Chapter 17 - ଶିକ୍ଷାର ବିକାଶ (Educational Development)",
+        "title_en": "Educational Development",
+        "title_or": "ଶିକ୍ଷାର ବିକାଶ",
+        "subject": "social_science",
+        "thumbnail": null
+      },
+      {
+        "id": "DGWPPQGqNXNOhaBlZEwb",
+        "title": "Chapter 18 - କୃଷିର ବିକାଶ (Agricultural Development)",
+        "title_en": "Agricultural Development",
+        "title_or": "କୃଷିର ବିକାଶ",
+        "subject": "social_science",
+        "thumbnail": null
+      },
+      {
+        "id": "qwNARHd5y1yYwoOE0YJK",
+        "title": "Rudhi O Lokabani",
+        "title_en": "Idioms and Proverbs",
+        "title_or": "ରୂଢ଼ି ଓ ଲୋକବାଣୀ",
+        "subject": "odia_grammar",
+        "thumbnail": null
+      },
+      {
+        "id": "6Fv1QQ7heAcLjsKwSfRy",
+        "title": "Chapter 17 - ମୋହମୁଦ୍ଗରଃ (Mohamudgarah)",
+        "title_en": "Mohamudgarah",
+        "title_or": "ମୋହମୁଦ୍ଗରଃ",
+        "subject": "sanskrit",
+        "thumbnail": null
+      },
+      {
+        "id": "QsL9fqpqDWxtiEMgqCgj",
+        "title": "Chapter 18 - ଜନନୀ ଗରୀୟସୀ (Janani Gariyasi)",
+        "title_en": "Janani Gariyasi",
+        "title_or": "ଜନନୀ ଗରୀୟସୀ",
+        "subject": "sanskrit",
+        "thumbnail": null
+      },
+      {
+        "id": "K4DkLzrrZxlLdMhO8OvN",
+        "title": "Chapter 19 - ଅସାଧ୍ୟସାଧନମ୍ (Asadhyasadhanam)",
+        "title_en": "Asadhyasadhanam",
+        "title_or": "ଅସାଧ୍ୟସାଧନମ୍",
+        "subject": "sanskrit",
+        "thumbnail": null
+      },
+      {
+        "id": "25orOHbkJ8aVraDlwPIu",
+        "title": "TheBrook Ready",
+        "title_en": "The Brook",
+        "title_or": "ଝରଣା",
+        "subject": "english",
+        "thumbnail": null
+      },
+      {
+        "id": "tpioTGaUyNQlDeQRXPBw",
+        "title": "Samasa",
+        "title_en": null,
+        "title_or": null,
+        "subject": "sanskrit_grammar",
+        "thumbnail": null
+      },
+      {
+        "id": "dx2FJG3J7PmGFsgxkKzz",
+        "title": "Sananta",
+        "title_en": "Desiderative Verbs",
+        "title_or": "ସାନନ୍ତ",
+        "subject": "sanskrit_grammar",
+        "thumbnail": null
+      },
+      {
+        "id": "4Sq0hC4lYY5D13a5JfwL",
+        "title": "Subject Verb Agreement",
+        "title_en": "Subject Verb Agreement",
+        "title_or": "କର୍ତ୍ତା-କ୍ରିୟା ସମନ୍ୱୟ",
+        "subject": "english_grammar",
+        "thumbnail": null
+      },
+      {
+        "id": "Jb1gxditmbVBJIubDjok",
+        "title": "Reproduction",
+        "title_en": "Reproduction",
+        "title_or": "ପ୍ରଜନନ",
+        "subject": "life_science",
+        "thumbnail": null
+      },
+      {
+        "id": "gGZsJbeTp8L5qGOk4NC0",
+        "title": "Chapter 11 - ପରିବହନ, ଯୋଗାଯୋଗ ଏବଂ ବାଣିଜ୍ୟ (Transport, Communication and Trade)",
+        "title_en": "Transport, Communication and Trade",
+        "title_or": "ପରିବହନ, ଯୋଗାଯୋଗ ଏବଂ ବାଣିଜ୍ୟ",
+        "subject": "geography",
+        "thumbnail": null
+      },
+      {
+        "id": "QISTLcWQrEA1Ly13noYM",
+        "title": "Chapter 12 - ଆର୍ଥନୀତିକ ବିକାଶ (Economic Development)",
+        "title_en": "Economic Development",
+        "title_or": "ଆର୍ଥନୀତିକ ବିକାଶ",
+        "subject": "geography",
+        "thumbnail": null
+      },
+      {
+        "id": "NFRvIs9SY2qHuUk5GpKU",
+        "title": "Chapter 5 - ସ୍ୱାସ୍ଥ୍ୟ ଓ ପରିମଳ (Health and Hygiene)",
+        "title_en": "Health and Hygiene",
+        "title_or": "ସ୍ୱାସ୍ଥ୍ୟ ଓ ପରିମଳ",
+        "subject": "vocational",
+        "thumbnail": null
+      },
+      {
+        "id": "hQ6eEOUKSxzbk1M6kJeR",
+        "title": "Chapter 8 - ବୋଧ (Bodh)",
+        "title_en": "Bodh",
+        "title_or": "ବୋଧ",
+        "subject": "hindi",
+        "thumbnail": null
+      },
+      {
+        "id": "RCcFvgtfQscdEfx2ppWB",
+        "title": "Chapter 6 - ଆଲୋକ– ପ୍ରତିଫଳନ ଓ ପ୍ରତିସରଣ (Light - Reflection and Refraction)",
+        "title_en": "Light - Reflection and Refraction",
+        "title_or": "ଆଲୋକ– ପ୍ରତିଫଳନ ଓ ପ୍ରତିସରଣ",
+        "subject": "physical_science",
+        "thumbnail": null
+      },
+      {
+        "id": "U9CEWL4QPAb14ZXUAzqH",
+        "title": "Chapter 8 - ବିରାମ ଚିହ୍ନ (Viram Chinh - Punctuation Marks)",
+        "title_en": "Viram Chinh - Punctuation Marks",
+        "title_or": "ବିରାମ ଚିହ୍ନ",
+        "subject": "hindi_grammar",
+        "thumbnail": null
+      },
+      {
+        "id": "fkyI0tF9qhaRVpaSr67X",
+        "title": "The Second Judgment: Reconciliation and Wisdom - ଦ୍ୱିତୀୟ ରାୟ: ମେଳ ଓ ଜ୍ଞାନ",
+        "title_en": "The Second Judgment: Reconciliation and Wisdom",
+        "title_or": "ଦ୍ୱିତୀୟ ରାୟ: ମେଳ ଓ ଜ୍ଞାନ",
+        "subject": "English",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "December 2026",
     "chapters": [
       {
         "id": "mBd0R0i4E5MDKg2o6bRx",
@@ -9205,22 +9251,6 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "Strdd1gmlwmiCYAaT6c2",
-        "title": "Chapter 23 - ହୀରାକୁଦବନ୍ଧଃ (Hirakudabandhah)",
-        "title_en": "Hirakudabandhah",
-        "title_or": "ହୀରାକୁଦବନ୍ଧଃ",
-        "subject": "sanskrit",
-        "thumbnail": null
-      },
-      {
-        "id": "class10_sanskrit_literature",
-        "title": "ସଂସ୍କୃତ ସାହିତ୍ୟ ମଞ୍ଜରୀ (Class 10 Sanskrit Literature)",
-        "title_en": "Class 10 Sanskrit Literature",
-        "title_or": "ସଂସ୍କୃତ ସାହିତ୍ୟ ମଞ୍ଜରୀ",
-        "subject": "Sanskrit",
-        "thumbnail": null
-      },
-      {
         "id": "pMsLFvy2i0JcoeWkIk4b",
         "title": "TheVillageJudge Ready",
         "title_en": "The Village Judge",
@@ -9237,26 +9267,10 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "dx2FJG3J7PmGFsgxkKzz",
-        "title": "Sananta",
-        "title_en": "Desiderative Verbs",
-        "title_or": "ସାନନ୍ତ",
-        "subject": "sanskrit_grammar",
-        "thumbnail": null
-      },
-      {
         "id": "AyJyknRgVDBZ9xJYFl91",
         "title": "Stri Pratyaya",
         "title_en": "Feminine Suffixes",
         "title_or": "ସ୍ତ୍ରୀ ପ୍ରତ୍ୟୟ",
-        "subject": "sanskrit_grammar",
-        "thumbnail": null
-      },
-      {
-        "id": "jYLYELTjcSejLzdLCJKo",
-        "title": "Tadhita Prakarana",
-        "title_en": "Taddhita Suffixes",
-        "title_or": "ତଦ୍ଧିତ ପ୍ରକରଣ",
         "subject": "sanskrit_grammar",
         "thumbnail": null
       },
@@ -9266,14 +9280,6 @@ export const ROADMAP_DATA = [
         "title_en": "Tense Revisited",
         "title_or": "କାଳର ପୁନରାଲୋଚନା",
         "subject": "english_grammar",
-        "thumbnail": null
-      },
-      {
-        "id": "Jb1gxditmbVBJIubDjok",
-        "title": "Reproduction",
-        "title_en": "Reproduction",
-        "title_or": "ପ୍ରଜନନ",
-        "subject": "life_science",
         "thumbnail": null
       },
       {
@@ -9301,27 +9307,11 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "I4WE9ipy66RHtmBCkotX",
-        "title": "Chapter 15 - ଦାରିଦ୍ର୍ୟ (Poverty)",
-        "title_en": "Poverty",
-        "title_or": "ଦାରିଦ୍ର୍ୟ",
-        "subject": "geography",
-        "thumbnail": null
-      },
-      {
         "id": "I5ouNuduyRLg0oYK8cJQ",
         "title": "Chapter 6 - କର୍ମକ୍ଷେତ୍ରରେ ନିରାପତ୍ତା (Safety at Workplace)",
         "title_en": "Safety at Workplace",
         "title_or": "କର୍ମକ୍ଷେତ୍ରରେ ନିରାପତ୍ତା",
         "subject": "vocational",
-        "thumbnail": null
-      },
-      {
-        "id": "hQ6eEOUKSxzbk1M6kJeR",
-        "title": "Chapter 8 - ବୋଧ (Bodh)",
-        "title_en": "Bodh",
-        "title_or": "ବୋଧ",
-        "subject": "hindi",
         "thumbnail": null
       },
       {
@@ -9381,14 +9371,6 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "class10_hindi_literature",
-        "title": "हिन्दी सौरभ (Class 10 Hindi Literature)",
-        "title_en": "हिन्दी सौरभ",
-        "title_or": "Class 10 Hindi Literature",
-        "subject": "Hindi",
-        "thumbnail": null
-      },
-      {
         "id": "zM3ZUo9MXaprYQbtlbC4",
         "title": "Chapter 5 - ପରିସଂଖ୍ୟାନ (Statistics)",
         "title_en": "Statistics",
@@ -9399,7 +9381,7 @@ export const ROADMAP_DATA = [
     ]
   },
   {
-    "month": "December 2026",
+    "month": "January 2027",
     "chapters": [
       {
         "id": "ZuCVJ9G3H6UaQgRlY5ai",
@@ -9442,6 +9424,22 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
+        "id": "PC8FHKNcMjQW961faQFL",
+        "title": "Tippani O Chitha Prastuti",
+        "title_en": "Note and Draft Preparation",
+        "title_or": "ଟିପ୍‌ପଣୀ ଓ ଚିଠା ପ୍ରସ୍ତୁତି",
+        "subject": "odia_grammar",
+        "thumbnail": null
+      },
+      {
+        "id": "Strdd1gmlwmiCYAaT6c2",
+        "title": "Chapter 23 - ହୀରାକୁଦବନ୍ଧଃ (Hirakudabandhah)",
+        "title_en": "Hirakudabandhah",
+        "title_or": "ହୀରାକୁଦବନ୍ଧଃ",
+        "subject": "sanskrit",
+        "thumbnail": null
+      },
+      {
         "id": "5PVzBRUtXuwhQMTX3nqe",
         "title": "Chapter 24 - ପରବୁଦ୍ଧିର୍ଭୟଙ୍କରୀ (Parabuddhirbhayankari)",
         "title_en": "Parabuddhirbhayankari",
@@ -9454,14 +9452,6 @@ export const ROADMAP_DATA = [
         "title": "Chapter 25 - ସର୍ବଂସହା (Sarvamsaha)",
         "title_en": "Sarvamsaha",
         "title_or": "ସର୍ବଂସହା",
-        "subject": "sanskrit",
-        "thumbnail": null
-      },
-      {
-        "id": "6klpHQ6PjQI7b7LHNLRU",
-        "title": "Chapter 26 - କିଂ ଫଳମସ୍ତି ଦାନସ୍ୟ (Kim Phalamasti Danasya)",
-        "title_en": "Kim Phalamasti Danasya",
-        "title_or": "କିଂ ଫଳମସ୍ତି ଦାନସ୍ୟ",
         "subject": "sanskrit",
         "thumbnail": null
       },
@@ -9479,6 +9469,14 @@ export const ROADMAP_DATA = [
         "title_en": "Virtue",
         "title_or": "ସଦ୍‌ଗୁଣ",
         "subject": "english",
+        "thumbnail": null
+      },
+      {
+        "id": "jYLYELTjcSejLzdLCJKo",
+        "title": "Tadhita Prakarana",
+        "title_en": "Taddhita Suffixes",
+        "title_or": "ତଦ୍ଧିତ ପ୍ରକରଣ",
+        "subject": "sanskrit_grammar",
         "thumbnail": null
       },
       {
@@ -9506,11 +9504,27 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
+        "id": "I4WE9ipy66RHtmBCkotX",
+        "title": "Chapter 15 - ଦାରିଦ୍ର୍ୟ (Poverty)",
+        "title_en": "Poverty",
+        "title_or": "ଦାରିଦ୍ର୍ୟ",
+        "subject": "geography",
+        "thumbnail": null
+      },
+      {
         "id": "ROtmb20WpiKRMKl72XJT",
         "title": "Chapter 16 - ବେକାରୀ (Unemployment)",
         "title_en": "Unemployment",
         "title_or": "ବେକାରୀ",
         "subject": "geography",
+        "thumbnail": null
+      },
+      {
+        "id": "OPxrsZKNJFW1ElKitCWI",
+        "title": "Chapter 7 - ବିଦେଶୀ ଓ ଆଞ୍ଚଳିକ ଭାଷା (Foreign and Regional Language)",
+        "title_en": "Foreign and Regional Language",
+        "title_or": "ବିଦେଶୀ ଓ ଆଞ୍ଚଳିକ ଭାଷା",
+        "subject": "vocational",
         "thumbnail": null
       },
       {
@@ -9544,11 +9558,27 @@ export const ROADMAP_DATA = [
         "title_or": "ଟିମୋଥିର ବୃଦ୍ଧି ଓ ପରିବର୍ତ୍ତନ",
         "subject": "English",
         "thumbnail": null
+      },
+      {
+        "id": "7Yukb86gfwmb9Bptpbwd",
+        "title": "Chapter 6 - ଅଙ୍କନ (Construction)",
+        "title_en": "Construction",
+        "title_or": "ଅଙ୍କନ",
+        "subject": "geometry",
+        "thumbnail": null
+      },
+      {
+        "id": "cKl1PFkdrkgSnGH7AReP",
+        "title": "Chapter 6 - ସ୍ଥାନାଙ୍କ ଜ୍ୟାମିତି (Co-ordinate Geometry)",
+        "title_en": "Co-ordinate Geometry",
+        "title_or": "ସ୍ଥାନାଙ୍କ ଜ୍ୟାମିତି",
+        "subject": "algebra",
+        "thumbnail": null
       }
     ]
   },
   {
-    "month": "January 2027",
+    "month": "February 2027",
     "chapters": [
       {
         "id": "Y2ffOG9WOfM2Lua2351W",
@@ -9567,11 +9597,19 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "PC8FHKNcMjQW961faQFL",
-        "title": "Tippani O Chitha Prastuti",
-        "title_en": "Note and Draft Preparation",
-        "title_or": "ଟିପ୍‌ପଣୀ ଓ ଚିଠା ପ୍ରସ୍ତୁତି",
-        "subject": "odia_grammar",
+        "id": "7gF7jKw3togWA52Z4oZn",
+        "title": "Chapter 26 - ଭାରତ ଓ ତାହାର ପଡ଼ୋଶୀ ରାଷ୍ଟ୍ର (India and its Neighbouring Countries)",
+        "title_en": "India and its Neighbouring Countries",
+        "title_or": "ଭାରତ ଓ ତାହାର ପଡ଼ୋଶୀ ରାଷ୍ଟ୍ର",
+        "subject": "social_science",
+        "thumbnail": null
+      },
+      {
+        "id": "6klpHQ6PjQI7b7LHNLRU",
+        "title": "Chapter 26 - କିଂ ଫଳମସ୍ତି ଦାନସ୍ୟ (Kim Phalamasti Danasya)",
+        "title_en": "Kim Phalamasti Danasya",
+        "title_or": "କିଂ ଫଳମସ୍ତି ଦାନସ୍ୟ",
+        "subject": "sanskrit",
         "thumbnail": null
       },
       {
@@ -9579,6 +9617,14 @@ export const ROADMAP_DATA = [
         "title": "Chapter 27 - ଅହିଂସାଚରଣମ୍ (Ahinsacharanam)",
         "title_en": "Ahinsacharanam",
         "title_or": "ଅହିଂସାଚରଣମ୍",
+        "subject": "sanskrit",
+        "thumbnail": null
+      },
+      {
+        "id": "9gfMkXsN2qIlk3iaUOgo",
+        "title": "Chapter 28 - ଅସ୍ମାକଂ ରାଷ୍ଟ୍ରିୟଧ୍ୱଜଃ (Asmakam Rashtriyadhvajah)",
+        "title_en": "Asmakam Rashtriyadhvajah",
+        "title_or": "ଅସ୍ମାକଂ ରାଷ୍ଟ୍ରିୟଧ୍ୱଜଃ",
         "subject": "sanskrit",
         "thumbnail": null
       },
@@ -9631,14 +9677,6 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "OPxrsZKNJFW1ElKitCWI",
-        "title": "Chapter 7 - ବିଦେଶୀ ଓ ଆଞ୍ଚଳିକ ଭାଷା (Foreign and Regional Language)",
-        "title_en": "Foreign and Regional Language",
-        "title_or": "ବିଦେଶୀ ଓ ଆଞ୍ଚଳିକ ଭାଷା",
-        "subject": "vocational",
-        "thumbnail": null
-      },
-      {
         "id": "JsDraftMrkHJqLAgRsUN",
         "title": "Chapter 11 - ଜନନୀ ଜନ୍ମଭୂମି (Janani Janmabhumi)",
         "title_en": "Janani Janmabhumi",
@@ -9668,43 +9706,6 @@ export const ROADMAP_DATA = [
         "title_en": "Village Song",
         "title_or": "ଗ୍ରାମ୍ୟ ଗୀତ",
         "subject": "English",
-        "thumbnail": null
-      },
-      {
-        "id": "7Yukb86gfwmb9Bptpbwd",
-        "title": "Chapter 6 - ଅଙ୍କନ (Construction)",
-        "title_en": "Construction",
-        "title_or": "ଅଙ୍କନ",
-        "subject": "geometry",
-        "thumbnail": null
-      },
-      {
-        "id": "cKl1PFkdrkgSnGH7AReP",
-        "title": "Chapter 6 - ସ୍ଥାନାଙ୍କ ଜ୍ୟାମିତି (Co-ordinate Geometry)",
-        "title_en": "Co-ordinate Geometry",
-        "title_or": "ସ୍ଥାନାଙ୍କ ଜ୍ୟାମିତି",
-        "subject": "algebra",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "February 2027",
-    "chapters": [
-      {
-        "id": "7gF7jKw3togWA52Z4oZn",
-        "title": "Chapter 26 - ଭାରତ ଓ ତାହାର ପଡ଼ୋଶୀ ରାଷ୍ଟ୍ର (India and its Neighbouring Countries)",
-        "title_en": "India and its Neighbouring Countries",
-        "title_or": "ଭାରତ ଓ ତାହାର ପଡ଼ୋଶୀ ରାଷ୍ଟ୍ର",
-        "subject": "social_science",
-        "thumbnail": null
-      },
-      {
-        "id": "9gfMkXsN2qIlk3iaUOgo",
-        "title": "Chapter 28 - ଅସ୍ମାକଂ ରାଷ୍ଟ୍ରିୟଧ୍ୱଜଃ (Asmakam Rashtriyadhvajah)",
-        "title_en": "Asmakam Rashtriyadhvajah",
-        "title_or": "ଅସ୍ମାକଂ ରାଷ୍ଟ୍ରିୟଧ୍ୱଜଃ",
-        "subject": "sanskrit",
         "thumbnail": null
       }
     ]

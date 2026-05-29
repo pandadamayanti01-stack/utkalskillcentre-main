@@ -141,24 +141,11 @@ async function run() {
         return a.title.localeCompare(b.title);
       });
 
-      if (c === 8 || c === 9 || c === 10) {
-        // Use weighted workload for Class 8, 9, 10
-        const N = chapters.length;
-        chapters.forEach((chap, j) => {
-          const position = (j + 0.5) / N;
-          let monthIndex = 0;
-          while (monthIndex < 8 && position > CUMULATIVE_WEIGHTS[monthIndex]) {
-            monthIndex++;
-          }
-          roadmap[monthIndex].chapters.push(chap);
-        });
-      } else {
-        // Chronological sequential block distribution
-        chapters.forEach((chap, idx) => {
-          const monthIndex = Math.min(8, Math.floor((idx / chapters.length) * 9));
-          roadmap[monthIndex].chapters.push(chap);
-        });
-      }
+      // Chronological sequential block distribution
+      chapters.forEach((chap, idx) => {
+        const monthIndex = Math.min(8, Math.floor((idx / chapters.length) * 9));
+        roadmap[monthIndex].chapters.push(chap);
+      });
     });
     roadmaps[classStr] = roadmap;
   }
