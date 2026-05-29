@@ -614,6 +614,10 @@ export function cleanOdiaOrthography(text: string): string {
     'ବାଲରାମ': 'ବଳରାମ',
     'ବାଲଦେବ': 'ବଳଦେବ',
     'ବାଲଶ୍ରୀ': 'ବଳଶ୍ରୀ',
+    
+    // 5. Chapter Title Corrections (Class 7 Sahitya Suman)
+    'ମାତୃଭକ୍ତି କଥା': 'ମାଡ଼ହାଣ୍ଡି କଥା',
+    'Matrubhakti Katha': 'Madahandi Katha',
   };
 
   let correctedText = text;
