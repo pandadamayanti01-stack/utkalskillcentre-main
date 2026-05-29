@@ -374,7 +374,13 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
     window.speechSynthesis.speak(utterance);
   };
 
-  const speakWithGeminiVoice = async (text: string, onDone?: () => void, retries = 2): Promise<void> => {
+  const speakWithGeminiVoice = async (text: string, onDone?: () => void, retries = 1): Promise<void> => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      console.warn("Gemini TTS connection timed out (2.5s limit reached). Triggering immediate local browser TTS fallback...");
+      controller.abort();
+    }, 2500);
+
     try {
       stopCurrentAudio();
       window.speechSynthesis.cancel();
@@ -384,7 +390,10 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text, language }),
+        signal: controller.signal
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw { status: response.status, message: `TTS HTTP ${response.status}` };
@@ -456,16 +465,18 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
 
       await audio.play();
     } catch (err: any) {
+      clearTimeout(timeoutId);
       const isQuotaExceeded = err?.status === 429;
+      const isAborted = err?.name === 'AbortError';
       
-      if (retries > 0 && !isQuotaExceeded) {
-        const delay = (3 - retries) * 2000; 
+      if (retries > 0 && !isQuotaExceeded && !isAborted) {
+        const delay = (2 - retries) * 1500; 
         console.warn(`Gemini TTS error. Retrying in ${delay}ms... (${retries} attempts left)`, err);
         await new Promise(resolve => setTimeout(resolve, delay));
         return speakWithGeminiVoice(text, onDone, retries - 1);
       }
       
-      console.warn(isQuotaExceeded ? 'Gemini TTS quota exceeded, falling back to browser TTS immediately.' : 'Gemini voice unavailable, using browser TTS fallback.', err);
+      console.warn(isAborted ? 'Gemini TTS timed out, falling back to browser TTS.' : 'Gemini voice unavailable, using browser TTS fallback.', err);
       setIsSpeaking(false);
       speakWithBrowserTtsFallback(text, onDone);
     }
