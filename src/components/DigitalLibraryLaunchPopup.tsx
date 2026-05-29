@@ -105,7 +105,7 @@ export default function DigitalLibraryLaunchPopup({
                 <Lucide.Sparkles size={14} />
               </div>
               <h4 style={{ color: styles.featureTitle }} className="text-xs font-black">
-                ଗୁଣ୍ଡୁଲୁ AI ପ୍ରଶ୍ନ ସମାଧାନକାରୀ
+                ଗୁନ୍ଦୁଲୁ AI ପ୍ରଶ୍ନ ସମାଧାନକାରୀ
               </h4>
             </div>
           </div>

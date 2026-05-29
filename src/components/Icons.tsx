@@ -28,7 +28,7 @@ export const Logo = ({ className = "h-12" }: { className?: string }) => (
 );
 
 export const BigsanBranding = ({ className = "" }: { className?: string }) => {
-  const [lang] = useState<'en' | 'or'>(localStorage.getItem('lang') as any || 'en');
+  const [lang] = useState<'en' | 'or'>(localStorage.getItem('lang') as any || 'or');
   return (
     <div className={`flex flex-col items-center gap-1 ${className}`}>
       <p className="text-[10px] uppercase tracking-widest text-slate-400 font-medium">

@@ -4622,7 +4622,7 @@ Sample tone for Class 6-10:
   }
 
   function renderDigitalLibraryUpload() {
-    const language = (localStorage.getItem('lang') as 'en' | 'or') || 'en';
+    const language = (localStorage.getItem('lang') as 'en' | 'or') || 'or';
     const cleanSub = (s: string) => {
       if (!s) return '';
       let cleaned = s.toLowerCase();

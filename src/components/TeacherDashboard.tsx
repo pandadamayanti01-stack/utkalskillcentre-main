@@ -114,7 +114,7 @@ export function TeacherDashboard({ user, language, chapters, setActiveTab, textb
             <p className="text-slate-300 text-sm max-w-2xl leading-relaxed">
               {language === 'en' 
                 ? 'Generate bilingual school-standard homework worksheets, mock test sheets, and confidential teacher answer keys. Printed sheets automatically embed the Utkal QR badge for your students to download the app.'
-                : 'ଗୁଣ୍ଡୁଲୁ AI ଦ୍ୱାରା ଦ୍ୱିଭାଷୀ ବିଦ୍ୟାଳୟ-ମାନକ ହୋମୱାର୍କ ସିଟ୍ ଓ ମକ୍ ଟେଷ୍ଟ ତୁରନ୍ତ ପ୍ରସ୍ତୁତ କରନ୍ତୁ। ପ୍ରିଣ୍ଟେବଲ୍ ସିଟ୍ ରେ ଛାତ୍ରମାନଙ୍କ ପାଇଁ QR କୋଡ୍ ରହିବ।'}
+                : 'ଗୁନ୍ଦୁଲୁ AI ଦ୍ୱାରା ଦ୍ୱିଭାଷୀ ବିଦ୍ୟାଳୟ-ମାନକ ହୋମୱାର୍କ ସିଟ୍ ଓ ମକ୍ ଟେଷ୍ଟ ତୁରନ୍ତ ପ୍ରସ୍ତୁତ କରନ୍ତୁ। ପ୍ରିଣ୍ଟେବଲ୍ ସିଟ୍ ରେ ଛାତ୍ରମାନଙ୍କ ପାଇଁ QR କୋଡ୍ ରହିବ।'}
             </p>
             <div className="pt-2">
               <button 
@@ -331,7 +331,7 @@ export function TeacherDashboard({ user, language, chapters, setActiveTab, textb
                   <span className="text-2xl">📝</span>
                   <div>
                     <h3 className="text-xl font-black text-white">
-                      {language === 'en' ? 'Gundulu AI Homework Maker' : 'ଗୁଣ୍ଡୁଲୁ AI ପ୍ରଶ୍ନପତ୍ର ନିର୍ମାତା'}
+                      {language === 'en' ? 'Gundulu AI Homework Maker' : 'ଗୁନ୍ଦୁଲୁ AI ପ୍ରଶ୍ନପତ୍ର ନିର୍ମାତା'}
                     </h3>
                     <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">
                       Create printable school worksheets instantly
@@ -537,7 +537,7 @@ export function TeacherDashboard({ user, language, chapters, setActiveTab, textb
                         <p className="text-xs text-slate-400 max-w-lg mx-auto">
                           {language === 'en'
                             ? 'Scan this worksheets custom invitation to ask Gundulu AI, practice daily MCQs, and access bilingual textbooks for FREE!'
-                            : 'ମାଗଣାରେ ଗୁଣ୍ଡୁଲୁ AI କୁ ପ୍ରଶ୍ନ ପଚାରିବା, ଦୈନିକ MCQ ଟେଷ୍ଟ ଦେବା ଏବଂ ପାଠ୍ୟପୁସ୍ତକ ପାଇଁ ଆପ୍ ଡାଉନଲୋଡ୍ କରନ୍ତୁ!'}
+                            : 'ମାଗଣାରେ ଗୁନ୍ଦୁଲୁ AI କୁ ପ୍ରଶ୍ନ ପଚାରିବା, ଦୈନିକ MCQ ଟେଷ୍ଟ ଦେବା ଏବଂ ପାଠ୍ୟପୁସ୍ତକ ପାଇଁ ଆପ୍ ଡାଉନଲୋଡ୍ କରନ୍ତୁ!'}
                         </p>
                         
                         {/* Interactive Vector Mock QR Code block */}

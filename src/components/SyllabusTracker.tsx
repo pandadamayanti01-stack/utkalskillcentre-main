@@ -142,7 +142,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
       <SEO 
         title={translate(
           `Gundulu's Journey - 9 Month Roadmap | Class ${studentClassStr}`,
-          `ଗୁଣ୍ଡୁଲୁର ଯାତ୍ରା - ୯ ମାସର ରୋଡମ୍ୟାପ୍ | ${getOdiaClassStr(studentClassStr)} ଶ୍ରେଣୀ`
+          `ଗୁନ୍ଦୁଲୁର ଯାତ୍ରା - ୯ ମାସର ରୋଡମ୍ୟାପ୍ | ${getOdiaClassStr(studentClassStr)} ଶ୍ରେଣୀ`
         )}
         description={`Follow Gundulu on a 9-month epic journey to master the entire Class ${studentClassStr} syllabus!`}
       />
@@ -152,7 +152,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-slate-800 mb-2 flex items-center gap-3">
             <Compass className="text-emerald-500" size={32} />
-            {translate("Gundulu's Journey", "ଗୁଣ୍ଡୁଲୁର ଯାତ୍ରା")}
+            {translate("Gundulu's Journey", "ଗୁନ୍ଦୁଲୁର ଯାତ୍ରା")}
           </h1>
           <p className="text-slate-500 max-w-2xl text-sm md:text-base font-medium">
             {translate(

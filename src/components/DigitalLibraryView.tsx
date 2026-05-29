@@ -1010,7 +1010,7 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
 
     const inviteText = language === 'en'
       ? `Hey friends! I am revising "${selectedChapter.title}" in our Digital Library on the Utkal Skill Centre app! 📚 Gundulu AI explains everything so easily with beautiful notes & formulas! Check it out here: https://utkalskillcentre.com`
-      : `ହେଲୋ ସାଙ୍ଗମାନେ! ମୁଁ ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍ ଆପ୍‌ରେ ଆମର ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀରୁ "${selectedChapter.title}" ର ନୋଟ୍ସ ପଢୁଛି! 📚 ଗୁଣ୍ଡୁଲୁ AI ବହୁତ ସହଜରେ ସବୁ ସୂତ୍ର ଏବଂ ସାରାଂଶ ବୁଝାଇ ଦେଉଛି। ମାଗଣାରେ ପଢ଼ିବା ପାଇଁ ଏଠାରେ କ୍ଲିକ୍ କରନ୍ତୁ: https://utkalskillcentre.com`;
+      : `ହେଲୋ ସାଙ୍ଗମାନେ! ମୁଁ ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍ ଆପ୍‌ରେ ଆମର ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀରୁ "${selectedChapter.title}" ର ନୋଟ୍ସ ପଢୁଛି! 📚 ଗୁନ୍ଦୁଲୁ AI ବହୁତ ସହଜରେ ସବୁ ସୂତ୍ର ଏବଂ ସାରାଂଶ ବୁଝାଇ ଦେଉଛି। ମାଗଣାରେ ପଢ଼ିବା ପାଇଁ ଏଠାରେ କ୍ଲିକ୍ କରନ୍ତୁ: https://utkalskillcentre.com`;
 
     try {
       const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(inviteText)}`;
@@ -1045,7 +1045,7 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
 
       // Reset chatbot to initial greeting
       const greetEn = `Namaskar! Mu Gundulu. 🦜 I am your AI study companion for this chapter: "${selectedChapter.title}". Ask me any math formulas, definitions, or click the suggestions below! How can I help you today? ✨`;
-      const greetOr = `ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। 🦜 ଆଜି ଆମେ ଏହି ଅଧ୍ୟาୟ ପଢ଼ିବା: "${selectedChapter.title}"। ଏହି ଅଧ୍ୟାୟର କୌଣସି ପ୍ରଶ୍ନ ବା ସୂତ୍ର ବୁଝିବା ପାଇଁ ମୋତେ ପଚାରନ୍ତୁ, ମୁଁ ସାହାଯ୍ୟ କରିବି! ✨`;
+      const greetOr = `ନମସ୍କାର! ମୁଁ ଗୁନ୍ଦୁଲୁ। 🦜 ଆଜି ଆମେ ଏହି ଅଧ୍ୟାୟ ପଢ଼ିବା: "${selectedChapter.title}"। ଏହି ଅଧ୍ୟାୟର କୌଣସି ପ୍ରଶ୍ନ ବା ସୂତ୍ର ବୁଝିବା ପାଇଁ ମୋତେ ପଚାରନ୍ତୁ, ମୁଁ ସାହାଯ୍ୟ କରିବି! ✨`;
       setChatMessages([
         {
           id: 'initial',
@@ -1377,7 +1377,7 @@ Instructions:
         let title = language === 'en' ? 'Digital Library | Utkal Skill Centre' : 'ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀ | ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର';
         let desc = language === 'en'
           ? `Access complete school textbooks, chapter solutions, MCQs, study notes, and AI support for Classes 1 to 10 in Odia on Utkal Skill Centre.`
-          : `ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରରେ ୧ ରୁ ୧୦ ଶ୍ରେଣୀ ପାଇଁ ଓଡ଼ିଆ ମିଡିୟମ୍ ସ୍କୁଲ୍ ବହି, ସମାଧାନ, MCQ ଏବଂ ଏଆଇ ଶିକ୍ଷକ ଗୁଣ୍ଡୁଲୁ ସହ ପାଠପଢ଼ନ୍ତୁ।`;
+          : `ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରରେ ୧ ରୁ ୧୦ ଶ୍ରେଣୀ ପାଇଁ ଓଡ଼ିଆ ମିଡିୟମ୍ ସ୍କୁଲ୍ ବହି, ସମାଧାନ, MCQ ଏବଂ ଏଆଇ ଶିକ୍ଷକ ଗୁନ୍ଦୁଲୁ ସହ ପାଠପଢ଼ନ୍ତୁ।`;
 
         let schemaData: any = null;
 
@@ -2089,7 +2089,7 @@ Instructions:
                           <p className="text-xs text-slate-400 leading-relaxed font-bold">
                             {language === 'en'
                               ? "Official revision notes are blank. Click below to let Gundulu AI generate & save comprehensive chapter notes and revision formulas directly to Firestore for all students!"
-                              : "ଏହି ଅଧ୍ୟାୟର ନୋଟ୍ସ ଖାଲି ଅଛି। ଗୁଣ୍ଡୁଲୁ AI ଦ୍ୱାରା ନୂତନ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଏବଂ ଉଦାହରଣ ପ୍ରସ୍ତուତ କରି ସିଧାସଳଖ ଡାଟାବେସରେ ସେଭ୍ କରିବା ପାଇଁ ତଳେ କ୍ଲିକ୍ କରନ୍ତୁ!"}
+                              : "ଏହି ଅଧ୍ୟାୟର ନୋଟ୍ସ ଖାଲି ଅଛି। ଗୁନ୍ଦୁଲୁ AI ଦ୍ୱାରା ନୂତନ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଏବଂ ଉଦାହରଣ ପ୍ରସ୍ତୁତ କରି ସିଧାସଳଖ ଡାଟାବେସରେ ସେଭ୍ କରିବା ପାଇଁ ତଳେ କ୍ଲିକ୍ କରନ୍ତୁ!"}
                           </p>
                         </div>
                         <button
@@ -2404,7 +2404,7 @@ Instructions:
                   </div>
                   <div>
                     <h3 className="text-sm font-black text-white flex items-center gap-1.5">
-                      <span>{language === 'en' ? 'Gundulu AI Tutor' : 'ଗୁଣ୍ଡୁଲୁ ଏଆଈ ସାଥୀ'}</span>
+                      <span>{language === 'en' ? 'Gundulu AI Tutor' : 'ଗୁନ୍ଦୁଲୁ ଏଆଈ ସାଥୀ'}</span>
                       <Lucide.Sparkles size={12} className="text-amber-400" />
                     </h3>
                     <p className="text-[10px] text-emerald-400 font-extrabold uppercase tracking-widest flex items-center gap-1">
@@ -2427,12 +2427,12 @@ Instructions:
                   </motion.div>
                   <div className="space-y-3">
                     <h4 className="text-base font-black text-white">
-                      {language === 'en' ? 'Unlock Gundulu AI Tutor' : 'ଗୁଣ୍ଡୁଲୁ AI ଟ୍ୟୁଟର ଅନଲକ୍ କରନ୍ତୁ'}
+                      {language === 'en' ? 'Unlock Gundulu AI Tutor' : 'ଗୁନ୍ଦୁଲୁ AI ଟ୍ୟୁଟର ଅନଲକ୍ କରନ୍ତୁ'}
                     </h4>
                     <p className="text-xs text-slate-400 font-medium leading-relaxed max-w-[260px] mx-auto">
                       {language === 'en'
                         ? 'Chat with Gundulu to solve doubts, explain complex formulas, and get custom interactive practice tests instantly!'
-                        : 'ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହୋଇ ସବୁ ଗଣିତ ପ୍ରଶ୍ନର ସମାଧାନ, ସୂତ୍ର ଏବଂ ସ୍ପେସାଲ୍ ଟେଷ୍ଟ ପାଆନ୍ତୁ!'}
+                        : 'ଗୁନ୍ଦୁଲୁ ସହ କଥା ହୋଇ ସବୁ ଗଣିତ ପ୍ରଶ୍ନର ସମାଧାନ, ସୂତ୍ର ଏବଂ ସ୍ପେସାଲ୍ ଟେଷ୍ଟ ପାଆନ୍ତୁ!'}
                     </p>
                   </div>
                   <button
@@ -2539,7 +2539,7 @@ Instructions:
                       type="text"
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
-                      placeholder={language === 'en' ? 'Ask Gundulu anything...' : 'ଏହି ଅଧ୍ୟାୟ ବିଷୟରେ ଗୁଣ୍ଡୁଲୁକୁ ପଚାରନ୍ତୁ...'}
+                      placeholder={language === 'en' ? 'Ask Gundulu anything...' : 'ଏହି ଅଧ୍ୟାୟ ବିଷୟରେ ଗୁନ୍ଦୁଲୁକୁ ପଚାରନ୍ତୁ...'}
                       className="gundulu-chat-input flex-1 bg-slate-900 border border-white/10 rounded-2xl px-5 py-3 text-sm font-semibold text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 shadow-inner transition-all"
                     />
                     <button
@@ -2693,7 +2693,7 @@ Instructions:
                           <p className="text-xs text-slate-400 leading-relaxed font-bold">
                             {language === 'en'
                               ? "Official revision notes are not uploaded yet. Click below to let Gundulu AI generate comprehensive chapter notes, revision formulas, and laws instantly!"
-                              : "ଏହି ଅଧ୍ୟାୟର ଅଫିସିଆଲ୍ ନୋଟ୍ସ ଏପର୍ଯ୍ୟନ୍ତ ଯୋଡ଼ା ଯାଇନାହିଁ। କିନ୍ତୁ ଆପଣଙ୍କ ପାଇଁ ଗୁଣ୍ଡୁଲୁ AI ଗୁרୁତ୍ୱପୂર્ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଏବଂ ଉଦାହରଣ ପ୍ରସ୍ତୁତ କରିବାକୁ ପ୍ରସ୍ତୁତ ଅଛି!"}
+                              : "ଏହି ଅଧ୍ୟାୟର ଅଫିସିଆଲ୍ ନୋଟ୍ସ ଏପର୍ଯ୍ୟନ୍ତ ଯୋଡ଼ା ଯାଇନାହିଁ। କିନ୍ତୁ ଆପଣଙ୍କ ପାଇଁ ଗୁନ୍ଦୁଲୁ AI ଗୁרୁତ୍ୱପୂર્ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଏବଂ ଉଦାହରଣ ପ୍ରସ୍ତୁତ କରିବାକୁ ପ୍ରସ୍ତୁତ ଅଛି!"}
                           </p>
                         </div>
                         <button
@@ -2958,7 +2958,7 @@ Instructions:
                   </div>
                   <div>
                     <h2 className="text-sm md:text-lg font-black text-white leading-tight flex items-center gap-2">
-                      <span>{language === 'en' ? 'Gundulu AI Chat Room' : 'ଗୁଣ୍ଡୁଲୁ ଏଆଈ ଚାଟ୍ ରୁମ୍'}</span>
+                      <span>{language === 'en' ? 'Gundulu AI Chat Room' : 'ଗୁନ୍ଦୁଲୁ ଏଆଈ ଚାଟ୍ ରୁମ୍'}</span>
                       <span className="hidden sm:inline-block px-2.5 py-0.5 rounded-full text-[9px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 uppercase tracking-widest font-black">
                         {language === 'en' ? 'Active' : 'ସକ୍ରିୟ'}
                       </span>
@@ -3129,7 +3129,7 @@ Instructions:
                       type="text"
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
-                      placeholder={language === 'en' ? 'Ask Gundulu about this chapter...' : 'ଏହି ଅଧ୍ୟାୟ ବିଷୟରେ ଗୁଣ୍ଡୁଲୁକୁ ପଚାରନ୍ତୁ...'}
+                      placeholder={language === 'en' ? 'Ask Gundulu about this chapter...' : 'ଏହି ଅଧ୍ୟାୟ ବିଷୟରେ ଗୁନ୍ଦୁଲୁକୁ ପଚାରନ୍ତୁ...'}
                       className="flex-1 bg-slate-900 border border-white/5 rounded-2xl px-5 py-3 text-sm font-semibold text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/30"
                     />
                     <button

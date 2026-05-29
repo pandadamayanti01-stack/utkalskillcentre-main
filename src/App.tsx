@@ -80,6 +80,7 @@ const DigitalLibraryLaunchPopup = lazy(() => import('./components/DigitalLibrary
 const TeacherDashboard = lazy(() => import('./components/TeacherDashboard').then((module) => ({ default: module.TeacherDashboard })));
 const CommunityChatView = lazy(() => import('./components/CommunityChatView').then((module) => ({ default: module.CommunityChatView })));
 const LaunchCelebration = lazy(() => import('./components/LaunchCelebration'));
+const PitchDeckView = lazy(() => import('./components/PitchDeckView').then((module) => ({ default: module.PitchDeckView })));
 
 function ViewLoader({ fullHeight = false }: { fullHeight?: boolean }) {
   return (
@@ -3303,6 +3304,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             {activeTab === 'support' && <SupportView user={user} language={language} onBack={() => setActiveTab('dashboard')} handleSupportClick={handleSupportClick} confirmSupport={confirmSupport} supportSession={supportSession} />}
             {activeTab === 'store' && <AvatarStore user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'plans' && <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'pitch_deck' && <PitchDeckView language={language} onBack={() => setActiveTab('dashboard')} />}
           </AnimatePresence>
 
 

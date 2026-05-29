@@ -521,17 +521,17 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
                     <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[7px] sm:text-[10px] font-black uppercase tracking-[0.2em] shadow-[inset_0_0_10px_rgba(16,185,129,0.1)] whitespace-nowrap">
                       <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-emerald-400 shadow-[0_0_5px_#34d399] animate-pulse"></span>
-                      <span className="hidden sm:inline">{language === 'en' ? 'Gundulu AI Active' : 'ଗୁଣ୍ଡୁଲୁ AI ସକ୍ରିୟ'}</span>
+                      <span className="hidden sm:inline">{language === 'en' ? 'Gundulu AI Active' : 'ଗୁନ୍ଦୁଲୁ AI ସକ୍ରିୟ'}</span>
                       <span className="sm:hidden">{language === 'en' ? 'AI Active' : 'AI ସକ୍ରିୟ'}</span>
                     </div>
                   </div>
                   <h3 className="text-[11px] leading-tight sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300 tracking-tighter group-hover:text-white transition-colors whitespace-nowrap">
-                    {language === 'en' ? 'Talk to Gundulu' : 'ଗୁଣ୍ଡୁଲୁ ସହିତ କଥା ହୁଅନ୍ତୁ'}
+                    {language === 'en' ? 'Talk to Gundulu' : 'ଗୁନ୍ଦୁଲୁ ସହିତ କଥା ହୁଅନ୍ତୁ'}
                   </h3>
                   <p className="text-slate-400 text-[8px] sm:text-xs font-bold leading-relaxed max-w-[260px] mx-auto group-hover:text-slate-300 transition-colors hidden sm:block">
                     {language === 'en' 
                       ? 'Initiate a deep learning session. Ask complex questions and get instant, step-by-step voice answers.'
-                      : 'ଗୋଟିଏ ଗଭୀର ଶିକ୍ଷା ସେସନ୍ ଆରମ୍ଭ କରନ୍ତୁ | ଗୁଣ୍ଡୁଲୁ ଭଏସ୍ ଇଣ୍ଟରଫେସ୍ ମାଧ୍ୟମରେ ଜଟିଳ ପ୍ରଶ୍ନର ସମାଧାନ କରିବାକୁ ସକ୍ଷମ |'}
+                      : 'ଗୋଟିଏ ଗଭୀର ଶିକ୍ଷା ସେସନ୍ ଆରମ୍ଭ କରନ୍ତୁ | ଗୁନ୍ଦୁଲୁ ଭଏସ୍ ଇଣ୍ଟରଫେସ୍ ମାଧ୍ୟମରେ ଜଟିଳ ପ୍ରଶ୍ନର ସମାଧାନ କରିବାକୁ ସକ୍ଷମ |'}
                   </p>
                 </div>
               </div>

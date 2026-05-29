@@ -27,7 +27,7 @@ export function SkillGameView({ chapter, onBack }: SkillGameViewProps) {
   const [timeLeft, setTimeLeft] = useState(60);
   const [question, setQuestion] = useState<any>(null);
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
-  const [lang] = useState<'en' | 'or'>(localStorage.getItem('lang') as any || 'en');
+  const [lang] = useState<'en' | 'or'>(localStorage.getItem('lang') as any || 'or');
   const title = chapter?.title || "Skill Game";
 
   useEffect(() => {

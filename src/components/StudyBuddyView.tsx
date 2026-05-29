@@ -50,7 +50,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
       id: '1',
       role: 'assistant',
       content: language === 'or'
-        ? 'ନମସ୍କାର.. ମୁଁ ଗୁଣ୍ଡୁଲୁ.. ଆଜି ଆମେ କ’ଣ ପଢ଼ିବା? ✨'
+        ? 'ନମସ୍କାର.. ମୁଁ ଗୁନ୍ଦୁଲୁ.. ଆଜି ଆମେ କ’ଣ ପଢ଼ିବା? ✨'
         : 'Namaskar! ✨ I am Gundulu! What shall we learn today?',
       timestamp: new Date(),
     }
@@ -268,7 +268,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         if (err.message?.includes('503') || err.status === 503) {
           errorMsg = language === 'en'
             ? 'Gundulu is very busy right now! Please try asking again in a minute.'
-            : 'ଗୁଣ୍ଡୁଲୁ ବର୍ତ୍ତମାନ ବହୁତ ବ୍ୟସ୍ତ ଅଛନ୍ତି! ଦୟାକରି କିଛି ସମୟ ପରେ ପୁଣି ପଚାରନ୍ତୁ |';
+            : 'ଗୁନ୍ଦୁଲୁ ବର୍ତ୍ତମାନ ବହୁତ ବ୍ୟସ୍ତ ଅଛନ୍ତି! ଦୟାକରି କିଛି ସମୟ ପରେ ପୁଣି ପଚାରନ୍ତୁ |';
         }
 
         const errorMessage: Message = {
@@ -463,7 +463,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
               </div>
 
               <textarea
-                placeholder={language === 'en' ? 'Message Gundulu...' : 'ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହୁଅନ୍ତୁ...'}
+                placeholder={language === 'en' ? 'Message Gundulu...' : 'ଗୁନ୍ଦୁଲୁ ସହ କଥା ହୁଅନ୍ତୁ...'}
                 className="flex-1 bg-transparent border-none focus:outline-none text-white text-sm py-3 px-2 resize-none max-h-32 min-h-[44px] custom-scrollbar"
                 rows={1}
                 value={input}

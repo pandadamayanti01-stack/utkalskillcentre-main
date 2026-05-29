@@ -125,7 +125,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
   const chatHistoryRef = useRef<any[]>([]);
   
   // Immersive Status States
-  const [status, setStatus] = useState("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+  const [status, setStatus] = useState("ଗୁନ୍ଦୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
   const [subtitle, setSubtitle] = useState("");
   const subtitleContainerRef = useRef<HTMLDivElement>(null);
   const activeSubtitleIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -484,15 +484,15 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
     hasPlayedGreetingRef.current = false;
     responseTurnRef.current = 0;
     chatHistoryRef.current = []; // Reset previous chat history on mount
-    setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+    setStatus("ଗୁନ୍ଦୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
     setSubtitle('');
 
     const speakGreeting = () => {
       if (hasPlayedGreetingRef.current) return;
       hasPlayedGreetingRef.current = true;
 
-      const greeting = "ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। ଆସ, ଏବେ ଏକାଠି ପଢ଼ିବା ଓ ଆଗକୁ ବଢ଼ିବା।";
-      setStatus("ଗୁଣ୍ଡୁଲୁ କହୁଛି...");
+      const greeting = "ନମସ୍କାର! ମୁଁ ଗୁନ୍ଦୁଲୁ। ଆସ, ଏବେ ଏକାଠି ପଢ଼ିବା ଓ ଆଗକୁ ବଢ଼ିବା।";
+      setStatus("ଗୁନ୍ଦୁଲୁ କହୁଛି...");
 
       speakWithGeminiVoice(greeting, () => {
         triggerVisualNudge();
@@ -502,10 +502,10 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
             recognitionRef.current.start();
           } catch (e) {
             console.warn("Speech recognition failed to auto-start after greeting:", e);
-            setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+            setStatus("ଗୁନ୍ଦୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
           }
         } else {
-          setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+          setStatus("ଗୁନ୍ଦୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
         }
       });
     };
@@ -525,7 +525,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
 
       recognition.onstart = () => {
         setIsListening(true);
-        setStatus("ଗୁଣ୍ଡୁଲୁ ଶୁଣୁଛି... 👂");
+        setStatus("ଗୁନ୍ଦୁଲୁ ଶୁଣୁଛି... 👂");
         transcriptBufferRef.current = '';
       };
 
@@ -577,7 +577,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
           silenceTimeoutRef.current = null;
         }
         if (event.error === 'no-speech') {
-          setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+          setStatus("ଗୁନ୍ଦୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
           return;
         }
         const errorMsg = "ଶୁଣିପାରିଲି ନାହିଁ | ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |";
@@ -604,7 +604,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
   };
 
   const processWithGemini = async (speechInput: SpeechInput) => {
-    setStatus("ଗୁଣ୍ଡୁଲୁ ଚିନ୍ତା କରୁଛି...");
+    setStatus("ଗୁନ୍ଦୁଲୁ ଚିନ୍ତା କରୁଛି...");
     setIsListening(false);
     
     try {
@@ -750,10 +750,10 @@ Understand user intent from these transcripts and respond in Odia only.
           recognitionRef.current.start();
         } catch (e) {
           console.warn("Speech recognition failed to auto-start:", e);
-          setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+          setStatus("ଗୁନ୍ଦୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
         }
       } else {
-        setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+        setStatus("ଗୁନ୍ଦୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
       }
     });
   };
@@ -898,7 +898,7 @@ Understand user intent from these transcripts and respond in Odia only.
             </div>
             <div className="card-notes-preview">
               <p className="notes-heading">ପାଠ୍ୟକ୍ରମ ବିବରଣୀ (Lesson Overview):</p>
-              <p className="notes-text">{activeChapter.notes || "ନମସ୍କାର! ଗୁଣ୍ଡୁଲୁ ସହ ପଢିବା ପାଇଁ ଆପଣଙ୍କ ସ୍ୱାଗତ।"}</p>
+              <p className="notes-text">{activeChapter.notes || "ନମସ୍କାର! ଗୁନ୍ଦୁଲୁ ସହ ପଢିବା ପାଇଁ ଆପଣଙ୍କ ସ୍ୱାଗତ।"}</p>
             </div>
           </div>
         )}
