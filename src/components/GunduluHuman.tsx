@@ -116,7 +116,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
     { code: 'hi-IN', label: 'हिंदी (Hindi)' },
     { code: 'en-IN', label: 'English' }
   ];
-  const [inputLanguage, setInputLanguage] = useState('or-IN'); // Default to Odia for maximum syllabus and regional pronunciation accuracy
+  const [inputLanguage, setInputLanguage] = useState('hi-IN'); // Default to Hindi ASR (with corrections) for best phonetic recognition accuracy in browsers
   
   const hasPlayedGreetingRef = useRef(false);
   const responseTurnRef = useRef(0);
@@ -358,9 +358,9 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
       utterance.pitch = 1.1;
       utterance.rate = 0.85;
     } else {
-      // Standard voice: pitch up to emulate a friendly child mascot
-      utterance.pitch = 1.8;
-      utterance.rate = 0.9;
+      // Standard voice: keep pitch natural and pleasant for a sweet girl/elder sister voice
+      utterance.pitch = 1.15;
+      utterance.rate = 0.85;
     }
 
     utterance.onstart = () => {

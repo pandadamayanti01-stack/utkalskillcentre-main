@@ -545,10 +545,10 @@ app.post('/api/tts/gemini', async (req, res) => {
     // Select the best voice. We only try one preferred voice first, and optionally one fallback.
     // This prevents hitting the 3 RPM limit from redundant voice loops on the free tier.
     const preferredVoice = isOdia 
-      ? (process.env.GEMINI_TTS_VOICE_ODIA || 'Puck') 
+      ? (process.env.GEMINI_TTS_VOICE_ODIA || 'Kore') 
       : (process.env.GEMINI_TTS_VOICE_EN || 'Aoede');
 
-    const fallbackVoice = isOdia ? 'Kore' : 'Charon';
+    const fallbackVoice = isOdia ? 'Puck' : 'Charon';
     const voiceCandidates = [preferredVoice, fallbackVoice];
 
     const ttsPrompt = isOdia
