@@ -4411,9 +4411,9 @@ export const ROADMAP_DATA_7 = [
       },
       {
         "id": "TgSBENcvhLxNex39bizN",
-        "title": "Chapter 2 - Matrubhakti Katha",
-        "title_en": "Matrubhakti Katha",
-        "title_or": "ମାତୃଭକ୍ତି କଥା",
+        "title": "Chapter 2 - Madahandi Katha",
+        "title_en": "Madahandi Katha",
+        "title_or": "ମାଡ଼ହାଣ୍ଡି କଥା",
         "subject": "sahitya_suman",
         "thumbnail": null
       },
