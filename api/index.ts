@@ -372,7 +372,7 @@ app.post('/api/ai/generate', async (req, res) => {
         
         if (accessToken) {
           // Map models to standard Vertex AI model names
-          const vertexModel = modelType === 'pro' ? 'gemini-1.5-pro' : 'gemini-1.5-flash';
+          const vertexModel = modelType === 'pro' ? 'gemini-2.5-pro' : 'gemini-2.5-flash';
           const region = process.env.VERTEX_AI_REGION || 'us-central1';
           
           console.log(`Backend AI: Calling Vertex AI model ${vertexModel} in region ${region} for project ${projectId}...`);
@@ -419,7 +419,7 @@ app.post('/api/ai/generate', async (req, res) => {
           const vertexKey = process.env.VERTEX_API_KEY || process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
           if (vertexKey) {
             console.log("Backend AI: Attempting to call Vertex endpoints using direct developer key...");
-            const apiKeyModel = modelType === 'pro' ? 'gemini-1.5-pro' : 'gemini-1.5-flash';
+            const apiKeyModel = modelType === 'pro' ? 'gemini-2.5-pro' : 'gemini-2.5-flash';
             const vertexKeyUrl = `https://generativelanguage.googleapis.com/v1beta/models/${apiKeyModel}:generateContent?key=${vertexKey}`;
             
             const response = await fetch(vertexKeyUrl, {

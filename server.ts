@@ -503,7 +503,7 @@ async function startServer() {
           }
 
           if (accessToken) {
-            const vertexModel = modelType === 'pro' ? 'gemini-1.5-pro' : 'gemini-1.5-flash';
+            const vertexModel = modelType === 'pro' ? 'gemini-2.5-pro' : 'gemini-2.5-flash';
             const region = process.env.VERTEX_AI_REGION || 'us-central1';
             
             console.log(`Backend AI (Server): Calling Vertex AI model ${vertexModel} in region ${region} for project ${projectId}...`);
