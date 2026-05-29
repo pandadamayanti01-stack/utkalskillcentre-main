@@ -6,29 +6,24 @@ Utkal Skill Centre is a bilingual educational PWA designed to bridge the digital
 
 ---
 
-## 📈 Market Size & Social Impact Scale
+## 📈 Our Journey, Traction & Social Impact
 
-To demonstrate the commercial viability and profound social footprint of Utkal Skill Centre, we have mapped our addressable market across Odisha's state school system:
+Instead of corporate buzzwords, Utkal Skill Centre is built on a real, high-impact mission to bridge the digital divide for state-board students in Odisha:
 
-*   **Total Addressable Market (TAM)**: **6.2 Million (62+ Lakhs) Students** enrolled in over 50,000 government and government-aided schools across Odisha studying under the Board of Secondary Education (BSE) state board curriculum.
-*   **Serviceable Addressable Market (SAM)**: **3.5 Million Students** from Class 3 to Class 10 who require localized tutoring in core curriculum subjects (Mathematics, Science, English, EVS) and have access to a household smartphone.
-*   **Serviceable Obtainable Market (SOM)**: **350,000 Students (10% of SAM)** targeted within the first 18 months of launch through school-level partnerships, community learning networks, and digital advocacy.
-*   **Business Viability & Social Impact**: 
-    *   *High-Margin Profitability*: By employing a serverless infrastructure (Google Cloud Run + Firebase Hosting) and offloading heavy compute tasks (such as using our client-side local SpeechSynthesis fallback), our operational cost-per-user approaches **$0.00**.
-    *   *Democratized Pricing*: This low cost-structure allows us to offer premium RAG tutoring, mock test generators, and homework guides at just **₹99/month ($1.19/mo)**. Compared to legacy EdTech platforms charging ₹15,000+/year for English-only content, Utkal Skill Centre delivers institutional-grade tutoring at a price point accessible to lower-income and rural families.
-*   **📊 Project Current Status & Real-time Traction**:
-    *   **Pilot User Base**: Successfully onboarded **434 active students** during our initial pilot phase, with **5 active paying premium subscribers** (validating the ₹99/month commercial interest).
-    *   **Launch Targets**: 
-        *   *Short-term (Next 3 Months)*: Target **20,000+ onboarded students** (our Progressive Web App is fully live and serving real state-board students, with high user anticipation for the upcoming Play Store release).
-        *   *Mid-term (Year 1)*: Target **100,000+ (1 Lakh+) onboarded students** across Odisha.
-    *   **100% Core Curriculum Aligned**: Standardized and populated curriculum roadmaps from **Class 1 to Class 10** in Firestore.
-    *   **Full Study Notes Coverage**: Exposes premium bilingual study notes for all **448 chapters** across all school grades.
-    *   **Smart Classes Open Library**: Fully integrated YouTube lesson curator, making curated video education 100% free and unlocked for all students.
-    *   **PWA Deployed & Fully Live**: Fully configured, compiled, and deployed as a fast, offline-precached Progressive Web App on our custom domain, optimized for basic mobile devices and ready as a Trusted Web Activity (TWA).
-*   **🛠️ Gundulu AI Technical Evolution & Future Roadmap**:
-    *   **Phase 1 (Current - RAG)**: Exposes textbook note repositories and video metadata through dynamic **Retrieval-Augmented Generation (RAG)** context injections, guaranteeing 100% syllabus accuracy.
-    *   **Phase 2 (Mid-term - RAG + SFT)**: Transitioning to a hybrid **RAG + Supervised Fine-Tuning (SFT)** architecture. We plan to fine-tune lightweight open-source models (such as *Gemma-2B/7B*) on high-quality Odia dialogue logs to drastically lower latency and increase natural Odia conversations.
-    *   **Phase 3 (Long-term - SFT Automation)**: Deploying a fully custom, autonomously fine-tuned Gundulu model capable of managing interactive study sessions, real-time voice grading, and prompt-less bilingual evaluation.
+*   **The Mission**: Over **6.2 Million (62+ Lakhs) Students** study in Odia-medium government schools across Odisha under the Board of Secondary Education (BSE). Legacy EdTech platforms are English-only and charge ₹15,000+/year, completely locking rural kids out. We deliver high-quality curriculum-aligned tutoring at just **₹99/month ($1.19/mo)**.
+*   **Our Milestones**:
+    *   **🌸 April 1st (Utkal Divas / Odisha Day)**: We officially launched the **Utkal Skill Centre** web platform to bring digital curriculum tutoring to state-board students in their mother tongue (**Odia**).
+    *   **📱 Progressive Web App (PWA) Launch**: Soon after, we rolled out our offline-precached PWA. This allows rural students to access study guides, textbooks, and interactive mock tests instantly on basic household smartphones and slow 2G/3G connections.
+*   **📊 Pilot Traction & Growth**:
+    *   **Onboarded Students**: Successfully onboarded **434 active students** during our initial pilot phase.
+    *   **Paying Subscribers**: Secured **5 premium paying subscribers** at our affordable ₹99/month rate, validating strong market demand.
+    *   **Syllabus Coverage**: Deployed 100% complete syllabus roadmaps from **Class 1 to Class 10** with premium notes for all **448 chapters**.
+    *   **100% Free Smart Classes**: Fully integrated curated video lesson libraries, making YouTube school classes unlocked and free for everyone.
+    *   **Virtually $0.00 Operational Cost**: By serving study guides statically and offloading voice synthesizers to the student's browser engine, our server operational cost approaches **$0.00**, making our ₹99/mo subscription highly profitable!
+*   **🤖 Gundulu AI technical Evolution**:
+    *   **Phase 1 (Current - Syllabus Search)**: Gundulu acts as a supportive digital elder sister, using precise text search to fetch textbook notes and generate monthly practice tests.
+    *   **Phase 2 (Future - Native Odia Gemma Training)**: We plan to train Google's lightweight open AI models (such as *Gemma-2B/7B*) on our Odia educational transcripts. This will allow Gundulu to speak and text in Odia with incredibly fast native speed and near-zero server cost!
+    *   **Phase 3 (Future - Voice Tutor)**: Unlocking fully automated voice dialogue, where Gundulu can converse naturally, grade student speech pronunciation, and tutor dynamically.
 
 ---
 
