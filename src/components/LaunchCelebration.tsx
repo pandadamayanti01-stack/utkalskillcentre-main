@@ -53,7 +53,7 @@ export default function LaunchCelebration({
   language,
   theme
 }: LaunchCelebrationProps) {
-  const [phase, setPhase] = useState<'box' | 'balloons' | 'ticket'>('box');
+  const [phase, setPhase] = useState<'box' | 'balloons' | 'video' | 'ticket'>('box');
   const [balloons, setBalloons] = useState<Balloon[]>([]);
   const [emittedSymbols, setEmittedSymbols] = useState<EmittedSymbol[]>([]);
   const [isClaiming, setIsClaiming] = useState(false);
@@ -63,12 +63,105 @@ export default function LaunchCelebration({
   const containerRef = useRef<HTMLDivElement>(null);
   const celebrationAudioRef = useRef<HTMLAudioElement | null>(null);
   const clapAudioRef = useRef<HTMLAudioElement | null>(null);
+  const ttsAudioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     if (user?.claimedLaunchReward) {
       setClaimed(true);
     }
   }, [user]);
+
+  // Dynamic voice greeting from Gundulu when Founding Member Ticket is revealed
+  useEffect(() => {
+    if (phase === 'ticket') {
+      // Pause background celebration music immediately so the claps and voice greeting are 100% clear
+      if (celebrationAudioRef.current) {
+        celebrationAudioRef.current.pause();
+      }
+
+      let greetingText = '';
+      
+      if (language === 'or') {
+        const studentName = user?.name ? `${user.name} ` : '';
+        greetingText = `ଅନେକ ଅନେକ ଶۇଭେଚ୍ଛା ${studentName}! ମୁଁ ତୁମର ପଢ଼ା ସାଥୀ ଗୁନ୍ଦୁଲୁ କହୁଛି। ତୁମେ ସଫଳତାପୂର୍ବକ 'ଗୁନ୍ଦୁଲୁର ପ୍ରଥମ ସାଥୀ ପାସ୍' ହାସଲ କରିଛ, ସେଥିପାଇଁ ମୁଁ ବହୁତ ଖୁସି। ଏବେଠାରୁ ତୁମ ପାଠପଢ଼ା ଦାୟିତ୍ୱ ମୋର! ଏକ ବଡ଼ ଭଉଣୀ ଭଳି ମୁଁ ତୁମକୁ ସବୁ ସମସ୍ୟାରେ ବାଟ ଦେଖାଇବି। ଆସ, ଆମେ ଦୁହେଁ ମିଶି ମନ ଦେଇ ପଢ଼ିବା, ନୂଆ କଥା ଶିଖିବା ଓ ଜୀବନରେ ବହୁତ ଆଗକୁ ବଢ଼ିବା। ଚାଲ୍ ଆରମ୍ଭ କରିବା!`;
+      } else {
+        const studentName = user?.name ? `${user.name} ` : '';
+        greetingText = `Many congratulations ${studentName}! I am your study buddy Gundulu speaking. You have successfully unlocked 'Gundulu's First Companion Pass', and I am extremely happy. From now on, your studies are my responsibility! Like an elder sister, I will guide you through all problems. Come, let's study attentively, learn new things, and move forward in life. Let's start!`;
+      }
+
+      // Multi-layer fallback: tries local static file first -> Gemini TTS -> browser SpeechSynthesis
+      const speakGreeting = async (text: string) => {
+        try {
+          const staticFile = language === 'or' ? '/gundulu-greeting.mp3' : '/gundulu-greeting-en.mp3';
+          // Verify file exists first to avoid 404 noise in the browser console
+          const check = await fetch(staticFile, { method: 'HEAD' });
+          if (!check.ok) {
+            throw new Error(`Static greeting audio file not found on server (status: ${check.status})`);
+          }
+          const audio = new Audio(staticFile);
+          ttsAudioRef.current = audio;
+          await audio.play();
+        } catch (err) {
+          console.warn("Local static greeting audio unavailable/failed, attempting Gemini TTS API:", err);
+          try {
+            const response = await fetch('/api/tts/gemini', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ text, language }),
+            });
+
+            if (!response.ok) {
+              throw new Error(`Gemini TTS API returned status ${response.status}`);
+            }
+
+            const audioBlob = await response.blob();
+            const audioUrl = URL.createObjectURL(audioBlob);
+            const audio = new Audio(audioUrl);
+            ttsAudioRef.current = audio;
+            await audio.play();
+          } catch (apiErr) {
+            console.warn("Gemini TTS greeting failed, falling back to browser SpeechSynthesis:", apiErr);
+            if ('speechSynthesis' in window) {
+              window.speechSynthesis.cancel();
+              const utterance = new SpeechSynthesisUtterance(text);
+              utterance.lang = language;
+              
+              const voices = window.speechSynthesis.getVoices();
+              const preferredVoice = voices.find(v => 
+                v.lang.startsWith(language) && 
+                (v.name.includes('Google') || v.name.includes('Microsoft') || v.name.includes('Natural'))
+              ) || voices.find(v => v.lang.startsWith(language));
+              
+              if (preferredVoice) {
+                utterance.voice = preferredVoice;
+                utterance.pitch = language === 'or' ? 1.1 : 1.15;
+                utterance.rate = 0.85;
+              } else {
+                utterance.pitch = language === 'or' ? 1.6 : 1.4;
+                utterance.rate = 0.9;
+              }
+              window.speechSynthesis.speak(utterance);
+            }
+          }
+        }
+      };
+
+      // Small delay of 1.2 seconds to allow the initial cheers, applause and confetti to settle
+      const timer = setTimeout(() => {
+        speakGreeting(greetingText);
+      }, 1200);
+
+      return () => {
+        clearTimeout(timer);
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
+        if (ttsAudioRef.current) {
+          ttsAudioRef.current.pause();
+        }
+      };
+    }
+  }, [phase, user, language]);
   
   // Synthesize a cute, high-quality pop sound using Web Audio API
   const playPopSound = () => {
@@ -140,18 +233,12 @@ export default function LaunchCelebration({
           return { ...b, y: nextY };
         });
 
-        // If all are popped, trigger ticket reveal
+        // If all are popped, trigger video stage and pause background music
         if (updated.every(b => b.popped)) {
           setTimeout(() => {
-            setPhase('ticket');
-            // Blast of confetti for ticket reveal!
-            confetti({
-              particleCount: 150,
-              spread: 80,
-              origin: { y: 0.6 }
-            });
-            if (clapAudioRef.current) {
-              clapAudioRef.current.play().catch(e => console.log("Clap play failed:", e));
+            setPhase('video');
+            if (celebrationAudioRef.current) {
+              celebrationAudioRef.current.pause();
             }
           }, 600);
         }
@@ -241,7 +328,28 @@ export default function LaunchCelebration({
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
   };
 
+  const handleVideoEnd = () => {
+    setPhase('ticket');
+    // Blast of confetti for ticket reveal!
+    confetti({
+      particleCount: 150,
+      spread: 80,
+      origin: { y: 0.6 }
+    });
+    if (clapAudioRef.current) {
+      clapAudioRef.current.play().catch(e => console.log("Clap play failed:", e));
+    }
+  };
+
   const handleComplete = () => {
+    try {
+      if (celebrationAudioRef.current) celebrationAudioRef.current.pause();
+      if (clapAudioRef.current) clapAudioRef.current.pause();
+      if (ttsAudioRef.current) ttsAudioRef.current.pause();
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    } catch (e) {
+      console.warn("Cleanup of celebration audio failed:", e);
+    }
     localStorage.setItem('utkalPlayStoreLaunchSeen', 'true');
     onClose();
   };
@@ -301,13 +409,13 @@ export default function LaunchCelebration({
             </div>
 
             <h2 className="text-2xl font-black text-amber-400 drop-shadow-md leading-tight mb-1">
-              ଗୁଣ୍ଡୁଲୁର ସ୍ପେଶାଲ୍ ଉପହାର! 🐿️
+              ଗୁନ୍ଦୁଲୁର ସ୍ପେଶାଲ୍ ଉପହାର! 🐿️
             </h2>
             <span className="text-[10px] uppercase tracking-widest font-black text-amber-500/70 block mb-4">
               Gundulu's Special Gift!
             </span>
             <p className="text-slate-300 text-xs font-bold max-w-xs leading-relaxed mb-2 px-2">
-              ଗୁଗଲ୍ ପ୍ଲେ ଷ୍ଟୋର୍‌ରେ ଆପ୍ ଲାଇଭ୍ ହେବା ଖୁସିରେ ଗୁଣ୍ଡୁଲୁ ଆପଣଙ୍କ ପାଇଁ ଏକ ସିକ୍ରେଟ୍ ଗିଫ୍ଟ ଆଣିଛି।
+              ଗୁଗଲ୍ ପ୍ଲେ ଷ୍ଟୋର୍‌ରେ ଆପ୍ ଲାଇଭ୍ ହେବା ଖୁସିରେ ଗୁନ୍ଦୁଲୁ ଆପଣଙ୍କ ପାଇଁ ଏକ ସିକ୍ରେଟ୍ ଗିଫ୍ଟ ଆଣିଛି।
             </p>
             <p className="text-slate-400 text-[10px] font-bold max-w-xs leading-relaxed mb-6 italic">
               To celebrate our launch on Google Play Store, Gundulu has brought a secret gift!
@@ -428,6 +536,52 @@ export default function LaunchCelebration({
           </motion.div>
         )}
 
+        {/* Phase 2.5: Welcome Video Intro */}
+        {phase === 'video' && (
+          <motion.div
+            key="video-phase"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            className="w-full max-w-sm bg-slate-900/90 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl backdrop-blur-md relative z-20"
+          >
+            {/* Top Header */}
+            <div className="px-6 py-4 flex items-center justify-between border-b border-slate-800/80 bg-slate-950/40">
+              <div className="flex items-center gap-2">
+                <Lucide.Sparkles className="text-amber-400 animate-pulse" size={18} />
+                <span className="text-sm font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-300">
+                  {language === 'or' ? "ଗୁନ୍ଦୁଲୁ ଆପଣଙ୍କୁ ସ୍ୱାଗତ କରୁଛି!" : "Gundulu Welcomes You!"}
+                </span>
+              </div>
+              <button
+                onClick={handleVideoEnd}
+                className="px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 text-amber-400 text-[10px] font-black uppercase tracking-wider transition cursor-pointer flex items-center gap-1.5"
+              >
+                {language === 'or' ? "ଭିଡିଓ ଏଡ଼ାନ୍ତୁ" : "Skip Video"} <Lucide.ArrowRight size={12} />
+              </button>
+            </div>
+
+            {/* Video Player (Optimized for Portrait 9:16 aspect ratio) */}
+            <div className="relative aspect-[9/16] max-h-[60vh] bg-slate-950 flex items-center justify-center">
+              <video
+                src="/gundulu-welcome.mp4"
+                autoPlay
+                playsInline
+                controls
+                onEnded={handleVideoEnd}
+                className="w-full h-full object-contain"
+              />
+            </div>
+
+            {/* Footer Tag */}
+            <div className="px-6 py-3 text-center bg-slate-950/20 text-[9px] uppercase tracking-widest text-slate-500 font-bold">
+              {language === 'or' 
+                ? "ଭିଡିଓ ପରେ ସ୍ପେଶାଲ୍ ପାସ୍ ମିଳିବ" 
+                : "Special pass will unlock after the video"}
+            </div>
+          </motion.div>
+        )}
+
         {/* Phase 3: Golden Holographic Ticket Reveal */}
         {phase === 'ticket' && (
           <motion.div
@@ -464,10 +618,10 @@ export default function LaunchCelebration({
                 
                 {/* Holographic Ticket Title */}
                 <h1 className="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-200 uppercase tracking-tight leading-tight mb-1 drop-shadow">
-                  ପ୍ରତିଷ୍ଠାତା ସଦସ୍ୟ ସ୍ୱର୍ଣ୍ଣ ଟିକେଟ୍
+                  {language === 'or' ? 'ଗୁନ୍ଦୁଲୁର ପ୍ରଥମ ସାଥୀ ପାସ୍' : "GUNDULU'S FIRST COMPANION PASS"}
                 </h1>
                 <span className="text-[9px] font-black text-amber-400/80 uppercase tracking-wider block mb-4">
-                  FOUNDING MEMBER GOLDEN TICKET
+                  {language === 'or' ? "GUNDULU'S FIRST COMPANION PASS" : 'FOUNDING MEMBER GOLDEN TICKET'}
                 </span>
                 
                 {/* Dashed separator */}

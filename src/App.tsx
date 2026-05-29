@@ -233,7 +233,7 @@ const AhasLogoSVG = ({ className = "h-6" }: { className?: string }) => (
 );
 
 const BigsanBranding = ({ className = "" }: { className?: string }) => {
-  const [lang] = useState<'en' | 'or'>(localStorage.getItem('lang') as any || 'en');
+  const [lang] = useState<'en' | 'or'>(localStorage.getItem('lang') as any || 'or');
   return (
     <div className={`flex flex-col items-center gap-1 ${className}`}>
       <p className="text-[10px] uppercase tracking-widest text-slate-400 font-medium">
@@ -968,7 +968,7 @@ export default function App() {
     return () => window.removeEventListener('changeTab', handleTabChange);
   }, []);
 
-  const [language, _setLanguage] = useState<'en' | 'or'>(localStorage.getItem('lang') as any || 'en');
+  const [language, _setLanguage] = useState<'en' | 'or'>(localStorage.getItem('lang') as any || 'or');
   const languageRef = useRef(language);
   const setLanguage = async (lang: 'en' | 'or') => {
     languageRef.current = lang;
@@ -991,7 +991,7 @@ export default function App() {
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [showConfigError, setShowConfigError] = useState<{title: string, message: string} | null>(null);
  // const [showLaunchPoster, setShowLaunchPoster] = useState(() => !localStorage.getItem('utkalDivasSeen'));
-  // Feature Flag: Set to true (or localstorage check) to enable the Google Play Store Launch Celebration Event
+  // Hiding the launch celebration event for now. Change to: () => !localStorage.getItem('utkalPlayStoreLaunchSeen') to enable it when live.
   const [showLaunchEvent, setShowLaunchEvent] = useState(false);
   const [showTestSeriesPoster, setShowTestSeriesPoster] = useState(false);
   const [showLibraryPopup, setShowLibraryPopup] = useState(false);

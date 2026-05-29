@@ -42,19 +42,61 @@ Baseline RAG extractions from state textbooks often contained mathematical symbo
 
 ---
 
-## 🔌 Model Context Protocol (MCP) Server
+## 🔌 Google Agent Developer Kit (ADK) & Model Context Protocol (MCP)
 
-To demonstrate ecosystem compatibility with the **Google Agent Developer Kit (ADK)**, we created a Python FastMCP server at [scratch/hackathon_mcp_server.py](file:///d:/WebApp/utkalskillcentre-main/scratch/hackathon_mcp_server.py) that exposes our database context as structured tools.
+To demonstrate enterprise-grade ecosystem compatibility with the **Google Agent Developer Kit (ADK)** and Google AI Studio agents, we have built a Model Context Protocol (MCP) server at [scratch/hackathon_mcp_server.py](file:///d:/WebApp/utkalskillcentre-main/scratch/hackathon_mcp_server.py).
 
-### Available Tools:
-1.  `get_curriculum_chapter_context(subject, grade, chapter_id)`: Fetches curriculum notes from Firestore and filters markdown characters.
-2.  `award_launch_celebration_points(user_id)`: Rewards 500 XP to the student's leaderboard profile on Play Store launch.
+This server acts as a secure, real-time data bridge, exposing Utkal Skill Centre's Firestore database and gamification pipelines as executable tools that Google's AI Agents can dynamically discover and invoke during student interactions.
 
-To run the MCP server:
-```bash
-uv pip install mcp firebase-admin
-python scratch/hackathon_mcp_server.py
+### 📐 System Architecture
+
+```mermaid
+graph TD
+    A[Google AI Agent / ADK] <-->|Model Context Protocol| B[Python FastMCP Server]
+    B <-->|Firebase Admin SDK| C[(Cloud Firestore Database)]
+    B -->|Regex Post-Processor| D[Clean Curriculum Context]
 ```
+
+### 🛠️ Exposed Tools & Capabilities
+
+The server registers two critical tools complying with the Google ADK tool-calling specification:
+
+| Tool Name | Parameters | Description | Return Type | Business Logic |
+| :--- | :--- | :--- | :--- | :--- |
+| `get_curriculum_chapter_context` | `subject` (str)<br>`grade` (int)<br>`chapter_id` (str) | Exposes textbook chapters and syllabus notes to Google AI agents for RAG. | `str` (Odia text) | Queries the `textbooks` collection in Firestore, filters out raw Markdown/LaTeX formatting (`$`, `#`, `*`) using regex post-processing, and returns clean, readable prose. |
+| `award_launch_celebration_points` | `user_id` (str) | Programmatically awards +500 XP to the student's profile to celebrate the Play Store launch. | `str` (Status message) | Verifies the student profile in Firestore, checks for duplicate claims via the `claimedLaunchReward` flag, increments points atomically, and registers the reward. |
+
+### ⚙️ Exposing Tools to Google's Agent (Local Setup)
+
+To start the server and connect it to your local agent environment:
+
+1. **Install Prerequisites**:
+   ```bash
+   uv pip install mcp firebase-admin
+   # or via standard pip:
+   pip install mcp firebase-admin
+   ```
+
+2. **Run the MCP Server**:
+   ```bash
+   python scratch/hackathon_mcp_server.py
+   ```
+
+3. **Google ADK Config Integration**:
+   Add the server to your Google Agent Context config (e.g., `mcp_config.json`):
+   ```json
+   {
+     "mcpServers": {
+       "utkal_agent_bridge": {
+         "command": "python",
+         "args": ["d:/WebApp/utkalskillcentre-main/scratch/hackathon_mcp_server.py"],
+         "env": {
+           "GOOGLE_APPLICATION_CREDENTIALS": "d:/WebApp/utkalskillcentre-main/utkalskillcentre-4ed1afa2f6a3.json"
+         }
+       }
+     }
+   }
+   ```
 
 ---
 
