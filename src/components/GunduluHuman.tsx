@@ -134,6 +134,11 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
   const audioUrlRef = useRef<string | null>(null);
   const sphereRef = useRef<HTMLDivElement>(null);
 
+  // Web Audio API refs for real-time lip-sync avatar pulsing
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
+
   // Auto-scroll subtitle container to bottom whenever subtitle updates
   useEffect(() => {
     if (subtitleContainerRef.current) {
@@ -188,6 +193,13 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
     if (audioUrlRef.current) {
       URL.revokeObjectURL(audioUrlRef.current);
       audioUrlRef.current = null;
+    }
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+    if (sphereRef.current) {
+      sphereRef.current.style.transform = 'scale(1)';
     }
   };
 
@@ -332,8 +344,25 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = language;
-    utterance.pitch = 1.8;
-    utterance.rate = 0.9;
+    
+    // Attempt to locate premium natural voice engines installed in Chrome/Android/iOS
+    const voices = window.speechSynthesis.getVoices();
+    const premiumOdiaVoice = voices.find(v => 
+      v.lang.startsWith('or') && 
+      (v.name.includes('Google') || v.name.includes('Microsoft') || v.name.includes('Natural'))
+    ) || voices.find(v => v.lang.startsWith('or'));
+    
+    if (premiumOdiaVoice) {
+      utterance.voice = premiumOdiaVoice;
+      // Premium voices are pre-tuned; keep pitch and speed natural
+      utterance.pitch = 1.1;
+      utterance.rate = 0.85;
+    } else {
+      // Standard voice: pitch up to emulate a friendly child mascot
+      utterance.pitch = 1.8;
+      utterance.rate = 0.9;
+    }
+
     utterance.onstart = () => {
       setIsSpeaking(true);
       animateSubtitle(text, true);
@@ -379,6 +408,52 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
       };
       
       animateSubtitle(text, false);
+
+      // Web Audio API analysis for real-time lip-sync/volume pulsing
+      if (!audioContextRef.current) {
+        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+        if (AudioContextClass) {
+          audioContextRef.current = new AudioContextClass();
+          const analyser = audioContextRef.current.createAnalyser();
+          analyser.fftSize = 64; // Small fftSize for fast, lightweight performance
+          analyserRef.current = analyser;
+        }
+      }
+
+      if (audioContextRef.current && analyserRef.current) {
+        try {
+          if (audioContextRef.current.state === 'suspended') {
+            await audioContextRef.current.resume();
+          }
+          
+          const source = audioContextRef.current.createMediaElementSource(audio);
+          source.connect(analyserRef.current);
+          analyserRef.current.connect(audioContextRef.current.destination);
+          
+          const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
+          const updateVolumeScale = () => {
+            if (!analyserRef.current || !sphereRef.current) return;
+            analyserRef.current.getByteFrequencyData(dataArray);
+            
+            let sum = 0;
+            for (let i = 0; i < dataArray.length; i++) {
+              sum += dataArray[i];
+            }
+            const average = sum / dataArray.length;
+            
+            // Scale the sphere slightly based on voice volume (Max 15% enlargement)
+            const scale = 1 + (average / 255) * 0.15;
+            sphereRef.current.style.transform = `scale(${scale})`;
+            
+            animationFrameRef.current = requestAnimationFrame(updateVolumeScale);
+          };
+          
+          animationFrameRef.current = requestAnimationFrame(updateVolumeScale);
+        } catch (e) {
+          console.warn("Web Audio API binding failed:", e);
+        }
+      }
+
       await audio.play();
     } catch (err: any) {
       const isQuotaExceeded = err?.status === 429;
@@ -598,6 +673,14 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
           5. When mentioning technical English terms (e.g., Photosynthesis, Gravity, Friction), translate them to their standard Odia names so students learn both.
           6. Never read raw text robotic-style. Explain it like a passionate, friendly private home tutor.
           7. Conclude your answer with a highly engaging, sweet follow-up question (e.g., "Bujhiparlu ta? Na au thare kahibi?" / "Bala lagila ta? Au kichi prashna achi?").
+        
+        Oral-First Formatting Rules (CRITICAL FOR TTS NATURALNESS):
+          1. NEVER output Markdown formatting (do NOT use **, *, #, _, -, or lists).
+          2. NEVER output emojis or emoticons (e.g. do NOT use ✨, 😊, etc.) as they glitch the voice synthesizer.
+          3. Spell out all numbers and mathematical operations phonetically in Odia text (e.g. write "ତିନି ବିଭକ୍ତ ଚାରି" instead of "3/4", and "ସମାନ" instead of "=").
+          4. NEVER put English translation terms in brackets (e.g. do NOT write "ପ୍ଲାଣ୍ଟ (plant)"). Instead, write the Odia word or write the English word phonetically in Odia script (e.g. "ପ୍ଲାଣ୍ଟ").
+          5. Use punctuation (commas and periods) strategically to force natural breathing pauses in speech synthesis.
+          
         Language Policy: STRICT ODIA OUTPUT ONLY.
         Input Policy: User may speak in Odia or English. Always understand both, but always reply only in Odia.
         ASR Rule: Speech-to-text can be wrong for Odisha names/words. Use context to auto-correct likely misheard words.
