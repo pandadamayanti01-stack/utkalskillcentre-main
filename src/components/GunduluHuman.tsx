@@ -123,6 +123,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
   const silenceTimeoutRef = useRef<any>(null);
   const transcriptBufferRef = useRef<string>('');
   const chatHistoryRef = useRef<any[]>([]);
+  const [usePremiumVoice, setUsePremiumVoice] = useState(false); // Default to standard offline local TTS to save 100% voice API costs!
   
   // Immersive Status States
   const [status, setStatus] = useState("ଗୁନ୍ଦୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
@@ -505,7 +506,8 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
       const greeting = "ନମସ୍କାର! ମୁଁ ଗୁନ୍ଦୁଲୁ। ଆସ, ଏବେ ଏକାଠି ପଢ଼ିବା ଓ ଆଗକୁ ବଢ଼ିବା।";
       setStatus("ଗୁନ୍ଦୁଲୁ କହୁଛି...");
 
-      speakWithGeminiVoice(greeting, () => {
+      const speakFn = usePremiumVoice ? speakWithGeminiVoice : speakWithBrowserTtsFallback;
+      speakFn(greeting, () => {
         triggerVisualNudge();
         if (recognitionRef.current && !isListeningRef.current) {
           transcriptBufferRef.current = '';
@@ -720,9 +722,9 @@ Understand user intent from these transcripts and respond in Odia only.
       const userContent = { role: 'user', parts: [{ text: inputPayload }] };
       chatHistoryRef.current.push(userContent);
 
-      // 2. Limit history to keep up to last 6 entries (3 complete turns back)
-      if (chatHistoryRef.current.length > 6) {
-        chatHistoryRef.current = chatHistoryRef.current.slice(-6);
+      // 2. Limit history to keep up to last 3 entries (saves 50% on input token context memory costs!)
+      if (chatHistoryRef.current.length > 3) {
+        chatHistoryRef.current = chatHistoryRef.current.slice(-3);
       }
 
       const modelInstance = ai.getGenerativeModel({
@@ -751,7 +753,8 @@ Understand user intent from these transcripts and respond in Odia only.
   };
 
   const speakResponse = (text: string) => {
-    speakWithGeminiVoice(text, () => {
+    const speakFn = usePremiumVoice ? speakWithGeminiVoice : speakWithBrowserTtsFallback;
+    speakFn(text, () => {
       triggerVisualNudge();
       // Automatically start listening for student's response (seamless hands-free loop!)
       if (recognitionRef.current && !isListeningRef.current) {
@@ -942,8 +945,38 @@ Understand user intent from these transcripts and respond in Odia only.
         )}
       </div>
 
-      {/* 5. BOTTOM CALL HUD ACTIONS PANEL - Ultra-clean SINGLE STOP BUTTON */}
-      <div className="call-bottom-hud-panel single-stop-hud">
+      {/* 5. BOTTOM CALL HUD ACTIONS PANEL - Voice Switcher + Hang Up */}
+      <div className="call-bottom-hud-panel single-stop-hud" style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+        <button 
+          className="hud-action-btn glass-btn"
+          onClick={() => {
+            const nextState = !usePremiumVoice;
+            setUsePremiumVoice(nextState);
+            // Stop current audio so it can adapt instantly
+            stopCurrentAudio();
+            setIsSpeaking(false);
+            setStatus(nextState ? "Premium Voice Enabled ✨" : "Standard Voice Enabled 📱");
+            setTimeout(() => setStatus("ଗୁନ୍ଦୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ"), 1500);
+          }}
+          title={usePremiumVoice ? "Switch to Standard Voice (Free)" : "Switch to Premium AI Voice (Cloud)"}
+          style={{ 
+            width: '52px', 
+            height: '52px', 
+            borderRadius: '50%',
+            border: '1.5px solid rgba(255,255,255,0.08)', 
+            background: usePremiumVoice ? 'rgba(124, 58, 237, 0.25)' : 'rgba(255,255,255,0.04)', 
+            boxShadow: usePremiumVoice ? '0 0 15px rgba(124, 58, 237, 0.4)' : 'none',
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center' 
+          }}
+        >
+          <Lucide.Sparkles size={22} className={usePremiumVoice ? 'text-violet-400' : 'text-slate-400'} />
+          <span className="hud-btn-label" style={{ fontSize: '0.62rem', whiteSpace: 'nowrap', marginTop: '1px' }}>
+            {usePremiumVoice ? "Premium" : "Standard"}
+          </span>
+        </button>
+
         {onBack && (
           <button 
             className="hud-action-btn hang-up-btn" 
