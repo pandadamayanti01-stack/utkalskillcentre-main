@@ -33,6 +33,10 @@ export default function Login({ language, translations, setLanguage, setRegData 
   const [isSending, setIsSending] = useState(false);
   const [authStep, setAuthStep] = useState<'login' | 'otp'>('login');
   const [showAdminPill, setShowAdminPill] = useState(false);
+  const showShowcaseButton = typeof window !== 'undefined' && (
+    window.location.search.includes('showcase=true') || 
+    window.location.hash === '#pitch_deck'
+  );
   
   // PWA Install State
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -307,6 +311,20 @@ export default function Login({ language, translations, setLanguage, setRegData 
 
         {/* CONTROLS: LANGUAGE & PWA WHATSAPP INSTALL */}
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-2">
+          {showShowcaseButton && (
+            <button 
+              onClick={() => {
+                if (typeof (window as any)._onLaunchShowcase === 'function') {
+                  (window as any)._onLaunchShowcase();
+                }
+              }}
+              className="px-2.5 py-1 rounded-xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 hover:from-amber-500/30 hover:to-orange-500/30 border border-amber-500/40 text-[9px] font-black text-amber-300 flex items-center gap-1 shadow-lg backdrop-blur-md transition-all active:scale-95 animate-pulse cursor-pointer"
+            >
+              <Sparkles size={12} className="text-amber-400" />
+              {language === 'en' ? 'SHOWCASE' : 'ପ୍ରୋଜେକ୍ଟ ସ୍ଲାଇଡ୍'}
+            </button>
+          )}
+
           <button 
             onClick={() => setLanguage(language === 'en' ? 'or' : 'en')} 
             className="px-2.5 py-1 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-[9px] font-black text-amber-400 flex items-center gap-1 shadow-lg backdrop-blur-md transition-all active:scale-95"

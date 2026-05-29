@@ -745,6 +745,25 @@ export default function App() {
     const hash = window.location.hash.replace('#', '').split('/')[0];
     return hash || localStorage.getItem('activeTab') || 'dashboard';
   });
+  const [showShowcaseOnly, setShowShowcaseOnly] = useState(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    return searchParams.get('showcase') === 'true' || window.location.hash === '#pitch_deck';
+  });
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.get('showcase') === 'true' || window.location.hash === '#pitch_deck') {
+      localStorage.setItem('showcase_mode', 'true');
+    }
+
+    (window as any)._onLaunchShowcase = () => {
+      setShowShowcaseOnly(true);
+    };
+    return () => {
+      delete (window as any)._onLaunchShowcase;
+    };
+  }, []);
+
   const [lastTab, setLastTab] = useState('dashboard');
   const [isRegisteredForTestSeries, setIsRegisteredForTestSeries] = useState(false);
   const [openTutorInVoiceMode, setOpenTutorInVoiceMode] = useState(0);
@@ -2465,6 +2484,19 @@ export default function App() {
           <p className="text-[9px] font-medium tracking-[0.3em] uppercase text-slate-500">Powered by Bigsan Group</p>
         </div>
       </div>
+    );
+  }
+
+  if (showShowcaseOnly) {
+    return (
+      <Suspense fallback={<ViewLoader fullHeight />}>
+        <PitchDeckView language={language} onBack={() => {
+          setShowShowcaseOnly(false);
+          if (window.location.hash === '#pitch_deck') {
+            window.location.hash = '';
+          }
+        }} />
+      </Suspense>
     );
   }
 

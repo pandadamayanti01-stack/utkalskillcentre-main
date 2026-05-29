@@ -33,6 +33,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const t = translations[language];
 
+  const showShowcaseTab = typeof window !== 'undefined' && (() => {
+    const isShowcaseActive = window.location.search.includes('showcase=true') || 
+                             window.location.hash === '#pitch_deck' ||
+                             localStorage.getItem('showcase_mode') === 'true';
+    if (isShowcaseActive) {
+      localStorage.setItem('showcase_mode', 'true');
+    }
+    return isShowcaseActive;
+  })();
+
   const allMenuItems = [
     { id: 'profile', icon: Lucide.User, label: 'Profile' },
     { id: 'dashboard', icon: Lucide.LayoutDashboard, label: user?.role === 'teacher' ? (language === 'en' ? 'Educator Studio' : 'ଶିକ୍ଷକ ଷ୍ଟୁଡିଓ') : t.dashboard },
@@ -52,10 +62,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'support', icon: Lucide.HelpCircle, label: t.support.title },
   ];
 
+  const filteredMenuItems = showShowcaseTab 
+    ? allMenuItems 
+    : allMenuItems.filter(item => item.id !== 'pitch_deck');
+
   const teacherExcludedIds = ['store', 'leaderboard', 'daily_mcqs', 'syllabus_tracker', 'monthly_tests', 'smart_classes', 'plans'];
   const menuItems = user?.role === 'teacher'
-    ? allMenuItems.filter(item => !teacherExcludedIds.includes(item.id))
-    : allMenuItems;
+    ? filteredMenuItems.filter(item => !teacherExcludedIds.includes(item.id))
+    : filteredMenuItems;
 
 
 
