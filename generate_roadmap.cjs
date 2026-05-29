@@ -153,9 +153,9 @@ async function run() {
           roadmap[monthIndex].chapters.push(chap);
         });
       } else {
-        // Even distribution
+        // Chronological sequential block distribution
         chapters.forEach((chap, idx) => {
-          const monthIndex = idx % 9;
+          const monthIndex = Math.min(8, Math.floor((idx / chapters.length) * 9));
           roadmap[monthIndex].chapters.push(chap);
         });
       }

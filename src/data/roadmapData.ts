@@ -12,10 +12,10 @@ export const ROADMAP_DATA_1 = [
         "thumbnail": null
       },
       {
-        "id": "kjWd03UuFUT2EfVn6Kaw",
-        "title": "Chapter 10 - My One Day's Work (Time)",
-        "title_en": "My One Day's Work (Time)",
-        "title_or": "ମୋର ଗୋଟିଏ ଦିବସର କାମ",
+        "id": "tzb8ZgNsF3bYzLcx0fYw",
+        "title": "Chapter 2 - Which is Long? Which is Round? (Shapes)",
+        "title_en": "Which is Long? Which is Round? (Shapes)",
+        "title_or": "କେଉଁଟି ଲମ୍ବା ? କେଉଁଟି ଗୋଲ ?",
         "subject": "ganita_khela",
         "thumbnail": null
       },
@@ -28,18 +28,18 @@ export const ROADMAP_DATA_1 = [
         "thumbnail": null
       },
       {
-        "id": "zzoGMjMexFnlVGDOsKXM",
-        "title": "Chapter 10 - Everyone is Our Friend - Poem",
-        "title_en": "Everyone is Our Friend - Poem",
-        "title_or": "ସଭିଏଁ ଆମର ମିତ",
+        "id": "ZvRgoU0kFI6qXGXvyueF",
+        "title": "Chapter 2 - Chakuli Kala Te Te - Poem",
+        "title_en": "Chakuli Kala Te Te - Poem",
+        "title_or": "ଚକୁଳି କଳା ତେଁ ତେଁ",
         "subject": "jhulana_1",
         "thumbnail": null
       },
       {
-        "id": "jF8k3a3emtoNMgWB7Sy6",
-        "title": "Chapter 20 - Holi - Poem",
-        "title_en": "Holi - Poem",
-        "title_or": "ହୋଲି",
+        "id": "Kc422gXqsOyL8jIxQ3Z1",
+        "title": "Chapter 3 - Muni Smiled - Story",
+        "title_en": "Muni Smiled - Story",
+        "title_or": "ମୁନି ଦେଲା ହସି",
         "subject": "jhulana_1",
         "thumbnail": null
       },
@@ -52,24 +52,24 @@ export const ROADMAP_DATA_1 = [
         "thumbnail": null
       },
       {
-        "id": "jhulana_class1_ch10",
-        "title": "Sabhie Aamara Mita",
+        "id": "jhulana_class1_ch2",
+        "title": "Chakuli Kala Chen",
         "title_en": null,
         "title_or": null,
         "subject": "odia",
         "thumbnail": null
       },
       {
-        "id": "jhulana_class1_ch19",
-        "title": "Benga Chuara Ratha Jatra",
+        "id": "jhulana_class1_ch3",
+        "title": "Muni Dela Hasi",
         "title_en": null,
         "title_or": null,
         "subject": "odia",
         "thumbnail": null
       },
       {
-        "id": "jhulana_class1_ch28",
-        "title": "Akshyara Gita",
+        "id": "jhulana_class1_ch4",
+        "title": "Aare Kau Aare Thekua",
         "title_en": null,
         "title_or": null,
         "subject": "odia",
@@ -81,26 +81,148 @@ export const ROADMAP_DATA_1 = [
     "month": "July 2026",
     "chapters": [
       {
-        "id": "tzb8ZgNsF3bYzLcx0fYw",
-        "title": "Chapter 2 - Which is Long? Which is Round? (Shapes)",
-        "title_en": "Which is Long? Which is Round? (Shapes)",
-        "title_or": "କେଉଁଟି ଲମ୍ବା ? କେଉଁଟି ଗୋଲ ?",
+        "id": "VDhZqhEqc7VITaEZMvVm",
+        "title": "Chapter 3 - Let's Find (Numbers 1 to 9)",
+        "title_en": "Let's Find (Numbers 1 to 9)",
+        "title_or": "ଆସ ଖୋଜିବା",
         "subject": "ganita_khela",
         "thumbnail": null
       },
       {
-        "id": "3PP3RsP6jhSxCcONlZTY",
-        "title": "Chapter 11 - How Many Times Added? (Multiplication)",
-        "title_en": "How Many Times Added? (Multiplication)",
-        "title_or": "କେତେ ଥର ମିଶିଲା ?",
+        "id": "7vxtIgB06xw5CqVVQpoI",
+        "title": "Chapter 4 - Come Crow, Come Rabbit - Poem",
+        "title_en": "Come Crow, Come Rabbit - Poem",
+        "title_or": "ଆ’ରେ କାଉ , ଆ’ ଠେକୁଆ",
+        "subject": "jhulana_1",
+        "thumbnail": null
+      },
+      {
+        "id": "nryCGExutJofHWjXBvaf",
+        "title": "Chapter 5 - Our Family",
+        "title_en": "Our Family",
+        "title_or": "ଆମ ପରିବାର",
+        "subject": "jhulana_1",
+        "thumbnail": null
+      },
+      {
+        "id": "8XxxKzrZ4RDTUI2pSMiZ",
+        "title": "Chapter 6 - Let's look at the picture and talk 2",
+        "title_en": "Let's look at the picture and talk 2",
+        "title_or": "ଆସ ଚିତ୍ରଦେଖି କଥା ହେବା ୨",
+        "subject": "jhulana_1",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class1_ch5",
+        "title": "Aama Paribara",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class1_ch6",
+        "title": "Aasa Chitra Dekhi 2",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class1_ch7",
+        "title": "Bada Kie",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "August 2026",
+    "chapters": [
+      {
+        "id": "AzGEGnXNRZVNzx47L75C",
+        "title": "Chapter 4 - Let's Make 10 (Numbers 10 to 20)",
+        "title_en": "Let's Make 10 (Numbers 10 to 20)",
+        "title_or": "ଆସ, ୧୦ ତିଆରି କରିବା",
         "subject": "ganita_khela",
         "thumbnail": null
       },
       {
-        "id": "ZvRgoU0kFI6qXGXvyueF",
-        "title": "Chapter 2 - Chakuli Kala Te Te - Poem",
-        "title_en": "Chakuli Kala Te Te - Poem",
-        "title_or": "ଚକୁଳି କଳା ତେଁ ତେଁ",
+        "id": "KEQ368wuxHqgGm9cRyAM",
+        "title": "Chapter 5 - What is the Number? (Addition & Subtraction of 1-Digit Numbers)",
+        "title_en": "What is the Number? (Addition & Subtraction of 1-Digit Numbers)",
+        "title_or": "ସଂଖ୍ୟାଟି କେତେ",
+        "subject": "ganita_khela",
+        "thumbnail": null
+      },
+      {
+        "id": "uOaluq8F5ZbItXxAlFx6",
+        "title": "Chapter 7 - Who is Big? - Story",
+        "title_en": "Who is Big? - Story",
+        "title_or": "ବଡ଼ କିଏ?",
+        "subject": "jhulana_1",
+        "thumbnail": null
+      },
+      {
+        "id": "Ok8e8nWGwvaV0S1HDDzP",
+        "title": "Chapter 8 - Sparrow - Poem",
+        "title_en": "Sparrow - Poem",
+        "title_or": "ଚଟିଆ",
+        "subject": "jhulana_1",
+        "thumbnail": null
+      },
+      {
+        "id": "HJVegh473QZNqk7CDipY",
+        "title": "Chapter 9 - Fox Drinking Coconut Water - Story",
+        "title_en": "Fox Drinking Coconut Water - Story",
+        "title_or": "বিଲୁଆର ପଇଡ଼ ପିଆ",
+        "subject": "jhulana_1",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class1_ch8",
+        "title": "Chatia",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class1_ch9",
+        "title": "Biluara Paida Pia",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class1_ch10",
+        "title": "Sabhie Aamara Mita",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "September 2026",
+    "chapters": [
+      {
+        "id": "i5LsQKIZf5BLHirBvEeS",
+        "title": "Chapter 6 - Vegetable Garden (Addition & Subtraction within 20)",
+        "title_en": "Vegetable Garden (Addition & Subtraction within 20)",
+        "title_or": "ପନିପରିବା ବଗିଚା",
+        "subject": "ganita_khela",
+        "thumbnail": null
+      },
+      {
+        "id": "zzoGMjMexFnlVGDOsKXM",
+        "title": "Chapter 10 - Everyone is Our Friend - Poem",
+        "title_en": "Everyone is Our Friend - Poem",
+        "title_or": "ସଭିଏଁ ଆମର ମିତ",
         "subject": "jhulana_1",
         "thumbnail": null
       },
@@ -113,67 +235,6 @@ export const ROADMAP_DATA_1 = [
         "thumbnail": null
       },
       {
-        "id": "yrN8dQVFhNnePPsIXItd",
-        "title": "Chapter 21 - Seeing the Idol - Story",
-        "title_en": "Seeing the Idol - Story",
-        "title_or": "ମେଢ଼ଦେଖା",
-        "subject": "jhulana_1",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class1_ch2",
-        "title": "Chakuli Kala Chen",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class1_ch11",
-        "title": "Duiti Bani",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class1_ch20",
-        "title": "Holi",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "August 2026",
-    "chapters": [
-      {
-        "id": "VDhZqhEqc7VITaEZMvVm",
-        "title": "Chapter 3 - Let's Find (Numbers 1 to 9)",
-        "title_en": "Let's Find (Numbers 1 to 9)",
-        "title_or": "ଆସ ଖୋଜିବା",
-        "subject": "ganita_khela",
-        "thumbnail": null
-      },
-      {
-        "id": "IUmZGVeA6BXx3IxF8JXD",
-        "title": "Chapter 12 - Let's Buy and Sell (Money)",
-        "title_en": "Let's Buy and Sell (Money)",
-        "title_or": "ଆସ କିଣାବିକା କରିବା",
-        "subject": "ganita_khela",
-        "thumbnail": null
-      },
-      {
-        "id": "Kc422gXqsOyL8jIxQ3Z1",
-        "title": "Chapter 3 - Muni Smiled - Story",
-        "title_en": "Muni Smiled - Story",
-        "title_or": "ମୁନି ଦେଲା ହସି",
-        "subject": "jhulana_1",
-        "thumbnail": null
-      },
-      {
         "id": "GgDB77Vn02yoVAyEfB8V",
         "title": "Chapter 12 - Let's look at the picture and talk 3",
         "title_en": "Let's look at the picture and talk 3",
@@ -182,16 +243,8 @@ export const ROADMAP_DATA_1 = [
         "thumbnail": null
       },
       {
-        "id": "hzx2uPQleDJw4B9pYKfn",
-        "title": "Chapter 22 - Let's look at the picture and talk 5",
-        "title_en": "Let's look at the picture and talk 5",
-        "title_or": "ଆସ ଚିତ୍ରଦେଖି କଥା ହେବା ୫",
-        "subject": "jhulana_1",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class1_ch3",
-        "title": "Muni Dela Hasi",
+        "id": "jhulana_class1_ch11",
+        "title": "Duiti Bani",
         "title_en": null,
         "title_or": null,
         "subject": "odia",
@@ -206,8 +259,8 @@ export const ROADMAP_DATA_1 = [
         "thumbnail": null
       },
       {
-        "id": "jhulana_class1_ch21",
-        "title": "Medha Dekha",
+        "id": "jhulana_class1_ch13",
+        "title": "Aama Aja",
         "title_en": null,
         "title_or": null,
         "subject": "odia",
@@ -216,30 +269,22 @@ export const ROADMAP_DATA_1 = [
     ]
   },
   {
-    "month": "September 2026",
+    "month": "October 2026",
     "chapters": [
       {
-        "id": "AzGEGnXNRZVNzx47L75C",
-        "title": "Chapter 4 - Let's Make 10 (Numbers 10 to 20)",
-        "title_en": "Let's Make 10 (Numbers 10 to 20)",
-        "title_or": "ଆସ, ୧୦ ତିଆରି କରିବା",
+        "id": "5QqMvmSIa1nvGoN9zR9t",
+        "title": "Chapter 7 - Lina's Family (Measurement)",
+        "title_en": "Lina's Family (Measurement)",
+        "title_or": "ଲୀନାର ପରିବାର",
         "subject": "ganita_khela",
         "thumbnail": null
       },
       {
-        "id": "aEunju4kIdP4Wi0wHwPP",
-        "title": "Chapter 13 - Wow, So Many Toys! (Data Handling)",
-        "title_en": "Wow, So Many Toys! (Data Handling)",
-        "title_or": "ବାଃ, ଏତେଗୁଡ଼ିଏ ଖେଳଣା",
+        "id": "NQhbSkTA9O8Ir4g1tYN2",
+        "title": "Chapter 8 - Fun with Numbers (Numbers 21 to 99)",
+        "title_en": "Fun with Numbers (Numbers 21 to 99)",
+        "title_or": "ସଂଖ୍ୟାର ମଜା",
         "subject": "ganita_khela",
-        "thumbnail": null
-      },
-      {
-        "id": "7vxtIgB06xw5CqVVQpoI",
-        "title": "Chapter 4 - Come Crow, Come Rabbit - Poem",
-        "title_en": "Come Crow, Come Rabbit - Poem",
-        "title_or": "ଆ’ରେ କାଉ , ଆ’ ଠେକୁଆ",
-        "subject": "jhulana_1",
         "thumbnail": null
       },
       {
@@ -251,24 +296,162 @@ export const ROADMAP_DATA_1 = [
         "thumbnail": null
       },
       {
-        "id": "OEMD0mHvO7dBCEJIs7uC",
-        "title": "Chapter 23 - Elephant and Little Crow - Story",
-        "title_en": "Elephant and Little Crow - Story",
-        "title_or": "ହାତୀ ଓ କୁନିକାଉ",
+        "id": "am9OspM5HVGE1mL0Sspq",
+        "title": "Chapter 15 - The Fun of Rasagola - Story",
+        "title_en": "The Fun of Rasagola - Story",
+        "title_or": "ରସଗୋଲାର ମଜା",
         "subject": "jhulana_1",
         "thumbnail": null
       },
       {
-        "id": "jhulana_class1_ch4",
-        "title": "Aare Kau Aare Thekua",
+        "id": "3lQZiYuybyOTUVWq949C",
+        "title": "Chapter 16 - Our Work",
+        "title_en": "Our Work",
+        "title_or": "ଆମ କାମ",
+        "subject": "jhulana_1",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class1_ch14",
+        "title": "Hanumankadara Chasama",
         "title_en": null,
         "title_or": null,
         "subject": "odia",
         "thumbnail": null
       },
       {
-        "id": "jhulana_class1_ch13",
-        "title": "Aama Aja",
+        "id": "jhulana_class1_ch15",
+        "title": "Rasagolara Maja",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class1_ch16",
+        "title": "Aama Kama",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "November 2026",
+    "chapters": [
+      {
+        "id": "KBBQt4tACF5ZQpXdut6v",
+        "title": "Chapter 9 - Our Festivals (Patterns)",
+        "title_en": "Our Festivals (Patterns)",
+        "title_or": "ଆମ ପର୍ବପର୍ବାଣୀ",
+        "subject": "ganita_khela",
+        "thumbnail": null
+      },
+      {
+        "id": "7aTiz91u5PavOpGUTdxL",
+        "title": "Chapter 17 - Let's look at the picture and talk 4",
+        "title_en": "Let's look at the picture and talk 4",
+        "title_or": "ଆସ ଚିତ୍ରଦେଖି କଥା ହେବା ୪",
+        "subject": "jhulana_1",
+        "thumbnail": null
+      },
+      {
+        "id": "FtIDYpM5kiHNP8AuWpCC",
+        "title": "Chapter 18 - Let's Go to the Fair - Poem",
+        "title_en": "Let's Go to the Fair - Poem",
+        "title_or": "ଆସରେ ଯିବା ଯାତରା ଦେଖି",
+        "subject": "jhulana_1",
+        "thumbnail": null
+      },
+      {
+        "id": "dAali4qHaeSWByIfwxAS",
+        "title": "Chapter 19 - Brother Frog seeing Rath Yatra - Story",
+        "title_en": "Brother Frog seeing Rath Yatra - Story",
+        "title_or": "ବେଙ୍ଗଭାଇର ରଥଯାତରା ଦେଖା",
+        "subject": "jhulana_1",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class1_ch17",
+        "title": "Aasa Chitra Dekhi 4",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class1_ch18",
+        "title": "Aasare Jiba Jatara",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class1_ch19",
+        "title": "Benga Chuara Ratha Jatra",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "December 2026",
+    "chapters": [
+      {
+        "id": "kjWd03UuFUT2EfVn6Kaw",
+        "title": "Chapter 10 - My One Day's Work (Time)",
+        "title_en": "My One Day's Work (Time)",
+        "title_or": "ମୋର ଗୋଟିଏ ଦିବସର କାମ",
+        "subject": "ganita_khela",
+        "thumbnail": null
+      },
+      {
+        "id": "3PP3RsP6jhSxCcONlZTY",
+        "title": "Chapter 11 - How Many Times Added? (Multiplication)",
+        "title_en": "How Many Times Added? (Multiplication)",
+        "title_or": "କେତେ ଥର ମିଶିଲା ?",
+        "subject": "ganita_khela",
+        "thumbnail": null
+      },
+      {
+        "id": "jF8k3a3emtoNMgWB7Sy6",
+        "title": "Chapter 20 - Holi - Poem",
+        "title_en": "Holi - Poem",
+        "title_or": "ହୋଲି",
+        "subject": "jhulana_1",
+        "thumbnail": null
+      },
+      {
+        "id": "yrN8dQVFhNnePPsIXItd",
+        "title": "Chapter 21 - Seeing the Idol - Story",
+        "title_en": "Seeing the Idol - Story",
+        "title_or": "ମେଢ଼ଦେଖା",
+        "subject": "jhulana_1",
+        "thumbnail": null
+      },
+      {
+        "id": "hzx2uPQleDJw4B9pYKfn",
+        "title": "Chapter 22 - Let's look at the picture and talk 5",
+        "title_en": "Let's look at the picture and talk 5",
+        "title_or": "ଆସ ଚିତ୍ରଦେଖି କଥା ହେବା ୫",
+        "subject": "jhulana_1",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class1_ch20",
+        "title": "Holi",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class1_ch21",
+        "title": "Medha Dekha",
         "title_en": null,
         "title_or": null,
         "subject": "odia",
@@ -285,29 +468,21 @@ export const ROADMAP_DATA_1 = [
     ]
   },
   {
-    "month": "October 2026",
+    "month": "January 2027",
     "chapters": [
       {
-        "id": "KEQ368wuxHqgGm9cRyAM",
-        "title": "Chapter 5 - What is the Number? (Addition & Subtraction of 1-Digit Numbers)",
-        "title_en": "What is the Number? (Addition & Subtraction of 1-Digit Numbers)",
-        "title_or": "ସଂଖ୍ୟାଟି କେତେ",
+        "id": "IUmZGVeA6BXx3IxF8JXD",
+        "title": "Chapter 12 - Let's Buy and Sell (Money)",
+        "title_en": "Let's Buy and Sell (Money)",
+        "title_or": "ଆସ କିଣାବିକା କରିବା",
         "subject": "ganita_khela",
         "thumbnail": null
       },
       {
-        "id": "nryCGExutJofHWjXBvaf",
-        "title": "Chapter 5 - Our Family",
-        "title_en": "Our Family",
-        "title_or": "ଆମ ପରିବାର",
-        "subject": "jhulana_1",
-        "thumbnail": null
-      },
-      {
-        "id": "am9OspM5HVGE1mL0Sspq",
-        "title": "Chapter 15 - The Fun of Rasagola - Story",
-        "title_en": "The Fun of Rasagola - Story",
-        "title_or": "ରସଗୋଲାର ମଜା",
+        "id": "OEMD0mHvO7dBCEJIs7uC",
+        "title": "Chapter 23 - Elephant and Little Crow - Story",
+        "title_en": "Elephant and Little Crow - Story",
+        "title_or": "ହାତୀ ଓ କୁନିକାଉ",
         "subject": "jhulana_1",
         "thumbnail": null
       },
@@ -320,19 +495,11 @@ export const ROADMAP_DATA_1 = [
         "thumbnail": null
       },
       {
-        "id": "jhulana_class1_ch5",
-        "title": "Aama Paribara",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class1_ch14",
-        "title": "Hanumankadara Chasama",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
+        "id": "LguMwIeS8pfJsAORhCPg",
+        "title": "Chapter 25 - Suni Won - Story",
+        "title_en": "Suni Won - Story",
+        "title_or": "ସୁନିଗଲା ଜିତି",
+        "subject": "jhulana_1",
         "thumbnail": null
       },
       {
@@ -342,116 +509,10 @@ export const ROADMAP_DATA_1 = [
         "title_or": null,
         "subject": "odia",
         "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "November 2026",
-    "chapters": [
-      {
-        "id": "i5LsQKIZf5BLHirBvEeS",
-        "title": "Chapter 6 - Vegetable Garden (Addition & Subtraction within 20)",
-        "title_en": "Vegetable Garden (Addition & Subtraction within 20)",
-        "title_or": "ପନିପରିବା ବଗିଚା",
-        "subject": "ganita_khela",
-        "thumbnail": null
-      },
-      {
-        "id": "8XxxKzrZ4RDTUI2pSMiZ",
-        "title": "Chapter 6 - Let's look at the picture and talk 2",
-        "title_en": "Let's look at the picture and talk 2",
-        "title_or": "ଆସ ଚିତ୍ରଦେଖି କଥା ହେବା ୨",
-        "subject": "jhulana_1",
-        "thumbnail": null
-      },
-      {
-        "id": "3lQZiYuybyOTUVWq949C",
-        "title": "Chapter 16 - Our Work",
-        "title_en": "Our Work",
-        "title_or": "ଆମ କାମ",
-        "subject": "jhulana_1",
-        "thumbnail": null
-      },
-      {
-        "id": "LguMwIeS8pfJsAORhCPg",
-        "title": "Chapter 25 - Suni Won - Story",
-        "title_en": "Suni Won - Story",
-        "title_or": "ସୁନିଗଲା ଜିତି",
-        "subject": "jhulana_1",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class1_ch6",
-        "title": "Aasa Chitra Dekhi 2",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class1_ch15",
-        "title": "Rasagolara Maja",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
       },
       {
         "id": "jhulana_class1_ch24",
         "title": "Upahara",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "December 2026",
-    "chapters": [
-      {
-        "id": "5QqMvmSIa1nvGoN9zR9t",
-        "title": "Chapter 7 - Lina's Family (Measurement)",
-        "title_en": "Lina's Family (Measurement)",
-        "title_or": "ଲୀନାର ପରିବାର",
-        "subject": "ganita_khela",
-        "thumbnail": null
-      },
-      {
-        "id": "uOaluq8F5ZbItXxAlFx6",
-        "title": "Chapter 7 - Who is Big? - Story",
-        "title_en": "Who is Big? - Story",
-        "title_or": "ବଡ଼ କିଏ?",
-        "subject": "jhulana_1",
-        "thumbnail": null
-      },
-      {
-        "id": "7aTiz91u5PavOpGUTdxL",
-        "title": "Chapter 17 - Let's look at the picture and talk 4",
-        "title_en": "Let's look at the picture and talk 4",
-        "title_or": "ଆସ ଚିତ୍ରଦେଖି କଥା ହେବା ୪",
-        "subject": "jhulana_1",
-        "thumbnail": null
-      },
-      {
-        "id": "IU6KYnSGfpzHty7tbmA7",
-        "title": "Chapter 26 - My Village - Poem",
-        "title_en": "My Village - Poem",
-        "title_or": "ମୋ ଗାଆଁ",
-        "subject": "jhulana_1",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class1_ch7",
-        "title": "Bada Kie",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class1_ch16",
-        "title": "Aama Kama",
         "title_en": null,
         "title_or": null,
         "subject": "odia",
@@ -468,29 +529,21 @@ export const ROADMAP_DATA_1 = [
     ]
   },
   {
-    "month": "January 2027",
+    "month": "February 2027",
     "chapters": [
       {
-        "id": "NQhbSkTA9O8Ir4g1tYN2",
-        "title": "Chapter 8 - Fun with Numbers (Numbers 21 to 99)",
-        "title_en": "Fun with Numbers (Numbers 21 to 99)",
-        "title_or": "ସଂଖ୍ୟାର ମଜା",
+        "id": "aEunju4kIdP4Wi0wHwPP",
+        "title": "Chapter 13 - Wow, So Many Toys! (Data Handling)",
+        "title_en": "Wow, So Many Toys! (Data Handling)",
+        "title_or": "ବାଃ, ଏତେଗୁଡ଼ିଏ ଖେଳଣା",
         "subject": "ganita_khela",
         "thumbnail": null
       },
       {
-        "id": "Ok8e8nWGwvaV0S1HDDzP",
-        "title": "Chapter 8 - Sparrow - Poem",
-        "title_en": "Sparrow - Poem",
-        "title_or": "ଚଟିଆ",
-        "subject": "jhulana_1",
-        "thumbnail": null
-      },
-      {
-        "id": "FtIDYpM5kiHNP8AuWpCC",
-        "title": "Chapter 18 - Let's Go to the Fair - Poem",
-        "title_en": "Let's Go to the Fair - Poem",
-        "title_or": "ଆସରେ ଯିବା ଯାତରା ଦେଖି",
+        "id": "IU6KYnSGfpzHty7tbmA7",
+        "title": "Chapter 26 - My Village - Poem",
+        "title_en": "My Village - Poem",
+        "title_or": "ମୋ ଗାଆଁ",
         "subject": "jhulana_1",
         "thumbnail": null
       },
@@ -503,19 +556,11 @@ export const ROADMAP_DATA_1 = [
         "thumbnail": null
       },
       {
-        "id": "jhulana_class1_ch8",
-        "title": "Chatia",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class1_ch17",
-        "title": "Aasa Chitra Dekhi 4",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
+        "id": "00IcP5vSqjxFV9zM8EqH",
+        "title": "Chapter 28 - Alphabet Song - Poem",
+        "title_en": "Alphabet Song - Poem",
+        "title_or": "ଅକ୍ଷର ଗୀତ",
+        "subject": "jhulana_1",
         "thumbnail": null
       },
       {
@@ -525,63 +570,18 @@ export const ROADMAP_DATA_1 = [
         "title_or": null,
         "subject": "odia",
         "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "February 2027",
-    "chapters": [
-      {
-        "id": "KBBQt4tACF5ZQpXdut6v",
-        "title": "Chapter 9 - Our Festivals (Patterns)",
-        "title_en": "Our Festivals (Patterns)",
-        "title_or": "ଆମ ପର୍ବପର୍ବାଣୀ",
-        "subject": "ganita_khela",
-        "thumbnail": null
-      },
-      {
-        "id": "HJVegh473QZNqk7CDipY",
-        "title": "Chapter 9 - Fox Drinking Coconut Water - Story",
-        "title_en": "Fox Drinking Coconut Water - Story",
-        "title_or": "বিଲୁଆର ପଇଡ଼ ପିଆ",
-        "subject": "jhulana_1",
-        "thumbnail": null
-      },
-      {
-        "id": "dAali4qHaeSWByIfwxAS",
-        "title": "Chapter 19 - Brother Frog seeing Rath Yatra - Story",
-        "title_en": "Brother Frog seeing Rath Yatra - Story",
-        "title_or": "ବେଙ୍ଗଭାଇର ରଥଯାତରା ଦେଖା",
-        "subject": "jhulana_1",
-        "thumbnail": null
-      },
-      {
-        "id": "00IcP5vSqjxFV9zM8EqH",
-        "title": "Chapter 28 - Alphabet Song - Poem",
-        "title_en": "Alphabet Song - Poem",
-        "title_or": "ଅକ୍ଷର ଗୀତ",
-        "subject": "jhulana_1",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class1_ch9",
-        "title": "Biluara Paida Pia",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class1_ch18",
-        "title": "Aasare Jiba Jatara",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
       },
       {
         "id": "jhulana_class1_ch27",
         "title": "Gadigadi Jae Panasa",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class1_ch28",
+        "title": "Akshyara Gita",
         "title_en": null,
         "title_or": null,
         "subject": "odia",
@@ -605,18 +605,18 @@ export const ROADMAP_DATA_2 = [
         "thumbnail": null
       },
       {
-        "id": "9Dizu8IirQBaNlSj6FTw",
-        "title": "Chapter 10 - The King has a Fever",
-        "title_en": "The King has a Fever",
-        "title_or": "ମହାରାଜାଙ୍କୁ ଜ୍ୱର",
+        "id": "7LhPkGMnCggEpL3NyTqt",
+        "title": "Chapter 2 - Holira Maja / Fun of Holi",
+        "title_en": "Holira Maja / Fun of Holi",
+        "title_or": "ହୋଲିର ମଜା",
         "subject": "jhulana_2",
         "thumbnail": null
       },
       {
-        "id": "Vw6Mjr6mjjBbem71gavq",
-        "title": "Chapter 19 - Bargarh Dhanuyatra",
-        "title_en": "Bargarh Dhanuyatra",
-        "title_or": "ବରଗଡ଼ ଧନୁଯାତ୍ରା",
+        "id": "dsXkP7oVivWb45tmACDe",
+        "title": "Chapter 3 - Who will be like my mother",
+        "title_en": "Who will be like my mother",
+        "title_or": "ମାଆ ପରି ମୋର କିଏ ସେ ହେବ",
         "subject": "jhulana_2",
         "thumbnail": null
       },
@@ -629,10 +629,10 @@ export const ROADMAP_DATA_2 = [
         "thumbnail": null
       },
       {
-        "id": "ymrKsZ0GTIputueS1mDf",
-        "title": "Chapter 10 - Fun at the Fair",
-        "title_en": "Fun at the Fair",
-        "title_or": "ମେଳାରେ ମଜା",
+        "id": "fgirhWPvmrGZCyd7S0Tw",
+        "title": "Chapter 2 - Shapes Around Us",
+        "title_en": "Shapes Around Us",
+        "title_or": "ଆମ ଚାରିପାଖରେ ଥିବା ଆକୃତି",
         "subject": "maja_majare_ganita",
         "thumbnail": null
       },
@@ -645,16 +645,16 @@ export const ROADMAP_DATA_2 = [
         "thumbnail": null
       },
       {
-        "id": "jhulana_class2_ch10",
-        "title": "Maharajanku Jwara",
+        "id": "jhulana_class2_ch2",
+        "title": "Holira Maja",
         "title_en": null,
         "title_or": null,
         "subject": "odia",
         "thumbnail": null
       },
       {
-        "id": "jhulana_class2_ch19",
-        "title": "Bargarh Dhanujatra",
+        "id": "jhulana_class2_ch3",
+        "title": "Maa Pari Mora",
         "title_en": null,
         "title_or": null,
         "subject": "odia",
@@ -666,10 +666,132 @@ export const ROADMAP_DATA_2 = [
     "month": "July 2026",
     "chapters": [
       {
-        "id": "7LhPkGMnCggEpL3NyTqt",
-        "title": "Chapter 2 - Holira Maja / Fun of Holi",
-        "title_en": "Holira Maja / Fun of Holi",
-        "title_or": "ହୋଲିର ମଜା",
+        "id": "mbXeIxbH59bJ2CfwIoGs",
+        "title": "Chapter 4 - Aunt Kanchana's House",
+        "title_en": "Aunt Kanchana's House",
+        "title_or": "କାଞ୍ଚନ ମାଉସୀ ଘର",
+        "subject": "jhulana_2",
+        "thumbnail": null
+      },
+      {
+        "id": "v8oh5VWOQkRxOsoWkYPd",
+        "title": "Chapter 5 - Elephant and Tiger will go to Uncle's house",
+        "title_en": "Elephant and Tiger will go to Uncle's house",
+        "title_or": "ହାତୀ ବାଘ ଯିବେ ମାମୁ ଘର",
+        "subject": "jhulana_2",
+        "thumbnail": null
+      },
+      {
+        "id": "wELVOsBWhZe7n6kvh85l",
+        "title": "Chapter 6 - Parrot's Beak, Cuckoo's Voice",
+        "title_en": "Parrot's Beak, Cuckoo's Voice",
+        "title_or": "ଶୁଆର ଥଣ୍ଟ କୋଇଲିର କଣ୍ଠ",
+        "subject": "jhulana_2",
+        "thumbnail": null
+      },
+      {
+        "id": "StnG1c9IKAr978YgApR0",
+        "title": "Chapter 3 - Fun with Numbers",
+        "title_en": "Fun with Numbers",
+        "title_or": "ସଂଖ୍ୟା ସହିତ ମଜା",
+        "subject": "maja_majare_ganita",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class2_ch4",
+        "title": "Kanchana Mausi Ghara",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class2_ch5",
+        "title": "Hati Bagha Mamu Ghara",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class2_ch6",
+        "title": "Suara Thanta Koilira Kantha",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "August 2026",
+    "chapters": [
+      {
+        "id": "FCUnnCgLPx0cO042lXFx",
+        "title": "Chapter 7 - Sajie Hele Khusi",
+        "title_en": "Sajie Hele Khusi",
+        "title_or": "ସଜିଏଁ ହେଲେ ଖୁସି",
+        "subject": "jhulana_2",
+        "thumbnail": null
+      },
+      {
+        "id": "d9QuJEbnh6i3TOMWUNk5",
+        "title": "Chapter 8 - Mamuni's Doll",
+        "title_en": "Mamuni's Doll",
+        "title_or": "ମାମୁନିର କଣ୍ଢେଇ",
+        "subject": "jhulana_2",
+        "thumbnail": null
+      },
+      {
+        "id": "IFM9MlDMinUxgdet2iIK",
+        "title": "Chapter 9 - The Balloon Flew Away",
+        "title_en": "The Balloon Flew Away",
+        "title_or": "ବେଲୁନ୍ ଗଲା ଉଡ଼ି",
+        "subject": "jhulana_2",
+        "thumbnail": null
+      },
+      {
+        "id": "FTcHsEAoXWC5Qz4P4gvG",
+        "title": "Chapter 4 - Story of Shadows",
+        "title_en": "Story of Shadows",
+        "title_or": "ଛାୟାର କାହାଣୀ",
+        "subject": "maja_majare_ganita",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class2_ch7",
+        "title": "Sabhie Hele Khusi",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class2_ch8",
+        "title": "Mamunira Kandhei",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class2_ch9",
+        "title": "Belun Gala Udi",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "September 2026",
+    "chapters": [
+      {
+        "id": "9Dizu8IirQBaNlSj6FTw",
+        "title": "Chapter 10 - The King has a Fever",
+        "title_en": "The King has a Fever",
+        "title_or": "ମହାରାଜାଙ୍କୁ ଜ୍ୱର",
         "subject": "jhulana_2",
         "thumbnail": null
       },
@@ -682,32 +804,24 @@ export const ROADMAP_DATA_2 = [
         "thumbnail": null
       },
       {
-        "id": "B0616C00pIeKqFxkzrz8",
-        "title": "Chapter 20 - Ballabhi Studied",
-        "title_en": "Ballabhi Studied",
-        "title_or": "ବଲ୍ଲଭୀ ପଢ଼ିଲା ପାଠ",
+        "id": "RYC1YU1tGsrXdZNdWPoq",
+        "title": "Chapter 12 - Queen of Rain",
+        "title_en": "Queen of Rain",
+        "title_or": "ବରଷାରାଣୀ",
         "subject": "jhulana_2",
         "thumbnail": null
       },
       {
-        "id": "fgirhWPvmrGZCyd7S0Tw",
-        "title": "Chapter 2 - Shapes Around Us",
-        "title_en": "Shapes Around Us",
-        "title_or": "ଆମ ଚାରିପାଖରେ ଥିବା ଆକୃତି",
+        "id": "BIVJzIzDWQr3psLjrqux",
+        "title": "Chapter 5 - Playing with Lines",
+        "title_en": "Playing with Lines",
+        "title_or": "ଗାର ସହିତ ଖେଳିବା",
         "subject": "maja_majare_ganita",
         "thumbnail": null
       },
       {
-        "id": "gQb7yBrjQpGIHqN75q7f",
-        "title": "Chapter 11 - Data Handling",
-        "title_en": "Data Handling",
-        "title_or": "ତଥ୍ୟ ପରିଚାଳନା",
-        "subject": "maja_majare_ganita",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class2_ch2",
-        "title": "Holira Maja",
+        "id": "jhulana_class2_ch10",
+        "title": "Maharajanku Jwara",
         "title_en": null,
         "title_or": null,
         "subject": "odia",
@@ -722,8 +836,8 @@ export const ROADMAP_DATA_2 = [
         "thumbnail": null
       },
       {
-        "id": "jhulana_class2_ch20",
-        "title": "Ballavi Padhila Patha",
+        "id": "jhulana_class2_ch12",
+        "title": "Barasharani",
         "title_en": null,
         "title_or": null,
         "subject": "odia",
@@ -732,21 +846,151 @@ export const ROADMAP_DATA_2 = [
     ]
   },
   {
-    "month": "August 2026",
+    "month": "October 2026",
     "chapters": [
       {
-        "id": "dsXkP7oVivWb45tmACDe",
-        "title": "Chapter 3 - Who will be like my mother",
-        "title_en": "Who will be like my mother",
-        "title_or": "ମାଆ ପରି ମୋର କିଏ ସେ ହେବ",
+        "id": "SUE9mSctDra1ufXvPclk",
+        "title": "Chapter 13 - Farmer Brother",
+        "title_en": "Farmer Brother",
+        "title_or": "ଚାଷୀଭାଇ",
         "subject": "jhulana_2",
         "thumbnail": null
       },
       {
-        "id": "RYC1YU1tGsrXdZNdWPoq",
-        "title": "Chapter 12 - Queen of Rain",
-        "title_en": "Queen of Rain",
-        "title_or": "ବରଷାରାଣୀ",
+        "id": "HgeIZ03q9IKRdy10wX25",
+        "title": "Chapter 14 - The Golden Field Smiled",
+        "title_en": "The Golden Field Smiled",
+        "title_or": "ହସିଲା ସୁନାର କ୍ଷେତ",
+        "subject": "jhulana_2",
+        "thumbnail": null
+      },
+      {
+        "id": "od3G0OG5FieqVu7NVvei",
+        "title": "Chapter 15 - Tale of Twelve Months",
+        "title_en": "Tale of Twelve Months",
+        "title_or": "ବାରମାସର କଥା",
+        "subject": "jhulana_2",
+        "thumbnail": null
+      },
+      {
+        "id": "LMSM80o7y0UW81aeEGKn",
+        "title": "Chapter 6 - Decoration for the Festival",
+        "title_en": "Decoration for the Festival",
+        "title_or": "ପର୍ବ ପାଇଁ ସାଜସଜ୍ଜା",
+        "subject": "maja_majare_ganita",
+        "thumbnail": null
+      },
+      {
+        "id": "lWe4MwcSchRrp4UmNd5n",
+        "title": "Chapter 7 - The Queen's Gift",
+        "title_en": "The Queen's Gift",
+        "title_or": "ରାଣୀଙ୍କ ଉପହାର",
+        "subject": "maja_majare_ganita",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class2_ch13",
+        "title": "Chashibhai",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class2_ch14",
+        "title": "Hasila Sunara Khetya",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class2_ch15",
+        "title": "Baramasara Katha",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "November 2026",
+    "chapters": [
+      {
+        "id": "av5DhsxhXlurQOSIZSw7",
+        "title": "Chapter 16 - Kalpana's Birthday",
+        "title_en": "Kalpana's Birthday",
+        "title_or": "କଳ୍ପନାର ଜନ୍ମଦିନ",
+        "subject": "jhulana_2",
+        "thumbnail": null
+      },
+      {
+        "id": "1jA6A4yOtWlFFEdbvCN7",
+        "title": "Chapter 17 - Let my earth keep smiling",
+        "title_en": "Let my earth keep smiling",
+        "title_or": "ମାଟି ମୋର ହସୁଥାଉ",
+        "subject": "jhulana_2",
+        "thumbnail": null
+      },
+      {
+        "id": "UMLT7dHvlHidab1AIdWa",
+        "title": "Chapter 18 - Our earth will smile again",
+        "title_en": "Our earth will smile again",
+        "title_or": "ହସିବ ପୁଣି ଆମ ଧରଣୀ",
+        "subject": "jhulana_2",
+        "thumbnail": null
+      },
+      {
+        "id": "WjPv6oS79eaE4xMAikQM",
+        "title": "Chapter 8 - Grouping and Sharing",
+        "title_en": "Grouping and Sharing",
+        "title_or": "ଏକାଠି କରିବା ଓ ବାଣ୍ଟିବା",
+        "subject": "maja_majare_ganita",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class2_ch16",
+        "title": "Kalpanara Janmadina",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class2_ch17",
+        "title": "Mati Mora Hasuthau",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      },
+      {
+        "id": "jhulana_class2_ch18",
+        "title": "Hasiba Puni Aama Dharani",
+        "title_en": null,
+        "title_or": null,
+        "subject": "odia",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "December 2026",
+    "chapters": [
+      {
+        "id": "Vw6Mjr6mjjBbem71gavq",
+        "title": "Chapter 19 - Bargarh Dhanuyatra",
+        "title_en": "Bargarh Dhanuyatra",
+        "title_or": "ବରଗଡ଼ ଧନୁଯାତ୍ରା",
+        "subject": "jhulana_2",
+        "thumbnail": null
+      },
+      {
+        "id": "B0616C00pIeKqFxkzrz8",
+        "title": "Chapter 20 - Ballabhi Studied",
+        "title_en": "Ballabhi Studied",
+        "title_or": "ବଲ୍ଲଭୀ ପଢ଼ିଲା ପାଠ",
         "subject": "jhulana_2",
         "thumbnail": null
       },
@@ -759,24 +1003,24 @@ export const ROADMAP_DATA_2 = [
         "thumbnail": null
       },
       {
-        "id": "StnG1c9IKAr978YgApR0",
-        "title": "Chapter 3 - Fun with Numbers",
-        "title_en": "Fun with Numbers",
-        "title_or": "ସଂଖ୍ୟା ସହିତ ମଜା",
+        "id": "jlWFT57PMrT01m3RHz55",
+        "title": "Chapter 9 - Basket of Seasons",
+        "title_en": "Basket of Seasons",
+        "title_or": "ଋତୁ ପସରା",
         "subject": "maja_majare_ganita",
         "thumbnail": null
       },
       {
-        "id": "jhulana_class2_ch3",
-        "title": "Maa Pari Mora",
+        "id": "jhulana_class2_ch19",
+        "title": "Bargarh Dhanujatra",
         "title_en": null,
         "title_or": null,
         "subject": "odia",
         "thumbnail": null
       },
       {
-        "id": "jhulana_class2_ch12",
-        "title": "Barasharani",
+        "id": "jhulana_class2_ch20",
+        "title": "Ballavi Padhila Patha",
         "title_en": null,
         "title_or": null,
         "subject": "odia",
@@ -793,82 +1037,13 @@ export const ROADMAP_DATA_2 = [
     ]
   },
   {
-    "month": "September 2026",
+    "month": "January 2027",
     "chapters": [
-      {
-        "id": "mbXeIxbH59bJ2CfwIoGs",
-        "title": "Chapter 4 - Aunt Kanchana's House",
-        "title_en": "Aunt Kanchana's House",
-        "title_or": "କାଞ୍ଚନ ମାଉସୀ ଘର",
-        "subject": "jhulana_2",
-        "thumbnail": null
-      },
-      {
-        "id": "SUE9mSctDra1ufXvPclk",
-        "title": "Chapter 13 - Farmer Brother",
-        "title_en": "Farmer Brother",
-        "title_or": "ଚାଷୀଭାଇ",
-        "subject": "jhulana_2",
-        "thumbnail": null
-      },
       {
         "id": "pDGk5v7EqvkOpAe24WWc",
         "title": "Chapter 22 - Festivals of Odisha",
         "title_en": "Festivals of Odisha",
         "title_or": "ଓଡ଼ିଶାର ପର୍ବପର୍ବାଣି",
-        "subject": "jhulana_2",
-        "thumbnail": null
-      },
-      {
-        "id": "FTcHsEAoXWC5Qz4P4gvG",
-        "title": "Chapter 4 - Story of Shadows",
-        "title_en": "Story of Shadows",
-        "title_or": "ଛାୟାର କାହାଣୀ",
-        "subject": "maja_majare_ganita",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class2_ch4",
-        "title": "Kanchana Mausi Ghara",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class2_ch13",
-        "title": "Chashibhai",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class2_ch22",
-        "title": "Odishara Parbaparbani",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "October 2026",
-    "chapters": [
-      {
-        "id": "v8oh5VWOQkRxOsoWkYPd",
-        "title": "Chapter 5 - Elephant and Tiger will go to Uncle's house",
-        "title_en": "Elephant and Tiger will go to Uncle's house",
-        "title_or": "ହାତୀ ବାଘ ଯିବେ ମାମୁ ଘର",
-        "subject": "jhulana_2",
-        "thumbnail": null
-      },
-      {
-        "id": "HgeIZ03q9IKRdy10wX25",
-        "title": "Chapter 14 - The Golden Field Smiled",
-        "title_en": "The Golden Field Smiled",
-        "title_or": "ହସିଲା ସୁନାର କ୍ଷେତ",
         "subject": "jhulana_2",
         "thumbnail": null
       },
@@ -881,59 +1056,6 @@ export const ROADMAP_DATA_2 = [
         "thumbnail": null
       },
       {
-        "id": "BIVJzIzDWQr3psLjrqux",
-        "title": "Chapter 5 - Playing with Lines",
-        "title_en": "Playing with Lines",
-        "title_or": "ଗାର ସହିତ ଖେଳିବା",
-        "subject": "maja_majare_ganita",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class2_ch5",
-        "title": "Hati Bagha Mamu Ghara",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class2_ch14",
-        "title": "Hasila Sunara Khetya",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class2_ch23",
-        "title": "Charidiga",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "November 2026",
-    "chapters": [
-      {
-        "id": "wELVOsBWhZe7n6kvh85l",
-        "title": "Chapter 6 - Parrot's Beak, Cuckoo's Voice",
-        "title_en": "Parrot's Beak, Cuckoo's Voice",
-        "title_or": "ଶୁଆର ଥଣ୍ଟ କୋଇଲିର କଣ୍ଠ",
-        "subject": "jhulana_2",
-        "thumbnail": null
-      },
-      {
-        "id": "od3G0OG5FieqVu7NVvei",
-        "title": "Chapter 15 - Tale of Twelve Months",
-        "title_en": "Tale of Twelve Months",
-        "title_or": "ବାରମାସର କଥା",
-        "subject": "jhulana_2",
-        "thumbnail": null
-      },
-      {
         "id": "uGPYu8nf80qSKIjDTwGr",
         "title": "Chapter 24 - Let's get ready",
         "title_en": "Let's get ready",
@@ -942,24 +1064,24 @@ export const ROADMAP_DATA_2 = [
         "thumbnail": null
       },
       {
-        "id": "LMSM80o7y0UW81aeEGKn",
-        "title": "Chapter 6 - Decoration for the Festival",
-        "title_en": "Decoration for the Festival",
-        "title_or": "ପର୍ବ ପାଇଁ ସାଜସଜ୍ଜା",
+        "id": "ymrKsZ0GTIputueS1mDf",
+        "title": "Chapter 10 - Fun at the Fair",
+        "title_en": "Fun at the Fair",
+        "title_or": "ମେଳାରେ ମଜା",
         "subject": "maja_majare_ganita",
         "thumbnail": null
       },
       {
-        "id": "jhulana_class2_ch6",
-        "title": "Suara Thanta Koilira Kantha",
+        "id": "jhulana_class2_ch22",
+        "title": "Odishara Parbaparbani",
         "title_en": null,
         "title_or": null,
         "subject": "odia",
         "thumbnail": null
       },
       {
-        "id": "jhulana_class2_ch15",
-        "title": "Baramasara Katha",
+        "id": "jhulana_class2_ch23",
+        "title": "Charidiga",
         "title_en": null,
         "title_or": null,
         "subject": "odia",
@@ -976,82 +1098,13 @@ export const ROADMAP_DATA_2 = [
     ]
   },
   {
-    "month": "December 2026",
+    "month": "February 2027",
     "chapters": [
-      {
-        "id": "FCUnnCgLPx0cO042lXFx",
-        "title": "Chapter 7 - Sajie Hele Khusi",
-        "title_en": "Sajie Hele Khusi",
-        "title_or": "ସଜିଏଁ ହେଲେ ଖୁସି",
-        "subject": "jhulana_2",
-        "thumbnail": null
-      },
-      {
-        "id": "av5DhsxhXlurQOSIZSw7",
-        "title": "Chapter 16 - Kalpana's Birthday",
-        "title_en": "Kalpana's Birthday",
-        "title_or": "କଳ୍ପନାର ଜନ୍ମଦିନ",
-        "subject": "jhulana_2",
-        "thumbnail": null
-      },
       {
         "id": "910pRjiQ7kiu7MQvQJ8k",
         "title": "Chapter 25 - Twinkling Sky",
         "title_en": "Twinkling Sky",
         "title_or": "ଝିଲିମିଲି ଆକାଶ",
-        "subject": "jhulana_2",
-        "thumbnail": null
-      },
-      {
-        "id": "lWe4MwcSchRrp4UmNd5n",
-        "title": "Chapter 7 - The Queen's Gift",
-        "title_en": "The Queen's Gift",
-        "title_or": "ରାଣୀଙ୍କ ଉପହାର",
-        "subject": "maja_majare_ganita",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class2_ch7",
-        "title": "Sabhie Hele Khusi",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class2_ch16",
-        "title": "Kalpanara Janmadina",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class2_ch25",
-        "title": "Jhilimili Akasha",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "January 2027",
-    "chapters": [
-      {
-        "id": "d9QuJEbnh6i3TOMWUNk5",
-        "title": "Chapter 8 - Mamuni's Doll",
-        "title_en": "Mamuni's Doll",
-        "title_or": "ମାମୁନିର କଣ୍ଢେଇ",
-        "subject": "jhulana_2",
-        "thumbnail": null
-      },
-      {
-        "id": "1jA6A4yOtWlFFEdbvCN7",
-        "title": "Chapter 17 - Let my earth keep smiling",
-        "title_en": "Let my earth keep smiling",
-        "title_or": "ମାଟି ମୋର ହସୁଥାଉ",
         "subject": "jhulana_2",
         "thumbnail": null
       },
@@ -1064,59 +1117,6 @@ export const ROADMAP_DATA_2 = [
         "thumbnail": null
       },
       {
-        "id": "WjPv6oS79eaE4xMAikQM",
-        "title": "Chapter 8 - Grouping and Sharing",
-        "title_en": "Grouping and Sharing",
-        "title_or": "ଏକାଠି କରିବା ଓ ବାଣ୍ଟିବା",
-        "subject": "maja_majare_ganita",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class2_ch8",
-        "title": "Mamunira Kandhei",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class2_ch17",
-        "title": "Mati Mora Hasuthau",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
-      },
-      {
-        "id": "jhulana_class2_ch26",
-        "title": "Jahnara Luchakali",
-        "title_en": null,
-        "title_or": null,
-        "subject": "odia",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "February 2027",
-    "chapters": [
-      {
-        "id": "IFM9MlDMinUxgdet2iIK",
-        "title": "Chapter 9 - The Balloon Flew Away",
-        "title_en": "The Balloon Flew Away",
-        "title_or": "ବେଲୁନ୍ ଗଲା ଉଡ଼ି",
-        "subject": "jhulana_2",
-        "thumbnail": null
-      },
-      {
-        "id": "UMLT7dHvlHidab1AIdWa",
-        "title": "Chapter 18 - Our earth will smile again",
-        "title_en": "Our earth will smile again",
-        "title_or": "ହସିବ ପୁଣି ଆମ ଧରଣୀ",
-        "subject": "jhulana_2",
-        "thumbnail": null
-      },
-      {
         "id": "A3SkMCOYHEFb62sUi2U0",
         "title": "Chapter 27 - Tell me who am I",
         "title_en": "Tell me who am I",
@@ -1125,24 +1125,24 @@ export const ROADMAP_DATA_2 = [
         "thumbnail": null
       },
       {
-        "id": "jlWFT57PMrT01m3RHz55",
-        "title": "Chapter 9 - Basket of Seasons",
-        "title_en": "Basket of Seasons",
-        "title_or": "ଋତୁ ପସରା",
+        "id": "gQb7yBrjQpGIHqN75q7f",
+        "title": "Chapter 11 - Data Handling",
+        "title_en": "Data Handling",
+        "title_or": "ତଥ୍ୟ ପରିଚାଳନା",
         "subject": "maja_majare_ganita",
         "thumbnail": null
       },
       {
-        "id": "jhulana_class2_ch9",
-        "title": "Belun Gala Udi",
+        "id": "jhulana_class2_ch25",
+        "title": "Jhilimili Akasha",
         "title_en": null,
         "title_or": null,
         "subject": "odia",
         "thumbnail": null
       },
       {
-        "id": "jhulana_class2_ch18",
-        "title": "Hasiba Puni Aama Dharani",
+        "id": "jhulana_class2_ch26",
+        "title": "Jahnara Luchakali",
         "title_en": null,
         "title_or": null,
         "subject": "odia",
@@ -1174,10 +1174,10 @@ export const ROADMAP_DATA_3 = [
         "thumbnail": null
       },
       {
-        "id": "9MnZGXsUiswpdgXfWNxt",
-        "title": "Chapter 10 - Hide and Seek",
-        "title_en": "Hide and Seek",
-        "title_or": "ଲୁଚକାଳି ଖେଳ",
+        "id": "0itIM6MYd0iTjtcBK480",
+        "title": "Chapter 2 - Ant",
+        "title_en": "Ant",
+        "title_or": "ପିମ୍ପୁଡ଼ି",
         "subject": "bhasa_mahak_1",
         "thumbnail": null
       },
@@ -1190,10 +1190,10 @@ export const ROADMAP_DATA_3 = [
         "thumbnail": null
       },
       {
-        "id": "j0I2ml11NU6CRlofHbO0",
-        "title": "Chapter 10 - Fun with Pictures",
-        "title_en": "Fun with Pictures",
-        "title_or": "Fun with Pictures",
+        "id": "F42z7zpXtFfmCxkFbQiL",
+        "title": "Chapter 2 - Learn English Letters (Part 1)",
+        "title_en": "Learn English Letters (Part 1)",
+        "title_or": "Learn English Letters (Part 1)",
         "subject": "pallavi",
         "thumbnail": null
       },
@@ -1206,10 +1206,10 @@ export const ROADMAP_DATA_3 = [
         "thumbnail": null
       },
       {
-        "id": "bnfv5r8Q7WLP2JPbYEnR",
-        "title": "Chapter 10 - Fun in the Classroom",
-        "title_en": "Fun in the Classroom",
-        "title_or": "ଶ୍ରେଣୀରେ ମଜା",
+        "id": "wQXXRUjXe61ZOq3xLE51",
+        "title": "Chapter 2 - Fun with Toys",
+        "title_en": "Fun with Toys",
+        "title_or": "ଖେଳନାର ମଜା",
         "subject": "ganita_mela",
         "thumbnail": null
       },
@@ -1222,10 +1222,10 @@ export const ROADMAP_DATA_3 = [
         "thumbnail": null
       },
       {
-        "id": "yFzgddJxJ0DMWTEaczAg",
-        "title": "Chapter 10 - World of Materials",
-        "title_en": "World of Materials",
-        "title_or": "ପଦାର୍ଥର ଦୁନିଆ",
+        "id": "HtB0fGb6tYwyKJapMJec",
+        "title": "Chapter 2 - Visiting the Palm Fair",
+        "title_en": "Visiting the Palm Fair",
+        "title_or": "ତାଳ ମେଳା ବୁଲିଯିବା",
         "subject": "paribesa_patha",
         "thumbnail": null
       },
@@ -1246,10 +1246,10 @@ export const ROADMAP_DATA_3 = [
         "thumbnail": null
       },
       {
-        "id": "B9Kaiqd3L7QkcNXylUOK",
-        "title": "Chapter 10 - Festival Music",
-        "title_en": "Festival Music",
-        "title_or": "ଉତ୍ସବ ସମ୍ପର୍କୀୟ ସଙ୍ଗୀତ",
+        "id": "BPUptRXaJjAHVouSjpYg",
+        "title": "Chapter 2 - Plants and Creepers in Art",
+        "title_en": "Plants and Creepers in Art",
+        "title_or": "ଚିତ୍ରକଳାରେ ବୃକ୍ଷଲତା",
         "subject": "kala_sikhya",
         "thumbnail": null
       }
@@ -1257,99 +1257,6 @@ export const ROADMAP_DATA_3 = [
   },
   {
     "month": "July 2026",
-    "chapters": [
-      {
-        "id": "0itIM6MYd0iTjtcBK480",
-        "title": "Chapter 2 - Ant",
-        "title_en": "Ant",
-        "title_or": "ପିମ୍ପୁଡ଼ି",
-        "subject": "bhasa_mahak_1",
-        "thumbnail": null
-      },
-      {
-        "id": "s6Df7j1FEYEMI90NtrE5",
-        "title": "Chapter 11 - Magic Box",
-        "title_en": "Magic Box",
-        "title_or": "କୁହୁକ ପେଡ଼ି",
-        "subject": "bhasa_mahak_1",
-        "thumbnail": null
-      },
-      {
-        "id": "F42z7zpXtFfmCxkFbQiL",
-        "title": "Chapter 2 - Learn English Letters (Part 1)",
-        "title_en": "Learn English Letters (Part 1)",
-        "title_or": "Learn English Letters (Part 1)",
-        "subject": "pallavi",
-        "thumbnail": null
-      },
-      {
-        "id": "6g6BhaiL0eAG92Dp0zEI",
-        "title": "Chapter 11 - The Food we eat",
-        "title_en": "The Food we eat",
-        "title_or": "The Food we eat",
-        "subject": "pallavi",
-        "thumbnail": null
-      },
-      {
-        "id": "wQXXRUjXe61ZOq3xLE51",
-        "title": "Chapter 2 - Fun with Toys",
-        "title_en": "Fun with Toys",
-        "title_or": "ଖେଳନାର ମଜା",
-        "subject": "ganita_mela",
-        "thumbnail": null
-      },
-      {
-        "id": "YyfV2pAIIaoaDKr5bFjg",
-        "title": "Chapter 11 - Filling and Pouring",
-        "title_en": "Filling and Pouring",
-        "title_or": "ଭରିବା ଓ ଓଜାଡ଼ିବା",
-        "subject": "ganita_mela",
-        "thumbnail": null
-      },
-      {
-        "id": "HtB0fGb6tYwyKJapMJec",
-        "title": "Chapter 2 - Visiting the Palm Fair",
-        "title_en": "Visiting the Palm Fair",
-        "title_or": "ତାଳ ମେଳା ବୁଲିଯିବା",
-        "subject": "paribesa_patha",
-        "thumbnail": null
-      },
-      {
-        "id": "2cnFJcub372K0VGxzp75",
-        "title": "Chapter 11 - Objects from Materials",
-        "title_en": "Objects from Materials",
-        "title_or": "ପଦାର୍ଥରୁ ବସ୍ତୁ",
-        "subject": "paribesa_patha",
-        "thumbnail": null
-      },
-      {
-        "id": "uQCiN9YVoM0BZFoOkX5Q",
-        "title": "Chapter 2 - Kicking and Stopping/Catching",
-        "title_en": "Kicking and Stopping/Catching",
-        "title_or": "ଗୋଡ଼ରେ ମାରିବା ଏବଂ ଧରିବା",
-        "subject": "sharirika_sikhya",
-        "thumbnail": null
-      },
-      {
-        "id": "BPUptRXaJjAHVouSjpYg",
-        "title": "Chapter 2 - Plants and Creepers in Art",
-        "title_en": "Plants and Creepers in Art",
-        "title_or": "ଚିତ୍ରକଳାରେ ବୃକ୍ଷଲତା",
-        "subject": "kala_sikhya",
-        "thumbnail": null
-      },
-      {
-        "id": "Oa0ww7kCqUSeyLlozs9p",
-        "title": "Chapter 11 - Come Let's Dance",
-        "title_en": "Come Let's Dance",
-        "title_or": "ଆସ ନୃତ୍ୟ କରିବା",
-        "subject": "kala_sikhya",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "August 2026",
     "chapters": [
       {
         "id": "VKJUluEQhCVMYjMHm2Ay",
@@ -1360,10 +1267,10 @@ export const ROADMAP_DATA_3 = [
         "thumbnail": null
       },
       {
-        "id": "mX1oHsyjd1CRShrtArH4",
-        "title": "Chapter 12 - Mind Changed",
-        "title_en": "Mind Changed",
-        "title_or": "ମନ ବଦଳିଲା",
+        "id": "3OxYYehpzFbyTlkWPCXE",
+        "title": "Chapter 4 - Earth is our Mother",
+        "title_en": "Earth is our Mother",
+        "title_or": "ମାଟି ଆମର ମାଆ",
         "subject": "bhasa_mahak_1",
         "thumbnail": null
       },
@@ -1376,14 +1283,6 @@ export const ROADMAP_DATA_3 = [
         "thumbnail": null
       },
       {
-        "id": "0hhFwzJbS3Eoi0ap0V4h",
-        "title": "Chapter 12 - Days and Months",
-        "title_en": "Days and Months",
-        "title_or": "Days and Months",
-        "subject": "pallavi",
-        "thumbnail": null
-      },
-      {
         "id": "D3ovNrFW6hMfYv2xLuhu",
         "title": "Chapter 3 - Double Century / Numbers up to 200",
         "title_en": "Double Century / Numbers up to 200",
@@ -1392,10 +1291,10 @@ export const ROADMAP_DATA_3 = [
         "thumbnail": null
       },
       {
-        "id": "JLixWwElXCHfwrnZGx7M",
-        "title": "Chapter 12 - Giving and Taking",
-        "title_en": "Giving and Taking",
-        "title_or": "ଦେବା ଓ ନେବା",
+        "id": "sZlVU5ccox15nAWhwVjW",
+        "title": "Chapter 4 - Holidays with Grandma",
+        "title_en": "Holidays with Grandma",
+        "title_or": "ଛୁଟିରେ ଆଇ ମା’ଙ୍କ ସହ",
         "subject": "ganita_mela",
         "thumbnail": null
       },
@@ -1408,18 +1307,10 @@ export const ROADMAP_DATA_3 = [
         "thumbnail": null
       },
       {
-        "id": "eWkUybLXOag7lxDjMcnH",
-        "title": "Chapter 12 - Waste Management",
-        "title_en": "Waste Management",
-        "title_or": "ଆବର୍ଜନାର ପରିଚାଳନା",
-        "subject": "paribesa_patha",
-        "thumbnail": null
-      },
-      {
-        "id": "lmDXeuS62q7jS9OcztZO",
-        "title": "Chapter 3 - Hitting the Ball",
-        "title_en": "Hitting the Ball",
-        "title_or": "ବଲ୍କୁ ମାରିବା",
+        "id": "uQCiN9YVoM0BZFoOkX5Q",
+        "title": "Chapter 2 - Kicking and Stopping/Catching",
+        "title_en": "Kicking and Stopping/Catching",
+        "title_or": "ଗୋଡ଼ରେ ମାରିବା ଏବଂ ଧରିବା",
         "subject": "sharirika_sikhya",
         "thumbnail": null
       },
@@ -1430,96 +1321,11 @@ export const ROADMAP_DATA_3 = [
         "title_or": "କଳାରେ ଜୀବଜନ୍ତୁ",
         "subject": "kala_sikhya",
         "thumbnail": null
-      },
-      {
-        "id": "QxIZwkQ4XKf0tXAtDGzK",
-        "title": "Chapter 12 - Joyful Dance",
-        "title_en": "Joyful Dance",
-        "title_or": "ଆନନ୍ଦରେ ନୃତ୍ୟ",
-        "subject": "kala_sikhya",
-        "thumbnail": null
       }
     ]
   },
   {
-    "month": "September 2026",
-    "chapters": [
-      {
-        "id": "3OxYYehpzFbyTlkWPCXE",
-        "title": "Chapter 4 - Earth is our Mother",
-        "title_en": "Earth is our Mother",
-        "title_or": "ମାଟି ଆମର ମାଆ",
-        "subject": "bhasa_mahak_1",
-        "thumbnail": null
-      },
-      {
-        "id": "02MFqJr3z8LWyujB86jP",
-        "title": "Chapter 13 - A Small Child Like You",
-        "title_en": "A Small Child Like You",
-        "title_or": "ତୁମ ପରି ଛୋଟ ପିଲାଟିଏ",
-        "subject": "bhasa_mahak_1",
-        "thumbnail": null
-      },
-      {
-        "id": "kPJ6MFkYvXSxlL3k8yKw",
-        "title": "Chapter 4 - Learn English Letters (Part 3)",
-        "title_en": "Learn English Letters (Part 3)",
-        "title_or": "Learn English Letters (Part 3)",
-        "subject": "pallavi",
-        "thumbnail": null
-      },
-      {
-        "id": "DquVvmvLnwNmtolUdy72",
-        "title": "Chapter 13 - Seasons",
-        "title_en": "Seasons",
-        "title_or": "Seasons",
-        "subject": "pallavi",
-        "thumbnail": null
-      },
-      {
-        "id": "sZlVU5ccox15nAWhwVjW",
-        "title": "Chapter 4 - Holidays with Grandma",
-        "title_en": "Holidays with Grandma",
-        "title_or": "ଛୁଟିରେ ଆଇ ମା’ଙ୍କ ସହ",
-        "subject": "ganita_mela",
-        "thumbnail": null
-      },
-      {
-        "id": "ysBCdX3sbDm5dEoeDjqy",
-        "title": "Chapter 13 - Time Rolls On",
-        "title_en": "Time Rolls On",
-        "title_or": "ସମୟ ଗଡ଼ିଚାଲେ",
-        "subject": "ganita_mela",
-        "thumbnail": null
-      },
-      {
-        "id": "ce3sWXRBZE8Z9gZGPBF4",
-        "title": "Chapter 4 - Knowing About Plants",
-        "title_en": "Knowing About Plants",
-        "title_or": "ଉଦ୍ଭିଦ ବିଷୟରେ ଜାଣିବା",
-        "subject": "paribesa_patha",
-        "thumbnail": null
-      },
-      {
-        "id": "Nn5eXntgoFKRuzoDWRU3",
-        "title": "Chapter 4 - Small Steps",
-        "title_en": "Small Steps",
-        "title_or": "ଛୋଟ ପଦକ୍ଷେପ",
-        "subject": "sharirika_sikhya",
-        "thumbnail": null
-      },
-      {
-        "id": "wPwYze7aHhMy6vQ23llu",
-        "title": "Chapter 4 - People Around Us",
-        "title_en": "People Around Us",
-        "title_or": "ଆମ ଚାରିପାଖରେ ଥିବା ମଣିଷ",
-        "subject": "kala_sikhya",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "October 2026",
+    "month": "August 2026",
     "chapters": [
       {
         "id": "MP2vvtK8vmXCLAIck0dK",
@@ -1530,11 +1336,11 @@ export const ROADMAP_DATA_3 = [
         "thumbnail": null
       },
       {
-        "id": "0wVj5HPtramjIely0NkD",
-        "title": "Chapter 14 - Clever Farmer",
-        "title_en": "Clever Farmer",
-        "title_or": "ଚତୁର କୃଷକ",
-        "subject": "bhasa_mahak_1",
+        "id": "kPJ6MFkYvXSxlL3k8yKw",
+        "title": "Chapter 4 - Learn English Letters (Part 3)",
+        "title_en": "Learn English Letters (Part 3)",
+        "title_or": "Learn English Letters (Part 3)",
+        "subject": "pallavi",
         "thumbnail": null
       },
       {
@@ -1554,47 +1360,47 @@ export const ROADMAP_DATA_3 = [
         "thumbnail": null
       },
       {
-        "id": "iC368doOg9hiGkdY4Shs",
-        "title": "Chapter 14 - Pond Fair",
-        "title_en": "Pond Fair",
-        "title_or": "ପୋଖରୀ ମେଳା",
-        "subject": "ganita_mela",
-        "thumbnail": null
-      },
-      {
-        "id": "RLgSqNh9YAxZyVVb4K86",
-        "title": "Chapter 5 - Plants and Animals Living Together",
-        "title_en": "Plants and Animals Living Together",
-        "title_or": "ଉଦ୍ଭିଦ ଓ ପ୍ରାଣୀଙ୍କ ଏକତ୍ର ବସବାସ",
+        "id": "ce3sWXRBZE8Z9gZGPBF4",
+        "title": "Chapter 4 - Knowing About Plants",
+        "title_en": "Knowing About Plants",
+        "title_or": "ଉଦ୍ଭିଦ ବିଷୟରେ ଜାଣିବା",
         "subject": "paribesa_patha",
         "thumbnail": null
       },
       {
-        "id": "r7JIISDVHe7uwcwwYrC7",
-        "title": "Chapter 5 - Regional and Traditional Sports",
-        "title_en": "Regional and Traditional Sports",
-        "title_or": "ଆଞ୍ଚଳିକ ଏବଂ ପାରମ୍ପରିକ କ୍ରୀଡ଼ା",
+        "id": "lmDXeuS62q7jS9OcztZO",
+        "title": "Chapter 3 - Hitting the Ball",
+        "title_en": "Hitting the Ball",
+        "title_or": "ବଲ୍କୁ ମାରିବା",
         "subject": "sharirika_sikhya",
         "thumbnail": null
       },
       {
-        "id": "3owkDU4g1IN8pyD7f3RB",
-        "title": "Chapter 5 - Festivals and Celebrations",
-        "title_en": "Festivals and Celebrations",
-        "title_or": "ପର୍ବପର୍ବାଣୀ ଏବଂ ଉତ୍ସବ",
+        "id": "wPwYze7aHhMy6vQ23llu",
+        "title": "Chapter 4 - People Around Us",
+        "title_en": "People Around Us",
+        "title_or": "ଆମ ଚାରିପାଖରେ ଥିବା ମଣିଷ",
         "subject": "kala_sikhya",
         "thumbnail": null
       }
     ]
   },
   {
-    "month": "November 2026",
+    "month": "September 2026",
     "chapters": [
       {
         "id": "lP4QNMGfrBmeue4Dp1Vx",
         "title": "Chapter 6 - Branch Bird and Elephant",
         "title_en": "Branch Bird and Elephant",
         "title_or": "ଡାଳ ଚଢ଼େଇ ଓ ହାତୀ",
+        "subject": "bhasa_mahak_1",
+        "thumbnail": null
+      },
+      {
+        "id": "o8vUWX0JY4EnmMb8udBA",
+        "title": "Chapter 7 - Letter to a Friend",
+        "title_en": "Letter to a Friend",
+        "title_or": "ବନ୍ଧୁକୁ ପତ୍ର",
         "subject": "bhasa_mahak_1",
         "thumbnail": null
       },
@@ -1615,6 +1421,22 @@ export const ROADMAP_DATA_3 = [
         "thumbnail": null
       },
       {
+        "id": "ZGnR9eQ7ENLfdW9UP7HJ",
+        "title": "Chapter 7 - House of Hundreds-2",
+        "title_en": "House of Hundreds-2",
+        "title_or": "ଶହେର ଘର-୨",
+        "subject": "ganita_mela",
+        "thumbnail": null
+      },
+      {
+        "id": "RLgSqNh9YAxZyVVb4K86",
+        "title": "Chapter 5 - Plants and Animals Living Together",
+        "title_en": "Plants and Animals Living Together",
+        "title_or": "ଉଦ୍ଭିଦ ଓ ପ୍ରାଣୀଙ୍କ ଏକତ୍ର ବସବାସ",
+        "subject": "paribesa_patha",
+        "thumbnail": null
+      },
+      {
         "id": "JBp3ztEhWcH0OXlBS1Nl",
         "title": "Chapter 6 - Living Together Harmoniously",
         "title_en": "Living Together Harmoniously",
@@ -1623,11 +1445,19 @@ export const ROADMAP_DATA_3 = [
         "thumbnail": null
       },
       {
-        "id": "d1wJEZy5oUnRW1UJCHLQ",
-        "title": "Chapter 6 - Yoga for Daily Life",
-        "title_en": "Yoga for Daily Life",
-        "title_or": "ଦୈନନ୍ଦିନ ଜୀବନ ପାଇଁ ଯୋଗ",
+        "id": "Nn5eXntgoFKRuzoDWRU3",
+        "title": "Chapter 4 - Small Steps",
+        "title_en": "Small Steps",
+        "title_or": "ଛୋଟ ପଦକ୍ଷେପ",
         "subject": "sharirika_sikhya",
+        "thumbnail": null
+      },
+      {
+        "id": "3owkDU4g1IN8pyD7f3RB",
+        "title": "Chapter 5 - Festivals and Celebrations",
+        "title_en": "Festivals and Celebrations",
+        "title_or": "ପର୍ବପର୍ବାଣୀ ଏବଂ ଉତ୍ସବ",
+        "subject": "kala_sikhya",
         "thumbnail": null
       },
       {
@@ -1641,13 +1471,13 @@ export const ROADMAP_DATA_3 = [
     ]
   },
   {
-    "month": "December 2026",
+    "month": "October 2026",
     "chapters": [
       {
-        "id": "o8vUWX0JY4EnmMb8udBA",
-        "title": "Chapter 7 - Letter to a Friend",
-        "title_en": "Letter to a Friend",
-        "title_or": "ବନ୍ଧୁକୁ ପତ୍ର",
+        "id": "wERXEuLwN2ydyvzkgIYn",
+        "title": "Chapter 8 - Ruchi's Game",
+        "title_en": "Ruchi's Game",
+        "title_or": "ରୁଚିର ଖେଳ",
         "subject": "bhasa_mahak_1",
         "thumbnail": null
       },
@@ -1657,51 +1487,6 @@ export const ROADMAP_DATA_3 = [
         "title_en": "The Frog & The Crow",
         "title_or": "The Frog & The Crow",
         "subject": "pallavi",
-        "thumbnail": null
-      },
-      {
-        "id": "ZGnR9eQ7ENLfdW9UP7HJ",
-        "title": "Chapter 7 - House of Hundreds-2",
-        "title_en": "House of Hundreds-2",
-        "title_or": "ଶହେର ଘର-୨",
-        "subject": "ganita_mela",
-        "thumbnail": null
-      },
-      {
-        "id": "2FRTKyzWQXG3ptmtuYqB",
-        "title": "Chapter 7 - Water - A Valuable Gift of Nature",
-        "title_en": "Water - A Valuable Gift of Nature",
-        "title_or": "ଜଳ - ପ୍ରକୃତିର ଏକ ମୂଲ୍ୟବାନ ଉପହାର",
-        "subject": "paribesa_patha",
-        "thumbnail": null
-      },
-      {
-        "id": "mEjjsQywi2bp0nkyNWQO",
-        "title": "Chapter 7 - Yoga Practice / Yogasanas",
-        "title_en": "Yoga Practice / Yogasanas",
-        "title_or": "ଯୋଗ ଅଭ୍ୟାସ (ଯୋଗାସନ)",
-        "subject": "sharirika_sikhya",
-        "thumbnail": null
-      },
-      {
-        "id": "KxhM8oArQew2Tn1oX9pn",
-        "title": "Chapter 7 - Feel the Rhythm",
-        "title_en": "Feel the Rhythm",
-        "title_or": "ତାଳକୁ ଅନୁଭବ କର",
-        "subject": "kala_sikhya",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "January 2027",
-    "chapters": [
-      {
-        "id": "wERXEuLwN2ydyvzkgIYn",
-        "title": "Chapter 8 - Ruchi's Game",
-        "title_en": "Ruchi's Game",
-        "title_or": "ରୁଚିର ଖେଳ",
-        "subject": "bhasa_mahak_1",
         "thumbnail": null
       },
       {
@@ -1721,31 +1506,39 @@ export const ROADMAP_DATA_3 = [
         "thumbnail": null
       },
       {
-        "id": "J9J7hlwYZxF6mye3yw4r",
-        "title": "Chapter 8 - Our Food",
-        "title_en": "Our Food",
-        "title_or": "ଆମ ଖାଦ୍ୟ",
+        "id": "2FRTKyzWQXG3ptmtuYqB",
+        "title": "Chapter 7 - Water - A Valuable Gift of Nature",
+        "title_en": "Water - A Valuable Gift of Nature",
+        "title_or": "ଜଳ - ପ୍ରକୃତିର ଏକ ମୂଲ୍ୟବାନ ଉପହାର",
         "subject": "paribesa_patha",
         "thumbnail": null
       },
       {
-        "id": "hm19KeaVJD2FFwZXw0JS",
-        "title": "Chapter 8 - Journey to Different Regions",
-        "title_en": "Journey to Different Regions",
-        "title_or": "ବିଭିନ୍ନ ଅଞ୍ଚଳକୁ ଯାତ୍ରା",
+        "id": "KxhM8oArQew2Tn1oX9pn",
+        "title": "Chapter 7 - Feel the Rhythm",
+        "title_en": "Feel the Rhythm",
+        "title_or": "ତାଳକୁ ଅନୁଭବ କର",
         "subject": "kala_sikhya",
         "thumbnail": null
       }
     ]
   },
   {
-    "month": "February 2027",
+    "month": "November 2026",
     "chapters": [
       {
         "id": "jxYgCYoQc8cInMoH8xwC",
         "title": "Chapter 9 - Odia New Year",
         "title_en": "Odia New Year",
         "title_or": "ଓଡ଼ିଆ ନୂଆବର୍ଷ",
+        "subject": "bhasa_mahak_1",
+        "thumbnail": null
+      },
+      {
+        "id": "9MnZGXsUiswpdgXfWNxt",
+        "title": "Chapter 10 - Hide and Seek",
+        "title_en": "Hide and Seek",
+        "title_or": "ଲୁଚକାଳି ଖେଳ",
         "subject": "bhasa_mahak_1",
         "thumbnail": null
       },
@@ -1766,6 +1559,75 @@ export const ROADMAP_DATA_3 = [
         "thumbnail": null
       },
       {
+        "id": "bnfv5r8Q7WLP2JPbYEnR",
+        "title": "Chapter 10 - Fun in the Classroom",
+        "title_en": "Fun in the Classroom",
+        "title_or": "ଶ୍ରେଣୀରେ ମଜା",
+        "subject": "ganita_mela",
+        "thumbnail": null
+      },
+      {
+        "id": "J9J7hlwYZxF6mye3yw4r",
+        "title": "Chapter 8 - Our Food",
+        "title_en": "Our Food",
+        "title_or": "ଆମ ଖାଦ୍ୟ",
+        "subject": "paribesa_patha",
+        "thumbnail": null
+      },
+      {
+        "id": "r7JIISDVHe7uwcwwYrC7",
+        "title": "Chapter 5 - Regional and Traditional Sports",
+        "title_en": "Regional and Traditional Sports",
+        "title_or": "ଆଞ୍ଚଳିକ ଏବଂ ପାରମ୍ପରିକ କ୍ରୀଡ଼ା",
+        "subject": "sharirika_sikhya",
+        "thumbnail": null
+      },
+      {
+        "id": "hm19KeaVJD2FFwZXw0JS",
+        "title": "Chapter 8 - Journey to Different Regions",
+        "title_en": "Journey to Different Regions",
+        "title_or": "ବିଭିନ୍ନ ଅଞ୍ଚଳକୁ ଯାତ୍ରା",
+        "subject": "kala_sikhya",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "December 2026",
+    "chapters": [
+      {
+        "id": "s6Df7j1FEYEMI90NtrE5",
+        "title": "Chapter 11 - Magic Box",
+        "title_en": "Magic Box",
+        "title_or": "କୁହୁକ ପେଡ଼ି",
+        "subject": "bhasa_mahak_1",
+        "thumbnail": null
+      },
+      {
+        "id": "j0I2ml11NU6CRlofHbO0",
+        "title": "Chapter 10 - Fun with Pictures",
+        "title_en": "Fun with Pictures",
+        "title_or": "Fun with Pictures",
+        "subject": "pallavi",
+        "thumbnail": null
+      },
+      {
+        "id": "6g6BhaiL0eAG92Dp0zEI",
+        "title": "Chapter 11 - The Food we eat",
+        "title_en": "The Food we eat",
+        "title_or": "The Food we eat",
+        "subject": "pallavi",
+        "thumbnail": null
+      },
+      {
+        "id": "YyfV2pAIIaoaDKr5bFjg",
+        "title": "Chapter 11 - Filling and Pouring",
+        "title_en": "Filling and Pouring",
+        "title_or": "ଭରିବା ଓ ଓଜାଡ଼ିବା",
+        "subject": "ganita_mela",
+        "thumbnail": null
+      },
+      {
         "id": "hCLuQfHdDHvH1VU3zimd",
         "title": "Chapter 9 - Staying Healthy and Happy",
         "title_en": "Staying Healthy and Happy",
@@ -1774,10 +1636,148 @@ export const ROADMAP_DATA_3 = [
         "thumbnail": null
       },
       {
+        "id": "yFzgddJxJ0DMWTEaczAg",
+        "title": "Chapter 10 - World of Materials",
+        "title_en": "World of Materials",
+        "title_or": "ପଦାର୍ଥର ଦୁନିଆ",
+        "subject": "paribesa_patha",
+        "thumbnail": null
+      },
+      {
+        "id": "d1wJEZy5oUnRW1UJCHLQ",
+        "title": "Chapter 6 - Yoga for Daily Life",
+        "title_en": "Yoga for Daily Life",
+        "title_or": "ଦୈନନ୍ଦିନ ଜୀବନ ପାଇଁ ଯୋଗ",
+        "subject": "sharirika_sikhya",
+        "thumbnail": null
+      },
+      {
         "id": "Mox47aQZh4pfBCPCQJ3n",
         "title": "Chapter 9 - Musical Instruments",
         "title_en": "Musical Instruments",
         "title_or": "ସଙ୍ଗୀତରେ ବ୍ୟବହୃତ ବାଦ୍ୟଯନ୍ତ୍ର",
+        "subject": "kala_sikhya",
+        "thumbnail": null
+      },
+      {
+        "id": "B9Kaiqd3L7QkcNXylUOK",
+        "title": "Chapter 10 - Festival Music",
+        "title_en": "Festival Music",
+        "title_or": "ଉତ୍ସବ ସମ୍ପର୍କୀୟ ସଙ୍ଗୀତ",
+        "subject": "kala_sikhya",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "January 2027",
+    "chapters": [
+      {
+        "id": "mX1oHsyjd1CRShrtArH4",
+        "title": "Chapter 12 - Mind Changed",
+        "title_en": "Mind Changed",
+        "title_or": "ମନ ବଦଳିଲା",
+        "subject": "bhasa_mahak_1",
+        "thumbnail": null
+      },
+      {
+        "id": "02MFqJr3z8LWyujB86jP",
+        "title": "Chapter 13 - A Small Child Like You",
+        "title_en": "A Small Child Like You",
+        "title_or": "ତୁମ ପରି ଛୋଟ ପିଲାଟିଏ",
+        "subject": "bhasa_mahak_1",
+        "thumbnail": null
+      },
+      {
+        "id": "0hhFwzJbS3Eoi0ap0V4h",
+        "title": "Chapter 12 - Days and Months",
+        "title_en": "Days and Months",
+        "title_or": "Days and Months",
+        "subject": "pallavi",
+        "thumbnail": null
+      },
+      {
+        "id": "JLixWwElXCHfwrnZGx7M",
+        "title": "Chapter 12 - Giving and Taking",
+        "title_en": "Giving and Taking",
+        "title_or": "ଦେବା ଓ ନେବା",
+        "subject": "ganita_mela",
+        "thumbnail": null
+      },
+      {
+        "id": "ysBCdX3sbDm5dEoeDjqy",
+        "title": "Chapter 13 - Time Rolls On",
+        "title_en": "Time Rolls On",
+        "title_or": "ସମୟ ଗଡ଼ିଚାଲେ",
+        "subject": "ganita_mela",
+        "thumbnail": null
+      },
+      {
+        "id": "2cnFJcub372K0VGxzp75",
+        "title": "Chapter 11 - Objects from Materials",
+        "title_en": "Objects from Materials",
+        "title_or": "ପଦାର୍ଥରୁ ବସ୍ତୁ",
+        "subject": "paribesa_patha",
+        "thumbnail": null
+      },
+      {
+        "id": "mEjjsQywi2bp0nkyNWQO",
+        "title": "Chapter 7 - Yoga Practice / Yogasanas",
+        "title_en": "Yoga Practice / Yogasanas",
+        "title_or": "ଯୋଗ ଅଭ୍ୟାସ (ଯୋଗାସନ)",
+        "subject": "sharirika_sikhya",
+        "thumbnail": null
+      },
+      {
+        "id": "Oa0ww7kCqUSeyLlozs9p",
+        "title": "Chapter 11 - Come Let's Dance",
+        "title_en": "Come Let's Dance",
+        "title_or": "ଆସ ନୃତ୍ୟ କରିବା",
+        "subject": "kala_sikhya",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "February 2027",
+    "chapters": [
+      {
+        "id": "0wVj5HPtramjIely0NkD",
+        "title": "Chapter 14 - Clever Farmer",
+        "title_en": "Clever Farmer",
+        "title_or": "ଚତୁର କୃଷକ",
+        "subject": "bhasa_mahak_1",
+        "thumbnail": null
+      },
+      {
+        "id": "DquVvmvLnwNmtolUdy72",
+        "title": "Chapter 13 - Seasons",
+        "title_en": "Seasons",
+        "title_or": "Seasons",
+        "subject": "pallavi",
+        "thumbnail": null
+      },
+      {
+        "id": "iC368doOg9hiGkdY4Shs",
+        "title": "Chapter 14 - Pond Fair",
+        "title_en": "Pond Fair",
+        "title_or": "ପୋଖରୀ ମେଳା",
+        "subject": "ganita_mela",
+        "thumbnail": null
+      },
+      {
+        "id": "eWkUybLXOag7lxDjMcnH",
+        "title": "Chapter 12 - Waste Management",
+        "title_en": "Waste Management",
+        "title_or": "ଆବର୍ଜନାର ପରିଚାଳନା",
+        "subject": "paribesa_patha",
+        "thumbnail": null
+      },
+      {
+        "id": "QxIZwkQ4XKf0tXAtDGzK",
+        "title": "Chapter 12 - Joyful Dance",
+        "title_en": "Joyful Dance",
+        "title_or": "ଆନନ୍ଦରେ ନୃତ୍ୟ",
         "subject": "kala_sikhya",
         "thumbnail": null
       }
@@ -1799,10 +1799,10 @@ export const ROADMAP_DATA_4 = [
         "thumbnail": null
       },
       {
-        "id": "IGhE6yorMcCOtdEeFbL2",
-        "title": "Chapter 11 - We Are All Indians",
-        "title_en": "We Are All Indians",
-        "title_or": "ଆମେ ସମସ୍ତେ ଭାରତୀୟ",
+        "id": "NEtgHjsgmenxUrhX69qY",
+        "title": "Chapter 2 - Badal And Moti",
+        "title_en": "Badal And Moti",
+        "title_or": "ବାଦଲ ଏବଂ ମୋତି",
         "subject": "pallavi",
         "thumbnail": null
       },
@@ -1815,10 +1815,10 @@ export const ROADMAP_DATA_4 = [
         "thumbnail": null
       },
       {
-        "id": "LzTHgQhttDReIf0Zz6p3",
-        "title": "Chapter 10 - Preparing music",
-        "title_en": "Preparing music",
-        "title_or": "ସଙ୍ଗୀତ ପ୍ରସ୍ତୁତ କରିବା",
+        "id": "nRhVbqYBldjY2kzuYRO3",
+        "title": "Chapter 2 - Nature's repetitive patterned background",
+        "title_en": "Nature's repetitive patterned background",
+        "title_or": "ପ୍ରକୃତିର ଆବୃତ୍ତା ଛାପବା ପୃଷ୍ଠଭାଗ",
         "subject": "kala_sikhya",
         "thumbnail": null
       },
@@ -1831,10 +1831,10 @@ export const ROADMAP_DATA_4 = [
         "thumbnail": null
       },
       {
-        "id": "4foh48o8AHazX6KXZiEI",
-        "title": "Chapter 11 - Fun with symmetry",
-        "title_en": "Fun with symmetry",
-        "title_or": "ପ୍ରତିସମତାର ମଜା",
+        "id": "GAHbM6KiZA64zZwGPXI7",
+        "title": "Chapter 2 - Hide and seek",
+        "title_en": "Hide and seek",
+        "title_or": "ଲୁଚକାଳି ଖେଳ",
         "subject": "ganita_mela",
         "thumbnail": null
       },
@@ -1847,10 +1847,10 @@ export const ROADMAP_DATA_4 = [
         "thumbnail": null
       },
       {
-        "id": "aZetvwnMasj3fruq5HoA",
-        "title": "Chapter 10 - Gachha O Kathuria",
-        "title_en": "Gachha O Kathuria",
-        "title_or": "ଗଛ ଓ କାଠୁରିଆ",
+        "id": "Qm1wOSnqnJWmZOmAohj8",
+        "title": "Chapter 2 - Swadhina Deshara Santana Ame",
+        "title_en": "Swadhina Deshara Santana Ame",
+        "title_or": "ସ୍ୱାଧୀନ ଦେଶର ସନ୍ତାନ ଆମେ",
         "subject": "bhasa_mahak_2",
         "thumbnail": null
       },
@@ -1871,91 +1871,6 @@ export const ROADMAP_DATA_4 = [
         "thumbnail": null
       },
       {
-        "id": "j8n19RjClpKSmeZCmJPX",
-        "title": "Chapter 10 - Our sky",
-        "title_en": "Our sky",
-        "title_or": "ଆମ ଆକାଶ",
-        "subject": "paribesa_patha",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "July 2026",
-    "chapters": [
-      {
-        "id": "NEtgHjsgmenxUrhX69qY",
-        "title": "Chapter 2 - Badal And Moti",
-        "title_en": "Badal And Moti",
-        "title_or": "ବାଦଲ ଏବଂ ମୋତି",
-        "subject": "pallavi",
-        "thumbnail": null
-      },
-      {
-        "id": "AdIv0OGiBCUeiqN50YPp",
-        "title": "Chapter 12 - Night",
-        "title_en": "Night",
-        "title_or": "ରାତି",
-        "subject": "pallavi",
-        "thumbnail": null
-      },
-      {
-        "id": "nRhVbqYBldjY2kzuYRO3",
-        "title": "Chapter 2 - Nature's repetitive patterned background",
-        "title_en": "Nature's repetitive patterned background",
-        "title_or": "ପ୍ରକୃତିର ଆବୃତ୍ତା ଛାପବା ପୃଷ୍ଠଭାଗ",
-        "subject": "kala_sikhya",
-        "thumbnail": null
-      },
-      {
-        "id": "NWDNYBkn66TT24YRX4vH",
-        "title": "Chapter 11 - Song and story",
-        "title_en": "Song and story",
-        "title_or": "ଗୀତ ଏବଂ କାହାଣୀ",
-        "subject": "kala_sikhya",
-        "thumbnail": null
-      },
-      {
-        "id": "GAHbM6KiZA64zZwGPXI7",
-        "title": "Chapter 2 - Hide and seek",
-        "title_en": "Hide and seek",
-        "title_or": "ଲୁଚକାଳି ଖେଳ",
-        "subject": "ganita_mela",
-        "thumbnail": null
-      },
-      {
-        "id": "ZI8nIla62J7iieTj7SqL",
-        "title": "Chapter 12 - Clock goes tick tick, calendar says tick tick",
-        "title_en": "Clock goes tick tick, calendar says tick tick",
-        "title_or": "ଘଣ୍ଟା ଚାଲେ ଟିକ୍ ଟିକ୍, କ୍ୟାଲେଣ୍ଡର କହେ ଟିକ୍ ଟିକ୍",
-        "subject": "ganita_mela",
-        "thumbnail": null
-      },
-      {
-        "id": "Qm1wOSnqnJWmZOmAohj8",
-        "title": "Chapter 2 - Swadhina Deshara Santana Ame",
-        "title_en": "Swadhina Deshara Santana Ame",
-        "title_or": "ସ୍ୱାଧୀନ ଦେଶର ସନ୍ତାନ ଆମେ",
-        "subject": "bhasa_mahak_2",
-        "thumbnail": null
-      },
-      {
-        "id": "qyPJvEyEhMqLCV1Dcwdj",
-        "title": "Chapter 11 - Nibedana",
-        "title_en": "Nibedana",
-        "title_or": "ନିବେଦନ",
-        "subject": "bhasa_mahak_2",
-        "thumbnail": null
-      },
-      {
-        "id": "AYzO1AGePA1Sai5BGihG",
-        "title": "Chapter 2 - Kicking and Receiving",
-        "title_en": "Kicking and Receiving",
-        "title_or": "ଗୋଇଠା ମାରିବା ଏବଂ ଗ୍ରହଣ କରିବା",
-        "subject": "krida_yoga",
-        "thumbnail": null
-      },
-      {
         "id": "oYXTFPfkdbgInxa3Hnpl",
         "title": "Chapter 2 - Knowing our neighbors",
         "title_en": "Knowing our neighbors",
@@ -1966,21 +1881,13 @@ export const ROADMAP_DATA_4 = [
     ]
   },
   {
-    "month": "August 2026",
+    "month": "July 2026",
     "chapters": [
       {
         "id": "AgNCKZPF144Jw0a2CG8O",
         "title": "Chapter 3 - Between Home And School",
         "title_en": "Between Home And School",
         "title_or": "ଘର ଏବଂ ବିଦ୍ୟାଳୟ ମଧ୍ୟରେ",
-        "subject": "pallavi",
-        "thumbnail": null
-      },
-      {
-        "id": "7TlgvgTmI7Zf0tyy7QHE",
-        "title": "Chapter 13 - Chandrayaan",
-        "title_en": "Chandrayaan",
-        "title_or": "ଚନ୍ଦ୍ରଯାନ",
         "subject": "pallavi",
         "thumbnail": null
       },
@@ -1993,10 +1900,10 @@ export const ROADMAP_DATA_4 = [
         "thumbnail": null
       },
       {
-        "id": "suQtHFSHYc1205uUg2jq",
-        "title": "Chapter 12 - Think, feel and create",
-        "title_en": "Think, feel and create",
-        "title_or": "ଭାବ, ଅନୁଭବ କର ଏବଂ ସୃଷ୍ଟି କର",
+        "id": "1BnlmY64fYTSQCZaIJZ3",
+        "title": "Chapter 4 - Folk art processes",
+        "title_en": "Folk art processes",
+        "title_or": "ଲୋକଜ କାର୍ଯ୍ୟ ପ୍ରକ୍ରିୟା",
         "subject": "kala_sikhya",
         "thumbnail": null
       },
@@ -2009,14 +1916,6 @@ export const ROADMAP_DATA_4 = [
         "thumbnail": null
       },
       {
-        "id": "ic4jbFLvQk4zVmQoIqpH",
-        "title": "Chapter 13 - Transport museum",
-        "title_en": "Transport museum",
-        "title_or": "ପରିବହନ ସଂଗ୍ରହାଳୟ",
-        "subject": "ganita_mela",
-        "thumbnail": null
-      },
-      {
         "id": "E7ucI5HGZpIugDGjpqDG",
         "title": "Chapter 3 - Nakali Suna / Shapatha",
         "title_en": "Nakali Suna / Shapatha",
@@ -2025,18 +1924,18 @@ export const ROADMAP_DATA_4 = [
         "thumbnail": null
       },
       {
-        "id": "Ouwu9Kn27iigM8Wvk1iN",
-        "title": "Chapter 12 - Boita Bandana O Baliyatra",
-        "title_en": "Boita Bandana O Baliyatra",
-        "title_or": "ବୋଇତ ବନ୍ଦାଣ ଓ ବାଲିଯାତ୍ରା",
+        "id": "sdqSfJx5Fn5m4d3yisPN",
+        "title": "Chapter 4 - Jayi Rajaguru",
+        "title_en": "Jayi Rajaguru",
+        "title_or": "ଜୟୀ ରାଜଗୁରୁ",
         "subject": "bhasa_mahak_2",
         "thumbnail": null
       },
       {
-        "id": "9BYx0lqIXSDxIi1KBwTm",
-        "title": "Chapter 3 - Hitting the Shuttlecock",
-        "title_en": "Hitting the Shuttlecock",
-        "title_or": "ସଟଲ୍କକ୍କୁ ମାରିବା",
+        "id": "AYzO1AGePA1Sai5BGihG",
+        "title": "Chapter 2 - Kicking and Receiving",
+        "title_en": "Kicking and Receiving",
+        "title_or": "ଗୋଇଠା ମାରିବା ଏବଂ ଗ୍ରହଣ କରିବା",
         "subject": "krida_yoga",
         "thumbnail": null
       },
@@ -2051,90 +1950,13 @@ export const ROADMAP_DATA_4 = [
     ]
   },
   {
-    "month": "September 2026",
+    "month": "August 2026",
     "chapters": [
       {
         "id": "zIIvBKT4A8TRf3qTiSMR",
         "title": "Chapter 4 - This Is My Town",
         "title_en": "This Is My Town",
         "title_or": "ଏହା ମୋର ସହର",
-        "subject": "pallavi",
-        "thumbnail": null
-      },
-      {
-        "id": "1BnlmY64fYTSQCZaIJZ3",
-        "title": "Chapter 4 - Folk art processes",
-        "title_en": "Folk art processes",
-        "title_or": "ଲୋକଜ କାର୍ଯ୍ୟ ପ୍ରକ୍ରିୟା",
-        "subject": "kala_sikhya",
-        "thumbnail": null
-      },
-      {
-        "id": "93V7ddCPFdTrtO2K3D5r",
-        "title": "Chapter 13 - Voice and musical instruments",
-        "title_en": "Voice and musical instruments",
-        "title_or": "ସ୍ୱର ଏବଂ ବାଦ୍ୟଯନ୍ତ୍ର",
-        "subject": "kala_sikhya",
-        "thumbnail": null
-      },
-      {
-        "id": "EzajBq7K1OD1DzG5hn6E",
-        "title": "Chapter 4 - Introduction to thousands",
-        "title_en": "Introduction to thousands",
-        "title_or": "ହଜାରର ପରିଚୟ",
-        "subject": "ganita_mela",
-        "thumbnail": null
-      },
-      {
-        "id": "VWRk5RYAKyLrHPnzyRN5",
-        "title": "Chapter 14 - Data handling",
-        "title_en": "Data handling",
-        "title_or": "ତଥ୍ୟ ପରିଚାଳନା",
-        "subject": "ganita_mela",
-        "thumbnail": null
-      },
-      {
-        "id": "sdqSfJx5Fn5m4d3yisPN",
-        "title": "Chapter 4 - Jayi Rajaguru",
-        "title_en": "Jayi Rajaguru",
-        "title_or": "ଜୟୀ ରାଜଗୁରୁ",
-        "subject": "bhasa_mahak_2",
-        "thumbnail": null
-      },
-      {
-        "id": "iZUjXDY9hIX1cRG9xMJQ",
-        "title": "Chapter 13 - Kabadi Khelara Maja",
-        "title_en": "Kabadi Khelara Maja",
-        "title_or": "କବାଡ଼ି ଖେଳର ମଜା",
-        "subject": "bhasa_mahak_2",
-        "thumbnail": null
-      },
-      {
-        "id": "QSuT1ZXQjuuIBEhGcSy9",
-        "title": "Chapter 4 - Short Steps",
-        "title_en": "Short Steps",
-        "title_or": "ଛୋଟ ସୋପାନ",
-        "subject": "krida_yoga",
-        "thumbnail": null
-      },
-      {
-        "id": "RwVEdLCngfzbEibxkvYS",
-        "title": "Chapter 4 - Growing with nature",
-        "title_en": "Growing with nature",
-        "title_or": "ପ୍ରକୃତି ସହିତ ବଢ଼ିବା",
-        "subject": "paribesa_patha",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "October 2026",
-    "chapters": [
-      {
-        "id": "LXQmeOZ3bUvdAUl0qVsZ",
-        "title": "Chapter 6 - The Crow",
-        "title_en": "The Crow",
-        "title_or": "କାଉ",
         "subject": "pallavi",
         "thumbnail": null
       },
@@ -2147,11 +1969,19 @@ export const ROADMAP_DATA_4 = [
         "thumbnail": null
       },
       {
-        "id": "5NKl1GUBUTG9ugGFA3AB",
-        "title": "Chapter 14 - My body in dance",
-        "title_en": "My body in dance",
-        "title_or": "ନୃତ୍ୟରେ ମୋର ଶରୀର",
+        "id": "rfSMq0TpVu5N8uu8fv3c",
+        "title": "Chapter 6 - Imagination / Planning",
+        "title_en": "Imagination / Planning",
+        "title_or": "ପରିକଳ୍ପନା",
         "subject": "kala_sikhya",
+        "thumbnail": null
+      },
+      {
+        "id": "EzajBq7K1OD1DzG5hn6E",
+        "title": "Chapter 4 - Introduction to thousands",
+        "title_en": "Introduction to thousands",
+        "title_or": "ହଜାରର ପରିଚୟ",
+        "subject": "ganita_mela",
         "thumbnail": null
       },
       {
@@ -2171,34 +2001,34 @@ export const ROADMAP_DATA_4 = [
         "thumbnail": null
       },
       {
-        "id": "sleYYO4I4kJ1w3QVdOf6",
-        "title": "Chapter 14 - Application Letter",
-        "title_en": "Application Letter",
-        "title_or": "ଆବେଦନ ପତ୍ର",
-        "subject": "bhasa_mahak_2",
-        "thumbnail": null
-      },
-      {
-        "id": "fhdQWOiTEJpH7uoJVMHO",
-        "title": "Chapter 5 - Local and Traditional Games",
-        "title_en": "Local and Traditional Games",
-        "title_or": "ସ୍ଥାନୀୟ ଏବଂ ପାରମ୍ପରିକ ଖେଳ",
+        "id": "9BYx0lqIXSDxIi1KBwTm",
+        "title": "Chapter 3 - Hitting the Shuttlecock",
+        "title_en": "Hitting the Shuttlecock",
+        "title_or": "ସଟଲ୍କକ୍କୁ ମାରିବା",
         "subject": "krida_yoga",
         "thumbnail": null
       },
       {
-        "id": "p14nNmriwvEjiTIr7UPZ",
-        "title": "Chapter 5 - Food and health",
-        "title_en": "Food and health",
-        "title_or": "ଖାଦ୍ୟ ଓ ସ୍ୱାସ୍ଥ୍ୟ",
+        "id": "RwVEdLCngfzbEibxkvYS",
+        "title": "Chapter 4 - Growing with nature",
+        "title_en": "Growing with nature",
+        "title_or": "ପ୍ରକୃତି ସହିତ ବଢ଼ିବା",
         "subject": "paribesa_patha",
         "thumbnail": null
       }
     ]
   },
   {
-    "month": "November 2026",
+    "month": "September 2026",
     "chapters": [
+      {
+        "id": "LXQmeOZ3bUvdAUl0qVsZ",
+        "title": "Chapter 6 - The Crow",
+        "title_en": "The Crow",
+        "title_or": "କାଉ",
+        "subject": "pallavi",
+        "thumbnail": null
+      },
       {
         "id": "30gOi0topZzYryRZ9rlm",
         "title": "Chapter 7 - Out In The Garden",
@@ -2208,18 +2038,18 @@ export const ROADMAP_DATA_4 = [
         "thumbnail": null
       },
       {
-        "id": "rfSMq0TpVu5N8uu8fv3c",
-        "title": "Chapter 6 - Imagination / Planning",
-        "title_en": "Imagination / Planning",
-        "title_or": "ପରିକଳ୍ପନା",
+        "id": "KHaBsBZaxhlkflZN6H0Y",
+        "title": "Chapter 7 - Let's create",
+        "title_en": "Let's create",
+        "title_or": "ଆସ ସର୍ଜନା କରିବା",
         "subject": "kala_sikhya",
         "thumbnail": null
       },
       {
-        "id": "QGTDnVWWd4BhvrTs1OER",
-        "title": "Chapter 15 - My dance tells a story",
-        "title_en": "My dance tells a story",
-        "title_or": "ମୋର ନୃତ୍ୟ କାହାଣୀ କହେ",
+        "id": "l2bElHBUABBB7eBCgdpv",
+        "title": "Chapter 8 - Look around",
+        "title_en": "Look around",
+        "title_or": "ଚତୁଃପାର୍ଶ୍ୱକୁ ଦେଖ",
         "subject": "kala_sikhya",
         "thumbnail": null
       },
@@ -2240,25 +2070,33 @@ export const ROADMAP_DATA_4 = [
         "thumbnail": null
       },
       {
-        "id": "s8eTilNvqLoPPtPGAu5n",
-        "title": "Chapter 6 - Yoga for Daily Life",
-        "title_en": "Yoga for Daily Life",
-        "title_or": "ଦୈନନ୍ଦିନ ଜୀବନ ପାଇଁ ଯୋଗ",
+        "id": "2ZpxFDKHO7NhGYIhPuxb",
+        "title": "Chapter 7 - Ama Surjyayana",
+        "title_en": "Ama Surjyayana",
+        "title_or": "ଆମ ସୂର୍ଯ୍ୟଯାନ",
+        "subject": "bhasa_mahak_2",
+        "thumbnail": null
+      },
+      {
+        "id": "QSuT1ZXQjuuIBEhGcSy9",
+        "title": "Chapter 4 - Short Steps",
+        "title_en": "Short Steps",
+        "title_or": "ଛୋଟ ସୋପାନ",
         "subject": "krida_yoga",
         "thumbnail": null
       },
       {
-        "id": "cII4CoNVfozY3dv0oabv",
-        "title": "Chapter 6 - Joyful healthy living",
-        "title_en": "Joyful healthy living",
-        "title_or": "ଆନନ୍ଦମୟ ସୁସ୍ଥ ଜୀବନଯାପନ",
+        "id": "p14nNmriwvEjiTIr7UPZ",
+        "title": "Chapter 5 - Food and health",
+        "title_en": "Food and health",
+        "title_or": "ଖାଦ୍ୟ ଓ ସ୍ୱାସ୍ଥ୍ୟ",
         "subject": "paribesa_patha",
         "thumbnail": null
       }
     ]
   },
   {
-    "month": "December 2026",
+    "month": "October 2026",
     "chapters": [
       {
         "id": "7mpbK9u4AatIeoPYxmsY",
@@ -2269,18 +2107,18 @@ export const ROADMAP_DATA_4 = [
         "thumbnail": null
       },
       {
-        "id": "KHaBsBZaxhlkflZN6H0Y",
-        "title": "Chapter 7 - Let's create",
-        "title_en": "Let's create",
-        "title_or": "ଆସ ସର୍ଜନା କରିବା",
+        "id": "WEutliqLKqN3tMvFXFJn",
+        "title": "Chapter 9 - Singing and playing",
+        "title_en": "Singing and playing",
+        "title_or": "ଗାଇବା ଓ ଖେଳିବା",
         "subject": "kala_sikhya",
         "thumbnail": null
       },
       {
-        "id": "wmUMrDWHLgEsIJsq5aYP",
-        "title": "Chapter 16 - My dance composition",
-        "title_en": "My dance composition",
-        "title_or": "ମୋର ନୃତ୍ୟ ସଂରଚନା",
+        "id": "LzTHgQhttDReIf0Zz6p3",
+        "title": "Chapter 10 - Preparing music",
+        "title_en": "Preparing music",
+        "title_or": "ସଙ୍ଗୀତ ପ୍ରସ୍ତୁତ କରିବା",
         "subject": "kala_sikhya",
         "thumbnail": null
       },
@@ -2290,59 +2128,6 @@ export const ROADMAP_DATA_4 = [
         "title_en": "The cleanest village",
         "title_or": "ସବୁଠାରୁ ସ୍ୱଚ୍ଛ ଗ୍ରାମ",
         "subject": "ganita_mela",
-        "thumbnail": null
-      },
-      {
-        "id": "2ZpxFDKHO7NhGYIhPuxb",
-        "title": "Chapter 7 - Ama Surjyayana",
-        "title_en": "Ama Surjyayana",
-        "title_or": "ଆମ ସୂର୍ଯ୍ୟଯାନ",
-        "subject": "bhasa_mahak_2",
-        "thumbnail": null
-      },
-      {
-        "id": "hdRLQ2DeJhhzW3D3gzN5",
-        "title": "Chapter 7 - Yoga Practice",
-        "title_en": "Yoga Practice",
-        "title_or": "ଯୋଗ ସାଧନା",
-        "subject": "krida_yoga",
-        "thumbnail": null
-      },
-      {
-        "id": "RYV3G3Gf1okfgTMwJKSO",
-        "title": "Chapter 7 - How things work",
-        "title_en": "How things work",
-        "title_or": "ଜିନିଷଗୁଡ଼ିକ କିପରି କାର୍ଯ୍ୟ କରନ୍ତି",
-        "subject": "paribesa_patha",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "January 2027",
-    "chapters": [
-      {
-        "id": "BagLf0WPGnG4NzdtjALl",
-        "title": "Chapter 9 - Seeing Without Seeing",
-        "title_en": "Seeing Without Seeing",
-        "title_or": "ନଦେଖି ଦେଖିବା",
-        "subject": "pallavi",
-        "thumbnail": null
-      },
-      {
-        "id": "l2bElHBUABBB7eBCgdpv",
-        "title": "Chapter 8 - Look around",
-        "title_en": "Look around",
-        "title_or": "ଚତୁଃପାର୍ଶ୍ୱକୁ ଦେଖ",
-        "subject": "kala_sikhya",
-        "thumbnail": null
-      },
-      {
-        "id": "YIDaq7a0liJ5h4lTgiT3",
-        "title": "Chapter 17 - Emotion and expression in dance",
-        "title_en": "Emotion and expression in dance",
-        "title_or": "ନୃତ୍ୟରେ ଭାବ ଏବଂ ଅଭିବ୍ୟକ୍ତି",
-        "subject": "kala_sikhya",
         "thumbnail": null
       },
       {
@@ -2362,39 +2147,39 @@ export const ROADMAP_DATA_4 = [
         "thumbnail": null
       },
       {
-        "id": "ZIhi9F6hHnGsqgDFmkiU",
-        "title": "Chapter 8 - Structure of things",
-        "title_en": "Structure of things",
-        "title_or": "ଜିନିଷଗୁଡ଼ିକର ଗଠନ ପ୍ରଣାଳୀ",
+        "id": "cII4CoNVfozY3dv0oabv",
+        "title": "Chapter 6 - Joyful healthy living",
+        "title_en": "Joyful healthy living",
+        "title_or": "ଆନନ୍ଦମୟ ସୁସ୍ଥ ଜୀବନଯାପନ",
         "subject": "paribesa_patha",
         "thumbnail": null
       }
     ]
   },
   {
-    "month": "February 2027",
+    "month": "November 2026",
     "chapters": [
       {
-        "id": "w0Xe5LTPjkooyKRNcsVD",
-        "title": "Chapter 10 - Little Drops Of Water",
-        "title_en": "Little Drops Of Water",
-        "title_or": "ପାଣିର ଛୋଟ ବୁନ୍ଦା",
+        "id": "BagLf0WPGnG4NzdtjALl",
+        "title": "Chapter 9 - Seeing Without Seeing",
+        "title_en": "Seeing Without Seeing",
+        "title_or": "ନଦେଖି ଦେଖିବା",
         "subject": "pallavi",
         "thumbnail": null
       },
       {
-        "id": "WEutliqLKqN3tMvFXFJn",
-        "title": "Chapter 9 - Singing and playing",
-        "title_en": "Singing and playing",
-        "title_or": "ଗାଇବା ଓ ଖେଳିବା",
+        "id": "NWDNYBkn66TT24YRX4vH",
+        "title": "Chapter 11 - Song and story",
+        "title_en": "Song and story",
+        "title_or": "ଗୀତ ଏବଂ କାହାଣୀ",
         "subject": "kala_sikhya",
         "thumbnail": null
       },
       {
-        "id": "LGw5EgqlHiKe6L0dHCWU",
-        "title": "Chapter 18 - Dance traditions of our country",
-        "title_en": "Dance traditions of our country",
-        "title_or": "ଆମ ଦେଶର ନୃତ୍ୟ ପରମ୍ପରା",
+        "id": "suQtHFSHYc1205uUg2jq",
+        "title": "Chapter 12 - Think, feel and create",
+        "title_en": "Think, feel and create",
+        "title_or": "ଭାବ, ଅନୁଭବ କର ଏବଂ ସୃଷ୍ଟି କର",
         "subject": "kala_sikhya",
         "thumbnail": null
       },
@@ -2415,10 +2200,225 @@ export const ROADMAP_DATA_4 = [
         "thumbnail": null
       },
       {
+        "id": "aZetvwnMasj3fruq5HoA",
+        "title": "Chapter 10 - Gachha O Kathuria",
+        "title_en": "Gachha O Kathuria",
+        "title_or": "ଗଛ ଓ କାଠୁରିଆ",
+        "subject": "bhasa_mahak_2",
+        "thumbnail": null
+      },
+      {
+        "id": "fhdQWOiTEJpH7uoJVMHO",
+        "title": "Chapter 5 - Local and Traditional Games",
+        "title_en": "Local and Traditional Games",
+        "title_or": "ସ୍ଥାନୀୟ ଏବଂ ପାରମ୍ପରିକ ଖେଳ",
+        "subject": "krida_yoga",
+        "thumbnail": null
+      },
+      {
+        "id": "RYV3G3Gf1okfgTMwJKSO",
+        "title": "Chapter 7 - How things work",
+        "title_en": "How things work",
+        "title_or": "ଜିନିଷଗୁଡ଼ିକ କିପରି କାର୍ଯ୍ୟ କରନ୍ତି",
+        "subject": "paribesa_patha",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "December 2026",
+    "chapters": [
+      {
+        "id": "w0Xe5LTPjkooyKRNcsVD",
+        "title": "Chapter 10 - Little Drops Of Water",
+        "title_en": "Little Drops Of Water",
+        "title_or": "ପାଣିର ଛୋଟ ବୁନ୍ଦା",
+        "subject": "pallavi",
+        "thumbnail": null
+      },
+      {
+        "id": "IGhE6yorMcCOtdEeFbL2",
+        "title": "Chapter 11 - We Are All Indians",
+        "title_en": "We Are All Indians",
+        "title_or": "ଆମେ ସମସ୍ତେ ଭାରତୀୟ",
+        "subject": "pallavi",
+        "thumbnail": null
+      },
+      {
+        "id": "93V7ddCPFdTrtO2K3D5r",
+        "title": "Chapter 13 - Voice and musical instruments",
+        "title_en": "Voice and musical instruments",
+        "title_or": "ସ୍ୱର ଏବଂ ବାଦ୍ୟଯନ୍ତ୍ର",
+        "subject": "kala_sikhya",
+        "thumbnail": null
+      },
+      {
+        "id": "5NKl1GUBUTG9ugGFA3AB",
+        "title": "Chapter 14 - My body in dance",
+        "title_en": "My body in dance",
+        "title_or": "ନୃତ୍ୟରେ ମୋର ଶରୀର",
+        "subject": "kala_sikhya",
+        "thumbnail": null
+      },
+      {
+        "id": "4foh48o8AHazX6KXZiEI",
+        "title": "Chapter 11 - Fun with symmetry",
+        "title_en": "Fun with symmetry",
+        "title_or": "ପ୍ରତିସମତାର ମଜା",
+        "subject": "ganita_mela",
+        "thumbnail": null
+      },
+      {
+        "id": "ZI8nIla62J7iieTj7SqL",
+        "title": "Chapter 12 - Clock goes tick tick, calendar says tick tick",
+        "title_en": "Clock goes tick tick, calendar says tick tick",
+        "title_or": "ଘଣ୍ଟା ଚାଲେ ଟିକ୍ ଟିକ୍, କ୍ୟାଲେଣ୍ଡର କହେ ଟିକ୍ ଟିକ୍",
+        "subject": "ganita_mela",
+        "thumbnail": null
+      },
+      {
+        "id": "qyPJvEyEhMqLCV1Dcwdj",
+        "title": "Chapter 11 - Nibedana",
+        "title_en": "Nibedana",
+        "title_or": "ନିବେଦନ",
+        "subject": "bhasa_mahak_2",
+        "thumbnail": null
+      },
+      {
+        "id": "s8eTilNvqLoPPtPGAu5n",
+        "title": "Chapter 6 - Yoga for Daily Life",
+        "title_en": "Yoga for Daily Life",
+        "title_or": "ଦୈନନ୍ଦିନ ଜୀବନ ପାଇଁ ଯୋଗ",
+        "subject": "krida_yoga",
+        "thumbnail": null
+      },
+      {
+        "id": "ZIhi9F6hHnGsqgDFmkiU",
+        "title": "Chapter 8 - Structure of things",
+        "title_en": "Structure of things",
+        "title_or": "ଜିନିଷଗୁଡ଼ିକର ଗଠନ ପ୍ରଣାଳୀ",
+        "subject": "paribesa_patha",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "January 2027",
+    "chapters": [
+      {
+        "id": "AdIv0OGiBCUeiqN50YPp",
+        "title": "Chapter 12 - Night",
+        "title_en": "Night",
+        "title_or": "ରାତି",
+        "subject": "pallavi",
+        "thumbnail": null
+      },
+      {
+        "id": "QGTDnVWWd4BhvrTs1OER",
+        "title": "Chapter 15 - My dance tells a story",
+        "title_en": "My dance tells a story",
+        "title_or": "ମୋର ନୃତ୍ୟ କାହାଣୀ କହେ",
+        "subject": "kala_sikhya",
+        "thumbnail": null
+      },
+      {
+        "id": "wmUMrDWHLgEsIJsq5aYP",
+        "title": "Chapter 16 - My dance composition",
+        "title_en": "My dance composition",
+        "title_or": "ମୋର ନୃତ୍ୟ ସଂରଚନା",
+        "subject": "kala_sikhya",
+        "thumbnail": null
+      },
+      {
+        "id": "ic4jbFLvQk4zVmQoIqpH",
+        "title": "Chapter 13 - Transport museum",
+        "title_en": "Transport museum",
+        "title_or": "ପରିବହନ ସଂଗ୍ରହାଳୟ",
+        "subject": "ganita_mela",
+        "thumbnail": null
+      },
+      {
+        "id": "Ouwu9Kn27iigM8Wvk1iN",
+        "title": "Chapter 12 - Boita Bandana O Baliyatra",
+        "title_en": "Boita Bandana O Baliyatra",
+        "title_or": "ବୋଇତ ବନ୍ଦାଣ ଓ ବାଲିଯାତ୍ରା",
+        "subject": "bhasa_mahak_2",
+        "thumbnail": null
+      },
+      {
+        "id": "iZUjXDY9hIX1cRG9xMJQ",
+        "title": "Chapter 13 - Kabadi Khelara Maja",
+        "title_en": "Kabadi Khelara Maja",
+        "title_or": "କବାଡ଼ି ଖେଳର ମଜା",
+        "subject": "bhasa_mahak_2",
+        "thumbnail": null
+      },
+      {
+        "id": "hdRLQ2DeJhhzW3D3gzN5",
+        "title": "Chapter 7 - Yoga Practice",
+        "title_en": "Yoga Practice",
+        "title_or": "ଯୋଗ ସାଧନା",
+        "subject": "krida_yoga",
+        "thumbnail": null
+      },
+      {
         "id": "q7Bfk3OgohzlGfS8asFA",
         "title": "Chapter 9 - Different lands, different lives",
         "title_en": "Different lands, different lives",
         "title_or": "ଭିନ୍ନ ଭୂମି, ଭିନ୍ନ ଜୀବନ",
+        "subject": "paribesa_patha",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "February 2027",
+    "chapters": [
+      {
+        "id": "7TlgvgTmI7Zf0tyy7QHE",
+        "title": "Chapter 13 - Chandrayaan",
+        "title_en": "Chandrayaan",
+        "title_or": "ଚନ୍ଦ୍ରଯାନ",
+        "subject": "pallavi",
+        "thumbnail": null
+      },
+      {
+        "id": "YIDaq7a0liJ5h4lTgiT3",
+        "title": "Chapter 17 - Emotion and expression in dance",
+        "title_en": "Emotion and expression in dance",
+        "title_or": "ନୃତ୍ୟରେ ଭାବ ଏବଂ ଅଭିବ୍ୟକ୍ତି",
+        "subject": "kala_sikhya",
+        "thumbnail": null
+      },
+      {
+        "id": "LGw5EgqlHiKe6L0dHCWU",
+        "title": "Chapter 18 - Dance traditions of our country",
+        "title_en": "Dance traditions of our country",
+        "title_or": "ଆମ ଦେଶର ନୃତ୍ୟ ପରମ୍ପରା",
+        "subject": "kala_sikhya",
+        "thumbnail": null
+      },
+      {
+        "id": "VWRk5RYAKyLrHPnzyRN5",
+        "title": "Chapter 14 - Data handling",
+        "title_en": "Data handling",
+        "title_or": "ତଥ୍ୟ ପରିଚାଳନା",
+        "subject": "ganita_mela",
+        "thumbnail": null
+      },
+      {
+        "id": "sleYYO4I4kJ1w3QVdOf6",
+        "title": "Chapter 14 - Application Letter",
+        "title_en": "Application Letter",
+        "title_or": "ଆବେଦନ ପତ୍ର",
+        "subject": "bhasa_mahak_2",
+        "thumbnail": null
+      },
+      {
+        "id": "j8n19RjClpKSmeZCmJPX",
+        "title": "Chapter 10 - Our sky",
+        "title_en": "Our sky",
+        "title_or": "ଆମ ଆକାଶ",
         "subject": "paribesa_patha",
         "thumbnail": null
       }
@@ -2440,10 +2440,10 @@ export const ROADMAP_DATA_5 = [
         "thumbnail": null
       },
       {
-        "id": "VFBxfs4ewM4sBpt428Ek",
-        "title": "Chapter 10 - Symmetrical Figures",
-        "title_en": "Symmetrical Figures",
-        "title_or": "ପৃতিସମ ଚିତ୍ର",
+        "id": "9GXxBpBIQk0HY9tCRE1N",
+        "title": "Chapter 2 - Fractions",
+        "title_en": "Fractions",
+        "title_or": "ଭଗ୍ନ ସଂଖ୍ୟା",
         "subject": "ganita_mela",
         "thumbnail": null
       },
@@ -2456,18 +2456,18 @@ export const ROADMAP_DATA_5 = [
         "thumbnail": null
       },
       {
-        "id": "UZMOjhCLoeZK2IQ2mvop",
-        "title": "Chapter 10 - Singing and Style",
-        "title_en": "Singing and Style",
-        "title_or": "ଗୀତ ଗାଇବା ଏବଂ ଶୈଳୀକା",
+        "id": "Gc6WboHMnHDFzRchs5jI",
+        "title": "Chapter 2 - Look out the window and draw",
+        "title_en": "Look out the window and draw",
+        "title_or": "ଝରକା ବାହାରକୁ ଦେଖ ଓ ଆଙ୍କ",
         "subject": "kala_sikhya",
         "thumbnail": null
       },
       {
-        "id": "ecBPBPy9H7ot6I3lapq2",
-        "title": "Chapter 19 - My Dance and Room Dance",
-        "title_en": "My Dance and Room Dance",
-        "title_or": "ମୋ ନୃତ୍ୟ ଓ ରୁମ୍ ନୃତ୍ୟ",
+        "id": "M0AZeB6hmpmflzXCYF1R",
+        "title": "Chapter 3 - Stories in Paintings",
+        "title_en": "Stories in Paintings",
+        "title_or": "ଚିତ୍ରକଳାରେ କାହାଣୀ",
         "subject": "kala_sikhya",
         "thumbnail": null
       },
@@ -2480,10 +2480,10 @@ export const ROADMAP_DATA_5 = [
         "thumbnail": null
       },
       {
-        "id": "KppRYqNa8EnmElbiT8dP",
-        "title": "Chapter 10 - The Decision of the Panchayat",
-        "title_en": "The Decision of the Panchayat",
-        "title_or": "ପଞ୍ଚାୟତର ନିଷ୍ପତ୍ତି",
+        "id": "ECpaqijX6IhDECsklZXX",
+        "title": "Chapter 2 - Gone with the Scooter",
+        "title_en": "Gone with the Scooter",
+        "title_or": "ସ୍କୁଟର ସହିତ ଉଭାନ୍",
         "subject": "pallavi",
         "thumbnail": null
       },
@@ -2504,10 +2504,10 @@ export const ROADMAP_DATA_5 = [
         "thumbnail": null
       },
       {
-        "id": "4XpLX98zTZPsJi2MpR8Y",
-        "title": "Chapter 10 - National Flag",
-        "title_en": "National Flag",
-        "title_or": "ଜାତୀୟପତାକା",
+        "id": "AMkiDX5ZrSQy2LOlPFC0",
+        "title": "Chapter 2 - The Throne of Justice",
+        "title_en": "The Throne of Justice",
+        "title_or": "ନ୍ୟାୟର ସିଂହାସନ",
         "subject": "bhasa_mahak_3",
         "thumbnail": null
       },
@@ -2517,91 +2517,6 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Water is Life",
         "title_or": "ଜଳ ହିଁ ଜୀବନ",
         "subject": "ama_chaturbaswara_pruthibi",
-        "thumbnail": null
-      },
-      {
-        "id": "zDHoCM91YnWTcKcdzl2W",
-        "title": "Chapter 10 - Earth - Our Habitat",
-        "title_en": "Earth - Our Habitat",
-        "title_or": "ପୃଥିବୀ - ଆମ ବାସସ୍ଥାନ",
-        "subject": "ama_chaturbaswara_pruthibi",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "July 2026",
-    "chapters": [
-      {
-        "id": "9GXxBpBIQk0HY9tCRE1N",
-        "title": "Chapter 2 - Fractions",
-        "title_en": "Fractions",
-        "title_or": "ଭଗ୍ନ ସଂଖ୍ୟା",
-        "subject": "ganita_mela",
-        "thumbnail": null
-      },
-      {
-        "id": "hIO1TrKRmMxfNgWg4LCW",
-        "title": "Chapter 11 - Kekema's Blanket",
-        "title_en": "Kekema's Blanket",
-        "title_or": "କେକେମାଙ୍କ କମ୍ବଳ",
-        "subject": "ganita_mela",
-        "thumbnail": null
-      },
-      {
-        "id": "Gc6WboHMnHDFzRchs5jI",
-        "title": "Chapter 2 - Look out the window and draw",
-        "title_en": "Look out the window and draw",
-        "title_or": "ଝରକା ବାହାରକୁ ଦେଖ ଓ ଆଙ୍କ",
-        "subject": "kala_sikhya",
-        "thumbnail": null
-      },
-      {
-        "id": "AHt686MDz1ZNM891gKDS",
-        "title": "Chapter 11 - Music around me",
-        "title_en": "Music around me",
-        "title_or": "ମୋ ଚାରିପାଖର ସଙ୍ଗୀତ",
-        "subject": "kala_sikhya",
-        "thumbnail": null
-      },
-      {
-        "id": "ECpaqijX6IhDECsklZXX",
-        "title": "Chapter 2 - Gone with the Scooter",
-        "title_en": "Gone with the Scooter",
-        "title_or": "ସ୍କୁଟର ସହିତ ଉଭାନ୍",
-        "subject": "pallavi",
-        "thumbnail": null
-      },
-      {
-        "id": "xSiI9cg0LV31HzoovdA3",
-        "title": "Chapter 11 - The Old Stag",
-        "title_en": "The Old Stag",
-        "title_or": "ବୃଦ୍ଧ ହରିଣ",
-        "subject": "pallavi",
-        "thumbnail": null
-      },
-      {
-        "id": "jbJlGl0A7zh4l7nTfnhT",
-        "title": "Chapter 2 - Kicking and Receiving",
-        "title_en": "Kicking and Receiving",
-        "title_or": "ଗୋଡ଼ରେ ମାରିବା ଏବଂ ଗ୍ରହଣ କରିବା",
-        "subject": "sharirika_yoga",
-        "thumbnail": null
-      },
-      {
-        "id": "AMkiDX5ZrSQy2LOlPFC0",
-        "title": "Chapter 2 - The Throne of Justice",
-        "title_en": "The Throne of Justice",
-        "title_or": "ନ୍ୟାୟର ସିଂହାସନ",
-        "subject": "bhasa_mahak_3",
-        "thumbnail": null
-      },
-      {
-        "id": "eYmgS5N5UqMuu0P6DY23",
-        "title": "Chapter 11 - The Story of the Ganges",
-        "title_en": "The Story of the Ganges",
-        "title_or": "ଗଙ୍ଗାର କାହାଣୀ",
-        "subject": "bhasa_mahak_3",
         "thumbnail": null
       },
       {
@@ -2615,7 +2530,7 @@ export const ROADMAP_DATA_5 = [
     ]
   },
   {
-    "month": "August 2026",
+    "month": "July 2026",
     "chapters": [
       {
         "id": "1pDFvlUcDZe0CvyMhEVZ",
@@ -2626,26 +2541,26 @@ export const ROADMAP_DATA_5 = [
         "thumbnail": null
       },
       {
-        "id": "qhPK31VqDiYhXoOzfcFJ",
-        "title": "Chapter 12 - Measurement of Time",
-        "title_en": "Measurement of Time",
-        "title_or": "ସମୟର ମାପ",
+        "id": "sHQN4OVIQrve8EOPf9Nf",
+        "title": "Chapter 4 - We all are travellers-2",
+        "title_en": "We all are travellers-2",
+        "title_or": "ଆମେ ସମସ୍ତେ ଯାତ୍ରୀ - ୨",
         "subject": "ganita_mela",
         "thumbnail": null
       },
       {
-        "id": "M0AZeB6hmpmflzXCYF1R",
-        "title": "Chapter 3 - Stories in Paintings",
-        "title_en": "Stories in Paintings",
-        "title_or": "ଚିତ୍ରକଳାରେ କାହାଣୀ",
+        "id": "xmLc6z1nsW4Ai8Z2KqiW",
+        "title": "Chapter 4 - Imagination in Art",
+        "title_en": "Imagination in Art",
+        "title_or": "କଳାରେ କାଳ୍ପନିକତା",
         "subject": "kala_sikhya",
         "thumbnail": null
       },
       {
-        "id": "JG3V9jVoKChHrnvKpA1T",
-        "title": "Chapter 12 - Musical Instruments and Sound",
-        "title_en": "Musical Instruments and Sound",
-        "title_or": "ବାଦ୍ୟ ଯନ୍ତ୍ର ଏବଂ ଧ୍ୱନି",
+        "id": "weYxVzlcAmzkhvCU9pgU",
+        "title": "Chapter 5 - Communication through Art",
+        "title_en": "Communication through Art",
+        "title_or": "କଳାଦ୍ୱାରା ବାର୍ତ୍ତା ପ୍ରସାରଣ",
         "subject": "kala_sikhya",
         "thumbnail": null
       },
@@ -2658,18 +2573,10 @@ export const ROADMAP_DATA_5 = [
         "thumbnail": null
       },
       {
-        "id": "ReaaawW5sHxoPKqBY8u4",
-        "title": "Chapter 12 - Braille",
-        "title_en": "Braille",
-        "title_or": "ବ୍ରେଲି",
-        "subject": "pallavi",
-        "thumbnail": null
-      },
-      {
-        "id": "ie1ZndrFRrWMkvxUnNDn",
-        "title": "Chapter 3 - Striking an Object",
-        "title_en": "Striking an Object",
-        "title_or": "ବସ୍ତୁକୁ ଆଘାତ କର",
+        "id": "jbJlGl0A7zh4l7nTfnhT",
+        "title": "Chapter 2 - Kicking and Receiving",
+        "title_en": "Kicking and Receiving",
+        "title_or": "ଗୋଡ଼ରେ ମାରିବା ଏବଂ ଗ୍ରହଣ କରିବା",
         "subject": "sharirika_yoga",
         "thumbnail": null
       },
@@ -2678,14 +2585,6 @@ export const ROADMAP_DATA_5 = [
         "title": "Chapter 3 - Everyone Helps Their Own",
         "title_en": "Everyone Helps Their Own",
         "title_or": "ଯେ ଯାହା ଘର ଉପକାରେ",
-        "subject": "bhasa_mahak_3",
-        "thumbnail": null
-      },
-      {
-        "id": "UgGPWD90HgH3SDSBZzPa",
-        "title": "Chapter 12 - You Gave Me a Great Lesson",
-        "title_en": "You Gave Me a Great Lesson",
-        "title_or": "ଦେଲୁ ମୋତେ ମହାଶିକ୍ଷା",
         "subject": "bhasa_mahak_3",
         "thumbnail": null
       },
@@ -2700,37 +2599,29 @@ export const ROADMAP_DATA_5 = [
     ]
   },
   {
-    "month": "September 2026",
+    "month": "August 2026",
     "chapters": [
       {
-        "id": "sHQN4OVIQrve8EOPf9Nf",
-        "title": "Chapter 4 - We all are travellers-2",
-        "title_en": "We all are travellers-2",
-        "title_or": "ଆମେ ସମସ୍ତେ ଯାତ୍ରୀ - ୨",
+        "id": "COAQ7dc238dno70OhOPv",
+        "title": "Chapter 5 - Near and Far",
+        "title_en": "Near and Far",
+        "title_or": "ପାଖ ଓ ଦୂର",
         "subject": "ganita_mela",
         "thumbnail": null
       },
       {
-        "id": "UJ47zdSgE5zmiNBI1JSL",
-        "title": "Chapter 13 - Jumping Animals",
-        "title_en": "Jumping Animals",
-        "title_or": "ପ୍ରାଣୀ ଡେଇଁକା",
-        "subject": "ganita_mela",
-        "thumbnail": null
-      },
-      {
-        "id": "xmLc6z1nsW4Ai8Z2KqiW",
-        "title": "Chapter 4 - Imagination in Art",
-        "title_en": "Imagination in Art",
-        "title_or": "କଳାରେ କାଳ୍ପନିକତା",
+        "id": "AYw47cNVzDlbwt3EGf5Z",
+        "title": "Chapter 6 - Create a Scene",
+        "title_en": "Create a Scene",
+        "title_or": "ଗୋଟିଏ ଦୃଶ୍ୟ ସୃଷ୍ଟି କର",
         "subject": "kala_sikhya",
         "thumbnail": null
       },
       {
-        "id": "QeFfcp3KWAuBEQkcLJ6I",
-        "title": "Chapter 13 - Building Blocks",
-        "title_en": "Building Blocks",
-        "title_or": "ବିଲ୍ଡିଂ ବ୍ଲକ୍",
+        "id": "crA14hbY4aOPAOSthBbU",
+        "title": "Chapter 7 - Create a Story",
+        "title_en": "Create a Story",
+        "title_or": "କାହାଣୀ ସୃଷ୍ଟି କରିବା",
         "subject": "kala_sikhya",
         "thumbnail": null
       },
@@ -2743,10 +2634,10 @@ export const ROADMAP_DATA_5 = [
         "thumbnail": null
       },
       {
-        "id": "AEpbFXURzIQ2Kvx2JgOS",
-        "title": "Chapter 4 - Small Steps",
-        "title_en": "Small Steps",
-        "title_or": "ଛୋଟ ଛୋଟ ପଦକ୍ଷେପ",
+        "id": "ie1ZndrFRrWMkvxUnNDn",
+        "title": "Chapter 3 - Striking an Object",
+        "title_en": "Striking an Object",
+        "title_or": "ବସ୍ତୁକୁ ଆଘାତ କର",
         "subject": "sharirika_yoga",
         "thumbnail": null
       },
@@ -2759,10 +2650,10 @@ export const ROADMAP_DATA_5 = [
         "thumbnail": null
       },
       {
-        "id": "aPeq5xqwaEizSq9OOHwo",
-        "title": "Chapter 13 - Return/Reward",
-        "title_en": "Return/Reward",
-        "title_or": "ପ୍ରତିଦାନ",
+        "id": "9Je7OiX0wg2S0RsHMKHz",
+        "title": "Chapter 5 - The Post of Leader Suits You",
+        "title_en": "The Post of Leader Suits You",
+        "title_or": "ଦଳପତି ପଦ ତୁମକୁ ସାଜେ",
         "subject": "bhasa_mahak_3",
         "thumbnail": null
       },
@@ -2777,37 +2668,37 @@ export const ROADMAP_DATA_5 = [
     ]
   },
   {
-    "month": "October 2026",
+    "month": "September 2026",
     "chapters": [
       {
-        "id": "COAQ7dc238dno70OhOPv",
-        "title": "Chapter 5 - Near and Far",
-        "title_en": "Near and Far",
-        "title_or": "ପାଖ ଓ ଦୂର",
+        "id": "OehETWJkVVbAQIDoVmh6",
+        "title": "Chapter 6 - Milk Production Center",
+        "title_en": "Milk Production Center",
+        "title_or": "ଦୁଗ୍ଧ ଉତ୍ପାଦନ କେନ୍ଦ୍ର",
         "subject": "ganita_mela",
         "thumbnail": null
       },
       {
-        "id": "VFUHycEgXLxudq9AVP9C",
-        "title": "Chapter 14 - Map and Location",
-        "title_en": "Map and Location",
-        "title_or": "ମାନଚିତ୍ର ଓ ଅବସ୍ଥାନ",
+        "id": "1KHyeVRkNW7jbL98gaxy",
+        "title": "Chapter 7 - Shapes and Patterns",
+        "title_en": "Shapes and Patterns",
+        "title_or": "ଆକୃତି ଓ ସଂରଚନା",
         "subject": "ganita_mela",
         "thumbnail": null
       },
       {
-        "id": "weYxVzlcAmzkhvCU9pgU",
-        "title": "Chapter 5 - Communication through Art",
-        "title_en": "Communication through Art",
-        "title_or": "କଳାଦ୍ୱାରା ବାର୍ତ୍ତା ପ୍ରସାରଣ",
+        "id": "LDrkyJmlv4mwHcGxYxjR",
+        "title": "Chapter 8 - Time, Team and Skill",
+        "title_en": "Time, Team and Skill",
+        "title_or": "କାଳ, ଦଳ ଏବଂ କୌଶଳ",
         "subject": "kala_sikhya",
         "thumbnail": null
       },
       {
-        "id": "fNvZxEU4PnGKc7WjzIvt",
-        "title": "Chapter 14 - Planning and Inspiration",
-        "title_en": "Planning and Inspiration",
-        "title_or": "ପରିକଳ୍ପନା ଏବଂ ଅନୁପ୍ରେରଣା",
+        "id": "X2YycCyPXO0JVwGUGDYC",
+        "title": "Chapter 9 - Watch and Review",
+        "title_en": "Watch and Review",
+        "title_or": "ଦେଖିବା ଏବଂ ସମାଲୋଚନା କରିବା",
         "subject": "kala_sikhya",
         "thumbnail": null
       },
@@ -2820,18 +2711,26 @@ export const ROADMAP_DATA_5 = [
         "thumbnail": null
       },
       {
-        "id": "842AbM4rRPDN81uAt2Me",
-        "title": "Chapter 5 - Local and Traditional Games",
-        "title_en": "Local and Traditional Games",
-        "title_or": "ସ୍ଥାନୀୟ ଏବଂ ପାରମ୍ପରିକ",
+        "id": "O37U5Z1uEhgYq2bc1HIT",
+        "title": "Chapter 6 - The Wise Parrot",
+        "title_en": "The Wise Parrot",
+        "title_or": "ଚତୁର ଶୁଆ",
+        "subject": "pallavi",
+        "thumbnail": null
+      },
+      {
+        "id": "AEpbFXURzIQ2Kvx2JgOS",
+        "title": "Chapter 4 - Small Steps",
+        "title_en": "Small Steps",
+        "title_or": "ଛୋଟ ଛୋଟ ପଦକ୍ଷେପ",
         "subject": "sharirika_yoga",
         "thumbnail": null
       },
       {
-        "id": "9Je7OiX0wg2S0RsHMKHz",
-        "title": "Chapter 5 - The Post of Leader Suits You",
-        "title_en": "The Post of Leader Suits You",
-        "title_or": "ଦଳପତି ପଦ ତୁମକୁ ସାଜେ",
+        "id": "x8m8VXeuwfxmgv213vGh",
+        "title": "Chapter 6 - Nuakhai Festival",
+        "title_en": "Nuakhai Festival",
+        "title_or": "ନୂଆଖାଇ",
         "subject": "bhasa_mahak_3",
         "thumbnail": null
       },
@@ -2846,61 +2745,61 @@ export const ROADMAP_DATA_5 = [
     ]
   },
   {
-    "month": "November 2026",
+    "month": "October 2026",
     "chapters": [
       {
-        "id": "OehETWJkVVbAQIDoVmh6",
-        "title": "Chapter 6 - Milk Production Center",
-        "title_en": "Milk Production Center",
-        "title_or": "ଦୁଗ୍ଧ ଉତ୍ପାଦନ କେନ୍ଦ୍ର",
+        "id": "YpQ3QwfxIisFPxYK8yo3",
+        "title": "Chapter 8 - Weight and Capacity",
+        "title_en": "Weight and Capacity",
+        "title_or": "ଓଜନ ଓ ଧାରକତ୍ୱ",
         "subject": "ganita_mela",
         "thumbnail": null
       },
       {
-        "id": "yzSrMla1wmRKBTmYMv7N",
-        "title": "Chapter 15 - Information through Pictures",
-        "title_en": "Information through Pictures",
-        "title_or": "ଚିତ୍ର ମାଧ୍ୟମରେ ତଥ୍ୟ",
+        "id": "SsVpjFN3pyiF8OmLjH5m",
+        "title": "Chapter 9 - Coconut Orchard",
+        "title_en": "Coconut Orchard",
+        "title_or": "ନଡ଼ିଆ ବଗିଚା",
         "subject": "ganita_mela",
         "thumbnail": null
       },
       {
-        "id": "AYw47cNVzDlbwt3EGf5Z",
-        "title": "Chapter 6 - Create a Scene",
-        "title_en": "Create a Scene",
-        "title_or": "ଗୋଟିଏ ଦୃଶ୍ୟ ସୃଷ୍ଟି କର",
+        "id": "UZMOjhCLoeZK2IQ2mvop",
+        "title": "Chapter 10 - Singing and Style",
+        "title_en": "Singing and Style",
+        "title_or": "ଗୀତ ଗାଇବା ଏବଂ ଶୈଳୀକା",
         "subject": "kala_sikhya",
         "thumbnail": null
       },
       {
-        "id": "n0jN4pcoBoIRIZwE4b1h",
-        "title": "Chapter 15 - My Dance Flow in Daily Activities",
-        "title_en": "My Dance Flow in Daily Activities",
-        "title_or": "ଦୈନନ୍ଦିନ କାର୍ଯ୍ୟରେ ମୋର ନୃତ୍ୟଧାରା",
+        "id": "AHt686MDz1ZNM891gKDS",
+        "title": "Chapter 11 - Music around me",
+        "title_en": "Music around me",
+        "title_or": "ମୋ ଚାରିପାଖର ସଙ୍ଗୀତ",
         "subject": "kala_sikhya",
         "thumbnail": null
       },
       {
-        "id": "O37U5Z1uEhgYq2bc1HIT",
-        "title": "Chapter 6 - The Wise Parrot",
-        "title_en": "The Wise Parrot",
-        "title_or": "ଚତୁର ଶୁଆ",
+        "id": "kdIAHEPqAtNEI5qjzjJ1",
+        "title": "Chapter 7 - Fit Body, Fit Mind, Fit Nation",
+        "title_en": "Fit Body, Fit Mind, Fit Nation",
+        "title_or": "ସୁସ୍ଥ ଶରୀର, ସୁସ୍ଥ ମନ, ସୁସ୍ଥ ରାଷ୍ଟ୍ର",
         "subject": "pallavi",
         "thumbnail": null
       },
       {
-        "id": "herP7kshBCPEVY5fcuw9",
-        "title": "Chapter 6 - Yoga in Daily Life",
-        "title_en": "Yoga in Daily Life",
-        "title_or": "ଦୈନନ୍ଦିନ ଜୀବନରେ ଯୋଗ",
-        "subject": "sharirika_yoga",
+        "id": "HzZBH5PpXOM6KE0RZho6",
+        "title": "Chapter 7 - Kaziranga National Park",
+        "title_en": "Kaziranga National Park",
+        "title_or": "କାଜିରଙ୍ଗା ଜାତୀୟ ଉଦ୍ୟାନ",
+        "subject": "bhasa_mahak_3",
         "thumbnail": null
       },
       {
-        "id": "x8m8VXeuwfxmgv213vGh",
-        "title": "Chapter 6 - Nuakhai Festival",
-        "title_en": "Nuakhai Festival",
-        "title_or": "ନୂଆଖାଇ",
+        "id": "4JbNMP7EPEtjvXMpCvBJ",
+        "title": "Chapter 8 - The Story of Three Fishes",
+        "title_en": "The Story of Three Fishes",
+        "title_or": "ତିନି ମାଛର କାହାଣୀ",
         "subject": "bhasa_mahak_3",
         "thumbnail": null
       },
@@ -2915,53 +2814,53 @@ export const ROADMAP_DATA_5 = [
     ]
   },
   {
-    "month": "December 2026",
+    "month": "November 2026",
     "chapters": [
       {
-        "id": "1KHyeVRkNW7jbL98gaxy",
-        "title": "Chapter 7 - Shapes and Patterns",
-        "title_en": "Shapes and Patterns",
-        "title_or": "ଆକୃତି ଓ ସଂରଚନା",
+        "id": "VFBxfs4ewM4sBpt428Ek",
+        "title": "Chapter 10 - Symmetrical Figures",
+        "title_en": "Symmetrical Figures",
+        "title_or": "ପ୍ରତିସମ ଚିତ୍ର",
         "subject": "ganita_mela",
         "thumbnail": null
       },
       {
-        "id": "crA14hbY4aOPAOSthBbU",
-        "title": "Chapter 7 - Create a Story",
-        "title_en": "Create a Story",
-        "title_or": "କାହାଣୀ ସୃଷ୍ଟି କରିବା",
+        "id": "JG3V9jVoKChHrnvKpA1T",
+        "title": "Chapter 12 - Musical Instruments and Sound",
+        "title_en": "Musical Instruments and Sound",
+        "title_or": "ବାଦ୍ୟ ଯନ୍ତ୍ର ଏବଂ ଧ୍ୱନି",
         "subject": "kala_sikhya",
         "thumbnail": null
       },
       {
-        "id": "huspiulTLq5UszXuSa5b",
-        "title": "Chapter 16 - Rhythm and Tempo in Dance",
-        "title_en": "Rhythm and Tempo in Dance",
-        "title_or": "ନୃତ୍ୟରେ ତାଳ ଓ ଲୟ",
+        "id": "QeFfcp3KWAuBEQkcLJ6I",
+        "title": "Chapter 13 - Building Blocks",
+        "title_en": "Building Blocks",
+        "title_or": "ବିଲ୍ଡିଂ ବ୍ଲକ୍",
         "subject": "kala_sikhya",
         "thumbnail": null
       },
       {
-        "id": "kdIAHEPqAtNEI5qjzjJ1",
-        "title": "Chapter 7 - Fit Body, Fit Mind, Fit Nation",
-        "title_en": "Fit Body, Fit Mind, Fit Nation",
-        "title_or": "ସୁସ୍ଥ ଶରୀର, ସୁସ୍ଥ ମନ, ସୁସ୍ଥ ରାଷ୍ଟ୍ର",
+        "id": "j2NReNx95wIynK1rvxQe",
+        "title": "Chapter 8 - The Lagori Champions",
+        "title_en": "The Lagori Champions",
+        "title_or": "ଲାଗୋରି ବିଜେତା",
         "subject": "pallavi",
         "thumbnail": null
       },
       {
-        "id": "kdrRrcptIZ53lZGqNqcw",
-        "title": "Chapter 7 - Yoga Practice",
-        "title_en": "Yoga Practice",
-        "title_or": "ଯୋଗ ସାଧନା",
+        "id": "842AbM4rRPDN81uAt2Me",
+        "title": "Chapter 5 - Local and Traditional Games",
+        "title_en": "Local and Traditional Games",
+        "title_or": "ସ୍ଥାନୀୟ ଏବଂ ପାରମ୍ପରିକ",
         "subject": "sharirika_yoga",
         "thumbnail": null
       },
       {
-        "id": "HzZBH5PpXOM6KE0RZho6",
-        "title": "Chapter 7 - Kaziranga National Park",
-        "title_en": "Kaziranga National Park",
-        "title_or": "କାଜିରଙ୍ଗା ଜାତୀୟ ଉଦ୍ୟାନ",
+        "id": "pvjFAP9NIPpueaBalyoZ",
+        "title": "Chapter 9 - The Stone Tells a Story",
+        "title_en": "The Stone Tells a Story",
+        "title_or": "ପଥର କହୁଛି କଥା",
         "subject": "bhasa_mahak_3",
         "thumbnail": null
       },
@@ -2976,45 +2875,77 @@ export const ROADMAP_DATA_5 = [
     ]
   },
   {
-    "month": "January 2027",
+    "month": "December 2026",
     "chapters": [
       {
-        "id": "YpQ3QwfxIisFPxYK8yo3",
-        "title": "Chapter 8 - Weight and Capacity",
-        "title_en": "Weight and Capacity",
-        "title_or": "ଓଜନ ଓ ଧାରକତ୍ୱ",
+        "id": "hIO1TrKRmMxfNgWg4LCW",
+        "title": "Chapter 11 - Grandma's Blanket",
+        "title_en": "Grandma's Blanket",
+        "title_or": "ଜେଜେମା'ଙ୍କ କମ୍ବଳ",
         "subject": "ganita_mela",
         "thumbnail": null
       },
       {
-        "id": "LDrkyJmlv4mwHcGxYxjR",
-        "title": "Chapter 8 - Time, Team and Skill",
-        "title_en": "Time, Team and Skill",
-        "title_or": "କାଳ, ଦଳ ଏବଂ କୌଶଳ",
+        "id": "qhPK31VqDiYhXoOzfcFJ",
+        "title": "Chapter 12 - Measurement of Time",
+        "title_en": "Measurement of Time",
+        "title_or": "ସମୟର ମାପ",
+        "subject": "ganita_mela",
+        "thumbnail": null
+      },
+      {
+        "id": "fNvZxEU4PnGKc7WjzIvt",
+        "title": "Chapter 14 - Planning and Inspiration",
+        "title_en": "Planning and Inspiration",
+        "title_or": "ପରିକଳ୍ପନା ଏବଂ ଅନୁପ୍ରେରଣା",
         "subject": "kala_sikhya",
         "thumbnail": null
       },
       {
-        "id": "Gwqt4i0qEpV138hiwBQp",
-        "title": "Chapter 17 - Dance of my Nation",
-        "title_en": "Dance of my Nation",
-        "title_or": "ମୋ ରାଷ୍ଟ୍ରର ନୃତ୍ୟ",
+        "id": "n0jN4pcoBoIRIZwE4b1h",
+        "title": "Chapter 15 - My Dance Flow in Daily Activities",
+        "title_en": "My Dance Flow in Daily Activities",
+        "title_or": "ଦୈନନ୍ଦିନ କାର୍ଯ୍ୟରେ ମୋର ନୃତ୍ୟଧାରା",
         "subject": "kala_sikhya",
         "thumbnail": null
       },
       {
-        "id": "j2NReNx95wIynK1rvxQe",
-        "title": "Chapter 8 - The Lagori Champions",
-        "title_en": "The Lagori Champions",
-        "title_or": "ଲାଗୋରି ବିଜେତା",
+        "id": "3AmNYVGl1DbWOUDwctnV",
+        "title": "Chapter 9 - The Swing",
+        "title_en": "The Swing",
+        "title_or": "ଦୋଳି",
         "subject": "pallavi",
         "thumbnail": null
       },
       {
-        "id": "4JbNMP7EPEtjvXMpCvBJ",
-        "title": "Chapter 8 - The Story of Three Fishes",
-        "title_en": "The Story of Three Fishes",
-        "title_or": "ତିନି ମାଛର କାହାଣୀ",
+        "id": "KppRYqNa8EnmElbiT8dP",
+        "title": "Chapter 10 - The Decision of the Panchayat",
+        "title_en": "The Decision of the Panchayat",
+        "title_or": "ପଞ୍ଚାୟତର ନିଷ୍ପତ୍ତି",
+        "subject": "pallavi",
+        "thumbnail": null
+      },
+      {
+        "id": "herP7kshBCPEVY5fcuw9",
+        "title": "Chapter 6 - Yoga in Daily Life",
+        "title_en": "Yoga in Daily Life",
+        "title_or": "ଦୈନନ୍ଦିନ ଜୀବନରେ ଯୋଗ",
+        "subject": "sharirika_yoga",
+        "thumbnail": null
+      },
+      {
+        "id": "4XpLX98zTZPsJi2MpR8Y",
+        "title": "Chapter 10 - National Flag",
+        "title_en": "National Flag",
+        "title_or": "ଜାତୀୟପତାକା",
+        "subject": "bhasa_mahak_3",
+        "thumbnail": null
+      },
+      {
+        "id": "eYmgS5N5UqMuu0P6DY23",
+        "title": "Chapter 11 - The Story of the Ganges",
+        "title_en": "The Story of the Ganges",
+        "title_or": "ଗଙ୍ଗାର କାହାଣୀ",
         "subject": "bhasa_mahak_3",
         "thumbnail": null
       },
@@ -3029,22 +2960,83 @@ export const ROADMAP_DATA_5 = [
     ]
   },
   {
-    "month": "February 2027",
+    "month": "January 2027",
     "chapters": [
       {
-        "id": "SsVpjFN3pyiF8OmLjH5m",
-        "title": "Chapter 9 - Coconut Orchard",
-        "title_en": "Coconut Orchard",
-        "title_or": "ନଡ଼ିଆ ବଗିଚା",
+        "id": "UJ47zdSgE5zmiNBI1JSL",
+        "title": "Chapter 13 - Jumping Animals",
+        "title_en": "Jumping Animals",
+        "title_or": "ପ୍ରାଣୀ ଡେଇଁକା",
         "subject": "ganita_mela",
         "thumbnail": null
       },
       {
-        "id": "X2YycCyPXO0JVwGUGDYC",
-        "title": "Chapter 9 - Watch and Review",
-        "title_en": "Watch and Review",
-        "title_or": "ଦେଖିବା ଏବଂ ସମାଲୋଚନା କରିବା",
+        "id": "VFUHycEgXLxudq9AVP9C",
+        "title": "Chapter 14 - Map and Location",
+        "title_en": "Map and Location",
+        "title_or": "ମାନଚିତ୍ର ଓ ଅବସ୍ଥାନ",
+        "subject": "ganita_mela",
+        "thumbnail": null
+      },
+      {
+        "id": "huspiulTLq5UszXuSa5b",
+        "title": "Chapter 16 - Rhythm and Tempo in Dance",
+        "title_en": "Rhythm and Tempo in Dance",
+        "title_or": "ନୃତ୍ୟରେ ତାଳ ଓ ଲୟ",
         "subject": "kala_sikhya",
+        "thumbnail": null
+      },
+      {
+        "id": "Gwqt4i0qEpV138hiwBQp",
+        "title": "Chapter 17 - Dance of my Nation",
+        "title_en": "Dance of my Nation",
+        "title_or": "ମୋ ରାଷ୍ଟ୍ରର ନୃତ୍ୟ",
+        "subject": "kala_sikhya",
+        "thumbnail": null
+      },
+      {
+        "id": "xSiI9cg0LV31HzoovdA3",
+        "title": "Chapter 11 - The Old Stag",
+        "title_en": "The Old Stag",
+        "title_or": "ବୃଦ୍ଧ ହରିଣ",
+        "subject": "pallavi",
+        "thumbnail": null
+      },
+      {
+        "id": "kdrRrcptIZ53lZGqNqcw",
+        "title": "Chapter 7 - Yoga Practice",
+        "title_en": "Yoga Practice",
+        "title_or": "ଯୋଗ ସାଧନା",
+        "subject": "sharirika_yoga",
+        "thumbnail": null
+      },
+      {
+        "id": "UgGPWD90HgH3SDSBZzPa",
+        "title": "Chapter 12 - You Gave Me a Great Lesson",
+        "title_en": "You Gave Me a Great Lesson",
+        "title_or": "ଦେଲୁ ମୋତେ ମହାଶିକ୍ଷା",
+        "subject": "bhasa_mahak_3",
+        "thumbnail": null
+      },
+      {
+        "id": "uavaEk7aDjc4PwSN43Xz",
+        "title": "Chapter 9 - Flow of Nature",
+        "title_en": "Flow of Nature",
+        "title_or": "ପ୍ରକୃତିର ଧାରା",
+        "subject": "ama_chaturbaswara_pruthibi",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "February 2027",
+    "chapters": [
+      {
+        "id": "yzSrMla1wmRKBTmYMv7N",
+        "title": "Chapter 15 - Information through Pictures",
+        "title_en": "Information through Pictures",
+        "title_or": "ଚିତ୍ର ମାଧ୍ୟମରେ ତଥ୍ୟ",
+        "subject": "ganita_mela",
         "thumbnail": null
       },
       {
@@ -3056,26 +3048,34 @@ export const ROADMAP_DATA_5 = [
         "thumbnail": null
       },
       {
-        "id": "3AmNYVGl1DbWOUDwctnV",
-        "title": "Chapter 9 - The Swing",
-        "title_en": "The Swing",
-        "title_or": "ଦୋଳି",
+        "id": "ecBPBPy9H7ot6I3lapq2",
+        "title": "Chapter 19 - My Dance and Room Dance",
+        "title_en": "My Dance and Room Dance",
+        "title_or": "ମୋ ନୃତ୍ୟ ଓ ରୁମ୍ ନୃତ୍ୟ",
+        "subject": "kala_sikhya",
+        "thumbnail": null
+      },
+      {
+        "id": "ReaaawW5sHxoPKqBY8u4",
+        "title": "Chapter 12 - Braille",
+        "title_en": "Braille",
+        "title_or": "ବ୍ରେଲି",
         "subject": "pallavi",
         "thumbnail": null
       },
       {
-        "id": "pvjFAP9NIPpueaBalyoZ",
-        "title": "Chapter 9 - The Stone Tells a Story",
-        "title_en": "The Stone Tells a Story",
-        "title_or": "ପଥର କହୁଛି କଥା",
+        "id": "aPeq5xqwaEizSq9OOHwo",
+        "title": "Chapter 13 - Return/Reward",
+        "title_en": "Return/Reward",
+        "title_or": "ପ୍ରତିଦାନ",
         "subject": "bhasa_mahak_3",
         "thumbnail": null
       },
       {
-        "id": "uavaEk7aDjc4PwSN43Xz",
-        "title": "Chapter 9 - Flow of Nature",
-        "title_en": "Flow of Nature",
-        "title_or": "प्रକୃତିର ଧାରା",
+        "id": "zDHoCM91YnWTcKcdzl2W",
+        "title": "Chapter 10 - Earth - Our Habitat",
+        "title_en": "Earth - Our Habitat",
+        "title_or": "ପୃଥିବୀ - ଆମ ବାସସ୍ଥାନ",
         "subject": "ama_chaturbaswara_pruthibi",
         "thumbnail": null
       }
@@ -3097,18 +3097,18 @@ export const ROADMAP_DATA_6 = [
         "thumbnail": null
       },
       {
-        "id": "lUCKTCzgK3rgrXwWXeHc",
-        "title": "Chapter 10 - Rain and Frog",
-        "title_en": "Rain and Frog",
-        "title_or": "बरसात और मेंढक",
+        "id": "spL0aIFzZmmR63pONZMO",
+        "title": "Chapter 2 - Know the Alphabet",
+        "title_en": "Know the Alphabet",
+        "title_or": "वर्णमाला जानें",
         "subject": "hindi_kalika",
         "thumbnail": null
       },
       {
-        "id": "1v24LIRsgd5IGLtyVz7T",
-        "title": "Chapter 19 - Don't be Afraid",
-        "title_en": "Don't be Afraid",
-        "title_or": "डरो मत",
+        "id": "ACaHUFdNYmBerxxctw9w",
+        "title": "Chapter 3 - Learn the Writing Style of Letters",
+        "title_en": "Learn the Writing Style of Letters",
+        "title_or": "वर्ण लेखन की शैली सीखें",
         "subject": "hindi_kalika",
         "thumbnail": null
       },
@@ -3121,10 +3121,10 @@ export const ROADMAP_DATA_6 = [
         "thumbnail": null
       },
       {
-        "id": "BT5cendZ78zKRWPvd8pY",
-        "title": "Chapter 10 - Characteristics of the Living World",
-        "title_en": "Characteristics of the Living World",
-        "title_or": "ଜୀବଜଗତର ବୈଶିଷ୍ଟ୍ୟ",
+        "id": "IuuFXIBrV8vo95fpc2Y5",
+        "title": "Chapter 2 - Diversity in the Living World",
+        "title_en": "Diversity in the Living World",
+        "title_or": "ଜୀବଜଗତରେ ବିବିଧତା",
         "subject": "jigyasa",
         "thumbnail": null
       },
@@ -3137,10 +3137,10 @@ export const ROADMAP_DATA_6 = [
         "thumbnail": null
       },
       {
-        "id": "JgECAZdcFK4EfEkuwSYz",
-        "title": "Chapter 10 - Chhau Dance",
-        "title_en": "Chhau Dance",
-        "title_or": "ଛଉନୃତ୍ୟ",
+        "id": "tXtGPn06G6ulTmmi32Kt",
+        "title": "Chapter 2 - This Country, This Soil",
+        "title_en": "This Country, This Soil",
+        "title_or": "ଏଇ ଦେଶ ଏଇ ମାଟି",
         "subject": "sahitya_sudha",
         "thumbnail": null
       },
@@ -3153,10 +3153,10 @@ export const ROADMAP_DATA_6 = [
         "thumbnail": null
       },
       {
-        "id": "Vena1r1vC9hrgsH0PNfU",
-        "title": "Chapter 10 - Grassroots Democracy - Part 1: Governance",
-        "title_en": "Grassroots Democracy - Part 1: Governance",
-        "title_or": "ତୃଣମୂଳ ଗଣତନ୍ତ୍ର – ଭାଗ ୧: ଶାସନବିଧି",
+        "id": "LEvdlCHQbQcibaHBiDXG",
+        "title": "Chapter 2 - Oceans and Continents",
+        "title_en": "Oceans and Continents",
+        "title_or": "ମହାସାଗର ଏବଂ ମହାଦେଶ",
         "subject": "samajika_bignana",
         "thumbnail": null
       },
@@ -3169,18 +3169,18 @@ export const ROADMAP_DATA_6 = [
         "thumbnail": null
       },
       {
-        "id": "WQRp05GHHWrFfgujBs75",
-        "title": "Chapter 10 - Song Writing Skills",
-        "title_en": "Song Writing Skills",
-        "title_or": "ଗୀତ ରଚନାର କୌଶଳ",
+        "id": "vy2amvwpyLRMbfndVahV",
+        "title": "Chapter 2 - Modifying Illustrative Drawing",
+        "title_en": "Modifying Illustrative Drawing",
+        "title_or": "ଦୃଷ୍ଟାନ୍ତ ଚିତ୍ରର ପରିବର୍ଦ୍ଧନ",
         "subject": "kalakunja",
         "thumbnail": null
       },
       {
-        "id": "4IduoILX7HDYZ0RPVa2D",
-        "title": "Chapter 19 - Shadow and String Puppetry",
-        "title_en": "Shadow and String Puppetry",
-        "title_or": "ଛାଇ ଏବଂ ସୂତାର କଥା କଣ୍ଢେଇ ନାଚ",
+        "id": "SiR5MQ0QeZI1RDptBswz",
+        "title": "Chapter 3 - Human Drawing",
+        "title_en": "Human Drawing",
+        "title_or": "ବ୍ୟକ୍ତି ଚିତ୍ରଣ",
         "subject": "kalakunja",
         "thumbnail": null
       },
@@ -3193,10 +3193,10 @@ export const ROADMAP_DATA_6 = [
         "thumbnail": null
       },
       {
-        "id": "86PoUgMOZ6ywtT3E1vrO",
-        "title": "Chapter 10 - Change of Heart",
-        "title_en": "Change of Heart",
-        "title_or": "Change of Heart",
+        "id": "dwd8kdXzj5ulMZxYtaPa",
+        "title": "Chapter 2 - The Raven and the Fox",
+        "title_en": "The Raven and the Fox",
+        "title_or": "The Raven and the Fox",
         "subject": "jasmine",
         "thumbnail": null
       },
@@ -3209,18 +3209,18 @@ export const ROADMAP_DATA_6 = [
         "thumbnail": null
       },
       {
-        "id": "HzsEtnY8rjG0QUaGWOvx",
-        "title": "Chapter 10 - Ordinal Numbers",
-        "title_en": "Ordinal Numbers",
-        "title_or": "पूरणवाचकशब्दाः (ପୂରଣବାଚକ ଶବ୍ଦ)",
+        "id": "X5lVVvEWr9zexqeRm0Bl",
+        "title": "Chapter 2 - Introduction to Vowel Signs",
+        "title_en": "Introduction to Vowel Signs",
+        "title_or": "मात्रापरिचयः (ମାତ୍ରା ପରିଚୟ)",
         "subject": "sanskritakalika_1",
         "thumbnail": null
       },
       {
-        "id": "Ht4tHgCyys3SPZxNc99A",
-        "title": "Chapter 19 - He is the Great Painter",
-        "title_en": "He is the Great Painter",
-        "title_or": "स एव महान् चित्रकारः (ସେ ହିଁ ମହାନ ଚିତ୍ରକାର)",
+        "id": "DPqR8XQBz9VAbbFHfHTE",
+        "title": "Chapter 3 - Addition of Vowel Signs",
+        "title_en": "Addition of Vowel Signs",
+        "title_or": "मात्रायोगः (ମାତ୍ରା ଯୋଗ)",
         "subject": "sanskritakalika_1",
         "thumbnail": null
       },
@@ -3233,10 +3233,10 @@ export const ROADMAP_DATA_6 = [
         "thumbnail": null
       },
       {
-        "id": "usXCCa6FGMoGZRoYC6Rl",
-        "title": "Chapter 10 - Whole Numbers",
-        "title_en": "Whole Numbers",
-        "title_or": "ପୂର୍ଣ୍ଣ ସଂଖ୍ୟା",
+        "id": "q7bb7vScXQLVVywiF0kh",
+        "title": "Chapter 2 - Lines and Angles",
+        "title_en": "Lines and Angles",
+        "title_or": "ରେଖା ଏବଂ କୋଣ",
         "subject": "ganita_prakas",
         "thumbnail": null
       },
@@ -3262,146 +3262,122 @@ export const ROADMAP_DATA_6 = [
     "month": "July 2026",
     "chapters": [
       {
-        "id": "spL0aIFzZmmR63pONZMO",
-        "title": "Chapter 2 - Know the Alphabet",
-        "title_en": "Know the Alphabet",
-        "title_or": "वर्णमाला जानें",
+        "id": "8iqroxFPnMNThUB6ItQW",
+        "title": "Chapter 4 - Recognize Vowel Signs",
+        "title_en": "Recognize Vowel Signs",
+        "title_or": "मात्राएँ पहचानें",
         "subject": "hindi_kalika",
         "thumbnail": null
       },
       {
-        "id": "popErO91gra0KFd6Ep8Z",
-        "title": "Chapter 11 - Four Directions",
-        "title_en": "Four Directions",
-        "title_or": "चार दिशाएँ",
+        "id": "KIpfwRE4UHM4DIprgLzI",
+        "title": "Chapter 5 - Learn Conjunct Letters",
+        "title_en": "Learn Conjunct Letters",
+        "title_or": "संयुक्त वर्ण एवं उनके मानक रूप जानें",
         "subject": "hindi_kalika",
         "thumbnail": null
       },
       {
-        "id": "dKgu0daSbfy53j57qO3W",
-        "title": "Chapter 20 - Plant a Tree on Your Birthday",
-        "title_en": "Plant a Tree on Your Birthday",
-        "title_or": "जन्म-दिवस पर पेड़ लगाओ",
+        "id": "2VvMr5UPyMcTNjPsYQAC",
+        "title": "Chapter 6 - Look and Read",
+        "title_en": "Look and Read",
+        "title_or": "देखें और पढ़ें",
         "subject": "hindi_kalika",
         "thumbnail": null
       },
       {
-        "id": "IuuFXIBrV8vo95fpc2Y5",
-        "title": "Chapter 2 - Diversity in the Living World",
-        "title_en": "Diversity in the Living World",
-        "title_or": "ଜୀବଜଗତରେ ବିବିଧତା",
+        "id": "PJhSlL4CNEHni32KKTY3",
+        "title": "Chapter 3 - Balanced Diet: Way to a Healthy Body",
+        "title_en": "Balanced Diet: Way to a Healthy Body",
+        "title_or": "ସୁଷମ ଖାଦ୍ୟ: ସୁସ୍ଥ ଶରୀରର ଉପାୟ",
         "subject": "jigyasa",
         "thumbnail": null
       },
       {
-        "id": "R6vavVYearqanDQAqjSw",
-        "title": "Chapter 11 - Natural Resources",
-        "title_en": "Natural Resources",
-        "title_or": "ପ୍ରାକୃତିକ ସମ୍ପଦ",
-        "subject": "jigyasa",
-        "thumbnail": null
-      },
-      {
-        "id": "tXtGPn06G6ulTmmi32Kt",
-        "title": "Chapter 2 - This Country, This Soil",
-        "title_en": "This Country, This Soil",
-        "title_or": "ଏଇ ଦେଶ ଏଇ ମାଟି",
+        "id": "603lytLw4DKWye0JSTuj",
+        "title": "Chapter 3 - Hockey",
+        "title_en": "Hockey",
+        "title_or": "ହକି",
         "subject": "sahitya_sudha",
         "thumbnail": null
       },
       {
-        "id": "GCijfR5Myo66CRWIftpV",
-        "title": "Chapter 11 - Why Will You Fly So Fast?",
-        "title_en": "Why Will You Fly So Fast?",
-        "title_or": "ଉଡ଼ିବୁ ଏଡ଼େ ବେଗି କାହିଁକିରେ ?",
+        "id": "Ib1vBl6ypoz6ozempSph",
+        "title": "Chapter 4 - Mountaineer Kalpana Dash",
+        "title_en": "Mountaineer Kalpana Dash",
+        "title_or": "ପର୍ବତାରୋହୀ କଳ୍ପନା ଦାଶ",
         "subject": "sahitya_sudha",
         "thumbnail": null
       },
       {
-        "id": "LEvdlCHQbQcibaHBiDXG",
-        "title": "Chapter 2 - Oceans and Continents",
-        "title_en": "Oceans and Continents",
-        "title_or": "ମହାସାଗର ଏବଂ ମହାଦେଶ",
+        "id": "BVFp2Q7OgkDUj0uGnpcu",
+        "title": "Chapter 3 - Landforms and Life",
+        "title_en": "Landforms and Life",
+        "title_or": "ଭୂମିରୂପ ଏବଂ ଜୀବନ",
         "subject": "samajika_bignana",
         "thumbnail": null
       },
       {
-        "id": "jQSaUjcnz3UbaBEgsBXL",
-        "title": "Chapter 11 - Grassroots Democracy - Part 2: Local Government in Rural Areas",
-        "title_en": "Grassroots Democracy - Part 2: Local Government in Rural Areas",
-        "title_or": "ତୃଣମୂଳ ଗଣତନ୍ତ୍ର – ଭାଗ ୨: ଗ୍ରାମାଞ୍ଚଳରେ ସ୍ଥାନୀୟ ସରକାର",
+        "id": "CZ390t8xYksYPWwaYTwU",
+        "title": "Chapter 4 - Timeline and Sources of History",
+        "title_en": "Timeline and Sources of History",
+        "title_or": "ଇତିହାସର ସମୟସୀମା ଏବଂ ଉତ୍ସ",
         "subject": "samajika_bignana",
         "thumbnail": null
       },
       {
-        "id": "vy2amvwpyLRMbfndVahV",
-        "title": "Chapter 2 - Modifying Illustrative Drawing",
-        "title_en": "Modifying Illustrative Drawing",
-        "title_or": "ଦୃଷ୍ଟାନ୍ତ ଚିତ୍ରର ପରିବର୍ଦ୍ଧନ",
+        "id": "XEXfG3pAflrOXOZxyqrQ",
+        "title": "Chapter 4 - Paper Art",
+        "title_en": "Paper Art",
+        "title_or": "କାଗଜ କଳା",
         "subject": "kalakunja",
         "thumbnail": null
       },
       {
-        "id": "QW8h2gFzOokB72ZvDZKx",
-        "title": "Chapter 11 - Music and Society",
-        "title_en": "Music and Society",
-        "title_or": "ସଙ୍ଗୀତ ଓ ସମାଜ",
+        "id": "C9apNhYBlMf0HCLYmab6",
+        "title": "Chapter 5 - Printmaking",
+        "title_en": "Printmaking",
+        "title_or": "ଛାପ ଚିତ୍ର",
         "subject": "kalakunja",
         "thumbnail": null
       },
       {
-        "id": "SPJx1D9CWvgcl4B9rrxa",
-        "title": "Chapter 20 - Conclusion",
-        "title_en": "Conclusion",
-        "title_or": "ଉପସଂହାର",
-        "subject": "kalakunja",
-        "thumbnail": null
-      },
-      {
-        "id": "dwd8kdXzj5ulMZxYtaPa",
-        "title": "Chapter 2 - The Raven and the Fox",
-        "title_en": "The Raven and the Fox",
-        "title_or": "The Raven and the Fox",
+        "id": "sSZA8euC9MEskzdpJ6jf",
+        "title": "Chapter 3 - Rama to the Rescue",
+        "title_en": "Rama to the Rescue",
+        "title_or": "Rama to the Rescue",
         "subject": "jasmine",
         "thumbnail": null
       },
       {
-        "id": "noYfEXmvXlVsGYwEo0KV",
-        "title": "Chapter 11 - The Winner",
-        "title_en": "The Winner",
-        "title_or": "The Winner",
+        "id": "3l9RH73MNZMJWvYvbbkg",
+        "title": "Chapter 4 - True Friendship",
+        "title_en": "True Friendship",
+        "title_or": "True Friendship",
         "subject": "jasmine",
         "thumbnail": null
       },
       {
-        "id": "X5lVVvEWr9zexqeRm0Bl",
-        "title": "Chapter 2 - Introduction to Vowel Signs",
-        "title_en": "Introduction to Vowel Signs",
-        "title_or": "मात्रापरिचयः (ମାତ୍ରା ପରିଚୟ)",
+        "id": "92qEKUKaGF1gDSQ9Tm8O",
+        "title": "Chapter 4 - Conjunct Consonants",
+        "title_en": "Conjunct Consonants",
+        "title_or": "संयुक्ताक्षराणि (ଯୁକ୍ତାକ୍ଷର)",
         "subject": "sanskritakalika_1",
         "thumbnail": null
       },
       {
-        "id": "KTtQozEdwXfDs8NUQ7sN",
-        "title": "Chapter 11 - Days of the Week",
-        "title_en": "Days of the Week",
-        "title_or": "वासरः (ବାର)",
+        "id": "tZpXupxXTXaJduH51YK2",
+        "title": "Chapter 5 - Introduction to Gender",
+        "title_en": "Introduction to Gender",
+        "title_or": "लिङ्गपरिचयः (ଲିଙ୍ଗ ପରିଚୟ)",
         "subject": "sanskritakalika_1",
         "thumbnail": null
       },
       {
-        "id": "pr0JVBwYO1PNZBt9Aw9A",
-        "title": "Chapter 20 - Helping Others",
-        "title_en": "Helping Others",
-        "title_or": "परोपकारः (ପରୋପକାର)",
-        "subject": "sanskritakalika_1",
-        "thumbnail": null
-      },
-      {
-        "id": "q7bb7vScXQLVVywiF0kh",
-        "title": "Chapter 2 - Lines and Angles",
-        "title_en": "Lines and Angles",
-        "title_or": "ରେଖା ଏବଂ କୋଣ",
+        "id": "CgDseWH7sbt8TtUudTcv",
+        "title": "Chapter 3 - Playing with Numbers",
+        "title_en": "Playing with Numbers",
+        "title_or": "ସଂଖ୍ୟା ଖେଳ",
         "subject": "ganita_prakas",
         "thumbnail": null
       },
@@ -3427,10 +3403,127 @@ export const ROADMAP_DATA_6 = [
     "month": "August 2026",
     "chapters": [
       {
-        "id": "ACaHUFdNYmBerxxctw9w",
-        "title": "Chapter 3 - Learn the Writing Style of Letters",
-        "title_en": "Learn the Writing Style of Letters",
-        "title_or": "वर्ण लेखन की शैली सीखें",
+        "id": "uwZEkR29dgiZPEQe93Ts",
+        "title": "Chapter 7 - Family",
+        "title_en": "Family",
+        "title_or": "परिवार (चित्र और बातचीत)",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
+        "id": "gAVpVptQcoWjjAVkWq5f",
+        "title": "Chapter 8 - Learn Counting",
+        "title_en": "Learn Counting",
+        "title_or": "गिनती सीखें",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
+        "id": "rQM7f4kUCRbSwvgRNVFU",
+        "title": "Chapter 9 - Alphabet Song",
+        "title_en": "Alphabet Song",
+        "title_or": "अक्षर गीत",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
+        "id": "CzBisZvlBGZyHWRCImyd",
+        "title": "Chapter 4 - Exploring Magnets",
+        "title_en": "Exploring Magnets",
+        "title_or": "ଚୁମ୍ବକ ଅନ୍ୱେଷଣ",
+        "subject": "jigyasa",
+        "thumbnail": null
+      },
+      {
+        "id": "9JoomsDQ5wji1nRbA60a",
+        "title": "Chapter 5 - Rain",
+        "title_en": "Rain",
+        "title_or": "ବର୍ଷା",
+        "subject": "sahitya_sudha",
+        "thumbnail": null
+      },
+      {
+        "id": "jo0SHWfpS4yC8f6pP8QF",
+        "title": "Chapter 5 - India, that is Bharat",
+        "title_en": "India, that is Bharat",
+        "title_or": "ଇଣ୍ଡିଆ, ଅର୍ଥାତ୍ ଭାରତ",
+        "subject": "samajika_bignana",
+        "thumbnail": null
+      },
+      {
+        "id": "eLhKMSQVfECAHDPQeEAe",
+        "title": "Chapter 6 - Music and Emotion",
+        "title_en": "Music and Emotion",
+        "title_or": "ସଙ୍ଗୀତ ଓ ଭାବ",
+        "subject": "kalakunja",
+        "thumbnail": null
+      },
+      {
+        "id": "nOWfGDWsD0rqnsIybR2X",
+        "title": "Chapter 7 - Musical Instruments",
+        "title_en": "Musical Instruments",
+        "title_or": "ସଙ୍ଗୀତମୟ ବାଦ୍ୟଯନ୍ତ୍ର",
+        "subject": "kalakunja",
+        "thumbnail": null
+      },
+      {
+        "id": "xMs4ZPt0Tn8bl1N7YeJ4",
+        "title": "Chapter 5 - Nobody's Friend",
+        "title_en": "Nobody's Friend",
+        "title_or": "Nobody's Friend",
+        "subject": "jasmine",
+        "thumbnail": null
+      },
+      {
+        "id": "JETLH7vubuyuusN7mrkh",
+        "title": "Chapter 6 - The Chair",
+        "title_en": "The Chair",
+        "title_or": "The Chair",
+        "subject": "jasmine",
+        "thumbnail": null
+      },
+      {
+        "id": "X5EnzFHAYmGbjPpF0mwg",
+        "title": "Chapter 6 - Introduction to Number",
+        "title_en": "Introduction to Number",
+        "title_or": "वचनपरिचयः (ବଚନ ପରିଚୟ)",
+        "subject": "sanskritakalika_1",
+        "thumbnail": null
+      },
+      {
+        "id": "4FfpSkblba2qbwoJX8cE",
+        "title": "Chapter 7 - Pronouns",
+        "title_en": "Pronouns",
+        "title_or": "सर्वनामानि (ସର୍ବନାମ)",
+        "subject": "sanskritakalika_1",
+        "thumbnail": null
+      },
+      {
+        "id": "b9kaxyyy2VGC7aqRPQlw",
+        "title": "Chapter 4 - Data Representation and Management",
+        "title_en": "Data Representation and Management",
+        "title_or": "ତଥ୍ୟ ଉପସ୍ଥାପନା ଓ ପରିଚାଳନା",
+        "subject": "ganita_prakas",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "September 2026",
+    "chapters": [
+      {
+        "id": "lUCKTCzgK3rgrXwWXeHc",
+        "title": "Chapter 10 - Rain and Frog",
+        "title_en": "Rain and Frog",
+        "title_or": "बरसात और मेंढक",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
+        "id": "popErO91gra0KFd6Ep8Z",
+        "title": "Chapter 11 - Four Directions",
+        "title_en": "Four Directions",
+        "title_or": "चार दिशाएँ",
         "subject": "hindi_kalika",
         "thumbnail": null
       },
@@ -3443,122 +3536,114 @@ export const ROADMAP_DATA_6 = [
         "thumbnail": null
       },
       {
-        "id": "YeOauwCh8YZ0kQnAZcgf",
-        "title": "Chapter 21 - Squirrel's Story",
-        "title_en": "Squirrel's Story",
-        "title_or": "गिलहरी की कहानी (चित्र और बातचीत)",
-        "subject": "hindi_kalika",
-        "thumbnail": null
-      },
-      {
-        "id": "PJhSlL4CNEHni32KKTY3",
-        "title": "Chapter 3 - Balanced Diet: Way to a Healthy Body",
-        "title_en": "Balanced Diet: Way to a Healthy Body",
-        "title_or": "ସୁଷମ ଖାଦ୍ୟ: ସୁସ୍ଥ ଶରୀରର ଉପାୟ",
+        "id": "M7VOnHXTOjQdTD8J5lt2",
+        "title": "Chapter 5 - Measurement of Length and Motion",
+        "title_en": "Measurement of Length and Motion",
+        "title_or": "ଦୈର୍ଘ୍ୟ ମାପ ଏବଂ ଗତି",
         "subject": "jigyasa",
         "thumbnail": null
       },
       {
-        "id": "pW3yWEAKoTZxICMz1q7N",
-        "title": "Chapter 12 - Our Universe",
-        "title_en": "Our Universe",
-        "title_or": "ଆମ ବିଶ୍ୱ",
+        "id": "ORieEkO3nScTj3o4NKSj",
+        "title": "Chapter 6 - Things Around Us",
+        "title_en": "Things Around Us",
+        "title_or": "ଆମ ଚତୁଃପାର୍ଶ୍ୱରେ ଥିବା ବସ୍ତୁ",
         "subject": "jigyasa",
         "thumbnail": null
       },
       {
-        "id": "603lytLw4DKWye0JSTuj",
-        "title": "Chapter 3 - Hockey",
-        "title_en": "Hockey",
-        "title_or": "ହକି",
+        "id": "u7cLAzBqYKJGl0MQFUwa",
+        "title": "Chapter 6 - If You Try to Deceive...",
+        "title_en": "If You Try to Deceive...",
+        "title_or": "ଠକି ବସିଲେ ଓକିଲିବ",
         "subject": "sahitya_sudha",
         "thumbnail": null
       },
       {
-        "id": "4Ttr02llxTecD3JSsouv",
-        "title": "Chapter 12 - Three Boons",
-        "title_en": "Three Boons",
-        "title_or": "ତିନୋଟି ବର",
+        "id": "z3QjKwyHNxPXQ8ur9Z96",
+        "title": "Chapter 7 - Moral Sayings",
+        "title_en": "Moral Sayings",
+        "title_or": "ନୀତି-ବଚନ",
         "subject": "sahitya_sudha",
         "thumbnail": null
       },
       {
-        "id": "BVFp2Q7OgkDUj0uGnpcu",
-        "title": "Chapter 3 - Landforms and Life",
-        "title_en": "Landforms and Life",
-        "title_or": "ଭୂମିରୂପ ଏବଂ ଜୀବନ",
+        "id": "xED22sbiCYWQnYqoXMKs",
+        "title": "Chapter 6 - Beginning of Indian Civilization",
+        "title_en": "Beginning of Indian Civilization",
+        "title_or": "ଭାରତୀୟ ସଭ୍ୟତାର ପ୍ରାରମ୍ଭ",
         "subject": "samajika_bignana",
         "thumbnail": null
       },
       {
-        "id": "MXj2MrdXReffhpo7C6Ar",
-        "title": "Chapter 12 - Grassroots Democracy - Part 3: Local Government in Urban Areas",
-        "title_en": "Grassroots Democracy - Part 3: Local Government in Urban Areas",
-        "title_or": "ତୃଣମୂଳ ଗଣତନ୍ତ୍ର – ଭାଗ ୩: ସହରାଞ୍ଚଳରେ ସ୍ଥାନୀୟ ସରକାର",
+        "id": "XRXI22xLrQI63IpO3km1",
+        "title": "Chapter 7 - Cultural Basis of India",
+        "title_en": "Cultural Basis of India",
+        "title_or": "ଭାରତର ସାଂସ୍କୃତିକ ଆଧାର",
         "subject": "samajika_bignana",
         "thumbnail": null
       },
       {
-        "id": "SiR5MQ0QeZI1RDptBswz",
-        "title": "Chapter 3 - Human Drawing",
-        "title_en": "Human Drawing",
-        "title_or": "ବ୍ୟକ୍ତି ଚିତ୍ରଣ",
+        "id": "Pw8eNl96vrfld2RsSR07",
+        "title": "Chapter 8 - Raga and Tala",
+        "title_en": "Raga and Tala",
+        "title_or": "ରାଗ ଓ ତାଳ",
         "subject": "kalakunja",
         "thumbnail": null
       },
       {
-        "id": "UpYHUj7meaHjuuwPh45G",
-        "title": "Chapter 12 - My Body in Motion",
-        "title_en": "My Body in Motion",
-        "title_or": "ଚଳଚଞ୍ଚଳତାରେ ମୋ ଶରୀର",
+        "id": "oPWihzsVY6aV78zHk3ze",
+        "title": "Chapter 9 - Sweet Melodies of Various Songs",
+        "title_en": "Sweet Melodies of Various Songs",
+        "title_or": "비ଭିନ୍ନ ଗୀତର ମଧୁର ସ୍ୱର",
         "subject": "kalakunja",
         "thumbnail": null
       },
       {
-        "id": "sCyZb5ZEzspew8ivrqLg",
-        "title": "Chapter 21 - Integration of Art Forms",
-        "title_en": "Integration of Art Forms",
-        "title_or": "କଳାରୂପ ଗୁଡ଼ିକର ଏକତ୍ରୀକରଣ",
+        "id": "WQRp05GHHWrFfgujBs75",
+        "title": "Chapter 10 - Song Writing Skills",
+        "title_en": "Song Writing Skills",
+        "title_or": "ଗୀତ ରଚନାର କୌଶଳ",
         "subject": "kalakunja",
         "thumbnail": null
       },
       {
-        "id": "sSZA8euC9MEskzdpJ6jf",
-        "title": "Chapter 3 - Rama to the Rescue",
-        "title_en": "Rama to the Rescue",
-        "title_or": "Rama to the Rescue",
+        "id": "9MkFZy6Fn9xdQtzqUS4y",
+        "title": "Chapter 7 - Neem Baba",
+        "title_en": "Neem Baba",
+        "title_or": "Neem Baba",
         "subject": "jasmine",
         "thumbnail": null
       },
       {
-        "id": "qwl5g86wosZijOIJayx9",
-        "title": "Chapter 12 - Yoga: A Way of Life",
-        "title_en": "Yoga: A Way of Life",
-        "title_or": "Yoga: A Way of Life",
+        "id": "oREILfoUizTc9atmMWjD",
+        "title": "Chapter 8 - What a Bird Thought",
+        "title_en": "What a Bird Thought",
+        "title_or": "What a Bird Thought",
         "subject": "jasmine",
         "thumbnail": null
       },
       {
-        "id": "DPqR8XQBz9VAbbFHfHTE",
-        "title": "Chapter 3 - Addition of Vowel Signs",
-        "title_en": "Addition of Vowel Signs",
-        "title_or": "मात्रायोगः (ମାତ୍ରା ଯୋଗ)",
+        "id": "CatD8wAGP4qNwVr8sGUy",
+        "title": "Chapter 8 - Use of You and I",
+        "title_en": "Use of You and I",
+        "title_or": "युष्मद्-अस्मच्छब्दप्रयोगः (ଯୁଷ୍ମଦ୍-ଅସ୍କଦ୍ ଶବ୍ଦ ପ୍ରୟୋଗ)",
         "subject": "sanskritakalika_1",
         "thumbnail": null
       },
       {
-        "id": "HWdbKonikoxvgkkOanVw",
-        "title": "Chapter 12 - Time",
-        "title_en": "Time",
-        "title_or": "समयः (ସମୟ)",
+        "id": "QaQVcCbqURiQjvCFZPps",
+        "title": "Chapter 9 - Counting Numbers",
+        "title_en": "Counting Numbers",
+        "title_or": "संख्यागणना (ସଂଖ୍ୟା ଗଣନା)",
         "subject": "sanskritakalika_1",
         "thumbnail": null
       },
       {
-        "id": "CgDseWH7sbt8TtUudTcv",
-        "title": "Chapter 3 - Playing with Numbers",
-        "title_en": "Playing with Numbers",
-        "title_or": "ସଂଖ୍ୟା ଖେଳ",
+        "id": "FCOa1dJp17q6hLNY0fWU",
+        "title": "Chapter 5 - Prime Numbers",
+        "title_en": "Prime Numbers",
+        "title_or": "ମୌଳିକ ସଂଖ୍ୟା",
         "subject": "ganita_prakas",
         "thumbnail": null
       },
@@ -3581,154 +3666,13 @@ export const ROADMAP_DATA_6 = [
     ]
   },
   {
-    "month": "September 2026",
+    "month": "October 2026",
     "chapters": [
-      {
-        "id": "8iqroxFPnMNThUB6ItQW",
-        "title": "Chapter 4 - Recognize Vowel Signs",
-        "title_en": "Recognize Vowel Signs",
-        "title_or": "मात्राएँ पहचानें",
-        "subject": "hindi_kalika",
-        "thumbnail": null
-      },
       {
         "id": "EbrwNX1k0UXd27BgBNuw",
         "title": "Chapter 13 - The Rooster Crowed",
         "title_en": "The Rooster Crowed",
         "title_or": "मुर्गा बोला, ‘कुकडू-कूँ’",
-        "subject": "hindi_kalika",
-        "thumbnail": null
-      },
-      {
-        "id": "bnbOse03MiAtJzl3nz3r",
-        "title": "Chapter 22 - The Balloon Man",
-        "title_en": "The Balloon Man",
-        "title_or": "गुब्बारे वाला",
-        "subject": "hindi_kalika",
-        "thumbnail": null
-      },
-      {
-        "id": "CzBisZvlBGZyHWRCImyd",
-        "title": "Chapter 4 - Exploring Magnets",
-        "title_en": "Exploring Magnets",
-        "title_or": "ଚୁମ୍ବକ ଅନ୍ୱେଷଣ",
-        "subject": "jigyasa",
-        "thumbnail": null
-      },
-      {
-        "id": "Ib1vBl6ypoz6ozempSph",
-        "title": "Chapter 4 - Mountaineer Kalpana Dash",
-        "title_en": "Mountaineer Kalpana Dash",
-        "title_or": "ପର୍ବତାରୋହୀ କଳ୍ପନା ଦାଶ",
-        "subject": "sahitya_sudha",
-        "thumbnail": null
-      },
-      {
-        "id": "l58TTVV1r2kW9tXCU4PJ",
-        "title": "Chapter 13 - Ketaka's Bravery",
-        "title_en": "Ketaka's Bravery",
-        "title_or": "କେତକର ବୀରତା",
-        "subject": "sahitya_sudha",
-        "thumbnail": null
-      },
-      {
-        "id": "CZ390t8xYksYPWwaYTwU",
-        "title": "Chapter 4 - Timeline and Sources of History",
-        "title_en": "Timeline and Sources of History",
-        "title_or": "ଇତିହାସର ସମୟସୀମା ଏବଂ ଉତ୍ସ",
-        "subject": "samajika_bignana",
-        "thumbnail": null
-      },
-      {
-        "id": "xKRCbJflXLiYZvHPFdwl",
-        "title": "Chapter 13 - Value of Work",
-        "title_en": "Value of Work",
-        "title_or": "କାର୍ଯ୍ୟର ମୂଲ୍ୟ",
-        "subject": "samajika_bignana",
-        "thumbnail": null
-      },
-      {
-        "id": "XEXfG3pAflrOXOZxyqrQ",
-        "title": "Chapter 4 - Paper Art",
-        "title_en": "Paper Art",
-        "title_or": "କାଗଜ କଳା",
-        "subject": "kalakunja",
-        "thumbnail": null
-      },
-      {
-        "id": "1YDtZ1eSH1Ti4lyxcnKs",
-        "title": "Chapter 13 - Overcoming Obstacles in Dance",
-        "title_en": "Overcoming Obstacles in Dance",
-        "title_or": "ନୃତ୍ୟରେ ପ୍ରତିବନ୍ଧକ ଦୂରୀକରଣ",
-        "subject": "kalakunja",
-        "thumbnail": null
-      },
-      {
-        "id": "3l9RH73MNZMJWvYvbbkg",
-        "title": "Chapter 4 - True Friendship",
-        "title_en": "True Friendship",
-        "title_or": "True Friendship",
-        "subject": "jasmine",
-        "thumbnail": null
-      },
-      {
-        "id": "hElNuOlv3VEVcyu2mPfE",
-        "title": "Chapter 13 - Our Bharat: Incredible India",
-        "title_en": "Our Bharat: Incredible India",
-        "title_or": "Our Bharat: Incredible India",
-        "subject": "jasmine",
-        "thumbnail": null
-      },
-      {
-        "id": "92qEKUKaGF1gDSQ9Tm8O",
-        "title": "Chapter 4 - Conjunct Consonants",
-        "title_en": "Conjunct Consonants",
-        "title_or": "संयुक्ताक्षराणि (ଯୁକ୍ତାକ୍ଷର)",
-        "subject": "sanskritakalika_1",
-        "thumbnail": null
-      },
-      {
-        "id": "itgFATHJOj8edN7ZsU71",
-        "title": "Chapter 13 - We are Brave, We are Patient",
-        "title_en": "We are Brave, We are Patient",
-        "title_or": "शूराः वयं धीराः वयम् (ଆମେ ବୀର ଆମେ ଧୀର)",
-        "subject": "sanskritakalika_1",
-        "thumbnail": null
-      },
-      {
-        "id": "b9kaxyyy2VGC7aqRPQlw",
-        "title": "Chapter 4 - Data Representation and Management",
-        "title_en": "Data Representation and Management",
-        "title_or": "ତଥ୍ୟ ଉପସ୍ଥାପନା ଓ ପରିଚାଳନା",
-        "subject": "ganita_prakas",
-        "thumbnail": null
-      },
-      {
-        "id": "PZTXz0nhvfho8lgTZGPm",
-        "title": "Project 4 - Project 4: Animation and Games",
-        "title_en": "Project 4: Animation and Games",
-        "title_or": "ପ୍ରକଳ୍ପ ୪: ଆନିମେସନ୍ ଏବଂ ଖେଳ",
-        "subject": "kausala_bodha",
-        "thumbnail": null
-      },
-      {
-        "id": "xKwfYO6RxY0O5yqf5W2f",
-        "title": "Chapter 4 - Fundamental Skills of Handball",
-        "title_en": "Fundamental Skills of Handball",
-        "title_or": "ହ୍ୟାଣ୍ଡବଲ୍ର ମୌଳିକ ଦକ୍ଷତା",
-        "subject": "khela_sikhya",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "October 2026",
-    "chapters": [
-      {
-        "id": "KIpfwRE4UHM4DIprgLzI",
-        "title": "Chapter 5 - Learn Conjunct Letters",
-        "title_en": "Learn Conjunct Letters",
-        "title_or": "संयुक्त वर्ण एवं उनके मानक रूप जानें",
         "subject": "hindi_kalika",
         "thumbnail": null
       },
@@ -3741,231 +3685,82 @@ export const ROADMAP_DATA_6 = [
         "thumbnail": null
       },
       {
-        "id": "0XsN605RJdtErEQbKxz0",
-        "title": "Chapter 23 - Tosiya's Dream",
-        "title_en": "Tosiya's Dream",
-        "title_or": "तोसिया का सपना",
-        "subject": "hindi_kalika",
-        "thumbnail": null
-      },
-      {
-        "id": "M7VOnHXTOjQdTD8J5lt2",
-        "title": "Chapter 5 - Measurement of Length and Motion",
-        "title_en": "Measurement of Length and Motion",
-        "title_or": "ଦୈର୍ଘ୍ୟ ମାପ ଏବଂ ଗତି",
+        "id": "Uf9J0Wsce85O23owcIlj",
+        "title": "Chapter 7 - Temperature and its Measurement",
+        "title_en": "Temperature and its Measurement",
+        "title_or": "ତାପମାତ୍ରା ଏବଂ ଏହାର ମାପ",
         "subject": "jigyasa",
         "thumbnail": null
       },
       {
-        "id": "9JoomsDQ5wji1nRbA60a",
-        "title": "Chapter 5 - Rain",
-        "title_en": "Rain",
-        "title_or": "ବର୍ଷା",
+        "id": "rO1EUln6twoqvl06RF55",
+        "title": "Chapter 8 - Unforgettable Story of My Life",
+        "title_en": "Unforgettable Story of My Life",
+        "title_or": "ମୋ ଜୀବନର ଅଭୁଲାକଥା",
         "subject": "sahitya_sudha",
         "thumbnail": null
       },
       {
-        "id": "BmmTkjvflgIuUlcYmHCY",
-        "title": "Chapter 14 - Traveller's Letter",
-        "title_en": "Traveller's Letter",
-        "title_or": "ଭ୍ରମଣକାରୀର ପତ୍ର",
+        "id": "mQerS6aqGfXnMSBKXjCK",
+        "title": "Chapter 9 - Children of Utkal",
+        "title_en": "Children of Utkal",
+        "title_or": "ଉତ୍କଳ ସନ୍ତାନ",
         "subject": "sahitya_sudha",
         "thumbnail": null
       },
       {
-        "id": "jo0SHWfpS4yC8f6pP8QF",
-        "title": "Chapter 5 - India, that is Bharat",
-        "title_en": "India, that is Bharat",
-        "title_or": "ଇଣ୍ଡିଆ, ଅର୍ଥାତ୍ ଭାରତ",
+        "id": "ALeaUBGgXF2lb3EOe1C4",
+        "title": "Chapter 8 - Unity in Diversity, or 'One in Many'",
+        "title_en": "Unity in Diversity, or 'One in Many'",
+        "title_or": "ବିବିଧତା ମଧ୍ୟରେ ଏକତା, ବା ‘ଅନେକରେ ଏକ’",
         "subject": "samajika_bignana",
         "thumbnail": null
       },
       {
-        "id": "IqWACc6bgAcKhLWhOIpd",
-        "title": "Chapter 14 - Economic Activities Around Us",
-        "title_en": "Economic Activities Around Us",
-        "title_or": "ଆମ ଚତୁଃପାର୍ଶ୍ୱର ଅର୍ଥନୈତିକ କାର୍ଯ୍ୟକଳାପ",
-        "subject": "samajika_bignana",
-        "thumbnail": null
-      },
-      {
-        "id": "C9apNhYBlMf0HCLYmab6",
-        "title": "Chapter 5 - Printmaking",
-        "title_en": "Printmaking",
-        "title_or": "ଛାପ ଚିତ୍ର",
+        "id": "QW8h2gFzOokB72ZvDZKx",
+        "title": "Chapter 11 - Music and Society",
+        "title_en": "Music and Society",
+        "title_or": "ସଙ୍ଗୀତ ଓ ସମାଜ",
         "subject": "kalakunja",
         "thumbnail": null
       },
       {
-        "id": "DY1Ax4cFwLSIpYQQ0I5l",
-        "title": "Chapter 14 - Dance Movement Coordination",
-        "title_en": "Dance Movement Coordination",
-        "title_or": "ନୃତ୍ୟର ଗତି ସମନ୍ୱୟ",
+        "id": "UpYHUj7meaHjuuwPh45G",
+        "title": "Chapter 12 - My Body in Motion",
+        "title_en": "My Body in Motion",
+        "title_or": "ଚଳଚଞ୍ଚଳତାରେ ମୋ ଶରୀର",
         "subject": "kalakunja",
         "thumbnail": null
       },
       {
-        "id": "xMs4ZPt0Tn8bl1N7YeJ4",
-        "title": "Chapter 5 - Nobody's Friend",
-        "title_en": "Nobody's Friend",
-        "title_or": "Nobody's Friend",
+        "id": "3JECTEsAJi4fbTQKvYWe",
+        "title": "Chapter 9 - Our Daily Spices",
+        "title_en": "Our Daily Spices",
+        "title_or": "Our Daily Spices",
         "subject": "jasmine",
         "thumbnail": null
       },
       {
-        "id": "9cfLRPlVlD2l893mCpT1",
-        "title": "Chapter 14 - The Kites",
-        "title_en": "The Kites",
-        "title_or": "The Kites",
-        "subject": "jasmine",
-        "thumbnail": null
-      },
-      {
-        "id": "tZpXupxXTXaJduH51YK2",
-        "title": "Chapter 5 - Introduction to Gender",
-        "title_en": "Introduction to Gender",
-        "title_or": "लिङ्गपरिचयः (ଲିଙ୍ଗ ପରିଚୟ)",
+        "id": "HzsEtnY8rjG0QUaGWOvx",
+        "title": "Chapter 10 - Ordinal Numbers",
+        "title_en": "Ordinal Numbers",
+        "title_or": "पूरणवाचकशब्दाः (ପୂରଣବାଚକ ଶବ୍ଦ)",
         "subject": "sanskritakalika_1",
         "thumbnail": null
       },
       {
-        "id": "WGTaWnbWI9K5ErCFR70P",
-        "title": "Chapter 14 - Guest is God",
-        "title_en": "Guest is God",
-        "title_or": "अतिथिदेवो भव (ଅତିଥି ଦେବୋ ଭବ)",
+        "id": "KTtQozEdwXfDs8NUQ7sN",
+        "title": "Chapter 11 - Days of the Week",
+        "title_en": "Days of the Week",
+        "title_or": "वासरः (ବାର)",
         "subject": "sanskritakalika_1",
         "thumbnail": null
       },
       {
-        "id": "FCOa1dJp17q6hLNY0fWU",
-        "title": "Chapter 5 - Prime Numbers",
-        "title_en": "Prime Numbers",
-        "title_or": "ମୌଳିକ ସଂଖ୍ୟା",
-        "subject": "ganita_prakas",
-        "thumbnail": null
-      },
-      {
-        "id": "YcRWdD87MIHGSxS0EStp",
-        "title": "Project 5 - Project 5: School Museum",
-        "title_en": "Project 5: School Museum",
-        "title_or": "ପ୍ରକଳ୍ପ ୫: ବିଦ୍ୟାଳୟ ସଂଗ୍ରହାଳୟ",
-        "subject": "kausala_bodha",
-        "thumbnail": null
-      },
-      {
-        "id": "amEgZe76eBpLJGWClmfX",
-        "title": "Chapter 5 - Yoga",
-        "title_en": "Yoga",
-        "title_or": "ଯୋଗ",
-        "subject": "khela_sikhya",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "November 2026",
-    "chapters": [
-      {
-        "id": "2VvMr5UPyMcTNjPsYQAC",
-        "title": "Chapter 6 - Look and Read",
-        "title_en": "Look and Read",
-        "title_or": "देखें और पढ़ें",
-        "subject": "hindi_kalika",
-        "thumbnail": null
-      },
-      {
-        "id": "RohXcjOWmyUiaYCdVGyv",
-        "title": "Chapter 15 - Learn from Nature",
-        "title_en": "Learn from Nature",
-        "title_or": "प्रकृति से सीखो",
-        "subject": "hindi_kalika",
-        "thumbnail": null
-      },
-      {
-        "id": "eX9Y5syUtOsnaDRvpaJk",
-        "title": "Chapter 24 - Farmer",
-        "title_en": "Farmer",
-        "title_or": "किसान",
-        "subject": "hindi_kalika",
-        "thumbnail": null
-      },
-      {
-        "id": "ORieEkO3nScTj3o4NKSj",
-        "title": "Chapter 6 - Things Around Us",
-        "title_en": "Things Around Us",
-        "title_or": "ଆମ ଚତୁଃପାର୍ଶ୍ୱରେ ଥିବା ବସ୍ତୁ",
-        "subject": "jigyasa",
-        "thumbnail": null
-      },
-      {
-        "id": "u7cLAzBqYKJGl0MQFUwa",
-        "title": "Chapter 6 - If You Try to Deceive...",
-        "title_en": "If You Try to Deceive...",
-        "title_or": "ଠକି ବସିଲେ ଓକିଲିବ",
-        "subject": "sahitya_sudha",
-        "thumbnail": null
-      },
-      {
-        "id": "nZ5Y4BcLDfrDdniYBDtu",
-        "title": "Chapter 15 - Trees and Creepers are Our Friends",
-        "title_en": "Trees and Creepers are Our Friends",
-        "title_or": "ବୃକ୍ଷଲତା ଆମର ବନ୍ଧୁ",
-        "subject": "sahitya_sudha",
-        "thumbnail": null
-      },
-      {
-        "id": "xED22sbiCYWQnYqoXMKs",
-        "title": "Chapter 6 - Beginning of Indian Civilization",
-        "title_en": "Beginning of Indian Civilization",
-        "title_or": "ଭାରତୀୟ ସଭ୍ୟତାର ପ୍ରାରମ୍ଭ",
-        "subject": "samajika_bignana",
-        "thumbnail": null
-      },
-      {
-        "id": "eLhKMSQVfECAHDPQeEAe",
-        "title": "Chapter 6 - Music and Emotion",
-        "title_en": "Music and Emotion",
-        "title_or": "ସଙ୍ଗୀତ ଓ ଭାବ",
-        "subject": "kalakunja",
-        "thumbnail": null
-      },
-      {
-        "id": "z1I01xX8fxeCjm4trMyO",
-        "title": "Chapter 15 - Dance of Our Region",
-        "title_en": "Dance of Our Region",
-        "title_or": "ଆମ ଅଞ୍ଚଳର ନୃତ୍ୟ",
-        "subject": "kalakunja",
-        "thumbnail": null
-      },
-      {
-        "id": "JETLH7vubuyuusN7mrkh",
-        "title": "Chapter 6 - The Chair",
-        "title_en": "The Chair",
-        "title_or": "The Chair",
-        "subject": "jasmine",
-        "thumbnail": null
-      },
-      {
-        "id": "oaaIeHdaqcD5L3yiDB1O",
-        "title": "Chapter 15 - Ila Sachani: Embroidering Dreams",
-        "title_en": "Ila Sachani: Embroidering Dreams",
-        "title_or": "Ila Sachani: Embroidering Dreams",
-        "subject": "jasmine",
-        "thumbnail": null
-      },
-      {
-        "id": "X5EnzFHAYmGbjPpF0mwg",
-        "title": "Chapter 6 - Introduction to Number",
-        "title_en": "Introduction to Number",
-        "title_or": "वचनपरिचयः (ବଚନ ପରିଚୟ)",
-        "subject": "sanskritakalika_1",
-        "thumbnail": null
-      },
-      {
-        "id": "kIL0IXvvZGoGdQDSwuCO",
-        "title": "Chapter 15 - Intelligence Accomplishes Everything",
-        "title_en": "Intelligence Accomplishes Everything",
-        "title_or": "बुद्धिः सर्वार्थसाधिका (ବୁଦ୍ଧି ହିଁ ସବୁକିଛି ସାଧନ କରେ)",
+        "id": "HWdbKonikoxvgkkOanVw",
+        "title": "Chapter 12 - Time",
+        "title_en": "Time",
+        "title_or": "समयः (ସମୟ)",
         "subject": "sanskritakalika_1",
         "thumbnail": null
       },
@@ -3978,23 +3773,23 @@ export const ROADMAP_DATA_6 = [
         "thumbnail": null
       },
       {
-        "id": "NhAQxxj4TFbu1t1mz8Ab",
-        "title": "Project 6 - Project 6: Fireless Cooking",
-        "title_en": "Project 6: Fireless Cooking",
-        "title_or": "ପ୍ରକଳ୍ପ ୬: ଅଗ୍ନିବିହୀନ ରୋଷେଇ",
+        "id": "PZTXz0nhvfho8lgTZGPm",
+        "title": "Project 4 - Project 4: Animation and Games",
+        "title_en": "Project 4: Animation and Games",
+        "title_or": "ପ୍ରକଳ୍ପ ୪: ଆନିମେସନ୍ ଏବଂ ଖେଳ",
         "subject": "kausala_bodha",
         "thumbnail": null
       }
     ]
   },
   {
-    "month": "December 2026",
+    "month": "November 2026",
     "chapters": [
       {
-        "id": "uwZEkR29dgiZPEQe93Ts",
-        "title": "Chapter 7 - Family",
-        "title_en": "Family",
-        "title_or": "परिवार (चित्र और बातचीत)",
+        "id": "RohXcjOWmyUiaYCdVGyv",
+        "title": "Chapter 15 - Learn from Nature",
+        "title_en": "Learn from Nature",
+        "title_or": "प्रकृति से सीखो",
         "subject": "hindi_kalika",
         "thumbnail": null
       },
@@ -4003,107 +3798,6 @@ export const ROADMAP_DATA_6 = [
         "title": "Chapter 16 - Reena's Day",
         "title_en": "Reena's Day",
         "title_or": "रीना का दिन",
-        "subject": "hindi_kalika",
-        "thumbnail": null
-      },
-      {
-        "id": "nl1oqbh3WoDMdG8rwUmz",
-        "title": "Chapter 25 - Sports and Games",
-        "title_en": "Sports and Games",
-        "title_or": "खेलकूद (चित्र और बातचीत)",
-        "subject": "hindi_kalika",
-        "thumbnail": null
-      },
-      {
-        "id": "Uf9J0Wsce85O23owcIlj",
-        "title": "Chapter 7 - Temperature and its Measurement",
-        "title_en": "Temperature and its Measurement",
-        "title_or": "ତାପମାତ୍ରା ଏବଂ ଏହାର ମାପ",
-        "subject": "jigyasa",
-        "thumbnail": null
-      },
-      {
-        "id": "z3QjKwyHNxPXQ8ur9Z96",
-        "title": "Chapter 7 - Moral Sayings",
-        "title_en": "Moral Sayings",
-        "title_or": "ନୀତି-ବଚନ",
-        "subject": "sahitya_sudha",
-        "thumbnail": null
-      },
-      {
-        "id": "XRXI22xLrQI63IpO3km1",
-        "title": "Chapter 7 - Cultural Basis of India",
-        "title_en": "Cultural Basis of India",
-        "title_or": "ଭାରତର ସାଂସ୍କୃତିକ ଆଧାର",
-        "subject": "samajika_bignana",
-        "thumbnail": null
-      },
-      {
-        "id": "nOWfGDWsD0rqnsIybR2X",
-        "title": "Chapter 7 - Musical Instruments",
-        "title_en": "Musical Instruments",
-        "title_or": "ସଙ୍ଗୀତମୟ ବାଦ୍ୟଯନ୍ତ୍ର",
-        "subject": "kalakunja",
-        "thumbnail": null
-      },
-      {
-        "id": "CLfhQwo9UBQomKCXbfg5",
-        "title": "Chapter 16 - Unveiling Rasas",
-        "title_en": "Unveiling Rasas",
-        "title_or": "ରସ ଉନ୍ମୋଚନ",
-        "subject": "kalakunja",
-        "thumbnail": null
-      },
-      {
-        "id": "9MkFZy6Fn9xdQtzqUS4y",
-        "title": "Chapter 7 - Neem Baba",
-        "title_en": "Neem Baba",
-        "title_or": "Neem Baba",
-        "subject": "jasmine",
-        "thumbnail": null
-      },
-      {
-        "id": "jW9OCUs7TQieI3nYrbla",
-        "title": "Chapter 16 - National War Memorial",
-        "title_en": "National War Memorial",
-        "title_or": "National War Memorial",
-        "subject": "jasmine",
-        "thumbnail": null
-      },
-      {
-        "id": "4FfpSkblba2qbwoJX8cE",
-        "title": "Chapter 7 - Pronouns",
-        "title_en": "Pronouns",
-        "title_or": "सर्वनामानि (ସର୍ବନାମ)",
-        "subject": "sanskritakalika_1",
-        "thumbnail": null
-      },
-      {
-        "id": "3H3n2L6WFzQWtErf3pxJ",
-        "title": "Chapter 16 - He Who Knows is Wise",
-        "title_en": "He Who Knows is Wise",
-        "title_or": "यो जानाति सः पण्डितः (ଯିଏ ଜାଣେ ସିଏ ପଣ୍ଡିତ)",
-        "subject": "sanskritakalika_1",
-        "thumbnail": null
-      },
-      {
-        "id": "tyweGW7kdgg443NvVsrw",
-        "title": "Chapter 7 - Fractions",
-        "title_en": "Fractions",
-        "title_or": "ଭଗ୍ନାଂଶ",
-        "subject": "ganita_prakas",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "January 2027",
-    "chapters": [
-      {
-        "id": "gAVpVptQcoWjjAVkWq5f",
-        "title": "Chapter 8 - Learn Counting",
-        "title_en": "Learn Counting",
-        "title_or": "गिनती सीखें",
         "subject": "hindi_kalika",
         "thumbnail": null
       },
@@ -4124,103 +3818,10 @@ export const ROADMAP_DATA_6 = [
         "thumbnail": null
       },
       {
-        "id": "rO1EUln6twoqvl06RF55",
-        "title": "Chapter 8 - Unforgettable Story of My Life",
-        "title_en": "Unforgettable Story of My Life",
-        "title_or": "ମୋ ଜୀବନର ଅଭୁଲାକଥା",
-        "subject": "sahitya_sudha",
-        "thumbnail": null
-      },
-      {
-        "id": "ALeaUBGgXF2lb3EOe1C4",
-        "title": "Chapter 8 - Unity in Diversity, or 'One in Many'",
-        "title_en": "Unity in Diversity, or 'One in Many'",
-        "title_or": "ବିବିଧତା ମଧ୍ୟରେ ଏକତା, ବା ‘ଅନେକରେ ଏକ’",
-        "subject": "samajika_bignana",
-        "thumbnail": null
-      },
-      {
-        "id": "Pw8eNl96vrfld2RsSR07",
-        "title": "Chapter 8 - Raga and Tala",
-        "title_en": "Raga and Tala",
-        "title_or": "ରାଗ ଓ ତାଳ",
-        "subject": "kalakunja",
-        "thumbnail": null
-      },
-      {
-        "id": "dnZN4cjpbIE5l2BAWBqv",
-        "title": "Chapter 17 - Let's Decorate / Stage Setup",
-        "title_en": "Let's Decorate / Stage Setup",
-        "title_or": "ଆସ ସଜାଇବା",
-        "subject": "kalakunja",
-        "thumbnail": null
-      },
-      {
-        "id": "oREILfoUizTc9atmMWjD",
-        "title": "Chapter 8 - What a Bird Thought",
-        "title_en": "What a Bird Thought",
-        "title_or": "What a Bird Thought",
-        "subject": "jasmine",
-        "thumbnail": null
-      },
-      {
-        "id": "CatD8wAGP4qNwVr8sGUy",
-        "title": "Chapter 8 - Use of You and I",
-        "title_en": "Use of You and I",
-        "title_or": "युष्मद्-अस्मच्छब्दप्रयोगः (ଯୁଷ୍ମଦ୍-ଅସ୍କଦ୍ ଶବ୍ଦ ପ୍ରୟୋଗ)",
-        "subject": "sanskritakalika_1",
-        "thumbnail": null
-      },
-      {
-        "id": "FvphDf1HpTg1A0Dovbwi",
-        "title": "Chapter 17 - Good Sayings",
-        "title_en": "Good Sayings",
-        "title_or": "सुभाषितानि (ସୁଭାଷିତ)",
-        "subject": "sanskritakalika_1",
-        "thumbnail": null
-      },
-      {
-        "id": "xSpnMMIWeIWXLtg3umTu",
-        "title": "Chapter 8 - Geometrical Constructions",
-        "title_en": "Geometrical Constructions",
-        "title_or": "ଜ୍ୟାମିତିକ ଅଙ୍କନ",
-        "subject": "ganita_prakas",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "February 2027",
-    "chapters": [
-      {
-        "id": "rQM7f4kUCRbSwvgRNVFU",
-        "title": "Chapter 9 - Alphabet Song",
-        "title_en": "Alphabet Song",
-        "title_or": "अक्षर गीत",
-        "subject": "hindi_kalika",
-        "thumbnail": null
-      },
-      {
-        "id": "T7GLzcFeo1INPSCvbVH7",
-        "title": "Chapter 18 - Colorful World",
-        "title_en": "Colorful World",
-        "title_or": "दुनिया रंग-बिरंगी",
-        "subject": "hindi_kalika",
-        "thumbnail": null
-      },
-      {
-        "id": "afXqZida6qHFuq7b5AcD",
-        "title": "Chapter 9 - Methods of Separation",
-        "title_en": "Methods of Separation",
-        "title_or": "ପୃଥକୀକରଣ ପଦ୍ଧତି",
-        "subject": "jigyasa",
-        "thumbnail": null
-      },
-      {
-        "id": "mQerS6aqGfXnMSBKXjCK",
-        "title": "Chapter 9 - Children of Utkal",
-        "title_en": "Children of Utkal",
-        "title_or": "ଉତ୍କଳ ସନ୍ତାନ",
+        "id": "JgECAZdcFK4EfEkuwSYz",
+        "title": "Chapter 10 - Chhau Dance",
+        "title_en": "Chhau Dance",
+        "title_or": "ଛଉନୃତ୍ୟ",
         "subject": "sahitya_sudha",
         "thumbnail": null
       },
@@ -4233,11 +3834,285 @@ export const ROADMAP_DATA_6 = [
         "thumbnail": null
       },
       {
-        "id": "oPWihzsVY6aV78zHk3ze",
-        "title": "Chapter 9 - Sweet Melodies of Various Songs",
-        "title_en": "Sweet Melodies of Various Songs",
-        "title_or": "비ଭିନ୍ନ ଗୀତର ମଧୁର ସ୍ୱର",
+        "id": "Vena1r1vC9hrgsH0PNfU",
+        "title": "Chapter 10 - Grassroots Democracy - Part 1: Governance",
+        "title_en": "Grassroots Democracy - Part 1: Governance",
+        "title_or": "ତୃଣମୂଳ ଗଣତନ୍ତ୍ର – ଭାଗ ୧: ଶାସନବିଧି",
+        "subject": "samajika_bignana",
+        "thumbnail": null
+      },
+      {
+        "id": "1YDtZ1eSH1Ti4lyxcnKs",
+        "title": "Chapter 13 - Overcoming Obstacles in Dance",
+        "title_en": "Overcoming Obstacles in Dance",
+        "title_or": "ନୃତ୍ୟରେ ପ୍ରତିବନ୍ଧକ ଦୂରୀକରଣ",
         "subject": "kalakunja",
+        "thumbnail": null
+      },
+      {
+        "id": "DY1Ax4cFwLSIpYQQ0I5l",
+        "title": "Chapter 14 - Dance Movement Coordination",
+        "title_en": "Dance Movement Coordination",
+        "title_or": "ନୃତ୍ୟର ଗତି ସମନ୍ୱୟ",
+        "subject": "kalakunja",
+        "thumbnail": null
+      },
+      {
+        "id": "86PoUgMOZ6ywtT3E1vrO",
+        "title": "Chapter 10 - Change of Heart",
+        "title_en": "Change of Heart",
+        "title_or": "Change of Heart",
+        "subject": "jasmine",
+        "thumbnail": null
+      },
+      {
+        "id": "noYfEXmvXlVsGYwEo0KV",
+        "title": "Chapter 11 - The Winner",
+        "title_en": "The Winner",
+        "title_or": "The Winner",
+        "subject": "jasmine",
+        "thumbnail": null
+      },
+      {
+        "id": "itgFATHJOj8edN7ZsU71",
+        "title": "Chapter 13 - We are Brave, We are Patient",
+        "title_en": "We are Brave, We are Patient",
+        "title_or": "शूराः वयं धीराः वयम् (ଆମେ ବୀର ଆମେ ଧୀର)",
+        "subject": "sanskritakalika_1",
+        "thumbnail": null
+      },
+      {
+        "id": "WGTaWnbWI9K5ErCFR70P",
+        "title": "Chapter 14 - Guest is God",
+        "title_en": "Guest is God",
+        "title_or": "अतिथिदेवो भव (ଅତିଥି ଦେବୋ ଭବ)",
+        "subject": "sanskritakalika_1",
+        "thumbnail": null
+      },
+      {
+        "id": "tyweGW7kdgg443NvVsrw",
+        "title": "Chapter 7 - Fractions",
+        "title_en": "Fractions",
+        "title_or": "ଭଗ୍ନାଂଶ",
+        "subject": "ganita_prakas",
+        "thumbnail": null
+      },
+      {
+        "id": "xKwfYO6RxY0O5yqf5W2f",
+        "title": "Chapter 4 - Fundamental Skills of Handball",
+        "title_en": "Fundamental Skills of Handball",
+        "title_or": "ହ୍ୟାଣ୍ଡବଲ୍ର ମୌଳିକ ଦକ୍ଷତା",
+        "subject": "khela_sikhya",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "December 2026",
+    "chapters": [
+      {
+        "id": "T7GLzcFeo1INPSCvbVH7",
+        "title": "Chapter 18 - Colorful World",
+        "title_en": "Colorful World",
+        "title_or": "दुनिया रंग-बिरंगी",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
+        "id": "1v24LIRsgd5IGLtyVz7T",
+        "title": "Chapter 19 - Don't be Afraid",
+        "title_en": "Don't be Afraid",
+        "title_or": "डरो मत",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
+        "id": "dKgu0daSbfy53j57qO3W",
+        "title": "Chapter 20 - Plant a Tree on Your Birthday",
+        "title_en": "Plant a Tree on Your Birthday",
+        "title_or": "जन्म-दिवस पर पेड़ लगाओ",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
+        "id": "afXqZida6qHFuq7b5AcD",
+        "title": "Chapter 9 - Methods of Separation",
+        "title_en": "Methods of Separation",
+        "title_or": "ପୃଥକୀକରଣ ପଦ୍ଧତି",
+        "subject": "jigyasa",
+        "thumbnail": null
+      },
+      {
+        "id": "BT5cendZ78zKRWPvd8pY",
+        "title": "Chapter 10 - Characteristics of the Living World",
+        "title_en": "Characteristics of the Living World",
+        "title_or": "ଜୀବଜଗତର ବୈଶିଷ୍ଟ୍ୟ",
+        "subject": "jigyasa",
+        "thumbnail": null
+      },
+      {
+        "id": "GCijfR5Myo66CRWIftpV",
+        "title": "Chapter 11 - Why Will You Fly So Fast?",
+        "title_en": "Why Will You Fly So Fast?",
+        "title_or": "ଉଡ଼ିବୁ ଏଡ଼େ ବେଗି କାହିଁକିରେ ?",
+        "subject": "sahitya_sudha",
+        "thumbnail": null
+      },
+      {
+        "id": "4Ttr02llxTecD3JSsouv",
+        "title": "Chapter 12 - Three Boons",
+        "title_en": "Three Boons",
+        "title_or": "ତିନୋଟି ବର",
+        "subject": "sahitya_sudha",
+        "thumbnail": null
+      },
+      {
+        "id": "jQSaUjcnz3UbaBEgsBXL",
+        "title": "Chapter 11 - Grassroots Democracy - Part 2: Local Government in Rural Areas",
+        "title_en": "Grassroots Democracy - Part 2: Local Government in Rural Areas",
+        "title_or": "ତୃଣମୂଳ ଗଣତନ୍ତ୍ର – ଭାଗ ୨: ଗ୍ରାମାଞ୍ଚଳରେ ସ୍ଥାନୀୟ ସରକାର",
+        "subject": "samajika_bignana",
+        "thumbnail": null
+      },
+      {
+        "id": "z1I01xX8fxeCjm4trMyO",
+        "title": "Chapter 15 - Dance of Our Region",
+        "title_en": "Dance of Our Region",
+        "title_or": "ଆମ ଅଞ୍ଚଳର ନୃତ୍ୟ",
+        "subject": "kalakunja",
+        "thumbnail": null
+      },
+      {
+        "id": "CLfhQwo9UBQomKCXbfg5",
+        "title": "Chapter 16 - Unveiling Rasas",
+        "title_en": "Unveiling Rasas",
+        "title_or": "ରସ ଉନ୍ମୋଚନ",
+        "subject": "kalakunja",
+        "thumbnail": null
+      },
+      {
+        "id": "dnZN4cjpbIE5l2BAWBqv",
+        "title": "Chapter 17 - Let's Decorate / Stage Setup",
+        "title_en": "Let's Decorate / Stage Setup",
+        "title_or": "ଆସ ସଜାଇବା",
+        "subject": "kalakunja",
+        "thumbnail": null
+      },
+      {
+        "id": "qwl5g86wosZijOIJayx9",
+        "title": "Chapter 12 - Yoga: A Way of Life",
+        "title_en": "Yoga: A Way of Life",
+        "title_or": "Yoga: A Way of Life",
+        "subject": "jasmine",
+        "thumbnail": null
+      },
+      {
+        "id": "hElNuOlv3VEVcyu2mPfE",
+        "title": "Chapter 13 - Our Bharat: Incredible India",
+        "title_en": "Our Bharat: Incredible India",
+        "title_or": "Our Bharat: Incredible India",
+        "subject": "jasmine",
+        "thumbnail": null
+      },
+      {
+        "id": "kIL0IXvvZGoGdQDSwuCO",
+        "title": "Chapter 15 - Intelligence Accomplishes Everything",
+        "title_en": "Intelligence Accomplishes Everything",
+        "title_or": "बुद्धिः सर्वार्थसाधिका (ବୁଦ୍ଧି ହିଁ ସବୁକିଛି ସାଧନ କରେ)",
+        "subject": "sanskritakalika_1",
+        "thumbnail": null
+      },
+      {
+        "id": "3H3n2L6WFzQWtErf3pxJ",
+        "title": "Chapter 16 - He Who Knows is Wise",
+        "title_en": "He Who Knows is Wise",
+        "title_or": "यो जानाति सः पण्डितः (ଯିଏ ଜାଣେ ସିଏ ପଣ୍ଡିତ)",
+        "subject": "sanskritakalika_1",
+        "thumbnail": null
+      },
+      {
+        "id": "xSpnMMIWeIWXLtg3umTu",
+        "title": "Chapter 8 - Geometrical Constructions",
+        "title_en": "Geometrical Constructions",
+        "title_or": "ଜ୍ୟାମିତିକ ଅଙ୍କନ",
+        "subject": "ganita_prakas",
+        "thumbnail": null
+      },
+      {
+        "id": "YcRWdD87MIHGSxS0EStp",
+        "title": "Project 5 - Project 5: School Museum",
+        "title_en": "Project 5: School Museum",
+        "title_or": "ପ୍ରକଳ୍ପ ୫: ବିଦ୍ୟାଳୟ ସଂଗ୍ରହାଳୟ",
+        "subject": "kausala_bodha",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "January 2027",
+    "chapters": [
+      {
+        "id": "YeOauwCh8YZ0kQnAZcgf",
+        "title": "Chapter 21 - Squirrel's Story",
+        "title_en": "Squirrel's Story",
+        "title_or": "गिलहरी की कहानी (चित्र और बातचीत)",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
+        "id": "bnbOse03MiAtJzl3nz3r",
+        "title": "Chapter 22 - The Balloon Man",
+        "title_en": "The Balloon Man",
+        "title_or": "गुब्बारे वाला",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
+        "id": "0XsN605RJdtErEQbKxz0",
+        "title": "Chapter 23 - Tosiya's Dream",
+        "title_en": "Tosiya's Dream",
+        "title_or": "तोसिया का सपना",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
+        "id": "R6vavVYearqanDQAqjSw",
+        "title": "Chapter 11 - Natural Resources",
+        "title_en": "Natural Resources",
+        "title_or": "ପ୍ରାକୃତିକ ସମ୍ପଦ",
+        "subject": "jigyasa",
+        "thumbnail": null
+      },
+      {
+        "id": "l58TTVV1r2kW9tXCU4PJ",
+        "title": "Chapter 13 - Ketaka's Bravery",
+        "title_en": "Ketaka's Bravery",
+        "title_or": "କେତକର ବୀରତା",
+        "subject": "sahitya_sudha",
+        "thumbnail": null
+      },
+      {
+        "id": "BmmTkjvflgIuUlcYmHCY",
+        "title": "Chapter 14 - Traveller's Letter",
+        "title_en": "Traveller's Letter",
+        "title_or": "ଭ୍ରମଣକାରୀର ପତ୍ର",
+        "subject": "sahitya_sudha",
+        "thumbnail": null
+      },
+      {
+        "id": "MXj2MrdXReffhpo7C6Ar",
+        "title": "Chapter 12 - Grassroots Democracy - Part 3: Local Government in Urban Areas",
+        "title_en": "Grassroots Democracy - Part 3: Local Government in Urban Areas",
+        "title_or": "ତୃଣମୂଳ ଗଣତନ୍ତ୍ର – ଭାଗ ୩: ସହରାଞ୍ଚଳରେ ସ୍ଥାନୀୟ ସରକାର",
+        "subject": "samajika_bignana",
+        "thumbnail": null
+      },
+      {
+        "id": "xKRCbJflXLiYZvHPFdwl",
+        "title": "Chapter 13 - Value of Work",
+        "title_en": "Value of Work",
+        "title_or": "କାର୍ଯ୍ୟର ମୂଲ୍ୟ",
+        "subject": "samajika_bignana",
         "thumbnail": null
       },
       {
@@ -4249,18 +4124,34 @@ export const ROADMAP_DATA_6 = [
         "thumbnail": null
       },
       {
-        "id": "3JECTEsAJi4fbTQKvYWe",
-        "title": "Chapter 9 - Our Daily Spices",
-        "title_en": "Our Daily Spices",
-        "title_or": "Our Daily Spices",
+        "id": "4IduoILX7HDYZ0RPVa2D",
+        "title": "Chapter 19 - Shadow and String Puppetry",
+        "title_en": "Shadow and String Puppetry",
+        "title_or": "ଛାଇ ଏବଂ ସୂତାର କଥା କଣ୍ଢେଇ ନାଚ",
+        "subject": "kalakunja",
+        "thumbnail": null
+      },
+      {
+        "id": "9cfLRPlVlD2l893mCpT1",
+        "title": "Chapter 14 - The Kites",
+        "title_en": "The Kites",
+        "title_or": "The Kites",
         "subject": "jasmine",
         "thumbnail": null
       },
       {
-        "id": "QaQVcCbqURiQjvCFZPps",
-        "title": "Chapter 9 - Counting Numbers",
-        "title_en": "Counting Numbers",
-        "title_or": "संख्यागणना (ସଂଖ୍ୟା ଗଣନା)",
+        "id": "oaaIeHdaqcD5L3yiDB1O",
+        "title": "Chapter 15 - Ila Sachani: Embroidering Dreams",
+        "title_en": "Ila Sachani: Embroidering Dreams",
+        "title_or": "Ila Sachani: Embroidering Dreams",
+        "subject": "jasmine",
+        "thumbnail": null
+      },
+      {
+        "id": "FvphDf1HpTg1A0Dovbwi",
+        "title": "Chapter 17 - Good Sayings",
+        "title_en": "Good Sayings",
+        "title_or": "सुभाषितानि (ସୁଭାଷିତ)",
         "subject": "sanskritakalika_1",
         "thumbnail": null
       },
@@ -4277,6 +4168,115 @@ export const ROADMAP_DATA_6 = [
         "title": "Chapter 9 - Symmetry",
         "title_en": "Symmetry",
         "title_or": "ପ୍ରତିସମତା",
+        "subject": "ganita_prakas",
+        "thumbnail": null
+      },
+      {
+        "id": "NhAQxxj4TFbu1t1mz8Ab",
+        "title": "Project 6 - Project 6: Fireless Cooking",
+        "title_en": "Project 6: Fireless Cooking",
+        "title_or": "ପ୍ରକଳ୍ପ ୬: ଅଗ୍ନିବିହୀନ ରୋଷେଇ",
+        "subject": "kausala_bodha",
+        "thumbnail": null
+      },
+      {
+        "id": "amEgZe76eBpLJGWClmfX",
+        "title": "Chapter 5 - Yoga",
+        "title_en": "Yoga",
+        "title_or": "ଯୋଗ",
+        "subject": "khela_sikhya",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "February 2027",
+    "chapters": [
+      {
+        "id": "eX9Y5syUtOsnaDRvpaJk",
+        "title": "Chapter 24 - Farmer",
+        "title_en": "Farmer",
+        "title_or": "किसान",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
+        "id": "nl1oqbh3WoDMdG8rwUmz",
+        "title": "Chapter 25 - Sports and Games",
+        "title_en": "Sports and Games",
+        "title_or": "खेलकूद (चित्र और बातचीत)",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
+        "id": "pW3yWEAKoTZxICMz1q7N",
+        "title": "Chapter 12 - Our Universe",
+        "title_en": "Our Universe",
+        "title_or": "ଆମ ବିଶ୍ୱ",
+        "subject": "jigyasa",
+        "thumbnail": null
+      },
+      {
+        "id": "nZ5Y4BcLDfrDdniYBDtu",
+        "title": "Chapter 15 - Trees and Creepers are Our Friends",
+        "title_en": "Trees and Creepers are Our Friends",
+        "title_or": "ବୃକ୍ଷଲତା ଆମର ବନ୍ଧୁ",
+        "subject": "sahitya_sudha",
+        "thumbnail": null
+      },
+      {
+        "id": "IqWACc6bgAcKhLWhOIpd",
+        "title": "Chapter 14 - Economic Activities Around Us",
+        "title_en": "Economic Activities Around Us",
+        "title_or": "ଆମ ଚତୁଃପାର୍ଶ୍ୱର ଅର୍ଥନୈତିକ କାର୍ଯ୍ୟକଳାପ",
+        "subject": "samajika_bignana",
+        "thumbnail": null
+      },
+      {
+        "id": "SPJx1D9CWvgcl4B9rrxa",
+        "title": "Chapter 20 - Conclusion",
+        "title_en": "Conclusion",
+        "title_or": "ଉପସଂହାର",
+        "subject": "kalakunja",
+        "thumbnail": null
+      },
+      {
+        "id": "sCyZb5ZEzspew8ivrqLg",
+        "title": "Chapter 21 - Integration of Art Forms",
+        "title_en": "Integration of Art Forms",
+        "title_or": "କଳାରୂପ ଗୁଡ଼ିକର ଏକତ୍ରୀକରଣ",
+        "subject": "kalakunja",
+        "thumbnail": null
+      },
+      {
+        "id": "jW9OCUs7TQieI3nYrbla",
+        "title": "Chapter 16 - National War Memorial",
+        "title_en": "National War Memorial",
+        "title_or": "National War Memorial",
+        "subject": "jasmine",
+        "thumbnail": null
+      },
+      {
+        "id": "Ht4tHgCyys3SPZxNc99A",
+        "title": "Chapter 19 - He is the Great Painter",
+        "title_en": "He is the Great Painter",
+        "title_or": "स एव महान् चित्रकारः (ସେ ହିଁ ମହାନ ଚିତ୍ରକାର)",
+        "subject": "sanskritakalika_1",
+        "thumbnail": null
+      },
+      {
+        "id": "pr0JVBwYO1PNZBt9Aw9A",
+        "title": "Chapter 20 - Helping Others",
+        "title_en": "Helping Others",
+        "title_or": "परोपकारः (ପରୋପକାର)",
+        "subject": "sanskritakalika_1",
+        "thumbnail": null
+      },
+      {
+        "id": "usXCCa6FGMoGZRoYC6Rl",
+        "title": "Chapter 10 - Whole Numbers",
+        "title_en": "Whole Numbers",
+        "title_or": "ପୂର୍ଣ୍ଣ ସଂଖ୍ୟା",
         "subject": "ganita_prakas",
         "thumbnail": null
       }
@@ -4298,10 +4298,10 @@ export const ROADMAP_DATA_7 = [
         "thumbnail": null
       },
       {
-        "id": "G301MDVSxz70hDg9obWa",
-        "title": "Chapter 10 - Constitution of India: An Introduction",
-        "title_en": "Constitution of India: An Introduction",
-        "title_or": "ଭାରତର ସମ୍ବିଧାନ: ଏକ ପରିଚୟ",
+        "id": "ws9svxF9CRVXKjp22kga",
+        "title": "Chapter 2 - Understanding weather",
+        "title_en": "Understanding weather",
+        "title_or": "ପାଣିପାଗକୁ ବୁଝିବା",
         "subject": "samajika_bignana",
         "thumbnail": null
       },
@@ -4314,10 +4314,10 @@ export const ROADMAP_DATA_7 = [
         "thumbnail": null
       },
       {
-        "id": "EtjwBanVtMz0TsQb9X8m",
-        "title": "Chapter 10 - Life processes in plants",
-        "title_en": "Life processes in plants",
-        "title_or": "ଉଦ୍ଭିଦରେ ଜୀବନ ପ୍ରକ୍ରିୟା",
+        "id": "shom9ZBSlrTFLc48gBrE",
+        "title": "Chapter 2 - Investigation of acids, bases and neutral substances",
+        "title_en": "Investigation of acids, bases and neutral substances",
+        "title_or": "ଅମ୍ଳ, କ୍ଷାରକ ଓ ନିରପେକ୍ଷ ପଦାର୍ଥର ଅନୁସନ୍ଧାନ",
         "subject": "jigyasa",
         "thumbnail": null
       },
@@ -4330,18 +4330,18 @@ export const ROADMAP_DATA_7 = [
         "thumbnail": null
       },
       {
-        "id": "ytQVULbR8cD4rWkUedad",
-        "title": "Chapter 10 - Panchami Bibhakti Prayogah",
-        "title_en": "Panchami Bibhakti Prayogah",
-        "title_or": "ପଞ୍ଚମୀ ବିଭକ୍ତି ପ୍ରୟୋଗଃ",
+        "id": "49xgfpUgCudn0VB0Pmkh",
+        "title": "Chapter 2 - I Karanta Strilingah",
+        "title_en": "I Karanta Strilingah",
+        "title_or": "ଇ କାରାନ୍ତ ସ୍ତ୍ରୀଲିଙ୍ଗଃ",
         "subject": "sanskritakalika_2",
         "thumbnail": null
       },
       {
-        "id": "c95nkTwwjvx6BsDkEtdn",
-        "title": "Chapter 19 - Nityam Pibamah Subhashitarasam",
-        "title_en": "Nityam Pibamah Subhashitarasam",
-        "title_or": "ନିତ୍ୟଂ ପିବାମଃ ସୁଭାଷିତରସମ୍",
+        "id": "Bf5Z8UeGNWnCp0hFh0OL",
+        "title": "Chapter 3 - Ee Karanta Strilingah",
+        "title_en": "Ee Karanta Strilingah",
+        "title_or": "ଈ କାରାନ୍ତ ସ୍ତ୍ରୀଲିଙ୍ଗଃ",
         "subject": "sanskritakalika_2",
         "thumbnail": null
       },
@@ -4354,18 +4354,18 @@ export const ROADMAP_DATA_7 = [
         "thumbnail": null
       },
       {
-        "id": "ylWbIBJHCYI6fnes0yR5",
-        "title": "Chapter 10 - Dance and Expressive Art",
-        "title_en": "Dance and Expressive Art",
-        "title_or": "ନୃତ୍ୟ ଏବଂ ଭାବମୟ କଳା",
+        "id": "DSU1eTfCV3PuFkbjJLHz",
+        "title": "Chapter 2 - Mukabhinaya / Pantomime",
+        "title_en": "Mukabhinaya / Pantomime",
+        "title_or": "କଥା ନ କହି ଅଧିକ କୁହ ମୂକାଭିନୟ",
         "subject": "kalakruti",
         "thumbnail": null
       },
       {
-        "id": "j9XYHqhe1tmecT0lvETs",
-        "title": "Chapter 19 - Beautiful Handicraft Art",
-        "title_en": "Beautiful Handicraft Art",
-        "title_or": "ସୁନ୍ଦର ହସ୍ତଶିଳ୍ପ କଳା",
+        "id": "Ik4eVOQIV80UvrGYdNZ6",
+        "title": "Chapter 3 - Mancha Shilpa / Stage Craft",
+        "title_en": "Mancha Shilpa / Stage Craft",
+        "title_or": "ଆସ ଆମେ ସଜାଇବା ମଞ୍ଚ ଶିଳ୍ପ",
         "subject": "kalakruti",
         "thumbnail": null
       },
@@ -4378,10 +4378,10 @@ export const ROADMAP_DATA_7 = [
         "thumbnail": null
       },
       {
-        "id": "9BAuHmSHJhU5YRgDoeuE",
-        "title": "Chapter 10 - Himalaya",
-        "title_en": "Himalaya",
-        "title_or": "हिमालय (Himalaya)",
+        "id": "1JodQTDnpzOlQs7eP8fp",
+        "title": "Chapter 2 - Apna-Apna Kaam",
+        "title_en": "Apna-Apna Kaam",
+        "title_or": "अपना-अपना काम (Apna-Apna Kaam)",
         "subject": "hindi_kalika",
         "thumbnail": null
       },
@@ -4410,10 +4410,10 @@ export const ROADMAP_DATA_7 = [
         "thumbnail": null
       },
       {
-        "id": "eUTXTqwHLk55voGkHusS",
-        "title": "Chapter 10 - Bemara Bahana",
-        "title_en": "Bemara Bahana",
-        "title_or": "ବେମାର ବାହାନା",
+        "id": "TgSBENcvhLxNex39bizN",
+        "title": "Chapter 2 - Matrubhakti Katha",
+        "title_en": "Matrubhakti Katha",
+        "title_or": "ମାତୃଭକ୍ତି କଥା",
         "subject": "sahitya_suman",
         "thumbnail": null
       },
@@ -4426,10 +4426,10 @@ export const ROADMAP_DATA_7 = [
         "thumbnail": null
       },
       {
-        "id": "MaZD49FfwAYv8TkbWRVO",
-        "title": "Chapter 10 - The Tunnel",
-        "title_en": "The Tunnel",
-        "title_or": "The Tunnel",
+        "id": "l1bn8igE6JflRLQMRUVW",
+        "title": "Chapter 2 - Try Again",
+        "title_en": "Try Again",
+        "title_or": "Try Again",
         "subject": "jasmine",
         "thumbnail": null
       },
@@ -4447,98 +4447,74 @@ export const ROADMAP_DATA_7 = [
     "month": "July 2026",
     "chapters": [
       {
-        "id": "ws9svxF9CRVXKjp22kga",
-        "title": "Chapter 2 - Understanding weather",
-        "title_en": "Understanding weather",
-        "title_or": "ପାଣିପାଗକୁ ବୁଝିବା",
+        "id": "lSsygZX3eU0hrSg2KZkh",
+        "title": "Chapter 3 - Climate of India",
+        "title_en": "Climate of India",
+        "title_or": "ଭାରତର ଜଳବାୟୁ",
         "subject": "samajika_bignana",
         "thumbnail": null
       },
       {
-        "id": "dQzL0BK1XDa1lPKNMG6H",
-        "title": "Chapter 11 - From Barter to Money",
-        "title_en": "From Barter to Money",
-        "title_or": "ଦ୍ରବ୍ୟ ବିନିମୟରୁ ମୁଦ୍ରା ପର୍ଯ୍ୟନ୍ତ",
-        "subject": "samajika_bignana",
-        "thumbnail": null
-      },
-      {
-        "id": "shom9ZBSlrTFLc48gBrE",
-        "title": "Chapter 2 - Investigation of acids, bases and neutral substances",
-        "title_en": "Investigation of acids, bases and neutral substances",
-        "title_or": "ଅମ୍ଳ, କ୍ଷାରକ ଓ ନିରପେକ୍ଷ ପଦାର୍ଥର ଅନୁସନ୍ଧାନ",
+        "id": "LoJf18SJxdNnd3Duuo2s",
+        "title": "Chapter 3 - Electricity: Its circuit and components",
+        "title_en": "Electricity: Its circuit and components",
+        "title_or": "ବିଦ୍ୟୁତ୍: ଏହାର ପରିପଥ ଓ ଉପାଦାନ",
         "subject": "jigyasa",
         "thumbnail": null
       },
       {
-        "id": "j4NUGT2qtyrYnuLfJjnF",
-        "title": "Chapter 11 - Light: Shadows and reflection",
-        "title_en": "Light: Shadows and reflection",
-        "title_or": "ଆଲୋକ: ଛାୟା ଓ ପ୍ରତିଫଳନ",
-        "subject": "jigyasa",
-        "thumbnail": null
-      },
-      {
-        "id": "49xgfpUgCudn0VB0Pmkh",
-        "title": "Chapter 2 - I Karanta Strilingah",
-        "title_en": "I Karanta Strilingah",
-        "title_or": "ଇ କାରାନ୍ତ ସ୍ତ୍ରୀଲିଙ୍ଗଃ",
+        "id": "q4yR0PwxgA8TffjF2rop",
+        "title": "Chapter 4 - U Uu evang Ru Karanta Strilingah",
+        "title_en": "U Uu evang Ru Karanta Strilingah",
+        "title_or": "ଉ ଊ ଏବଂ ଋ କାରାନ୍ତ ସ୍ତ୍ରୀଲିଙ୍ଗଃ",
         "subject": "sanskritakalika_2",
         "thumbnail": null
       },
       {
-        "id": "6LKxOwMzDo9uFNhZrJo7",
-        "title": "Chapter 11 - Shashthi Bibhakti Prayogah",
-        "title_en": "Shashthi Bibhakti Prayogah",
-        "title_or": "ଷଷ୍ଠୀ ବିଭକ୍ତି ପ୍ରୟୋଗଃ",
+        "id": "j5cLG9N5hBW9r5p9DjR5",
+        "title": "Chapter 5 - I U Karanta Napunsakalingah",
+        "title_en": "I U Karanta Napunsakalingah",
+        "title_or": "ଇ ଉ କାରାନ୍ତ ନପୁଂସକଲିଙ୍ଗଃ",
         "subject": "sanskritakalika_2",
         "thumbnail": null
       },
       {
-        "id": "WZPpy9nSAKABT0p6d8Mg",
-        "title": "Chapter 20 - Suryanamaskarah",
-        "title_en": "Suryanamaskarah",
-        "title_or": "ସୂର୍ଯ୍ୟନମସ୍କାରଃ",
+        "id": "7a2ADZw5ChMtD6YSdfqh",
+        "title": "Chapter 6 - Karaka-Bibhakti Prayogah (Prathama)",
+        "title_en": "Karaka-Bibhakti Prayogah (Prathama)",
+        "title_or": "କାରକ-ବିଭକ୍ତି ପ୍ରୟୋଗଃ (ପ୍ରଥମା ବିଭକ୍ତି ପ୍ରୟୋଗଃ)",
         "subject": "sanskritakalika_2",
         "thumbnail": null
       },
       {
-        "id": "DSU1eTfCV3PuFkbjJLHz",
-        "title": "Chapter 2 - Mukabhinaya / Pantomime",
-        "title_en": "Mukabhinaya / Pantomime",
-        "title_or": "କଥା ନ କହି ଅଧିକ କୁହ ମୂକାଭିନୟ",
+        "id": "ADJ2OSrkZZVKQe5ZT5r4",
+        "title": "Chapter 4 - India's Storytelling Tradition",
+        "title_en": "India's Storytelling Tradition",
+        "title_or": "ଭାରତର କାହାଣୀ କହିବା ପରମ୍ପରା",
         "subject": "kalakruti",
         "thumbnail": null
       },
       {
-        "id": "PSTnHsffHaN4K1SFk8IV",
-        "title": "Chapter 11 - Dance Elements and Skills",
-        "title_en": "Dance Elements and Skills",
-        "title_or": "ନୃତ୍ୟ ଉପାଦାନ ଏବଂ କୌଶଳ",
+        "id": "5BjEOja1lsq4wwnrOGC1",
+        "title": "Chapter 5 - Musical Composition",
+        "title_en": "Musical Composition",
+        "title_or": "ସଙ୍ଗୀତ ସଂରଚନା",
         "subject": "kalakruti",
         "thumbnail": null
       },
       {
-        "id": "3dZDPmtLsDJ1degGMEfD",
-        "title": "Chapter 20 - Sculptures of All Artists Come Alive",
-        "title_en": "Sculptures of All Artists Come Alive",
-        "title_or": "ସମସ୍ତ କଳାକାରଙ୍କ ମୂର୍ତ୍ତିକଳା ପ୍ରାଣବନ୍ତ ହୁଏ",
-        "subject": "kalakruti",
-        "thumbnail": null
-      },
-      {
-        "id": "1JodQTDnpzOlQs7eP8fp",
-        "title": "Chapter 2 - Apna-Apna Kaam",
-        "title_en": "Apna-Apna Kaam",
-        "title_or": "अपना-अपना काम (Apna-Apna Kaam)",
+        "id": "Ihm9GL5ReVUgMLhQqrXr",
+        "title": "Chapter 3 - Aayi Varsha Rani",
+        "title_en": "Aayi Varsha Rani",
+        "title_or": "आई वर्षा रानी (Aayi Varsha Rani)",
         "subject": "hindi_kalika",
         "thumbnail": null
       },
       {
-        "id": "QOFh7nsEO3ovsG9kvUq7",
-        "title": "Chapter 11 - Hamare Madhubabu",
-        "title_en": "Hamare Madhubabu",
-        "title_or": "हमारे मधुबाबू (Hamare Madhubabu)",
+        "id": "PPsG8JetyPwUImfoGK2q",
+        "title": "Chapter 4 - Aasman Gira",
+        "title_en": "Aasman Gira",
+        "title_or": "आसमान गिरा (Aasman Gira)",
         "subject": "hindi_kalika",
         "thumbnail": null
       },
@@ -4559,34 +4535,34 @@ export const ROADMAP_DATA_7 = [
         "thumbnail": null
       },
       {
-        "id": "TgSBENcvhLxNex39bizN",
-        "title": "Chapter 2 - Matrubhakti Katha",
-        "title_en": "Matrubhakti Katha",
-        "title_or": "ମାତୃଭକ୍ତି କଥା",
+        "id": "wTaDIddmI14Zy2jeGqRx",
+        "title": "Chapter 3 - Jatiyapana",
+        "title_en": "Jatiyapana",
+        "title_or": "ଜาତୀୟପଣା",
         "subject": "sahitya_suman",
         "thumbnail": null
       },
       {
-        "id": "kaxfqlqzvLJ4rwHJrG73",
-        "title": "Chapter 11 - Interview with Kelucharan Mahapatra",
-        "title_en": "Interview with Kelucharan Mahapatra",
-        "title_or": "ପଦ୍ମବିଭୂଷଣ କେଳୁଚରଣ ମହାପାତ୍ରଙ୍କ ସହ ସାକ୍ଷାତକାର",
+        "id": "cju6KKruZocXAJftfrkP",
+        "title": "Chapter 4 - Panire Pani",
+        "title_en": "Panire Pani",
+        "title_or": "ପାଣିରେ ପାଣି",
         "subject": "sahitya_suman",
         "thumbnail": null
       },
       {
-        "id": "l1bn8igE6JflRLQMRUVW",
-        "title": "Chapter 2 - Try Again",
-        "title_en": "Try Again",
-        "title_or": "Try Again",
+        "id": "aq85LUjqLwV3Iq61JAuc",
+        "title": "Chapter 3 - Three Days to See",
+        "title_en": "Three Days to See",
+        "title_or": "Three Days to See",
         "subject": "jasmine",
         "thumbnail": null
       },
       {
-        "id": "TYFh4IZmR4GYW8coHmk3",
-        "title": "Chapter 11 - Travel",
-        "title_en": "Travel",
-        "title_or": "Travel",
+        "id": "epFWt7AnvF9238xk8Wnz",
+        "title": "Chapter 4 - Animals, Birds, and Dr. Dolittle",
+        "title_en": "Animals, Birds, and Dr. Dolittle",
+        "title_or": "Animals, Birds, and Dr. Dolittle",
         "subject": "jasmine",
         "thumbnail": null
       },
@@ -4602,155 +4578,6 @@ export const ROADMAP_DATA_7 = [
   },
   {
     "month": "August 2026",
-    "chapters": [
-      {
-        "id": "lSsygZX3eU0hrSg2KZkh",
-        "title": "Chapter 3 - Climate of India",
-        "title_en": "Climate of India",
-        "title_or": "ଭାରତର ଜଳବାୟୁ",
-        "subject": "samajika_bignana",
-        "thumbnail": null
-      },
-      {
-        "id": "Uctfkwy4IwsyR3UQSlO8",
-        "title": "Chapter 12 - Understanding Market",
-        "title_en": "Understanding Market",
-        "title_or": "ବଜାରକୁ ବୁଝିବା",
-        "subject": "samajika_bignana",
-        "thumbnail": null
-      },
-      {
-        "id": "LoJf18SJxdNnd3Duuo2s",
-        "title": "Chapter 3 - Electricity: Its circuit and components",
-        "title_en": "Electricity: Its circuit and components",
-        "title_or": "ବିଦ୍ୟୁତ୍: ଏହାର ପରିପଥ ଓ ଉପାଦାନ",
-        "subject": "jigyasa",
-        "thumbnail": null
-      },
-      {
-        "id": "UVjcIETkPPM4voFgq7YX",
-        "title": "Chapter 12 - Earth, Moon and Sun",
-        "title_en": "Earth, Moon and Sun",
-        "title_or": "ପୃଥିବୀ, ଚନ୍ଦ୍ର ଓ ସୂର୍ଯ୍ୟ",
-        "subject": "jigyasa",
-        "thumbnail": null
-      },
-      {
-        "id": "Bf5Z8UeGNWnCp0hFh0OL",
-        "title": "Chapter 3 - Ee Karanta Strilingah",
-        "title_en": "Ee Karanta Strilingah",
-        "title_or": "ଈ କାରାନ୍ତ ସ୍ତ୍ରୀଲିଙ୍ଗଃ",
-        "subject": "sanskritakalika_2",
-        "thumbnail": null
-      },
-      {
-        "id": "0wMJiBBaWpwPoN2lRdtF",
-        "title": "Chapter 12 - Saptami Bibhakti Prayogah",
-        "title_en": "Saptami Bibhakti Prayogah",
-        "title_or": "ସପ୍ତମୀ ବିଭକ୍ତି ପ୍ରୟୋଗଃ",
-        "subject": "sanskritakalika_2",
-        "thumbnail": null
-      },
-      {
-        "id": "SFeLBD4KSTYWCd4xDUOP",
-        "title": "Chapter 21 - Seba Hi Paramadharmah",
-        "title_en": "Seba Hi Paramadharmah",
-        "title_or": "ସେବା ହି ପରମଧର୍ମଃ",
-        "subject": "sanskritakalika_2",
-        "thumbnail": null
-      },
-      {
-        "id": "Ik4eVOQIV80UvrGYdNZ6",
-        "title": "Chapter 3 - Mancha Shilpa / Stage Craft",
-        "title_en": "Mancha Shilpa / Stage Craft",
-        "title_or": "ଆସ ଆମେ ସଜାଇବା ମଞ୍ଚ ଶିଳ୍ପ",
-        "subject": "kalakruti",
-        "thumbnail": null
-      },
-      {
-        "id": "NyAceMiS7Vkno4D3PSSN",
-        "title": "Chapter 12 - Dance, Sequence and Creativity",
-        "title_en": "Dance, Sequence and Creativity",
-        "title_or": "ନୃତ୍ୟ, କ୍ରମେ ଏବଂ ସୃଜନଶୀଳତା",
-        "subject": "kalakruti",
-        "thumbnail": null
-      },
-      {
-        "id": "Ihm9GL5ReVUgMLhQqrXr",
-        "title": "Chapter 3 - Aayi Varsha Rani",
-        "title_en": "Aayi Varsha Rani",
-        "title_or": "आई वर्षा रानी (Aayi Varsha Rani)",
-        "subject": "hindi_kalika",
-        "thumbnail": null
-      },
-      {
-        "id": "VAJDF8a6AmQxNVjoq88E",
-        "title": "Chapter 12 - Hum Anek Kintu Ek",
-        "title_en": "Hum Anek Kintu Ek",
-        "title_or": "हम अनेक किंतु एक (Hum Anek Kintu Ek)",
-        "subject": "hindi_kalika",
-        "thumbnail": null
-      },
-      {
-        "id": "Nv89agtIBL080OcfDLH6",
-        "title": "Unit 3 - Unit 2: Basic skills of sports - Badminton",
-        "title_en": "Unit 2: Basic skills of sports - Badminton",
-        "title_or": "ଏକକ-୨: କ୍ରୀଡ଼ାର ମୌଳିକ କୌଶଳ - ବ୍ୟାଡ୍ମିଣ୍ଟନ୍",
-        "subject": "khela_sikhya",
-        "thumbnail": null
-      },
-      {
-        "id": "4ADx7qb0nUo5zaWZnzpt",
-        "title": "Chapter 3 - Magic of point among numbers / Decimals",
-        "title_en": "Magic of point among numbers / Decimals",
-        "title_or": "ସଂଖ୍ୟାର ମଝିରେ ବିନ୍ଦୁର କମାଲ",
-        "subject": "ganita_prakas",
-        "thumbnail": null
-      },
-      {
-        "id": "wTaDIddmI14Zy2jeGqRx",
-        "title": "Chapter 3 - Jatiyapana",
-        "title_en": "Jatiyapana",
-        "title_or": "ଜาତୀୟପଣା",
-        "subject": "sahitya_suman",
-        "thumbnail": null
-      },
-      {
-        "id": "GgyQGWYzUuP32RZEXdRZ",
-        "title": "Chapter 12 - Daraja Kholi Deba",
-        "title_en": "Daraja Kholi Deba",
-        "title_or": "ଦରଜା ଖୋଲି ଦେବା",
-        "subject": "sahitya_suman",
-        "thumbnail": null
-      },
-      {
-        "id": "aq85LUjqLwV3Iq61JAuc",
-        "title": "Chapter 3 - Three Days to See",
-        "title_en": "Three Days to See",
-        "title_or": "Three Days to See",
-        "subject": "jasmine",
-        "thumbnail": null
-      },
-      {
-        "id": "c4kLPbAQB6Gy5rJc7fZK",
-        "title": "Chapter 12 - Conquering the Summit",
-        "title_en": "Conquering the Summit",
-        "title_or": "Conquering the Summit",
-        "subject": "jasmine",
-        "thumbnail": null
-      },
-      {
-        "id": "OPMxrKyEK7pJEC5WX0FB",
-        "title": "Project 3 - Project 3: Tie and Dye / Box Work",
-        "title_en": "Project 3: Tie and Dye / Box Work",
-        "title_or": "ପ୍ରକଳ୍ପ-୩: ବାନ୍ଧ କାମ / ବାକ୍ସ କାମ",
-        "subject": "kausala_bodha",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "September 2026",
     "chapters": [
       {
         "id": "JyxPZb3OyYoVyrKA4zKb",
@@ -4769,66 +4596,183 @@ export const ROADMAP_DATA_7 = [
         "thumbnail": null
       },
       {
-        "id": "q4yR0PwxgA8TffjF2rop",
-        "title": "Chapter 4 - U Uu evang Ru Karanta Strilingah",
-        "title_en": "U Uu evang Ru Karanta Strilingah",
-        "title_or": "ଉ ଊ ଏବଂ ଋ କାରାନ୍ତ ସ୍ତ୍ରୀଲିଙ୍ଗଃ",
+        "id": "xMabo91SFodYg1XitMKo",
+        "title": "Chapter 7 - Dwitiya Bibhakti Prayogah",
+        "title_en": "Dwitiya Bibhakti Prayogah",
+        "title_or": "ଦ୍ୱିତୀୟା ବିଭକ୍ତି ପ୍ରୟୋଗଃ",
         "subject": "sanskritakalika_2",
         "thumbnail": null
       },
       {
-        "id": "7tzN2KqzNKEkSeriQNxW",
-        "title": "Chapter 13 - Agya Gurunam Hyabicharaniya",
-        "title_en": "Agya Gurunam Hyabicharaniya",
-        "title_or": "ଆଜ୍ଞା ଗୁରୂଣାଂ ହ୍ୟବିଚାରଣୀୟା",
+        "id": "E03Gjn6qX05x0KPuvVk7",
+        "title": "Chapter 8 - Trutiya Bibhakti Prayogah",
+        "title_en": "Trutiya Bibhakti Prayogah",
+        "title_or": "ତୃତୀୟା ବିଭକ୍ତି ପ୍ରୟୋଗଃ",
         "subject": "sanskritakalika_2",
         "thumbnail": null
       },
       {
-        "id": "qCUeH7prxFBsoceColAa",
-        "title": "Chapter 22 - Antyakshari Krida",
-        "title_en": "Antyakshari Krida",
-        "title_or": "ଅନ୍ତ୍ୟାକ୍ଷରୀ କ୍ରୀଡ଼ା",
-        "subject": "sanskritakalika_2",
-        "thumbnail": null
-      },
-      {
-        "id": "ADJ2OSrkZZVKQe5ZT5r4",
-        "title": "Chapter 4 - India's Storytelling Tradition",
-        "title_en": "India's Storytelling Tradition",
-        "title_or": "ଭାରତର କାହାଣୀ କହିବା ପରମ୍ପରା",
+        "id": "BZjXUDiu3U1J0SZIq5kq",
+        "title": "Chapter 6 - Music, Emotion and Creativity",
+        "title_en": "Music, Emotion and Creativity",
+        "title_or": "ସଙ୍ଗୀତ, ଭାବନା ଏବଂ ସୃଜନଶୀଳତା",
         "subject": "kalakruti",
         "thumbnail": null
       },
       {
-        "id": "InLQ9G5FEFoR9jAkgesw",
-        "title": "Chapter 13 - Famous Personalities",
-        "title_en": "Famous Personalities",
-        "title_or": "ପ୍ରସିଦ୍ଧ ବ୍ୟକ୍ତିତ୍ୱ",
+        "id": "NHBrcn7jet3yPUerY49m",
+        "title": "Chapter 7 - Melody and Rhythm",
+        "title_en": "Melody and Rhythm",
+        "title_or": "ରାଗ ଓ ତାଳ",
         "subject": "kalakruti",
         "thumbnail": null
       },
       {
-        "id": "PPsG8JetyPwUImfoGK2q",
-        "title": "Chapter 4 - Aasman Gira",
-        "title_en": "Aasman Gira",
-        "title_or": "आसमान गिरा (Aasman Gira)",
+        "id": "UgzzQwNUsLvzFZ8Qxa0h",
+        "title": "Chapter 5 - Rathyatra",
+        "title_en": "Rathyatra",
+        "title_or": "रथयात्रा (Rathyatra)",
         "subject": "hindi_kalika",
         "thumbnail": null
       },
       {
-        "id": "Fb0QLsyBYZ0W9XFUt1yx",
-        "title": "Chapter 13 - Sundar Hockey Ka Garh",
-        "title_en": "Sundar Hockey Ka Garh",
-        "title_or": "सुंदर हॉकी का गढ़ (Sundar Hockey Ka Garh)",
+        "id": "4ADx7qb0nUo5zaWZnzpt",
+        "title": "Chapter 3 - Magic of point among numbers / Decimals",
+        "title_en": "Magic of point among numbers / Decimals",
+        "title_or": "ସଂଖ୍ୟାର ମଝିରେ ବିନ୍ଦୁର କମାଲ",
+        "subject": "ganita_prakas",
+        "thumbnail": null
+      },
+      {
+        "id": "N7W2qfZUMPCfW81mnpt7",
+        "title": "Chapter 5 - Balabuddhi",
+        "title_en": "Balabuddhi",
+        "title_or": "ବଳବୁଦ୍ଧି",
+        "subject": "sahitya_suman",
+        "thumbnail": null
+      },
+      {
+        "id": "9qK6q9CfdyUDNAPdK9aB",
+        "title": "Chapter 6 - Mahan Biplabi Matho Singh",
+        "title_en": "Mahan Biplabi Matho Singh",
+        "title_or": "ମହାନ୍ ବିପ୍ଳବୀ ମାଥୋ ସିଂହ",
+        "subject": "sahitya_suman",
+        "thumbnail": null
+      },
+      {
+        "id": "NHSB9mVv3v82zeEJ526s",
+        "title": "Chapter 5 - A Funny Man",
+        "title_en": "A Funny Man",
+        "title_or": "A Funny Man",
+        "subject": "jasmine",
+        "thumbnail": null
+      },
+      {
+        "id": "OPMxrKyEK7pJEC5WX0FB",
+        "title": "Project 3 - Project 3: Tie and Dye / Box Work",
+        "title_en": "Project 3: Tie and Dye / Box Work",
+        "title_or": "ପ୍ରକଳ୍ପ-୩: ବାନ୍ଧ କାମ / ବାକ୍ସ କାମ",
+        "subject": "kausala_bodha",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "September 2026",
+    "chapters": [
+      {
+        "id": "fANDy2ZOLM2uQxa55nYM",
+        "title": "Chapter 5 - Emergence of Empire",
+        "title_en": "Emergence of Empire",
+        "title_or": "ସାମ୍ରାଜ୍ୟର ଅଭ୍ୟୁଦୟ",
+        "subject": "samajika_bignana",
+        "thumbnail": null
+      },
+      {
+        "id": "baRfFz96tUnEhODXIcPI",
+        "title": "Chapter 6 - Era of Reformation",
+        "title_en": "Era of Reformation",
+        "title_or": "ପୁନର୍ଗଠନର ଯୁଗ",
+        "subject": "samajika_bignana",
+        "thumbnail": null
+      },
+      {
+        "id": "KwPOMkvSAzbxEAdMfdna",
+        "title": "Chapter 5 - Physical and chemical changes around us",
+        "title_en": "Physical and chemical changes around us",
+        "title_or": "ଆମ ଚତୁଃପାର୍ଶ୍ୱରେ ଭୌତିକ ଓ ରାସାୟନିକ ପରିବର୍ତ୍ତନ",
+        "subject": "jigyasa",
+        "thumbnail": null
+      },
+      {
+        "id": "pTC9St1Z8cWcWkJ2usVT",
+        "title": "Chapter 6 - Adolescence: Growth and change",
+        "title_en": "Adolescence: Growth and change",
+        "title_or": "କିଶୋରାବସ୍ଥା: ବୃଦ୍ଧି ଓ ପରିବର୍ତ୍ତନ",
+        "subject": "jigyasa",
+        "thumbnail": null
+      },
+      {
+        "id": "vjEL6LxIKem5iRilqAeO",
+        "title": "Chapter 9 - Chaturthi Bibhakti Prayogah",
+        "title_en": "Chaturthi Bibhakti Prayogah",
+        "title_or": "ଚତୁର୍ଥୀ ବିଭକ୍ତି ପ୍ରୟୋଗଃ",
+        "subject": "sanskritakalika_2",
+        "thumbnail": null
+      },
+      {
+        "id": "ytQVULbR8cD4rWkUedad",
+        "title": "Chapter 10 - Panchami Bibhakti Prayogah",
+        "title_en": "Panchami Bibhakti Prayogah",
+        "title_or": "ପଞ୍ଚମୀ ବିଭକ୍ତି ପ୍ରୟୋଗଃ",
+        "subject": "sanskritakalika_2",
+        "thumbnail": null
+      },
+      {
+        "id": "6LKxOwMzDo9uFNhZrJo7",
+        "title": "Chapter 11 - Shashthi Bibhakti Prayogah",
+        "title_en": "Shashthi Bibhakti Prayogah",
+        "title_or": "ଷଷ୍ଠୀ ବିଭକ୍ତି ପ୍ରୟୋଗଃ",
+        "subject": "sanskritakalika_2",
+        "thumbnail": null
+      },
+      {
+        "id": "dBvzA7mkpiAb86kLgF47",
+        "title": "Chapter 8 - Folk Music",
+        "title_en": "Folk Music",
+        "title_or": "ଲୋକମାନଙ୍କ ସଙ୍ଗୀତ",
+        "subject": "kalakruti",
+        "thumbnail": null
+      },
+      {
+        "id": "6hz8dkE3Cr75ymDrBoMR",
+        "title": "Chapter 9 - Performance",
+        "title_en": "Performance",
+        "title_or": "ପରିବେଷଣ",
+        "subject": "kalakruti",
+        "thumbnail": null
+      },
+      {
+        "id": "DmGX9LyBSvnjRowGKLaV",
+        "title": "Chapter 6 - Baya Hamari Chidiya Rani",
+        "title_en": "Baya Hamari Chidiya Rani",
+        "title_or": "बया हमारी चिड़िया रानी (Baya Hamari Chidiya Rani)",
         "subject": "hindi_kalika",
         "thumbnail": null
       },
       {
-        "id": "csMr96PNuDT5dDocJEg7",
-        "title": "Unit 4 - Unit 3: Basic skills of sports - Football",
-        "title_en": "Unit 3: Basic skills of sports - Football",
-        "title_or": "ଏକକ-୩: କ୍ରୀଡ଼ାର ମୌଳିକ କୌଶଳ - ଫୁଟବଲ୍",
+        "id": "H6Uy48vv469Q51Z2WZG5",
+        "title": "Chapter 7 - Kavi Yadumani",
+        "title_en": "Kavi Yadumani",
+        "title_or": "कवि यदुमणि (Kavi Yadumani)",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
+        "id": "Nv89agtIBL080OcfDLH6",
+        "title": "Unit 3 - Unit 2: Basic skills of sports - Badminton",
+        "title_en": "Unit 2: Basic skills of sports - Badminton",
+        "title_or": "ଏକକ-୨: କ୍ରୀଡ଼ାର ମୌଳିକ କୌଶଳ - ବ୍ୟାଡ୍ମିଣ୍ଟନ୍",
         "subject": "khela_sikhya",
         "thumbnail": null
       },
@@ -4841,34 +4785,34 @@ export const ROADMAP_DATA_7 = [
         "thumbnail": null
       },
       {
-        "id": "cju6KKruZocXAJftfrkP",
-        "title": "Chapter 4 - Panire Pani",
-        "title_en": "Panire Pani",
-        "title_or": "ପାଣିରେ ପାଣି",
+        "id": "gRxXVLIceH3hKDRgo76T",
+        "title": "Chapter 7 - Karmagitika",
+        "title_en": "Karmagitika",
+        "title_or": "କର୍ମଗୀତିକା",
         "subject": "sahitya_suman",
         "thumbnail": null
       },
       {
-        "id": "wlP5QJKElYeHYYuCrqve",
-        "title": "Extra Reading - Extra Reading: Bisweswaraya",
-        "title_en": "Extra Reading: Bisweswaraya",
-        "title_or": "ଅତିରିକ୍ତ ପଠନ: ବିଶ୍ୱେଶ୍ୱରାୟ",
+        "id": "hy1Zg3JchGOEoflXR8sE",
+        "title": "Chapter 8 - Mo Pilabela Katha",
+        "title_en": "Mo Pilabela Katha",
+        "title_or": "ମୋ ପିଲାବେଳ କଥା",
         "subject": "sahitya_suman",
         "thumbnail": null
       },
       {
-        "id": "epFWt7AnvF9238xk8Wnz",
-        "title": "Chapter 4 - Animals, Birds, and Dr. Dolittle",
-        "title_en": "Animals, Birds, and Dr. Dolittle",
-        "title_or": "Animals, Birds, and Dr. Dolittle",
+        "id": "RH35qKiY8rN6rQc0QMtX",
+        "title": "Chapter 6 - Say the Right Thing",
+        "title_en": "Say the Right Thing",
+        "title_or": "Say the Right Thing",
         "subject": "jasmine",
         "thumbnail": null
       },
       {
-        "id": "VTsxAeafUXmKEeAEsbAx",
-        "title": "Chapter 13 - A Homage to Our Brave Soldiers",
-        "title_en": "A Homage to Our Brave Soldiers",
-        "title_or": "A Homage to Our Brave Soldiers",
+        "id": "2t0SQk7aJ5ceNOgiST6L",
+        "title": "Chapter 7 - My Brother's Great Invention",
+        "title_en": "My Brother's Great Invention",
+        "title_or": "My Brother's Great Invention",
         "subject": "jasmine",
         "thumbnail": null
       },
@@ -4884,264 +4828,6 @@ export const ROADMAP_DATA_7 = [
   },
   {
     "month": "October 2026",
-    "chapters": [
-      {
-        "id": "fANDy2ZOLM2uQxa55nYM",
-        "title": "Chapter 5 - Emergence of Empire",
-        "title_en": "Emergence of Empire",
-        "title_or": "ସାମ୍ରାଜ୍ୟର ଅଭ୍ୟୁଦୟ",
-        "subject": "samajika_bignana",
-        "thumbnail": null
-      },
-      {
-        "id": "KwPOMkvSAzbxEAdMfdna",
-        "title": "Chapter 5 - Physical and chemical changes around us",
-        "title_en": "Physical and chemical changes around us",
-        "title_or": "ଆମ ଚତୁଃପାର୍ଶ୍ୱରେ ଭୌତିକ ଓ ରାସାୟନିକ ପରିବର୍ତ୍ତନ",
-        "subject": "jigyasa",
-        "thumbnail": null
-      },
-      {
-        "id": "j5cLG9N5hBW9r5p9DjR5",
-        "title": "Chapter 5 - I U Karanta Napunsakalingah",
-        "title_en": "I U Karanta Napunsakalingah",
-        "title_or": "ଇ ଉ କାରାନ୍ତ ନପୁଂସକଲିଙ୍ଗଃ",
-        "subject": "sanskritakalika_2",
-        "thumbnail": null
-      },
-      {
-        "id": "2lhpyHREMrr8zderSJiN",
-        "title": "Chapter 14 - Kirtiryasya Sa Jibati",
-        "title_en": "Kirtiryasya Sa Jibati",
-        "title_or": "କୀର୍ତ୍ତିର୍ଯସ୍ୟ ସ ଜୀବତି",
-        "subject": "sanskritakalika_2",
-        "thumbnail": null
-      },
-      {
-        "id": "MtN46y366xxT65XZgDXX",
-        "title": "Chapter 23 - Ishabasyam Idam Sarbam",
-        "title_en": "Ishabasyam Idam Sarbam",
-        "title_or": "ଈଶାବାସ୍ୟମ୍ ଇଦଂ ସର୍ବମ୍",
-        "subject": "sanskritakalika_2",
-        "thumbnail": null
-      },
-      {
-        "id": "5BjEOja1lsq4wwnrOGC1",
-        "title": "Chapter 5 - Musical Composition",
-        "title_en": "Musical Composition",
-        "title_or": "ସଙ୍ଗୀତ ସଂରଚନା",
-        "subject": "kalakruti",
-        "thumbnail": null
-      },
-      {
-        "id": "bmUjFk8GTnIeP5IJ8Pt3",
-        "title": "Chapter 14 - Natya / Dance Drama",
-        "title_en": "Natya / Dance Drama",
-        "title_or": "ନାଟ୍ୟ",
-        "subject": "kalakruti",
-        "thumbnail": null
-      },
-      {
-        "id": "UgzzQwNUsLvzFZ8Qxa0h",
-        "title": "Chapter 5 - Rathyatra",
-        "title_en": "Rathyatra",
-        "title_or": "रथयात्रा (Rathyatra)",
-        "subject": "hindi_kalika",
-        "thumbnail": null
-      },
-      {
-        "id": "ZtuP1HKuC5TnM5LXgfiw",
-        "title": "Chapter 14 - Paheliyan",
-        "title_en": "Paheliyan",
-        "title_or": "पहेलियाँ (Paheliyan)",
-        "subject": "hindi_kalika",
-        "thumbnail": null
-      },
-      {
-        "id": "kHIg6aRBqhGYUtz5XHoK",
-        "title": "Unit 5 - Unit 4: Basic skills of sports - Kabaddi",
-        "title_en": "Unit 4: Basic skills of sports - Kabaddi",
-        "title_or": "ଏକକ-୪: କ୍ରୀଡ଼ାର ମୌଳିକ କୌଶଳ - କବାଡ଼ି",
-        "subject": "khela_sikhya",
-        "thumbnail": null
-      },
-      {
-        "id": "rnf4qS86IJeBCWeH2dcr",
-        "title": "Chapter 5 - Parallel lines and transversals",
-        "title_en": "Parallel lines and transversals",
-        "title_or": "ସମାନ୍ତର ସରଳ ରେଖା ଓ ଛେଦକ",
-        "subject": "ganita_prakas",
-        "thumbnail": null
-      },
-      {
-        "id": "N7W2qfZUMPCfW81mnpt7",
-        "title": "Chapter 5 - Balabuddhi",
-        "title_en": "Balabuddhi",
-        "title_or": "ବଳବୁଦ୍ଧି",
-        "subject": "sahitya_suman",
-        "thumbnail": null
-      },
-      {
-        "id": "HVHMOOhB81fqoU2hrkHv",
-        "title": "Extra Reading - Extra Reading: Dancer Sudha Chandran",
-        "title_en": "Extra Reading: Dancer Sudha Chandran",
-        "title_or": "ଅତିରିକ୍ତ ପଠନ: ନୃତ୍ୟାଙ୍ଗନା ସୁଧା ଚନ୍ଦ୍ରନ",
-        "subject": "sahitya_suman",
-        "thumbnail": null
-      },
-      {
-        "id": "NHSB9mVv3v82zeEJ526s",
-        "title": "Chapter 5 - A Funny Man",
-        "title_en": "A Funny Man",
-        "title_or": "A Funny Man",
-        "subject": "jasmine",
-        "thumbnail": null
-      },
-      {
-        "id": "INYLlddwosHuYSxHXE9B",
-        "title": "Chapter 14 - My Dear Soldiers",
-        "title_en": "My Dear Soldiers",
-        "title_or": "My Dear Soldiers",
-        "subject": "jasmine",
-        "thumbnail": null
-      },
-      {
-        "id": "SJ5d8ctOvFaRSBm6w9lI",
-        "title": "Project 5 - Project 5: Puppet Show",
-        "title_en": "Project 5: Puppet Show",
-        "title_or": "ପ୍ରକଳ୍ପ-୫: କଣ୍ଢେଇ ନାଚ",
-        "subject": "kausala_bodha",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "November 2026",
-    "chapters": [
-      {
-        "id": "baRfFz96tUnEhODXIcPI",
-        "title": "Chapter 6 - Era of Reformation",
-        "title_en": "Era of Reformation",
-        "title_or": "ପୁନର୍ଗଠନର ଯୁଗ",
-        "subject": "samajika_bignana",
-        "thumbnail": null
-      },
-      {
-        "id": "pTC9St1Z8cWcWkJ2usVT",
-        "title": "Chapter 6 - Adolescence: Growth and change",
-        "title_en": "Adolescence: Growth and change",
-        "title_or": "କିଶୋରାବସ୍ଥା: ବୃଦ୍ଧି ଓ ପରିବର୍ତ୍ତନ",
-        "subject": "jigyasa",
-        "thumbnail": null
-      },
-      {
-        "id": "7a2ADZw5ChMtD6YSdfqh",
-        "title": "Chapter 6 - Karaka-Bibhakti Prayogah (Prathama)",
-        "title_en": "Karaka-Bibhakti Prayogah (Prathama)",
-        "title_or": "କାରକ-ବିଭକ୍ତି ପ୍ରୟୋଗଃ (ପ୍ରଥମା ବିଭକ୍ତି ପ୍ରୟୋଗଃ)",
-        "subject": "sanskritakalika_2",
-        "thumbnail": null
-      },
-      {
-        "id": "K7gnQORUyQ2LF0RM3nO5",
-        "title": "Chapter 15 - Sma Prayogah: Sambhashanam",
-        "title_en": "Sma Prayogah: Sambhashanam",
-        "title_or": "ସ୍ମ ପ୍ରୟୋଗଃ ସମ୍ଭାଷଣମ୍",
-        "subject": "sanskritakalika_2",
-        "thumbnail": null
-      },
-      {
-        "id": "r2BnxKqZoVTJqdPVTIFu",
-        "title": "Chapter 24 - Suktimala",
-        "title_en": "Suktimala",
-        "title_or": "ସୂକ୍ତିମାଳା",
-        "subject": "sanskritakalika_2",
-        "thumbnail": null
-      },
-      {
-        "id": "BZjXUDiu3U1J0SZIq5kq",
-        "title": "Chapter 6 - Music, Emotion and Creativity",
-        "title_en": "Music, Emotion and Creativity",
-        "title_or": "ସଙ୍ଗୀତ, ଭାବନା ଏବଂ ସୃଜନଶୀଳତା",
-        "subject": "kalakruti",
-        "thumbnail": null
-      },
-      {
-        "id": "ULqwiQGFiKzYh4yCY7Oh",
-        "title": "Chapter 15 - Estimation and Symbolism in Objects",
-        "title_en": "Estimation and Symbolism in Objects",
-        "title_or": "ଆକଳନ ଏବଂ ପ୍ରତୀକରେ ବସ୍ତୁ",
-        "subject": "kalakruti",
-        "thumbnail": null
-      },
-      {
-        "id": "DmGX9LyBSvnjRowGKLaV",
-        "title": "Chapter 6 - Baya Hamari Chidiya Rani",
-        "title_en": "Baya Hamari Chidiya Rani",
-        "title_or": "बया हमारी चिड़िया रानी (Baya Hamari Chidiya Rani)",
-        "subject": "hindi_kalika",
-        "thumbnail": null
-      },
-      {
-        "id": "R9pQ7a7stQMHKvLH6kM5",
-        "title": "Unit 6 - Unit 5: Yoga",
-        "title_en": "Unit 5: Yoga",
-        "title_or": "ଏକକ-୫: ଯୋଗ",
-        "subject": "khela_sikhya",
-        "thumbnail": null
-      },
-      {
-        "id": "jz3EKqwa1Ls6zEsMJ9xa",
-        "title": "Chapter 6 - Number games",
-        "title_en": "Number games",
-        "title_or": "ସଂଖ୍ୟା ଖେଳ",
-        "subject": "ganita_prakas",
-        "thumbnail": null
-      },
-      {
-        "id": "9qK6q9CfdyUDNAPdK9aB",
-        "title": "Chapter 6 - Mahan Biplabi Matho Singh",
-        "title_en": "Mahan Biplabi Matho Singh",
-        "title_or": "ମହାନ୍ ବିପ୍ଳବୀ ମାଥୋ ସିଂହ",
-        "subject": "sahitya_suman",
-        "thumbnail": null
-      },
-      {
-        "id": "cKmYOnMR6ugFM1lMTWXX",
-        "title": "Extra Reading - Extra Reading: Re Pataka Jatir Garaba",
-        "title_en": "Extra Reading: Re Pataka Jatir Garaba",
-        "title_or": "ଅତିରିକ୍ତ ପଠନ: ରେ ପତାକା ଜାତିର ଗରବ",
-        "subject": "sahitya_suman",
-        "thumbnail": null
-      },
-      {
-        "id": "RH35qKiY8rN6rQc0QMtX",
-        "title": "Chapter 6 - Say the Right Thing",
-        "title_en": "Say the Right Thing",
-        "title_or": "Say the Right Thing",
-        "subject": "jasmine",
-        "thumbnail": null
-      },
-      {
-        "id": "3FF0j1UVU4PGZY1DTkgN",
-        "title": "Chapter 15 - Rani Abbakka",
-        "title_en": "Rani Abbakka",
-        "title_or": "Rani Abbakka",
-        "subject": "jasmine",
-        "thumbnail": null
-      },
-      {
-        "id": "RlP3Jzfq0jXxrZh2312X",
-        "title": "Project 6 - Project 6: Family Health Booklet / Health Journal",
-        "title_en": "Project 6: Family Health Booklet / Health Journal",
-        "title_or": "ପ୍ରକଳ୍ପ-୬: ପରିବାର ସ୍ୱାସ୍ଥ୍ୟ ପୁସ୍ତିକା",
-        "subject": "kausala_bodha",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "December 2026",
     "chapters": [
       {
         "id": "fz8rxcLNYfPCLJbJdiTQ",
@@ -5160,89 +4846,113 @@ export const ROADMAP_DATA_7 = [
         "thumbnail": null
       },
       {
-        "id": "xMabo91SFodYg1XitMKo",
-        "title": "Chapter 7 - Dwitiya Bibhakti Prayogah",
-        "title_en": "Dwitiya Bibhakti Prayogah",
-        "title_or": "ଦ୍ୱିତୀୟା ବିଭକ୍ତି ପ୍ରୟୋଗଃ",
+        "id": "0wMJiBBaWpwPoN2lRdtF",
+        "title": "Chapter 12 - Saptami Bibhakti Prayogah",
+        "title_en": "Saptami Bibhakti Prayogah",
+        "title_or": "ସପ୍ତମୀ ବିଭକ୍ତି ପ୍ରୟୋଗଃ",
         "subject": "sanskritakalika_2",
         "thumbnail": null
       },
       {
-        "id": "vIfa71GfvvhTsbxGn4Lk",
-        "title": "Chapter 16 - Kartabyam Palayet",
-        "title_en": "Kartabyam Palayet",
-        "title_or": "କର୍ତ୍ତବ୍ୟଂ ପାଳୟେତ୍",
+        "id": "7tzN2KqzNKEkSeriQNxW",
+        "title": "Chapter 13 - Agya Gurunam Hyabicharaniya",
+        "title_en": "Agya Gurunam Hyabicharaniya",
+        "title_or": "ଆଜ୍ଞା ଗୁରୂଣାଂ ହ୍ୟବିଚାରଣୀୟା",
         "subject": "sanskritakalika_2",
         "thumbnail": null
       },
       {
-        "id": "NHBrcn7jet3yPUerY49m",
-        "title": "Chapter 7 - Melody and Rhythm",
-        "title_en": "Melody and Rhythm",
-        "title_or": "ରାଗ ଓ ତାଳ",
+        "id": "2lhpyHREMrr8zderSJiN",
+        "title": "Chapter 14 - Kirtiryasya Sa Jibati",
+        "title_en": "Kirtiryasya Sa Jibati",
+        "title_or": "କୀର୍ତ୍ତିର୍ଯସ୍ୟ ସ ଜୀବତି",
+        "subject": "sanskritakalika_2",
+        "thumbnail": null
+      },
+      {
+        "id": "ylWbIBJHCYI6fnes0yR5",
+        "title": "Chapter 10 - Dance and Expressive Art",
+        "title_en": "Dance and Expressive Art",
+        "title_or": "ନୃତ୍ୟ ଏବଂ ଭାବମୟ କଳା",
         "subject": "kalakruti",
         "thumbnail": null
       },
       {
-        "id": "GCLydJlBqGkBzdzbCuLA",
-        "title": "Chapter 16 - Palette of Nature",
-        "title_en": "Palette of Nature",
-        "title_or": "ପ୍ରକୃତିର ପ୍ୟାଲେଟ",
+        "id": "PSTnHsffHaN4K1SFk8IV",
+        "title": "Chapter 11 - Dance Elements and Skills",
+        "title_en": "Dance Elements and Skills",
+        "title_or": "ନୃତ୍ୟ ଉପାଦାନ ଏବଂ କୌଶଳ",
         "subject": "kalakruti",
         "thumbnail": null
       },
       {
-        "id": "H6Uy48vv469Q51Z2WZG5",
-        "title": "Chapter 7 - Kavi Yadumani",
-        "title_en": "Kavi Yadumani",
-        "title_or": "कवि यदुमणि (Kavi Yadumani)",
+        "id": "NyAceMiS7Vkno4D3PSSN",
+        "title": "Chapter 12 - Dance, Sequence and Creativity",
+        "title_en": "Dance, Sequence and Creativity",
+        "title_or": "ନୃତ୍ୟ, କ୍ରମେ ଏବଂ ସୃଜନଶୀଳତା",
+        "subject": "kalakruti",
+        "thumbnail": null
+      },
+      {
+        "id": "uXO7xOZeqW1Jqt3bUA9z",
+        "title": "Chapter 8 - Neem",
+        "title_en": "Neem",
+        "title_or": "नीम (Neem)",
         "subject": "hindi_kalika",
         "thumbnail": null
       },
       {
-        "id": "GNBVoVfB6aoOEBLbuUSE",
-        "title": "Chapter 7 - Story of three intersecting lines / Triangles",
-        "title_en": "Story of three intersecting lines / Triangles",
-        "title_or": "ତିନୋଟି ପରସ୍ପର ଛେଦୀ ସରଳ ରେଖାର କଥା",
+        "id": "csMr96PNuDT5dDocJEg7",
+        "title": "Unit 4 - Unit 3: Basic skills of sports - Football",
+        "title_en": "Unit 3: Basic skills of sports - Football",
+        "title_or": "ଏକକ-୩: କ୍ରୀଡ଼ାର ମୌଳିକ କୌଶଳ - ଫୁଟବଲ୍",
+        "subject": "khela_sikhya",
+        "thumbnail": null
+      },
+      {
+        "id": "rnf4qS86IJeBCWeH2dcr",
+        "title": "Chapter 5 - Parallel lines and transversals",
+        "title_en": "Parallel lines and transversals",
+        "title_or": "ସମାନ୍ତର ସରଳ ରେଖା ଓ ଛେଦକ",
         "subject": "ganita_prakas",
         "thumbnail": null
       },
       {
-        "id": "gRxXVLIceH3hKDRgo76T",
-        "title": "Chapter 7 - Karmagitika",
-        "title_en": "Karmagitika",
-        "title_or": "କର୍ମଗୀତିକା",
+        "id": "RR0fTjPpb8BRH0AQ2bou",
+        "title": "Chapter 9 - Sharata Raja",
+        "title_en": "Sharata Raja",
+        "title_or": "ଶରତ ରାଜା",
         "subject": "sahitya_suman",
         "thumbnail": null
       },
       {
-        "id": "tXdRQNFxQmtxRdvEtZt0",
-        "title": "Extra Reading - Extra Reading: Road Safety",
-        "title_en": "Extra Reading: Road Safety",
-        "title_or": "ଅତିରିକ୍ତ ପଠନ: ସଡ଼କ ନିରାପତ୍ତା",
+        "id": "eUTXTqwHLk55voGkHusS",
+        "title": "Chapter 10 - Bemara Bahana",
+        "title_en": "Bemara Bahana",
+        "title_or": "ବେମାର ବାହାନା",
         "subject": "sahitya_suman",
         "thumbnail": null
       },
       {
-        "id": "2t0SQk7aJ5ceNOgiST6L",
-        "title": "Chapter 7 - My Brother's Great Invention",
-        "title_en": "My Brother's Great Invention",
-        "title_or": "My Brother's Great Invention",
+        "id": "vemoFeFixyFdgzq6LAC4",
+        "title": "Chapter 8 - Paper Boats",
+        "title_en": "Paper Boats",
+        "title_or": "Paper Boats",
         "subject": "jasmine",
         "thumbnail": null
       },
       {
-        "id": "WFo5U8EyjnZ8a0P17oGI",
-        "title": "Project 7 - Planning for Skill Fair",
-        "title_en": "Planning for Skill Fair",
-        "title_or": "କୌଶଳ ମେଳା ପାଇଁ ଯୋଜନା",
-        "subject": "kausala_bodha",
+        "id": "3xMR5zBBWvtMOS2S8KXp",
+        "title": "Chapter 9 - North, South, East, West",
+        "title_en": "North, South, East, West",
+        "title_or": "North, South, East, West",
+        "subject": "jasmine",
         "thumbnail": null
       }
     ]
   },
   {
-    "month": "January 2027",
+    "month": "November 2026",
     "chapters": [
       {
         "id": "hpWiK6BBzBcMROaICvVx",
@@ -5261,127 +4971,34 @@ export const ROADMAP_DATA_7 = [
         "thumbnail": null
       },
       {
-        "id": "E03Gjn6qX05x0KPuvVk7",
-        "title": "Chapter 8 - Trutiya Bibhakti Prayogah",
-        "title_en": "Trutiya Bibhakti Prayogah",
-        "title_or": "ତୃତୀୟା ବିଭକ୍ତି ପ୍ରୟୋଗଃ",
+        "id": "K7gnQORUyQ2LF0RM3nO5",
+        "title": "Chapter 15 - Sma Prayogah: Sambhashanam",
+        "title_en": "Sma Prayogah: Sambhashanam",
+        "title_or": "ସ୍ମ ପ୍ରୟୋଗଃ ସମ୍ଭାଷଣମ୍",
         "subject": "sanskritakalika_2",
         "thumbnail": null
       },
       {
-        "id": "AruKj3iVeJYIns9lfiO6",
-        "title": "Chapter 17 - Sunagarikah",
-        "title_en": "Sunagarikah",
-        "title_or": "ସୁନାଗରିକଃ",
+        "id": "vIfa71GfvvhTsbxGn4Lk",
+        "title": "Chapter 16 - Kartabyam Palayet",
+        "title_en": "Kartabyam Palayet",
+        "title_or": "କର୍ତ୍ତବ୍ୟଂ ପାଳୟେତ୍",
         "subject": "sanskritakalika_2",
         "thumbnail": null
       },
       {
-        "id": "dBvzA7mkpiAb86kLgF47",
-        "title": "Chapter 8 - Folk Music",
-        "title_en": "Folk Music",
-        "title_or": "ଲୋକମାନଙ୍କ ସଙ୍ଗୀତ",
+        "id": "InLQ9G5FEFoR9jAkgesw",
+        "title": "Chapter 13 - Famous Personalities",
+        "title_en": "Famous Personalities",
+        "title_or": "ପ୍ରସିଦ୍ଧ ବ୍ୟକ୍ତିତ୍ୱ",
         "subject": "kalakruti",
         "thumbnail": null
       },
       {
-        "id": "RTlNHjEk3Q1BFR3NmjQW",
-        "title": "Chapter 17 - How to Experience Gradually",
-        "title_en": "How to Experience Gradually",
-        "title_or": "କ୍ରମେ କିପରି ଅନୁଭବ କର",
-        "subject": "kalakruti",
-        "thumbnail": null
-      },
-      {
-        "id": "uXO7xOZeqW1Jqt3bUA9z",
-        "title": "Chapter 8 - Neem",
-        "title_en": "Neem",
-        "title_or": "नीम (Neem)",
-        "subject": "hindi_kalika",
-        "thumbnail": null
-      },
-      {
-        "id": "Yw9sq7brPRklRKbx9FOV",
-        "title": "Chapter 8 - Use of fractions",
-        "title_en": "Use of fractions",
-        "title_or": "ଭଗ୍ନାଂଶର ବ୍ୟବହାର",
-        "subject": "ganita_prakas",
-        "thumbnail": null
-      },
-      {
-        "id": "hy1Zg3JchGOEoflXR8sE",
-        "title": "Chapter 8 - Mo Pilabela Katha",
-        "title_en": "Mo Pilabela Katha",
-        "title_or": "ମୋ ପିଲାବେଳ କଥା",
-        "subject": "sahitya_suman",
-        "thumbnail": null
-      },
-      {
-        "id": "q1pg1q89SLHGY88YjGbR",
-        "title": "Extra Reading - Extra Reading: Swami Bhakta Kumara",
-        "title_en": "Extra Reading: Swami Bhakta Kumara",
-        "title_or": "ଅତିରିକ୍ତ ପଠନ: ସ୍ୱାମୀ ଭକ୍ତ କୁମର",
-        "subject": "sahitya_suman",
-        "thumbnail": null
-      },
-      {
-        "id": "vemoFeFixyFdgzq6LAC4",
-        "title": "Chapter 8 - Paper Boats",
-        "title_en": "Paper Boats",
-        "title_or": "Paper Boats",
-        "subject": "jasmine",
-        "thumbnail": null
-      }
-    ]
-  },
-  {
-    "month": "February 2027",
-    "chapters": [
-      {
-        "id": "XbCJHd9it6KpqoAZs2jv",
-        "title": "Chapter 9 - From Rulers to Ruled: Types of Government",
-        "title_en": "From Rulers to Ruled: Types of Government",
-        "title_or": "ଶାସକଙ୍କ ଠାରୁ ଶାସିତଙ୍କ ପର୍ଯ୍ୟନ୍ତ: ସରକାରର ପ୍ରକାର ଭେଦ",
-        "subject": "samajika_bignana",
-        "thumbnail": null
-      },
-      {
-        "id": "MkiZcqKVJlmCXA0rG4ie",
-        "title": "Chapter 9 - Life processes of animals",
-        "title_en": "Life processes of animals",
-        "title_or": "ପ୍ରାଣୀମାନଙ୍କ ଜୀବନ ପ୍ରକ୍ରିୟା",
-        "subject": "jigyasa",
-        "thumbnail": null
-      },
-      {
-        "id": "vjEL6LxIKem5iRilqAeO",
-        "title": "Chapter 9 - Chaturthi Bibhakti Prayogah",
-        "title_en": "Chaturthi Bibhakti Prayogah",
-        "title_or": "ଚତୁର୍ଥୀ ବିଭକ୍ତି ପ୍ରୟୋଗଃ",
-        "subject": "sanskritakalika_2",
-        "thumbnail": null
-      },
-      {
-        "id": "nI9lvPSMroHLDEPp1V7W",
-        "title": "Chapter 18 - Bande Bharatamataram",
-        "title_en": "Bande Bharatamataram",
-        "title_or": "ବନ୍ଦେ ଭାରତମାତରମ୍",
-        "subject": "sanskritakalika_2",
-        "thumbnail": null
-      },
-      {
-        "id": "6hz8dkE3Cr75ymDrBoMR",
-        "title": "Chapter 9 - Performance",
-        "title_en": "Performance",
-        "title_or": "ପରିବେଷଣ",
-        "subject": "kalakruti",
-        "thumbnail": null
-      },
-      {
-        "id": "PEoBI63oNL7S2WqYKv9s",
-        "title": "Chapter 18 - Weaving and Our Tradition",
-        "title_en": "Weaving and Our Tradition",
-        "title_or": "ବୟନ ଓ ଆମ ପରମ୍ପରା",
+        "id": "bmUjFk8GTnIeP5IJ8Pt3",
+        "title": "Chapter 14 - Natya / Dance Drama",
+        "title_en": "Natya / Dance Drama",
+        "title_or": "ନାଟ୍ୟ",
         "subject": "kalakruti",
         "thumbnail": null
       },
@@ -5394,18 +5011,401 @@ export const ROADMAP_DATA_7 = [
         "thumbnail": null
       },
       {
-        "id": "RR0fTjPpb8BRH0AQ2bou",
-        "title": "Chapter 9 - Sharata Raja",
-        "title_en": "Sharata Raja",
-        "title_or": "ଶରତ ରାଜା",
+        "id": "9BAuHmSHJhU5YRgDoeuE",
+        "title": "Chapter 10 - Himalaya",
+        "title_en": "Himalaya",
+        "title_or": "हिमालय (Himalaya)",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
+        "id": "jz3EKqwa1Ls6zEsMJ9xa",
+        "title": "Chapter 6 - Number games",
+        "title_en": "Number games",
+        "title_or": "ସଂଖ୍ୟା ଖେଳ",
+        "subject": "ganita_prakas",
+        "thumbnail": null
+      },
+      {
+        "id": "kaxfqlqzvLJ4rwHJrG73",
+        "title": "Chapter 11 - Interview with Kelucharan Mahapatra",
+        "title_en": "Interview with Kelucharan Mahapatra",
+        "title_or": "ପଦ୍ମବିଭୂଷଣ କେଳୁଚରଣ ମହାପାତ୍ରଙ୍କ ସହ ସାକ୍ଷାତକାର",
         "subject": "sahitya_suman",
         "thumbnail": null
       },
       {
-        "id": "3xMR5zBBWvtMOS2S8KXp",
-        "title": "Chapter 9 - North, South, East, West",
-        "title_en": "North, South, East, West",
-        "title_or": "North, South, East, West",
+        "id": "GgyQGWYzUuP32RZEXdRZ",
+        "title": "Chapter 12 - Daraja Kholi Deba",
+        "title_en": "Daraja Kholi Deba",
+        "title_or": "ଦରଜା ଖୋଲି ଦେବା",
+        "subject": "sahitya_suman",
+        "thumbnail": null
+      },
+      {
+        "id": "MaZD49FfwAYv8TkbWRVO",
+        "title": "Chapter 10 - The Tunnel",
+        "title_en": "The Tunnel",
+        "title_or": "The Tunnel",
+        "subject": "jasmine",
+        "thumbnail": null
+      },
+      {
+        "id": "SJ5d8ctOvFaRSBm6w9lI",
+        "title": "Project 5 - Project 5: Puppet Show",
+        "title_en": "Project 5: Puppet Show",
+        "title_or": "ପ୍ରକଳ୍ପ-୫: କଣ୍ଢେଇ ନାଚ",
+        "subject": "kausala_bodha",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "December 2026",
+    "chapters": [
+      {
+        "id": "XbCJHd9it6KpqoAZs2jv",
+        "title": "Chapter 9 - From Rulers to Ruled: Types of Government",
+        "title_en": "From Rulers to Ruled: Types of Government",
+        "title_or": "ଶାସକଙ୍କ ଠାରୁ ଶାସିତଙ୍କ ପର୍ଯ୍ୟନ୍ତ: ସରକାରର ପ୍ରକାର ଭେଦ",
+        "subject": "samajika_bignana",
+        "thumbnail": null
+      },
+      {
+        "id": "G301MDVSxz70hDg9obWa",
+        "title": "Chapter 10 - Constitution of India: An Introduction",
+        "title_en": "Constitution of India: An Introduction",
+        "title_or": "ଭାରତର ସମ୍ବିଧାନ: ଏକ ପରିଚୟ",
+        "subject": "samajika_bignana",
+        "thumbnail": null
+      },
+      {
+        "id": "MkiZcqKVJlmCXA0rG4ie",
+        "title": "Chapter 9 - Life processes of animals",
+        "title_en": "Life processes of animals",
+        "title_or": "ପ୍ରାଣୀମାନଙ୍କ ଜୀବନ ପ୍ରକ୍ରିୟା",
+        "subject": "jigyasa",
+        "thumbnail": null
+      },
+      {
+        "id": "EtjwBanVtMz0TsQb9X8m",
+        "title": "Chapter 10 - Life processes in plants",
+        "title_en": "Life processes in plants",
+        "title_or": "ଉଦ୍ଭିଦରେ ଜୀବନ ପ୍ରକ୍ରିୟା",
+        "subject": "jigyasa",
+        "thumbnail": null
+      },
+      {
+        "id": "AruKj3iVeJYIns9lfiO6",
+        "title": "Chapter 17 - Sunagarikah",
+        "title_en": "Sunagarikah",
+        "title_or": "ସୁନାଗରିକଃ",
+        "subject": "sanskritakalika_2",
+        "thumbnail": null
+      },
+      {
+        "id": "nI9lvPSMroHLDEPp1V7W",
+        "title": "Chapter 18 - Bande Bharatamataram",
+        "title_en": "Bande Bharatamataram",
+        "title_or": "ବନ୍ଦେ ଭାରତମାତରମ୍",
+        "subject": "sanskritakalika_2",
+        "thumbnail": null
+      },
+      {
+        "id": "c95nkTwwjvx6BsDkEtdn",
+        "title": "Chapter 19 - Nityam Pibamah Subhashitarasam",
+        "title_en": "Nityam Pibamah Subhashitarasam",
+        "title_or": "ନିତ୍ୟଂ ପିବାମଃ ସୁଭାଷିତରସମ୍",
+        "subject": "sanskritakalika_2",
+        "thumbnail": null
+      },
+      {
+        "id": "ULqwiQGFiKzYh4yCY7Oh",
+        "title": "Chapter 15 - Estimation and Symbolism in Objects",
+        "title_en": "Estimation and Symbolism in Objects",
+        "title_or": "ଆକଳନ ଏବଂ ପ୍ରତୀକରେ ବସ୍ତୁ",
+        "subject": "kalakruti",
+        "thumbnail": null
+      },
+      {
+        "id": "GCLydJlBqGkBzdzbCuLA",
+        "title": "Chapter 16 - Palette of Nature",
+        "title_en": "Palette of Nature",
+        "title_or": "ପ୍ରକୃତିର ପ୍ୟାଲେଟ",
+        "subject": "kalakruti",
+        "thumbnail": null
+      },
+      {
+        "id": "QOFh7nsEO3ovsG9kvUq7",
+        "title": "Chapter 11 - Hamare Madhubabu",
+        "title_en": "Hamare Madhubabu",
+        "title_or": "हमारे मधुबाबू (Hamare Madhubabu)",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
+        "id": "kHIg6aRBqhGYUtz5XHoK",
+        "title": "Unit 5 - Unit 4: Basic skills of sports - Kabaddi",
+        "title_en": "Unit 4: Basic skills of sports - Kabaddi",
+        "title_or": "ଏକକ-୪: କ୍ରୀଡ଼ାର ମୌଳିକ କୌଶଳ - କବାଡ଼ି",
+        "subject": "khela_sikhya",
+        "thumbnail": null
+      },
+      {
+        "id": "GNBVoVfB6aoOEBLbuUSE",
+        "title": "Chapter 7 - Story of three intersecting lines / Triangles",
+        "title_en": "Story of three intersecting lines / Triangles",
+        "title_or": "ତିନୋଟି ପରସ୍ପର ଛେଦୀ ସରଳ ରେଖାର କଥା",
+        "subject": "ganita_prakas",
+        "thumbnail": null
+      },
+      {
+        "id": "wlP5QJKElYeHYYuCrqve",
+        "title": "Extra Reading - Extra Reading: Bisweswaraya",
+        "title_en": "Extra Reading: Bisweswaraya",
+        "title_or": "ଅତିରିକ୍ତ ପଠନ: ବିଶ୍ୱେଶ୍ୱରାୟ",
+        "subject": "sahitya_suman",
+        "thumbnail": null
+      },
+      {
+        "id": "HVHMOOhB81fqoU2hrkHv",
+        "title": "Extra Reading - Extra Reading: Dancer Sudha Chandran",
+        "title_en": "Extra Reading: Dancer Sudha Chandran",
+        "title_or": "ଅତିରିକ୍ତ ପଠନ: ନୃତ୍ୟାଙ୍ଗନା ସୁଧା ଚନ୍ଦ୍ରନ",
+        "subject": "sahitya_suman",
+        "thumbnail": null
+      },
+      {
+        "id": "TYFh4IZmR4GYW8coHmk3",
+        "title": "Chapter 11 - Travel",
+        "title_en": "Travel",
+        "title_or": "Travel",
+        "subject": "jasmine",
+        "thumbnail": null
+      },
+      {
+        "id": "c4kLPbAQB6Gy5rJc7fZK",
+        "title": "Chapter 12 - Conquering the Summit",
+        "title_en": "Conquering the Summit",
+        "title_or": "Conquering the Summit",
+        "subject": "jasmine",
+        "thumbnail": null
+      },
+      {
+        "id": "RlP3Jzfq0jXxrZh2312X",
+        "title": "Project 6 - Project 6: Family Health Booklet / Health Journal",
+        "title_en": "Project 6: Family Health Booklet / Health Journal",
+        "title_or": "ପ୍ରକଳ୍ପ-୬: ପରିବାର ସ୍ୱାସ୍ଥ୍ୟ ପୁସ୍ତିକା",
+        "subject": "kausala_bodha",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "January 2027",
+    "chapters": [
+      {
+        "id": "dQzL0BK1XDa1lPKNMG6H",
+        "title": "Chapter 11 - From Barter to Money",
+        "title_en": "From Barter to Money",
+        "title_or": "ଦ୍ରବ୍ୟ ବିନିମୟରୁ ମୁଦ୍ରା ପର୍ଯ୍ୟନ୍ତ",
+        "subject": "samajika_bignana",
+        "thumbnail": null
+      },
+      {
+        "id": "j4NUGT2qtyrYnuLfJjnF",
+        "title": "Chapter 11 - Light: Shadows and reflection",
+        "title_en": "Light: Shadows and reflection",
+        "title_or": "ଆଲୋକ: ଛାୟା ଓ ପ୍ରତିଫଳନ",
+        "subject": "jigyasa",
+        "thumbnail": null
+      },
+      {
+        "id": "WZPpy9nSAKABT0p6d8Mg",
+        "title": "Chapter 20 - Suryanamaskarah",
+        "title_en": "Suryanamaskarah",
+        "title_or": "ସୂର୍ଯ୍ୟନମସ୍କାରଃ",
+        "subject": "sanskritakalika_2",
+        "thumbnail": null
+      },
+      {
+        "id": "SFeLBD4KSTYWCd4xDUOP",
+        "title": "Chapter 21 - Seba Hi Paramadharmah",
+        "title_en": "Seba Hi Paramadharmah",
+        "title_or": "ସେବା ହି ପରମଧର୍ମଃ",
+        "subject": "sanskritakalika_2",
+        "thumbnail": null
+      },
+      {
+        "id": "qCUeH7prxFBsoceColAa",
+        "title": "Chapter 22 - Antyakshari Krida",
+        "title_en": "Antyakshari Krida",
+        "title_or": "ଅନ୍ତ୍ୟାକ୍ଷରୀ କ୍ରୀଡ଼ା",
+        "subject": "sanskritakalika_2",
+        "thumbnail": null
+      },
+      {
+        "id": "RTlNHjEk3Q1BFR3NmjQW",
+        "title": "Chapter 17 - How to Experience Gradually",
+        "title_en": "How to Experience Gradually",
+        "title_or": "କ୍ରମେ କିପରି ଅନୁଭବ କର",
+        "subject": "kalakruti",
+        "thumbnail": null
+      },
+      {
+        "id": "PEoBI63oNL7S2WqYKv9s",
+        "title": "Chapter 18 - Weaving and Our Tradition",
+        "title_en": "Weaving and Our Tradition",
+        "title_or": "ବୟନ ଓ ଆମ ପରମ୍ପରା",
+        "subject": "kalakruti",
+        "thumbnail": null
+      },
+      {
+        "id": "VAJDF8a6AmQxNVjoq88E",
+        "title": "Chapter 12 - Hum Anek Kintu Ek",
+        "title_en": "Hum Anek Kintu Ek",
+        "title_or": "हम अनेक किंतु एक (Hum Anek Kintu Ek)",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
+        "id": "Fb0QLsyBYZ0W9XFUt1yx",
+        "title": "Chapter 13 - Sundar Hockey Ka Garh",
+        "title_en": "Sundar Hockey Ka Garh",
+        "title_or": "सुंदर हॉकी का गढ़ (Sundar Hockey Ka Garh)",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
+        "id": "R9pQ7a7stQMHKvLH6kM5",
+        "title": "Unit 6 - Unit 5: Yoga",
+        "title_en": "Unit 5: Yoga",
+        "title_or": "ଏକକ-୫: ଯୋଗ",
+        "subject": "khela_sikhya",
+        "thumbnail": null
+      },
+      {
+        "id": "Yw9sq7brPRklRKbx9FOV",
+        "title": "Chapter 8 - Use of fractions",
+        "title_en": "Use of fractions",
+        "title_or": "ଭଗ୍ନାଂଶର ବ୍ୟବହାର",
+        "subject": "ganita_prakas",
+        "thumbnail": null
+      },
+      {
+        "id": "cKmYOnMR6ugFM1lMTWXX",
+        "title": "Extra Reading - Extra Reading: Re Pataka Jatir Garaba",
+        "title_en": "Extra Reading: Re Pataka Jatir Garaba",
+        "title_or": "ଅତିରିକ୍ତ ପଠନ: ରେ ପତାକା ଜାତିର ଗରବ",
+        "subject": "sahitya_suman",
+        "thumbnail": null
+      },
+      {
+        "id": "tXdRQNFxQmtxRdvEtZt0",
+        "title": "Extra Reading - Extra Reading: Road Safety",
+        "title_en": "Extra Reading: Road Safety",
+        "title_or": "ଅତିରିକ୍ତ ପଠନ: ସଡ଼କ ନିରାପତ୍ତା",
+        "subject": "sahitya_suman",
+        "thumbnail": null
+      },
+      {
+        "id": "VTsxAeafUXmKEeAEsbAx",
+        "title": "Chapter 13 - A Homage to Our Brave Soldiers",
+        "title_en": "A Homage to Our Brave Soldiers",
+        "title_or": "A Homage to Our Brave Soldiers",
+        "subject": "jasmine",
+        "thumbnail": null
+      },
+      {
+        "id": "INYLlddwosHuYSxHXE9B",
+        "title": "Chapter 14 - My Dear Soldiers",
+        "title_en": "My Dear Soldiers",
+        "title_or": "My Dear Soldiers",
+        "subject": "jasmine",
+        "thumbnail": null
+      },
+      {
+        "id": "WFo5U8EyjnZ8a0P17oGI",
+        "title": "Project 7 - Planning for Skill Fair",
+        "title_en": "Planning for Skill Fair",
+        "title_or": "କୌଶଳ ମେଳା ପାଇଁ ଯୋଜନା",
+        "subject": "kausala_bodha",
+        "thumbnail": null
+      }
+    ]
+  },
+  {
+    "month": "February 2027",
+    "chapters": [
+      {
+        "id": "Uctfkwy4IwsyR3UQSlO8",
+        "title": "Chapter 12 - Understanding Market",
+        "title_en": "Understanding Market",
+        "title_or": "ବଜାରକୁ ବୁଝିବା",
+        "subject": "samajika_bignana",
+        "thumbnail": null
+      },
+      {
+        "id": "UVjcIETkPPM4voFgq7YX",
+        "title": "Chapter 12 - Earth, Moon and Sun",
+        "title_en": "Earth, Moon and Sun",
+        "title_or": "ପୃଥିବୀ, ଚନ୍ଦ୍ର ଓ ସୂର୍ଯ୍ୟ",
+        "subject": "jigyasa",
+        "thumbnail": null
+      },
+      {
+        "id": "MtN46y366xxT65XZgDXX",
+        "title": "Chapter 23 - Ishabasyam Idam Sarbam",
+        "title_en": "Ishabasyam Idam Sarbam",
+        "title_or": "ଈଶାବାସ୍ୟମ୍ ଇଦଂ ସର୍ବମ୍",
+        "subject": "sanskritakalika_2",
+        "thumbnail": null
+      },
+      {
+        "id": "r2BnxKqZoVTJqdPVTIFu",
+        "title": "Chapter 24 - Suktimala",
+        "title_en": "Suktimala",
+        "title_or": "ସୂକ୍ତିମାଳା",
+        "subject": "sanskritakalika_2",
+        "thumbnail": null
+      },
+      {
+        "id": "j9XYHqhe1tmecT0lvETs",
+        "title": "Chapter 19 - Beautiful Handicraft Art",
+        "title_en": "Beautiful Handicraft Art",
+        "title_or": "ସୁନ୍ଦର ହସ୍ତଶିଳ୍ପ କଳା",
+        "subject": "kalakruti",
+        "thumbnail": null
+      },
+      {
+        "id": "3dZDPmtLsDJ1degGMEfD",
+        "title": "Chapter 20 - Sculptures of All Artists Come Alive",
+        "title_en": "Sculptures of All Artists Come Alive",
+        "title_or": "ସମସ୍ତ କଳାକାରଙ୍କ ମୂର୍ତ୍ତିକଳା ପ୍ରାଣବନ୍ତ ହୁଏ",
+        "subject": "kalakruti",
+        "thumbnail": null
+      },
+      {
+        "id": "ZtuP1HKuC5TnM5LXgfiw",
+        "title": "Chapter 14 - Paheliyan",
+        "title_en": "Paheliyan",
+        "title_or": "पहेलियाँ (Paheliyan)",
+        "subject": "hindi_kalika",
+        "thumbnail": null
+      },
+      {
+        "id": "q1pg1q89SLHGY88YjGbR",
+        "title": "Extra Reading - Extra Reading: Swami Bhakta Kumara",
+        "title_en": "Extra Reading: Swami Bhakta Kumara",
+        "title_or": "ଅତିରିକ୍ତ ପଠନ: ସ୍ୱାମୀ ଭକ୍ତ କୁମର",
+        "subject": "sahitya_suman",
+        "thumbnail": null
+      },
+      {
+        "id": "3FF0j1UVU4PGZY1DTkgN",
+        "title": "Chapter 15 - Rani Abbakka",
+        "title_en": "Rani Abbakka",
+        "title_or": "Rani Abbakka",
         "subject": "jasmine",
         "thumbnail": null
       }
