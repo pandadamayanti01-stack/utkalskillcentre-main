@@ -503,11 +503,10 @@ async function startServer() {
           }
 
           if (accessToken) {
-            const vertexModel = modelType === 'pro' ? 'gemini-2.5-pro' : 'gemini-2.5-flash';
-            const region = process.env.VERTEX_AI_REGION || 'us-central1';
+            const vertexModel = modelType === 'pro' ? 'gemini-2.5-pro' : 'gemini-3.5-flash';
             
-            console.log(`Backend AI (Server): Calling Vertex AI model ${vertexModel} in region ${region} for project ${projectId}...`);
-            const vertexUrl = `https://${region}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${region}/publishers/google/models/${vertexModel}:generateContent`;
+            console.log(`Backend AI (Server): Calling Vertex AI model ${vertexModel} via global endpoint for project ${projectId}...`);
+            const vertexUrl = `https://aiplatform.googleapis.com/v1/projects/${projectId}/locations/global/publishers/google/models/${vertexModel}:generateContent`;
             
             const formattedSystemInstruction = systemInstruction 
               ? { parts: [{ text: systemInstruction }] } 
@@ -551,11 +550,10 @@ async function startServer() {
           const vertexKey = process.env.VERTEX_API_KEY || process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
           if (vertexKey) {
             console.log("Backend AI (Server): Attempting to call Vertex endpoints using direct developer key...");
-            const apiKeyModel = modelType === 'pro' ? 'gemini-2.5-pro' : 'gemini-2.5-flash';
+            const apiKeyModel = modelType === 'pro' ? 'gemini-2.5-pro' : 'gemini-3.5-flash';
             const isVertexKey = vertexKey.startsWith('AQ.');
-            const region = process.env.VERTEX_AI_REGION || 'us-central1';
             const vertexKeyUrl = isVertexKey
-              ? `https://${region}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${region}/publishers/google/models/${apiKeyModel}:generateContent?key=${vertexKey}`
+              ? `https://aiplatform.googleapis.com/v1/publishers/google/models/${apiKeyModel}:generateContent?key=${vertexKey}`
               : `https://generativelanguage.googleapis.com/v1beta/models/${apiKeyModel}:generateContent?key=${vertexKey}`;
 
             const response = await fetch(vertexKeyUrl, {
