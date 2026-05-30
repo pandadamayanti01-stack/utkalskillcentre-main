@@ -28,7 +28,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
   }, [language]);
 
   // Slides count
-  const TOTAL_SLIDES = 5;
+  const TOTAL_SLIDES = 6;
 
   // Auto-play loop
   useEffect(() => {
@@ -122,6 +122,17 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
         speakerNotes: "Hello judges! Welcome to Utkal Skill Centre. We are building the future of accessible, bilingual education in India. By combining native Odia curriculum tutoring with state-of-the-art conversational AI, we are bringing an elite personal tutor directly to the fingertips of millions of students in rural Odisha, completely in their mother tongue, removing linguistic and economic barriers."
       },
       {
+        title: "The Creator's Hackathon Journey",
+        subtitle: "Building the RAG Vector Pipeline, Standardizing 10 Grades, and Defeating API Spikes",
+        tagline: "OUR DEVELOPMENT ODYSSEY",
+        bullets: [
+          { title: "Standardizing All 10 Classes", desc: "Curated, structured, and synchronized syllabus guides for Grades 1 through 10 in Google Firestore." },
+          { title: "High-Throughput Gemini OCR", desc: "Crafted a custom multi-modal pipeline vectorizing 1,100+ PDF pages with key rotation and adaptive backoff." },
+          { title: "Liberating Smart Classes", desc: "Unlocked curated YouTube lesson panels completely free for every student with dynamic bilingual mapping." }
+        ],
+        speakerNotes: "Let's talk about the developer's journey! Building this during the hackathon was an intense odyssey of engineering. We meticulously standardized syllabus hierarchies for all 10 grades in Firestore. To handle indexing at scale, we wrote a high-throughput multi-modal Gemini OCR and vectorization engine with adaptive rate-limit backoff. Lastly, we liberated all Smart Class videos—making them 100% free and dynamically bilingual for children across Odisha."
+      },
+      {
         title: "Our Journey & Active Launch Milestones",
         subtitle: "Bridging the rural EdTech gap starting April 1st (Utkal Divas)",
         tagline: "OUR STORY & ANCHOR DATES",
@@ -178,6 +189,17 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
           { title: "ନେଟୱର୍କ ସମସ୍ୟାର ସମାଧାନ", desc: "ଏକ ହାଲୁକା PWA ଆପ୍ ଯାହା ଗ୍ରାମାଞ୍ଚଳର 2G/3G ଇଣ୍ଟରନେଟ୍ ରେ ମଧ୍ୟ ବହୁତ ସ୍ପିଡ୍ ଚାଲେ।" }
         ],
         speakerNotes: "ପ୍ରଣାମ ବିଚାରକ ମଣ୍ଡଳୀ! ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରକୁ ଆପଣମାନଙ୍କୁ ସ୍ୱାଗତ। ଆମେ ଓଡ଼ିଶାର ସରକାରୀ ବିଦ୍ୟାଳୟର ପିଲାମାନଙ୍କ ପାଇଁ ମାତୃଭାଷାରେ ବିଶ୍ୱସ୍ତରୀୟ ଏଆଇ ଶିକ୍ଷା ସାଥୀ ତିଆରି କରିଛୁ। ଓଡ଼ିଆ ଭାଷା ଓ ସରକାରୀ ପାଠ୍ୟକ୍ରମକୁ ଏକାଠି କରି ଆମେ ପିଲାମାନଙ୍କ ମୋବାଇଲ୍ ରେ ଗୁନ୍ଦୁଲୁ ଏଆଇ ଟ୍ୟୁଟର ପହଞ୍ଚାଇଛୁ, ଯାହା ସେମାନଙ୍କୁ ସମ୍ପୂର୍ଣ୍ଣ ମାତୃଭାଷାରେ ଏକ ବଡ଼ ଭଉଣୀ ଭଳି ଗାଇଡ୍ କରୁଛି।"
+      },
+      {
+        title: "ସ୍ରଷ୍ଟାଙ୍କ ହାକାଥନ୍ ଯାତ୍ରା",
+        subtitle: "୧୦ଟି ଶ୍ରେଣୀର ପାଠ୍ୟକ୍ରମ ସଂରଚନା, RAG ଭେକ୍ଟର ଡାଟାବେସ୍ ଏବଂ ନିରନ୍ତର ବିକାଶ",
+        tagline: "ଆମର ବିଜୟ ଏବଂ ଅଭିଯାନ",
+        bullets: [
+          { title: "୧୦ଟି ଶ୍ରେଣୀର ପାଠ୍ୟକ୍ରମ ସମନ୍ୱୟ", desc: "Firestore ରେ ଶ୍ରେଣୀ ୧ ରୁ ୧୦ ପର୍ଯ୍ୟନ୍ତ ସମସ୍ତ ପାଠ୍ୟ ବିଷୟକୁ ସଠିକ୍ ଓଡ଼ିଆ ଭାଷାରେ ଯୋଡ଼ିଲୁ।" },
+          { title: "Gemini OCR ଭେକ୍ଟର ଡାଟାବେସ୍", desc: "୧,୧୦୦+ ରୁ ଅଧିକ ପେଜ୍ କୁ Gemini ମାଧ୍ୟମରେ ସୁରକ୍ଷିତ ଏଆଇ OCR ଏବଂ ଭେକ୍ଟରରେ ପରିଣତ କଲୁ।" },
+          { title: "ମାଗଣା ସ୍ମାର୍ଟ କ୍ଲାସେସ୍ ଉନ୍ମୋଚନ", desc: "ସମସ୍ତ ଶ୍ରେଣୀର ୟୁଟ୍ୟୁବ୍ ଭିଡିଓ ଗୁଡ଼ିକୁ ସମ୍ପୂର୍ଣ୍ଣ ମାଗଣା ଏବଂ ଓଡ଼ିଆ ଭାଷାରେ ଅନ୍ଲକ୍ କଲୁ।" }
+        ],
+        speakerNotes: "ଆମର ହାକାଥନ୍ ବିକାଶ ଯାତ୍ରା ବିଷୟରେ କହିବାକୁ ଗଲେ, ଏହା ଥିଲା ଏକ ଅତି କଠିନ ଏବଂ ପ୍ରେରଣାଦାୟୀ ଯାତ୍ରା। ଆମେ ଦିନରାତି ଏକ କରି ଶ୍ରେଣୀ ୧ ରୁ ୧୦ ପର୍ଯ୍ୟନ୍ତ ସମସ୍ତ ପାଠ୍ୟକ୍ରମକୁ Firestore ରେ ସମନ୍ୱିତ କଲୁ। Gemini API ସର୍ଭର ବ୍ୟସ୍ତତାକୁ ଦୂର କରିବା ପାଇଁ ଆମେ ସ୍ୱତନ୍ତ୍ର adaptive backoff OCR ଇଞ୍ଜିନ ତିଆରି କରି ୧,୧୦୦+ ପୃଷ୍ଠାର ସଫଳ OCR ଓ ଭେକ୍ଟର ଏମ୍ବେଡିଂ କଲୁ। ଶେଷରେ, ପିଲାଙ୍କ ସ୍ୱାର୍ଥ ପାଇଁ ସ୍ମାର୍ଟ କ୍ଲାସର ସମସ୍ତ ୟୁଟ୍ୟୁବ୍ ପାଠ ଭିଡିଓକୁ ସମ୍ପୂର୍ଣ୍ଣ ମାଗଣା ଓ ଓଡ଼ିଆ ସ୍ଲାଣ୍ଡ୍ ରେ ଅନ୍ଲକ୍ କଲୁ।"
       },
       {
         title: "ଆମର ଯାତ୍ରା ଏବଂ ଶୁଭାରମ୍ଭ ମାଇଲଖୁଣ୍ଟ",
@@ -443,8 +465,63 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                 </motion.div>
               )}
 
-              {/* SLIDE 2 SHOWCASE: Beautiful Bilingual Milestone Timeline */}
+              {/* SLIDE 2 SHOWCASE: Creator's Hackathon Journey Stats & Badges */}
               {currentSlide === 1 && (
+                <div className="w-full max-w-md space-y-4">
+                  {/* Creator Badge */}
+                  <div className="bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-amber-500/10 border border-purple-500/20 p-4 rounded-2xl text-center relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12 animate-pulse" style={{ animationDuration: '4s' }} />
+                    <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center mx-auto mb-2 text-purple-400 border border-purple-500/30">
+                      <Lucide.Award size={24} className="animate-bounce" />
+                    </div>
+                    <span className="text-[8px] uppercase tracking-[0.2em] font-black text-purple-400">
+                      {deckLanguage === 'or' ? 'ହାକାଥନ୍ ସ୍ରଷ୍ଟା ସମ୍ମାନ' : 'OFFICIAL HACKATHON CREATOR'}
+                    </span>
+                    <h3 className="text-sm font-black text-white mt-0.5">
+                      {deckLanguage === 'or' ? 'ଉତ୍କଳ ରୂପାନ୍ତରଣ ୨୦୨୬' : 'Utkal Transformation Pipeline'}
+                    </h3>
+                  </div>
+
+                  {/* Dev Stats Grid */}
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="bg-slate-900 border border-white/5 p-2 rounded-xl text-center">
+                      <span className="text-[7px] text-slate-500 font-bold block">GRADES SYNCED</span>
+                      <h4 className="text-sm font-black text-amber-400">10 / 10</h4>
+                      <span className="text-[6px] text-slate-400">Class 1 to 10</span>
+                    </div>
+                    <div className="bg-slate-900 border border-white/5 p-2 rounded-xl text-center">
+                      <span className="text-[7px] text-slate-500 font-bold block">CHAPTERS</span>
+                      <h4 className="text-sm font-black text-cyan-400">1,100+</h4>
+                      <span className="text-[6px] text-slate-400">Vectorized RAG</span>
+                    </div>
+                    <div className="bg-slate-900 border border-white/5 p-2 rounded-xl text-center">
+                      <span className="text-[7px] text-slate-500 font-bold block">TYPE SAFETY</span>
+                      <h4 className="text-sm font-black text-emerald-400">0 Errors</h4>
+                      <span className="text-[6px] text-slate-400">tsc compile pass</span>
+                    </div>
+                  </div>
+
+                  {/* Interactive Hackathon Milestones Checklist */}
+                  <div className="bg-slate-900/80 border border-white/5 p-3.5 rounded-2xl space-y-2">
+                    <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest block">
+                      {deckLanguage === 'or' ? 'କ୍ରିଏଟର୍ ବିକାଶ ଗ୍ରିଡ୍ (ଚେକ୍ ଲିଷ୍ଟ)' : 'Creator Development Milestones'}
+                    </span>
+                    {[
+                      { label: deckLanguage === 'or' ? '୧୦ଟି ଶ୍ରେଣୀର ପୂର୍ଣ୍ଣ ସିଲାବସ୍ ମ୍ୟାପିଂ' : 'Standardize 10 Classes Syllabus & Sync', active: true },
+                      { label: deckLanguage === 'or' ? 'ଗୁନ୍ଦୁଲୁ ଆପ୍ PWA ଏବଂ ଅଫଲାଇନ୍ precache' : 'Gundulu PWA Launch & Standalone Focus', active: true },
+                      { label: deckLanguage === 'or' ? 'ସ୍ମାର୍ଟ କ୍ଲାସେସ୍ ସମ୍ପୂର୍ଣ୍ଣ ମାଗଣା ଓ ଅନ୍ଲକ୍' : 'Unlock curating Smart Classes for free', active: true }
+                    ].map((item, idx) => (
+                      <div key={idx} className="flex items-center gap-2 text-[10px] text-slate-300">
+                        <Lucide.CheckCircle size={12} className="text-emerald-400 shrink-0" />
+                        <span className="truncate">{item.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* SLIDE 3 SHOWCASE: Beautiful Bilingual Milestone Timeline */}
+              {currentSlide === 2 && (
                 <div className="w-full max-w-md flex flex-col gap-4">
                   {/* Timeline Title Banner */}
                   <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 p-3 rounded-2xl flex items-center gap-3">
@@ -535,8 +612,8 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                 </div>
               )}
 
-              {/* SLIDE 3 SHOWCASE: Interactive Balloon-Popping Simulation & Vertical Video Player */}
-              {currentSlide === 2 && (
+              {/* SLIDE 4 SHOWCASE: Interactive Balloon-Popping Simulation & Vertical Video Player */}
+              {currentSlide === 3 && (
                 <div className="w-full max-w-md flex flex-col gap-4">
                   {/* Floating Balloons Simulation */}
                   <div className="bg-slate-900/80 border border-white/5 p-4 rounded-2xl">
@@ -626,8 +703,8 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                 </div>
               )}
 
-              {/* SLIDE 4 SHOWCASE: Enterprise Architecture Node Map Diagram */}
-              {currentSlide === 3 && (
+              {/* SLIDE 5 SHOWCASE: Enterprise Architecture Node Map Diagram */}
+              {currentSlide === 4 && (
                 <div className="w-full max-w-md bg-slate-950/80 rounded-2xl p-4 border border-white/5 space-y-4">
                   <div className="text-center">
                     <span className="text-[9px] uppercase tracking-widest font-black text-amber-500">
@@ -718,8 +795,8 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                 </div>
               )}
 
-              {/* SLIDE 5 SHOWCASE: Roadmap 3-Phase Interactive Timeline & Pilot Stats */}
-              {currentSlide === 4 && (
+              {/* SLIDE 6 SHOWCASE: Roadmap 3-Phase Interactive Timeline & Pilot Stats */}
+              {currentSlide === 5 && (
                 <div className="w-full max-w-md space-y-4">
                   {/* Pilot Stats Grid */}
                   <div className="grid grid-cols-2 gap-3">
