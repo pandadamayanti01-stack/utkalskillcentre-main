@@ -1011,15 +1011,7 @@ export default function App() {
   const [tutorLoading, setTutorLoading] = useState<Record<string, boolean>>({});
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [showConfigError, setShowConfigError] = useState<{title: string, message: string} | null>(null);
-  const [showLaunchPoster, setShowLaunchPoster] = useState(() => {
-    const isPwa = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
-    if (isPwa) {
-      return !localStorage.getItem('rajaFestivalSeen');
-    } else {
-      localStorage.removeItem('rajaFestivalSeen');
-      return true;
-    }
-  });
+  const [showLaunchPoster, setShowLaunchPoster] = useState(false);
   // Hiding the launch celebration event for now. Change to: () => !localStorage.getItem('utkalPlayStoreLaunchSeen') to enable it when live.
   const [showLaunchEvent, setShowLaunchEvent] = useState(false);
   const [showTestSeriesPoster, setShowTestSeriesPoster] = useState(false);
@@ -1800,7 +1792,19 @@ export default function App() {
         //   setShowLibraryPopup(true);
         // }
         setShowLaunchEvent(false);
-        setShowLibraryPopup(true);
+        
+        // Show Raja Festival Poster once per day until June 16th, 2026
+        const todayStr = new Date().toLocaleDateString('en-CA');
+        const hasSeenToday = localStorage.getItem('rajaFestivalLastSeenDate') === todayStr;
+        const isBeforeEnd = new Date() <= new Date('2026-06-16T23:59:59');
+
+        if (!hasSeenToday && isBeforeEnd) {
+          setShowLaunchPoster(true);
+          setShowLibraryPopup(false);
+        } else {
+          setShowLaunchPoster(false);
+          setShowLibraryPopup(true);
+        }
         setLoading(false);
       } else {
         setUser(null);
@@ -2915,13 +2919,12 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
               <Suspense fallback={null}>
                 <RajaFestivalPoster onClose={() => {
                   setShowLaunchPoster(false);
-                  const isPwa = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
-                  if (isPwa) {
-                    localStorage.setItem('rajaFestivalSeen', 'true');
-                  } else {
-                    localStorage.removeItem('rajaFestivalSeen');
-                  }
+                  const todayStr = new Date().toLocaleDateString('en-CA');
+                  localStorage.setItem('rajaFestivalLastSeenDate', todayStr);
                   handleGunduluGreeting();
+                  if (user) {
+                    setShowLibraryPopup(true);
+                  }
                 }} />
               </Suspense>
             )}
