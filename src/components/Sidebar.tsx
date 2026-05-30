@@ -95,7 +95,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="p-2 flex flex-col gap-4 mb-4">
             <div className="flex items-center gap-3">
               {/* Chariot/Rath Crest */}
-              <img src="/gundulu-rath-crest.png" alt="Gundulu" className="h-12 w-auto drop-shadow-lg" />
+              <div className="relative h-12 w-12 rounded-full overflow-hidden border border-emerald-500/30 bg-slate-950/40 p-1 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.25)] flex-shrink-0">
+                <img 
+                  src="/gundulu-rath-crest.png" 
+                  alt="Gundulu" 
+                  className="h-full w-full object-cover scale-[1.3] filter saturate-[1.2]" 
+                />
+              </div>
               <div className="flex flex-col">
                 <span className="text-[#ffd700] font-black text-xl leading-none">ଏଆଈ-AI</span>
                 <span className="text-[10px] font-bold text-white/40 tracking-widest uppercase">Gundulu Era</span>
