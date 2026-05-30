@@ -658,6 +658,173 @@ button, a, .glass-card, .prevent-select, .bottom-nav-gradient, header {
   scrollbar-width: none;
 }
 
+/* --- Ultra-Premium Dark Theme Card Protection for Light Mode (Track 2 Contrast Fix) --- */
+.force-dark-theme .text-white,
+body.theme-daybreak .force-dark-theme .text-white,
+body.theme-daybreak .force-dark-theme span.text-white,
+body.theme-daybreak .force-dark-theme h1.text-white,
+body.theme-daybreak .force-dark-theme h2.text-white,
+body.theme-daybreak .force-dark-theme h3.text-white,
+body.theme-daybreak .force-dark-theme h4.text-white,
+body.theme-daybreak .force-dark-theme p.text-white,
+body.theme-daybreak .force-dark-theme div.text-white {
+  color: #ffffff !important;
+}
+
+.force-dark-theme .text-amber-400,
+body.theme-daybreak .force-dark-theme .text-amber-400,
+body.theme-daybreak .force-dark-theme span.text-amber-400,
+body.theme-daybreak .force-dark-theme h1.text-amber-400,
+body.theme-daybreak .force-dark-theme h2.text-amber-400,
+body.theme-daybreak .force-dark-theme h3.text-amber-400,
+body.theme-daybreak .force-dark-theme h4.text-amber-400,
+body.theme-daybreak .force-dark-theme p.text-amber-400,
+body.theme-daybreak .force-dark-theme div.text-amber-400 {
+  color: #fbbf24 !important;
+}
+
+.force-dark-theme .text-amber-500,
+body.theme-daybreak .force-dark-theme .text-amber-500,
+body.theme-daybreak .force-dark-theme span.text-amber-500,
+body.theme-daybreak .force-dark-theme h1.text-amber-500,
+body.theme-daybreak .force-dark-theme h2.text-amber-500,
+body.theme-daybreak .force-dark-theme h3.text-amber-500,
+body.theme-daybreak .force-dark-theme h4.text-amber-500,
+body.theme-daybreak .force-dark-theme p.text-amber-500,
+body.theme-daybreak .force-dark-theme div.text-amber-500 {
+  color: #f59e0b !important;
+}
+
+.force-dark-theme .text-yellow-400,
+body.theme-daybreak .force-dark-theme .text-yellow-400,
+body.theme-daybreak .force-dark-theme span.text-yellow-400,
+body.theme-daybreak .force-dark-theme h1.text-yellow-400,
+body.theme-daybreak .force-dark-theme h2.text-yellow-400,
+body.theme-daybreak .force-dark-theme h3.text-yellow-400,
+body.theme-daybreak .force-dark-theme h4.text-yellow-400,
+body.theme-daybreak .force-dark-theme p.text-yellow-400,
+body.theme-daybreak .force-dark-theme div.text-yellow-400 {
+  color: #facc15 !important;
+}
+
+.force-dark-theme .text-emerald-400,
+body.theme-daybreak .force-dark-theme .text-emerald-400,
+body.theme-daybreak .force-dark-theme span.text-emerald-400,
+body.theme-daybreak .force-dark-theme h1.text-emerald-400,
+body.theme-daybreak .force-dark-theme h2.text-emerald-400,
+body.theme-daybreak .force-dark-theme h3.text-emerald-400,
+body.theme-daybreak .force-dark-theme h4.text-emerald-400,
+body.theme-daybreak .force-dark-theme p.text-emerald-400,
+body.theme-daybreak .force-dark-theme div.text-emerald-400 {
+  color: #34d399 !important;
+}
+
+.force-dark-theme .text-pink-400,
+body.theme-daybreak .force-dark-theme .text-pink-400,
+body.theme-daybreak .force-dark-theme span.text-pink-400,
+body.theme-daybreak .force-dark-theme h1.text-pink-400,
+body.theme-daybreak .force-dark-theme h2.text-pink-400,
+body.theme-daybreak .force-dark-theme h3.text-pink-400,
+body.theme-daybreak .force-dark-theme h4.text-pink-400,
+body.theme-daybreak .force-dark-theme p.text-pink-400,
+body.theme-daybreak .force-dark-theme div.text-pink-400 {
+  color: #f472b6 !important;
+}
+
+.force-dark-theme .text-slate-100,
+body.theme-daybreak .force-dark-theme .text-slate-100,
+body.theme-daybreak .force-dark-theme span.text-slate-100,
+body.theme-daybreak .force-dark-theme h1.text-slate-100,
+body.theme-daybreak .force-dark-theme h2.text-slate-100,
+body.theme-daybreak .force-dark-theme h3.text-slate-100,
+body.theme-daybreak .force-dark-theme h4.text-slate-100,
+body.theme-daybreak .force-dark-theme p.text-slate-100,
+body.theme-daybreak .force-dark-theme div.text-slate-100 {
+  color: #f1f5f9 !important;
+}
+
+.force-dark-theme .text-slate-200,
+body.theme-daybreak .force-dark-theme .text-slate-200,
+body.theme-daybreak .force-dark-theme span.text-slate-200,
+body.theme-daybreak .force-dark-theme h1.text-slate-200,
+body.theme-daybreak .force-dark-theme h2.text-slate-200,
+body.theme-daybreak .force-dark-theme h3.text-slate-200,
+body.theme-daybreak .force-dark-theme h4.text-slate-200,
+body.theme-daybreak .force-dark-theme p.text-slate-200,
+body.theme-daybreak .force-dark-theme div.text-slate-200 {
+  color: #e2e8f0 !important;
+}
+
+.force-dark-theme .text-slate-300,
+body.theme-daybreak .force-dark-theme .text-slate-300,
+body.theme-daybreak .force-dark-theme span.text-slate-300,
+body.theme-daybreak .force-dark-theme h1.text-slate-300,
+body.theme-daybreak .force-dark-theme h2.text-slate-300,
+body.theme-daybreak .force-dark-theme h3.text-slate-300,
+body.theme-daybreak .force-dark-theme h4.text-slate-300,
+body.theme-daybreak .force-dark-theme p.text-slate-300,
+body.theme-daybreak .force-dark-theme div.text-slate-300 {
+  color: #cbd5e1 !important;
+}
+
+.force-dark-theme .text-slate-400,
+body.theme-daybreak .force-dark-theme .text-slate-400,
+body.theme-daybreak .force-dark-theme span.text-slate-400,
+body.theme-daybreak .force-dark-theme h1.text-slate-400,
+body.theme-daybreak .force-dark-theme h2.text-slate-400,
+body.theme-daybreak .force-dark-theme h3.text-slate-400,
+body.theme-daybreak .force-dark-theme h4.text-slate-400,
+body.theme-daybreak .force-dark-theme p.text-slate-400,
+body.theme-daybreak .force-dark-theme div.text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+.force-dark-theme .text-slate-500,
+body.theme-daybreak .force-dark-theme .text-slate-500,
+body.theme-daybreak .force-dark-theme span.text-slate-500,
+body.theme-daybreak .force-dark-theme h1.text-slate-500,
+body.theme-daybreak .force-dark-theme h2.text-slate-500,
+body.theme-daybreak .force-dark-theme h3.text-slate-500,
+body.theme-daybreak .force-dark-theme h4.text-slate-500,
+body.theme-daybreak .force-dark-theme p.text-slate-500,
+body.theme-daybreak .force-dark-theme div.text-slate-500 {
+  color: #64748b !important;
+}
+
+.force-dark-theme .text-transparent,
+body.theme-daybreak .force-dark-theme .text-transparent,
+body.theme-daybreak .force-dark-theme span.text-transparent,
+body.theme-daybreak .force-dark-theme h1.text-transparent,
+body.theme-daybreak .force-dark-theme h2.text-transparent,
+body.theme-daybreak .force-dark-theme h3.text-transparent,
+body.theme-daybreak .force-dark-theme h4.text-transparent,
+body.theme-daybreak .force-dark-theme p.text-transparent,
+body.theme-daybreak .force-dark-theme div.text-transparent {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* Ensure background color classes on dark theme elements aren't overridden */
+.force-dark-theme .bg-slate-900,
+body.theme-daybreak .force-dark-theme .bg-slate-900 {
+  background-color: #0f172a !important;
+}
+
+.force-dark-theme .bg-slate-950,
+body.theme-daybreak .force-dark-theme .bg-slate-950 {
+  background-color: #020617 !important;
+}
+
+.force-dark-theme .bg-slate-900\/60,
+body.theme-daybreak .force-dark-theme .bg-slate-900\/60 {
+  background-color: rgba(15, 23, 42, 0.6) !important;
+}
+
+.force-dark-theme .bg-slate-950\/90,
+body.theme-daybreak .force-dark-theme .bg-slate-950\/90 {
+  background-color: rgba(2, 6, 23, 0.9) !important;
+}
+
 
 
 

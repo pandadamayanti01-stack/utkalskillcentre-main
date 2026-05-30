@@ -119,7 +119,7 @@ export default function DigitalLibraryLaunchPopup({
                   ଖୁବ୍ ଶୀଘ୍ର ଆସୁଛି
                 </span>
                 <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                  ଅଫିସିଆଲ୍ ଆଣ୍ଡ୍ରଏଡ୍ ଆପ୍ <strong className="text-emerald-600 dark:text-emerald-400">୧ ଜୁନ୍</strong> ରୁ
+                  ଅଫିସିଆଲ୍ ଆଣ୍ଡ୍ରଏଡ୍ ଆପ୍ <strong className="text-emerald-600 dark:text-emerald-400">୧୪ ଜୁନ୍</strong> ରୁ
                 </span>
               </div>
               <img 

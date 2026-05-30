@@ -80,6 +80,7 @@ const DigitalLibraryLaunchPopup = lazy(() => import('./components/DigitalLibrary
 const TeacherDashboard = lazy(() => import('./components/TeacherDashboard').then((module) => ({ default: module.TeacherDashboard })));
 const CommunityChatView = lazy(() => import('./components/CommunityChatView').then((module) => ({ default: module.CommunityChatView })));
 const LaunchCelebration = lazy(() => import('./components/LaunchCelebration'));
+const RajaFestivalPoster = lazy(() => import('./components/RajaFestivalPoster'));
 const PitchDeckView = lazy(() => import('./components/PitchDeckView').then((module) => ({ default: module.PitchDeckView })));
 
 function ViewLoader({ fullHeight = false }: { fullHeight?: boolean }) {
@@ -1010,7 +1011,14 @@ export default function App() {
   const [tutorLoading, setTutorLoading] = useState<Record<string, boolean>>({});
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [showConfigError, setShowConfigError] = useState<{title: string, message: string} | null>(null);
- // const [showLaunchPoster, setShowLaunchPoster] = useState(() => !localStorage.getItem('utkalDivasSeen'));
+  // Hiding the Raja Festival Launch Poster for now. Set to the PWA conditional block below when live:
+  // () => {
+  //   const isPwa = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
+  //   if (isPwa) return !localStorage.getItem('rajaFestivalSeen');
+  //   localStorage.removeItem('rajaFestivalSeen');
+  //   return true;
+  // }
+  const [showLaunchPoster, setShowLaunchPoster] = useState(false);
   // Hiding the launch celebration event for now. Change to: () => !localStorage.getItem('utkalPlayStoreLaunchSeen') to enable it when live.
   const [showLaunchEvent, setShowLaunchEvent] = useState(false);
   const [showTestSeriesPoster, setShowTestSeriesPoster] = useState(false);
@@ -1782,6 +1790,15 @@ export default function App() {
         (unsubscribe as any).unsubSettings = unsubSettings;
 
         setShowTestSeriesPoster(false);
+        // Hiding the Gundulu welcome video launch event for now. Change to the block below when live:
+        // const hasSeenLaunchEvent = localStorage.getItem('utkalPlayStoreLaunchSeen') === 'true';
+        // if (!hasSeenLaunchEvent) {
+        //   setShowLaunchEvent(true);
+        //   setShowLibraryPopup(false);
+        // } else {
+        //   setShowLibraryPopup(true);
+        // }
+        setShowLaunchEvent(false);
         setShowLibraryPopup(true);
         setLoading(false);
       } else {
@@ -2893,14 +2910,20 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
               )}
             </AnimatePresence>
 
-            {/* {showLaunchPoster && (
-              <UtkalDivasPoster onClose={() => {
-                setShowLaunchPoster(false);
-                localStorage.setItem('utkalDivasSeen', 'true');
-                handleGunduluGreeting();
-              }} />
+            {showLaunchPoster && (
+              <Suspense fallback={null}>
+                <RajaFestivalPoster onClose={() => {
+                  setShowLaunchPoster(false);
+                  const isPwa = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
+                  if (isPwa) {
+                    localStorage.setItem('rajaFestivalSeen', 'true');
+                  } else {
+                    localStorage.removeItem('rajaFestivalSeen');
+                  }
+                  handleGunduluGreeting();
+                }} />
+              </Suspense>
             )}
-             <GunduluHuman skipInitialGreeting={showLaunchPoster} /> */}
 
             {showLaunchEvent && (
               <Suspense fallback={<ViewLoader />}>
@@ -3181,7 +3204,11 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
     {showLaunchEvent && (
       <Suspense fallback={<ViewLoader />}>
         <LaunchCelebration
-          onClose={() => setShowLaunchEvent(false)}
+          onClose={() => {
+            setShowLaunchEvent(false);
+            localStorage.setItem('utkalPlayStoreLaunchSeen', 'true');
+            setShowLibraryPopup(true);
+          }}
           user={user}
           language={language}
           theme={theme}

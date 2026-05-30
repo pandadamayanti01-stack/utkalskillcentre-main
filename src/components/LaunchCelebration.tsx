@@ -589,7 +589,7 @@ export default function LaunchCelebration({
             initial={{ scale: 0.8, y: 50, opacity: 0 }}
             animate={{ scale: 1, y: 0, opacity: 1 }}
             transition={{ type: 'spring', damping: 20, stiffness: 100 }}
-            className="w-full max-w-sm"
+            className="w-full max-w-sm force-dark-theme"
           >
             {/* Holographic Shimmer Card */}
             <div className="relative group rounded-[2.5rem] p-0.5 bg-gradient-to-br from-amber-400 via-yellow-200 to-amber-600 shadow-[0_0_50px_rgba(245,158,11,0.3)] border border-amber-300/30 overflow-hidden">
@@ -612,7 +612,7 @@ export default function LaunchCelebration({
                   <img src="/utkal-192.png" alt="Utkal Logo" className="w-10 h-10 object-contain" />
                 </div>
                 
-                <span className="text-[9px] uppercase tracking-[0.3em] font-black text-amber-500/90 mb-1">
+                <span className="text-[9px] uppercase tracking-[0.3em] font-black text-amber-500 mb-1">
                   ଗୁଗଲ୍ ପ୍ଲେ ଷ୍ଟୋର୍ ଅଫିସିଆଲ୍ ଶୁଭାରମ୍ଭ
                 </span>
                 
@@ -620,21 +620,21 @@ export default function LaunchCelebration({
                 <h1 className="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-200 uppercase tracking-tight leading-tight mb-1 drop-shadow">
                   {language === 'or' ? 'ଗୁନ୍ଦୁଲୁର ପ୍ରଥମ ସାଥୀ ପାସ୍' : "GUNDULU'S FIRST COMPANION PASS"}
                 </h1>
-                <span className="text-[9px] font-black text-amber-400/80 uppercase tracking-wider block mb-4">
+                <span className="text-[9px] font-black text-amber-400 uppercase tracking-wider block mb-4">
                   {language === 'or' ? "GUNDULU'S FIRST COMPANION PASS" : 'FOUNDING MEMBER GOLDEN TICKET'}
                 </span>
                 
                 {/* Dashed separator */}
                 <div className="w-full flex items-center gap-1.5 mb-5 px-4">
                   <div className="flex-1 border-t border-dashed border-amber-500/30"></div>
-                  <span className="text-[9px] text-amber-500/50 font-bold uppercase tracking-widest font-mono">UTKAL-2026-TWA</span>
+                  <span className="text-[9px] text-amber-500 font-bold uppercase tracking-widest font-mono">UTKAL-2026-TWA</span>
                   <div className="flex-1 border-t border-dashed border-amber-500/30"></div>
                 </div>
 
                 {/* Student Details Plate */}
                 <div className="w-full py-3.5 px-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 mb-5 text-left">
                   <div className="flex justify-between items-center mb-1">
-                    <span className="text-[9px] uppercase text-slate-500 font-bold">ଛାତ୍ରଙ୍କ ନାମ (STUDENT NAME)</span>
+                    <span className="text-[9px] uppercase text-slate-500 font-bold">ଛาତ୍ରଙ୍କ ନାମ (STUDENT NAME)</span>
                     <span className="text-[9px] font-bold text-amber-400 font-mono">ଭିଆଇପି ସଦସ୍ୟ (VIP)</span>
                   </div>
                   <h3 className="text-sm font-black text-white mb-2 truncate">
@@ -642,8 +642,8 @@ export default function LaunchCelebration({
                   </h3>
 
                   <div className="flex justify-between items-center text-[10px] text-slate-400 font-bold">
-                    <span>ଶ୍ରେଣୀ (CLASS): {user?.class || 'N/A'}</span>
-                    <span>ଆଇଡି (ID): {user?.id?.substring(0, 8).toUpperCase() || 'PIONEER'}</span>
+                    <span className="text-slate-400">ଶ୍ରେଣୀ (CLASS): {user?.class || 'N/A'}</span>
+                    <span className="text-slate-400">ଆଇଡି (ID): {user?.id?.substring(0, 8).toUpperCase() || 'PIONEER'}</span>
                   </div>
                 </div>
 
@@ -657,7 +657,7 @@ export default function LaunchCelebration({
                         className="py-3 px-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-black text-xs flex items-center justify-center gap-2"
                       >
                         <Lucide.CheckCircle size={16} />
-                        <span>୫୦୦ XP ଦାବି ହୋଇସାରିଛି! 🏆 (500 XP Claimed)</span>
+                        <span className="text-emerald-400">୫୦୦ XP ଦାବି ହୋଇସାରିଛି! 🏆 (500 XP Claimed)</span>
                       </motion.div>
                     ) : (
                       <button
