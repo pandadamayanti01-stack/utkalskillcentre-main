@@ -88,6 +88,9 @@ export default function Login({ language, translations, setLanguage, setRegData 
   const [showAdminPill, setShowAdminPill] = useState(false);
   const showShowcaseButton = typeof window !== 'undefined' && (
     window.location.search.includes('showcase=true') || 
+    window.location.search.includes('judge=true') || 
+    window.location.search.includes('judgestatus=true') || 
+    window.location.hash.includes('judge') ||
     window.location.hash === '#pitch_deck'
   );
   const showJudgePass = typeof window !== 'undefined' && (

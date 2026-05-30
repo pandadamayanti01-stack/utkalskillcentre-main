@@ -35,6 +35,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const showShowcaseTab = typeof window !== 'undefined' && (() => {
     const isShowcaseActive = window.location.search.includes('showcase=true') || 
+                             window.location.search.includes('judge=true') || 
+                             window.location.search.includes('judgestatus=true') || 
+                             window.location.hash.includes('judge') ||
                              window.location.hash === '#pitch_deck' ||
                              localStorage.getItem('showcase_mode') === 'true';
     if (isShowcaseActive) {
