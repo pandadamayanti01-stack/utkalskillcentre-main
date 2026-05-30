@@ -62,21 +62,56 @@ export default function RajaFestivalPoster({ onClose }: RajaFestivalPosterProps)
     setIsSwinging(true);
     setSwingCount(prev => prev + 1);
 
-
-
-    // Shower flowers and sweets!
-    const items = ['🌸', '🌺', '🌹', '🍬', ' Pitha ', '✨'];
-    const defaults = { startVelocity: 35, spread: 180, ticks: 100, zIndex: 10000 };
+    // 1. Beauty Crackers (Interactive Fireworks) from Left & Right
+    const crackerColors = ['#f43f5e', '#ec4899', '#f59e0b', '#fbbf24', '#10b981', '#3b82f6', '#a855f7'];
+    
+    confetti({
+      particleCount: 65,
+      spread: 75,
+      origin: { x: 0.25, y: 0.65 },
+      colors: crackerColors,
+      startVelocity: 42,
+      zIndex: 10000
+    });
 
     confetti({
-      ...defaults,
-      particleCount: 50,
-      scalar: 2.5,
-      shapes: ['emoji'] as any,
-      shapeOptions: {
-        emoji: { value: items[Math.floor(Math.random() * items.length)] }
-      }
-    } as any);
+      particleCount: 65,
+      spread: 75,
+      origin: { x: 0.75, y: 0.65 },
+      colors: crackerColors,
+      startVelocity: 42,
+      zIndex: 10000
+    });
+
+    // 2. Center Sparkler Burst (Golden Fireworks Cracker)
+    confetti({
+      particleCount: 85,
+      spread: 130,
+      origin: { x: 0.5, y: 0.45 },
+      colors: ['#ffe066', '#fbbf24', '#f59e0b', '#ffffff', '#ec4899'],
+      startVelocity: 32,
+      zIndex: 10000
+    });
+
+    // 3. Floating Sweets, Balloons, and Flowers (Emojis)
+    const festiveEmojis = ['🎈', '🎈', '🌸', '🌺', '🌹', '🍬', '🎆', '🎇', '✨', '🎉'];
+    
+    // Trigger multiple emoji bursts for high visual variety
+    for (let i = 0; i < 3; i++) {
+      confetti({
+        startVelocity: 25 + i * 5,
+        spread: 180,
+        ticks: 120,
+        zIndex: 10000,
+        particleCount: 18,
+        scalar: 2.6 + i * 0.4,
+        origin: { x: 0.35 + i * 0.15, y: 0.55 },
+        shapes: ['emoji'] as any,
+        shapeOptions: {
+          emoji: { value: festiveEmojis[Math.floor(Math.random() * festiveEmojis.length)] }
+        }
+      } as any);
+    }
 
     // Stop swinging animation after 1.8 seconds
     setTimeout(() => {
