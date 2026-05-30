@@ -1572,6 +1572,10 @@ export default function App() {
       if (unsubSub) unsubSub();
 
       if (firebaseUser) {
+        const currentHash = window.location.hash.replace('#', '');
+        if (currentHash === 'judge' || currentHash === 'pitch_deck' || window.location.hash.includes('judge') || window.location.hash.includes('pitch_deck')) {
+          setActiveTab('dashboard');
+        }
         // Set up real-time listener for user data
         const userDocRef = doc(firestore, 'users', firebaseUser.uid);
         unsubUser = onSnapshot(userDocRef, (docSnap) => {
