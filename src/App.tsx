@@ -3294,9 +3294,11 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-3">
               {/* UTKAL LOGO used in Header */}
-              {activeTab !== 'dashboard' && (
-                <img src="/utkal-192.png" className="h-10 w-10 rounded-full object-cover drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" alt="Utkal Skill Centre" />
-              )}
+              <img 
+                src="/utkal-192.png" 
+                className={`h-10 w-10 rounded-full object-cover drop-shadow-[0_0_15px_rgba(16,185,129,0.5)] ${activeTab === 'dashboard' ? 'lg:hidden' : ''}`} 
+                alt="Utkal Skill Centre" 
+              />
               <h1 className="text-base sm:text-lg font-black bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-400 tracking-tight ml-2 font-serif whitespace-nowrap">
                 Utkal Skill Centre
               </h1>
