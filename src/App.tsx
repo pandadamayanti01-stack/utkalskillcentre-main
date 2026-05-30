@@ -1792,6 +1792,7 @@ export default function App() {
         //   setShowLibraryPopup(true);
         // }
         setShowLaunchEvent(false);
+        setShowLibraryPopup(false); // Hide Digital Library Launch Popup completely for now
         
         // Show Raja Festival Poster once per day until June 16th, 2026
         const todayStr = new Date().toLocaleDateString('en-CA');
@@ -1800,10 +1801,8 @@ export default function App() {
 
         if (!hasSeenToday && isBeforeEnd) {
           setShowLaunchPoster(true);
-          setShowLibraryPopup(false);
         } else {
           setShowLaunchPoster(false);
-          setShowLibraryPopup(true);
         }
         setLoading(false);
       } else {
@@ -2915,19 +2914,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
               )}
             </AnimatePresence>
 
-            {showLaunchPoster && (
-              <Suspense fallback={null}>
-                <RajaFestivalPoster onClose={() => {
-                  setShowLaunchPoster(false);
-                  const todayStr = new Date().toLocaleDateString('en-CA');
-                  localStorage.setItem('rajaFestivalLastSeenDate', todayStr);
-                  handleGunduluGreeting();
-                  if (user) {
-                    setShowLibraryPopup(true);
-                  }
-                }} />
-              </Suspense>
-            )}
+
 
             {showLaunchEvent && (
               <Suspense fallback={<ViewLoader />}>
@@ -3190,6 +3177,18 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
       </Suspense>
     )}
 
+    {showLaunchPoster && (
+      <Suspense fallback={null}>
+        <RajaFestivalPoster onClose={() => {
+          setShowLaunchPoster(false);
+          const todayStr = new Date().toLocaleDateString('en-CA');
+          localStorage.setItem('rajaFestivalLastSeenDate', todayStr);
+          handleGunduluGreeting();
+        }} />
+      </Suspense>
+    )}
+
+    {/* Hiding Digital Library Launch Popup completely for now
     {showLibraryPopup && user && (
       <Suspense fallback={null}>
         <DigitalLibraryLaunchPopup 
@@ -3204,6 +3203,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
         />
       </Suspense>
     )}
+    */}
 
     {showLaunchEvent && (
       <Suspense fallback={<ViewLoader />}>
@@ -3211,7 +3211,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
           onClose={() => {
             setShowLaunchEvent(false);
             localStorage.setItem('utkalPlayStoreLaunchSeen', 'true');
-            setShowLibraryPopup(true);
+            setShowLibraryPopup(false);
           }}
           user={user}
           language={language}
