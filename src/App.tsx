@@ -2959,15 +2959,21 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold uppercase tracking-wider mb-4">
               <Lucide.Sparkles size={12} />
-              Personalized Learning
+              {language === 'en' ? 'Personalized Learning' : 'ଆପଣଙ୍କ ପାଇଁ ବ୍ୟକ୍ତିଗତ ଶିକ୍ଷା'}
             </div>
             
             <h1 className="text-4xl xl:text-5xl font-black text-white leading-[1.1] mb-4 tracking-tight">
-              Master Your Future with <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">Gundulu</span>
+              {language === 'en' ? (
+                <>Master Your Future with <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">Gundulu</span></>
+              ) : (
+                <>ଗୁନ୍ଦୁଲୁ ସହ ଗଢ଼ନ୍ତୁ ଆପଣଙ୍କ <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">ଉଜ୍ଜ୍ୱଳ ଭବିଷ୍ୟତ</span></>
+              )}
             </h1>
             
             <p className="text-base text-slate-400 mb-8 leading-relaxed">
-              Experience the next generation of education. Our study buddy adapts to your learning style, providing real-time feedback and personalized pathways to success.
+              {language === 'en' 
+                ? 'Experience the next generation of education. Our study buddy adapts to your learning style, providing real-time feedback and personalized pathways to success.' 
+                : 'ଶିକ୍ଷାର ପରବର୍ତ୍ତୀ ପିଢିକୁ ଅନୁଭବ କରନ୍ତୁ। ଆମର ଶିକ୍ଷା ସାଥୀ ଆପଣଙ୍କ ପଢିବା ଶୈଳୀ ସହ ଖାପ ଖାଇଥାଏ, ପ୍ରକୃତ ସମୟର ମତାମତ ଏବଂ ସଫଳତାର ମାର୍ଗ ପ୍ରଦାନ କରିଥାଏ।'}
             </p>
 
             {/* Interface Mockup / Floating Elements */}
@@ -2991,7 +2997,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                 className="absolute -bottom-4 left-0 right-0 mx-auto w-fit px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold text-slate-400 hover:text-white hover:bg-white/10 transition-all flex items-center gap-2 backdrop-blur-sm"
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                Latest: BSE Odisha 10th Result 2026 Live
+                {language === 'en' ? 'Latest: BSE Odisha 10th Result 2026 Live' : 'ସର୍ବଶେଷ: BSE ଓଡ଼ିଶା ଦଶମ ରେଜଲ୍ଟ ୨୦୨୬ ଲାଇଭ୍'}
                 <Lucide.ExternalLink size={10} />
               </motion.a>
 
@@ -3036,8 +3042,8 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                   <Lucide.Bot className="text-emerald-400 w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-xs text-slate-400">Learning Analysis</div>
-                  <div className="text-sm font-bold text-white">98% Accuracy</div>
+                  <div className="text-xs text-slate-400">{language === 'en' ? 'Learning Analysis' : 'ଶିକ୍ଷା ବିଶ୍ଳେଷଣ'}</div>
+                  <div className="text-sm font-bold text-white">{language === 'en' ? '98% Accuracy' : '୯୮% ସଠିକତା'}</div>
                 </div>
               </motion.div>
 
@@ -3050,8 +3056,8 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                   <Lucide.Sparkles className="text-cyan-400 w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-xs text-slate-400">Learning Path</div>
-                  <div className="text-sm font-bold text-white">Optimized</div>
+                  <div className="text-xs text-slate-400">{language === 'en' ? 'Learning Path' : 'ଅଧ୍ୟୟନ ପଥ'}</div>
+                  <div className="text-sm font-bold text-white">{language === 'en' ? 'Optimized' : 'ଅପ୍ଟିମାଇଜ୍ଡ୍'}</div>
                 </div>
               </motion.div>
 
@@ -3064,8 +3070,8 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                   <Lucide.Globe className="text-blue-400 w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-xs text-slate-400">Global Knowledge</div>
-                  <div className="text-sm font-bold text-white">Connected</div>
+                  <div className="text-xs text-slate-400">{language === 'en' ? 'Global Knowledge' : 'ବୈଶ୍ୱିକ ଜ୍ଞାନ'}</div>
+                  <div className="text-sm font-bold text-white">{language === 'en' ? 'Connected' : 'ସଂଯୁକ୍ତ'}</div>
                 </div>
               </motion.div>
             </div>

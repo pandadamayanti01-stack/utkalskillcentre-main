@@ -632,8 +632,13 @@ export default function Login({ language, translations, setLanguage, setRegData 
               ) : (
                 <motion.div key="otp" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full space-y-6 text-center">
                   <Sparkles className="text-amber-400 mx-auto animate-pulse" size={48} />
-                  <h2 className="text-white text-2xl font-black tracking-tight font-['Outfit']">Verify Security Code</h2>
-                  <p className="text-xs text-slate-400">Code dispatched to <span className="text-amber-400 font-bold">{phoneNumber}</span></p>
+                  <h2 className="text-white text-2xl font-black tracking-tight font-['Outfit']">
+                    {language === 'en' ? 'Verify Security Code' : 'ସୁରକ୍ଷା କୋଡ୍ ଯାଞ୍ଚ କରନ୍ତୁ'}
+                  </h2>
+                  <p className="text-xs text-slate-400">
+                    {language === 'en' ? 'Code dispatched to ' : 'କୋଡ୍ ପଠାଯାଇଛି: '}
+                    <span className="text-amber-400 font-bold">{phoneNumber}</span>
+                  </p>
                   <input 
                     type="text" 
                     maxLength={6} 
@@ -647,10 +652,10 @@ export default function Login({ language, translations, setLanguage, setRegData 
                     disabled={isSending}
                     className="w-full py-4 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-amber-900/40 active:scale-95 transition-all flex items-center justify-center gap-2"
                   >
-                    {isSending ? <Loader2 className="animate-spin" size={18} /> : 'Verify Code'}
+                    {isSending ? <Loader2 className="animate-spin" size={18} /> : (language === 'en' ? 'Verify Code' : 'କୋଡ୍ ଯାଞ୍ଚ କରନ୍ତୁ')}
                   </button>
                   <button onClick={() => setAuthStep('login')} className="text-[10px] text-slate-500 font-bold flex items-center gap-1.5 mx-auto hover:text-slate-300 transition-colors">
-                    <ArrowLeft size={12} /> Change Phone Number
+                    <ArrowLeft size={12} /> {language === 'en' ? 'Change Phone Number' : 'ମୋବାଇଲ୍ ନମ୍ବର ବଦଳାନ୍ତୁ'}
                   </button>
                 </motion.div>
               )}
@@ -677,7 +682,9 @@ export default function Login({ language, translations, setLanguage, setRegData 
         {/* Emerald Live Indicator */}
         <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.15)] backdrop-blur-md">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
-          <span className="text-[9px] font-black tracking-[0.25em] text-emerald-400 uppercase font-['Outfit']">Utkal System Online</span>
+          <span className="text-[9px] font-black tracking-[0.25em] text-emerald-400 uppercase font-['Outfit']">
+            {language === 'en' ? 'Utkal System Online' : 'ଉତ୍କଳ ସିଷ୍ଟମ୍ ସକ୍ରିୟ'}
+          </span>
         </div>
       </footer>
 

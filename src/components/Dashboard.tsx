@@ -372,14 +372,14 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       <div className="flex flex-row items-start md:items-center justify-between gap-4 md:gap-6 relative z-20">
         
         {/* Left Side: Welcome Text + XP Badge */}
-        <div className="flex flex-col gap-6 md:gap-4 relative z-10 flex-1 lg:flex-none lg:w-[350px] min-w-0">
+        <div className="flex flex-col gap-6 md:gap-4 relative z-10 flex-1 lg:flex-none lg:max-w-md min-w-0">
           
           {/* Welcome Text */}
           <div className="space-y-2">
             <div className="absolute -left-12 -top-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none"></div>
             <div className="flex items-center gap-3 sm:gap-4">
               <div className="w-1.5 h-8 md:w-2 md:h-12 bg-gradient-to-b from-emerald-400 to-teal-600 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.5)] shrink-0"></div>
-              <h1 className="text-2xl sm:text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-slate-800 via-slate-700 to-slate-500 dark:from-white dark:via-white dark:to-slate-400 tracking-tighter truncate">
+              <h1 className="text-xl sm:text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-slate-800 via-slate-700 to-slate-500 dark:from-white dark:via-white dark:to-slate-400 tracking-tighter leading-tight break-words">
                 {language === 'en' ? 'Welcome back,' : 'ସ୍ୱାଗତ,'} <br className="sm:hidden" /><span className="text-emerald-500 drop-shadow-sm leading-tight">{user?.name || 'Student'}!</span>
               </h1>
             </div>
@@ -560,7 +560,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
                   <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[7px] sm:text-[9px] font-black uppercase tracking-[0.2em] whitespace-nowrap">
                     <Lucide.CheckCircle2 size={10} className="drop-shadow-md sm:w-3 sm:h-3" />
-                    Knowledge Pulse
+                    {language === 'en' ? 'Knowledge Pulse' : 'ଜ୍ଞାନ ପରୀକ୍ଷା'}
                   </div>
                 </div>
                 
@@ -579,12 +579,14 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-1 pt-1 z-10 relative">
                     {todayDailySubject && (
                       <span className="px-1.5 py-0.5 rounded-md bg-cyan-500/10 border border-cyan-500/20 text-[7px] sm:text-[8px] font-black uppercase tracking-wider text-cyan-300 text-center truncate inline-block max-w-[120px] backdrop-blur-sm">
-                        <span className="hidden sm:inline">{language === 'en' ? 'Topic: ' : 'ବିଷୟ: '}</span>{todayDailySubject}
+                        <span className="hidden sm:inline">{language === 'en' ? 'Topic: ' : 'ବିଷୟ: '}</span>
+                        {translations[language].subjects?.[todayDailySubject.toLowerCase()] || translations[language].subjects?.[todayDailySubject] || todayDailySubject}
                       </span>
                     )}
                     {tomorrowDailySubject && (
                       <span className="px-1.5 py-0.5 rounded-md bg-white/5 border border-white/10 text-[7px] sm:text-[8px] font-black uppercase tracking-wider text-slate-400 text-center truncate hidden sm:inline-block max-w-[120px] backdrop-blur-sm">
-                        {language === 'en' ? 'Next: ' : 'ଆସନ୍ତାକାଲି: '} {tomorrowDailySubject}
+                        {language === 'en' ? 'Next: ' : 'ଆସନ୍ତାକାଲି: '} 
+                        {translations[language].subjects?.[tomorrowDailySubject.toLowerCase()] || translations[language].subjects?.[tomorrowDailySubject] || tomorrowDailySubject}
                       </span>
                     )}
                   </div>
@@ -703,7 +705,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             </motion.div>
 
             {/* Class-wise YouTube Matrix - Cinema Style */}
-            <div className="bg-slate-900/40 backdrop-blur-xl rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_15px_40px_-10px_rgba(0,0,0,0.5)] relative overflow-hidden group hover:border-red-500/30 hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between h-full">
+            <div className={`bg-slate-900/40 backdrop-blur-xl rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_15px_40px_-10px_rgba(0,0,0,0.5)] relative overflow-hidden group hover:border-red-500/30 hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between h-full ${!isRegistered ? 'lg:col-span-2' : ''}`}>
               <div className="absolute top-0 right-0 w-32 sm:w-48 h-32 sm:h-48 bg-red-500/5 rounded-full blur-[60px] -mr-16 sm:-mr-24 -mt-16 sm:-mt-24 pointer-events-none group-hover:bg-red-500/10 transition-all"></div>
               <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-red-600/0 via-red-500/50 to-red-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               
@@ -711,7 +713,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 <div className="flex items-center justify-between">
                   <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[8px] sm:text-[9px] font-black uppercase tracking-[0.2em]">
                     <div className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_5px_#ef4444] animate-pulse" />
-                    Neural Feed • Tier {userClass}
+                    {language === 'en' ? `Neural Feed • Tier ${userClass}` : `ଭିଡିଓ ଫିଡ୍ • ଶ୍ରେଣୀ ${userClass}`}
                   </div>
                   <div className="text-[8px] sm:text-[9px] font-black text-slate-500 uppercase tracking-widest">
                     {language === 'en' ? 'Live Archive' : 'ଭିଡିଓ ସଂଗ୍ରହ'}
@@ -970,7 +972,13 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               ) : (
                 <div className="text-center py-10 space-y-4 opacity-40">
                   <Lucide.BarChart3 size={40} className="mx-auto text-slate-600" />
-                  <p className="text-slate-500 font-black text-[10px] uppercase tracking-widest leading-relaxed">No data detected.<br/>Commence learning protocols.</p>
+                  <p className="text-slate-500 font-black text-[10px] uppercase tracking-widest leading-relaxed">
+                    {language === 'en' ? (
+                      <>No data detected.<br/>Commence learning protocols.</>
+                    ) : (
+                      <>କୌଣସି ଡାଟା ମିଳିଲା ନାହିଁ ।<br/>ପଢ଼ା ଆରମ୍ଭ କରନ୍ତୁ ।</>
+                    )}
+                  </p>
                 </div>
               )}
             </div>
@@ -1003,27 +1011,11 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 ))
               ) : (
                 <div className="col-span-3 py-8 border border-dashed border-white/5 rounded-[2rem] text-center opacity-30">
-                  <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest italic">No nodes unlocked</p>
+                  <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest italic">
+                    {language === 'en' ? 'No nodes unlocked' : 'କୌଣସି ପଦକ ଅନ୍‌ଲକ୍ ହୋଇନାହିଁ'}
+                  </p>
                 </div>
               )}
-            </div>
-          </div>
-
-          {/* Global Rankings Matrix */}
-          <div className="space-y-6">
-            <LeaderboardView
-              leaderboard={filteredLeaderboard}
-              language={language}
-              following={following}
-              user={user}
-              onToggleFollow={onToggleFollow}
-            />
-            <div className="px-2">
-              <DistrictLeaderboardFilter
-                selectedDistrict={selectedDistrict}
-                setSelectedDistrict={setSelectedDistrict}
-                language={language}
-              />
             </div>
           </div>
         </div>
@@ -1031,7 +1023,11 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           {/* AI Disclaimer */}
           <div className="max-w-7xl mx-auto px-6 mt-12 mb-8 space-y-6">
             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em] text-center bg-white/5 py-3 rounded-2xl border border-white/5 backdrop-blur-md">
-              <span className="text-amber-500/80 mr-2">◆</span> AI systems can make mistakes. Please double-check critical information with your textbooks. <span className="text-amber-500/80 ml-2">◆</span>
+              <span className="text-amber-500/80 mr-2">◆</span>
+              {language === 'en' 
+                ? 'AI systems can make mistakes. Please double-check critical information with your textbooks.' 
+                : 'AI ସିଷ୍ଟମ୍ ଭୁଲ୍ କରିପାରେ। ଦୟାକରି ଆପଣଙ୍କ ପାଠ୍ୟପୁସ୍ତକ ସହିତ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂଚନା ଯାଞ୍ଚ କରନ୍ତୁ।'}
+              <span className="text-amber-500/80 ml-2">◆</span>
             </p>
 
             {/* SOCIAL MEDIAS ROW */}
