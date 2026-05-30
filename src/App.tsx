@@ -2936,7 +2936,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
           <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-blue-500/20 rounded-full blur-[120px] pointer-events-none"></div>
 
           {/* Left Content - Marketing Focus */}
-        <div className="hidden lg:flex flex-1 flex-col justify-start pt-24 px-16 xl:px-24 relative z-10 border-r border-white/5 bg-slate-900/30 backdrop-blur-sm overflow-y-auto">
+        <div className="hidden lg:flex flex-1 flex-col justify-start pt-6 px-12 xl:px-20 relative z-10 border-r border-white/5 bg-slate-900/30 backdrop-blur-sm overflow-hidden">
           {/* Abstract Network Background */}
           <div className="absolute inset-0 opacity-20 pointer-events-none">
             <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
@@ -2955,14 +2955,26 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             transition={{ duration: 0.8 }}
             className="max-w-xl relative z-10"
           >
-            <img src="/utkal-192.png" className="h-10 w-auto mb-6 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" alt="Utkal" referrerPolicy="no-referrer" />
+            <div className="flex items-center gap-3 mb-8 group">
+              <div className="relative p-1.5 bg-gradient-to-tr from-slate-950 via-slate-900 to-slate-950 rounded-full border border-emerald-500/40 shadow-[0_0_25px_rgba(16,185,129,0.25)] group-hover:border-emerald-400/60 transition-all duration-300">
+                <div className="absolute inset-0 bg-emerald-500/15 rounded-full blur-md opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                <img src="/utkal-192.png" className="h-10 w-10 relative z-10 object-cover rounded-full border border-white/20 shadow-[0_2px_8px_rgba(0,0,0,0.3)]" alt="Utkal" referrerPolicy="no-referrer" />
+              </div>
+              <div className="flex flex-col">
+                <div className="text-xl font-black tracking-wider text-white flex items-center gap-1.5 leading-none">
+                  <span>UTKAL</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold uppercase tracking-widest scale-90 origin-left">PRO</span>
+                </div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400/80 group-hover:text-emerald-400/80 transition-colors mt-1">Skill Centre</div>
+              </div>
+            </div>
             
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold uppercase tracking-wider mb-4">
               <Lucide.Sparkles size={12} />
               {language === 'en' ? 'Personalized Learning' : 'ଆପଣଙ୍କ ପାଇଁ ବ୍ୟକ୍ତିଗତ ଶିକ୍ଷା'}
             </div>
             
-            <h1 className="text-4xl xl:text-5xl font-black text-white leading-[1.1] mb-4 tracking-tight">
+            <h1 className="text-4xl xl:text-5xl font-black text-white leading-normal mb-4 tracking-tight">
               {language === 'en' ? (
                 <>Master Your Future with <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">Gundulu</span></>
               ) : (
@@ -2970,23 +2982,39 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
               )}
             </h1>
             
-            <p className="text-base text-slate-400 mb-8 leading-relaxed">
+            <p className="text-base text-slate-400 mb-4 leading-relaxed">
               {language === 'en' 
                 ? 'Experience the next generation of education. Our study buddy adapts to your learning style, providing real-time feedback and personalized pathways to success.' 
                 : 'ଶିକ୍ଷାର ପରବର୍ତ୍ତୀ ପିଢିକୁ ଅନୁଭବ କରନ୍ତୁ। ଆମର ଶିକ୍ଷା ସାଥୀ ଆପଣଙ୍କ ପଢିବା ଶୈଳୀ ସହ ଖାପ ଖାଇଥାଏ, ପ୍ରକୃତ ସମୟର ମତାମତ ଏବଂ ସଫଳତାର ମାର୍ଗ ପ୍ରଦାନ କରିଥାଏ।'}
             </p>
 
             {/* Interface Mockup / Floating Elements */}
-            <div className="relative h-72 w-full mt-8">
+            <div className="relative h-64 w-full mt-4">
               {/* Main Core */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32">
+              <motion.div 
+                animate={{
+                  y: [0, -8, 8, -4, 4, 0],
+                  x: [0, 5, -5, 3, -3, 0]
+                }}
+                transition={{
+                  duration: 8,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 group"
+              >
                 <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-xl animate-pulse"></div>
-                <div className="absolute inset-0 border border-emerald-500/30 rounded-full animate-[spin_10s_linear_infinite]"></div>
-                <div className="absolute inset-2 border border-cyan-500/30 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
-                <div className="absolute inset-0 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm rounded-full border border-white/10 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
-                  <Lucide.Bot className="text-emerald-400 w-12 h-12" />
+                <div className="absolute inset-0 border-2 border-emerald-500/30 rounded-full animate-[spin_12s_linear_infinite]"></div>
+                <div className="absolute inset-2 border-2 border-cyan-500/30 rounded-full animate-[spin_18s_linear_infinite_reverse]"></div>
+                <div className="absolute inset-0 flex items-center justify-center bg-slate-950/80 backdrop-blur-md rounded-full border border-emerald-500/40 shadow-[0_0_35px_rgba(16,185,129,0.45)] overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 to-cyan-500/10 opacity-30 group-hover:opacity-60 transition-opacity duration-300"></div>
+                  <img 
+                    src="/gundulu.png" 
+                    className="w-full h-full object-cover scale-[2.0] translate-y-[2%] relative z-10 transition-transform duration-500 group-hover:scale-[2.3]" 
+                    alt="Gundulu Mascot" 
+                  />
                 </div>
-              </div>
+              </motion.div>
               
               {/* Internal Link for SEO */}
               <motion.a 
@@ -3036,42 +3064,42 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
               <motion.div 
                 animate={{ y: [0, -10, 0], x: [0, 5, 0] }}
                 transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-                className="absolute top-4 left-8 bg-slate-800/80 backdrop-blur-md border border-emerald-500/30 p-3 rounded-2xl shadow-lg flex items-center gap-3"
+                className="absolute top-2 left-6 bg-slate-950/75 backdrop-blur-md border border-emerald-500/25 p-3 rounded-2xl shadow-[0_4px_20px_rgba(16,185,129,0.15)] flex items-center gap-3 hover:border-emerald-400/50 transition-all duration-300 group"
               >
-                <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                  <Lucide.Bot className="text-emerald-400 w-4 h-4" />
+                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 group-hover:scale-105 transition-transform">
+                  <Lucide.Bot className="text-emerald-400 w-5 h-5 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
                 </div>
                 <div>
-                  <div className="text-xs text-slate-400">{language === 'en' ? 'Learning Analysis' : 'ଶିକ୍ଷା ବିଶ୍ଳେଷଣ'}</div>
-                  <div className="text-sm font-bold text-white">{language === 'en' ? '98% Accuracy' : '୯୮% ସଠିକତା'}</div>
+                  <div className="text-[10px] uppercase tracking-wider font-bold text-slate-400/80 leading-none">{language === 'en' ? 'Learning Analysis' : 'ଶିକ୍ଷା ବିଶ୍ଳେଷଣ'}</div>
+                  <div className="text-xs font-black text-white mt-1 leading-none">{language === 'en' ? '98% Accuracy' : '୯୮% ସଠିକତା'}</div>
                 </div>
               </motion.div>
 
               <motion.div 
                 animate={{ y: [0, 15, 0], x: [0, -5, 0] }}
                 transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 1 }}
-                className="absolute top-8 right-4 bg-slate-800/80 backdrop-blur-md border border-cyan-500/30 p-3 rounded-2xl shadow-lg flex items-center gap-3"
+                className="absolute top-6 right-2 bg-slate-950/75 backdrop-blur-md border border-cyan-500/25 p-3 rounded-2xl shadow-[0_4px_20px_rgba(6,182,212,0.15)] flex items-center gap-3 hover:border-cyan-400/50 transition-all duration-300 group"
               >
-                <div className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center">
-                  <Lucide.Sparkles className="text-cyan-400 w-4 h-4" />
+                <div className="w-9 h-9 rounded-xl bg-cyan-500/10 flex items-center justify-center border border-cyan-500/20 group-hover:scale-105 transition-transform">
+                  <Lucide.Sparkles className="text-cyan-400 w-5 h-5 drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]" />
                 </div>
                 <div>
-                  <div className="text-xs text-slate-400">{language === 'en' ? 'Learning Path' : 'ଅଧ୍ୟୟନ ପଥ'}</div>
-                  <div className="text-sm font-bold text-white">{language === 'en' ? 'Optimized' : 'ଅପ୍ଟିମାଇଜ୍ଡ୍'}</div>
+                  <div className="text-[10px] uppercase tracking-wider font-bold text-slate-400/80 leading-none">{language === 'en' ? 'Learning Path' : 'ଅଧ୍ୟୟନ ପଥ'}</div>
+                  <div className="text-xs font-black text-white mt-1 leading-none">{language === 'en' ? 'Optimized' : 'ଅପ୍ଟିମାଇଜ୍ଡ୍'}</div>
                 </div>
               </motion.div>
 
               <motion.div 
                 animate={{ y: [0, -15, 0] }}
                 transition={{ repeat: Infinity, duration: 6, ease: "easeInOut", delay: 2 }}
-                className="absolute bottom-4 left-1/4 bg-slate-800/80 backdrop-blur-md border border-blue-500/30 p-3 rounded-2xl shadow-lg flex items-center gap-3"
+                className="absolute bottom-2 left-1/4 bg-slate-950/75 backdrop-blur-md border border-blue-500/25 p-3 rounded-2xl shadow-[0_4px_20px_rgba(59,130,246,0.15)] flex items-center gap-3 hover:border-blue-400/50 transition-all duration-300 group"
               >
-                <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
-                  <Lucide.Globe className="text-blue-400 w-4 h-4" />
+                <div className="w-9 h-9 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20 group-hover:scale-105 transition-transform">
+                  <Lucide.Globe className="text-blue-400 w-5 h-5 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
                 </div>
                 <div>
-                  <div className="text-xs text-slate-400">{language === 'en' ? 'Global Knowledge' : 'ବୈଶ୍ୱିକ ଜ୍ଞାନ'}</div>
-                  <div className="text-sm font-bold text-white">{language === 'en' ? 'Connected' : 'ସଂଯୁକ୍ତ'}</div>
+                  <div className="text-[10px] uppercase tracking-wider font-bold text-slate-400/80 leading-none">{language === 'en' ? 'Global Knowledge' : 'ବୈଶ୍ୱିକ ଜ୍ଞାନ'}</div>
+                  <div className="text-xs font-black text-white mt-1 leading-none">{language === 'en' ? 'Connected' : 'ସଂଯୁକ୍ତ'}</div>
                 </div>
               </motion.div>
             </div>
@@ -3261,7 +3289,9 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-3">
               {/* UTKAL LOGO used in Header */}
-              <img src="/utkal-192.png" className="h-10 w-10 rounded-full object-cover drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" alt="Utkal Skill Centre" />
+              {activeTab !== 'dashboard' && (
+                <img src="/utkal-192.png" className="h-10 w-10 rounded-full object-cover drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" alt="Utkal Skill Centre" />
+              )}
               <h1 className="text-base sm:text-lg font-black bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-400 tracking-tight ml-2 font-serif whitespace-nowrap">
                 Utkal Skill Centre
               </h1>

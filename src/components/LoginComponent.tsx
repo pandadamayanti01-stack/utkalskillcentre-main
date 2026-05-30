@@ -509,12 +509,12 @@ export default function Login({ language, translations, setLanguage, setRegData 
                           <select 
                             value={selectedClass} 
                             onChange={(e) => setSelectedClass(e.target.value)}
-                            className="w-full py-3.5 pl-4 pr-10 bg-black/40 border border-white/10 rounded-2xl text-white text-xs font-bold outline-none focus:border-amber-400/80 focus:shadow-[0_0_20px_rgba(245,158,11,0.2)] appearance-none transition-all cursor-pointer"
+                            className="w-full py-3.5 pl-4 pr-10 bg-slate-950/80 border-2 border-slate-600 hover:border-amber-500 focus:border-amber-400 rounded-2xl text-white text-xs font-bold outline-none focus:shadow-[0_0_20px_rgba(245,158,11,0.25)] appearance-none transition-all cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
                           >
                             <option className="bg-[#0b0f19]">{t.selectClass} *</option>
                             {Object.entries(t.classes).map(([k,v]) => <option key={k} value={k} className="bg-[#0b0f19]">{v as string}</option>)}
                           </select>
-                          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 group-focus-within:text-amber-400 transition-colors">
+                          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 group-hover:text-amber-400 group-focus-within:text-amber-400 transition-colors">
                             <ChevronRight size={16} className="transform rotate-90" />
                           </div>
                         </div>
@@ -528,12 +528,12 @@ export default function Login({ language, translations, setLanguage, setRegData 
                           <select 
                             value={selectedBoard} 
                             onChange={(e) => setSelectedBoard(e.target.value)}
-                            className="w-full py-3.5 pl-4 pr-10 bg-black/40 border border-white/10 rounded-2xl text-white text-xs font-bold outline-none focus:border-amber-400/80 focus:shadow-[0_0_20px_rgba(245,158,11,0.2)] appearance-none transition-all cursor-pointer"
+                            className="w-full py-3.5 pl-4 pr-10 bg-slate-950/80 border-2 border-slate-600 hover:border-amber-500 focus:border-amber-400 rounded-2xl text-white text-xs font-bold outline-none focus:shadow-[0_0_20px_rgba(245,158,11,0.25)] appearance-none transition-all cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
                           >
                             <option className="bg-[#0b0f19]">{t.selectBoard} *</option>
                             {t.boards && Object.entries(t.boards).map(([k,v]) => <option key={k} value={k} className="bg-[#0b0f19]">{v as string}</option>)}
                           </select>
-                          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 group-focus-within:text-amber-400 transition-colors">
+                          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 group-hover:text-amber-400 group-focus-within:text-amber-400 transition-colors">
                             <ChevronRight size={16} className="transform rotate-90" />
                           </div>
                         </div>
@@ -546,7 +546,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
                       <Phone size={12} /> {language === 'en' ? 'Mobile Number' : 'ମୋବାଇଲ୍ ନମ୍ବର'}
                     </label>
                     <div className="flex gap-2.5">
-                      <div className="px-4 py-3.5 bg-black/40 border border-white/10 rounded-2xl text-amber-400 text-xs font-black flex items-center justify-center shadow-inner">
+                      <div className="px-4 py-3.5 bg-slate-950/80 border-2 border-slate-600 rounded-2xl text-amber-400 text-xs font-black flex items-center justify-center shadow-inner">
                         <span>+91</span>
                       </div>
                       <input 
@@ -556,7 +556,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
                         placeholder={t.enterPhone}
                         inputMode="numeric"
                         autoComplete="tel"
-                        className="flex-1 py-3.5 px-5 bg-black/40 border border-white/10 rounded-2xl text-white text-xs font-black outline-none focus:border-amber-400/80 focus:shadow-[0_0_20px_rgba(245,158,11,0.2)] placeholder:text-slate-600 transition-all shadow-inner" 
+                        className="flex-1 py-3.5 px-5 bg-slate-950/80 border-2 border-slate-600 hover:border-amber-500 focus:border-amber-400 rounded-2xl text-white text-xs font-black outline-none focus:shadow-[0_0_20px_rgba(245,158,11,0.25)] placeholder:text-slate-600 transition-all shadow-inner" 
                       />
                     </div>
                   </div>

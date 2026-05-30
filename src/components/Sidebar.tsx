@@ -101,8 +101,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <span className="text-[10px] font-bold text-white/40 tracking-widest uppercase">Gundulu Era</span>
               </div>
             </div>
-            {/* Utkal Logo in Sidebar */}
-            <img src="/utkal-192.png" alt="Utkal Skill Centre" className="h-8 w-fit opacity-90 brightness-110" />
+            {/* Utkal Logo in Sidebar hidden per user request */}
           </div>
 
           {/* NAVIGATION */}
