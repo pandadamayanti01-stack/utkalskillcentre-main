@@ -1011,14 +1011,15 @@ export default function App() {
   const [tutorLoading, setTutorLoading] = useState<Record<string, boolean>>({});
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [showConfigError, setShowConfigError] = useState<{title: string, message: string} | null>(null);
-  // Hiding the Raja Festival Launch Poster for now. Set to the PWA conditional block below when live:
-  // () => {
-  //   const isPwa = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
-  //   if (isPwa) return !localStorage.getItem('rajaFestivalSeen');
-  //   localStorage.removeItem('rajaFestivalSeen');
-  //   return true;
-  // }
-  const [showLaunchPoster, setShowLaunchPoster] = useState(false);
+  const [showLaunchPoster, setShowLaunchPoster] = useState(() => {
+    const isPwa = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
+    if (isPwa) {
+      return !localStorage.getItem('rajaFestivalSeen');
+    } else {
+      localStorage.removeItem('rajaFestivalSeen');
+      return true;
+    }
+  });
   // Hiding the launch celebration event for now. Change to: () => !localStorage.getItem('utkalPlayStoreLaunchSeen') to enable it when live.
   const [showLaunchEvent, setShowLaunchEvent] = useState(false);
   const [showTestSeriesPoster, setShowTestSeriesPoster] = useState(false);
