@@ -31,11 +31,14 @@ Instead of corporate buzzwords, Utkal Skill Centre is built on a real, high-impa
 
 *   **Live App URL**: [https://utkalskillcentre.com](https://utkalskillcentre.com)
 *   **✨ Interactive Judge Showcase Link**: [https://utkalskillcentre.com?showcase=true](https://utkalskillcentre.com?showcase=true) *(Loads the landing page in English by default, dynamically exposing the gold pulsing presentation launcher button for non-logged-in judges and permanent sessions in the sidebar!)*
-*   **Judge Demo Credentials (OTP Bypass)**:
-    *   **Phone Number**: `1234567890` (configured in Firebase Console)
-    *   **OTP Verification Code**: `123456`
-    *   *(Note: Simply enter the test phone number `1234567890` on the main login screen, select BSE Odisha / Class 10, and enter the bypass code `123456` when prompted. This allows judges to experience the exact same seamless mobile OTP flow that standard students in rural Odisha see, keeping the login flow 100% authentic without email/password fields.)*
+*   **⚡ Judge Fast-Pass Entry (Recommended)**: [https://utkalskillcentre.com?judge=true](https://utkalskillcentre.com?judge=true) or access with hash `#judge`.
+    *   *What it does*: Displays an exclusive, sleek, glassmorphic **"Judge Fast-Pass Access"** action panel on the login view.
+    *   *Zero-Friction Login*: With a single tap, it pre-configures and pre-fills the official demo phone number (`1234567890`), locks the grade mapping precisely to **Class 10, BSE Odisha**, dynamically executes reCAPTCHA in silent mode, bypasses manual verification input, and completes the OTP authorization using the test bypass code (`123456`) instantly!
+*   **🔓 Sunday Lockout Bypass Protection**:
+    *   *The Feature*: The PWA natively includes a **Sunday Rest Lockout** feature that closes study portals on Sundays to promote healthy screen habits and mental well-being for students.
+    *   *The Showcase Exemption*: Since judging/evaluations are occurring, we have implemented an automated Sunday lockout bypass for judges. Any session initialized under the fast-pass demo credentials (`1234567890`), or loaded via `?judge=true` / `?showcase=true`, programmatically overrides the lock screens, guaranteeing an uninterrupted and smooth showcase 24/7.
 *   **FastMCP Server Source**: [scratch/hackathon_mcp_server.py](file:///d:/WebApp/utkalskillcentre-main/scratch/hackathon_mcp_server.py)
+
 
 ---
 
