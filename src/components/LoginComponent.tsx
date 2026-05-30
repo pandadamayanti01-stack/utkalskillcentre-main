@@ -90,6 +90,11 @@ export default function Login({ language, translations, setLanguage, setRegData 
     window.location.search.includes('showcase=true') || 
     window.location.hash === '#pitch_deck'
   );
+  const showJudgePass = typeof window !== 'undefined' && (
+    window.location.search.includes('judge=true') || 
+    window.location.search.includes('showcase=true') || 
+    window.location.hash === '#judge'
+  );
   
   // PWA Install State
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -570,40 +575,44 @@ export default function Login({ language, translations, setLanguage, setRegData 
                     {isSending ? <Loader2 className="animate-spin" size={18} /> : <>{t.sendOtp || 'Continue'} <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" /></>}
                   </button>
 
-                  <div className="relative py-1 flex items-center justify-center">
-                    <div className="h-px bg-white/10 w-full" />
-                    <span className="absolute bg-[#0f172a] px-4 text-[9px] font-black text-slate-500 uppercase tracking-widest rounded-full border border-white/10 py-1">
-                      {language === 'en' ? 'OR' : 'କିମ୍ବା'}
-                    </span>
-                  </div>
+                  {showJudgePass && (
+                    <>
+                      <div className="relative py-1 flex items-center justify-center">
+                        <div className="h-px bg-white/10 w-full" />
+                        <span className="absolute bg-[#0f172a] px-4 text-[9px] font-black text-slate-500 uppercase tracking-widest rounded-full border border-white/10 py-1">
+                          {language === 'en' ? 'OR' : 'କିମ୍ବା'}
+                        </span>
+                      </div>
 
-                  {/* HACKATHON DEMO FAST-PASS PANEL */}
-                  <div className="p-3.5 rounded-2xl border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-orange-500/5 to-purple-500/10 space-y-2 text-left relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-16 h-16 bg-amber-500/5 rounded-full blur-xl pointer-events-none" />
-                    <div className="flex items-center gap-2">
-                      <Sparkles size={14} className="text-amber-400 animate-pulse" />
-                      <span className="text-[9px] font-black text-amber-400 uppercase tracking-widest">
-                        {language === 'en' ? 'Judge Fast-Pass Access' : 'ଜଜ୍ ଫାଷ୍ଟ-ପାସ୍ ପ୍ରବେଶ'}
-                      </span>
-                    </div>
-                    <p className="text-[10px] text-slate-400 leading-normal font-bold">
-                      {language === 'en' ? 'Select a test account below for instant, one-click automated login (bypasses reCAPTCHA & SMS waiting).' : 'ବିନା SMS ଅପେକ୍ଷା ଓ reCAPTCHA ରେ ତୁରନ୍ତ ଲଗଇନ୍ କରିବା ପାଇଁ ଚୟନ କରନ୍ତୁ |'}
-                    </p>
-                    <div className="flex flex-col pt-1">
-                      {TEST_ACCOUNTS.map((acc, idx) => (
-                        <button
-                          key={idx}
-                          type="button"
-                          onClick={() => handleFastPassLogin(acc)}
-                          disabled={isSending}
-                          className="w-full py-3 px-4 rounded-xl bg-black/40 hover:bg-[#b34d1f]/10 border border-white/5 hover:border-amber-500/30 text-xs font-black text-slate-200 hover:text-amber-300 transition-all flex items-center justify-between group active:scale-95 cursor-pointer shadow-inner"
-                        >
-                          <span>{language === 'en' ? 'Log in as Student (Class 10)' : 'ଛାତ୍ର ଭାବରେ ତୁରନ୍ତ ଲଗଇନ୍ କରନ୍ତୁ (ଦଶମ ଶ୍ରେଣୀ)'}</span>
-                          <ChevronRight size={14} className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-amber-400 animate-pulse" />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                      {/* HACKATHON DEMO FAST-PASS PANEL */}
+                      <div className="p-3.5 rounded-2xl border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-orange-500/5 to-purple-500/10 space-y-2 text-left relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-16 h-16 bg-amber-500/5 rounded-full blur-xl pointer-events-none" />
+                        <div className="flex items-center gap-2">
+                          <Sparkles size={14} className="text-amber-400 animate-pulse" />
+                          <span className="text-[9px] font-black text-amber-400 uppercase tracking-widest">
+                            {language === 'en' ? 'Judge Fast-Pass Access' : 'ଜଜ୍ ଫାଷ୍ଟ-ପାସ୍ ପ୍ରବେଶ'}
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-slate-400 leading-normal font-bold">
+                          {language === 'en' ? 'Select a test account below for instant, one-click automated login (bypasses reCAPTCHA & SMS waiting).' : 'ବିନା SMS ଅପେକ୍ଷା ଓ reCAPTCHA ରେ ତୁରନ୍ତ ଲଗଇନ୍ କରିବା ପାଇଁ ଚୟନ କରନ୍ତୁ |'}
+                        </p>
+                        <div className="flex flex-col pt-1">
+                          {TEST_ACCOUNTS.map((acc, idx) => (
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={() => handleFastPassLogin(acc)}
+                              disabled={isSending}
+                              className="w-full py-3 px-4 rounded-xl bg-black/40 hover:bg-[#b34d1f]/10 border border-white/5 hover:border-amber-500/30 text-xs font-black text-slate-200 hover:text-amber-300 transition-all flex items-center justify-between group active:scale-95 cursor-pointer shadow-inner"
+                            >
+                              <span>{language === 'en' ? 'Log in as Student (Class 10)' : 'ଛାତ୍ର ଭାବରେ ତୁରନ୍ତ ଲଗଇନ୍ କରନ୍ତୁ (ଦଶମ ଶ୍ରେଣୀ)'}</span>
+                              <ChevronRight size={14} className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-amber-400 animate-pulse" />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  )}
 
                   <button
                     onClick={handleGoogleLogin}
