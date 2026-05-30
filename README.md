@@ -31,12 +31,13 @@ Instead of corporate buzzwords, Utkal Skill Centre is built on a real, high-impa
 
 *   **Live App URL**: [https://utkalskillcentre.com](https://utkalskillcentre.com)
 *   **✨ Interactive Judge Showcase Link**: [https://utkalskillcentre.com?showcase=true](https://utkalskillcentre.com?showcase=true) *(Loads the landing page in English by default, dynamically exposing the gold pulsing presentation launcher button for non-logged-in judges and permanent sessions in the sidebar!)*
-*   **⚡ Judge Fast-Pass Entry (Recommended)**: [https://utkalskillcentre.com?judge=true](https://utkalskillcentre.com?judge=true) or access with hash `#judge`.
-    *   *What it does*: Displays an exclusive, sleek, glassmorphic **"Judge Fast-Pass Access"** action panel on the login view.
+*   **⚡ Judge Fast-Pass Entry (Recommended)**: [https://utkalskillcentre.com?judgestatus=true](https://utkalskillcentre.com?judgestatus=true) or access via query parameter `?judge=true` / hash `#judge`.
+    *   *What it does*: Displays an exclusive, sleek, glassmorphic **"Judge Fast-Pass Access"** action panel on the login view, and dynamically activates the gold pulsing "SHOWCASE" presenter button in the utility bar.
     *   *Zero-Friction Login*: With a single tap, it pre-configures and pre-fills the official demo phone number (`1234567890`), locks the grade mapping precisely to **Class 10, BSE Odisha**, dynamically executes reCAPTCHA in silent mode, bypasses manual verification input, and completes the OTP authorization using the test bypass code (`123456`) instantly!
+    *   *Seamless Dashboard Routing*: Redirection handlers actively capture the judge/presentation session context and automatically route the judge directly to the authenticated **Student Dashboard** upon successful login, eliminating blank landing pages.
 *   **🔓 Sunday Lockout Bypass Protection**:
     *   *The Feature*: The PWA natively includes a **Sunday Rest Lockout** feature that closes study portals on Sundays to promote healthy screen habits and mental well-being for students.
-    *   *The Showcase Exemption*: Since judging/evaluations are occurring, we have implemented an automated Sunday lockout bypass for judges. Any session initialized under the fast-pass demo credentials (`1234567890`), or loaded via `?judge=true` / `?showcase=true`, programmatically overrides the lock screens, guaranteeing an uninterrupted and smooth showcase 24/7.
+    *   *The Showcase Exemption*: Since judging/evaluations are occurring, we have implemented an automated Sunday lockout bypass for judges. Any session initialized under the fast-pass demo credentials (`1234567890`), or loaded via `?judge=true` / `?judgestatus=true` / `?showcase=true`, programmatically overrides the lock screens, guaranteeing an uninterrupted and smooth showcase 24/7.
 *   **FastMCP Server Source**: [scratch/hackathon_mcp_server.py](file:///d:/WebApp/utkalskillcentre-main/scratch/hackathon_mcp_server.py)
 
 
@@ -71,6 +72,36 @@ Standard generative models often hallucinate or fail at retrieving precise, regi
     1.  **Multimodal AI OCR Ingestion**: Engineered a resilient, self-healing key-rotation Python pipeline using `poppler-utils`, `pdf2image`, and Google's cutting-edge **`gemini-2.5-flash`** model to transcribe and digitize **all 1,170 official textbook chapters** (Class 1 to 10 scanned PDFs) with 100% Odia Unicode accuracy.
     2.  **Firestore Native Vector Store**: Stored page-level 768-dimensional embeddings using `gemini-embedding-001` directly in Firestore as native Vector fields.
     3.  **Real-Time Semantic Grounding**: When students query Gundulu AI, the server converts the question to a vector, runs a native Firestore nearest-neighbor `.findNearest()` search (Cosine distance), retrieves the exact matching textbook page, and injects it as the strict source of truth, yielding **99%+ factual correctness** in local mother-tongue answers.
+
+---
+
+## 🎨 Brand Redesign & Visual Optimization ("New Era EdTech" Makeover)
+
+In tandem with functional stability, we carried out a high-fidelity visual and branding overhaul to elevate the PWA's user experience to a premium, state-of-the-art "new era EdTech for school students" look:
+
+### 1. Dynamic Floating Gundulu Companion Mascot
+*   **The Upgrade**: Replaced the generic flat icons in the center of the rotating tech node lines with the circular, high-end face of the official **Gundulu mascot** (`/gundulu.png`).
+*   **The Physics Animation**: Implemented continuous Framer Motion keyframe animations that slide Gundulu along a smooth, gentle **3D orbital path** (float animation), making the companion mascot look alive and dynamically responsive.
+*   **Micro-Interactions**: Mapped smooth active-state scales to zoom the mascot face from `scale-[2.0]` up to `scale-[2.3]` upon user hover.
+
+### 2. High-Contrast Solid Dropdowns & Inputs (Vercel/Linear Style)
+*   **The Upgrade**: Shifted all core login selectors (Class select, Board select, Phone `+91` code prefix, and Mobile Number text input) from dim semi-transparent lines to a bold, premium **`border-2 border-slate-600`** system with a deep **`bg-slate-950/80`** glass backdrop.
+*   **The Result**: Rounded boundaries are **100% visible, sharp, and perfectly readable** on all screen types and ambient brightness levels. On hover, the border dynamically transitions to a solid amber (**`hover:border-amber-500`**), and on focus it lights up with a gorgeous gold glow (**`focus:shadow-[0_0_20px_rgba(245,158,11,0.25)]`**).
+
+### 3. Glassmorphic Circular Logo & Optimized Spacing
+*   **The Upgrade**: Redesigned the top-left landing page logo into a horizontal, glowing glass badge combining a circular double-ring crest border (`rounded-full border border-white/20`), custom gold-emerald "PRO" indicators, and high-fidelity tracking-tight typography.
+*   **Marginal Balance**: Reduced top padding of the landing page from `pt-24`/`pt-10` down to **`pt-6`** to eliminate excess blank space, creating a perfectly balanced professional boundary.
+
+### 4. Royal Rounded Rath Crest Sidebar Seal
+*   **The Upgrade**: Upgraded the sidebar top-left crest (`/gundulu-rath-crest.png`) to a royal badge by wrapping it in an overflow-hidden circular mask (**`rounded-full h-12 w-12 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.25)]`**).
+*   **The Polish**: Clipped out all blurry square corners from the raw asset, zoomed in dynamically via CSS (`scale-[1.3]`), and increased the gold-green saturation (`saturate-[1.2]`) to make the crest stand out with rich contrast.
+
+### 5. Smart Post-Login UI Hiding Rules
+*   **The Upgrade**: Hid redundant branding elements once a student has successfully logged in (such as removing the Utkal logo from the sidebar top on desktop), ensuring a clean, focused, and professional study workspace.
+*   **Balanced Branded Headers**: Restored and locked the Utkal crest logo (`/utkal-192.png`) to be permanently visible next to the title text in the header, keeping desktop and mobile dashboards perfectly aligned and beautifully branded.
+
+### 6. Fluid Bilingual Typography
+*   **The Upgrade**: Relaxed line-height vertical spacing to **`leading-normal`** on all marketing headings to completely resolve vertical overlaps of tall Odia vowel marks (`ୂ`, `ୁ`, `ି`, `ୀ`, `୍ଳ`, `ଷ୍ୟ`), ensuring perfect readability.
 
 ---
 
