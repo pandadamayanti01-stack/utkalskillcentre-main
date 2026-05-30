@@ -4536,8 +4536,8 @@ export const ROADMAP_DATA_7 = [
       },
       {
         "id": "wTaDIddmI14Zy2jeGqRx",
-        "title": "Chapter 3 - Jatiyapana",
-        "title_en": "Jatiyapana",
+        "title": "Chapter 3 - Jatiya Pakhi",
+        "title_en": "Jatiya Pakhi",
         "title_or": "ଜาତୀୟପଣା",
         "subject": "sahitya_suman",
         "thumbnail": null

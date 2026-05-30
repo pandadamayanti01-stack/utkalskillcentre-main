@@ -23,6 +23,7 @@ export function TeacherDashboard({ user, language, chapters, setActiveTab, textb
   const [isGeneratingHomework, setIsGeneratingHomework] = useState(false);
   const [generatedHomework, setGeneratedHomework] = useState('');
 
+
   // Tuition Batches Mock State
   const [batches, setBatches] = useState([
     { id: '1', name: 'Class 10 Evening Batch', code: 'UTKAL-X-EVE', studentsCount: 14 },
@@ -223,6 +224,8 @@ export function TeacherDashboard({ user, language, chapters, setActiveTab, textb
             >
               <span>{language === 'en' ? 'Browse All Textbooks →' : 'ସମସ୍ତ ପୁସ୍ତକ ଦେଖନ୍ତୁ →'}</span>
             </button>
+
+
           </div>
         </motion.div>
       </div>
@@ -584,6 +587,7 @@ export function TeacherDashboard({ user, language, chapters, setActiveTab, textb
           document.body
         )}
       </AnimatePresence>
+
     </motion.div>
   );
 }

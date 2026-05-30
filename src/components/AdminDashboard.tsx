@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import {
   BookOpen,
   Brain,
@@ -202,6 +203,15 @@ Sample tone for Class 6-10:
   const [libFormVideoUrl, setLibFormVideoUrl] = useState('');
   const [coverUploadProgress, setCoverUploadProgress] = useState<number | null>(null);
   const [isLibSaving, setIsLibSaving] = useState(false);
+
+  // AI Vector Indexer States
+  const [showIndexerModal, setShowIndexerModal] = useState(false);
+  const [indexerClass, setIndexerClass] = useState('10');
+  const [indexerSubject, setIndexerSubject] = useState('math');
+  const [indexerText, setIndexerText] = useState('');
+  const [indexerReference, setIndexerReference] = useState('');
+  const [isIndexing, setIsIndexing] = useState(false);
+  const [indexingResult, setIndexingResult] = useState('');
 
   // Remote Support States
   const [remoteCode, setRemoteCode] = useState('');
@@ -4998,13 +5008,22 @@ Sample tone for Class 6-10:
                 Upload and organize interactive textbooks, study notes, and PDF chapters. Students can view original PDFs side-by-side with your AI-powered study materials.
               </p>
             </div>
-            <button
-              onClick={handleOpenAddModal}
-              className="flex items-center gap-2 px-6 py-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-emerald-900/30 self-start md:self-auto"
-            >
-              <Plus size={16} />
-              <span>Add New Chapter</span>
-            </button>
+            <div className="flex flex-col sm:flex-row gap-3 self-start md:self-auto">
+              <button
+                onClick={handleOpenAddModal}
+                className="flex items-center gap-2 px-6 py-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-emerald-900/30 justify-center"
+              >
+                <Plus size={16} />
+                <span>Add New Chapter</span>
+              </button>
+              <button
+                onClick={() => setShowIndexerModal(true)}
+                className="flex items-center gap-2 px-6 py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-purple-900/30 justify-center"
+              >
+                <Sparkles size={16} />
+                <span>AI Vector Indexer</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -5504,6 +5523,183 @@ Sample tone for Class 6-10:
               <p className="font-bold text-xs uppercase tracking-widest">{notification.message}</p>
             </div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* AI Vector Indexer Modal */}
+      <AnimatePresence>
+        {showIndexerModal && createPortal(
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-slate-900 border border-purple-500/20 rounded-[32px] w-full max-w-2xl p-6 sm:p-8 relative shadow-2xl my-8 overflow-hidden max-h-[90vh] flex flex-col"
+            >
+              <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/5 rounded-full blur-[80px] -mr-32 -mt-32 pointer-events-none" />
+              
+              <div className="flex items-center justify-between mb-6 shrink-0 border-b border-white/5 pb-4">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">⚡</span>
+                  <div>
+                    <h3 className="text-xl font-black text-white">Gundulu AI Textbook Indexer</h3>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">
+                      Index textbook chapters into Firestore Vector Store
+                    </p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => {
+                    setShowIndexerModal(false);
+                    setIndexerText('');
+                    setIndexingResult('');
+                  }}
+                  className="p-2 rounded-full bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              {!indexingResult ? (
+                <div className="space-y-6 overflow-y-auto pr-2 flex-1">
+                  <div className="p-4 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs leading-relaxed space-y-1">
+                    <p className="font-bold flex items-center gap-1.5"><Info size={14} /> Loving Elder Sister Persona & Vector Search Enabled:</p>
+                    <p>This tool splits textbook text by paragraph, generates high-quality 768-dimensional embeddings using rotating API keys, and uploads them to the vector store. Gundulu Apa (Elder Sister) will read from these exact chunks to answer students with 100% accuracy!</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Class */}
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Target Class</label>
+                      <select 
+                        value={indexerClass}
+                        onChange={(e) => setIndexerClass(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-white/10 text-white font-bold focus:border-purple-500 outline-none"
+                      >
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                          <option key={num} value={num}>Class {num}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Subject */}
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Subject</label>
+                      <select 
+                        value={indexerSubject}
+                        onChange={(e) => setIndexerSubject(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-white/10 text-white font-bold focus:border-purple-500 outline-none"
+                      >
+                        <option value="math">Mathematics (ଗଣିତ)</option>
+                        <option value="algebra">Algebra (ବୀଜଗଣିତ)</option>
+                        <option value="geometry">Geometry (ଜ୍ୟାମିତି)</option>
+                        <option value="science">Science (ବିଜ୍ଞାନ)</option>
+                        <option value="english">English (ଇଂରାଜୀ)</option>
+                        <option value="odia">Odia (ଓଡ଼ିଆ)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Reference */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Reference tag (e.g. Page number, Stanza number)</label>
+                    <input 
+                      type="text"
+                      placeholder="e.g. Chapter 3 Page 45, Stanzas 1-15..."
+                      value={indexerReference}
+                      onChange={(e) => setIndexerReference(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-white/10 text-white font-bold focus:border-purple-500 outline-none placeholder:text-slate-800"
+                    />
+                  </div>
+
+                  {/* Textarea */}
+                  <div className="space-y-2 flex-1 flex flex-col">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Paste Textbook / Chapter Content (Separate paragraphs with blank lines)</label>
+                    <textarea 
+                      placeholder="Paste stanzas or paragraphs here..."
+                      value={indexerText}
+                      onChange={(e) => setIndexerText(e.target.value)}
+                      className="w-full min-h-[180px] p-4 rounded-xl bg-slate-950 border border-white/10 text-slate-200 font-medium focus:border-purple-500 outline-none placeholder:text-slate-800 resize-y flex-1"
+                    />
+                  </div>
+
+                  <div className="pt-4 shrink-0">
+                    <button
+                      type="button"
+                      disabled={isIndexing || !indexerText.trim()}
+                      onClick={async () => {
+                        setIsIndexing(true);
+                        try {
+                          const res = await fetch('/api/ai/index-textbook', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              class: indexerClass,
+                              subject: indexerSubject,
+                              text: indexerText,
+                              reference: indexerReference
+                            })
+                          });
+                          
+                          if (!res.ok) {
+                            const err = await res.json().catch(() => ({}));
+                            throw new Error(err.error || 'Indexing failed');
+                          }
+                          const data = await res.json();
+                          setIndexingResult(`successfully indexed ${data.chunksIndexed} chunks into textbook_chunks collection! ✨`);
+                        } catch (err: any) {
+                          alert(`Indexing failed: ${err.message}`);
+                        } finally {
+                          setIsIndexing(false);
+                        }
+                      }}
+                      className="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-purple-900/30 transition-all disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+                    >
+                      {isIndexing ? (
+                        <>
+                          <Plus size={16} className="animate-spin" />
+                          <span>Generating Vectors & Ingesting Chunks...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles size={16} />
+                          <span>Start AI Indexing Pipeline ✨</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="p-8 text-center space-y-6 flex-1 flex flex-col justify-center items-center">
+                  <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-400 border border-emerald-500/20 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+                    <CheckCircle2 size={40} />
+                  </div>
+                  <div className="space-y-2">
+                    <h4 className="text-xl font-black text-white">Indexing Completed!</h4>
+                    <p className="text-sm text-slate-400 leading-relaxed max-w-sm">
+                      {indexingResult}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIndexerText('');
+                      setIndexingResult('');
+                    }}
+                    className="px-8 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs uppercase tracking-widest transition-all"
+                  >
+                    Index Another Chapter
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          </motion.div>,
+          document.body
         )}
       </AnimatePresence>
     </div>

@@ -332,8 +332,100 @@ function pcmToWav(pcmBuffer: any, sampleRate: number = 24000): any {
 
 app.post('/api/ai/generate', async (req, res) => {
   try {
-    const { contents, systemInstruction, modelType, generationConfig } = req.body;
+    let { contents, systemInstruction, modelType, generationConfig, class: userClass, subject } = req.body;
     
+    // Perform Firestore Native Vector Search Grounding if class & subject are supplied
+    if (userClass && subject) {
+      try {
+        let queryText = '';
+        if (Array.isArray(contents) && contents.length > 0) {
+          const lastUserTurn = [...contents].reverse().find(turn => turn.role === 'user');
+          if (lastUserTurn && Array.isArray(lastUserTurn.parts)) {
+            queryText = lastUserTurn.parts.map((p: any) => p.text || '').join('\n').trim();
+          }
+        }
+        
+        if (queryText) {
+          console.log(`Backend RAG: Retrieving context for query: "${queryText.substring(0, 50)}..." class: ${userClass}, subject: ${subject}`);
+          const rotatorKeys = [];
+          for (let i = 1; i <= 7; i++) {
+            const k = process.env[`GEMINI_ROTATOR_KEY_${i}`];
+            if (k) rotatorKeys.push(k);
+          }
+          if (process.env.GEMINI_API_KEY && !rotatorKeys.includes(process.env.GEMINI_API_KEY)) {
+            rotatorKeys.push(process.env.GEMINI_API_KEY);
+          }
+          const keyToUse = rotatorKeys[Math.floor(Math.random() * rotatorKeys.length)] || process.env.GEMINI_API_KEY;
+          
+          if (keyToUse) {
+            const embedUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key=${keyToUse}`;
+            const embedRes = await fetch(embedUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                model: "models/gemini-embedding-001",
+                content: { parts: [{ text: queryText }] },
+                outputDimensionality: 768
+              })
+            });
+            
+            if (embedRes.ok) {
+              const embedData = await embedRes.json();
+              const queryVector = embedData.embedding?.values;
+              
+              if (queryVector && queryVector.length === 768) {
+                const adminApp = getInitializedAdminApp();
+                if (adminApp) {
+                  const db = getAdminFirestore(adminApp, firestoreDatabaseId);
+                  const chunksColl = db.collection('textbook_chunks');
+                  const { FieldValue } = require('firebase-admin/firestore');
+                  
+                  const vectorQuery = chunksColl
+                    .where('class', '==', String(userClass).toLowerCase().trim())
+                    .where('subject', '==', String(subject).toLowerCase().trim())
+                    .findNearest(
+                      'embedding',
+                      FieldValue.vector(queryVector),
+                      {
+                        limit: 3,
+                        distanceMeasure: 'COSINE'
+                      }
+                    );
+                  
+                  const snapshot = await vectorQuery.get();
+                  let retrievedText = '';
+                  snapshot.forEach((doc: any) => {
+                    const data = doc.data();
+                    retrievedText += `\n--- [Verified Reference: ${data.reference || 'Textbook'}] ---\n${data.text}\n`;
+                  });
+                  
+                  if (retrievedText) {
+                    console.log("Backend RAG: Successfully retrieved grounded textbook chunks!");
+                    systemInstruction = `${systemInstruction ? systemInstruction + '\n\n' : ''}### STRICT TEXTBOOK GROUNDING CONTEXT:
+The following are verified, 100% correct stanzas/passages retrieved directly from the official school textbook. You MUST base your answers strictly on this context:
+${retrievedText}
+`;
+                  }
+                }
+              }
+            } else {
+              const embedErrText = await embedRes.text();
+              console.warn("Backend RAG: Failed to fetch query embedding:", embedErrText);
+            }
+          }
+        }
+      } catch (err: any) {
+        console.error("Backend RAG Error:", err.message);
+        if (err.message && err.message.includes('requires a vector index')) {
+          return res.status(412).json({ 
+            error: "Vector index required", 
+            message: err.message, 
+            details: "Please create the vector index in Firestore. Visit the link in server logs or console."
+          });
+        }
+      }
+    }
+
     const useVertex = process.env.USE_VERTEX_AI === 'true';
     
     if (useVertex) {
@@ -636,6 +728,77 @@ app.post('/api/tts/gemini', async (req, res) => {
   } catch (error: any) {
     console.error('Gemini TTS Error:', error);
     return res.status(500).json({ error: error?.message || 'TTS generation failed', stack: error?.stack });
+  }
+});
+
+app.post('/api/ai/index-textbook', async (req, res) => {
+  try {
+    const { class: userClass, subject, text, reference } = req.body;
+    if (!userClass || !subject || !text) {
+      return res.status(400).json({ error: 'class, subject, and text are required fields' });
+    }
+
+    const adminApp = getInitializedAdminApp();
+    if (!adminApp) return res.status(500).json({ error: 'Firebase Admin initialization failed' });
+
+    const db = getAdminFirestore(adminApp, firestoreDatabaseId);
+    const chunksColl = db.collection('textbook_chunks');
+    const { FieldValue } = require('firebase-admin/firestore');
+
+    // 1. Chunk text dynamically by paragraphs / stanzas (~800 characters)
+    const rawChunks = text
+      .split(/\n\n+/)
+      .map((t: string) => t.trim())
+      .filter((t: string) => t.length > 10);
+
+    const rotatorKeys = [];
+    for (let i = 1; i <= 7; i++) {
+      const k = process.env[`GEMINI_ROTATOR_KEY_${i}`];
+      if (k) rotatorKeys.push(k);
+    }
+    if (process.env.GEMINI_API_KEY && !rotatorKeys.includes(process.env.GEMINI_API_KEY)) {
+      rotatorKeys.push(process.env.GEMINI_API_KEY);
+    }
+
+    let indexedCount = 0;
+    for (let idx = 0; idx < rawChunks.length; idx++) {
+      const chunkText = rawChunks[idx];
+      const keyToUse = rotatorKeys[idx % rotatorKeys.length] || process.env.GEMINI_API_KEY;
+      if (!keyToUse) continue;
+
+      const embedUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key=${keyToUse}`;
+      const embedRes = await fetch(embedUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: "models/gemini-embedding-001",
+          content: { parts: [{ text: chunkText }] },
+          outputDimensionality: 768
+        })
+      });
+
+      if (embedRes.ok) {
+        const embedData = await embedRes.json();
+        const queryVector = embedData.embedding?.values;
+        if (queryVector && queryVector.length === 768) {
+          const docRef = chunksColl.doc();
+          await docRef.set({
+            class: String(userClass).toLowerCase().trim(),
+            subject: String(subject).toLowerCase().trim(),
+            text: chunkText,
+            embedding: FieldValue.vector(queryVector),
+            reference: reference ? `${reference} (Part ${idx + 1})` : `Page ${idx + 1}`,
+            createdAt: FieldValue.serverTimestamp()
+          });
+          indexedCount++;
+        }
+      }
+    }
+
+    res.json({ success: true, chunksIndexed: indexedCount });
+  } catch (error: any) {
+    console.error('Textbook Indexing Error:', error);
+    res.status(500).json({ error: error?.message || 'Indexing failed' });
   }
 });
 
