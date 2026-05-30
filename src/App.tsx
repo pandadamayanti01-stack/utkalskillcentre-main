@@ -1573,7 +1573,8 @@ export default function App() {
 
       if (firebaseUser) {
         const currentHash = window.location.hash.replace('#', '');
-        if (currentHash === 'judge' || currentHash === 'pitch_deck' || window.location.hash.includes('judge') || window.location.hash.includes('pitch_deck')) {
+        const hasJudgeQuery = window.location.search.includes('judge') || window.location.search.includes('showcase');
+        if (currentHash === 'judge' || currentHash === 'pitch_deck' || window.location.hash.includes('judge') || window.location.hash.includes('pitch_deck') || hasJudgeQuery) {
           setActiveTab('dashboard');
         }
         // Set up real-time listener for user data

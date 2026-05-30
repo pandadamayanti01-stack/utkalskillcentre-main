@@ -92,7 +92,9 @@ export default function Login({ language, translations, setLanguage, setRegData 
   );
   const showJudgePass = typeof window !== 'undefined' && (
     window.location.search.includes('judge=true') || 
+    window.location.search.includes('judgestatus=true') || 
     window.location.search.includes('showcase=true') || 
+    window.location.hash.includes('judge') ||
     window.location.hash === '#judge'
   );
   
