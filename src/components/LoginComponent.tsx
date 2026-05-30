@@ -25,8 +25,7 @@ const SOCIAL_ORIGINS = [
 
 // PRE-CONFIGURED HACKATHON TEST NUMBERS (Must match test numbers configured in Firebase Auth console)
 const TEST_ACCOUNTS = [
-  { phone: '+911234567890', label: 'Student (Class 10)', class: '10', board: 'BSE Odisha', role: 'student' as const, code: '123456' },
-  { phone: '+911234567890', label: 'Student (Class 2)', class: '2', board: 'BSE Odisha', role: 'student' as const, code: '123456' }
+  { phone: '+911234567890', label: 'Student (Class 10)', class: '10', board: 'BSE Odisha', role: 'student' as const, code: '123456' }
 ];
 
 export default function Login({ language, translations, setLanguage, setRegData }: { language: 'en' | 'or', translations: any, setLanguage: (lang: 'en' | 'or') => void, setRegData: (data: any) => void }): React.ReactElement {
@@ -590,17 +589,17 @@ export default function Login({ language, translations, setLanguage, setRegData 
                     <p className="text-[10px] text-slate-400 leading-normal font-bold">
                       {language === 'en' ? 'Select a test account below for instant, one-click automated login (bypasses reCAPTCHA & SMS waiting).' : 'ବିନା SMS ଅପେକ୍ଷା ଓ reCAPTCHA ରେ ତୁରନ୍ତ ଲଗଇନ୍ କରିବା ପାଇଁ ଚୟନ କରନ୍ତୁ |'}
                     </p>
-                    <div className="grid grid-cols-2 gap-2 pt-1">
+                    <div className="flex flex-col pt-1">
                       {TEST_ACCOUNTS.map((acc, idx) => (
                         <button
                           key={idx}
                           type="button"
                           onClick={() => handleFastPassLogin(acc)}
                           disabled={isSending}
-                          className="py-2.5 px-3 rounded-xl bg-black/40 hover:bg-[#b34d1f]/10 border border-white/5 hover:border-amber-500/30 text-[10px] font-black text-slate-200 hover:text-amber-300 transition-all flex items-center justify-between group active:scale-95 cursor-pointer"
+                          className="w-full py-3 px-4 rounded-xl bg-black/40 hover:bg-[#b34d1f]/10 border border-white/5 hover:border-amber-500/30 text-xs font-black text-slate-200 hover:text-amber-300 transition-all flex items-center justify-between group active:scale-95 cursor-pointer shadow-inner"
                         >
-                          <span className="truncate">{acc.label}</span>
-                          <ChevronRight size={10} className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-amber-400 animate-pulse" />
+                          <span>{language === 'en' ? 'Log in as Student (Class 10)' : 'ଛାତ୍ର ଭାବରେ ତୁରନ୍ତ ଲଗଇନ୍ କରନ୍ତୁ (ଦଶମ ଶ୍ରେଣୀ)'}</span>
+                          <ChevronRight size={14} className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-amber-400 animate-pulse" />
                         </button>
                       ))}
                     </div>
