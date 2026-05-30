@@ -23,8 +23,62 @@ const SOCIAL_ORIGINS = [
   new URL(FACEBOOK_PROFILE_URL).origin,
 ];
 
+// PRE-CONFIGURED HACKATHON TEST NUMBERS (Must match test numbers configured in Firebase Auth console)
+const TEST_ACCOUNTS = [
+  { phone: '+919999999999', label: 'Anuradha (Class 10)', class: '10', board: 'BSE Odisha', role: 'student' as const, code: '123456' },
+  { phone: '+918888888888', label: 'Teacher Demo', class: '10', board: 'BSE Odisha', role: 'teacher' as const, code: '123456' }
+];
+
 export default function Login({ language, translations, setLanguage, setRegData }: { language: 'en' | 'or', translations: any, setLanguage: (lang: 'en' | 'or') => void, setRegData: (data: any) => void }): React.ReactElement {
   const [phoneNumber, setPhoneNumber] = useState('');
+
+  const handleFastPassLogin = async (acc: typeof TEST_ACCOUNTS[number]) => {
+    setUserRole(acc.role);
+    if (acc.role === 'student') {
+      setSelectedClass(acc.class);
+      setSelectedBoard(acc.board);
+    }
+    
+    // Set matching registration data
+    setRegData({
+      class: acc.role === 'student' ? acc.class : '10',
+      board: acc.role === 'student' ? acc.board : 'BSE Odisha',
+      role: acc.role
+    });
+
+    setPhoneNumber(acc.phone);
+    if (phoneInputRef.current) {
+      phoneInputRef.current.value = acc.phone.replace('+91', '');
+    }
+
+    setIsSending(true);
+
+    try {
+      // 1. Solve Captcha via silent invisible element
+      if (!recaptchaVerifier.current && recaptchaDomRef.current) {
+        recaptchaVerifier.current = new RecaptchaVerifier(auth, recaptchaDomRef.current, {
+          'size': 'invisible',
+          'callback': (_response: any) => {}
+        });
+      }
+
+      // 2. Dispatch Firebase Phone Sign-in (returns instantly for test numbers)
+      const confirmation = await signInWithPhoneNumber(auth, acc.phone, recaptchaVerifier.current);
+      setVerificationId(confirmation);
+      
+      // 3. Programmatically confirm standard OTP immediately (Zero-friction Login!)
+      await confirmation.confirm(acc.code);
+      console.log("Fast-Pass automated login successful");
+      
+    } catch (error: any) {
+      console.error("Fast-pass login error:", error);
+      alert("Fast-pass authentication failed: " + error.message);
+      if (recaptchaVerifier.current) recaptchaVerifier.current.clear();
+      recaptchaVerifier.current = null;
+    } finally {
+      setIsSending(false);
+    }
+  };
   const [verificationId, setVerificationId] = useState<any>(null);
   const [otp, setOtp] = useState('');
   const [selectedClass, setSelectedClass] = useState('');
@@ -522,6 +576,34 @@ export default function Login({ language, translations, setLanguage, setRegData 
                     <span className="absolute bg-[#0f172a] px-4 text-[9px] font-black text-slate-500 uppercase tracking-widest rounded-full border border-white/10 py-1">
                       {language === 'en' ? 'OR' : 'କିମ୍ବା'}
                     </span>
+                  </div>
+
+                  {/* HACKATHON DEMO FAST-PASS PANEL */}
+                  <div className="p-3.5 rounded-2xl border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-orange-500/5 to-purple-500/10 space-y-2 text-left relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-16 h-16 bg-amber-500/5 rounded-full blur-xl pointer-events-none" />
+                    <div className="flex items-center gap-2">
+                      <Sparkles size={14} className="text-amber-400 animate-pulse" />
+                      <span className="text-[9px] font-black text-amber-400 uppercase tracking-widest">
+                        {language === 'en' ? 'Judge Fast-Pass Access' : 'ଜଜ୍ ଫାଷ୍ଟ-ପାସ୍ ପ୍ରବେଶ'}
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-slate-400 leading-normal font-bold">
+                      {language === 'en' ? 'Select a test account below for instant, one-click automated login (bypasses reCAPTCHA & SMS waiting).' : 'ବିନା SMS ଅପେକ୍ଷା ଓ reCAPTCHA ରେ ତୁରନ୍ତ ଲଗଇନ୍ କରିବା ପାଇଁ ଚୟନ କରନ୍ତୁ |'}
+                    </p>
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                      {TEST_ACCOUNTS.map((acc, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => handleFastPassLogin(acc)}
+                          disabled={isSending}
+                          className="py-2.5 px-3 rounded-xl bg-black/40 hover:bg-[#b34d1f]/10 border border-white/5 hover:border-amber-500/30 text-[10px] font-black text-slate-200 hover:text-amber-300 transition-all flex items-center justify-between group active:scale-95 cursor-pointer"
+                        >
+                          <span className="truncate">{acc.label}</span>
+                          <ChevronRight size={10} className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-amber-400 animate-pulse" />
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
                   <button
