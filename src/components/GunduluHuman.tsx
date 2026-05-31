@@ -176,6 +176,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animationFrameRef = useRef<number | null>(null);
+  const audioVolumeRef = useRef<number>(0);
 
   // Auto-scroll subtitle container to bottom whenever subtitle updates
   useEffect(() => {
@@ -239,6 +240,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
     if (sphereRef.current) {
       sphereRef.current.style.transform = 'scale(1)';
     }
+    audioVolumeRef.current = 0;
   };
 
   const animateSubtitle = (text: string, isBrowserTts: boolean = false) => {
@@ -488,6 +490,9 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
             }
             const average = sum / dataArray.length;
             
+            // Sync volume to audioVolumeRef for the Canvas waveform
+            audioVolumeRef.current = average;
+
             // Scale the sphere slightly based on voice volume (Max 15% enlargement)
             const scale = 1 + (average / 255) * 0.15;
             sphereRef.current.style.transform = `scale(${scale})`;
@@ -965,17 +970,9 @@ Understand user intent from these transcripts and respond in Odia only.
         <h2 className="call-state-title">{status}</h2>
         
         {/* Active Realtime Audio wave visualization */}
-        {(isSpeaking || isListening) && (
-          <div className="call-visualizer-wave">
-            <span className="v-bar vb1"></span>
-            <span className="v-bar vb2"></span>
-            <span className="v-bar vb3"></span>
-            <span className="v-bar vb4"></span>
-            <span className="v-bar vb5"></span>
-            <span className="v-bar vb6"></span>
-            <span className="v-bar vb7"></span>
-          </div>
-        )}
+        <div className="call-visualizer-wave-container w-full max-w-[200px] mx-auto mt-2">
+          <AudioWaveform isSpeaking={isSpeaking} isListening={isListening} audioVolumeRef={audioVolumeRef} />
+        </div>
       </div>
 
       {/* 4. SUBTITLE CAPTIONS DISPLAY */}
@@ -1034,5 +1031,116 @@ Understand user intent from these transcripts and respond in Odia only.
     </div>
   );
 };
+
+interface AudioWaveformProps {
+  isSpeaking: boolean;
+  isListening: boolean;
+  audioVolumeRef: React.RefObject<number>;
+}
+
+export function AudioWaveform({ isSpeaking, isListening, audioVolumeRef }: AudioWaveformProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let phase = 0;
+
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * window.devicePixelRatio;
+      canvas.height = rect.height * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    };
+
+    resize();
+    window.addEventListener('resize', resize);
+
+    const drawWave = (
+      ctx: CanvasRenderingContext2D,
+      width: number,
+      height: number,
+      amplitude: number,
+      frequency: number,
+      speed: number,
+      color: string,
+      lineWidth: number
+    ) => {
+      ctx.beginPath();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.lineCap = 'round';
+
+      for (let x = 0; x < width; x++) {
+        const envelope = Math.sin((x / width) * Math.PI);
+        const y = height / 2 + Math.sin(x * frequency + phase * speed) * amplitude * envelope;
+        
+        if (x === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+      ctx.stroke();
+    };
+
+    const render = () => {
+      if (!canvas || !ctx) return;
+      const width = canvas.width / window.devicePixelRatio;
+      const height = canvas.height / window.devicePixelRatio;
+
+      ctx.clearRect(0, 0, width, height);
+
+      let baseAmplitude = 3;
+      let targetColor1 = 'rgba(148, 163, 184, 0.25)'; // slate-400
+      let targetColor2 = 'rgba(100, 116, 139, 0.15)'; // slate-500
+      let targetColor3 = 'rgba(71, 85, 105, 0.1)';   // slate-600
+
+      if (isSpeaking) {
+        const volumeFactor = audioVolumeRef?.current !== undefined 
+          ? (audioVolumeRef.current / 255) * 30 
+          : 0;
+        baseAmplitude = Math.max(8, volumeFactor > 0 ? volumeFactor : 15 + Math.sin(phase * 0.1) * 5);
+        targetColor1 = 'rgba(139, 92, 246, 0.7)'; // Speaking: Violet
+        targetColor2 = 'rgba(236, 72, 153, 0.5)'; // Pink
+        targetColor3 = 'rgba(99, 102, 241, 0.3)'; // Indigo
+      } else if (isListening) {
+        baseAmplitude = 18 + Math.sin(phase * 0.25) * 8;
+        targetColor1 = 'rgba(6, 182, 212, 0.7)';  // Listening: Cyan
+        targetColor2 = 'rgba(16, 185, 129, 0.5)';  // Emerald
+        targetColor3 = 'rgba(34, 197, 94, 0.3)';   // Green
+      }
+
+      phase += 0.12;
+
+      // Render 3 layers of waves for rich organic depth
+      drawWave(ctx, width, height, baseAmplitude * 0.6, 0.04, 0.7, targetColor3, 1);
+      drawWave(ctx, width, height, baseAmplitude * 0.8, 0.03, -1.0, targetColor2, 1.5);
+      drawWave(ctx, width, height, baseAmplitude, 0.02, 0.8, targetColor1, 2.5);
+
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', resize);
+    };
+  }, [isSpeaking, isListening, audioVolumeRef]);
+
+  return (
+    <canvas 
+      ref={canvasRef} 
+      className="w-full h-10 pointer-events-none rounded-xl"
+      style={{ display: 'block', maxHeight: '40px' }}
+    />
+  );
+}
 
 export default GunduluHuman;
