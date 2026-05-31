@@ -360,7 +360,9 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
         {isWelcome ? (
           <div className="welcome-concept-slide">
             <div className="welcome-avatar-ripple">
-              <img src="/gundulu.png" alt="Welcome Gundulu" className="welcome-card-avatar" />
+              <div className="welcome-card-avatar-container">
+                <img src="/gundulu.png" alt="Welcome Gundulu" className="welcome-card-avatar" />
+              </div>
             </div>
             <p className="welcome-card-text">ଆସ ଏକାଠି ପାଠ ପଢିବା!</p>
           </div>
@@ -914,7 +916,9 @@ Understand user intent from these transcripts and respond in Odia only.
 
             {/* Central Avatar Orb */}
             <div ref={sphereRef} className="avatar-sphere" onClick={toggleListening}>
-              <img src="/gundulu.png" alt="Gundulu" className="avatar-img-3d" />
+              <div className="avatar-img-container">
+                <img src="/gundulu.png" alt="Gundulu" className="avatar-img-3d" />
+              </div>
               
               {/* Glossy glass reflection cover */}
               <div className="avatar-glass-shine"></div>

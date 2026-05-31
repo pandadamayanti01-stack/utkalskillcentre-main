@@ -39,7 +39,9 @@ const UnlockGundulu = () => {
         {/* 3. The Locked Header */}
         <div className="header-locked">
           <div className="locked-wrapper">
-            <img src="/gundulu.png" alt="Locked Gundulu" className="gundulu-locked" />
+            <div className="locked-avatar-container">
+              <img src="/gundulu.png" alt="Locked Gundulu" className="gundulu-locked" />
+            </div>
             <span className="lock-icon">🔒</span>
           </div>
           <h2>Unlock Gundulu’s Brain! ✨</h2>

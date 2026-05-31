@@ -2393,15 +2393,17 @@ Instructions:
                 
                 <div className="flex items-center gap-3 relative z-10">
                   <div className="relative group cursor-pointer">
-                    <img
-                      src="/gundulu.png"
-                      alt="Gundulu Avatar"
-                      className="h-12 w-12 rounded-full border-2 border-emerald-400/50 object-cover bg-emerald-950/40 shadow-[0_0_15px_rgba(52,211,153,0.4)] group-hover:scale-110 transition-transform duration-300"
-                      onError={(e) => {
-                        handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
-                      }}
-                    />
-                    <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-400 border-2 border-slate-900 shadow-[0_0_10px_#34d399] animate-pulse" />
+                    <div className="h-12 w-12 rounded-full border-2 border-emerald-400/50 overflow-hidden bg-emerald-950/40 shadow-[0_0_15px_rgba(52,211,153,0.4)] shrink-0 flex items-center justify-center relative">
+                      <img
+                        src="/gundulu.png"
+                        alt="Gundulu Avatar"
+                        className="w-full h-full object-cover scale-[1.8] translate-y-[2%] transition-transform duration-500 group-hover:scale-[2.0]"
+                        onError={(e) => {
+                          handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
+                        }}
+                      />
+                    </div>
+                    <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-400 border-2 border-slate-900 shadow-[0_0_10px_#34d399] animate-pulse z-20" />
                   </div>
                   <div>
                     <h3 className="text-sm font-black text-white flex items-center gap-1.5">
@@ -2464,14 +2466,16 @@ Instructions:
                         className={`flex items-end gap-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                       >
                         {msg.sender === 'gundulu' && (
-                          <img
-                            src="/gundulu.png"
-                            alt="Gundulu"
-                            className="h-8 w-8 rounded-full border border-emerald-500/20 shadow-lg shadow-emerald-500/10 shrink-0"
-                            onError={(e) => {
-                              handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
-                            }}
-                          />
+                          <div className="h-8 w-8 rounded-full border border-emerald-500/20 shadow-lg shadow-emerald-500/10 shrink-0 overflow-hidden flex items-center justify-center bg-emerald-950/20">
+                            <img
+                              src="/gundulu.png"
+                              alt="Gundulu"
+                              className="w-full h-full object-cover scale-[1.8] translate-y-[3%]"
+                              onError={(e) => {
+                                handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
+                              }}
+                            />
+                          </div>
                         )}
                         <div
                           className={`max-w-[85%] rounded-3xl p-4 leading-relaxed shadow-lg border backdrop-blur-sm ${msg.sender === 'user'
@@ -2486,14 +2490,16 @@ Instructions:
 
                     {isAiLoading && (
                       <div className="flex items-end gap-3 justify-start">
-                        <img
-                          src="/gundulu.png"
-                          alt="Gundulu"
-                          className="h-8 w-8 rounded-full shadow-lg shadow-emerald-500/20 animate-pulse border border-emerald-500/30 shrink-0"
-                          onError={(e) => {
-                            handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
-                          }}
-                        />
+                        <div className="h-8 w-8 rounded-full shadow-lg shadow-emerald-500/20 animate-pulse border border-emerald-500/30 shrink-0 overflow-hidden flex items-center justify-center bg-emerald-950/20">
+                          <img
+                            src="/gundulu.png"
+                            alt="Gundulu"
+                            className="w-full h-full object-cover scale-[1.8] translate-y-[3%]"
+                            onError={(e) => {
+                              handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
+                            }}
+                          />
+                        </div>
                         <div className="bg-slate-900/80 backdrop-blur-md border border-emerald-500/20 rounded-3xl rounded-bl-sm p-4 shadow-lg">
                           <div className="flex gap-1.5 items-center h-4">
                             <span className="h-2 w-2 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '0ms' }} />
@@ -2947,15 +2953,17 @@ Instructions:
               <div className="flex items-center justify-between gap-4 pb-4 border-b border-white/10 flex-shrink-0 flex-wrap md:flex-nowrap">
                 <div className="flex items-center gap-3">
                   <div className="relative">
-                    <img
-                      src="/gundulu.png"
-                      alt="Gundulu Avatar"
-                      className="h-10 w-10 rounded-full border border-emerald-400/30 object-cover bg-emerald-950/20 shadow-md shadow-emerald-500/10"
-                      onError={(e) => {
-                        handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
-                      }}
-                    />
-                    <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-400 border border-[#011e1a] shadow-[0_0_8px_#34d399]" />
+                    <div className="h-10 w-10 rounded-full border border-emerald-400/30 overflow-hidden bg-emerald-950/20 shadow-md shadow-emerald-500/10 shrink-0 flex items-center justify-center relative">
+                      <img
+                        src="/gundulu.png"
+                        alt="Gundulu Avatar"
+                        className="w-full h-full object-cover scale-[1.8] translate-y-[3%]"
+                        onError={(e) => {
+                          handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
+                        }}
+                      />
+                    </div>
+                    <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-400 border border-[#011e1a] shadow-[0_0_8px_#34d399] z-20" />
                   </div>
                   <div>
                     <h2 className="text-sm md:text-lg font-black text-white leading-tight flex items-center gap-2">
@@ -3051,14 +3059,16 @@ Instructions:
                         className={`flex items-end gap-2.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                       >
                         {msg.sender === 'gundulu' && (
-                          <img
-                            src="/gundulu.png"
-                            alt="Gundulu"
-                            className="h-8 w-8 rounded-full border border-emerald-500/10 shadow-sm"
-                            onError={(e) => {
-                              handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
-                            }}
-                          />
+                          <div className="h-8 w-8 rounded-full border border-emerald-500/10 shadow-sm shrink-0 overflow-hidden flex items-center justify-center bg-emerald-950/20">
+                            <img
+                              src="/gundulu.png"
+                              alt="Gundulu"
+                              className="w-full h-full object-cover scale-[1.8] translate-y-[3%]"
+                              onError={(e) => {
+                                handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
+                              }}
+                            />
+                          </div>
                         )}
                         <div
                           className={`max-w-[75%] rounded-2xl p-4 leading-relaxed shadow-sm border ${msg.sender === 'user'
@@ -3076,14 +3086,16 @@ Instructions:
 
                     {isAiLoading && (
                       <div className="flex items-end gap-2.5 justify-start">
-                        <img
-                          src="/gundulu.png"
-                          alt="Gundulu"
-                          className="h-8 w-8 rounded-full animate-bounce"
-                          onError={(e) => {
-                            handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
-                          }}
-                        />
+                        <div className="h-8 w-8 rounded-full animate-bounce shrink-0 overflow-hidden flex items-center justify-center bg-emerald-950/20">
+                          <img
+                            src="/gundulu.png"
+                            alt="Gundulu"
+                            className="w-full h-full object-cover scale-[1.8] translate-y-[3%]"
+                            onError={(e) => {
+                              handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
+                            }}
+                          />
+                        </div>
                         <div className={`border rounded-2xl rounded-bl-none p-4 shadow-sm ${eyeCareMode === 'sepia' ? 'bg-amber-100 border-amber-900/10' : 'bg-slate-950 border-white/5'
                           }`}>
                           <div className="flex gap-1">

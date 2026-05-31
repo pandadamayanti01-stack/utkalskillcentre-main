@@ -20,10 +20,24 @@
   position: relative; display: inline-block;
 }
 
-.gundulu-locked {
+.locked-avatar-container {
   width: 120px; height: 120px; border-radius: 50%;
   border: 4px solid #333; /* Greyed out border */
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.gundulu-locked {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center 12%;
+  transform: scale(1.68);
   filter: grayscale(1); /* Makes Gundulu look "Locked" */
+  transition: all 0.5s ease;
 }
 
 .lock-icon {
