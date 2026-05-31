@@ -795,14 +795,20 @@ export default function App() {
       setActiveTab('dashboard');
       setShowLaunchPoster(false);
     } else if (nextStep === 3) {
+      setActiveTab('dashboard');
       setShowLaunchPoster(false);
-      setActiveTab('digital_library');
     } else if (nextStep === 4) {
       setShowLaunchPoster(false);
-      setActiveTab('syllabus_tracker');
+      setActiveTab('digital_library');
     } else if (nextStep === 5) {
       setShowLaunchPoster(false);
+      setActiveTab('syllabus_tracker');
+    } else if (nextStep === 6) {
+      setShowLaunchPoster(false);
       setActiveTab('leaderboard');
+    } else if (nextStep === 7) {
+      setShowLaunchPoster(false);
+      setActiveTab('pitch_deck');
     }
   };
 
@@ -1844,16 +1850,7 @@ export default function App() {
         setShowLaunchEvent(false);
         setShowLibraryPopup(false); // Hide Digital Library Launch Popup completely for now
         
-        // Show Raja Festival Poster once per day until June 16th, 2026
-        const todayStr = new Date().toLocaleDateString('en-CA');
-        const hasSeenToday = localStorage.getItem('rajaFestivalLastSeenDate') === todayStr;
-        const isBeforeEnd = new Date() <= new Date('2026-06-16T23:59:59');
-
-        if (!hasSeenToday && isBeforeEnd) {
-          setShowLaunchPoster(true);
-        } else {
-          setShowLaunchPoster(false);
-        }
+        setShowLaunchPoster(false);
         setLoading(false);
       } else {
         setUser(null);
@@ -3413,7 +3410,9 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                   onOpenCommunity={() => setShowCommunityChat(true)}
                   following={following}
                   onToggleFollow={handleToggleFollow}
-                  isTourStep4={tourStep === 2}
+                  isTourStep3={tourStep === 2}
+                  isTourStep4={tourStep === 3}
+                  onOpenRajaPoster={() => setShowLaunchPoster(true)}
                 />
               )
             )}
@@ -3545,23 +3544,27 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
               <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shadow-[0_0_8px_#fbbf24]"></span>
               <span className="text-[10px] font-black text-amber-400 uppercase tracking-[0.2em]">Guided Judge Tour</span>
             </div>
-            <span className="text-[10px] font-black text-slate-500 tracking-wider">Step {tourStep} of 5</span>
+            <span className="text-[10px] font-black text-slate-500 tracking-wider">Step {tourStep} of 7</span>
           </div>
 
           <div className="space-y-1">
             <h4 className="text-sm md:text-base font-black text-white uppercase tracking-tight flex items-center gap-1.5">
               {tourStep === 1 && "👋 Welcome & Automated Setup"}
-              {tourStep === 2 && "🤖 AI Study Buddy (Gundulu AI)"}
-              {tourStep === 3 && "📚 Digital Library"}
-              {tourStep === 4 && "📊 Syllabus Tracker"}
-              {tourStep === 5 && "🏆 Statewide Leaderboards"}
+              {tourStep === 2 && "⚡ Student XP & Streaks Tracker"}
+              {tourStep === 3 && "🤖 AI Study Buddy (Gundulu AI)"}
+              {tourStep === 4 && "📚 Digital Library"}
+              {tourStep === 5 && "📊 Syllabus Tracker"}
+              {tourStep === 6 && "🏆 Statewide Leaderboards"}
+              {tourStep === 7 && "💼 Pitch Deck & Gemma Roadmap"}
             </h4>
             <p className="text-xs text-slate-300 leading-relaxed font-medium">
               {tourStep === 1 && "We have automatically logged you into a Class 10 BSE Odisha simulated account (Anuradha Panda). Let's take a quick tour of our core features!"}
-              {tourStep === 2 && "Our zero-hallucination AI Study Buddy is grounded directly in regional textbooks, offering instant low-latency bilingual voice tutoring."}
-              {tourStep === 3 && "Rural students get unlimited, structured access to curated subject directories of school lessons completely for free."}
-              {tourStep === 4 && "Track your board exam preparation progress chapter-by-chapter with our real-time syllabus tracker."}
-              {tourStep === 5 && "Compete with other students across Odisha, track your rank, and earn rewards on our statewide leaderboards."}
+              {tourStep === 2 && "Track your daily study goals and maintain streaks. Earn XP by reading chapters, answering MCQs, and chatting with Gundulu AI!"}
+              {tourStep === 3 && "Our zero-hallucination AI Study Buddy is grounded directly in regional textbooks, offering instant low-latency bilingual voice tutoring."}
+              {tourStep === 4 && "Rural students get unlimited, structured access to curated subject directories of school lessons completely for free."}
+              {tourStep === 5 && "Track your board exam preparation progress chapter-by-chapter with our real-time syllabus tracker."}
+              {tourStep === 6 && "Compete with other students across Odisha, track your rank, and earn rewards on our statewide leaderboards."}
+              {tourStep === 7 && "Explore our pilot project's pitch deck, scale-to-zero serverless hosting, and our roadmap for training a native Odia Gemma model."}
             </p>
           </div>
 
@@ -3584,7 +3587,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
               )}
               <button 
                 onClick={() => {
-                  if (tourStep < 5) {
+                  if (tourStep < 7) {
                     handleTourStepChange(tourStep + 1);
                   } else {
                     handleEndTour();
@@ -3592,8 +3595,8 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                 }}
                 className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-black text-[10px] uppercase tracking-widest shadow-lg shadow-amber-500/20 active:scale-95 transition-all cursor-pointer flex items-center gap-1"
               >
-                <span>{tourStep === 5 ? "Finish" : "Next"}</span>
-                {tourStep < 5 && <Lucide.ChevronRight size={12} />}
+                <span>{tourStep === 7 ? "Finish" : "Next"}</span>
+                {tourStep < 7 && <Lucide.ChevronRight size={12} />}
               </button>
             </div>
           </div>

@@ -46,6 +46,7 @@ interface DashboardProps {
   onToggleFollow?: (targetUserId: string) => void;
   isTourStep3?: boolean;
   isTourStep4?: boolean;
+  onOpenRajaPoster?: () => void;
 }
 function PerformanceChart({ submissions, tests, language }: any) {
   const chartData = React.useMemo(() => {
@@ -132,7 +133,7 @@ function PerformanceChart({ submissions, tests, language }: any) {
   );
 }
 
-export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, hasDailyPractice, todayDailySubject, tomorrowDailySubject, onChallengeComplete, onOpenTutor, onOpenDailyPractice, onShareDailyPractice, isRegistered = false, onRegistrationComplete, onOpenCommunity, following = [], onToggleFollow, isTourStep3, isTourStep4 }: DashboardProps) {
+export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, hasDailyPractice, todayDailySubject, tomorrowDailySubject, onChallengeComplete, onOpenTutor, onOpenDailyPractice, onShareDailyPractice, isRegistered = false, onRegistrationComplete, onOpenCommunity, following = [], onToggleFollow, isTourStep3, isTourStep4, onOpenRajaPoster }: DashboardProps) {
     // Map class to YouTube video URL (embed links)
     const classVideoMap: Record<string, string> = {
       '1': 'https://www.youtube.com/embed/DxouHyB-IA8',
@@ -379,11 +380,22 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           {/* Welcome Text */}
           <div className="space-y-2">
             <div className="absolute -left-12 -top-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none"></div>
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="w-1.5 h-8 md:w-2 md:h-12 bg-gradient-to-b from-emerald-400 to-teal-600 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.5)] shrink-0"></div>
-              <h1 className="text-xl sm:text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-slate-800 via-slate-700 to-slate-500 dark:from-white dark:via-white dark:to-slate-400 tracking-tighter leading-tight break-words">
-                {language === 'en' ? 'Welcome back,' : 'ସ୍ୱାଗତ,'} <br className="sm:hidden" /><span className="text-emerald-500 drop-shadow-sm leading-tight">{user?.name || 'Student'}!</span>
-              </h1>
+            <div className="flex items-center justify-between gap-3 sm:gap-4 w-full">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="w-1.5 h-8 md:w-2 md:h-12 bg-gradient-to-b from-emerald-400 to-teal-600 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.5)] shrink-0"></div>
+                <h1 className="text-xl sm:text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-slate-800 via-slate-700 to-slate-500 dark:from-white dark:via-white dark:to-slate-400 tracking-tighter leading-tight break-words">
+                  {language === 'en' ? 'Welcome back,' : 'ସ୍ୱାଗତ,'} <br className="sm:hidden" /><span className="text-emerald-500 drop-shadow-sm leading-tight">{user?.name || 'Student'}!</span>
+                </h1>
+              </div>
+              {onOpenRajaPoster && (
+                <button
+                  onClick={onOpenRajaPoster}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-black text-[9px] sm:text-[10px] uppercase tracking-widest shadow-lg shadow-amber-500/20 active:scale-95 transition-all cursor-pointer border border-amber-400/20 shrink-0"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping shrink-0"></span>
+                  🎡 {language === 'en' ? 'Raja Festival' : 'ରଜ ମହୋତ୍ସବ'}
+                </button>
+              )}
             </div>
             <p className="text-slate-500 dark:text-slate-400 text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] pl-4 sm:pl-6 flex items-center gap-1.5 sm:gap-2 truncate">
               <Lucide.Calendar size={10} className="text-emerald-500 sm:w-3 sm:h-3 shrink-0" />
