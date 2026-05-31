@@ -2700,7 +2700,7 @@ Instructions:
                           <p className="text-xs text-slate-400 leading-relaxed font-bold">
                             {language === 'en'
                               ? "Official revision notes are not uploaded yet. Click below to let Gundulu AI generate comprehensive chapter notes, revision formulas, and laws instantly!"
-                              : "ଏହି ଅଧ୍ୟାୟର ଅଫିସିଆଲ୍ ନୋଟ୍ସ ଏପର୍ଯ୍ୟନ୍ତ ଯୋଡ଼ା ଯାଇନାହିଁ। କିନ୍ତୁ ଆପଣଙ୍କ ପାଇଁ ଗୁନ୍ଦୁଲୁ AI ଗୁרୁତ୍ୱପୂર્ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଏବଂ ଉଦାହରଣ ପ୍ରସ୍ତୁତ କରିବାକୁ ପ୍ରସ୍ତୁତ ଅଛି!"}
+                              : "ଏହି ଅଧ୍ୟାୟର ଅଫିସିଆଲ୍ ନୋଟ୍ସ ଏପର୍ଯ୍ୟନ୍ତ ଯୋଡ଼ା ଯାଇନାହିଁ। କିନ୍ତୁ ଆପଣଙ୍କ ପାଇଁ ଗୁନ୍ଦୁଲୁ AI ଗୁରୁତ୍ୱପୂર્ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଏବଂ ଉଦାହରଣ ପ୍ରସ୍ତୁତ କରିବାକୁ ପ୍ରସ୍ତୁତ ଅଛି!"}
                           </p>
                         </div>
                         <button

@@ -611,7 +611,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             }`}
           >
             <Lucide.Trophy size={14} />
-            <span>{language === 'en' ? 'Statewide Leaderboard' : 'ରାଜ୍ୟସ୍ତרୀୟ ଲିଡରବୋର୍ଡ'}</span>
+            <span>{language === 'en' ? 'Statewide Leaderboard' : 'ରାଜ୍ୟ ସ୍ତରୀୟ ଲିଡରବୋର୍ଡ'}</span>
           </button>
         </div>
       </div>
@@ -1214,7 +1214,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 🏆 {language === 'en' ? 'Gamification Arena' : 'ଗେମିଫିକେସନ୍ ଆରେନା'}
               </span>
               <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                {language === 'en' ? 'Statewide Regional Leaderboard' : 'ରାଜ୍ୟସ୍ତରୀୟ ଆଞ୍ଚଳିକ ଲିଡରବୋର୍ଡ'}
+                {language === 'en' ? 'Statewide Regional Leaderboard' : 'ରାଜ୍ୟ ସ୍ତରୀୟ ଆଞ୍ଚଳିକ ଲିଡରବୋର୍ଡ'}
               </h2>
               <p className="text-xs text-slate-400 font-bold max-w-xl">
                 {language === 'en'
