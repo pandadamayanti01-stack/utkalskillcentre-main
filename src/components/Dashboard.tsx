@@ -44,6 +44,8 @@ interface DashboardProps {
   onOpenCommunity?: () => void;
   following?: string[];
   onToggleFollow?: (targetUserId: string) => void;
+  isTourStep3?: boolean;
+  isTourStep4?: boolean;
 }
 function PerformanceChart({ submissions, tests, language }: any) {
   const chartData = React.useMemo(() => {
@@ -130,7 +132,7 @@ function PerformanceChart({ submissions, tests, language }: any) {
   );
 }
 
-export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, hasDailyPractice, todayDailySubject, tomorrowDailySubject, onChallengeComplete, onOpenTutor, onOpenDailyPractice, onShareDailyPractice, isRegistered = false, onRegistrationComplete, onOpenCommunity, following = [], onToggleFollow }: DashboardProps) {
+export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, hasDailyPractice, todayDailySubject, tomorrowDailySubject, onChallengeComplete, onOpenTutor, onOpenDailyPractice, onShareDailyPractice, isRegistered = false, onRegistrationComplete, onOpenCommunity, following = [], onToggleFollow, isTourStep3, isTourStep4 }: DashboardProps) {
     // Map class to YouTube video URL (embed links)
     const classVideoMap: Record<string, string> = {
       '1': 'https://www.youtube.com/embed/DxouHyB-IA8',
@@ -391,7 +393,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
           {/* XP Badge */}
           <div className="flex items-center justify-start">
-            <div className="bg-slate-900/60 backdrop-blur-2xl px-4 md:px-6 py-3 md:py-4 rounded-3xl md:rounded-[2rem] flex items-center gap-3 md:gap-5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_10px_40px_rgba(0,0,0,0.5)] hover:border-emerald-500/30 transition-all duration-500 group cursor-default max-w-max">
+            <div className={`bg-slate-900/60 backdrop-blur-2xl px-4 md:px-6 py-3 md:py-4 rounded-3xl md:rounded-[2rem] flex items-center gap-3 md:gap-5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_10px_40px_rgba(0,0,0,0.5)] hover:border-emerald-500/30 transition-all duration-500 group cursor-default max-w-max ${isTourStep3 ? 'ring-[4px] ring-amber-500 scale-[1.03] border-amber-500/50 shadow-[0_0_30px_rgba(245,158,11,0.6)] z-30 animate-pulse bg-slate-950/90' : ''}`}>
               <div className="text-right">
                 <div className="flex items-center justify-end gap-2 md:gap-3 mb-0.5">
                   <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">{t.dailyGoal}</p>
@@ -499,7 +501,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   setShowTrailer(true);
                 }
               }}
-              className="bg-slate-900/60 backdrop-blur-2xl rounded-[2rem] p-4 sm:p-6 relative overflow-hidden cursor-pointer group border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_20px_60px_-15px_rgba(0,0,0,0.7)] hover:border-emerald-500/40 hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between h-full"
+              className={`bg-slate-900/60 backdrop-blur-2xl rounded-[2rem] p-4 sm:p-6 relative overflow-hidden cursor-pointer group border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_20px_60px_-15px_rgba(0,0,0,0.7)] hover:border-emerald-500/40 hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between h-full ${isTourStep4 ? 'ring-[4px] ring-amber-500 scale-[1.03] border-amber-500/50 shadow-[0_0_30px_rgba(245,158,11,0.6)] z-30 animate-pulse bg-slate-950/90' : ''}`}
             >
               {/* Edge-to-edge gradients */}
               <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-teal-900/20 opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>

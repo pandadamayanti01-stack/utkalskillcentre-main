@@ -768,6 +768,51 @@ export default function App() {
   const [lastTab, setLastTab] = useState('dashboard');
   const [isRegisteredForTestSeries, setIsRegisteredForTestSeries] = useState(false);
   const [openTutorInVoiceMode, setOpenTutorInVoiceMode] = useState(0);
+  const [tourStep, setTourStep] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      const isTourActive = sessionStorage.getItem('judge_tour_active') === 'true';
+      if (isTourActive) {
+        const step = parseInt(sessionStorage.getItem('judge_tour_step') || '1', 10);
+        setTourStep(step);
+      } else {
+        setTourStep(null);
+      }
+    } else {
+      setTourStep(null);
+    }
+  }, [user]);
+
+  const handleTourStepChange = (nextStep: number) => {
+    sessionStorage.setItem('judge_tour_step', String(nextStep));
+    setTourStep(nextStep);
+
+    if (nextStep === 1) {
+      setActiveTab('dashboard');
+      setShowLaunchPoster(false);
+    } else if (nextStep === 2) {
+      setActiveTab('dashboard');
+      setShowLaunchPoster(false);
+    } else if (nextStep === 3) {
+      setShowLaunchPoster(false);
+      setActiveTab('digital_library');
+    } else if (nextStep === 4) {
+      setShowLaunchPoster(false);
+      setActiveTab('syllabus_tracker');
+    } else if (nextStep === 5) {
+      setShowLaunchPoster(false);
+      setActiveTab('leaderboard');
+    }
+  };
+
+  const handleEndTour = () => {
+    sessionStorage.removeItem('judge_tour_active');
+    sessionStorage.removeItem('judge_tour_step');
+    setTourStep(null);
+    setShowLaunchPoster(false);
+    setActiveTab('dashboard');
+  };
   const [supportSession, setSupportSession] = useState<any>(null);
   const [confirmSupport, setConfirmSupport] = useState(false);
   const confirmTimeoutRef = useRef<any>(null);
@@ -3368,6 +3413,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                   onOpenCommunity={() => setShowCommunityChat(true)}
                   following={following}
                   onToggleFollow={handleToggleFollow}
+                  isTourStep4={tourStep === 2}
                 />
               )
             )}
@@ -3480,6 +3526,79 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
           onClose={() => setShowCommunityChat(false)}
         />
       </Suspense>
+    )}
+
+    {/* Guided Tour Stepper */}
+    {tourStep !== null && (
+      <div className="fixed bottom-6 right-6 z-[10000] w-full max-w-[380px] px-4 md:px-0">
+        <motion.div 
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 50, opacity: 0 }}
+          className="glass-card rounded-[2rem] p-5 md:p-6 shadow-2xl bg-slate-950/95 border border-amber-500/30 flex flex-col gap-4 relative overflow-hidden backdrop-blur-2xl"
+        >
+          {/* Neon animated gradient background glow */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+          
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shadow-[0_0_8px_#fbbf24]"></span>
+              <span className="text-[10px] font-black text-amber-400 uppercase tracking-[0.2em]">Guided Judge Tour</span>
+            </div>
+            <span className="text-[10px] font-black text-slate-500 tracking-wider">Step {tourStep} of 5</span>
+          </div>
+
+          <div className="space-y-1">
+            <h4 className="text-sm md:text-base font-black text-white uppercase tracking-tight flex items-center gap-1.5">
+              {tourStep === 1 && "👋 Welcome & Automated Setup"}
+              {tourStep === 2 && "🤖 AI Study Buddy (Gundulu AI)"}
+              {tourStep === 3 && "📚 Digital Library"}
+              {tourStep === 4 && "📊 Syllabus Tracker"}
+              {tourStep === 5 && "🏆 Statewide Leaderboards"}
+            </h4>
+            <p className="text-xs text-slate-300 leading-relaxed font-medium">
+              {tourStep === 1 && "We have automatically logged you into a Class 10 BSE Odisha simulated account (Anuradha Panda). Let's take a quick tour of our core features!"}
+              {tourStep === 2 && "Our zero-hallucination AI Study Buddy is grounded directly in regional textbooks, offering instant low-latency bilingual voice tutoring."}
+              {tourStep === 3 && "Rural students get unlimited, structured access to curated subject directories of school lessons completely for free."}
+              {tourStep === 4 && "Track your board exam preparation progress chapter-by-chapter with our real-time syllabus tracker."}
+              {tourStep === 5 && "Compete with other students across Odisha, track your rank, and earn rewards on our statewide leaderboards."}
+            </p>
+          </div>
+
+          <div className="flex items-center justify-between gap-3 pt-2 shrink-0">
+            <button 
+              onClick={handleEndTour}
+              className="text-[10px] font-bold text-slate-400 hover:text-white uppercase tracking-widest transition-colors cursor-pointer"
+            >
+              Skip Tour
+            </button>
+            <div className="flex items-center gap-2">
+              {tourStep > 1 && (
+                <button 
+                  onClick={() => handleTourStepChange(tourStep - 1)}
+                  className="px-3 py-2 rounded-xl bg-slate-900 border border-white/10 hover:border-white/20 text-white font-bold text-[10px] uppercase tracking-widest transition-all cursor-pointer flex items-center gap-1"
+                >
+                  <Lucide.ChevronLeft size={12} />
+                  Back
+                </button>
+              )}
+              <button 
+                onClick={() => {
+                  if (tourStep < 5) {
+                    handleTourStepChange(tourStep + 1);
+                  } else {
+                    handleEndTour();
+                  }
+                }}
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-black text-[10px] uppercase tracking-widest shadow-lg shadow-amber-500/20 active:scale-95 transition-all cursor-pointer flex items-center gap-1"
+              >
+                <span>{tourStep === 5 ? "Finish" : "Next"}</span>
+                {tourStep < 5 && <Lucide.ChevronRight size={12} />}
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      </div>
     )}
 
     </div>

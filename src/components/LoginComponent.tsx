@@ -31,6 +31,14 @@ const TEST_ACCOUNTS = [
 export default function Login({ language, translations, setLanguage, setRegData }: { language: 'en' | 'or', translations: any, setLanguage: (lang: 'en' | 'or') => void, setRegData: (data: any) => void }): React.ReactElement {
   const [phoneNumber, setPhoneNumber] = useState('');
 
+  const handleLaunchGuidedTour = async () => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('judge_tour_active', 'true');
+      sessionStorage.setItem('judge_tour_step', '1');
+    }
+    await handleFastPassLogin(TEST_ACCOUNTS[0]);
+  };
+
   const handleFastPassLogin = async (acc: typeof TEST_ACCOUNTS[number]) => {
     setUserRole(acc.role);
     if (acc.role === 'student') {
@@ -602,6 +610,18 @@ export default function Login({ language, translations, setLanguage, setRegData 
                           {language === 'en' ? 'Select a test account below for instant, one-click automated login (bypasses reCAPTCHA & SMS waiting).' : 'ବିନା SMS ଅପେକ୍ଷା ଓ reCAPTCHA ରେ ତୁରନ୍ତ ଲଗଇନ୍ କରିବା ପାଇଁ ଚୟନ କରନ୍ତୁ |'}
                         </p>
                         <div className="flex flex-col pt-1">
+                          <button
+                            type="button"
+                            onClick={handleLaunchGuidedTour}
+                            disabled={isSending}
+                            className="w-full mb-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 border border-amber-400/30 hover:border-amber-300 text-xs font-black text-white hover:text-white transition-all flex items-center justify-between group active:scale-95 cursor-pointer shadow-lg shadow-amber-900/20"
+                          >
+                            <span className="flex items-center gap-2">
+                              <Sparkles size={14} className="animate-spin" />
+                              {language === 'en' ? '🌟 Launch Guided Judge Tour' : '🌟 ଜଜ୍ ଗାଇଡେଡ୍ ଟୁର୍ ଆରମ୍ଭ କରନ୍ତୁ'}
+                            </span>
+                            <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-all text-white" />
+                          </button>
                           {TEST_ACCOUNTS.map((acc, idx) => (
                             <button
                               key={idx}
