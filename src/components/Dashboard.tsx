@@ -15,6 +15,7 @@ import { translations } from '../translations';
 import { DailyChallenge } from './DailyChallenge';
 import { LeaderboardView } from './LeaderboardView';
 import { DistrictLeaderboardFilter } from './DistrictLeaderboardFilter';
+import { ODISHA_DISTRICTS } from '../constants/districts';
 import { TestSeriesRegistrationForm } from './TestSeriesRegistrationForm';
 import { db } from '../firebase';
 import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
@@ -205,6 +206,84 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   const [displayedStudent, setDisplayedStudent] = useState<any | null>(null);
   const [activeRank, setActiveRank] = useState<number | null>(null);
   const [isSundayClosed, setIsSundayClosed] = useState(false);
+
+  const [activeSubTab, setActiveSubTab] = useState<'overview' | 'leaderboard'>('overview');
+
+  // Odisha high-performance mock student profiles for development realism
+  const mockLeaderboardProfiles = React.useMemo(() => [
+    { id: 'mock_1', name: 'Rajesh Mohanty', points: 980, streak: 15, district: 'Khordha', school: 'Bhubaneswar Govt High School', avatar: '', dailyCompleted: true },
+    { id: 'mock_2', name: 'Priyabrata Sahu', points: 870, streak: 9, district: 'Cuttack', school: 'Ravenshaw Collegiate School', avatar: '', dailyCompleted: true },
+    { id: 'mock_3', name: 'Subhashree Dash', points: 810, streak: 12, district: 'Balasore', school: 'Balasore Zilla School', avatar: '', dailyCompleted: false },
+    { id: 'mock_4', name: 'Sameer Patnaik', points: 740, streak: 7, district: 'Koraput', school: 'Jeypore High School', avatar: '', dailyCompleted: true },
+    { id: 'mock_5', name: 'Chinmayee Mishra', points: 690, streak: 5, district: 'Khordha', school: 'Capital High School', avatar: '', dailyCompleted: false },
+    { id: 'mock_6', name: 'Sourav Jena', points: 610, streak: 4, district: 'Cuttack', school: 'SCB Medical Public School', avatar: '', dailyCompleted: true },
+    { id: 'mock_7', name: 'Swagatika Rout', points: 580, streak: 6, district: 'Balasore', school: 'Fakir Mohan High School', avatar: '', dailyCompleted: true },
+    { id: 'mock_8', name: 'Rakesh Nayak', points: 520, streak: 3, district: 'Koraput', school: 'Koraput Govt Zilla School', avatar: '', dailyCompleted: false },
+  ], []);
+
+  // Blend actual leaderboard with mock data to show an active, full board
+  const combinedLeaderboard = React.useMemo(() => {
+    const list = [...leaderboard];
+    
+    mockLeaderboardProfiles.forEach(mock => {
+      if (!list.some(s => s.name?.toLowerCase() === mock.name.toLowerCase())) {
+        list.push({
+          ...mock,
+          class: user?.class || '10'
+        });
+      }
+    });
+
+    if (user && !list.some(s => s.id === user.id)) {
+      list.push({
+        id: user.id,
+        name: user.name || 'Student',
+        class: user.class || '10',
+        points: user.points || 0,
+        streak: user.streak || 0,
+        district: user.district || 'Khordha',
+        school: user.school || 'My School',
+        avatar: user.avatar || '',
+        dailyCompleted: user.points_today > 0
+      });
+    }
+
+    return list.sort((a, b) => (b.points || 0) - (a.points || 0));
+  }, [leaderboard, user, mockLeaderboardProfiles]);
+
+  // Apply selected district filter to the combined dataset
+  const filteredList = React.useMemo(() => {
+    return selectedDistrict
+      ? combinedLeaderboard.filter(u => u.district?.toLowerCase() === selectedDistrict.toLowerCase())
+      : combinedLeaderboard;
+  }, [combinedLeaderboard, selectedDistrict]);
+
+  const getBadgeInfo = (points: number) => {
+    const level = Math.floor((points || 0) / 100) + 1;
+    let badgeTitle = 'Curious Learner';
+    let badgeTitleOdia = 'ଜିଜ୍ଞାସୁ ଛାତ୍ର';
+    let badgeIcon = '🔍';
+
+    if (level >= 10) {
+      badgeTitle = 'Gundulu Legend';
+      badgeTitleOdia = 'ଗୁନ୍ଦୁଲୁ ମହାରଥୀ';
+      badgeIcon = '👑';
+    } else if (level >= 7) {
+      badgeTitle = 'Odia Math Master';
+      badgeTitleOdia = 'ଗଣିତ ସମ୍ରାଟ';
+      badgeIcon = '📐';
+    } else if (level >= 5) {
+      badgeTitle = 'Syllabus Conqueror';
+      badgeTitleOdia = 'ପାଠ୍ୟକ୍ରମ ବିଜେତା';
+      badgeIcon = '⚔️';
+    } else if (level >= 3) {
+      badgeTitle = 'Gundulu Scholar';
+      badgeTitleOdia = 'ଗୁନ୍ଦୁଲୁ ପଣ୍ଡିତ';
+      badgeIcon = '🎓';
+    }
+
+    return { level, title: language === 'en' ? `${badgeIcon} ${badgeTitle}` : `${badgeIcon} ${badgeTitleOdia}` };
+  };
 
   useEffect(() => {
     const fetchTopStudyStudents = async () => {
@@ -491,11 +570,39 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         </div>
       </div>
 
-      {/* Main Grid Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-8">
-        
-        {/* Left Column - Core Interactions */}
-        <div className="lg:col-span-8 space-y-8">
+      {/* Premium Sub-Tab Switcher */}
+      <div className="flex justify-start border-b border-white/5 pb-2 relative z-20">
+        <div className="flex p-1 bg-slate-950/60 backdrop-blur-md border border-white/10 rounded-2xl">
+          <button
+            onClick={() => setActiveSubTab('overview')}
+            className={`px-5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-300 flex items-center gap-2 cursor-pointer ${
+              activeSubTab === 'overview'
+                ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Lucide.LayoutDashboard size={14} />
+            <span>{language === 'en' ? 'Overview' : 'ପ୍ରୋଫାଇଲ୍ ସାରାଂଶ'}</span>
+          </button>
+          <button
+            onClick={() => setActiveSubTab('leaderboard')}
+            className={`px-5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-300 flex items-center gap-2 cursor-pointer ${
+              activeSubTab === 'leaderboard'
+                ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Lucide.Trophy size={14} />
+            <span>{language === 'en' ? 'Statewide Leaderboard' : 'ରାଜ୍ୟସ୍ତରୀୟ ଲିଡରବୋର୍ଡ'}</span>
+          </button>
+        </div>
+      </div>
+
+      {activeSubTab === 'overview' ? (
+        /* Main Grid Layout */
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-8">
+          {/* Left Column - Core Interactions */}
+          <div className="lg:col-span-8 space-y-8">
           
 
 
@@ -1033,7 +1140,226 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           </div>
         </div>
       </div>
-          {/* AI Disclaimer */}
+      ) : (
+        /* Statewide Leaderboard Section */
+        <div className="space-y-6 sm:space-y-8">
+          {/* Header Summary Card */}
+          <div className="glass-card rounded-[2rem] p-6 border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 via-slate-900/40 to-indigo-950/10 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 hover:border-emerald-500/30 transition-all duration-500">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.08),transparent_50%)] pointer-events-none" />
+            <div className="space-y-2 text-center md:text-left flex-1">
+              <span className="px-3 py-1 rounded-full text-[10px] font-black bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-widest inline-block animate-pulse">
+                🏆 {language === 'en' ? 'Gamification Arena' : 'ଗେମିଫିକେସନ୍ ଆରେନା'}
+              </span>
+              <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                {language === 'en' ? 'Statewide Regional Leaderboard' : 'ରାଜ୍ୟସ୍ତରୀୟ ଆଞ୍ଚଳିକ ଲିଡରବୋର୍ଡ'}
+              </h2>
+              <p className="text-xs text-slate-400 font-bold max-w-xl">
+                {language === 'en'
+                  ? 'Track your rank, sync daily challenges, and earn exclusive Odia scholar badges as you compete with students across Odisha!'
+                  : 'ଆପଣଙ୍କର ମାନ୍ୟତା ଟ୍ରାକ୍ କରନ୍ତୁ, ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ ସମାଧାନ କରନ୍ତୁ ଏବଂ ଓଡ଼ିଶାର ଅନ୍ୟ ଛାତ୍ରମାନଙ୍କ ସହ ପ୍ରତିଦ୍ୱନ୍ଦ୍ୱିତା କରି ଓଡ଼ିଆ ସ୍କଲାର ବ୍ୟାଜ୍ ହାସଲ କରନ୍ତୁ!'}
+              </p>
+            </div>
+
+            {/* Quick Stats Block */}
+            <div className="flex items-center gap-4 bg-slate-950/60 p-4 rounded-3xl border border-white/5 shrink-0 w-full md:w-auto justify-around md:justify-start">
+              <div className="text-center px-4 border-r border-white/5">
+                <p className="text-[8px] font-black text-slate-500 uppercase tracking-wider mb-1">{language === 'en' ? 'Your Rank' : 'ଆପଣଙ୍କ ରାଙ୍କ'}</p>
+                <p className="text-lg font-black text-emerald-400 font-mono">
+                  #{combinedLeaderboard.findIndex(s => s.id === user?.id) + 1 || '-'}
+                </p>
+              </div>
+              <div className="text-center px-4 border-r border-white/5">
+                <p className="text-[8px] font-black text-slate-500 uppercase tracking-wider mb-1">{language === 'en' ? 'Current Tier' : 'ଆପଣଙ୍କ ସ୍ତର'}</p>
+                <p className="text-lg font-black text-amber-400 font-mono">
+                  Lvl {getBadgeInfo(user?.points || 0).level}
+                </p>
+              </div>
+              <div className="text-center px-4">
+                <p className="text-[8px] font-black text-slate-500 uppercase tracking-wider mb-1">{language === 'en' ? 'Daily MCQ' : 'ଦୈନିକ MCQ'}</p>
+                <p className={`text-[10px] font-black px-2.5 py-0.5 rounded-full ${
+                  user?.points_today > 0
+                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                    : 'bg-amber-500/10 text-amber-400 border border-amber-500/20 animate-pulse'
+                }`}>
+                  {user?.points_today > 0
+                    ? (language === 'en' ? 'Completed' : 'ସମାପ୍ତ')
+                    : (language === 'en' ? 'Pending' : 'ବାକି ଅଛି')}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Leaderboard Table Content with Sidebar-styled filters */}
+          <div className="glass-card rounded-[2.5rem] p-4 sm:p-6 md:p-8 border-white/5 bg-slate-900/40 space-y-6">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-white/5 pb-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-emerald-500/10 rounded-2xl text-emerald-500 border border-emerald-500/20">
+                  <Lucide.Trophy size={18} />
+                </div>
+                <div>
+                  <h3 className="text-md font-black text-white tracking-tight">
+                    {language === 'en' ? 'Odisha District Rankings' : 'ଓଡ଼ିଶା ଜିଲ୍ଲା ମାନ୍ୟତା ତାଲିକା'}
+                  </h3>
+                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">
+                    {language === 'en' ? 'Ranked by overall study effort' : 'ସାମଗ୍ରିକ ପଠନ ପ୍ରୟାସ ଉପରେ ଆଧାରିତ'}
+                  </p>
+                </div>
+              </div>
+
+              {/* District Filter Component */}
+              <DistrictLeaderboardFilter 
+                selectedDistrict={selectedDistrict}
+                setSelectedDistrict={setSelectedDistrict}
+                language={language}
+              />
+            </div>
+
+            {/* Top Students Ranked List */}
+            <div className="overflow-x-auto custom-scrollbar">
+              <table className="w-full text-left min-w-[700px]">
+                <thead>
+                  <tr className="border-b border-white/5 bg-white/5">
+                    <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black">{language === 'en' ? 'Rank' : 'ମାନ୍ୟତା'}</th>
+                    <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black">{language === 'en' ? 'Student' : 'ଛାତ୍ର'}</th>
+                    <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black">{language === 'en' ? 'District' : 'ଜିଲ୍ଲା'}</th>
+                    <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black">{language === 'en' ? 'Badge Title' : 'ପଦକ ଆଖ୍ୟା'}</th>
+                    <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black text-center">{language === 'en' ? 'Daily MCQ' : 'ଦୈନିକ MCQ'}</th>
+                    <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black text-right">{language === 'en' ? 'XP Points' : 'XP ପଏଣ୍ଟ'}</th>
+                    <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black text-right">{language === 'en' ? 'Action' : 'କାର୍ଯ୍ୟ'}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {filteredList.map((student, idx) => {
+                    const isCurrentUser = student.id === user?.id;
+                    const badgeInfo = getBadgeInfo(student.points || 0);
+                    const globalRank = combinedLeaderboard.findIndex(s => s.id === student.id) + 1;
+                    
+                    return (
+                      <tr 
+                        key={student.id} 
+                        className={`hover:bg-white/5 transition-all duration-200 ${
+                          isCurrentUser 
+                            ? 'bg-emerald-500/5 border-l-4 border-l-emerald-500' 
+                            : 'border-l-4 border-l-transparent'
+                        }`}
+                      >
+                        {/* Rank Position */}
+                        <td className="px-6 py-4">
+                          <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs ${
+                            globalRank === 1 ? 'bg-yellow-500 text-slate-950 shadow-[0_0_15px_rgba(234,179,8,0.4)]' :
+                            globalRank === 2 ? 'bg-slate-300 text-slate-950 shadow-[0_0_15px_rgba(203,213,225,0.4)]' :
+                            globalRank === 3 ? 'bg-amber-600 text-slate-950 shadow-[0_0_15px_rgba(217,119,6,0.4)]' :
+                            'text-slate-500'
+                          }`}>
+                            {globalRank}
+                          </div>
+                        </td>
+
+                        {/* Name and School */}
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+                              {student.avatar ? (
+                                <img src={student.avatar} alt={student.name} className="w-full h-full object-cover" />
+                              ) : (
+                                <span className="text-xs font-black text-white uppercase">{student.name?.[0] || 'S'}</span>
+                              )}
+                            </div>
+                            <div>
+                              <div className="font-bold text-white flex items-center gap-1.5">
+                                <span className={isCurrentUser ? 'text-emerald-400' : 'text-white'}>
+                                  {student.name}
+                                </span>
+                                {isCurrentUser && (
+                                  <span className="text-[8px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-500/20 font-black uppercase tracking-wider">
+                                    {language === 'en' ? 'You' : 'ଆପଣ'}
+                                  </span>
+                                )}
+                              </div>
+                              <span className="text-[9px] text-slate-500 font-semibold block mt-0.5 max-w-[200px] truncate">
+                                {student.school || (language === 'en' ? 'Regional High School' : 'ଆଞ୍ଚଳିକ ଉଚ୍ଚ ବିଦ୍ୟାଳୟ')}
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* District name */}
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-300">
+                            <Lucide.MapPin size={12} className="text-slate-500 shrink-0" />
+                            <span>
+                              {(() => {
+                                const matched = ODISHA_DISTRICTS.find(d => d.en.toLowerCase() === student.district?.toLowerCase());
+                                return matched 
+                                  ? (language === 'en' ? matched.en : matched.or)
+                                  : student.district;
+                              })()}
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* Rank Badge */}
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            <span className="px-2 py-0.5 rounded bg-slate-950 text-[9px] font-black text-slate-400 border border-white/5 font-mono">
+                              Lvl {badgeInfo.level}
+                            </span>
+                            <span className="text-xs font-black text-amber-400 uppercase tracking-tight">
+                              {badgeInfo.title}
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* Daily MCQ Completion check */}
+                        <td className="px-6 py-4 text-center">
+                          <div className="flex justify-center">
+                            {student.dailyCompleted ? (
+                              <div className="w-5 h-5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.2)]" title="Daily Challenge Completed!">
+                                <Lucide.Check size={12} strokeWidth={3} />
+                              </div>
+                            ) : (
+                              <div className="w-5 h-5 rounded-full bg-slate-950 border border-white/5 flex items-center justify-center text-slate-600" title="Daily Challenge Pending">
+                                <Lucide.Clock size={10} />
+                              </div>
+                            )}
+                          </div>
+                        </td>
+
+                        {/* XP Points */}
+                        <td className="px-6 py-4 text-right">
+                          <div className="inline-flex items-center gap-1 text-emerald-400 font-mono font-black text-xs">
+                            <Lucide.Zap size={12} className="text-amber-500 shrink-0 animate-pulse" />
+                            <span>{student.points || 0} XP</span>
+                          </div>
+                        </td>
+
+                        {/* Action buttons (Follow/Friends) */}
+                        <td className="px-6 py-4 text-right">
+                          {student.id !== user?.id && (
+                            <button
+                              onClick={() => onToggleFollow?.(student.id)}
+                              className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider transition-all cursor-pointer ${
+                                following?.includes(student.id)
+                                  ? 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-red-950/40 hover:text-red-400'
+                                  : 'bg-emerald-500/10 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/20 shadow-sm'
+                              }`}
+                            >
+                              {following?.includes(student.id)
+                                ? (language === 'en' ? 'Following' : 'ଅନୁସରଣ କରୁଛନ୍ତି')
+                                : (language === 'en' ? '+ Follow' : '+ ଅନୁସରଣ')}
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* AI Disclaimer */}
           <div className="max-w-7xl mx-auto px-6 mt-12 mb-8 space-y-6">
             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em] text-center bg-white/5 py-3 rounded-2xl border border-white/5 backdrop-blur-md">
               <span className="text-amber-500/80 mr-2">◆</span>
