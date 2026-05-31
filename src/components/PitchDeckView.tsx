@@ -1097,7 +1097,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
       {/* Diagnostics Modal Overlay */}
       <AnimatePresence>
         {showDiagnostics && (
-          <div className="absolute inset-0 z-50 bg-slate-950 flex items-center justify-center p-3 md:p-6 overflow-hidden">
+          <div className="absolute inset-0 z-50 bg-slate-950 flex items-center justify-center p-3 md:p-6 overflow-hidden force-dark-theme">
             <motion.div
               initial={{ opacity: 0, scale: 0.97, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -1106,7 +1106,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
               className="bg-slate-900 border border-white/10 rounded-2xl md:rounded-3xl w-full max-w-2xl h-full max-h-full overflow-hidden relative shadow-[0_0_50px_rgba(16,185,129,0.15)] flex flex-col"
             >
               {/* Holographic matrix scanlines */}
-              <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.03),rgba(0,255,0,0.01),rgba(0,0,255,0.03))] bg-[size:100%_4px,6px_100%] pointer-events-none opacity-20 z-10" />
+              <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.03),rgba(0,255,0,0.01),rgba(0,0,255,0.03))] bg-[size:100%_4px,6px_100%] pointer-events-none opacity-[0.06] z-10" />
 
               {/* Top Header Bar */}
               <div className="p-5 border-b border-white/5 flex items-center justify-between bg-slate-950 relative z-20 shrink-0">
@@ -1153,24 +1153,24 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                   {/* Latency Box */}
                   <div className="bg-slate-950/60 rounded-2xl border border-white/5 p-4 flex flex-col justify-between">
                     <div>
-                      <span className="text-[8px] text-slate-500 uppercase tracking-wider block font-black">
+                      <span className="text-[8.5px] text-slate-400 uppercase tracking-wider block font-black">
                         {deckLanguage === 'or' ? 'ଭର୍ଟେକ୍ସ AI ଇନଫରେନ୍ସ' : 'Vertex AI Pipeline'}
                       </span>
                       <div className="flex items-baseline gap-1 mt-1.5">
                         <h4 className="text-3xl font-black text-emerald-400 tracking-tight">
                           {diagnosticsData.vertexLatency}
                         </h4>
-                        <span className="text-[10px] text-slate-500 font-bold uppercase">ms</span>
+                        <span className="text-[10px] text-slate-400 font-bold uppercase">ms</span>
                       </div>
                     </div>
                     <div className="mt-4 pt-3 border-t border-white/5 space-y-1">
                       <div className="flex justify-between text-[9px]">
-                        <span className="text-slate-500">Cloud Run RTT</span>
-                        <span className="text-slate-300 font-bold">{diagnosticsData.networkPing}ms</span>
+                        <span className="text-slate-400 font-medium">Cloud Run RTT</span>
+                        <span className="text-slate-200 font-black">{diagnosticsData.networkPing}ms</span>
                       </div>
                       <div className="flex justify-between text-[9px]">
-                        <span className="text-slate-500">Region routing</span>
-                        <span className="text-slate-300 font-bold">us-central1</span>
+                        <span className="text-slate-400 font-medium">Region routing</span>
+                        <span className="text-slate-200 font-black">us-central1</span>
                       </div>
                     </div>
                   </div>
@@ -1195,10 +1195,10 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                       </svg>
                       <div className="absolute text-center">
                         <span className="text-base font-black text-white">{diagnosticsData.dbSpeed}</span>
-                        <span className="text-[7px] text-slate-500 uppercase tracking-widest block font-bold">ms</span>
+                        <span className="text-[7px] text-slate-400 uppercase tracking-widest block font-bold">ms</span>
                       </div>
                     </div>
-                    <span className="text-[9px] font-bold text-slate-400 mt-2 text-center uppercase tracking-wider">
+                    <span className="text-[9.5px] font-black text-slate-300 mt-2 text-center uppercase tracking-wider">
                       {deckLanguage === 'or' ? 'ଡାଟାବେସ୍ ସିଙ୍କ୍ ସ୍ପିଡ୍' : 'Firestore Sync Speed'}
                     </span>
                   </div>
@@ -1206,7 +1206,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                   {/* PWA offline cache */}
                   <div className="bg-slate-950/60 rounded-2xl border border-white/5 p-4 flex flex-col justify-between">
                     <div>
-                      <span className="text-[8px] text-slate-500 uppercase tracking-wider block font-black">
+                      <span className="text-[8.5px] text-slate-400 uppercase tracking-wider block font-black">
                         {deckLanguage === 'or' ? 'ଅଫଲାଇନ୍ ଷ୍ଟୋରେଜ୍ କ୍ୟାଶ୍' : 'PWA Cache Occupancy'}
                       </span>
                       <div className="flex items-baseline gap-1 mt-1.5">
@@ -1217,12 +1217,12 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                     </div>
                     <div className="mt-4 pt-3 border-t border-white/5 space-y-1">
                       <div className="flex justify-between text-[9px]">
-                        <span className="text-slate-500">Chapters Precached</span>
-                        <span className="text-indigo-400 font-bold">92 Chapters (C4)</span>
+                        <span className="text-slate-400 font-medium">Chapters Precached</span>
+                        <span className="text-indigo-450 font-black">92 Chapters (C4)</span>
                       </div>
                       <div className="flex justify-between text-[9px]">
-                        <span className="text-slate-500">Service Worker</span>
-                        <span className="text-emerald-400 font-bold flex items-center gap-1">
+                        <span className="text-slate-400 font-medium">Service Worker</span>
+                        <span className="text-emerald-400 font-black flex items-center gap-1">
                           <span className="w-1 h-1 rounded-full bg-emerald-400 animate-ping" />
                           ACTIVE
                         </span>
@@ -1234,12 +1234,12 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
 
                 {/* SVG Ping History Graph */}
                 <div className="w-full h-24 bg-slate-950/80 border border-white/5 rounded-2xl p-3.5 relative flex flex-col justify-between overflow-hidden">
-                  <span className="text-[8px] uppercase tracking-widest text-slate-500 absolute top-2 left-3 font-black">
+                  <span className="text-[8.5px] uppercase tracking-widest text-slate-400 absolute top-2 left-3 font-black">
                     {deckLanguage === 'or' ? 'ରିଅଲ୍-ଟାଇମ୍ ନେଟୱାର୍କ ପାଇପଲାଇନ୍ ହିଷ୍ଟ୍ରି' : 'Real-Time Network Pipeline Latency RTT'}
                   </span>
                   <div className="absolute top-2 right-3 flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                    <span className="text-[8px] font-black text-emerald-400 tracking-wider">
+                    <span className="text-[8.5px] font-black text-emerald-400 tracking-wider">
                       {diagnosticsData.vertexLatency}ms
                     </span>
                   </div>
@@ -1297,7 +1297,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                       <h4 className="text-xs font-black text-white uppercase tracking-wider">
                         {deckLanguage === 'or' ? 'ସକ୍ରିୟ ସ୍ପିଚ୍ ଇଞ୍ଜିନ୍ ବାଛନ୍ତୁ' : 'Active Speech Engine Selector'}
                       </h4>
-                      <p className="text-[9px] text-slate-400">
+                      <p className="text-[9.5px] text-slate-300 leading-normal font-medium">
                         {deckLanguage === 'or' ? 'ସ୍ଥାନୀୟ ବ୍ରାଉଜର୍ ସହିତ କ୍ଲାଉଡ୍ ଭଏସ୍ ରୋଟେସନ୍ କରନ୍ତୁ' : 'Bypass cloud server TTS and force client synthesis fallback dynamically.'}
                       </p>
                     </div>
@@ -1350,12 +1350,12 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                           }`}
                         >
                           <div className="flex items-center gap-2 mb-1">
-                            <opt.icon size={14} className={isSelected ? 'text-emerald-400' : 'text-slate-500'} />
-                            <span className={`text-[11px] font-black ${isSelected ? 'text-white' : 'text-slate-300'}`}>
+                            <opt.icon size={14} className={isSelected ? 'text-emerald-400' : 'text-slate-400'} />
+                            <span className={`text-[11.5px] font-black ${isSelected ? 'text-white' : 'text-slate-200'}`}>
                               {opt.title}
                             </span>
                           </div>
-                          <span className="text-[8.5px] text-slate-400 leading-normal">
+                          <span className="text-[9px] text-slate-300 leading-normal font-medium">
                             {opt.desc}
                           </span>
                         </button>
