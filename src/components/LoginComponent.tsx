@@ -35,6 +35,8 @@ export default function Login({ language, translations, setLanguage, setRegData 
     if (typeof window !== 'undefined') {
       sessionStorage.setItem('judge_tour_active', 'true');
       sessionStorage.setItem('judge_tour_step', '1');
+      const todayStr = new Date().toLocaleDateString('en-CA');
+      localStorage.setItem('rajaFestivalLastSeenDate', todayStr);
     }
     await handleFastPassLogin(TEST_ACCOUNTS[0]);
   };

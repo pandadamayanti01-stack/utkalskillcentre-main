@@ -769,6 +769,7 @@ export default function App() {
   const [isRegisteredForTestSeries, setIsRegisteredForTestSeries] = useState(false);
   const [openTutorInVoiceMode, setOpenTutorInVoiceMode] = useState(0);
   const [tourStep, setTourStep] = useState<number | null>(null);
+  const [showLaunchPoster, setShowLaunchPoster] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -776,6 +777,26 @@ export default function App() {
       if (isTourActive) {
         const step = parseInt(sessionStorage.getItem('judge_tour_step') || '1', 10);
         setTourStep(step);
+        
+        // Sync active tab for tour step on load/reload
+        if (step === 1 || step === 2 || step === 3 || step === 4) {
+          setActiveTab('dashboard');
+        } else if (step === 5) {
+          setActiveTab('digital_library');
+        } else if (step === 6) {
+          setActiveTab('syllabus_tracker');
+        } else if (step === 7) {
+          setActiveTab('leaderboard');
+        } else if (step === 8) {
+          setActiveTab('pitch_deck');
+        }
+
+        // Sync poster visibility
+        if (step === 2) {
+          setShowLaunchPoster(true);
+        } else {
+          setShowLaunchPoster(false);
+        }
       } else {
         setTourStep(null);
         // Automatically show Raja Festival poster for regular students on login (once per day, until 16th June 2026)
@@ -799,6 +820,12 @@ export default function App() {
   const handleTourStepChange = (nextStep: number) => {
     sessionStorage.setItem('judge_tour_step', String(nextStep));
     setTourStep(nextStep);
+
+    // If they move past step 2, mark Raja poster as seen today to prevent auto-popping on future user snapshot updates
+    if (nextStep !== 2) {
+      const todayStr = new Date().toLocaleDateString('en-CA');
+      localStorage.setItem('rajaFestivalLastSeenDate', todayStr);
+    }
 
     if (nextStep === 1) {
       setActiveTab('dashboard');
@@ -833,6 +860,10 @@ export default function App() {
     setTourStep(null);
     setShowLaunchPoster(false);
     setActiveTab('dashboard');
+    
+    // Mark Raja poster as seen today so it doesn't pop up after ending the tour
+    const todayStr = new Date().toLocaleDateString('en-CA');
+    localStorage.setItem('rajaFestivalLastSeenDate', todayStr);
   };
   const [supportSession, setSupportSession] = useState<any>(null);
   const [confirmSupport, setConfirmSupport] = useState(false);
@@ -1077,7 +1108,6 @@ export default function App() {
   const [tutorLoading, setTutorLoading] = useState<Record<string, boolean>>({});
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [showConfigError, setShowConfigError] = useState<{title: string, message: string} | null>(null);
-  const [showLaunchPoster, setShowLaunchPoster] = useState(false);
   // Hiding the launch celebration event for now. Change to: () => !localStorage.getItem('utkalPlayStoreLaunchSeen') to enable it when live.
   const [showLaunchEvent, setShowLaunchEvent] = useState(false);
   const [showTestSeriesPoster, setShowTestSeriesPoster] = useState(false);
