@@ -1895,7 +1895,6 @@ export default function App() {
         setShowLaunchEvent(false);
         setShowLibraryPopup(false); // Hide Digital Library Launch Popup completely for now
         
-        setShowLaunchPoster(false);
         setLoading(false);
       } else {
         setUser(null);
