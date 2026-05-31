@@ -24,6 +24,8 @@ import NeuralBackground from './NeuralBackground';
 import OdishaLiveMap from './OdishaLiveMap';
 import ReactMarkdown from 'react-markdown';
 import { generateHomeworkSheet } from '../services/aiService';
+import { GoldenTicket } from './GoldenTicket';
+import { MathBlackboard } from './MathBlackboard';
 
 interface DashboardProps {
   user: any;
@@ -191,6 +193,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
+  const [showGoldenTicket, setShowGoldenTicket] = useState(false);
+  const [showBlackboard, setShowBlackboard] = useState(false);
   const [dailyVideoId, setDailyVideoId] = useState<string | null>(isSpecialPromoPeriod ? 'Ml-_dY7FXrs' : null);
 
   const [showHomeworkModal, setShowHomeworkModal] = useState(false);
@@ -509,6 +513,20 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               </div>
             </div>
           </div>
+
+          {/* Claim Golden Ticket Button */}
+          <div className="flex items-center justify-start pl-1">
+            <button
+              onClick={() => setShowGoldenTicket(true)}
+              className="px-4.5 py-2.5 bg-gradient-to-r from-amber-500/10 via-orange-500/15 to-amber-500/10 hover:from-amber-500/20 hover:to-orange-500/20 border border-amber-500/30 hover:border-amber-400/50 rounded-2xl flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_5px_15px_rgba(245,158,11,0.05)] group text-amber-300 hover:text-white"
+            >
+              <Lucide.Trophy size={13} className="text-amber-400 animate-pulse group-hover:rotate-12 transition-transform shrink-0" />
+              <span className="text-[10px] md:text-xs font-black uppercase tracking-widest">
+                {language === 'or' ? 'ସ୍ୱର୍ଣ୍ଣ ପତ୍ର କ୍ଲେମ କରନ୍ତୁ' : 'Claim Golden Ticket'}
+              </span>
+            </button>
+          </div>
+
         </div>
 
         {/* Middle Section: Desktop Only - Neural Sync Status */}
@@ -593,7 +611,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             }`}
           >
             <Lucide.Trophy size={14} />
-            <span>{language === 'en' ? 'Statewide Leaderboard' : 'ରାଜ୍ୟସ୍ତରୀୟ ଲିଡରବୋର୍ଡ'}</span>
+            <span>{language === 'en' ? 'Statewide Leaderboard' : 'ରାଜ୍ୟସ୍ତרୀୟ ଲିଡରବୋର୍ଡ'}</span>
           </button>
         </div>
       </div>
@@ -603,11 +621,9 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-8">
           {/* Left Column - Core Interactions */}
           <div className="lg:col-span-8 space-y-8">
-          
-
 
           {/* AI Tutor & Daily MCQ Grid */}
-          <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
             
             {/* AI Tutor Card - Hyper Premium Banner */}
             <motion.div 
@@ -619,14 +635,14 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   setShowTrailer(true);
                 }
               }}
-              className={`bg-slate-900/60 backdrop-blur-2xl rounded-[2rem] p-4 sm:p-6 relative overflow-hidden cursor-pointer group border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_20px_60px_-15px_rgba(0,0,0,0.7)] hover:border-emerald-500/40 hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between h-full ${isTourStep4 ? 'ring-[4px] ring-amber-500 scale-[1.03] border-amber-500/50 shadow-[0_0_30px_rgba(245,158,11,0.6)] z-30 animate-pulse bg-slate-950/90' : ''}`}
+              className={`bg-slate-900/60 backdrop-blur-2xl rounded-[2rem] p-4 sm:p-6 relative overflow-hidden cursor-pointer group border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_20px_60px_-15px_rgba(0,0,0,0.7)] hover:border-emerald-500/40 hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between h-full col-span-2 lg:col-span-1 ${isTourStep4 ? 'ring-[4px] ring-amber-500 scale-[1.03] border-amber-500/50 shadow-[0_0_30px_rgba(245,158,11,0.6)] z-30 animate-pulse bg-slate-950/90' : ''}`}
             >
               {/* Edge-to-edge gradients */}
               <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-teal-900/20 opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
               <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[100px] -mr-[200px] -mt-[200px] pointer-events-none group-hover:bg-emerald-500/20 group-hover:scale-110 transition-all duration-1000"></div>
               <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
               
-              <div className="flex flex-col items-center justify-center gap-2 sm:gap-4 relative z-10 w-full text-center h-full">
+              <div className="flex flex-row sm:flex-col items-center justify-start sm:justify-center gap-3 sm:gap-4 relative z-10 w-full text-left sm:text-center h-full">
                 <div className="relative shrink-0">
                   <div className="w-12 h-12 sm:w-20 sm:h-20 rounded-full bg-slate-950 border-[2px] sm:border-[3px] border-emerald-500/30 shadow-[0_0_40px_rgba(16,185,129,0.3)] flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:border-emerald-400 transition-all duration-500 overflow-hidden relative group-hover:shadow-[0_0_60px_rgba(16,185,129,0.5)]">
                     <div className="absolute inset-0 bg-emerald-500/10 animate-pulse" />
@@ -637,10 +653,10 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   </div>
                 </div>
                 
-                <div className="space-y-1.5 sm:space-y-2 flex flex-col items-center flex-1 justify-center">
-                  <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
+                <div className="space-y-1 sm:space-y-2 flex flex-col items-start sm:items-center flex-1 justify-center">
+                  <div className="flex flex-wrap items-center justify-start sm:justify-center gap-1 sm:gap-2">
                     <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[7px] sm:text-[10px] font-black uppercase tracking-[0.2em] shadow-[inset_0_0_10px_rgba(16,185,129,0.1)] whitespace-nowrap">
-                      <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-emerald-400 shadow-[0_0_5px_#34d399] animate-pulse"></span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_5px_#34d399] animate-pulse"></span>
                       <span className="hidden sm:inline">{language === 'en' ? 'Gundulu AI Active' : 'ଗୁନ୍ଦୁଲୁ AI ସକ୍ରିୟ'}</span>
                       <span className="sm:hidden">{language === 'en' ? 'AI Active' : 'AI ସକ୍ରିୟ'}</span>
                     </div>
@@ -658,7 +674,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             </motion.div>
 
             {/* Daily MCQ Card - Gamified */}
-            <div className="bg-slate-900/40 backdrop-blur-xl rounded-[2rem] p-4 sm:p-6 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_15px_40px_-10px_rgba(0,0,0,0.5)] relative group hover:border-cyan-500/30 hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between h-full">
+            <div className="bg-slate-900/40 backdrop-blur-xl rounded-[2rem] p-3.5 sm:p-6 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_15px_40px_-10px_rgba(0,0,0,0.5)] relative group hover:border-cyan-500/30 hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between h-full col-span-1">
               
               {/* Background glows (Isolated overflow-hidden) */}
               <div className="absolute inset-0 overflow-hidden rounded-[2rem] pointer-events-none z-0">
@@ -667,7 +683,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               </div>
               
               {/* Hanging Bookmark Ribbon (Right Side) */}
-              <div className="absolute top-0 right-3 sm:right-4 w-6 sm:w-8 h-14 sm:h-16 bg-gradient-to-b from-pink-500 to-rose-600 drop-shadow-[0_5px_10px_rgba(225,29,72,0.4)] z-20 flex justify-center pt-1.5 sm:pt-2 transition-all duration-500 group-hover:pt-2 group-hover:h-16 group-hover:sm:h-20"
+              <div className="absolute top-0 right-2 sm:right-4 w-5 sm:w-8 h-12 sm:h-16 bg-gradient-to-b from-pink-500 to-rose-600 drop-shadow-[0_5px_10px_rgba(225,29,72,0.4)] z-20 flex justify-center pt-1.5 sm:pt-2 transition-all duration-500 group-hover:pt-2 group-hover:h-16 group-hover:sm:h-20"
                    style={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%)' }}>
                 <div className="flex flex-col items-center text-white font-black text-[9px] sm:text-[11px] uppercase leading-[1.1] drop-shadow-md">
                   <span>M</span>
@@ -680,21 +696,21 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
                   <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[7px] sm:text-[9px] font-black uppercase tracking-[0.2em] whitespace-nowrap">
                     <Lucide.CheckCircle2 size={10} className="drop-shadow-md sm:w-3 sm:h-3" />
-                    {language === 'en' ? 'Knowledge Pulse' : 'ଜ୍ଞାନ ପରୀକ୍ଷା'}
+                    {language === 'en' ? 'Knowledge Pulse' : 'ଜ୍ଞាន ପରୀକ୍ଷା'}
                   </div>
                 </div>
                 
                 <div className="text-center flex flex-col flex-1 justify-center">
-                  <h3 className="text-[11px] leading-tight sm:text-2xl font-black text-white tracking-tighter mb-1.5 sm:mb-2 group-hover:text-cyan-50 transition-colors whitespace-nowrap">
+                  <h3 className="text-[11px] leading-tight sm:text-2xl font-black text-white tracking-tighter mb-1.5 sm:mb-2 group-hover:text-cyan-50 transition-colors sm:whitespace-nowrap">
                     {language === 'en' ? "Gundulu's Trial" : "ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ"}
                   </h3>
                   <p className="text-slate-400 text-[8px] sm:text-xs font-bold leading-relaxed max-w-[260px] mx-auto hidden sm:block">
                     {hasDailyPractice
                       ? (language === 'en' ? 'New cognitive nodes are available for your current tier. Synchronize now.' : 'ଆପଣଙ୍କ ଶ୍ରେଣୀ ପାଇଁ ନୂଆ ପ୍ରଶ୍ନ ଉପଲବ୍ଧ ଅଛି | ବର୍ତ୍ତମାନ ସମାଧାନ କରନ୍ତୁ |')
-                      : (language === 'en' ? 'Daily challenge status: PENDING. Check the practice matrix for updates.' : 'ଆଜିର ପ୍ରଶ୍ନ ସେଟ୍ ପ୍ରକାଶିତ ହୋଇଛି କି ନାହିଁ ଦେଖିବାକୁ ଅଭ୍ୟାସ ଟ୍ୟାବ୍ ଖୋଲନ୍ତୁ |')}
+                      : (language === 'en' ? 'Daily challenge status: PENDING. Check the practice matrix for updates.' : 'ଆଜିର ପ୍ରଶ୍ନ ସେଟ୍ ପ୍ରକାଶିତ ହୋଇଛି କି ନାହିଁ ଦେଖିବାକୁ ଅଭ୍ୟาସ ଟ୍ୟାବ୍ ଖୋଲନ୍ତୁ |')}
                   </p>
                 </div>
-
+ 
                 {(todayDailySubject || tomorrowDailySubject) && (
                   <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-1 pt-1 z-10 relative">
                     {todayDailySubject && (
@@ -712,8 +728,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   </div>
                 )}
               </div>
-
-              <div className="relative z-10 flex flex-row gap-1.5 sm:gap-3 mt-4 sm:mt-6 shrink-0">
+ 
+              <div className="relative z-10 flex flex-row gap-1 sm:gap-3 mt-3 sm:mt-6 shrink-0">
                 <button
                   type="button"
                   onClick={onOpenDailyPractice}
@@ -733,6 +749,53 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 </button>
               </div>
             </div>
+ 
+            {/* Gundulu's Blackboard Card */}
+            <motion.div 
+              variants={itemVariants}
+              onClick={() => {
+                if (isPremium) {
+                  setShowBlackboard(true);
+                } else {
+                  setShowTrailer(true);
+                }
+              }}
+              className="bg-slate-900/60 backdrop-blur-2xl rounded-[2rem] p-3.5 sm:p-6 relative overflow-hidden cursor-pointer group border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_20px_60px_-15px_rgba(0,0,0,0.7)] hover:border-amber-500/40 hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between h-full col-span-1"
+            >
+              {/* Edge-to-edge gradients */}
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-amber-900/20 opacity-50 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-amber-500/10 rounded-full blur-[100px] -mr-[200px] -mt-[200px] pointer-events-none group-hover:bg-amber-500/20 group-hover:scale-110 transition-all duration-1000"></div>
+              <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+              
+              <div className="flex flex-col items-center justify-center gap-2 sm:gap-4 relative z-10 w-full text-center h-full">
+                <div className="relative shrink-0">
+                  <div className="w-12 h-12 sm:w-20 sm:h-20 rounded-[1.5rem] bg-[#0f2f1d] border-[2px] sm:border-[3px] border-amber-800 shadow-[0_0_40px_rgba(245,158,11,0.2)] flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:border-amber-600 transition-all duration-500 overflow-hidden relative">
+                    <div className="absolute inset-0 bg-white/[0.02] pointer-events-none" />
+                    <Lucide.PenTool className="text-amber-200 w-6.5 h-6.5 sm:w-10 sm:h-10 animate-pulse" />
+                  </div>
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 sm:w-7 sm:h-7 bg-gradient-to-br from-amber-400 to-orange-600 rounded-full flex items-center justify-center text-white shadow-[0_0_15px_rgba(245,158,11,0.6)] border-2 border-slate-900 group-hover:scale-110 transition-transform">
+                    <Lucide.Sparkles size={10} className="sm:w-3 sm:h-3" />
+                  </div>
+                </div>
+                
+                <div className="space-y-1.5 sm:space-y-2 flex flex-col items-center flex-1 justify-center">
+                  <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
+                    <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[7px] sm:text-[10px] font-black uppercase tracking-[0.2em] shadow-[inset_0_0_10px_rgba(245,158,11,0.1)] whitespace-nowrap">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_5px_#fbbf24] animate-pulse"></span>
+                      <span>{language === 'en' ? 'Math Blackboard' : 'ଗଣିତ କଳାପଟା'}</span>
+                    </div>
+                  </div>
+                  <h3 className="text-[11px] leading-tight sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300 tracking-tighter group-hover:text-white transition-colors sm:whitespace-nowrap">
+                    {language === 'en' ? "Gundulu's Slate" : 'ଗୁନ୍ଦୁଲୁ କଳାପଟା'}
+                  </h3>
+                  <p className="text-slate-400 text-[8px] sm:text-xs font-bold leading-relaxed max-w-[260px] mx-auto group-hover:text-slate-300 transition-colors hidden sm:block">
+                    {language === 'en' 
+                      ? 'Draw equations or write calculations with chalk. Gundulu scans and solves them in Odia.'
+                      : 'ଖଡ଼ିରେ ଯେକୌଣସି ଗଣିତ ଲେଖନ୍ତୁ, ଏବଂ ଗୁନ୍ଦୁଲୁ ଆପା ସ୍ପଷ୍ଟ ଭାବେ ଏହାର ସମାଧାନ ବୁଝାଇଦେବେ |'}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
 
           </div>
 
@@ -1424,6 +1487,20 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           />
         )}
 
+        {showGoldenTicket && (
+          <GoldenTicket
+            user={user}
+            language={language}
+            onClose={() => setShowGoldenTicket(false)}
+          />
+        )}
+
+        {showBlackboard && (
+          <MathBlackboard
+            language={language}
+            onClose={() => setShowBlackboard(false)}
+          />
+        )}
       </AnimatePresence>
 
       {showTrailer && (

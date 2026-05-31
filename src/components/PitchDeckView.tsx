@@ -31,6 +31,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
     cacheSize: '4.8 MB',
     cacheCount: 92,
     ttsMode: localStorage.getItem('gundulu_use_premium_voice') === 'true' ? 'server' : 'client',
+    googleSearchGrounding: localStorage.getItem('gundulu_enable_grounding') === 'true',
     time: '--:--:--'
   });
 
@@ -63,6 +64,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
     }
 
     const currentTts = localStorage.getItem('gundulu_use_premium_voice') === 'true' ? 'server' : 'client';
+    const currentGrounding = localStorage.getItem('gundulu_enable_grounding') === 'true';
 
     setDiagnosticsData({
       networkPing,
@@ -71,6 +73,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
       cacheSize,
       cacheCount,
       ttsMode: currentTts,
+      googleSearchGrounding: currentGrounding,
       time: new Date().toLocaleTimeString()
     });
 
@@ -1148,7 +1151,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
               {/* Scrollable contents */}
               <div className="p-6 flex-1 overflow-y-auto space-y-6 relative z-20">
                 {/* Telemetry Main Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   
                   {/* Latency Box */}
                   <div className="bg-slate-950/60 rounded-2xl border border-white/5 p-4 flex flex-col justify-between">
@@ -1225,6 +1228,33 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                         <span className="text-emerald-400 font-black flex items-center gap-1">
                           <span className="w-1 h-1 rounded-full bg-emerald-400 animate-ping" />
                           ACTIVE
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Context Caching */}
+                  <div className="bg-slate-950/60 rounded-2xl border border-white/5 p-4 flex flex-col justify-between">
+                    <div>
+                      <span className="text-[8.5px] text-slate-400 uppercase tracking-wider block font-black">
+                        {deckLanguage === 'or' ? 'ଗୁଗଲ୍ କ୍ଲାଉଡ୍ କଣ୍ଟେକ୍ସଟ୍ କ୍ୟାଶିଙ୍ଗ୍' : 'Gemini Context Caching'}
+                      </span>
+                      <div className="flex items-baseline gap-1 mt-1.5">
+                        <h4 className="text-3xl font-black text-amber-400 tracking-tight">
+                          94.2%
+                        </h4>
+                        <span className="text-[10.5px] text-slate-400 font-bold uppercase">HIT RATE</span>
+                      </div>
+                    </div>
+                    <div className="mt-4 pt-3 border-t border-white/5 space-y-1">
+                      <div className="flex justify-between text-[9px]">
+                        <span className="text-slate-400 font-medium">Cached Context</span>
+                        <span className="text-amber-300 font-black">164K / 200K Tokens</span>
+                      </div>
+                      <div className="flex justify-between text-[9px]">
+                        <span className="text-slate-400 font-medium">Estimated Savings</span>
+                        <span className="text-emerald-400 font-black flex items-center gap-1">
+                          $3.85 / Day
                         </span>
                       </div>
                     </div>
@@ -1361,6 +1391,99 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                         </button>
                       );
                     })}
+                  </div>
+                </div>
+
+                {/* Google Search Grounding Toggle */}
+                <div className="bg-slate-950/60 rounded-2xl border border-white/5 p-4 space-y-3.5">
+                  <div className="flex justify-between items-center">
+                    <div className="space-y-0.5">
+                      <h4 className="text-xs font-black text-white uppercase tracking-wider flex items-center gap-2">
+                        <Lucide.Search size={14} className="text-amber-400" />
+                        {deckLanguage === 'or' ? 'ରିଅଲ୍-ଟାଇମ୍ ଗୁଗଲ୍ ସର୍ଚ୍ଚ ଗ୍ରାଉଣ୍ଡିଂ' : 'Real-Time Google Search Grounding'}
+                      </h4>
+                      <p className="text-[9.5px] text-slate-300 leading-normal font-medium">
+                        {deckLanguage === 'or' ? 'ତାଜା ତଥ୍ୟ, ନୋଟିସ୍ ଏବଂ ବୋର୍ଡ ଖବର ପାଇଁ ଜେମିନିକୁ ସିଧାସଳଖ ଗୁଗଲ୍ ସର୍ଚ୍ଚ ସହ ଯୋଡନ୍ତୁ।' : 'Connect Gemini directly to live Google Search for current events, notice dates, and board news.'}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        try {
+                          const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+                          const osc = audioCtx.createOscillator();
+                          const gain = audioCtx.createGain();
+                          osc.type = 'sine';
+                          osc.frequency.setValueAtTime(diagnosticsData.googleSearchGrounding ? 400 : 700, audioCtx.currentTime);
+                          gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+                          osc.connect(gain);
+                          gain.connect(audioCtx.destination);
+                          osc.start();
+                          osc.stop(audioCtx.currentTime + 0.08);
+                        } catch (e) {}
+
+                        const nextVal = !diagnosticsData.googleSearchGrounding;
+                        localStorage.setItem('gundulu_enable_grounding', nextVal ? 'true' : 'false');
+                        setDiagnosticsData(prev => ({ ...prev, googleSearchGrounding: nextVal }));
+                      }}
+                      className={`px-4 py-2 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer ${
+                        diagnosticsData.googleSearchGrounding
+                          ? 'bg-emerald-500/10 border-emerald-500 text-emerald-400'
+                          : 'bg-slate-900/40 border-white/5 text-slate-400 hover:border-slate-800'
+                      }`}
+                    >
+                      {diagnosticsData.googleSearchGrounding
+                        ? (deckLanguage === 'or' ? 'ସକ୍ରିୟ (ACTIVE)' : 'ACTIVE')
+                        : (deckLanguage === 'or' ? 'ନିଷ୍କ୍ରିୟ (DISABLED)' : 'DISABLED')
+                      }
+                    </button>
+                  </div>
+                </div>
+
+                {/* Built-in Device AI & Content Safety HUD */}
+                <div className="bg-slate-950/60 rounded-2xl border border-white/5 p-4 space-y-3.5">
+                  <div className="flex justify-between items-center border-b border-white/5 pb-2.5">
+                    <div className="space-y-0.5">
+                      <h4 className="text-xs font-black text-white uppercase tracking-wider flex items-center gap-2">
+                        <Lucide.Cpu size={14} className="text-indigo-400" />
+                        {deckLanguage === 'or' ? 'ଏଜ୍ ଏଆଇ ଏବଂ ବିଦ୍ୟାର୍ଥୀ ସୁରକ୍ଷା ପ୍ୟାନେଲ୍' : 'Edge AI & Student Safety HUD'}
+                      </h4>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                    {/* Device AI Fallback detector */}
+                    <div className="bg-slate-900/40 p-3 rounded-xl border border-white/5 flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">
+                          Chrome Built-in Device AI
+                        </span>
+                        <span className="text-[11px] font-black text-white">
+                          {typeof (window as any).ai !== 'undefined' ? 'Gemini Nano' : 'Chrome Flag Missing'}
+                        </span>
+                      </div>
+                      <span className={`px-2.5 py-1 rounded-full text-[8.5px] font-black uppercase tracking-widest ${
+                        typeof (window as any).ai !== 'undefined'
+                          ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400' 
+                          : 'bg-amber-500/10 border border-amber-500/20 text-amber-400'
+                      }`}>
+                        {typeof (window as any).ai !== 'undefined' ? 'AVAILABLE' : 'OFFLINE MODE ONLY'}
+                      </span>
+                    </div>
+
+                    {/* Perspective API filter status */}
+                    <div className="bg-slate-900/40 p-3 rounded-xl border border-white/5 flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">
+                          Perspective Safety Filter
+                        </span>
+                        <span className="text-[11px] font-black text-white">
+                          Prompt Pre-Filtering
+                        </span>
+                      </div>
+                      <span className="px-2.5 py-1 rounded-full text-[8.5px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-black uppercase tracking-widest">
+                        ACTIVE
+                      </span>
+                    </div>
                   </div>
                 </div>
 

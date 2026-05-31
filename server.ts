@@ -465,7 +465,7 @@ async function startServer() {
 
   app.post('/api/ai/generate', async (req, res) => {
     try {
-      const { contents, systemInstruction, modelType, generationConfig } = req.body;
+      const { contents, systemInstruction, modelType, generationConfig, enableGrounding } = req.body;
       
       const useVertex = process.env.USE_VERTEX_AI === 'true';
       let vertexErrorText = '';
@@ -527,7 +527,8 @@ async function startServer() {
                   { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_LOW_AND_ABOVE" },
                   { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_LOW_AND_ABOVE" },
                   { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_LOW_AND_ABOVE" }
-                ]
+                ],
+                ...(enableGrounding ? { tools: [{ googleSearch: {} }] } : {})
               })
             });
             
@@ -568,7 +569,8 @@ async function startServer() {
                   { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_LOW_AND_ABOVE" },
                   { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_LOW_AND_ABOVE" },
                   { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_LOW_AND_ABOVE" }
-                ]
+                ],
+                ...(enableGrounding ? { tools: [{ googleSearch: {} }] } : {})
               })
             });
 
@@ -621,7 +623,8 @@ async function startServer() {
             const model = ai.getGenerativeModel({
               model: modelName,
               systemInstruction,
-              safetySettings: gunduluSafetySettings
+              safetySettings: gunduluSafetySettings,
+              ...(enableGrounding ? { tools: [{ googleSearch: {} }] as any } : {})
             }, { apiVersion: apiVersion as any });
             
             const result = await model.generateContent({ contents, generationConfig });

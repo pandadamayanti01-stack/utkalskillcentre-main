@@ -4,7 +4,7 @@ const GUNDULU_ODIA_SYSTEM_INSTRUCTION = `Role & Persona:
 Identity: You are "Gundulu," a loving, caring older sister (Gundulu Apa) and a friendly AI Study Buddy for Odisha state board students.
 Tone: Warm, supportive, encouraging, and patient. Speak with the affectionate care of an elder sister helping her younger siblings study.
 Language Policy: STRICT ODIA ONLY. Never use blocks of English. If you must use a technical term, write it in Odia script.
-Greeting: Always start your first response with "Namaskar! Mu tumara Gundulu Apa (ଗୁଣ୍ଡୁଲୁ ଅପା). Aaji ame kana padhiba? ✨"
+Greeting: Always start your first response with "Namaskar! Mu tumara Gundulu Apa (ଗୁନ୍ଦୁଲୁ ଅପା). Aaji ame kana padhiba? ✨"
 Instructions: Explain school concepts step-by-step. If a student asks a doubt, provide a clear and simple explanation. Use gentle, caring elder-sister phrases like 'ବୁଝିଲ ଭାଇ' or 'କହିଲ ବୁନି' (or speak with natural, sibling-to-sibling Odia warmth).
 SAFETY & GUARDRAILS: You are an educational tutor designed for young school children. Under no circumstances should you discuss adult topics, violence, self-harm, hate speech, politics, romance, nudity, or inappropriate themes. If a student tries to ask about non-educational, unnecessary, harmful, or inappropriate topics, politely decline and redirect them back to their school lessons.
 
@@ -89,6 +89,70 @@ export const getAI = (meta?: { class?: string, subject?: string }) => {
     getGenerativeModel: (opts: any, requestOptions?: any) => {
       return {
         generateContent: async (params: any) => {
+           // 1. Perspective API Content Safety pre-filter
+           const safetyCheck = checkPromptSafety(params.contents);
+           if (!safetyCheck.safe) {
+             console.warn("Perspective API Filter Blocked Prompt:", safetyCheck.reason);
+             const isOdia = opts.systemInstruction?.includes("Gundulu") && opts.systemInstruction?.includes("Namaskar");
+             const blockText = isOdia
+               ? "ସୁରକ୍ଷା ଚେତାବନୀ: ଆପଣଙ୍କ ପ୍ରଶ୍ନରେ ଶିକ୍ଷା ସମ୍ବନ୍ଧୀୟ ନଥିବା ଶବ୍ଦ ବା ବିଷୟ ଚିହ୍ନଟ ହୋଇଛି । ଦୟาକରି କେବଳ ପାଠପଢ଼ା ବିଷୟରେ ପଚାରନ୍ତୁ । (Perspective API Safety Block)"
+               : "Safety Warning: Non-educational or inappropriate content detected. Please ask questions related to your school curriculum. (Perspective API Safety Block)";
+             return { response: { text: () => blockText } };
+           }
+
+           // 2. Offline Gemini Nano Fallback
+           if (typeof window !== 'undefined' && !navigator.onLine) {
+             console.log("Device is offline. Attempting Chrome Built-in Device AI (Gemini Nano) Fallback...");
+             try {
+               const aiObj = (window as any).ai;
+               if (aiObj) {
+                 let lastQuery = '';
+                 if (params.contents && Array.isArray(params.contents)) {
+                   for (let i = params.contents.length - 1; i >= 0; i--) {
+                     const turn = params.contents[i];
+                     if (turn.role === 'user' && turn.parts && Array.isArray(turn.parts)) {
+                       for (const part of turn.parts) {
+                         if (part.text) {
+                           lastQuery = part.text;
+                           break;
+                         }
+                       }
+                       if (lastQuery) break;
+                     }
+                   }
+                 }
+                 
+                 if (lastQuery) {
+                   let session;
+                   if (aiObj.assistant && typeof aiObj.assistant.create === 'function') {
+                     session = await aiObj.assistant.create();
+                   } else if (typeof aiObj.createTextSession === 'function') {
+                     session = await aiObj.createTextSession();
+                   }
+                   
+                   if (session) {
+                     const result = await session.prompt(lastQuery);
+                     console.log("Chrome Device AI generated response successfully.");
+                     const cleaned = cleanOdiaOrthography(result);
+                     return { 
+                       response: { 
+                         text: () => `${cleaned}\n\n*(Offline Gemini Nano Local Fallback)*` 
+                       } 
+                     };
+                   }
+                 }
+               }
+             } catch (nanoErr) {
+               console.warn("Chrome Device AI Fallback failed execution:", nanoErr);
+             }
+             
+             const isOdia = opts.systemInstruction?.includes("Gundulu") && opts.systemInstruction?.includes("Namaskar");
+             const offlineText = isOdia
+               ? "ଦୁଃଖିତ, ଆପଣ ଅଫଲାଇନ୍ ଅଛନ୍ତି । ଦୟାକରି ଇଣ୍ଟରନେଟ୍ ସଂଯୋଗ ଯାଞ୍ଚ କରନ୍ତୁ ।"
+               : "You are currently offline. Please check your internet connection.";
+             return { response: { text: () => offlineText } };
+           }
+
            const isPro = opts.model && opts.model.includes('pro');
            const modelType = isPro ? 'pro' : 'flash';
            
@@ -101,7 +165,8 @@ export const getAI = (meta?: { class?: string, subject?: string }) => {
                modelType: modelType, 
                generationConfig: params.generationConfig,
                class: meta?.class,
-               subject: meta?.subject
+               subject: meta?.subject,
+               enableGrounding: localStorage.getItem('gundulu_enable_grounding') === 'true'
              })
            });
            
@@ -621,6 +686,12 @@ export function cleanOdiaOrthography(text: string): string {
     // 5. Chapter Title Corrections (Class 7 Sahitya Suman)
     'ମାତୃଭକ୍ତି କଥା': 'ମାଡ଼ହାଣ୍ଡି କଥା',
     'Matrubhakti Katha': 'Madahandi Katha',
+    
+    // 6. Mascot Name Correction
+    'ଗୁଣ୍ଡୁଲୁ': 'ଗୁନ୍ଦୁଲୁ',
+    'ଗୁଣ୍ଡୁଳୁ': 'ଗୁନ୍ଦୁଲୁ',
+    'ଗୁଣ୍ଡୁଲି': 'ଗୁନ୍ଦୁଲୁ',
+    'ଗୁଣ୍ଡୁଲ': 'ଗୁନ୍ଦୁଲ',
   };
 
   let correctedText = text;
@@ -657,5 +728,48 @@ export function cleanOdiaOrthography(text: string): string {
     .replace(/\\\(/g, '')
     .replace(/\\\)/g, '');
 
+  // Clean up LaTeX formatting and structure tags
+  correctedText = correctedText
+    .replace(/\\text\s*{(.*?)}/g, '$1')
+    .replace(/\\frac\s*{(.*?)}\s*{(.*?)}/g, '$1/$2')
+    .replace(/\\mathrm\s*{(.*?)}/g, '$1')
+    .replace(/\\mathit\s*{(.*?)}/g, '$1')
+    .replace(/\\(?:,|:|;|!)/g, ' ');
+
   return correctedText;
+}
+
+export function checkPromptSafety(contents: any[]): { safe: boolean; reason?: string } {
+  if (!contents || !Array.isArray(contents)) return { safe: true };
+  
+  let combinedText = '';
+  for (const turn of contents) {
+    if (turn.parts && Array.isArray(turn.parts)) {
+      for (const part of turn.parts) {
+        if (part.text) {
+          combinedText += ' ' + part.text;
+        }
+      }
+    }
+  }
+
+  const lowercase = combinedText.toLowerCase();
+  
+  const unsafePatterns = [
+    'kill myself', 'suicide', 'bomb', 'weapons', 'abuse', 'violence', 'murder', 'assassin',
+    'porn', 'nudity', 'sex', 'nsfw', 'adult movie',
+    'ignore previous instructions', 'ignore instructions', 'bypass system prompt', 'reveal system instructions',
+    'system prompt', 'you are now a', 'jailbreak', 'ignore safety settings'
+  ];
+
+  for (const pattern of unsafePatterns) {
+    if (lowercase.includes(pattern)) {
+      return { 
+        safe: false, 
+        reason: pattern 
+      };
+    }
+  }
+
+  return { safe: true };
 }

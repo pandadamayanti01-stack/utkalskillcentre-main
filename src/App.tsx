@@ -3820,7 +3820,7 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack, userPr
       const ai = getAI();
       const prompt = `Analyze these quiz results for a student named ${user.name} and provide 3-4 concise, actionable insights for their parent. 
       Data: ${safeJsonStringify(quizData.map(r => ({ chapter: String(r.chapterId), accuracy: r.accuracy, score: r.score, total: r.total })))}
-      Format the response as a short list of bullet points. Focus on strengths and areas for improvement.`;
+      Format the response in friendly, conversational Odia (ଓଡ଼ିଆ). Focus on strengths and areas for improvement, addressing the parents directly in an encouraging, supportive tone. Limit to 3-4 bullet points.`;
 
       const responseText = await withRetry(async (modelName, apiVersion) => {
         const model = ai.getGenerativeModel({ model: modelName }, { apiVersion });
