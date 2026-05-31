@@ -177,6 +177,91 @@ To start the server and connect it to your local agent environment:
 
 ---
 
+---
+
+## 🏆 Google AI Hackathon: Consoles & Features Master Roadmap
+
+### 🧠 1. Google AI & Gemini Superpowers
+*   **📷 Multimodal Problem Solver (Active RAG + Image)**
+    *   **The Idea**: Students capture a photo of a handwritten math problem or textbook diagram. Gemini Flash processes the image, identifies the textbook chapter, and guides them step-by-step using Socratic teaching.
+    *   **Impact**: Showcases complex multimodal vision, text extraction, and vernacular reasoning.
+*   **📉 Cost & Latency Optimization (Context Caching)**
+    *   **The Idea**: Cache textbook PDFs and notes on Google Cloud. Display a live "Cache Hits vs. Cache Misses" metric and "Cost Savings ($)" on the telemetry dashboard.
+    *   **Impact**: Proves production-level understanding of token usage and developer cost-efficiency.
+*   **🎙️ Next-Gen Gemini Live API Integration**
+    *   **The Idea**: Prepare the voice architecture for the Gemini Multimodal Live API (WebSockets) to support real-time audio with interruption capabilities.
+    *   **Impact**: Puts you on the cutting edge of Google's latest real-time audio technology.
+*   **🌐 Chrome Built-in Device AI (Gemini Nano Fallback)**
+    *   **The Idea**: Route basic grammar checks, spelling corrections, and definitions to Chrome’s local Gemini Nano engine (`window.ai`) when the user is offline.
+    *   **Impact**: Highlights developer foresight by saving server bandwidth and supporting offline learning.
+*   **🔍 Real-Time Google Search Grounding**
+    *   **The Idea**: Ground Gemini with live Google Search queries to handle questions about board results, notice dates, or current events.
+    *   **Impact**: Solves LLM knowledge cutoff and prevents hallucinations.
+
+### 🗣️ 2. Vernacular, Safety & Accessibility Features
+*   **🛡️ Perspective API for Youth Content Safety**
+    *   **The Idea**: Pre-filter student prompts using Google’s Perspective API to block toxicity and prompt injection before they reach Gemini.
+    *   **Impact**: Guarantees classroom safety and student moderation.
+*   **🔊 Premium Wavenet TTS Voice Curation**
+    *   **The Idea**: Use neural Google Wavenet voices (`or-IN-Wavenet` / `hi-IN-Wavenet`) for Gundulu to provide natural, human-like voice synthesis in Odia.
+    *   **Impact**: Significantly improves conversational immersion compared to robotic browser default speech engines.
+*   **🗣️ Regional Odia Dialect Translation Bridge**
+    *   **The Idea**: Use Gemini as a translation bridge to map regional Odia dialects (such as Sambalpuri, Ganjami, or Desia) to standard Odia before processing.
+    *   **Impact**: Drives digital inclusivity for tribal and rural student populations.
+*   **♿ Hands-Free Voice Accessibility Mode (A11y)**
+    *   **The Idea**: Allow visually impaired students to navigate and learn from the entire application solely through voice commands and read-aloud responses.
+    *   **Impact**: Aligns perfectly with Google’s deep focus on accessibility and inclusive design.
+*   **🔌 Gundulu Chrome Web Extension**
+    *   **The Idea**: Build a simple Chrome extension that lets students highlight text on any educational site and ask Gundulu for a quick explanation in Odia.
+    *   **Impact**: Demonstrates ecosystem thinking by extending the platform beyond the web application.
+
+### 🎮 3. Advanced Gamification & Interactive Learning
+*   **🧩 Drag-and-Drop Dynamic AI Quizzes**
+    *   **The Idea**: Have Gemini generate step-by-step arithmetic matches or sorting cards in structured JSON format, rendering them as interactive frontend games.
+    *   **Impact**: Replaces static MCQ sheets with tactile, active gamification.
+*   **🎟️ "Golden Ticket" Dynamic Certificates**
+    *   **The Idea**: Generate dynamic SVG certificate tickets in JSON format when students complete learning streaks, displaying custom achievements.
+    *   **Impact**: Completes the student reward loop with shareable, personalized rewards.
+*   **✍️ Math Drawing Blackboard (OCR)**
+    *   **The Idea**: Let younger students draw digits or equations on an on-screen blackboard, converting their strokes into math variables verified by Gemini.
+    *   **Impact**: Promotes motor skill learning and tactile interaction for younger classes.
+*   **👓 WebXR Augmented Reality (AR) Diagrams**
+    *   **The Idea**: Render 3D overlays of science diagrams (like cells, atoms, or the solar system) in the student's room using their phone camera and WebXR.
+    *   **Impact**: Elevates visual learning to state-of-the-art immersive technology standards.
+
+### 🏫 4. School, Parent & Teacher Infrastructure
+*   **📝 Vernacular Parent Portal & AI Reports**
+    *   **The Idea**: Analyze student analytics logs to generate progress reports in conversational Odia for parents to view.
+    *   **Impact**: Solves real-world parental involvement loops using localized, empathetic summary.
+*   **🏫 Google Workspace & Classroom Sync**
+    *   **The Idea**: Let teachers sync class rosters via Google Classroom API, and let students export study sheets to Google Drive.
+    *   **Impact**: Demonstrates institutional value for school boards using Google infrastructure.
+*   **🗺️ Google Maps Regional Engagement Heatmap**
+    *   **The Idea**: Visualize student competition, high-scorers, and XP streaks across Odisha using a custom styled Google Map wrapper.
+    *   **Impact**: Creates a highly impressive presentation slide for analytics visualization.
+*   **📊 BigQuery Curriculum Insights**
+    *   **The Idea**: Route anonymized logs to BigQuery to help school boards analyze which chapters (e.g., "force" or "fractions") have the lowest comprehension rates.
+    *   **Impact**: Transitions the app into a powerful policy-making tool.
+
+### ⚡ 5. Production & Developer Optimization
+*   **🌍 Google Earth Engine for Geography**
+    *   **The Idea**: Embed Earth Engine time-lapses (e.g., Similipal forest cover, Mahanadi river delta shifts) into geography lessons.
+    *   **Impact**: Connects geographic studies with live scientific telemetry.
+*   **💻 Project IDX Workspace**
+    *   **The Idea**: Package and containerize the development stack within Project IDX to showcase cloud-native development workflows.
+    *   **Impact**: Leverages Google's next-generation IDE ecosystem.
+*   **⚡ Google Cloud Run Serverless Deployments**
+    *   **The Idea**: Deploy the backend containers to Cloud Run to support auto-scaling from zero to thousands of users during exam result seasons.
+    *   **Impact**: Ensures high system availability and cloud cost management.
+*   **🔥 Firebase Genkit Migration**
+    *   **The Idea**: Use Firebase Genkit to manage prompts, evaluate model outputs, and log telemetry events.
+    *   **Impact**: Demonstrates adoption of Google's official, next-generation AI developer toolset.
+*   **🔋 Budget Device FPS Telemetry**
+    *   **The Idea**: Monitor rendering speeds and canvas performance. Dynamically scale down canvas animations on low-end budget smartphones.
+    *   **Impact**: Focuses on performance-first engineering suited for regional target demographics.
+
+---
+
 ## ⚙️ Daily MCQ Automation & Local Developer Setup
 
 For developers hosting the platform locally, follow these instructions to get up and running:
