@@ -186,6 +186,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
                   ? 'bg-[#b34d1f] text-white border-[#b34d1f] shadow-md shadow-orange-950/20' 
                   : 'bg-white/5 text-slate-300 border-white/10 hover:border-emerald-500/30 hover:bg-emerald-500/10'
               }`}
+              style={optionalFilter === opt ? { color: '#ffffff' } : undefined}
             >
               {opt === 'All' ? translate('Show All', 'ସବୁ ଦେଖାନ୍ତୁ') : opt}
             </button>
@@ -194,7 +195,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
       )}
 
       {/* Gamified Map Area */}
-      <div className="relative w-full max-w-4xl mx-auto overflow-hidden rounded-[3rem] border border-white/10 bg-slate-900/30 backdrop-blur-md p-6 md:p-12 shadow-2xl">
+      <div className="relative w-full max-w-4xl mx-auto overflow-hidden rounded-[3rem] border border-white/10 bg-slate-900/30 backdrop-blur-md p-6 md:p-12 shadow-2xl force-dark-theme">
         {/* Decorative Map Background */}
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 pointer-events-none mix-blend-overlay"></div>
         
@@ -303,7 +304,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="w-full max-w-4xl max-h-[85vh] bg-slate-900 border border-white/10 rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden"
+              className="w-full max-w-4xl max-h-[85vh] bg-slate-900 border border-white/10 rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden force-dark-theme"
             >
               <div className="p-6 md:p-8 border-b border-white/5 flex items-center justify-between bg-slate-950/80 backdrop-blur-md">
                 <div>

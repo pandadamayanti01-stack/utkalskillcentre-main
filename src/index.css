@@ -840,6 +840,21 @@ body.theme-daybreak .force-dark-theme .bg-slate-900\/40 {
   background-color: rgba(15, 23, 42, 0.4) !important;
 }
 
+.force-dark-theme .bg-white\/5,
+body.theme-daybreak .force-dark-theme .bg-white\/5 {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.force-dark-theme .bg-slate-900\/30,
+body.theme-daybreak .force-dark-theme .bg-slate-900\/30 {
+  background-color: rgba(15, 23, 42, 0.3) !important;
+}
+
+.force-dark-theme .bg-slate-950\/40,
+body.theme-daybreak .force-dark-theme .bg-slate-950\/40 {
+  background-color: rgba(2, 6, 23, 0.4) !important;
+}
+
 .force-dark-theme .border-white\/5,
 body.theme-daybreak .force-dark-theme .border-white\/5 {
   border-color: rgba(255, 255, 255, 0.05) !important;
@@ -854,6 +869,7 @@ body.theme-daybreak .force-dark-theme .border-white\/10 {
 body.theme-daybreak .force-dark-theme .border-white\/20 {
   border-color: rgba(255, 255, 255, 0.2) !important;
 }
+
 
 
 
