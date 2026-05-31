@@ -531,7 +531,26 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
                 </div>
               </div>
             ) : explanation ? (
-              <div className="prose prose-invert prose-emerald text-[13px] md:text-sm text-slate-200 max-w-none leading-relaxed space-y-2 select-text pb-6">
+              <div className="socratic-response-container text-[13px] md:text-sm text-slate-200 max-w-none leading-relaxed space-y-2 select-text pb-6">
+                <style>{`
+                  .socratic-response-container p {
+                    color: #e2e8f0 !important;
+                    margin-bottom: 0.75rem;
+                  }
+                  .socratic-response-container strong {
+                    color: #34d399 !important;
+                    font-weight: 800;
+                  }
+                  .socratic-response-container ul, .socratic-response-container ol {
+                    margin-left: 1.25rem;
+                    margin-bottom: 0.75rem;
+                    list-style-type: decimal;
+                  }
+                  .socratic-response-container li {
+                    color: #f1f5f9 !important;
+                    margin-bottom: 0.4rem;
+                  }
+                `}</style>
                 <ReactMarkdown>{explanation}</ReactMarkdown>
               </div>
             ) : (
