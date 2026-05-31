@@ -1097,19 +1097,19 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
       {/* Diagnostics Modal Overlay */}
       <AnimatePresence>
         {showDiagnostics && (
-          <div className="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-2xl flex items-center justify-center p-3 md:p-6 overflow-hidden">
+          <div className="absolute inset-0 z-50 bg-slate-950 flex items-center justify-center p-3 md:p-6 overflow-hidden">
             <motion.div
               initial={{ opacity: 0, scale: 0.97, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.97, y: 10 }}
               transition={{ type: 'spring', damping: 25, stiffness: 180 }}
-              className="bg-slate-900/90 border border-white/10 rounded-2xl md:rounded-3xl w-full max-w-2xl h-full max-h-full overflow-hidden relative shadow-[0_0_50px_rgba(16,185,129,0.15)] flex flex-col"
+              className="bg-slate-900 border border-white/10 rounded-2xl md:rounded-3xl w-full max-w-2xl h-full max-h-full overflow-hidden relative shadow-[0_0_50px_rgba(16,185,129,0.15)] flex flex-col"
             >
               {/* Holographic matrix scanlines */}
               <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.03),rgba(0,255,0,0.01),rgba(0,0,255,0.03))] bg-[size:100%_4px,6px_100%] pointer-events-none opacity-20 z-10" />
 
               {/* Top Header Bar */}
-              <div className="p-5 border-b border-white/5 flex items-center justify-between bg-slate-950/40 relative z-20">
+              <div className="p-5 border-b border-white/5 flex items-center justify-between bg-slate-950 relative z-20 shrink-0">
                 <div className="flex items-center gap-2">
                   <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
                   <div>
@@ -1367,7 +1367,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
               </div>
 
               {/* Bottom Footer Action Panel */}
-              <div className="p-5 border-t border-white/5 bg-slate-950/40 flex items-center justify-between relative z-20 shrink-0">
+              <div className="p-5 border-t border-white/5 bg-slate-950 flex items-center justify-between relative z-20 shrink-0">
                 <div className="flex gap-2">
                   <button
                     onClick={() => {
