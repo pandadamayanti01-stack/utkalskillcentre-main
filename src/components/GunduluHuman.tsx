@@ -879,7 +879,7 @@ Understand user intent from these transcripts and respond in Odia only.
   };
 
   return (
-    <div className={`immersive-call-container ${getCallStateClass()} ${activeChapter ? 'has-visual-card' : ''}`}>
+    <div className={`immersive-call-container ${getCallStateClass()} ${activeChapter ? 'has-visual-card' : ''} force-dark-theme`}>
       
       {/* Dynamic Swirling Siri-Style Background Aura Blobs */}
       <div className="bg-glow-blobs">
