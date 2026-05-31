@@ -158,7 +158,9 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
   const silenceTimeoutRef = useRef<any>(null);
   const transcriptBufferRef = useRef<string>('');
   const chatHistoryRef = useRef<any[]>([]);
-  const [usePremiumVoice, setUsePremiumVoice] = useState(false); // Default to standard offline local TTS to save 100% voice API costs!
+  const [usePremiumVoice, setUsePremiumVoice] = useState(() => {
+    return localStorage.getItem('gundulu_use_premium_voice') === 'true';
+  });
   
   // Immersive Status States
   const [status, setStatus] = useState("ଗୁନ୍ଦୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
@@ -541,7 +543,8 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
       const greeting = "ନମସ୍କାର! ମୁଁ ଗୁନ୍ଦୁଲୁ। ଆସ, ଏବେ ଏକାଠି ପଢ଼ିବା ଓ ଆଗକୁ ବଢ଼ିବା।";
       setStatus("ଗୁନ୍ଦୁଲୁ କହୁଛି...");
 
-      const speakFn = usePremiumVoice ? speakWithGeminiVoice : speakWithBrowserTtsFallback;
+      const activePremiumVoice = localStorage.getItem('gundulu_use_premium_voice') === 'true';
+      const speakFn = activePremiumVoice ? speakWithGeminiVoice : speakWithBrowserTtsFallback;
       speakFn(sanitizeTextForTTS(greeting), () => {
         triggerVisualNudge();
         if (recognitionRef.current && !isListeningRef.current) {
@@ -790,7 +793,8 @@ Understand user intent from these transcripts and respond in Odia only.
   };
 
   const speakResponse = (text: string) => {
-    const speakFn = usePremiumVoice ? speakWithGeminiVoice : speakWithBrowserTtsFallback;
+    const activePremiumVoice = localStorage.getItem('gundulu_use_premium_voice') === 'true';
+    const speakFn = activePremiumVoice ? speakWithGeminiVoice : speakWithBrowserTtsFallback;
     const sanitized = sanitizeTextForTTS(text);
     speakFn(sanitized, () => {
       triggerVisualNudge();
