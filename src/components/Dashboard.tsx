@@ -1142,7 +1142,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       </div>
       ) : (
         /* Statewide Leaderboard Section */
-        <div className="space-y-6 sm:space-y-8">
+        <div className="space-y-6 sm:space-y-8 force-dark-theme">
           {/* Header Summary Card */}
           <div className="glass-card rounded-[2rem] p-6 border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 via-slate-900/40 to-indigo-950/10 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 hover:border-emerald-500/30 transition-all duration-500">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.08),transparent_50%)] pointer-events-none" />
@@ -1163,19 +1163,19 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             {/* Quick Stats Block */}
             <div className="flex items-center gap-4 bg-slate-950/60 p-4 rounded-3xl border border-white/5 shrink-0 w-full md:w-auto justify-around md:justify-start">
               <div className="text-center px-4 border-r border-white/5">
-                <p className="text-[8px] font-black text-slate-500 uppercase tracking-wider mb-1">{language === 'en' ? 'Your Rank' : 'ଆପଣଙ୍କ ରାଙ୍କ'}</p>
+                <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">{language === 'en' ? 'Your Rank' : 'ଆପଣଙ୍କ ରାଙ୍କ'}</p>
                 <p className="text-lg font-black text-emerald-400 font-mono">
                   #{combinedLeaderboard.findIndex(s => s.id === user?.id) + 1 || '-'}
                 </p>
               </div>
               <div className="text-center px-4 border-r border-white/5">
-                <p className="text-[8px] font-black text-slate-500 uppercase tracking-wider mb-1">{language === 'en' ? 'Current Tier' : 'ଆପଣଙ୍କ ସ୍ତର'}</p>
+                <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">{language === 'en' ? 'Current Tier' : 'ଆପଣଙ୍କ ସ୍ତର'}</p>
                 <p className="text-lg font-black text-amber-400 font-mono">
                   Lvl {getBadgeInfo(user?.points || 0).level}
                 </p>
               </div>
               <div className="text-center px-4">
-                <p className="text-[8px] font-black text-slate-500 uppercase tracking-wider mb-1">{language === 'en' ? 'Daily MCQ' : 'ଦୈନିକ MCQ'}</p>
+                <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">{language === 'en' ? 'Daily MCQ' : 'ଦୈନିକ MCQ'}</p>
                 <p className={`text-[10px] font-black px-2.5 py-0.5 rounded-full ${
                   user?.points_today > 0
                     ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
