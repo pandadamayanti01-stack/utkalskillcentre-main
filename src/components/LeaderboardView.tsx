@@ -95,13 +95,13 @@ export function LeaderboardView({ leaderboard, language, onBack, following, user
           className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
         >
           <ArrowLeft size={20} />
-          <span>Back to Dashboard</span>
+          <span>{language === 'en' ? 'Back to Dashboard' : 'ଡ୍ୟାସବୋର୍ଡକୁ ଫେରନ୍ତୁ'}</span>
         </motion.button>
       )}
 
       <motion.div variants={itemVariants} className="text-center mb-10">
         <h2 className="text-3xl font-bold text-white mb-2">{translations[language].weeklyLeaderboard}</h2>
-        <p className="text-slate-500">Celebrate effort and consistency! Resets every Sunday.</p>
+        <p className="text-slate-500">{language === 'en' ? 'Celebrate effort and consistency! Resets every Sunday.' : 'ପରିଶ୍ରମ ଓ ନିରନ୍ତରତାକୁ ଉତ୍ସାହିତ କରନ୍ତୁ! ପ୍ରତି ରବିବାର ଏହା ରିସେଟ୍ ହୁଏ।'}</p>
       </motion.div>
 
       <motion.div variants={itemVariants} className="flex flex-col items-center gap-6">
@@ -158,11 +158,11 @@ export function LeaderboardView({ leaderboard, language, onBack, following, user
         <table className="w-full text-left min-w-[600px]">
           <thead>
             <tr className="border-b border-white/5 bg-white/5">
-              <th className="px-3 sm:px-8 py-4 sm:py-6 text-xs uppercase tracking-widest text-slate-500 font-bold">Rank</th>
-              <th className="px-3 sm:px-8 py-4 sm:py-6 text-xs uppercase tracking-widest text-slate-500 font-bold">Student</th>
-              <th className="px-3 sm:px-8 py-4 sm:py-6 text-xs uppercase tracking-widest text-slate-500 font-bold">Consistency</th>
+              <th className="px-3 sm:px-8 py-4 sm:py-6 text-xs uppercase tracking-widest text-slate-500 font-bold">{language === 'en' ? 'Rank' : 'ମାନ୍ୟତା'}</th>
+              <th className="px-3 sm:px-8 py-4 sm:py-6 text-xs uppercase tracking-widest text-slate-500 font-bold">{language === 'en' ? 'Student' : 'ଛାତ୍ର'}</th>
+              <th className="px-3 sm:px-8 py-4 sm:py-6 text-xs uppercase tracking-widest text-slate-500 font-bold">{language === 'en' ? 'Consistency' : 'ନିରନ୍ତରତା'}</th>
               <th className="px-3 sm:px-8 py-4 sm:py-6 text-xs uppercase tracking-widest text-slate-500 font-bold text-right">{translations[language].effortPoints}</th>
-              <th className="px-3 sm:px-8 py-4 sm:py-6 text-xs uppercase tracking-widest text-slate-500 font-bold text-right">Action</th>
+              <th className="px-3 sm:px-8 py-4 sm:py-6 text-xs uppercase tracking-widest text-slate-500 font-bold text-right">{language === 'en' ? 'Action' : 'କାର୍ଯ୍ୟ'}</th>
             </tr>
           </thead>
           <tbody>
@@ -247,7 +247,7 @@ export function LeaderboardView({ leaderboard, language, onBack, following, user
             ) : (
               <tr>
                 <td colSpan={5} className="px-3 sm:px-8 py-20 text-center text-slate-500">
-                  No students in this league yet. Keep practicing to move up!
+                  {language === 'en' ? 'No students in this league yet. Keep practicing to move up!' : 'ଏହି ଲିଗ୍‌ରେ ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ଛାତ୍ର ନାହାଁନ୍ତି। ଆଗକୁ ବଢିବା ପାଇଁ ଅଭ୍ୟାସ ଜାରି ରଖନ୍ତୁ!'}
                 </td>
               </tr>
             )}
@@ -257,7 +257,7 @@ export function LeaderboardView({ leaderboard, language, onBack, following, user
       
       <motion.div variants={itemVariants} className="p-6 bg-emerald-500/5 border border-emerald-500/10 rounded-3xl text-center">
         <p className="text-emerald-400 text-sm font-medium">
-          🌟 You are in the top 15% of effort makers this week! Keep it up!
+          🌟 {language === 'en' ? 'You are in the top 15% of effort makers this week! Keep it up!' : 'ଆପଣ ଏହି ସପ୍ତାହର ଶୀର୍ଷ ୧୫% ପରିଶ୍ରମୀ ଛାତ୍ରଙ୍କ ମଧ୍ୟରେ ଅଛନ୍ତି! ଏମିତି ଜାରି ରଖନ୍ତୁ!'}
         </p>
       </motion.div>
     </motion.div>

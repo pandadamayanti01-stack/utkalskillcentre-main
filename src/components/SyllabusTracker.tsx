@@ -254,7 +254,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
                   
                   {isCurrentMonth && (
                     <div className="absolute -top-4 -right-2 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg border-2 border-white transform rotate-12 z-30">
-                      CURRENT
+                      {language === 'en' ? 'CURRENT' : 'ସାମ୍ପ୍ରତିକ'}
                     </div>
                   )}
 
@@ -311,9 +311,9 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
                     <span className="text-emerald-600">
                       {selectedMonth.month}
                     </span>
-                    <span className="text-slate-400 text-lg">Mission</span>
+                    <span className="text-slate-400 text-lg">{language === 'en' ? 'Mission' : 'ଲକ୍ଷ୍ୟ'}</span>
                   </h2>
-                  <p className="text-slate-500 mt-1 text-sm font-medium">Recommended chapters to conquer this month.</p>
+                  <p className="text-slate-500 mt-1 text-sm font-medium">{language === 'en' ? 'Recommended chapters to conquer this month.' : 'ଏହି ମାସରେ ସମାପ୍ତ କରିବାକୁ ଥିବା ଅଧ୍ୟାୟଗୁଡ଼ିକ।'}</p>
                 </div>
                 <button 
                   onClick={() => setSelectedMonth(null)}

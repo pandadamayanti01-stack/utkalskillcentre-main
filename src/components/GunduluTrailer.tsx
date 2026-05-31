@@ -181,7 +181,9 @@ export const GunduluTrailer: React.FC<GunduluTrailerProps> = ({ onClose, onSubsc
                   <p className="text-emerald-500 font-black text-[10px] tracking-[0.6em] uppercase animate-pulse">Neural Link Active</p>
                   <div className="h-[2px] w-12 bg-emerald-500/30" />
                 </div>
-                <p className="text-white/40 text-[8px] font-black uppercase tracking-[1em] mt-4">Processing Data Streams...</p>
+                <p className="text-white/40 text-[8px] font-black uppercase tracking-[1em] mt-4">
+                  {language === 'en' ? 'Processing Data Streams...' : 'ଡାଟା ଲୋଡ୍ ହେଉଛି...'}
+                </p>
               </motion.div>
             </motion.div>
           ) : (
@@ -218,7 +220,7 @@ export const GunduluTrailer: React.FC<GunduluTrailerProps> = ({ onClose, onSubsc
                 </button>
 
                 <p className="mt-6 text-[10px] font-black text-white/20 uppercase tracking-[0.3em]">
-                  Join 5000+ Topper Students
+                  {language === 'en' ? 'Join 5000+ Topper Students' : '୫୦୦୦+ ଟପ୍ପର ଛାତ୍ରଙ୍କ ସହ ଯୋଗ ଦିଅନ୍ତୁ'}
                 </p>
               </div>
             </motion.div>

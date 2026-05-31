@@ -74,8 +74,12 @@ function PerformanceChart({ submissions, tests, language }: any) {
         <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-800/50 border border-slate-700 flex items-center justify-center mb-2 sm:mb-4">
           <Lucide.TrendingUp size={16} className="sm:w-5 sm:h-5 text-slate-500" />
         </div>
-        <p className="text-slate-400 font-black uppercase tracking-widest text-[8px] sm:text-[10px]">No Progress Data Yet</p>
-        <p className="text-slate-500 text-[8px] sm:text-xs mt-1 sm:mt-2 max-w-[200px]">Take monthly tests to see your growth chart!</p>
+        <p className="text-slate-400 font-black uppercase tracking-widest text-[8px] sm:text-[10px]">
+          {language === 'en' ? 'No Progress Data Yet' : 'ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ପ୍ରଗତି ତଥ୍ୟ ନାହିଁ'}
+        </p>
+        <p className="text-slate-500 text-[8px] sm:text-xs mt-1 sm:mt-2 max-w-[200px]">
+          {language === 'en' ? 'Take monthly tests to see your growth chart!' : 'ଆପଣଙ୍କର ବିକାଶ ଗ୍ରାଫ୍ ଦେଖିବା ପାଇଁ ମାସିକ ପରୀକ୍ଷା ଦିଅନ୍ତୁ!'}
+        </p>
       </div>
     );
   }
@@ -84,12 +88,18 @@ function PerformanceChart({ submissions, tests, language }: any) {
     <div className="glass-card neon-border rounded-3xl p-5 md:p-6 lg:p-8 bg-gradient-to-br from-emerald-500/5 to-transparent">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h3 className="text-lg font-black text-white tracking-tight">Your Progress Graph</h3>
-          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em]">Monthly Performance Analytics</p>
+          <h3 className="text-lg font-black text-white tracking-tight">
+            {language === 'en' ? 'Your Progress Graph' : 'ଆପଣଙ୍କର ପ୍ରଗତି ଗ୍ରାଫ୍'}
+          </h3>
+          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em]">
+            {language === 'en' ? 'Monthly Performance Analytics' : 'ମାସିକ ପ୍ରଦର୍ଶନ ବିଶ୍ଳେଷଣ'}
+          </p>
         </div>
         <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
           <Lucide.TrendingUp size={12} />
-          {chartData.length > 1 && chartData[chartData.length-1].score >= chartData[chartData.length-2].score ? 'Improving' : 'Consistency is Key'}
+          {chartData.length > 1 && chartData[chartData.length-1].score >= chartData[chartData.length-2].score 
+            ? (language === 'en' ? 'Improving' : 'ଉନ୍ନତି ହେଉଛି') 
+            : (language === 'en' ? 'Consistency is Key' : 'ନିରନ୍ତରତା ଅତ୍ୟନ୍ତ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ')}
         </div>
       </div>
       
@@ -115,7 +125,7 @@ function PerformanceChart({ submissions, tests, language }: any) {
               contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
               itemStyle={{ color: '#10b981', fontWeight: 800, fontSize: '12px' }}
               labelStyle={{ color: '#94a3b8', fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', marginBottom: '4px' }}
-              formatter={(value) => [`${value}%`, 'SCORE']}
+              formatter={(value) => [`${value}%`, language === 'en' ? 'SCORE' : 'ସ୍କୋର']}
             />
             <Area 
               type="monotone" 
@@ -1006,7 +1016,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 <div className="p-1.5 bg-purple-500/10 rounded-xl text-purple-500 border border-purple-500/20">
                   <Lucide.Award size={16} />
                 </div>
-                <h3 className="text-md font-black text-white tracking-tight">Achievements</h3>
+                <h3 className="text-md font-black text-white tracking-tight">{t.badges}</h3>
               </div>
               <Lucide.Star size={14} className="text-purple-500" />
             </div>
@@ -1046,7 +1056,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
             {/* SOCIAL MEDIAS ROW */}
             <div className="flex items-center justify-center gap-4 bg-slate-900/40 py-4 px-6 rounded-3xl border border-white/5">
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 mr-2">Connect:</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 mr-2">{language === 'en' ? 'Connect:' : 'ଯୋଗାଯୋଗ:'}</span>
               <a
                 href="https://www.facebook.com/share/1JAq6DY6Sq/"
                 target="_blank"
