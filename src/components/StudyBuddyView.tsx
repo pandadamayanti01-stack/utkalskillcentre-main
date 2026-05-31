@@ -312,10 +312,17 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
       <div className="flex items-center justify-between px-6 py-3 border-b border-white/5 bg-slate-950/50 backdrop-blur-xl shrink-0">
         <div className="flex items-center gap-4">
           <div className="relative">
-            <div className={`w-12 h-12 rounded-2xl bg-[#10b981]/10 flex items-center justify-center text-[#10b981] border border-[#10b981]/20 shadow-[0_0_15px_rgba(16,185,129,0.2)] overflow-hidden ${loading ? 'animate-pulse' : ''}`}>
-              <Bot size={28} className="text-[#10b981]" />
+            <div className={`w-12 h-12 rounded-2xl bg-[#10b981]/10 flex items-center justify-center text-[#10b981] border border-[#10b981]/20 shadow-[0_0_15px_rgba(16,185,129,0.2)] overflow-hidden relative shrink-0 ${loading ? 'animate-pulse' : ''}`}>
+              <img
+                src="/gundulu.png"
+                alt="Gundulu Avatar"
+                className="w-full h-full object-cover scale-[1.8] translate-y-[3%]"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png';
+                }}
+              />
             </div>
-            <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-[#10b981] border-2 border-slate-900 ${loading ? 'animate-ping' : 'animate-pulse'}`}></div>
+            <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-[#10b981] border-2 border-slate-900 z-10 ${loading ? 'animate-ping' : 'animate-pulse'}`}></div>
           </div>
           <div>
             <h3 className="text-lg font-black text-white tracking-tight">Gundulu</h3>
@@ -367,7 +374,18 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
             >
               <div className={`max-w-[85%] flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border overflow-hidden ${msg.role === 'user' ? 'bg-blue-500/10 border-blue-500/20 text-blue-500' : 'bg-[#10b981]/10 border-[#10b981]/20 text-[#10b981]'}`}>
-                  {msg.role === 'user' ? <User size={20} /> : <Bot size={20} />}
+                  {msg.role === 'user' ? (
+                    <User size={20} />
+                  ) : (
+                    <img
+                      src="/gundulu.png"
+                      alt="Gundulu"
+                      className="w-full h-full object-cover scale-[1.8] translate-y-[3%]"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png';
+                      }}
+                    />
+                  )}
                 </div>
                 <div className="space-y-2">
                   {msg.imageUrl && (
@@ -400,8 +418,15 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
             className="flex justify-start"
           >
             <div className="flex gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center">
-                <Bot size={20} />
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center overflow-hidden">
+                <img
+                  src="/gundulu.png"
+                  alt="Gundulu"
+                  className="w-full h-full object-cover scale-[1.8] translate-y-[3%]"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png';
+                  }}
+                />
               </div>
               <div className="glass-card border border-white/5 p-4 rounded-[2rem] rounded-tl-none flex items-center gap-2">
                 <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce"></div>
