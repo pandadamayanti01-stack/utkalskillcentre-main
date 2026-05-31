@@ -847,8 +847,8 @@ async function startServer() {
       const voiceCandidates = [preferredVoice, fallbackVoice];
 
       const ttsPrompt = isOdia
-        ? `ନିମ୍ନଲିଖିତ ଓଡ଼ିଆ ଲେଖାକୁ ଅତ୍ୟନ୍ତ ସ୍ପଷ୍ଟ ଭାବରେ, ଗୋଟି ଗୋଟି କରି ଧୀର ଏବଂ ମଧୁର ସ୍ୱରରେ ଛୋଟ ପିଲାଙ୍କୁ ବୁଝାଇବା ଶୈଳୀରେ କହନ୍ତୁ। ପ୍ରତ୍ୟେକ ଓଡ଼ିଆ ଶବ୍ଦର ଉଚ୍ଚାରଣ ସ୍ପଷ୍ଟ ଏବଂ ସ୍ୱାଭାବିକ ହେବା ଉଚିତ। କୌଣସି ବିଦେଶୀ ଉଚ୍ଚାରଣ ବ୍ୟବହାର କରନ୍ତୁ ନାହିଁ।\n\n${text}`
-        : `Speak this text in a warm, extremely clear, slow-paced, and friendly tutoring style for children in India. Articulate each word slowly and clearly:\n\n${text}`;
+        ? `ତୁମେ ଗୁନ୍ଦୁଲୁ (Gundulu), ଜଣେ ବହୁତ ସ୍ନେହୀ ଏବଂ ମଧୁର ବଡ଼ ଭଉଣୀ | ଛୋଟ ପିଲାଙ୍କୁ ପଢ଼ାଇଲା ଭଳି ଅତି ନରମ, ସ୍ନେହପୂର୍ଣ୍ଣ ଏବଂ ସୁନ୍ଦର ଭଉଣୀ ସ୍ୱରରେ ନିମ୍ନଲିଖିତ ଓଡ଼ିଆ ଲେଖାକୁ କୁହ। ପ୍ରତ୍ୟେକ ଓଡ଼ିଆ ଶବ୍ଦର ଉଚ୍ଚାରଣ ଅତ୍ୟନ୍ତ ମଧୁର, ସ୍ପଷ୍ଟ ଏବଂ ସ୍ୱାଭାବିକ ହେବା ଉଚିତ।\n\n${text}`
+        : `You are Gundulu, a warm, sweet, and cute elder sister tutoring a young student. Speak this text in an extremely clear, slow-paced, warm, and friendly sister voice with high-pitch enthusiasm:\n\n${text}`;
 
       let lastError = 'Unknown TTS failure';
       

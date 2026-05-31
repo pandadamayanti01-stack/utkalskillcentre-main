@@ -339,7 +339,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
     if (!explanation) return;
 
     // 1. Extract a concise audio summary to keep TTS generation nearly instantaneous (under 30 words)
-    let speechText = explanation.split(/(?:ସୋପାନ|Step|1\.)/i)[0];
+    let speechText = explanation;
     
     // Clean up brackets, English translations, and markdown markers
     speechText = speechText
@@ -353,6 +353,11 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
       speechText = sentences.slice(0, 2).join(' ');
     } else {
       speechText = sentences.join(' ');
+    }
+
+    // Keep it under a safe length for fast speech synthesis
+    if (speechText.length > 180) {
+      speechText = speechText.substring(0, 177) + "...";
     }
 
     // Append standard inviting call-to-action
@@ -374,16 +379,26 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
       utterance.lang = selectedLang === 'or' ? 'or-IN' : 'en-IN';
       
       const voices = window.speechSynthesis.getVoices();
-      const matchVoice = voices.find(v => 
+      // Prioritize a sweet, cute female voice (Heera, Zira, Susan, Hazel, or generic Female/Girl)
+      let matchVoice = voices.find(v => 
         v.lang.startsWith(selectedLang === 'or' ? 'or' : 'en') && 
-        (v.name.includes('Google') || v.name.includes('Microsoft') || v.name.includes('Natural'))
-      ) || voices.find(v => v.lang.startsWith(selectedLang === 'or' ? 'or' : 'en'));
+        (v.name.includes('Heera') || v.name.includes('Zira') || v.name.toLowerCase().includes('female') || v.name.includes('Susan') || v.name.includes('Hazel') || v.name.includes('Google US English') || v.name.includes('Google UK English Female'))
+      );
+
+      if (!matchVoice) {
+        // Fallback to Google/Microsoft voices but exclude known male voices
+        matchVoice = voices.find(v => 
+          v.lang.startsWith(selectedLang === 'or' ? 'or' : 'en') && 
+          (v.name.includes('Google') || v.name.includes('Microsoft') || v.name.includes('Natural')) &&
+          !v.name.includes('David') && !v.name.includes('Ravi') && !v.name.toLowerCase().includes('male')
+        ) || voices.find(v => v.lang.startsWith(selectedLang === 'or' ? 'or' : 'en'));
+      }
 
       if (matchVoice) {
         utterance.voice = matchVoice;
       }
       
-      utterance.pitch = 1.15;
+      utterance.pitch = 1.25; // cute high-pitched sister voice
       utterance.rate = 0.85;
 
       utterance.onend = () => setSpeaking(false);
@@ -418,6 +433,27 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
           window.speechSynthesis.cancel();
           const utterance = new SpeechSynthesisUtterance(cleanText);
           utterance.lang = selectedLang === 'or' ? 'or-IN' : 'en-IN';
+
+          const voices = window.speechSynthesis.getVoices();
+          let matchVoice = voices.find(v => 
+            v.lang.startsWith(selectedLang === 'or' ? 'or' : 'en') && 
+            (v.name.includes('Heera') || v.name.includes('Zira') || v.name.toLowerCase().includes('female') || v.name.includes('Susan') || v.name.includes('Hazel') || v.name.includes('Google US English') || v.name.includes('Google UK English Female'))
+          );
+
+          if (!matchVoice) {
+            matchVoice = voices.find(v => 
+              v.lang.startsWith(selectedLang === 'or' ? 'or' : 'en') && 
+              (v.name.includes('Google') || v.name.includes('Microsoft') || v.name.includes('Natural')) &&
+              !v.name.includes('David') && !v.name.includes('Ravi') && !v.name.toLowerCase().includes('male')
+            ) || voices.find(v => v.lang.startsWith(selectedLang === 'or' ? 'or' : 'en'));
+          }
+
+          if (matchVoice) {
+            utterance.voice = matchVoice;
+          }
+          utterance.pitch = 1.25; // cute high-pitched sister voice
+          utterance.rate = 0.85;
+
           utterance.onend = () => setSpeaking(false);
           utterance.onerror = () => setSpeaking(false);
           window.speechSynthesis.speak(utterance);

@@ -389,21 +389,26 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
     
     // Attempt to locate premium natural voice engines installed in Chrome/Android/iOS
     const voices = window.speechSynthesis.getVoices();
-    const premiumOdiaVoice = voices.find(v => 
-      v.lang.startsWith('or') && 
-      (v.name.includes('Google') || v.name.includes('Microsoft') || v.name.includes('Natural'))
-    ) || voices.find(v => v.lang.startsWith('or'));
+    // Prioritize a sweet, cute female voice (Heera, Zira, Susan, Hazel, or containing 'female')
+    let premiumVoice = voices.find(v => 
+      v.lang.startsWith(language) && 
+      (v.name.includes('Heera') || v.name.includes('Zira') || v.name.toLowerCase().includes('female') || v.name.includes('Susan') || v.name.includes('Hazel') || v.name.includes('Google US English') || v.name.includes('Google UK English Female'))
+    );
     
-    if (premiumOdiaVoice) {
-      utterance.voice = premiumOdiaVoice;
-      // Premium voices are pre-tuned; keep pitch and speed natural
-      utterance.pitch = 1.1;
-      utterance.rate = 0.85;
-    } else {
-      // Standard voice: keep pitch natural and pleasant for a sweet girl/elder sister voice
-      utterance.pitch = 1.15;
-      utterance.rate = 0.85;
+    if (!premiumVoice) {
+      premiumVoice = voices.find(v => 
+        v.lang.startsWith(language) && 
+        (v.name.includes('Google') || v.name.includes('Microsoft') || v.name.includes('Natural')) &&
+        !v.name.includes('David') && !v.name.includes('Ravi') && !v.name.toLowerCase().includes('male')
+      ) || voices.find(v => v.lang.startsWith(language));
     }
+    
+    if (premiumVoice) {
+      utterance.voice = premiumVoice;
+    }
+    
+    utterance.pitch = 1.25; // cute, sweet girl voice pitch
+    utterance.rate = 0.85;
 
     utterance.onstart = () => {
       setIsSpeaking(true);

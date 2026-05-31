@@ -127,19 +127,25 @@ export default function LaunchCelebration({
               utterance.lang = language;
               
               const voices = window.speechSynthesis.getVoices();
-              const preferredVoice = voices.find(v => 
+              // Prioritize a sweet, cute female voice (Heera, Zira, Susan, Hazel, or generic Female/Girl)
+              let preferredVoice = voices.find(v => 
                 v.lang.startsWith(language) && 
-                (v.name.includes('Google') || v.name.includes('Microsoft') || v.name.includes('Natural'))
-              ) || voices.find(v => v.lang.startsWith(language));
+                (v.name.includes('Heera') || v.name.includes('Zira') || v.name.toLowerCase().includes('female') || v.name.includes('Susan') || v.name.includes('Hazel') || v.name.includes('Google US English') || v.name.includes('Google UK English Female'))
+              );
+              
+              if (!preferredVoice) {
+                preferredVoice = voices.find(v => 
+                  v.lang.startsWith(language) && 
+                  (v.name.includes('Google') || v.name.includes('Microsoft') || v.name.includes('Natural')) &&
+                  !v.name.includes('David') && !v.name.includes('Ravi') && !v.name.toLowerCase().includes('male')
+                ) || voices.find(v => v.lang.startsWith(language));
+              }
               
               if (preferredVoice) {
                 utterance.voice = preferredVoice;
-                utterance.pitch = language === 'or' ? 1.1 : 1.15;
-                utterance.rate = 0.85;
-              } else {
-                utterance.pitch = language === 'or' ? 1.6 : 1.4;
-                utterance.rate = 0.9;
               }
+              utterance.pitch = 1.25; // cute high-pitched sister voice
+              utterance.rate = 0.85;
               window.speechSynthesis.speak(utterance);
             }
           }
