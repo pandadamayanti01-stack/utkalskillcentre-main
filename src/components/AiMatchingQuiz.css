@@ -1,0 +1,41 @@
+/* Custom Card Error Shake Keyframes */
+@keyframes cardErrorShake {
+  0% { transform: translateX(0); }
+  15% { transform: translateX(-6px) rotate(-1.5deg); }
+  30% { transform: translateX(5px) rotate(1.5deg); }
+  45% { transform: translateX(-4px) rotate(-1deg); }
+  60% { transform: translateX(3px) rotate(1deg); }
+  75% { transform: translateX(-2px) rotate(-0.5deg); }
+  90% { transform: translateX(1px) rotate(0.5deg); }
+  100% { transform: translateX(0); }
+}
+
+.card-error-shake {
+  animation: cardErrorShake 0.65s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+/* Radar Scan Keyframes */
+@keyframes radarScan {
+  0% { transform: translateY(-100%); }
+  50% { transform: translateY(400%); }
+  100% { transform: translateY(-100%); }
+}
+
+.radar-line {
+  animation: radarScan 3.5s linear infinite;
+}
+
+/* Truncate helpers */
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Grab cursors for drag elements */
+[draggable="true"] {
+  cursor: grab;
+}
+[draggable="true"]:active {
+  cursor: grabbing;
+}

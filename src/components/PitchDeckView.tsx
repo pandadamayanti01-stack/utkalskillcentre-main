@@ -24,14 +24,77 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
   const [showDiagnostics, setShowDiagnostics] = useState(false);
   const [diagnosticsRunning, setDiagnosticsRunning] = useState(false);
   const [pingHistory, setPingHistory] = useState<number[]>([138, 144, 131, 149, 142, 135, 148, 140]);
+  const getTtsMode = () => {
+    const v = localStorage.getItem('gundulu_use_premium_voice');
+    if (v === 'live_ws') return 'live_ws';
+    return v === 'true' ? 'server' : 'client';
+  };
+
+  const [fps, setFps] = useState(60);
+  const [autoPerformance, setAutoPerformance] = useState(
+    localStorage.getItem('gundulu_auto_performance') !== 'false'
+  );
+  const [isPerformanceMode, setIsPerformanceMode] = useState(
+    localStorage.getItem('gundulu_performance_mode') === 'true'
+  );
+
+  useEffect(() => {
+    let lastTime = performance.now();
+    let frameCount = 0;
+    let animationFrameId: number;
+    let lowFpsCount = 0;
+
+    const checkFps = () => {
+      const now = performance.now();
+      frameCount++;
+
+      if (now >= lastTime + 1000) {
+        const currentFps = Math.round((frameCount * 1000) / (now - lastTime));
+        setFps(currentFps);
+        frameCount = 0;
+        lastTime = now;
+
+        if (currentFps < 35) {
+          lowFpsCount++;
+          if (lowFpsCount >= 3 && autoPerformance && !isPerformanceMode) {
+            localStorage.setItem('gundulu_performance_mode', 'true');
+            setIsPerformanceMode(true);
+            window.dispatchEvent(new CustomEvent('gundulu_performance_changed'));
+            console.warn("Auto-performance scaler enabled: FPS dropped below 35 for 3 consecutive seconds.");
+          }
+        } else {
+          lowFpsCount = 0;
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(checkFps);
+    };
+
+    animationFrameId = requestAnimationFrame(checkFps);
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [autoPerformance, isPerformanceMode]);
+
+  useEffect(() => {
+    const handlePerformanceChange = () => {
+      setIsPerformanceMode(localStorage.getItem('gundulu_performance_mode') === 'true');
+    };
+    window.addEventListener('gundulu_performance_changed', handlePerformanceChange);
+    return () => {
+      window.removeEventListener('gundulu_performance_changed', handlePerformanceChange);
+    };
+  }, []);
+
   const [diagnosticsData, setDiagnosticsData] = useState<any>({
     networkPing: 38,
     vertexLatency: 142,
     dbSpeed: 92,
     cacheSize: '4.8 MB',
     cacheCount: 92,
-    ttsMode: localStorage.getItem('gundulu_use_premium_voice') === 'true' ? 'server' : 'client',
+    ttsMode: getTtsMode(),
     googleSearchGrounding: localStorage.getItem('gundulu_enable_grounding') === 'true',
+    enableDialectBridge: localStorage.getItem('gundulu_enable_dialect_bridge') === 'true',
     time: '--:--:--'
   });
 
@@ -63,8 +126,9 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
       console.warn("Storage check failed", e);
     }
 
-    const currentTts = localStorage.getItem('gundulu_use_premium_voice') === 'true' ? 'server' : 'client';
+    const currentTts = getTtsMode();
     const currentGrounding = localStorage.getItem('gundulu_enable_grounding') === 'true';
+    const currentDialect = localStorage.getItem('gundulu_enable_dialect_bridge') === 'true';
 
     setDiagnosticsData({
       networkPing,
@@ -74,6 +138,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
       cacheCount,
       ttsMode: currentTts,
       googleSearchGrounding: currentGrounding,
+      enableDialectBridge: currentDialect,
       time: new Date().toLocaleTimeString()
     });
 
@@ -188,21 +253,10 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
           { title: "Digital Study Companion", desc: "Gundulu AI tutor provides warm, interactive, and personalized explanations." },
           { title: "Budget & Network Resilient", desc: "Lightweight offline-first PWA, optimized for rural 2G/3G connections and mobile-only families." }
         ],
-        speakerNotes: "Hello judges! Welcome to Utkal Skill Centre. We are building the future of accessible, bilingual education in India. By combining native Odia curriculum tutoring with state-of-the-art conversational AI, we are bringing an elite personal tutor directly to the fingertips of millions of students in rural Odisha, completely in their mother tongue, removing linguistic and economic barriers."
+        speakerNotes: "Hello judges! Welcome to Utkal Skill Centre. We are building the future of accessible, bilingual education in India. By combining native Odia curriculum tutoring with state-of-the-art conversational AI, we are bringing an elite personal tutor directly to the fingertips of rural students, completely in their mother tongue, removing linguistic and economic barriers."
       },
       {
-        title: "The Creator's Hackathon Journey",
-        subtitle: "Building the RAG Vector Pipeline, Standardizing 10 Grades, and Defeating API Spikes",
-        tagline: "OUR DEVELOPMENT ODYSSEY",
-        bullets: [
-          { title: "Standardizing All 10 Classes", desc: "Curated, structured, and synchronized syllabus guides for Grades 1 through 10 in Google Firestore." },
-          { title: "High-Throughput Gemini OCR", desc: "Crafted a custom multi-modal pipeline vectorizing 1,100+ PDF pages with key rotation and adaptive backoff." },
-          { title: "Liberating Smart Classes", desc: "Unlocked curated YouTube lesson panels completely free for every student with dynamic bilingual mapping." }
-        ],
-        speakerNotes: "Let's talk about the developer's journey! Building this during the hackathon was an intense odyssey of engineering. We meticulously standardized syllabus hierarchies for all 10 grades in Firestore. To handle indexing at scale, we wrote a high-throughput multi-modal Gemini OCR and vectorization engine with adaptive rate-limit backoff. Lastly, we liberated all Smart Class videos—making them 100% free and dynamically bilingual for children across Odisha."
-      },
-      {
-        title: "Our Journey & Active Launch Milestones",
+        title: "Born in a Rural Village: Our Journey",
         subtitle: "Bridging the rural EdTech gap starting April 1st (Utkal Divas)",
         tagline: "OUR STORY & ANCHOR DATES",
         bullets: [
@@ -211,6 +265,28 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
           { title: "🎒 Core Syllabus Coverage", desc: "Dedicated specifically to Odia-medium school children ignored by traditional English-only platforms." }
         ],
         speakerNotes: "Hello judges. Our journey is deeply personal. We officially launched Utkal Skill Centre on April 1st—Utkal Divas—to celebrate Odisha's heritage and support Odia-medium students. Shortly after, we successfully launched our fully offline Progressive Web App (PWA) to ensure that even families with basic smartphones on slow rural connections have instant access to lessons."
+      },
+      {
+        title: "Gundulu AI Socratic Slate",
+        subtitle: "Interactive chalkboard allowing kids to draw or write and get friendly explanations",
+        tagline: "MULTIMODAL SOCRATIC LEARNING",
+        bullets: [
+          { title: "Digital Slate Interface", desc: "A cozy green chalkboard mimicking the classic rural classroom experience." },
+          { title: "Gemini Vision Solver", desc: "Students can draw digits, math equations, or shapes, and Gundulu explains them instantly." },
+          { title: "Socratic Method", desc: "Guides the student via questions instead of giving plain answers, keeping them curious." }
+        ],
+        speakerNotes: "Slide 3 is our live interactive demo! We built the Gundulu Socratic Slate: a mini digital chalkboard matching classic village schools. Children can draw directly with touch or mouse. When they submit, Gemini Flash analyzes the canvas via multimodal vision, explains the math/drawings in colloquial Odia, and uses a warm Socratic teaching style."
+      },
+      {
+        title: "High-Performance Cloud Architecture",
+        subtitle: "Google Cloud Run, Vertex AI & Low-Latency Offline Fallbacks",
+        tagline: "ENTERPRISE-GRADE TECH STACK",
+        bullets: [
+          { title: "Vertex AI & Cloud Run", desc: "Securely hosted Express backend using Vertex AI APIs with local Ambient ADC credentials." },
+          { title: "Quota & Fail-Safe Routing", desc: "Ambient fallback routes requests dynamically between Vertex AI and Google AI Studio." },
+          { title: "Zero-Cost Browser Synthesis", desc: "If Voice APIs hit rate-limits (429), client fallbacks offload SpeechSynthesis to the browser." }
+        ],
+        speakerNotes: "Our technical architecture is incredibly robust and cost-resilient. Running on Google Cloud Run serverless means our base operational cost is practically $0.00. To guarantee low-latency operation on slow 2G rural networks, we built a multi-tier fallback: if the premium server TTS API is offline or throttled, the client PWA instantly synthesizes voice logs locally via the browser's audio engine."
       },
       {
         title: "A Magical, Gamified Learning Portal",
@@ -222,18 +298,6 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
           { title: "Premium Visual Rewards", desc: "Watching Gundulu's vertical welcome animation grants a Founding Golden Ticket with +500 XP." }
         ],
         speakerNotes: "To hook young learners on their very first launch, we built a highly gamified greeting sequence. Students pop interactive helium balloons to hear synthesized audio pops and watch a snappy 12-second vertical welcome animation from their mascot, Gundulu. This rewards them with a Gold Founding Member Ticket and programmatically syncs +500 XP to Firestore to drive instant daily retention."
-      },
-      {
-        title: "High-Performance Serverless Architecture",
-        subtitle: "Google Cloud Run, Vertex AI & Low-Latency Offline Fallbacks",
-        tagline: "ENTERPRISE-GRADE TECH STACK",
-        bullets: [
-          { title: "Vertex AI & Cloud Run", desc: "Securely hosted Express backend using Vertex AI APIs with local Ambient ADC credentials." },
-          { title: "Quota & Fail-Safe Routing", desc: "Ambient fallback routes requests dynamically between Vertex AI and Google AI Studio." },
-          { title: "Zero-Cost Browser Synthesis", desc: "If Voice APIs hit rate-limits (429), client fallbacks offload SpeechSynthesis to the browser." },
-          { title: "FastMCP Agent Tooling", desc: "Exposes schema tools to the Google Agent Developer Kit for database and live state tracking." }
-        ],
-        speakerNotes: "Our technical architecture is incredibly robust and cost-resilient. Running on Google Cloud Run serverless means our base operational cost is practically $0.00. To guarantee low-latency operation on slow 2G rural networks, we built a multi-tier fallback: if the premium server TTS API is offline or throttled, the client PWA instantly synthesizes voice logs locally via the browser's audio engine."
       },
       {
         title: "Business Viability & Future AI Roadmap",
@@ -260,19 +324,8 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
         speakerNotes: "ପ୍ରଣାମ ବିଚାରକ ମଣ୍ଡଳୀ! ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରକୁ ଆପଣମାନଙ୍କୁ ସ୍ୱାଗତ। ଆମେ ଓଡ଼ିଶାର ସରକାରୀ ବିଦ୍ୟାଳୟର ପିଲାମାନଙ୍କ ପାଇଁ ମାତୃଭାଷାରେ ବିଶ୍ୱସ୍ତରୀୟ ଏଆଇ ଶିକ୍ଷା ସାଥୀ ତିଆରି କରିଛୁ। ଓଡ଼ିଆ ଭାଷା ଓ ସରକାରୀ ପାଠ୍ୟକ୍ରମକୁ ଏକାଠି କରି ଆମେ ପିଲାମାନଙ୍କ ମୋବାଇଲ୍ ରେ ଗୁନ୍ଦୁଲୁ ଏଆଇ ଟ୍ୟୁଟର ପହଞ୍ଚାଇଛୁ, ଯାହା ସେମାନଙ୍କୁ ସମ୍ପୂର୍ଣ୍ଣ ମାତୃଭାଷାରେ ଏକ ବଡ଼ ଭଉଣୀ ଭଳି ଗାଇଡ୍ କରୁଛି।"
       },
       {
-        title: "ସ୍ରଷ୍ଟାଙ୍କ ହାକାଥନ୍ ଯାତ୍ରା",
-        subtitle: "୧୦ଟି ଶ୍ରେଣୀର ପାଠ୍ୟକ୍ରମ ସଂରଚନା, RAG ଭେକ୍ଟର ଡାଟାବେସ୍ ଏବଂ ନିରନ୍ତର ବିକାଶ",
-        tagline: "ଆମର ବିଜୟ ଏବଂ ଅଭିଯାନ",
-        bullets: [
-          { title: "୧୦ଟି ଶ୍ରେଣୀର ପାଠ୍ୟକ୍ରମ ସମନ୍ୱୟ", desc: "Firestore ରେ ଶ୍ରେଣୀ ୧ ରୁ ୧୦ ପର୍ଯ୍ୟନ୍ତ ସମସ୍ତ ପାଠ୍ୟ ବିଷୟକୁ ସଠିକ୍ ଓଡ଼ିଆ ଭାଷାରେ ଯୋଡ଼ିଲୁ।" },
-          { title: "Gemini OCR ଭେକ୍ଟର ଡାଟାବେସ୍", desc: "୧,୧୦୦+ ରୁ ଅଧିକ ପେଜ୍ କୁ Gemini ମାଧ୍ୟମରେ ସୁରକ୍ଷିତ ଏଆଇ OCR ଏବଂ ଭେକ୍ଟରରେ ପରିଣତ କଲୁ।" },
-          { title: "ମାଗଣା ସ୍ମାର୍ଟ କ୍ଲାସେସ୍ ଉନ୍ମୋଚନ", desc: "ସମସ୍ତ ଶ୍ରେଣୀର ୟୁଟ୍ୟୁବ୍ ଭିଡିଓ ଗୁଡ଼ିକୁ ସମ୍ପୂର୍ଣ୍ଣ ମାଗଣା ଏବଂ ଓଡ଼ିଆ ଭାଷାରେ ଅନ୍ଲକ୍ କଲୁ।" }
-        ],
-        speakerNotes: "ଆମର ହାକାଥନ୍ ବିକାଶ ଯାତ୍ରା ବିଷୟରେ କହିବାକୁ ଗଲେ, ଏହା ଥିଲା ଏକ ଅତି କଠିନ ଏବଂ ପ୍ରେରଣାଦାୟୀ ଯାତ୍ରା। ଆମେ ଦିନରାତି ଏକ କରି ଶ୍ରେଣୀ ୧ ରୁ ୧୦ ପର୍ଯ୍ୟନ୍ତ ସମସ୍ତ ପାଠ୍ୟକ୍ରମକୁ Firestore ରେ ସମନ୍ୱିତ କଲୁ। Gemini API ସର୍ଭର ବ୍ୟସ୍ତତାକୁ ଦୂର କରିବା ପାଇଁ ଆମେ ସ୍ୱତନ୍ତ୍ର adaptive backoff OCR ଇଞ୍ଜିନ ତିଆରି କରି ୧,୧୦୦+ ପୃଷ୍ଠାର ସଫଳ OCR ଓ ଭେକ୍ଟର ଏମ୍ବେଡିଂ କଲୁ। ଶେଷରେ, ପିଲାଙ୍କ ସ୍ୱାର୍ଥ ପାଇଁ ସ୍ମାର୍ଟ କ୍ଲାସର ସମସ୍ତ ୟୁଟ୍ୟୁବ୍ ପାଠ ଭିଡିଓକୁ ସମ୍ପୂର୍ଣ୍ଣ ମାଗଣା ଓ ଓଡ଼ିଆ ସ୍ଲାଣ୍ଡ୍ ରେ ଅନ୍ଲକ୍ କଲୁ।"
-      },
-      {
-        title: "ଆମର ଯାତ୍ରା ଏବଂ ଶୁଭାରମ୍ଭ ମାଇଲଖୁଣ୍ଟ",
-        subtitle: "ଏପ୍ରିଲ୍ ୧ (ଉତ୍କଳ ଦିବସ) ରୁ ଆରମ୍ଭ ਹੋଇଥିବା ଶିକ୍ଷା ସେବା",
+        title: "ଓଡ଼ିଶାର ପଲ୍ଲୀ ଗ୍ରାମରୁ ଆରମ୍ଭ: ଆମର ଯାତ୍ରା",
+        subtitle: "ଏପ୍ରିଲ୍ ୧ (ଉତ୍କଳ ଦିବସ) ରୁ ଆରମ୍ଭ ହୋଇଥିବା ଶିକ୍ଷା ସେବା",
         tagline: "ଆମର ସଂଳାପ ଏବଂ ମାଇଲଖୁଣ୍ଟ",
         bullets: [
           { title: "🌸 ଏପ୍ରିଲ୍ ୧ ଶୁଭାରମ୍ଭ", desc: "ଓଡ଼ିଶାର ଗର୍ବ ଓ ଗୌରବର ଦିନ ଉତ୍କଳ ଦିବସରେ ଆମର ଅଫିସିଆଲ୍ ପ୍ଲାଟଫର୍ମ ଆରମ୍ଭ କରିଥିଲୁ।" },
@@ -280,6 +333,28 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
           { title: "🎒 ଓଡ଼ିଆ ମାଧ୍ୟମ ପିଲାଙ୍କ ଲକ୍ଷ୍ୟ", desc: "ଇଂରାଜୀ ଆପ୍ ଦ୍ୱାରା ଅଣଦେଖା ହୋଇଥିବା ସରକାରୀ ବିଦ୍ୟାଳୟର ପିଲାମାନଙ୍କୁ ସାହାଯ୍ୟ କରିବା।" }
         ],
         speakerNotes: "ଆମର ଶିକ୍ଷା ଯାତ୍ରା ଅତି ନିଆରା। ଓଡ଼ିଶାର ପିଲାମାନଙ୍କ ସ୍ୱାର୍ଥ ରକ୍ଷା ପାଇଁ ଏପ୍ରିଲ୍ ୧ - ଉତ୍କଳ ଦିବସରେ ଆମେ ଆମର ୱେବସାଇଟ୍ ଶୁଭାରମ୍ଭ କରିଥିଲୁ। ଏହା ପରେ ଗ୍ରାମାଞ୍ଚଳରେ ଧିମା ଇଣ୍ଟରନେଟ୍ ରେ ପାଠପଢ଼ାକୁ ସହଜ କରିବାକୁ ଆମେ ଆମର PWA ଆପ୍ ପ୍ରସ୍ତୁତ କଲୁ, ଯାହା ସ୍ୱଳ୍ପ ବ୍ୟାଣ୍ଡୱିଡଥ୍ ରେ ମଧ୍ୟ ବିନା ରୋକଟୋକରେ ଚାଲିପାରୁଛି।"
+      },
+      {
+        title: "ଗୁନ୍ଦୁଲୁ ଏଆଇ ସକ୍ରେଟିକ୍ ସ୍ଲେଟ୍",
+        subtitle: "ଆକର୍ଷଣୀୟ ଚିତ୍ରାଙ୍କନ ଓ ସ୍ଲେଟ୍ ବୋର୍ଡ ଯାହା ପିଲାଙ୍କ ଚିତ୍ର ଦେଖି ବୁଝାଇଥାଏ",
+        tagline: "ବହୁମୁଖୀ ସକ୍ରେଟିକ୍ ଶିକ୍ଷା ପ୍ରଣାଳୀ",
+        bullets: [
+          { title: "ଡିଜିଟାଲ୍ ସ୍ଲେଟ୍ ବୋର୍ଡ", desc: "ଆମ ପାରମ୍ପରିକ ଗ୍ରାମୀଣ ସ୍କୁଲ୍ ଭଳି ଏକ ସୁନ୍ଦର ସବୁଜ ରଙ୍ଗର ଚକ୍-ସ୍ଲେଟ୍।" },
+          { title: "Gemini ର ଭିଜନ ସମାଧାନ", desc: "ଛାତ୍ରଛାତ୍ରୀ ଯେକୌଣସି ସଂଖ୍ୟା, ଗଣିତ କିମ୍ବା ଆକୃତି ଆଙ୍କି ଗୁନ୍ଦୁଲୁକୁ ସେ ବିଷୟରେ ପଚାରିପାରିବେ।" },
+          { title: "ସକ୍ରେଟିକ୍ ପ୍ରଶ୍ନୋତ୍ତର ଶୈଳୀ", desc: "ସିଧାସଳଖ ଉତ୍ତର ନ ଦେଇ ପ୍ରଶ୍ନ ପଚାରି ପିଲାଙ୍କ ମନରେ କୌତୁହଳ ସୃଷ୍ଟି କରେ।" }
+        ],
+        speakerNotes: "ସ୍ଲାଇଡ୍ ୩ ହେଉଛି ଆମର ଲାଇଭ୍ ଡେମୋ! ଆମେ ଏକ ଗୁନ୍ଦୁଲୁ ସକ୍ରେଟିକ୍ ସ୍ଲେଟ୍ ତିଆରି କରିଛୁ ଯାହା ଏକ ସୁନ୍ଦର କଳାପଟା ପରି କାମ କରେ। ପିଲାମାନେ ନିଜ ହାତରେ ଏଥିରେ ଲେଖିପାରିବେ କିମ୍ବା ଆଙ୍କିପାରିବେ। ଏହାକୁ ସବ୍ମିଟ୍ କଲେ Gemini Multimodal Vision API କ୍ୟାନ୍ଭାସକୁ ବିଶ୍ଳେଷଣ କରି ଓଡ଼ିଆରେ ସମ୍ପୂର୍ଣ୍ଣ ସ୍ପଷ୍ଟୀକରଣ ପ୍ରଦାନ କରେ।"
+      },
+      {
+        title: "ଶକ୍ତିଶାଳୀ ଏବଂ ସୁରକ୍ଷିତ ସର୍ଭର ବ୍ୟବସ୍ଥା",
+        subtitle: "ଗୁଗଲ୍ କ୍ଲାଉଡ୍ ରନ୍, ଭର୍ଟେକ୍ସ ଏଆଇ ଏବଂ ଜିରୋ-କଷ୍ଟ ବ୍ରାଉଜର୍ ଟିଟିଏସ୍ (TTS)",
+        tagline: "ଉଚ୍ଚ ସ୍ତରୀୟ ଟେକ୍ନୋଲୋଜି",
+        bullets: [
+          { title: "ଭର୍ଟେକ୍ସ ଏଆଇ ଓ କ୍ଲାଉଡ୍ ରନ୍", desc: "ସର୍ଭରଲେସ୍ ଏକ୍ସପ୍ରେସ୍ ବ୍ୟାକେଣ୍ଡ ଗୁଗଲ୍ କ୍ଲାଉଡ୍ ରନ୍ ଉପରେ ସମ୍ପୂର୍ଣ୍ଣ ସୁରକ୍ଷିତ ଭାବେ ଚାଲୁଛି।" },
+          { title: "ସର୍ଭର ଅଟୋମେଟିକ୍ ସୁରକ୍ଷା", desc: "ଭର୍ଟେକ୍ସ ଏଆଇ ଏବଂ ଗୁଗଲ୍ ଏଆଇ ଷ୍ଟୁଡିଓ ମଧ୍ୟରେ ସ୍ୱୟଂଚାଳିତ ଭାବେ ରିକ୍ୱେଷ୍ଟ୍ ପରିଚାଳନା।" },
+          { title: "ମାଗଣା ବ୍ରାଉଜର୍ ଟିଟିଏସ୍ ଫଲବ୍ୟାକ୍", desc: "ଯଦି ଏପିଆଇ (API) ଲିମିଟ୍ ହୁଏ, ଆପ୍ ତୁରନ୍ତ ୟୁଜର୍ ର ବ୍ରାଉଜର୍ ବ୍ୟବହାର କରି ଓଡ଼ିଆ ଭଏସ୍ ଉତ୍ପନ୍ନ କରେ।" }
+        ],
+        speakerNotes: "ଆମର ବ୍ୟାକେଣ୍ଡ ଗୁଗଲ୍ କ୍ଲାଉଡ୍ ରନ୍ ର ସର୍ଭରଲେସ୍ ଟେକ୍ନୋଲୋଜିରେ ହୋଷ୍ଟ ହୋଇଛି, ଯାହାଦ୍ୱାରା ଆମର ମାସିକ ସର୍ଭର ଖର୍ଚ୍ଚ ପ୍ରାୟ ଶୂନ ଟଙ୍କା। ଗ୍ରାମାଞ୍ଚଳରେ ଧିମା ଇଣ୍ଟରନେଟ୍ ରେ ଭଏସ୍ ସମସ୍ୟା ଦୂର କରିବାକୁ ଆମେ ବ୍ରାଉଜର୍ ଆଧାରିତ ଫଲବ୍ୟାକ୍ ତିଆରି କରିଛୁ। ସର୍ଭର ଯଦି ବ୍ୟସ୍ତ ରହେ, ମୋବାଇଲ୍ ବ୍ରାଉଜର୍ ନିଜେ ଓଡ଼ିଆ କଥା କହି ପିଲାଙ୍କୁ ଶୁଣାଏ।"
       },
       {
         title: "ମନୋରଞ୍ଜନ ଓ ଗେମିଂ ସହ ପାଠପଢ଼ା",
@@ -1336,7 +1411,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     {[
                       {
                         key: 'client',
@@ -1349,6 +1424,12 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                         title: deckLanguage === 'or' ? 'ଗୁଗଲ୍ କ୍ଲାଉଡ୍ (Vertex AI)' : 'Google Cloud (Vertex AI)',
                         desc: deckLanguage === 'or' ? 'ପ୍ରିମିୟମ୍ ସ୍ପିଚ୍ ସର୍ଭର୍ ଏବଂ ପ୍ରକ୍ସି ନେଟୱାର୍କ' : 'Premium synthesised audio stream via secure server proxy',
                         icon: Lucide.Sparkles
+                      },
+                      {
+                        key: 'live_ws',
+                        title: deckLanguage === 'or' ? 'ଜେମିନି ଲାଇଭ୍ (WebSockets)' : 'Gemini Live (WebSockets)',
+                        desc: deckLanguage === 'or' ? 'ରିଅଲ୍-ଟାଇମ୍ ଦ୍ଵିମୁଖୀ ଅଡିଓ ଓ ସ୍ୱୟଂଚାଳିତ ବାଧା' : 'Real-time duplex audio with active interruption support',
+                        icon: Lucide.Mic
                       }
                     ].map((opt) => {
                       const isSelected = diagnosticsData.ttsMode === opt.key;
@@ -1370,7 +1451,11 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                               osc.stop(audioCtx.currentTime + 0.08);
                             } catch (e) {}
                             
-                            localStorage.setItem('gundulu_use_premium_voice', opt.key === 'server' ? 'true' : 'false');
+                            if (opt.key === 'live_ws') {
+                              localStorage.setItem('gundulu_use_premium_voice', 'live_ws');
+                            } else {
+                              localStorage.setItem('gundulu_use_premium_voice', opt.key === 'server' ? 'true' : 'false');
+                            }
                             setDiagnosticsData(prev => ({ ...prev, ttsMode: opt.key }));
                           }}
                           className={`p-3.5 text-left rounded-xl border transition-all cursor-pointer flex flex-col justify-between ${
@@ -1381,7 +1466,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                         >
                           <div className="flex items-center gap-2 mb-1">
                             <opt.icon size={14} className={isSelected ? 'text-emerald-400' : 'text-slate-400'} />
-                            <span className={`text-[11.5px] font-black ${isSelected ? 'text-white' : 'text-slate-200'}`}>
+                            <span className={`text-[11px] font-black ${isSelected ? 'text-white' : 'text-slate-200'}`}>
                               {opt.title}
                             </span>
                           </div>
@@ -1433,6 +1518,52 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                       }`}
                     >
                       {diagnosticsData.googleSearchGrounding
+                        ? (deckLanguage === 'or' ? 'ସକ୍ରିୟ (ACTIVE)' : 'ACTIVE')
+                        : (deckLanguage === 'or' ? 'ନିଷ୍କ୍ରିୟ (DISABLED)' : 'DISABLED')
+                      }
+                    </button>
+                  </div>
+                </div>
+
+                {/* Dialect Bridge Toggle */}
+                <div className="bg-slate-950/60 rounded-2xl border border-white/5 p-4 space-y-3.5">
+                  <div className="flex justify-between items-center">
+                    <div className="space-y-0.5">
+                      <h4 className="text-xs font-black text-white uppercase tracking-wider flex items-center gap-2">
+                        <Lucide.Languages size={14} className="text-indigo-400" />
+                        {deckLanguage === 'or' ? 'ମାତୃଭାଷା ସେତୁ (Dialect Bridge)' : 'Colloquial Dialect Bridge'}
+                      </h4>
+                      <p className="text-[9.5px] text-slate-300 leading-normal font-medium">
+                        {deckLanguage === 'or' ? 'କୋଷାଲୀ/ଦେଶିଆ ଉପଭାଷାକୁ ପ୍ରମାଣିତ ଓଡ଼ିଆ ସହ ସମ୍ବନ୍ଧିତ କରନ୍ତୁ।' : 'Bridge Kosli/Desia tribal dialects seamlessly with standard Odia orthography.'}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        try {
+                          const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+                          const osc = audioCtx.createOscillator();
+                          const gain = audioCtx.createGain();
+                          osc.type = 'sine';
+                          osc.frequency.setValueAtTime(diagnosticsData.enableDialectBridge ? 400 : 700, audioCtx.currentTime);
+                          gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+                          osc.connect(gain);
+                          gain.connect(audioCtx.destination);
+                          osc.start();
+                          osc.stop(audioCtx.currentTime + 0.08);
+                        } catch (e) {}
+
+                        const nextVal = !diagnosticsData.enableDialectBridge;
+                        localStorage.setItem('gundulu_enable_dialect_bridge', nextVal ? 'true' : 'false');
+                        setDiagnosticsData(prev => ({ ...prev, enableDialectBridge: nextVal }));
+                      }}
+                      className={`px-4 py-2 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer ${
+                        diagnosticsData.enableDialectBridge
+                          ? 'bg-indigo-500/10 border-indigo-500 text-indigo-400'
+                          : 'bg-slate-900/40 border-white/5 text-slate-400 hover:border-slate-800'
+                      }`}
+                    >
+                      {diagnosticsData.enableDialectBridge
                         ? (deckLanguage === 'or' ? 'ସକ୍ରିୟ (ACTIVE)' : 'ACTIVE')
                         : (deckLanguage === 'or' ? 'ନିଷ୍କ୍ରିୟ (DISABLED)' : 'DISABLED')
                       }

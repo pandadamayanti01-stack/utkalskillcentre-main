@@ -59,6 +59,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'monthly_tests', icon: Lucide.Calendar, label: t.monthlyTests },
     { id: 'syllabus_tracker', icon: Lucide.ListChecks, label: language === 'en' ? 'Syllabus Tracker' : 'ପାଠ୍ୟକ୍ରମ ଟ୍ରାକର୍' },
     { id: 'daily_mcqs', icon: Lucide.ListChecks, label: language === 'en' ? 'Daily MCQ Practice' : 'ଦୈନିକ MCQ ଅଭ୍ୟାସ' },
+    { id: 'matching_quiz', icon: Lucide.Shuffle, label: language === 'en' ? 'AI Matching Game' : 'ଗୁନ୍ଦୁଲୁ ମିଳନ ଖେଳ' },
     { id: 'leaderboard', icon: Lucide.Trophy, label: t.leaderboard },
     { id: 'store', icon: Lucide.ShoppingBag, label: language === 'en' ? 'Avatar Store' : 'ଅବତାର ଷ୍ଟୋର' },
     { id: 'plans', icon: Lucide.CreditCard, label: language === 'en' ? 'Subscription' : 'ସବସ୍କ୍ରିପସନ୍' },
@@ -69,7 +70,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     ? allMenuItems 
     : allMenuItems.filter(item => item.id !== 'pitch_deck');
 
-  const teacherExcludedIds = ['store', 'leaderboard', 'daily_mcqs', 'syllabus_tracker', 'monthly_tests', 'smart_classes', 'plans'];
+  const teacherExcludedIds = ['store', 'leaderboard', 'daily_mcqs', 'syllabus_tracker', 'monthly_tests', 'smart_classes', 'plans', 'matching_quiz'];
   const menuItems = user?.role === 'teacher'
     ? filteredMenuItems.filter(item => !teacherExcludedIds.includes(item.id))
     : filteredMenuItems;

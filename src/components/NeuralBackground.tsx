@@ -1,7 +1,20 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 const NeuralBackground: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isPerformanceMode, setIsPerformanceMode] = useState(
+    localStorage.getItem('gundulu_performance_mode') === 'true'
+  );
+
+  useEffect(() => {
+    const handlePerformanceChange = () => {
+      setIsPerformanceMode(localStorage.getItem('gundulu_performance_mode') === 'true');
+    };
+    window.addEventListener('gundulu_performance_changed', handlePerformanceChange);
+    return () => {
+      window.removeEventListener('gundulu_performance_changed', handlePerformanceChange);
+    };
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -9,6 +22,11 @@ const NeuralBackground: React.FC = () => {
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+
+    if (isPerformanceMode) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      return;
+    }
 
     let particles: Particle[] = [];
     let animationFrameId: number;
@@ -131,7 +149,7 @@ const NeuralBackground: React.FC = () => {
       window.removeEventListener('mousemove', handleMouseMove);
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [isPerformanceMode]);
 
   return (
     <canvas

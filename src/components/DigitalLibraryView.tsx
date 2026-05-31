@@ -2397,7 +2397,7 @@ Instructions:
                       <img
                         src="/gundulu.png"
                         alt="Gundulu Avatar"
-                        className="w-full h-full object-cover scale-[1.8] translate-y-[2%] transition-transform duration-500 group-hover:scale-[2.0]"
+                        className="w-full h-full object-cover scale-[0.95] transition-transform duration-500 group-hover:scale-[1.1]"
                         onError={(e) => {
                           handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
                         }}
@@ -2470,7 +2470,7 @@ Instructions:
                             <img
                               src="/gundulu.png"
                               alt="Gundulu"
-                              className="w-full h-full object-cover scale-[1.8] translate-y-[3%]"
+                              className="w-full h-full object-cover scale-[0.95]"
                               onError={(e) => {
                                 handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
                               }}
@@ -2494,7 +2494,7 @@ Instructions:
                           <img
                             src="/gundulu.png"
                             alt="Gundulu"
-                            className="w-full h-full object-cover scale-[1.8] translate-y-[3%]"
+                            className="w-full h-full object-cover scale-[0.95]"
                             onError={(e) => {
                               handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
                             }}
@@ -2957,7 +2957,7 @@ Instructions:
                       <img
                         src="/gundulu.png"
                         alt="Gundulu Avatar"
-                        className="w-full h-full object-cover scale-[1.8] translate-y-[3%]"
+                        className="w-full h-full object-cover scale-[0.95]"
                         onError={(e) => {
                           handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
                         }}
@@ -3063,7 +3063,7 @@ Instructions:
                             <img
                               src="/gundulu.png"
                               alt="Gundulu"
-                              className="w-full h-full object-cover scale-[1.8] translate-y-[3%]"
+                              className="w-full h-full object-cover scale-[0.95]"
                               onError={(e) => {
                                 handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
                               }}
@@ -3090,7 +3090,7 @@ Instructions:
                           <img
                             src="/gundulu.png"
                             alt="Gundulu"
-                            className="w-full h-full object-cover scale-[1.8] translate-y-[3%]"
+                            className="w-full h-full object-cover scale-[0.95]"
                             onError={(e) => {
                               handleImageError(e, 'https://cdn-icons-png.flaticon.com/512/8649/8649595.png');
                             }}

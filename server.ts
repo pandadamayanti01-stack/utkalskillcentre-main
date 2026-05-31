@@ -465,8 +465,16 @@ async function startServer() {
 
   app.post('/api/ai/generate', async (req, res) => {
     try {
-      const { contents, systemInstruction, modelType, generationConfig, enableGrounding } = req.body;
+      const { contents, systemInstruction, modelType, generationConfig, enableGrounding, enableDialectBridge } = req.body;
       
+      let finalSystemInstruction = systemInstruction;
+      if (enableDialectBridge) {
+        finalSystemInstruction = (finalSystemInstruction || '') + 
+          "\n\n[REGIONAL DIALECT TRANSLATION BRIDGE: ACTIVE]\n" +
+          "The student may write or speak in regional Odia dialects like Sambalpuri (e.g., using terms like 'କାଣା', 'କାଁ', 'ଖାଇଛ', 'କରସି'), Ganjami, or Desia. " +
+          "You must automatically translate and understand these regional terms as their standard Odia equivalents, and respond back in standard Odia with extra elder-sister warmth.";
+      }
+
       const useVertex = process.env.USE_VERTEX_AI === 'true';
       let vertexErrorText = '';
       
@@ -508,8 +516,8 @@ async function startServer() {
             console.log(`Backend AI (Server): Calling Vertex AI model ${vertexModel} via global endpoint for project ${projectId}...`);
             const vertexUrl = `https://aiplatform.googleapis.com/v1/projects/${projectId}/locations/global/publishers/google/models/${vertexModel}:generateContent`;
             
-            const formattedSystemInstruction = systemInstruction 
-              ? { parts: [{ text: systemInstruction }] } 
+            const formattedSystemInstruction = finalSystemInstruction 
+              ? { parts: [{ text: finalSystemInstruction }] } 
               : undefined;
 
             const response = await fetch(vertexUrl, {
@@ -562,7 +570,7 @@ async function startServer() {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 contents,
-                systemInstruction: systemInstruction ? { parts: [{ text: systemInstruction }] } : undefined,
+                systemInstruction: finalSystemInstruction ? { parts: [{ text: finalSystemInstruction }] } : undefined,
                 generationConfig,
                 safetySettings: [
                   { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_LOW_AND_ABOVE" },
@@ -621,10 +629,10 @@ async function startServer() {
           try {
             console.log(`Backend AI: Attempting ${modelName} via ${apiVersion}...`);
             const model = ai.getGenerativeModel({
-              model: modelName,
-              systemInstruction,
-              safetySettings: gunduluSafetySettings,
-              ...(enableGrounding ? { tools: [{ googleSearch: {} }] as any } : {})
+               model: modelName,
+               systemInstruction: finalSystemInstruction,
+               safetySettings: gunduluSafetySettings,
+               ...(enableGrounding ? { tools: [{ googleSearch: {} }] as any } : {})
             }, { apiVersion: apiVersion as any });
             
             const result = await model.generateContent({ contents, generationConfig });
@@ -662,6 +670,126 @@ async function startServer() {
       res.status(500).json({ error: error.message || 'AI Generation failed' });
     }
   });
+
+  app.post('/api/ai/generate-matching-quiz', async (req, res) => {
+    try {
+      const { className, subjectName, language } = req.body;
+      if (!className || !subjectName) {
+        return res.status(400).json({ error: 'className and subjectName are required' });
+      }
+
+      const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+      if (!apiKey) {
+        return res.status(503).json({ error: 'GEMINI_API_KEY is not configured on the server' });
+      }
+
+      const prompt = `You are an expert curriculum builder. Create a matching pair educational game for school children of Standard/Class "${className}" in the subject "${subjectName}" in "${language === 'or' ? 'Odia (using Odia script for student content, keep mathematical numbers or scientific variables clean)' : 'English'}".
+      Generate exactly 5 matching pairs. Each pair must contain:
+      - "left": a question, definition, math expression, or term (be concise, maximum 25 characters, e.g. "5 + 3" or "Force unit" or "ପ୍ରତିଫଳନ").
+      - "right": the correct matching answer or corresponding term (be concise, maximum 25 characters, e.g. "8" or "Newton" or "ଆଲୋକ").
+
+      Provide the output in JSON format with the following structure:
+      {
+        "pairs": [
+          { "id": "1", "left": "Left side term 1", "right": "Right side term 1" },
+          { "id": "2", "left": "Left side term 2", "right": "Right side term 2" },
+          { "id": "3", "left": "Left side term 3", "right": "Right side term 3" },
+          { "id": "4", "left": "Left side term 4", "right": "Right side term 4" },
+          { "id": "5", "left": "Left side term 5", "right": "Right side term 5" }
+        ]
+      }
+      Do not include any extra introductory or explanatory text. Return ONLY the JSON object.`;
+
+      const ai = new GoogleGenerativeAI(apiKey);
+      const model = ai.getGenerativeModel({
+        model: "gemini-2.5-flash",
+        generationConfig: {
+          responseMimeType: "application/json",
+          temperature: 0.7,
+        }
+      }, { apiVersion: "v1beta" });
+
+      const result = await model.generateContent(prompt);
+      let responseText = result.response.text();
+      
+      if (language === 'or') {
+        responseText = cleanOdiaOrthographyLocal(responseText);
+      }
+
+      const quizData = JSON.parse(responseText.replace(/```json\n?|```/g, '').trim());
+      res.json(quizData);
+    } catch (error: any) {
+      console.error("Quiz Generation Error:", error);
+      res.status(500).json({ error: error.message || 'Failed to generate quiz' });
+    }
+  });
+
+  function cleanOdiaOrthographyLocal(text: string): string {
+    if (!text) return text;
+
+    const correctionMap: Record<string, string> = {
+      'ପରିକ୍ଷା': 'ପରୀକ୍ଷା',
+      'ପରିକ୍ଷାଗାର': 'ପରୀକ୍ଷାଗାର',
+      'ବେବସାୟ': 'ବ୍ୟବସାୟ',
+      'ୱେବସାୟ': 'ବ୍ୟବସାୟ',
+      'ବେକରଣ': 'ବ୍ୟାକରଣ',
+      'ବ୍ୟାକରନ': 'ବ୍ୟାକରଣ',
+      'ସିକ୍ଷା': 'ଶିକ୍ଷା',
+      'ଶିକ୍ଷନ': 'ଶିକ୍ଷଣ',
+      'ସାହିତ୍ୟ ସାଥି': 'ସାହିତ୍ୟ ସାଥୀ',
+      'ବର୍ନ': 'ବର୍ଣ୍ଣ',
+      'ବର୍ନମାଳା': 'ବର୍ଣ୍ଣମାଳା',
+      'ବାଳ ଓ ଗତି': 'ବଳ ଓ ଗତି',
+      'ବାଲ ଓ ଗତି': 'ବଳ ଓ ଗତି',
+      'ବାଲରାମ': 'ବଳରାମ',
+      'ବାଲଦେବ': 'ବଳଦେବ',
+      'ବାଲଶ୍ରୀ': 'ବଳଶ୍ରୀ',
+      'ମାତୃଭକ୍ତି କଥା': 'ମାଡ଼ହାଣ୍ଡି କଥା',
+      'Matrubhakti Katha': 'Madahandi Katha',
+      'ଗୁଣ୍ଡୁଲୁ': 'ଗୁନ୍ଦୁଲୁ',
+      'ଗୁଣ୍ଡୁଳୁ': 'ଗୁନ୍ଦୁଲୁ',
+      'ଗୁଣ୍ଡୁଲି': 'ଗୁନ୍ଦୁଲୁ',
+      'ଗୁଣ୍ଡୁଲ': 'ଗୁନ୍ଦୁଲ',
+    };
+
+    let correctedText = text;
+    for (const [incorrect, correct] of Object.entries(correctionMap)) {
+      correctedText = correctedText.replaceAll(incorrect, correct);
+    }
+
+    correctedText = correctedText
+      .replace(/\\div/g, '÷')
+      .replace(/\\times/g, '×')
+      .replace(/\\pm/g, '±')
+      .replace(/\\approx/g, '≈')
+      .replace(/\\neq/g, '≠')
+      .replace(/\\leq/g, '≤')
+      .replace(/\\geq/g, '≥')
+      .replace(/\\infty/g, '∞')
+      .replace(/\\cdot/g, '•')
+      .replace(/\\alpha/g, 'α')
+      .replace(/\\beta/g, 'β')
+      .replace(/\\theta/g, 'θ')
+      .replace(/\\pi/g, 'π')
+      .replace(/\\sqrt/g, '√');
+
+    correctedText = correctedText
+      .replace(/\$\$/g, '')
+      .replace(/\$/g, '')
+      .replace(/\\\[/g, '')
+      .replace(/\\\]/g, '')
+      .replace(/\\\(/g, '')
+      .replace(/\\\)/g, '');
+
+    correctedText = correctedText
+      .replace(/\\text\s*{(.*?)}/g, '$1')
+      .replace(/\\frac\s*{(.*?)}\s*{(.*?)}/g, '$1/$2')
+      .replace(/\\mathrm\s*{(.*?)}/g, '$1')
+      .replace(/\\mathit\s*{(.*?)}/g, '$1')
+      .replace(/\\(?:,|:|;|!)/g, ' ');
+
+    return correctedText;
+  }
 
   // Helper to prepend standard WAV header to raw PCM audio/l16 buffer
   function pcmToWav(pcmBuffer: any, sampleRate: number = 24000): any {

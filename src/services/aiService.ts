@@ -166,7 +166,8 @@ export const getAI = (meta?: { class?: string, subject?: string }) => {
                generationConfig: params.generationConfig,
                class: meta?.class,
                subject: meta?.subject,
-               enableGrounding: localStorage.getItem('gundulu_enable_grounding') === 'true'
+               enableGrounding: localStorage.getItem('gundulu_enable_grounding') === 'true',
+               enableDialectBridge: localStorage.getItem('gundulu_enable_dialect_bridge') === 'true'
              })
            });
            

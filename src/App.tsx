@@ -47,6 +47,7 @@ import { OfflineService } from './services/offlineService';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ChatbotModal } from './components/ChatbotModal';
 import { DailyMcqView } from './components/DailyMcqView';
+import { AiMatchingQuiz } from './components/AiMatchingQuiz';
 import { getDeferredPrompt, clearDeferredPrompt, vibrate, requestScreenWakeLock, releaseScreenWakeLock, shareNative, playSuccessChime, playClickSound, subscribeUserToPush } from './pwa';
 import { SEO } from './components/SEO';
 import { BottomNavBar } from './components/BottomNavBar';
@@ -3101,7 +3102,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                   <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 to-cyan-500/10 opacity-30 group-hover:opacity-60 transition-opacity duration-300"></div>
                   <img 
                     src="/gundulu.png" 
-                    className="w-full h-full object-cover scale-[2.0] translate-y-[2%] relative z-10 transition-transform duration-500 group-hover:scale-[2.3]" 
+                    className="w-full h-full object-cover scale-[0.95] relative z-10 transition-transform duration-500 group-hover:scale-[1.1]" 
                     alt="Gundulu Mascot" 
                   />
                 </div>

@@ -279,9 +279,9 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 12%; /* Keep the face centered */
+  object-position: center; /* Keep the face centered */
   transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  transform: scale(1.68); /* Scale it up inside the container to crop out everything else */
+  transform: scale(0.95); /* Adjusted scale for new baby avatar */
 }
 
 .avatar-sphere-border {
@@ -299,15 +299,15 @@
 
 /* State sphere changes & Avatar Pulsing Zoom */
 .listening .avatar-img-3d {
-  transform: scale(1.78);
+  transform: scale(1.05);
 }
 
 .thinking .avatar-img-3d {
-  transform: scale(1.62);
+  transform: scale(0.9);
 }
 
 .speaking .avatar-img-3d {
-  transform: scale(1.74);
+  transform: scale(1.0);
 }
 
 .listening .avatar-sphere {
@@ -1031,8 +1031,8 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 12%;
-  transform: scale(1.68);
+  object-position: center;
+  transform: scale(0.95);
   transition: all 0.6s ease;
 }
 
