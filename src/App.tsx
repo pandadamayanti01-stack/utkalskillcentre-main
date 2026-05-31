@@ -778,12 +778,16 @@ export default function App() {
         setTourStep(step);
       } else {
         setTourStep(null);
-        // Automatically show Raja Festival poster for regular students on login
+        // Automatically show Raja Festival poster for regular students on login (once per day, until 16th June 2026)
         if (user.role !== 'teacher') {
-          const todayStr = new Date().toLocaleDateString('en-CA');
-          const lastSeen = localStorage.getItem('rajaFestivalLastSeenDate');
-          if (lastSeen !== todayStr) {
-            setShowLaunchPoster(true);
+          const today = new Date();
+          const limitDate = new Date('2026-06-16T23:59:59');
+          if (today <= limitDate) {
+            const todayStr = today.toLocaleDateString('en-CA');
+            const lastSeen = localStorage.getItem('rajaFestivalLastSeenDate');
+            if (lastSeen !== todayStr) {
+              setShowLaunchPoster(true);
+            }
           }
         }
       }
