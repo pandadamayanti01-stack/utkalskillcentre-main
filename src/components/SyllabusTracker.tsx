@@ -148,13 +148,13 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
       />
 
       {/* Header */}
-      <div className="flex items-center justify-between gap-4 flex-wrap sticky top-0 z-30 bg-white/90 backdrop-blur-xl py-4 border-b border-slate-200">
+      <div className="flex items-center justify-between gap-4 flex-wrap py-4 border-b border-white/5">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black text-slate-800 mb-2 flex items-center gap-3">
-            <Compass className="text-emerald-500" size={32} />
+          <h1 className="text-3xl md:text-4xl font-black text-white mb-2 flex items-center gap-3 bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+            <Compass className="text-emerald-400" size={32} />
             {translate("Gundulu's Journey", "ଗୁନ୍ଦୁଲୁର ଯାତ୍ରା")}
           </h1>
-          <p className="text-slate-500 max-w-2xl text-sm md:text-base font-medium">
+          <p className="text-slate-400 max-w-2xl text-sm md:text-base font-semibold">
             {translate(
               "Your epic 9-month roadmap from June 2026 to February 2027. Explore the islands below to see your recommended monthly chapters!",
               "ଜୁନ୍ ୨୦୨୬ ରୁ ଫେବୃଆରୀ ୨୦୨୭ ପର୍ଯ୍ୟନ୍ତ ଆପଣଙ୍କର ୯ ମାସର ରୋଡମ୍ୟାପ୍ | ମାସିକ ଅଧ୍ୟାୟଗୁଡିକ ଦେଖିବାକୁ ନିମ୍ନରେ ଥିବା ଦ୍ୱୀପପୁଞ୍ଜଗୁଡିକୁ ଏକ୍ସପ୍ଲୋର୍ କରନ୍ତୁ!"
@@ -163,7 +163,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
         </div>
         <button
           onClick={onBack}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-100 border border-slate-200 text-slate-700 hover:bg-slate-200 transition-all font-bold text-sm shadow-sm"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-white/5 border border-white/10 text-slate-200 hover:bg-white/10 transition-all font-bold text-sm shadow-sm cursor-pointer"
         >
           <ArrowLeft size={16} />
           {translate('Return to Dashboard', 'ଡ୍ୟାସବୋର୍ଡକୁ ଫେରନ୍ତୁ')}
@@ -173,18 +173,18 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
       {/* Filter Section */}
       {(studentClassStr === '9' || studentClassStr === '10') && (
         <div className="flex items-center gap-3 overflow-x-auto pb-2 custom-scrollbar">
-          <div className="flex items-center gap-2 text-slate-500 font-bold text-sm bg-slate-100 px-4 py-2.5 rounded-xl border border-slate-200">
-            <Filter size={16} />
+          <div className="flex items-center gap-2 text-slate-400 font-bold text-sm bg-white/5 px-4 py-2.5 rounded-2xl border border-white/10">
+            <Filter size={16} className="text-emerald-400" />
             {translate('Select Optional Subject:', 'ବୈକଳ୍ପିକ ବିଷୟ ବାଛନ୍ତୁ:')}
           </div>
           {(studentClassStr === '9' ? ['All', 'Hindi', 'Sanskrit'] : ['All', 'Hindi', 'Sanskrit', 'Vocational']).map((opt) => (
             <button
               key={opt}
               onClick={() => setOptionalFilter(opt as any)}
-              className={`px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap transition-all border ${
+              className={`px-5 py-2.5 rounded-2xl font-bold text-sm whitespace-nowrap transition-all border cursor-pointer ${
                 optionalFilter === opt 
-                  ? 'bg-emerald-500 text-white border-emerald-500 shadow-md shadow-emerald-500/20' 
-                  : 'bg-white text-slate-600 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50'
+                  ? 'bg-[#b34d1f] text-white border-[#b34d1f] shadow-md shadow-orange-950/20' 
+                  : 'bg-white/5 text-slate-300 border-white/10 hover:border-emerald-500/30 hover:bg-emerald-500/10'
               }`}
             >
               {opt === 'All' ? translate('Show All', 'ସବୁ ଦେଖାନ୍ତୁ') : opt}
@@ -194,25 +194,25 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
       )}
 
       {/* Gamified Map Area */}
-      <div className="relative w-full max-w-4xl mx-auto overflow-hidden rounded-[3rem] border-4 border-emerald-100 bg-gradient-to-b from-emerald-50/80 to-cyan-50/50 p-6 md:p-12 shadow-2xl">
+      <div className="relative w-full max-w-4xl mx-auto overflow-hidden rounded-[3rem] border border-white/10 bg-slate-900/30 backdrop-blur-md p-6 md:p-12 shadow-2xl">
         {/* Decorative Map Background */}
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none mix-blend-overlay"></div>
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 pointer-events-none mix-blend-overlay"></div>
         
         {/* Decorative Floating Background Elements */}
-        <Cloud className="absolute top-10 left-10 text-white opacity-40 animate-pulse" size={64} />
-        <Cloud className="absolute top-1/4 right-10 text-white opacity-50" size={80} />
-        <Cloud className="absolute top-1/2 left-4 text-white opacity-30" size={48} />
-        <Star className="absolute top-1/3 left-1/4 text-yellow-300 opacity-60 animate-bounce" size={24} />
-        <Star className="absolute bottom-1/4 right-1/4 text-yellow-400 opacity-50" size={32} />
+        <Cloud className="absolute top-10 left-10 text-white opacity-10 animate-pulse" size={64} />
+        <Cloud className="absolute top-1/4 right-10 text-white opacity-20" size={80} />
+        <Cloud className="absolute top-1/2 left-4 text-white opacity-10" size={48} />
+        <Star className="absolute top-1/3 left-1/4 text-yellow-500/40 opacity-60 animate-bounce" size={24} />
+        <Star className="absolute bottom-1/4 right-1/4 text-yellow-500/40 opacity-50" size={32} />
 
         {/* The Winding Path Line */}
-        <div className="absolute top-16 bottom-16 left-1/2 -translate-x-1/2 w-2 bg-emerald-200/50 rounded-full z-0">
-          <div className="w-full h-full border-l-4 border-dashed border-emerald-400 rounded-full"></div>
+        <div className="absolute top-16 bottom-16 left-1/2 -translate-x-1/2 w-2 bg-emerald-950/40 rounded-full z-0">
+          <div className="w-full h-full border-l-4 border-dashed border-emerald-500/30 rounded-full"></div>
         </div>
 
         {/* Start Marker */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 bg-white p-3 rounded-full shadow-lg border-2 border-emerald-400">
-          <Flag className="text-emerald-500" size={24} />
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 bg-slate-950 p-3 rounded-full shadow-lg border border-emerald-500/30">
+          <Flag className="text-emerald-400" size={24} />
         </div>
 
         <div className="flex flex-col gap-16 md:gap-20 relative z-10 py-16">
@@ -225,11 +225,11 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
               <div key={idx} className={`flex w-full ${isLeft ? 'justify-start' : 'justify-end'} relative md:px-12`}>
                 {/* Horizontal connecting branch */}
                 <div 
-                  className={`absolute top-1/2 -translate-y-1/2 h-2 bg-emerald-200/50 -z-10 w-[40%] md:w-[35%] rounded-full ${
+                  className={`absolute top-1/2 -translate-y-1/2 h-2 bg-emerald-950/40 -z-10 w-[40%] md:w-[35%] rounded-full ${
                     isLeft ? 'left-1/2 md:left-[35%]' : 'right-1/2 md:right-[35%]'
                   }`}
                 >
-                  <div className={`w-full h-full border-t-4 border-dashed rounded-full ${isCurrentMonth ? 'border-amber-400' : 'border-emerald-400'}`}></div>
+                  <div className={`w-full h-full border-t-4 border-dashed rounded-full ${isCurrentMonth ? 'border-amber-500/30' : 'border-emerald-500/30'}`}></div>
                 </div>
 
                 <motion.button
@@ -243,44 +243,44 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
                   whileHover={{ scale: 1.1, rotate: isLeft ? -2 : 2 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setSelectedMonth(monthData)}
-                  className={`group relative bg-white p-5 md:p-6 w-[140px] md:w-[180px] rounded-[2.5rem] border-[4px] shadow-[0_15px_30px_rgba(0,0,0,0.1)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)] transition-all flex flex-col items-center justify-center text-center overflow-visible z-20 ${
-                    isCurrentMonth ? 'border-amber-400 ring-4 ring-amber-400/20' : 'border-emerald-400 hover:border-emerald-500'
+                  className={`group relative bg-slate-950/80 p-5 md:p-6 w-[140px] md:w-[180px] rounded-[2.5rem] border shadow-[0_15px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)] transition-all flex flex-col items-center justify-center text-center overflow-visible z-20 cursor-pointer ${
+                    isCurrentMonth ? 'border-amber-400/50 ring-4 ring-amber-400/10' : 'border-white/10 hover:border-emerald-500/50'
                   }`}
                 >
                   {/* Outer Glow on Hover or Current Month */}
                   <div className={`absolute inset-0 rounded-[2.5rem] blur-xl transition-opacity ${
-                    isCurrentMonth ? 'bg-amber-400/30 opacity-100 animate-pulse' : 'bg-emerald-400/20 opacity-0 group-hover:opacity-100'
+                    isCurrentMonth ? 'bg-amber-400/10 opacity-100 animate-pulse' : 'bg-emerald-400/10 opacity-0 group-hover:opacity-100'
                   }`}></div>
                   
                   {isCurrentMonth && (
-                    <div className="absolute -top-4 -right-2 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg border-2 border-white transform rotate-12 z-30">
+                    <div className="absolute -top-4 -right-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg border border-white/20 transform rotate-12 z-30">
                       {language === 'en' ? 'CURRENT' : 'ସାମ୍ପ୍ରତିକ'}
                     </div>
                   )}
 
                   <div className={`w-16 h-16 md:w-20 md:h-20 rounded-full p-1.5 mb-3 shadow-lg relative ${
-                    isCurrentMonth ? 'bg-gradient-to-br from-amber-400 to-orange-500 shadow-amber-500/30' : 'bg-gradient-to-br from-emerald-400 to-cyan-500 shadow-emerald-500/30'
+                    isCurrentMonth ? 'bg-gradient-to-br from-amber-500 to-orange-600 shadow-amber-500/20' : 'bg-gradient-to-br from-emerald-500 to-cyan-600 shadow-emerald-500/20'
                   }`}>
-                    <div className="w-full h-full bg-white rounded-full flex items-center justify-center">
+                    <div className="w-full h-full bg-slate-950 rounded-full flex items-center justify-center">
                       {isCurrentMonth ? (
-                        <Star className="text-amber-500 group-hover:text-orange-500 transition-colors" size={28} />
+                        <Star className="text-amber-400 group-hover:text-orange-400 transition-colors" size={28} />
                       ) : (
-                        <Map className="text-emerald-500 group-hover:text-cyan-500 transition-colors" size={28} />
+                        <Map className="text-emerald-400 group-hover:text-cyan-400 transition-colors" size={28} />
                       )}
                     </div>
                   </div>
                   
-                  <h3 className="text-xl md:text-2xl font-black text-slate-800 mb-0.5 tracking-wide leading-tight">
+                  <h3 className="text-xl md:text-2xl font-black text-white mb-0.5 tracking-wide leading-tight font-serif">
                     {monthData.month.split(' ')[0]}
                   </h3>
                   <p className="text-[10px] md:text-xs text-slate-500 font-bold uppercase tracking-widest mb-3">
                     {monthData.month.split(' ')[1]}
                   </p>
                   
-                  <div className={`px-3 py-1.5 rounded-full text-[10px] font-black flex items-center gap-1.5 border-2 ${
-                    isCurrentMonth ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-slate-100 text-slate-700 border-slate-200'
+                  <div className={`px-3 py-1.5 rounded-xl text-[10px] font-black flex items-center gap-1.5 border ${
+                    isCurrentMonth ? 'bg-amber-500/10 text-amber-300 border-amber-500/20' : 'bg-white/5 text-slate-300 border-white/10'
                   }`}>
-                    <BookOpen size={12} className={isCurrentMonth ? 'text-amber-500' : 'text-emerald-500'} />
+                    <BookOpen size={12} className={isCurrentMonth ? 'text-amber-400' : 'text-emerald-400'} />
                     {visibleCount} Ch.
                   </div>
                 </motion.button>
@@ -297,33 +297,33 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="w-full max-w-4xl max-h-[85vh] bg-white border border-slate-200 rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden"
+              className="w-full max-w-4xl max-h-[85vh] bg-slate-900 border border-white/10 rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden"
             >
-              <div className="p-6 md:p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/80 backdrop-blur-md">
+              <div className="p-6 md:p-8 border-b border-white/5 flex items-center justify-between bg-slate-950/80 backdrop-blur-md">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-black text-slate-800 flex items-center gap-3">
-                    <span className="text-emerald-600">
+                  <h2 className="text-2xl md:text-3xl font-black text-white flex items-center gap-3 font-serif">
+                    <span className="text-emerald-400">
                       {selectedMonth.month}
                     </span>
-                    <span className="text-slate-400 text-lg">{language === 'en' ? 'Mission' : 'ଲକ୍ଷ୍ୟ'}</span>
+                    <span className="text-slate-400 text-lg font-sans font-bold uppercase tracking-widest">{language === 'en' ? 'Mission' : 'ଲକ୍ଷ୍ୟ'}</span>
                   </h2>
-                  <p className="text-slate-500 mt-1 text-sm font-medium">{language === 'en' ? 'Recommended chapters to conquer this month.' : 'ଏହି ମାସରେ ସମାପ୍ତ କରିବାକୁ ଥିବା ଅଧ୍ୟାୟଗୁଡ଼ିକ।'}</p>
+                  <p className="text-slate-400 mt-1 text-sm font-semibold">{language === 'en' ? 'Recommended chapters to conquer this month.' : 'ଏହି ମାସରେ ସମାପ୍ତ କରିବାକୁ ଥିବା ଅଧ୍ୟାୟଗୁଡ଼ିକ।'}</p>
                 </div>
                 <button 
                   onClick={() => setSelectedMonth(null)}
-                  className="w-10 h-10 rounded-full bg-slate-200 hover:bg-slate-300 flex items-center justify-center text-slate-600 hover:text-slate-800 transition-colors"
+                  className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer"
                 >
                   <X size={20} />
                 </button>
               </div>
 
-              <div className="p-6 md:p-8 overflow-y-auto custom-scrollbar flex-1 bg-slate-50">
+              <div className="p-6 md:p-8 overflow-y-auto custom-scrollbar flex-1 bg-slate-950/40">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {selectedMonth.chapters.filter((c: any) => isVisibleChapter(c.subject)).map((chapter: any, idx: number) => {
                     // Clean up ugly file name artifacts from the title
@@ -342,15 +342,15 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
                       .replace(/^[-:]\s*/, ''); // Remove leading dashes or colons
 
                     return (
-                      <div key={idx} className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-emerald-400 hover:shadow-md transition-all flex items-start gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
-                          <BookOpen size={16} className="text-emerald-600" />
+                      <div key={idx} className="p-4 rounded-2xl bg-slate-900 border border-white/5 hover:border-emerald-500/30 hover:shadow-[0_0_15px_rgba(16,185,129,0.1)] transition-all flex items-start gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                          <BookOpen size={16} className="text-emerald-400" />
                         </div>
                         <div>
-                          <h4 className="text-slate-800 font-bold text-sm md:text-base leading-tight mb-1">
+                          <h4 className="text-white font-bold text-sm md:text-base leading-tight mb-2">
                             {cleanTitle || rawTitle}
                           </h4>
-                          <span className="inline-block px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest bg-slate-100 text-slate-600 border border-slate-200">
+                          <span className="inline-block px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest bg-white/5 text-slate-400 border border-white/5">
                             {getTranslatedSubject(chapter.subject)}
                           </span>
                         </div>
