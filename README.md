@@ -75,32 +75,46 @@ Standard generative models often hallucinate or fail at retrieving precise, regi
 
 ---
 
-## 🎨 Brand Redesign & Visual Optimization ("New Era EdTech" Makeover)
+## 🎨 Brand Redesign, Gamification & Visual Overhaul ("New Era EdTech" Makeover)
 
-In tandem with functional stability, we carried out a high-fidelity visual and branding overhaul to elevate the PWA's user experience to a premium, state-of-the-art "new era EdTech for school students" look:
+In tandem with core functional stability, we carried out an immersive visual, interactive, and gamification overhaul to elevate the student PWA to a premium, state-of-the-art "new era EdTech" experience:
 
-### 1. Dynamic Floating Gundulu Companion Mascot
-*   **The Upgrade**: Replaced the generic flat icons in the center of the rotating tech node lines with the circular, high-end face of the official **Gundulu mascot** (`/gundulu.png`).
-*   **The Physics Animation**: Implemented continuous Framer Motion keyframe animations that slide Gundulu along a smooth, gentle **3D orbital path** (float animation), making the companion mascot look alive and dynamically responsive.
-*   **Micro-Interactions**: Mapped smooth active-state scales to zoom the mascot face from `scale-[2.0]` up to `scale-[2.3]` upon user hover.
+### 1. Siri-Style Interactive Voice Waveform Animation
+*   **The Feature**: Integrated a dynamic, responsive **HTML5 Canvas Audio Waveform animation** in the conversational AI companion portal ([GunduluHuman.tsx](file:///d:/WebApp/utkalskillcentre-main/src/components/GunduluHuman.tsx)).
+*   **Audio Lip-Sync Integration**: The wave amplitude syncs in real-time with Web Audio API frequency analyzer stream data (`audioVolumeRef.current`) when Gundulu speaks.
+*   **Multi-State Visualizations**:
+    *   *Speaking*: Renders warm pulsing violet, pink, and indigo tapered sine wave overlays.
+    *   *Listening*: Transitions to vibrant cyan/emerald waves to visually prompt student speech.
+    *   *Idle*: Renders a calm, breathing slate grey baseline flatline.
 
-### 2. High-Contrast Solid Dropdowns & Inputs (Vercel/Linear Style)
+### 2. Statewide Student Leaderboard (Gamification Engine)
+*   **The Feature**: Added a sleek statewide leaderboard sub-tab in the student dashboard, highlighting community metrics and regional engagement.
+*   **Tactile Capsule Transitions**: Built smooth sub-tab sliders allowing students to toggle between `Overview` widgets and the `Statewide Leaderboard` instantly.
+*   **Regional Filter & Streaks**: Lets judges segment students by Odisha districts (Bhubaneswar, Cuttack, Koraput, Balasore, etc.). Displays active checkmark indicators showing today's Daily MCQ Challenge completion.
+*   **Odia Rank Badge Calculations**: Automatically calculates level bounds (`Math.floor(points / 100) + 1`) and assigns custom gamified titles (e.g., `Lvl 10+` -> `Gundulu Legend 👑` / `Lvl 7+` -> `Odia Math Master 📐`).
+
+### 3. Comprehensive Mascot Alignment & Cropping
+*   **The Problem**: The raw mascot asset `/gundulu.png` has credit lines and logos baked at the bottom which looked clipped when framed in standard circular CSS masks.
+*   **The Fix**: Applied a uniform zoom-and-crop wrapper technique (`object-position: center 12%` / `transform: scale(1.68)` / `overflow-hidden`) across every instance of the mascot in the app:
+    *   The student dashboard header avatar inside [Dashboard.tsx](file:///d:/WebApp/utkalskillcentre-main/src/components/Dashboard.tsx).
+    *   The library floating header and chat message bubbles inside [DigitalLibraryView.tsx](file:///d:/WebApp/utkalskillcentre-main/src/components/DigitalLibraryView.tsx).
+    *   The primary study buddy input, message history, and loading placeholders inside [StudyBuddyView.tsx](file:///d:/WebApp/utkalskillcentre-main/src/components/StudyBuddyView.tsx).
+    *   The subscription lock templates inside [UnlockGundulu.tsx](file:///d:/WebApp/utkalskillcentre-main/src/components/UnlockGundulu.tsx).
+*   **The Result**: All avatars render a pristine, centered, high-fidelity baby mascot face without cropped text labels.
+
+### 4. High-Contrast Solid Dropdowns & Inputs (Vercel/Linear Style)
 *   **The Upgrade**: Shifted all core login selectors (Class select, Board select, Phone `+91` code prefix, and Mobile Number text input) from dim semi-transparent lines to a bold, premium **`border-2 border-slate-600`** system with a deep **`bg-slate-950/80`** glass backdrop.
 *   **The Result**: Rounded boundaries are **100% visible, sharp, and perfectly readable** on all screen types and ambient brightness levels. On hover, the border dynamically transitions to a solid amber (**`hover:border-amber-500`**), and on focus it lights up with a gorgeous gold glow (**`focus:shadow-[0_0_20px_rgba(245,158,11,0.25)]`**).
 
-### 3. Glassmorphic Circular Logo & Optimized Spacing
+### 5. Glassmorphic Circular Logo & Optimized Spacing
 *   **The Upgrade**: Redesigned the top-left landing page logo into a horizontal, glowing glass badge combining a circular double-ring crest border (`rounded-full border border-white/20`), custom gold-emerald "PRO" indicators, and high-fidelity tracking-tight typography.
 *   **Marginal Balance**: Reduced top padding of the landing page from `pt-24`/`pt-10` down to **`pt-6`** to eliminate excess blank space, creating a perfectly balanced professional boundary.
 
-### 4. Royal Rounded Rath Crest Sidebar Seal
+### 6. Royal Rounded Rath Crest Sidebar Seal
 *   **The Upgrade**: Upgraded the sidebar top-left crest (`/gundulu-rath-crest.png`) to a royal badge by wrapping it in an overflow-hidden circular mask (**`rounded-full h-12 w-12 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.25)]`**).
 *   **The Polish**: Clipped out all blurry square corners from the raw asset, zoomed in dynamically via CSS (`scale-[1.3]`), and increased the gold-green saturation (`saturate-[1.2]`) to make the crest stand out with rich contrast.
 
-### 5. Smart Post-Login UI Hiding Rules
-*   **The Upgrade**: Hid redundant branding elements once a student has successfully logged in (such as removing the Utkal logo from the sidebar top on desktop), ensuring a clean, focused, and professional study workspace.
-*   **Balanced Branded Headers**: Restored and locked the Utkal crest logo (`/utkal-192.png`) to be permanently visible next to the title text in the header, keeping desktop and mobile dashboards perfectly aligned and beautifully branded.
-
-### 6. Fluid Bilingual Typography
+### 7. Fluid Bilingual Typography
 *   **The Upgrade**: Relaxed line-height vertical spacing to **`leading-normal`** on all marketing headings to completely resolve vertical overlaps of tall Odia vowel marks (`ୂ`, `ୁ`, `ି`, `ୀ`, `୍ଳ`, `ଷ୍ୟ`), ensuring perfect readability.
 
 ---
