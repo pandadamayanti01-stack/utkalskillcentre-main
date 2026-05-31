@@ -360,7 +360,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
   };
 
   return ReactDOM.createPortal(
-    <div className="fixed inset-0 z-[9999] bg-slate-950/80 backdrop-blur-md overflow-y-auto scroll-smooth overscroll-contain p-3 md:p-6 flex flex-col items-center justify-start md:justify-center" style={{ WebkitOverflowScrolling: 'touch' }}>
+    <div className="fixed inset-0 z-[9999] bg-slate-950/80 backdrop-blur-md overflow-y-auto scroll-smooth overscroll-contain p-3 md:p-6 flex flex-col items-center justify-start md:justify-center force-dark-theme" style={{ WebkitOverflowScrolling: 'touch' }}>
       {/* Dynamic background math glow */}
       <div className="absolute w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none" />
 
@@ -368,7 +368,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
         initial={{ opacity: 0, scale: 0.93, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.93, y: 15 }}
-        className="w-full max-w-[900px] bg-slate-900 border border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row relative z-10 my-4 md:my-0"
+        className="w-full max-w-[900px] bg-slate-900 border border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row relative z-10 my-4 md:my-0 force-dark-theme"
       >
         {/* Modal Close Button */}
         <button
