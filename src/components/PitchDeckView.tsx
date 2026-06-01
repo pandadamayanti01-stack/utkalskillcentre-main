@@ -304,11 +304,11 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
         subtitle: "Proven Demand, Virtually $0.00 Overhead & Native Speed Conversations",
         tagline: "GROWTH, TRACTION & SUSTAINABILITY",
         bullets: [
-          { title: "Proven Pilot Traction", desc: "Successfully onboarded 434 active students with 5 paying premium subscribers." },
+          { title: "Proven Pilot Traction", desc: "Successfully onboarded 434 active students with 6 paying premium subscribers across 7 districts." },
           { title: "Highly Scalable margins", desc: "Serving syllabus guides statically keeps operational cost at $0.00, enabling ₹99/mo subscriptions." },
           { title: "Future Specialized AI Tutor", desc: "Transitioning to training lightweight Google AI models specifically on Odia educational transcripts for native speech speeds." }
         ],
-        speakerNotes: "We have already proven commercial demand, onboarding 434 pilot students and securing 5 paying premium subscribers on our ₹99/month tier. Our serverless setup keeps operational costs near-zero. In the future, we plan to train lightweight Google AI models specifically on Odia educational transcripts, enabling Gundulu to speak with native speed and zero API overhead!"
+        speakerNotes: "We have already proven commercial demand, onboarding 434 pilot students and securing 6 paying premium subscribers across 7 districts (Bhubaneswar, Cuttack, Keonjhar, Balasore, Nayagarh, Balangir, and Berhampur) on our ₹99/month tier. Our serverless setup keeps operational costs near-zero. In the future, we plan to train lightweight Google AI models specifically on Odia educational transcripts, enabling Gundulu to speak with native speed and zero API overhead!"
       }
     ],
     or: [
@@ -374,10 +374,10 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
         bullets: [
           { title: "ମୋ ସ୍କୁଲ୍ ସହଭାଗିତା", desc: "ଓଡ଼ିଶାର ସ୍କୁଲ୍ ନେଟୱର୍କ ମାଧ୍ୟମରେ ୬୨ ଲକ୍ଷ ଓଡ଼ିଆ ମାଧ୍ୟମ ପିଲାଙ୍କ ପାଖରେ ପହଞ୍ଚିବା।" },
           { title: "ଭଏସ୍-ଟୁ-ଭଏସ୍ ଓ ହୋମୱାର୍କ ସିଟ୍", desc: "ଓଡ଼ିଆ-ଇଂରାଜୀ ଦ୍ୱିଭାଷୀ ଭଏସ୍ ହଟ୍‌ଲାଇନ୍ ଏବଂ ଶିକ୍ଷକଙ୍କ ପାଇଁ AI ହୋମୱାର୍କ ଜେନେରେଟର।" },
-          { title: "ସ୍କ୍ରିନ-ଫ୍ରି ପଢ଼ା ସହ ସକ୍ରିୟ ୟୁଜର୍", desc: "୪୩୪ ଜଣ ସକ୍ରିୟ ପାଇଲଟ୍ ଛାତ୍ର ଏବଂ ମାସିକ ମାତ୍ର ୯୯ ଟଙ୍କା ରେ ସବସ୍କ୍ରିପସନ୍।" },
+          { title: "ସ୍କ୍ରିନ-ଫ୍ରି ପଢ଼ା ସହ ସକ୍ରିୟ ୟୁଜର୍", desc: "୪୩୪ ଜଣ ସକ୍ରିୟ ପାଇଲଟ୍ ଛାତ୍ର ଏବଂ ୭ଟି ଜିଲ୍ଲାରୁ ୬ ଜଣ ପ୍ରିମିୟମ୍ ସବସ୍କ୍ରିପସନ୍।" },
           { title: "ଡିଭାଇସ୍-ନେଟିଭ୍ ଜେମା ୨ବି", desc: "ମୋବାଇଲ୍ ବ୍ରାଉଜର୍ ରେ ୧୦୦% ଅଫଲାଇନ୍ ଭାବେ ଚାଲିବା ପାଇଁ ଜେମା ମଡେଲ୍ ର ଟ୍ରେନିଂ।" }
         ],
-        speakerNotes: "ଆମେ ଆମର ପାଇଲଟ୍ ପର୍ଯ୍ୟାୟରେ ୪୩୪ ଜଣ ସକ୍ରିୟ ଛାତ୍ର ଏବଂ ମାସିକ ୯୯ ଟଙ୍କା ସବସ୍କ୍ରିପସନ୍ ପାଇଛୁ। ଆମର ସ୍କେଲିଂ ମୋ ସ୍କୁଲ୍ ଅଭିଯାନ ସହଭାଗିତା, ଭଏସ୍-ଟୁ-ଭଏସ୍ ଟ୍ୟୁଟର୍, ଏବଂ ଶିକ୍ଷକଙ୍କ ପାଇଁ AI ହୋମୱାର୍କ ମେକର୍ ଦ୍ୱାରା ହେବ। ଏହା ସହ, ବ୍ରାଉଜର୍-ନେଟିଭ୍ ଓଡ଼ିଆ-ଜେମା ୨ବି ମଡେଲ୍ ଦ୍ୱାରା ଆମେ ବିନା ଇଣ୍ଟରନେଟ୍ ରେ ସର୍ଭର ଖର୍ଚ୍ଚ ସମ୍ପୂର୍ଣ୍ଣ ଶୂନ କରିପାରିବା।"
+        speakerNotes: "ଆମେ ଆମର ପାଇଲଟ୍ ପର୍ଯ୍ୟାୟରେ ୪୩୪ ଜଣ ସକ୍ରିୟ ଛାତ୍ର ଏବଂ ବିଭିନ୍ନ ଜିଲ୍ଲା (ଭୁବନେଶ୍ୱର, କଟକ, କେନ୍ଦୁଝର, ବାଲେଶ୍ୱର, ନୟାଗଡ଼, ବଲାଙ୍ଗୀର, ବ୍ରହ୍ମପୁର) ରୁ ୬ ଜଣ ପ୍ରିମିୟମ୍ ସବସ୍କ୍ରିପସନ୍ ପାଇଛୁ। ଆମର ସ୍କେଲିଂ ମୋ ସ୍କୁଲ୍ ଅଭିଯାନ ସହଭାଗିତା, ଭଏସ୍-ଟୁ-ଭଏସ୍ ଟ୍ୟୁଟର୍, ଏବଂ ଶିକ୍ଷକଙ୍କ ପାଇଁ AI ହୋମୱାର୍କ ମେକର୍ ଦ୍ୱାରା ହେବ। ଏହା ସହ, ବ୍ରାଉଜର୍-ନେଟିଭ୍ ଓଡ଼ିଆ-ଜେମା ୨ବି ମଡେଲ୍ ଦ୍ୱାରା ଆମେ ବିନା ଇଣ୍ଟରନେଟ୍ ରେ ସର୍ଭର ଖର୍ଚ୍ଚ ସମ୍ପୂର୍ଣ୍ଣ ଶୂନ କରିପାରିବା।"
       }
     ]
   };
@@ -968,8 +968,8 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                     </div>
                     <div className="bg-slate-900 border border-white/5 p-3 rounded-2xl text-center hover:border-[#b34d1f]/30 transition-all">
                       <span className="text-[8px] text-slate-500 uppercase tracking-wider block font-bold">Paying Subscribers</span>
-                      <h3 className="text-2xl font-black text-amber-400 mt-1">5</h3>
-                      <span className="text-[8px] text-slate-400">Validating commercial demand at ₹99</span>
+                      <h3 className="text-2xl font-black text-amber-400 mt-1">6</h3>
+                      <span className="text-[8px] text-slate-400">Validated across 7 districts at ₹99</span>
                     </div>
                   </div>
 
