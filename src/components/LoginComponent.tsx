@@ -25,7 +25,8 @@ const SOCIAL_ORIGINS = [
 
 // PRE-CONFIGURED HACKATHON TEST NUMBERS (Must match test numbers configured in Firebase Auth console)
 const TEST_ACCOUNTS = [
-  { phone: '+911234567890', label: 'Student (Class 10)', class: '10', board: 'BSE Odisha', role: 'student' as const, code: '123456' }
+  { phone: '+911234567890', label: 'Student (Class 10)', class: '10', board: 'BSE Odisha', role: 'student' as const, code: '123456' },
+  { phone: '+911010101010', label: 'Teacher (Educator)', class: '10', board: 'BSE Odisha', role: 'teacher' as const, code: '123456' }
 ];
 
 export default function Login({ language, translations, setLanguage, setRegData }: { language: 'en' | 'or', translations: any, setLanguage: (lang: 'en' | 'or') => void, setRegData: (data: any) => void }): React.ReactElement {
@@ -632,7 +633,12 @@ export default function Login({ language, translations, setLanguage, setRegData 
                               disabled={isSending}
                               className="w-full py-3 px-4 rounded-xl bg-black/40 hover:bg-[#b34d1f]/10 border border-white/5 hover:border-amber-500/30 text-xs font-black text-slate-200 hover:text-amber-300 transition-all flex items-center justify-between group active:scale-95 cursor-pointer shadow-inner"
                             >
-                              <span>{language === 'en' ? 'Log in as Student (Class 10)' : 'ଛାତ୍ର ଭାବରେ ତୁରନ୍ତ ଲଗଇନ୍ କରନ୍ତୁ (ଦଶମ ଶ୍ରେଣୀ)'}</span>
+                              <span>
+                                {acc.role === 'teacher'
+                                  ? (language === 'en' ? 'Log in as Teacher (Educator Studio)' : 'ଶିକ୍ଷକ ଭାବରେ ତୁରନ୍ତ ଲଗଇନ୍ କରନ୍ତୁ (ଶିକ୍ଷକ ଷ୍ଟୁଡିଓ)')
+                                  : (language === 'en' ? 'Log in as Student (Class 10)' : 'ଛାତ୍ର ଭାବରେ ତୁରନ୍ତ ଲଗଇନ୍ କରନ୍ତୁ (ଦଶମ ଶ୍ରେଣୀ)')
+                                }
+                              </span>
                               <ChevronRight size={14} className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-amber-400 animate-pulse" />
                             </button>
                           ))}
