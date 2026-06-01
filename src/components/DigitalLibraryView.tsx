@@ -1185,9 +1185,9 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
       } else if (mKey.includes('ganita') || mKey.includes('math')) {
         matchesGenericFallback = cSub.includes('math') || cSub.includes('ganita') || cSub === 'algebra' || cSub === 'geometry' || cSub === 'algebraicequations';
       } else if (mKey.includes('samajika') || mKey.includes('social')) {
-        matchesGenericFallback = cSub.includes('social') || cSub === 'history';
+        matchesGenericFallback = cSub.includes('social') || cSub.includes('samajika') || cSub === 'history' || cSub.includes('geography') || cSub.includes('itihasa') || cSub.includes('bhugola');
       } else if (mKey.includes('jigyasa') || mKey.includes('science') || mKey.includes('paribesa') || mKey.includes('bignana')) {
-        matchesGenericFallback = (cSub.includes('science') || cSub.includes('bignana') || cSub === 'paribesapatha' || cSub === 'jigyasa' || cSub === 'physicalscience' || cSub === 'lifescience' || cSub === 'science_curiosity') && !cSub.includes('social');
+        matchesGenericFallback = (cSub.includes('science') || cSub.includes('bignana') || cSub === 'paribesapatha' || cSub === 'jigyasa' || cSub === 'physicalscience' || cSub === 'lifescience' || cSub === 'science_curiosity') && !cSub.includes('social') && !cSub.includes('samajika');
       } else if (mKey.includes('sahitya') || mKey.includes('jhulana') || mKey.includes('bhasa') || mKey.includes('odia')) {
         matchesGenericFallback = (cSub.includes('odia') || cSub === 'jhulana' || cSub === 'bhasamahak' || cSub.includes('sahitya')) && !cSub.includes('grammar');
       } else if (mKey.includes('pallavi') || mKey.includes('jasmine') || mKey.includes('english')) {

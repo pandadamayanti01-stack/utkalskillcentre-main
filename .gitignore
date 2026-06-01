@@ -14,3 +14,4 @@ src/firebase-applet-config.json
 .firebase/
 src/scratch/
 scratch/
+textbook_vectors_class_*_progress.json

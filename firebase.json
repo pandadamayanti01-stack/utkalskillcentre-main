@@ -1,11 +1,9 @@
 {
-  "firestore": [
-    {
-      "database": "utkal-prod",
-      "rules": "firestore.rules",
-      "indexes": "firestore.indexes.json"
-    }
-  ],
+  "firestore": {
+    "database": "utkal-prod",
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
   "hosting": {
     "public": "dist",
     "ignore": [

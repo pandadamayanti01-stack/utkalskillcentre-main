@@ -22,6 +22,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
   const [isEraser, setIsEraser] = useState(false);
   
   const [loading, setLoading] = useState(false);
+  const [scanning, setScanning] = useState(false);
   const [explanation, setExplanation] = useState<string>('');
   const [displayedExplanation, setDisplayedExplanation] = useState<string>('');
   const [speaking, setSpeaking] = useState(false);
@@ -310,6 +311,154 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
     const newHistory = historyRef.current.slice(0, historyIndexRef.current + 1);
     newHistory.push(currentState);
     
+    historyRef.current = newHistory;
+    historyIndexRef.current = newHistory.length - 1;
+    setCanUndo(historyIndexRef.current > 0);
+    setCanRedo(false);
+
+    setExplanation('');
+    setDisplayedExplanation('');
+    stopAudio();
+  };
+
+  const loadTemplate = (type: 'equation' | 'triangle' | 'odia' | 'ocr') => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Clear board first
+    const width = canvas.width / 2;
+    const height = canvas.height / 2;
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.clearRect(0, 0, width, height);
+    
+    // Set drawing settings (chalk style)
+    ctx.strokeStyle = '#fef8ec';
+    ctx.fillStyle = '#fef8ec';
+    ctx.shadowColor = 'rgba(254, 248, 236, 0.4)';
+    ctx.shadowBlur = 3;
+    ctx.lineWidth = 3.5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    if (type === 'ocr') {
+      // Trigger visual green laser scanning animation
+      setScanning(true);
+      setTimeout(() => setScanning(false), 1800);
+
+      // Draw simulated textbook page outline
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = '#38bdf8'; // Cyan border for textbook boundary
+      ctx.strokeRect(width / 2 - 200, height / 2 - 110, 400, 210);
+
+      // Draw Textbook Header tag
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = 'bold 12px "Courier New", Courier, monospace';
+      ctx.fillText("BSE ODISHA CLASS 10 PHYSICAL SCIENCE (Page 142)", width / 2 - 180, height / 2 - 90);
+
+      // Question printed text
+      ctx.fillStyle = '#fef8ec';
+      ctx.font = 'bold 20px "Comic Sans MS", cursive, sans-serif';
+      ctx.fillText("ପ୍ରଶ୍ନ: ଆଲୋକର ପ୍ରତିଫଳନ କହିଲେ କଣ ବୁଝ?", width / 2 - 180, height / 2 - 50);
+
+      // Draw physics diagram
+      const mirrorY = height / 2 + 50;
+      const normalX = width / 2;
+
+      // Draw mirror line
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#fef8ec';
+      ctx.beginPath();
+      ctx.moveTo(width / 2 - 120, mirrorY);
+      ctx.lineTo(width / 2 + 120, mirrorY);
+      ctx.stroke();
+
+      // Mirror hashes
+      ctx.lineWidth = 1.5;
+      for (let i = -110; i <= 110; i += 15) {
+        ctx.beginPath();
+        ctx.moveTo(width / 2 + i, mirrorY);
+        ctx.lineTo(width / 2 + i - 8, mirrorY + 8);
+        ctx.stroke();
+      }
+
+      // Normal Line (dashed)
+      ctx.strokeStyle = 'rgba(254, 248, 236, 0.5)';
+      ctx.beginPath();
+      ctx.setLineDash([5, 5]);
+      ctx.moveTo(normalX, mirrorY);
+      ctx.lineTo(normalX, mirrorY - 80);
+      ctx.stroke();
+      ctx.setLineDash([]); // reset
+
+      // Incident ray
+      ctx.strokeStyle = '#fef8ec';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(normalX - 70, mirrorY - 60);
+      ctx.lineTo(normalX, mirrorY);
+      ctx.stroke();
+
+      // Reflected ray
+      ctx.beginPath();
+      ctx.moveTo(normalX, mirrorY);
+      ctx.lineTo(normalX + 70, mirrorY - 60);
+      ctx.stroke();
+
+      // Arrow indicators
+      ctx.font = '12px "Courier New", Courier, monospace';
+      ctx.fillText("Incident Ray", normalX - 110, mirrorY - 70);
+      ctx.fillText("Reflected Ray", normalX + 35, mirrorY - 70);
+      ctx.fillText("Normal", normalX - 20, mirrorY - 90);
+    } else if (type === 'equation') {
+      // Draw math equation "x² - 5x + 6 = 0"
+      ctx.font = 'bold 36px "Courier New", Courier, monospace';
+      ctx.fillText("x² - 5x + 6 = 0", width / 2 - 140, height / 2 - 10);
+    } else if (type === 'triangle') {
+      // Draw right triangle
+      const startX = width / 2 - 100;
+      const startY = height / 2 - 80;
+      const endX = width / 2 - 100;
+      const endY = height / 2 + 60;
+      const baseEndX = width / 2 + 100;
+      const baseEndY = height / 2 + 60;
+
+      ctx.beginPath();
+      ctx.moveTo(startX, startY); // top vertex
+      ctx.lineTo(endX, endY);     // bottom-left right-angle
+      ctx.lineTo(baseEndX, baseEndY); // bottom-right
+      ctx.closePath();
+      ctx.stroke();
+
+      // Right angle square indicator
+      ctx.beginPath();
+      ctx.moveTo(endX, endY - 20);
+      ctx.lineTo(endX + 20, endY - 20);
+      ctx.lineTo(endX + 20, endY);
+      ctx.stroke();
+
+      // Draw text tags
+      ctx.font = 'bold 20px "Courier New", Courier, monospace';
+      ctx.fillText("A", startX - 25, startY + 5);
+      ctx.fillText("B", endX - 25, endY + 20);
+      ctx.fillText("C", baseEndX + 10, baseEndY + 10);
+      ctx.fillText("c = 10 cm", (startX + baseEndX) / 2 + 10, (startY + baseEndY) / 2);
+      ctx.fillText("a = 6 cm", endX - 95, (startY + endY) / 2);
+      ctx.fillText("b = 8 cm", (endX + baseEndX) / 2, endY + 30);
+    } else if (type === 'odia') {
+      // Draw Odia text "ବାଘ" (Tiger)
+      ctx.font = 'bold 50px "Comic Sans MS", cursive, sans-serif';
+      ctx.fillText("ବାଘ", width / 2 - 60, height / 2 + 15);
+    }
+
+    // Reset shadow values so manual drawing doesn't have it by default
+    ctx.shadowBlur = 0;
+
+    // Save state to history
+    const currentState = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const newHistory = historyRef.current.slice(0, historyIndexRef.current + 1);
+    newHistory.push(currentState);
     historyRef.current = newHistory;
     historyIndexRef.current = newHistory.length - 1;
     setCanUndo(historyIndexRef.current > 0);
@@ -798,6 +947,14 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
               onTouchEnd={stopDrawing}
               className="cursor-crosshair block w-full touch-none bg-transparent"
             />
+            {scanning && (
+              <motion.div 
+                initial={{ top: '0%' }}
+                animate={{ top: '100%' }}
+                transition={{ duration: 1.8, repeat: 0, ease: "linear" }}
+                className="absolute left-0 right-0 h-1 bg-emerald-400 shadow-[0_0_15px_#34d399,0_0_5px_#34d399] z-20 pointer-events-none"
+              />
+            )}
             {/* Real Blackboard Dust Overlay */}
             <div className="absolute inset-0 bg-gradient-to-tr from-white/[0.015] to-transparent pointer-events-none" />
 
@@ -838,6 +995,45 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
                 {!loading && (
                   <span className="absolute inset-0 rounded-full border-2 border-emerald-400/30 animate-ping opacity-75 pointer-events-none" style={{ animationDuration: '2.5s' }} />
                 )}
+              </button>
+            </div>
+          </div>
+
+          {/* Quick Drawing Templates (Hackathon Showcase Tool) */}
+          <div className="flex flex-wrap items-center gap-2 bg-slate-950/45 p-3 rounded-2xl border border-white/5 relative overflow-hidden shrink-0">
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-transparent pointer-events-none" />
+            <span className="text-[10px] text-amber-400 font-black uppercase tracking-wider flex items-center gap-1.5 z-10 relative">
+              <Lucide.Sparkles size={11} className="animate-pulse text-amber-400 fill-amber-400" />
+              {selectedLang === 'or' ? 'ଶୀଘ୍ର ଡେମୋ ଚିତ୍ର (Demo Drawings):' : 'Demo Templates:'}
+            </span>
+            <div className="flex flex-wrap gap-1.5 z-10 relative">
+              <button
+                type="button"
+                onClick={() => loadTemplate('equation')}
+                className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-white/10 hover:border-amber-500/50 hover:bg-slate-800/80 text-white text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-[1.02] active:scale-95 flex items-center gap-1"
+              >
+                <span>📐 {selectedLang === 'or' ? 'ଦ୍ଵିଘାତ ସମୀକରଣ' : 'Math Equation'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => loadTemplate('triangle')}
+                className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-white/10 hover:border-amber-500/50 hover:bg-slate-800/80 text-white text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-[1.02] active:scale-95 flex items-center gap-1"
+              >
+                <span>🔺 {selectedLang === 'or' ? 'ଜ୍ୟାମିତିକ ତ୍ରିଭୁଜ' : 'Right Triangle'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => loadTemplate('odia')}
+                className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-white/10 hover:border-amber-500/50 hover:bg-slate-800/80 text-white text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-[1.02] active:scale-95 flex items-center gap-1"
+              >
+                <span>✍️ {selectedLang === 'or' ? 'ଓଡ଼ିଆ ଶବ୍ଦ (ବାଘ)' : 'Odia Word (ବାଘ)'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => loadTemplate('ocr')}
+                className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-emerald-500/30 hover:border-emerald-400 hover:bg-slate-800/80 text-emerald-400 text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-[1.02] active:scale-95 flex items-center gap-1 shadow-lg shadow-emerald-500/5"
+              >
+                <span>📸 {selectedLang === 'or' ? 'ପାଠ୍ୟପୁସ୍ତକ ସ୍କାନ (OCR)' : 'Textbook OCR Scan'}</span>
               </button>
             </div>
           </div>

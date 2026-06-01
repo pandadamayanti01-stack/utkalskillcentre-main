@@ -50,6 +50,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'profile', icon: Lucide.User, label: 'Profile' },
     { id: 'dashboard', icon: Lucide.LayoutDashboard, label: user?.role === 'teacher' ? (language === 'en' ? 'Educator Studio' : 'ଶିକ୍ଷକ ଷ୍ଟୁଡିଓ') : t.dashboard },
     { id: 'pitch_deck', icon: Lucide.Presentation, label: language === 'en' ? '✨ Project Showcase' : '✨ ପ୍ରୋଜେକ୍ଟ ସ୍ଲାଇଡ୍' },
+    { id: 'telemetry', icon: Lucide.Activity, label: language === 'en' ? '📊 System Telemetry' : '📊 ସିଷ୍ଟମ ଟେଲିମେଟ୍ରି' },
     { id: 'notifications', icon: Lucide.Bell, label: language === 'en' ? 'Notifications' : 'ବିଜ୍ଞପ୍ତି' },
     { id: 'study_buddy', icon: Lucide.Bot, label: t.studyBuddy || 'Study Buddy' },
     { id: 'gundulu', icon: Lucide.Sparkles, label: language === 'en' ? '🎤 Gundulu AI Tutor' : '🎤 ଗୁନ୍ଦୁଲୁ AI ଟ୍ୟୁଟର' },
@@ -68,7 +69,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const filteredMenuItems = showShowcaseTab 
     ? allMenuItems 
-    : allMenuItems.filter(item => item.id !== 'pitch_deck');
+    : allMenuItems.filter(item => item.id !== 'pitch_deck' && item.id !== 'telemetry');
 
   const teacherExcludedIds = ['store', 'leaderboard', 'daily_mcqs', 'syllabus_tracker', 'monthly_tests', 'smart_classes', 'plans', 'matching_quiz'];
   const menuItems = user?.role === 'teacher'

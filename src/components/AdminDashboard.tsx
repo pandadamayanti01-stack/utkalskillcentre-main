@@ -4673,7 +4673,7 @@ Sample tone for Class 6-10:
       }
 
       if (filtSub === 'math' && chapSub.includes('math')) return true;
-      if (filtSub === 'science' && (chapSub.includes('science') || chapSub.includes('bignana') || chapSub.includes('jigyasa'))) return true;
+      if (filtSub === 'science' && (chapSub.includes('science') || chapSub.includes('bignana') || chapSub.includes('jigyasa')) && !chapSub.includes('samajika') && !chapSub.includes('social')) return true;
       if (filtSub === 'odia' && (chapSub.includes('odia') || chapSub.includes('sahitya') || chapSub.includes('jhulana') || chapSub.includes('bhasa'))) return true;
       if (filtSub === 'english' && (chapSub.includes('english') || chapSub.includes('jasmine') || chapSub.includes('pallavi'))) return true;
 
@@ -4747,13 +4747,14 @@ Sample tone for Class 6-10:
         hindigrammar: 'hindi_grammar'
       };
 
+      // Check social science first to prevent samajikabignana from matching science block via bignana keyword
+      if (spec.includes('social') || spec.includes('samajika') || spec.includes('history') || spec.includes('itihasa')) return 'social_science';
       if (spec.includes('math') || spec.includes('ganita')) return 'math';
       if (spec.includes('science') || spec.includes('jigyasa') || spec.includes('bignana')) {
         if (spec.includes('physical')) return 'physical_science';
         if (spec.includes('life') || spec.includes('jiba')) return 'life_science';
         return 'science';
       }
-      if (spec.includes('social') || spec.includes('samajika') || spec.includes('history') || spec.includes('itihasa')) return 'social_science';
       if (spec.includes('geography') || spec.includes('bhugola')) return 'geography';
       if (spec.includes('odia') || spec.includes('sahitya') || spec.includes('jhulana') || spec.includes('bhasa')) {
         if (spec.includes('grammar') || spec.includes('byakarana')) return 'odia_grammar';

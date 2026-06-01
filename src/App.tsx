@@ -83,6 +83,7 @@ const CommunityChatView = lazy(() => import('./components/CommunityChatView').th
 const LaunchCelebration = lazy(() => import('./components/LaunchCelebration'));
 const RajaFestivalPoster = lazy(() => import('./components/RajaFestivalPoster'));
 const PitchDeckView = lazy(() => import('./components/PitchDeckView').then((module) => ({ default: module.PitchDeckView })));
+const TelemetryView = lazy(() => import('./components/TelemetryView').then((module) => ({ default: module.TelemetryView })));
 
 function ViewLoader({ fullHeight = false }: { fullHeight?: boolean }) {
   return (
@@ -766,6 +767,20 @@ export default function App() {
     };
   }, []);
 
+  const showShowcaseTab = (() => {
+    if (typeof window === 'undefined') return false;
+    const isShowcaseActive = window.location.search.includes('showcase=true') || 
+                             window.location.search.includes('judge=true') || 
+                             window.location.search.includes('judgestatus=true') || 
+                             window.location.hash.includes('judge') ||
+                             window.location.hash === '#pitch_deck' ||
+                             localStorage.getItem('showcase_mode') === 'true';
+    if (isShowcaseActive) {
+      localStorage.setItem('showcase_mode', 'true');
+    }
+    return isShowcaseActive;
+  })();
+
   const [lastTab, setLastTab] = useState('dashboard');
   const [isRegisteredForTestSeries, setIsRegisteredForTestSeries] = useState(false);
   const [openTutorInVoiceMode, setOpenTutorInVoiceMode] = useState(0);
@@ -852,6 +867,9 @@ export default function App() {
     } else if (nextStep === 8) {
       setShowLaunchPoster(false);
       setActiveTab('pitch_deck');
+    } else if (nextStep === 9) {
+      setShowLaunchPoster(false);
+      setActiveTab('telemetry');
     }
   };
 
@@ -3426,40 +3444,86 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
           <AnimatePresence mode="wait">
             {/* Your 10+ Tab components go here... */}
             {activeTab === 'dashboard' && (
-              user?.role === 'teacher' ? (
-                <TeacherDashboard user={user} language={language} chapters={chapters} setActiveTab={setActiveTab} textbooksCount={textbooks.length} />
-              ) : (
-                <Dashboard
-                  user={user}
-                  leaderboard={leaderboard}
-                  language={language}
-                  isPremium={isPremium}
-                  onUpgrade={() => setActiveTab('plans')}
-                  chapters={chapters}
-                  dailyChallenge={dailyChallenge}
-                  hasDailyPractice={dailyMcqs.length > 0}
-                  todayDailySubject={todayDailySubject}
-                  tomorrowDailySubject={tomorrowDailySubject}
-                  onOpenDailyPractice={() => setActiveTab('daily_mcqs')}
-                  onShareDailyPractice={handleShareDailyPractice}
-                  isRegistered={isRegisteredForTestSeries}
-                  onRegistrationComplete={() => setIsRegisteredForTestSeries(true)}
-                  onOpenTutor={() => {
-                    if (isPremium) {
-                      setOpenTutorInVoiceMode(Date.now());
-                      setActiveTab('study_buddy');
-                    } else {
-                      handleUpgradeClick();
-                    }
-                  }}
-                  onOpenCommunity={() => setShowCommunityChat(true)}
-                  following={following}
-                  onToggleFollow={handleToggleFollow}
-                  isTourStep3={tourStep === 3}
-                  isTourStep4={tourStep === 4}
-                  onOpenRajaPoster={() => setShowLaunchPoster(true)}
-                />
-              )
+              <div className="space-y-6 flex flex-col h-full min-h-0">
+                {showShowcaseTab && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="glass-card rounded-2xl p-4 bg-slate-900/90 border border-emerald-500/30 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 relative overflow-hidden backdrop-blur-md shrink-0 select-none"
+                  >
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 bg-emerald-500/15 rounded-xl border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 animate-pulse">
+                        <Lucide.Activity size={18} />
+                      </div>
+                      <div>
+                        <h4 className="text-xs md:text-sm font-black text-white uppercase tracking-wider flex items-center gap-1.5">
+                          ⚡ Auditor Observability Active
+                        </h4>
+                        <p className="text-[10px] md:text-xs text-slate-400 leading-relaxed font-medium">
+                          Monitor GenAI pipeline latencies, speech synthesis routing decisions, and context caching cost controls in real-time.
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        try {
+                          const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+                          const osc = audioCtx.createOscillator();
+                          const gain = audioCtx.createGain();
+                          osc.type = 'sine';
+                          osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                          gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                          osc.connect(gain);
+                          gain.connect(audioCtx.destination);
+                          osc.start();
+                          osc.stop(audioCtx.currentTime + 0.1);
+                        } catch (e) {}
+                        setActiveTab('telemetry');
+                      }}
+                      className="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black text-[10px] uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 rounded-lg border border-emerald-400/20 cursor-pointer shadow-lg shadow-emerald-500/15 shrink-0"
+                    >
+                      Open Telemetry HUD
+                      <Lucide.ArrowRight size={12} />
+                    </button>
+                  </motion.div>
+                )}
+                {user?.role === 'teacher' ? (
+                  <TeacherDashboard user={user} language={language} chapters={chapters} setActiveTab={setActiveTab} textbooksCount={textbooks.length} />
+                ) : (
+                  <Dashboard
+                    user={user}
+                    leaderboard={leaderboard}
+                    language={language}
+                    isPremium={isPremium}
+                    onUpgrade={() => setActiveTab('plans')}
+                    chapters={chapters}
+                    dailyChallenge={dailyChallenge}
+                    hasDailyPractice={dailyMcqs.length > 0}
+                    todayDailySubject={todayDailySubject}
+                    tomorrowDailySubject={tomorrowDailySubject}
+                    onOpenDailyPractice={() => setActiveTab('daily_mcqs')}
+                    onShareDailyPractice={handleShareDailyPractice}
+                    isRegistered={isRegisteredForTestSeries}
+                    onRegistrationComplete={() => setIsRegisteredForTestSeries(true)}
+                    onOpenTutor={() => {
+                      if (isPremium) {
+                        setOpenTutorInVoiceMode(Date.now());
+                        setActiveTab('study_buddy');
+                      } else {
+                        handleUpgradeClick();
+                      }
+                    }}
+                    onOpenCommunity={() => setShowCommunityChat(true)}
+                    following={following}
+                    onToggleFollow={handleToggleFollow}
+                    isTourStep3={tourStep === 3}
+                    isTourStep4={tourStep === 4}
+                    onOpenRajaPoster={() => setShowLaunchPoster(true)}
+                  />
+                )}
+              </div>
             )}
             {activeTab === 'notifications' && <NotificationsView notifications={studentNotifications} language={language} readNotifIds={readNotifIds} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'digital_library' && (
@@ -3501,6 +3565,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             {activeTab === 'store' && <AvatarStore user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'plans' && <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'pitch_deck' && <PitchDeckView language={language} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'telemetry' && <TelemetryView language={language} onBack={() => setActiveTab('dashboard')} />}
           </AnimatePresence>
 
 
@@ -3589,7 +3654,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
               <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shadow-[0_0_8px_#fbbf24]"></span>
               <span className="text-[10px] font-black text-amber-400 uppercase tracking-[0.2em]">Guided Judge Tour</span>
             </div>
-            <span className="text-[10px] font-black text-slate-500 tracking-wider">Step {tourStep} of 8</span>
+            <span className="text-[10px] font-black text-slate-500 tracking-wider">Step {tourStep} of 9</span>
           </div>
 
           <div className="space-y-1">
@@ -3602,6 +3667,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
               {tourStep === 6 && "📊 Syllabus Tracker"}
               {tourStep === 7 && "🏆 Statewide Leaderboards"}
               {tourStep === 8 && "💼 Pitch Deck & Gemma Roadmap"}
+              {tourStep === 9 && "⚡ Live System Observability"}
             </h4>
             <p className="text-xs text-slate-300 leading-relaxed font-medium">
               {tourStep === 1 && "We have automatically logged you into a Class 10 BSE Odisha simulated account (Anuradha Panda). Let's take a quick tour of our core features!"}
@@ -3612,6 +3678,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
               {tourStep === 6 && "Track your board exam preparation progress chapter-by-chapter with our real-time syllabus tracker."}
               {tourStep === 7 && "Compete with other students across Odisha, track your rank, and earn rewards on our statewide leaderboards."}
               {tourStep === 8 && "Explore our pilot project's pitch deck, scale-to-zero serverless hosting, and our roadmap for training a native Odia Gemma model."}
+              {tourStep === 9 && "Auditor-facing live telemetry console showing Vertex AI pipe delays, context caching cost reductions, and a failure injection sandbox to test system resilience."}
             </p>
           </div>
 
@@ -3634,7 +3701,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
               )}
               <button 
                 onClick={() => {
-                  if (tourStep < 8) {
+                  if (tourStep < 9) {
                     handleTourStepChange(tourStep + 1);
                   } else {
                     handleEndTour();
@@ -3642,8 +3709,8 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                 }}
                 className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-black text-[10px] uppercase tracking-widest shadow-lg shadow-amber-500/20 active:scale-95 transition-all cursor-pointer flex items-center gap-1"
               >
-                <span>{tourStep === 8 ? "Finish" : "Next"}</span>
-                {tourStep < 8 && <Lucide.ChevronRight size={12} />}
+                <span>{tourStep === 9 ? "Finish" : "Next"}</span>
+                {tourStep < 9 && <Lucide.ChevronRight size={12} />}
               </button>
             </div>
           </div>
