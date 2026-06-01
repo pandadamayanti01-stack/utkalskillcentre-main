@@ -3444,7 +3444,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
           <AnimatePresence mode="wait">
             {/* Your 10+ Tab components go here... */}
             {activeTab === 'dashboard' && (
-              <div className="space-y-6 flex flex-col h-full min-h-0">
+              <div className="space-y-6 flex flex-col w-full">
                 {showShowcaseTab && (
                   <motion.div 
                     initial={{ opacity: 0, y: -20 }}
