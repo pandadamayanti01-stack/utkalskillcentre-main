@@ -330,9 +330,92 @@ function pcmToWav(pcmBuffer: any, sampleRate: number = 24000): any {
   return Buffer.concat([header, pcmBuffer]);
 }
 
+const KOSLI_DESIA_MAP: Record<string, string> = {
+  "କାଣା କରୁଛୁ": "କଣ କରୁଛ",
+  "କାଣା କରୁଛ": "କଣ କରୁଛ",
+  "ଭାତ ଖାଇଲୁନି": "ଭାତ ଖାଇଲ କି",
+  "କରୁଛନ": "କରୁଛନ୍ତି",
+  "ଖାଉଛନ": "ଖାଉଛନ୍ତି",
+  "ପଢୁଛନ": "ପଢୁଛନ୍ତି",
+  "ଖେଳୁଛନ": "ଖେଳୁଛନ୍ତି",
+  "ଆମେନ": "ଆମେ",
+  "ତୁମେନ": "ତୁମେମାନେ",
+  "ଘରକେ": "ଘରକୁ",
+  "ସ୍କୁଲକେ": "ସ୍କୁଲକୁ",
+  "ଖେଳବାକେ": "ଖେଳିବାକୁ",
+  "ପଢ଼ବାକେ": "ପଢ଼ିବାକୁ",
+  "ଲେଖବାକେ": "ଲେଖିବାକୁ",
+  "କେନ୍ତା": "କେମିତି",
+  "କେନେ": "କେଉଁଠି",
+  "ହେତା": "ସେମିତି",
+  "କାଣା": "କଣ",
+  "ମୁଇଁ": "ମୁଁ",
+  "ତୁଇ": "ତୁମେ",
+  "ଖାଉଛୁ": "ଖାଉଛ",
+  "ଯାଉଛୁ": "ଯାଉଛ",
+  "ଖାଇବୁ": "ଖାଇବ",
+  "ଆସିଲୁ": "ଆସିଲ",
+  "ଗଲାସ": "ଗଲ",
+  "ନାଇଁ": "ନାହିଁ",
+  "ଅଛେ": "ଅଛି"
+};
+
+function normalizeOdiaDialect(query: string): string {
+  if (!query) return query;
+  let normalized = query;
+  const sortedKeys = Object.keys(KOSLI_DESIA_MAP).sort((a, b) => b.length - a.length);
+  for (const key of sortedKeys) {
+    const replacement = KOSLI_DESIA_MAP[key];
+    normalized = normalized.split(key).join(replacement);
+  }
+  return normalized;
+}
+
+function tokenize(text: string): Set<string> {
+  if (!text) return new Set();
+  const tokens = text
+    .toLowerCase()
+    .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"'।]/g, ' ')
+    .split(/\s+/);
+  
+  const uniqueTokens = new Set<string>();
+  for (let token of tokens) {
+    token = token.trim();
+    if (token.length > 1) {
+      uniqueTokens.add(token);
+    }
+  }
+  return uniqueTokens;
+}
+
+function calculateJaccard(setA: Set<string>, setB: Set<string>): number {
+  if (setA.size === 0 || setB.size === 0) return 0;
+  let intersectionCount = 0;
+  for (const item of setA) {
+    if (setB.has(item)) {
+      intersectionCount++;
+    }
+  }
+  const unionSize = setA.size + setB.size - intersectionCount;
+  return intersectionCount / unionSize;
+}
+
+function cosineSimilarity(vecA: number[], vecB: number[]): number {
+  let dotProduct = 0;
+  let normA = 0;
+  let normB = 0;
+  for (let i = 0; i < vecA.length; i++) {
+    dotProduct += vecA[i] * vecB[i];
+    normA += vecA[i] * vecA[i];
+    normB += vecB[i] * vecB[i];
+  }
+  if (normA === 0 || normB === 0) return 0;
+  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+}
+
 app.post('/api/ai/generate', async (req, res) => {
   try {
-    let { contents, systemInstruction, modelType, generationConfig, class: userClass, subject } = req.body;
+    let { contents, systemInstruction, modelType, generationConfig, class: userClass, subject, enableDialectBridge } = req.body;
     
     // Perform Firestore Native Vector Search Grounding if class & subject are supplied
     if (userClass && subject) {
@@ -346,7 +429,15 @@ app.post('/api/ai/generate', async (req, res) => {
         }
         
         if (queryText) {
-          console.log(`Backend RAG: Retrieving context for query: "${queryText.substring(0, 50)}..." class: ${userClass}, subject: ${subject}`);
+          let searchNormalizedQuery = queryText;
+          const isBridgeActive = enableDialectBridge === true || enableDialectBridge === 'true';
+          
+          if (isBridgeActive) {
+            searchNormalizedQuery = normalizeOdiaDialect(queryText);
+            console.log(`Dialect Bridge: Normalized Kosli/Desia query from "${queryText}" to "${searchNormalizedQuery}"`);
+          }
+
+          console.log(`Backend RAG: Retrieving context for query: "${searchNormalizedQuery.substring(0, 50)}..." class: ${userClass}, subject: ${subject}`);
           const rotatorKeys = [];
           for (let i = 1; i <= 7; i++) {
             const k = process.env[`GEMINI_ROTATOR_KEY_${i}`];
@@ -364,7 +455,7 @@ app.post('/api/ai/generate', async (req, res) => {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 model: "models/gemini-embedding-001",
-                content: { parts: [{ text: queryText }] },
+                content: { parts: [{ text: searchNormalizedQuery }] },
                 outputDimensionality: 768
               })
             });
@@ -380,6 +471,7 @@ app.post('/api/ai/generate', async (req, res) => {
                   const chunksColl = db.collection('textbook_chunks');
                   const { FieldValue } = require('firebase-admin/firestore');
                   
+                  // Retrieve top 8 vector matches
                   const vectorQuery = chunksColl
                     .where('class', '==', String(userClass).toLowerCase().trim())
                     .where('subject', '==', String(subject).toLowerCase().trim())
@@ -387,24 +479,69 @@ app.post('/api/ai/generate', async (req, res) => {
                       'embedding',
                       FieldValue.vector(queryVector),
                       {
-                        limit: 3,
+                        limit: 8,
                         distanceMeasure: 'COSINE'
                       }
                     );
                   
                   const snapshot = await vectorQuery.get();
-                  let retrievedText = '';
+                  const candidates: any[] = [];
+                  const queryTokens = tokenize(searchNormalizedQuery);
+
                   snapshot.forEach((doc: any) => {
                     const data = doc.data();
-                    retrievedText += `\n--- [Verified Reference: ${data.reference || 'Textbook'}] ---\n${data.text}\n`;
+                    const chunkText = data.text || '';
+                    const chunkTokens = tokenize(chunkText);
+                    const jaccard = calculateJaccard(queryTokens, chunkTokens);
+                    
+                    let chunkEmbedding: number[] = [];
+                    if (data.embedding) {
+                      if (Array.isArray(data.embedding)) {
+                        chunkEmbedding = data.embedding;
+                      } else if (typeof data.embedding.toArray === 'function') {
+                        chunkEmbedding = data.embedding.toArray();
+                      } else if (Array.isArray(data.embedding.values)) {
+                        chunkEmbedding = data.embedding.values;
+                      }
+                    }
+                    
+                    const cosSim = chunkEmbedding.length === 768 
+                      ? cosineSimilarity(queryVector, chunkEmbedding) 
+                      : 0;
+                    
+                    const hybridScore = 0.7 * cosSim + 0.3 * jaccard;
+                    
+                    candidates.push({
+                      reference: data.reference,
+                      text: chunkText,
+                      cosSim,
+                      jaccard,
+                      score: hybridScore
+                    });
+                  });
+
+                  // Sort candidates by hybrid score descending
+                  candidates.sort((a, b) => b.score - a.score);
+
+                  // Pick top 3
+                  const topCandidates = candidates.slice(0, 3);
+                  
+                  let retrievedText = '';
+                  topCandidates.forEach((candidate) => {
+                    retrievedText += `\n--- [Verified Reference: ${candidate.reference || 'Textbook'}] ---\n${candidate.text}\n`;
                   });
                   
                   if (retrievedText) {
-                    console.log("Backend RAG: Successfully retrieved grounded textbook chunks!");
+                    console.log(`Backend RAG: Successfully retrieved grounded textbook chunks (Top score: ${topCandidates[0]?.score?.toFixed(4)}, Vector: ${topCandidates[0]?.cosSim?.toFixed(4)}, Jaccard: ${topCandidates[0]?.jaccard?.toFixed(4)})`);
                     systemInstruction = `${systemInstruction ? systemInstruction + '\n\n' : ''}### STRICT TEXTBOOK GROUNDING CONTEXT:
 The following are verified, 100% correct stanzas/passages retrieved directly from the official school textbook. You MUST base your answers strictly on this context:
 ${retrievedText}
 `;
+                  }
+
+                  if (isBridgeActive) {
+                    systemInstruction = `${systemInstruction ? systemInstruction + '\n\n' : ''}### DIALECT BRIDGE ACTIVE:
+The student may be using local colloquial speech (Kosli/Desia accents). Keep your tone elder-sisterly, warm and friendly, and respond in standard Odia. Ensure any grammatical mappings are resolved naturally.`;
                   }
                 }
               }

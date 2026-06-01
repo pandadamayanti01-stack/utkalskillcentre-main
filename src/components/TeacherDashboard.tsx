@@ -130,7 +130,7 @@ export function TeacherDashboard({ user, language, chapters, setActiveTab, textb
       </motion.div>
 
       {/* 3. Tuition Batch / Student Management Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <motion.div variants={itemVariants} className="glass-card rounded-3xl p-6 border border-white/10 space-y-6 bg-slate-900/40">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -186,6 +186,58 @@ export function TeacherDashboard({ user, language, chapters, setActiveTab, textb
             <p className="text-sm font-bold text-white">Average Batch Accuracy: <span className="text-emerald-400">84%</span></p>
             <p className="text-xs text-slate-400">Top Performing Topic: Quadratic Equations</p>
           </div>
+        </motion.div>
+
+        {/* Predictive Learning Diagnostics */}
+        <motion.div variants={itemVariants} className="glass-card rounded-3xl p-6 border border-red-500/20 space-y-6 bg-gradient-to-br from-slate-900/40 via-red-500/5 to-transparent flex flex-col justify-between">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-xl bg-red-500/20 text-red-400 border border-red-500/30 animate-pulse">
+                  <Lucide.ShieldAlert size={20} />
+                </div>
+                <h3 className="text-lg font-black text-white">
+                  {language === 'en' ? 'AI Diagnostics' : 'AI ନିଦାନ ପ୍ୟାନେଲ୍'}
+                </h3>
+              </div>
+              <span className="px-2 py-0.5 rounded-full bg-red-500/20 text-red-300 text-[10px] font-black uppercase tracking-widest border border-red-500/30">
+                {language === 'en' ? 'Gaps Found' : 'ତ୍ରୁଟି ଚିହ୍ନଟ'}
+              </span>
+            </div>
+            <p className="text-slate-400 text-xs">
+              {language === 'en' ? 'AI identified conceptual learning gap in your batches.' : 'ଆପଣଙ୍କ ବ୍ୟାଚ୍‌ରେ AI ଦ୍ଵାରା ଶିକ୍ଷଣ ତ୍ରୁଟି ଚିହ୍ନଟ ହୋଇଛି ।'}
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-red-950/20 border border-red-500/20 space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping shrink-0" />
+              <span className="text-[10px] font-black text-red-400 uppercase tracking-wider">{language === 'en' ? 'Concept Hazard' : 'ସଂକଳ୍ପ ବିପଦ'}</span>
+            </div>
+            <h4 className="text-xs font-bold text-white leading-snug">
+              Class 7 Science - Air Pressure / Air (ବାୟୁ)
+            </h4>
+            <div className="flex justify-between text-[10px] text-slate-400 font-bold">
+              <span>{language === 'en' ? 'Avg. Accuracy:' : 'ହାରାହାରି ସ୍କୋର:'}</span>
+              <span className="text-red-400">72%</span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              setHomeworkClass('7');
+              setHomeworkSubject('science');
+              setHomeworkChapter('ବାୟୁ');
+              setHomeworkDifficulty('medium');
+              setHomeworkQCount(10);
+              setShowHomeworkModal(true);
+            }}
+            className="w-full py-3 rounded-xl bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-black text-xs uppercase tracking-wider transition-all shadow-lg shadow-red-900/30 flex items-center justify-center gap-1.5 cursor-pointer"
+          >
+            <Lucide.Printer size={14} />
+            <span>{language === 'en' ? 'Auto-Generate Revision' : 'ସଂଶୋଧନ ସିଟ୍ ପ୍ରସ୍ତୁତ'}</span>
+          </button>
         </motion.div>
 
         {/* 5. Quick Access: Textbooks Library */}

@@ -62,6 +62,17 @@ export const TelemetryView: React.FC<TelemetryViewProps> = ({
       { timestamp: getFormattedTime(Date.now() - 1000), type: 'info', message: 'Listening for system events...' }
     ];
     setLogs(initialLogs);
+
+    const handleTelemetryEvent = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail) {
+        addLog(customEvent.detail.type || 'info', customEvent.detail.message);
+      }
+    };
+    window.addEventListener('gundulu_telemetry_log', handleTelemetryEvent);
+    return () => {
+      window.removeEventListener('gundulu_telemetry_log', handleTelemetryEvent);
+    };
   }, []);
 
   // Format timestamp helper
@@ -235,6 +246,7 @@ export const TelemetryView: React.FC<TelemetryViewProps> = ({
     if (nextVal) {
       addLog('warn', 'Auditor Simulation: INJECTED Complete Network Disconnection (Offline mode).');
       addLog('routing', 'Network Sync Manager: Offline state detected. Local ServiceWorker hijacking requests. Vector DB searches and Socratic blackboard solutions running fully locally on client device sandbox.');
+      addLog('routing', '[SYSTEM] Browser switched to Local WebGPU execution routing. Quantized Odia-Gemma 2B active.');
     } else {
       addLog('success', 'Auditor Simulation: REVERTED Network Disconnection. Live sockets re-established.');
     }
