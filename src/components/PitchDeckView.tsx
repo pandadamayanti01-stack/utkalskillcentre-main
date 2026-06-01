@@ -294,10 +294,10 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
         tagline: "PRODUCT DESIGN & CUSTOMER JOURNEY",
         bullets: [
           { title: "Frictionless Signup", desc: "Bypass mode with mobile OTP allows parents with no email to log in instantly." },
-          { title: "Interactive Launch Event", desc: "Students pop floating balloons containing Odia vowels to release sound particles." },
+          { title: "Interactive Onboarding", desc: "Students pop floating balloons containing Odia vowels to release sound particles, going live with our Play Store launch on June 14." },
           { title: "Premium Visual Rewards", desc: "Watching Gundulu's vertical welcome animation grants a Founding Golden Ticket with +500 XP." }
         ],
-        speakerNotes: "To hook young learners on their very first launch, we built a highly gamified greeting sequence. Students pop interactive helium balloons to hear synthesized audio pops and watch a snappy 12-second vertical welcome animation from their mascot, Gundulu. This rewards them with a Gold Founding Member Ticket and programmatically syncs +500 XP to Firestore to drive instant daily retention."
+        speakerNotes: "To hook young learners on their very first launch, we built a highly gamified greeting sequence. Students pop interactive helium balloons to hear synthesized audio pops and watch a snappy 12-second vertical welcome animation from their mascot, Gundulu. This gamified onboarding goes live on June 14 with our Play Store launch, and rewards them with a Gold Founding Member Ticket, programmatically syncing +500 XP to Firestore to drive instant daily retention."
       },
       {
         title: "Business Viability & Future AI Roadmap",
@@ -362,10 +362,10 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
         tagline: "ପ୍ରଡକ୍ଟ ଡିଜାଇନ୍ ଏବଂ ଆନନ୍ଦଦାୟକ ପର୍ଯ୍ୟାୟ",
         bullets: [
           { title: "ସରଳ ପ୍ରବେଶ ପ୍ରଣାଳୀ", desc: "କୌଣସି ଜଟିଳ ଫର୍ମ ବିନା କେବଳ ମୋବାଇଲ୍ ଦ୍ୱାରା ଲଗଇନ୍ କରି ତୁରନ୍ତ ଆରମ୍ଭ କରିପାରିବେ।" },
-          { title: "ବେଲୁନ୍ ଫୁଟାଇବା ଖେଳ", desc: "ପ୍ରଥମ ଲଗଇନ୍ ରେ ପିଲାମାନେ ବେଲୁନ୍ ଫୁଟାଇ ଓଡ଼ିଆ ଅକ୍ଷର ଶିଖନ୍ତି ଏବଂ ଶବ୍ଦ ଇଫେକ୍ଟ ଶୁଣନ୍ତି।" },
+          { title: "ବେଲୁନ୍ ଫୁଟାଇବା ଖେଳ", desc: "ପ୍ରଥମ ଲଗଇନ୍ ରେ ପିଲାମାନେ ବେଲୁନ୍ ଫୁଟାଇ ଓଡ଼ିଆ ସ୍ୱରବର୍ଣ୍ଣ ଶିଖନ୍ତି, ଯାହା ଜୁନ୍ ୧୪ ରେ ପ୍ଲେ ଷ୍ଟୋର୍ (Play Store) ଲଞ୍ଚ୍ ସହ ଲାଇଭ୍ ହେବାକୁ ଯାଉଛି।" },
           { title: "ଗୋଲ୍ଡେନ୍ ହୋଲୋଗ୍ରାଫିକ୍ ଟିକେଟ୍", desc: "ଗୁନ୍ଦୁଲୁର ୧୨-ସେକେଣ୍ଡ୍ ର ସ୍ୱାଗତ ଭିଡିଓ ଦେଖିଲେ ପିଲାମାନଙ୍କୁ ଗୋଲ୍ଡେନ୍ ପାସ୍ ଏବଂ +୫୦୦ XP ମିଳେ।" }
         ],
-        speakerNotes: "ଛୋଟ ପିଲାଙ୍କ ମନରେ ପାଠପଢ଼ା ପାଇଁ ଉତ୍ସାହ ଭରିବାକୁ ଆମେ ଏକ ସୁନ୍ଦର ବେଲୁନ୍ ଗେମ୍ ରଖିଛୁ। ପିଲାମାନେ ରଙ୍ଗବେରଙ୍ଗ ବେଲୁନ୍ ଫୁଟାଇବା ପରେ ସେମାନଙ୍କ ସାମ୍ନାରେ ଗୁନ୍ଦୁଲୁର ଏକ ୧୨-ସେକେଣ୍ଡ୍ ର ମନୋରଞ୍ଜକ ଓଡ଼ିଆ ଆନିମେସନ୍ ପ୍ଲେ ହୁଏ। ଏହା ପରେ ସେମାନଙ୍କୁ ଏକ ଗୋଲ୍ଡେନ୍ ଫାଉଣ୍ଡିଂ ମେମ୍ବର ପାସ୍ ଏବଂ ୫୦୦ XP ମିଳିଥାଏ, ଯାହା ପିଲାଙ୍କୁ ପ୍ରତିଦିନ ପଢ଼ିବାକୁ ଆକର୍ଷିତ କରେ।"
+        speakerNotes: "ଛୋଟ ପିଲାଙ୍କ ମନରେ ପାଠପଢ଼ା ପାଇଁ ଉତ୍ସାହ ଭରିବାକୁ ଆମେ ଏକ ସୁନ୍ଦର ବେଲୁନ୍ ଗେମ୍ ରଖିଛୁ। ପିଲାମାନେ ରଙ୍ଗବେରଙ୍ଗ ବେଲୁନ୍ ଫୁଟାଇବା ପରେ ସେମାନଙ୍କ ସାମ୍ନାରେ ଗୁନ୍ଦୁଲୁର ଏକ ୧୨-ସେକେଣ୍ଡ୍ ର ମନୋରଞ୍ଜକ ଓଡ଼ିଆ ଆନିମେସନ୍ ପ୍ଲେ ହୁଏ। ଏହି ଗେମିଫାଇଡ୍ ଅନବୋର୍ଡିଂ ଜୁନ୍ ୧୪ ପ୍ଲେ ଷ୍ଟୋର୍ (Play Store) ଲଞ୍ଚ ସହିତ ଲାଇଭ୍ ହେବ ଏବଂ ସେମାନଙ୍କୁ ଏକ ଗୋଲ୍ଡେନ୍ ଫାଉଣ୍ଡିଂ ମେମ୍ବର ପାସ୍ ଓ ୫୦୦ XP ପ୍ରଦାନ କରିବ, ଯାହା ପିଲାଙ୍କୁ ପ୍ରତିଦିନ ପଢ଼ିବାକୁ ଆକର୍ଷିତ କରେ।"
       },
       {
         title: "ବ୍ୟବସାୟିକ ସଫଳତା ଏବଂ ଏଆଇ ରୋଡ୍ ମ୍ୟାପ୍",
@@ -745,8 +745,8 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                 </div>
               )}
 
-              {/* SLIDE 4 SHOWCASE: Interactive Balloon-Popping Simulation & Vertical Video Player */}
-              {currentSlide === 3 && (
+              {/* SLIDE 5 SHOWCASE: Interactive Balloon-Popping Simulation & Vertical Video Player */}
+              {currentSlide === 4 && (
                 <div className="w-full max-w-md flex flex-col gap-4">
                   {/* Floating Balloons Simulation */}
                   <div className="bg-slate-900/80 border border-white/5 p-4 rounded-2xl">
@@ -836,8 +836,8 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                 </div>
               )}
 
-              {/* SLIDE 5 SHOWCASE: Enterprise Architecture Node Map Diagram */}
-              {currentSlide === 4 && (
+              {/* SLIDE 4 SHOWCASE: Enterprise Architecture Node Map Diagram */}
+              {currentSlide === 3 && (
                 <div className="w-full max-w-md bg-slate-950/80 rounded-2xl p-4 border border-white/5 space-y-4">
                   <div className="text-center">
                     <span className="text-[9px] uppercase tracking-widest font-black text-amber-500">
