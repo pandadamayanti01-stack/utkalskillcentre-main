@@ -601,7 +601,7 @@ The student may be using local colloquial speech (Kosli/Desia accents). Keep you
         
         if (accessToken) {
           // Map models to standard Vertex AI model names
-          const vertexModel = modelType === 'pro' ? 'gemini-2.5-pro' : 'gemini-3.5-flash';
+          const vertexModel = modelType === 'pro' ? 'gemini-2.5-pro' : 'gemini-2.5-flash';
           
           console.log(`Backend AI: Calling Vertex AI model ${vertexModel} via global endpoint for project ${projectId}...`);
           const vertexUrl = `https://aiplatform.googleapis.com/v1/projects/${projectId}/locations/global/publishers/google/models/${vertexModel}:generateContent`;
@@ -647,7 +647,7 @@ The student may be using local colloquial speech (Kosli/Desia accents). Keep you
           const vertexKey = process.env.VERTEX_API_KEY || process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
           if (vertexKey) {
             console.log("Backend AI: Attempting to call Vertex endpoints using direct developer key...");
-            const apiKeyModel = modelType === 'pro' ? 'gemini-2.5-pro' : 'gemini-3.5-flash';
+            const apiKeyModel = modelType === 'pro' ? 'gemini-2.5-pro' : 'gemini-2.5-flash';
             const isVertexKey = vertexKey.startsWith('AQ.');
             const vertexKeyUrl = isVertexKey
               ? `https://aiplatform.googleapis.com/v1/publishers/google/models/${apiKeyModel}:generateContent?key=${vertexKey}`
@@ -695,11 +695,11 @@ The student may be using local colloquial speech (Kosli/Desia accents). Keep you
     const ai = new GoogleGenerativeAI(apiKey);
 
     const FLASH_MODELS = [
-      "gemini-3.5-flash", "gemini-2.5-flash", "gemini-2.0-flash", "gemini-3.1-flash-lite",
+      "gemini-2.5-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite",
       "gemini-flash-latest", "gemini-flash-lite-latest", "gemini-2.5-flash-lite", "gemini-2.5-flash-image"
     ];
     const PRO_MODELS = [
-      "gemini-3.1-pro-preview", "gemini-3-pro-preview", "gemini-2.5-pro", "gemini-pro-latest"
+      "gemini-2.5-pro", "gemini-3.1-pro-preview", "gemini-3-pro-preview", "gemini-pro-latest"
     ];
     
     let models = modelType === 'pro' ? [...PRO_MODELS, ...FLASH_MODELS] : [...FLASH_MODELS];
