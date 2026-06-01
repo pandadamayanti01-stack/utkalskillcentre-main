@@ -48,7 +48,7 @@ export const TelemetryView: React.FC<TelemetryViewProps> = ({
   // Real-time Event Logger
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [showMcpSchemas, setShowMcpSchemas] = useState(false);
-  const logEndRef = useRef<HTMLDivElement | null>(null);
+  const logContainerRef = useRef<HTMLDivElement | null>(null);
 
   // Initialise logs
   useEffect(() => {
@@ -74,10 +74,10 @@ export const TelemetryView: React.FC<TelemetryViewProps> = ({
     return `${hrs}:${mins}:${secs}.${millis}`;
   }
 
-  // Scroll logs to bottom
+  // Scroll logs to bottom inside the log container only (prevents window scrolling)
   useEffect(() => {
-    if (logEndRef.current) {
-      logEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (logContainerRef.current) {
+      logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
     }
   }, [logs]);
 
@@ -742,7 +742,7 @@ export const TelemetryView: React.FC<TelemetryViewProps> = ({
             </div>
 
             {/* Terminal Feed logs area */}
-            <div className="flex-1 p-4 font-mono text-[10.5px] leading-relaxed overflow-y-auto space-y-1.5 select-text selection:bg-emerald-500/20 scrollbar-thin">
+            <div ref={logContainerRef} className="flex-1 p-4 font-mono text-[10.5px] leading-relaxed overflow-y-auto space-y-1.5 select-text selection:bg-emerald-500/20 scrollbar-thin">
               {logs.map((log, idx) => (
                 <div key={idx} className="flex items-start gap-2 hover:bg-white/[0.02] py-0.5 px-1.5 rounded transition-all">
                   <span className="text-slate-500 select-none">{log.timestamp}</span>
@@ -768,7 +768,6 @@ export const TelemetryView: React.FC<TelemetryViewProps> = ({
                   </span>
                 </div>
               ))}
-              <div ref={logEndRef} />
             </div>
 
             {/* Performance status indicator footer */}
