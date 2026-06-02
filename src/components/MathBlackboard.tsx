@@ -8,11 +8,17 @@ import { cleanOdiaOrthography } from '../services/aiService';
 interface MathBlackboardProps {
   language: 'en' | 'or';
   onClose: () => void;
+  isPremium?: boolean;
+  onUpgrade?: () => void;
+  user?: any;
 }
 
 export const MathBlackboard: React.FC<MathBlackboardProps> = ({
   language,
-  onClose
+  onClose,
+  isPremium = false,
+  onUpgrade,
+  user
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const explanationRef = useRef<HTMLDivElement | null>(null);
@@ -20,6 +26,13 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
   const [brushColor, setBrushColor] = useState('#fef8ec'); // Cream chalk color
   const [brushWidth, setBrushWidth] = useState(4);
   const [isEraser, setIsEraser] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [freeQueriesCount, setFreeQueriesCount] = useState<number>(0);
+
+  useEffect(() => {
+    const getFreeQueriesKey = () => `free_ai_queries_used_${user?.uid || user?.id || 'guest'}`;
+    setFreeQueriesCount(parseInt(localStorage.getItem(getFreeQueriesKey()) || '0', 10));
+  }, [user]);
   
   const [loading, setLoading] = useState(false);
   const [scanning, setScanning] = useState(false);
@@ -687,6 +700,11 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
   const solveProblem = async () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    if (!isPremium && freeQueriesCount >= 5) {
+      setShowUpgradeModal(true);
+      return;
+    }
     
     stopAudio();
     setLoading(true);
@@ -702,10 +720,10 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
       const systemInstruction = 
         "You are Gundulu AI, a friendly, brilliant, and patient Socratic tutor for school students in Odisha. " +
         "Analyze the hand-drawn blackboard image. " +
-        "1. Identify what is drawn or written on the chalkboard. This could be a math problem, equation, sum, geometric shape, diagram, sketch, or words/sentences written in Odia or English script. " +
+        "1. Identify what is drawn or written on the chalkboard. This could be a math problem, equation, sum, geometric shape, diagram, sketch, or words/sentences written in Odia or English script for any subject (Math, Science, Language, History, Geography, EVS, etc.). " +
         "2. Be extremely precise in handwriting recognition. For example, distinguish between similar-looking Odia characters (like 'ଘ' in 'ବାଘ' meaning tiger, and 'ଧ' in 'ବାଧା' meaning obstacle). Pay close attention to standard Odia letters and words. " +
         "3. If it is a math problem, sum, or equation: solve it step-by-step using a Socratic tutoring method, guiding the child to think rather than just printing a single result. " +
-        "4. If it is a general drawing, shape, or word (such as 'ବାଘ'): identify it accurately, explain what it represents (e.g., share interesting facts, science, or general knowledge about it), and engage the child in a friendly, interactive conversation. " +
+        "4. If it is a general drawing, shape, word, or academic query (such as a science diagram or history question): identify it accurately, explain what it represents step-by-step, and engage the child in a friendly, interactive conversation. " +
         "5. Provide the explanation in the student's selected language: " + (selectedLang === 'or' ? 'Odia' : 'English') + ". " +
         "6. Keep the explanation concise, clear, and structured with clean markdown points. " +
         "7. CRITICAL MATH LAYOUT RULE: NEVER output LaTeX math expressions, formulas, or delimiters (DO NOT write $, $$, \\[, \\], \\(, \\), \\text{}, \\frac, \\sqrt, \\times, \\div). Write all mathematical equations, fractions, and calculations using plain text and standard Unicode characters (e.g., use +, -, ×, ÷, =, /, √, π, ^) that school students and parents can easily read.";
@@ -747,12 +765,23 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
       const data = await response.json();
       const rawText = data.text || "Could not generate solution.";
       setExplanation(cleanOdiaOrthography(rawText));
+
+      // Increment free queries token counter for unsubscribed users if it is a valid academic query and not safety-blocked
+      if (!isPremium) {
+        const isSafetyBlocked = rawText.includes("Safety Warning") || rawText.includes("Perspective API") || rawText.includes("ସୁରକ୍ଷା ଚେତାବନୀ");
+        if (!isSafetyBlocked) {
+          const getFreeQueriesKey = () => `free_ai_queries_used_${user?.uid || user?.id || 'guest'}`;
+          const currentFreeCount = parseInt(localStorage.getItem(getFreeQueriesKey()) || '0', 10);
+          localStorage.setItem(getFreeQueriesKey(), (currentFreeCount + 1).toString());
+          setFreeQueriesCount(currentFreeCount + 1);
+        }
+      }
     } catch (err) {
       console.error("AI Blackboard Solve Error:", err);
       setExplanation(
         selectedLang === 'or'
-          ? "❌ ଗଣିତ ପ୍ରଶ୍ନଟି ପଢିବାରେ ଅସୁବିଧା ହେଲା | ଦୟାକରି ସ୍ପଷ୍ଟ ଭାବେ ପୁଣିଥରେ ଲେଖନ୍ତୁ।"
-          : "❌ Failed to analyze chalkboard. Please write standard calculations clearly."
+          ? "❌ ପ୍ରଶ୍ନଟି ପଢିବାରେ ଅସୁବିଧା ହେଲା | ଦୟାକରି ସ୍ପଷ୍ଟ ଭାବେ ପୁଣିଥରେ ଲେଖନ୍ତୁ।"
+          : "❌ Failed to analyze chalkboard. Please write or draw clearly."
       );
     } finally {
       setLoading(false);
@@ -891,12 +920,12 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
               </div>
               <div>
                 <h3 className="text-sm md:text-base font-black text-white uppercase tracking-tight">
-                  {selectedLang === 'or' ? 'ଗୁନ୍ଦୁଲୁ ଗଣିତ କଳାପଟା' : "Gundulu's Slate Blackboard"}
+                  {selectedLang === 'or' ? 'ଗୁନ୍ଦୁଲୁ କଳାପଟା' : "Gundulu's Slate Blackboard"}
                 </h3>
                 <span className="text-[9px] md:text-[11px] text-slate-400 font-bold block mt-0.5 leading-none">
                   {selectedLang === 'or' 
-                    ? 'ଚକ୍ ଖଡିରେ ଗଣିତ ପ୍ରଶ୍ନ ଲେଖନ୍ତୁ ଏବଂ ଗୁନ୍ଦୁଲୁ ଆପା ସେଥିରେ ଆପଣଙ୍କୁ ମାର୍ଗଦର୍ଶନ କରିବେ।'
-                    : 'Write or draw equations, and Gundulu AI will explain step-by-step.'}
+                    ? 'ଖଡ଼ିରେ ଯେକୌଣସି ବିଷୟର ଲେଖା ବା ଚିତ୍ର ଆଙ୍କନ୍ତୁ, ଗୁନ୍ଦୁଲୁ ଆପା ସମ୍ପୂର୍ଣ୍ଣ ବୁଝାଇଦେବେ।'
+                    : 'Draw shapes, write words, or input equations. Gundulu AI will explain step-by-step.'}
                 </span>
               </div>
             </div>
@@ -997,6 +1026,60 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
                 )}
               </button>
             </div>
+
+            {/* Premium Upgrade Modal Overlay */}
+            <AnimatePresence>
+              {showUpgradeModal && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="absolute inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex items-center justify-center p-5 rounded-[2rem] select-none force-dark-theme"
+                >
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-[60px] pointer-events-none" />
+                  
+                  <div className="relative max-w-sm w-full bg-slate-900/60 border border-amber-500/25 backdrop-blur-2xl rounded-[2.5rem] p-6 md:p-8 shadow-2xl flex flex-col items-center gap-5 text-center">
+                    <div className="relative shrink-0">
+                      <div className="absolute inset-0 rounded-full bg-amber-500 blur-xl opacity-25 animate-pulse" />
+                      <div className="w-16 h-16 rounded-full bg-slate-950 border-2 border-amber-500/40 shadow-[0_0_20px_rgba(245,158,11,0.3)] flex items-center justify-center overflow-hidden">
+                        <img src="/gundulu.png" alt="Gundulu" className="w-full h-full object-cover scale-[0.95]" />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <h3 className="text-base md:text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-amber-400 uppercase tracking-wide">
+                        {selectedLang === 'or' ? 'ମାଗଣା ସୀମା ଶେଷ ହୋଇଛି! ✍️' : 'Slate Trial Limit Reached! ✍️'}
+                      </h3>
+                      <p className="text-[11px] md:text-xs font-bold text-slate-350 leading-relaxed">
+                        {selectedLang === 'or'
+                          ? 'ଗୁନ୍ଦୁଲୁ କଳାପଟା ସ୍କାନର୍ ସାହାଯ୍ୟରେ ସମସ୍ତ ବିଷୟର ଜଟିଳ ଗଣିତ ଏବଂ ପ୍ରଶ୍ନର ସମାଧାନ ପାଇବା ପାଇଁ ପ୍ରିମିୟମ୍‌କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ!'
+                          : 'Upgrade to Gundulu Premium to scan and solve unlimited chalkboard questions, complex equations, and get dynamic step-by-step guidance.'}
+                      </p>
+                    </div>
+                    
+                    <div className="flex flex-col gap-2.5 w-full mt-1.5">
+                      <button
+                        onClick={() => {
+                          setShowUpgradeModal(false);
+                          if (onUpgrade) onUpgrade();
+                        }}
+                        className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white hover:scale-105 active:scale-95 transition-all shadow-[0_6px_20px_rgba(245,158,11,0.25)] flex items-center justify-center gap-2 font-black text-[10px] uppercase tracking-wider cursor-pointer"
+                      >
+                        <Lucide.Sparkles size={13} className="animate-pulse" />
+                        <span>{selectedLang === 'or' ? 'ପ୍ରିମିୟମ ଅପଗ୍ରେଡ୍' : 'Upgrade to Premium'}</span>
+                      </button>
+                      
+                      <button
+                        onClick={() => setShowUpgradeModal(false)}
+                        className="w-full py-3 rounded-2xl bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 hover:scale-[1.02] active:scale-95 transition-all font-black text-[10px] uppercase tracking-wider cursor-pointer"
+                      >
+                        {selectedLang === 'or' ? 'ଅତିକ୍ରମ କରନ୍ତୁ' : 'Cancel'}
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Quick Drawing Templates (Hackathon Showcase Tool) */}

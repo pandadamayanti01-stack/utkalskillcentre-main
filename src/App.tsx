@@ -3508,12 +3508,8 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                     isRegistered={isRegisteredForTestSeries}
                     onRegistrationComplete={() => setIsRegisteredForTestSeries(true)}
                     onOpenTutor={() => {
-                      if (isPremium) {
-                        setOpenTutorInVoiceMode(Date.now());
-                        setActiveTab('study_buddy');
-                      } else {
-                        handleUpgradeClick();
-                      }
+                      setOpenTutorInVoiceMode(Date.now());
+                      setActiveTab('study_buddy');
                     }}
                     onOpenCommunity={() => setShowCommunityChat(true)}
                     following={following}
@@ -3553,10 +3549,10 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             {activeTab === 'syllabus_tracker' && <SyllabusTracker user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'daily_mcqs' && <DailyMcqView mcqs={dailyMcqs} submissions={dailyMcqSubmissions} user={user} language={language} onBack={() => setActiveTab('dashboard')} onSubmissionSuccess={loadDailyMcqSubmissions} />}
             {activeTab === 'study_buddy' && (
-              isPremium ? <StudyBuddyView language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} user={user} initialVoiceMode={openTutorInVoiceMode} onBack={() => setActiveTab('dashboard')} onLanguageChange={setLanguage} systemSettings={systemSettings} /> : <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
+              <StudyBuddyView language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} user={user} initialVoiceMode={openTutorInVoiceMode} onBack={() => setActiveTab('dashboard')} onLanguageChange={setLanguage} systemSettings={systemSettings} />
             )}
             {activeTab === 'gundulu' && (
-              isPremium ? <GunduluHuman userClass={user?.class} onBack={() => setActiveTab('dashboard')} /> : <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />
+              <GunduluHuman isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} userClass={user?.class} onBack={() => setActiveTab('dashboard')} />
             )}
             {activeTab === 'profile' && <ProfileView user={user} language={language} theme={theme} setTheme={setTheme} onBack={() => setActiveTab('dashboard')} onParentAccess={() => setActiveTab('parent_dashboard')} setActiveTab={setActiveTab} />}
             {activeTab === 'parent_dashboard' && <ParentDashboard user={user} chapters={chapters} leaderboard={leaderboard} language={language} onBack={() => setActiveTab('profile')} userProgress={userProgress} />}

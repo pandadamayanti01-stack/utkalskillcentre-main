@@ -106,7 +106,7 @@ const extractSpeechInput = (event: any): SpeechInput => {
   return { primary, candidates: candidates.slice(0, 3), confidence };
 };
 
-const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skipInitialGreeting?: boolean; userClass?: string; onBack?: () => void }) => {
+const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack, isPremium = false, onUpgrade, user }: { skipInitialGreeting?: boolean; userClass?: string; onBack?: () => void; isPremium?: boolean; onUpgrade?: () => void; user?: any }) => {
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isWaitingForInput, setIsWaitingForInput] = useState(false);
@@ -118,6 +118,18 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
   
   // Call Timer State
   const [callDuration, setCallDuration] = useState(0);
+  const [freeQueriesCount, setFreeQueriesCount] = useState<number>(0);
+
+  useEffect(() => {
+    const getFreeQueriesKey = () => `free_ai_queries_used_${user?.uid || user?.id || 'guest'}`;
+    setFreeQueriesCount(parseInt(localStorage.getItem(getFreeQueriesKey()) || '0', 10));
+  }, [user]);
+
+  const isGreeting = (text: string) => {
+    const cleaned = text.trim().toLowerCase().replace(/[?.!,]/g, '');
+    const greetings = ['hi', 'hello', 'hey', 'namaskar', 'namaskara', 'namaste', 'kemiti achha', 'how are you', 'good morning', 'good evening', 'thanks', 'thank you', 'dhanyabad', 'dhanyabada', 'ok', 'okay'];
+    return greetings.includes(cleaned) || cleaned.length < 5;
+  };
 
   const [chapters, setChapters] = useState<any[]>([]);
   const [activeChapter, setActiveChapter] = useState<any>(null);
@@ -550,6 +562,10 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack }: { skip
 
     const speakGreeting = () => {
       if (hasPlayedGreetingRef.current) return;
+      const getFreeQueriesKey = () => `free_ai_queries_used_${user?.uid || user?.id || 'guest'}`;
+      const freeQueriesUsed = parseInt(localStorage.getItem(getFreeQueriesKey()) || '0', 10);
+      if (!isPremium && freeQueriesUsed >= 5) return; // Do not greet if paywalled
+
       hasPlayedGreetingRef.current = true;
 
       const greeting = "ନମସ୍କାର! ମୁଁ ଗୁନ୍ଦୁଲୁ। ଆସ, ଏବେ ଏକାଠି ପଢ଼ିବା ଓ ଆଗକୁ ବଢ଼ିବା।";
@@ -797,6 +813,27 @@ Understand user intent from these transcripts and respond in Odia only.
       chatHistoryRef.current.push({ role: 'model', parts: [{ text: response }] });
 
       responseTurnRef.current += 1;
+
+      // Increment free queries token counter for unsubscribed users if it is a valid academic query and not safety-blocked
+      const academicQuery = !isGreeting(speechInput.primary);
+      if (!isPremium && academicQuery) {
+        const isSafetyBlocked = response.includes("Safety Warning") || response.includes("Perspective API") || response.includes("ସୁରକ୍ଷା ଚେତାବନୀ");
+        if (!isSafetyBlocked) {
+          const getFreeQueriesKey = () => `free_ai_queries_used_${user?.uid || user?.id || 'guest'}`;
+          const currentFreeCount = parseInt(localStorage.getItem(getFreeQueriesKey()) || '0', 10);
+          localStorage.setItem(getFreeQueriesKey(), (currentFreeCount + 1).toString());
+          setFreeQueriesCount(currentFreeCount + 1);
+          
+          if (currentFreeCount + 1 >= 5) {
+            window.speechSynthesis.cancel();
+            stopCurrentAudio();
+            recognitionRef.current?.stop();
+            setIsSpeaking(false);
+            setIsListening(false);
+          }
+        }
+      }
+
       speakResponse(response);
     } catch (error) {
       const errorMsg = "ଓଃ! କିଛି ଭୁଲ୍ ହୋଇଗଲା |";
@@ -812,6 +849,12 @@ Understand user intent from these transcripts and respond in Odia only.
       triggerVisualNudge();
       // Automatically start listening for student's response (seamless hands-free loop!)
       if (recognitionRef.current && !isListeningRef.current) {
+        const getFreeQueriesKey = () => `free_ai_queries_used_${user?.uid || user?.id || 'guest'}`;
+        const freeQueriesUsed = parseInt(localStorage.getItem(getFreeQueriesKey()) || '0', 10);
+        if (!isPremium && freeQueriesUsed >= 5) {
+          return;
+        }
+
         transcriptBufferRef.current = '';
         try {
           recognitionRef.current.start();
@@ -826,6 +869,11 @@ Understand user intent from these transcripts and respond in Odia only.
   };
 
   const toggleListening = () => {
+    if (!isPremium && freeQueriesCount >= 5) {
+      if (onUpgrade) onUpgrade();
+      return;
+    }
+
     if (isListeningRef.current) {
       if (silenceTimeoutRef.current) {
         clearTimeout(silenceTimeoutRef.current);
@@ -1036,6 +1084,51 @@ Understand user intent from these transcripts and respond in Odia only.
           </button>
         )}
       </div>
+
+      {/* Premium Upgrade Overlay */}
+      {!isPremium && freeQueriesCount >= 5 && (
+        <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-xl z-[100] flex items-center justify-center p-6 text-center select-none animate-fade-in force-dark-theme">
+          <div className="absolute top-0 right-0 w-[350px] h-[350px] bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-violet-500/10 rounded-full blur-[80px] pointer-events-none" />
+          
+          <div className="relative max-w-md w-full bg-slate-900/60 border border-emerald-500/20 backdrop-blur-2xl rounded-[3rem] p-8 md:p-10 shadow-2xl flex flex-col items-center gap-6">
+            <div className="relative shrink-0">
+              <div className="absolute inset-0 rounded-full bg-emerald-500 blur-xl opacity-20 animate-pulse" />
+              <div className="w-20 h-20 rounded-full bg-slate-950 border-2 border-emerald-500/40 shadow-[0_0_25px_rgba(16,185,129,0.3)] flex items-center justify-center overflow-hidden">
+                <img src="/gundulu.png" alt="Gundulu" className="w-full h-full object-cover scale-[0.95]" />
+              </div>
+            </div>
+            
+            <div className="space-y-3">
+              <h3 className="text-xl md:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-emerald-400 uppercase tracking-wide">
+                {inputLanguage.startsWith('or') || language.startsWith('or') ? 'ମାଗଣା ଭଏସ୍ ସୀମା ଶେଷ! 🎤' : 'Voice Trial Limit Reached! 🎤'}
+              </h3>
+              <p className="text-xs md:text-sm font-bold text-slate-350 leading-relaxed">
+                {inputLanguage.startsWith('or') || language.startsWith('or')
+                  ? 'ଗୁନ୍ଦୁଲୁ ଆପା ସହିତ ବିନା କୌଣସି ବାଧାରେ ସିଧାସଳଖ କଥାବାର୍ତ୍ତା କରିବା ପାଇଁ ପ୍ରିମିୟମ୍‌କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ!'
+                  : 'Upgrade to Gundulu Premium to converse naturally in Odia with Gundulu Voice Tutor, grade your speech pronunciation, and get unlimited voice answers.'}
+              </p>
+            </div>
+            
+            <div className="flex flex-col gap-3.5 w-full mt-2">
+              <button
+                onClick={onUpgrade}
+                className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 hover:scale-105 active:scale-95 transition-all shadow-[0_8px_25px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 font-black text-xs uppercase tracking-widest cursor-pointer"
+              >
+                <Lucide.Sparkles size={14} className="animate-pulse" />
+                <span>{inputLanguage.startsWith('or') || language.startsWith('or') ? 'ପ୍ରିମିୟମ ଅପଗ୍ରେଡ୍' : 'Upgrade to Premium'}</span>
+              </button>
+              
+              <button
+                onClick={onBack}
+                className="w-full py-3.5 rounded-2xl bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 hover:scale-[1.02] active:scale-95 transition-all font-black text-xs uppercase tracking-widest cursor-pointer"
+              >
+                {inputLanguage.startsWith('or') || language.startsWith('or') ? 'ଫେରିଯାଆନ୍ତୁ' : 'Go Back'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

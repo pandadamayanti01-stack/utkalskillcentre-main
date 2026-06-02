@@ -63,6 +63,12 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
+  const [freeQueriesCount, setFreeQueriesCount] = useState<number>(0);
+
+  useEffect(() => {
+    const getFreeQueriesKey = () => `free_ai_queries_used_${user?.uid || user?.id || 'guest'}`;
+    setFreeQueriesCount(parseInt(localStorage.getItem(getFreeQueriesKey()) || '0', 10));
+  }, [user]);
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -83,13 +89,26 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
       messagesEndRef.current.scrollIntoView({ behavior });
     }
   };
-    const sendMessage = async (textOverride?: string) => {
-      const textToSend = textOverride || input;
-      if (!textToSend.trim() && !selectedImage) return;
-      if (!isPremium) {
+  const isGreeting = (text: string) => {
+    const cleaned = text.trim().toLowerCase().replace(/[?.!,]/g, '');
+    const greetings = ['hi', 'hello', 'hey', 'namaskar', 'namaskara', 'namaste', 'kemiti achha', 'how are you', 'good morning', 'good evening', 'thanks', 'thank you', 'dhanyabad', 'dhanyabada', 'ok', 'okay'];
+    return greetings.includes(cleaned) || cleaned.length < 5;
+  };
+
+  const sendMessage = async (textOverride?: string) => {
+    const textToSend = textOverride || input;
+    if (!textToSend.trim() && !selectedImage) return;
+
+    const getFreeQueriesKey = () => `free_ai_queries_used_${user?.uid || user?.id || 'guest'}`;
+    const academicQuery = !isGreeting(textToSend);
+
+    if (!isPremium && academicQuery) {
+      const freeQueriesUsed = parseInt(localStorage.getItem(getFreeQueriesKey()) || '0', 10);
+      if (freeQueriesUsed >= 5) {
         onUpgrade();
         return;
       }
+    }
 
       const today = new Date().toISOString().split('T')[0];
       const getUsageKey = () => `ai_usage_${user?.uid || user?.id || 'guest'}_${today}`;
@@ -169,6 +188,13 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
             timestamp: new Date(),
           };
           setMessages(prev => [...prev, assistantMessage]);
+          
+          if (!isPremium && academicQuery) {
+            const currentFreeCount = parseInt(localStorage.getItem(getFreeQueriesKey()) || '0', 10);
+            localStorage.setItem(getFreeQueriesKey(), (currentFreeCount + 1).toString());
+            setFreeQueriesCount(currentFreeCount + 1);
+          }
+
           // await saveChatHistory(textToSend, foundAnswer);
           await logAiUsage(
             user?.uid || 'anonymous',
@@ -252,6 +278,16 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         };
 
         setMessages(prev => [...prev, assistantMessage]);
+
+        // Increment free queries token counter for unsubscribed users if it is a valid academic query and not safety-blocked
+        if (!isPremium && academicQuery) {
+          const isSafetyBlocked = responseText.includes("Safety Warning") || responseText.includes("Perspective API");
+          if (!isSafetyBlocked) {
+            const currentFreeCount = parseInt(localStorage.getItem(getFreeQueriesKey()) || '0', 10);
+            localStorage.setItem(getFreeQueriesKey(), (currentFreeCount + 1).toString());
+            setFreeQueriesCount(currentFreeCount + 1);
+          }
+        }
         // await saveChatHistory(textToSend, responseText);
         await logAiUsage(
           user?.uid || 'anonymous',
@@ -455,65 +491,95 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
             </div>
           )}
 
-          <div className="relative group">
-            <div className="absolute inset-0 bg-emerald-500/5 rounded-[2rem] blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none"></div>
-
-            {selectedImage && (
-              <div className="flex items-center gap-2 px-4 py-2 mb-2 bg-slate-900 rounded-2xl border border-white/10">
-                <img src={selectedImage.preview} alt="preview" className="w-12 h-12 rounded-xl object-cover" />
-                <span className="flex-1 text-xs text-slate-400">Image ready</span>
-                <button onClick={() => setSelectedImage(null)} className="p-1 text-slate-500 hover:text-white"><X size={14} /></button>
+          {!isPremium && freeQueriesCount >= 5 ? (
+            <div className="relative overflow-hidden p-6 bg-gradient-to-br from-slate-900/90 via-slate-950/85 to-[#0b2f1d]/20 border border-emerald-500/30 rounded-[2.5rem] shadow-[0_15px_35px_rgba(0,0,0,0.5),0_0_20px_rgba(16,185,129,0.15)] flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left relative z-10">
+              {/* background lighting */}
+              <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-[40px] pointer-events-none" />
+              
+              <div className="flex gap-4 items-center flex-col sm:flex-row relative z-10">
+                <div className="w-14 h-14 rounded-full border border-emerald-500/40 bg-slate-950 flex items-center justify-center p-1.5 shadow-[0_0_15px_rgba(16,185,129,0.3)] flex-shrink-0 animate-pulse">
+                  <img src="/gundulu.png" alt="Gundulu" className="w-full h-full object-cover scale-[0.95]" />
+                </div>
+                <div>
+                  <h4 className="text-sm sm:text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-emerald-400 uppercase tracking-wide">
+                    {language === 'or' ? 'ମାଗଣା ପଚାରିବା ସୀମା ଶେଷ ହୋଇଛି! 🚀' : 'Free Trial Limit Reached! 🚀'}
+                  </h4>
+                  <p className="text-[10px] sm:text-xs font-bold text-slate-400 mt-1 leading-relaxed max-w-[420px]">
+                    {language === 'or' 
+                      ? 'ଗୁନ୍ଦୁଲୁ ପ୍ରିମିୟମ୍‌କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ ଏବଂ ଅସୀମିତ ପ୍ରଶ୍ନର ସମାଧାନ କରନ୍ତୁ, ଗୁନ୍ଦୁଲୁଙ୍କ ସହିତ ଭଏସ୍ କଲ୍ କରନ୍ତୁ ଏବଂ ସ୍ମାର୍ଟ କ୍ଲାସର ମଜା ନିଅନ୍ତୁ!'
+                      : 'Upgrade to Gundulu Premium to ask unlimited questions, solve complex chalkboard equations, and voice chat with Gundulu AI Tutor.'}
+                  </p>
+                </div>
               </div>
-            )}
-
-            <div className="relative flex items-end gap-2 p-2 bg-slate-900 border border-white/10 rounded-[2rem] shadow-2xl focus-within:border-emerald-500/50 transition-all">
-              <div className="flex items-center mb-1 ml-1">
-                <button
-                  onClick={() => setAttachmentMenuOpen((prev) => !prev)}
-                  className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-all"
-                >
-                  <Plus size={20} />
-                </button>
-
-                {attachmentMenuOpen && (
-                  <div className="absolute bottom-14 left-0 w-48 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50">
-                    <button onClick={() => { fileInputRef.current?.click(); setAttachmentMenuOpen(false); }} className="w-full px-4 py-3 text-left text-sm text-slate-300 hover:bg-white/5 flex items-center gap-3">
-                      <Image size={16} /> Gallery
-                    </button>
-                    <button onClick={() => { cameraInputRef.current?.click(); setAttachmentMenuOpen(false); }} className="w-full px-4 py-3 text-left text-sm text-slate-300 hover:bg-white/5 flex items-center gap-3 border-t border-white/5">
-                      <Camera size={16} /> Camera
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              <textarea
-                placeholder={language === 'en' ? 'Message Gundulu...' : 'ଗୁନ୍ଦୁଲୁ ସହ କଥା ହୁଅନ୍ତୁ...'}
-                className="flex-1 bg-transparent border-none focus:outline-none text-white text-sm py-3 px-2 resize-none max-h-32 min-h-[44px] custom-scrollbar"
-                rows={1}
-                value={input}
-                onChange={(e) => {
-                  setInput(e.target.value);
-                  e.target.style.height = 'auto';
-                  e.target.style.height = `${e.target.scrollHeight}px`;
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                  }
-                }}
-              />
-
               <button
-                onClick={() => sendMessage()}
-                disabled={(!input.trim() && !selectedImage) || loading}
-                className="p-2.5 bg-emerald-500 text-slate-950 rounded-full disabled:bg-slate-800 disabled:text-slate-600 transition-all hover:scale-105 active:scale-95"
+                onClick={onUpgrade}
+                className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(16,185,129,0.4)] flex items-center justify-center gap-2 font-black text-xs uppercase tracking-wider cursor-pointer whitespace-nowrap relative z-10"
               >
-                {loading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
+                <Sparkles size={14} className="animate-spin" style={{ animationDuration: '3s' }} />
+                <span>{language === 'or' ? 'ପ୍ରିମିୟମ ଅପଗ୍ରେଡ୍' : 'Upgrade to Premium'}</span>
               </button>
             </div>
-          </div>
+          ) : (
+            <div className="relative group">
+              <div className="absolute inset-0 bg-emerald-500/5 rounded-[2rem] blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none"></div>
+
+              {selectedImage && (
+                <div className="flex items-center gap-2 px-4 py-2 mb-2 bg-slate-900 rounded-2xl border border-white/10">
+                  <img src={selectedImage.preview} alt="preview" className="w-12 h-12 rounded-xl object-cover" />
+                  <span className="flex-1 text-xs text-slate-400">Image ready</span>
+                  <button onClick={() => setSelectedImage(null)} className="p-1 text-slate-500 hover:text-white"><X size={14} /></button>
+                </div>
+              )}
+
+              <div className="relative flex items-end gap-2 p-2 bg-slate-900 border border-white/10 rounded-[2rem] shadow-2xl focus-within:border-emerald-500/50 transition-all">
+                <div className="flex items-center mb-1 ml-1">
+                  <button
+                    onClick={() => setAttachmentMenuOpen((prev) => !prev)}
+                    className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-all"
+                  >
+                    <Plus size={20} />
+                  </button>
+
+                  {attachmentMenuOpen && (
+                    <div className="absolute bottom-14 left-0 w-48 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50">
+                      <button onClick={() => { fileInputRef.current?.click(); setAttachmentMenuOpen(false); }} className="w-full px-4 py-3 text-left text-sm text-slate-300 hover:bg-white/5 flex items-center gap-3">
+                        <Image size={16} /> Gallery
+                      </button>
+                      <button onClick={() => { cameraInputRef.current?.click(); setAttachmentMenuOpen(false); }} className="w-full px-4 py-3 text-left text-sm text-slate-300 hover:bg-white/5 flex items-center gap-3 border-t border-white/5">
+                        <Camera size={16} /> Camera
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <textarea
+                  placeholder={language === 'en' ? 'Message Gundulu...' : 'ଗୁନ୍ଦୁଲୁ ସହ କଥା ହୁଅନ୍ତୁ...'}
+                  className="flex-1 bg-transparent border-none focus:outline-none text-white text-sm py-3 px-2 resize-none max-h-32 min-h-[44px] custom-scrollbar"
+                  rows={1}
+                  value={input}
+                  onChange={(e) => {
+                    setInput(e.target.value);
+                    e.target.style.height = 'auto';
+                    e.target.style.height = `${e.target.scrollHeight}px`;
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      sendMessage();
+                    }
+                  }}
+                />
+
+                <button
+                  onClick={() => sendMessage()}
+                  disabled={(!input.trim() && !selectedImage) || loading}
+                  className="p-2.5 bg-emerald-500 text-slate-950 rounded-full disabled:bg-slate-800 disabled:text-slate-600 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                >
+                  {loading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
+                </button>
+              </div>
+            </div>
+          )}
 
           <div className="mt-3 flex justify-center gap-6 opacity-40">
              <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">

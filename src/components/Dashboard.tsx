@@ -629,11 +629,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             <motion.div 
               variants={itemVariants}
               onClick={() => {
-                if (isPremium) {
-                  onOpenTutor?.();
-                } else {
-                  setShowTrailer(true);
-                }
+                onOpenTutor?.();
               }}
               className={`bg-gradient-to-br from-slate-900/80 via-slate-950/70 to-emerald-950/20 backdrop-blur-2xl rounded-[2.5rem] p-5 sm:p-6.5 relative overflow-hidden cursor-pointer group border border-white/10 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_25px_50px_-12px_rgba(0,0,0,0.8)] hover:border-emerald-500/40 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_rgba(16,185,129,0.25)] transition-all duration-500 flex flex-col justify-between h-full col-span-2 lg:col-span-1 force-dark-theme ${isTourStep4 ? 'ring-[4px] ring-amber-500 scale-[1.03] border-amber-500/50 shadow-[0_0_30px_rgba(245,158,11,0.6)] z-30 animate-pulse bg-slate-950/90' : ''}`}
             >
@@ -760,11 +756,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             <motion.div 
               variants={itemVariants}
               onClick={() => {
-                if (isPremium) {
-                  setShowBlackboard(true);
-                } else {
-                  setShowTrailer(true);
-                }
+                setShowBlackboard(true);
               }}
               className="bg-gradient-to-br from-[#0c2b18] via-[#051c0f] to-[#011409] backdrop-blur-2xl rounded-[2.5rem] p-5 sm:p-6.5 relative overflow-hidden cursor-pointer group border border-amber-500/20 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_25px_50px_-12px_rgba(0,0,0,0.8)] hover:border-amber-500/60 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_rgba(245,158,11,0.25)] transition-all duration-500 flex flex-col justify-between h-full col-span-1 force-dark-theme"
             >
@@ -792,16 +784,16 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
                     <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.2em] shadow-[inset_0_0_10px_rgba(245,158,11,0.15)] whitespace-nowrap">
                       <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_5px_#f59e0b] animate-pulse"></span>
-                      <span>{language === 'en' ? 'Math Blackboard' : 'ଗଣିତ କଳାପଟା'}</span>
+                      <span>{language === 'en' ? 'Slate Blackboard' : 'ଗୁନ୍ଦୁଲୁ କଳାପଟା'}</span>
                     </div>
                   </div>
                   <h3 className="text-sm leading-tight sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-amber-100 to-slate-300 tracking-tighter group-hover:text-white transition-colors">
-                    {language === 'en' ? "Gundulu's Slate" : 'ଗୁନ୍ଦୁଲୁ କଳାପଟା'}
+                    {language === 'en' ? "Universal Slate" : 'ଗୁନ୍ଦୁଲୁ କଳାପଟା'}
                   </h3>
                   <p className="text-slate-400 text-[9px] sm:text-xs font-bold leading-relaxed max-w-[260px] mx-auto group-hover:text-slate-300 transition-colors hidden sm:block text-center">
                     {language === 'en' 
-                      ? 'Draw equations or write calculations with chalk. Gundulu scans and solves them in Odia.'
-                      : 'ଖଡ଼ିରେ ଯେକୌଣସି ଗଣିତ ଲେଖନ୍ତୁ, ଏବଂ ଗୁନ୍ଦୁଲୁ ଆପା ସ୍ପଷ୍ଟ ଭାବେ ଏହାର ସମାଧାନ ବୁଝାଇଦେବେ |'}
+                      ? 'Draw shapes, write words, or solve equations. Gundulu AI scans and explains any subject!'
+                      : 'ଖଡ଼ିରେ ଲେଖନ୍ତୁ ବା ଚିତ୍ର ଆଙ୍କନ୍ତୁ, ଗୁନ୍ଦୁଲୁ ଆପା ଯେକୌଣସି ବିଷୟର ସମାଧାନ ଓ ସମ୍ପୂର୍ଣ୍ଣ ବୁଝାମଣା ଓଡ଼ିଆରେ କରିବେ।'}
                   </p>
                 </div>
               </div>
@@ -1509,6 +1501,9 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           <MathBlackboard
             language={language}
             onClose={() => setShowBlackboard(false)}
+            isPremium={isPremium}
+            onUpgrade={onUpgrade}
+            user={user}
           />
         )}
       </AnimatePresence>
