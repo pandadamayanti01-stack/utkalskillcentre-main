@@ -12,6 +12,8 @@ interface AiMatchingQuizProps {
   language: 'en' | 'or';
   onClose: () => void;
   onSuccess?: () => void;
+  isPremium?: boolean;
+  onUpgrade?: () => void;
 }
 
 interface QuizPair {
@@ -34,7 +36,7 @@ const AVAILABLE_SUBJECTS = [
   { id: 'SocialScience', labelEn: 'Social Studies', labelOr: 'ସାମାଜିକ ବିଜ୍ଞାନ', icon: <Lucide.Globe size={20} />, color: 'text-rose-400 bg-rose-500/10 border-rose-500/30' }
 ];
 
-export function AiMatchingQuiz({ user, language, onClose, onSuccess }: AiMatchingQuizProps) {
+export function AiMatchingQuiz({ user, language, onClose, onSuccess, isPremium = false, onUpgrade }: AiMatchingQuizProps) {
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [gameState, setGameState] = useState<'subject-select' | 'loading' | 'playing' | 'completed'>('subject-select');
   const [pairs, setPairs] = useState<QuizPair[]>([]);
@@ -48,6 +50,13 @@ export function AiMatchingQuiz({ user, language, onClose, onSuccess }: AiMatchin
   const [timer, setTimer] = useState<number>(0);
   const [isSavingScore, setIsSavingScore] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const [freeQueriesCount, setFreeQueriesCount] = useState<number>(0);
+
+  useEffect(() => {
+    const getFreeQueriesKey = () => `free_ai_queries_used_${user?.uid || user?.id || 'guest'}`;
+    setFreeQueriesCount(parseInt(localStorage.getItem(getFreeQueriesKey()) || '0', 10));
+  }, [user]);
 
   // Audio synthesis feedback using Web Audio API
   const playSynthSound = (type: 'success' | 'error' | 'win') => {
@@ -130,6 +139,10 @@ export function AiMatchingQuiz({ user, language, onClose, onSuccess }: AiMatchin
 
   // Generate dynamic quiz via Backend endpoint
   const startQuiz = async (subject: string) => {
+    if (!isPremium && freeQueriesCount >= 5) {
+      return;
+    }
+
     setSelectedSubject(subject);
     setGameState('loading');
     setErrorMessage(null);
@@ -156,6 +169,14 @@ export function AiMatchingQuiz({ user, language, onClose, onSuccess }: AiMatchin
       const data = await response.json();
       if (!data.pairs || !Array.isArray(data.pairs) || data.pairs.length === 0) {
         throw new Error('Invalid quiz response formatting');
+      }
+
+      // Increment free queries count for unsubscribed users
+      if (!isPremium) {
+        const getFreeQueriesKey = () => `free_ai_queries_used_${user?.uid || user?.id || 'guest'}`;
+        const currentCount = parseInt(localStorage.getItem(getFreeQueriesKey()) || '0', 10);
+        localStorage.setItem(getFreeQueriesKey(), (currentCount + 1).toString());
+        setFreeQueriesCount(currentCount + 1);
       }
 
       const quizPairs: QuizPair[] = data.pairs.slice(0, 5);
@@ -671,6 +692,51 @@ export function AiMatchingQuiz({ user, language, onClose, onSuccess }: AiMatchin
 
           </AnimatePresence>
         </div>
+
+        {/* Premium Upgrade Overlay */}
+        {!isPremium && freeQueriesCount >= 5 && (
+          <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-xl z-[100] flex items-center justify-center p-6 text-center select-none force-dark-theme animate-fade-in">
+            <div className="absolute top-0 right-0 w-[350px] h-[350px] bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-violet-500/10 rounded-full blur-[80px] pointer-events-none" />
+            
+            <div className="relative max-w-md w-full bg-slate-900/60 border border-emerald-500/20 backdrop-blur-2xl rounded-[3rem] p-8 md:p-10 shadow-2xl flex flex-col items-center gap-6">
+              <div className="relative shrink-0">
+                <div className="absolute inset-0 rounded-full bg-emerald-500 blur-xl opacity-20 animate-pulse" />
+                <div className="w-20 h-20 rounded-full bg-slate-950 border-2 border-emerald-500/40 shadow-[0_0_25px_rgba(16,185,129,0.3)] flex items-center justify-center overflow-hidden">
+                  <img src="/gundulu.png" alt="Gundulu" className="w-full h-full object-cover scale-[0.95]" />
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <h3 className="text-xl md:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-emerald-400 uppercase tracking-wide">
+                  {language === 'or' ? 'ମାଗଣା ସୀମା ଶେଷ! 🧩' : 'Trial Limit Reached! 🧩'}
+                </h3>
+                <p className="text-xs md:text-sm font-bold text-slate-300 leading-relaxed">
+                  {language === 'or'
+                    ? 'ଗୁନ୍ଦୁଲୁ ମିଳନ ଖେଳ ଏବଂ ଅନ୍ୟାନ୍ୟ AI ସୁବିଧାର ଅସୀମିତ ବ୍ୟବହାର ପାଇଁ ପ୍ରିମିୟମ୍‌କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ!'
+                    : 'Upgrade to Gundulu Premium for unlimited access to matching quizzes, voice conversation, and AI Tutor solvers!'}
+                </p>
+              </div>
+              
+              <div className="flex flex-col gap-3.5 w-full mt-2">
+                <button
+                  onClick={onUpgrade}
+                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 hover:scale-105 active:scale-95 transition-all shadow-[0_8px_25px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 font-black text-xs uppercase tracking-widest cursor-pointer"
+                >
+                  <Lucide.Sparkles size={14} className="animate-pulse" />
+                  <span>{language === 'or' ? 'ପ୍ରିମିୟମ ଅପଗ୍ରେଡ୍' : 'Upgrade to Premium'}</span>
+                </button>
+                
+                <button
+                  onClick={onClose}
+                  className="w-full py-3.5 rounded-2xl bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 hover:scale-[1.02] active:scale-95 transition-all font-black text-xs uppercase tracking-widest cursor-pointer"
+                >
+                  {language === 'or' ? 'ବନ୍ଦ କରନ୍ତୁ' : 'Close'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
     </div>,

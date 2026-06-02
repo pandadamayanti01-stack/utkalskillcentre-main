@@ -726,7 +726,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
         "4. If it is a general drawing, shape, word, or academic query (such as a science diagram or history question): identify it accurately, explain what it represents step-by-step, and engage the child in a friendly, interactive conversation. " +
         "5. Provide the explanation in the student's selected language: " + (selectedLang === 'or' ? 'Odia' : 'English') + ". " +
         "6. Keep the explanation concise, clear, and structured with clean markdown points. " +
-        "7. CRITICAL MATH LAYOUT RULE: NEVER output LaTeX math expressions, formulas, or delimiters (DO NOT write $, $$, \\[, \\], \\(, \\), \\text{}, \\frac, \\sqrt, \\times, \\div). Write all mathematical equations, fractions, and calculations using plain text and standard Unicode characters (e.g., use +, -, ×, ÷, =, /, √, π, ^) that school students and parents can easily read.";
+        "7. For math equations and formulas, format them beautifully using LaTeX math delimiters like $$ for block equations or $ for inline equations.";
 
       const promptText = 
         selectedLang === 'or'
@@ -740,7 +740,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
             { text: promptText },
             {
               inlineData: {
-                mimeType: 'image/png',
+                mimeType: 'image/jpeg',
                 data: base64Data
               }
             }
@@ -764,7 +764,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
 
       const data = await response.json();
       const rawText = data.text || "Could not generate solution.";
-      setExplanation(cleanOdiaOrthography(rawText));
+      setExplanation(cleanOdiaOrthography(rawText, true));
 
       // Increment free queries token counter for unsubscribed users if it is a valid academic query and not safety-blocked
       if (!isPremium) {

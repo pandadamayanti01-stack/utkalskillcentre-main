@@ -714,7 +714,7 @@ export async function generateHomeworkSheet(
  * Post-processes Gundulu's Odia outputs to guarantee 100% spelling accuracy 
  * for school children by auto-correcting common AI typographical errors.
  */
-export function cleanOdiaOrthography(text: string): string {
+export function cleanOdiaOrthography(text: string, allowLatex: boolean = false): string {
   if (!text) return text;
 
   const correctionMap: Record<string, string> = {
@@ -763,40 +763,42 @@ export function cleanOdiaOrthography(text: string): string {
     correctedText = correctedText.replaceAll(incorrect, correct);
   }
 
-  // 5. LaTeX and mathematical formatting cleanup
-  // Replace LaTeX mathematical commands with standard Unicode characters
-  correctedText = correctedText
-    .replace(/\\div/g, '÷')
-    .replace(/\\times/g, '×')
-    .replace(/\\pm/g, '±')
-    .replace(/\\approx/g, '≈')
-    .replace(/\\neq/g, '≠')
-    .replace(/\\leq/g, '≤')
-    .replace(/\\geq/g, '≥')
-    .replace(/\\infty/g, '∞')
-    .replace(/\\cdot/g, '•')
-    .replace(/\\alpha/g, 'α')
-    .replace(/\\beta/g, 'β')
-    .replace(/\\theta/g, 'θ')
-    .replace(/\\pi/g, 'π')
-    .replace(/\\sqrt/g, '√');
+  if (!allowLatex) {
+    // 5. LaTeX and mathematical formatting cleanup
+    // Replace LaTeX mathematical commands with standard Unicode characters
+    correctedText = correctedText
+      .replace(/\\div/g, '÷')
+      .replace(/\\times/g, '×')
+      .replace(/\\pm/g, '±')
+      .replace(/\\approx/g, '≈')
+      .replace(/\\neq/g, '≠')
+      .replace(/\\leq/g, '≤')
+      .replace(/\\geq/g, '≥')
+      .replace(/\\infty/g, '∞')
+      .replace(/\\cdot/g, '•')
+      .replace(/\\alpha/g, 'α')
+      .replace(/\\beta/g, 'β')
+      .replace(/\\theta/g, 'θ')
+      .replace(/\\pi/g, 'π')
+      .replace(/\\sqrt/g, '√');
 
-  // Strip all standard LaTeX math block delimiters: $$, $, \[, \], \(, \)
-  correctedText = correctedText
-    .replace(/\$\$/g, '')
-    .replace(/\$/g, '')
-    .replace(/\\\[/g, '')
-    .replace(/\\\]/g, '')
-    .replace(/\\\(/g, '')
-    .replace(/\\\)/g, '');
+    // Strip all standard LaTeX math block delimiters: $$, $, \[, \], \(, \)
+    correctedText = correctedText
+      .replace(/\$\$/g, '')
+      .replace(/\$/g, '')
+      .replace(/\\\[/g, '')
+      .replace(/\\\]/g, '')
+      .replace(/\\\(/g, '')
+      .replace(/\\\)/g, '');
 
-  // Clean up LaTeX formatting and structure tags
-  correctedText = correctedText
-    .replace(/\\text\s*{(.*?)}/g, '$1')
-    .replace(/\\frac\s*{(.*?)}\s*{(.*?)}/g, '$1/$2')
-    .replace(/\\mathrm\s*{(.*?)}/g, '$1')
-    .replace(/\\mathit\s*{(.*?)}/g, '$1')
-    .replace(/\\(?:,|:|;|!)/g, ' ');
+    // Clean up LaTeX formatting and structure tags
+    correctedText = correctedText
+      .replace(/\\text\s*{(.*?)}/g, '$1')
+      .replace(/\\frac\s*{(.*?)}\s*{(.*?)}/g, '$1/$2')
+      .replace(/\\mathrm\s*{(.*?)}/g, '$1')
+      .replace(/\\mathit\s*{(.*?)}/g, '$1')
+      .replace(/\\(?:,|:|;|!)/g, ' ');
+  }
 
   return correctedText;
 }
