@@ -733,6 +733,98 @@ function setCachedData<T>(key: string, data: T): void {
   }
 }
 
+function ParentPinGate({ parentPin, onCorrectPin, onBack, language }: { parentPin: string; onCorrectPin: () => void; onBack: () => void; language: 'en' | 'or' }) {
+  const [pin, setPin] = useState('');
+  const [error, setError] = useState('');
+
+  const verifyPin = () => {
+    if (pin === parentPin) {
+      onCorrectPin();
+    } else {
+      setError(language === 'en' ? 'Incorrect PIN' : 'ଭୁଲ୍ PIN');
+      setPin('');
+    }
+  };
+
+  return (
+    <div className="flex-1 flex flex-col items-center justify-center p-6 bg-slate-950/20 backdrop-blur-md relative min-h-[calc(100vh-80px)]">
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none" />
+      
+      <motion.div 
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="bg-slate-900/80 border border-white/10 rounded-[2.5rem] p-8 w-full max-w-sm text-center shadow-2xl relative z-10 backdrop-blur-xl"
+      >
+        <button 
+          onClick={onBack}
+          className="absolute top-6 left-6 text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 text-xs font-bold"
+        >
+          <Lucide.ArrowLeft size={16} />
+          {language === 'en' ? 'Back' : 'ପଛକୁ'}
+        </button>
+
+        <div className="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-500 mx-auto mb-6 mt-4 shadow-inner">
+          <Lucide.Lock size={32} />
+        </div>
+        
+        <h3 className="text-2xl font-black text-white mb-2">
+          {language === 'en' ? 'Parent Insights Lock' : 'ପିତାମାତା ଇନସାଇଟ୍ସ ଲକ୍'}
+        </h3>
+        <p className="text-slate-400 mb-6 text-xs font-semibold">
+          {language === 'en' ? 'Enter the 4-digit parent security PIN to view analytics.' : 'ଆନାଲିଟିକ୍ସ ଦେଖିବା ପାଇଁ ୪-ଅଙ୍କ ବିଶିଷ୍ଟ ପିତାମାତା ସୁରକ୍ଷା PIN ଦିଅନ୍ତୁ ।'}
+        </p>
+        
+        <div className="flex justify-center gap-3 mb-6">
+          {[0, 1, 2, 3].map((i) => (
+            <div 
+              key={i} 
+              className={`w-12 h-16 rounded-xl border-2 flex items-center justify-center text-2xl font-bold transition-all duration-200 ${
+                pin.length > i 
+                  ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]' 
+                  : 'border-white/10 bg-white/5 text-slate-500'
+              }`}
+            >
+              {pin.length > i ? '•' : ''}
+            </div>
+          ))}
+        </div>
+
+        {error && <p className="text-rose-500 text-xs font-bold mb-4">{error}</p>}
+
+        <div className="grid grid-cols-3 gap-2">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 'C', 0, 'OK'].map((btn) => (
+            <button
+              key={btn}
+              onClick={() => {
+                if (btn === 'C') {
+                  setPin('');
+                  setError('');
+                } else if (btn === 'OK') {
+                  verifyPin();
+                } else {
+                  setError('');
+                  if (pin.length < 4) {
+                    setPin(prev => prev + btn);
+                  }
+                }
+              }}
+              className={`py-4 rounded-xl text-white font-extrabold transition-all duration-150 ${
+                btn === 'OK' 
+                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-900/30' 
+                  : btn === 'C'
+                  ? 'bg-white/5 hover:bg-white/10 text-rose-400'
+                  : 'bg-white/5 hover:bg-white/10 hover:scale-[1.02]'
+              }`}
+            >
+              {btn}
+            </button>
+          ))}
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
 export default function App() {
   const [user, setUser] = useState<Student | null>(null);
   const [isAdminView, setIsAdminView] = useState(false);
@@ -786,6 +878,13 @@ export default function App() {
   const [openTutorInVoiceMode, setOpenTutorInVoiceMode] = useState(0);
   const [tourStep, setTourStep] = useState<number | null>(null);
   const [showLaunchPoster, setShowLaunchPoster] = useState(false);
+  const [isParentUnlocked, setIsParentUnlocked] = useState(false);
+
+  useEffect(() => {
+    if (activeTab !== 'parent_dashboard') {
+      setIsParentUnlocked(false);
+    }
+  }, [activeTab]);
 
   useEffect(() => {
     if (user) {
@@ -3554,8 +3653,30 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             {activeTab === 'gundulu' && (
               <GunduluHuman isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} userClass={user?.class} user={user} onBack={() => setActiveTab('dashboard')} />
             )}
-            {activeTab === 'profile' && <ProfileView user={user} language={language} theme={theme} setTheme={setTheme} onBack={() => setActiveTab('dashboard')} onParentAccess={() => setActiveTab('parent_dashboard')} setActiveTab={setActiveTab} />}
-            {activeTab === 'parent_dashboard' && <ParentDashboard user={user} chapters={chapters} leaderboard={leaderboard} language={language} onBack={() => setActiveTab('profile')} userProgress={userProgress} />}
+            {activeTab === 'profile' && (
+              <ProfileView 
+                user={user} 
+                language={language} 
+                theme={theme} 
+                setTheme={setTheme} 
+                onBack={() => setActiveTab('dashboard')} 
+                onParentAccess={() => setActiveTab('parent_dashboard')} 
+                setActiveTab={setActiveTab} 
+                setIsParentUnlocked={setIsParentUnlocked}
+              />
+            )}
+            {activeTab === 'parent_dashboard' && (
+              user?.parent_pin && !isParentUnlocked ? (
+                <ParentPinGate 
+                  parentPin={user.parent_pin}
+                  onCorrectPin={() => setIsParentUnlocked(true)}
+                  onBack={() => setActiveTab('dashboard')}
+                  language={language}
+                />
+              ) : (
+                <ParentDashboard user={user} chapters={chapters} leaderboard={leaderboard} language={language} onBack={() => setActiveTab('profile')} userProgress={userProgress} />
+              )
+            )}
             {activeTab === 'leaderboard' && <LeaderboardView leaderboard={leaderboard} language={language} onBack={() => setActiveTab('dashboard')} following={following} user={user} onToggleFollow={handleToggleFollow} />}
             {activeTab === 'support' && <SupportView user={user} language={language} onBack={() => setActiveTab('dashboard')} handleSupportClick={handleSupportClick} confirmSupport={confirmSupport} supportSession={supportSession} />}
             {activeTab === 'store' && <AvatarStore user={user} language={language} onBack={() => setActiveTab('dashboard')} />}
@@ -4248,7 +4369,7 @@ function SupportView({ user, language, onBack, handleSupportClick, confirmSuppor
   );
 }
 
-function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, setActiveTab }: any) {
+function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, setActiveTab, setIsParentUnlocked }: any) {
   const [activeProfileTab, setActiveProfileTab] = useState<'student' | 'parent'>('student');
   const [district, setDistrict] = useState(user.district || '');
   const [school, setSchool] = useState(user.school || '');
@@ -4282,6 +4403,7 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
   const handleParentAccess = () => {
     if (!user.parent_pin) {
       // If no PIN set, go straight in or ask to set one
+      if (setIsParentUnlocked) setIsParentUnlocked(true);
       onParentAccess();
     } else {
       setShowPinModal(true);
@@ -4290,6 +4412,7 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
 
   const verifyPin = () => {
     if (pin === user.parent_pin) {
+      if (setIsParentUnlocked) setIsParentUnlocked(true);
       onParentAccess();
       setShowPinModal(false);
     } else {
