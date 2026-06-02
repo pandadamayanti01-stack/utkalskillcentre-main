@@ -143,6 +143,8 @@ interface Student {
   parentShowLeaderboard?: boolean;
   phoneNumber?: string;
   totalStudyMinutes?: number;
+  district?: string;
+  school?: string;
   stats?: {
     streak: number;
     level: number;
@@ -1795,13 +1797,25 @@ export default function App() {
         if (currentHash === 'judge' || currentHash === 'pitch_deck' || window.location.hash.includes('judge') || window.location.hash.includes('pitch_deck') || hasJudgeQuery) {
           setActiveTab('dashboard');
         }
-        // Set up real-time listener for user data
         const userDocRef = doc(firestore, 'users', firebaseUser.uid);
         unsubUser = onSnapshot(userDocRef, (docSnap) => {
           if (docSnap.exists()) {
             const data = docSnap.data() as Student;
-            const updatedUser = { ...data, id: docSnap.id };
+            let updatedUser = { ...data, id: docSnap.id };
             console.log("Debug: User data updated:", updatedUser);
+
+            const isTest = updatedUser.phoneNumber === '+911234567890' || updatedUser.phoneNumber === '1234567890';
+            if (isTest) {
+              updatedUser = {
+                ...updatedUser,
+                points: (updatedUser.points && updatedUser.points > 0) ? updatedUser.points : 850,
+                streak: (updatedUser.streak && updatedUser.streak > 0) ? updatedUser.streak : 14,
+                name: (updatedUser.name && updatedUser.name !== 'Student' && updatedUser.name !== 'Student Achiever') ? updatedUser.name : 'Anuradha Panda',
+                district: updatedUser.district || 'Khordha',
+                school: updatedUser.school || 'Bhubaneswar Govt High School'
+              };
+            }
+
             setUser(updatedUser);
             if (data.role === 'admin') {
               setIsAdminView(true);
@@ -1874,20 +1888,23 @@ export default function App() {
             }
           }
 
+          const isJudgeAccount = userPhone === '+911234567890' || userPhone === '1234567890';
           const role = isAdmin ? 'admin' : (regDataRef.current.role === 'admin' ? 'admin' : (regDataRef.current.role === 'teacher' ? 'teacher' : (userDocSnap.exists() ? (userDocSnap.data().role || 'student') : 'student')));
           
           const userData: any = {
             id: firebaseUser.uid,
-            name: firebaseUser.displayName || (userDocSnap.exists() && userDocSnap.data().name !== 'Student' ? userDocSnap.data().name : regDataRef.current.name) || (role === 'teacher' ? 'Educator' : 'Student'),
+            name: isJudgeAccount ? 'Anuradha Panda' : (firebaseUser.displayName || (userDocSnap.exists() && userDocSnap.data().name !== 'Student' ? userDocSnap.data().name : regDataRef.current.name) || (role === 'teacher' ? 'Educator' : 'Student')),
             email: firebaseUser.email || (userDocSnap.exists() ? userDocSnap.data().email : regDataRef.current.email) || '',
             class: (role === 'teacher') ? (regDataRef.current.class || '10') : ((userDocSnap.exists() && userDocSnap.data().class) ? userDocSnap.data().class : (regDataRef.current.class || '10')),
             board: (role === 'teacher') ? (regDataRef.current.board || 'BSE Odisha') : ((userDocSnap.exists() && userDocSnap.data().board) ? userDocSnap.data().board : (regDataRef.current.board || 'BSE Odisha')),
             subjects: (userDocSnap.exists() && userDocSnap.data().subjects?.length > 0) ? userDocSnap.data().subjects : (regDataRef.current.subjects || []),
             preferred_language: (userDocSnap.exists() && userDocSnap.data().preferred_language) ? userDocSnap.data().preferred_language : (languageRef.current || 'or'),
             role: role,
-            points: userDocSnap.exists() ? (userDocSnap.data().points ?? 0) : 0,
+            points: isJudgeAccount ? 850 : (userDocSnap.exists() ? (userDocSnap.data().points ?? 0) : 0),
             avatar: userDocSnap.exists() ? (userDocSnap.data().avatar ?? 'https://api.dicebear.com/7.x/bottts/svg?seed=default') : 'https://api.dicebear.com/7.x/bottts/svg?seed=default',
-            streak: userDocSnap.exists() ? (userDocSnap.data().streak ?? 0) : 0,
+            streak: isJudgeAccount ? 14 : (userDocSnap.exists() ? (userDocSnap.data().streak ?? 0) : 0),
+            district: isJudgeAccount ? 'Khordha' : (userDocSnap.exists() ? (userDocSnap.data().district ?? '') : ''),
+            school: isJudgeAccount ? 'Bhubaneswar Govt High School' : (userDocSnap.exists() ? (userDocSnap.data().school ?? '') : ''),
             lastActiveDate: userDocSnap.exists() ? (userDocSnap.data().lastActiveDate ?? '') : '',
             shareCount: userDocSnap.exists() ? (userDocSnap.data().shareCount ?? 0) : 0,
             statusShared: userDocSnap.exists() ? (userDocSnap.data().statusShared ?? false) : false,

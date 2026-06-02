@@ -29,6 +29,8 @@ parent_pin?: string;
   parentShowLeaderboard?: boolean;
   totalStudyMinutes?: number;
   claimedLaunchReward?: boolean;
+  district?: string;
+  school?: string;
   stats?: {
     streak: number;
     level: number;

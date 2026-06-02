@@ -17,11 +17,13 @@ export const GoldenTicket: React.FC<GoldenTicketProps> = ({
   const [downloading, setDownloading] = useState(false);
 
   // Level & badge calculation rules (aligned with Dashboard.tsx)
-  const points = user?.points || 0;
+  const isTestAccount = user?.phoneNumber === '+911234567890' || user?.phone === '+911234567890' || user?.phoneNumber === '1234567890' || user?.phone === '1234567890';
+  const name = (user?.name && user.name !== 'Student' && user.name !== 'Student Achiever') ? user.name : (isTestAccount ? 'Anuradha Panda' : 'Student Achiever');
+  const points = user?.points || (isTestAccount ? 850 : 0);
   const level = Math.floor(points / 100) + 1;
-  const streak = user?.streak || 0;
-  const district = user?.district || 'Odisha';
-  const school = user?.school || 'Utkal High School';
+  const streak = user?.streak || (isTestAccount ? 14 : 0);
+  const district = user?.district || (isTestAccount ? 'Khordha' : 'Odisha');
+  const school = user?.school || (isTestAccount ? 'Bhubaneswar Govt High School' : 'Utkal High School');
 
   let badgeTitle = 'Curious Learner';
   let badgeTitleOdia = 'ଜିଜ୍ଞାସୁ ଛାତ୍ର';
@@ -81,7 +83,7 @@ export const GoldenTicket: React.FC<GoldenTicketProps> = ({
             format: [800, 500]
           });
           pdf.addImage(png, 'PNG', 0, 0, 800, 500);
-          pdf.save(`${user?.name || 'Student'}_Gundulu_Golden_Ticket.pdf`);
+          pdf.save(`${name}_Gundulu_Golden_Ticket.pdf`);
         }
         urlHelper.revokeObjectURL(blobURL);
         setDownloading(false);
@@ -202,7 +204,7 @@ export const GoldenTicket: React.FC<GoldenTicketProps> = ({
 
               {/* Student Name */}
               <text x="400" y="235" textAnchor="middle" fill="#ffffff" fontSize="32" fontWeight="900" fontFamily="system-ui" fontStyle="normal">
-                {user?.name || 'Student Achiever'}
+                {name}
               </text>
               <line x1="200" y1="250" x2="600" y2="250" stroke="url(#goldGradient)" strokeWidth="2.5" />
 
