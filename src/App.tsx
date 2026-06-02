@@ -3566,6 +3566,13 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             {activeTab === 'plans' && <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'pitch_deck' && <PitchDeckView language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'telemetry' && <TelemetryView language={language} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'matching_quiz' && (
+              <AiMatchingQuiz 
+                user={user} 
+                language={language} 
+                onClose={() => setActiveTab('dashboard')} 
+              />
+            )}
           </AnimatePresence>
 
 

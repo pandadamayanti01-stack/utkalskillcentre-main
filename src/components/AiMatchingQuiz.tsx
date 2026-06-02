@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { collection, doc, runTransaction, serverTimestamp } from 'firebase/firestore';
 import * as Lucide from 'lucide-react';
@@ -343,9 +344,9 @@ export function AiMatchingQuiz({ user, language, onClose, onSuccess }: AiMatchin
     return language === 'or' ? subj.labelOr : subj.labelEn;
   };
 
-  return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
-      <div className="w-full max-w-4xl bg-slate-900/90 border border-white/10 rounded-[2.5rem] shadow-[0_25px_70px_-15px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.05)] overflow-hidden relative max-h-[90vh] flex flex-col">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-start md:justify-center p-3 md:p-6 bg-slate-950/80 backdrop-blur-md overflow-y-auto force-dark-theme">
+      <div className="w-full max-w-4xl bg-slate-900/90 border border-white/10 rounded-[2.5rem] shadow-[0_25px_70px_-15px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.05)] overflow-hidden relative max-h-[90vh] flex flex-col force-dark-theme">
         
         {/* Glow overlay decoration */}
         <div className="absolute -top-40 -left-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none"></div>
@@ -672,6 +673,7 @@ export function AiMatchingQuiz({ user, language, onClose, onSuccess }: AiMatchin
         </div>
 
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
