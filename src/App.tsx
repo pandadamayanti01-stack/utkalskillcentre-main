@@ -894,16 +894,20 @@ export default function App() {
         setTourStep(step);
         
         // Sync active tab for tour step on load/reload
-        if (step === 1 || step === 2 || step === 3 || step === 4) {
+        if (step === 1 || step === 2 || step === 3) {
           setActiveTab('dashboard');
-        } else if (step === 5) {
+        } else if (step === 4) {
           setActiveTab('digital_library');
-        } else if (step === 6) {
+        } else if (step === 5) {
           setActiveTab('syllabus_tracker');
-        } else if (step === 7) {
+        } else if (step === 6) {
           setActiveTab('leaderboard');
+        } else if (step === 7) {
+          setActiveTab('parent_dashboard');
         } else if (step === 8) {
           setActiveTab('pitch_deck');
+        } else if (step === 9) {
+          setActiveTab('telemetry');
         }
 
         // Sync poster visibility
