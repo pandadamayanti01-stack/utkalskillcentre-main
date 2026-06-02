@@ -119,6 +119,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack, isPremiu
   // Call Timer State
   const [callDuration, setCallDuration] = useState(0);
   const [freeQueriesCount, setFreeQueriesCount] = useState<number>(0);
+  const isFreePeriod = new Date() < new Date('2026-06-21T00:00:00');
 
   useEffect(() => {
     const getFreeQueriesKey = () => `free_ai_queries_used_${user?.uid || user?.id || 'guest'}`;
@@ -564,7 +565,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack, isPremiu
       if (hasPlayedGreetingRef.current) return;
       const getFreeQueriesKey = () => `free_ai_queries_used_${user?.uid || user?.id || 'guest'}`;
       const freeQueriesUsed = parseInt(localStorage.getItem(getFreeQueriesKey()) || '0', 10);
-      if (!isPremium && freeQueriesUsed >= 5) return; // Do not greet if paywalled
+      if (!isPremium && freeQueriesUsed >= 5 && !isFreePeriod) return; // Do not greet if paywalled
 
       hasPlayedGreetingRef.current = true;
 
@@ -824,7 +825,7 @@ Understand user intent from these transcripts and respond in Odia only.
           localStorage.setItem(getFreeQueriesKey(), (currentFreeCount + 1).toString());
           setFreeQueriesCount(currentFreeCount + 1);
           
-          if (currentFreeCount + 1 >= 5) {
+          if (currentFreeCount + 1 >= 5 && !isFreePeriod) {
             window.speechSynthesis.cancel();
             stopCurrentAudio();
             recognitionRef.current?.stop();
@@ -851,7 +852,7 @@ Understand user intent from these transcripts and respond in Odia only.
       if (recognitionRef.current && !isListeningRef.current) {
         const getFreeQueriesKey = () => `free_ai_queries_used_${user?.uid || user?.id || 'guest'}`;
         const freeQueriesUsed = parseInt(localStorage.getItem(getFreeQueriesKey()) || '0', 10);
-        if (!isPremium && freeQueriesUsed >= 5) {
+        if (!isPremium && freeQueriesUsed >= 5 && !isFreePeriod) {
           return;
         }
 
@@ -869,7 +870,7 @@ Understand user intent from these transcripts and respond in Odia only.
   };
 
   const toggleListening = () => {
-    if (!isPremium && freeQueriesCount >= 5) {
+    if (!isPremium && freeQueriesCount >= 5 && !isFreePeriod) {
       if (onUpgrade) onUpgrade();
       return;
     }
@@ -936,6 +937,20 @@ Understand user intent from these transcripts and respond in Odia only.
   return (
     <div className={`immersive-call-container ${getCallStateClass()} ${activeChapter ? 'has-visual-card' : ''} force-dark-theme`}>
       
+      {isFreePeriod && (
+        <div 
+          className="absolute top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-emerald-500/10 via-teal-500/15 to-emerald-500/10 border border-emerald-500/20 px-4 py-1.5 rounded-full flex items-center justify-center gap-2 text-center text-[10px] font-black text-emerald-400 uppercase tracking-widest z-[90] shadow-lg backdrop-blur-md"
+          style={{ width: 'max-content', maxWidth: '90%' }}
+        >
+          <Lucide.Sparkles size={12} className="text-emerald-400 animate-spin" style={{ animationDuration: '3s' }} />
+          <span>
+            {language.startsWith('or') || inputLanguage.startsWith('or')
+              ? '🎉 ମାଗଣା ପ୍ରଦର୍ଶନ ଅଫର! ୨୦ ଜୁନ୍ ୨୦୨୬ ପର୍ଯ୍ୟନ୍ତ ଗୁନ୍ଦୁଲୁ AI ର ଅସୀମିତ ବ୍ୟବହାର କରନ୍ତୁ।'
+              : '🎉 Free Showcase Access Active! Enjoy unlimited learning until June 20, 2026.'}
+          </span>
+        </div>
+      )}
+
       {/* Dynamic Swirling Siri-Style Background Aura Blobs */}
       <div className="bg-glow-blobs">
         <div className="glow-blob blob-violet"></div>
@@ -1086,7 +1101,7 @@ Understand user intent from these transcripts and respond in Odia only.
       </div>
 
       {/* Premium Upgrade Overlay */}
-      {!isPremium && freeQueriesCount >= 5 && (
+      {!isPremium && freeQueriesCount >= 5 && !isFreePeriod && (
         <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-xl z-[100] flex items-center justify-center p-6 text-center select-none animate-fade-in force-dark-theme">
           <div className="absolute top-0 right-0 w-[350px] h-[350px] bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-violet-500/10 rounded-full blur-[80px] pointer-events-none" />

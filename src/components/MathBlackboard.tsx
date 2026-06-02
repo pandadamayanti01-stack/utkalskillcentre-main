@@ -701,7 +701,8 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    if (!isPremium && freeQueriesCount >= 5) {
+    const isFreePeriod = new Date() < new Date('2026-06-21T00:00:00');
+    if (!isPremium && freeQueriesCount >= 5 && !isFreePeriod) {
       setShowUpgradeModal(true);
       return;
     }

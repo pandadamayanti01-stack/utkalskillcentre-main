@@ -5478,6 +5478,27 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
         <span>Back to Dashboard</span>
       </button>
 
+      {new Date() < new Date('2026-06-21T00:00:00') && (
+        <div className="max-w-4xl mx-auto mb-10 bg-gradient-to-r from-emerald-500/10 via-teal-500/15 to-emerald-500/10 border border-emerald-500/20 rounded-[2rem] p-6 text-center shadow-lg relative overflow-hidden backdrop-blur-md">
+          <div className="absolute top-0 right-0 w-[200px] h-[200px] bg-emerald-500/5 rounded-full blur-[50px] pointer-events-none" />
+          <div className="flex flex-col md:flex-row items-center gap-4 text-left">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+              <Lucide.Sparkles size={24} className="animate-pulse" />
+            </div>
+            <div>
+              <h4 className="text-lg font-black text-emerald-400 uppercase tracking-wider mb-1">
+                {language === 'or' ? '🎉 ମାଗଣା ପ୍ରଦର୍ଶନ ଅଫର ସକ୍ରିୟ!' : '🎉 Free Showcase Access Active!'}
+              </h4>
+              <p className="text-sm font-medium text-slate-305 leading-relaxed">
+                {language === 'or' 
+                  ? '୨୦ ଜୁନ୍ ୨୦୨୬ ପର୍ଯ୍ୟନ୍ତ ଆପଣ ଗୁନ୍ଦୁଲୁ AI ଟ୍ୟୁଟର, ଗଣିତ ବ୍ଲାକବୋର୍ଡ ଏବଂ ଭଏସ୍ ଟ୍ୟୁଟର ର ଅସୀମିତ ବ୍ୟବହାର ମାଗଣାରେ କରିପାରିବେ। ଯଦି ଆପଣ ପ୍ରଦର୍ଶନ ଅଫର ପରେ ମଧ୍ୟ ସେବା ଚାହୁଁଛନ୍ତି, ତେବେ ଆପଣ ଏବେ ସବସ୍କ୍ରାଇବ୍ କରିପାରିବେ।'
+                  : 'You have unlimited AI tutor questions, practice problems, and voice tutor access without a premium subscription until June 20, 2026. If you\'d like to secure your membership for after the showcase period, you can subscribe below.'}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="text-center mb-12">
         <h2 className="text-4xl font-bold text-white mb-4">{p.title}</h2>
         <p className="text-slate-400">Unlock Gundulu Premium for unlimited learning!</p>

@@ -139,7 +139,8 @@ export function AiMatchingQuiz({ user, language, onClose, onSuccess, isPremium =
 
   // Generate dynamic quiz via Backend endpoint
   const startQuiz = async (subject: string) => {
-    if (!isPremium && freeQueriesCount >= 5) {
+    const isFreePeriod = new Date() < new Date('2026-06-21T00:00:00');
+    if (!isPremium && freeQueriesCount >= 5 && !isFreePeriod) {
       return;
     }
 
@@ -694,7 +695,7 @@ export function AiMatchingQuiz({ user, language, onClose, onSuccess, isPremium =
         </div>
 
         {/* Premium Upgrade Overlay */}
-        {!isPremium && freeQueriesCount >= 5 && (
+        {!isPremium && freeQueriesCount >= 5 && !(new Date() < new Date('2026-06-21T00:00:00')) && (
           <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-xl z-[100] flex items-center justify-center p-6 text-center select-none force-dark-theme animate-fade-in">
             <div className="absolute top-0 right-0 w-[350px] h-[350px] bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-violet-500/10 rounded-full blur-[80px] pointer-events-none" />
