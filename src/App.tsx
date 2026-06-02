@@ -848,28 +848,28 @@ export default function App() {
       setShowLaunchPoster(false);
     } else if (nextStep === 2) {
       setActiveTab('dashboard');
-      setShowLaunchPoster(true);
+      setShowLaunchPoster(false);
     } else if (nextStep === 3) {
       setActiveTab('dashboard');
       setShowLaunchPoster(false);
     } else if (nextStep === 4) {
-      setActiveTab('dashboard');
+      setActiveTab('digital_library');
       setShowLaunchPoster(false);
     } else if (nextStep === 5) {
-      setShowLaunchPoster(false);
-      setActiveTab('digital_library');
-    } else if (nextStep === 6) {
-      setShowLaunchPoster(false);
       setActiveTab('syllabus_tracker');
-    } else if (nextStep === 7) {
       setShowLaunchPoster(false);
+    } else if (nextStep === 6) {
       setActiveTab('leaderboard');
+      setShowLaunchPoster(false);
+    } else if (nextStep === 7) {
+      setActiveTab('parent_dashboard');
+      setShowLaunchPoster(false);
     } else if (nextStep === 8) {
-      setShowLaunchPoster(false);
       setActiveTab('pitch_deck');
-    } else if (nextStep === 9) {
       setShowLaunchPoster(false);
+    } else if (nextStep === 9) {
       setActiveTab('telemetry');
+      setShowLaunchPoster(false);
     }
   };
 
@@ -3518,8 +3518,8 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                     onOpenCommunity={() => setShowCommunityChat(true)}
                     following={following}
                     onToggleFollow={handleToggleFollow}
-                    isTourStep3={tourStep === 3}
-                    isTourStep4={tourStep === 4}
+                    isTourStep3={tourStep === 3} // Student XP is Step 3
+                    isTourStep4={tourStep === 2} // Gundulu AI is Step 2
                     onOpenRajaPoster={() => setShowLaunchPoster(true)}
                   />
                 )}
@@ -3660,23 +3660,23 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
           <div className="space-y-1">
             <h4 className="text-sm md:text-base font-black text-white uppercase tracking-tight flex items-center gap-1.5">
               {tourStep === 1 && "👋 Welcome & Automated Setup"}
-              {tourStep === 2 && "🎡 Raja Festival Celebration"}
+              {tourStep === 2 && "🤖 AI Study Buddy (Gundulu AI)"}
               {tourStep === 3 && "⚡ Student XP & Streaks Tracker"}
-              {tourStep === 4 && "🤖 AI Study Buddy (Gundulu AI)"}
-              {tourStep === 5 && "📚 Digital Library"}
-              {tourStep === 6 && "📊 Syllabus Tracker"}
-              {tourStep === 7 && "🏆 Statewide Leaderboards"}
+              {tourStep === 4 && "📚 Digital Library"}
+              {tourStep === 5 && "📊 Syllabus Tracker"}
+              {tourStep === 6 && "🏆 Statewide Leaderboards"}
+              {tourStep === 7 && "👨‍👩‍👦 Parent Insights (PRO)"}
               {tourStep === 8 && "💼 Pitch Deck & Gemma Roadmap"}
               {tourStep === 9 && "⚡ Live System Observability"}
             </h4>
             <p className="text-xs text-slate-300 leading-relaxed font-medium">
               {tourStep === 1 && "We have automatically logged you into a Class 10 BSE Odisha simulated account (Anuradha Panda). Let's take a quick tour of our core features!"}
-              {tourStep === 2 && "Celebrate Raja Parba, Odisha's unique cultural festival. Regular students see this beautiful interactive swing experience automatically on login!"}
+              {tourStep === 2 && "Our zero-hallucination AI Study Buddy is grounded directly in regional textbooks, offering instant low-latency bilingual voice tutoring."}
               {tourStep === 3 && "Track your daily study goals and maintain streaks. Earn XP by reading chapters, answering MCQs, and chatting with Gundulu AI!"}
-              {tourStep === 4 && "Our zero-hallucination AI Study Buddy is grounded directly in regional textbooks, offering instant low-latency bilingual voice tutoring."}
-              {tourStep === 5 && "Rural students get unlimited, structured access to curated subject directories of school lessons completely for free."}
-              {tourStep === 6 && "Track your board exam preparation progress chapter-by-chapter with our real-time syllabus tracker."}
-              {tourStep === 7 && "Compete with other students across Odisha, track your rank, and earn rewards on our statewide leaderboards."}
+              {tourStep === 4 && "Rural students get unlimited, structured access to curated subject directories of school lessons completely for free."}
+              {tourStep === 5 && "Track your board exam preparation progress chapter-by-chapter with our real-time syllabus tracker."}
+              {tourStep === 6 && "Compete with other students across Odisha, track your rank, and earn rewards on our statewide leaderboards."}
+              {tourStep === 7 && "Parents receive AI-generated actionable reports detailing their child's weak areas, accuracy, and district ranking."}
               {tourStep === 8 && "Explore our pilot project's pitch deck, scale-to-zero serverless hosting, and our roadmap for training a native Odia Gemma model."}
               {tourStep === 9 && "Auditor-facing live telemetry console showing Vertex AI pipe delays, context caching cost reductions, and a failure injection sandbox to test system resilience."}
             </p>
@@ -3955,16 +3955,22 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack, userPr
       variants={containerVariants}
       initial="hidden"
       animate="show"
-      className="max-w-4xl mx-auto pb-12"
+      className="w-full max-w-6xl mx-auto px-4 md:px-8 py-6 pb-24"
     >
-      <motion.div variants={itemVariants} className="flex items-center justify-between mb-8">
-        <button 
-          onClick={onBack}
-          className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
-        >
-          <Lucide.ArrowLeft size={20} />
-          <span>Back to Profile</span>
-        </button>
+      <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div className="flex flex-col">
+          <button 
+            onClick={onBack}
+            className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-2"
+          >
+            <Lucide.ArrowLeft size={20} />
+            <span className="text-sm">Back</span>
+          </button>
+          <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight">
+            {language === 'en' ? 'Parent Insights' : 'ପିତାମାତା ଇନସାଇଟ୍ସ'}
+          </h2>
+          <p className="text-slate-400 text-sm mt-1">{user.name}'s Academic Progress</p>
+        </div>
         <button 
           onClick={() => setViewingReport(true)}
           className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-widest flex items-center gap-2 shadow-lg shadow-emerald-500/20 transition-all"
@@ -4100,6 +4106,25 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack, userPr
           </div>
         </motion.div>
       </div>
+
+      {/* SOCIAL MEDIA LINKS */}
+      <motion.div variants={itemVariants} className="mt-12 pt-8 border-t border-emerald-500/20 text-center">
+        <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-4">Connect With Utkal Skill Centre</p>
+        <div className="flex items-center justify-center gap-4">
+          <a href="#" className="p-3 rounded-full bg-white/5 text-slate-400 hover:text-[#ffd700] hover:bg-white/10 hover:-translate-y-1 transition-all">
+            <Lucide.Youtube size={20} />
+          </a>
+          <a href="#" className="p-3 rounded-full bg-white/5 text-slate-400 hover:text-[#ffd700] hover:bg-white/10 hover:-translate-y-1 transition-all">
+            <Lucide.Instagram size={20} />
+          </a>
+          <a href="#" className="p-3 rounded-full bg-white/5 text-slate-400 hover:text-[#ffd700] hover:bg-white/10 hover:-translate-y-1 transition-all">
+            <Lucide.Twitter size={20} />
+          </a>
+          <a href="#" className="p-3 rounded-full bg-white/5 text-slate-400 hover:text-[#ffd700] hover:bg-white/10 hover:-translate-y-1 transition-all">
+            <Lucide.Facebook size={20} />
+          </a>
+        </div>
+      </motion.div>
     </motion.div>
   );
 }
@@ -6483,56 +6508,139 @@ function LeaderboardView({ leaderboard, language, onBack, following, user, onTog
       </motion.button>
 
       <motion.div variants={itemVariants} className="text-center mb-10">
-        <h2 className="text-3xl font-bold text-white mb-2">{translations[language].weeklyLeaderboard}</h2>
-        <p className="text-slate-500">Celebrate effort and consistency! Resets every Sunday.</p>
+        <h2 className="text-3xl font-bold text-slate-800 dark:text-white mb-2">{translations[language].weeklyLeaderboard}</h2>
+        <p className="text-slate-500">{language === 'en' ? 'Compete with students across Odisha and track your overall rank!' : 'ଓଡ଼ିଶାର ଅନ୍ୟ ଛାତ୍ରମାନଙ୍କ ସହ ପ୍ରତିଦ୍ୱନ୍ଦ୍ୱିତା କରନ୍ତୁ ଏବଂ ନିଜର ମାନ୍ୟତା ଟ୍ରାକ୍ କରନ୍ତୁ!'}</p>
       </motion.div>
 
       <motion.div variants={itemVariants} className="flex flex-col items-center gap-6">
-        <div className="flex p-1 bg-slate-900/50 border border-white/5 rounded-2xl">
+        {/* Main Category Filters */}
+        <div className="flex p-1.5 bg-slate-200/50 dark:bg-slate-900/60 border border-slate-300/50 dark:border-white/10 rounded-full shadow-inner backdrop-blur-sm">
           <button
             onClick={() => setActiveFilter('league')}
-            className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${
-              activeFilter === 'league' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-slate-300'
+            className={`px-8 py-2.5 rounded-full text-sm font-black transition-all duration-300 ${
+              activeFilter === 'league' ? 'bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 shadow-md scale-105' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
             }`}
           >
             {translations[language].leagues || 'Leagues'}
           </button>
           <button
             onClick={() => setActiveFilter('class')}
-            className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${
-              activeFilter === 'class' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-slate-300'
+            className={`px-8 py-2.5 rounded-full text-sm font-black transition-all duration-300 ${
+              activeFilter === 'class' ? 'bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 shadow-md scale-105' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
             }`}
           >
             {language === 'en' ? 'My Class' : 'ମୋ ଶ୍ରେଣୀ'}
           </button>
           <button
             onClick={() => setActiveFilter('friends')}
-            className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${
-              activeFilter === 'friends' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-slate-300'
+            className={`px-8 py-2.5 rounded-full text-sm font-black transition-all duration-300 ${
+              activeFilter === 'friends' ? 'bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 shadow-md scale-105' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
             }`}
           >
             {translations[language].friends || 'Friends'}
           </button>
         </div>
 
+        {/* Premium League Selector */}
         {activeFilter === 'league' && (
-          <div className="flex justify-center gap-2 p-1 bg-slate-900/50 border border-white/5 rounded-2xl w-fit mx-auto">
-            {leagues.map((league) => (
-              <button
-                key={league}
-                onClick={() => setActiveLeague(league)}
-                className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${
-                  activeLeague === league 
-                    ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20' 
-                    : 'text-slate-500 hover:text-slate-300'
-                }`}
-              >
-                {translations[language][league.toLowerCase()]}
-              </button>
-            ))}
+          <div className="flex flex-wrap justify-center gap-3.5 p-2 bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-[2rem] w-fit mx-auto mt-6 mb-10 shadow-2xl relative overflow-hidden select-none">
+            {leagues.map((league) => {
+              const icons: Record<string, string> = { Bronze: '🥉', Silver: '🥈', Gold: '🥇', Platinum: '💎' };
+              const colors: Record<string, string> = { 
+                Bronze: 'from-orange-600 via-amber-700 to-orange-800 text-white shadow-[0_12px_24px_rgba(249,115,22,0.4)] border-orange-500/50', 
+                Silver: 'from-slate-400 via-slate-500 to-slate-600 text-white shadow-[0_12px_24px_rgba(148,163,184,0.4)] border-slate-300/50', 
+                Gold: 'from-yellow-400 via-amber-500 to-yellow-600 text-slate-950 shadow-[0_12px_28px_rgba(234,179,8,0.5)] border-yellow-300/60', 
+                Platinum: 'from-cyan-400 via-teal-500 to-blue-600 text-white shadow-[0_12px_30px_rgba(6,182,212,0.5)] border-cyan-300/60' 
+              };
+              const inactiveHoverGlows: Record<string, string> = {
+                Bronze: 'hover:border-orange-500/50 hover:shadow-[0_0_15px_rgba(249,115,22,0.2)]',
+                Silver: 'hover:border-slate-400/50 hover:shadow-[0_0_15px_rgba(148,163,184,0.2)]',
+                Gold: 'hover:border-yellow-400/50 hover:shadow-[0_0_15px_rgba(234,179,8,0.25)]',
+                Platinum: 'hover:border-cyan-400/50 hover:shadow-[0_0_15px_rgba(6,182,212,0.3)]'
+              };
+              const isActive = activeLeague === league;
+              
+              return (
+                <button
+                  key={league}
+                  onClick={() => setActiveLeague(league)}
+                  className={`flex items-center gap-2.5 px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all duration-500 cursor-pointer border ${
+                    isActive 
+                      ? `bg-gradient-to-r ${colors[league]} scale-110 -translate-y-1.5` 
+                      : `bg-slate-950/40 text-slate-400 border-white/5 ${inactiveHoverGlows[league]} hover:bg-slate-900/60 hover:text-white hover:-translate-y-0.5`
+                  }`}
+                >
+                  <span className={`text-lg drop-shadow-md ${isActive ? 'animate-bounce' : ''}`} style={{ animationDuration: '2.5s' }}>{icons[league]}</span>
+                  <span>{translations[language][league.toLowerCase()]}</span>
+                </button>
+              );
+            })}
           </div>
         )}
       </motion.div>
+
+      {/* 🏆 PREMIUM PODIUM UI - X FACTOR 🏆 */}
+      {!(loadingClass || loadingFriends) && filteredLeaderboard.length >= 3 && activeFilter === 'league' && (
+        <motion.div variants={itemVariants} className="flex justify-center items-end gap-3 md:gap-8 pt-32 mt-12 pb-12 w-full max-w-3xl mx-auto">
+          {/* Rank 2 (Silver) */}
+          <div className="flex flex-col items-center relative group w-1/3 max-w-[140px]">
+            <div className="absolute -top-16 z-20 group-hover:-translate-y-2 transition-transform duration-500">
+              <div className="w-16 h-16 rounded-full border-[3px] border-slate-300 bg-slate-800 overflow-hidden shadow-[0_0_25px_rgba(203,213,225,0.4)] flex items-center justify-center">
+                {filteredLeaderboard[1]?.avatar ? <img src={filteredLeaderboard[1].avatar} className="w-full h-full object-cover"/> : <span className="text-xl font-black text-white">{filteredLeaderboard[1]?.name?.[0] || 'S'}</span>}
+              </div>
+              <div className="absolute -bottom-2 -right-2 bg-gradient-to-br from-slate-200 to-slate-400 rounded-full p-1.5 text-slate-900 shadow-lg border border-slate-100/50">
+                <Lucide.Medal size={14} fill="currentColor" />
+              </div>
+            </div>
+            <div className="w-full h-32 md:h-40 bg-gradient-to-t from-slate-900/90 via-slate-800/80 to-slate-400/20 rounded-t-3xl border-t-[3px] border-x border-slate-300/40 flex flex-col items-center justify-start pt-6 shadow-[inset_0_20px_20px_rgba(203,213,225,0.1),0_0_30px_rgba(203,213,225,0.05)] backdrop-blur-xl relative overflow-hidden">
+              <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.1)_0%,transparent_100%)] opacity-50" />
+              <span className="text-3xl font-black text-slate-300 drop-shadow-lg relative z-10">2</span>
+              <span className="text-xs font-bold text-white mt-2 truncate w-[90%] text-center relative z-10">{filteredLeaderboard[1]?.name}</span>
+              <span className="text-[10px] md:text-xs text-emerald-400 font-mono font-bold mt-0.5 relative z-10">{filteredLeaderboard[1]?.points} XP</span>
+            </div>
+          </div>
+
+          {/* Rank 1 (Gold) */}
+          <div className="flex flex-col items-center relative group z-10 w-1/3 max-w-[160px]">
+            <div className="absolute -top-24 z-20 group-hover:-translate-y-3 transition-transform duration-500">
+              <div className="absolute -top-7 left-1/2 -translate-x-1/2 text-yellow-400 drop-shadow-[0_0_20px_rgba(250,204,21,0.8)] z-30 animate-pulse">
+                <Lucide.Crown size={36} fill="currentColor" />
+              </div>
+              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-yellow-400 bg-slate-800 overflow-hidden shadow-[0_0_40px_rgba(250,204,21,0.6)] flex items-center justify-center">
+                {filteredLeaderboard[0]?.avatar ? <img src={filteredLeaderboard[0].avatar} className="w-full h-full object-cover"/> : <span className="text-2xl font-black text-white">{filteredLeaderboard[0]?.name?.[0] || 'S'}</span>}
+              </div>
+              <div className="absolute -bottom-2 -right-2 bg-gradient-to-br from-yellow-300 to-amber-500 rounded-full p-2 text-slate-900 shadow-[0_0_15px_rgba(250,204,21,0.5)] border border-yellow-200">
+                <Lucide.Trophy size={16} fill="currentColor" />
+              </div>
+            </div>
+            <div className="w-full h-40 md:h-48 bg-gradient-to-t from-slate-900/90 via-amber-900/50 to-yellow-500/30 rounded-t-3xl border-t-[4px] border-x border-yellow-400/60 flex flex-col items-center justify-start pt-8 shadow-[inset_0_20px_30px_rgba(250,204,21,0.15),0_-10px_40px_rgba(250,204,21,0.1)] backdrop-blur-xl relative overflow-hidden">
+              <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.2)_0%,transparent_100%)] opacity-50" />
+              <div className="absolute top-0 inset-x-0 h-1/2 bg-yellow-400/10 blur-xl rounded-full" />
+              <span className="text-4xl md:text-5xl font-black text-yellow-400 drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)] relative z-10">1</span>
+              <span className="text-sm md:text-base font-black text-white mt-2 md:mt-3 truncate w-[90%] text-center relative z-10">{filteredLeaderboard[0]?.name}</span>
+              <span className="text-xs md:text-sm text-yellow-300 font-mono font-black mt-1 relative z-10 px-2 py-0.5 bg-yellow-500/10 rounded-full border border-yellow-500/20">{filteredLeaderboard[0]?.points} XP</span>
+            </div>
+          </div>
+
+          {/* Rank 3 (Bronze) */}
+          <div className="flex flex-col items-center relative group w-1/3 max-w-[140px]">
+            <div className="absolute -top-16 z-20 group-hover:-translate-y-2 transition-transform duration-500">
+              <div className="w-16 h-16 rounded-full border-[3px] border-orange-700 bg-slate-800 overflow-hidden shadow-[0_0_20px_rgba(194,65,12,0.4)] flex items-center justify-center">
+                {filteredLeaderboard[2]?.avatar ? <img src={filteredLeaderboard[2].avatar} className="w-full h-full object-cover"/> : <span className="text-xl font-black text-white">{filteredLeaderboard[2]?.name?.[0] || 'S'}</span>}
+              </div>
+              <div className="absolute -bottom-2 -right-2 bg-gradient-to-br from-orange-500 to-red-700 rounded-full p-1.5 text-white shadow-lg border border-orange-400/50">
+                <Lucide.Medal size={14} fill="currentColor" />
+              </div>
+            </div>
+            <div className="w-full h-28 md:h-36 bg-gradient-to-t from-slate-900/90 via-slate-800/80 to-orange-700/20 rounded-t-3xl border-t-[3px] border-x border-orange-700/40 flex flex-col items-center justify-start pt-6 shadow-[inset_0_20px_20px_rgba(194,65,12,0.1),0_0_20px_rgba(194,65,12,0.05)] backdrop-blur-xl relative overflow-hidden">
+              <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.1)_0%,transparent_100%)] opacity-30" />
+              <span className="text-3xl font-black text-orange-600 drop-shadow-lg relative z-10">3</span>
+              <span className="text-xs font-bold text-white mt-2 truncate w-[90%] text-center relative z-10">{filteredLeaderboard[2]?.name}</span>
+              <span className="text-[10px] md:text-xs text-emerald-400 font-mono font-bold mt-0.5 relative z-10">{filteredLeaderboard[2]?.points} XP</span>
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       <motion.div variants={itemVariants} className="bg-slate-900/50 border border-white/5 rounded-[40px] overflow-x-auto custom-scrollbar">
         <table className="w-full text-left min-w-[600px]">

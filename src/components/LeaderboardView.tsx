@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'motion/react';
-import { ArrowLeft, Flame, Loader2 } from 'lucide-react';
+import { ArrowLeft, Flame, Loader2, Crown, Trophy, Medal } from 'lucide-react';
 import { translations } from '../translations';
 import { db as firestore } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
@@ -153,6 +153,69 @@ export function LeaderboardView({ leaderboard, language, onBack, following, user
           </div>
         )}
       </motion.div>
+
+      {/* 🏆 PREMIUM PODIUM UI - X FACTOR 🏆 */}
+      {!loadingFriends && filteredLeaderboard.length >= 3 && activeFilter === 'league' && (
+        <motion.div variants={itemVariants} className="flex justify-center items-end gap-3 md:gap-8 pt-16 pb-12 w-full max-w-3xl mx-auto">
+          {/* Rank 2 (Silver) */}
+          <div className="flex flex-col items-center relative group w-1/3 max-w-[140px]">
+            <div className="absolute -top-16 z-20 group-hover:-translate-y-2 transition-transform duration-500">
+              <div className="w-16 h-16 rounded-full border-[3px] border-slate-300 bg-slate-800 overflow-hidden shadow-[0_0_25px_rgba(203,213,225,0.4)]">
+                {filteredLeaderboard[1]?.avatar ? <img src={filteredLeaderboard[1].avatar} className="w-full h-full object-cover"/> : <span className="text-xl font-black flex items-center justify-center h-full text-white">{filteredLeaderboard[1]?.name?.[0] || 'S'}</span>}
+              </div>
+              <div className="absolute -bottom-2 -right-2 bg-gradient-to-br from-slate-200 to-slate-400 rounded-full p-1.5 text-slate-900 shadow-lg border border-slate-100/50">
+                <Medal size={14} fill="currentColor" />
+              </div>
+            </div>
+            <div className="w-full h-32 md:h-40 bg-gradient-to-t from-slate-900/90 via-slate-800/80 to-slate-400/20 rounded-t-3xl border-t-[3px] border-x border-slate-300/40 flex flex-col items-center justify-start pt-6 shadow-[inset_0_20px_20px_rgba(203,213,225,0.1),0_0_30px_rgba(203,213,225,0.05)] backdrop-blur-xl relative overflow-hidden">
+              <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.1)_0%,transparent_100%)] opacity-50" />
+              <span className="text-3xl font-black text-slate-300 drop-shadow-lg relative z-10">2</span>
+              <span className="text-xs font-bold text-white mt-2 truncate w-[90%] text-center relative z-10">{filteredLeaderboard[1]?.name}</span>
+              <span className="text-[10px] md:text-xs text-emerald-400 font-mono font-bold mt-0.5 relative z-10">{filteredLeaderboard[1]?.points} XP</span>
+            </div>
+          </div>
+
+          {/* Rank 1 (Gold) */}
+          <div className="flex flex-col items-center relative group z-10 w-1/3 max-w-[160px]">
+            <div className="absolute -top-24 z-20 group-hover:-translate-y-3 transition-transform duration-500">
+              <div className="absolute -top-7 left-1/2 -translate-x-1/2 text-yellow-400 drop-shadow-[0_0_20px_rgba(250,204,21,0.8)] z-30 animate-pulse">
+                <Crown size={36} fill="currentColor" />
+              </div>
+              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-yellow-400 bg-slate-800 overflow-hidden shadow-[0_0_40px_rgba(250,204,21,0.6)]">
+                {filteredLeaderboard[0]?.avatar ? <img src={filteredLeaderboard[0].avatar} className="w-full h-full object-cover"/> : <span className="text-2xl font-black flex items-center justify-center h-full text-white">{filteredLeaderboard[0]?.name?.[0] || 'S'}</span>}
+              </div>
+              <div className="absolute -bottom-2 -right-2 bg-gradient-to-br from-yellow-300 to-amber-500 rounded-full p-2 text-slate-900 shadow-[0_0_15px_rgba(250,204,21,0.5)] border border-yellow-200">
+                <Trophy size={16} fill="currentColor" />
+              </div>
+            </div>
+            <div className="w-full h-40 md:h-48 bg-gradient-to-t from-slate-900/90 via-amber-900/50 to-yellow-500/30 rounded-t-3xl border-t-[4px] border-x border-yellow-400/60 flex flex-col items-center justify-start pt-8 shadow-[inset_0_20px_30px_rgba(250,204,21,0.15),0_-10px_40px_rgba(250,204,21,0.1)] backdrop-blur-xl relative overflow-hidden">
+              <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.2)_0%,transparent_100%)] opacity-50" />
+              <div className="absolute top-0 inset-x-0 h-1/2 bg-yellow-400/10 blur-xl rounded-full" />
+              <span className="text-4xl md:text-5xl font-black text-yellow-400 drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)] relative z-10">1</span>
+              <span className="text-sm md:text-base font-black text-white mt-2 md:mt-3 truncate w-[90%] text-center relative z-10">{filteredLeaderboard[0]?.name}</span>
+              <span className="text-xs md:text-sm text-yellow-300 font-mono font-black mt-1 relative z-10 px-2 py-0.5 bg-yellow-500/10 rounded-full border border-yellow-500/20">{filteredLeaderboard[0]?.points} XP</span>
+            </div>
+          </div>
+
+          {/* Rank 3 (Bronze) */}
+          <div className="flex flex-col items-center relative group w-1/3 max-w-[140px]">
+            <div className="absolute -top-16 z-20 group-hover:-translate-y-2 transition-transform duration-500">
+              <div className="w-16 h-16 rounded-full border-[3px] border-orange-700 bg-slate-800 overflow-hidden shadow-[0_0_20px_rgba(194,65,12,0.4)]">
+                {filteredLeaderboard[2]?.avatar ? <img src={filteredLeaderboard[2].avatar} className="w-full h-full object-cover"/> : <span className="text-xl font-black flex items-center justify-center h-full text-white">{filteredLeaderboard[2]?.name?.[0] || 'S'}</span>}
+              </div>
+              <div className="absolute -bottom-2 -right-2 bg-gradient-to-br from-orange-500 to-red-700 rounded-full p-1.5 text-white shadow-lg border border-orange-400/50">
+                <Medal size={14} fill="currentColor" />
+              </div>
+            </div>
+            <div className="w-full h-28 md:h-36 bg-gradient-to-t from-slate-900/90 via-slate-800/80 to-orange-700/20 rounded-t-3xl border-t-[3px] border-x border-orange-700/40 flex flex-col items-center justify-start pt-6 shadow-[inset_0_20px_20px_rgba(194,65,12,0.1),0_0_20px_rgba(194,65,12,0.05)] backdrop-blur-xl relative overflow-hidden">
+              <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.1)_0%,transparent_100%)] opacity-30" />
+              <span className="text-3xl font-black text-orange-600 drop-shadow-lg relative z-10">3</span>
+              <span className="text-xs font-bold text-white mt-2 truncate w-[90%] text-center relative z-10">{filteredLeaderboard[2]?.name}</span>
+              <span className="text-[10px] md:text-xs text-emerald-400 font-mono font-bold mt-0.5 relative z-10">{filteredLeaderboard[2]?.points} XP</span>
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       <motion.div variants={itemVariants} className="bg-slate-900/50 border border-white/5 rounded-[40px] overflow-x-auto custom-scrollbar">
         <table className="w-full text-left min-w-[600px]">

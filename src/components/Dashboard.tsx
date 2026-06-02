@@ -487,7 +487,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
           {/* XP Badge */}
           <div className="flex items-center justify-start">
-            <div className={`bg-slate-900/60 backdrop-blur-2xl px-4 md:px-6 py-3 md:py-4 rounded-3xl md:rounded-[2rem] flex items-center gap-3 md:gap-5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_10px_40px_rgba(0,0,0,0.5)] hover:border-emerald-500/30 transition-all duration-500 group cursor-default max-w-max ${isTourStep3 ? 'ring-[4px] ring-amber-500 scale-[1.03] border-amber-500/50 shadow-[0_0_30px_rgba(245,158,11,0.6)] z-30 animate-pulse bg-slate-950/90' : ''}`}>
+            <div className={`bg-slate-900/60 backdrop-blur-2xl px-4 md:px-6 py-3 md:py-4 rounded-3xl md:rounded-[2rem] flex items-center gap-3 md:gap-5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_10px_40px_rgba(0,0,0,0.5)] hover:border-emerald-500/30 transition-all duration-500 group cursor-default max-w-max force-dark-theme ${isTourStep3 ? 'ring-[4px] ring-amber-500 scale-[1.03] border-amber-500/50 shadow-[0_0_30px_rgba(245,158,11,0.6)] z-30 animate-pulse bg-slate-950/90' : ''}`}>
               <div className="text-right">
                 <div className="flex items-center justify-end gap-2 md:gap-3 mb-0.5">
                   <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">{t.dailyGoal}</p>
@@ -635,36 +635,40 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   setShowTrailer(true);
                 }
               }}
-              className={`bg-slate-900/60 backdrop-blur-2xl rounded-[2rem] p-4 sm:p-6 relative overflow-hidden cursor-pointer group border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_20px_60px_-15px_rgba(0,0,0,0.7)] hover:border-emerald-500/40 hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between h-full col-span-2 lg:col-span-1 ${isTourStep4 ? 'ring-[4px] ring-amber-500 scale-[1.03] border-amber-500/50 shadow-[0_0_30px_rgba(245,158,11,0.6)] z-30 animate-pulse bg-slate-950/90' : ''}`}
+              className={`bg-gradient-to-br from-slate-900/80 via-slate-950/70 to-emerald-950/20 backdrop-blur-2xl rounded-[2.5rem] p-5 sm:p-6.5 relative overflow-hidden cursor-pointer group border border-white/10 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_25px_50px_-12px_rgba(0,0,0,0.8)] hover:border-emerald-500/40 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_rgba(16,185,129,0.25)] transition-all duration-500 flex flex-col justify-between h-full col-span-2 lg:col-span-1 force-dark-theme ${isTourStep4 ? 'ring-[4px] ring-amber-500 scale-[1.03] border-amber-500/50 shadow-[0_0_30px_rgba(245,158,11,0.6)] z-30 animate-pulse bg-slate-950/90' : ''}`}
             >
+              {/* Tech Mesh Overlay */}
+              <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none opacity-40"></div>
               {/* Edge-to-edge gradients */}
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-teal-900/20 opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
-              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[100px] -mr-[200px] -mt-[200px] pointer-events-none group-hover:bg-emerald-500/20 group-hover:scale-110 transition-all duration-1000"></div>
-              <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/15 via-transparent to-teal-900/30 opacity-40 group-hover:opacity-80 transition-opacity duration-700 pointer-events-none"></div>
+              <div className="absolute top-0 right-0 w-[450px] h-[450px] bg-emerald-500/10 rounded-full blur-[90px] -mr-[180px] -mt-[180px] pointer-events-none group-hover:bg-emerald-500/20 group-hover:scale-110 transition-all duration-1000"></div>
+              <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
               
-              <div className="flex flex-row sm:flex-col items-center justify-start sm:justify-center gap-3 sm:gap-4 relative z-10 w-full text-left sm:text-center h-full">
+              <div className="flex flex-row sm:flex-col items-center justify-start sm:justify-center gap-4.5 sm:gap-5 relative z-10 w-full text-left sm:text-center h-full">
                 <div className="relative shrink-0">
-                  <div className="w-12 h-12 sm:w-20 sm:h-20 rounded-full bg-slate-950 border-[2px] sm:border-[3px] border-emerald-500/30 shadow-[0_0_40px_rgba(16,185,129,0.3)] flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:border-emerald-400 transition-all duration-500 overflow-hidden relative group-hover:shadow-[0_0_60px_rgba(16,185,129,0.5)]">
+                  {/* Glowing Ring around Avatar */}
+                  <div className="absolute inset-0 rounded-full bg-emerald-500 blur-xl opacity-30 group-hover:opacity-60 group-hover:scale-110 transition-all duration-500"></div>
+                  <div className="w-13 h-13 sm:w-22 sm:h-22 rounded-full bg-slate-950 border-[2px] sm:border-[3px] border-emerald-500/40 shadow-[0_0_40px_rgba(16,185,129,0.4)] flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:border-emerald-400 transition-all duration-500 overflow-hidden relative">
                     <div className="absolute inset-0 bg-emerald-500/10 animate-pulse" />
                     <img src="/gundulu.png" alt="Gundulu" className="w-full h-full object-cover scale-[0.95] relative z-10 transition-transform duration-500 group-hover:scale-[1.1]" />
                   </div>
-                  <div className="absolute -bottom-1 -right-1 w-5 h-5 sm:w-7 sm:h-7 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-full flex items-center justify-center text-white shadow-[0_0_15px_rgba(16,185,129,0.6)] border-2 border-slate-900 group-hover:scale-110 transition-transform">
-                    <Lucide.Sparkles size={10} className="sm:w-3 sm:h-3" />
+                  <div className="absolute -bottom-1 -right-1 w-6.5 h-6.5 sm:w-8.5 sm:h-8.5 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-full flex items-center justify-center text-white shadow-[0_0_15px_rgba(16,185,129,0.7)] border-[2.5px] border-slate-900 group-hover:scale-115 transition-all">
+                    <Lucide.Sparkles size={11} className="sm:w-3.5 sm:h-3.5" />
                   </div>
                 </div>
                 
-                <div className="space-y-1 sm:space-y-2 flex flex-col items-start sm:items-center flex-1 justify-center">
+                <div className="space-y-1.5 sm:space-y-2.5 flex flex-col items-start sm:items-center flex-1 justify-center">
                   <div className="flex flex-wrap items-center justify-start sm:justify-center gap-1 sm:gap-2">
-                    <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[7px] sm:text-[10px] font-black uppercase tracking-[0.2em] shadow-[inset_0_0_10px_rgba(16,185,129,0.1)] whitespace-nowrap">
+                    <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.2em] shadow-[inset_0_0_10px_rgba(16,185,129,0.15)] whitespace-nowrap">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_5px_#34d399] animate-pulse"></span>
                       <span className="hidden sm:inline">{language === 'en' ? 'Gundulu AI Active' : 'ଗୁନ୍ଦୁଲୁ AI ସକ୍ରିୟ'}</span>
                       <span className="sm:hidden">{language === 'en' ? 'AI Active' : 'AI ସକ୍ରିୟ'}</span>
                     </div>
                   </div>
-                  <h3 className="text-[11px] leading-tight sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300 tracking-tighter group-hover:text-white transition-colors whitespace-nowrap">
+                  <h3 className="text-sm leading-tight sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-slate-300 tracking-tighter group-hover:text-white transition-colors">
                     {language === 'en' ? 'Talk to Gundulu' : 'ଗୁନ୍ଦୁଲୁ ସହିତ କଥା ହୁଅନ୍ତୁ'}
                   </h3>
-                  <p className="text-slate-400 text-[8px] sm:text-xs font-bold leading-relaxed max-w-[260px] mx-auto group-hover:text-slate-300 transition-colors hidden sm:block">
+                  <p className="text-slate-400 text-[9px] sm:text-xs font-bold leading-relaxed max-w-[260px] mx-auto group-hover:text-slate-300 transition-colors hidden sm:block text-center">
                     {language === 'en' 
                       ? 'Initiate a deep learning session. Ask complex questions and get instant, step-by-step voice answers.'
                       : 'ଗୋଟିଏ ଗଭୀର ଶିକ୍ଷା ସେସନ୍ ଆରମ୍ଭ କରନ୍ତୁ | ଗୁନ୍ଦୁଲୁ ଭଏସ୍ ଇଣ୍ଟରଫେସ୍ ମାଧ୍ୟମରେ ଜଟିଳ ପ୍ରଶ୍ନର ସମାଧାନ କରିବାକୁ ସକ୍ଷମ |'}
@@ -674,53 +678,54 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             </motion.div>
 
             {/* Daily MCQ Card - Gamified */}
-            <div className="bg-slate-900/40 backdrop-blur-xl rounded-[2rem] p-3.5 sm:p-6 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_15px_40px_-10px_rgba(0,0,0,0.5)] relative group hover:border-cyan-500/30 hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between h-full col-span-1">
+            <div className="bg-gradient-to-br from-slate-900/80 via-slate-950/70 to-cyan-950/20 backdrop-blur-2xl rounded-[2.5rem] p-5 sm:p-6.5 relative overflow-hidden group border border-white/10 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_25px_50px_-12px_rgba(0,0,0,0.8)] hover:border-cyan-500/40 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_rgba(6,182,212,0.25)] transition-all duration-500 flex flex-col justify-between h-full col-span-1 force-dark-theme">
               
-              {/* Background glows (Isolated overflow-hidden) */}
-              <div className="absolute inset-0 overflow-hidden rounded-[2rem] pointer-events-none z-0">
-                <div className="absolute top-0 right-0 w-48 h-48 bg-cyan-500/10 rounded-full blur-[60px] -mr-24 -mt-24 pointer-events-none group-hover:bg-cyan-500/20 transition-all"></div>
-                <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-600/0 via-cyan-500/50 to-cyan-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              </div>
+              {/* Tech Mesh Overlay */}
+              <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none opacity-30"></div>
+              {/* Edge-to-edge gradients */}
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/15 via-transparent to-blue-900/30 opacity-40 group-hover:opacity-80 transition-opacity duration-700 pointer-events-none"></div>
+              <div className="absolute top-0 right-0 w-[350px] h-[350px] bg-cyan-500/10 rounded-full blur-[80px] -mr-[120px] -mt-[120px] pointer-events-none group-hover:bg-cyan-500/20 group-hover:scale-110 transition-all duration-1000"></div>
+              <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
               
               {/* Hanging Bookmark Ribbon (Right Side) */}
-              <div className="absolute top-0 right-2 sm:right-4 w-5 sm:w-8 h-12 sm:h-16 bg-gradient-to-b from-pink-500 to-rose-600 drop-shadow-[0_5px_10px_rgba(225,29,72,0.4)] z-20 flex justify-center pt-1.5 sm:pt-2 transition-all duration-500 group-hover:pt-2 group-hover:h-16 group-hover:sm:h-20"
+              <div className="absolute top-0 right-3 sm:right-5 w-6 sm:w-9 h-14 sm:h-18 bg-gradient-to-b from-pink-500 to-rose-600 drop-shadow-[0_8px_16px_rgba(225,29,72,0.5)] border-x border-rose-500/30 z-20 flex justify-center pt-2 sm:pt-3 transition-all duration-500 group-hover:pt-3.5 group-hover:h-18 group-hover:sm:h-22"
                    style={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%)' }}>
-                <div className="flex flex-col items-center text-white font-black text-[9px] sm:text-[11px] uppercase leading-[1.1] drop-shadow-md">
+                <div className="flex flex-col items-center text-white font-black text-[9px] sm:text-[11px] uppercase tracking-wider leading-[1.1] drop-shadow-md">
                   <span>M</span>
                   <span>C</span>
                   <span>Q</span>
                 </div>
               </div>
               
-              <div className="relative z-10 space-y-3 sm:space-y-4 flex flex-col flex-1">
-                <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
-                  <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[7px] sm:text-[9px] font-black uppercase tracking-[0.2em] whitespace-nowrap">
-                    <Lucide.CheckCircle2 size={10} className="drop-shadow-md sm:w-3 sm:h-3" />
-                    {language === 'en' ? 'Knowledge Pulse' : 'ଜ୍ଞាន ପରୀକ୍ଷା'}
+              <div className="relative z-10 space-y-4 flex flex-col flex-1">
+                <div className="flex flex-wrap items-center justify-start gap-1 sm:gap-2">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.2em] shadow-[inset_0_0_10px_rgba(6,182,212,0.15)] whitespace-nowrap">
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_5px_#22d3ee] animate-pulse"></span>
+                    <span>{language === 'en' ? 'Knowledge Pulse' : 'ଜ୍ଞାନ ପରୀକ୍ଷା'}</span>
                   </div>
                 </div>
                 
-                <div className="text-center flex flex-col flex-1 justify-center">
-                  <h3 className="text-[11px] leading-tight sm:text-2xl font-black text-white tracking-tighter mb-1.5 sm:mb-2 group-hover:text-cyan-50 transition-colors sm:whitespace-nowrap">
+                <div className="text-left flex flex-col flex-1 justify-center">
+                  <h3 className="text-base leading-tight sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-100 to-slate-300 tracking-tighter mb-1.5 sm:mb-2.5">
                     {language === 'en' ? "Gundulu's Trial" : "ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ"}
                   </h3>
-                  <p className="text-slate-400 text-[8px] sm:text-xs font-bold leading-relaxed max-w-[260px] mx-auto hidden sm:block">
+                  <p className="text-slate-400 text-[9px] sm:text-xs font-bold leading-relaxed max-w-[260px] group-hover:text-slate-300 transition-colors hidden sm:block">
                     {hasDailyPractice
                       ? (language === 'en' ? 'New cognitive nodes are available for your current tier. Synchronize now.' : 'ଆପଣଙ୍କ ଶ୍ରେଣୀ ପାଇଁ ନୂଆ ପ୍ରଶ୍ନ ଉପଲବ୍ଧ ଅଛି | ବର୍ତ୍ତମାନ ସମାଧାନ କରନ୍ତୁ |')
-                      : (language === 'en' ? 'Daily challenge status: PENDING. Check the practice matrix for updates.' : 'ଆଜିର ପ୍ରଶ୍ନ ସେଟ୍ ପ୍ରକାଶିତ ହୋଇଛି କି ନାହିଁ ଦେଖିବାକୁ ଅଭ୍ୟาସ ଟ୍ୟାବ୍ ଖୋଲନ୍ତୁ |')}
+                      : (language === 'en' ? 'Daily challenge status: PENDING. Check the practice matrix for updates.' : 'ଆଜିର ପ୍ରଶ୍ନ ସେଟ୍ ପ୍ରକାଶିତ ହୋଇଛି କି ନାହିଁ ଦେଖିବାକୁ ଅଭ୍ୟାସ ଟ୍ୟାବ୍ ଖୋଲନ୍ତୁ |')}
                   </p>
                 </div>
  
                 {(todayDailySubject || tomorrowDailySubject) && (
-                  <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-1 pt-1 z-10 relative">
+                  <div className="flex flex-col sm:flex-row flex-wrap justify-start gap-1.5 pt-1 z-10 relative">
                     {todayDailySubject && (
-                      <span className="px-1.5 py-0.5 rounded-md bg-cyan-500/10 border border-cyan-500/20 text-[7px] sm:text-[8px] font-black uppercase tracking-wider text-cyan-300 text-center truncate inline-block max-w-[120px] backdrop-blur-sm">
+                      <span className="px-2 py-0.5 rounded-md bg-cyan-500/10 border border-cyan-500/35 text-[7.5px] sm:text-[9px] font-black uppercase tracking-wider text-cyan-300 text-center truncate inline-block max-w-[125px] backdrop-blur-sm">
                         <span className="hidden sm:inline">{language === 'en' ? 'Topic: ' : 'ବିଷୟ: '}</span>
                         {translations[language].subjects?.[todayDailySubject.toLowerCase()] || translations[language].subjects?.[todayDailySubject] || todayDailySubject}
                       </span>
                     )}
                     {tomorrowDailySubject && (
-                      <span className="px-1.5 py-0.5 rounded-md bg-white/5 border border-white/10 text-[7px] sm:text-[8px] font-black uppercase tracking-wider text-slate-400 text-center truncate hidden sm:inline-block max-w-[120px] backdrop-blur-sm">
+                      <span className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-[7.5px] sm:text-[9px] font-black uppercase tracking-wider text-slate-400 text-center truncate hidden sm:inline-block max-w-[125px] backdrop-blur-sm">
                         {language === 'en' ? 'Next: ' : 'ଆସନ୍ତାକାଲି: '} 
                         {translations[language].subjects?.[tomorrowDailySubject.toLowerCase()] || translations[language].subjects?.[tomorrowDailySubject] || tomorrowDailySubject}
                       </span>
@@ -729,18 +734,18 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 )}
               </div>
  
-              <div className="relative z-10 flex flex-row gap-1 sm:gap-3 mt-3 sm:mt-6 shrink-0">
+              <div className="relative z-10 flex flex-row gap-1.5 sm:gap-3 mt-4 sm:mt-7 shrink-0">
                 <button
                   type="button"
                   onClick={onOpenDailyPractice}
-                  className="flex-1 px-2 sm:px-5 py-2 sm:py-3 rounded-xl bg-gradient-to-b from-cyan-400 to-cyan-600 hover:from-cyan-300 hover:to-cyan-500 text-white text-[8px] sm:text-[10px] font-black uppercase tracking-[0.1em] sm:tracking-[0.2em] transition-all shadow-[0_10px_20px_-10px_rgba(6,182,212,0.8)] active:scale-95 border-t border-cyan-300 truncate whitespace-nowrap"
+                  className="flex-1 px-3 sm:px-5 py-2.5 sm:py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-[8px] sm:text-[10px] font-black uppercase tracking-[0.1em] sm:tracking-[0.2em] transition-all shadow-[0_10px_20px_-10px_rgba(6,182,212,0.8)] hover:shadow-[0_15px_30px_rgba(6,182,212,0.5)] hover:scale-[1.03] active:scale-95 border-t border-cyan-350 truncate whitespace-nowrap cursor-pointer"
                 >
                   {language === 'en' ? "Commence Trial" : "ଆରମ୍ଭ କରନ୍ତୁ"}
                 </button>
                 <button
                   type="button"
                   onClick={onShareDailyPractice}
-                  className="px-2.5 sm:px-5 py-2 sm:py-3 rounded-xl bg-[#25D366]/10 border border-[#25D366]/30 text-[#25D366] hover:bg-[#25D366]/20 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.1em] sm:tracking-[0.2em] transition-all flex items-center justify-center gap-1.5 sm:gap-2 shrink-0 group"
+                  className="px-3 sm:px-5 py-2.5 sm:py-3.5 rounded-xl bg-[#25D366]/10 border border-[#25D366]/35 text-[#25D366] hover:bg-[#25D366]/20 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.1em] sm:tracking-[0.2em] transition-all flex items-center justify-center gap-1.5 sm:gap-2 shrink-0 group cursor-pointer"
                 >
                   <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 sm:w-[16px] sm:h-[16px] transition-transform group-hover:scale-110">
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
@@ -749,7 +754,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 </button>
               </div>
             </div>
- 
+
+
             {/* Gundulu's Blackboard Card */}
             <motion.div 
               variants={itemVariants}
@@ -760,35 +766,39 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   setShowTrailer(true);
                 }
               }}
-              className="bg-slate-900/60 backdrop-blur-2xl rounded-[2rem] p-3.5 sm:p-6 relative overflow-hidden cursor-pointer group border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_20px_60px_-15px_rgba(0,0,0,0.7)] hover:border-amber-500/40 hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between h-full col-span-1"
+              className="bg-gradient-to-br from-[#0c2b18] via-[#051c0f] to-[#011409] backdrop-blur-2xl rounded-[2.5rem] p-5 sm:p-6.5 relative overflow-hidden cursor-pointer group border border-amber-500/20 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_25px_50px_-12px_rgba(0,0,0,0.8)] hover:border-amber-500/60 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_rgba(245,158,11,0.25)] transition-all duration-500 flex flex-col justify-between h-full col-span-1 force-dark-theme"
             >
+              {/* Tech Mesh Overlay */}
+              <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none opacity-30"></div>
               {/* Edge-to-edge gradients */}
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-amber-900/20 opacity-50 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
-              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-amber-500/10 rounded-full blur-[100px] -mr-[200px] -mt-[200px] pointer-events-none group-hover:bg-amber-500/20 group-hover:scale-110 transition-all duration-1000"></div>
-              <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/15 via-transparent to-amber-900/30 opacity-40 group-hover:opacity-80 transition-opacity duration-700 pointer-events-none"></div>
+              <div className="absolute top-0 right-0 w-[350px] h-[350px] bg-amber-500/10 rounded-full blur-[80px] -mr-[120px] -mt-[120px] pointer-events-none group-hover:bg-amber-500/20 group-hover:scale-110 transition-all duration-1000"></div>
+              <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
               
-              <div className="flex flex-col items-center justify-center gap-2 sm:gap-4 relative z-10 w-full text-center h-full">
+              <div className="flex flex-col items-center justify-center gap-4.5 sm:gap-5 relative z-10 w-full text-center h-full">
                 <div className="relative shrink-0">
-                  <div className="w-12 h-12 sm:w-20 sm:h-20 rounded-[1.5rem] bg-[#0f2f1d] border-[2px] sm:border-[3px] border-amber-800 shadow-[0_0_40px_rgba(245,158,11,0.2)] flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:border-amber-600 transition-all duration-500 overflow-hidden relative">
-                    <div className="absolute inset-0 bg-white/[0.02] pointer-events-none" />
-                    <Lucide.PenTool className="text-amber-200 w-6.5 h-6.5 sm:w-10 sm:h-10 animate-pulse" />
+                  {/* Outer Glowing Ring */}
+                  <div className="absolute inset-0 rounded-[1.5rem] bg-amber-500 blur-xl opacity-20 group-hover:opacity-50 group-hover:scale-110 transition-all duration-500"></div>
+                  <div className="w-13 h-13 sm:w-22 sm:h-22 rounded-[1.8rem] bg-[#0c2616] border-[2px] sm:border-[3px] border-amber-500/40 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_0_40px_rgba(245,158,11,0.25)] flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:border-amber-400 transition-all duration-500 overflow-hidden relative">
+                    <div className="absolute inset-0 bg-white/[0.01] pointer-events-none" />
+                    <Lucide.PenTool className="text-amber-350 w-7 h-7 sm:w-11 sm:h-11 animate-pulse" />
                   </div>
-                  <div className="absolute -bottom-1 -right-1 w-5 h-5 sm:w-7 sm:h-7 bg-gradient-to-br from-amber-400 to-orange-600 rounded-full flex items-center justify-center text-white shadow-[0_0_15px_rgba(245,158,11,0.6)] border-2 border-slate-900 group-hover:scale-110 transition-transform">
-                    <Lucide.Sparkles size={10} className="sm:w-3 sm:h-3" />
+                  <div className="absolute -bottom-1 -right-1 w-6.5 h-6.5 sm:w-8.5 sm:h-8.5 bg-gradient-to-br from-amber-400 to-orange-600 rounded-full flex items-center justify-center text-white shadow-[0_0_15px_rgba(245,158,11,0.7)] border-[2.5px] border-slate-900 group-hover:scale-115 transition-all">
+                    <Lucide.Sparkles size={11} className="sm:w-3.5 sm:h-3.5" />
                   </div>
                 </div>
                 
-                <div className="space-y-1.5 sm:space-y-2 flex flex-col items-center flex-1 justify-center">
+                <div className="space-y-1.5 sm:space-y-2.5 flex flex-col items-center flex-1 justify-center">
                   <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
-                    <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[7px] sm:text-[10px] font-black uppercase tracking-[0.2em] shadow-[inset_0_0_10px_rgba(245,158,11,0.1)] whitespace-nowrap">
-                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_5px_#fbbf24] animate-pulse"></span>
+                    <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.2em] shadow-[inset_0_0_10px_rgba(245,158,11,0.15)] whitespace-nowrap">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_5px_#f59e0b] animate-pulse"></span>
                       <span>{language === 'en' ? 'Math Blackboard' : 'ଗଣିତ କଳାପଟା'}</span>
                     </div>
                   </div>
-                  <h3 className="text-[11px] leading-tight sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300 tracking-tighter group-hover:text-white transition-colors sm:whitespace-nowrap">
+                  <h3 className="text-sm leading-tight sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-amber-100 to-slate-300 tracking-tighter group-hover:text-white transition-colors">
                     {language === 'en' ? "Gundulu's Slate" : 'ଗୁନ୍ଦୁଲୁ କଳାପଟା'}
                   </h3>
-                  <p className="text-slate-400 text-[8px] sm:text-xs font-bold leading-relaxed max-w-[260px] mx-auto group-hover:text-slate-300 transition-colors hidden sm:block">
+                  <p className="text-slate-400 text-[9px] sm:text-xs font-bold leading-relaxed max-w-[260px] mx-auto group-hover:text-slate-300 transition-colors hidden sm:block text-center">
                     {language === 'en' 
                       ? 'Draw equations or write calculations with chalk. Gundulu scans and solves them in Odia.'
                       : 'ଖଡ଼ିରେ ଯେକୌଣସି ଗଣିତ ଲେଖନ୍ତୁ, ଏବଂ ଗୁନ୍ଦୁଲୁ ଆପା ସ୍ପଷ୍ଟ ଭାବେ ଏହାର ସମାଧାନ ବୁଝାଇଦେବେ |'}

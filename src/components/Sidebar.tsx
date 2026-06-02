@@ -64,6 +64,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'leaderboard', icon: Lucide.Trophy, label: t.leaderboard },
     { id: 'store', icon: Lucide.ShoppingBag, label: language === 'en' ? 'Avatar Store' : 'ଅବତାର ଷ୍ଟୋର' },
     { id: 'plans', icon: Lucide.CreditCard, label: language === 'en' ? 'Subscription' : 'ସବସ୍କ୍ରିପସନ୍' },
+    { id: 'parent_dashboard', icon: Lucide.Users, label: language === 'en' ? 'Parent Insights' : 'ପିତାମାତା ଇନସାଇଟ୍ସ', premium: true, badge: <span className="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md tracking-wider">PRO</span> },
     { id: 'support', icon: Lucide.HelpCircle, label: t.support.title },
   ];
 
@@ -126,8 +127,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   icon={<Icon size={20} />}
                   label={item.label}
                   active={isActive}
-                  /* Applying the Terracotta theme for active items */
-                  className={isActive ? 'bg-[#b34d1f] text-white shadow-lg' : 'text-white/60 hover:bg-white/5'}
+                  premium={item.premium}
+                  badge={item.badge}
+                  /* Applying the Terracotta theme for active items if not premium */
+                  className={isActive && !item.premium ? 'bg-[#b34d1f] text-white shadow-lg' : ''}
                   onClick={() => {
                     setActiveTab(item.id);
                     setSidebarOpen(false);
