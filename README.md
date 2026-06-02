@@ -20,10 +20,10 @@ Instead of corporate buzzwords, Utkal Skill Centre is built on a real, high-impa
     *   **Syllabus Coverage**: Deployed 100% complete syllabus roadmaps from **Class 1 to Class 10** with premium notes for all **448 chapters**.
     *   **100% Free Smart Classes**: Fully integrated curated video lesson libraries, making YouTube school classes unlocked and free for everyone.
     *   **Virtually $0.00 Operational Cost**: By serving study guides statically and offloading voice synthesizers to the student's browser engine, our server operational cost approaches **$0.00**, making our ₹99/mo subscription highly profitable!
-*   **🤖 Gundulu AI technical Evolution**:
-    *   **Phase 1 (Current - Syllabus Search)**: Gundulu acts as a supportive digital elder sister, using precise text search to fetch textbook notes and generate monthly practice tests.
-    *   **Phase 2 (Future - Native Odia Gemma Training)**: We plan to train Google's lightweight open AI models (such as *Gemma-2B/7B*) on our Odia educational transcripts. This will allow Gundulu to speak and text in Odia with incredibly fast native speed and near-zero server cost!
-    *   **Phase 3 (Future - Voice Tutor)**: Unlocking fully automated voice dialogue, where Gundulu can converse naturally, grade student speech pronunciation, and tutor dynamically.
+*   **🤖 Gundulu AI Technical Evolution Roadmap**:
+    *   **Phase 1 (Current - RAG [Already Done])**: 100% active Retrieval-Augmented Generation (RAG) using Firestore Native Vector search and bilingual (Odia + English) Jaccard re-ranking for zero-hallucination textbook alignment.
+    *   **Phase 2 (Medium-Term - RAG + SFT)**: Integrating SFT (Supervised Fine-Tuning) with RAG on Google's lightweight open models (such as *Gemma-2B/7B*) using localized school curriculum data. This optimizes conversational flow and tone without losing factual grounding.
+    *   **Phase 3 (Long-Term - SFT on Edge)**: Standalone Supervised Fine-Tuned (SFT) model execution running directly on the client browser via WebGPU/WASM for high-speed, completely offline edge tutoring with zero cloud costs.
 
 ---
 
