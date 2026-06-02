@@ -25,8 +25,7 @@ const SOCIAL_ORIGINS = [
 
 // PRE-CONFIGURED HACKATHON TEST NUMBERS (Must match test numbers configured in Firebase Auth console)
 const TEST_ACCOUNTS = [
-  { phone: '+911234567890', label: 'Student (Class 10)', class: '10', board: 'BSE Odisha', role: 'student' as const, code: '123456' },
-  { phone: '+911010101010', label: 'Student (Class 10)', class: '10', board: 'BSE Odisha', role: 'student' as const, code: '101010' }
+  { phone: '+911234567890', label: 'Student (Class 10)', class: '10', board: 'BSE Odisha', role: 'student' as const, code: '123456' }
 ];
 
 export default function Login({ language, translations, setLanguage, setRegData }: { language: 'en' | 'or', translations: any, setLanguage: (lang: 'en' | 'or') => void, setRegData: (data: any) => void }): React.ReactElement {
