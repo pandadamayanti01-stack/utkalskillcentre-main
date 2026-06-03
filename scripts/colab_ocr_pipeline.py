@@ -45,18 +45,24 @@ print("✅ Dependencies imported successfully!")
 # drive.mount('/content/drive')
 
 # ------------------------------------------------------------------------------
-# STEP 3: API KEY ROTATOR CONFIGURATION & TARGET SELECTION
+# STEP 3: API KEY CONFIGURATION & TARGET SELECTION
 # ------------------------------------------------------------------------------
-# Add your 7 developer keys here.
-API_KEYS = [
-    "AIzaSy...", # Key 1
-    "AIzaSy...", # Key 2
-    "AIzaSy...", # Key 3
-    "AIzaSy...", # Key 4
-    "AIzaSy...", # Key 5
-    "AIzaSy...", # Key 6
-    "AIzaSy..."  # Key 7
-]
+# We will use your Pay-As-You-Go API Key.
+# The script will try to load it from Google Colab Secrets (User Data) or Environment variables.
+API_KEY = None
+
+try:
+    from google.colab import userdata
+    API_KEY = userdata.get('GEMINI_API_KEY')
+except Exception:
+    pass
+
+if not API_KEY:
+    API_KEY = os.environ.get("GEMINI_API_KEY")
+
+# Paste your API key here directly if not using Colab Secrets or Env Variables:
+if not API_KEY or API_KEY == "YOUR_PAY_AS_YOU_GO_KEY_HERE":
+    API_KEY = "AIzaSyChC5vHsWedo2EQbISIgrCp0bakJBPztdw"
 
 # Set active target class to process (e.g. '10', '9', '8')
 TARGET_CLASS = "10"
@@ -69,7 +75,6 @@ PROGRESS_FILE_PATH = f"/content/drive/MyDrive/textbook_vectors_class_{TARGET_CLA
 # Credentials file path in your mounted Google Drive
 SERVICE_ACCOUNT_PATH = "/content/drive/MyDrive/utkalskillcentre-4ed1afa2f6a3.json"
 
-current_key_idx = 0
 global_cooldown_until = 0
 
 # ------------------------------------------------------------------------------
@@ -77,53 +82,69 @@ global_cooldown_until = 0
 # ------------------------------------------------------------------------------
 def perform_ocr_with_rate_limit_handling(image, prompt="Please transcribe all text from this textbook page. Transcribe Odia script perfectly with all characters and matras intact."):
     """
-    Performs Gemini 2.5 Flash OCR on a page image with smart key rotation, pacing,
-    and project-wide global cooldown handling.
+    Performs Gemini 2.5 Flash OCR on a page image using a single Pay-As-You-Go API key,
+    with adaptive rate-limit retries and safety checks disabled for educational contents.
     """
-    global current_key_idx, global_cooldown_until
+    global global_cooldown_until
     
-    max_attempts = len(API_KEYS) * 2
-    fallback_delay = 10
+    max_attempts = 15
+    fallback_delay = 5
     
-    for attempt in range(max_attempts):
-        # 1. Respect project-wide global cooldown
+    for attempt in range(1, max_attempts + 1):
+        # 1. Respect global cooldown
         now = time.time()
         if now < global_cooldown_until:
             wait_time = int(global_cooldown_until - now)
-            print(f"⏳ [Project Quota Cooldown] Sleeping for {wait_time}s to let the rate limit window reset...")
+            print(f"⏳ [Quota Cooldown] Sleeping for {wait_time}s...")
             time.sleep(wait_time)
             
-        # 2. Get the current key
-        key_idx = current_key_idx
-        api_key = API_KEYS[key_idx]
-        
         try:
-            # Initialize Client using the official google-genai SDK
-            client = genai.Client(api_key=api_key)
+            client = genai.Client(api_key=API_KEY)
             
-            # Execute Gemini 2.5 Flash OCR
+            # Execute Gemini 2.5 Flash OCR with safety settings disabled
             response = client.models.generate_content(
                 model='gemini-2.5-flash',
-                contents=[image, prompt]
+                contents=[image, prompt],
+                config=types.GenerateContentConfig(
+                    safety_settings=[
+                        types.SafetySetting(
+                            category=types.HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+                            threshold=types.HarmBlockThreshold.BLOCK_NONE,
+                        ),
+                        types.SafetySetting(
+                            category=types.HarmCategory.HARM_CATEGORY_HARASSMENT,
+                            threshold=types.HarmBlockThreshold.BLOCK_NONE,
+                        ),
+                        types.SafetySetting(
+                            category=types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+                            threshold=types.HarmBlockThreshold.BLOCK_NONE,
+                        ),
+                        types.SafetySetting(
+                            category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+                            threshold=types.HarmBlockThreshold.BLOCK_NONE,
+                        ),
+                    ]
+                )
             )
             
             ocr_text = response.text
             if not ocr_text:
-                raise ValueError("Returned text payload is empty.")
+                finish_reason = "Unknown"
+                if response.candidates and len(response.candidates) > 0:
+                    candidate = response.candidates[0]
+                    finish_reason = getattr(candidate, 'finish_reason', 'Unknown')
+                raise ValueError(f"Returned text payload is empty. (Finish Reason: {finish_reason})")
                 
-            # SUCCESS pacing: Natural sleep delay of 3.0s to stay below 20 RPM naturally
-            time.sleep(3.0)
+            # SUCCESS pacing: Natural sleep delay of 1.0s to pace requests
+            time.sleep(1.0)
             return ocr_text
             
         except Exception as e:
             err_msg = str(e)
+            print(f"⚠️ Attempt {attempt}/{max_attempts} failed: {err_msg[:120]}")
             
             # Handle Quota / Rate-Limit (429)
             if "429" in err_msg or "RESOURCE_EXHAUSTED" in err_msg:
-                # Rotate key for the next attempt
-                current_key_idx = (current_key_idx + 1) % len(API_KEYS)
-                
-                # Parse retryDelay if present (e.g. "Please retry in 54.284799949s.")
                 sleep_duration = fallback_delay
                 delay_match = re.search(r"retry in\s+([\d\.]+)\s*s", err_msg)
                 if delay_match:
@@ -133,25 +154,20 @@ def perform_ocr_with_rate_limit_handling(image, prompt="Please transcribe all te
                     if delay_match_json:
                         sleep_duration = int(delay_match_json.group(1)) + 2
                 
-                print(f"⚠️ Key [{key_idx}] rate-limited (429). err_msg: {err_msg[:100]}...")
-                print(f"⏳ Cooldown locked! Pausing pipeline for {sleep_duration} seconds...")
-                
-                # Set global project cooldown
+                print(f"⏳ Rate limited (429). Pausing for {sleep_duration} seconds...")
                 global_cooldown_until = time.time() + sleep_duration
-                fallback_delay = min(fallback_delay * 1.5, 60)
+                fallback_delay = min(fallback_delay * 1.5, 30)
                 
             # Handle Service Unavailable (503)
             elif "503" in err_msg or "UNAVAILABLE" in err_msg:
-                print(f"⚠️ Key [{key_idx}] service unavailable (503). Retrying in 5 seconds...")
+                print(f"⏳ Service unavailable (503). Retrying in 5 seconds...")
                 time.sleep(5)
                 
-            # Handle bad key or general blockage
             else:
-                print(f"❌ Key [{key_idx}] client error: {err_msg[:200]}")
-                current_key_idx = (current_key_idx + 1) % len(API_KEYS)
+                # Other errors: back off slightly and retry
                 time.sleep(2)
                 
-    raise RuntimeError("❌ All API keys failed repeatedly. Pipeline halted to prevent progress loss.")
+    raise RuntimeError("❌ All attempts failed on OCR generation. Pipeline halted.")
 
 # ------------------------------------------------------------------------------
 # STEP 5: EMBEDDING ENGINE
@@ -159,24 +175,21 @@ def perform_ocr_with_rate_limit_handling(image, prompt="Please transcribe all te
 def generate_page_embedding(text):
     """
     Generates a 768-dimensional vector embedding for a page using gemini-embedding-001.
-    Uses rotation and cooldown to survive rate limits.
+    Uses the single API key with retries.
     """
-    global current_key_idx, global_cooldown_until
+    global global_cooldown_until
     
-    max_attempts = len(API_KEYS) * 2
+    max_attempts = 15
     fallback_delay = 5
     
-    for attempt in range(max_attempts):
+    for attempt in range(1, max_attempts + 1):
         now = time.time()
         if now < global_cooldown_until:
             wait_time = int(global_cooldown_until - now)
             time.sleep(wait_time)
             
-        key_idx = current_key_idx
-        api_key = API_KEYS[key_idx]
-        
         try:
-            client = genai.Client(api_key=api_key)
+            client = genai.Client(api_key=API_KEY)
             response = client.models.embed_content(
                 model="models/gemini-embedding-001",
                 contents=text,
@@ -185,28 +198,26 @@ def generate_page_embedding(text):
             
             vector = response.embedding.values
             if vector and len(vector) == 768:
-                time.sleep(1.5) # Natural pacing
+                time.sleep(0.5) # Pacing
                 return vector
             raise ValueError("Embedding returned incorrect dimension or format.")
             
         except Exception as e:
             err_msg = str(e)
+            print(f"⚠️ Embedding Attempt {attempt}/{max_attempts} failed: {err_msg[:120]}")
+            
             if "429" in err_msg or "RESOURCE_EXHAUSTED" in err_msg:
-                current_key_idx = (current_key_idx + 1) % len(API_KEYS)
                 sleep_duration = fallback_delay
                 delay_match = re.search(r"retry in\s+([\d\.]+)\s*s", err_msg)
                 if delay_match:
                     sleep_duration = int(float(delay_match.group(1))) + 2
                 
-                print(f"⚠️ Key [{key_idx}] rate-limited on Embedding (429). Message: {err_msg[:80]}...")
                 global_cooldown_until = time.time() + sleep_duration
                 fallback_delay = min(fallback_delay * 1.5, 30)
             else:
-                print(f"⚠️ Key [{key_idx}] failed on Embedding: {err_msg[:120]}")
-                current_key_idx = (current_key_idx + 1) % len(API_KEYS)
                 time.sleep(2)
                 
-    raise RuntimeError("❌ All API keys failed on Embedding generation.")
+    raise RuntimeError("❌ All attempts failed on Embedding generation.")
 
 # ------------------------------------------------------------------------------
 # STEP 6: MAIN OCR PROCESSING & EMBEDDING LOOP (With Resume Capability)
