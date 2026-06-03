@@ -5206,6 +5206,19 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
         >
           {loading ? <Lucide.Loader2 className="animate-spin" size={20} /> : translations[language].profile.saveProfile}
         </button>
+
+        {/* Privacy Policy Link */}
+        <div className="text-center pt-2">
+          <a 
+            href="/privacy-policy.html" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-xs text-slate-500 hover:text-emerald-400 font-bold transition-colors inline-flex items-center gap-1.5"
+          >
+            <Lucide.ShieldCheck size={14} />
+            {language === 'en' ? 'Privacy Policy & Data Security' : 'ଗୋପନୀୟତା ନୀତି ଏବଂ ତଥ୍ୟ ସୁରକ୍ଷା'}
+          </a>
+        </div>
       </div>
     </motion.div>
 
