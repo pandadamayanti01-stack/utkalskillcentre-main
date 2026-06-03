@@ -19,7 +19,7 @@ export const GoldenTicket: React.FC<GoldenTicketProps> = ({
   // Level & badge calculation rules (aligned with Dashboard.tsx)
   const isTestAccount = user?.phoneNumber === '+911234567890' || user?.phone === '+911234567890' || user?.phoneNumber === '1234567890' || user?.phone === '1234567890';
   const name = (user?.name && user.name !== 'Student' && user.name !== 'Student Achiever') ? user.name : (isTestAccount ? 'Anuradha Panda' : 'Student Achiever');
-  const points = user?.points || (isTestAccount ? 850 : 0);
+  const points = Math.max(user?.points || 0, user?.points_today || 0) || (isTestAccount ? 850 : 0);
   const level = Math.floor(points / 100) + 1;
   const streak = user?.streak || (isTestAccount ? 14 : 0);
   const district = user?.district || (isTestAccount ? 'Khordha' : 'Odisha');

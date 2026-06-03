@@ -132,6 +132,7 @@ interface Student {
   subjects?: string[];
   preferred_language: string;
   points: number;
+  points_today?: number;
   role: string;
   avatar?: string;
   streak?: number;
@@ -1804,6 +1805,11 @@ export default function App() {
             let updatedUser = { ...data, id: docSnap.id };
             console.log("Debug: User data updated:", updatedUser);
 
+            // Self-heal points in local state if points_today is higher
+            if (updatedUser.points_today && (!updatedUser.points || updatedUser.points < updatedUser.points_today)) {
+              updatedUser.points = updatedUser.points_today;
+            }
+
             const isTest = updatedUser.phoneNumber === '+911234567890' || updatedUser.phoneNumber === '1234567890';
             if (isTest) {
               updatedUser = {
@@ -1900,7 +1906,7 @@ export default function App() {
             subjects: (userDocSnap.exists() && userDocSnap.data().subjects?.length > 0) ? userDocSnap.data().subjects : (regDataRef.current.subjects || []),
             preferred_language: (userDocSnap.exists() && userDocSnap.data().preferred_language) ? userDocSnap.data().preferred_language : (languageRef.current || 'or'),
             role: role,
-            points: isJudgeAccount ? 850 : (userDocSnap.exists() ? (userDocSnap.data().points ?? 0) : 0),
+            points: isJudgeAccount ? 850 : (userDocSnap.exists() ? Math.max(userDocSnap.data().points ?? 0, userDocSnap.data().points_today ?? 0) : 0),
             avatar: userDocSnap.exists() ? (userDocSnap.data().avatar ?? 'https://api.dicebear.com/7.x/bottts/svg?seed=default') : 'https://api.dicebear.com/7.x/bottts/svg?seed=default',
             streak: isJudgeAccount ? 14 : (userDocSnap.exists() ? (userDocSnap.data().streak ?? 0) : 0),
             district: isJudgeAccount ? 'Khordha' : (userDocSnap.exists() ? (userDocSnap.data().district ?? '') : ''),
