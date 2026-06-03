@@ -190,6 +190,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
             <button
               onClick={handleLogout}
+              className="w-full flex items-center gap-3 p-4 rounded-2xl text-amber-400/70 hover:bg-amber-500/10 hover:text-amber-400 transition-all font-bold text-sm group"
+            >
+              <Lucide.Users size={20} className="group-hover:scale-105 transition-transform" />
+              {language === 'en' ? 'Switch Sibling' : 'ଆକାଉଣ୍ଟ୍ ବଦଳାନ୍ତୁ'}
+            </button>
+
+            <button
+              onClick={handleLogout}
               className="w-full flex items-center gap-3 p-4 rounded-2xl text-red-400/70 hover:bg-red-500/10 hover:text-red-400 transition-all font-bold text-sm group"
             >
               <Lucide.LogOut size={20} className="group-hover:-translate-x-1 transition-transform" />

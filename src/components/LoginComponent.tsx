@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { auth, db, signInWithGoogle } from '../firebase';
-import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
+import { RecaptchaVerifier, signInWithPhoneNumber, signInWithCustomToken } from 'firebase/auth';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Phone, Loader2, Globe, ArrowLeft, Shield, ChevronRight, Sparkles, Youtube, Instagram, Facebook, BookOpen } from 'lucide-react';
 import { doc, getDoc } from 'firebase/firestore';
@@ -96,6 +96,57 @@ export default function Login({ language, translations, setLanguage, setRegData 
   const [isSending, setIsSending] = useState(false);
   const [authStep, setAuthStep] = useState<'login' | 'otp'>('login');
   const [showAdminPill, setShowAdminPill] = useState(false);
+
+  // PIN Switcher State variables
+  const [loginView, setLoginView] = useState<'phone' | 'switcher' | 'pin'>('phone');
+  const [savedAccounts, setSavedAccounts] = useState<any[]>([]);
+  const [selectedAccount, setSelectedAccount] = useState<any | null>(null);
+  const [pin, setPin] = useState('');
+  const [pinError, setPinError] = useState('');
+  const [verifyingPin, setVerifyingPin] = useState(false);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('saved_accounts');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setSavedAccounts(parsed);
+          setLoginView('switcher');
+        }
+      }
+    } catch (e) {
+      console.error("Failed to load saved accounts", e);
+    }
+  }, []);
+
+  const handlePinSubmit = async (enteredPin: string) => {
+    if (!selectedAccount) return;
+    setVerifyingPin(true);
+    setPinError('');
+    try {
+      const response = await fetch('/api/auth/login-with-pin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: selectedAccount.uid, pin: enteredPin })
+      });
+      
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to authenticate');
+      }
+
+      // PIN matches, authenticate with custom token!
+      await signInWithCustomToken(auth, data.customToken);
+      console.log("PIN Switcher Login successful");
+    } catch (err: any) {
+      console.error(err);
+      setPinError(err.message || 'Incorrect PIN. Please try again.');
+      setPin('');
+    } finally {
+      setVerifyingPin(false);
+    }
+  };
   const showShowcaseButton = typeof window !== 'undefined' && (
     window.location.search.includes('showcase=true') || 
     window.location.search.includes('judge=true') || 
@@ -435,262 +486,433 @@ export default function Login({ language, translations, setLanguage, setRegData 
           {/* WELCOME BANNER (Slightly Up) */}
           <div className="w-full text-center space-y-1 pb-1">
             <AnimatePresence mode="wait">
-              <motion.div key={language} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }}>
-                <h2 className="text-white text-3xl sm:text-4xl font-black tracking-tight font-['Outfit']">
-                  {language === 'en' ? 'Join the ' : 'ସାମିଲ ହୁଅନ୍ତୁ ' }
-                  <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-emerald-400 bg-clip-text text-transparent">
-                    {language === 'en' ? 'AI Era' : 'AI ଯୁଗରେ'}
-                  </span>
-                </h2>
-                <p className="text-slate-400 text-[9px] font-black uppercase tracking-[0.3em] mt-1.5 flex items-center justify-center gap-2">
-                  <span className="h-px w-4 bg-slate-700" />
-                  {language === 'en' ? 'Personalized Learning' : 'ଆପଣଙ୍କ ପାଇଁ ବ୍ୟକ୍ତିଗତ ଶିକ୍ଷା'}
-                  <span className="h-px w-4 bg-slate-700" />
-                </p>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          <div className={`w-full grid ${showAdminPill ? 'grid-cols-2' : 'grid-cols-1'} gap-1.5 p-1 bg-black/40 rounded-xl border border-white/5`}>
-            <button
-              type="button"
-              onClick={() => setUserRole('student')}
-              className={`py-3 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${
-                userRole === 'student' 
-                  ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-lg shadow-amber-900/40 scale-[1.02]' 
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              👨‍🎓 {language === 'en' ? 'Student' : 'ଛାତ୍ର'}
-            </button>
-            {/* HACKATHON: TEACHER ROLE HIDDEN FOR MVP
-            <button
-              type="button"
-              onClick={() => setUserRole('teacher')}
-              className={`py-3 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${
-                userRole === 'teacher' 
-                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-900/40 scale-[1.02]' 
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              👨‍🏫 {language === 'en' ? 'Teacher' : 'ଶିକ୍ଷକ'}
-            </button>
-            */}
-            {showAdminPill && (
-              <button
-                type="button"
-                onClick={() => setUserRole('admin')}
-                className={`py-3 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 relative ${
-                  userRole === 'admin' 
-                    ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg shadow-emerald-900/40 scale-[1.02]' 
-                    : 'text-slate-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                🛡️ {language === 'en' ? 'Admin' : 'ପ୍ରଶାସକ'}
-                <div 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowAdminPill(false);
-                    if (userRole === 'admin') setUserRole('student');
-                  }}
-                  title="Hide Admin Mode"
-                  className="absolute right-1 top-1 w-4 h-4 rounded-full bg-black/40 hover:bg-red-500/80 flex items-center justify-center text-[8px] text-slate-300 hover:text-white transition-colors"
-                >
-                  ✕
-                </div>
-              </button>
-            )}
-          </div>
-
-          {/* RECAPTCHA & INPUT FLOW */}
-          <div className="w-full space-y-3.5">
-            <div id="recaptcha-container" ref={recaptchaDomRef} className="my-1 flex justify-center w-full overflow-hidden"></div>
-            
-            <AnimatePresence mode="wait">
-              {authStep === 'login' ? (
-                <motion.div 
-                  key="login" 
-                  initial={{ opacity: 0, y: 10 }} 
-                  animate={{ opacity: 1, y: 0 }} 
-                  exit={{ opacity: 0, y: -10 }}
-                  className="w-full space-y-3.5"
-                >
-                  {userRole === 'student' && (
-                    <div className="space-y-3">
-                      <div className="space-y-1">
-                        <label className="text-[10px] font-black text-amber-400 uppercase tracking-widest pl-3 flex items-center gap-1.5">
-                          <BookOpen size={12} /> {language === 'en' ? 'Select Class' : 'ଶ୍ରେଣୀ ବାଛନ୍ତୁ'}
-                        </label>
-                        <div className="relative group">
-                          <select 
-                            value={selectedClass} 
-                            onChange={(e) => setSelectedClass(e.target.value)}
-                            className="w-full py-3.5 pl-4 pr-10 bg-slate-950/80 border-2 border-slate-600 hover:border-amber-500 focus:border-amber-400 rounded-2xl text-white text-xs font-bold outline-none focus:shadow-[0_0_20px_rgba(245,158,11,0.25)] appearance-none transition-all cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
-                          >
-                            <option className="bg-[#0b0f19]">{t.selectClass} *</option>
-                            {Object.entries(t.classes).map(([k,v]) => <option key={k} value={k} className="bg-[#0b0f19]">{v as string}</option>)}
-                          </select>
-                          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 group-hover:text-amber-400 group-focus-within:text-amber-400 transition-colors">
-                            <ChevronRight size={16} className="transform rotate-90" />
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="space-y-1">
-                        <label className="text-[10px] font-black text-amber-400 uppercase tracking-widest pl-3 flex items-center gap-1.5">
-                          <Globe size={12} /> {language === 'en' ? 'Select Board' : 'ବୋର୍ଡ ବାଛନ୍ତୁ'}
-                        </label>
-                        <div className="relative group">
-                          <select 
-                            value={selectedBoard} 
-                            onChange={(e) => setSelectedBoard(e.target.value)}
-                            className="w-full py-3.5 pl-4 pr-10 bg-slate-950/80 border-2 border-slate-600 hover:border-amber-500 focus:border-amber-400 rounded-2xl text-white text-xs font-bold outline-none focus:shadow-[0_0_20px_rgba(245,158,11,0.25)] appearance-none transition-all cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
-                          >
-                            <option className="bg-[#0b0f19]">{t.selectBoard} *</option>
-                            {t.boards && Object.entries(t.boards).map(([k,v]) => <option key={k} value={k} className="bg-[#0b0f19]">{v as string}</option>)}
-                          </select>
-                          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 group-hover:text-amber-400 group-focus-within:text-amber-400 transition-colors">
-                            <ChevronRight size={16} className="transform rotate-90" />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-black text-amber-400 uppercase tracking-widest pl-3 flex items-center gap-1.5">
-                      <Phone size={12} /> {language === 'en' ? 'Mobile Number' : 'ମୋବାଇଲ୍ ନମ୍ବର'}
-                    </label>
-                    <div className="flex gap-2.5">
-                      <div className="px-4 py-3.5 bg-slate-950/80 border-2 border-slate-600 rounded-2xl text-amber-400 text-xs font-black flex items-center justify-center shadow-inner">
-                        <span>+91</span>
-                      </div>
-                      <input 
-                        type="tel" 
-                        ref={phoneInputRef}
-                        defaultValue={phoneNumber}
-                        placeholder={t.enterPhone}
-                        inputMode="numeric"
-                        autoComplete="tel"
-                        className="flex-1 py-3.5 px-5 bg-slate-950/80 border-2 border-slate-600 hover:border-amber-500 focus:border-amber-400 rounded-2xl text-white text-xs font-black outline-none focus:shadow-[0_0_20px_rgba(245,158,11,0.25)] placeholder:text-slate-600 transition-all shadow-inner" 
-                      />
-                    </div>
-                  </div>
-
+              {loginView === 'switcher' ? (
+                <motion.div key="switcher-header" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }}>
+                  <h2 className="text-white text-2xl sm:text-3xl font-black tracking-tight font-['Outfit']">
+                    {language === 'en' ? 'Who is studying today?' : 'ଆଜି କିଏ ପଢୁଛି?'}
+                  </h2>
+                  <p className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mt-1.5">
+                    {language === 'en' ? 'Select profile & enter PIN to switch' : 'ପ୍ରୋଫାଇଲ୍ ବାଛନ୍ତୁ ଏବଂ ପିନ୍ ଦିଅନ୍ତୁ'}
+                  </p>
+                </motion.div>
+              ) : loginView === 'pin' ? (
+                <motion.div key="pin-header" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} className="relative flex items-center justify-center">
                   <button 
-                    onClick={onSmsSend} 
-                    disabled={isSending} 
-                    className={`w-full group py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2 ${
-                      userRole === 'admin' 
-                        ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-emerald-900/40' 
-                        : userRole === 'teacher' 
-                        ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-purple-900/40' 
-                        : 'bg-gradient-to-r from-amber-600 via-orange-600 to-amber-600 hover:from-amber-500 hover:to-orange-500 text-white shadow-amber-900/40'
-                    }`}
+                    onClick={() => { setLoginView('switcher'); setPin(''); setPinError(''); }}
+                    className="absolute left-0 p-2 bg-white/5 hover:bg-white/10 rounded-xl text-slate-400 hover:text-white transition-colors"
                   >
-                    {isSending ? <Loader2 className="animate-spin" size={18} /> : <>{t.sendOtp || 'Continue'} <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" /></>}
+                    <ArrowLeft size={16} />
                   </button>
-
-                  {showJudgePass && (
-                    <>
-                      <div className="relative py-1 flex items-center justify-center">
-                        <div className="h-px bg-white/10 w-full" />
-                        <span className="absolute bg-[#0f172a] px-4 text-[9px] font-black text-slate-500 uppercase tracking-widest rounded-full border border-white/10 py-1">
-                          {language === 'en' ? 'OR' : 'କିମ୍ବା'}
-                        </span>
-                      </div>
-
-                      {/* HACKATHON DEMO FAST-PASS PANEL */}
-                      <div className="p-3.5 rounded-2xl border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-orange-500/5 to-purple-500/10 space-y-2 text-left relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-16 h-16 bg-amber-500/5 rounded-full blur-xl pointer-events-none" />
-                        <div className="flex items-center gap-2">
-                          <Sparkles size={14} className="text-amber-400 animate-pulse" />
-                          <span className="text-[9px] font-black text-amber-400 uppercase tracking-widest">
-                            {language === 'en' ? 'Judge Fast-Pass Access' : 'ଜଜ୍ ଫାଷ୍ଟ-ପାସ୍ ପ୍ରବେଶ'}
-                          </span>
-                        </div>
-                        <p className="text-[10px] text-slate-400 leading-normal font-bold">
-                          {language === 'en' ? 'Select a test account below for instant, one-click automated login (bypasses reCAPTCHA & SMS waiting).' : 'ବିନା SMS ଅପେକ୍ଷା ଓ reCAPTCHA ରେ ତୁରନ୍ତ ଲଗଇନ୍ କରିବା ପାଇଁ ଚୟନ କରନ୍ତୁ |'}
-                        </p>
-                        <div className="flex flex-col pt-1">
-                          <button
-                            type="button"
-                            onClick={handleLaunchGuidedTour}
-                            disabled={isSending}
-                            className="w-full mb-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 border border-amber-400/30 hover:border-amber-300 text-xs font-black text-white hover:text-white transition-all flex items-center justify-between group active:scale-95 cursor-pointer shadow-lg shadow-amber-900/20"
-                          >
-                            <span className="flex items-center gap-2">
-                              <Sparkles size={14} className="animate-spin" />
-                              {language === 'en' ? '🌟 Launch Guided Judge Tour' : '🌟 ଜଜ୍ ଗାଇଡେଡ୍ ଟୁର୍ ଆରମ୍ଭ କରନ୍ତୁ'}
-                            </span>
-                            <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-all text-white" />
-                          </button>
-                          {TEST_ACCOUNTS.map((acc, idx) => (
-                            <button
-                              key={idx}
-                              type="button"
-                              onClick={() => handleFastPassLogin(acc)}
-                              disabled={isSending}
-                              className="w-full py-3 px-4 rounded-xl bg-black/40 hover:bg-[#b34d1f]/10 border border-white/5 hover:border-amber-500/30 text-xs font-black text-slate-200 hover:text-amber-300 transition-all flex items-center justify-between group active:scale-95 cursor-pointer shadow-inner"
-                            >
-                              <span>
-                                {language === 'en' ? `Log in as Student (Class ${acc.class})` : `ଛାତ୍ର ଭାବରେ ତୁରନ୍ତ ଲଗଇନ୍ କରନ୍ତୁ (ଶ୍ରେଣୀ ${acc.class})`}
-                              </span>
-                              <ChevronRight size={14} className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-amber-400 animate-pulse" />
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </>
-                  )}
-
-                  <button
-                    onClick={handleGoogleLogin}
-                    className="w-full py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-3 crystal-button-sapphire text-white shadow-xl hover:shadow-blue-500/30 active:scale-95 cursor-pointer group"
-                  >
-                    <div className="bg-white p-1 rounded-full flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                      <svg className="w-4 h-4" viewBox="0 0 24 24">
-                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
-                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                      </svg>
-                    </div>
-                    <span className="tracking-[0.15em]">{language === 'en' ? 'Continue with Google' : 'ଗୁଗଲ୍ ସହିତ ଆଗକୁ ବଢନ୍ତୁ'}</span>
-                  </button>
+                  <div>
+                    <h2 className="text-white text-xl sm:text-2xl font-black tracking-tight font-['Outfit']">
+                      {language === 'en' ? 'Enter Login PIN' : 'ଲଗଇନ୍ ପିନ୍ ଦିଅନ୍ତୁ'}
+                    </h2>
+                    <p className="text-amber-400 text-[10px] font-bold uppercase tracking-wider mt-1">
+                      {selectedAccount?.name}
+                    </p>
+                  </div>
                 </motion.div>
               ) : (
-                <motion.div key="otp" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full space-y-6 text-center">
-                  <Sparkles className="text-amber-400 mx-auto animate-pulse" size={48} />
-                  <h2 className="text-white text-2xl font-black tracking-tight font-['Outfit']">
-                    {language === 'en' ? 'Verify Security Code' : 'ସୁରକ୍ଷା କୋଡ୍ ଯାଞ୍ଚ କରନ୍ତୁ'}
+                <motion.div key="phone-header" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }}>
+                  <h2 className="text-white text-3xl sm:text-4xl font-black tracking-tight font-['Outfit']">
+                    {language === 'en' ? 'Join the ' : 'ସାମିଲ ହୁଅନ୍ତୁ ' }
+                    <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-emerald-400 bg-clip-text text-transparent">
+                      {language === 'en' ? 'AI Era' : 'AI ଯୁଗରେ'}
+                    </span>
                   </h2>
-                  <p className="text-xs text-slate-400">
-                    {language === 'en' ? 'Code dispatched to ' : 'କୋଡ୍ ପଠାଯାଇଛି: '}
-                    <span className="text-amber-400 font-bold">{phoneNumber}</span>
+                  <p className="text-slate-400 text-[9px] font-black uppercase tracking-[0.3em] mt-1.5 flex items-center justify-center gap-2">
+                    <span className="h-px w-4 bg-slate-700" />
+                    {language === 'en' ? 'Personalized Learning' : 'ଆପଣଙ୍କ ପାଇଁ ବ୍ୟକ୍ତିଗତ ଶିକ୍ଷା'}
+                    <span className="h-px w-4 bg-slate-700" />
                   </p>
-                  <input 
-                    type="text" 
-                    maxLength={6} 
-                    value={otp} 
-                    onChange={(e) => setOtp(e.target.value)} 
-                    placeholder="••••••" 
-                    className="w-full py-4 px-6 bg-black/40 border border-amber-500/40 rounded-2xl text-center text-2xl font-black text-amber-400 tracking-widest outline-none focus:border-amber-400 focus:shadow-[0_0_20px_rgba(245,158,11,0.2)]" 
-                  />
-                  <button 
-                    onClick={verifyOtp} 
-                    disabled={isSending}
-                    className="w-full py-4 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-amber-900/40 active:scale-95 transition-all flex items-center justify-center gap-2"
-                  >
-                    {isSending ? <Loader2 className="animate-spin" size={18} /> : (language === 'en' ? 'Verify Code' : 'କୋଡ୍ ଯାଞ୍ଚ କରନ୍ତୁ')}
-                  </button>
-                  <button onClick={() => setAuthStep('login')} className="text-[10px] text-slate-500 font-bold flex items-center gap-1.5 mx-auto hover:text-slate-300 transition-colors">
-                    <ArrowLeft size={12} /> {language === 'en' ? 'Change Phone Number' : 'ମୋବାଇଲ୍ ନମ୍ବର ବଦଳାନ୍ତୁ'}
-                  </button>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
+
+          <AnimatePresence mode="wait">
+            {loginView === 'switcher' ? (
+              <motion.div 
+                key="switcher-view"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                className="w-full space-y-4"
+              >
+                <div className="grid grid-cols-2 gap-3 max-h-[300px] overflow-y-auto p-1">
+                  {savedAccounts.map((acc, index) => {
+                    const initial = acc.name ? acc.name.charAt(0).toUpperCase() : '?';
+                    return (
+                      <div 
+                        key={acc.uid || index} 
+                        className="relative group p-4 rounded-3xl bg-slate-950/65 border-2 border-slate-800 hover:border-amber-500/50 hover:bg-slate-900/60 transition-all duration-300 flex flex-col items-center justify-center text-center cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.4)]"
+                        onClick={() => {
+                          setSelectedAccount(acc);
+                          setPin('');
+                          setPinError('');
+                          setLoginView('pin');
+                        }}
+                      >
+                        {/* Remove account card action button */}
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (confirm(language === 'en' ? `Remove ${acc.name} from this device?` : `ଏହି ଡିଭାଇସରୁ ${acc.name} କୁ ବାଦ୍ ଦେବେ?` )) {
+                              const updated = savedAccounts.filter((a: any) => a.uid !== acc.uid);
+                              setSavedAccounts(updated);
+                              localStorage.setItem('saved_accounts', JSON.stringify(updated));
+                              if (updated.length === 0) {
+                                setLoginView('phone');
+                              }
+                            }
+                          }}
+                          className="absolute top-2 right-2 p-1 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-full transition-colors z-20"
+                          title="Remove Account"
+                        >
+                          ✕
+                        </button>
+
+                        {/* Avatar */}
+                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500/10 to-orange-500/10 border border-amber-500/30 flex items-center justify-center text-xl font-black text-amber-400 mb-2 shadow-[0_0_15px_rgba(245,158,11,0.15)] group-hover:scale-105 transition-transform duration-300">
+                          {acc.avatar ? (
+                            <img src={acc.avatar} className="w-full h-full object-cover rounded-2xl" alt="" />
+                          ) : (
+                            <span>{initial}</span>
+                          )}
+                        </div>
+
+                        <div className="text-white text-xs font-black tracking-tight truncate max-w-full mb-0.5">
+                          {acc.name}
+                        </div>
+
+                        <div className="text-[8px] font-bold text-slate-500 uppercase tracking-wider">
+                          {acc.class ? `Class ${acc.class}` : 'Student'}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setLoginView('phone')}
+                  className="w-full py-3.5 rounded-2xl border border-slate-700 hover:border-amber-500 bg-transparent text-slate-300 hover:text-white font-black text-xs uppercase tracking-widest transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <span>➕ {language === 'en' ? 'Log in with another number' : 'ଅନ୍ୟ ନମ୍ବରରେ ଲଗଇନ୍ କରନ୍ତୁ'}</span>
+                </button>
+              </motion.div>
+            ) : loginView === 'pin' ? (
+              <motion.div 
+                key="pin-view"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="w-full space-y-4"
+              >
+                {/* Dots indicator */}
+                <div className="flex justify-center gap-3 py-1">
+                  {[0, 1, 2, 3].map((i) => (
+                    <div 
+                      key={i} 
+                      className={`w-10 h-14 rounded-2xl border-2 flex items-center justify-center text-xl font-black transition-all ${
+                        pin.length > i 
+                          ? 'border-amber-500 bg-amber-500/10 text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.25)]' 
+                          : 'border-slate-800 bg-slate-950/50 text-slate-600'
+                      }`}
+                    >
+                      {pin.length > i ? '•' : ''}
+                    </div>
+                  ))}
+                </div>
+
+                {pinError && (
+                  <div className="text-red-400 text-[10px] font-bold text-center py-0.5">
+                    ✕ {pinError}
+                  </div>
+                )}
+
+                {/* Keypad */}
+                <div className="grid grid-cols-3 gap-1.5">
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, '✕', 0, '✓'].map((btn) => (
+                    <button
+                      key={btn}
+                      type="button"
+                      disabled={verifyingPin}
+                      onClick={() => {
+                        if (btn === '✕') {
+                          setPin(prev => prev.slice(0, -1));
+                          setPinError('');
+                        } else if (btn === '✓') {
+                          if (pin.length !== 4) {
+                            setPinError(language === 'en' ? 'Please enter a 4-digit PIN' : 'ଦୟାକରି ୪-ଅଙ୍କ ବିଶିଷ୍ଟ ପିନ୍ ଦିଅନ୍ତୁ');
+                            return;
+                          }
+                          handlePinSubmit(pin);
+                        } else {
+                          if (pin.length < 4) {
+                            const nextPin = pin + btn;
+                            setPin(nextPin);
+                            setPinError('');
+                            if (nextPin.length === 4) {
+                              handlePinSubmit(nextPin);
+                            }
+                          }
+                        }
+                      }}
+                      className={`py-3 rounded-xl text-base font-black transition-all active:scale-95 flex items-center justify-center ${
+                        btn === '✓'
+                          ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg shadow-emerald-900/30'
+                          : btn === '✕'
+                          ? 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                          : 'bg-slate-950/60 hover:bg-slate-900 text-white border border-white/5 shadow-inner'
+                      }`}
+                    >
+                      {verifyingPin && btn === '✓' ? <Loader2 className="animate-spin" size={16} /> : btn}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div 
+                key="phone-view"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="w-full space-y-4"
+              >
+                <div className={`w-full grid ${showAdminPill ? 'grid-cols-2' : 'grid-cols-1'} gap-1.5 p-1 bg-black/40 rounded-xl border border-white/5`}>
+                  <button
+                    type="button"
+                    onClick={() => setUserRole('student')}
+                    className={`py-3 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${
+                      userRole === 'student' 
+                        ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-lg shadow-amber-900/40 scale-[1.02]' 
+                        : 'text-slate-400 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    👨‍🎓 {language === 'en' ? 'Student' : 'ଛାତ୍ର'}
+                  </button>
+                  {showAdminPill && (
+                    <button
+                      type="button"
+                      onClick={() => setUserRole('admin')}
+                      className={`py-3 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 relative ${
+                        userRole === 'admin' 
+                          ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg shadow-emerald-900/40 scale-[1.02]' 
+                          : 'text-slate-400 hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      🛡️ {language === 'en' ? 'Admin' : 'ପ୍ରଶାସକ'}
+                      <div 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowAdminPill(false);
+                          if (userRole === 'admin') setUserRole('student');
+                        }}
+                        title="Hide Admin Mode"
+                        className="absolute right-1 top-1 w-4 h-4 rounded-full bg-black/40 hover:bg-red-500/80 flex items-center justify-center text-[8px] text-slate-300 hover:text-white transition-colors"
+                      >
+                        ✕
+                      </div>
+                    </button>
+                  )}
+                </div>
+
+                {/* RECAPTCHA & INPUT FLOW */}
+                <div className="w-full space-y-3.5">
+                  <div id="recaptcha-container" ref={recaptchaDomRef} className="my-1 flex justify-center w-full overflow-hidden"></div>
+                  
+                  <AnimatePresence mode="wait">
+                    {authStep === 'login' ? (
+                      <motion.div 
+                        key="login" 
+                        initial={{ opacity: 0, y: 10 }} 
+                        animate={{ opacity: 1, y: 0 }} 
+                        exit={{ opacity: 0, y: -10 }}
+                        className="w-full space-y-3.5"
+                      >
+                        {userRole === 'student' && (
+                          <div className="space-y-3">
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-black text-amber-400 uppercase tracking-widest pl-3 flex items-center gap-1.5">
+                                <BookOpen size={12} /> {language === 'en' ? 'Select Class' : 'ଶ୍ରେଣୀ ବାଛନ୍ତୁ'}
+                              </label>
+                              <div className="relative group">
+                                <select 
+                                  value={selectedClass} 
+                                  onChange={(e) => setSelectedClass(e.target.value)}
+                                  className="w-full py-3.5 pl-4 pr-10 bg-slate-950/80 border-2 border-slate-600 hover:border-amber-500 focus:border-amber-400 rounded-2xl text-white text-xs font-bold outline-none focus:shadow-[0_0_20px_rgba(245,158,11,0.25)] appearance-none transition-all cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
+                                >
+                                  <option className="bg-[#0b0f19]">{t.selectClass} *</option>
+                                  {Object.entries(t.classes).map(([k,v]) => <option key={k} value={k} className="bg-[#0b0f19]">{v as string}</option>)}
+                                </select>
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 group-hover:text-amber-400 group-focus-within:text-amber-400 transition-colors">
+                                  <ChevronRight size={16} className="transform rotate-90" />
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-black text-amber-400 uppercase tracking-widest pl-3 flex items-center gap-1.5">
+                                <Globe size={12} /> {language === 'en' ? 'Select Board' : 'ବୋର୍ଡ ବାଛନ୍ତୁ'}
+                              </label>
+                              <div className="relative group">
+                                <select 
+                                  value={selectedBoard} 
+                                  onChange={(e) => setSelectedBoard(e.target.value)}
+                                  className="w-full py-3.5 pl-4 pr-10 bg-slate-950/80 border-2 border-slate-600 hover:border-amber-500 focus:border-amber-400 rounded-2xl text-white text-xs font-bold outline-none focus:shadow-[0_0_20px_rgba(245,158,11,0.25)] appearance-none transition-all cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
+                                >
+                                  <option className="bg-[#0b0f19]">{t.selectBoard} *</option>
+                                  {t.boards && Object.entries(t.boards).map(([k,v]) => <option key={k} value={k} className="bg-[#0b0f19]">{v as string}</option>)}
+                                </select>
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 group-hover:text-amber-400 group-focus-within:text-amber-400 transition-colors">
+                                  <ChevronRight size={16} className="transform rotate-90" />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-black text-amber-400 uppercase tracking-widest pl-3 flex items-center gap-1.5">
+                            <Phone size={12} /> {language === 'en' ? 'Mobile Number' : 'ମୋବାଇଲ୍ ନମ୍ବର'}
+                          </label>
+                          <div className="flex gap-2.5">
+                            <div className="px-4 py-3.5 bg-slate-950/80 border-2 border-slate-600 rounded-2xl text-amber-400 text-xs font-black flex items-center justify-center shadow-inner">
+                              <span>+91</span>
+                            </div>
+                            <input 
+                              type="tel" 
+                              ref={phoneInputRef}
+                              defaultValue={phoneNumber}
+                              placeholder={t.enterPhone}
+                              inputMode="numeric"
+                              autoComplete="tel"
+                              className="flex-1 py-3.5 px-5 bg-slate-950/80 border-2 border-slate-600 hover:border-amber-500 focus:border-amber-400 rounded-2xl text-white text-xs font-black outline-none focus:shadow-[0_0_20px_rgba(245,158,11,0.25)] placeholder:text-slate-600 transition-all shadow-inner" 
+                            />
+                          </div>
+                        </div>
+
+                        <button 
+                          type="button"
+                          onClick={onSmsSend} 
+                          disabled={isSending} 
+                          className={`w-full group py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2 ${
+                            userRole === 'admin' 
+                              ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-emerald-900/40' 
+                              : userRole === 'teacher' 
+                              ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-purple-900/40' 
+                              : 'bg-gradient-to-r from-amber-600 via-orange-600 to-amber-600 hover:from-amber-500 hover:to-orange-500 text-white shadow-amber-900/40'
+                          }`}
+                        >
+                          {isSending ? <Loader2 className="animate-spin" size={18} /> : <>{t.sendOtp || 'Continue'} <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" /></>}
+                        </button>
+
+                        {showJudgePass && (
+                          <>
+                            <div className="relative py-1 flex items-center justify-center">
+                              <div className="h-px bg-white/10 w-full" />
+                              <span className="absolute bg-[#0f172a] px-4 text-[9px] font-black text-slate-500 uppercase tracking-widest rounded-full border border-white/10 py-1">
+                                {language === 'en' ? 'OR' : 'କିମ୍ବା'}
+                              </span>
+                            </div>
+
+                            {/* HACKATHON DEMO FAST-PASS PANEL */}
+                            <div className="p-3.5 rounded-2xl border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-orange-500/5 to-purple-500/10 space-y-2 text-left relative overflow-hidden">
+                              <div className="absolute top-0 right-0 w-16 h-16 bg-amber-500/5 rounded-full blur-xl pointer-events-none" />
+                              <div className="flex items-center gap-2">
+                                <Sparkles size={14} className="text-amber-400 animate-pulse" />
+                                <span className="text-[9px] font-black text-amber-400 uppercase tracking-widest">
+                                  {language === 'en' ? 'Judge Fast-Pass Access' : 'ଜଜ୍ ଫାଷ୍ଟ-ପାସ୍ ପ୍ରବେଶ'}
+                                </span>
+                              </div>
+                              <p className="text-[10px] text-slate-400 leading-normal font-bold">
+                                {language === 'en' ? 'Select a test account below for instant, one-click automated login (bypasses reCAPTCHA & SMS waiting).' : 'ବିନା SMS ଅପେକ୍ଷା ଓ reCAPTCHA ରେ ତୁରନ୍ତ ଲଗଇନ୍ କରିବା ପାଇଁ ଚୟନ କରନ୍ତୁ |'}
+                              </p>
+                              <div className="flex flex-col pt-1">
+                                <button
+                                  type="button"
+                                  onClick={handleLaunchGuidedTour}
+                                  disabled={isSending}
+                                  className="w-full mb-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 border border-amber-400/30 hover:border-amber-300 text-xs font-black text-white hover:text-white transition-all flex items-center justify-between group active:scale-95 cursor-pointer shadow-lg shadow-amber-900/20"
+                                >
+                                  <span className="flex items-center gap-2">
+                                    <Sparkles size={14} className="animate-spin" />
+                                    {language === 'en' ? '🌟 Launch Guided Judge Tour' : '🌟 ଜଜ୍ ଗାଇଡେଡ୍ ଟୁର୍ ଆରମ୍ଭ କରନ୍ତୁ'}
+                                  </span>
+                                  <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-all text-white" />
+                                </button>
+                                {TEST_ACCOUNTS.map((acc, idx) => (
+                                  <button
+                                    key={idx}
+                                    type="button"
+                                    onClick={() => handleFastPassLogin(acc)}
+                                    disabled={isSending}
+                                    className="w-full py-3 px-4 rounded-xl bg-black/40 hover:bg-[#b34d1f]/10 border border-white/5 hover:border-amber-500/30 text-xs font-black text-slate-200 hover:text-amber-300 transition-all flex items-center justify-between group active:scale-95 cursor-pointer shadow-inner"
+                                  >
+                                    <span>
+                                      {language === 'en' ? `Log in as Student (Class ${acc.class})` : `ଛାତ୍ର ଭାବରେ ତୁରନ୍ତ ଲଗଇନ୍ କରନ୍ତୁ (ଶ୍ରେଣୀ ${acc.class})`}
+                                    </span>
+                                    <ChevronRight size={14} className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-amber-400 animate-pulse" />
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          </>
+                        )}
+
+                        <button
+                          type="button"
+                          onClick={handleGoogleLogin}
+                          className="w-full py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-3 crystal-button-sapphire text-white shadow-xl hover:shadow-blue-500/30 active:scale-95 cursor-pointer group"
+                        >
+                          <div className="bg-white p-1 rounded-full flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                            <svg className="w-4 h-4" viewBox="0 0 24 24">
+                              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+                              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                            </svg>
+                          </div>
+                          <span className="tracking-[0.15em]">{language === 'en' ? 'Continue with Google' : 'ଗୁଗଲ୍ ସହିତ ଆଗକୁ ବଢନ୍ତୁ'}</span>
+                        </button>
+                      </motion.div>
+                    ) : (
+                      <motion.div key="otp" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full space-y-6 text-center">
+                        <Sparkles className="text-amber-400 mx-auto animate-pulse" size={48} />
+                        <h2 className="text-white text-2xl font-black tracking-tight font-['Outfit']">
+                          {language === 'en' ? 'Verify Security Code' : 'ସୁରକ୍ଷା କୋଡ୍ ଯାଞ୍ଚ କରନ୍ତୁ'}
+                        </h2>
+                        <p className="text-xs text-slate-400">
+                          {language === 'en' ? 'Code dispatched to ' : 'କୋଡ୍ ପଠାଯାଇଛି: '}
+                          <span className="text-amber-400 font-bold">{phoneNumber}</span>
+                        </p>
+                        <input 
+                          type="text" 
+                          maxLength={6} 
+                          value={otp} 
+                          onChange={(e) => setOtp(e.target.value)} 
+                          placeholder="••••••" 
+                          className="w-full py-4 px-6 bg-black/40 border border-amber-500/40 rounded-2xl text-center text-2xl font-black text-amber-400 tracking-widest outline-none focus:border-amber-400 focus:shadow-[0_0_20px_rgba(245,158,11,0.2)]" 
+                        />
+                        <button 
+                          type="button"
+                          onClick={verifyOtp} 
+                          disabled={isSending}
+                          className="w-full py-4 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-amber-900/40 active:scale-95 transition-all flex items-center justify-center gap-2"
+                        >
+                          {isSending ? <Loader2 className="animate-spin" size={18} /> : (language === 'en' ? 'Verify Code' : 'କୋଡ୍ ଯାଞ୍ଚ କରନ୍ତୁ')}
+                        </button>
+                        <button type="button" onClick={() => setAuthStep('login')} className="text-[10px] text-slate-500 font-bold flex items-center gap-1.5 mx-auto hover:text-slate-300 transition-colors">
+                          <ArrowLeft size={12} /> {language === 'en' ? 'Change Phone Number' : 'ମୋବାଇଲ୍ ନମ୍ବର ବଦଳାନ୍ତୁ'}
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       </main>
 

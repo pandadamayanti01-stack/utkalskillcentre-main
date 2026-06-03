@@ -939,6 +939,51 @@ app.post('/api/ai/index-textbook', async (req, res) => {
   }
 });
 
+app.post('/api/auth/login-with-pin', async (req, res) => {
+  try {
+    const { userId, pin } = req.body;
+    if (!userId || !pin) {
+      return res.status(400).json({ error: 'userId and pin are required' });
+    }
+
+    const adminApp = getInitializedAdminApp();
+    if (!adminApp) {
+      return res.status(500).json({ error: 'Firebase Admin initialization failed' });
+    }
+
+    const db = getAdminFirestore(adminApp, firestoreDatabaseId);
+    
+    // Fetch the user's document from Firestore to verify their PIN
+    const userDoc = await db.collection('users').doc(userId).get();
+    if (!userDoc.exists) {
+      return res.status(404).json({ error: 'User profile not found' });
+    }
+
+    const userData = userDoc.data();
+    const storedPin = userData?.pin;
+
+    if (!storedPin) {
+      return res.status(400).json({ error: 'No PIN is set for this account. Please log in with OTP first and set a PIN.' });
+    }
+
+    if (String(storedPin).trim() !== String(pin).trim()) {
+      return res.status(401).json({ error: 'Incorrect PIN. Please try again.' });
+    }
+
+    // PIN is correct, generate a custom token
+    const { getAuth: getAdminAuth } = await import('firebase-admin/auth');
+    const authAdmin = getAdminAuth(adminApp);
+    
+    // Generate a custom auth token that client can sign in with
+    const customToken = await authAdmin.createCustomToken(userId);
+
+    res.json({ success: true, customToken });
+  } catch (error: any) {
+    console.error('PIN Auth Endpoint Error:', error);
+    res.status(500).json({ error: error.message || 'Internal Server Error' });
+  }
+});
+
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('Unhandled API Error:', err);

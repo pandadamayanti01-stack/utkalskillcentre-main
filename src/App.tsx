@@ -140,6 +140,7 @@ interface Student {
   shareCount?: number;
   statusShared?: boolean;
   parent_pin?: string;
+  pin?: string;
   completed_chapters?: string[];
   parentShowLeaderboard?: boolean;
   phoneNumber?: string;
@@ -1249,6 +1250,19 @@ export default function App() {
   
   // Auth State
   const [authStep, setAuthStep] = useState<'login' | 'otp'>('login');
+  
+  // Switching Sibling Saved Accounts with PIN
+  const [showSetPinPrompt, setShowSetPinPrompt] = useState(false);
+  const [newPinValue, setNewPinValue] = useState('');
+
+  useEffect(() => {
+    if (user && user.role === 'student' && !user.pin && !user.parent_pin && sessionStorage.getItem('set_pin_prompt_dismissed') !== 'true') {
+      setShowSetPinPrompt(true);
+    } else {
+      setShowSetPinPrompt(false);
+    }
+  }, [user]);
+
   const [isAdminLogin, setIsAdminLogin] = useState(false);
   const [adminEmail, setAdminEmail] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
@@ -1804,6 +1818,34 @@ export default function App() {
             const data = docSnap.data() as Student;
             let updatedUser = { ...data, id: docSnap.id };
             console.log("Debug: User data updated:", updatedUser);
+
+            // Cache user metadata in localStorage for switching accounts without SMS OTP costs
+            if (updatedUser.id && updatedUser.name) {
+              try {
+                const rawAccounts = localStorage.getItem('saved_accounts');
+                let accounts = rawAccounts ? JSON.parse(rawAccounts) : [];
+                if (!Array.isArray(accounts)) accounts = [];
+                
+                const existingIdx = accounts.findIndex((a: any) => a.uid === updatedUser.id);
+                const accountData = {
+                  uid: updatedUser.id,
+                  name: updatedUser.name,
+                  avatar: updatedUser.avatar || '',
+                  class: updatedUser.class || '',
+                  board: updatedUser.board || '',
+                  phoneNumber: updatedUser.phoneNumber || ''
+                };
+                
+                if (existingIdx >= 0) {
+                  accounts[existingIdx] = accountData;
+                } else {
+                  accounts.push(accountData);
+                }
+                localStorage.setItem('saved_accounts', JSON.stringify(accounts));
+              } catch (e) {
+                console.error("Failed to save account to cache:", e);
+              }
+            }
 
             // Self-heal points in local state if points_today is higher
             if (updatedUser.points_today && (!updatedUser.points || updatedUser.points < updatedUser.points_today)) {
@@ -2469,16 +2511,24 @@ export default function App() {
 
   const handleLogout = async () => {
     try {
+      const savedAccountsBackup = localStorage.getItem('saved_accounts');
       await signOut(auth);
-      // Clear all local storage data
+      // Clear all local storage data except the saved profiles list
       localStorage.clear();
+      if (savedAccountsBackup) {
+        localStorage.setItem('saved_accounts', savedAccountsBackup);
+      }
       // Force a reload to clear any stale state if needed, 
       // though onAuthStateChanged should handle it.
       window.location.href = '/';
     } catch (error) {
       console.error("Logout Error:", error);
-      // Fallback: clear user state manually
+      // Fallback: clear user state manually while preserving profiles list
+      const savedAccountsBackup = localStorage.getItem('saved_accounts');
       localStorage.clear();
+      if (savedAccountsBackup) {
+        localStorage.setItem('saved_accounts', savedAccountsBackup);
+      }
       setUser(null);
       setIsPremium(false);
     }
@@ -3874,6 +3924,105 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
       </div>
     )}
 
+    {/* Set Switcher PIN Modal */}
+    <AnimatePresence>
+      {showSetPinPrompt && (
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <motion.div 
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            className="bg-slate-900 border border-white/10 rounded-[2.5rem] p-8 w-full max-w-sm text-center relative overflow-hidden"
+          >
+            <div className="absolute top-4 right-4">
+              <button 
+                onClick={() => {
+                  sessionStorage.setItem('set_pin_prompt_dismissed', 'true');
+                  setShowSetPinPrompt(false);
+                }}
+                className="p-2 text-slate-400 hover:text-white transition-colors"
+              >
+                <Lucide.X size={20} />
+              </button>
+            </div>
+
+            <div className="w-16 h-16 bg-gradient-to-tr from-amber-500/20 to-orange-500/20 rounded-2xl flex items-center justify-center text-amber-400 mx-auto mb-6 border border-amber-500/30">
+              <Lucide.ShieldAlert size={32} className="animate-pulse" />
+            </div>
+            
+            <h3 className="text-xl font-bold text-white mb-2">
+              {language === 'en' ? 'Set Login PIN' : 'ଲଗଇନ୍ ପିନ୍ ସେଟ୍ କରନ୍ତୁ'}
+            </h3>
+            <p className="text-xs text-slate-400 mb-6 leading-relaxed">
+              {language === 'en' 
+                ? 'Set a 4-digit PIN to switch between siblings on this phone instantly without waiting for SMS OTP.' 
+                : 'ଏହି ମୋବାଇଲରେ ବିନା SMS OTP ରେ ତୁରନ୍ତ ଆକାଉଣ୍ଟ ବଦଳାଇବା ପାଇଁ ଏକ ୪-ଅଙ୍କ ବିଶିଷ୍ଟ ପିନ୍ ସେଟ୍ କରନ୍ତୁ |'}
+            </p>
+            
+            {/* 4 dots entry */}
+            <div className="flex justify-center gap-3 mb-8">
+              {[0, 1, 2, 3].map((i) => (
+                <div 
+                  key={i} 
+                  className={`w-12 h-16 rounded-2xl border-2 flex items-center justify-center text-2xl font-black transition-all ${
+                    newPinValue.length > i 
+                      ? 'border-amber-500 bg-amber-500/10 text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.25)]' 
+                      : 'border-slate-700 bg-slate-950/50 text-slate-600'
+                  }`}
+                >
+                  {newPinValue.length > i ? '•' : ''}
+                </div>
+              ))}
+            </div>
+
+            {/* Keypad */}
+            <div className="grid grid-cols-3 gap-2 mb-2">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, '✕', 0, '✓'].map((btn) => (
+                <button
+                  key={btn}
+                  onClick={async () => {
+                    if (btn === '✕') {
+                      setNewPinValue(prev => prev.slice(0, -1));
+                    } else if (btn === '✓') {
+                      if (newPinValue.length !== 4) {
+                        alert(language === 'en' ? 'Please enter a 4-digit PIN' : 'ଦୟาକରି ୪-ଅଙ୍କ ବିଶିଷ୍ଟ ପିନ୍ ଦିଅନ୍ତୁ');
+                        return;
+                      }
+                      // Save PIN to Firestore
+                      try {
+                        await updateDoc(doc(firestore, 'users', user.id), {
+                          pin: newPinValue,
+                          parent_pin: newPinValue
+                        });
+                        alert(language === 'en' ? 'PIN set successfully!' : 'ପିନ୍ ସଫଳତାର ସହ ସେଟ୍ ହେଲା!');
+                        setShowSetPinPrompt(false);
+                      } catch (err: any) {
+                        console.error("Failed to save PIN:", err);
+                        alert("Failed to save PIN: " + err.message);
+                      }
+                    } else {
+                      if (newPinValue.length < 4) {
+                        setNewPinValue(prev => prev + btn);
+                      }
+                    }
+                  }}
+                  className={`py-4 rounded-xl text-lg font-black transition-all active:scale-95 flex items-center justify-center ${
+                    btn === '✓'
+                      ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg shadow-emerald-900/30'
+                      : btn === '✕'
+                      ? 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                      : 'bg-slate-950/60 hover:bg-slate-900 text-white border border-white/5 shadow-inner'
+                  }`}
+                >
+                  {btn}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+
     </div>
   </ErrorBoundary>
 );
@@ -4889,12 +5038,13 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
                         type="password"
                         maxLength={4}
                         placeholder="Set a 4-digit PIN for parent access"
-                        value={user.parent_pin || ''}
+                        value={user.parent_pin || user.pin || ''}
                         onChange={async (e) => {
                           const val = e.target.value.replace(/\D/g, '');
                           if (val.length <= 4) {
                             await updateDoc(doc(firestore, 'users', user.id), {
-                              parent_pin: val
+                              parent_pin: val,
+                              pin: val
                             });
                           }
                         }}
