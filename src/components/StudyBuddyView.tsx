@@ -351,7 +351,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
           <div className="relative">
             <div className={`w-12 h-12 rounded-2xl bg-[#10b981]/10 flex items-center justify-center text-[#10b981] border border-[#10b981]/20 shadow-[0_0_15px_rgba(16,185,129,0.2)] overflow-hidden relative shrink-0 ${loading ? 'animate-pulse' : ''}`}>
               <img
-                src="/gundulu.png"
+                src="/gundulu-v3.png"
                 alt="Gundulu Avatar"
                 className="w-full h-full object-cover scale-[0.95]"
                 onError={(e) => {
@@ -426,7 +426,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
                     <User size={20} />
                   ) : (
                     <img
-                      src="/gundulu.png"
+                      src="/gundulu-v3.png"
                       alt="Gundulu"
                       className="w-full h-full object-cover scale-[0.95]"
                       onError={(e) => {
@@ -468,7 +468,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
             <div className="flex gap-3">
               <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center overflow-hidden">
                 <img
-                  src="/gundulu.png"
+                  src="/gundulu-v3.png"
                   alt="Gundulu"
                   className="w-full h-full object-cover scale-[0.95]"
                   onError={(e) => {
@@ -510,7 +510,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
               
               <div className="flex gap-4 items-center flex-col sm:flex-row relative z-10">
                 <div className="w-14 h-14 rounded-full border border-emerald-500/40 bg-slate-950 flex items-center justify-center p-1.5 shadow-[0_0_15px_rgba(16,185,129,0.3)] flex-shrink-0 animate-pulse">
-                  <img src="/gundulu.png" alt="Gundulu" className="w-full h-full object-cover scale-[0.95]" />
+                  <img src="/gundulu-v3.png" alt="Gundulu" className="w-full h-full object-cover scale-[0.95]" />
                 </div>
                 <div>
                   <h4 className="text-sm sm:text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-emerald-400 uppercase tracking-wide">

@@ -91,7 +91,7 @@ export default defineConfig(({mode}) => {
           ],
           screenshots: [
             {
-              src: '/gundulu.png',
+              src: '/gundulu-v3.png',
               sizes: '1006x1920',
               type: 'image/png',
               form_factor: 'narrow',

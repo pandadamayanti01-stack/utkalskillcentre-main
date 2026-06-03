@@ -40,7 +40,7 @@ const UnlockGundulu = () => {
         <div className="header-locked">
           <div className="locked-wrapper">
             <div className="locked-avatar-container">
-              <img src="/gundulu.png" alt="Locked Gundulu" className="gundulu-locked" />
+              <img src="/gundulu-v3.png" alt="Locked Gundulu" className="gundulu-locked" />
             </div>
             <span className="lock-icon">🔒</span>
           </div>

@@ -374,7 +374,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack, isPremiu
           <div className="welcome-concept-slide">
             <div className="welcome-avatar-ripple">
               <div className="welcome-card-avatar-container">
-                <img src="/gundulu.png" alt="Welcome Gundulu" className="welcome-card-avatar" />
+                <img src="/gundulu-v3.png" alt="Welcome Gundulu" className="welcome-card-avatar" />
               </div>
             </div>
             <p className="welcome-card-text">ଆସ ଏକାଠି ପାଠ ପଢିବା!</p>
@@ -985,7 +985,7 @@ Understand user intent from these transcripts and respond in Odia only.
             {/* Central Avatar Orb */}
             <div ref={sphereRef} className="avatar-sphere" onClick={toggleListening}>
               <div className="avatar-img-container">
-                <img src="/gundulu.png" alt="Gundulu" className="avatar-img-3d" />
+                <img src="/gundulu-v3.png" alt="Gundulu" className="avatar-img-3d" />
               </div>
               
               {/* Glossy glass reflection cover */}
@@ -1110,7 +1110,7 @@ Understand user intent from these transcripts and respond in Odia only.
             <div className="relative shrink-0">
               <div className="absolute inset-0 rounded-full bg-emerald-500 blur-xl opacity-20 animate-pulse" />
               <div className="w-20 h-20 rounded-full bg-slate-950 border-2 border-emerald-500/40 shadow-[0_0_25px_rgba(16,185,129,0.3)] flex items-center justify-center overflow-hidden">
-                <img src="/gundulu.png" alt="Gundulu" className="w-full h-full object-cover scale-[0.95]" />
+                <img src="/gundulu-v3.png" alt="Gundulu" className="w-full h-full object-cover scale-[0.95]" />
               </div>
             </div>
             

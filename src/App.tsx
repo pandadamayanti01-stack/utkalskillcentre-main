@@ -3248,7 +3248,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                 <div className="absolute inset-0 flex items-center justify-center bg-slate-950/80 backdrop-blur-md rounded-full border border-emerald-500/40 shadow-[0_0_35px_rgba(16,185,129,0.45)] overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 to-cyan-500/10 opacity-30 group-hover:opacity-60 transition-opacity duration-300"></div>
                   <img 
-                    src="/gundulu.png" 
+                    src="/gundulu-v3.png" 
                     className="w-full h-full object-cover scale-[0.95] relative z-10 transition-transform duration-500 group-hover:scale-[1.1]" 
                     alt="Gundulu Mascot" 
                   />

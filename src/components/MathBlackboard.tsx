@@ -1016,7 +1016,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
                   </div>
                 )}
                 <img 
-                  src="/gundulu.png" 
+                  src="/gundulu-v3.png" 
                   alt="Solve with Gundulu" 
                   className={`w-full h-full object-cover scale-[0.95] ${loading ? 'opacity-40' : 'hover:scale-105 transition-transform duration-300'}`} 
                 />
@@ -1043,7 +1043,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
                     <div className="relative shrink-0">
                       <div className="absolute inset-0 rounded-full bg-amber-500 blur-xl opacity-25 animate-pulse" />
                       <div className="w-16 h-16 rounded-full bg-slate-950 border-2 border-amber-500/40 shadow-[0_0_20px_rgba(245,158,11,0.3)] flex items-center justify-center overflow-hidden">
-                        <img src="/gundulu.png" alt="Gundulu" className="w-full h-full object-cover scale-[0.95]" />
+                        <img src="/gundulu-v3.png" alt="Gundulu" className="w-full h-full object-cover scale-[0.95]" />
                       </div>
                     </div>
                     
@@ -1222,7 +1222,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
               <div className="flex items-center justify-between border-b border-slate-800/80 pb-3 flex-shrink-0">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full overflow-hidden border border-emerald-500/30 bg-emerald-950/20 shadow-md">
-                    <img src="/gundulu.png" alt="Gundulu Mascot" className="w-full h-full object-cover scale-[0.95]" />
+                    <img src="/gundulu-v3.png" alt="Gundulu Mascot" className="w-full h-full object-cover scale-[0.95]" />
                   </div>
                   <div>
                     <h4 className="text-xs md:text-sm font-black text-white uppercase tracking-widest leading-none mb-1">

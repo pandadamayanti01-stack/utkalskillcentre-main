@@ -2395,7 +2395,7 @@ Instructions:
                   <div className="relative group cursor-pointer">
                     <div className="h-12 w-12 rounded-full border-2 border-emerald-400/50 overflow-hidden bg-emerald-950/40 shadow-[0_0_15px_rgba(52,211,153,0.4)] shrink-0 flex items-center justify-center relative">
                       <img
-                        src="/gundulu.png"
+                        src="/gundulu-v3.png"
                         alt="Gundulu Avatar"
                         className="w-full h-full object-cover scale-[0.95] transition-transform duration-500 group-hover:scale-[1.1]"
                         onError={(e) => {
@@ -2468,7 +2468,7 @@ Instructions:
                         {msg.sender === 'gundulu' && (
                           <div className="h-8 w-8 rounded-full border border-emerald-500/20 shadow-lg shadow-emerald-500/10 shrink-0 overflow-hidden flex items-center justify-center bg-emerald-950/20">
                             <img
-                              src="/gundulu.png"
+                              src="/gundulu-v3.png"
                               alt="Gundulu"
                               className="w-full h-full object-cover scale-[0.95]"
                               onError={(e) => {
@@ -2492,7 +2492,7 @@ Instructions:
                       <div className="flex items-end gap-3 justify-start">
                         <div className="h-8 w-8 rounded-full shadow-lg shadow-emerald-500/20 animate-pulse border border-emerald-500/30 shrink-0 overflow-hidden flex items-center justify-center bg-emerald-950/20">
                           <img
-                            src="/gundulu.png"
+                            src="/gundulu-v3.png"
                             alt="Gundulu"
                             className="w-full h-full object-cover scale-[0.95]"
                             onError={(e) => {
@@ -2955,7 +2955,7 @@ Instructions:
                   <div className="relative">
                     <div className="h-10 w-10 rounded-full border border-emerald-400/30 overflow-hidden bg-emerald-950/20 shadow-md shadow-emerald-500/10 shrink-0 flex items-center justify-center relative">
                       <img
-                        src="/gundulu.png"
+                        src="/gundulu-v3.png"
                         alt="Gundulu Avatar"
                         className="w-full h-full object-cover scale-[0.95]"
                         onError={(e) => {
@@ -3061,7 +3061,7 @@ Instructions:
                         {msg.sender === 'gundulu' && (
                           <div className="h-8 w-8 rounded-full border border-emerald-500/10 shadow-sm shrink-0 overflow-hidden flex items-center justify-center bg-emerald-950/20">
                             <img
-                              src="/gundulu.png"
+                              src="/gundulu-v3.png"
                               alt="Gundulu"
                               className="w-full h-full object-cover scale-[0.95]"
                               onError={(e) => {
@@ -3088,7 +3088,7 @@ Instructions:
                       <div className="flex items-end gap-2.5 justify-start">
                         <div className="h-8 w-8 rounded-full animate-bounce shrink-0 overflow-hidden flex items-center justify-center bg-emerald-950/20">
                           <img
-                            src="/gundulu.png"
+                            src="/gundulu-v3.png"
                             alt="Gundulu"
                             className="w-full h-full object-cover scale-[0.95]"
                             onError={(e) => {

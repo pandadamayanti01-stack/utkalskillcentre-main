@@ -646,7 +646,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   <div className="absolute inset-0 rounded-full bg-emerald-500 blur-xl opacity-30 group-hover:opacity-60 group-hover:scale-110 transition-all duration-500"></div>
                   <div className="w-13 h-13 sm:w-22 sm:h-22 rounded-full bg-slate-950 border-[2px] sm:border-[3px] border-emerald-500/40 shadow-[0_0_40px_rgba(16,185,129,0.4)] flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:border-emerald-400 transition-all duration-500 overflow-hidden relative">
                     <div className="absolute inset-0 bg-emerald-500/10 animate-pulse" />
-                    <img src="/gundulu.png" alt="Gundulu" className="w-full h-full object-cover scale-[0.95] relative z-10 transition-transform duration-500 group-hover:scale-[1.1]" />
+                    <img src="/gundulu-v3.png" alt="Gundulu" className="w-full h-full object-cover scale-[0.95] relative z-10 transition-transform duration-500 group-hover:scale-[1.1]" />
                   </div>
                   <div className="absolute -bottom-1 -right-1 w-6.5 h-6.5 sm:w-8.5 sm:h-8.5 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-full flex items-center justify-center text-white shadow-[0_0_15px_rgba(16,185,129,0.7)] border-[2.5px] border-slate-900 group-hover:scale-115 transition-all">
                     <Lucide.Sparkles size={11} className="sm:w-3.5 sm:h-3.5" />

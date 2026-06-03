@@ -378,7 +378,7 @@ export function AiMatchingQuiz({ user, language, onClose, onSuccess, isPremium =
         <div className="flex items-center justify-between border-b border-white/5 px-6 py-5 relative z-10 shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-slate-950 border border-emerald-500/30 flex items-center justify-center overflow-hidden shrink-0 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
-              <img src="/gundulu.png" alt="Gundulu" className="w-full h-full object-cover scale-[0.95]" />
+              <img src="/gundulu-v3.png" alt="Gundulu" className="w-full h-full object-cover scale-[0.95]" />
             </div>
             <div>
               <h2 className="text-base sm:text-lg font-black text-white tracking-tight leading-none uppercase">
@@ -704,7 +704,7 @@ export function AiMatchingQuiz({ user, language, onClose, onSuccess, isPremium =
               <div className="relative shrink-0">
                 <div className="absolute inset-0 rounded-full bg-emerald-500 blur-xl opacity-20 animate-pulse" />
                 <div className="w-20 h-20 rounded-full bg-slate-950 border-2 border-emerald-500/40 shadow-[0_0_25px_rgba(16,185,129,0.3)] flex items-center justify-center overflow-hidden">
-                  <img src="/gundulu.png" alt="Gundulu" className="w-full h-full object-cover scale-[0.95]" />
+                  <img src="/gundulu-v3.png" alt="Gundulu" className="w-full h-full object-cover scale-[0.95]" />
                 </div>
               </div>
               
