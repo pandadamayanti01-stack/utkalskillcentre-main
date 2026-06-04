@@ -10,7 +10,7 @@ Utkal Skill Centre is a bilingual educational PWA designed to bridge the digital
 
 Instead of corporate buzzwords, Utkal Skill Centre is built on a real, high-impact mission to bridge the digital divide for state-board students in Odisha:
 
-*   **The Mission**: Over **5.2 Million (52 Lakhs) Students** study in Odia-medium government schools across Odisha under the Board of Secondary Education (BSE). Legacy EdTech platforms are English-only and charge ₹15,000+/year, completely locking rural kids out. We deliver high-quality curriculum-aligned tutoring at just **₹99/month ($1.19/mo)**.
+*   **The Mission**: Over **70 Lakhs (7 Million) Students** across Odisha's educational pipeline (including 3 Lakh Shishu Vatika, 52 Lakh school students upto 10th, 4 Lakh +2 students, and 10 Lakh Graduation/PG students) are locked out of modern, expensive EdTech. We deliver high-quality curriculum-aligned tutoring at just **₹99/month ($1.19/mo)**.
 *   **Our Milestones**:
     *   **🌸 April 1st (Utkal Divas / Odisha Day)**: We officially launched the **Utkal Skill Centre** web platform to bring digital curriculum tutoring to state-board students in their mother tongue (**Odia**).
     *   **📱 Progressive Web App (PWA) Launch**: Soon after, we rolled out our offline-precached PWA. This allows rural students to access study guides, textbooks, and interactive mock tests instantly on basic household smartphones and slow 2G/3G connections.
