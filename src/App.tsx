@@ -1908,7 +1908,7 @@ export default function App() {
             const emailLockId = firebaseUser.email ? `email:${firebaseUser.email.toLowerCase()}` : null;
             let emailLock: any = null;
 
-            if (emailLockId) {
+            if (selectedClass && selectedBoard && emailLockId) {
               const emailLockDoc = await getDoc(doc(firestore, 'user_locks', emailLockId));
               if (emailLockDoc.exists()) {
                 emailLock = emailLockDoc.data();
@@ -1988,40 +1988,71 @@ export default function App() {
             userData.createdAt = serverTimestamp();
           }
 
-          await setDoc(userDocRef, userData, { merge: true });
-          
-          // Check test series registration
-          try {
-            const q = query(collection(firestore, 'test_series_registrations'), where('userId', '==', firebaseUser.uid));
-            const querySnapshot = await getDocs(q);
-            setIsRegisteredForTestSeries(!querySnapshot.empty);
-          } catch (regErr) {
-            console.error("Error checking test series registration:", regErr);
-          }
-          await setDoc(doc(firestore, 'public_profiles', firebaseUser.uid), {
-            name: userData.name,
-            points: userData.points,
-            class: userData.class,
-            avatar: userData.avatar,
-            streak: userData.streak
-          }, { merge: true });
+          const dbData = userDocSnap.exists() ? userDocSnap.data() : null;
+          const needsWrite = !dbData || 
+                             dbData.lastActiveDate !== today || 
+                             dbData.name !== userData.name || 
+                             dbData.email !== userData.email ||
+                             dbData.class !== userData.class ||
+                             dbData.board !== userData.board ||
+                             dbData.phoneNumber !== userData.phoneNumber;
 
-          if (userData.phoneNumber) {
-            await setDoc(doc(firestore, 'user_locks', userData.phoneNumber), {
-              class: userData.class,
-              board: userData.board
-            }, { merge: true });
+          if (userDocSnap.exists()) {
+            // Let the UI render immediately since user document is fetched!
+            setLoading(false);
           }
 
-          if (firebaseUser.email) {
-            const emailLockId = `email:${firebaseUser.email.toLowerCase()}`;
-            await setDoc(doc(firestore, 'user_locks', emailLockId), {
-              class: userData.class,
-              board: userData.board
-            }, { merge: true });
+          const performSync = async () => {
+            try {
+              if (needsWrite) {
+                await setDoc(userDocRef, userData, { merge: true });
+                
+                await setDoc(doc(firestore, 'public_profiles', firebaseUser.uid), {
+                  name: userData.name,
+                  points: userData.points,
+                  class: userData.class,
+                  avatar: userData.avatar,
+                  streak: userData.streak
+                }, { merge: true });
+
+                if (userData.phoneNumber) {
+                  await setDoc(doc(firestore, 'user_locks', userData.phoneNumber), {
+                    class: userData.class,
+                    board: userData.board
+                  }, { merge: true });
+                }
+
+                if (firebaseUser.email) {
+                  const emailLockId = `email:${firebaseUser.email.toLowerCase()}`;
+                  await setDoc(doc(firestore, 'user_locks', emailLockId), {
+                    class: userData.class,
+                    board: userData.board
+                  }, { merge: true });
+                }
+              }
+
+              // Check test series registration in background
+              const q = query(collection(firestore, 'test_series_registrations'), where('userId', '==', firebaseUser.uid));
+              const querySnapshot = await getDocs(q);
+              setIsRegisteredForTestSeries(!querySnapshot.empty);
+            } catch (fsErr) {
+              handleFirestoreError(fsErr, OperationType.WRITE, `users/${firebaseUser.uid}`);
+            } finally {
+              // Ensure loading is set to false even if registration path was taken and needsWrite was awaited
+              setLoading(false);
+            }
+          };
+
+          if (userDocSnap.exists()) {
+            // Run background sync without blocking
+            performSync();
+          } else {
+            // Await creation for new registrations before loading dashboard
+            await performSync();
           }
         } catch (fsErr) {
           handleFirestoreError(fsErr, OperationType.WRITE, `users/${firebaseUser.uid}`);
+          setLoading(false);
         }
 
         // Check subscription
