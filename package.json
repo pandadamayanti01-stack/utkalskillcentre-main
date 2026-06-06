@@ -11,7 +11,7 @@
     "url": "git+https://github.com/pandadamayanti01-stack/utkalskillcentre-main.git"
   },
   "scripts": {
-    "dev": "tsx server.ts",
+    "dev": "tsx watch server.ts",
     "build": "vite build",
     "start": "tsx server.ts",
     "preview": "vite preview",
