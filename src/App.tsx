@@ -1855,7 +1855,8 @@ export default function App() {
                   class: updatedUser.class || '',
                   board: updatedUser.board || '',
                   phoneNumber: updatedUser.phoneNumber || '',
-                  role: updatedUser.role || 'student'
+                  role: updatedUser.role || 'student',
+                  hasPin: !!(updatedUser.pin || updatedUser.parent_pin)
                 };
                 
                 if (existingIdx >= 0) {
@@ -2606,6 +2607,8 @@ export default function App() {
       await signOut(auth);
       // Clear all local storage data except the saved profiles list
       localStorage.clear();
+      // Clear session storage as well to reset PIN dismiss state
+      sessionStorage.clear();
       if (savedAccountsBackup) {
         localStorage.setItem('saved_accounts', savedAccountsBackup);
       }
@@ -2617,6 +2620,7 @@ export default function App() {
       // Fallback: clear user state manually while preserving profiles list
       const savedAccountsBackup = localStorage.getItem('saved_accounts');
       localStorage.clear();
+      sessionStorage.clear();
       if (savedAccountsBackup) {
         localStorage.setItem('saved_accounts', savedAccountsBackup);
       }
@@ -5060,6 +5064,48 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
                     </svg>
                     {language === 'en' ? 'Link Google Account' : 'Google ସହିତ ଲିଙ୍କ୍ କରନ୍ତୁ'}
                   </button>
+                </div>
+              )}
+
+              {/* Security & Switcher PIN Section */}
+              {user.role !== 'teacher' && (
+                <div className="p-6 bg-slate-900/50 border border-white/10 rounded-3xl space-y-4">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl">
+                      <Lucide.Lock size={24} />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-white text-lg">
+                        {language === 'en' ? 'Security & Switcher PIN' : 'ସୁରକ୍ଷା ଏବଂ ସ୍ୱିଚର୍ ପିନ୍'}
+                      </h3>
+                      <p className="text-xs text-slate-400">
+                        {language === 'en' 
+                          ? 'Set a 4-digit PIN for quick sibling switching without OTP and protecting parent controls' 
+                          : 'OTP ବିନା ଶୀଘ୍ର ଆକାଉଣ୍ଟ୍ ବଦଳାଇବା ଏବଂ ପିତାମାତାଙ୍କ ନିୟନ୍ତ୍ରଣକୁ ସୁରକ୍ଷିତ ରଖିବା ପାଇଁ ଏକ ୪-ଅଙ୍କ ବିଶିଷ୍ଟ ପିନ୍ ସେଟ୍ କରନ୍ତୁ'}
+                      </p>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-400 mb-2">
+                      {language === 'en' ? '4-Digit PIN' : '୪-ଅଙ୍କ ବିଶିଷ୍ଟ ପିନ୍'}
+                    </label>
+                    <input 
+                      type="password"
+                      maxLength={4}
+                      placeholder={language === 'en' ? 'Enter a 4-digit PIN' : '୪-ଅଙ୍କ ବିଶିଷ୍ଟ ପିନ୍ ଦିଅନ୍ତୁ'}
+                      value={user.parent_pin || user.pin || ''}
+                      onChange={async (e) => {
+                        const val = e.target.value.replace(/\D/g, '');
+                        if (val.length <= 4) {
+                          await updateDoc(doc(firestore, 'users', user.id), {
+                            parent_pin: val,
+                            pin: val
+                          });
+                        }
+                      }}
+                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 text-center tracking-[1em] font-mono text-xl"
+                    />
+                  </div>
                 </div>
               )}
 

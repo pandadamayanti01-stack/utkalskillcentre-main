@@ -584,11 +584,35 @@ export default function Login({ language, translations, setLanguage, setRegData 
                         className="relative group p-4 rounded-3xl bg-slate-950/65 border-2 border-slate-800 hover:border-amber-500/50 hover:bg-slate-900/60 transition-all duration-300 flex flex-col items-center justify-center text-center cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.4)]"
                         onClick={() => {
                           setSelectedAccount(acc);
-                          setPin('');
-                          setPinError('');
-                          setLoginView('pin');
+                          if (acc.hasPin === false) {
+                            // Automatically start OTP verification flow by prefilling & switching to phone view
+                            setLoginView('phone');
+                            setUserRole(acc.role || 'student');
+                            if (acc.class) setSelectedClass(acc.class);
+                            if (acc.board) setSelectedBoard(acc.board);
+                            const rawPhone = acc.phoneNumber || '';
+                            const cleanDigits = rawPhone.replace(/\D/g, '');
+                            const phone10 = cleanDigits.length >= 10 ? cleanDigits.slice(-10) : cleanDigits;
+                            setPhoneNumber(phone10);
+                            setTimeout(() => {
+                              if (phoneInputRef.current) {
+                                phoneInputRef.current.value = phone10;
+                              }
+                            }, 50);
+                          } else {
+                            setPin('');
+                            setPinError('');
+                            setLoginView('pin');
+                          }
                         }}
                       >
+                        {/* No PIN Badge */}
+                        {acc.hasPin === false && (
+                          <div className="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-[7px] font-black text-amber-400 uppercase tracking-wide z-20">
+                            {language === 'en' ? 'No PIN' : 'ପିନ୍ ନାହିଁ'}
+                          </div>
+                        )}
+
                         {/* Remove account card action button */}
                         <button 
                           onClick={(e) => {
