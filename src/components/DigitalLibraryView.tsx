@@ -1630,8 +1630,8 @@ Instructions:
                       </h2>
                       <p className="text-sm md:text-base text-white/90 mt-2 font-medium max-w-lg leading-relaxed">
                         {language === 'en'
-                          ? 'Immersive holographic chapters & AI study guides await.'
-                          : 'ମୂଳ ବିଷୟବସ୍ତୁ ପଢ଼ନ୍ତୁ କିମ୍ବା ଆମର ସରଳୀକୃତ ଦ୍ୱିଭାଷୀ ଟିପ୍ପଣୀ ବ୍ୟବହାର କରନ୍ତୁ।'}
+                          ? 'Immersive holographic chapters & Gundulu study notes await.'
+                          : 'ମୂଳ ବିଷୟବସ୍ତୁ ପଢ଼ନ୍ତୁ କିମ୍ବା ଆମର ସରଳୀକୃତ ଦ୍ୱିଭାଷୀ ଗୁନ୍ଦୁଲୁ ଟିପ୍ପଣୀ ବ୍ୟବହାର କରନ୍ତୁ।'}
                       </p>
                     </div>
                     <div className="text-left md:text-right bg-black/10 p-4 rounded-2xl border border-white/10 backdrop-blur-md">
@@ -1727,7 +1727,7 @@ Instructions:
                           )}
                           <span className="flex items-center gap-1 text-amber-400 font-bold bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20 shadow-[0_0_10px_rgba(251,191,36,0.2)]">
                             <Lucide.Sparkles size={10} className="animate-pulse" />
-                            <span>AI Study</span>
+                            <span>{language === 'en' ? 'Gundulu Note' : 'ଗୁନ୍ଦୁଲୁ ଟିପ୍ପଣୀ'}</span>
                           </span>
                         </div>
                       </div>
@@ -1797,7 +1797,7 @@ Instructions:
                       }`}
                   >
                     <Lucide.Sparkles size={14} />
-                    <span>{language === 'en' ? 'AI Study Guide' : 'AI ଟିପ୍ପଣୀ'}</span>
+                    <span>{language === 'en' ? 'Gundulu Note' : 'ଗୁନ୍ଦୁଲୁ ଟିପ୍ପଣୀ'}</span>
                   </button>
 
                   <button
@@ -1805,7 +1805,7 @@ Instructions:
                       if (effectivePdfUrl) {
                         setReaderMode('pdf');
                       } else {
-                        alert(language === 'en' ? 'Original PDF not uploaded yet. Please use the AI Study Guide!' : 'ଏହି ବିଷୟର ମୂଳ PDF ଏପର୍ଯ୍ୟନ୍ତ ଅପଲୋଡ୍ ହୋଇନାହିଁ। ଦୟାକରି AI ଟିପ୍ପଣୀ ପଢ଼ନ୍ତୁ!');
+                        alert(language === 'en' ? 'Original PDF not uploaded yet. Please use the Gundulu Note!' : 'ଏହି ବିଷୟର ମୂଳ PDF ଏପର୍ଯ୍ୟନ୍ତ ଅପଲୋଡ୍ ହୋଇନାହିଁ। ଦୟାକରି ଗୁନ୍ଦୁଲୁ ଟିପ୍ପଣୀ ପଢ଼ନ୍ତୁ!');
                       }
                     }}
                     className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold tracking-wider transition-all ${!effectivePdfUrl ? 'opacity-40 cursor-not-allowed' : ''
@@ -1833,7 +1833,7 @@ Instructions:
                       }`}
                   >
                     <Lucide.Youtube size={14} />
-                    <span>{language === 'en' ? 'AI Video' : 'ଏଆଇ ଭିଡିଓ'}</span>
+                    <span>{language === 'en' ? 'Gundulu Video' : 'ଗୁନ୍ଦୁଲୁ ଭିଡିଓ'}</span>
                   </button>
                 </div>
 
@@ -1970,7 +1970,7 @@ Instructions:
                                   <p className="text-xs text-slate-400 leading-relaxed font-bold">
                                     {language === 'en'
                                       ? 'Sharing is caring! Share this premium study material to one of your WhatsApp school/tuition groups to instantly unlock the entire guide.'
-                                      : 'ଏହି ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ପାଠକୁ ଆପଣଙ୍କ ସ୍କୁଲ୍ WhatsApp ଗ୍ରୁପ୍‌ରେ ଶେୟାର କରନ୍ତୁ ଏବଂ ସମସ୍ତ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଓ ଟିପ୍ପଣୀ ତୁରନ୍ତ ପଢ଼ନ୍ତୁ।'}
+                                      : 'ଏହି ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ପାଠକୁ ଆପଣଙ୍କ ସ୍କୁଲ୍ WhatsApp ଗ୍ରୁପ୍‌ରେ ଶେୟାର କରନ୍ତୁ ଏବଂ ସମସ୍ତ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଓ ଗୁନ୍ଦୁଲୁ ଟିପ୍ପଣୀ ତୁରନ୍ତ ପଢ଼ନ୍ତୁ।'}
                                   </p>
                                 </div>
 
@@ -2024,7 +2024,7 @@ Instructions:
                                   <p className="text-xs text-slate-400 leading-relaxed font-bold">
                                     {language === 'en'
                                       ? 'Sharing is caring! Share this premium study material to one of your WhatsApp school/tuition groups to instantly unlock the entire guide.'
-                                      : 'ଏହି ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ପାଠକୁ ଆପଣଙ୍କ ସ୍କୁଲ୍ WhatsApp ଗ୍ରୁପ୍‌ରେ ଶେୟାର କରନ୍ତୁ ଏବଂ ସମସ୍ତ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଓ ଟିପ୍ପଣୀ ତୁରନ୍ତ ପଢ଼ନ୍ତୁ।'}
+                                      : 'ଏହି ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ପାଠକୁ ଆପଣଙ୍କ ସ୍କୁଲ୍ WhatsApp ଗ୍ରୁପ୍‌ରେ ଶେୟାର କରନ୍ତୁ ଏବଂ ସମସ୍ତ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଓ ଗୁନ୍ଦୁଲୁ ଟିପ୍ପଣୀ ତୁରନ୍ତ ପଢ଼ନ୍ତୁ।'}
                                   </p>
                                 </div>
 
@@ -2079,7 +2079,7 @@ Instructions:
                           ) : (
                             <>
                               <Lucide.Sparkles size={14} className="animate-bounce" />
-                              <span>{language === 'en' ? 'Generate & Save AI Notes ✨' : 'AI ନୋଟ୍ସ ପ୍ରସ୍ତୁତ ଓ ସେଭ୍ କରନ୍ତୁ ✨'}</span>
+                              <span>{language === 'en' ? 'Generate & Save Gundulu Notes ✨' : 'ଗୁନ୍ଦୁଲୁ ନୋଟ୍ସ ପ୍ରସ୍ତୁତ ଓ ସେଭ୍ କରନ୍ତୁ ✨'}</span>
                             </>
                           )}
                         </button>
@@ -2097,7 +2097,7 @@ Instructions:
                           <p className="text-xs text-slate-400 leading-relaxed font-bold">
                             {language === 'en'
                               ? "Revision notes, key formulas, and practice answers for this chapter are being prepared and will be uploaded soon. Stay tuned! 🌟"
-                              : "ଏହି ଅଧ୍ୟାୟର ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଏବଂ ଅଧ୍ୟୟନ ଟିପ୍ପଣୀ ଖୁବ୍ ଶୀଘ୍ର ଅପଲୋଡ୍ ହେବାକୁ ଯାଉଛି। ଅପେକ୍ଷା କରନ୍ତୁ! 🌟"}
+                              : "ଏହି ଅଧ୍ୟାୟର ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଏବଂ ଗୁନ୍ଦୁଲୁ ଟିପ୍ପଣୀ ଖୁବ୍ ଶୀଘ୍ର ଅପଲୋଡ୍ ହେବାକୁ ଯାଉଛି। ଅପେକ୍ଷା କରନ୍ତୁ! 🌟"}
                           </p>
                         </div>
                       </div>
@@ -2329,7 +2329,7 @@ Instructions:
                     <div className="flex items-center gap-2">
                       <Lucide.PenTool size={16} className="text-emerald-400 animate-pulse" />
                       <span className="text-xs font-black text-slate-300">
-                        {language === 'en' ? 'Personal Study Notes' : 'ମୋର ଅଧ୍ୟୟନ ଟିପ୍ପଣୀ (ସ୍ୱତନ୍ତ୍ର)'}
+                        {language === 'en' ? 'Personal Study Notes' : 'ମୋର ଗୁନ୍ଦୁଲୁ ଟିପ୍ପଣୀ (ସ୍ୱତନ୍ତ୍ର)'}
                       </span>
                     </div>
 
@@ -2689,7 +2689,7 @@ Instructions:
                           ) : (
                             <>
                               <Lucide.Sparkles size={14} className="animate-bounce" />
-                              <span>{language === 'en' ? 'Generate AI Study Notes ✨' : 'AI ନୋଟ୍ସ ପ୍ରସ୍ତୁତ କରନ୍ତୁ ✨'}</span>
+                              <span>{language === 'en' ? 'Generate Gundulu Notes ✨' : 'ଗୁନ୍ଦୁଲୁ ନୋଟ୍ସ ପ୍ରସ୍ତୁତ କରନ୍ତୁ ✨'}</span>
                             </>
                           )}
                         </button>
