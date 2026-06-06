@@ -59,8 +59,8 @@ if (!getInitializedAdminApp()) {
     } else {
       console.warn("firebase-applet-config.json not found. Using environment variables.");
       config = {
-        projectId: process.env.FIREBASE_PROJECT_ID || process.env.VITE_FIREBASE_PROJECT_ID,
-        storageBucket: process.env.FIREBASE_STORAGE_BUCKET || process.env.VITE_FIREBASE_STORAGE_BUCKET
+        projectId: process.env.FIREBASE_PROJECT_ID || process.env.VITE_FIREBASE_PROJECT_ID || 'utkalskillcentre',
+        storageBucket: process.env.FIREBASE_STORAGE_BUCKET || process.env.VITE_FIREBASE_STORAGE_BUCKET || 'utkalskillcentre.firebasestorage.app'
       };
     }
 
@@ -934,6 +934,128 @@ async function startServer() {
       return res.status(502).json({ error: `Gemini TTS failed for all configured models and voices: ${lastError}` });
     } catch (error: any) {
       console.error('Gemini TTS Error:', error);
+    }
+  });
+
+  // Textbook indexing endpoint (matching api/index.ts)
+  app.post('/api/ai/index-textbook', async (req, res) => {
+    try {
+      const { class: userClass, subject, text, reference } = req.body;
+      if (!userClass || !subject || !text) {
+        return res.status(400).json({ error: 'class, subject, and text are required fields' });
+      }
+
+      const adminApp = getInitializedAdminApp();
+      if (!adminApp) return res.status(500).json({ error: 'Firebase Admin initialization failed' });
+
+      const db = getAdminFirestore(adminApp, firestoreDatabaseId);
+      const chunksColl = db.collection('textbook_chunks');
+      const { FieldValue } = await import('firebase-admin/firestore');
+
+      // 1. Chunk text dynamically by paragraphs / stanzas (~800 characters)
+      const rawChunks = text
+        .split(/\n\n+/)
+        .map((t: string) => t.trim())
+        .filter((t: string) => t.length > 10);
+
+      const rotatorKeys = [];
+      for (let i = 1; i <= 7; i++) {
+        const k = process.env[`GEMINI_ROTATOR_KEY_${i}`];
+        if (k) rotatorKeys.push(k);
+      }
+      if (process.env.GEMINI_API_KEY && !rotatorKeys.includes(process.env.GEMINI_API_KEY)) {
+        rotatorKeys.push(process.env.GEMINI_API_KEY);
+      }
+
+      let indexedCount = 0;
+      for (let idx = 0; idx < rawChunks.length; idx++) {
+        const chunkText = rawChunks[idx];
+        const keyToUse = rotatorKeys[idx % rotatorKeys.length] || process.env.GEMINI_API_KEY;
+        if (!keyToUse) continue;
+
+        const embedUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key=${keyToUse}`;
+        const embedRes = await fetch(embedUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: "models/gemini-embedding-001",
+            content: { parts: [{ text: chunkText }] },
+            outputDimensionality: 768
+          })
+        });
+
+        if (embedRes.ok) {
+          const embedData = await embedRes.json();
+          const queryVector = embedData.embedding?.values;
+          if (queryVector && queryVector.length === 768) {
+            let storedClass = String(userClass).toLowerCase().trim();
+            if (storedClass.startsWith('class')) {
+              storedClass = storedClass.replace('class', '').trim();
+            }
+            const docRef = chunksColl.doc();
+            await docRef.set({
+              class: storedClass,
+              subject: String(subject).toLowerCase().trim(),
+              text: chunkText,
+              embedding: FieldValue.vector(queryVector),
+              reference: reference ? `${reference} (Part ${idx + 1})` : `Page ${idx + 1}`,
+              createdAt: FieldValue.serverTimestamp()
+            });
+            indexedCount++;
+          }
+        }
+      }
+
+      res.json({ success: true, chunksIndexed: indexedCount });
+    } catch (error: any) {
+      console.error('Textbook Indexing Error:', error);
+      res.status(500).json({ error: error?.message || 'Indexing failed' });
+    }
+  });
+
+  // Login with PIN endpoint (matching api/index.ts)
+  app.post('/api/auth/login-with-pin', async (req, res) => {
+    try {
+      const { userId, pin } = req.body;
+      if (!userId || !pin) {
+        return res.status(400).json({ error: 'userId and pin are required' });
+      }
+
+      const adminApp = getInitializedAdminApp();
+      if (!adminApp) {
+        return res.status(503).json({ error: 'Firebase Admin initialization failed' });
+      }
+
+      const db = getAdminFirestore(adminApp, firestoreDatabaseId);
+      
+      // Fetch the user's document from Firestore to verify their PIN
+      const userDoc = await db.collection('users').doc(userId).get();
+      if (!userDoc.exists) {
+        return res.status(404).json({ error: 'User profile not found' });
+      }
+
+      const userData = userDoc.data();
+      const storedPin = userData?.pin;
+
+      if (!storedPin) {
+        return res.status(400).json({ error: 'No PIN is set for this account. Please log in with OTP first and set a PIN.' });
+      }
+
+      if (String(storedPin).trim() !== String(pin).trim()) {
+        return res.status(401).json({ error: 'Incorrect PIN. Please try again.' });
+      }
+
+      // PIN is correct, generate a custom token
+      const { getAuth: getAdminAuth } = await import('firebase-admin/auth');
+      const authAdmin = getAdminAuth(adminApp);
+      
+      // Generate a custom auth token that client can sign in with
+      const customToken = await authAdmin.createCustomToken(userId);
+
+      res.json({ success: true, customToken });
+    } catch (error: any) {
+      console.error('PIN Auth Endpoint Error:', error);
+      res.status(500).json({ error: error.message || 'Internal Server Error' });
     }
   });
 

@@ -65,8 +65,8 @@ function getInitializedAdminApp(): App | null {
       config.projectId = config.projectId || config.project_id;
     } else {
       config = {
-        projectId: process.env.FIREBASE_PROJECT_ID || process.env.VITE_FIREBASE_PROJECT_ID,
-        storageBucket: process.env.FIREBASE_STORAGE_BUCKET || process.env.VITE_FIREBASE_STORAGE_BUCKET
+        projectId: process.env.FIREBASE_PROJECT_ID || process.env.VITE_FIREBASE_PROJECT_ID || 'utkalskillcentre',
+        storageBucket: process.env.FIREBASE_STORAGE_BUCKET || process.env.VITE_FIREBASE_STORAGE_BUCKET || 'utkalskillcentre.firebasestorage.app'
       };
     }
 
