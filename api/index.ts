@@ -951,44 +951,70 @@ app.post('/api/ai/index-textbook', async (req, res) => {
 app.post('/api/auth/login-with-pin', async (req, res) => {
   try {
     const { userId, pin } = req.body;
+    console.log(`[PIN Auth] Login request received for userId: ${userId}`);
     if (!userId || !pin) {
       return res.status(400).json({ error: 'userId and pin are required' });
     }
 
     const adminApp = getInitializedAdminApp();
     if (!adminApp) {
-      return res.status(500).json({ error: 'Firebase Admin initialization failed' });
+      console.error('[PIN Auth] Firebase Admin app not initialized');
+      return res.status(503).json({ error: 'Firebase Admin initialization failed' });
     }
 
+    console.log(`[PIN Auth] Accessing database: ${firestoreDatabaseId}`);
     const db = getAdminFirestore(adminApp, firestoreDatabaseId);
     
+    // Safety timeout promise
+    const dbTimeout = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error(`Firestore query timed out after 15s. Please check server connection to database '${firestoreDatabaseId}'.`)), 15000)
+    );
+
     // Fetch the user's document from Firestore to verify their PIN
-    const userDoc = await db.collection('users').doc(userId).get();
+    console.log(`[PIN Auth] Fetching user doc from Firestore for UID: ${userId}...`);
+    const userDoc = await Promise.race([
+      db.collection('users').doc(userId).get(),
+      dbTimeout
+    ]);
+
     if (!userDoc.exists) {
+      console.warn(`[PIN Auth] User profile not found for UID: ${userId}`);
       return res.status(404).json({ error: 'User profile not found' });
     }
 
     const userData = userDoc.data();
     const storedPin = userData?.pin;
+    console.log(`[PIN Auth] User found: ${userData?.name}. Comparing PINs...`);
 
     if (!storedPin) {
+      console.warn(`[PIN Auth] No PIN is set in DB for user ${userData?.name}`);
       return res.status(400).json({ error: 'No PIN is set for this account. Please log in with OTP first and set a PIN.' });
     }
 
     if (String(storedPin).trim() !== String(pin).trim()) {
+      console.warn(`[PIN Auth] PIN mismatch for user ${userData?.name}`);
       return res.status(401).json({ error: 'Incorrect PIN. Please try again.' });
     }
 
     // PIN is correct, generate a custom token
+    console.log('[PIN Auth] PIN verified. Loading auth service...');
     const { getAuth: getAdminAuth } = await import('firebase-admin/auth');
     const authAdmin = getAdminAuth(adminApp);
     
     // Generate a custom auth token that client can sign in with
-    const customToken = await authAdmin.createCustomToken(userId);
+    console.log('[PIN Auth] Generating custom auth token...');
+    const tokenTimeout = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('Firebase custom token generation timed out after 15s.')), 15000)
+    );
+    const customToken = await Promise.race([
+      authAdmin.createCustomToken(userId),
+      tokenTimeout
+    ]);
 
+    console.log('[PIN Auth] Custom token generated successfully. Sending response.');
     res.json({ success: true, customToken });
   } catch (error: any) {
-    console.error('PIN Auth Endpoint Error:', error);
+    console.error('[PIN Auth] Endpoint Error:', error);
     res.status(500).json({ error: error.message || 'Internal Server Error' });
   }
 });
