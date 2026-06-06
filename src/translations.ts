@@ -19,6 +19,7 @@ export const translations: any = {
     email: "Email Address",
     selectClass: "Select Your Class",
     classes: {
+      "sishuvatika(Anganwadi)": "Shishu Vatika (Anganwadi)",
       class1: "Class 1",
       class2: "Class 2",
       class3: "Class 3",
@@ -135,10 +136,10 @@ export const translations: any = {
     wrong: "Wrong",
     time: "Time Taken",
     backToDashboard: "Back to Dashboard",
-    dailyMcq: "Gundulu's Daily Challenge",
+    dailyMcq: "Gundulu Daily Challenge",
     takeDailyMcq: "Solve Today's Challenge",
     proTip: "Pro Tip",
-    studyBuddy: "Gundulu Homework Helper",
+    studyBuddy: "Gundulu AI Homework Helper",
     levelUp: "Level Up!",
     nextLeague: "Next League",
     currentStreak: "Current Streak",
@@ -284,6 +285,7 @@ export const translations: any = {
     },
     subjectsByClass: {
       odisha: {
+        "sishuvatika(Anganwadi)": ['odia'],
         class1: ['ganita_khela', 'jhulana_1'],
         class2: ['maja_majare_ganita', 'jhulana_2'],
         class3: ['bhasa_mahak_1', 'ganita_mela', 'paribesa_patha', 'pallavi', 'kala_sikhya', 'sharirika_sikhya'],
@@ -296,6 +298,7 @@ export const translations: any = {
         class10: ['odia', 'odia_grammar', 'english', 'english_grammar', 'hindi', 'hindi_grammar', 'sanskrit', 'sanskrit_grammar', 'algebra', 'geometry', 'life_science', 'physical_science', 'social_science', 'vocational', 'geography'],
       },
       aurobindo: {
+        "sishuvatika(Anganwadi)": ['odia'],
         class1: ['ganita_khela', 'jhulana_1'],
         class2: ['maja_majare_ganita', 'jhulana_2'],
         class3: ['bhasa_mahak_1', 'ganita_mela', 'paribesa_patha', 'pallavi', 'kala_sikhya', 'sharirika_sikhya'],
@@ -308,6 +311,7 @@ export const translations: any = {
         class10: ['odia', 'odia_grammar', 'english', 'english_grammar', 'hindi', 'hindi_grammar', 'sanskrit', 'sanskrit_grammar', 'algebra', 'geometry', 'life_science', 'physical_science', 'social_science', 'vocational', 'geography'],
       },
       oav: {
+        "sishuvatika(Anganwadi)": ['odia'],
         class1: ['odia', 'math', 'english'],
         class2: ['odia', 'math', 'english'],
         class3: ['odia', 'english', 'math', 'evs'],
@@ -392,6 +396,7 @@ export const translations: any = {
     email: "ଇମେଲ୍ ଠିକଣା",
     selectClass: "ଆପଣଙ୍କ ଶ୍ରେଣୀ ଚୟନ କରନ୍ତୁ",
     classes: {
+      "sishuvatika(Anganwadi)": "ଶିଶୁ ବାଟିକା (ଅଙ୍ଗନୱାଡ଼ି)",
       class1: "ପ୍ରଥମ ଶ୍ରେଣୀ",
       class2: "ଦ୍ୱିତୀୟ ଶ୍ରେଣୀ",
       class3: "ତୃତୀୟ ଶ୍ରେଣୀ",
@@ -508,12 +513,12 @@ export const translations: any = {
     wrong: "ଭୁଲ୍",
     time: "ନିଆଯାଇଥିବା ସମୟ",
     backToDashboard: "ଡ୍ୟାସବୋର୍ଡକୁ ଫେରିଯାଅ",
-    dailyMcq: "ଗୁନ୍ଦୁଲୁଙ୍କ ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ",
+    dailyMcq: "ଗୁନ୍ଦୁଲୁ ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ",
     takeDailyMcq: "ଆଜିର ଚ୍ୟାଲେଞ୍ଜ ସମାଧାନ କରନ୍ତୁ",
     dailyGoal: "ଦୈନିକ ଲକ୍ଷ୍ୟ",
     pointsToday: "ଆଜିର ପଏଣ୍ଟ",
     proTip: "ପ୍ରୋ ଟିପ୍",
-    studyBuddy: "ଗୁନ୍ଦୁଲୁ ହୋମୱର୍କ ହେଲ୍ପର",
+    studyBuddy: "ଗୁନ୍ଦୁଲୁ AI ହୋମୱର୍କ ସହାୟକ",
     levelUp: "ଲେଭଲ୍ ଅପ୍!",
     nextLeague: "ପରବର୍ତ୍ତୀ ଲିଗ୍",
     currentStreak: "ସାମ୍ପ୍ରତିକ ଧାରା",
@@ -659,6 +664,7 @@ export const translations: any = {
     },
     subjectsByClass: {
       odisha: {
+        "sishuvatika(Anganwadi)": ['odia'],
         class1: ['ganita_khela', 'jhulana_1'],
         class2: ['maja_majare_ganita', 'jhulana_2'],
         class3: ['bhasa_mahak_1', 'ganita_mela', 'paribesa_patha', 'pallavi', 'kala_sikhya', 'sharirika_sikhya'],
@@ -671,6 +677,7 @@ export const translations: any = {
         class10: ['odia', 'odia_grammar', 'english', 'english_grammar', 'hindi', 'hindi_grammar', 'sanskrit', 'sanskrit_grammar', 'algebra', 'geometry', 'life_science', 'physical_science', 'social_science', 'vocational', 'geography'],
       },
       aurobindo: {
+        "sishuvatika(Anganwadi)": ['odia'],
         class1: ['ganita_khela', 'jhulana_1'],
         class2: ['maja_majare_ganita', 'jhulana_2'],
         class3: ['bhasa_mahak_1', 'ganita_mela', 'paribesa_patha', 'pallavi', 'kala_sikhya', 'sharirika_sikhya'],
@@ -683,6 +690,7 @@ export const translations: any = {
         class10: ['odia', 'odia_grammar', 'english', 'english_grammar', 'hindi', 'hindi_grammar', 'sanskrit', 'sanskrit_grammar', 'algebra', 'geometry', 'life_science', 'physical_science', 'social_science', 'vocational', 'geography'],
       },
       oav: {
+        "sishuvatika(Anganwadi)": ['odia'],
         class1: ['odia', 'math', 'english'],
         class2: ['odia', 'math', 'english'],
         class3: ['odia', 'english', 'math', 'evs'],

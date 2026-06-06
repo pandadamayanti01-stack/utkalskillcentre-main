@@ -25,7 +25,8 @@ const SOCIAL_ORIGINS = [
 
 // PRE-CONFIGURED HACKATHON TEST NUMBERS (Must match test numbers configured in Firebase Auth console)
 const TEST_ACCOUNTS = [
-  { phone: '+911234567890', label: 'Student (Class 10)', class: '10', board: 'BSE Odisha', role: 'student' as const, code: '123456' }
+  { phone: '+911234567890', label: 'Student (Class 10)', class: '10', board: 'BSE Odisha', role: 'student' as const, code: '123456' },
+  { phone: '+919876543210', label: 'Teacher / Educator', class: '10', board: 'BSE Odisha', role: 'teacher' as const, code: '123456' }
 ];
 
 export default function Login({ language, translations, setLanguage, setRegData }: { language: 'en' | 'or', translations: any, setLanguage: (lang: 'en' | 'or') => void, setRegData: (data: any) => void }): React.ReactElement {
@@ -119,6 +120,41 @@ export default function Login({ language, translations, setLanguage, setRegData 
       console.error("Failed to load saved accounts", e);
     }
   }, []);
+
+  const handleVerifyWithOtp = () => {
+    if (!selectedAccount) return;
+    
+    // Extract last 10 digits of the phone number
+    const rawPhone = selectedAccount.phoneNumber || '';
+    const cleanDigits = rawPhone.replace(/\D/g, '');
+    const phone10 = cleanDigits.length >= 10 ? cleanDigits.slice(-10) : cleanDigits;
+
+    // Set view to phone login form
+    setLoginView('phone');
+    
+    // Set matching role if stored in the account data
+    if (selectedAccount.role) {
+      setUserRole(selectedAccount.role);
+    } else if (selectedAccount.class || selectedAccount.board) {
+      setUserRole('student');
+    }
+    
+    if (selectedAccount.class) {
+      setSelectedClass(selectedAccount.class);
+    }
+    if (selectedAccount.board) {
+      setSelectedBoard(selectedAccount.board);
+    }
+
+    // Prefill phone state and input element
+    setPhoneNumber(phone10);
+    if (phoneInputRef.current) {
+      phoneInputRef.current.value = phone10;
+    }
+    
+    setPin('');
+    setPinError('');
+  };
 
   const handlePinSubmit = async (enteredPin: string) => {
     if (!selectedAccount) return;
@@ -671,6 +707,14 @@ export default function Login({ language, translations, setLanguage, setRegData 
                     </button>
                   ))}
                 </div>
+
+                <button
+                  type="button"
+                  onClick={handleVerifyWithOtp}
+                  className="w-full py-3 rounded-2xl border border-white/10 hover:border-amber-500 bg-slate-950/40 text-slate-300 hover:text-white font-black text-xs uppercase tracking-widest transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2 mt-2"
+                >
+                  💬 {language === 'en' ? 'Verify with SMS OTP' : 'SMS OTP ଦ୍ୱାରା ଯାଞ୍ଚ କରନ୍ତୁ'}
+                </button>
               </motion.div>
             ) : (
               <motion.div 
@@ -680,7 +724,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
                 exit={{ opacity: 0, x: -20 }}
                 className="w-full space-y-4"
               >
-                <div className={`w-full grid ${showAdminPill ? 'grid-cols-2' : 'grid-cols-1'} gap-1.5 p-1 bg-black/40 rounded-xl border border-white/5`}>
+                <div className={`w-full grid ${showAdminPill ? 'grid-cols-3' : 'grid-cols-2'} gap-1.5 p-1 bg-black/40 rounded-xl border border-white/5`}>
                   <button
                     type="button"
                     onClick={() => setUserRole('student')}
@@ -691,6 +735,17 @@ export default function Login({ language, translations, setLanguage, setRegData 
                     }`}
                   >
                     👨‍🎓 {language === 'en' ? 'Student' : 'ଛାତ୍ର'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setUserRole('teacher')}
+                    className={`py-3 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${
+                      userRole === 'teacher' 
+                        ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-900/40 scale-[1.02]' 
+                        : 'text-slate-400 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    👩‍🏫 {language === 'en' ? 'Teacher' : 'ଶିକ୍ଷକ'}
                   </button>
                   {showAdminPill && (
                     <button
@@ -851,7 +906,9 @@ export default function Login({ language, translations, setLanguage, setRegData 
                                     className="w-full py-3 px-4 rounded-xl bg-black/40 hover:bg-[#b34d1f]/10 border border-white/5 hover:border-amber-500/30 text-xs font-black text-slate-200 hover:text-amber-300 transition-all flex items-center justify-between group active:scale-95 cursor-pointer shadow-inner"
                                   >
                                     <span>
-                                      {language === 'en' ? `Log in as Student (Class ${acc.class})` : `ଛାତ୍ର ଭାବରେ ତୁରନ୍ତ ଲଗଇନ୍ କରନ୍ତୁ (ଶ୍ରେଣୀ ${acc.class})`}
+                                      {language === 'en' 
+                                        ? `Log in as ${acc.role === 'teacher' ? 'Teacher' : `Student (Class ${acc.class})`}`
+                                        : `${acc.role === 'teacher' ? 'ଶିକ୍ଷକ' : `ଛାତ୍ର (ଶ୍ରେଣୀ ${acc.class})`} ଭାବରେ ତୁରନ୍ତ ଲଗଇନ୍ କରନ୍ତୁ`}
                                     </span>
                                     <ChevronRight size={14} className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-amber-400 animate-pulse" />
                                   </button>
@@ -920,13 +977,13 @@ export default function Login({ language, translations, setLanguage, setRegData 
       <footer className="w-full max-w-md flex flex-col items-center gap-3 z-20 pb-1">
         {/* Social Media Links */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-4">
-          <a href={YOUTUBE_CHANNEL_URL} target={socialLinkTarget} rel={socialLinkRel} className="w-8 h-8 rounded-xl bg-white/5 hover:bg-red-500/10 border border-white/10 hover:border-red-500/30 flex items-center justify-center text-slate-400 hover:text-red-500 transition-all shadow-md active:scale-95">
+          <a href={YOUTUBE_CHANNEL_URL} target={socialLinkTarget} rel={socialLinkRel} className="w-8 h-8 rounded-xl bg-red-600 text-white border border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.3)] transition-all hover:scale-110 hover:shadow-[0_0_15px_rgba(239,68,68,0.5)] active:scale-95 flex items-center justify-center">
             <Youtube size={16} />
           </a>
-          <a href={INSTAGRAM_PROFILE_URL} target={socialLinkTarget} rel={socialLinkRel} className="w-8 h-8 rounded-xl bg-white/5 hover:bg-pink-500/10 border border-white/10 hover:border-pink-500/30 flex items-center justify-center text-slate-400 hover:text-pink-500 transition-all shadow-md active:scale-95">
+          <a href={INSTAGRAM_PROFILE_URL} target={socialLinkTarget} rel={socialLinkRel} className="w-8 h-8 rounded-xl bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-600 text-white border border-pink-500/30 shadow-[0_0_10px_rgba(236,72,153,0.3)] transition-all hover:scale-110 hover:shadow-[0_0_15px_rgba(236,72,153,0.5)] active:scale-95 flex items-center justify-center">
             <Instagram size={16} />
           </a>
-          <a href={FACEBOOK_PROFILE_URL} target={socialLinkTarget} rel={socialLinkRel} className="w-8 h-8 rounded-xl bg-white/5 hover:bg-blue-500/10 border border-white/10 hover:border-blue-500/30 flex items-center justify-center text-slate-400 hover:text-blue-500 transition-all shadow-md active:scale-95">
+          <a href={FACEBOOK_PROFILE_URL} target={socialLinkTarget} rel={socialLinkRel} className="w-8 h-8 rounded-xl bg-blue-600 text-white border border-blue-500 shadow-[0_0_10px_rgba(37,99,235,0.3)] transition-all hover:scale-110 hover:shadow-[0_0_15px_rgba(37,99,235,0.5)] active:scale-95 flex items-center justify-center">
             <Facebook size={16} />
           </a>
         </motion.div>

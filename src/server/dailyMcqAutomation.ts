@@ -18,6 +18,7 @@ function splitTextIntoChapters(text: string): { title: string, content: string }
 }
 
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import webpush from 'web-push';
 import type { Express } from 'express';
 import { App, getApp as getAdminApp, getApps } from 'firebase-admin/app';
 import { getFirestore as getAdminFirestore, FieldValue } from 'firebase-admin/firestore';
@@ -790,6 +791,13 @@ export async function runScheduledGeneration(adminApp: App, databaseId: string, 
       const saved = await upsertDailyMcq(adminApp, databaseId, generatedSet);
       console.log(`[MCQ-AUTO] Saved MCQ for ${className} ${subject} with id ${String(saved.id)}`);
       generated.push({ className, subject, id: String(saved.id) });
+
+      // Trigger daily MCQ notifications for students of this class
+      if (status === 'published') {
+        sendDailyMcqNotification(adminApp, databaseId, className, subject, activeDate).catch((err) => {
+          console.error(`[MCQ-AUTO] Failed to send notifications for ${className}:`, err);
+        });
+      }
     } catch (error: any) {
       console.error(`[MCQ-AUTO] Error for class ${className}:`, error?.message || error);
       skipped.push({ className, reason: error?.message || 'Unknown generation error' });
@@ -798,6 +806,104 @@ export async function runScheduledGeneration(adminApp: App, databaseId: string, 
 
   console.log('[MCQ-AUTO] Generation complete. Generated:', generated, 'Skipped:', skipped);
   return { activeDate, generated, skipped };
+}
+
+async function sendDailyMcqNotification(
+  adminApp: App,
+  databaseId: string,
+  className: string,
+  subject: string,
+  activeDate: string
+) {
+  try {
+    const db = getAdminFirestore(adminApp, databaseId);
+    
+    // 1. Get translations for the subject name
+    const subjectEn = translations.en.subjects?.[subject as keyof typeof translations.en.subjects] || subject.replace(/_/g, ' ');
+    const subjectOr = translations.or.subjects?.[subject as keyof typeof translations.or.subjects] || subject.replace(/_/g, ' ');
+    const classLabel = translations.en.classes?.[className as keyof typeof translations.en.classes] || className;
+    const classLabelOr = translations.or.classes?.[className as keyof typeof translations.or.classes] || className;
+
+    const notifTitle = `Daily MCQ Live 📝`;
+    const notifTitleOr = `ଦୈନିକ MCQ ଲାଇଭ୍ 📝`;
+    
+    const notifMessage = `Today's Daily MCQ for ${classLabel} (${subjectEn}) is now live. Solve it now to earn XP! 🚀`;
+    const notifMessageOdia = `ଆଜିର ${classLabelOr} (${subjectOr}) ପାଇଁ ଦୈନିକ MCQ ଲାଇଭ୍ ହୋଇଯାଇଛି। ସମାଧାନ କରି XP ହାସଲ କରନ୍ତୁ! 🚀`;
+
+    // 2. Add document to 'notifications' collection in Firestore
+    await db.collection('notifications').add({
+      title: notifTitle,
+      titleOdia: notifTitleOr,
+      message: notifMessage,
+      messageOdia: notifMessageOdia,
+      audience: className,
+      createdAt: FieldValue.serverTimestamp()
+    });
+
+    console.log(`[MCQ-NOTIFICATION] Saved system notification for ${className} ${subject}`);
+
+    // 3. Query all users in this class who have active push subscriptions
+    const usersSnapshot = await db.collection('users')
+      .where('class', '==', className)
+      .where('pushSubscription', '!=', null)
+      .get();
+
+    if (usersSnapshot.empty) {
+      console.log(`[MCQ-NOTIFICATION] No push subscribers found in class ${className}`);
+      return;
+    }
+
+    const vapidPublicKey = process.env.VAPID_PUBLIC_KEY || 'BHk1uroqx4HMHX1c3ldVPuO3AYWBGByuqlYBjWPW2YttFtiurT8cI731ckrp7K_Q491TtgpAkZL7ioLvVKtmtJo';
+    const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY || 'YGxwRzEnUaPqPygwknmuurDPEQVAwrEobKosW18pGVA';
+
+    if (vapidPublicKey && vapidPrivateKey) {
+      try {
+        webpush.setVapidDetails(
+          'mailto:support@utkalskillcentre.com',
+          vapidPublicKey,
+          vapidPrivateKey
+        );
+      } catch (err: any) {
+        console.error('[MCQ-NOTIFICATION] VAPID config error:', err.message);
+      }
+    }
+
+    let sentCount = 0;
+    const promises = [];
+
+    for (const docSnap of usersSnapshot.docs) {
+      const userData = docSnap.data();
+      const subscription = userData.pushSubscription;
+      const userLang = userData.language || 'en';
+
+      if (subscription && subscription.endpoint) {
+        const payload = JSON.stringify({
+          title: userLang === 'or' ? notifTitleOr : notifTitle,
+          body: userLang === 'or' ? notifMessageOdia : notifMessage,
+          url: '/daily_mcqs'
+        });
+
+        promises.push(
+          webpush.sendNotification(subscription, payload)
+            .then(() => { sentCount++; })
+            .catch((err: any) => {
+              console.error(`[MCQ-NOTIFICATION] Failed for user ${docSnap.id}:`, err.message);
+              // Clean up expired subscriptions
+              if (err.statusCode === 410 || err.statusCode === 404) {
+                db.collection('users').doc(docSnap.id).update({
+                  pushSubscription: null
+                }).catch(() => {});
+              }
+            })
+        );
+      }
+    }
+
+    await Promise.allSettled(promises);
+    console.log(`[MCQ-NOTIFICATION] Sent push notifications to ${sentCount} devices in ${className}`);
+  } catch (err: any) {
+    console.error(`[MCQ-NOTIFICATION] Error dispatching MCQ notification:`, err.message || err);
+  }
 }
 
 /** Firestore / gRPC errors expose numeric `code` (e.g. 7 PERMISSION_DENIED, 16 UNAUTHENTICATED). */

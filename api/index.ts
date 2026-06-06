@@ -437,7 +437,12 @@ app.post('/api/ai/generate', async (req, res) => {
             console.log(`Dialect Bridge: Normalized Kosli/Desia query from "${queryText}" to "${searchNormalizedQuery}"`);
           }
 
-          console.log(`Backend RAG: Retrieving context for query: "${searchNormalizedQuery.substring(0, 50)}..." class: ${userClass}, subject: ${subject}`);
+          let searchClass = String(userClass).toLowerCase().trim();
+          if (searchClass.startsWith('class')) {
+            searchClass = searchClass.replace('class', '').trim();
+          }
+
+          console.log(`Backend RAG: Retrieving context for query: "${searchNormalizedQuery.substring(0, 50)}..." class: ${userClass} (normalized: ${searchClass}), subject: ${subject}`);
           const rotatorKeys = [];
           for (let i = 1; i <= 7; i++) {
             const k = process.env[`GEMINI_ROTATOR_KEY_${i}`];
@@ -473,7 +478,7 @@ app.post('/api/ai/generate', async (req, res) => {
                   
                   // Retrieve top 8 vector matches
                   const vectorQuery = chunksColl
-                    .where('class', '==', String(userClass).toLowerCase().trim())
+                    .where('class', '==', searchClass)
                     .where('subject', '==', String(subject).toLowerCase().trim())
                     .findNearest(
                       'embedding',
@@ -918,9 +923,13 @@ app.post('/api/ai/index-textbook', async (req, res) => {
         const embedData = await embedRes.json();
         const queryVector = embedData.embedding?.values;
         if (queryVector && queryVector.length === 768) {
+          let storedClass = String(userClass).toLowerCase().trim();
+          if (storedClass.startsWith('class')) {
+            storedClass = storedClass.replace('class', '').trim();
+          }
           const docRef = chunksColl.doc();
           await docRef.set({
-            class: String(userClass).toLowerCase().trim(),
+            class: storedClass,
             subject: String(subject).toLowerCase().trim(),
             text: chunkText,
             embedding: FieldValue.vector(queryVector),

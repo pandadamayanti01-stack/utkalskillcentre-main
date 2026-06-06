@@ -2,10 +2,63 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Youtube, Search, Plus, Trash2, CheckCircle2, PlayCircle, Loader2 } from 'lucide-react';
 import { db } from '../../firebase';
-import { collection, getDocs, addDoc, deleteDoc, doc, serverTimestamp, query, orderBy, limit } from 'firebase/firestore';
+import { collection, getDocs, addDoc, deleteDoc, doc, serverTimestamp, query, orderBy, limit, where, onSnapshot, updateDoc } from 'firebase/firestore';
 import { translations } from '../../translations';
 import { CHAPTERS_MAP } from '../../data/chaptersMap';
 import { getSubjectDisplayName } from '../SmartClassesView';
+
+const normalizeSubjectKey = (subject: string): string => {
+  if (!subject) return '';
+  const spec = subject.toLowerCase().replace(/[^a-z0-9_]/g, '').replace(/_/g, '');
+  
+  const mapping: Record<string, string> = {
+    ganitakhela: 'math',
+    majamajareganita: 'math',
+    ganitamela: 'math',
+    ganitaprakas: 'math',
+    jhulana1: 'odia',
+    jhulana2: 'odia',
+    bhasamahak1: 'odia',
+    bhasamahak2: 'odia',
+    bhasamahak3: 'odia',
+    sahityasudha: 'odia',
+    sahityasuman: 'odia',
+    sahityasurabhi: 'odia',
+    sahityadhara: 'odia',
+    paribesapatha: 'science',
+    jigyasa: 'science',
+    amachaturbaswarapruthibi: 'science',
+    pallavi: 'english',
+    jasmine: 'english',
+    sanskritakalika1: 'sanskrit',
+    sanskritakalika2: 'sanskrit',
+    sanskritakalika3: 'sanskrit',
+    sanskritprabha: 'sanskrit',
+    hindikalika: 'hindi',
+    hindisaurabh: 'hindi',
+    kausalabodha: 'vocational',
+    kalasikhya: 'art',
+    sharirikasikhya: 'physical_education',
+    kridayoga: 'physical_education',
+    sharirikayoga: 'physical_education',
+    kalakunja: 'art',
+    khelasikhya: 'physical_education',
+    kalakruti: 'art',
+    kruti: 'art',
+    algebra: 'algebra',
+    geometry: 'geometry',
+    physicalscience: 'physical_science',
+    lifescience: 'life_science',
+    socialscience: 'social_science',
+    geography: 'geography',
+    englishgrammar: 'english_grammar',
+    odiagrammar: 'odia_grammar',
+    sanskritgrammar: 'sanskrit_grammar',
+    hindigrammar: 'hindi_grammar'
+  };
+
+  return mapping[spec] || subject;
+};
 
 const getSubjectsForClass = (classStr: string) => {
   const rawSubjects = Object.keys(CHAPTERS_MAP[classStr] || {});
@@ -82,6 +135,11 @@ export function VideoCuratorTab() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
+  // Suggestions state
+  const [suggestedVideos, setSuggestedVideos] = useState<any[]>([]);
+  const [activeSuggestionId, setActiveSuggestionId] = useState<string | null>(null);
+  const [activeSuggestionBatchId, setActiveSuggestionBatchId] = useState<string | null>(null);
+
   // Form State
   const [selectedClass, setSelectedClass] = useState('10');
   const [selectedSubject, setSelectedSubject] = useState(() => {
@@ -102,6 +160,23 @@ export function VideoCuratorTab() {
 
   useEffect(() => {
     fetchVideos();
+
+    // Listen to pending suggested videos from teachers
+    const q = query(
+      collection(db, 'suggested_videos'), 
+      where('status', '==', 'pending')
+    );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const suggestions = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setSuggestedVideos(suggestions);
+    }, (error) => {
+      console.error("Failed to listen to suggested videos:", error);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   // Update order and title when chapter selection changes
@@ -204,6 +279,56 @@ export function VideoCuratorTab() {
     }
   };
 
+  const handleSelectSuggestion = (suggestion: any) => {
+    try {
+      setActiveSuggestionId(suggestion.id);
+      setActiveSuggestionBatchId(suggestion.batchId || null);
+      
+      const targetUrl = suggestion.url || suggestion.suggestUrl || '';
+      setYoutubeUrl(targetUrl);
+      
+      const id = extractYoutubeId(targetUrl);
+      setPreviewId(id);
+      
+      setVideoTitle(suggestion.title || 'Suggested Video');
+      
+      const targetClass = suggestion.classStr || suggestion.class;
+      if (targetClass) {
+        setSelectedClass(String(targetClass));
+        const subjects = getSubjectsForClass(String(targetClass));
+         const targetSubject = normalizeSubjectKey(suggestion.subject || '');
+        if (targetSubject && subjects.includes(targetSubject)) {
+          setSelectedSubject(targetSubject);
+        } else {
+          setSelectedSubject(subjects.includes('algebra') ? 'algebra' : (subjects[0] || 'math'));
+        }
+      }
+      setChapterName(''); // Admin selects chapter
+    } catch (err) {
+      console.error("Error selecting suggestion:", err);
+      alert("Failed to load suggested video details: " + err);
+    }
+  };
+
+  const handleRejectSuggestion = async (id: string) => {
+    if (!window.confirm("Are you sure you want to reject this suggested video?")) return;
+    try {
+      await updateDoc(doc(db, 'suggested_videos', id), {
+        status: 'rejected',
+        rejectedAt: serverTimestamp()
+      });
+      if (activeSuggestionId === id) {
+        setActiveSuggestionId(null);
+        setActiveSuggestionBatchId(null);
+        setYoutubeUrl('');
+        setPreviewId('');
+      }
+      alert("Video suggestion rejected.");
+    } catch (err) {
+      console.error("Error rejecting suggestion:", err);
+    }
+  };
+
   const handleSaveVideo = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedClass || !selectedSubject || !chapterName || !youtubeUrl) return;
@@ -222,10 +347,20 @@ export function VideoCuratorTab() {
       
       await addDoc(collection(db, 'curated_videos'), newVideo);
       
+      // Update pending review suggestions
+      if (activeSuggestionId) {
+        await updateDoc(doc(db, 'suggested_videos', activeSuggestionId), {
+          status: 'approved',
+          approvedAt: serverTimestamp()
+        });
+      }
+
       // Reset form
       setYoutubeUrl('');
       setPreviewId('');
       setSearchResults([]);
+      setActiveSuggestionId(null);
+      setActiveSuggestionBatchId(null);
       
       fetchVideos();
       alert("Video Curated Successfully!");
@@ -268,6 +403,69 @@ export function VideoCuratorTab() {
           </div>
         </div>
       </div>
+
+      {/* Teacher Suggested Videos Review Queue */}
+      {suggestedVideos.length > 0 && (
+        <div className="glass-card rounded-3xl p-6 border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-slate-900/60 to-slate-900/80 space-y-4">
+          <div className="flex items-center gap-3 border-b border-white/5 pb-3">
+            <div className="p-2 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 animate-pulse">
+              <Youtube size={20} />
+            </div>
+            <div>
+              <h3 className="text-lg font-black text-white">Pending Teacher Suggestions</h3>
+              <p className="text-xs text-slate-400">Review and select video lessons suggested by educators for global curation.</p>
+            </div>
+            <span className="ml-auto px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-black uppercase tracking-wider border border-amber-500/30">
+              {suggestedVideos.length} Suggested
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {suggestedVideos.map((sug) => (
+              <div 
+                key={sug.id} 
+                className={`p-4 rounded-2xl bg-slate-950/60 border transition-all flex flex-col justify-between space-y-3 ${
+                  activeSuggestionId === sug.id ? 'border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.2)]' : 'border-white/5 hover:border-white/10'
+                }`}
+              >
+                <div className="space-y-1">
+                  <div className="flex justify-between items-start gap-2">
+                    <span className="px-2 py-0.5 rounded-md bg-purple-500/15 text-purple-300 text-[9px] font-black uppercase tracking-wider">
+                      Class {sug.classStr} • {sug.subject?.toUpperCase()}
+                    </span>
+                    <span className="text-[9px] text-slate-500 font-bold">
+                      {sug.createdAt?.seconds ? new Date(sug.createdAt.seconds * 1000).toLocaleDateString() : 'Pending'}
+                    </span>
+                  </div>
+                  <h4 className="font-bold text-white text-xs leading-snug truncate">{sug.title}</h4>
+                  <p className="text-[10px] text-slate-400 font-medium">
+                    Suggested by: <span className="text-purple-400 font-bold">{sug.teacherName}</span> ({sug.batchName})
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2 pt-2 border-t border-white/5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => handleSelectSuggestion(sug)}
+                    className="flex-1 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-slate-950 font-black text-[10px] uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-1"
+                  >
+                    <CheckCircle2 size={12} />
+                    <span>Review & Curate</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleRejectSuggestion(sug.id)}
+                    className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-xl transition-all cursor-pointer"
+                    title="Reject suggestion"
+                  >
+                    <Trash2 size={12} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         

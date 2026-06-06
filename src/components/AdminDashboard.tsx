@@ -873,7 +873,7 @@ Sample tone for Class 6-10:
                 title: 'Command',
                 items: [
                   { id: 'dashboard', label: 'Overview', icon: Activity },
-                  { id: 'ai_usage', label: 'AI Usage Logs', icon: Brain },
+                  { id: 'ai_usage', label: 'Gundulu AI Logs', icon: Brain },
                   { id: 'daily_mcqs', label: 'Daily MCQs', icon: Zap },
                   { id: 'community_chats', label: 'Community Chats', icon: Shield },
                 ]
@@ -2805,7 +2805,7 @@ Sample tone for Class 6-10:
                                       onClick={async () => {
                                         try {
                                           // Set loading state (we could use a local state but for now just console)
-                                          console.log("AI Grading starting...");
+                                          console.log("Gundulu AI Grading starting...");
                                           const result = await gradeSubjectiveAnswer(
                                             q.question,
                                             q.correct_answer || '',
@@ -2816,7 +2816,7 @@ Sample tone for Class 6-10:
                                           );
 
                                           if (result.suggestedMark !== undefined) {
-                                            if (confirm(`AI suggests ${result.suggestedMark} marks.\nJustification: ${result.justification}\n\nApply this mark?`)) {
+                                            if (confirm(`Gundulu AI suggests ${result.suggestedMark} marks.\nJustification: ${result.justification}\n\nApply this mark?`)) {
                                               const newScores = { ...(sub.subjectiveScores || {}), [i]: result.suggestedMark };
                                               const totalManual = Object.values(newScores).reduce((a: any, b: any) => (a as number) + (b as number), 0);
                                               await updateDoc(doc(firestore, 'monthly_test_submissions', sub.id), {
@@ -2828,18 +2828,18 @@ Sample tone for Class 6-10:
                                             }
                                           }
                                         } catch (err) {
-                                          console.error("AI Grading Error:", err);
-                                          alert("AI Assistant failed to grade. Please try again.");
+                                          console.error("Gundulu AI Grading Error:", err);
+                                          alert("Gundulu AI Grader failed to grade. Please try again.");
                                         }
                                       }}
                                       className="px-4 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 rounded-xl text-[10px] font-black uppercase tracking-widest border border-emerald-500/20 flex items-center gap-2 transition-all"
                                     >
-                                      <Sparkles size={14} /> AI Suggest Mark
+                                      <Sparkles size={14} /> Gundulu Suggest Mark
                                     </button>
                                   </div>
                                   {sub.aiJustifications?.[i] && (
                                     <p className="text-[10px] text-slate-500 italic bg-white/5 p-2 rounded-lg border border-white/5">
-                                      AI Note: {sub.aiJustifications[i]}
+                                      Gundulu AI Note: {sub.aiJustifications[i]}
                                     </p>
                                   )}
                                 </div>
@@ -2950,7 +2950,7 @@ Sample tone for Class 6-10:
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="glass-card p-6 rounded-[2rem] relative overflow-hidden group">
             <div className="stat-card-glow" style={{ '--glow-color': 'rgba(16, 185, 129, 0.1)' } as any} />
-            <div className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1 relative z-10">Total Questions Today</div>
+            <div className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1 relative z-10">Total Inquiries Today</div>
             <div className="text-4xl font-black text-white relative z-10">{stats.aiQuestionsToday}</div>
             <div className="absolute bottom-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
               <Brain size={64} />
@@ -3019,7 +3019,7 @@ Sample tone for Class 6-10:
             <div className="p-8 border-b border-white/5 font-black text-white flex items-center justify-between flex-wrap gap-4 bg-white/5">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-8 bg-indigo-500 rounded-full shadow-[0_0_10px_#6366f1]"></div>
-                <span className="text-xl tracking-tighter">AI Interaction History</span>
+                <span className="text-xl tracking-tighter">Gundulu Interaction History</span>
               </div>
               <div className="flex gap-2 p-1 bg-black/20 rounded-2xl border border-white/5 flex-wrap">
                 {(['today', 'week', 'month', 'all'] as const).map(f => (
@@ -5022,7 +5022,7 @@ Sample tone for Class 6-10:
                 className="flex items-center gap-2 px-6 py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-purple-900/30 justify-center"
               >
                 <Sparkles size={16} />
-                <span>AI Vector Indexer</span>
+                <span>Gundulu Vector Indexer</span>
               </button>
             </div>
           </div>
@@ -5548,7 +5548,7 @@ Sample tone for Class 6-10:
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">⚡</span>
                   <div>
-                    <h3 className="text-xl font-black text-white">Gundulu AI Textbook Indexer</h3>
+                    <h3 className="text-xl font-black text-white">Gundulu Vector Indexer</h3>
                     <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">
                       Index textbook chapters into Firestore Vector Store
                     </p>

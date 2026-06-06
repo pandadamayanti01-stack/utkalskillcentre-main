@@ -681,14 +681,39 @@ export async function generateHomeworkSheet(
 ) {
   try {
     const ai = getAI();
-    const prompt = `Generate a standard school homework worksheet with exactly ${qCount} questions and a separate complete answer key on the topic of "${chapterTitle}" in the subject "${subjectName}" for standard "${className}".
+    const prompt = `You are Gundulu, an expert educational content developer for the Board of Secondary Education (BSE) Odisha curriculum.
+    Generate a premium, school-standard, exam-aligned bilingual homework worksheet with exactly ${qCount} questions and a separate complete answer key on the topic of "${chapterTitle}" in the subject "${subjectName}" for standard "${className}".
     Difficulty level: "${difficulty.toUpperCase()}".
-    The worksheet should be bilingual, containing the question clearly written in both English and clean Odia.
+    
+    The worksheet and answer key MUST be highly structured, professional, and bilingual (with every section header, instruction, and question clearly written in English and followed by its accurate, natural Odia translation).
+    
+    CRITICAL: Do NOT use raw LaTeX mathematical symbols, equations, or formatting delimiters (like $$, $, \[, \], \(, \), \frac, \sqrt, \times, \div). Instead, use standard plain text or standard Unicode symbols (like ÷, ×, ±, ≈, ≠, ≤, ≥, ∞, •, α, β, θ, π, √, ^) so that it renders clearly on any device screen.
+    
     Provide the output in beautiful structured Markdown containing:
-    1. A premium header saying: "UTKAL SKILL CENTRE • AI WORKsheet" with Class, Subject, and Chapter name fields.
-    2. The list of ${qCount} questions clearly numbered.
-    3. A clear separator page break.
-    4. An "ANSWER KEY / MODEL SOLUTIONS" section with step-by-step detailed explanations for each question.
+    1. A premium, formal header block:
+       # UTKAL SKILL CENTRE • AI WORKSHEET (କାର୍ଯ୍ୟପତ୍ର)
+       **School Name (ବିଦ୍ୟାଳୟ ନାମ):** ________________________
+       **Student Name (ଛාତ୍ର/ଛାତ୍ରୀଙ୍କ ନାମ):** __________________  **Roll No (କ୍ରମିକ ସଂଖ୍ୟା):** ______
+       **Class (ଶ୍ରେଣୀ):** ${className}  |  **Subject (ବିଷୟ):** ${subjectName}
+       **Chapter (ଅଧ୍ୟାୟ):** ${chapterTitle}  |  **Time Allowed:** 45 Mins  |  **Max Marks:** 20
+       
+       ---
+       
+    2. The list of exactly ${qCount} questions divided into standard Board Exam sections:
+       - **SECTION A: OBJECTIVE TYPE / SHORT-ANSWER QUESTIONS (କ ବିଭାଗ: ବସ୍ତୁନିଷ୍ଠ ପ୍ରଶ୍ନ)**
+         (Assign 1 Mark each, e.g. MCQs, fill-in-the-blanks, or one-word answers. Total: ~40% of questions)
+       - **SECTION B: CONCEPTUAL SHORT ANSWER QUESTIONS (ଖ ବିଭାଗ: ସଂକ୍ଷିପ୍ତ ଉତ୍ତରମୂଳକ ପ୍ରଶ୍ନ)**
+         (Assign 2 or 3 Marks each. Total: ~40% of questions)
+       - **SECTION C: LONG/ANALYTICAL ANSWER QUESTIONS (ଗ ବିଭାଗ: ଦୀର୍ଘ ଉତ୍ତରମୂଳକ ପ୍ରଶ୍ନ)**
+         (Assign 5 Marks each. Total: ~20% of questions)
+       
+       *Label each question clearly with its marks in square brackets, e.g., [1 Mark] or [3 Marks] or [5 Marks].*
+       
+    3. A clear separator page break for printing:
+       ---
+       
+    4. **ANSWER KEY & MODEL SOLUTIONS (ଉତ୍ତର ସୂଚୀ ଏବଂ ସମାଧାନ)**:
+       Provide detailed, step-by-step solutions, explanations, and calculations for each question in both English and Odia.
     
     Make it highly educational and standard for schools. Keep the output clean, do not wrap in JSON, return ONLY the raw Markdown text.`;
 
@@ -703,9 +728,138 @@ export async function generateHomeworkSheet(
       return result.response.text();
     }, 'flash');
 
-    return responseText || "Failed to generate homework sheet. Please try again.";
+    return responseText ? cleanOdiaOrthography(responseText) : "Failed to generate homework sheet. Please try again.";
   } catch (error) {
     console.error("Homework Generation Error:", error);
+    throw error;
+  }
+}
+
+export async function generateLessonPlan(
+  className: string,
+  subjectName: string,
+  chapterTitle: string,
+  language: 'en' | 'or' = 'or'
+) {
+  try {
+    const ai = getAI();
+    const prompt = `You are Gundulu, a senior curriculum planner and expert teacher tutor aligned with the OPEPA (Odisha Primary Education Programme Authority) and Board of Secondary Education (BSE) Odisha guidelines.
+    Generate a premium, professional school lesson plan (ପାଠ୍ୟ ଯୋଜନା) for standard "${className}" on the topic of "${chapterTitle}" in the subject "${subjectName}".
+    
+    The lesson plan MUST follow the official OPEPA 5E Model (Engagement, Exploration, Explanation, Elaboration, Evaluation) pedagogical framework and be written bilingually (with sections, guidelines, and summaries in English and accurate Odia translation).
+    
+    CRITICAL: Do NOT use raw LaTeX mathematical symbols, equations, or formatting delimiters (like $$, $, \[, \], \(, \), \frac, \sqrt, \times, \div). Instead, use standard plain text or standard Unicode symbols (like ÷, ×, ±, ≈, ≠, ≤, ≥, ∞, •, α, β, θ, π, √, ^) so that it renders clearly on any device screen.
+    
+    Provide the output in beautiful structured Markdown containing:
+    1. A premium header block:
+       # UTKAL SKILL CENTRE • AI LESSON PLAN (ପାଠ୍ୟ ଯୋଜନା)
+       **Class (ଶ୍ରେଣୀ):** ${className}  |  **Subject (ବିଷୟ):** ${subjectName}
+       **Chapter/Topic (ଅଧ୍ୟାୟ/ପ୍ରସଙ୍ଗ):** ${chapterTitle}  |  **Duration (ଅବଧି):** 45 Mins
+       
+       ---
+       
+    2. **Learning Objectives & Competencies (ଶିକ୍ଷଣ ଉଦ୍ଦେଶ୍ୟ ଓ ଦକ୍ଷତା)**:
+       Define 2-3 specific learning outcomes (LOs) aligned with Odisha state board standards.
+       
+    3. **Required TLM / Teaching Learning Material (ଶିକ୍ଷଣ ଶିକ୍ଷାଦାନ ସାମଗ୍ରୀ)**:
+       Suggest zero-cost or low-cost learning aids that are easily accessible in government schools.
+       
+    4. **The 5E Pedagogical Framework (୫-ଇ ଶିକ୍ଷଣ ପଦ୍ଧତି)**:
+       For each stage, specify Teacher's Action, Expected Student Activity, and Duration:
+       - **Engagement (ପ୍ରବେଶ - 5 Mins)**: Warm-up activity, question, or story to connect with prior knowledge.
+       - **Exploration (ଅନୁସନ୍ଧାନ - 10 Mins)**: Direct student-led activity, inquiry, or observation.
+       - **Explanation (ସ୍ପଷ୍ଟୀକରଣ - 10 Mins)**: Clarifying concepts, terms, and explanations with textbook references.
+       - **Elaboration (ପ୍ରସାରଣ - 15 Mins)**: Real-world connection, application tasks, or practice problems.
+       - **Evaluation (ମୂଲ୍ୟାଙ୍କନ - 5 Mins)**: Quick informal check or feedback.
+       
+    5. **Blackboard Summary (କଳାପଟା ଲିଖନ)**:
+       Provide a structured summary block showing exactly what the teacher should write/draw on the blackboard (definitions, key formulas, diagrams, or diagrams text description).
+       
+    6. **Differentiated Learning Strategies (ବିଭିନ୍ନ ଶିକ୍ଷଣ ଶୈଳୀ)**:
+       - **For Remedial Group/Slow Learners (ଧୀର ଶିକ୍ଷାର୍ଥୀଙ୍କ ପାଇଁ):** Visual prompts, simplified tasks, or peer support instructions.
+       - **For Enrichment Group/Fast Learners (ଦ୍ରୁତ ଶିକ୍ଷାର୍ଥୀଙ୍କ ପାଇଁ):** Advanced challenge questions or leadership roles.
+       
+    7. **Home Assignment (ଗୃହ କାର୍ଯ୍ୟ)**:
+       1-2 conceptual or activity-based questions for homework.
+
+    Make it highly educational and standard for schools. Keep the output clean, do not wrap in JSON, return ONLY the raw Markdown text.`;
+
+    const responseText = await withRetry(async (modelName, apiVersion) => {
+      const model = ai.getGenerativeModel({ model: modelName }, { apiVersion });
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.7,
+        },
+      });
+      return result.response.text();
+    }, 'flash');
+
+    return responseText ? cleanOdiaOrthography(responseText) : "Failed to generate lesson plan. Please try again.";
+  } catch (error) {
+    console.error("Lesson Plan Generation Error:", error);
+    throw error;
+  }
+}
+
+export async function generatePracticalActivities(
+  className: string,
+  subjectName: string,
+  chapterTitle: string,
+  language: 'en' | 'or' = 'or'
+) {
+  try {
+    const ai = getAI();
+    const prompt = `You are Gundulu, a senior curriculum designer and pedagogical expert for school education, aligned with the Board of Secondary Education (BSE) Odisha and OPEPA frameworks.
+    Generate a premium, school-standard, bilingual guide with exactly 2 interactive, hands-on classroom activities or projects for standard "${className}" on the topic/chapter "${chapterTitle}" in the subject "${subjectName}".
+    
+    BILINGUAL & LOCALIZED:
+    - The guide MUST be bilingual, containing clear descriptions in both English and accurate Odia translation for all instructions and titles.
+    - Tailor the activity design according to the subject:
+      * If the subject is "Science" (or related like Physical/Life Science): Generate 2 hands-on experiments using zero-cost/low-cost or common household materials.
+      * If the subject is "Mathematics" (or Algebra/Geometry): Generate 2 concrete mathematical modeling activities (e.g., using grid papers, matchsticks, cardboard cutouts, measuring shapes, or numerical puzzle games).
+      * If the subject is a language ("English", "Odia", "Sanskrit", "Hindi", or related grammar): Generate 2 interactive language activities (e.g., dialogue role-plays, vocabulary bingo games, storyboarding, script-writing, or debate exercises).
+      * If the subject is "Social Science" (History, Geography, Civics, or Art & Health): Generate 2 active learning activities (e.g., map tracking, mock parliaments, timeline charts, drawing posters, or local case studies).
+      * For any other subject: Generate 2 active group learning exercises or practical demonstration guides.
+    
+    CRITICAL: Do NOT use raw LaTeX mathematical symbols, equations, or formatting delimiters (like $$, $, \[, \], \(, \), \frac, \sqrt, \times, \div). Instead, use standard plain text or standard Unicode symbols (like ÷, ×, ±, ≈, ≠, ≤, ≥, ∞, •, α, β, θ, π, √, ^) so that it renders clearly on any device screen.
+    
+    Provide the output in beautiful structured Markdown containing:
+    1. A premium header block:
+       # UTKAL SKILL CENTRE • CLASSROOM ACTIVITIES & PROJECTS GUIDE (ଶ୍ରେଣୀ କାର୍ଯ୍ୟକଳାପ ଓ ପ୍ରକଳ୍ପ ସହାୟକ)
+       **Class (ଶ୍ରେଣୀ):** ${className}  |  **Subject (ବିଷୟ):** ${subjectName}
+       **Chapter/Topic (ଅଧ୍ୟାୟ/ପ୍ରସଙ୍ଗ):** ${chapterTitle}
+       
+       ---
+       
+    2. Detailed layouts for each of the 2 activities:
+       - **Activity/Experiment Name (କାର୍ଯ୍ୟକଳାପ/ପରୀକ୍ଷାର ନାମ)**: Engaging name.
+       - **Objective (ଉଦ୍ଦେଶ୍ୟ)**: What concept does this clarify?
+       - **Materials/Preparation Needed (ଆବଶ୍ୟକ ସାମଗ୍ରୀ ଓ ପ୍ରସ୍ତୁତି)**: Zero-cost, low-cost, or easy classroom aids.
+       - **Step-by-step Procedure (କାର୍ଯ୍ୟପନ୍ଥା)**: Clear, numbered guide for teachers to direct students.
+       - **Scientific/Conceptual Explanation (ବୈଜ୍ଞାନିକ/ବିଷୟଗତ ସିଦ୍ଧାନ୍ତ ଓ ପର୍ଯ୍ୟବେକ୍ଷଣ)**: Simple explanation of the core concept.
+       
+    3. A combined pedagogy booster section:
+       - **Classroom Discussion Prompts (ଶ୍ରେଣୀଗୃହ ଆଲୋଚନା ପ୍ରଶ୍ନ)**: 2-3 interactive questions to ask students during/after the activity to guide their understanding.
+       - **Common Student Misconceptions (ସାଧାରଣ ଭୁଲ ଧାରଣା)**: 1-2 common conceptual mistakes students make with this topic and how to correct them.
+       - **Blackboard Sketch / Summary Guide (କଳାପଟା ଚିତ୍ର ଓ ସାରାଂଶ)**: Clear text instructions or ASCII representations describing exactly what the teacher should draw/write on the blackboard to explain the activity (e.g. diagrams, setup sketches, or a table of values).
+
+    Make it highly educational and standard for schools. Keep the output clean, do not wrap in JSON, return ONLY the raw Markdown text.`;
+
+    const responseText = await withRetry(async (modelName, apiVersion) => {
+      const model = ai.getGenerativeModel({ model: modelName }, { apiVersion });
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.7,
+        },
+      });
+      return result.response.text();
+    }, 'flash');
+
+    return responseText ? cleanOdiaOrthography(responseText) : "Failed to generate classroom activities guide. Please try again.";
+  } catch (error) {
+    console.error("Activities Generation Error:", error);
     throw error;
   }
 }

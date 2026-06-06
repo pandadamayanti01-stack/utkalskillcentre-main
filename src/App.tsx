@@ -32,7 +32,7 @@ import {
   sendPasswordResetEmail,
   linkWithPopup
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, query, where, getDocs, orderBy, limit, addDoc, updateDoc, increment, getCountFromServer, onSnapshot, Timestamp, deleteDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, query, where, getDocs, orderBy, limit, addDoc, updateDoc, increment, getCountFromServer, onSnapshot, Timestamp, deleteDoc, Query, DocumentData } from 'firebase/firestore';
 import { createSupportSession, endSupportSession, subscribeToQueuePosition } from './services/supportService';
 import { ODISHA_DISTRICTS } from './constants/districts';
 import { translations } from './translations';
@@ -66,6 +66,7 @@ const AdminDashboard = lazy(() =>
 );
 const PracticeQuestion = lazy(() => import('./components/PracticeQuestion').then((module) => ({ default: module.PracticeQuestion })));
 const Dashboard = lazy(() => import('./components/Dashboard').then((module) => ({ default: module.Dashboard })));
+const SishuVatikaDashboard = lazy(() => import('./components/SishuVatikaDashboard').then((module) => ({ default: module.SishuVatikaDashboard })));
 const NotificationsView = lazy(() => import('./components/NotificationsView').then((module) => ({ default: module.NotificationsView })));
 const GunduluHuman = lazy(() => import('./components/GunduluHuman'));
 const AvatarStore = lazy(() => import('./components/AvatarStore').then((module) => ({ default: module.AvatarStore })));
@@ -1321,20 +1322,41 @@ export default function App() {
     dailyMcqSubjectRotation: ['math', 'english', 'science', 'odia', 'social']
   });
 
-  const loadChapters = useCallback(async () => {
+  const loadChapters = useCallback(async (classStr?: string) => {
     if (!user) return;
-    const chaptersCacheKey = `chapters_${user.role}_${user.class || 'all'}_${user.board || 'all'}`;
+    const targetClass = classStr || user.class || '10';
+    const chaptersCacheKey = `chapters_${user.role}_${targetClass}_${user.board || 'all'}`;
     const cached = getCachedData<Chapter[]>(chaptersCacheKey, 1800000); // 30 mins
     if (cached) {
       setChapters(cached);
       return;
     }
     try {
-      const chaptersQuery = user.role === 'admin' 
-        ? collection(firestore, 'chapters')
-        : (user.role === 'student' && user.class
-            ? query(collection(firestore, 'chapters'), where('status', '==', 'published'), where('class', '==', user.class))
-            : query(collection(firestore, 'chapters'), where('status', '==', 'published')));
+      let chaptersQuery: Query<DocumentData>;
+      if (user.role === 'admin') {
+        chaptersQuery = collection(firestore, 'published_textbooks_chapters');
+      } else {
+        const classDigits = targetClass.replace(/\D/g, '');
+        if (classDigits) {
+          const classVariants = [
+            `class${classDigits}`,
+            `class ${classDigits}`,
+            classDigits
+          ];
+          chaptersQuery = query(
+            collection(firestore, 'chapters'),
+            where('status', '==', 'published'),
+            where('class', 'in', classVariants)
+          );
+        } else {
+          chaptersQuery = query(
+            collection(firestore, 'chapters'),
+            where('status', '==', 'published'),
+            where('class', '==', targetClass)
+          );
+        }
+      }
+      
       const snapshot = await getDocs(chaptersQuery);
       const allDataRaw = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
       const allData: Chapter[] = [];
@@ -1359,8 +1381,6 @@ export default function App() {
       });
       const data = allData.filter(c => {
         if ((c as any).isLibraryChapter || (c as any).pdfUrl) return true;
-        const cleanClass = (cls: string) => (cls || '').toLowerCase().replace(/\s+/g, '').replace('class', '').replace('th', '');
-        const matchesClass = !user?.class || cleanClass(c.class) === cleanClass(user.class);
         const userBoardRaw = user?.board || '';
         const userBoard = (userBoardRaw === 'undefined' ? '' : userBoardRaw).toLowerCase();
         let chapterBoardStr = '';
@@ -1370,7 +1390,7 @@ export default function App() {
           chapterBoardStr = ((c.board as any).en || (c.board as any).or || '').toLowerCase();
         }
         const matchesBoard = !userBoard || chapterBoardStr.includes(userBoard) || userBoard.includes(chapterBoardStr);
-        return matchesClass && matchesBoard;
+        return matchesBoard;
       });
       setChapters(data);
       setCachedData(chaptersCacheKey, data);
@@ -1645,6 +1665,7 @@ export default function App() {
         if (!n.audience || n.audience === 'all') return true;
         if (user?.role === 'teacher') return n.audience === 'teachers';
         if (n.audience === 'teachers') return false;
+        if (n.audience.startsWith('class')) return user?.class === n.audience;
         if (n.audience === 'students') return true;
         if (n.audience === 'premium') return Boolean(isPremium);
         if (n.audience === 'free') return !isPremium;
@@ -1833,7 +1854,8 @@ export default function App() {
                   avatar: updatedUser.avatar || '',
                   class: updatedUser.class || '',
                   board: updatedUser.board || '',
-                  phoneNumber: updatedUser.phoneNumber || ''
+                  phoneNumber: updatedUser.phoneNumber || '',
+                  role: updatedUser.role || 'student'
                 };
                 
                 if (existingIdx >= 0) {
@@ -1861,6 +1883,14 @@ export default function App() {
                 name: (updatedUser.name && updatedUser.name !== 'Student' && updatedUser.name !== 'Student Achiever') ? updatedUser.name : 'Anuradha Panda',
                 district: updatedUser.district || 'Khordha',
                 school: updatedUser.school || 'Bhubaneswar Govt High School'
+              };
+            }
+            const isTeacherTest = (updatedUser.phoneNumber === '+919876543210' || updatedUser.phoneNumber === '9876543210') && updatedUser.role !== 'student';
+            if (isTeacherTest) {
+              updatedUser = {
+                ...updatedUser,
+                name: (updatedUser.name && updatedUser.name !== 'Educator') ? updatedUser.name : 'Damayanti Panda',
+                role: updatedUser.role || 'teacher'
               };
             }
 
@@ -1894,7 +1924,8 @@ export default function App() {
               '+918926118509', '8926118509',
               '+918457811227', '8457811227',
               '+916370487877', '6370487877',
-              '+911234567890', '1234567890'
+              '+911234567890', '1234567890',
+              '+919876543210', '9876543210'
             ].includes(userPhone));
 
           if (isAdmin || regDataRef.current.role === 'admin' || (userDocSnap.exists() && userDocSnap.data().role === 'admin')) {
@@ -1937,11 +1968,32 @@ export default function App() {
           }
 
           const isJudgeAccount = userPhone === '+911234567890' || userPhone === '1234567890';
-          const role = isAdmin ? 'admin' : (regDataRef.current.role === 'admin' ? 'admin' : (regDataRef.current.role === 'teacher' ? 'teacher' : (userDocSnap.exists() ? (userDocSnap.data().role || 'student') : 'student')));
+          const isTeacherTestAccount = userPhone === '+919876543210' || userPhone === '9876543210';
+          
+          // Prioritize Firestore role if document already exists
+          const role = isAdmin 
+            ? 'admin' 
+            : (userDocSnap.exists() && userDocSnap.data().role 
+              ? userDocSnap.data().role 
+              : (regDataRef.current.role === 'admin' 
+                ? 'admin' 
+                : (regDataRef.current.role === 'student' 
+                  ? 'student' 
+                  : (isTeacherTestAccount || regDataRef.current.role === 'teacher') 
+                    ? 'teacher' 
+                    : 'student')));
           
           const userData: any = {
             id: firebaseUser.uid,
-            name: isJudgeAccount ? 'Anuradha Panda' : (firebaseUser.displayName || (userDocSnap.exists() && userDocSnap.data().name !== 'Student' ? userDocSnap.data().name : regDataRef.current.name) || (role === 'teacher' ? 'Educator' : 'Student')),
+            name: isJudgeAccount 
+              ? 'Anuradha Panda' 
+              : (userDocSnap.exists() && userDocSnap.data().name && userDocSnap.data().name !== 'Student' && userDocSnap.data().name !== 'Student Achiever'
+                ? userDocSnap.data().name 
+                : (role === 'student' && regDataRef.current.name 
+                  ? regDataRef.current.name 
+                  : (isTeacherTestAccount && role !== 'student' 
+                    ? 'Damayanti Panda' 
+                    : (firebaseUser.displayName || regDataRef.current.name || (role === 'teacher' ? 'Educator' : 'Student'))))),
             email: firebaseUser.email || (userDocSnap.exists() ? userDocSnap.data().email : regDataRef.current.email) || '',
             class: (role === 'teacher') ? (regDataRef.current.class || '10') : ((userDocSnap.exists() && userDocSnap.data().class) ? userDocSnap.data().class : (regDataRef.current.class || '10')),
             board: (role === 'teacher') ? (regDataRef.current.board || 'BSE Odisha') : ((userDocSnap.exists() && userDocSnap.data().board) ? userDocSnap.data().board : (regDataRef.current.board || 'BSE Odisha')),
@@ -2058,6 +2110,13 @@ export default function App() {
         // Check subscription
         const subDocRef = doc(firestore, 'subscriptions', firebaseUser.uid);
         unsubSub = onSnapshot(subDocRef, (subDocSnap) => {
+          // If in the free showcase period (until June 20, 2026), everyone gets free premium access
+          const isFreePeriod = new Date() < new Date('2026-06-20T17:00:00+05:30');
+          if (isFreePeriod) {
+            setIsPremium(true);
+            return;
+          }
+
           const userEmail = firebaseUser.email?.toLowerCase();
           const userPhone = firebaseUser.phoneNumber;
           const lifetimeEmails = ['gyanaloka.panda@gmail.com', 'gyanapd.ram@gmail.com', 'pandadamayanti01@gmail.com', 'gyanalpanda@gmail.com'];
@@ -2440,7 +2499,8 @@ export default function App() {
           '+919556086560', '9556086560',
           '+918457811227', '8457811227',
           '+916370487877', '6370487877',
-          '+911234567890', '1234567890'
+          '+911234567890', '1234567890',
+          '+919876543210', '9876543210'
         ].includes(formattedNumber);
         
         if (!isTestAccount) {
@@ -2619,10 +2679,11 @@ export default function App() {
     });
   };
 
-  const handleSubscribe = async (amount: number, planType: 'monthly' | 'yearly' = 'monthly', userClass: number = 1) => {
+  const handleSubscribe = async (amount: number, planType: 'monthly' | 'yearly' = 'monthly', userClass: any = undefined) => {
     if (!user) return;
 
     // The yearly plan restriction has been removed. All users can access it.
+    const finalClass = userClass !== undefined ? userClass : (user.class || 1);
     
     const res = await loadRazorpayScript();
     if (!res) {
@@ -2636,7 +2697,7 @@ export default function App() {
         const orderData = await fetchJson('/api/payment/create-order', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: safeJsonStringify({ userId: user.id, amount, userClass, planType })
+          body: safeJsonStringify({ userId: user.id, amount, userClass: finalClass, planType })
         });
 
         console.log("Order created:", orderData);
@@ -3700,7 +3761,18 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                   </motion.div>
                 )}
                 {user?.role === 'teacher' ? (
-                  <TeacherDashboard user={user} language={language} chapters={chapters} setActiveTab={setActiveTab} textbooksCount={textbooks.length} />
+                  <TeacherDashboard user={user} language={language} chapters={chapters} setActiveTab={setActiveTab} textbooksCount={textbooks.length} isPremium={isPremium} loadChapters={loadChapters} />
+                ) : user?.class === 'sishuvatika(Anganwadi)' ? (
+                  <SishuVatikaDashboard
+                    user={user}
+                    language={language}
+                    isPremium={isPremium}
+                    onUpgrade={() => setActiveTab('plans')}
+                    onOpenTutor={() => {
+                      setActiveTab('gundulu');
+                    }}
+                    onOpenLibrary={() => setActiveTab('digital_library')}
+                  />
                 ) : (
                   <Dashboard
                     user={user}
@@ -3718,8 +3790,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                     isRegistered={isRegisteredForTestSeries}
                     onRegistrationComplete={() => setIsRegisteredForTestSeries(true)}
                     onOpenTutor={() => {
-                      setOpenTutorInVoiceMode(Date.now());
-                      setActiveTab('study_buddy');
+                      setActiveTab('gundulu');
                     }}
                     onOpenCommunity={() => setShowCommunityChat(true)}
                     following={following}
@@ -3740,6 +3811,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                 isPremium={isPremium}
                 onUpgrade={() => setActiveTab('plans')}
                 onBack={() => setActiveTab('dashboard')}
+                loadChapters={loadChapters}
               />
             )}
             {activeTab === 'smart_classes' && (
@@ -3762,8 +3834,16 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
               <StudyBuddyView language={language} isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} user={user} initialVoiceMode={openTutorInVoiceMode} onBack={() => setActiveTab('dashboard')} onLanguageChange={setLanguage} systemSettings={systemSettings} />
             )}
             {activeTab === 'gundulu' && (
-              <GunduluHuman isPremium={isPremium} onUpgrade={() => setActiveTab('plans')} userClass={user?.class} user={user} onBack={() => setActiveTab('dashboard')} />
+              <Suspense fallback={<div className="flex-grow flex items-center justify-center text-white text-sm font-semibold">Loading Gundulu AI Tutor...</div>}>
+                <GunduluHuman 
+                  user={user} 
+                  isPremium={isPremium} 
+                  onUpgrade={() => setActiveTab('plans')} 
+                  onBack={() => setActiveTab('dashboard')} 
+                />
+              </Suspense>
             )}
+
             {activeTab === 'profile' && (
               <ProfileView 
                 user={user} 
@@ -3897,7 +3977,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
           <div className="space-y-1">
             <h4 className="text-sm md:text-base font-black text-white uppercase tracking-tight flex items-center gap-1.5">
               {tourStep === 1 && "👋 Welcome & Automated Setup"}
-              {tourStep === 2 && "🤖 AI Study Buddy (Gundulu AI)"}
+              {tourStep === 2 && "🤖 Gundulu AI Homework Helper"}
               {tourStep === 3 && "⚡ Student XP & Streaks Tracker"}
               {tourStep === 4 && "📚 Digital Library"}
               {tourStep === 5 && "📊 Syllabus Tracker"}
@@ -3908,7 +3988,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             </h4>
             <p className="text-xs text-slate-300 leading-relaxed font-medium">
               {tourStep === 1 && "We have automatically logged you into a Class 10 BSE Odisha simulated account (Anuradha Panda). Let's take a quick tour of our core features!"}
-              {tourStep === 2 && "Our zero-hallucination AI Study Buddy is grounded directly in regional textbooks, offering instant low-latency bilingual voice tutoring."}
+              {tourStep === 2 && "Our zero-hallucination Gundulu AI Homework Helper is grounded directly in regional textbooks, offering instant low-latency bilingual homework assistance and explanations."}
               {tourStep === 3 && "Track your daily study goals and maintain streaks. Earn XP by reading chapters, answering MCQs, and chatting with Gundulu AI!"}
               {tourStep === 4 && "Rural students get unlimited, structured access to curated subject directories of school lessons completely for free."}
               {tourStep === 5 && "Track your board exam preparation progress chapter-by-chapter with our real-time syllabus tracker."}
@@ -4802,33 +4882,41 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
           </button>
         </div>
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-white">{translations[language].profile.editTitle}</h2>
-          <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">
-            {language === 'en' ? 'Points:' : 'ପଏଣ୍ଟ:'} <span className="text-emerald-400">{user.points}</span>
-          </p>
+          <h2 className="text-2xl font-bold text-white">
+            {user.role === 'teacher'
+              ? (language === 'en' ? 'Educator Profile' : 'ଶିକ୍ଷକ ପ୍ରୋଫାଇଲ୍')
+              : translations[language].profile.editTitle}
+          </h2>
+          {user.role !== 'teacher' && (
+            <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">
+              {language === 'en' ? 'Points:' : 'ପଏଣ୍ଟ:'} <span className="text-emerald-400">{user.points}</span>
+            </p>
+          )}
         </div>
       </div>
-<div className="space-y-4">
+      <div className="space-y-4">
         {/* Animated Toggle Switch */}
-        <div className="relative flex w-full p-1 bg-slate-900/50 border border-white/5 rounded-2xl mb-8 shadow-inner">
-          <button
-            onClick={() => setActiveProfileTab('student')}
-            className={`relative flex-1 py-3 text-sm font-bold z-10 transition-colors ${activeProfileTab === 'student' ? 'text-white' : 'text-slate-500 hover:text-slate-300'}`}
-          >
-            {language === 'en' ? 'Student Profile' : 'ଛାତ୍ର ପ୍ରୋଫାଇଲ୍'}
-          </button>
-          <button
-            onClick={() => setActiveProfileTab('parent')}
-            className={`relative flex-1 py-3 text-sm font-bold z-10 transition-colors ${activeProfileTab === 'parent' ? 'text-white' : 'text-slate-500 hover:text-slate-300'}`}
-          >
-            {language === 'en' ? 'Parent Controls' : 'ପିତାମାତାଙ୍କ ନିୟନ୍ତ୍ରଣ'}
-          </button>
-          <motion.div
-            className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-emerald-600 rounded-xl shadow-lg shadow-emerald-900/20 z-0"
-            animate={{ left: activeProfileTab === 'student' ? '4px' : 'calc(50% + 0px)' }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          />
-        </div>
+        {user.role !== 'teacher' && (
+          <div className="relative flex w-full p-1 bg-slate-900/50 border border-white/5 rounded-2xl mb-8 shadow-inner">
+            <button
+              onClick={() => setActiveProfileTab('student')}
+              className={`relative flex-1 py-3 text-sm font-bold z-10 transition-colors ${activeProfileTab === 'student' ? 'text-white' : 'text-slate-500 hover:text-slate-300'}`}
+            >
+              {language === 'en' ? 'Student Profile' : 'ଛାତ୍ର ପ୍ରୋଫାଇଲ୍'}
+            </button>
+            <button
+              onClick={() => setActiveProfileTab('parent')}
+              className={`relative flex-1 py-3 text-sm font-bold z-10 transition-colors ${activeProfileTab === 'parent' ? 'text-white' : 'text-slate-500 hover:text-slate-300'}`}
+            >
+              {language === 'en' ? 'Parent Controls' : 'ପିତାମାତାଙ୍କ ନିୟନ୍ତ୍ରଣ'}
+            </button>
+            <motion.div
+              className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-emerald-600 rounded-xl shadow-lg shadow-emerald-900/20 z-0"
+              animate={{ left: activeProfileTab === 'student' ? '4px' : 'calc(50% + 0px)' }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            />
+          </div>
+        )}
 
         <AnimatePresence mode="wait">
           {activeProfileTab === 'student' && (
@@ -4886,63 +4974,67 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-400 mb-1">
-                    <Lucide.Globe className="inline-block text-emerald-400 mr-1" size={14} /> 
-                    {language === 'en' ? 'District' : 'ଜିଲ୍ଲା'}
-                  </label>
-                  <select
-                    className="w-full p-3 rounded-xl bg-slate-900/80 text-white border-2 border-white/10 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/30 transition-all"
-                    value={district}
-                    onChange={e => setDistrict(e.target.value)}
-                  >
-                    <option value="" className="bg-slate-900">{language === 'en' ? 'Select District' : 'ଜିଲ୍ଲା ଚୟନ କରନ୍ତୁ'}</option>
-                    {ODISHA_DISTRICTS.map(d => (
-                      <option key={d.en} value={d.en} className="bg-slate-900">
-                        {language === 'en' ? d.en : `${d.or} (${d.en})`}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-400 mb-1">
-                    <Lucide.School className="inline-block text-blue-400 mr-1" size={14} /> 
-                    {language === 'en' ? 'School' : 'ବିଦ୍ୟାଳୟ'}
-                  </label>
-                  <input
-                    className="w-full p-3 rounded-xl bg-slate-900/80 text-white border-2 border-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 transition-all"
-                    type="text"
-                    value={school}
-                    onChange={e => setSchool(e.target.value)}
-                    placeholder={language === 'en' ? 'Enter your school name' : 'ବିଦ୍ୟାଳୟ ନାମ ଲେଖନ୍ତୁ'}
-                  />
-                </div>
-              </div>
+              {user.role !== 'teacher' && (
+                <>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-400 mb-1">
+                        <Lucide.Globe className="inline-block text-emerald-400 mr-1" size={14} /> 
+                        {language === 'en' ? 'District' : 'ଜିଲ୍ଲା'}
+                      </label>
+                      <select
+                        className="w-full p-3 rounded-xl bg-slate-900/80 text-white border-2 border-white/10 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/30 transition-all"
+                        value={district}
+                        onChange={e => setDistrict(e.target.value)}
+                      >
+                        <option value="" className="bg-slate-900">{language === 'en' ? 'Select District' : 'ଜିଲ୍ଲା ଚୟନ କରନ୍ତୁ'}</option>
+                        {ODISHA_DISTRICTS.map(d => (
+                          <option key={d.en} value={d.en} className="bg-slate-900">
+                            {language === 'en' ? d.en : `${d.or} (${d.en})`}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-400 mb-1">
+                        <Lucide.School className="inline-block text-blue-400 mr-1" size={14} /> 
+                        {language === 'en' ? 'School' : 'ବିଦ୍ୟାଳୟ'}
+                      </label>
+                      <input
+                        className="w-full p-3 rounded-xl bg-slate-900/80 text-white border-2 border-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 transition-all"
+                        type="text"
+                        value={school}
+                        onChange={e => setSchool(e.target.value)}
+                        placeholder={language === 'en' ? 'Enter your school name' : 'ବିଦ୍ୟାଳୟ ନାମ ଲେଖନ୍ତୁ'}
+                      />
+                    </div>
+                  </div>
 
-              <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10 space-y-3">
-                <p className="text-[10px] text-slate-400 leading-relaxed">
-                  {translations[language].profile.requestChangeNote}
-                </p>
-                <div className="flex gap-2">
-                  <a 
-                    href={`https://wa.me/919337956168?text=${encodeURIComponent(`Namaskar Admin, I want to change my ${language === 'en' ? 'Class/Mobile Number' : 'ଶ୍ରେଣୀ/ମୋବାଇଲ୍ ନମ୍ବର'}. My Name: ${user.name}, Current Class: ${user.class}. Reason: `)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 py-2 rounded-xl bg-emerald-500/10 text-emerald-500 text-[10px] font-bold hover:bg-emerald-500/20 transition-all flex items-center justify-center gap-2 border border-emerald-500/20"
-                  >
-                    <Lucide.MessageCircle size={14} />
-                    WhatsApp
-                  </a>
-                  <a 
-                    href={`mailto:pandadamayanti01@gmail.com?subject=Profile Change Request&body=${encodeURIComponent(`Namaskar Admin,\n\nI want to change my Class or Mobile Number.\n\nName: ${user.name}\nPhone: ${user.phoneNumber || user.phone}\nCurrent Class: ${user.class}\n\nReason for change:\n`)}`}
-                    className="flex-1 py-2 rounded-xl bg-blue-500/10 text-blue-500 text-[10px] font-bold hover:bg-blue-500/20 transition-all flex items-center justify-center gap-2 border border-blue-500/20"
-                  >
-                    <Lucide.Mail size={14} />
-                    Email
-                  </a>
-                </div>
-              </div>
+                  <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10 space-y-3">
+                    <p className="text-[10px] text-slate-400 leading-relaxed">
+                      {translations[language].profile.requestChangeNote}
+                    </p>
+                    <div className="flex gap-2">
+                      <a 
+                        href={`https://wa.me/919337956168?text=${encodeURIComponent(`Namaskar Admin, I want to change my ${language === 'en' ? 'Class/Mobile Number' : 'ଶ୍ରେଣୀ/ମୋବାଇଲ୍ ନମ୍ବର'}. My Name: ${user.name}, Current Class: ${user.class}. Reason: `)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 py-2 rounded-xl bg-emerald-500/10 text-emerald-500 text-[10px] font-bold hover:bg-emerald-500/20 transition-all flex items-center justify-center gap-2 border border-emerald-500/20"
+                      >
+                        <Lucide.MessageCircle size={14} />
+                        WhatsApp
+                      </a>
+                      <a 
+                        href={`mailto:pandadamayanti01@gmail.com?subject=Profile Change Request&body=${encodeURIComponent(`Namaskar Admin,\n\nI want to change my Class or Mobile Number.\n\nName: ${user.name}\nPhone: ${user.phoneNumber || user.phone}\nCurrent Class: ${user.class}\n\nReason for change:\n`)}`}
+                        className="flex-1 py-2 rounded-xl bg-blue-500/10 text-blue-500 text-[10px] font-bold hover:bg-blue-500/20 transition-all flex items-center justify-center gap-2 border border-blue-500/20"
+                      >
+                        <Lucide.Mail size={14} />
+                        Email
+                      </a>
+                    </div>
+                  </div>
+                </>
+              )}
 
               {/* Account Linking Section */}
               {!isGoogleLinked && (
@@ -4972,21 +5064,23 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
               )}
 
               <div className="pt-6 border-t border-white/5">
-                <button 
-                  onClick={() => setShowOfflineNotes(true)}
-                  className="w-full flex items-center justify-between p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-500 hover:bg-blue-500/20 transition-all group mb-4"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-xl bg-blue-500 text-white">
-                      <Lucide.FileText size={20} />
+                {user.role !== 'teacher' && (
+                  <button 
+                    onClick={() => setShowOfflineNotes(true)}
+                    className="w-full flex items-center justify-between p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-500 hover:bg-blue-500/20 transition-all group mb-4"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-xl bg-blue-500 text-white">
+                        <Lucide.FileText size={20} />
+                      </div>
+                      <div className="text-left">
+                        <p className="font-bold">{language === 'en' ? 'Offline Notes' : 'ଅଫଲାଇନ୍ ନୋଟ୍'}</p>
+                        <p className="text-[10px] opacity-70 uppercase tracking-wider">{language === 'en' ? 'Access saved study material' : 'ସେଭ୍ ହୋଇଥିବା ପାଠ୍ୟପଢା ସାମଗ୍ରୀ'}</p>
+                      </div>
                     </div>
-                    <div className="text-left">
-                      <p className="font-bold">{language === 'en' ? 'Offline Notes' : 'ଅଫଲାଇନ୍ ନୋଟ୍'}</p>
-                      <p className="text-[10px] opacity-70 uppercase tracking-wider">{language === 'en' ? 'Access saved study material' : 'ସେଭ୍ ହୋଇଥିବା ପାଠ୍ୟପଢା ସାମଗ୍ରୀ'}</p>
-                    </div>
-                  </div>
-                  <Lucide.ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                </button>
+                    <Lucide.ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                  </button>
+                )}
 
                 <button 
                   onClick={() => setActiveTab('support')}
@@ -5622,11 +5716,58 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
   const [isSubmittingUtr, setIsSubmittingUtr] = useState(false);
 
   const p = translations[language].pricing;
+  const isTeacher = user?.role === 'teacher';
   
   // Subscription is a single flat monthly price for all classes.
-  let monthlyPrice = systemSettings?.monthlyPrice || 99;
-  let yearlyPrice = systemSettings?.yearlyPrice || 999;
-  let planName = p.premium.name;
+  let monthlyPrice = isTeacher ? 499 : (systemSettings?.monthlyPrice || 99);
+  let yearlyPrice = isTeacher ? 4999 : (systemSettings?.yearlyPrice || 999);
+  if (!isTeacher && user?.class === 'sishuvatika(Anganwadi)') {
+    monthlyPrice = 49;
+    yearlyPrice = 499;
+  }
+  let planName = isTeacher 
+    ? (language === 'en' ? 'Educator Pro Plan' : 'ଶିକ୍ଷକ ପ୍ରୋ ପ୍ଲାନ୍')
+    : p.premium.name;
+
+  let freePlanName = isTeacher
+    ? (language === 'en' ? 'Educator Free Plan' : 'ଶିକ୍ଷକ ମାଗଣା ପ୍ଲାନ୍')
+    : p.free.name;
+
+  let freeFeatures = isTeacher
+    ? (language === 'en'
+        ? [
+            "🤖 5 AI runs per month (Worksheets, Lesson Plans, Experiments)",
+            "❌ No YouTube video lesson suggestions allowed",
+            "⚡ Standard AI generation speed"
+          ]
+        : [
+            "🤖 ମାସକୁ ୫ଟି AI ଜେନେରେସନ୍ (ପ୍ରଶ୍ନପତ୍ର, ପାଠ୍ୟ ଯୋଜନା, ବିଜ୍ଞାନ ପରୀକ୍ଷା)",
+            "❌ ୟୁଟ୍ୟୁବ୍ ଭିଡିଓ ଲେସନ୍ ସୁପାରିଶ କରିବା ଅନୁମତି ନାହିଁ",
+            "⚡ ସାଧାରଣ AI ପ୍ରକ୍ରିୟାକରଣ ବେଗ"
+          ]
+      )
+    : p.free.features;
+
+  let premiumFeatures = isTeacher
+    ? (language === 'en'
+        ? [
+            "🤖 Unlimited AI Worksheet Maker runs",
+            "📋 Unlimited AI Lesson Plan Creator",
+            "🧪 Unlimited AI Science Experiment Guides",
+            "📢 Promote your YouTube video lessons globally to all registered students",
+            "⚡ High-speed priority AI generation",
+            "✨ Exclusive premium badge on your profile"
+          ]
+        : [
+            "🤖 ଅସୀମିତ AI ପ୍ରଶ୍ନପତ୍ର (Worksheet) ପ୍ରସ୍ତୁତି",
+            "📋 ଅସୀମିତ AI ପାଠ୍ୟ ଯୋଜନା (Lesson Plan) ପ୍ରସ୍ତୁତି",
+            "🧪 ଅସୀମିତ AI ବିଜ୍ଞାନ ପରୀକ୍ଷା (Science Experiment) ପ୍ରସ୍ତୁତି",
+            "📢 ନିଜର ୟୁଟ୍ୟୁବ୍ ଭିଡିଓ ଓଡ଼ିଶାର ସମସ୍ତ ପିଲାଙ୍କ ପାଇଁ ପ୍ରୋମୋଟ୍ କରନ୍ତୁ",
+            "⚡ ଉଚ୍ଚ-ଗତି ପ୍ରାଥମିକତା AI ଜେନେରେସନ୍",
+            "✨ ପ୍ରୋଫାଇଲ୍‌ରେ ଏକ୍ସକ୍ଲୁସିଭ୍ ପ୍ରିମିୟମ୍ ବ୍ୟାଜ୍"
+          ]
+      )
+    : p.premium.features;
 
   const handleOpenPayment = (amount: number, type: 'monthly'|'yearly') => {
     setSelectedPlanAmount(amount);
@@ -5638,7 +5779,7 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
 
   const handleSubmitUtr = async () => {
     if (!utrNumber.trim()) {
-      alert(language === 'en' ? "Please enter your UTR / Transaction ID" : "ଦୟାକରି ଆପଣଙ୍କର UTR / Transaction ID ପ୍ରବେଶ କରନ୍ତୁ");
+      alert(language === 'en' ? "Please enter your UTR / Transaction ID" : "ଦୟาକରି ଆପଣଙ୍କର UTR / Transaction ID ପ୍ରବେଶ କରନ୍ତୁ");
       return;
     }
     setIsSubmittingUtr(true);
@@ -5678,7 +5819,7 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
         <span>Back to Dashboard</span>
       </button>
 
-      {new Date() < new Date('2026-06-21T00:00:00') && (
+      {new Date() < new Date('2026-06-20T17:00:00+05:30') && (
         <div className="max-w-4xl mx-auto mb-10 bg-gradient-to-r from-emerald-500/10 via-teal-500/15 to-emerald-500/10 border border-emerald-500/20 rounded-[2rem] p-6 text-center shadow-lg relative overflow-hidden backdrop-blur-md">
           <div className="absolute top-0 right-0 w-[200px] h-[200px] bg-emerald-500/5 rounded-full blur-[50px] pointer-events-none" />
           <div className="flex flex-col md:flex-row items-center gap-4 text-left">
@@ -5691,8 +5832,8 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
               </h4>
               <p className="text-sm font-medium text-slate-305 leading-relaxed">
                 {language === 'or' 
-                  ? '୨୦ ଜୁନ୍ ୨୦୨୬ ପର୍ଯ୍ୟନ୍ତ ଆପଣ ଗୁନ୍ଦୁଲୁ AI ଟ୍ୟୁଟର, ଗଣିତ ବ୍ଲାକବୋର୍ଡ ଏବଂ ଭଏସ୍ ଟ୍ୟୁଟର ର ଅସୀମିତ ବ୍ୟବହାର ମାଗଣାରେ କରିପାରିବେ। ଯଦି ଆପଣ ପ୍ରଦର୍ଶନ ଅଫର ପରେ ମଧ୍ୟ ସେବା ଚାହୁଁଛନ୍ତି, ତେବେ ଆପଣ ଏବେ ସବସ୍କ୍ରାଇବ୍ କରିପାରିବେ।'
-                  : 'You have unlimited AI tutor questions, practice problems, and voice tutor access without a premium subscription until June 20, 2026. If you\'d like to secure your membership for after the showcase period, you can subscribe below.'}
+                  ? '୨୦ ଜୁନ୍ ୨୦୨୬ ଅପରାହ୍ନ ୫:୦୦ ଟା ପର୍ଯ୍ୟନ୍ତ ଆପଣ ଗୁନ୍ଦୁଲୁ AI ଟ୍ୟୁଟର, ଗଣିତ ବ୍ଲାକବୋର୍ଡ ଏବଂ ଭଏସ୍ ଟ୍ୟୁଟର ର ଅସୀମିତ ବ୍ୟବହାର ମାଗଣାରେ କରିପାରିବେ। ଯଦି ଆପଣ ପ୍ରଦର୍ଶନ ଅଫର ପରେ ମଧ୍ୟ ସେବା ଚାହୁଁଛନ୍ତି, ତେବେ ଆପଣ ଏବେ ସବସ୍କ୍ରାଇବ୍ କରିପାରିବେ।'
+                  : 'You have unlimited AI tutor questions, practice problems, and voice tutor access without a premium subscription until June 20, 2026 at 5:00 PM. If you\'d like to secure your membership for after the showcase period, you can subscribe below.'}
               </p>
             </div>
           </div>
@@ -5713,11 +5854,11 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
             </div>
           )}
           <div className="mb-8">
-            <h3 className="text-2xl font-bold text-white mb-2">{p.free.name}</h3>
+            <h3 className="text-2xl font-bold text-white mb-2">{freePlanName}</h3>
             <div className="text-4xl font-bold text-white">{p.free.price}</div>
           </div>
           <ul className="space-y-4 mb-10 flex-1">
-            {p.free.features.map((f: string, i: number) => (
+            {freeFeatures.map((f: string, i: number) => (
               <li key={i} className="flex items-center gap-3 text-slate-300">
                 <div className="w-5 h-5 rounded-full bg-emerald-500/10 flex items-center justify-center text-[10px]">✓</div>
                 {f}
@@ -5744,7 +5885,7 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
             </div>
           </div>
           <ul className="space-y-4 mb-10 flex-1">
-            {p.premium.features.map((f: string, i: number) => (
+            {premiumFeatures.map((f: string, i: number) => (
               <li key={i} className="flex items-center gap-3 text-white">
                 <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-[10px] text-white">✓</div>
                 {f}

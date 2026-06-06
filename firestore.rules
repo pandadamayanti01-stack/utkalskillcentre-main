@@ -113,7 +113,7 @@ service cloud.firestore {
       return hasRequiredFields(['id', 'name', 'role']) &&
              data.id is string && data.id.size() > 0 && data.id.size() < 128 &&
              data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
-             data.role in ['student', 'admin'] &&
+             data.role in ['student', 'admin', 'teacher'] &&
              (!('email' in data) || data.email == "" || isValidEmail(data.email)) &&
              (!('points' in data) || data.points is int) &&
              (!('class' in data) || data.class is string) &&
@@ -192,7 +192,7 @@ service cloud.firestore {
 
     match /users/{userId} {
       allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && isOwner(userId) && isValidUser(request.resource.data) && (request.resource.data.role == 'student' || isAdmin());
+      allow create: if isAuthenticated() && isOwner(userId) && isValidUser(request.resource.data) && (request.resource.data.role in ['student', 'teacher'] || isAdmin());
       allow update: if isAuthenticated() && (isAdmin() || (isOwner(userId) && isValidUser(request.resource.data) && request.resource.data.role == resource.data.role));
       allow delete: if isAdmin();
     }
@@ -365,6 +365,13 @@ service cloud.firestore {
     match /curated_videos/{videoId} {
       allow read: if isAuthenticated();
       allow write: if isAdmin();
+    }
+
+    // Suggested Videos (Teacher Submissions)
+    match /suggested_videos/{suggestionId} {
+      allow create: if isAuthenticated();
+      allow read: if isAuthenticated() && (resource == null || resource.data.teacherId == request.auth.uid || isAdmin());
+      allow update, delete: if isAdmin();
     }
 
     // Community Chats

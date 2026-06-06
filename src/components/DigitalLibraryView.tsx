@@ -17,6 +17,7 @@ interface DigitalLibraryViewProps {
   isPremium: boolean;
   onUpgrade?: () => void;
   onBack: () => void;
+  loadChapters?: (classStr?: string) => Promise<void>;
 }
 
 interface Message {
@@ -947,6 +948,9 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
   onUpgrade,
   onBack
 }) => {
+  const isFreePeriod = new Date() < new Date('2026-06-20T17:00:00+05:30');
+  const isTutorUnlocked = isPremium || isFreePeriod;
+
   // Navigation states: 'subjects' -> 'chapters' -> 'reader'
   const [currentView, setCurrentView] = useState<'subjects' | 'chapters' | 'reader'>('subjects');
   const [selectedSubject, setSelectedSubject] = useState<string>('');
@@ -1057,39 +1061,7 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
   }, [selectedChapter, language, user?.id]);
 
   useEffect(() => {
-    if (!selectedChapter) {
-      setChapterVideos([]);
-      return;
-    }
-    
-    const fetchChapterVideos = async () => {
-      setIsVideosLoading(true);
-      try {
-        const smartChapterName = getSmartClassChapterName(selectedChapter, selectedSubject, selectedClass);
-        if (!smartChapterName) {
-          setChapterVideos([]);
-          setIsVideosLoading(false);
-          return;
-        }
-
-        const q = query(
-          collection(db, 'curated_videos'),
-          where('classStr', '==', selectedClass),
-          where('subject', '==', selectedSubject),
-          where('chapter', '==', smartChapterName)
-        );
-        const snap = await getDocs(q);
-        const videoList = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        videoList.sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
-        setChapterVideos(videoList);
-      } catch (err) {
-        console.error("Failed to fetch chapter videos from curated_videos:", err);
-      } finally {
-        setIsVideosLoading(false);
-      }
-    };
-
-    fetchChapterVideos();
+    setChapterVideos([]);
   }, [selectedChapter, selectedSubject, selectedClass]);
 
   // Scroll window and scrollable dashboard containers to top on view changes (prevent SPA bottom landing)
@@ -2418,7 +2390,7 @@ Instructions:
                 </div>
               </div>
 
-              {!isPremium ? (
+              {!isTutorUnlocked ? (
                 /* GUNDULU SUBSCRIPTION LOCK OVERLAY */
                 <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-950/40 space-y-6">
                   <motion.div 

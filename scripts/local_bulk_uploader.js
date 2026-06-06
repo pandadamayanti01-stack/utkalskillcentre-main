@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { google } from 'googleapis';
 
-const COMPLETED_CLASSES = ['1', '2', '3', '4', '5', '6', '7', '10'];
+const COMPLETED_CLASSES = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 
 // Generates a random 20-character base62 document ID (like Firestore)
 function generateDocumentId() {

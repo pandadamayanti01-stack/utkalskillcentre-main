@@ -139,7 +139,7 @@ export function AiMatchingQuiz({ user, language, onClose, onSuccess, isPremium =
 
   // Generate dynamic quiz via Backend endpoint
   const startQuiz = async (subject: string) => {
-    const isFreePeriod = new Date() < new Date('2026-06-21T00:00:00');
+    const isFreePeriod = new Date() < new Date('2026-06-20T17:00:00+05:30');
     if (!isPremium && freeQueriesCount >= 5 && !isFreePeriod) {
       return;
     }
@@ -385,7 +385,7 @@ export function AiMatchingQuiz({ user, language, onClose, onSuccess, isPremium =
                 {language === 'or' ? 'ଗୁନ୍ଦୁଲୁ ମିଳନ ଖେଳ' : "Gundulu's Match Quiz"}
               </h2>
               <span className="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-widest mt-1 inline-block">
-                {language === 'or' ? 'Gemini Flash ଜ୍ଞାନ ପରୀକ୍ଷା' : 'Gemini Flash Concept Engine'}
+                {language === 'or' ? 'ଗୁନ୍ଦୁଲୁ ମିଳନ ଖେଳ' : 'Gundulu Matching Engine'}
               </span>
             </div>
           </div>
@@ -471,7 +471,7 @@ export function AiMatchingQuiz({ user, language, onClose, onSuccess, isPremium =
 
                 <div className="text-center space-y-2">
                   <h4 className="text-lg font-black text-white uppercase tracking-wider">
-                    {language === 'or' ? 'Gemini Flash ପ୍ରସ୍ତୁତ କରୁଛି...' : 'Gemini AI Synthesizing Quiz...'}
+                    {language === 'or' ? 'ଗୁନ୍ଦୁଲୁ AI ପ୍ରସ୍ତୁତ କରୁଛି...' : 'Gundulu AI Synthesizing Quiz...'}
                   </h4>
                   <p className="text-xs text-slate-500 font-bold uppercase tracking-widest animate-pulse max-w-sm leading-relaxed">
                     {language === 'or'
@@ -695,7 +695,7 @@ export function AiMatchingQuiz({ user, language, onClose, onSuccess, isPremium =
         </div>
 
         {/* Premium Upgrade Overlay */}
-        {!isPremium && freeQueriesCount >= 5 && !(new Date() < new Date('2026-06-21T00:00:00')) && (
+        {!isPremium && freeQueriesCount >= 5 && !(new Date() < new Date('2026-06-20T17:00:00+05:30')) && (
           <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-xl z-[100] flex items-center justify-center p-6 text-center select-none force-dark-theme animate-fade-in">
             <div className="absolute top-0 right-0 w-[350px] h-[350px] bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-violet-500/10 rounded-full blur-[80px] pointer-events-none" />

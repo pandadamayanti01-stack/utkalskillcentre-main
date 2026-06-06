@@ -52,15 +52,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'pitch_deck', icon: Lucide.Presentation, label: language === 'en' ? '✨ Project Showcase' : '✨ ପ୍ରୋଜେକ୍ଟ ସ୍ଲାଇଡ୍' },
     { id: 'telemetry', icon: Lucide.Activity, label: language === 'en' ? '📊 System Telemetry' : '📊 ସିଷ୍ଟମ ଟେଲିମେଟ୍ରି' },
     { id: 'notifications', icon: Lucide.Bell, label: language === 'en' ? 'Notifications' : 'ବିଜ୍ଞପ୍ତି' },
-    { id: 'study_buddy', icon: Lucide.Bot, label: t.studyBuddy || 'Study Buddy' },
-    { id: 'gundulu', icon: Lucide.Sparkles, label: language === 'en' ? '🎤 Gundulu AI Tutor' : '🎤 ଗୁନ୍ଦୁଲୁ AI ଟ୍ୟୁଟର' },
+    { id: 'study_buddy', icon: Lucide.MessageSquare, label: user?.role === 'teacher' ? (language === 'en' ? 'Gundulu Instructor' : 'ଗୁନ୍ଦୁଲୁ ଇନଷ୍ଟ୍ରକ୍ଟର') : t.studyBuddy },
+    { id: 'gundulu', icon: Lucide.Mic, label: language === 'en' ? 'Gundulu AI Tutor' : 'ଗୁନ୍ଦୁଲୁ AI ଟ୍ୟୁଟର' },
     { id: 'digital_library', icon: Lucide.Library, label: language === 'en' ? 'Digital Library' : 'ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀ' },
     { id: 'textbooks', icon: Lucide.Book, label: language === 'en' ? 'Textbooks' : 'ପାଠ୍ୟପୁସ୍ତକ' },
     { id: 'smart_classes', icon: Lucide.Youtube, label: language === 'en' ? 'Smart Classes' : 'ସ୍ମାର୍ଟ କ୍ଲାସ' },
     { id: 'monthly_tests', icon: Lucide.Calendar, label: t.monthlyTests },
     { id: 'syllabus_tracker', icon: Lucide.ListChecks, label: language === 'en' ? 'Syllabus Tracker' : 'ପାଠ୍ୟକ୍ରମ ଟ୍ରାକର୍' },
-    { id: 'daily_mcqs', icon: Lucide.ListChecks, label: language === 'en' ? 'Daily MCQ Practice' : 'ଦୈନିକ MCQ ଅଭ୍ୟାସ' },
-    { id: 'matching_quiz', icon: Lucide.Shuffle, label: language === 'en' ? 'AI Matching Game' : 'ଗୁନ୍ଦୁଲୁ ମିଳନ ଖେଳ' },
+    { id: 'daily_mcqs', icon: Lucide.ListChecks, label: language === 'en' ? 'Gundulu Daily Challenge' : 'ଗୁନ୍ଦୁଲୁ ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ' },
+    { id: 'matching_quiz', icon: Lucide.Shuffle, label: language === 'en' ? 'Gundulu Matching Game' : 'ଗୁନ୍ଦୁଲୁ ମିଳନ ଖେଳ' },
     { id: 'leaderboard', icon: Lucide.Trophy, label: t.leaderboard },
     { id: 'store', icon: Lucide.ShoppingBag, label: language === 'en' ? 'Avatar Store' : 'ଅବତାର ଷ୍ଟୋର' },
     { id: 'plans', icon: Lucide.CreditCard, label: language === 'en' ? 'Subscription' : 'ସବସ୍କ୍ରିପସନ୍' },
@@ -72,7 +72,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     ? allMenuItems 
     : allMenuItems.filter(item => item.id !== 'pitch_deck' && item.id !== 'telemetry');
 
-  const teacherExcludedIds = ['store', 'leaderboard', 'daily_mcqs', 'syllabus_tracker', 'monthly_tests', 'smart_classes', 'plans', 'matching_quiz'];
+  const teacherExcludedIds = ['store', 'leaderboard', 'daily_mcqs', 'syllabus_tracker', 'monthly_tests', 'smart_classes', 'matching_quiz', 'parent_dashboard', 'gundulu'];
   const menuItems = user?.role === 'teacher'
     ? filteredMenuItems.filter(item => !teacherExcludedIds.includes(item.id))
     : filteredMenuItems;
@@ -188,13 +188,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </div>
             </div>
 
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center gap-3 p-4 rounded-2xl text-amber-400/70 hover:bg-amber-500/10 hover:text-amber-400 transition-all font-bold text-sm group"
-            >
-              <Lucide.Users size={20} className="group-hover:scale-105 transition-transform" />
-              {language === 'en' ? 'Switch Sibling' : 'ଆକାଉଣ୍ଟ୍ ବଦଳାନ୍ତୁ'}
-            </button>
+            {user?.role !== 'teacher' && (
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-3 p-4 rounded-2xl text-amber-400/70 hover:bg-amber-500/10 hover:text-amber-400 transition-all font-bold text-sm group"
+              >
+                <Lucide.Users size={20} className="group-hover:scale-105 transition-transform" />
+                {language === 'en' ? 'Switch Sibling' : 'ଆକାଉଣ୍ଟ୍ ବଦଳାନ୍ତୁ'}
+              </button>
+            )}
 
             <button
               onClick={handleLogout}

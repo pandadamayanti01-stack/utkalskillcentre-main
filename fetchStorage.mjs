@@ -93,14 +93,29 @@ function formatChapterTitle(rawName) {
   return cleanTitle;
 }
 
+async function fetchAllItems() {
+  let items = [];
+  let pageToken = '';
+  do {
+    const url = `https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o${pageToken ? `?pageToken=${pageToken}` : ''}`;
+    const data = await fetchUrl(url);
+    if (data.items) {
+      items.push(...data.items);
+    }
+    pageToken = data.nextPageToken || '';
+  } while (pageToken);
+  return items;
+}
+
 async function main() {
   try {
-    const data = await fetchUrl('https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o');
-    if (!data.items) return;
+    console.log('Fetching all items from Firebase Storage (handling pagination)...');
+    const items = await fetchAllItems();
+    console.log(`Total items retrieved: ${items.length}`);
 
     const structure = {};
     
-    data.items.forEach(item => {
+    items.forEach(item => {
       const parts = item.name.split('/');
       if (parts[0] === 'Chapter Wise Text Book' && parts.length >= 4) {
         let className = parts[1].replace('Class ', '').trim();

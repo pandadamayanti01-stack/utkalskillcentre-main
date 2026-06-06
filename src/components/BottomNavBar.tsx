@@ -25,32 +25,23 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
   const currentDay = new Date().getDate();
   const isTestWindowActive = currentDay >= 1 && currentDay <= 10 && userRole !== 'teacher';
 
-  const navItems = [
-    isTestWindowActive
-      ? { id: 'monthly_tests', icon: Lucide.Home, label: language === 'en' ? 'Home' : 'ମୂଳ ପୃଷ୍ଠା' }
-      : { id: 'dashboard', icon: Lucide.Home, label: language === 'en' ? 'Home' : 'ମୂଳ ପୃଷ୍ଠା' },
-    {
-      id: 'study_buddy',
-      icon: Lucide.Users,
-      label: language === 'en' ? 'Study Buddy' : 'AI ବନ୍ଧୁ'
-    },
-    {
-      id: 'digital_library',
-      icon: Lucide.Grid,
-      label: language === 'en' ? 'Library' : 'ଲାଇବ୍ରେରୀ',
-      isCenter: true
-    },
-    {
-      id: 'smart_classes',
-      icon: Lucide.MonitorPlay,
-      label: language === 'en' ? 'Smart Class' : 'ସ୍ମାର୍ଟ କ୍ଲାସ୍'
-    },
-    {
-      id: 'menu',
-      icon: Lucide.User,
-      label: language === 'en' ? 'Profile' : 'ପ୍ରୋଫାଇଲ୍'
-    }
-  ];
+  const navItems = userRole === 'teacher'
+    ? [
+        { id: 'dashboard', icon: Lucide.Home, label: language === 'en' ? 'Home' : 'ମୂଳ ପୃଷ୍ଠା' },
+        { id: 'study_buddy', icon: Lucide.MessageSquare, label: language === 'en' ? 'Gundulu Inst' : 'ଗୁନ୍ଦୁଲୁ ଇନ୍‌ଷ୍ଟ୍ର' },
+        { id: 'digital_library', icon: Lucide.Grid, label: language === 'en' ? 'Library' : 'ଲାଇବ୍ରେରୀ', isCenter: true },
+        { id: 'notifications', icon: Lucide.Bell, label: language === 'en' ? 'Inbox' : 'ଇନବକ୍ସ' },
+        { id: 'menu', icon: Lucide.User, label: language === 'en' ? 'Profile' : 'ପ୍ରୋଫାଇଲ୍' }
+      ]
+    : [
+        isTestWindowActive
+          ? { id: 'monthly_tests', icon: Lucide.Home, label: language === 'en' ? 'Home' : 'ମୂଳ ପୃଷ୍ଠା' }
+          : { id: 'dashboard', icon: Lucide.Home, label: language === 'en' ? 'Home' : 'ମୂଳ ପୃଷ୍ଠା' },
+        { id: 'study_buddy', icon: Lucide.MessageSquare, label: language === 'en' ? 'Gundulu Helper' : 'ଗୁନ୍ଦୁଲୁ ହେଲ୍ପର' },
+        { id: 'digital_library', icon: Lucide.Grid, label: language === 'en' ? 'Library' : 'ଲାଇବ୍ରେରୀ', isCenter: true },
+        { id: 'smart_classes', icon: Lucide.MonitorPlay, label: language === 'en' ? 'Smart Class' : 'ସ୍ମାର୍ଟ କ୍ଲାସ୍' },
+        { id: 'menu', icon: Lucide.User, label: language === 'en' ? 'Profile' : 'ପ୍ରୋଫାଇଲ୍' }
+      ];
 
   const handleTabClick = (tabId: string) => {
     vibrate(12);
@@ -115,7 +106,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
                   />
                   
                   {/* Notification Badge */}
-                  {item.id === 'smart_classes' && unreadNotificationsCount > 0 && (
+                  {((item.id === 'smart_classes' && userRole !== 'teacher') || (item.id === 'notifications' && userRole === 'teacher')) && unreadNotificationsCount > 0 && (
                     <span className="absolute top-0 right-1 flex items-center justify-center px-1 py-0.5 min-w-[14px] h-[14px] rounded-full bg-red-500 text-[8px] font-black text-white shadow-[0_2px_4px_rgba(239,68,68,0.4)]">
                       {unreadNotificationsCount > 9 ? '9+' : unreadNotificationsCount}
                     </span>

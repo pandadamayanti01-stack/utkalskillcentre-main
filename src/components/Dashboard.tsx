@@ -18,7 +18,7 @@ import { DistrictLeaderboardFilter } from './DistrictLeaderboardFilter';
 import { ODISHA_DISTRICTS } from '../constants/districts';
 import { TestSeriesRegistrationForm } from './TestSeriesRegistrationForm';
 import { db } from '../firebase';
-import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
+import { collection, query, where, getDocs, orderBy, limit, doc, updateDoc, increment, serverTimestamp, onSnapshot } from 'firebase/firestore';
 import { GunduluTrailer } from './GunduluTrailer';
 import NeuralBackground from './NeuralBackground';
 import OdishaLiveMap from './OdishaLiveMap';
@@ -146,6 +146,14 @@ function PerformanceChart({ submissions, tests, language }: any) {
   );
 }
 
+const getWorksheetParts = (text: string) => {
+  if (!text) return { questions: '', answers: '' };
+  const parts = text.split(/---|\n##? ANSWER KEY|\n##? ANSWER|\n##? MODEL SOLUTIONS|\n##? ସମାଧାନ/i);
+  const questions = parts[0] || '';
+  const answers = parts.slice(1).join('\n') || '';
+  return { questions, answers };
+};
+
 export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, hasDailyPractice, todayDailySubject, tomorrowDailySubject, onChallengeComplete, onOpenTutor, onOpenDailyPractice, onShareDailyPractice, isRegistered = false, onRegistrationComplete, onOpenCommunity, following = [], onToggleFollow, isTourStep3, isTourStep4, onOpenRajaPoster }: DashboardProps) {
     // Map class to YouTube video URL (embed links)
     const classVideoMap: Record<string, string> = {
@@ -183,12 +191,14 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         if (match) userClass = match[1];
       }
     }
-    // Special Promotion Period: Till June 20th, 2026 (inclusive). No rotation.
-    const isSpecialPromoPeriod = new Date() < new Date('2026-06-21T00:00:00');
+    // Special Promotion Period: Till June 20th, 2026 at 5:00 PM (inclusive). No rotation.
+    const isSpecialPromoPeriod = new Date() < new Date('2026-06-20T17:00:00+05:30');
     const promoVideoUrl = 'https://www.youtube.com/embed/Ml-_dY7FXrs';
     const videoUrl = isSpecialPromoPeriod 
       ? promoVideoUrl 
-      : (classVideoMap[userClass] || classVideoMap['10']);
+       : (classVideoMap[userClass] || classVideoMap['10']);
+
+
 
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
@@ -345,7 +355,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
   useEffect(() => {
     // If in the special promotional period, lock the video ID and skip rotation
-    if (new Date() < new Date('2026-06-21T00:00:00')) {
+    if (new Date() < new Date('2026-06-20T17:00:00+05:30')) {
       setDailyVideoId('Ml-_dY7FXrs');
       return;
     }
@@ -431,8 +441,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       or: "ବଡ଼ ସ୍ୱପ୍ନ ଦେଖନ୍ତୁ, କଠିନ ପ୍ରୟାସ କରନ୍ତୁ, ଏକାଗ୍ର ରୁହନ୍ତୁ ଏବଂ ଭଲ ଲୋକମାନେ ସହିତ ରୁହନ୍ତୁ।"
     },
     {
-      en: "Use the AI Tutor for complex math problems to see step-by-step solutions.",
-      or: "ଜଟିଳ ଗଣିତ ସମସ୍ୟା ପାଇଁ AI Tutor ବ୍ୟବହାର କରନ୍ତୁ ଏବଂ ପଦକ୍ଷେପ ଦରକ୍ଷେପ ସମାଧାନ ଦେଖନ୍ତୁ।"
+      en: "Use the Gundulu AI Tutor for complex math problems to see step-by-step solutions.",
+      or: "ଜଟିଳ ଗଣିତ ସମସ୍ୟା ପାଇଁ ଗୁନ୍ଦୁଲୁ AI ଟ୍ୟୁଟର ବ୍ୟବହାର କରନ୍ତୁ ଏବଂ ପଦକ୍ଷେପ ଦରକ୍ଷେପ ସମାଧାନ ଦେଖନ୍ତୁ।"
     }
   ];
 
@@ -464,129 +474,139 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       exit="exit"
       className="space-y-5 sm:space-y-6 md:space-y-8 pb-20 lg:pb-8"
     >
-      {/* Welcome Section - Hyper Premium Header */}
-      <div className="flex flex-row items-start md:items-center justify-between gap-4 md:gap-6 relative z-20">
-        
-        {/* Left Side: Welcome Text + XP Badge */}
-        <div className="flex flex-col gap-6 md:gap-4 relative z-10 flex-1 lg:flex-none lg:max-w-md min-w-0">
+      {/* Welcome Section - Hyper Premium Header Card */}
+      <motion.div 
+        variants={itemVariants}
+        className="relative overflow-hidden rounded-none sm:rounded-[2.5rem] border-x-0 sm:border border-white/10 bg-slate-950 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-950/45 via-slate-950/70 to-slate-950 p-5 sm:p-8 md:p-10 shadow-2xl -mx-4 -mt-4 sm:mx-0 sm:mt-0"
+      >
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute -left-12 -bottom-12 w-72 h-72 bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
+
+        <div className="flex flex-row items-start md:items-center justify-between gap-4 md:gap-6 relative z-20 w-full">
           
-          {/* Welcome Text */}
-          <div className="space-y-2">
-            <div className="absolute -left-12 -top-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none"></div>
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="w-1.5 h-8 md:w-2 md:h-12 bg-gradient-to-b from-emerald-400 to-teal-600 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.5)] shrink-0"></div>
-              <h1 className="text-xl sm:text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-slate-800 via-slate-700 to-slate-500 dark:from-white dark:via-white dark:to-slate-400 tracking-tighter leading-tight break-words">
-                {language === 'en' ? 'Welcome back,' : 'ସ୍ୱାଗତ,'} <br className="sm:hidden" /><span className="text-emerald-500 drop-shadow-sm leading-tight">{user?.name || 'Student'}!</span>
-              </h1>
-            </div>
-            <p className="text-slate-500 dark:text-slate-400 text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] pl-4 sm:pl-6 flex items-center gap-1.5 sm:gap-2 truncate">
-              <Lucide.Calendar size={10} className="text-emerald-500 sm:w-3 sm:h-3 shrink-0" />
-              {new Date().toLocaleDateString(language === 'or' ? 'or-IN' : 'en-IN', { weekday: 'long', month: 'long', day: 'numeric' })}
-            </p>
-          </div>
-
-          {/* XP Badge */}
-          <div className="flex items-center justify-start">
-            <div className={`bg-slate-900/60 backdrop-blur-2xl px-4 md:px-6 py-3 md:py-4 rounded-3xl md:rounded-[2rem] flex items-center gap-3 md:gap-5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_10px_40px_rgba(0,0,0,0.5)] hover:border-emerald-500/30 transition-all duration-500 group cursor-default max-w-max force-dark-theme ${isTourStep3 ? 'ring-[4px] ring-amber-500 scale-[1.03] border-amber-500/50 shadow-[0_0_30px_rgba(245,158,11,0.6)] z-30 animate-pulse bg-slate-950/90' : ''}`}>
-              <div className="text-right">
-                <div className="flex items-center justify-end gap-2 md:gap-3 mb-0.5">
-                  <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">{t.dailyGoal}</p>
-                  <div className="flex items-center gap-1 text-orange-400" title="Current Streak">
-                    <Lucide.Flame size={10} className="md:w-3 md:h-3" fill="currentColor" />
-                    <span className="text-[9px] md:text-[10px] font-black">{user?.streak || 0}</span>
-                  </div>
-                </div>
-                <div className="flex items-baseline gap-1 justify-end">
-                  <p className="text-xl md:text-2xl font-black text-white tracking-tighter">{user?.points_today || 0}</p>
-                  <p className="text-[10px] md:text-xs font-bold text-emerald-500">/ {dailyGoal} XP</p>
-                </div>
-              </div>
-              <div className="relative w-10 h-10 md:w-14 md:h-14 group">
-                <div className="absolute inset-0 bg-emerald-500/10 rounded-full blur-md group-hover:bg-emerald-500/20 transition-all duration-500"></div>
-                <svg className="w-full h-full transform -rotate-90 relative z-10" viewBox="0 0 36 36">
-                  <circle cx="18" cy="18" r="16" stroke="currentColor" strokeWidth="2.5" fill="transparent" className="text-slate-800" />
-                  <circle cx="18" cy="18" r="16" stroke="currentColor" strokeWidth="3" strokeLinecap="round" fill="transparent" strokeDasharray={100} strokeDashoffset={100 - (100 * dailyProgress) / 100} className="text-emerald-400 transition-all duration-1000 drop-shadow-[0_0_8px_#10b981]" />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center z-20">
-                  <Lucide.Zap size={14} className="md:w-[18px] md:h-[18px] text-emerald-300 drop-shadow-md group-hover:scale-110 group-hover:text-white transition-transform duration-300" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Claim Golden Ticket Button */}
-          <div className="flex items-center justify-start pl-1">
-            <button
-              onClick={() => setShowGoldenTicket(true)}
-              className="px-4.5 py-2.5 bg-gradient-to-r from-amber-500/10 via-orange-500/15 to-amber-500/10 hover:from-amber-500/20 hover:to-orange-500/20 border border-amber-500/30 hover:border-amber-400/50 rounded-2xl flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_5px_15px_rgba(245,158,11,0.05)] group text-amber-300 hover:text-white"
-            >
-              <Lucide.Trophy size={13} className="text-amber-400 animate-pulse group-hover:rotate-12 transition-transform shrink-0" />
-              <span className="text-[10px] md:text-xs font-black uppercase tracking-widest">
-                {language === 'or' ? 'ସ୍ୱର୍ଣ୍ଣ ପତ୍ର କ୍ଲେମ କରନ୍ତୁ' : 'Claim Golden Ticket'}
-              </span>
-            </button>
-          </div>
-
-        </div>
-
-        {/* Middle Section: Desktop Only - Neural Sync Status */}
-        <div className="hidden lg:flex flex-1 max-w-xl xl:max-w-2xl mx-4 relative group">
-          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-cyan-500/5 to-emerald-500/5 rounded-[2rem] blur-xl opacity-50 group-hover:opacity-100 transition-opacity"></div>
-          <div className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-emerald-500/10 rounded-[2rem] p-5 flex items-center gap-6 w-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_10px_30px_-10px_rgba(16,185,129,0.15)] transition-all duration-500 hover:border-emerald-500/30">
+          {/* Left Side: Welcome Text + XP Badge */}
+          <div className="flex flex-col gap-6 md:gap-4 relative z-10 flex-1 lg:flex-none lg:max-w-md min-w-0">
             
-            <div className="relative shrink-0 w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-700 rounded-full flex items-center justify-center text-white shadow-[0_0_20px_rgba(16,185,129,0.4)] group-hover:scale-105 transition-transform duration-500">
-              <div className="absolute inset-0 rounded-full border-2 border-emerald-400/50 animate-ping" style={{ animationDuration: '3s' }}></div>
-              <Lucide.Target size={24} />
-            </div>
-
-            <div className="flex-1 space-y-2.5">
-              <div className="flex justify-between items-end">
-                <h4 className="text-[11px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">
-                  {language === 'en' ? 'Daily Target Sync' : 'ଦୈନିକ ଲକ୍ଷ୍ୟ'}
-                </h4>
-                <span className="text-[12px] font-black text-emerald-600 dark:text-emerald-400">{Math.round(dailyProgress)}%</span>
+            {/* Welcome Text */}
+            <div className="space-y-2">
+              <div className="absolute -left-12 -top-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="w-1.5 h-8 md:w-2 md:h-12 bg-gradient-to-b from-emerald-400 to-teal-600 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.5)] shrink-0"></div>
+                <h1 className="text-xl sm:text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-slate-800 via-slate-700 to-slate-500 dark:from-white dark:via-white dark:to-slate-400 tracking-tighter leading-tight break-words">
+                  {language === 'en' ? 'Welcome back,' : 'ସ୍ୱାଗତ,'} <br className="sm:hidden" /><span className="text-emerald-500 drop-shadow-sm leading-tight">{user?.name || 'Student'}!</span>
+                </h1>
               </div>
-              <div className="h-2.5 w-full bg-slate-200/50 dark:bg-slate-800/50 rounded-full overflow-hidden border border-white/20 shadow-inner relative">
-                <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-400 to-teal-500 shadow-[0_0_10px_rgba(16,185,129,0.8)] rounded-full transition-all duration-1000" style={{ width: `${dailyProgress}%` }}>
-                  <div className="absolute top-0 right-0 bottom-0 w-20 bg-gradient-to-r from-transparent to-white/30 skew-x-12 animate-[shimmer_2s_infinite]"></div>
-                </div>
-              </div>
-              <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 italic truncate">
-                {language === 'en' ? 'Keep learning to maintain your streak and unlock rewards.' : 'ଆପଣଙ୍କର ଦୈନିକ ଲକ୍ଷ୍ୟ ପୂରଣ କରନ୍ତୁ |'}
+              <p className="text-slate-500 dark:text-slate-400 text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] pl-4 sm:pl-6 flex items-center gap-1.5 sm:gap-2 truncate">
+                <Lucide.Calendar size={10} className="text-emerald-500 sm:w-3 sm:h-3 shrink-0" />
+                {new Date().toLocaleDateString(language === 'or' ? 'or-IN' : 'en-IN', { weekday: 'long', month: 'long', day: 'numeric' })}
               </p>
             </div>
 
-          </div>
-        </div>
+            {/* XP Badge */}
+            <div className="flex items-center justify-start">
+              <div className={`bg-slate-900/60 backdrop-blur-2xl px-4 md:px-6 py-3 md:py-4 rounded-3xl md:rounded-[2rem] flex items-center gap-3 md:gap-5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_10px_40px_rgba(0,0,0,0.5)] hover:border-emerald-500/30 transition-all duration-500 group cursor-default max-w-max force-dark-theme ${isTourStep3 ? 'ring-[4px] ring-amber-500 scale-[1.03] border-amber-500/50 shadow-[0_0_30px_rgba(245,158,11,0.6)] z-30 animate-pulse bg-slate-950/90' : ''}`}>
+                <div className="text-right">
+                  <div className="flex items-center justify-end gap-2 md:gap-3 mb-0.5">
+                    <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">{t.dailyGoal}</p>
+                    <div className="flex items-center gap-1 text-orange-400" title="Current Streak">
+                      <Lucide.Flame size={10} className="md:w-3 md:h-3" fill="currentColor" />
+                      <span className="text-[9px] md:text-[10px] font-black">{user?.streak || 0}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-baseline gap-1 justify-end">
+                    <p className="text-xl md:text-2xl font-black text-white tracking-tighter">{user?.points_today || 0}</p>
+                    <p className="text-[10px] md:text-xs font-bold text-emerald-500">/ {dailyGoal} XP</p>
+                  </div>
+                </div>
+                <div className="relative w-10 h-10 md:w-14 md:h-14 group">
+                  <div className="absolute inset-0 bg-emerald-500/10 rounded-full blur-md group-hover:bg-emerald-500/20 transition-all duration-500"></div>
+                  <svg className="w-full h-full transform -rotate-90 relative z-10" viewBox="0 0 36 36">
+                    <circle cx="18" cy="18" r="16" stroke="currentColor" strokeWidth="2.5" fill="transparent" className="text-slate-800" />
+                    <circle cx="18" cy="18" r="16" stroke="currentColor" strokeWidth="3" strokeLinecap="round" fill="transparent" strokeDasharray={100} strokeDashoffset={100 - (100 * dailyProgress) / 100} className="text-emerald-400 transition-all duration-1000 drop-shadow-[0_0_8px_#10b981]" />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center z-20">
+                    <Lucide.Zap size={14} className="md:w-[18px] md:h-[18px] text-emerald-300 drop-shadow-md group-hover:scale-110 group-hover:text-white transition-transform duration-300" />
+                  </div>
+                </div>
+              </div>
+            </div>
 
-        {/* Animated Gundulu Mascot Video (Right Side) */}
-        <div className="relative w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48 pointer-events-auto group shrink-0 mt-3 md:mt-0 self-center md:self-auto">
-          <div className="absolute inset-0 rounded-full overflow-hidden shadow-[0_0_30px_rgba(16,185,129,0.2)] ring-2 ring-emerald-500/20 bg-black">
-            <video 
-              ref={videoRef}
-              src="/gundulu.mp4" 
-              poster="/gundu2.0.png"
-              autoPlay
-              muted
-              loop 
-              playsInline
-              className="w-full h-full object-cover scale-[1.05] object-[center_40%] md:scale-[1.1] md:object-center relative z-10" 
-            />
+            {/* Claim Golden Ticket Button */}
+            <div className="flex items-center justify-start pl-1">
+              <button
+                type="button"
+                onClick={() => setShowGoldenTicket(true)}
+                className="px-4.5 py-2.5 bg-gradient-to-r from-amber-500/10 via-orange-500/15 to-amber-500/10 hover:from-amber-500/20 hover:to-orange-500/20 border border-amber-500/30 hover:border-amber-400/50 rounded-2xl flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_5px_15px_rgba(245,158,11,0.05)] group text-amber-300 hover:text-white"
+              >
+                <Lucide.Trophy size={13} className="text-amber-400 animate-pulse group-hover:rotate-12 transition-transform shrink-0" />
+                <span className="text-[10px] md:text-xs font-black uppercase tracking-widest">
+                  {language === 'or' ? 'ସ୍ୱର୍ଣ୍ଣ ପତ୍ର କ୍ଲେମ କରନ୍ତୁ' : 'Claim Golden Ticket'}
+                </span>
+              </button>
+            </div>
+
           </div>
-          
-          <button 
-            onClick={toggleMute}
-            className="absolute bottom-2 right-0 md:bottom-4 z-20 w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-600 border border-emerald-300/30 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:from-emerald-500 hover:to-teal-700 hover:scale-110 shadow-[0_4px_15px_rgba(16,185,129,0.4)] cursor-pointer"
-            title={isMuted ? "Unmute Sound" : "Mute Sound"}
-          >
-            {isMuted ? (
-              <Lucide.VolumeX size={16} className="fill-white" />
-            ) : (
-              <Lucide.Volume2 size={16} className="fill-white" />
-            )}
-          </button>
+
+          {/* Middle Section: Desktop Only - Neural Sync Status */}
+          <div className="hidden lg:flex flex-1 max-w-xl xl:max-w-2xl mx-4 relative group">
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-cyan-500/5 to-emerald-500/5 rounded-[2rem] blur-xl opacity-50 group-hover:opacity-100 transition-opacity"></div>
+            <div className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-emerald-500/10 rounded-[2rem] p-5 flex items-center gap-6 w-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_10px_30px_-10px_rgba(16,185,129,0.15)] transition-all duration-500 hover:border-emerald-500/30">
+              
+              <div className="relative shrink-0 w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-700 rounded-full flex items-center justify-center text-white shadow-[0_0_20px_rgba(16,185,129,0.4)] group-hover:scale-105 transition-transform duration-500">
+                <div className="absolute inset-0 rounded-full border-2 border-emerald-400/50 animate-ping" style={{ animationDuration: '3s' }}></div>
+                <Lucide.Target size={24} />
+              </div>
+
+              <div className="flex-1 space-y-2.5">
+                <div className="flex justify-between items-end">
+                  <h4 className="text-[11px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                    {language === 'en' ? 'Daily Target Sync' : 'ଦୈନିକ ଲକ୍ଷ୍ୟ'}
+                  </h4>
+                  <span className="text-[12px] font-black text-emerald-600 dark:text-emerald-400">{Math.round(dailyProgress)}%</span>
+                </div>
+                <div className="h-2.5 w-full bg-slate-200/50 dark:bg-slate-800/50 rounded-full overflow-hidden border border-white/20 shadow-inner relative">
+                  <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-400 to-teal-500 shadow-[0_0_10px_rgba(16,185,129,0.8)] rounded-full transition-all duration-1000" style={{ width: `${dailyProgress}%` }}>
+                    <div className="absolute top-0 right-0 bottom-0 w-20 bg-gradient-to-r from-transparent to-white/30 skew-x-12 animate-[shimmer_2s_infinite]"></div>
+                  </div>
+                </div>
+                <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 italic truncate">
+                  {language === 'en' ? 'Keep learning to maintain your streak and unlock rewards.' : 'ଆପଣଙ୍କର ଦୈନିକ ଲକ୍ଷ୍ୟ ପୂରଣ କରନ୍ତୁ |'}
+                </p>
+              </div>
+
+            </div>
+          </div>
+
+          {/* Animated Gundulu Mascot Video (Right Side) */}
+          <div className="relative w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48 pointer-events-auto group shrink-0 mt-3 md:mt-0 self-center md:self-auto">
+            <div className="absolute inset-0 rounded-full overflow-hidden shadow-[0_0_30px_rgba(16,185,129,0.2)] ring-2 ring-emerald-500/20 bg-black">
+              <video 
+                ref={videoRef}
+                src="/gundulu.mp4" 
+                poster="/gundu2.0.png"
+                autoPlay
+                muted
+                loop 
+                playsInline
+                className="w-full h-full object-cover scale-[1.05] object-[center_40%] md:scale-[1.1] md:object-center relative z-10" 
+              />
+            </div>
+            
+            <button 
+              type="button"
+              onClick={toggleMute}
+              className="absolute bottom-2 right-0 md:bottom-4 z-20 w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-600 border border-emerald-300/30 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:from-emerald-500 hover:to-teal-700 hover:scale-110 shadow-[0_4px_15px_rgba(16,185,129,0.4)] cursor-pointer"
+              title={isMuted ? "Unmute Sound" : "Mute Sound"}
+            >
+              {isMuted ? (
+                <Lucide.VolumeX size={16} className="fill-white" />
+              ) : (
+                <Lucide.Volume2 size={16} className="fill-white" />
+              )}
+            </button>
+          </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Premium Sub-Tab Switcher */}
       <div className="flex justify-start border-b border-white/5 pb-2 relative z-20">
@@ -622,8 +642,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           {/* Left Column - Core Interactions */}
           <div className="lg:col-span-8 space-y-8">
 
-          {/* AI Tutor & Daily MCQ Grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
+            {/* AI Tutor & Daily MCQ Grid */}
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
             
             {/* AI Tutor Card - Hyper Premium Banner */}
             <motion.div 
@@ -657,17 +677,17 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   <div className="flex flex-wrap items-center justify-start sm:justify-center gap-1 sm:gap-2">
                     <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.2em] shadow-[inset_0_0_10px_rgba(16,185,129,0.15)] whitespace-nowrap">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_5px_#34d399] animate-pulse"></span>
-                      <span className="hidden sm:inline">{language === 'en' ? 'Gundulu AI Active' : 'ଗୁନ୍ଦୁଲୁ AI ସକ୍ରିୟ'}</span>
-                      <span className="sm:hidden">{language === 'en' ? 'AI Active' : 'AI ସକ୍ରିୟ'}</span>
+                      <span className="hidden sm:inline">{language === 'en' ? 'Gundulu AI Tutor Active' : 'ଗୁନ୍ଦୁଲୁ AI ଟ୍ୟୁଟର ସକ୍ରିୟ'}</span>
+                      <span className="sm:hidden">{language === 'en' ? 'AI Tutor Active' : 'AI ଟ୍ୟୁଟର ସକ୍ରିୟ'}</span>
                     </div>
                   </div>
                   <h3 className="text-sm leading-tight sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-slate-300 tracking-tighter group-hover:text-white transition-colors">
-                    {language === 'en' ? 'Talk to Gundulu' : 'ଗୁନ୍ଦୁଲୁ ସହିତ କଥା ହୁଅନ୍ତୁ'}
+                    {language === 'en' ? 'Gundulu AI Tutor' : 'ଗୁନ୍ଦୁଲୁ AI ଟ୍ୟୁଟର'}
                   </h3>
                   <p className="text-slate-400 text-[9px] sm:text-xs font-bold leading-relaxed max-w-[260px] mx-auto group-hover:text-slate-300 transition-colors hidden sm:block text-center">
                     {language === 'en' 
-                      ? 'Initiate a deep learning session. Ask complex questions and get instant, step-by-step voice answers.'
-                      : 'ଗୋଟିଏ ଗଭୀର ଶିକ୍ଷା ସେସନ୍ ଆରମ୍ଭ କରନ୍ତୁ | ଗୁନ୍ଦୁଲୁ ଭଏସ୍ ଇଣ୍ଟରଫେସ୍ ମାଧ୍ୟମରେ ଜଟିଳ ପ୍ରଶ୍ନର ସମାଧାନ କରିବାକୁ ସକ୍ଷମ |'}
+                      ? 'Talk with Gundulu in Odia! Ask questions, practice pronunciation, and learn through voice conversation.'
+                      : 'ଗୁନ୍ଦୁଲୁଙ୍କ ସହ ଓଡ଼ିଆରେ କଥା ହୁଅନ୍ତୁ! ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ, ଉଚ୍ଚାରଣ ଅଭ୍ୟାସ କରନ୍ତୁ ଏବଂ କଥାବାର୍ତ୍ତା ମାଧ୍ୟମରେ ପଢନ୍ତୁ।'}
                   </p>
                 </div>
               </div>
@@ -703,7 +723,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 
                 <div className="text-left flex flex-col flex-1 justify-center">
                   <h3 className="text-base leading-tight sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-100 to-slate-300 tracking-tighter mb-1.5 sm:mb-2.5">
-                    {language === 'en' ? "Gundulu's Trial" : "ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ"}
+                    {language === 'en' ? "Gundulu Daily Challenge" : "ଗୁନ୍ଦୁଲୁ ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ"}
                   </h3>
                   <p className="text-slate-400 text-[9px] sm:text-xs font-bold leading-relaxed max-w-[260px] group-hover:text-slate-300 transition-colors hidden sm:block">
                     {hasDailyPractice
@@ -784,11 +804,11 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
                     <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.2em] shadow-[inset_0_0_10px_rgba(245,158,11,0.15)] whitespace-nowrap">
                       <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_5px_#f59e0b] animate-pulse"></span>
-                      <span>{language === 'en' ? 'Slate Blackboard' : 'ଗୁନ୍ଦୁଲୁ କଳାପଟା'}</span>
+                      <span>{language === 'en' ? 'Gundulu Slate Board' : 'ଗୁନ୍ଦୁଲୁ କଳାପଟା'}</span>
                     </div>
                   </div>
                   <h3 className="text-sm leading-tight sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-amber-100 to-slate-300 tracking-tighter group-hover:text-white transition-colors">
-                    {language === 'en' ? "Universal Slate" : 'ଗୁନ୍ଦୁଲୁ କଳାପଟା'}
+                    {language === 'en' ? "Gundulu Slate Board" : 'ଗୁନ୍ଦୁଲୁ କଳାପଟା'}
                   </h3>
                   <p className="text-slate-400 text-[9px] sm:text-xs font-bold leading-relaxed max-w-[260px] mx-auto group-hover:text-slate-300 transition-colors hidden sm:block text-center">
                     {language === 'en' 
@@ -1094,6 +1114,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 </div>
               </div>
             </div>
+
+
 
             {/* Motivation Insight */}
             <div className="md:col-span-1">
@@ -1442,7 +1464,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Utkal Skill Centre Facebook page"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-400/25 bg-blue-500/10 text-blue-500 transition-all hover:bg-blue-500 hover:text-white hover:scale-110 active:scale-95"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white border border-blue-500 shadow-[0_0_15px_rgba(37,99,235,0.3)] transition-all hover:scale-110 hover:shadow-[0_0_20px_rgba(37,99,235,0.5)] active:scale-95"
               >
                 <Lucide.Facebook size={18} />
               </a>
@@ -1451,7 +1473,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Utkal Skill Centre Instagram profile"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-pink-400/25 bg-pink-500/10 text-pink-500 transition-all hover:bg-pink-500 hover:text-white hover:scale-110 active:scale-95"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-600 text-white border border-pink-500/30 shadow-[0_0_15px_rgba(236,72,153,0.3)] transition-all hover:scale-110 hover:shadow-[0_0_20px_rgba(236,72,153,0.5)] active:scale-95"
               >
                 <Lucide.Instagram size={18} />
               </a>
@@ -1460,7 +1482,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Utkal Skill Centre WhatsApp channel"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-emerald-400/25 bg-emerald-500/10 text-emerald-500 transition-all hover:bg-emerald-500 hover:text-white hover:scale-110 active:scale-95"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600 text-white border border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all hover:scale-110 hover:shadow-[0_0_20px_rgba(16,185,129,0.5)] active:scale-95"
               >
                 <Lucide.MessageSquare size={18} />
               </a>
@@ -1469,7 +1491,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Utkal Skill Centre YouTube channel"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-red-400/25 bg-red-500/10 text-red-500 transition-all hover:bg-red-500 hover:text-white hover:scale-110 active:scale-95"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-red-600 text-white border border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all hover:scale-110 hover:shadow-[0_0_20px_rgba(239,68,68,0.5)] active:scale-95"
               >
                 <Lucide.Youtube size={18} />
               </a>
@@ -1506,6 +1528,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             user={user}
           />
         )}
+
+
       </AnimatePresence>
 
       {showTrailer && (

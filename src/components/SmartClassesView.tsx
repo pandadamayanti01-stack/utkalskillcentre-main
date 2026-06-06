@@ -14,7 +14,9 @@ const reverseKeyMap = (subKey: string): string => {
     'evs': ['paribesa', 'chaturbaswara', 'science', 'evs', 'jigyasa'],
     'english': ['english', 'pallavi', 'jasmine'],
     'art': ['kala', 'art', 'kruti'],
-    'physical_education': ['sharirika', 'khela', 'krida', 'sports', 'yoga']
+    'physical_education': ['sharirika', 'khela', 'krida', 'sports', 'yoga'],
+    'hindi': ['hindi'],
+    'sanskrit': ['sanskrit']
   };
   
   const subLower = subKey.toLowerCase();
@@ -40,7 +42,9 @@ export function getSubjectDisplayName(classCode: string, subjectKey: string, lan
     'evs': ['paribesa', 'chaturbaswara', 'science', 'evs', 'jigyasa'],
     'english': ['english', 'pallavi', 'jasmine'],
     'art': ['kala', 'art', 'kruti'],
-    'physical_education': ['sharirika', 'khela', 'krida', 'sports', 'yoga']
+    'physical_education': ['sharirika', 'khela', 'krida', 'sports', 'yoga'],
+    'hindi': ['hindi'],
+    'sanskrit': ['sanskrit']
   };
 
   const patterns = keyMap[subjectKey] || [];

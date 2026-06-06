@@ -335,10 +335,13 @@ async function startServer() {
   });
 
   // Helper to get price
-  function getPrice(userClass: number, planType: 'monthly' | 'yearly'): number {
-    if (userClass >= 1 && userClass <= 3) return planType === 'monthly' ? 99 : 499;
-    if (userClass >= 4 && userClass <= 7) return planType === 'monthly' ? 199 : 999;
-    if (userClass >= 8 && userClass <= 10) return planType === 'monthly' ? 299 : 1999;
+  function getPrice(userClass: any, planType: 'monthly' | 'yearly'): number {
+    if (userClass === 'sishuvatika(Anganwadi)') return planType === 'monthly' ? 49 : 499;
+    const classNum = parseInt(userClass);
+    if (isNaN(classNum)) return 999;
+    if (classNum >= 1 && classNum <= 3) return planType === 'monthly' ? 99 : 499;
+    if (classNum >= 4 && classNum <= 7) return planType === 'monthly' ? 199 : 999;
+    if (classNum >= 8 && classNum <= 10) return planType === 'monthly' ? 299 : 1999;
     return 999; // Default
   }
 
