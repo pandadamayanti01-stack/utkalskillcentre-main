@@ -167,9 +167,22 @@ export default function Login({ language, translations, setLanguage, setRegData 
         body: JSON.stringify({ userId: selectedAccount.uid, pin: enteredPin })
       });
       
-      const data = await response.json();
+      const text = await response.text();
+      let data: any = {};
+      try {
+        if (text) {
+          data = JSON.parse(text);
+        }
+      } catch (parseErr) {
+        console.warn('Failed to parse response JSON:', text);
+      }
+
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to authenticate');
+        throw new Error(data.error || text || 'Failed to authenticate');
+      }
+
+      if (!data.customToken) {
+        throw new Error('Authentication failed: No custom token received.');
       }
 
       // PIN matches, authenticate with custom token!
