@@ -19,6 +19,30 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
   const [xpPoints, setXpPoints] = useState(0);
   const [activeNode, setActiveNode] = useState<string | null>('cloud_run');
   const [activeRoadmapPhase, setActiveRoadmapPhase] = useState<number>(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      if (containerRef.current) {
+        containerRef.current.requestFullscreen().catch((err) => {
+          console.error("Error enabling fullscreen:", err);
+        });
+      }
+    } else {
+      document.exitFullscreen().catch((err) => {
+        console.error("Error exiting fullscreen:", err);
+      });
+    }
+  };
 
   // Telemetry & Diagnostics Console States
   const [showDiagnostics, setShowDiagnostics] = useState(false);
@@ -289,15 +313,15 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
         speakerNotes: "Our technical architecture is incredibly robust and cost-resilient. Running on Google Cloud Run serverless means our base operational cost is practically $0.00. To guarantee low-latency operation on slow 2G rural networks, we built a multi-tier fallback: if the premium server TTS API is offline or throttled, the client PWA instantly synthesizes voice logs locally via the browser's audio engine."
       },
       {
-        title: "AI Educator Studio & Gamification",
-        subtitle: "Homework Generator, 5E Lesson Planner & Interactive Student Portal",
-        tagline: "TEACHER ENABLEMENT & ENGAGEMENT",
+        title: "AI Educator Studio & Vernacular Suite",
+        subtitle: "Homework Generator, Sishu Vatika Slate, WebXR 3D Models & Sibling PIN Switcher",
+        tagline: "CLASSROOM TOOLS & OPTIMIZATION",
         bullets: [
-          { title: "Educator Studio", desc: "Teachers generate custom worksheets, OPEPA lesson plans, and practical guides instantly." },
-          { title: "Interactive Onboarding", desc: "Students pop floating balloons containing Odia vowels to release sound particles, going live with our Play Store launch on June 14." },
-          { title: "Mascot Welcome & Rewards", desc: "Watching Gundulu's vertical welcome animation grants a Founding Golden Ticket with +500 XP." }
+          { title: "AI Educator Studio", desc: "Teachers generate custom worksheets, OPEPA 5E lesson plans, and science guides instantly." },
+          { title: "Sishu Vatika & 3D Lab", desc: "Dedicated Odia toddler environment with tracing slate and interactive 3D diagrams." },
+          { title: "Sibling PIN Switcher", desc: "Zero SMS cost 4-digit PIN profile switching for shared household budget devices." }
         ],
-        speakerNotes: "To support the entire classroom ecosystem, we built the AI Educator Studio, enabling teachers to instantly generate OPEPA-compliant lesson plans and syllabus-aligned worksheets. To hook young learners on their very first launch, students pop interactive helium balloons to hear audio pops, watch a welcome animation from Gundulu, and receive a Gold Founding Member Ticket with +500 XP synced to Firestore."
+        speakerNotes: "To support the entire learning ecosystem from Class 1 to 10, we built the Educator Studio and Sishu Vatika. For preschool toddlers, Sishu Vatika provides a strictly Odia-locked digital environment featuring a kid-friendly tracing slate. For teachers, our Educator Studio instantly generates syllabus-aligned worksheets, OPEPA-compliant 5E lesson plans, and hands-on activity guides using low-cost household materials. Alongside the Gundulu 3D Study Lab for spatial learning, we optimized shared devices with a zero SMS cost sibling PIN switcher, complete with Play Store launch rewards of +500 XP."
       },
       {
         title: "Business Viability & Future AI Roadmap",
@@ -368,15 +392,15 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
         speakerNotes: "ଆମର ବ୍ୟାକେଣ୍ଡ ଗୁଗଲ୍ କ୍ଲାଉଡ୍ ରନ୍ ର ସର୍ଭରଲେସ୍ ଟେକ୍ନୋଲୋଜିରେ ହୋଷ୍ଟ ହୋଇଛି, ଯାହାଦ୍ୱାରା ଆମର ମାସିକ ସର୍ଭର ଖର୍ଚ୍ଚ ପ୍ରାୟ ଶୂନ ଟଙ୍କା। ଗ୍ରାମାଞ୍ଚଳରେ ଧିମା ଇଣ୍ଟରନେଟ୍ ରେ ଭଏସ୍ ସମସ୍ୟା ଦୂର କରିବାକୁ ଆମେ ବ୍ରାଉଜର୍ ଆଧାରିତ ଫଲବ୍ୟାକ୍ ତିଆରି କରିଛୁ। ସର୍ଭର ଯଦି ବ୍ୟସ୍ତ ରହେ, ମୋବାଇଲ୍ ବ୍ରାଉଜର୍ ନିଜେ ଓଡ଼ିଆ କଥା କହି ପିଲାଙ୍କୁ ଶୁଣାଏ।"
       },
       {
-        title: "ଶିକ୍ଷକ AI ଷ୍ଟୁଡିଓ ଓ ଗେମିଫିକେସନ୍",
-        subtitle: "ପ୍ରଶ୍ନପତ୍ର ନିର୍ମାତା, ୫E ପାଠ୍ୟ ଯୋଜନା ଓ ସାଥୀ ପୋର୍ଟାଲ",
-        tagline: "ଶିକ୍ଷକ ସଶକ୍ତିକରଣ ଓ ଆନନ୍ଦଦାୟକ ଶିକ୍ଷା",
+        title: "AI ଶିକ୍ଷକ ଷ୍ଟୁଡିଓ ଓ ସ୍ଥାନୀୟ ଶିକ୍ଷା ସୁଇଟ୍",
+        subtitle: "ପ୍ରଶ୍ନପତ୍ର ନିର୍ମାତା, ଶିଶୁ ବାଟିକା ସ୍ଲେଟ୍, ୩D ଲ୍ୟାବ୍ ଓ ସିବ୍ଲିଙ୍ଗ୍ ସୁଇଚର୍",
+        tagline: "ଶ୍ରେଣୀ ଗୃହ ଉପକରଣ ଓ ଅପ୍ଟିମାଇଜେସନ୍",
         bullets: [
-          { title: "ଶିକ୍ଷକ AI ଷ୍ଟୁଡିଓ", desc: "ଶିକ୍ଷକମାନେ ଓଡ଼ିଆ ହୋମୱାର୍କ ସିଟ୍, ପାଠ୍ୟ ଯୋଜନା ଓ କାର୍ଯ୍ୟକଳାପ ଗାଇଡ୍ ତୁରନ୍ତ ପ୍ରସ୍ତୁତ କରିପାରିବେ।" },
-          { title: "ବେଲୁନ୍ ଫୁଟାଇବା ଖେଳ", desc: "ପ୍ରଥମ ଲଗଇନ୍ ରେ ପିଲାମାନେ ବେଲୁନ୍ ଫୁଟାଇ ଓଡ଼ିଆ ସ୍ୱରବର୍ଣ୍ଣ ଶିଖନ୍ତି, ଯାହା ଜୁନ୍ ୧୪ ପ୍ଲେ ଷ୍ଟୋର୍ (Play Store) ଲଞ୍ଚ୍ ସହ ଲାଇଭ୍ ହେବାକୁ ଯାଉଛି।" },
-          { title: "ଗୋଲ୍ଡେନ୍ ହୋଲୋଗ୍ରାଫିକ୍ ଟիկେଟ୍", desc: "ଗୁନ୍ଦୁଲୁର ୧୨-ସେକେଣ୍ଡ୍ ର ସ୍ୱାଗତ ଭିଡିଓ ଦେଖିଲେ ପିଲାମାନେ ଗୋଲ୍ଡେନ୍ ପାସ୍ ଏବଂ +୫୦୦ XP ମିଳେ।" }
+          { title: "AI ଶିକ୍ଷକ ଷ୍ଟୁଡିଓ", desc: "ଶିକ୍ଷକମାନେ ଓଡ଼ିଆ ହୋମୱାର୍କ ସିଟ୍, OPEPA ୫E ପାଠ୍ୟ ଯୋଜନା ଓ ବିଜ୍ଞାନ କାର୍ଯ୍ୟକଳାପ ତୁରନ୍ତ ପ୍ରସ୍ତୁତ କରିପାରିବେ।" },
+          { title: "ଶିଶୁ ବାଟିକା ଓ ୩D ଲ୍ୟାବ୍", desc: "ଶିଶୁ ବାଟିକା ପାଇଁ ଓଡ଼ିଆ ଲେଖିବା ସ୍ଲେଟ୍ ଏବଂ ଜଟିଳ ପାଠ ବୁଝିବାକୁ ଆକର୍ଷଣୀୟ ୩D ବିଜ୍ଞାନ ମଡେଲ୍।" },
+          { title: "ସିବ୍ଲିଙ୍ଗ୍ ସୁଇଚର୍ ପିନ୍", desc: "ବିନା SMS ଖର୍ଚ୍ଚରେ ୪-ଅଙ୍କ ବିଶିଷ୍ଟ ପିନ୍ ଦ୍ୱାରା ଏକାଧିକ ପିଲାଙ୍କ ମଧ୍ୟରେ ପ୍ରୋଫାଇଲ୍ ଅଦଳବଦଳ।" }
         ],
-        speakerNotes: "ଶିକ୍ଷକମାନଙ୍କ ସଶକ୍ତିକରଣ ପାଇଁ ଆମେ AI Educator Studio ତିଆରି କରିଛୁ, ଯେଉଁଥିରେ ସେମାନେ ତୁରନ୍ତ OPEPA-ସମ୍ମତ ପାଠ୍ୟ ଯୋଜନା ଏବଂ ସିଲାବସ୍-ଅନୁଯାୟୀ ହୋମୱାର୍କ ସିଟ୍ ପ୍ରସ୍ତୁତ କରିପାରିବେ। ଛୋଟ ପିଲାଙ୍କ ମନରେ ପାଠପଢ଼ା ପାଇଁ ଉତ୍ସାହ ଭରିବାକୁ ଆମେ ଏକ ସୁନ୍ଦର ବେଲୁନ୍ ଗେମ୍ ରଖିଛୁ। ପିଲାମାନେ ରଙ୍ଗବେରଙ୍ଗ ବେଲୁନ୍ ଫୁଟାଇବା ପରେ ସେମାନଙ୍କ ସାମ୍ନାରେ ଗୁନ୍ଦୁଲୁର ଏକ ୧୨-ସେକେଣ୍ଡ୍ ର ମନୋରଞ୍ଜକ ଓଡ଼ିଆ ଆନିମେସନ୍ ପ୍ଲେ ହୁଏ ଏବଂ +୫୦୦ XP ପ୍ରଦାନ କରେ।"
+        speakerNotes: "ସ୍ଲାଇଡ୍ ୫ ଆମର ଓଡ଼ିଆ ଭାଷା ଭିତ୍ତିକ ଏବଂ ଶିକ୍ଷଣ ପରିବେଶକୁ ଦର୍ଶାଏ। ଶିକ୍ଷକଙ୍କ ପାଇଁ AI ଷ୍ଟୁଡିଓ ବ୍ୟତୀତ, ଆମେ ଅଙ୍ଗନୱାଡି ଶିଶୁଙ୍କ ପାଇଁ ସମ୍ପୂର୍ଣ୍ଣ ଓଡ଼ିଆ ଭାଷାରେ 'ଶିଶୁ ବାଟିକା' ଏବଂ କଠିନ ବିଜ୍ଞାନ ପାଠକୁ ସହଜ କରିବାକୁ '୩D ଲ୍ୟାବ୍' ପ୍ରସ୍ତୁତ କରିଛୁ। ଗୋଟିଏ ମୋବାଇଲ୍‌କୁ ଏକାଧିକ ପିଲା ବ୍ୟବହାର କରିବା ପାଇଁ ଆମେ ବିନା SMS ଖର୍ଚ୍ଚରେ ୪-ଅଙ୍କ ପିନ୍ ବିଶିଷ୍ଟ ସିବ୍ଲିଙ୍ଗ୍ ସୁଇଚର୍ ନିର୍ମାଣ କରିଛୁ, ଯାହା ମାସିକ ଖର୍ଚ୍ଚକୁ ବହୁତ କମ କରିଥାଏ।"
       },
       {
         title: "ବ୍ୟବସାୟିକ ସଫଳତା ଏବଂ ଏଆଇ ରୋଡ୍ ମ୍ୟାପ୍",
@@ -406,7 +430,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
   const currentSlideData = slidesContent[deckLanguage][currentSlide];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col relative overflow-hidden select-none">
+    <div ref={containerRef} className="min-h-screen bg-slate-950 text-white flex flex-col relative overflow-hidden select-none">
       {/* Deep Cybernetic Background Effects */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#b34d1f]/10 rounded-full blur-[120px]" />
@@ -448,6 +472,20 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
           >
             {isPlaying ? <Lucide.Pause size={14} /> : <Lucide.Play size={14} />}
             <span className="hidden sm:inline">{isPlaying ? 'Autoplay ON' : 'Autoplay'}</span>
+          </button>
+
+          {/* Fullscreen Mode Toggle */}
+          <button
+            onClick={toggleFullscreen}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer bg-white/5 text-white/70 border-white/10 hover:bg-white/10"
+            title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+          >
+            {isFullscreen ? <Lucide.Minimize size={14} /> : <Lucide.Maximize size={14} />}
+            <span className="hidden sm:inline">
+              {isFullscreen 
+                ? (deckLanguage === 'or' ? 'ଛୋଟ ସ୍କ୍ରିନ୍' : 'Minimize') 
+                : (deckLanguage === 'or' ? 'ପୂର୍ଣ୍ଣ ସ୍କ୍ରିନ୍' : 'Fullscreen')}
+            </span>
           </button>
 
           {/* Toggle speaker notes visibility */}

@@ -43,6 +43,10 @@ export default function Login({ language, translations, setLanguage, setRegData 
   };
 
   const handleFastPassLogin = async (acc: typeof TEST_ACCOUNTS[number]) => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('judge_mode_active', 'true');
+      localStorage.setItem('showcase_mode', 'true');
+    }
     setUserRole(acc.role);
     if (acc.role === 'student') {
       setSelectedClass(acc.class);
@@ -107,13 +111,29 @@ export default function Login({ language, translations, setLanguage, setRegData 
   const [verifyingPin, setVerifyingPin] = useState(false);
 
   useEffect(() => {
+    const isJudgeMode = typeof window !== 'undefined' && (
+      window.location.search.includes('judge=true') || 
+      window.location.search.includes('judgestatus=true') || 
+      window.location.search.includes('showcase=true') || 
+      window.location.hash.includes('judge') ||
+      window.location.hash === '#judge' ||
+      window.location.hash === '#pitch_deck' ||
+      localStorage.getItem('showcase_mode') === 'true'
+    );
+    if (isJudgeMode && typeof window !== 'undefined') {
+      sessionStorage.setItem('judge_mode_active', 'true');
+      localStorage.setItem('showcase_mode', 'true');
+    }
+
     try {
       const raw = localStorage.getItem('saved_accounts');
       if (raw) {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed) && parsed.length > 0) {
           setSavedAccounts(parsed);
-          setLoginView('switcher');
+          if (!isJudgeMode) {
+            setLoginView('switcher');
+          }
         }
       }
     } catch (e) {
@@ -201,14 +221,16 @@ export default function Login({ language, translations, setLanguage, setRegData 
     window.location.search.includes('judge=true') || 
     window.location.search.includes('judgestatus=true') || 
     window.location.hash.includes('judge') ||
-    window.location.hash === '#pitch_deck'
+    window.location.hash === '#pitch_deck' ||
+    localStorage.getItem('showcase_mode') === 'true'
   );
   const showJudgePass = typeof window !== 'undefined' && (
     window.location.search.includes('judge=true') || 
     window.location.search.includes('judgestatus=true') || 
     window.location.search.includes('showcase=true') || 
     window.location.hash.includes('judge') ||
-    window.location.hash === '#judge'
+    window.location.hash === '#judge' ||
+    localStorage.getItem('showcase_mode') === 'true'
   );
   
   // PWA Install State

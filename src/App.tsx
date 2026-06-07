@@ -2607,6 +2607,30 @@ export default function App() {
   const handleLogout = async () => {
     try {
       const savedAccountsBackup = localStorage.getItem('saved_accounts');
+      const search = window.location.search;
+      const hash = window.location.hash;
+      
+      const cleanPhone = (p: string) => p ? p.replace(/\D/g, '') : '';
+      const userPhone = user?.phoneNumber ? cleanPhone(user.phoneNumber) : '';
+      const authPhone = auth.currentUser?.phoneNumber ? cleanPhone(auth.currentUser.phoneNumber) : '';
+      
+      const isJudgeUser = 
+        userPhone.endsWith('1234567890') || 
+        userPhone.endsWith('9876543210') ||
+        authPhone.endsWith('1234567890') || 
+        authPhone.endsWith('9876543210') ||
+        user?.name === 'Anuradha Panda' ||
+        user?.name === 'Damayanti Panda' ||
+        (user?.role === 'teacher' && user?.name === 'Damayanti Panda');
+
+      const isJudgeMode = isJudgeUser || 
+                          search.includes('judge') || 
+                          hash.includes('judge') || 
+                          search.includes('showcase') || 
+                          hash.includes('showcase') || 
+                          sessionStorage.getItem('judge_mode_active') === 'true' ||
+                          localStorage.getItem('showcase_mode') === 'true';
+
       await signOut(auth);
       // Clear all local storage data except the saved profiles list
       localStorage.clear();
@@ -2615,17 +2639,42 @@ export default function App() {
       if (savedAccountsBackup) {
         localStorage.setItem('saved_accounts', savedAccountsBackup);
       }
-      // Force a reload to clear any stale state if needed, 
-      // though onAuthStateChanged should handle it.
-      window.location.href = '/';
+      
+      let redirectUrl = '/';
+      if (isJudgeMode) {
+        localStorage.setItem('showcase_mode', 'true');
+        redirectUrl = '/?judge=true';
+      }
+      window.location.href = redirectUrl;
     } catch (error) {
       console.error("Logout Error:", error);
-      // Fallback: clear user state manually while preserving profiles list
       const savedAccountsBackup = localStorage.getItem('saved_accounts');
+      const cleanPhone = (p: string) => p ? p.replace(/\D/g, '') : '';
+      const userPhone = user?.phoneNumber ? cleanPhone(user.phoneNumber) : '';
+      const authPhone = auth.currentUser?.phoneNumber ? cleanPhone(auth.currentUser.phoneNumber) : '';
+      
+      const isJudgeUser = 
+        userPhone.endsWith('1234567890') || 
+        userPhone.endsWith('9876543210') ||
+        authPhone.endsWith('1234567890') || 
+        authPhone.endsWith('9876543210') ||
+        user?.name === 'Anuradha Panda' ||
+        user?.name === 'Damayanti Panda';
+
+      const isJudgeMode = isJudgeUser || 
+                          window.location.search.includes('judge') || 
+                          window.location.hash.includes('judge') || 
+                          window.location.search.includes('showcase') || 
+                          window.location.hash.includes('showcase') || 
+                          sessionStorage.getItem('judge_mode_active') === 'true' ||
+                          localStorage.getItem('showcase_mode') === 'true';
       localStorage.clear();
       sessionStorage.clear();
       if (savedAccountsBackup) {
         localStorage.setItem('saved_accounts', savedAccountsBackup);
+      }
+      if (isJudgeMode) {
+        localStorage.setItem('showcase_mode', 'true');
       }
       setUser(null);
       setIsPremium(false);

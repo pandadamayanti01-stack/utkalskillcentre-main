@@ -15,7 +15,7 @@ Instead of corporate buzzwords, Utkal Skill Centre is built on a real, high-impa
     *   **🌸 April 1st (Utkal Divas / Odisha Day)**: We officially launched the **Utkal Skill Centre** web platform to bring digital curriculum tutoring to state-board students in their mother tongue (**Odia**).
     *   **📱 Progressive Web App (PWA) Launch**: Soon after, we rolled out our offline-precached PWA. This allows rural students to access study guides, textbooks, and interactive mock tests instantly on basic household smartphones and slow 2G/3G connections.
 *   **📊 Pilot Traction & Growth**:
-    *   **Onboarded Students**: Successfully onboarded **434 active students** during our initial pilot phase.
+    *   **Onboarded Students**: Successfully onboarded **445 active students** during our initial pilot phase.
     *   **Paying Subscribers**: Secured **6 premium paying subscribers** across 7 geographically diverse districts of Odisha (Bhubaneswar, Cuttack, Keonjhar, Balasore, Nayagarh, Balangir, and Berhampur) at our affordable ₹99/month rate, validating strong statewide product-market fit.
     *   **Syllabus Coverage**: Deployed 100% complete syllabus roadmaps from **Class 1 to Class 10** with premium notes for all **448 chapters**.
     *   **100% Free Smart Classes**: Fully integrated curated video lesson libraries, making YouTube school classes unlocked and free for everyone.
@@ -33,13 +33,39 @@ Instead of corporate buzzwords, Utkal Skill Centre is built on a real, high-impa
 *   **✨ Interactive Judge Showcase Link**: [https://utkalskillcentre.com?showcase=true](https://utkalskillcentre.com?showcase=true) *(Loads the landing page in English by default, dynamically exposing the gold pulsing presentation launcher button for non-logged-in judges and permanent sessions in the sidebar!)*
 *   **⚡ Judge Fast-Pass Entry (Recommended)**: [https://utkalskillcentre.com?judgestatus=true](https://utkalskillcentre.com?judgestatus=true) or access via query parameter `?judge=true` / hash `#judge`.
     *   *What it does*: Displays an exclusive, sleek, glassmorphic **"Judge Fast-Pass Access"** action panel on the login view, and dynamically activates the gold pulsing "SHOWCASE" presenter button in the utility bar.
-    *   *Zero-Friction Login*: With a single tap, it pre-configures and pre-fills the official demo phone number (`1234567890`), locks the grade mapping precisely to **Class 10, BSE Odisha**, dynamically executes reCAPTCHA in silent mode, bypasses manual verification input, and completes the OTP authorization using the test bypass code (`123456`) instantly!
-    *   *Seamless Dashboard Routing*: Redirection handlers actively capture the judge/presentation session context and automatically route the judge directly to the authenticated **Student Dashboard** upon successful login, eliminating blank landing pages.
+    *   *Zero-Friction Login*: Select one of the pre-configured test profiles to log in instantly (bypasses reCAPTCHA & manual OTP input using the standard bypass code `123456`):
+        *   **Student Profile (Class 10)**: Pre-fills phone `1234567890`.
+        *   **Teacher Profile (Educator Studio)**: Pre-fills phone `9876543210`.
+    *   *Seamless Dashboard Routing*: Redirection handlers actively capture the judge/presentation session context and automatically route the judge directly to the authenticated dashboard based on their role, eliminating blank landing pages.
 *   **🔓 Sunday Lockout Bypass Protection**:
     *   *The Feature*: The PWA natively includes a **Sunday Rest Lockout** feature that closes study portals on Sundays to promote healthy screen habits and mental well-being for students.
-    *   *The Showcase Exemption*: Since judging/evaluations are occurring, we have implemented an automated Sunday lockout bypass for judges. Any session initialized under the fast-pass demo credentials (`1234567890`), or loaded via `?judge=true` / `?judgestatus=true` / `?showcase=true`, programmatically overrides the lock screens, guaranteeing an uninterrupted and smooth showcase 24/7.
+    *   *The Showcase Exemption*: Since judging/evaluations are occurring, we have implemented an automated Sunday lockout bypass for judges. Any session initialized under the fast-pass student credential (`1234567890`), teacher credential (`9876543210`), or loaded via `?judge=true` / `?judgestatus=true` / `?showcase=true`, programmatically overrides the lock screens, guaranteeing an uninterrupted and smooth showcase 24/7.
 *   **FastMCP Server Source**: [scratch/hackathon_mcp_server.py](file:///d:/WebApp/utkalskillcentre-main/scratch/hackathon_mcp_server.py)
 
+---
+
+## 🌟 Implemented Vernacular, Classroom & 3D Features
+
+We have fully implemented several cutting-edge features that set Utkal Skill Centre apart:
+
+### 1. 👩‍🏫 AI Educator Studio (Teacher Dashboard)
+- **Gundulu Worksheet Maker**: Allows teachers to instantly generate curriculum-aligned homework worksheets with custom difficulty levels, along with comprehensive teacher answer keys.
+- **5E Lesson Planner**: Generates OPEPA-compliant lesson plans structured around the 5E framework (Engage, Explore, Explain, Elaborate, Evaluate) to optimize classroom instruction.
+- **Low-Cost Science Lab**: Provides step-by-step instructions for conducting scientific experiments using easily accessible, low-cost household materials.
+- *Accessible under the Teacher Fast-Pass login profile (`9876543210`).*
+
+### 2. 🧸 Sishu Vatika (Preschool/Anganwadi Flow)
+- A dedicated preschool/Anganwadi classroom flow tailored for 3-5 year old toddlers, removing all English or bilingual text fallbacks.
+- **Sishu Vatika Slate**: An interactive digital chalkboard allowing children to trace Odia letters (like "ଅ", "କ") and basic shapes (circle, triangle). Includes a specialized Gemini Vision model to recognize and warmly praise kid-level drawings in Odia.
+- **Warm Mascot Persona**: Features simple, engaging conversational instructions from the Gundulu mascot.
+
+### 3. 🧬 Gundulu 3D Study Lab (WebXR 3D Models)
+- An interactive **3D Study Lab** rendered directly in the client PWA (supporting standard browsers and mobile devices).
+- Renders high-fidelity, interactive 3D models of complex scientific concepts (e.g., cell structures, atomic bonds, solar systems, human organs) to foster immersive spatial learning.
+
+### 4. 👨‍👩‍👧‍👦 Sibling Account Switcher & PIN Gate
+- Enables multiple children in a family to share a single mobile device without incurring repeating SMS OTP fees.
+- Allows instant profile switching protected by a secure 4-digit PIN, with full parent dashboard lockouts to keep student settings and diagnostics protected.
 
 ---
 
@@ -180,8 +206,6 @@ To start the server and connect it to your local agent environment:
 
 ---
 
----
-
 ## 🏆 Google AI Hackathon: Consoles & Features Master Roadmap
 
 ### 🧠 1. Google AI & Gemini Superpowers
@@ -207,7 +231,7 @@ To start the server and connect it to your local agent environment:
     *   **Impact**: Guarantees classroom safety and student moderation.
 *   **🔊 Premium Wavenet TTS Voice Curation**
     *   **The Idea**: Use neural Google Wavenet voices (`or-IN-Wavenet` / `hi-IN-Wavenet`) for Gundulu to provide natural, human-like voice synthesis in Odia.
-    *   **Impact**: Significantly improves conversational immersion compared to robotic browser default speech engines.
+    *   **Impact**: Automatically enabled under premium modes, drastically improving accessibility.
 *   **🗣️ Regional Odia Dialect Translation Bridge**
     *   **The Idea**: Use Gemini as a translation bridge to map regional Odia dialects (such as Sambalpuri, Ganjami, or Desia) to standard Odia before processing.
     *   **Impact**: Drives digital inclusivity for tribal and rural student populations.
@@ -225,9 +249,6 @@ To start the server and connect it to your local agent environment:
 *   **🎟️ "Golden Ticket" Dynamic Certificates**
     *   **The Idea**: Generate dynamic SVG certificate tickets in JSON format when students complete learning streaks, displaying custom achievements.
     *   **Impact**: Completes the student reward loop with shareable, personalized rewards.
-*   **✍️ Math Drawing Blackboard (OCR)**
-    *   **The Idea**: Let younger students draw digits or equations on an on-screen blackboard, converting their strokes into math variables verified by Gemini.
-    *   **Impact**: Promotes motor skill learning and tactile interaction for younger classes.
 *   **👓 WebXR Augmented Reality (AR) Diagrams**
     *   **The Idea**: Render 3D overlays of science diagrams (like cells, atoms, or the solar system) in the student's room using their phone camera and WebXR.
     *   **Impact**: Elevates visual learning to state-of-the-art immersive technology standards.
@@ -240,10 +261,10 @@ To start the server and connect it to your local agent environment:
     *   **The Idea**: Let teachers sync class rosters via Google Classroom API, and let students export study sheets to Google Drive.
     *   **Impact**: Demonstrates institutional value for school boards using Google infrastructure.
 *   **🗺️ Google Maps Regional Engagement Heatmap**
-    *   **The Idea**: Visualize student competition, high-scorers, and XP streaks across Odisha using a custom styled Google Map wrapper.
-    *   **Impact**: Creates a highly impressive presentation slide for analytics visualization.
+    *   **The Idea**: Visualize student competition, XP streaks, and performance across Odisha using custom-styled Google Maps overlays.
+    *   **Impact**: Showcases geographic alignment and visual data representation.
 *   **📊 BigQuery Curriculum Insights**
-    *   **The Idea**: Route anonymized logs to BigQuery to help school boards analyze which chapters (e.g., "force" or "fractions") have the lowest comprehension rates.
+    *   **The Idea**: Route anonymized logs to BigQuery to help school boards analyze which chapters have the lowest comprehension rates.
     *   **Impact**: Transitions the app into a powerful policy-making tool.
 
 ### ⚡ 5. Production & Developer Optimization
