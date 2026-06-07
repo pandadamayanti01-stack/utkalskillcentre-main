@@ -919,7 +919,7 @@ export default function App() {
 
         // Sync poster visibility
         if (step === 2) {
-          setShowLaunchPoster(true);
+          setShowLaunchPoster(false); handleGunduluGreeting();
         } else {
           setShowLaunchPoster(false);
         }
@@ -933,7 +933,7 @@ export default function App() {
             const todayStr = today.toLocaleDateString('en-CA');
             const lastSeen = localStorage.getItem('rajaFestivalLastSeenDate');
             if (lastSeen !== todayStr) {
-              setShowLaunchPoster(true);
+              setShowLaunchPoster(false); handleGunduluGreeting();
             }
           }
         }
@@ -3598,7 +3598,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
       </Suspense>
     )}
 
-    {showLaunchPoster && (
+    {false && (
       <Suspense fallback={null}>
         <RajaFestivalPoster onClose={() => {
           setShowLaunchPoster(false);
