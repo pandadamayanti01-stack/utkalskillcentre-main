@@ -413,6 +413,10 @@ function cosineSimilarity(vecA: number[], vecB: number[]): number {
   return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
 }
 
+// Simple in-memory cache for RAG queries to prevent duplicate vector embedding & database lookups
+const ragCache = new Map<string, { systemInstructionExtra: string; timestamp: number }>();
+const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes cache TTL
+
 app.post('/api/ai/generate', async (req, res) => {
   try {
     let { contents, systemInstruction, modelType, generationConfig, class: userClass, subject, enableDialectBridge } = req.body;
@@ -442,117 +446,132 @@ app.post('/api/ai/generate', async (req, res) => {
             searchClass = searchClass.replace('class', '').trim();
           }
 
-          console.log(`Backend RAG: Retrieving context for query: "${searchNormalizedQuery.substring(0, 50)}..." class: ${userClass} (normalized: ${searchClass}), subject: ${subject}`);
-          const rotatorKeys = [];
-          for (let i = 1; i <= 7; i++) {
-            const k = process.env[`GEMINI_ROTATOR_KEY_${i}`];
-            if (k) rotatorKeys.push(k);
-          }
-          if (process.env.GEMINI_API_KEY && !rotatorKeys.includes(process.env.GEMINI_API_KEY)) {
-            rotatorKeys.push(process.env.GEMINI_API_KEY);
-          }
-          const keyToUse = rotatorKeys[Math.floor(Math.random() * rotatorKeys.length)] || process.env.GEMINI_API_KEY;
-          
-          if (keyToUse) {
-            const embedUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key=${keyToUse}`;
-            const embedRes = await fetch(embedUrl, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                model: "models/gemini-embedding-001",
-                content: { parts: [{ text: searchNormalizedQuery }] },
-                outputDimensionality: 768
-              })
-            });
+          const cacheKey = `${searchClass}_${subject}_${searchNormalizedQuery}_${isBridgeActive}`;
+          const cachedEntry = ragCache.get(cacheKey);
+
+          if (cachedEntry && (Date.now() - cachedEntry.timestamp < CACHE_TTL_MS)) {
+            console.log(`[RAG Cache] Hit! Reusing cached textbook context for: "${searchNormalizedQuery.substring(0, 30)}..."`);
+            systemInstruction = `${systemInstruction ? systemInstruction + '\n\n' : ''}${cachedEntry.systemInstructionExtra}`;
+          } else {
+            console.log(`Backend RAG: Retrieving context for query: "${searchNormalizedQuery.substring(0, 50)}..." class: ${userClass} (normalized: ${searchClass}), subject: ${subject}`);
+            const rotatorKeys = [];
+            for (let i = 1; i <= 7; i++) {
+              const k = process.env[`GEMINI_ROTATOR_KEY_${i}`];
+              if (k) rotatorKeys.push(k);
+            }
+            if (process.env.GEMINI_API_KEY && !rotatorKeys.includes(process.env.GEMINI_API_KEY)) {
+              rotatorKeys.push(process.env.GEMINI_API_KEY);
+            }
+            const keyToUse = rotatorKeys[Math.floor(Math.random() * rotatorKeys.length)] || process.env.GEMINI_API_KEY;
             
-            if (embedRes.ok) {
-              const embedData = await embedRes.json();
-              const queryVector = embedData.embedding?.values;
+            if (keyToUse) {
+              const embedUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key=${keyToUse}`;
+              const embedRes = await fetch(embedUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  model: "models/gemini-embedding-001",
+                  content: { parts: [{ text: searchNormalizedQuery }] },
+                  outputDimensionality: 768
+                })
+              });
               
-              if (queryVector && queryVector.length === 768) {
-                const adminApp = getInitializedAdminApp();
-                if (adminApp) {
-                  const db = getAdminFirestore(adminApp, firestoreDatabaseId);
-                  const chunksColl = db.collection('textbook_chunks');
-                  const { FieldValue } = require('firebase-admin/firestore');
-                  
-                  // Retrieve top 8 vector matches
-                  const vectorQuery = chunksColl
-                    .where('class', '==', searchClass)
-                    .where('subject', '==', String(subject).toLowerCase().trim())
-                    .findNearest(
-                      'embedding',
-                      FieldValue.vector(queryVector),
-                      {
-                        limit: 8,
-                        distanceMeasure: 'COSINE'
-                      }
-                    );
-                  
-                  const snapshot = await vectorQuery.get();
-                  const candidates: any[] = [];
-                  const queryTokens = tokenize(searchNormalizedQuery);
+              if (embedRes.ok) {
+                const embedData = await embedRes.json();
+                const queryVector = embedData.embedding?.values;
+                
+                if (queryVector && queryVector.length === 768) {
+                  const adminApp = getInitializedAdminApp();
+                  if (adminApp) {
+                    const db = getAdminFirestore(adminApp, firestoreDatabaseId);
+                    const chunksColl = db.collection('textbook_chunks');
+                    const { FieldValue } = require('firebase-admin/firestore');
+                    
+                    // Retrieve top 8 vector matches
+                    const vectorQuery = chunksColl
+                      .where('class', '==', searchClass)
+                      .where('subject', '==', String(subject).toLowerCase().trim())
+                      .findNearest(
+                        'embedding',
+                        FieldValue.vector(queryVector),
+                        {
+                          limit: 8,
+                          distanceMeasure: 'COSINE'
+                        }
+                      );
+                    
+                    const snapshot = await vectorQuery.get();
+                    const candidates: any[] = [];
+                    const queryTokens = tokenize(searchNormalizedQuery);
 
-                  snapshot.forEach((doc: any) => {
-                    const data = doc.data();
-                    const chunkText = data.text || '';
-                    const chunkTokens = tokenize(chunkText);
-                    const jaccard = calculateJaccard(queryTokens, chunkTokens);
-                    
-                    let chunkEmbedding: number[] = [];
-                    if (data.embedding) {
-                      if (Array.isArray(data.embedding)) {
-                        chunkEmbedding = data.embedding;
-                      } else if (typeof data.embedding.toArray === 'function') {
-                        chunkEmbedding = data.embedding.toArray();
-                      } else if (Array.isArray(data.embedding.values)) {
-                        chunkEmbedding = data.embedding.values;
+                    snapshot.forEach((doc: any) => {
+                      const data = doc.data();
+                      const chunkText = data.text || '';
+                      const chunkTokens = tokenize(chunkText);
+                      const jaccard = calculateJaccard(queryTokens, chunkTokens);
+                      
+                      let chunkEmbedding: number[] = [];
+                      if (data.embedding) {
+                        if (Array.isArray(data.embedding)) {
+                          chunkEmbedding = data.embedding;
+                        } else if (typeof data.embedding.toArray === 'function') {
+                          chunkEmbedding = data.embedding.toArray();
+                        } else if (Array.isArray(data.embedding.values)) {
+                          chunkEmbedding = data.embedding.values;
+                        }
                       }
-                    }
-                    
-                    const cosSim = chunkEmbedding.length === 768 
-                      ? cosineSimilarity(queryVector, chunkEmbedding) 
-                      : 0;
-                    
-                    const hybridScore = 0.7 * cosSim + 0.3 * jaccard;
-                    
-                    candidates.push({
-                      reference: data.reference,
-                      text: chunkText,
-                      cosSim,
-                      jaccard,
-                      score: hybridScore
+                      
+                      const cosSim = chunkEmbedding.length === 768 
+                        ? cosineSimilarity(queryVector, chunkEmbedding) 
+                        : 0;
+                      
+                      const hybridScore = 0.7 * cosSim + 0.3 * jaccard;
+                      
+                      candidates.push({
+                        reference: data.reference,
+                        text: chunkText,
+                        cosSim,
+                        jaccard,
+                        score: hybridScore
+                      });
                     });
-                  });
 
-                  // Sort candidates by hybrid score descending
-                  candidates.sort((a, b) => b.score - a.score);
+                    // Sort candidates by hybrid score descending
+                    candidates.sort((a, b) => b.score - a.score);
 
-                  // Pick top 3
-                  const topCandidates = candidates.slice(0, 3);
-                  
-                  let retrievedText = '';
-                  topCandidates.forEach((candidate) => {
-                    retrievedText += `\n--- [Verified Reference: ${candidate.reference || 'Textbook'}] ---\n${candidate.text}\n`;
-                  });
-                  
-                  if (retrievedText) {
-                    console.log(`Backend RAG: Successfully retrieved grounded textbook chunks (Top score: ${topCandidates[0]?.score?.toFixed(4)}, Vector: ${topCandidates[0]?.cosSim?.toFixed(4)}, Jaccard: ${topCandidates[0]?.jaccard?.toFixed(4)})`);
-                    systemInstruction = `${systemInstruction ? systemInstruction + '\n\n' : ''}### STRICT TEXTBOOK GROUNDING CONTEXT:
+                    // Pick top 3
+                    const topCandidates = candidates.slice(0, 3);
+                    
+                    let retrievedText = '';
+                    topCandidates.forEach((candidate) => {
+                      retrievedText += `\n--- [Verified Reference: ${candidate.reference || 'Textbook'}] ---\n${candidate.text}\n`;
+                    });
+                    
+                    let systemInstructionExtra = '';
+                    if (retrievedText) {
+                      console.log(`Backend RAG: Successfully retrieved grounded textbook chunks (Top score: ${topCandidates[0]?.score?.toFixed(4)}, Vector: ${topCandidates[0]?.cosSim?.toFixed(4)}, Jaccard: ${topCandidates[0]?.jaccard?.toFixed(4)})`);
+                      systemInstructionExtra += `### STRICT TEXTBOOK GROUNDING CONTEXT:
 The following are verified, 100% correct stanzas/passages retrieved directly from the official school textbook. You MUST base your answers strictly on this context:
 ${retrievedText}
 `;
-                  }
+                    }
 
-                  if (isBridgeActive) {
-                    systemInstruction = `${systemInstruction ? systemInstruction + '\n\n' : ''}### DIALECT BRIDGE ACTIVE:
+                    if (isBridgeActive) {
+                      systemInstructionExtra += `${systemInstructionExtra ? '\n\n' : ''}### DIALECT BRIDGE ACTIVE:
 The student may be using local colloquial speech (Kosli/Desia accents). Keep your tone elder-sisterly, warm and friendly, and respond in standard Odia. Ensure any grammatical mappings are resolved naturally.`;
+                    }
+
+                    if (systemInstructionExtra) {
+                      systemInstruction = `${systemInstruction ? systemInstruction + '\n\n' : ''}${systemInstructionExtra}`;
+                      // Cache the resulting string
+                      ragCache.set(cacheKey, { systemInstructionExtra, timestamp: Date.now() });
+                    }
                   }
                 }
+              } else {
+                const embedErrText = await embedRes.text();
+                console.warn("Backend RAG: Failed to fetch query embedding:", embedErrText);
               }
-            } else {
-              const embedErrText = await embedRes.text();
-              console.warn("Backend RAG: Failed to fetch query embedding:", embedErrText);
             }
           }
         }
