@@ -1840,16 +1840,7 @@ Instructions:
                     <span>{language === 'en' ? 'Gundulu Video' : 'ଗୁନ୍ଦୁଲୁ ଭିଡିଓ'}</span>
                   </button>
 
-                  <button
-                    onClick={() => setReaderMode('3d')}
-                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold tracking-wider transition-all ${readerMode === '3d'
-                      ? 'bg-[#b34d1f] text-white shadow-lg'
-                      : 'text-slate-400 hover:text-white'
-                      }`}
-                  >
-                    <Lucide.Box size={14} />
-                    <span>{language === 'en' ? 'Gundulu 3D Lab' : 'ଗୁନ୍ଦୁଲୁ ୩D ଲ୍ୟାବ୍'}</span>
-                  </button>
+
                 </div>
 
                 <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
