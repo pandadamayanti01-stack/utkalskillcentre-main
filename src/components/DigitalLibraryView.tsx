@@ -38,6 +38,17 @@ export const CLASS_SUBJECTS: Record<string, Array<{
   color: string;
   coverImage: string;
 }>> = {
+  "classsishuvatika(anganwadi)": [
+    {
+      key: "shishu_vatika",
+      labelEn: "Shishu Vatika",
+      labelOr: "ଶିଶୁ ବାଟିକା",
+      gradient: "from-pink-400 via-yellow-300 to-cyan-300",
+      icon: Lucide.BookOpen,
+      color: "#f472b6",
+      coverImage: "/gundulu-rath-crest.png"
+    }
+  ],
   class1: [
     {
       key: "ganita_khela",

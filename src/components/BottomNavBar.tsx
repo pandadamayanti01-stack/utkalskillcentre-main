@@ -12,6 +12,7 @@ interface BottomNavBarProps {
   unreadNotificationsCount?: number;
   userRole?: string;
   userName?: string;
+  userClass?: string;
 }
 
 export const BottomNavBar: React.FC<BottomNavBarProps> = ({
@@ -22,7 +23,8 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
   isSidebarOpen,
   unreadNotificationsCount = 0,
   userRole,
-  userName
+  userName,
+  userClass
 }) => {
   const currentDay = new Date().getDate();
   const isTestWindowActive = currentDay >= 1 && currentDay <= 10 && userRole !== 'teacher';
@@ -33,6 +35,14 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
         { id: 'study_buddy', icon: Lucide.MessageSquare, label: language === 'en' ? 'Gundulu Inst' : 'ଗୁନ୍ଦୁଲୁ ଇନ୍‌ଷ୍ଟ୍ର' },
         { id: 'digital_library', icon: Lucide.Grid, label: language === 'en' ? 'Library' : 'ଲାଇବ୍ରେରୀ', isCenter: true },
         { id: 'notifications', icon: Lucide.Bell, label: language === 'en' ? 'Inbox' : 'ଇନବକ୍ସ' },
+        { id: 'menu', icon: Lucide.User, label: language === 'en' ? 'Profile' : 'ପ୍ରୋଫାଇଲ୍' }
+      ]
+    : userClass === 'sishuvatika(Anganwadi)'
+    ? [
+        { id: 'dashboard', icon: Lucide.Home, label: language === 'en' ? 'Home' : 'ମୂଳ ପୃଷ୍ଠା' },
+        { id: 'gundulu', icon: Lucide.Mic, label: language === 'en' ? 'Gundulu AI' : 'ଗୁନ୍ଦୁଲୁ AI' },
+        { id: 'digital_library', icon: Lucide.Grid, label: language === 'en' ? 'Library' : 'ଲାଇବ୍ରେରୀ', isCenter: true },
+        { id: 'parent_dashboard', icon: Lucide.Users, label: language === 'en' ? 'Parent' : 'ପିତାମାତା' },
         { id: 'menu', icon: Lucide.User, label: language === 'en' ? 'Profile' : 'ପ୍ରୋଫାଇଲ୍' }
       ]
     : [

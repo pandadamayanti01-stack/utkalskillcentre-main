@@ -347,10 +347,19 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         className="hidden"
       />
 
-      <div className="flex items-center justify-between px-3 py-2 sm:px-6 sm:py-3 border-b border-white/5 bg-slate-950/50 backdrop-blur-xl shrink-0 gap-2">
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+      <div className="flex items-center justify-between px-2.5 py-1.5 sm:px-6 sm:py-3 border-b border-white/5 bg-slate-950/50 backdrop-blur-xl shrink-0 gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-all border border-white/5 mr-0.5 sm:mr-1 shrink-0"
+              title={language === 'en' ? 'Back' : 'ପଛକୁ ଫେରନ୍ତୁ'}
+            >
+              <ChevronLeft size={16} className="sm:size-5" />
+            </button>
+          )}
           <div className="relative shrink-0">
-            <div className={`w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-[#10b981]/10 flex items-center justify-center text-[#10b981] border border-[#10b981]/20 shadow-[0_0_15px_rgba(16,185,129,0.2)] overflow-hidden relative shrink-0 ${loading ? 'animate-pulse' : ''}`}>
+            <div className={`w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-2xl bg-[#10b981]/10 flex items-center justify-center text-[#10b981] border border-[#10b981]/20 shadow-[0_0_15px_rgba(16,185,129,0.2)] overflow-hidden relative shrink-0 ${loading ? 'animate-pulse' : ''}`}>
               <img
                 src="/gundulu-v3.png"
                 alt="Gundulu Avatar"
@@ -360,14 +369,14 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
                 }}
               />
             </div>
-            <div className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-[#10b981] border-2 border-slate-900 z-10 ${loading ? 'animate-ping' : 'animate-pulse'}`}></div>
+            <div className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 sm:w-4 sm:h-4 rounded-full bg-[#10b981] border-2 border-slate-900 z-10 ${loading ? 'animate-ping' : 'animate-pulse'}`}></div>
           </div>
           <div className="min-w-0">
-            <h3 className="text-sm sm:text-base md:text-lg font-black text-white tracking-tight truncate whitespace-nowrap">
+            <h3 className="text-xs sm:text-base md:text-lg font-black text-white tracking-tight truncate whitespace-nowrap">
               {language === 'en' ? 'Gundulu Chat' : 'ଗୁନ୍ଦୁଲୁ ଚାଟ୍'}
             </h3>
-            <div className="flex items-center gap-1 text-[9px] sm:text-[10px] font-black text-[#10b981] uppercase tracking-widest">
-              <Sparkles size={8} className="sm:size-[10px]" />
+            <div className="flex items-center gap-1 text-[8px] sm:text-[10px] font-black text-[#10b981] uppercase tracking-widest">
+              <Sparkles size={6} className="sm:size-[10px]" />
               {loading ? 'Thinking...' : 'Online & Ready'}
             </div>
           </div>
@@ -379,42 +388,35 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
             className="p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/5 text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all border border-white/5"
             title={language === 'en' ? 'Clear Chat' : 'ଚାଟ୍ ସଫା କରନ୍ତୁ'}
           >
-            <Trash2 size={16} className="sm:size-[18px]" />
+            <Trash2 size={14} className="sm:size-[18px]" />
           </button>
-          <div className="h-5 sm:h-6 w-px bg-white/10 mx-0.5 sm:mx-1"></div>
+          <div className="h-4 sm:h-6 w-px bg-white/10 mx-0.5 sm:mx-1"></div>
           <button
             onClick={() => onLanguageChange?.(language === 'en' ? 'or' : 'en')}
-            className="px-2 py-1 sm:px-3 sm:py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[9px] sm:text-[10px] font-black text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all uppercase tracking-widest"
+            className="px-2 py-1 sm:px-3 sm:py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[8px] sm:text-[10px] font-black text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all uppercase tracking-widest"
           >
             {language === 'en' ? 'English' : 'ଓଡ଼ିଆ'}
           </button>
-          {onBack && (
-            <>
-              <div className="h-5 sm:h-6 w-px bg-white/10 mx-0.5 sm:mx-1"></div>
-              <button
-                onClick={onBack}
-                className="p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/5 text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all border border-white/5"
-                title={language === 'en' ? 'Close' : 'ବନ୍ଦ କରନ୍ତୁ'}
-              >
-                <X size={16} className="sm:size-[18px]" />
-              </button>
-            </>
-          )}
         </div>
       </div>
 
       {new Date() < new Date('2026-06-20T17:00:00+05:30') && (
-        <div className="bg-gradient-to-r from-emerald-500/10 via-teal-500/15 to-emerald-500/10 border-b border-emerald-500/20 px-3 py-1.5 sm:px-6 sm:py-2 flex items-center justify-center gap-1.5 text-center text-[9px] sm:text-[10px] md:text-xs font-black text-emerald-400 uppercase tracking-widest shrink-0 shadow-lg shadow-emerald-950/20">
-          <Sparkles size={10} className="text-emerald-400 animate-spin sm:size-3" style={{ animationDuration: '3s' }} />
-          <span>
+        <div className="bg-gradient-to-r from-emerald-500/10 via-teal-500/15 to-emerald-500/10 border-b border-emerald-500/20 px-3 py-1 sm:px-6 sm:py-2 flex items-center justify-center gap-1.5 text-center text-[8px] sm:text-[10px] md:text-xs font-black text-emerald-400 uppercase tracking-widest shrink-0 shadow-lg shadow-emerald-950/20">
+          <Sparkles size={8} className="text-emerald-400 animate-spin sm:size-3" style={{ animationDuration: '3s' }} />
+          <span className="hidden sm:inline">
             {language === 'or' 
               ? '🎉 ମାଗଣା ପ୍ରଦର୍ଶନ ଅଫର! ୨୦ ଜୁନ୍ ୨୦୨୬ ଅପରାହ୍ନ ୫:୦୦ ଟା ପର୍ଯ୍ୟନ୍ତ ଗୁନ୍ଦୁଲୁ AI ର ଅସୀମିତ ବ୍ୟବହାର କରନ୍ତୁ।'
               : '🎉 Free Showcase Access Active! Enjoy unlimited learning with Gundulu AI until June 20, 2026 at 5:00 PM.'}
           </span>
+          <span className="inline sm:hidden truncate max-w-[90vw]">
+            {language === 'or' 
+              ? '🎉 ମାଗଣା ପ୍ରଦର୍ଶନ! ଅସୀମିତ ଗୁନ୍ଦୁଲୁ AI'
+              : '🎉 Free Showcase! Unlimited Gundulu AI'}
+          </span>
         </div>
       )}
 
-      <div ref={messageListRef} className="flex-1 overflow-y-auto min-h-0 px-4 md:px-8 py-6 space-y-6 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+      <div ref={messageListRef} className="flex-1 overflow-y-auto min-h-0 px-3 py-3 space-y-3 sm:px-6 md:px-8 sm:py-6 sm:space-y-6 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
         <AnimatePresence initial={false}>
           {messages.map((msg) => (
             <motion.div
@@ -423,10 +425,10 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
               animate={{ opacity: 1, y: 0, scale: 1 }}
               className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
-              <div className={`max-w-[85%] flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border overflow-hidden ${msg.role === 'user' ? 'bg-blue-500/10 border-blue-500/20 text-blue-500' : 'bg-[#10b981]/10 border-[#10b981]/20 text-[#10b981]'}`}>
+              <div className={`max-w-[88%] sm:max-w-[85%] flex gap-2 sm:gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 border overflow-hidden ${msg.role === 'user' ? 'bg-blue-500/10 border-blue-500/20 text-blue-500' : 'bg-[#10b981]/10 border-[#10b981]/20 text-[#10b981]'}`}>
                   {msg.role === 'user' ? (
-                    <User size={20} />
+                    <User size={16} className="sm:size-[20px]" />
                   ) : (
                     <img
                       src="/gundulu-v3.png"
@@ -438,22 +440,22 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
                     />
                   )}
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-1 sm:space-y-2 min-w-0">
                   {msg.imageUrl && (
                     <div className={`${msg.role === 'user' ? 'flex justify-end' : ''}`}>
                       <img
                         src={msg.imageUrl}
                         alt="attached"
-                        className="max-w-[220px] max-h-[180px] rounded-2xl border border-white/10 object-cover shadow-lg"
+                        className="max-w-[180px] sm:max-w-[220px] max-h-[140px] sm:max-h-[180px] rounded-xl sm:rounded-2xl border border-white/10 object-cover shadow-lg"
                       />
                     </div>
                   )}
-                  <div className={`p-5 rounded-[2rem] text-sm leading-relaxed shadow-xl relative ${msg.role === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'glass-card border border-[#10b981]/20 text-slate-200 rounded-tl-none'}`}>
-                    <div className="prose prose-invert prose-sm max-w-none">
+                  <div className={`p-3.5 sm:p-5 rounded-2xl sm:rounded-[2rem] text-xs sm:text-sm leading-relaxed shadow-xl relative ${msg.role === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'glass-card border border-[#10b981]/20 text-slate-200 rounded-tl-none'}`}>
+                    <div className="prose prose-invert prose-sm max-w-none break-words">
                       <Markdown>{msg.content}</Markdown>
                     </div>
                   </div>
-                  <p className={`text-[10px] font-bold text-slate-500 uppercase tracking-widest ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
+                  <p className={`text-[8px] sm:text-[10px] font-bold text-slate-500 uppercase tracking-widest ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
                     {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
@@ -468,8 +470,8 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
             animate={{ opacity: 1, scale: 1 }}
             className="flex justify-start"
           >
-            <div className="flex gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center overflow-hidden">
+            <div className="flex gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center overflow-hidden">
                 <img
                   src="/gundulu-v3.png"
                   alt="Gundulu"
@@ -479,10 +481,10 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
                   }}
                 />
               </div>
-              <div className="glass-card border border-white/5 p-4 rounded-[2rem] rounded-tl-none flex items-center gap-2">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce [animation-delay:0.2s]"></div>
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce [animation-delay:0.4s]"></div>
+              <div className="glass-card border border-white/5 p-3 sm:p-4 rounded-2xl sm:rounded-[2rem] rounded-tl-none flex items-center gap-1.5 sm:gap-2">
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-emerald-500 rounded-full animate-bounce"></div>
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-emerald-500 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-emerald-500 rounded-full animate-bounce [animation-delay:0.4s]"></div>
               </div>
             </div>
           </motion.div>
@@ -490,15 +492,15 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="shrink-0 p-3 sm:p-4 md:p-6 bg-gradient-to-t from-slate-950 via-slate-950 to-transparent">
+      <div className="shrink-0 p-2 sm:p-4 md:p-6 bg-gradient-to-t from-slate-950 via-slate-950 to-transparent">
         <div className="max-w-3xl mx-auto">
           {messages.length === 1 && (
-            <div className="flex flex-nowrap sm:flex-wrap gap-2 overflow-x-auto sm:overflow-x-visible pb-3 sm:pb-0 mb-3 sm:mb-6 justify-start sm:justify-center scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+            <div className="flex flex-nowrap sm:flex-wrap gap-1.5 sm:gap-2 overflow-x-auto sm:overflow-x-visible pb-2 sm:pb-0 mb-2 sm:mb-4 justify-start sm:justify-center scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
               {suggestedTopics.map((topic, idx) => (
                 <button
                   key={idx}
                   onClick={() => { setInput(language === 'en' ? topic.en : topic.or); }}
-                  className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/5 border border-white/10 text-[10px] sm:text-xs font-bold text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all shrink-0 whitespace-nowrap"
+                  className="px-2.5 py-1 sm:px-4 sm:py-2 rounded-full bg-white/5 border border-white/10 text-[9px] sm:text-xs font-bold text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all shrink-0 whitespace-nowrap"
                 >
                   {language === 'en' ? topic.en : topic.or}
                 </button>
@@ -507,19 +509,19 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
           )}
 
           {!isPremium && freeQueriesCount >= 5 && !(new Date() < new Date('2026-06-20T17:00:00+05:30')) ? (
-            <div className="relative overflow-hidden p-6 bg-gradient-to-br from-slate-900/90 via-slate-950/85 to-[#0b2f1d]/20 border border-emerald-500/30 rounded-[2.5rem] shadow-[0_15px_35px_rgba(0,0,0,0.5),0_0_20px_rgba(16,185,129,0.15)] flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left relative z-10">
+            <div className="relative overflow-hidden p-5 sm:p-6 bg-gradient-to-br from-slate-900/90 via-slate-950/85 to-[#0b2f1d]/20 border border-emerald-500/30 rounded-[2.5rem] shadow-[0_15px_35px_rgba(0,0,0,0.5),0_0_20px_rgba(16,185,129,0.15)] flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 text-center sm:text-left relative z-10">
               {/* background lighting */}
               <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-[40px] pointer-events-none" />
               
-              <div className="flex gap-4 items-center flex-col sm:flex-row relative z-10">
-                <div className="w-14 h-14 rounded-full border border-emerald-500/40 bg-slate-950 flex items-center justify-center p-1.5 shadow-[0_0_15px_rgba(16,185,129,0.3)] flex-shrink-0 animate-pulse">
+              <div className="flex gap-3 sm:gap-4 items-center flex-col sm:flex-row relative z-10">
+                <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-full border border-emerald-500/40 bg-slate-950 flex items-center justify-center p-1.5 shadow-[0_0_15px_rgba(16,185,129,0.3)] flex-shrink-0 animate-pulse">
                   <img src="/gundulu-v3.png" alt="Gundulu" className="w-full h-full object-cover scale-[0.95]" />
                 </div>
                 <div>
-                  <h4 className="text-sm sm:text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-emerald-400 uppercase tracking-wide">
+                  <h4 className="text-xs sm:text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-emerald-400 uppercase tracking-wide">
                     {language === 'or' ? 'ମାଗଣା ପଚାରିବା ସୀମା ଶେଷ ହୋଇଛି! 🚀' : 'Free Trial Limit Reached! 🚀'}
                   </h4>
-                  <p className="text-[10px] sm:text-xs font-bold text-slate-400 mt-1 leading-relaxed max-w-[420px]">
+                  <p className="text-[9px] sm:text-xs font-bold text-slate-400 mt-1 leading-relaxed max-w-[420px]">
                     {language === 'or' 
                       ? 'ଗୁନ୍ଦୁଲୁ ପ୍ରିମିୟମ୍‌କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ ଏବଂ ଅସୀମିତ ପ୍ରଶ୍ନର ସମାଧାନ କରନ୍ତୁ, ଗୁନ୍ଦୁଲୁ AI ହୋମୱର୍କ ସହାୟକଙ୍କ ଠାରୁ ଶିକ୍ଷା ସହାୟତା ପାଆନ୍ତୁ!'
                       : 'Upgrade to Gundulu Premium to ask unlimited questions, solve complex chalkboard equations, and get learning assistance from Gundulu AI Homework Helper.'}
@@ -528,9 +530,9 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
               </div>
               <button
                 onClick={onUpgrade}
-                className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(16,185,129,0.4)] flex items-center justify-center gap-2 font-black text-xs uppercase tracking-wider cursor-pointer whitespace-nowrap relative z-10"
+                className="w-full sm:w-auto px-4 py-2.5 sm:px-5 sm:py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(16,185,129,0.4)] flex items-center justify-center gap-2 font-black text-[10px] sm:text-xs uppercase tracking-wider cursor-pointer whitespace-nowrap relative z-10"
               >
-                <Sparkles size={14} className="animate-spin" style={{ animationDuration: '3s' }} />
+                <Sparkles size={12} className="animate-spin sm:size-3.5" style={{ animationDuration: '3s' }} />
                 <span>{language === 'or' ? 'ପ୍ରିମିୟମ ଅପଗ୍ରେଡ୍' : 'Upgrade to Premium'}</span>
               </button>
             </div>
@@ -540,28 +542,28 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
 
               {selectedImage && (
                 <div className="flex items-center gap-2 px-3 py-1.5 mb-2 bg-slate-900 rounded-xl border border-white/10">
-                  <img src={selectedImage.preview} alt="preview" className="w-10 h-10 rounded-lg object-cover" />
-                  <span className="flex-1 text-[11px] text-slate-400">Image ready</span>
-                  <button onClick={() => setSelectedImage(null)} className="p-1 text-slate-500 hover:text-white"><X size={14} /></button>
+                  <img src={selectedImage.preview} alt="preview" className="w-8 h-8 rounded-lg object-cover" />
+                  <span className="flex-1 text-[10px] text-slate-400">Image ready</span>
+                  <button onClick={() => setSelectedImage(null)} className="p-1 text-slate-500 hover:text-white"><X size={12} /></button>
                 </div>
               )}
 
-              <div className="relative flex items-end gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-slate-900 border border-white/10 rounded-[1.75rem] sm:rounded-[2rem] shadow-2xl focus-within:border-emerald-500/50 transition-all">
+              <div className="relative flex items-end gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-slate-900 border border-white/10 rounded-[1.5rem] sm:rounded-[2rem] shadow-2xl focus-within:border-emerald-500/50 transition-all">
                 <div className="flex items-center mb-0.5 ml-0.5 sm:mb-1 sm:ml-1">
                   <button
                     onClick={() => setAttachmentMenuOpen((prev) => !prev)}
                     className="p-1.5 sm:p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-all"
                   >
-                    <Plus size={18} className="sm:size-5" />
+                    <Plus size={16} className="sm:size-5" />
                   </button>
 
                   {attachmentMenuOpen && (
-                    <div className="absolute bottom-14 left-0 w-48 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50">
-                      <button onClick={() => { fileInputRef.current?.click(); setAttachmentMenuOpen(false); }} className="w-full px-4 py-3 text-left text-sm text-slate-300 hover:bg-white/5 flex items-center gap-3">
-                        <Image size={16} /> Gallery
+                    <div className="absolute bottom-14 left-0 w-40 sm:w-48 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50">
+                      <button onClick={() => { fileInputRef.current?.click(); setAttachmentMenuOpen(false); }} className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm text-slate-300 hover:bg-white/5 flex items-center gap-2.5 sm:gap-3">
+                        <Image size={14} className="sm:size-4" /> Gallery
                       </button>
-                      <button onClick={() => { cameraInputRef.current?.click(); setAttachmentMenuOpen(false); }} className="w-full px-4 py-3 text-left text-sm text-slate-300 hover:bg-white/5 flex items-center gap-3 border-t border-white/5">
-                        <Camera size={16} /> Camera
+                      <button onClick={() => { cameraInputRef.current?.click(); setAttachmentMenuOpen(false); }} className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm text-slate-300 hover:bg-white/5 flex items-center gap-2.5 sm:gap-3 border-t border-white/5">
+                        <Camera size={14} className="sm:size-4" /> Camera
                       </button>
                     </div>
                   )}
@@ -569,7 +571,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
 
                 <textarea
                   placeholder={language === 'en' ? 'Message Gundulu...' : 'ଗୁନ୍ଦୁଲୁ ସହ କଥା ହୁଅନ୍ତୁ...'}
-                  className="flex-1 bg-transparent border-none focus:outline-none text-white text-xs sm:text-sm py-2 sm:py-3 px-1 sm:px-2 resize-none max-h-24 sm:max-h-32 min-h-[36px] sm:min-h-[44px] custom-scrollbar"
+                  className="flex-1 bg-transparent border-none focus:outline-none text-xs sm:text-sm py-1.5 sm:py-3 px-1 sm:px-2 resize-none max-h-20 sm:max-h-32 min-h-[30px] sm:min-h-[44px] custom-scrollbar text-white placeholder-slate-500"
                   rows={1}
                   value={input}
                   onChange={(e) => {
@@ -588,15 +590,15 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
                 <button
                   onClick={() => sendMessage()}
                   disabled={(!input.trim() && !selectedImage) || loading}
-                  className="p-2 sm:p-2.5 bg-emerald-500 text-slate-950 rounded-full disabled:bg-slate-800 disabled:text-slate-600 transition-all hover:scale-105 active:scale-95 cursor-pointer shrink-0"
+                  className="p-1.5 sm:p-2.5 bg-emerald-500 text-slate-950 rounded-full disabled:bg-slate-800 disabled:text-slate-600 transition-all hover:scale-105 active:scale-95 cursor-pointer shrink-0"
                 >
-                  {loading ? <Loader2 size={16} className="animate-spin sm:size-5" /> : <Send size={16} className="sm:size-5" />}
+                  {loading ? <Loader2 size={14} className="animate-spin sm:size-5" /> : <Send size={14} className="sm:size-5" />}
                 </button>
               </div>
             </div>
           )}
 
-          <div className="mt-2 sm:mt-3 flex justify-center gap-4 sm:gap-6 opacity-40">
+          <div className="mt-2 sm:mt-3 hidden sm:flex justify-center gap-4 sm:gap-6 opacity-40">
              <div className="flex items-center gap-1 sm:gap-1.5 text-[8px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                <Sparkles size={8} className="sm:size-[10px]" /> Smart AI
              </div>

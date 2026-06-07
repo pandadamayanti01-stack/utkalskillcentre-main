@@ -69,6 +69,7 @@ const Dashboard = lazy(() => import('./components/Dashboard').then((module) => (
 const SishuVatikaDashboard = lazy(() => import('./components/SishuVatikaDashboard').then((module) => ({ default: module.SishuVatikaDashboard })));
 const NotificationsView = lazy(() => import('./components/NotificationsView').then((module) => ({ default: module.NotificationsView })));
 const GunduluHuman = lazy(() => import('./components/GunduluHuman'));
+const GunduluSishuVatika = lazy(() => import('./components/GunduluSishuVatika'));
 const AvatarStore = lazy(() => import('./components/AvatarStore').then((module) => ({ default: module.AvatarStore })));
 const ProgressChart = lazy(() => import('./components/ProgressChart').then((module) => ({ default: module.ProgressChart })));
 const StudyBuddyView = lazy(() => import('./components/StudyBuddyView').then((module) => ({ default: module.StudyBuddyView })));
@@ -3688,15 +3689,17 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
 
           <div className="flex items-center gap-4">
             {/* Notification Bell */}
-            <button
-              onClick={() => setActiveTab('notifications')}
-              className="relative p-2 text-slate-400 hover:text-white transition-colors rounded-full hover:bg-white/5"
-            >
-              <Lucide.Bell size={22} />
-              {studentNotifications.filter(n => n.id && !readNotifIds.includes(n.id)).length > 0 && (
-                <span className="absolute top-1 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-black/20"></span>
-              )}
-            </button>
+            {user?.class !== 'sishuvatika(Anganwadi)' && (
+              <button
+                onClick={() => setActiveTab('notifications')}
+                className="relative p-2 text-slate-400 hover:text-white transition-colors rounded-full hover:bg-white/5"
+              >
+                <Lucide.Bell size={22} />
+                {studentNotifications.filter(n => n.id && !readNotifIds.includes(n.id)).length > 0 && (
+                  <span className="absolute top-1 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-black/20"></span>
+                )}
+              </button>
+            )}
             
             {/* User Profile */}
             <button
@@ -3811,7 +3814,21 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             {activeTab === 'digital_library' && (
               <DigitalLibraryView
                 user={user}
-                chapters={chapters.filter((c: any) => c.isLibraryChapter || c.pdfUrl)}
+                chapters={
+                  user?.class === 'sishuvatika(Anganwadi)'
+                    ? textbooks
+                        .filter((tb: any) => tb.class === 'sishuvatika(Anganwadi)')
+                        .map((tb: any, index: number) => ({
+                          id: tb.id || `virtual_tb_${index}`,
+                          class: tb.class,
+                          subject: 'shishu_vatika',
+                          title: tb.title,
+                          pdfUrl: tb.download_url || tb.driveUrl,
+                          number: 1,
+                          description: 'ଶିଶୁ ବାଟିକା ସଂପୂର୍ଣ୍ଣ ପାଠ୍ୟପୁସ୍ତକ'
+                        }))
+                    : chapters.filter((c: any) => c.isLibraryChapter || c.pdfUrl)
+                }
                 language={language}
                 isPremium={isPremium}
                 onUpgrade={() => setActiveTab('plans')}
@@ -3841,12 +3858,21 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             )}
             {activeTab === 'gundulu' && (
               <Suspense fallback={<div className="flex-grow flex items-center justify-center text-white text-sm font-semibold">Loading Gundulu AI Tutor...</div>}>
-                <GunduluHuman 
-                  user={user} 
-                  isPremium={isPremium} 
-                  onUpgrade={() => setActiveTab('plans')} 
-                  onBack={() => setActiveTab('dashboard')} 
-                />
+                {user?.class === 'sishuvatika(Anganwadi)' ? (
+                  <GunduluSishuVatika 
+                    user={user} 
+                    isPremium={isPremium} 
+                    onUpgrade={() => setActiveTab('plans')} 
+                    onBack={() => setActiveTab('dashboard')} 
+                  />
+                ) : (
+                  <GunduluHuman 
+                    user={user} 
+                    isPremium={isPremium} 
+                    onUpgrade={() => setActiveTab('plans')} 
+                    onBack={() => setActiveTab('dashboard')} 
+                  />
+                )}
               </Suspense>
             )}
 
@@ -3906,6 +3932,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             unreadNotificationsCount={studentNotifications.filter(n => n.id && !readNotifIds.includes(n.id)).length}
             userRole={user.role}
             userName={user.name}
+            userClass={user.class}
           />
         )}
       </main>

@@ -937,6 +937,110 @@ async function startServer() {
     }
   });
 
+  // Dedicated Anganwadi (Sishu Vatika) TTS endpoint to prevent any modifications to the class 1-10 endpoint
+  app.post('/api/tts/anganwadi', async (req, res) => {
+    try {
+      const { text } = req.body || {};
+      if (!text || typeof text !== 'string') {
+        return res.status(400).json({ error: 'text is required' });
+      }
+
+      const geminiApiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+      if (!geminiApiKey) {
+        return res.status(503).json({ error: 'GEMINI_API_KEY is not configured' });
+      }
+
+      // Sishu Vatika is always Odia and uses gemini-3.1-flash-tts-preview
+      const models = ['gemini-3.1-flash-tts-preview'];
+      const preferredVoice = process.env.GEMINI_TTS_VOICE_ODIA || 'Kore';
+      const fallbackVoice = 'Puck';
+      const voiceCandidates = [preferredVoice, fallbackVoice];
+
+      // Custom prompt instructing the model to speak like a 1-2 year old baby girl child in Odia
+      const ttsPrompt = `ତୁମେ ଗୁନ୍ଦୁଲୁ (Gundulu), ଜଣେ ଅତି କୁନି ୧ ରୁ ୨ ବର୍ଷର ଶିଶୁ କନ୍ୟା (1-2 year old baby girl child) | ଖେଳିଲା ଭଳି ଅତି ମଧୁର, ସରଳ, ଅଳ୍ପ ଅଳ୍ପ ଓ ଧୀରେ କଥା କହିଲା ଭଳି କୁନି ଶିଶୁ ସ୍ୱରରେ ନିମ୍ନଲିଖିତ ଓଡ଼ିଆ ଲେଖାକୁ କୁହ। ପ୍ରତ୍ୟେକ ଓଡ଼ିଆ ଶବ୍ଦର ଉଚ୍ଚାରଣ ଅତ୍ୟନ୍ତ କୁନି ଝିଅର ସ୍ୱାଭାବିକ କଣ୍ଠରେ ହେବା ଉଚିତ।\n\n${text}`;
+
+      let lastError = 'Unknown TTS failure';
+      
+      for (const model of models) {
+        for (const voiceName of voiceCandidates) {
+          try {
+            console.log(`TTS Anganwadi proxy: Querying ${model} with voice ${voiceName}...`);
+            const ttsResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                contents: [{ role: 'user', parts: [{ text: ttsPrompt }] }],
+                generationConfig: {
+                  responseModalities: ['AUDIO'],
+                  speechConfig: {
+                    voiceConfig: {
+                      prebuiltVoiceConfig: { voiceName }
+                    }
+                  }
+                }
+              }),
+            });
+
+            if (!ttsResponse.ok) {
+              const errText = await ttsResponse.text();
+              lastError = errText;
+              console.warn(`Gemini Anganwadi TTS failed for model ${model}, voice ${voiceName}: ${errText}`);
+              if (ttsResponse.status === 429) {
+                if (errText.includes('quota') || errText.includes('limit')) {
+                  return res.status(429).json({
+                    error: 'Gemini TTS free tier quota exceeded. Please enable billing on your Google AI Studio account to lift this limit.',
+                    details: errText
+                  });
+                }
+              }
+              continue;
+            }
+
+            const data = await ttsResponse.json();
+            const candidate = data?.candidates?.[0];
+            const finishReason = candidate?.finishReason;
+            
+            if (finishReason === 'OTHER' || !candidate?.content?.parts) {
+              lastError = `Generation blocked or finished unexpectedly. Finish reason: ${finishReason}`;
+              console.warn(`Gemini Anganwadi TTS generation ended unexpectedly for model ${model}, voice ${voiceName}: ${lastError}`);
+              continue;
+            }
+
+            const inlineData = candidate.content.parts.find((p: any) => p?.inlineData)?.inlineData;
+            if (!inlineData?.data) {
+              lastError = `No audio payload for model ${model}, voice ${voiceName}`;
+              continue;
+            }
+
+            const mimeType = inlineData.mimeType || 'audio/wav';
+            let audioBuffer = Buffer.from(inlineData.data, 'base64');
+            let finalMimeType = 'audio/wav';
+
+            if (mimeType.toLowerCase().includes('l16') || mimeType.toLowerCase().includes('pcm')) {
+              audioBuffer = pcmToWav(audioBuffer, 24000);
+            } else {
+              finalMimeType = mimeType;
+            }
+
+            res.setHeader('Content-Type', finalMimeType);
+            res.setHeader('Cache-Control', 'no-store');
+            return res.send(audioBuffer);
+          } catch (error: any) {
+             lastError = error?.message || 'Network error fetching TTS';
+             console.warn(`Fetch error for model ${model}, voice ${voiceName}: ${lastError}`);
+          }
+        }
+      }
+
+      return res.status(502).json({ error: `Gemini Anganwadi TTS failed for all configured models and voices: ${lastError}` });
+    } catch (error: any) {
+      console.error('TTS Anganwadi error:', error);
+      res.status(500).json({ error: error?.message || 'Internal server error' });
+    }
+  });
+
   // Textbook indexing endpoint (matching api/index.ts)
   app.post('/api/ai/index-textbook', async (req, res) => {
     try {

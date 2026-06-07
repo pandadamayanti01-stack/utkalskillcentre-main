@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import * as Lucide from 'lucide-react';
 import { db } from '../firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { MathBlackboard } from './MathBlackboard';
+import { SishuVatikaSlate } from './SishuVatikaSlate';
 
 interface SishuVatikaDashboardProps {
   user: any;
@@ -295,13 +295,13 @@ export function SishuVatikaDashboard({
                 onClick={() => { playPopSound(); onUpgrade(); }}
                 className="px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-400 to-red-400 text-white font-black text-sm uppercase tracking-wider shadow-lg hover:scale-105 transition-all cursor-pointer border-b-4 border-red-600 active:border-b-0 active:translate-y-1"
               >
-                {language === 'or' ? '🌟 ପ୍ରିମିୟମ୍ ନିଅନ୍ତୁ' : '🌟 Get Premium'}
+                🌟 ପ୍ରିମିୟମ୍ ନିଅନ୍ତୁ
               </button>
             )}
             {isPremium && (
               <div className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-400 to-teal-400 text-white font-black text-xs uppercase tracking-wider shadow-md flex items-center gap-2 border-2 border-white">
                 <Lucide.Sparkles size={16} />
-                <span>Premium Active</span>
+                <span>ପ୍ରିମିୟମ ସକ୍ରିୟ</span>
               </div>
             )}
           </div>
@@ -337,7 +337,7 @@ export function SishuVatikaDashboard({
             </div>
             
             <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-4">
-              {language === 'or' ? 'ଗୁନ୍ଦୁଲୁ କୁ ଛୁଇଁ ଶୁଣନ୍ତୁ' : 'Tap Gundulu to hear speak!'}
+              ଗୁନ୍ଦୁଲୁ କୁ ଛୁଇଁ ଶୁଣନ୍ତୁ
             </p>
           </div>
 
@@ -373,14 +373,14 @@ export function SishuVatikaDashboard({
                   className="flex-1 bg-yellow-400 border-b-4 border-yellow-600 hover:bg-yellow-300 text-slate-800 font-extrabold py-3.5 px-4 rounded-2xl text-center shadow-md active:translate-y-0.5 active:border-b-2 transition-all flex items-center justify-center gap-2"
                 >
                   <Lucide.BookOpen size={20} />
-                  <span>{language === 'or' ? 'ଓଡ଼ିଆ ବହି ପଢ଼ନ୍ତୁ' : 'Read Odia Book'}</span>
+                  <span>ଓଡ଼ିଆ ବହି ପଢ଼ନ୍ତୁ</span>
                 </button>
                 <button
                   onClick={handleOpenTutorTab}
                   className="flex-1 bg-cyan-500 border-b-4 border-cyan-700 hover:bg-cyan-400 text-white font-extrabold py-3.5 px-4 rounded-2xl text-center shadow-md active:translate-y-0.5 active:border-b-2 transition-all flex items-center justify-center gap-2"
                 >
                   <Lucide.Mic size={20} />
-                  <span>{language === 'or' ? 'ଗୁନ୍ଦୁଲୁ ସହ କଥା' : 'Talk with Gundulu'}</span>
+                  <span>ଗୁନ୍ଦୁଲୁ ସହ କଥା</span>
                 </button>
               </div>
             </div>
@@ -401,19 +401,19 @@ export function SishuVatikaDashboard({
                 📖
               </div>
               <span className="bg-amber-200/60 text-amber-800 text-[10px] font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full">
-                {language === 'or' ? 'ପୁସ୍ତକ' : 'Storybook'}
+                ପୁସ୍ତକ
               </span>
             </div>
 
             <div>
               <h3 className="text-3xl font-black text-amber-900 leading-tight mb-2 group-hover:text-amber-950 transition-colors">
-                {language === 'or' ? 'ଶିଶୁ ବାଟିକା ପାଠ୍ୟପୁସ୍ତକ' : 'Shishu Vatika Textbook'}
+                ଶିଶୁ ବାଟିକା ପାଠ୍ୟପୁସ୍ତକ
               </h3>
               <p className="text-amber-700 font-bold text-lg mb-6">
-                {language === 'or' ? 'ଆସ ଓଡ଼ିଆ କାହାଣୀ ଓ ଗୀତ ବହି ପଢିବା!' : 'Let us read stories, rhymes, and letters together!'}
+                ଆସ ଓଡ଼ିଆ କାହାଣୀ ଓ ଗୀତ ବହି ପଢିବା!
               </p>
               <div className="inline-flex items-center gap-2 text-amber-800 font-black text-sm uppercase tracking-wider bg-white py-3 px-6 rounded-2xl shadow-sm border border-amber-200">
-                <span>{language === 'or' ? 'ପଢିବା ଆରମ୍ଭ କରନ୍ତୁ' : 'Start Reading'}</span>
+                <span>ପଢିବା ଆରମ୍ଭ କରନ୍ତୁ</span>
                 <Lucide.ArrowRight size={16} />
               </div>
             </div>
@@ -432,16 +432,16 @@ export function SishuVatikaDashboard({
                 🎙️
               </div>
               <span className="bg-pink-200/60 text-pink-800 text-[10px] font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full">
-                {language === 'or' ? 'ମାଇକ୍ରୋଫୋନ୍' : 'Speech Chat'}
+                କଥାବାର୍ତ୍ତା
               </span>
             </div>
 
             <div>
               <h3 className="text-3xl font-black text-pink-900 leading-tight mb-2 group-hover:text-pink-950 transition-colors">
-                {language === 'or' ? 'ଗୁନ୍ଦୁଲୁ ସହ କଥାବାର୍ତ୍ତା' : 'Speak with Gundulu'}
+                ଗୁନ୍ଦୁଲୁ ସହ କଥାବାର୍ତ୍ତା
               </h3>
               <p className="text-pink-700 font-bold text-lg mb-4">
-                {language === 'or' ? 'ଗୁନ୍ଦୁଲୁ କୁ ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ ଓ କାହାଣୀ ଶୁଣନ୍ତୁ!' : 'Ask Gundulu questions and listen to stories!'}
+                ଗୁନ୍ଦୁଲୁ କୁ ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ ଓ କାହାଣୀ ଶୁଣନ୍ତୁ!
               </p>
 
               {/* Premium fluid jumping soundwave visualizer */}
@@ -455,7 +455,7 @@ export function SishuVatikaDashboard({
               </div>
 
               <div className="inline-flex items-center gap-2 text-pink-800 font-black text-sm uppercase tracking-wider bg-white py-3 px-6 rounded-2xl shadow-sm border border-pink-200">
-                <span>{language === 'or' ? 'କଥାବାର୍ତ୍ତା ଆରମ୍ଭ କରନ୍ତୁ' : 'Start Talking'}</span>
+                <span>କଥାବାର୍ତ୍ତା ଆରମ୍ଭ କରନ୍ତୁ</span>
                 <Lucide.ArrowRight size={16} />
               </div>
             </div>
@@ -473,19 +473,19 @@ export function SishuVatikaDashboard({
                 🖍️
               </div>
               <span className="bg-emerald-200/60 text-emerald-800 text-[10px] font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full">
-                {language === 'or' ? 'କଳାପଟା' : 'Slate Board'}
+                କଳାପଟା
               </span>
             </div>
 
             <div>
               <h3 className="text-3xl font-black text-emerald-900 leading-tight mb-2 group-hover:text-emerald-950 transition-colors">
-                {language === 'or' ? 'ଗୁନ୍ଦୁଲୁ କଳାପଟା' : "Gundulu Slate Board"}
+                ଗୁନ୍ଦୁଲୁ କଳାପଟା
               </h3>
               <p className="text-emerald-700 font-bold text-lg mb-6">
-                {language === 'or' ? 'ଚାଲ ଚିତ୍ର ଆଙ୍କିବା, ଅକ୍ଷର ଲେଖିବା ଓ ଖେଳିବା!' : 'Let us draw pictures, write letters and numbers!'}
+                ଚାଲ ଚିତ୍ର ଆଙ୍କିବା, ଅକ୍ଷର ଲେଖିବା ଓ ଖେଳିବା!
               </p>
               <div className="inline-flex items-center gap-2 text-emerald-800 font-black text-sm uppercase tracking-wider bg-white py-3 px-6 rounded-2xl shadow-sm border border-emerald-200">
-                <span>{language === 'or' ? 'ଲେଖିବା ଆରମ୍ଭ କରନ୍ତୁ' : 'Start Drawing'}</span>
+                <span>ଲେଖିବା ଆରମ୍ଭ କରନ୍ତୁ</span>
                 <Lucide.ArrowRight size={16} />
               </div>
             </div>
@@ -501,16 +501,16 @@ export function SishuVatikaDashboard({
               </div>
               <div>
                 <h3 className="text-2xl font-black text-slate-800">
-                  {language === 'or' ? 'ମୋର ସୁନ୍ଦର ଷ୍ଟିକର ସଂଗ୍ରହ' : 'My Sticker Collection'}
+                  ମୋର ସୁନ୍ଦର ଷ୍ଟିକର ସଂଗ୍ରହ
                 </h3>
                 <p className="text-sm font-bold text-teal-600">
-                  {language === 'or' ? 'ପଢ଼ିବା ସହ ନୂଆ ଷ୍ଟିକର ମୁକ୍ତ କରନ୍ତୁ!' : 'Earn cute stickers as you learn and talk!'}
+                  ପଢ଼ିବା ସହ ନୂଆ ଷ୍ଟିକର ମୁକ୍ତ କରନ୍ତୁ!
                 </p>
               </div>
             </div>
             
             <div className="bg-teal-50 border border-teal-200/50 px-4 py-2 rounded-2xl text-xs font-bold text-teal-700">
-              {language === 'or' ? `ମୋଟ୍ ସଂଗ୍ରହ: ${STICKERS_DATA.filter(s => isPremium || !s.premiumOnly).length} / ${STICKERS_DATA.length}` : `Collected: ${STICKERS_DATA.filter(s => isPremium || !s.premiumOnly).length} / ${STICKERS_DATA.length}`}
+              ମୋଟ୍ ସଂଗ୍ରହ: {STICKERS_DATA.filter(s => isPremium || !s.premiumOnly).length} / {STICKERS_DATA.length}
             </div>
           </div>
 
@@ -533,7 +533,7 @@ export function SishuVatikaDashboard({
                   </div>
                   
                   <span className="text-[10px] font-black uppercase text-slate-500 tracking-wider text-center max-w-full truncate leading-tight">
-                    {language === 'or' ? sticker.nameOr : sticker.nameEn}
+                    {sticker.nameOr}
                   </span>
 
                   {/* Lock Indicator */}
@@ -570,7 +570,7 @@ export function SishuVatikaDashboard({
               </button>
 
               <h4 className="text-sm font-extrabold text-teal-600 uppercase tracking-widest mb-4">
-                🎉 {language === 'or' ? 'ଷ୍ଟିକର ମିଳିଗଲା!' : 'Sticker Collected!'} 🎉
+                🎉 ଷ୍ଟିକର ମିଳିଗଲା! 🎉
               </h4>
 
               <div className="w-48 h-48 rounded-full bg-yellow-50 border-4 border-yellow-200 flex items-center justify-center text-8xl mx-auto mb-6 shadow-inner animate-pulse">
@@ -598,7 +598,7 @@ export function SishuVatikaDashboard({
                   className="flex-1 bg-cyan-100 hover:bg-cyan-200 text-cyan-700 border-b-4 border-cyan-300 font-extrabold py-3.5 px-4 rounded-2xl active:translate-y-0.5 active:border-b-0 flex items-center justify-center gap-2 transition-all cursor-pointer"
                 >
                   <Lucide.Volume2 size={20} />
-                  <span>{language === 'or' ? 'ଶବ୍ଦ ଶୁଣନ୍ତୁ' : 'Say Name'}</span>
+                  <span>ଶବ୍ଦ ଶୁଣନ୍ତୁ</span>
                 </button>
                 
                 <button
@@ -675,7 +675,7 @@ export function SishuVatikaDashboard({
       {/* Blackboard Modal */}
       <AnimatePresence>
         {showBlackboard && (
-          <MathBlackboard
+          <SishuVatikaSlate
             language={language}
             onClose={() => setShowBlackboard(false)}
             isPremium={isPremium}

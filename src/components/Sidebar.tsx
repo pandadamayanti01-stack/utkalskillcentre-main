@@ -74,9 +74,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
     : allMenuItems.filter(item => item.id !== 'pitch_deck' && item.id !== 'telemetry');
 
   const teacherExcludedIds = ['store', 'leaderboard', 'daily_mcqs', 'syllabus_tracker', 'monthly_tests', 'smart_classes', 'matching_quiz', 'parent_dashboard', 'gundulu'];
-  const menuItems = user?.role === 'teacher'
-    ? filteredMenuItems.filter(item => !teacherExcludedIds.includes(item.id))
-    : filteredMenuItems;
+  let menuItems = filteredMenuItems;
+  if (user?.role === 'teacher') {
+    menuItems = filteredMenuItems.filter(item => !teacherExcludedIds.includes(item.id));
+  } else if (user?.class === 'sishuvatika(Anganwadi)') {
+    const sishuvatikaAllowedIds = ['profile', 'dashboard', 'gundulu', 'digital_library', 'plans', 'parent_dashboard', 'support'];
+    menuItems = filteredMenuItems.filter(item => sishuvatikaAllowedIds.includes(item.id));
+  }
 
 
 

@@ -22,10 +22,7 @@ async function main() {
   snapshot.forEach(doc => {
     const data = doc.data();
     console.log(`Document ID: ${doc.id}`);
-    console.log(`  Class: ${data.class}`);
-    console.log(`  Subject: ${data.subject}`);
-    console.log(`  Title: ${data.title}`);
-    console.log(`  Keys: ${Object.keys(data).join(', ')}`);
+    console.log(JSON.stringify(data, null, 2));
   });
 }
 

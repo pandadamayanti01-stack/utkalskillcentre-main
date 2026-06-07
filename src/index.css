@@ -870,6 +870,50 @@ body.theme-daybreak .force-dark-theme .border-white\/20 {
   border-color: rgba(255, 255, 255, 0.2) !important;
 }
 
+/* Ensure paragraph and text elements inside force-dark-theme keep bright colors in Daybreak theme */
+body.theme-daybreak .force-dark-theme p,
+body.theme-daybreak .force-dark-theme li {
+  color: #e2e8f0 !important;
+}
+
+body.theme-daybreak .force-dark-theme span:not(.text-orange-400):not(.text-emerald-400):not(.text-cyan-400):not(.text-amber-400):not(.text-rose-400):not(.text-emerald-500):not(.text-cyan-300):not(.text-slate-500) {
+  color: #cbd5e1 !important;
+}
+
+/* Daybreak input/textarea overrides inside force-dark-theme to prevent black-on-black typing */
+body.theme-daybreak .force-dark-theme input,
+body.theme-daybreak .force-dark-theme textarea {
+  background-color: #0f172a !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+body.theme-daybreak .force-dark-theme input::placeholder,
+body.theme-daybreak .force-dark-theme textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* Daybreak bg-white/5 and bg-white/10 button and chip overrides inside force-dark-theme */
+body.theme-daybreak .force-dark-theme .bg-white\/5,
+body.theme-daybreak .force-dark-theme button.bg-white\/5 {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: #cbd5e1 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+body.theme-daybreak .force-dark-theme .bg-white\/10,
+body.theme-daybreak .force-dark-theme button.bg-white\/10 {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+body.theme-daybreak .force-dark-theme button.bg-white\/5:hover,
+body.theme-daybreak .force-dark-theme button.bg-white\/10:hover {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+}
+
 
 
 
