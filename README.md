@@ -73,6 +73,60 @@ We have fully implemented several cutting-edge features that set Utkal Skill Cen
 
 In alignment with **Track 2 (Optimize)**, we focused on transforming our baseline educational MVP into a highly resilient, production-ready system optimized for low-bandwidth rural environments.
 
+### 📐 Complete System Component Architecture
+```mermaid
+graph TD
+    %% Styling Definitions
+    classDef client fill:#3b82f6,stroke:#1d4ed8,stroke-width:2px,color:#fff;
+    classDef server fill:#7c3aed,stroke:#5b21b6,stroke-width:2px,color:#fff;
+    classDef database fill:#10b981,stroke:#047857,stroke-width:2px,color:#fff;
+    classDef google fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff;
+    
+    %% Nodes
+    subgraph Client Tier [Client PWA - Browser / Mobile Device]
+        A1["Mobile PWA Viewport (React)"]
+        A2["Web Speech ASR (Odia/English)"]
+        A3["Web Audio API (Volume Waveform)"]
+        A4["Browser TTS Engine (Local Fallback)"]
+    end
+    
+    subgraph Gateway Tier [Server / Serverless Hosting]
+        B1["Express API Gateway (api/index.ts)"]
+        B2["In-Memory RAG Query Cache (10m TTL)"]
+    end
+
+    subgraph Storage Tier [Google Cloud Firebase]
+        C1[("Firestore Database (utkal-prod)")]
+        C2[("Vector Index (textbook_chunks)")]
+    end
+
+    subgraph Model Tier [Google Cloud AI Services]
+        D1["Gemini 2.5 Flash (LLM / Vision)"]
+        D2["gemini-embedding-001"]
+        D3["Gemini Text-to-Speech API"]
+    end
+
+    %% Component Flows
+    A1 <-->|JSON Payload| B1
+    A2 -->|ASR Transcripts| A1
+    B1 <-->|Cache Check| B2
+    B1 <-->|Vector & Auth Queries| C1
+    C1 --- C2
+    B1 -->|Embedding Request| D2
+    B1 -->|Grounded LLM Query| D1
+    B1 -->|Synthesis Request| D3
+    D3 -->|Raw Audio Buffer| B1
+    B1 -->|WAV Audio Response| A1
+    A1 -->|Audio Wave Stream| A3
+    A1 -->|Local Audio Fallback| A4
+
+    %% Apply Styles
+    class A1,A2,A3,A4 client;
+    class B1,B2 server;
+    class C1,C2 database;
+    class D1,D2,D3 google;
+```
+
 ### 1. Dynamic Fail-Safe Hybrid Pipeline (Vertex AI ⇄ Google AI Studio)
 In production, standardizing purely on Vertex AI can lead to outages if the Service Account encounters unexpected IAM permission changes or quotas.
 *   **Optimization**: We built a dynamic upstream router in our Express API backend (`server.ts` and `api/index.ts`).
