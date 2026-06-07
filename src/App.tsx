@@ -1259,7 +1259,8 @@ export default function App() {
   const [newPinValue, setNewPinValue] = useState('');
 
   useEffect(() => {
-    if (user && user.role === 'student' && !user.pin && !user.parent_pin && sessionStorage.getItem('set_pin_prompt_dismissed') !== 'true') {
+    const isJudge = window.location.search.includes('judge') || window.location.hash.includes('judge') || window.location.search.includes('showcase') || (typeof tourStep !== 'undefined' && tourStep) || (user && (user.phoneNumber === '+911234567890' || user.phoneNumber === '1234567890'));
+    if (user && user.role === 'student' && !user.pin && !user.parent_pin && sessionStorage.getItem('set_pin_prompt_dismissed') !== 'true' && !isJudge) {
       setShowSetPinPrompt(true);
     } else {
       setShowSetPinPrompt(false);
@@ -2909,7 +2910,7 @@ export default function App() {
   }
 
   const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-  const isSunday = (new Date().getDay() === 0 && !isLocalhost && user?.phoneNumber !== '+911234567890' && !window.location.search.includes('judge=true') && !window.location.search.includes('showcase=true')) || window.location.search.includes('test_lock=true');
+  const isSunday = (new Date().getDay() === 0 && !isLocalhost && user?.phoneNumber !== '+911234567890' && !window.location.search.includes('judge') && !window.location.hash.includes('judge') && !window.location.search.includes('showcase')) || window.location.search.includes('test_lock=true');
   const isLocked = isSunday && showSundayLockout && !sundayBypassed;
 
   if (isLocked) {
@@ -3889,7 +3890,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
               />
             )}
             {activeTab === 'parent_dashboard' && (
-              (user?.parent_pin && !isParentUnlocked && !tourStep && !window.location.search.includes('judge')) ? (
+              (user?.parent_pin && !isParentUnlocked && !tourStep && !window.location.search.includes('judge') && !window.location.hash.includes('judge')) ? (
                 <ParentPinGate 
                   parentPin={user.parent_pin}
                   onCorrectPin={() => setIsParentUnlocked(true)}
