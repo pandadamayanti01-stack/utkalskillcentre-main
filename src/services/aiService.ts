@@ -693,7 +693,7 @@ export async function generateHomeworkSheet(
     1. A premium, formal header block:
        # UTKAL SKILL CENTRE • AI WORKSHEET (କାର୍ଯ୍ୟପତ୍ର)
        **School Name (ବିଦ୍ୟାଳୟ ନାମ):** ________________________
-       **Student Name (ଛාତ୍ର/ଛାତ୍ରୀଙ୍କ ନାମ):** __________________  **Roll No (କ୍ରମିକ ସଂଖ୍ୟା):** ______
+       **Student Name (ଛାତ୍ର/ଛାତ୍ରୀଙ୍କ ନାମ):** __________________  **Roll No (କ୍ରମିକ ସଂଖ୍ୟା):** ______
        **Class (ଶ୍ରେଣୀ):** ${className}  |  **Subject (ବିଷୟ):** ${subjectName}
        **Chapter (ଅଧ୍ୟାୟ):** ${chapterTitle}  |  **Time Allowed:** 45 Mins  |  **Max Marks:** 20
        
@@ -743,10 +743,10 @@ export async function generateLessonPlan(
 ) {
   try {
     const ai = getAI();
-    const prompt = `You are Gundulu, a senior curriculum planner and expert teacher tutor aligned with the OPEPA (Odisha Primary Education Programme Authority) and Board of Secondary Education (BSE) Odisha guidelines.
+    const prompt = `You are Gundulu, a senior curriculum planner and expert teacher tutor aligned with the OSEPA (Odisha School Education Programme Authority) and Board of Secondary Education (BSE) Odisha guidelines.
     Generate a premium, professional school lesson plan (ପାଠ୍ୟ ଯୋଜନା) for standard "${className}" on the topic of "${chapterTitle}" in the subject "${subjectName}".
     
-    The lesson plan MUST follow the official OPEPA 5E Model (Engagement, Exploration, Explanation, Elaboration, Evaluation) pedagogical framework and be written bilingually (with sections, guidelines, and summaries in English and accurate Odia translation).
+    The lesson plan MUST follow the official OSEPA 5E Model (Engagement, Exploration, Explanation, Elaboration, Evaluation) pedagogical framework and be written bilingually (with sections, guidelines, and summaries in English and accurate Odia translation).
     
     CRITICAL: Do NOT use raw LaTeX mathematical symbols, equations, or formatting delimiters (like $$, $, \[, \], \(, \), \frac, \sqrt, \times, \div). Instead, use standard plain text or standard Unicode symbols (like ÷, ×, ±, ≈, ≠, ≤, ≥, ∞, •, α, β, θ, π, √, ^) so that it renders clearly on any device screen.
     
@@ -810,7 +810,7 @@ export async function generatePracticalActivities(
 ) {
   try {
     const ai = getAI();
-    const prompt = `You are Gundulu, a senior curriculum designer and pedagogical expert for school education, aligned with the Board of Secondary Education (BSE) Odisha and OPEPA frameworks.
+    const prompt = `You are Gundulu, a senior curriculum designer and pedagogical expert for school education, aligned with the Board of Secondary Education (BSE) Odisha and OSEPA frameworks.
     Generate a premium, school-standard, bilingual guide with exactly 2 interactive, hands-on classroom activities or projects for standard "${className}" on the topic/chapter "${chapterTitle}" in the subject "${subjectName}".
     
     BILINGUAL & LOCALIZED:

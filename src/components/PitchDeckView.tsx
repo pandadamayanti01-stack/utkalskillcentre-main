@@ -317,11 +317,11 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
         subtitle: "Homework Generator, Sishu Vatika Slate, WebXR 3D Models & Sibling PIN Switcher",
         tagline: "CLASSROOM TOOLS & OPTIMIZATION",
         bullets: [
-          { title: "AI Educator Studio", desc: "Teachers generate custom worksheets, OPEPA 5E lesson plans, and science guides instantly." },
+          { title: "AI Educator Studio", desc: "Teachers generate custom worksheets, OSEPA 5E lesson plans, and science guides instantly." },
           { title: "Sishu Vatika & 3D Lab", desc: "Dedicated Odia toddler environment with tracing slate and interactive 3D diagrams." },
           { title: "Sibling PIN Switcher", desc: "Zero SMS cost 4-digit PIN profile switching for shared household budget devices." }
         ],
-        speakerNotes: "To support the entire learning ecosystem from Class 1 to 10, we built the Educator Studio and Sishu Vatika. For preschool toddlers, Sishu Vatika provides a strictly Odia-locked digital environment featuring a kid-friendly tracing slate. For teachers, our Educator Studio instantly generates syllabus-aligned worksheets, OPEPA-compliant 5E lesson plans, and hands-on activity guides using low-cost household materials. Alongside the Gundulu 3D Study Lab for spatial learning, we optimized shared devices with a zero SMS cost sibling PIN switcher, complete with Play Store launch rewards of +500 XP."
+        speakerNotes: "To support the entire learning ecosystem from Class 1 to 10, we built the Educator Studio and Sishu Vatika. For preschool toddlers, Sishu Vatika provides a strictly Odia-locked digital environment featuring a kid-friendly tracing slate. For teachers, our Educator Studio instantly generates syllabus-aligned worksheets, OSEPA-compliant 5E lesson plans, and hands-on activity guides using low-cost household materials. Alongside the Gundulu 3D Study Lab for spatial learning, we optimized shared devices with a zero SMS cost sibling PIN switcher, complete with Play Store launch rewards of +500 XP."
       },
       {
         title: "Business Viability & Future AI Roadmap",
@@ -396,7 +396,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
         subtitle: "ପ୍ରଶ୍ନପତ୍ର ନିର୍ମାତା, ଶିଶୁ ବାଟିକା ସ୍ଲେଟ୍, ୩D ଲ୍ୟାବ୍ ଓ ସିବ୍ଲିଙ୍ଗ୍ ସୁଇଚର୍",
         tagline: "ଶ୍ରେଣୀ ଗୃହ ଉପକରଣ ଓ ଅପ୍ଟିମାଇଜେସନ୍",
         bullets: [
-          { title: "AI ଶିକ୍ଷକ ଷ୍ଟୁଡିଓ", desc: "ଶିକ୍ଷକମାନେ ଓଡ଼ିଆ ହୋମୱାର୍କ ସିଟ୍, OPEPA ୫E ପାଠ୍ୟ ଯୋଜନା ଓ ବିଜ୍ଞାନ କାର୍ଯ୍ୟକଳାପ ତୁରନ୍ତ ପ୍ରସ୍ତୁତ କରିପାରିବେ।" },
+          { title: "AI ଶିକ୍ଷକ ଷ୍ଟୁଡିଓ", desc: "ଶିକ୍ଷକମାନେ ଓଡ଼ିଆ ହୋମୱାର୍କ ସିଟ୍, OSEPA ୫E ପାଠ୍ୟ ଯୋଜନା ଓ ବିଜ୍ଞାନ କାର୍ଯ୍ୟକଳାପ ତୁରନ୍ତ ପ୍ରସ୍ତୁତ କରିପାରିବେ।" },
           { title: "ଶିଶୁ ବାଟିକା ଓ ୩D ଲ୍ୟାବ୍", desc: "ଶିଶୁ ବାଟିକା ପାଇଁ ଓଡ଼ିଆ ଲେଖିବା ସ୍ଲେଟ୍ ଏବଂ ଜଟିଳ ପାଠ ବୁଝିବାକୁ ଆକର୍ଷଣୀୟ ୩D ବିଜ୍ଞାନ ମଡେଲ୍।" },
           { title: "ସିବ୍ଲିଙ୍ଗ୍ ସୁଇଚର୍ ପିନ୍", desc: "ବିନା SMS ଖର୍ଚ୍ଚରେ ୪-ଅଙ୍କ ବିଶିଷ୍ଟ ପିନ୍ ଦ୍ୱାରା ଏକାଧିକ ପିଲାଙ୍କ ମଧ୍ୟରେ ପ୍ରୋଫାଇଲ୍ ଅଦଳବଦଳ।" }
         ],

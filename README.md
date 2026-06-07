@@ -50,7 +50,7 @@ We have fully implemented several cutting-edge features that set Utkal Skill Cen
 
 ### 1. 👩‍🏫 AI Educator Studio (Teacher Dashboard)
 - **Gundulu Worksheet Maker**: Allows teachers to instantly generate curriculum-aligned homework worksheets with custom difficulty levels, along with comprehensive teacher answer keys.
-- **5E Lesson Planner**: Generates OPEPA-compliant lesson plans structured around the 5E framework (Engage, Explore, Explain, Elaborate, Evaluate) to optimize classroom instruction.
+- **5E Lesson Planner**: Generates OSEPA-compliant lesson plans structured around the 5E framework (Engage, Explore, Explain, Elaborate, Evaluate) to optimize classroom instruction.
 - **Low-Cost Science Lab**: Provides step-by-step instructions for conducting scientific experiments using easily accessible, low-cost household materials.
 - *Accessible under the Teacher Fast-Pass login profile (`9876543210`).*
 

@@ -419,8 +419,8 @@ export function TeacherDashboard({
               </h1>
               <p className="text-slate-400 text-xs md:text-sm max-w-xl font-medium leading-relaxed">
                 {language === 'en' 
-                  ? 'Create BSE Odisha syllabus aligned worksheets, structured OPEPA-compliant lesson plans, zero-cost science experiment guides, and promote YouTube lesson videos globally.'
-                  : 'BSE ଓଡ଼ିଶା ପାଠ୍ୟକ୍ରମ ଅନୁଯାୟୀ ପ୍ରଶ୍ନପତ୍ର, OPEPA-ସମ୍ମତ ପାଠ୍ୟ ଯୋଜନା, ସ୍ଵଳ୍ପ ଖର୍ଚ୍ଚ ବିଜ୍ଞାନ ପରୀକ୍ଷା ଗାଇଡ୍ ସୃଷ୍ଟି କରନ୍ତୁ ଏବଂ ଶିକ୍ଷଣୀୟ ଭିଡିଓ ସାରା ଓଡ଼ିଶାର ପିଲାଙ୍କ ସହ ଶେୟାର କରନ୍ତୁ।'}
+                  ? 'Create BSE Odisha syllabus aligned worksheets, structured OSEPA-compliant lesson plans, zero-cost science experiment guides, and promote YouTube lesson videos globally.'
+                  : 'BSE ଓଡ଼ିଶା ପାଠ୍ୟକ୍ରମ ଅନୁଯାୟୀ ପ୍ରଶ୍ନପତ୍ର, OSEPA-ସମ୍ମତ ପାଠ୍ୟ ଯୋଜନା, ସ୍ଵଳ୍ପ ଖର୍ଚ୍ଚ ବିଜ୍ଞାନ ପରୀକ୍ଷା ଗାଇଡ୍ ସୃଷ୍ଟି କରନ୍ତୁ ଏବଂ ଶିକ୍ଷଣୀୟ ଭିଡିଓ ସାରା ଓଡ଼ିଶାର ପିଲାଙ୍କ ସହ ଶେୟାର କରନ୍ତୁ।'}
               </p>
 
               {currentTip && (
@@ -581,7 +581,7 @@ export function TeacherDashboard({
           
           {/* Single Line Clean Tab Subtitle / Instruction */}
           <p className="text-[11px] font-bold text-purple-400/85 tracking-wide pl-2 italic">
-            {activeSubTab === 'workspace' && (language === 'en' ? '✦ Create BSE-aligned worksheets, OPEPA lesson plans, and zero-cost science activities.' : '✦ BSE-ସମ୍ମତ ପ୍ରଶ୍ନପତ୍ର, ପାଠ୍ୟ ଯୋଜନା ଓ ବିଜ୍ଞାନ କାର୍ଯ୍ୟକଳาପ ସୃଷ୍ଟି କରନ୍ତୁ।')}
+            {activeSubTab === 'workspace' && (language === 'en' ? '✦ Create BSE-aligned worksheets, OSEPA lesson plans, and zero-cost science activities.' : '✦ BSE-ସମ୍ମତ ପ୍ରଶ୍ନପତ୍ର, ପାଠ୍ୟ ଯୋଜନା ଓ ବିଜ୍ଞାନ କାର୍ଯ୍ୟକଳାପ ସୃଷ୍ଟି କରନ୍ତୁ।')}
             {activeSubTab === 'library' && (language === 'en' ? '✦ View, copy, and print your previously generated AI teaching materials.' : '✦ ଆପଣଙ୍କ ଦ୍ୱାରା ପୂର୍ବରୁ ପ୍ରସ୍ତୁତ କରାଯାଇଥିବା ଶିକ୍ଷଣ ସାମଗ୍ରୀ ଦେଖନ୍ତୁ ଓ ପ୍ରିଣ୍ଟ କରନ୍ତୁ।')}
             {activeSubTab === 'broadcast' && (language === 'en' ? '✦ Monitor the curation status of your suggested YouTube lesson videos.' : '✦ ଆପଣଙ୍କ ଦ୍ୱାରା ସୁପାରିଶ ହୋଇଥିବା ୟୁଟ୍ୟୁବ୍ ଭିଡିଓର ସ୍ଥିତି ଯାଞ୍ଚ କରନ୍ତୁ।')}
             {activeSubTab === 'educator_board' && (language === 'en' ? '✦ View top contributing educators and contribution streaks across Odisha.' : '✦ ଓଡ଼ିଶାର ସର୍ବୋତ୍ତମ ଅବଦାନକାରୀ ଶିକ୍ଷକ ଏବଂ ସେମାନଙ୍କର ରାଙ୍କ ଦେଖନ୍ତୁ।')}
@@ -660,7 +660,7 @@ export function TeacherDashboard({
                           <Lucide.Presentation size={26} />
                         </div>
                         <span className="px-2.5 py-1 rounded-md bg-blue-500/10 border border-blue-500/20 text-blue-300 text-[8px] font-black uppercase tracking-wider">
-                          OPEPA 5E
+                          OSEPA 5E
                         </span>
                       </div>
                       
@@ -676,8 +676,8 @@ export function TeacherDashboard({
 
                         <p className="text-xs text-slate-400 leading-relaxed font-medium pt-1">
                           {language === 'en'
-                            ? 'Generate OPEPA guidelines aligned structured teaching plans containing learning objectives and TLM lists.'
-                            : 'BSE ଓଡ଼ିଶା ଓ OPEPA ନିର୍ଦ୍ଦେଶାବଳୀ ଅନୁଯାୟୀ ଶିକ୍ଷଣ ଉଦ୍ଦେଶ୍ୟ ଓ TLM ସହିତ ବିସ୍ତୃତ ପାଠ୍ୟ ଯୋଜନା ପ୍ରସ୍ତୁତ କରନ୍ତୁ।'}
+                            ? 'Generate OSEPA guidelines aligned structured teaching plans containing learning objectives and TLM lists.'
+                            : 'BSE ଓଡ଼ିଶା ଓ OSEPA ନିର୍ଦ୍ଦେଶାବଳୀ ଅନୁଯାୟୀ ଶିକ୍ଷଣ ଉଦ୍ଦେଶ୍ୟ ଓ TLM ସହିତ ବିସ୍ତୃତ ପାଠ୍ୟ ଯୋଜନା ପ୍ରସ୍ତୁତ କରନ୍ତୁ।'}
                         </p>
                       </div>
                     </div>
