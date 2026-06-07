@@ -5,13 +5,18 @@ const { getFirestore } = require('firebase-admin/firestore');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const API_KEYS = [
-  'AIzaSyC7UINWWpHpFLH7luNA1rKpVwxTZ4ttT-0',
-  'AIzaSyD4haloAGFX1ygDIIHri5oi9n_A36m5FA4',
-  'AIzaSyAUBYWNdOUmVUJ3FoJMqBEopEwGC0s937U',
-  'AIzaSyCdZFXZ0U5QSxNQk00mQA3NtaSS-ji6BkQ',
-  'AIzaSyBIkzsQX5PZ5DyNubS0mc77vjllewzwAks',
-  'AIzaSyCEg16z4_O5fx-0h8FO7M8y9cE4pK_J1Ws'
-];
+  process.env.GEMINI_API_KEY_1 || '',
+  process.env.GEMINI_API_KEY_2 || '',
+  process.env.GEMINI_API_KEY_3 || '',
+  process.env.GEMINI_API_KEY_4 || '',
+  process.env.GEMINI_API_KEY_5 || '',
+  process.env.GEMINI_API_KEY_6 || ''
+].filter(Boolean);
+
+// Fallback to primary key if no rotator keys configured
+if (API_KEYS.length === 0) {
+  API_KEYS.push(process.env.GEMINI_API_KEY || '');
+}
 
 let currentKeyIndex = 0;
 let genAI = new GoogleGenerativeAI(API_KEYS[currentKeyIndex]);

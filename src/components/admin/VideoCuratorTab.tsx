@@ -249,7 +249,8 @@ export function VideoCuratorTab() {
     try {
       const subjectName = getSubjectDisplayName(selectedClass, selectedSubject, 'en');
       const query = `Class ${selectedClass} ${subjectName} ${chapterName} Odia Medium BSE Odisha`;
-      const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&key=AIzaSyCAI8kQ9j2oLwHbVF8eUtTAaQGzLqOcgeI&maxResults=15&order=relevance`);
+      const youtubeApiKey = import.meta.env.VITE_YOUTUBE_API_KEY || "AIzaSyCAI8kQ9j2oLwHbVF8eUtTAaQGzLqOcgeI";
+      const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&key=${youtubeApiKey}&maxResults=15&order=relevance`);
       const data = await res.json();
       
       if (data.items && data.items.length > 0) {

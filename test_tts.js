@@ -1,4 +1,4 @@
-const geminiApiKey = 'AIzaSyCbxvcVI_uY6x_tp-v8T0EnttJhN0QTpSI';
+const geminiApiKey = process.env.GEMINI_API_KEY || '';
 const model = 'gemini-3.1-flash-tts-preview';
 const voiceName = 'Puck';
 const text = 'ନମସ୍କାର, ମୁଁ ଗୁନ୍ଦୁଲୁ।';

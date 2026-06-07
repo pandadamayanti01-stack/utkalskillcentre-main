@@ -62,7 +62,7 @@ if not API_KEY:
 
 # Paste your API key here directly if not using Colab Secrets or Env Variables:
 if not API_KEY or API_KEY == "YOUR_PAY_AS_YOU_GO_KEY_HERE":
-    API_KEY = "AIzaSyChC5vHsWedo2EQbISIgrCp0bakJBPztdw"
+    API_KEY = ""
 
 # Set active target class to process (e.g. '10', '9', '8')
 TARGET_CLASS = "10"
