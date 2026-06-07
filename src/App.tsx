@@ -85,6 +85,7 @@ const LaunchCelebration = lazy(() => import('./components/LaunchCelebration'));
 const RajaFestivalPoster = lazy(() => import('./components/RajaFestivalPoster'));
 const PitchDeckView = lazy(() => import('./components/PitchDeckView').then((module) => ({ default: module.PitchDeckView })));
 const TelemetryView = lazy(() => import('./components/TelemetryView').then((module) => ({ default: module.TelemetryView })));
+const Gundulu3DLab = lazy(() => import('./components/Gundulu3DLab').then((module) => ({ default: module.Gundulu3DLab })));
 
 function ViewLoader({ fullHeight = false }: { fullHeight?: boolean }) {
   return (
@@ -3714,7 +3715,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
 
         <div 
           ref={contentScrollRef} 
-          className={`flex-1 ${(activeTab === 'study_buddy' || activeTab === 'gundulu' || activeTab === 'digital_library') ? 'overflow-hidden p-0 flex flex-col min-h-0' : 'overflow-y-auto p-4 md:p-8 pb-28 lg:pb-8'} scrollbar-hide relative z-10`}
+          className={`flex-1 ${(activeTab === 'study_buddy' || activeTab === 'gundulu' || activeTab === 'digital_library' || activeTab === '3d_study') ? 'overflow-hidden p-0 flex flex-col min-h-0' : 'overflow-y-auto p-4 md:p-8 pb-28 lg:pb-8'} scrollbar-hide relative z-10`}
         >
           <AnimatePresence mode="wait">
             {/* Your 10+ Tab components go here... */}
@@ -3816,6 +3817,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                 onUpgrade={() => setActiveTab('plans')}
                 onBack={() => setActiveTab('dashboard')}
                 loadChapters={loadChapters}
+                onNavigateTo3D={() => setActiveTab('3d_study')}
               />
             )}
             {activeTab === 'smart_classes' && (
@@ -3878,6 +3880,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             {activeTab === 'plans' && <LocalSubscriptionGuard onSubscribe={handleSubscribe} language={language} isPremium={isPremium} user={user} onShare={handleShare} systemSettings={systemSettings} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'pitch_deck' && <PitchDeckView language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'telemetry' && <TelemetryView language={language} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === '3d_study' && <Gundulu3DLab language={language} user={user} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'matching_quiz' && (
               <AiMatchingQuiz 
                 user={user} 
@@ -3902,6 +3905,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             isSidebarOpen={isSidebarOpen}
             unreadNotificationsCount={studentNotifications.filter(n => n.id && !readNotifIds.includes(n.id)).length}
             userRole={user.role}
+            userName={user.name}
           />
         )}
       </main>

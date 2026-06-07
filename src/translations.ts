@@ -374,7 +374,21 @@ export const translations: any = {
       unlocked: "Offer Unlocked! Pay Now",
       shareOnWhatsApp: "Share on WhatsApp",
       postToStatus: "WhatsApp Status"
-    }
+    },
+    threeDLab: "Gundulu 3D Lab",
+    viewIn3D: "View in 3D 🔬",
+    arPrompt: "Scan floor to view in AR",
+    playAudio: "Listen to Gundulu",
+    stopAudio: "Stop Audio",
+    exploreInteractive: "Explore Interactive 3D Models mapped to BSE Odisha Syllabus",
+    gameTitle: "3D Labeling Quiz",
+    gameScore: "Score",
+    gameStart: "Start Labeling Game",
+    labelThis: "Identify this part:",
+    correctLabel: "Correct! +10 XP",
+    wrongLabel: "Wrong! Try again.",
+    gameComplete: "Quiz Complete!",
+    gameReward: "Congratulations! You earned 50 XP!",
   },
   or: {
     welcome: "ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରକୁ ସ୍ୱାଗତ",
@@ -750,9 +764,22 @@ export const translations: any = {
       shareToUnlock: "ଏହି ଅଫର୍ ଅନଲକ୍ କରିବାକୁ WhatsApp ରେ ୫ ଜଣ ସାଙ୍ଗଙ୍କ ସହିତ ସେୟାର୍ କରନ୍ତୁ",
       postStatusToUnlock: "ଅନଲକ୍ କରିବାକୁ WhatsApp ଷ୍ଟାଟସ୍‌ରେ ପୋଷ୍ଟ କରନ୍ତୁ",
       sharesRemaining: "ଆଉ {count} ସେୟାର୍ ଆବଶ୍ୟକ",
-      unlocked: "ଅଫର୍ ଅନଲକ୍ ହୋଇଛି! ଏବେ ପେମେଣ୍ଟ କରନ୍ତୁ",
       shareOnWhatsApp: "WhatsApp ରେ ସେୟାର୍ କରନ୍ତୁ",
       postToStatus: "WhatsApp Status"
-    }
+    },
+    threeDLab: "ଗୁନ୍ଦୁଲୁ ୩D ଲ୍ୟାବ୍",
+    viewIn3D: "୩D ଲ୍ୟାବ୍‌ରେ ଦେଖନ୍ତୁ 🔬",
+    arPrompt: "କ୍ୟାମେରାରେ ଦେଖିବା ପାଇଁ ଭୂମିକୁ ସ୍କାନ କରନ୍ତୁ",
+    playAudio: "ଗୁନ୍ଦୁଲୁ କଥା ଶୁଣନ୍ତୁ",
+    stopAudio: "ଅଡିଓ ବନ୍ଦ କରନ୍ତୁ",
+    exploreInteractive: "BSE ଓଡ଼ିଶା ସିଲାବସ୍ ଅନୁଯାୟୀ ଇଣ୍ଟରାକ୍ଟିଭ୍ ୩D ମଡେଲ୍‌ଗୁଡ଼ିକୁ ଅନୁସନ୍ଧାନ କରନ୍ତୁ",
+    gameTitle: "୩D ନାମକରଣ କୁଇଜ୍",
+    gameScore: "ସ୍କୋର",
+    gameStart: "ଖେଳ ଆରମ୍ଭ କରନ୍ତୁ",
+    labelThis: "ଏହି ଅଂଶଟିକୁ ଚିହ୍ନଟ କରନ୍ତୁ:",
+    correctLabel: "ସଠିକ୍! +୧୦ XP",
+    wrongLabel: "ଭୁଲ୍! ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |",
+    gameComplete: "କୁଇଜ୍ ସମ୍ପୂର୍ଣ୍ଣ ହୋଇଛି!",
+    gameReward: "ଅଭିନନ୍ଦନ! ଆପଣ ୫୦ XP ଜିତିଛନ୍ତି!",
   }
 };

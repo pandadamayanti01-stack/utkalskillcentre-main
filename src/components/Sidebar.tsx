@@ -55,6 +55,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'study_buddy', icon: Lucide.MessageSquare, label: user?.role === 'teacher' ? (language === 'en' ? 'Gundulu Instructor' : 'ଗୁନ୍ଦୁଲୁ ଇନଷ୍ଟ୍ରକ୍ଟର') : t.studyBuddy },
     { id: 'gundulu', icon: Lucide.Mic, label: language === 'en' ? 'Gundulu AI Tutor' : 'ଗୁନ୍ଦୁଲୁ AI ଟ୍ୟୁଟର' },
     { id: 'digital_library', icon: Lucide.Library, label: language === 'en' ? 'Digital Library' : 'ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀ' },
+    { id: '3d_study', icon: Lucide.Box, label: language === 'en' ? 'Gundulu 3D Lab' : 'ଗୁନ୍ଦୁଲୁ ୩D ଲ୍ୟାବ୍' },
     { id: 'textbooks', icon: Lucide.Book, label: language === 'en' ? 'Textbooks' : 'ପାଠ୍ୟପୁସ୍ତକ' },
     { id: 'smart_classes', icon: Lucide.Youtube, label: language === 'en' ? 'Smart Classes' : 'ସ୍ମାର୍ଟ କ୍ଲାସ' },
     { id: 'monthly_tests', icon: Lucide.Calendar, label: t.monthlyTests },
@@ -96,115 +97,164 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <motion.aside
         className={`fixed lg:static inset-y-0 left-0 w-72 sidebar-gradient z-50 transform transition-transform duration-300 lg:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
-        <div className="h-full flex flex-col p-6">
+        <div className="h-full flex flex-col p-5">
           {/* BRANDING SECTION */}
-          <div className="p-2 flex flex-col gap-4 mb-4">
-            <div className="flex items-center gap-3">
-              {/* Chariot/Rath Crest */}
-              <div className="relative h-12 w-12 rounded-full overflow-hidden border border-emerald-500/30 bg-slate-950/40 p-1 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.25)] flex-shrink-0">
-                <img 
-                  src="/gundulu-rath-crest.png" 
-                  alt="Gundulu" 
-                  className="h-full w-full object-cover scale-[1.3] filter saturate-[1.2]" 
-                />
+          <div className="p-1 flex flex-col gap-4 mb-2">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                {/* Chariot/Rath Crest */}
+                <div className="relative h-10 w-10 rounded-full overflow-hidden border border-emerald-500/20 bg-slate-900/10 p-1 flex items-center justify-center shadow-sm flex-shrink-0">
+                  <img 
+                    src="/gundulu-rath-crest.png" 
+                    alt="Gundulu" 
+                    className="h-full w-full object-cover scale-[1.2] filter saturate-[1.1]" 
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[#b34d1f] dark:text-[#ffd700] font-black text-base leading-none">ଏଆଇ-AI</span>
+                  <span className="text-[8px] font-black text-slate-400 dark:text-white/40 tracking-wider uppercase mt-0.5">GUNDULU ERA</span>
+                </div>
               </div>
-              <div className="flex flex-col">
-                <span className="text-[#ffd700] font-black text-xl leading-none">ଏଆଈ-AI</span>
-                <span className="text-[10px] font-bold text-white/40 tracking-widest uppercase">Gundulu Era</span>
-              </div>
-            </div>
-            {/* Utkal Logo in Sidebar hidden per user request */}
-          </div>
 
-          {/* NAVIGATION */}
-          <nav className="flex-1 space-y-1 overflow-y-auto pr-2 scrollbar-hide pt-4">
-            {menuItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeTab === item.id;
-              return (
-                <SidebarItem
-                  key={item.id}
-                  icon={<Icon size={20} />}
-                  label={item.label}
-                  active={isActive}
-                  premium={item.premium}
-                  badge={item.badge}
-                  /* Applying the Terracotta theme for active items if not premium */
-                  className={isActive && !item.premium ? 'bg-[#b34d1f] text-white shadow-lg' : ''}
-                  onClick={() => {
-                    setActiveTab(item.id);
-                    setSidebarOpen(false);
-                  }}
-                />
-              );
-            })}
-
-            {user?.role === 'admin' && (
-              <SidebarItem
-                icon={<Lucide.Lock size={20} />}
-                label={t.admin}
-                active={isAdminView}
-                onClick={() => {
-                  setIsAdminView(true);
-                  setSidebarOpen(false);
-                }}
-                className={`mt-6 pt-6 border-t border-white/5 ${isAdminView ? 'text-[#ffd700]' : 'text-amber-500/60'}`}
-              />
-            )}
-          </nav>
-
-          {/* USER INFO & LOGOUT */}
-          <div className="mt-auto pt-6 border-t border-white/5 space-y-4">
-            <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/5">
-              <div className="w-10 h-10 rounded-xl bg-[#b34d1f]/20 flex items-center justify-center text-[#ffd700] font-black border border-[#b34d1f]/30">
-                {user?.role === 'teacher' ? 'E' : (user?.name?.charAt(0) || 'S')}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-white truncate">{user?.role === 'teacher' && user?.name === 'Student' ? 'Educator' : (user?.name || 'Student')}</p>
-                <p className="text-[10px] text-[#ffd700] font-bold uppercase tracking-widest opacity-70">
-                  {user?.role === 'teacher' ? 'Educator Mode' : (user?.class ? (t.classes[user.class] || user.class) : 'Odisha Board')}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
-              <div className="flex items-center gap-2 text-white/60">
-                <Lucide.Globe size={18} className="text-emerald-400" />
-                <span className="text-xs font-bold">{language === 'en' ? 'Language' : 'ଭାଷା'}</span>
-              </div>
-              <div className="flex gap-1 bg-black/40 p-1 rounded-xl border border-white/5">
+              {/* High-Contrast Premium Language Switcher */}
+              <div className="flex gap-0.5 bg-slate-100 dark:bg-black/40 p-0.5 rounded-lg border border-slate-200 dark:border-white/5 flex-shrink-0">
                 <button
                   onClick={() => setLanguage('en')}
-                  className={`px-2.5 py-1 rounded-lg text-[10px] font-black transition-all ${language === 'en' ? 'bg-[#b34d1f] text-white shadow-md' : 'text-white/40 hover:text-white/70'}`}
+                  className={`px-2 py-0.5 rounded-md text-[9px] font-black transition-all ${language === 'en' ? 'bg-[#b34d1f] text-white shadow-sm' : 'text-slate-400 dark:text-white/40 hover:text-slate-600 dark:hover:text-white/70'}`}
                 >
                   EN
                 </button>
                 <button
                   onClick={() => setLanguage('or')}
-                  className={`px-2.5 py-1 rounded-lg text-[10px] font-black transition-all ${language === 'or' ? 'bg-[#b34d1f] text-white shadow-md' : 'text-white/40 hover:text-white/70'}`}
+                  className={`px-2 py-0.5 rounded-md text-[9px] font-black transition-all ${language === 'or' ? 'bg-[#b34d1f] text-white shadow-sm' : 'text-slate-400 dark:text-white/40 hover:text-slate-600 dark:hover:text-white/70'}`}
                 >
                   ଓଡ଼ିଆ
                 </button>
               </div>
             </div>
+          </div>
 
-            {user?.role !== 'teacher' && (
-              <button
-                onClick={handleLogout}
-                className="w-full flex items-center gap-3 p-4 rounded-2xl text-amber-400/70 hover:bg-amber-500/10 hover:text-amber-400 transition-all font-bold text-sm group"
-              >
-                <Lucide.Users size={20} className="group-hover:scale-105 transition-transform" />
-                {language === 'en' ? 'Switch Sibling' : 'ଆକାଉଣ୍ଟ୍ ବଦଳାନ୍ତୁ'}
-              </button>
+          {/* NAVIGATION */}
+          <nav className="flex-1 space-y-4 overflow-y-auto pr-2 scrollbar-hide pt-2">
+            {(() => {
+              const menuGroups = [
+                {
+                  titleEn: 'Academics',
+                  titleOr: 'ଶିକ୍ଷା',
+                  items: menuItems.filter(item => ['profile', 'dashboard', 'digital_library', 'textbooks', 'smart_classes', 'syllabus_tracker'].includes(item.id))
+                },
+                {
+                  titleEn: 'Challenge Arena 🏆',
+                  titleOr: 'ଚ୍ୟାଲେଞ୍ଜ ଆରେନା 🏆',
+                  items: menuItems.filter(item => ['monthly_tests', 'daily_mcqs', 'matching_quiz', 'leaderboard', 'store'].includes(item.id))
+                },
+                {
+                  titleEn: 'AI & Tools',
+                  titleOr: 'AI ସହାୟକ',
+                  items: menuItems.filter(item => ['3d_study', 'study_buddy', 'gundulu', 'pitch_deck', 'telemetry'].includes(item.id))
+                },
+                {
+                  titleEn: 'Account & Help',
+                  titleOr: 'ଖାତା ଓ ସାହାଯ୍ୟ',
+                  items: menuItems.filter(item => ['notifications', 'plans', 'parent_dashboard', 'support'].includes(item.id))
+                }
+              ].filter(group => group.items.length > 0);
+
+              return menuGroups.map((group, gIdx) => (
+                <div key={gIdx} className="space-y-1">
+                  <div className="text-[9px] font-black text-slate-400 dark:text-white/20 uppercase tracking-widest px-3.5 mb-1.5 block">
+                    {language === 'en' ? group.titleEn : group.titleOr}
+                  </div>
+                  <div className="space-y-1">
+                    {group.items.map((item) => {
+                      const Icon = item.icon;
+                      const isActive = activeTab === item.id;
+                      return (
+                        <SidebarItem
+                          key={item.id}
+                          icon={<Icon size={18} />}
+                          label={item.label}
+                          active={isActive}
+                          premium={item.premium}
+                          badge={item.badge}
+                          className={isActive && !item.premium ? 'bg-gradient-to-r from-[#b34d1f] to-[#d97706] text-white shadow-md border border-amber-500/25 font-black' : ''}
+                          onClick={() => {
+                            setActiveTab(item.id);
+                            setSidebarOpen(false);
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              ));
+            })()}
+
+            {user?.role === 'admin' && (
+              <div className="pt-4 mt-4 border-t border-white/5">
+                <SidebarItem
+                  icon={<Lucide.Lock size={18} />}
+                  label={t.admin}
+                  active={isAdminView}
+                  onClick={() => {
+                    setIsAdminView(true);
+                    setSidebarOpen(false);
+                  }}
+                  className={`${isAdminView ? 'text-[#ffd700]' : 'text-amber-500/60'}`}
+                />
+              </div>
             )}
+          </nav>
 
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center gap-3 p-4 rounded-2xl text-red-400/70 hover:bg-red-500/10 hover:text-red-400 transition-all font-bold text-sm group"
+          {/* USER INFO & LOGOUT: Combined into high-density card */}
+          <div className="mt-auto pt-4 border-t border-slate-200 dark:border-white/5">
+            <div 
+              onClick={() => {
+                setActiveTab('profile');
+                setSidebarOpen(false);
+              }}
+              className="p-3 rounded-2xl bg-gradient-to-r from-amber-500/10 to-[#b34d1f]/10 dark:from-amber-500/5 dark:to-[#b34d1f]/5 border border-amber-500/25 dark:border-amber-500/15 shadow-md space-y-3 cursor-pointer hover:from-amber-500/15 hover:to-[#b34d1f]/15 transition-all group"
             >
-              <Lucide.LogOut size={20} className="group-hover:-translate-x-1 transition-transform" />
-              {t.logout}
-            </button>
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-full bg-[#b34d1f]/10 flex items-center justify-center text-[#b34d1f] dark:text-[#ffd700] font-black border border-[#b34d1f]/25 shadow-sm text-xs group-hover:scale-105 transition-transform">
+                  {user?.role === 'teacher' ? 'E' : (user?.name?.charAt(0) || 'S')}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-black text-slate-800 dark:text-white truncate group-hover:text-[#b34d1f] dark:group-hover:text-amber-400 transition-colors">
+                    {user?.role === 'teacher' && user?.name === 'Student' ? 'Educator' : (user?.name || 'Student')}
+                  </p>
+                  <p className="text-[9px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider mt-0.5">
+                    {user?.role === 'teacher' ? 'Educator Mode' : (user?.class ? (t.classes[user.class] || user.class) : 'Odisha Board')}
+                  </p>
+                  <div className="flex items-center gap-1 text-[8.5px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest mt-1">
+                    <span>{language === 'en' ? 'Edit Profile' : 'ପ୍ରୋଫାଇଲ୍ ସଂଶୋଧନ'}</span>
+                    <Lucide.ArrowRight size={9} className="group-hover:translate-x-0.5 transition-transform" />
+                  </div>
+                </div>
+              </div>
+
+              <div 
+                className="flex items-center justify-between pt-2.5 border-t border-slate-200 dark:border-white/5" 
+                onClick={(e) => e.stopPropagation()}
+              >
+                {user?.role !== 'teacher' && (
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-1.5 text-[11px] font-black text-[#b34d1f] hover:text-[#b34d1f]/85 dark:text-amber-400 dark:hover:text-amber-300 transition-colors"
+                  >
+                    <Lucide.Users size={12} />
+                    <span>{language === 'en' ? 'Switch Sibling' : 'ସିବ୍ଲିଙ୍ଗ୍ ବଦଳାନ୍ତୁ'}</span>
+                  </button>
+                )}
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-1.5 text-[11px] font-black text-red-600 hover:text-red-500 dark:text-red-400 dark:hover:text-red-300 transition-colors ml-auto animate-pulse-slow"
+                >
+                  <Lucide.LogOut size={12} />
+                  <span>{t.logout}</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </motion.aside>

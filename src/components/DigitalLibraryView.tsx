@@ -8,6 +8,7 @@ import { doc, updateDoc, collection, query, where, getDocs } from 'firebase/fire
 import { solveMathDoubt } from '../services/aiService';
 import confetti from 'canvas-confetti';
 import { CHAPTERS_MAP } from '../data/chaptersMap';
+import { Gundulu3DLab } from './Gundulu3DLab';
 
 
 interface DigitalLibraryViewProps {
@@ -18,6 +19,7 @@ interface DigitalLibraryViewProps {
   onUpgrade?: () => void;
   onBack: () => void;
   loadChapters?: (classStr?: string) => Promise<void>;
+  onNavigateTo3D?: () => void;
 }
 
 interface Message {
@@ -946,7 +948,9 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
   language,
   isPremium,
   onUpgrade,
-  onBack
+  onBack,
+  loadChapters,
+  onNavigateTo3D
 }) => {
   const isFreePeriod = new Date() < new Date('2026-06-20T17:00:00+05:30');
   const isTutorUnlocked = isPremium || isFreePeriod;
@@ -986,7 +990,7 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
   const effectivePdfUrl = selectedChapter ? (selectedChapter.pdfUrl || selectedChapter.download_url || selectedChapter.driveUrl || '') : '';
 
   // Material reader settings
-  const [readerMode, setReaderMode] = useState<'notes' | 'pdf' | 'video'>('notes');
+  const [readerMode, setReaderMode] = useState<'notes' | 'pdf' | 'video' | '3d'>('notes');
   const [personalNotes, setPersonalNotes] = useState<string>('');
   const [isNotepadSaved, setIsNotepadSaved] = useState<boolean>(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
@@ -1835,6 +1839,17 @@ Instructions:
                     <Lucide.Youtube size={14} />
                     <span>{language === 'en' ? 'Gundulu Video' : 'ଗୁନ୍ଦୁଲୁ ଭିଡିଓ'}</span>
                   </button>
+
+                  <button
+                    onClick={() => setReaderMode('3d')}
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold tracking-wider transition-all ${readerMode === '3d'
+                      ? 'bg-[#b34d1f] text-white shadow-lg'
+                      : 'text-slate-400 hover:text-white'
+                      }`}
+                  >
+                    <Lucide.Box size={14} />
+                    <span>{language === 'en' ? 'Gundulu 3D Lab' : 'ଗୁନ୍ଦୁଲୁ ୩D ଲ୍ୟାବ୍'}</span>
+                  </button>
                 </div>
 
                 <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
@@ -2102,6 +2117,26 @@ Instructions:
                         </div>
                       </div>
                     )}
+                  </div>
+                ) : readerMode === '3d' ? (
+                  <div className="w-full h-[60vh] rounded-3xl overflow-hidden bg-slate-950 border border-white/5 flex flex-col relative shadow-[0_20px_50px_rgba(0,0,0,0.5)] animate-glow">
+                    {onNavigateTo3D && (
+                      <div className="absolute top-4 right-4 z-30">
+                        <button
+                          onClick={onNavigateTo3D}
+                          className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#b34d1f] hover:bg-[#b34d1f]/90 text-white font-black text-[10px] tracking-wide uppercase transition-all shadow-md active:scale-95 border border-white/5"
+                        >
+                          <Lucide.ExternalLink size={12} />
+                          <span>{language === 'en' ? 'Open Full-screen ↗' : 'ପୂର୍ଣ୍ଣ ସ୍କ୍ରିନ୍ କରନ୍ତୁ ↗'}</span>
+                        </button>
+                      </div>
+                    )}
+                    <Gundulu3DLab
+                      language={language}
+                      user={user}
+                      initialModelKey={selectedChapter.title || selectedSubject}
+                      isEmbedded={true}
+                    />
                   </div>
                 ) : readerMode === 'video' ? (
                   /* Gorgeous Embedded YouTube Player with smart class videos */
@@ -2695,6 +2730,26 @@ Instructions:
                         </button>
                       </div>
                     )}
+                  </div>
+                ) : readerMode === '3d' ? (
+                  <div className="w-full h-[60vh] rounded-3xl overflow-hidden bg-slate-950 border border-white/5 flex flex-col relative shadow-[0_20px_50px_rgba(0,0,0,0.5)] animate-glow">
+                    {onNavigateTo3D && (
+                      <div className="absolute top-4 right-4 z-30">
+                        <button
+                          onClick={onNavigateTo3D}
+                          className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#b34d1f] hover:bg-[#b34d1f]/90 text-white font-black text-[10px] tracking-wide uppercase transition-all shadow-md active:scale-95 border border-white/5"
+                        >
+                          <Lucide.ExternalLink size={12} />
+                          <span>{language === 'en' ? 'Open Full-screen ↗' : 'ପୂର୍ଣ୍ଣ ସ୍କ୍ରିନ୍ କରନ୍ତୁ ↗'}</span>
+                        </button>
+                      </div>
+                    )}
+                    <Gundulu3DLab
+                      language={language}
+                      user={user}
+                      initialModelKey={selectedChapter.title || selectedSubject}
+                      isEmbedded={true}
+                    />
                   </div>
                 ) : readerMode === 'video' ? (
                   /* Full-screen video mode canvas helper */

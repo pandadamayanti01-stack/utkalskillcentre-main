@@ -11,6 +11,7 @@ interface BottomNavBarProps {
   isSidebarOpen: boolean;
   unreadNotificationsCount?: number;
   userRole?: string;
+  userName?: string;
 }
 
 export const BottomNavBar: React.FC<BottomNavBarProps> = ({
@@ -20,7 +21,8 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
   setSidebarOpen,
   isSidebarOpen,
   unreadNotificationsCount = 0,
-  userRole
+  userRole,
+  userName
 }) => {
   const currentDay = new Date().getDate();
   const isTestWindowActive = currentDay >= 1 && currentDay <= 10 && userRole !== 'teacher';
@@ -59,7 +61,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
     <div className="fixed bottom-0 inset-x-0 z-40 lg:hidden pointer-events-none pb-[env(safe-area-inset-bottom)]">
       
       {/* Edge-to-Edge Navigation Bar Background */}
-      <div className="absolute inset-x-0 bottom-0 h-16 bg-white border-t border-slate-100 shadow-[0_-10px_40px_rgba(0,0,0,0.03)] pointer-events-auto flex items-center justify-between px-2">
+      <div className="absolute inset-x-0 bottom-0 h-16 bg-white/90 dark:bg-slate-950/85 backdrop-blur-xl border-t border-emerald-500/25 dark:border-emerald-500/15 shadow-[0_-8px_30px_rgba(16,185,129,0.08)] dark:shadow-[0_-12px_40px_rgba(16,185,129,0.15)] pointer-events-auto flex items-center justify-between px-2">
         
         {navItems.map((item, index) => {
           const Icon = item.icon;
@@ -69,17 +71,21 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
             (item.id === 'monthly_tests' && activeTab === 'dashboard' && isTestWindowActive) ||
             (item.id === 'dashboard' && activeTab === 'monthly_tests' && !isTestWindowActive);
           
+          const isProfile = item.id === 'menu';
+
           if (item.isCenter) {
             return (
               <div key={item.id} className="relative flex-1 flex justify-center pointer-events-auto h-full">
                 <button
                   onClick={() => handleTabClick(item.id)}
-                  className="absolute -top-6 flex flex-col items-center justify-center transition-transform active:scale-95 hover:scale-105 group"
+                  className="absolute -top-5.5 flex flex-col items-center justify-center transition-transform active:scale-95 hover:scale-105 group"
                 >
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-400 to-[#1A8055] flex items-center justify-center shadow-lg shadow-emerald-500/30 border-4 border-white group-hover:shadow-emerald-500/50 transition-all duration-300">
-                    <Icon size={24} color="white" strokeWidth={2.5} />
+                  <div className="w-13 h-13 rounded-full bg-gradient-to-br from-emerald-400 to-[#1A8055] flex items-center justify-center shadow-lg shadow-emerald-500/40 dark:shadow-emerald-500/50 border-4 border-white dark:border-slate-950 group-hover:shadow-emerald-500/60 transition-all duration-300 relative">
+                    {/* Pulsing glow ring inside center button */}
+                    <span className="absolute inset-0 rounded-full border border-white/20 animate-ping opacity-75 pointer-events-none" />
+                    <Icon size={22} color="white" strokeWidth={2.5} />
                   </div>
-                  <span className="text-[9px] font-black text-[#1A8055] mt-1 tracking-wide">
+                  <span className="text-[9px] font-black text-[#1A8055] dark:text-[#34d399] mt-1 tracking-wide">
                     {item.label}
                   </span>
                 </button>
@@ -95,26 +101,45 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
             >
               <div className={`flex flex-col items-center justify-center transition-all duration-300 ${isActive ? '-translate-y-0.5' : ''}`}>
                 
-                {/* Premium Active Pill Background */}
+                {/* Premium Active Pill Background with soft border & glow */}
                 <div className={`relative flex items-center justify-center transition-all duration-300 ${
-                  isActive ? 'bg-[#1A8055]/10 px-4 py-1 rounded-2xl' : 'px-4 py-1'
+                  isActive 
+                    ? isProfile
+                      ? 'bg-gradient-to-r from-amber-500/10 to-[#b34d1f]/10 px-3 py-1 rounded-2xl border border-amber-500/25 shadow-[0_2px_12px_rgba(217,119,6,0.15)]'
+                      : 'bg-emerald-500/10 dark:bg-emerald-500/15 px-3 py-1 rounded-2xl border border-emerald-500/20 dark:border-emerald-500/25 shadow-[0_2px_10px_rgba(16,185,129,0.1)]' 
+                    : 'px-3 py-1 border border-transparent'
                 }`}>
-                  <Icon 
-                    size={20} 
-                    className={`transition-colors duration-300 ${isActive ? 'text-[#1A8055]' : 'text-slate-400 group-hover:text-slate-500'}`} 
-                    strokeWidth={isActive ? 2.5 : 2} 
-                  />
+                  {isProfile ? (
+                    /* High-End Eye-Catching Avatar instead of generic user icon */
+                    <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-black transition-all ${
+                      isActive 
+                        ? 'bg-gradient-to-br from-[#b34d1f] to-amber-500 text-white ring-2 ring-amber-500/50 ring-offset-1 dark:ring-offset-slate-950 animate-pulse shadow-md'
+                        : 'bg-[#b34d1f]/10 text-[#b34d1f] dark:text-amber-400 border border-[#b34d1f]/25 shadow-sm'
+                    }`}>
+                      {userName?.charAt(0).toUpperCase() || (userRole === 'teacher' ? 'E' : 'S')}
+                    </div>
+                  ) : (
+                    <Icon 
+                      size={18} 
+                      className={`transition-colors duration-300 ${isActive ? 'text-[#1A8055] dark:text-[#34d399]' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600'}`} 
+                      strokeWidth={isActive ? 2.5 : 2} 
+                    />
+                  )}
                   
                   {/* Notification Badge */}
                   {((item.id === 'smart_classes' && userRole !== 'teacher') || (item.id === 'notifications' && userRole === 'teacher')) && unreadNotificationsCount > 0 && (
-                    <span className="absolute top-0 right-1 flex items-center justify-center px-1 py-0.5 min-w-[14px] h-[14px] rounded-full bg-red-500 text-[8px] font-black text-white shadow-[0_2px_4px_rgba(239,68,68,0.4)]">
+                    <span className="absolute -top-1 -right-1 flex items-center justify-center px-1 py-0.5 min-w-[14px] h-[14px] rounded-full bg-red-500 text-[8px] font-black text-white shadow-[0_2px_4px_rgba(239,68,68,0.4)]">
                       {unreadNotificationsCount > 9 ? '9+' : unreadNotificationsCount}
                     </span>
                   )}
                 </div>
 
-                <span className={`text-[9px] font-bold tracking-wide transition-colors duration-300 mt-0.5 ${
-                  isActive ? 'text-[#1A8055]' : 'text-slate-400'
+                <span className={`text-[9px] font-black tracking-wide transition-colors duration-300 mt-1 ${
+                  isActive 
+                    ? isProfile
+                      ? 'text-[#b34d1f] dark:text-amber-400'
+                      : 'text-[#1A8055] dark:text-[#34d399]' 
+                    : 'text-slate-400 dark:text-slate-500'
                 }`}>
                   {item.label}
                 </span>

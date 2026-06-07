@@ -11,7 +11,8 @@ import {
   Camera,
   Image,
   Plus,
-  X
+  X,
+  ChevronLeft
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
@@ -346,10 +347,10 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         className="hidden"
       />
 
-      <div className="flex items-center justify-between px-6 py-3 border-b border-white/5 bg-slate-950/50 backdrop-blur-xl shrink-0">
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <div className={`w-12 h-12 rounded-2xl bg-[#10b981]/10 flex items-center justify-center text-[#10b981] border border-[#10b981]/20 shadow-[0_0_15px_rgba(16,185,129,0.2)] overflow-hidden relative shrink-0 ${loading ? 'animate-pulse' : ''}`}>
+      <div className="flex items-center justify-between px-3 py-2 sm:px-6 sm:py-3 border-b border-white/5 bg-slate-950/50 backdrop-blur-xl shrink-0 gap-2">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div className="relative shrink-0">
+            <div className={`w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-[#10b981]/10 flex items-center justify-center text-[#10b981] border border-[#10b981]/20 shadow-[0_0_15px_rgba(16,185,129,0.2)] overflow-hidden relative shrink-0 ${loading ? 'animate-pulse' : ''}`}>
               <img
                 src="/gundulu-v3.png"
                 alt="Gundulu Avatar"
@@ -359,43 +360,43 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
                 }}
               />
             </div>
-            <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-[#10b981] border-2 border-slate-900 z-10 ${loading ? 'animate-ping' : 'animate-pulse'}`}></div>
+            <div className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-[#10b981] border-2 border-slate-900 z-10 ${loading ? 'animate-ping' : 'animate-pulse'}`}></div>
           </div>
-          <div>
-            <h3 className="text-lg font-black text-white tracking-tight">
-              {language === 'en' ? 'Gundulu AI Homework Helper' : 'ଗୁନ୍ଦୁଲୁ AI ହୋମୱର୍କ ସହାୟକ'}
+          <div className="min-w-0">
+            <h3 className="text-sm sm:text-base md:text-lg font-black text-white tracking-tight truncate whitespace-nowrap">
+              {language === 'en' ? 'Gundulu Chat' : 'ଗୁନ୍ଦୁଲୁ ଚାଟ୍'}
             </h3>
-            <div className="flex items-center gap-1.5 text-[10px] font-black text-[#10b981] uppercase tracking-widest">
-              <Sparkles size={10} />
+            <div className="flex items-center gap-1 text-[9px] sm:text-[10px] font-black text-[#10b981] uppercase tracking-widest">
+              <Sparkles size={8} className="sm:size-[10px]" />
               {loading ? 'Thinking...' : 'Online & Ready'}
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           <button
             onClick={() => setMessages([messages[0]])}
-            className="p-2.5 rounded-xl bg-white/5 text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all border border-white/5"
+            className="p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/5 text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all border border-white/5"
             title={language === 'en' ? 'Clear Chat' : 'ଚାଟ୍ ସଫା କରନ୍ତୁ'}
           >
-            <Trash2 size={18} />
+            <Trash2 size={16} className="sm:size-[18px]" />
           </button>
-          <div className="h-6 w-px bg-white/10 mx-1"></div>
+          <div className="h-5 sm:h-6 w-px bg-white/10 mx-0.5 sm:mx-1"></div>
           <button
             onClick={() => onLanguageChange?.(language === 'en' ? 'or' : 'en')}
-            className="px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-black text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all uppercase tracking-widest"
+            className="px-2 py-1 sm:px-3 sm:py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[9px] sm:text-[10px] font-black text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all uppercase tracking-widest"
           >
             {language === 'en' ? 'English' : 'ଓଡ଼ିଆ'}
           </button>
           {onBack && (
             <>
-              <div className="h-6 w-px bg-white/10 mx-1"></div>
+              <div className="h-5 sm:h-6 w-px bg-white/10 mx-0.5 sm:mx-1"></div>
               <button
                 onClick={onBack}
-                className="p-2.5 rounded-xl bg-white/5 text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all border border-white/5"
+                className="p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/5 text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all border border-white/5"
                 title={language === 'en' ? 'Close' : 'ବନ୍ଦ କରନ୍ତୁ'}
               >
-                <X size={18} />
+                <X size={16} className="sm:size-[18px]" />
               </button>
             </>
           )}
@@ -403,8 +404,8 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
       </div>
 
       {new Date() < new Date('2026-06-20T17:00:00+05:30') && (
-        <div className="bg-gradient-to-r from-emerald-500/10 via-teal-500/15 to-emerald-500/10 border-b border-emerald-500/20 px-6 py-2 flex items-center justify-center gap-2 text-center text-[10px] md:text-xs font-black text-emerald-400 uppercase tracking-widest shrink-0 shadow-lg shadow-emerald-950/20">
-          <Sparkles size={12} className="text-emerald-400 animate-spin" style={{ animationDuration: '3s' }} />
+        <div className="bg-gradient-to-r from-emerald-500/10 via-teal-500/15 to-emerald-500/10 border-b border-emerald-500/20 px-3 py-1.5 sm:px-6 sm:py-2 flex items-center justify-center gap-1.5 text-center text-[9px] sm:text-[10px] md:text-xs font-black text-emerald-400 uppercase tracking-widest shrink-0 shadow-lg shadow-emerald-950/20">
+          <Sparkles size={10} className="text-emerald-400 animate-spin sm:size-3" style={{ animationDuration: '3s' }} />
           <span>
             {language === 'or' 
               ? '🎉 ମାଗଣା ପ୍ରଦର୍ଶନ ଅଫର! ୨୦ ଜୁନ୍ ୨୦୨୬ ଅପରାହ୍ନ ୫:୦୦ ଟା ପର୍ଯ୍ୟନ୍ତ ଗୁନ୍ଦୁଲୁ AI ର ଅସୀମିତ ବ୍ୟବହାର କରନ୍ତୁ।'
@@ -489,15 +490,15 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="shrink-0 p-4 md:p-6 bg-gradient-to-t from-slate-950 via-slate-950 to-transparent">
+      <div className="shrink-0 p-3 sm:p-4 md:p-6 bg-gradient-to-t from-slate-950 via-slate-950 to-transparent">
         <div className="max-w-3xl mx-auto">
           {messages.length === 1 && (
-            <div className="flex flex-wrap gap-2 justify-center mb-6">
+            <div className="flex flex-nowrap sm:flex-wrap gap-2 overflow-x-auto sm:overflow-x-visible pb-3 sm:pb-0 mb-3 sm:mb-6 justify-start sm:justify-center scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
               {suggestedTopics.map((topic, idx) => (
                 <button
                   key={idx}
                   onClick={() => { setInput(language === 'en' ? topic.en : topic.or); }}
-                  className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all"
+                  className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/5 border border-white/10 text-[10px] sm:text-xs font-bold text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all shrink-0 whitespace-nowrap"
                 >
                   {language === 'en' ? topic.en : topic.or}
                 </button>
@@ -538,20 +539,20 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
               <div className="absolute inset-0 bg-emerald-500/5 rounded-[2rem] blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none"></div>
 
               {selectedImage && (
-                <div className="flex items-center gap-2 px-4 py-2 mb-2 bg-slate-900 rounded-2xl border border-white/10">
-                  <img src={selectedImage.preview} alt="preview" className="w-12 h-12 rounded-xl object-cover" />
-                  <span className="flex-1 text-xs text-slate-400">Image ready</span>
+                <div className="flex items-center gap-2 px-3 py-1.5 mb-2 bg-slate-900 rounded-xl border border-white/10">
+                  <img src={selectedImage.preview} alt="preview" className="w-10 h-10 rounded-lg object-cover" />
+                  <span className="flex-1 text-[11px] text-slate-400">Image ready</span>
                   <button onClick={() => setSelectedImage(null)} className="p-1 text-slate-500 hover:text-white"><X size={14} /></button>
                 </div>
               )}
 
-              <div className="relative flex items-end gap-2 p-2 bg-slate-900 border border-white/10 rounded-[2rem] shadow-2xl focus-within:border-emerald-500/50 transition-all">
-                <div className="flex items-center mb-1 ml-1">
+              <div className="relative flex items-end gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-slate-900 border border-white/10 rounded-[1.75rem] sm:rounded-[2rem] shadow-2xl focus-within:border-emerald-500/50 transition-all">
+                <div className="flex items-center mb-0.5 ml-0.5 sm:mb-1 sm:ml-1">
                   <button
                     onClick={() => setAttachmentMenuOpen((prev) => !prev)}
-                    className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-all"
+                    className="p-1.5 sm:p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-all"
                   >
-                    <Plus size={20} />
+                    <Plus size={18} className="sm:size-5" />
                   </button>
 
                   {attachmentMenuOpen && (
@@ -568,7 +569,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
 
                 <textarea
                   placeholder={language === 'en' ? 'Message Gundulu...' : 'ଗୁନ୍ଦୁଲୁ ସହ କଥା ହୁଅନ୍ତୁ...'}
-                  className="flex-1 bg-transparent border-none focus:outline-none text-white text-sm py-3 px-2 resize-none max-h-32 min-h-[44px] custom-scrollbar"
+                  className="flex-1 bg-transparent border-none focus:outline-none text-white text-xs sm:text-sm py-2 sm:py-3 px-1 sm:px-2 resize-none max-h-24 sm:max-h-32 min-h-[36px] sm:min-h-[44px] custom-scrollbar"
                   rows={1}
                   value={input}
                   onChange={(e) => {
@@ -587,20 +588,20 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
                 <button
                   onClick={() => sendMessage()}
                   disabled={(!input.trim() && !selectedImage) || loading}
-                  className="p-2.5 bg-emerald-500 text-slate-950 rounded-full disabled:bg-slate-800 disabled:text-slate-600 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                  className="p-2 sm:p-2.5 bg-emerald-500 text-slate-950 rounded-full disabled:bg-slate-800 disabled:text-slate-600 transition-all hover:scale-105 active:scale-95 cursor-pointer shrink-0"
                 >
-                  {loading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
+                  {loading ? <Loader2 size={16} className="animate-spin sm:size-5" /> : <Send size={16} className="sm:size-5" />}
                 </button>
               </div>
             </div>
           )}
 
-          <div className="mt-3 flex justify-center gap-6 opacity-40">
-             <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-               <Sparkles size={10} /> Smart AI
+          <div className="mt-2 sm:mt-3 flex justify-center gap-4 sm:gap-6 opacity-40">
+             <div className="flex items-center gap-1 sm:gap-1.5 text-[8px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+               <Sparkles size={8} className="sm:size-[10px]" /> Smart AI
              </div>
-             <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-               <Zap size={10} /> Fast Response
+             <div className="flex items-center gap-1 sm:gap-1.5 text-[8px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+               <Zap size={8} className="sm:size-[10px]" /> Fast Response
              </div>
           </div>
         </div>
