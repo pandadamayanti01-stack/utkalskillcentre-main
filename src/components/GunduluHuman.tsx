@@ -172,7 +172,9 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack, isPremiu
   const transcriptBufferRef = useRef<string>('');
   const chatHistoryRef = useRef<any[]>([]);
   const [usePremiumVoice, setUsePremiumVoice] = useState(() => {
-    return localStorage.getItem('gundulu_use_premium_voice') === 'true';
+    const saved = localStorage.getItem('gundulu_use_premium_voice');
+    if (saved === null) return true; // Default to premium voice for immediate WOW effect
+    return saved === 'true';
   });
   
   // Immersive Status States
@@ -572,7 +574,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack, isPremiu
       const greeting = "ନମସ୍କାର! ମୁଁ ଗୁନ୍ଦୁଲୁ। ଆସ, ଏବେ ଏକାଠି ପଢ଼ିବା ଓ ଆଗକୁ ବଢ଼ିବା।";
       setStatus("ଗୁନ୍ଦୁଲୁ କହୁଛି...");
 
-      const activePremiumVoice = localStorage.getItem('gundulu_use_premium_voice') === 'true';
+      const activePremiumVoice = localStorage.getItem('gundulu_use_premium_voice') !== 'false';
       const speakFn = activePremiumVoice ? speakWithGeminiVoice : speakWithBrowserTtsFallback;
       speakFn(sanitizeTextForTTS(greeting), () => {
         triggerVisualNudge();
@@ -843,7 +845,7 @@ Understand user intent from these transcripts and respond in Odia only.
   };
 
   const speakResponse = (text: string) => {
-    const activePremiumVoice = localStorage.getItem('gundulu_use_premium_voice') === 'true';
+    const activePremiumVoice = localStorage.getItem('gundulu_use_premium_voice') !== 'false';
     const speakFn = activePremiumVoice ? speakWithGeminiVoice : speakWithBrowserTtsFallback;
     const sanitized = sanitizeTextForTTS(text);
     speakFn(sanitized, () => {
@@ -1063,6 +1065,7 @@ Understand user intent from these transcripts and respond in Odia only.
           onClick={() => {
             const nextState = !usePremiumVoice;
             setUsePremiumVoice(nextState);
+            localStorage.setItem('gundulu_use_premium_voice', String(nextState));
             // Stop current audio so it can adapt instantly
             stopCurrentAudio();
             setIsSpeaking(false);
