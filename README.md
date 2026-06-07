@@ -17,7 +17,7 @@ Instead of corporate buzzwords, Utkal Skill Centre is built on a real, high-impa
 *   **📊 Pilot Traction & Growth**:
     *   **Onboarded Students**: Successfully onboarded **445 active students** during our initial pilot phase.
     *   **Paying Subscribers**: Secured **6 premium paying subscribers** across 7 geographically diverse districts of Odisha (Bhubaneswar, Cuttack, Keonjhar, Balasore, Nayagarh, Balangir, and Berhampur) at our affordable ₹99/month rate, validating strong statewide product-market fit.
-    *   **Syllabus Coverage**: Deployed 100% complete syllabus roadmaps from **Class 1 to Class 10** with premium notes for all **448 chapters**.
+    *   **Syllabus Coverage**: Deployed 100% complete syllabus roadmaps from **Class 1 to Class 10** with premium notes for all **1,170 chapters**.
     *   **100% Free Smart Classes**: Fully integrated curated video lesson libraries, making YouTube school classes unlocked and free for everyone.
     *   **Virtually $0.00 Operational Cost**: By serving study guides statically and offloading voice synthesizers to the student's browser engine, our server operational cost approaches **$0.00**, making our ₹99/mo subscription highly profitable!
 *   **🤖 Gundulu AI Technical Evolution Roadmap**:
