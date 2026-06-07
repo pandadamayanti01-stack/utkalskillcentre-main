@@ -162,7 +162,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
   }, [language]);
 
   // Slides count
-  const TOTAL_SLIDES = 6;
+  const TOTAL_SLIDES = 7;
 
   // Auto-play loop
   useEffect(() => {
@@ -249,11 +249,11 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
         subtitle: "Bridging the Educational Divide in Rural Odisha with Conversational AI",
         tagline: "1st PLACE HACKATHON SHOWCASE",
         bullets: [
-          { title: "Mother-Tongue First", desc: "Democratizing state-board syllabus tutoring in colloquial Odia." },
+          { title: "7 Million+ Students", desc: "Unlocking EdTech access for rural Odia-medium pupils locked out by English-only apps." },
           { title: "Digital Study Companion", desc: "Gundulu AI tutor provides warm, interactive, and personalized explanations." },
-          { title: "Budget & Network Resilient", desc: "Lightweight offline-first PWA, optimized for rural 2G/3G connections and mobile-only families." }
+          { title: "Budget & Network Resilient", desc: "₹99/month PWA, replacing legacy ₹15,000/yr fees, optimized for low-bandwidth 2G/3G connections." }
         ],
-        speakerNotes: "Hello judges! Welcome to Utkal Skill Centre. We are building the future of accessible, bilingual education in India. By combining native Odia curriculum tutoring with state-of-the-art conversational AI, we are bringing an elite personal tutor directly to the fingertips of rural students, completely in their mother tongue, removing linguistic and economic barriers."
+        speakerNotes: "Hello judges! Welcome to Utkal Skill Centre. We are building the future of accessible, bilingual education in India. In rural Odisha, 7 million plus students are locked out of modern AI EdTech. English apps are inaccessible, and legacy subscriptions cost upwards of 15,000 rupees a year, a fortune for agricultural families. We democratize learning at just 99 rupees a month with our textbook-grounded, low-bandwidth Socratic tutor."
       },
       {
         title: "Born in a Rural Village: Our Journey",
@@ -289,26 +289,37 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
         speakerNotes: "Our technical architecture is incredibly robust and cost-resilient. Running on Google Cloud Run serverless means our base operational cost is practically $0.00. To guarantee low-latency operation on slow 2G rural networks, we built a multi-tier fallback: if the premium server TTS API is offline or throttled, the client PWA instantly synthesizes voice logs locally via the browser's audio engine."
       },
       {
-        title: "A Magical, Gamified Learning Portal",
-        subtitle: "Interactive Onboarding, Animated Welcome & Instant Engagement",
-        tagline: "PRODUCT DESIGN & CUSTOMER JOURNEY",
+        title: "AI Educator Studio & Gamification",
+        subtitle: "Homework Generator, 5E Lesson Planner & Interactive Student Portal",
+        tagline: "TEACHER ENABLEMENT & ENGAGEMENT",
         bullets: [
-          { title: "Frictionless Signup", desc: "Bypass mode with mobile OTP allows parents with no email to log in instantly." },
+          { title: "Educator Studio", desc: "Teachers generate custom worksheets, OPEPA lesson plans, and practical guides instantly." },
           { title: "Interactive Onboarding", desc: "Students pop floating balloons containing Odia vowels to release sound particles, going live with our Play Store launch on June 14." },
-          { title: "Premium Visual Rewards", desc: "Watching Gundulu's vertical welcome animation grants a Founding Golden Ticket with +500 XP." }
+          { title: "Mascot Welcome & Rewards", desc: "Watching Gundulu's vertical welcome animation grants a Founding Golden Ticket with +500 XP." }
         ],
-        speakerNotes: "To hook young learners on their very first launch, we built a highly gamified greeting sequence. Students pop interactive helium balloons to hear synthesized audio pops and watch a snappy 12-second vertical welcome animation from their mascot, Gundulu. This gamified onboarding goes live on June 14 with our Play Store launch, and rewards them with a Gold Founding Member Ticket, programmatically syncing +500 XP to Firestore to drive instant daily retention."
+        speakerNotes: "To support the entire classroom ecosystem, we built the AI Educator Studio, enabling teachers to instantly generate OPEPA-compliant lesson plans and syllabus-aligned worksheets. To hook young learners on their very first launch, students pop interactive helium balloons to hear audio pops, watch a welcome animation from Gundulu, and receive a Gold Founding Member Ticket with +500 XP synced to Firestore."
       },
       {
         title: "Business Viability & Future AI Roadmap",
         subtitle: "Proven Demand, Virtually $0.00 Overhead & Native Speed Conversations",
         tagline: "GROWTH, TRACTION & SUSTAINABILITY",
         bullets: [
-          { title: "Proven Pilot Traction", desc: "Successfully onboarded 434 active students with 6 paying premium subscribers across 7 districts." },
+          { title: "Proven Pilot Traction", desc: "Successfully onboarded 445 active pilot students with 6 paying premium subscribers across 7 districts." },
           { title: "Highly Scalable margins", desc: "Serving syllabus guides statically keeps operational cost at $0.00, enabling ₹99/mo subscriptions." },
           { title: "Technical AI Roadmap", desc: "Transitioning from textbook RAG (Already Done) to RAG + SFT, and eventually SFT edge deployment on-device." }
         ],
-        speakerNotes: "We have already proven commercial demand, onboarding 434 pilot students and securing 6 paying premium subscribers across 7 districts (Bhubaneswar, Cuttack, Keonjhar, Balasore, Nayagarh, Balangir, and Berhampur) on our ₹99/month tier. Our serverless setup keeps operational costs near-zero. Our technical roadmap progresses from zero-hallucination RAG (already active) to hybrid RAG + SFT, and finally SFT edge deployment on the browser for zero-cost offline speech!"
+        speakerNotes: "We have already proven commercial demand, onboarding 445 pilot students and securing 6 paying premium subscribers across 7 districts (Bhubaneswar, Cuttack, Keonjhar, Balasore, Nayagarh, Balangir, and Berhampur) on our ₹99/month tier. Our serverless setup keeps operational costs near-zero. Our technical roadmap progresses from zero-hallucination RAG (already active) to hybrid RAG + SFT, and finally SFT edge deployment on the browser for zero-cost offline speech!"
+      },
+      {
+        title: "Thank You!",
+        subtitle: "Making world-class AI learning affordable, accessible, and offline-ready",
+        tagline: "UTKAL SKILL CENTRE - PITCH SUMMARY",
+        bullets: [
+          { title: "Founder", desc: "Damayanti Panda" },
+          { title: "Co-Founder", desc: "Gyanalok Panda" },
+          { title: "Contact Email", desc: "contact@utkalskillcentre.com" }
+        ],
+        speakerNotes: "Thank you for your time! Utkal Skill Centre is committed to delivering Socratic learning to every corner of Odisha. You can reach out to our founders, Damayanti Panda and Gyanalok Panda, at contact@utkalskillcentre.com."
       }
     ],
     or: [
@@ -317,11 +328,11 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
         subtitle: "ଓଡ଼ିଶାର ଗ୍ରାମାଞ୍ଚଳର ପିଲାମାନଙ୍କ ପାଇଁ କଥାବାର୍ତ୍ତା କରୁଥିବା ଏଆଇ (AI) ମାଧ୍ୟମରେ ପାଠପଢ଼ା",
         tagline: "ପ୍ରଥମ ସ୍ଥାନ ହାକାଥନ୍ ପ୍ରଦର୍ଶନୀ",
         bullets: [
-          { title: "ମାତୃଭାଷାକୁ ପ୍ରାଥମିକତା", desc: "ଓଡ଼ିଶା ବୋର୍ଡ ପାଠ୍ୟକ୍ରମକୁ ସରଳ ଓଡ଼ିଆ ଭାଷାରେ ଉପଲବ୍ଧ କରାଇବା।" },
+          { title: "୭୦ ଲକ୍ଷରୁ ଅଧିକ ଛାତ୍ର", desc: "ଇଂରାଜୀ ଆପ୍ ଦ୍ୱାରା ଅଣଦେଖା ହୋଇଥିବା ଓଡ଼ିଆ ମାଧ୍ୟମ ପିଲାଙ୍କ ପାଖରେ ବିଜ୍ଞାନ ଓ ଗଣିତ ଏଆଇ ଶିକ୍ଷା ପହଞ୍ଚାଇବା।" },
           { title: "ଡିଜିଟାଲ୍ ପଢ଼ା ସାଥୀ", desc: "ଗୁନ୍ଦୁଲୁ ଏଆଇ (Gundulu AI) ପିଲାମାନଙ୍କୁ ଭଉଣୀ ଭଳି ଆଦରରେ ସବୁ ପାଠ ବୁଝାଇଥାଏ।" },
-          { title: "ନେଟୱର୍କ ସମସ୍ୟାର ସମାଧାନ", desc: "ଏକ ହାଲୁକା PWA ଆପ୍ ଯାହା ଗ୍ରାମାଞ୍ଚଳର 2G/3G ଇଣ୍ଟରନେଟ୍ ରେ ମଧ୍ୟ ବହୁତ ସ୍ପିଡ୍ ଚାଲେ।" }
+          { title: "ନେଟୱର୍କ ଓ ବଜେଟ୍ ସହଜ", desc: "ବାର୍ଷିକ ୧୫,୦୦୦ ଟଙ୍କା ବଦଳରେ ମାସକୁ ମାତ୍ର ୯୯ ଟଙ୍କାରେ ଗ୍ରାମାଞ୍ଚଳର 2G/3G ନେଟୱର୍କ ଅନୁଯାୟୀ ପ୍ରସ୍ତୁତ PWA।" }
         ],
-        speakerNotes: "ପ୍ରଣାମ ବିଚାରକ ମଣ୍ଡଳୀ! ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରକୁ ଆପଣମାନଙ୍କୁ ସ୍ୱାଗତ। ଆମେ ଓଡ଼ିଶାର ସରକାରୀ ବିଦ୍ୟାଳୟର ପିଲାମାନଙ୍କ ପାଇଁ ମାତୃଭାଷାରେ ବିଶ୍ୱସ୍ତରୀୟ ଏଆଇ ଶିକ୍ଷା ସାଥୀ ତିଆରି କରିଛୁ। ଓଡ଼ିଆ ଭାଷା ଓ ସରକାରୀ ପାଠ୍ୟକ୍ରମକୁ ଏକାଠି କରି ଆମେ ପିଲାମାନଙ୍କ ମୋବାଇଲ୍ ରେ ଗୁନ୍ଦୁଲୁ ଏଆଇ ଟ୍ୟୁଟର ପହଞ୍ଚାଇଛୁ, ଯାହା ସେମାନଙ୍କୁ ସମ୍ପୂର୍ଣ୍ଣ ମାତୃଭାଷାରେ ଏକ ବଡ଼ ଭଉଣୀ ଭଳି ଗାଇଡ୍ କରୁଛି।"
+        speakerNotes: "ପ୍ରଣାମ ବିଚାରକ ମଣ୍ଡଳୀ! ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରକୁ ଆପଣମାନଙ୍କୁ ସ୍ୱାଗତ। ଓଡ଼ିଶାର ଗ୍ରାମାଞ୍ଚଳରେ ୭୦ ଲକ୍ଷରୁ ଅଧିକ ଛାତ୍ରଛାତ୍ରୀ ଆଜି ଆଧୁନିକ AI ଶିକ୍ଷାରୁ ବଞ୍ଚିତ ଅଛନ୍ତି। ବାର୍ଷିକ ୧୫,୦୦୦ ଟଙ୍କାର ବୋଝ ବଦଳରେ ଆମେ ମାସିକ ମାତ୍ର ୯୯ ଟଙ୍କାରେ ମାତୃଭାଷା ଶିକ୍ଷା ସାଥୀ ଗୁନ୍ଦୁଲୁ ଏଆଇ ପ୍ରସ୍ତୁତ କରିଛୁ, ଯାହା ଗ୍ରାମାଞ୍ଚଳର ସ୍ୱଳ୍ପ ନେଟୱର୍କରେ ମଧ୍ୟ ସୁନ୍ଦର ଭାବେ ଚାଲେ।"
       },
       {
         title: "ଓଡ଼ିଶାର ପଲ୍ଲୀ ଗ୍ରାମରୁ ଆରମ୍ଭ: ଆମର ଯାତ୍ରା",
@@ -332,7 +343,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
           { title: "📱 ପ୍ରୋଗ୍ରେସିଭ୍ ୱେବ୍ ଆପ୍ (PWA)", desc: "ଗ୍ରାମାଞ୍ଚଳର ମୋବାଇଲ୍ ବ୍ରାଉଜର୍ ଗୁଡ଼ିକ ପାଇଁ ଏକ ଦ୍ରୁତ, ଅଫଲାଇନ୍-ଅପ୍ଟିମାଇଜ୍ଡ୍ PWA ଆପ୍ ପ୍ରସ୍ତୁତ କଲୁ।" },
           { title: "🎒 ଓଡ଼ିଆ ମାଧ୍ୟମ ପିଲାଙ୍କ ଲକ୍ଷ୍ୟ", desc: "ଇଂରାଜୀ ଆପ୍ ଦ୍ୱାରା ଅଣଦେଖା ହୋଇଥିବା ସରକାରୀ ବିଦ୍ୟାଳୟର ପିଲାମାନଙ୍କୁ ସାହାଯ୍ୟ କରିବା।" }
         ],
-        speakerNotes: "ଆମର ଶିକ୍ଷା ଯାତ୍ରା ଅତି ନିଆରା। ଓଡ଼ିଶାର ପିଲାମାନଙ୍କ ସ୍ୱାର୍ଥ ରକ୍ଷା ପାଇଁ ଏପ୍ରିଲ୍ ୧ - ଉତ୍କଳ ଦିବସରେ ଆମେ ଆମର ୱେବସାଇଟ୍ ଶୁଭାରମ୍ଭ କରିଥିଲୁ। ଏହା ପରେ ଗ୍ରାମାଞ୍ଚଳରେ ଧିମା ଇଣ୍ଟରନେଟ୍ ରେ ପାଠପଢ଼ାକୁ ସହଜ କରିବାକୁ ଆମେ ଆମର PWA ଆପ୍ ପ୍ରସ୍ତୁତ କଲୁ, ଯାହା ସ୍ୱଳ୍ପ ବ୍ୟାଣ୍ଡୱିଡଥ୍ ରେ ମଧ୍ୟ ବିନା ରୋକଟୋକରେ ଚାଲିପାରୁଛି।"
+        speakerNotes: "ଆମର ଶିକ୍ଷା ଯାତ୍ରา ଅତି ନିଆରା। ଓଡ଼ିଶାର ପିଲାମାନଙ୍କ ସ୍ୱାର୍ଥ ରକ୍ଷା ପାଇଁ ଏପ୍ରିଲ୍ ୧ - ଉତ୍କଳ ଦିବସରେ ଆମେ ଆମର ୱେବସାଇଟ୍ ଶୁଭାରମ୍ଭ କରିଥିଲୁ। ଏହା ପରେ ଗ୍ରାମାଞ୍ଚଳରେ ଧିମା ଇଣ୍ଟରନେଟ୍ ରେ ପାଠପଢ଼ାକୁ ସହଜ କରିବାକୁ ଆମେ ଆମର PWA ଆପ୍ ପ୍ରସ୍ତୁତ କଲୁ, ଯାହା ସ୍ୱଳ୍ପ ବ୍ୟାଣ୍ଡୱିଡଥ୍ ରେ ମଧ୍ୟ ବିନା ରୋକଟୋକରେ ଚାଲିପାରୁଛି।"
       },
       {
         title: "ଗୁନ୍ଦୁଲୁ ଏଆଇ ସକ୍ରେଟିକ୍ ସ୍ଲେଟ୍",
@@ -341,31 +352,31 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
         bullets: [
           { title: "ଡିଜିଟାଲ୍ ସ୍ଲେଟ୍ ବୋର୍ଡ", desc: "ଆମ ପାରମ୍ପରିକ ଗ୍ରାମୀଣ ସ୍କୁଲ୍ ଭଳି ଏକ ସୁନ୍ଦର ସବୁଜ ରଙ୍ଗର ଚକ୍-ସ୍ଲେଟ୍।" },
           { title: "Gemini ର ଭିଜନ ସମାଧାନ", desc: "ଛାତ୍ରଛାତ୍ରୀ ଯେକୌଣସି ସଂଖ୍ୟା, ଗଣିତ କିମ୍ବା ଆକୃତି ଆଙ୍କି ଗୁନ୍ଦୁଲୁକୁ ସେ ବିଷୟରେ ପଚାରିପାରିବେ।" },
-          { title: "ସକ୍ରେଟିକ୍ ପ୍ରଶ୍ନୋତ୍ତର ଶୈଳୀ", desc: "ସିଧାସଳଖ ଉତ୍ତର ନ ଦେଇ ପ୍ରଶ୍ନ ପଚାରି ପିଲାଙ୍କ ମନରେ କୌତୁହଳ ସୃଷ୍ଟି କରେ।" }
+          { title: "ସକ୍ରେଟିକ୍ ପ୍ରଶ୍ନոତ୍ତର ଶୈଳୀ", desc: "ସିଧାସଳଖ ଉତ୍ତର ନ ଦେଇ ପ୍ରଶ୍ନ ପଚାରି ପିଲାଙ୍କ ମନରେ କୌତୁହଳ ସୃଷ୍ଟି କରେ।" }
         ],
         speakerNotes: "ସ୍ଲାଇଡ୍ ୩ ହେଉଛି ଆମର ଲାଇଭ୍ ଡେମୋ! ଆମେ ଏକ ଗୁନ୍ଦୁଲୁ ସକ୍ରେଟିକ୍ ସ୍ଲେଟ୍ ତିଆରି କରିଛୁ ଯାହା ଏକ ସୁନ୍ଦର କଳାପଟା ପରି କାମ କରେ। ପିଲାମାନେ ନିଜ ହାତରେ ଏଥିରେ ଲେଖିପାରିବେ କିମ୍ବା ଆଙ୍କିପାରିବେ। ଏହାକୁ ସବ୍ମିଟ୍ କଲେ Gemini Multimodal Vision API କ୍ୟାନ୍ଭାସକୁ ବିଶ୍ଳେଷଣ କରି ଓଡ଼ିଆରେ ସମ୍ପୂର୍ଣ୍ଣ ସ୍ପଷ୍ଟୀକରଣ ପ୍ରଦାନ କରେ।"
       },
       {
-        title: "ଶକ୍ତିଶାଳୀ ଏବଂ ସୁରକ୍ଷିତ ସର୍ଭର ବ୍ୟବସ୍ଥା",
+        title: "ଶକ୍ତିଶାଳୀ ଏବଂ ସୁරକ୍ଷିତ ସର୍ଭର ବ୍ୟବସ୍ଥା",
         subtitle: "ଗୁଗଲ୍ କ୍ଲାଉଡ୍ ରନ୍, ଭର୍ଟେକ୍ସ ଏଆଇ ଏବଂ ଜିରୋ-କଷ୍ଟ ବ୍ରାଉଜର୍ ଟିଟିଏସ୍ (TTS)",
         tagline: "ଉଚ୍ଚ ସ୍ତରୀୟ ଟେକ୍ନୋଲୋଜି",
         bullets: [
-          { title: "ଭର୍ଟେକ୍ସ ଏଆଇ ଓ କ୍ଲାଉଡ୍ ରନ୍", desc: "ସର୍ଭରଲେସ୍ ଏକ୍ସପ୍ରେସ୍ ବ୍ୟାକେଣ୍ଡ ଗୁଗଲ୍ କ୍ଲାଉଡ୍ ରନ୍ ଉପରେ ସମ୍ପୂର୍ଣ୍ଣ ସୁରକ୍ଷିତ ଭାବେ ଚାଲୁଛି।" },
-          { title: "ସର୍ଭର ଅଟୋମେଟିକ୍ ସୁରକ୍ଷା", desc: "ଭର୍ଟେକ୍ସ ଏଆଇ ଏବଂ ଗୁଗଲ୍ ଏଆଇ ଷ୍ଟୁଡିଓ ମଧ୍ୟରେ ସ୍ୱୟଂଚାଳିତ ଭାବେ ରିକ୍ୱେଷ୍ଟ୍ ପରିଚାଳନା।" },
+          { title: "ଭର୍ଟେକ୍ସ ଏଆଇ ଓ କ୍ଲାଉଡ୍ ରନ୍", desc: "ସର୍ଭରଲେସ୍ ଏକ୍ସପ୍ରେସ୍ ବ୍ୟାକେଣ୍ଡ ଗୁଗଲ୍ କ୍ଲାଉଡ୍ ରନ୍ ଉପରେ ସମ୍ପୂର୍ଣ୍ଣ ସୁරକ୍ଷିତ ଭାବେ ଚାଲୁଛି।" },
+          { title: "ସର୍ଭର ଅଟୋମେଟିକ୍ ସୁරକ୍ଷା", desc: "ଭର୍ଟେକ୍ସ ଏଆଇ ଏବଂ ଗୁଗଲ୍ ଏଆଇ ଷ୍ଟୁଡିଓ ମଧ୍ୟରେ ସ୍ୱୟଂଚାଳିତ ଭାବେ ରିକ୍ୱେଷ୍ଟ୍ ପରିଚାଳନା।" },
           { title: "ମାଗଣା ବ୍ରାଉଜର୍ ଟିଟିଏସ୍ ଫଲବ୍ୟାକ୍", desc: "ଯଦି ଏପିଆଇ (API) ଲିମିଟ୍ ହୁଏ, ଆପ୍ ତୁରନ୍ତ ୟୁଜର୍ ର ବ୍ରାଉଜର୍ ବ୍ୟବହାର କରି ଓଡ଼ିଆ ଭଏସ୍ ଉତ୍ପନ୍ନ କରେ।" }
         ],
         speakerNotes: "ଆମର ବ୍ୟାକେଣ୍ଡ ଗୁଗଲ୍ କ୍ଲାଉଡ୍ ରନ୍ ର ସର୍ଭରଲେସ୍ ଟେକ୍ନୋଲୋଜିରେ ହୋଷ୍ଟ ହୋଇଛି, ଯାହାଦ୍ୱାରା ଆମର ମାସିକ ସର୍ଭର ଖର୍ଚ୍ଚ ପ୍ରାୟ ଶୂନ ଟଙ୍କା। ଗ୍ରାମାଞ୍ଚଳରେ ଧିମା ଇଣ୍ଟରନେଟ୍ ରେ ଭଏସ୍ ସମସ୍ୟା ଦୂର କରିବାକୁ ଆମେ ବ୍ରାଉଜର୍ ଆଧାରିତ ଫଲବ୍ୟାକ୍ ତିଆରି କରିଛୁ। ସର୍ଭର ଯଦି ବ୍ୟସ୍ତ ରହେ, ମୋବାଇଲ୍ ବ୍ରାଉଜର୍ ନିଜେ ଓଡ଼ିଆ କଥା କହି ପିଲାଙ୍କୁ ଶୁଣାଏ।"
       },
       {
-        title: "ମନୋରଞ୍ଜନ ଓ ଗେମିଂ ସହ ପାଠପଢ଼ା",
-        subtitle: "ଆକର୍ଷଣୀୟ ବେଲୁନ୍ ଖେଳ, ଭିଡିଓ ଏବଂ ଉତ୍ସାହଜନକ ପୁରସ୍କାର",
-        tagline: "ପ୍ରଡକ୍ଟ ଡିଜାଇନ୍ ଏବଂ ଆନନ୍ଦଦାୟକ ପର୍ଯ୍ୟାୟ",
+        title: "ଶିକ୍ଷକ AI ଷ୍ଟୁଡିଓ ଓ ଗେମିଫିକେସନ୍",
+        subtitle: "ପ୍ରଶ୍ନପତ୍ର ନିର୍ମାତା, ୫E ପାଠ୍ୟ ଯୋଜନା ଓ ସାଥୀ ପୋର୍ଟାଲ",
+        tagline: "ଶିକ୍ଷକ ସଶକ୍ତିକରଣ ଓ ଆନନ୍ଦଦାୟକ ଶିକ୍ଷା",
         bullets: [
-          { title: "ସରଳ ପ୍ରବେଶ ପ୍ରଣାଳୀ", desc: "କୌଣସି ଜଟିଳ ଫର୍ମ ବିନା କେବଳ ମୋବାଇଲ୍ ଦ୍ୱାରା ଲଗଇନ୍ କରି ତୁରନ୍ତ ଆରମ୍ଭ କରିପାରିବେ।" },
-          { title: "ବେଲୁନ୍ ଫୁଟାଇବା ଖେଳ", desc: "ପ୍ରଥମ ଲଗଇନ୍ ରେ ପିଲାମାନେ ବେଲୁନ୍ ଫୁଟାଇ ଓଡ଼ିଆ ସ୍ୱରବର୍ଣ୍ଣ ଶିଖନ୍ତି, ଯାହା ଜୁନ୍ ୧୪ ରେ ପ୍ଲେ ଷ୍ଟୋର୍ (Play Store) ଲଞ୍ଚ୍ ସହ ଲାଇଭ୍ ହେବାକୁ ଯାଉଛି।" },
-          { title: "ଗୋଲ୍ଡେନ୍ ହୋଲୋଗ୍ରାଫିକ୍ ଟିକେଟ୍", desc: "ଗୁନ୍ଦୁଲୁର ୧୨-ସେକେଣ୍ଡ୍ ର ସ୍ୱାଗତ ଭିଡିଓ ଦେଖିଲେ ପିଲାମାନଙ୍କୁ ଗୋଲ୍ଡେନ୍ ପାସ୍ ଏବଂ +୫୦୦ XP ମିଳେ।" }
+          { title: "ଶିକ୍ଷକ AI ଷ୍ଟୁଡିଓ", desc: "ଶିକ୍ଷକମାନେ ଓଡ଼ିଆ ହୋମୱାର୍କ ସିଟ୍, ପାଠ୍ୟ ଯୋଜନା ଓ କାର୍ଯ୍ୟକଳାପ ଗାଇଡ୍ ତୁରନ୍ତ ପ୍ରସ୍ତୁତ କରିପାରିବେ।" },
+          { title: "ବେଲୁନ୍ ଫୁଟାଇବା ଖେଳ", desc: "ପ୍ରଥମ ଲଗଇନ୍ ରେ ପିଲାମାନେ ବେଲୁନ୍ ଫୁଟାଇ ଓଡ଼ିଆ ସ୍ୱରବର୍ଣ୍ଣ ଶିଖନ୍ତି, ଯାହା ଜୁନ୍ ୧୪ ପ୍ଲେ ଷ୍ଟୋର୍ (Play Store) ଲଞ୍ଚ୍ ସହ ଲାଇଭ୍ ହେବାକୁ ଯାଉଛି।" },
+          { title: "ଗୋଲ୍ଡେନ୍ ହୋଲୋଗ୍ରାଫିକ୍ ଟիկେଟ୍", desc: "ଗୁନ୍ଦୁଲୁର ୧୨-ସେକେଣ୍ଡ୍ ର ସ୍ୱାଗତ ଭିଡିଓ ଦେଖିଲେ ପିଲାମାନେ ଗୋଲ୍ଡେନ୍ ପାସ୍ ଏବଂ +୫୦୦ XP ମିଳେ।" }
         ],
-        speakerNotes: "ଛୋଟ ପିଲାଙ୍କ ମନରେ ପାଠପଢ଼ା ପାଇଁ ଉତ୍ସାହ ଭରିବାକୁ ଆମେ ଏକ ସୁନ୍ଦର ବେଲୁନ୍ ଗେମ୍ ରଖିଛୁ। ପିଲାମାନେ ରଙ୍ଗବେରଙ୍ଗ ବେଲୁନ୍ ଫୁଟାଇବା ପରେ ସେମାନଙ୍କ ସାମ୍ନାରେ ଗୁନ୍ଦୁଲୁର ଏକ ୧୨-ସେକେଣ୍ଡ୍ ର ମନୋରଞ୍ଜକ ଓଡ଼ିଆ ଆନିମେସନ୍ ପ୍ଲେ ହୁଏ। ଏହି ଗେମିଫାଇଡ୍ ଅନବୋର୍ଡିଂ ଜୁନ୍ ୧୪ ପ୍ଲେ ଷ୍ଟୋର୍ (Play Store) ଲଞ୍ଚ ସହିତ ଲାଇଭ୍ ହେବ ଏବଂ ସେମାନଙ୍କୁ ଏକ ଗୋଲ୍ଡେନ୍ ଫାଉଣ୍ଡିଂ ମେମ୍ବର ପାସ୍ ଓ ୫୦୦ XP ପ୍ରଦାନ କରିବ, ଯାହା ପିଲାଙ୍କୁ ପ୍ରତିଦିନ ପଢ଼ିବାକୁ ଆକର୍ଷିତ କରେ।"
+        speakerNotes: "ଶିକ୍ଷକମାନଙ୍କ ସଶକ୍ତିକରଣ ପାଇଁ ଆମେ AI Educator Studio ତିଆରି କରିଛୁ, ଯେଉଁଥିରେ ସେମାନେ ତୁରନ୍ତ OPEPA-ସମ୍ମତ ପାଠ୍ୟ ଯୋଜନା ଏବଂ ସିଲାବସ୍-ଅନୁଯାୟୀ ହୋମୱାର୍କ ସିଟ୍ ପ୍ରସ୍ତୁତ କରିପାରିବେ। ଛୋଟ ପିଲାଙ୍କ ମନରେ ପାଠପଢ଼ା ପାଇଁ ଉତ୍ସାହ ଭରିବାକୁ ଆମେ ଏକ ସୁନ୍ଦର ବେଲୁନ୍ ଗେମ୍ ରଖିଛୁ। ପିଲାମାନେ ରଙ୍ଗବେରଙ୍ଗ ବେଲୁନ୍ ଫୁଟାଇବା ପରେ ସେମାନଙ୍କ ସାମ୍ନାରେ ଗୁନ୍ଦୁଲୁର ଏକ ୧୨-ସେକେଣ୍ଡ୍ ର ମନୋରଞ୍ଜକ ଓଡ଼ିଆ ଆନିମେସନ୍ ପ୍ଲେ ହୁଏ ଏବଂ +୫୦୦ XP ପ୍ରଦାନ କରେ।"
       },
       {
         title: "ବ୍ୟବସାୟିକ ସଫଳତା ଏବଂ ଏଆଇ ରୋଡ୍ ମ୍ୟାପ୍",
@@ -373,10 +384,21 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
         tagline: "ବୃଦ୍ଧି, ଆକର୍ଷଣ ଏବଂ ସ୍ଥିରତା",
         bullets: [
           { title: "ମୋ ସ୍କୁଲ୍ ସହଭାଗିତା", desc: "ଓଡ଼ିଶାର ସ୍କୁଲ୍ ନେଟୱର୍କ ମାଧ୍ୟମରେ ୫୨ ଲକ୍ଷ ଓଡ଼ିଆ ମାଧ୍ୟମ ପିଲାଙ୍କ ପାଖରେ ପହଞ୍ଚିବା।" },
-          { title: "ସ୍କ୍ରିନ-ଫ୍ରି ପଢ଼ା ସହ ସକ୍ରିୟ ୟୁଜର୍", desc: "୪୩୪ ଜଣ ସକ୍ରିୟ ପାଇଲଟ୍ ଛାତ୍ର ଏବଂ ୭ଟି ଜିଲ୍ଲାରୁ ୬ ଜଣ ପ୍ରିମିୟମ୍ ସବସ୍କ୍ରିପସନ୍।" },
+          { title: "ସକ୍ରିୟ ପାଇଲଟ୍ ଛାତ୍ର ଓ ପ୍ରିମିୟମ୍", desc: "୪୪୫ ଜଣ ସକ୍ରିୟ ପାଇଲଟ୍ ଛାତ୍ର ଏବଂ ୭ଟି ଜିଲ୍ଲାରୁ ୬ ଜଣ ପ୍ରିମିୟମ୍ ସବସ୍କ୍ରିପସନ୍।" },
           { title: "ଟେକ୍ନିକାଲ୍ ଏଆଇ ରୋଡମ୍ୟାପ୍", desc: "ପାଠ୍ୟପୁସ୍ତକ RAG (ସମ୍ପୂର୍ଣ୍ଣ) ରୁ RAG + SFT ଏବଂ ପରେ offline edge ମଡେଲ (SFT) କୁ ଉନ୍ନତି।" }
         ],
-        speakerNotes: "ଆମେ ଆମର ପାଇଲଟ୍ ପର୍ଯ୍ୟାୟରେ ୪୩୪ ଜଣ ସକ୍ରିୟ ଛାତ୍ର ଏବଂ ବିଭିନ୍ନ ଜିଲ୍ଲା (ଭୁବନେଶ୍ୱର, କଟକ, କେନ୍ଦୁଝର, ବାଲେଶ୍ୱର, ନୟାଗଡ଼, ବଲାଙ୍ଗୀର, ବ୍ରହ୍ମପୁର) ରୁ ୬ ଜଣ ପ୍ରିମିୟମ୍ ସବସ୍କ୍ରିପସନ୍ ପାଇଛୁ। ଆମର ସ୍କେଲିଂ ମୋ ସ୍କୁଲ୍ ଅଭିଯାନ ସହଭାଗିତା, ଭଏସ୍-ଟୁ-ଭଏସ୍ ଟ୍ୟୁଟର୍, ଏବଂ ଶିକ୍ଷକଙ୍କ ପାଇଁ AI ହୋମୱାର୍କ ମେକର୍ ଦ୍ୱାରା ହେବ। ଆମର ଏଆଇ ବ୍ୟବସ୍ଥା ଜିରୋ-ହଲ୍ୟୁସିନେସନ୍ RAG ରୁ RAG + SFT ଏବଂ ପରେ ବ୍ରାଉଜର୍-ନେଟିଭ୍ offline SFT ମଡେଲ୍ କୁ ଉନ୍ନତି ହେବ, ଯାହା ସର୍ଭର ଖର୍ଚ୍ଚ ସମ୍ପୂର୍ଣ୍ଣ ଶୂନ କରିପାରିବ।"
+        speakerNotes: "ଆମେ ଆମର ପାଇଲଟ୍ ପର୍ଯ୍ୟାୟରେ ୪୪୫ ଜଣ ସକ୍ରିୟ ଛାତ୍ର ଏବଂ ବିଭିନ୍ନ ଜିଲ୍ଲା (ଭୁବନେଶ୍ୱର, କଟକ, କେନ୍ଦୁଝର, ବାଲେଶ୍ୱର, ନୟାଗଡ଼, ବଲାଙ୍ଗୀର, ବ୍ରହ୍ମପୁର) ରୁ ୬ ଜଣ ପ୍ରିମିୟମ୍ ସବସ୍କ୍ରିପସନ୍ ପାଇଛୁ। ଆମର ସ୍କେଲିଂ ମୋ ସ୍କୁଲ୍ ଅଭିଯାନ ସହଭାଗିତା, ଭଏସ୍-ଟୁ-ଭଏସ୍ ଟ୍ୟୁଟର୍, ଏବଂ ଶିକ୍ଷକଙ୍କ ପାଇଁ AI ହୋମୱାର୍କ ମେକର୍ ଦ୍ୱାରା ହେବ। ଆମର ଏଆଇ ବ୍ୟବସ୍ଥା ଜିରୋ-ହଲ୍ୟୁସିନେସନ୍ RAG ରୁ RAG + SFT ଏବଂ ପରେ ବ୍ରାଉଜର୍-ନେଟିଭ୍ offline SFT ମଡେଲ୍ କୁ ଉନ୍ନତି ହେବ, ଯାହା ସର୍ଭର ଖର୍ଚ୍ଚ ସମ୍ପୂର୍ଣ୍ଣ ଶୂନ କରିପାରିବ।"
+      },
+      {
+        title: "ଧନ୍ୟବାଦ!",
+        subtitle: "ବିଶ୍ୱସ୍ତରୀୟ AI ଶିକ୍ଷାକୁ ସରଳ, ସୁଲଭ ଏବଂ ଅଫଲାଇନ୍-ମୁକ୍ତ କରିବା",
+        tagline: "ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର - ପିଚ୍ ସମାପ୍ତ",
+        bullets: [
+          { title: "ପ୍ରତିଷ୍ଠାତା (Founder)", desc: "ଦମୟନ୍ତୀ ପଣ୍ଡା" },
+          { title: "ସହ-ପ୍ରତିଷ୍ଠାତା (Co-Founder)", desc: "ଜ୍ଞାନାଲୋକ ପଣ୍ଡା" },
+          { title: "ଇମେଲ୍ (Email)", desc: "contact@utkalskillcentre.com" }
+        ],
+        speakerNotes: "ଆପଣଙ୍କ ସମୟ ପାଇଁ ଧନ୍ୟବାଦ! ଓଡ଼ିଶାର କୋଣ ଅନୁକୋଣରେ ପିଲାଙ୍କ ପାଖରେ ବିଜ୍ଞାନ ଓ ଗଣିତ ଶିକ୍ଷା ପହଞ୍ଚାଇବା ପାଇଁ ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର ପ୍ରତିବଦ୍ଧ। ଆମ ପ୍ରତିଷ୍ଠାତା ଦମୟନ୍ତୀ ପଣ୍ଡା ଓ ସହ-ପ୍ରତିଷ୍ଠାତା ଜ୍ଞାନାଲୋକ ପଣ୍ଡାଙ୍କ ସହ ଆପଣ contact@utkalskillcentre.com ମାଧ୍ୟମରେ ଯୋଗାଯୋଗ କରିପାରିବେ।"
       }
     ]
   };
@@ -955,6 +977,47 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                 </div>
               )}
 
+              {/* SLIDE 7 SHOWCASE: Beautiful Holographic Thank You & Contact Card */}
+              {currentSlide === 6 && (
+                <motion.div
+                  initial={{ rotate: 1, scale: 0.95 }}
+                  animate={{ rotate: -1, scale: 1 }}
+                  transition={{ repeat: Infinity, repeatType: 'reverse', duration: 4 }}
+                  className="w-full max-w-sm"
+                >
+                  <div className="relative group rounded-[2.2rem] p-6 bg-slate-900/80 border border-amber-500/30 shadow-[0_0_40px_rgba(245,158,11,0.15)] overflow-hidden flex flex-col items-center text-center">
+                    <div className="absolute top-0 right-0 w-28 h-28 bg-amber-500/10 rounded-full blur-xl pointer-events-none" />
+                    
+                    <div className="w-16 h-16 rounded-full bg-slate-950 border border-amber-500/30 flex items-center justify-center p-1.5 shadow-lg mb-4">
+                      <img src="/utkal-192.png" alt="Utkal logo" className="w-full h-full object-contain" />
+                    </div>
+                    
+                    <h3 className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-200 uppercase tracking-wide leading-tight mb-2">
+                      Utkal Skill Centre
+                    </h3>
+                    
+                    <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-6">
+                      {deckLanguage === 'or' ? 'ଶିକ୍ଷା ଓ ପ୍ରଗତିର ଏକ ନୂଆ ଯୁଗ' : 'Empowering Rural Classrooms'}
+                    </p>
+
+                    <div className="w-full space-y-3 bg-black/40 border border-white/5 rounded-2xl p-4 text-left">
+                      <div>
+                        <span className="text-[7.5px] font-black text-slate-500 uppercase tracking-widest block">{deckLanguage === 'or' ? 'ପ୍ରତିଷ୍ଠାତା' : 'FOUNDER'}</span>
+                        <span className="text-xs font-black text-white">Damayanti Panda</span>
+                      </div>
+                      <div>
+                        <span className="text-[7.5px] font-black text-slate-500 uppercase tracking-widest block">{deckLanguage === 'or' ? 'ସହ-ପ୍ରତିଷ୍ଠାତା' : 'CO-FOUNDER'}</span>
+                        <span className="text-xs font-black text-white">Gyanalok Panda</span>
+                      </div>
+                      <div className="pt-2 border-t border-white/5">
+                        <span className="text-[7.5px] font-black text-slate-500 uppercase tracking-widest block">EMAIL</span>
+                        <span className="text-[10px] font-mono font-bold text-amber-400">contact@utkalskillcentre.com</span>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
               {/* SLIDE 6 SHOWCASE: Roadmap 3-Phase Interactive Timeline & Pilot Stats */}
               {currentSlide === 5 && (
                 <div className="w-full max-w-md space-y-4">
@@ -962,7 +1025,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                   <div className="grid grid-cols-2 gap-3">
                     <div className="bg-slate-900 border border-white/5 p-3 rounded-2xl text-center hover:border-emerald-500/30 transition-all">
                       <span className="text-[8px] text-slate-500 uppercase tracking-wider block font-bold">Active Pilot Users</span>
-                      <h3 className="text-2xl font-black text-emerald-400 mt-1">434</h3>
+                      <h3 className="text-2xl font-black text-emerald-400 mt-1">445</h3>
                       <span className="text-[8px] text-slate-400">Rural school students onboarded</span>
                     </div>
                     <div className="bg-slate-900 border border-white/5 p-3 rounded-2xl text-center hover:border-[#b34d1f]/30 transition-all">
