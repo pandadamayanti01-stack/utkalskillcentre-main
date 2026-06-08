@@ -271,7 +271,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
       {
         title: "Utkal Skill Centre",
         subtitle: "Bridging the Educational Divide in Rural Odisha with Conversational AI",
-        tagline: "1st PLACE HACKATHON SHOWCASE",
+        tagline: "HACKATHON SHOWCASE",
         bullets: [
           { title: "7 Million+ Students", desc: "Unlocking EdTech access for rural Odia-medium pupils locked out by English-only apps." },
           { title: "Digital Study Companion", desc: "Gundulu AI tutor provides warm, interactive, and personalized explanations." },
@@ -350,7 +350,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
       {
         title: "ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର",
         subtitle: "ଓଡ଼ିଶାର ଗ୍ରାମାଞ୍ଚଳର ପିଲାମାନଙ୍କ ପାଇଁ କଥାବାର୍ତ୍ତା କରୁଥିବା ଏଆଇ (AI) ମାଧ୍ୟମରେ ପାଠପଢ଼ା",
-        tagline: "ପ୍ରଥମ ସ୍ଥାନ ହାକାଥନ୍ ପ୍ରଦର୍ଶନୀ",
+        tagline: "ହାକାଥନ୍ ପ୍ରଦର୍ଶନୀ",
         bullets: [
           { title: "୭୦ ଲକ୍ଷରୁ ଅଧିକ ଛାତ୍ର", desc: "ଇଂରାଜୀ ଆପ୍ ଦ୍ୱାରା ଅଣଦେଖା ହୋଇଥିବା ଓଡ଼ିଆ ମାଧ୍ୟମ ପିଲାଙ୍କ ପାଖରେ ବିଜ୍ଞାନ ଓ ଗଣିତ ଏଆଇ ଶିକ୍ଷା ପହଞ୍ଚାଇବା।" },
           { title: "ଡିଜିଟାଲ୍ ପଢ଼ା ସାଥୀ", desc: "ଗୁନ୍ଦୁଲୁ ଏଆଇ (Gundulu AI) ପିଲାମାନଙ୍କୁ ଭଉଣୀ ଭଳି ଆଦରରେ ସବୁ ପାଠ ବୁଝାଇଥାଏ।" },
@@ -1183,7 +1183,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
               </div>
               <div className="space-y-1">
                 <h4 className="text-xs font-black text-amber-500 uppercase tracking-widest">
-                  {deckLanguage === 'or' ? 'ବିଚାରକ ପିଚ୍ ପ୍ଲେବୁକ୍ (୩ ମିନିଟ୍ ରେଡି):' : '🎙️ Hackathon Presenter Script (3-Minute Match):'}
+                  {deckLanguage === 'or' ? 'ବିଚାରକ ପିଚ୍ ପ୍ଲେବୁକ୍:' : '🎙️ Hackathon Presenter Script:'}
                 </h4>
                 <p className="text-xs md:text-sm text-slate-300 leading-relaxed italic">
                   "{currentSlideData.speakerNotes}"
