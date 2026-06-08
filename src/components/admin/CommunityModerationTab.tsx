@@ -11,7 +11,19 @@ export const CommunityModerationTab: React.FC = () => {
   const [deleting, setDeleting] = useState(false);
   const [deleteStatus, setDeleteStatus] = useState<string | null>(null);
 
-  const classes = ['class1', 'class2', 'class3', 'class4', 'class5', 'class6', 'class7', 'class8', 'class9', 'class10'];
+  const rooms = [
+    { id: 'teachers', label: 'Educator Staff Room 👥' },
+    { id: 'class10', label: 'Class 10' },
+    { id: 'class9', label: 'Class 9' },
+    { id: 'class8', label: 'Class 8' },
+    { id: 'class7', label: 'Class 7' },
+    { id: 'class6', label: 'Class 6' },
+    { id: 'class5', label: 'Class 5' },
+    { id: 'class4', label: 'Class 4' },
+    { id: 'class3', label: 'Class 3' },
+    { id: 'class2', label: 'Class 2' },
+    { id: 'class1', label: 'Class 1' }
+  ];
 
   useEffect(() => {
     setLoading(true);
@@ -122,17 +134,17 @@ export const CommunityModerationTab: React.FC = () => {
       <div className="glass-card p-6 rounded-[2rem] flex flex-col h-[calc(100vh-250px)]">
         {/* Class Selector */}
         <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide shrink-0 border-b border-white/5 mb-4">
-          {classes.map(cls => (
+          {rooms.map(room => (
             <button
-              key={cls}
-              onClick={() => setSelectedClass(cls)}
+              key={room.id}
+              onClick={() => setSelectedClass(room.id)}
               className={`px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wider whitespace-nowrap transition-all ${
-                selectedClass === cls
+                selectedClass === room.id
                   ? 'bg-indigo-500 text-white shadow-[0_0_15px_rgba(99,102,241,0.4)]'
                   : 'bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white'
               }`}
             >
-              Class {cls.replace('class', '')}
+              {room.label}
             </button>
           ))}
         </div>

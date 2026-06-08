@@ -22,7 +22,7 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const isStaff = student.role === 'teacher' || student.role === 'admin';
-  const [activeClass, setActiveClass] = useState(student.class || '10');
+  const [activeClass, setActiveClass] = useState(isStaff ? 'teachers' : (student.class || 'class10'));
 
   // Track presence and fetch recently active
   useEffect(() => {
@@ -153,7 +153,7 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
               <h1 className="text-white font-black text-lg sm:text-xl tracking-tight flex items-center gap-2 drop-shadow-md">
                 {isStaff ? (
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-slate-300">{language === 'en' ? 'Class Chat:' : 'ଶ୍ରେଣୀ ଚାଟ୍:'}</span>
+                    <span className="text-sm font-bold text-slate-350">{language === 'en' ? 'Active Chat:' : 'ଚାଟ୍ ରୁମ୍:'}</span>
                     <select
                       value={activeClass}
                       onChange={(e) => {
@@ -162,8 +162,13 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
                       }}
                       className="bg-slate-900/80 border border-emerald-500/30 text-emerald-400 font-black rounded-xl px-3 py-1.5 text-xs outline-none cursor-pointer focus:border-emerald-500 transition-all shadow-inner"
                     >
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
-                        <option key={num} value={String(num)} className="bg-slate-900 text-white font-bold">{language === 'en' ? `Class ${num}` : `ଶ୍ରେଣୀ ${num}`}</option>
+                      <option value="teachers" className="bg-slate-900 text-amber-400 font-black">
+                        {language === 'en' ? 'Educator Staff Room 👥' : 'ଶିକ୍ଷକ ଷ୍ଟାଫ୍ ରୁମ୍ 👥'}
+                      </option>
+                      {[10, 9, 8, 7, 6, 5, 4, 3, 2, 1].map(num => (
+                        <option key={num} value={`class${num}`} className="bg-slate-900 text-white font-bold">
+                          {language === 'en' ? `Class ${num}` : `ଶ୍ରେଣୀ ${num}`}
+                        </option>
                       ))}
                     </select>
                   </div>
