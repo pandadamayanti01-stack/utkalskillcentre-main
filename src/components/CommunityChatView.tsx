@@ -165,11 +165,13 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
                       <option value="teachers" className="bg-slate-900 text-amber-400 font-black">
                         {language === 'en' ? 'Educator Staff Room 👥' : 'ଶିକ୍ଷକ ଷ୍ଟାଫ୍ ରୁମ୍ 👥'}
                       </option>
+                      {/* Hide class 1 to 10 for teachers/staff for now; can be unhidden in the future
                       {[10, 9, 8, 7, 6, 5, 4, 3, 2, 1].map(num => (
                         <option key={num} value={`class${num}`} className="bg-slate-900 text-white font-bold">
                           {language === 'en' ? `Class ${num}` : `ଶ୍ରେଣୀ ${num}`}
                         </option>
                       ))}
+                      */}
                     </select>
                   </div>
                 ) : (
