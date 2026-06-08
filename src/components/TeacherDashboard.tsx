@@ -52,6 +52,7 @@ export function TeacherDashboard({
   // AI Generator Modal State
   const [showGeneratorModal, setShowGeneratorModal] = useState(false);
   const [generatorType, setGeneratorType] = useState<'worksheet' | 'lesson_plan' | 'practical_activity'>('worksheet');
+  const [generatorMobileTab, setGeneratorMobileTab] = useState<'config' | 'preview'>('config');
   
   // Generator Inputs
   const [inputClass, setInputClass] = useState('10');
@@ -243,6 +244,8 @@ export function TeacherDashboard({
       setActiveTab?.('plans');
       return;
     }
+
+    setGeneratorMobileTab('preview');
 
     setIsGenerating(true);
     setGeneratedContent('');
@@ -640,6 +643,7 @@ export function TeacherDashboard({
                         try {
                           setGeneratorType('worksheet');
                           setGeneratedContent('');
+                          setGeneratorMobileTab('config');
                           setShowGeneratorModal(true);
                           console.log("TeacherDashboard: showGeneratorModal set to true.");
                         } catch (err) {
@@ -695,6 +699,7 @@ export function TeacherDashboard({
                         try {
                           setGeneratorType('lesson_plan');
                           setGeneratedContent('');
+                          setGeneratorMobileTab('config');
                           setShowGeneratorModal(true);
                           console.log("TeacherDashboard: showGeneratorModal set to true.");
                         } catch (err) {
@@ -750,6 +755,7 @@ export function TeacherDashboard({
                         try {
                           setGeneratorType('practical_activity');
                           setGeneratedContent('');
+                          setGeneratorMobileTab('config');
                           setShowGeneratorModal(true);
                           console.log("TeacherDashboard: showGeneratorModal set to true.");
                         } catch (err) {
@@ -1013,6 +1019,7 @@ export function TeacherDashboard({
                                 setInputChapter(res.chapter);
                                 setInputDifficulty(res.difficulty || 'medium');
                                 setInputQCount(res.qCount || 10);
+                                setGeneratorMobileTab('preview');
                                 setShowGeneratorModal(true);
                               }}
                               className="flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-black text-[10px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-md shadow-purple-950/20 hover:scale-[1.01]"
@@ -1339,6 +1346,7 @@ export function TeacherDashboard({
                     onClick={() => {
                       setShowGeneratorModal(false);
                       setGeneratedContent('');
+                      setGeneratorMobileTab('config');
                     }}
                     className="p-2 rounded-full bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                   >
@@ -1346,11 +1354,39 @@ export function TeacherDashboard({
                   </button>
                 </div>
 
+                {/* Mobile Tab Switcher */}
+                <div className="flex md:hidden border-b border-white/10 p-2 shrink-0 bg-slate-950/20 relative z-20 print:hidden">
+                  <div className="flex w-full bg-slate-950/60 p-1 rounded-xl border border-white/5">
+                    <button
+                      onClick={() => setGeneratorMobileTab('config')}
+                      className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+                        generatorMobileTab === 'config'
+                          ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      <Lucide.Sliders size={12} />
+                      <span>{language === 'en' ? 'Parameters' : 'ପାରାମିଟର'}</span>
+                    </button>
+                    <button
+                      onClick={() => setGeneratorMobileTab('preview')}
+                      className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+                        generatorMobileTab === 'preview'
+                          ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      <Lucide.Eye size={12} />
+                      <span>{language === 'en' ? 'Preview Studio' : 'ପୂର୍ବାବଲୋକନ'}</span>
+                    </button>
+                  </div>
+                </div>
+
                 {/* Workspace Main Split Body */}
                 <div className="flex flex-col md:flex-row flex-1 overflow-hidden min-h-0 print:block print:overflow-visible">
                   
                   {/* Left Config Panel */}
-                  <div className="w-full md:w-[320px] shrink-0 border-b md:border-b-0 md:border-r border-white/10 bg-slate-950/40 p-6 flex flex-col justify-between overflow-y-auto print:hidden space-y-6 relative z-10">
+                  <div className={`w-full md:w-[320px] shrink-0 border-b md:border-b-0 md:border-r border-white/10 bg-slate-950/40 p-6 ${generatorMobileTab === 'config' ? 'flex' : 'hidden'} md:flex flex-col justify-between overflow-y-auto print:hidden space-y-6 relative z-10`}>
                     <div className="space-y-5">
                       <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[9px] font-black uppercase tracking-widest">
                         <Lucide.Sliders size={12} />
@@ -1501,7 +1537,7 @@ export function TeacherDashboard({
                   </div>
 
                   {/* Right Preview Canvas */}
-                  <div className="flex-1 bg-slate-950/10 flex flex-col overflow-hidden relative print:bg-white print:overflow-visible print:block print:static">
+                  <div className={`flex-1 bg-slate-950/10 ${generatorMobileTab === 'preview' ? 'flex' : 'hidden'} md:flex flex-col overflow-hidden relative print:bg-white print:overflow-visible print:block print:static`}>
                     {isGenerating ? (
                       // 1. Loading pipeline state
                       <div className="flex-1 overflow-y-auto p-6 md:p-8 flex flex-col justify-center items-center text-center space-y-6">
@@ -1629,7 +1665,10 @@ export function TeacherDashboard({
                             
                             <button
                               type="button"
-                              onClick={() => setGeneratedContent('')}
+                              onClick={() => {
+                                setGeneratedContent('');
+                                setGeneratorMobileTab('config');
+                              }}
                               className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer"
                               title={language === 'en' ? 'Clear Content' : 'ସଫା କରନ୍ତୁ'}
                             >
@@ -1692,7 +1731,10 @@ export function TeacherDashboard({
                         <div className="flex gap-4 shrink-0 print:hidden">
                           <button
                             type="button"
-                            onClick={() => setGeneratedContent('')}
+                            onClick={() => {
+                              setGeneratedContent('');
+                              setGeneratorMobileTab('config');
+                            }}
                             className="flex-1 py-3.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white font-black text-xs uppercase tracking-wider transition-all cursor-pointer"
                           >
                             {language === 'en' ? 'Create Another' : 'ଆଉ ଏକ ପ୍ରସ୍ତୁତ କରନ୍ତୁ'}
