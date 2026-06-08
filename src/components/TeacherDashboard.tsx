@@ -1386,7 +1386,7 @@ export function TeacherDashboard({
                 <div className="flex flex-col md:flex-row flex-1 overflow-hidden min-h-0 print:block print:overflow-visible">
                   
                   {/* Left Config Panel */}
-                  <div className={`w-full md:w-[320px] shrink-0 border-b md:border-b-0 md:border-r border-white/10 bg-slate-950/40 p-6 ${generatorMobileTab === 'config' ? 'flex' : 'hidden'} md:flex flex-col justify-between overflow-y-auto print:hidden space-y-6 relative z-10`}>
+                  <div className={`w-full flex-1 min-h-0 md:flex-none md:w-[320px] md:shrink-0 border-b md:border-b-0 md:border-r border-white/10 bg-slate-950/40 p-6 ${generatorMobileTab === 'config' ? 'flex' : 'hidden'} md:flex flex-col justify-between overflow-y-auto print:hidden space-y-6 relative z-10`}>
                     <div className="space-y-5">
                       <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[9px] font-black uppercase tracking-widest">
                         <Lucide.Sliders size={12} />
