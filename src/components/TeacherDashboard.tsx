@@ -230,9 +230,8 @@ export function TeacherDashboard({
 
   // AI Content Generation Trigger
   const handleGenerate = async () => {
-    alert("GENERATE button clicked! Chapter = '" + inputChapter + "', Class = '" + inputClass + "', Subject = '" + inputSubject + "'");
     if (!inputChapter.trim()) {
-      alert(language === 'en' ? "Please enter or select a chapter title." : "ଦୟାକରି ଏକ ଅଧ୍ୟାୟ ଶିରୋନାମା ଚୟନ କରନ୍ତୁ କିମ୍ବା ଲେଖନ୍ତୁ।");
+      alert(language === 'en' ? "Please enter or select a chapter title." : "ଦୟาକରି ଏକ ଅଧ୍ୟାୟ ଶିରୋନାମା ଚୟନ କରନ୍ତୁ କିମ୍ବା ଲେଖନ୍ତୁ।");
       return;
     }
 
@@ -637,7 +636,6 @@ export function TeacherDashboard({
                     
                     <button
                       onClick={() => {
-                        alert("Worksheet Maker: Open Studio clicked!");
                         console.log("TeacherDashboard: Open Studio (worksheet) clicked.");
                         try {
                           setGeneratorType('worksheet');
@@ -693,7 +691,6 @@ export function TeacherDashboard({
                     
                     <button
                       onClick={() => {
-                        alert("Lesson Planner: Open Studio clicked!");
                         console.log("TeacherDashboard: Open Studio (lesson_plan) clicked.");
                         try {
                           setGeneratorType('lesson_plan');
@@ -749,7 +746,6 @@ export function TeacherDashboard({
                     
                     <button
                       onClick={() => {
-                        alert("Activities Guide: Open Studio clicked!");
                         console.log("TeacherDashboard: Open Studio (practical_activity) clicked.");
                         try {
                           setGeneratorType('practical_activity');
