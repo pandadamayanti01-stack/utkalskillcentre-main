@@ -990,9 +990,9 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
     return CLASS_SUBJECTS[activeClassCode] || CLASS_SUBJECTS.class10;
   }, [selectedClass]);
 
-  // Keep selectedClass synchronized with user's registered class profile for students (admins can switch classes)
+  // Keep selectedClass synchronized with user's registered class profile for students (admins and teachers can switch classes)
   useEffect(() => {
-    if (user?.class && user.role !== 'admin') {
+    if (user?.class && user.role !== 'admin' && user.role !== 'teacher') {
       const cleanCls = user.class.toString().toLowerCase().replace(/\s+/g, '').replace('class', '').replace('th', '');
       setSelectedClass(cleanCls);
     }
@@ -1495,8 +1495,8 @@ Instructions:
               </h2>
             </div>
 
-            {/* Premium Class Selector Pill-Bar (Only visible to Admins) */}
-            {user?.role === 'admin' && (
+            {/* Premium Class Selector Pill-Bar (Only visible to Admins & Teachers) */}
+            {(user?.role === 'admin' || user?.role === 'teacher') && (
               <div className="flex items-center justify-start md:justify-center gap-2 overflow-x-auto pb-4 mb-8 max-w-5xl mx-auto scrollbar-thin scrollbar-thumb-emerald-500/10 scrollbar-track-transparent">
                 {['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].map((clsNum) => {
                   const isActive = selectedClass === clsNum;
@@ -1956,7 +1956,7 @@ Instructions:
                   >
                     {selectedChapter.notes ? (
                       (() => {
-                        const isUnlocked = isChapterNotesUnlocked || user?.role === 'admin';
+                        const isUnlocked = isChapterNotesUnlocked || user?.role === 'admin' || user?.role === 'teacher';
                         const originalNotes = selectedChapter.notes;
                         const finalNotes = isUnlocked ? originalNotes : (originalNotes.length > 350 ? originalNotes.substring(0, 350) + "..." : originalNotes);
 
@@ -2010,7 +2010,7 @@ Instructions:
                       })()
                     ) : generatedNotes ? (
                       (() => {
-                        const isUnlocked = isChapterNotesUnlocked || user?.role === 'admin';
+                        const isUnlocked = isChapterNotesUnlocked || user?.role === 'admin' || user?.role === 'teacher';
                         const originalNotes = generatedNotes;
                         const finalNotes = isUnlocked ? originalNotes : (originalNotes.length > 350 ? originalNotes.substring(0, 350) + "..." : originalNotes);
 
@@ -2062,7 +2062,7 @@ Instructions:
                           </div>
                         );
                       })()
-                    ) : user?.role === 'admin' ? (
+                    ) : (user?.role === 'admin' || user?.role === 'teacher') ? (
                       /* Stunning Glowing AI Notes Generation CTA Card (Only visible to Administrators) */
                       <div className="flex flex-col items-center justify-center p-8 text-center bg-slate-900/40 border border-white/5 rounded-3xl space-y-6 max-w-lg mx-auto">
                         <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20 relative animate-pulse shadow-lg">

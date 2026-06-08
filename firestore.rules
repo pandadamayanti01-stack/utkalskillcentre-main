@@ -89,6 +89,11 @@ service cloud.firestore {
           (request.auth.token.phone_number == "+919337956168"));
     }
 
+    function isTeacher() {
+      return isAuthenticated() &&
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher');
+    }
+
     function hasOnlyAllowedFields(fields) {
       return request.resource.data.keys().hasOnly(fields);
     }
@@ -199,7 +204,7 @@ service cloud.firestore {
 
     match /chapters/{chapterId} {
       allow read: if isAuthenticated();
-      allow create, update, delete: if isAdmin();
+      allow create, update, delete: if isAdmin() || isTeacher();
     }
 
     match /questions/{questionId} {
