@@ -11,14 +11,18 @@ interface CommunityChatViewProps {
   language: 'en' | 'or';
   student: Student;
   onClose: () => void;
+  isTab?: boolean;
 }
 
-export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, student, onClose }) => {
+export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, student, onClose, isTab = false }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [activeStudents, setActiveStudents] = useState<{id:string, name:string, avatar:string}[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  const isStaff = student.role === 'teacher' || student.role === 'admin';
+  const [activeClass, setActiveClass] = useState(student.class || '10');
 
   // Track presence and fetch recently active
   useEffect(() => {
@@ -33,7 +37,7 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
       try {
         const activeQ = query(
           collection(db, 'users'),
-          where('class', '==', student.class),
+          where('class', '==', activeClass),
           orderBy('lastActiveAt', 'desc'),
           limit(10)
         );
@@ -53,7 +57,7 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
     };
 
     fetchActive();
-  }, [student.id, student.class]);
+  }, [student.id, activeClass]);
 
   // Automatically scroll to bottom when new messages arrive
   const scrollToBottom = () => {
@@ -71,7 +75,7 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
 
     const q = query(
       collection(db, 'community'),
-      where('class', '==', student.class),
+      where('class', '==', activeClass),
       where('timestamp', '>=', Timestamp.fromDate(tenDaysAgo)),
       orderBy('timestamp', 'desc'),
       limit(50)
@@ -91,7 +95,7 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
     });
 
     return () => unsubscribe();
-  }, [student.class]);
+  }, [activeClass]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,7 +112,7 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
         userId: student.id,
         userName: student.name,
         userAvatar: student.avatar || null,
-        class: student.class,
+        class: activeClass,
         role: student.role,
         timestamp: serverTimestamp()
       });
@@ -121,14 +125,14 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
   const t = translations[language];
 
   // Extract numeric part of class if it says "class5"
-  let displayClass = student.class || '';
+  let displayClass = activeClass || '';
   const match = displayClass.match(/(\d+)/);
   if (match) {
     displayClass = match[1];
   }
 
   return (
-    <div className="fixed inset-0 z-[100] bg-slate-950/95 backdrop-blur-3xl flex flex-col font-sans overflow-hidden">
+    <div className={isTab ? "relative flex-grow flex flex-col font-sans overflow-hidden bg-slate-950/90 w-full h-full min-h-0" : "fixed inset-0 z-[100] bg-slate-950/95 backdrop-blur-3xl flex flex-col font-sans overflow-hidden"}>
       {/* Dynamic Background Elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-500/10 blur-[120px]"></div>
@@ -145,17 +149,37 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
             >
               <Lucide.ArrowLeft size={20} className="text-white" />
             </button>
-            <div className="flex flex-col">
+            <div className="flex flex-col text-left">
               <h1 className="text-white font-black text-lg sm:text-xl tracking-tight flex items-center gap-2 drop-shadow-md">
-                {language === 'en' ? `Class ${displayClass} Community` : `ଶ୍ରେଣୀ ${displayClass} କମ୍ୟୁନିଟି`}
+                {isStaff ? (
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold text-slate-300">{language === 'en' ? 'Class Chat:' : 'ଶ୍ରେଣୀ ଚାଟ୍:'}</span>
+                    <select
+                      value={activeClass}
+                      onChange={(e) => {
+                        setIsLoading(true);
+                        setActiveClass(e.target.value);
+                      }}
+                      className="bg-slate-900/80 border border-emerald-500/30 text-emerald-400 font-black rounded-xl px-3 py-1.5 text-xs outline-none cursor-pointer focus:border-emerald-500 transition-all shadow-inner"
+                    >
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
+                        <option key={num} value={String(num)} className="bg-slate-900 text-white font-bold">{language === 'en' ? `Class ${num}` : `ଶ୍ରେଣୀ ${num}`}</option>
+                      ))}
+                    </select>
+                  </div>
+                ) : (
+                  language === 'en' ? `Class ${displayClass} Community` : `ଶ୍ରେଣୀ ${displayClass} କମ୍ୟୁନିଟି`
+                )}
                 <div className="relative flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                 </div>
               </h1>
-              <p className="text-emerald-400 text-[10px] sm:text-xs font-bold uppercase tracking-widest opacity-80">
-                {language === 'en' ? 'Live Discussion' : 'ଲାଇଭ୍ ଆଲୋଚନା'}
-              </p>
+              {!isStaff && (
+                <p className="text-emerald-400 text-[10px] sm:text-xs font-bold uppercase tracking-widest opacity-80">
+                  {language === 'en' ? 'Live Discussion' : 'ଲାଇଭ୍ ଆଲୋଚନା'}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -197,7 +221,7 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
       </div>
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 z-10 scroll-smooth pb-32 custom-scrollbar">
+      <div className={`flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 z-10 scroll-smooth custom-scrollbar ${isTab ? 'pb-44 lg:pb-32' : 'pb-32'}`}>
         {isLoading ? (
           <div className="flex items-center justify-center h-full">
             <div className="relative">
@@ -258,7 +282,7 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
       </div>
 
       {/* Floating Input Area */}
-      <div className="absolute bottom-0 left-0 w-full p-4 sm:p-6 bg-slate-950/95 border-t border-white/5 z-20 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+      <div className={`absolute bottom-0 left-0 w-full p-4 sm:p-6 bg-slate-950/95 border-t border-white/5 z-20 ${isTab ? 'pb-[calc(4.5rem+env(safe-area-inset-bottom))] lg:pb-[calc(1rem+env(safe-area-inset-bottom))]' : 'pb-[calc(1rem+env(safe-area-inset-bottom))]'}`}>
         <form onSubmit={handleSendMessage} className="flex items-end gap-3 max-w-3xl mx-auto">
           <div className="flex-1 bg-slate-900/80 backdrop-blur-2xl rounded-[1.5rem] border border-white/10 focus-within:border-emerald-500/50 focus-within:shadow-[0_0_20px_rgba(16,185,129,0.15)] transition-all flex items-end min-h-[52px] shadow-2xl relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5 opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none"></div>

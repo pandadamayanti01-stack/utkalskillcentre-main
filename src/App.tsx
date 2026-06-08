@@ -3805,7 +3805,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
 
         <div 
           ref={contentScrollRef} 
-          className={`flex-1 ${(activeTab === 'study_buddy' || activeTab === 'gundulu' || activeTab === 'digital_library' || activeTab === '3d_study') ? 'overflow-hidden p-0 flex flex-col min-h-0' : 'overflow-y-auto p-4 md:p-8 pb-28 lg:pb-8'} scrollbar-hide relative z-10`}
+          className={`flex-1 ${(activeTab === 'study_buddy' || activeTab === 'gundulu' || activeTab === 'digital_library' || activeTab === '3d_study' || activeTab === 'community') ? 'overflow-hidden p-0 flex flex-col min-h-0' : 'overflow-y-auto p-4 md:p-8 pb-28 lg:pb-8'} scrollbar-hide relative z-10`}
         >
           <AnimatePresence mode="wait">
             {/* Your 10+ Tab components go here... */}
@@ -3932,6 +3932,16 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                 onUpgrade={() => setActiveTab('plans')}
                 onBack={() => setActiveTab('dashboard')}
               />
+            )}
+            {activeTab === 'community' && user && (
+              <Suspense fallback={<ViewLoader fullHeight />}>
+                <CommunityChatView 
+                  language={language}
+                  student={user}
+                  onClose={() => setActiveTab('dashboard')}
+                  isTab={true}
+                />
+              </Suspense>
             )}
             {activeTab === 'textbooks' && <TextbooksView user={user} textbooks={textbooks} language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'monthly_tests' && (
