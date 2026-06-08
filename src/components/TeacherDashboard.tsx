@@ -636,9 +636,16 @@ export function TeacherDashboard({
                     
                     <button
                       onClick={() => {
-                        setGeneratorType('worksheet');
-                        setGeneratedContent('');
-                        setShowGeneratorModal(true);
+                        console.log("TeacherDashboard: Open Studio (worksheet) clicked.");
+                        try {
+                          setGeneratorType('worksheet');
+                          setGeneratedContent('');
+                          setShowGeneratorModal(true);
+                          console.log("TeacherDashboard: showGeneratorModal set to true.");
+                        } catch (err) {
+                          console.error("TeacherDashboard: Error triggering worksheet studio:", err);
+                          alert("Error: " + (err as Error).message);
+                        }
                       }}
                       className="relative z-10 w-full py-3.5 mt-6 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs uppercase tracking-widest transition-all cursor-pointer shadow-lg shadow-purple-950/35 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 border border-purple-500/30"
                     >
@@ -684,9 +691,16 @@ export function TeacherDashboard({
                     
                     <button
                       onClick={() => {
-                        setGeneratorType('lesson_plan');
-                        setGeneratedContent('');
-                        setShowGeneratorModal(true);
+                        console.log("TeacherDashboard: Open Studio (lesson_plan) clicked.");
+                        try {
+                          setGeneratorType('lesson_plan');
+                          setGeneratedContent('');
+                          setShowGeneratorModal(true);
+                          console.log("TeacherDashboard: showGeneratorModal set to true.");
+                        } catch (err) {
+                          console.error("TeacherDashboard: Error triggering lesson plan studio:", err);
+                          alert("Error: " + (err as Error).message);
+                        }
                       }}
                       className="relative z-10 w-full py-3.5 mt-6 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-black text-xs uppercase tracking-widest transition-all cursor-pointer shadow-lg shadow-blue-950/35 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 border border-blue-500/30"
                     >
@@ -732,9 +746,16 @@ export function TeacherDashboard({
                     
                     <button
                       onClick={() => {
-                        setGeneratorType('practical_activity');
-                        setGeneratedContent('');
-                        setShowGeneratorModal(true);
+                        console.log("TeacherDashboard: Open Studio (practical_activity) clicked.");
+                        try {
+                          setGeneratorType('practical_activity');
+                          setGeneratedContent('');
+                          setShowGeneratorModal(true);
+                          console.log("TeacherDashboard: showGeneratorModal set to true.");
+                        } catch (err) {
+                          console.error("TeacherDashboard: Error triggering practical activity studio:", err);
+                          alert("Error: " + (err as Error).message);
+                        }
                       }}
                       className="relative z-10 w-full py-3.5 mt-6 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs uppercase tracking-widest transition-all cursor-pointer shadow-lg shadow-emerald-950/35 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 border border-emerald-500/30"
                     >
@@ -1285,21 +1306,14 @@ export function TeacherDashboard({
           )}
         </AnimatePresence>
 
-        {/* Unified AI Generator & Print Modal (Dual-Pane Split Studio layout) */}
-        <AnimatePresence>
-          {showGeneratorModal && createPortal(
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="print-modal-overlay fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto print:p-0 print:bg-white print:block print:static print:overflow-visible"
+        {/* Unified AI Generator & Print Modal (Dual-Pane Split Studio layout) - Inline standard divs for maximum rendering reliability */}
+        {showGeneratorModal && createPortal(
+          <div 
+            className="print-modal-overlay fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto print:p-0 print:bg-white print:block print:static print:overflow-visible"
+          >
+            <div 
+              className="print-modal-card bg-slate-900/95 border border-purple-500/20 rounded-[32px] w-full max-w-6xl relative shadow-2xl my-4 overflow-hidden h-[90vh] flex flex-col force-dark-theme print:max-h-none print:h-auto print:my-0 print:border-none print:bg-white print:shadow-none print:rounded-none print:block print:static print:overflow-visible"
             >
-              <motion.div 
-                initial={{ scale: 0.9, y: 20 }}
-                animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.9, y: 20 }}
-                className="print-modal-card bg-slate-900/95 border border-purple-500/20 rounded-[32px] w-full max-w-6xl relative shadow-2xl my-4 overflow-hidden h-[90vh] flex flex-col force-dark-theme print:max-h-none print:h-auto print:my-0 print:border-none print:bg-white print:shadow-none print:rounded-none print:block print:static print:overflow-visible"
-              >
                 <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/5 rounded-full blur-[80px] -mr-32 -mt-32 pointer-events-none print:hidden" />
                 
                 {/* Header */}
@@ -1709,11 +1723,10 @@ export function TeacherDashboard({
                     )}
                   </div>
                 </div>
-              </motion.div>
-            </motion.div>,
-            document.body
-          )}
-        </AnimatePresence>
+            </div>
+          </div>,
+          document.body
+        )}
       </motion.div>
     </div>
   );
