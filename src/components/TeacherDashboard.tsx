@@ -636,6 +636,7 @@ export function TeacherDashboard({
                     
                     <button
                       onClick={() => {
+                        alert("Worksheet Maker: Open Studio clicked!");
                         console.log("TeacherDashboard: Open Studio (worksheet) clicked.");
                         try {
                           setGeneratorType('worksheet');
@@ -691,6 +692,7 @@ export function TeacherDashboard({
                     
                     <button
                       onClick={() => {
+                        alert("Lesson Planner: Open Studio clicked!");
                         console.log("TeacherDashboard: Open Studio (lesson_plan) clicked.");
                         try {
                           setGeneratorType('lesson_plan');
@@ -746,6 +748,7 @@ export function TeacherDashboard({
                     
                     <button
                       onClick={() => {
+                        alert("Activities Guide: Open Studio clicked!");
                         console.log("TeacherDashboard: Open Studio (practical_activity) clicked.");
                         try {
                           setGeneratorType('practical_activity');

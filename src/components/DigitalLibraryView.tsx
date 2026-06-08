@@ -1260,6 +1260,7 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
 
   const handleGenerateAiNotes = async () => {
     if (!selectedChapter) return;
+    alert("Digital Library: Generate & Save Notes clicked for chapter: " + selectedChapter.title);
     setIsGeneratingNotes(true);
     try {
       const prompt = `Please generate high-quality, comprehensive, and clear student study notes for the textbook chapter: "${selectedChapter.title}" in the subject of "${selectedChapter.subject || selectedSubject || 'Mathematics'}". 
