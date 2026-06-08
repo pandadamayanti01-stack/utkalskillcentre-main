@@ -26,8 +26,8 @@ const firestoreDatabaseId =
   process.env.VITE_FIREBASE_DATABASE_ID ||
   'utkal-prod';
 
-const vapidPublicKey = process.env.VAPID_PUBLIC_KEY || 'BHk1uroqx4HMHX1c3ldVPuO3AYWBGByuqlYBjWPW2YttFtiurT8cI731ckrp7K_Q491TtgpAkZL7ioLvVKtmtJo';
-const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY || 'YGxwRzEnUaPqPygwknmuurDPEQVAwrEobKosW18pGVA';
+const vapidPublicKey = process.env.VAPID_PUBLIC_KEY;
+const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY;
 
 if (vapidPublicKey && vapidPrivateKey) {
   try {
