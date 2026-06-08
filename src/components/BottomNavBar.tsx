@@ -68,10 +68,10 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
   };
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-40 lg:hidden pointer-events-none pb-[env(safe-area-inset-bottom)]">
+    <div className="fixed bottom-0 inset-x-0 z-40 lg:hidden pointer-events-none pb-[calc(12px+env(safe-area-inset-bottom))] px-4">
       
-      {/* Edge-to-Edge Navigation Bar Background */}
-      <div className="absolute inset-x-0 bottom-0 h-16 bg-white/90 dark:bg-slate-950/85 backdrop-blur-xl border-t border-emerald-500/25 dark:border-emerald-500/15 shadow-[0_-8px_30px_rgba(16,185,129,0.08)] dark:shadow-[0_-12px_40px_rgba(16,185,129,0.15)] pointer-events-auto flex items-center justify-between px-2">
+      {/* Floating Island Navigation Bar Background */}
+      <div className="relative w-full h-16 bg-white/95 dark:bg-slate-950/90 backdrop-blur-xl border border-emerald-500/25 dark:border-emerald-500/15 shadow-[0_10px_35px_rgba(0,0,0,0.15),0_0_20px_rgba(16,185,129,0.08)] pointer-events-auto flex items-center justify-between px-2 rounded-2xl">
         
         {navItems.map((item, index) => {
           const Icon = item.icon;
