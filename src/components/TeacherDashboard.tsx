@@ -230,6 +230,7 @@ export function TeacherDashboard({
 
   // AI Content Generation Trigger
   const handleGenerate = async () => {
+    alert("GENERATE button clicked! Chapter = '" + inputChapter + "', Class = '" + inputClass + "', Subject = '" + inputSubject + "'");
     if (!inputChapter.trim()) {
       alert(language === 'en' ? "Please enter or select a chapter title." : "ଦୟାକରି ଏକ ଅଧ୍ୟାୟ ଶିରୋନାମା ଚୟନ କରନ୍ତୁ କିମ୍ବା ଲେଖନ୍ତୁ।");
       return;
