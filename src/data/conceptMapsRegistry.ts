@@ -6,7 +6,11 @@ export const AVAILABLE_PREMIUM_MAPS = [
   'BkI12z7DPpAaIozm4bKH', // Class 10 Physical Science - Electricity (Electricity Map)
   '5n7Dg8pphGZT8XG2xKHW', // Class 10 Physical Science - Acids, Bases and Salts (Acids Bases Map)
   'hN2uO4iyaCERFcPLmran', // Class 10 Physical Science - Metals and Non-Metals (Metals Non-Metals Map)
-  'vfXYwB9Po1rB4Aty4q3Y'  // Class 10 Physical Science - Carbon and its Compounds (Carbon Compounds Map)
+  'vfXYwB9Po1rB4Aty4q3Y', // Class 10 Physical Science - Carbon and its Compounds (Carbon Compounds Map)
+  'vYSgSwsyfXAUGTHZPMHk', // Class 10 Physical Science - Periodic Classification (Periodic Classification Map)
+  'vIk5JIUpltQXmdbvknis', // Class 10 Physical Science - Magnetic Effects (Magnetic Effects Map)
+  'yBsU83fVRBM0lGzhfG5N', // Class 10 Physical Science - Human Eye (Human Eye Map)
+  '8kGT8tSrIIFZ3sxoeyXt'  // Class 10 Life Science - Our Environment (Our Environment Map)
 ];
 
 /**

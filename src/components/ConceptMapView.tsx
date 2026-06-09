@@ -91,6 +91,42 @@ const PREMIUM_OVERLAYS: Record<string, OverlayNode[]> = {
     { labelEn: "Functional Groups", labelOr: "କ୍ରିୟାତ୍ମକ ଗ୍ରୁପ୍", top: '30%', left: '80%', color: 'amber' },
     { labelEn: "Unsaturated (Alkenes/Alkynes)", labelOr: "ଅସନ୍ତୃପ୍ତ (ଆଲକିନ୍/ଆଲକାଇନ୍)", top: '65%', left: '80%', color: 'blue' },
     { labelEn: "Soap & Detergents", labelOr: "ସାବୁନ୍ ଏବଂ ଡିଟରଜେଣ୍ଟ୍", top: '85%', left: '50%', color: 'emerald' }
+  ],
+  'vYSgSwsyfXAUGTHZPMHk': [
+    { labelEn: "Periodic Classification", labelOr: "ମୌଳିକର ଶ୍ରେଣୀକରଣ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Early Attempts (Triads/Octaves)", labelOr: "ପ୍ରାରମ୍ଭିକ ପ୍ରୟାସ (ତ୍ରିପଦୀ/ଅଷ୍ଟକ)", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Mendeleev's Periodic Table", labelOr: "ମେଣ୍ଡେଲିଭ୍ ପର୍ଯ୍ୟାୟ ସାରଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Modern Periodic Table (Atomic No.)", labelOr: "ଆଧୁନିକ ପର୍ଯ୍ୟାୟ ସାରଣୀ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Periods (7) & Groups (18)", labelOr: "ପର୍ଯ୍ୟାୟ (୭) ଓ ଗ୍ରୁପ୍ (୧୮)", top: '30%', left: '80%', color: 'blue' },
+    { labelEn: "Valency & Atomic Size Trends", labelOr: "ଯୋଜ୍ଯତା ଓ ଆଟୋମିକ୍ ସାଇଜ୍ ପ୍ରବୃତ୍ତି", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Metallic & Non-Metallic Trends", labelOr: "ଧାତବ ଓ ଅଧାତବ ଗୁଣଧର୍ମ", top: '85%', left: '50%', color: 'emerald' }
+  ],
+  'vIk5JIUpltQXmdbvknis': [
+    { labelEn: "Electromagnetism Overview", labelOr: "ବିଦ୍ୟୁତ୍ ଚୁମ୍ବକତ୍ୱ ସାରାଂଶ", top: '10%', left: '50%', color: 'blue' },
+    { labelEn: "Magnetic Field Lines", labelOr: "ଚୁମ୍ବକୀୟ ବଳରେଖା", top: '30%', left: '20%', color: 'amber' },
+    { labelEn: "Current in Solenoid", labelOr: "ସୋଲେନଏଡ୍‌ରେ ପ୍ରବାହିତ ସ୍ରୋତ", top: '65%', left: '20%', color: 'blue' },
+    { labelEn: "Fleming's Left-Hand Rule", labelOr: "ଫ୍ଲେମିଙ୍ଗଙ୍କ ବାମ-හସ୍ତ ନିୟମ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Electric Motor principle", labelOr: "ବିଦ୍ୟୁତ୍ ମୋଟର ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Induced Current / Generator", labelOr: "ପ୍ରେରିତ ସ୍ରୋତ / ଜେନେରେଟର", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Domestic Electric Circuits", labelOr: "ଗୃହୋପକରଣ ବିଦ୍ୟୁତ୍ ପରିପଥ", top: '85%', left: '50%', color: 'amber' }
+  ],
+  'yBsU83fVRBM0lGzhfG5N': [
+    { labelEn: "Human Eye & Light", labelOr: "ମାନବ ଚକ୍ଷୁ ଓ ଆଲୋକ", top: '10%', left: '50%', color: 'amber' },
+    { labelEn: "Accommodation of Eye", labelOr: "ଚକ୍ଷୁର ସମାଯୋଜନ କ୍ଷମତା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Myopia & Hypermetropia", labelOr: "ସମୀପ ଦୃଷ୍ଟି ଓ ଦୂର ଦୃଷ୍ଟି ଦୋଷ", top: '65%', left: '20%', color: 'emerald' },
+    { labelEn: "Dispersion / Spectrum", labelOr: "ଆଲୋକର ବିଛୁରଣ / ବର୍ଣ୍ଣାଳୀ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Atmospheric Refraction", labelOr: "ବାୟୁମଣ୍ଡଳୀୟ ପ୍ରତିସରଣ", top: '30%', left: '80%', color: 'blue' },
+    { labelEn: "Scattering (Tyndall Effect)", labelOr: "ଆଲୋକର ବିକିରଣ (ଟିଣ୍ଡାଲ୍ ପ୍ରଭାବ)", top: '65%', left: '80%', color: 'amber' },
+    { labelEn: "Rainbow Formation", labelOr: "ଇନ୍ଦ୍ରଧନୁ ସୃଷ୍ଟି ପ୍ରକ୍ରିୟା", top: '85%', left: '50%', color: 'emerald' }
+  ],
+  '8kGT8tSrIIFZ3sxoeyXt': [
+    { labelEn: "Ecosystem Balance", labelOr: "ପରିସଂସ୍ଥା ସନ୍ତୁଳନ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Food Chain & Food Web", labelOr: "ଖାଦ୍ୟ ଶୃଙ୍ଖଳ ଓ ଖାଦ୍ୟ ଜାଲ", top: '30%', left: '20%', color: 'emerald' },
+    { labelEn: "Energy Flow Pyramid", labelOr: "ଶକ୍ତି ପ୍ରବାହ ପିରାମିଡ୍", top: '65%', left: '20%', color: 'blue' },
+    { labelEn: "Ozone Layer & CFCs", labelOr: "ଓଜୋନ୍ ସ୍ତର ଓ କ୍ଷୟୀକରଣ", top: '48%', left: '50%', color: 'amber' },
+    { labelEn: "Biodegradable Waste", labelOr: "ଜୈବ ବିଘଟନଯୋଗ୍ୟ ଆବର୍ଜନା", top: '30%', left: '80%', color: 'purple' },
+    { labelEn: "Non-Biodegradable Waste", labelOr: "ଜୈବ ଅବିଘଟନଯୋଗ୍ୟ ଆବର୍ଜନା", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Ecosystem Management", labelOr: "ଆମ ପରିବେଶ ସୁରକ୍ଷା", top: '85%', left: '50%', color: 'blue' }
   ]
 };
 
