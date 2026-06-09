@@ -10,7 +10,12 @@ export const AVAILABLE_PREMIUM_MAPS = [
   'vYSgSwsyfXAUGTHZPMHk', // Class 10 Physical Science - Periodic Classification (Periodic Classification Map)
   'vIk5JIUpltQXmdbvknis', // Class 10 Physical Science - Magnetic Effects (Magnetic Effects Map)
   'yBsU83fVRBM0lGzhfG5N', // Class 10 Physical Science - Human Eye (Human Eye Map)
-  '8kGT8tSrIIFZ3sxoeyXt'  // Class 10 Life Science - Our Environment (Our Environment Map)
+  '8kGT8tSrIIFZ3sxoeyXt', // Class 10 Life Science - Our Environment (Our Environment Map)
+  'PVqIhNgzghFKacVchjs1', // Class 10 Life Science - Control and Coordination (Control and Coordination Map)
+  'fNy21816t8C3EMrsdP4S', // Class 10 Life Science - Excretion (Excretion Map)
+  'Jb1gxditmbVBJIubDjok', // Class 10 Life Science - Reproduction (Reproduction Map)
+  'zti7Pcoic1HhlnFlsGxK', // Class 10 Life Science - Heredity and Evolution (Heredity and Evolution Map)
+  'FE7XoiswjRxPglXwvzwd'  // Class 10 Life Science - Covid 19 Management (Covid 19 Management Map)
 ];
 
 /**

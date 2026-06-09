@@ -127,6 +127,51 @@ const PREMIUM_OVERLAYS: Record<string, OverlayNode[]> = {
     { labelEn: "Biodegradable Waste", labelOr: "ଜୈବ ବିଘଟନଯୋଗ୍ୟ ଆବର୍ଜନା", top: '30%', left: '80%', color: 'purple' },
     { labelEn: "Non-Biodegradable Waste", labelOr: "ଜୈବ ଅବିଘଟନଯୋଗ୍ୟ ଆବର୍ଜନା", top: '65%', left: '80%', color: 'purple' },
     { labelEn: "Ecosystem Management", labelOr: "ଆମ ପରିବେଶ ସୁରକ୍ଷା", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'PVqIhNgzghFKacVchjs1': [
+    { labelEn: "Control & Coordination", labelOr: "ନିୟନ୍ତ୍ରଣ ଓ ସମନ୍ୱୟ", top: '10%', left: '50%', color: 'purple' },
+    { labelEn: "Central Nervous System", labelOr: "କେନ୍ଦ୍ରୀୟ ସ୍ନାୟୁତନ୍ତ୍ର", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Reflex Action & Arc", labelOr: "ପ୍ରତିକ୍ଷେପ କ୍ରିୟā ଓ ଚାପ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Human Brain Parts", labelOr: "ମାନବ ମସ୍ତିଷ୍କ ଭାଗ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Plant Hormones", labelOr: "ଉଦ୍ଭିଦ ହରମୋନ୍", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Endocrine System (Glands)", labelOr: "ଅନ୍ତଃସ୍ରାବୀ ଗ୍ରନ୍ଥି ଓ ହରମୋନ୍", top: '65%', left: '80%', color: 'blue' },
+    { labelEn: "Hormonal Feedback", labelOr: "ହରମୋନାଲ୍ ନିୟନ୍ତ୍ରଣ ଚକ୍ର", top: '85%', left: '50%', color: 'amber' }
+  ],
+  'fNy21816t8C3EMrsdP4S': [
+    { labelEn: "Excretion Overview", labelOr: "ରେଚନ ପ୍ରକ୍ରିୟା ସାରାଂଶ", top: '10%', left: '50%', color: 'blue' },
+    { labelEn: "Kidneys & Urinary Tract", labelOr: "ବୃକ୍‌କ ଓ ମୂତ୍ରାଶୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Filtration & Absorption", labelOr: "ଛାଣିବା ଓ ପୁନଃଶୋଷଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Nephron Structure", labelOr: "ନେଫ୍ରନ୍ ସଂରଚନା", top: '48%', left: '50%', color: 'emerald' },
+    { labelEn: "Hemodialysis", labelOr: "ଡାୟାଲିସିସ୍ ପ୍ରଣାଳୀ", top: '30%', left: '80%', color: 'purple' },
+    { labelEn: "Plant Waste Products", labelOr: "ଉଦ୍ଭିଦରେ ରେଚନ ଗୁଣ", top: '65%', left: '80%', color: 'emerald' },
+    { labelEn: "Accessory Excretory Organs", labelOr: "ସହାୟକ ରେଚନ ଅଙ୍ଗ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'Jb1gxditmbVBJIubDjok': [
+    { labelEn: "How Organisms Reproduce", labelOr: "ଜୀବମାନଙ୍କ ପ୍ରଜନନ ପ୍ରକ୍ରିୟା", top: '10%', left: '50%', color: 'purple' },
+    { labelEn: "Asexual Methods (Fission)", labelOr: "ଅଲିଙ୍ଗୀ ଜନନ ପଦ୍ଧତି", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Sexual Reproduction in Plants", labelOr: "ଉଦ୍ଭିଦରେ ଲିଙ୍ଗୀ ଜନନ", top: '65%', left: '20%', color: 'emerald' },
+    { labelEn: "Zygote & Embryo", labelOr: "ଯୁଗ୍ମଜ ଏବଂ ଭ୍ରୂଣ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Male Reproductive System", labelOr: "ପୁରୁଷ ପ୍ରଜନନ ତନ୍ତ୍ର", top: '30%', left: '80%', color: 'blue' },
+    { labelEn: "Female Reproductive System", labelOr: "ସ୍ତ୍ରୀ ପ୍ରଜନନ ତନ୍ତ୍ର", top: '65%', left: '80%', color: 'blue' },
+    { labelEn: "Reproductive Health & Contraception", labelOr: "ପ୍ରଜନନ ସ୍ୱାସ୍ଥ୍ୟ ଓ ଜନ୍ମ ନିୟନ୍ତ୍ରଣ", top: '85%', left: '50%', color: 'amber' }
+  ],
+  'zti7Pcoic1HhlnFlsGxK': [
+    { labelEn: "Heredity & Genetics", labelOr: "ବଂଶାନୁକ୍ରମ ଓ ଜେନେଟିକ୍ସ", top: '10%', left: '50%', color: 'blue' },
+    { labelEn: "Mendelian Inheritance", labelOr: "ମେଣ୍ଡେଲଙ୍କ ନିୟମାବଳୀ", top: '30%', left: '20%', color: 'amber' },
+    { labelEn: "Sex Determination (XY)", labelOr: "ଲିଙ୍ଗ ନିରୂପଣ ପ୍ରକ୍ରିୟା", top: '65%', left: '20%', color: 'blue' },
+    { labelEn: "DNA Double Helix", labelOr: "ଡିଏନଏ ଓ କ୍ରୋମୋଜୋମ୍", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Acquired & Inherited Traits", labelOr: "ଅର୍ଜିତ ଓ ବଂଶଗତ ଲକ୍ଷଣ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Speciation & Evolution", labelOr: "ଜାତି ସୃଷ୍ଟି ଓ କ୍ରମବିକାଶ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Fossils & Homologous Organs", labelOr: "ଜୀବାଶ୍ମ ଓ ସମସଂସ୍ଥ ଅଙ୍ଗ", top: '85%', left: '50%', color: 'emerald' }
+  ],
+  'FE7XoiswjRxPglXwvzwd': [
+    { labelEn: "Covid-19 Management", labelOr: "କୋଭିଡ-୧୯ ପରିଚାଳନା", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "SARS-CoV-2 Structure", labelOr: "କରୋନା ଭାଇରସ୍ ଗଠନ", top: '30%', left: '20%', color: 'amber' },
+    { labelEn: "Droplet Transmission", labelOr: "ସଂକ୍ରମଣ ଓ ବ୍ୟାପିବା ପଥ", top: '65%', left: '20%', color: 'blue' },
+    { labelEn: "Immune Shielding", labelOr: "ରୋଗ ପ୍ରତିରୋଧକ ଶକ୍ତି", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Masks & Hand Hygiene", labelOr: "ମାସ୍କ ଓ ହାତ ଧୋଇବା", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Vaccine Protection", labelOr: "ଟିକାକରଣ ପ୍ରୋଟୋକଲ୍", top: '65%', left: '80%', color: 'emerald' },
+    { labelEn: "Social Distancing", labelOr: "ସାମାଜିକ ଦୂରତା ରକ୍ଷା", top: '85%', left: '50%', color: 'blue' }
   ]
 };
 
