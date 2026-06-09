@@ -28,7 +28,26 @@ export const AVAILABLE_PREMIUM_MAPS = [
   'j5ym70mivqsTXHpAnMxJ', // Class 10 Geometry - Tangents to a Circle (Tangents Map)
   'cHD1xEpJvTclMfvi5ZJH', // Class 10 Geometry - Trigonometry (Trigonometry Map)
   '4XpiLqgcg15qMNkQdgMm', // Class 10 Geometry - Mensuration (Mensuration Map)
-  '7Yukb86gfwmb9Bptpbwd'  // Class 10 Geometry - Construction (Construction Map)
+  '7Yukb86gfwmb9Bptpbwd', // Class 10 Geometry - Construction (Construction Map)
+  
+  // Class 9 Math - Algebra
+  'rEwPDUZHAwzJA0ZEEEp9', // Class 9 Algebra - Set Operations and Application
+  'xzRdIeQy9xACVlNyCrni', // Class 9 Algebra - Real Numbers
+  'vnVRu3EZt43dfDmC52hC', // Class 9 Algebra - Algebraic Expressions and Identities
+  '3930hm9apoZ0o85WBnGZ', // Class 9 Algebra - Algebraic Equations
+  'VWBNp0Z84ZMc7Cj5PsvO', // Class 9 Algebra - Coordinate Geometry
+  '8espf73Ro8U4dlairG2N', // Class 9 Algebra - Ratio and Proportion
+  'JUK8CDGUs0lHEmEpQjv3', // Class 9 Algebra - Statistics
+  '0iyOSoLXnySiCj8Hvzdp', // Class 9 Algebra - Probability
+  
+  // Class 9 Math - Geometry
+  'qjH43lmxEUZTzRfiJ3pE', // Class 9 Geometry - Lines and Angles
+  '6lmg30zsqPtO31fERDt8', // Class 9 Geometry - Congruence of Triangles
+  '5YsDHmIIyx9cWlSRkMtz', // Class 9 Geometry - Quadrilaterals
+  'waFHMnnjvCtoedjA4dkq', // Class 9 Geometry - Area
+  'CN2vF71fvpISYZQdSyo7', // Class 9 Geometry - Mensuration
+  '5sC6FO1jZ3KJDHXto8zF', // Class 9 Geometry - Construction
+  'yjYuvfGmjWGdhkca3gIB'  // Class 9 Geometry - Trigonometry
 ];
 
 /**

@@ -289,6 +289,141 @@ const PREMIUM_OVERLAYS: Record<string, OverlayNode[]> = {
     { labelEn: "Tangents to a Circle", labelOr: "ବୃତ୍ତକୁ ସ୍ପର୍ଶକ ଅଙ୍କନ", top: '30%', left: '80%', color: 'emerald' },
     { labelEn: "Similar Triangle Construction", labelOr: "ସଦୃଶ ତ୍ରିଭୁଜ ଅଙ୍କନ", top: '65%', left: '80%', color: 'purple' },
     { labelEn: "Cyclic Polygons Construction", labelOr: "ଚକ୍ରୀୟ ବହୁଭୁଜ ଅଙ୍କନ", top: '85%', left: '50%', color: 'emerald' }
+  ],
+  'rEwPDUZHAwzJA0ZEEEp9': [
+    { labelEn: "Set Theory Basics", labelOr: "ସେଟ୍ ତତ୍ତ୍ଵ ଧାରଣା", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Representation of Sets", labelOr: "ସେଟ୍‌ର ପ୍ରକାଶ ପ୍ରଣାଳୀ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Empty & Finite Sets", labelOr: "ଶୂନ୍ୟ ଓ ସସୀମ ସେଟ୍", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Venn Diagrams", labelOr: "ଭେନ୍ ଚିତ୍ର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Set Operations", labelOr: "ସେଟ୍ ପ୍ରକ୍ରିୟା", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Union & Intersection", labelOr: "ସଂଯୋଗ ଓ ଛେଦ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Difference of Sets", labelOr: "ଅନ୍ତର ପ୍ରକ୍ରିୟା", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'xzRdIeQy9xACVlNyCrni': [
+    { labelEn: "Real Numbers Overview", labelOr: "ବାସ୍ତବ ସଂଖ୍ୟା ସାରାଂଶ", top: '10%', left: '50%', color: 'blue' },
+    { labelEn: "Rational Numbers", labelOr: "ପରିମେୟ ସଂଖ୍ୟା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Irrational Numbers", labelOr: "ଅପରିମେୟ ସଂଖ୍ୟା", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Real Number Line", labelOr: "ବାସ୍ତବ ସଂଖ୍ୟା ରେଖା", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Operations on Real Numbers", labelOr: "ବାସ୍ତବ ସଂଖ୍ୟା ପ୍ରକ୍ରିୟା", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Laws of Exponents", labelOr: "ଘାତାଙ୍କ ନିୟମ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Surds & Rationalization", labelOr: "କରଣୀ ଓ ହରର ପରିମେୟକରଣ", top: '85%', left: '50%', color: 'amber' }
+  ],
+  'vnVRu3EZt43dfDmC52hC': [
+    { labelEn: "Expressions Basics", labelOr: "ବୀଜଗାଣିତିକ ପରିପ୍ରକାଶ ଧାରଣା", top: '10%', left: '50%', color: 'amber' },
+    { labelEn: "Polynomials & Degrees", labelOr: "ବହୁପଦୀ ରାଶି ଓ ଘାତ", top: '30%', left: '20%', color: 'emerald' },
+    { labelEn: "Addition & Subtraction", labelOr: "ମିଶନ ଓ ବିୟୋଗ", top: '65%', left: '20%', color: 'blue' },
+    { labelEn: "Multiplication of Polynomials", labelOr: "ବହୁପଦୀ ରାଶିର ଗୁଣନ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Remainder Theorem", labelOr: "ଭାଗଶେଷ ଉପପାଦ୍ୟ", top: '30%', left: '80%', color: 'amber' },
+    { labelEn: "Factorization", labelOr: "ଉତ୍ପାଦକୀକରଣ", top: '65%', left: '80%', color: 'blue' },
+    { labelEn: "Algebraic Identities", labelOr: "ବୀଜଗାଣିତିକ ଅଭେଦ ସୂତ୍ର", top: '85%', left: '50%', color: 'emerald' }
+  ],
+  '3930hm9apoZ0o85WBnGZ': [
+    { labelEn: "Linear Equations Basics", labelOr: "ସରଳ ସମୀକରଣ ଧାରଣା", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Linear Equations in One Var", labelOr: "ଏକ ଅଜ୍ଞାତ ରାଶି ବିଶିଷ୍ଟ ସମୀକରଣ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Simultaneous Equations", labelOr: "ସହସମୀକରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Solving Linear Equations", labelOr: "ସମୀକରଣର ସମାଧାନ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Problems", labelOr: "ବ୍ୟବହାରିକ ପ୍ରଶ୍ନ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Linear Graphs", labelOr: "ଲେଖଚିତ୍ର ଅଙ୍କନ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Solutions of Simultaneous", labelOr: "ସହସମୀକରଣର ସମାଧାନ ପ୍ରକ୍ରିୟା", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'VWBNp0Z84ZMc7Cj5PsvO': [
+    { labelEn: "Cartesian Plane", labelOr: "କାର୍ତ୍ତେଜୀୟ ସମତଳ", top: '10%', left: '50%', color: 'purple' },
+    { labelEn: "Origin & Axes", labelOr: "ମୂଳବିନ୍ଦୁ ଓ ଅକ୍ଷ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Quadrants", labelOr: "ଚତୁର୍ଥାଂଶ", top: '65%', left: '20%', color: 'emerald' },
+    { labelEn: "Plotting Points", labelOr: "ବିନ୍ଦୁ ସ୍ଥାପନ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Coordinates (x, y)", labelOr: "ସ୍ଥାନାଙ୍କ (x, y)", top: '30%', left: '80%', color: 'amber' },
+    { labelEn: "Distance from Axes", labelOr: "ଅକ୍ଷଠାରୁ ଦୂରତା", top: '65%', left: '80%', color: 'blue' },
+    { labelEn: "Linear Equations Graph", labelOr: "ସମୀକରଣର ଲେଖଚିତ୍ର", top: '85%', left: '50%', color: 'emerald' }
+  ],
+  '8espf73Ro8U4dlairG2N': [
+    { labelEn: "Ratio Basics", labelOr: "ଅନୁପାତ ଧାରଣା", top: '10%', left: '50%', color: 'blue' },
+    { labelEn: "Comparison of Ratios", labelOr: "ଅନୁପାତର ତୁଳନା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Proportion Concept", labelOr: "ସମାନୁପାତ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Direct Proportion", labelOr: "ପ୍ରତ୍ୟକ୍ଷ ସମାନୁପାତ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Inverse Proportion", labelOr: "ବ୍ୟସ୍ତ ସମାନୁପାତ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Continued Proportion", labelOr: "କ୍ରମିକ ସମାନୁପାତ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Applications of Proportion", labelOr: "ସମାନୁପାତର ପ୍ରୟୋଗ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'JUK8CDGUs0lHEmEpQjv3': [
+    { labelEn: "Data Collection", labelOr: "ତଥ୍ୟ ସଂଗ୍ରହ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Frequency Distribution", labelOr: "ବାରମ୍ବାରତା ବିତରଣ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Tabular Presentation", labelOr: "ସାରଣୀକରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Bar Graphs & Histograms", labelOr: "ସ୍ତମ୍ଭଲେଖ ଓ ହିଷ୍ଟୋଗ୍ରାମ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Frequency Polygons", labelOr: "ବାରମ୍ବାରତା ବହୁଭୁଜ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Measures of Central Tendency", labelOr: "କେନ୍ଦ୍ରୀୟ ପ୍ରବଣତା ମାପ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Mean, Median, Mode", labelOr: "ମାଧ୍ୟମାନ, ମଧ୍ୟମା, ଗରିଷ୍ଠକ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '0iyOSoLXnySiCj8Hvzdp': [
+    { labelEn: "Probability Concept", labelOr: "ସମ୍ଭାବ୍ୟତା ଧାରଣା", top: '10%', left: '50%', color: 'amber' },
+    { labelEn: "Empirical Probability", labelOr: "ପରୀକ୍ଷାମୂଳକ ସମ୍ଭାବ୍ୟତା", top: '30%', left: '20%', color: 'emerald' },
+    { labelEn: "Events & Outcomes", labelOr: "ଘଟଣା ଓ ଫଳାଫଳ", top: '65%', left: '20%', color: 'blue' },
+    { labelEn: "Coin Tossing Experiment", labelOr: "ମୁଦ୍ରା ଟସ୍ ପରୀକ୍ଷଣ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Rolling a Die", labelOr: "ଲୁଡୁ ଗୋଟି ପରୀକ୍ଷଣ", top: '30%', left: '80%', color: 'amber' },
+    { labelEn: "Sure & Impossible Events", labelOr: "ନିଶ୍ଚିତ ଓ ଅସମ୍ଭବ ଘଟଣା", top: '65%', left: '80%', color: 'blue' },
+    { labelEn: "Applications of Probability", labelOr: "ସମ୍ଭାବ୍ୟତାର ପ୍ରୟୋଗ", top: '85%', left: '50%', color: 'emerald' }
+  ],
+  'qjH43lmxEUZTzRfiJ3pE': [
+    { labelEn: "Lines & Angles Basics", labelOr: "ରେଖା ଓ କୋଣ ଧାରଣା", top: '10%', left: '50%', color: 'blue' },
+    { labelEn: "Types of Angles", labelOr: "କୋଣର ପ୍ରକାରଭେଦ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Intersecting Lines", labelOr: "ଛେଦୀ ସରଳରେଖା", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Parallel Lines & Transversal", labelOr: "ସମାନ୍ତର ସରଳରେଖା ଓ ଛେଦକ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Corresponding & Alternate", labelOr: "ଅନୁରୂପ ଓ ଏକାନ୍ତର କୋଣ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Vertically Opposite Angles", labelOr: "ପ୍ରତୀପ କୋଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Angle Sum Property", labelOr: "କୋଣ ସମଷ୍ଟି ଗୁଣଧର୍ମ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '6lmg30zsqPtO31fERDt8': [
+    { labelEn: "Triangles Congruence", labelOr: "ତ୍ରିଭୁଜର ସର୍ବସମତା", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "SAS Congruence Rule", labelOr: "ବା-କୋ-ବା ସର୍ବସମତା ନିୟମ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "ASA & AAS Rules", labelOr: "କୋ-ବା-କୋ ଓ କୋ-କୋ-ବା ନିୟମ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "SSS Congruence Rule", labelOr: "ବା-ବା-ବା ସର୍ବସମତା ନିୟମ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "RHS Congruence Rule", labelOr: "ସମକୋଣ-କର୍ଣ୍ଣ-ବାହୁ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Properties of Triangles", labelOr: "ତ୍ରିଭୁଜର ଗୁଣଧର୍ମ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Inequalities in Triangles", labelOr: "ତ୍ରିଭୁଜର ଅସମତା ସମ୍ବନ୍ଧ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '5YsDHmIIyx9cWlSRkMtz': [
+    { labelEn: "Quadrilaterals Basics", labelOr: "ଚତୁର୍ଭୁଜ ଧାରଣା", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Angle Sum of Quadrilateral", labelOr: "ଚତୁର୍ଭୁଜର କୋଣ ସମଷ୍ଟି", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Types of Quadrilaterals", labelOr: "ଚତୁର୍ଭୁଜର ପ୍ରକାରଭେଦ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Parallelogram Properties", labelOr: "ସାମାନ୍ତରିକ ଚତୁର୍ଭୁଜର ଗୁଣଧର୍ମ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Conditions for Parallelogram", labelOr: "ସାମାନ୍ତରିକ ଚତୁର୍ଭୁଜର ସର୍ତ୍ତାବଳୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Mid-point Theorem", labelOr: "ମଧ୍ୟବିନ୍ଦୁ ଉପପାଦ୍ୟ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Mid-point Converse", labelOr: "ମଧ୍ୟବିନ୍ଦୁ ବିପରୀତ ଉପପାଦ୍ୟ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'waFHMnnjvCtoedjA4dkq': [
+    { labelEn: "Area Concepts", labelOr: "କ୍ଷେତ୍ରଫଳ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Parallelograms on Same Base", labelOr: "ଏକା ଭୂମି ଓ ସମାନ୍ତର ସରଳରେଖା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Triangles on Same Base", labelOr: "ଏକା ଭୂମି ଓ ସଦୃଶ ସରଳରେଖା ତ୍ରିଭୁଜ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Area of Parallelogram", labelOr: "ସାମାନ୍ତରିକ ଚତୁର୍ଭୁଜ କ୍ଷେତ୍ରଫଳ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Area of Triangle Formula", labelOr: "ତ୍ରିଭୁଜର କ୍ଷେତ୍ରଫଳ ସୂତ୍ର", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Theorems on Area", labelOr: "କ୍ଷେତ୍ରଫଳ ସମ୍ବନ୍ଧୀୟ ଉପପାଦ୍ୟ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Median of a Triangle", labelOr: "ତ୍ରିଭୁଜର ମଧ୍ୟମା", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'CN2vF71fvpISYZQdSyo7': [
+    { labelEn: "Mensuration Overview", labelOr: "ପରିମିତି ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Triangles Area (Heron's)", labelOr: "ତ୍ରିଭୁଜର କ୍ଷେତ୍ରଫଳ (ହିରୋନ୍ସ ସୂତ୍ର)", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Quadrilaterals Area", labelOr: "ଚତୁର୍ଭୁଜର କ୍ଷେତ୍ରଫଳ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Surface Area of Cuboid/Cube", labelOr: "ସମଘନ ଓ ଆୟତଘନର କ୍ଷେତ୍ରଫଳ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Volume of Cuboid/Cube", labelOr: "ସମଘନ ଓ ଆୟତଘନର ଆୟତନ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Cylinders & Cones Area", labelOr: "ସିଲିଣ୍ଡର୍ ଓ କୋନ୍ କ୍ଷେତ୍ରଫଳ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Spheres & Hemispheres Volume", labelOr: "ଗୋଲକ ଓ ଅର୍ଦ୍ଧଗୋଲକ ଆୟତନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '5sC6FO1jZ3KJDHXto8zF': [
+    { labelEn: "Construction Basics", labelOr: "ଜ୍ୟାମିତିକ ଅଙ୍କନ ଧାରଣା", top: '10%', left: '50%', color: 'blue' },
+    { labelEn: "Bisecting a Given Angle", labelOr: "କୋଣର ସମଦ୍ଵିଖଣ୍ଡକ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Perpendicular Bisector", labelOr: "ଲମ୍ବ ସମଦ୍ଵିଖଣ୍ଡକ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Constructing 60/30/90 Angles", labelOr: "୬୦, ୩୦, ୯୦ ଡିଗ୍ରୀ କୋଣ ଅଙ୍କନ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Constructing Triangles (Base)", labelOr: "ତ୍ରିଭୁଜ ଅଙ୍କନ (ଭୂମି ଓ କୋଣ)", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Constructing Triangles (Perimeter)", labelOr: "ତ୍ରିଭୁଜ ଅଙ୍କନ (ପରିସୀମା ସହ)", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Special Cases", labelOr: "ସ୍ୱତନ୍ତ୍ର କ୍ଷେତ୍ର ଅଙ୍କନ", top: '85%', left: '50%', color: 'emerald' }
+  ],
+  'yjYuvfGmjWGdhkca3gIB': [
+    { labelEn: "Trigonometry Intro", labelOr: "ତ୍ରିକୋଣମିତିର ଉପକ୍ରମଣିକା", top: '10%', left: '50%', color: 'amber' },
+    { labelEn: "Right Angled Triangle", labelOr: "ସମକୋଣୀ ତ୍ରିଭୁଜ", top: '30%', left: '20%', color: 'emerald' },
+    { labelEn: "Trigonometric Ratios", labelOr: "ତ୍ରିକୋଣମିତିକ ଅନୁପାତ", top: '65%', left: '20%', color: 'blue' },
+    { labelEn: "Relation Between Ratios", labelOr: "ଅନୁପାତ ମଧ୍ୟରେ ସମ୍ବନ୍ଧ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Trigonometric Identities", labelOr: "ତ୍ରିକୋଣମିତିକ ଅଭେଦାବଳୀ", top: '30%', left: '80%', color: 'amber' },
+    { labelEn: "Values of Specific Angles", labelOr: "୦, ୩୦, ୪୫, ୬୦, ୯୦ର ମୂଲ୍ୟ", top: '65%', left: '80%', color: 'blue' },
+    { labelEn: "Simple Trigonometric Problems", labelOr: "ସରଳ ତ୍ରିକୋଣମିତିକ ପ୍ରଶ୍ନୋତ୍ତର", top: '85%', left: '50%', color: 'emerald' }
   ]
 };
 
