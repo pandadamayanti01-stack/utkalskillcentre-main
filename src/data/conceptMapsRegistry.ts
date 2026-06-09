@@ -1,0 +1,20 @@
+export const AVAILABLE_PREMIUM_MAPS = [
+  'Vx3FQK8ZAl67KwvDi1Iy', // Class 10 Life Science - Nutrition (Photosynthesis Map)
+  'BYsFgUxdUTQkTXoEyiUZ', // Class 4 Odia - Karuna Sagara Prabhuhe / Tiki Chadhei (Tiki Tiki Map)
+  'CUQwtkjyKesVfAtJYiky', // Class 10 Physical Science - Chemical Reactions (Chemical Reactions Map)
+  'BkI12z7DPpAaIozm4bKH'  // Class 10 Physical Science - Electricity (Electricity Map)
+];
+
+/**
+ * Returns the path to the concept map image if it exists in our premium assets,
+ * or null otherwise.
+ */
+export const getPremiumConceptMapUrl = (chapterId: string, language: 'en' | 'or'): string | null => {
+  if (AVAILABLE_PREMIUM_MAPS.includes(chapterId)) {
+    if (language === 'or' && chapterId !== 'BYsFgUxdUTQkTXoEyiUZ') {
+      return `/concept_maps/${chapterId}_or.png`;
+    }
+    return `/concept_maps/${chapterId}.png`;
+  }
+  return null;
+};

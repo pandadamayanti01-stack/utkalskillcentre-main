@@ -2151,8 +2151,8 @@ export default function App() {
         // Check subscription
         const subDocRef = doc(firestore, 'subscriptions', firebaseUser.uid);
         unsubSub = onSnapshot(subDocRef, (subDocSnap) => {
-          // If in the free showcase period (until June 20, 2026), everyone gets free premium access
-          const isFreePeriod = new Date() < new Date('2026-06-20T17:00:00+05:30');
+          // If in the free showcase period (until June 21, 2026), everyone gets free premium access
+          const isFreePeriod = new Date() < new Date('2026-06-21T00:00:00+05:30');
           if (isFreePeriod) {
             setIsPremium(true);
             return;
@@ -5993,7 +5993,7 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
         <span>Back to Dashboard</span>
       </button>
 
-      {new Date() < new Date('2026-06-20T17:00:00+05:30') && (
+      {new Date() < new Date('2026-06-21T00:00:00+05:30') && (
         <div className="max-w-4xl mx-auto mb-10 bg-gradient-to-r from-emerald-500/10 via-teal-500/15 to-emerald-500/10 border border-emerald-500/20 rounded-[2rem] p-6 text-center shadow-lg relative overflow-hidden backdrop-blur-md">
           <div className="absolute top-0 right-0 w-[200px] h-[200px] bg-emerald-500/5 rounded-full blur-[50px] pointer-events-none" />
           <div className="flex flex-col md:flex-row items-center gap-4 text-left">

@@ -21,7 +21,9 @@ export function PracticeQuestion({ question, isPremium, language, onUpgrade }: P
           <Lucide.HelpCircle size={24} />
         </div>
         <div className="flex-1 space-y-1">
-          <p className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em]">Cognitive Probe</p>
+          <p className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em]">
+            {language === 'or' ? 'ଜ୍ଞାନାତ୍ମକ ପ୍ରଶ୍ନ' : 'Cognitive Probe'}
+          </p>
           <h4 className="text-white font-black text-lg leading-relaxed tracking-tight">{question.question}</h4>
         </div>
       </div>
@@ -74,7 +76,11 @@ export function PracticeQuestion({ question, isPremium, language, onUpgrade }: P
           }`}
         >
           {!isPremium && <Lucide.Lock size={14} className="group-hover/btn:scale-110 transition-transform" />}
-          <span className="relative z-10">{showAnswer ? 'Retract Solution' : 'Request Logic Link'}</span>
+          <span className="relative z-10 text-[10px]">
+            {showAnswer 
+              ? (language === 'or' ? 'ସମାଧାନ ବନ୍ଦ କରନ୍ତୁ' : 'Retract Solution') 
+              : (language === 'or' ? 'ନ୍ୟୁରାଲ୍ ସମାଧାନ ଦେଖନ୍ତୁ' : 'Request Logic Link')}
+          </span>
           <Lucide.ChevronDown size={14} className={`transition-transform relative z-10 ${showAnswer ? 'rotate-180' : ''}`} />
           
           {showAnswer && (
@@ -101,16 +107,18 @@ export function PracticeQuestion({ question, isPremium, language, onUpgrade }: P
                   
                   <div className="flex items-center gap-2 text-emerald-400 font-black text-[10px] uppercase tracking-[0.2em] mb-4">
                     <Lucide.MessageSquare size={14} />
-                    <span>Neural Insights</span>
+                    <span>{language === 'or' ? 'ନ୍ୟୁରାଲ୍ ବିଶ୍ଳେଷଣ' : 'Neural Insights'}</span>
                   </div>
                   
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-black text-slate-500 uppercase tracking-widest">Validated Entry:</span>
+                      <span className="text-xs font-black text-slate-500 uppercase tracking-widest">
+                        {language === 'or' ? 'ଯାଞ୍ଚ ହୋଇଥିବା ଉତ୍ତର:' : 'Validated Entry:'}
+                      </span>
                       <span className="text-sm font-black text-emerald-400">{question.correct_answer}</span>
                     </div>
                     <p className="text-emerald-100/70 text-sm leading-relaxed italic font-medium">
-                      "{question.tutor_explanation || question.answer || 'No logical breakdown provided.'}"
+                      "{question.tutor_explanation || question.answer || (language === 'or' ? 'କୌଣସି ବିଶ୍ଳେଷଣ ଦିଆଯାଇନାହିଁ।' : 'No logical breakdown provided.')}"
                     </p>
                   </div>
                 </div>
@@ -126,13 +134,17 @@ export function PracticeQuestion({ question, isPremium, language, onUpgrade }: P
             <div className="w-14 h-14 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-500 mx-auto mb-4 border border-amber-500/20">
               <Lucide.Lock size={28} />
             </div>
-            <h5 className="text-sm font-black text-white uppercase tracking-tighter mb-2">Neural Link Encrypted</h5>
-            <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-6">Upgrade to Premium to unlock solution protocols.</p>
+            <h5 className="text-sm font-black text-white uppercase tracking-tighter mb-2">
+              {language === 'or' ? 'ନ୍ୟୁରାଲ୍ ଲିଙ୍କ୍ ଏନକ୍ରିପ୍ଟ ହୋଇଛି' : 'Neural Link Encrypted'}
+            </h5>
+            <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-6">
+              {language === 'or' ? 'ସମାଧାନ ପ୍ରକ୍ରିୟା ଅନଲକ୍ କରିବାକୁ ପ୍ରିମିୟମକୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ।' : 'Upgrade to Premium to unlock solution protocols.'}
+            </p>
             <button 
               onClick={onUpgrade}
               className="w-full py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-xl shadow-lg shadow-amber-900/40 hover:scale-105 active:scale-95 transition-all"
             >
-              Initialize Upgrade
+              {language === 'or' ? 'ଅପଗ୍ରେଡ୍ ଆରମ୍ଭ କରନ୍ତୁ' : 'Initialize Upgrade'}
             </button>
           </div>
         </div>

@@ -119,7 +119,7 @@ const GunduluSishuVatika = ({ skipInitialGreeting = false, userClass, onBack, is
   // Call Timer State
   const [callDuration, setCallDuration] = useState(0);
   const [freeQueriesCount, setFreeQueriesCount] = useState<number>(0);
-  const isFreePeriod = new Date() < new Date('2026-06-20T17:00:00+05:30');
+  const isFreePeriod = new Date() < new Date('2026-06-21T00:00:00+05:30');
 
   useEffect(() => {
     const getFreeQueriesKey = () => `free_ai_queries_used_${user?.uid || user?.id || 'guest'}`;

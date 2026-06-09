@@ -9,6 +9,7 @@ import { solveMathDoubt } from '../services/aiService';
 import confetti from 'canvas-confetti';
 import { CHAPTERS_MAP } from '../data/chaptersMap';
 import { Gundulu3DLab } from './Gundulu3DLab';
+import { ConceptMapView } from './ConceptMapView';
 
 
 interface DigitalLibraryViewProps {
@@ -963,7 +964,7 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
   loadChapters,
   onNavigateTo3D
 }) => {
-  const isFreePeriod = new Date() < new Date('2026-06-20T17:00:00+05:30');
+  const isFreePeriod = new Date() < new Date('2026-06-21T00:00:00+05:30');
   const isTutorUnlocked = isPremium || isFreePeriod;
 
   // Navigation states: 'subjects' -> 'chapters' -> 'reader'
@@ -1001,7 +1002,7 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
   const effectivePdfUrl = selectedChapter ? (selectedChapter.pdfUrl || selectedChapter.download_url || selectedChapter.driveUrl || '') : '';
 
   // Material reader settings
-  const [readerMode, setReaderMode] = useState<'notes' | 'pdf' | 'video' | '3d'>('notes');
+  const [readerMode, setReaderMode] = useState<'notes' | 'concept_map' | 'pdf' | 'video' | '3d'>('notes');
   const [personalNotes, setPersonalNotes] = useState<string>('');
   const [isNotepadSaved, setIsNotepadSaved] = useState<boolean>(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
@@ -1260,6 +1261,10 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
 
   const handleGenerateAiNotes = async () => {
     if (!selectedChapter) return;
+    if (!isPremium && !isFreePeriod) {
+      if (onUpgrade) onUpgrade();
+      return;
+    }
     setIsGeneratingNotes(true);
     try {
       const prompt = `Please generate high-quality, comprehensive, and clear student study notes for the textbook chapter: "${selectedChapter.title}" in the subject of "${selectedChapter.subject || selectedSubject || 'Mathematics'}". 
@@ -1816,6 +1821,17 @@ Instructions:
                   </button>
 
                   <button
+                    onClick={() => setReaderMode('concept_map')}
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold tracking-wider transition-all ${readerMode === 'concept_map'
+                      ? 'bg-[#b34d1f] text-white shadow-lg'
+                      : 'text-slate-400 hover:text-white'
+                      }`}
+                  >
+                    <Lucide.Network size={14} className={readerMode === 'concept_map' ? 'animate-pulse text-emerald-400' : ''} />
+                    <span>{language === 'en' ? 'Concept Map' : 'ଭିଜୁଆଲ୍ ସାରାଂଶ'}</span>
+                  </button>
+
+                  <button
                     onClick={() => {
                       if (effectivePdfUrl) {
                         setReaderMode('pdf');
@@ -2120,6 +2136,14 @@ Instructions:
                       </div>
                     )}
                   </div>
+                ) : readerMode === 'concept_map' ? (
+                  <ConceptMapView
+                    chapter={selectedChapter}
+                    language={language}
+                    isPremium={isTutorUnlocked}
+                    onUpgrade={onUpgrade}
+                    onAskGundulu={handleSendToGundulu}
+                  />
                 ) : readerMode === '3d' ? (
                   <div className="w-full h-[60vh] rounded-3xl overflow-hidden bg-slate-950 border border-white/5 flex flex-col relative shadow-[0_20px_50px_rgba(0,0,0,0.5)] animate-glow">
                     {onNavigateTo3D && (
@@ -2391,6 +2415,7 @@ Instructions:
 
             {/* RIGHT PANEL - GUNDULU FLOATING STUDY ASSISTANT CHATBOX */}
             <motion.div 
+              id="gundulu-chat-sidebar"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3, type: "spring", stiffness: 200 }}

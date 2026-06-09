@@ -175,14 +175,15 @@ export function TeacherDashboard({
   }, [inputClass, loadChapters]);
 
   // Usage Guard Calculations
+  const isFreePeriod = new Date() < new Date('2026-06-21T00:00:00+05:30');
   const currentMonth = new Date().toISOString().substring(0, 7);
   const currentUsage = user?.aiUsage?.[currentMonth] || 0;
-  const hasRemainingRuns = isPremium || currentUsage < 5;
+  const hasRemainingRuns = isPremium || isFreePeriod || currentUsage < 5;
 
   // Video Suggestion Submission Handler
   const handleSuggestVideo = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isPremium) {
+    if (!isPremium && !isFreePeriod) {
       alert(language === 'en' 
         ? "Video suggestions are a Pro feature. Please subscribe to promote your lessons!" 
         : "ଭିଡିଓ ସୁପାରିଶ କରିବା ଏକ ପ୍ରୋ ଫିଚର । ନିଜ ଭିଡିଓ ପ୍ରୋମୋଟ୍ କରିବା ପାଇଁ ଦୟାକରି ସବସ୍କ୍ରାଇବ୍ କରନ୍ତୁ!");
@@ -420,14 +421,14 @@ export function TeacherDashboard({
               <h1 className="text-2xl sm:text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-purple-300 tracking-tight leading-tight">
                 {language === 'en' ? `Welcome, ${user?.name || 'Educator'}!` : `ସ୍ୱାଗତମ୍, ${user?.name || 'ଶିକ୍ଷକ'}!`}
               </h1>
-              <p className="text-slate-400 text-xs md:text-sm max-w-xl font-medium leading-relaxed">
+              <p className="hidden sm:block text-slate-400 text-xs md:text-sm max-w-xl font-medium leading-relaxed">
                 {language === 'en' 
                   ? 'Create BSE Odisha syllabus aligned worksheets, structured OSEPA-compliant lesson plans, zero-cost science experiment guides, and promote YouTube lesson videos globally.'
                   : 'BSE ଓଡ଼ିଶା ପାଠ୍ୟକ୍ରମ ଅନୁଯାୟୀ ପ୍ରଶ୍ନପତ୍ର, OSEPA-ସମ୍ମତ ପାଠ୍ୟ ଯୋଜନା, ସ୍ଵଳ୍ପ ଖର୍ଚ୍ଚ ବିଜ୍ଞାନ ପରୀକ୍ଷା ଗାଇଡ୍ ସୃଷ୍ଟି କରନ୍ତୁ ଏବଂ ଶିକ୍ଷଣୀୟ ଭିଡିଓ ସାରା ଓଡ଼ିଶାର ପିଲାଙ୍କ ସହ ଶେୟାର କରନ୍ତୁ।'}
               </p>
 
               {currentTip && (
-                <div className="relative mt-4 bg-purple-500/10 border border-purple-500/20 px-4 py-2.5 rounded-2xl text-purple-300 text-xs font-bold max-w-lg shadow-inner flex items-center gap-2 animate-fade-in">
+                <div className="hidden sm:flex relative mt-4 bg-purple-500/10 border border-purple-500/20 px-4 py-2.5 rounded-2xl text-purple-300 text-xs font-bold max-w-lg shadow-inner items-center gap-2 animate-fade-in">
                   <Lucide.MessageCircle size={14} className="text-purple-400 shrink-0" />
                   <span>{currentTip}</span>
                 </div>
@@ -508,6 +509,22 @@ export function TeacherDashboard({
                       <h4 className="text-xs sm:text-sm font-black text-amber-400 uppercase tracking-widest">{language === 'en' ? 'PRO EDUCATOR' : 'ପ୍ରୋ ଶିକ୍ଷକ'}</h4>
                       <p className="text-[9px] sm:text-[10px] text-slate-400 font-bold mt-0.5">{language === 'en' ? 'Unlimited Studio Access' : 'ଅସୀମିତ AI ସୁବିଧା'}</p>
                     </div>
+                  </div>
+                ) : isFreePeriod ? (
+                  <div className="bg-gradient-to-r from-emerald-500/20 via-teal-500/5 to-transparent border border-emerald-500/40 rounded-2xl sm:rounded-[2rem] p-4 sm:p-5 backdrop-blur-md shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 hover:border-emerald-500/60 transition-all duration-300 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/10 rounded-full blur-xl pointer-events-none group-hover:scale-150 transition-transform duration-500" />
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-500/25 flex items-center justify-center text-emerald-400 border border-emerald-500/30 shrink-0 shadow-[0_0_15px_rgba(16,185,129,0.25)]">
+                        <Lucide.Sparkles size={18} className="animate-pulse" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs sm:text-sm font-black text-emerald-400 uppercase tracking-widest">{language === 'en' ? 'Showcase Access Active' : 'ପ୍ରଦର୍ଶନୀ ଅଫର ସକ୍ରିୟ'}</h4>
+                        <p className="text-[9px] sm:text-[10px] text-slate-400 font-bold mt-0.5">{language === 'en' ? 'Unlimited AI Studio until June 21' : '୨୧ ଜୁନ୍ ପର୍ଯ୍ୟନ୍ତ ଅସୀମିତ AI ସୁବିଧା'}</p>
+                      </div>
+                    </div>
+                    <span className="text-[9px] font-black text-emerald-300 bg-emerald-500/10 border border-emerald-500/25 px-2.5 py-1 rounded-lg">
+                      {language === 'en' ? 'Free Trial' : 'ମାଗଣା ଟ୍ରାଏଲ୍'}
+                    </span>
                   </div>
                 ) : (
                   <div className="bg-slate-900/80 border border-purple-500/25 rounded-2xl sm:rounded-[2rem] p-4 sm:p-5 backdrop-blur-md shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 hover:border-purple-500/40 transition-colors">
