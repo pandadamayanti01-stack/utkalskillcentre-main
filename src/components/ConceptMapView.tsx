@@ -20,6 +20,44 @@ interface ConceptMapViewProps {
   onAskGundulu: (query: string) => void;
 }
 
+interface OverlayNode {
+  labelEn: string;
+  labelOr: string;
+  top: string;
+  left: string;
+  color: 'emerald' | 'blue' | 'amber' | 'purple';
+}
+
+const PREMIUM_OVERLAYS: Record<string, OverlayNode[]> = {
+  'Vx3FQK8ZAl67KwvDi1Iy': [
+    { labelEn: "Photosynthesis Overview", labelOr: "ଆଲୋକଶ୍ଳେଷଣ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Carbon Dioxide (CO2)", labelOr: "ଅଙ୍ଗାରକାମ୍ଳ (CO2)", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Water (H2O)", labelOr: "ଜଳ (H2O)", top: '65%', left: '20%', color: 'blue' },
+    { labelEn: "Chloroplast (Chlorophyll)", labelOr: "ହରିତ୍‌କଣା (ହରିତକାଣ)", top: '48%', left: '50%', color: 'emerald' },
+    { labelEn: "Light Reaction (Grana)", labelOr: "ଆଲୋକ ପ୍ରକ୍ରିୟା (ଗ୍ରାନା)", top: '30%', left: '80%', color: 'amber' },
+    { labelEn: "Dark Reaction (Stroma)", labelOr: "ଅନ୍ଧକାର ପ୍ରକ୍ରିୟା (ଷ୍ଟ୍ରୋମା)", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Glucose & Oxygen (O2)", labelOr: "ଗ୍ଲୁକୋଜ୍ ଏବଂ ଅମ୍ଳଜାନ (O2)", top: '85%', left: '50%', color: 'emerald' }
+  ],
+  'CUQwtkjyKesVfAtJYiky': [
+    { labelEn: "Chemical Equations", labelOr: "ରାସାୟନିକ ସମୀକରଣ", top: '10%', left: '50%', color: 'amber' },
+    { labelEn: "Reactants", labelOr: "ପ୍ରତିକାରକ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Combination Reaction", labelOr: "ସଂଶ୍ଳେଷଣ ପ୍ରତିକ୍ରିୟା", top: '65%', left: '20%', color: 'emerald' },
+    { labelEn: "Reaction Conditions", labelOr: "ପ୍ରତିକ୍ରିୟା ସର୍ତ୍ତାବଳୀ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Products", labelOr: "ଉତ୍ପାଦ", top: '30%', left: '80%', color: 'blue' },
+    { labelEn: "Decomposition Reaction", labelOr: "ବିଘଟନ ପ୍ରତିକ୍ରିୟା", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Displacement & Redox", labelOr: "ବିସ୍ଥାପନ ଓ ଜାରଣ-ବିଜାରଣ", top: '85%', left: '50%', color: 'amber' }
+  ],
+  'BkI12z7DPpAaIozm4bKH': [
+    { labelEn: "Electric Circuit", labelOr: "ବିଦ୍ୟୁତ୍ ପରିପଥ", top: '10%', left: '50%', color: 'blue' },
+    { labelEn: "Electric Current (I)", labelOr: "ବିଦ୍ୟୁତ୍ ସ୍ରୋତ (I)", top: '30%', left: '20%', color: 'amber' },
+    { labelEn: "Voltage / Potential (V)", labelOr: "ବିଭବାନ୍ତର (V)", top: '65%', left: '20%', color: 'blue' },
+    { labelEn: "Ohm's Law (V = IR)", labelOr: "ଓମ୍‌ଙ୍କ ନିୟମ (V = IR)", top: '48%', left: '50%', color: 'emerald' },
+    { labelEn: "Resistance (R)", labelOr: "ପ୍ରତିରୋଧ (R)", top: '30%', left: '80%', color: 'purple' },
+    { labelEn: "Series / Parallel Resistors", labelOr: "ଶ୍ରେଣୀ ଓ ସମାନ୍ତରାଳ ସଂଯୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Heating Effect", labelOr: "ତାପୀୟ ପ୍ରଭାବ", top: '85%', left: '50%', color: 'amber' }
+  ]
+};
+
 export const ConceptMapView: React.FC<ConceptMapViewProps> = ({
   chapter,
   language,
@@ -30,6 +68,10 @@ export const ConceptMapView: React.FC<ConceptMapViewProps> = ({
   const premiumUrl = useMemo(() => {
     return getPremiumConceptMapUrl(chapter.id, language);
   }, [chapter.id, language]);
+
+  const overlays = useMemo(() => {
+    return PREMIUM_OVERLAYS[chapter.id] || [];
+  }, [chapter.id]);
 
   // Clean chapter title for display
   const displayTitle = useMemo(() => {
@@ -132,13 +174,44 @@ export const ConceptMapView: React.FC<ConceptMapViewProps> = ({
 
         {/* Display the chapter's custom premium concept map */}
         <div className="relative max-w-full rounded-2xl overflow-hidden border border-white/10 bg-slate-950 p-2 shadow-2xl group flex items-center justify-center">
-          <img
-            src={premiumUrl}
-            alt={`${displayTitle} Concept Map`}
-            className={`max-h-[70vh] w-auto object-contain rounded-xl shadow-lg border border-white/5 transition-transform duration-500 ${
-              isPremium ? 'group-hover:scale-[1.01]' : 'blur-md opacity-40 pointer-events-none select-none'
-            }`}
-          />
+          <div className="relative inline-block">
+            <img
+              src={premiumUrl}
+              alt={`${displayTitle} Concept Map`}
+              className={`max-h-[70vh] w-auto object-contain rounded-xl shadow-lg border border-white/5 transition-transform duration-500 ${
+                isPremium ? 'group-hover:scale-[1.01]' : 'blur-md opacity-40 pointer-events-none select-none'
+              }`}
+            />
+            {/* HTML Overlay Layer */}
+            {isPremium && overlays.length > 0 && (
+              <div className="absolute inset-0 pointer-events-none">
+                {overlays.map((node, i) => {
+                  const label = language === 'en' ? node.labelEn : node.labelOr;
+                  const borderClass = {
+                    emerald: 'border-emerald-500/40 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.15)] hover:border-emerald-400 hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]',
+                    blue: 'border-blue-500/40 text-blue-300 shadow-[0_0_12px_rgba(59,130,246,0.15)] hover:border-blue-400 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]',
+                    amber: 'border-amber-500/40 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.15)] hover:border-amber-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)]',
+                    purple: 'border-purple-500/40 text-purple-300 shadow-[0_0_12px_rgba(168,85,247,0.15)] hover:border-purple-400 hover:shadow-[0_0_20px_rgba(168,85,247,0.3)]'
+                  }[node.color];
+
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => handleNodeClick(label)}
+                      className={`absolute px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-2xl bg-slate-950/80 backdrop-blur-md border text-[10px] sm:text-xs font-black tracking-wide whitespace-nowrap cursor-pointer pointer-events-auto hover:scale-105 active:scale-95 transition-all duration-300 hover:text-white ${borderClass}`}
+                      style={{
+                        top: node.top,
+                        left: node.left,
+                        transform: 'translate(-50%, -50%)',
+                      }}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/30 to-transparent pointer-events-none" />
 
           {/* Premium Lock Overlay for Free Users */}
