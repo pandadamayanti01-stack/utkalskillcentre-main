@@ -1243,6 +1243,1761 @@ const PREMIUM_OVERLAYS: Record<string, OverlayNode[]> = {
     { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
     { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
     { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch1': [
+    { labelEn: "Aasa Chitra Dekhi Summary", labelOr: "Aasa Chitra Dekhi ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch2': [
+    { labelEn: "Chakuli Kala Chen Summary", labelOr: "Chakuli Kala Chen ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch3': [
+    { labelEn: "Muni Dela Hasi Summary", labelOr: "Muni Dela Hasi ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch4': [
+    { labelEn: "Aare Kau Aare Thekua Summary", labelOr: "Aare Kau Aare Thekua ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch5': [
+    { labelEn: "Aama Paribara Summary", labelOr: "Aama Paribara ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch6': [
+    { labelEn: "Aasa Chitra Dekhi 2 Summary", labelOr: "Aasa Chitra Dekhi 2 ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch7': [
+    { labelEn: "Bada Kie Summary", labelOr: "Bada Kie ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch8': [
+    { labelEn: "Chatia Summary", labelOr: "Chatia ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch9': [
+    { labelEn: "Biluara Paida Pia Summary", labelOr: "Biluara Paida Pia ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch10': [
+    { labelEn: "Sabhie Aamara Mita Summary", labelOr: "Sabhie Aamara Mita ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch11': [
+    { labelEn: "Duiti Bani Summary", labelOr: "Duiti Bani ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch12': [
+    { labelEn: "Aasa Chitra Dekhi 3 Summary", labelOr: "Aasa Chitra Dekhi 3 ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch13': [
+    { labelEn: "Aama Aja Summary", labelOr: "Aama Aja ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch14': [
+    { labelEn: "Hanumankadara Chasama Summary", labelOr: "Hanumankadara Chasama ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch15': [
+    { labelEn: "Rasagolara Maja Summary", labelOr: "Rasagolara Maja ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch16': [
+    { labelEn: "Aama Kama Summary", labelOr: "Aama Kama ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch17': [
+    { labelEn: "Aasa Chitra Dekhi 4 Summary", labelOr: "Aasa Chitra Dekhi 4 ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch18': [
+    { labelEn: "Aasare Jiba Jatara Summary", labelOr: "Aasare Jiba Jatara ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch19': [
+    { labelEn: "Benga Chuara Ratha Jatra Summary", labelOr: "Benga Chuara Ratha Jatra ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch20': [
+    { labelEn: "Holi Summary", labelOr: "Holi ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch21': [
+    { labelEn: "Medha Dekha Summary", labelOr: "Medha Dekha ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch22': [
+    { labelEn: "Aasa Chitra Dekhi 5 Summary", labelOr: "Aasa Chitra Dekhi 5 ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch23': [
+    { labelEn: "Hati O Kunikaou Summary", labelOr: "Hati O Kunikaou ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch24': [
+    { labelEn: "Upahara Summary", labelOr: "Upahara ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch25': [
+    { labelEn: "Sunigala Jiti Summary", labelOr: "Sunigala Jiti ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch26': [
+    { labelEn: "Mo Gaan Summary", labelOr: "Mo Gaan ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch27': [
+    { labelEn: "Gadigadi Jae Panasa Summary", labelOr: "Gadigadi Jae Panasa ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class1_ch28': [
+    { labelEn: "Akshyara Gita Summary", labelOr: "Akshyara Gita ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch1': [
+    { labelEn: "Mankada Khaiba Kakudi Summary", labelOr: "Mankada Khaiba Kakudi ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch2': [
+    { labelEn: "Holira Maja Summary", labelOr: "Holira Maja ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch3': [
+    { labelEn: "Maa Pari Mora Summary", labelOr: "Maa Pari Mora ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch4': [
+    { labelEn: "Kanchana Mausi Ghara Summary", labelOr: "Kanchana Mausi Ghara ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch5': [
+    { labelEn: "Hati Bagha Mamu Ghara Summary", labelOr: "Hati Bagha Mamu Ghara ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch6': [
+    { labelEn: "Suara Thanta Koilira Kantha Summary", labelOr: "Suara Thanta Koilira Kantha ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch7': [
+    { labelEn: "Sabhie Hele Khusi Summary", labelOr: "Sabhie Hele Khusi ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch8': [
+    { labelEn: "Mamunira Kandhei Summary", labelOr: "Mamunira Kandhei ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch9': [
+    { labelEn: "Belun Gala Udi Summary", labelOr: "Belun Gala Udi ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch10': [
+    { labelEn: "Maharajanku Jwara Summary", labelOr: "Maharajanku Jwara ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch11': [
+    { labelEn: "Ranga Chhadigala Summary", labelOr: "Ranga Chhadigala ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch12': [
+    { labelEn: "Barasharani Summary", labelOr: "Barasharani ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch13': [
+    { labelEn: "Chashibhai Summary", labelOr: "Chashibhai ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch14': [
+    { labelEn: "Hasila Sunara Khetya Summary", labelOr: "Hasila Sunara Khetya ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch15': [
+    { labelEn: "Baramasara Katha Summary", labelOr: "Baramasara Katha ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch16': [
+    { labelEn: "Kalpanara Janmadina Summary", labelOr: "Kalpanara Janmadina ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch17': [
+    { labelEn: "Mati Mora Hasuthau Summary", labelOr: "Mati Mora Hasuthau ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch18': [
+    { labelEn: "Hasiba Puni Aama Dharani Summary", labelOr: "Hasiba Puni Aama Dharani ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch19': [
+    { labelEn: "Bargarh Dhanujatra Summary", labelOr: "Bargarh Dhanujatra ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch20': [
+    { labelEn: "Ballavi Padhila Patha Summary", labelOr: "Ballavi Padhila Patha ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch21': [
+    { labelEn: "Ekatara Bala Summary", labelOr: "Ekatara Bala ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch22': [
+    { labelEn: "Odishara Parbaparbani Summary", labelOr: "Odishara Parbaparbani ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch23': [
+    { labelEn: "Charidiga Summary", labelOr: "Charidiga ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch24': [
+    { labelEn: "Sajadi Heba Aame Summary", labelOr: "Sajadi Heba Aame ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch25': [
+    { labelEn: "Jhilimili Akasha Summary", labelOr: "Jhilimili Akasha ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch26': [
+    { labelEn: "Jahnara Luchakali Summary", labelOr: "Jahnara Luchakali ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jhulana_class2_ch27': [
+    { labelEn: "Kahila Dekhi Mun Kie Summary", labelOr: "Kahila Dekhi Mun Kie ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  's4necjbs8JNDLW2w1u5I': [
+    { labelEn: "No one is like him/her/it Summary", labelOr: "କେହି ନୁହେଁ ତା’ ସରି ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '0itIM6MYd0iTjtcBK480': [
+    { labelEn: "Ant Summary", labelOr: "ପିମ୍ପୁଡ଼ି ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'VKJUluEQhCVMYjMHm2Ay': [
+    { labelEn: "Whose legs are how many Summary", labelOr: "କାହାର କେତେ ଗୋଡ଼ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '3OxYYehpzFbyTlkWPCXE': [
+    { labelEn: "Earth is our Mother Summary", labelOr: "ମାଟି ଆମର ମାଆ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'MP2vvtK8vmXCLAIck0dK': [
+    { labelEn: "Somuna's Mango Tree Summary", labelOr: "ସୋମୁନାର ଆମ୍ବଗଛ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'lP4QNMGfrBmeue4Dp1Vx': [
+    { labelEn: "Branch Bird and Elephant Summary", labelOr: "ଡାଳ ଚଢ଼େଇ ଓ ହାତୀ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'o8vUWX0JY4EnmMb8udBA': [
+    { labelEn: "Letter to a Friend Summary", labelOr: "ବନ୍ଧୁକୁ ପତ୍ର ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'wERXEuLwN2ydyvzkgIYn': [
+    { labelEn: "Ruchi's Game Summary", labelOr: "ରୁଚିର ଖେଳ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jxYgCYoQc8cInMoH8xwC': [
+    { labelEn: "Odia New Year Summary", labelOr: "ଓଡ଼ିଆ ନୂଆବର୍ଷ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '9MnZGXsUiswpdgXfWNxt': [
+    { labelEn: "Hide and Seek Summary", labelOr: "ଲୁଚକାଳି ଖେଳ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  's6Df7j1FEYEMI90NtrE5': [
+    { labelEn: "Magic Box Summary", labelOr: "କୁହୁକ ପେଡ଼ି ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'mX1oHsyjd1CRShrtArH4': [
+    { labelEn: "Mind Changed Summary", labelOr: "ମନ ବଦଳିଲା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '02MFqJr3z8LWyujB86jP': [
+    { labelEn: "A Small Child Like You Summary", labelOr: "ତୁମ ପରି ଛୋଟ ପିଲାଟିଏ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '0wVj5HPtramjIely0NkD': [
+    { labelEn: "Clever Farmer Summary", labelOr: "ଚତୁର କୃଷକ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'BYsFgUxdUTQkTXoEyiUZ': [
+    { labelEn: "Karuna Sagara Prabhuhe / Tiki Chadhei Summary", labelOr: "କରୁଣା ସାଗର ପ୍ରଭୁହେ / ଟିକି ଚଢ଼େଇ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'Qm1wOSnqnJWmZOmAohj8': [
+    { labelEn: "Swadhina Deshara Santana Ame Summary", labelOr: "ସ୍ୱାଧୀନ ଦେଶର ସନ୍ତାନ ଆମେ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'E7ucI5HGZpIugDGjpqDG': [
+    { labelEn: "Nakali Suna / Shapatha Summary", labelOr: "ନକଲି ସୁନା / ଶପଥ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'sdqSfJx5Fn5m4d3yisPN': [
+    { labelEn: "Jayi Rajaguru Summary", labelOr: "ଜୟୀ ରାଜଗୁରୁ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'tpW2aE0GbmuMqAGdyoOa': [
+    { labelEn: "Odisha Mora Desha Summary", labelOr: "ଓଡ଼ିଶା ମୋର ଦେଶ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'IQ2XMDi8b4iuKWIJkiDr': [
+    { labelEn: "Acharya Harihara Summary", labelOr: "ଆଚାର୍ଯ୍ୟ ହରିହର ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '2ZpxFDKHO7NhGYIhPuxb': [
+    { labelEn: "Ama Surjyayana Summary", labelOr: "ଆମ ସୂର୍ଯ୍ୟଯାନ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'xc5EfZubGRGLMnUM5jcK': [
+    { labelEn: "Computer- An Introduction Summary", labelOr: "କମ୍ପ୍ୟୁଟର-ଏକ ପରିଚୟ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'tP2yy07CLeJ3aMlOToDn': [
+    { labelEn: "Mu Nimagachha Summary", labelOr: "ମୁଁ ନିମଗଛ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'aZetvwnMasj3fruq5HoA': [
+    { labelEn: "Gachha O Kathuria Summary", labelOr: "ଗଛ ଓ କାଠୁରିଆ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'qyPJvEyEhMqLCV1Dcwdj': [
+    { labelEn: "Nibedana Summary", labelOr: "ନିବେଦନ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'Ouwu9Kn27iigM8Wvk1iN': [
+    { labelEn: "Boita Bandana O Baliyatra Summary", labelOr: "ବୋଇତ ବନ୍ଦାଣ ଓ ବାଲିଯାତ୍ରା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'iZUjXDY9hIX1cRG9xMJQ': [
+    { labelEn: "Kabadi Khelara Maja Summary", labelOr: "କବାଡ଼ି ଖେଳର ମଜା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'sleYYO4I4kJ1w3QVdOf6': [
+    { labelEn: "Application Letter Summary", labelOr: "ଆବେଦନ ପତ୍ର ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'S2eWPphKlgv9UJks2szj': [
+    { labelEn: "The Story of a Tree Summary", labelOr: "ଗଛ କାହାଣୀ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'AMkiDX5ZrSQy2LOlPFC0': [
+    { labelEn: "The Throne of Justice Summary", labelOr: "ନ୍ୟାୟର ସିଂହାସନ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'SUunZIyGD81P3SaVtmY8': [
+    { labelEn: "Everyone Helps Their Own Summary", labelOr: "ଯେ ଯାହା ଘର ଉପକାରେ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'UyNbpCihw9YLG0ZHfD4Y': [
+    { labelEn: "Tales of Childhood Summary", labelOr: "ଶୈଶବର କଥା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '9Je7OiX0wg2S0RsHMKHz': [
+    { labelEn: "The Post of Leader Suits You Summary", labelOr: "ଦଳପତି ପଦ ତୁମକୁ ସାଜେ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'x8m8VXeuwfxmgv213vGh': [
+    { labelEn: "Nuakhai Festival Summary", labelOr: "ନୂଆଖାଇ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'HzZBH5PpXOM6KE0RZho6': [
+    { labelEn: "Kaziranga National Park Summary", labelOr: "କାଜିରଙ୍ଗା ଜାତୀୟ ଉଦ୍ୟାନ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '4JbNMP7EPEtjvXMpCvBJ': [
+    { labelEn: "The Story of Three Fishes Summary", labelOr: "ତିନି ମାଛର କାହାଣୀ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'pvjFAP9NIPpueaBalyoZ': [
+    { labelEn: "The Stone Tells a Story Summary", labelOr: "ପଥର କହୁଛି କଥା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '4XpLX98zTZPsJi2MpR8Y': [
+    { labelEn: "National Flag Summary", labelOr: "ଜାତୀୟପତାକା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'eYmgS5N5UqMuu0P6DY23': [
+    { labelEn: "The Story of the Ganges Summary", labelOr: "ଗଙ୍ଗାର କାହାଣୀ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'UgGPWD90HgH3SDSBZzPa': [
+    { labelEn: "You Gave Me a Great Lesson Summary", labelOr: "ଦେଲୁ ମୋତେ ମହାଶିକ୍ଷା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'aPeq5xqwaEizSq9OOHwo': [
+    { labelEn: "Return/Reward Summary", labelOr: "ପ୍ରତିଦାନ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'tLI2qL3dPnaBxKACUoZI': [
+    { labelEn: "Motherland Summary", labelOr: "ଜନ୍ମଭୂମି ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'tXtGPn06G6ulTmmi32Kt': [
+    { labelEn: "This Country, This Soil Summary", labelOr: "ଏଇ ଦେଶ ଏଇ ମାଟି ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '603lytLw4DKWye0JSTuj': [
+    { labelEn: "Hockey Summary", labelOr: "ହକି ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'Ib1vBl6ypoz6ozempSph': [
+    { labelEn: "Mountaineer Kalpana Dash Summary", labelOr: "ପର୍ବତାରୋହୀ କଳ୍ପନା ଦାଶ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '9JoomsDQ5wji1nRbA60a': [
+    { labelEn: "Rain Summary", labelOr: "ବର୍ଷା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'u7cLAzBqYKJGl0MQFUwa': [
+    { labelEn: "If You Try to Deceive... Summary", labelOr: "ଠକି ବସିଲେ ଓକିଲିବ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'z3QjKwyHNxPXQ8ur9Z96': [
+    { labelEn: "Moral Sayings Summary", labelOr: "ନୀତି-ବଚନ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'rO1EUln6twoqvl06RF55': [
+    { labelEn: "Unforgettable Story of My Life Summary", labelOr: "ମୋ ଜୀବନର ଅଭୁଲାକଥା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'mQerS6aqGfXnMSBKXjCK': [
+    { labelEn: "Children of Utkal Summary", labelOr: "ଉତ୍କଳ ସନ୍ତାନ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'JgECAZdcFK4EfEkuwSYz': [
+    { labelEn: "Chhau Dance Summary", labelOr: "ଛଉନୃତ୍ୟ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'GCijfR5Myo66CRWIftpV': [
+    { labelEn: "Why Will You Fly So Fast? Summary", labelOr: "ଉଡ଼ିବୁ ଏଡ଼େ ବେଗି କାହିଁକିରେ ? ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '4Ttr02llxTecD3JSsouv': [
+    { labelEn: "Three Boons Summary", labelOr: "ତିନୋଟି ବର ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'l58TTVV1r2kW9tXCU4PJ': [
+    { labelEn: "Ketaka's Bravery Summary", labelOr: "କେତକର ବୀରତା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'BmmTkjvflgIuUlcYmHCY': [
+    { labelEn: "Traveller's Letter Summary", labelOr: "ଭ୍ରମଣକାରୀର ପତ୍ର ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'nZ5Y4BcLDfrDdniYBDtu': [
+    { labelEn: "Trees and Creepers are Our Friends Summary", labelOr: "ବୃକ୍ଷଲତା ଆମର ବନ୍ଧୁ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '77VCVmJK8yXi6jTh2Eu0': [
+    { labelEn: "Kalamanikare Summary", labelOr: "କଳାମାଣିକରେ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'TgSBENcvhLxNex39bizN': [
+    { labelEn: "Madahandi Katha Summary", labelOr: "ମାଡ଼ହାଣ୍ଡି କଥା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'wTaDIddmI14Zy2jeGqRx': [
+    { labelEn: "Jatiya Pakhi Summary", labelOr: "ଜาତୀୟପଣା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'cju6KKruZocXAJftfrkP': [
+    { labelEn: "Panire Pani Summary", labelOr: "ପାଣିରେ ପାଣି ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'N7W2qfZUMPCfW81mnpt7': [
+    { labelEn: "Balabuddhi Summary", labelOr: "ବଳବୁଦ୍ଧି ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '9qK6q9CfdyUDNAPdK9aB': [
+    { labelEn: "Mahan Biplabi Matho Singh Summary", labelOr: "ମହାନ୍ ବିପ୍ଳବୀ ମାଥୋ ସିଂହ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'gRxXVLIceH3hKDRgo76T': [
+    { labelEn: "Karmagitika Summary", labelOr: "କର୍ମଗୀତିକା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'hy1Zg3JchGOEoflXR8sE': [
+    { labelEn: "Mo Pilabela Katha Summary", labelOr: "ମୋ ପିଲାବେଳ କଥା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'RR0fTjPpb8BRH0AQ2bou': [
+    { labelEn: "Sharata Raja Summary", labelOr: "ଶରତ ରାଜା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'eUTXTqwHLk55voGkHusS': [
+    { labelEn: "Bemara Bahana Summary", labelOr: "ବେମାର ବାହାନା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'kaxfqlqzvLJ4rwHJrG73': [
+    { labelEn: "Interview with Kelucharan Mahapatra Summary", labelOr: "ପଦ୍ମବିଭୂଷଣ କେଳୁଚରଣ ମହାପାତ୍ରଙ୍କ ସହ ସାକ୍ଷାତକାର ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'GgyQGWYzUuP32RZEXdRZ': [
+    { labelEn: "Daraja Kholi Deba Summary", labelOr: "ଦରଜା ଖୋଲି ଦେବା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'wlP5QJKElYeHYYuCrqve': [
+    { labelEn: "Extra Reading: Bisweswaraya Summary", labelOr: "ଅତିରିକ୍ତ ପଠନ: ବିଶ୍ୱେଶ୍ୱରାୟ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'HVHMOOhB81fqoU2hrkHv': [
+    { labelEn: "Extra Reading: Dancer Sudha Chandran Summary", labelOr: "ଅତିରିକ୍ତ ପଠନ: ନୃତ୍ୟାଙ୍ଗନା ସୁଧା ଚନ୍ଦ୍ରନ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'cKmYOnMR6ugFM1lMTWXX': [
+    { labelEn: "Extra Reading: Re Pataka Jatir Garaba Summary", labelOr: "ଅତିରିକ୍ତ ପଠନ: ରେ ପତାକା ଜାତିର ଗରବ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'tXdRQNFxQmtxRdvEtZt0': [
+    { labelEn: "Extra Reading: Road Safety Summary", labelOr: "ଅତିରିକ୍ତ ପଠନ: ସଡ଼କ ନିରାପତ୍ତା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'q1pg1q89SLHGY88YjGbR': [
+    { labelEn: "Extra Reading: Swami Bhakta Kumara Summary", labelOr: "ଅତିରିକ୍ତ ପଠନ: ସ୍ୱାମୀ ଭକ୍ତ କୁମର ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '3kJOOcP3NEGAmH1vV2oi': [
+    { labelEn: "Come, O' Odia! Summary", labelOr: "ଆସ ଉତ୍କଳୀୟ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'QrxJM5aEjtIr4QQ0poOV': [
+    { labelEn: "The Bird's Revolution Summary", labelOr: "ବିହଙ୍ଗ ବିପ୍ଳବ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'bfrNyJe7eCAKcOaastWF': [
+    { labelEn: "Oath Summary", labelOr: "ଶପଥ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'lq1G0y9q8Rv6mTdX0gSq': [
+    { labelEn: "Damkach Summary", labelOr: "ଦମକଚ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'CtJ0LYQlD2ycQmhRCJpf': [
+    { labelEn: "Collection of Bhagabata Sayings Summary", labelOr: "ଭାଗବତ ସୁକ୍ତି ସଂଗ୍ରହ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'ZVXHiroVqDcnZ02s4Yhd': [
+    { labelEn: "Still Alive Summary", labelOr: "ଏବେ ମଧ୍ୟ ବଞ୍ଚିଛି ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'UrzIzJUUa8gIxOeloHH1': [
+    { labelEn: "Dreamy Bird Summary", labelOr: "ସ୍ୱପ୍ନିଳ ବିହଙ୍ଗ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'i0mskISkcrdhNQJ2W8Dj': [
+    { labelEn: "Offering Summary", labelOr: "ଆହୁତି ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'Hnedg61cDr3B7DhgmNKi': [
+    { labelEn: "Motherland Summary", labelOr: "ମାତୃଭୂମି ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'eYnVNKEgMRTWBAycOjdC': [
+    { labelEn: "Bharata's Journey to Chitrakuta Summary", labelOr: "ଭରତଙ୍କ ଚିତ୍ରକୂଟ ଯାତ୍ରା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '5PQTOB0ujc94CagugdUp': [
+    { labelEn: "Timeless Verses Summary", labelOr: "କାଳଜୟୀ ପଦ ପଂକ୍ତି ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'hVjNVMCSeEEHVIyi2PZA': [
+    { labelEn: "Dictionary Summary", labelOr: "ଅଭିଧାନ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'fpxxniDI3VVmBVRCljST': [
+    { labelEn: "Word Formation Overview & Rules", labelOr: "ଶବ୍ଦଗଠନ ନିୟମ ଓ ପରିଚୟ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Key Concepts", labelOr: "ପ୍ରମୁଖ ସଂଜ୍ଞା ଓ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Examples", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Questions", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Common Mistakes", labelOr: "ସାଧାରଣ ଭୁଲ୍ ଓ ସଂଶୋଧନ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Applications in Writing", labelOr: "ରଚନାତ୍ମକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Quick Revision", labelOr: "ସାରାଂଶ ଓ ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'Lw4tIVKP91Dd0Iy3oUF8': [
+    { labelEn: "Sandhi Overview & Rules", labelOr: "ସନ୍ଧି ନିୟମ ଓ ପରିଚୟ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Key Concepts", labelOr: "ପ୍ରମୁଖ ସଂଜ୍ଞା ଓ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Examples", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Questions", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Common Mistakes", labelOr: "ସାଧାରଣ ଭୁଲ୍ ଓ ସଂଶୋଧନ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Applications in Writing", labelOr: "ରଚନାତ୍ମକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Quick Revision", labelOr: "ସାରାଂଶ ଓ ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'yKY36WWkb8CdIuBCQ1hO': [
+    { labelEn: "Kaha Mukha Anai Banchibi Summary", labelOr: "କାହା ମୁଖ ଅନାଇ ବଞ୍ଚିବି ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'Jr6OIbv86jTvqRn5rxx5': [
+    { labelEn: "Padma Summary", labelOr: "ପଦ୍ମ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'WqNinhXVwTwhO06s3viH': [
+    { labelEn: "He Mora Kalama Summary", labelOr: "ହେ ମୋର କଲମ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'zdiCM2Mj1XWseBoi4CnA': [
+    { labelEn: "Samasa Overview & Rules", labelOr: "ସମାସ ନିୟମ ଓ ପରିଚୟ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Key Concepts", labelOr: "ପ୍ରମୁଖ ସଂଜ୍ଞା ଓ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Examples", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Questions", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Common Mistakes", labelOr: "ସାଧାରଣ ଭୁଲ୍ ଓ ସଂଶୋଧନ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Applications in Writing", labelOr: "ରଚନାତ୍ମକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Quick Revision", labelOr: "ସାରାଂଶ ଓ ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'QnbLcv3y3bv27zVIGjV9': [
+    { labelEn: "Manisha Bhai Summary", labelOr: "ମଣିଷ ଭାଇ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jg0mvn693SLuFpFtrSHi': [
+    { labelEn: "Gopa Prayana Summary", labelOr: "ଗୋପ ପ୍ରୟାଣ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'vEGRwCrWdEIHquuxbeYs': [
+    { labelEn: "Upasarga Overview & Rules", labelOr: "ଉପସର୍ଗ ନିୟମ ଓ ପରିଚୟ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Key Concepts", labelOr: "ପ୍ରମୁଖ ସଂଜ୍ଞା ଓ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Examples", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Questions", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Common Mistakes", labelOr: "ସାଧାରଣ ଭୁଲ୍ ଓ ସଂଶୋଧନ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Applications in Writing", labelOr: "ରଚନାତ୍ମକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Quick Revision", labelOr: "ସାରାଂଶ ଓ ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '1N7VM22WVz084JMZirSR': [
+    { labelEn: "Paikabadhura Udbodhana Summary", labelOr: "ପାଇକବଧୂର ଉଦ୍ବୋଧନ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'KMCqES4FdGCdqTdO92vL': [
+    { labelEn: "Matira Manisha Summary", labelOr: "ମାଟିର ମଣିଷ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'CK2TuzmX7UJBmbEZ4frc': [
+    { labelEn: "Krudanta Overview & Rules", labelOr: "କୃଦନ୍ତ ନିୟମ ଓ ପରିଚୟ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Key Concepts", labelOr: "ପ୍ରମୁଖ ସଂଜ୍ଞା ଓ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Examples", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Questions", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Common Mistakes", labelOr: "ସାଧାରଣ ଭୁଲ୍ ଓ ସଂଶୋଧନ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Applications in Writing", labelOr: "ରଚନାତ୍ମକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Quick Revision", labelOr: "ସାରାଂଶ ଓ ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'VyrOZy1CDRms5RNQKwFz': [
+    { labelEn: "Jatiya Jibana Summary", labelOr: "ଜାତୀୟ ଜୀବନ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'UTe2LvL1d4OZFJJuqsG4': [
+    { labelEn: "Bhasha O Jatiyata Summary", labelOr: "ଭାଷା ଓ ଜାତୀୟତା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'qMjCKfEVGDTFfWfPUT2Q': [
+    { labelEn: "Taddhita Overview & Rules", labelOr: "ତଦ୍ଧିତ ନିୟମ ଓ ପରିଚୟ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Key Concepts", labelOr: "ପ୍ରମୁଖ ସଂଜ୍ଞା ଓ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Examples", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Questions", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Common Mistakes", labelOr: "ସାଧାରଣ ଭୁଲ୍ ଓ ସଂଶୋଧନ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Applications in Writing", labelOr: "ରଚନାତ୍ମକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Quick Revision", labelOr: "ସାରାଂଶ ଓ ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'XEkm3hDoSXZdQRTexZPz': [
+    { labelEn: "Karak and Vibhakti Overview & Rules", labelOr: "କାରକ ଓ ବିଭକ୍ତି ନିୟମ ଓ ପରିଚୟ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Key Concepts", labelOr: "ପ୍ରମୁଖ ସଂଜ୍ଞା ଓ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Examples", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Questions", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Common Mistakes", labelOr: "ସାଧାରଣ ଭୁଲ୍ ଓ ସଂଶୋଧନ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Applications in Writing", labelOr: "ରଚନାତ୍ମକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Quick Revision", labelOr: "ସାରାଂଶ ଓ ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'BWlOYP0FesCYJvD39lc7': [
+    { labelEn: "Bamanara Hata O Akashara Chandra Summary", labelOr: "ବାମନର ହାତ ଓ ଆକାଶର ଚନ୍ଦ୍ର ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'IfNJ4V7gJdGuBw7vAlqB': [
+    { labelEn: "Prakruta Bandhu Summary", labelOr: "ପ୍ରକୃତ ବନ୍ଧୁ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'tP6MzQ0FlzU57M3bqBAS': [
+    { labelEn: "Vibhakti Overview & Rules", labelOr: "ବିଭକ୍ତି ନିୟମ ଓ ପରିଚୟ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Key Concepts", labelOr: "ପ୍ରମୁଖ ସଂଜ୍ଞା ଓ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Examples", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Questions", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Common Mistakes", labelOr: "ସାଧାରଣ ଭୁଲ୍ ଓ ସଂଶୋଧନ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Applications in Writing", labelOr: "ରଚନାତ୍ମକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Quick Revision", labelOr: "ସାରାଂଶ ଓ ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'tfqX4rqjRQZrnMYhJEyv': [
+    { labelEn: "Samuha Drusti Summary", labelOr: "ସମୂହ ଦୃଷ୍ଟି ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '7FyobyANPW6btXvwqWmM': [
+    { labelEn: "Sakti O Jnana Summary", labelOr: "ଶକ୍ତି ଓ ଜ୍ଞାନ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'D8J6mu5yEXpOKt5fJdJE': [
+    { labelEn: "Paragraph Writing Overview & Rules", labelOr: "ଅନୁଚ୍ଛେଦ ଲିଖନ ନିୟମ ଓ ପରିଚୟ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Key Concepts", labelOr: "ପ୍ରମୁଖ ସଂଜ୍ଞା ଓ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Examples", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Questions", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Common Mistakes", labelOr: "ସାଧାରଣ ଭୁଲ୍ ଓ ସଂଶୋଧନ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Applications in Writing", labelOr: "ରଚନାତ୍ମକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Quick Revision", labelOr: "ସାରାଂଶ ଓ ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'oBj87HgDeqPlTAiV19fQ': [
+    { labelEn: "Odia Sahitya Katha Summary", labelOr: "ଓଡ଼ିଆ ସାହିତ୍ୟ କଥା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'H3ljch0KhTkTJNXv5NXh': [
+    { labelEn: "Budha Sankhari Summary", labelOr: "ବୁଢ଼ା ଶଙ୍ଖାରି ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'U6TuGxeTfJu5atCFK9zY': [
+    { labelEn: "Advertisement Writing Overview & Rules", labelOr: "ବିଜ୍ଞାପନ ଲିଖନ ନିୟମ ଓ ପରିଚୟ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Key Concepts", labelOr: "ପ୍ରମୁଖ ସଂଜ୍ଞା ଓ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Examples", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Questions", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Common Mistakes", labelOr: "ସାଧାରଣ ଭୁଲ୍ ଓ ସଂଶୋଧନ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Applications in Writing", labelOr: "ରଚନାତ୍ମକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Quick Revision", labelOr: "ସାରାଂଶ ଓ ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'rCld0xIyy8pnBqOAMmKa': [
+    { labelEn: "Pataka Uttolana Summary", labelOr: "ପତାକା ଉତ୍ତୋଳନ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  't6VtHOd0Ik4cjvSF7iK4': [
+    { labelEn: "Lakshmira Abhisara Summary", labelOr: "ଲକ୍ଷ୍ମୀର ଅଭିସାର ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'gpar00JDfaPQLVXjY5Up': [
+    { labelEn: "Official Letter and Application Overview & Rules", labelOr: "ସରକାରୀ ପତ୍ର ଓ ଦରଖାସ୍ତ ନିୟମ ଓ ପରିଚୟ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Key Concepts", labelOr: "ପ୍ରମୁଖ ସଂଜ୍ଞା ଓ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Examples", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Questions", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Common Mistakes", labelOr: "ସାଧାରଣ ଭୁଲ୍ ଓ ସଂଶୋଧନ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Applications in Writing", labelOr: "ରଚନାତ୍ମକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Quick Revision", labelOr: "ସାରାଂଶ ଓ ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'ODQGh1y0qXvYIv9yUci6': [
+    { labelEn: "Dalabehera Summary", labelOr: "ଦଳବେହେରା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'idn9IVsJLCUIUYdrD32Y': [
+    { labelEn: "Dura Pahada Summary", labelOr: "ଦୂର ପାହାଡ଼ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'Tj6rxvCuuChC83rvpDcf': [
+    { labelEn: "Bhimanka Singhanada Radi Summary", labelOr: "ଭୀମଙ୍କ ସିଂଘନାଦ ରଡ଼ି ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'WJx36nRZJ0INsq7PIOma': [
+    { labelEn: "Raghabanka Lanka Jatranukula Summary", labelOr: "ରାଘବଙ୍କ ଲଙ୍କା ଯାତ୍ରାନୁକୂଳ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'mKClBmBGmqPPBXBUMBea': [
+    { labelEn: "Translation Overview & Rules", labelOr: "ଅନୁବାଦ ପ୍ରକରଣ ନିୟମ ଓ ପରିଚୟ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Key Concepts", labelOr: "ପ୍ରମୁଖ ସଂଜ୍ଞା ଓ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Examples", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Questions", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Common Mistakes", labelOr: "ସାଧାରଣ ଭୁଲ୍ ଓ ସଂଶୋଧନ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Applications in Writing", labelOr: "ରଚନାତ୍ମକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Quick Revision", labelOr: "ସାରାଂଶ ଓ ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'x0or0kBIRph6tfIFj7xF': [
+    { labelEn: "Sentence Analysis Overview & Rules", labelOr: "ବାକ୍ୟ ବିଚାର ନିୟମ ଓ ପରିଚୟ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Key Concepts", labelOr: "ପ୍ରମୁଖ ସଂଜ୍ଞା ଓ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Examples", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Questions", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Common Mistakes", labelOr: "ସାଧାରଣ ଭୁଲ୍ ଓ ସଂଶୋଧନ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Applications in Writing", labelOr: "ରଚନାତ୍ମକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Quick Revision", labelOr: "ସାରାଂଶ ଓ ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'DJO5ghl1p9F3C6FLYFct': [
+    { labelEn: "ରାଘବଙ୍କ ଲଙ୍କା ଯାତ୍ରାନୁକୂଳ  Summary", labelOr: "ରାଘବଙ୍କ ଲଙ୍କା ଯାତ୍ରାନୁକୂଳ  ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'xOZCdoyyy46eJqRv1aRJ': [
+    { labelEn: "Chilikare Sayantana Drushya Summary", labelOr: "ଚିଲିକାରେ ସାୟନ୍ତନ ଦୃଶ୍ୟ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'WMa2wCbpY75sElxzNEJY': [
+    { labelEn: "Mangale Aila Usha Summary", labelOr: "ମଙ୍ଗଳେ ଅଇଲା ଉଷା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'p2hfLK0fRZYvu1yYmKUe': [
+    { labelEn: "Sentence Analysis Overview & Rules", labelOr: "ବାକ୍ୟ ବିଚାର ନିୟମ ଓ ପରିଚୟ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Key Concepts", labelOr: "ପ୍ରମୁଖ ସଂଜ୍ଞା ଓ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Examples", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Questions", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Common Mistakes", labelOr: "ସାଧାରଣ ଭୁଲ୍ ଓ ସଂଶୋଧନ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Applications in Writing", labelOr: "ରଚନାତ୍ମକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Quick Revision", labelOr: "ସାରାଂଶ ଓ ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '806nwqnsrDByCqCck3QV': [
+    { labelEn: "Jaga Bandhanahara Summary", labelOr: "ଜାଗ ବନ୍ଧନହରା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '050OFWWLYZ9HcVNXPlDg': [
+    { labelEn: "Sarbansaha Mati Summary", labelOr: "ସର୍ବଂସହା ମାଟି ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'BmrPG6YsY0WeoqZoUFzk': [
+    { labelEn: "Prosody and Figures of Speech Overview & Rules", labelOr: "ଛନ୍ଦ ଓ ଅଳଙ୍କାର ନିୟମ ଓ ପରିଚୟ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Key Concepts", labelOr: "ପ୍ରମୁଖ ସଂଜ୍ଞା ଓ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Examples", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Questions", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Common Mistakes", labelOr: "ସାଧାରଣ ଭୁଲ୍ ଓ ସଂଶୋଧନ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Applications in Writing", labelOr: "ରଚନାତ୍ମକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Quick Revision", labelOr: "ସାରାଂଶ ଓ ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '2RogACOuyxWuQRJIaGii': [
+    { labelEn: "Janmabhumi Summary", labelOr: "ଜନ୍ମଭୂମି ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'W5UBvXOor7CVSkiDpduy': [
+    { labelEn: "Sabhyata O Bijnana Summary", labelOr: "ସଭ୍ୟତା ଓ ବିଜ୍ଞାନ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'bSKzdhrG8X2718jemnbO': [
+    { labelEn: "Natwa Vidhi, Shatwa Vidhi, and Common Errors Overview & Rules", labelOr: "‘ଣତ୍ବ’ ବିଧୂ, ‘ଷତ୍ବ’ ବିଧୂ ଓ ସାଧାରଣ ଅଶୁଦ୍ଧି ନିୟମ ଓ ପରିଚୟ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Key Concepts", labelOr: "ପ୍ରମୁଖ ସଂଜ୍ଞା ଓ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Examples", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Questions", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Common Mistakes", labelOr: "ସାଧାରଣ ଭୁଲ୍ ଓ ସଂଶୋଧନ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Applications in Writing", labelOr: "ରଚନାତ୍ମକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Quick Revision", labelOr: "ସାରାଂଶ ଓ ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'ABUP25CZSfmWCTmHpYjK': [
+    { labelEn: "Matrubhasha O Lokashiksha Summary", labelOr: "ମାତୃଭାଷା ଓ ଲୋକଶିକ୍ଷା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'zoS0Hx5ehtbb9cUUpUaN': [
+    { labelEn: "Naren ru Vivekananda Summary", labelOr: "ନରେନ୍ରୁ ବିବେକାନନ୍ଦ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'pP8cBauCfw0n0JIWflaj': [
+    { labelEn: "Odia Sahitya Katha Summary", labelOr: "ଓଡ଼ିଆ ସାହିତ୍ୟ କଥା ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'qwNARHd5y1yYwoOE0YJK': [
+    { labelEn: "Idioms and Proverbs Overview & Rules", labelOr: "ରୂଢ଼ି ଓ ଲୋକବାଣୀ ନିୟମ ଓ ପରିଚୟ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Key Concepts", labelOr: "ପ୍ରମୁଖ ସଂଜ୍ଞା ଓ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Examples", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Questions", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Common Mistakes", labelOr: "ସାଧାରଣ ଭୁଲ୍ ଓ ସଂଶୋଧନ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Applications in Writing", labelOr: "ରଚନାତ୍ମକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Quick Revision", labelOr: "ସାରାଂଶ ଓ ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'mBd0R0i4E5MDKg2o6bRx': [
+    { labelEn: "Katha Summary", labelOr: "କାଠ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'hrK9pzFTsgjPPVDHK4YP': [
+    { labelEn: "Kalara Kapola Tale Summary", labelOr: "କାଳର କପୋଳ ତଳେ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'hGwLArMQe333f3gdMndp': [
+    { labelEn: "Factual Reports Overview & Rules", labelOr: "ତଥ୍ୟଭିତ୍ତିକ ବିବରଣୀ ନିୟମ ଓ ପରିଚୟ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Key Concepts", labelOr: "ପ୍ରମୁଖ ସଂଜ୍ଞା ଓ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Examples", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Questions", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Common Mistakes", labelOr: "ସାଧାରଣ ଭୁଲ୍ ଓ ସଂଶୋଧନ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Applications in Writing", labelOr: "ରଚନାତ୍ମକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Quick Revision", labelOr: "ସାରାଂଶ ଓ ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'ZuCVJ9G3H6UaQgRlY5ai': [
+    { labelEn: "Bela, Aswattha O Batabruksha Summary", labelOr: "ବେଲ, ଅଶ୍ଵତ୍ଥ ଓ ବଟବୃକ୍ଷ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'vQvlL2irIdJSzjoAD6by': [
+    { labelEn: "Phalgu Summary", labelOr: "ଫଲ୍ଗୁ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'PC8FHKNcMjQW961faQFL': [
+    { labelEn: "Note and Draft Preparation Overview & Rules", labelOr: "ଟିପ୍‌ପଣୀ ଓ ଚିଠା ପ୍ରସ୍ତୁତି ନିୟମ ଓ ପରିଚୟ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Key Concepts", labelOr: "ପ୍ରମୁଖ ସଂଜ୍ଞା ଓ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Examples", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Questions", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Common Mistakes", labelOr: "ସାଧାରଣ ଭୁଲ୍ ଓ ସଂଶୋଧନ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Applications in Writing", labelOr: "ରଚନାତ୍ମକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Quick Revision", labelOr: "ସାରାଂଶ ଓ ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'Y2ffOG9WOfM2Lua2351W': [
+    { labelEn: "Konarka Summary", labelOr: "କୋଣାର୍କ ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "About the Author", labelOr: "କବି/ଲେଖକ ପରିଚୟ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Key Themes", labelOr: "ପ୍ରମୁଖ ଭାବାର୍ଥ ଓ ମର୍ମବାଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Textbook Q&A", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Word Meanings", labelOr: "କଠିନ ଶବ୍ଦାର୍ଥ ଓ ଟିପ୍ପଣୀ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Grammar in Chapter", labelOr: "ଅଧ୍ୟାୟ ଭିତ୍ତିକ ବ୍ୟାକରଣ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Socratic Discussion", labelOr: "ସାରାଂଶ ଓ ଚିନ୍ତନଶୀଳ ପ୍ରଶ୍ନ", top: '85%', left: '50%', color: 'blue' }
   ]
 };
 
