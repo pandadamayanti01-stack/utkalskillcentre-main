@@ -289,6 +289,51 @@ const PREMIUM_OVERLAYS: Record<string, OverlayNode[]> = {
     { labelEn: "Tangents to a Circle", labelOr: "ବୃତ୍ତକୁ ସ୍ପର୍ଶକ ଅଙ୍କନ", top: '30%', left: '80%', color: 'emerald' },
     { labelEn: "Similar Triangle Construction", labelOr: "ସଦୃଶ ତ୍ରିଭୁଜ ଅଙ୍କନ", top: '65%', left: '80%', color: 'purple' },
     { labelEn: "Cyclic Polygons Construction", labelOr: "ଚକ୍ରୀୟ ବହୁଭୁଜ ଅଙ୍କନ", top: '85%', left: '50%', color: 'emerald' }
+  ],
+  'RCcFvgtfQscdEfx2ppWB': [
+    { labelEn: "Light & Optics", labelOr: "ଆଲୋକ ଓ ଦୃଷ୍ଟିବିଜ୍ଞାନ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Laws of Reflection", labelOr: "ପ୍ରତିଫଳନର ନିୟମ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Spherical Mirrors", labelOr: "ଗୋଲକୀୟ ଦର୍ପଣ", top: '65%', left: '20%', color: 'blue' },
+    { labelEn: "Refraction of Light", labelOr: "ଆଲୋକର ପ୍ରତିସରଣ", top: '48%', left: '50%', color: 'emerald' },
+    { labelEn: "Refractive Index", labelOr: "ପ୍ରତିସରଣାଙ୍କ", top: '30%', left: '80%', color: 'amber' },
+    { labelEn: "Spherical Lenses", labelOr: "ଗୋଲକୀୟ ଲେନ୍ସ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Power of Lens", labelOr: "ଲେନ୍ସର କ୍ଷମତା", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'yEpFBOFHNX07NnGyz7k3': [
+    { labelEn: "Natural Resources", labelOr: "ପ୍ରାକୃତିକ ସମ୍ବଳ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Forest & Wildlife", labelOr: "ଅରଣ୍ୟ ଓ ବନ୍ୟପ୍ରାଣୀ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Water Conservation", labelOr: "ଜଳ ସଂରକ୍ଷଣ", top: '65%', left: '20%', color: 'blue' },
+    { labelEn: "Coal & Petroleum", labelOr: "କୋଇଲା ଓ ପେଟ୍ରୋଲିୟମ", top: '48%', left: '50%', color: 'emerald' },
+    { labelEn: "Renewable Energy", labelOr: "ଅକ୍ଷୟ ଶକ୍ତି ଉତ୍ସ", top: '30%', left: '80%', color: 'amber' },
+    { labelEn: "Resource Management", labelOr: "ସମ୍ବଳର ପରିଚାଳନା", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Three R's Principle", labelOr: "୩ 'R' ର ନିୟମ", top: '85%', left: '50%', color: 'emerald' }
+  ],
+  'YILwHvMcyPII0LXrnAmJ': [
+    { labelEn: "Respiration Overview", labelOr: "ଶ୍ଵସନର ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Glycolysis", labelOr: "ଗ୍ଲାଇକୋଲିସିସ୍", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Aerobic Respiration", labelOr: "ସବାତ ଶ୍ଵସନ", top: '65%', left: '20%', color: 'blue' },
+    { labelEn: "Anaerobic Respiration", labelOr: "ଅବାତ ଶ୍ଵସନ", top: '48%', left: '50%', color: 'emerald' },
+    { labelEn: "Respiratory System", labelOr: "ଶ୍ଵସନ ତନ୍ତ୍ର", top: '30%', left: '80%', color: 'amber' },
+    { labelEn: "Gaseous Exchange", labelOr: "ଗ୍ୟାସୀୟ ବିନିମୟ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Cellular Respiration", labelOr: "କୋଷୀୟ ଶ୍ଵସନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'gknuEN2rccGYW4RiMvRw': [
+    { labelEn: "Sources of Energy", labelOr: "ଶକ୍ତିର ଉତ୍ସ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Fossil Fuels", labelOr: "ଜୀବାଶ୍ମ ଜାଳେଣି", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Thermal & Hydro Power", labelOr: "ତାପଜ ଓ ଜଳ ବିଦ୍ୟୁତ୍ ଶକ୍ତି", top: '65%', left: '20%', color: 'blue' },
+    { labelEn: "Solar & Wind Energy", labelOr: "ସୌର ଓ ବାୟୁ ଶକ୍ତି", top: '48%', left: '50%', color: 'emerald' },
+    { labelEn: "Biomass & Biogas", labelOr: "ଜୈବ ଭର ଓ ବାୟୋଗ୍ୟାସ", top: '30%', left: '80%', color: 'amber' },
+    { labelEn: "Nuclear Energy", labelOr: "ନାଭିକୀୟ ଶକ୍ତି", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Environmental Impact", labelOr: "ପରିବେଶ ଉପରେ ପ୍ରଭାବ", top: '85%', left: '50%', color: 'emerald' }
+  ],
+  'SIqN8U9fvVQfhCzwkWNi': [
+    { labelEn: "Circulatory System", labelOr: "ପରିବହନ ଓ ସଞ୍ଚାଳନ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Blood & Lymph", labelOr: "ରକ୍ତ ଓ ଲସିକା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Structure of Heart", labelOr: "ହୃତ୍‌ପିଣ୍ଡର ଗଠନ", top: '65%', left: '20%', color: 'blue' },
+    { labelEn: "Double Circulation", labelOr: "ଦ୍ଵି-ସଞ୍ଚାଳନ", top: '48%', left: '50%', color: 'emerald' },
+    { labelEn: "Transportation in Plants", labelOr: "ଉଦ୍ଭିଦରେ ପରିବହନ", top: '30%', left: '80%', color: 'amber' },
+    { labelEn: "Xylem & Phloem", labelOr: "ଜାଇଲେମ୍ ଓ ଫ୍ଲୋଏମ୍", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Transpiration", labelOr: "ଉତ୍ସେଦନ", top: '85%', left: '50%', color: 'blue' }
   ]
 };
 
