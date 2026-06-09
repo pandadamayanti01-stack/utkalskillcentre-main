@@ -47,7 +47,16 @@ export const AVAILABLE_PREMIUM_MAPS = [
   'waFHMnnjvCtoedjA4dkq', // Class 9 Geometry - Area
   'CN2vF71fvpISYZQdSyo7', // Class 9 Geometry - Mensuration
   '5sC6FO1jZ3KJDHXto8zF', // Class 9 Geometry - Construction
-  'yjYuvfGmjWGdhkca3gIB'  // Class 9 Geometry - Trigonometry
+  'yjYuvfGmjWGdhkca3gIB', // Class 9 Geometry - Trigonometry
+  
+  // Class 8 Math
+  'yfmB1qOTSrRv1vQiDJcy', // Class 8 Math - Square and Cube
+  'O9oJ8NL6NqvkUP3Se1hS', // Class 8 Math - Game of Exponents
+  'RkebiH5rqWq3FvSUIMWc', // Class 8 Math - Story of Numbers
+  '5L5edZ4whoKapY9QDJx1', // Class 8 Math - Quadrilateral
+  'mHjUCUJZBrEd77BiiN1n', // Class 8 Math - Number Game
+  'rQabkKY5kCrjzQzKF0iA', // Class 8 Math - Principles of Division
+  'uaqbpOUe3xFmStqXqqv3'  // Class 8 Math - Proportional Reasoning - 1
 ];
 
 /**

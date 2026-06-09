@@ -424,6 +424,69 @@ const PREMIUM_OVERLAYS: Record<string, OverlayNode[]> = {
     { labelEn: "Trigonometric Identities", labelOr: "ତ୍ରିକୋଣମିତିକ ଅଭେଦାବଳୀ", top: '30%', left: '80%', color: 'amber' },
     { labelEn: "Values of Specific Angles", labelOr: "୦, ୩୦, ୪୫, ୬୦, ୯୦ର ମୂଲ୍ୟ", top: '65%', left: '80%', color: 'blue' },
     { labelEn: "Simple Trigonometric Problems", labelOr: "ସରଳ ତ୍ରିକୋଣମିତିକ ପ୍ରଶ୍ନୋତ୍ତର", top: '85%', left: '50%', color: 'emerald' }
+  ],
+  'yfmB1qOTSrRv1vQiDJcy': [
+    { labelEn: "Square & Cube Concepts", labelOr: "ବର୍ଗ ଓ ଘନ ଧାରଣା", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Perfect Squares", labelOr: "ପୂର୍ଣ୍ଣ ବର୍ଗ ସଂଖ୍ୟା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Square Roots", labelOr: "ବର୍ଗମୂଳ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Perfect Cubes", labelOr: "ପୂର୍ଣ୍ଣ ଘନ ସଂଖ୍ୟା", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Cube Roots", labelOr: "ଘନମୂଳ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Properties of Squares", labelOr: "ବର୍ଗ ସଂଖ୍ୟାର ଧର୍ମ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Estimating Square Roots", labelOr: "ବର୍ଗମୂଳର ଆକଳନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'O9oJ8NL6NqvkUP3Se1hS': [
+    { labelEn: "Exponents Overview", labelOr: "ଘାତାଙ୍କ ସାରାଂଶ", top: '10%', left: '50%', color: 'blue' },
+    { labelEn: "Laws of Exponents", labelOr: "ଘାତାଙ୍କ ନିୟମ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Negative Exponents", labelOr: "ଋଣାତ୍ମକ ଘାତାଙ୍କ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Scientific Notation", labelOr: "ବୈଜ୍ଞାନିକ ପଦ୍ଧତିରେ ପ୍ରକାଶ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Base and Power", labelOr: "ଆଧାର ଓ ଘାତ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Exponential Operations", labelOr: "ଘାତାଙ୍କ ଗାଣିତିକ ପ୍ରକ୍ରିୟା", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Comparing Large Numbers", labelOr: "ବୃହତ୍ ସଂଖ୍ୟାର ତୁଳନା", top: '85%', left: '50%', color: 'amber' }
+  ],
+  'RkebiH5rqWq3FvSUIMWc': [
+    { labelEn: "Numbers Story Basics", labelOr: "ସଂଖ୍ୟା କାହାଣୀ ମୌଳିକ ଧାରଣା", top: '10%', left: '50%', color: 'amber' },
+    { labelEn: "Types of Numbers", labelOr: "ସଂଖ୍ୟାର ପ୍ରକାରଭେଦ", top: '30%', left: '20%', color: 'emerald' },
+    { labelEn: "Prime & Composite", labelOr: "ମୌଳିକ ଓ ଯୌଗିକ ସଂଖ୍ୟା", top: '65%', left: '20%', color: 'blue' },
+    { labelEn: "Factors & Multiples", labelOr: "ଗୁଣନୀୟକ ଓ ଗୁଣିତକ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "HCF & LCM", labelOr: "ଗରିଷ୍ଠ ସାଧାରଣ ଗୁଣନୀୟକ ଓ ଲଘିଷ୍ଠ ସାଧାରଣ ଗୁଣିତକ", top: '30%', left: '80%', color: 'amber' },
+    { labelEn: "Divisibility Tests", labelOr: "ବିଭାଜ୍ୟତା ପରୀକ୍ଷା", top: '65%', left: '80%', color: 'blue' },
+    { labelEn: "Prime Factorization", labelOr: "ମୌଳିକ ଗୁଣନୀୟକ ବିଶ୍ଳେଷଣ", top: '85%', left: '50%', color: 'emerald' }
+  ],
+  '5L5edZ4whoKapY9QDJx1': [
+    { labelEn: "Quadrilateral Basics", labelOr: "ଚତୁର୍ଭୁଜ ମୌଳିକ ଧାରଣା", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Angle Sum Property", labelOr: "କୋଣ ସମଷ୍ଟି ଗୁଣଧର୍ମ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Types of Quadrilaterals", labelOr: "ଚତୁର୍ଭୁଜର ପ୍ରକାରଭେଦ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Properties of Parallelogram", labelOr: "ସାମାନ୍ତରିକ ଚତୁର୍ଭୁଜର ଗୁଣଧର୍ମ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Square, Rectangle, Rhombus", labelOr: "ବର୍ଗଚିତ୍ର, ଆୟତଚିତ୍ର, ରମ୍ବସ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Construction of Quadrilaterals", labelOr: "ଚତୁର୍ଭୁଜ ଅଙ୍କନ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Theorems on Quadrilaterals", labelOr: "ଚତୁର୍ଭୁଜ ସମ୍ବନ୍ଧୀୟ ଉପପାଦ୍ୟ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'mHjUCUJZBrEd77BiiN1n': [
+    { labelEn: "Number Games Intro", labelOr: "ସଂଖ୍ୟା ଖେଳର ଧାରଣା", top: '10%', left: '50%', color: 'purple' },
+    { labelEn: "Number Patterns", labelOr: "ସଂଖ୍ୟା ପାଟର୍ଣ୍ଣ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Magic Squares", labelOr: "ମାଜିକ୍ ବର୍ଗଚିତ୍ର", top: '65%', left: '20%', color: 'emerald' },
+    { labelEn: "Letters for Digits", labelOr: "ଅକ୍ଷର ବ୍ୟବହାର କରି ଗଣିତ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Divisibility Games", labelOr: "ବିଭାଜ୍ୟତା ଖେଳ", top: '30%', left: '80%', color: 'amber' },
+    { labelEn: "Fun with Numbers", labelOr: "ସଂଖ୍ୟା ସହିତ ମଜା", top: '65%', left: '80%', color: 'blue' },
+    { labelEn: "Mathematical Puzzles", labelOr: "ଗାଣିତିକ ପ୍ରହେଳିକା", top: '85%', left: '50%', color: 'emerald' }
+  ],
+  'rQabkKY5kCrjzQzKF0iA': [
+    { labelEn: "Division Basics", labelOr: "ବାଣ୍ଟିବା କ୍ରିୟାର ଧାରଣା", top: '10%', left: '50%', color: 'blue' },
+    { labelEn: "Equal Distribution", labelOr: "ସମବଣ୍ଟନ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Division Algorithm", labelOr: "ଭାଗକ୍ରିୟା ସୂତ୍ର", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Quotient & Remainder", labelOr: "ଭାଗଫଳ ଓ ଭାଗଶେଷ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Division of Large Numbers", labelOr: "ବୃହତ୍ ସଂଖ୍ୟାର ଭାଗକ୍ରିୟା", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Word Problems on Division", labelOr: "ଭାଗକ୍ରିୟା ବ୍ୟବହାରିକ ପ୍ରଶ୍ନ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Estimating Quotients", labelOr: "ଆକଳିତ ଭାଗଫଳ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'uaqbpOUe3xFmStqXqqv3': [
+    { labelEn: "Proportional Reasoning", labelOr: "ସମାନୁପାତିକ ଯୁକ୍ତି", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Ratio Concept", labelOr: "ଅନୁପାତ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Direct Variation", labelOr: "ପ୍ରତ୍ୟକ୍ଷ ବିଚରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Unitary Method", labelOr: "ଐକିକ ପ୍ରଣାଳୀ", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Percentage Basics", labelOr: "ଶତକଡ଼ା ଧାରଣା", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Applications of Ratio", labelOr: "ଅନୁପାତର ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Simple Scale Drawings", labelOr: "ସ୍କେଲ୍ ଚିତ୍ର ଅଙ୍କନ", top: '85%', left: '50%', color: 'blue' }
   ]
 };
 
