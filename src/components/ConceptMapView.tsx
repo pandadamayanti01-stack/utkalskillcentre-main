@@ -487,6 +487,762 @@ const PREMIUM_OVERLAYS: Record<string, OverlayNode[]> = {
     { labelEn: "Percentage Basics", labelOr: "ଶତକଡ଼ା ଧାରଣା", top: '30%', left: '80%', color: 'emerald' },
     { labelEn: "Applications of Ratio", labelOr: "ଅନୁପାତର ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
     { labelEn: "Simple Scale Drawings", labelOr: "ସ୍କେଲ୍ ଚିତ୍ର ଅଙ୍କନ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'XHDqx5EBcSK8ISGZCDz8': [
+    { labelEn: "Finding Tulutuli the Cat (Pre-counting Concepts) Overview", labelOr: "ଟୁଲୁଟୁଲି ବିଲେଇକୁ ଖୋଜିବା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'tzb8ZgNsF3bYzLcx0fYw': [
+    { labelEn: "Which is Long? Which is Round? (Shapes) Overview", labelOr: "କେଉଁଟି ଲମ୍ବା ? କେଉଁଟି ଗୋଲ ? ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'VDhZqhEqc7VITaEZMvVm': [
+    { labelEn: "Let's Find (Numbers 1 to 9) Overview", labelOr: "ଆସ ଖୋଜିବା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'AzGEGnXNRZVNzx47L75C': [
+    { labelEn: "Let's Make 10 (Numbers 10 to 20) Overview", labelOr: "ଆସ, ୧୦ ତିଆରି କରିବା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'KEQ368wuxHqgGm9cRyAM': [
+    { labelEn: "What is the Number? (Addition & Subtraction of 1-Digit Numbers) Overview", labelOr: "ସଂଖ୍ୟାଟି କେତେ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'i5LsQKIZf5BLHirBvEeS': [
+    { labelEn: "Vegetable Garden (Addition & Subtraction within 20) Overview", labelOr: "ପନିପରିବା ବଗିଚା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '5QqMvmSIa1nvGoN9zR9t': [
+    { labelEn: "Lina's Family (Measurement) Overview", labelOr: "ଲୀନାର ପରିବାର ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'NQhbSkTA9O8Ir4g1tYN2': [
+    { labelEn: "Fun with Numbers (Numbers 21 to 99) Overview", labelOr: "ସଂଖ୍ୟାର ମଜା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'KBBQt4tACF5ZQpXdut6v': [
+    { labelEn: "Our Festivals (Patterns) Overview", labelOr: "ଆମ ପର୍ବପର୍ବାଣୀ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'kjWd03UuFUT2EfVn6Kaw': [
+    { labelEn: "My One Day's Work (Time) Overview", labelOr: "ମୋର ଗୋଟିଏ ଦିବସର କାମ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '3PP3RsP6jhSxCcONlZTY': [
+    { labelEn: "How Many Times Added? (Multiplication) Overview", labelOr: "କେତେ ଥର ମିଶିଲା ? ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'IUmZGVeA6BXx3IxF8JXD': [
+    { labelEn: "Let's Buy and Sell (Money) Overview", labelOr: "ଆସ କିଣାବିକା କରିବା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'aEunju4kIdP4Wi0wHwPP': [
+    { labelEn: "Wow, So Many Toys! (Data Handling) Overview", labelOr: "ବାଃ, ଏତେଗୁଡ଼ିଏ ଖେଳଣା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'cb9gCy47ARkBnJcl7EAC': [
+    { labelEn: "A Day at the Beach Overview", labelOr: "ସମୁଦ୍ର କୂଳରେ ଦିନଟିଏ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'fgirhWPvmrGZCyd7S0Tw': [
+    { labelEn: "Shapes Around Us Overview", labelOr: "ଆମ ଚାରିପାଖରେ ଥିବା ଆକୃତି ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'StnG1c9IKAr978YgApR0': [
+    { labelEn: "Fun with Numbers Overview", labelOr: "ସଂଖ୍ୟା ସହିତ ମଜା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'FTcHsEAoXWC5Qz4P4gvG': [
+    { labelEn: "Story of Shadows Overview", labelOr: "ଛାୟାର କାହାଣୀ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'BIVJzIzDWQr3psLjrqux': [
+    { labelEn: "Playing with Lines Overview", labelOr: "ଗାର ସହିତ ଖେଳିବା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'LMSM80o7y0UW81aeEGKn': [
+    { labelEn: "Decoration for the Festival Overview", labelOr: "ପର୍ବ ପାଇଁ ସାଜସଜ୍ଜା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'lWe4MwcSchRrp4UmNd5n': [
+    { labelEn: "The Queen's Gift Overview", labelOr: "ରାଣୀଙ୍କ ଉପହାର ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'WjPv6oS79eaE4xMAikQM': [
+    { labelEn: "Grouping and Sharing Overview", labelOr: "ଏକାଠି କରିବା ଓ ବାଣ୍ଟିବା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jlWFT57PMrT01m3RHz55': [
+    { labelEn: "Basket of Seasons Overview", labelOr: "ଋତୁ ପସରା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'ymrKsZ0GTIputueS1mDf': [
+    { labelEn: "Fun at the Fair Overview", labelOr: "ମେଳାରେ ମଜା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'gQb7yBrjQpGIHqN75q7f': [
+    { labelEn: "Data Handling Overview", labelOr: "ତଥ୍ୟ ପରିଚାଳନା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'yVJibK9hMXAhRwEusQRX': [
+    { labelEn: "What is in a name? Overview", labelOr: "ନାମରେ କ’ଣ ଅଛି ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'wQXXRUjXe61ZOq3xLE51': [
+    { labelEn: "Fun with Toys Overview", labelOr: "ଖେଳନାର ମଜା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'D3ovNrFW6hMfYv2xLuhu': [
+    { labelEn: "Double Century / Numbers up to 200 Overview", labelOr: "ବିଶତକ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'sZlVU5ccox15nAWhwVjW': [
+    { labelEn: "Holidays with Grandma Overview", labelOr: "ଛୁଟିରେ ଆଇ ମା’ଙ୍କ ସହ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '8g9RcSH71H0WX9le4oD5': [
+    { labelEn: "Fun with Shapes Overview", labelOr: "ଆକୃତିର ମଜା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'ndoSlbKwJCeASV0RcT0X': [
+    { labelEn: "House of Hundreds-1 Overview", labelOr: "ଶହେର ଘର-୧ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'ZGnR9eQ7ENLfdW9UP7HJ': [
+    { labelEn: "House of Hundreds-2 Overview", labelOr: "ଶହେର ଘର-୨ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '4mtuyQRVZEDeyO4tNyfa': [
+    { labelEn: "Rakhi Purnima Overview", labelOr: "ରାକ୍ଷୀ ପୂର୍ଣ୍ଣିମା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '1nuaLWaE9GsGMpiQImdV': [
+    { labelEn: "Equal Distribution Overview", labelOr: "ସମବଣ୍ଟନ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'bnfv5r8Q7WLP2JPbYEnR': [
+    { labelEn: "Fun in the Classroom Overview", labelOr: "ଶ୍ରେଣୀରେ ମଜା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'YyfV2pAIIaoaDKr5bFjg': [
+    { labelEn: "Filling and Pouring Overview", labelOr: "ଭରିବା ଓ ଓଜାଡ଼ିବା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'JLixWwElXCHfwrnZGx7M': [
+    { labelEn: "Giving and Taking Overview", labelOr: "ଦେବା ଓ ନେବା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'ysBCdX3sbDm5dEoeDjqy': [
+    { labelEn: "Time Rolls On Overview", labelOr: "ସମୟ ଗଡ଼ିଚାଲେ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'iC368doOg9hiGkdY4Shs': [
+    { labelEn: "Pond Fair Overview", labelOr: "ପୋଖରୀ ମେଳା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'lcd0zysfDI97gzPprf2h': [
+    { labelEn: "Shapes around us Overview", labelOr: "ଆମ ଚାରିପାଖର ଆକୃତି ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'GAHbM6KiZA64zZwGPXI7': [
+    { labelEn: "Hide and seek Overview", labelOr: "ଲୁଚକାଳି ଖେଳ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'K9WEkGkmlVFxOwnLnKJq': [
+    { labelEn: "Patterns around us Overview", labelOr: "ଆମ ଚାରିପାଖର ସଂରଚନା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'EzajBq7K1OD1DzG5hn6E': [
+    { labelEn: "Introduction to thousands Overview", labelOr: "ହଜାରର ପରିଚୟ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'G42FcYtTwnj2fvukqF0a': [
+    { labelEn: "Dividing and measuring Overview", labelOr: "ବାଣ୍ଟିବା ଓ ମାପିବା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'bpODntY6rOiCy3ZHftdf': [
+    { labelEn: "Measuring length Overview", labelOr: "ଦୈର୍ଘ୍ୟ ମାପିବା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'HsUV4JV2zvqITQnQcO25': [
+    { labelEn: "The cleanest village Overview", labelOr: "ସବୁଠାରୁ ସ୍ୱଚ୍ଛ ଗ୍ରାମ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'tjZVwBeLDMWHbvu1LNVZ': [
+    { labelEn: "Measuring and filling Overview", labelOr: "ମାପିବା ଓ ଭରିବା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'urx0fCg2AxKUukq8uc8r': [
+    { labelEn: "We are all in one team Overview", labelOr: "ଆମେ ସବୁ ଏକା ଦଳର ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '4foh48o8AHazX6KXZiEI': [
+    { labelEn: "Fun with symmetry Overview", labelOr: "ପ୍ରତିସମତାର ମଜା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'ZI8nIla62J7iieTj7SqL': [
+    { labelEn: "Clock goes tick tick, calendar says tick tick Overview", labelOr: "ଘଣ୍ଟା ଚାଲେ ଟିକ୍ ଟିକ୍, କ୍ୟାଲେଣ୍ଡର କହେ ଟିକ୍ ଟିକ୍ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'ic4jbFLvQk4zVmQoIqpH': [
+    { labelEn: "Transport museum Overview", labelOr: "ପରିବହନ ସଂଗ୍ରହାଳୟ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'VWRk5RYAKyLrHPnzyRN5': [
+    { labelEn: "Data handling Overview", labelOr: "ତଥ୍ୟ ପରିଚାଳନା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'zi4SgPBFc2vIwntai4fo': [
+    { labelEn: "We all are travellers-1 Overview", labelOr: "ଆମେ ସମସ୍ତେ ଯାତ୍ରୀ-୧ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '9GXxBpBIQk0HY9tCRE1N': [
+    { labelEn: "Fractions Overview", labelOr: "ଭଗ୍ନ ସଂଖ୍ୟା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '1pDFvlUcDZe0CvyMhEVZ': [
+    { labelEn: "Angles of Rotation Overview", labelOr: "ଘୂର୍ଣ୍ଣନର କୋଣ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'sHQN4OVIQrve8EOPf9Nf': [
+    { labelEn: "We all are travellers-2 Overview", labelOr: "ଆମେ ସମସ୍ତେ ଯାତ୍ରୀ - ୨ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'COAQ7dc238dno70OhOPv': [
+    { labelEn: "Near and Far Overview", labelOr: "ପାଖ ଓ ଦୂର ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'OehETWJkVVbAQIDoVmh6': [
+    { labelEn: "Milk Production Center Overview", labelOr: "ଦୁଗ୍ଧ ଉତ୍ପାଦନ କେନ୍ଦ୍ର ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '1KHyeVRkNW7jbL98gaxy': [
+    { labelEn: "Shapes and Patterns Overview", labelOr: "ଆକୃତି ଓ ସଂରଚନା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'YpQ3QwfxIisFPxYK8yo3': [
+    { labelEn: "Weight and Capacity Overview", labelOr: "ଓଜନ ଓ ଧାରକତ୍ୱ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'SsVpjFN3pyiF8OmLjH5m': [
+    { labelEn: "Coconut Orchard Overview", labelOr: "ନଡ଼ିଆ ବଗିଚା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'VFBxfs4ewM4sBpt428Ek': [
+    { labelEn: "Symmetrical Figures Overview", labelOr: "ପ୍ରତିସମ ଚିତ୍ର ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'hIO1TrKRmMxfNgWg4LCW': [
+    { labelEn: "Grandma's Blanket Overview", labelOr: "ଜେଜେମା'ଙ୍କ କମ୍ବଳ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'qhPK31VqDiYhXoOzfcFJ': [
+    { labelEn: "Measurement of Time Overview", labelOr: "ସମୟର ମାପ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'UJ47zdSgE5zmiNBI1JSL': [
+    { labelEn: "Jumping Animals Overview", labelOr: "ପ୍ରାଣୀ ଡେଇଁକା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'VFUHycEgXLxudq9AVP9C': [
+    { labelEn: "Map and Location Overview", labelOr: "ମାନଚିତ୍ର ଓ ଅବସ୍ଥାନ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'yzSrMla1wmRKBTmYMv7N': [
+    { labelEn: "Information through Pictures Overview", labelOr: "ଚିତ୍ର ମାଧ୍ୟମରେ ତଥ୍ୟ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'hvGDi51aNQIJoBlfLx9c': [
+    { labelEn: "Patterns in Mathematics Overview", labelOr: "ଗଣିତରେ ସଂରଚନା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'q7bb7vScXQLVVywiF0kh': [
+    { labelEn: "Lines and Angles Overview", labelOr: "ରେଖା ଏବଂ କୋଣ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'CgDseWH7sbt8TtUudTcv': [
+    { labelEn: "Playing with Numbers Overview", labelOr: "ସଂଖ୍ୟା ଖେଳ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'b9kaxyyy2VGC7aqRPQlw': [
+    { labelEn: "Data Representation and Management Overview", labelOr: "ତଥ୍ୟ ଉପସ୍ଥାପନା ଓ ପରିଚାଳନା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'FCOa1dJp17q6hLNY0fWU': [
+    { labelEn: "Prime Numbers Overview", labelOr: "ମୌଳିକ ସଂଖ୍ୟା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'Nd0xchC7ge7nMYVPAhEh': [
+    { labelEn: "Perimeter and Area Overview", labelOr: "ପରିସୀମା ଓ କ୍ଷେତ୍ରଫଳ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'tyweGW7kdgg443NvVsrw': [
+    { labelEn: "Fractions Overview", labelOr: "ଭଗ୍ନାଂଶ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'xSpnMMIWeIWXLtg3umTu': [
+    { labelEn: "Geometrical Constructions Overview", labelOr: "ଜ୍ୟାମିତିକ ଅଙ୍କନ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '8MojDutow0VZlSclmCjM': [
+    { labelEn: "Symmetry Overview", labelOr: "ପ୍ରତିସମତା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'usXCCa6FGMoGZRoYC6Rl': [
+    { labelEn: "Whole Numbers Overview", labelOr: "ପୂର୍ଣ୍ଣ ସଂଖ୍ୟା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'EARppILzbkB8aBzqiZMj': [
+    { labelEn: "Large numbers around us Overview", labelOr: "ଆମ ଚାରିପଟେ ଥିବା ବଡ଼ ସଂଖ୍ୟା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'c04iLz7qHsqZWLVdvwq0': [
+    { labelEn: "Arithmetic expressions Overview", labelOr: "ପାଟୀଗାଣିତିକ ପରିପ୍ରକାଶ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  '4ADx7qb0nUo5zaWZnzpt': [
+    { labelEn: "Magic of point among numbers / Decimals Overview", labelOr: "ସଂଖ୍ୟାର ମଝିରେ ବିନ୍ଦୁର କମାଲ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'z7fu2GIhoFjNBac8vlYP': [
+    { labelEn: "Mathematical expression using letters and numbers / Algebra Overview", labelOr: "ଅକ୍ଷର ଓ ସଂଖ୍ୟା ମାଧ୍ୟମରେ ଗାଣିତିକ ପରିପ୍ରକାଶ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'rnf4qS86IJeBCWeH2dcr': [
+    { labelEn: "Parallel lines and transversals Overview", labelOr: "ସମାନ୍ତର ସରଳ ରେଖା ଓ ଛେଦକ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'jz3EKqwa1Ls6zEsMJ9xa': [
+    { labelEn: "Number games Overview", labelOr: "ସଂଖ୍ୟା ଖେଳ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'GNBVoVfB6aoOEBLbuUSE': [
+    { labelEn: "Story of three intersecting lines / Triangles Overview", labelOr: "ତିନୋଟି ପରସ୍ପର ଛେଦୀ ସରଳ ରେଖାର କଥା ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
+  ],
+  'Yw9sq7brPRklRKbx9FOV': [
+    { labelEn: "Use of fractions Overview", labelOr: "ଭଗ୍ନାଂଶର ବ୍ୟବହାର ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Core Concepts", labelOr: "ମୌଳିକ ଧାରଣା", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Solved Problems", labelOr: "ସମାଧାନ ସହ ଉଦାହରଣ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Practice Exercise", labelOr: "ଅଭ୍ୟାସ ପ୍ରଶ୍ନୋତ୍ତର", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Formulas & Rules", labelOr: "ପ୍ରମୁଖ ସୂତ୍ର ଓ ନିୟମ", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Real-world Applications", labelOr: "ବାସ୍ତବିକ ପ୍ରୟୋଗ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Summary & Notes", labelOr: "ଅଧ୍ୟାୟର ମୁଖ୍ୟ ବିନ୍ଦୁ", top: '85%', left: '50%', color: 'blue' }
   ]
 };
 

@@ -1,62 +1,90 @@
 export const AVAILABLE_PREMIUM_MAPS = [
-  'Vx3FQK8ZAl67KwvDi1Iy', // Class 10 Life Science - Nutrition (Photosynthesis Map)
-  'WHZAR4BSAWixmaPmHuqW', // Class 10 Life Science - Nutrition (Photosynthesis Map - Alternative ID)
-  'BYsFgUxdUTQkTXoEyiUZ', // Class 4 Odia - Karuna Sagara Prabhuhe / Tiki Chadhei (Tiki Tiki Map)
-  'CUQwtkjyKesVfAtJYiky', // Class 10 Physical Science - Chemical Reactions (Chemical Reactions Map)
-  'BkI12z7DPpAaIozm4bKH', // Class 10 Physical Science - Electricity (Electricity Map)
-  '5n7Dg8pphGZT8XG2xKHW', // Class 10 Physical Science - Acids, Bases and Salts (Acids Bases Map)
-  'hN2uO4iyaCERFcPLmran', // Class 10 Physical Science - Metals and Non-Metals (Metals Non-Metals Map)
-  'vfXYwB9Po1rB4Aty4q3Y', // Class 10 Physical Science - Carbon and its Compounds (Carbon Compounds Map)
-  'vYSgSwsyfXAUGTHZPMHk', // Class 10 Physical Science - Periodic Classification (Periodic Classification Map)
-  'vIk5JIUpltQXmdbvknis', // Class 10 Physical Science - Magnetic Effects (Magnetic Effects Map)
-  'yBsU83fVRBM0lGzhfG5N', // Class 10 Physical Science - Human Eye (Human Eye Map)
-  '8kGT8tSrIIFZ3sxoeyXt', // Class 10 Life Science - Our Environment (Our Environment Map)
-  'PVqIhNgzghFKacVchjs1', // Class 10 Life Science - Control and Coordination (Control and Coordination Map)
-  'fNy21816t8C3EMrsdP4S', // Class 10 Life Science - Excretion (Excretion Map)
-  'Jb1gxditmbVBJIubDjok', // Class 10 Life Science - Reproduction (Reproduction Map)
-  'zti7Pcoic1HhlnFlsGxK', // Class 10 Life Science - Heredity and Evolution (Heredity and Evolution Map)
-  'FE7XoiswjRxPglXwvzwd', // Class 10 Life Science - Covid 19 Management (Covid 19 Management Map)
-  'lw9n7sG7qxnfbwm4kLY9', // Class 10 Algebra - Linear Simultaneous Equations (Linear Simultaneous Equations Map)
-  'bH692tqUJlkINiHpNJMk', // Class 10 Algebra - Quadratic Equations (Quadratic Equations Map)
-  'ZNhThX6hmIa5GKYUDpIX', // Class 10 Algebra - Arithmetic Progression (Arithmetic Progression Map)
-  'lQX4qU8uY9Rjy5wrcUhX', // Class 10 Algebra - Probability (Probability Map)
-  'zM3ZUo9MXaprYQbtlbC4', // Class 10 Algebra - Statistics (Statistics Map)
-  'cKl1PFkdrkgSnGH7AReP', // Class 10 Algebra - Co-ordinate Geometry (Co-ordinate Geometry Map)
-  'zjmscF6RCwSzh7UsljMp', // Class 10 Geometry - Similarity (Similarity Map)
-  'HlfuVAm9dcK1gGpNkpuq', // Class 10 Geometry - Similarity (Similarity Map - Alternative ID)
-  'bq9cINIoZgSaIWag7JLM', // Class 10 Geometry - Circles (Circles Map)
-  'j5ym70mivqsTXHpAnMxJ', // Class 10 Geometry - Tangents to a Circle (Tangents Map)
-  'cHD1xEpJvTclMfvi5ZJH', // Class 10 Geometry - Trigonometry (Trigonometry Map)
-  '4XpiLqgcg15qMNkQdgMm', // Class 10 Geometry - Mensuration (Mensuration Map)
-  '7Yukb86gfwmb9Bptpbwd', // Class 10 Geometry - Construction (Construction Map)
-  
-  // Class 9 Math - Algebra
-  'rEwPDUZHAwzJA0ZEEEp9', // Class 9 Algebra - Set Operations and Application
-  'xzRdIeQy9xACVlNyCrni', // Class 9 Algebra - Real Numbers
-  'vnVRu3EZt43dfDmC52hC', // Class 9 Algebra - Algebraic Expressions and Identities
-  '3930hm9apoZ0o85WBnGZ', // Class 9 Algebra - Algebraic Equations
-  'VWBNp0Z84ZMc7Cj5PsvO', // Class 9 Algebra - Coordinate Geometry
-  '8espf73Ro8U4dlairG2N', // Class 9 Algebra - Ratio and Proportion
-  'JUK8CDGUs0lHEmEpQjv3', // Class 9 Algebra - Statistics
-  '0iyOSoLXnySiCj8Hvzdp', // Class 9 Algebra - Probability
-  
-  // Class 9 Math - Geometry
-  'qjH43lmxEUZTzRfiJ3pE', // Class 9 Geometry - Lines and Angles
-  '6lmg30zsqPtO31fERDt8', // Class 9 Geometry - Congruence of Triangles
-  '5YsDHmIIyx9cWlSRkMtz', // Class 9 Geometry - Quadrilaterals
-  'waFHMnnjvCtoedjA4dkq', // Class 9 Geometry - Area
-  'CN2vF71fvpISYZQdSyo7', // Class 9 Geometry - Mensuration
-  '5sC6FO1jZ3KJDHXto8zF', // Class 9 Geometry - Construction
-  'yjYuvfGmjWGdhkca3gIB', // Class 9 Geometry - Trigonometry
-  
-  // Class 8 Math
-  'yfmB1qOTSrRv1vQiDJcy', // Class 8 Math - Square and Cube
-  'O9oJ8NL6NqvkUP3Se1hS', // Class 8 Math - Game of Exponents
-  'RkebiH5rqWq3FvSUIMWc', // Class 8 Math - Story of Numbers
-  '5L5edZ4whoKapY9QDJx1', // Class 8 Math - Quadrilateral
-  'mHjUCUJZBrEd77BiiN1n', // Class 8 Math - Number Game
-  'rQabkKY5kCrjzQzKF0iA', // Class 8 Math - Principles of Division
-  'uaqbpOUe3xFmStqXqqv3'  // Class 8 Math - Proportional Reasoning - 1
+  'Vx3FQK8ZAl67KwvDi1Iy',
+  'Bases and Salts (Acids Bases Map)  hN2uO4iyaCERFcPLmran',
+  'XHDqx5EBcSK8ISGZCDz8',
+  'tzb8ZgNsF3bYzLcx0fYw',
+  'VDhZqhEqc7VITaEZMvVm',
+  'AzGEGnXNRZVNzx47L75C',
+  'KEQ368wuxHqgGm9cRyAM',
+  'i5LsQKIZf5BLHirBvEeS',
+  '5QqMvmSIa1nvGoN9zR9t',
+  'NQhbSkTA9O8Ir4g1tYN2',
+  'KBBQt4tACF5ZQpXdut6v',
+  'kjWd03UuFUT2EfVn6Kaw',
+  '3PP3RsP6jhSxCcONlZTY',
+  'IUmZGVeA6BXx3IxF8JXD',
+  'aEunju4kIdP4Wi0wHwPP',
+  'cb9gCy47ARkBnJcl7EAC',
+  'fgirhWPvmrGZCyd7S0Tw',
+  'StnG1c9IKAr978YgApR0',
+  'FTcHsEAoXWC5Qz4P4gvG',
+  'BIVJzIzDWQr3psLjrqux',
+  'LMSM80o7y0UW81aeEGKn',
+  'lWe4MwcSchRrp4UmNd5n',
+  'WjPv6oS79eaE4xMAikQM',
+  'jlWFT57PMrT01m3RHz55',
+  'ymrKsZ0GTIputueS1mDf',
+  'gQb7yBrjQpGIHqN75q7f',
+  'yVJibK9hMXAhRwEusQRX',
+  'wQXXRUjXe61ZOq3xLE51',
+  'D3ovNrFW6hMfYv2xLuhu',
+  'sZlVU5ccox15nAWhwVjW',
+  '8g9RcSH71H0WX9le4oD5',
+  'ndoSlbKwJCeASV0RcT0X',
+  'ZGnR9eQ7ENLfdW9UP7HJ',
+  '4mtuyQRVZEDeyO4tNyfa',
+  '1nuaLWaE9GsGMpiQImdV',
+  'bnfv5r8Q7WLP2JPbYEnR',
+  'YyfV2pAIIaoaDKr5bFjg',
+  'JLixWwElXCHfwrnZGx7M',
+  'ysBCdX3sbDm5dEoeDjqy',
+  'iC368doOg9hiGkdY4Shs',
+  'lcd0zysfDI97gzPprf2h',
+  'GAHbM6KiZA64zZwGPXI7',
+  'K9WEkGkmlVFxOwnLnKJq',
+  'EzajBq7K1OD1DzG5hn6E',
+  'G42FcYtTwnj2fvukqF0a',
+  'bpODntY6rOiCy3ZHftdf',
+  'HsUV4JV2zvqITQnQcO25',
+  'tjZVwBeLDMWHbvu1LNVZ',
+  'urx0fCg2AxKUukq8uc8r',
+  '4foh48o8AHazX6KXZiEI',
+  'ZI8nIla62J7iieTj7SqL',
+  'ic4jbFLvQk4zVmQoIqpH',
+  'VWRk5RYAKyLrHPnzyRN5',
+  'zi4SgPBFc2vIwntai4fo',
+  '9GXxBpBIQk0HY9tCRE1N',
+  '1pDFvlUcDZe0CvyMhEVZ',
+  'sHQN4OVIQrve8EOPf9Nf',
+  'COAQ7dc238dno70OhOPv',
+  'OehETWJkVVbAQIDoVmh6',
+  '1KHyeVRkNW7jbL98gaxy',
+  'YpQ3QwfxIisFPxYK8yo3',
+  'SsVpjFN3pyiF8OmLjH5m',
+  'VFBxfs4ewM4sBpt428Ek',
+  'hIO1TrKRmMxfNgWg4LCW',
+  'qhPK31VqDiYhXoOzfcFJ',
+  'UJ47zdSgE5zmiNBI1JSL',
+  'VFUHycEgXLxudq9AVP9C',
+  'yzSrMla1wmRKBTmYMv7N',
+  'hvGDi51aNQIJoBlfLx9c',
+  'q7bb7vScXQLVVywiF0kh',
+  'CgDseWH7sbt8TtUudTcv',
+  'b9kaxyyy2VGC7aqRPQlw',
+  'FCOa1dJp17q6hLNY0fWU',
+  'Nd0xchC7ge7nMYVPAhEh',
+  'tyweGW7kdgg443NvVsrw',
+  'xSpnMMIWeIWXLtg3umTu',
+  '8MojDutow0VZlSclmCjM',
+  'usXCCa6FGMoGZRoYC6Rl',
+  'EARppILzbkB8aBzqiZMj',
+  'c04iLz7qHsqZWLVdvwq0',
+  '4ADx7qb0nUo5zaWZnzpt',
+  'z7fu2GIhoFjNBac8vlYP',
+  'rnf4qS86IJeBCWeH2dcr',
+  'jz3EKqwa1Ls6zEsMJ9xa',
+  'GNBVoVfB6aoOEBLbuUSE',
+  'Yw9sq7brPRklRKbx9FOV'
 ];
 
 /**
