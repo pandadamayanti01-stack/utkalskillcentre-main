@@ -22,7 +22,19 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const isStaff = student.role === 'teacher' || student.role === 'admin';
-  const [activeClass, setActiveClass] = useState(isStaff ? 'teachers' : (student.class || 'class10'));
+  
+  // Normalize class name (e.g., prefix raw numbers like '10' with 'class')
+  const getNormalizedClass = () => {
+    if (isStaff) return 'teachers';
+    if (!student.class) return 'class10';
+    const trimmed = student.class.trim();
+    if (/^\d+$/.test(trimmed)) {
+      return `class${trimmed}`;
+    }
+    return trimmed;
+  };
+
+  const [activeClass, setActiveClass] = useState(getNormalizedClass());
 
   // Track presence and fetch recently active
   useEffect(() => {
@@ -165,13 +177,11 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
                       <option value="teachers" className="bg-slate-900 text-amber-400 font-black">
                         {language === 'en' ? 'Educator Staff Room 👥' : 'ଶିକ୍ଷକ ଷ୍ଟାଫ୍ ରୁମ୍ 👥'}
                       </option>
-                      {/* Hide class 1 to 10 for teachers/staff for now; can be unhidden in the future
                       {[10, 9, 8, 7, 6, 5, 4, 3, 2, 1].map(num => (
                         <option key={num} value={`class${num}`} className="bg-slate-900 text-white font-bold">
                           {language === 'en' ? `Class ${num}` : `ଶ୍ରେଣୀ ${num}`}
                         </option>
                       ))}
-                      */}
                     </select>
                   </div>
                 ) : (
