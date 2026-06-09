@@ -51,11 +51,22 @@ export async function generateMcqsWithGemini(
   mode: 'daily' | 'monthly' = 'daily',
   difficulty: 'easy' | 'medium' | 'hard' = 'medium'
 ): Promise<any[]> {
-  const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
-  if (!apiKey) throw new Error('GEMINI_API_KEY is not set');
+  const keysToTry: string[] = [];
+  if (process.env.GEMINI_API_KEY) keysToTry.push(process.env.GEMINI_API_KEY);
+  if (process.env.VITE_GEMINI_API_KEY && !keysToTry.includes(process.env.VITE_GEMINI_API_KEY)) {
+    keysToTry.push(process.env.VITE_GEMINI_API_KEY);
+  }
+  for (let i = 1; i <= 7; i++) {
+    const k = process.env[`GEMINI_ROTATOR_KEY_${i}`];
+    if (k && !keysToTry.includes(k)) {
+      keysToTry.push(k);
+    }
+  }
 
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const fileManager = new GoogleAIFileManager(apiKey);
+  if (keysToTry.length === 0) {
+    throw new Error('No GEMINI_API_KEY or GEMINI_ROTATOR_KEYs configured on the server.');
+  }
+
   const targetLanguage = getTargetLanguage(subject);
 
   // Focus the content if it's a massive book
@@ -64,64 +75,83 @@ export async function generateMcqsWithGemini(
   const tempPath = path.join(os.tmpdir(), `usc_gen_${Date.now()}.pdf`);
   fs.writeFileSync(tempPath, processedBuffer);
 
+  let lastError: any = null;
+
   try {
-    const uploadResult = await fileManager.uploadFile(tempPath, {
-      mimeType: "application/pdf",
-      displayName: `Book_${subject}_Focused`,
-    });
-
-    const file = uploadResult.file;
-    let activeFile = await fileManager.getFile(file.name);
-    let attempts = 0;
-    while (activeFile.state === FileState.PROCESSING && attempts < 40) {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-      activeFile = await fileManager.getFile(file.name);
-      attempts++;
-    }
-
-    if (activeFile.state !== FileState.ACTIVE) throw new Error("File focus failed.");
-    console.log("[GeminiMCQ] Focused File ACTIVE.");
-
-    const prompt = `You are a teacher. Generate exactly ${mode === 'monthly' ? 23 : count} questions from this book for a Daily Practice set.
-       MIX: 
-       - First 4 questions: simple 1-mark MCQs.
-       - Next 3 questions: short 2-mark MCQs or simple subjective.
-       - Next 2 questions: medium 3-mark subjective questions.
-       - Last 1 question: detailed 5-mark subjective question.
-       DIFFICULTY: ${difficulty.toUpperCase()}.
-       SCHEMA: Array of { "question": string, "options": string[], "correct_answer": string, "explanation": string, "type": "mcq" | "subjective", "chapter": string }.
-       Language: ${targetLanguage}.`;
-
-    // Priority model list: 1.5 and 2.0 models are disabled for this specific API key.
-    const models = [
-      "gemini-2.5-flash",
-      "gemini-2.5-flash",
-      "gemini-2.5-flash"
-    ];
-    
-    for (const modelId of models) {
+    for (let keyIdx = 0; keyIdx < keysToTry.length; keyIdx++) {
+      const apiKey = keysToTry[keyIdx];
+      const obscuredKey = apiKey.substring(0, 8) + '...' + apiKey.substring(apiKey.length - 4);
+      console.log(`[GeminiMCQ] Attempting generation using Key ${keyIdx + 1}/${keysToTry.length} (${obscuredKey})`);
+      
       try {
-        console.log(`[GeminiMCQ] Prompting ${modelId}...`);
-        const model = genAI.getGenerativeModel({ 
-          model: modelId,
-          generationConfig: { responseMimeType: "application/json" }
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const fileManager = new GoogleAIFileManager(apiKey);
+
+        const uploadResult = await fileManager.uploadFile(tempPath, {
+          mimeType: "application/pdf",
+          displayName: `Book_${subject}_Focused`,
         });
 
-        const result = await model.generateContent([{ text: prompt }, { fileData: { mimeType: file.mimeType, fileUri: file.uri } }]);
-        const questions = JSON.parse(result.response.text());
+        const file = uploadResult.file;
+        let activeFile = await fileManager.getFile(file.name);
+        let attempts = 0;
+        while (activeFile.state === FileState.PROCESSING && attempts < 40) {
+          await new Promise((resolve) => setTimeout(resolve, 5000));
+          activeFile = await fileManager.getFile(file.name);
+          attempts++;
+        }
+
+        if (activeFile.state !== FileState.ACTIVE) {
+          throw new Error("File processing failed.");
+        }
+        console.log("[GeminiMCQ] Focused File ACTIVE.");
+
+        const prompt = `You are a teacher. Generate exactly ${mode === 'monthly' ? 23 : count} questions from this book for a Daily Practice set.
+           MIX: 
+           - First 4 questions: simple 1-mark MCQs.
+           - Next 3 questions: short 2-mark MCQs or simple subjective.
+           - Next 2 questions: medium 3-mark subjective questions.
+           - Last 1 question: detailed 5-mark subjective question.
+           DIFFICULTY: ${difficulty.toUpperCase()}.
+           SCHEMA: Array of { "question": string, "options": string[], "correct_answer": string, "explanation": string, "type": "mcq" | "subjective", "chapter": string }.
+           Language: ${targetLanguage}.`;
+
+        const models = [
+          "gemini-2.5-flash",
+          "gemini-2.5-flash-lite",
+          "gemini-3.1-flash-lite",
+          "gemini-2.0-flash-lite"
+        ];
         
-        if (Array.isArray(questions) && questions.length > 0) {
-          console.log(`[GeminiMCQ] SUCCESS with ${modelId}!`);
-          return questions;
+        for (const modelId of models) {
+          try {
+            console.log(`[GeminiMCQ] Prompting ${modelId}...`);
+            const model = genAI.getGenerativeModel({ 
+              model: modelId,
+              generationConfig: { responseMimeType: "application/json" }
+            });
+
+            const result = await model.generateContent([{ text: prompt }, { fileData: { mimeType: file.mimeType, fileUri: file.uri } }]);
+            const questions = JSON.parse(result.response.text());
+            
+            if (Array.isArray(questions) && questions.length > 0) {
+              console.log(`[GeminiMCQ] SUCCESS with ${modelId}!`);
+              return questions;
+            }
+          } catch (err: any) {
+            console.warn(`[GeminiMCQ] Model ${modelId} failed: ${err.message}`);
+            lastError = err;
+          }
         }
       } catch (err: any) {
-        console.warn(`[GeminiMCQ] ${modelId} failed: ${err.message}`);
+        console.warn(`[GeminiMCQ] API Key ${keyIdx + 1} failed: ${err.message}`);
+        lastError = err;
       }
     }
 
-    throw new Error("Focus mode failed to produce results. Try manual generation.");
-
+    throw new Error(`All configured API keys failed to generate MCQs. Last error: ${lastError?.message || lastError}`);
   } finally {
     if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath);
   }
 }
+
