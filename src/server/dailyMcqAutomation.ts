@@ -990,7 +990,7 @@ export function registerDailyMcqAutomation(app: Express, providedAdminApp: App |
 
   app.all('/api/admin/daily-mcqs/run-auto', async (req, res) => {
     try {
-      // Vercel Cron sends HTTP GET. We accept both GET and POST.
+      // Automated Cron sends HTTP GET. We accept both GET and POST.
       const authHeader = req.headers.authorization;
       if (req.method === 'GET' && process.env.CRON_SECRET) {
         if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {

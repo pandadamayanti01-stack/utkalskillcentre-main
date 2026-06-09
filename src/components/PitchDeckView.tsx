@@ -277,73 +277,73 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
           { title: "Digital Study Companion", desc: "Gundulu AI tutor provides warm, interactive, and personalized explanations." },
           { title: "Budget & Network Resilient", desc: "₹99/month PWA, replacing legacy ₹15,000/yr fees, optimized for low-bandwidth 2G/3G connections." }
         ],
-        speakerNotes: "Hello judges! Welcome to Utkal Skill Centre. We are building the future of accessible, bilingual education in India. In rural Odisha, 7 million plus students are locked out of modern AI EdTech. English apps are inaccessible, and legacy subscriptions cost upwards of 15,000 rupees a year, a fortune for agricultural families. We democratize learning at just 99 rupees a month with our textbook-grounded, low-bandwidth Socratic tutor."
+        speakerNotes: "In rural Odisha, India, over seven million students in Odia-medium schools are locked out of modern AI EdTech. English apps are inaccessible, and legacy subscriptions cost upwards of fifteen thousand rupees a year—a fortune for agricultural families. Welcome to Utkal Skill Centre, featuring Gundulu AI: a textbook-grounded, bilingual Socratic tutor designed for low-bandwidth rural environments, priced at just ninety-nine rupees a month."
       },
       {
-        title: "Born in a Rural Village: Our Journey",
-        subtitle: "Bridging the rural EdTech gap starting April 1st (Utkal Divas)",
-        tagline: "OUR STORY & ANCHOR DATES",
-        bullets: [
-          { title: "🌸 April 1st Launch", desc: "Successfully launched our official platform on Odisha Day to celebrate our students' heritage." },
-          { title: "📱 Progressive Web App (PWA)", desc: "Quickly rolled out our fast, offline-precached PWA, optimized for rural household mobile browsers." },
-          { title: "🎒 Core Syllabus Coverage", desc: "Dedicated specifically to Odia-medium school children ignored by traditional English-only platforms." }
-        ],
-        speakerNotes: "Hello judges. Our journey is deeply personal. We officially launched Utkal Skill Centre on April 1st—Utkal Divas—to celebrate Odisha's heritage and support Odia-medium students. Shortly after, we successfully launched our fully offline Progressive Web App (PWA) to ensure that even families with basic smartphones on slow rural connections have instant access to lessons."
-      },
-      {
-        title: "Gundulu AI Socratic Slate",
-        subtitle: "Interactive chalkboard allowing kids to draw or write and get friendly explanations",
+        title: "Point-and-Ask & Socratic Slate",
+        subtitle: "Textbook-grounded interactive learning experience",
         tagline: "MULTIMODAL SOCRATIC LEARNING",
         bullets: [
-          { title: "Digital Slate Interface", desc: "A cozy green chalkboard mimicking the classic rural classroom experience." },
-          { title: "Gemini Vision Solver", desc: "Students can draw digits, math equations, or shapes, and Gundulu explains them instantly." },
-          { title: "Socratic Method", desc: "Guides the student via questions instead of giving plain answers, keeping them curious." }
+          { title: "Voice-to-Voice AI", desc: "Students converse with Gundulu to test reading speed, fluency, and comprehension." },
+          { title: "Point-and-Ask Vision", desc: "Scan printed textbook pages to dynamically launch interactive study resources." },
+          { title: "Digital Chalkboard", desc: "Socratic guidance that prompts students with questions rather than feeding direct answers." }
         ],
-        speakerNotes: "Slide 3 is our live interactive demo! We built the Gundulu Socratic Slate: a mini digital chalkboard matching classic village schools. Children can draw directly with touch or mouse. When they submit, Gemini Flash analyzes the canvas via multimodal vision, explains the math/drawings in colloquial Odia, and uses a warm Socratic teaching style."
+        speakerNotes: "Learning with Gundulu is natural and highly adaptive. In our Voice-to-Voice AI mode, students hold spoken conversations with our mascot to test reading speed and comprehension. For book learning, our Point-and-Ask Vision OCR scans printed textbooks to unlock interactive Socratic chalkboard slates."
       },
       {
-        title: "High-Performance Cloud Architecture",
-        subtitle: "Google Cloud Run, Vertex AI & Low-Latency Offline Fallbacks",
-        tagline: "ENTERPRISE-GRADE TECH STACK",
+        title: "Gundulu 3D Study Lab",
+        subtitle: "Immersive spatial learning natively in the browser",
+        tagline: "SPATIAL SCIENCE VISUALIZATIONS",
         bullets: [
-          { title: "Vertex AI & Cloud Run", desc: "Securely hosted Express backend using Vertex AI APIs with local Ambient ADC credentials." },
-          { title: "Quota & Fail-Safe Routing", desc: "Ambient fallback routes requests dynamically between Vertex AI and Google AI Studio." },
-          { title: "Zero-Cost Browser Synthesis", desc: "If Voice APIs hit rate-limits (429), client fallbacks offload SpeechSynthesis to the browser." }
+          { title: "Interactive 3D Models", desc: "Manipulate high-fidelity science models (like magnetic fields and circuits) in real time." },
+          { title: "Zero-Plugin WebGL", desc: "Optimized to run smoothly on low-cost smartphones without installing external software." },
+          { title: "Conceptual Visualizations", desc: "Fosters deeper spatial understanding of complex physical and life science topics." }
         ],
-        speakerNotes: "Our technical architecture is incredibly robust and cost-resilient. Running on Google Cloud Run serverless means our base operational cost is practically $0.00. To guarantee low-latency operation on slow 2G rural networks, we built a multi-tier fallback: if the premium server TTS API is offline or throttled, the client PWA instantly synthesizes voice logs locally via the browser's audio engine."
+        speakerNotes: "And with the newly integrated Gundulu 3D Study Lab, students can interact with high-fidelity, interactive 3D models of complex scientific concepts right in their browser, fostering immersive spatial learning."
       },
       {
-        title: "AI Educator Studio & Vernacular Suite",
-        subtitle: "Homework Generator, Sishu Vatika Slate, WebXR 3D Models & Sibling PIN Switcher",
-        tagline: "CLASSROOM TOOLS & OPTIMIZATION",
+        title: "AI Educator Studio & Sishu Vatika",
+        subtitle: "Comprehensive support for teachers and preschool toddlers",
+        tagline: "CLASSROOM ECOSYSTEM & EARLY LEARNING",
         bullets: [
-          { title: "AI Educator Studio", desc: "Teachers generate custom worksheets, OSEPA 5E lesson plans, and science guides instantly." },
-          { title: "Sishu Vatika & 3D Lab", desc: "Dedicated Odia toddler environment with tracing slate and interactive 3D diagrams." },
-          { title: "Sibling PIN Switcher", desc: "Zero SMS cost 4-digit PIN profile switching for shared household budget devices." }
+          { title: "Sishu Vatika Tracing Slate", desc: "Toddlers trace Odia alphabets in an completely safe, Odia-locked digital playground." },
+          { title: "OSEPA 5E Lesson Planners", desc: "Teachers generate compliant teaching guides using low-cost household materials." },
+          { title: "Worksheet & Quiz Generator", desc: "Instantly creates customized printable worksheets matching the state board syllabus." }
         ],
-        speakerNotes: "To support the entire learning ecosystem from Class 1 to 10, we built the Educator Studio and Sishu Vatika. For preschool toddlers, Sishu Vatika provides a strictly Odia-locked digital environment featuring a kid-friendly tracing slate. For teachers, our Educator Studio instantly generates syllabus-aligned worksheets, OSEPA-compliant 5E lesson plans, and hands-on activity guides using low-cost household materials. Alongside the Gundulu 3D Study Lab for spatial learning, we optimized shared devices with a zero SMS cost sibling PIN switcher, complete with Play Store launch rewards of +500 XP."
+        speakerNotes: "To support the entire learning ecosystem from Class one to ten, we built the Educator Studio and Sishu Vatika. For preschool toddlers, Sishu Vatika provides a strictly Odia-locked digital environment featuring a kid-friendly tracing slate. For teachers, our Educator Studio instantly generates syllabus-aligned worksheets, OSEPA-compliant 5E lesson plans, and hands-on activity guides using low-cost household materials, while streaming smart classes across the state."
       },
       {
-        title: "Business Viability & Future AI Roadmap",
-        subtitle: "Proven Demand, Virtually $0.00 Overhead & Native Speed Conversations",
-        tagline: "GROWTH, TRACTION & SUSTAINABILITY",
+        title: "Track 2: Technical Optimization",
+        subtitle: "Maximum performance with virtually $0.00 cloud operational overhead",
+        tagline: "TRACK 2: OPTIMIZE & SCALABILITY",
         bullets: [
-          { title: "Proven Pilot Traction", desc: "Successfully onboarded 445 active pilot students with 6 paying premium subscribers across 7 districts." },
-          { title: "Highly Scalable margins", desc: "Serving syllabus guides statically keeps operational cost at $0.00, enabling ₹99/mo subscriptions." },
-          { title: "Technical AI Roadmap", desc: "Transitioning from textbook RAG (Already Done) to RAG + SFT, and eventually SFT edge deployment on-device." }
+          { title: "Sibling PIN Profile Switcher", desc: "Shared budget devices switch users instantly with a 4-digit PIN, avoiding costly SMS OTPs." },
+          { title: "Native Firestore Vector Search", desc: "Performs low-latency semantic search on 1,100+ chapters directly within the database." },
+          { title: "Client Voice Synthesis Fallback", desc: "Offloads speech generation to the browser, saving Vertex API costs and working offline." }
         ],
-        speakerNotes: "We have already proven commercial demand, onboarding 445 pilot students and securing 6 paying premium subscribers across 7 districts (Bhubaneswar, Cuttack, Keonjhar, Balasore, Nayagarh, Balangir, and Berhampur) on our ₹99/month tier. Our serverless setup keeps operational costs near-zero. Our technical roadmap progresses from zero-hallucination RAG (already active) to hybrid RAG + SFT, and finally SFT edge deployment on the browser for zero-cost offline speech!"
+        speakerNotes: "Under Track 2: Optimize, our focus was building a highly cost-effective, resilient architecture. We solved this by implementing native vector search directly within Google Firestore, offloading speech synthesis to the browser, and building a zero SMS cost sibling profile switcher protected by a secure four-digit PIN. This allows multiple children in a family to share a single budget device with zero recurring authentication overhead, keeping operational costs at virtually zero dollars."
       },
       {
-        title: "Thank You!",
-        subtitle: "Making world-class AI learning affordable, accessible, and offline-ready",
-        tagline: "UTKAL SKILL CENTRE - PITCH SUMMARY",
+        title: "Classroom Resilience & Telemetry",
+        subtitle: "Visible observability and robust offline-first architecture",
+        tagline: "ROBUSTNESS, FAILOVER & OBSERVABILITY",
         bullets: [
-          { title: "Founder", desc: "Damayanti Panda" },
-          { title: "Co-Founder", desc: "Gyanalok Panda" },
-          { title: "Contact Email", desc: "contact@utkalskillcentre.com" }
+          { title: "Live Telemetry Dashboard", desc: "Allows auditors to inspect server latency, Cache sizes, and failover status in real time." },
+          { title: "Auto-Failover Pipelines", desc: "Vertex AI failures gracefully fall back to Google AI Studio and browser voice engines." },
+          { title: "Offline PWA Fallback", desc: "Service worker caching ensures full offline functionality for lessons when connectivity is lost." }
         ],
-        speakerNotes: "Thank you for your time! Utkal Skill Centre is committed to delivering Socratic learning to every corner of Odisha. You can reach out to our founders, Damayanti Panda and Gyanalok Panda, at contact@utkalskillcentre.com."
+        speakerNotes: "To guarantee classroom resilience, we integrated visible Observability. In our Telemetry dashboard, auditors can test our failover pipelines. If Vertex Cloud Run APIs fail, the agent instantly drops back to client-side caching. If the school completely loses internet access, our offline Progressive Web App takes over fully. We also expose our database schemas via a Model Context Protocol server for external agent integration."
+      },
+      {
+        title: "Validation, Future Vision & Thank You!",
+        subtitle: "Making world-class AI learning affordable and accessible to every child",
+        tagline: "UTKAL PITCH DECK SUMMARY",
+        bullets: [
+          { title: "Proven Pilot Traction", desc: "445 active pilot students and 6 premium paying subscribers across 7 districts." },
+          { title: "On-Device Gemma-2B", desc: "Transitioning to fine-tuned Gemma 2B running 100% locally on cheap $30 smartphones." },
+          { title: "Contact Us", desc: "Founders: Damayanti Panda & Gyanalok Panda. Email: contact@utkalskillcentre.com" }
+        ],
+        speakerNotes: "We have validated product-market fit with four hundred and forty-five active pilot students and early paid subscriptions. Technically, we are transitioning from textbook RAG to a hybrid SFT architecture. By running this Supervised Fine-Tuned Gemma 2B model fully client-side on thirty-dollar budget smartphones, Utkal Skill Centre is making world-class AI learning affordable, accessible, and offline-ready for every child in Odisha. Thank you."
       }
     ],
     or: [
@@ -353,76 +353,76 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
         tagline: "ହାକାଥନ୍ ପ୍ରଦର୍ଶନୀ",
         bullets: [
           { title: "୭୦ ଲକ୍ଷରୁ ଅଧିକ ଛାତ୍ର", desc: "ଇଂରାଜୀ ଆପ୍ ଦ୍ୱାରା ଅଣଦେଖା ହୋଇଥିବା ଓଡ଼ିଆ ମାଧ୍ୟମ ପିଲାଙ୍କ ପାଖରେ ବିଜ୍ଞାନ ଓ ଗଣିତ ଏଆଇ ଶିକ୍ଷା ପହଞ୍ଚାଇବା।" },
-          { title: "ଡିଜିଟାଲ୍ ପଢ଼ା ସାଥୀ", desc: "ଗୁନ୍ଦୁଲୁ ଏଆଇ (Gundulu AI) ପିଲାମାନଙ୍କୁ ଭଉଣୀ ଭଳି ଆଦରରେ ସବୁ ପାଠ ବୁଝାଇଥାଏ।" },
+          { title: "ଡିଜିଟାଲ୍ ପଢ଼ା ସାଥୀ", desc: "ଗುନ୍ଦୁଲୁ ଏଆଇ (Gundulu AI) ପିଲାମାନଙ୍କୁ ଭଉଣୀ ଭଳି ଆଦରରେ ସବୁ ପାଠ ବୁଝାଇଥାଏ।" },
           { title: "ନେଟୱର୍କ ଓ ବଜେଟ୍ ସହଜ", desc: "ବାର୍ଷିକ ୧୫,୦୦୦ ଟଙ୍କା ବଦଳରେ ମାସକୁ ମାତ୍ର ୯୯ ଟଙ୍କାରେ ଗ୍ରାମାଞ୍ଚଳର 2G/3G ନେଟୱର୍କ ଅନୁଯାୟୀ ପ୍ରସ୍ତୁତ PWA।" }
         ],
-        speakerNotes: "ପ୍ରଣାମ ବିଚାରକ ମଣ୍ଡଳୀ! ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରକୁ ଆପଣମାନଙ୍କୁ ସ୍ୱାଗତ। ଓଡ଼ିଶାର ଗ୍ରାମାଞ୍ଚଳରେ ୭୦ ଲକ୍ଷରୁ ଅଧିକ ଛାତ୍ରଛାତ୍ରୀ ଆଜି ଆଧୁନିକ AI ଶିକ୍ଷାରୁ ବଞ୍ଚିତ ଅଛନ୍ତି। ବାର୍ଷିକ ୧୫,୦୦୦ ଟଙ୍କାର ବୋଝ ବଦଳରେ ଆମେ ମାସିକ ମାତ୍ର ୯୯ ଟଙ୍କାରେ ମାତୃଭାଷା ଶିକ୍ଷା ସାଥୀ ଗୁନ୍ଦୁଲୁ ଏଆଇ ପ୍ରସ୍ତୁତ କରିଛୁ, ଯାହା ଗ୍ରାମାଞ୍ଚଳର ସ୍ୱଳ୍ପ ନେଟୱର୍କରେ ମଧ୍ୟ ସୁନ୍ଦର ଭାବେ ଚାଲେ।"
+        speakerNotes: "ଓଡ଼ିଶାର ଗ୍ରାମାଞ୍ଚଳରେ ୭୦ ଲକ୍ଷରୁ ଅଧିକ ଓଡ଼ିଆ ମାଧ୍ୟମ ଛାତ୍ରଛାତ୍ରୀ ଆଜି ଆଧୁନିକ AI ଶିକ୍ଷାରୁ ବଞ୍ଚିତ ଅଛନ୍ତି। ସେମାନଙ୍କ ପାଇଁ ଇଂରାଜୀ ଆପ୍ ବୁଝିବା ଅସମ୍ଭବ ଏବଂ ବାର୍ଷିକ ୧୫,୦୦୦ ଟଙ୍କାର ଫିସ ଦେବା ଗରିବ ପରିବାର ପାଇଁ ଅତି କଷ୍ଟକର। ଏହାର ସମାଧାନ ହେଉଛି ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରର ମାତୃଭାଷା ଶିକ୍ଷା ସାଥୀ ଗୁନ୍ଦୁଲୁ ଏଆଇ, ଯାହା ମାସିକ ମାତ୍ର ୯୯ ଟଙ୍କାରେ ସ୍ୱଳ୍ପ ନେଟୱର୍କରେ ମଧ୍ୟ ସୁନ୍ଦର ଭାବେ ଚାଲେ।"
       },
       {
-        title: "ଓଡ଼ିଶାର ପଲ୍ଲୀ ଗ୍ରାମରୁ ଆରମ୍ଭ: ଆମର ଯାତ୍ରା",
-        subtitle: "ଏପ୍ରିଲ୍ ୧ (ଉତ୍କଳ ଦିବସ) ରୁ ଆରମ୍ଭ ହୋଇଥିବା ଶିକ୍ଷା ସେବା",
-        tagline: "ଆମର ସଂଳାପ ଏବଂ ମାଇଲଖୁଣ୍ଟ",
+        title: "ସକ୍ରେଟିକ୍ ସ୍ଲେଟ୍ ଓ ଭଏସ୍ AI",
+        subtitle: "ପାଠ୍ୟପୁସ୍ତକ ଆଧାରିତ ପାରସ୍ପରିକ ଶିକ୍ଷା ଶୈଳୀ",
+        tagline: "ସକ୍ରେଟିକ୍ ଶିକ୍ଷା ପ୍ରଣାଳୀ",
         bullets: [
-          { title: "🌸 ଏପ୍ରିଲ୍ ୧ ଶୁଭାରମ୍ଭ", desc: "ଓଡ଼ିଶାର ଗର୍ବ ଓ ଗୌରବର ଦିନ ଉତ୍କଳ ଦିବସରେ ଆମର ଅଫିସିଆଲ୍ ପ୍ଲାଟଫର୍ମ ଆରମ୍ଭ କରିଥିଲୁ।" },
-          { title: "📱 ପ୍ରୋଗ୍ରେସିଭ୍ ୱେବ୍ ଆପ୍ (PWA)", desc: "ଗ୍ରାମାଞ୍ଚଳର ମୋବାଇଲ୍ ବ୍ରାଉଜର୍ ଗୁଡ଼ିକ ପାଇଁ ଏକ ଦ୍ରୁତ, ଅଫଲାଇନ୍-ଅପ୍ଟିମାଇଜ୍ଡ୍ PWA ଆପ୍ ପ୍ରସ୍ତୁତ କଲୁ।" },
-          { title: "🎒 ଓଡ଼ିଆ ମାଧ୍ୟମ ପିଲାଙ୍କ ଲକ୍ଷ୍ୟ", desc: "ଇଂରାଜୀ ଆପ୍ ଦ୍ୱାରା ଅଣଦେଖା ହୋଇଥିବା ସରକାରୀ ବିଦ୍ୟାଳୟର ପିଲାମାନଙ୍କୁ ସାହାଯ୍ୟ କରିବା।" }
+          { title: "କଥାବାର୍ତ୍ତା କରୁଥିବା AI", desc: "ପିଲାମାନେ ଗୁନ୍ଦୁଲୁ ସହ କଥା ହୋଇ ନିଜର ପଢ଼ିବା ସ୍ପିଡ୍ ଓ ବୁଝିବା ଶକ୍ତି ପରୀକ୍ଷา କରିପାରିବେ।" },
+          { title: "ପଏଣ୍ଟ-ଏଣ୍ଡ-ଆସ୍କ ସ୍ଲେଟ୍", desc: "ବହିର ଯେକୌଣସି ପୃଷ୍ଠାକୁ ସ୍କ୍ୟାନ୍ କରି ମନ ପସନ୍ଦର ପାଠ୍ୟକ୍ରମ ତୁରନ୍ତ ଖୋଲିପାରିବେ।" },
+          { title: "ଡିଜିଟାଲ୍ ସବୁଜ ବୋର୍ଡ", desc: "ସିଧାସଳଖ ଉତ୍ତର ନ ଦେଇ ପ୍ରଶ୍ନ ପଚାରି ପିଲାଙ୍କ ମନରେ କୌତուହଳ ସୃଷ୍ଟି କରେ।" }
         ],
-        speakerNotes: "ଆମର ଶିକ୍ଷା ଯାତ୍ରา ଅତି ନିଆରା। ଓଡ଼ିଶାର ପିଲାମାନଙ୍କ ସ୍ୱାର୍ଥ ରକ୍ଷା ପାଇଁ ଏପ୍ରିଲ୍ ୧ - ଉତ୍କଳ ଦିବସରେ ଆମେ ଆମର ୱେବସାଇଟ୍ ଶୁଭାରମ୍ଭ କରିଥିଲୁ। ଏହା ପରେ ଗ୍ରାମାଞ୍ଚଳରେ ଧିମା ଇଣ୍ଟରନେଟ୍ ରେ ପାଠପଢ଼ାକୁ ସହଜ କରିବାକୁ ଆମେ ଆମର PWA ଆପ୍ ପ୍ରସ୍ତୁତ କଲୁ, ଯାହା ସ୍ୱଳ୍ପ ବ୍ୟାଣ୍ଡୱିଡଥ୍ ରେ ମଧ୍ୟ ବିନା ରୋକଟୋକରେ ଚାଲିପାରୁଛି।"
+        speakerNotes: "ଗୁନ୍ଦୁଲୁ ସହ ପାଠ ପଢ଼ିବା ଅତି ସହଜ ଓ ରୋମାଞ୍ଚକର। ଆମର ଭଏସ୍-ଟୁ-ଭଏସ୍ ଏଆଇ (AI) ମୋଡ୍‌ରେ ପିଲାମାନେ ଆମ ମାସ୍କଟ୍ ସହିତ ସିଧାସଳଖ କଥାବାର୍ତ୍ତା କରି ନିଜର ପଢ଼ିବା ଶୈଳୀ ଓ ଦକ୍ଷତା ଯାଞ୍ଚ କରିପାରିବେ। ବହି ପଢ଼ିବା ପାଇଁ ଆମର ପଏଣ୍ଟ-ଏଣ୍ଡ-ଆସ୍କ ଭିଜନ୍ OCR ଛପା ହୋଇଥିବା ପୃଷ୍ଠାକୁ ସ୍କ୍ୟାନ୍ କରି ଆମ ସକ୍ରେଟିକ୍ କଳାପଟା ଖୋଲିଥାଏ।"
       },
       {
-        title: "ଗୁନ୍ଦୁଲୁ ଏଆଇ ସକ୍ରେଟିକ୍ ସ୍ଲେଟ୍",
-        subtitle: "ଆକର୍ଷଣୀୟ ଚିତ୍ରାଙ୍କନ ଓ ସ୍ଲେଟ୍ ବୋର୍ଡ ଯାହା ପିଲାଙ୍କ ଚିତ୍ର ଦେଖି ବୁଝାଇଥାଏ",
-        tagline: "ବହୁମୁଖୀ ସକ୍ରେଟିକ୍ ଶିକ୍ଷା ପ୍ରଣାଳୀ",
+        title: "ଗୁନ୍ଦୁଲୁ ୩D ଷ୍ଟଡି ଲ୍ୟାବ୍",
+        subtitle: "ବ୍ରାଉଜର୍ ରେ ଆକର୍ଷଣୀୟ ମାନସିକ ପାଠ୍ୟକ୍ରମ",
+        tagline: "ବିଜ୍ଞାନ ୩D ମଡେଲ୍ ପ୍ରଦର୍ଶନୀ",
         bullets: [
-          { title: "ଡିଜିଟାଲ୍ ସ୍ଲେଟ୍ ବୋର୍ଡ", desc: "ଆମ ପାରମ୍ପରିକ ଗ୍ରାମୀଣ ସ୍କୁଲ୍ ଭଳି ଏକ ସୁନ୍ଦର ସବୁଜ ରଙ୍ଗର ଚକ୍-ସ୍ଲେଟ୍।" },
-          { title: "Gemini ର ଭିଜନ ସମାଧାନ", desc: "ଛାତ୍ରଛାତ୍ରୀ ଯେକୌଣସି ସଂଖ୍ୟା, ଗଣିତ କିମ୍ବା ଆକୃତି ଆଙ୍କି ଗୁନ୍ଦୁଲୁକୁ ସେ ବିଷୟରେ ପଚାରିପାରିବେ।" },
-          { title: "ସକ୍ରେଟିକ୍ ପ୍ରଶ୍ନոତ୍ତର ଶୈଳୀ", desc: "ସିଧାସଳଖ ଉତ୍ତର ନ ଦେଇ ପ୍ରଶ୍ନ ପଚାରି ପିଲାଙ୍କ ମନରେ କୌତୁହଳ ସୃଷ୍ଟି କରେ।" }
+          { title: "୩D ଇଣ୍ଟରାକ୍ଟିଭ୍ ମଡେଲ୍", desc: "ଚୁମ୍ବକୀୟ କ୍ଷେତ୍ର ବଳରେଖା କିମ୍ବା ବୈଦ୍ୟୁତିକ ସର୍କିଟ୍ ଭଳି ଜଟିଳ ମଡେଲ୍‌କୁ ଛୁଇଁ ଅନୁଭବ କରନ୍ତୁ।" },
+          { title: "ମୋବାଇଲ୍ ବ୍ରାଉଜର୍ ସପୋର୍ଟ", desc: "କୌଣସି ଆପ୍ ଡାଉନଲୋଡ୍ ନକରି ମାତ୍ର ₹୩,୦୦ ର ଶସ୍ତା ମୋବାଇଲ୍ ବ୍ରାଉଜର୍‌ରେ ଚାଲିବ।" },
+          { title: "ଦୃଶ୍ୟମାନ ଭିଜୁଆଲାଇଜେସନ୍", desc: "ବିଜ୍ଞାନର ଜଟିଳ ତତ୍ତ୍ୱଗୁଡ଼ିକୁ ପିଲାମାନେ ସହଜରେ ଦେଖି ବୁଝିପାରିବେ।" }
         ],
-        speakerNotes: "ସ୍ଲାଇଡ୍ ୩ ହେଉଛି ଆମର ଲାଇଭ୍ ଡେମୋ! ଆମେ ଏକ ଗୁନ୍ଦୁଲୁ ସକ୍ରେଟିକ୍ ସ୍ଲେଟ୍ ତିଆରି କରିଛୁ ଯାହା ଏକ ସୁନ୍ଦର କଳାପଟା ପରି କାମ କରେ। ପିଲାମାନେ ନିଜ ହାତରେ ଏଥିରେ ଲେଖିପାରିବେ କିମ୍ବା ଆଙ୍କିପାରିବେ। ଏହାକୁ ସବ୍ମିଟ୍ କଲେ Gemini Multimodal Vision API କ୍ୟାନ୍ଭାସକୁ ବିଶ୍ଳେଷଣ କରି ଓଡ଼ିଆରେ ସମ୍ପୂର୍ଣ୍ଣ ସ୍ପଷ୍ଟୀକରଣ ପ୍ରଦାନ କରେ।"
+        speakerNotes: "ଆମର ନୂତନ ୩D ଷ୍ଟଡି ଲ୍ୟାବ୍ ମାଧ୍ୟମରେ ଛାତ୍ରଛାତ୍ରୀମାନେ ଜଟିଳ ବୈଜ୍ଞାନିକ ତତ୍ତ୍ୱଗୁଡ଼ିକର ୩D ମଡେଲ୍ ସହିତ ନିଜ ମୋବାଇଲ୍‌ ବ୍ରାଉଜର୍‌ରେ ସିଧାସଳଖ ଖେଳିପାରିବେ, ଯାହା ସେମାନଙ୍କର ସ୍ଥାନିକ ବୁଝିବା ଶକ୍ତିକୁ ବହୁଗୁଣିତ କରିବ।"
       },
       {
-        title: "ଶକ୍ତିଶାଳୀ ଏବଂ ସୁරକ୍ଷିତ ସର୍ଭର ବ୍ୟବସ୍ଥା",
-        subtitle: "ଗୁଗଲ୍ କ୍ଲାଉଡ୍ ରନ୍, ଭର୍ଟେକ୍ସ ଏଆଇ ଏବଂ ଜିରୋ-କଷ୍ଟ ବ୍ରାଉଜର୍ ଟିଟିଏସ୍ (TTS)",
-        tagline: "ଉଚ୍ଚ ସ୍ତରୀୟ ଟେକ୍ନୋଲୋଜି",
+        title: "AI ଶିକ୍ଷକ ଷ୍ଟୁଡିଓ ଓ ଶିଶୁ ବାଟିକା",
+        subtitle: "ଶିକ୍ଷକ ଏବଂ ଶିଶୁମାନଙ୍କ ପାଇଁ ସମ୍ପୂର୍ଣ୍ଣ ସହାୟତା ବ୍ୟବସ୍ଥା",
+        tagline: "ଶ୍ରେଣୀ ଗୃହ ଉପକରଣ ଓ ପ୍ରାଥମିକ ଶିକ୍ଷା",
         bullets: [
-          { title: "ଭର୍ଟେକ୍ସ ଏଆଇ ଓ କ୍ଲାଉଡ୍ ରନ୍", desc: "ସର୍ଭରଲେସ୍ ଏକ୍ସପ୍ରେସ୍ ବ୍ୟାକେଣ୍ଡ ଗୁଗଲ୍ କ୍ଲାଉଡ୍ ରନ୍ ଉପରେ ସମ୍ପୂର୍ଣ୍ଣ ସୁරକ୍ଷିତ ଭାବେ ଚାଲୁଛି।" },
-          { title: "ସର୍ଭର ଅଟୋମେଟିକ୍ ସୁරକ୍ଷା", desc: "ଭର୍ଟେକ୍ସ ଏଆଇ ଏବଂ ଗୁଗଲ୍ ଏଆଇ ଷ୍ଟୁଡିଓ ମଧ୍ୟରେ ସ୍ୱୟଂଚାଳିତ ଭାବେ ରିକ୍ୱେଷ୍ଟ୍ ପରିଚାଳନା।" },
-          { title: "ମାଗଣା ବ୍ରାଉଜର୍ ଟିଟିଏସ୍ ଫଲବ୍ୟାକ୍", desc: "ଯଦି ଏପିଆଇ (API) ଲିମିଟ୍ ହୁଏ, ଆପ୍ ତୁରନ୍ତ ୟୁଜର୍ ର ବ୍ରାଉଜର୍ ବ୍ୟବହାର କରି ଓଡ଼ିଆ ଭଏସ୍ ଉତ୍ପନ୍ନ କରେ।" }
+          { title: "ଶିଶୁ ବାଟିକา ଅକ୍ଷର ଲେଖା ସ୍ଲେଟ୍", desc: "ଅଙ୍ଗନୱାଡି ପିଲାଙ୍କ ପାଇଁ ସମ୍ପୂର୍ଣ୍ଣ ଓଡ଼ିଆ ଭାଷାରେ ସୁରକ୍ଷିତ ଡିଜିଟାଲ୍ ଅକ୍ଷର ଲେଖା ବୋର୍ଡ।" },
+          { title: "OSEPA ୫E ପାଠ୍ୟ ଯୋଜନା", desc: "ଘරୋଇ ଶସ୍ତା ଉପକରଣ ବ୍ୟବହାର କରି ପାଠ ପଢ଼ାଇବାର ସହଜ OSEPA ପାଠ୍ୟ ଯୋଜନା।" },
+          { title: "ପ୍ରଶ୍ନପତ୍ର ଓ ହୋମୱାର୍କ ମେକର୍", desc: "ସିଲାବସ୍ ଅନୁଯାୟୀ କ୍ଲାସ୍ ଟେଷ୍ଟ୍ ଏବଂ ଛାପିବା ଯୋଗ୍ୟ ହୋମୱାର୍କ ସିଟ୍ ତୁରନ୍ତ ତିଆରି କରିପାରିବେ।" }
         ],
-        speakerNotes: "ଆମର ବ୍ୟାକେଣ୍ଡ ଗୁଗଲ୍ କ୍ଲାଉଡ୍ ରନ୍ ର ସର୍ଭରଲେସ୍ ଟେକ୍ନୋଲୋଜିରେ ହୋଷ୍ଟ ହୋଇଛି, ଯାହାଦ୍ୱାରା ଆମର ମାସିକ ସର୍ଭର ଖର୍ଚ୍ଚ ପ୍ରାୟ ଶୂନ ଟଙ୍କା। ଗ୍ରାମାଞ୍ଚଳରେ ଧିମା ଇଣ୍ଟରନେଟ୍ ରେ ଭଏସ୍ ସମସ୍ୟା ଦୂର କରିବାକୁ ଆମେ ବ୍ରାଉଜର୍ ଆଧାରିତ ଫଲବ୍ୟାକ୍ ତିଆରି କରିଛୁ। ସର୍ଭର ଯଦି ବ୍ୟସ୍ତ ରହେ, ମୋବାଇଲ୍ ବ୍ରାଉଜର୍ ନିଜେ ଓଡ଼ିଆ କଥା କହି ପିଲାଙ୍କୁ ଶୁଣାଏ।"
+        speakerNotes: "ଆମେ କ୍ଲାସ୍ ୧ ରୁ ୧୦ ପର୍ଯ୍ୟନ୍ତ ସମ୍ପୂର୍ଣ୍ଣ ଶିକ୍ଷା ବ୍ୟବସ୍ଥାକୁ ସାହାଯ୍ୟ କରିବା ପାଇଁ 'ଶିଶୁ ବାଟିକା' ଏବଂ 'ଶିକ୍ଷକ ଷ୍ଟୁଡିଓ' ତିଆରି କରିଛୁ। ଅଙ୍ଗନୱାଡି ଶିଶୁମାନଙ୍କ ପାଇଁ ଓଡ଼ିଆ ଅକ୍ଷର ଲେଖା ବୋର୍ଡ ଏବଂ ଶିକ୍ଷକଙ୍କ ପାଇଁ ଘରୋଇ ଖେଳନା ମାଧ୍ୟମରେ OSEPA ୫E ପାଠ୍ୟ ଯୋଜନା ଓ କାର୍ଯ୍ୟପତ୍ର ତୁରନ୍ତ ପ୍ରସ୍ତୁତ କରିବାର ବ୍ୟବସ୍ଥା ରହିଛି।"
       },
       {
-        title: "AI ଶିକ୍ଷକ ଷ୍ଟୁଡିଓ ଓ ସ୍ଥାନୀୟ ଶିକ୍ଷା ସୁଇଟ୍",
-        subtitle: "ପ୍ରଶ୍ନପତ୍ର ନିର୍ମାତା, ଶିଶୁ ବାଟିକା ସ୍ଲେଟ୍, ୩D ଲ୍ୟାବ୍ ଓ ସିବ୍ଲିଙ୍ଗ୍ ସୁଇଚର୍",
-        tagline: "ଶ୍ରେଣୀ ଗୃହ ଉପକରଣ ଓ ଅପ୍ଟିମାଇଜେସନ୍",
+        title: "ଟ୍ରାକ୍ ୨: ବୈଷୟିକ ଅପ୍ଟିମାଇଜେସନ୍",
+        subtitle: "ସର୍ବନିମ୍ନ କ୍ଲାଉଡ୍ ଖର୍ଚ୍ଚ ଏବଂ ଗ୍ରାମୀଣ ବ୍ୟବହାରକାରୀଙ୍କ ପାଇଁ ଅତ୍ୟାଧୁନିକ ଡିଜାଇନ୍",
+        tagline: "ଟ୍ରାକ୍ ୨: ସର୍ଭର ବ୍ୟବସ୍ଥା ଅପ୍ଟିମାଇଜେସନ୍",
         bullets: [
-          { title: "AI ଶିକ୍ଷକ ଷ୍ଟୁଡିଓ", desc: "ଶିକ୍ଷକମାନେ ଓଡ଼ିଆ ହୋମୱାର୍କ ସିଟ୍, OSEPA ୫E ପାଠ୍ୟ ଯୋଜନା ଓ ବିଜ୍ଞାନ କାର୍ଯ୍ୟକଳାପ ତୁରନ୍ତ ପ୍ରସ୍ତୁତ କରିପାରିବେ।" },
-          { title: "ଶିଶୁ ବାଟିକା ଓ ୩D ଲ୍ୟାବ୍", desc: "ଶିଶୁ ବାଟିକା ପାଇଁ ଓଡ଼ିଆ ଲେଖିବା ସ୍ଲେଟ୍ ଏବଂ ଜଟିଳ ପାଠ ବୁଝିବାକୁ ଆକର୍ଷଣୀୟ ୩D ବିଜ୍ଞାନ ମଡେଲ୍।" },
-          { title: "ସିବ୍ଲିଙ୍ଗ୍ ସୁଇଚର୍ ପିନ୍", desc: "ବିନା SMS ଖର୍ଚ୍ଚରେ ୪-ଅଙ୍କ ବିଶିଷ୍ଟ ପିନ୍ ଦ୍ୱାରା ଏକାଧିକ ପିଲାଙ୍କ ମଧ୍ୟରେ ପ୍ରୋଫାଇଲ୍ ଅଦଳବଦଳ।" }
+          { title: "ସିବ୍ଲିଙ୍ଗ୍ ସୁଇଚର୍ ପିନ୍", desc: "ଗୋଟିଏ ମୋବାଇଲ୍‌କୁ ଏକାଧିକ ପିଲା ବିନା SMS OTP ଖର୍ଚ୍ଚରେ ୪-ଅଙ୍କ ପିନ୍ ଦ୍ୱାରା ଅଦଳବଦଳ କରିପାରିବେ।" },
+          { title: "ଫାୟାରଷ୍ଟୋର୍ ଭେକ୍ଟର ସର୍ଚ୍ଚ", desc: "୧,୧୦୦ ରୁ ଅଧିକ ପାଠକୁ ସର୍ଭର ଖର୍ଚ୍ଚ କମ କରି ଖୁବ୍ କମ୍ ସମୟରେ ଖୋଜି ବାହାର କରିପାରିବେ।" },
+          { title: "ଲୋକାଲ୍ ବ୍ରାଉଜର୍ ଭଏସ୍", desc: "ଭଏସ୍ ସର୍ଭର ଉପରେ ଚାପ କମାଇ ମୋବାଇଲ୍ ବ୍ରାଉଜର୍‌ରେ ଭଏସ୍ ପ୍ରସ୍ତୁତ କରେ, ଯାହା ଅଫଲାଇନ୍ ମଧ୍ୟ ଚାଲିବ।" }
         ],
-        speakerNotes: "ସ୍ଲାଇଡ୍ ୫ ଆମର ଓଡ଼ିଆ ଭାଷା ଭିତ୍ତିକ ଏବଂ ଶିକ୍ଷଣ ପରିବେଶକୁ ଦର୍ଶାଏ। ଶିକ୍ଷକଙ୍କ ପାଇଁ AI ଷ୍ଟୁଡିଓ ବ୍ୟତୀତ, ଆମେ ଅଙ୍ଗନୱାଡି ଶିଶୁଙ୍କ ପାଇଁ ସମ୍ପୂର୍ଣ୍ଣ ଓଡ଼ିଆ ଭାଷାରେ 'ଶିଶୁ ବାଟିକା' ଏବଂ କଠିନ ବିଜ୍ଞାନ ପାଠକୁ ସହଜ କରିବାକୁ '୩D ଲ୍ୟାବ୍' ପ୍ରସ୍ତୁତ କରିଛୁ। ଗୋଟିଏ ମୋବାଇଲ୍‌କୁ ଏକାଧିକ ପିଲା ବ୍ୟବହାର କରିବା ପାଇଁ ଆମେ ବିନା SMS ଖର୍ଚ୍ଚରେ ୪-ଅଙ୍କ ପିନ୍ ବିଶିଷ୍ଟ ସିବ୍ଲିଙ୍ଗ୍ ସୁଇଚର୍ ନିର୍ମାଣ କରିଛୁ, ଯାହା ମାସିକ ଖର୍ଚ୍ଚକୁ ବହୁତ କମ କରିଥାଏ।"
+        speakerNotes: "ଟ୍ରାକ୍ ୨ ଅପ୍ଟିମାଇଜେସନ୍ ଅଧୀନରେ, ଆମର ଲକ୍ଷ୍ୟ ଥିଲା ଏକ ଅତି ଶସ୍ତା ଏବଂ ଦୃଢ଼ ସର୍ଭରଲେସ୍ ବ୍ୟବସ୍ଥା ତିଆରି କରିବା। ଆମେ ବିନା ସର୍ଭର ଖର୍ଚ୍ଚରେ Firestore native vector search ଇମ୍ପ୍ଲିମେଣ୍ଟ କରିଛୁ, ଭଏସ୍ ସିନ୍ଥେସିସ୍ ବ୍ରାଉଜରକୁ ଅଫଲୋଡ୍ କରିଛୁ, ଏବଂ ବିନା ସର୍ଭର କିମ୍ବା SMS ଖର୍ଚ୍ଚରେ ଗୋଟିଏ ଫୋନରେ ୪-ଅଙ୍କ ପିନ୍ ବିଶିଷ୍ଟ ସିବ୍ଲିଙ୍ଗ୍ ସୁଇଚର୍ ତିଆରି କରିଛୁ।"
       },
       {
-        title: "ବ୍ୟବସାୟିକ ସଫଳତା ଏବଂ ଏଆଇ ରୋଡ୍ ମ୍ୟାପ୍",
-        subtitle: "RAG (ସମ୍ପୂର୍ଣ୍ଣ) -> RAG + SFT -> ସମ୍ପୂର୍ଣ୍ଣ SFT edge ରୋଡମ୍ୟାପ୍",
-        tagline: "ବୃଦ୍ଧି, ଆକର୍ଷଣ ଏବଂ ସ୍ଥିରତା",
+        title: "ଶ୍ରେଣୀ ଗୃହ ସୁରକ୍ଷା ଓ ଲାଇଭ୍ ଟେଲିମେଟ୍ରି",
+        subtitle: "ସମ୍ପୂର୍ଣ୍ଣ ଅଫଲାଇନ୍-ଫ୍ରେଣ୍ଡଲି ଏବଂ ସର୍ଭର ସ୍ଥିତି ଯାଞ୍ଚ",
+        tagline: "ଅଫଲାଇନ୍ ବ୍ୟବସ୍ଥା ଓ ସର୍ଭର ନିରୀକ୍ଷଣ",
         bullets: [
-          { title: "ମୋ ସ୍କୁଲ୍ ସହଭାଗିତା", desc: "ଓଡ଼ିଶାର ସ୍କୁଲ୍ ନେଟୱର୍କ ମାଧ୍ୟମରେ ୫୨ ଲକ୍ଷ ଓଡ଼ିଆ ମାଧ୍ୟମ ପିଲାଙ୍କ ପାଖରେ ପହଞ୍ଚିବା।" },
-          { title: "ସକ୍ରିୟ ପାଇଲଟ୍ ଛାତ୍ର ଓ ପ୍ରିମିୟମ୍", desc: "୪୪୫ ଜଣ ସକ୍ରିୟ ପାଇଲଟ୍ ଛାତ୍ର ଏବଂ ୭ଟି ଜିଲ୍ଲାରୁ ୬ ଜଣ ପ୍ରିମିୟମ୍ ସବସ୍କ୍ରିପସନ୍।" },
-          { title: "ଟେକ୍ନିକାଲ୍ ଏଆଇ ରୋଡମ୍ୟାପ୍", desc: "ପାଠ୍ୟପୁସ୍ତକ RAG (ସମ୍ପୂର୍ଣ୍ଣ) ରୁ RAG + SFT ଏବଂ ପରେ offline edge ମଡେଲ (SFT) କୁ ଉନ୍ନତି।" }
+          { title: "ଲାଇଭ୍ ଟେଲିମେଟ୍ରି", desc: "ଅଡିଟର୍‌ମାନେ ସର୍ଭର Latency, କ୍ୟାଚ୍ ସାଇଜ୍ ଏବଂ ବ୍ୟାକେଣ୍ଡ୍ ରନିଂ ସ୍ଥିତି ଯାଞ୍ଚ କରିପାରିବେ।" },
+          { title: "ଅଟୋ-ଫଲବ୍ୟାକ୍ ପ୍ରକ୍ରିୟା", desc: "ସର୍ଭର ସମସ୍ୟା ଦେଖାଦେଲେ ତୁରନ୍ତ AI ଷ୍ଟୁଡିଓ ଏବଂ ଲୋକାଲ୍ ଟିଟିଏସ୍ ସହାୟତା ନେଇଥାଏ।" },
+          { title: "ସମ୍ପୂର୍ଣ୍ଣ ଅଫଲାଇନ୍ PWA", desc: "ଇଣ୍ଟରନେଟ୍ ବିଲକୁଲ୍ ନଥିଲେ ମଧ୍ୟ ସଂରକ୍ଷିତ ୱେବ୍ ଆପ୍ ପିଲାଙ୍କ ପାଠପଢ଼ା ଜାରି ରଖିବାରେ ସାହାଯ୍ୟ କରେ।" }
         ],
-        speakerNotes: "ଆମେ ଆମର ପାଇଲଟ୍ ପର୍ଯ୍ୟାୟରେ ୪୪୫ ଜଣ ସକ୍ରିୟ ଛାତ୍ର ଏବଂ ବିଭିନ୍ନ ଜିଲ୍ଲା (ଭୁବନେଶ୍ୱର, କଟକ, କେନ୍ଦୁଝର, ବାଲେଶ୍ୱର, ନୟାଗଡ଼, ବଲାଙ୍ଗୀର, ବ୍ରହ୍ମପୁର) ରୁ ୬ ଜଣ ପ୍ରିମିୟମ୍ ସବସ୍କ୍ରିପସନ୍ ପାଇଛୁ। ଆମର ସ୍କେଲିଂ ମୋ ସ୍କୁଲ୍ ଅଭିଯାନ ସହଭାଗିତା, ଭଏସ୍-ଟୁ-ଭଏସ୍ ଟ୍ୟୁଟର୍, ଏବଂ ଶିକ୍ଷକଙ୍କ ପାଇଁ AI ହୋମୱାର୍କ ମେକର୍ ଦ୍ୱାରା ହେବ। ଆମର ଏଆଇ ବ୍ୟବସ୍ଥା ଜିରୋ-ହଲ୍ୟୁସିନେସନ୍ RAG ରୁ RAG + SFT ଏବଂ ପରେ ବ୍ରାଉଜର୍-ନେଟିଭ୍ offline SFT ମଡେଲ୍ କୁ ଉନ୍ନତି ହେବ, ଯାହା ସର୍ଭର ଖର୍ଚ୍ଚ ସମ୍ପୂର୍ଣ୍ଣ ଶୂନ କରିପାରିବ।"
+        speakerNotes: "ଶ୍ରେଣୀ ଗୃହରେ ସ୍ଥିରତା ବଜାୟ ରଖିବା ପାଇଁ ଆମେ ଏକ ଲାଇଭ୍ ଟେଲିମେଟ୍ରି ଡ୍ୟାସବୋର୍ଡ ସଂଯୋଗ କରିଛୁ। ଯଦି ସର୍ଭର ବ୍ୟସ୍ତ ରହେ, ଆପ୍ ତୁରନ୍ତ ଲୋକାଲ୍ ବ୍ୟାକେଣ୍ଡକୁ ଫଲବ୍ୟାକ୍ କରିଥାଏ। ଇଣ୍ଟରନେଟ୍ ବିଲକୁଲ୍ ଚାଲିଗଲେ ଆମର PWA ଆପ୍ ସମ୍ପୂର୍ଣ୍ଣ ଅଫଲାଇନ୍ ମୋଡ୍‌ରେ ପିଲାଙ୍କ ପଢ଼ାକୁ ଜାରି ରଖିବାରେ ସାହାଯ୍ୟ କରେ।"
       },
       {
-        title: "ଧନ୍ୟବାଦ!",
-        subtitle: "ବିଶ୍ୱସ୍ତରୀୟ AI ଶିକ୍ଷାକୁ ସରଳ, ସୁଲଭ ଏବଂ ଅଫଲାଇନ୍-ମୁକ୍ତ କରିବା",
-        tagline: "ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର - ପିଚ୍ ସମାପ୍ତ",
+        title: "ଆଗାମୀ ଏଆଇ ଯୋଜନା ଓ ଧନ୍ୟବାଦ!",
+        subtitle: "ବିଶ୍ୱସ୍ତରୀୟ ଏଆଇ (AI) ଶିକ୍ଷାକୁ ଓଡ଼ିଶାର ପ୍ରତିଟି ଶିଶୁ ପାଇଁ ସୁଲଭ କରିବା",
+        tagline: "ଉତ୍କଳ ପିଚ୍ ଶେଷ ସଂକ୍ଷିପ୍ତ",
         bullets: [
-          { title: "ପ୍ରତିଷ୍ଠାତା (Founder)", desc: "ଦମୟନ୍ତୀ ପଣ୍ଡା" },
-          { title: "ସହ-ପ୍ରତିଷ୍ଠାତା (Co-Founder)", desc: "ଜ୍ଞାନାଲୋକ ପଣ୍ଡା" },
-          { title: "ଇମେଲ୍ (Email)", desc: "contact@utkalskillcentre.com" }
+          { title: "ସକ୍ରିୟ ପାଇଲଟ୍ ଛାତ୍ର", desc: "୭ଟି ଜିଲ୍ଲାରେ ୪୪୫ ଜଣ ସକ୍ରିୟ ପାଇଲଟ୍ ଛାତ୍ର ଏବଂ ପେଡ୍ ପ୍ରିମିୟମ୍ ସବସ୍କ୍ରିପସନ୍।" },
+          { title: "ମୋବାଇଲ୍‌-ନେଟିଭ୍ Gemma 2B", desc: "ପାଠ୍ୟପୁସ୍ତକ RAG ରୁ ୩୦ ଡଲାରର ଫୋନ୍‌ରେ ମାଗଣାରେ ଅଫଲାଇନ୍ ଚାଲୁଥିବା Gemma-2B ମଡେଲକୁ ଉନ୍ନତି।" },
+          { title: "ଆମ ସହ ଯୋଗାଯୋଗ", desc: "ପ୍ରତିଷ୍ଠାତା: ଦମୟନ୍ତୀ ପଣ୍ଡା ଓ ଜ୍ଞାନାଲୋକ ପଣ୍ଡା | ଇମେଲ୍: contact@utkalskillcentre.com" }
         ],
-        speakerNotes: "ଆପଣଙ୍କ ସମୟ ପାଇଁ ଧନ୍ୟବାଦ! ଓଡ଼ିଶାର କୋଣ ଅନୁକୋଣରେ ପିଲାଙ୍କ ପାଖରେ ବିଜ୍ଞାନ ଓ ଗଣିତ ଶିକ୍ଷା ପହଞ୍ଚାଇବା ପାଇଁ ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର ପ୍ରତିବଦ୍ଧ। ଆମ ପ୍ରତିଷ୍ଠାତା ଦମୟନ୍ତୀ ପଣ୍ଡା ଓ ସହ-ପ୍ରତିଷ୍ଠାତା ଜ୍ଞାନାଲୋକ ପଣ୍ଡାଙ୍କ ସହ ଆପଣ contact@utkalskillcentre.com ମାଧ୍ୟମରେ ଯୋଗାଯୋଗ କରିପାରିବେ।"
+        speakerNotes: "ଆମେ ଆମର ପାଇଲଟ୍ ପର୍ଯ୍ୟାୟରେ ୪୪୫ ଜଣ ସକ୍ରିୟ ଛାତ୍ରଙ୍କ ସହ ସଫଳତା ହାସଲ କରିଛୁ। ଆଗକୁ ଆମର ଏଆଇ ସିଷ୍ଟମକୁ ପାଠ୍ୟପୁସ୍ତକ RAG ରୁ ମୋବାଇଲ୍‌-ନେଟିଭ୍ Gemma 2B ମଡେଲକୁ ଉନ୍ନତି କରିବୁ, ଯାହା ୩୦ ଡଲାରର ଶସ୍ତା ଫୋନ୍‌ରେ ମଧ୍ୟ ବିନା ଇଣ୍ଟରନେଟ୍ ରେ ପାଠ ପଢ଼ାଇପାରିବ। ଆମ ସହ ଯୋଗାଯୋଗ ପାଇଁ contact@utkalskillcentre.com ମାଧ୍ୟମରେ ମେଲ୍ କରିପାରିବେ। ଧନ୍ୟବାଦ।"
       }
     ]
   };

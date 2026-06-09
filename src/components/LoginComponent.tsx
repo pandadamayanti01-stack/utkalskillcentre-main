@@ -370,7 +370,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
       case 'auth/operation-not-allowed':
         return 'Phone sign-in is disabled. Enable Phone provider in Firebase Authentication.';
       case 'auth/unauthorized-domain':
-        return 'This domain is not authorized in Firebase Authentication. Add your Vercel/Cloud Run domain in Authorized Domains.';
+        return 'This domain is not authorized in Firebase Authentication. Add your Cloud Run domain in Authorized Domains.';
       case 'auth/invalid-app-credential':
         return 'Firebase app verification failed. Add your domain to Authorized Domains in Firebase Console Authentication settings.';
       case 'auth/billing-not-enabled':

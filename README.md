@@ -91,7 +91,7 @@ graph TD
     end
     
     subgraph Gateway Tier [Server / Serverless Hosting]
-        B1["Express API Gateway (api/index.ts)"]
+        B1["Express API Gateway (server.ts)"]
         B2["In-Memory RAG Query Cache (10m TTL)"]
     end
 
@@ -129,7 +129,7 @@ graph TD
 
 ### 1. Dynamic Fail-Safe Hybrid Pipeline (Vertex AI ⇄ Google AI Studio)
 In production, standardizing purely on Vertex AI can lead to outages if the Service Account encounters unexpected IAM permission changes or quotas.
-*   **Optimization**: We built a dynamic upstream router in our Express API backend (`server.ts` and `api/index.ts`).
+*   **Optimization**: We built a dynamic upstream router in our Express API backend (`server.ts`).
 *   **Behavior**: The backend first attempts to route requests securely through **Vertex AI** using ambient Application Default Credentials (ADC) or JWT auth. If Vertex AI returns a `403 Permission Denied` (e.g., API disabled, IAM block), or hits quota, the server instantly logs a warning and falls through to **Google AI Studio (`GEMINI_API_KEY`)** to deliver zero-downtime tutoring.
 
 ### 2. Conversational Odia Mother-Tongue Persona (Gundulu AI)
@@ -194,7 +194,7 @@ In tandem with core functional stability, we carried out an immersive visual, in
     *   The subscription lock templates inside [UnlockGundulu.tsx](file:///d:/WebApp/utkalskillcentre-main/src/components/UnlockGundulu.tsx).
 *   **The Result**: All avatars render a pristine, centered, high-fidelity baby mascot face without cropped text labels.
 
-### 4. High-Contrast Solid Dropdowns & Inputs (Vercel/Linear Style)
+### 4. High-Contrast Solid Dropdowns & Inputs (Linear Style)
 *   **The Upgrade**: Shifted all core login selectors (Class select, Board select, Phone `+91` code prefix, and Mobile Number text input) from dim semi-transparent lines to a bold, premium **`border-2 border-slate-600`** system with a deep **`bg-slate-950/80`** glass backdrop.
 *   **The Result**: Rounded boundaries are **100% visible, sharp, and perfectly readable** on all screen types and ambient brightness levels. On hover, the border dynamically transitions to a solid amber (**`hover:border-amber-500`**), and on focus it lights up with a gorgeous gold glow (**`focus:shadow-[0_0_20px_rgba(245,158,11,0.25)]`**).
 

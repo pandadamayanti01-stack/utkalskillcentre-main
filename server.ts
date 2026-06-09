@@ -1041,7 +1041,7 @@ async function startServer() {
     }
   });
 
-  // Textbook indexing endpoint (matching api/index.ts)
+  // Textbook indexing endpoint
   app.post('/api/ai/index-textbook', async (req, res) => {
     try {
       const { class: userClass, subject, text, reference } = req.body;
@@ -1117,7 +1117,7 @@ async function startServer() {
     }
   });
 
-  // Login with PIN endpoint (matching api/index.ts)
+  // Login with PIN endpoint
   app.post('/api/auth/login-with-pin', async (req, res) => {
     try {
       const { userId, pin } = req.body;
@@ -1229,20 +1229,12 @@ async function startServer() {
 
   const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
   
-  // Only listen if not running as a serverless function (e.g., Vercel)
-  if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
-    app.listen(PORT, '0.0.0.0', () => {
-      console.log(`Server running on http://0.0.0.0:${PORT}`);
-    });
-  }
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on http://0.0.0.0:${PORT}`);
+  });
   
   return app;
 }
 
-// Start the server and export for Vercel
-export const appPromise = startServer();
-// Default export for Vercel's standard function signature
-export default async (req: any, res: any) => {
-  const app = await appPromise;
-  return app(req, res);
-};
+// Start the server
+startServer();
