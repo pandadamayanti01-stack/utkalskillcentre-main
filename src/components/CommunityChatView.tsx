@@ -144,7 +144,7 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
   }
 
   return (
-    <div className={isTab ? "relative flex-grow flex flex-col font-sans overflow-hidden bg-slate-950/90 w-full h-full min-h-0" : "fixed inset-0 z-[100] bg-slate-950/95 backdrop-blur-3xl flex flex-col font-sans overflow-hidden"}>
+    <div className={isTab ? "relative flex-grow flex flex-col font-sans overflow-hidden bg-slate-950/90 w-full h-full min-h-0 force-dark-theme" : "fixed inset-0 z-[100] bg-slate-950/95 backdrop-blur-3xl flex flex-col font-sans overflow-hidden force-dark-theme"}>
       {/* Dynamic Background Elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-500/10 blur-[120px]"></div>
