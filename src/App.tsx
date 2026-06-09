@@ -3805,7 +3805,13 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
 
         <div 
           ref={contentScrollRef} 
-          className={`flex-1 ${(activeTab === 'study_buddy' || activeTab === 'gundulu' || activeTab === 'digital_library' || activeTab === '3d_study' || activeTab === 'community') ? 'overflow-hidden p-0 flex flex-col min-h-0' : 'overflow-y-auto p-4 md:p-8 pb-28 lg:pb-8'} scrollbar-hide relative z-10`}
+          className={`flex-1 ${
+            (activeTab === 'study_buddy' || activeTab === 'gundulu' || activeTab === 'digital_library' || activeTab === '3d_study' || activeTab === 'community') 
+              ? 'overflow-hidden p-0 flex flex-col min-h-0' 
+              : (activeTab === 'dashboard'
+                  ? 'overflow-y-auto pt-0 px-4 pb-28 lg:pb-8 sm:pt-4 md:pt-6 md:px-8'
+                  : 'overflow-y-auto p-4 md:p-8 pb-28 lg:pb-8')
+          } scrollbar-hide relative z-10`}
         >
           <AnimatePresence mode="wait">
             {/* Your 10+ Tab components go here... */}

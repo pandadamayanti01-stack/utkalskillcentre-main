@@ -18,7 +18,7 @@ import { DistrictLeaderboardFilter } from './DistrictLeaderboardFilter';
 import { ODISHA_DISTRICTS } from '../constants/districts';
 import { TestSeriesRegistrationForm } from './TestSeriesRegistrationForm';
 import { db } from '../firebase';
-import { collection, query, where, getDocs, orderBy, limit, doc, updateDoc, increment, serverTimestamp, onSnapshot } from 'firebase/firestore';
+import { collection, query, where, getDocs, orderBy, limit, doc, updateDoc, increment, serverTimestamp, onSnapshot, getDoc } from 'firebase/firestore';
 import { GunduluTrailer } from './GunduluTrailer';
 import NeuralBackground from './NeuralBackground';
 import OdishaLiveMap from './OdishaLiveMap';
@@ -222,6 +222,63 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   const [isSundayClosed, setIsSundayClosed] = useState(false);
 
   const [activeSubTab, setActiveSubTab] = useState<'overview' | 'leaderboard'>('overview');
+
+  const [leaderboardType, setLeaderboardType] = useState<'daily' | 'monthly'>('daily');
+  const [selectedMonth, setSelectedMonth] = useState('may_2026');
+  const [selectedClassFilter, setSelectedClassFilter] = useState(user?.class || '10');
+  const [monthlyLeaderboardsData, setMonthlyLeaderboardsData] = useState<any>(null);
+  const [loadingMonthlyData, setLoadingMonthlyData] = useState(false);
+
+  useEffect(() => {
+    if (activeSubTab !== 'leaderboard' || leaderboardType !== 'monthly') return;
+    const fetchMonthlyData = async () => {
+      setLoadingMonthlyData(true);
+      try {
+        const docRef = doc(db, 'system_settings', 'monthly_leaderboards');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setMonthlyLeaderboardsData(docSnap.data());
+        } else {
+          console.log("No monthly leaderboards doc found in Firestore, using code fallback.");
+        }
+      } catch (error) {
+        console.error("Error fetching monthly leaderboards:", error);
+      } finally {
+        setLoadingMonthlyData(false);
+      }
+    };
+    fetchMonthlyData();
+  }, [activeSubTab, leaderboardType]);
+
+  const monthsList = [
+    { id: 'may_2026', label: language === 'en' ? 'May 2026' : 'ମଇ ୨୦୨୬' },
+    { id: 'july_2026', label: language === 'en' ? 'July 2026' : 'ଜୁଲାଇ ୨୦୨୬' }
+  ];
+
+  const getMonthlyLeaderboardList = () => {
+    if (monthlyLeaderboardsData && monthlyLeaderboardsData[selectedMonth]) {
+      const monthData = monthlyLeaderboardsData[selectedMonth];
+      if (monthData.type === 'combined') {
+        return monthData.students || [];
+      } else if (monthData.type === 'class-specific' && monthData.classes) {
+        return monthData.classes[selectedClassFilter] || [];
+      }
+    }
+
+    if (selectedMonth === 'may_2026') {
+      return [
+        { rank: 1, name: "Dibyansh Panda", class: "5", score: 15, school: language === 'en' ? "Bhubaneswar Govt Primary School" : "ସରକାରୀ ପ୍ରାଥମିକ ବିଦ୍ୟାଳୟ" },
+        { rank: 1, name: "Sohan Lenka", class: "7", score: 15, school: language === 'en' ? "Cuttack Public School" : "କଟକ ପବ୍ଲିକ ସ୍କୁଲ" },
+        { rank: 2, name: "Rohan Kumar Lenka", class: "8", score: 14.5, school: language === 'en' ? "Balasore High School" : "ବାଲେଶ୍ୱର ହାଇସ୍କୁଲ" },
+        { rank: 3, name: "Sujata Singh", class: "10", score: 14, school: language === 'en' ? "Bhubaneswar Girls High School" : "ଭୁବନେଶ୍ୱର ବାଳିକା ହାଇସ୍କୁଲ" },
+        { rank: 4, name: "Anik Arav Jena", class: "1", score: 13, school: language === 'en' ? "Saraswati Shishu Mandir" : "ସରସ୍ୱତୀ ଶିଶୁ ମନ୍ଦିର" },
+        { rank: 5, name: "Student", class: "1", score: 12, school: language === 'en' ? "Regional Primary School" : "ଆଞ୍ଚଳିକ ପ୍ରାଥମିକ ବିଦ୍ୟାଳୟ" }
+      ];
+    }
+    return [];
+  };
+
+  const showTestResultHanger = true;
 
   // Odisha high-performance mock student profiles for development realism
   const mockLeaderboardProfiles = React.useMemo(() => [
@@ -477,7 +534,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       {/* Welcome Section - Hyper Premium Header Card */}
       <motion.div 
         variants={itemVariants}
-        className="relative overflow-hidden rounded-none sm:rounded-[2.5rem] border-x-0 sm:border border-white/10 bg-slate-950 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-950/45 via-slate-950/70 to-slate-950 p-5 sm:p-8 md:p-10 shadow-2xl -mx-4 -mt-4 sm:mx-0 sm:mt-0"
+        className="relative overflow-hidden rounded-none sm:rounded-[2.5rem] border-x-0 sm:border border-white/10 bg-slate-950 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-950/45 via-slate-950/70 to-slate-950 p-5 sm:p-8 md:p-10 shadow-2xl -mx-4 mt-0 sm:mx-0 sm:mt-0"
       >
         <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute -left-12 -bottom-12 w-72 h-72 bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
@@ -504,33 +561,36 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
             {/* XP Badge */}
             <div className="flex items-center justify-start">
-              <div className={`bg-slate-900/60 backdrop-blur-2xl px-4 md:px-6 py-3 md:py-4 rounded-3xl md:rounded-[2rem] flex items-center gap-3 md:gap-5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_10px_40px_rgba(0,0,0,0.5)] hover:border-emerald-500/30 transition-all duration-500 group cursor-default max-w-max force-dark-theme ${isTourStep3 ? 'ring-[4px] ring-amber-500 scale-[1.03] border-amber-500/50 shadow-[0_0_30px_rgba(245,158,11,0.6)] z-30 animate-pulse bg-slate-950/90' : ''}`}>
+              <div 
+                style={{ backgroundColor: '#090d16', borderColor: '#1e293b' }}
+                className={`backdrop-blur-2xl px-4 md:px-6 py-3 md:py-4 rounded-3xl md:rounded-[2rem] flex items-center gap-3 md:gap-5 border shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_10px_40px_rgba(0,0,0,0.5)] hover:border-emerald-500/30 transition-all duration-500 group cursor-default max-w-max ${isTourStep3 ? 'ring-[4px] ring-amber-500 scale-[1.03] border-amber-500/50 shadow-[0_0_30px_rgba(245,158,11,0.6)] z-30 animate-pulse bg-slate-950/90' : ''}`}
+              >
                 <div className="text-right">
                   <div className="flex items-center justify-end gap-2 md:gap-3 mb-0.5">
-                    <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">{t.dailyGoal}</p>
-                    <div className="flex items-center gap-1 text-orange-400" title="Current Streak">
+                    <div style={{ color: '#94a3b8' }} className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em]">{t.points}</div>
+                    <div style={{ color: '#fb923c' }} className="flex items-center gap-1" title="Current Streak">
                       <Lucide.Flame size={10} className="md:w-3 md:h-3" fill="currentColor" />
-                      <span className="text-[9px] md:text-[10px] font-black">{user?.streak || 0}</span>
+                      <strong style={{ color: '#fb923c', fontWeight: '900' }} className="text-[9px] md:text-[10px]">{user?.streak || 0}</strong>
                     </div>
                   </div>
                   <div className="flex items-baseline gap-1 justify-end">
-                    <p className="text-xl md:text-2xl font-black text-white tracking-tighter">{user?.points_today || 0}</p>
-                    <p className="text-[10px] md:text-xs font-bold text-emerald-500">/ {dailyGoal} XP</p>
+                    <div style={{ color: '#ffffff' }} className="text-xl md:text-2xl font-black tracking-tighter">{user?.points_today || 0}</div>
+                    <div style={{ color: '#10b981' }} className="text-[10px] md:text-xs font-bold">/ {dailyGoal} XP</div>
                   </div>
                 </div>
                 <div className="relative w-10 h-10 md:w-14 md:h-14 group">
                   <div className="absolute inset-0 bg-emerald-500/10 rounded-full blur-md group-hover:bg-emerald-500/20 transition-all duration-500"></div>
                   <svg className="w-full h-full transform -rotate-90 relative z-10" viewBox="0 0 36 36">
-                    <circle cx="18" cy="18" r="16" stroke="currentColor" strokeWidth="2.5" fill="transparent" className="text-slate-800" />
-                    <circle cx="18" cy="18" r="16" stroke="currentColor" strokeWidth="3" strokeLinecap="round" fill="transparent" strokeDasharray={100} strokeDashoffset={100 - (100 * dailyProgress) / 100} className="text-emerald-400 transition-all duration-1000 drop-shadow-[0_0_8px_#10b981]" />
+                    <circle cx="18" cy="18" r="16" stroke="#1e293b" strokeWidth="2.5" fill="transparent" />
+                    <circle cx="18" cy="18" r="16" stroke="#34d399" strokeWidth="3" strokeLinecap="round" fill="transparent" strokeDasharray={100} strokeDashoffset={100 - (100 * dailyProgress) / 100} className="transition-all duration-1000 drop-shadow-[0_0_8px_#10b981]" />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center z-20">
-                    <Lucide.Zap size={14} className="md:w-[18px] md:h-[18px] text-emerald-300 drop-shadow-md group-hover:scale-110 group-hover:text-white transition-transform duration-300" />
+                    <Lucide.Zap size={14} style={{ color: '#6ee7b7' }} className="md:w-[18px] md:h-[18px] drop-shadow-md group-hover:scale-110 group-hover:text-white transition-transform duration-300" />
                   </div>
                 </div>
               </div>
             </div>
-
+            
             {/* Claim Golden Ticket Button */}
             <div className="flex items-center justify-start pl-1">
               <button
@@ -577,33 +637,77 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             </div>
           </div>
 
-          {/* Animated Gundulu Mascot Video (Right Side) */}
-          <div className="relative w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48 pointer-events-auto group shrink-0 mt-3 md:mt-0 self-center md:self-auto">
-            <div className="absolute inset-0 rounded-full overflow-hidden shadow-[0_0_30px_rgba(16,185,129,0.2)] ring-2 ring-emerald-500/20 bg-black">
-              <video 
-                ref={videoRef}
-                src="/gundulu.mp4" 
-                poster="/gundu2.0.png"
-                autoPlay
-                muted
-                loop 
-                playsInline
-                className="w-full h-full object-cover scale-[1.05] object-[center_40%] md:scale-[1.1] md:object-center relative z-10" 
-              />
-            </div>
+          {/* Animated Gundulu Mascot Video (Right Side) with hanging rope banner */}
+          <div className="flex flex-col items-center shrink-0 mt-3 md:mt-0 self-center md:self-auto relative select-none">
+            {showTestResultHanger && (
+              <motion.div
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                whileHover={{ y: 3, scale: 1.05 }}
+                onClick={() => {
+                  setActiveSubTab('leaderboard');
+                  setLeaderboardType('monthly');
+                }}
+                className="relative cursor-pointer group flex flex-col items-center z-30 mb-3 -mt-5 md:-mt-9"
+              >
+                {/* Hanging Ropes */}
+                <div className="flex justify-between w-20 h-6 relative z-10 pointer-events-none -mb-1.5">
+                  <div className="w-[2px] h-full bg-gradient-to-b from-slate-700 via-slate-400 to-slate-800 shadow-[0_1px_3px_rgba(0,0,0,0.8)]"></div>
+                  <div className="w-[2px] h-full bg-gradient-to-b from-slate-700 via-slate-400 to-slate-800 shadow-[0_1px_3px_rgba(0,0,0,0.8)]"></div>
+                </div>
+                
+                {/* Hanging Sign Board (Gold metallic theme - Wow type eye catching!) */}
+                <div 
+                  style={{ background: 'linear-gradient(to bottom, #1e293b, #0f172a, #020617)' }}
+                  className="border-2 border-amber-400 rounded-2xl px-5 py-3 flex flex-col items-center shadow-[0_15px_35px_-5px_rgba(0,0,0,0.8),0_0_20px_rgba(245,158,11,0.4),inset_0_1px_1px_rgba(255,255,255,0.2)] transition-all duration-300 force-dark-theme"
+                >
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-red-500 animate-ping shrink-0"></span>
+                    <span 
+                      style={{ color: '#fbbf24' }}
+                      className="text-[12px] font-black uppercase tracking-[0.25em] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+                    >
+                      MTS RESULT OUT!
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 mt-1">
+                    <Lucide.Trophy size={11} className="text-yellow-400" />
+                    <span className="text-[9px] font-black text-amber-100/90 uppercase tracking-widest">
+                      {language === 'en' ? 'Click to Check' : 'ଦେଖିବା ପାଇଁ କ୍ଲିକ୍ କରନ୍ତୁ'}
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            )}
             
-            <button 
-              type="button"
-              onClick={toggleMute}
-              className="absolute bottom-2 right-0 md:bottom-4 z-20 w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-600 border border-emerald-300/30 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:from-emerald-500 hover:to-teal-700 hover:scale-110 shadow-[0_4px_15px_rgba(16,185,129,0.4)] cursor-pointer"
-              title={isMuted ? "Unmute Sound" : "Mute Sound"}
-            >
-              {isMuted ? (
-                <Lucide.VolumeX size={16} className="fill-white" />
-              ) : (
-                <Lucide.Volume2 size={16} className="fill-white" />
-              )}
-            </button>
+            {/* The Mascot Video Player */}
+            <div className="relative w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48 pointer-events-auto group shrink-0">
+              <div className="absolute inset-0 rounded-full overflow-hidden shadow-[0_0_30px_rgba(16,185,129,0.2)] ring-2 ring-emerald-500/20 bg-black">
+                <video 
+                  ref={videoRef}
+                  src="/gundulu.mp4" 
+                  poster="/gundu2.0.png"
+                  autoPlay
+                  muted
+                  loop 
+                  playsInline
+                  className="w-full h-full object-cover scale-[1.05] object-[center_40%] md:scale-[1.1] md:object-center relative z-10" 
+                />
+              </div>
+              
+              <button 
+                type="button"
+                onClick={toggleMute}
+                className="absolute bottom-2 right-0 md:bottom-4 z-20 w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-600 border border-emerald-300/30 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:from-emerald-500 hover:to-teal-700 hover:scale-110 shadow-[0_4px_15px_rgba(16,185,129,0.4)] cursor-pointer"
+                title={isMuted ? "Unmute Sound" : "Mute Sound"}
+              >
+                {isMuted ? (
+                  <Lucide.VolumeX size={16} className="fill-white" />
+                ) : (
+                  <Lucide.Volume2 size={16} className="fill-white" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </motion.div>
@@ -1231,221 +1335,466 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         /* Statewide Leaderboard Section */
         <div className="space-y-6 sm:space-y-8 force-dark-theme">
           {/* Header Summary Card */}
-          <div className="glass-card rounded-[2rem] p-6 border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 via-slate-900/40 to-indigo-950/10 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 hover:border-emerald-500/30 transition-all duration-500">
+          <div className={`glass-card rounded-[2rem] p-6 border bg-gradient-to-br shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 transition-all duration-500 ${
+            leaderboardType === 'monthly'
+              ? 'border-amber-500/20 from-amber-500/5 via-slate-900/40 to-orange-950/10 hover:border-amber-500/30'
+              : 'border-emerald-500/20 from-emerald-500/5 via-slate-900/40 to-indigo-950/10 hover:border-emerald-500/30'
+          }`}>
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.08),transparent_50%)] pointer-events-none" />
             <div className="space-y-2 text-center md:text-left flex-1">
-              <span className="px-3 py-1 rounded-full text-[10px] font-black bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-widest inline-block animate-pulse">
+              <span className={`px-3 py-1 rounded-full text-[10px] font-black border uppercase tracking-widest inline-block animate-pulse ${
+                leaderboardType === 'monthly'
+                  ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                  : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+              }`}>
                 🏆 {language === 'en' ? 'Gamification Arena' : 'ଗେମିଫିକେସନ୍ ଆରେନା'}
               </span>
               <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                {language === 'en' ? 'Statewide Regional Leaderboard' : 'ରାଜ୍ୟ ସ୍ତରୀୟ ଆଞ୍ଚଳିକ ଲିଡରବୋର୍ଡ'}
+                {leaderboardType === 'monthly'
+                  ? (language === 'en' ? 'Statewide Monthly Test Champions' : 'ରାଜ୍ୟ ସ୍ତରୀୟ ମାସିକ ଟେଷ୍ଟ ଚାମ୍ପିଅନ୍ସ')
+                  : (language === 'en' ? 'Statewide Regional Leaderboard' : 'ରାଜ୍ୟ ସ୍ତରୀୟ ଆଞ୍ଚଳିକ ଲିଡରବୋର୍ଡ')}
               </h2>
               <p className="text-xs text-slate-400 font-bold max-w-xl">
-                {language === 'en'
-                  ? 'Track your rank, sync daily challenges, and earn exclusive Odia scholar badges as you compete with students across Odisha!'
-                  : 'ଆପଣଙ୍କର ମାନ୍ୟତା ଟ୍ରାକ୍ କରନ୍ତୁ, ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ ସମାଧାନ କରନ୍ତୁ ଏବଂ ଓଡ଼ିଶାର ଅନ୍ୟ ଛାତ୍ରମାନଙ୍କ ସହ ପ୍ରତିଦ୍ୱନ୍ଦ୍ୱିତା କରି ଓଡ଼ିଆ ସ୍କଲାର ବ୍ୟାଜ୍ ହାସଲ କରନ୍ତୁ!'}
+                {leaderboardType === 'monthly'
+                  ? (language === 'en'
+                      ? 'Track the top scorers of the Monthly Test Series (MTS) across Odisha. Work hard to get featured here!'
+                      : 'ଓଡ଼ିଶାର ମାସିକ ଟେଷ୍ଟ ସିରିଜ୍ (MTS) ର ଶୀର୍ଷ ସ୍କୋରର ମାନଙ୍କୁ ଟ୍ରାକ୍ କରନ୍ତୁ | ସଫଳତା ପାଇଁ ଅଧିକ ପରିଶ୍ରମ କରନ୍ତୁ!')
+                  : (language === 'en'
+                      ? 'Track your rank, sync daily challenges, and earn exclusive Odia scholar badges as you compete with students across Odisha!'
+                      : 'ଆପଣଙ୍କର ମାନ୍ୟତା ଟ୍ରାକ୍ କରନ୍ତୁ, ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ ସମାଧାନ କରନ୍ତୁ ଏବଂ ଓଡ଼ିଶାର ଅନ୍ୟ ଛାତ୍ରମାନଙ୍କ ସହ ପ୍ରତିଦ୍ୱନ୍ଦ୍ୱିତା କରି ଓଡ଼ିଆ ସ୍କଲାର ବ୍ୟାଜ୍ ହାସଲ କରନ୍ତୁ!')}
               </p>
             </div>
 
             {/* Quick Stats Block */}
-            <div className="flex items-center gap-4 bg-slate-950/60 p-4 rounded-3xl border border-white/5 shrink-0 w-full md:w-auto justify-around md:justify-start">
-              <div className="text-center px-4 border-r border-white/5">
-                <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">{language === 'en' ? 'Your Rank' : 'ଆପଣଙ୍କ ରାଙ୍କ'}</p>
-                <p className="text-lg font-black text-emerald-400 font-mono">
-                  #{combinedLeaderboard.findIndex(s => s.id === user?.id) + 1 || '-'}
-                </p>
+            {leaderboardType === 'monthly' ? (
+              <div className="flex items-center gap-4 bg-slate-950/60 p-4 rounded-3xl border border-white/5 shrink-0 w-full md:w-auto justify-around md:justify-start">
+                <div className="text-center px-4 border-r border-white/5">
+                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">
+                    {language === 'en' ? 'Test Rank' : 'ଟେଷ୍ଟ ର୍ୟାଙ୍କ'}
+                  </p>
+                  <p className="text-lg font-black text-amber-400 font-mono">
+                    {(() => {
+                      const list = getMonthlyLeaderboardList();
+                      const idx = list.findIndex((s: any) => s.name?.toLowerCase() === user?.name?.toLowerCase());
+                      return idx >= 0 ? `#${list[idx].rank}` : '-';
+                    })()}
+                  </p>
+                </div>
+                <div className="text-center px-4 border-r border-white/5">
+                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">
+                    {selectedMonth === 'may_2026'
+                      ? (language === 'en' ? 'Avg. Score' : 'ହାରାହାରି ସ୍କୋର')
+                      : (language === 'en' ? 'Test Score' : 'ପରୀକ୍ଷା ସ୍କୋର')}
+                  </p>
+                  <p className="text-lg font-black text-amber-400 font-mono">
+                    {(() => {
+                      const list = getMonthlyLeaderboardList();
+                      const idx = list.findIndex((s: any) => s.name?.toLowerCase() === user?.name?.toLowerCase());
+                      return idx >= 0 ? `${list[idx].score}/25` : '-';
+                    })()}
+                  </p>
+                </div>
+                <div className="text-center px-4">
+                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">
+                    {language === 'en' ? 'Month' : 'ମାସ'}
+                  </p>
+                  <p className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                    {selectedMonth === 'may_2026'
+                      ? (language === 'en' ? 'May 2026' : 'ମଇ ୨୦୨୬')
+                      : (language === 'en' ? 'July 2026' : 'ଜୁଲାଇ ୨୦୨୬')}
+                  </p>
+                </div>
               </div>
-              <div className="text-center px-4 border-r border-white/5">
-                <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">{language === 'en' ? 'Current Tier' : 'ଆପଣଙ୍କ ସ୍ତର'}</p>
-                <p className="text-lg font-black text-amber-400 font-mono">
-                  Lvl {getBadgeInfo(user?.points || 0).level}
-                </p>
+            ) : (
+              <div className="flex items-center gap-4 bg-slate-950/60 p-4 rounded-3xl border border-white/5 shrink-0 w-full md:w-auto justify-around md:justify-start">
+                <div className="text-center px-4 border-r border-white/5">
+                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">{language === 'en' ? 'Your Rank' : 'ଆପଣଙ୍କ ରାଙ୍କ'}</p>
+                  <p className="text-lg font-black text-emerald-400 font-mono">
+                    #{combinedLeaderboard.findIndex(s => s.id === user?.id) + 1 || '-'}
+                  </p>
+                </div>
+                <div className="text-center px-4 border-r border-white/5">
+                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">{language === 'en' ? 'Current Tier' : 'ଆପଣଙ୍କ ସ୍ତର'}</p>
+                  <p className="text-lg font-black text-amber-400 font-mono">
+                    Lvl {getBadgeInfo(user?.points || 0).level}
+                  </p>
+                </div>
+                <div className="text-center px-4">
+                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">{language === 'en' ? 'Daily MCQ' : 'ଦୈନିକ MCQ'}</p>
+                  <p className={`text-[10px] font-black px-2.5 py-0.5 rounded-full ${
+                    user?.points_today > 0
+                      ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                      : 'bg-amber-500/10 text-amber-400 border-amber-500/20 animate-pulse'
+                  }`}>
+                    {user?.points_today > 0
+                      ? (language === 'en' ? 'Completed' : 'ସମାପ୍ତ')
+                      : (language === 'en' ? 'Pending' : 'ବାକି ଅଛି')}
+                  </p>
+                </div>
               </div>
-              <div className="text-center px-4">
-                <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">{language === 'en' ? 'Daily MCQ' : 'ଦୈନିକ MCQ'}</p>
-                <p className={`text-[10px] font-black px-2.5 py-0.5 rounded-full ${
-                  user?.points_today > 0
-                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                    : 'bg-amber-500/10 text-amber-400 border border-amber-500/20 animate-pulse'
-                }`}>
-                  {user?.points_today > 0
-                    ? (language === 'en' ? 'Completed' : 'ସମାପ୍ତ')
-                    : (language === 'en' ? 'Pending' : 'ବାକି ଅଛି')}
-                </p>
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Leaderboard Table Content with Sidebar-styled filters */}
           <div className="glass-card rounded-[2.5rem] p-4 sm:p-6 md:p-8 border-white/5 bg-slate-900/40 space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-white/5 pb-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-emerald-500/10 rounded-2xl text-emerald-500 border border-emerald-500/20">
-                  <Lucide.Trophy size={18} />
+              <div className="flex flex-wrap items-center gap-4 flex-1">
+                <div className="flex items-center gap-3">
+                  <div className={`p-2 rounded-2xl border ${
+                    leaderboardType === 'monthly'
+                      ? 'bg-amber-500/10 text-amber-500 border-amber-500/20'
+                      : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
+                  }`}>
+                    <Lucide.Trophy size={18} />
+                  </div>
+                  <div>
+                    <h3 className="text-md font-black text-white tracking-tight">
+                      {leaderboardType === 'monthly'
+                        ? (language === 'en' ? 'Monthly Test Champions' : 'ମାସିକ ଟେଷ୍ଟ ଚାମ୍ପିଅନ୍ସ')
+                        : (language === 'en' ? 'Odisha District Rankings' : 'ଓଡ଼ିଶା ଜିଲ୍ଲା ମାନ୍ୟତା ତାଲିକା')}
+                    </h3>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">
+                      {leaderboardType === 'monthly'
+                        ? (language === 'en' ? 'Overall top student test performances' : 'ଛାତ୍ରଛାତ୍ରୀଙ୍କ ସାମଗ୍ରିକ ପରୀକ୍ଷା ପ୍ରଦର୍ଶନ')
+                        : (language === 'en' ? 'Ranked by overall study effort' : 'ସାମଗ୍ରିକ ପଠନ ପ୍ରୟାସ ଉପରେ ଆଧାରିତ')}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-md font-black text-white tracking-tight">
-                    {language === 'en' ? 'Odisha District Rankings' : 'ଓଡ଼ିଶା ଜିଲ୍ଲା ମାନ୍ୟତା ତାଲିକା'}
-                  </h3>
-                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">
-                    {language === 'en' ? 'Ranked by overall study effort' : 'ସାମଗ୍ରିକ ପଠନ ପ୍ରୟାସ ଉପରେ ଆଧାରିତ'}
-                  </p>
+
+                {/* Highlighted Toggle Switch */}
+                <div className="flex bg-slate-950/60 p-1 rounded-2xl border border-white/5 gap-1 shrink-0 ml-0 md:ml-4">
+                  <button
+                    type="button"
+                    onClick={() => setLeaderboardType('daily')}
+                    className={`px-3.5 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 flex items-center gap-1.5 cursor-pointer ${
+                      leaderboardType === 'daily'
+                        ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/20'
+                        : 'text-slate-400 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    <Lucide.Zap size={11} />
+                    <span>{t.dailyStreak}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLeaderboardType('monthly')}
+                    className={`px-3.5 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 flex items-center gap-1.5 cursor-pointer ${
+                      leaderboardType === 'monthly'
+                        ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-md shadow-amber-500/20'
+                        : 'text-slate-400 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    <Lucide.Trophy size={11} />
+                    <span>{t.monthlyTest}</span>
+                  </button>
                 </div>
               </div>
 
-              {/* District Filter Component */}
-              <DistrictLeaderboardFilter 
-                selectedDistrict={selectedDistrict}
-                setSelectedDistrict={setSelectedDistrict}
-                language={language}
-              />
+              {/* Conditional Filters */}
+              {leaderboardType === 'daily' ? (
+                <DistrictLeaderboardFilter 
+                  selectedDistrict={selectedDistrict}
+                  setSelectedDistrict={setSelectedDistrict}
+                  language={language}
+                />
+              ) : (
+                <div className="flex flex-wrap items-center gap-4">
+                  {/* Month Selection Dropdown */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">{language === 'en' ? 'Month:' : 'ମାସ:'}</span>
+                    <select
+                      value={selectedMonth}
+                      onChange={(e) => setSelectedMonth(e.target.value)}
+                      className="bg-slate-950 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white font-bold outline-none cursor-pointer focus:border-amber-500/50"
+                    >
+                      {monthsList.map(m => (
+                        <option key={m.id} value={m.id}>{m.label}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Class Selection Dropdown */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">{language === 'en' ? 'Class:' : 'ଶ୍ରେଣୀ:'}</span>
+                    <select
+                      value={selectedClassFilter}
+                      onChange={(e) => setSelectedClassFilter(e.target.value)}
+                      className="bg-slate-950 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white font-bold outline-none cursor-pointer focus:border-amber-500/50"
+                    >
+                      {Array.from({ length: 10 }, (_, i) => String(i + 1)).map(c => (
+                        <option key={c} value={c}>
+                          {language === 'en' ? `Class ${c}` : `ଶ୍ରେଣୀ ${c}`}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
             </div>
+
+            {/* Monthly Reward Announcement Box */}
+            {leaderboardType === 'monthly' && (
+              <div className="relative overflow-hidden rounded-[2rem] border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-orange-600/10 to-amber-500/10 p-5 text-center shadow-[0_0_25px_rgba(245,158,11,0.1)] group">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12 animate-[shimmer_2s_infinite]"></div>
+                <div className="relative z-10 flex flex-col sm:flex-row items-center justify-center gap-3">
+                  <div className="p-2 bg-amber-500/20 rounded-2xl text-amber-400 border border-amber-500/30">
+                    <Lucide.Gift size={20} className="animate-bounce" />
+                  </div>
+                  <p className="text-xs font-black text-amber-200 tracking-wide uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
+                    {language === 'en'
+                      ? 'Every month, the top 5 students from each class get free Gundulu monthly access! 🎁'
+                      : 'ପ୍ରତି ମାସରେ ପ୍ରତ୍ୟେକ ଶ୍ରେଣୀର ଶୀର୍ଷ ୫ ଜଣ ଛାତ୍ରଛାତ୍ରୀଙ୍କୁ ମାଗଣାରେ ଗୁନ୍ଦୁଲୁ ମାସିକ ସବସ୍କ୍ରିପସନ ମିଳିବ! 🎁'}
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* Top Students Ranked List */}
             <div className="overflow-x-auto custom-scrollbar">
               <table className="w-full text-left min-w-[700px]">
                 <thead>
                   <tr className="border-b border-white/5 bg-white/5">
-                    <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black">{language === 'en' ? 'Rank' : 'ମାନ୍ୟତା'}</th>
-                    <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black">{language === 'en' ? 'Student' : 'ଛାତ୍ର'}</th>
-                    <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black">{language === 'en' ? 'District' : 'ଜିଲ୍ଲା'}</th>
-                    <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black">{language === 'en' ? 'Badge Title' : 'ପଦକ ଆଖ୍ୟା'}</th>
-                    <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black text-center">{language === 'en' ? 'Daily MCQ' : 'ଦୈନିକ MCQ'}</th>
-                    <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black text-right">{language === 'en' ? 'XP Points' : 'XP ପଏଣ୍ଟ'}</th>
-                    <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black text-right">{language === 'en' ? 'Action' : 'କାର୍ଯ୍ୟ'}</th>
+                    {leaderboardType === 'daily' ? (
+                      <>
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black">{language === 'en' ? 'Rank' : 'ମାନ୍ୟତା'}</th>
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black">{language === 'en' ? 'Student' : 'ଛାତ୍ର'}</th>
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black">{language === 'en' ? 'District' : 'ଜିଲ୍ଲା'}</th>
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black">{language === 'en' ? 'Badge Title' : 'ପଦକ ଆଖ୍ୟା'}</th>
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black text-center">{language === 'en' ? 'Daily MCQ' : 'ଦୈନିକ MCQ'}</th>
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black text-right">{language === 'en' ? 'XP Points' : 'XP ପଏଣ୍ଟ'}</th>
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black text-right">{language === 'en' ? 'Action' : 'କାର୍ଯ୍ୟ'}</th>
+                      </>
+                    ) : (
+                      <>
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black">{language === 'en' ? 'Rank' : 'ମାନ୍ୟତା'}</th>
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black">{language === 'en' ? 'Student' : 'ଛାତ୍ର'}</th>
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black">{language === 'en' ? 'Class' : 'ଶ୍ରେଣୀ'}</th>
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black">{language === 'en' ? 'School' : 'ବିଦ୍ୟାଳୟ'}</th>
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black text-right">
+                          {selectedMonth === 'may_2026'
+                            ? (language === 'en' ? 'Average Score' : 'ହାରାହାରି ସ୍କୋର')
+                            : (language === 'en' ? 'Score' : 'ସ୍କୋର')}
+                        </th>
+                      </>
+                    )}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
-                  {filteredList.map((student, idx) => {
-                    const isCurrentUser = student.id === user?.id;
-                    const badgeInfo = getBadgeInfo(student.points || 0);
-                    const globalRank = combinedLeaderboard.findIndex(s => s.id === student.id) + 1;
-                    
-                    return (
-                      <tr 
-                        key={student.id} 
-                        className={`hover:bg-white/5 transition-all duration-200 ${
-                          isCurrentUser 
-                            ? 'bg-emerald-500/5 border-l-4 border-l-emerald-500' 
-                            : 'border-l-4 border-l-transparent'
-                        }`}
-                      >
-                        {/* Rank Position */}
-                        <td className="px-6 py-4">
-                          <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs ${
-                            globalRank === 1 ? 'bg-yellow-500 text-slate-950 shadow-[0_0_15px_rgba(234,179,8,0.4)]' :
-                            globalRank === 2 ? 'bg-slate-300 text-slate-950 shadow-[0_0_15px_rgba(203,213,225,0.4)]' :
-                            globalRank === 3 ? 'bg-amber-600 text-slate-950 shadow-[0_0_15px_rgba(217,119,6,0.4)]' :
-                            'text-slate-500'
-                          }`}>
-                            {globalRank}
-                          </div>
-                        </td>
-
-                        {/* Name and School */}
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
-                              {student.avatar ? (
-                                <img src={student.avatar} alt={student.name} className="w-full h-full object-cover" />
-                              ) : (
-                                <span className="text-xs font-black text-white uppercase">{student.name?.[0] || 'S'}</span>
-                              )}
+                  {leaderboardType === 'daily' ? (
+                    filteredList.map((student, idx) => {
+                      const isCurrentUser = student.id === user?.id;
+                      const badgeInfo = getBadgeInfo(student.points || 0);
+                      const globalRank = combinedLeaderboard.findIndex(s => s.id === student.id) + 1;
+                      
+                      return (
+                        <tr 
+                          key={student.id} 
+                          className={`hover:bg-white/5 transition-all duration-200 ${
+                            isCurrentUser 
+                              ? 'bg-emerald-500/5 border-l-4 border-l-emerald-500' 
+                              : 'border-l-4 border-l-transparent'
+                          }`}
+                        >
+                          {/* Rank Position */}
+                          <td className="px-6 py-4">
+                            <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs ${
+                              globalRank === 1 ? 'bg-yellow-500 text-slate-950 shadow-[0_0_15px_rgba(234,179,8,0.4)]' :
+                              globalRank === 2 ? 'bg-slate-300 text-slate-950 shadow-[0_0_15px_rgba(203,213,225,0.4)]' :
+                              globalRank === 3 ? 'bg-amber-600 text-slate-950 shadow-[0_0_15px_rgba(217,119,6,0.4)]' :
+                              'text-slate-500'
+                            }`}>
+                              {globalRank}
                             </div>
-                            <div>
-                              <div className="font-bold text-white flex items-center gap-1.5">
-                                <span className={isCurrentUser ? 'text-emerald-400' : 'text-white'}>
-                                  {student.name}
-                                </span>
-                                {isCurrentUser && (
-                                  <span className="text-[8px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-500/20 font-black uppercase tracking-wider">
-                                    {language === 'en' ? 'You' : 'ଆପଣ'}
-                                  </span>
+                          </td>
+
+                          {/* Name and School */}
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+                                {student.avatar ? (
+                                  <img src={student.avatar} alt={student.name} className="w-full h-full object-cover" />
+                                ) : (
+                                  <span className="text-xs font-black text-white uppercase">{student.name?.[0] || 'S'}</span>
                                 )}
                               </div>
-                              <span className="text-[9px] text-slate-500 font-semibold block mt-0.5 max-w-[200px] truncate">
-                                {student.school || (language === 'en' ? 'Regional High School' : 'ଆଞ୍ଚଳିକ ଉଚ୍ଚ ବିଦ୍ୟାଳୟ')}
+                              <div>
+                                <div className="font-bold text-white flex items-center gap-1.5">
+                                  <span className={isCurrentUser ? 'text-emerald-400' : 'text-white'}>
+                                    {student.name}
+                                  </span>
+                                  {isCurrentUser && (
+                                    <span className="text-[8px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-500/20 font-black uppercase tracking-wider">
+                                      {language === 'en' ? 'You' : 'ଆପଣ'}
+                                    </span>
+                                  )}
+                                </div>
+                                <span className="text-[9px] text-slate-500 font-semibold block mt-0.5 max-w-[200px] truncate">
+                                  {student.school || (language === 'en' ? 'Regional High School' : 'ଆଞ୍ଚଳିକ ଉଚ୍ଚ ବିଦ୍ୟାଳୟ')}
+                                </span>
+                              </div>
+                            </div>
+                          </td>
+
+                          {/* District name */}
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-300">
+                              <Lucide.MapPin size={12} className="text-slate-500 shrink-0" />
+                              <span>
+                                {(() => {
+                                  const matched = ODISHA_DISTRICTS.find(d => d.en.toLowerCase() === student.district?.toLowerCase());
+                                  return matched 
+                                    ? (language === 'en' ? matched.en : matched.or)
+                                    : student.district;
+                                })()}
                               </span>
                             </div>
-                          </div>
-                        </td>
+                          </td>
 
-                        {/* District name */}
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-300">
-                            <Lucide.MapPin size={12} className="text-slate-500 shrink-0" />
-                            <span>
-                              {(() => {
-                                const matched = ODISHA_DISTRICTS.find(d => d.en.toLowerCase() === student.district?.toLowerCase());
-                                return matched 
-                                  ? (language === 'en' ? matched.en : matched.or)
-                                  : student.district;
-                              })()}
-                            </span>
-                          </div>
-                        </td>
+                          {/* Rank Badge */}
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-2">
+                              <span className="px-2 py-0.5 rounded bg-slate-950 text-[9px] font-black text-slate-400 border border-white/5 font-mono">
+                                Lvl {badgeInfo.level}
+                              </span>
+                              <span className="text-xs font-black text-amber-400 uppercase tracking-tight">
+                                {badgeInfo.title}
+                              </span>
+                            </div>
+                          </td>
 
-                        {/* Rank Badge */}
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            <span className="px-2 py-0.5 rounded bg-slate-950 text-[9px] font-black text-slate-400 border border-white/5 font-mono">
-                              Lvl {badgeInfo.level}
-                            </span>
-                            <span className="text-xs font-black text-amber-400 uppercase tracking-tight">
-                              {badgeInfo.title}
-                            </span>
-                          </div>
-                        </td>
+                          {/* Daily MCQ Completion check */}
+                          <td className="px-6 py-4 text-center">
+                            <div className="flex justify-center">
+                              {student.dailyCompleted ? (
+                                <div className="w-5 h-5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.2)]" title="Daily Challenge Completed!">
+                                  <Lucide.Check size={12} strokeWidth={3} />
+                                </div>
+                              ) : (
+                                <div className="w-5 h-5 rounded-full bg-slate-950 border border-white/5 flex items-center justify-center text-slate-600" title="Daily Challenge Pending">
+                                  <Lucide.Clock size={10} />
+                                </div>
+                              )}
+                            </div>
+                          </td>
 
-                        {/* Daily MCQ Completion check */}
-                        <td className="px-6 py-4 text-center">
-                          <div className="flex justify-center">
-                            {student.dailyCompleted ? (
-                              <div className="w-5 h-5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.2)]" title="Daily Challenge Completed!">
-                                <Lucide.Check size={12} strokeWidth={3} />
-                              </div>
-                            ) : (
-                              <div className="w-5 h-5 rounded-full bg-slate-950 border border-white/5 flex items-center justify-center text-slate-600" title="Daily Challenge Pending">
-                                <Lucide.Clock size={10} />
-                              </div>
+                          {/* XP Points */}
+                          <td className="px-6 py-4 text-right">
+                            <div className="inline-flex items-center gap-1 text-emerald-400 font-mono font-black text-xs">
+                              <Lucide.Zap size={12} className="text-amber-500 shrink-0 animate-pulse" />
+                              <span>{student.points || 0} XP</span>
+                            </div>
+                          </td>
+
+                          {/* Action buttons (Follow/Friends) */}
+                          <td className="px-6 py-4 text-right">
+                            {student.id !== user?.id && (
+                              <button
+                                onClick={() => onToggleFollow?.(student.id)}
+                                className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider transition-all cursor-pointer ${
+                                  following?.includes(student.id)
+                                    ? 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-red-950/40 hover:text-red-400'
+                                    : 'bg-emerald-500/10 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/20 shadow-sm'
+                                }`}
+                              >
+                                {following?.includes(student.id)
+                                  ? (language === 'en' ? 'Following' : 'ଅନୁସରଣ କରୁଛନ୍ତି')
+                                  : (language === 'en' ? '+ Follow' : '+ ଅନୁସରଣ')}
+                              </button>
                             )}
-                          </div>
-                        </td>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    (() => {
+                      const list = getMonthlyLeaderboardList();
+                      if (list.length === 0) {
+                        return (
+                          <tr>
+                            <td colSpan={5} className="px-6 py-12 text-center text-slate-500 font-bold text-xs uppercase tracking-wider">
+                              {t.noMonthlyData || 'No monthly test data available for the selected month/class.'}
+                            </td>
+                          </tr>
+                        );
+                      }
+                      return list.map((student: any, idx: number) => {
+                        const isCurrentUser = student.name?.toLowerCase() === user?.name?.toLowerCase();
+                        
+                        return (
+                          <tr 
+                            key={idx} 
+                            className={`hover:bg-white/5 transition-all duration-200 ${
+                              isCurrentUser 
+                                ? 'bg-amber-500/5 border-l-4 border-l-amber-500' 
+                                : 'border-l-4 border-l-transparent'
+                            }`}
+                          >
+                            {/* Rank Position */}
+                            <td className="px-6 py-4">
+                              <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs ${
+                                student.rank === 1 ? 'bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-slate-950 shadow-[0_0_15px_rgba(245,158,11,0.4)] border border-yellow-300' :
+                                student.rank === 2 ? 'bg-slate-300 text-slate-950 shadow-[0_0_15px_rgba(203,213,225,0.4)]' :
+                                student.rank === 3 ? 'bg-amber-600 text-slate-950 shadow-[0_0_15px_rgba(217,119,6,0.4)]' :
+                                'text-slate-500'
+                              }`}>
+                                {student.rank}
+                              </div>
+                            </td>
 
-                        {/* XP Points */}
-                        <td className="px-6 py-4 text-right">
-                          <div className="inline-flex items-center gap-1 text-emerald-400 font-mono font-black text-xs">
-                            <Lucide.Zap size={12} className="text-amber-500 shrink-0 animate-pulse" />
-                            <span>{student.points || 0} XP</span>
-                          </div>
-                        </td>
+                            {/* Student Name */}
+                            <td className="px-6 py-4">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+                                  <span className="text-xs font-black text-white uppercase">{student.name?.[0] || 'S'}</span>
+                                </div>
+                                <div>
+                                  <div className="font-bold text-white flex items-center gap-1.5">
+                                    <span className={isCurrentUser ? 'text-amber-400' : 'text-white'}>
+                                      {student.name}
+                                    </span>
+                                    {isCurrentUser && (
+                                      <span className="text-[8px] bg-amber-500/10 text-amber-400 px-1.5 py-0.5 rounded border border-amber-500/20 font-black uppercase tracking-wider">
+                                        {language === 'en' ? 'You' : 'ଆପଣ'}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
 
-                        {/* Action buttons (Follow/Friends) */}
-                        <td className="px-6 py-4 text-right">
-                          {student.id !== user?.id && (
-                            <button
-                              onClick={() => onToggleFollow?.(student.id)}
-                              className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider transition-all cursor-pointer ${
-                                following?.includes(student.id)
-                                  ? 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-red-950/40 hover:text-red-400'
-                                  : 'bg-emerald-500/10 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/20 shadow-sm'
-                              }`}
-                            >
-                              {following?.includes(student.id)
-                                ? (language === 'en' ? 'Following' : 'ଅନୁସରଣ କରୁଛନ୍ତି')
-                                : (language === 'en' ? '+ Follow' : '+ ଅନୁସରଣ')}
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
+                            {/* Class */}
+                            <td className="px-6 py-4">
+                              <span className="text-xs font-bold text-slate-300">
+                                {language === 'en' ? `Class ${student.class}` : `ଶ୍ରେଣୀ ${student.class}`}
+                              </span>
+                            </td>
+
+                            {/* School */}
+                            <td className="px-6 py-4">
+                              <span className="text-xs font-bold text-slate-400 block max-w-[250px] truncate">
+                                {student.school}
+                              </span>
+                            </td>
+
+                            {/* Marks/Score */}
+                            <td className="px-6 py-4 text-right">
+                              <div className="inline-flex items-center gap-1.5 text-amber-400 font-mono font-black text-xs">
+                                <Lucide.Crown size={12} className="text-yellow-400 shrink-0 animate-pulse" />
+                                <span>{student.score} / 25 {language === 'en' ? 'Marks' : 'ମାର୍କ'}</span>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      });
+                    })()
+                  )}
                 </tbody>
               </table>
             </div>
           </div>
         </div>
       )}
+
       {/* AI Disclaimer */}
           <div className="max-w-7xl mx-auto px-6 mt-12 mb-8 space-y-6">
             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em] text-center bg-white/5 py-3 rounded-2xl border border-white/5 backdrop-blur-md">
