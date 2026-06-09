@@ -15,7 +15,20 @@ export const AVAILABLE_PREMIUM_MAPS = [
   'fNy21816t8C3EMrsdP4S', // Class 10 Life Science - Excretion (Excretion Map)
   'Jb1gxditmbVBJIubDjok', // Class 10 Life Science - Reproduction (Reproduction Map)
   'zti7Pcoic1HhlnFlsGxK', // Class 10 Life Science - Heredity and Evolution (Heredity and Evolution Map)
-  'FE7XoiswjRxPglXwvzwd'  // Class 10 Life Science - Covid 19 Management (Covid 19 Management Map)
+  'FE7XoiswjRxPglXwvzwd', // Class 10 Life Science - Covid 19 Management (Covid 19 Management Map)
+  'lw9n7sG7qxnfbwm4kLY9', // Class 10 Algebra - Linear Simultaneous Equations (Linear Simultaneous Equations Map)
+  'bH692tqUJlkINiHpNJMk', // Class 10 Algebra - Quadratic Equations (Quadratic Equations Map)
+  'ZNhThX6hmIa5GKYUDpIX', // Class 10 Algebra - Arithmetic Progression (Arithmetic Progression Map)
+  'lQX4qU8uY9Rjy5wrcUhX', // Class 10 Algebra - Probability (Probability Map)
+  'zM3ZUo9MXaprYQbtlbC4', // Class 10 Algebra - Statistics (Statistics Map)
+  'cKl1PFkdrkgSnGH7AReP', // Class 10 Algebra - Co-ordinate Geometry (Co-ordinate Geometry Map)
+  'zjmscF6RCwSzh7UsljMp', // Class 10 Geometry - Similarity (Similarity Map)
+  'HlfuVAm9dcK1gGpNkpuq', // Class 10 Geometry - Similarity (Similarity Map - Alternative ID)
+  'bq9cINIoZgSaIWag7JLM', // Class 10 Geometry - Circles (Circles Map)
+  'j5ym70mivqsTXHpAnMxJ', // Class 10 Geometry - Tangents to a Circle (Tangents Map)
+  'cHD1xEpJvTclMfvi5ZJH', // Class 10 Geometry - Trigonometry (Trigonometry Map)
+  '4XpiLqgcg15qMNkQdgMm', // Class 10 Geometry - Mensuration (Mensuration Map)
+  '7Yukb86gfwmb9Bptpbwd'  // Class 10 Geometry - Construction (Construction Map)
 ];
 
 /**
