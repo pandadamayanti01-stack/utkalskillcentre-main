@@ -55,6 +55,33 @@ const PREMIUM_OVERLAYS: Record<string, OverlayNode[]> = {
     { labelEn: "Resistance (R)", labelOr: "ପ୍ରତିରୋଧ (R)", top: '30%', left: '80%', color: 'purple' },
     { labelEn: "Series / Parallel Resistors", labelOr: "ଶ୍ରେଣୀ ଓ ସମାନ୍ତରାଳ ସଂଯୋଗ", top: '65%', left: '80%', color: 'purple' },
     { labelEn: "Heating Effect", labelOr: "ତାପୀୟ ପ୍ରଭାବ", top: '85%', left: '50%', color: 'amber' }
+  ],
+  '5n7Dg8pphGZT8XG2xKHW': [
+    { labelEn: "Acids, Bases & Salts", labelOr: "ଅମ୍ଳ, କ୍ଷାରକ ଓ ଲବଣ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Acids (pH < 7)", labelOr: "ଅମ୍ଳ (pH < ୭)", top: '30%', left: '20%', color: 'amber' },
+    { labelEn: "pH Indicators", labelOr: "pH ସୂଚକ", top: '65%', left: '20%', color: 'blue' },
+    { labelEn: "Neutralization", labelOr: "ପ୍ରଶମନ ପ୍ରତିକ୍ରିୟା", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Bases (pH > 7)", labelOr: "କ୍ଷାରକ (pH > ୭)", top: '30%', left: '80%', color: 'emerald' },
+    { labelEn: "Salts & Properties", labelOr: "ଲବଣ ଓ ଗୁଣଧର୍ମ", top: '65%', left: '80%', color: 'blue' },
+    { labelEn: "Chlor-Alkali Process", labelOr: "କ୍ଲୋର-ଆଲକାଲି ପ୍ରଣାଳୀ", top: '85%', left: '50%', color: 'amber' }
+  ],
+  'hN2uO4iyaCERFcPLmran': [
+    { labelEn: "Metals & Non-Metals", labelOr: "ଧାତୁ ଓ ଅଧାତୁ", top: '10%', left: '50%', color: 'blue' },
+    { labelEn: "Physical Properties", labelOr: "ଭୌତିକ ଧର୍ମ", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Reactivity Series", labelOr: "ପ୍ରତିକ୍ରିୟାଶୀଳତା ଶ୍ରେଣୀ", top: '65%', left: '20%', color: 'amber' },
+    { labelEn: "Ionic Bonding", labelOr: "ଆୟୋନିକ୍ ବନ୍ଧନ", top: '48%', left: '50%', color: 'emerald' },
+    { labelEn: "Chemical Properties", labelOr: "ରାସାୟନିକ ଧର୍ମ", top: '30%', left: '80%', color: 'purple' },
+    { labelEn: "Extraction of Metals", labelOr: "ଧାତୁ ନିଷ୍କାସନ", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Corrosion Prevention", labelOr: "କ୍ଷୟୀଭବନ ପ୍ରତିରୋଧ", top: '85%', left: '50%', color: 'emerald' }
+  ],
+  'vfXYwB9Po1rB4Aty4q3Y': [
+    { labelEn: "Carbon Compounds", labelOr: "କାର୍ବନ ଯୌଗିକ", top: '10%', left: '50%', color: 'amber' },
+    { labelEn: "Covalent Bonding", labelOr: "ସହସଂଯୋଜକ ବନ୍ଧନ", top: '30%', left: '20%', color: 'emerald' },
+    { labelEn: "Saturated (Alkanes)", labelOr: "ସନ୍ତୃପ୍ତ (ଆଲକେନ୍)", top: '65%', left: '20%', color: 'blue' },
+    { labelEn: "Allotropes (Diamond/Graphite)", labelOr: "ଅପରୂପ (ହୀରା/ଗ୍ରାଫାଇଟ୍)", top: '48%', left: '50%', color: 'purple' },
+    { labelEn: "Functional Groups", labelOr: "କ୍ରିୟାତ୍ମକ ଗ୍ରୁପ୍", top: '30%', left: '80%', color: 'amber' },
+    { labelEn: "Unsaturated (Alkenes/Alkynes)", labelOr: "ଅସନ୍ତୃପ୍ତ (ଆଲକିନ୍/ଆଲକାଇନ୍)", top: '65%', left: '80%', color: 'blue' },
+    { labelEn: "Soap & Detergents", labelOr: "ସାବୁନ୍ ଏବଂ ଡିଟରଜେଣ୍ଟ୍", top: '85%', left: '50%', color: 'emerald' }
   ]
 };
 

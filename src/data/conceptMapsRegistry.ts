@@ -2,7 +2,10 @@ export const AVAILABLE_PREMIUM_MAPS = [
   'Vx3FQK8ZAl67KwvDi1Iy', // Class 10 Life Science - Nutrition (Photosynthesis Map)
   'BYsFgUxdUTQkTXoEyiUZ', // Class 4 Odia - Karuna Sagara Prabhuhe / Tiki Chadhei (Tiki Tiki Map)
   'CUQwtkjyKesVfAtJYiky', // Class 10 Physical Science - Chemical Reactions (Chemical Reactions Map)
-  'BkI12z7DPpAaIozm4bKH'  // Class 10 Physical Science - Electricity (Electricity Map)
+  'BkI12z7DPpAaIozm4bKH', // Class 10 Physical Science - Electricity (Electricity Map)
+  '5n7Dg8pphGZT8XG2xKHW', // Class 10 Physical Science - Acids, Bases and Salts (Acids Bases Map)
+  'hN2uO4iyaCERFcPLmran', // Class 10 Physical Science - Metals and Non-Metals (Metals Non-Metals Map)
+  'vfXYwB9Po1rB4Aty4q3Y'  // Class 10 Physical Science - Carbon and its Compounds (Carbon Compounds Map)
 ];
 
 /**
