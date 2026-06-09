@@ -30,6 +30,15 @@ interface OverlayNode {
 
 const PREMIUM_OVERLAYS: Record<string, OverlayNode[]> = {
   'Vx3FQK8ZAl67KwvDi1Iy': [
+    { labelEn: "Photosynthesis Overview", labelOr: "ଆଲୋକଶ୍ଳେଷଣ ସାରาଂଶ", top: '10%', left: '50%', color: 'emerald' },
+    { labelEn: "Carbon Dioxide (CO2)", labelOr: "ଅଙ୍ଗାରକାମ୍ଳ (CO2)", top: '30%', left: '20%', color: 'blue' },
+    { labelEn: "Water (H2O)", labelOr: "ଜଳ (H2O)", top: '65%', left: '20%', color: 'blue' },
+    { labelEn: "Chloroplast (Chlorophyll)", labelOr: "ହରିତ୍‌କଣା (ହରିତକାଣ)", top: '48%', left: '50%', color: 'emerald' },
+    { labelEn: "Light Reaction (Grana)", labelOr: "ଆଲୋକ ପ୍ରକ୍ରିୟା (ଗ୍ରାନା)", top: '30%', left: '80%', color: 'amber' },
+    { labelEn: "Dark Reaction (Stroma)", labelOr: "ଅନ୍ଧକାର ପ୍ରକ୍ରିୟା (ଷ୍ଟ୍ରୋମା)", top: '65%', left: '80%', color: 'purple' },
+    { labelEn: "Glucose & Oxygen (O2)", labelOr: "ଗ୍ଲୁକୋଜ୍ ଏବଂ ଅମ୍ଳଜାନ (O2)", top: '85%', left: '50%', color: 'emerald' }
+  ],
+  'WHZAR4BSAWixmaPmHuqW': [
     { labelEn: "Photosynthesis Overview", labelOr: "ଆଲୋକଶ୍ଳେଷଣ ସାରାଂଶ", top: '10%', left: '50%', color: 'emerald' },
     { labelEn: "Carbon Dioxide (CO2)", labelOr: "ଅଙ୍ଗାରକାମ୍ଳ (CO2)", top: '30%', left: '20%', color: 'blue' },
     { labelEn: "Water (H2O)", labelOr: "ଜଳ (H2O)", top: '65%', left: '20%', color: 'blue' },
