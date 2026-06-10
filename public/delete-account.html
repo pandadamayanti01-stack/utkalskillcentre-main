@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="or">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Account & Data Deletion - Utkal Skill Centre</title>
+    <style>
+        body {
+            background-color: #020617;
+            color: #cbd5e1;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #0f172a;
+            padding: 40px;
+            border-radius: 24px;
+            border: 1px solid #1e293b;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        h1 {
+            color: #ffffff;
+            font-size: 2.5rem;
+            margin-top: 0;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #fbbf24, #f97316, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        h2 {
+            color: #f59e0b;
+            font-size: 1.5rem;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 8px;
+            margin-top: 30px;
+        }
+        p, li {
+            font-size: 1rem;
+            color: #94a3b8;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .last-updated {
+            font-size: 0.85rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            background-color: #020617;
+            color: #ffffff;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #10b981;
+        }
+        button {
+            background-color: #10b981;
+            color: #020617;
+            font-weight: 900;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.2s ease;
+        }
+        button:hover {
+            background-color: #34d399;
+            transform: scale(1.02);
+        }
+        .success-message {
+            display: none;
+            background-color: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+        .contact-box {
+            background-color: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .contact-box h3 {
+            color: #34d399;
+            margin-top: 0;
+        }
+        .contact-box p {
+            color: #a7f3d0;
+            margin-bottom: 0;
+        }
+        a {
+            color: #34d399;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Request Account & Data Deletion</h1>
+        <div class="last-updated">Last Updated: June 10, 2026</div>
+        
+        <p>In accordance with Google Play Developer Policies and data protection regulations, Utkal Skill Centre provides a straightforward way for users to request the permanent deletion of their account and all associated personal data.</p>
+        
+        <h2>How to Delete Your Account</h2>
+        <p>You can request account deletion at any time. When you request account deletion, the following data is permanently purged from our secure servers:</p>
+        <ul>
+            <li>Your mobile phone number, name, email, and authentication profile.</li>
+            <li>Your school class configuration and board details.</li>
+            <li>All study metrics (experience points, total study minutes, daily question attempt histories, and mock test scores).</li>
+            <li>Your position and entries on public leaderboards.</li>
+        </ul>
+        
+        <div class="contact-box" style="margin-bottom: 30px;">
+            <h3>⚠️ Important Note</h3>
+            <p>Once deleted, this action cannot be undone. All subscription validity, leaderboard status, and learning progress milestones will be lost permanently.</p>
+        </div>
+
+        <h2>Submit Deletion Request</h2>
+        <p>Please enter your registered details below to submit a deletion request. Our team will process your request and completely delete your records within 48 to 72 hours.</p>
+
+        <form id="deleteForm" onsubmit="handleSubmit(event)">
+            <div class="form-group">
+                <label for="userName">Full Name</label>
+                <input type="text" id="userName" required placeholder="Enter your registered name">
+            </div>
+            <div class="form-group">
+                <label for="userPhone">Registered Phone Number</label>
+                <input type="tel" id="userPhone" required placeholder="e.g. +91 7735118243">
+            </div>
+            <div class="form-group">
+                <label for="userEmail">Registered Email (Optional)</label>
+                <input type="email" id="userEmail" placeholder="e.g. email@example.com">
+            </div>
+            <div class="form-group">
+                <label for="reason">Reason for Deletion</label>
+                <textarea id="reason" rows="3" placeholder="Please let us know how we can improve (optional)"></textarea>
+            </div>
+            <button type="submit">Submit Request</button>
+        </form>
+
+        <div id="successMsg" class="success-message">
+            Your deletion request has been submitted successfully. Our support desk will verify your details and completely purge your account information within 48 to 72 hours. An email or SMS confirmation will be sent upon completion.
+        </div>
+
+        <h2>Alternative Deletion Request</h2>
+        <p>You can also request data deletion by directly email us at <a href="mailto:contact@utkalskillcentre.com">contact@utkalskillcentre.com</a> with the subject line "Request for Account Deletion", specifying your registered phone number. We will verify and process your request immediately.</p>
+    </div>
+
+    <script>
+        function handleSubmit(e) {
+            e.preventDefault();
+            // In production, this would make an API call to your backend endpoint (e.g. /api/data-deletion-request)
+            document.getElementById('deleteForm').style.display = 'none';
+            document.getElementById('successMsg').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
