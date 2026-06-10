@@ -1067,6 +1067,25 @@ export default function Login({ language, translations, setLanguage, setRegData 
           </a>
         </motion.div>
 
+        {/* Policy & Compliance Links */}
+        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[9px] text-slate-500 font-bold pt-1">
+          <a href="/privacy-policy.html" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 transition-colors">
+            {language === 'en' ? 'Privacy Policy' : 'ଗୋପନୀୟତା ନୀତି'}
+          </a>
+          <span>•</span>
+          <a href="/terms.html" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 transition-colors">
+            {language === 'en' ? 'Terms & Conditions' : 'ନିୟମ ଓ ସର୍ତ୍ତାବଳୀ'}
+          </a>
+          <span>•</span>
+          <a href="/refund-policy.html" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 transition-colors">
+            {language === 'en' ? 'Refund Policy' : 'ରିଫଣ୍ଡ ନୀତି'}
+          </a>
+          <span>•</span>
+          <a href="/delete-account.html" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 transition-colors">
+            {language === 'en' ? 'Delete Account' : 'ଖାତା ବିଲୋପ'}
+          </a>
+        </div>
+
         {/* Emerald Live Indicator */}
         <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.15)] backdrop-blur-md">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
