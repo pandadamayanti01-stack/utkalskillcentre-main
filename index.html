@@ -80,13 +80,28 @@
         <script src="/ga.js" defer></script>
     
     <!-- Google tag (gtag.js) - Google Ads Tracking -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18060347643"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+      (function() {
+        var isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                           navigator.standalone || 
+                           (document.referrer && document.referrer.indexOf('android-app://') !== -1) ||
+                           window.location.search.indexOf('utm_source=twa') !== -1;
+        if (isStandalone) {
+          console.log('Running in TWA / Standalone mode - Google Ads script bypassed.');
+          return;
+        }
 
-      gtag('config', 'AW-18060347643');
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=AW-18060347643';
+        document.head.appendChild(script);
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        window.gtag = window.gtag || gtag;
+        window.gtag('js', new Date());
+        window.gtag('config', 'AW-18060347643');
+      })();
     </script>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
   </head>
