@@ -53,6 +53,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
   const [showResponsePopup, setShowResponsePopup] = useState(false);
+  const [isNeon, setIsNeon] = useState(false);
 
   // Undo/Redo Refs to bypass React state lag
   const historyRef = useRef<ImageData[]>([]);
@@ -426,7 +427,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
   };
 
   // Drawing event handlers
-  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+  const startDrawing = (e: React.PointerEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -434,69 +435,87 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
 
     setIsDrawing(true);
     
-    // Set drawing behavior vs eraser
-    if (isEraser) {
+    // Detect pen stylus eraser
+    const isPenEraser = e.pointerType === 'pen' && (e.buttons === 32 || (e as any).button === 5);
+    const activeEraser = isEraser || isPenEraser;
+
+    // Pointer pressure sensitivity scaling
+    const pressure = e.pressure !== undefined && e.pressure > 0 ? e.pressure : 0.5;
+    const currentWidth = activeEraser 
+      ? brushWidth * 3.5 * (0.4 + pressure * 1.2) 
+      : brushWidth * (0.4 + pressure * 1.2);
+
+    if (activeEraser) {
       ctx.globalCompositeOperation = 'destination-out'; // Native erase drawing pixels transparently
-      ctx.lineWidth = brushWidth * 3.5; // Thicker eraser
+      ctx.lineWidth = currentWidth;
+      ctx.shadowBlur = 0; // Disable neon blur on eraser
     } else {
       ctx.globalCompositeOperation = 'source-over'; // Standard draw
-      ctx.lineWidth = brushWidth;
+      ctx.lineWidth = currentWidth;
       ctx.strokeStyle = brushColor;
+
+      if (isNeon) {
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = brushColor;
+      } else {
+        ctx.shadowBlur = 0;
+      }
     }
 
     ctx.beginPath();
 
     // Calculate canvas coordinates
     const rect = canvas.getBoundingClientRect();
-    let clientX, clientY;
-    
-    if ('touches' in e) {
-      clientX = e.touches[0].clientX;
-      clientY = e.touches[0].clientY;
-    } else {
-      clientX = e.clientX;
-      clientY = e.clientY;
-    }
-
-    const x = clientX - rect.left;
-    const y = clientY - rect.top;
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
     ctx.moveTo(x, y);
   };
 
-  const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+  const draw = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (!isDrawing) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Detect pen stylus eraser
+    const isPenEraser = e.pointerType === 'pen' && (e.buttons === 32 || (e as any).button === 5);
+    const activeEraser = isEraser || isPenEraser;
+
+    // Pointer pressure sensitivity scaling
+    const pressure = e.pressure !== undefined && e.pressure > 0 ? e.pressure : 0.5;
+    const currentWidth = activeEraser 
+      ? brushWidth * 3.5 * (0.4 + pressure * 1.2) 
+      : brushWidth * (0.4 + pressure * 1.2);
+
     // Chalk line settings
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     
     const rect = canvas.getBoundingClientRect();
-    let clientX, clientY;
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
     
-    if ('touches' in e) {
-      // Prevent default page scroll on touch drawing
-      e.preventDefault();
-      clientX = e.touches[0].clientX;
-      clientY = e.touches[0].clientY;
-    } else {
-      clientX = e.clientX;
-      clientY = e.clientY;
-    }
-
-    const x = clientX - rect.left;
-    const y = clientY - rect.top;
-    
-    if (isEraser) {
+    if (activeEraser) {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.lineWidth = currentWidth;
+      ctx.shadowBlur = 0;
       ctx.lineTo(x, y);
       ctx.stroke();
     } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.lineWidth = currentWidth;
+      ctx.strokeStyle = brushColor;
+
+      if (isNeon) {
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = brushColor;
+      } else {
+        ctx.shadowBlur = 0;
+      }
+
       // Premium chalk brush texture logic: draw base chalk line with transparency
       ctx.globalAlpha = 0.45;
-      ctx.strokeStyle = brushColor;
       ctx.lineTo(x, y);
       ctx.stroke();
 
@@ -1348,13 +1367,10 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
           >
             <canvas
               ref={canvasRef}
-              onMouseDown={startDrawing}
-              onMouseMove={draw}
-              onMouseUp={stopDrawing}
-              onMouseLeave={stopDrawing}
-              onTouchStart={startDrawing}
-              onTouchMove={draw}
-              onTouchEnd={stopDrawing}
+              onPointerDown={startDrawing}
+              onPointerMove={draw}
+              onPointerUp={stopDrawing}
+              onPointerLeave={stopDrawing}
               className="cursor-crosshair block w-full touch-none bg-transparent"
             />
             {scanning && (
@@ -1641,6 +1657,13 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
                 title="Eraser"
               >
                 <Lucide.Eraser size={14} />
+              </button>
+              <button
+                onClick={() => { setIsEraser(false); setIsNeon(!isNeon); }}
+                className={`w-7 h-7 rounded-lg border flex items-center justify-center transition-all cursor-pointer ${!isEraser && isNeon ? 'border-emerald-400 bg-emerald-500/10 text-emerald-400 scale-105 shadow-[0_0_10px_rgba(52,211,153,0.4)]' : 'border-white/10 hover:bg-white/5 text-slate-400 hover:text-white'}`}
+                title={selectedLang === 'or' ? 'ନିଅନ୍ ଗ୍ଲୋ (Neon Glow)' : 'Neon Glow'}
+              >
+                <Lucide.Sparkles size={14} className={isNeon ? "animate-pulse text-emerald-400 fill-emerald-400/20" : ""} />
               </button>
             </div>
 
