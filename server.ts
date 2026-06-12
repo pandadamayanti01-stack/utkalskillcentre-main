@@ -728,12 +728,94 @@ async function startServer() {
     }
   });
 
+  async function refineTextPrompt(prompt: string): Promise<string> {
+    const systemInstruction = "You are an expert prompt designer for image generators. Translate any Odia or phonetic Odia math/science terms into clear English concepts. Design a detailed visual description for a clean, textbook-quality diagram overlay with a white background. Do NOT write any text or labels inside the image. The prompt must describe the visual elements only, and must end with: 'textless, no labels, no text, no letters, no writing, clean diagram'. Keep output under 60 words.";
+    const userPrompt = `Refine this educational image prompt: "${prompt}". Translate to English if needed. Describe the visual layout clearly without any text or letters.`;
+
+    const useVertex = process.env.USE_VERTEX_AI === 'true';
+    if (useVertex) {
+      try {
+        const creds = getServiceAccountCredentials();
+        let projectId = process.env.FIREBASE_PROJECT_ID || 'utkalskillcentre';
+        let accessToken = '';
+
+        if (creds) {
+          projectId = creds.project_id || projectId;
+          const vertexAuth = new google.auth.JWT({
+            email: creds.client_email,
+            key: creds.private_key,
+            scopes: ['https://www.googleapis.com/auth/cloud-platform']
+          });
+          const authClient = await vertexAuth.authorize();
+          accessToken = authClient.access_token || '';
+        } else {
+          const auth = new google.auth.GoogleAuth({
+            scopes: ['https://www.googleapis.com/auth/cloud-platform']
+          });
+          const authClient = await auth.getClient();
+          const tokenResponse = await authClient.getAccessToken();
+          accessToken = tokenResponse.token || '';
+          projectId = await auth.getProjectId() || projectId;
+        }
+
+        if (accessToken) {
+          const url = `https://aiplatform.googleapis.com/v1/projects/${projectId}/locations/global/publishers/google/models/gemini-2.5-flash:generateContent`;
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${accessToken}`
+            },
+            body: JSON.stringify({
+              contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+              systemInstruction: { parts: [{ text: systemInstruction }] }
+            })
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (text) {
+              return text.trim();
+            }
+          }
+        }
+      } catch (err: any) {
+        console.warn("Vertex AI prompt refinement failed:", err.message);
+      }
+    }
+
+    const rotatorKeys = getRotatorKeys();
+    for (const keyToUse of rotatorKeys) {
+      try {
+        const ai = new GoogleGenerativeAI(keyToUse);
+        const model = ai.getGenerativeModel({
+          model: "gemini-2.5-flash",
+          systemInstruction: systemInstruction
+        });
+        const result = await model.generateContent(userPrompt);
+        const text = result.response.text();
+        if (text) {
+          return text.trim();
+        }
+      } catch (err: any) {
+        console.warn(`AI Studio key prompt refinement failed:`, err.message);
+      }
+    }
+
+    return `${prompt}, clean textbook style vector diagram, white background, textless, no labels, no text, no letters, no writing`;
+  }
+
   app.post('/api/ai/generate-image', async (req, res) => {
     try {
       const { prompt } = req.body;
       if (!prompt) {
         return res.status(400).json({ error: 'prompt is required' });
       }
+
+      console.log(`Backend AI: Original prompt from user: "${prompt}"`);
+      const finalPrompt = await refineTextPrompt(prompt);
+      console.log(`Backend AI: Refined prompt to pass to Imagen: "${finalPrompt}"`);
 
       // 1. Try Vertex AI Image Generation Route first
       const useVertex = process.env.USE_VERTEX_AI === 'true';
@@ -775,7 +857,7 @@ async function startServer() {
               },
               body: JSON.stringify({
                 instances: [
-                  { prompt: prompt }
+                  { prompt: finalPrompt }
                 ],
                 parameters: {
                   sampleCount: 1,
@@ -819,7 +901,7 @@ async function startServer() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               instances: [
-                { prompt: prompt }
+                { prompt: finalPrompt }
               ],
               parameters: {
                 sampleCount: 1,
