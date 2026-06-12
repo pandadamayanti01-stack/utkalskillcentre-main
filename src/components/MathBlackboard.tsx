@@ -54,6 +54,9 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
   const [canRedo, setCanRedo] = useState(false);
   const [showResponsePopup, setShowResponsePopup] = useState(false);
   const [isNeon, setIsNeon] = useState(false);
+  const [showAiImageModal, setShowAiImageModal] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [generatingImage, setGeneratingImage] = useState(false);
 
   // Undo/Redo Refs to bypass React state lag
   const historyRef = useRef<ImageData[]>([]);
@@ -1183,6 +1186,143 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
     }
   };
 
+  const refineSketch = async () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    if (activeImage) {
+      await bakeImageToCanvasPromise();
+    }
+
+    stopAudio();
+    setScanning(true);
+    setGeneratingImage(true);
+
+    try {
+      const dataUrl = getCanvasDataUrlWithBackground();
+      
+      const response = await fetch('/api/ai/refine-sketch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: dataUrl })
+      });
+
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+
+      const data = await response.json();
+      if (data.image) {
+        const img = new Image();
+        img.onload = () => {
+          let w = img.width;
+          let h = img.height;
+          const maxDim = 400;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) {
+              h = (maxDim / w) * h;
+              w = maxDim;
+            } else {
+              w = (maxDim / h) * w;
+              h = maxDim;
+            }
+          }
+
+          const scrollTop = boardFrameRef.current?.scrollTop || 0;
+          const parentHeight = boardFrameRef.current?.clientHeight || 500;
+          const parentWidth = boardFrameRef.current?.clientWidth || 800;
+
+          setActiveImage({
+            url: data.image,
+            x: (parentWidth - w) / 2,
+            y: scrollTop + (parentHeight - h) / 2,
+            width: w,
+            height: h,
+            isDragging: false,
+            isResizing: false,
+            dragStartX: 0,
+            dragStartY: 0,
+            originalWidth: img.width,
+            originalHeight: img.height
+          });
+        };
+        img.src = data.image;
+      }
+    } catch (err) {
+      console.error("Sketch refinement error:", err);
+      alert(selectedLang === 'or' ? "❌ ଚିତ୍ରକୁ ସୁଧାରିବାରେ ଅସୁବିଧା ହେଲା।" : "❌ Failed to refine sketch drawing.");
+    } finally {
+      setScanning(false);
+      setGeneratingImage(false);
+    }
+  };
+
+  const generateAiImage = async (prompt: string) => {
+    if (!prompt.trim()) return;
+    
+    stopAudio();
+    setGeneratingImage(true);
+    setShowAiImageModal(false);
+
+    try {
+      const response = await fetch('/api/ai/generate-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
+      });
+
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+
+      const data = await response.json();
+      if (data.image) {
+        const img = new Image();
+        img.onload = () => {
+          let w = img.width;
+          let h = img.height;
+          const maxDim = 400;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) {
+              h = (maxDim / w) * h;
+              w = maxDim;
+            } else {
+              w = (maxDim / h) * w;
+              h = maxDim;
+            }
+          }
+
+          const scrollTop = boardFrameRef.current?.scrollTop || 0;
+          const parentHeight = boardFrameRef.current?.clientHeight || 500;
+          const parentWidth = boardFrameRef.current?.clientWidth || 800;
+
+          setActiveImage({
+            url: data.image,
+            x: (parentWidth - w) / 2,
+            y: scrollTop + (parentHeight - h) / 2,
+            width: w,
+            height: h,
+            isDragging: false,
+            isResizing: false,
+            dragStartX: 0,
+            dragStartY: 0,
+            originalWidth: img.width,
+            originalHeight: img.height
+          });
+        };
+        img.src = data.image;
+        setAiPrompt('');
+      }
+    } catch (err) {
+      console.error("AI image generation error:", err);
+      alert(selectedLang === 'or' ? "❌ ଚିତ୍ର ତିଆରି କରିବାରେ ଅସୁବିଧା ହେଲା।" : "❌ Failed to generate AI image.");
+    } finally {
+      setGeneratingImage(false);
+    }
+  };
+
   // Custom Markdown renderer components to render steps as premium UI cards
   const markdownComponents = {
     h3: ({ children, ...props }: any) => (
@@ -1380,6 +1520,29 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
                 transition={{ duration: 1.8, repeat: 0, ease: "linear" }}
                 className="absolute left-0 right-0 h-1 bg-emerald-400 shadow-[0_0_15px_#34d399,0_0_5px_#34d399] z-20 pointer-events-none"
               />
+            )}
+            {generatingImage && (
+              <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm flex flex-col items-center justify-center gap-4 z-40">
+                <div className="relative w-16 h-16 flex items-center justify-center">
+                  <div className="absolute inset-0 rounded-full border-4 border-t-emerald-400 border-r-transparent border-b-emerald-400 border-l-transparent animate-spin duration-1000" />
+                  <div className="absolute inset-2 rounded-full border-4 border-t-transparent border-r-cyan-400 border-b-transparent border-l-cyan-400 animate-spin duration-700" style={{ animationDirection: 'reverse' }} />
+                  <div className="w-4 h-4 rounded-full bg-emerald-400 animate-ping" />
+                </div>
+                <div className="text-center">
+                  <p className="text-emerald-400 text-xs md:text-sm font-black tracking-wider uppercase animate-pulse">
+                    {selectedLang === 'or' ? 'ଏଆଇ ଚିତ୍ର ପ୍ରସ୍ତୁତ ହେଉଛି...' : 'AI Image is generating...'}
+                  </p>
+                  <p className="text-slate-400 text-[10px] mt-1">
+                    {selectedLang === 'or' ? 'ଦୟାକରି କିଛି ସମୟ ଅପେକ୍ଷା କରନ୍ତୁ' : 'Please wait while we create high-quality diagram'}
+                  </p>
+                </div>
+                <motion.div 
+                  initial={{ top: '0%' }}
+                  animate={{ top: '100%' }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  className="absolute left-0 right-0 h-1 bg-emerald-400/80 shadow-[0_0_15px_#34d399,0_0_5px_#34d399] z-41 pointer-events-none"
+                />
+              </div>
             )}
             {/* Real Blackboard Dust Overlay */}
             <div className="absolute inset-0 bg-gradient-to-tr from-white/[0.015] to-transparent pointer-events-none" />
@@ -1685,6 +1848,25 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
                 <span>{selectedLang === 'or' ? 'ଛବି ଆଣନ୍ତୁ' : 'Upload Image'}</span>
               </button>
 
+              <button
+                onClick={() => setShowAiImageModal(true)}
+                className="px-3 py-1.5 rounded-xl bg-slate-950/80 border border-violet-500/30 hover:border-violet-400 hover:bg-slate-800 text-violet-400 text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5"
+                title={selectedLang === 'or' ? 'ଏଆଇ ଚିତ୍ର (AI Image)' : 'AI Image'}
+              >
+                <Lucide.Palette size={12} />
+                <span>{selectedLang === 'or' ? 'ଏଆଇ ଚିତ୍ର' : 'AI Image'}</span>
+              </button>
+
+              <button
+                onClick={refineSketch}
+                disabled={generatingImage}
+                className="px-3 py-1.5 rounded-xl bg-slate-950/80 border border-cyan-500/30 hover:border-cyan-400 hover:bg-slate-800 text-cyan-400 text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5"
+                title={selectedLang === 'or' ? 'ଚିତ୍ର ସୁଧାରନ୍ତୁ (Refine Drawing)' : 'AI Refine'}
+              >
+                <Lucide.Wand2 size={12} className={generatingImage ? "animate-spin" : ""} />
+                <span>{selectedLang === 'or' ? 'ସୁଧାରନ୍ତୁ' : 'AI Refine'}</span>
+              </button>
+
               {(boardMode === 'student' || boardMode === 'teacher') && (
                 <button
                   onClick={convertHandwritingToText}
@@ -1871,6 +2053,94 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
                   </button>
                 </div>
               )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {showAiImageModal && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 rounded-[2.5rem]"
+              onClick={() => setShowAiImageModal(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                className="w-full max-w-md bg-slate-900/90 border border-white/10 rounded-3xl p-6 shadow-2xl relative"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Close Button */}
+                <button
+                  onClick={() => setShowAiImageModal(false)}
+                  className="absolute top-4 right-4 p-1.5 rounded-lg bg-white/5 hover:bg-red-500/10 text-slate-400 hover:text-red-400 border border-white/5 transition-all cursor-pointer"
+                >
+                  <Lucide.X size={14} />
+                </button>
+
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-violet-500/10 border border-violet-500/30 flex items-center justify-center text-violet-400 shadow-md">
+                    <Lucide.Palette size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-black text-white uppercase tracking-widest leading-none mb-1">
+                      {selectedLang === 'or' ? 'ଗୁନ୍ଦୁଲୁ ଆର୍ଟ୍ ଏଆଇ' : 'Gundulu Art (AI Image)'}
+                    </h3>
+                    <span className="text-[10px] font-black text-violet-400 uppercase tracking-widest">
+                      {selectedLang === 'or' ? 'ଇମେଜେନ୍ ୩ ଚିତ୍ର ନିର୍ମାଣକାରୀ' : 'Powered by Imagen 3'}
+                    </span>
+                  </div>
+                </div>
+
+                <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+                  {selectedLang === 'or' 
+                    ? 'ଆପଣ ଯେକୌଣସି ଶିକ୍ଷଣୀୟ ଚିତ୍ର କିମ୍ବା ଡାଇଗ୍ରାମ୍ ଲେଖନ୍ତୁ, ଏଆଇ ସେହି ଚିତ୍ରଟିକୁ ବ୍ଲାକବୋର୍ଡରେ ରଖିଦେବ।' 
+                    : 'Describe any educational diagram or illustration, and our AI will generate a premium transparent-friendly overlay card.'}
+                </p>
+
+                <div className="space-y-4">
+                  <textarea
+                    value={aiPrompt}
+                    onChange={(e) => setAiPrompt(e.target.value)}
+                    placeholder={
+                      selectedLang === 'or' 
+                        ? 'ଉଦାହରଣ: ଉଦ୍ଭିଦର କୋଷର ଚିତ୍ର (Plant cell diagram)...' 
+                        : 'Example: A detailed diagram of a human heart with labels...'
+                    }
+                    className="w-full h-32 bg-slate-950/80 border border-white/10 rounded-2xl p-4 text-slate-100 text-xs md:text-sm placeholder-slate-600 focus:outline-none focus:border-violet-500 transition-all resize-none"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        generateAiImage(aiPrompt);
+                      }
+                    }}
+                  />
+
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => setShowAiImageModal(false)}
+                      className="flex-1 py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-black text-[10px] uppercase tracking-wider transition-all cursor-pointer text-center"
+                    >
+                      {selectedLang === 'or' ? 'ବାତିଲ୍' : 'Cancel'}
+                    </button>
+                    <button
+                      onClick={() => generateAiImage(aiPrompt)}
+                      disabled={!aiPrompt.trim()}
+                      className={`flex-1 py-2.5 px-4 rounded-xl font-black text-[10px] uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                        aiPrompt.trim() 
+                          ? 'bg-violet-600 hover:bg-violet-700 text-white shadow-lg shadow-violet-600/20 hover:scale-[1.02] active:scale-[0.98]' 
+                          : 'bg-slate-800 text-slate-600 cursor-not-allowed'
+                      }`}
+                    >
+                      <Lucide.Sparkles size={12} />
+                      <span>{selectedLang === 'or' ? 'ତିଆରି କରନ୍ତୁ' : 'Generate'}</span>
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>

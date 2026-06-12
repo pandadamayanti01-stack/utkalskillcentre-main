@@ -728,6 +728,175 @@ async function startServer() {
     }
   });
 
+  app.post('/api/ai/generate-image', async (req, res) => {
+    try {
+      const { prompt } = req.body;
+      if (!prompt) {
+        return res.status(400).json({ error: 'prompt is required' });
+      }
+
+      const rotatorKeys = getRotatorKeys();
+      if (rotatorKeys.length === 0) {
+        return res.status(503).json({ error: 'GEMINI_API_KEY and all rotator keys are missing on the server' });
+      }
+
+      let lastError = null;
+
+      for (const keyToUse of rotatorKeys) {
+        try {
+          console.log(`Backend AI: Attempting image generation via key ${keyToUse.substring(0, 12)}...`);
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${keyToUse}`;
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              instances: [
+                { prompt: prompt }
+              ],
+              parameters: {
+                sampleCount: 1,
+                aspectRatio: "1:1",
+                outputMimeType: "image/jpeg"
+              }
+            })
+          });
+
+          if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(`Imagen API error: ${response.status} - ${errText}`);
+          }
+
+          const data = await response.json();
+          if (data.predictions && data.predictions[0] && data.predictions[0].bytesBase64Encoded) {
+            const base64 = data.predictions[0].bytesBase64Encoded;
+            return res.json({ image: `data:image/jpeg;base64,${base64}` });
+          } else {
+            throw new Error(`Invalid response structure from Imagen: ${JSON.stringify(data)}`);
+          }
+        } catch (err: any) {
+          console.error(`Imagen key ${keyToUse.substring(0, 12)} failed:`, err.message);
+          lastError = err;
+          if (err.message.includes('429') || err.message.includes('403') || err.message.includes('401')) {
+            continue; // try next key
+          }
+        }
+      }
+
+      throw lastError || new Error("All rotator keys failed for image generation");
+    } catch (error: any) {
+      console.error("Backend AI Generate Image Error:", error);
+      res.status(500).json({ error: error.message || 'Image Generation failed' });
+    }
+  });
+
+  app.post('/api/ai/refine-sketch', async (req, res) => {
+    try {
+      const { image } = req.body;
+      if (!image) {
+        return res.status(400).json({ error: 'image is required' });
+      }
+
+      const rotatorKeys = getRotatorKeys();
+      if (rotatorKeys.length === 0) {
+        return res.status(503).json({ error: 'GEMINI_API_KEY and all rotator keys are missing on the server' });
+      }
+
+      // Stage 1: Call Gemini 2.5 Flash to analyze the sketch
+      const cleanBase64 = image.includes(',') ? image.split(',')[1] : image;
+      let promptDescription = "";
+      let lastError = null;
+
+      for (const keyToUse of rotatorKeys) {
+        try {
+          console.log(`Backend AI Stage 1: Analyzing sketch via key ${keyToUse.substring(0, 12)}...`);
+          const ai = new GoogleGenerativeAI(keyToUse);
+          const model = ai.getGenerativeModel({
+            model: "gemini-2.5-flash",
+            systemInstruction: "You are an expert educational designer. Analyze the crude blackboard sketch and describe a clean, professional vector diagram overlay based on it. Keep description under 80 words."
+          });
+
+          const contents: any[] = [
+            {
+              role: 'user',
+              parts: [
+                { text: "Analyze this rough blackboard drawing. Identify the diagram, subject matter, or illustration. Generate a highly detailed, professional prompt for an image generator (like Imagen) to create a clean, textbook-quality version of this diagram (clean vector style, white background). Keep output under 80 words." },
+                { inlineData: { mimeType: 'image/jpeg', data: cleanBase64 } }
+              ]
+            }
+          ];
+
+          const result = await model.generateContent({ contents });
+          const text = result.response.text();
+          if (text) {
+            promptDescription = text.trim();
+            break; // Succeeded!
+          }
+        } catch (err: any) {
+          console.error(`Stage 1 key ${keyToUse.substring(0, 12)} failed:`, err.message);
+          lastError = err;
+          if (err.message.includes('429') || err.message.includes('403') || err.message.includes('401')) {
+            continue;
+          }
+        }
+      }
+
+      if (!promptDescription) {
+        throw lastError || new Error("Failed to analyze sketch drawing using any key");
+      }
+
+      console.log("Stage 1 complete. Sketch description:", promptDescription);
+
+      // Stage 2: Call Imagen 3 with the generated prompt description
+      for (const keyToUse of rotatorKeys) {
+        try {
+          console.log(`Backend AI Stage 2: Generating refined diagram via key ${keyToUse.substring(0, 12)}...`);
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${keyToUse}`;
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              instances: [
+                { prompt: promptDescription }
+              ],
+              parameters: {
+                sampleCount: 1,
+                aspectRatio: "1:1",
+                outputMimeType: "image/jpeg"
+              }
+            })
+          });
+
+          if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(`Imagen API error: ${response.status} - ${errText}`);
+          }
+
+          const data = await response.json();
+          if (data.predictions && data.predictions[0] && data.predictions[0].bytesBase64Encoded) {
+            const base64 = data.predictions[0].bytesBase64Encoded;
+            return res.json({ 
+              image: `data:image/jpeg;base64,${base64}`,
+              description: promptDescription
+            });
+          } else {
+            throw new Error(`Invalid response structure from Imagen: ${JSON.stringify(data)}`);
+          }
+        } catch (err: any) {
+          console.error(`Stage 2 key ${keyToUse.substring(0, 12)} failed:`, err.message);
+          lastError = err;
+          if (err.message.includes('429') || err.message.includes('403') || err.message.includes('401')) {
+            continue;
+          }
+        }
+      }
+
+      throw lastError || new Error("All rotator keys failed for image refinement");
+    } catch (error: any) {
+      console.error("Backend AI Refine Sketch Error:", error);
+      res.status(500).json({ error: error.message || 'Sketch Refinement failed' });
+    }
+  });
+
   app.post('/api/ai/generate-matching-quiz', async (req, res) => {
     try {
       const { className, subjectName, language } = req.body;
