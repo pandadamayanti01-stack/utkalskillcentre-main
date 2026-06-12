@@ -837,7 +837,7 @@ export const SishuVatikaSlate: React.FC<SishuVatikaSlateProps> = ({
               </div>
               <div>
                 <h3 className="text-sm md:text-base font-black text-white uppercase tracking-tight">
-                  ଗୁନ୍ଦୁଲୁ ଶିଶୁ ବାଟିକା କଳାପଟା
+                  ଗୁନ୍ଦୁଲୁ ଶିଶୁ ବାଟିକା ସ୍ମାର୍ଟ ବୋର୍ଡ
                 </h3>
                 <span className="text-[9px] md:text-[11px] text-slate-400 font-bold block mt-0.5 leading-none">
                   {selectedLang === 'or' 
@@ -968,7 +968,7 @@ export const SishuVatikaSlate: React.FC<SishuVatikaSlateProps> = ({
                         ମାଗଣା ସୀମା ଶେଷ ହୋଇଛି! ✍️
                       </h3>
                       <p className="text-[11px] md:text-xs font-bold text-slate-350 leading-relaxed">
-                        ଗୁନ୍ଦୁଲୁ କଳାପଟା ସାହାଯ୍ୟରେ ସମସ୍ତ ବିଷୟର ସମାଧାନ ପାଇବା ପାଇଁ ପ୍ରିମିୟମ୍‌କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ!
+                        ଗୁନ୍ଦୁଲୁ ସ୍ମାର୍ଟ ବୋର୍ଡ ସାହାଯ୍ୟରେ ସମସ୍ତ ବିଷୟର ସମାଧାନ ପାଇବା ପାଇଁ ପ୍ରିମିୟମ୍‌କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ!
                       </p>
                     </div>
                     
@@ -1180,7 +1180,7 @@ export const SishuVatikaSlate: React.FC<SishuVatikaSlateProps> = ({
                         ଗୁନ୍ଦୁଲୁ ଆପା ଦେଖୁଛନ୍ତି...
                       </p>
                       <p className="text-[10px] text-slate-500 mt-1 max-w-[250px]">
-                        ଗୁନ୍ଦୁଲୁ ଆପା କଳାପଟାରେ ଅଙ୍କାଯାଇଥିବା ଚିତ୍ରଟିକୁ ଦେଖୁଛନ୍ତି।
+                        ଗୁନ୍ଦୁଲୁ ଆପା ସ୍ମାର୍ଟ ବୋର୍ଡରେ ଅଙ୍କାଯାଇଥିବା ଚିତ୍ରଟିକୁ ଦେଖୁଛନ୍ତି।
                       </p>
                     </div>
                   </div>

@@ -105,19 +105,31 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
 
   // Fullscreen and Orientation lock on mount
   useEffect(() => {
-    try {
-      const doc = document.documentElement;
-      if (doc.requestFullscreen) {
-        doc.requestFullscreen().catch(() => {});
-      } else if ((doc as any).webkitRequestFullscreen) {
-        (doc as any).webkitRequestFullscreen();
-      }
-      if (window.screen && window.screen.orientation && (window.screen.orientation as any).lock) {
-        (window.screen.orientation as any).lock('landscape').catch(() => {});
-      }
-    } catch (e) {}
+    const lockLandscape = () => {
+      try {
+        const doc = document.documentElement;
+        if (doc.requestFullscreen && !document.fullscreenElement) {
+          doc.requestFullscreen().catch(() => {});
+        }
+        if (window.screen && window.screen.orientation && (window.screen.orientation as any).lock) {
+          (window.screen.orientation as any).lock('landscape').catch(() => {});
+        }
+      } catch (e) {}
+    };
+
+    lockLandscape();
+
+    // Re-lock when window gets focus (re-focusing after file uploads or native screens)
+    const handleFocus = () => {
+      setTimeout(lockLandscape, 350);
+    };
+
+    window.addEventListener('focus', handleFocus);
+    document.addEventListener('visibilitychange', handleFocus);
 
     return () => {
+      window.removeEventListener('focus', handleFocus);
+      document.removeEventListener('visibilitychange', handleFocus);
       try {
         if (document.fullscreenElement) {
           document.exitFullscreen().catch(() => {});
@@ -1488,12 +1500,12 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
         initial={{ opacity: 0, scale: 0.93, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.93, y: 15 }}
-        className="w-[92vw] max-w-[1080px] h-[85vh] max-h-[740px] bg-slate-900 border border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden relative z-10 my-4 md:my-0 force-dark-theme flex flex-col"
+        className="w-[96vw] md:w-[92vw] max-w-[1080px] h-[95vh] md:h-[85vh] max-h-[740px] bg-slate-900 border border-slate-800 rounded-[1.5rem] md:rounded-[2.5rem] shadow-2xl overflow-hidden relative z-10 my-1 md:my-0 force-dark-theme flex flex-col"
       >
-        <div className="w-full h-full p-6 flex flex-col gap-4 bg-slate-950/40 relative min-h-0">
+        <div className="w-full h-full p-3 md:p-6 flex flex-col gap-2 md:gap-4 bg-slate-950/40 relative min-h-0">
           
           {/* Header Row */}
-          <div className="flex items-center justify-between border-b border-slate-800/60 pb-3.5 gap-4 flex-wrap md:flex-nowrap">
+          <div className="flex items-center justify-between border-b border-slate-800/60 pb-2 md:pb-3.5 gap-2 md:gap-4 flex-wrap md:flex-nowrap">
             {/* Title & Description */}
             <div className="flex items-center gap-3">
               <div className="p-2.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex-shrink-0">
@@ -1507,7 +1519,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
                   {boardMode === 'teacher' 
                     ? (selectedLang === 'or' ? 'ଶିକ୍ଷକ ସ୍ମାର୍ଟବୋର୍ଡ: ପାଠ୍ୟ ଉଦାହରଣ ଏବଂ ଆଇଡିଆ ପାଇଁ କଳାପଟାରେ ଲେଖନ୍ତୁ।' : 'Teacher Smartboard: Draw templates or write topics to get lesson ideas.')
                     : boardMode === 'anganwadi'
-                    ? (selectedLang === 'or' ? 'ଶିଶୁ ବାଟିକା କଳାପଟା: ଆସ ଅକ୍ଷର ଲେଖିବା ଓ ମଜା ଗପ ଶୁଣିବା!' : 'Sishu Vatika Board: Let\'s trace letters and hear sweet stories!')
+                    ? (selectedLang === 'or' ? 'ଶିଶୁ ବାଟିକା ସ୍ମାର୍ଟ ବୋର୍ଡ: ଆସ ଅକ୍ଷର ଲେଖିବା ଓ ମଜା ଗପ ଶୁଣିବା!' : 'Sishu Vatika Board: Let\'s trace letters and hear sweet stories!')
                     : (selectedLang === 'or' ? 'ଛାତ୍ର ସ୍ମାର୍ଟବୋର୍ଡ: ଅଙ୍କ କିମ୍ବା ପ୍ରଶ୍ନର ସମାଧାନ ପାଇଁ ଲେଖନ୍ତୁ।' : 'Student Board: Write equations or draw diagrams to get Socratic help.')}
                 </span>
               </div>
@@ -1549,7 +1561,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
           {/* Blackboard Board Frame (using class themes) */}
           <div 
             ref={boardFrameRef}
-            className={`flex-1 border-[12px] border-amber-900 rounded-3xl overflow-y-auto scrollbar-hide shadow-[0_10px_30px_rgba(0,0,0,0.5),inset_0_2px_10px_rgba(0,0,0,0.8)] relative select-none board-theme-${boardTheme} transition-all duration-300 min-h-0`}
+            className={`flex-1 border-[6px] md:border-[12px] border-amber-900 rounded-2xl md:rounded-3xl overflow-y-auto scrollbar-hide shadow-[0_10px_30px_rgba(0,0,0,0.5),inset_0_2px_10px_rgba(0,0,0,0.8)] relative select-none board-theme-${boardTheme} transition-all duration-300 min-h-0`}
           >
             <canvas
               ref={canvasRef}
@@ -1761,12 +1773,12 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
                     
                     <div className="space-y-2">
                       <h3 className="text-base md:text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-amber-400 uppercase tracking-wide">
-                        {selectedLang === 'or' ? 'ମାଗଣା ସୀମା ଶେଷ ହୋଇଛି! ✍️' : 'Slate Trial Limit Reached! ✍️'}
+                        {selectedLang === 'or' ? 'ମାଗଣା ସୀମା ଶେଷ ହୋଇଛି! ✍️' : 'Smart Board Limit Reached! ✍️'}
                       </h3>
                       <p className="text-[11px] md:text-xs font-bold text-slate-350 leading-relaxed">
                         {selectedLang === 'or'
-                          ? 'ଗୁନ୍ଦୁଲୁ କଳାପଟା ସ୍କାନର୍ ସାହାଯ୍ୟରେ ସମସ୍ତ ବିଷୟର ଜଟିଳ ଗଣିତ ଏବଂ ପ୍ରଶ୍ନର ସମାଧାନ ପାଇବା ପାଇଁ ପ୍ରିମିୟମ୍‌କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ!'
-                          : 'Upgrade to Gundulu Premium to scan and solve unlimited chalkboard questions, complex equations, and get dynamic step-by-step guidance.'}
+                          ? 'ଗୁନ୍ଦୁଲୁ ସ୍ମାର୍ଟ ବୋର୍ଡ ସ୍କାନର୍ ସାହାଯ୍ୟରେ ସମସ୍ତ ବିଷୟର ଜଟିଳ ଗଣିତ ଏବଂ ପ୍ରଶ୍ନର ସମାଧାନ ପାଇବା ପାଇଁ ପ୍ରିମିୟମ୍‌କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ!'
+                          : 'Upgrade to Gundulu Premium to scan and solve unlimited smart board questions, complex equations, and get dynamic step-by-step guidance.'}
                       </p>
                     </div>
                     
@@ -1797,38 +1809,38 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
 
           {/* Quick Drawing Templates (Hackathon Showcase Tool for Judges only) */}
           {isJudge && (
-            <div className="flex flex-wrap items-center gap-2 bg-slate-950/45 p-3 rounded-2xl border border-white/5 relative overflow-hidden shrink-0">
+            <div className="flex flex-nowrap overflow-x-auto scrollbar-hide items-center gap-2 bg-slate-950/45 p-2.5 rounded-xl border border-white/5 relative overflow-hidden shrink-0">
               <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-transparent pointer-events-none" />
-              <span className="text-[10px] text-amber-400 font-black uppercase tracking-wider flex items-center gap-1.5 z-10 relative">
+              <span className="text-[10px] text-amber-400 font-black uppercase tracking-wider flex items-center gap-1.5 z-10 relative shrink-0">
                 <Lucide.Sparkles size={11} className="animate-pulse text-amber-400 fill-amber-400" />
                 {selectedLang === 'or' ? 'ଶୀଘ୍ର ଡେମୋ ଚିତ୍ର (Demo Drawings):' : 'Demo Templates:'}
               </span>
-              <div className="flex flex-wrap gap-1.5 z-10 relative">
+              <div className="flex flex-nowrap gap-1.5 z-10 relative shrink-0">
                 <button
                   type="button"
                   onClick={() => loadTemplate('equation')}
-                  className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-white/10 hover:border-amber-500/50 hover:bg-slate-800/80 text-white text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-[1.02] active:scale-95 flex items-center gap-1"
+                  className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-white/10 hover:border-amber-500/50 hover:bg-slate-800/80 text-white text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-[1.02] active:scale-95 flex items-center gap-1 shrink-0"
                 >
                   <span>📐 {selectedLang === 'or' ? 'ଦ୍ଵିଘାତ ସମୀକରଣ' : 'Math Equation'}</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => loadTemplate('triangle')}
-                  className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-white/10 hover:border-amber-500/50 hover:bg-slate-800/80 text-white text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-[1.02] active:scale-95 flex items-center gap-1"
+                  className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-white/10 hover:border-amber-500/50 hover:bg-slate-800/80 text-white text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-[1.02] active:scale-95 flex items-center gap-1 shrink-0"
                 >
                   <span>🔺 {selectedLang === 'or' ? 'ଜ୍ୟାମିତିକ ତ୍ରିଭୁଜ' : 'Right Triangle'}</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => loadTemplate('odia')}
-                  className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-white/10 hover:border-amber-500/50 hover:bg-slate-800/80 text-white text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-[1.02] active:scale-95 flex items-center gap-1"
+                  className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-white/10 hover:border-amber-500/50 hover:bg-slate-800/80 text-white text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-[1.02] active:scale-95 flex items-center gap-1 shrink-0"
                 >
                   <span>✍️ {selectedLang === 'or' ? 'ଓଡ଼ିଆ ଶବ୍ଦ (ବାଘ)' : 'Odia Word (ବାଘ)'}</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => loadTemplate('ocr')}
-                  className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-emerald-500/30 hover:border-emerald-400 hover:bg-slate-800/80 text-emerald-400 text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-[1.02] active:scale-95 flex items-center gap-1 shadow-lg shadow-emerald-500/5"
+                  className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-emerald-500/30 hover:border-emerald-400 hover:bg-slate-800/80 text-emerald-400 text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-[1.02] active:scale-95 flex items-center gap-1 shadow-lg shadow-emerald-500/5 shrink-0"
                 >
                   <span>📸 {selectedLang === 'or' ? 'ପାଠ୍ୟପୁସ୍ତକ ସ୍କାନ (OCR)' : 'Textbook OCR Scan'}</span>
                 </button>
@@ -1837,9 +1849,9 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
           )}
 
           {/* Chalk Toolbar controls */}
-          <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-900/60 p-3 rounded-2xl border border-white/5">
+          <div className="flex flex-nowrap overflow-x-auto scrollbar-hide items-center justify-between gap-3 bg-slate-900/60 p-2 md:p-3 rounded-xl md:rounded-2xl border border-white/5 w-full shrink-0">
             {/* Color/Eraser options */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={() => { setIsEraser(false); setBrushColor('#fef8ec'); }}
                 className={`w-7 h-7 rounded-lg border flex items-center justify-center transition-all cursor-pointer ${!isEraser && brushColor === '#fef8ec' ? 'border-amber-400 bg-white/10 scale-105' : 'border-white/10 hover:bg-white/5'}`}
@@ -1878,7 +1890,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
             </div>
 
             {/* Smartboard Image Upload & OCR Tools */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               <input 
                 type="file" 
                 ref={fileInputRef} 
@@ -1932,7 +1944,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
             </div>
 
             {/* Undo / Redo controls */}
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 shrink-0">
               <button
                 onClick={handleUndo}
                 disabled={!canUndo}
@@ -1960,7 +1972,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
             </div>
 
             {/* Brush Width Slider */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Chalk Size:</span>
               <input
                 type="range"
@@ -1975,7 +1987,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
             {/* Blackboard Reset */}
             <button
               onClick={clearBoard}
-              className="px-3 py-1.5 rounded-xl bg-red-500/10 border border-red-500/20 hover:bg-red-500 hover:text-white text-red-400 text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer flex items-center gap-1"
+              className="px-3 py-1.5 rounded-xl bg-red-500/10 border border-red-500/20 hover:bg-red-500 hover:text-white text-red-400 text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer flex items-center gap-1 shrink-0"
             >
               <Lucide.Trash2 size={11} />
               {selectedLang === 'or' ? 'କାଟି ଦିଅନ୍ତୁ' : 'Clear Board'}

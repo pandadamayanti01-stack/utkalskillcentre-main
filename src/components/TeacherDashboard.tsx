@@ -804,18 +804,18 @@ export function TeacherDashboard({
                           <Lucide.PenTool size={26} className="animate-pulse" />
                         </div>
                         <span className="px-2.5 py-1 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-300 text-[8px] font-black uppercase tracking-wider">
-                          {language === 'en' ? 'Gundulu Slate' : 'ଗୁନ୍ଦୁଲୁ କଳାପଟା'}
+                          {language === 'en' ? 'Gundulu Smart Board' : 'ଗୁନ୍ଦୁଲୁ ସ୍ମାର୍ଟ ବୋର୍ଡ'}
                         </span>
                       </div>
                       
                       <div className="space-y-2">
                         <h4 className="text-lg font-black text-white group-hover:text-amber-355 transition-colors">
-                          {language === 'en' ? 'Gundulu Slate Board' : 'ଗୁନ୍ଦୁଲୁ କଳାପଟା'}
+                          {language === 'en' ? 'Gundulu Smart Board' : 'ଗୁନ୍ଦୁଲୁ ସ୍ମାର୍ଟ ବୋର୍ଡ'}
                         </h4>
 
                         <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-300 text-[8.5px] font-black uppercase tracking-wider w-fit">
                           <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_5px_#f59e0b] animate-pulse" />
-                          <span>{language === 'en' ? 'Slate Engine Live' : 'କଳାପଟା ଇଞ୍ଜିନ୍ ସକ୍ରିୟ'}</span>
+                          <span>{language === 'en' ? 'Smart Board Live' : 'ସ୍ମାର୍ଟ ବୋର୍ଡ ସକ୍ରିୟ'}</span>
                         </div>
 
                         <p className="text-xs text-slate-350 leading-relaxed font-medium pt-1">
@@ -840,7 +840,7 @@ export function TeacherDashboard({
                       }}
                       className="relative z-10 w-full py-3.5 mt-6 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-black text-xs uppercase tracking-widest transition-all cursor-pointer shadow-lg shadow-amber-950/35 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 border border-amber-500/30"
                     >
-                      <span>{language === 'en' ? 'Launch Slate Board' : 'କଳାପଟା ଖୋଲନ୍ତୁ'}</span>
+                      <span>{language === 'en' ? 'Launch Smart Board' : 'ସ୍ମାର୍ଟ ବୋର୍ଡ ଖୋଲନ୍ତୁ'}</span>
                       <Lucide.ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                     </button>
                   </motion.div>

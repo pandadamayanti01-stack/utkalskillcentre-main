@@ -473,13 +473,13 @@ export function SishuVatikaDashboard({
                 🖍️
               </div>
               <span className="bg-emerald-200/60 text-emerald-800 text-[10px] font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full">
-                କଳାପଟା
+                ସ୍ମାର୍ଟ ବୋର୍ଡ
               </span>
             </div>
 
             <div>
               <h3 className="text-3xl font-black text-emerald-900 leading-tight mb-2 group-hover:text-emerald-950 transition-colors">
-                ଗୁନ୍ଦୁଲୁ କଳାପଟା
+                ଗୁନ୍ଦୁଲୁ ସ୍ମାର୍ଟ ବୋର୍ଡ
               </h3>
               <p className="text-emerald-700 font-bold text-lg mb-6">
                 ଚାଲ ଚିତ୍ର ଆଙ୍କିବା, ଅକ୍ଷର ଲେଖିବା ଓ ଖେଳିବା!

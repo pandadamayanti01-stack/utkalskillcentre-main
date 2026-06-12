@@ -908,11 +908,11 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
                     <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.2em] shadow-[inset_0_0_10px_rgba(245,158,11,0.15)] whitespace-nowrap">
                       <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_5px_#f59e0b] animate-pulse"></span>
-                      <span>{language === 'en' ? 'Gundulu Slate Board' : 'ଗୁନ୍ଦୁଲୁ କଳାପଟା'}</span>
+                      <span>{language === 'en' ? 'Gundulu Smart Board' : 'ଗୁନ୍ଦୁଲୁ ସ୍ମାର୍ଟ ବୋର୍ଡ'}</span>
                     </div>
                   </div>
                   <h3 className="text-sm leading-tight sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-amber-100 to-slate-300 tracking-tighter group-hover:text-white transition-colors">
-                    {language === 'en' ? "Gundulu Slate Board" : 'ଗୁନ୍ଦୁଲୁ କଳାପଟା'}
+                    {language === 'en' ? "Gundulu Smart Board" : 'ଗୁନ୍ଦୁଲୁ ସ୍ମାର୍ଟ ବୋର୍ଡ'}
                   </h3>
                   <p className="text-slate-400 text-[9px] sm:text-xs font-bold leading-relaxed max-w-[260px] mx-auto group-hover:text-slate-300 transition-colors hidden sm:block text-center">
                     {language === 'en' 
