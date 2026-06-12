@@ -735,6 +735,74 @@ async function startServer() {
         return res.status(400).json({ error: 'prompt is required' });
       }
 
+      // 1. Try Vertex AI Image Generation Route first
+      const useVertex = process.env.USE_VERTEX_AI === 'true';
+      if (useVertex) {
+        try {
+          console.log("Backend AI: Attempting image generation via Vertex AI...");
+          const creds = getServiceAccountCredentials();
+          let projectId = process.env.FIREBASE_PROJECT_ID || 'utkalskillcentre';
+          let accessToken = '';
+
+          if (creds) {
+            projectId = creds.project_id || projectId;
+            const vertexAuth = new google.auth.JWT({
+              email: creds.client_email,
+              key: creds.private_key,
+              scopes: ['https://www.googleapis.com/auth/cloud-platform']
+            });
+            const authClient = await vertexAuth.authorize();
+            accessToken = authClient.access_token || '';
+          } else {
+            const auth = new google.auth.GoogleAuth({
+              scopes: ['https://www.googleapis.com/auth/cloud-platform']
+            });
+            const authClient = await auth.getClient();
+            const tokenResponse = await authClient.getAccessToken();
+            accessToken = tokenResponse.token || '';
+            projectId = await auth.getProjectId() || projectId;
+          }
+
+          if (accessToken) {
+            const region = process.env.VERTEX_AI_REGION || 'us-central1';
+            const url = `https://${region}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${region}/publishers/google/models/imagen-3.0-generate-002:predict`;
+            
+            const response = await fetch(url, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+              },
+              body: JSON.stringify({
+                instances: [
+                  { prompt: prompt }
+                ],
+                parameters: {
+                  sampleCount: 1,
+                  aspectRatio: "1:1",
+                  outputMimeType: "image/jpeg"
+                }
+              })
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              if (data.predictions && data.predictions[0] && data.predictions[0].bytesBase64Encoded) {
+                const base64 = data.predictions[0].bytesBase64Encoded;
+                console.log("Backend AI: Image generated successfully via Vertex AI.");
+                return res.json({ image: `data:image/jpeg;base64,${base64}` });
+              }
+            } else {
+              const errText = await response.text();
+              console.warn("Vertex AI Imagen returned non-OK status:", response.status, errText);
+            }
+          }
+        } catch (vertexErr: any) {
+          console.error("Vertex AI Imagen generation route failed:", vertexErr.message);
+        }
+      }
+
+      // 2. Fallback to Google AI Studio Imagen 3 REST API using Key Rotator
       const rotatorKeys = getRotatorKeys();
       if (rotatorKeys.length === 0) {
         return res.status(503).json({ error: 'GEMINI_API_KEY and all rotator keys are missing on the server' });
@@ -782,7 +850,7 @@ async function startServer() {
         }
       }
 
-      throw lastError || new Error("All rotator keys failed for image generation");
+      throw lastError || new Error("All rotator keys and Vertex AI failed for image generation");
     } catch (error: any) {
       console.error("Backend AI Generate Image Error:", error);
       res.status(500).json({ error: error.message || 'Image Generation failed' });
@@ -796,101 +864,241 @@ async function startServer() {
         return res.status(400).json({ error: 'image is required' });
       }
 
-      const rotatorKeys = getRotatorKeys();
-      if (rotatorKeys.length === 0) {
-        return res.status(503).json({ error: 'GEMINI_API_KEY and all rotator keys are missing on the server' });
-      }
-
-      // Stage 1: Call Gemini 2.5 Flash to analyze the sketch
       const cleanBase64 = image.includes(',') ? image.split(',')[1] : image;
       let promptDescription = "";
       let lastError = null;
 
-      for (const keyToUse of rotatorKeys) {
+      // 1. Try Vertex AI Route for Stage 1 (Gemini 2.5 Flash analysis)
+      const useVertex = process.env.USE_VERTEX_AI === 'true';
+      if (useVertex) {
         try {
-          console.log(`Backend AI Stage 1: Analyzing sketch via key ${keyToUse.substring(0, 12)}...`);
-          const ai = new GoogleGenerativeAI(keyToUse);
-          const model = ai.getGenerativeModel({
-            model: "gemini-2.5-flash",
-            systemInstruction: "You are an expert educational designer. Analyze the crude blackboard sketch and describe a clean, professional vector diagram overlay based on it. Keep description under 80 words."
-          });
+          console.log("Backend AI Stage 1: Analyzing sketch via Vertex AI...");
+          const creds = getServiceAccountCredentials();
+          let projectId = process.env.FIREBASE_PROJECT_ID || 'utkalskillcentre';
+          let accessToken = '';
 
-          const contents: any[] = [
-            {
-              role: 'user',
-              parts: [
-                { text: "Analyze this rough blackboard drawing. Identify the diagram, subject matter, or illustration. Generate a highly detailed, professional prompt for an image generator (like Imagen) to create a clean, textbook-quality version of this diagram (clean vector style, white background). Keep output under 80 words." },
-                { inlineData: { mimeType: 'image/jpeg', data: cleanBase64 } }
-              ]
-            }
-          ];
-
-          const result = await model.generateContent({ contents });
-          const text = result.response.text();
-          if (text) {
-            promptDescription = text.trim();
-            break; // Succeeded!
+          if (creds) {
+            projectId = creds.project_id || projectId;
+            const vertexAuth = new google.auth.JWT({
+              email: creds.client_email,
+              key: creds.private_key,
+              scopes: ['https://www.googleapis.com/auth/cloud-platform']
+            });
+            const authClient = await vertexAuth.authorize();
+            accessToken = authClient.access_token || '';
+          } else {
+            const auth = new google.auth.GoogleAuth({
+              scopes: ['https://www.googleapis.com/auth/cloud-platform']
+            });
+            const authClient = await auth.getClient();
+            const tokenResponse = await authClient.getAccessToken();
+            accessToken = tokenResponse.token || '';
+            projectId = await auth.getProjectId() || projectId;
           }
-        } catch (err: any) {
-          console.error(`Stage 1 key ${keyToUse.substring(0, 12)} failed:`, err.message);
-          lastError = err;
-          if (err.message.includes('429') || err.message.includes('403') || err.message.includes('401')) {
-            continue;
+
+          if (accessToken) {
+            const url = `https://aiplatform.googleapis.com/v1/projects/${projectId}/locations/global/publishers/google/models/gemini-2.5-flash:generateContent`;
+            const response = await fetch(url, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+              },
+              body: JSON.stringify({
+                contents: [
+                  {
+                    role: "user",
+                    parts: [
+                      { text: "Analyze this rough blackboard drawing. Identify the diagram, subject matter, or illustration. Generate a highly detailed, professional prompt for an image generator (like Imagen) to create a clean, textbook-quality version of this diagram (clean vector style, white background). Keep output under 80 words." },
+                      { inlineData: { mimeType: 'image/jpeg', data: cleanBase64 } }
+                    ]
+                  }
+                ],
+                systemInstruction: {
+                  parts: [{ text: "You are an expert educational designer. Analyze the crude blackboard sketch and describe a clean, professional vector diagram overlay based on it. Keep description under 80 words." }]
+                }
+              })
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+              if (text) {
+                promptDescription = text.trim();
+                console.log("Backend AI Stage 1: Sketch analyzed successfully via Vertex AI:", promptDescription);
+              }
+            } else {
+              const errText = await response.text();
+              console.warn("Vertex AI Stage 1 returned non-OK status:", response.status, errText);
+            }
+          }
+        } catch (vertexErr: any) {
+          console.error("Vertex AI Stage 1 failed:", vertexErr.message);
+        }
+      }
+
+      // If Vertex AI didn't run or fail, fallback to Rotator Keys for Stage 1
+      if (!promptDescription) {
+        const rotatorKeys = getRotatorKeys();
+        for (const keyToUse of rotatorKeys) {
+          try {
+            console.log(`Backend AI Stage 1: Analyzing sketch via key ${keyToUse.substring(0, 12)}...`);
+            const ai = new GoogleGenerativeAI(keyToUse);
+            const model = ai.getGenerativeModel({
+              model: "gemini-2.5-flash",
+              systemInstruction: "You are an expert educational designer. Analyze the crude blackboard sketch and describe a clean, professional vector diagram overlay based on it. Keep description under 80 words."
+            });
+
+            const contents: any[] = [
+              {
+                role: 'user',
+                parts: [
+                  { text: "Analyze this rough blackboard drawing. Identify the diagram, subject matter, or illustration. Generate a highly detailed, professional prompt for an image generator (like Imagen) to create a clean, textbook-quality version of this diagram (clean vector style, white background). Keep output under 80 words." },
+                  { inlineData: { mimeType: 'image/jpeg', data: cleanBase64 } }
+                ]
+              }
+            ];
+
+            const result = await model.generateContent({ contents });
+            const text = result.response.text();
+            if (text) {
+              promptDescription = text.trim();
+              break;
+            }
+          } catch (err: any) {
+            console.error(`Stage 1 key ${keyToUse.substring(0, 12)} failed:`, err.message);
+            lastError = err;
+            if (err.message.includes('429') || err.message.includes('403') || err.message.includes('401')) {
+              continue;
+            }
           }
         }
       }
 
       if (!promptDescription) {
-        throw lastError || new Error("Failed to analyze sketch drawing using any key");
+        throw lastError || new Error("Failed to analyze sketch drawing using any key or Vertex AI");
       }
 
-      console.log("Stage 1 complete. Sketch description:", promptDescription);
-
       // Stage 2: Call Imagen 3 with the generated prompt description
-      for (const keyToUse of rotatorKeys) {
+      let imageResultBase64 = "";
+
+      // Try Vertex AI Route for Stage 2 first
+      if (useVertex) {
         try {
-          console.log(`Backend AI Stage 2: Generating refined diagram via key ${keyToUse.substring(0, 12)}...`);
-          const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${keyToUse}`;
-          const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              instances: [
-                { prompt: promptDescription }
-              ],
-              parameters: {
-                sampleCount: 1,
-                aspectRatio: "1:1",
-                outputMimeType: "image/jpeg"
-              }
-            })
-          });
+          console.log("Backend AI Stage 2: Generating refined diagram via Vertex AI...");
+          const creds = getServiceAccountCredentials();
+          let projectId = process.env.FIREBASE_PROJECT_ID || 'utkalskillcentre';
+          let accessToken = '';
 
-          if (!response.ok) {
-            const errText = await response.text();
-            throw new Error(`Imagen API error: ${response.status} - ${errText}`);
-          }
-
-          const data = await response.json();
-          if (data.predictions && data.predictions[0] && data.predictions[0].bytesBase64Encoded) {
-            const base64 = data.predictions[0].bytesBase64Encoded;
-            return res.json({ 
-              image: `data:image/jpeg;base64,${base64}`,
-              description: promptDescription
+          if (creds) {
+            projectId = creds.project_id || projectId;
+            const vertexAuth = new google.auth.JWT({
+              email: creds.client_email,
+              key: creds.private_key,
+              scopes: ['https://www.googleapis.com/auth/cloud-platform']
             });
+            const authClient = await vertexAuth.authorize();
+            accessToken = authClient.access_token || '';
           } else {
-            throw new Error(`Invalid response structure from Imagen: ${JSON.stringify(data)}`);
+            const auth = new google.auth.GoogleAuth({
+              scopes: ['https://www.googleapis.com/auth/cloud-platform']
+            });
+            const authClient = await auth.getClient();
+            const tokenResponse = await authClient.getAccessToken();
+            accessToken = tokenResponse.token || '';
+            projectId = await auth.getProjectId() || projectId;
           }
-        } catch (err: any) {
-          console.error(`Stage 2 key ${keyToUse.substring(0, 12)} failed:`, err.message);
-          lastError = err;
-          if (err.message.includes('429') || err.message.includes('403') || err.message.includes('401')) {
-            continue;
+
+          if (accessToken) {
+            const region = process.env.VERTEX_AI_REGION || 'us-central1';
+            const url = `https://${region}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${region}/publishers/google/models/imagen-3.0-generate-002:predict`;
+            
+            const response = await fetch(url, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+              },
+              body: JSON.stringify({
+                instances: [
+                  { prompt: promptDescription }
+                ],
+                parameters: {
+                  sampleCount: 1,
+                  aspectRatio: "1:1",
+                  outputMimeType: "image/jpeg"
+                }
+              })
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              if (data.predictions && data.predictions[0] && data.predictions[0].bytesBase64Encoded) {
+                imageResultBase64 = data.predictions[0].bytesBase64Encoded;
+                console.log("Backend AI Stage 2: Refined diagram generated successfully via Vertex AI.");
+              }
+            } else {
+              const errText = await response.text();
+              console.warn("Vertex AI Stage 2 returned non-OK status:", response.status, errText);
+            }
+          }
+        } catch (vertexErr: any) {
+          console.error("Vertex AI Stage 2 failed:", vertexErr.message);
+        }
+      }
+
+      // Fallback to Rotator Keys for Stage 2 if Vertex AI failed
+      if (!imageResultBase64) {
+        const rotatorKeys = getRotatorKeys();
+        for (const keyToUse of rotatorKeys) {
+          try {
+            console.log(`Backend AI Stage 2: Generating refined diagram via key ${keyToUse.substring(0, 12)}...`);
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${keyToUse}`;
+            const response = await fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                instances: [
+                  { prompt: promptDescription }
+                ],
+                parameters: {
+                  sampleCount: 1,
+                  aspectRatio: "1:1",
+                  outputMimeType: "image/jpeg"
+                }
+              })
+            });
+
+            if (!response.ok) {
+              const errText = await response.text();
+              throw new Error(`Imagen API error: ${response.status} - ${errText}`);
+            }
+
+            const data = await response.json();
+            if (data.predictions && data.predictions[0] && data.predictions[0].bytesBase64Encoded) {
+              imageResultBase64 = data.predictions[0].bytesBase64Encoded;
+              break;
+            } else {
+              throw new Error(`Invalid response structure from Imagen: ${JSON.stringify(data)}`);
+            }
+          } catch (err: any) {
+            console.error(`Stage 2 key ${keyToUse.substring(0, 12)} failed:`, err.message);
+            lastError = err;
+            if (err.message.includes('429') || err.message.includes('403') || err.message.includes('401')) {
+              continue;
+            }
           }
         }
       }
 
-      throw lastError || new Error("All rotator keys failed for image refinement");
+      if (imageResultBase64) {
+        return res.json({ 
+          image: `data:image/jpeg;base64,${imageResultBase64}`,
+          description: promptDescription
+        });
+      }
+
+      throw lastError || new Error("All rotator keys and Vertex AI failed for image refinement");
     } catch (error: any) {
       console.error("Backend AI Refine Sketch Error:", error);
       res.status(500).json({ error: error.message || 'Sketch Refinement failed' });
