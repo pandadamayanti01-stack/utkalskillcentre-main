@@ -115,7 +115,14 @@ export async function getYoutubeVideoData(videoId: string) {
   const url = `https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet&id=${videoId}&key=${apiKey}`;
   const res = await fetch(url);
   if (!res.ok) {
-    throw new Error(`YouTube API returned status ${res.status}`);
+    let errMsg = `YouTube API returned status ${res.status}`;
+    try {
+      const errData = await res.json();
+      if (errData?.error?.message) {
+        errMsg += `: ${errData.error.message}`;
+      }
+    } catch (_) {}
+    throw new Error(errMsg);
   }
   const data = await res.json();
   if (!data.items || data.items.length === 0) {
@@ -137,7 +144,14 @@ export async function getYoutubeVideosDataBatch(videoIds: string[]) {
   const url = `https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet&id=${idsStr}&key=${apiKey}`;
   const res = await fetch(url);
   if (!res.ok) {
-    throw new Error(`YouTube API returned status ${res.status}`);
+    let errMsg = `YouTube API returned status ${res.status}`;
+    try {
+      const errData = await res.json();
+      if (errData?.error?.message) {
+        errMsg += `: ${errData.error.message}`;
+      }
+    } catch (_) {}
+    throw new Error(errMsg);
   }
   const data = await res.json();
   return data.items || [];
@@ -613,7 +627,14 @@ export async function runAutomatedSyncForSubject(
     try {
       const searchRes = await fetch(searchUrl);
       if (!searchRes.ok) {
-        throw new Error(`YouTube Search failed with status ${searchRes.status}`);
+        let errMsg = `YouTube Search failed with status ${searchRes.status}`;
+        try {
+          const errData = await searchRes.json();
+          if (errData?.error?.message) {
+            errMsg += `: ${errData.error.message}`;
+          }
+        } catch (_) {}
+        throw new Error(errMsg);
       }
       
       const searchData = await searchRes.json();
