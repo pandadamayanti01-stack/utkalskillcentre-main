@@ -1848,24 +1848,28 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
                 <span>{selectedLang === 'or' ? 'ଛବି ଆଣନ୍ତୁ' : 'Upload Image'}</span>
               </button>
 
-              <button
-                onClick={() => setShowAiImageModal(true)}
-                className="px-3 py-1.5 rounded-xl bg-slate-950/80 border border-violet-500/30 hover:border-violet-400 hover:bg-slate-800 text-violet-400 text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5"
-                title={selectedLang === 'or' ? 'ଏଆଇ ଚିତ୍ର (AI Image)' : 'AI Image'}
-              >
-                <Lucide.Palette size={12} />
-                <span>{selectedLang === 'or' ? 'ଏଆଇ ଚିତ୍ର' : 'AI Image'}</span>
-              </button>
+              {boardMode === 'teacher' && (
+                <>
+                  <button
+                    onClick={() => setShowAiImageModal(true)}
+                    className="px-3 py-1.5 rounded-xl bg-slate-950/80 border border-violet-500/30 hover:border-violet-400 hover:bg-slate-800 text-violet-400 text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5"
+                    title={selectedLang === 'or' ? 'ଏଆଇ ଚିତ୍ର (AI Image)' : 'AI Image'}
+                  >
+                    <Lucide.Palette size={12} />
+                    <span>{selectedLang === 'or' ? 'ଏଆଇ ଚିତ୍ର' : 'AI Image'}</span>
+                  </button>
 
-              <button
-                onClick={refineSketch}
-                disabled={generatingImage}
-                className="px-3 py-1.5 rounded-xl bg-slate-950/80 border border-cyan-500/30 hover:border-cyan-400 hover:bg-slate-800 text-cyan-400 text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5"
-                title={selectedLang === 'or' ? 'ଚିତ୍ର ସୁଧାରନ୍ତୁ (Refine Drawing)' : 'AI Refine'}
-              >
-                <Lucide.Wand2 size={12} className={generatingImage ? "animate-spin" : ""} />
-                <span>{selectedLang === 'or' ? 'ସୁଧାରନ୍ତୁ' : 'AI Refine'}</span>
-              </button>
+                  <button
+                    onClick={refineSketch}
+                    disabled={generatingImage}
+                    className="px-3 py-1.5 rounded-xl bg-slate-950/80 border border-cyan-500/30 hover:border-cyan-400 hover:bg-slate-800 text-cyan-400 text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5"
+                    title={selectedLang === 'or' ? 'ଚିତ୍ର ସୁଧାରନ୍ତୁ (Refine Drawing)' : 'AI Refine'}
+                  >
+                    <Lucide.Wand2 size={12} className={generatingImage ? "animate-spin" : ""} />
+                    <span>{selectedLang === 'or' ? 'ସୁଧାରନ୍ତୁ' : 'AI Refine'}</span>
+                  </button>
+                </>
+              )}
 
               {(boardMode === 'student' || boardMode === 'teacher') && (
                 <button
