@@ -755,6 +755,42 @@ export async function runAutomatedSyncForSubject(
 // Register routing endpoints on the Express application
 export function registerYoutubeSyncAutomation(app: Express, providedAdminApp: App | null, databaseId: string) {
   
+  // Endpoint to proxy YouTube search queries securely without exposing the API key on the frontend
+  app.get('/api/admin/videos/search', async (req, res) => {
+    try {
+      const { q, maxResults } = req.query;
+      if (!q) {
+        return res.status(400).json({ error: 'Missing search query parameter (q).' });
+      }
+
+      const apiKey = getYoutubeApiKey();
+      if (!apiKey) {
+        return res.status(503).json({ error: 'YouTube API key is not configured.' });
+      }
+
+      const limit = Number(maxResults) || 15;
+      const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(String(q))}&type=video&key=${apiKey}&maxResults=${limit}&order=relevance`;
+
+      const searchRes = await fetch(searchUrl);
+      if (!searchRes.ok) {
+        let errMsg = `YouTube Search failed with status ${searchRes.status}`;
+        try {
+          const errData = await searchRes.json();
+          if (errData?.error?.message) {
+            errMsg += `: ${errData.error.message}`;
+          }
+        } catch (_) {}
+        return res.status(searchRes.status).json({ error: errMsg });
+      }
+
+      const searchData = await searchRes.json();
+      return res.json(searchData);
+    } catch (error: unknown) {
+      console.error('[YouTube Sync API] Secure search proxy error:', error);
+      return res.status(500).json({ error: 'Failed to query YouTube API.', details: String(error) });
+    }
+  });
+
   // Endpoint to manually trigger A/B Trial evaluations
   app.all('/api/admin/videos/trial-eval', async (req, res) => {
     try {

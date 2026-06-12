@@ -256,9 +256,12 @@ export function VideoCuratorTab() {
       const subjectName = getSubjectDisplayName(selectedClass, selectedSubject, 'en');
       const cleanChapterName = formatChapterName(chapterName);
       const query = `Class ${selectedClass} ${subjectName} ${cleanChapterName} Odia Medium BSE Odisha`;
-      const youtubeApiKey = import.meta.env.VITE_YOUTUBE_API_KEY || "";
-      const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&key=${youtubeApiKey}&maxResults=15&order=relevance`);
+      const res = await fetch(`/api/admin/videos/search?q=${encodeURIComponent(query)}&maxResults=15`);
       const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to search YouTube.');
+      }
       
       if (data.items && data.items.length > 0) {
         const urls = data.items.map((item: any) => `https://www.youtube.com/watch?v=${item.id.videoId}`);
