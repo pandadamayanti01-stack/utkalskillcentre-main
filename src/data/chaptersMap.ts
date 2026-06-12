@@ -206,7 +206,6 @@ export const CHAPTERS_MAP: Record<string, Record<string, string[]>> = {
       "Chapter 9 - ସମବଣ୍ଟନ"
     ],
     "odia": [
-      "Chapter 1 - Our School",
       "Class3_Ch01_Kehi_Nuhen_Ta_Sari",
       "Class3_Ch02_Pimpudi",
       "Class3_Ch03_Luchakali_Khela",
