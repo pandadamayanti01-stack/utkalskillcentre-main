@@ -71,6 +71,18 @@ import { capDailyMcqQuestionList, DAILY_MCQ_QUESTION_COUNT, getDailyMcqMarksForI
 import { translations } from '../translations.js';
 import { createGoogleAuth } from './googleCredentials.js';
 import { generateMcqsWithGemini } from '../utils/geminiMcqGenerator.js';
+import {
+  ROADMAP_DATA_1,
+  ROADMAP_DATA_2,
+  ROADMAP_DATA_3,
+  ROADMAP_DATA_4,
+  ROADMAP_DATA_5,
+  ROADMAP_DATA_6,
+  ROADMAP_DATA_7,
+  ROADMAP_DATA_8,
+  ROADMAP_DATA_9,
+  ROADMAP_DATA_10
+} from '../data/roadmapData.js';
 
 const DEFAULT_AUTOMATION_TIME = '07:00';
 const DEFAULT_AUTOMATION_TIME_ZONE = 'Asia/Kolkata';
@@ -113,6 +125,7 @@ type GeneratedDailyMcqResult = {
   board: string;
   activeDate: string;
   status: 'draft' | 'published';
+  month?: string;
   questions: DailyMcqQuestion[];
   source: {
     textbookId: string;
@@ -340,36 +353,105 @@ async function loadUrlTextContent(url: string): Promise<DriveContentResult> {
   throw new Error(`Unsupported textbook URL content type for auto-generation: ${mimeType}`);
 }
 
-const TEXTBOOK_BUCKET_NAME = process.env.TEXTBOOK_STORAGE_BUCKET || 'utkalskillcentre-admin';
+const TEXTBOOK_BUCKET_NAME = process.env.FIREBASE_STORAGE_BUCKET || process.env.TEXTBOOK_STORAGE_BUCKET || 'utkalskillcentre.firebasestorage.app';
 
 import { SUBJECT_FILE_KEYWORDS } from '../constants.js';
 
-async function loadTextbookFromBucket(adminApp: App, className: string, subject: string): Promise<{ driveContent: DriveContentResult; source: GeneratedDailyMcqResult['source'] } | null> {
+function getSubjectFolderNames(subject: string): string[] {
+  const s = subject.toLowerCase().trim();
+  const list = [subject];
+  
+  const capitalized = s.split('_').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join('_');
+  const readable = s.split('_').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
+  const uppercase = s.toUpperCase();
+  const lowercase = s.toLowerCase();
+  
+  list.push(capitalized, readable, uppercase, lowercase);
+
+  if (s === 'math' || s === 'mathematics') {
+    list.push('Mathematics', 'mathematics', 'Maths', 'maths', 'Math', 'math', 'Algebra', 'Geometry');
+  }
+  if (s === 'science') {
+    list.push('Science', 'science', 'Physical_science', 'Life_science', 'Physical science', 'Life science', 'Science_curiosity', 'Science Curiosity');
+  }
+  if (s === 'social_science' || s === 'social') {
+    list.push('Social_science', 'Social science', 'Social Science', 'History', 'Geography', 'Social Studies', 'Social_studies');
+  }
+  if (s === 'physical_education' || s === 'physical') {
+    list.push('Physical_education', 'Physical education', 'Physical Education', 'Physical', 'physical');
+  }
+  if (s === 'vocational') {
+    list.push('Vocational', 'vocational');
+  }
+
+  return Array.from(new Set(list.filter(Boolean)));
+}
+
+async function loadTextbookFromBucket(adminApp: App, className: string, subject: string, chapterTitle?: string): Promise<{ driveContent: DriveContentResult; source: GeneratedDailyMcqResult['source'] } | null> {
   const classDigit = className.replace(/[^0-9]/g, '');
-  // Try both Class X and Class_X folder patterns
-  const possibleClassFolders = [`Class ${classDigit}/`, `Class_${classDigit}/`];
+  // Try both Class X and Class_X folder patterns inside the Chapter Wise Text Book directory
+  const possibleClassFolders = [
+    `Chapter Wise Text Book/Class ${classDigit}/`,
+    `Chapter Wise Text Book/Class_${classDigit}/`
+  ];
+  
   const subjectKey = normalizeSubjectKey(subject);
   const keywords = SUBJECT_FILE_KEYWORDS[subjectKey] || [subjectKey.replace(/_/g, ' '), subjectKey.replace(/_/g, '')];
 
+  let chNum: number | null = null;
+  if (chapterTitle) {
+    const match = chapterTitle.match(/(?:chapter|ch\.?|lesson|unit)\s*(\d+)/i);
+    if (match) chNum = parseInt(match[1]);
+  }
+
   try {
     const bucket = getAdminStorage(adminApp).bucket(TEXTBOOK_BUCKET_NAME);
-    let bestScore = 0;
     let bestFile = null;
     let bestFileName = '';
     
-    // Build possible folder patterns based on your bucket structure: "Class X/Subject/"
-    const subjectFolder = subject.charAt(0).toUpperCase() + subject.slice(1);
+    // Build possible folder patterns based on your bucket structure
     const folderSearchPatterns = [];
+    const folderCandidates = getSubjectFolderNames(subject);
     for (const classFolder of possibleClassFolders) {
-      folderSearchPatterns.push(`${classFolder}${subjectFolder}/`);
-      folderSearchPatterns.push(classFolder); // Fallback to root of Class folder
+      for (const folderCandidate of folderCandidates) {
+        folderSearchPatterns.push(`${classFolder}${folderCandidate}/`);
+      }
     }
 
     for (const prefix of folderSearchPatterns) {
       console.log(`[Bucket Search] Checking prefix: ${prefix}`);
       const [files] = await bucket.getFiles({ prefix, maxResults: 50 });
       const pdfFiles = files.filter((f) => f.name.toLowerCase().endsWith('.pdf'));
-      
+      if (pdfFiles.length === 0) continue;
+
+      // If we have a chapter number, try to find the specific chapter PDF file
+      if (chNum !== null) {
+        const chPatterns = [
+          `chapter ${chNum}`,
+          `chapter_${chNum}`,
+          `chapter ${String(chNum).padStart(2, '0')}`,
+          `chapter_${String(chNum).padStart(2, '0')}`,
+          `ch${String(chNum).padStart(2, '0')}`,
+          `ch${chNum}`,
+          `ch_${String(chNum).padStart(2, '0')}`,
+          `ch_${chNum}`
+        ];
+        
+        const matched = pdfFiles.find(f => {
+          const lowerName = f.name.toLowerCase();
+          return chPatterns.some(p => lowerName.includes(p));
+        });
+        
+        if (matched) {
+          bestFile = matched;
+          bestFileName = matched.name;
+          console.log(`[Bucket Search] Found chapter-specific file: ${bestFileName}`);
+          break;
+        }
+      }
+
+      // Fallback: search using subject keywords and match score
+      let bestScore = 0;
       for (const f of pdfFiles) {
         const lower = f.name.toLowerCase().replace(/[_\s]+/g, '');
         let score = 0;
@@ -377,9 +459,6 @@ async function loadTextbookFromBucket(adminApp: App, className: string, subject:
           const normKw = kw.toLowerCase().replace(/[_\s]+/g, '');
           if (lower.includes(normKw)) score += normKw.length;
         }
-        
-        // Bonus for being in the correct subject subfolder
-        if (f.name.includes(`/${subjectFolder}/`)) score += 10;
 
         if (score > bestScore) {
           bestScore = score;
@@ -387,10 +466,14 @@ async function loadTextbookFromBucket(adminApp: App, className: string, subject:
           bestFileName = f.name;
         }
       }
-      if (bestFile && bestScore > 5) break; // Found a good match in the subject folder, stop searching
+      
+      if (bestFile && bestScore > 5) {
+        console.log(`[Bucket Search] Found fallback matching file: ${bestFileName} (score: ${bestScore})`);
+        break;
+      }
     }
     
-    if (!bestFile || bestScore <= 0) {
+    if (!bestFile) {
       console.warn(`[Bucket Debug] No PDF file matched keywords for ${className}/${subject} in ${TEXTBOOK_BUCKET_NAME}`);
       return null;
     }
@@ -591,6 +674,7 @@ async function generateQuestionsFromText(input: {
   board?: string;
   activeDate: string;
   pdfBuffer: Buffer;
+  chapters?: string[];
 }) {
   const target = DAILY_MCQ_QUESTION_COUNT;
   if (!input.pdfBuffer || input.pdfBuffer.length === 0) {
@@ -599,7 +683,14 @@ async function generateQuestionsFromText(input: {
   
   console.log('[DailyMCQ] Generating with Native PDF Vision...');
   // Pass the raw buffer directly to our updated Gemini utility
-  const mcqs = await generateMcqsWithGemini(input.pdfBuffer, Math.max(DAILY_MCQ_QUESTION_COUNT + 5, 15), input.subject);
+  const mcqs = await generateMcqsWithGemini(
+    input.pdfBuffer,
+    Math.max(DAILY_MCQ_QUESTION_COUNT + 5, 15),
+    input.subject,
+    'daily',
+    'medium',
+    input.chapters
+  );
   
   // Validate and cap the MCQs
   const questions = cleanGeneratedQuestions(mcqs, input.subject);
@@ -646,7 +737,7 @@ async function findMatchingTextbookSource(adminApp: App, databaseId: string, par
 
 async function upsertDailyMcq(adminApp: App, databaseId: string, result: GeneratedDailyMcqResult) {
   const db = getDatabase(adminApp, databaseId);
-  const docId = `${result.class}_${result.activeDate}`;
+  const docId = `${result.class}_${result.subject}_${result.activeDate}`;
   const docRef = db.collection('daily_mcqs').doc(docId);
 
   const questions = capDailyMcqQuestionList(result.questions);
@@ -658,6 +749,7 @@ async function upsertDailyMcq(adminApp: App, databaseId: string, result: Generat
     board: result.board || 'odisha',
     activeDate: result.activeDate,
     status: result.status,
+    month: result.month || '',
     questions,
     source: result.source,
     updatedAt: FieldValue.serverTimestamp(),
@@ -674,9 +766,12 @@ async function buildGeneratedDailyMcq(adminApp: App, databaseId: string, params:
   board?: string;
   title?: string;
   status?: 'draft' | 'published';
+  chapters?: string[];
+  monthString?: string;
 }) {
   // 1. Strictly load from Firebase Storage bucket
-  const bucketResult = await loadTextbookFromBucket(adminApp, params.className, params.subject);
+  const targetChapter = Array.isArray(params.chapters) && params.chapters.length > 0 ? params.chapters[0] : undefined;
+  const bucketResult = await loadTextbookFromBucket(adminApp, params.className, params.subject, targetChapter);
   
   if (!bucketResult) {
     const classDigit = params.className.replace(/[^0-9]/g, '');
@@ -693,6 +788,7 @@ async function buildGeneratedDailyMcq(adminApp: App, databaseId: string, params:
     board: params.board || 'odisha',
     activeDate: params.activeDate,
     pdfBuffer: driveContent.buffer!,
+    chapters: params.chapters,
   });
 
   return {
@@ -702,6 +798,7 @@ async function buildGeneratedDailyMcq(adminApp: App, databaseId: string, params:
     board: params.board || 'odisha',
     activeDate: params.activeDate,
     status: params.status || 'draft',
+    month: params.monthString,
     questions,
     source,
   } satisfies GeneratedDailyMcqResult;
@@ -739,6 +836,35 @@ async function getAvailableBucketSubjects(adminApp: App, className: string): Pro
   }
 }
 
+const ROADMAPS_BY_CLASS: Record<string, any[]> = {
+  class1: ROADMAP_DATA_1,
+  class2: ROADMAP_DATA_2,
+  class3: ROADMAP_DATA_3,
+  class4: ROADMAP_DATA_4,
+  class5: ROADMAP_DATA_5,
+  class6: ROADMAP_DATA_6,
+  class7: ROADMAP_DATA_7,
+  class8: ROADMAP_DATA_8,
+  class9: ROADMAP_DATA_9,
+  class10: ROADMAP_DATA_10,
+};
+
+function mapRoadmapSubjectToStandard(roadmapSubject: string): string {
+  const s = String(roadmapSubject || '').toLowerCase().trim();
+  if (s === 'ganita_khela' || s === 'maja_majare_ganita' || s === 'math' || s === 'algebra' || s === 'geometry') return 'math';
+  if (s === 'jhulana_1' || s === 'jhulana_2' || s === 'odia' || s === 'odia_grammar' || s === 'sahitya') return 'odia';
+  if (s === 'pallavi' || s === 'english' || s === 'english_grammar') return 'english';
+  if (s === 'paribesa_patha' || s === 'evs') return 'evs';
+  if (s === 'science' || s === 'physical_science' || s === 'life_science' || s === 'science_curiosity') return 'science';
+  if (s === 'social_science' || s === 'history' || s === 'geography') return 'social_science';
+  if (s === 'sanskrit' || s === 'sanskrit_grammar') return 'sanskrit';
+  if (s === 'hindi' || s === 'hindi_grammar') return 'hindi';
+  if (s === 'vocational' || s === 'vocational_agriculture' || s === 'vocational_automotive' || s === 'vocational_tourism' || s === 'vocational_electronics') return 'vocational';
+  if (s === 'art' || s === 'kala_sikhya' || s === 'kala_kruti') return 'art';
+  if (s === 'physical_education' || s === 'sharirika_sikhya' || s === 'physical') return 'physical_education';
+  return s;
+}
+
 export async function runScheduledGeneration(adminApp: App, databaseId: string, dateString?: string, specificClassName?: string) {
   const db = getDatabase(adminApp, databaseId);
   const settingsDoc = await db.collection('system_settings').doc('config').get();
@@ -749,54 +875,133 @@ export async function runScheduledGeneration(adminApp: App, databaseId: string, 
     : (Array.isArray(settings.enabledClasses) && settings.enabledClasses.length > 0
       ? settings.enabledClasses
       : DEFAULT_ENABLED_CLASSES);
-  const hasCustomRotation = Array.isArray(settings.dailyMcqSubjectRotation) && settings.dailyMcqSubjectRotation.length > 0;
   const status = settings.dailyMcqAutomationPublishMode === 'published' ? 'published' : DEFAULT_AUTOMATION_STATUS;
-
-  // Per-class subject lists from subjectsByClass; fall back to admin rotation or global default
-  const subjectsByClass = (translations.en as any).subjectsByClass?.odisha as Record<string, string[]> | undefined;
 
   const generated: Array<{ className: string; subject: string; id: string }> = [];
   const skipped: Array<{ className: string; reason: string }> = [];
 
   console.log('[MCQ-AUTO] Starting MCQ generation for date:', activeDate);
   console.log('[MCQ-AUTO] Effective classes:', effectiveClasses);
+
+  // Parse month and year from activeDate (using UTC/Kolkata date construction safely)
+  const dateObj = new Date(activeDate);
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const monthName = monthNames[dateObj.getMonth()];
+  const year = dateObj.getFullYear();
+  const monthString = `${monthName} ${year}`; // e.g. "June 2026"
+  const dayOfMonth = dateObj.getDate();
+
   for (const className of effectiveClasses) {
     try {
       console.log(`[MCQ-AUTO] Processing class: ${className}`);
-      const existing = await db.collection('daily_mcqs').where('class', '==', className).where('activeDate', '==', activeDate).get();
-      if (!existing.empty) {
-        console.log(`[MCQ-AUTO] Skipped ${className}: Daily set already exists for this date.`);
-        skipped.push({ className, reason: 'Daily set already exists for this class and date.' });
-        continue;
+
+      // 1. Get the roadmap for this class
+      const normalizedClassName = className.toLowerCase().trim();
+      const classRoadmap = ROADMAPS_BY_CLASS[normalizedClassName];
+      
+      let activeChapters: any[] = [];
+      if (classRoadmap) {
+        const monthEntry = classRoadmap.find(entry => entry.month === monthString);
+        if (monthEntry && Array.isArray(monthEntry.chapters)) {
+          activeChapters = monthEntry.chapters;
+        }
       }
 
-      // Determine which subjects are actually available in the bucket for this class
-      const availableBucketSubjects = await getAvailableBucketSubjects(adminApp, className);
-      console.log(`[MCQ-AUTO] Available subjects in bucket for ${className}:`, availableBucketSubjects);
+      // If no chapters scheduled for this month, fall back to old sequence selection
+      let subjectsToGenerate: string[] = [];
+      if (activeChapters.length === 0) {
+        console.warn(`[MCQ-AUTO] No chapters scheduled in roadmap for ${className} in ${monthString}. Falling back to default rotation.`);
+        const availableBucketSubjects = await getAvailableBucketSubjects(adminApp, className);
+        const subjectsByClass = (translations.en as any).subjectsByClass?.odisha as Record<string, string[]> | undefined;
+        const hasCustomRotation = Array.isArray(settings.dailyMcqSubjectRotation) && settings.dailyMcqSubjectRotation.length > 0;
+        const fallbackSubjects = (availableBucketSubjects.length > 0)
+          ? availableBucketSubjects
+          : ((!hasCustomRotation && subjectsByClass?.[className]) || settings.dailyMcqSubjectRotation);
+        
+        const sub = getRotatingDailyMcqSubject(activeDate, fallbackSubjects);
+        subjectsToGenerate = [sub];
+      } else {
+        // Standardize the subjects in the active roadmap chapters
+        const subjectsInMonth = Array.from(new Set(activeChapters.map((ch: any) => mapRoadmapSubjectToStandard(ch.subject))));
+        
+        // Group electives: sanskrit, hindi, vocational
+        const electiveGroup = ['sanskrit', 'hindi', 'vocational'];
+        const rotationSlots: (string | string[])[] = [];
+        let hasElectives = false;
 
-      const classSubjects = (availableBucketSubjects.length > 0) 
-        ? availableBucketSubjects 
-        : ((!hasCustomRotation && subjectsByClass?.[className]) || settings.dailyMcqSubjectRotation);
-      
-      const subject = getRotatingDailyMcqSubject(activeDate, classSubjects);
-      console.log(`[MCQ-AUTO] Selected subject for ${className}:`, subject);
+        for (const sub of subjectsInMonth) {
+          if (electiveGroup.includes(sub)) {
+            hasElectives = true;
+          } else {
+            rotationSlots.push(sub);
+          }
+        }
+        if (hasElectives) {
+          rotationSlots.push(electiveGroup);
+        }
 
-      const generatedSet = await buildGeneratedDailyMcq(adminApp, databaseId, {
-        className,
-        subject,
-        activeDate,
-        status,
-      });
-      console.log(`[MCQ-AUTO] Generated MCQ set for ${className} ${subject}`);
-      const saved = await upsertDailyMcq(adminApp, databaseId, generatedSet);
-      console.log(`[MCQ-AUTO] Saved MCQ for ${className} ${subject} with id ${String(saved.id)}`);
-      generated.push({ className, subject, id: String(saved.id) });
+        // Select the active slot for today
+        const slotIndex = (dayOfMonth - 1) % rotationSlots.length;
+        const activeSlot = rotationSlots[slotIndex];
 
-      // Trigger daily MCQ notifications for students of this class
-      if (status === 'published') {
-        sendDailyMcqNotification(adminApp, databaseId, className, subject, activeDate).catch((err) => {
-          console.error(`[MCQ-AUTO] Failed to send notifications for ${className}:`, err);
+        if (Array.isArray(activeSlot)) {
+          // It's the elective day slot. Generate all electives scheduled for this month.
+          subjectsToGenerate = activeSlot.filter(sub => subjectsInMonth.includes(sub));
+        } else {
+          subjectsToGenerate = [activeSlot];
+        }
+      }
+
+      console.log(`[MCQ-AUTO] Subjects to generate for ${className}:`, subjectsToGenerate);
+
+      for (const subject of subjectsToGenerate) {
+        // Check if the daily set for this subject already exists for this date
+        const existing = await db.collection('daily_mcqs')
+          .where('class', '==', className)
+          .where('subject', '==', subject)
+          .where('activeDate', '==', activeDate)
+          .get();
+
+        if (!existing.empty) {
+          console.log(`[MCQ-AUTO] Skipped ${className} ${subject}: Daily set already exists for this date.`);
+          skipped.push({ className: `${className} (${subject})`, reason: 'Daily set already exists for this class, subject, and date.' });
+          continue;
+        }
+
+        // Get the specific roadmap chapters for this subject
+        const subjectChapters = activeChapters.filter((ch: any) => mapRoadmapSubjectToStandard(ch.subject) === subject);
+        
+        let selectedChapterTitles: string[] | undefined = undefined;
+        if (subjectChapters.length > 0) {
+          // Select only one chapter based on rotation of day of month
+          const chIndex = (dayOfMonth - 1) % subjectChapters.length;
+          const chosenChapter = subjectChapters[chIndex];
+          const title = chosenChapter.title_or || chosenChapter.title_en || chosenChapter.title || '';
+          if (title) {
+            selectedChapterTitles = [title];
+          }
+        }
+
+        const generatedSet = await buildGeneratedDailyMcq(adminApp, databaseId, {
+          className,
+          subject,
+          activeDate,
+          status,
+          chapters: selectedChapterTitles,
+          monthString,
         });
+
+        console.log(`[MCQ-AUTO] Generated MCQ set for ${className} ${subject}`);
+        const saved = await upsertDailyMcq(adminApp, databaseId, generatedSet);
+        console.log(`[MCQ-AUTO] Saved MCQ for ${className} ${subject} with id ${String(saved.id)}`);
+        generated.push({ className, subject, id: String(saved.id) });
+
+        // Trigger daily MCQ notifications for students of this class
+        if (status === 'published') {
+          sendDailyMcqNotification(adminApp, databaseId, className, subject, activeDate).catch((err) => {
+            console.error(`[MCQ-AUTO] Failed to send notifications for ${className}:`, err);
+          });
+        }
       }
     } catch (error: any) {
       console.error(`[MCQ-AUTO] Error for class ${className}:`, error?.message || error);

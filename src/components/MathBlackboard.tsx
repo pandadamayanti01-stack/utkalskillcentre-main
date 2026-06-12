@@ -105,6 +105,13 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
 
   // Fullscreen and Orientation lock on mount
   useEffect(() => {
+    const isMobile = typeof window !== 'undefined' && (
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+      window.innerWidth < 768
+    );
+
+    if (isMobile) return;
+
     const lockLandscape = () => {
       try {
         const doc = document.documentElement;

@@ -828,14 +828,20 @@ export function TeacherDashboard({
                     
                     <button
                       onClick={() => {
-                        try {
-                          const doc = document.documentElement;
-                          if (doc.requestFullscreen) doc.requestFullscreen();
-                          else if ((doc as any).webkitRequestFullscreen) (doc as any).webkitRequestFullscreen();
-                          if (window.screen && window.screen.orientation && (window.screen.orientation as any).lock) {
-                            (window.screen.orientation as any).lock('landscape').catch(() => {});
-                          }
-                        } catch (e) {}
+                        const isMobile = typeof window !== 'undefined' && (
+                          /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                          window.innerWidth < 768
+                        );
+                        if (!isMobile) {
+                          try {
+                            const doc = document.documentElement;
+                            if (doc.requestFullscreen) doc.requestFullscreen();
+                            else if ((doc as any).webkitRequestFullscreen) (doc as any).webkitRequestFullscreen();
+                            if (window.screen && window.screen.orientation && (window.screen.orientation as any).lock) {
+                              (window.screen.orientation as any).lock('landscape').catch(() => {});
+                            }
+                          } catch (e) {}
+                        }
                         setShowBlackboard(true);
                       }}
                       className="relative z-10 w-full py-3.5 mt-6 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-black text-xs uppercase tracking-widest transition-all cursor-pointer shadow-lg shadow-amber-950/35 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 border border-amber-500/30"

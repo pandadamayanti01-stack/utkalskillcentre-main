@@ -5,9 +5,9 @@ export const ROADMAP_DATA_1 = [
     "chapters": [
       {
         "id": "XHDqx5EBcSK8ISGZCDz8",
-        "title": "Chapter 1 - Finding Tulutuli the Cat (Pre-counting Concepts)",
-        "title_en": "Finding Tulutuli the Cat (Pre-counting Concepts)",
-        "title_or": "ଟୁଲୁଟୁଲି ବିଲେଇକୁ ଖୋଜିବା",
+        "title": "Chapter 1 - Finding Chulubuli the Cat (Pre-counting Concepts)",
+        "title_en": "Finding Chulubuli the Cat (Pre-counting Concepts)",
+        "title_or": "ଚୁଲୁବୁଲି ବିଲେଇକୁ ଖୋଜିବା",
         "subject": "ganita_khela",
         "thumbnail": null
       },

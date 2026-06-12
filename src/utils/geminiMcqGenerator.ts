@@ -18,8 +18,8 @@ function getTargetLanguage(subject: string): string {
  * Intelligent Slicing: If PDF is too large, extract a manageable range of pages.
  */
 async function focusPdfContent(pdfBuffer: Buffer): Promise<Buffer> {
-  // If under 25MB, don't slice
-  if (pdfBuffer.length < 25 * 1024 * 1024) return pdfBuffer;
+  // If under 150MB, don't slice
+  if (pdfBuffer.length < 150 * 1024 * 1024) return pdfBuffer;
   
   console.log(`[GeminiMCQ] File too large (${(pdfBuffer.length/1024/1024).toFixed(1)}MB). Slicing pages for focus...`);
   
@@ -49,7 +49,8 @@ export async function generateMcqsWithGemini(
   count: number = 10,
   subject: string = 'general',
   mode: 'daily' | 'monthly' = 'daily',
-  difficulty: 'easy' | 'medium' | 'hard' = 'medium'
+  difficulty: 'easy' | 'medium' | 'hard' = 'medium',
+  chapters?: string[]
 ): Promise<any[]> {
   const keysToTry: string[] = [];
   if (process.env.GEMINI_API_KEY) keysToTry.push(process.env.GEMINI_API_KEY);
@@ -106,7 +107,25 @@ export async function generateMcqsWithGemini(
         }
         console.log("[GeminiMCQ] Focused File ACTIVE.");
 
-        const prompt = `You are a teacher. Generate exactly ${mode === 'monthly' ? 23 : count} questions from this book for a Daily Practice set.
+        let prompt = '';
+        if (chapters && chapters.length > 0) {
+          const chaptersList = chapters.map(ch => `"${ch}"`).join(', ');
+          prompt = `You are an expert textbook parser and educational content assistant.
+Your task is to analyze the provided textbook PDF, locate the actual exercises, question banks, or chapter-end question sections for the following specific chapters: ${chaptersList}.
+
+Instructions:
+1. Locate the printed exercises at the end of the specified chapters in the PDF.
+2. Find the multiple-choice questions (MCQs) that have options (typically labelled with letters like A, B, C, D or Odia characters like କ, ଖ, ଗ, ଘ).
+3. Extract them EXACTLY as they are written in the book. Do not rewrite, modify, or invent new questions.
+4. Keep the question text and options in the original language (${targetLanguage}). If the options are in Odia (କ, ଖ, ଗ, ଘ), capture them as strings in the options array.
+5. Provide the correct answer and write a helpful explanation in ${targetLanguage} explaining why that answer is correct, citing the page number or section if possible.
+6. Return exactly ${mode === 'monthly' ? 23 : count} questions.
+7. SCHEMA: Array of { "question": string, "options": string[], "correct_answer": string, "explanation": string, "type": "mcq", "chapter": string }.
+
+Fallback:
+If the specified chapter exercises do not contain enough exact MCQs (less than ${mode === 'monthly' ? 23 : count}), supplement the list by converting other exercise questions (such as fill-in-the-blanks or short questions) from those chapters into MCQ format, using the exact text from the textbook as the question stem. Only generate brand-new questions based on the chapter content as a last resort if no exercise text is available.`;
+        } else {
+          prompt = `You are a teacher. Generate exactly ${mode === 'monthly' ? 23 : count} questions from this book for a Daily Practice set.
            MIX: 
            - First 4 questions: simple 1-mark MCQs.
            - Next 3 questions: short 2-mark MCQs or simple subjective.
@@ -115,6 +134,7 @@ export async function generateMcqsWithGemini(
            DIFFICULTY: ${difficulty.toUpperCase()}.
            SCHEMA: Array of { "question": string, "options": string[], "correct_answer": string, "explanation": string, "type": "mcq" | "subjective", "chapter": string }.
            Language: ${targetLanguage}.`;
+        }
 
         const models = [
           "gemini-2.5-flash",
