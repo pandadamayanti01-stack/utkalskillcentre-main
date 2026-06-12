@@ -620,7 +620,7 @@ export async function runAutomatedSyncForSubject(
       candidatesWithScores.sort((a, b) => b.score - a.score);
 
       let syncedVideo = false;
-      // 4. Iterate sorted candidates, run Gemini OCR check, and curate the first verified video
+      // 4. Iterate sorted candidates, run Gemini OCR check, and curate
       for (const candidate of candidatesWithScores) {
         const verifyResult = await verifyYoutubeVideoWithGemini(
           classStr,
@@ -631,27 +631,62 @@ export async function runAutomatedSyncForSubject(
           candidate.id
         );
 
-        if (verifyResult.verified) {
-          // Curate this video! handleVideoSyncOrAddition handles A/B switches automatically
-          const url = `https://www.youtube.com/watch?v=${candidate.id}`;
-          const additionResult = await handleVideoSyncOrAddition(adminApp, databaseId, {
-            classStr,
-            subject: subjectKey,
-            chapter: rawChapter,
-            youtubeUrl: url,
-            title: candidate.snippet.title
-          });
+        const url = `https://www.youtube.com/watch?v=${candidate.id}`;
 
-          results.push({
-            chapter: cleanChapterName,
-            status: 'synced',
-            videoId: candidate.id,
-            title: candidate.snippet.title,
-            score: candidate.score,
-            details: additionResult
-          });
-          syncedVideo = true;
-          break; // Only curate 1 top video per chapter in a sync cycle
+        if (verifyResult.verified) {
+          if (verifyResult.confidence >= 0.8) {
+            // AUTOMATIC (High confidence) -> Add/Publish/Trial immediately!
+            const additionResult = await handleVideoSyncOrAddition(adminApp, databaseId, {
+              classStr,
+              subject: subjectKey,
+              chapter: rawChapter,
+              youtubeUrl: url,
+              title: candidate.snippet.title
+            });
+
+            results.push({
+              chapter: cleanChapterName,
+              status: 'synced_automatic',
+              videoId: candidate.id,
+              title: candidate.snippet.title,
+              score: candidate.score,
+              confidence: verifyResult.confidence,
+              details: additionResult
+            });
+            syncedVideo = true;
+            break; // Done with this chapter
+          } else {
+            // MANUAL REVIEW (Low confidence) -> Add to review queue (status: 'pending_review')
+            const newVideoDoc = {
+              classStr: classStr,
+              subject: subjectKey,
+              chapter: rawChapter,
+              youtubeUrl: url,
+              title: candidate.snippet.title,
+              order: existingIds.size + 1,
+              status: 'pending_review',
+              reviewReason: `Gemini verified but confidence is low (${verifyResult.confidence}): ${verifyResult.reasoning}`,
+              viewCount: parseInt(candidate.statistics?.viewCount || '0', 10),
+              likeCount: parseInt(candidate.statistics?.likeCount || '0', 10),
+              commentCount: parseInt(candidate.statistics?.commentCount || '0', 10),
+              engagementScore: candidate.score,
+              createdAt: FieldValue.serverTimestamp()
+            };
+            
+            await videosRef.add(newVideoDoc);
+
+            results.push({
+              chapter: cleanChapterName,
+              status: 'flagged_review_low_confidence',
+              videoId: candidate.id,
+              title: candidate.snippet.title,
+              score: candidate.score,
+              confidence: verifyResult.confidence,
+              reason: verifyResult.reasoning
+            });
+            syncedVideo = true;
+            break; // Done with this chapter
+          }
         } else {
           console.log(`[YouTube Sync] Candidate ${candidate.id} failed Gemini OCR/Index verification: ${verifyResult.reasoning}`);
         }

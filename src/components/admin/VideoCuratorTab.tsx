@@ -482,6 +482,51 @@ export function VideoCuratorTab() {
     }
   };
 
+  const handleApprovePending = async (vid: CuratedVideo) => {
+    if (!window.confirm(`Are you sure you want to approve and publish "${vid.title}"?`)) return;
+    try {
+      setIsSaving(true);
+      // 1. Call add-direct to publish/trial it (handles A/B testing switches automatically!)
+      const res = await fetch('/api/admin/videos/add-direct', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          classStr: vid.classStr,
+          subject: vid.subject,
+          chapter: vid.chapter,
+          youtubeUrl: vid.youtubeUrl,
+          title: vid.title,
+          order: vid.order,
+          bypassLimitCheck: false
+        })
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || errData.details || 'Failed to approve video');
+      }
+
+      const addRes = await res.json();
+
+      // 2. Delete the old pending_review document
+      await deleteDoc(doc(db, 'curated_videos', vid.id));
+
+      fetchVideos();
+
+      if (addRes.action === 'switched') {
+        alert(`Video approved! Replaced low-performing video (retained as backup).`);
+      } else {
+        alert("Video approved and published successfully!");
+      }
+    } catch (err) {
+      console.error("Error approving video:", err);
+      alert("Failed to approve video: " + (err instanceof Error ? err.message : String(err)));
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -894,9 +939,20 @@ export function VideoCuratorTab() {
                         </p>
                       )}
                     </div>
-                    <button onClick={() => handleDelete(vid.id)} className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all self-center shrink-0">
-                      <Trash2 size={16} />
-                    </button>
+                    <div className="flex items-center gap-1 self-center shrink-0">
+                      {isPending && (
+                        <button 
+                          onClick={() => handleApprovePending(vid)} 
+                          className="p-2 text-slate-500 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-xl transition-all cursor-pointer"
+                          title="Approve & Publish Video"
+                        >
+                          <CheckCircle2 size={16} />
+                        </button>
+                      )}
+                      <button onClick={() => handleDelete(vid.id)} className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all">
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </div>
                 );
               })
