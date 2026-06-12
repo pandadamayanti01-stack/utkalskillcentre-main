@@ -149,8 +149,8 @@ async function startServer() {
     next();
   });
 
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json({ limit: '50mb' }));
+  app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
   // Basic request logging
   app.use((req, res, next) => {
@@ -190,6 +190,36 @@ async function startServer() {
     } catch (error: any) {
       console.error('Upload Error:', error);
       res.status(500).json({ error: error.message || 'Upload failed' });
+    }
+  });
+
+  // Image Proxy to fetch external textbook pages / diagrams safely bypassing CORS
+  app.get('/api/image-proxy', async (req, res) => {
+    try {
+      const imageUrl = req.query.url as string;
+      if (!imageUrl) {
+        return res.status(400).json({ error: 'URL parameter is required' });
+      }
+
+      if (!imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
+        return res.status(400).json({ error: 'Invalid URL scheme' });
+      }
+
+      const response = await fetch(imageUrl);
+      if (!response.ok) {
+        return res.status(response.status).send(`Failed to fetch image: ${response.statusText}`);
+      }
+
+      const contentType = response.headers.get('content-type') || 'image/png';
+      res.setHeader('Content-Type', contentType);
+      res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 1 day
+
+      const arrayBuffer = await response.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      res.send(buffer);
+    } catch (err: any) {
+      console.error('Image proxy error:', err);
+      res.status(500).json({ error: err.message || 'Image proxy failed' });
     }
   });
 
@@ -466,6 +496,17 @@ async function startServer() {
     }
   ];
 
+  function getRotatorKeys(): string[] {
+    const keys: string[] = [];
+    const primaryKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+    if (primaryKey) keys.push(primaryKey);
+    for (let i = 1; i <= 7; i++) {
+      const k = process.env[`GEMINI_ROTATOR_KEY_${i}`];
+      if (k && !keys.includes(k)) keys.push(k);
+    }
+    return keys;
+  }
+
   app.post('/api/ai/generate', async (req, res) => {
     try {
       const { contents, systemInstruction, modelType, generationConfig, enableGrounding, enableDialectBridge } = req.body;
@@ -605,16 +646,14 @@ async function startServer() {
         console.log("Backend AI (Server): Vertex AI failed. Falling back to Google AI Studio standard developer key route.");
       }
 
-      const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
-      if (!apiKey) {
+      const rotatorKeys = getRotatorKeys();
+      if (rotatorKeys.length === 0) {
         return res.status(503).json({ 
-          error: 'GEMINI_API_KEY is not configured on the server',
+          error: 'GEMINI_API_KEY and all rotator keys are missing on the server',
           details: 'Vertex AI was tried but failed, and Google AI Studio backup API key is missing.',
           vertexError: vertexErrorText || undefined
         });
       }
-
-      const ai = new GoogleGenerativeAI(apiKey);
 
       const FLASH_MODELS = [
         "gemini-2.5-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite",
@@ -627,46 +666,61 @@ async function startServer() {
       let models = modelType === 'pro' ? [...PRO_MODELS, ...FLASH_MODELS] : [...FLASH_MODELS];
 
       let lastError = null;
-      for (const modelName of models) {
-        for (const apiVersion of ["v1beta", "v1"]) {
-          try {
-            console.log(`Backend AI: Attempting ${modelName} via ${apiVersion}...`);
-            const model = ai.getGenerativeModel({
-               model: modelName,
-               systemInstruction: finalSystemInstruction,
-               safetySettings: gunduluSafetySettings,
-               ...(enableGrounding ? { tools: [{ googleSearch: {} }] as any } : {})
-            }, { apiVersion: apiVersion as any });
-            
-            const result = await model.generateContent({ contents, generationConfig });
-            return res.json({ text: result.response.text() });
-          } catch(err: any) {
-            lastError = err;
-            const is503 = err.message?.includes('503') || err.status === 503 || err.code === 503;
-            const is404 = err.message?.includes('404') || err.status === 404 || err.code === 404;
-            const isAuthError = err.message?.includes('403') || err.message?.includes('401') || 
-                               err.status === 403 || err.status === 401;
-            const isBadRequest = err.message?.includes('400') || err.status === 400 || err.code === 400;
 
-            if (isAuthError) {
-              console.error("Backend AI Auth Error:", err.message);
-              return res.status(403).json({ error: "Gemini API Authentication Failed." });
-            }
+      for (const keyToUse of rotatorKeys) {
+        const ai = new GoogleGenerativeAI(keyToUse);
+        let keySucceeded = false;
+        
+        for (const modelName of models) {
+          for (const apiVersion of ["v1beta", "v1"]) {
+            try {
+              console.log(`Backend AI: Attempting ${modelName} via ${apiVersion} using key ${keyToUse.substring(0, 12)}...`);
+              const model = ai.getGenerativeModel({
+                 model: modelName,
+                 systemInstruction: finalSystemInstruction,
+                 safetySettings: gunduluSafetySettings,
+                 ...(enableGrounding ? { tools: [{ googleSearch: {} }] as any } : {})
+              }, { apiVersion: apiVersion as any });
+              
+              const result = await model.generateContent({ contents, generationConfig });
+              return res.json({ text: result.response.text() });
+            } catch(err: any) {
+              lastError = err;
+              const is503 = err.message?.includes('503') || err.status === 503 || err.code === 503;
+              const is404 = err.message?.includes('404') || err.status === 404 || err.code === 404;
+              const isAuthError = err.message?.includes('403') || err.message?.includes('401') || 
+                                 err.status === 403 || err.status === 401;
+              const isBadRequest = err.message?.includes('400') || err.status === 400 || err.code === 400;
+              const isQuotaOrDepleted = err.message?.includes('429') || err.message?.includes('quota') || err.message?.includes('prepayment') || err.status === 429;
 
-            if (isBadRequest) {
-              console.error("Backend AI Bad Request:", err.message);
-              return res.status(400).json({ error: err.message || "Invalid request parameters." });
-            }
+              if (isAuthError) {
+                console.warn(`Backend AI Auth Error for key ${keyToUse.substring(0, 12)}: ${err.message}. Trying next key.`);
+                break; // Break inner model/version loops for this key and try the next key
+              }
 
-            if (is404) {
-              continue; // Try next API version
+              if (isBadRequest) {
+                console.error("Backend AI Bad Request:", err.message);
+                return res.status(400).json({ error: err.message || "Invalid request parameters." });
+              }
+
+              if (isQuotaOrDepleted) {
+                console.warn(`Key ${keyToUse.substring(0, 12)} is depleted or rate limited (429). Trying next key.`);
+                break; // Break inner model/version loops for this key and try the next key
+              }
+
+              if (is404) {
+                continue; // Try next API version
+              }
+              console.error(`Model Attempt Failed: ${modelName} (${apiVersion}) using key ${keyToUse.substring(0, 12)}:`, err.message);
             }
-            console.error(`Model Attempt Failed: ${modelName} (${apiVersion})`, err.message);
+          }
+          if (lastError?.message?.includes('429') || lastError?.message?.includes('403') || lastError?.message?.includes('401')) {
+            break; // Break outer model loop to go to next key directly
           }
         }
       }
       
-      throw lastError || new Error("All AI models failed");
+      throw lastError || new Error("All AI models and all rotator keys failed");
 
     } catch(error: any) {
       console.error("Backend AI Generic Error:", error);
@@ -681,9 +735,9 @@ async function startServer() {
         return res.status(400).json({ error: 'className and subjectName are required' });
       }
 
-      const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
-      if (!apiKey) {
-        return res.status(503).json({ error: 'GEMINI_API_KEY is not configured on the server' });
+      const rotatorKeys = getRotatorKeys();
+      if (rotatorKeys.length === 0) {
+        return res.status(503).json({ error: 'GEMINI_API_KEY and all rotator keys are missing on the server' });
       }
 
       const prompt = `You are an expert curriculum builder. Create a matching pair educational game for school children of Standard/Class "${className}" in the subject "${subjectName}" in "${language === 'or' ? 'Odia (using Odia script for student content, keep mathematical numbers or scientific variables clean)' : 'English'}".
@@ -703,24 +757,35 @@ async function startServer() {
       }
       Do not include any extra introductory or explanatory text. Return ONLY the JSON object.`;
 
-      const ai = new GoogleGenerativeAI(apiKey);
-      const model = ai.getGenerativeModel({
-        model: "gemini-2.5-flash",
-        generationConfig: {
-          responseMimeType: "application/json",
-          temperature: 0.7,
-        }
-      }, { apiVersion: "v1beta" });
+      let lastError = null;
+      for (const keyToUse of rotatorKeys) {
+        try {
+          console.log(`Backend Quiz: Attempting matching quiz generation using key ${keyToUse.substring(0, 12)}...`);
+          const ai = new GoogleGenerativeAI(keyToUse);
+          const model = ai.getGenerativeModel({
+            model: "gemini-2.5-flash",
+            generationConfig: {
+              responseMimeType: "application/json",
+              temperature: 0.7,
+            }
+          }, { apiVersion: "v1beta" });
 
-      const result = await model.generateContent(prompt);
-      let responseText = result.response.text();
-      
-      if (language === 'or') {
-        responseText = cleanOdiaOrthographyLocal(responseText);
+          const result = await model.generateContent(prompt);
+          let responseText = result.response.text();
+          
+          if (language === 'or') {
+            responseText = cleanOdiaOrthographyLocal(responseText);
+          }
+
+          const quizData = JSON.parse(responseText.replace(/```json\n?|```/g, '').trim());
+          return res.json(quizData);
+        } catch (error: any) {
+          lastError = error;
+          console.warn(`Quiz attempt failed using key ${keyToUse.substring(0, 12)}:`, error.message);
+        }
       }
 
-      const quizData = JSON.parse(responseText.replace(/```json\n?|```/g, '').trim());
-      res.json(quizData);
+      throw lastError || new Error('Failed to generate quiz with all available keys');
     } catch (error: any) {
       console.error("Quiz Generation Error:", error);
       res.status(500).json({ error: error.message || 'Failed to generate quiz' });
@@ -827,9 +892,9 @@ async function startServer() {
         return res.status(400).json({ error: 'text is required' });
       }
 
-      const geminiApiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
-      if (!geminiApiKey) {
-        return res.status(503).json({ error: 'GEMINI_API_KEY is not configured' });
+      const rotatorKeys = getRotatorKeys();
+      if (rotatorKeys.length === 0) {
+        return res.status(503).json({ error: 'GEMINI_API_KEY and all rotator keys are missing' });
       }
 
       // Determine target models & voice candidates dynamically based on language to avoid quota waste:
@@ -855,85 +920,85 @@ async function startServer() {
 
       let lastError = 'Unknown TTS failure';
       
-      for (const model of models) {
-        for (const voiceName of voiceCandidates) {
-          try {
-            console.log(`TTS proxy: Querying ${model} with voice ${voiceName}...`);
-            const ttsResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                contents: [{ role: 'user', parts: [{ text: ttsPrompt }] }],
-                generationConfig: {
-                  responseModalities: ['AUDIO'],
-                  speechConfig: {
-                    voiceConfig: {
-                      prebuiltVoiceConfig: { voiceName }
+      for (const keyToUse of rotatorKeys) {
+        let keyFailed = false;
+        for (const model of models) {
+          for (const voiceName of voiceCandidates) {
+            try {
+              console.log(`TTS proxy: Querying ${model} with voice ${voiceName} using key ${keyToUse.substring(0, 12)}...`);
+              const ttsResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${keyToUse}`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  contents: [{ role: 'user', parts: [{ text: ttsPrompt }] }],
+                  generationConfig: {
+                    responseModalities: ['AUDIO'],
+                    speechConfig: {
+                      voiceConfig: {
+                        prebuiltVoiceConfig: { voiceName }
+                      }
                     }
                   }
-                }
-              }),
-            });
+                }),
+              });
 
-            if (!ttsResponse.ok) {
-              const errText = await ttsResponse.text();
-              lastError = errText;
-              console.warn(`Gemini TTS failed for model ${model}, voice ${voiceName}: ${errText}`);
-              
-              // If we hit quota limits, don't keep looping to avoid lockouts
-              if (ttsResponse.status === 429) {
-                if (errText.includes('quota') || errText.includes('limit')) {
-                  return res.status(429).json({
-                    error: 'Gemini TTS free tier quota exceeded. Please enable billing on your Google AI Studio account to lift this limit.',
-                    details: errText
-                  });
+              if (!ttsResponse.ok) {
+                const errText = await ttsResponse.text();
+                lastError = errText;
+                console.warn(`Gemini TTS failed for model ${model}, voice ${voiceName} using key ${keyToUse.substring(0, 12)}: ${errText}`);
+                
+                if (ttsResponse.status === 429 || ttsResponse.status === 403 || ttsResponse.status === 401) {
+                  keyFailed = true;
+                  break; // Try next key
                 }
+                continue;
               }
-              continue;
+
+              const data = await ttsResponse.json();
+              const candidate = data?.candidates?.[0];
+              const finishReason = candidate?.finishReason;
+              
+              if (finishReason === 'OTHER' || !candidate?.content?.parts) {
+                lastError = `Generation blocked or finished unexpectedly. Finish reason: ${finishReason}`;
+                console.warn(`Gemini TTS generation ended unexpectedly for model ${model}, voice ${voiceName}: ${lastError}`);
+                continue;
+              }
+
+              const inlineData = candidate.content.parts.find((p: any) => p?.inlineData)?.inlineData;
+              if (!inlineData?.data) {
+                lastError = `No audio payload for model ${model}, voice ${voiceName}`;
+                continue;
+              }
+
+              const mimeType = inlineData.mimeType || 'audio/wav';
+              let audioBuffer = Buffer.from(inlineData.data, 'base64');
+              let finalMimeType = 'audio/wav';
+
+              // Convert raw 16-bit linear PCM (audio/l16) to fully compatible audio/wav
+              if (mimeType.toLowerCase().includes('l16') || mimeType.toLowerCase().includes('pcm')) {
+                audioBuffer = pcmToWav(audioBuffer, 24000);
+              } else {
+                finalMimeType = mimeType;
+              }
+
+              res.setHeader('Content-Type', finalMimeType);
+              res.setHeader('Cache-Control', 'no-store');
+              return res.send(audioBuffer);
+            } catch (error: any) {
+               lastError = error?.message || 'Network error fetching TTS';
+               console.warn(`Fetch error for model ${model}, voice ${voiceName}: ${lastError}`);
             }
-
-            const data = await ttsResponse.json();
-            const candidate = data?.candidates?.[0];
-            const finishReason = candidate?.finishReason;
-            
-            if (finishReason === 'OTHER' || !candidate?.content?.parts) {
-              lastError = `Generation blocked or finished unexpectedly. Finish reason: ${finishReason}`;
-              console.warn(`Gemini TTS generation ended unexpectedly for model ${model}, voice ${voiceName}: ${lastError}`);
-              continue;
-            }
-
-            const inlineData = candidate.content.parts.find((p: any) => p?.inlineData)?.inlineData;
-            if (!inlineData?.data) {
-              lastError = `No audio payload for model ${model}, voice ${voiceName}`;
-              continue;
-            }
-
-            const mimeType = inlineData.mimeType || 'audio/wav';
-            let audioBuffer = Buffer.from(inlineData.data, 'base64');
-            let finalMimeType = 'audio/wav';
-
-            // Convert raw 16-bit linear PCM (audio/l16) to fully compatible audio/wav
-            if (mimeType.toLowerCase().includes('l16') || mimeType.toLowerCase().includes('pcm')) {
-              audioBuffer = pcmToWav(audioBuffer, 24000);
-            } else {
-              finalMimeType = mimeType;
-            }
-
-            res.setHeader('Content-Type', finalMimeType);
-            res.setHeader('Cache-Control', 'no-store');
-            return res.send(audioBuffer);
-          } catch (error: any) {
-             lastError = error?.message || 'Network error fetching TTS';
-             console.warn(`Fetch error for model ${model}, voice ${voiceName}: ${lastError}`);
           }
+          if (keyFailed) break; // Break out of model loop to try the next key
         }
       }
 
-      return res.status(502).json({ error: `Gemini TTS failed for all configured models and voices: ${lastError}` });
+      return res.status(502).json({ error: `Gemini TTS failed for all configured models, voices, and rotator keys: ${lastError}` });
     } catch (error: any) {
       console.error('Gemini TTS Error:', error);
+      res.status(500).json({ error: error?.message || 'Internal server error' });
     }
   });
 
@@ -945,9 +1010,9 @@ async function startServer() {
         return res.status(400).json({ error: 'text is required' });
       }
 
-      const geminiApiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
-      if (!geminiApiKey) {
-        return res.status(503).json({ error: 'GEMINI_API_KEY is not configured' });
+      const rotatorKeys = getRotatorKeys();
+      if (rotatorKeys.length === 0) {
+        return res.status(503).json({ error: 'GEMINI_API_KEY and all rotator keys are missing' });
       }
 
       // Sishu Vatika is always Odia and uses gemini-3.1-flash-tts-preview
@@ -961,80 +1026,80 @@ async function startServer() {
 
       let lastError = 'Unknown TTS failure';
       
-      for (const model of models) {
-        for (const voiceName of voiceCandidates) {
-          try {
-            console.log(`TTS Anganwadi proxy: Querying ${model} with voice ${voiceName}...`);
-            const ttsResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                contents: [{ role: 'user', parts: [{ text: ttsPrompt }] }],
-                generationConfig: {
-                  responseModalities: ['AUDIO'],
-                  speechConfig: {
-                    voiceConfig: {
-                      prebuiltVoiceConfig: { voiceName }
+      for (const keyToUse of rotatorKeys) {
+        let keyFailed = false;
+        for (const model of models) {
+          for (const voiceName of voiceCandidates) {
+            try {
+              console.log(`TTS Anganwadi proxy: Querying ${model} with voice ${voiceName} using key ${keyToUse.substring(0, 12)}...`);
+              const ttsResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${keyToUse}`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  contents: [{ role: 'user', parts: [{ text: ttsPrompt }] }],
+                  generationConfig: {
+                    responseModalities: ['AUDIO'],
+                    speechConfig: {
+                      voiceConfig: {
+                        prebuiltVoiceConfig: { voiceName }
+                      }
                     }
                   }
-                }
-              }),
-            });
+                }),
+              });
 
-            if (!ttsResponse.ok) {
-              const errText = await ttsResponse.text();
-              lastError = errText;
-              console.warn(`Gemini Anganwadi TTS failed for model ${model}, voice ${voiceName}: ${errText}`);
-              if (ttsResponse.status === 429) {
-                if (errText.includes('quota') || errText.includes('limit')) {
-                  return res.status(429).json({
-                    error: 'Gemini TTS free tier quota exceeded. Please enable billing on your Google AI Studio account to lift this limit.',
-                    details: errText
-                  });
+              if (!ttsResponse.ok) {
+                const errText = await ttsResponse.text();
+                lastError = errText;
+                console.warn(`Gemini Anganwadi TTS failed for model ${model}, voice ${voiceName} using key ${keyToUse.substring(0, 12)}: ${errText}`);
+                if (ttsResponse.status === 429 || ttsResponse.status === 403 || ttsResponse.status === 401) {
+                  keyFailed = true;
+                  break; // Try next key
                 }
+                continue;
               }
-              continue;
+
+              const data = await ttsResponse.json();
+              const candidate = data?.candidates?.[0];
+              const finishReason = candidate?.finishReason;
+              
+              if (finishReason === 'OTHER' || !candidate?.content?.parts) {
+                lastError = `Generation blocked or finished unexpectedly. Finish reason: ${finishReason}`;
+                console.warn(`Gemini Anganwadi TTS generation ended unexpectedly for model ${model}, voice ${voiceName}: ${lastError}`);
+                continue;
+              }
+
+              const inlineData = candidate.content.parts.find((p: any) => p?.inlineData)?.inlineData;
+              if (!inlineData?.data) {
+                lastError = `No audio payload for model ${model}, voice ${voiceName}`;
+                continue;
+              }
+
+              const mimeType = inlineData.mimeType || 'audio/wav';
+              let audioBuffer = Buffer.from(inlineData.data, 'base64');
+              let finalMimeType = 'audio/wav';
+
+              if (mimeType.toLowerCase().includes('l16') || mimeType.toLowerCase().includes('pcm')) {
+                audioBuffer = pcmToWav(audioBuffer, 24000);
+              } else {
+                finalMimeType = mimeType;
+              }
+
+              res.setHeader('Content-Type', finalMimeType);
+              res.setHeader('Cache-Control', 'no-store');
+              return res.send(audioBuffer);
+            } catch (error: any) {
+               lastError = error?.message || 'Network error fetching TTS';
+               console.warn(`Fetch error for model ${model}, voice ${voiceName}: ${lastError}`);
             }
-
-            const data = await ttsResponse.json();
-            const candidate = data?.candidates?.[0];
-            const finishReason = candidate?.finishReason;
-            
-            if (finishReason === 'OTHER' || !candidate?.content?.parts) {
-              lastError = `Generation blocked or finished unexpectedly. Finish reason: ${finishReason}`;
-              console.warn(`Gemini Anganwadi TTS generation ended unexpectedly for model ${model}, voice ${voiceName}: ${lastError}`);
-              continue;
-            }
-
-            const inlineData = candidate.content.parts.find((p: any) => p?.inlineData)?.inlineData;
-            if (!inlineData?.data) {
-              lastError = `No audio payload for model ${model}, voice ${voiceName}`;
-              continue;
-            }
-
-            const mimeType = inlineData.mimeType || 'audio/wav';
-            let audioBuffer = Buffer.from(inlineData.data, 'base64');
-            let finalMimeType = 'audio/wav';
-
-            if (mimeType.toLowerCase().includes('l16') || mimeType.toLowerCase().includes('pcm')) {
-              audioBuffer = pcmToWav(audioBuffer, 24000);
-            } else {
-              finalMimeType = mimeType;
-            }
-
-            res.setHeader('Content-Type', finalMimeType);
-            res.setHeader('Cache-Control', 'no-store');
-            return res.send(audioBuffer);
-          } catch (error: any) {
-             lastError = error?.message || 'Network error fetching TTS';
-             console.warn(`Fetch error for model ${model}, voice ${voiceName}: ${lastError}`);
           }
+          if (keyFailed) break; // Break out of model loop to try next key
         }
       }
 
-      return res.status(502).json({ error: `Gemini Anganwadi TTS failed for all configured models and voices: ${lastError}` });
+      return res.status(502).json({ error: `Gemini Anganwadi TTS failed for all configured models, voices, and rotator keys: ${lastError}` });
     } catch (error: any) {
       console.error('TTS Anganwadi error:', error);
       res.status(500).json({ error: error?.message || 'Internal server error' });

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import * as Lucide from 'lucide-react';
 import { db } from '../firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { SishuVatikaSlate } from './SishuVatikaSlate';
+import { MathBlackboard } from './MathBlackboard';
 
 interface SishuVatikaDashboardProps {
   user: any;
@@ -675,12 +675,13 @@ export function SishuVatikaDashboard({
       {/* Blackboard Modal */}
       <AnimatePresence>
         {showBlackboard && (
-          <SishuVatikaSlate
+          <MathBlackboard
             language={language}
             onClose={() => setShowBlackboard(false)}
             isPremium={isPremium}
             onUpgrade={onUpgrade}
             user={user}
+            initialMode="anganwadi"
           />
         )}
       </AnimatePresence>

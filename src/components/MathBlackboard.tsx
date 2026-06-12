@@ -11,6 +11,7 @@ interface MathBlackboardProps {
   isPremium?: boolean;
   onUpgrade?: () => void;
   user?: any;
+  initialMode?: 'student' | 'anganwadi' | 'teacher';
 }
 
 export const MathBlackboard: React.FC<MathBlackboardProps> = ({
@@ -18,10 +19,15 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
   onClose,
   isPremium = false,
   onUpgrade,
-  user
+  user,
+  initialMode = 'student'
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const explanationRef = useRef<HTMLDivElement | null>(null);
+  const boardFrameRef = useRef<HTMLDivElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const [boardMode, setBoardMode] = useState<'student' | 'anganwadi' | 'teacher'>(initialMode);
   const [isDrawing, setIsDrawing] = useState(false);
   const [brushColor, setBrushColor] = useState('#fef8ec'); // Cream chalk color
   const [brushWidth, setBrushWidth] = useState(4);
@@ -52,6 +58,235 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
   const historyRef = useRef<ImageData[]>([]);
   const historyIndexRef = useRef<number>(-1);
 
+  // Draggable and Resizable Image Overlay state
+  interface ActiveImageState {
+    url: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    isDragging: boolean;
+    isResizing: boolean;
+    dragStartX: number;
+    dragStartY: number;
+    originalWidth: number;
+    originalHeight: number;
+  }
+
+  const [activeImage, setActiveImage] = useState<ActiveImageState | null>(null);
+
+  // Check if user is a judge or in judge mode for showcase templates visibility
+  const isJudge = (() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('judge') === 'true' || window.location.hash.includes('judge=true')) {
+          return true;
+        }
+        if (sessionStorage.getItem('judge_mode_active') === 'true' || sessionStorage.getItem('judge_offline_auth_active') === 'true') {
+          return true;
+        }
+      }
+      if (user) {
+        const email = user.email || '';
+        const phone = user.phoneNumber || '';
+        if (email.includes('judge') || email.includes('admin') || phone.includes('99999')) {
+          return true;
+        }
+      }
+    } catch (e) {}
+    return false;
+  })();
+
+  // Fullscreen and Orientation lock on mount
+  useEffect(() => {
+    try {
+      const doc = document.documentElement;
+      if (doc.requestFullscreen) {
+        doc.requestFullscreen().catch(() => {});
+      } else if ((doc as any).webkitRequestFullscreen) {
+        (doc as any).webkitRequestFullscreen();
+      }
+      if (window.screen && window.screen.orientation && (window.screen.orientation as any).lock) {
+        (window.screen.orientation as any).lock('landscape').catch(() => {});
+      }
+    } catch (e) {}
+
+    return () => {
+      try {
+        if (document.fullscreenElement) {
+          document.exitFullscreen().catch(() => {});
+        }
+        if (window.screen && window.screen.orientation && window.screen.orientation.unlock) {
+          window.screen.orientation.unlock();
+        }
+      } catch (e) {}
+    };
+  }, []);
+
+  const handleClose = () => {
+    try {
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
+      }
+      if (window.screen && window.screen.orientation && window.screen.orientation.unlock) {
+        window.screen.orientation.unlock();
+      }
+    } catch (e) {}
+    onClose();
+  };
+
+  // Draggable/Resizable image mouse and touch event tracking
+  useEffect(() => {
+    const handlePointerMove = (e: MouseEvent | TouchEvent) => {
+      if (!activeImage) return;
+      if (!activeImage.isDragging && !activeImage.isResizing) return;
+
+      let clientX, clientY;
+      if ('touches' in e) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+      }
+
+      if (activeImage.isDragging) {
+        const dx = clientX - activeImage.dragStartX;
+        const dy = clientY - activeImage.dragStartY;
+        setActiveImage(prev => prev ? {
+          ...prev,
+          x: prev.x + dx,
+          y: prev.y + dy,
+          dragStartX: clientX,
+          dragStartY: clientY
+        } : null);
+      } else if (activeImage.isResizing) {
+        const dx = clientX - activeImage.dragStartX;
+        const newWidth = Math.max(50, activeImage.width + dx);
+        const newHeight = newWidth * (activeImage.originalHeight / activeImage.originalWidth);
+        setActiveImage(prev => prev ? {
+          ...prev,
+          width: newWidth,
+          height: newHeight,
+          dragStartX: clientX,
+          dragStartY: clientY
+        } : null);
+      }
+    };
+
+    const handlePointerUp = () => {
+      if (activeImage && (activeImage.isDragging || activeImage.isResizing)) {
+        setActiveImage(prev => prev ? {
+          ...prev,
+          isDragging: false,
+          isResizing: false
+        } : null);
+      }
+    };
+
+    window.addEventListener('mousemove', handlePointerMove);
+    window.addEventListener('mouseup', handlePointerUp);
+    window.addEventListener('touchmove', handlePointerMove);
+    window.addEventListener('touchend', handlePointerUp);
+
+    return () => {
+      window.removeEventListener('mousemove', handlePointerMove);
+      window.removeEventListener('mouseup', handlePointerUp);
+      window.removeEventListener('touchmove', handlePointerMove);
+      window.removeEventListener('touchend', handlePointerUp);
+    };
+  }, [activeImage]);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const url = event.target?.result as string;
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width;
+        let h = img.height;
+        const maxDim = 350;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) {
+            h = (maxDim / w) * h;
+            w = maxDim;
+          } else {
+            w = (maxDim / h) * w;
+            h = maxDim;
+          }
+        }
+        
+        const scrollTop = boardFrameRef.current?.scrollTop || 0;
+        const parentHeight = boardFrameRef.current?.clientHeight || 500;
+        const parentWidth = boardFrameRef.current?.clientWidth || 800;
+
+        setActiveImage({
+          url,
+          x: (parentWidth - w) / 2,
+          y: scrollTop + (parentHeight - h) / 2,
+          width: w,
+          height: h,
+          isDragging: false,
+          isResizing: false,
+          dragStartX: 0,
+          dragStartY: 0,
+          originalWidth: img.width,
+          originalHeight: img.height
+        });
+      };
+      img.src = url;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const bakeImageToCanvasPromise = (): Promise<void> => {
+    return new Promise((resolve) => {
+      if (!activeImage) {
+        resolve();
+        return;
+      }
+
+      const canvas = canvasRef.current;
+      if (!canvas) {
+        resolve();
+        return;
+      }
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        resolve();
+        return;
+      }
+
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.drawImage(img, activeImage.x, activeImage.y, activeImage.width, activeImage.height);
+        
+        const currentState = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const newHistory = historyRef.current.slice(0, historyIndexRef.current + 1);
+        newHistory.push(currentState);
+        historyRef.current = newHistory;
+        historyIndexRef.current = newHistory.length - 1;
+        setCanUndo(historyIndexRef.current > 0);
+        setCanRedo(false);
+
+        setActiveImage(null);
+        resolve();
+      };
+      img.onerror = () => {
+        console.error("Failed to load activeImage for baking");
+        setActiveImage(null);
+        resolve();
+      };
+      img.src = activeImage.url;
+    });
+  };
+
   // Auto-scroll explanation on mobile when loaded
   useEffect(() => {
     if (explanation && !loading && window.innerWidth < 768) {
@@ -69,10 +304,10 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
       if (!parent) return;
 
       const rect = parent.getBoundingClientRect();
-      const canvasWidth = rect.width - 24; // 12px border each side
-      const canvasHeight = parent.clientHeight - 24;
+      const canvasWidth = rect.width;
+      const canvasHeight = 1600; // infinite scrolling chalkboard height
 
-      if (canvasWidth <= 0 || canvasHeight <= 0) return;
+      if (canvasWidth <= 0) return;
 
       canvas.width = canvasWidth * 2;
       canvas.height = canvasHeight * 2;
@@ -99,7 +334,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
     };
 
     // Wait a brief moment for DOM layouts to settle to get accurate parent height
-    const timer = setTimeout(resizeCanvas, 120);
+    const timer = setTimeout(resizeCanvas, 150);
 
     window.addEventListener('resize', resizeCanvas);
     return () => {
@@ -340,6 +575,10 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    if (boardFrameRef.current) {
+      boardFrameRef.current.scrollTop = 0;
+    }
+
     // Clear board first
     const width = canvas.width / 2;
     const height = canvas.height / 2;
@@ -560,8 +799,13 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
         utterance.voice = matchVoice;
       }
       
-      utterance.pitch = 1.25; // cute high-pitched sister voice
-      utterance.rate = 0.85;
+      if (boardMode === 'anganwadi') {
+        utterance.pitch = 1.6;
+        utterance.rate = 0.75;
+      } else {
+        utterance.pitch = 1.25; // cute high-pitched sister voice
+        utterance.rate = 0.85;
+      }
 
       utterance.onend = () => setSpeaking(false);
       utterance.onerror = () => setSpeaking(false);
@@ -570,7 +814,8 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
     } else {
       // Premium server-side Google Cloud / Gemini TTS
       try {
-        const response = await fetch('/api/tts/gemini', {
+        const ttsUrl = boardMode === 'anganwadi' ? '/api/tts/anganwadi' : '/api/tts/gemini';
+        const response = await fetch(ttsUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -613,8 +858,13 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
           if (matchVoice) {
             utterance.voice = matchVoice;
           }
-          utterance.pitch = 1.25; // cute high-pitched sister voice
-          utterance.rate = 0.85;
+          if (boardMode === 'anganwadi') {
+            utterance.pitch = 1.6;
+            utterance.rate = 0.75;
+          } else {
+            utterance.pitch = 1.25; // cute high-pitched sister voice
+            utterance.rate = 0.85;
+          }
 
           utterance.onend = () => setSpeaking(false);
           utterance.onerror = () => setSpeaking(false);
@@ -701,6 +951,10 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    if (activeImage) {
+      await bakeImageToCanvasPromise();
+    }
+
     const isFreePeriod = new Date() < new Date('2026-06-21T00:00:00+05:30');
     if (!isPremium && freeQueriesCount >= 5 && !isFreePeriod) {
       setShowUpgradeModal(true);
@@ -717,17 +971,35 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
       const dataUrl = getCanvasDataUrlWithBackground();
       const base64Data = dataUrl.split(',')[1];
 
-      // Socratic Prompt
-      const systemInstruction = 
-        "You are Gundulu AI, a friendly, brilliant, and patient Socratic tutor for school students in Odisha. " +
-        "Analyze the hand-drawn blackboard image. " +
-        "1. Identify what is drawn or written on the chalkboard. This could be a math problem, equation, sum, geometric shape, diagram, sketch, or words/sentences written in Odia or English script for any subject (Math, Science, Language, History, Geography, EVS, etc.). " +
-        "2. Be extremely precise in handwriting recognition. For example, distinguish between similar-looking Odia characters (like 'ଘ' in 'ବାଘ' meaning tiger, and 'ଧ' in 'ବାଧା' meaning obstacle). Pay close attention to standard Odia letters and words. " +
-        "3. If it is a math problem, sum, or equation: solve it step-by-step using a Socratic tutoring method, guiding the child to think rather than just printing a single result. " +
-        "4. If it is a general drawing, shape, word, or academic query (such as a science diagram or history question): identify it accurately, explain what it represents step-by-step, and engage the child in a friendly, interactive conversation. " +
-        "5. Provide the explanation in the student's selected language: " + (selectedLang === 'or' ? 'Odia' : 'English') + ". " +
-        "6. Keep the explanation concise, clear, and structured with clean markdown points. " +
-        "7. CRITICAL: Do NOT use LaTeX math code, delimiters like $$ or $, backslashes (\\), or LaTeX symbols (like \\frac, \\sqrt, \\pm). Instead, format all math equations, formulas, and expressions using plain text or standard Unicode symbols (like x^2, /, *, +, -, =, √x, +/-). Ensure they are written in a simple, plain-spaced, easy-to-read layout for school kids.";
+      // Socratic / Pedagogical Role-based prompts
+      let systemInstruction = "";
+      if (boardMode === 'anganwadi') {
+        systemInstruction =
+          "You are Gundulu AI, a warm, friendly, and patient preschool teacher/tutor for Anganwadi (Sishu Vatika) children (aged 3-5 years) in Odisha. " +
+          "Analyze the hand-drawn blackboard image containing children's letters, numbers, or drawings. " +
+          "1. Identify the letter, number, or drawing drawn on the board. " +
+          "2. Provide feedback in extremely simple, encouraging, and sweet Odia language. Speak like an affectionate Odia preschool teacher (use warm tones, gentle praise like 'BOHUT BADHIA' or 'SUNDAR HOICHI' but written in Odia characters as 'ବହୁତ ବଢ଼ିଆ', 'ସୁନ୍ଦର ହୋଇଛି'). " +
+          "3. Suggest 1 fun, tiny game or sound the child can make related to that object. Keep it extremely short, sweet, and engaging (1-2 sentences).";
+      } else if (boardMode === 'teacher') {
+        systemInstruction =
+          "You are Gundulu AI, a brilliant pedagogical assistant for school teachers in Odisha. " +
+          "Analyze the chalkboard contents and help the teacher explain this topic to their class. " +
+          "1. Identify the subject matter and topic written or sketched. " +
+          "2. Suggest 2 interactive, low-cost activities or real-life examples the teacher can use in class to demonstrate this topic. " +
+          "3. Formulate 2 thought-provoking questions the teacher can ask students to check for understanding. " +
+          "4. Keep response structured in bullet points and written in: " + (selectedLang === 'or' ? 'Odia' : 'English') + ".";
+      } else {
+        systemInstruction = 
+          "You are Gundulu AI, a friendly, brilliant, and patient Socratic tutor for school students in Odisha. " +
+          "Analyze the hand-drawn blackboard image. " +
+          "1. Identify what is drawn or written on the chalkboard. This could be a math problem, equation, sum, geometric shape, diagram, sketch, or words/sentences written in Odia or English script for any subject (Math, Science, Language, History, Geography, EVS, etc.). " +
+          "2. Be extremely precise in handwriting recognition. Distinguish standard Odia characters. " +
+          "3. If it is a math problem, sum, or equation: solve it step-by-step using a Socratic tutoring method, guiding the child to think rather than just printing a single result. " +
+          "4. If it is a general drawing, shape, word, or academic query: identify it accurately, explain what it represents step-by-step, and engage the child in a friendly, interactive conversation. " +
+          "5. Provide the explanation in the student's selected language: " + (selectedLang === 'or' ? 'Odia' : 'English') + ". " +
+          "6. Keep the explanation concise, clear, and structured with clean markdown points. " +
+          "7. CRITICAL: Do NOT use LaTeX math code, delimiters like $$ or $, backslashes (\\), or LaTeX symbols. Instead, format all math equations, formulas, and expressions using plain text or standard Unicode symbols (like x^2, /, *, +, -, =, √x, +/-). Ensure they are written in a simple, plain-spaced, easy-to-read layout for school kids.";
+      }
 
       const promptText = 
         selectedLang === 'or'
@@ -785,6 +1057,109 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
           : "❌ Failed to analyze chalkboard. Please write or draw clearly."
       );
     } finally {
+      setLoading(false);
+    }
+  };
+
+  const convertHandwritingToText = async () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    if (activeImage) {
+      await bakeImageToCanvasPromise();
+    }
+
+    stopAudio();
+    setScanning(true);
+    setLoading(true);
+    
+    try {
+      const dataUrl = getCanvasDataUrlWithBackground();
+      const base64Data = dataUrl.split(',')[1];
+
+      const systemInstruction = 
+        "You are an expert OCR transcription tool for handwriting. " +
+        "Your task is to transcribe exactly what is written on the chalkboard. " +
+        "1. Identify the handwritten text in the chalkboard (could be in Odia or English script). " +
+        "2. Do NOT add any explanations, summaries, or intro/outro text. Only return the exact transcribed text. " +
+        "3. Preserve the line breaks and layout of the handwriting as closely as possible. " +
+        "4. If there are math equations, transcribe them clearly using standard text symbols (e.g., x^2 + 5x + 6 = 0).";
+
+      const promptText = "Transcribe the handwritten text from this chalkboard image exactly, line-by-line, without adding any comments or markdown wrappers.";
+
+      const contents = [
+        {
+          role: 'user',
+          parts: [
+            { text: promptText },
+            {
+              inlineData: {
+                mimeType: 'image/jpeg',
+                data: base64Data
+              }
+            }
+          ]
+        }
+      ];
+
+      const response = await fetch('/api/ai/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents,
+          systemInstruction,
+          modelType: 'flash'
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+
+      const data = await response.json();
+      const rawText = data.text || "";
+      const cleanText = rawText.trim();
+
+      if (cleanText) {
+        // Clear board first
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.clearRect(0, 0, canvas.width / 2, canvas.height / 2);
+        
+        // Write text line-by-line
+        ctx.fillStyle = '#fef8ec';
+        ctx.font = 'bold 26px "Courier New", Courier, monospace';
+        ctx.textBaseline = 'top';
+
+        const lines = cleanText.split('\n');
+        let startY = 80;
+        const lineHeight = 42;
+
+        lines.forEach(line => {
+          ctx.fillText(line, 60, startY);
+          startY += lineHeight;
+        });
+
+        // Save state to undo/redo history
+        const currentState = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const newHistory = historyRef.current.slice(0, historyIndexRef.current + 1);
+        newHistory.push(currentState);
+        
+        if (newHistory.length > 25) {
+          newHistory.shift();
+        }
+        
+        historyRef.current = newHistory;
+        historyIndexRef.current = newHistory.length - 1;
+        setCanUndo(historyIndexRef.current > 0);
+        setCanRedo(false);
+      }
+    } catch (err) {
+      console.error("Handwriting OCR conversion error:", err);
+      alert(selectedLang === 'or' ? "❌ ହାତଲେଖା ପଢିବାରେ ଅସୁବିଧା ହେଲା।" : "❌ Failed to transcribe handwriting.");
+    } finally {
+      setScanning(false);
       setLoading(false);
     }
   };
@@ -920,13 +1295,15 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
                 <Lucide.PenTool size={18} />
               </div>
               <div>
-                <h3 className="text-sm md:text-base font-black text-white uppercase tracking-tight">
-                  {selectedLang === 'or' ? 'ଗୁନ୍ଦୁଲୁ କଳାପଟା' : "Gundulu's Slate Blackboard"}
+                <h3 className="text-sm md:text-base font-black text-white tracking-tight">
+                  {selectedLang === 'or' ? 'GunduluAI ସ୍ମାର୍ଟ ବୋର୍ଡ' : "GunduluAI Smart Board"}
                 </h3>
                 <span className="text-[9px] md:text-[11px] text-slate-400 font-bold block mt-0.5 leading-none">
-                  {selectedLang === 'or' 
-                    ? 'ଖଡ଼ିରେ ଯେକୌଣସି ବିଷୟର ଲେଖା ବା ଚିତ୍ର ଆଙ୍କନ୍ତୁ, ଗୁନ୍ଦୁଲୁ ଆପା ସମ୍ପୂର୍ଣ୍ଣ ବୁଝାଇଦେବେ।'
-                    : 'Draw shapes, write words, or input equations. Gundulu AI will explain step-by-step.'}
+                  {boardMode === 'teacher' 
+                    ? (selectedLang === 'or' ? 'ଶିକ୍ଷକ ସ୍ମାର୍ଟବୋର୍ଡ: ପାଠ୍ୟ ଉଦାହରଣ ଏବଂ ଆଇଡିଆ ପାଇଁ କଳାପଟାରେ ଲେଖନ୍ତୁ।' : 'Teacher Smartboard: Draw templates or write topics to get lesson ideas.')
+                    : boardMode === 'anganwadi'
+                    ? (selectedLang === 'or' ? 'ଶିଶୁ ବାଟିକା କଳାପଟା: ଆସ ଅକ୍ଷର ଲେଖିବା ଓ ମଜା ଗପ ଶୁଣିବା!' : 'Sishu Vatika Board: Let\'s trace letters and hear sweet stories!')
+                    : (selectedLang === 'or' ? 'ଛାତ୍ର ସ୍ମାର୍ଟବୋର୍ଡ: ଅଙ୍କ କିମ୍ବା ପ୍ରଶ୍ନର ସମାଧାନ ପାଇଁ ଲେଖନ୍ତୁ।' : 'Student Board: Write equations or draw diagrams to get Socratic help.')}
                 </span>
               </div>
             </div>
@@ -955,9 +1332,9 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
               </div>
 
               <button
-                onClick={onClose}
+                onClick={handleClose}
                 className="p-2 rounded-xl bg-white/5 hover:bg-red-500/10 hover:text-red-400 border border-white/10 hover:border-red-500/20 text-slate-400 transition-all cursor-pointer flex-shrink-0"
-                title="Close Blackboard"
+                title="Close Smart Board"
               >
                 <Lucide.X size={14} />
               </button>
@@ -965,7 +1342,10 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
           </div>
 
           {/* Blackboard Board Frame (using class themes) */}
-          <div className={`flex-1 border-[12px] border-amber-900 rounded-3xl overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.5),inset_0_2px_10px_rgba(0,0,0,0.8)] relative select-none board-theme-${boardTheme} transition-all duration-300 min-h-0 flex flex-col`}>
+          <div 
+            ref={boardFrameRef}
+            className={`flex-1 border-[12px] border-amber-900 rounded-3xl overflow-y-auto scrollbar-hide shadow-[0_10px_30px_rgba(0,0,0,0.5),inset_0_2px_10px_rgba(0,0,0,0.8)] relative select-none board-theme-${boardTheme} transition-all duration-300 min-h-0`}
+          >
             <canvas
               ref={canvasRef}
               onMouseDown={startDrawing}
@@ -988,8 +1368,114 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
             {/* Real Blackboard Dust Overlay */}
             <div className="absolute inset-0 bg-gradient-to-tr from-white/[0.015] to-transparent pointer-events-none" />
 
+
+
+            {/* Draggable/Resizable activeImage Overlay */}
+            {activeImage && (
+              <div 
+                style={{
+                  position: 'absolute',
+                  left: `${activeImage.x}px`,
+                  top: `${activeImage.y}px`,
+                  width: `${activeImage.width}px`,
+                  height: `${activeImage.height}px`,
+                  border: '2px dashed #f59e0b',
+                  cursor: activeImage.isDragging ? 'grabbing' : 'grab',
+                  zIndex: 35,
+                }}
+                onMouseDown={(e) => {
+                  e.stopPropagation();
+                  let clientX = e.clientX;
+                  let clientY = e.clientY;
+                  setActiveImage(prev => prev ? {
+                    ...prev,
+                    isDragging: true,
+                    dragStartX: clientX,
+                    dragStartY: clientY
+                  } : null);
+                }}
+                onTouchStart={(e) => {
+                  e.stopPropagation();
+                  let clientX = e.touches[0].clientX;
+                  let clientY = e.touches[0].clientY;
+                  setActiveImage(prev => prev ? {
+                    ...prev,
+                    isDragging: true,
+                    dragStartX: clientX,
+                    dragStartY: clientY
+                  } : null);
+                }}
+              >
+                <img 
+                  src={activeImage.url} 
+                  alt="Overlay" 
+                  className="w-full h-full object-contain pointer-events-none" 
+                />
+                <div 
+                  style={{
+                    position: 'absolute',
+                    right: '-6px',
+                    bottom: '-6px',
+                    width: '14px',
+                    height: '14px',
+                    backgroundColor: '#f59e0b',
+                    border: '2px solid #ffffff',
+                    borderRadius: '50%',
+                    cursor: 'se-resize',
+                    zIndex: 40,
+                  }}
+                  onMouseDown={(e) => {
+                    e.stopPropagation();
+                    let clientX = e.clientX;
+                    let clientY = e.clientY;
+                    setActiveImage(prev => prev ? {
+                      ...prev,
+                      isResizing: true,
+                      dragStartX: clientX,
+                      dragStartY: clientY
+                    } : null);
+                  }}
+                  onTouchStart={(e) => {
+                    e.stopPropagation();
+                    let clientX = e.touches[0].clientX;
+                    let clientY = e.touches[0].clientY;
+                    setActiveImage(prev => prev ? {
+                      ...prev,
+                      isResizing: true,
+                      dragStartX: clientX,
+                      dragStartY: clientY
+                    } : null);
+                  }}
+                />
+                <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 border border-white/10 px-2 py-1.5 rounded-xl flex items-center gap-1.5 shadow-lg">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      bakeImageToCanvasPromise();
+                    }}
+                    className="p-1 rounded bg-emerald-500 hover:bg-emerald-600 text-slate-950 cursor-pointer transition-all active:scale-90"
+                    title="Place Image"
+                  >
+                    <Lucide.Check size={12} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActiveImage(null);
+                    }}
+                    className="p-1 rounded bg-red-500 hover:bg-red-600 text-white cursor-pointer transition-all active:scale-90"
+                    title="Remove Image"
+                  >
+                    <Lucide.X size={12} />
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Gundulu Floating mascot button */}
-            <div className="absolute bottom-4 right-4 z-30 flex flex-col items-end gap-1.5">
+            <div className="absolute bottom-4 right-4 z-30 flex flex-col items-end gap-1.5 pointer-events-auto">
               <AnimatePresence>
                 {!loading && (
                   <motion.div 
@@ -1012,7 +1498,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
               >
                 {loading && (
                   <div className="absolute inset-0 bg-slate-950/85 flex items-center justify-center z-20">
-                    <Lucide.Loader2 size={22} className="text-emerald-400 animate-spin" />
+                    <Lucide.BrainCircuit size={22} className="text-emerald-400 animate-spin" />
                   </div>
                 )}
                 <img 
@@ -1083,44 +1569,46 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
             </AnimatePresence>
           </div>
 
-          {/* Quick Drawing Templates (Hackathon Showcase Tool) */}
-          <div className="flex flex-wrap items-center gap-2 bg-slate-950/45 p-3 rounded-2xl border border-white/5 relative overflow-hidden shrink-0">
-            <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-transparent pointer-events-none" />
-            <span className="text-[10px] text-amber-400 font-black uppercase tracking-wider flex items-center gap-1.5 z-10 relative">
-              <Lucide.Sparkles size={11} className="animate-pulse text-amber-400 fill-amber-400" />
-              {selectedLang === 'or' ? 'ଶୀଘ୍ର ଡେମୋ ଚିତ୍ର (Demo Drawings):' : 'Demo Templates:'}
-            </span>
-            <div className="flex flex-wrap gap-1.5 z-10 relative">
-              <button
-                type="button"
-                onClick={() => loadTemplate('equation')}
-                className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-white/10 hover:border-amber-500/50 hover:bg-slate-800/80 text-white text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-[1.02] active:scale-95 flex items-center gap-1"
-              >
-                <span>📐 {selectedLang === 'or' ? 'ଦ୍ଵିଘାତ ସମୀକରଣ' : 'Math Equation'}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => loadTemplate('triangle')}
-                className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-white/10 hover:border-amber-500/50 hover:bg-slate-800/80 text-white text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-[1.02] active:scale-95 flex items-center gap-1"
-              >
-                <span>🔺 {selectedLang === 'or' ? 'ଜ୍ୟାମିତିକ ତ୍ରିଭୁଜ' : 'Right Triangle'}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => loadTemplate('odia')}
-                className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-white/10 hover:border-amber-500/50 hover:bg-slate-800/80 text-white text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-[1.02] active:scale-95 flex items-center gap-1"
-              >
-                <span>✍️ {selectedLang === 'or' ? 'ଓଡ଼ିଆ ଶବ୍ଦ (ବାଘ)' : 'Odia Word (ବାଘ)'}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => loadTemplate('ocr')}
-                className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-emerald-500/30 hover:border-emerald-400 hover:bg-slate-800/80 text-emerald-400 text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-[1.02] active:scale-95 flex items-center gap-1 shadow-lg shadow-emerald-500/5"
-              >
-                <span>📸 {selectedLang === 'or' ? 'ପାଠ୍ୟପୁସ୍ତକ ସ୍କାନ (OCR)' : 'Textbook OCR Scan'}</span>
-              </button>
+          {/* Quick Drawing Templates (Hackathon Showcase Tool for Judges only) */}
+          {isJudge && (
+            <div className="flex flex-wrap items-center gap-2 bg-slate-950/45 p-3 rounded-2xl border border-white/5 relative overflow-hidden shrink-0">
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-transparent pointer-events-none" />
+              <span className="text-[10px] text-amber-400 font-black uppercase tracking-wider flex items-center gap-1.5 z-10 relative">
+                <Lucide.Sparkles size={11} className="animate-pulse text-amber-400 fill-amber-400" />
+                {selectedLang === 'or' ? 'ଶୀଘ୍ର ଡେମୋ ଚିତ୍ର (Demo Drawings):' : 'Demo Templates:'}
+              </span>
+              <div className="flex flex-wrap gap-1.5 z-10 relative">
+                <button
+                  type="button"
+                  onClick={() => loadTemplate('equation')}
+                  className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-white/10 hover:border-amber-500/50 hover:bg-slate-800/80 text-white text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-[1.02] active:scale-95 flex items-center gap-1"
+                >
+                  <span>📐 {selectedLang === 'or' ? 'ଦ୍ଵିଘାତ ସମୀକରଣ' : 'Math Equation'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => loadTemplate('triangle')}
+                  className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-white/10 hover:border-amber-500/50 hover:bg-slate-800/80 text-white text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-[1.02] active:scale-95 flex items-center gap-1"
+                >
+                  <span>🔺 {selectedLang === 'or' ? 'ଜ୍ୟାମିତିକ ତ୍ରିଭୁଜ' : 'Right Triangle'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => loadTemplate('odia')}
+                  className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-white/10 hover:border-amber-500/50 hover:bg-slate-800/80 text-white text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-[1.02] active:scale-95 flex items-center gap-1"
+                >
+                  <span>✍️ {selectedLang === 'or' ? 'ଓଡ଼ିଆ ଶବ୍ଦ (ବାଘ)' : 'Odia Word (ବାଘ)'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => loadTemplate('ocr')}
+                  className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-emerald-500/30 hover:border-emerald-400 hover:bg-slate-800/80 text-emerald-400 text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-[1.02] active:scale-95 flex items-center gap-1 shadow-lg shadow-emerald-500/5"
+                >
+                  <span>📸 {selectedLang === 'or' ? 'ପାଠ୍ୟପୁସ୍ତକ ସ୍କାନ (OCR)' : 'Textbook OCR Scan'}</span>
+                </button>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Chalk Toolbar controls */}
           <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-900/60 p-3 rounded-2xl border border-white/5">
@@ -1154,6 +1642,37 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
               >
                 <Lucide.Eraser size={14} />
               </button>
+            </div>
+
+            {/* Smartboard Image Upload & OCR Tools */}
+            <div className="flex items-center gap-2">
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleImageUpload} 
+                accept="image/*" 
+                className="hidden" 
+              />
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="px-3 py-1.5 rounded-xl bg-slate-950/80 border border-white/10 hover:border-amber-500/50 hover:bg-slate-800 text-slate-300 hover:text-white text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5"
+                title="Upload image overlay"
+              >
+                <Lucide.Image size={12} />
+                <span>{selectedLang === 'or' ? 'ଛବି ଆଣନ୍ତୁ' : 'Upload Image'}</span>
+              </button>
+
+              {(boardMode === 'student' || boardMode === 'teacher') && (
+                <button
+                  onClick={convertHandwritingToText}
+                  disabled={loading}
+                  className="px-3 py-1.5 rounded-xl bg-slate-950/80 border border-emerald-500/30 hover:border-emerald-400 hover:bg-slate-800 text-emerald-400 text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 shadow-md"
+                  title="Transcribe drawings to text"
+                >
+                  <Lucide.Sparkles size={12} className="animate-pulse" />
+                  <span>{selectedLang === 'or' ? 'ଲିଖନରୁ ପାଠ୍ୟ' : 'Ink to Text'}</span>
+                </button>
+              )}
             </div>
 
             {/* Undo / Redo controls */}

@@ -19,6 +19,7 @@ import {
 } from 'firebase/firestore';
 import { CLASS_SUBJECTS } from './DigitalLibraryView';
 import NeuralBackground from './NeuralBackground';
+import { MathBlackboard } from './MathBlackboard';
 
 interface TeacherDashboardProps {
   user: any;
@@ -41,6 +42,7 @@ export function TeacherDashboard({
 }: TeacherDashboardProps) {
   // Subtabs State
   const [activeSubTab, setActiveSubTab] = useState<'workspace' | 'library' | 'broadcast' | 'educator_board'>('workspace');
+  const [showBlackboard, setShowBlackboard] = useState(false);
 
   // Video Suggestion Form State
   const [suggestTitle, setSuggestTitle] = useState('');
@@ -618,7 +620,7 @@ export function TeacherDashboard({
                   <span>{language === 'en' ? 'Gundulu AI Engines' : 'ଗୁନ୍ଦୁଲୁ AI ଷ୍ଟୁଡିଓ ଇଞ୍ଜିନ୍'}</span>
                 </h3>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {/* Card 1: AI Worksheet Maker */}
                   <motion.div 
                     whileHover={{ y: -8, scale: 1.01 }}
@@ -783,6 +785,62 @@ export function TeacherDashboard({
                       className="relative z-10 w-full py-3.5 mt-6 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs uppercase tracking-widest transition-all cursor-pointer shadow-lg shadow-emerald-950/35 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 border border-emerald-500/30"
                     >
                       <span>{language === 'en' ? 'Open Studio' : 'ଷ୍ଟୁଡିଓ ଖୋଲନ୍ତୁ'}</span>
+                      <Lucide.ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                    </button>
+                  </motion.div>
+
+                  {/* Card 4: Gundulu Slate Board */}
+                  <motion.div 
+                    whileHover={{ y: -8, scale: 1.01 }}
+                    className="relative group rounded-[2.2rem] p-6 border border-amber-500/20 bg-gradient-to-br from-[#0c2b18]/60 via-[#051c0f]/80 to-[#011409]/40 hover:border-amber-500/40 hover:shadow-[0_20px_50px_rgba(245,158,11,0.18)] transition-all duration-500 flex flex-col justify-between min-h-[350px] overflow-hidden"
+                  >
+                    {/* Tech Mesh Overlay */}
+                    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none opacity-20"></div>
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl pointer-events-none group-hover:scale-150 transition-transform duration-500" />
+                    
+                    <div className="space-y-5 relative z-10">
+                      <div className="flex justify-between items-start">
+                        <div className="w-14 h-14 rounded-2xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center text-amber-400 group-hover:bg-amber-500/25 shadow-inner transition-colors duration-300">
+                          <Lucide.PenTool size={26} className="animate-pulse" />
+                        </div>
+                        <span className="px-2.5 py-1 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-300 text-[8px] font-black uppercase tracking-wider">
+                          {language === 'en' ? 'Gundulu Slate' : 'ଗୁନ୍ଦୁଲୁ କଳାପଟା'}
+                        </span>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <h4 className="text-lg font-black text-white group-hover:text-amber-355 transition-colors">
+                          {language === 'en' ? 'Gundulu Slate Board' : 'ଗୁନ୍ଦୁଲୁ କଳାପଟା'}
+                        </h4>
+
+                        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-300 text-[8.5px] font-black uppercase tracking-wider w-fit">
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_5px_#f59e0b] animate-pulse" />
+                          <span>{language === 'en' ? 'Slate Engine Live' : 'କଳାପଟା ଇଞ୍ଜିନ୍ ସକ୍ରିୟ'}</span>
+                        </div>
+
+                        <p className="text-xs text-slate-350 leading-relaxed font-medium pt-1">
+                          {language === 'en'
+                            ? 'Draw shapes, write words, or solve equations. Gundulu AI scans and explains any subject!'
+                            : 'ଖଡ଼ିରେ ଲେଖନ୍ତୁ ବା ଚିତ୍ର ଆଙ୍କନ୍ତୁ, ଗୁନ୍ଦୁଲୁ ଆପା ଯେକୌଣସି ବିଷୟର ସମାଧାନ ଓ ସମ୍ପୂର୍ଣ୍ଣ ବୁଝାମଣା ଓଡ଼ିଆରେ କରିବେ।'}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <button
+                      onClick={() => {
+                        try {
+                          const doc = document.documentElement;
+                          if (doc.requestFullscreen) doc.requestFullscreen();
+                          else if ((doc as any).webkitRequestFullscreen) (doc as any).webkitRequestFullscreen();
+                          if (window.screen && window.screen.orientation && (window.screen.orientation as any).lock) {
+                            (window.screen.orientation as any).lock('landscape').catch(() => {});
+                          }
+                        } catch (e) {}
+                        setShowBlackboard(true);
+                      }}
+                      className="relative z-10 w-full py-3.5 mt-6 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-black text-xs uppercase tracking-widest transition-all cursor-pointer shadow-lg shadow-amber-950/35 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 border border-amber-500/30"
+                    >
+                      <span>{language === 'en' ? 'Launch Slate Board' : 'କଳାପଟା ଖୋଲନ୍ତୁ'}</span>
                       <Lucide.ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                     </button>
                   </motion.div>
@@ -1787,6 +1845,15 @@ export function TeacherDashboard({
           document.body
         )}
       </motion.div>
+      {showBlackboard && (
+        <MathBlackboard
+          language={language}
+          onClose={() => setShowBlackboard(false)}
+          isPremium={isPremium}
+          user={user}
+          initialMode="teacher"
+        />
+      )}
     </div>
   );
 }

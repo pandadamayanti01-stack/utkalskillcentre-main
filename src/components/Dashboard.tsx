@@ -1875,6 +1875,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             isPremium={isPremium}
             onUpgrade={onUpgrade}
             user={user}
+            initialMode="student"
           />
         )}
 
