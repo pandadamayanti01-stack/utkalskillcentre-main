@@ -64,6 +64,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
 
   // Draggable and Resizable Image Overlay state
   interface ActiveImageState {
+    id: string;
     url: string;
     x: number;
     y: number;
@@ -77,7 +78,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
     originalHeight: number;
   }
 
-  const [activeImage, setActiveImage] = useState<ActiveImageState | null>(null);
+  const [boardImages, setBoardImages] = useState<ActiveImageState[]>([]);
 
   // Check if user is a judge or in judge mode for showcase templates visibility
   const isJudge = (() => {
@@ -143,8 +144,8 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
   // Draggable/Resizable image mouse and touch event tracking
   useEffect(() => {
     const handlePointerMove = (e: MouseEvent | TouchEvent) => {
-      if (!activeImage) return;
-      if (!activeImage.isDragging && !activeImage.isResizing) return;
+      const activeImg = boardImages.find(img => img.isDragging || img.isResizing);
+      if (!activeImg) return;
 
       let clientX, clientY;
       if ('touches' in e) {
@@ -155,37 +156,38 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
         clientY = e.clientY;
       }
 
-      if (activeImage.isDragging) {
-        const dx = clientX - activeImage.dragStartX;
-        const dy = clientY - activeImage.dragStartY;
-        setActiveImage(prev => prev ? {
-          ...prev,
-          x: prev.x + dx,
-          y: prev.y + dy,
+      if (activeImg.isDragging) {
+        const dx = clientX - activeImg.dragStartX;
+        const dy = clientY - activeImg.dragStartY;
+        setBoardImages(prev => prev.map(img => img.id === activeImg.id ? {
+          ...img,
+          x: img.x + dx,
+          y: img.y + dy,
           dragStartX: clientX,
           dragStartY: clientY
-        } : null);
-      } else if (activeImage.isResizing) {
-        const dx = clientX - activeImage.dragStartX;
-        const newWidth = Math.max(50, activeImage.width + dx);
-        const newHeight = newWidth * (activeImage.originalHeight / activeImage.originalWidth);
-        setActiveImage(prev => prev ? {
-          ...prev,
+        } : img));
+      } else if (activeImg.isResizing) {
+        const dx = clientX - activeImg.dragStartX;
+        const newWidth = Math.max(50, activeImg.width + dx);
+        const newHeight = newWidth * (activeImg.originalHeight / activeImg.originalWidth);
+        setBoardImages(prev => prev.map(img => img.id === activeImg.id ? {
+          ...img,
           width: newWidth,
           height: newHeight,
           dragStartX: clientX,
           dragStartY: clientY
-        } : null);
+        } : img));
       }
     };
 
     const handlePointerUp = () => {
-      if (activeImage && (activeImage.isDragging || activeImage.isResizing)) {
-        setActiveImage(prev => prev ? {
-          ...prev,
+      const activeImg = boardImages.find(img => img.isDragging || img.isResizing);
+      if (activeImg) {
+        setBoardImages(prev => prev.map(img => img.id === activeImg.id ? {
+          ...img,
           isDragging: false,
           isResizing: false
-        } : null);
+        } : img));
       }
     };
 
@@ -200,7 +202,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
       window.removeEventListener('touchmove', handlePointerMove);
       window.removeEventListener('touchend', handlePointerUp);
     };
-  }, [activeImage]);
+  }, [boardImages]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -228,7 +230,8 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
         const parentHeight = boardFrameRef.current?.clientHeight || 500;
         const parentWidth = boardFrameRef.current?.clientWidth || 800;
 
-        setActiveImage({
+        const newImage: ActiveImageState = {
+          id: Date.now().toString() + Math.random().toString(),
           url,
           x: (parentWidth - w) / 2,
           y: scrollTop + (parentHeight - h) / 2,
@@ -240,16 +243,18 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
           dragStartY: 0,
           originalWidth: img.width,
           originalHeight: img.height
-        });
+        };
+        setBoardImages(prev => [...prev, newImage]);
       };
       img.src = url;
     };
     reader.readAsDataURL(file);
   };
 
-  const bakeImageToCanvasPromise = (): Promise<void> => {
+  const bakeImageToCanvasPromise = (id: string): Promise<void> => {
     return new Promise((resolve) => {
-      if (!activeImage) {
+      const targetImage = boardImages.find(img => img.id === id);
+      if (!targetImage) {
         resolve();
         return;
       }
@@ -269,7 +274,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
       img.crossOrigin = "anonymous";
       img.onload = () => {
         ctx.globalCompositeOperation = 'source-over';
-        ctx.drawImage(img, activeImage.x, activeImage.y, activeImage.width, activeImage.height);
+        ctx.drawImage(img, targetImage.x, targetImage.y, targetImage.width, targetImage.height);
         
         const currentState = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const newHistory = historyRef.current.slice(0, historyIndexRef.current + 1);
@@ -279,16 +284,58 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
         setCanUndo(historyIndexRef.current > 0);
         setCanRedo(false);
 
-        setActiveImage(null);
+        setBoardImages(prev => prev.filter(item => item.id !== id));
         resolve();
       };
       img.onerror = () => {
-        console.error("Failed to load activeImage for baking");
-        setActiveImage(null);
+        console.error("Failed to load image for baking");
+        setBoardImages(prev => prev.filter(item => item.id !== id));
         resolve();
       };
-      img.src = activeImage.url;
+      img.src = targetImage.url;
     });
+  };
+
+  const bakeAllImagesToCanvasPromise = async (): Promise<void> => {
+    if (boardImages.length === 0) return;
+    
+    const imagesToBake = [...boardImages];
+    for (const img of imagesToBake) {
+      await new Promise<void>((resolve) => {
+        const canvas = canvasRef.current;
+        if (!canvas) {
+          resolve();
+          return;
+        }
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        if (!ctx) {
+          resolve();
+          return;
+        }
+
+        const imageObj = new Image();
+        imageObj.crossOrigin = "anonymous";
+        imageObj.onload = () => {
+          ctx.globalCompositeOperation = 'source-over';
+          ctx.drawImage(imageObj, img.x, img.y, img.width, img.height);
+          
+          const currentState = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const newHistory = historyRef.current.slice(0, historyIndexRef.current + 1);
+          newHistory.push(currentState);
+          historyRef.current = newHistory;
+          historyIndexRef.current = newHistory.length - 1;
+          setCanUndo(historyIndexRef.current > 0);
+          setCanRedo(false);
+          resolve();
+        };
+        imageObj.onerror = () => {
+          console.error("Failed to load image for baking");
+          resolve();
+        };
+        imageObj.src = img.url;
+      });
+    }
+    setBoardImages([]);
   };
 
   // Auto-scroll explanation on mobile when loaded
@@ -589,6 +636,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
     setExplanation('');
     setDisplayedExplanation('');
     stopAudio();
+    setBoardImages([]);
   };
 
   const loadTemplate = (type: 'equation' | 'triangle' | 'odia' | 'ocr') => {
@@ -973,9 +1021,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    if (activeImage) {
-      await bakeImageToCanvasPromise();
-    }
+    await bakeAllImagesToCanvasPromise();
 
     const isFreePeriod = new Date() < new Date('2026-06-21T00:00:00+05:30');
     if (!isPremium && freeQueriesCount >= 5 && !isFreePeriod) {
@@ -1089,9 +1135,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
 
-    if (activeImage) {
-      await bakeImageToCanvasPromise();
-    }
+    await bakeAllImagesToCanvasPromise();
 
     stopAudio();
     setScanning(true);
@@ -1192,9 +1236,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
 
-    if (activeImage) {
-      await bakeImageToCanvasPromise();
-    }
+    await bakeAllImagesToCanvasPromise();
 
     stopAudio();
     setScanning(true);
@@ -1234,7 +1276,8 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
           const parentHeight = boardFrameRef.current?.clientHeight || 500;
           const parentWidth = boardFrameRef.current?.clientWidth || 800;
 
-          setActiveImage({
+          const newImage: ActiveImageState = {
+            id: Date.now().toString() + Math.random().toString(),
             url: data.image,
             x: (parentWidth - w) / 2,
             y: scrollTop + (parentHeight - h) / 2,
@@ -1246,7 +1289,8 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
             dragStartY: 0,
             originalWidth: img.width,
             originalHeight: img.height
-          });
+          };
+          setBoardImages(prev => [...prev, newImage]);
         };
         img.src = data.image;
       }
@@ -1298,7 +1342,8 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
           const parentHeight = boardFrameRef.current?.clientHeight || 500;
           const parentWidth = boardFrameRef.current?.clientWidth || 800;
 
-          setActiveImage({
+          const newImage: ActiveImageState = {
+            id: Date.now().toString() + Math.random().toString(),
             url: data.image,
             x: (parentWidth - w) / 2,
             y: scrollTop + (parentHeight - h) / 2,
@@ -1310,7 +1355,8 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
             dragStartY: 0,
             originalWidth: img.width,
             originalHeight: img.height
-          });
+          };
+          setBoardImages(prev => [...prev, newImage]);
         };
         img.src = data.image;
         setAiPrompt('');
@@ -1549,44 +1595,45 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
 
 
 
-            {/* Draggable/Resizable activeImage Overlay */}
-            {activeImage && (
+            {/* Draggable/Resizable Board Images Overlay */}
+            {boardImages.map((img) => (
               <div 
+                key={img.id}
                 style={{
                   position: 'absolute',
-                  left: `${activeImage.x}px`,
-                  top: `${activeImage.y}px`,
-                  width: `${activeImage.width}px`,
-                  height: `${activeImage.height}px`,
+                  left: `${img.x}px`,
+                  top: `${img.y}px`,
+                  width: `${img.width}px`,
+                  height: `${img.height}px`,
                   border: '2px dashed #f59e0b',
-                  cursor: activeImage.isDragging ? 'grabbing' : 'grab',
+                  cursor: img.isDragging ? 'grabbing' : 'grab',
                   zIndex: 35,
                 }}
                 onMouseDown={(e) => {
                   e.stopPropagation();
                   let clientX = e.clientX;
                   let clientY = e.clientY;
-                  setActiveImage(prev => prev ? {
-                    ...prev,
+                  setBoardImages(prev => prev.map(item => item.id === img.id ? {
+                    ...item,
                     isDragging: true,
                     dragStartX: clientX,
                     dragStartY: clientY
-                  } : null);
+                  } : item));
                 }}
                 onTouchStart={(e) => {
                   e.stopPropagation();
                   let clientX = e.touches[0].clientX;
                   let clientY = e.touches[0].clientY;
-                  setActiveImage(prev => prev ? {
-                    ...prev,
+                  setBoardImages(prev => prev.map(item => item.id === img.id ? {
+                    ...item,
                     isDragging: true,
                     dragStartX: clientX,
                     dragStartY: clientY
-                  } : null);
+                  } : item));
                 }}
               >
                 <img 
-                  src={activeImage.url} 
+                  src={img.url} 
                   alt="Overlay" 
                   className="w-full h-full object-contain pointer-events-none" 
                 />
@@ -1607,23 +1654,23 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
                     e.stopPropagation();
                     let clientX = e.clientX;
                     let clientY = e.clientY;
-                    setActiveImage(prev => prev ? {
-                      ...prev,
+                    setBoardImages(prev => prev.map(item => item.id === img.id ? {
+                      ...item,
                       isResizing: true,
                       dragStartX: clientX,
                       dragStartY: clientY
-                    } : null);
+                    } : item));
                   }}
                   onTouchStart={(e) => {
                     e.stopPropagation();
                     let clientX = e.touches[0].clientX;
                     let clientY = e.touches[0].clientY;
-                    setActiveImage(prev => prev ? {
-                      ...prev,
+                    setBoardImages(prev => prev.map(item => item.id === img.id ? {
+                      ...item,
                       isResizing: true,
                       dragStartX: clientX,
                       dragStartY: clientY
-                    } : null);
+                    } : item));
                   }}
                 />
                 <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 border border-white/10 px-2 py-1.5 rounded-xl flex items-center gap-1.5 shadow-lg">
@@ -1631,7 +1678,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      bakeImageToCanvasPromise();
+                      bakeImageToCanvasPromise(img.id);
                     }}
                     className="p-1 rounded bg-emerald-500 hover:bg-emerald-600 text-slate-950 cursor-pointer transition-all active:scale-90"
                     title="Place Image"
@@ -1642,7 +1689,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setActiveImage(null);
+                      setBoardImages(prev => prev.filter(item => item.id !== img.id));
                     }}
                     className="p-1 rounded bg-red-500 hover:bg-red-600 text-white cursor-pointer transition-all active:scale-90"
                     title="Remove Image"
@@ -1651,7 +1698,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
                   </button>
                 </div>
               </div>
-            )}
+            ))}
 
             {/* Gundulu Floating mascot button */}
             <div className="absolute bottom-4 right-4 z-30 flex flex-col items-end gap-1.5 pointer-events-auto">
