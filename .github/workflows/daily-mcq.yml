@@ -27,13 +27,6 @@ jobs:
       - name: Run Daily MCQ Generator
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GEMINI_ROTATOR_KEY_1: ${{ secrets.GEMINI_ROTATOR_KEY_1 }}
-          GEMINI_ROTATOR_KEY_2: ${{ secrets.GEMINI_ROTATOR_KEY_2 }}
-          GEMINI_ROTATOR_KEY_3: ${{ secrets.GEMINI_ROTATOR_KEY_3 }}
-          GEMINI_ROTATOR_KEY_4: ${{ secrets.GEMINI_ROTATOR_KEY_4 }}
-          GEMINI_ROTATOR_KEY_5: ${{ secrets.GEMINI_ROTATOR_KEY_5 }}
-          GEMINI_ROTATOR_KEY_6: ${{ secrets.GEMINI_ROTATOR_KEY_6 }}
-          GEMINI_ROTATOR_KEY_7: ${{ secrets.GEMINI_ROTATOR_KEY_7 }}
           FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
           FIRESTORE_DATABASE_ID: ${{ secrets.FIRESTORE_DATABASE_ID }}
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}
