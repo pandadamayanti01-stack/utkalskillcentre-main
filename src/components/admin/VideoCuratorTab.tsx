@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Youtube, Search, Plus, Trash2, CheckCircle2, PlayCircle, Loader2 } from 'lucide-react';
+import { Youtube, Search, Plus, Trash2, CheckCircle2, PlayCircle, Loader2, RefreshCw, Sliders, ShieldCheck } from 'lucide-react';
 import { db } from '../../firebase';
 import { collection, getDocs, addDoc, deleteDoc, doc, serverTimestamp, query, orderBy, limit, where, onSnapshot, updateDoc } from 'firebase/firestore';
 import { translations } from '../../translations';
@@ -24,7 +24,7 @@ const normalizeSubjectKey = (subject: string): string => {
     sahityasudha: 'odia',
     sahityasuman: 'odia',
     sahityasurabhi: 'odia',
-    sahityadhara: 'odia',
+    sahitydhara: 'odia',
     paribesapatha: 'science',
     jigyasa: 'science',
     amachaturbaswarapruthibi: 'science',
@@ -75,42 +75,31 @@ const getSubjectsForClass = (classStr: string) => {
 };
 
 function formatChapterName(rawName: string) {
-  // 1. If it already contains a hyphen (e.g. "Chapter 1 - ..."), it is already in standard format
   if (rawName.includes(' - ')) {
     return rawName.trim();
   }
 
-  // 2. Extract chapter number
   let chapterNum = 1;
   const numMatch = rawName.match(/Chapter[_\-\s]?\s*(\d+)/i) || rawName.match(/Ch[_\-\s]?\s*(\d+)/i);
   if (numMatch) {
     chapterNum = parseInt(numMatch[1], 10);
   }
 
-  // 3. Clean up the title part
-  // Remove Class prefix (e.g. Class4_ or Class3_)
   let titlePart = rawName.replace(/^Class\d+_/i, '');
   
-  // Remove Subject prefix (e.g. KalaSikhya_, KalaKruti_, PE_, Pallavi_, EVS_)
   titlePart = titlePart.replace(/^(KalaSikhya|KalaKruti|PE|Pallavi|EVS|Odia|Mathematics|Evs|Physical_education)_[A-Za-z0-9]+_/i, '');
   titlePart = titlePart.replace(/^(KalaSikhya|KalaKruti|PE|Pallavi|EVS|Odia|Mathematics|Evs|Physical_education)_/i, '');
   
-  // Remove Chapter prefix (e.g. Ch01_ or Chapter01_)
   titlePart = titlePart.replace(/^Ch[_\-\s]?\d+_/i, '');
   titlePart = titlePart.replace(/^Chapter[_\-\s]?\d+_/i, '');
   
-  // Remove Unit/Theme/Music/Dance/VisualArts keywords (e.g. VisualArts_Ch01_, Unit1_Ch1_, Music_Ch06_, Dance_Ch11_, Drama_Ch05_)
   titlePart = titlePart.replace(/^(Unit\d+|VisualArts|Music|Dance|Drama|Theatre|Theme\d+)_Ch\d+_/i, '');
   titlePart = titlePart.replace(/^(Unit\d+|VisualArts|Music|Dance|Drama|Theatre|Theme\d+)_Ch0\d+_/i, '');
   titlePart = titlePart.replace(/^(Unit\d+|VisualArts|Music|Dance|Drama|Theatre|Theme\d+)_/i, '');
   
-  // Just in case, clean up any remaining ChXX prefix
   titlePart = titlePart.replace(/^Ch\d+_/i, '');
-
-  // Replace underscores with spaces
   titlePart = titlePart.replace(/_/g, ' ').trim();
 
-  // Capitalize first letter of each word for beauty
   titlePart = titlePart.split(' ').map(word => {
     if (!word) return '';
     return word.charAt(0).toUpperCase() + word.slice(1);
@@ -128,6 +117,16 @@ interface CuratedVideo {
   title: string;
   order: number;
   createdAt: any;
+  status?: 'published' | 'trial' | 'backup' | 'pending_review';
+  trialStartedAt?: any;
+  replacedVideoId?: string;
+  originalOrder?: number;
+  initialScore?: number;
+  viewCount?: number;
+  likeCount?: number;
+  commentCount?: number;
+  engagementScore?: number;
+  reviewReason?: string;
 }
 
 export function VideoCuratorTab() {
@@ -157,6 +156,13 @@ export function VideoCuratorTab() {
   const [isAutoCurating, setIsAutoCurating] = useState(false);
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [searchIndex, setSearchIndex] = useState(0);
+
+  // Sync / Evaluation States
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [isEvaluating, setIsEvaluating] = useState(false);
+  const [isReverifying, setIsReverifying] = useState(false);
+  const [logMessage, setLogMessage] = useState<string | null>(null);
+
 
   useEffect(() => {
     fetchVideos();
@@ -337,19 +343,29 @@ export function VideoCuratorTab() {
     
     setIsSaving(true);
     try {
-      const newVideo = {
-        classStr: selectedClass,
-        subject: selectedSubject,
-        chapter: chapterName,
-        youtubeUrl: youtubeUrl,
-        title: videoTitle,
-        order: Number(videoOrder) || 1,
-        createdAt: serverTimestamp(),
-      };
-      
-      await addDoc(collection(db, 'curated_videos'), newVideo);
-      
-      // Update pending review suggestions
+      // Direct curate: Call backend API to handle limit checks, scoring, and A/B switch
+      const res = await fetch('/api/admin/videos/add-direct', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          classStr: selectedClass,
+          subject: selectedSubject,
+          chapter: chapterName,
+          youtubeUrl: youtubeUrl,
+          title: videoTitle,
+          order: Number(videoOrder) || 1,
+          bypassLimitCheck: false
+        })
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || errData.details || 'Failed to curate video');
+      }
+
+      const addRes = await res.json();
+
+      // Update pending review suggestions if approved from review card
       if (activeSuggestionId) {
         await updateDoc(doc(db, 'suggested_videos', activeSuggestionId), {
           status: 'approved',
@@ -365,12 +381,94 @@ export function VideoCuratorTab() {
       setActiveSuggestionBatchId(null);
       
       fetchVideos();
-      alert("Video Curated Successfully!");
+
+      if (addRes.action === 'switched') {
+        alert(`Successfully added! Replaced low-performing video (retained as backup).`);
+      } else if (addRes.action === 'flagged_pending') {
+        alert(`Video engagement score was lower than current playlist. Video added to review queue.`);
+      } else {
+        alert("Video Curated Successfully!");
+      }
     } catch (err) {
       console.error("Error saving video:", err);
-      alert("Failed to save video. Please try again.");
+      alert("Failed to save video: " + (err instanceof Error ? err.message : String(err)));
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleRunSync = async () => {
+    if (!window.confirm(`Are you sure you want to run YouTube Sync for Class ${selectedClass} - ${getSubjectDisplayName(selectedClass, selectedSubject, 'en')}? This will scan YouTube for all chapters.`)) return;
+    setIsSyncing(true);
+    setLogMessage("Syncing... this might take a few moments.");
+    try {
+      const res = await fetch('/api/admin/videos/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          classStr: selectedClass,
+          subject: selectedSubject
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setLogMessage(`Sync Completed!\nResults:\n${JSON.stringify(data.results, null, 2)}`);
+        fetchVideos();
+      } else {
+        throw new Error(data.error || 'Sync failed');
+      }
+    } catch (err) {
+      console.error("Sync error:", err);
+      setLogMessage(`Sync Failed: ${err instanceof Error ? err.message : String(err)}`);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  const handleRunEval = async () => {
+    if (!window.confirm("Evaluate matured trial videos now? (Force mode will evaluate all trial videos immediately, ignoring the 15-day waiting period.)")) return;
+    const force = window.confirm("Do you want to FORCE evaluation immediately without waiting 15 days? (OK = Force immediately, Cancel = Only evaluate matured trials)");
+    setIsEvaluating(true);
+    setLogMessage("Evaluating trials...");
+    try {
+      const res = await fetch(`/api/admin/videos/trial-eval?force=${force}`, {
+        method: 'POST'
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setLogMessage(`Evaluation Completed!\nResults:\n${JSON.stringify(data.results, null, 2)}`);
+        fetchVideos();
+      } else {
+        throw new Error(data.error || 'Evaluation failed');
+      }
+    } catch (err) {
+      console.error("Eval error:", err);
+      setLogMessage(`Evaluation Failed: ${err instanceof Error ? err.message : String(err)}`);
+    } finally {
+      setIsEvaluating(false);
+    }
+  };
+
+  const handleRunReverify = async () => {
+    if (!window.confirm("Verify all currently active videos with Gemini OCR? Videos that fail verification will be set to 'pending_review'.")) return;
+    setIsReverifying(true);
+    setLogMessage("Re-verifying all playlist videos using Gemini...");
+    try {
+      const res = await fetch('/api/admin/videos/reverify', {
+        method: 'POST'
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setLogMessage(`Re-verification Completed!\nVerified count: ${data.count}\nResults:\n${JSON.stringify(data.results, null, 2)}`);
+        fetchVideos();
+      } else {
+        throw new Error(data.error || 'Re-verification failed');
+      }
+    } catch (err) {
+      console.error("Reverify error:", err);
+      setLogMessage(`Re-verification Failed: ${err instanceof Error ? err.message : String(err)}`);
+    } finally {
+      setIsReverifying(false);
     }
   };
 
@@ -383,6 +481,7 @@ export function VideoCuratorTab() {
       console.error("Error deleting:", err);
     }
   };
+
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -404,6 +503,93 @@ export function VideoCuratorTab() {
             </p>
           </div>
         </div>
+      </div>
+
+      {/* Automation Control Panel */}
+      <div className="glass-card rounded-3xl p-6 border border-white/5 bg-slate-900/40 space-y-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-red-500/20 text-red-400 border border-red-500/30">
+              <Sliders size={20} />
+            </div>
+            <div>
+              <h3 className="text-lg font-black text-white">Automation Control Center</h3>
+              <p className="text-xs text-slate-400">Trigger background YouTube bulk syncs, run Gemini OCR audits, and evaluate active A/B trials.</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <button
+            type="button"
+            onClick={handleRunSync}
+            disabled={isSyncing || isEvaluating || isReverifying}
+            className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-red-500/30 text-left transition-all hover:bg-slate-900/60 disabled:opacity-50 flex flex-col justify-between space-y-4 group cursor-pointer"
+          >
+            <div className="flex justify-between items-start w-full">
+              <span className="p-2.5 rounded-xl bg-red-500/10 text-red-400 group-hover:bg-red-500/20 transition-all">
+                <RefreshCw size={18} className={isSyncing ? 'animate-spin' : ''} />
+              </span>
+              <span className="text-[10px] text-slate-500 font-black uppercase tracking-wider">Sync API</span>
+            </div>
+            <div>
+              <h4 className="font-bold text-white text-sm">Run YouTube Sync</h4>
+              <p className="text-[11px] text-slate-400 mt-1 leading-normal">
+                Bulk search new YouTube lessons for Class {selectedClass} - {getSubjectDisplayName(selectedClass, selectedSubject, 'en')} chapters and auto-curate with Gemini OCR verify.
+              </p>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleRunEval}
+            disabled={isSyncing || isEvaluating || isReverifying}
+            className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-amber-500/30 text-left transition-all hover:bg-slate-900/60 disabled:opacity-50 flex flex-col justify-between space-y-4 group cursor-pointer"
+          >
+            <div className="flex justify-between items-start w-full">
+              <span className="p-2.5 rounded-xl bg-amber-500/10 text-amber-400 group-hover:bg-amber-500/20 transition-all">
+                <Sliders size={18} className={isEvaluating ? 'animate-pulse' : ''} />
+              </span>
+              <span className="text-[10px] text-slate-500 font-black uppercase tracking-wider">A/B Engine</span>
+            </div>
+            <div>
+              <h4 className="font-bold text-white text-sm">Evaluate A/B Trials</h4>
+              <p className="text-[11px] text-slate-400 mt-1 leading-normal">
+                Trigger 15-day trials evaluation immediately. Promotes successful trial videos and rolls back low-performing ones.
+              </p>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleRunReverify}
+            disabled={isSyncing || isEvaluating || isReverifying}
+            className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-emerald-500/30 text-left transition-all hover:bg-slate-900/60 disabled:opacity-50 flex flex-col justify-between space-y-4 group cursor-pointer"
+          >
+            <div className="flex justify-between items-start w-full">
+              <span className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 group-hover:bg-emerald-500/20 transition-all">
+                <ShieldCheck size={18} />
+              </span>
+              <span className="text-[10px] text-slate-500 font-black uppercase tracking-wider">OCR Audit</span>
+            </div>
+            <div>
+              <h4 className="font-bold text-white text-sm">Gemini OCR Audit</h4>
+              <p className="text-[11px] text-slate-400 mt-1 leading-normal">
+                Retroactively run Gemini OCR thumbnail analysis on all curated playlist videos. Flags spam/non-educational lessons to review.
+              </p>
+            </div>
+          </button>
+        </div>
+
+        {logMessage && (
+          <div className="p-4 rounded-2xl bg-slate-950 border border-white/5 text-[11px] font-mono text-slate-300 whitespace-pre-wrap max-h-60 overflow-y-auto relative">
+            <div className="flex justify-between border-b border-white/5 pb-2 mb-2 font-black uppercase tracking-wider text-slate-500">
+              <span>Execution Logs</span>
+              <button type="button" onClick={() => setLogMessage(null)} className="text-red-400 hover:text-red-300 font-bold">Clear</button>
+            </div>
+            {logMessage}
+          </div>
+        )}
       </div>
 
       {/* Teacher Suggested Videos Review Queue */}
@@ -640,31 +826,80 @@ export function VideoCuratorTab() {
             ) : videos.length === 0 ? (
               <div className="text-center p-8 text-slate-500 font-bold text-sm">No videos curated yet.</div>
             ) : (
-              videos.map((vid) => (
-                <div key={vid.id} className="p-4 rounded-2xl bg-white/5 border border-white/5 flex gap-4 group hover:border-red-500/30 transition-all">
-                  <div className="w-24 h-16 rounded-lg overflow-hidden shrink-0 relative bg-black/50">
-                    <img 
-                      src={`https://img.youtube.com/vi/${extractYoutubeId(vid.youtubeUrl)}/mqdefault.jpg`} 
-                      alt="thumbnail" 
-                      className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <Youtube size={16} className="text-white drop-shadow-md" />
+              videos.map((vid) => {
+                const isTrial = vid.status === 'trial';
+                const isBackup = vid.status === 'backup';
+                const isPending = vid.status === 'pending_review';
+                
+                return (
+                  <div key={vid.id} className={`p-4 rounded-2xl border flex gap-4 group transition-all ${
+                    isTrial 
+                      ? 'border-cyan-500/30 bg-cyan-950/10 hover:border-cyan-500/50' 
+                      : isBackup 
+                        ? 'border-orange-500/15 bg-orange-950/5 opacity-60 hover:opacity-100 hover:border-orange-500/35'
+                        : isPending
+                          ? 'border-red-500/30 bg-red-950/10 hover:border-red-500/50'
+                          : 'border-white/5 bg-white/5 hover:border-red-500/30'
+                  }`}>
+                    <div className="w-24 h-16 rounded-lg overflow-hidden shrink-0 relative bg-black/50">
+                      <img 
+                        src={`https://img.youtube.com/vi/${extractYoutubeId(vid.youtubeUrl)}/mqdefault.jpg`} 
+                        alt="thumbnail" 
+                        className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Youtube size={16} className="text-white drop-shadow-md" />
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-white font-bold text-sm truncate">{vid.title}</h4>
-                    <p className="text-xs text-slate-400 truncate">{vid.chapter}</p>
-                    <div className="flex gap-2 mt-1">
-                      <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">Class {vid.classStr}</span>
-                      <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 capitalize">{getSubjectDisplayName(vid.classStr, vid.subject, 'en')}</span>
+                    <div className="flex-1 min-w-0 flex flex-col justify-center">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <h4 className="text-white font-bold text-sm truncate max-w-[180px]" title={vid.title}>{vid.title}</h4>
+                        {isTrial && (
+                          <span className="px-2 py-0.5 rounded-md bg-cyan-500/20 text-cyan-300 text-[8px] font-black uppercase tracking-wider border border-cyan-500/30">
+                            Trial Video
+                          </span>
+                        )}
+                        {isBackup && (
+                          <span className="px-2 py-0.5 rounded-md bg-orange-500/20 text-orange-300 text-[8px] font-black uppercase tracking-wider border border-orange-500/30">
+                            Backup Video (Inactive)
+                          </span>
+                        )}
+                        {isPending && (
+                          <span className="px-2 py-0.5 rounded-md bg-red-500/20 text-red-300 text-[8px] font-black uppercase tracking-wider border border-red-500/30" title={vid.reviewReason}>
+                            Pending Review
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-slate-400 truncate mt-0.5" title={vid.chapter}>{vid.chapter}</p>
+                      
+                      {/* Stats Display */}
+                      {(vid.engagementScore !== undefined || vid.viewCount !== undefined) ? (
+                        <div className="flex items-center gap-2 mt-1 text-[9px] font-mono text-slate-400">
+                          <span>Views: <strong className="text-slate-200">{vid.viewCount?.toLocaleString() || 0}</strong></span>
+                          <span>•</span>
+                          <span>Likes: <strong className="text-slate-200">{vid.likeCount?.toLocaleString() || 0}</strong></span>
+                          <span>•</span>
+                          <span>Score: <strong className="text-red-400">{vid.engagementScore?.toLocaleString() || 0}</strong></span>
+                        </div>
+                      ) : (
+                        <div className="flex gap-2 mt-1">
+                          <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">Class {vid.classStr}</span>
+                          <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 capitalize">{getSubjectDisplayName(vid.classStr, vid.subject, 'en')}</span>
+                        </div>
+                      )}
+                      
+                      {isPending && vid.reviewReason && (
+                        <p className="text-[10px] text-red-400/90 font-medium italic mt-1 leading-normal">
+                          {vid.reviewReason}
+                        </p>
+                      )}
                     </div>
+                    <button onClick={() => handleDelete(vid.id)} className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all self-center shrink-0">
+                      <Trash2 size={16} />
+                    </button>
                   </div>
-                  <button onClick={() => handleDelete(vid.id)} className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all self-center">
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </div>

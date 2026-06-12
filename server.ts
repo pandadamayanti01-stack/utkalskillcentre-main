@@ -17,8 +17,11 @@ import fs from 'fs';
 import crypto from 'node:crypto';
 import webpush from 'web-push';
 import { registerDailyMcqAutomation } from './src/server/dailyMcqAutomation.js';
+import { registerYoutubeSyncAutomation } from './src/server/youtubeSync.js';
 import { getServiceAccountCredentials } from './src/server/googleCredentials.js';
 import { google } from 'googleapis';
+import cron from 'node-cron';
+
 
 const firestoreDatabaseId =
   process.env.FIRESTORE_DATABASE_ID ||
@@ -1724,6 +1727,22 @@ async function startServer() {
 
   const adminApp = getInitializedAdminApp();
   registerDailyMcqAutomation(app, adminApp, firestoreDatabaseId);
+  registerYoutubeSyncAutomation(app, adminApp, firestoreDatabaseId);
+
+  // Schedule YouTube A/B Trial evaluations daily at midnight
+  cron.schedule('0 0 * * *', async () => {
+    console.log('[Cron] Running daily A/B video trial evaluation...');
+    try {
+      if (adminApp) {
+        const { evaluateTrialVideos } = await import('./src/server/youtubeSync.js');
+        const results = await evaluateTrialVideos(adminApp, firestoreDatabaseId, false);
+        console.log('[Cron] A/B Trial evaluation results:', results);
+      }
+    } catch (err) {
+      console.error('[Cron] A/B Trial evaluation failed:', err);
+    }
+  });
+
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== 'production' || !fs.existsSync(indexPath)) {

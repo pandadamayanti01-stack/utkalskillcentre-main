@@ -130,7 +130,9 @@ export function SmartClassesView({ user, language, isPremium, onUpgrade, onBack 
     try {
       const q = query(collection(db, 'curated_videos'), where('classStr', '==', studentClassStr));
       const snap = await getDocs(q);
-      const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const data = snap.docs
+        .map(doc => ({ id: doc.id, ...doc.data() } as any))
+        .filter(v => !v.status || v.status === 'published' || v.status === 'trial');
       setVideos(data);
     } catch (err) {
       console.error("Failed to fetch videos:", err);
@@ -138,6 +140,7 @@ export function SmartClassesView({ user, language, isPremium, onUpgrade, onBack 
       setIsLoading(false);
     }
   };
+
 
   const rawSubjects = Object.keys(CHAPTERS_MAP[studentClassStr] || {});
   const subjects = (studentClassStr === '9' || studentClassStr === '10')
