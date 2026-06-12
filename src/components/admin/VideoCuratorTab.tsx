@@ -415,7 +415,7 @@ export function VideoCuratorTab() {
         setLogMessage(`Sync Completed!\nResults:\n${JSON.stringify(data.results, null, 2)}`);
         fetchVideos();
       } else {
-        throw new Error(data.error || 'Sync failed');
+        throw new Error((data.error || 'Sync failed') + (data.details ? `: ${data.details}` : ''));
       }
     } catch (err) {
       console.error("Sync error:", err);
@@ -439,7 +439,7 @@ export function VideoCuratorTab() {
         setLogMessage(`Evaluation Completed!\nResults:\n${JSON.stringify(data.results, null, 2)}`);
         fetchVideos();
       } else {
-        throw new Error(data.error || 'Evaluation failed');
+        throw new Error((data.error || 'Evaluation failed') + (data.details ? `: ${data.details}` : ''));
       }
     } catch (err) {
       console.error("Eval error:", err);
@@ -462,7 +462,7 @@ export function VideoCuratorTab() {
         setLogMessage(`Re-verification Completed!\nVerified count: ${data.count}\nResults:\n${JSON.stringify(data.results, null, 2)}`);
         fetchVideos();
       } else {
-        throw new Error(data.error || 'Re-verification failed');
+        throw new Error((data.error || 'Re-verification failed') + (data.details ? `: ${data.details}` : ''));
       }
     } catch (err) {
       console.error("Reverify error:", err);
@@ -471,6 +471,7 @@ export function VideoCuratorTab() {
       setIsReverifying(false);
     }
   };
+
 
   const handleDelete = async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this video?")) return;

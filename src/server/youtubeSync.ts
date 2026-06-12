@@ -84,11 +84,31 @@ function getGeminiClient(): GoogleGenerativeAI {
   throw new Error('No GEMINI_API_KEY or rotator keys configured in environment.');
 }
 
+// Helper to find the best available YouTube API key (supports fallback to Gemini rotator keys)
+export function getYoutubeApiKey(): string {
+  const ytKey = process.env.YOUTUBE_API_KEY || process.env.VITE_YOUTUBE_API_KEY || '';
+  if (ytKey) return ytKey;
+
+  // Fallback to Gemini keys starting with AIzaSy
+  const geminiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || '';
+  if (geminiKey.startsWith('AIzaSy')) return geminiKey;
+
+  for (let i = 1; i <= 7; i++) {
+    const key = process.env[`GEMINI_ROTATOR_KEY_${i}`];
+    if (key && key.startsWith('AIzaSy')) {
+      console.log(`[YouTube Sync] Falling back to GEMINI_ROTATOR_KEY_${i} for YouTube API.`);
+      return key;
+    }
+  }
+
+  return '';
+}
+
 // Fetch YouTube video statistics and metadata
 export async function getYoutubeVideoData(videoId: string) {
-  const apiKey = process.env.YOUTUBE_API_KEY || process.env.VITE_YOUTUBE_API_KEY || '';
+  const apiKey = getYoutubeApiKey();
   if (!apiKey) {
-    console.warn('[YouTube Sync] YOUTUBE_API_KEY is missing.');
+    console.warn('[YouTube Sync] YOUTUBE_API_KEY and fallback keys are missing.');
     return null;
   }
 
@@ -107,9 +127,9 @@ export async function getYoutubeVideoData(videoId: string) {
 // Fetch statistics and metadata for multiple YouTube videos in a single batch call
 export async function getYoutubeVideosDataBatch(videoIds: string[]) {
   if (videoIds.length === 0) return [];
-  const apiKey = process.env.YOUTUBE_API_KEY || process.env.VITE_YOUTUBE_API_KEY || '';
+  const apiKey = getYoutubeApiKey();
   if (!apiKey) {
-    console.warn('[YouTube Sync] YOUTUBE_API_KEY is missing.');
+    console.warn('[YouTube Sync] YOUTUBE_API_KEY and fallback keys are missing.');
     return [];
   }
 
@@ -122,6 +142,7 @@ export async function getYoutubeVideosDataBatch(videoIds: string[]) {
   const data = await res.json();
   return data.items || [];
 }
+
 
 // Compute engagement score: views + likes * 5 + comments * 10
 export function calculateEngagementScore(stats: any): number {
@@ -538,10 +559,11 @@ export async function runAutomatedSyncForSubject(
   classStr: string,
   subject: string
 ) {
-  const apiKey = process.env.YOUTUBE_API_KEY || process.env.VITE_YOUTUBE_API_KEY || '';
+  const apiKey = getYoutubeApiKey();
   if (!apiKey) {
-    throw new Error('YOUTUBE_API_KEY is not configured in the environment.');
+    throw new Error('YOUTUBE_API_KEY is not configured in the environment. Please add YOUTUBE_API_KEY or VITE_YOUTUBE_API_KEY to your .env configuration.');
   }
+
 
   const db = getAdminFirestore(adminApp, databaseId);
   const videosRef = db.collection('curated_videos');
