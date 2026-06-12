@@ -259,7 +259,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
         resolve();
         return;
       }
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
       if (!ctx) {
         resolve();
         return;
@@ -318,7 +318,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
       canvas.style.width = `${canvasWidth}px`;
       canvas.style.height = `${canvasHeight}px`;
 
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
       if (ctx) {
         ctx.scale(2, 2);
         
@@ -400,7 +400,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
       historyIndexRef.current--;
       const canvas = canvasRef.current;
       if (!canvas) return;
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
       if (!ctx) return;
       
       ctx.globalCompositeOperation = 'source-over';
@@ -417,7 +417,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
       historyIndexRef.current++;
       const canvas = canvasRef.current;
       if (!canvas) return;
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
       if (!ctx) return;
       
       ctx.globalCompositeOperation = 'source-over';
@@ -433,7 +433,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
   const startDrawing = (e: React.PointerEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
 
     setIsDrawing(true);
@@ -478,7 +478,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
     if (!isDrawing) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
 
     // Detect pen stylus eraser
@@ -546,7 +546,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
     // Save final stroke to undo/redo history stack
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
 
     const currentState = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -567,7 +567,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
   const clearBoard = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
 
     const width = canvas.width / 2;
@@ -594,7 +594,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
   const loadTemplate = (type: 'equation' | 'triangle' | 'odia' | 'ocr') => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
 
     if (boardFrameRef.current) {
@@ -1086,7 +1086,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
   const convertHandwritingToText = async () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
 
     if (activeImage) {
@@ -1189,7 +1189,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
   const refineSketch = async () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
 
     if (activeImage) {
