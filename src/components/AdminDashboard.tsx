@@ -8,6 +8,7 @@ import {
   Settings,
   Users,
   Library,
+  Copy,
   Plus,
   Trash2,
   XCircle,
@@ -934,9 +935,17 @@ Sample tone for Class 6-10:
                       <item.icon size={20} className={`shrink-0 ${isActive ? 'drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'group-hover:scale-110 transition-transform'}`} />
                       <motion.span
                         animate={{ opacity: isSidebarOpen ? 1 : 0, x: isSidebarOpen ? 0 : -10 }}
-                        className="text-xs font-bold whitespace-nowrap tracking-tight"
+                        className="text-xs font-bold whitespace-nowrap tracking-tight flex-1 flex items-center justify-between"
                       >
-                        {item.label}
+                        <span>{item.label}</span>
+                        {item.id === 'support' && (() => {
+                          const count = supportTickets.filter(t => t.status === 'open' && t.message && t.message.includes('[MTS_CLAIM:may_2026]')).length;
+                          return count > 0 ? (
+                            <span className="bg-amber-500 text-slate-950 text-[9px] font-black px-2 py-0.5 rounded-full shadow-[0_0_8px_#f59e0b] animate-pulse">
+                              {count}
+                            </span>
+                          ) : null;
+                        })()}
                       </motion.span>
                     </button>
                   );
@@ -4563,65 +4572,149 @@ Sample tone for Class 6-10:
                 <p className="text-slate-500 font-bold">No support tickets found.</p>
               </div>
             ) : (
-              supportTickets.map((ticket) => (
-                <motion.div
-                  key={ticket.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className="glass-card p-6 rounded-3xl border border-white/5 hover:border-white/10 transition-all group"
-                >
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div className="space-y-3 flex-1">
+              supportTickets.map((ticket) => {
+                const isMtsClaim = ticket.message?.startsWith('[MTS_CLAIM:may_2026]');
+                let parsedMtsDetails: any = null;
+                if (isMtsClaim) {
+                  const msg = ticket.message;
+                  const nameMatch = msg.match(/Name:\s*([^,]+)/);
+                  const classMatch = msg.match(/Class:\s*([^,]+)/);
+                  const upiMatch = msg.match(/UPI\/PhonePe\/GPay:\s*([^,]+)/);
+                  const phoneMatch = msg.match(/Parent Phone:\s*([^,]+)/);
+                  const prizeMatch = msg.match(/Prize:\s*([^,]+)/);
+                  const tierMatch = msg.match(/Reward Tier:\s*([^,]+)/);
+
+                  parsedMtsDetails = {
+                    name: nameMatch ? nameMatch[1].trim() : 'N/A',
+                    classVal: classMatch ? classMatch[1].trim() : 'N/A',
+                    upiVal: upiMatch ? upiMatch[1].trim() : 'N/A',
+                    parentPhone: phoneMatch ? phoneMatch[1].trim() : 'N/A',
+                    prizeVal: prizeMatch ? prizeMatch[1].trim() : 'N/A',
+                    tierVal: tierMatch ? tierMatch[1].trim() : 'N/A'
+                  };
+                }
+
+                return (
+                  <motion.div
+                    key={ticket.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className={`glass-card p-6 rounded-3xl border transition-all group ${
+                      isMtsClaim
+                        ? 'border-amber-500/30 shadow-[0_0_20px_rgba(245,158,11,0.05)] bg-gradient-to-r from-slate-900/90 to-amber-950/10'
+                        : 'border-white/5 hover:border-white/10'
+                    }`}
+                  >
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                      <div className="space-y-3 flex-1 text-left">
+                        <div className="flex items-center gap-3">
+                          <span className={`px-2 py-1 rounded-md text-[9px] font-black uppercase tracking-wider border ${ticket.status === 'open' ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'}`}>
+                            {ticket.status}
+                          </span>
+                          {isMtsClaim && (
+                            <span className="px-2.5 py-0.5 rounded-full bg-amber-500 text-slate-950 text-[9px] font-black uppercase tracking-wider flex items-center gap-1 shadow-[0_0_10px_#f59e0b]">
+                              <Trophy size={9} />
+                              May MTS Winner
+                            </span>
+                          )}
+                          <h4 className="text-white font-black tracking-tight">{ticket.userName}</h4>
+                          <span className="text-slate-500 text-[10px] font-bold uppercase">{ticket.userPhone || ticket.userEmail}</span>
+                        </div>
+
+                        {isMtsClaim ? (
+                          <div className="space-y-3 p-4 bg-slate-950/60 rounded-2xl border border-amber-500/10 mt-2">
+                            <div className="flex flex-wrap items-center gap-4 text-xs">
+                              <div className="flex items-center gap-1 text-amber-400 font-black">
+                                <Trophy size={12} />
+                                <span>{parsedMtsDetails.tierVal}</span>
+                              </div>
+                              <div className="text-emerald-400 font-mono font-black text-sm">
+                                Prize: {parsedMtsDetails.prizeVal}
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-bold text-slate-300 pt-1">
+                              <div>
+                                <span className="text-[9px] text-slate-500 block">WINNER NAME</span>
+                                <span>{parsedMtsDetails.name}</span>
+                              </div>
+                              <div>
+                                <span className="text-[9px] text-slate-500 block">CLASS</span>
+                                <span>Class {parsedMtsDetails.classVal}</span>
+                              </div>
+                              <div>
+                                <span className="text-[9px] text-slate-500 block">PARENT PHONE</span>
+                                <span>{parsedMtsDetails.parentPhone}</span>
+                              </div>
+                              <div>
+                                <span className="text-[9px] text-slate-500 block">UPI / GPAY / PHONEPE</span>
+                                <div className="flex items-center gap-1.5 mt-0.5">
+                                  <span className="font-mono text-amber-100 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">{parsedMtsDetails.upiVal}</span>
+                                  <button
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(parsedMtsDetails.upiVal);
+                                      showNotification("UPI details copied!", "success");
+                                    }}
+                                    className="p-1 hover:bg-white/5 rounded text-slate-400 hover:text-white transition-all cursor-pointer"
+                                    title="Copy UPI Details"
+                                  >
+                                    <Copy size={11} />
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <p className="text-slate-300 text-sm leading-relaxed font-medium">{ticket.message}</p>
+                        )}
+
+                        <div className="text-[10px] text-slate-500 flex items-center gap-2 font-bold uppercase tracking-widest">
+                          <Calendar size={10} />
+                          {parseLogTimestamp(ticket.createdAt)?.toLocaleString() || 'Recently'}
+                        </div>
+                      </div>
                       <div className="flex items-center gap-3">
-                        <span className={`px-2 py-1 rounded-md text-[9px] font-black uppercase tracking-wider border ${ticket.status === 'open' ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'}`}>
-                          {ticket.status}
-                        </span>
-                        <h4 className="text-white font-black tracking-tight">{ticket.userName}</h4>
-                        <span className="text-slate-500 text-[10px] font-bold uppercase">{ticket.userPhone || ticket.userEmail}</span>
-                      </div>
-                      <p className="text-slate-300 text-sm leading-relaxed font-medium">{ticket.message}</p>
-                      <div className="text-[10px] text-slate-500 flex items-center gap-2 font-bold uppercase tracking-widest">
-                        <Calendar size={10} />
-                        {parseLogTimestamp(ticket.createdAt)?.toLocaleString() || 'Recently'}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      {ticket.status === 'open' ? (
+                        {ticket.status === 'open' ? (
+                          <button
+                            onClick={async () => {
+                              await updateDoc(doc(firestore, 'support_tickets', ticket.id), { status: 'closed' });
+                              showNotification(isMtsClaim ? "Prize marked as Paid and claim ticket resolved!" : "Ticket marked as closed");
+                            }}
+                            className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all border ${
+                              isMtsClaim
+                                ? 'bg-amber-500/20 text-amber-400 border-amber-500/30 hover:bg-amber-500 hover:text-slate-950 shadow-md shadow-amber-500/10'
+                                : 'bg-emerald-600/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-600 hover:text-white'
+                            }`}
+                          >
+                            {isMtsClaim ? "Mark Paid & Close" : "Resolve"}
+                          </button>
+                        ) : (
+                          <button
+                            onClick={async () => {
+                              await updateDoc(doc(firestore, 'support_tickets', ticket.id), { status: 'open' });
+                              showNotification("Ticket reopened");
+                            }}
+                            className="px-6 py-2.5 bg-slate-800 text-slate-400 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-700 hover:text-white transition-all border border-white/5"
+                          >
+                            Reopen
+                          </button>
+                        )}
                         <button
                           onClick={async () => {
-                            await updateDoc(doc(firestore, 'support_tickets', ticket.id), { status: 'closed' });
-                            showNotification("Ticket marked as closed");
+                            if (window.confirm("Are you sure you want to delete this ticket?")) {
+                              await deleteDoc(doc(firestore, 'support_tickets', ticket.id));
+                              showNotification("Ticket deleted");
+                            }
                           }}
-                          className="px-6 py-2.5 bg-emerald-600/10 text-emerald-400 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-emerald-600 hover:text-white transition-all border border-emerald-500/20"
+                          className="p-3 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all border border-red-500/20"
                         >
-                          Resolve
+                          <Trash2 size={16} />
                         </button>
-                      ) : (
-                        <button
-                          onClick={async () => {
-                            await updateDoc(doc(firestore, 'support_tickets', ticket.id), { status: 'open' });
-                            showNotification("Ticket reopened");
-                          }}
-                          className="px-6 py-2.5 bg-slate-800 text-slate-400 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-700 hover:text-white transition-all border border-white/5"
-                        >
-                          Reopen
-                        </button>
-                      )}
-                      <button
-                        onClick={async () => {
-                          if (window.confirm("Are you sure you want to delete this ticket?")) {
-                            await deleteDoc(doc(firestore, 'support_tickets', ticket.id));
-                            showNotification("Ticket deleted");
-                          }
-                        }}
-                        className="p-3 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all border border-red-500/20"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              ))
+                  </motion.div>
+                );
+              })
             )}
           </div>
         ) : (

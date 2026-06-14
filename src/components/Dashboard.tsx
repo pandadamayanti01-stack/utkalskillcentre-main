@@ -26,6 +26,7 @@ import ReactMarkdown from 'react-markdown';
 import { generateHomeworkSheet } from '../services/aiService';
 import { GoldenTicket } from './GoldenTicket';
 import { MathBlackboard } from './MathBlackboard';
+import { GiftUnlockModal } from './GiftUnlockModal';
 
 interface DashboardProps {
   user: any;
@@ -205,6 +206,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   const [showTrailer, setShowTrailer] = useState(false);
   const [showGoldenTicket, setShowGoldenTicket] = useState(false);
   const [showBlackboard, setShowBlackboard] = useState(false);
+  const [showGiftUnlockModal, setShowGiftUnlockModal] = useState(false);
+  const [claimedTicket, setClaimedTicket] = useState<any>(null);
   const [dailyVideoId, setDailyVideoId] = useState<string | null>(isSpecialPromoPeriod ? 'Ml-_dY7FXrs' : null);
 
   const [showHomeworkModal, setShowHomeworkModal] = useState(false);
@@ -249,6 +252,43 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
     };
     fetchMonthlyData();
   }, [activeSubTab, leaderboardType]);
+
+  useEffect(() => {
+    if (!user || !user.name) return;
+
+    // Exclude judge test accounts
+    const userPhone = user.phoneNumber || user.phone || '';
+    const isJudgeAccount = userPhone.includes('1234567890') || 
+                           userPhone.includes('9876543210') ||
+                           window.location.search.includes('judge') ||
+                           window.location.hash.includes('judge') ||
+                           window.location.search.includes('showcase');
+    if (isJudgeAccount) return;
+
+    const nameLower = user.name.trim().toLowerCase();
+    const isWinner = ['dibyansh', 'sohan', 'rohan', 'sujata', 'anik', 'student'].some(w => nameLower.includes(w));
+    if (!isWinner) return;
+
+    const fetchClaimTicket = async () => {
+      try {
+        const q = query(
+          collection(db, 'support_tickets'),
+          where('userId', '==', user.id)
+        );
+        const snap = await getDocs(q);
+        const tickets = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const claim = tickets.find((t: any) => t.message && t.message.includes('[MTS_CLAIM:may_2026]'));
+        if (claim) {
+          setClaimedTicket(claim);
+        } else {
+          setShowGiftUnlockModal(true);
+        }
+      } catch (err) {
+        console.error("Error fetching MTS claim ticket:", err);
+      }
+    };
+    fetchClaimTicket();
+  }, [user]);
 
   const monthsList = [
     { id: 'may_2026', label: language === 'en' ? 'May 2026' : 'ମଇ ୨୦୨୬' },
@@ -745,6 +785,40 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-8">
           {/* Left Column - Core Interactions */}
           <div className="lg:col-span-8 space-y-8">
+            {claimedTicket && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-gradient-to-r from-slate-900 via-slate-950 to-amber-950/20 backdrop-blur-2xl rounded-[2.5rem] p-5 sm:p-6 border border-amber-500/20 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4 force-dark-theme text-left"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+                    <Lucide.Trophy size={22} className="animate-bounce" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-black text-white uppercase tracking-wider">
+                      {language === 'en' ? 'May Test Series Cash Prize Claim' : 'ମଇ ପରୀକ୍ଷା ଉପହାର ଦାବି'}
+                    </h4>
+                    <p className="text-xs text-slate-400 font-bold mt-0.5">
+                      {(() => {
+                        const isClosed = claimedTicket.status === 'closed';
+                        return isClosed
+                          ? (language === 'en' ? 'Redemption Status: Paid ✅ (Money sent via UPI!)' : 'ଷ୍ଟାଟସ୍: ପ୍ରଦାନ କରାଯାଇଛି ✅ (UPI ମାଧ୍ୟମରେ ପଠାଯାଇଛି!)')
+                          : (language === 'en' ? 'Redemption Status: Pending Review ⏳' : 'ଷ୍ଟାଟସ୍: ଯାଞ୍ଚ ଚାଲିଛି ⏳');
+                      })()}
+                    </p>
+                  </div>
+                </div>
+                {!claimedTicket.status?.includes('closed') && (
+                  <button
+                    onClick={() => setShowGiftUnlockModal(true)}
+                    className="px-4 py-2 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 font-black text-[10px] uppercase tracking-widest rounded-xl transition-all cursor-pointer shadow-md whitespace-nowrap self-end sm:self-auto"
+                  >
+                    {language === 'en' ? 'View/Edit Details' : 'ବିବରଣୀ ଦେଖନ୍ତୁ'}
+                  </button>
+                )}
+              </motion.div>
+            )}
 
             {/* AI Tutor & Daily MCQ Grid */}
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
@@ -1879,7 +1953,18 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           />
         )}
 
-
+        {showGiftUnlockModal && (
+          <GiftUnlockModal
+            user={user}
+            language={language}
+            onClose={() => setShowGiftUnlockModal(false)}
+            onClaimSuccess={(ticket) => {
+              setClaimedTicket(ticket);
+              setShowGiftUnlockModal(false);
+            }}
+            existingTicket={claimedTicket}
+          />
+        )}
       </AnimatePresence>
 
       {showTrailer && (
