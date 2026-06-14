@@ -67,6 +67,12 @@ We have fully implemented several cutting-edge features that set Utkal Skill Cen
 - Enables multiple children in a family to share a single mobile device without incurring repeating SMS OTP fees.
 - Allows instant profile switching protected by a secure 4-digit PIN, with full parent dashboard lockouts to keep student settings and diagnostics protected.
 
+### 5. 🎟️ May Test Series Mystery Gift & Cash Claim
+- Instantly identifies top performers of the May Month Test Series and serves an animated, floating **Mystery Gift Box** on their dashboard.
+- Clicking the box triggers a smooth shake sequence and pops open with a full **confetti canvas explosion**, revealing their cash prize (₹500 down to ₹100 depending on rank).
+- Allows winners to submit their UPI/GPay details directly, opening a secure, admin-only resolvable claim ticket in the support queue.
+- Includes a live status tracker showing review states (`Pending ⏳` / `Paid ✅`) and lets admin process payments and mark tickets as paid with a single click.
+
 ---
 
 ## 🎯 Track 2 Optimization Details & Architecture
