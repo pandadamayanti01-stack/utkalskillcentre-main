@@ -8,7 +8,7 @@ Utkal Skill Centre is a bilingual educational PWA designed to bridge the digital
 
 ## 📈 Our Journey, Traction & Social Impact
 
-Instead of corporate buzzwords, Utkal Skill Centre is built on a real, high-impact mission to bridge the digital divide for state-board students in Odisha:
+Utkal Skill Centre is built on a high-impact mission to bridge the digital divide for state-board students in Odisha:
 
 *   **The Mission**: Over **70 Lakhs (7 Million) Students** across Odisha's educational pipeline (including 3 Lakh Shishu Vatika, 52 Lakh school students upto 10th, 4 Lakh +2 students, and 10 Lakh Graduation/PG students) are locked out of modern, expensive EdTech. We deliver high-quality curriculum-aligned tutoring at just **₹99/month ($1.19/mo)**.
 *   **Our Milestones**:
@@ -19,7 +19,7 @@ Instead of corporate buzzwords, Utkal Skill Centre is built on a real, high-impa
     *   **Paying Subscribers**: Secured **6 premium paying subscribers** across 7 geographically diverse districts of Odisha (Bhubaneswar, Cuttack, Keonjhar, Balasore, Nayagarh, Balangir, and Berhampur) at our affordable ₹99/month rate, validating strong statewide product-market fit.
     *   **Syllabus Coverage**: Deployed 100% complete syllabus roadmaps from **Class 1 to Class 10** with premium notes for all **1,170 chapters**.
     *   **100% Free Smart Classes**: Fully integrated curated video lesson libraries, making YouTube school classes unlocked and free for everyone.
-    *   **Virtually $0.00 Operational Cost**: By serving study guides statically and offloading voice synthesizers to the student's browser engine, our server operational cost approaches **$0.00**, making our ₹99/mo subscription highly profitable!
+    *   **⚡ Ultra-Low Operational Cost**: By serving study guides statically and offloading voice synthesizers to client-side browser engines, we optimized the system architecture to achieve near-zero infrastructure overhead per user, ensuring sustainable unit economics at the ₹99/month price point.
 *   **🤖 Gundulu AI Technical Evolution Roadmap**:
     *   **Phase 1 (Current - RAG [Already Done])**: 100% active Retrieval-Augmented Generation (RAG) using Firestore Native Vector search and bilingual (Odia + English) Jaccard re-ranking for zero-hallucination textbook alignment.
     *   **Phase 2 (Medium-Term - RAG + SFT)**: Integrating SFT (Supervised Fine-Tuning) with RAG on Google's lightweight open models (such as *Gemma-2B/7B*) using localized school curriculum data. This optimizes conversational flow and tone without losing factual grounding.
