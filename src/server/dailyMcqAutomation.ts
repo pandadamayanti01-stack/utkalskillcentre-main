@@ -353,7 +353,7 @@ async function loadUrlTextContent(url: string): Promise<DriveContentResult> {
   throw new Error(`Unsupported textbook URL content type for auto-generation: ${mimeType}`);
 }
 
-const TEXTBOOK_BUCKET_NAME = process.env.FIREBASE_STORAGE_BUCKET || process.env.TEXTBOOK_STORAGE_BUCKET || 'utkalskillcentre.firebasestorage.app';
+const TEXTBOOK_BUCKET_NAME = 'utkalskillcentre.firebasestorage.app';
 
 import { SUBJECT_FILE_KEYWORDS } from '../constants.js';
 
@@ -389,8 +389,12 @@ function getSubjectFolderNames(subject: string): string[] {
 
 async function loadTextbookFromBucket(adminApp: App, className: string, subject: string, chapterTitle?: string): Promise<{ driveContent: DriveContentResult; source: GeneratedDailyMcqResult['source'] } | null> {
   const classDigit = className.replace(/[^0-9]/g, '');
-  // Try both Class X and Class_X folder patterns inside the Chapter Wise Text Book directory
+  // Try both Class X and Class_X folder patterns inside chapterwise and Chapter Wise Text Book directories
   const possibleClassFolders = [
+    `chapterwise/Class ${classDigit}/`,
+    `chapterwise/Class_${classDigit}/`,
+    `Chapterwise/Class ${classDigit}/`,
+    `Chapterwise/Class_${classDigit}/`,
     `Chapter Wise Text Book/Class ${classDigit}/`,
     `Chapter Wise Text Book/Class_${classDigit}/`
   ];
@@ -808,7 +812,14 @@ async function getAvailableBucketSubjects(adminApp: App, className: string): Pro
   try {
     const bucket = getAdminStorage(adminApp).bucket(TEXTBOOK_BUCKET_NAME);
     const classDigit = className.replace(/[^0-9]/g, '');
-    const possibleClassFolders = [`Class ${classDigit}/`, `Class_${classDigit}/`];
+    const possibleClassFolders = [
+      `chapterwise/Class ${classDigit}/`,
+      `chapterwise/Class_${classDigit}/`,
+      `Chapterwise/Class ${classDigit}/`,
+      `Chapterwise/Class_${classDigit}/`,
+      `Chapter Wise Text Book/Class ${classDigit}/`,
+      `Chapter Wise Text Book/Class_${classDigit}/`
+    ];
     
     const subjects = new Set<string>();
     for (const prefix of possibleClassFolders) {
