@@ -43,8 +43,8 @@ jobs:
 
       - name: Generate Android Project and Build Packages
         env:
-          BUBBLEWRAP_KEYSTORE_PASSWORD: utkalskill123
-          BUBBLEWRAP_KEY_PASSWORD: utkalskill123
+          BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.BUBBLEWRAP_KEYSTORE_PASSWORD }}
+          BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.BUBBLEWRAP_KEY_PASSWORD }}
           ANDROID_SDK_ROOT: ""
         run: |
           # Build the signed APK and AAB packages directly from twa-manifest.json
