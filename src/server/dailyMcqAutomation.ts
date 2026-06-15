@@ -861,19 +861,104 @@ const ROADMAPS_BY_CLASS: Record<string, any[]> = {
 };
 
 function mapRoadmapSubjectToStandard(roadmapSubject: string): string {
-  const s = String(roadmapSubject || '').toLowerCase().trim();
-  if (s === 'ganita_khela' || s === 'maja_majare_ganita' || s === 'math' || s === 'algebra' || s === 'geometry') return 'math';
-  if (s === 'jhulana_1' || s === 'jhulana_2' || s === 'odia' || s === 'odia_grammar' || s === 'sahitya') return 'odia';
-  if (s === 'pallavi' || s === 'english' || s === 'english_grammar') return 'english';
-  if (s === 'paribesa_patha' || s === 'evs') return 'evs';
-  if (s === 'science' || s === 'physical_science' || s === 'life_science' || s === 'science_curiosity') return 'science';
-  if (s === 'social_science' || s === 'history' || s === 'geography') return 'social_science';
-  if (s === 'sanskrit' || s === 'sanskrit_grammar') return 'sanskrit';
-  if (s === 'hindi' || s === 'hindi_grammar') return 'hindi';
-  if (s === 'vocational' || s === 'vocational_agriculture' || s === 'vocational_automotive' || s === 'vocational_tourism' || s === 'vocational_electronics') return 'vocational';
-  if (s === 'art' || s === 'kala_sikhya' || s === 'kala_kruti') return 'art';
-  if (s === 'physical_education' || s === 'sharirika_sikhya' || s === 'physical') return 'physical_education';
-  return s;
+  const raw = String(roadmapSubject || '').toLowerCase().trim();
+  
+  // Normalize spaces/punctuation/underscores
+  const s = raw.replace(/\s+/g, '_').replace(/[\(\)]/g, '');
+
+  // Math
+  if (
+    s === 'math' || s === 'mathematics' || s === 'algebra' || s === 'geometry' ||
+    s === 'ganita_khela' || s === 'ganita_mela' || s === 'ganita_prakas' || s === 'maja_majare_ganita'
+  ) {
+    return 'math';
+  }
+
+  // Odia
+  if (
+    s === 'odia' || s === 'odia_grammar' || s === 'sahitya' || s === 'ସାହିତ୍ୟ' ||
+    s === 'odia_grammar_odia_grammar' || s === 'ଓଡ଼ିଆ_ବ୍ୟାକରଣ_odia_grammar' ||
+    s === 'jhulana_1' || s === 'jhulana_2' ||
+    s === 'bhasa_mahak_1' || s === 'bhasa_mahak_2' || s === 'bhasa_mahak_3' ||
+    s === 'sahitya_sudha' || s === 'sahitya_suman' || s === 'sahitya_surabhi'
+  ) {
+    return 'odia';
+  }
+
+  // English
+  if (
+    s === 'english' || s === 'english_grammar' ||
+    s === 'pallavi' || s === 'jasmine'
+  ) {
+    return 'english';
+  }
+
+  // EVS
+  if (
+    s === 'evs' || s === 'paribesa_patha' || s === 'ama_chaturbaswara_pruthibi'
+  ) {
+    return 'evs';
+  }
+
+  // Science
+  if (
+    s === 'science' || s === 'physical_science' || s === 'life_science' ||
+    s === 'science_curiosity' || s === 'jigyasa' ||
+    s.includes('life_science') || s.includes('physical_science') || s.includes('ଜୀବବିଜ୍ଞାନ')
+  ) {
+    return 'science';
+  }
+
+  // Social Science
+  if (
+    s === 'social_science' || s === 'history' || s === 'geography' ||
+    s === 'samajika_bignana'
+  ) {
+    return 'social_science';
+  }
+
+  // Sanskrit
+  if (
+    s === 'sanskrit' || s === 'sanskrit_grammar' ||
+    s === 'sanskritakalika_1' || s === 'sanskritakalika_2' || s === 'sanskritakalika_3'
+  ) {
+    return 'sanskrit';
+  }
+
+  // Hindi
+  if (
+    s === 'hindi' || s === 'hindi_grammar' || s === 'hindi_kalika'
+  ) {
+    return 'hindi';
+  }
+
+  // Vocational
+  if (
+    s === 'vocational' || s === 'kausala_bodha' ||
+    s === 'vocational_agriculture' || s === 'vocational_automotive' ||
+    s === 'vocational_tourism' || s === 'vocational_electronics'
+  ) {
+    return 'vocational';
+  }
+
+  // Art
+  if (
+    s === 'art' || s === 'kala_sikhya' || s === 'kala_kruti' ||
+    s === 'kalakruti' || s === 'kalakunja' || s === 'kruti'
+  ) {
+    return 'art';
+  }
+
+  // Physical Education
+  if (
+    s === 'physical_education' || s === 'physical' ||
+    s === 'khela_sikhya' || s === 'krida_yoga' ||
+    s === 'sharirika_sikhya' || s === 'sharirika_yoga'
+  ) {
+    return 'physical_education';
+  }
+
+  return raw;
 }
 
 export async function runScheduledGeneration(adminApp: App, databaseId: string, dateString?: string, specificClassName?: string, forceRegenerate: boolean = false) {
