@@ -76,6 +76,15 @@ jobs:
             *.aab
             app-release.aab
 
+      - name: Print Build Logs on Failure
+        if: failure()
+        run: |
+          if [ -f bubblewrap_build.log ]; then
+            cat bubblewrap_build.log
+          else
+            echo "No build log file found."
+          fi
+
       - name: Upload Build Log (Always)
         if: always()
         uses: actions/upload-artifact@v4
