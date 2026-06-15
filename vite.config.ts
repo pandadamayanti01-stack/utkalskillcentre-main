@@ -91,16 +91,16 @@ export default defineConfig(({mode}) => {
           ],
           screenshots: [
             {
-              src: '/gundulu-v3.png',
+              src: '/gundulu-v3.jpg',
               sizes: '1024x1024',
               type: 'image/jpeg',
               form_factor: 'narrow',
               label: 'Gundulu AI Tutor - Learning Dashboard'
             },
             {
-              src: '/mts-1may.png',
-              sizes: '2752x1536',
-              type: 'image/png',
+              src: '/mts-1may.jpg',
+              sizes: '1280x714',
+              type: 'image/jpeg',
               form_factor: 'wide',
               label: 'Utkal Skill Centre - Mock Tests & Dashboard'
             }
