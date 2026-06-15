@@ -196,7 +196,15 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
   };
 
   useEffect(() => {
-    setLocalSubmissions(submissions);
+    setLocalSubmissions((prev) => {
+      const merged = [...submissions];
+      prev.forEach((p) => {
+        if (!merged.some((m) => m.id === p.id)) {
+          merged.push(p);
+        }
+      });
+      return merged;
+    });
   }, [submissions]);
 
   const { isListening, startListening, stopListening } = useVoiceInput(language);
@@ -445,6 +453,11 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
         submittedAt: new Date() as any,
       };
       setLocalSubmissions(prev => [...prev, newSubmission]);
+      try {
+        localStorage.removeItem(`fs_cache_mcq_subs_${user.id}`);
+      } catch (e) {
+        console.warn("Failed to clear MCQ submissions cache:", e);
+      }
       onSubmissionSuccess?.();
       setVictoryData({
         show: true,
