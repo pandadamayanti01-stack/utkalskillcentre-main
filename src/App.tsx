@@ -5524,8 +5524,8 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
           {loading ? <Lucide.Loader2 className="animate-spin" size={20} /> : translations[language].profile.saveProfile}
         </button>
 
-        {/* Privacy Policy Link */}
-        <div className="text-center pt-2">
+        {/* Privacy Policy & Delete Account Links */}
+        <div className="flex flex-col items-center gap-2.5 pt-3 border-t border-white/5 mt-4">
           <a 
             href="/privacy-policy.html" 
             target="_blank" 
@@ -5534,6 +5534,15 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
           >
             <Lucide.ShieldCheck size={14} />
             {language === 'en' ? 'Privacy Policy & Data Security' : 'ଗୋପନୀୟତା ନୀତି ଏବଂ ତଥ୍ୟ ସୁରକ୍ଷା'}
+          </a>
+          <a 
+            href="/delete-account.html" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-xs text-slate-500 hover:text-red-400 font-bold transition-colors inline-flex items-center gap-1.5"
+          >
+            <Lucide.UserX size={14} />
+            {language === 'en' ? 'Delete Account Request' : 'ଖାତା ବିଲୋପ ଅନୁରୋଧ'}
           </a>
         </div>
       </div>
