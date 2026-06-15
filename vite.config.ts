@@ -26,7 +26,7 @@ export default defineConfig(({mode}) => {
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
-        injectRegister: false,
+        injectRegister: 'auto',
         includeAssets: ['icon.svg'],
         workbox: {
           importScripts: ['/push-worker.js'],
