@@ -68,8 +68,15 @@ async function trigger() {
   const targetDate = date.toISOString().split('T')[0];
   console.log(`Generating for date: ${targetDate}`);
 
+  const force = process.env.FORCE_REGENERATE === 'true' || 
+                process.argv.includes('--force') || 
+                process.argv.includes('-f');
+  if (force) {
+    console.log('Force option is enabled. Existing daily MCQs will be regenerated and overwritten.');
+  }
+
   try {
-    const result = await runScheduledGeneration(app, databaseId, targetDate);
+    const result = await runScheduledGeneration(app, databaseId, targetDate, undefined, force);
     console.log('--- Result ---');
     console.log('Generated:', result.generated);
     console.log('Skipped:', result.skipped);

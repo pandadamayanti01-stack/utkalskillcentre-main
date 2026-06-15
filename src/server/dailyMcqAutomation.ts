@@ -876,7 +876,7 @@ function mapRoadmapSubjectToStandard(roadmapSubject: string): string {
   return s;
 }
 
-export async function runScheduledGeneration(adminApp: App, databaseId: string, dateString?: string, specificClassName?: string) {
+export async function runScheduledGeneration(adminApp: App, databaseId: string, dateString?: string, specificClassName?: string, forceRegenerate: boolean = false) {
   const db = getDatabase(adminApp, databaseId);
   const settingsDoc = await db.collection('system_settings').doc('config').get();
   const settings = (settingsDoc.data() || {}) as AutomationSettings;
@@ -973,8 +973,8 @@ export async function runScheduledGeneration(adminApp: App, databaseId: string, 
           .where('activeDate', '==', activeDate)
           .get();
 
-        if (!existing.empty) {
-          console.log(`[MCQ-AUTO] Skipped ${className} ${subject}: Daily set already exists for this date.`);
+        if (!existing.empty && !forceRegenerate) {
+          console.log(`[MCQ-AUTO] Skipped ${className} ${subject}: Daily set already exists for this date. (Use force to overwrite)`);
           skipped.push({ className: `${className} (${subject})`, reason: 'Daily set already exists for this class, subject, and date.' });
           continue;
         }
@@ -1221,7 +1221,8 @@ export function registerDailyMcqAutomation(app: Express, providedAdminApp: App |
 
       const activeDate = String(req.body?.activeDate || req.query?.activeDate || '').trim() || undefined;
       const className = String(req.body?.className || req.query?.className || '').trim() || undefined;
-      const result = await runScheduledGeneration(adminApp, databaseId, activeDate, className);
+      const force = req.body?.force === true || req.query?.force === 'true' || req.body?.forceRegenerate === true || req.query?.forceRegenerate === 'true';
+      const result = await runScheduledGeneration(adminApp, databaseId, activeDate, className, force);
       return res.json(result);
     } catch (error: unknown) {
       console.error('Run Daily MCQ Automation Error:', error);
