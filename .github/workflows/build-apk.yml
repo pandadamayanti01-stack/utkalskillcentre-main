@@ -1,0 +1,79 @@
+name: Build Android App (APK & AAB)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Setup Android SDK Env
+        run: |
+          echo "ANDROID_HOME=/usr/local/lib/android/sdk" >> $GITHUB_ENV
+          echo "ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk-bundle" >> $GITHUB_ENV
+
+      - name: Generate Signing Keystore
+        run: |
+          # Generate a secure keystore file if it doesn't already exist in the repo
+          if [ ! -f android.keystore ]; then
+            echo "Generating new secure keystore..."
+            keytool -genkeypair -v \
+              -keystore android.keystore \
+              -alias android \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -storepass utkalskill123 \
+              -keypass utkalskill123 \
+              -dname "CN=Utkal Skill Centre, OU=App, O=Utkal, L=Bhubaneswar, S=Odisha, C=IN"
+          else
+            echo "Keystore already exists."
+          fi
+
+      - name: Install Bubblewrap CLI
+        run: npm install -g @bubblewrap/cli
+
+      - name: Generate Android Project and Build Packages
+        env:
+          BUBBLEWRAP_KEYSTORE_PASSWORD: utkalskill123
+          BUBBLEWRAP_KEY_PASSWORD: utkalskill123
+        run: |
+          # 1. Update/Generate the Android project based on twa-manifest.json
+          bubblewrap update
+          
+          # 2. Build the signed APK and AAB packages
+          bubblewrap build --keystorePassword utkalskill123 --keyPassword utkalskill123
+
+      - name: Upload Android APK (Signed)
+        uses: actions/upload-artifact@v4
+        with:
+          name: utkalskillcentre-android-apk
+          path: |
+            *signed.apk
+            app-release-signed.apk
+
+      - name: Upload Android App Bundle (AAB for Google Play)
+        uses: actions/upload-artifact@v4
+        with:
+          name: utkalskillcentre-android-aab
+          path: |
+            *.aab
+            app-release.aab

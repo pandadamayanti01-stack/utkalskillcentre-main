@@ -1,0 +1,28 @@
+{
+  "packageId": "com.utkalskillcentre.app",
+  "host": "utkalskillcentre.com",
+  "name": "Utkal Skill Centre",
+  "launcherName": "Utkal Skill",
+  "display": "standalone",
+  "themeColor": "#10b981",
+  "themeColorDark": "#10b981",
+  "navigationColor": "#10b981",
+  "navigationColorDark": "#10b981",
+  "backgroundColor": "#0f172a",
+  "enableNotifications": true,
+  "startUrl": "/#dashboard",
+  "iconUrl": "https://utkalskillcentre.com/utkal-512.png",
+  "maskableIconUrl": "https://utkalskillcentre.com/usc-markable.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "android"
+  },
+  "appVersionName": "1.0.1",
+  "appVersionCode": 2,
+  "webManifestUrl": "https://utkalskillcentre.com/manifest.json",
+  "fallbackType": "customtabs",
+  "enableSiteSettingsShortcut": true,
+  "orientation": "portrait",
+  "fingerprints": []
+}
