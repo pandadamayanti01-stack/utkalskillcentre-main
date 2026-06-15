@@ -686,11 +686,11 @@ async function generateQuestionsFromText(input: {
   }
   
   console.log('[DailyMCQ] Generating with Native PDF Vision...');
-  // Pass the raw buffer directly to our updated Gemini utility
   const mcqs = await generateMcqsWithGemini(
     input.pdfBuffer,
     Math.max(DAILY_MCQ_QUESTION_COUNT + 5, 15),
     input.subject,
+    input.className,
     'daily',
     'medium',
     input.chapters

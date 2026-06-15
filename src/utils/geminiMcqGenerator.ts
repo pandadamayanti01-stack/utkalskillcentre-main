@@ -14,6 +14,30 @@ function getTargetLanguage(subject: string): string {
   return 'Odia (ଓଡ଼ିଆ)';
 }
 
+function getGamificationInstructions(subject: string, className: string): string {
+  const normalizedClass = className.toLowerCase().trim();
+  const classDigit = parseInt(normalizedClass.replace(/[^0-9]/g, ''), 10) || 10;
+  
+  // Decide character tier based on grade level
+  const characterTier = classDigit <= 5
+    ? "Primary Characters (Chhota Bheem, Raju, Doraemon, Shinchan, Motu, Patlu, Krishna, Hanuman)"
+    : "Secondary Characters (Naruto, Goku, Luffy, Tanjiro, Spider-Man, BGMI, Free Fire)";
+    
+  return `
+GAMIFICATION & LOCAL PERSONA INTEGRATION RULES:
+1. You MUST integrate characters from the following list into the questions: ${characterTier}.
+2. Weave these characters into the question text naturally based on the subject:
+   - Math (math, algebra, geometry, ganita_mela, ganitaprakas): Have characters count items (laddoos, dorayakis, chakra/power points), calculate training speeds, or measure historical landmarks of Odisha (like Puri chariot wheels or Konark Sun Temple dimensions).
+   - Science (science, jigyasa, physical/life science, evs): Have characters explain science concepts via their gadgets/powers (Doraemon's Bamboo Copter for gravity, Goku's blasts for energy transfer, Spider-Man's webs for tension/elasticity) or local environmental tasks (protecting Olive Ridley turtles at Gahirmatha, cleaning Chilika Lake).
+   - English: Use character story scenarios to test grammar rules, proper nouns, verb tenses, and punctuation.
+   - Odia (odia, sahitya_surabhi): Write grammar questions (Noun/Pronoun/Verb/Adjective/Subject-Object identification) in Odia based on character actions.
+   - Social Science (history, geography, samajika_bignana): Have characters travel to and ask questions about iconic Odisha heritage sites (Konark Temple, Udayagiri Caves, Lingaraj Temple, Dhauli Peace Pagoda) or geographical landmarks (Mahanadi River, Chilika Lake, Similipal Forest, Hirakud Dam).
+   - Kruti (Art/Craft): Have characters interact with traditional Odisha arts (painting Raghurajpur Pattachitra using natural shell colors, sewing Pipili Applique/Chandua motifs, inspecting Cuttack Silver Filigree, modeling clay toys for Rath Yatra).
+   - Khela Sikhya / Sharirika Yoga (Physical Ed): Have characters play traditional games (Kabaddi, Kho-Kho, Gilli-Danda) or practice healthy yoga poses (Padmasana, Tadasana, Pranayama breathing).
+3. The explanation field should feature cheering remarks from the hosting character in Odia (e.g. "ନାରୁତୋ କୁହେ: ସାବାସ୍! ତୁମେ ଏହାକୁ ଠିକ୍ ସମାଧାନ କଲ!" or "ଭୀମ କୁହେ: ବହୁତ ବଢିଆ! ତୁମେ ମୋ ଲଡୁ ଖାଇବା ବେଗ ପରି ଗଣିତ ସମାଧାନ କଲ!").
+4. ALWAYS match the target language rules: English for English subject, Odia for all other subjects. No LaTeX formulas.`;
+}
+
 /**
  * Intelligent Slicing: If PDF is too large, extract a manageable range of pages.
  */
@@ -48,6 +72,7 @@ export async function generateMcqsWithGemini(
   pdfBuffer: Buffer,
   count: number = 10,
   subject: string = 'general',
+  className: string = 'class10',
   mode: 'daily' | 'monthly' = 'daily',
   difficulty: 'easy' | 'medium' | 'hard' = 'medium',
   chapters?: string[]
@@ -107,6 +132,7 @@ export async function generateMcqsWithGemini(
         }
         console.log("[GeminiMCQ] Focused File ACTIVE.");
 
+        const gamificationRules = getGamificationInstructions(subject, className);
         let prompt = '';
         if (chapters && chapters.length > 0) {
           const chaptersList = chapters.map(ch => `"${ch}"`).join(', ');
@@ -116,14 +142,16 @@ Your task is to analyze the provided textbook PDF, locate the actual exercises, 
 Instructions:
 1. Locate the printed exercises at the end of the specified chapters in the PDF.
 2. Find the multiple-choice questions (MCQs) that have options (typically labelled with letters like A, B, C, D or Odia characters like କ, ଖ, ଗ, ଘ).
-3. Extract them EXACTLY as they are written in the book. Do not rewrite, modify, or invent new questions.
+3. When extracting or adapting questions, apply the gamification and character integration rules listed below where appropriate (e.g. you can slightly adapt generic name nouns in the question stems to match the characters).
 4. Keep the question text and options in the original language (${targetLanguage}). If the options are in Odia (କ, ଖ, ଗ, ଘ), capture them as strings in the options array.
 5. Provide the correct answer and write a helpful explanation in ${targetLanguage} explaining why that answer is correct, citing the page number or section if possible.
 6. Return exactly ${mode === 'monthly' ? 23 : count} questions.
 7. SCHEMA: Array of { "question": string, "options": string[], "correct_answer": string, "explanation": string, "type": "mcq", "chapter": string }.
 
 Fallback:
-If the specified chapter exercises do not contain enough exact MCQs (less than ${mode === 'monthly' ? 23 : count}), supplement the list by converting other exercise questions (such as fill-in-the-blanks or short questions) from those chapters into MCQ format, using the exact text from the textbook as the question stem. Only generate brand-new questions based on the chapter content as a last resort if no exercise text is available.`;
+If the specified chapter exercises do not contain enough exact MCQs (less than ${mode === 'monthly' ? 23 : count}), supplement the list by converting other exercise questions (such as fill-in-the-blanks or short questions) from those chapters into MCQ format, using the exact text from the textbook as the question stem. Only generate brand-new questions based on the chapter content as a last resort if no exercise text is available.
+        
+${gamificationRules}`;
         } else {
           prompt = `You are a teacher. Generate exactly ${mode === 'monthly' ? 23 : count} questions from this book for a Daily Practice set.
            MIX: 
@@ -133,7 +161,9 @@ If the specified chapter exercises do not contain enough exact MCQs (less than $
            - Last 1 question: detailed 5-mark subjective question.
            DIFFICULTY: ${difficulty.toUpperCase()}.
            SCHEMA: Array of { "question": string, "options": string[], "correct_answer": string, "explanation": string, "type": "mcq" | "subjective", "chapter": string }.
-           Language: ${targetLanguage}.`;
+           Language: ${targetLanguage}.
+           
+${gamificationRules}`;
         }
 
         const models = [
