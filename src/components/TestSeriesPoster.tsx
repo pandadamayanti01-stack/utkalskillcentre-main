@@ -31,7 +31,7 @@ export default function TestSeriesPoster({ onClose }: TestSeriesPosterProps) {
           </button>
 
           <img
-            src="/mts-1may.png"
+            src="/mts-1may.jpg"
             alt="Monthly Test May 2026 Poster"
             className="w-full h-auto rounded-2xl shadow-2xl border border-white/20"
           />
