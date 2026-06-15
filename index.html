@@ -76,6 +76,19 @@
           event.preventDefault();
         }
       });
+
+      // Guarantee immediate Service Worker registration on page load (essential for PWA analyzers)
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js')
+            .then(function(reg) {
+              console.log('Service Worker registered successfully:', reg.scope);
+            })
+            .catch(function(err) {
+              console.error('Service Worker registration failed:', err);
+            });
+        });
+      }
     </script>
         <script src="/ga.js" defer></script>
     

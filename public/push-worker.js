@@ -39,7 +39,7 @@ self.addEventListener('notificationclick', (event) => {
 
   // Open or focus application window
   event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
       // If a window is already open, focus it and redirect
       for (const client of windowClients) {
         if (client.url && 'focus' in client) {
@@ -51,8 +51,8 @@ self.addEventListener('notificationclick', (event) => {
         }
       }
       // Otherwise, open a pristine new window
-      if (clients.openWindow) {
-        return clients.openWindow(targetUrl);
+      if (self.clients.openWindow) {
+        return self.clients.openWindow(targetUrl);
       }
     })
   );
