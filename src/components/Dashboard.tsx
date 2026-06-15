@@ -839,34 +839,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
               
               <div className="flex flex-row sm:flex-col items-center justify-start sm:justify-center gap-4.5 sm:gap-5 relative z-10 w-full text-left sm:text-center h-full">
-                <div className="relative shrink-0 mt-8 sm:mt-10">
-                  {/* CSS for Swinging Signboard */}
-                  <style dangerouslySetInnerHTML={{__html: `
-                    @keyframes swing {
-                      0% { transform: translate(-50%, 0) rotate(4deg); }
-                      50% { transform: translate(-50%, 0) rotate(-4deg); }
-                      100% { transform: translate(-50%, 0) rotate(4deg); }
-                    }
-                    .animate-swing {
-                      transform-origin: top center;
-                      animation: swing 3s ease-in-out infinite;
-                    }
-                  `}} />
-                  
-                  {/* Swinging Signboard */}
-                  <div 
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent opening AI Tutor
-                      onOpenDailyPractice?.();
-                    }}
-                    className="absolute -top-10 left-1/2 bg-gradient-to-r from-amber-800 to-amber-950 border border-amber-600/50 text-amber-250 text-[8px] sm:text-[9.5px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md shadow-lg shadow-black/80 cursor-pointer animate-swing whitespace-nowrap z-25 hover:border-amber-400 hover:text-white transition-all select-none"
-                  >
-                    {/* Hanger ropes */}
-                    <div className="absolute -top-3.5 left-3 w-0.5 h-4 bg-slate-500/60" />
-                    <div className="absolute -top-3.5 right-3 w-0.5 h-4 bg-slate-500/60" />
-                    
-                    {language === 'en' ? '📐 Math Board MCQ' : '📐 ଗଣିତ ବୋର୍ଡ MCQ'}
-                  </div>
+                <div className="relative shrink-0">
                   {/* Glowing Ring around Avatar */}
                   <div className="absolute inset-0 rounded-full bg-emerald-500 blur-xl opacity-30 group-hover:opacity-60 group-hover:scale-110 transition-all duration-500"></div>
                   <div className="w-13 h-13 sm:w-22 sm:h-22 rounded-full bg-slate-950 border-[2px] sm:border-[3px] border-emerald-500/40 shadow-[0_0_40px_rgba(16,185,129,0.4)] flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:border-emerald-400 transition-all duration-500 overflow-hidden relative">
