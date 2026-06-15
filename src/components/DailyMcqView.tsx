@@ -1274,7 +1274,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center z-50 p-4"
+              className="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center z-[9999] p-4 overflow-y-auto"
             >
               {/* Custom animations for victory overlays */}
               <style dangerouslySetInnerHTML={{__html: `
@@ -1299,26 +1299,26 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                 animate={{ scale: 1, y: 0, opacity: 1 }}
                 exit={{ scale: 0.9, y: 30, opacity: 0 }}
                 transition={{ type: 'spring', damping: 20 }}
-                className="glass-card max-w-lg w-full rounded-[3rem] border-2 border-amber-500/30 p-8 text-center space-y-6 relative overflow-hidden shadow-[0_0_50px_rgba(245,158,11,0.2)] bg-slate-900/90"
+                className="glass-card max-w-md w-full rounded-[2rem] sm:rounded-[3rem] border-2 border-amber-500/30 p-5 sm:p-8 text-center space-y-4 sm:space-y-6 relative overflow-hidden shadow-[0_0_50px_rgba(245,158,11,0.2)] bg-slate-900/90 max-h-[92vh] overflow-y-auto"
               >
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.08)_0%,transparent_70%)] pointer-events-none" />
                 
-                <div className="space-y-2">
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-3 py-1 rounded-full">
+                <div className="space-y-1.5">
+                  <span className="text-[9px] font-black uppercase tracking-[0.2em] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full">
                     {language === 'en' ? 'Challenge Completed' : 'ଚ୍ୟାଲେଞ୍ଜ ସମ୍ପୂର୍ଣ୍ଣ ହେଲା'}
                   </span>
-                  <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                  <h2 className="text-xl sm:text-3xl font-black text-white tracking-tight">
                     {language === 'en' ? 'Victory Celebration! 🏆' : 'ବିଜୟ ଉତ୍ସବ! 🏆'}
                   </h2>
                 </div>
 
                 {/* 3D Pedestal Spotlight Scene */}
-                <div className="relative w-full h-48 flex items-center justify-center">
+                <div className="relative w-full h-36 sm:h-48 flex items-center justify-center">
                   {/* Spotlight ray */}
-                  <div className="absolute top-0 w-32 h-44 bg-gradient-to-b from-amber-500/15 to-transparent rounded-full blur-xl pointer-events-none" />
+                  <div className="absolute top-0 w-24 sm:w-32 h-32 sm:h-44 bg-gradient-to-b from-amber-500/15 to-transparent rounded-full blur-xl pointer-events-none" />
                   
                   {/* Pedestal Base */}
-                  <div className="absolute bottom-4 w-36 h-6 bg-slate-950 rounded-[50%] border-t-2 border-amber-500 shadow-[0_8px_30px_rgba(245,158,11,0.4)] flex items-center justify-center">
+                  <div className="absolute bottom-4 w-28 sm:w-36 h-4 sm:h-6 bg-slate-950 rounded-[50%] border-t-2 border-amber-500 shadow-[0_8px_30px_rgba(245,158,11,0.4)] flex items-center justify-center">
                     <div className="absolute inset-0 bg-gradient-to-t from-amber-500/30 to-transparent opacity-80" />
                   </div>
 
@@ -1326,32 +1326,32 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                   <img
                     src={victoryAvatar.url}
                     alt={victoryAvatar.name}
-                    className="w-28 h-28 object-contain z-10 animate-bounce-slow drop-shadow-[0_12px_24px_rgba(0,0,0,0.8)]"
+                    className="w-20 sm:w-28 h-20 sm:h-28 object-contain z-10 animate-bounce-slow drop-shadow-[0_12px_24px_rgba(0,0,0,0.8)]"
                   />
 
                   {/* Speech Bubble */}
-                  <div className="absolute -top-4 right-2 sm:right-6 bg-slate-950 border border-white/10 px-4 py-2.5 rounded-2xl max-w-[180px] shadow-xl text-left text-xs font-semibold text-slate-200 after:content-[''] after:absolute after:bottom-0 after:left-4 after:w-3 after:h-3 after:bg-slate-950 after:border-r after:border-b after:border-white/10 after:rotate-45 after:translate-y-1.5 z-20">
+                  <div className="absolute -top-2 sm:-top-4 right-1 sm:right-6 bg-slate-950 border border-white/10 px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl max-w-[150px] sm:max-w-[180px] shadow-xl text-left text-[10px] sm:text-xs font-semibold text-slate-200 after:content-[''] after:absolute after:bottom-0 after:left-4 after:w-3 after:h-3 after:bg-slate-950 after:border-r after:border-b after:border-white/10 after:rotate-45 after:translate-y-1.5 z-20">
                     {victoryAvatar.bubbleText}
                   </div>
                 </div>
 
                 {/* Performance Stats */}
-                <div className="grid grid-cols-2 gap-4 p-4 rounded-2xl bg-white/5 border border-white/5">
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/5">
                   <div className="space-y-1">
-                    <p className="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest">
+                    <p className="text-[9px] sm:text-[10px] text-slate-400 font-extrabold uppercase tracking-widest">
                       {language === 'en' ? 'Questions Correct' : 'ସଠିକ୍ ଉତ୍ତର'}
                     </p>
-                    <p className="text-xl sm:text-2xl font-black text-white">
+                    <p className="text-lg sm:text-2xl font-black text-white">
                       {victoryData.correctCount} / {victoryData.totalQuestions}
                     </p>
                   </div>
                   <div className="space-y-1 border-l border-white/5">
-                    <p className="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest">
+                    <p className="text-[9px] sm:text-[10px] text-slate-400 font-extrabold uppercase tracking-widest">
                       {language === 'en' ? 'Utkal Coins Earned' : 'ଉତ୍କଳ କଏନ ଅର୍ଜନ'}
                     </p>
                     <div className="flex items-center justify-center gap-1.5 text-amber-400">
-                      <Lucide.Coins size={18} className="animate-spin-slow" />
-                      <span className="text-xl sm:text-2xl font-black">+{victoryData.pointsEarned}</span>
+                      <Lucide.Coins size={16} className="animate-spin-slow" />
+                      <span className="text-lg sm:text-2xl font-black">+{victoryData.pointsEarned}</span>
                     </div>
                   </div>
                 </div>
@@ -1360,7 +1360,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                 <div className="flex flex-col sm:flex-row gap-3 pt-2">
                   <button
                     onClick={() => setVictoryData(null)}
-                    className="flex-1 py-4 bg-slate-800 hover:bg-slate-700 text-white font-extrabold text-sm uppercase tracking-wider rounded-2xl transition-all cursor-pointer active:scale-95 border border-white/5"
+                    className="flex-1 py-3 sm:py-4 bg-slate-800 hover:bg-slate-700 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider rounded-2xl transition-all cursor-pointer active:scale-95 border border-white/5"
                   >
                     {language === 'en' ? 'Review Answers' : 'ଉତ୍ତରଗୁଡ଼ିକ ଦେଖନ୍ତୁ'}
                   </button>
@@ -1369,7 +1369,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                       setVictoryData(null);
                       onBack();
                     }}
-                    className="flex-1 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-sm uppercase tracking-wider rounded-2xl transition-all cursor-pointer active:scale-95 shadow-lg shadow-amber-950/40"
+                    className="flex-1 py-3 sm:py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs sm:text-sm uppercase tracking-wider rounded-2xl transition-all cursor-pointer active:scale-95 shadow-lg shadow-amber-950/40"
                   >
                     {language === 'en' ? 'Back to Dashboard' : 'ଡ୍ୟାସବୋର୍ଡକୁ ଯାଆନ୍ତୁ'}
                   </button>
