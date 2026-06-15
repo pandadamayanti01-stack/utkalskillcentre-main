@@ -3002,7 +3002,7 @@ export default function App() {
   }
 
   const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-  const isSunday = (new Date().getDay() === 0 && !isLocalhost && user?.phoneNumber !== '+911234567890' && !window.location.search.includes('judge') && !window.location.hash.includes('judge') && !window.location.search.includes('showcase')) || window.location.search.includes('test_lock=true');
+  const isSunday = (new Date().getDay() === 0 && !isLocalhost && user?.phoneNumber !== '+911234567890' && user?.phoneNumber !== '+919876543210' && !window.location.search.includes('judge') && !window.location.hash.includes('judge') && !window.location.search.includes('showcase')) || window.location.search.includes('test_lock=true');
   const isLocked = isSunday && showSundayLockout && !sundayBypassed;
 
   if (isLocked) {
