@@ -839,7 +839,34 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
               
               <div className="flex flex-row sm:flex-col items-center justify-start sm:justify-center gap-4.5 sm:gap-5 relative z-10 w-full text-left sm:text-center h-full">
-                <div className="relative shrink-0">
+                <div className="relative shrink-0 mt-8 sm:mt-10">
+                  {/* CSS for Swinging Signboard */}
+                  <style dangerouslySetInnerHTML={{__html: `
+                    @keyframes swing {
+                      0% { transform: translate(-50%, 0) rotate(4deg); }
+                      50% { transform: translate(-50%, 0) rotate(-4deg); }
+                      100% { transform: translate(-50%, 0) rotate(4deg); }
+                    }
+                    .animate-swing {
+                      transform-origin: top center;
+                      animation: swing 3s ease-in-out infinite;
+                    }
+                  `}} />
+                  
+                  {/* Swinging Signboard */}
+                  <div 
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent opening AI Tutor
+                      onOpenDailyPractice?.();
+                    }}
+                    className="absolute -top-10 left-1/2 bg-gradient-to-r from-amber-800 to-amber-950 border border-amber-600/50 text-amber-250 text-[8px] sm:text-[9.5px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md shadow-lg shadow-black/80 cursor-pointer animate-swing whitespace-nowrap z-25 hover:border-amber-400 hover:text-white transition-all select-none"
+                  >
+                    {/* Hanger ropes */}
+                    <div className="absolute -top-3.5 left-3 w-0.5 h-4 bg-slate-500/60" />
+                    <div className="absolute -top-3.5 right-3 w-0.5 h-4 bg-slate-500/60" />
+                    
+                    {language === 'en' ? '📐 Math Board MCQ' : '📐 ଗଣିତ ବୋର୍ଡ MCQ'}
+                  </div>
                   {/* Glowing Ring around Avatar */}
                   <div className="absolute inset-0 rounded-full bg-emerald-500 blur-xl opacity-30 group-hover:opacity-60 group-hover:scale-110 transition-all duration-500"></div>
                   <div className="w-13 h-13 sm:w-22 sm:h-22 rounded-full bg-slate-950 border-[2px] sm:border-[3px] border-emerald-500/40 shadow-[0_0_40px_rgba(16,185,129,0.4)] flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:border-emerald-400 transition-all duration-500 overflow-hidden relative">
@@ -1048,47 +1075,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               </motion.div>
             )}
 
-            {/* Class Community Chat Card */}
-            <motion.div 
-              variants={itemVariants}
-              onClick={onOpenCommunity}
-              className="bg-slate-900/60 backdrop-blur-2xl border border-indigo-500/30 rounded-[2rem] p-6 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_20px_60px_-15px_rgba(0,0,0,0.5)] cursor-pointer group hover:border-indigo-400/50 hover:-translate-y-1 transition-all duration-500 relative overflow-hidden flex flex-col justify-between h-full"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-violet-900/20 opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
-              <div className="absolute -top-24 -right-24 w-64 h-64 bg-indigo-500/20 rounded-full blur-[80px] group-hover:bg-indigo-400/30 transition-colors duration-1000 pointer-events-none"></div>
-              
-              <div className="flex flex-col h-full relative z-10 justify-between">
-                <div className="flex flex-row items-center gap-4">
-                  <div className="relative shrink-0">
-                    <div className="absolute inset-0 bg-indigo-500 blur-md opacity-20 group-hover:opacity-40 transition-opacity"></div>
-                    <div className="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)] group-hover:rotate-12 group-hover:scale-110 transition-transform duration-500">
-                      <Lucide.MessageCircle size={20} className="text-indigo-400 drop-shadow-[0_0_8px_rgba(99,102,241,0.8)]" />
-                    </div>
-                  </div>
-                  <div className="flex-1 text-left">
-                    <div className="inline-flex items-center gap-1 mb-1 px-2.5 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-[10px] font-black uppercase tracking-widest shadow-[0_0_10px_rgba(99,102,241,0.2)]">
-                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 shadow-[0_0_5px_#818cf8] animate-pulse"></span>
-                      {language === 'en' ? 'Live Chat' : 'ଲାଇଭ୍ ଚାଟ୍'}
-                    </div>
-                    <h3 className="text-lg sm:text-xl font-black text-white tracking-tight uppercase drop-shadow-md mt-1">
-                      {language === 'en' ? `CLASS ${userClass} COMMUNITY` : `ଶ୍ରେଣୀ ${userClass} କମ୍ୟୁନିଟି`}
-                    </h3>
-                  </div>
-                </div>
-                <p className="text-slate-400 text-[10px] sm:text-xs font-bold leading-relaxed mt-4 group-hover:text-slate-300 transition-colors">
-                  {language === 'en' ? 'Join the discussion. Help your classmates, ask questions, and share knowledge in real-time!' : 'ଆଲୋଚନାରେ ଯୋଗ ଦିଅନ୍ତୁ | ସାଙ୍ଗମାନଙ୍କୁ ସାହାଯ୍ୟ କରନ୍ତୁ ଏବଂ ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ!'}
-                </p>
-                <div className="mt-4 flex -space-x-2 overflow-hidden">
-                  <div className="inline-block h-6 w-6 rounded-full ring-2 ring-slate-900 bg-emerald-500 flex items-center justify-center text-[8px] font-bold text-white">1</div>
-                  <div className="inline-block h-6 w-6 rounded-full ring-2 ring-slate-900 bg-blue-500 flex items-center justify-center text-[8px] font-bold text-white">2</div>
-                  <div className="inline-block h-6 w-6 rounded-full ring-2 ring-slate-900 bg-amber-500 flex items-center justify-center text-[8px] font-bold text-white">3</div>
-                  <div className="inline-block h-6 w-6 rounded-full ring-2 ring-slate-900 bg-slate-700 flex items-center justify-center text-[8px] font-bold text-white">+</div>
-                </div>
-              </div>
-            </motion.div>
-
             {/* Class-wise YouTube Matrix - Cinema Style */}
-            <div className={`bg-slate-900/40 backdrop-blur-xl rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_15px_40px_-10px_rgba(0,0,0,0.5)] relative overflow-hidden group hover:border-red-500/30 hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between h-full ${!isRegistered ? 'lg:col-span-2' : ''}`}>
+            <div className={`bg-slate-900/40 backdrop-blur-xl rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_15px_40px_-10px_rgba(0,0,0,0.5)] relative overflow-hidden group hover:border-red-500/30 hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between h-full ${isRegistered ? 'lg:col-span-2' : 'col-span-1'}`}>
               <div className="absolute top-0 right-0 w-32 sm:w-48 h-32 sm:h-48 bg-red-500/5 rounded-full blur-[60px] -mr-16 sm:-mr-24 -mt-16 sm:-mt-24 pointer-events-none group-hover:bg-red-500/10 transition-all"></div>
               <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-red-600/0 via-red-500/50 to-red-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               

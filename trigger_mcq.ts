@@ -24,18 +24,27 @@ async function trigger() {
 
   const databaseId = process.env.FIRESTORE_DATABASE_ID || 'utkal-prod';
   
-  // Generate for tomorrow to maintain a 1-day buffer.
-  // If today is Saturday (IST), we skip Sunday and generate for Monday (+2 days).
+  // Generate daily MCQs with time-based logic:
+  // - If run before 6:00 AM IST (e.g. manual early morning trigger), generate for TODAY.
+  // - If run at or after 6:00 AM IST (like the scheduled 6:07 AM cron), generate for TOMORROW.
+  // - On Saturday, skip Sunday and generate for Monday.
   const date = new Date();
   const istDateString = date.toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
   const localDate = new Date(istDateString);
   const dayOfWeek = localDate.getDay(); // 0 = Sunday, 6 = Saturday in IST
+  const currentHour = localDate.getHours();
 
-  if (dayOfWeek === 6) {
-    console.log('Today is Saturday (IST). Skipping Sunday and generating for Monday.');
-    date.setDate(date.getDate() + 2);
+  if (currentHour < 6) {
+    console.log(`Running early (before 6 AM IST at hour ${currentHour}). Generating for today.`);
+    // date remains today
   } else {
-    date.setDate(date.getDate() + 1);
+    if (dayOfWeek === 6) {
+      console.log('Today is Saturday (IST) at or after 6 AM. Skipping Sunday and generating for Monday.');
+      date.setDate(date.getDate() + 2);
+    } else {
+      console.log('Today is weekday/Sunday at or after 6 AM. Generating for tomorrow.');
+      date.setDate(date.getDate() + 1);
+    }
   }
   
   const targetDate = date.toISOString().split('T')[0];

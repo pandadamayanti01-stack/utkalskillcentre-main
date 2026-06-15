@@ -639,6 +639,77 @@ export async function gradeSubjectiveAnswer(
 }
 
 /**
+ * Scans a student's notebook rough work copy, performs OCR and math calculations,
+ * and returns step-by-step corrections with zero LaTeX and clean native Odia.
+ */
+export async function scanNotebookAnswer(
+  base64Data: string,
+  mimeType: string,
+  question: string,
+  language: 'en' | 'or' = 'or'
+) {
+  try {
+    const ai = getAI();
+    
+    const prompt = `You are Gundulu, a warm, supportive digital elder sister tutoring a student in mathematics.
+    The student has uploaded an image of their notebook copy (handwritten rough work) solving this question:
+    
+    Question: "${question}"
+    
+    Instructions:
+    1. Read the student's handwritten work in the image.
+    2. Solve the problem yourself step-by-step.
+    3. Compare their steps with the correct mathematical steps.
+    4. Provide encouraging, step-by-step feedback in ${language === 'or' ? 'Odia' : 'English'}. Point out exactly which steps are correct and if there is a mistake, explain why and how to fix it.
+    5. Formulate a final clean summary of the answer that the student can submit.
+    
+    STRICT FORMATTING RULES:
+    1. NO LATEX: Do not use any LaTeX notation (e.g. no $$, \\[, \\], \\(, \\), \\frac, \\sqrt, etc.). Write formulas in clean, plain-text unicode (e.g., x^2, sqrt(y), theta, or inline text).
+    2. CLEAN NATURAL ODIA: The Odia feedback must be warm, natural, and grammatically correct, using clean native teacher-student conversation style. Avoid broken or literal machine translations.
+    
+    Please reply in JSON format:
+    {
+      "feedback": "Step-by-step feedback in ${language === 'or' ? 'Odia' : 'English'}...",
+      "isCorrect": boolean,
+      "finalAnswer": "A short summary of the correct final answer/steps to fill in..."
+    }
+    Return ONLY this JSON object.`;
+
+    const parts = [
+      { text: prompt },
+      {
+        inlineData: {
+          data: base64Data,
+          mimeType
+        }
+      }
+    ];
+
+    const resultText = await withRetry(async (modelName, apiVersion) => {
+      const model = ai.getGenerativeModel({ model: modelName }, { apiVersion });
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts }],
+        generationConfig: {
+          ...(apiVersion === 'v1beta' ? { responseMimeType: "application/json" } : {}),
+          temperature: 0.3,
+        },
+      });
+      return result.response.text();
+    }, 'flash');
+
+    return safeJsonParse(resultText || '{}');
+  } catch (error) {
+    console.error("Scan notebook error:", error);
+    return {
+      feedback: language === 'or' ? "ସ୍କାନ୍ କରିବାରେ ତ୍ରୁଟି ହେଲା। ଦୟାକରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।" : "Error scanning the notebook. Please try again.",
+      isCorrect: false,
+      finalAnswer: ""
+    };
+  }
+}
+
+
+/**
  * Logs AI usage to Firestore for admin tracking
  */
 export async function logAiUsage(

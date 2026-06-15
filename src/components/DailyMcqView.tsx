@@ -12,6 +12,8 @@ import { SEO } from './SEO';
 import { vibrate, playSuccessChime } from '../pwa';
 import { cleanMathNotation } from './DigitalLibraryView';
 import confetti from 'canvas-confetti';
+import { scanNotebookAnswer } from '../services/aiService';
+import Markdown from 'react-markdown';
 
 interface DailyMcqViewProps {
   mcqs: DailyMcq[];
@@ -113,6 +115,85 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
   // Focused Practice mode states
   const [selectedMcqId, setSelectedMcqId] = useState<string | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
+
+  // Notebook OCR scanner states and refs
+  const [notebookImages, setNotebookImages] = useState<Record<number, { base64: string; mimeType: string; preview: string }>>({});
+  const [scanFeedbacks, setScanFeedbacks] = useState<Record<number, { feedback: string; isCorrect: boolean }>>({});
+  const [scanningIndex, setScanningIndex] = useState<number | null>(null);
+  const [victoryData, setVictoryData] = useState<{
+    show: boolean;
+    correctCount: number;
+    totalQuestions: number;
+    pointsEarned: number;
+  } | null>(null);
+
+  const cameraInputRef = React.useRef<HTMLInputElement>(null);
+  const galleryInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>, isCamera: boolean) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      const base64 = result.split(',')[1];
+      setNotebookImages(prev => ({
+        ...prev,
+        [currentQuestionIndex]: { base64, mimeType: file.type, preview: result }
+      }));
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
+  const handleScanNotebook = async () => {
+    const imgData = notebookImages[currentQuestionIndex];
+    if (!imgData || !currentQuestion) return;
+
+    setScanningIndex(currentQuestionIndex);
+    try {
+      const result = await scanNotebookAnswer(
+        imgData.base64,
+        imgData.mimeType,
+        currentQuestion.question,
+        language
+      );
+
+      if (result) {
+        setScanFeedbacks(prev => ({
+          ...prev,
+          [currentQuestionIndex]: {
+            feedback: result.feedback || (language === 'or' ? "କୌଣସି ପ୍ରତିକ୍ରିୟା ମିଳିଲା ନାହିଁ।" : "No feedback received."),
+            isCorrect: !!result.isCorrect
+          }
+        }));
+
+        if (result.finalAnswer) {
+          // Pre-fill the answer textarea
+          const nextAnswers = [...selectedSetAnswers];
+          nextAnswers[currentQuestionIndex] = result.finalAnswer;
+          setSelectedAnswers((prev) => ({ ...prev, [selectedMcqId!]: nextAnswers }));
+        }
+      }
+    } catch (err) {
+      console.error("OCR Scan notebook error:", err);
+    } finally {
+      setScanningIndex(null);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setNotebookImages(prev => {
+      const copy = { ...prev };
+      delete copy[currentQuestionIndex];
+      return copy;
+    });
+    setScanFeedbacks(prev => {
+      const copy = { ...prev };
+      delete copy[currentQuestionIndex];
+      return copy;
+    });
+  };
 
   useEffect(() => {
     setLocalSubmissions(submissions);
@@ -365,6 +446,12 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
       };
       setLocalSubmissions(prev => [...prev, newSubmission]);
       onSubmissionSuccess?.();
+      setVictoryData({
+        show: true,
+        correctCount,
+        totalQuestions: questions.length,
+        pointsEarned: totalPointsEarned
+      });
       
       // Haptics & Sound alerts
       const allCorrect = correctCount === questions.length;
@@ -829,6 +916,131 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                           </div>
                         )}
 
+                        {/* Camera & Gallery Upload Row */}
+                        {!isSubmitted && (
+                          <div className="flex flex-wrap items-center gap-3 mt-3">
+                            <button
+                              type="button"
+                              onClick={() => cameraInputRef.current?.click()}
+                              className="px-4 py-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 text-slate-200 text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-md"
+                            >
+                              <Lucide.Camera size={14} className="text-cyan-400" />
+                              {language === 'en' ? 'Camera Scan' : 'କ୍ୟାମେରା ସ୍କାନ୍'}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => galleryInputRef.current?.click()}
+                              className="px-4 py-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 text-slate-200 text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-md"
+                            >
+                              <Lucide.Image size={14} className="text-cyan-400" />
+                              {language === 'en' ? 'Upload Photo' : 'ଫଟୋ ଅପଲୋଡ୍'}
+                            </button>
+
+                            <input
+                              type="file"
+                              accept="image/*"
+                              capture="environment"
+                              ref={cameraInputRef}
+                              onChange={(e) => handleImageSelect(e, true)}
+                              className="hidden"
+                            />
+                            <input
+                              type="file"
+                              accept="image/*"
+                              ref={galleryInputRef}
+                              onChange={(e) => handleImageSelect(e, false)}
+                              className="hidden"
+                            />
+                          </div>
+                        )}
+
+                        {/* Image Preview & Scan Action */}
+                        {notebookImages[currentQuestionIndex] && (
+                          <div className="mt-4 p-4 rounded-2xl bg-slate-950/60 border border-white/5 space-y-3">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                                {language === 'en' ? 'Uploaded Copy Page:' : 'ଅପଲୋଡ୍ ହୋଇଥିବା ପୃଷ୍ଠା:'}
+                              </span>
+                              {!isSubmitted && (
+                                <button
+                                  type="button"
+                                  onClick={handleRemoveImage}
+                                  className="text-red-400 hover:text-red-300 transition-colors p-1"
+                                >
+                                  <Lucide.Trash2 size={16} />
+                                </button>
+                              )}
+                            </div>
+
+                            <div className="flex flex-col sm:flex-row items-center gap-4">
+                              <div className="w-24 h-24 rounded-lg overflow-hidden border border-white/10 relative">
+                                <img
+                                  src={notebookImages[currentQuestionIndex].preview}
+                                  alt="Rough work preview"
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+
+                              {!isSubmitted && (
+                                <button
+                                  type="button"
+                                  disabled={scanningIndex === currentQuestionIndex}
+                                  onClick={handleScanNotebook}
+                                  className={`px-5 py-3 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2 shadow-lg active:scale-95 ${
+                                    scanningIndex === currentQuestionIndex
+                                      ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                                      : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-950/20'
+                                  }`}
+                                >
+                                  {scanningIndex === currentQuestionIndex ? (
+                                    <>
+                                      <Lucide.Loader2 size={14} className="animate-spin text-emerald-400" />
+                                      {language === 'en' ? 'Scanning...' : 'ସ୍କାନ୍ ହେଉଛି...'}
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Lucide.Sparkles size={14} />
+                                      {language === 'en' ? 'Verify Copy with Gundulu' : 'ଗୁନ୍ଦୁଲୁଙ୍କ ସହ ଯାଞ୍ଚ କରନ୍ତୁ'}
+                                    </>
+                                  )}
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Gundulu OCR Corrections Feedback Card */}
+                        {scanFeedbacks[currentQuestionIndex] && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className={`mt-4 p-5 rounded-[1.5rem] border-2 space-y-2.5 backdrop-blur-sm ${
+                              scanFeedbacks[currentQuestionIndex].isCorrect
+                                ? 'bg-emerald-500/5 border-emerald-500/20 text-slate-100'
+                                : 'bg-amber-500/5 border-amber-500/20 text-slate-100'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <div className={`p-1 rounded-full ${
+                                scanFeedbacks[currentQuestionIndex].isCorrect ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'
+                              }`}>
+                                {scanFeedbacks[currentQuestionIndex].isCorrect ? (
+                                  <Lucide.CheckCircle2 size={16} />
+                                ) : (
+                                  <Lucide.HelpCircle size={16} />
+                                )}
+                              </div>
+                              <span className="text-xs font-black uppercase tracking-wider text-white">
+                                {language === 'en' ? "Gundulu's Verification:" : "ଗୁନ୍ଦୁଲୁଙ୍କ ମତାମତ:"}
+                              </span>
+                            </div>
+                            
+                            <div className="text-sm leading-relaxed prose prose-invert max-w-none text-slate-300">
+                              <Markdown>{scanFeedbacks[currentQuestionIndex].feedback}</Markdown>
+                            </div>
+                          </motion.div>
+                        )}
+
                         {/* Subjective submissions review details */}
                         {isSubmitted && (
                           <div className="space-y-4 p-4 rounded-2xl bg-cyan-500/5 border border-cyan-500/10">
@@ -1004,6 +1216,156 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
         <Lucide.AlertTriangle size={12} />
         <span>Gundulu AI can make mistakes. Always cross-verify answers.</span>
       </div>
+
+      {/* Victory Overlay Modal */}
+      <AnimatePresence>
+        {victoryData && victoryData.show && (() => {
+          // Determine avatar and speech bubble details
+          const getVictoryAvatarInfo = () => {
+            if (user.avatar === '/gundulu-v3.png' || !user.avatar) {
+              return {
+                url: '/gundulu-v3.png',
+                name: 'Gundulu Mascot',
+                bubbleText: language === 'or' 
+                  ? 'ଅତି ସୁନ୍ଦର! ତୁମେ ଆଜିର ଗଣିତ ଚ୍ୟାଲେଞ୍ଜ ସଫଳତାର ସହ ସମାଧାନ କରିଛ। ଏହିପରି ପଢ଼ା ଜାରି ରଖ!' 
+                  : "Fantastic job! You've successfully finished today's math challenge. Let's keep this streak going!"
+              };
+            }
+            
+            const userClassNum = parseInt(user.class || '10', 10);
+            const isPrimary = userClassNum <= 5;
+            
+            if (isPrimary) {
+              return {
+                url: user.avatar,
+                name: 'Cartoon Buddy',
+                bubbleText: language === 'or'
+                  ? 'ସୁପର ଚ୍ୟାଲେଞ୍ଜର! ଆଜି ତୁମେ ବହୁତ ବଢିଆ ସମାଧାନ କରିଛ। ଶାବାଶ!'
+                  : "Laddoo-tastic! You did an amazing job today! Super proud of you!"
+              };
+            } else {
+              return {
+                url: user.avatar,
+                name: 'Anime Hero',
+                bubbleText: language === 'or'
+                  ? 'ବିକ୍ଟୋରି ରୟାଲ୍! ତୁମେ ଗଣିତରେ ଜବରଦସ୍ତ ସ୍କୋର କରିଛ! ସାବାସ୍!'
+                  : "Victory Royale! You dominated this math set! Dattebayo!"
+              };
+            }
+          };
+
+          const victoryAvatar = getVictoryAvatarInfo();
+
+          return (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center z-50 p-4"
+            >
+              {/* Custom animations for victory overlays */}
+              <style dangerouslySetInnerHTML={{__html: `
+                @keyframes bounceSlow {
+                  0%, 100% { transform: translateY(0); }
+                  50% { transform: translateY(-8px); }
+                }
+                @keyframes spinSlow {
+                  0% { transform: rotate(0deg); }
+                  100% { transform: rotate(360deg); }
+                }
+                .animate-bounce-slow {
+                  animation: bounceSlow 3s ease-in-out infinite;
+                }
+                .animate-spin-slow {
+                  animation: spinSlow 6s linear infinite;
+                }
+              `}} />
+
+              <motion.div
+                initial={{ scale: 0.9, y: 30, opacity: 0 }}
+                animate={{ scale: 1, y: 0, opacity: 1 }}
+                exit={{ scale: 0.9, y: 30, opacity: 0 }}
+                transition={{ type: 'spring', damping: 20 }}
+                className="glass-card max-w-lg w-full rounded-[3rem] border-2 border-amber-500/30 p-8 text-center space-y-6 relative overflow-hidden shadow-[0_0_50px_rgba(245,158,11,0.2)] bg-slate-900/90"
+              >
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.08)_0%,transparent_70%)] pointer-events-none" />
+                
+                <div className="space-y-2">
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-3 py-1 rounded-full">
+                    {language === 'en' ? 'Challenge Completed' : 'ଚ୍ୟାଲେଞ୍ଜ ସମ୍ପୂର୍ଣ୍ଣ ହେଲା'}
+                  </span>
+                  <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                    {language === 'en' ? 'Victory Celebration! 🏆' : 'ବିଜୟ ଉତ୍ସବ! 🏆'}
+                  </h2>
+                </div>
+
+                {/* 3D Pedestal Spotlight Scene */}
+                <div className="relative w-full h-48 flex items-center justify-center">
+                  {/* Spotlight ray */}
+                  <div className="absolute top-0 w-32 h-44 bg-gradient-to-b from-amber-500/15 to-transparent rounded-full blur-xl pointer-events-none" />
+                  
+                  {/* Pedestal Base */}
+                  <div className="absolute bottom-4 w-36 h-6 bg-slate-950 rounded-[50%] border-t-2 border-amber-500 shadow-[0_8px_30px_rgba(245,158,11,0.4)] flex items-center justify-center">
+                    <div className="absolute inset-0 bg-gradient-to-t from-amber-500/30 to-transparent opacity-80" />
+                  </div>
+
+                  {/* Floating Avatar image */}
+                  <img
+                    src={victoryAvatar.url}
+                    alt={victoryAvatar.name}
+                    className="w-28 h-28 object-contain z-10 animate-bounce-slow drop-shadow-[0_12px_24px_rgba(0,0,0,0.8)]"
+                  />
+
+                  {/* Speech Bubble */}
+                  <div className="absolute -top-4 right-2 sm:right-6 bg-slate-950 border border-white/10 px-4 py-2.5 rounded-2xl max-w-[180px] shadow-xl text-left text-xs font-semibold text-slate-200 after:content-[''] after:absolute after:bottom-0 after:left-4 after:w-3 after:h-3 after:bg-slate-950 after:border-r after:border-b after:border-white/10 after:rotate-45 after:translate-y-1.5 z-20">
+                    {victoryAvatar.bubbleText}
+                  </div>
+                </div>
+
+                {/* Performance Stats */}
+                <div className="grid grid-cols-2 gap-4 p-4 rounded-2xl bg-white/5 border border-white/5">
+                  <div className="space-y-1">
+                    <p className="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest">
+                      {language === 'en' ? 'Questions Correct' : 'ସଠିକ୍ ଉତ୍ତର'}
+                    </p>
+                    <p className="text-xl sm:text-2xl font-black text-white">
+                      {victoryData.correctCount} / {victoryData.totalQuestions}
+                    </p>
+                  </div>
+                  <div className="space-y-1 border-l border-white/5">
+                    <p className="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest">
+                      {language === 'en' ? 'Utkal Coins Earned' : 'ଉତ୍କଳ କଏନ ଅର୍ଜନ'}
+                    </p>
+                    <div className="flex items-center justify-center gap-1.5 text-amber-400">
+                      <Lucide.Coins size={18} className="animate-spin-slow" />
+                      <span className="text-xl sm:text-2xl font-black">+{victoryData.pointsEarned}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                  <button
+                    onClick={() => setVictoryData(null)}
+                    className="flex-1 py-4 bg-slate-800 hover:bg-slate-700 text-white font-extrabold text-sm uppercase tracking-wider rounded-2xl transition-all cursor-pointer active:scale-95 border border-white/5"
+                  >
+                    {language === 'en' ? 'Review Answers' : 'ଉତ୍ତରଗୁଡ଼ିକ ଦେଖନ୍ତୁ'}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setVictoryData(null);
+                      onBack();
+                    }}
+                    className="flex-1 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-sm uppercase tracking-wider rounded-2xl transition-all cursor-pointer active:scale-95 shadow-lg shadow-amber-950/40"
+                  >
+                    {language === 'en' ? 'Back to Dashboard' : 'ଡ୍ୟାସବୋର୍ଡକୁ ଯାଆନ୍ତୁ'}
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          );
+        })()}
+      </AnimatePresence>
     </motion.div>
   );
 }

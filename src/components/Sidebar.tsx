@@ -58,6 +58,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: '3d_study', icon: Lucide.Box, label: language === 'en' ? 'Gundulu 3D Lab' : 'ଗୁନ୍ଦୁଲୁ ୩D ଲ୍ୟାବ୍' },
     { id: 'textbooks', icon: Lucide.Book, label: language === 'en' ? 'Textbooks' : 'ପାଠ୍ୟପୁସ୍ତକ' },
     { id: 'smart_classes', icon: Lucide.Youtube, label: language === 'en' ? 'Smart Classes' : 'ସ୍ମାର୍ଟ କ୍ଲାସ' },
+    { id: 'community', icon: Lucide.MessagesSquare, label: language === 'en' ? 'Community' : 'କମ୍ୟୁନିଟି' },
     { id: 'monthly_tests', icon: Lucide.Calendar, label: t.monthlyTests },
     { id: 'syllabus_tracker', icon: Lucide.ListChecks, label: language === 'en' ? 'Syllabus Tracker' : 'ପାଠ୍ୟକ୍ରମ ଟ୍ରାକର୍' },
     { id: 'daily_mcqs', icon: Lucide.ListChecks, label: language === 'en' ? 'Gundulu Daily Challenge' : 'ଗୁନ୍ଦୁଲୁ ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ' },
@@ -146,7 +147,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 {
                   titleEn: 'Academics',
                   titleOr: 'ଶିକ୍ଷା',
-                  items: menuItems.filter(item => ['profile', 'dashboard', 'digital_library', 'textbooks', 'smart_classes', 'syllabus_tracker'].includes(item.id))
+                  items: menuItems.filter(item => ['profile', 'dashboard', 'digital_library', 'textbooks', 'smart_classes', 'syllabus_tracker', 'community'].includes(item.id))
                 },
                 {
                   titleEn: 'Challenge Arena 🏆',
