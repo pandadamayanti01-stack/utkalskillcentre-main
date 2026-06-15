@@ -18,7 +18,7 @@ export const AboutUsModal: React.FC<AboutUsModalProps> = ({ language, onClose })
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.95, opacity: 0, y: 20 }}
         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full max-w-4xl relative bg-slate-900 border border-amber-500/20 rounded-[2.5rem] overflow-hidden shadow-2xl shadow-black/80 flex flex-col md:flex-row max-h-[90vh] md:max-h-[85vh] force-dark-theme"
+        className="w-full max-w-4xl relative bg-slate-900 border border-amber-500/20 rounded-[2.5rem] overflow-hidden shadow-2xl shadow-black/80 flex flex-col md:flex-row max-h-[90vh] md:max-h-[85vh] overflow-y-auto md:overflow-y-visible force-dark-theme"
       >
         {/* Glow/Light effects */}
         <div className="absolute top-0 right-0 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -26,6 +26,20 @@ export const AboutUsModal: React.FC<AboutUsModalProps> = ({ language, onClose })
 
         {/* Decorative Top Line */}
         <div className="absolute top-0 inset-x-0 h-[3px] bg-gradient-to-r from-amber-500 via-yellow-400 to-emerald-500 z-10" />
+
+        {/* Mission (Mobile Only, at the top) */}
+        <div className="block md:hidden p-6 pb-2 space-y-3 shrink-0 force-dark-theme relative z-20 mt-3">
+          <h3 className="text-[10px] font-black text-amber-500 uppercase tracking-widest">
+            {isOdia ? 'ଆମର ଲକ୍ଷ୍ୟ' : 'OUR MISSION'}
+          </h3>
+          <p className="text-slate-300 text-sm leading-relaxed font-medium">
+            {isOdia ? (
+              'ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର ହେଉଛି ଗୁନ୍ଦୁଲୁ ଏଆଇ (Gundulu AI) ଦ୍ୱାରା ଚାଲିତ ଏକ ସକ୍ରେଟିକ୍ ଶିକ୍ଷା ସାଥୀ | ଓଡ଼ିଶାର ଗ୍ରାମାଞ୍ଚଳରେ ସ୍ୱଳ୍ପ ନେଟୱର୍କରେ ଚାଲିବା ପାଇଁ ଏହା ସ୍ୱତନ୍ତ୍ର ଭାବେ ପ୍ରସ୍ତୁତ ଏବଂ ମାସକୁ ମାତ୍ର ୯୯ ଟଙ୍କାରେ ବିଶ୍ୱସ୍ତରୀୟ ଏଆଇ ଶିକ୍ଷା ପ୍ରଦାନ କରିଥାଏ |'
+            ) : (
+              'Utkal Skill Centre is a digital study companion powered by Gundulu AI, a textbook-grounded, bilingual Socratic tutor. Specially designed for low-bandwidth rural classrooms in Odisha, it makes world-class AI learning affordable at just ₹99/month.'
+            )}
+          </p>
+        </div>
 
         {/* LEFT COLUMN: Logo & Traction Stats (45% Width on Desktop) */}
         <div className="w-full md:w-[42%] bg-slate-950/80 p-6 md:p-10 border-b md:border-b-0 md:border-r border-white/5 flex flex-col items-center justify-center text-center space-y-6 relative overflow-hidden shrink-0 force-dark-theme">
@@ -75,10 +89,10 @@ export const AboutUsModal: React.FC<AboutUsModalProps> = ({ language, onClose })
         </div>
 
         {/* RIGHT COLUMN: Description, Team, Contact & Socials (58% Width on Desktop) */}
-        <div className="w-full md:w-[58%] p-6 md:p-10 overflow-y-auto space-y-6 flex flex-col justify-between force-dark-theme">
+        <div className="w-full md:w-[58%] p-6 md:p-10 md:overflow-y-auto space-y-6 flex flex-col justify-between force-dark-theme">
           
-          {/* Mission & Description */}
-          <div className="space-y-3">
+          {/* Mission & Description (Desktop Only) */}
+          <div className="hidden md:block space-y-3">
             <h3 className="text-[10px] font-black text-amber-500 uppercase tracking-widest">
               {isOdia ? 'ଆମର ଲକ୍ଷ୍ୟ' : 'OUR MISSION'}
             </h3>

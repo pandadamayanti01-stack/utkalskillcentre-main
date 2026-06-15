@@ -16,3 +16,4 @@ src/scratch/
 scratch/
 textbook_vectors_class_*_progress.json
 .venv/
+users.csv
