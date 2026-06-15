@@ -914,8 +914,19 @@ body.theme-daybreak .force-dark-theme button.bg-white\/10:hover {
   color: #ffffff !important;
 }
 
-
-
-
-
-
+/* Avoid vertical overlapping of tall Odia vowel marks (ୂ, ୁ, ି, ୀ, ୍ଳ) */
+html[lang="or"] body,
+html[lang="or"] p,
+html[lang="or"] h1,
+html[lang="or"] h2,
+html[lang="or"] h3,
+html[lang="or"] h4,
+html[lang="or"] h5,
+html[lang="or"] h6,
+html[lang="or"] li,
+html[lang="or"] span,
+html[lang="or"] div,
+html[lang="or"] button,
+html[lang="or"] textarea {
+  line-height: 1.68 !important;
+}

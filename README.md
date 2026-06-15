@@ -1,8 +1,25 @@
 # 🎓 Utkal Skill Centre — AI Agents Challenge (Track 2: Optimize)
 
-Welcome to the official repository of **Utkal Skill Centre**, optimized for **Track 2: Optimize** of the **Google for Startups AI Agents Challenge**.
+> [!IMPORTANT]
+> **⚡ JUDGE QUICK START FAST-PASS**: 
+> Access the app instantly at **[https://utkalskillcentre.com?judgestatus=true](https://utkalskillcentre.com?judgestatus=true)** 
+> Bypasses reCAPTCHA/OTP Restraints. Select **Student (`1234567890`)** or **Teacher (`9876543210`)** and use code `123456` to log in instantly. Overrides Sunday lockouts.
+>
+> **FastMCP Server Source**: [scratch/hackathon_mcp_server.py](file:///d:/WebApp/utkalskillcentre-main/scratch/hackathon_mcp_server.py) (Exposes Odisha BSE textbooks & XP rewards)
 
-Utkal Skill Centre is a bilingual educational PWA designed to bridge the digital and educational divide for state-board students in Odisha, India, by providing localized, curriculum-aligned AI tutoring (Gundulu AI) in their mother tongue (**Odia**).
+## ⚡ How We Optimized for Rural Odisha (Track 2: The Real Story)
+
+Most EdTech apps are built for high-speed 5G and premium smartphones. But when we launched *Utkal Skill Centre* for state-board students in Odisha, we realized the reality on the ground was very different: basic ₹5,000 Android phones, patchy 2G/3G connections, and families who cannot afford heavy data charges.
+
+Here is a quick look at how we rewrote our code to solve these real-world constraints:
+
+| Constraint | The Usual EdTech Approach | Rural Odisha Reality | How We Optimized It |
+| :--- | :--- | :--- | :--- |
+| **Connection** | Assumes high-speed 4G/5G and fiber. | Slow, patchy 2G/3G mobile data. | **Precached Service Workers**: The app loads instantly offline. We only query Firestore for textbook vector chunks. |
+| **Phones** | Built for high-end iPhones and pixels. | Budget ₹5,000 ($60) Android devices. | **Pure CSS & Static WebXR**: We optimized rendering to save CPU cycles and cleaned up slate memory leaks. |
+| **Costs** | VC-funded cloud budgets. | Student budget is ₹99/month ($1.19). | **Local Speech Engine**: Replaced expensive Cloud TTS ($0.05/min) with local Web Speech Synthesis. **₹0 cloud cost, 0 latency**. |
+| **Language** | Heavy English LLMs + Translate APIs. | State-board textbooks are in Odia; dual-translation overhead is cost-prohibitive. | **Firestore Native Vector Search + Bilingual Jaccard re-ranking**: Direct Odia search with no Translate API overhead. |
+| **Inputs** | Heavy typing and keyboard setups. | Voice-first culture; tracing Odia letters. | **Web Speech API & Mascot Trace Slates**: Custom drawing inputs and Odia voice recognition. |
 
 ---
 

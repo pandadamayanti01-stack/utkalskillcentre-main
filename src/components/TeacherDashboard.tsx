@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as Lucide from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { cleanMathNotation } from '../utils/cleaners';
 import { generateHomeworkSheet, generateLessonPlan, generatePracticalActivities } from '../services/aiService';
 import { db } from '../firebase';
 import { 
@@ -1772,7 +1773,7 @@ export function TeacherDashboard({
                             {generatorType === 'worksheet' ? (
                               answerKeyMode === 'student' ? (
                                 <>
-                                  <ReactMarkdown>{studentQuestions}</ReactMarkdown>
+                                  <ReactMarkdown>{cleanMathNotation(studentQuestions)}</ReactMarkdown>
                                   <div className="mt-12 pt-8 border-t-2 border-dashed border-slate-300 text-center space-y-4 print:text-black print:border-slate-300">
                                     <div className="inline-flex items-center gap-3 bg-purple-500/10 border border-purple-500/20 px-5 py-3 rounded-2xl text-purple-700">
                                       <Lucide.Sparkles size={18} />
@@ -1799,11 +1800,11 @@ export function TeacherDashboard({
                                       TEACHER ANSWER KEY • pedagogical reference
                                     </span>
                                   </div>
-                                  <ReactMarkdown>{generatedContent}</ReactMarkdown>
+                                  <ReactMarkdown>{cleanMathNotation(generatedContent)}</ReactMarkdown>
                                 </>
                               )
                             ) : (
-                              <ReactMarkdown>{generatedContent}</ReactMarkdown>
+                              <ReactMarkdown>{cleanMathNotation(generatedContent)}</ReactMarkdown>
                             )}
                           </div>
                         </div>

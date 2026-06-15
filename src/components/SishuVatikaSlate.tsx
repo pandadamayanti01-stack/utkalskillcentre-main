@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as Lucide from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { cleanMathNotation } from '../utils/cleaners';
 import { cleanOdiaOrthography } from '../services/aiService';
 
 interface SishuVatikaSlateProps {
@@ -1187,7 +1188,7 @@ export const SishuVatikaSlate: React.FC<SishuVatikaSlateProps> = ({
                 ) : (
                   <div className="socratic-response-container text-xs md:text-sm text-slate-200 leading-relaxed space-y-2 pb-6">
                     {displayedExplanation ? (
-                      <ReactMarkdown components={markdownComponents}>{displayedExplanation}</ReactMarkdown>
+                      <ReactMarkdown components={markdownComponents}>{cleanMathNotation(displayedExplanation)}</ReactMarkdown>
                     ) : (
                       <p className="text-slate-500 text-center py-6 text-xs font-bold">
                         କୌଣସି ଉତ୍ତର ମିଳିଲା ନାହିଁ।

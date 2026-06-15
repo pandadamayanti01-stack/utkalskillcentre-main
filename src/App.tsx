@@ -52,6 +52,7 @@ import { getDeferredPrompt, clearDeferredPrompt, vibrate, requestScreenWakeLock,
 import { SEO } from './components/SEO';
 import { BottomNavBar } from './components/BottomNavBar';
 import ReactMarkdown from 'react-markdown';
+import { cleanMathNotation } from './utils/cleaners';
 import LibraryPortalGate from './components/LibraryPortalGate';
 
 const AdminDashboard = lazy(() =>
@@ -1221,6 +1222,7 @@ export default function App() {
     languageRef.current = lang;
     _setLanguage(lang);
     localStorage.setItem('lang', lang);
+    document.documentElement.lang = lang;
     if (user?.id) {
       try {
         await updateDoc(doc(firestore, 'users', user.id), { preferred_language: lang });
@@ -1229,6 +1231,10 @@ export default function App() {
       }
     }
   };
+
+  useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
@@ -3218,7 +3224,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
               </h2>
 
               <div className="prose prose-invert max-w-none text-slate-300 font-medium leading-relaxed space-y-6">
-                <ReactMarkdown>{selectedPreview.content}</ReactMarkdown>
+                <ReactMarkdown>{cleanMathNotation(selectedPreview.content)}</ReactMarkdown>
               </div>
 
               {/* Conversion sticky loop box */}
@@ -4642,7 +4648,7 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack, userPr
                 </div>
               ) : learningInsights && learningInsights !== "No insights available yet." ? (
                 <div className="text-sm text-slate-300 leading-relaxed prose prose-invert prose-emerald max-w-none prose-p:my-1 prose-li:my-0.5">
-                  <ReactMarkdown>{learningInsights}</ReactMarkdown>
+                  <ReactMarkdown>{cleanMathNotation(learningInsights)}</ReactMarkdown>
                 </div>
               ) : (
                 <p className="text-xs text-slate-400 leading-relaxed text-center py-4">
