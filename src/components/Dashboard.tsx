@@ -266,7 +266,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
     if (isJudgeAccount) return;
 
     const nameLower = user.name.trim().toLowerCase();
-    const isWinner = ['dibyansh', 'sohan', 'rohan', 'sujata', 'anik', 'student'].some(w => nameLower.includes(w));
+    const isWinner = ['dibyansh', 'sohan', 'rohan', 'sujata', 'anik'].some(w => nameLower.includes(w));
     if (!isWinner) return;
 
     const fetchClaimTicket = async () => {

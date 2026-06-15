@@ -1079,14 +1079,6 @@ export default function Login({ language, translations, setLanguage, setRegData 
             {language === 'en' ? 'Terms & Conditions' : 'ନିୟମ ଓ ସର୍ତ୍ତାବଳୀ'}
           </a>
           <span>•</span>
-          <a href="/refund-policy.html" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 transition-colors">
-            {language === 'en' ? 'Refund Policy' : 'ରିଫଣ୍ଡ ନୀତି'}
-          </a>
-          <span>•</span>
-          <a href="/delete-account.html" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 transition-colors">
-            {language === 'en' ? 'Delete Account' : 'ଖାତା ବିଲୋପ'}
-          </a>
-          <span>•</span>
           <button type="button" onClick={() => setShowAboutModal(true)} className="hover:text-emerald-400 transition-colors cursor-pointer">
             {language === 'en' ? 'About Us' : 'ଆମ ବିଷୟରେ'}
           </button>
