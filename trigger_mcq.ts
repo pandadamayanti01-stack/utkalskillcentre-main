@@ -28,11 +28,29 @@ async function trigger() {
   // - If run before 6:00 AM IST (e.g. manual early morning trigger), generate for TODAY.
   // - If run at or after 6:00 AM IST (like the scheduled 6:07 AM cron), generate for TOMORROW.
   // - On Saturday, skip Sunday and generate for Monday.
-  const date = new Date();
-  const istDateString = date.toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
-  const localDate = new Date(istDateString);
-  const dayOfWeek = localDate.getDay(); // 0 = Sunday, 6 = Saturday in IST
-  const currentHour = localDate.getHours();
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Kolkata',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  });
+  
+  const parts = formatter.formatToParts(new Date());
+  const partMap = Object.fromEntries(parts.map(p => [p.type, p.value]));
+  
+  const year = parseInt(partMap.year);
+  const month = parseInt(partMap.month) - 1; // 0-indexed month
+  const day = parseInt(partMap.day);
+  const currentHour = parseInt(partMap.hour);
+  
+  // Construct a date object representing midnight today in Kolkata using UTC methods
+  // to avoid any server/runner local timezone offsets when formatting to ISO string.
+  const date = new Date(Date.UTC(year, month, day));
+  const dayOfWeek = date.getUTCDay(); // 0 = Sunday, 6 = Saturday in IST
 
   if (currentHour < 6) {
     console.log(`Running early (before 6 AM IST at hour ${currentHour}). Generating for today.`);
@@ -40,10 +58,10 @@ async function trigger() {
   } else {
     if (dayOfWeek === 6) {
       console.log('Today is Saturday (IST) at or after 6 AM. Skipping Sunday and generating for Monday.');
-      date.setDate(date.getDate() + 2);
+      date.setUTCDate(date.getUTCDate() + 2);
     } else {
       console.log('Today is weekday/Sunday at or after 6 AM. Generating for tomorrow.');
-      date.setDate(date.getDate() + 1);
+      date.setUTCDate(date.getUTCDate() + 1);
     }
   }
   
