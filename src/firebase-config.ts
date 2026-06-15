@@ -3,7 +3,7 @@ export const firebaseConfig = {
   appId: "1:108736001473:web:07f139fe64f7641c2c6b40",
   apiKey: "AIzaSyB53Wdjm_c8-55XeBuyxj5l_ozRxfc6Pbc",
   authDomain: "utkalskillcentre.firebaseapp.com",
-  firestoreDatabaseId: "utkal-prod",
+  firestoreDatabaseId: (import.meta.env.VITE_FIREBASE_DATABASE_ID as string) || "utkal-prod",
   storageBucket: "utkalskillcentre.firebasestorage.app",
   messagingSenderId: "108736001473",
   measurementId: "G-Z2M2G8LL46"
