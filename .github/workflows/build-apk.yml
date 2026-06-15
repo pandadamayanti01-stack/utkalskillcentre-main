@@ -27,23 +27,15 @@ jobs:
 
 
 
-      - name: Generate Signing Keystore
+      - name: Decode Signing Keystore
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
         run: |
-          # Generate a secure keystore file if it doesn't already exist in the repo
-          if [ ! -f android.keystore ]; then
-            echo "Generating new secure keystore..."
-            keytool -genkeypair -v \
-              -keystore android.keystore \
-              -alias android \
-              -keyalg RSA \
-              -keysize 2048 \
-              -validity 10000 \
-              -storepass utkalskill123 \
-              -keypass utkalskill123 \
-              -dname "CN=Utkal Skill Centre, OU=App, O=Utkal, L=Bhubaneswar, S=Odisha, C=IN"
-          else
-            echo "Keystore already exists."
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "Error: ANDROID_KEYSTORE_BASE64 secret is not set in GitHub repository settings!"
+            exit 1
           fi
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android.keystore
 
       - name: Install Bubblewrap CLI
         run: npm install -g @bubblewrap/cli

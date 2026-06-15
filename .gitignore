@@ -18,3 +18,5 @@ textbook_vectors_class_*_progress.json
 .venv/
 users.csv
 play_store_testers.csv
+*.keystore
+*.jks
