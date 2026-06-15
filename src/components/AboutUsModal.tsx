@@ -174,7 +174,7 @@ export const AboutUsModal: React.FC<AboutUsModalProps> = ({ language, onClose })
         {/* CLOSE BUTTON: Sits inside the card but offset from the rounded border to prevent clipping */}
         <button
           onClick={onClose}
-          className="absolute top-7 right-7 md:top-8 md:right-8 z-[9999] h-10 w-10 rounded-full flex items-center justify-center transition-all border shadow-lg hover:scale-105 active:scale-95 cursor-pointer"
+          className="absolute top-10 right-10 md:top-8 md:right-8 z-[9999] h-10 w-10 rounded-full flex items-center justify-center transition-all border shadow-lg hover:scale-105 active:scale-95 cursor-pointer"
           style={{
             backgroundColor: isLight ? '#f1f5f9' : '#1e293b',
             color: isLight ? '#0f172a' : '#ffffff',
