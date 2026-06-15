@@ -62,10 +62,7 @@ jobs:
           BUBBLEWRAP_KEYSTORE_PASSWORD: utkalskill123
           BUBBLEWRAP_KEY_PASSWORD: utkalskill123
         run: |
-          # 1. Update/Generate the Android project based on twa-manifest.json
-          yes | bubblewrap update
-          
-          # 2. Build the signed APK and AAB packages
+          # Build the signed APK and AAB packages directly from twa-manifest.json
           yes | bubblewrap build
 
       - name: Upload Android APK (Signed)
