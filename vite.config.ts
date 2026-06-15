@@ -92,7 +92,7 @@ export default defineConfig(({mode}) => {
           screenshots: [
             {
               src: '/gundulu-v3.jpg',
-              sizes: '1024x1024',
+              sizes: '1080x1920',
               type: 'image/jpeg',
               form_factor: 'narrow',
               label: 'Gundulu AI Tutor - Learning Dashboard'
