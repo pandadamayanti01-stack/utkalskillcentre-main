@@ -67,6 +67,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'plans', icon: Lucide.CreditCard, label: language === 'en' ? 'Subscription' : 'ସବସ୍କ୍ରିପସନ୍' },
     { id: 'parent_dashboard', icon: Lucide.Users, label: language === 'en' ? 'Parent Insights' : 'ପିତାମାତା ଇନସାଇଟ୍ସ', premium: true, badge: <span className="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md tracking-wider">PRO</span> },
     { id: 'support', icon: Lucide.HelpCircle, label: t.support.title },
+    { id: 'about_us', icon: Lucide.Info, label: language === 'en' ? 'About Us' : 'ଆମ ବିଷୟରେ' },
   ];
 
   const filteredMenuItems = showShowcaseTab 
@@ -160,7 +161,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 {
                   titleEn: 'Account & Help',
                   titleOr: 'ଖାତା ଓ ସାହାଯ୍ୟ',
-                  items: menuItems.filter(item => ['notifications', 'plans', 'parent_dashboard', 'support'].includes(item.id))
+                  items: menuItems.filter(item => ['notifications', 'plans', 'parent_dashboard', 'support', 'about_us'].includes(item.id))
                 }
               ].filter(group => group.items.length > 0);
 

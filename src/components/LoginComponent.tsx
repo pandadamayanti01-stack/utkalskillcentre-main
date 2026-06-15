@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Phone, Loader2, Globe, ArrowLeft, Shield, ChevronRight, Sparkles, Youtube, Instagram, Facebook, BookOpen } from 'lucide-react';
 import { doc, getDoc } from 'firebase/firestore';
 import { getDeferredPrompt, clearDeferredPrompt } from '../pwa';
+import { AboutUsModal } from './AboutUsModal';
 
 const WhatsAppIcon = ({ size = 18 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -121,6 +122,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
   const [isSending, setIsSending] = useState(false);
   const [authStep, setAuthStep] = useState<'login' | 'otp'>('login');
   const [showAdminPill, setShowAdminPill] = useState(false);
+  const [showAboutModal, setShowAboutModal] = useState(false);
 
   // PIN Switcher State variables
   const [loginView, setLoginView] = useState<'phone' | 'switcher' | 'pin'>('phone');
@@ -1084,6 +1086,10 @@ export default function Login({ language, translations, setLanguage, setRegData 
           <a href="/delete-account.html" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 transition-colors">
             {language === 'en' ? 'Delete Account' : 'ଖାତା ବିଲୋପ'}
           </a>
+          <span>•</span>
+          <button type="button" onClick={() => setShowAboutModal(true)} className="hover:text-emerald-400 transition-colors cursor-pointer">
+            {language === 'en' ? 'About Us' : 'ଆମ ବିଷୟରେ'}
+          </button>
         </div>
 
         {/* Emerald Live Indicator */}
@@ -1094,6 +1100,12 @@ export default function Login({ language, translations, setLanguage, setRegData 
           </span>
         </div>
       </footer>
+
+      <AnimatePresence>
+        {showAboutModal && (
+          <AboutUsModal language={language} onClose={() => setShowAboutModal(false)} />
+        )}
+      </AnimatePresence>
 
     </div>
   );

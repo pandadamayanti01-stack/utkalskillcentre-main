@@ -88,6 +88,7 @@ const RajaFestivalPoster = lazy(() => import('./components/RajaFestivalPoster'))
 const PitchDeckView = lazy(() => import('./components/PitchDeckView').then((module) => ({ default: module.PitchDeckView })));
 const TelemetryView = lazy(() => import('./components/TelemetryView').then((module) => ({ default: module.TelemetryView })));
 const Gundulu3DLab = lazy(() => import('./components/Gundulu3DLab').then((module) => ({ default: module.Gundulu3DLab })));
+const AboutUsModal = lazy(() => import('./components/AboutUsModal').then((module) => ({ default: module.AboutUsModal })));
 
 function ViewLoader({ fullHeight = false }: { fullHeight?: boolean }) {
   return (
@@ -4016,6 +4017,11 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             {activeTab === 'pitch_deck' && <PitchDeckView language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'telemetry' && <TelemetryView language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === '3d_study' && <Gundulu3DLab language={language} user={user} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'about_us' && (
+              <Suspense fallback={<ViewLoader />}>
+                <AboutUsModal language={language} onClose={() => setActiveTab('dashboard')} />
+              </Suspense>
+            )}
             {activeTab === 'matching_quiz' && (
               <AiMatchingQuiz 
                 user={user} 

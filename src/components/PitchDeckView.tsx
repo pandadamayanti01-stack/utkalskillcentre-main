@@ -339,7 +339,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
         subtitle: "Making world-class AI learning affordable and accessible to every child",
         tagline: "UTKAL PITCH DECK SUMMARY",
         bullets: [
-          { title: "Proven Pilot Traction", desc: "445 active pilot students and 6 premium paying subscribers across 7 districts." },
+          { title: "Proven Pilot Traction", desc: "445 active pilot students and 6 premium paying subscribers across 30 districts." },
           { title: "On-Device Gemma-2B", desc: "Transitioning to fine-tuned Gemma 2B running 100% locally on cheap $30 smartphones." },
           { title: "Contact Us", desc: "Founders: Damayanti Panda & Gyanalok Panda. Email: contact@utkalskillcentre.com" }
         ],
@@ -418,7 +418,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
         subtitle: "ବିଶ୍ୱସ୍ତରୀୟ ଏଆଇ (AI) ଶିକ୍ଷାକୁ ଓଡ଼ିଶାର ପ୍ରତିଟି ଶିଶୁ ପାଇଁ ସୁଲଭ କରିବା",
         tagline: "ଉତ୍କଳ ପିଚ୍ ଶେଷ ସଂକ୍ଷିପ୍ତ",
         bullets: [
-          { title: "ସକ୍ରିୟ ପାଇଲଟ୍ ଛାତ୍ର", desc: "୭ଟି ଜିଲ୍ଲାରେ ୪୪୫ ଜଣ ସକ୍ରିୟ ପାଇଲଟ୍ ଛାତ୍ର ଏବଂ ପେଡ୍ ପ୍ରିମିୟମ୍ ସବସ୍କ୍ରିପସନ୍।" },
+          { title: "ସକ୍ରିୟ ପାଇଲଟ୍ ଛାତ୍ର", desc: "୩୦ଟି ଜିଲ୍ଲାରେ ୪୪୫ ଜଣ ସକ୍ରିୟ ପାଇଲଟ୍ ଛାତ୍ର ଏବଂ ପେଡ୍ ପ୍ରିମିୟମ୍ ସବସ୍କ୍ରିପସନ୍।" },
           { title: "ମୋବାଇଲ୍‌-ନେଟିଭ୍ Gemma 2B", desc: "ପାଠ୍ୟପୁସ୍ତକ RAG ରୁ ୩୦ ଡଲାରର ଫୋନ୍‌ରେ ମାଗଣାରେ ଅଫଲାଇନ୍ ଚାଲୁଥିବା Gemma-2B ମଡେଲକୁ ଉନ୍ନତି।" },
           { title: "ଆମ ସହ ଯୋଗାଯୋଗ", desc: "ପ୍ରତିଷ୍ଠାତା: ଦମୟନ୍ତୀ ପଣ୍ଡା ଓ ଜ୍ଞାନାଲୋକ ପଣ୍ଡା | ଇମେଲ୍: contact@utkalskillcentre.com" }
         ],
@@ -1069,7 +1069,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                     <div className="bg-slate-900 border border-white/5 p-3 rounded-2xl text-center hover:border-[#b34d1f]/30 transition-all">
                       <span className="text-[8px] text-slate-500 uppercase tracking-wider block font-bold">Paying Subscribers</span>
                       <h3 className="text-2xl font-black text-amber-400 mt-1">6</h3>
-                      <span className="text-[8px] text-slate-400">Validated across 7 districts at ₹99</span>
+                      <span className="text-[8px] text-slate-400">Validated across 30 districts at ₹99</span>
                     </div>
                   </div>
 
