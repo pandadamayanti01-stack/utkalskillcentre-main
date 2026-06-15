@@ -18,8 +18,8 @@
     "path": "./android.keystore",
     "alias": "my-key-alias"
   },
-  "appVersionName": "1.0.2",
-  "appVersionCode": 4,
+  "appVersionName": "1.0.3",
+  "appVersionCode": 10,
   "webManifestUrl": "https://utkalskillcentre.com/manifest.json",
   "fallbackType": "customtabs",
   "enableSiteSettingsShortcut": true,
