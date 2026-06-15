@@ -58,7 +58,7 @@ jobs:
           BUBBLEWRAP_KEY_PASSWORD: utkalskill123
         run: |
           # Build the signed APK and AAB packages directly from twa-manifest.json
-          yes | bubblewrap build
+          yes | bubblewrap build > bubblewrap_build.log 2>&1
 
       - name: Upload Android APK (Signed)
         uses: actions/upload-artifact@v4
@@ -75,3 +75,10 @@ jobs:
           path: |
             *.aab
             app-release.aab
+
+      - name: Upload Build Log (Always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bubblewrap-build-log
+          path: bubblewrap_build.log
