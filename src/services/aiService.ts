@@ -520,9 +520,9 @@ export async function generateTestQuestions(subject: string, className: string, 
     const ai = getAI();
     
     // Parse class number (e.g. 'class5' -> 5, '5' -> 5)
-    const classNum = parseInt(className.replace(/\D/g, '')) || 10;
-    const isDecemberHalfYearly = month.toLowerCase().includes('december');
-    const isHalfBoard = ['physical_science', 'life_science', 'social_science', 'geography'].includes(subject.toLowerCase().trim());
+    const classNum = className ? (parseInt(String(className).replace(/\D/g, '')) || 10) : 10;
+    const isDecemberHalfYearly = month ? String(month).toLowerCase().includes('december') : false;
+    const isHalfBoard = subject ? ['physical_science', 'life_science', 'social_science', 'geography'].includes(String(subject).toLowerCase().trim()) : false;
     
     let structureDescription = '';
     let totalMarks = 0;

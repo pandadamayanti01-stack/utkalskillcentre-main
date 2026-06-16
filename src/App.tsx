@@ -8380,12 +8380,12 @@ function ResultsReviewView({ submission, test, onBack, language }: any) {
 
         <div className="space-y-6">
           {test.questions.map((q: any, i: number) => {
-            const studentAns = submission.answers[i];
+            const studentAns = submission?.answers?.[i];
             const isMcq = q.type === 'mcq' || !q.type;
             const studentAnsText = typeof studentAns === 'object' && studentAns !== null ? studentAns.text : studentAns;
             const studentAnsImg = typeof studentAns === 'object' && studentAns !== null ? studentAns.imageUrl : null;
             const isCorrect = q.isGrace || (isMcq 
-              ? (q.options[studentAns] === q.correct_answer || String(studentAns) === q.correct_answer)
+              ? (q.options && studentAns !== undefined && (q.options[studentAns] === q.correct_answer || String(studentAns) === q.correct_answer))
               : true); 
             
             const awardedMarks = q.isGrace 
