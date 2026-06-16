@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, orderBy, onSnapshot, deleteDoc, doc, getDocs, where, Timestamp, limit } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { collection, query, orderBy, onSnapshot, deleteDoc, doc, getDocs, where, Timestamp, limit, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db, auth } from '../../firebase';
 import { ChatMessage } from '../../types';
-import { Trash2, Shield, Search, AlertCircle, RefreshCw } from 'lucide-react';
+import { Trash2, Shield, Search, AlertCircle, RefreshCw, Send } from 'lucide-react';
 
 export const CommunityModerationTab: React.FC = () => {
   const [selectedClass, setSelectedClass] = useState<string>('class10');
@@ -10,6 +10,8 @@ export const CommunityModerationTab: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
   const [deleteStatus, setDeleteStatus] = useState<string | null>(null);
+  const [inputText, setInputText] = useState('');
+  const [sending, setSending] = useState(false);
 
   const rooms = [
     { id: 'teachers', label: 'Educator Staff Room 👥' },
@@ -104,6 +106,33 @@ export const CommunityModerationTab: React.FC = () => {
     setDeleting(false);
   };
 
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputText.trim()) return;
+
+    const messageText = inputText.trim();
+    setInputText('');
+    setSending(true);
+
+    try {
+      const currentUser = auth.currentUser;
+      await addDoc(collection(db, 'community'), {
+        text: messageText,
+        userId: currentUser?.uid || 'admin',
+        userName: currentUser?.displayName || 'Administrator',
+        userAvatar: currentUser?.photoURL || null,
+        class: selectedClass,
+        role: 'admin',
+        timestamp: serverTimestamp()
+      });
+    } catch (error) {
+      console.error("Error sending message:", error);
+      alert("Failed to send message");
+    } finally {
+      setSending(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -185,6 +214,26 @@ export const CommunityModerationTab: React.FC = () => {
             ))
           )}
         </div>
+
+        {/* Send Announcement / Message Form */}
+        <form onSubmit={handleSendMessage} className="flex items-center gap-3 border-t border-white/5 pt-4 shrink-0 mt-4">
+          <input
+            type="text"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            placeholder={`Send announcement to ${rooms.find(r => r.id === selectedClass)?.label || selectedClass}...`}
+            className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-indigo-500 focus:bg-white/10 transition-all"
+            disabled={sending}
+          />
+          <button
+            type="submit"
+            disabled={!inputText.trim() || sending}
+            className="p-2.5 bg-indigo-500 hover:bg-indigo-600 disabled:opacity-50 text-white rounded-xl transition-all flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/20"
+            title="Send Message"
+          >
+            <Send size={18} />
+          </button>
+        </form>
       </div>
     </div>
   );
