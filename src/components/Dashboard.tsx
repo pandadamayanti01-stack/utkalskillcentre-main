@@ -17,6 +17,20 @@ import { LeaderboardView } from './LeaderboardView';
 import { DistrictLeaderboardFilter } from './DistrictLeaderboardFilter';
 import { ODISHA_DISTRICTS } from '../constants/districts';
 import { TestSeriesRegistrationForm } from './TestSeriesRegistrationForm';
+import { jsPDF } from 'jspdf';
+import { CLASS_SUBJECTS } from './DigitalLibraryView';
+import {
+  ROADMAP_DATA_1,
+  ROADMAP_DATA_2,
+  ROADMAP_DATA_3,
+  ROADMAP_DATA_4,
+  ROADMAP_DATA_5,
+  ROADMAP_DATA_6,
+  ROADMAP_DATA_7,
+  ROADMAP_DATA_8,
+  ROADMAP_DATA_9,
+  ROADMAP_DATA as ROADMAP_DATA_10
+} from '../data/roadmapData';
 import { db } from '../firebase';
 import { collection, query, where, getDocs, orderBy, limit, doc, updateDoc, increment, serverTimestamp, onSnapshot, getDoc } from 'firebase/firestore';
 import { GunduluTrailer } from './GunduluTrailer';
@@ -51,6 +65,7 @@ interface DashboardProps {
   isTourStep3?: boolean;
   isTourStep4?: boolean;
   onOpenRajaPoster?: () => void;
+  onOpenMonthlyTests?: () => void;
 }
 function PerformanceChart({ submissions, tests, language }: any) {
   const chartData = React.useMemo(() => {
@@ -155,7 +170,279 @@ const getWorksheetParts = (text: string) => {
   return { questions, answers };
 };
 
-export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, hasDailyPractice, todayDailySubject, tomorrowDailySubject, onChallengeComplete, onOpenTutor, onOpenDailyPractice, onShareDailyPractice, isRegistered = false, onRegistrationComplete, onOpenCommunity, following = [], onToggleFollow, isTourStep3, isTourStep4, onOpenRajaPoster }: DashboardProps) {
+const CHAPTER_QUESTION_BANK: Record<string, {
+  mcqs: Array<{ question: string; options: string[] }>;
+  subjectives: Array<{ question: string; hint: string }>;
+}> = {
+  "linear simultaneous equations": {
+    mcqs: [
+      { question: "For a unique solution of the system a1x + b1y + c1 = 0 and a2x + b2y + c2 = 0, what is the condition?", options: ["a1/a2 != b1/b2", "a1/a2 = b1/b2 != c1/c2", "a1/a2 = b1/b2 = c1/c2", "a1.a2 + b1.b2 = 0"] },
+      { question: "If D = 0, Dx = 5, and Dy = 10, how many solutions exist for the system?", options: ["No solution", "Unique solution", "Infinitely many solutions", "Two solutions"] },
+      { question: "Solve for x and y: x + y = 5 and x - y = 1.", options: ["x = 3, y = 2", "x = 4, y = 1", "x = 2, y = 3", "x = 5, y = 0"] },
+      { question: "What is the value of the determinant | 3  2 | / | 1  4 |?", options: ["10", "14", "2", "-10"] },
+      { question: "Under what condition will the lines represented by 2x + ky = 5 and 3x + 6y = 8 be parallel?", options: ["k = 4", "k = 3", "k = 2", "k = 6"] }
+    ],
+    subjectives: [
+      { question: "Solve the following system of linear equations using Cramer's Rule: 3x + 4y = 10 and 2x - 2y = 2.", hint: "Calculate D = |3 4; 2 -2| = -14. Calculate Dx = |10 4; 2 -2| = -28. Calculate Dy = |3 10; 2 2| = -14. Then x = Dx/D = 2, and y = Dy/D = 1." },
+      { question: "For what value of 'k' will the system of equations kx + 3y = (k-3) and 12x + ky = k have infinitely many solutions?", hint: "Apply the condition a1/a2 = b1/b2 = c1/c2. k/12 = 3/k = (k-3)/k. Solving k^2 = 36 gives k = 6." }
+    ]
+  },
+  "quadratic equations": {
+    mcqs: [
+      { question: "What is the discriminant of the quadratic equation ax^2 + bx + c = 0?", options: ["b^2 - 4ac", "b^2 + 4ac", "4ac - b^2", "sqrt(b^2 - 4ac)"] },
+      { question: "If the roots of a quadratic equation are real and equal, what is the value of the discriminant?", options: ["D = 0", "D > 0", "D < 0", "D >= 0"] },
+      { question: "Find the roots of the equation x^2 - 5x + 6 = 0.", options: ["2, 3", "1, 5", "-2, -3", "0, 6"] },
+      { question: "If one root of the quadratic equation 2x^2 + kx - 6 = 0 is 2, what is the value of k?", options: ["-1", "1", "2", "-2"] },
+      { question: "What is the sum of the roots of the quadratic equation 3x^2 - 9x + 5 = 0?", options: ["3", "-3", "5/3", "-5/3"] }
+    ],
+    subjectives: [
+      { question: "Find the roots of the quadratic equation 2x^2 - 7x + 3 = 0 using the quadratic formula.", hint: "a=2, b=-7, c=3. D = b^2 - 4ac = 49 - 24 = 25. Roots are x = (-b +- sqrt(D)) / 2a = (7 +- 5) / 4, yielding x = 3 and x = 1/2." },
+      { question: "If alpha and beta are the roots of the equation x^2 - px + q = 0, find the value of (alpha^2 + beta^2).", hint: "Use sum of roots alpha + beta = p and product alpha * beta = q. alpha^2 + beta^2 = (alpha + beta)^2 - 2*alpha*beta = p^2 - 2q." }
+    ]
+  },
+  "similarity": {
+    mcqs: [
+      { question: "In two similar triangles, if the ratio of their corresponding sides is 3:4, what is the ratio of their areas?", options: ["9:16", "3:4", "27:64", "sqrt(3):2"] },
+      { question: "According to Thales Theorem, if a line is drawn parallel to one side of a triangle, it divides the other two sides in:", options: ["Equal ratio", "Unequal ratio", "Product of sides", "Sum of sides"] },
+      { question: "In triangle ABC, D and E are points on AB and AC such that DE || BC. If AD/DB = 3/5 and AC = 5.6 cm, find AE.", options: ["2.1 cm", "3.1 cm", "1.5 cm", "3.5 cm"] },
+      { question: "Which of the following is NOT a criterion for similarity of two triangles?", options: ["RHS", "AAA", "SAS", "SSS"] },
+      { question: "If triangle ABC ~ triangle PQR, AB = 6cm, PQ = 9cm, and perimeter of ABC is 24cm, find the perimeter of PQR.", options: ["36 cm", "32 cm", "40 cm", "28 cm"] }
+    ],
+    subjectives: [
+      { question: "State and prove the Basic Proportionality Theorem (Thales Theorem).", hint: "Outline triangle ABC with DE || BC. Show that Area(ADE)/Area(BDE) = AD/DB and Area(ADE)/Area(CDE) = AE/EC. Since Area(BDE) = Area(CDE) on same base DE, conclude AD/DB = AE/EC." },
+      { question: "If the areas of two similar triangles are equal, prove that the triangles are congruent.", hint: "Since area ratio is 1, the ratio of squares of corresponding sides is 1, which implies corresponding sides are equal. By SSS, they are congruent." }
+    ]
+  },
+  "chemical reactions": {
+    mcqs: [
+      { question: "What type of reaction is: Fe + CuSO4 -> FeSO4 + Cu?", options: ["Displacement Reaction", "Combination Reaction", "Decomposition Reaction", "Double Displacement Reaction"] },
+      { question: "Which gas is released when dilute hydrochloric acid reacts with zinc granules?", options: ["Hydrogen gas", "Oxygen gas", "Carbon dioxide gas", "Chlorine gas"] },
+      { question: "What is the chemical formula of quicklime?", options: ["CaO", "Ca(OH)2", "CaCO3", "CaCl2"] },
+      { question: "In the reaction CuO + H2 -> Cu + H2O, which substance is reduced?", options: ["CuO", "H2", "Cu", "H2O"] },
+      { question: "Why is nitrogen gas flushed into potato chips packets?", options: ["To prevent oxidation/rancidity", "To keep them crispy", "To make them look bigger", "To kill bacteria"] }
+    ],
+    subjectives: [
+      { question: "Balance the chemical equation: Fe + H2O -> Fe3O4 + H2 and write the physical states of reactants and products.", hint: "Balanced equation: 3Fe(s) + 4H2O(g) -> Fe3O4(s) + 4H2(g)." },
+      { question: "Differentiate between exothermic and endothermic reactions with one chemical equation example for each.", hint: "Exothermic releases heat: C + O2 -> CO2 + heat. Endothermic absorbs heat: CaCO3 + heat -> CaO + CO2." }
+    ]
+  },
+  "nutrition": {
+    mcqs: [
+      { question: "Which enzyme is present in human saliva?", options: ["Amylase (Ptyalin)", "Pepsin", "Trypsin", "Lipase"] },
+      { question: "Which pigment in green leaves traps solar energy for photosynthesis?", options: ["Chlorophyll", "Carotenoids", "Xanthophyll", "Anthocyanin"] },
+      { question: "Where in the human body is bile juice produced and stored?", options: ["Produced in Liver, stored in Gallbladder", "Produced in Gallbladder, stored in Liver", "Produced in Pancreas, stored in Liver", "Produced in Stomach, stored in Pancreas"] },
+      { question: "What is the mode of nutrition in Cuscuta (Amarabel)?", options: ["Parasitic", "Autotrophic", "Saprophytic", "Holozoic"] },
+      { question: "What is the primary site of absorption of digested food in the human body?", options: ["Small Intestine (Villi)", "Large Intestine", "Stomach", "Mouth"] }
+    ],
+    subjectives: [
+      { question: "Write the balanced chemical equation for photosynthesis. List the three major events that occur during this process.", hint: "Equation: 6CO2 + 12H2O + light -> C6H12O6 + 6O2 + 6H2O. Events: Chlorophyll absorbs light; light splits water; CO2 reduces to carbohydrate." },
+      { question: "Explain the process of digestion in the human stomach. Mention the roles of HCl, pepsin, and mucus.", hint: "Gastric juice: HCl activates pepsin and protects inner stomach lining." }
+    ]
+  },
+  "gandhi": {
+    mcqs: [
+      { question: "In which year did Mahatma Gandhi return to India from South Africa?", options: ["1915", "1917", "1919", "1920"] },
+      { question: "Where did Gandhiji organize his first successful Satyagraha in India?", options: ["Champaran", "Kheda", "Ahmedabad", "Bardoli"] },
+      { question: "Who was the political mentor (Guru) of Mahatma Gandhi?", options: ["Gopal Krishna Gokhale", "Bal Gangadhar Tilak", "Dadabhai Naoroji", "Rabindranath Tagore"] },
+      { question: "Why did Gandhiji launch the Champaran Satyagraha in 1917?", options: ["Against the oppressive Tinkathia system of indigo farming", "Against salt tax", "Against British land revenue", "To support mill workers"] },
+      { question: "Who gave the title 'Mahatma' to Mohandas Karamchand Gandhi?", options: ["Rabindranath Tagore", "Subhas Chandra Bose", "Jawaharlal Nehru", "Gopal Krishna Gokhale"] }
+    ],
+    subjectives: [
+      { question: "Explain the causes and significance of the Champaran Satyagraha of 1917.", hint: "Causes: European planters forced peasants to grow indigo on 3/20th of land (Tinkathia system). Significance: First successful experiment of Satyagraha by Gandhiji in India." },
+      { question: "Discuss the Rowlatt Act of 1919 and how Gandhiji organized the countrywide protest against it.", hint: "Rowlatt Act allowed detention without trial. Gandhiji formed Satyagraha Sabha and called for Hartal on April 6, 1919." }
+    ]
+  },
+  "non-cooperation": {
+    mcqs: [
+      { question: "In which Congress session was the resolution for the Non-Cooperation Movement formally adopted?", options: ["Nagpur Session (Dec 1920)", "Calcutta Special Session (Sep 1920)", "Lahore Session (1929)", "Madras Session (1927)"] },
+      { question: "Which tragic incident in February 1922 led Gandhiji to suspend the Non-Cooperation Movement?", options: ["Chauri Chaura Incident", "Jallianwala Bagh Massacre", "Kakori Conspiracy", "Rowlatt Satyagraha"] },
+      { question: "Who founded the Utkal Swarajya Shiksha Parishad in Odisha during the Non-Cooperation Movement?", options: ["Gopabandhu Das", "Harekrushna Mahatab", "Madhusudan Das", "Nabakrushna Choudhury"] },
+      { question: "Gandhiji returned which British-bestowed title in protest during the Non-Cooperation Movement?", options: ["Kaisar-i-Hind Gold Medal", "Knighthood", "Rai Bahadur", "Sir"] },
+      { question: "Who led the student boycott of schools and colleges in Cuttack during the Non-Cooperation Movement?", options: ["Harekrushna Mahatab", "Gopabandhu Das", "Ramadevi", "Sarala Devi"] }
+    ],
+    subjectives: [
+      { question: "Describe the impact and main programs of the Non-Cooperation Movement in Odisha.", hint: "Boycott of British goods/schools; burning foreign cloth; establishment of national schools (Swaraj Ashram) and Panchayats." },
+      { question: "Explain the circumstances that led to the withdrawal of the Non-Cooperation Movement in 1922.", hint: "Chauri Chaura incident (Feb 1922) where a violent mob burned down a police station and killed 22 policemen." }
+    ]
+  },
+  "singhanada": {
+    mcqs: [
+      { question: "Who is the poet of the famous Odia epic poem 'Bhimanka Singhanada Radi'?", options: ["Sarala Das", "Jagannath Das", "Upendra Bhanja", "Balaram Das"] },
+      { question: "From which parva of Sarala Mahabharata is the 'Bhimanka Singhanada Radi' poem extracted?", options: ["Gada Parva", "Sabha Parva", "Bhishma Parva", "Vana Parva"] },
+      { question: "Which god gave the Singhanada (horn) to Bhima?", options: ["Lord Shiva", "Lord Krishna", "Lord Brahma", "Lord Vishnu"] },
+      { question: "Where was Duryodhana hiding when Bhima blew the Singhanada?", options: ["Vyasasaras (Vyasa Lake)", "Gupta Gada", "Patalapura", "Kurukshetra forest"] },
+      { question: "What happened to the earth when Bhima blew the Singhanada for the first time?", options: ["The earth trembled and mountains crumbled", "The sun stopped shining", "A heavy rain started", "The oceans dried up"] }
+    ],
+    subjectives: [
+      { question: "Describe the first sound of Bhima's Singhanada and its impact on the universe as depicted in the poem.", hint: "The first blast shook the three worlds, caused earthquakes, collapsed mountain peaks, and generated massive waves in Vyasasaras." },
+      { question: "Why did Sahadeva advise Yudhisthira to have Bhima blow the Singhanada? Explain the strategy behind it.", hint: "Duryodhana was hiding inside Vyasasaras using water-stilling spells. Hearing the horn would provoke Duryodhana's pride and draw him out to fight." }
+    ]
+  },
+  "lanka jatranukula": {
+    mcqs: [
+      { question: "Who is the poet of 'Raghabanka Lanka Jatranukula'?", options: ["Kabi Samrat Upendra Bhanja", "Radhanath Ray", "Ganga Dhar Meher", "Fakir Mohan Senapati"] },
+      { question: "From which famous Odia kavya is 'Raghabanka Lanka Jatranukula' taken?", options: ["Baidehisa Bilasa", "Labanyabati", "Kotibrahmanda Sundari", "Premasudhanidhi"] },
+      { question: "Why was Lord Rama angry at the ocean god (Varuna)?", options: ["Varuna did not give passage to Lanka", "Varuna hid Sita", "Varuna destroyed the bridge", "Varuna supported Ravana"] },
+      { question: "What did Vibhishana advise Ravana to do regarding Sita?", options: ["Return Sita to Rama with respect", "Fight Rama with full force", "Hide Sita in another place", "Kill Sita to take revenge"] },
+      { question: "Which two ministers did Ravana send to spy on Rama's army?", options: ["Suka and Sarana", "Angada and Hanuman", "Sanhlad and Prahlad", "Malyabana and Kumbhakarna"] }
+    ],
+    subjectives: [
+      { question: "Describe the anger of Lord Rama towards Varuna and his preparation to dry up the ocean as described in the kavya.", hint: "After waiting 3 days, Rama decided to launch Brahmastra to dry the ocean, threatening Varuna and causing panic among aquatic life." },
+      { question: "Explain the message Ravana sent through his spies Suka and Sarana to Vibhishana. What was Vibhishana's reaction?", hint: "Ravana sent spies to warn Vibhishana against supporting Rama. Vibhishana rejected the appeal, declaring Rama's divine victory." }
+    ]
+  },
+  "bright and beautiful": {
+    mcqs: [
+      { question: "Who is the poet of the poem 'All Things Bright and Beautiful'?", options: ["Cecil Frances Alexander", "William Wordsworth", "John Keats", "Robert Frost"] },
+      { question: "According to the poet, what has God given to little birds?", options: ["Glowing colors and tiny wings", "Sweet voices and nests", "Warm feathers and seeds", "Bright eyes and long beaks"] },
+      { question: "How does the poet describe the cold wind in the poem?", options: ["Cold wind in the winter", "Cold wind in the summer", "Cold wind in the autumn", "Cold wind in the spring"] },
+      { question: "What runs by the mountain in the poem?", options: ["A river", "A road", "A train", "A valley"] },
+      { question: "Why has God given us eyes and lips, according to C.F. Alexander?", options: ["To see His creations and tell of His greatness", "To read and sing", "To work and eat", "To look at nature and smile"] }
+    ],
+    subjectives: [
+      { question: "How does the poet Cecil Frances Alexander describe God's creation in the poem 'All Things Bright and Beautiful'?", hint: "All creatures great and small are made by God. He gave glowing colors to flowers and tiny wings to birds, and created hills, rivers, and seasons." },
+      { question: "What is the central message of the poem 'All Things Bright and Beautiful'?", hint: "It is a hymn of praise emphasizing that God is the Creator of all elements in nature and we should be grateful for His blessings." }
+    ]
+  },
+  "set operations": {
+    mcqs: [
+      { question: "If set A has 3 elements, set B has 4 elements, and they are disjoint, what is the number of elements in A U B?", options: ["7", "12", "1", "0"] },
+      { question: "What is the intersection of set A = {1, 2, 3} and set B = {2, 3, 4}?", options: ["{2, 3}", "{1, 2, 3, 4}", "{1, 4}", "{}"] },
+      { question: "If A = {x | x is a letter in 'apple'}, what is the cardinality of A?", options: ["4", "5", "6", "3"] },
+      { question: "Which of the following is equal to the set difference A - B?", options: ["A n B'", "A U B'", "A' n B", "A' U B"] },
+      { question: "For any set A, what is A intersect A'?", options: ["Empty set (phi)", "Universal set (U)", "Set A", "Set A'"] }
+    ],
+    subjectives: [
+      { question: "Draw a Venn diagram showing (A U B) n C.", hint: "Draw three intersecting circles representing sets A, B, and C. Shade the region that belongs to both the union of A and B, and set C." },
+      { question: "Prove that A - (B U C) = (A - B) n (A - C) using laws of set operations.", hint: "A - (B U C) = A n (B U C)' = A n (B' n C') = (A n B') n (A n C') = (A - B) n (A - C)." }
+    ]
+  },
+  "lines and angles": {
+    mcqs: [
+      { question: "If two supplementary angles are in the ratio 4:5, find the larger angle.", options: ["100 degrees", "80 degrees", "90 degrees", "120 degrees"] },
+      { question: "If a ray stands on a line, what is the sum of the two adjacent angles formed?", options: ["180 degrees", "90 degrees", "360 degrees", "270 degrees"] },
+      { question: "An angle is equal to one-third of its complement. Find the measure of the angle.", options: ["22.5 degrees", "45 degrees", "30 degrees", "60 degrees"] },
+      { question: "If two lines intersect, what is the sum of the four angles formed?", options: ["360 degrees", "180 degrees", "90 degrees", "540 degrees"] },
+      { question: "Find the measure of an angle which is equal to its supplement.", options: ["90 degrees", "45 degrees", "180 degrees", "60 degrees"] }
+    ],
+    subjectives: [
+      { question: "Prove that if two lines intersect each other, then the vertically opposite angles are equal.", hint: "Let lines AB and CD intersect at O. Ray OA stands on CD. Sum of adjacent angles AOC and AOD is 180 (linear pair). Similarly, ray OD stands on AB. Sum of AOD and BOD is 180. Equate them: AOC + AOD = AOD + BOD, which proves AOC = BOD." },
+      { question: "In a triangle, if the side BC is produced to D, prove that the exterior angle ACD is equal to the sum of the two interior opposite angles.", hint: "In triangle ABC, sum of angles A + B + C = 180. The exterior angle ACD and interior angle ACB form a linear pair, so ACD + ACB = 180. Conclude ACD = A + B." }
+    ]
+  },
+  "matter in our surroundings": {
+    mcqs: [
+      { question: "What is the physical state of water at 100 degrees Celsius?", options: ["Liquid and Gas", "Solid", "Liquid", "Gas"] },
+      { question: "Which of the following processes represents the direct transition of a solid into gas?", options: ["Sublimation", "Condensation", "Evaporation", "Fusion"] },
+      { question: "What is the SI unit of temperature?", options: ["Kelvin", "Celsius", "Fahrenheit", "Joule"] },
+      { question: "Which of the following has the highest kinetic energy in particles?", options: ["Steam at 100 degrees Celsius", "Water at 100 degrees Celsius", "Ice at 0 degrees Celsius", "Water at 0 degrees Celsius"] },
+      { question: "What is the name of the process when a gas changes into a liquid?", options: ["Condensation", "Sublimation", "Vaporization", "Fusion"] }
+    ],
+    subjectives: [
+      { question: "Explain why we feel cold when we apply nail polish remover (acetone) on our palm.", hint: "Acetone has a low boiling point. When applied on the palm, the particles gain energy from the palm and evaporate, causing cooling." },
+      { question: "Define latent heat of fusion and latent heat of vaporization.", hint: "Latent heat of fusion is the heat required to convert 1kg of solid into liquid at atmospheric pressure and its melting point. Latent heat of vaporization is the heat required to convert 1kg of liquid into gas at its boiling point." }
+    ]
+  },
+  "biodiversity": {
+    mcqs: [
+      { question: "Who proposed the five-kingdom classification of organisms?", options: ["Robert Whittaker", "Carl Woese", "Charles Darwin", "Ernst Haeckel"] },
+      { question: "To which kingdom do unicellular eukaryotic organisms belong?", options: ["Protista", "Monera", "Fungi", "Plantae"] },
+      { question: "Which kingdom includes organisms that are multicellular, eukaryotic, and heterotrophic without cell walls?", options: ["Animalia", "Plantae", "Fungi", "Protista"] },
+      { question: "What is the cell wall of fungi made of?", options: ["Chitin", "Cellulose", "Peptidoglycan", "Lignin"] },
+      { question: "Who is known as the Father of Taxonomy?", options: ["Carl Linnaeus", "Aristotle", "Charles Darwin", "Gregor Mendel"] }
+    ],
+    subjectives: [
+      { question: "List the main characteristics of kingdom Monera. Give two examples.", hint: "Monera are unicellular, prokaryotic organisms lacking a defined nucleus and membrane-bound organelles. Cell walls may be present. Examples: Bacteria, Cyanobacteria (Blue-green algae)." },
+      { question: "Differentiate between gymnosperms and angiosperms with respect to seed enclosure and flowers.", hint: "Gymnosperms bear naked seeds and do not produce flowers (e.g. Pinus). Angiosperms bear seeds enclosed inside fruits and produce flowers (e.g. Mango)." }
+    ]
+  },
+  "priceless gift": {
+    mcqs: [
+      { question: "What was the name of the young girl whom the writer met at the restaurant?", options: ["Maggie", "Lucy", "Sita", "Mary"] },
+      { question: "Where did Maggie's brother Frank serve as a soldier?", options: ["India", "South Africa", "England", "France"] },
+      { question: "What did Maggie do in the typewriter shop?", options: ["Worked as a typist", "Sold typewriter parts", "Cleaned typewriters", "Did accounting work"] },
+      { question: "What was the gift Maggie gave to the writer for her brother's grave?", options: ["A shilling", "A letter", "A ring", "Flowers"] },
+      { question: "What did the writer tell Maggie's mother about her brother's health?", options: ["He was alive and well", "He was seriously ill", "He died in the battle", "He went missing"] }
+    ],
+    subjectives: [
+      { question: "Why did Maggie want to know if the writer was an Indian? What was her concern?", hint: "Maggie's brother Frank was serving as a soldier in India. She and her mother believed that India was full of tigers, snakes, and fevers, and wanted to ask an Indian if it was safe." },
+      { question: "Why did the writer tell a lie to Maggie's mother about her brother Frank?", hint: "Maggie's mother was seriously ill and worried about Frank. The writer told a lie (that Frank was alive and well) to give her hope and peace of mind, which helped her recover." }
+    ]
+  },
+  "kaha mukha": {
+    mcqs: [
+      { question: "Who is the poet of the famous old Odia poem 'Kaha Mukha Anai Banchibi'?", options: ["Bhakta Kabi Banamali", "Bhima Bhoi", "Jagannath Das", "Dinakrushna Das"] },
+      { question: "Whose motherly affection is depicted in the poem 'Kaha Mukha Anai Banchibi'?", options: ["Yashoda", "Devaki", "Kausalya", "Kaikeyi"] },
+      { question: "Why was Mother Yashoda worried about Sri Krishna?", options: ["He went to herd cows in the forest", "He ran away to Mathura", "He was ill", "He got lost in the river"] },
+      { question: "What does Yashoda say she will do if Krishna doesn't return?", options: ["She will end her life", "She will go search for him", "She will lock him up", "She will complain to Nanda"] },
+      { question: "What is Yashoda's greatest fear in the forest for Krishna?", options: ["Heat, thorns, and wild animals", "Heavy rains", "Evil spirits", "Dacoits"] }
+    ],
+    subjectives: [
+      { question: "Describe Mother Yashoda's feelings and anxiety when Sri Krishna goes to the forest to herd cows.", hint: "Yashoda is filled with intense maternal anxiety. She fears that Krishna's tender feet will hurt from walking on hot sand and thorns, that he will get hungry/thirsty, or that wild animals will attack him. She feels that without Krishna, her life is meaningless." }
+    ]
+  }
+};
+
+const generateFallbackQuestions = (subjectKey: string, chapters: any[], isBoard: boolean) => {
+  const chapterTitles = chapters.map(ch => ch.title_en || ch.title || '').filter(Boolean);
+  const formattedChapters = chapterTitles.slice(0, 3);
+  if (formattedChapters.length === 0) {
+    return [
+      { question: "Which state of India is known as the 'Soul of Incredible India'?", options: ["Odisha", "Kerala", "Rajasthan", "Goa"] },
+      { question: "What is the capital of Odisha?", options: ["Bhubaneswar", "Cuttack", "Rourkela", "Puri"] },
+      { question: "Which festival of Odisha is associated with the chariots of Lord Jagannath?", options: ["Ratha Yatra", "Raja Parba", "Nuakhai", "Bali Yatra"] },
+      { question: "Who is the current Chief Minister of Odisha?", options: ["Mohan Charan Majhi", "Naveen Patnaik", "Biju Patnaik", "Harekrushna Mahatab"] },
+      { question: "What is the state bird of Odisha?", options: ["Indian Roller", "Peacock", "House Sparrow", "Hill Myna"] }
+    ];
+  }
+  const questions: any[] = [];
+  questions.push({
+    question: `Which of the following topics is most central to the study of "${formattedChapters[0]}"?`,
+    options: ["Fundamental Principles", "Practical Applications", "Historical Evolution", "Core Definitions"]
+  });
+  questions.push({
+    question: `In standard school curriculum, what is the main objective of studying "${formattedChapters[0]}"?`,
+    options: ["To understand theoretical formulas", "To build real-world problem solving skills", "To prepare for exam patterns", "All of the above"]
+  });
+  const ch2 = formattedChapters[1] || formattedChapters[0];
+  questions.push({
+    question: `Which concept is closely related to the understanding of "${ch2}"?`,
+    options: ["Basic Concepts", "Advanced Proofs", "Experimental Verification", "General Knowledge"]
+  });
+  questions.push({
+    question: `Identify the correct statement regarding the chapter "${formattedChapters[0]}":`,
+    options: ["It is a core part of the state board syllabus.", "It is only studied in higher classes.", "It has no practical application in daily life.", "It was recently removed from school textbooks."]
+  });
+  questions.push({
+    question: `Solve/Answer the mock assessment question based on "${ch2}":`,
+    options: ["Option A is correct", "Option B is correct", "Option C is correct", "Option D is correct"]
+  });
+  return questions;
+};
+
+const generateFallbackSubjectives = (subjectKey: string, chapters: any[], isBoard: boolean) => {
+  const chapterTitles = chapters.map(ch => ch.title_en || ch.title || '').filter(Boolean);
+  const formattedChapters = chapterTitles.slice(0, 2);
+  if (formattedChapters.length === 0) {
+    return [
+      { question: "Describe the major tourist places in Odisha and their contribution to economy.", hint: "Discuss Puri-Konark-Bhubaneswar, eco-tourism, Chilika lake." },
+      { question: "Describe the significance of the Raja Festival of Odisha and how it is celebrated.", hint: "Explain earth worship, swing (Doli), Poda Pitha." }
+    ];
+  }
+  const subjectives: any[] = [];
+  subjectives.push({
+    question: `Explain the core concept of "${formattedChapters[0]}" in detail. How is this concept applied in daily life or standard board assessments?`,
+    hint: `Start with the definition of ${formattedChapters[0]}. Explain its components, key equations or theories, and give at least two practical examples or applications.`
+  });
+  const ch2 = formattedChapters[1] || formattedChapters[0];
+  subjectives.push({
+    question: `Describe the step-by-step methodology or theorem associated with the topic of "${ch2}". Draw a neat diagram description where necessary.`,
+    hint: `Outline the core statement or experiment for ${ch2}. Explain the logical sequence of steps or proof, mention key factors, and summarize the final conclusion.`
+  });
+  return subjectives;
+};
+
+export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, hasDailyPractice, todayDailySubject, tomorrowDailySubject, onChallengeComplete, onOpenTutor, onOpenDailyPractice, onShareDailyPractice, isRegistered = false, onRegistrationComplete, onOpenCommunity, following = [], onToggleFollow, isTourStep3, isTourStep4, onOpenRajaPoster, onOpenMonthlyTests }: DashboardProps) {
     // Map class to YouTube video URL (embed links)
     const classVideoMap: Record<string, string> = {
       '1': 'https://www.youtube.com/embed/DxouHyB-IA8',
@@ -207,6 +494,207 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   const [showGoldenTicket, setShowGoldenTicket] = useState(false);
   const [showBlackboard, setShowBlackboard] = useState(false);
   const [showGiftUnlockModal, setShowGiftUnlockModal] = useState(false);
+  const [showMtsGradingModal, setShowMtsGradingModal] = useState(false);
+  const [showImportantPapersModal, setShowImportantPapersModal] = useState(false);
+  const classKey = 'class' + userClass;
+  const subjects = CLASS_SUBJECTS[classKey] || CLASS_SUBJECTS.class10;
+
+  // Get roadmap data for a specific class
+  const getRoadmapForClass = (cls: string) => {
+    switch (cls) {
+      case '1': return ROADMAP_DATA_1;
+      case '2': return ROADMAP_DATA_2;
+      case '3': return ROADMAP_DATA_3;
+      case '4': return ROADMAP_DATA_4;
+      case '5': return ROADMAP_DATA_5;
+      case '6': return ROADMAP_DATA_6;
+      case '7': return ROADMAP_DATA_7;
+      case '8': return ROADMAP_DATA_8;
+      case '9': return ROADMAP_DATA_9;
+      case '10': return ROADMAP_DATA_10;
+      default: return ROADMAP_DATA_10;
+    }
+  };
+
+  // Helper to match roadmap chapter subject with digital library subject key
+  const matchChapterSubject = (roadmapSub: string, targetSubKey: string): boolean => {
+    if (!roadmapSub || !targetSubKey) return false;
+    const rSub = roadmapSub.toLowerCase().trim();
+    const tKey = targetSubKey.toLowerCase().trim();
+    
+    if (rSub === tKey) return true;
+    
+    if (tKey === 'algebra' || tKey === 'geometry') {
+      return rSub.includes('math') || rSub.includes('ganita') || rSub.includes('algebra') || rSub.includes('geometry');
+    }
+    if (tKey === 'physical_science') {
+      return rSub.includes('physical') || rSub.includes('bhautika') || rSub.includes('scp') || rSub.includes('ଭୌତିକ');
+    }
+    if (tKey === 'life_science') {
+      return rSub.includes('life') || rSub.includes('jiba') || rSub.includes('scl') || rSub.includes('ଜୀବ');
+    }
+    if (tKey === 'social_science') {
+      return rSub.includes('history') || rSub.includes('social') || rSub.includes('itiha') || rSub.includes('ssh') || rSub.includes('ଇତିହାସ');
+    }
+    if (tKey === 'geography') {
+      return rSub.includes('geography') || rSub.includes('bhugol') || rSub.includes('ssg') || rSub.includes('ଭୂଗୋଳ');
+    }
+    if (tKey === 'odia') {
+      return rSub === 'odia' || rSub.includes('jhulana') || rSub.includes('bhasa') || rSub.includes('ସାହିତ୍ୟ');
+    }
+    if (tKey === 'odia_grammar') {
+      return rSub.includes('odia_grammar') || rSub.includes('odia grammar') || rSub.includes('ବ୍ୟାକରଣ');
+    }
+    if (tKey === 'english') {
+      return rSub === 'english' || rSub.includes('literature') || rSub.includes('pallavi');
+    }
+    if (tKey === 'english_grammar') {
+      return rSub.includes('english_grammar') || rSub.includes('english grammar');
+    }
+    if (tKey === 'sanskrit') {
+      return rSub === 'sanskrit';
+    }
+    if (tKey === 'sanskrit_grammar') {
+      return rSub.includes('sanskrit_grammar') || rSub.includes('sanskrit grammar');
+    }
+    if (tKey === 'hindi') {
+      return rSub === 'hindi';
+    }
+    if (tKey === 'hindi_grammar') {
+      return rSub.includes('hindi_grammar') || rSub.includes('hindi grammar');
+    }
+    
+    return rSub.includes(tKey) || tKey.includes(rSub);
+  };
+
+  // Helper to format current month as string
+  const getCurrentMonthStr = () => {
+    const date = new Date();
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    return `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+  };
+
+  // Retrieve cumulative chapters for a subject up to the current calendar month
+  const getCumulativeChaptersForSubject = (subjectKey: string) => {
+    const roadmap = getRoadmapForClass(userClass);
+    const monthStr = getCurrentMonthStr();
+    const currentMonthIndex = roadmap.findIndex(entry => 
+      entry.month.toLowerCase() === monthStr.toLowerCase()
+    );
+    
+    const activeIndex = currentMonthIndex >= 0 ? currentMonthIndex : 0;
+    const cumulativeChapters: any[] = [];
+    
+    for (let i = 0; i <= activeIndex; i++) {
+      const entry = roadmap[i];
+      if (!entry || !entry.chapters) continue;
+      
+      const subjectChs = entry.chapters.filter((ch: any) => 
+        matchChapterSubject(ch.subject, subjectKey)
+      );
+      cumulativeChapters.push(...subjectChs);
+    }
+    return cumulativeChapters;
+  };
+
+  const curateMcqsForSubject = (subjectKey: string, chapters: any[], count: number, isBoard: boolean) => {
+    let pool: Array<{ question: string; options: string[] }> = [];
+    
+    chapters.forEach(ch => {
+      const title = (ch.title_en || ch.title || '').toLowerCase();
+      Object.keys(CHAPTER_QUESTION_BANK).forEach(bankKey => {
+        if (title.includes(bankKey)) {
+          pool.push(...CHAPTER_QUESTION_BANK[bankKey].mcqs);
+        }
+      });
+    });
+    
+    const uniquePool: typeof pool = [];
+    const seen = new Set<string>();
+    pool.forEach(q => {
+      if (!seen.has(q.question)) {
+        seen.add(q.question);
+        uniquePool.push(q);
+      }
+    });
+    
+    let result = [...uniquePool];
+    if (result.length < count) {
+      const fallbacks = generateFallbackQuestions(subjectKey, chapters, isBoard);
+      fallbacks.forEach(q => {
+        if (result.length < count && !result.some(r => r.question === q.question)) {
+          result.push(q);
+        }
+      });
+    }
+    
+    if (result.length < count) {
+      const general = getMockQuestions(subjectKey);
+      general.forEach(q => {
+        if (result.length < count && !result.some(r => r.question === q.question)) {
+          result.push(q);
+        }
+      });
+    }
+    
+    return result.slice(0, count);
+  };
+
+  const curateSubjectivesForSubject = (subjectKey: string, chapters: any[], type: 'quick' | 'full', isBoard: boolean) => {
+    let pool: Array<{ question: string; hint: string }> = [];
+    
+    chapters.forEach(ch => {
+      const title = (ch.title_en || ch.title || '').toLowerCase();
+      Object.keys(CHAPTER_QUESTION_BANK).forEach(bankKey => {
+        if (title.includes(bankKey)) {
+          pool.push(...CHAPTER_QUESTION_BANK[bankKey].subjectives);
+        }
+      });
+    });
+    
+    const uniquePool: typeof pool = [];
+    const seen = new Set<string>();
+    pool.forEach(q => {
+      if (!seen.has(q.question)) {
+        seen.add(q.question);
+        uniquePool.push(q);
+      }
+    });
+    
+    let result = [...uniquePool];
+    let needed = 3;
+    if (type === 'full') {
+      if (isBoard) {
+        const isHalfPaper = ['physical_science', 'life_science', 'social_science', 'geography', 'vocational'].includes(subjectKey);
+        needed = isHalfPaper ? 3 : 5;
+      } else {
+        needed = 5;
+      }
+    }
+    
+    if (result.length < needed) {
+      const fallbacks = generateFallbackSubjectives(subjectKey, chapters, isBoard);
+      fallbacks.forEach(q => {
+        if (result.length < needed && !result.some(r => r.question === q.question)) {
+          result.push(q);
+        }
+      });
+    }
+    
+    if (result.length < needed) {
+      const general = getMockSubjectiveQuestions(subjectKey);
+      general.forEach(q => {
+        if (result.length < needed && !result.some(r => r.question === q.question)) {
+          result.push(q);
+        }
+      });
+    }
+    
+    return result.slice(0, needed);
+  };
   const [claimedTicket, setClaimedTicket] = useState<any>(null);
   const [dailyVideoId, setDailyVideoId] = useState<string | null>(isSpecialPromoPeriod ? 'Ml-_dY7FXrs' : null);
 
@@ -316,6 +804,589 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       ];
     }
     return [];
+  };
+
+  const getMtsStatus = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+
+    // Check if we are in the December Half-Yearly Exam cycle (runs from Nov 21 to Dec 20)
+    const isHalfYearlyPrep = (month === 10 && day >= 21) || (month === 11 && day <= 4);
+    const isHalfYearlyLive = month === 11 && day >= 5 && day <= 10;
+    const isHalfYearlyGrading = month === 11 && day >= 11 && day <= 15;
+    const isHalfYearlyPublished = month === 11 && day >= 16 && day <= 20;
+
+    if (isHalfYearlyPrep) {
+      return {
+        phase: 'half_yearly_prep' as const,
+        titleEn: 'HALF-YEARLY PREP!',
+        titleOr: 'ଅର୍ଦ୍ଧବାର୍ଷିକ ପ୍ରସ୍ତୁତି!',
+        subtitleEn: 'Download 100-Mark Mock papers for practice',
+        subtitleOr: '୧୦୦-ମାର୍କ ମକ୍ ପେପର ଡାଉନଲୋଡ୍ କରନ୍ତୁ',
+        borderColor: 'border-rose-400',
+        shadowColor: 'shadow-[0_15px_35px_-5px_rgba(0,0,0,0.8),0_0_20px_rgba(244,63,94,0.3)]',
+        pingColor: 'bg-rose-500',
+        textColor: '#f43f5e',
+        icon: <Lucide.FileText size={11} className="text-rose-400" />
+      };
+    } else if (isHalfYearlyLive) {
+      return {
+        phase: 'half_yearly_live' as const,
+        titleEn: 'HALF-YEARLY LIVE!',
+        titleOr: 'ଅର୍ଦ୍ଧବାର୍ଷିକ ପରୀକ୍ଷା!',
+        subtitleEn: 'Official 100-Mark Exam: Participate Now',
+        subtitleOr: '୧୦୦-ମାର୍କ ଅଫିସିଆଲ୍ ପରୀକ୍ଷା ଚାଲିଛି!',
+        borderColor: 'border-rose-500',
+        shadowColor: 'shadow-[0_15px_35px_-5px_rgba(0,0,0,0.8),0_0_20px_rgba(244,63,94,0.5)]',
+        pingColor: 'bg-rose-500',
+        textColor: '#f43f5e',
+        icon: <Lucide.Play size={11} className="text-rose-400 fill-rose-400 animate-pulse animate-duration-1000" />
+      };
+    } else if (isHalfYearlyGrading) {
+      return {
+        phase: 'half_yearly_grading' as const,
+        titleEn: 'GRADING IN PROGRESS!',
+        titleOr: 'ମୂଲ୍ୟାଙ୍କନ ଚାଲିଛି!',
+        subtitleEn: 'Rough work copy review & grading',
+        subtitleOr: 'ଖାତା ଦେଖା ଏବଂ ମୂଲ୍ୟାଙ୍କନ ପ୍ରକ୍ରିୟା ଚାଲିଛି',
+        borderColor: 'border-indigo-400',
+        shadowColor: 'shadow-[0_15px_35px_-5px_rgba(0,0,0,0.8),0_0_20px_rgba(99,102,241,0.3)]',
+        pingColor: 'bg-indigo-500',
+        textColor: '#818cf8',
+        icon: <Lucide.Clock size={11} className="text-indigo-400" />
+      };
+    } else if (isHalfYearlyPublished) {
+      return {
+        phase: 'half_yearly_published' as const,
+        titleEn: 'RESULTS OUT!',
+        titleOr: 'ପରୀକ୍ଷା ଫଳ ପ୍ରକାଶିତ!',
+        subtitleEn: 'Download Report Card & Certificate',
+        subtitleOr: 'ରିପୋର୍ଟ କାର୍ଡ ଏବଂ ସାର୍ଟିଫିକେଟ୍ ଡାଉନଲୋଡ୍ କରନ୍ତୁ',
+        borderColor: 'border-amber-400',
+        shadowColor: 'shadow-[0_15px_35px_-5px_rgba(0,0,0,0.8),0_0_20px_rgba(245,158,11,0.4)]',
+        pingColor: 'bg-red-500',
+        textColor: '#fbbf24',
+        icon: <Lucide.Trophy size={11} className="text-yellow-400 animate-bounce" />
+      };
+    }
+
+    // Default regular months
+    // Check if the 10th of the current month is a Sunday
+    const date10 = new Date(year, month, 10);
+    const is10thSunday = date10.getDay() === 0;
+
+    const goingOnEndDay = is10thSunday ? 11 : 10;
+    const gradingStartDay = is10thSunday ? 12 : 11;
+
+    if (day >= 1 && day <= 4) {
+      return {
+        phase: 'coming_soon' as const,
+        titleEn: 'MTS REGISTERING',
+        titleOr: 'ପରୀକ୍ଷା ପଞ୍ଜୀକରଣ',
+        subtitleEn: 'MTS Coming Soon! Register Now',
+        subtitleOr: 'ମାସିକ ଟେଷ୍ଟ ଶୀଘ୍ର ଆସୁଛି! ପଞ୍ଜୀକରଣ କରନ୍ତୁ',
+        borderColor: 'border-amber-400',
+        shadowColor: 'shadow-[0_15px_35px_-5px_rgba(0,0,0,0.8),0_0_20px_rgba(245,158,11,0.3)]',
+        pingColor: 'bg-amber-500',
+        textColor: '#fbbf24',
+        icon: <Lucide.FileEdit size={11} className="text-yellow-400" />
+      };
+    } else if (day >= 5 && day <= goingOnEndDay) {
+      return {
+        phase: 'going_on' as const,
+        titleEn: 'MTS LIVE NOW!',
+        titleOr: 'ପରୀକ୍ଷା ଚାଲିଛି!',
+        subtitleEn: 'MTS Going On! Participate Now',
+        subtitleOr: 'ଟେଷ୍ଟ ସିରିଜ୍ ଚାଲିଛି! ଭାଗ ନିଅନ୍ତୁ',
+        borderColor: 'border-emerald-500',
+        shadowColor: 'shadow-[0_15px_35px_-5px_rgba(0,0,0,0.8),0_0_20px_rgba(16,185,129,0.3)]',
+        pingColor: 'bg-emerald-500',
+        textColor: '#34d399',
+        icon: <Lucide.Play size={11} className="text-emerald-400 fill-emerald-400 animate-pulse animate-duration-1000" />
+      };
+    } else if (day >= gradingStartDay && day <= 15) {
+      return {
+        phase: 'grading' as const,
+        titleEn: 'RESULTS SOON!',
+        titleOr: 'ଫଳାଫଳ ଶୀଘ୍ର!',
+        subtitleEn: 'MTS Result Publishing Soon!',
+        subtitleOr: 'ପରୀକ୍ଷା ଫଳାଫଳ ଶୀଘ୍ର ପ୍ରକାଶ ପାଇବ',
+        borderColor: 'border-indigo-400',
+        shadowColor: 'shadow-[0_15px_35px_-5px_rgba(0,0,0,0.8),0_0_20px_rgba(99,102,241,0.3)]',
+        pingColor: 'bg-indigo-500',
+        textColor: '#818cf8',
+        icon: <Lucide.Clock size={11} className="text-indigo-400" />
+      };
+    } else if (day >= 16 && day <= 20) {
+      return {
+        phase: 'published' as const,
+        titleEn: 'MTS RESULT OUT!',
+        titleOr: 'ଫଳାଫଳ ପ୍ରକାଶିତ!',
+        subtitleEn: 'MTS Result Out! Click to Check',
+        subtitleOr: 'ପରୀକ୍ଷା ଫଳ ପ୍ରକାଶିତ! ଯାଞ୍ଚ କରନ୍ତୁ',
+        borderColor: 'border-amber-400',
+        shadowColor: 'shadow-[0_15px_35px_-5px_rgba(0,0,0,0.8),0_0_20px_rgba(245,158,11,0.4)]',
+        pingColor: 'bg-red-500',
+        textColor: '#fbbf24',
+        icon: <Lucide.Trophy size={11} className="text-yellow-400 animate-bounce" />
+      };
+    } else {
+      return {
+        phase: 'important_qs' as const,
+        titleEn: 'EXAM PAPERS!',
+        titleOr: 'ପ୍ରଶ୍ନପତ୍ର ଗୁଡ଼ିକ!',
+        subtitleEn: 'Exam Important Questions',
+        subtitleOr: 'ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ପ୍ରଶ୍ନପତ୍ର',
+        borderColor: 'border-purple-400',
+        shadowColor: 'shadow-[0_15px_35px_-5px_rgba(0,0,0,0.8),0_0_20px_rgba(168,85,247,0.3)]',
+        pingColor: 'bg-purple-500',
+        textColor: '#c084fc',
+        icon: <Lucide.FileText size={11} className="text-purple-400" />
+      };
+    }
+  };
+
+  const mtsStatus = getMtsStatus(new Date());
+  const getMockQuestions = (subjectKey: string) => {
+    const key = subjectKey.toLowerCase();
+    if (key.includes('math') || key.includes('algebra') || key.includes('geometry')) {
+      return [
+        {
+          question: "If a quadratic equation is ax^2 + bx + c = 0, what is the formula for the discriminant?",
+          options: ["b^2 - 4ac", "b^2 + 4ac", "4ac - b^2", "sqrt(b^2 - 4ac)"]
+        },
+        {
+          question: "In a right-angled triangle, if base = 3cm and height = 4cm, what is the hypotenuse?",
+          options: ["5 cm", "7 cm", "6 cm", "12 cm"]
+        },
+        {
+          question: "What is the value of sin(30 degrees) + cos(60 degrees)?",
+          options: ["1", "0.5", "sqrt(3)", "0"]
+        },
+        {
+          question: "An Arithmetic Progression has a first term a=3 and common difference d=2. What is the 10th term?",
+          options: ["21", "23", "19", "25"]
+        },
+        {
+          question: "What is the area of a circle with a radius of 7 cm? (Use pi = 22/7)",
+          options: ["154 sq.cm", "44 sq.cm", "22 sq.cm", "88 sq.cm"]
+        }
+      ];
+    } else if (key.includes('science') || key.includes('physical') || key.includes('life')) {
+      return [
+        {
+          question: "What is the chemical formula of rust?",
+          options: ["Fe2O3.xH2O", "Fe3O4", "FeO", "Fe(OH)2"]
+        },
+        {
+          question: "Which gland in the human body is known as the master gland?",
+          options: ["Pituitary Gland", "Thyroid Gland", "Adrenal Gland", "Pancreas"]
+        },
+        {
+          question: "What is the SI unit of electric potential difference?",
+          options: ["Volt", "Ampere", "Ohm", "Watt"]
+        },
+        {
+          question: "Which of the following is responsible for acid rain?",
+          options: ["SO2 and NO2", "CO2 and CO", "CH4 and CO2", "O2 and N2"]
+        },
+        {
+          question: "What is the power house of the cell?",
+          options: ["Mitochondria", "Nucleus", "Ribosome", "Lysosome"]
+        }
+      ];
+    } else if (key.includes('social') || key.includes('history') || key.includes('geography')) {
+      return [
+        {
+          question: "In which year did the Salt Satyagraha in Odisha begin at Inchudi?",
+          options: ["1930", "1920", "1942", "1919"]
+        },
+        {
+          question: "Which is the highest waterfall in Odisha?",
+          options: ["Barehipani", "Joranda", "Khandadhar", "Duduma"]
+        },
+        {
+          question: "Who was the first Prime Minister of Odisha?",
+          options: ["Krushna Chandra Gajapati", "Nabakrushna Choudhury", "Harekrushna Mahatab", "Biju Patnaik"]
+        },
+        {
+          question: "Which soil type cover is the largest in Odisha?",
+          options: ["Red Soil", "Black Soil", "Laterite Soil", "Alluvial Soil"]
+        },
+        {
+          question: "Where is the Sun Temple of Konark located?",
+          options: ["Puri District", "Khurda District", "Cuttack District", "Ganjam District"]
+        }
+      ];
+    } else if (key.includes('english')) {
+      return [
+        {
+          question: "Identify the correct active voice: 'A letter was written by Sita.'",
+          options: ["Sita wrote a letter.", "Sita writes a letter.", "Sita is writing a letter.", "Sita has written a letter."]
+        },
+        {
+          question: "What is the antonym of the word 'Abundant'?",
+          options: ["Scarce", "Plentiful", "Ample", "Generous"]
+        },
+        {
+          question: "Fill in the blank: 'He has been studying ___ 3 hours.'",
+          options: ["for", "since", "from", "during"]
+        },
+        {
+          question: "Choose the correct spelling:",
+          options: ["Committee", "Comitee", "Committe", "Commitee"]
+        },
+        {
+          question: "What is the synonym of 'Diligent'?",
+          options: ["Hardworking", "Lazy", "Intelligent", "Careless"]
+        }
+      ];
+    } else if (key.includes('odia')) {
+      return [
+        {
+          question: "Who is the writer of the famous Odia poem 'Bande Utkala Janani'?",
+          options: ["Laxmikanta Mohapatra", "Radhanath Ray", "Madhusudan Rao", "Fakir Mohan Senapati"]
+        },
+        {
+          question: "What is the synonym of the Odia word 'Akasha'?",
+          options: ["Gagana", "Pruthibi", "Aloka", "Sagara"]
+        },
+        {
+          question: "Identify the correct spelling in Odia:",
+          options: ["Ashirbada", "Asirbada", "Ashirbaddha", "Asirbbada"]
+        },
+        {
+          question: "What type of noun is 'Ganga'?",
+          options: ["Nama-Vachaka (Proper)", "Jati-Vachaka (Common)", "Guna-Vachaka (Abstract)", "Kriya-Vachaka (Verbal)"]
+        },
+        {
+          question: "What is the opposite of the Odia word 'Prathama'?",
+          options: ["Shesha", "Dwitiya", "Arambha", "Anta"]
+        }
+      ];
+    } else {
+      return [
+        {
+          question: "Which state of India is known as the 'Soul of Incredible India'?",
+          options: ["Odisha", "Kerala", "Rajasthan", "Goa"]
+        },
+        {
+          question: "What is the capital of Odisha?",
+          options: ["Bhubaneswar", "Cuttack", "Rourkela", "Puri"]
+        },
+        {
+          question: "Which festival of Odisha is associated with the chariots of Lord Jagannath?",
+          options: ["Ratha Yatra", "Raja Parba", "Nuakhai", "Bali Yatra"]
+        },
+        {
+          question: "Who is the current Chief Minister of Odisha?",
+          options: ["Mohan Charan Majhi", "Naveen Patnaik", "Biju Patnaik", "Harekrushna Mahatab"]
+        },
+        {
+          question: "What is the state bird of Odisha?",
+          options: ["Indian Roller", "Peacock", "House Sparrow", "Hill Myna"]
+        }
+      ];
+    }
+  };
+
+  const getMockSubjectiveQuestions = (subjectKey: string) => {
+    const key = subjectKey.toLowerCase();
+    if (key.includes('math') || key.includes('algebra') || key.includes('geometry')) {
+      return [
+        {
+          question: "Solve the linear equations using Cramer's rule: 2x + 3y = 8 and 3x - y = 1.",
+          hint: "Find D, Dx, and Dy first. x = Dx/D and y = Dy/D. The correct answer should yield x=1, y=2."
+        },
+        {
+          question: "Prove that the angle subtended by an arc at the center of a circle is double the angle subtended by it at any point on the remaining part of the circle.",
+          hint: "Draw a circle with center O, arc AB and angle ACB at the circumference. Draw line CO extending to D and use exterior angle theorem."
+        }
+      ];
+    } else if (key.includes('science') || key.includes('physical') || key.includes('life')) {
+      return [
+        {
+          question: "State Mendel's Law of Segregation and explain it with a monohybrid cross experiment.",
+          hint: "Define how alleles separate during gamete formation. Use F1 and F2 generation cross ratio (3:1 phenotype, 1:2:1 genotype)."
+        },
+        {
+          question: "Describe the structure and working principle of an Electric Motor with a labeled diagram description.",
+          hint: "Mention armature coil, split rings (commutator), carbon brushes, and magnetic poles. Explain using Fleming's Left Hand Rule."
+        }
+      ];
+    } else if (key.includes('social') || key.includes('history') || key.includes('geography')) {
+      return [
+        {
+          question: "Explain the role of Utkal Sammilani in the creation of a separate province of Odisha in 1936.",
+          hint: "Highlight Madhusudan Das, Krushna Chandra Gajapati, the Kanika session, Boundary Commission, and April 1, 1936."
+        },
+        {
+          question: "Describe the key factors influencing the climate of Odisha. How do monsoons affect local agriculture?",
+          hint: "Discuss tropical monsoon climate, bay of bengal sea proximity, eastern ghats topography, and agricultural dependence on kharif crops."
+        }
+      ];
+    } else if (key.includes('english')) {
+      return [
+        {
+          question: "Write an essay in about 150 words on 'Your Aim in Life'. Outline your reasons and preparation.",
+          hint: "Structure it into introduction, choice of career, why you chose it, how you plan to serve society, and conclusion."
+        },
+        {
+          question: "Read the passage and draft a formal letter to your Headmaster requesting a leave of absence for 3 days to attend your sibling's wedding.",
+          hint: "Use formal letter layout: date, recipient address, subject line, body text, and polite closing ('Yours obediently')."
+        }
+      ];
+    } else if (key.includes('odia')) {
+      return [
+        {
+          question: "Odia re 'Bruksha Ropana ra Abhiyana' (Afforestation Drive) upare 150 sabda re eka racana lekhantu.",
+          hint: "Upakrama, bruksha ropana ra abasyakata, upakarita, sarakara nka padakhepa, o sesha katha re racana ti sanchit karantu."
+        },
+        {
+          question: "Fakir Mohan Senapati nka 'Chhamana Athaguntha' upanyasa ra mukhyacharitra O katha-bastura eka sankhipta paricaya diantu.",
+          hint: "Ramachandra Mangaraj, saria, bhagia, o zamindari sosana upare alokapata karantu."
+        }
+      ];
+    } else {
+      return [
+        {
+          question: "What are the major tourist places in Odisha and how do they contribute to the state's economy?",
+          hint: "Discuss the golden triangle (Puri-Konark-Bhubaneswar), eco-tourism, chilika lake, and local handicraft generation."
+        },
+        {
+          question: "Describe the significance of the Raja Festival of Odisha and how it is celebrated in rural districts.",
+          hint: "Explain the agricultural break, earth worship, swings (Doli), traditional Odia pitha (Poda Pitha), and cultural games."
+        }
+      ];
+    }
+  };
+
+  const generateMtsImportantPDF = (subjectLabel: string, subjectKey: string, type: 'quick' | 'full') => {
+    try {
+      const doc = new jsPDF();
+      const isBoard = userClass === '9' || userClass === '10';
+      const cumulativeChapters = getCumulativeChaptersForSubject(subjectKey);
+      
+      const isHalfYearlyMock = mtsStatus.phase === 'half_yearly_prep';
+      
+      let totalMcqs = type === 'quick' ? 10 : 50;
+      let durationStr = type === 'quick' ? "45 Minutes" : "2 Hours 30 Minutes";
+      let maxMarks = type === 'quick' ? 25 : 100;
+      
+      if (isHalfYearlyMock && type === 'full') {
+        // Enforce 100-Mark layout for all classes during Half-Yearly mock downloads
+        totalMcqs = 50;
+        durationStr = "2 Hours 30 Minutes";
+        maxMarks = 100;
+      } else {
+        if (isBoard) {
+          const isHalfPaper = ['physical_science', 'life_science', 'social_science', 'geography', 'vocational'].includes(subjectKey);
+          if (isHalfPaper) {
+            totalMcqs = type === 'quick' ? 10 : (subjectKey === 'vocational' ? 10 : 25);
+            durationStr = type === 'quick' ? "45 Minutes" : "1 Hour 30 Minutes";
+            maxMarks = type === 'quick' ? 25 : 50;
+          }
+        } else {
+          totalMcqs = type === 'quick' ? 10 : 30;
+          durationStr = type === 'quick' ? "45 Minutes" : "1 Hour 30 Minutes";
+          maxMarks = type === 'quick' ? 25 : 50;
+        }
+      }
+      
+      const examPattern = isHalfYearlyMock && type === 'full'
+        ? `Half-Yearly 100-Mark Mock Series (${isBoard ? 'Odisha Board Pattern' : 'School System Pattern'})`
+        : (isBoard 
+            ? `BSE Odisha Board Exam Pattern (${type === 'quick' ? 'Selection Practice' : 'Full-Length Mock'})` 
+            : `Regular School Exam Pattern (${type === 'quick' ? 'Practice Set' : 'Full Mock'})`);
+      
+      const drawBorder = () => {
+        doc.setDrawColor(16, 185, 129); // emerald green border
+        doc.setLineWidth(1);
+        doc.rect(10, 10, 190, 277);
+      };
+      drawBorder();
+      
+      // Header Banner
+      doc.setFillColor(15, 23, 42); // dark blue background header
+      doc.rect(11, 11, 188, 30, 'F');
+      
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(18);
+      doc.setTextColor(255, 255, 255);
+      doc.text("UTKAL SKILL CENTRE", 105, 22, { align: "center" });
+      
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(168, 85, 247); // purple text
+      doc.text("ODISHA'S PREMIER DIGITAL EDUCATION COOPERATIVE", 105, 29, { align: "center" });
+      doc.setTextColor(255, 255, 255);
+      const headerTitle = isHalfYearlyMock && type === 'full'
+        ? "Half-Yearly Mock Exam: 100-Mark Master Series (2026)" 
+        : `Month-End Exam: Selection Practice Set (2026)`;
+      doc.text(headerTitle, 105, 36, { align: "center" });
+      
+      // Document Metadata
+      doc.setTextColor(15, 23, 42); // reset text color
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.text(`Class: ${userClass || '10'}`, 20, 52);
+      doc.text(`Subject: ${subjectLabel}`, 80, 52);
+      doc.text(`Total Marks: ${maxMarks}`, 160, 52);
+      
+      doc.setFont("helvetica", "italic");
+      doc.setFontSize(10);
+      doc.text(`Pattern: ${examPattern}`, 20, 59);
+      doc.text(`Time: ${durationStr}`, 160, 59);
+      
+      doc.setDrawColor(203, 213, 225); // slate line
+      doc.setLineWidth(0.5);
+      doc.line(20, 64, 190, 64);
+      
+      let y = 72;
+      const checkPageOverflow = (currentY: number, spaceNeeded: number): number => {
+        if (currentY + spaceNeeded > 270) {
+          doc.addPage();
+          drawBorder();
+          return 25; // reset y on new page
+        }
+        return currentY;
+      };
+
+      // Covered Syllabus
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(10);
+      doc.text("Syllabus Covered:", 20, y);
+      doc.setFont("helvetica", "normal");
+      y += 6;
+      
+      const chapterList = cumulativeChapters.map(ch => ch.title_en || ch.title || '').filter(Boolean);
+      const syllabusText = chapterList.length > 0 
+        ? chapterList.join(', ') 
+        : (language === 'en' ? "General syllabus revision set." : "ସାଧାରଣ ସିଲାବସ୍ ପୁନରାଲୋଚନା ସେଟ୍ ।");
+      
+      const splitSyllabus = doc.splitTextToSize(syllabusText, 165);
+      splitSyllabus.forEach((line: string) => {
+        y = checkPageOverflow(y, 6);
+        doc.text(line, 20, y);
+        y += 6;
+      });
+      
+      y = checkPageOverflow(y, 10);
+      doc.line(20, y, 190, y);
+      y += 8;
+      
+      // Instructions
+      y = checkPageOverflow(y, 35);
+      doc.setFont("helvetica", "bold");
+      doc.text("Instructions to Candidate:", 20, y);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9.5);
+      y += 6;
+      doc.text("1. Read all questions carefully before answering.", 20, y);
+      y += 6;
+      doc.text(`2. Section A contains ${totalMcqs} Multiple Choice Questions (1 mark each).`, 20, y);
+      y += 6;
+      
+      let subjCount = type === 'quick' ? 3 : 5;
+      if (!isHalfYearlyMock) {
+        if (isBoard && ['physical_science', 'life_science', 'social_science', 'geography', 'vocational'].includes(subjectKey) && type === 'full') {
+          subjCount = subjectKey === 'vocational' ? 4 : 3;
+        }
+      }
+      doc.text(`3. Section B contains ${subjCount} Subjective Questions.`, 20, y);
+      y += 6;
+      doc.text("4. Answers should be clear and written in your practice copy book.", 20, y);
+      y += 6;
+      doc.line(20, y, 190, y);
+      y += 10;
+      
+      // Section A: MCQs
+      y = checkPageOverflow(y, 15);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(11);
+      doc.text("SECTION A: MULTIPLE CHOICE QUESTIONS (MCQ)", 20, y);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      y += 10;
+      
+      const mcqs = curateMcqsForSubject(subjectKey, cumulativeChapters, totalMcqs, isBoard);
+      mcqs.forEach((q, qIdx) => {
+        y = checkPageOverflow(y, 35);
+        
+        doc.setFont("helvetica", "bold");
+        doc.text(`Q${qIdx + 1}. ${q.question}`, 20, y);
+        doc.setFont("helvetica", "normal");
+        y += 7;
+        
+        q.options.forEach((opt, oIdx) => {
+          doc.text(`   (${String.fromCharCode(97 + oIdx)}) ${opt}`, 20, y);
+          y += 6;
+        });
+        y += 4;
+      });
+      
+      y = checkPageOverflow(y, 10);
+      doc.line(20, y, 190, y);
+      y += 10;
+      
+      // Section B: Subjectives
+      y = checkPageOverflow(y, 15);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(11);
+      doc.text("SECTION B: SUBJECTIVE QUESTIONS", 20, y);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      y += 10;
+      
+      const subjectives = curateSubjectivesForSubject(subjectKey, cumulativeChapters, type, isBoard);
+      subjectives.forEach((q, sIdx) => {
+        y = checkPageOverflow(y, 25);
+        doc.setFont("helvetica", "bold");
+        
+        let marksStr = "(5 Marks)";
+        if (type === 'full') {
+          if (isHalfYearlyMock) {
+            marksStr = "(10 Marks)";
+          } else if (isBoard) {
+            const isHalf = ['physical_science', 'life_science', 'social_science', 'geography', 'vocational'].includes(subjectKey);
+            if (isHalf) {
+              if (sIdx === 0) marksStr = "(8 Marks: 2 bits x 4 marks)";
+              else if (sIdx === 1) marksStr = "(9 Marks: 3 bits x 3 marks)";
+              else marksStr = "(8 Marks: 4 bits x 2 marks)";
+            } else {
+              marksStr = "(10 Marks)";
+            }
+          } else {
+            marksStr = "(4 Marks)";
+          }
+        }
+        
+        doc.text(`Q${sIdx + totalMcqs + 1}. ${q.question} ${marksStr}`, 20, y);
+        doc.setFont("helvetica", "normal");
+        y += 7;
+        
+        const splitHint = doc.splitTextToSize(`Hint/Key: ${q.hint}`, 160);
+        splitHint.forEach((line: string) => {
+          y = checkPageOverflow(y, 6);
+          doc.text(line, 20, y);
+          y += 6;
+        });
+        y += 6;
+      });
+      
+      // Footer
+      y = checkPageOverflow(y, 15);
+      doc.setFont("helvetica", "italic");
+      doc.setFontSize(8);
+      doc.setTextColor(100, 116, 139);
+      doc.text("Generated by Utkal Skill Centre AI System. Copying or unauthorized printing is encouraged for learning.", 105, 280, { align: "center" });
+      
+      doc.save(`USC_Class_${userClass}_${subjectLabel.replace(/\s+/g, '_')}_${type === 'quick' ? 'Quick_Set' : 'Full_Mock'}.pdf`);
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+      doc.save(`USC_Class_${userClass}_${subjectLabel.replace(/\s+/g, '_')}_${type === 'quick' ? 'Quick_Set' : 'Full_Mock'}.pdf`);
+    }
   };
 
   const showTestResultHanger = true;
@@ -685,8 +1756,18 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 animate={{ y: 0, opacity: 1 }}
                 whileHover={{ y: 3, scale: 1.05 }}
                 onClick={() => {
-                  setActiveSubTab('leaderboard');
-                  setLeaderboardType('monthly');
+                  if (mtsStatus.phase === 'coming_soon') {
+                    setShowRegistrationForm(true);
+                  } else if (mtsStatus.phase === 'going_on' || mtsStatus.phase === 'half_yearly_live') {
+                    if (onOpenMonthlyTests) onOpenMonthlyTests();
+                  } else if (mtsStatus.phase === 'grading' || mtsStatus.phase === 'half_yearly_grading') {
+                    setShowMtsGradingModal(true);
+                  } else if (mtsStatus.phase === 'published' || mtsStatus.phase === 'half_yearly_published') {
+                    setActiveSubTab('leaderboard');
+                    setLeaderboardType('monthly');
+                  } else if (mtsStatus.phase === 'important_qs' || mtsStatus.phase === 'half_yearly_prep') {
+                    setShowImportantPapersModal(true);
+                  }
                 }}
                 className="relative cursor-pointer group flex flex-col items-center z-30 mb-3 -mt-5 md:-mt-9"
               >
@@ -696,24 +1777,24 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   <div className="w-[2px] h-full bg-gradient-to-b from-slate-700 via-slate-400 to-slate-800 shadow-[0_1px_3px_rgba(0,0,0,0.8)]"></div>
                 </div>
                 
-                {/* Hanging Sign Board (Gold metallic theme - Wow type eye catching!) */}
+                {/* Hanging Sign Board (Dynamic theme based on calendar phase) */}
                 <div 
                   style={{ background: 'linear-gradient(to bottom, #1e293b, #0f172a, #020617)' }}
-                  className="border-2 border-amber-400 rounded-2xl px-5 py-3 flex flex-col items-center shadow-[0_15px_35px_-5px_rgba(0,0,0,0.8),0_0_20px_rgba(245,158,11,0.4),inset_0_1px_1px_rgba(255,255,255,0.2)] transition-all duration-300 force-dark-theme"
+                  className={`border-2 ${mtsStatus.borderColor} rounded-2xl px-5 py-3 flex flex-col items-center ${mtsStatus.shadowColor} transition-all duration-300 force-dark-theme`}
                 >
                   <div className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-red-500 animate-ping shrink-0"></span>
+                    <span className={`w-2 h-2 rounded-full ${mtsStatus.pingColor} animate-ping shrink-0`}></span>
                     <span 
-                      style={{ color: '#fbbf24' }}
+                      style={{ color: mtsStatus.textColor }}
                       className="text-[12px] font-black uppercase tracking-[0.25em] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
                     >
-                      MTS RESULT OUT!
+                      {language === 'en' ? mtsStatus.titleEn : mtsStatus.titleOr}
                     </span>
                   </div>
                   <div className="flex items-center gap-1 mt-1">
-                    <Lucide.Trophy size={11} className="text-yellow-400" />
-                    <span className="text-[9px] font-black text-amber-100/90 uppercase tracking-widest">
-                      {language === 'en' ? 'Click to Check' : 'ଦେଖିବା ପାଇଁ କ୍ଲିକ୍ କରନ୍ତୁ'}
+                    {mtsStatus.icon}
+                    <span className="text-[9px] font-black text-amber-100/90 uppercase tracking-widest text-center truncate max-w-[150px]">
+                      {language === 'en' ? mtsStatus.subtitleEn : mtsStatus.subtitleOr}
                     </span>
                   </div>
                 </div>
@@ -1925,6 +3006,186 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             }}
             existingTicket={claimedTicket}
           />
+        )}
+
+        {showMtsGradingModal && (
+          <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="glass-card bg-slate-900/90 border border-indigo-500/30 shadow-[0_0_50px_rgba(99,102,241,0.25)] rounded-[2.5rem] p-6 max-w-md w-full relative overflow-hidden force-dark-theme"
+            >
+              {/* Decorative glows */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute -left-10 -bottom-10 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl pointer-events-none" />
+
+              <div className="flex flex-col items-center text-center space-y-6">
+                {/* Header Icon */}
+                <div className="w-16 h-16 rounded-full bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shadow-[0_0_20px_rgba(99,102,241,0.2)] animate-pulse">
+                  <Lucide.Clock size={28} />
+                </div>
+
+                <div className="space-y-2">
+                  <h3 className="text-xl font-black text-white uppercase tracking-wider">
+                    {language === 'en' ? 'MTS Grading in Progress' : 'ପ୍ରଶ୍ନପତ୍ର ମୂଲ୍ୟାଙ୍କନ'}
+                  </h3>
+                  <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">
+                    {language === 'en' ? 'Monthly Test Series Status' : 'ମାସିକ ଟେଷ୍ଟ ସିରିଜ୍ ସ୍ଥିତି'}
+                  </p>
+                </div>
+
+                {/* Progress Ticker */}
+                <div className="w-full bg-slate-950/80 border border-white/5 rounded-3xl p-5 space-y-4">
+                  <div className="flex justify-between text-xs font-black text-slate-400">
+                    <span>{language === 'en' ? 'Evaluation Progress' : 'ମୂଲ୍ୟାଙ୍କନ ଅଗ୍ରଗତି'}</span>
+                    <span className="text-indigo-400">78%</span>
+                  </div>
+                  <div className="h-3 bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/5 shadow-inner">
+                    <div className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 shadow-[0_0_10px_rgba(99,102,241,0.5)]" style={{ width: '78%' }} />
+                  </div>
+
+                  {/* Checklist */}
+                  <div className="text-left space-y-2.5 pt-2 text-xs font-bold">
+                    <div className="flex items-center gap-2 text-emerald-400">
+                      <Lucide.CheckCircle2 size={14} className="shrink-0" />
+                      <span>{language === 'en' ? 'Paper Submission: Completed' : 'ଖାତା ଦାଖଲ: ସମ୍ପୂର୍ଣ୍ଣ'}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-indigo-400">
+                      <span className="w-3.5 h-3.5 rounded-full border-2 border-indigo-400 border-t-transparent animate-spin shrink-0" />
+                      <span>{language === 'en' ? 'AI & Teacher Assessment: Grading' : 'AI ଏବଂ ଶିକ୍ଷକ ମୂଲ୍ୟାଙ୍କନ ଚାଲିଛି'}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-slate-500">
+                      <Lucide.Circle size={14} className="shrink-0" />
+                      <span>{language === 'en' ? 'Leaderboard Compilation: Pending' : 'ଫଳາଫଳ ଏବଂ ରାଙ୍କ ପ୍ରସ୍ତୁତି ବାକି ଅଛି'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mascot message */}
+                <div className="bg-indigo-500/10 border border-indigo-500/20 rounded-2xl p-4 flex gap-3 text-left">
+                  <img src="/gundulu-v3.png" alt="Gundulu" className="w-10 h-10 rounded-xl object-cover border border-indigo-500/30 shrink-0" />
+                  <p className="text-xs text-indigo-200 leading-relaxed font-bold">
+                    {language === 'en'
+                      ? "Gundulu is reviewing answers with our board teachers! The statewide leaderboard and certificates will be out on the 16th of this month at 6:00 AM. Get ready!"
+                      : "ଗୁନ୍ଦୁଲୁ ଆପଣଙ୍କ ବୋର୍ଡ ଶିକ୍ଷକଙ୍କ ସହ ଖାତା ଦେଖିବାରେ ବ୍ୟସ୍ତ ଅଛି! ଆସନ୍ତା ୧୬ ତାରିଖ ସକାଳ ୬:୦୦ ଟାରେ ମାର୍କସିଟ୍ ଏବଂ ଲିଡରବୋର୍ଡ ପ୍ରକାଶିତ ହେବ।"}
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => setShowMtsGradingModal(false)}
+                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-black text-xs uppercase tracking-widest transition-all cursor-pointer shadow-lg shadow-indigo-950/35 hover:scale-[1.02] active:scale-[0.98] border border-indigo-500/30"
+                >
+                  {language === 'en' ? 'Got it, Gundulu!' : 'ଠିକ୍ ଅଛି ଗୁନ୍ଦୁଲୁ!'}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {showImportantPapersModal && (
+          <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="glass-card bg-slate-900/95 border border-purple-500/30 shadow-[0_0_50px_rgba(168,85,247,0.25)] rounded-[2.5rem] p-6 max-w-2xl w-full relative overflow-hidden force-dark-theme max-h-[90vh] flex flex-col"
+            >
+              {/* Decorative glows */}
+              <div className="absolute top-0 right-0 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute -left-10 -bottom-10 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+
+              {/* Close Button */}
+              <button
+                onClick={() => setShowImportantPapersModal(false)}
+                className="absolute top-6 right-6 p-2 text-slate-400 hover:text-white rounded-full bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
+              >
+                <Lucide.X size={18} />
+              </button>
+
+              <div className="space-y-6 flex-grow overflow-y-auto pr-1">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-purple-500/15 border border-purple-500/25 flex items-center justify-center text-purple-400">
+                    <Lucide.FileText size={26} />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-black text-white uppercase tracking-wider">
+                      {language === 'en' ? 'Month-End Exam Important Questions' : 'ମାସ ଶେଷ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ପ୍ରଶ୍ନପତ୍ର'}
+                    </h3>
+                    <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-0.5">
+                      {(() => {
+                        const isBoard = userClass === '9' || userClass === '10';
+                        return isBoard 
+                          ? (language === 'en' ? 'Odisha Board Exam Pattern (MCQ + Subjective)' : 'ଓଡ଼ିଶା ବୋର୍ଡ ପ୍ୟାଟର୍ନ (MCQ + ଦୀର୍ଘ ପ୍ରଶ୍ନ)')
+                          : (language === 'en' ? 'Regular School Exam Pattern (MCQ + Practice)' : 'ସାଧାରଣ ସ୍କୁଲ ପରୀକ୍ଷା ପ୍ୟାଟର୍ନ');
+                      })()}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {subjects.map((sub: any) => {
+                    const isBoard = userClass === '9' || userClass === '10';
+                    const patternLabel = isBoard 
+                      ? (language === 'en' ? 'Board Selection' : 'ବୋର୍ଡ ସିଲେକ୍ସନ')
+                      : (language === 'en' ? 'School Practice' : 'ବିଦ୍ୟାଳୟ ଅଭ୍ୟାସ');
+                    
+                    const subChapters = getCumulativeChaptersForSubject(sub.key);
+                    const chapterTitles = subChapters.map(ch => ch.title_en || ch.title || '');
+                    const chapterStr = chapterTitles.length > 0 
+                      ? chapterTitles.slice(0, 3).join(', ') + (chapterTitles.length > 3 ? '...' : '')
+                      : (language === 'en' ? 'General Revision' : 'ସାଧାରଣ ପୁନରାଲୋଚନା');
+                    
+                    return (
+                      <div 
+                        key={sub.key} 
+                        className="bg-slate-950/60 border border-white/5 hover:border-purple-500/30 rounded-3xl p-5 flex flex-col justify-between gap-4 backdrop-blur-md transition-all duration-300 hover:scale-[1.02] shadow-inner"
+                      >
+                        <div className="space-y-1">
+                          <span className="px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                            {patternLabel}
+                          </span>
+                          <h4 className="text-sm font-black text-white pt-1">
+                            {language === 'en' ? sub.labelEn : sub.labelOr}
+                          </h4>
+                          <p className="text-[10px] text-slate-400 font-bold line-clamp-2 min-h-[2.5rem] leading-relaxed">
+                            <span className="text-purple-400">{language === 'en' ? 'Syllabus: ' : 'ସିଲାବସ୍: '}</span>
+                            {chapterStr}
+                          </p>
+                        </div>
+
+                        <div className="flex gap-2 w-full">
+                          <button
+                            onClick={() => generateMtsImportantPDF(language === 'en' ? sub.labelEn : sub.labelOr, sub.key, 'quick')}
+                            className="flex-1 py-2 rounded-xl bg-white/5 hover:bg-purple-500/10 border border-white/10 hover:border-purple-500/30 text-white hover:text-purple-300 font-black text-[9px] uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                          >
+                            <Lucide.Download size={10} />
+                            <span>{language === 'en' ? 'Quick Set (25M)' : 'କ୍ଵିକ୍ ସେଟ୍ (୨୫M)'}</span>
+                          </button>
+                          
+                          <button
+                            onClick={() => generateMtsImportantPDF(language === 'en' ? sub.labelEn : sub.labelOr, sub.key, 'full')}
+                            className="flex-1 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-[9px] uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-md shadow-purple-950/20"
+                          >
+                            <Lucide.Award size={10} />
+                            <span>{language === 'en' ? 'Full Mock' : 'ପୂର୍ଣ୍ଣ ମକ୍'}</span>
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-white/5 text-center">
+                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                  {language === 'en' 
+                    ? '◆ Prepare these questions thoroughly for your school assessments ◆' 
+                    : '◆ ଆପଣଙ୍କ ପରୀକ୍ଷା ପ୍ରସ୍ତୁତି ପାଇଁ ଏହି ପ୍ରଶ୍ନଗୁଡ଼ିକୁ ଭଲଭାବେ ଅଭ୍ୟାସ କରନ୍ତୁ ◆'}
+                </p>
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
 

@@ -2414,7 +2414,9 @@ Sample tone for Class 6-10:
 
                         // Sort by score desc, then time asc
                         submissions.sort((a: any, b: any) => {
-                          if (b.score !== a.score) return b.score - a.score;
+                          const scoreA = a.finalScore ?? a.score ?? 0;
+                          const scoreB = b.finalScore ?? b.score ?? 0;
+                          if (scoreB !== scoreA) return scoreB - scoreA;
                           return (a.submittedAt?.seconds || 0) - (b.submittedAt?.seconds || 0);
                         });
 

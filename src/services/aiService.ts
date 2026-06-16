@@ -518,16 +518,78 @@ export async function generateCurriculum(board: string, className: string) {
 export async function generateTestQuestions(subject: string, className: string, month: string, language: 'en' | 'or' = 'or') {
   try {
     const ai = getAI();
+    
+    // Parse class number (e.g. 'class5' -> 5, '5' -> 5)
+    const classNum = parseInt(className.replace(/\D/g, '')) || 10;
+    const isDecemberHalfYearly = month.toLowerCase().includes('december');
+    const isHalfBoard = ['physical_science', 'life_science', 'social_science', 'geography'].includes(subject.toLowerCase().trim());
+    
+    let structureDescription = '';
+    let totalMarks = 0;
+    
+    if (isDecemberHalfYearly) {
+      // 100 Marks for December Half-Yearly
+      structureDescription = `
+      1. 50 Questions: 1 Mark each (Objective/MCQ).
+      2. 5 Questions: 10 Marks each (Long Answer/Subjective).
+      Total: 100 Marks (55 Questions).
+      `;
+      totalMarks = 100;
+    } else {
+      // Regular months
+      if (classNum >= 1 && classNum <= 5) {
+        // Primary classes: 25 Marks
+        structureDescription = `
+        1. 5 Questions: 1 Mark each (Objective/MCQ).
+        2. 3 Questions: 2 Marks each (Short Answer/Subjective).
+        3. 3 Questions: 3 Marks each (Medium Answer/Subjective).
+        4. 1 Question: 5 Marks (Long Answer/Subjective).
+        Total: 25 Marks (12 Questions).
+        `;
+        totalMarks = 25;
+      } else if (classNum >= 6 && classNum <= 8) {
+        // Middle classes: 45 Marks
+        structureDescription = `
+        1. 10 Questions: 1 Mark each (Objective/MCQ).
+        2. 5 Questions: 2 Marks each (Short Answer/Subjective).
+        3. 5 Questions: 3 Marks each (Medium Answer/Subjective).
+        4. 2 Questions: 5 Marks each (Long Answer/Subjective).
+        Total: 45 Marks (22 Questions).
+        `;
+        totalMarks = 45;
+      } else {
+        // High School (Class 9 & 10)
+        if (isHalfBoard) {
+          // Half-Board subjects: 25 Marks
+          structureDescription = `
+          1. 5 Questions: 1 Mark each (Objective/MCQ).
+          2. 3 Questions: 2 Marks each (Short Answer/Subjective).
+          3. 3 Questions: 3 Marks each (Medium Answer/Subjective).
+          4. 1 Question: 5 Marks (Long Answer/Subjective).
+          Total: 25 Marks (12 Questions).
+          `;
+          totalMarks = 25;
+        } else {
+          // Full-Board subjects: 45 Marks
+          structureDescription = `
+          1. 10 Questions: 1 Mark each (Objective/MCQ).
+          2. 5 Questions: 2 Marks each (Short Answer/Subjective).
+          3. 5 Questions: 3 Marks each (Medium Answer/Subjective).
+          4. 2 Questions: 5 Marks each (Long Answer/Subjective).
+          Total: 45 Marks (22 Questions).
+          `;
+          totalMarks = 45;
+        }
+      }
+    }
+
     const prompt = `Generate a comprehensive monthly test for "${subject}" for class "${className}" for the month of "${month}".
     The entire test (questions and options) must be written in ${language === 'or' ? 'Odia (using Odia script)' : 'English'}.
-    The test must follow this specific structure of 25 questions (Total 44 Marks):
-    1. 15 Questions: 1 Mark each (Objective/MCQ).
-    2. 5 Questions: 2 Marks each (Short Answer/Subjective).
-    3. 3 Questions: 3 Marks each (Long Answer/Subjective).
-    4. 2 Questions: 5 Marks each (Very Long Answer/Subjective).
+    The test must follow this specific structure of questions (Total ${totalMarks} Marks):
+    ${structureDescription}
 
     For MCQ (1 Mark), provide 4 options and a correct_answer.
-    For Subjective (2, 3, 5 Marks), provide the question and a detailed "model_answer" in the "correct_answer" field.
+    For Subjective (2, 3, 5, or 10 Marks), provide the question and a detailed "model_answer" in the "correct_answer" field.
 
     Provide the output in JSON format with the following structure:
     {
@@ -535,7 +597,7 @@ export async function generateTestQuestions(subject: string, className: string, 
         { 
           "question": "Question text", 
           "type": "mcq" | "subjective",
-          "marks": 1 | 2 | 3 | 5,
+          "marks": 1 | 2 | 3 | 5 | 10,
           "options": ["A", "B", "C", "D"], // Only for MCQ, empty for subjective
           "correct_answer": "Option text for MCQ or Model Answer for Subjective"
         }

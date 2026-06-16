@@ -3906,6 +3906,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                     isTourStep3={tourStep === 3} // Student XP is Step 3
                     isTourStep4={tourStep === 2} // Gundulu AI is Step 2
                     onOpenRajaPoster={() => setShowLaunchPoster(true)}
+                    onOpenMonthlyTests={() => setActiveTab('monthly_tests')}
                   />
                 )}
               </div>
@@ -8381,6 +8382,8 @@ function ResultsReviewView({ submission, test, onBack, language }: any) {
           {test.questions.map((q: any, i: number) => {
             const studentAns = submission.answers[i];
             const isMcq = q.type === 'mcq' || !q.type;
+            const studentAnsText = typeof studentAns === 'object' && studentAns !== null ? studentAns.text : studentAns;
+            const studentAnsImg = typeof studentAns === 'object' && studentAns !== null ? studentAns.imageUrl : null;
             const isCorrect = q.isGrace || (isMcq 
               ? (q.options[studentAns] === q.correct_answer || String(studentAns) === q.correct_answer)
               : true); 
@@ -8442,9 +8445,21 @@ function ResultsReviewView({ submission, test, onBack, language }: any) {
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
-                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Your Answer:</p>
-                        <p className="text-slate-300 italic text-sm leading-relaxed">{studentAns || 'No answer provided.'}</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 min-h-[100px] flex flex-col justify-center">
+                          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Your Answer:</p>
+                          <p className="text-slate-300 italic text-sm leading-relaxed">{studentAnsText || 'No text answer provided.'}</p>
+                        </div>
+                        {studentAnsImg && (
+                          <a href={studentAnsImg} target="_blank" rel="noopener noreferrer" className="relative group aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black/20 block">
+                            <img src={studentAnsImg} alt="Uploaded Answer Sheet" className="w-full h-full object-contain" />
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
+                              <span className="text-white text-xs font-bold flex items-center gap-2">
+                                <Lucide.ExternalLink size={14} /> View Full Image
+                              </span>
+                            </div>
+                          </a>
+                        )}
                       </div>
                       <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-5">
                         <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-2">Model Answer / Evaluation Criteria:</p>
@@ -8528,9 +8543,9 @@ function CertificateView({ submission, test, user, onBack, language }: any) {
               <h3 className="text-sm sm:text-2xl font-bold text-emerald-800 uppercase tracking-[0.05em] sm:tracking-[0.1em]">{test.month} {test.year} Monthly Assessment</h3>
               <div className="flex items-center justify-center gap-1.5 sm:gap-3 text-slate-500 text-[10px] sm:text-sm">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                <span>Subject: <span className="font-bold text-slate-800">{test.subject}</span></span>
+                <span>Subject: <span className="font-bold text-slate-800">{translations[language].subjects?.[test.subject] || test.subject}</span></span>
                 <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                <span>Class: <span className="font-bold text-slate-800">{submission.class}</span></span>
+                <span>Class: <span className="font-bold text-slate-800">{translations[language].classes?.[submission.class] || submission.class}</span></span>
               </div>
             </div>
 
@@ -8858,7 +8873,7 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack, setActiv
                   <>
                     <div className="grid grid-cols-2 gap-4 mb-2">
                       <div className="bg-slate-800/50 rounded-2xl p-4 text-center">
-                        <p className="text-xl font-bold text-white">{submission.finalScore || submission.score}</p>
+                        <p className="text-xl font-bold text-white">{submission.finalScore || submission.score}<span className="text-xs text-slate-500">/{submission.totalMaxMarks || submission.totalQuestions}</span></p>
                         <p className="text-[10px] font-bold uppercase text-slate-500">Score</p>
                       </div>
                       <div className="bg-slate-800/50 rounded-2xl p-4 text-center">
