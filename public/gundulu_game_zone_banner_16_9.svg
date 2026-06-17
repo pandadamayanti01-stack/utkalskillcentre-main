@@ -1,0 +1,217 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="100%" height="100%">
+  <defs>
+    <!-- Background Dark Gradient -->
+    <radialGradient id="bgDark" cx="50%" cy="50%" r="75%">
+      <stop offset="0%" stop-color="#1E293B" />
+      <stop offset="60%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#020617" />
+    </radialGradient>
+
+    <!-- Gold Accent Gradient -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCD34D" />
+      <stop offset="50%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+
+    <!-- Emerald Glow Gradient -->
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#34D399" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+
+    <!-- Rose Gradient -->
+    <linearGradient id="roseGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FB7185" />
+      <stop offset="100%" stop-color="#E11D48" />
+    </linearGradient>
+
+    <!-- Headband Ribbon Gradient -->
+    <linearGradient id="pinkRibbon" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF5D8F" />
+      <stop offset="50%" stop-color="#FF85A2" />
+      <stop offset="100%" stop-color="#FF5D8F" />
+    </linearGradient>
+
+    <!-- Petal Radial Gradient -->
+    <radialGradient id="petalGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFB5A7" />
+      <stop offset="100%" stop-color="#FF7096" />
+    </radialGradient>
+
+    <!-- Grid Pattern -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#334155" stroke-width="1" opacity="0.15" />
+    </pattern>
+  </defs>
+
+  <!-- Widescreen Background -->
+  <rect width="1280" height="720" fill="url(#bgDark)" />
+  <!-- Grid Overlay -->
+  <rect width="1280" height="720" fill="url(#grid)" />
+
+  <!-- Abstract Tech/Glowing Elements -->
+  <g opacity="0.6">
+    <circle cx="950" cy="360" r="280" fill="#3B82F6" opacity="0.05" filter="blur(80px)" />
+    <circle cx="300" cy="360" r="280" fill="#F59E0B" opacity="0.03" filter="blur(80px)" />
+  </g>
+
+  <!-- Programmatic Sambalpuri trim on TOP & BOTTOM -->
+  <!-- Top Trim -->
+  <g transform="translate(0, 0)">
+    <rect width="1280" height="15" fill="#0F172A" />
+    <path d="M 0 7.5 H 1280" stroke="#EF4444" stroke-width="15" stroke-dasharray="20 20" />
+    <path d="M 0 7.5 H 1280" stroke="#F59E0B" stroke-width="15" stroke-dasharray="20 20" stroke-dashoffset="20" />
+  </g>
+  <!-- Bottom Trim -->
+  <g transform="translate(0, 705)">
+    <rect width="1280" height="15" fill="#0F172A" />
+    <path d="M 0 7.5 H 1280" stroke="#EF4444" stroke-width="15" stroke-dasharray="20 20" />
+    <path d="M 0 7.5 H 1280" stroke="#F59E0B" stroke-width="15" stroke-dasharray="20 20" stroke-dashoffset="20" />
+  </g>
+
+  <!-- ==================== LEFT SECTION: TEXT & INFO ==================== -->
+  <g transform="translate(100, 0)">
+    <!-- Main Badge -->
+    <g transform="translate(0, 140)">
+      <rect width="250" height="36" rx="18" fill="#1E293B" stroke="#334155" stroke-width="2" />
+      <circle cx="20" cy="18" r="7" fill="#10B981" />
+      <text x="38" y="22" font-family="'Outfit', 'Inter', sans-serif" font-weight="900" font-size="12" fill="#34D399" letter-spacing="2">ଶିକ୍ଷା ସହିତ ମନୋରଞ୍ଜନ</text>
+    </g>
+
+    <!-- Main Title (Odia) -->
+    <text x="0" y="270" font-family="'Outfit', 'Inter', 'Noto Sans Odia', sans-serif" font-weight="900" font-size="76" fill="url(#goldGrad)" filter="drop-shadow(0px 4px 12px rgba(245, 158, 11, 0.2))">
+      ଗୁନ୍ଦୁଲୁ ଗେମ୍ ଜୋନ୍
+    </text>
+
+    <!-- Subtitle (English) -->
+    <text x="5" y="325" font-family="'Outfit', 'Inter', sans-serif" font-weight="900" font-size="24" fill="#E2E8F0" letter-spacing="8">
+      GUNDULU GAME ZONE
+    </text>
+
+    <!-- Description (Odia) -->
+    <text x="5" y="380" font-family="'Outfit', 'Inter', 'Noto Sans Odia', sans-serif" font-weight="600" font-size="18" fill="#94A3B8" width="550">
+      ଓଡ଼ିଶାର ପାରମ୍ପରିକ ଖେଳ ଏବଂ ସ୍କୁଲ୍ ପାଠ୍ୟକ୍ରମର ଏକ ଅତି ସୁନ୍ଦର ସମନ୍ୱୟ।
+    </text>
+    <text x="5" y="410" font-family="'Outfit', 'Inter', 'Noto Sans Odia', sans-serif" font-weight="600" font-size="18" fill="#94A3B8">
+      ଗୁନ୍ଦୁଲୁ AI ସହିତ ମଜାଦାର ଖେଳ ମାଧ୍ୟମରେ ଗଣିତ ଏବଂ ଓଡ଼ିଆରେ ନିପୁଣ ହୁଅନ୍ତୁ!
+    </text>
+
+    <!-- Game List Badges -->
+    <g transform="translate(5, 460)">
+      <!-- Badge 1 -->
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="160" height="40" rx="12" fill="#EF4444" opacity="0.1" />
+        <rect x="0" y="0" width="160" height="40" rx="12" fill="none" stroke="#EF4444" stroke-width="1.5" opacity="0.3" />
+        <text x="80" y="25" font-family="'Outfit', 'Inter', 'Noto Sans Odia', sans-serif" font-weight="900" font-size="14" fill="#FB7185" text-anchor="middle">📝 ବହି ପୃଷ୍ଠା ଖେଳ</text>
+      </g>
+      <!-- Badge 2 -->
+      <g transform="translate(180, 0)">
+        <rect x="0" y="0" width="160" height="40" rx="12" fill="#F59E0B" opacity="0.1" />
+        <rect x="0" y="0" width="160" height="40" rx="12" fill="none" stroke="#F59E0B" stroke-width="1.5" opacity="0.3" />
+        <text x="80" y="25" font-family="'Outfit', 'Inter', 'Noto Sans Odia', sans-serif" font-weight="900" font-size="14" fill="#FBBF24" text-anchor="middle">🐯 ବାଘ-ଛେଳି ଖେଳ</text>
+      </g>
+      <!-- Badge 3 -->
+      <g transform="translate(360, 0)">
+        <rect x="0" y="0" width="160" height="40" rx="12" fill="#10B981" opacity="0.1" />
+        <rect x="0" y="0" width="160" height="40" rx="12" fill="none" stroke="#10B981" stroke-width="1.5" opacity="0.3" />
+        <text x="80" y="25" font-family="'Outfit', 'Inter', 'Noto Sans Odia', sans-serif" font-weight="900" font-size="14" fill="#34D399" text-anchor="middle">💃 ପୁଚି ଖେଳ</text>
+      </g>
+    </g>
+
+    <!-- Footer Tagline -->
+    <g transform="translate(5, 540)">
+      <text x="0" y="25" font-family="'Outfit', 'Inter', 'Noto Sans Odia', sans-serif" font-weight="800" font-size="15" fill="#34D399" letter-spacing="1">
+        • ସ୍କୋର କରନ୍ତୁ ଏବଂ ନୂଆ କାହାଣୀ ପୁସ୍ତକ ଅନଲକ୍ କରନ୍ତୁ!
+      </text>
+    </g>
+  </g>
+
+  <!-- ==================== RIGHT SECTION: MASCOT IMAGE BADGE ==================== -->
+  <g transform="translate(900, 360)">
+    <!-- Outer Glow Circle Behind Mascot -->
+    <circle cx="0" cy="-20" r="195" fill="none" stroke="url(#goldGrad)" stroke-width="3" opacity="0.2" />
+    <circle cx="0" cy="-20" r="185" fill="#0F172A" stroke="#334155" stroke-width="4" filter="drop-shadow(0px 16px 32px rgba(0, 0, 0, 0.4))" />
+
+    <!-- Circular Checkered Trim Wrapper -->
+    <circle cx="0" cy="-20" r="185" fill="none" stroke="#0F172A" stroke-width="10" stroke-dasharray="12 12" />
+    <circle cx="0" cy="-20" r="185" fill="none" stroke="#EF4444" stroke-width="10" stroke-dasharray="12 12" stroke-dashoffset="12" />
+
+    <!-- Baby Girl Mascot Face & features (Inside circle) -->
+    <g transform="translate(0, -35) scale(1.5)">
+      <!-- Hair (Back) -->
+      <path d="M -60 10 C -60 -50, 60 -50, 60 10 C 60 20, 50 30, 50 10 C 50 -30, -50 -30, -50 10 C -50 20, -60 10, -60 10 Z" fill="#292524" />
+
+      <!-- Ears -->
+      <circle cx="-56" cy="15" r="12" fill="#FDBA74" />
+      <circle cx="56" cy="15" r="12" fill="#FDBA74" />
+
+      <!-- Face Shape -->
+      <circle cx="0" cy="10" r="58" fill="#FED7AA" />
+
+      <!-- Hair Bangs (Front) -->
+      <path d="M -58 -3 Q -30 -30, 0 -10 Q 30 -30, 58 -3 Q 66 -23, 0 -37 Q -66 -23, -58 -3 Z" fill="#292524" />
+
+      <!-- Headband (Pink Ribbon) -->
+      <path d="M -59 0 Q 0 -28, 59 0" fill="none" stroke="url(#pinkRibbon)" stroke-width="12" stroke-linecap="round" />
+
+      <!-- Rosy Cheeks -->
+      <circle cx="-38" cy="26" r="11" fill="#FCA5A5" opacity="0.5" />
+      <circle cx="38" cy="26" r="11" fill="#FCA5A5" opacity="0.5" />
+
+      <!-- Big Sparkly Eyes -->
+      <!-- Left Eye -->
+      <circle cx="-26" cy="9" r="11" fill="#1C1917" />
+      <circle cx="-29" cy="5" r="3.5" fill="#FFFFFF" />
+      <circle cx="-23" cy="12" r="1.5" fill="#FFFFFF" />
+      <!-- Right Eye -->
+      <circle cx="26" cy="9" r="11" fill="#1C1917" />
+      <circle cx="23" cy="5" r="3.5" fill="#FFFFFF" />
+      <circle cx="29" cy="12" r="1.5" fill="#FFFFFF" />
+
+      <!-- Eyelashes / Brows -->
+      <path d="M -38 -2 Q -26 -8, -14 -2" fill="none" stroke="#292524" stroke-width="2.5" stroke-linecap="round" />
+      <path d="M 14 -2 Q 26 -8, 38 -2" fill="none" stroke="#292524" stroke-width="2.5" stroke-linecap="round" />
+
+      <!-- Bindi (Traditional Forehead Dot) -->
+      <circle cx="0" cy="0" r="5" fill="#1C1917" />
+
+      <!-- Cute Smiling Mouth -->
+      <path d="M -12 28 Q 0 40, 12 28" fill="none" stroke="#E11D48" stroke-width="3.5" stroke-linecap="round" />
+
+      <!-- Pink Flower on Headband -->
+      <g transform="translate(46, -18) scale(0.7)">
+        <!-- Back Petals -->
+        <circle cx="-14" cy="0" r="14" fill="url(#petalGrad)" />
+        <circle cx="14" cy="0" r="14" fill="url(#petalGrad)" />
+        <circle cx="0" cy="-14" r="14" fill="url(#petalGrad)" />
+        <circle cx="0" cy="14" r="14" fill="url(#petalGrad)" />
+        <!-- Diagonal Petals -->
+        <circle cx="-10" cy="-10" r="14" fill="url(#petalGrad)" />
+        <circle cx="10" cy="-10" r="14" fill="url(#petalGrad)" />
+        <circle cx="-10" cy="10" r="14" fill="url(#petalGrad)" />
+        <circle cx="10" cy="10" r="14" fill="url(#petalGrad)" />
+        <!-- Flower Center -->
+        <circle cx="0" cy="0" r="8" fill="url(#goldGrad)" stroke="#FFFFFF" stroke-width="1.5" />
+      </g>
+    </g>
+
+    <!-- Magic open book at the bottom of the mascot -->
+    <g transform="translate(0, 100) scale(1.3)">
+      <!-- Closed Book base shape -->
+      <path d="M -80 0 L 80 0 L 100 20 L -100 20 Z" fill="#1E293B" />
+      <!-- Opened Magic pages -->
+      <path d="M 0 0 C -40 -15, -80 0, -80 0 L -80 -10 C -80 -10, -40 -25, 0 -10 Z" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
+      <path d="M 0 0 C 40 -15, 80 0, 80 0 L 80 -10 C 80 -10, 40 -25, 0 -10 Z" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
+      
+      <!-- Flying math/Odia sparks -->
+      <g opacity="0.9">
+        <text x="-40" y="-22" font-family="sans-serif" font-weight="bold" font-size="12" fill="#FBBF24">ଅ</text>
+        <text x="30" y="-26" font-family="sans-serif" font-weight="bold" font-size="10" fill="#3882F6">କ</text>
+        <text x="-10" y="-35" font-family="sans-serif" font-weight="bold" font-size="11" fill="#EF4444">୫</text>
+        <text x="12" y="-20" font-family="sans-serif" font-weight="bold" font-size="9" fill="#10B981">x</text>
+      </g>
+    </g>
+  </g>
+
+</svg>
