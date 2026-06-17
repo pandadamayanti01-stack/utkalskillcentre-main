@@ -180,8 +180,16 @@ function getIconEmoji(type: string): string {
 
 const wobble = (val: number, amp = 1.8) => val + (Math.random() - 0.5) * amp;
 
+const getTodayDateString = () => {
+  const today = new Date();
+  const dd = String(today.getDate()).padStart(2, '0');
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const yyyy = today.getFullYear();
+  return `${dd}/${mm}/${yyyy}`;
+};
+
 export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; onBack: () => void }) {
-  const [dateStr, setDateStr] = useState<string>('17/06/2026'); // Today's date
+  const [dateStr, setDateStr] = useState<string>(getTodayDateString()); // Today's date
   const [pageNo, setPageNo] = useState<string>('001');
   const [selectedSubject, setSelectedSubject] = useState<string>('algebra');
   const [titleText, setTitleText] = useState<string>('');
@@ -189,6 +197,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
   const [footerText, setFooterText] = useState<string>('UTKAL SKILL CENTRE • ପଢ଼ିବ ଓଡ଼ିଶା, ବଢ଼ିବ ଓଡ଼ିଶା');
   const [badgeText, setBadgeText] = useState<string>('SET-01');
   const [logoImage, setLogoImage] = useState<string | null>('/utkal-512.png');
+  const [paperStyle, setPaperStyle] = useState<'ruled' | 'chalkboard' | 'parchment' | 'blueprint'>('ruled');
 
   // Dynamic Textbook Selection states
   const [selectedClass, setSelectedClass] = useState<string>('class10');
@@ -394,9 +403,9 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
     }
   };
 
-  const drawSketchIcon = (ctx: CanvasRenderingContext2D, type: string, x: number, y: number) => {
+  const drawSketchIcon = (ctx: CanvasRenderingContext2D, type: string, x: number, y: number, strokeColor = '#334155') => {
     ctx.save();
-    ctx.strokeStyle = '#334155';
+    ctx.strokeStyle = strokeColor;
     ctx.lineWidth = 2.5;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
@@ -691,7 +700,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.lineTo(wobble(mx + 20), wobble(my + mh));
       ctx.stroke();
       ctx.font = 'bold 9px sans-serif';
-      ctx.fillStyle = '#1E293B';
+      ctx.fillStyle = strokeColor;
       ctx.fillText('N', mx + 6, my + 12);
       ctx.fillText('S', mx + 26, my + 12);
     } else if (type === 'concave_mirror') {
@@ -762,7 +771,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.lineTo(wobble(x + 58), wobble(y + 58));
       ctx.stroke();
       ctx.font = 'bold 10px Kalam';
-      ctx.fillStyle = '#1E293B';
+      ctx.fillStyle = strokeColor;
       ctx.fillText('a', x + 23, y + 30);
       ctx.fillText('b', x + 47, y + 30);
       ctx.fillText('c', x + 23, y + 50);
@@ -892,9 +901,9 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
     ctx.restore();
   };
 
-  const drawJagannathTemple = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
+  const drawJagannathTemple = (ctx: CanvasRenderingContext2D, x: number, y: number, strokeColor = '#0F172A') => {
     ctx.save();
-    ctx.strokeStyle = '#0F172A';
+    ctx.strokeStyle = strokeColor;
     ctx.lineWidth = 3;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
@@ -987,18 +996,64 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
 
       const theme = SUBJECT_THEMES[getSubjectCategory(selectedSubject)] || SUBJECT_THEMES.math;
 
-      ctx.fillStyle = '#FCFBF9';
+      // Resolve colors based on paperStyle and fallback to subject theme
+      let paperBg = '#FCFBF9';
+      let ruledColor = theme.ruledColor;
+      let primaryColor = theme.primaryColor;
+      let secondaryColor = theme.secondaryColor;
+      let accentColor = theme.accentColor;
+      let lightBg = theme.lightBg;
+      let darkTextColor = theme.darkTextColor;
+      let boxBorder = 'rgba(0, 0, 0, 0.08)';
+      let marginColor = '#EF4444'; // Sambalpuri margin red line
+      let isDarkPaper = false;
+
+      if (paperStyle === 'chalkboard') {
+        paperBg = '#121824'; // Chalk slate dark background
+        ruledColor = 'rgba(255, 255, 255, 0.07)';
+        primaryColor = '#F8FAFC'; // Crisp chalky off-white
+        secondaryColor = '#38BDF8'; // Neon light blue
+        accentColor = '#F43F5E'; // Neon rose
+        lightBg = 'rgba(255, 255, 255, 0.04)';
+        darkTextColor = '#F1F5F9';
+        boxBorder = 'rgba(255, 255, 255, 0.1)';
+        marginColor = 'rgba(239, 68, 68, 0.4)'; // Faint red margin
+        isDarkPaper = true;
+      } else if (paperStyle === 'parchment') {
+        paperBg = '#F4EBD0'; // Vintage warm parchment paper
+        ruledColor = 'rgba(120, 80, 50, 0.09)';
+        primaryColor = '#3A2614'; // Deep sepia
+        secondaryColor = '#8E3200'; // Rich terracotta / brown
+        accentColor = '#B45309'; // Amber sienna
+        lightBg = 'rgba(244, 235, 208, 0.35)';
+        darkTextColor = '#3A2614';
+        boxBorder = 'rgba(120, 80, 50, 0.15)';
+        marginColor = 'rgba(139, 69, 19, 0.4)'; // Sepia brown margin line
+      } else if (paperStyle === 'blueprint') {
+        paperBg = '#0A3663'; // Engineering blueprint dark blue
+        ruledColor = 'rgba(255, 255, 255, 0.12)';
+        primaryColor = '#FFFFFF'; // Bright white pen
+        secondaryColor = '#22D3EE'; // Bright cyan drafting pen
+        accentColor = '#FACC15'; // Blueprint yellow alert
+        lightBg = 'rgba(255, 255, 255, 0.05)';
+        darkTextColor = '#FFFFFF';
+        boxBorder = 'rgba(255, 255, 255, 0.2)';
+        marginColor = 'rgba(255, 255, 255, 0.25)'; // White margin line
+        isDarkPaper = true;
+      }
+
+      ctx.fillStyle = paperBg;
       ctx.fillRect(0, 0, 1080, 1920);
 
       const category = getSubjectCategory(selectedSubject);
 
       // 1. Draw dynamic category-specific background pattern watermarks
-      ctx.strokeStyle = theme.ruledColor;
+      ctx.strokeStyle = ruledColor;
       ctx.lineWidth = 1.2;
 
       if (category === 'math') {
         // Draw grid paper (graph notebook style)
-        ctx.globalAlpha = 0.12;
+        ctx.globalAlpha = isDarkPaper ? 0.08 : 0.12;
         // Horizontal lines
         for (let y = 260; y < 1880; y += 48) {
           ctx.beginPath();
@@ -1015,7 +1070,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         }
       } else if (category === 'science') {
         // Draw faint organic chemistry hexagon lattice
-        ctx.globalAlpha = 0.1;
+        ctx.globalAlpha = isDarkPaper ? 0.06 : 0.1;
         const hexRadius = 40;
         const hSpace = hexRadius * 1.5;
         const vSpace = hexRadius * Math.sqrt(3);
@@ -1038,7 +1093,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         }
       } else if (category === 'social') {
         // Draw global latitude/longitude coordinate arcs
-        ctx.globalAlpha = 0.08;
+        ctx.globalAlpha = isDarkPaper ? 0.05 : 0.08;
         const cx = 540, cy = -200;
         for (let r = 500; r < 2100; r += 160) {
           ctx.beginPath();
@@ -1053,7 +1108,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         }
       } else if (category === 'skills') {
         // Draw faint circuit lines and connection nodes
-        ctx.globalAlpha = 0.08;
+        ctx.globalAlpha = isDarkPaper ? 0.05 : 0.08;
         for (let y = 300; y < 1880; y += 180) {
           ctx.beginPath();
           ctx.moveTo(wobble(180), y);
@@ -1062,7 +1117,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
           ctx.lineTo(wobble(900), y + 60);
           ctx.stroke();
           // Draw connection dots
-          ctx.fillStyle = theme.ruledColor;
+          ctx.fillStyle = ruledColor;
           ctx.beginPath();
           ctx.arc(wobble(400), y, 4, 0, Math.PI * 2);
           ctx.arc(wobble(460), y + 60, 4, 0, Math.PI * 2);
@@ -1070,7 +1125,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         }
       } else {
         // Default (languages): Rule lines with wobbly notebook look
-        ctx.globalAlpha = 0.22;
+        ctx.globalAlpha = isDarkPaper ? 0.15 : 0.22;
         for (let y = 300; y < 1880; y += 48) {
           ctx.beginPath();
           ctx.moveTo(0, y);
@@ -1085,9 +1140,9 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
 
       // 2. Draw the large, elegant Konark Sun Temple Wheel watermark in the center background
       ctx.save();
-      ctx.strokeStyle = theme.ruledColor;
+      ctx.strokeStyle = ruledColor;
       ctx.lineWidth = 1.0;
-      ctx.globalAlpha = 0.04; // 4% opacity (extremely faint, very professional watermark)
+      ctx.globalAlpha = isDarkPaper ? 0.025 : 0.04; // Faint Konark watermark
       const kwCx = 540;
       const kwCy = 1050;
       const kwR = 240;
@@ -1112,7 +1167,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.globalAlpha = 1.0;
 
       // Draw Sambalpuri Margin Pattern on the left
-      ctx.strokeStyle = '#EF4444';
+      ctx.strokeStyle = marginColor;
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       ctx.moveTo(130, 0);
@@ -1127,7 +1182,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       // Sambalpuri Ikat border details between the two vertical lines
       ctx.lineWidth = 1.0;
       ctx.save();
-      ctx.globalAlpha = 0.4;
+      ctx.globalAlpha = isDarkPaper ? 0.25 : 0.4;
       for (let y = 10; y < 1920; y += 30) {
         ctx.beginPath();
         ctx.moveTo(130, y);
@@ -1138,7 +1193,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       }
       ctx.restore();
 
-      ctx.strokeStyle = '#475569';
+      ctx.strokeStyle = isDarkPaper ? 'rgba(255, 255, 255, 0.3)' : '#475569';
       ctx.lineWidth = 2.5;
       ctx.beginPath();
       const bx = 60, by = 60, bw = 220, bh = 95;
@@ -1154,7 +1209,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.lineTo(bx + bw, by + 48);
       ctx.stroke();
 
-      ctx.fillStyle = '#1E293B';
+      ctx.fillStyle = primaryColor;
       ctx.font = 'bold 18px Kalam';
       ctx.fillText(`Date: ${dateStr}`, bx + 15, by + 32);
       ctx.fillText(`Page No.: ${pageNo}`, bx + 15, by + 80);
@@ -1169,11 +1224,13 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
                 ctx.save();
                 ctx.beginPath();
                 ctx.arc(940, 110, 50, 0, Math.PI * 2);
+                ctx.fillStyle = isDarkPaper ? 'rgba(255, 255, 255, 0.1)' : '#FFFFFF';
+                ctx.fill();
                 ctx.clip();
                 ctx.drawImage(img, 890, 60, 100, 100);
                 ctx.restore();
 
-                ctx.strokeStyle = '#475569';
+                ctx.strokeStyle = isDarkPaper ? 'rgba(255, 255, 255, 0.3)' : '#475569';
                 ctx.lineWidth = 2.5;
                 ctx.beginPath();
                 for (let a = 0; a < Math.PI * 2; a += 0.1) {
@@ -1188,28 +1245,28 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
                 resolve();
               } catch (drawErr) {
                 console.error('Error drawing logo image onto canvas:', drawErr);
-                drawJagannathTemple(ctx, 840, 40);
+                drawJagannathTemple(ctx, 840, 40, primaryColor);
                 resolve();
               }
             };
             img.onerror = (loadErr) => {
               console.warn('Failed to load logo image:', loadErr);
-              drawJagannathTemple(ctx, 840, 40);
+              drawJagannathTemple(ctx, 840, 40, primaryColor);
               resolve();
             };
             img.src = logoImage;
           });
         } catch (promiseErr) {
           console.warn('Error processing logo image promise:', promiseErr);
-          drawJagannathTemple(ctx, 840, 40);
+          drawJagannathTemple(ctx, 840, 40, primaryColor);
         }
       } else {
-        drawJagannathTemple(ctx, 840, 40);
+        drawJagannathTemple(ctx, 840, 40, primaryColor);
       }
 
       // Draw Neelachakra Flag at top center
       ctx.save();
-      ctx.strokeStyle = theme.secondaryColor;
+      ctx.strokeStyle = secondaryColor;
       ctx.lineWidth = 2.0;
       const nfCx = 540;
       const nfCy = 55;
@@ -1240,12 +1297,12 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.stroke();
       ctx.restore();
 
-      ctx.fillStyle = theme.secondaryColor;
+      ctx.fillStyle = secondaryColor;
       ctx.font = 'bold 20px Kalam';
       ctx.textAlign = 'center';
       ctx.fillText(badgeText, 540, 115);
 
-      ctx.fillStyle = theme.primaryColor;
+      ctx.fillStyle = primaryColor;
       let titleFontSize = 40;
       ctx.font = `bold ${titleFontSize}px Kalam`;
       let textWidth = ctx.measureText(titleText).width;
@@ -1256,7 +1313,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       }
       ctx.fillText(titleText, 540, 170);
 
-      ctx.fillStyle = '#64748B';
+      ctx.fillStyle = isDarkPaper ? '#94A3B8' : '#64748B';
       let subtitleFontSize = 24;
       ctx.font = `italic ${subtitleFontSize}px Caveat`;
       let subWidth = ctx.measureText(`— ${subtitleText} —`).width;
@@ -1273,7 +1330,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       for (let i = 0; i < questions.length; i++) {
         const q = questions[i];
         
-        ctx.strokeStyle = theme.primaryColor;
+        ctx.strokeStyle = primaryColor;
         ctx.lineWidth = 2;
         ctx.beginPath();
         for (let a = 0; a < Math.PI * 2; a += 0.1) {
@@ -1287,18 +1344,18 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         ctx.stroke();
 
         ctx.font = 'bold 18px Kalam';
-        ctx.fillStyle = theme.primaryColor;
+        ctx.fillStyle = primaryColor;
         ctx.fillText(String(i + 1), 74, startY + 22);
 
         ctx.font = 'bold 20px Kalam';
-        ctx.fillStyle = theme.darkTextColor;
+        ctx.fillStyle = darkTextColor;
         const qLines = wrapText(ctx, `Q. ${q.question}`, 420);
         qLines.forEach((line, idx) => {
           ctx.fillText(line, 160, startY + 14 + idx * 24);
         });
 
         ctx.font = 'bold 20px Kalam';
-        ctx.fillStyle = theme.secondaryColor;
+        ctx.fillStyle = secondaryColor;
         const ansLines = wrapText(ctx, `• Ans. ${q.answer}`, 420);
         const ansStartY = startY + 14 + qLines.length * 24 + 10;
         ansLines.forEach((line, idx) => {
@@ -1309,7 +1366,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
           const nx = 590, ny = startY - 8, nw = 290, nh = 74;
 
           // Fill side note background card
-          ctx.fillStyle = theme.lightBg;
+          ctx.fillStyle = lightBg;
           ctx.beginPath();
           ctx.moveTo(nx, ny);
           ctx.lineTo(nx + nw, ny);
@@ -1319,7 +1376,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
           ctx.fill();
 
           // Draw left accent line (thicker)
-          ctx.strokeStyle = theme.accentColor;
+          ctx.strokeStyle = accentColor;
           ctx.lineWidth = 4.5;
           ctx.beginPath();
           ctx.moveTo(nx + 2, ny);
@@ -1327,7 +1384,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
           ctx.stroke();
 
           // Draw other wobbly borders
-          ctx.strokeStyle = 'rgba(148, 163, 184, 0.4)';
+          ctx.strokeStyle = isDarkPaper ? 'rgba(255, 255, 255, 0.15)' : 'rgba(148, 163, 184, 0.4)';
           ctx.lineWidth = 1.2;
           ctx.beginPath();
           ctx.moveTo(nx + 2, ny + (Math.random() - 0.5) * 1.5);
@@ -1337,12 +1394,12 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
           ctx.stroke();
 
           // Draw label
-          ctx.fillStyle = theme.secondaryColor;
+          ctx.fillStyle = secondaryColor;
           ctx.font = 'bold 15px Kalam';
           ctx.fillText(q.sideNoteLabel, nx + 14, ny + 22);
 
           // Draw side-note content
-          ctx.fillStyle = theme.darkTextColor;
+          ctx.fillStyle = darkTextColor;
           ctx.font = 'bold 16px Kalam';
           const noteLines = wrapText(ctx, q.sideNote, 260);
           let noteY = ny + 40;
@@ -1352,12 +1409,12 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
           });
         }
 
-        drawSketchIcon(ctx, q.iconType, 900, startY - 12);
+        drawSketchIcon(ctx, q.iconType, 900, startY - 12, primaryColor);
         startY += 145;
       }
 
       ctx.textAlign = 'center';
-      ctx.fillStyle = theme.primaryColor;
+      ctx.fillStyle = primaryColor;
       ctx.font = 'bold 24px Kalam';
       ctx.fillText(`★ ${footerText} ★`, 540, 1850);
 
@@ -1368,12 +1425,63 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+
+      // Auto-increment page number for the next generated sheet
+      setPageNo((prev) => {
+        const nextNum = parseInt(prev, 10) + 1;
+        return String(isNaN(nextNum) ? 1 : nextNum).padStart(3, '0');
+      });
     } catch (err) {
       console.error('Error generating branded poster:', err);
     } finally {
       setGenerating(false);
     }
   };
+
+  // Resolve colors for live preview
+  const isDarkPaper = paperStyle === 'chalkboard' || paperStyle === 'blueprint';
+  const previewBg = 
+    paperStyle === 'chalkboard' ? 'bg-[#121824]' : 
+    paperStyle === 'parchment' ? 'bg-[#F4EBD0]' : 
+    paperStyle === 'blueprint' ? 'bg-[#0A3663]' : 'bg-[#FCFBF9]';
+  const previewText = isDarkPaper ? 'text-slate-100' : 'text-slate-900';
+  const previewTitle = isDarkPaper ? 'text-white' : 'text-slate-900';
+  const previewSub = 
+    paperStyle === 'chalkboard' ? 'text-slate-400' : 
+    paperStyle === 'blueprint' ? 'text-slate-300' : 
+    paperStyle === 'parchment' ? 'text-amber-950' : 'text-slate-500';
+  const previewAns = 
+    paperStyle === 'chalkboard' ? 'text-sky-400' : 
+    paperStyle === 'blueprint' ? 'text-cyan-300' : 
+    paperStyle === 'parchment' ? 'text-[#8E3200]' : 'text-blue-600';
+  const previewNoteText = 
+    paperStyle === 'chalkboard' ? 'text-slate-200' : 
+    paperStyle === 'blueprint' ? 'text-white' : 
+    paperStyle === 'parchment' ? 'text-[#3A2614]' : theme.darkTextColor;
+  const previewNoteLabel = 
+    paperStyle === 'chalkboard' ? 'text-sky-400' : 
+    paperStyle === 'blueprint' ? 'text-cyan-400' : 
+    paperStyle === 'parchment' ? 'text-[#B45309]' : theme.secondaryColor;
+  const previewNoteBg = 
+    paperStyle === 'chalkboard' ? 'rgba(255, 255, 255, 0.04)' : 
+    paperStyle === 'blueprint' ? 'rgba(255, 255, 255, 0.05)' : 
+    paperStyle === 'parchment' ? 'rgba(255, 255, 255, 0.25)' : theme.lightBg;
+  const previewNoteBorder = 
+    paperStyle === 'chalkboard' ? 'rgba(255, 255, 255, 0.1)' : 
+    paperStyle === 'blueprint' ? 'rgba(255, 255, 255, 0.2)' : 
+    paperStyle === 'parchment' ? 'rgba(120, 80, 50, 0.15)' : 'rgba(148, 163, 184, 0.2)';
+  const previewNoteLeftBorder = 
+    paperStyle === 'chalkboard' ? '#38BDF8' : 
+    paperStyle === 'blueprint' ? '#22D3EE' : 
+    paperStyle === 'parchment' ? '#B45309' : theme.accentColor;
+  const previewLines = 
+    paperStyle === 'chalkboard' ? 'bg-white/[0.04]' : 
+    paperStyle === 'blueprint' ? 'bg-white/[0.08]' : 
+    paperStyle === 'parchment' ? 'bg-[#785032]/[0.06]' : 'bg-blue-500/[0.08]';
+  const previewMargin = 
+    paperStyle === 'chalkboard' ? 'bg-red-500/20' : 
+    paperStyle === 'blueprint' ? 'bg-white/20' : 
+    paperStyle === 'parchment' ? 'bg-amber-800/30' : 'bg-red-500/30';
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-24 p-6 select-none text-slate-100 font-sans bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 rounded-[3rem] border border-slate-800 shadow-3xl relative overflow-hidden force-dark-theme">
@@ -1519,6 +1627,30 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
                 className="w-full bg-slate-900 border border-slate-800 px-4 py-2.5 rounded-xl font-bold text-xs text-white focus:border-indigo-500 outline-none"
               />
             </div>
+
+            <div>
+              <label className="text-[9px] text-slate-400 font-black uppercase tracking-wider block mb-1.5">ପୃଷ୍ଠା ଶୈଳୀ (Paper Theme / Style)</label>
+              <div className="grid grid-cols-2 gap-3 mt-1.5">
+                {[
+                  { id: 'ruled', name: 'Classic Notebook', bg: 'bg-[#FCFBF9] text-slate-950 border-slate-300', desc: 'Standard cream lined page' },
+                  { id: 'chalkboard', name: 'Neon Chalkboard', bg: 'bg-[#121824] text-slate-100 border-slate-800', desc: 'Dark chalkboard slate' },
+                  { id: 'parchment', name: 'Vintage Scroll', bg: 'bg-[#F4EBD0] text-amber-950 border-amber-900/30', desc: 'Aged paper with sepia ink' },
+                  { id: 'blueprint', name: 'Blueprint Draft', bg: 'bg-[#0A3663] text-cyan-100 border-cyan-800/30', desc: 'Engineering grid & white pen' },
+                ].map(style => (
+                  <button
+                    key={style.id}
+                    type="button"
+                    onClick={() => setPaperStyle(style.id as any)}
+                    className={`p-3 rounded-2xl border-2 text-left transition-all ${
+                      paperStyle === style.id ? 'ring-2 ring-indigo-500 border-transparent scale-[1.02]' : 'hover:bg-white/5 opacity-80 hover:opacity-100'
+                    } ${style.bg}`}
+                  >
+                    <div className="font-extrabold text-[10px]">{style.name}</div>
+                    <div className="text-[8px] opacity-75 mt-0.5 font-bold leading-tight">{style.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
           <h2 className="text-sm font-black uppercase text-slate-300 tracking-wider border-b border-white/5 pb-2 flex items-center gap-2">
@@ -1662,37 +1794,37 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
           {/* Glowing Subject Theme Backdrop */}
           <div className={`absolute top-10 bottom-0 left-10 right-10 rounded-[2.5rem] blur-[80px] pointer-events-none transition-all duration-700 ${theme.glowClass}`} />
           
-          <div className="w-full max-w-[390px] aspect-[9/16] bg-[#FCFBF9] border-8 border-slate-950 rounded-[3rem] shadow-[0_25px_60px_rgba(0,0,0,0.5)] relative overflow-hidden select-none p-4 flex flex-col justify-between text-[6px] z-10 transition-all hover:scale-[1.01] duration-500">
+          <div className={`w-full max-w-[390px] aspect-[9/16] border-8 border-slate-950 rounded-[3rem] shadow-[0_25px_60px_rgba(0,0,0,0.5)] relative overflow-hidden select-none p-4 flex flex-col justify-between text-[6px] z-10 transition-all hover:scale-[1.01] duration-500 ${previewBg} ${previewText}`}>
             
             {/* Organic notebook ruled lines */}
-            <div className="absolute inset-0 pointer-events-none flex flex-col justify-between pt-[72px] pb-6" style={{ opacity: 0.16 }}>
+            <div className="absolute inset-0 pointer-events-none flex flex-col justify-between pt-[72px] pb-6">
               {Array.from({ length: 33 }).map((_, i) => (
-                <div key={i} className="w-full h-px bg-blue-500/80" />
+                <div key={i} className={`w-full h-px ${previewLines}`} />
               ))}
             </div>
 
             {/* Red double vertical margin */}
-            <div className="absolute top-0 bottom-0 left-[35px] w-px bg-red-500/50" />
-            <div className="absolute top-0 bottom-0 left-[37px] w-px bg-red-500/50" />
+            <div className={`absolute top-0 bottom-0 left-[35px] w-px ${previewMargin}`} />
+            <div className={`absolute top-0 bottom-0 left-[37px] w-px ${previewMargin}`} />
 
             {/* HEADER DETAILS */}
             <div className="relative flex justify-between items-start z-10 mt-2 font-sans">
-              <div className="border border-slate-700/80 px-2 py-0.5 text-[5px] font-mono leading-none bg-white">
-                <div className="border-b border-slate-600 pb-0.5">Date: {dateStr}</div>
+              <div className={`border px-2 py-0.5 text-[5px] font-mono leading-none ${isDarkPaper ? 'border-white/20 bg-slate-950' : 'border-slate-700/80 bg-white'}`}>
+                <div className={`border-b pb-0.5 ${isDarkPaper ? 'border-white/10' : 'border-slate-600'}`}>Date: {dateStr}</div>
                 <div className="pt-0.5">Page No.: {pageNo}</div>
               </div>
 
               <div className="text-center flex-grow px-2" style={{ fontFamily: 'Kalam, cursive' }}>
-                <div className="text-[6.5px] font-bold text-slate-500 uppercase leading-none tracking-wider">{badgeText}</div>
-                <div className="text-[10px] font-black text-slate-900 leading-tight uppercase mt-0.5">{titleText}</div>
-                <div className="text-[7px] font-black text-blue-600 italic mt-0.5">-- {subtitleText} --</div>
+                <div className={`text-[6.5px] font-bold uppercase leading-none tracking-wider ${isDarkPaper ? 'text-slate-400' : 'text-slate-500'}`}>{badgeText}</div>
+                <div className={`text-[10px] font-black leading-tight uppercase mt-0.5 ${previewTitle}`}>{titleText}</div>
+                <div className={`text-[7px] font-black italic mt-0.5 ${previewSub}`}>-- {subtitleText} --</div>
               </div>
 
-              <div className="w-7 h-7 rounded-full bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center shrink-0 shadow-sm">
+              <div className={`w-7 h-7 rounded-full border overflow-hidden flex items-center justify-center shrink-0 shadow-sm ${isDarkPaper ? 'border-white/20 bg-white/10' : 'border-slate-200 bg-slate-100'}`}>
                 {logoImage ? (
                   <img src={logoImage} alt="logo" className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-[5px] font-black text-slate-500">P-2</span>
+                  <span className={`text-[5px] font-black ${isDarkPaper ? 'text-slate-400' : 'text-slate-500'}`}>P-2</span>
                 )}
               </div>
             </div>
@@ -1702,11 +1834,11 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
               {questions.map((q, idx) => (
                 <div key={q.id} className="flex justify-between items-start gap-1">
                   <div className="flex-1 space-y-0.5 min-w-0">
-                    <div className="text-[7.5px] font-black text-slate-800 flex items-start gap-1">
-                      <span className="w-3.5 h-3.5 shrink-0 rounded-full border border-slate-800 flex items-center justify-center text-[5px] font-mono">{idx + 1}</span>
+                    <div className={`text-[7.5px] font-black flex items-start gap-1 ${previewTitle}`}>
+                      <span className={`w-3.5 h-3.5 shrink-0 rounded-full border flex items-center justify-center text-[5px] font-mono ${isDarkPaper ? 'border-slate-700 bg-white/5' : 'border-slate-800 bg-white'}`}>{idx + 1}</span>
                       <span className="leading-tight">{q.question}</span>
                     </div>
-                    <div className="text-[7.5px] font-bold text-blue-600 pl-4 underline decoration-blue-400 decoration-1">
+                    <div className={`text-[7.5px] font-bold pl-4 underline decoration-1 ${previewAns}`}>
                       • Ans. {q.answer}
                     </div>
                   </div>
@@ -1715,23 +1847,23 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
                     <div 
                       className="w-[85px] p-1 rounded-md shrink-0 leading-snug border-l-2 shadow-sm"
                       style={{ 
-                        backgroundColor: theme.lightBg,
-                        borderColor: theme.accentColor,
-                        borderTop: '1px solid rgba(148, 163, 184, 0.2)',
-                        borderRight: '1px solid rgba(148, 163, 184, 0.2)',
-                        borderBottom: '1px solid rgba(148, 163, 184, 0.2)',
+                        backgroundColor: previewNoteBg,
+                        borderColor: previewNoteLeftBorder,
+                        borderTop: `1px solid ${previewNoteBorder}`,
+                        borderRight: `1px solid ${previewNoteBorder}`,
+                        borderBottom: `1px solid ${previewNoteBorder}`,
                       }}
                     >
-                      <span className="text-[4.5px] font-black block mb-0.5 uppercase tracking-wider" style={{ color: theme.secondaryColor }}>
+                      <span className="text-[4.5px] font-black block mb-0.5 uppercase tracking-wider" style={{ color: previewNoteLabel }}>
                         {q.sideNoteLabel}
                       </span>
-                      <span className="text-[5.5px] font-bold block leading-tight" style={{ color: theme.darkTextColor }}>
+                      <span className="text-[5.5px] font-bold block leading-tight" style={{ color: previewNoteText }}>
                         {q.sideNote}
                       </span>
                     </div>
                   )}
 
-                  <div className="w-7 h-7 bg-slate-100 border border-slate-200 rounded-xl shrink-0 flex items-center justify-center text-sm shadow-inner">
+                  <div className={`w-7 h-7 border rounded-xl shrink-0 flex items-center justify-center text-sm shadow-inner ${isDarkPaper ? 'bg-white/5 border-white/10' : 'bg-slate-100 border-slate-200'}`}>
                     {getIconEmoji(q.iconType)}
                   </div>
                 </div>
