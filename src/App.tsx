@@ -8741,6 +8741,10 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack, setActiv
     }
   ];
 
+  const userClassLabel = user?.class 
+    ? (translations[language]?.classes?.[user.class as keyof typeof translations.en.classes] || `Class ${user.class}`) 
+    : 'Class 10';
+
   return (
     <motion.div 
       variants={containerVariants}
@@ -8749,8 +8753,8 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack, setActiv
       className="space-y-8"
     >
       <SEO 
-        title={`Class 10 Monthly Test Series 2026 | Latest Odisha Board Selection Questions`}
-        description="Participate in the latest Odisha Board pattern monthly test series. Get Class 10 selection questions, MCQ practice, and instant certificates."
+        title={`${userClassLabel} Monthly Test Series 2026 | Latest Odisha Board Selection Questions`}
+        description={`Participate in the latest Odisha Board pattern monthly test series for ${userClassLabel}. Get selection questions, MCQ practice, and instant certificates.`}
         schemaType="FAQPage"
         faqs={testFaqs}
       />
