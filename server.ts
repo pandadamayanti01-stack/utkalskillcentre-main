@@ -1278,7 +1278,7 @@ async function startServer() {
       2. A concise and correct answer.
       3. A side note label (MUST be one of: "Important!", "Key Fact", "Remember!", "Note", "Did You Know!", "Formula!").
       4. A brief 1-sentence supporting note details.
-      5. An icon type (MUST be one of: "temple", "flower", "mountain", "dance", "leader", "river", "sand", "school", "book", "deer", "mirror", "lens", "prism", "magnet"). Choose the icon that best represents the question topic. If it is a science/physics chapter, prefer using "mirror", "lens", "prism", or "magnet" where appropriate.
+      5. An icon type (MUST be one of: "temple", "flower", "mountain", "dance", "leader", "river", "sand", "school", "book", "deer", "mirror", "lens", "prism", "magnet", "concave_mirror", "axes", "triangle", "circle", "matrix", "integral", "beaker", "atom", "dna", "bulb", "globe", "quill"). Choose the icon that best represents the question topic. If it is a math/algebra/geometry chapter, prefer using "axes", "triangle", "circle", "matrix", or "integral". If it is a science/physics/chemistry chapter, prefer using "beaker", "atom", "dna", "bulb", "mirror", "lens", "prism", or "magnet". Choose "book" or "quill" for general/language chapters.
 
       Provide the output in JSON format with the following structure:
       {

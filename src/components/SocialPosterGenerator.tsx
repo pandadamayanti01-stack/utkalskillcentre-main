@@ -21,20 +21,59 @@ import { db } from '../firebase';
 function getSubjectCategory(subjectKey: string): 'math' | 'science' | 'social' | 'language' | 'skills' {
   const key = subjectKey.toLowerCase();
   
-  if (key.includes('ganita') || key === 'algebra' || key === 'geometry' || key.includes('math')) {
+  if (
+    key.includes('ganita') || 
+    key.includes('algebra') || 
+    key.includes('geometry') || 
+    key.includes('math')
+  ) {
     return 'math';
   }
-  if (key.includes('science') || key.includes('jigyasa') || key.includes('paribesa') || key.includes('life') || key.includes('physical') || key.includes('surrounding')) {
+  if (
+    key.includes('science') || 
+    key.includes('jigyasa') || 
+    key.includes('paribesa') || 
+    key.includes('life') || 
+    key.includes('physical') || 
+    key.includes('surrounding')
+  ) {
     return 'science';
   }
-  if (key.includes('social') || key.includes('geography') || key.includes('history') || key === 'samajika_bignana' || key === 'geography') {
+  if (
+    key.includes('social') || 
+    key.includes('geography') || 
+    key.includes('history') || 
+    key.includes('samajika') || 
+    key.includes('nagari') ||
+    key.includes('rajaniti') ||
+    key.includes('bhugola')
+  ) {
     return 'social';
   }
-  if (key.includes('kausala') || key.includes('vocational') || key.includes('art') || key.includes('sikhya') || key.includes('khela') || key.includes('sharirika') || key.includes('yoga') || key.includes('palette') || key.includes('wellness')) {
+  if (
+    key.includes('kausala') || 
+    key.includes('vocational') || 
+    key.includes('art') || 
+    key.includes('sikhya') || 
+    key.includes('khela') || 
+    key.includes('sharirika') || 
+    key.includes('yoga') || 
+    key.includes('palette') || 
+    key.includes('wellness') ||
+    key.includes('skill')
+  ) {
     return 'skills';
   }
   return 'language';
 }
+
+const CATEGORY_ALLOWED_ICONS: Record<'math' | 'science' | 'social' | 'language' | 'skills', string[]> = {
+  math: ['axes', 'triangle', 'circle', 'matrix', 'integral', 'book', 'quill'],
+  science: ['beaker', 'atom', 'dna', 'bulb', 'magnet', 'lens', 'prism', 'concave_mirror', 'book', 'quill'],
+  language: ['book', 'quill', 'school'],
+  skills: ['axes', 'bulb', 'school', 'matrix', 'book', 'quill'],
+  social: ['globe', 'mountain', 'river', 'temple', 'sand', 'book', 'quill']
+};
 
 function getSubjectIconTypes(subjectKey: string): string[] {
   const cat = getSubjectCategory(subjectKey);
@@ -329,7 +368,10 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
             { label: 'Important!', text: 'Commonly asked problem.' }
           ];
           const note = defaultSideNotes[index % defaultSideNotes.length];
-          const subjectIcons = getSubjectIconTypes(selectedSubject);
+          const cat = getSubjectCategory(selectedSubject);
+          const allowed = CATEGORY_ALLOWED_ICONS[cat] || [];
+          const isIconAllowed = q.iconType && allowed.includes(q.iconType);
+          const finalIcon = isIconAllowed ? q.iconType : (subjectIcons[index % subjectIcons.length] || 'book');
 
           return {
             id: index + 1,
@@ -337,7 +379,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
             answer: ansText || '',
             sideNote: q.sideNote || note.text,
             sideNoteLabel: (q.sideNoteLabel || note.label) as any,
-            iconType: (q.iconType || subjectIcons[index % subjectIcons.length] || 'book') as any
+            iconType: finalIcon as any
           };
         });
 
@@ -391,14 +433,21 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       const data = await response.json();
       if (data && data.questions && Array.isArray(data.questions)) {
         const subjectIcons = getSubjectIconTypes(selectedSubject);
-        const mapped = data.questions.map((q: any, index: number) => ({
-          id: index + 1,
-          question: q.question || '',
-          answer: q.answer || '',
-          sideNote: q.sideNote || '',
-          sideNoteLabel: q.sideNoteLabel || 'Note',
-          iconType: q.iconType || subjectIcons[index % subjectIcons.length]
-        }));
+        const cat = getSubjectCategory(selectedSubject);
+        const allowed = CATEGORY_ALLOWED_ICONS[cat] || [];
+
+        const mapped = data.questions.map((q: any, index: number) => {
+          const isIconAllowed = q.iconType && allowed.includes(q.iconType);
+          const finalIcon = isIconAllowed ? q.iconType : (subjectIcons[index % subjectIcons.length] || 'book');
+          return {
+            id: index + 1,
+            question: q.question || '',
+            answer: q.answer || '',
+            sideNote: q.sideNote || '',
+            sideNoteLabel: q.sideNoteLabel || 'Note',
+            iconType: finalIcon
+          };
+        });
 
         const fullList = [...mapped];
         while (fullList.length < 10) {
