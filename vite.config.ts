@@ -165,6 +165,7 @@ export default defineConfig(({mode}) => {
           middleSchoolExamPapers: path.resolve(__dirname, 'odisha-school-exam-question-papers-class-6-to-8.html'),
           matricExamModelPapers: path.resolve(__dirname, 'bse-odisha-matric-exam-model-and-past-papers.html'),
           teacherLessonPlans: path.resolve(__dirname, 'odisha-school-lesson-plans-and-worksheets-for-teachers.html'),
+          textbookErrorsList: path.resolve(__dirname, 'bse-odisha-textbook-errors-and-corrections-list.html'),
         },
       },
     },
