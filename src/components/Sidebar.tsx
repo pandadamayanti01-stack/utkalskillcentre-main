@@ -62,7 +62,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'monthly_tests', icon: Lucide.Calendar, label: t.monthlyTests },
     { id: 'syllabus_tracker', icon: Lucide.ListChecks, label: language === 'en' ? 'Syllabus Tracker' : 'ପାଠ୍ୟକ୍ରମ ଟ୍ରାକର୍' },
     { id: 'daily_mcqs', icon: Lucide.ListChecks, label: language === 'en' ? 'Gundulu Daily Challenge' : 'ଗୁନ୍ଦୁଲୁ ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ' },
-    { id: 'matching_quiz', icon: Lucide.Shuffle, label: language === 'en' ? 'Gundulu Matching Game' : 'ଗୁନ୍ଦୁଲୁ ମିଳନ ଖେଳ' },
+    { id: 'game_zone', icon: Lucide.Gamepad2, label: language === 'en' ? 'Gundulu Game Zone' : 'ଗୁନ୍ଦୁଲୁ ଗେମ୍ ଜୋନ୍' },
     { id: 'leaderboard', icon: Lucide.Trophy, label: t.leaderboard },
     { id: 'store', icon: Lucide.ShoppingBag, label: language === 'en' ? 'Avatar Store' : 'ଅବତାର ଷ୍ଟୋର' },
     { id: 'plans', icon: Lucide.CreditCard, label: language === 'en' ? 'Subscription' : 'ସବସ୍କ୍ରିପସନ୍' },
@@ -152,7 +152,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 {
                   titleEn: 'Challenge Arena 🏆',
                   titleOr: 'ଚ୍ୟାଲେଞ୍ଜ ଆରେନା 🏆',
-                  items: menuItems.filter(item => ['monthly_tests', 'daily_mcqs', 'matching_quiz', 'leaderboard', 'store'].includes(item.id))
+                  items: menuItems.filter(item => ['monthly_tests', 'daily_mcqs', 'game_zone', 'leaderboard', 'store'].includes(item.id))
                 },
                 {
                   titleEn: 'AI & Tools',

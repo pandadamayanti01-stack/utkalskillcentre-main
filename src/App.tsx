@@ -47,7 +47,7 @@ import { OfflineService } from './services/offlineService';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ChatbotModal } from './components/ChatbotModal';
 import { DailyMcqView } from './components/DailyMcqView';
-import { AiMatchingQuiz } from './components/AiMatchingQuiz';
+import { GameZone } from './components/GameZone';
 import { getDeferredPrompt, clearDeferredPrompt, vibrate, requestScreenWakeLock, releaseScreenWakeLock, shareNative, playSuccessChime, playClickSound, subscribeUserToPush } from './pwa';
 import { SEO } from './components/SEO';
 import { BottomNavBar } from './components/BottomNavBar';
@@ -4024,13 +4024,11 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                 <AboutUsModal language={language} onClose={() => setActiveTab('dashboard')} />
               </Suspense>
             )}
-            {activeTab === 'matching_quiz' && (
-              <AiMatchingQuiz 
+            {activeTab === 'game_zone' && (
+              <GameZone 
                 user={user} 
                 language={language} 
-                isPremium={isPremium}
-                onUpgrade={() => setActiveTab('plans')}
-                onClose={() => setActiveTab('dashboard')} 
+                onBack={() => setActiveTab('dashboard')} 
               />
             )}
           </AnimatePresence>

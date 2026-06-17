@@ -382,10 +382,10 @@ export function AiMatchingQuiz({ user, language, onClose, onSuccess, isPremium =
             </div>
             <div>
               <h2 className="text-base sm:text-lg font-black text-white tracking-tight leading-none uppercase">
-                {language === 'or' ? 'ଗୁନ୍ଦୁଲୁ ମିଳନ ଖେଳ' : "Gundulu's Match Quiz"}
+                {language === 'or' ? 'ଗୁନ୍ଦୁଲୁ ଗେମ୍ ଜୋନ୍' : "Gundulu Game Zone"}
               </h2>
               <span className="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-widest mt-1 inline-block">
-                {language === 'or' ? 'ଗୁନ୍ଦୁଲୁ ମିଳନ ଖେଳ' : 'Gundulu Matching Engine'}
+                {language === 'or' ? 'କାର୍ଡ଼-ମିଳନ ଖେଳ' : 'AI Card-Matching Arena'}
               </span>
             </div>
           </div>

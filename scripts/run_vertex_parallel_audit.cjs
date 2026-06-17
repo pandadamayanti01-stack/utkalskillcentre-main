@@ -4,10 +4,18 @@ const path = require('path');
 const https = require('https');
 const { GoogleAuth } = require('google-auth-library');
 
-// Load environment configurations
 const projectId = process.env.FIREBASE_PROJECT_ID || 'utkalskillcentre';
-const region = process.env.VERTEX_AI_REGION || 'us-central1';
-const CONCURRENCY_LIMIT = 15; // Safe speed to stay within Vertex AI RPM limits
+const REGIONS = [
+  'us-central1',
+  'us-east4',
+  'us-west1',
+  'europe-west1',
+  'europe-west4',
+  'asia-northeast1',
+  'us-east1',
+  'us-east5'
+];
+const CONCURRENCY_LIMIT = 8; // Distributed across regions (1 worker per region)
 const CLASSES = ['3', '4', '5', '6', '7', '8', '9', '10']; // Resume from Class 3
 
 const promptPrefix = `You are a professional Odia educational proofreader and editor for the Board of Secondary Education, Odisha (BSE Odisha).
@@ -49,8 +57,7 @@ async function getAccessToken() {
   }
 }
 
-// Call Vertex AI REST API
-function callVertexAi(text, accessToken, retries = 3) {
+function callVertexAi(text, accessToken, initialRegion, retries = 6) {
   return new Promise((resolve, reject) => {
     const payload = JSON.stringify({
       contents: [
@@ -68,9 +75,10 @@ function callVertexAi(text, accessToken, retries = 3) {
       }
     });
 
+    let currentRegion = initialRegion;
     const options = {
-      hostname: `${region}-aiplatform.googleapis.com`,
-      path: `/v1/projects/${projectId}/locations/${region}/publishers/google/models/gemini-2.5-flash:generateContent`,
+      hostname: `${currentRegion}-aiplatform.googleapis.com`,
+      path: `/v1/projects/${projectId}/locations/${currentRegion}/publishers/google/models/gemini-2.5-flash:generateContent`,
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
@@ -96,18 +104,35 @@ function callVertexAi(text, accessToken, retries = 3) {
             } catch (err) {
               reject(new Error("Failed to parse Vertex AI response body: " + err.message));
             }
-          } else if (res.statusCode === 429 && attempt < retries) {
-            // Rate limited, backoff and retry
-            setTimeout(() => runRequest(attempt + 1), attempt * 2000);
+          } else if ((res.statusCode === 429 || res.statusCode === 503 || res.statusCode === 500) && attempt < retries) {
+            const currentIndex = REGIONS.indexOf(currentRegion);
+            const nextRegion = REGIONS[(currentIndex + 1) % REGIONS.length];
+            const delay = Math.pow(2, attempt) * 500 + Math.random() * 500;
+            console.warn(`  ⚠️ Attempt ${attempt}/${retries} got status ${res.statusCode} on ${currentRegion}. Retrying on ${nextRegion} in ${Math.round(delay)}ms...`);
+            
+            currentRegion = nextRegion;
+            options.hostname = `${currentRegion}-aiplatform.googleapis.com`;
+            options.path = `/v1/projects/${projectId}/locations/${currentRegion}/publishers/google/models/gemini-2.5-flash:generateContent`;
+            
+            setTimeout(() => runRequest(attempt + 1), delay);
           } else {
-            reject(new Error(`Vertex AI returned status code ${res.statusCode}: ${body}`));
+            reject(new Error(`Vertex AI returned status code ${res.statusCode} on ${currentRegion}: ${body}`));
           }
         });
       });
 
       req.on('error', (err) => {
         if (attempt < retries) {
-          setTimeout(() => runRequest(attempt + 1), attempt * 2000);
+          const currentIndex = REGIONS.indexOf(currentRegion);
+          const nextRegion = REGIONS[(currentIndex + 1) % REGIONS.length];
+          const delay = Math.pow(2, attempt) * 500 + Math.random() * 500;
+          console.warn(`  ⚠️ Attempt ${attempt}/${retries} got connection error ${err.message} on ${currentRegion}. Retrying on ${nextRegion} in ${Math.round(delay)}ms...`);
+          
+          currentRegion = nextRegion;
+          options.hostname = `${currentRegion}-aiplatform.googleapis.com`;
+          options.path = `/v1/projects/${projectId}/locations/${currentRegion}/publishers/google/models/gemini-2.5-flash:generateContent`;
+          
+          setTimeout(() => runRequest(attempt + 1), delay);
         } else {
           reject(err);
         }
@@ -137,7 +162,7 @@ async function processClass(classNum) {
   // Filter segments that need cleaning
   const tasks = [];
   for (let i = 0; i < data.length; i++) {
-    if (data[i].text && data[i].text.trim().length >= 5) {
+    if (data[i].text && data[i].text.trim().length >= 5 && !data[i].cleaned) {
       tasks.push({ index: i, text: data[i].text });
     }
   }
@@ -153,11 +178,16 @@ async function processClass(classNum) {
 
       try {
         const token = await getAccessToken();
-        const cleanedText = await callVertexAi(task.text, token);
+        const initialRegion = REGIONS[task.index % REGIONS.length];
+        const cleanedText = await callVertexAi(task.text, token, initialRegion);
         data[task.index].text = cleanedText;
+        data[task.index].cleaned = true;
         completedCount++;
         
-        if (completedCount % 50 === 0 || completedCount === 1 || completedCount === tasks.length) {
+        if (completedCount % 20 === 0) {
+          fs.writeFileSync(filepath, JSON.stringify(data, null, 2), 'utf8');
+          console.log(`  [Class ${classNum}] Progress: ${completedCount}/${tasks.length} segments cleaned (Auto-Saved).`);
+        } else if (completedCount === 1 || completedCount === tasks.length) {
           console.log(`  [Class ${classNum}] Progress: ${completedCount}/${tasks.length} segments cleaned.`);
         }
       } catch (err) {
@@ -181,8 +211,8 @@ async function processClass(classNum) {
 
 async function main() {
   console.log(`🚀 Starting Global Vertex AI OCR Cleanup Pipeline...`);
-  console.log(`Project: ${projectId} | Region: ${region}`);
-  console.log(`Model: Gemini 2.5 Flash | Parallel Workers: ${CONCURRENCY_LIMIT}\n`);
+  console.log(`Project: ${projectId}`);
+  console.log(`Model: Gemini 2.5 Flash | Concurrency: ${CONCURRENCY_LIMIT} over ${REGIONS.length} regions\n`);
   
   const startTime = Date.now();
   
