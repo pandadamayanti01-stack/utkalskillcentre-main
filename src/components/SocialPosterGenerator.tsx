@@ -1042,30 +1042,8 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         isDarkPaper = true;
       }
 
-      let bgImgUrl = '/paper_bg_ruled.png';
-      if (paperStyle === 'chalkboard') bgImgUrl = '/paper_bg_chalkboard.png';
-      else if (paperStyle === 'parchment') bgImgUrl = '/paper_bg_parchment.png';
-      else if (paperStyle === 'blueprint') bgImgUrl = '/paper_bg_blueprint.png';
-
-      let paperBgImage: HTMLImageElement | null = null;
-      try {
-        paperBgImage = await new Promise<HTMLImageElement | null>((resolve) => {
-          const img = new Image();
-          img.crossOrigin = 'anonymous';
-          img.onload = () => resolve(img);
-          img.onerror = () => resolve(null);
-          img.src = bgImgUrl;
-        });
-      } catch (err) {
-        console.warn('Background image loading failed, falling back to color fill:', err);
-      }
-
-      if (paperBgImage) {
-        ctx.drawImage(paperBgImage, 0, 0, 1080, 1920);
-      } else {
-        ctx.fillStyle = paperBg;
-        ctx.fillRect(0, 0, 1080, 1920);
-      }
+      ctx.fillStyle = paperBg;
+      ctx.fillRect(0, 0, 1080, 1920);
 
       const category = getSubjectCategory(selectedSubject);
 
@@ -1466,10 +1444,6 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
     paperStyle === 'chalkboard' ? 'bg-[#121824]' : 
     paperStyle === 'parchment' ? 'bg-[#F4EBD0]' : 
     paperStyle === 'blueprint' ? 'bg-[#0A3663]' : 'bg-[#FCFBF9]';
-  const previewBgImg = 
-    paperStyle === 'chalkboard' ? '/paper_bg_chalkboard.png' : 
-    paperStyle === 'parchment' ? '/paper_bg_parchment.png' : 
-    paperStyle === 'blueprint' ? '/paper_bg_blueprint.png' : '/paper_bg_ruled.png';
   const previewText = isDarkPaper ? 'text-slate-100' : 'text-slate-900';
   const previewTitle = isDarkPaper ? 'text-white' : 'text-slate-900';
   const previewSub = 
@@ -1820,15 +1794,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
           {/* Glowing Subject Theme Backdrop */}
           <div className={`absolute top-10 bottom-0 left-10 right-10 rounded-[2.5rem] blur-[80px] pointer-events-none transition-all duration-700 ${theme.glowClass}`} />
           
-          <div 
-            className={`w-full max-w-[390px] aspect-[9/16] border-8 border-slate-950 rounded-[3rem] shadow-[0_25px_60px_rgba(0,0,0,0.5)] relative overflow-hidden select-none p-4 flex flex-col justify-between text-[6px] z-10 transition-all hover:scale-[1.01] duration-500 ${previewBg} ${previewText}`}
-            style={{
-              backgroundImage: `url(${previewBgImg})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat'
-            }}
-          >
+          <div className={`w-full max-w-[390px] aspect-[9/16] border-8 border-slate-950 rounded-[3rem] shadow-[0_25px_60px_rgba(0,0,0,0.5)] relative overflow-hidden select-none p-4 flex flex-col justify-between text-[6px] z-10 transition-all hover:scale-[1.01] duration-500 ${previewBg} ${previewText}`}>
             
             {/* Organic notebook ruled lines */}
             <div className="absolute inset-0 pointer-events-none flex flex-col justify-between pt-[72px] pb-6">
