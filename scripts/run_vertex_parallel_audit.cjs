@@ -7,7 +7,7 @@ const { GoogleAuth } = require('google-auth-library');
 // Load environment configurations
 const projectId = process.env.FIREBASE_PROJECT_ID || 'utkalskillcentre';
 const region = process.env.VERTEX_AI_REGION || 'us-central1';
-const CONCURRENCY_LIMIT = 5; // Safe speed to stay within Vertex AI RPM limits
+const CONCURRENCY_LIMIT = 15; // Safe speed to stay within Vertex AI RPM limits
 const CLASSES = ['3', '4', '5', '6', '7', '8', '9', '10']; // Resume from Class 3
 
 const promptPrefix = `You are a professional Odia educational proofreader and editor for the Board of Secondary Education, Odisha (BSE Odisha).
