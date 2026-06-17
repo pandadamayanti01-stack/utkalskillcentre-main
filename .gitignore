@@ -20,3 +20,5 @@ users.csv
 play_store_testers.csv
 *.keystore
 *.jks
+extracted_user_list.csv
+gemini_batch_requests.jsonl
