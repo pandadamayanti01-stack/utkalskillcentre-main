@@ -1407,12 +1407,87 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       }
       ctx.fillText(`— ${subtitleText} —`, 540, 220);
 
-      let startY = 285;
+      // Pass 1: Pre-calculate heights and check if we exceed our page budget
+      const defaultQLineHeight = 28;
+      const defaultAnsLineHeight = 30;
+      const defaultPadding = 18;
+      
+      const heights: number[] = [];
+      let totalRequiredHeight = 0;
+      
+      for (let i = 0; i < questions.length; i++) {
+        const q = questions[i];
+        
+        ctx.font = 'bold 24px Kalam';
+        const qLines = wrapText(ctx, `Q. ${q.question}`, 420);
+        
+        ctx.font = 'bold 26px Kalam';
+        const ansLines = wrapText(ctx, `• Ans. ${q.answer}`, 410);
+        
+        const qHeight = qLines.length * defaultQLineHeight;
+        const ansHeight = ansLines.length * defaultAnsLineHeight;
+        const qaHeight = 14 + qHeight + 12 + ansHeight;
+        
+        let sideNoteHeight = 0;
+        if (q.sideNote) {
+          ctx.font = 'bold 18px Kalam';
+          const noteLines = wrapText(ctx, q.sideNote, 260);
+          const nh = Math.max(90, 48 + noteLines.length * 24);
+          sideNoteHeight = -8 + nh;
+        }
+        
+        const blockHeight = Math.max(qaHeight, sideNoteHeight, 95);
+        heights.push(blockHeight);
+        totalRequiredHeight += blockHeight + defaultPadding;
+      }
+      totalRequiredHeight -= defaultPadding; // remove last padding
+
+      // Target bounds: start drawing at 270px, footer is at 1860px.
+      // Available height is 1860 - 270 = 1590px.
+      // We set target budget to 1560px for a safety margin.
+      const maxAvailableHeight = 1560;
+      
+      let qLineHeight = defaultQLineHeight;
+      let ansLineHeight = defaultAnsLineHeight;
+      let padding = defaultPadding;
+      
+      let qFontSize = 24;
+      let ansFontSize = 26;
+      let noteFontSize = 18;
+      let noteLabelSize = 16;
+      let noteLineHeight = 24;
+
+      if (totalRequiredHeight > maxAvailableHeight) {
+        const compression = maxAvailableHeight / totalRequiredHeight;
+        padding = Math.max(6, defaultPadding * compression);
+        qLineHeight = Math.max(22, defaultQLineHeight * compression);
+        ansLineHeight = Math.max(24, defaultAnsLineHeight * compression);
+        
+        qFontSize = Math.max(20, Math.floor(24 * compression));
+        ansFontSize = Math.max(22, Math.floor(26 * compression));
+        noteFontSize = Math.max(15, Math.floor(18 * compression));
+        noteLabelSize = Math.max(14, Math.floor(16 * compression));
+        noteLineHeight = Math.max(20, Math.floor(24 * compression));
+      }
+
+      let startY = 270;
       ctx.textAlign = 'left';
 
       for (let i = 0; i < questions.length; i++) {
         const q = questions[i];
         
+        // Draw light dotted separator between questions
+        if (i > 0) {
+          ctx.strokeStyle = isDarkPaper ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
+          ctx.lineWidth = 1;
+          ctx.setLineDash([4, 4]);
+          ctx.beginPath();
+          ctx.moveTo(100, startY - 8);
+          ctx.lineTo(980, startY - 8);
+          ctx.stroke();
+          ctx.setLineDash([]); // Reset
+        }
+
         ctx.strokeStyle = primaryColor;
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -1426,28 +1501,40 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         ctx.closePath();
         ctx.stroke();
 
-        ctx.font = 'bold 20px Kalam';
+        ctx.font = `bold ${Math.max(16, qFontSize - 4)}px Kalam`;
         ctx.fillStyle = primaryColor;
         const numStr = String(i + 1);
         const textX = numStr.length > 1 ? 67 : 73;
         ctx.fillText(numStr, textX, startY + 22);
 
-        ctx.font = 'bold 24px Kalam';
+        // Draw Question
+        ctx.font = `bold ${qFontSize}px Kalam`;
         const qLines = wrapText(ctx, `Q. ${q.question}`, 420);
         qLines.forEach((line, idx) => {
-          drawFormattedTextLine(ctx, line, 160, startY + 14 + idx * 28, darkTextColor, secondaryColor);
+          drawFormattedTextLine(ctx, line, 160, startY + 14 + idx * qLineHeight, darkTextColor, secondaryColor);
         });
 
-        ctx.font = 'bold 26px Kalam';
+        // Draw Answer
+        ctx.font = `bold ${ansFontSize}px Kalam`;
         ctx.fillStyle = secondaryColor;
         const ansLines = wrapText(ctx, `• Ans. ${q.answer}`, 410);
-        const ansStartY = startY + 14 + qLines.length * 28 + 12;
+        const ansStartY = startY + 14 + qLines.length * qLineHeight + 12;
         ansLines.forEach((line, idx) => {
-          ctx.fillText(line, 180, ansStartY + idx * 30);
+          ctx.fillText(line, 180, ansStartY + idx * ansLineHeight);
         });
 
+        const qHeight = qLines.length * qLineHeight;
+        const ansHeight = ansLines.length * ansLineHeight;
+        const qaHeight = 14 + qHeight + 12 + ansHeight;
+
+        // Draw Side Note
+        let sideNoteHeight = 0;
         if (q.sideNote) {
-          const nx = 590, ny = startY - 8, nw = 290, nh = 90;
+          ctx.font = `bold ${noteFontSize}px Kalam`;
+          const noteLines = wrapText(ctx, q.sideNote, 260);
+          const nh = Math.max(90, 48 + noteLines.length * noteLineHeight);
+          sideNoteHeight = -8 + nh;
+          const nx = 590, ny = startY - 8, nw = 290;
 
           // Fill side note background card
           ctx.fillStyle = lightBg;
@@ -1467,7 +1554,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
           ctx.lineTo(nx + 2, ny + nh);
           ctx.stroke();
 
-          // Draw other wobbly borders
+          // Draw wobbly borders
           ctx.strokeStyle = isDarkPaper ? 'rgba(255, 255, 255, 0.15)' : 'rgba(148, 163, 184, 0.4)';
           ctx.lineWidth = 1.2;
           ctx.beginPath();
@@ -1479,22 +1566,23 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
 
           // Draw label
           ctx.fillStyle = secondaryColor;
-          ctx.font = 'bold 16px Kalam';
-          ctx.fillText(q.sideNoteLabel, nx + 14, ny + 26);
+          ctx.font = `bold ${noteLabelSize}px Kalam`;
+          ctx.fillText(q.sideNoteLabel, nx + 14, ny + 24);
 
           // Draw side-note content
           ctx.fillStyle = darkTextColor;
-          ctx.font = 'bold 18px Kalam';
-          const noteLines = wrapText(ctx, q.sideNote, 260);
+          ctx.font = `bold ${noteFontSize}px Kalam`;
           let noteY = ny + 48;
           noteLines.forEach((line) => {
             ctx.fillText(line, nx + 14, noteY);
-            noteY += 24;
+            noteY += noteLineHeight;
           });
         }
 
         drawSketchIcon(ctx, q.iconType, 900, startY - 12, primaryColor);
-        startY += 158;
+        
+        const blockHeight = Math.max(qaHeight, sideNoteHeight, 95);
+        startY += blockHeight + padding;
       }
 
       ctx.textAlign = 'center';
