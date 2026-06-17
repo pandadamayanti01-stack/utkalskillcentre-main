@@ -1590,6 +1590,58 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.font = 'bold 24px Kalam';
       ctx.fillText(`★ ${footerText} ★`, 540, 1860);
 
+      // Draw dynamic QR Code pointing to utkalskillcentre.com in bottom-left margin
+      try {
+        await new Promise<void>((resolve) => {
+          const qrImg = new Image();
+          qrImg.crossOrigin = 'anonymous';
+          qrImg.onload = () => {
+            ctx.save();
+            ctx.translate(72, 1760); // positioned in the bottom-left margin
+            ctx.rotate(0.05); // slight playful tilt matching hand-placed look
+
+            // Setup drop shadow for the card
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.12)';
+            ctx.shadowBlur = 8;
+            ctx.shadowOffsetX = 2;
+            ctx.shadowOffsetY = 4;
+
+            // White card backing
+            ctx.fillStyle = '#FFFFFF';
+            ctx.beginPath();
+            ctx.rect(-40, -45, 80, 95);
+            ctx.fill();
+
+            // Clear drop shadow for borders
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+
+            // Draw a subtle border matching paper style
+            ctx.strokeStyle = isDarkPaper ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.08)';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(-40, -45, 80, 95);
+
+            // Draw QR Code image
+            ctx.drawImage(qrImg, -33, -38, 66, 66);
+
+            // Draw "Scan to Learn" text underneath QR
+            ctx.fillStyle = isDarkPaper ? '#94A3B8' : '#475569';
+            ctx.font = 'bold 9px Kalam';
+            ctx.textAlign = 'center';
+            ctx.fillText('Scan to Learn', 0, 44);
+
+            ctx.restore();
+            resolve();
+          };
+          qrImg.onerror = () => resolve();
+          qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https%3A%2F%2Futkalskillcentre.com';
+        });
+      } catch (err) {
+        console.warn('QR Code generation failed:', err);
+      }
+
       // Draw premium sticker badge for the Gundulu character mascot (pointing pose)
       try {
         await new Promise<void>((resolve) => {
@@ -2145,6 +2197,17 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
 
             {/* FOOTER */}
             <div className="relative text-center text-[9px] font-black z-10 border-t border-slate-200/40 pt-2 pb-1.5 flex items-center justify-center" style={{ fontFamily: 'Kalam, cursive' }}>
+              
+              {/* Hand-drawn style QR Code Scanner in bottom-left */}
+              <div className="absolute left-1 bottom-1 p-0.5 bg-white border border-slate-200/80 rounded shadow-[0_1px_3px_rgba(0,0,0,0.08)] flex flex-col items-center justify-center rotate-[3deg] z-20">
+                <img 
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=https%3A%2F%2Futkalskillcentre.com" 
+                  alt="QR Scanner" 
+                  className="w-[18px] h-[18px] object-contain" 
+                />
+                <span className="text-[3px] font-bold text-slate-500 mt-0.5 scale-90">Scan to Learn</span>
+              </div>
+
               <span>★ {footerText} ★</span>
               
               {/* Premium Sticker/Badge for Gundulu Mascot (pointing baby pose) */}
