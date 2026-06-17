@@ -133,8 +133,8 @@ function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number)
 
   for (let n = 0; n < words.length; n++) {
     let testLine = currentLine + words[n] + ' ';
-    let metrics = ctx.measureText(testLine);
-    let testWidth = metrics.width;
+    // Measure width excluding asterisks
+    let testWidth = ctx.measureText(testLine.replace(/\*/g, '')).width;
     if (testWidth > maxWidth && n > 0) {
       lines.push(currentLine.trim());
       currentLine = words[n] + ' ';
@@ -144,6 +144,42 @@ function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number)
   }
   lines.push(currentLine.trim());
   return lines;
+}
+
+function drawFormattedTextLine(
+  ctx: CanvasRenderingContext2D,
+  line: string,
+  x: number,
+  y: number,
+  textColor: string,
+  underlineColor: string
+) {
+  const parts = line.split('*');
+  let currentX = x;
+
+  parts.forEach((part, index) => {
+    const isUnderlined = index % 2 === 1;
+    ctx.fillStyle = textColor;
+    ctx.fillText(part, currentX, y);
+
+    const partWidth = ctx.measureText(part).width;
+    if (isUnderlined && part.trim().length > 0) {
+      ctx.save();
+      ctx.strokeStyle = underlineColor;
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.moveTo(currentX, y + 4);
+      const segments = Math.max(3, Math.floor(partWidth / 8));
+      for (let i = 1; i <= segments; i++) {
+        const px = currentX + (i / segments) * partWidth;
+        const py = (y + 4) + (Math.random() - 0.5) * 1.5;
+        ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+    currentX += partWidth;
+  });
 }
 
 function getIconEmoji(type: string): string {
@@ -1343,27 +1379,28 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         ctx.closePath();
         ctx.stroke();
 
-        ctx.font = 'bold 18px Kalam';
-        ctx.fillStyle = primaryColor;
-        ctx.fillText(String(i + 1), 74, startY + 22);
-
         ctx.font = 'bold 20px Kalam';
-        ctx.fillStyle = darkTextColor;
+        ctx.fillStyle = primaryColor;
+        const numStr = String(i + 1);
+        const textX = numStr.length > 1 ? 67 : 73;
+        ctx.fillText(numStr, textX, startY + 22);
+
+        ctx.font = 'bold 24px Kalam';
         const qLines = wrapText(ctx, `Q. ${q.question}`, 420);
         qLines.forEach((line, idx) => {
-          ctx.fillText(line, 160, startY + 14 + idx * 24);
+          drawFormattedTextLine(ctx, line, 160, startY + 14 + idx * 28, darkTextColor, secondaryColor);
         });
 
-        ctx.font = 'bold 20px Kalam';
+        ctx.font = 'bold 26px Kalam';
         ctx.fillStyle = secondaryColor;
-        const ansLines = wrapText(ctx, `• Ans. ${q.answer}`, 420);
-        const ansStartY = startY + 14 + qLines.length * 24 + 10;
+        const ansLines = wrapText(ctx, `• Ans. ${q.answer}`, 410);
+        const ansStartY = startY + 14 + qLines.length * 28 + 12;
         ansLines.forEach((line, idx) => {
-          ctx.fillText(line, 180, ansStartY + idx * 24);
+          ctx.fillText(line, 180, ansStartY + idx * 30);
         });
 
         if (q.sideNote) {
-          const nx = 590, ny = startY - 8, nw = 290, nh = 74;
+          const nx = 590, ny = startY - 8, nw = 290, nh = 90;
 
           // Fill side note background card
           ctx.fillStyle = lightBg;
@@ -1395,28 +1432,90 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
 
           // Draw label
           ctx.fillStyle = secondaryColor;
-          ctx.font = 'bold 15px Kalam';
-          ctx.fillText(q.sideNoteLabel, nx + 14, ny + 22);
+          ctx.font = 'bold 16px Kalam';
+          ctx.fillText(q.sideNoteLabel, nx + 14, ny + 26);
 
           // Draw side-note content
           ctx.fillStyle = darkTextColor;
-          ctx.font = 'bold 16px Kalam';
+          ctx.font = 'bold 18px Kalam';
           const noteLines = wrapText(ctx, q.sideNote, 260);
-          let noteY = ny + 40;
+          let noteY = ny + 48;
           noteLines.forEach((line) => {
             ctx.fillText(line, nx + 14, noteY);
-            noteY += 20;
+            noteY += 24;
           });
         }
 
         drawSketchIcon(ctx, q.iconType, 900, startY - 12, primaryColor);
-        startY += 145;
+        startY += 158;
       }
 
       ctx.textAlign = 'center';
       ctx.fillStyle = primaryColor;
       ctx.font = 'bold 24px Kalam';
-      ctx.fillText(`★ ${footerText} ★`, 540, 1850);
+      ctx.fillText(`★ ${footerText} ★`, 540, 1860);
+
+      // Draw premium sticker badge for the Gundulu character mascot (pointing pose)
+      try {
+        await new Promise<void>((resolve) => {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = () => {
+            ctx.save();
+            ctx.translate(920, 1760);
+            ctx.rotate(-0.08); // slight playful tilt
+
+            // Setup drop shadow for the sticker base
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.15)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetX = 3;
+            ctx.shadowOffsetY = 5;
+
+            // Draw circular sticker background base (pure white to blend with baby image background)
+            ctx.fillStyle = '#FFFFFF';
+            ctx.beginPath();
+            ctx.arc(0, 0, 65, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Clear drop shadow for inner drawings
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+
+            // Clip the image to the circle boundaries so the white corners don't overflow
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(0, 0, 64, 0, Math.PI * 2);
+            ctx.clip();
+            ctx.drawImage(img, -64, -64, 128, 128);
+            ctx.restore();
+
+            // Draw outer border matching the theme
+            ctx.strokeStyle = primaryColor;
+            ctx.lineWidth = 2.0;
+            ctx.beginPath();
+            ctx.arc(0, 0, 65, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Draw inner dashed border matching the theme
+            ctx.strokeStyle = secondaryColor;
+            ctx.lineWidth = 1.2;
+            ctx.setLineDash([4, 3]);
+            ctx.beginPath();
+            ctx.arc(0, 0, 57, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.setLineDash([]); // Reset dash
+
+            ctx.restore();
+            resolve();
+          };
+          img.onerror = () => resolve();
+          img.src = '/gundulu-pointing.png';
+        });
+      } catch (err) {
+        console.warn('Gundulu character image loading failed:', err);
+      }
 
       const dataUrl = canvas.toDataURL('image/png');
       const link = document.createElement('a');
@@ -1430,6 +1529,19 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       setPageNo((prev) => {
         const nextNum = parseInt(prev, 10) + 1;
         return String(isNaN(nextNum) ? 1 : nextNum).padStart(3, '0');
+      });
+
+      // Auto-increment badge/set number (e.g. SET-01 -> SET-02)
+      setBadgeText((prev) => {
+        const match = prev.match(/^(SET-)(\d+)$/i);
+        if (match) {
+          const prefix = match[1]; // "SET-"
+          const numStr = match[2]; // e.g. "01"
+          const nextNum = parseInt(numStr, 10) + 1;
+          const padded = String(nextNum).padStart(numStr.length, '0');
+          return `${prefix}${padded}`;
+        }
+        return prev;
       });
     } catch (err) {
       console.error('Error generating branded poster:', err);
@@ -1830,15 +1942,27 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
             </div>
 
             {/* 10 QUESTIONS LIST */}
-            <div className="flex-1 flex flex-col justify-between py-4 pl-[45px] pr-2 z-10 space-y-1" style={{ fontFamily: 'Kalam, cursive' }}>
+            <div className="flex-1 flex flex-col justify-between py-4 pl-[45px] pr-2 z-10 space-y-1.5" style={{ fontFamily: 'Kalam, cursive' }}>
               {questions.map((q, idx) => (
                 <div key={q.id} className="flex justify-between items-start gap-1">
                   <div className="flex-1 space-y-0.5 min-w-0">
-                    <div className={`text-[7.5px] font-black flex items-start gap-1 ${previewTitle}`}>
-                      <span className={`w-3.5 h-3.5 shrink-0 rounded-full border flex items-center justify-center text-[5px] font-mono ${isDarkPaper ? 'border-slate-700 bg-white/5' : 'border-slate-800 bg-white'}`}>{idx + 1}</span>
-                      <span className="leading-tight">{q.question}</span>
+                    <div className={`text-[8.5px] font-black flex items-start gap-1 ${previewTitle}`}>
+                      <span className={`w-3.5 h-3.5 shrink-0 rounded-full border flex items-center justify-center text-[5.5px] font-mono ${isDarkPaper ? 'border-slate-700 bg-white/5' : 'border-slate-800 bg-white'}`}>{idx + 1}</span>
+                      <span className="leading-tight">
+                        {q.question.split('*').map((part, index) => {
+                          const isUnderlined = index % 2 === 1;
+                          if (isUnderlined) {
+                            return (
+                              <span key={index} className="underline decoration-blue-500/80 underline-offset-1 font-bold">
+                                {part}
+                              </span>
+                            );
+                          }
+                          return part;
+                        })}
+                      </span>
                     </div>
-                    <div className={`text-[7.5px] font-bold pl-4 underline decoration-1 ${previewAns}`}>
+                    <div className={`text-[9.5px] font-bold pl-4 leading-normal ${previewAns}`}>
                       • Ans. {q.answer}
                     </div>
                   </div>
@@ -1854,10 +1978,10 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
                         borderBottom: `1px solid ${previewNoteBorder}`,
                       }}
                     >
-                      <span className="text-[4.5px] font-black block mb-0.5 uppercase tracking-wider" style={{ color: previewNoteLabel }}>
+                      <span className="text-[5px] font-black block mb-0.5 uppercase tracking-wider" style={{ color: previewNoteLabel }}>
                         {q.sideNoteLabel}
                       </span>
-                      <span className="text-[5.5px] font-bold block leading-tight" style={{ color: previewNoteText }}>
+                      <span className="text-[6px] font-bold block leading-tight" style={{ color: previewNoteText }}>
                         {q.sideNote}
                       </span>
                     </div>
@@ -1871,8 +1995,26 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
             </div>
 
             {/* FOOTER */}
-            <div className="text-center text-[8px] font-black z-10 border-t border-slate-200/40 pt-1.5 pb-1" style={{ fontFamily: 'Kalam, cursive' }}>
-              ★ {footerText} ★
+            <div className="relative text-center text-[9px] font-black z-10 border-t border-slate-200/40 pt-2 pb-1.5 flex items-center justify-center" style={{ fontFamily: 'Kalam, cursive' }}>
+              <span>★ {footerText} ★</span>
+              
+              {/* Premium Sticker/Badge for Gundulu Mascot (pointing baby pose) */}
+              <div 
+                className="absolute right-1 bottom-1 w-9 h-9 rounded-full bg-[#FFFFFF] shadow-md flex items-center justify-center rotate-[-6deg] z-20 group overflow-hidden"
+                style={{ borderColor: theme.primaryColor, borderWidth: '1px', borderStyle: 'solid' }}
+              >
+                {/* Decorative dashed inner border */}
+                <div 
+                  className="absolute inset-0.5 rounded-full border border-dashed pointer-events-none z-10" 
+                  style={{ borderColor: theme.secondaryColor }}
+                />
+                {/* Mascot image */}
+                <img 
+                  src="/gundulu-pointing.png" 
+                  alt="gundulu" 
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" 
+                />
+              </div>
             </div>
 
           </div>

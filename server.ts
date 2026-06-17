@@ -1274,7 +1274,7 @@ async function startServer() {
       The output should be generated in ${language === 'or' ? 'Odia (using clean Odia script)' : 'English'}.
       
       For each of the 10 questions, generate:
-      1. A short, highly relevant revision question.
+      1. A short, highly relevant revision question. In the question text, identify the 1 or 2 most important keywords (such as the main topic, scientific term, or specific subject noun) and wrap them in single asterisks (e.g. "Which is the *famous lake* in Bhubaneswar?" or "*ସରଳ ସହସମୀକରଣ* କହିଲେ କଣ ବୁଝାଏ?"). Do not put asterisks on the question mark or outer punctuation.
       2. A concise and correct answer.
       3. A side note label (MUST be one of: "Important!", "Key Fact", "Remember!", "Note", "Did You Know!", "Formula!").
       4. A brief 1-sentence supporting note details.
