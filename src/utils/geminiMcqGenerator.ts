@@ -21,7 +21,7 @@ function getGamificationInstructions(subject: string, className: string): string
   // Decide character tier based on grade level
   const characterTier = classDigit <= 5
     ? "Primary Characters (Chhota Bheem, Raju, Doraemon, Shinchan, Motu, Patlu, Krishna, Hanuman)"
-    : "Secondary Characters (Naruto, Goku, Luffy, Tanjiro, Spider-Man, BGMI, Free Fire)";
+    : "Secondary Characters (Naruto, Goku, Luffy, Tanjiro, Spider-Man, BGMI, Free Fire, Esports)";
     
   return `
 GAMIFICATION & LOCAL PERSONA INTEGRATION RULES:
