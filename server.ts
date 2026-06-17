@@ -672,10 +672,13 @@ async function startServer() {
 
       for (const keyToUse of rotatorKeys) {
         const ai = new GoogleGenerativeAI(keyToUse);
-        let keySucceeded = false;
+        let keyFailed = false;
         
         for (const modelName of models) {
+          if (keyFailed) break;
+          
           for (const apiVersion of ["v1beta", "v1"]) {
+            if (keyFailed) break;
             try {
               console.log(`Backend AI: Attempting ${modelName} via ${apiVersion} using key ${keyToUse.substring(0, 12)}...`);
               const model = ai.getGenerativeModel({
@@ -698,12 +701,14 @@ async function startServer() {
 
               if (isAuthError) {
                 console.warn(`Backend AI Auth Error for key ${keyToUse.substring(0, 12)}: ${err.message}. Trying next key.`);
-                break; // Break inner model/version loops for this key and try the next key
+                keyFailed = true;
+                break;
               }
 
               if (isBadRequest) {
                 if (err.message?.toLowerCase().includes('api key') || err.message?.toLowerCase().includes('key expired') || err.message?.toLowerCase().includes('invalid')) {
                   console.warn(`Backend AI Key Error for key ${keyToUse.substring(0, 12)}: ${err.message}. Trying next key.`);
+                  keyFailed = true;
                   break;
                 }
                 console.error("Backend AI Bad Request:", err.message);
@@ -712,7 +717,8 @@ async function startServer() {
 
               if (isQuotaOrDepleted) {
                 console.warn(`Key ${keyToUse.substring(0, 12)} is depleted or rate limited (429). Trying next key.`);
-                break; // Break inner model/version loops for this key and try the next key
+                keyFailed = true;
+                break;
               }
 
               if (is404) {
@@ -720,9 +726,6 @@ async function startServer() {
               }
               console.error(`Model Attempt Failed: ${modelName} (${apiVersion}) using key ${keyToUse.substring(0, 12)}:`, err.message);
             }
-          }
-          if (lastError?.message?.includes('429') || lastError?.message?.includes('403') || lastError?.message?.includes('401')) {
-            break; // Break outer model loop to go to next key directly
           }
         }
       }
