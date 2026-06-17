@@ -447,6 +447,18 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
     ctx.lineJoin = 'round';
 
     if (type === 'temple') {
+      // Draw watercolor-like soft orange-gold temple body background
+      ctx.save();
+      ctx.fillStyle = 'rgba(239, 137, 71, 0.18)';
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 40), wobble(y + 12));
+      ctx.quadraticCurveTo(wobble(x + 22), wobble(y + 45), wobble(x + 22), wobble(y + 60));
+      ctx.lineTo(wobble(x + 58), wobble(y + 60));
+      ctx.quadraticCurveTo(wobble(x + 58), wobble(y + 45), wobble(x + 40), wobble(y + 12));
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.moveTo(wobble(x + 40), wobble(y + 12));
       ctx.quadraticCurveTo(wobble(x + 22), wobble(y + 45), wobble(x + 22), wobble(y + 60));
@@ -466,7 +478,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.lineTo(wobble(x + 40), wobble(y + 2));
       ctx.stroke();
 
-      ctx.fillStyle = '#EF4444';
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.8)'; // bright organic crimson flag
       ctx.beginPath();
       ctx.moveTo(wobble(x + 40), wobble(y + 2));
       ctx.lineTo(wobble(x + 54), wobble(y + 6));
@@ -475,21 +487,47 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.fill();
       ctx.stroke();
     } else if (type === 'flower') {
-      ctx.fillStyle = '#FBBF24';
       const cx = x + 40;
       const cy = y + 30;
+
+      // Stem color wash
+      ctx.save();
+      ctx.strokeStyle = 'rgba(16, 185, 129, 0.25)';
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.moveTo(wobble(cx), wobble(cy + 8));
+      ctx.quadraticCurveTo(wobble(cx - 5), wobble(cy + 30), wobble(cx - 2), wobble(y + 62));
+      ctx.stroke();
+      ctx.restore();
+
+      // Petal color wash
+      ctx.save();
+      ctx.fillStyle = 'rgba(251, 191, 36, 0.35)'; // translucent gold-yellow
       for (let a = 0; a < Math.PI * 2; a += Math.PI / 3) {
         const px = cx + Math.cos(a) * 14;
         const py = cy + Math.sin(a) * 14;
         ctx.beginPath();
         ctx.arc(wobble(px), wobble(py), 7, 0, Math.PI * 2);
         ctx.fill();
-        ctx.stroke();
       }
-      ctx.fillStyle = '#F59E0B';
+
+      // Center color wash
+      ctx.fillStyle = 'rgba(245, 158, 11, 0.45)'; // translucent amber
       ctx.beginPath();
       ctx.arc(wobble(cx), wobble(cy), 8, 0, Math.PI * 2);
       ctx.fill();
+      ctx.restore();
+
+      // Outline strokes
+      for (let a = 0; a < Math.PI * 2; a += Math.PI / 3) {
+        const px = cx + Math.cos(a) * 14;
+        const py = cy + Math.sin(a) * 14;
+        ctx.beginPath();
+        ctx.arc(wobble(px), wobble(py), 7, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.beginPath();
+      ctx.arc(wobble(cx), wobble(cy), 8, 0, Math.PI * 2);
       ctx.stroke();
 
       ctx.beginPath();
@@ -497,6 +535,25 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.quadraticCurveTo(wobble(cx - 5), wobble(cy + 30), wobble(cx - 2), wobble(y + 62));
       ctx.stroke();
     } else if (type === 'mountain') {
+      // Emerald / forest green mountain fills
+      ctx.save();
+      ctx.fillStyle = 'rgba(16, 185, 129, 0.16)';
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 15), wobble(y + 60));
+      ctx.lineTo(wobble(x + 40), wobble(y + 15));
+      ctx.lineTo(wobble(x + 65), wobble(y + 60));
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = 'rgba(4, 120, 87, 0.12)';
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 35), wobble(y + 60));
+      ctx.lineTo(wobble(x + 55), wobble(y + 25));
+      ctx.lineTo(wobble(x + 75), wobble(y + 60));
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.moveTo(wobble(x + 15), wobble(y + 60));
       ctx.lineTo(wobble(x + 40), wobble(y + 15));
@@ -517,6 +574,15 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
     } else if (type === 'dance') {
       const cx = x + 40;
       const cy = y + 20;
+
+      // Soft purple background watercolor splash behind dancer
+      ctx.save();
+      ctx.fillStyle = 'rgba(139, 92, 246, 0.15)';
+      ctx.beginPath();
+      ctx.arc(wobble(cx), wobble(cy + 18), 18, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.arc(wobble(cx), wobble(cy), 6, 0, Math.PI * 2);
       ctx.stroke();
@@ -552,6 +618,24 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
     } else if (type === 'leader') {
       const cx = x + 40;
       const cy = y + 30;
+
+      // Watercolor fill for body & face
+      ctx.save();
+      ctx.fillStyle = 'rgba(217, 119, 6, 0.15)'; // warm ochre coat/body
+      ctx.beginPath();
+      ctx.moveTo(wobble(cx - 12), wobble(cy + 7));
+      ctx.quadraticCurveTo(wobble(cx - 24), wobble(cy + 22), wobble(cx - 26), wobble(y + 60));
+      ctx.lineTo(wobble(cx + 26), wobble(y + 60));
+      ctx.quadraticCurveTo(wobble(cx + 24), wobble(cy + 22), wobble(cx + 12), wobble(cy + 7));
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = 'rgba(254, 215, 170, 0.45)'; // peach skin color
+      ctx.beginPath();
+      ctx.arc(wobble(cx), wobble(cy - 6), 13, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.arc(wobble(cx), wobble(cy - 6), 13, 0, Math.PI * 2);
       ctx.stroke();
@@ -579,6 +663,18 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.quadraticCurveTo(wobble(cx + 24), wobble(cy + 22), wobble(cx + 12), wobble(cy + 7));
       ctx.stroke();
     } else if (type === 'river') {
+      // Winding river blue watercolor fill between the two curves
+      ctx.save();
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.2)';
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 10), wobble(y + 18));
+      ctx.bezierCurveTo(wobble(x + 30), wobble(y + 8), wobble(x + 50), wobble(y + 54), wobble(x + 70), wobble(y + 44));
+      ctx.lineTo(wobble(x + 70), wobble(y + 62));
+      ctx.bezierCurveTo(wobble(x + 50), wobble(y + 72), wobble(x + 30), wobble(y + 26), wobble(x + 10), wobble(y + 36));
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.moveTo(wobble(x + 10), wobble(y + 18));
       ctx.bezierCurveTo(wobble(x + 30), wobble(y + 8), wobble(x + 50), wobble(y + 54), wobble(x + 70), wobble(y + 44));
@@ -591,6 +687,18 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
     } else if (type === 'sand') {
       const cx = x + 40;
       const cy = y + 32;
+
+      ctx.save();
+      ctx.fillStyle = 'rgba(245, 158, 11, 0.18)'; // beach sand glow
+      ctx.beginPath();
+      ctx.arc(wobble(cx), wobble(cy), 22, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(217, 119, 6, 0.3)';
+      ctx.beginPath();
+      ctx.arc(wobble(cx), wobble(cy), 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.arc(wobble(cx), wobble(cy), 22, 0, Math.PI * 2);
       ctx.stroke();
@@ -605,6 +713,28 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         ctx.stroke();
       }
     } else if (type === 'school') {
+      // Soft terracotta brick color fill for school building
+      ctx.save();
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.15)';
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 15), wobble(y + 60));
+      ctx.lineTo(wobble(x + 15), wobble(y + 28));
+      ctx.quadraticCurveTo(wobble(x + 40), wobble(y + 8), wobble(x + 65), wobble(y + 28));
+      ctx.lineTo(wobble(x + 65), wobble(y + 60));
+      ctx.closePath();
+      ctx.fill();
+
+      // Stone color for door
+      ctx.fillStyle = 'rgba(120, 113, 108, 0.25)';
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 28), wobble(y + 60));
+      ctx.lineTo(wobble(x + 28), wobble(y + 38));
+      ctx.quadraticCurveTo(wobble(x + 40), wobble(y + 26), wobble(x + 52), wobble(y + 38));
+      ctx.lineTo(wobble(x + 52), wobble(y + 60));
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.moveTo(wobble(x + 15), wobble(y + 60));
       ctx.lineTo(wobble(x + 15), wobble(y + 28));
@@ -619,6 +749,29 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.lineTo(wobble(x + 52), wobble(y + 60));
       ctx.stroke();
     } else if (type === 'book') {
+      ctx.save();
+      // Soft antique cream pages
+      ctx.fillStyle = 'rgba(253, 251, 236, 0.75)';
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 40), wobble(y + 22));
+      ctx.quadraticCurveTo(wobble(x + 25), wobble(y + 10), wobble(x + 12), wobble(y + 16));
+      ctx.lineTo(wobble(x + 12), wobble(y + 46));
+      ctx.quadraticCurveTo(wobble(x + 25), wobble(y + 40), wobble(x + 40), wobble(y + 52));
+      ctx.quadraticCurveTo(wobble(x + 55), wobble(y + 40), wobble(x + 68), wobble(y + 46));
+      ctx.lineTo(wobble(x + 68), wobble(y + 16));
+      ctx.quadraticCurveTo(wobble(x + 55), wobble(y + 10), wobble(x + 40), wobble(y + 22));
+      ctx.closePath();
+      ctx.fill();
+
+      // Soft purple spine backdrop
+      ctx.strokeStyle = 'rgba(139, 92, 246, 0.28)';
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.moveTo(x + 40, y + 23);
+      ctx.lineTo(x + 40, y + 51);
+      ctx.stroke();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.moveTo(wobble(x + 40), wobble(y + 52));
       ctx.quadraticCurveTo(wobble(x + 25), wobble(y + 40), wobble(x + 12), wobble(y + 46));
@@ -637,6 +790,17 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
     } else if (type === 'deer') {
       const cx = x + 40;
       const cy = y + 38;
+
+      ctx.save();
+      ctx.fillStyle = 'rgba(180, 83, 9, 0.18)'; // warm deer brown
+      ctx.beginPath();
+      ctx.moveTo(wobble(cx - 9), wobble(cy - 9));
+      ctx.lineTo(wobble(cx + 9), wobble(cy - 9));
+      ctx.lineTo(wobble(cx), wobble(cy + 16));
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.moveTo(wobble(cx - 9), wobble(cy - 9));
       ctx.lineTo(wobble(cx + 9), wobble(cy - 9));
@@ -656,6 +820,13 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.lineTo(wobble(cx + 7), wobble(cy - 28));
       ctx.stroke();
     } else if (type === 'mirror') {
+      ctx.save();
+      ctx.fillStyle = 'rgba(186, 230, 253, 0.22)'; // blue glass highlight
+      ctx.beginPath();
+      ctx.arc(wobble(x + 40), wobble(y + 26), 15, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.moveTo(wobble(x + 20), wobble(y + 45));
       ctx.lineTo(wobble(x + 60), wobble(y + 45));
@@ -681,6 +852,16 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.lineTo(wobble(x + 58), wobble(y + 27));
       ctx.stroke();
     } else if (type === 'lens') {
+      ctx.save();
+      ctx.fillStyle = 'rgba(6, 182, 212, 0.22)'; // cyan glass refractions
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 40), wobble(y + 12));
+      ctx.quadraticCurveTo(wobble(x + 50), wobble(y + 35), wobble(x + 40), wobble(y + 58));
+      ctx.quadraticCurveTo(wobble(x + 30), wobble(y + 35), wobble(x + 40), wobble(y + 12));
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.moveTo(wobble(x + 40), wobble(y + 12));
       ctx.quadraticCurveTo(wobble(x + 50), wobble(y + 35), wobble(x + 40), wobble(y + 58));
@@ -703,12 +884,36 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.lineTo(wobble(x + 63), wobble(y + 26));
       ctx.stroke();
     } else if (type === 'prism') {
+      ctx.save();
+      // Indigo prism wash
+      ctx.fillStyle = 'rgba(99, 102, 241, 0.15)';
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 40), wobble(y + 14));
+      ctx.lineTo(wobble(x + 16), wobble(y + 56));
+      ctx.lineTo(wobble(x + 64), wobble(y + 56));
+      ctx.closePath();
+      ctx.fill();
+
+      // Soft light dispersion overlay
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.08)';
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 30), wobble(y + 35));
+      ctx.lineTo(wobble(x + 48), wobble(y + 38));
+      ctx.lineTo(wobble(x + 70), wobble(y + 34));
+      ctx.lineTo(wobble(x + 68), wobble(y + 48));
+      ctx.lineTo(wobble(x + 46), wobble(y + 42));
+      ctx.lineTo(wobble(x + 30), wobble(y + 35));
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.moveTo(wobble(x + 40), wobble(y + 14));
       ctx.lineTo(wobble(x + 16), wobble(y + 56));
       ctx.lineTo(wobble(x + 64), wobble(y + 56));
       ctx.closePath();
       ctx.stroke();
+
       ctx.beginPath();
       ctx.moveTo(wobble(x + 2), wobble(y + 40));
       ctx.lineTo(wobble(x + 30), wobble(y + 35));
@@ -728,6 +933,19 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.stroke();
     } else if (type === 'magnet') {
       const mx = x + 20, my = y + 26, mw = 40, mh = 16;
+      ctx.save();
+      // Red for N pole
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.25)';
+      ctx.beginPath();
+      ctx.rect(wobble(mx), wobble(my), mw / 2, mh);
+      ctx.fill();
+      // Blue for S pole
+      ctx.fillStyle = 'rgba(59, 130, 246, 0.25)';
+      ctx.beginPath();
+      ctx.rect(wobble(mx + mw / 2), wobble(my), mw / 2, mh);
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.rect(wobble(mx), wobble(my), mw, mh);
       ctx.stroke();
@@ -740,6 +958,16 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.fillText('N', mx + 6, my + 12);
       ctx.fillText('S', mx + 26, my + 12);
     } else if (type === 'concave_mirror') {
+      ctx.save();
+      // Soft reflection glow inside curve
+      ctx.fillStyle = 'rgba(148, 163, 184, 0.15)';
+      ctx.beginPath();
+      ctx.arc(wobble(x + 60), wobble(y + 35), 24, Math.PI * 0.75, Math.PI * 1.25);
+      ctx.lineTo(x + 60, y + 35);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.arc(wobble(x + 60), wobble(y + 35), 24, Math.PI * 0.75, Math.PI * 1.25);
       ctx.stroke();
@@ -754,6 +982,14 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       }
       ctx.lineWidth = 2.5;
     } else if (type === 'axes') {
+      ctx.save();
+      // Soft spot highlight at center of axes
+      ctx.fillStyle = 'rgba(234, 179, 8, 0.12)';
+      ctx.beginPath();
+      ctx.arc(wobble(x + 40), wobble(y + 35), 18, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.moveTo(wobble(x + 40), wobble(y + 10));
       ctx.lineTo(wobble(x + 40), wobble(y + 60));
@@ -773,6 +1009,16 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.lineTo(wobble(x + 60), wobble(y + 20));
       ctx.stroke();
     } else if (type === 'triangle') {
+      ctx.save();
+      ctx.fillStyle = 'rgba(249, 115, 22, 0.15)'; // soft warm orange fill
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 40), wobble(y + 12));
+      ctx.lineTo(wobble(x + 15), wobble(y + 58));
+      ctx.lineTo(wobble(x + 65), wobble(y + 58));
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.moveTo(wobble(x + 40), wobble(y + 12));
       ctx.lineTo(wobble(x + 15), wobble(y + 58));
@@ -786,6 +1032,14 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       const cx = x + 40;
       const cy = y + 35;
       const r = 20;
+
+      ctx.save();
+      ctx.fillStyle = 'rgba(236, 72, 153, 0.15)'; // soft rose circle
+      ctx.beginPath();
+      ctx.arc(wobble(cx), wobble(cy), wobble(r), 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.arc(wobble(cx), wobble(cy), wobble(r), 0, Math.PI * 2);
       ctx.stroke();
@@ -794,6 +1048,13 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.lineTo(wobble(cx + r * Math.cos(-Math.PI / 4)), wobble(cy + r * Math.sin(-Math.PI / 4)));
       ctx.stroke();
     } else if (type === 'matrix') {
+      ctx.save();
+      ctx.fillStyle = 'rgba(20, 184, 166, 0.12)'; // teal box backing
+      ctx.beginPath();
+      ctx.rect(wobble(x + 15), wobble(y + 12), 50, 46);
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.moveTo(wobble(x + 22), wobble(y + 12));
       ctx.lineTo(wobble(x + 15), wobble(y + 12));
@@ -813,6 +1074,13 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.fillText('c', x + 23, y + 50);
       ctx.fillText('d', x + 47, y + 50);
     } else if (type === 'integral') {
+      ctx.save();
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.1)'; // soft red highlight
+      ctx.beginPath();
+      ctx.arc(wobble(x + 40), wobble(y + 35), 16, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.moveTo(wobble(x + 46), wobble(y + 10));
       ctx.bezierCurveTo(wobble(x + 26), wobble(y + 8), wobble(x + 26), wobble(y + 30), wobble(x + 40), wobble(y + 35));
@@ -822,6 +1090,18 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.fillStyle = '#EF4444';
       ctx.fillText('dx', x + 48, y + 42);
     } else if (type === 'beaker') {
+      ctx.save();
+      // Cyan beaker fluid fill
+      ctx.fillStyle = 'rgba(6, 182, 212, 0.25)';
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 21), wobble(y + 48));
+      ctx.lineTo(wobble(x + 59), wobble(y + 48));
+      ctx.lineTo(wobble(x + 64), wobble(y + 58));
+      ctx.lineTo(wobble(x + 16), wobble(y + 58));
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.moveTo(wobble(x + 30), wobble(y + 12));
       ctx.lineTo(wobble(x + 50), wobble(y + 12));
@@ -851,10 +1131,23 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
     } else if (type === 'atom') {
       const cx = x + 40;
       const cy = y + 35;
-      ctx.fillStyle = '#EF4444';
+
+      ctx.save();
+      // Energy field splash
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.08)';
+      ctx.beginPath();
+      ctx.arc(wobble(cx), wobble(cy), 22, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Red nucleus fill
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.3)';
       ctx.beginPath();
       ctx.arc(wobble(cx), wobble(cy), 4, 0, Math.PI * 2);
       ctx.fill();
+      ctx.restore();
+
+      ctx.beginPath();
+      ctx.arc(wobble(cx), wobble(cy), 4, 0, Math.PI * 2);
       ctx.stroke();
       ctx.save();
       ctx.translate(cx, cy);
@@ -868,6 +1161,14 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.stroke();
       ctx.restore();
     } else if (type === 'dna') {
+      ctx.save();
+      // Double helix backing highlight
+      ctx.fillStyle = 'rgba(16, 185, 129, 0.16)';
+      ctx.beginPath();
+      ctx.rect(wobble(x + 24), wobble(y + 12), 32, 46);
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       for (let sy = y + 14; sy <= y + 54; sy += 8) {
         const pct = (sy - (y + 14)) / 40;
@@ -887,6 +1188,21 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
     } else if (type === 'bulb') {
       const cx = x + 40;
       const cy = y + 26;
+
+      ctx.save();
+      // Glow wash
+      ctx.fillStyle = 'rgba(253, 224, 71, 0.28)';
+      ctx.beginPath();
+      ctx.arc(cx, cy, 14, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Slate grey base wash
+      ctx.fillStyle = 'rgba(71, 85, 105, 0.2)';
+      ctx.beginPath();
+      ctx.rect(wobble(cx - 5), wobble(y + 46), 10, 5);
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.arc(cx, cy, 14, Math.PI * 0.75, Math.PI * 0.25, true);
       ctx.lineTo(wobble(cx + 7), wobble(y + 46));
@@ -906,6 +1222,15 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       const cx = x + 40;
       const cy = y + 30;
       const r = 18;
+
+      ctx.save();
+      // Ocean fill
+      ctx.fillStyle = 'rgba(14, 165, 233, 0.18)';
+      ctx.beginPath();
+      ctx.arc(wobble(cx), wobble(cy), r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.arc(wobble(cx), wobble(cy), r, 0, Math.PI * 2);
       ctx.stroke();
@@ -923,6 +1248,17 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.ellipse(cx, cy, 5, r, 0, 0, Math.PI * 2);
       ctx.stroke();
     } else if (type === 'quill') {
+      ctx.save();
+      // Soft purple feather body wash
+      ctx.fillStyle = 'rgba(139, 92, 246, 0.18)';
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 18), wobble(y + 55));
+      ctx.quadraticCurveTo(wobble(x + 35), wobble(y + 35), wobble(x + 58), wobble(y + 12));
+      ctx.quadraticCurveTo(wobble(x + 48), wobble(y + 28), wobble(x + 28), wobble(y + 44));
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath();
       ctx.moveTo(wobble(x + 18), wobble(y + 55));
       ctx.quadraticCurveTo(wobble(x + 35), wobble(y + 35), wobble(x + 58), wobble(y + 12));
@@ -1649,7 +1985,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
           img.crossOrigin = 'anonymous';
           img.onload = () => {
             ctx.save();
-            ctx.translate(920, 1760);
+            ctx.translate(935, 1790);
             ctx.rotate(-0.08); // slight playful tilt
 
             // Setup drop shadow for the sticker base
@@ -2212,7 +2548,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
               
               {/* Premium Sticker/Badge for Gundulu Mascot (pointing baby pose) */}
               <div 
-                className="absolute right-1 bottom-1 w-9 h-9 rounded-full bg-[#FFFFFF] shadow-md flex items-center justify-center rotate-[-6deg] z-20 group overflow-hidden"
+                className="absolute right-0.5 bottom-0.5 w-9 h-9 rounded-full bg-[#FFFFFF] shadow-md flex items-center justify-center rotate-[-6deg] z-20 group overflow-hidden"
                 style={{ borderColor: theme.primaryColor, borderWidth: '1px', borderStyle: 'solid' }}
               >
                 {/* Decorative dashed inner border */}
