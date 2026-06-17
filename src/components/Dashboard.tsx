@@ -1163,8 +1163,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   };
 
   const generateMtsImportantPDF = (subjectLabel: string, subjectKey: string, type: 'quick' | 'full') => {
+    const doc = new jsPDF();
     try {
-      const doc = new jsPDF();
       const isBoard = userClass === '9' || userClass === '10';
       const cumulativeChapters = getCumulativeChaptersForSubject(subjectKey);
       

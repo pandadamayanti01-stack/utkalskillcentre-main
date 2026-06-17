@@ -32,7 +32,7 @@ import {
   Book,
   Edit,
   Upload,
-  Image,
+  Image as ImageIcon,
   File,
   Download,
   Bot,
@@ -98,8 +98,9 @@ import {
   gradeSubjectiveAnswer
 } from '../services/aiService';
 import { joinSupportSession, sendRemoteCommand, updatePointer, endSupportSession } from '../services/supportService';
+import { SocialPosterGenerator } from './SocialPosterGenerator';
 
-type AdminTab = 'dashboard' | 'smart_classes' | 'content' | 'monthly_tests' | 'daily_mcqs' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup' | 'students' | 'teachers' | 'subscriptions' | 'support' | 'user_locks' | 'digital_library_upload' | 'community_chats';
+type AdminTab = 'dashboard' | 'smart_classes' | 'content' | 'monthly_tests' | 'daily_mcqs' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup' | 'students' | 'teachers' | 'subscriptions' | 'support' | 'user_locks' | 'digital_library_upload' | 'community_chats' | 'poster_generator';
 
 interface AdminDashboardProps {
   onExit: () => void;
@@ -877,6 +878,7 @@ Sample tone for Class 6-10:
                   { id: 'ai_usage', label: 'Gundulu AI Logs', icon: Brain },
                   { id: 'daily_mcqs', label: 'Daily MCQs', icon: Zap },
                   { id: 'community_chats', label: 'Community Chats', icon: Shield },
+                  { id: 'poster_generator', label: 'Social Posters', icon: ImageIcon },
                 ]
               },
               {
@@ -5431,7 +5433,7 @@ Sample tone for Class 6-10:
                           className={`flex items-center gap-2 px-5 py-3 bg-slate-900 border border-white/5 hover:border-emerald-500/30 text-white rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer active:scale-95 transition-all ${coverUploadProgress !== null ? 'opacity-40 cursor-not-allowed' : ''
                             }`}
                         >
-                          <Image size={14} />
+                          <ImageIcon size={14} />
                           <span>{coverUploadProgress !== null ? "Uploading..." : "Select Cover"}</span>
                         </label>
                       </div>
@@ -5594,6 +5596,7 @@ Sample tone for Class 6-10:
               {activeTab === 'support' && renderSupport()}
               {activeTab === 'subscriptions' && renderSubscriptions()}
               {activeTab === 'community_chats' && <CommunityModerationTab />}
+              {activeTab === 'poster_generator' && <SocialPosterGenerator chapters={content} onBack={() => setActiveTab('dashboard')} />}
             </motion.div>
           </AnimatePresence>
         </div>

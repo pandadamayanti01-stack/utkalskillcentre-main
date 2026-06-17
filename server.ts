@@ -702,6 +702,10 @@ async function startServer() {
               }
 
               if (isBadRequest) {
+                if (err.message?.toLowerCase().includes('api key') || err.message?.toLowerCase().includes('key expired') || err.message?.toLowerCase().includes('invalid')) {
+                  console.warn(`Backend AI Key Error for key ${keyToUse.substring(0, 12)}: ${err.message}. Trying next key.`);
+                  break;
+                }
                 console.error("Backend AI Bad Request:", err.message);
                 return res.status(400).json({ error: err.message || "Invalid request parameters." });
               }
@@ -1251,6 +1255,79 @@ async function startServer() {
     } catch (error: any) {
       console.error("Quiz Generation Error:", error);
       res.status(500).json({ error: error.message || 'Failed to generate quiz' });
+    }
+  });
+
+  app.post('/api/ai/generate-revision-poster', async (req, res) => {
+    try {
+      const { className, subjectName, chapterName, language } = req.body;
+      if (!className || !subjectName || !chapterName) {
+        return res.status(400).json({ error: 'className, subjectName and chapterName are required' });
+      }
+
+      const rotatorKeys = getRotatorKeys();
+      if (rotatorKeys.length === 0) {
+        return res.status(503).json({ error: 'GEMINI_API_KEY and all rotator keys are missing on the server' });
+      }
+
+      const prompt = `You are an expert curriculum builder for Indian schools.
+      Create a set of 10 revision questions and answers for Class "${className}" in the subject "${subjectName}" for the Chapter: "${chapterName}".
+      The output should be generated in ${language === 'or' ? 'Odia (using clean Odia script)' : 'English'}.
+      
+      For each of the 10 questions, generate:
+      1. A short, highly relevant revision question.
+      2. A concise and correct answer.
+      3. A side note label (MUST be one of: "Important!", "Key Fact", "Remember!", "Note", "Did You Know!", "Formula!").
+      4. A brief 1-sentence supporting note details.
+      5. An icon type (MUST be one of: "temple", "flower", "mountain", "dance", "leader", "river", "sand", "school", "book", "deer", "mirror", "lens", "prism", "magnet"). Choose the icon that best represents the question topic. If it is a science/physics chapter, prefer using "mirror", "lens", "prism", or "magnet" where appropriate.
+
+      Provide the output in JSON format with the following structure:
+      {
+        "questions": [
+          {
+            "id": 1,
+            "question": "Question 1 text...",
+            "answer": "Answer 1 text...",
+            "sideNoteLabel": "Key Fact",
+            "sideNote": "Supporting note text...",
+            "iconType": "book"
+          }
+        ]
+      }
+      Fill in all 10 questions. Do not wrap the response in any markdown formatting or code blocks. Return ONLY the raw JSON object.`;
+
+      let lastError = null;
+      for (const keyToUse of rotatorKeys) {
+        try {
+          console.log(`Backend Poster: Attempting revision poster generation using key ${keyToUse.substring(0, 12)}...`);
+          const ai = new GoogleGenerativeAI(keyToUse);
+          const model = ai.getGenerativeModel({
+            model: "gemini-2.5-flash",
+            generationConfig: {
+              responseMimeType: "application/json",
+              temperature: 0.7,
+            }
+          }, { apiVersion: "v1beta" });
+
+          const result = await model.generateContent(prompt);
+          let responseText = result.response.text();
+          
+          if (language === 'or') {
+            responseText = cleanOdiaOrthographyLocal(responseText);
+          }
+
+          const posterData = JSON.parse(responseText.replace(/```json\n?|```/g, '').trim());
+          return res.json(posterData);
+        } catch (error: any) {
+          lastError = error;
+          console.warn(`Poster generation attempt failed using key ${keyToUse.substring(0, 12)}:`, error.message);
+        }
+      }
+
+      throw lastError || new Error('Failed to generate poster questions with all available keys');
+    } catch (error: any) {
+      console.error("Poster Generation Error:", error);
+      res.status(500).json({ error: error.message || 'Failed to generate poster questions' });
     }
   });
 

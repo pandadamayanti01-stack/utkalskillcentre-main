@@ -69,6 +69,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'parent_dashboard', icon: Lucide.Users, label: language === 'en' ? 'Parent Insights' : 'ପିତାମାତା ଇନସାଇଟ୍ସ', premium: true, badge: <span className="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md tracking-wider">PRO</span> },
     { id: 'support', icon: Lucide.HelpCircle, label: t.support.title },
     { id: 'about_us', icon: Lucide.Info, label: language === 'en' ? 'About Us' : 'ଆମ ବିଷୟରେ' },
+    { id: 'poster_generator', icon: Lucide.Image, label: language === 'en' ? 'Social Posters' : 'ପୋଷ୍ଟର ସୃଷ୍ଟି' },
   ];
 
   const filteredMenuItems = showShowcaseTab 
@@ -77,11 +78,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const teacherExcludedIds = ['store', 'leaderboard', 'daily_mcqs', 'syllabus_tracker', 'monthly_tests', 'smart_classes', 'matching_quiz', 'parent_dashboard', 'gundulu'];
   let menuItems = filteredMenuItems;
+  if (user?.role !== 'admin') {
+    menuItems = menuItems.filter(item => item.id !== 'poster_generator');
+  }
   if (user?.role === 'teacher') {
-    menuItems = filteredMenuItems.filter(item => !teacherExcludedIds.includes(item.id));
+    menuItems = menuItems.filter(item => !teacherExcludedIds.includes(item.id));
   } else if (user?.class === 'sishuvatika(Anganwadi)') {
     const sishuvatikaAllowedIds = ['profile', 'dashboard', 'gundulu', 'digital_library', 'plans', 'parent_dashboard', 'support'];
-    menuItems = filteredMenuItems.filter(item => sishuvatikaAllowedIds.includes(item.id));
+    menuItems = menuItems.filter(item => sishuvatikaAllowedIds.includes(item.id));
   }
 
 
@@ -157,7 +161,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 {
                   titleEn: 'AI & Tools',
                   titleOr: 'AI ସହାୟକ',
-                  items: menuItems.filter(item => ['3d_study', 'study_buddy', 'gundulu', 'pitch_deck', 'telemetry'].includes(item.id))
+                  items: menuItems.filter(item => ['3d_study', 'study_buddy', 'gundulu', 'pitch_deck', 'telemetry', 'poster_generator'].includes(item.id))
                 },
                 {
                   titleEn: 'Account & Help',

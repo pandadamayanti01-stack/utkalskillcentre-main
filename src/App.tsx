@@ -78,6 +78,7 @@ const Sidebar = lazy(() => import('./components/Sidebar').then((module) => ({ de
 const LoginComponent = lazy(() => import('./components/LoginComponent'));
 const TestSeriesPoster = lazy(() => import('./components/TestSeriesPoster'));
 const SyllabusTracker = lazy(() => import('./components/SyllabusTracker').then((module) => ({ default: module.SyllabusTracker })));
+const SocialPosterGenerator = lazy(() => import('./components/SocialPosterGenerator').then((module) => ({ default: module.SocialPosterGenerator })));
 const DigitalLibraryView = lazy(() => import('./components/DigitalLibraryView').then((module) => ({ default: module.DigitalLibraryView })));
 const SmartClassesView = lazy(() => import('./components/SmartClassesView').then((module) => ({ default: module.SmartClassesView })));
 const DigitalLibraryLaunchPopup = lazy(() => import('./components/DigitalLibraryLaunchPopup'));
@@ -3947,6 +3948,14 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                 onUpgrade={() => setActiveTab('plans')}
                 onBack={() => setActiveTab('dashboard')}
               />
+            )}
+            {activeTab === 'poster_generator' && (
+              <Suspense fallback={<ViewLoader fullHeight />}>
+                <SocialPosterGenerator
+                  chapters={chapters}
+                  onBack={() => setActiveTab('dashboard')}
+                />
+              </Suspense>
             )}
             {activeTab === 'community' && user && (
               <Suspense fallback={<ViewLoader fullHeight />}>
