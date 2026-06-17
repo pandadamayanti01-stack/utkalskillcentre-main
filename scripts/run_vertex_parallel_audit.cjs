@@ -70,7 +70,7 @@ function callVertexAi(text, accessToken, retries = 3) {
 
     const options = {
       hostname: `${region}-aiplatform.googleapis.com`,
-      path: `/v1/projects/${projectId}/locations/${region}/publishers/google/models/gemini-2.5-pro:generateContent`,
+      path: `/v1/projects/${projectId}/locations/${region}/publishers/google/models/gemini-2.5-flash:generateContent`,
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
@@ -182,7 +182,7 @@ async function processClass(classNum) {
 async function main() {
   console.log(`🚀 Starting Global Vertex AI OCR Cleanup Pipeline...`);
   console.log(`Project: ${projectId} | Region: ${region}`);
-  console.log(`Model: Gemini 2.5 Pro | Parallel Workers: ${CONCURRENCY_LIMIT}\n`);
+  console.log(`Model: Gemini 2.5 Flash | Parallel Workers: ${CONCURRENCY_LIMIT}\n`);
   
   const startTime = Date.now();
   
