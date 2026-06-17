@@ -151,7 +151,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
     <div className="max-w-5xl mx-auto space-y-6 pb-20 select-none text-slate-800 p-2 animate-fadeIn">
       
       {/* HEADER BANNER CARD */}
-      <div className="relative overflow-hidden bg-white border border-slate-200/80 rounded-[2.5rem] p-6 shadow-md shadow-slate-100/50">
+      <div className="relative overflow-hidden bg-white border border-slate-200/80 rounded-[1.75rem] md:rounded-[2.5rem] p-4 sm:p-6 shadow-md shadow-slate-100/50">
         <SambalpuriTrim position="top" />
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 mt-4">
@@ -245,7 +245,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05 }}
               onClick={() => handleGameClick(game)}
-              className={`group flex flex-col justify-between overflow-hidden bg-white border rounded-[2.5rem] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer shadow-[0_4px_16px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] ${
+              className={`group flex flex-col justify-between overflow-hidden bg-white border rounded-[2rem] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer shadow-[0_4px_16px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] ${
                 isPlayable 
                   ? 'border-amber-300 hover:border-amber-400' 
                   : 'border-slate-200/60 opacity-90'
@@ -331,7 +331,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
               initial={{ opacity: 0, scale: 0.95, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              className="relative w-full max-w-lg bg-white border border-slate-200 rounded-[2.5rem] p-7 md:p-8 shadow-2xl overflow-hidden"
+              className="relative w-full max-w-lg bg-white border border-slate-200 rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-8 shadow-2xl overflow-y-auto max-h-[92vh]"
             >
               {/* Modal Top Sambalpuri Border */}
               <SambalpuriTrim position="top" />
@@ -362,14 +362,14 @@ export function GameZone({ user, onBack }: GameZoneProps) {
                 </div>
 
                 {/* Gundulu Speech bubble with real mascot image */}
-                <div className="flex gap-4 items-start bg-slate-50 border border-slate-100 p-5 rounded-[2rem] relative shadow-inner">
+                <div className="flex gap-3 sm:gap-4 items-start bg-slate-50 border border-slate-100 p-4 sm:p-5 rounded-2xl sm:rounded-[2rem] relative shadow-inner">
                   {/* Decorative dialogue arrow pointer */}
                   <div className="absolute top-6 -left-1.5 w-0 h-0 border-t-[6px] border-t-transparent border-r-[8px] border-r-slate-50 border-b-[6px] border-b-transparent" />
                   
                   <img 
                     src="/gundulu-v3.png" 
                     alt="Gundulu Speaking" 
-                    className="w-14 h-14 rounded-full shrink-0 border border-slate-200 bg-white object-contain p-0.5"
+                    className="w-11 h-11 sm:w-14 sm:h-14 rounded-full shrink-0 border border-slate-200 bg-white object-contain p-0.5"
                   />
                   <div className="space-y-1">
                     <div className="text-[9px] text-emerald-600 font-extrabold tracking-wider uppercase">ଗୁନ୍ଦୁଲୁ AI (Gundulu AI)</div>
