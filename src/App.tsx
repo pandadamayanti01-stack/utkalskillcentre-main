@@ -85,7 +85,6 @@ const TeacherDashboard = lazy(() => import('./components/TeacherDashboard').then
 const CommunityChatView = lazy(() => import('./components/CommunityChatView').then((module) => ({ default: module.CommunityChatView })));
 const LaunchCelebration = lazy(() => import('./components/LaunchCelebration'));
 const RajaFestivalPoster = lazy(() => import('./components/RajaFestivalPoster'));
-const TextbookErrorAlertPopup = lazy(() => import('./components/TextbookErrorAlertPopup'));
 const PitchDeckView = lazy(() => import('./components/PitchDeckView').then((module) => ({ default: module.PitchDeckView })));
 const TelemetryView = lazy(() => import('./components/TelemetryView').then((module) => ({ default: module.TelemetryView })));
 const Gundulu3DLab = lazy(() => import('./components/Gundulu3DLab').then((module) => ({ default: module.Gundulu3DLab })));
@@ -888,7 +887,6 @@ export default function App() {
   const [openTutorInVoiceMode, setOpenTutorInVoiceMode] = useState(0);
   const [tourStep, setTourStep] = useState<number | null>(null);
   const [showLaunchPoster, setShowLaunchPoster] = useState(false);
-  const [showTextbookErrorAlert, setShowTextbookErrorAlert] = useState(false);
   const [isParentUnlocked, setIsParentUnlocked] = useState(false);
 
   useEffect(() => {
@@ -938,16 +936,6 @@ export default function App() {
             const lastSeen = localStorage.getItem('rajaFestivalLastSeenDate');
             if (lastSeen !== todayStr) {
               setShowLaunchPoster(false); handleGunduluGreeting();
-            }
-          }
-
-          // Trigger textbook error warning popup for affected classes
-          const errorClasses = ['class1', 'class4', 'class5', 'class7', 'class8'];
-          if (errorClasses.includes(user.class)) {
-            const todayStr = today.toLocaleDateString('en-CA');
-            const lastSeenError = localStorage.getItem('textbookErrorAlertLastSeenDate');
-            if (lastSeenError !== todayStr) {
-              setShowTextbookErrorAlert(true);
             }
           }
         }
@@ -3715,18 +3703,6 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
       </Suspense>
     )}
 
-    {showTextbookErrorAlert && user && (
-      <Suspense fallback={null}>
-        <TextbookErrorAlertPopup 
-          userClass={user.class}
-          onClose={() => {
-            setShowTextbookErrorAlert(false);
-            const todayStr = new Date().toLocaleDateString('en-CA');
-            localStorage.setItem('textbookErrorAlertLastSeenDate', todayStr);
-          }} 
-        />
-      </Suspense>
-    )}
 
     {/* Hiding Digital Library Launch Popup completely for now
     {showLibraryPopup && user && (
