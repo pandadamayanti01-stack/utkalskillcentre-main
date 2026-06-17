@@ -68,11 +68,11 @@ function getSubjectCategory(subjectKey: string): 'math' | 'science' | 'social' |
 }
 
 const CATEGORY_ALLOWED_ICONS: Record<'math' | 'science' | 'social' | 'language' | 'skills', string[]> = {
-  math: ['axes', 'triangle', 'circle', 'matrix', 'integral', 'book', 'quill'],
-  science: ['beaker', 'atom', 'dna', 'bulb', 'magnet', 'lens', 'prism', 'concave_mirror', 'book', 'quill'],
-  language: ['book', 'quill', 'school'],
-  skills: ['axes', 'bulb', 'school', 'matrix', 'book', 'quill'],
-  social: ['globe', 'mountain', 'river', 'temple', 'sand', 'book', 'quill']
+  math: ['axes', 'triangle', 'circle', 'matrix', 'integral', 'book', 'quill', 'puzzle'],
+  science: ['beaker', 'atom', 'dna', 'bulb', 'magnet', 'lens', 'prism', 'concave_mirror', 'book', 'quill', 'sprout'],
+  language: ['book', 'quill', 'school', 'slate', 'scroll', 'puzzle'],
+  skills: ['axes', 'bulb', 'school', 'matrix', 'book', 'quill', 'palette', 'puzzle', 'sprout', 'slate'],
+  social: ['globe', 'mountain', 'river', 'temple', 'sand', 'book', 'quill', 'scroll', 'sprout', 'slate']
 };
 
 function getSubjectIconTypes(subjectKey: string): string[] {
@@ -84,10 +84,10 @@ function getSubjectIconTypes(subjectKey: string): string[] {
     return ['beaker', 'atom', 'dna', 'bulb', 'magnet', 'lens', 'prism', 'concave_mirror', 'beaker', 'atom'];
   }
   if (cat === 'language') {
-    return ['book', 'quill', 'school', 'book', 'quill', 'school', 'book', 'quill', 'book', 'school'];
+    return ['book', 'quill', 'school', 'slate', 'scroll', 'book', 'quill', 'slate', 'scroll', 'school'];
   }
   if (cat === 'skills') {
-    return ['axes', 'bulb', 'school', 'matrix', 'axes', 'bulb', 'school', 'matrix', 'axes', 'bulb'];
+    return ['palette', 'bulb', 'school', 'puzzle', 'sprout', 'slate', 'palette', 'bulb', 'puzzle', 'sprout'];
   }
   return ['globe', 'mountain', 'river', 'temple', 'globe', 'mountain', 'river', 'temple', 'globe', 'mountain'];
 }
@@ -248,7 +248,12 @@ function getIconEmoji(type: string): string {
     dna: '🧬',
     bulb: '💡',
     globe: '🌐',
-    quill: '✒️'
+    quill: '✒️',
+    slate: '📝',
+    puzzle: '🧩',
+    palette: '🎨',
+    sprout: '🌱',
+    scroll: '📜'
   };
   return map[type] || '✨';
 }
@@ -1317,6 +1322,164 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.beginPath();
       ctx.moveTo(wobble(x + 18), wobble(y + 55));
       ctx.lineTo(wobble(x + 55), wobble(y + 15));
+      ctx.stroke();
+    } else if (type === 'slate') {
+      ctx.save();
+      // Outer frame wash
+      ctx.fillStyle = 'rgba(139, 90, 43, 0.25)';
+      ctx.beginPath();
+      ctx.rect(wobble(x + 14), wobble(y + 14), 52, 36);
+      ctx.fill();
+      // Inner blackboard wash
+      ctx.fillStyle = 'rgba(51, 65, 85, 0.35)';
+      ctx.beginPath();
+      ctx.rect(wobble(x + 20), wobble(y + 18), 40, 28);
+      ctx.fill();
+      ctx.restore();
+
+      // Outlines
+      ctx.beginPath();
+      ctx.rect(wobble(x + 14), wobble(y + 14), 52, 36);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.rect(wobble(x + 20), wobble(y + 18), 40, 28);
+      ctx.stroke();
+
+      // chalk character
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.font = 'bold 10px Kalam';
+      ctx.fillText('ଅ', x + 36, y + 36);
+    } else if (type === 'puzzle') {
+      ctx.save();
+      ctx.fillStyle = 'rgba(14, 165, 233, 0.22)';
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 24), wobble(y + 24));
+      ctx.lineTo(wobble(x + 36), wobble(y + 24));
+      ctx.arc(wobble(x + 40), wobble(y + 20), 4, Math.PI, 0);
+      ctx.lineTo(wobble(x + 44), wobble(y + 24));
+      ctx.lineTo(wobble(x + 56), wobble(y + 24));
+      ctx.lineTo(wobble(x + 56), wobble(y + 34));
+      ctx.arc(wobble(x + 52), wobble(y + 38), 4, -Math.PI / 2, Math.PI / 2, true);
+      ctx.lineTo(wobble(x + 56), wobble(y + 42));
+      ctx.lineTo(wobble(x + 56), wobble(y + 52));
+      ctx.lineTo(wobble(x + 24), wobble(y + 52));
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 24), wobble(y + 24));
+      ctx.lineTo(wobble(x + 36), wobble(y + 24));
+      ctx.arc(wobble(x + 40), wobble(y + 20), 4, Math.PI, 0);
+      ctx.lineTo(wobble(x + 44), wobble(y + 24));
+      ctx.lineTo(wobble(x + 56), wobble(y + 24));
+      ctx.lineTo(wobble(x + 56), wobble(y + 34));
+      ctx.arc(wobble(x + 52), wobble(y + 38), 4, -Math.PI / 2, Math.PI / 2, true);
+      ctx.lineTo(wobble(x + 56), wobble(y + 42));
+      ctx.lineTo(wobble(x + 56), wobble(y + 52));
+      ctx.lineTo(wobble(x + 24), wobble(y + 52));
+      ctx.closePath();
+      ctx.stroke();
+    } else if (type === 'palette') {
+      const cx = x + 38;
+      const cy = y + 32;
+
+      ctx.save();
+      ctx.fillStyle = 'rgba(217, 119, 6, 0.16)';
+      ctx.beginPath();
+      ctx.arc(wobble(cx), wobble(cy), 20, 0, Math.PI * 1.7);
+      ctx.quadraticCurveTo(wobble(cx - 5), wobble(cy + 5), wobble(cx - 20), wobble(cy));
+      ctx.closePath();
+      ctx.fill();
+
+      // paint blobs
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.7)';
+      ctx.beginPath(); ctx.arc(wobble(cx - 10), wobble(cy - 8), 3.5, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = 'rgba(245, 158, 11, 0.7)';
+      ctx.beginPath(); ctx.arc(wobble(cx + 8), wobble(cy - 8), 3.5, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = 'rgba(59, 130, 246, 0.7)';
+      ctx.beginPath(); ctx.arc(wobble(cx + 10), wobble(cy + 6), 3.5, 0, Math.PI * 2); ctx.fill();
+
+      ctx.strokeStyle = 'rgba(139, 92, 246, 0.25)';
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(x + 18, y + 54);
+      ctx.lineTo(x + 58, y + 14);
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.beginPath();
+      ctx.arc(wobble(cx), wobble(cy), 20, 0, Math.PI * 1.7);
+      ctx.quadraticCurveTo(wobble(cx - 5), wobble(cy + 5), wobble(cx - 20), wobble(cy));
+      ctx.closePath();
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 18), wobble(y + 54));
+      ctx.lineTo(wobble(x + 58), wobble(y + 14));
+      ctx.stroke();
+    } else if (type === 'sprout') {
+      ctx.save();
+      ctx.fillStyle = 'rgba(120, 113, 108, 0.25)';
+      ctx.beginPath();
+      ctx.ellipse(wobble(x + 40), wobble(y + 54), 16, 6, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = 'rgba(34, 197, 94, 0.3)';
+      ctx.beginPath();
+      ctx.ellipse(wobble(x + 28), wobble(y + 24), 8, 5, -Math.PI / 6, 0, Math.PI * 2);
+      ctx.ellipse(wobble(x + 52), wobble(y + 24), 8, 5, Math.PI / 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      ctx.beginPath();
+      ctx.ellipse(wobble(x + 40), wobble(y + 54), 16, 6, 0, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 40), wobble(y + 50));
+      ctx.quadraticCurveTo(wobble(x + 38), wobble(y + 34), wobble(x + 40), wobble(y + 22));
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.ellipse(wobble(x + 28), wobble(y + 24), 8, 5, -Math.PI / 6, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.ellipse(wobble(x + 52), wobble(y + 24), 8, 5, Math.PI / 6, 0, Math.PI * 2);
+      ctx.stroke();
+    } else if (type === 'scroll') {
+      ctx.save();
+      ctx.fillStyle = 'rgba(253, 251, 236, 0.8)';
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 20), wobble(y + 18));
+      ctx.lineTo(wobble(x + 56), wobble(y + 18));
+      ctx.lineTo(wobble(x + 56), wobble(y + 50));
+      ctx.lineTo(wobble(x + 20), wobble(y + 50));
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.strokeStyle = 'rgba(239, 68, 68, 0.4)';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(x + 18, y + 34);
+      ctx.lineTo(x + 58, y + 34);
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.beginPath();
+      ctx.ellipse(wobble(x + 20), wobble(y + 34), 4, 16, 0, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.ellipse(wobble(x + 56), wobble(y + 34), 4, 16, 0, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 20), wobble(y + 18));
+      ctx.lineTo(wobble(x + 56), wobble(y + 18));
+      ctx.moveTo(wobble(x + 20), wobble(y + 50));
+      ctx.lineTo(wobble(x + 56), wobble(y + 50));
       ctx.stroke();
     }
     ctx.restore();
