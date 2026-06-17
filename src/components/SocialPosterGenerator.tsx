@@ -233,7 +233,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
   const [footerText, setFooterText] = useState<string>('UTKAL SKILL CENTRE • ପଢ଼ିବ ଓଡ଼ିଶା, ବଢ଼ିବ ଓଡ଼ିଶା');
   const [badgeText, setBadgeText] = useState<string>('SET-01');
   const [logoImage, setLogoImage] = useState<string | null>('/utkal-512.png');
-  const [paperStyle, setPaperStyle] = useState<'ruled' | 'chalkboard' | 'parchment' | 'blueprint'>('ruled');
+  const [paperStyle, setPaperStyle] = useState<'ruled' | 'chalkboard' | 'parchment' | 'blueprint' | 'cotton'>('cotton');
 
   // Dynamic Textbook Selection states
   const [selectedClass, setSelectedClass] = useState<string>('class10');
@@ -1076,10 +1076,57 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         boxBorder = 'rgba(255, 255, 255, 0.2)';
         marginColor = 'rgba(255, 255, 255, 0.25)'; // White margin line
         isDarkPaper = true;
+      } else if (paperStyle === 'cotton') {
+        paperBg = '#F9F6F0'; // Premium warm cotton paper base
+        ruledColor = 'rgba(180, 160, 140, 0.22)';
+        primaryColor = '#1F3F24'; // Deep forest pine green (extremely classy/premium)
+        secondaryColor = '#8D5832'; // Walnut amber brown
+        accentColor = '#B8583B'; // Terracotta sienna
+        lightBg = '#F3EBE0'; // Faint matching cream
+        darkTextColor = '#2C2218'; // Warm dark coffee
+        boxBorder = 'rgba(139, 90, 43, 0.15)';
+        marginColor = 'rgba(180, 80, 60, 0.45)'; // Soft organic margin
       }
 
       ctx.fillStyle = paperBg;
       ctx.fillRect(0, 0, 1080, 1920);
+
+      // Draw programmatically generated world-class organic cotton fibers/speckles for "cotton" style
+      if (paperStyle === 'cotton') {
+        ctx.save();
+        
+        // 1. Draw organic wood pulp / plant husks (tiny amber-brown speckles)
+        ctx.fillStyle = 'rgba(139, 90, 43, 0.12)';
+        for (let j = 0; j < 350; j++) {
+          const sx = Math.random() * 1080;
+          const sy = Math.random() * 1920;
+          const size = 0.5 + Math.random() * 1.5;
+          ctx.beginPath();
+          ctx.arc(sx, sy, size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // 2. Draw organic paper fibers (fine curved translucent threads)
+        ctx.strokeStyle = 'rgba(139, 90, 43, 0.08)';
+        ctx.lineWidth = 0.8;
+        for (let j = 0; j < 180; j++) {
+          const fx = Math.random() * 1080;
+          const fy = Math.random() * 1920;
+          const len = 6 + Math.random() * 14;
+          const angle = Math.random() * Math.PI * 2;
+          ctx.beginPath();
+          ctx.moveTo(fx, fy);
+          ctx.quadraticCurveTo(
+            fx + Math.cos(angle) * (len / 2) + (Math.random() - 0.5) * 4,
+            fy + Math.sin(angle) * (len / 2) + (Math.random() - 0.5) * 4,
+            fx + Math.cos(angle) * len,
+            fy + Math.sin(angle) * len
+          );
+          ctx.stroke();
+        }
+
+        ctx.restore();
+      }
 
       const category = getSubjectCategory(selectedSubject);
 
@@ -1555,45 +1602,56 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
   const previewBg = 
     paperStyle === 'chalkboard' ? 'bg-[#121824]' : 
     paperStyle === 'parchment' ? 'bg-[#F4EBD0]' : 
-    paperStyle === 'blueprint' ? 'bg-[#0A3663]' : 'bg-[#FCFBF9]';
+    paperStyle === 'blueprint' ? 'bg-[#0A3663]' : 
+    paperStyle === 'cotton' ? 'bg-[#F9F6F0] bg-[radial-gradient(rgba(139,90,43,0.07)_1px,transparent_0)] bg-[size:12px_12px]' : 'bg-[#FCFBF9]';
   const previewText = isDarkPaper ? 'text-slate-100' : 'text-slate-900';
-  const previewTitle = isDarkPaper ? 'text-white' : 'text-slate-900';
+  const previewTitle = 
+    paperStyle === 'cotton' ? 'text-[#1F3F24]' : (isDarkPaper ? 'text-white' : 'text-slate-900');
   const previewSub = 
     paperStyle === 'chalkboard' ? 'text-slate-400' : 
     paperStyle === 'blueprint' ? 'text-slate-300' : 
-    paperStyle === 'parchment' ? 'text-amber-950' : 'text-slate-500';
+    paperStyle === 'parchment' ? 'text-amber-950' : 
+    paperStyle === 'cotton' ? 'text-amber-900/60' : 'text-slate-500';
   const previewAns = 
     paperStyle === 'chalkboard' ? 'text-sky-400' : 
     paperStyle === 'blueprint' ? 'text-cyan-300' : 
-    paperStyle === 'parchment' ? 'text-[#8E3200]' : 'text-blue-600';
+    paperStyle === 'parchment' ? 'text-[#8E3200]' : 
+    paperStyle === 'cotton' ? 'text-[#8D5832]' : 'text-blue-600';
   const previewNoteText = 
     paperStyle === 'chalkboard' ? 'text-slate-200' : 
     paperStyle === 'blueprint' ? 'text-white' : 
-    paperStyle === 'parchment' ? 'text-[#3A2614]' : theme.darkTextColor;
+    paperStyle === 'parchment' ? 'text-[#3A2614]' : 
+    paperStyle === 'cotton' ? 'text-[#2C2218]' : theme.darkTextColor;
   const previewNoteLabel = 
     paperStyle === 'chalkboard' ? 'text-sky-400' : 
     paperStyle === 'blueprint' ? 'text-cyan-400' : 
-    paperStyle === 'parchment' ? 'text-[#B45309]' : theme.secondaryColor;
+    paperStyle === 'parchment' ? 'text-[#B45309]' : 
+    paperStyle === 'cotton' ? 'text-[#B8583B]' : theme.secondaryColor;
   const previewNoteBg = 
     paperStyle === 'chalkboard' ? 'rgba(255, 255, 255, 0.04)' : 
     paperStyle === 'blueprint' ? 'rgba(255, 255, 255, 0.05)' : 
-    paperStyle === 'parchment' ? 'rgba(255, 255, 255, 0.25)' : theme.lightBg;
+    paperStyle === 'parchment' ? 'rgba(255, 255, 255, 0.25)' : 
+    paperStyle === 'cotton' ? 'rgba(139, 90, 43, 0.05)' : theme.lightBg;
   const previewNoteBorder = 
     paperStyle === 'chalkboard' ? 'rgba(255, 255, 255, 0.1)' : 
     paperStyle === 'blueprint' ? 'rgba(255, 255, 255, 0.2)' : 
-    paperStyle === 'parchment' ? 'rgba(120, 80, 50, 0.15)' : 'rgba(148, 163, 184, 0.2)';
+    paperStyle === 'parchment' ? 'rgba(120, 80, 50, 0.15)' : 
+    paperStyle === 'cotton' ? 'rgba(139, 90, 43, 0.12)' : 'rgba(148, 163, 184, 0.2)';
   const previewNoteLeftBorder = 
     paperStyle === 'chalkboard' ? '#38BDF8' : 
     paperStyle === 'blueprint' ? '#22D3EE' : 
-    paperStyle === 'parchment' ? '#B45309' : theme.accentColor;
+    paperStyle === 'parchment' ? '#B45309' : 
+    paperStyle === 'cotton' ? '#B8583B' : theme.accentColor;
   const previewLines = 
     paperStyle === 'chalkboard' ? 'bg-white/[0.04]' : 
     paperStyle === 'blueprint' ? 'bg-white/[0.08]' : 
-    paperStyle === 'parchment' ? 'bg-[#785032]/[0.06]' : 'bg-blue-500/[0.08]';
+    paperStyle === 'parchment' ? 'bg-[#785032]/[0.06]' : 
+    paperStyle === 'cotton' ? 'bg-[rgba(180,160,140,0.18)]' : 'bg-blue-500/[0.08]';
   const previewMargin = 
     paperStyle === 'chalkboard' ? 'bg-red-500/20' : 
     paperStyle === 'blueprint' ? 'bg-white/20' : 
-    paperStyle === 'parchment' ? 'bg-amber-800/30' : 'bg-red-500/30';
+    paperStyle === 'parchment' ? 'bg-amber-800/30' : 
+    paperStyle === 'cotton' ? 'bg-[rgba(180,80,60,0.45)]' : 'bg-red-500/30';
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-24 p-6 select-none text-slate-100 font-sans bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 rounded-[3rem] border border-slate-800 shadow-3xl relative overflow-hidden force-dark-theme">
@@ -1744,6 +1802,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
               <label className="text-[9px] text-slate-400 font-black uppercase tracking-wider block mb-1.5">ପୃଷ୍ଠା ଶୈଳୀ (Paper Theme / Style)</label>
               <div className="grid grid-cols-2 gap-3 mt-1.5">
                 {[
+                  { id: 'cotton', name: '🌟 Premium Cotton', bg: 'bg-[#F9F6F0] text-emerald-950 border-amber-500/30 shadow-[0_4px_15px_rgba(217,119,6,0.1)]', desc: 'World-class handmade organic cotton paper with natural plant fibers' },
                   { id: 'ruled', name: 'Classic Notebook', bg: 'bg-[#FCFBF9] text-slate-950 border-slate-300', desc: 'Standard cream lined page' },
                   { id: 'chalkboard', name: 'Neon Chalkboard', bg: 'bg-[#121824] text-slate-100 border-slate-800', desc: 'Dark chalkboard slate' },
                   { id: 'parchment', name: 'Vintage Scroll', bg: 'bg-[#F4EBD0] text-amber-950 border-amber-900/30', desc: 'Aged paper with sepia ink' },
@@ -1754,7 +1813,9 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
                     type="button"
                     onClick={() => setPaperStyle(style.id as any)}
                     className={`p-3 rounded-2xl border-2 text-left transition-all ${
-                      paperStyle === style.id ? 'ring-2 ring-indigo-500 border-transparent scale-[1.02]' : 'hover:bg-white/5 opacity-80 hover:opacity-100'
+                      style.id === 'cotton' ? 'col-span-2' : ''
+                    } ${
+                      paperStyle === style.id ? 'ring-2 ring-indigo-500 border-transparent scale-[1.01]' : 'hover:bg-white/5 opacity-80 hover:opacity-100'
                     } ${style.bg}`}
                   >
                     <div className="font-extrabold text-[10px]">{style.name}</div>
