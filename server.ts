@@ -503,10 +503,6 @@ async function startServer() {
     const keys: string[] = [];
     const primaryKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
     if (primaryKey) keys.push(primaryKey);
-    for (let i = 1; i <= 7; i++) {
-      const k = process.env[`GEMINI_ROTATOR_KEY_${i}`];
-      if (k && !keys.includes(k)) keys.push(k);
-    }
     return keys;
   }
 
