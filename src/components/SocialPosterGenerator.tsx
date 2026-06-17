@@ -178,7 +178,7 @@ function getIconEmoji(type: string): string {
   return map[type] || '✨';
 }
 
-
+const wobble = (val: number, amp = 1.8) => val + (Math.random() - 0.5) * amp;
 
 export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; onBack: () => void }) {
   const [dateStr, setDateStr] = useState<string>('17/06/2026'); // Today's date
@@ -335,7 +335,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
           className: selectedClass,
           subjectName: selectedSubject,
           chapterName: chapter.title,
-          language: selectedSubject === 'odia' ? 'or' : 'en'
+          language: (selectedSubject === 'english' || selectedSubject === 'english_grammar') ? 'en' : 'or'
         })
       });
 
@@ -400,8 +400,6 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
     ctx.lineWidth = 2.5;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-
-    const wobble = (val: number, amp = 1.8) => val + (Math.random() - 0.5) * amp;
 
     if (type === 'temple') {
       ctx.beginPath();
@@ -747,7 +745,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.arc(wobble(cx), wobble(cy), wobble(r), 0, Math.PI * 2);
       ctx.stroke();
       ctx.beginPath();
-      ctx.moveTo(wobble(cx));
+      ctx.moveTo(wobble(cx), wobble(cy));
       ctx.lineTo(wobble(cx + r * Math.cos(-Math.PI / 4)), wobble(cy + r * Math.sin(-Math.PI / 4)));
       ctx.stroke();
     } else if (type === 'matrix') {
@@ -901,8 +899,6 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
-    const wobble = (val: number, amp = 1.8) => val + (Math.random() - 0.5) * amp;
-
     ctx.beginPath();
     ctx.moveTo(wobble(x + 40), wobble(y + 190));
     ctx.lineTo(wobble(x + 40), wobble(y + 150));
@@ -970,9 +966,18 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
   const downloadPosterImage = async () => {
     setGenerating(true);
     try {
-      await document.fonts.load('bold 24px Kalam');
-      await document.fonts.load('bold 18px Kalam');
-      await document.fonts.load('italic 15px Caveat');
+      try {
+        await Promise.race([
+          Promise.all([
+            document.fonts.load('bold 24px Kalam'),
+            document.fonts.load('bold 18px Kalam'),
+            document.fonts.load('italic 15px Caveat')
+          ]),
+          new Promise((resolve) => setTimeout(resolve, 2000))
+        ]);
+      } catch (fontErr) {
+        console.warn('Font loading failed, proceeding with system fonts:', fontErr);
+      }
 
       const canvas = document.createElement('canvas');
       canvas.width = 1080;
@@ -1155,32 +1160,49 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.fillText(`Page No.: ${pageNo}`, bx + 15, by + 80);
 
       if (logoImage) {
-        await new Promise<void>((resolve) => {
-          const img = new Image();
-          img.onload = () => {
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(940, 110, 50, 0, Math.PI * 2);
-            ctx.clip();
-            ctx.drawImage(img, 890, 60, 100, 100);
-            ctx.restore();
+        try {
+          await new Promise<void>((resolve) => {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => {
+              try {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(940, 110, 50, 0, Math.PI * 2);
+                ctx.clip();
+                ctx.drawImage(img, 890, 60, 100, 100);
+                ctx.restore();
 
-            ctx.strokeStyle = '#475569';
-            ctx.lineWidth = 2.5;
-            ctx.beginPath();
-            for (let a = 0; a < Math.PI * 2; a += 0.1) {
-              const r = 50 + (Math.random() - 0.5) * 1.5;
-              const px = 940 + Math.cos(a) * r;
-              const py = 110 + Math.sin(a) * r;
-              if (a === 0) ctx.moveTo(px, py);
-              else ctx.lineTo(px, py);
-            }
-            ctx.closePath();
-            ctx.stroke();
-            resolve();
-          };
-          img.src = logoImage;
-        });
+                ctx.strokeStyle = '#475569';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                for (let a = 0; a < Math.PI * 2; a += 0.1) {
+                  const r = 50 + (Math.random() - 0.5) * 1.5;
+                  const px = 940 + Math.cos(a) * r;
+                  const py = 110 + Math.sin(a) * r;
+                  if (a === 0) ctx.moveTo(px, py);
+                  else ctx.lineTo(px, py);
+                }
+                ctx.closePath();
+                ctx.stroke();
+                resolve();
+              } catch (drawErr) {
+                console.error('Error drawing logo image onto canvas:', drawErr);
+                drawJagannathTemple(ctx, 840, 40);
+                resolve();
+              }
+            };
+            img.onerror = (loadErr) => {
+              console.warn('Failed to load logo image:', loadErr);
+              drawJagannathTemple(ctx, 840, 40);
+              resolve();
+            };
+            img.src = logoImage;
+          });
+        } catch (promiseErr) {
+          console.warn('Error processing logo image promise:', promiseErr);
+          drawJagannathTemple(ctx, 840, 40);
+        }
       } else {
         drawJagannathTemple(ctx, 840, 40);
       }
@@ -1343,7 +1365,9 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       const link = document.createElement('a');
       link.download = `${selectedSubject}_Poster_Page_${pageNo}.png`;
       link.href = dataUrl;
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
     } catch (err) {
       console.error('Error generating branded poster:', err);
     } finally {
