@@ -18,6 +18,7 @@ import {
   Sliders
 } from 'lucide-react';
 import { CLASS_SUBJECTS } from './DigitalLibraryView';
+import confetti from 'canvas-confetti';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import {
@@ -236,33 +237,56 @@ function drawFormattedTextLine(
   x: number,
   y: number,
   textColor: string,
-  underlineColor: string
+  underlineColor: string,
+  highlighterColor = 'rgba(253, 224, 71, 0.45)'
 ) {
   const parts = line.split('*');
+  
+  // First pass: Draw highlighter backgrounds under highlighted text segments
   let currentX = x;
-
   parts.forEach((part, index) => {
-    const isUnderlined = index % 2 === 1;
-    ctx.fillStyle = textColor;
-    ctx.fillText(part, currentX, y);
-
+    const isHighlighted = index % 2 === 1;
     const partWidth = ctx.measureText(part).width;
-    if (isUnderlined && part.trim().length > 0) {
+
+    if (isHighlighted && part.trim().length > 0) {
       ctx.save();
-      ctx.strokeStyle = underlineColor;
-      ctx.lineWidth = 1.8;
+      ctx.fillStyle = highlighterColor;
+
+      // Extract font size from context to dynamically scale the highlighter height
+      const fontSizeMatch = ctx.font.match(/(\d+)px/);
+      const fontSize = fontSizeMatch ? parseInt(fontSizeMatch[1], 10) : 16;
+
+      const rectH = fontSize * 1.1;
+      const rectY = y - fontSize * 0.85;
+      const rectX = currentX - 2;
+      const rectW = partWidth + 4;
+
+      // Draw slightly wavy/organic rounded highlighter stroke
       ctx.beginPath();
-      ctx.moveTo(currentX, y + 4);
-      const segments = Math.max(3, Math.floor(partWidth / 8));
-      for (let i = 1; i <= segments; i++) {
-        const px = currentX + (i / segments) * partWidth;
-        const py = (y + 4) + (Math.random() - 0.5) * 1.5;
-        ctx.lineTo(px, py);
-      }
-      ctx.stroke();
+      const r = Math.min(4, rectW / 2);
+      ctx.moveTo(rectX + r, rectY);
+      ctx.lineTo(rectX + rectW - r, rectY);
+      ctx.quadraticCurveTo(rectX + rectW, rectY, rectX + rectW, rectY + r);
+      ctx.lineTo(rectX + rectW, rectY + rectH - r);
+      ctx.quadraticCurveTo(rectX + rectW, rectY + rectH, rectX + rectW - r, rectY + rectH);
+      ctx.lineTo(rectX + r, rectY + rectH);
+      ctx.quadraticCurveTo(rectX, rectY + rectH, rectX, rectY + rectH - r);
+      ctx.lineTo(rectX, rectY + r);
+      ctx.quadraticCurveTo(rectX, rectY, rectX + r, rectY);
+      ctx.closePath();
+      ctx.fill();
+
       ctx.restore();
     }
     currentX += partWidth;
+  });
+
+  // Second pass: Draw actual text labels on top of the backgrounds
+  currentX = x;
+  parts.forEach((part, index) => {
+    ctx.fillStyle = textColor;
+    ctx.fillText(part, currentX, y);
+    currentX += ctx.measureText(part).width;
   });
 }
 
@@ -2344,6 +2368,18 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       let startY = 270;
       ctx.textAlign = 'left';
 
+      // Determine style-specific highlighter marker color
+      let highlighterColor = 'rgba(253, 224, 71, 0.45)'; // default cotton / ruled yellow
+      if (paperStyle === 'chalkboard') {
+        highlighterColor = 'rgba(34, 211, 238, 0.3)'; // neon cyan
+      } else if (paperStyle === 'blueprint') {
+        highlighterColor = 'rgba(251, 146, 60, 0.35)'; // neon orange
+      } else if (paperStyle === 'parchment') {
+        highlighterColor = 'rgba(245, 158, 11, 0.35)'; // amber gold
+      } else if (paperStyle === 'cotton') {
+        highlighterColor = 'rgba(253, 224, 71, 0.42)'; // soft premium yellow
+      }
+
       for (let i = 0; i < activeQuestions.length; i++) {
         const q = activeQuestions[i];
         
@@ -2382,7 +2418,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         ctx.font = `bold ${qFontSize}px Kalam`;
         const qLines = wrapText(ctx, `Q. ${q.question}`, 420);
         qLines.forEach((line, idx) => {
-          drawFormattedTextLine(ctx, line, 160, startY + 14 + idx * qLineHeight, darkTextColor, secondaryColor);
+          drawFormattedTextLine(ctx, line, 160, startY + 14 + idx * qLineHeight, darkTextColor, secondaryColor, highlighterColor);
         });
 
         // Draw Answer
@@ -2642,6 +2678,39 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       link.click();
       document.body.removeChild(link);
 
+      // Launch premium Celebratory Confetti Burst!
+      try {
+        const duration = 2.5 * 1000;
+        const animationEnd = Date.now() + duration;
+        const defaults = { startVelocity: 28, spread: 360, ticks: 60, zIndex: 9999 };
+
+        const randomInRange = (min: number, max: number) => {
+          return Math.random() * (max - min) + min;
+        };
+
+        const interval = setInterval(() => {
+          const timeLeft = animationEnd - Date.now();
+
+          if (timeLeft <= 0) {
+            return clearInterval(interval);
+          }
+
+          const particleCount = 40 * (timeLeft / duration);
+          confetti({
+            ...defaults,
+            particleCount,
+            origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+          });
+          confetti({
+            ...defaults,
+            particleCount,
+            origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+          });
+        }, 250);
+      } catch (confettiErr) {
+        console.warn("Confetti display failed:", confettiErr);
+      }
+
       // Auto-increment page number for the next generated sheet
       setPageNo((prev) => {
         const nextNum = parseInt(prev, 10) + 1;
@@ -2722,6 +2791,13 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
     paperStyle === 'blueprint' ? 'bg-white/20' : 
     paperStyle === 'parchment' ? 'bg-amber-800/30' : 
     paperStyle === 'cotton' ? 'bg-[rgba(180,80,60,0.45)]' : 'bg-red-500/30';
+
+  const previewHighlighter = 
+    paperStyle === 'chalkboard' ? 'bg-[#22D3EE]/25 text-[#22D3EE] px-1 rounded border border-[#22D3EE]/20 mx-0.5 font-extrabold' : 
+    paperStyle === 'blueprint' ? 'bg-[#FB923C]/25 text-[#FB923C] px-1 rounded border border-[#FB923C]/20 mx-0.5 font-extrabold' : 
+    paperStyle === 'parchment' ? 'bg-[#D97706]/20 text-[#78350F] px-1 rounded border border-[#D97706]/15 mx-0.5 font-extrabold' : 
+    paperStyle === 'cotton' ? 'bg-[#FDE047]/45 text-[#451A03] px-1 rounded border border-[#FDE047]/30 mx-0.5 font-extrabold shadow-sm' : 
+    'bg-yellow-300/45 text-amber-950 px-1 rounded border border-yellow-400/30 mx-0.5 font-extrabold';
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-24 p-6 select-none text-slate-100 font-sans bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 rounded-[3rem] border border-slate-800 shadow-3xl relative overflow-hidden force-dark-theme">
@@ -3102,10 +3178,10 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
                       <span className={`w-3.5 h-3.5 shrink-0 rounded-full border flex items-center justify-center text-[5.5px] font-mono ${isDarkPaper ? 'border-slate-700 bg-white/5' : 'border-slate-800 bg-white'}`}>{idx + 1}</span>
                       <span className="leading-tight">
                         {q.question.split('*').map((part, index) => {
-                          const isUnderlined = index % 2 === 1;
-                          if (isUnderlined) {
+                          const isHighlighted = index % 2 === 1;
+                          if (isHighlighted) {
                             return (
-                              <span key={index} className="underline decoration-blue-500/80 underline-offset-1 font-bold">
+                              <span key={index} className={previewHighlighter}>
                                 {part}
                               </span>
                             );
