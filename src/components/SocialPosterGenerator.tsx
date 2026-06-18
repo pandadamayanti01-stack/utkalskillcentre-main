@@ -341,6 +341,31 @@ function findRoadmapChapter(classKey: string, chapterId: string) {
   return null;
 }
 
+function toOdiaNumerals(numStr: string): string {
+  const map: Record<string, string> = {
+    '0': '୦',
+    '1': '୧',
+    '2': '୨',
+    '3': '୩',
+    '4': '୪',
+    '5': '୫',
+    '6': '୬',
+    '7': '୭',
+    '8': '୮',
+    '9': '୯'
+  };
+  return numStr.split('').map(char => map[char] || char).join('');
+}
+
+function getChapterOdiaPrefix(titleStr: string): string {
+  const match = titleStr.match(/^Chapter\s+(\d+)/i);
+  if (match) {
+    const num = match[1];
+    return `ଅଧ୍ୟାୟ ${toOdiaNumerals(num)}`;
+  }
+  return '';
+}
+
 function getClassOdiaLabel(classKey: string) {
   const cNum = classKey.replace('class', '');
   switch (cNum) {
@@ -455,14 +480,28 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
             }
           }
           
+          const originalTitle = data.title || '';
+          const chapNum = parseInt(originalTitle.match(/Chapter\s+(\d+)/i)?.[1] || '0', 10);
+          
           let displayTitle = data.title || '';
           if (titleOr) {
-            const chapterNumPrefix = data.title?.match(/^Chapter\s+\d+/i)?.[0] || '';
+            const isEnglishSubject = selectedSubject === 'english' || selectedSubject === 'english_grammar';
             const subText = titleEn ? ` (${titleEn})` : '';
-            if (chapterNumPrefix) {
-              displayTitle = `${chapterNumPrefix} - ${titleOr}${subText}`;
+            
+            if (isEnglishSubject) {
+              const chapterNumPrefix = data.title?.match(/^Chapter\s+\d+/i)?.[0] || '';
+              if (chapterNumPrefix) {
+                displayTitle = `${chapterNumPrefix} - ${titleOr}${subText}`;
+              } else {
+                displayTitle = `${titleOr}${subText}`;
+              }
             } else {
-              displayTitle = `${titleOr}${subText}`;
+              const odiaPrefix = getChapterOdiaPrefix(data.title || '');
+              if (odiaPrefix) {
+                displayTitle = `${odiaPrefix} - ${titleOr}${subText}`;
+              } else {
+                displayTitle = `${titleOr}${subText}`;
+              }
             }
           }
           
@@ -471,16 +510,13 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
             ...data,
             title: displayTitle,
             title_or: titleOr,
-            title_en: titleEn
+            title_en: titleEn,
+            chapterNumber: chapNum
           };
         });
         
         // Sort chapters numerically by chapter number (e.g. Chapter 1, Chapter 2...)
-        docs.sort((a, b) => {
-          const aNum = parseInt(a.title?.match(/Chapter\s+(\d+)/i)?.[1] || '0', 10);
-          const bNum = parseInt(b.title?.match(/Chapter\s+(\d+)/i)?.[1] || '0', 10);
-          return aNum - bNum;
-        });
+        docs.sort((a, b) => a.chapterNumber - b.chapterNumber);
 
         setLoadedChapters(docs);
       } catch (err) {
