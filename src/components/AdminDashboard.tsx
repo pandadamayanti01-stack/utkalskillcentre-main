@@ -5540,7 +5540,7 @@ Sample tone for Class 6-10:
   }
 
   return (
-    <div className="min-h-screen bg-[#020617] text-slate-200 font-['Inter'] selection:bg-cyan-500/30 selection:text-white overflow-x-hidden">
+    <div className="h-screen w-full overflow-y-auto overflow-x-hidden bg-[#020617] text-slate-200 font-['Inter'] selection:bg-cyan-500/30 selection:text-white">
       {/* Background Orbs */}
       <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none animate-pulse" />
       <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none animate-pulse" style={{ animationDelay: '2s' }} />

@@ -744,6 +744,8 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
           for (const q of fullList) {
             if (q.imagePrompt) {
               await generateIndividualQuestionImage(q.id, q.imagePrompt);
+              // Wait 1.5s between requests to prevent hitting Vertex/Gemini rate limits
+              await new Promise(resolve => setTimeout(resolve, 1500));
             }
           }
         };
@@ -2836,11 +2838,24 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={downloadPosterImage}
-          disabled={generating}
+          disabled={generating || questions.some(q => q.imageLoading)}
           className="px-6 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black rounded-2xl text-sm transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 disabled:opacity-50 hover:brightness-110"
         >
-          {generating ? <RefreshCw className="animate-spin text-slate-950" size={18} /> : <Download className="text-slate-950" size={18} />}
-          <span>ଡାଉନଲୋଡ୍ କରନ୍ତୁ (Download Branded Poster)</span>
+          {generating || questions.some(q => q.imageLoading) ? (
+            <>
+              <RefreshCw className="animate-spin text-slate-950" size={18} />
+              <span>
+                {generating 
+                  ? "ପୋଷ୍ଟର ପ୍ରସ୍ତୁତ ହେଉଛି... (Generating Poster...)" 
+                  : `ଚିତ୍ର ପ୍ରସ୍ତୁତ ହେଉଛି... (${questions.filter(q => q.imageUrl).length}/${questions.filter(q => q.imagePrompt).length} Generated)`}
+              </span>
+            </>
+          ) : (
+            <>
+              <Download className="text-slate-950" size={18} />
+              <span>ଡାଉନଲୋଡ୍ କରନ୍ତୁ (Download Branded Poster)</span>
+            </>
+          )}
         </motion.button>
       </motion.div>
 
