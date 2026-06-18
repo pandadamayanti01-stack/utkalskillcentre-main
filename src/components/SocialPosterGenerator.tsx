@@ -341,6 +341,42 @@ function findRoadmapChapter(classKey: string, chapterId: string) {
   return null;
 }
 
+function getClassOdiaLabel(classKey: string) {
+  const cNum = classKey.replace('class', '');
+  switch (cNum) {
+    case '1': return 'ପ୍ରଥମ ଶ୍ରେଣୀ';
+    case '2': return 'ଦ୍ୱିତୀୟ ଶ୍ରେଣୀ';
+    case '3': return 'ତୃତୀୟ ଶ୍ରେଣୀ';
+    case '4': return 'ଚତୁର୍ଥ ଶ୍ରେଣୀ';
+    case '5': return 'ପଞ୍ଚମ ଶ୍ରେଣୀ';
+    case '6': return 'ଷଷ୍ଠ ଶ୍ରେଣୀ';
+    case '7': return 'ସପ୍ତମ ଶ୍ରେଣୀ';
+    case '8': return 'ଅଷ୍ଟମ ଶ୍ରେଣୀ';
+    case '9': return 'ନବମ ଶ୍ରେଣୀ';
+    case '10': return 'ଦଶମ ଶ୍ରେଣୀ';
+    case 'sishuvatika(anganwadi)': return 'ଶିଶୁ ବାଟିକା';
+    default: return classKey;
+  }
+}
+
+function getClassOdiaHighlight(classKey: string) {
+  const cNum = classKey.replace('class', '');
+  switch (cNum) {
+    case '1': return 'ପ୍ରଥମ ଶ୍ରେଣୀ (Class 1)';
+    case '2': return 'ଦ୍ୱିତୀୟ ଶ୍ରେଣୀ (Class 2)';
+    case '3': return 'ତୃତୀୟ ଶ୍ରେଣୀ (Class 3)';
+    case '4': return 'ଚତୁର୍ଥ ଶ୍ରେଣୀ (Class 4)';
+    case '5': return 'ପଞ୍ଚମ ଶ୍ରେଣୀ (Class 5)';
+    case '6': return 'ଷଷ୍ଠ ଶ୍ରେଣୀ (Class 6)';
+    case '7': return 'ସପ୍ତମ ଶ୍ରେଣୀ (Class 7)';
+    case '8': return 'ଅଷ୍ଟମ ଶ୍ରେଣୀ (Class 8)';
+    case '9': return 'ନବମ ଶ୍ରେଣୀ (Class 9)';
+    case '10': return 'ଦଶମ ଶ୍ରେଣୀ (Class 10)';
+    case 'sishuvatika(anganwadi)': return 'ଶିଶୁ ବାଟିକା (Shishu Vatika)';
+    default: return classKey.toUpperCase();
+  }
+}
+
 export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; onBack: () => void }) {
   const [dateStr, setDateStr] = useState<string>(getTodayDateString()); // Today's date
   const [pageNo, setPageNo] = useState<string>('001');
@@ -529,7 +565,16 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       }
       
       setTitleText(displayTitle.toUpperCase());
-      setSubtitleText(`Class ${selectedClass.replace('class', '')} ${selectedSubject.toUpperCase()} Revision`);
+      
+      const classNum = selectedClass.replace('class', '');
+      const subObj = activeSubjects.find(s => s.key === selectedSubject);
+      const isEnglishSubject = selectedSubject === 'english' || selectedSubject === 'english_grammar';
+      
+      const subOdia = isEnglishSubject
+        ? `Class ${classNum} - ${subObj ? subObj.labelEn : selectedSubject.toUpperCase()} Revision`
+        : `${getClassOdiaLabel(selectedClass)} - ${subObj ? subObj.labelOr : selectedSubject.toUpperCase()} (AI ପୁନରାଲୋଚନା)`;
+      
+      setSubtitleText(subOdia);
       setAiImagePrompt(`clean textbook style vector diagram of ${displayTitle}`);
       setAiImageCaption(`Figure: ${displayTitle}`);
     }
@@ -623,7 +668,16 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         setQuestions(fullList);
 
         setTitleText(chapter.title?.toUpperCase() || 'AI REVISION QUESTIONS');
-        setSubtitleText(`Class ${selectedClass.replace('class', '')} ${selectedSubject.toUpperCase()} AI Revision`);
+        
+        const classNum = selectedClass.replace('class', '');
+        const subObj = activeSubjects.find(s => s.key === selectedSubject);
+        const isEnglishSubject = selectedSubject === 'english' || selectedSubject === 'english_grammar';
+        
+        const subOdia = isEnglishSubject
+          ? `Class ${classNum} - ${subObj ? subObj.labelEn : selectedSubject.toUpperCase()} AI Revision`
+          : `${getClassOdiaLabel(selectedClass)} - ${subObj ? subObj.labelOr : selectedSubject.toUpperCase()} (AI ପୁନରାଲୋଚନା)`;
+        
+        setSubtitleText(subOdia);
 
         // Trigger sequential image generation for questions that have prompts to prevent browser connection limit blocks and Vertex AI 429 Quota Exceeded (RESOURCE_EXHAUSTED)
         const triggerSequentialImages = async () => {
@@ -2390,6 +2444,41 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         startY += blockHeight + padding;
       }
 
+      // Draw highlighted Class Badge above the footer slogan for extra visibility
+      ctx.save();
+      const classBadgeText = getClassOdiaHighlight(selectedClass);
+      ctx.font = 'bold 20px Kalam';
+      const badgeTextWidth = ctx.measureText(classBadgeText).width;
+      const badgeW = badgeTextWidth + 24;
+      const badgeH = 34;
+      const badgeX = 540 - badgeW / 2;
+      const badgeY = 1795;
+      
+      const drawRoundedRect = (x: number, y: number, w: number, h: number, r: number) => {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+      };
+      
+      // Draw badge background (solid accent color)
+      ctx.fillStyle = accentColor;
+      drawRoundedRect(badgeX, badgeY, badgeW, badgeH, 8);
+      ctx.fill();
+      
+      // Draw text (white on colored badge for maximum pop)
+      ctx.fillStyle = '#FFFFFF';
+      ctx.textAlign = 'center';
+      ctx.fillText(classBadgeText, 540, badgeY + 24);
+      ctx.restore();
+
       ctx.textAlign = 'center';
       ctx.fillStyle = primaryColor;
       ctx.font = 'bold 24px Kalam';
@@ -3028,7 +3117,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
             </div>
 
             {/* FOOTER */}
-            <div className="relative text-center text-[9px] font-black z-10 border-t border-slate-200/40 pt-2 pb-1.5 flex items-center justify-center" style={{ fontFamily: 'Kalam, cursive' }}>
+            <div className="relative text-center text-[9px] font-black z-10 border-t border-slate-200/40 pt-2 pb-1.5 flex flex-col items-center justify-center gap-1" style={{ fontFamily: 'Kalam, cursive' }}>
               
               {/* Hand-drawn style QR Code Scanner in bottom-left */}
               <div className="absolute left-1 bottom-1 p-0.5 bg-white border border-slate-200/80 rounded shadow-[0_1px_3px_rgba(0,0,0,0.08)] flex flex-col items-center justify-center rotate-[3deg] z-20">
@@ -3038,6 +3127,14 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
                   className="w-[18px] h-[18px] object-contain" 
                 />
                 <span className="text-[3px] font-bold text-slate-500 mt-0.5 scale-90">Scan to Learn</span>
+              </div>
+
+              {/* Class Highlighted Badge */}
+              <div 
+                className="px-2 py-0.5 rounded-md text-[6.5px] font-black text-white shadow-sm flex items-center justify-center leading-none"
+                style={{ backgroundColor: theme.accentColor }}
+              >
+                {getClassOdiaHighlight(selectedClass)}
               </div>
 
               <span>★ {footerText} ★</span>
