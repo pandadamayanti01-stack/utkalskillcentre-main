@@ -2343,8 +2343,8 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
 
       // Target bounds: start drawing at 270px, footer is at 1860px.
       // Available height is 1860 - 270 = 1590px.
-      // We set target budget to 1460px for a solid safety margin to prevent overlaps.
-      const maxAvailableHeight = 1460;
+      // We set target budget to 1440px for a solid safety margin to prevent mascot, QR code and class badge overlaps.
+      const maxAvailableHeight = 1440;
       
       let qLineHeight = defaultQLineHeight;
       let ansLineHeight = defaultAnsLineHeight;
@@ -2457,12 +2457,12 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       }
 
       let distributedPadding = padding;
-      const totalAvailableSpace = 1590; // Spacing from 270px to 1860px
+      const totalAvailableSpace = maxAvailableHeight; // Safe space to prevent overlapping bottom elements (ends at 270 + 1440 = 1710px)
       const remainingSpace = totalAvailableSpace - finalTotalHeight;
       if (activeQuestions.length > 1 && remainingSpace > 0) {
         distributedPadding = remainingSpace / (activeQuestions.length - 1);
-        // Cap distributed padding to avoid cartoonishly large gaps (max 45px)
-        distributedPadding = Math.min(45, distributedPadding);
+        // Cap distributed padding to avoid cartoonishly large gaps (max 40px)
+        distributedPadding = Math.min(40, distributedPadding);
       }
 
       let startY = 270;
