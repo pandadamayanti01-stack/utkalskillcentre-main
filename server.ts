@@ -506,6 +506,7 @@ async function startServer() {
     return keys;
   }
 
+
   app.post('/api/ai/generate', async (req, res) => {
     try {
       const { contents, systemInstruction, modelType, generationConfig, enableGrounding, enableDialectBridge } = req.body;
@@ -901,7 +902,7 @@ async function startServer() {
       for (const keyToUse of rotatorKeys) {
         try {
           console.log(`Backend AI: Attempting image generation via key ${keyToUse.substring(0, 12)}...`);
-          const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${keyToUse}`;
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${keyToUse}`;
           const response = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1141,7 +1142,7 @@ async function startServer() {
         for (const keyToUse of rotatorKeys) {
           try {
             console.log(`Backend AI Stage 2: Generating refined diagram via key ${keyToUse.substring(0, 12)}...`);
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${keyToUse}`;
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${keyToUse}`;
             const response = await fetch(url, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -1284,6 +1285,10 @@ async function startServer() {
       - Languages & Literature (Odia, English, Hindi, Sanskrit): Prefer "slate", "scroll", "quill", "book", or "school".
       - Cognitive Reasoning / Comprehension (Bodha Kruti): Prefer "puzzle" or "bulb".
       - Arts, Culture, Crafts & Vocational (Koshala / Skills): Prefer "palette", "sprout", "dance", "temple", "flower", "mountain", "river", "sand", "deer", or "globe".
+      6. A detailed English visual prompt (imagePrompt) describing a clean textbook-style diagram, graph, sketch, or illustration explaining or illustrating the mathematical/scientific concept of this specific question.
+         - CRITICAL: Even if the question and answer are in Odia, the imagePrompt MUST be in English.
+         - The prompt must specify visual elements only, be textless, and have a white background (e.g., "A clean vector diagram of a right-angled triangle showing sides a, b, c with a square angle indicator, white background, textless, no labels").
+         - Do not include any words, text, letters, or writings in the prompt or in the generated image.
 
       Provide the output in JSON format with the following structure:
       {
@@ -1294,7 +1299,8 @@ async function startServer() {
             "answer": "Answer 1 text...",
             "sideNoteLabel": "Key Fact",
             "sideNote": "Supporting note text...",
-            "iconType": "book"
+            "iconType": "book",
+            "imagePrompt": "Detailed English visual prompt for the question diagram..."
           }
         ]
       }
