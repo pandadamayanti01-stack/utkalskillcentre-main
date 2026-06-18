@@ -457,9 +457,19 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
     const chapter = availableChapters.find(c => c.id === selectedChapterId);
     if (!chapter) return;
 
+    const chTitle = chapter.title || 'Chapter';
+    const imagePromptText = `clean textbook style vector diagram of ${chTitle}`;
+    
+    setAiImagePrompt(imagePromptText);
+    setAiImageCaption(`Figure: ${chTitle}`);
+
     setGeneratingAi(true);
+    if (showAiIllustration) {
+      setGeneratingImage(true);
+    }
+
     try {
-      const response = await fetch('/api/ai/generate-revision-poster', {
+      const questionsPromise = fetch('/api/ai/generate-revision-poster', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -470,11 +480,21 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         })
       });
 
-      if (!response.ok) {
-        throw new Error("AI Endpoint returned error");
+      const imagePromise = showAiIllustration
+        ? fetch('/api/ai/generate-image', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt: imagePromptText })
+          })
+        : Promise.resolve(null);
+
+      const [questionsRes, imageRes] = await Promise.all([questionsPromise, imagePromise]);
+
+      if (!questionsRes.ok) {
+        throw new Error("AI Questions Endpoint returned error");
       }
 
-      const data = await response.json();
+      const data = await questionsRes.json();
       if (data && data.questions && Array.isArray(data.questions)) {
         const subjectIcons = getSubjectIconTypes(selectedSubject);
         const cat = getSubjectCategory(selectedSubject);
@@ -508,15 +528,24 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
 
         setTitleText(chapter.title?.toUpperCase() || 'AI REVISION QUESTIONS');
         setSubtitleText(`Class ${selectedClass.replace('class', '')} ${selectedSubject.toUpperCase()} AI Revision`);
-        const chTitle = chapter.title || 'Chapter';
-        setAiImagePrompt(`clean textbook style vector diagram of ${chTitle}`);
-        setAiImageCaption(`Figure: ${chTitle}`);
+      }
+
+      if (imageRes) {
+        if (imageRes.ok) {
+          const imageData = await imageRes.json();
+          if (imageData.image) {
+            setAiImageUrl(imageData.image);
+          }
+        } else {
+          console.warn("Parallel AI image generation failed:", await imageRes.text());
+        }
       }
     } catch (err) {
       console.error(err);
-      alert("Failed to auto-generate questions using Gemini. Please try manual entry.");
+      alert("Failed to auto-generate questions/diagram using Gemini. Please try manual entries.");
     } finally {
       setGeneratingAi(false);
+      setGeneratingImage(false);
     }
   };
 
