@@ -2369,6 +2369,100 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         noteLabelSize = Math.max(12, Math.floor(14 * compression));
         noteLineHeight = Math.max(18, Math.floor(22 * compression));
         imgSize = Math.max(240, Math.floor(320 * compression));
+      } else {
+        // If we have extra space, let's try to upscale up to 1.3x to fill the page and enlarge the text
+        let upscaleFactor = Math.min(1.3, maxAvailableHeight / totalRequiredHeight);
+        
+        let fits = false;
+        while (upscaleFactor >= 1.0 && !fits) {
+          const testQFontSize = Math.floor(22 * upscaleFactor);
+          const testAnsFontSize = Math.floor(24 * upscaleFactor);
+          const testNoteFontSize = Math.floor(16 * upscaleFactor);
+          const testNoteLabelSize = Math.floor(14 * upscaleFactor);
+          const testQLineHeight = Math.round(defaultQLineHeight * upscaleFactor);
+          const testAnsLineHeight = Math.round(defaultAnsLineHeight * upscaleFactor);
+          const testNoteLineHeight = Math.round(22 * upscaleFactor);
+          const testPadding = Math.round(defaultPadding * upscaleFactor);
+          
+          let testHeight = 0;
+          for (let i = 0; i < activeQuestions.length; i++) {
+            const q = activeQuestions[i];
+            ctx.font = `bold ${testQFontSize}px Kalam`;
+            const qLines = wrapText(ctx, `Q. ${q.question}`, 420);
+            
+            ctx.font = `bold ${testAnsFontSize}px Kalam`;
+            const ansLines = wrapText(ctx, `• Ans. ${q.answer}`, 410);
+            
+            const qH = qLines.length * testQLineHeight;
+            const ansH = ansLines.length * testAnsLineHeight;
+            const qaH = 14 + qH + 12 + ansH;
+            
+            let sideNoteH = 0;
+            if (q.sideNote) {
+              ctx.font = `bold ${testNoteFontSize}px Kalam`;
+              const noteLines = wrapText(ctx, q.sideNote, 260);
+              const nh = Math.max(90, 48 + noteLines.length * testNoteLineHeight);
+              sideNoteH = -8 + nh;
+            }
+            
+            testHeight += Math.max(qaH, sideNoteH, 95) + testPadding;
+          }
+          if (activeQuestions.length > 0) {
+            testHeight -= testPadding;
+          }
+          
+          if (testHeight <= maxAvailableHeight) {
+            qFontSize = testQFontSize;
+            ansFontSize = testAnsFontSize;
+            noteFontSize = testNoteFontSize;
+            noteLabelSize = testNoteLabelSize;
+            qLineHeight = testQLineHeight;
+            ansLineHeight = testAnsLineHeight;
+            noteLineHeight = testNoteLineHeight;
+            padding = testPadding;
+            fits = true;
+          } else {
+            upscaleFactor -= 0.05;
+          }
+        }
+      }
+
+      // Recalculate block heights with final chosen scales to distribute leftover space perfectly
+      const finalHeights: number[] = [];
+      let finalTotalHeight = 0;
+      for (let i = 0; i < activeQuestions.length; i++) {
+        const q = activeQuestions[i];
+        
+        ctx.font = `bold ${qFontSize}px Kalam`;
+        const qLines = wrapText(ctx, `Q. ${q.question}`, 420);
+        
+        ctx.font = `bold ${ansFontSize}px Kalam`;
+        const ansLines = wrapText(ctx, `• Ans. ${q.answer}`, 410);
+        
+        const qHeight = qLines.length * qLineHeight;
+        const ansHeight = ansLines.length * ansLineHeight;
+        const qaHeight = 14 + qHeight + 12 + ansHeight;
+        
+        let sideNoteHeight = 0;
+        if (q.sideNote) {
+          ctx.font = `bold ${noteFontSize}px Kalam`;
+          const noteLines = wrapText(ctx, q.sideNote, 260);
+          const nh = Math.max(90, 48 + noteLines.length * noteLineHeight);
+          sideNoteHeight = -8 + nh;
+        }
+        
+        const blockHeight = Math.max(qaHeight, sideNoteHeight, 95);
+        finalHeights.push(blockHeight);
+        finalTotalHeight += blockHeight;
+      }
+
+      let distributedPadding = padding;
+      const totalAvailableSpace = 1590; // Spacing from 270px to 1860px
+      const remainingSpace = totalAvailableSpace - finalTotalHeight;
+      if (activeQuestions.length > 1 && remainingSpace > 0) {
+        distributedPadding = remainingSpace / (activeQuestions.length - 1);
+        // Cap distributed padding to avoid cartoonishly large gaps (max 45px)
+        distributedPadding = Math.min(45, distributedPadding);
       }
 
       let startY = 270;
@@ -2519,7 +2613,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
           drawSketchIcon(ctx, q.iconType, 900, startY - 12, primaryColor);
         }
         
-        startY += blockHeight + padding;
+        startY += blockHeight + distributedPadding;
       }
 
       // Draw highlighted Class Badge above the footer slogan for extra visibility
