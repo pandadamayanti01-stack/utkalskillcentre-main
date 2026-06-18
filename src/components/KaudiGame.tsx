@@ -29,6 +29,7 @@ export function KaudiGame({ user, onBack }: KaudiGameProps) {
   const [selectedOpt, setSelectedOpt] = useState<number | null>(null);
   
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+  const [showHelp, setShowHelp] = useState<boolean>(false);
   const [gunduluSpeech, setGunduluSpeech] = useState<string>('କଉଡ଼ି ଗଡ଼ାଇ ନିଜ ଭାଗ୍ୟ ଓ ଜ୍ଞାନ ପରଖ!');
   const [userXp, setUserXp] = useState<number>(user?.xp || user?.points || 150);
 
@@ -317,14 +318,23 @@ export function KaudiGame({ user, onBack }: KaudiGameProps) {
           <Lucide.Gamepad className="text-purple-500" size={20} />
           କଉଡ଼ି ଖେଳ (Cowrie Shell Race)
         </h2>
-        <button 
-          onClick={() => setSoundEnabled(!soundEnabled)} 
-          className={`p-2.5 rounded-2xl border transition-all active:scale-95 shadow-sm ${
-            soundEnabled ? 'bg-emerald-50 border-emerald-100 text-emerald-600' : 'bg-slate-50 border-slate-200 text-slate-400'
-          }`}
-        >
-          {soundEnabled ? <Lucide.Volume2 size={16} /> : <Lucide.VolumeX size={16} />}
-        </button>
+        <div className="flex items-center gap-1.5">
+          <button 
+            onClick={() => setShowHelp(true)} 
+            className="p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-2xl text-slate-500 active:scale-95 transition-all shadow-sm"
+            title="ଖେଳ ନିୟମ"
+          >
+            <Lucide.HelpCircle size={16} />
+          </button>
+          <button 
+            onClick={() => setSoundEnabled(!soundEnabled)} 
+            className={`p-2.5 rounded-2xl border transition-all active:scale-95 shadow-sm ${
+              soundEnabled ? 'bg-emerald-50 border-emerald-100 text-emerald-600' : 'bg-slate-50 border-slate-200 text-slate-400'
+            }`}
+          >
+            {soundEnabled ? <Lucide.Volume2 size={16} /> : <Lucide.VolumeX size={16} />}
+          </button>
+        </div>
       </div>
 
       {/* GUNDULU DIALOGUE */}
@@ -542,6 +552,91 @@ export function KaudiGame({ user, onBack }: KaudiGameProps) {
           </div>
         </div>
       )}
+
+      {/* HOW TO PLAY MODAL */}
+      <AnimatePresence>
+        {showHelp && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center px-4 backdrop-blur-sm bg-slate-950/40 animate-fadeIn">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              className="relative w-full max-w-lg bg-white border border-slate-200 rounded-[2.5rem] p-7 md:p-8 shadow-2xl text-slate-800 overflow-hidden"
+            >
+              {/* Programmatic Sambalpuri trim on modal */}
+              <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-red-600 via-slate-900 to-amber-400" />
+
+              {/* Close Button */}
+              <button
+                onClick={() => setShowHelp(false)}
+                className="absolute top-5 right-5 p-2 bg-slate-50 rounded-xl border border-slate-200 text-slate-400 hover:text-slate-700 active:scale-95 transition-all"
+              >
+                <Lucide.X size={16} />
+              </button>
+
+              <div className="space-y-6 mt-5">
+                <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+                  <Lucide.HelpCircle className="text-purple-500" size={24} />
+                  <h2 className="text-xl font-black text-slate-900">କଉଡ଼ି ଖେଳ - ନିୟମାବଳୀ</h2>
+                </div>
+
+                <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
+                  <div className="bg-slate-50 p-4 border border-slate-200/60 rounded-2xl space-y-2">
+                    <h3 className="text-sm font-black text-purple-600 flex items-center gap-1.5">
+                      🎲 କଉଡ଼ି ଚାଲି ନିୟମ
+                    </h3>
+                    <ul className="text-xs text-slate-600 space-y-1.5 list-disc pl-4 font-bold leading-relaxed">
+                      <li>୪ଟି କଉଡ଼ିକୁ ରୋଲ୍ କଲେ, ସେମାନଙ୍କର ଉନ୍ମୁକ୍ତ (ଚିତ୍) ବା ବନ୍ଦ (ପଟ୍) ସ୍ଥିତି ଅନୁଯାୟୀ ଚାଲି ମିଳିବ:</li>
+                      <li>୧ଟି ଚିତ୍ = ୧ ଘର ଆଗକୁ</li>
+                      <li>୨ଟି ଚିତ୍ = ୨ ଘର ଆଗକୁ</li>
+                      <li>୩ଟି ଚିତ୍ = ୩ ଘର ଆଗକୁ</li>
+                      <li>୪ଟି ଚିତ୍ = ୪ ଘର ଆଗକୁ</li>
+                      <li>୦ଟି ଚିତ୍ (ସବୁ ବନ୍ଦ) = ୮ ଘର ଆଗକୁ!</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-slate-50 p-4 border border-slate-200/60 rounded-2xl space-y-2">
+                    <h3 className="text-sm font-black text-amber-600 flex items-center gap-1.5">
+                      📝 କୁଇଜ୍ ଟାଇଲ୍
+                    </h3>
+                    <ul className="text-xs text-slate-600 space-y-1.5 list-disc pl-4 font-bold leading-relaxed">
+                      <li>ଯଦି ଆପଣ କୌଣସି କୁଇଜ୍ ଘରେ ପହଞ୍ଚନ୍ତି, ଗୋଟିଏ ପ୍ରଶ୍ନ ପଚରାଯିବ।</li>
+                      <li>ଠିକ୍ ଉତ୍ତର ଦେଲେ ଆପଣ <strong>୧ ଘର ଆଗକୁ</strong> ଯିବେ, ଭୁଲ୍ ଉତ୍ତର ଦେଲେ <strong>୧ ଘର ପଛକୁ</strong> ଫେରିବେ।</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-slate-50 p-4 border border-slate-200/60 rounded-2xl space-y-2">
+                    <h3 className="text-sm font-black text-red-600 flex items-center gap-1.5">
+                      🕸️ କଉଡ଼ି ଫାନ୍ଦ
+                    </h3>
+                    <ul className="text-xs text-slate-600 space-y-1.5 list-disc pl-4 font-bold leading-relaxed">
+                      <li>ଫାନ୍ଦ ଥିବା ଘରେ ପହଞ୍ଚିଲେ ଆପଣ ବନ୍ଦୀ ହୋଇଯିବେ।</li>
+                      <li>ମୁକ୍ତ ହେବା ପାଇଁ ପରବର୍ତ୍ତୀ ରୋଲରେ ଆପଣଙ୍କୁ ଏକ ଯୁଗ୍ମ ସଂଖ୍ୟା (ଯେପରିକି ୨, ୪ କିମ୍ବା ୮) ରୋଲ୍ କରିବାକୁ ପଡିବ।</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-slate-50 p-4 border border-slate-200/60 rounded-2xl space-y-2">
+                    <h3 className="text-sm font-black text-emerald-600 flex items-center gap-1.5">
+                      🏆 ସୀମା ଓ ବିଜୟ
+                    </h3>
+                    <ul className="text-xs text-slate-600 space-y-1.5 list-disc pl-4 font-bold leading-relaxed">
+                      <li>ଆପଣଙ୍କ ପାଖରେ ମୋଟ ୧୨ ଥର ରୋଲ୍ କରିବାର ସୁଯୋଗ ରହିବ।</li>
+                      <li>୧୨ଟି ଚାଲ୍ ମଧ୍ୟରେ ୨୦ ନମ୍ବର ଘରେ ପହଞ୍ଚି ଗ୍ରାମ ମନ୍ଦିର ଛୁଇଁଲେ +150 XP ସହ ଜିତିବେ!</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setShowHelp(false)}
+                  className="w-full py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white font-black rounded-2xl text-xs transition-all shadow-md shadow-purple-500/10"
+                >
+                  ବୁଝିଗଲି, ଖେଳିବା!
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

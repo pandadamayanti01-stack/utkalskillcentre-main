@@ -24,6 +24,7 @@ export function PuchiGame({ user, onBack }: PuchiGameProps) {
   const [balance, setBalance] = useState<number>(100); // 0 to 100%
   const [squatState, setSquatState] = useState<'center' | 'left' | 'right'>('center');
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+  const [showHelp, setShowHelp] = useState<boolean>(false);
   const [gunduluSpeech, setGunduluSpeech] = useState<string>('ତାଳ ଅନୁଯାୟୀ ଠିକ୍ ସମୟରେ ଟ୍ୟାପ୍ କର!');
   const [userXp, setUserXp] = useState<number>(user?.xp || user?.points || 150);
 
@@ -298,14 +299,23 @@ export function PuchiGame({ user, onBack }: PuchiGameProps) {
           <Lucide.Music className="text-rose-500 animate-bounce" size={20} />
           ପୁଚି ଖେଳ (Traditional Rhythm Squat)
         </h2>
-        <button 
-          onClick={() => setSoundEnabled(!soundEnabled)} 
-          className={`p-2.5 rounded-2xl border transition-all active:scale-95 shadow-sm ${
-            soundEnabled ? 'bg-emerald-50 border-emerald-100 text-emerald-600' : 'bg-slate-50 border-slate-200 text-slate-400'
-          }`}
-        >
-          {soundEnabled ? <Lucide.Volume2 size={16} /> : <Lucide.VolumeX size={16} />}
-        </button>
+        <div className="flex items-center gap-1.5">
+          <button 
+            onClick={() => setShowHelp(true)} 
+            className="p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-2xl text-slate-500 active:scale-95 transition-all shadow-sm"
+            title="ଖେଳ ନିୟମ"
+          >
+            <Lucide.HelpCircle size={16} />
+          </button>
+          <button 
+            onClick={() => setSoundEnabled(!soundEnabled)} 
+            className={`p-2.5 rounded-2xl border transition-all active:scale-95 shadow-sm ${
+              soundEnabled ? 'bg-emerald-50 border-emerald-100 text-emerald-600' : 'bg-slate-50 border-slate-200 text-slate-400'
+            }`}
+          >
+            {soundEnabled ? <Lucide.Volume2 size={16} /> : <Lucide.VolumeX size={16} />}
+          </button>
+        </div>
       </div>
 
       {/* GUNDULU Dialogue Bubble */}
@@ -487,6 +497,86 @@ export function PuchiGame({ user, onBack }: PuchiGameProps) {
           </div>
         </div>
       )}
+
+      {/* HOW TO PLAY MODAL */}
+      <AnimatePresence>
+        {showHelp && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center px-4 backdrop-blur-sm bg-slate-950/40 animate-fadeIn">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              className="relative w-full max-w-lg bg-white border border-slate-200 rounded-[2.5rem] p-7 md:p-8 shadow-2xl text-slate-800 overflow-hidden"
+            >
+              {/* Programmatic Sambalpuri trim on modal */}
+              <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-red-600 via-slate-900 to-amber-400" />
+
+              {/* Close Button */}
+              <button
+                onClick={() => setShowHelp(false)}
+                className="absolute top-5 right-5 p-2 bg-slate-50 rounded-xl border border-slate-200 text-slate-400 hover:text-slate-700 active:scale-95 transition-all"
+              >
+                <Lucide.X size={16} />
+              </button>
+
+              <div className="space-y-6 mt-5">
+                <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+                  <Lucide.HelpCircle className="text-rose-500" size={24} />
+                  <h2 className="text-xl font-black text-slate-900">ପୁଚି ଖେଳ - ନିୟମାବଳୀ</h2>
+                </div>
+
+                <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
+                  <div className="bg-slate-50 p-4 border border-slate-200/60 rounded-2xl space-y-2">
+                    <h3 className="text-sm font-black text-rose-600 flex items-center gap-1.5">
+                      🎵 ଖେଳ ଏବଂ ତାଳ ସଙ୍ଗୀତ
+                    </h3>
+                    <ul className="text-xs text-slate-600 space-y-1.5 list-disc pl-4 font-bold leading-relaxed">
+                      <li>ଉପରୁ ଗ୍ଲାଇଡ୍ କରି ପଡ଼ୁଥିବା ବବଲ୍ (ତା, ଧିନ୍, ପୁଚି, ନା) ଗୁଡ଼ିକୁ ଠିକ୍ ସମୟରେ ଟ୍ୟାପ୍ କରନ୍ତୁ।</li>
+                      <li>ବବଲ୍ ଗୁଡ଼ିକ ଠିକ୍ ତଳ ଗୋଲ ଟାର୍ଗେଟ୍ ସହ ଓଭରଲାପ୍ ହେବା ସମୟରେ ହିଁ ଟ୍ୟାପ୍ କରିବାକୁ ହେବ।</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-slate-50 p-4 border border-slate-200/60 rounded-2xl space-y-2">
+                    <h3 className="text-sm font-black text-blue-600 flex items-center gap-1.5">
+                      ⌨️ କଣ୍ଟ୍ରୋଲ୍ ବଟନ୍
+                    </h3>
+                    <ul className="text-xs text-slate-600 space-y-1.5 list-disc pl-4 font-bold leading-relaxed">
+                      <li><strong>ବାମ ପଟ ବବଲ୍:</strong> ସ୍କ୍ରିନର ବାମ ପାର୍ଶ୍ୱରେ ଟ୍ୟାପ୍ କରନ୍ତୁ କିମ୍ବା କୀବୋର୍ଡର <strong>A / Left Arrow</strong> ଦବାନ୍ତୁ।</li>
+                      <li><strong>ଡାହାଣ ପଟ ବବଲ୍:</strong> ସ୍କ୍ରିନର ଡାହାଣ ପାର୍ଶ୍ୱରେ ଟ୍ୟାପ୍ କରନ୍ତୁ କିମ୍ବା କୀବୋର୍ଡର <strong>D / Right Arrow</strong> ଦବାନ୍ତu।</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-slate-50 p-4 border border-slate-200/60 rounded-2xl space-y-2">
+                    <h3 className="text-sm font-black text-amber-600 flex items-center gap-1.5">
+                      ⚖️ ସନ୍ତୁଳନ ରକ୍ଷା
+                    </h3>
+                    <ul className="text-xs text-slate-600 space-y-1.5 list-disc pl-4 font-bold leading-relaxed">
+                      <li>ଯଦି ଆପଣ ଟ୍ୟାପ୍ ମିସ୍ କରନ୍ତି, ଗୁନ୍ଦୁଲୁର ସନ୍ତୁଳନ ବିଗିଡ଼ିଯିବ।</li>
+                      <li>ସନ୍ତୁଳନ ବାର୍ ଶୂନ୍ୟ (୦%) ହେବା ପୂର୍ବରୁ ସଠିକ୍ ଟ୍ୟାପ୍ କରି ଗୁନ୍ଦୁଲୁକୁ ସୁସ୍ଥ ରଖନ୍ତୁ।</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-slate-50 p-4 border border-slate-200/60 rounded-2xl space-y-2">
+                    <h3 className="text-sm font-black text-emerald-600 flex items-center gap-1.5">
+                      🏆 ସ୍କୋର ଓ ବିଜୟ
+                    </h3>
+                    <ul className="text-xs text-slate-600 space-y-1.5 list-disc pl-4 font-bold leading-relaxed">
+                      <li>୩୦ ସେକେଣ୍ଡର ସୀମା ଭିତରେ ୫୦୦ରୁ ଅଧିକ ପଏଣ୍ଟ ସ୍କୋର କଲେ ଆପଣ ବିଜୟୀ ହେବେ ଏବଂ +150 XP ପାଇବେ!</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setShowHelp(false)}
+                  className="w-full py-3 bg-gradient-to-r from-rose-500 to-rose-600 text-white font-black rounded-2xl text-xs transition-all shadow-md shadow-rose-500/10"
+                >
+                  ବୁଝିଗଲି, ଖେଳିବା!
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

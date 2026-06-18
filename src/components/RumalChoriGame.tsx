@@ -28,6 +28,7 @@ export function RumalChoriGame({ user, onBack }: RumalChoriGameProps) {
   const [statusMessage, setStatusMessage] = useState<string>('ବାଘ ଠାରୁ ରକ୍ଷା କର...');
   const [gunduluSpeech, setGunduluSpeech] = useState<string>('ଚୋର ପଛରେ ବୁଲୁଛି, ରୁମାଲ୍ ପଡିବା ମାତ୍ରେ ତୁରନ୍ତ ଟ୍ୟାପ୍ କର!');
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+  const [showHelp, setShowHelp] = useState<boolean>(false);
   const [userXp, setUserXp] = useState<number>(user?.xp || user?.points || 150);
 
   const reactionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -307,14 +308,23 @@ export function RumalChoriGame({ user, onBack }: RumalChoriGameProps) {
           <Lucide.EyeOff className="text-blue-500 animate-pulse" size={20} />
           ରୁମାଲ ଚୋରି ଖେଳ (Handkerchief Chase)
         </h2>
-        <button 
-          onClick={() => setSoundEnabled(!soundEnabled)} 
-          className={`p-2.5 rounded-2xl border transition-all active:scale-95 shadow-sm ${
-            soundEnabled ? 'bg-emerald-50 border-emerald-100 text-emerald-600' : 'bg-slate-50 border-slate-200 text-slate-400'
-          }`}
-        >
-          {soundEnabled ? <Lucide.Volume2 size={16} /> : <Lucide.VolumeX size={16} />}
-        </button>
+        <div className="flex items-center gap-1.5">
+          <button 
+            onClick={() => setShowHelp(true)} 
+            className="p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-2xl text-slate-500 active:scale-95 transition-all shadow-sm"
+            title="ଖେଳ ନିୟମ"
+          >
+            <Lucide.HelpCircle size={16} />
+          </button>
+          <button 
+            onClick={() => setSoundEnabled(!soundEnabled)} 
+            className={`p-2.5 rounded-2xl border transition-all active:scale-95 shadow-sm ${
+              soundEnabled ? 'bg-emerald-50 border-emerald-100 text-emerald-600' : 'bg-slate-50 border-slate-200 text-slate-400'
+            }`}
+          >
+            {soundEnabled ? <Lucide.Volume2 size={16} /> : <Lucide.VolumeX size={16} />}
+          </button>
+        </div>
       </div>
 
       {/* GUNDULU Dialouge */}
@@ -493,6 +503,87 @@ export function RumalChoriGame({ user, onBack }: RumalChoriGameProps) {
           </div>
         </div>
       )}
+
+      {/* HOW TO PLAY MODAL */}
+      <AnimatePresence>
+        {showHelp && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center px-4 backdrop-blur-sm bg-slate-950/40 animate-fadeIn">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              className="relative w-full max-w-lg bg-white border border-slate-200 rounded-[2.5rem] p-7 md:p-8 shadow-2xl text-slate-800 overflow-hidden"
+            >
+              {/* Programmatic Sambalpuri trim on modal */}
+              <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-red-600 via-slate-900 to-amber-400" />
+
+              {/* Close Button */}
+              <button
+                onClick={() => setShowHelp(false)}
+                className="absolute top-5 right-5 p-2 bg-slate-50 rounded-xl border border-slate-200 text-slate-400 hover:text-slate-700 active:scale-95 transition-all"
+              >
+                <Lucide.X size={16} />
+              </button>
+
+              <div className="space-y-6 mt-5">
+                <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+                  <Lucide.HelpCircle className="text-blue-500" size={24} />
+                  <h2 className="text-xl font-black text-slate-900">ରୁମାଲ ଚୋରି ଖେଳ - ନିୟମାବଳୀ</h2>
+                </div>
+
+                <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
+                  <div className="bg-slate-50 p-4 border border-slate-200/60 rounded-2xl space-y-2">
+                    <h3 className="text-sm font-black text-blue-600 flex items-center gap-1.5">
+                      🧐 ଖେଳ ପରିବେଶ
+                    </h3>
+                    <ul className="text-xs text-slate-600 space-y-1.5 list-disc pl-4 font-bold leading-relaxed">
+                      <li>୬ ଜଣ ପିଲା ବୋର୍ଡରେ ଗୋଲ୍ ହୋଇ ବସିଛନ୍ତି।</li>
+                      <li>ଚୋର (Thief) ଜଣକ ହାତରେ ରୁମାଲ ଧରି ଚାରିପଟେ ଦୌଡ଼ୁଛନ୍ତି।</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-slate-50 p-4 border border-slate-200/60 rounded-2xl space-y-2">
+                    <h3 className="text-sm font-black text-red-600 flex items-center gap-1.5">
+                      ⚠️ ଆପଣଙ୍କ ପଛରେ ରୁମାଲ (ଆପଣଙ୍କ ଚାଲି)
+                    </h3>
+                    <ul className="text-xs text-slate-600 space-y-1.5 list-disc pl-4 font-bold leading-relaxed">
+                      <li>ଯଦି ଚୋର ଆପଣଙ୍କ (👦 ତଳେ ଥିବା ପିଲା) ପଛରେ ରୁମାଲ ପକାଏ, ତୁରନ୍ତ ସ୍କ୍ରିନ ମଝିରେ ଥିବା <strong>"ଦୌଡ଼ନ୍ତୁ!"</strong> ଲାଲ୍ ବଟନ୍ କ୍ଲିକ୍ କରନ୍ତୁ।</li>
+                      <li>ଆପଣଙ୍କୁ ତୁରନ୍ତ ଟ୍ୟାପ୍ କରିବାକୁ ହେବ, ନଚେତ୍ ଚୋର ଆପଣଙ୍କୁ ଛୁଇଁଦେଲେ ଜୀବନ ହରାଇବେ।</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-slate-50 p-4 border border-slate-200/60 rounded-2xl space-y-2">
+                    <h3 className="text-sm font-black text-amber-600 flex items-center gap-1.5">
+                      👥 ସାଙ୍ଗଙ୍କ ପଛରେ ରୁମାଲ (ସାଙ୍ଗମାନଙ୍କ ଚାଲି)
+                    </h3>
+                    <ul className="text-xs text-slate-600 space-y-1.5 list-disc pl-4 font-bold leading-relaxed">
+                      <li>ଯଦି ଚୋର ଅନ୍ୟ କୌଣସି ସାଙ୍ଗ ପଛରେ ରୁମାଲ ପକାଏ, ତେବେ ତୁରନ୍ତ <strong>ସେହି ସାଙ୍ଗର ଆଭାତାର (ଗୋଲ୍ ଗୋଟି) ଉପରେ କ୍ଲିକ୍ କରନ୍ତୁ</strong>।</li>
+                      <li>ଏହା ଦ୍ୱାରା ସେ ସଜାଗ ହୋଇ ଦୌଡ଼ିବ ଏବଂ ଚୋର ହାତରୁ ବଞ୍ଚିଯିବ।</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-slate-50 p-4 border border-slate-200/60 rounded-2xl space-y-2">
+                    <h3 className="text-sm font-black text-emerald-600 flex items-center gap-1.5">
+                      🏆 ଜୀବନ ଓ ବିଜୟ
+                    </h3>
+                    <ul className="text-xs text-slate-600 space-y-1.5 list-disc pl-4 font-bold leading-relaxed">
+                      <li>ଆପଣଙ୍କ ପାଖରେ ମୋଟ ୩ଟି ଜୀବନ ରହିବ।</li>
+                      <li>ରାଉଣ୍ଡ ବଢିବା ସହିତ ଚୋରର ଦୌଡ଼ିବା ବେଗ ବୃଦ୍ଧି ପାଇବ। ୩୦୦ରୁ ଅଧିକ ପଏଣ୍ଟ କଲେ +150 XP ଜିତିବେ!</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setShowHelp(false)}
+                  className="w-full py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-black rounded-2xl text-xs transition-all shadow-md shadow-blue-500/10"
+                >
+                  ବୁଝିଗଲି, ଖେଳିବା!
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

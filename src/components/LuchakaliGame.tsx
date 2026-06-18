@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import * as Lucide from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -30,6 +30,7 @@ export function LuchakaliGame({ user, onBack }: LuchakaliGameProps) {
   const [timeLeft, setTimeLeft] = useState<number>(40);
   const [score, setScore] = useState<number>(0);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+  const [showHelp, setShowHelp] = useState<boolean>(false);
   const [gunduluSpeech, setGunduluSpeech] = useState<string>('ମ୍ୟାଜିକ୍ ଲାଇଟ୍ ବୁଲାଇ କାନ୍ଥରେ ଲୁଚିଥିବା ଶବ୍ଦ ଖୋଜନ୍ତୁ!');
   const [userXp, setUserXp] = useState<number>(user?.xp || user?.points || 150);
 
@@ -331,14 +332,23 @@ export function LuchakaliGame({ user, onBack }: LuchakaliGameProps) {
           <Lucide.Sparkles className="text-emerald-500" size={20} />
           ଲୁଚକାଳି ଖେଳ (Magic Flashlight Search)
         </h2>
-        <button 
-          onClick={() => setSoundEnabled(!soundEnabled)} 
-          className={`p-2.5 rounded-2xl border transition-all active:scale-95 shadow-sm ${
-            soundEnabled ? 'bg-emerald-50 border-emerald-100 text-emerald-600' : 'bg-slate-50 border-slate-200 text-slate-400'
-          }`}
-        >
-          {soundEnabled ? <Lucide.Volume2 size={16} /> : <Lucide.VolumeX size={16} />}
-        </button>
+        <div className="flex items-center gap-1.5">
+          <button 
+            onClick={() => setShowHelp(true)} 
+            className="p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-2xl text-slate-500 active:scale-95 transition-all shadow-sm"
+            title="ଖେଳ ନିୟମ"
+          >
+            <Lucide.HelpCircle size={16} />
+          </button>
+          <button 
+            onClick={() => setSoundEnabled(!soundEnabled)} 
+            className={`p-2.5 rounded-2xl border transition-all active:scale-95 shadow-sm ${
+              soundEnabled ? 'bg-emerald-50 border-emerald-100 text-emerald-600' : 'bg-slate-50 border-slate-200 text-slate-400'
+            }`}
+          >
+            {soundEnabled ? <Lucide.Volume2 size={16} /> : <Lucide.VolumeX size={16} />}
+          </button>
+        </div>
       </div>
 
       {/* GUNDULU DIALOGUE */}
@@ -490,6 +500,85 @@ export function LuchakaliGame({ user, onBack }: LuchakaliGameProps) {
           </div>
         </div>
       )}
+
+      {/* HOW TO PLAY MODAL */}
+      <AnimatePresence>
+        {showHelp && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center px-4 backdrop-blur-sm bg-slate-950/40 animate-fadeIn">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              className="relative w-full max-w-lg bg-white border border-slate-200 rounded-[2.5rem] p-7 md:p-8 shadow-2xl text-slate-800 overflow-hidden"
+            >
+              {/* Programmatic Sambalpuri trim on modal */}
+              <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-red-600 via-slate-900 to-amber-400" />
+
+              {/* Close Button */}
+              <button
+                onClick={() => setShowHelp(false)}
+                className="absolute top-5 right-5 p-2 bg-slate-50 rounded-xl border border-slate-200 text-slate-400 hover:text-slate-700 active:scale-95 transition-all"
+              >
+                <Lucide.X size={16} />
+              </button>
+
+              <div className="space-y-6 mt-5">
+                <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+                  <Lucide.HelpCircle className="text-emerald-500" size={24} />
+                  <h2 className="text-xl font-black text-slate-900">ଲୁଚକାଳି ଖେଳ - ନିୟମାବଳୀ</h2>
+                </div>
+
+                <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
+                  <div className="bg-slate-50 p-4 border border-slate-200/60 rounded-2xl space-y-2">
+                    <h3 className="text-sm font-black text-emerald-600 flex items-center gap-1.5">
+                      🔦 ଯାଦୁକରୀ ଟର୍ଚ୍ଚ
+                    </h3>
+                    <ul className="text-xs text-slate-600 space-y-1.5 list-disc pl-4 font-bold leading-relaxed">
+                      <li>କଳା ପରଦା ଉପରେ ଆଙ୍ଗୁଠି କିମ୍ବା ମାଉସ୍ ବୁଲାଇ ଆଲୋକିତ Spotlight ସାହାଯ୍ୟରେ ଲୁଚିଥିବା ପାଠ୍ୟ ବବଲ୍ ଖୋଜନ୍ତୁ।</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-slate-50 p-4 border border-slate-200/60 rounded-2xl space-y-2">
+                    <h3 className="text-sm font-black text-blue-600 flex items-center gap-1.5">
+                      🎯 ସଠିକ୍ ଲକ୍ଷ୍ୟ
+                    </h3>
+                    <ul className="text-xs text-slate-600 space-y-1.5 list-disc pl-4 font-bold leading-relaxed">
+                      <li>ଉପରେ ଦିଆଯାଇଥିବା ନିର୍ଦ୍ଦେଶ (ଯେପରିକି "ଶୁଦ୍ଧ ଓଡ଼ିଆ ଶବ୍ଦ ଖୋଜନ୍ତୁ" କିମ୍ବା "୩ ଦ୍ୱାରା ବିଭାଜ୍ୟ ସଂଖ୍ୟା ଖୋଜନ୍ତୁ") ଅନୁଯାୟୀ କେବଳ ସଠିକ୍ ବବଲ୍ ଉପରେ କ୍ଲିକ୍ କରନ୍ତୁ।</li>
+                      <li>ସବୁ ସଠିକ୍ ଲକ୍ଷ୍ୟ ଖୋଜିବା ପରେ ପରବର୍ତ୍ତୀ ରାଉଣ୍ଡ ଖୋଲିବ।</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-slate-50 p-4 border border-slate-200/60 rounded-2xl space-y-2">
+                    <h3 className="text-sm font-black text-red-600 flex items-center gap-1.5">
+                      ⚠️ ଭୁଲ୍ ଶବ୍ଦ
+                    </h3>
+                    <ul className="text-xs text-slate-600 space-y-1.5 list-disc pl-4 font-bold leading-relaxed">
+                      <li>ଯଦି ଆପଣ କୌଣସି ଅଶୁଦ୍ଧ/ଭୁଲ୍ ଶବ୍ଦ ବା ବିକଳ୍ପ କ୍ଲିକ୍ କରନ୍ତି, ତେବେ ୩ ସେକେଣ୍ଡ ସମୟ କମିଯିବ।</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-slate-50 p-4 border border-slate-200/60 rounded-2xl space-y-2">
+                    <h3 className="text-sm font-black text-amber-600 flex items-center gap-1.5">
+                      🏆 ସମୟ ଓ ସ୍କୋର
+                    </h3>
+                    <ul className="text-xs text-slate-600 space-y-1.5 list-disc pl-4 font-bold leading-relaxed">
+                      <li>ଆପଣଙ୍କ ପାଖରେ ପ୍ରତି ଲେଭଲ୍ ଶେଷ କରିବାକୁ ୪୦ ସେକେଣ୍ଡ ସମୟ ରହିବ।</li>
+                      <li>ସମୟ ଶେଷ ହେବା ପୂର୍ବରୁ ସମସ୍ତ ୩ଟି ଲେଭଲ୍ ପାର କଲେ ଆପଣ ବିଜୟୀ ହୋଇ +150 XP ଅର୍ଜନ କରିବେ!</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setShowHelp(false)}
+                  className="w-full py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-black rounded-2xl text-xs transition-all shadow-md shadow-emerald-500/10"
+                >
+                  ବୁଝିଗଲି, ଖେଳିବା!
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
