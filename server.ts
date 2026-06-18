@@ -1274,17 +1274,26 @@ async function startServer() {
       Create a set of 10 revision questions and answers for Class "${className}" in the subject "${subjectName}" for the Chapter: "${chapterName}".
       The output should be generated in ${language === 'or' ? 'Odia (using clean Odia script)' : 'English'}.
       
+      CRITICAL INSTRUCTIONS FOR QUESTION QUALITY & DIVERSITY:
+      - HIGH DIVERSITY: Ensure all 10 questions cover completely different aspects, sub-topics, formulas, theorems, properties, or practical applications of the chapter.
+      - AVOID TEMPLATED PAIRS: Do NOT create pairs of identical templated questions with minor word changes (e.g. do NOT make one question for "What is a perfect square?" and a corresponding identical question for "What is a perfect cube?"). Instead, make one question about perfect squares, and a completely different question about properties of cubes, word problems, or estimating roots.
+      - TERM TRANSLATION ACCURACY: If outputting in Odia, ensure mathematically correct translations:
+        - "Odd numbers" must be translated as "ଅଯୁଗ୍ମ ସଂଖ୍ୟା" (DO NOT use "ଯୁଗ୍ମ ସଂଖ୍ୟା").
+        - "Even numbers" must be translated as "ଯୁଗ୍ମ ସଂଖ୍ୟା".
+        - "Square root" is "ବର୍ଗମୂଳ".
+        - "Cube root" is "ଘନମୂଳ".
+      
       For each of the 10 questions, generate:
       1. A short, highly relevant revision question. In the question text, identify the 1 or 2 most important keywords (such as the main topic, scientific term, or specific subject noun) and wrap them in single asterisks (e.g. "Which is the *famous lake* in Bhubaneswar?" or "*ସରଳ ସହସମୀକରଣ* କହିଲେ କଣ ବୁଝାଏ?"). Do not put asterisks on the question mark or outer punctuation.
       2. A concise and correct answer.
       3. A side note label (MUST be one of: "Important!", "Key Fact", "Remember!", "Note", "Did You Know!", "Formula!").
       4. A brief 1-sentence supporting note details.
       5. An icon type (MUST be one of: "temple", "flower", "mountain", "dance", "leader", "river", "sand", "school", "book", "deer", "mirror", "lens", "prism", "magnet", "concave_mirror", "axes", "triangle", "circle", "matrix", "integral", "beaker", "atom", "dna", "bulb", "globe", "quill", "slate", "puzzle", "palette", "sprout", "scroll"). Choose the icon that best represents the question topic:
-      - Math/Algebra/Geometry: Prefer "axes", "triangle", "circle", "matrix", or "integral".
-      - Science/Physics/Chemistry/Biology: Prefer "beaker", "atom", "dna", "bulb", "mirror", "lens", "prism", "magnet", or "sprout".
-      - Languages & Literature (Odia, English, Hindi, Sanskrit): Prefer "slate", "scroll", "quill", "book", or "school".
-      - Cognitive Reasoning / Comprehension (Bodha Kruti): Prefer "puzzle" or "bulb".
-      - Arts, Culture, Crafts & Vocational (Koshala / Skills): Prefer "palette", "sprout", "dance", "temple", "flower", "mountain", "river", "sand", "deer", or "globe".
+         - Math/Algebra/Geometry: Prefer "axes", "triangle", "circle", "matrix", or "integral".
+         - Science/Physics/Chemistry/Biology: Prefer "beaker", "atom", "dna", "bulb", "mirror", "lens", "prism", "magnet", or "sprout".
+         - Languages & Literature (Odia, English, Hindi, Sanskrit): Prefer "slate", "scroll", "quill", "book", or "school".
+         - Cognitive Reasoning / Comprehension (Bodha Kruti): Prefer "puzzle" or "bulb".
+         - Arts, Culture, Crafts & Vocational (Koshala / Skills): Prefer "palette", "sprout", "dance", "temple", "flower", "mountain", "river", "sand", "deer", or "globe".
       6. A detailed English visual prompt (imagePrompt) describing a clean textbook-style diagram, graph, sketch, or illustration explaining or illustrating the mathematical/scientific concept of this specific question.
          - CRITICAL: Even if the question and answer are in Odia, the imagePrompt MUST be in English.
          - The prompt must specify visual elements only, be textless, and have a white background (e.g., "A clean vector diagram of a right-angled triangle showing sides a, b, c with a square angle indicator, white background, textless, no labels").

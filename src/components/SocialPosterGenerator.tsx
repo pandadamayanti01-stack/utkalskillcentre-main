@@ -1897,7 +1897,9 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         if (q.imageUrl) {
           return new Promise<{ id: number; img: HTMLImageElement | null }>((resolve) => {
             const img = new Image();
-            img.crossOrigin = 'anonymous';
+            if (q.imageUrl.startsWith('http') || q.imageUrl.startsWith('https')) {
+              img.crossOrigin = 'anonymous';
+            }
             img.onload = () => resolve({ id: q.id, img });
             img.onerror = () => resolve({ id: q.id, img: null });
             img.src = q.imageUrl;
@@ -2188,7 +2190,9 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         try {
           await new Promise<void>((resolve) => {
             const img = new Image();
-            img.crossOrigin = 'anonymous';
+            if (logoImage.startsWith('http') || logoImage.startsWith('https')) {
+              img.crossOrigin = 'anonymous';
+            }
             img.onload = () => {
               try {
                 ctx.save();
@@ -2612,7 +2616,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       try {
         await new Promise<void>((resolve) => {
           const img = new Image();
-          img.crossOrigin = 'anonymous';
+          // Local asset doesn't need crossOrigin
           img.onload = () => {
             ctx.save();
             ctx.translate(935, 1790);
