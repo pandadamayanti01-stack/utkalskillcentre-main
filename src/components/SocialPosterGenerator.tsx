@@ -12,7 +12,10 @@ import {
   Bot,
   CheckCircle,
   HelpCircle,
-  FileText
+  FileText,
+  ImagePlus,
+  Trash2,
+  Sliders
 } from 'lucide-react';
 import { CLASS_SUBJECTS } from './DigitalLibraryView';
 import { collection, query, where, getDocs } from 'firebase/firestore';
@@ -310,6 +313,14 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
   const [selectedChapterId, setSelectedChapterId] = useState<string>('');
   const [generatingAi, setGeneratingAi] = useState<boolean>(false);
 
+  // AI Illustration & Adaptive Layout states
+  const [showAiIllustration, setShowAiIllustration] = useState<boolean>(false);
+  const [questionCount, setQuestionCount] = useState<number>(10);
+  const [aiImageUrl, setAiImageUrl] = useState<string | null>(null);
+  const [aiImagePrompt, setAiImagePrompt] = useState<string>('');
+  const [aiImageCaption, setAiImageCaption] = useState<string>('Figure: Diagram');
+  const [generatingImage, setGeneratingImage] = useState<boolean>(false);
+
   const DEFAULT_BLANK_QUESTIONS: QuestionItem[] = Array.from({ length: 10 }, (_, i) => ({
     id: i + 1,
     question: '',
@@ -433,6 +444,8 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       
       setTitleText(displayTitle.toUpperCase());
       setSubtitleText(`Class ${selectedClass.replace('class', '')} ${selectedSubject.toUpperCase()} Revision`);
+      setAiImagePrompt(`clean textbook style vector diagram of ${displayTitle}`);
+      setAiImageCaption(`Figure: ${displayTitle}`);
     }
   };
 
@@ -495,6 +508,9 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
 
         setTitleText(chapter.title?.toUpperCase() || 'AI REVISION QUESTIONS');
         setSubtitleText(`Class ${selectedClass.replace('class', '')} ${selectedSubject.toUpperCase()} AI Revision`);
+        const chTitle = chapter.title || 'Chapter';
+        setAiImagePrompt(`clean textbook style vector diagram of ${chTitle}`);
+        setAiImageCaption(`Figure: ${chTitle}`);
       }
     } catch (err) {
       console.error(err);
@@ -514,6 +530,46 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       const reader = new FileReader();
       reader.onload = (event) => {
         setLogoImage(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAiImageGenerate = async () => {
+    if (!aiImagePrompt.trim()) {
+      alert("Please enter an image prompt first!");
+      return;
+    }
+    setGeneratingImage(true);
+    try {
+      const response = await fetch('/api/ai/generate-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: aiImagePrompt })
+      });
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+      const data = await response.json();
+      if (data.image) {
+        setAiImageUrl(data.image);
+      } else {
+        throw new Error("No image data returned from server");
+      }
+    } catch (err: any) {
+      console.error("AI Diagram generation error:", err);
+      alert("❌ Failed to generate AI diagram: " + (err.message || err));
+    } finally {
+      setGeneratingImage(false);
+    }
+  };
+
+  const handleAiImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setAiImageUrl(event.target?.result as string);
       };
       reader.readAsDataURL(file);
     }
@@ -1989,8 +2045,10 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       const heights: number[] = [];
       let totalRequiredHeight = 0;
       
-      for (let i = 0; i < questions.length; i++) {
-        const q = questions[i];
+      const activeQuestions = questions.slice(0, questionCount);
+      
+      for (let i = 0; i < activeQuestions.length; i++) {
+        const q = activeQuestions[i];
         
         ctx.font = 'bold 24px Kalam';
         const qLines = wrapText(ctx, `Q. ${q.question}`, 420);
@@ -2014,7 +2072,13 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         heights.push(blockHeight);
         totalRequiredHeight += blockHeight + defaultPadding;
       }
-      totalRequiredHeight -= defaultPadding; // remove last padding
+      if (activeQuestions.length > 0) {
+        totalRequiredHeight -= defaultPadding; // remove last padding
+      }
+
+      if (showAiIllustration) {
+        totalRequiredHeight += 380; // height of the AI Illustration block (320px image + 30px caption + 30px padding)
+      }
 
       // Target bounds: start drawing at 270px, footer is at 1860px.
       // Available height is 1860 - 270 = 1590px.
@@ -2030,6 +2094,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       let noteFontSize = 18;
       let noteLabelSize = 16;
       let noteLineHeight = 24;
+      let imgSize = 320;
 
       if (totalRequiredHeight > maxAvailableHeight) {
         const compression = maxAvailableHeight / totalRequiredHeight;
@@ -2042,13 +2107,14 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         noteFontSize = Math.max(15, Math.floor(18 * compression));
         noteLabelSize = Math.max(14, Math.floor(16 * compression));
         noteLineHeight = Math.max(20, Math.floor(24 * compression));
+        imgSize = Math.max(240, Math.floor(320 * compression));
       }
 
       let startY = 270;
       ctx.textAlign = 'left';
 
-      for (let i = 0; i < questions.length; i++) {
-        const q = questions[i];
+      for (let i = 0; i < activeQuestions.length; i++) {
+        const q = activeQuestions[i];
         
         // Draw light dotted separator between questions
         if (i > 0) {
@@ -2157,6 +2223,90 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         
         const blockHeight = Math.max(qaHeight, sideNoteHeight, 95);
         startY += blockHeight + padding;
+      }
+
+      // Draw AI Illustration diagram if enabled
+      if (showAiIllustration) {
+        const imgX = (1080 - imgSize) / 2;
+        const imgY = startY + 10;
+        
+        if (aiImageUrl) {
+          try {
+            await new Promise<void>((resolve) => {
+              const img = new Image();
+              img.crossOrigin = 'anonymous';
+              img.onload = () => {
+                ctx.save();
+                ctx.strokeStyle = primaryColor;
+                ctx.lineWidth = 2.5;
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.08)';
+                ctx.shadowBlur = 6;
+                ctx.shadowOffsetX = 2;
+                ctx.shadowOffsetY = 3;
+                
+                // Draw white background card for diagram
+                ctx.fillStyle = '#FFFFFF';
+                ctx.beginPath();
+                ctx.rect(imgX - 8, imgY - 8, imgSize + 16, imgSize + 16);
+                ctx.fill();
+                ctx.stroke();
+                
+                ctx.shadowColor = 'transparent'; // Reset shadow
+                
+                // Clip and draw image
+                ctx.save();
+                ctx.beginPath();
+                ctx.rect(imgX, imgY, imgSize, imgSize);
+                ctx.clip();
+                ctx.drawImage(img, imgX, imgY, imgSize, imgSize);
+                ctx.restore();
+                
+                // Draw outer decorative wobbly/dashed border
+                ctx.strokeStyle = secondaryColor;
+                ctx.lineWidth = 1.2;
+                ctx.setLineDash([4, 3]);
+                ctx.strokeRect(imgX - 4, imgY - 4, imgSize + 8, imgSize + 8);
+                ctx.setLineDash([]);
+                
+                ctx.restore();
+                resolve();
+              };
+              img.onerror = () => resolve();
+              img.src = aiImageUrl;
+            });
+          } catch (imgErr) {
+            console.warn("Failed to draw AI illustration on canvas:", imgErr);
+          }
+        } else {
+          // Empty placeholder card
+          ctx.save();
+          ctx.strokeStyle = isDarkPaper ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.15)';
+          ctx.lineWidth = 2;
+          ctx.setLineDash([6, 4]);
+          ctx.strokeRect(imgX, imgY, imgSize, imgSize);
+          ctx.setLineDash([]);
+          
+          ctx.fillStyle = isDarkPaper ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.01)';
+          ctx.fillRect(imgX, imgY, imgSize, imgSize);
+          
+          ctx.fillStyle = isDarkPaper ? '#94A3B8' : '#64748B';
+          ctx.font = 'bold 16px Kalam';
+          ctx.textAlign = 'center';
+          ctx.fillText('[ AI Illustration Placeholder ]', 540, imgY + imgSize / 2);
+          ctx.restore();
+        }
+
+        // Draw Figure Caption
+        if (aiImageCaption) {
+          ctx.save();
+          ctx.fillStyle = isDarkPaper ? '#CBD5E1' : '#334155';
+          ctx.font = 'bold 18px Kalam';
+          ctx.textAlign = 'center';
+          ctx.fillText(aiImageCaption, 540, imgY + imgSize + 25);
+          ctx.restore();
+        }
+        
+        startY += imgSize + 50; // Increment startY to avoid overlapping anything below
       }
 
       ctx.textAlign = 'center';
@@ -2495,6 +2645,124 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
             </div>
           </div>
 
+          {/* AI ILLUSTRATION & LAYOUT SECTION */}
+          <div className="p-5 bg-white/5 border border-white/10 rounded-3xl space-y-4 shadow-inner">
+            <h3 className="text-xs font-black uppercase text-slate-300 tracking-wider flex items-center gap-2 border-b border-white/5 pb-2">
+              <Sliders size={16} className="text-violet-400 drop-shadow-[0_0_8px_rgba(167,139,250,0.4)]" />
+              AI ଚିତ୍ର ଏବଂ ଲେଆଉଟ୍ (AI Illustration & Layout)
+            </h3>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-[9px] text-slate-400 font-black uppercase tracking-wider block mb-1.5">ପ୍ରଶ୍ନ ସଂଖ୍ୟା (Questions Count)</label>
+                <select
+                  value={questionCount}
+                  onChange={e => setQuestionCount(Number(e.target.value))}
+                  className="w-full bg-slate-900 border border-slate-800 px-3 py-2.5 rounded-xl text-xs font-bold text-white focus:border-indigo-500 outline-none"
+                >
+                  {[5, 6, 7, 8, 9, 10].map(cnt => (
+                    <option key={cnt} value={cnt}>{cnt} Questions</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-[9px] text-slate-400 font-black uppercase tracking-wider block mb-1.5">AI ଚିତ୍ର ଦେଖାନ୍ତୁ (AI Illustration)</label>
+                <button
+                  type="button"
+                  onClick={() => setShowAiIllustration(prev => !prev)}
+                  className={`w-full px-3 py-2.5 rounded-xl text-xs font-bold transition-all border outline-none ${
+                    showAiIllustration 
+                      ? 'bg-emerald-500/10 border-emerald-500 text-emerald-400 animate-pulse' 
+                      : 'bg-slate-900 border-slate-800 text-slate-400'
+                  }`}
+                >
+                  {showAiIllustration ? '✅ ENABLED (ସକ୍ରିୟ)' : '❌ DISABLED (ନିଷ୍କ୍ରିୟ)'}
+                </button>
+              </div>
+            </div>
+
+            {showAiIllustration && (
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                className="space-y-4 pt-2 border-t border-white/5"
+              >
+                <div>
+                  <label className="text-[9px] text-slate-400 font-black uppercase tracking-wider block mb-1.5">AI ଚିତ୍ର ପ୍ରମ୍ପ୍ଟ (AI Image Prompt)</label>
+                  <div className="flex gap-2">
+                    <input 
+                      type="text" 
+                      value={aiImagePrompt}
+                      onChange={e => setAiImagePrompt(e.target.value)}
+                      placeholder="e.g. textbook style vector diagram of parabola graph..."
+                      className="flex-grow bg-slate-900 border border-slate-800 px-3.5 py-2 rounded-xl text-xs font-bold text-white focus:border-indigo-500 outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAiImageGenerate}
+                      disabled={generatingImage}
+                      className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black rounded-xl text-xs flex items-center gap-1.5 shrink-0 disabled:opacity-50 hover:brightness-110 active:scale-95 transition-all"
+                    >
+                      {generatingImage ? <RefreshCw className="animate-spin text-slate-950" size={13} /> : <Bot className="text-slate-950" size={13} />}
+                      <span>ତିଆରି କରନ୍ତୁ (Generate)</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-[9px] text-slate-400 font-black uppercase tracking-wider block mb-1.5">ଚିତ୍ରର ନାମ (Figure Caption)</label>
+                    <input 
+                      type="text" 
+                      value={aiImageCaption}
+                      onChange={e => setAiImageCaption(e.target.value)}
+                      placeholder="Figure: Diagram..."
+                      className="w-full bg-slate-900 border border-slate-800 px-3.5 py-2.5 rounded-xl text-xs font-bold text-white focus:border-indigo-500 outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[9px] text-slate-400 font-black uppercase tracking-wider block mb-1.5">କଷ୍ଟମ୍ ଚିତ୍ର ଅପଲୋଡ୍ (Upload Local)</label>
+                    <div className="relative">
+                      <input 
+                        type="file" 
+                        accept="image/*"
+                        onChange={handleAiImageUpload}
+                        className="hidden" 
+                        id="ai-illustrator-file-upload"
+                      />
+                      <label 
+                        htmlFor="ai-illustrator-file-upload"
+                        className="w-full flex items-center justify-center gap-1.5 px-3 py-2.5 bg-slate-900 border border-slate-800 hover:border-slate-700 cursor-pointer rounded-xl text-xs font-bold text-slate-300"
+                      >
+                        <ImagePlus size={14} className="text-violet-400" />
+                        <span>ଫାଇଲ୍ ବାଛନ୍ତୁ (Choose File)</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {aiImageUrl && (
+                  <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden border border-white/10 bg-slate-950 flex items-center justify-center p-2 group">
+                    <img 
+                      src={aiImageUrl} 
+                      alt="AI generated illustration" 
+                      className="w-full h-full object-contain rounded-xl"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setAiImageUrl(null)}
+                      className="absolute top-4 right-4 p-2 bg-red-500/90 text-white rounded-xl shadow-lg border border-red-400 hover:bg-red-600 transition-all opacity-0 group-hover:opacity-100 active:scale-95"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </div>
+
           {/* BRANDING SETUP */}
           <div className="p-5 bg-white/5 border border-white/10 rounded-3xl space-y-4 shadow-inner">
             <h3 className="text-xs font-black uppercase text-slate-300 tracking-wider flex items-center gap-2 border-b border-white/5 pb-2">
@@ -2716,9 +2984,9 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
               </div>
             </div>
 
-            {/* 10 QUESTIONS LIST */}
-            <div className="flex-1 flex flex-col justify-between py-4 pl-[45px] pr-2 z-10 space-y-1.5" style={{ fontFamily: 'Kalam, cursive' }}>
-              {questions.map((q, idx) => (
+            {/* QUESTIONS LIST */}
+            <div className="flex-1 flex flex-col justify-between py-4 pl-[45px] pr-2 z-10 space-y-1.5 animate-fadeIn" style={{ fontFamily: 'Kalam, cursive' }}>
+              {questions.slice(0, questionCount).map((q, idx) => (
                 <div key={q.id} className="flex justify-between items-start gap-1">
                   <div className="flex-1 space-y-0.5 min-w-0">
                     <div className={`text-[8.5px] font-black flex items-start gap-1 ${previewTitle}`}>
@@ -2767,6 +3035,28 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
                   </div>
                 </div>
               ))}
+
+              {showAiIllustration && (
+                <div className="mt-2 flex flex-col items-center gap-1 self-center w-full max-w-[180px] border border-dashed rounded-lg p-1 bg-white/5 shadow-inner select-none">
+                  {aiImageUrl ? (
+                    <img 
+                      src={aiImageUrl} 
+                      alt="AI illustration preview" 
+                      className="w-full aspect-square object-contain rounded-md"
+                    />
+                  ) : (
+                    <div className="w-full aspect-square border border-dashed border-white/20 rounded-md flex flex-col items-center justify-center bg-white/[0.02] text-[5px] text-slate-500 font-bold p-2 text-center">
+                      <ImageIcon size={14} className="mb-1 opacity-50" />
+                      <span>[ AI Illustration Placeholder ]</span>
+                    </div>
+                  )}
+                  {aiImageCaption && (
+                    <span className={`text-[6.5px] font-bold text-center leading-none mt-0.5 ${previewTitle}`}>
+                      {aiImageCaption}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* FOOTER */}
