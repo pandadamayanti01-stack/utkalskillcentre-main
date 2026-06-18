@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as Lucide from 'lucide-react';
 import { BahiPrusthaGame } from './BahiPrusthaGame';
+import { BaghChheliGame } from './BaghChheliGame';
+import { PuchiGame } from './PuchiGame';
+import { RumalChoriGame } from './RumalChoriGame';
+import { KaudiGame } from './KaudiGame';
+import { LuchakaliGame } from './LuchakaliGame';
 
 interface GameZoneProps {
   user: any;
@@ -46,6 +51,9 @@ export function GameZone({ user, onBack }: GameZoneProps) {
   const todayDayIndex = new Date().getDay();
   const todayNameOdia = daysOfWeekOdia[todayDayIndex];
 
+  // Bypass days-of-week locking logic on localhost for easier testing/development
+  const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
   const games: GameItem[] = [
     {
       id: 'bahi-prustha',
@@ -58,7 +66,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
       points: 500,
       playDay: 'ବୁଧବାର',
       status: 'playable',
-      lore: 'ବହି ପୃଷ୍ଠା ଖେଳ ହେଉଛି ଆମ ଓଡ଼ିଆ ପାଠ୍ୟପୁସ୍ତକକୁ ନେଇ ଏକ ଅତି ସୁନ୍ଦର ଶିକ୍ଷଣୀୟ ଖେଳ। ଏଥିରେ ଗଣିତ ପୃଷ୍ଠା ଯୋଗଫଳ ଏବଂ ଓଡ଼ିଆ ଶବ୍ଦ ଖୋଜିବା ଭଳି ରୋମାଞ୍କକର ରାଉଣ୍ଡ ରହିଛି, ଯାହା ଶିକ୍ଷା ସହିତ ମସ୍ତିଷ୍କର ଶୀଘ୍ର ଚିନ୍ତା କରିବାର ଶକ୍ତି ବଢ଼ାଇଥାଏ।'
+      lore: 'ବହି ପୃଷ୍ଠା ଖେଳ ହେଉଛି ଆମ ଓଡ଼ିଆ ପାଠ୍ୟପୁସ୍ତକକୁ ନେଇ ଏକ ଅତି ସୁନ୍ଦର ଶିକ୍ଷଣୀୟ ଖେଳ। ଏଥିରେ ଗଣିତ ପୃଷ୍ଠା ଯୋଗଫଳ ଏବଂ ଓଡ଼ିଆ ଶବ୍ଦ ଖୋଜିବା ଭଳି ରୋମաଞ୍କକର ରାଉଣ୍ଡ ରହିଛି, ଯାହା ଶିକ୍ଷା ସହିତ ମସ୍ତିଷ୍କର ଶୀଘ୍ର ଚିନ୍ତା କରିବାର ଶକ୍ତି ବଢ଼ାଇଥାଏ।'
     },
     {
       id: 'bagh-chheli',
@@ -70,7 +78,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
       difficulty: 'କଠିନ',
       points: 800,
       playDay: 'ସୋମବାର',
-      status: 'coming-soon',
+      status: 'playable',
       lore: 'ବାଘ-ଛେଳି ହେଉଛି ଓଡ଼ିଶାର ଏକ ପାରମ୍ପରିକ ଦୁଇ ଜଣିଆ ବୋର୍ଡ଼ ଖେଳ। ଏଥିରେ ଜଣେ ଖେଳାଳି ୪ଟି ବାଘ ଏବଂ ଅନ୍ୟ ଜଣେ ୨୦ଟି ଛେଳି ନେଇ ଚାଲନ୍ତି। ବାଘ ଛେଳିଙ୍କୁ ଖାଇବାକୁ ଚେଷ୍ଟା କରୁଥିବା ବେଳେ ଛେଳିମାନେ ବାଘକୁ ବନ୍ଦୀ କରିବାକୁ ରଣନୀତି କରନ୍ତି। ଏହା ଆପଣଙ୍କ ମାନସିକ ଚତୁରତା ବୃଦ୍ଧି କରେ!'
     },
     {
@@ -83,7 +91,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
       difficulty: 'ସହଜ',
       points: 600,
       playDay: 'ମଙ୍ଗଳବାର',
-      status: 'coming-soon',
+      status: 'playable',
       lore: 'ପୁଚି ହେଉଛି ଓଡ଼ିଶାର ଗ୍ରାମାଞ୍ଚଳରେ ଝିଅମାନଙ୍କ ଦ୍ୱାରା ଖେଳାଯାଉଥିବା ଏକ ଲୋକପ୍ରିୟ ପାରମ୍ପରିକ ଖେଳ, ବିଶେଷ କରି କୁମାର ପୂର୍ଣ୍ଣିମା ସମୟରେ। ଏହା ଏକ ଶାରୀରିକ କସରତ ଯେଉଁଥିରେ ଗୀତ ଗାଇ ଗୋଡ଼କୁ ଆଗପଛ କରି ବସିବା ଓ ଉଠିବାକୁ ହୁଏ। ଏହା ଶରୀରକୁ ସୁସ୍ଥ ଓ ନମନୀୟ ରଖେ!'
     },
     {
@@ -96,20 +104,20 @@ export function GameZone({ user, onBack }: GameZoneProps) {
       difficulty: 'ସହଜ',
       points: 400,
       playDay: 'ଗୁରୁବାର',
-      status: 'coming-soon',
+      status: 'playable',
       lore: 'ରୁମାଲ ଚୋରି ହେଉଛି ପିଲାମାନଙ୍କର ଏକ ବହୁତ ମଜାଦାର ଗୋଷ୍ଠୀ ଖେଳ। ସମସ୍ତେ ଗୋଲ ହୋଇ ବସିଥିବା ବେଳେ ଜଣେ ପଛରେ ରୁମାଲ୍ ପକାଇ ଦୌଡ଼େ। ଯାହା ପଛରେ ରୁମାଲ୍ ପଡ଼େ ସେ ତୁରନ୍ତ ଧରି ଚୋରକୁ ଧରିବାକୁ ଚେଷ୍ଟା କରେ। ଏହା ଏକାଗ୍ରତା ଓ ଦ୍ରୁତ ପ୍ରତିକ୍ରିୟାର ଖେଳ!'
     },
     {
       id: 'kaudi',
       title: 'କଉଡ଼ି ଖେଳ',
-      desc: '୩D କଉଡ଼ି ଗୁଡ଼ିକୁ ପକାଇ ପ୍ରାକୃତିକ ଭାଗ୍ୟ ଓ ସଂଖ୍ୟାର ରୋମାଞ୍ଚକର ଗଣନା କରନ୍ତୁ ।',
+      desc: '୩D କଉଡ଼ି ଗুଡ଼ିକୁ ପକାଇ ପ୍ରାକୃତିକ ଭାଗ୍ୟ ଓ ସଂଖ୍ୟାର ରୋମାଞ୍କକର ଗଣନା କରନ୍ତୁ ।',
       imageUrl: '/gundulu_kaudi.png?v=2',
       icon: <Lucide.Gamepad size={16} />,
       color: 'bg-purple-50 text-purple-600 border-purple-200',
       difficulty: 'ମାଧ୍ୟମ',
       points: 700,
       playDay: 'ଶୁକ୍ରବାର',
-      status: 'coming-soon',
+      status: 'playable',
       lore: 'କଉଡ଼ି ଖେଳ ହେଉଛି ଓଡ଼ିଶାର ସବୁଠାରୁ ପୁରୁଣା ଓ ଘରୋଇ ଖେଳ ମଧ୍ୟରୁ ଏକ। ଏଥିରେ କଉଡ଼ି ଗୁଡ଼ିକୁ ହାତରେ ହଲାଇ ତଳେ ଢଳାଯାଏ ଏବଂ କଉଡ଼ିର ଚିତ୍ କିମ୍ବା ପଟ୍ ଦେଖି ସ୍କୋର ଗଣନା କରାଯାଏ। ଏହା ଭାଗ୍ୟ ଓ ସଂଖ୍ୟାର ଏକ ସୁନ୍ଦର ଖେଳ!'
     },
     {
@@ -122,10 +130,12 @@ export function GameZone({ user, onBack }: GameZoneProps) {
       difficulty: 'ମାଧ୍ୟମ',
       points: 500,
       playDay: 'ଶନିବାର',
-      status: 'coming-soon',
+      status: 'playable',
       lore: 'ଲୁଚକାଳି ହେଉଛି ପିଲାଦିନର ସବୁଠାରୁ ପ୍ରିୟ ଖେଳ। ଜଣେ ଖେଳାଳି ଆଖି ବନ୍ଦ କରି ସଂଖ୍ୟା ଗଣୁଥିବା ବେଳେ ଅନ୍ୟମାନେ ଲୁଚିଯାନ୍ତି। ପରେ ସେମାନଙ୍କୁ ଖୋଜି ବାହାର କରିବାକୁ ହୁଏ। ଏଠାରେ ଆମେ ଯାଦୁକରୀ ଲାଇଟ୍ ସାହାଯ୍ୟରେ ପାଠ୍ୟବହିର ଗୁପ୍ତ ଜ୍ଞାନକୁ ଖୋଜିବା!'
     }
   ];
+
+  const todaysGame = games.find(g => g.playDay === todayNameOdia) || games[0];
 
   if (activeGameId === 'bahi-prustha') {
     return (
@@ -135,12 +145,52 @@ export function GameZone({ user, onBack }: GameZoneProps) {
       />
     );
   }
+  if (activeGameId === 'bagh-chheli') {
+    return (
+      <BaghChheliGame 
+        user={user} 
+        onBack={() => setActiveGameId(null)} 
+      />
+    );
+  }
+  if (activeGameId === 'puchi') {
+    return (
+      <PuchiGame 
+        user={user} 
+        onBack={() => setActiveGameId(null)} 
+      />
+    );
+  }
+  if (activeGameId === 'rumal-chori') {
+    return (
+      <RumalChoriGame 
+        user={user} 
+        onBack={() => setActiveGameId(null)} 
+      />
+    );
+  }
+  if (activeGameId === 'kaudi') {
+    return (
+      <KaudiGame 
+        user={user} 
+        onBack={() => setActiveGameId(null)} 
+      />
+    );
+  }
+  if (activeGameId === 'luchakali') {
+    return (
+      <LuchakaliGame 
+        user={user} 
+        onBack={() => setActiveGameId(null)} 
+      />
+    );
+  }
 
   const handleGameClick = (game: GameItem) => {
-    const isBahiPlayable = game.id === 'bahi-prustha';
     const isTodayPlayDay = game.playDay === todayNameOdia || todayNameOdia === 'ରବିବାର';
+    const isPlayable = (isLocalhost || isTodayPlayDay) && game.status === 'playable';
 
-    if (isBahiPlayable && (isTodayPlayDay || true)) {
+    if (isPlayable) {
       setActiveGameId(game.id);
     } else {
       setSelectedLoreGame(game);
@@ -236,7 +286,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-1">
         {games.map((game, idx) => {
           const isTodayGame = game.playDay === todayNameOdia || todayNameOdia === 'ରବିବାର';
-          const isPlayable = game.status === 'playable';
+          const isPlayable = (isLocalhost || isTodayGame) && game.status === 'playable';
           
           return (
             <motion.div
@@ -385,7 +435,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
                     ଆଜି <span className="text-slate-900 font-extrabold underline">{todayNameOdia}</span>, ତେଣୁ ଏହି ଖେଳଟି ତାଲା ପଡ଼ିଛି ।
                   </p>
                   <p className="text-[11px] text-emerald-600 font-black">
-                    ଆଜିର ମୁଖ୍ୟ ଖେଳ <span className="underline font-black text-slate-800">ବହି ପୃଷ୍ଠା ଖେଳ</span> ଖେଳିବା ପାଇਂ ତଳ ବଟନ୍ ଦବାନ୍ତୁ !
+                    ଆଜିର ମୁଖ୍ୟ ଖେଳ <span className="underline font-black text-slate-800">{todaysGame.title}</span> ଖେଳିବା ପାଇଁ ତଳ ବଟନ୍ ଦବାନ୍ତୁ !
                   </p>
                 </div>
 
@@ -400,11 +450,11 @@ export function GameZone({ user, onBack }: GameZoneProps) {
                   <button
                     onClick={() => {
                       setSelectedLoreGame(null);
-                      setActiveGameId('bahi-prustha');
+                      setActiveGameId(todaysGame.id);
                     }}
                     className="flex-1 py-3 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-black rounded-2xl text-xs transition-all shadow-md shadow-amber-500/10"
                   >
-                    ବହି ପୃଷ୍ଠା ଖେଳନ୍ତୁ ➔
+                    {todaysGame.title} ଖେଳନ୍ତୁ ➔
                   </button>
                 </div>
               </div>

@@ -419,42 +419,42 @@ export function BahiPrusthaGame({ user, onBack }: BahiPrusthaGameProps) {
       )}
 
       {/* HEADER HUD */}
-      <header className="w-full bg-slate-900/60 backdrop-blur-xl border-b border-white/5 px-6 py-4 flex items-center justify-between sticky top-0 z-30">
-        <div className="flex items-center gap-3">
+      <header className="w-full bg-slate-900/60 backdrop-blur-xl border-b border-white/5 px-3 py-3 sm:px-6 sm:py-4 flex items-center justify-between sticky top-0 z-30">
+        <div className="flex items-center gap-1.5 sm:gap-3">
           <button 
             onClick={onBack} 
-            className="p-2.5 bg-white/5 rounded-xl border border-white/5 text-slate-400 hover:text-white hover:bg-white/10 active:scale-95 transition-all"
+            className="p-2 sm:p-2.5 bg-white/5 rounded-xl border border-white/5 text-slate-400 hover:text-white hover:bg-white/10 active:scale-95 transition-all"
           >
-            <Lucide.ArrowLeft size={18} />
+            <Lucide.ArrowLeft size={16} />
           </button>
           <div>
-            <h1 className="text-lg font-black tracking-wider text-emerald-400 flex items-center gap-1.5">
-              <Lucide.BookOpen size={20} />
+            <h1 className="text-xs sm:text-base md:text-lg font-black tracking-wider text-emerald-400 flex items-center gap-1">
+              <Lucide.BookOpen size={16} />
               ବହି ପୃଷ୍ଠା ଖେଳ
             </h1>
-            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5 hidden sm:block">
               Traditional Odia Learning Game
             </p>
           </div>
         </div>
 
         {/* HUD Score & XP */}
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 rounded-xl">
-            <Lucide.Coins size={15} className="text-amber-400 animate-spin-slow" />
-            <span className="text-xs font-black text-amber-300">{userXp} XP</span>
+        <div className="flex items-center gap-1.5 sm:gap-4">
+          <div className="flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-amber-500/10 border border-amber-500/30 rounded-xl">
+            <Lucide.Coins size={13} className="text-amber-400 animate-spin-slow" />
+            <span className="text-[10px] sm:text-xs font-black text-amber-300">{userXp} XP</span>
           </div>
           <button 
             onClick={() => setShowHelp(true)}
-            className="px-3 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 rounded-xl border border-emerald-500/20 text-emerald-400 font-black text-xs flex items-center gap-1.5 active:scale-95 transition-all"
+            className="p-2 sm:px-3 sm:py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 rounded-xl border border-emerald-500/20 text-emerald-400 font-black text-xs flex items-center gap-1.5 active:scale-95 transition-all"
             title="କେମିତି ଖେଳିବେ"
           >
             <Lucide.HelpCircle size={15} />
-            <span>କେମିତି ଖେଳିବେ?</span>
+            <span className="hidden md:inline">କେମିତି ଖେଳିବେ?</span>
           </button>
           <button 
             onClick={() => setSoundEnabled(!soundEnabled)}
-            className="p-2.5 bg-white/5 rounded-xl border border-white/5 text-slate-400 hover:text-white"
+            className="p-2 sm:p-2.5 bg-white/5 rounded-xl border border-white/5 text-slate-400 hover:text-white"
           >
             {soundEnabled ? <Lucide.Volume2 size={16} /> : <Lucide.VolumeX size={16} />}
           </button>
@@ -653,57 +653,57 @@ export function BahiPrusthaGame({ user, onBack }: BahiPrusthaGameProps) {
                 style={{ transformStyle: 'preserve-3d' }}
               >
                 {/* Book Spine Shadows */}
-                <div className="absolute top-0 bottom-0 left-[calc(50%-12px)] w-6 bg-gradient-to-r from-black/40 via-black/80 to-black/40 z-10 border-l border-r border-white/5" />
+                <div className="absolute top-0 bottom-0 left-[calc(50%-6px)] w-3 sm:left-[calc(50%-12px)] sm:w-6 bg-gradient-to-r from-black/40 via-black/80 to-black/40 z-10 border-l border-r border-white/5" />
 
                 {/* LEFT PAGE */}
-                <div className="flex-1 bg-slate-900 p-6 flex flex-col justify-between border-r border-black/40 select-none">
+                <div className="flex-1 bg-slate-900 p-2.5 sm:p-6 flex flex-col justify-between border-r border-black/40 select-none">
                   {activeMode === 'syllabus' ? (
                     selectedSubject === 'math' ? (
                       /* Math Board Left page */
-                      <div className="space-y-4 flex flex-col justify-center h-full text-center">
-                        <div className="mx-auto w-12 h-12 bg-amber-500/15 rounded-xl border border-amber-500/20 flex items-center justify-center text-amber-400">
+                      <div className="space-y-2 sm:space-y-4 flex flex-col justify-center h-full text-center">
+                        <div className="mx-auto w-8 h-8 sm:w-12 sm:h-12 bg-amber-500/15 rounded-xl border border-amber-500/20 hidden sm:flex items-center justify-center text-amber-400">
                           <Lucide.PlusCircle size={24} />
                         </div>
-                        <h4 className="text-base font-black text-amber-300 leading-normal">
+                        <h4 className="text-xs sm:text-base font-black text-amber-300 leading-normal">
                           {MATH_LEVELS[selectedClass].instruction}
                         </h4>
-                        <p className="text-xs text-slate-400 leading-relaxed font-bold">
+                        <p className="text-[10px] sm:text-xs text-slate-400 leading-relaxed font-bold">
                           ସାବଧାନ ରୁହନ୍ତୁ! ଦ୍ରୁତ ଉତ୍ତର ଦେଲେ ଅଧିକ ବୋନସ XP ମିଳିବ।
                         </p>
                       </div>
                     ) : (
                       /* Odia Board Left page: displays text snippet */
-                      <div className="space-y-4 flex flex-col justify-center h-full">
+                      <div className="space-y-2 sm:space-y-4 flex flex-col justify-center h-full">
                         <span className="text-[10px] text-rose-400 font-black tracking-widest uppercase block border-b border-white/5 pb-1">ଓଡ଼ିଆ ସାହିତ୍ୟ ପୃଷ୍ଠା</span>
-                        <p className="text-base md:text-lg text-slate-200 leading-relaxed font-black tracking-wide bg-slate-950/40 p-4 rounded-xl border border-white/5">
+                        <p className="text-xs sm:text-lg text-slate-200 leading-relaxed font-black tracking-wide bg-slate-950/40 p-2 sm:p-4 rounded-xl border border-white/5">
                           {currentOdiaQuestion?.sentence}
                         </p>
-                        <div className="flex gap-1.5 items-center text-[10px] text-amber-400 font-bold bg-amber-500/5 px-3 py-1.5 rounded-lg border border-amber-500/10">
-                          <Lucide.Info size={12} />
-                          <span>ସୂଚନା: {currentOdiaQuestion?.hint}</span>
+                        <div className="flex gap-1 items-center text-[9px] sm:text-[10px] text-amber-400 font-bold bg-amber-500/5 px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg border border-amber-500/10">
+                          <Lucide.Info size={11} />
+                          <span className="truncate">ସୂଚନା: {currentOdiaQuestion?.hint}</span>
                         </div>
                       </div>
                     )
                   ) : (
                     /* Playbook Mode Left page: displays story text */
-                    <div className="space-y-4 flex flex-col justify-center h-full">
+                    <div className="space-y-2 sm:space-y-4 flex flex-col justify-center h-full">
                       <span className="text-[10px] text-emerald-400 font-black tracking-widest uppercase block border-b border-white/5 pb-1">
                         କାହାଣୀ - ପୃଷ୍ଠା {selectedPlaybook?.pages[playbookIndex].pageNo}
                       </span>
-                      <p className="text-sm md:text-base text-slate-100 leading-relaxed font-black tracking-wide p-4 bg-slate-950/40 rounded-xl border border-white/5">
+                      <p className="text-xs sm:text-base text-slate-100 leading-relaxed font-black tracking-wide p-2 sm:p-4 bg-slate-950/40 rounded-xl border border-white/5">
                         {selectedPlaybook?.pages[playbookIndex].text}
                       </p>
                     </div>
                   )}
                   
                   {/* Left Footer Page Indicator */}
-                  <div className="text-[10px] text-slate-600 font-mono">
-                    {activeMode === 'syllabus' ? `ଶ୍ରେଣୀ ${selectedClass} • ପାଠ୍ୟପୁସ୍ତକ` : `କାହାଣୀ`}
+                  <div className="text-[9px] sm:text-[10px] text-slate-600 font-mono">
+                    {activeMode === 'syllabus' ? `ଶ୍ରେଣୀ ${selectedClass} • ପାଠ୍ୟ` : `କାହାଣୀ`}
                   </div>
                 </div>
 
                 {/* RIGHT PAGE */}
-                <div className="flex-1 bg-slate-900 p-6 flex flex-col justify-between border-l border-black/40 relative select-none">
+                <div className="flex-1 bg-slate-900 p-2.5 sm:p-6 flex flex-col justify-between border-l border-black/40 relative select-none">
                   
                   {/* Feedback Overlays */}
                   <AnimatePresence>
@@ -716,13 +716,13 @@ export function BahiPrusthaGame({ user, onBack }: BahiPrusthaGameProps) {
                       >
                         {feedback === 'correct' ? (
                           <div className="flex flex-col items-center gap-2">
-                            <Lucide.CheckCircle2 size={48} className="text-emerald-400" />
-                            <span className="text-sm font-black text-emerald-300">ସଠିକ୍ ଉତ୍ତର!</span>
+                            <Lucide.CheckCircle2 size={40} className="text-emerald-400" />
+                            <span className="text-xs sm:text-sm font-black text-emerald-300">ସଠିକ୍ ଉତ୍ତର!</span>
                           </div>
                         ) : (
                           <div className="flex flex-col items-center gap-2">
-                            <Lucide.XCircle size={48} className="text-red-400" />
-                            <span className="text-sm font-black text-red-300">ଭୁଲ ଉତ୍ତର!</span>
+                            <Lucide.XCircle size={40} className="text-red-400" />
+                            <span className="text-xs sm:text-sm font-black text-red-300">ଭୁଲ ଉତ୍ତର!</span>
                           </div>
                         )}
                       </motion.div>
@@ -732,45 +732,45 @@ export function BahiPrusthaGame({ user, onBack }: BahiPrusthaGameProps) {
                   {activeMode === 'syllabus' ? (
                     selectedSubject === 'math' ? (
                       /* Math Board Right page: Big page digits */
-                      <div className="flex-grow flex flex-col justify-center items-center text-center space-y-4">
+                      <div className="flex-grow flex flex-col justify-center items-center text-center space-y-2 sm:space-y-4">
                         <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">ପୃଷ୍ଠା ସଂଖ୍ୟା</span>
-                        <div className="px-8 py-5 bg-gradient-to-b from-amber-500/10 to-amber-600/5 border border-amber-500/30 rounded-2xl shadow-inner font-mono font-black text-5xl text-amber-300 tracking-wider relative select-none">
+                        <div className="px-4 py-2 sm:px-8 sm:py-5 bg-gradient-to-b from-amber-500/10 to-amber-600/5 border border-amber-500/30 rounded-2xl shadow-inner font-mono font-black text-2xl sm:text-5xl text-amber-300 tracking-wider relative select-none">
                           {currentMathPage}
                           {/* Inner page layout details */}
-                          <div className="absolute top-1 right-2 w-2 h-2 rounded-full bg-amber-500/20" />
+                          <div className="absolute top-1 right-2 w-1.5 h-1.5 rounded-full bg-amber-500/20" />
                         </div>
                         {MATH_LEVELS[selectedClass].questionType === 'modulo' && (
-                          <span className="text-xs font-black text-slate-300 uppercase tracking-widest mt-2">
+                          <span className="text-[9px] sm:text-xs font-black text-slate-300 uppercase tracking-widest mt-1">
                             କି ସଂଖ୍ୟା? (Even or Odd)
                           </span>
                         )}
                         {MATH_LEVELS[selectedClass].questionType === 'divisibility' && (
-                          <span className="text-xs font-black text-slate-300 uppercase tracking-widest mt-2">
-                            ୩ ଦ୍ୱାରା ବିଭାଜ୍ୟ କି? (Divisible by 3)
+                          <span className="text-[9px] sm:text-xs font-black text-slate-300 uppercase tracking-widest mt-1">
+                            ୩ ଦ୍ୱାରା ବିଭାଜ୍ୟ କି?
                           </span>
                         )}
                       </div>
                     ) : (
                       /* Odia Board Right page: Lists MCQ */
-                      <div className="flex-grow flex flex-col justify-center space-y-4">
+                      <div className="flex-grow flex flex-col justify-center space-y-2 sm:space-y-4">
                         <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">ବାକ୍ୟ ପୂରଣ କରନ୍ତୁ</span>
-                        <p className="text-sm text-slate-300 font-black leading-relaxed">
+                        <p className="text-xs sm:text-sm text-slate-300 font-black leading-relaxed">
                           ତଳ ବିକଳ୍ପଗୁଡ଼ିକ ମଧ୍ୟରୁ ସଠିକ୍ ଓଡ଼ିଆ ଶବ୍ଦଟିକୁ ବାଛନ୍ତୁ:
                         </p>
                       </div>
                     )
                   ) : (
                     /* Playbook Mode Right page: Story Quiz MCQs */
-                    <div className="flex-grow flex flex-col justify-center space-y-4">
+                    <div className="flex-grow flex flex-col justify-center space-y-2 sm:space-y-4">
                       <span className="text-[10px] text-emerald-400 font-black tracking-widest uppercase block">ଚ୍ୟାଲେଞ୍ଜ</span>
-                      <p className="text-sm md:text-base text-slate-200 font-black leading-relaxed bg-slate-950/20 p-3 rounded-xl border border-white/5">
+                      <p className="text-xs sm:text-base text-slate-200 font-black leading-relaxed bg-slate-950/20 p-2 sm:p-3 rounded-xl border border-white/5">
                         {selectedPlaybook?.pages[playbookIndex].embeddedQuestion.prompt}
                       </p>
                     </div>
                   )}
 
                   {/* Right Footer Page Indicator */}
-                  <div className="text-[10px] text-slate-600 font-mono text-right">
+                  <div className="text-[9px] sm:text-[10px] text-slate-600 font-mono text-right">
                     {activeMode === 'syllabus' ? `ପୃଷ୍ଠା ${currentMathPage}` : `ପୃଷ୍ଠା ${playbookIndex + 1}`}
                   </div>
                 </div>

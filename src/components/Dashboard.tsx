@@ -496,6 +496,18 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   const [showGiftUnlockModal, setShowGiftUnlockModal] = useState(false);
   const [showMtsGradingModal, setShowMtsGradingModal] = useState(false);
   const [showImportantPapersModal, setShowImportantPapersModal] = useState(false);
+
+  // Custom Worksheet Wizard States
+  const [worksheetStep, setWorksheetStep] = useState<number>(1);
+  const [selectedWorksheetSubject, setSelectedWorksheetSubject] = useState<string>('');
+  const [selectedWorksheetChapters, setSelectedWorksheetChapters] = useState<string[]>([]);
+  const [worksheetDifficulty, setWorksheetDifficulty] = useState<'easy' | 'medium' | 'hard'>('medium');
+  const [worksheetPattern, setWorksheetPattern] = useState<'quick' | 'full'>('quick');
+  const [isGeneratingWorksheet, setIsGeneratingWorksheet] = useState<boolean>(false);
+  const [worksheetGeneratingProgress, setWorksheetGeneratingProgress] = useState<number>(0);
+  const [worksheetGeneratingStatusText, setWorksheetGeneratingStatusText] = useState<string>('');
+  const [worksheetChaptersList, setWorksheetChaptersList] = useState<any[]>([]);
+  const [isLoadingWorksheetChapters, setIsLoadingWorksheetChapters] = useState<boolean>(false);
   const classKey = 'class' + userClass;
   const subjects = CLASS_SUBJECTS[classKey] || CLASS_SUBJECTS.class10;
 
@@ -598,6 +610,762 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       cumulativeChapters.push(...subjectChs);
     }
     return cumulativeChapters;
+  };
+
+  const getSubjectCategory = (subjectKey: string): 'math' | 'science' | 'social' | 'language' | 'skills' => {
+    const key = subjectKey.toLowerCase();
+    if (key.includes('ganita') || key.includes('algebra') || key.includes('geometry') || key.includes('math')) {
+      return 'math';
+    }
+    if (key.includes('science') || key.includes('jigyasa') || key.includes('paribesa') || key.includes('life') || key.includes('physical') || key.includes('surrounding')) {
+      return 'science';
+    }
+    if (key.includes('social') || key.includes('geography') || key.includes('history') || key.includes('samajika') || key.includes('nagari') || key.includes('rajaniti') || key.includes('bhugola')) {
+      return 'social';
+    }
+    if (key.includes('kausala') || key.includes('vocational') || key.includes('art') || key.includes('sikhya') || key.includes('khela') || key.includes('sharirika') || key.includes('yoga') || key.includes('palette') || key.includes('wellness') || key.includes('skill')) {
+      return 'skills';
+    }
+    return 'language';
+  };
+
+  const getSubjectIconTypes = (subjectKey: string): string[] => {
+    const cat = getSubjectCategory(subjectKey);
+    if (cat === 'math') {
+      return ['axes', 'triangle', 'circle', 'matrix', 'integral', 'axes', 'triangle', 'matrix', 'circle', 'axes'];
+    }
+    if (cat === 'science') {
+      return ['beaker', 'atom', 'dna', 'bulb', 'magnet', 'lens', 'prism', 'concave_mirror', 'beaker', 'atom'];
+    }
+    if (cat === 'language') {
+      return ['book', 'quill', 'school', 'slate', 'scroll', 'book', 'quill', 'slate', 'scroll', 'school'];
+    }
+    if (cat === 'skills') {
+      return ['palette', 'bulb', 'school', 'puzzle', 'sprout', 'slate', 'palette', 'bulb', 'puzzle', 'sprout'];
+    }
+    return ['globe', 'mountain', 'river', 'temple', 'globe', 'mountain', 'river', 'temple', 'globe', 'mountain'];
+  };
+
+  const fetchWorksheetChapters = async (subjectKey: string) => {
+    setIsLoadingWorksheetChapters(true);
+    try {
+      const clsStr = (userClass || '10').trim();
+      const q = query(
+        collection(db, 'chapters'), 
+        where('class', '==', `class${clsStr}`),
+        where('subject', '==', subjectKey)
+      );
+      const snap = await getDocs(q);
+      const docsData = snap.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      
+      // Filter chapters by roadmap up to current month
+      const roadmapChapters = getCumulativeChaptersForSubject(subjectKey);
+      
+      const filtered = docsData.filter((dbCh: any) => {
+        const titleDb = (dbCh.title || '').toLowerCase();
+        return roadmapChapters.some((roadCh: any) => {
+          const titleRoad = (roadCh.title_en || roadCh.title || '').toLowerCase();
+          return titleDb.includes(titleRoad) || titleRoad.includes(titleDb);
+        });
+      });
+      
+      const finalChapters = filtered.length > 0 ? filtered : roadmapChapters.map((ch, idx) => ({
+        id: `roadmap_${idx}`,
+        title: ch.title_en || ch.title,
+        quiz_questions: CHAPTER_QUESTION_BANK[Object.keys(CHAPTER_QUESTION_BANK).find(k => (ch.title_en || ch.title || '').toLowerCase().includes(k)) || '']?.mcqs || []
+      }));
+
+      setWorksheetChaptersList(finalChapters);
+      setSelectedWorksheetChapters(finalChapters.map((c: any) => c.id || c.title));
+    } catch (err) {
+      console.error("Failed to fetch worksheet chapters:", err);
+      const roadmapChapters = getCumulativeChaptersForSubject(subjectKey);
+      const mapped = roadmapChapters.map((ch, idx) => ({
+        id: `roadmap_${idx}`,
+        title: ch.title_en || ch.title,
+        quiz_questions: []
+      }));
+      setWorksheetChaptersList(mapped);
+      setSelectedWorksheetChapters(mapped.map((c: any) => c.id));
+    } finally {
+      setIsLoadingWorksheetChapters(false);
+    }
+  };
+
+  const handleCloseWorksheetModal = () => {
+    setShowImportantPapersModal(false);
+    setWorksheetStep(1);
+    setSelectedWorksheetSubject('');
+    setSelectedWorksheetChapters([]);
+    setWorksheetDifficulty('medium');
+    setWorksheetPattern('quick');
+    setIsGeneratingWorksheet(false);
+    setWorksheetGeneratingProgress(0);
+    setWorksheetGeneratingStatusText('');
+  };
+
+  const cleanLaTeX = (text: string): string => {
+    if (!text) return '';
+    let cleaned = text;
+    cleaned = cleaned.replace(/\$/g, '');
+    cleaned = cleaned.replace(/\\frac\s*{(.*?)}\s*{(.*?)}/g, '($1/$2)');
+    cleaned = cleaned.replace(/\\sqrt\s*{(.*?)}/g, '√$1');
+    cleaned = cleaned.replace(/\\pm/g, '±');
+    cleaned = cleaned.replace(/\\theta/g, 'θ');
+    cleaned = cleaned.replace(/\\alpha/g, 'α');
+    cleaned = cleaned.replace(/\\beta/g, 'β');
+    cleaned = cleaned.replace(/\\pi/g, 'π');
+    cleaned = cleaned.replace(/\\times/g, '×');
+    cleaned = cleaned.replace(/\\div/g, '÷');
+    cleaned = cleaned.replace(/\\neq/g, '≠');
+    cleaned = cleaned.replace(/\\leq/g, '≤');
+    cleaned = cleaned.replace(/\\geq/g, '≥');
+    cleaned = cleaned.replace(/\\degree/g, '°');
+    cleaned = cleaned.replace(/\\Delta/g, 'Δ');
+    cleaned = cleaned.replace(/\^2/g, '²');
+    cleaned = cleaned.replace(/\^3/g, '³');
+    cleaned = cleaned.replace(/_1/g, '₁');
+    cleaned = cleaned.replace(/_2/g, '₂');
+    cleaned = cleaned.replace(/_n/g, 'ₙ');
+    cleaned = cleaned.replace(/\\text\s*{(.*?)}/g, '$1');
+    cleaned = cleaned.replace(/\\mathrm\s*{(.*?)}/g, '$1');
+    cleaned = cleaned.replace(/\s+/g, ' ').trim();
+    return cleaned;
+  };
+
+  const drawWobblyLine = (ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number, color: string, width: number) => {
+    ctx.save();
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    const steps = Math.ceil(distance / 12);
+    ctx.moveTo(x1, y1);
+    for (let i = 1; i <= steps; i++) {
+      const t = i / steps;
+      const x = x1 + dx * t;
+      const y = y1 + dy * t;
+      const wobbleVal = (Math.sin(t * Math.PI * 6) * 0.9) + (Math.random() - 0.5) * 0.4;
+      ctx.lineTo(x + wobbleVal, y + wobbleVal);
+    }
+    ctx.stroke();
+    ctx.restore();
+  };
+
+  const drawWobblyRect = (ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, color: string, width: number) => {
+    drawWobblyLine(ctx, x, y, x + w, y, color, width);
+    drawWobblyLine(ctx, x + w, y, x + w, y + h, color, width);
+    drawWobblyLine(ctx, x + w, y + h, x, y + h, color, width);
+    drawWobblyLine(ctx, x, y + h, x, y, color, width);
+  };
+
+  const wobble = (val: number, amp = 1.8) => val + (Math.random() - 0.5) * amp;
+
+  const drawSketchIcon = (ctx: CanvasRenderingContext2D, type: string, x: number, y: number, strokeColor = '#334155') => {
+    ctx.save();
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    if (type === 'temple') {
+      ctx.save();
+      ctx.fillStyle = 'rgba(239, 137, 71, 0.18)';
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 40), wobble(y + 12));
+      ctx.quadraticCurveTo(wobble(x + 22), wobble(y + 45), wobble(x + 22), wobble(y + 60));
+      ctx.lineTo(wobble(x + 58), wobble(y + 60));
+      ctx.quadraticCurveTo(wobble(x + 58), wobble(y + 45), wobble(x + 40), wobble(y + 12));
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 40), wobble(y + 12));
+      ctx.quadraticCurveTo(wobble(x + 22), wobble(y + 45), wobble(x + 22), wobble(y + 60));
+      ctx.lineTo(wobble(x + 58), wobble(y + 60));
+      ctx.quadraticCurveTo(wobble(x + 58), wobble(y + 45), wobble(x + 40), wobble(y + 12));
+      ctx.stroke();
+
+      for (let r = 26; r < 60; r += 12) {
+        ctx.beginPath();
+        ctx.moveTo(wobble(x + 26), wobble(y + r));
+        ctx.lineTo(wobble(x + 54), wobble(y + r));
+        ctx.stroke();
+      }
+
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 40), wobble(y + 12));
+      ctx.lineTo(wobble(x + 40), wobble(y + 2));
+      ctx.stroke();
+
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.8)';
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 40), wobble(y + 2));
+      ctx.lineTo(wobble(x + 54), wobble(y + 6));
+      ctx.lineTo(wobble(x + 40), wobble(y + 10));
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    } else if (type === 'flower') {
+      const cx = x + 40;
+      const cy = y + 30;
+      ctx.save();
+      ctx.strokeStyle = 'rgba(16, 185, 129, 0.25)';
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.moveTo(wobble(cx), wobble(cy + 8));
+      ctx.quadraticCurveTo(wobble(cx - 5), wobble(cy + 30), wobble(cx - 2), wobble(y + 62));
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.save();
+      ctx.fillStyle = 'rgba(251, 191, 36, 0.35)';
+      for (let a = 0; a < Math.PI * 2; a += Math.PI / 3) {
+        const px = cx + Math.cos(a) * 14;
+        const py = cy + Math.sin(a) * 14;
+        ctx.beginPath();
+        ctx.arc(wobble(px), wobble(py), 7, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.fillStyle = 'rgba(245, 158, 11, 0.45)';
+      ctx.beginPath();
+      ctx.arc(wobble(cx), wobble(cy), 8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      for (let a = 0; a < Math.PI * 2; a += Math.PI / 3) {
+        const px = cx + Math.cos(a) * 14;
+        const py = cy + Math.sin(a) * 14;
+        ctx.beginPath();
+        ctx.arc(wobble(px), wobble(py), 7, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.beginPath();
+      ctx.arc(wobble(cx), wobble(cy), 8, 0, Math.PI * 2);
+      ctx.stroke();
+    } else if (type === 'mountain') {
+      ctx.save();
+      ctx.fillStyle = 'rgba(16, 185, 129, 0.16)';
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 15), wobble(y + 60));
+      ctx.lineTo(wobble(x + 40), wobble(y + 15));
+      ctx.lineTo(wobble(x + 65), wobble(y + 60));
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = 'rgba(4, 120, 87, 0.12)';
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 35), wobble(y + 60));
+      ctx.lineTo(wobble(x + 55), wobble(y + 25));
+      ctx.lineTo(wobble(x + 75), wobble(y + 60));
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 15), wobble(y + 60));
+      ctx.lineTo(wobble(x + 40), wobble(y + 15));
+      ctx.lineTo(wobble(x + 65), wobble(y + 60));
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 35), wobble(y + 60));
+      ctx.lineTo(wobble(x + 55), wobble(y + 25));
+      ctx.lineTo(wobble(x + 75), wobble(y + 60));
+      ctx.stroke();
+    } else if (type === 'river') {
+      ctx.save();
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.2)';
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 10), wobble(y + 18));
+      ctx.bezierCurveTo(wobble(x + 30), wobble(y + 8), wobble(x + 50), wobble(y + 54), wobble(x + 70), wobble(y + 44));
+      ctx.lineTo(wobble(x + 70), wobble(y + 62));
+      ctx.bezierCurveTo(wobble(x + 50), wobble(y + 72), wobble(x + 30), wobble(y + 26), wobble(x + 10), wobble(y + 36));
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 10), wobble(y + 18));
+      ctx.bezierCurveTo(wobble(x + 30), wobble(y + 8), wobble(x + 50), wobble(y + 54), wobble(x + 70), wobble(y + 44));
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 10), wobble(y + 36));
+      ctx.bezierCurveTo(wobble(x + 30), wobble(y + 26), wobble(x + 50), wobble(y + 72), wobble(x + 70), wobble(y + 62));
+      ctx.stroke();
+    } else if (type === 'school') {
+      ctx.save();
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.15)';
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 15), wobble(y + 60));
+      ctx.lineTo(wobble(x + 15), wobble(y + 28));
+      ctx.quadraticCurveTo(wobble(x + 40), wobble(y + 8), wobble(x + 65), wobble(y + 28));
+      ctx.lineTo(wobble(x + 65), wobble(y + 60));
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = 'rgba(120, 113, 108, 0.25)';
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 28), wobble(y + 60));
+      ctx.lineTo(wobble(x + 28), wobble(y + 38));
+      ctx.quadraticCurveTo(wobble(x + 40), wobble(y + 26), wobble(x + 52), wobble(y + 38));
+      ctx.lineTo(wobble(x + 52), wobble(y + 60));
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 15), wobble(y + 60));
+      ctx.lineTo(wobble(x + 15), wobble(y + 28));
+      ctx.quadraticCurveTo(wobble(x + 40), wobble(y + 8), wobble(x + 65), wobble(y + 28));
+      ctx.lineTo(wobble(x + 65), wobble(y + 60));
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 28), wobble(y + 60));
+      ctx.lineTo(wobble(x + 28), wobble(y + 38));
+      ctx.quadraticCurveTo(wobble(x + 40), wobble(y + 26), wobble(x + 52), wobble(y + 38));
+      ctx.lineTo(wobble(x + 52), wobble(y + 60));
+      ctx.stroke();
+    } else {
+      ctx.save();
+      ctx.fillStyle = 'rgba(253, 251, 236, 0.75)';
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 40), wobble(y + 22));
+      ctx.quadraticCurveTo(wobble(x + 25), wobble(y + 10), wobble(x + 12), wobble(y + 16));
+      ctx.lineTo(wobble(x + 12), wobble(y + 46));
+      ctx.quadraticCurveTo(wobble(x + 25), wobble(y + 40), wobble(x + 40), wobble(y + 52));
+      ctx.quadraticCurveTo(wobble(x + 55), wobble(y + 40), wobble(x + 68), wobble(y + 46));
+      ctx.lineTo(wobble(x + 68), wobble(y + 16));
+      ctx.quadraticCurveTo(wobble(x + 55), wobble(y + 10), wobble(x + 40), wobble(y + 22));
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.strokeStyle = 'rgba(139, 92, 246, 0.28)';
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.moveTo(x + 40, y + 23);
+      ctx.lineTo(x + 40, y + 51);
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 40), wobble(y + 52));
+      ctx.quadraticCurveTo(wobble(x + 25), wobble(y + 40), wobble(x + 12), wobble(y + 46));
+      ctx.lineTo(wobble(x + 12), wobble(y + 16));
+      ctx.quadraticCurveTo(wobble(x + 25), wobble(y + 10), wobble(x + 40), wobble(y + 22));
+      ctx.closePath();
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(wobble(x + 40), wobble(y + 22));
+      ctx.quadraticCurveTo(wobble(x + 55), wobble(y + 10), wobble(x + 68), wobble(y + 16));
+      ctx.lineTo(wobble(x + 68), wobble(y + 46));
+      ctx.quadraticCurveTo(wobble(x + 55), wobble(y + 40), wobble(x + 40), wobble(y + 52));
+      ctx.closePath();
+      ctx.stroke();
+    }
+    ctx.restore();
+  };
+
+  const wrapText = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] => {
+    const words = text.split(' ');
+    const lines: string[] = [];
+    let currentLine = '';
+    
+    for (let i = 0; i < words.length; i++) {
+      const word = words[i];
+      const testLine = currentLine ? currentLine + ' ' + word : word;
+      const metrics = ctx.measureText(testLine);
+      if (metrics.width > maxWidth) {
+        lines.push(currentLine);
+        currentLine = word;
+      } else {
+        currentLine = testLine;
+      }
+    }
+    if (currentLine) {
+      lines.push(currentLine);
+    }
+    return lines;
+  };
+
+  const curateWorksheetQuestions = (subjectKey: string, chapters: any[], difficulty: 'easy' | 'medium' | 'hard', pattern: 'quick' | 'full') => {
+    const isBoard = userClass === '9' || userClass === '10';
+    let totalMcqs = 10;
+    let totalSubjectives = 3;
+    
+    if (pattern === 'quick') {
+      totalMcqs = 10;
+      totalSubjectives = 3;
+    } else {
+      if (isBoard) {
+        const isHalfPaper = ['physical_science', 'life_science', 'social_science', 'geography', 'vocational'].includes(subjectKey);
+        if (isHalfPaper) {
+          totalMcqs = 25;
+          totalSubjectives = 3;
+        } else {
+          totalMcqs = 50;
+          totalSubjectives = 5;
+        }
+      } else {
+        totalMcqs = 30;
+        totalSubjectives = 5;
+      }
+    }
+    
+    let mcqPool: any[] = [];
+    let subjectivePool: any[] = [];
+    
+    chapters.forEach(ch => {
+      let qList: any[] = [];
+      if (ch.quiz_questions && Array.isArray(ch.quiz_questions)) {
+        qList = ch.quiz_questions;
+      } else if (ch.mcqs && Array.isArray(ch.mcqs)) {
+        qList = ch.mcqs;
+      }
+      
+      qList.forEach(q => {
+        const isSubj = q.type === 'subjective' || q.isSubjective || !q.options || !Array.isArray(q.options) || q.options.length === 0;
+        if (isSubj) {
+          subjectivePool.push({
+            question: q.question,
+            hint: q.answer || q.hint || q.correct_answer || 'Use standard textbook steps to explain.'
+          });
+        } else {
+          mcqPool.push({
+            question: q.question,
+            options: q.options,
+            answer: q.answer || (typeof q.correctAnswer === 'number' ? q.options[q.correctAnswer] : q.correctAnswer) || ''
+          });
+        }
+      });
+    });
+    
+    chapters.forEach(ch => {
+      const title = (ch.title_en || ch.title || '').toLowerCase();
+      Object.keys(CHAPTER_QUESTION_BANK).forEach(bankKey => {
+        if (title.includes(bankKey)) {
+          const bank = CHAPTER_QUESTION_BANK[bankKey];
+          if (bank.mcqs) mcqPool.push(...bank.mcqs);
+          if (bank.subjectives) subjectivePool.push(...bank.subjectives);
+        }
+      });
+    });
+    
+    const uniqueMcqs: any[] = [];
+    const seenMcqs = new Set<string>();
+    mcqPool.forEach(q => {
+      const qText = (q.question || '').trim().toLowerCase();
+      if (qText && !seenMcqs.has(qText)) {
+        seenMcqs.add(qText);
+        uniqueMcqs.push(q);
+      }
+    });
+    
+    const uniqueSubjectives: any[] = [];
+    const seenSubjectives = new Set<string>();
+    subjectivePool.forEach(q => {
+      const qText = (q.question || '').trim().toLowerCase();
+      if (qText && !seenSubjectives.has(qText)) {
+        seenSubjectives.add(qText);
+        uniqueSubjectives.push(q);
+      }
+    });
+    
+    if (uniqueMcqs.length < totalMcqs) {
+      const fb = generateFallbackQuestions(subjectKey, chapters, isBoard);
+      fb.forEach(q => {
+        const qText = (q.question || '').trim().toLowerCase();
+        if (!seenMcqs.has(qText)) {
+          seenMcqs.add(qText);
+          uniqueMcqs.push(q);
+        }
+      });
+    }
+    
+    if (uniqueSubjectives.length < totalSubjectives) {
+      const fb = generateFallbackSubjectives(subjectKey, chapters, isBoard);
+      fb.forEach(q => {
+        const qText = (q.question || '').trim().toLowerCase();
+        if (!seenSubjectives.has(qText)) {
+          seenSubjectives.add(qText);
+          uniqueSubjectives.push(q);
+        }
+      });
+    }
+    
+    let selectedMcqs = [...uniqueMcqs];
+    let selectedSubjectives = [...uniqueSubjectives];
+    
+    if (difficulty === 'easy') {
+      selectedMcqs.sort((a, b) => (a.question.length - b.question.length));
+      selectedSubjectives.sort((a, b) => (a.question.length - b.question.length));
+    } else if (difficulty === 'hard') {
+      selectedMcqs.sort((a, b) => (b.question.length - a.question.length));
+      selectedSubjectives.sort((a, b) => (b.question.length - a.question.length));
+    }
+    
+    return {
+      mcqs: selectedMcqs.slice(0, totalMcqs),
+      subjectives: selectedSubjectives.slice(0, totalSubjectives)
+    };
+  };
+
+  const generateCustomWorksheetPDF = async () => {
+    setIsGeneratingWorksheet(true);
+    setWorksheetGeneratingProgress(10);
+    setWorksheetGeneratingStatusText(language === 'en' ? 'Preparing question bank...' : 'ପ୍ରଶ୍ନପତ୍ର ପ୍ରସ୍ତୁତ କରାଯାଉଛି...');
+    
+    try {
+      const isBoard = userClass === '9' || userClass === '10';
+      const subjectLabel = language === 'en' 
+        ? (subjects.find((s: any) => s.key === selectedWorksheetSubject)?.labelEn || selectedWorksheetSubject)
+        : (subjects.find((s: any) => s.key === selectedWorksheetSubject)?.labelOr || selectedWorksheetSubject);
+      
+      const selectedChaptersData = worksheetChaptersList.filter((ch: any) => 
+        selectedWorksheetChapters.includes(ch.id || ch.title)
+      );
+      
+      const { mcqs, subjectives } = curateWorksheetQuestions(
+        selectedWorksheetSubject, 
+        selectedChaptersData, 
+        worksheetDifficulty, 
+        worksheetPattern
+      );
+      
+      setWorksheetGeneratingProgress(25);
+      setWorksheetGeneratingStatusText(language === 'en' ? 'Loading assets...' : 'ସମ୍ପତ୍ତି ଲୋଡ୍ କରାଯାଉଛି...');
+      
+      const logoImg = new Image();
+      logoImg.src = '/utkal-512.png';
+      await new Promise(resolve => { logoImg.onload = resolve; logoImg.onerror = resolve; });
+      
+      const mascotImg = new Image();
+      mascotImg.src = '/gundulu-pointing.png';
+      await new Promise(resolve => { mascotImg.onload = resolve; mascotImg.onerror = resolve; });
+      
+      setWorksheetGeneratingProgress(45);
+      setWorksheetGeneratingStatusText(language === 'en' ? 'Rendering wobbly notebook lines...' : 'ଖାତା ପୃଷ୍ଠା ପ୍ରସ୍ତୁତ କରାଯାଉଛି...');
+      
+      const doc = new jsPDF('p', 'mm', 'a4');
+      const docWidth = 210;
+      const docHeight = 297;
+      
+      let pageNumber = 1;
+      let canvas = document.createElement('canvas');
+      canvas.width = 1240;
+      canvas.height = 1754;
+      let ctx = canvas.getContext('2d')!;
+      
+      const drawPaperBackground = (ctx: CanvasRenderingContext2D) => {
+        ctx.fillStyle = '#FCFBF7';
+        ctx.fillRect(0, 0, 1240, 1754);
+        ctx.strokeStyle = 'rgba(239, 68, 68, 0.4)';
+        ctx.lineWidth = 1.8;
+        
+        drawWobblyLine(ctx, 140, 40, 140, 1714, 'rgba(239, 68, 68, 0.4)', 1.8);
+        drawWobblyLine(ctx, 144, 40, 144, 1714, 'rgba(239, 68, 68, 0.4)', 1.8);
+        drawWobblyLine(ctx, 40, 210, 1200, 210, 'rgba(239, 68, 68, 0.4)', 1.8);
+        
+        for (let yLine = 252; yLine <= 1620; yLine += 42) {
+          drawWobblyLine(ctx, 144, yLine, 1200, yLine, 'rgba(14, 165, 233, 0.12)', 1.5);
+        }
+        
+        drawWobblyLine(ctx, 40, 40, 1200, 40, '#10b981', 3.5);
+        drawWobblyLine(ctx, 40, 1714, 1200, 1714, '#10b981', 3.5);
+        drawWobblyLine(ctx, 40, 40, 40, 1714, '#10b981', 3.5);
+        drawWobblyLine(ctx, 1200, 40, 1200, 1714, '#10b981', 3.5);
+      };
+      
+      drawPaperBackground(ctx);
+      
+      const drawHeader = (ctx: CanvasRenderingContext2D) => {
+        ctx.drawImage(logoImg, 180, 60, 95, 95);
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 30px Arial, sans-serif';
+        ctx.fillText("UTKAL SKILL CENTRE", 300, 95);
+        
+        ctx.fillStyle = '#10b981';
+        ctx.font = 'bold 12px Arial, sans-serif';
+        ctx.fillText("ODISHA'S PREMIER DIGITAL EDUCATION COOPERATIVE", 300, 118);
+        
+        ctx.fillStyle = '#475569';
+        ctx.font = 'bold 15px Arial, sans-serif';
+        ctx.fillText(`MTS CUSTOM WORKSHEET • CLASS ${userClass || '10'}`, 300, 140);
+        
+        drawWobblyRect(ctx, 800, 60, 370, 110, '#94a3b8', 1.5);
+        ctx.fillStyle = '#1e293b';
+        ctx.font = 'bold 14px Arial, sans-serif';
+        ctx.fillText("NAME: ____________________", 815, 95);
+        ctx.fillText("ROLL: ________  DATE: ____", 815, 135);
+      };
+      
+      drawHeader(ctx);
+      
+      let y = 252;
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 17px Arial, sans-serif';
+      ctx.fillText(`SUBJECT: ${subjectLabel}`, 180, y);
+      ctx.fillText(`MARKS: ${worksheetPattern === 'quick' ? '25' : (isBoard ? (['physical_science', 'life_science', 'social_science', 'geography', 'vocational'].includes(selectedWorksheetSubject) ? '50' : '100') : '50')}`, 600, y);
+      ctx.fillText(`DIFFICULTY: ${worksheetDifficulty.toUpperCase()}`, 940, y);
+      y += 42;
+      
+      ctx.fillStyle = '#475569';
+      ctx.font = 'italic 14px Arial, sans-serif';
+      const syllabusTitles = selectedChaptersData.map((c: any) => c.title || c.title_en || '').slice(0, 4).join(', ');
+      ctx.fillText(`SYLLABUS: ${syllabusTitles}${selectedChaptersData.length > 4 ? '...' : ''}`, 180, y);
+      y += 42;
+      
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(180, y - 10);
+      ctx.lineTo(1180, y - 10);
+      ctx.stroke();
+      
+      const finalizePage = (pageCtx: CanvasRenderingContext2D, pageNum: number) => {
+        pageCtx.drawImage(mascotImg, 980, 1420, 180, 180);
+        pageCtx.fillStyle = '#64748b';
+        pageCtx.font = 'italic 13px Arial, sans-serif';
+        pageCtx.textAlign = 'center';
+        pageCtx.fillText("Practice daily on Utkal Skill Centre • Share this worksheet with friends!", 620, 1665);
+        pageCtx.font = 'bold 12px Arial, sans-serif';
+        pageCtx.fillText(`Page ${pageNum}`, 620, 1690);
+        pageCtx.textAlign = 'left';
+      };
+      
+      const checkPageOverflow = (currentY: number, spaceNeeded: number) => {
+        if (currentY + spaceNeeded > 1540) {
+          finalizePage(ctx, pageNumber);
+          const imgData = canvas.toDataURL('image/png');
+          if (pageNumber > 1) {
+            doc.addPage();
+          }
+          doc.addImage(imgData, 'PNG', 0, 0, docWidth, docHeight);
+          pageNumber++;
+          canvas = document.createElement('canvas');
+          canvas.width = 1240;
+          canvas.height = 1754;
+          ctx = canvas.getContext('2d')!;
+          drawPaperBackground(ctx);
+          return 252;
+        }
+        return currentY;
+      };
+      
+      setWorksheetGeneratingProgress(65);
+      setWorksheetGeneratingStatusText(language === 'en' ? 'Writing Section A (MCQs)...' : 'ବିଭାଗ କ (MCQ) ଲେଖାଯାଉଛି...');
+      
+      if (mcqs.length > 0) {
+        y = checkPageOverflow(y, 60);
+        ctx.fillStyle = '#1e293b';
+        ctx.font = 'bold 18px Arial, sans-serif';
+        ctx.fillText("SECTION A: MULTIPLE CHOICE QUESTIONS (MCQ)", 180, y);
+        y += 42;
+        
+        mcqs.forEach((q, idx) => {
+          const cleanQ = cleanLaTeX(q.question);
+          ctx.font = 'bold 15px Arial, sans-serif';
+          const qLines = wrapText(ctx, `Q${idx + 1}. ${cleanQ}`, 960);
+          const qSpace = (qLines.length + q.options.length + 1) * 42;
+          y = checkPageOverflow(y, qSpace);
+          
+          ctx.fillStyle = '#0f172a';
+          ctx.font = 'bold 15px Arial, sans-serif';
+          qLines.forEach(line => {
+            ctx.fillText(line, 180, y);
+            y += 42;
+          });
+          
+          ctx.font = '15px Arial, sans-serif';
+          ctx.fillStyle = '#334155';
+          q.options.forEach((opt: string, optIdx: number) => {
+            const optLetter = String.fromCharCode(97 + optIdx);
+            const cleanOpt = cleanLaTeX(opt);
+            ctx.fillText(`(${optLetter})  ${cleanOpt}`, 220, y);
+            y += 42;
+          });
+          y += 20;
+          y = Math.ceil(y / 42) * 42;
+        });
+      }
+      
+      setWorksheetGeneratingProgress(85);
+      setWorksheetGeneratingStatusText(language === 'en' ? 'Writing Section B (Subjectives)...' : 'ବିଭାଗ ଖ (ଦୀର୍ଘ ପ୍ରଶ୍ନ) ଲେଖାଯାଉଛି...');
+      
+      if (subjectives.length > 0) {
+        y = checkPageOverflow(y, 80);
+        ctx.fillStyle = '#1e293b';
+        ctx.font = 'bold 18px Arial, sans-serif';
+        ctx.fillText("SECTION B: SUBJECTIVE QUESTIONS", 180, y);
+        y += 42;
+        
+        const subjectIcons = getSubjectIconTypes(selectedWorksheetSubject);
+        subjectives.forEach((q, idx) => {
+          const cleanQ = cleanLaTeX(q.question);
+          ctx.font = 'bold 15px Arial, sans-serif';
+          const qLines = wrapText(ctx, `Q${idx + mcqs.length + 1}. ${cleanQ}`, 960);
+          const optSpace = (qLines.length + 6) * 42;
+          y = checkPageOverflow(y, optSpace);
+          
+          const iconType = subjectIcons[idx % subjectIcons.length] || 'book';
+          drawSketchIcon(ctx, iconType, 50, y - 25, '#1e293b');
+          
+          ctx.fillStyle = '#0f172a';
+          ctx.font = 'bold 15px Arial, sans-serif';
+          qLines.forEach(line => {
+            ctx.fillText(line, 180, y);
+            y += 42;
+          });
+          
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = 'italic 12px Arial, sans-serif';
+          ctx.fillText("Student Answer Area (Write answers below)", 180, y);
+          y += 42;
+          y += 42 * 4;
+          
+          ctx.fillStyle = '#64748b';
+          ctx.font = 'italic 11px Arial, sans-serif';
+          const cleanHint = cleanLaTeX(q.hint);
+          ctx.fillText(`Hint: ${cleanHint}`, 180, y);
+          y += 42;
+          y += 20;
+          y = Math.ceil(y / 42) * 42;
+        });
+      }
+      
+      finalizePage(ctx, pageNumber);
+      const imgData = canvas.toDataURL('image/png');
+      if (pageNumber > 1) {
+        doc.addPage();
+      }
+      doc.addImage(imgData, 'PNG', 0, 0, docWidth, docHeight);
+      
+      setWorksheetGeneratingProgress(95);
+      setWorksheetGeneratingStatusText(language === 'en' ? 'Finalizing PDF...' : 'PDF ଚୂଡ଼ାନ୍ତ ରୂପ ଦିଆଯାଉଛି...');
+      
+      const filename = `USC_Worksheet_Class${userClass}_${selectedWorksheetSubject.toUpperCase()}_${worksheetDifficulty}.pdf`;
+      doc.save(filename);
+      
+      setWorksheetGeneratingProgress(100);
+      setWorksheetGeneratingStatusText(language === 'en' ? 'Downloaded successfully!' : 'ସଫଳତାର ସହ ଡାଉନଲୋଡ୍ ହୋଇଛି!');
+      setWorksheetStep(5);
+    } catch (err) {
+      console.error("Failed to generate PDF:", err);
+      alert(language === 'en' ? "Failed to generate worksheet. Please try again." : "ପ୍ରଶ୍ନପତ୍ର ପ୍ରସ୍ତୁତ କରିବାରେ ବିଫଳ ହେଲା। ଦୟାକରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।");
+    } finally {
+      setIsGeneratingWorksheet(false);
+    }
   };
 
   const curateMcqsForSubject = (subjectKey: string, chapters: any[], count: number, isBoard: boolean) => {
@@ -1763,8 +2531,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   } else if (mtsStatus.phase === 'grading' || mtsStatus.phase === 'half_yearly_grading') {
                     setShowMtsGradingModal(true);
                   } else if (mtsStatus.phase === 'published' || mtsStatus.phase === 'half_yearly_published') {
-                    setActiveSubTab('leaderboard');
-                    setLeaderboardType('monthly');
+                    setShowImportantPapersModal(true);
                   } else if (mtsStatus.phase === 'important_qs' || mtsStatus.phase === 'half_yearly_prep') {
                     setShowImportantPapersModal(true);
                   }
@@ -3084,104 +3851,390 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         )}
 
         {showImportantPapersModal && (
-          <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+          <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md overflow-y-auto">
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="glass-card bg-slate-900/95 border border-purple-500/30 shadow-[0_0_50px_rgba(168,85,247,0.25)] rounded-[2.5rem] p-6 max-w-2xl w-full relative overflow-hidden force-dark-theme max-h-[90vh] flex flex-col"
+              className="glass-card bg-slate-900/95 border border-emerald-500/30 shadow-[0_0_50px_rgba(16,185,129,0.25)] rounded-[2.5rem] p-7 max-w-2xl w-full relative overflow-hidden force-dark-theme max-h-[90vh] flex flex-col"
             >
               {/* Decorative glows */}
-              <div className="absolute top-0 right-0 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute -left-10 -bottom-10 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute -left-10 -bottom-10 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
 
               {/* Close Button */}
               <button
-                onClick={() => setShowImportantPapersModal(false)}
-                className="absolute top-6 right-6 p-2 text-slate-400 hover:text-white rounded-full bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
+                onClick={handleCloseWorksheetModal}
+                disabled={isGeneratingWorksheet}
+                className="absolute top-6 right-6 p-2 text-slate-400 hover:text-white rounded-full bg-white/5 hover:bg-white/10 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Lucide.X size={18} />
               </button>
 
-              <div className="space-y-6 flex-grow overflow-y-auto pr-1">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-purple-500/15 border border-purple-500/25 flex items-center justify-center text-purple-400">
-                    <Lucide.FileText size={26} />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-black text-white uppercase tracking-wider">
-                      {language === 'en' ? 'Month-End Exam Important Questions' : 'ମାସ ଶେଷ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ପ୍ରଶ୍ନପତ୍ର'}
-                    </h3>
-                    <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-0.5">
-                      {(() => {
-                        const isBoard = userClass === '9' || userClass === '10';
-                        return isBoard 
-                          ? (language === 'en' ? 'Odisha Board Exam Pattern (MCQ + Subjective)' : 'ଓଡ଼ିଶା ବୋର୍ଡ ପ୍ୟାଟର୍ନ (MCQ + ଦୀର୍ଘ ପ୍ରଶ୍ନ)')
-                          : (language === 'en' ? 'Regular School Exam Pattern (MCQ + Practice)' : 'ସାଧାରଣ ସ୍କୁଲ ପରୀକ୍ଷା ପ୍ୟାଟର୍ନ');
-                      })()}
-                    </p>
-                  </div>
+              {/* Header */}
+              <div className="flex items-center gap-4 mb-6 border-b border-white/5 pb-4">
+                <div className="w-14 h-14 rounded-2xl bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center text-emerald-400">
+                  <Lucide.BookOpen size={26} />
                 </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {subjects.map((sub: any) => {
-                    const isBoard = userClass === '9' || userClass === '10';
-                    const patternLabel = isBoard 
-                      ? (language === 'en' ? 'Board Selection' : 'ବୋର୍ଡ ସିଲେକ୍ସନ')
-                      : (language === 'en' ? 'School Practice' : 'ବିଦ୍ୟାଳୟ ଅଭ୍ୟାସ');
-                    
-                    const subChapters = getCumulativeChaptersForSubject(sub.key);
-                    const chapterTitles = subChapters.map(ch => ch.title_en || ch.title || '');
-                    const chapterStr = chapterTitles.length > 0 
-                      ? chapterTitles.slice(0, 3).join(', ') + (chapterTitles.length > 3 ? '...' : '')
-                      : (language === 'en' ? 'General Revision' : 'ସାଧାରଣ ପୁନରାଲୋଚନା');
-                    
-                    return (
-                      <div 
-                        key={sub.key} 
-                        className="bg-slate-950/60 border border-white/5 hover:border-purple-500/30 rounded-3xl p-5 flex flex-col justify-between gap-4 backdrop-blur-md transition-all duration-300 hover:scale-[1.02] shadow-inner"
-                      >
-                        <div className="space-y-1">
-                          <span className="px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-purple-500/10 text-purple-400 border border-purple-500/20">
-                            {patternLabel}
-                          </span>
-                          <h4 className="text-sm font-black text-white pt-1">
-                            {language === 'en' ? sub.labelEn : sub.labelOr}
-                          </h4>
-                          <p className="text-[10px] text-slate-400 font-bold line-clamp-2 min-h-[2.5rem] leading-relaxed">
-                            <span className="text-purple-400">{language === 'en' ? 'Syllabus: ' : 'ସିଲାବସ୍: '}</span>
-                            {chapterStr}
-                          </p>
-                        </div>
-
-                        <div className="flex gap-2 w-full">
-                          <button
-                            onClick={() => generateMtsImportantPDF(language === 'en' ? sub.labelEn : sub.labelOr, sub.key, 'quick')}
-                            className="flex-1 py-2 rounded-xl bg-white/5 hover:bg-purple-500/10 border border-white/10 hover:border-purple-500/30 text-white hover:text-purple-300 font-black text-[9px] uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-1.5"
-                          >
-                            <Lucide.Download size={10} />
-                            <span>{language === 'en' ? 'Quick Set (25M)' : 'କ୍ଵିକ୍ ସେଟ୍ (୨୫M)'}</span>
-                          </button>
-                          
-                          <button
-                            onClick={() => generateMtsImportantPDF(language === 'en' ? sub.labelEn : sub.labelOr, sub.key, 'full')}
-                            className="flex-1 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-[9px] uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-md shadow-purple-950/20"
-                          >
-                            <Lucide.Award size={10} />
-                            <span>{language === 'en' ? 'Full Mock' : 'ପୂର୍ଣ୍ଣ ମକ୍'}</span>
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
+                <div>
+                  <h3 className="text-lg font-black text-white uppercase tracking-wider">
+                    {language === 'en' ? 'Gundulu Worksheet Maker' : 'ଗୁନ୍ଦୁଲୁ ପରୀକ୍ଷା ପ୍ରଶ୍ନପତ୍ର ମେକର'}
+                  </h3>
+                  <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-0.5">
+                    {language === 'en' ? 'Step-by-Step Lined Revision Sheets' : 'ସୋପାନ-ଅନୁସାରେ ଲାଇନ୍‌ଡ୍ ପେପର୍ ମେକର୍'}
+                  </p>
                 </div>
               </div>
 
+              {/* Wizard Content */}
+              <div className="flex-grow overflow-y-auto pr-1">
+                
+                {/* STEP 1: SUBJECT SELECTION */}
+                {worksheetStep === 1 && (
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-black text-white uppercase tracking-wider">
+                      {language === 'en' ? 'Step 1: Select Subject' : 'ପ୍ରଥମ ସୋପାନ: ବିଷୟ ଚୟନ କରନ୍ତୁ'}
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {subjects.map((sub: any) => {
+                        const roadmapChs = getCumulativeChaptersForSubject(sub.key);
+                        return (
+                          <button
+                            key={sub.key}
+                            onClick={() => {
+                              setSelectedWorksheetSubject(sub.key);
+                              fetchWorksheetChapters(sub.key);
+                              setWorksheetStep(2);
+                            }}
+                            className="bg-slate-950/60 border border-white/5 hover:border-emerald-500/40 rounded-3xl p-5 flex items-center gap-4 text-left transition-all duration-300 hover:scale-[1.02] shadow-inner group"
+                          >
+                            <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:bg-emerald-500/20 group-hover:scale-105 transition-all">
+                              <Lucide.FileText size={22} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h5 className="text-sm font-black text-white truncate">
+                                {language === 'en' ? sub.labelEn : sub.labelOr}
+                              </h5>
+                              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">
+                                {roadmapChs.length} {language === 'en' ? 'roadmap chapters' : 'ରୋଡମ୍ୟାପ୍ ଅଧ୍ୟାୟ'}
+                              </p>
+                            </div>
+                            <Lucide.ChevronRight size={16} className="text-slate-500 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all" />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* STEP 2: CHAPTER CHECKLIST */}
+                {worksheetStep === 2 && (
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <h4 className="text-sm font-black text-white uppercase tracking-wider">
+                        {language === 'en' ? 'Step 2: Choose Chapters' : 'ଦ୍ୱିତୀୟ ସୋପାନ: ଅଧ୍ୟାୟ ଚୟନ କରନ୍ତୁ'}
+                      </h4>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => setSelectedWorksheetChapters(worksheetChaptersList.map(c => c.id || c.title))}
+                          className="px-2 py-1 rounded bg-white/5 hover:bg-white/10 text-[9px] font-black uppercase text-slate-300 transition-colors"
+                        >
+                          {language === 'en' ? 'Select All' : 'ସମସ୍ତ ଚୟନ'}
+                        </button>
+                        <button
+                          onClick={() => setSelectedWorksheetChapters([])}
+                          className="px-2 py-1 rounded bg-white/5 hover:bg-white/10 text-[9px] font-black uppercase text-slate-300 transition-colors"
+                        >
+                          {language === 'en' ? 'Clear' : 'ସଫା କରନ୍ତୁ'}
+                        </button>
+                      </div>
+                    </div>
+
+                    {isLoadingWorksheetChapters ? (
+                      <div className="p-16 text-center flex flex-col items-center justify-center gap-3">
+                        <Lucide.Loader2 size={32} className="text-emerald-400 animate-spin" />
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                          {language === 'en' ? 'Loading roadmap chapters...' : 'ରୋଡମ୍ୟାପ୍ ଅଧ୍ୟାୟ ଲୋଡ୍ ହେଉଛି...'}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="space-y-2 max-h-[40vh] overflow-y-auto p-1 bg-slate-950/40 border border-white/5 rounded-2xl shadow-inner">
+                        {worksheetChaptersList.map((ch: any) => {
+                          const id = ch.id || ch.title;
+                          const isChecked = selectedWorksheetChapters.includes(id);
+                          const title = typeof ch.title === 'string' 
+                            ? ch.title 
+                            : (ch.title?.or || ch.title?.en || 'Untitled Chapter');
+                          
+                          return (
+                            <label
+                              key={id}
+                              className="flex items-center gap-3 p-3.5 rounded-xl border border-white/5 bg-slate-900/50 hover:bg-slate-900/90 transition-all cursor-pointer select-none"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={isChecked}
+                                onChange={() => {
+                                  if (isChecked) {
+                                    setSelectedWorksheetChapters(selectedWorksheetChapters.filter(x => x !== id));
+                                  } else {
+                                    setSelectedWorksheetChapters([...selectedWorksheetChapters, id]);
+                                  }
+                                }}
+                                className="w-4.5 h-4.5 rounded border-white/10 text-emerald-500 bg-slate-950 focus:ring-emerald-500/30"
+                              />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs font-bold text-white truncate">{title}</p>
+                              </div>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    <div className="flex justify-between pt-4 border-t border-white/5">
+                      <button
+                        onClick={() => setWorksheetStep(1)}
+                        className="px-5 py-2.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 text-xs font-black uppercase text-white tracking-wider transition-colors cursor-pointer"
+                      >
+                        {language === 'en' ? 'Back' : 'ପଛକୁ'}
+                      </button>
+                      <button
+                        disabled={selectedWorksheetChapters.length === 0}
+                        onClick={() => setWorksheetStep(3)}
+                        className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-xs font-black uppercase text-white tracking-wider transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-emerald-950/20"
+                      >
+                        {language === 'en' ? 'Continue' : 'ଆଗକୁ'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* STEP 3: DIFFICULTY SELECT */}
+                {worksheetStep === 3 && (
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-black text-white uppercase tracking-wider">
+                      {language === 'en' ? 'Step 3: Choose Level' : 'ତୃତୀୟ ସୋପାନ: ସ୍ତର ଚୟନ କରନ୍ତୁ'}
+                    </h4>
+                    <div className="grid grid-cols-1 gap-3">
+                      {(['easy', 'medium', 'hard'] as const).map((level) => {
+                        const active = worksheetDifficulty === level;
+                        const colors = {
+                          easy: { border: 'hover:border-green-500/40 border-green-500/20', bg: 'bg-green-500/5', text: 'text-green-400', desc: language === 'en' ? 'Short MCQs and direct, basic revision problems' : 'ସରଳ MCQ ଏବଂ ସିଧାସଳଖ ପରୀକ୍ଷା ପ୍ରଶ୍ନ' },
+                          medium: { border: 'hover:border-amber-500/40 border-amber-500/20', bg: 'bg-amber-500/5', text: 'text-amber-400', desc: language === 'en' ? 'Balanced state board standard mock questions' : 'ମାଧ୍ୟମିକ ବୋର୍ଡ ସ୍ତରର ମିଶ୍ରିତ ପ୍ରଶ୍ନପତ୍ର' },
+                          hard: { border: 'hover:border-red-500/40 border-red-500/20', bg: 'bg-red-500/5', text: 'text-red-400', desc: language === 'en' ? 'Theorem proofs, multi-step math and detailed explanations' : 'ଉପପାଦ୍ୟ, ଦୀର୍ଘ ପ୍ରଶ୍ନ ଏବଂ ପ୍ରମାଣ ଭିତ୍ତିକ ପ୍ରଶ୍ନ' }
+                        }[level];
+
+                        return (
+                          <button
+                            key={level}
+                            onClick={() => setWorksheetDifficulty(level)}
+                            className={`p-4 rounded-3xl border text-left transition-all duration-300 flex items-start gap-4 ${
+                              active 
+                                ? `${colors.bg} border-emerald-500/60 shadow-[0_0_15px_rgba(16,185,129,0.15)]` 
+                                : `bg-slate-950/40 border-white/5 ${colors.border}`
+                            }`}
+                          >
+                            <div className="mt-1">
+                              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${active ? 'border-emerald-400' : 'border-slate-600'}`}>
+                                {active && <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />}
+                              </div>
+                            </div>
+                            <div>
+                              <h5 className={`text-sm font-black uppercase tracking-wider ${colors.text}`}>
+                                {level.toUpperCase()}
+                              </h5>
+                              <p className="text-[11px] text-slate-400 font-bold mt-1 leading-relaxed">
+                                {colors.desc}
+                              </p>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <div className="flex justify-between pt-4 border-t border-white/5">
+                      <button
+                        onClick={() => setWorksheetStep(2)}
+                        className="px-5 py-2.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 text-xs font-black uppercase text-white tracking-wider transition-colors cursor-pointer"
+                      >
+                        {language === 'en' ? 'Back' : 'ପଛକୁ'}
+                      </button>
+                      <button
+                        onClick={() => setWorksheetStep(4)}
+                        className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-xs font-black uppercase text-white tracking-wider transition-all cursor-pointer shadow-lg shadow-emerald-950/20"
+                      >
+                        {language === 'en' ? 'Continue' : 'ଆଗକୁ'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* STEP 4: PATTERN SELECT */}
+                {worksheetStep === 4 && (
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-black text-white uppercase tracking-wider">
+                      {language === 'en' ? 'Step 4: Select Format' : 'ଚତୁର୍ଥ ସୋପାନ: ଫର୍ମାଟ୍ ଚୟନ କରନ୍ତୁ'}
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {/* Quick Set */}
+                      <button
+                        onClick={() => setWorksheetPattern('quick')}
+                        className={`p-5 rounded-3xl border text-left transition-all duration-300 flex flex-col justify-between gap-4 ${
+                          worksheetPattern === 'quick'
+                            ? 'bg-emerald-500/5 border-emerald-500/60 shadow-[0_0_15px_rgba(16,185,129,0.15)]'
+                            : 'bg-slate-950/40 border-white/5 hover:border-emerald-500/20'
+                        }`}
+                      >
+                        <div>
+                          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-3">
+                            <Lucide.Sparkles size={20} />
+                          </div>
+                          <h5 className="text-sm font-black text-white uppercase tracking-wider">
+                            {language === 'en' ? 'Quick Set (25M)' : 'କ୍ଵିକ୍ ସେଟ୍ (୨୫ Marks)'}
+                          </h5>
+                          <p className="text-[10px] text-slate-400 font-bold mt-1 leading-relaxed">
+                            {language === 'en' 
+                              ? '10 MCQs + 3 short subjective questions. Ideal for quick daily practice.' 
+                              : '୧୦ MCQ + ୩ ସଂକ୍ଷିପ୍ତ ଦୀର୍ଘ ପ୍ରଶ୍ନ । ଦୈନିକ ଅଭ୍ୟାସ ପାଇଁ ସର୍ବୋତ୍ତମ ।'}
+                          </p>
+                        </div>
+                        <span className="px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-slate-950 border border-white/5 text-emerald-400 self-start">
+                          {language === 'en' ? 'Est: 45 Min' : 'ସମୟ: ୪୫ ମିନିଟ୍'}
+                        </span>
+                      </button>
+
+                      {/* Full Mock */}
+                      <button
+                        onClick={() => setWorksheetPattern('full')}
+                        className={`p-5 rounded-3xl border text-left transition-all duration-300 flex flex-col justify-between gap-4 ${
+                          worksheetPattern === 'full'
+                            ? 'bg-purple-500/5 border-purple-500/60 shadow-[0_0_15px_rgba(168,85,247,0.15)]'
+                            : 'bg-slate-950/40 border-white/5 hover:border-purple-500/20'
+                        }`}
+                      >
+                        <div>
+                          <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 mb-3">
+                            <Lucide.Award size={20} />
+                          </div>
+                          <h5 className="text-sm font-black text-white uppercase tracking-wider">
+                            {language === 'en' ? 'Full Mock Exam' : 'ସମ୍ପୂର୍ଣ୍ଣ ମକ୍ ପେପର୍'}
+                          </h5>
+                          <p className="text-[10px] text-slate-400 font-bold mt-1 leading-relaxed">
+                            {userClass === '9' || userClass === '10'
+                              ? (language === 'en' ? 'Follows official BSE Odisha Board blueprint pattern (MCQ + Prose/Poetry bit alternatives).' : 'ଓଡ଼ିଶା ବୋର୍ଡ ପ୍ୟାଟର୍ନ ଅନୁଯାୟୀ ପ୍ରଶ୍ନପତ୍ର (MCQ + ବିକଳ୍ପ ସହ ପ୍ରଶ୍ନ) ।')
+                              : (language === 'en' ? 'Standard school curriculum pattern. 30 MCQs + 5 subjectives.' : 'ବିଦ୍ୟାଳୟ ପାଠ୍ୟଖସଡ଼ା ଅନୁଯାୟୀ । ୩୦ MCQ + ୫ ଦୀର୍ଘ ପ୍ରଶ୍ନ ।')}
+                          </p>
+                        </div>
+                        <span className="px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-slate-950 border border-white/5 text-purple-400 self-start">
+                          {userClass === '9' || userClass === '10' ? (language === 'en' ? '50 / 100 Marks' : '୫୦ / ୧୦୦ ମାର୍କ') : (language === 'en' ? '50 Marks' : '୫୦ ମାର୍କ')}
+                        </span>
+                      </button>
+                    </div>
+
+                    <div className="flex justify-between pt-4 border-t border-white/5">
+                      <button
+                        disabled={isGeneratingWorksheet}
+                        onClick={() => setWorksheetStep(3)}
+                        className="px-5 py-2.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 text-xs font-black uppercase text-white tracking-wider transition-colors cursor-pointer disabled:opacity-50"
+                      >
+                        {language === 'en' ? 'Back' : 'ପଛକୁ'}
+                      </button>
+                      <button
+                        onClick={generateCustomWorksheetPDF}
+                        className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-xs font-black uppercase text-white tracking-wider transition-all cursor-pointer shadow-lg shadow-emerald-950/20"
+                      >
+                        {language === 'en' ? 'Create PDF' : 'ପ୍ରଶ୍ନପତ୍ର ତିଆରି କରନ୍ତୁ'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* STEP 5: GENERATING PROGRESS OR DONE */}
+                {worksheetStep === 5 && (
+                  <div className="text-center py-6 space-y-6 flex flex-col items-center justify-center">
+                    {isGeneratingWorksheet ? (
+                      <>
+                        <div className="relative w-36 h-36 flex items-center justify-center">
+                          {/* Pulsing glow halo */}
+                          <div className="absolute inset-0 rounded-full bg-emerald-500/10 border border-emerald-500/20 animate-ping opacity-60" />
+                          <div className="absolute inset-2 rounded-full border-[3px] border-emerald-500/30 border-t-emerald-400 animate-spin" />
+                          
+                          <img
+                            src="/gundulu-pointing.png"
+                            alt="Gundulu"
+                            className="w-24 h-24 object-contain animate-bounce-subtle"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2 max-w-sm">
+                          <h5 className="text-base font-black text-white uppercase tracking-wider">
+                            {worksheetGeneratingStatusText}
+                          </h5>
+                          <div className="w-full h-2 bg-slate-950 border border-white/5 rounded-full overflow-hidden p-0.5">
+                            <motion.div
+                              animate={{ width: `${worksheetGeneratingProgress}%` }}
+                              className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400"
+                            />
+                          </div>
+                          <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest block pt-1">
+                            {worksheetGeneratingProgress}% {language === 'en' ? 'Completed' : 'ସମାପ୍ତ'}
+                          </span>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="relative w-28 h-28 rounded-full bg-emerald-500/10 border border-emerald-500/35 flex items-center justify-center text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+                          <Lucide.CheckCircle2 size={48} className="animate-bounce" />
+                        </div>
+                        
+                        <div className="space-y-2 max-w-md">
+                          <h4 className="text-lg font-black text-white uppercase tracking-wider">
+                            {language === 'en' ? 'Worksheet Generated!' : 'ପ୍ରଶ୍ନପତ୍ର ପ୍ରସ୍ତୁତ ହୋଇଗଲା!'}
+                          </h4>
+                          <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                            {language === 'en' 
+                              ? 'Your premium lined A4 notebook revision worksheet has been saved to your downloads folder. Print it and practice!' 
+                              : 'ଆପଣଙ୍କର A4 ଖାତା ସ୍ତରୀୟ ଲାଇନ୍‌ଡ୍ ପରୀକ୍ଷା ପ୍ରଶ୍ନପତ୍ର ଡାଉନଲୋଡ୍ ଫୋଲ୍ଡରରେ ସେଭ୍ ହୋଇଛି । ଏହାକୁ ପ୍ରିଣ୍ଟ କରି ଅଭ୍ୟାସ କରନ୍ତୁ!'}
+                          </p>
+                        </div>
+                        
+                        <div className="flex flex-col sm:flex-row gap-3 pt-4 w-full justify-center max-w-md">
+                          {/* Share on WhatsApp */}
+                          <a
+                            href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
+                              language === 'en'
+                                ? `Hey! I just generated a custom wobbly-notebook revision worksheet for BSE Odisha class ${userClass} exams on Utkal Skill Centre. It looks amazing! Try it yourself here: https://utkalskillcentre.com`
+                                : `ନମସ୍କାର! ମୁଁ ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରରେ ମୋ ପରୀକ୍ଷା ପାଇଁ ଏକ କଷ୍ଟମ୍ ଖାତା ପରି ପ୍ରଶ୍ନପତ୍ର ତିଆରି କରି ଡାଉନଲୋଡ୍ କଲି । ଆପଣ ମଧ୍ୟ ଏଠାରେ ଚେଷ୍ଟା କରନ୍ତୁ: https://utkalskillcentre.com`
+                            )}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 py-3 px-5 rounded-2xl bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-black text-xs uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2 shadow-lg shadow-green-950/20"
+                          >
+                            <Lucide.Share2 size={14} />
+                            <span>{language === 'en' ? 'Share with Friends' : 'ସାଙ୍ଗମାନଙ୍କୁ ସେୟାର୍'}</span>
+                          </a>
+
+                          <button
+                            onClick={() => setWorksheetStep(1)}
+                            className="flex-1 py-3 px-5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 text-white font-black text-xs uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                          >
+                            <Lucide.RotateCcw size={14} />
+                            <span>{language === 'en' ? 'Create New' : 'ନୂଆ ପ୍ରସ୍ତୁତ କରନ୍ତୁ'}</span>
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+
+              </div>
+
               <div className="mt-6 pt-4 border-t border-white/5 text-center">
-                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">
                   {language === 'en' 
-                    ? '◆ Prepare these questions thoroughly for your school assessments ◆' 
-                    : '◆ ଆପଣଙ୍କ ପରୀକ୍ଷା ପ୍ରସ୍ତୁତି ପାଇଁ ଏହି ପ୍ରଶ୍ନଗୁଡ଼ିକୁ ଭଲଭାବେ ଅଭ୍ୟାସ କରନ୍ତୁ ◆'}
+                    ? '◆ Powered by Utkal Skill Centre Premium Worksheet Engine ◆' 
+                    : '◆ ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର ପ୍ରିମିୟମ୍ ପ୍ରଶ୍ନପତ୍ର ଇଞ୍ଜିନ୍ ଦ୍ୱାରା ଚାଳିତ ◆'}
                 </p>
               </div>
             </motion.div>

@@ -92,12 +92,38 @@ function getSubjectIconTypes(subjectKey: string): string[] {
   return ['globe', 'mountain', 'river', 'temple', 'globe', 'mountain', 'river', 'temple', 'globe', 'mountain'];
 }
 
+function sanitizeSideNoteLabel(label: string, text: string): string {
+  if (!label || !text) return label || 'Note';
+  const cleanLbl = label.trim().toLowerCase().replace('!', '');
+  const cleanTxt = text.toLowerCase();
+  
+  if (cleanLbl === 'formula') {
+    const isGraphRelated = 
+      cleanTxt.includes('ଗ୍ରାଫ') || 
+      cleanTxt.includes('ରେଖା') || 
+      cleanTxt.includes('ଛେଦ') || 
+      cleanTxt.includes('ସମାପତିତ') || 
+      cleanTxt.includes('ସମାନ୍ତର') ||
+      cleanTxt.includes('graph') ||
+      cleanTxt.includes('line') ||
+      cleanTxt.includes('intersect') ||
+      cleanTxt.includes('coincident') ||
+      cleanTxt.includes('parallel');
+      
+    if (isGraphRelated) {
+      const hasOdia = /[\u0B00-\u0B7F]/.test(text);
+      return hasOdia ? 'ଲେଖଚିତ୍ର!' : 'Graph!';
+    }
+  }
+  return label;
+}
+
 interface QuestionItem {
   id: number;
   question: string;
   answer: string;
   sideNote: string;
-  sideNoteLabel: 'Important!' | 'Key Fact' | 'Remember!' | 'Note' | 'Did You Know!' | 'Formula!';
+  sideNoteLabel: string;
   iconType: string;
 }
 
@@ -383,7 +409,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
             question: q.question || '',
             answer: ansText || '',
             sideNote: q.sideNote || note.text,
-            sideNoteLabel: (q.sideNoteLabel || note.label) as any,
+            sideNoteLabel: sanitizeSideNoteLabel(q.sideNoteLabel || note.label, q.sideNote || note.text),
             iconType: finalIcon as any
           };
         });
@@ -449,7 +475,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
             question: q.question || '',
             answer: q.answer || '',
             sideNote: q.sideNote || '',
-            sideNoteLabel: q.sideNoteLabel || 'Note',
+            sideNoteLabel: sanitizeSideNoteLabel(q.sideNoteLabel || 'Note', q.sideNote || ''),
             iconType: finalIcon
           };
         });
