@@ -238,13 +238,26 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
             )}
           </p>
         </div>
-        <button
-          onClick={onBack}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-white/5 border border-white/10 text-slate-200 hover:bg-white/10 transition-all font-bold text-sm shadow-sm cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-          {translate('Return to Dashboard', 'ଡ୍ୟାସବୋର୍ଡକୁ ଫେରନ୍ତୁ')}
-        </button>
+        <div className="flex items-center gap-3">
+          {(studentClassStr === '9' || studentClassStr === '10') && (
+            <a
+              href="/bse-odisha-syllabus-and-exam-notifications.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 transition-all font-bold text-sm shadow-sm"
+            >
+              <BookOpen size={16} />
+              {translate('Syllabus PDF', 'ସିଲାବସ୍ PDF')}
+            </a>
+          )}
+          <button
+            onClick={onBack}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-white/5 border border-white/10 text-slate-200 hover:bg-white/10 transition-all font-bold text-sm shadow-sm cursor-pointer"
+          >
+            <ArrowLeft size={16} />
+            {translate('Return to Dashboard', 'ଡ୍ୟାସବୋର୍ଡକୁ ଫେରନ୍ତୁ')}
+          </button>
+        </div>
       </div>
 
       {/* Filter Section */}
