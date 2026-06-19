@@ -19,6 +19,7 @@ import webpush from 'web-push';
 import { registerDailyMcqAutomation } from './src/server/dailyMcqAutomation.js';
 import { registerYoutubeSyncAutomation } from './src/server/youtubeSync.js';
 import { getServiceAccountCredentials } from './src/server/googleCredentials.js';
+import { BSE_SYLLABUS_MAPPING_9, BSE_SYLLABUS_MAPPING_10 } from './src/data/bseSyllabusMapping.js';
 import { google } from 'googleapis';
 import cron from 'node-cron';
 
@@ -228,6 +229,62 @@ async function startServer() {
     } catch (err: any) {
       console.error('Image proxy error:', err);
       res.status(500).json({ error: err.message || 'Image proxy failed' });
+    }
+  });
+
+  // Helper to determine the active milestone key based on the current date
+  function getActiveMilestoneKey(): 'ia1' | 'ia2' | 'half_yearly' | 'ia3' | 'ia4' | 'annual' {
+    const now = new Date();
+    const month = now.getMonth(); // 0 = Jan, 5 = Jun, 6 = Jul, 8 = Sep, 10 = Nov
+    const date = now.getDate();
+
+    // June 1 to July 15 -> ia1
+    if (month === 5 || (month === 6 && date <= 15)) {
+      return 'ia1';
+    }
+    // July 16 to August 31 -> ia2
+    if ((month === 6 && date > 15) || month === 7) {
+      return 'ia2';
+    }
+    // September 1 to September 15 -> half_yearly
+    if (month === 8 && date <= 15) {
+      return 'half_yearly';
+    }
+    // September 16 to November 15 -> ia3
+    if ((month === 8 && date > 15) || month === 9 || (month === 10 && date <= 15)) {
+      return 'ia3';
+    }
+    // November 16 to January 15 -> ia4
+    if ((month === 10 && date > 15) || month === 11 || (month === 0 && date <= 15)) {
+      return 'ia4';
+    }
+    // January 16 to May 31 -> annual
+    return 'annual';
+  }
+
+  // GET /api/syllabus/class-9
+  app.get('/api/syllabus/class-9', (req, res) => {
+    try {
+      const activeKey = getActiveMilestoneKey();
+      res.json({
+        activeMilestone: activeKey,
+        milestones: BSE_SYLLABUS_MAPPING_9
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message || 'Failed to fetch Class 9 syllabus' });
+    }
+  });
+
+  // GET /api/syllabus/class-10
+  app.get('/api/syllabus/class-10', (req, res) => {
+    try {
+      const activeKey = getActiveMilestoneKey();
+      res.json({
+        activeMilestone: activeKey,
+        milestones: BSE_SYLLABUS_MAPPING_10
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message || 'Failed to fetch Class 10 syllabus' });
     }
   });
 

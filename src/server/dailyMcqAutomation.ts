@@ -83,6 +83,7 @@ import {
   ROADMAP_DATA_9,
   ROADMAP_DATA_10
 } from '../data/roadmapData.js';
+import { BSE_SYLLABUS_MAPPING_9, BSE_SYLLABUS_MAPPING_10 } from '../data/bseSyllabusMapping.js';
 
 const DEFAULT_AUTOMATION_TIME = '07:00';
 const DEFAULT_AUTOMATION_TIME_ZONE = 'Asia/Kolkata';
@@ -847,6 +848,35 @@ async function getAvailableBucketSubjects(adminApp: App, className: string): Pro
   }
 }
 
+function getActiveMilestoneKeyForDate(dateString: string): 'ia1' | 'ia2' | 'half_yearly' | 'ia3' | 'ia4' | 'annual' {
+  const now = new Date(dateString);
+  const month = now.getMonth(); // 0 = Jan, 5 = Jun, 6 = Jul, 8 = Sep, 10 = Nov
+  const date = now.getDate();
+
+  // June 1 to July 15 -> ia1
+  if (month === 5 || (month === 6 && date <= 15)) {
+    return 'ia1';
+  }
+  // July 16 to August 31 -> ia2
+  if ((month === 6 && date > 15) || month === 7) {
+    return 'ia2';
+  }
+  // September 1 to September 15 -> half_yearly
+  if (month === 8 && date <= 15) {
+    return 'half_yearly';
+  }
+  // September 16 to November 15 -> ia3
+  if ((month === 8 && date > 15) || month === 9 || (month === 10 && date <= 15)) {
+    return 'ia3';
+  }
+  // November 16 to January 15 -> ia4
+  if ((month === 10 && date > 15) || month === 11 || (month === 0 && date <= 15)) {
+    return 'ia4';
+  }
+  // January 16 to May 31 -> annual
+  return 'annual';
+}
+
 const ROADMAPS_BY_CLASS: Record<string, any[]> = {
   class1: ROADMAP_DATA_1,
   class2: ROADMAP_DATA_2,
@@ -991,15 +1021,62 @@ export async function runScheduledGeneration(adminApp: App, databaseId: string, 
     try {
       console.log(`[MCQ-AUTO] Processing class: ${className}`);
 
-      // 1. Get the roadmap for this class
+      // 1. Get the roadmap / syllabus chapters for this class
       const normalizedClassName = className.toLowerCase().trim();
-      const classRoadmap = ROADMAPS_BY_CLASS[normalizedClassName];
-      
       let activeChapters: any[] = [];
-      if (classRoadmap) {
-        const monthEntry = classRoadmap.find(entry => entry.month === monthString);
-        if (monthEntry && Array.isArray(monthEntry.chapters)) {
-          activeChapters = monthEntry.chapters;
+
+      if (normalizedClassName === 'class9' || normalizedClassName === 'class10') {
+        // Class 9 or 10 -> Use Official BSE Syllabus Milestone mapping
+        const activeMilestoneKey = getActiveMilestoneKeyForDate(activeDate);
+        console.log(`[MCQ-AUTO] Class 9/10 active milestone: ${activeMilestoneKey}`);
+        const milestones = normalizedClassName === 'class9' ? BSE_SYLLABUS_MAPPING_9 : BSE_SYLLABUS_MAPPING_10;
+        const activeMilestone = milestones.find(m => m.key === activeMilestoneKey);
+        
+        if (activeMilestone) {
+          // Fetch all chapters from database for this class, and filter based on title matching
+          console.log(`[MCQ-AUTO] Loading all database chapters for ${className}...`);
+          const allChaptersSnapshot = await db.collection('chapters')
+            .where('class', '==', className)
+            .get();
+            
+          const allChapters: any[] = [];
+          allChaptersSnapshot.forEach(doc => {
+            const data = doc.data();
+            allChapters.push({
+              id: doc.id,
+              title: data.title || '',
+              title_en: data.title_en || null,
+              title_or: data.title_or || null,
+              subject: data.subject || 'other'
+            });
+          });
+          
+          // Map database chapters to milestone subjects
+          for (const subKey of Object.keys(activeMilestone.subjects)) {
+            const allowedSubstrings = activeMilestone.subjects[subKey];
+            
+            const matchedChaptersForSub = allChapters.filter(ch => {
+              const stdSub = mapRoadmapSubjectToStandard(ch.subject);
+              if (stdSub !== subKey) return false;
+              
+              const titleStr = `${ch.title || ''} ${ch.title_en || ''} ${ch.title_or || ''}`.toLowerCase();
+              return allowedSubstrings.some(allowed => 
+                titleStr.includes(allowed.toLowerCase())
+              );
+            });
+            
+            activeChapters.push(...matchedChaptersForSub);
+          }
+          console.log(`[MCQ-AUTO] Class 9/10 matched active chapters count: ${activeChapters.length}`);
+        }
+      } else {
+        // Lower classes -> Use standard monthly roadmap
+        const classRoadmap = ROADMAPS_BY_CLASS[normalizedClassName];
+        if (classRoadmap) {
+          const monthEntry = classRoadmap.find(entry => entry.month === monthString);
+          if (monthEntry && Array.isArray(monthEntry.chapters)) {
+            activeChapters = monthEntry.chapters;
+          }
         }
       }
 
