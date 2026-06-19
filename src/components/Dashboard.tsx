@@ -479,8 +479,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         if (match) userClass = match[1];
       }
     }
-    // Special Promotion Period: Till June 21st, 2026 (inclusive). No rotation.
-    const isSpecialPromoPeriod = new Date() < new Date('2026-06-21T00:00:00+05:30');
+    // Special Promotion Period: Till July 1st, 2026 (inclusive). No rotation.
+    const isSpecialPromoPeriod = new Date() < new Date('2026-07-01T00:00:00+05:30');
     const promoVideoUrl = 'https://www.youtube.com/embed/Ml-_dY7FXrs';
     const videoUrl = isSpecialPromoPeriod 
       ? promoVideoUrl 
@@ -2291,7 +2291,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
   useEffect(() => {
     // If in the special promotional period, lock the video ID and skip rotation
-    if (new Date() < new Date('2026-06-21T00:00:00+05:30')) {
+    if (new Date() < new Date('2026-07-01T00:00:00+05:30')) {
       setDailyVideoId('Ml-_dY7FXrs');
       return;
     }

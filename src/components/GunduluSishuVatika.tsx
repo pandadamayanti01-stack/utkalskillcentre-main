@@ -119,7 +119,7 @@ const GunduluSishuVatika = ({ skipInitialGreeting = false, userClass, onBack, is
   // Call Timer State
   const [callDuration, setCallDuration] = useState(0);
   const [freeQueriesCount, setFreeQueriesCount] = useState<number>(0);
-  const isFreePeriod = new Date() < new Date('2026-06-21T00:00:00+05:30');
+  const isFreePeriod = new Date() < new Date('2026-07-01T00:00:00+05:30');
 
   useEffect(() => {
     const getFreeQueriesKey = () => `free_ai_queries_used_${user?.uid || user?.id || 'guest'}`;
@@ -944,7 +944,7 @@ Understand user intent from these transcripts and respond in Odia only.
         >
           <Lucide.Sparkles size={12} className="text-emerald-400 animate-spin" style={{ animationDuration: '3s' }} />
           <span>
-            🎉 ମାଗଣା ପ୍ରଦର୍ଶନ ଅଫର! ୨୦ ଜୁନ୍ ୨୦୨୬ ଅପରାହ୍ନ ୫:୦୦ ଟା ପର୍ଯ୍ୟନ୍ତ ଗୁନ୍ଦୁଲୁ AI ର ଅସୀମିତ ବ୍ୟବହାର କରନ୍ତୁ।
+            🎉 ମାଗଣା ପ୍ରଦର୍ଶନ ଅଫର! ୩୦ ଜୁନ୍ ୨୦୨୬ ରାତି ୧୧:୫୯ ଟା ପର୍ଯ୍ୟନ୍ତ ଗୁନ୍ଦୁଲୁ AI ର ଅସୀମିତ ବ୍ୟବହାର କରନ୍ତୁ।
           </span>
         </div>
       )}

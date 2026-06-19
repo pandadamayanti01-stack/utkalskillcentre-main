@@ -1043,7 +1043,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
 
     await bakeAllImagesToCanvasPromise();
 
-    const isFreePeriod = new Date() < new Date('2026-06-21T00:00:00+05:30');
+    const isFreePeriod = new Date() < new Date('2026-07-01T00:00:00+05:30');
     if (!isPremium && freeQueriesCount >= 5 && !isFreePeriod) {
       setShowUpgradeModal(true);
       return;
