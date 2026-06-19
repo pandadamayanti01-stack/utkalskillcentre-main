@@ -18,6 +18,13 @@
       "**/.*",
       "**/node_modules/**"
     ],
+    "redirects": [
+      {
+        "source": "/class-3-to-10-study-materials.html",
+        "destination": "/anganwadi-to-class-10-study-materials.html",
+        "type": 301
+      }
+    ],
     "headers": [
       {
         "source": "/index.html",
