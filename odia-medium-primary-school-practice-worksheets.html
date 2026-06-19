@@ -77,66 +77,99 @@
       ol, ul { padding-left: 20px; color: var(--muted); }
       li { margin-bottom: 8px; font-size: 15px; }
       .footer { text-align:center; padding-top:40px; border-top:1px solid rgba(255,255,255,0.05); margin-top:60px; color: var(--muted); font-size: 13px; }
+      .class-nav { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; text-align: left; }
+      .class-badge { display: inline-block; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); color: var(--text); padding: 6px 14px; border-radius: 999px; text-decoration: none; font-size: 12px; font-weight: 700; transition: all 0.2s; }
+      .class-badge:hover { background: var(--accent); border-color: var(--accent); color: #0f172a; }
+      .whatsapp-share-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: #25d366; color: white; padding: 14px 28px; border-radius: 14px; text-decoration: none; font-weight: 800; font-size: 14px; margin-top: 24px; border: none; cursor: pointer; box-shadow: 0 8px 16px -4px rgba(37,211,102,0.4); text-transform: uppercase; letter-spacing: 0.5px; width: 100%; transition: all 0.2s; }
+      .whatsapp-share-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 20px -4px rgba(37,211,102,0.5); }
     </style>
     <script src="/ga.js" defer></script>
   </head>
   <body>
     <div class="wrap">
+      <!-- Class Selector Navigation Bar -->
+      <div class="class-nav">
+        <span style="font-size:12px; font-weight:700; color:var(--muted); align-self:center; margin-right:4px;">ଶ୍ରେଣୀ (Class):</span>
+        <a href="/?class=sishuvatika(Anganwadi)" class="class-badge">ଶିଶୁବାଟିକା</a>
+        <a href="/?class=1" class="class-badge">୧ମ</a>
+        <a href="/?class=2" class="class-badge">୨ମ</a>
+        <a href="/?class=3" class="class-badge">୩ୟ</a>
+        <a href="/?class=4" class="class-badge">୪ର୍ଥ</a>
+        <a href="/?class=5" class="class-badge">୫ମ</a>
+        <a href="/?class=6" class="class-badge">୬ଷ୍ଠ</a>
+        <a href="/?class=7" class="class-badge">୭ମ</a>
+        <a href="/?class=8" class="class-badge">୮ମ</a>
+        <a href="/?class=9" class="class-badge">୯ମ</a>
+        <a href="/?class=10" class="class-badge">୧୦ମ</a>
+      </div>
+
       <div class="hero">
-        <div class="badge">Primary Education (Class 1 - 5)</div>
+        <div class="badge">ପ୍ରାଥମିକ ଶିକ୍ଷା (Class 1 - 5)</div>
         <h1>Odia Medium Primary School Practice Worksheets</h1>
         <h2 style="color:var(--text); opacity:0.8; font-size:1.4rem; margin-top:-8px; margin-bottom:24px; font-weight:600;">୧ମ ରୁ ୫ମ ଶ୍ରେଣୀ ପ୍ରଶ୍ନପତ୍ର ଓ କାର୍ଯ୍ୟପତ୍ରିକା</h2>
-        <p class="tagline">Interactive, syllabus-aligned worksheets, visual math tests, and daily challenges for younger learners in Odisha.</p>
+        <p class="tagline">ପ୍ରାଥମିକ ଶ୍ରେଣୀର ପିଲାମାନଙ୍କ ପାଇଁ ସିଲାବସ୍ ଅନୁଯାୟୀ ପ୍ରଶ୍ନପତ୍ର, ଗଣିତ ପରୀକ୍ଷା ଏବଂ ମଜାଦାର କାର୍ଯ୍ୟପତ୍ରିକା।</p>
         
         <div class="btn-container">
-          <a href="/" class="button btn-primary">Open Practice Dashboard</a>
-          <a href="/#digital_library" class="button btn-secondary">Browse Textbooks PDF</a>
+          <a href="/" class="button btn-primary">ପ୍ରାକ୍ଟିସ୍ ଡ୍ୟାସବୋର୍ଡ</a>
+          <a href="/#digital_library" class="button btn-secondary">ପାଠ୍ୟପୁସ୍ତକ PDF</a>
         </div>
       </div>
 
       <div class="card">
-        <h2>Bilingual Worksheets for Early Learners</h2>
-        <p>Providing high-quality study materials in both Odia and English ensures children build conceptual clarity without language barriers. Our worksheets are designed with fun cartoon avatars, interactive scoreboards, and coin achievements to keep children engaged.</p>
+        <h2>ଛୋଟ ପିଲାଙ୍କ ପାଇଁ ଓଡ଼ିଆ ଓ ଇଂରାଜୀ କାର୍ଯ୍ୟପତ୍ରିକା</h2>
+        <p>ପିଲାମାନେ ଯେପରି ସହଜରେ ବୁଝିପାରିବେ ସେଥିପାଇଁ ଓଡ଼ିଆ ଏବଂ ଇଂରାଜୀ ଦୁଇଟିଯାକ ଭାଷାରେ ପ୍ରଶ୍ନପତ୍ର ଦିଆଯାଇଛି। ଏହା ସହ କାର୍ଟୁନ୍ ଆଭାତାର ଓ ରିୱାର୍ଡ କଏନ୍ ସିଷ୍ଟମ୍ ପିଲାଙ୍କ ପଢିବା ଆଗ୍ରହ ବଢାଇବ।</p>
         
         <div class="grid">
           <div class="grid-card">
             <h3>Mathematics (ଗଣିତ)</h3>
-            <p>Addition, subtraction, shape identification, and simple word problems written in easy-to-understand Odia medium formats.</p>
+            <p>ଯୋଗ, ବିୟୋଗ, ଚିତ୍ର ଚିହ୍ନଟ ଏବଂ ସହଜ ଗାଣିତିକ ସମସ୍ୟାର ସରଳ ଓଡ଼ିଆ ସମାଧାନ।</p>
           </div>
           <div class="grid-card">
             <h3>English (ଇଂରାଜୀ)</h3>
-            <p>Vocabulary puzzles, simple grammar drills, spelling worksheets, and story reading sheets for primary class levels.</p>
+            <p>ଶବ୍ଦ ଖେଳ (Vocabulary puzzles), ବ୍ୟାକରଣ, ବନାନ ଶିକ୍ଷା ଏବଂ ସରଳ ଗଳ୍ପ ପଢିବା କାର୍ଯ୍ୟପତ୍ରିକା।</p>
           </div>
           <div class="grid-card">
-            <h3>Milestones & Coins</h3>
-            <p>Completing sets unlocks rewards, avatar frames, and displays colorful victory animations (Class 1-5 special kids theme).</p>
+            <h3>Milestones & Coins (ପୁରସ୍କାର)</h3>
+            <p>ପ୍ରଶ୍ନର ଉତ୍ତର ଦେଇ କଏନ୍ ଓ ନୂଆ ଆଭାତାର୍ ଜିତନ୍ତୁ, ଯାହା ପିଲାଙ୍କୁ ଖେଳ ଖେଳରେ ପଢିବାକୁ ଉତ୍ସାହିତ କରିବ।</p>
           </div>
         </div>
       </div>
 
       <div class="card">
-        <h2>Class-Wise Practice Sheets</h2>
-        <p>We provide curated educational material mapped exactly to the syllabus prescribed by the School and Mass Education Department, Odisha:</p>
+        <h2>ଶ୍ରେଣୀ ଅନୁଯାୟୀ କାର୍ଯ୍ୟପତ୍ରିକା</h2>
+        <p>ଓଡ଼ିଶା ବିଦ୍ୟାଳୟ ଓ ଗଣଶିକ୍ଷା ବିଭାଗର ସିଲାବସ୍ ଅନୁଯାୟୀ ସମସ୍ତ ପାଠ୍ୟ ସାମଗ୍ରୀ ପ୍ରସ୍ତୁ:</p>
         <ul>
-          <li><strong>Class 1 & 2</strong>: Image-matching worksheets, basic counting sheets, alphabet worksheets, and interactive drawing slate.</li>
-          <li><strong>Class 3 & 4</strong>: Foundational math multiplication worksheets, sentence formation sheets, and environment studies quizzes.</li>
-          <li><strong>Class 5</strong>: Fractions worksheets, English grammar, science lessons, and previous class school assessment papers.</li>
+          <li><strong>୧ମ ଓ ୨ମ ଶ୍ରେଣୀ</strong>: ଚିତ୍ର ମିଳାଇବା, ସଂଖ୍ୟା ଗଣିବା, ଅକ୍ଷର ଶିଖିବା ଏବଂ ମଜାଦାର ଡ୍ରଇଂ ସ୍ଲେଟ୍।</li>
+          <li><strong>୩ୟ ଓ ୪ର୍ଥ ଶ୍ରେଣୀ</strong>: ଗୁଣନ ଅଭ୍ୟାସ, ସରଳ ବାକ୍ୟ ଗଠନ ଏବଂ ପରିବେଶ ବିଜ୍ଞାନ କୁଇଜ୍।</li>
+          <li><strong>୫ମ ଶ୍ରେଣୀ</strong>: ଭଗ୍ନାଂଶ (Fractions), ଇଂରାଜୀ ବ୍ୟାକରଣ, ବିଜ୍ଞାନ ପାଠ ଏବଂ ପୂର୍ବ ପରୀକ୍ଷାର ପ୍ରଶ୍ନପତ୍ର।</li>
         </ul>
       </div>
 
       <div class="card">
-        <h2>How to Practice Worksheets Online</h2>
+        <h2>ଅնଲାଇନ୍ ଅଭ୍ୟାସ କିପରି କରିବେ</h2>
         <ol>
-          <li>Open the <strong>Utkal Skill Centre</strong> app in your web browser.</li>
-          <li>Log in with your mobile number (or use the fast pass credential <code>1234567890</code> for testing).</li>
-          <li>Navigate to the **Daily MCQ** or **Digital Library** from the navigation bar.</li>
-          <li>Select your class (e.g., Class 3, Class 5) to instantly generate syllabus-aligned practice sets.</li>
-          <li>Review explanations and download printable PDF resources directly to your device.</li>
+          <li>ଆପଣଙ୍କ ମୋବାଇଲ୍ ବ୍ରାଉଜର୍‌ରେ <strong>ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍</strong> ଆପ୍ ଖୋଲନ୍ତୁ।</li>
+          <li>ନିଜ ମୋବାଇଲ୍ ନମ୍ବର ଦେଇ ଲଗ୍-ଇନ୍ କରନ୍ତୁ (କିମ୍ବା ଟେଷ୍ଟିଂ ପାଇଁ <code>1234567890</code> ବ୍ୟବହାର କରନ୍ତୁ)।</li>
+          <li>ମେନୁରୁ **Daily MCQ** କିମ୍ବା **Digital Library** କୁ ଯାଆନ୍ତୁ।</li>
+          <li>ନିଜ ଶ୍ରେଣୀ (ଯଥା: ୩ୟ, ୫ମ) ବାଛନ୍ତୁ ଏବଂ ସିଲାବସ୍ ଅନୁଯାୟୀ କୁଇଜ୍ ଆରମ୍ଭ କରନ୍ତୁ।</li>
+          <li>ପ୍ରଶ୍ନର ଉତ୍ତର ଦେଇ ସଠିକ୍ ସମାଧାନ ଦେଖନ୍ତୁ ଏବଂ PDF ଡାଉନଲୋଡ୍ କରନ୍ତୁ।</li>
         </ol>
       </div>
 
+      <!-- Join Utkal Skill Centre -->
+      <div class="card" style="padding: 24px; border-radius: 20px; text-align: center;">
+        <h2 style="font-size:20px; font-weight:800;">🎓 ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍‌ରେ ଯୋଗ ଦିଅନ୍ତୁ</h2>
+        <p style="font-size:13.5px; line-height:1.6; margin-bottom: 20px;">ଓଡ଼ିଆ ମାଧ୍ୟମରେ ସ୍ମାର୍ଟ ଶିକ୍ଷା ସହିତ ଏକ ସ୍ମାର୍ଟ ଭବିଷ୍ୟତ ପାଇଁ ଆଜି ହିଁ ଯୋଗ ଦିଅନ୍ତୁ।</p>
+        <a href="/" class="button btn-primary" style="width:100%; text-align:center; padding:12px; font-size:14px; background: var(--accent); color: white; box-shadow: 0 10px 20px -5px rgba(16,185,129,0.4);">ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍‌ରେ ଯୋଗ ଦିଅନ୍ତୁ</a>
+      </div>
+
+      <a href="https://api.whatsapp.com/send?text=%E0%AD%A7%E0%AC%AE%20%E0%AC%B0%E0%AD%81%20%E0%AD%AB%E0%AC%AE%20%E0%AC%B6%E0%AD%8D%E0%AC%B0%E0%AF%87%E0%AC%A3%E0%AF%80%20%E0%AC%AA%E0%AC%BF%E0%AC%B2%E0%AC%BE%E0%AC%9E%E0%AD%8D%E0%AC%95%20%E0%AC%AA%E0%AC%BE%E0%AC%8Blocks%20%E0%AC%97%E0%AC%A3%E0%AC%BF%E0%AC%A4%E0%AC%8C%20%E0%AC%87%E0%AC%9B%E0%AC%B0%E0%AC%BE%E0%AC%9C%E0%AF%80%20%E0%AC%AA%E0%AD%8D%E0%AC%B0%E0%AC%B6%E0%AD%8D%E0%AC%A8%E0%AC%AA%E0%AC%A4%E0%AD%8D%E0%AC%B0%20%E0%AC%93%20%E0%AC%95%E0%AC%BE%E0%AD%80%E0%AC%B0%E0%AD%8D%E0%AC%AF%E0%AD%8D%E0%AC%AF%E0%AC%AA%E0%AC%A4%E0%AD%8D%E0%AC%B0%E0%AC%BF%E0%AC%95%E0%AC%BE%20%E0%AC%8F%E0%AC%A0%E0%AC%BE%E0%AC%B0%E0%AC%BF%20%E0%AC%9A%E0%AF%87%E0%AC%95%E0%AD%8D%20%E0%AC%95%E0%AC%B0%E0%AC%A8%E0%AD%8D%E0%AC%A4%E0%AD%81%3A%20https%3A%2F%2Futkalskillcentre.com%2Fodia-medium-primary-school-practice-worksheets.html" target="_blank" class="whatsapp-share-btn">
+        <svg style="width:20px; height:20px; fill:currentColor;" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.457L0 24zm6.59-4.846c1.66.986 3.288 1.488 4.936 1.489 5.485 0 9.948-4.467 9.952-9.953.001-2.656-1.03-5.155-2.905-7.03C16.756 1.785 14.263.754 11.6.754c-5.486 0-9.949 4.468-9.953 9.953-.001 1.904.498 3.763 1.446 5.4l-.988 3.605 3.693-.969zm11.378-5.367c-.29-.145-1.72-.849-1.986-.945-.266-.096-.46-.145-.654.145-.193.291-.749.945-.918 1.139-.17.194-.339.218-.63.073-.29-.145-1.226-.452-2.335-1.442-.864-.771-1.447-1.723-1.616-2.014-.17-.291-.018-.447.127-.592.13-.13.29-.339.436-.509.145-.17.193-.291.29-.485.097-.194.049-.364-.025-.509-.073-.146-.654-1.577-.896-2.158-.236-.569-.475-.492-.653-.501-.17-.008-.364-.01-.557-.01-.194 0-.509.073-.775.364-.266.29-1.018.995-1.018 2.428 0 1.432 1.042 2.816 1.188 3.01.145.194 2.05 3.13 4.966 4.387.694.299 1.236.478 1.659.613.698.222 1.334.191 1.838.116.56-.084 1.72-.703 1.962-1.383.242-.68.242-1.262.17-1.38-.073-.119-.266-.194-.556-.339z"/></svg>
+        ସାଙ୍ଗମାନଙ୍କ ସହ ଶେୟାର କରନ୍ତୁ (Share on WhatsApp)
+      </a>
+
       <div class="footer">
-        &copy; 2026 Utkal Skill Centre. Formulated according to BSE Odisha and OSEPA primary school guidelines.
+        &copy; 2026 ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍। BSE ଓଡ଼ିଶା ଓ OSEPA ପ୍ରାଥମିକ ଶିକ୍ଷା ନିର୍ଦ୍ଦେଶାବଳୀ ଅନୁଯାୟୀ ପ୍ରସ୍ତୁତ।
       </div>
     </div>
   </body>

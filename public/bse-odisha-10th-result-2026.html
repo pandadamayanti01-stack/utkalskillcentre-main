@@ -85,11 +85,32 @@
       .dot-red { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
       .warning-box { margin-top: 24px; padding: 20px; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); border-radius: 16px; text-align: left; }
       .info-box { margin-top: 16px; padding: 20px; background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.25); border-radius: 16px; text-align: left; }
+      .class-nav { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; text-align: left; }
+      .class-badge { display: inline-block; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); color: var(--text); padding: 6px 14px; border-radius: 999px; text-decoration: none; font-size: 12px; font-weight: 700; transition: all 0.2s; }
+      .class-badge:hover { background: var(--accent); border-color: var(--accent); color: #0f172a; }
+      .whatsapp-share-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: #25d366; color: white; padding: 14px 28px; border-radius: 14px; text-decoration: none; font-weight: 800; font-size: 14px; margin-top: 24px; border: none; cursor: pointer; box-shadow: 0 8px 16px -4px rgba(37,211,102,0.4); text-transform: uppercase; letter-spacing: 0.5px; width: 100%; transition: all 0.2s; }
+      .whatsapp-share-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 20px -4px rgba(37,211,102,0.5); }
     </style>
         <script src="/ga.js" defer></script>
   </head>
   <body>
     <div class="wrap">
+      <!-- Class Selector Navigation Bar -->
+      <div class="class-nav">
+        <span style="font-size:12px; font-weight:700; color:var(--muted); align-self:center; margin-right:4px;">ଶ୍ରେଣୀ (Class):</span>
+        <a href="/?class=sishuvatika(Anganwadi)" class="class-badge">ଶିଶୁବାଟିକା</a>
+        <a href="/?class=1" class="class-badge">୧ମ</a>
+        <a href="/?class=2" class="class-badge">୨ମ</a>
+        <a href="/?class=3" class="class-badge">୩ୟ</a>
+        <a href="/?class=4" class="class-badge">୪ର୍ଥ</a>
+        <a href="/?class=5" class="class-badge">୫ମ</a>
+        <a href="/?class=6" class="class-badge">୬ଷ୍ଠ</a>
+        <a href="/?class=7" class="class-badge">୭ମ</a>
+        <a href="/?class=8" class="class-badge">୮ମ</a>
+        <a href="/?class=9" class="class-badge">୯ମ</a>
+        <a href="/?class=10" class="class-badge">୧୦ମ</a>
+      </div>
+
       <div class="hero" style="padding: 40px 20px;">
         <div class="status-badge" style="background:rgba(239,68,68,0.2); color:#ef4444; border-color:rgba(239,68,68,0.3);">ଲାଇଭ୍ ଅପଡେଟ୍ (Live)</div>
         <h1 style="font-size: clamp(2rem, 4.5vw, 3rem); margin: 0 0 10px; font-weight:900;">BSE ଓଡ଼ିଶା ୧୦ମ ଶ୍ରେଣୀ ରେଜଲ୍ଟ ୨୦୨୬</h1>
@@ -146,6 +167,11 @@
         <p style="font-size:13.5px; line-height:1.6; margin-bottom: 20px;">ଓଡ଼ିଆ ମାଧ୍ୟମରେ ସ୍ମାର୍ଟ ଶିକ୍ଷା ସହିତ ଏକ ସ୍ମାର୍ଟ ଭବିଷ୍ୟତ ପାଇଁ ଆଜି ହିଁ ଯୋଗ ଦିଅନ୍ତୁ।</p>
         <a href="/" class="button btn-primary" style="width:100%; text-align:center; padding:12px; font-size:14px;">ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍‌ରେ ଯୋଗ ଦିଅନ୍ତୁ</a>
       </div>
+
+      <a href="https://api.whatsapp.com/send?text=BSE%20%E0%AC%93%E0%AC%A1%E0%AC%BC%E0%AC%BF%E0%AC%B6%E0%AC%BE%20%E0%AD%A7%E0%AD%A6%E0%AC%AE%20%E0%AC%B6%E0%AD%8D%E0%AC%B0%E0%AF%87%E0%AC%A3%E0%AF%80%20%E0%AC%AE%E0%AC%BE%E0%AC%9F%E0%AD%8D%E0%AC%B0%E0%AC%BF%E0%AC%95%20%E0%AC%B0%E0%AF%87%E0%AC%9C%E0%AC%B2%E0%AD%8D%E0%AC%9F%20%E0%AD%A8%E0%AD%A6%E0%AD%A8%E0%AD%AC%20(Live)%20%E0%AC%9A%E0%AF%87%E0%AC%95%E0%AD%8D%20%E0%AC%95%E0%AC%B0%E0%AC%A8%E0%AD%8D%E0%AC%A4%E0%AD%81%3A%20https%3A%2F%2Futkalskillcentre.com%2Fbse-odisha-10th-result-2026.html" target="_blank" class="whatsapp-share-btn">
+        <svg style="width:20px; height:20px; fill:currentColor;" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.457L0 24zm6.59-4.846c1.66.986 3.288 1.488 4.936 1.489 5.485 0 9.948-4.467 9.952-9.953.001-2.656-1.03-5.155-2.905-7.03C16.756 1.785 14.263.754 11.6.754c-5.486 0-9.949 4.468-9.953 9.953-.001 1.904.498 3.763 1.446 5.4l-.988 3.605 3.693-.969zm11.378-5.367c-.29-.145-1.72-.849-1.986-.945-.266-.096-.46-.145-.654.145-.193.291-.749.945-.918 1.139-.17.194-.339.218-.63.073-.29-.145-1.226-.452-2.335-1.442-.864-.771-1.447-1.723-1.616-2.014-.17-.291-.018-.447.127-.592.13-.13.29-.339.436-.509.145-.17.193-.291.29-.485.097-.194.049-.364-.025-.509-.073-.146-.654-1.577-.896-2.158-.236-.569-.475-.492-.653-.501-.17-.008-.364-.01-.557-.01-.194 0-.509.073-.775.364-.266.29-1.018.995-1.018 2.428 0 1.432 1.042 2.816 1.188 3.01.145.194 2.05 3.13 4.966 4.387.694.299 1.236.478 1.659.613.698.222 1.334.191 1.838.116.56-.084 1.72-.703 1.962-1.383.242-.68.242-1.262.17-1.38-.073-.119-.266-.194-.556-.339z"/></svg>
+        ସାଙ୍ଗମାନଙ୍କ ସହ ଶେୟାର କରନ୍ତୁ (Share on WhatsApp)
+      </a>
 
       <div class="footer" style="margin-top: 24px; padding-top: 24px;">
         &copy; 2026 ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍ | ଏହା ସରକାରୀ ୱେବସାଇଟ୍ ନୁହେଁ। ଅଫିସିଆଲ୍ ରେଜଲ୍ଟ bseodisha.ac.in ରେ ଉପଲବ୍ଧ।

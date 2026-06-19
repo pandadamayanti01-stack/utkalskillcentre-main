@@ -281,122 +281,155 @@
         color: var(--muted);
         font-size: 13px;
       }
+      .class-nav { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; text-align: left; }
+      .class-badge { display: inline-block; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); color: var(--text); padding: 6px 14px; border-radius: 999px; text-decoration: none; font-size: 12px; font-weight: 700; transition: all 0.2s; }
+      .class-badge:hover { background: var(--accent); border-color: var(--accent); color: #0f172a; }
+      .whatsapp-share-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: #25d366; color: white; padding: 14px 28px; border-radius: 14px; text-decoration: none; font-weight: 800; font-size: 14px; margin-top: 24px; border: none; cursor: pointer; box-shadow: 0 8px 16px -4px rgba(37,211,102,0.4); text-transform: uppercase; letter-spacing: 0.5px; width: 100%; transition: all 0.2s; }
+      .whatsapp-share-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 20px -4px rgba(37,211,102,0.5); }
     </style>
     <script src="/ga.js" defer></script>
   </head>
   <body>
     <div class="wrap">
+      <!-- Class Selector Navigation Bar -->
+      <div class="class-nav">
+        <span style="font-size:12px; font-weight:700; color:var(--muted); align-self:center; margin-right:4px;">ଶ୍ରେଣୀ (Class):</span>
+        <a href="/?class=sishuvatika(Anganwadi)" class="class-badge">ଶିଶୁବାଟିକା</a>
+        <a href="/?class=1" class="class-badge">୧ମ</a>
+        <a href="/?class=2" class="class-badge">୨ମ</a>
+        <a href="/?class=3" class="class-badge">୩ୟ</a>
+        <a href="/?class=4" class="class-badge">୪ର୍ଥ</a>
+        <a href="/?class=5" class="class-badge">୫ମ</a>
+        <a href="/?class=6" class="class-badge">୬ଷ୍ଠ</a>
+        <a href="/?class=7" class="class-badge">୭ମ</a>
+        <a href="/?class=8" class="class-badge">୮ମ</a>
+        <a href="/?class=9" class="class-badge">୯ମ</a>
+        <a href="/?class=10" class="class-badge">୧୦ମ</a>
+      </div>
+
       <div class="hero">
         <div class="badge">Official OSEPA Audit 2026</div>
         <h1>BSE Odisha School Textbook Errors & Corrections</h1>
         <h2 style="color:var(--text); opacity:0.9; font-size:1.3rem; margin-top:-8px; margin-bottom:24px; font-weight:600;">ପାଠ୍ୟପୁସ୍ତକ ମୁଦ୍ରଣ ତ୍ରୁଟି ଏବଂ ସଂଶୋଧନ ତାଲିକା</h2>
-        <p class="tagline">Official OSEPA-identified printing blunders (total 1,678 errors) across primary and secondary textbooks in Odisha, complete with verified corrections.</p>
+        <p class="tagline">ଓଡ଼ିଶା ସରକାରୀ ସ୍କୁଲ ବହିରେ ଥିବା ମୋଟ୍ ୧,୬୭٨ଟି ମୁଦ୍ରଣ ତ୍ରୁଟି ଏବଂ ସେଗୁଡ଼ିକର ସଠିକ୍ ଉତ୍ତର ତାଲିକା।</p>
         
         <div class="btn-container">
-          <a href="/" class="button btn-primary">Open Student Dashboard</a>
-          <a href="/#digital_library" class="button btn-secondary">Corrected Textbooks Library</a>
+          <a href="/" class="button btn-primary" style="background: linear-gradient(to right, #10b981, #059669); color: #040d0e; box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.3); border: none;">ଆପ୍ ଡ୍ୟାସବୋର୍ଡ</a>
+          <a href="/#digital_library" class="button btn-secondary">ସଂଶୋଧିତ ବହି ସମୂହ</a>
         </div>
       </div>
 
       <div class="banner-success">
         <div style="font-size: 32px;">🛡️</div>
         <div>
-          <h3 class="banner-success-title">USC Manually Verified & Corrected!</h3>
-          <p class="banner-success-desc">Students do not need to worry about wrong facts. All 1,678 textbook blunders have been corrected within the digital notes, textbooks, and practice MCQs on the Utkal Skill Centre app.</p>
+          <h3 class="banner-success-title">ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍ ଦ୍ୱାରା ସଂଶୋଧିତ!</h3>
+          <p class="banner-success-desc">ସମସ୍ତ ୧,୬୭٨ଟି ବହିର ଭୁଲ୍‌କୁ ଆମେ ଆପ୍ ଭିତରେ ସଂଶୋଧନ କରିସାରିଛୁ, ଯାହାଦ୍ୱାରା ପିଲାମାନେ କେବଳ ସଠିକ୍ ପାଠ ପଢିପାରିବେ।</p>
         </div>
       </div>
 
       <div class="card">
-        <h2>📊 Error Distribution by Class</h2>
-        <p>A rigorous syllabus audit verified the density of print and translation issues across classes:</p>
+        <h2>📊 ଶ୍ରେଣୀ ଅନୁଯାୟୀ ଭୁଲ୍ ସଂଖ୍ୟା</h2>
+        <p>ଓଡ଼ିଶା ସରକାରୀ ବହିଗୁଡ଼ିକରେ ଥିବା ମୁଦ୍ରଣ ତ୍ରୁଟିର ସମ୍ପୂର୍ଣ୍ଣ ତାଲିକା:</p>
         
         <table>
           <thead>
             <tr>
-              <th>Class</th>
-              <th>Identified Errors</th>
-              <th>Audit Status</th>
+              <th>ଶ୍ରେଣୀ</th>
+              <th>ଚିହ୍ନଟ ହୋଇଥିବା ଭୁଲ୍</th>
+              <th>ଯାଞ୍ଚ ସ୍ଥିତି</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Class 1</td>
-              <td>2 Errors</td>
-              <td style="color:var(--accent); font-weight:800;">✓ Corrected</td>
+              <td>୧ମ ଶ୍ରେଣୀ</td>
+              <td>୨ ଟି ଭୁଲ୍</td>
+              <td style="color:var(--accent); font-weight:800;">✓ ସଂଶୋଧିତ</td>
             </tr>
             <tr>
-              <td>Class 4</td>
-              <td>131 Errors</td>
-              <td style="color:var(--accent); font-weight:800;">✓ Corrected</td>
+              <td>୪ର୍ଥ ଶ୍ରେଣୀ</td>
+              <td>୧୩୧ ଟି ଭୁଲ୍</td>
+              <td style="color:var(--accent); font-weight:800;">✓ ସଂଶୋଧିତ</td>
             </tr>
             <tr>
-              <td>Class 5</td>
-              <td>75 Errors</td>
-              <td style="color:var(--accent); font-weight:800;">✓ Corrected</td>
+              <td>୫ମ ଶ୍ରେଣୀ</td>
+              <td>୭୫ ଟି ଭୁଲ୍</td>
+              <td style="color:var(--accent); font-weight:800;">✓ ସଂଶୋଧିତ</td>
             </tr>
             <tr>
-              <td>Class 7</td>
-              <td>387 Errors</td>
-              <td style="color:var(--accent); font-weight:800;">✓ Corrected</td>
+              <td>୭ମ ଶ୍ରେଣୀ</td>
+              <td>୩୮୭ ଟି ଭୁଲ୍</td>
+              <td style="color:var(--accent); font-weight:800;">✓ ସଂଶୋଧିତ</td>
             </tr>
             <tr>
-              <td>Class 8</td>
-              <td>705 Errors</td>
-              <td style="color:var(--accent); font-weight:800;">✓ Corrected</td>
+              <td>୮ମ ଶ୍ରେଣୀ</td>
+              <td>୭୦୫ ଟି ଭୁଲ୍</td>
+              <td style="color:var(--accent); font-weight:800;">✓ ସଂଶୋଧିତ</td>
             </tr>
             <tr style="font-weight: 800; border-top: 2px solid rgba(255,255,255,0.1);">
-              <td style="color: var(--warning);">Total Errors</td>
-              <td style="color: var(--warning);">1,678 Errors</td>
-              <td style="color: var(--accent);">Fully Resolved</td>
+              <td style="color: var(--warning);">ମୋଟ୍ ଭୁଲ୍</td>
+              <td style="color: var(--warning);">୧,୬୭٨ ଟି ଭୁଲ୍</td>
+              <td style="color: var(--accent);">ସମ୍ପୂର୍ଣ୍ଣ ସଂଶୋଧିତ</td>
             </tr>
           </tbody>
         </table>
       </div>
 
       <div class="card">
-        <h2>⚠️ Famous Textbook Blunders Flagged</h2>
-        <p>Some of the most publicized errors identified in the official print editions of the school books include:</p>
+        <h2>⚠️ ସରକାରୀ ବହିରେ ଥିବା କିଛି ବଡ଼ ଭୁଲ୍:</h2>
+        <p>ଓଡ଼ିଶା ପ୍ରାଥମିକ ଓ ମାଧ୍ୟମିକ ବିଦ୍ୟାଳୟ ବହିରେ ଥିବା କିଛି ଗୁରୁତର ତ୍ରୁଟି:</p>
         
         <div class="highlight-container">
           <div class="highlight-card">
-            <div class="highlight-title">🏛️ Karnataka Assembly Photo</div>
-            <p class="highlight-desc">In the Class 8 history/civics chapter, the picture of the Karnataka Legislative Assembly was mistakenly printed with the label of the Odisha Legislative Assembly.</p>
+            <div class="highlight-title">🏛️ କର୍ଣ୍ଣาଟକ ବିଧାନସଭା ଫଟୋ</div>
+            <p class="highlight-desc">୮ମ ଶ୍ରେଣୀ ଇତିହାସ ବହିରେ ଓଡ଼ିଶା ବିଧାନସଭା ବଦଳରେ ଭୁଲରେ କର୍ଣ୍ଣାଟକ ବିଧାନସଭାର ଫଟୋ ଛପାଯାଇଥିଲା।</p>
           </div>
           <div class="highlight-card">
-            <div class="highlight-title">⛰️ Niyamgiri Hills Location</div>
-            <p class="highlight-desc">The geographical position of the sacred Niyamgiri Hills (originally in Rayagada and Kalahandi, Odisha) was wrongfully shown inside Jharkhand state.</p>
+            <div class="highlight-title">⛰️ ନିୟମଗିରି ପାହାଡ଼ର ଅବସ୍ଥିତି</div>
+            <p class="highlight-desc">ଭୂଗୋଳ ବହିରେ ଓଡ଼ିଶାର ପବିତ୍ର ନିୟମଗିରି ପାହାଡ଼ (ରାୟଗଡ଼ା ଓ କଳାହାଣ୍ଡି)କୁ ଝାଡ଼ଖଣ୍ଡ ରାଜ୍ୟରେ ଦର୍ଶାଯାଇଥିଲା।</p>
           </div>
           <div class="highlight-card">
-            <div class="highlight-title">📍 Ganjam District Mislabel</div>
-            <p class="highlight-desc">Ganjam district in southern Odisha was mistakenly named as "Berhampur district" in official mapping pages (Berhampur is a city within Ganjam, not a district).</p>
+            <div class="highlight-title">📍 ଗଞ୍ଜାମ ଜିଲ୍ଲାକୁ ବ୍ରହ୍ମପୁର ଜିଲ୍ଲା</div>
+            <p class="highlight-desc">ମାନଚିତ୍ରରେ ଗଞ୍ଜାମ ଜିଲ୍ଲା ସ୍ଥାନରେ ବ୍ରହ୍ମପୁର ଜିଲ୍ଲା ଲେଖାଯାଇଥିଲା (ବ୍ରହ୍ମପୁର ଏକ ସହର, ଜିଲ୍ଲା ନୁହେଁ)।</p>
           </div>
           <div class="highlight-card">
-            <div class="highlight-title">➕ Math Sign Mismatches</div>
-            <p class="highlight-desc">Several Class 7 and Class 8 algebra worksheets contained missing mathematical operators and sign mismatches, making them unsolvable as printed.</p>
+            <div class="highlight-title">➕ ଗଣିତ ଚିହ୍ନ ଭୁଲ୍</div>
+            <p class="highlight-desc">୭ମ ଓ ୮ମ ଶ୍ରେଣୀ ବୀଜଗଣିତ ବହିରେ ଅନେକ ସୂତ୍ର ଓ ପ୍ରଶ୍ନରେ ଗାଣିତିକ ଚିହ୍ନ ଭୁଲ୍ ଥିବାରୁ ପ୍ରଶ୍ନଗୁଡ଼ିକର ସମାଧାନ ହେଉନଥିଲା।</p>
           </div>
         </div>
       </div>
 
       <div class="card">
-        <h2>Frequently Asked Questions</h2>
+        <h2>ବାରମ୍ବାର ପଚରାଯାଉଥିବା ପ୍ରଶ୍ନ (FAQs)</h2>
         <div class="faq-list">
           <div class="faq-item">
-            <h3 class="faq-q">Where can I find the official list of OSEPA textbook corrections?</h3>
-            <p class="faq-a">The official correction pamphlets are shared by the Odisha School Education Programme Authority (OSEPA) with block education officers. Utkal Skill Centre compiles these directly inside our digital note sets for easy access.</p>
+            <h3 class="faq-q">ଅଫିସିଆଲ୍ ଓସେପା (OSEPA) ସଂଶୋଧନ ପୁସ୍ତିକା କେଉଁଠୁ ମିଳିବ?</h3>
+            <p class="faq-a">ଏହି ସଂଶୋଧନ ତାଲିକା ସରକାରଙ୍କ ଦ୍ୱାରା ବିଦ୍ୟାଳୟମାନଙ୍କୁ ଦିଆଯାଏ। ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍ ଏହାକୁ ସଂଗ୍ରହ କରି ନିଜ ଆପ୍‌ରେ ସମ୍ପୂର୍ଣ୍ଣ ଅପଡେଟ୍ କରିଛି।</p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-q">Why is Class 8 textbook containing the most errors?</h3>
-            <p class="faq-a">Class 8 textbooks underwent layout adjustments recently, resulting in 705 errors across geography, history, and science subjects. We have verified these segments and integrated corrections for all Class 8 notes.</p>
+            <h3 class="faq-q">୮ମ ଶ୍ରେଣୀ ବହିରେ ସର୍ବାଧିକ ଭୁଲ୍ କାହିଁକି ଥିଲା?</h3>
+            <p class="faq-a">୮ମ ଶ୍ରେଣୀର ପାଠ୍ୟଖସଡ଼ାରେ ନୂତନ ପରିବର୍ତ୍ତନ କାରଣରୁ ମୋଟ୍ ୭୦୫ଟି ମୁଦ୍ରଣ ଓ ଅନୁବାଦ ଜନିତ ଭୁଲ୍ ରହିଯାଇଥିଲା। ଆମେ ସମସ୍ତ ନୋଟ୍ସକୁ ଯାଞ୍ଚ କରି ଠିକ୍ କରିଛୁ।</p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-q">Are online materials safe to study from?</h3>
-            <p class="faq-a">Absolutely. Study materials on Utkal Skill Centre are completely audited. Gundulu AI and our curriculum team have updated our entire question bank and textbook reader notes to align with correct academic facts.</p>
+            <h3 class="faq-q">ଆପଣଙ୍କ ଆପ୍‌ରେ ଥିବା ପାଠ୍ୟ ସାମଗ୍ରୀ ସମ୍ପୂର୍ଣ୍ଣ ସଠିକ୍ କି?</h3>
+            <p class="faq-a">ହଁ, ଆମର ଅଭିଜ୍ଞ ଶିକ୍ଷକ ଓ Gundulu AI ସାହାଯ୍ୟରେ ସମସ୍ତ ପାଠ୍ୟପୁସ୍ତକ ଓ ପ୍ରଶ୍ନପତ୍ରକୁ ଭୁଲମୁକ୍ତ କରାଯାଇଛି, ଯେଉଁଥିରେ ଛାତ୍ରଛାତ୍ରୀ କେବଳ ସଠିକ୍ ତଥ୍ୟ ପଢିବେ।</p>
           </div>
         </div>
       </div>
 
+      <!-- Join Utkal Skill Centre -->
+      <div class="card" style="padding: 24px; border-radius: 20px; text-align: center;">
+        <h2 style="font-size:20px; font-weight:800;">🎓 ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍‌ରେ ଯୋଗ ଦିଅନ୍ତୁ</h2>
+        <p style="font-size:13.5px; line-height:1.6; margin-bottom: 20px;">ଓଡ଼ିଆ ମାଧ୍ୟମରେ ସ୍ମାର୍ଟ ଶିକ୍ଷା ସହିତ ଏକ ସ୍ମାର୍ଟ ଭବିଷ୍ୟତ ପାଇଁ ଆଜି ହିଁ ଯୋଗ ଦିଅନ୍ତୁ।</p>
+        <a href="/" class="button btn-primary" style="width:100%; text-align:center; padding:12px; font-size:14px; background: var(--accent); color: #040d0e; box-shadow: 0 10px 20px -5px rgba(16,185,129,0.4);">ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍‌ରେ ଯୋଗ ଦିଅନ୍ତୁ</a>
+      </div>
+
+      <a href="https://api.whatsapp.com/send?text=%E0%AC%93%E0%AC%A1%E0%AC%BC%E0%AC%BF%E0%AC%B6%E0%AC%BE%20%E0%AC%B8%E0%AC%B0%E0%AC%95%E0%AC%BE%E0%AC%B0%E0%AF%80%20%E0%AC%B8%E0%AD%8D%E0%AC%95%E0%AD%81%E0%AC%B2%20%E0%AC%AC%E0%AC%B9%E0%AC%BF%E0%AC%B0%20%E0%AC%AD%E0%AC%81%E0%AC%B2%20%E0%AC%8F%E0%AC%AC%E0%AC%9Dis%20%E0%AC%B8%E0%AD%8D%E0%AC%B0%E0%AC%B6%E0%AD%8D%E0%AC%A7%E0%AC%A8%20%E0%AC%A4%E0%AC%BE%E0%AC%B2%E0%AC%BF%E0%AC%95%E0%AC%BE%20%E0%AC%8F%E0%AC%A0%E0%AC%BE%E0%AC%B0%E0%AC%BF%20%E0%AC%A6%E0%AF%87%E0%AC%96%E0%AC%A8%E0%AD%8D%E0%AC%A4%E0%AD%81%3A%20https%3A%2F%2Futkalskillcentre.com%2Fbse-odisha-textbook-errors-and-corrections-list.html" target="_blank" class="whatsapp-share-btn">
+        <svg style="width:20px; height:20px; fill:currentColor;" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.457L0 24zm6.59-4.846c1.66.986 3.288 1.488 4.936 1.489 5.485 0 9.948-4.467 9.952-9.953.001-2.656-1.03-5.155-2.905-7.03C16.756 1.785 14.263.754 11.6.754c-5.486 0-9.949 4.468-9.953 9.953-.001 1.904.498 3.763 1.446 5.4l-.988 3.605 3.693-.969zm11.378-5.367c-.29-.145-1.72-.849-1.986-.945-.266-.096-.46-.145-.654.145-.193.291-.749.945-.918 1.139-.17.194-.339.218-.63.073-.29-.145-1.226-.452-2.335-1.442-.864-.771-1.447-1.723-1.616-2.014-.17-.291-.018-.447.127-.592.13-.13.29-.339.436-.509.145-.17.193-.291.29-.485.097-.194.049-.364-.025-.509-.073-.146-.654-1.577-.896-2.158-.236-.569-.475-.492-.653-.501-.17-.008-.364-.01-.557-.01-.194 0-.509.073-.775.364-.266.29-1.018.995-1.018 2.428 0 1.432 1.042 2.816 1.188 3.01.145.194 2.05 3.13 4.966 4.387.694.299 1.236.478 1.659.613.698.222 1.334.191 1.838.116.56-.084 1.72-.703 1.962-1.383.242-.68.242-1.262.17-1.38-.073-.119-.266-.194-.556-.339z"/></svg>
+        ସାଙ୍ଗମାନଙ୍କ ସହ ଶେୟାର କରନ୍ତୁ (Share on WhatsApp)
+      </a>
+
       <div class="footer">
-        &copy; 2026 Utkal Skill Centre. Dedicated to delivering high-quality, error-free Odia medium tutoring.
+        &copy; 2026 ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍। ସମସ୍ତ ପାଠ୍ୟପୁସ୍ତକ ଓ ପ୍ରଶ୍ନପତ୍ର ବୋର୍ଡ ସିଲାବସ୍ ଅନୁଯାୟୀ ପ୍ରସ୍ତୁତ।
       </div>
     </div>
   </body>
