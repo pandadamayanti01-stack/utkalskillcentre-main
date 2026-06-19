@@ -206,6 +206,7 @@ export const CHAPTERS_MAP: Record<string, Record<string, string[]>> = {
       "Chapter 9 - ସମବଣ୍ଟନ"
     ],
     "odia": [
+      "Chapter 1 - Our School",
       "Class3_Ch01_Kehi_Nuhen_Ta_Sari",
       "Class3_Ch02_Pimpudi",
       "Class3_Ch03_Luchakali_Khela",
@@ -1270,13 +1271,14 @@ export const CHAPTERS_MAP: Record<string, Record<string, string[]>> = {
       "Class10_Geo_Ch09_Agriculture",
       "Class10_Geo_Ch10_Manufacturing_Industries",
       "Class10_Geo_Ch11_Transport_Communication_Trade",
-      "Class10_Geo_Ch12_Economic_Development",
-      "Class10_Geo_Ch13_Price_Rise_Financial_Planning",
-      "Class10_Geo_Ch14_Consumer_Awareness",
-      "Class10_Geo_Ch15_Poverty",
-      "Class10_Geo_Ch16_Unemployment",
-      "Class10_Geo_Ch17_Industrialization",
-      "Class10_Geo_Ch18_Setting_up_Enterprises"
+      "Class10_Geo_Ch12_Disaster_Management",
+      "Class10_Geo_Ch13_Economic_Development",
+      "Class10_Geo_Ch14_Price_Rise_Financial_Planning",
+      "Class10_Geo_Ch15_Consumer_Awareness",
+      "Class10_Geo_Ch16_Poverty",
+      "Class10_Geo_Ch17_Unemployment",
+      "Class10_Geo_Ch18_Industrialization",
+      "Class10_Geo_Ch19_Setting_up_Enterprises"
     ],
     "geometry": [
       "Class10_Geo_Ch01_Similarity_in_Geometry",

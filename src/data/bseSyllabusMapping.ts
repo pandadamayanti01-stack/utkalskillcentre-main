@@ -95,7 +95,7 @@ export const BSE_SYLLABUS_MAPPING_10: BseSyllabusMilestone[] = [
       physical_science: ['ଚୁମ୍ବକୀୟ ପ୍ରଭାବ'],
       life_science: ['ପ୍ରାକୃତିକ ସମ୍ପଦର ସଂରକ୍ଷଣ', 'କୋଭିଡ଼-୧୯', 'ମହାମାରୀ'],
       social_science: ['ବୈଦେଶିକ ନୀତି'],
-      geography: ['ଜଳବାୟୁ ଜନିତ', 'ପରିବହନ, ଯୋଗାଯୋଗ'],
+      geography: ['ଜଳବାୟୁ ଜନିତ', 'ପରିବହନ, ଯୋଗାଯୋଗ', 'ବିପର୍ଯ୍ୟୟ'],
       english: ['Formalin Jar', "School's Goodbye", 'Direct and Indirect Speech'],
       odia: ['ଓଡ଼ିଆ ସାହିତ୍ୟ କଥା', 'ବେଲ, ଅଶ୍ବତ୍ଥ', 'ଟିପ୍ପଣୀ']
     }
@@ -112,7 +112,7 @@ export const BSE_SYLLABUS_MAPPING_10: BseSyllabusMilestone[] = [
       physical_science: ['ରାସାୟନିକ', 'ଅମ୍ଳ', 'ଧାତୁ', 'ପ୍ରତିଫଳନ', 'ମାନବ ଚକ୍ଷୁ', 'କାର୍ବନ', 'ଶ୍ରେଣୀକରଣ', 'ବିଦ୍ୟୁତ୍', 'ଚୁମ୍ବକୀୟ'],
       life_science: ['ପୋଷଣ', 'ଶ୍ଵସନ', 'ପରିବହନ', 'ରେଚନ', 'ନିୟନ୍ତ୍ରଣ', 'ଜନନ', 'ବଂଶାନୁକ୍ରମ', 'ଶକ୍ତିର ଉତ୍ସ', 'ପରିବେଶ', 'ସଂରକ୍ଷଣ', 'ମହାମାରୀ'],
       social_science: ['ଆନ୍ଦୋଳନ', 'ରାଜ୍ୟ ପୁନର୍ଗଠନ', 'ଓଡ଼ିଶା ପ୍ରଦେଶ', 'ଗଣତନ୍ତ୍ର', '୨୦୦୦ ଖ୍ରୀଷ୍ଟାବ୍ଦ', 'ବିକାଶ', 'ସଡ଼କ ନିରାପତ୍ତା', 'ବୈଦେଶିକ ਨୀତି'],
-      geography: ['ସମ୍ବଳ', 'ଜୈବ ସମ୍ବଳ', 'ଜଳ ସମ୍ବଳ', 'ଖଣିଜ', 'ଶକ୍ତି', 'କୃଷି', 'ଉଦ୍ୟୋଗ', 'ଜଳବାୟୁ', 'ପରିବହନ'],
+      geography: ['ସମ୍ବଳ', 'ଜୈବ ସମ୍ବଳ', 'ଜଳ ସମ୍ବଳ', 'ଖଣିଜ', 'ଶକ୍ତି', 'କୃଷି', 'ଉଦ୍ୟୋଗ', 'ଜଳବାୟୁ', 'ପରିବହନ', 'ବିପର୍ଯ୍ୟୟ'],
       economics: ['ଅର୍ଥନୈତିକ ବିକାଶ', 'ବ୍ୟବସ୍ଥା', 'ଉଦ୍ୟୋଗ ବିକାଶ'],
       english: ['All Things Bright', 'A Letter to God', 'At the High School', 'A Tiger', 'Solitary Reaper', 'Festivals', 'The Beggar', 'Great Son', 'Air Pollution', 'Village Song', 'Flower-School', 'Village Judge', 'Grain as big', 'Formalin Jar', "School's Goodbye"],
       odia: ['ବନ୍ଦେ ଉତ୍କଳ', 'ସିଂହନାଦ', 'ମହାପାତ୍ର', 'ଜନ୍ମଭୂମି', 'କାଠ', 'ରାଘବଙ୍କ', 'ଚିଲିକାରେ', 'ସଭ୍ୟତା', 'କପୋଳ', 'ଫଲ୍ଗୁ', 'ଉଷା', 'ବନ୍ଧନହରା', 'ମାଟି', 'ମାତୃଭାଷା', 'ନରେନ୍ଦ୍ର', 'କୋଣାର୍କ', 'ଓଡ଼ିଆ ସାହିତ୍ୟ', 'ବେଲ']

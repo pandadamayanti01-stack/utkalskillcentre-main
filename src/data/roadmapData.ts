@@ -9126,10 +9126,10 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "QISTLcWQrEA1Ly13noYM",
-        "title": "Chapter 12 - ଆର୍ଥନୀତିକ ବିକାଶ (Economic Development)",
-        "title_en": "Economic Development",
-        "title_or": "ଆର୍ଥନୀତିକ ବିକାଶ",
+        "id": "GeoCh12DisasterMgmt10",
+        "title": "Chapter 12 - ବିପର୍ଯ୍ୟୟ ପରିଚାଳନା (Disaster Management)",
+        "title_en": "Disaster Management",
+        "title_or": "ବିପର୍ଯ୍ୟୟ ପରିଚାଳନା",
         "subject": "geography",
         "thumbnail": null
       },
@@ -9291,18 +9291,18 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "nLOhAO54z3xvdo3xbg5I",
-        "title": "Chapter 13 - ଦରବୃଦ୍ଧି ଓ ଆର୍ଥିକ ଯୋଜନା (Inflation and Financial Planning)",
-        "title_en": "Inflation and Financial Planning",
-        "title_or": "ଦରବୃଦ୍ଧି ଓ ଆର୍ଥିକ ଯୋଜନା",
+        "id": "QISTLcWQrEA1Ly13noYM",
+        "title": "Chapter 13 - ଆର୍ଥନୀତିକ ବିକାଶ (Economic Development)",
+        "title_en": "Economic Development",
+        "title_or": "ଆର୍ଥନୀତିକ ବିକାଶ",
         "subject": "geography",
         "thumbnail": null
       },
       {
-        "id": "3STbRkURjlVyKzj5AB6G",
-        "title": "Chapter 14 - ଖାଉଟି ସଚେତନତା (Consumer Awareness)",
-        "title_en": "Consumer Awareness",
-        "title_or": "ଖାଉଟି ସଚେତନତା",
+        "id": "nLOhAO54z3xvdo3xbg5I",
+        "title": "Chapter 14 - ଦରବୃଦ୍ଧି ଓ ଆର୍ଥିକ ଯୋଜନା (Inflation and Financial Planning)",
+        "title_en": "Inflation and Financial Planning",
+        "title_or": "ଦରବୃଦ୍ଧି ଓ ଆର୍ଥିକ ଯୋଜନା",
         "subject": "geography",
         "thumbnail": null
       },
@@ -9504,18 +9504,18 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "I4WE9ipy66RHtmBCkotX",
-        "title": "Chapter 15 - ଦାରିଦ୍ର୍ୟ (Poverty)",
-        "title_en": "Poverty",
-        "title_or": "ଦାରିଦ୍ର୍ୟ",
+        "id": "3STbRkURjlVyKzj5AB6G",
+        "title": "Chapter 15 - ଖାଉଟି ସଚେତନତା (Consumer Awareness)",
+        "title_en": "Consumer Awareness",
+        "title_or": "ଖାଉଟି ସଚେତନତା",
         "subject": "geography",
         "thumbnail": null
       },
       {
-        "id": "ROtmb20WpiKRMKl72XJT",
-        "title": "Chapter 16 - ବେକାରୀ (Unemployment)",
-        "title_en": "Unemployment",
-        "title_or": "ବେକାରୀ",
+        "id": "I4WE9ipy66RHtmBCkotX",
+        "title": "Chapter 16 - ଦାରିଦ୍ର୍ୟ (Poverty)",
+        "title_en": "Poverty",
+        "title_or": "ଦାରିଦ୍ର୍ୟ",
         "subject": "geography",
         "thumbnail": null
       },
@@ -9661,8 +9661,16 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
+        "id": "ROtmb20WpiKRMKl72XJT",
+        "title": "Chapter 17 - ବେକାରୀ (Unemployment)",
+        "title_en": "Unemployment",
+        "title_or": "ବେକାରୀ",
+        "subject": "geography",
+        "thumbnail": null
+      },
+      {
         "id": "SBPKyQxEbgjng85e8k96",
-        "title": "Chapter 17 - ଔଦ୍ଯୋଗୀକରଣ (Entrepreneurship)",
+        "title": "Chapter 18 - ଔଦ୍ଯୋଗୀକରଣ (Entrepreneurship)",
         "title_en": "Entrepreneurship",
         "title_or": "ଔଦ୍ଯୋଗୀକରଣ",
         "subject": "geography",
@@ -9670,7 +9678,7 @@ export const ROADMAP_DATA = [
       },
       {
         "id": "4Qft5SbVmYojrCjF79uj",
-        "title": "Chapter 18 - ଉଦ୍ୟୋଗ ପ୍ରତିଷ୍ଠା ପାଠ (Enterprise set-up)",
+        "title": "Chapter 19 - ଉଦ୍ୟୋଗ ପ୍ରତିଷ୍ଠା ପାଠ (Enterprise set-up)",
         "title_en": "Enterprise set-up",
         "title_or": "ଉଦ୍ୟୋଗ ପ୍ରତିଷ୍ଠା ପାଠ",
         "subject": "geography",
