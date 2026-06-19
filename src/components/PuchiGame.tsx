@@ -32,14 +32,42 @@ export function PuchiGame({ user, onBack }: PuchiGameProps) {
   const nextNoteId = useRef<number>(0);
   const gameLoopRef = useRef<number | null>(null);
   const spawnTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  // Lazy initialize a single persistent AudioContext to prevent browser audio context exhaustion
+  const getAudioContext = (): AudioContext | null => {
+    if (typeof window === 'undefined') return null;
+    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContextClass) return null;
+    
+    if (!audioCtxRef.current) {
+      audioCtxRef.current = new AudioContextClass();
+    }
+    
+    // Resume context if suspended (browser security block)
+    if (audioCtxRef.current.state === 'suspended') {
+      audioCtxRef.current.resume();
+    }
+    
+    return audioCtxRef.current;
+  };
+
+  // Close context on unmount
+  useEffect(() => {
+    return () => {
+      if (audioCtxRef.current) {
+        audioCtxRef.current.close().catch(err => console.warn(err));
+        audioCtxRef.current = null;
+      }
+    };
+  }, []);
 
   // Web Audio Synth
   const playSynthSound = (type: 'tap-perfect' | 'tap-good' | 'miss' | 'win' | 'lose') => {
     if (!soundEnabled) return;
     try {
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-      if (!AudioContextClass) return;
-      const ctx = new AudioContextClass();
+      const ctx = getAudioContext();
+      if (!ctx) return;
       const now = ctx.currentTime;
 
       if (type === 'tap-perfect') {
