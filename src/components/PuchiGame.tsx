@@ -233,19 +233,29 @@ export function PuchiGame({ user, onBack }: PuchiGameProps) {
     gameLoopRef.current = requestAnimationFrame(updateNotes);
   };
 
-  // Stop loops
+  // Stop loops when gameState changes to something other than playing
   useEffect(() => {
     if (gameState !== 'playing') {
       isPlayingRef.current = false;
-      if (spawnTimerRef.current) clearInterval(spawnTimerRef.current);
-      if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
+      if (spawnTimerRef.current) {
+        clearInterval(spawnTimerRef.current);
+        spawnTimerRef.current = null;
+      }
+      if (gameLoopRef.current) {
+        cancelAnimationFrame(gameLoopRef.current);
+        gameLoopRef.current = null;
+      }
     }
+  }, [gameState]);
+
+  // Clean up completely on unmount
+  useEffect(() => {
     return () => {
       isPlayingRef.current = false;
       if (spawnTimerRef.current) clearInterval(spawnTimerRef.current);
       if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
     };
-  }, [gameState]);
+  }, []);
 
   // Handle tap action
   const handleTap = (lane: 'left' | 'right') => {
