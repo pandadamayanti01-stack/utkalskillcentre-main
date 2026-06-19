@@ -33,6 +33,7 @@ export function PuchiGame({ user, onBack }: PuchiGameProps) {
   const gameLoopRef = useRef<number | null>(null);
   const spawnTimerRef = useRef<NodeJS.Timeout | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
+  const bgmRef = useRef<HTMLAudioElement | null>(null);
 
   // Lazy initialize a single persistent AudioContext to prevent browser audio context exhaustion
   const getAudioContext = (): AudioContext | null => {
@@ -52,15 +53,35 @@ export function PuchiGame({ user, onBack }: PuchiGameProps) {
     return audioCtxRef.current;
   };
 
-  // Close context on unmount
+  // Close context and stop BGM on unmount
   useEffect(() => {
     return () => {
       if (audioCtxRef.current) {
         audioCtxRef.current.close().catch(err => console.warn(err));
         audioCtxRef.current = null;
       }
+      if (bgmRef.current) {
+        bgmRef.current.pause();
+        bgmRef.current = null;
+      }
     };
   }, []);
+
+  // Manage Background Music (Raja-doli.mpeg) during active gameplay
+  useEffect(() => {
+    if (gameState === 'playing' && soundEnabled) {
+      if (!bgmRef.current) {
+        bgmRef.current = new Audio('/Raja-doli.mpeg');
+        bgmRef.current.loop = true;
+        bgmRef.current.volume = 0.45;
+      }
+      bgmRef.current.play().catch(err => console.warn("Failed to play BGM:", err));
+    } else {
+      if (bgmRef.current) {
+        bgmRef.current.pause();
+      }
+    }
+  }, [gameState, soundEnabled]);
 
   // Web Audio Synth
   const playSynthSound = (type: 'tap-perfect' | 'tap-good' | 'miss' | 'win' | 'lose') => {
