@@ -73,8 +73,18 @@
       p { color: var(--muted); }
       .links-list { list-style:none; padding:0; }
       .links-list li { margin-bottom:12px; display:flex; align-items:center; gap:10px; }
-      .links-list a { color: var(--accent2); text-decoration:none; font-weight:600; }
+       .links-list a { color: var(--accent2); text-decoration:none; font-weight:600; }
       .footer { text-align:center; padding-top:40px; border-top:1px solid rgba(255,255,255,0.05); margin-top:40px; color: var(--muted); font-size: 14px; }
+      .status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 24px 0; text-align: left; }
+      .status-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 12px 16px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; }
+      .status-label { font-size: 13px; font-weight: 600; color: var(--text); }
+      .status-indicator { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+      .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+      .dot-green { background: #10b981; box-shadow: 0 0 8px #10b981; }
+      .dot-yellow { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+      .dot-red { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+      .warning-box { margin-top: 24px; padding: 20px; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); border-radius: 16px; text-align: left; }
+      .info-box { margin-top: 16px; padding: 20px; background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.25); border-radius: 16px; text-align: left; }
     </style>
         <script src="/ga.js" defer></script>
   </head>
@@ -99,20 +109,46 @@
           </div>
         </div>
         
+        <!-- Live Server Status Grid -->
+        <h3 style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:1.5px; margin-top:32px; margin-bottom:12px; color:var(--muted); text-align:left;">Live Gateway Server Status</h3>
+        <div class="status-grid">
+          <div class="status-item">
+            <span class="status-label">Server 1 (OrissaResults)</span>
+            <span class="status-indicator" style="color:#ef4444;"><span class="dot dot-red"></span>Overloaded</span>
+          </div>
+          <div class="status-item">
+            <span class="status-label">Server 2 (BSE Odisha)</span>
+            <span class="status-indicator" style="color:#f59e0b;"><span class="dot dot-yellow"></span>Slow</span>
+          </div>
+          <div class="status-item">
+            <span class="status-label">Server 3 (IndiaResults Mirror)</span>
+            <span class="status-indicator" style="color:#10b981;"><span class="dot dot-green"></span>Online (Name-wise)</span>
+          </div>
+        </div>
+
+        <div class="warning-box">
+          <p style="color:#ef4444; font-weight:800; margin:0 0 8px; font-size:15px; text-transform:uppercase; letter-spacing:0.5px;">⚠️ Official Server is slow/down. Try Server 2 or 3 below.</p>
+          <p style="font-size:13.5px; margin:0; line-height:1.6; color:#e2e8f0;">Due to high traffic, Server 1 may return a <strong>"500 Internal Server Error"</strong> or connection timeout. If so, immediately check Server 2, Server 3, or use the offline SMS method below.</p>
+        </div>
+
         <div class="btn-container">
-          <a href="https://bseodisha.ac.in/" target="_blank" class="button btn-primary">Check BSE Result 1</a>
-          <a href="https://bseodisha.nic.in/" target="_blank" class="button btn-secondary">Check BSE Result 2</a>
+          <a href="https://orissaresults.nic.in/" target="_blank" class="button btn-primary" style="background:#3b82f6; box-shadow:0 10px 20px -5px rgba(59,130,246,0.4);">Check Result (Server 1)</a>
+          <a href="https://bseodisha.ac.in/" target="_blank" class="button btn-secondary">Check Result (Server 2)</a>
+          <a href="https://odisha.indiaresults.com/bse-orissa/index.html" target="_blank" class="button btn-secondary" style="border-color:#10b981; color:#10b981;">Check Result (Server 3 - Mirror)</a>
         </div>
 
-        <div style="margin-top:32px; padding:20px; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:16px;">
-          <p style="color:#ef4444; font-weight:700; margin:0 0 10px;">⚠️ Government Servers are Busy (500 Error)</p>
-          <p style="font-size:14px; margin:0;">The official websites are currently experiencing high traffic. If you face a 500 error, please try the <strong>SMS Method</strong> below.</p>
+        <div class="info-box" style="margin-top: 24px;">
+          <p style="color:#10b981; font-weight:800; margin:0 0 10px; font-size:15px; text-transform:uppercase; letter-spacing:0.5px;">📱 Alternative Method: Check via SMS (Offline / No Internet)</p>
+          <p style="font-size:14px; margin:0 0 8px; color:#e2e8f0;">Send an SMS to receive your marksheet instantly on your mobile:</p>
+          <div style="background:rgba(0,0,0,0.2); padding:12px; border-radius:8px; font-family:monospace; font-size:14px; color:#fff; display:inline-block; border:1px solid rgba(255,255,255,0.05); margin-bottom:8px;">
+            Type <strong>OR10 &lt;RollNumber&gt;</strong> and send to <strong>5676750</strong> (or <strong>56263</strong>)
+          </div>
+          <p style="font-size:12px; color:var(--muted); margin:0;">Example: SMS <strong>OR10 102CA001</strong> to <strong>5676750</strong></p>
         </div>
 
-        <div style="margin-top:20px; padding:20px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:16px;">
-          <p style="color:#10b981; font-weight:700; margin:0 0 10px;">📱 Check via SMS (Offline)</p>
-          <p style="font-size:14px; margin:0;">Type <strong>OR10 &lt;RollNumber&gt;</strong> and send it to <strong>5676750</strong></p>
-          <p style="font-size:12px; color:var(--muted); margin-top:5px;">Example: OR10 12345678 to 5676750</p>
+        <div class="info-box" style="margin-top:16px; border-color:rgba(59,130,246,0.25); background:rgba(59,130,246,0.08);">
+          <p style="color:#3b82f6; font-weight:800; margin:0 0 8px; font-size:15px; text-transform:uppercase; letter-spacing:0.5px;">🔍 Alternative Method: Name-wise Result Lookup</p>
+          <p style="font-size:13.5px; margin:0; line-height:1.6; color:#e2e8f0;">Forgot your Roll Number? Server 3 (IndiaResults) supports name-wise lookup. You can enter your full name to fetch your roll number and scores.</p>
         </div>
       </div>
 
