@@ -152,6 +152,11 @@ async function startServer() {
     next();
   });
 
+  // Redirect old study materials URL to new Anganwadi-to-Class-10 URL
+  app.get('/class-3-to-10-study-materials.html', (req, res) => {
+    res.redirect(301, '/anganwadi-to-class-10-study-materials.html');
+  });
+
   app.use(express.json({ limit: '50mb' }));
   app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
