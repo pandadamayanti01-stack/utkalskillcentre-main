@@ -34,6 +34,7 @@ export function PuchiGame({ user, onBack }: PuchiGameProps) {
   const spawnTimerRef = useRef<NodeJS.Timeout | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const bgmRef = useRef<HTMLAudioElement | null>(null);
+  const isPlayingRef = useRef<boolean>(false);
 
   // Lazy initialize a single persistent AudioContext to prevent browser audio context exhaustion
   const getAudioContext = (): AudioContext | null => {
@@ -168,6 +169,7 @@ export function PuchiGame({ user, onBack }: PuchiGameProps) {
   // Start rhythm loop
   const startGame = () => {
     setGameState('playing');
+    isPlayingRef.current = true;
     setScore(0);
     setStreak(0);
     setMaxStreak(0);
@@ -211,6 +213,7 @@ export function PuchiGame({ user, onBack }: PuchiGameProps) {
             const nextB = Math.max(0, b - 10 * missedCount);
             if (nextB <= 0) {
               setGameState('gameover');
+              isPlayingRef.current = false;
               playSynthSound('lose');
               setGunduluSpeech('ଓଃ! ଭାରସାମ୍ୟ ହରାଇ ପଡ଼ିଗଲୁ। ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ!');
             }
@@ -222,7 +225,7 @@ export function PuchiGame({ user, onBack }: PuchiGameProps) {
         return nextNotes;
       });
 
-      if (gameState === 'playing') {
+      if (isPlayingRef.current) {
         gameLoopRef.current = requestAnimationFrame(updateNotes);
       }
     };
@@ -233,10 +236,12 @@ export function PuchiGame({ user, onBack }: PuchiGameProps) {
   // Stop loops
   useEffect(() => {
     if (gameState !== 'playing') {
+      isPlayingRef.current = false;
       if (spawnTimerRef.current) clearInterval(spawnTimerRef.current);
       if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
     }
     return () => {
+      isPlayingRef.current = false;
       if (spawnTimerRef.current) clearInterval(spawnTimerRef.current);
       if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
     };
@@ -244,7 +249,7 @@ export function PuchiGame({ user, onBack }: PuchiGameProps) {
 
   // Handle tap action
   const handleTap = (lane: 'left' | 'right') => {
-    if (gameState !== 'playing') return;
+    if (!isPlayingRef.current) return;
 
     setSquatState(lane);
     setTimeout(() => setSquatState('center'), 200);
@@ -278,6 +283,7 @@ export function PuchiGame({ user, onBack }: PuchiGameProps) {
         if (nextS >= 500) {
           // Win condition (reached target score in 30 seconds)
           setGameState('gameover');
+          isPlayingRef.current = false;
           playSynthSound('win');
           confetti({ particleCount: 70, spread: 50 });
           setGunduluSpeech('ଅତି ସୁନ୍ଦର! ପୁଚି ନୃତ୍ୟରେ ଆପଣ ଚାମ୍ପିଅନ୍ ହେଲେ! 🏆 +120 XP');
@@ -307,6 +313,7 @@ export function PuchiGame({ user, onBack }: PuchiGameProps) {
         const nextB = Math.max(0, b - 8);
         if (nextB <= 0) {
           setGameState('gameover');
+          isPlayingRef.current = false;
           playSynthSound('lose');
           setGunduluSpeech('ଓଃ! ଭାରସାମ୍ୟ ହରାଇ ପଡ଼ିଗଲୁ। ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ!');
         }
