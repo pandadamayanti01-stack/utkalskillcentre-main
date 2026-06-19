@@ -84,6 +84,9 @@ export default function Login({ language, translations, setLanguage, setRegData 
       // 3. Programmatically confirm standard OTP immediately (Zero-friction Login!)
       await confirmation.confirm(acc.code);
       console.log("Fast-Pass automated login successful");
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'login', { method: 'OTP' });
+      }
       
     } catch (error: any) {
       console.error("Fast-pass login error:", error);
@@ -347,6 +350,9 @@ export default function Login({ language, translations, setLanguage, setRegData 
     try {
       await signInWithGoogle();
       console.log("Google login successful");
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'login', { method: 'Google' });
+      }
     } catch (error) {
       console.error("Google login error:", error);
       alert("Google login failed.");
@@ -453,6 +459,9 @@ export default function Login({ language, translations, setLanguage, setRegData 
     setIsSending(true);
     try {
       await verificationId.confirm(otp);
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'login', { method: 'OTP' });
+      }
     } catch (error) {
       alert("Invalid OTP");
     } finally {

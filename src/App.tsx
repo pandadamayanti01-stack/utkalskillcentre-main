@@ -2347,6 +2347,9 @@ export default function App() {
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'login', { method: 'Google' });
+      }
     } catch (error: any) {
       // Ignore user-cancelled popup errors
       if (error.code === 'auth/cancelled-popup-request' || error.code === 'auth/popup-closed-by-user') {
@@ -2635,6 +2638,9 @@ export default function App() {
     setLoading(true);
     try {
       await confirmationResult.confirm(otp.trim());
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'login', { method: 'OTP' });
+      }
     } catch (error: any) {
       console.error("OTP Error:", error);
       if (error.code === 'auth/invalid-verification-code') {
