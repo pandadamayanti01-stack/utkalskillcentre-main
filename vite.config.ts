@@ -141,7 +141,7 @@ export default defineConfig(({mode}) => {
           main: path.resolve(__dirname, 'index.html'),
           odishaLearningApp: path.resolve(__dirname, 'odisha-learning-app.html'),
           odiaAiTutor: path.resolve(__dirname, 'odia-ai-tutor.html'),
-          classStudyMaterials: path.resolve(__dirname, 'class-3-to-10-study-materials.html'),
+          classStudyMaterials: path.resolve(__dirname, 'anganwadi-to-class-10-study-materials.html'),
           monthlyTests: path.resolve(__dirname, 'monthly-tests-for-odisha-students.html'),
           class10StudyApp: path.resolve(__dirname, 'class-10-odisha-study-app.html'),
           class9StudyApp: path.resolve(__dirname, 'class-9-odisha-study-app.html'),
