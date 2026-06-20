@@ -37,7 +37,7 @@ import { GunduluTrailer } from './GunduluTrailer';
 import NeuralBackground from './NeuralBackground';
 import OdishaLiveMap from './OdishaLiveMap';
 import ReactMarkdown from 'react-markdown';
-import { generateHomeworkSheet } from '../services/aiService';
+import { generateHomeworkSheet, translateContent } from '../services/aiService';
 import { GoldenTicket } from './GoldenTicket';
 import { MathBlackboard } from './MathBlackboard';
 import { GiftUnlockModal } from './GiftUnlockModal';
@@ -1148,12 +1148,26 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         selectedWorksheetChapters.includes(ch.id || ch.title)
       );
       
-      const { mcqs, subjectives } = curateWorksheetQuestions(
+      let { mcqs, subjectives } = curateWorksheetQuestions(
         selectedWorksheetSubject, 
         selectedChaptersData, 
         worksheetDifficulty, 
         worksheetPattern
       );
+      
+      if (language === 'or') {
+        setWorksheetGeneratingProgress(15);
+        setWorksheetGeneratingStatusText('AI Translation to Odia in progress...');
+        try {
+          const translated = await translateContent({ mcqs, subjectives }, 'or');
+          if (translated && (translated.mcqs || translated.subjectives)) {
+            mcqs = translated.mcqs || mcqs;
+            subjectives = translated.subjectives || subjectives;
+          }
+        } catch (transErr) {
+          console.error("Worksheet translation error, using English fallbacks:", transErr);
+        }
+      }
       
       setWorksheetGeneratingProgress(25);
       setWorksheetGeneratingStatusText(language === 'en' ? 'Loading assets...' : 'ସମ୍ପତ୍ତି ଲୋଡ୍ କରାଯାଉଛି...');

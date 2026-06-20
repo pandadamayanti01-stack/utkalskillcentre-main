@@ -335,12 +335,19 @@ export async function translateContent(text: string | object, targetLanguage: 'e
     const isJson = typeof text === 'object';
     const textPayload = isJson ? safeJsonStringify(text) : text;
 
-    let systemInstruction = targetLanguage === 'or' 
-      ? "You are an expert translator. Translate the following educational content from English to Odia. Keep mathematical terms, numbers, and formatting intact."
-      : "You are an expert translator. Translate the following educational content from Odia to English. Keep mathematical terms, numbers, and formatting intact.";
+    let systemInstruction = '';
+    if (targetLanguage === 'or') {
+      systemInstruction = `You are an expert translator. Translate the following educational content from English to Odia.
+      CRITICAL LANGUAGE RULES FOR ODIA MEDIUM:
+      - Keep all mathematical equations, formulas, variables, and digits in standard English/Arabic notation (e.g. 5, x, y, a^2 + b^2, 2x + 3y = 5).
+      - Do NOT translate English math variables to Odia script (e.g., do NOT write 'x' as 'ଏକ୍ସ' or '5' as '୫').
+      - All surrounding explanatory text, questions, options, instructions, and non-mathematical terms MUST be translated to natural, grammatically correct Odia script.`;
+    } else {
+      systemInstruction = "You are an expert translator. Translate the following educational content from Odia to English. Keep mathematical terms, numbers, and formatting intact.";
+    }
 
     if (isJson) {
-      systemInstruction += " The input is a JSON object. Translate all string values within the JSON object to the target language, but keep the keys exactly the same. Return ONLY the translated JSON object. Do not include any markdown formatting like ```json.";
+      systemInstruction += "\n\nThe input is a JSON object. Translate all string values within the JSON object to the target language, but keep the keys exactly the same. Return ONLY the translated JSON object. Do not include any markdown formatting like ```json.";
     }
 
     const translatedText = await withRetry(async (modelName, apiVersion) => {
