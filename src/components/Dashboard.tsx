@@ -3850,7 +3850,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           </div>
         )}
 
-        {showImportantPapersModal && (
+        {showImportantPapersModal && createPortal(
           <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md overflow-y-auto">
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
@@ -3866,7 +3866,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               <button
                 onClick={handleCloseWorksheetModal}
                 disabled={isGeneratingWorksheet}
-                className="absolute top-6 right-6 p-2 text-slate-400 hover:text-white rounded-full bg-white/5 hover:bg-white/10 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                className="absolute top-8 right-8 p-2 text-slate-400 hover:text-white rounded-full bg-white/5 hover:bg-white/10 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Lucide.X size={18} />
               </button>
@@ -4238,7 +4238,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 </p>
               </div>
             </motion.div>
-          </div>
+          </div>,
+          document.body
         )}
       </AnimatePresence>
 
