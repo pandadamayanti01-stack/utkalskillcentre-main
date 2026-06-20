@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="or" class="notranslate">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google" content="notranslate" />
+    <title>AI BSE Odisha Worksheet & Question Paper Generator | Utkal Skill Centre</title>
+    <meta name="description" content="Generate board-pattern BSE Odisha exam worksheets and question papers instantly in Odia and English. Odisha's first AI worksheet studio for school teachers, aligned with SCERT milestones." />
+    <meta name="keywords" content="BSE Odisha model question papers, Odisha school worksheets, worksheet generator in Odia, Class 10 exam papers Odisha, Utkal Skill Centre AI" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://utkalskillcentre.com/bse-odisha-worksheet-generator-ai.html" />
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="AI BSE Odisha Worksheet & Question Paper Generator | Utkal Skill Centre" />
+    <meta property="og:description" content="Create bilingual BSE Odisha exam worksheets instantly. Try the live interactive worksheet generator in Odia and English." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://utkalskillcentre.com/bse-odisha-worksheet-generator-ai.html" />
+    <meta property="og:image" content="https://utkalskillcentre.com/usc-markable.png" />
+    
+    <!-- Twitter Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AI BSE Odisha Worksheet & Question Paper Generator | Utkal Skill Centre" />
+    <meta name="twitter:description" content="Create bilingual BSE Odisha exam worksheets instantly. Try the live interactive worksheet generator in Odia and English." />
+    <meta name="twitter:image" content="https://utkalskillcentre.com/usc-markable.png" />
+
+    <!-- Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&family=Quicksand:wght@500;700&display=swap" rel="stylesheet" />
+
+    <style>
+      :root {
+        --bg-dark: #07070f;
+        --bg-panel: rgba(18, 24, 38, 0.7);
+        --border-glass: rgba(255, 255, 255, 0.08);
+        --text-light: #f3f4f6;
+        --text-muted: #9ca3af;
+        --accent-emerald: #10b981;
+        --accent-cyan: #06b6d4;
+        --gradient-primary: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: 'Outfit', sans-serif;
+        background: var(--bg-dark);
+        background-image: 
+          radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.05) 0%, transparent 40%),
+          radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.05) 0%, transparent 40%);
+        color: var(--text-light);
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      /* Navbar */
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px 0;
+        border-bottom: 1px solid var(--border-glass);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        color: white;
+        font-weight: 800;
+        font-size: 20px;
+      }
+
+      .logo img {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+      }
+
+      .logo span {
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .btn-nav {
+        background: var(--border-glass);
+        border: 1px solid var(--border-glass);
+        color: var(--text-light);
+        padding: 10px 20px;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 14px;
+        text-decoration: none;
+        transition: all 0.2s;
+      }
+
+      .btn-nav:hover {
+        background: var(--gradient-primary);
+        border-color: transparent;
+        color: #07070f;
+        transform: translateY(-1px);
+      }
+
+      /* Hero */
+      .hero {
+        text-align: center;
+        padding: 80px 0 40px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        color: var(--accent-emerald);
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 24px;
+      }
+
+      .hero h1 {
+        font-size: clamp(2.2rem, 4.5vw, 4rem);
+        font-weight: 900;
+        line-height: 1.15;
+        letter-spacing: -1px;
+        margin-bottom: 20px;
+      }
+
+      .hero h1 span {
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero p {
+        font-size: clamp(1.1rem, 1.8vw, 1.25rem);
+        color: var(--text-muted);
+        max-w: 800px;
+        margin: 0 auto 32px;
+        font-weight: 500;
+      }
+
+      /* Generator Panel */
+      .generator-card {
+        background: var(--bg-panel);
+        border: 1px solid var(--border-glass);
+        border-radius: 28px;
+        padding: 36px;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        margin-bottom: 60px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .form-group label {
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        letter-spacing: 0.5px;
+      }
+
+      .form-group select {
+        background: #0f1322;
+        border: 1px solid var(--border-glass);
+        color: var(--text-light);
+        padding: 14px;
+        border-radius: 14px;
+        font-family: inherit;
+        font-weight: 600;
+        font-size: 14px;
+        outline: none;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .form-group select:focus {
+        border-color: var(--accent-emerald);
+      }
+
+      .btn-generate {
+        background: var(--gradient-primary);
+        color: #07070f;
+        border: none;
+        padding: 16px;
+        border-radius: 14px;
+        font-weight: 800;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 8px 20px -4px rgba(16, 185, 129, 0.3);
+      }
+
+      .btn-generate:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px -4px rgba(16, 185, 129, 0.4);
+      }
+
+      /* Loader */
+      .loader-box {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        min-height: 200px;
+      }
+
+      .spinner {
+        width: 44px;
+        height: 44px;
+        border: 4px solid var(--border-glass);
+        border-top-color: var(--accent-emerald);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      .loader-text {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent-emerald);
+      }
+
+      /* Preview Sheet */
+      .preview-sheet {
+        background: #090b14;
+        border: 1px solid var(--border-glass);
+        border-radius: 20px;
+        padding: 28px;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 13px;
+        color: var(--accent-cyan);
+        max-height: 480px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+        margin-top: 24px;
+      }
+
+      /* Features section */
+      .features {
+        padding: 40px 0 80px;
+        text-align: center;
+      }
+
+      .features h2 {
+        font-size: 28px;
+        font-weight: 800;
+        margin-bottom: 36px;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+      }
+
+      .feature-card {
+        background: var(--bg-panel);
+        border: 1px solid var(--border-glass);
+        border-radius: 24px;
+        padding: 32px;
+        text-align: left;
+      }
+
+      .feat-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--accent-emerald);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+
+      .feature-card h3 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+
+      .feature-card p {
+        font-size: 14px;
+        color: var(--text-muted);
+      }
+
+      /* Footer */
+      .footer {
+        border-top: 1px solid var(--border-glass);
+        padding: 40px 0;
+        text-align: center;
+        background: rgba(0,0,0,0.3);
+      }
+
+      .footer p {
+        font-size: 13px;
+        color: var(--text-muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      
+      <!-- Nav -->
+      <nav class="navbar">
+        <a href="/" class="logo">
+          <img src="/utkal-192.png" alt="Utkal Skill Centre Logo" />
+          <span>Utkal Skill Centre</span>
+        </a>
+        <a href="/" class="btn-nav">Educator Studio</a>
+      </nav>
+
+      <!-- Hero -->
+      <header class="hero">
+        <div class="badge">BSE Odisha Board Pattern</div>
+        <h1>AI <span>Question Paper</span> & Worksheet Generator</h1>
+        <p>
+           Odisha's first AI worksheet creator built for school teachers. Instantly draft bilingual exam papers and classroom worksheets aligned with SCERT milestones.
+        </p>
+      </header>
+
+      <!-- Generator -->
+      <section class="generator-card">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>ଶ୍ରେଣୀ (Select Class)</label>
+            <select id="w-class">
+              <option value="10">Class 10</option>
+              <option value="9">Class 9</option>
+              <option value="8">Class 8</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ବିଷୟ (Select Subject)</label>
+            <select id="w-subject">
+              <option value="math">Mathematics (ଗଣିତ)</option>
+              <option value="science">Physical Science (ଭୌତିକ ବିଜ୍ଞାନ)</option>
+              <option value="odia">Odia (ଓଡ଼ିଆ)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>କଠିନତା (Difficulty)</label>
+            <select id="w-diff">
+              <option value="medium">Medium (ମାଧ୍ୟମ)</option>
+              <option value="easy">Easy (ସହଜ)</option>
+              <option value="hard">Hard (କଠିନ)</option>
+            </select>
+          </div>
+          <div class="form-group" style="justify-content: flex-end;">
+            <button class="btn-generate" onclick="generateWorksheet()">Create Worksheet</button>
+          </div>
+        </div>
+
+        <!-- Loader -->
+        <div class="loader-box" id="loader-box">
+          <div class="spinner"></div>
+          <div class="loader-text" id="loader-text">Formulating questions...</div>
+        </div>
+
+        <!-- Preview Sheet -->
+        <div class="preview-sheet" id="preview-sheet">
+# Select parameters above and click "Create Worksheet" to run the AI engine and see a live exam paper preview...
+        </div>
+      </section>
+
+      <!-- Features Grid -->
+      <section class="features">
+        <h2>Save Hours of Prep Time</h2>
+        <div class="features-grid">
+          
+          <div class="feature-card">
+            <div class="feat-icon">
+              <svg style="width:20px; height:20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+            </div>
+            <h3>SCERT Syllabus Linked</h3>
+            <p>Questions are automatically formulated using actual SCERT Odisha textbook databases and curriculum chapters.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feat-icon">
+              <svg style="width:20px; height:20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.584a24.14 24.14 0 002.584-3.584m0 0A24.142 24.142 0 0012 6.836m1.632 3.164a24.142 24.142 0 01-1.632 3.164m0 0L9 18h3.818M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3>Bilingual Formatting</h3>
+            <p>Generate clean, professional worksheets featuring both English and Odia translations for maximum classroom clarity.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feat-icon">
+              <svg style="width:20px; height:20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+              </svg>
+            </div>
+            <h3>One-Click Print to PDF</h3>
+            <p>Access printable sheets directly inside the dashboard. Layouts are pre-formatted for direct A4 printing or saving as PDF.</p>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <p>© 2026 Utkal Skill Centre. All Rights Reserved. Aligned with BSE Odisha Board & SCERT Syllabus.</p>
+      </div>
+    </footer>
+
+    <!-- Interactive script -->
+    <script>
+      function generateWorksheet() {
+        const wClass = document.getElementById('w-class').value;
+        const wSubject = document.getElementById('w-subject').value;
+        const wDiff = document.getElementById('w-diff').value;
+        const preview = document.getElementById('preview-sheet');
+        const loader = document.getElementById('loader-box');
+
+        preview.style.display = 'none';
+        loader.style.display = 'flex';
+
+        const steps = [
+          "Parsing Class " + wClass + " " + wSubject + " database...",
+          "Mapping board question blueprint...",
+          "Formulating " + wDiff + " level questions...",
+          "Rendering bilingual output..."
+        ];
+
+        let index = 0;
+        const loaderText = document.getElementById('loader-text');
+        loaderText.textContent = steps[0];
+
+        const interval = setInterval(() => {
+          index++;
+          if (index < steps.length) {
+            loaderText.textContent = steps[index];
+          } else {
+            clearInterval(interval);
+            loader.style.display = 'none';
+            preview.style.display = 'block';
+
+            preview.textContent = `===================================================
+UTKAL SKILL CENTRE - AI WORKSHEET GENERATOR
+===================================================
+Class: BSE Class ${wClass} | Subject: ${wSubject.toUpperCase()}
+Standard: Board Pattern | Difficulty: ${wDiff.toUpperCase()}
+---------------------------------------------------
+
+Q1. [MCQ - 1 Mark]
+    Solve the quadratic equation x^2 - 5x + 6 = 0 for x.
+    x^2 - 5x + 6 = 0 ଦ୍ଵିଘାତ ସମୀକରଣର ସମାଧାନ କର।
+    A) x = 2, 3
+    B) x = 1, 5
+    C) x = -2, -3
+    D) x = 0, 6
+
+Q2. [Short Answer - 3 Marks]
+    Find the 10th term of the Arithmetic Progression: 2, 5, 8, 11, ...
+    ୨, ୫, ୮, ୧୧, ... ସମାନ୍ତର ପ୍ରଗତି (AP) ର ୧୦ମ ପଦଟି ନିର୍ଣ୍ଣୟ କର।
+
+Q3. [Long Answer - 5 Marks]
+    State and prove Thales Theorem (Basic Proportionality Theorem) with diagram.
+    ଚିତ୍ର ସହ ଥେଲସଙ୍କ ଉପପାଦ୍ୟ (ମୌଳିକ ସମାନୁପାତିକତା ଉପପାଦ୍ୟ) ଲେଖ ଏବଂ ପ୍ରମାଣ କର।
+
+---------------------------------------------------
+◆ Generated by Utkal Skill Centre Worksheet AI ◆`;
+          }
+        }, 1200);
+      }
+    </script>
+  </body>
+</html>
