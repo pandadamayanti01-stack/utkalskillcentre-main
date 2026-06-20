@@ -1289,11 +1289,11 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       const checkPageOverflow = (currentY: number, spaceNeeded: number) => {
         if (currentY + spaceNeeded > 1540) {
           finalizePage(ctx, pageNumber);
-          const imgData = canvas.toDataURL('image/png');
+          const imgData = canvas.toDataURL('image/jpeg', 0.7);
           if (pageNumber > 1) {
             doc.addPage();
           }
-          doc.addImage(imgData, 'PNG', 0, 0, docWidth, docHeight);
+          doc.addImage(imgData, 'JPEG', 0, 0, docWidth, docHeight);
           pageNumber++;
           canvas = document.createElement('canvas');
           canvas.width = 1240;
@@ -1387,11 +1387,11 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       }
       
       finalizePage(ctx, pageNumber);
-      const imgData = canvas.toDataURL('image/png');
+      const imgData = canvas.toDataURL('image/jpeg', 0.7);
       if (pageNumber > 1) {
         doc.addPage();
       }
-      doc.addImage(imgData, 'PNG', 0, 0, docWidth, docHeight);
+      doc.addImage(imgData, 'JPEG', 0, 0, docWidth, docHeight);
       
       setWorksheetGeneratingProgress(95);
       setWorksheetGeneratingStatusText(language === 'en' ? 'Finalizing PDF...' : 'PDF ଚୂଡ଼ାନ୍ତ ରୂପ ଦିଆଯାଉଛି...');
