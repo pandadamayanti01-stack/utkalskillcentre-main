@@ -27,7 +27,7 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const isStaff = student.role === 'teacher' || student.role === 'admin';
-  const canUpload = student.role === 'admin' || student.role === 'teacher';
+  const canUpload = student.role === 'admin';
   
   // Normalize class name (e.g., prefix raw numbers like '10' with 'class')
   const getNormalizedClass = () => {
