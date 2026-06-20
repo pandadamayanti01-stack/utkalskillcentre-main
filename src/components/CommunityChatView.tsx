@@ -119,8 +119,8 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 10 * 1024 * 1024) {
-      alert(language === 'en' ? "File size exceeds 10MB limit." : "ଫାଇଲ୍ ସାଇଜ୍ 10MB ରୁ ଅଧିକ ହୋଇପାରିବ ନାହିଁ।");
+    if (file.size > 35 * 1024 * 1024) {
+      alert(language === 'en' ? "File size exceeds 35MB limit." : "ଫାଇଲ୍ ସାଇଜ୍ 35MB ରୁ ଅଧିକ ହୋଇପାରିବ ନାହିଁ।");
       return;
     }
 

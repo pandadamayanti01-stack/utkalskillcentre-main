@@ -141,8 +141,8 @@ export const CommunityModerationTab: React.FC = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 10 * 1024 * 1024) {
-      alert("File size exceeds 10MB limit.");
+    if (file.size > 35 * 1024 * 1024) {
+      alert("File size exceeds 35MB limit.");
       return;
     }
 
