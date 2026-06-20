@@ -159,7 +159,10 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
     roadmap.forEach(entry => {
       if (Array.isArray(entry.chapters)) {
         entry.chapters.forEach(ch => {
-          chaptersMap.set(ch.id, ch);
+          chaptersMap.set(ch.id, {
+            ...ch,
+            month: entry.month // Store month to map optional subjects later
+          });
         });
       }
     });
@@ -171,9 +174,23 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
     if (studentClassStr !== '9' && studentClassStr !== '10') return [];
     const mappings = studentClassStr === '9' ? BSE_SYLLABUS_MAPPING_9 : BSE_SYLLABUS_MAPPING_10;
     
+    const milestoneMonthsMap: Record<string, string[]> = {
+      ia1: ["June 2026", "July 2026"],
+      ia2: ["August 2026"],
+      half_yearly: ["June 2026", "July 2026", "August 2026", "September 2026"],
+      ia3: ["October 2026", "November 2026"],
+      ia4: ["December 2026", "January 2027"],
+      annual: [
+        "June 2026", "July 2026", "August 2026", "September 2026",
+        "October 2026", "November 2026", "December 2026", "January 2027",
+        "February 2027"
+      ]
+    };
+
     return mappings.map(milestone => {
       const matchedChapters: any[] = [];
       
+      // 1. Match core subjects
       Object.keys(milestone.subjects).forEach(subKey => {
         const allowedSubstrings = milestone.subjects[subKey];
         
@@ -202,6 +219,18 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
         
         matchedChapters.push(...matches);
       });
+      
+      // 2. Match optional subjects dynamically by study month
+      const allowedMonths = milestoneMonthsMap[milestone.key] || [];
+      const optionalMatches = allClassChapters.filter(ch => {
+        const chSub = ch.subject.toLowerCase();
+        const isOptional = chSub.includes('hindi') || chSub.includes('sanskrit') || chSub.includes('vocational');
+        if (!isOptional) return false;
+        
+        return allowedMonths.includes((ch as any).month);
+      });
+      
+      matchedChapters.push(...optionalMatches);
       
       return {
         ...milestone,
