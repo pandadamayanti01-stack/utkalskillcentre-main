@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Map, Compass, BookOpen, X, Filter, Flag, Trophy, Cloud, Star } from 'lucide-react';
+import { ArrowLeft, Map as MapIcon, Compass, BookOpen, X, Filter, Flag, Trophy, Cloud, Star } from 'lucide-react';
 import { SEO } from './SEO';
 import {
   ROADMAP_DATA,
@@ -361,7 +361,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
                       {isCurrent ? (
                         <Star className="text-amber-400 group-hover:text-orange-400 transition-colors" size={24} />
                       ) : (
-                        <Map className="text-emerald-400 group-hover:text-cyan-400 transition-colors" size={24} />
+                        <MapIcon className="text-emerald-400 group-hover:text-cyan-400 transition-colors" size={24} />
                       )}
                     </div>
                   </div>
