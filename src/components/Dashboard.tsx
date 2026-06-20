@@ -1350,7 +1350,12 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           const cleanQ = cleanLaTeX(q.question);
           ctx.font = 'bold 15px Arial, sans-serif';
           const qLines = wrapText(ctx, `Q${idx + mcqs.length + 1}. ${cleanQ}`, 960);
-          const optSpace = (qLines.length + 6) * 42;
+          
+          ctx.font = 'italic 11px Arial, sans-serif';
+          const cleanHint = cleanLaTeX(q.hint);
+          const hintLines = wrapText(ctx, `Hint: ${cleanHint}`, 960);
+          
+          const optSpace = (qLines.length + 1 + 4 + hintLines.length) * 42;
           y = checkPageOverflow(y, optSpace);
           
           const iconType = subjectIcons[idx % subjectIcons.length] || 'book';
@@ -1371,9 +1376,10 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           
           ctx.fillStyle = '#64748b';
           ctx.font = 'italic 11px Arial, sans-serif';
-          const cleanHint = cleanLaTeX(q.hint);
-          ctx.fillText(`Hint: ${cleanHint}`, 180, y);
-          y += 42;
+          hintLines.forEach(line => {
+            ctx.fillText(line, 180, y);
+            y += 42;
+          });
           y += 20;
           y = Math.ceil(y / 42) * 42;
         });
