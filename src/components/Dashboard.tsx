@@ -1190,7 +1190,9 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       drawPaperBackground(ctx);
       
       const drawHeader = (ctx: CanvasRenderingContext2D) => {
-        ctx.drawImage(logoImg, 180, 60, 95, 95);
+        if (logoImg.complete && logoImg.naturalWidth > 0) {
+          ctx.drawImage(logoImg, 180, 60, 95, 95);
+        }
         ctx.fillStyle = '#0f172a';
         ctx.font = 'bold 30px Arial, sans-serif';
         ctx.fillText("UTKAL SKILL CENTRE", 300, 95);
@@ -1234,7 +1236,9 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       ctx.stroke();
       
       const finalizePage = (pageCtx: CanvasRenderingContext2D, pageNum: number) => {
-        pageCtx.drawImage(mascotImg, 980, 1420, 180, 180);
+        if (mascotImg.complete && mascotImg.naturalWidth > 0) {
+          pageCtx.drawImage(mascotImg, 980, 1420, 180, 180);
+        }
         pageCtx.fillStyle = '#64748b';
         pageCtx.font = 'italic 13px Arial, sans-serif';
         pageCtx.textAlign = 'center';
