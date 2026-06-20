@@ -1284,7 +1284,7 @@ async function startServer() {
         - For all other subjects: The terms MUST be in English.`;
       }
 
-      const prompt = `You are an expert curriculum builder. Create a matching pair educational game for school children of Standard/Class "${className}" in the subject "${subjectName}" in ${languageInstruction}.`;
+      const prompt = `You are an expert curriculum builder. Create a matching pair educational game for school children of Standard/Class "${className}" in the subject "${subjectName}" in ${languageInstruction}.
       Generate exactly 5 matching pairs. Each pair must contain:
       - "left": a question, definition, math expression, or term (be concise, maximum 25 characters, e.g. "5 + 3" or "Force unit" or "ପ୍ରତିଫଳନ").
       - "right": the correct matching answer or corresponding term (be concise, maximum 25 characters, e.g. "8" or "Newton" or "ଆଲୋକ").
