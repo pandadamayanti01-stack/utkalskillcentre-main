@@ -16,7 +16,7 @@ import { getStorage as getAdminStorage } from 'firebase-admin/storage';
 import fs from 'fs';
 import crypto from 'node:crypto';
 import webpush from 'web-push';
-import { registerDailyMcqAutomation } from './src/server/dailyMcqAutomation.js';
+import { registerDailyMcqAutomation, loadTextbookFromBucket, extractPdfText } from './src/server/dailyMcqAutomation.js';
 import { registerYoutubeSyncAutomation } from './src/server/youtubeSync.js';
 import { getServiceAccountCredentials } from './src/server/googleCredentials.js';
 import { BSE_SYLLABUS_MAPPING_9, BSE_SYLLABUS_MAPPING_10 } from './src/data/bseSyllabusMapping.js';
@@ -1333,6 +1333,116 @@ async function startServer() {
     } catch (error: any) {
       console.error("Quiz Generation Error:", error);
       res.status(500).json({ error: error.message || 'Failed to generate quiz' });
+    }
+  });
+
+  app.post('/api/ai/generate-custom-worksheet', async (req, res) => {
+    try {
+      const { className, subjectName, chapters, language } = req.body;
+      if (!className || !subjectName) {
+        return res.status(400).json({ error: 'className and subjectName are required' });
+      }
+
+      const rotatorKeys = getRotatorKeys();
+      if (rotatorKeys.length === 0) {
+        return res.status(503).json({ error: 'GEMINI_API_KEY and all rotator keys are missing on the server' });
+      }
+
+      const adminApp = getInitializedAdminApp();
+      let chapterTextContext = '';
+      if (adminApp && Array.isArray(chapters) && chapters.length > 0) {
+        try {
+          const firstChapter = chapters[0];
+          console.log(`[Custom Worksheet] Loading textbook for ${className} ${subjectName} chapter: ${firstChapter}`);
+          const bucketResult = await loadTextbookFromBucket(adminApp, className, subjectName, firstChapter);
+          if (bucketResult && bucketResult.driveContent?.buffer) {
+            const parsedText = await extractPdfText(bucketResult.driveContent.buffer);
+            if (parsedText && parsedText.trim().length > 50) {
+              chapterTextContext = parsedText.substring(0, 30000);
+              console.log(`[Custom Worksheet] Successfully extracted ${chapterTextContext.length} chars of chapter text.`);
+            }
+          }
+        } catch (storageErr: any) {
+          console.warn('[Custom Worksheet] Error loading PDF from storage, falling back to general knowledge:', storageErr.message);
+        }
+      }
+
+      let languageInstruction = '';
+      if (language === 'or') {
+        languageInstruction = `Odia (using Odia script for student content).
+        SUBJECT-SPECIFIC RULES:
+        - For "English" subject: The terms/questions MUST be in English only.
+        - For "Sanskrit" / "Hindi" subjects: The terms/questions MUST be in Sanskrit / Hindi.
+        - For "Mathematics", "Science", and "Social Science" subjects: The questions and options MUST be in Odia (but keep mathematical numbers, equations, or scientific variables clean using standard English/Arabic numerals like 5, x, y, a^2 + b^2).`;
+      } else {
+        languageInstruction = `English.
+        SUBJECT-SPECIFIC RULES:
+        - For "Odia" / "Sanskrit" / "Hindi" subjects: The questions MUST be in their respective scripts.
+        - For all other subjects: The questions MUST be in English.`;
+      }
+
+      const prompt = `You are an expert curriculum builder and Board exam paper setter for the Board of Secondary Education (BSE) Odisha.
+      Generate exactly 15 multiple-choice questions (MCQs) and exactly 15 subjective questions (total 30 questions) of MEDIUM difficulty on the topic/chapters: "${Array.isArray(chapters) ? chapters.join(', ') : chapters}" in the subject "${subjectName}" for standard "${className}".
+      
+      CRITICAL REQUIREMENTS:
+      - The questions must be highly important from a board exam perspective, focusing on core syllabus concepts.
+      - The subjective questions and their model answers/hints must follow the official BSE Odisha board exam pattern style, structure, and standard terminology.
+      - Do NOT use raw LaTeX mathematical symbols or formatting delimiters (like $$, $, \\[, \\], \\frac, \\sqrt). Instead, use standard plain text or standard Unicode symbols (like ÷, ×, ±, ≈, ≠, ≤, ≥, ∞, •, α, β, θ, π, √, ^) so that it renders clearly on any device screen.
+
+      ${chapterTextContext ? `Here is the verified textbook chapter content to base your questions on:\n\n${chapterTextContext}\n\n` : ''}
+
+      ${languageInstruction}
+
+      Provide the output in JSON format with the following structure:
+      {
+        "mcqs": [
+          {
+            "question": "Question text",
+            "options": ["Option A", "Option B", "Option C", "Option D"],
+            "answer": "Correct option text exactly matching one of the options"
+          }
+        ],
+        "subjectives": [
+          {
+            "question": "Subjective question text",
+            "hint": "Model solution or step-by-step hint explaining the answer key"
+          }
+        ]
+      }
+      Do not include any extra introductory or explanatory text. Return ONLY the JSON object.`;
+
+      let lastError = null;
+      for (const keyToUse of rotatorKeys) {
+        try {
+          console.log(`Backend Custom Worksheet: Attempting generation using key ${keyToUse.substring(0, 12)}...`);
+          const ai = new GoogleGenerativeAI(keyToUse);
+          const model = ai.getGenerativeModel({
+            model: "gemini-2.5-flash",
+            generationConfig: {
+              responseMimeType: "application/json",
+              temperature: 0.7,
+            }
+          }, { apiVersion: "v1beta" });
+
+          const result = await model.generateContent(prompt);
+          let responseText = result.response.text();
+          
+          if (language === 'or') {
+            responseText = cleanOdiaOrthographyLocal(responseText);
+          }
+
+          const worksheetData = JSON.parse(responseText.replace(/```json\n?|```/g, '').trim());
+          return res.json(worksheetData);
+        } catch (error: any) {
+          lastError = error;
+          console.warn(`Worksheet generation attempt failed using key ${keyToUse.substring(0, 12)}:`, error.message);
+        }
+      }
+
+      throw lastError || new Error('Failed to generate custom worksheet with all available keys');
+    } catch (error: any) {
+      console.error("Custom Worksheet Error:", error);
+      res.status(500).json({ error: error.message || 'Failed to generate custom worksheet' });
     }
   });
 

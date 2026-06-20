@@ -1135,8 +1135,13 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
   const generateCustomWorksheetPDF = async () => {
     setIsGeneratingWorksheet(true);
+    setWorksheetStep(5);
     setWorksheetGeneratingProgress(10);
-    setWorksheetGeneratingStatusText(language === 'en' ? 'Preparing question bank...' : 'ପ୍ରଶ୍ନପତ୍ର ପ୍ରସ୍ତୁତ କରାଯାଉଛି...');
+    setWorksheetGeneratingStatusText(
+      language === 'en' 
+        ? 'Generating 15 MCQ & 15 Subjective questions via AI...' 
+        : 'AI ସାହାଯ୍ୟରେ ୧୫ଟି MCQ ଓ ୧୫ଟି ଦୀର୍ଘ ପ୍ରଶ୍ନ ପ୍ରସ୍ତୁତ କରାଯାଉଛି...'
+    );
     
     try {
       const isBoard = userClass === '9' || userClass === '10';
@@ -1147,41 +1152,29 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       const selectedChaptersData = worksheetChaptersList.filter((ch: any) => 
         selectedWorksheetChapters.includes(ch.id || ch.title)
       );
-      
-      let { mcqs, subjectives } = curateWorksheetQuestions(
-        selectedWorksheetSubject, 
-        selectedChaptersData, 
-        worksheetDifficulty, 
-        worksheetPattern
-      );
-      
-      if (language === 'or') {
-        setWorksheetGeneratingProgress(15);
-        setWorksheetGeneratingStatusText('AI Translation to Odia in progress...');
-        try {
-          const translated = await translateContent({ mcqs, subjectives }, 'or');
-          if (translated) {
-            let source = translated;
-            if (!translated.mcqs && !translated.subjectives) {
-              const rootKey = Object.keys(translated).find(k => 
-                translated[k] && typeof translated[k] === 'object' && 
-                (translated[k].mcqs || translated[k].subjectives)
-              );
-              if (rootKey) {
-                source = translated[rootKey];
-              }
-            }
-            if (source.mcqs || source.subjectives) {
-              mcqs = source.mcqs || mcqs;
-              subjectives = source.subjectives || subjectives;
-            }
-          }
-        } catch (transErr) {
-          console.error("Worksheet translation error, using English fallbacks:", transErr);
-        }
+
+      const response = await fetch('/api/ai/generate-custom-worksheet', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          className: `Class ${userClass}`,
+          subjectName: subjectLabel,
+          chapters: selectedWorksheetChapters,
+          language
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(language === 'en' ? 'Failed to generate custom worksheet from server.' : 'ସର୍ଭରରୁ ପ୍ରଶ୍ନପତ୍ର ପ୍ରସ୍ତୁତ କରିବାରେ ବିଫଳ ହେଲା।');
       }
+
+      const data = await response.json();
+      const mcqs = data.mcqs || [];
+      const subjectives = data.subjectives || [];
       
-      setWorksheetGeneratingProgress(25);
+      setWorksheetGeneratingProgress(35);
       setWorksheetGeneratingStatusText(language === 'en' ? 'Loading assets...' : 'ସମ୍ପତ୍ତି ଲୋଡ୍ କରାଯାଉଛି...');
       
       const logoImg = new Image();
@@ -1192,7 +1185,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       mascotImg.src = '/gundulu-pointing.png';
       await new Promise(resolve => { mascotImg.onload = resolve; mascotImg.onerror = resolve; });
       
-      setWorksheetGeneratingProgress(45);
+      setWorksheetGeneratingProgress(50);
       setWorksheetGeneratingStatusText(language === 'en' ? 'Rendering wobbly notebook lines...' : 'ଖାତା ପୃଷ୍ଠା ପ୍ରସ୍ତୁତ କରାଯାଉଛି...');
       
       const doc = new jsPDF('p', 'mm', 'a4');
@@ -4095,10 +4088,10 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                       </button>
                       <button
                         disabled={selectedWorksheetChapters.length === 0}
-                        onClick={() => setWorksheetStep(3)}
+                        onClick={generateCustomWorksheetPDF}
                         className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-xs font-black uppercase text-white tracking-wider transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-emerald-950/20"
                       >
-                        {language === 'en' ? 'Continue' : 'ଆଗକୁ'}
+                        {language === 'en' ? 'Create PDF' : 'ପ୍ରଶ୍ନପତ୍ର ତିଆରି କରନ୍ତୁ'}
                       </button>
                     </div>
                   </div>

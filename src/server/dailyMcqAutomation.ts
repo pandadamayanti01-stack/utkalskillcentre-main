@@ -57,7 +57,7 @@ function getExpectedLanguage(subject: string): 'odia' | 'english' | 'hindi' | 's
 
 
 
-async function extractPdfText(buffer: Buffer): Promise<string> {
+export async function extractPdfText(buffer: Buffer): Promise<string> {
   try {
     const parser = new PDFParse({ data: buffer });
     const result = await parser.getText();
@@ -388,7 +388,7 @@ function getSubjectFolderNames(subject: string): string[] {
   return Array.from(new Set(list.filter(Boolean)));
 }
 
-async function loadTextbookFromBucket(adminApp: App, className: string, subject: string, chapterTitle?: string): Promise<{ driveContent: DriveContentResult; source: GeneratedDailyMcqResult['source'] } | null> {
+export async function loadTextbookFromBucket(adminApp: App, className: string, subject: string, chapterTitle?: string): Promise<{ driveContent: DriveContentResult; source: GeneratedDailyMcqResult['source'] } | null> {
   const classDigit = className.replace(/[^0-9]/g, '');
   // Try both Class X and Class_X folder patterns inside chapterwise and Chapter Wise Text Book directories
   const possibleClassFolders = [
