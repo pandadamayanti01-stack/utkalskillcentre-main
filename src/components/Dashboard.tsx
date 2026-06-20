@@ -1160,9 +1160,21 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         setWorksheetGeneratingStatusText('AI Translation to Odia in progress...');
         try {
           const translated = await translateContent({ mcqs, subjectives }, 'or');
-          if (translated && (translated.mcqs || translated.subjectives)) {
-            mcqs = translated.mcqs || mcqs;
-            subjectives = translated.subjectives || subjectives;
+          if (translated) {
+            let source = translated;
+            if (!translated.mcqs && !translated.subjectives) {
+              const rootKey = Object.keys(translated).find(k => 
+                translated[k] && typeof translated[k] === 'object' && 
+                (translated[k].mcqs || translated[k].subjectives)
+              );
+              if (rootKey) {
+                source = translated[rootKey];
+              }
+            }
+            if (source.mcqs || source.subjectives) {
+              mcqs = source.mcqs || mcqs;
+              subjectives = source.subjectives || subjectives;
+            }
           }
         } catch (transErr) {
           console.error("Worksheet translation error, using English fallbacks:", transErr);

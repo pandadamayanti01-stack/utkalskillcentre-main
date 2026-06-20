@@ -69,18 +69,58 @@ export const getStudyBuddySystemInstruction = (
   return `${base}${nameHint}${classHint}`;
 };
 
-/**
- * Safely parse JSON from AI response, handling markdown code blocks
- */
 function safeJsonParse(text: string) {
   try {
-    // Remove markdown code blocks if present
-    const cleaned = text.replace(/```json\n?|```/g, '').trim();
+    let cleaned = text.replace(/```json\n?|```/g, '').trim();
+    const firstBrace = cleaned.indexOf('{');
+    const firstBracket = cleaned.indexOf('[');
+    let startIdx = -1;
+    let endIdx = -1;
+    
+    if (firstBrace !== -1 && (firstBracket === -1 || firstBrace < firstBracket)) {
+      startIdx = firstBrace;
+      endIdx = cleaned.lastIndexOf('}');
+    } else if (firstBracket !== -1) {
+      startIdx = firstBracket;
+      endIdx = cleaned.lastIndexOf(']');
+    }
+    
+    if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
+      cleaned = cleaned.substring(startIdx, endIdx + 1);
+    }
     return JSON.parse(cleaned);
   } catch (e) {
     console.error("Failed to parse JSON from AI:", text);
     throw e;
   }
+}
+
+export function normalizeKeys(obj: any): any {
+  if (Array.isArray(obj)) {
+    return obj.map(item => normalizeKeys(item));
+  } else if (obj !== null && typeof obj === 'object') {
+    const newObj: any = {};
+    for (const key of Object.keys(obj)) {
+      const lowerKey = key.toLowerCase();
+      let newKey = key;
+      if (lowerKey.includes('mcq') || lowerKey.includes('ପ୍ରଶ୍ନଗୁଡ଼ିକ') || lowerKey === 'mcqs') {
+        newKey = 'mcqs';
+      } else if (lowerKey.includes('subjective') || lowerKey.includes('ଦୀର୍ଘ') || lowerKey === 'subjectives') {
+        newKey = 'subjectives';
+      } else if (lowerKey.includes('question') || lowerKey.includes('ପ୍ରଶ୍ନ') || lowerKey === 'q') {
+        newKey = 'question';
+      } else if (lowerKey.includes('option') || lowerKey.includes('ବିକଳ୍ପ') || lowerKey === 'opts') {
+        newKey = 'options';
+      } else if (lowerKey.includes('answer') || lowerKey.includes('ଉତ୍ତର') || lowerKey === 'ans') {
+        newKey = 'answer';
+      } else if (lowerKey.includes('hint') || lowerKey.includes('ସୂଚନା') || lowerKey.includes('ଇଙ୍ଗିତ')) {
+        newKey = 'hint';
+      }
+      newObj[newKey] = normalizeKeys(obj[key]);
+    }
+    return newObj;
+  }
+  return obj;
 }
 
 function generateOfflineSocraticResponse(query: string, isOdia: boolean): string {
@@ -329,25 +369,23 @@ export async function solveMathDoubt(
   }
 }
 
-export async function translateContent(text: string | object, targetLanguage: 'en' | 'or') {
+async function translateBatch(batch: any[], targetLanguage: 'en' | 'or'): Promise<any[]> {
   try {
     const ai = getAI();
-    const isJson = typeof text === 'object';
-    const textPayload = isJson ? safeJsonStringify(text) : text;
-
+    const textPayload = safeJsonStringify(batch);
+    
     let systemInstruction = '';
     if (targetLanguage === 'or') {
-      systemInstruction = `You are an expert translator. Translate the following educational content from English to Odia.
+      systemInstruction = `You are an expert translator. Translate the following educational questions array from English to Odia.
       CRITICAL LANGUAGE RULES FOR ODIA MEDIUM:
       - Keep all mathematical equations, formulas, variables, and digits in standard English/Arabic notation (e.g. 5, x, y, a^2 + b^2, 2x + 3y = 5).
       - Do NOT translate English math variables to Odia script (e.g., do NOT write 'x' as 'ଏକ୍ସ' or '5' as '୫').
-      - All surrounding explanatory text, questions, options, instructions, and non-mathematical terms MUST be translated to natural, grammatically correct Odia script.`;
+      - All surrounding explanatory text, questions, options, instructions, and non-mathematical terms MUST be translated to natural, grammatically correct Odia script.
+      - Return ONLY the translated JSON array. Maintain exact structure and keys ('question', 'options', 'answer', 'hint'). Do not include any markdown formatting.`;
     } else {
-      systemInstruction = "You are an expert translator. Translate the following educational content from Odia to English. Keep mathematical terms, numbers, and formatting intact.";
-    }
-
-    if (isJson) {
-      systemInstruction += "\n\nThe input is a JSON object. Translate all string values within the JSON object to the target language, but keep the keys exactly the same. Return ONLY the translated JSON object. Do not include any markdown formatting like ```json.";
+      systemInstruction = `You are an expert translator. Translate the following educational questions array from Odia to English.
+      Keep mathematical terms, numbers, and formatting intact.
+      Return ONLY the translated JSON array. Maintain exact structure and keys ('question', 'options', 'answer', 'hint'). Do not include any markdown formatting.`;
     }
 
     const translatedText = await withRetry(async (modelName, apiVersion) => {
@@ -360,21 +398,92 @@ export async function translateContent(text: string | object, targetLanguage: 'e
         contents: [{ role: 'user', parts: [{ text: textPayload }] }],
         generationConfig: {
           temperature: 0.1,
-          ...(isJson ? { responseMimeType: "application/json" } : {})
+          responseMimeType: "application/json"
         },
       });
       return result.response.text();
     }, 'flash');
+
+    const cleaned = targetLanguage === 'or' ? cleanOdiaOrthography(translatedText) : translatedText;
+    const parsed = safeJsonParse(cleaned);
+    return normalizeKeys(parsed);
+  } catch (error) {
+    console.error("Batch Translation Error:", error);
+    return batch; // Fallback to original batch
+  }
+}
+
+export async function translateContent(text: string | object, targetLanguage: 'en' | 'or') {
+  try {
+    const ai = getAI();
+    const isJson = typeof text === 'object';
     
     if (isJson) {
-      try {
-        const cleaned = targetLanguage === 'or' ? cleanOdiaOrthography(translatedText) : translatedText;
-        return safeJsonParse(cleaned);
-      } catch (e) {
-        console.error("Failed to parse translated JSON", e);
-        return text; // Fallback to original if parsing fails
+      const obj = text as any;
+      const mcqs = obj.mcqs || [];
+      const subjectives = obj.subjectives || [];
+      
+      const translatedMcqs: any[] = [];
+      const translatedSubjectives: any[] = [];
+      
+      // Batch translate MCQs (10 at a time)
+      const mcqBatchSize = 10;
+      for (let i = 0; i < mcqs.length; i += mcqBatchSize) {
+        const batch = mcqs.slice(i, i + mcqBatchSize);
+        console.log(`Translating MCQ batch ${i / mcqBatchSize + 1}...`);
+        const result = await translateBatch(batch, targetLanguage);
+        if (Array.isArray(result)) {
+          translatedMcqs.push(...result);
+        } else {
+          translatedMcqs.push(...batch);
+        }
       }
+      
+      // Batch translate Subjectives (5 at a time)
+      const subBatchSize = 5;
+      for (let i = 0; i < subjectives.length; i += subBatchSize) {
+        const batch = subjectives.slice(i, i + subBatchSize);
+        console.log(`Translating Subjective batch ${i / subBatchSize + 1}...`);
+        const result = await translateBatch(batch, targetLanguage);
+        if (Array.isArray(result)) {
+          translatedSubjectives.push(...result);
+        } else {
+          translatedSubjectives.push(...batch);
+        }
+      }
+      
+      return {
+        mcqs: translatedMcqs,
+        subjectives: translatedSubjectives
+      };
     }
+
+    const textPayload = text as string;
+    let systemInstruction = '';
+    if (targetLanguage === 'or') {
+      systemInstruction = `You are an expert translator. Translate the following educational content from English to Odia.
+      CRITICAL LANGUAGE RULES FOR ODIA MEDIUM:
+      - Keep all mathematical equations, formulas, variables, and digits in standard English/Arabic notation (e.g. 5, x, y, a^2 + b^2, 2x + 3y = 5).
+      - Do NOT translate English math variables to Odia script (e.g., do NOT write 'x' as 'ଏକ୍ସ' or '5' as '୫').
+      - All surrounding explanatory text, questions, options, instructions, and non-mathematical terms MUST be translated to natural, grammatically correct Odia script.`;
+    } else {
+      systemInstruction = "You are an expert translator. Translate the following educational content from Odia to English. Keep mathematical terms, numbers, and formatting intact.";
+    }
+
+    const translatedText = await withRetry(async (modelName, apiVersion) => {
+      const model = ai.getGenerativeModel({ 
+        model: modelName,
+        systemInstruction
+      }, { apiVersion });
+
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: textPayload }] }],
+        generationConfig: {
+          temperature: 0.1,
+        },
+      });
+      return result.response.text();
+    }, 'flash');
 
     return targetLanguage === 'or' ? cleanOdiaOrthography(translatedText) : translatedText;
   } catch (error) {
