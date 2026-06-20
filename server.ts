@@ -1270,7 +1270,21 @@ async function startServer() {
         return res.status(503).json({ error: 'GEMINI_API_KEY and all rotator keys are missing on the server' });
       }
 
-      const prompt = `You are an expert curriculum builder. Create a matching pair educational game for school children of Standard/Class "${className}" in the subject "${subjectName}" in "${language === 'or' ? 'Odia (using Odia script for student content, keep mathematical numbers or scientific variables clean)' : 'English'}".
+      let languageInstruction = '';
+      if (language === 'or') {
+        languageInstruction = `Odia (using Odia script for student content).
+        SUBJECT-SPECIFIC RULES:
+        - For "English" subject: The terms MUST be in English only.
+        - For "Sanskrit" / "Hindi" subjects: The terms MUST be in Sanskrit / Hindi.
+        - For "Mathematics", "Science", and "Social Science" subjects: The terms MUST be in Odia (but keep mathematical numbers or scientific variables clean using standard English/Arabic numerals like 5, x, y, a^2 + b^2).`;
+      } else {
+        languageInstruction = `English.
+        SUBJECT-SPECIFIC RULES:
+        - For "Odia" / "Sanskrit" / "Hindi" subjects: The terms MUST be in their respective scripts.
+        - For all other subjects: The terms MUST be in English.`;
+      }
+
+      const prompt = `You are an expert curriculum builder. Create a matching pair educational game for school children of Standard/Class "${className}" in the subject "${subjectName}" in ${languageInstruction}.`;
       Generate exactly 5 matching pairs. Each pair must contain:
       - "left": a question, definition, math expression, or term (be concise, maximum 25 characters, e.g. "5 + 3" or "Force unit" or "ପ୍ରତିଫଳନ").
       - "right": the correct matching answer or corresponding term (be concise, maximum 25 characters, e.g. "8" or "Newton" or "ଆଲୋକ").

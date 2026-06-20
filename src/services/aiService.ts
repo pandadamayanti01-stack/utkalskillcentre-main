@@ -583,8 +583,32 @@ export async function generateTestQuestions(subject: string, className: string, 
       }
     }
 
+    let languageInstruction = '';
+    const subLower = String(subject).toLowerCase().trim();
+    if (language === 'or') {
+      languageInstruction = `
+      The entire test (questions, options, and model solutions) must be written in Odia (using clean Odia script).
+      CRITICAL SUBJECT-SPECIFIC LANGUAGE RULES FOR ODIA MEDIUM:
+      - For "English" subject (e.g. 'english', 'sle'): The entire test questions, options, and answers MUST be written in English only.
+      - For "Odia" / "FLO" subject (e.g. 'odia', 'flo'): The entire test MUST be written in Odia only.
+      - For "Sanskrit" / "TLS" subject (e.g. 'sanskrit', 'tls'): The entire test MUST be written in Sanskrit (Devanagari script) or bilingual Sanskrit/Odia.
+      - For "Hindi" / "TLH" subject (e.g. 'hindi', 'tlh'): The entire test MUST be written in Hindi (Devanagari script) only.
+      - For "Mathematics" / "Math" / "MTH" subject (e.g. 'math', 'mathematics', 'mth'): The math equations and numbers can be in English/Arabic numerals (e.g. 5, x, y, a^2 + b^2 = c^2), but the question text, options, and explanations MUST be written in Odia. Do not output math questions purely in English.
+      - For "Science" (e.g. 'science', 'physical_science', 'life_science') and "Social Science" (e.g. 'social_science', 'history', 'geography') subjects: The question text and options MUST be written in Odia.
+      `;
+    } else {
+      languageInstruction = `
+      The entire test (questions, options, and model solutions) must be written in English.
+      CRITICAL SUBJECT-SPECIFIC LANGUAGE RULES FOR ENGLISH MEDIUM:
+      - For "Odia" / "FLO" subject: The entire test MUST be written in Odia (using Odia script) only.
+      - For "Hindi" / "TLH" subject: The entire test MUST be written in Hindi (Devanagari script) only.
+      - For "Sanskrit" / "TLS" subject: The entire test MUST be written in Sanskrit (Devanagari script) only.
+      - For all other subjects: The entire test MUST be written in English.
+      `;
+    }
+
     const prompt = `Generate a comprehensive monthly test for "${subject}" for class "${className}" for the month of "${month}".
-    The entire test (questions and options) must be written in ${language === 'or' ? 'Odia (using Odia script)' : 'English'}.
+    ${languageInstruction}
     The test must follow this specific structure of questions (Total ${totalMarks} Marks):
     ${structureDescription}
 
