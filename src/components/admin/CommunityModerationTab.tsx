@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { collection, query, orderBy, onSnapshot, deleteDoc, doc, getDocs, where, Timestamp, limit, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db, auth } from '../../firebase';
 import { ChatMessage } from '../../types';
-import { Trash2, Shield, Search, AlertCircle, RefreshCw, Send } from 'lucide-react';
+import { Trash2, Shield, Search, AlertCircle, RefreshCw, Send, Paperclip, Loader2 } from 'lucide-react';
 
 export const CommunityModerationTab: React.FC = () => {
   const [selectedClass, setSelectedClass] = useState<string>('class10');
@@ -12,6 +12,10 @@ export const CommunityModerationTab: React.FC = () => {
   const [deleteStatus, setDeleteStatus] = useState<string | null>(null);
   const [inputText, setInputText] = useState('');
   const [sending, setSending] = useState(false);
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingFile, setUploadingFile] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const rooms = [
     { id: 'teachers', label: 'Educator Staff Room 👥' },
@@ -133,6 +137,67 @@ export const CommunityModerationTab: React.FC = () => {
     }
   };
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      alert("File size exceeds 10MB limit.");
+      return;
+    }
+
+    const { ref: storageRef, uploadBytesResumable, getDownloadURL } = await import('firebase/storage');
+    const { storage } = await import('../../firebase');
+
+    setUploadingFile(true);
+    setUploadProgress(0);
+
+    try {
+      const fileRef = storageRef(storage, `community_files/${selectedClass}/${Date.now()}_${file.name}`);
+      const uploadTask = uploadBytesResumable(fileRef, file);
+
+      uploadTask.on('state_changed', 
+        (snapshot) => {
+          const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+          setUploadProgress(progress);
+        }, 
+        (error) => {
+          console.error("Upload error:", error);
+          alert("Upload failed. Please try again.");
+          setUploadingFile(false);
+        }, 
+        async () => {
+          try {
+            const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+            const currentUser = auth.currentUser;
+            
+            await addDoc(collection(db, 'community'), {
+              text: `Sent a file: ${file.name}`,
+              fileUrl: downloadUrl,
+              fileName: file.name,
+              fileType: file.type.startsWith('image/') ? 'image' : 'pdf',
+              userId: currentUser?.uid || 'admin',
+              userName: currentUser?.displayName || 'Administrator',
+              userAvatar: currentUser?.photoURL || null,
+              class: selectedClass,
+              role: 'admin',
+              timestamp: serverTimestamp()
+            });
+          } catch (err) {
+            console.error("Error creating message for uploaded file:", err);
+          } finally {
+            setUploadingFile(false);
+            setUploadProgress(0);
+          }
+        }
+      );
+    } catch (err) {
+      console.error("Firebase Storage init error:", err);
+      alert("Failed to initialize upload.");
+      setUploadingFile(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -201,6 +266,31 @@ export const CommunityModerationTab: React.FC = () => {
                       </span>
                     </div>
                     <p className="text-slate-300 whitespace-pre-wrap break-words">{msg.text}</p>
+                    {msg.fileUrl && (
+                      <div className="mt-2.5 p-3 rounded-xl bg-slate-950/40 border border-white/10 flex items-center justify-between gap-4 backdrop-blur-sm relative z-10 max-w-md">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30">
+                            {msg.fileType === 'image' ? (
+                              <Shield size={18} className="text-indigo-400" />
+                            ) : (
+                              <AlertCircle size={18} className="text-indigo-400" />
+                            )}
+                          </div>
+                          <div className="flex flex-col text-left">
+                            <span className="text-xs font-bold text-white max-w-[150px] truncate">{msg.fileName || 'document.pdf'}</span>
+                            <span className="text-[10px] text-slate-400 uppercase tracking-wider">{msg.fileType === 'image' ? 'Image File' : 'PDF Document'}</span>
+                          </div>
+                        </div>
+                        <a 
+                          href={msg.fileUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="px-3 py-1.5 rounded-lg bg-indigo-500 hover:bg-indigo-400 text-white text-xs font-bold transition-all active:scale-95 flex items-center justify-center shadow-md shadow-indigo-950/50"
+                        >
+                          Download
+                        </a>
+                      </div>
+                    )}
                   </div>
                   <button
                     onClick={() => handleDeleteMessage(msg.id)}
@@ -215,8 +305,41 @@ export const CommunityModerationTab: React.FC = () => {
           )}
         </div>
 
+        {/* Hidden File Input */}
+        <input 
+          type="file" 
+          ref={fileInputRef} 
+          onChange={handleFileChange} 
+          accept=".pdf,image/*" 
+          className="hidden" 
+        />
+
+        {/* Uploading progress bar */}
+        {uploadingFile && (
+          <div className="mb-3 px-4 py-2 rounded-xl bg-slate-900 border border-indigo-500/30 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <Loader2 size={16} className="text-indigo-400 animate-spin" />
+              <span className="text-xs font-bold text-slate-300">
+                Uploading material ({uploadProgress}%)...
+              </span>
+            </div>
+            <div className="flex-grow bg-slate-800 rounded-full h-1.5 overflow-hidden">
+              <div className="bg-indigo-500 h-full transition-all" style={{ width: `${uploadProgress}%` }}></div>
+            </div>
+          </div>
+        )}
+
         {/* Send Announcement / Message Form */}
         <form onSubmit={handleSendMessage} className="flex items-center gap-3 border-t border-white/5 pt-4 shrink-0 mt-4">
+          <button
+            type="button"
+            disabled={uploadingFile}
+            onClick={() => fileInputRef.current?.click()}
+            className="p-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 rounded-xl transition-all active:scale-95 flex items-center justify-center shrink-0"
+            title="Upload Worksheet/Image"
+          >
+            <Paperclip size={18} />
+          </button>
           <input
             type="text"
             value={inputText}
