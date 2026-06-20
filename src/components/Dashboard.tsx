@@ -656,7 +656,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         where('subject', '==', subjectKey)
       );
       const snap = await getDocs(q);
-      const docsData = snap.docs.map(doc => ({
+      const docsData: any[] = snap.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
@@ -664,28 +664,40 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       // Filter chapters by roadmap up to current month
       const roadmapChapters = getCumulativeChaptersForSubject(subjectKey);
       
-      const filtered = docsData.filter((dbCh: any) => {
-        const titleDb = (dbCh.title || '').toLowerCase();
-        return roadmapChapters.some((roadCh: any) => {
-          const titleRoad = (roadCh.title_en || roadCh.title || '').toLowerCase();
+      const finalChapters = roadmapChapters.map((roadCh, idx) => {
+        const titleRoad = (roadCh.title_en || roadCh.title || '').toLowerCase();
+        
+        // Find matching chapter in Firestore docsData
+        const matchedDbCh = docsData.find((dbCh: any) => {
+          const titleDb = (dbCh.title || '').toLowerCase();
           return titleDb.includes(titleRoad) || titleRoad.includes(titleDb);
         });
+        
+        if (matchedDbCh) {
+          return {
+            id: matchedDbCh.id,
+            title: (language === 'en' ? roadCh.title_en : roadCh.title_or) || roadCh.title || matchedDbCh.title,
+            quiz_questions: matchedDbCh.quiz_questions || matchedDbCh.mcqs || []
+          };
+        }
+        
+        // Fallback using roadmap local questions if not in Firestore yet
+        const localKey = Object.keys(CHAPTER_QUESTION_BANK).find(k => titleRoad.includes(k)) || '';
+        return {
+          id: `roadmap_${idx}`,
+          title: (language === 'en' ? roadCh.title_en : roadCh.title_or) || roadCh.title || 'Untitled Chapter',
+          quiz_questions: CHAPTER_QUESTION_BANK[localKey]?.mcqs || []
+        };
       });
-      
-      const finalChapters = filtered.length > 0 ? filtered : roadmapChapters.map((ch, idx) => ({
-        id: `roadmap_${idx}`,
-        title: ch.title_en || ch.title,
-        quiz_questions: CHAPTER_QUESTION_BANK[Object.keys(CHAPTER_QUESTION_BANK).find(k => (ch.title_en || ch.title || '').toLowerCase().includes(k)) || '']?.mcqs || []
-      }));
 
       setWorksheetChaptersList(finalChapters);
-      setSelectedWorksheetChapters(finalChapters.map((c: any) => c.id || c.title));
+      setSelectedWorksheetChapters(finalChapters.map((c: any) => c.id));
     } catch (err) {
       console.error("Failed to fetch worksheet chapters:", err);
       const roadmapChapters = getCumulativeChaptersForSubject(subjectKey);
       const mapped = roadmapChapters.map((ch, idx) => ({
         id: `roadmap_${idx}`,
-        title: ch.title_en || ch.title,
+        title: (language === 'en' ? ch.title_en : ch.title_or) || ch.title || 'Untitled Chapter',
         quiz_questions: []
       }));
       setWorksheetChaptersList(mapped);
