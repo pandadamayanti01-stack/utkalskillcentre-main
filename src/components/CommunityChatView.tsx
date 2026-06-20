@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import * as Lucide from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp, Timestamp, doc, updateDoc, getDocs, limit } from 'firebase/firestore';
-import { db } from '../firebase';
+import { ref as storageRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '../firebase';
 import { Student, ChatMessage } from '../types';
 import { translations } from '../translations';
 import { playClickSound, vibrate } from '../pwa';
@@ -21,7 +22,14 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
   const [activeStudents, setActiveStudents] = useState<{id:string, name:string, avatar:string}[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  const cleanPhone = (p: string) => p.replace(/\D/g, '');
+  const userPhone = student.phoneNumber ? cleanPhone(student.phoneNumber) : '';
   const isStaff = student.role === 'teacher' || student.role === 'admin';
+  const canUpload = student.role === 'admin' || userPhone === '1010101010';
   
   // Normalize class name (e.g., prefix raw numbers like '10' with 'class')
   const getNormalizedClass = () => {
@@ -108,6 +116,60 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
 
     return () => unsubscribe();
   }, [activeClass]);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      alert(language === 'en' ? "File size exceeds 10MB limit." : "ଫାଇଲ୍ ସାଇଜ୍ 10MB ରୁ ଅଧିକ ହୋଇପାରିବ ନାହିଁ।");
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadProgress(10);
+
+    try {
+      const fileRef = storageRef(storage, `community_files/${activeClass}/${Date.now()}_${file.name}`);
+      const uploadTask = uploadBytesResumable(fileRef, file);
+
+      uploadTask.on('state_changed', 
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setUploadProgress(Math.round(progress));
+        }, 
+        (error) => {
+          console.error("Storage upload error:", error);
+          alert(language === 'en' ? "Failed to upload file." : "ଫାଇଲ୍ ଅପଲୋଡ୍ କରିବାରେ ବିଫଳ ହେଲା।");
+          setIsUploading(false);
+        }, 
+        async () => {
+          const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+          
+          await addDoc(collection(db, 'community'), {
+            text: file.name,
+            fileUrl: downloadUrl,
+            fileName: file.name,
+            fileType: file.type.includes('image') ? 'image' : 'pdf',
+            userId: student.id,
+            userName: student.name,
+            userAvatar: student.avatar || null,
+            class: activeClass,
+            role: student.role,
+            timestamp: serverTimestamp()
+          });
+          
+          setIsUploading(false);
+          setUploadProgress(0);
+          if (fileInputRef.current) fileInputRef.current.value = '';
+        }
+      );
+    } catch (err) {
+      console.error("Upload handler error:", err);
+      alert(language === 'en' ? "Upload failed." : "ଅପଲୋଡ୍ ବିଫଳ ହେଲା।");
+      setIsUploading(false);
+    }
+  };
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -261,6 +323,30 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
             const isAdmin = msg.role === 'admin' || msg.role === 'teacher';
             const showHeader = index === 0 || messages[index - 1].userId !== msg.userId;
 
+            const msgReactions = msg.reactions || {};
+            const availableEmojis = ['👍', '❤️', '😮', '🙋‍♂️'];
+            
+            const handleToggleReaction = async (emoji: string) => {
+              try {
+                const messageRef = doc(db, 'community', msg.id);
+                const currentUsers = msgReactions[emoji] || [];
+                let updatedUsers: string[];
+                if (currentUsers.includes(student.id)) {
+                  updatedUsers = currentUsers.filter((id: string) => id !== student.id);
+                } else {
+                  updatedUsers = [...currentUsers, student.id];
+                }
+                
+                await updateDoc(messageRef, {
+                  [`reactions.${emoji}`]: updatedUsers
+                });
+              } catch (err) {
+                console.error("Error toggling reaction:", err);
+              }
+            };
+
+            const activeReactions = Object.entries(msgReactions).filter(([_, users]) => users && users.length > 0);
+
             return (
               <motion.div 
                 initial={{ opacity: 0, y: 15, scale: 0.95 }}
@@ -290,6 +376,75 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
                 }`}>
                   {isAdmin && <div className="absolute inset-0 bg-amber-500/5 rounded-2xl rounded-tl-sm pointer-events-none"></div>}
                   <p className="text-[15px] leading-relaxed break-words relative z-10 font-medium">{msg.text}</p>
+                  
+                  {msg.fileUrl && (
+                    <div className="mt-2.5 p-3 rounded-xl bg-slate-950/40 border border-white/10 flex items-center justify-between gap-4 backdrop-blur-sm relative z-10">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">
+                          {msg.fileType === 'image' ? (
+                            <Lucide.Image size={18} className="text-emerald-400" />
+                          ) : (
+                            <Lucide.FileText size={18} className="text-emerald-400" />
+                          )}
+                        </div>
+                        <div className="flex flex-col text-left">
+                          <span className="text-xs font-bold text-white max-w-[150px] truncate">{msg.fileName || 'document.pdf'}</span>
+                          <span className="text-[10px] text-slate-400 uppercase tracking-wider">{msg.fileType === 'image' ? 'Image File' : 'PDF Document'}</span>
+                        </div>
+                      </div>
+                      <a 
+                        href={msg.fileUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="p-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white transition-all active:scale-95 flex items-center justify-center shadow-md shadow-emerald-950/50"
+                      >
+                        <Lucide.Download size={14} />
+                      </a>
+                    </div>
+                  )}
+                </div>
+
+                {/* Reactions list & quick picker */}
+                <div className="flex items-center gap-1.5 mt-1 ml-1 flex-wrap">
+                  {activeReactions.map(([emoji, users]) => {
+                    const hasReacted = users.includes(student.id);
+                    return (
+                      <button
+                        key={emoji}
+                        onClick={() => handleToggleReaction(emoji)}
+                        className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs transition-all active:scale-90 border ${
+                          hasReacted 
+                            ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400 font-bold' 
+                            : 'bg-white/5 border-white/5 text-slate-400 hover:bg-white/10'
+                        }`}
+                      >
+                        <span>{emoji}</span>
+                        <span className="text-[10px]">{users.length}</span>
+                      </button>
+                    );
+                  })}
+                  
+                  {/* Plus button to show quick emojis tray */}
+                  <div className="relative group/tray">
+                    <button className="w-5 h-5 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-450 hover:bg-white/10 hover:text-white transition-all">
+                      <Lucide.Plus size={10} />
+                    </button>
+                    <div className="absolute left-0 bottom-full mb-1 bg-slate-900 border border-white/10 rounded-full px-2 py-1 shadow-2xl flex items-center gap-2 opacity-0 scale-90 translate-y-1 pointer-events-none group-hover/tray:opacity-100 group-hover/tray:scale-100 group-hover/tray:translate-y-0 group-hover/tray:pointer-events-auto transition-all duration-200 z-30">
+                      {availableEmojis.map(emoji => {
+                        const users = msgReactions[emoji] || [];
+                        const hasReacted = users.includes(student.id);
+                        return (
+                          <button
+                            key={emoji}
+                            onClick={() => handleToggleReaction(emoji)}
+                            className={`hover:scale-125 active:scale-90 transition-transform text-sm p-1 rounded-full ${hasReacted ? 'bg-emerald-500/20' : ''}`}
+                          >
+                            {emoji}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
               </motion.div>
             );
@@ -300,7 +455,45 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
 
       {/* Floating Input Area */}
       <div className={`absolute bottom-0 left-0 w-full p-4 sm:p-6 bg-slate-950/95 border-t border-white/5 z-20 ${isTab ? 'pb-[calc(4.5rem+env(safe-area-inset-bottom))] lg:pb-[calc(1rem+env(safe-area-inset-bottom))]' : 'pb-[calc(1rem+env(safe-area-inset-bottom))]'}`}>
+        {/* Hidden File Input */}
+        {canUpload && (
+          <input 
+            type="file" 
+            ref={fileInputRef} 
+            onChange={handleFileChange} 
+            accept=".pdf,image/*" 
+            className="hidden" 
+          />
+        )}
+
+        {/* Uploading progress bar */}
+        {isUploading && (
+          <div className="max-w-3xl mx-auto mb-3 px-4 py-2 rounded-xl bg-slate-900 border border-emerald-500/30 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <Lucide.Loader2 size={16} className="text-emerald-400 animate-spin" />
+              <span className="text-xs font-bold text-slate-300">
+                {language === 'en' ? `Uploading material (${uploadProgress}%)...` : `ଅପଲୋଡ୍ ହେଉଛି (${uploadProgress}%)...`}
+              </span>
+            </div>
+            <div className="flex-grow bg-slate-800 rounded-full h-1.5 overflow-hidden">
+              <div className="bg-emerald-500 h-full transition-all" style={{ width: `${uploadProgress}%` }}></div>
+            </div>
+          </div>
+        )}
+
         <form onSubmit={handleSendMessage} className="flex items-end gap-3 max-w-3xl mx-auto">
+          {canUpload && (
+            <button
+              type="button"
+              disabled={isUploading}
+              onClick={() => fileInputRef.current?.click()}
+              className="w-[52px] h-[52px] rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 flex items-center justify-center shrink-0 disabled:opacity-50 transition-all active:scale-90"
+              title={language === 'en' ? 'Upload Worksheet/Image' : 'ୱର୍କସିଟ୍/ଫଟୋ ଅପଲୋଡ୍ କରନ୍ତୁ'}
+            >
+              <Lucide.Paperclip size={20} />
+            </button>
+          )}
+
           <div className="flex-1 bg-slate-900/80 backdrop-blur-2xl rounded-[1.5rem] border border-white/10 focus-within:border-emerald-500/50 focus-within:shadow-[0_0_20px_rgba(16,185,129,0.15)] transition-all flex items-end min-h-[52px] shadow-2xl relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5 opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none"></div>
             <textarea

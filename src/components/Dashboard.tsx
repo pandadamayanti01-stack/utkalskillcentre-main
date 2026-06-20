@@ -1397,6 +1397,58 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       setWorksheetGeneratingStatusText(language === 'en' ? 'Finalizing PDF...' : 'PDF ଚୂଡ଼ାନ୍ତ ରୂପ ଦିଆଯାଉଛି...');
       
       const filename = `USC_Worksheet_Class${userClass}_${selectedWorksheetSubject.toUpperCase()}_${worksheetDifficulty}.pdf`;
+      
+      const isStudent = user?.role === 'student' || !user?.role;
+      if (isStudent) {
+        try {
+          setWorksheetGeneratingProgress(90);
+          setWorksheetGeneratingStatusText(language === 'en' ? 'Sharing to Class Community...' : 'ଶ୍ରେଣୀ କମ୍ୟୁନିଟିରେ ଶେୟାର୍ ହେଉଛି...');
+          
+          const pdfBlob = doc.output('blob');
+          const { ref: storageRef, uploadBytes, getDownloadURL } = await import('firebase/storage');
+          const { storage } = await import('../firebase');
+          const { addDoc, collection, serverTimestamp } = await import('firebase/firestore');
+          
+          const classNormalized = `class${userClass || '10'}`;
+          const fileRef = storageRef(storage, `community_files/${classNormalized}/${Date.now()}_${filename}`);
+          const uploadResult = await uploadBytes(fileRef, pdfBlob);
+          const pdfUrl = await getDownloadURL(uploadResult.ref);
+          
+          await addDoc(collection(db, 'community'), {
+            text: language === 'en' 
+              ? `I just generated a custom practice worksheet for Class ${userClass || '10'} ${subjectLabel} (${worksheetDifficulty} difficulty)!`
+              : `ମୁଁ ଶ୍ରେଣୀ ${userClass || '10'} ${subjectLabel} (${worksheetDifficulty} ଅସୁବିଧା) ପାଇଁ ଏକ ଅଭ୍ୟାସ ପ୍ରଶ୍ନପତ୍ର ପ୍ରସ୍ତୁତ କରିଛି!`,
+            userId: user.id || user.uid,
+            userName: user.name || 'Student',
+            userAvatar: user.avatar || null,
+            class: classNormalized,
+            role: 'student',
+            timestamp: serverTimestamp()
+          });
+          
+          await addDoc(collection(db, 'community'), {
+            text: language === 'en'
+              ? `Approved! Here is the download link for the Class ${userClass || '10'} ${subjectLabel} Worksheet:`
+              : `ଅନୁମୋଦିତ! ଶ୍ରେଣୀ ${userClass || '10'} ${subjectLabel} ପ୍ରଶ୍ନପତ୍ର ଡାଉନଲୋଡ୍ କରିବା ପାଇଁ ଲିଙ୍କ୍:`,
+            fileUrl: pdfUrl,
+            fileName: filename,
+            fileType: 'pdf',
+            userId: 'admin_bot',
+            userName: 'Utkal Admin Bot',
+            userAvatar: null,
+            class: classNormalized,
+            role: 'admin',
+            timestamp: serverTimestamp()
+          });
+          
+          if (onOpenCommunity) {
+            onOpenCommunity();
+          }
+        } catch (shareErr) {
+          console.error("Failed to share worksheet to community:", shareErr);
+        }
+      }
+      
       doc.save(filename);
       
       setWorksheetGeneratingProgress(100);

@@ -196,6 +196,12 @@ export interface ChatMessage {
   class: string;
   role: string;
   timestamp: any;
+  fileUrl?: string;
+  fileName?: string;
+  fileType?: string;
+  reactions?: {
+    [emoji: string]: string[];
+  };
 }
 
 declare global {
