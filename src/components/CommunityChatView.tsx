@@ -26,10 +26,8 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
-  const cleanPhone = (p: string) => p.replace(/\D/g, '');
-  const userPhone = student.phoneNumber ? cleanPhone(student.phoneNumber) : '';
   const isStaff = student.role === 'teacher' || student.role === 'admin';
-  const canUpload = student.role === 'admin' || userPhone === '1010101010';
+  const canUpload = student.role === 'admin' || student.role === 'teacher';
   
   // Normalize class name (e.g., prefix raw numbers like '10' with 'class')
   const getNormalizedClass = () => {
