@@ -3880,7 +3880,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           </div>
         )}
 
-        {showImportantPapersModal && createPortal(
+        {showImportantPapersModal && (
           <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md overflow-y-auto">
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
@@ -4268,8 +4268,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 </p>
               </div>
             </motion.div>
-          </div>,
-          document.body
+          </div>
         )}
       </AnimatePresence>
 
