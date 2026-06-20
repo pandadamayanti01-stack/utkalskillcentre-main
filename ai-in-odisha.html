@@ -642,6 +642,39 @@
         color: var(--text-muted);
         font-weight: 500;
       }
+
+      /* Quick Links Sub-Menu */
+      .tools-hub-nav {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 20px 0 40px;
+      }
+
+      .hub-link {
+        font-size: 12px;
+        font-weight: 700;
+        padding: 8px 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        color: var(--text-muted);
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border-glass);
+        transition: all 0.2s;
+      }
+
+      .hub-link:hover {
+        background: rgba(255, 255, 255, 0.07);
+        color: var(--text-light);
+        border-color: var(--text-muted);
+      }
+
+      .hub-link.current {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--accent-emerald);
+        border-color: rgba(16, 185, 129, 0.3);
+      }
     </style>
   </head>
   <body>
@@ -655,6 +688,14 @@
         </a>
         <a href="/" class="btn-nav">ଆପ୍ ଖୋଲନ୍ତୁ (Open App)</a>
       </nav>
+
+      <!-- Sub Navigation Hub -->
+      <div class="tools-hub-nav">
+        <a href="/ai-in-odisha.html" class="hub-link current">AI Odisha Hub</a>
+        <a href="/osepa-lesson-planner-ai.html" class="hub-link">OSEPA Lesson Planner</a>
+        <a href="/bse-odisha-worksheet-generator-ai.html" class="hub-link">BSE Worksheet Generator</a>
+        <a href="/zero-cost-science-projects-odisha.html" class="hub-link">Zero-Cost TLM Generator</a>
+      </div>
 
       <!-- Hero -->
       <header class="hero">
