@@ -60,6 +60,32 @@ const isOnlyEmojis = (str: string) => {
   });
 };
 
+const odiaClassNames: Record<string, string> = {
+  '10': 'ଦଶମ',
+  '9': 'ନବମ',
+  '8': 'ଅଷ୍ଟମ',
+  '7': 'ସପ୍ତମ',
+  '6': 'ଷଷ୍ଠ',
+  '5': 'ପଞ୍ଚମ',
+  '4': 'ଚତୁର୍ଥ',
+  '3': 'ତୃତୀୟ',
+  '2': 'ଦ୍ଵିତୀୟ',
+  '1': 'ପ୍ରଥମ'
+};
+
+const englishClassNames: Record<string, string> = {
+  '10': '10th',
+  '9': '9th',
+  '8': '8th',
+  '7': '7th',
+  '6': '6th',
+  '5': '5th',
+  '4': '4th',
+  '3': '3rd',
+  '2': '2nd',
+  '1': '1st'
+};
+
 interface CommunityChatViewProps {
   language: 'en' | 'or';
   student: Student;
@@ -361,17 +387,25 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
                       className="bg-slate-900/80 border border-emerald-500/30 text-emerald-400 font-black rounded-xl px-3 py-1.5 text-xs outline-none cursor-pointer focus:border-emerald-500 transition-all shadow-inner"
                     >
                       <option value="teachers" className="bg-slate-900 text-amber-400 font-black">
-                        {language === 'en' ? 'Educator Staff Room 👥' : 'ଶିକ୍ଷକ ଷ୍ଟାଫ୍ ରୁମ୍ 👥'}
+                        {language === 'en' ? 'Utkal Guru Parivara 👥' : 'ଉତ୍କଳ ଗୁରୁ ପରିବାର 👥'}
                       </option>
                       {[10, 9, 8, 7, 6, 5, 4, 3, 2, 1].map(num => (
                         <option key={num} value={`class${num}`} className="bg-slate-900 text-white font-bold">
-                          {language === 'en' ? `Class ${num}` : `ଶ୍ରେଣୀ ${num}`}
+                          {language === 'en' ? `Utkal ${englishClassNames[String(num)] || num} Sanga 👥` : `ଉତ୍କଳ ${odiaClassNames[String(num)] || num} ସାଙ୍ଗ 👥`}
                         </option>
                       ))}
                     </select>
                   </div>
                 ) : (
-                  language === 'en' ? `Class ${displayClass} Community` : `ଶ୍ରେଣୀ ${displayClass} କମ୍ୟୁନିଟି`
+                  language === 'en' ? (
+                    displayClass === 'teachers' 
+                      ? 'Utkal Guru Parivara' 
+                      : `Utkal ${englishClassNames[displayClass] || displayClass} Sanga`
+                  ) : (
+                    displayClass === 'teachers' 
+                      ? 'ଉତ୍କଳ ଗୁରୁ ପରିବାର' 
+                      : `ଉତ୍କଳ ${odiaClassNames[displayClass] || displayClass} ସାଙ୍ଗ`
+                  )
                 )}
                 <div className="relative flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
