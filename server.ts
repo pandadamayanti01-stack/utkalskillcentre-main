@@ -2027,6 +2027,65 @@ async function startServer() {
     }
   });
 
+  const sendDailyGreetings = async () => {
+    console.log('[Cron] Sending daily morning greetings to student rooms...');
+    try {
+      if (adminApp) {
+        const db = getAdminFirestore(adminApp, firestoreDatabaseId);
+        const classes = Array.from({ length: 10 }, (_, i) => `class${i + 1}`);
+        const FieldValue = (await import('firebase-admin/firestore')).FieldValue;
+
+        const greetingText = `🌅 ଶୁଭ ସକାଳ, ସାଙ୍ଗମାନେ!
+
+ପ୍ରତିଦିନ ସକାଳ ଆମ ପାଇଁ ଏକ ନୂଆ ସୁଯୋଗ ନେଇ ଆସିଥାଏ। ଜୀବନରେ ସଫଳ ହେବାକୁ ହେଲେ ପ୍ରତିଦିନ ଛୋଟ ଛୋଟ ସଫଳ ପ୍ରୟାସ କରିବାକୁ ପଡ଼ିବ। ଆଜିର ଦିନକୁ ସଫଳ କରିବା ପାଇଁ ଚାଲ ପ୍ରଥମ ପଦକ୍ଷେପ ନେବା!
+
+🏆 ଆଜିର ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ (Daily MCQ): ତୁରନ୍ତ ଆଜିର MCQ ପ୍ରଶ୍ନ ଗୁଡ଼ିକୁ ସମ୍ପୂର୍ଣ୍ଣ କରି ଆପଣଙ୍କର ଷ୍ଟ୍ରିକ୍ (Streak) ବଜାୟ ରଖ ଏବଂ ନିଜର ଜ୍ଞାନକୁ ପରୀକ୍ଷା କର। ମନେରଖ, ପ୍ରତିଦିନ କୁଇଜ୍ ଅଭ୍ୟାସ କଲେ ହିଁ ମସ୍ତିଷ୍କ ଅଧିକ ସକ୍ରିୟ ଓ ଶାଣିତ ହୋଇଥାଏ।
+🤖 ସନ୍ଦେହ ସମାଧାନ (Ask Doubts): ପାଠପଢ଼ାରେ ଯେକୌଣସି ପ୍ରଶ୍ନ ବା ସନ୍ଦେହ ଥିଲେ, ମତେ ଏଠାରେ @gundulu ମେନସନ୍ କରି ପଚାର। ମୁଁ ତୁରନ୍ତ ଓଡ଼ିଆରେ ସହଜ କରି ବୁଝାଇଦେବି।
+"ନିରନ୍ତର ଚେଷ୍ଟା ହିଁ ସଫଳତାର ଚାବିକାଠି।" ଚାଲ ଆଜିର MCQ ଚ୍ୟାଲେଞ୍ଜ ଜିତି ଦେଖାଇବା! 💪🚀`;
+
+        for (const cls of classes) {
+          await db.collection('community').add({
+            text: greetingText,
+            userId: 'gundulu_bot',
+            userName: 'Gundulu AI 🤖',
+            userAvatar: '/gundulu-v3.png',
+            class: cls,
+            role: 'admin',
+            timestamp: FieldValue.serverTimestamp()
+          });
+        }
+        console.log('[Cron] Daily morning greetings successfully posted to all student rooms.');
+      } else {
+        console.warn('[Cron] Cannot send greetings because Firebase Admin is not initialized.');
+      }
+    } catch (err) {
+      console.error('[Cron] Failed to send daily morning greetings:', err);
+    }
+  };
+
+  // Expose endpoint for manual daily greeting triggers
+  app.post('/api/admin/send-daily-greetings', async (req, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+        return res.status(401).json({ error: 'Unauthorized Request' });
+      }
+
+      await sendDailyGreetings();
+      return res.json({ success: true, message: 'Daily greetings sent to all student rooms' });
+    } catch (err: any) {
+      console.error('Failed to trigger daily greetings:', err);
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  // Schedule daily morning greeting at 7:00 AM IST
+  cron.schedule('0 7 * * *', async () => {
+    await sendDailyGreetings();
+  }, {
+    timezone: "Asia/Kolkata"
+  });
+
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== 'production' || !fs.existsSync(indexPath)) {
