@@ -613,7 +613,7 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
       </div>
 
       {/* Messages Area */}
-      <div className={`flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 z-10 scroll-smooth custom-scrollbar pb-48`}>
+      <div className={`flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 z-10 scroll-smooth custom-scrollbar pb-6`}>
         {/* Active Filter Indicators */}
         {(showOnlyFiles || searchQuery) && (
           <div className="max-w-3xl mx-auto mb-2 p-3 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-between gap-4">
@@ -839,7 +839,7 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
       </div>
 
       {/* Floating Input Area */}
-      <div className={`absolute bottom-0 left-0 w-full p-4 sm:p-6 bg-slate-950/95 border-t border-white/5 z-20 pb-[calc(1.2rem+env(safe-area-inset-bottom))]`}>
+      <div className={`relative shrink-0 p-4 sm:p-6 bg-slate-950/95 border-t border-white/5 z-20 pb-[calc(1.2rem+env(safe-area-inset-bottom))]`}>
         {/* Hidden File Input */}
         {canUpload && (
           <input 
