@@ -8,6 +8,58 @@ import { Student, ChatMessage } from '../types';
 import { translations } from '../translations';
 import { playClickSound, vibrate } from '../pwa';
 
+const isCleanAvatar = (url: string | null | undefined) => {
+  if (!url) return false;
+  if (url.includes('api.dicebear.com')) return false;
+  if (url.length < 5) return false;
+  return true;
+};
+
+const getInitials = (name: string) => {
+  if (!name) return 'U';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+  return parts[0].substring(0, Math.min(2, parts[0].length)).toUpperCase();
+};
+
+const getAvatarBgColor = (name: string) => {
+  const colors = [
+    'from-emerald-500/20 to-teal-500/20 text-emerald-450 border-emerald-500/30',
+    'from-blue-500/20 to-indigo-500/20 text-blue-400 border-blue-500/30',
+    'from-purple-500/20 to-pink-500/20 text-purple-400 border-purple-500/30',
+    'from-amber-500/20 to-orange-500/20 text-amber-400 border-amber-500/30',
+    'from-rose-500/20 to-red-500/20 text-rose-400 border-rose-500/30',
+    'from-cyan-500/20 to-blue-500/20 text-cyan-400 border-cyan-500/30',
+  ];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % colors.length;
+  return colors[index];
+};
+
+const isOnlyEmojis = (str: string) => {
+  const chars = Array.from(str.trim());
+  if (chars.length === 0) return false;
+  return chars.every(char => {
+    if (/\s/.test(char)) return true;
+    const codePoint = char.codePointAt(0);
+    if (!codePoint) return false;
+    return (
+      (codePoint >= 0x1F300 && codePoint <= 0x1F9FF) || // Misc Symbols and Pictographs
+      (codePoint >= 0x1F600 && codePoint <= 0x1F64F) || // Emoticons
+      (codePoint >= 0x2600 && codePoint <= 0x26FF) ||   // Misc Symbols
+      (codePoint >= 0x2700 && codePoint <= 0x27BF) ||   // Dingbats
+      (codePoint >= 0x1F1E6 && codePoint <= 0x1F1FF) || // Regional indicator symbols
+      (codePoint >= 0x1F900 && codePoint <= 0x1F9FF) || // Supplemental Symbols and Pictographs
+      (codePoint >= 0x1FA70 && codePoint <= 0x1FAFF)    // Symbols and Pictographs Extended-A
+    );
+  });
+};
+
 interface CommunityChatViewProps {
   language: 'en' | 'or';
   student: Student;
@@ -24,7 +76,13 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [emojiCooldown, setEmojiCooldown] = useState(false);
+  const [showQuickEmojiBar, setShowQuickEmojiBar] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+
+  const [showOnlyFiles, setShowOnlyFiles] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const isStaff = student.role === 'teacher' || student.role === 'admin';
   const canUpload = student.role === 'admin';
@@ -41,6 +99,21 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
   };
 
   const [activeClass, setActiveClass] = useState(getNormalizedClass());
+
+  // Filter messages by search query and shared files toggle
+  const filteredMessages = messages.filter(msg => {
+    if (showOnlyFiles && !msg.fileUrl) {
+      return false;
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      const nameMatch = msg.userName ? msg.userName.toLowerCase().includes(q) : false;
+      const textMatch = msg.text ? msg.text.toLowerCase().includes(q) : false;
+      const fileMatch = msg.fileName ? msg.fileName.toLowerCase().includes(q) : false;
+      return nameMatch || textMatch || fileMatch;
+    }
+    return true;
+  });
 
   // Track presence and fetch recently active
   useEffect(() => {
@@ -174,9 +247,23 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
     if (!inputText.trim()) return;
 
     const messageText = inputText.trim();
+
+    // Check if the message contains only emojis and if there are multiple emojis
+    const chars = Array.from(messageText.replace(/\s+/g, ''));
+    if (chars.length > 1 && isOnlyEmojis(messageText)) {
+      alert(language === 'en' 
+        ? "To prevent chat spam, you can only send one emoji at a time!" 
+        : "ଚାଟ୍ ସ୍ପାମ୍ ରୋକିବା ପାଇଁ, ଆପଣ ଏକ ସମୟରେ କେବଳ ଗୋଟିଏ ଇମୋଜି ପଠାଇ ପାରିବେ!");
+      return;
+    }
+
     setInputText('');
     playClickSound();
     vibrate(10);
+
+    // Set emoji cooldown on any message send as well to prevent spamming
+    setEmojiCooldown(true);
+    setTimeout(() => setEmojiCooldown(false), 2000);
 
     try {
       await addDoc(collection(db, 'community'), {
@@ -190,7 +277,29 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
       });
     } catch (error) {
       console.error("Error sending message:", error);
-      // Could show a toast notification here
+    }
+  };
+
+  const handleQuickEmojiSend = async (emoji: string) => {
+    if (emojiCooldown) return;
+    setEmojiCooldown(true);
+    setTimeout(() => setEmojiCooldown(false), 3000);
+
+    playClickSound();
+    vibrate(10);
+
+    try {
+      await addDoc(collection(db, 'community'), {
+        text: emoji,
+        userId: student.id,
+        userName: student.name,
+        userAvatar: student.avatar || null,
+        class: activeClass,
+        role: student.role,
+        timestamp: serverTimestamp()
+      });
+    } catch (error) {
+      console.error("Error sending emoji:", error);
     }
   };
 
@@ -259,7 +368,75 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
               )}
             </div>
           </div>
+
+          {/* Right Action Icons for Filter & Search */}
+          <div className="flex items-center gap-2">
+            {/* Search Toggle Button */}
+            <button
+              onClick={() => {
+                playClickSound();
+                setShowSearch(prev => !prev);
+                if (showSearch) setSearchQuery(''); // Clear search query when closing
+              }}
+              className={`w-10 h-10 flex items-center justify-center rounded-full active:scale-95 transition-all shadow-inner border ${
+                showSearch || searchQuery 
+                  ? 'bg-indigo-500/20 border-indigo-500/30 text-indigo-400 font-bold' 
+                  : 'bg-white/5 hover:bg-white/10 border-white/10 text-white'
+              }`}
+              title={language === 'en' ? 'Search Messages' : 'ମେସେଜ୍ ସର୍ଚ୍ଚ'}
+            >
+              <Lucide.Search size={18} />
+            </button>
+
+            {/* Shared Files Toggle Button */}
+            <button
+              onClick={() => {
+                playClickSound();
+                setShowOnlyFiles(prev => !prev);
+              }}
+              className={`w-10 h-10 flex items-center justify-center rounded-full active:scale-95 transition-all shadow-inner border ${
+                showOnlyFiles 
+                  ? 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400 font-bold' 
+                  : 'bg-white/5 hover:bg-white/10 border-white/10 text-white'
+              }`}
+              title={language === 'en' ? 'Show Shared Files Only' : 'ସେୟାର୍ ହୋଇଥିବା ଫାଇଲ୍'}
+            >
+              <Lucide.FolderDown size={18} />
+            </button>
+          </div>
         </div>
+
+        {/* Animated Search Input Bar */}
+        <AnimatePresence>
+          {showSearch && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="px-4 pb-3 pt-1 border-t border-white/5 bg-slate-950/20"
+            >
+              <div className="relative max-w-3xl mx-auto">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={language === 'en' ? 'Search by message, filename, or sender...' : 'ମେସେଜ୍, ଫାଇଲ୍ ନାମ କିମ୍ବା ପ୍ରେରକଙ୍କ ନାମ ଖୋଜନ୍ତୁ...'}
+                  className="w-full h-10 pl-10 pr-10 rounded-xl bg-slate-950/80 border border-white/10 text-white font-medium text-xs outline-none focus:border-indigo-500 transition-all shadow-inner"
+                  autoFocus
+                />
+                <Lucide.Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                  >
+                    <Lucide.X size={16} />
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Premium Recently Active Bar */}
         <AnimatePresence>
@@ -274,23 +451,27 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
                 {language === 'en' ? 'Active Now' : 'ସମ୍ପ୍ରତି ସକ୍ରିୟ'}
               </span>
               <div className="flex gap-3">
-                {activeStudents.map(s => (
-                  <div key={s.id} className="relative group shrink-0">
-                    <div className="absolute inset-0 rounded-full bg-emerald-500/20 blur-md group-hover:bg-emerald-500/40 transition-all"></div>
-                    {s.avatar ? (
-                      <img src={s.avatar} alt={s.name} className="relative w-8 h-8 rounded-full border-2 border-emerald-500/50 object-cover shadow-lg" />
-                    ) : (
-                      <div className="relative w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border-2 border-emerald-500/50 flex items-center justify-center shadow-lg">
-                        <Lucide.User size={14} className="text-emerald-400" />
+                {activeStudents.map(s => {
+                  const hasCleanAvatar = isCleanAvatar(s.avatar);
+                  const initialsColor = getAvatarBgColor(s.name);
+                  return (
+                    <div key={s.id} className="relative group shrink-0">
+                      <div className="absolute inset-0 rounded-full bg-emerald-500/20 blur-md group-hover:bg-emerald-500/40 transition-all"></div>
+                      {hasCleanAvatar ? (
+                        <img src={s.avatar} alt={s.name} className="relative w-8 h-8 rounded-full border-2 border-emerald-500/50 object-cover shadow-lg" />
+                      ) : (
+                        <div className={`relative w-8 h-8 rounded-full bg-gradient-to-br ${initialsColor} border-2 flex items-center justify-center shadow-lg font-black text-xs`}>
+                          {getInitials(s.name)}
+                        </div>
+                      )}
+                      <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-slate-900 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
+                      
+                      <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-2.5 py-1 bg-slate-800 text-white font-bold text-[10px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50 shadow-xl border border-white/10">
+                        {s.name}
                       </div>
-                    )}
-                    <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-slate-900 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
-                    
-                    <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-2.5 py-1 bg-slate-800 text-white font-bold text-[10px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50 shadow-xl border border-white/10">
-                      {s.name}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </motion.div>
           )}
@@ -298,7 +479,42 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
       </div>
 
       {/* Messages Area */}
-      <div className={`flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 z-10 scroll-smooth custom-scrollbar ${isTab ? 'pb-44 lg:pb-32' : 'pb-32'}`}>
+      <div className={`flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 z-10 scroll-smooth custom-scrollbar pb-32`}>
+        {/* Active Filter Indicators */}
+        {(showOnlyFiles || searchQuery) && (
+          <div className="max-w-3xl mx-auto mb-2 p-3 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+                {showOnlyFiles ? <Lucide.FolderDown size={16} /> : <Lucide.Search size={16} />}
+              </div>
+              <span className="text-xs font-bold text-slate-200 text-left">
+                {showOnlyFiles && searchQuery ? (
+                  language === 'en' 
+                    ? `Showing shared files matching "${searchQuery}"` 
+                    : `"${searchQuery}" ସହ ମେଳ ହେଉଥିବା ଫାଇଲ୍ ଗୁଡ଼ିକ ଦେଖାଉଛି`
+                ) : showOnlyFiles ? (
+                  language === 'en' ? 'Showing Shared Files Only' : 'କେବଳ ସେୟାର୍ ହୋଇଥିବା ଫାଇଲ୍ ଗୁଡ଼ିକ ଦେଖାଉଛି'
+                ) : (
+                  language === 'en' 
+                    ? `Search results for "${searchQuery}"` 
+                    : `"${searchQuery}" ପାଇଁ ଫଳାଫଳ`
+                )}
+              </span>
+            </div>
+            <button
+              onClick={() => {
+                playClickSound();
+                setShowOnlyFiles(false);
+                setShowSearch(false);
+                setSearchQuery('');
+              }}
+              className="px-3 py-1 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all active:scale-95 shrink-0"
+            >
+              {language === 'en' ? 'Clear Filter' : 'ଫିଲ୍ଟର୍ ହଟାନ୍ତୁ'}
+            </button>
+          </div>
+        )}
+
         {isLoading ? (
           <div className="flex items-center justify-center h-full">
             <div className="relative">
@@ -306,17 +522,27 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
               <Lucide.Loader2 className="w-10 h-10 text-emerald-500 animate-spin relative z-10" />
             </div>
           </div>
-        ) : messages.length === 0 ? (
+        ) : filteredMessages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center">
             <div className="w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-6 shadow-2xl relative">
               <div className="absolute inset-0 rounded-full bg-indigo-500/20 blur-xl animate-pulse"></div>
               <Lucide.MessagesSquare size={40} className="text-indigo-400 relative z-10" />
             </div>
-            <h2 className="text-2xl font-black text-white tracking-tight mb-2">Start the Conversation</h2>
-            <p className="text-slate-400 max-w-xs">{language === 'en' ? 'Be the first to say hello and kick off the discussion!' : 'ପ୍ରଥମେ ନମସ୍କାର କୁହନ୍ତୁ ଏବଂ ଆଲୋଚନା ଆରମ୍ଭ କରନ୍ତୁ!'}</p>
+            <h2 className="text-2xl font-black text-white tracking-tight mb-2">
+              {showOnlyFiles || searchQuery ? (language === 'en' ? 'No Results Found' : 'କୌଣସି ଫଳาଫଳ ମିଳିଲା ନାହିଁ') : 'Start the Conversation'}
+            </h2>
+            <p className="text-slate-400 max-w-xs">
+              {showOnlyFiles || searchQuery ? (
+                language === 'en' 
+                  ? 'Try clearing the active filters or search queries to view all messages.' 
+                  : 'ସମସ୍ତ ମେସେଜ୍ ଦେଖିବା ପାଇଁ ସର୍ଚ୍ଚ କିମ୍ବା ଫିଲ୍ଟର୍ ହଟାଇ ଦିଅନ୍ତୁ।'
+              ) : (
+                language === 'en' ? 'Be the first to say hello and kick off the discussion!' : 'ପ୍ରଥମେ ନମସ୍କାର କୁହନ୍ତୁ ଏବଂ ଆଲୋଚନା ଆରମ୍ଭ କରନ୍ତୁ!'
+              )}
+            </p>
           </div>
         ) : (
-          messages.map((msg, index) => {
+          filteredMessages.map((msg, index) => {
             const isMe = msg.userId === student.id;
             const isAdmin = msg.role === 'admin' || msg.role === 'teacher';
             const showHeader = index === 0 || messages[index - 1].userId !== msg.userId;
@@ -452,7 +678,7 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
       </div>
 
       {/* Floating Input Area */}
-      <div className={`absolute bottom-0 left-0 w-full p-4 sm:p-6 bg-slate-950/95 border-t border-white/5 z-20 ${isTab ? 'pb-[calc(4.5rem+env(safe-area-inset-bottom))] lg:pb-[calc(1rem+env(safe-area-inset-bottom))]' : 'pb-[calc(1rem+env(safe-area-inset-bottom))]'}`}>
+      <div className={`absolute bottom-0 left-0 w-full p-4 sm:p-6 bg-slate-950/95 border-t border-white/5 z-20 pb-[calc(1.2rem+env(safe-area-inset-bottom))]`}>
         {/* Hidden File Input */}
         {canUpload && (
           <input 
@@ -479,7 +705,56 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
           </div>
         )}
 
+        {/* Quick Emoji Bar */}
+        <AnimatePresence>
+          {showQuickEmojiBar && (
+            <motion.div 
+              initial={{ height: 0, opacity: 0, marginBottom: 0 }}
+              animate={{ height: 'auto', opacity: 1, marginBottom: 14 }}
+              exit={{ height: 0, opacity: 0, marginBottom: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="flex items-center justify-center gap-4 px-4 py-2 bg-slate-900/70 rounded-2xl border border-white/5 backdrop-blur-md max-w-3xl mx-auto shadow-2xl">
+                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider select-none shrink-0 mr-1.5">
+                  {language === 'en' ? 'Quick Send:' : 'ତୁରନ୍ତ ପଠାନ୍ତୁ:'}
+                </span>
+                <div className="flex items-center gap-3">
+                  {['👍', '❤️', '😂', '😮', '😢', '🙏'].map(emoji => (
+                    <button
+                      key={emoji}
+                      type="button"
+                      disabled={emojiCooldown}
+                      onClick={() => handleQuickEmojiSend(emoji)}
+                      className={`text-2xl hover:scale-125 active:scale-95 transition-all p-1.5 rounded-full select-none ${
+                        emojiCooldown ? 'opacity-40 cursor-not-allowed scale-90' : 'cursor-pointer hover:bg-white/5'
+                      }`}
+                    >
+                      {emoji}
+                    </button>
+                  ))}
+                </div>
+                {emojiCooldown && (
+                  <span className="text-[9px] text-amber-500 font-medium animate-pulse ml-1.5 select-none shrink-0">
+                    {language === 'en' ? 'wait...' : 'ଅପେକ୍ଷା କରନ୍ତୁ...'}
+                  </span>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <form onSubmit={handleSendMessage} className="flex items-end gap-3 max-w-3xl mx-auto">
+          <button
+            type="button"
+            onClick={() => setShowQuickEmojiBar(prev => !prev)}
+            className={`w-[52px] h-[52px] rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-slate-350 flex items-center justify-center shrink-0 transition-all active:scale-90 ${
+              showQuickEmojiBar ? 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400' : ''
+            }`}
+            title={language === 'en' ? 'Quick Emojis' : 'ତୁରନ୍ତ ଇମୋଜି'}
+          >
+            {showQuickEmojiBar ? <Lucide.X size={20} /> : <Lucide.Plus size={20} />}
+          </button>
+
           {canUpload && (
             <button
               type="button"
