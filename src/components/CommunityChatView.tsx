@@ -84,6 +84,7 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeReactionMenuId, setActiveReactionMenuId] = useState<string | null>(null);
+  const [voiceAlert, setVoiceAlert] = useState(false);
 
   const isStaff = student.role === 'teacher' || student.role === 'admin';
   const canUpload = student.role === 'admin';
@@ -281,6 +282,20 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
     }
   };
 
+  const handleVoiceClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    playClickSound();
+    vibrate(15);
+    setVoiceAlert(true);
+  };
+
+  useEffect(() => {
+    if (voiceAlert) {
+      const timer = setTimeout(() => setVoiceAlert(false), 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [voiceAlert]);
+
   const handleQuickEmojiSend = async (emoji: string) => {
     if (emojiCooldown) return;
     setEmojiCooldown(true);
@@ -288,6 +303,7 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
 
     playClickSound();
     vibrate(10);
+    setShowQuickEmojiBar(false);
 
     try {
       await addDoc(collection(db, 'community'), {
@@ -771,37 +787,51 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
           )}
         </AnimatePresence>
 
-        <form onSubmit={handleSendMessage} className="flex items-end gap-3 max-w-3xl mx-auto">
-          <button
-            type="button"
-            onClick={() => setShowQuickEmojiBar(prev => !prev)}
-            className={`w-[52px] h-[52px] rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-slate-350 flex items-center justify-center shrink-0 transition-all active:scale-90 ${
-              showQuickEmojiBar ? 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400' : ''
-            }`}
-            title={language === 'en' ? 'Quick Emojis' : 'ତୁରନ୍ତ ଇମୋଜି'}
-          >
-            {showQuickEmojiBar ? <Lucide.X size={20} /> : <Lucide.Plus size={20} />}
-          </button>
+        {/* Custom Voice Alert Toast */}
+        <AnimatePresence>
+          {voiceAlert && (
+            <motion.div
+              initial={{ opacity: 0, y: 30, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 30, scale: 0.9 }}
+              className="absolute bottom-24 left-1/2 -translate-x-1/2 bg-slate-900/90 border border-emerald-500/30 text-emerald-400 px-5 py-3 rounded-full text-xs font-black tracking-wide shadow-[0_10px_30px_rgba(16,185,129,0.2)] z-[110] flex items-center gap-2 backdrop-blur-md whitespace-nowrap"
+            >
+              <Lucide.Mic size={16} className="animate-pulse" />
+              <span>
+                {language === 'en' ? 'Voice messaging is coming soon!' : 'ଭଏସ୍ ମେସେଜିଂ ସୁବିଧା ଶୀଘ୍ର ଆସୁଛି!'}
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-          {canUpload && (
+        <form onSubmit={handleSendMessage} className="flex items-end gap-2.5 max-w-3xl mx-auto w-full px-1">
+          {/* Pill Container (Input + Emojis + Attachment) */}
+          <div className="flex-1 flex items-end bg-slate-900/90 backdrop-blur-2xl rounded-[1.75rem] border border-white/10 focus-within:border-emerald-500/40 focus-within:shadow-[0_0_20px_rgba(16,185,129,0.15)] transition-all shadow-2xl relative px-1 py-1 min-h-[50px] group">
+            {/* Background gradient on focus */}
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5 opacity-0 group-focus-within:opacity-100 transition-opacity rounded-[1.75rem] pointer-events-none"></div>
+
+            {/* Left Button inside Pill: Emoji Toggle */}
             <button
               type="button"
-              disabled={isUploading}
-              onClick={() => fileInputRef.current?.click()}
-              className="w-[52px] h-[52px] rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 flex items-center justify-center shrink-0 disabled:opacity-50 transition-all active:scale-90"
-              title={language === 'en' ? 'Upload Worksheet/Image' : 'ୱର୍କସିଟ୍/ଫଟୋ ଅପଲୋଡ୍ କରନ୍ତୁ'}
+              onClick={() => {
+                playClickSound();
+                vibrate(10);
+                setShowQuickEmojiBar(prev => !prev);
+              }}
+              className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all active:scale-90 relative z-10 mb-0.5 ${
+                showQuickEmojiBar ? 'text-emerald-400 bg-emerald-500/10' : 'text-slate-400 hover:text-white hover:bg-white/5'
+              }`}
+              title={language === 'en' ? 'Quick Emojis' : 'ତୁରନ୍ତ ଇମୋଜି'}
             >
-              <Lucide.Paperclip size={20} />
+              {showQuickEmojiBar ? <Lucide.Keyboard size={20} /> : <Lucide.Smile size={20} />}
             </button>
-          )}
 
-          <div className="flex-1 bg-slate-900/80 backdrop-blur-2xl rounded-[1.5rem] border border-white/10 focus-within:border-emerald-500/50 focus-within:shadow-[0_0_20px_rgba(16,185,129,0.15)] transition-all flex items-end min-h-[52px] shadow-2xl relative overflow-hidden group">
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5 opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none"></div>
+            {/* Middle: Textarea input */}
             <textarea
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              placeholder={language === 'en' ? 'Type your message...' : 'ଏକ ମେସେଜ୍ ଲେଖନ୍ତୁ...'}
-              className="w-full bg-transparent text-white px-5 py-3.5 outline-none resize-none max-h-32 text-[15px] font-medium placeholder:text-slate-500 relative z-10"
+              placeholder={language === 'en' ? 'Message' : 'ଏଠାରେ ମେସେଜ୍ ଲେଖନ୍ତୁ...'}
+              className="flex-1 bg-transparent text-white px-2 py-2 outline-none resize-none max-h-32 text-[15px] font-medium placeholder:text-slate-500 relative z-10 self-center"
               rows={1}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
@@ -810,18 +840,46 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
                 }
               }}
               style={{
-                height: inputText ? 'auto' : '52px',
-                minHeight: '52px'
+                height: inputText ? 'auto' : '36px',
+                minHeight: '36px'
               }}
             />
+
+            {/* Right Button inside Pill: Attachment (only if canUpload) */}
+            {canUpload && (
+              <button
+                type="button"
+                disabled={isUploading}
+                onClick={() => {
+                  playClickSound();
+                  vibrate(10);
+                  fileInputRef.current?.click();
+                }}
+                className="w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/5 transition-all active:scale-90 shrink-0 disabled:opacity-50 relative z-10 mb-0.5"
+                title={language === 'en' ? 'Upload Worksheet/Image' : 'ୱର୍କସିଟ୍/ଫଟୋ ଅପଲୋଡ୍ କରନ୍ତୁ'}
+              >
+                {isUploading ? <Lucide.Loader2 size={18} className="animate-spin text-emerald-400" /> : <Lucide.Paperclip size={18} />}
+              </button>
+            )}
           </div>
+
+          {/* Right Button outside Pill: Dynamic Action (Send / Mic) */}
           <button
-            type="submit"
-            disabled={!inputText.trim() || isLoading}
-            className="w-[52px] h-[52px] rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 hover:from-emerald-300 hover:to-emerald-500 text-white flex items-center justify-center shrink-0 disabled:opacity-50 disabled:grayscale transition-all active:scale-90 shadow-[0_0_20px_rgba(16,185,129,0.4)] disabled:shadow-none group relative"
+            type={inputText.trim() ? "submit" : "button"}
+            onClick={inputText.trim() ? undefined : handleVoiceClick}
+            disabled={isLoading}
+            className={`w-[50px] h-[50px] rounded-full text-white flex items-center justify-center shrink-0 transition-all active:scale-90 shadow-lg relative ${
+              inputText.trim() 
+                ? 'bg-emerald-500 hover:bg-emerald-400 shadow-[0_4px_15px_rgba(16,185,129,0.3)]' 
+                : 'bg-emerald-600 hover:bg-emerald-500 shadow-[0_4px_15px_rgba(5,150,105,0.2)]'
+            }`}
+            title={inputText.trim() ? (language === 'en' ? 'Send Message' : 'ମେସେଜ୍ ପଠାନ୍ତୁ') : (language === 'en' ? 'Voice Message' : 'ଭଏସ୍ ମେସେଜ୍')}
           >
-            <div className="absolute inset-0 bg-white/20 rounded-full scale-0 group-active:scale-100 transition-transform"></div>
-            <Lucide.Send size={20} className="ml-1 relative z-10 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+            {inputText.trim() ? (
+              <Lucide.Send size={20} className="ml-0.5" />
+            ) : (
+              <Lucide.Mic size={20} />
+            )}
           </button>
         </form>
       </div>
