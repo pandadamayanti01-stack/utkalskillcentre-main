@@ -34,7 +34,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
         { id: 'dashboard', icon: Lucide.Home, label: language === 'en' ? 'Home' : 'ମୂଳ ପୃଷ୍ଠା' },
         { id: 'study_buddy', icon: Lucide.MessageSquare, label: language === 'en' ? 'Gundulu Inst' : 'ଗୁନ୍ଦୁଲୁ ଇନ୍‌ଷ୍ଟ୍ର' },
         { id: 'digital_library', icon: Lucide.Grid, label: language === 'en' ? 'Library' : 'ଲାଇବ୍ରେରୀ', isCenter: true },
-        { id: 'community', icon: Lucide.MessagesSquare, label: language === 'en' ? 'Community' : 'କମ୍ୟୁନିଟି' },
+        { id: 'community', icon: Lucide.MessagesSquare, label: language === 'en' ? 'Sikhyaka Sathi' : 'ଶିକ୍ଷକ ସାଥୀ' },
         { id: 'menu', icon: Lucide.User, label: language === 'en' ? 'Profile' : 'ପ୍ରୋଫାଇଲ୍' }
       ]
     : userClass === 'sishuvatika(Anganwadi)'
@@ -51,7 +51,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
           : { id: 'dashboard', icon: Lucide.Home, label: language === 'en' ? 'Home' : 'ମୂଳ ପୃଷ୍ଠା' },
         { id: 'study_buddy', icon: Lucide.MessageSquare, label: language === 'en' ? 'Gundulu Helper' : 'ଗୁନ୍ଦୁଲୁ ହେଲ୍ପର' },
         { id: 'digital_library', icon: Lucide.Grid, label: language === 'en' ? 'Library' : 'ଲାଇବ୍ରେରୀ', isCenter: true },
-        { id: 'community', icon: Lucide.MessagesSquare, label: language === 'en' ? 'Community' : 'କମ୍ୟୁନିଟି' },
+        { id: 'community', icon: Lucide.MessagesSquare, label: language === 'en' ? 'Mo Sanga' : 'ମୋ ସାଙ୍ଗ' },
         { id: 'menu', icon: Lucide.User, label: language === 'en' ? 'Profile' : 'ପ୍ରୋଫାଇଲ୍' }
       ];
 
