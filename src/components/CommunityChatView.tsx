@@ -83,6 +83,7 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
   const [showOnlyFiles, setShowOnlyFiles] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeReactionMenuId, setActiveReactionMenuId] = useState<string | null>(null);
 
   const isStaff = student.role === 'teacher' || student.role === 'admin';
   const canUpload = student.role === 'admin';
@@ -649,25 +650,52 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
                   })}
                   
                   {/* Plus button to show quick emojis tray */}
-                  <div className="relative group/tray">
-                    <button className="w-5 h-5 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-450 hover:bg-white/10 hover:text-white transition-all">
+                  <div className="relative">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        playClickSound();
+                        setActiveReactionMenuId(prev => prev === msg.id ? null : msg.id);
+                      }}
+                      className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all active:scale-95 ${
+                        activeReactionMenuId === msg.id
+                          ? 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400 font-bold scale-110'
+                          : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white'
+                      }`}
+                    >
                       <Lucide.Plus size={10} />
                     </button>
-                    <div className="absolute left-0 bottom-full mb-1 bg-slate-900 border border-white/10 rounded-full px-2 py-1 shadow-2xl flex items-center gap-2 opacity-0 scale-90 translate-y-1 pointer-events-none group-hover/tray:opacity-100 group-hover/tray:scale-100 group-hover/tray:translate-y-0 group-hover/tray:pointer-events-auto transition-all duration-200 z-30">
-                      {availableEmojis.map(emoji => {
-                        const users = msgReactions[emoji] || [];
-                        const hasReacted = users.includes(student.id);
-                        return (
-                          <button
-                            key={emoji}
-                            onClick={() => handleToggleReaction(emoji)}
-                            className={`hover:scale-125 active:scale-90 transition-transform text-sm p-1 rounded-full ${hasReacted ? 'bg-emerald-500/20' : ''}`}
-                          >
-                            {emoji}
-                          </button>
-                        );
-                      })}
-                    </div>
+                    {activeReactionMenuId === msg.id && (
+                      <>
+                        {/* Transparent overlay to dismiss on tapping outside */}
+                        <div 
+                          className="fixed inset-0 z-20" 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveReactionMenuId(null);
+                          }}
+                        />
+                        <div className="absolute left-0 bottom-full mb-1 bg-slate-900 border border-white/10 rounded-full px-2 py-1 shadow-2xl flex items-center gap-2 z-30 animate-in fade-in slide-in-from-bottom-2 duration-150">
+                          {availableEmojis.map(emoji => {
+                            const users = msgReactions[emoji] || [];
+                            const hasReacted = users.includes(student.id);
+                            return (
+                              <button
+                                key={emoji}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleToggleReaction(emoji);
+                                  setActiveReactionMenuId(null);
+                                }}
+                                className={`hover:scale-125 active:scale-90 transition-transform text-sm p-1 rounded-full ${hasReacted ? 'bg-emerald-500/20' : ''}`}
+                              >
+                                {emoji}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               </motion.div>
