@@ -536,8 +536,11 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
     
     if (rSub === tKey) return true;
     
-    if (tKey === 'algebra' || tKey === 'geometry') {
-      return rSub.includes('math') || rSub.includes('ganita') || rSub.includes('algebra') || rSub.includes('geometry');
+    if (tKey === 'algebra') {
+      return rSub.includes('algebra') || (rSub.includes('math') && !rSub.includes('geometry')) || (rSub.includes('ganita') && !rSub.includes('geometry'));
+    }
+    if (tKey === 'geometry') {
+      return rSub.includes('geometry');
     }
     if (tKey === 'physical_science') {
       return rSub.includes('physical') || rSub.includes('bhautika') || rSub.includes('scp') || rSub.includes('ଭୌତିକ');

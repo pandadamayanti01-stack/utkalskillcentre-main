@@ -198,11 +198,26 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
           const chSub = ch.subject.toLowerCase();
           
           // Map standard subjects (e.g. algebra/geometry/math -> math, physical/life_science -> science, etc.)
-          const stdSub = (chSub.includes('algebra') || chSub.includes('geometry') || chSub.includes('math')) ? 'math' :
+          const titleText = `${ch.title || ''} ${ch.title_en || ''} ${ch.title_or || ''}`.toLowerCase();
+          const stdSub = chSub.includes('algebra') ? 'algebra' :
+                         chSub.includes('geometry') ? 'geometry' :
+                         chSub.includes('math') ? 'math' :
                          (chSub.includes('physical_science') || chSub.includes('science')) ? 'physical_science' :
                          chSub.includes('life_science') ? 'life_science' :
                          (chSub.includes('social') || chSub.includes('history')) ? 'social_science' :
-                         chSub.includes('geography') ? 'geography' :
+                         chSub.includes('geography') ? (
+                           (titleText.includes('econom') || 
+                            titleText.includes('price') || 
+                            titleText.includes('consumer') || 
+                            titleText.includes('poverty') || 
+                            titleText.includes('unemploy') || 
+                            titleText.includes('industrial') || 
+                            titleText.includes('enterpris') ||
+                            titleText.includes('ଅର୍ଥ') ||
+                            titleText.includes('ଦର') ||
+                            titleText.includes('ଭୋକ୍ତା')
+                           ) ? 'economics' : 'geography'
+                         ) :
                          chSub.includes('economics') ? 'economics' :
                          chSub.includes('english_grammar') ? 'english_grammar' :
                          chSub.includes('english') ? 'english' :
@@ -211,7 +226,6 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
                          
           if (stdSub !== subKey) return false;
           
-          const titleText = `${ch.title || ''} ${ch.title_en || ''} ${ch.title_or || ''}`.toLowerCase();
           return allowedSubstrings.some(allowed => 
             titleText.includes(allowed.toLowerCase())
           );
