@@ -86,6 +86,23 @@ const englishClassNames: Record<string, string> = {
   '1': '1st'
 };
 
+const isQuestionText = (text: string): boolean => {
+  const clean = text.trim().toLowerCase();
+  if (clean.includes('@gundulu') || clean.includes('@bot') || clean.includes('@utkalbot')) {
+    return true;
+  }
+  
+  const hasQuestionMark = clean.endsWith('?') || clean.endsWith('❓');
+
+  const odiaKeywords = ['କଣ', 'କାହିଁକି', 'କିପରି', 'କେତେ', 'କେବେ', 'କିଏ', 'କେଉଁ', 'କାହା', 'ପ୍ରାଇସ', 'ପ୍ରାଇସ୍', 'ଫ୍ରି', 'ଫ୍ରୀ', 'ପେମେଣ୍ଟ', 'ପଇସା', 'ଟଙ୍କା'];
+  const englishKeywords = ['what', 'why', 'how', 'who', 'when', 'where', 'which', 'explain', 'solve', 'price', 'free', 'premium', 'pay', 'charge', 'cost', 'subscription'];
+  
+  const matchesOdia = odiaKeywords.some(kw => clean.includes(kw));
+  const matchesEnglish = englishKeywords.some(kw => clean.includes(kw));
+  
+  return clean.length >= 4 && (matchesOdia || matchesEnglish || hasQuestionMark);
+};
+
 interface CommunityChatViewProps {
   language: 'en' | 'or';
   student: Student;
@@ -303,8 +320,74 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
         role: student.role,
         timestamp: serverTimestamp()
       });
+
+      // Trigger Gundulu AI Bot response if it's a question (and not from the bot itself)
+      if (isQuestionText(messageText) && student.id !== 'gundulu_bot') {
+        triggerGunduluBotResponse(messageText);
+      }
     } catch (error) {
       console.error("Error sending message:", error);
+    }
+  };
+
+  const triggerGunduluBotResponse = async (studentMessage: string) => {
+    try {
+      // Clear the bot handle from query if present
+      const cleanMessageText = studentMessage.replace(/@(gundulu|bot|utkalbot)/gi, '').trim();
+
+      const response = await fetch('/api/ai/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          contents: [{ role: 'user', parts: [{ text: cleanMessageText }] }],
+          systemInstruction: `You are Gundulu AI 🤖 (ଗୁନ୍ଦୁଲୁ AI), the friendly and wise Socratic AI study companion for Utkal Skill Centre (ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର). You are chatting in the "${activeClass}" student room.
+Your goal is to solve students' academic doubts and answer their questions about the platform.
+
+Here is the essential information about Utkal Skill Centre features, pricing, and payments:
+1. PLATFORM PRICING (FOR STUDENTS):
+   - Free Plan: ₹0. Includes chapter notes, basic quizzes, standard YouTube concept videos, and leaderboard access. Questions to the AI tutor are limited.
+   - Premium Plan (Class 1-10): ₹99/month or ₹999/year. Includes unlimited AI Doubt Solver questions, Photo Question Solver (uploading pictures/drawings to solve), Voice Assistant, study tracker, personalized practice, and performance reports.
+   - Sishu Vatika (Anganwadi): Special price of ₹49/month or ₹499/year.
+2. PLATFORM PRICING (FOR TEACHERS):
+   - Free Plan: ₹0. Allows 5 AI runs per month for generating worksheets, lesson plans, or experiments.
+   - Educator Pro Plan: ₹499/month or ₹4999/year. Includes unlimited AI Worksheet Maker, AI Lesson Plan Creator, AI Science Experiment Guides, and the ability to promote their YouTube lessons globally to all students in Odisha.
+3. HOW TO PAY & UPGRADE:
+   - Users can upgrade by going to the "Subscription" (ସବସ୍କ୍ରିପସନ୍) tab in the app or clicking the "Upgrade to Premium Plan" button.
+   - Payments are processed securely via Razorpay or UPI. For UPI, users can make a payment and submit their UTR / Transaction ID in the app for manual verification.
+4. CHAT STYLE GUIDELINES:
+   - Always respond in Odia (or bilingual Odia/English if natural).
+   - Use simple, friendly, Socratic-style guidance. Do not give the direct answer immediately; guide the student step-by-step.
+   - Keep responses relatively concise (1-3 small paragraphs max) so they fit nicely in chat bubbles.
+   - Never answer harmful, dangerous, or completely off-topic adult content. Maintain standard school-friendly safety.`,
+          modelType: 'flash'
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('AI generation failed');
+      }
+
+      const data = await response.json();
+      if (data.text) {
+        // Simulate typing delay of 1.5 seconds for a realistic interaction
+        setTimeout(async () => {
+          try {
+            await addDoc(collection(db, 'community'), {
+              text: data.text,
+              userId: 'gundulu_bot',
+              userName: 'Gundulu AI 🤖',
+              userAvatar: '/gundulu-v3.png',
+              class: activeClass,
+              role: 'admin',
+              timestamp: serverTimestamp()
+            });
+          } catch (fireErr) {
+            console.error("Error writing bot reply to Firestore:", fireErr);
+          }
+        }, 1500);
+      }
+    } catch (err) {
+      console.error("Gundulu AI Bot response error:", err);
     }
   };
 
