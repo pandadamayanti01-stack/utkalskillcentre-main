@@ -29,7 +29,7 @@ export const SUBJECT_FILE_KEYWORDS: Record<string, string[]> = {
   // Social Science
   history: ['history'],
   geography: ['geography'],
-  social_science: ['social science', 'samajika bigyan', 'ସାମାଜିକ ବିଜ୍ଞାନ ଅଧ୍ୟୟନ ଭାରତ ଓ ଆମ ପୃଥିବୀ'],
+  social_science: ['social science', 'samajika bigyan', 'ସାମାଜିକ ବିଜ୍ଞାନ ଅଧ୍ୟୟନ ଭାରତ ଓ ଆମ ପୃଥିବୀ', 'history', 'geography', 'hist', 'geo'],
 
   // EVS (Classes 3-5)
   evs: ['bichitra pruthibi', 'ama bichitra biswa', 'bichitra biswa', 'evs', 'ପରିବେଶ ପାଠ', 'ଆମ ଚର୍ତୁର୍ପାଶ୍ଵର ପୃଥିବୀ'],
