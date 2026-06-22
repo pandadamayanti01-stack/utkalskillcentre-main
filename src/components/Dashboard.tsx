@@ -592,17 +592,48 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
     return `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
   };
 
-  // Retrieve cumulative chapters for a subject up to the current calendar month
+  // Retrieve cumulative chapters for a subject up to the current calendar month (or active milestone for board classes)
   const getCumulativeChaptersForSubject = (subjectKey: string) => {
     const roadmap = getRoadmapForClass(userClass);
-    const monthStr = getCurrentMonthStr();
-    const currentMonthIndex = roadmap.findIndex(entry => 
-      entry.month.toLowerCase() === monthStr.toLowerCase()
-    );
-    
-    const activeIndex = currentMonthIndex >= 0 ? currentMonthIndex : 0;
+    const isBoard = userClass === '9' || userClass === '10';
+    let activeIndex = 0;
+
+    if (isBoard) {
+      // Find active milestone and get all months up to that milestone
+      const now = new Date();
+      const month = now.getMonth(); // 0 = Jan, 5 = Jun, etc.
+      const date = now.getDate();
+      
+      let milestoneKey = 'annual';
+      if (month === 5 || (month === 6 && date <= 15)) milestoneKey = 'ia1';
+      else if ((month === 6 && date > 15) || month === 7) milestoneKey = 'ia2';
+      else if (month === 8 && date <= 15) milestoneKey = 'half_yearly';
+      else if ((month === 8 && date > 15) || month === 9 || (month === 10 && date <= 15)) milestoneKey = 'ia3';
+      else if ((month === 10 && date > 15) || month === 11 || (month === 0 && date <= 15)) milestoneKey = 'ia4';
+
+      const milestoneEndMonths: Record<string, string> = {
+        ia1: 'July 2026',
+        ia2: 'August 2026',
+        half_yearly: 'September 2026',
+        ia3: 'November 2026',
+        ia4: 'January 2027',
+        annual: 'February 2027'
+      };
+
+      const targetMonth = milestoneEndMonths[milestoneKey] || 'February 2027';
+      const targetIndex = roadmap.findIndex(entry => 
+        entry.month.toLowerCase() === targetMonth.toLowerCase()
+      );
+      activeIndex = targetIndex >= 0 ? targetIndex : roadmap.length - 1;
+    } else {
+      const monthStr = getCurrentMonthStr();
+      const currentMonthIndex = roadmap.findIndex(entry => 
+        entry.month.toLowerCase() === monthStr.toLowerCase()
+      );
+      activeIndex = currentMonthIndex >= 0 ? currentMonthIndex : 0;
+    }
+
     const cumulativeChapters: any[] = [];
-    
     for (let i = 0; i <= activeIndex; i++) {
       const entry = roadmap[i];
       if (!entry || !entry.chapters) continue;
@@ -614,6 +645,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
     }
     return cumulativeChapters;
   };
+
 
   const getSubjectCategory = (subjectKey: string): 'math' | 'science' | 'social' | 'language' | 'skills' => {
     const key = subjectKey.toLowerCase();
