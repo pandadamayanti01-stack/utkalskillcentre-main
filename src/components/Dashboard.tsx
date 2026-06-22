@@ -1535,9 +1535,23 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       setWorksheetGeneratingProgress(95);
       setWorksheetGeneratingStatusText(language === 'en' ? 'Finalizing PDF...' : 'PDF ଚୂଡ଼ାନ୍ତ ରୂପ ଦିଆଯାଉଛି...');
       
+      let chapterSuffix = '';
+      if (selectedChaptersData.length === 1) {
+        const cleanTitle = selectedChaptersData[0].title
+          .replace(/[^a-zA-Z0-9\u0b00-\u0b7f\s]+/g, '')
+          .trim()
+          .replace(/\s+/g, '_')
+          .substring(0, 20);
+        chapterSuffix = `_${cleanTitle}`;
+      } else if (selectedChaptersData.length > 1) {
+        chapterSuffix = language === 'or'
+          ? `_${selectedChaptersData.length}_ଅଧ୍ୟାୟ`
+          : `_${selectedChaptersData.length}_chapters`;
+      }
+
       const filename = language === 'or'
-        ? `ଉତ୍କଳ_ପ୍ରଶ୍ନପତ୍ର_ଶ୍ରେଣୀ_${userClass}_${subjectLabel.replace(/\s+/g, '_')}.pdf`
-        : `USC_Worksheet_Class${userClass}_${selectedWorksheetSubject.toUpperCase()}_${worksheetDifficulty}.pdf`;
+        ? `ଉତ୍କଳ_ପ୍ରଶ୍ନପତ୍ର_ଶ୍ରେଣୀ_${userClass}_${subjectLabel.replace(/\s+/g, '_')}${chapterSuffix}.pdf`
+        : `USC_Worksheet_Class${userClass}_${selectedWorksheetSubject.toUpperCase()}_${worksheetDifficulty}${chapterSuffix}.pdf`;
       
       const isStudent = user?.role === 'student' || !user?.role;
       if (isStudent) {
