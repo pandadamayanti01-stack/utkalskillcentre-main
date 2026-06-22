@@ -447,10 +447,21 @@ export async function loadTextbookFromBucket(adminApp: App, className: string, s
       }
     }
 
-    for (const prefix of folderSearchPatterns) {
-      console.log(`[Bucket Search] Checking prefix: ${prefix}`);
-      const [files] = await bucket.getFiles({ prefix, maxResults: 50 });
-      const pdfFiles = files.filter((f) => f.name.toLowerCase().endsWith('.pdf'));
+    console.log(`[Bucket Search] Querying ${folderSearchPatterns.length} prefixes in parallel...`);
+    const searchPromises = folderSearchPatterns.map(async (prefix) => {
+      try {
+        const [files] = await bucket.getFiles({ prefix, maxResults: 50 });
+        const pdfFiles = files.filter((f) => f.name.toLowerCase().endsWith('.pdf'));
+        return { prefix, pdfFiles };
+      } catch (err: any) {
+        console.warn(`[Bucket Search] Error listing prefix ${prefix}:`, err.message);
+        return { prefix, pdfFiles: [] };
+      }
+    });
+
+    const searchResults = await Promise.all(searchPromises);
+
+    for (const { prefix, pdfFiles } of searchResults) {
       if (pdfFiles.length === 0) continue;
 
       // If we have a chapter number, try to find the specific chapter PDF file

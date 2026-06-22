@@ -338,8 +338,8 @@ export async function generateMonthlyTestsForMonth(
       try {
         const firstChapter = groupChapters[0];
         const bucketResult = await loadTextbookFromBucket(adminApp, className, firstChapter.subject, firstChapter.title || firstChapter.title_en || firstChapter.title_or);
-        if (bucketResult && bucketResult.driveContent?.buffer) {
-          const parsedText = await extractPdfText(bucketResult.driveContent.buffer);
+        if (bucketResult && bucketResult.driveContent?.text) {
+          const parsedText = bucketResult.driveContent.text;
           if (parsedText && parsedText.trim().length > 50) {
             chapterTextContext = parsedText.substring(0, 25000);
             console.log(`[MonthlyTestAuto] Successfully loaded ${chapterTextContext.length} chars of chapter content for prompt.`);

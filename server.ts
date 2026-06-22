@@ -1365,8 +1365,8 @@ async function startServer() {
           const firstChapter = chapters[0];
           console.log(`[Custom Worksheet] Loading textbook for ${className} ${subjectName} chapter: ${firstChapter}`);
           const bucketResult = await loadTextbookFromBucket(adminApp, className, subjectName, firstChapter);
-          if (bucketResult && bucketResult.driveContent?.buffer) {
-            const parsedText = await extractPdfText(bucketResult.driveContent.buffer);
+          if (bucketResult && bucketResult.driveContent?.text) {
+            const parsedText = bucketResult.driveContent.text;
             if (parsedText && parsedText.trim().length > 50) {
               chapterTextContext = parsedText.substring(0, 30000);
               console.log(`[Custom Worksheet] Successfully extracted ${chapterTextContext.length} chars of chapter text.`);
@@ -1553,8 +1553,8 @@ async function startServer() {
           const firstChapter = chapters[0];
           console.log(`[Monthly Test] Loading textbook for ${className} ${subjectName} chapter: ${firstChapter}`);
           const bucketResult = await loadTextbookFromBucket(adminApp, className, subjectName, firstChapter);
-          if (bucketResult && bucketResult.driveContent?.buffer) {
-            const parsedText = await extractPdfText(bucketResult.driveContent.buffer);
+          if (bucketResult && bucketResult.driveContent?.text) {
+            const parsedText = bucketResult.driveContent.text;
             if (parsedText && parsedText.trim().length > 50) {
               chapterTextContext = parsedText.substring(0, 30000);
               console.log(`[Monthly Test] Successfully extracted ${chapterTextContext.length} chars of chapter text.`);
@@ -1756,8 +1756,8 @@ async function startServer() {
           const firstChapter = chapters[0];
           console.log(`[Daily MCQ AI] Loading textbook for ${className} ${subjectName} chapter: ${firstChapter}`);
           const bucketResult = await loadTextbookFromBucket(adminApp, className, subjectName, firstChapter);
-          if (bucketResult && bucketResult.driveContent?.buffer) {
-            const parsedText = await extractPdfText(bucketResult.driveContent.buffer);
+          if (bucketResult && bucketResult.driveContent?.text) {
+            const parsedText = bucketResult.driveContent.text;
             if (parsedText && parsedText.trim().length > 50) {
               chapterTextContext = parsedText.substring(0, 30000);
               console.log(`[Daily MCQ AI] Successfully extracted ${chapterTextContext.length} chars of chapter text.`);
