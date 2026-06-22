@@ -274,6 +274,7 @@ export function MtsChampionshipPoster({ isRegistered, onRegisterClick, language 
   if (typeof document === 'undefined') return null;
 
   return createPortal(
+    <>
     <AnimatePresence>
       {isVisible && (
         <div 
