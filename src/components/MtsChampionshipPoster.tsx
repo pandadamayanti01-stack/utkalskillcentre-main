@@ -132,10 +132,17 @@ export function MtsChampionshipPoster({ isRegistered, onRegisterClick, language 
       return;
     }
 
-    // 2. Dismissal Check: Once per day check
+    // 2. Dismissal Check: Once per day check (Remove localhost bypass so daily limits work correctly everywhere)
     const todayStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
     const dismissedDate = localStorage.getItem('mts_championship_dismissed_date');
-    if (dismissedDate === todayStr && !isLocalhost) {
+    if (dismissedDate === todayStr) {
+      setIsVisible(false);
+      return;
+    }
+
+    // 2b. Session Check: Only show once per browser session to prevent popups on tab switches / back button
+    const shownThisSession = sessionStorage.getItem('mts_championship_shown_session');
+    if (shownThisSession === 'true') {
       setIsVisible(false);
       return;
     }
@@ -147,6 +154,7 @@ export function MtsChampionshipPoster({ isRegistered, onRegisterClick, language 
     
     setIsRegistrationWindow(isJulyWindow);
     setIsVisible(true);
+    sessionStorage.setItem('mts_championship_shown_session', 'true');
 
     // 4. Initialize floating balloons
     const initialBalloons = Array.from({ length: 8 }, (_, i) => {
