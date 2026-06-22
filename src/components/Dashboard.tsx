@@ -2865,7 +2865,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   </p>
                 </div>
  
-                {(todayDailySubject || tomorrowDailySubject) && (
+                {/* Hide daily subject details to avoid confusion as requested */}
+                {false && (todayDailySubject || tomorrowDailySubject) && (
                   <div className="flex flex-col sm:flex-row flex-wrap justify-start gap-1.5 pt-1 z-10 relative">
                     {todayDailySubject && (
                       <span className="px-2 py-0.5 rounded-md bg-cyan-500/10 border border-cyan-500/35 text-[7.5px] sm:text-[9px] font-black uppercase tracking-wider text-cyan-300 text-center truncate inline-block max-w-[125px] backdrop-blur-sm">

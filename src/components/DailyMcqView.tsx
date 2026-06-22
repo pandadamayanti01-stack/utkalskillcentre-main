@@ -730,9 +730,10 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                               {isToday ? t.todaysSet : t.previousSet}
                             </span>
                             <span className="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-[0.15em] bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
-                              {t.forClass} {mcq.class}
+                              {translations[language].classes?.[mcq.class.toLowerCase()] || translations[language].classes?.[mcq.class] || mcq.class}
                             </span>
-                            {mcq.subject && (
+                            {/* Hide subject badge on Daily MCQ cards to avoid confusion */}
+                            {false && mcq.subject && (
                               <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-[0.15em] ${style.badge}`}>
                                 {translations[language].subjects?.[mcq.subject] || mcq.subject}
                               </span>
@@ -751,7 +752,9 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                             <SubjectIcon size={24} />
                           </div>
                           <div className="space-y-1">
-                            <h2 className="text-xl font-bold text-white leading-tight">{mcq.title}</h2>
+                            <h2 className="text-xl font-bold text-white leading-tight">
+                              {language === 'or' ? 'ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ' : 'Daily Challenge'}
+                            </h2>
                             <p className="text-xs text-slate-400 font-medium">
                               {questions.length} {questions.length === 1 ? 'Question' : 'Questions'} &bull;&nbsp;
                               {questions.reduce((sum, q) => sum + (q.marks || 1), 0) + ATTEMPT_REWARD} {t.pointsAvailable}
@@ -927,7 +930,9 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                 <div className={`p-1.5 rounded-lg bg-white/5 ${activeSubjectStyle.text}`}>
                   <ActiveSubjectIcon size={16} />
                 </div>
-                <span className="text-xs font-extrabold uppercase tracking-[0.2em] text-slate-400">{activeMcq?.title}</span>
+                <span className="text-xs font-extrabold uppercase tracking-[0.2em] text-slate-400">
+                  {language === 'or' ? 'ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ' : 'Daily Challenge'}
+                </span>
               </div>
 
               <div className="inline-flex items-center gap-1 bg-black/20 border border-white/5 px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] text-amber-400">

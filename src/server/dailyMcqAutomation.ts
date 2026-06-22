@@ -1657,17 +1657,15 @@ async function sendDailyMcqNotification(
   try {
     const db = getAdminFirestore(adminApp, databaseId);
     
-    // 1. Get translations for the subject name
-    const subjectEn = translations.en.subjects?.[subject as keyof typeof translations.en.subjects] || subject.replace(/_/g, ' ');
-    const subjectOr = translations.or.subjects?.[subject as keyof typeof translations.or.subjects] || subject.replace(/_/g, ' ');
+    // 1. Get translations for class name (excluding subject name to avoid confusion as requested)
     const classLabel = translations.en.classes?.[className as keyof typeof translations.en.classes] || className;
     const classLabelOr = translations.or.classes?.[className as keyof typeof translations.or.classes] || className;
 
     const notifTitle = `Daily MCQ Live 📝`;
     const notifTitleOr = `ଦୈନିକ MCQ ଲାଇଭ୍ 📝`;
     
-    const notifMessage = `Today's Daily MCQ for ${classLabel} (${subjectEn}) is now live. Solve it now to earn XP! 🚀`;
-    const notifMessageOdia = `ଆଜିର ${classLabelOr} (${subjectOr}) ପାଇଁ ଦୈନିକ MCQ ଲାଇଭ୍ ହୋଇଯାଇଛି। ସମାଧାନ କରି XP ହାସଲ କରନ୍ତୁ! 🚀`;
+    const notifMessage = `Today's Daily MCQ for ${classLabel} is now live. Solve it now to earn XP! 🚀`;
+    const notifMessageOdia = `ଆଜିର ${classLabelOr} ପାଇଁ ଦୈନିକ MCQ ଲାଇଭ୍ ହୋଇଯାଇଛି। ସମାଧାନ କରି XP ହାସଲ କରନ୍ତୁ! 🚀`;
 
     // 2. Add document to 'notifications' collection in Firestore
     await db.collection('notifications').add({

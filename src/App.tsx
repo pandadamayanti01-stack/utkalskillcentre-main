@@ -2323,10 +2323,9 @@ export default function App() {
     const classLabel = user?.class ? (translations[language].classes?.[user.class] || user.class) : '';
     openDailyMcqWhatsAppShare({
       language,
-      subjectLabel: todayDailySubject,
       classLabel,
     });
-  }, [language, todayDailySubject, user?.class]);
+  }, [language, user?.class]);
 
   useEffect(() => {
     let interval: any;
