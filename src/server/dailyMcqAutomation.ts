@@ -970,6 +970,15 @@ async function generateOptionalQuestionsFromPrompt(
   const targetLanguage = getTargetLanguage(subject);
   const gamificationRules = getGamificationInstructions(subject, className);
 
+  let sanskritSpellingInstructions = '';
+  if (subject.toLowerCase().includes('sanskrit')) {
+    sanskritSpellingInstructions = `
+    CRITICAL SANSKRIT ORTHOGRAPHY & SPELLING RULES:
+    1. Script: Sanskrit questions, options, answers, and explanations MUST be written in clean Devanagari script (देवनागरी लिपि).
+    2. Letter and Word Accuracy: Ensure absolute spelling correctness of Sanskrit words. Avoid letter substitution errors.
+    3. Conjuncts & Halant: Use correct conjuncts/ligatures (e.g., द्व, द्ध, ज्ञ, क्ष, त्र, प्र, श्र) and proper halant placement (्) (e.g., correct is "किम्", "अस्ति", "पठति"). Do NOT output broken or disjointed Unicode characters.`;
+  }
+
   const prompt = `You are a teacher. Generate exactly ${count} multiple-choice questions (MCQs) for the subject "${subject}" (Class: ${className}).
 ${chapterTitle ? `The questions should focus on the chapter/topic: "${chapterTitle}".` : 'The questions should cover general topics suitable for this class level.'}
 Difficulty: MEDIUM.
@@ -980,6 +989,8 @@ Rules:
 3. Keep the question text and options in the original language (${targetLanguage}). If the options are in Odia, capture them as strings in the options array.
 4. Provide the correct answer and write a helpful explanation in ${targetLanguage} explaining why that answer is correct.
 5. SCHEMA: Array of { "question": string, "options": string[], "correct_answer": string, "explanation": string, "type": "mcq", "chapter": string }.
+
+${sanskritSpellingInstructions}
 
 ${gamificationRules}`;
 
@@ -1150,6 +1161,147 @@ ${gamificationRules}`;
   throw new Error(`All configured API keys failed to generate core MCQs from prompt. Last error: ${lastError?.message || lastError}`);
 }
 
+export function getCoreSubjectsForClass(className: string): string[] {
+  const c = className.toLowerCase().trim();
+  if (c === 'class1') return ['ganita_khela', 'jhulana_1'];
+  if (c === 'class2') return ['maja_majare_ganita', 'jhulana_2'];
+  if (c === 'class3') return ['bhasa_mahak_1', 'ganita_mela', 'paribesa_patha', 'pallavi', 'kala_sikhya', 'sharirika_sikhya'];
+  if (c === 'class4') return ['ganita_mela', 'bhasa_mahak_2', 'paribesa_patha', 'pallavi', 'kala_sikhya', 'krida_yoga'];
+  if (c === 'class5') return ['ganita_mela', 'bhasa_mahak_3', 'ama_chaturbaswara_pruthibi', 'pallavi', 'kala_sikhya', 'sharirika_yoga'];
+  if (c === 'class6') return ['ganita_prakas', 'sahitya_sudha', 'jigyasa', 'samajika_bignana', 'jasmine', 'kausala_bodha', 'kalakunja', 'khela_sikhya'];
+  if (c === 'class7') return ['ganita_prakas', 'sahitya_suman', 'jigyasa', 'samajika_bignana', 'jasmine', 'kausala_bodha', 'kalakruti', 'khela_sikhya'];
+  if (c === 'class8') return ['ganita_prakas', 'sahitya_surabhi', 'jigyasa', 'samajika_bignana', 'jasmine', 'kausala_bodha', 'kruti', 'khela_sikhya'];
+  if (c === 'class9' || c === 'class10') {
+    return ['math', 'science', 'social_science', 'english', 'odia'];
+  }
+  return ['general'];
+}
+
+function cleanMixedQuestions(questions: any[], targetSubjects: string[]): DailyMcqQuestion[] {
+  const rawQuestions = Array.isArray(questions) ? questions : [];
+  const cleaned = [];
+
+  for (let i = 0; i < targetSubjects.length; i++) {
+    const sub = targetSubjects[i];
+    const q = rawQuestions[i] || rawQuestions.find(rq => String(rq?.subject).toLowerCase() === sub.toLowerCase());
+    
+    let question = String(q?.question || q?.Question || '').trim();
+    let options = Array.isArray(q?.options || q?.Options)
+      ? (q.options || q.Options).map((o: any) => String(o || '').trim()).filter(Boolean)
+      : [];
+    let correct_answer = String(q?.correct_answer || q?.Correct_Answer || q?.answer || '').trim();
+    let explanation = String(q?.explanation || q?.Explanation || '').trim();
+    const type = 'mcq';
+    const chapter = String(q?.chapter || q?.Chapter || '').trim();
+    
+    const isOdia = getExpectedLanguage(sub) === 'odia';
+    if (isOdia) {
+      question = cleanOdiaOrthographyLocal(question);
+      options = options.map(o => cleanOdiaOrthographyLocal(o));
+      correct_answer = cleanOdiaOrthographyLocal(correct_answer);
+      explanation = cleanOdiaOrthographyLocal(explanation);
+    }
+
+    if (!question || options.length < 2 || !correct_answer) {
+      cleaned.push(getPlaceholderQuestion(sub, chapter));
+    } else {
+      cleaned.push({
+        question,
+        options,
+        correct_answer,
+        explanation,
+        type,
+        chapter,
+        subject: sub,
+        marks: 1
+      });
+    }
+  }
+
+  return cleaned;
+}
+
+async function generateMixedCoreQuestionsFromPrompt(
+  className: string,
+  questionSubjects: string[],
+  questionChapters: (string | undefined)[],
+  count: number
+): Promise<DailyMcqQuestion[]> {
+  const keysToTry = getGeminiApiKeys();
+  if (keysToTry.length === 0) {
+    throw new Error('No GEMINI_API_KEY or GEMINI_ROTATOR_KEYs configured on the server.');
+  }
+
+  const questionsDescription = questionSubjects.map((sub, idx) => {
+    const ch = questionChapters[idx];
+    const lang = getTargetLanguage(sub);
+    return `- Question ${idx + 1}: Subject: "${sub}"${ch ? ` (Chapter/Topic: "${ch}")` : ' (General syllabus concepts)'} & Language: ${lang}`;
+  }).join('\n');
+
+  const prompt = `You are a teacher. Generate exactly ${count} Multiple-Choice Questions (MCQs) for standard "${className}".
+Each question MUST strictly correspond to the specified subject, chapter (if any), and language below:
+
+${questionsDescription}
+
+Rules:
+1. Make sure to generate EXACTLY ${count} questions.
+2. Each question MUST be a 1-mark Multiple-Choice Question (MCQ) with exactly 4 options.
+3. Every question must be worth 1 mark (assign "marks": 1).
+4. The difficulty must be MEDIUM.
+5. Keep the question text and options in the target language specified for that question. If the options are in Odia, capture them as strings in the options array.
+6. Provide the correct answer and write a helpful explanation in the target language explaining why that answer is correct.
+7. SCHEMA: Array of { "question": string, "options": string[], "correct_answer": string, "explanation": string, "type": "mcq", "chapter": string, "subject": string }. Ensure "subject" matches the respective subject string from the list above.
+8. The questions must be direct, formal, and strictly academic. No cartoon, anime, or gaming characters (e.g., no Naruto, Goku, Bheem, Doraemon, BGMI, Free Fire, etc.).
+9. The explanations must be professional, educational, and explain the core concept directly without casual remarks or character dialogues.
+10. Do NOT use raw LaTeX mathematical symbols or formatting delimiters (like $$, $, \\[, \\], \\frac, \\sqrt). Instead, use standard plain text or standard Unicode symbols (like ÷, ×, ±, ≈, ≠, ≤, ≥, ∞, •, α, β, θ, π, √, ^) so that it renders clearly on any device screen.
+11. ODIA ORTHOGRAPHY & SPELLING (ଯୁକ୍ତାକ୍ଷର): When generating text in Odia, ensure absolute correctness of spelling and conjunct letters (ଯୁକ୍ତାକ୍ଷର, e.g., using proper ligatures like ନ୍ଦ, ନ୍ଧ, ଷ୍ଟ, ତ୍ତ, ଳ, ନ୍ତ, etc.). Avoid broken Unicode combinations (like ନ୍‌ଦ or ନ୍‌ଧ) and ensure historical names or terms (like "ଦାଣ୍ଡି ଯାତ୍ରା" / "Dandi March") are spelled exactly as they appear in standard Odia textbooks.
+12. SANSKRIT/HINDI ORTHOGRAPHY: If any question is for Sanskrit or Hindi, use clean Devanagari script (देवनागरी लिपि) with proper conjuncts and halants.`;
+
+  const models = [
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
+    "gemini-3.1-flash-lite",
+    "gemini-2.0-flash-lite"
+  ];
+
+  let lastError: any = null;
+
+  for (let keyIdx = 0; keyIdx < keysToTry.length; keyIdx++) {
+    const apiKey = keysToTry[keyIdx];
+    try {
+      const genAI = new GoogleGenerativeAI(apiKey);
+      for (const modelId of models) {
+        try {
+          console.log(`[MCQ-MIXED-PROMPT] Prompting ${modelId} with API key ${keyIdx + 1}...`);
+          const model = genAI.getGenerativeModel({
+            model: modelId,
+            generationConfig: { responseMimeType: "application/json" }
+          });
+
+          const result = await model.generateContent(prompt);
+          const mcqs = JSON.parse(result.response.text());
+          
+          if (Array.isArray(mcqs) && mcqs.length > 0) {
+            const cleaned = cleanMixedQuestions(mcqs, questionSubjects);
+            if (cleaned.length >= count) {
+              console.log(`[MCQ-MIXED-PROMPT] SUCCESS with ${modelId}!`);
+              return cleaned;
+            }
+          }
+        } catch (err: any) {
+          console.warn(`[MCQ-MIXED-PROMPT] Model ${modelId} failed: ${err.message}`);
+          lastError = err;
+        }
+      }
+    } catch (err: any) {
+      console.warn(`[MCQ-MIXED-PROMPT] API Key ${keyIdx + 1} failed: ${err.message}`);
+      lastError = err;
+    }
+  }
+
+  throw new Error(`All configured API keys failed to generate mixed core MCQs from prompt. Last error: ${lastError?.message || lastError}`);
+}
+
 async function buildGeneratedDailyMcq(adminApp: App, databaseId: string, params: {
   className: string;
   subject: string;
@@ -1167,40 +1319,126 @@ async function buildGeneratedDailyMcq(adminApp: App, databaseId: string, params:
   };
 
   const targetChapter = Array.isArray(params.chapters) && params.chapters.length > 0 ? params.chapters[0] : undefined;
-  let bucketResult = null;
-  try {
-    bucketResult = await loadTextbookFromBucket(adminApp, params.className, params.subject, targetChapter);
-  } catch (error: any) {
-    console.warn(`[MCQ-AUTO] Failed to load textbook from bucket for core: ${error.message}`);
-  }
 
-  if (bucketResult && bucketResult.driveContent.buffer) {
-    try {
-      console.log(`[MCQ-AUTO] Textbook PDF found for core subject. Generating via PDF vision...`);
-      coreQuestions = await generateQuestionsFromText({
-        className: params.className,
-        subject: params.subject,
-        board: params.board || 'odisha',
-        activeDate: params.activeDate,
-        pdfBuffer: bucketResult.driveContent.buffer,
-        chapters: params.chapters,
-      });
-      source = bucketResult.source;
-    } catch (error: any) {
-      console.warn(`[MCQ-AUTO] PDF generation failed for core: ${error.message}. Falling back to prompt generation...`);
+  if (params.subject === 'mixed') {
+    const coreSubjects = getCoreSubjectsForClass(params.className);
+    const questionSubjects: string[] = [];
+    for (let i = 0; i < 10; i++) {
+      questionSubjects.push(coreSubjects[i % coreSubjects.length]);
     }
-  }
 
-  if (coreQuestions.length === 0) {
-    console.log(`[MCQ-AUTO] No textbook PDF or PDF generation failed. Generating core questions via prompt...`);
-    coreQuestions = await generateCoreQuestionsFromPrompt(
+    const db = getDatabase(adminApp, databaseId);
+    const dateObj = new Date(params.activeDate);
+    const dayOfMonth = dateObj.getDate();
+
+    let activeChapters: any[] = [];
+    const normalizedClassName = params.className.toLowerCase().trim();
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const monthName = monthNames[dateObj.getMonth()];
+    const year = dateObj.getFullYear();
+    const monthStr = params.monthString || `${monthName} ${year}`;
+
+    if (normalizedClassName === 'class9' || normalizedClassName === 'class10') {
+      const activeMilestoneKey = getActiveMilestoneKeyForDate(params.activeDate);
+      const milestones = normalizedClassName === 'class9' ? BSE_SYLLABUS_MAPPING_9 : BSE_SYLLABUS_MAPPING_10;
+      const activeMilestone = milestones.find(m => m.key === activeMilestoneKey);
+      if (activeMilestone) {
+        try {
+          const allChaptersSnapshot = await db.collection('chapters')
+            .where('class', '==', params.className)
+            .get();
+          const allChapters: any[] = [];
+          allChaptersSnapshot.forEach(doc => {
+            const data = doc.data();
+            allChapters.push({
+              id: doc.id,
+              title: data.title || '',
+              title_en: data.title_en || null,
+              title_or: data.title_or || null,
+              subject: data.subject || 'other'
+            });
+          });
+          for (const subKey of Object.keys(activeMilestone.subjects)) {
+            const allowedSubstrings = activeMilestone.subjects[subKey];
+            const matched = allChapters.filter(ch => {
+              const stdSub = mapRoadmapSubjectToGranular(ch.subject, ch.title || ch.title_en || ch.title_or);
+              if (stdSub !== subKey) return false;
+              const titleStr = `${ch.title || ''} ${ch.title_en || ''} ${ch.title_or || ''}`.toLowerCase();
+              return allowedSubstrings.some(allowed => titleStr.includes(allowed.toLowerCase()));
+            });
+            activeChapters.push(...matched);
+          }
+        } catch (e) {
+          console.warn("[MCQ-AUTO] Failed to load chapters for optional/core details:", e);
+        }
+      }
+    } else {
+      const classRoadmap = ROADMAPS_BY_CLASS[normalizedClassName];
+      if (classRoadmap) {
+        const monthEntry = classRoadmap.find(entry => entry.month === monthStr);
+        if (monthEntry && Array.isArray(monthEntry.chapters)) {
+          activeChapters = monthEntry.chapters;
+        }
+      }
+    }
+
+    const questionChapters: (string | undefined)[] = [];
+    for (let i = 0; i < 10; i++) {
+      const sub = questionSubjects[i];
+      const subChapters = activeChapters.filter((ch: any) => mapRoadmapSubjectToStandard(ch.subject) === sub);
+      let chTitle = undefined;
+      if (subChapters.length > 0) {
+        const chIdx = (dayOfMonth - 1 + i) % subChapters.length;
+        const chosen = subChapters[chIdx];
+        chTitle = chosen.title_or || chosen.title_en || chosen.title || undefined;
+      }
+      questionChapters.push(chTitle);
+    }
+
+    console.log(`[MCQ-AUTO] Generating 10 mixed core MCQs for subjects:`, questionSubjects);
+    coreQuestions = await generateMixedCoreQuestionsFromPrompt(
       params.className,
-      params.subject,
-      DAILY_MCQ_QUESTION_COUNT,
-      params.chapters
+      questionSubjects,
+      questionChapters,
+      10
     );
-    while (coreQuestions.length < DAILY_MCQ_QUESTION_COUNT) {
-      coreQuestions.push(getPlaceholderQuestion(params.subject, targetChapter));
+  } else {
+    // Keep single subject fallback vision generation just in case
+    let bucketResult = null;
+    try {
+      bucketResult = await loadTextbookFromBucket(adminApp, params.className, params.subject, targetChapter);
+    } catch (error: any) {
+      console.warn(`[MCQ-AUTO] Failed to load textbook from bucket for core: ${error.message}`);
+    }
+
+    if (bucketResult && bucketResult.driveContent.buffer) {
+      try {
+        console.log(`[MCQ-AUTO] Textbook PDF found for core subject. Generating via PDF vision...`);
+        coreQuestions = await generateQuestionsFromText({
+          className: params.className,
+          subject: params.subject,
+          board: params.board || 'odisha',
+          activeDate: params.activeDate,
+          pdfBuffer: bucketResult.driveContent.buffer,
+          chapters: params.chapters,
+        });
+        source = bucketResult.source;
+      } catch (error: any) {
+        console.warn(`[MCQ-AUTO] PDF generation failed for core: ${error.message}. Falling back to prompt generation...`);
+      }
+    }
+
+    if (coreQuestions.length === 0) {
+      console.log(`[MCQ-AUTO] No textbook PDF or PDF generation failed. Generating core questions via prompt...`);
+      coreQuestions = await generateCoreQuestionsFromPrompt(
+        params.className,
+        params.subject,
+        DAILY_MCQ_QUESTION_COUNT,
+        params.chapters
+      );
+      while (coreQuestions.length < DAILY_MCQ_QUESTION_COUNT) {
+        coreQuestions.push(getPlaceholderQuestion(params.subject, targetChapter));
+      }
     }
   }
 
@@ -1270,7 +1508,9 @@ async function buildGeneratedDailyMcq(adminApp: App, databaseId: string, params:
   }
 
   return {
-    title: params.title?.trim() || `${getSubjectLabel(params.subject)} Daily Practice`,
+    title: params.title?.trim() || (params.subject === 'mixed'
+      ? `${params.className.replace(/class/i, 'Class ')} Daily Challenge`
+      : `${getSubjectLabel(params.subject)} Daily Practice`),
     class: params.className,
     subject: params.subject,
     board: params.board || 'odisha',
@@ -1587,67 +1827,8 @@ export async function runScheduledGeneration(adminApp: App, databaseId: string, 
         }
       }
 
-      // If no chapters scheduled for this month, fall back to old sequence selection
-      let subjectsToGenerate: string[] = [];
-      if (activeChapters.length === 0) {
-        console.warn(`[MCQ-AUTO] No chapters scheduled in roadmap for ${className} in ${monthString}. Falling back to default rotation.`);
-        const availableBucketSubjects = await getAvailableBucketSubjects(adminApp, className);
-        const subjectsByClass = (translations.en as any).subjectsByClass?.odisha as Record<string, string[]> | undefined;
-        const hasCustomRotation = Array.isArray(settings.dailyMcqSubjectRotation) && settings.dailyMcqSubjectRotation.length > 0;
-        let fallbackSubjects = (availableBucketSubjects.length > 0)
-          ? availableBucketSubjects
-          : ((!hasCustomRotation && subjectsByClass?.[className]) || settings.dailyMcqSubjectRotation);
-        
-        if (normalizedClassName === 'class9' || normalizedClassName === 'class10') {
-          fallbackSubjects = fallbackSubjects.filter((s: string) => !['sanskrit', 'hindi', 'vocational'].includes(mapRoadmapSubjectToStandard(s)));
-        }
-
-        const sub = getRotatingDailyMcqSubject(activeDate, fallbackSubjects);
-        subjectsToGenerate = [sub];
-      } else {
-        if (normalizedClassName === 'class9' || normalizedClassName === 'class10') {
-          const coreSubjects = ['math', 'science', 'social_science', 'odia', 'english'];
-          const subjectsInMonth = Array.from(new Set(activeChapters.map((ch: any) => mapRoadmapSubjectToStandard(ch.subject))))
-            .filter(sub => coreSubjects.includes(sub));
-          
-          if (subjectsInMonth.length === 0) {
-            subjectsToGenerate = ['math'];
-          } else {
-            const slotIndex = (dayOfMonth - 1) % subjectsInMonth.length;
-            subjectsToGenerate = [subjectsInMonth[slotIndex]];
-          }
-        } else {
-          // Standardize the subjects in the active roadmap chapters
-          const subjectsInMonth = Array.from(new Set(activeChapters.map((ch: any) => mapRoadmapSubjectToStandard(ch.subject))));
-          
-          // Group electives: sanskrit, hindi, vocational
-          const electiveGroup = ['sanskrit', 'hindi', 'vocational'];
-          const rotationSlots: (string | string[])[] = [];
-          let hasElectives = false;
-
-          for (const sub of subjectsInMonth) {
-            if (electiveGroup.includes(sub)) {
-              hasElectives = true;
-            } else {
-              rotationSlots.push(sub);
-            }
-          }
-          if (hasElectives) {
-            rotationSlots.push(electiveGroup);
-          }
-
-          // Select the active slot for today
-          const slotIndex = (dayOfMonth - 1) % rotationSlots.length;
-          const activeSlot = rotationSlots[slotIndex];
-
-          if (Array.isArray(activeSlot)) {
-            // It's the elective day slot. Generate all electives scheduled for this month.
-            subjectsToGenerate = activeSlot.filter(sub => subjectsInMonth.includes(sub));
-          } else {
-            subjectsToGenerate = [activeSlot];
-          }
-        }
-      }
+      // Always generate exactly one mixed set containing questions from multiple subjects
+      const subjectsToGenerate = ['mixed'];
 
       console.log(`[MCQ-AUTO] Subjects to generate for ${className}:`, subjectsToGenerate);
 
@@ -1674,19 +1855,7 @@ export async function runScheduledGeneration(adminApp: App, databaseId: string, 
           }
         }
 
-        // Get the specific roadmap chapters for this subject
-        const subjectChapters = activeChapters.filter((ch: any) => mapRoadmapSubjectToStandard(ch.subject) === subject);
-        
         let selectedChapterTitles: string[] | undefined = undefined;
-        if (subjectChapters.length > 0) {
-          // Select only one chapter based on rotation of day of month
-          const chIndex = (dayOfMonth - 1) % subjectChapters.length;
-          const chosenChapter = subjectChapters[chIndex];
-          const title = chosenChapter.title_or || chosenChapter.title_en || chosenChapter.title || '';
-          if (title) {
-            selectedChapterTitles = [title];
-          }
-        }
 
         const generatedSet = await buildGeneratedDailyMcq(adminApp, databaseId, {
           className,

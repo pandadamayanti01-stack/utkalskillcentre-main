@@ -161,6 +161,8 @@ export interface DailyMcqQuestion {
   type?: 'mcq' | 'subjective';
   /** The chapter name or number this question belongs to. */
   chapter?: string;
+  /** The subject key this question belongs to (for mixed sets). */
+  subject?: string;
 }
 
 export interface DailyMcqSubmission {

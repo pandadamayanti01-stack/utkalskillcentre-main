@@ -193,6 +193,7 @@ export const translations: any = {
       aspirational: "Aspirational Components",
       science_curiosity: "Science (Jigyansa)",
       social_science: "Social Science",
+      mixed: "Daily Challenge",
       
       // Dynamic Textbook specific subjects
       ganita_khela: "Ganita Khela",
@@ -590,6 +591,7 @@ export const translations: any = {
       aspirational: "ଆକାଂକ୍ଷାମୂଳକ ଉପାଦାନ",
       science_curiosity: "ବିଜ୍ଞାନ (ଜିଜ୍ଞାସା)",
       social_science: "ସାମାଜିକ ବିଜ୍ଞାନ",
+      mixed: "ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ",
       
       // Dynamic Textbook specific subjects
       ganita_khela: "ଗଣିତ ଖେଳ",

@@ -15,28 +15,14 @@ export function getTargetLanguage(subject: string): string {
 }
 
 export function getGamificationInstructions(subject: string, className: string): string {
-  const normalizedClass = className.toLowerCase().trim();
-  const classDigit = parseInt(normalizedClass.replace(/[^0-9]/g, ''), 10) || 10;
-  
-  // Decide character tier based on grade level
-  const characterTier = classDigit <= 5
-    ? "Primary Characters (Chhota Bheem, Raju, Doraemon, Shinchan, Motu, Patlu, Krishna, Hanuman)"
-    : "Secondary Characters (Naruto, Goku, Luffy, Tanjiro, Spider-Man, BGMI, Free Fire, Esports)";
-    
   return `
-GAMIFICATION & LOCAL PERSONA INTEGRATION RULES:
-1. You MUST integrate characters from the following list into the questions: ${characterTier}.
-2. Weave these characters into the question text naturally based on the subject:
-   - Math (math, algebra, geometry, ganita_mela, ganitaprakas): Have characters count items (laddoos, dorayakis, chakra/power points), calculate training speeds, or measure historical landmarks of Odisha (like Puri chariot wheels or Konark Sun Temple dimensions).
-   - Science (science, jigyasa, physical/life science, evs): Have characters explain science concepts via their gadgets/powers (Doraemon's Bamboo Copter for gravity, Goku's blasts for energy transfer, Spider-Man's webs for tension/elasticity) or local environmental tasks (protecting Olive Ridley turtles at Gahirmatha, cleaning Chilika Lake).
-   - English: Use character story scenarios to test grammar rules, proper nouns, verb tenses, and punctuation.
-   - Odia (odia, sahitya_surabhi): Write grammar questions (Noun/Pronoun/Verb/Adjective/Subject-Object identification) in Odia based on character actions.
-   - Social Science (history, geography, samajika_bignana): Have characters travel to and ask questions about iconic Odisha heritage sites (Konark Temple, Udayagiri Caves, Lingaraj Temple, Dhauli Peace Pagoda) or geographical landmarks (Mahanadi River, Chilika Lake, Similipal Forest, Hirakud Dam).
-   - Kruti (Art/Craft): Have characters interact with traditional Odisha arts (painting Raghurajpur Pattachitra using natural shell colors, sewing Pipili Applique/Chandua motifs, inspecting Cuttack Silver Filigree, modeling clay toys for Rath Yatra).
-   - Khela Sikhya / Sharirika Yoga (Physical Ed): Have characters play traditional games (Kabaddi, Kho-Kho, Gilli-Danda) or practice healthy yoga poses (Padmasana, Tadasana, Pranayama breathing).
-3. The explanation field should feature cheering remarks from the hosting character in Odia (e.g. "ନାରୁତୋ କୁହେ: ସାବାସ୍! ତୁମେ ଏହାକୁ ଠିକ୍ ସମାଧାନ କଲ!" or "ଭୀମ କୁହେ: ବହୁତ ବଢିଆ! ତୁମେ ମୋ ଲଡୁ ଖାଇବା ବେଗ ପରି ଗଣିତ ସମାଧାନ କଲ!").
-4. ALWAYS match the target language rules: English for English subject, Odia for all other subjects. No LaTeX formulas.
-5. ODIA ORTHOGRAPHY & SPELLING (ଯୁକ୍ତାକ୍ଷର): When generating text in Odia, ensure absolute correctness of spelling and conjunct letters (ଯୁକ୍ତାକ୍ଷର, e.g., using proper ligatures like ନ୍ଦ, ନ୍ଧ, ଷ୍ଟ, ତ୍ତ, ଳ, ନ୍ତ, etc.). Avoid broken Unicode combinations (like ନ୍‌ଦ or ନ୍‌ଧ) and ensure historical names or terms (like "ଦାଣ୍ଡି ଯାତ୍ରା" / "Dandi March") are spelled exactly as they appear in standard Odia textbooks.`;
+STRICT ACADEMIC BOARD-PATTERN RULES:
+1. Do NOT integrate any gaming, cartoon, or anime characters (e.g., NO BGMI, Free Fire, Esports, Naruto, Goku, Luffy, Tanjiro, Spider-Man, Chhota Bheem, Doraemon, Shinchan, etc.).
+2. All questions, options, correct answers, and explanations MUST be formal, academic, and directly aligned with the textbook and standard board exam syllabus.
+3. Questions must focus exactly on subject matter (e.g., real math equations/problems, physics principles, grammar rules, historical facts) without wrapping them in fictional gaming or cartoon stories.
+4. The explanation field must be professional, educational, and explain the core concept directly. Do NOT include casual remarks, mascot quotes, or cheering comments.
+5. ALWAYS match the target language rules: English for English subject, Odia for all other subjects. No LaTeX formulas.
+6. ODIA ORTHOGRAPHY & SPELLING (ଯୁକ୍ତାକ୍ଷର): When generating text in Odia, ensure absolute correctness of spelling and conjunct letters (ଯୁକ୍ତାକ୍ଷର, e.g., using proper ligatures like ନ୍ଦ, ନ୍ଧ, ଷ୍ଟ, ତ୍ତ, ଳ, ନ୍ତ, etc.). Avoid broken Unicode combinations (like ନ୍‌ଦ or ନ୍‌ଧ) and ensure historical names or terms (like "ଦାଣ୍ଡି ଯାତ୍ରା" / "Dandi March") are spelled exactly as they appear in standard Odia textbooks.`;
 }
 
 /**

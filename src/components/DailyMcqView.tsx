@@ -95,6 +95,17 @@ const getSubjectStyle = (subject: string = '') => {
       accentColor: '#6366f1'
     };
   }
+  if (normalized.includes('mixed') || normalized.includes('general') || normalized.includes('challenge')) {
+    return {
+      gradient: 'from-violet-600/20 via-cyan-600/10 to-transparent',
+      border: 'border-violet-500/30 hover:border-cyan-500/50',
+      text: 'text-cyan-400',
+      badge: 'bg-violet-500/15 text-cyan-300 border border-violet-500/20',
+      icon: Lucide.Trophy,
+      lightBg: 'bg-violet-50',
+      accentColor: '#8b5cf6'
+    };
+  }
   return {
     gradient: 'from-slate-600/20 via-slate-700/10 to-transparent',
     border: 'border-white/10 hover:border-white/20',
@@ -969,9 +980,19 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                   <div className="space-y-6">
                     {/* Header: Question indicator + Marks */}
                     <div className="flex items-center justify-between">
-                      <span className="px-3.5 py-1 rounded-xl bg-white/5 border border-white/10 text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">
-                        {t.question} {currentQuestionIndex + 1}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="px-3.5 py-1 rounded-xl bg-white/5 border border-white/10 text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">
+                          {t.question} {currentQuestionIndex + 1}
+                        </span>
+                        {currentQuestion?.subject && (() => {
+                          const subjectsTranslation = translations[language]?.subjects as Record<string, string> | undefined;
+                          return (
+                            <span className={`px-2.5 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider ${getSubjectStyle(currentQuestion.subject).badge}`}>
+                              {subjectsTranslation?.[currentQuestion.subject] || currentQuestion.subject.replace(/_/g, ' ')}
+                            </span>
+                          );
+                        })()}
+                      </div>
                       <span className="text-xs font-bold text-slate-500">
                         {t.marks}: {currentQuestion?.marks || 1}
                       </span>
@@ -995,110 +1016,9 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                             nextAnswers[currentQuestion.originalIndex] = e.target.value;
                             setSelectedAnswers((prev) => ({ ...prev, [selectedMcqId!]: nextAnswers }));
                           }}
-                          className="w-full min-h-[140px] rounded-2xl border border-white/10 bg-white/5 p-4 text-slate-100 placeholder:text-slate-600 focus:border-cyan-500/40 focus:bg-white/10 focus:shadow-[0_0_15px_rgba(6,182,212,0.1)] transition-all outline-none resize-none pr-14"
+                          className="w-full min-h-[140px] rounded-2xl border border-white/10 bg-white/5 p-4 text-slate-100 placeholder:text-slate-600 focus:border-cyan-500/40 focus:bg-white/10 focus:shadow-[0_0_15px_rgba(6,182,212,0.1)] transition-all outline-none resize-none pr-4"
                         />
                         
-                        {/* Voice microphone UI */}
-                        {!isSubmitted && (
-                          <div className="absolute right-4 bottom-4 flex items-center gap-3">
-                            {isListening && (
-                              <motion.div 
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                className="px-3 py-1 rounded-full bg-emerald-500 text-white text-[9px] font-black uppercase tracking-wider flex items-center gap-1.5 shadow-lg shadow-emerald-500/25"
-                              >
-                                <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
-                                {language === 'en' ? 'Listening...' : 'ଶୁଣୁଛି...'}
-                              </motion.div>
-                            )}
-                            
-                            <div className="relative">
-                              {/* Voice neural active rings */}
-                              {isListening && (
-                                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                  <motion.div 
-                                    animate={{ scale: [1, 2, 1], opacity: [0.5, 0, 0.5] }}
-                                    transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                                    className="absolute w-16 h-16 rounded-full border border-emerald-500/40"
-                                  />
-                                  <motion.div 
-                                    animate={{ scale: [1, 2.5, 1], opacity: [0.3, 0, 0.3] }}
-                                    transition={{ repeat: Infinity, duration: 2, ease: "easeInOut", delay: 0.6 }}
-                                    className="absolute w-16 h-16 rounded-full border border-emerald-500/20"
-                                  />
-                                </div>
-                              )}
-                              
-                              <button
-                                type="button"
-                                onMouseDown={() => startListening((text) => {
-                                  setSelectedAnswers((prev) => {
-                                    const currentAnswers = prev[selectedMcqId!] || [];
-                                    const nextAnswers = [...currentAnswers];
-                                    nextAnswers[currentQuestion.originalIndex] = (nextAnswers[currentQuestion.originalIndex] || '').trim() + ' ' + text.trim();
-                                    return { ...prev, [selectedMcqId!]: nextAnswers };
-                                  });
-                                })}
-                                onMouseUp={stopListening}
-                                onTouchStart={(e) => {
-                                  e.preventDefault();
-                                  startListening((text) => {
-                                    setSelectedAnswers((prev) => {
-                                      const currentAnswers = prev[selectedMcqId!] || [];
-                                      const nextAnswers = [...currentAnswers];
-                                      nextAnswers[currentQuestion.originalIndex] = (nextAnswers[currentQuestion.originalIndex] || '').trim() + ' ' + text.trim();
-                                      return { ...prev, [selectedMcqId!]: nextAnswers };
-                                    });
-                                  });
-                                }}
-                                onTouchEnd={stopListening}
-                                className={`relative p-3.5 rounded-full transition-all duration-300 cursor-pointer ${isListening ? 'bg-emerald-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.4)]' : 'bg-white/5 text-slate-400 hover:text-emerald-400 hover:bg-white/10'}`}
-                                title={t.voiceHint}
-                              >
-                                <Lucide.Mic size={18} className={isListening ? 'animate-pulse' : ''} />
-                              </button>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Camera & Gallery Upload Row */}
-                        {!isSubmitted && (
-                          <div className="flex flex-wrap items-center gap-3 mt-3">
-                            <button
-                              type="button"
-                              onClick={() => cameraInputRef.current?.click()}
-                              className="px-4 py-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 text-slate-200 text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-md"
-                            >
-                              <Lucide.Camera size={14} className="text-cyan-400" />
-                              {language === 'en' ? 'Camera Scan' : 'କ୍ୟାମେରା ସ୍କାନ୍'}
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => galleryInputRef.current?.click()}
-                              className="px-4 py-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 text-slate-200 text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-md"
-                            >
-                              <Lucide.Image size={14} className="text-cyan-400" />
-                              {language === 'en' ? 'Upload Photo' : 'ଫଟୋ ଅପଲୋଡ୍'}
-                            </button>
-
-                            <input
-                              type="file"
-                              accept="image/*"
-                              capture="environment"
-                              ref={cameraInputRef}
-                              onChange={(e) => handleImageSelect(e, true)}
-                              className="hidden"
-                            />
-                            <input
-                              type="file"
-                              accept="image/*"
-                              ref={galleryInputRef}
-                              onChange={(e) => handleImageSelect(e, false)}
-                              className="hidden"
-                            />
-                          </div>
-                        )}
-
                         {/* Image Preview & Scan Action */}
                         {notebookImages[currentQuestion?.originalIndex ?? currentQuestionIndex] && (
                           <div className="mt-4 p-4 rounded-2xl bg-slate-950/60 border border-white/5 space-y-3">
