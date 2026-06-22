@@ -13,7 +13,7 @@ interface TestSeriesRegistrationFormProps {
 export function TestSeriesRegistrationForm({ user, language, onClose }: TestSeriesRegistrationFormProps) {
   const [formData, setFormData] = useState({
     name: user?.name || '',
-    school: '',
+    school: user?.school || '',
     class: user?.class || '',
     district: user?.district || '',
     phone: user?.phoneNumber || '',
