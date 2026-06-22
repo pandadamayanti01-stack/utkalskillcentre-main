@@ -125,6 +125,19 @@ export function MtsChampionshipPoster({ isRegistered, onRegisterClick, language 
     const deadline = new Date('2026-07-04T23:59:59');
     const now = new Date();
     const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    
+    // Check if '?clear=true' is in the URL to clear the popup state
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('clear') === 'true') {
+      localStorage.removeItem('mts_championship_dismissed_date');
+      sessionStorage.removeItem('mts_championship_shown_session');
+      urlParams.delete('clear');
+      const newSearch = urlParams.toString();
+      const newPath = window.location.pathname + (newSearch ? `?${newSearch}` : '');
+      window.history.replaceState({}, '', newPath);
+    }
+
+    const isTestMode = window.location.search.includes('test=true') || window.location.search.includes('clear=true');
     const todayStr = now.toISOString().split('T')[0];
     const dismissedDate = localStorage.getItem('mts_championship_dismissed_date');
     const shownThisSession = sessionStorage.getItem('mts_championship_shown_session');
@@ -133,6 +146,7 @@ export function MtsChampionshipPoster({ isRegistered, onRegisterClick, language 
       now: now.toISOString(),
       deadline: deadline.toISOString(),
       isLocalhost,
+      isTestMode,
       dismissedDate,
       todayStr,
       shownThisSession,
@@ -148,13 +162,13 @@ export function MtsChampionshipPoster({ isRegistered, onRegisterClick, language 
     }
 
     // 2. Dismissal Check: Once per day check (Remove localhost bypass so daily limits work correctly everywhere)
-    if (dismissedDate === todayStr) {
+    if (dismissedDate === todayStr && !isTestMode) {
       setIsVisible(false);
       return;
     }
 
     // 2b. Session Check: Only show once per browser session to prevent popups on tab switches / back button
-    if (shownThisSession === 'true') {
+    if (shownThisSession === 'true' && !isTestMode) {
       setIsVisible(false);
       return;
     }
@@ -166,7 +180,9 @@ export function MtsChampionshipPoster({ isRegistered, onRegisterClick, language 
     
     setIsRegistrationWindow(isJulyWindow);
     setIsVisible(true);
-    sessionStorage.setItem('mts_championship_shown_session', 'true');
+    if (!isTestMode) {
+      sessionStorage.setItem('mts_championship_shown_session', 'true');
+    }
 
     // 4. Initialize floating balloons
     const initialBalloons = Array.from({ length: 8 }, (_, i) => {
