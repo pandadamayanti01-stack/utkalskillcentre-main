@@ -1001,6 +1001,83 @@ async function generateOptionalQuestions(
   return generateOptionalQuestionsFromPrompt(className, subject, count, chapterTitle);
 }
 
+async function generateCoreQuestionsFromPrompt(
+  className: string,
+  subject: string,
+  count: number,
+  chapterTitles?: string[]
+): Promise<DailyMcqQuestion[]> {
+  const keysToTry = getGeminiApiKeys();
+  if (keysToTry.length === 0) {
+    throw new Error('No GEMINI_API_KEY or GEMINI_ROTATOR_KEYs configured on the server.');
+  }
+
+  const targetLanguage = getTargetLanguage(subject);
+  const gamificationRules = getGamificationInstructions(subject, className);
+
+  const prompt = `You are a teacher. Generate exactly ${count} questions from the syllabus of subject "${subject}" (Class: ${className}).
+${chapterTitles && chapterTitles.length > 0 ? `The questions should focus on the chapters/topics: ${chapterTitles.map(c => `"${c}"`).join(', ')}.` : 'The questions should cover general syllabus-aligned topics suitable for this class.'}
+Difficulty: MEDIUM.
+
+MIX:
+- First 4 questions: simple 1-mark MCQs.
+- Next 3 questions: short 2-mark MCQs or simple subjective.
+- Next 2 questions: medium 3-mark subjective questions.
+- Last 1 question: detailed 5-mark subjective question.
+
+Rules:
+1. Make sure to generate EXACTLY ${count} questions.
+2. Keep the question text and options in the original language (${targetLanguage}). If the options are in Odia, capture them as strings in the options array.
+3. Provide the correct answer and write a helpful explanation in ${targetLanguage} explaining why that answer is correct.
+4. SCHEMA: Array of { "question": string, "options": string[], "correct_answer": string, "explanation": string, "type": "mcq" | "subjective", "chapter": string }.
+
+${gamificationRules}`;
+
+  const models = [
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
+    "gemini-3.1-flash-lite",
+    "gemini-2.0-flash-lite"
+  ];
+
+  let lastError: any = null;
+
+  for (let keyIdx = 0; keyIdx < keysToTry.length; keyIdx++) {
+    const apiKey = keysToTry[keyIdx];
+    try {
+      const genAI = new GoogleGenerativeAI(apiKey);
+      for (const modelId of models) {
+        try {
+          console.log(`[MCQ-CORE-PROMPT] Prompting ${modelId} with API key ${keyIdx + 1}...`);
+          const model = genAI.getGenerativeModel({
+            model: modelId,
+            generationConfig: { responseMimeType: "application/json" }
+          });
+
+          const result = await model.generateContent(prompt);
+          const mcqs = JSON.parse(result.response.text());
+          
+          if (Array.isArray(mcqs) && mcqs.length > 0) {
+            const cleaned = cleanGeneratedQuestions(mcqs, subject);
+            if (cleaned.length >= count) {
+              console.log(`[MCQ-CORE-PROMPT] SUCCESS with ${modelId}!`);
+              return cleaned;
+            }
+          }
+        } catch (err: any) {
+          console.warn(`[MCQ-CORE-PROMPT] Model ${modelId} failed: ${err.message}`);
+          lastError = err;
+        }
+      }
+    } catch (err: any) {
+      console.warn(`[MCQ-CORE-PROMPT] API Key ${keyIdx + 1} failed: ${err.message}`);
+      lastError = err;
+    }
+  }
+
+  throw new Error(`All configured API keys failed to generate core MCQs from prompt. Last error: ${lastError?.message || lastError}`);
+}
+
 async function buildGeneratedDailyMcq(adminApp: App, databaseId: string, params: {
   className: string;
   subject: string;
@@ -1011,27 +1088,49 @@ async function buildGeneratedDailyMcq(adminApp: App, databaseId: string, params:
   chapters?: string[];
   monthString?: string;
 }) {
-  // 1. Strictly load from Firebase Storage bucket
+  let coreQuestions: DailyMcqQuestion[] = [];
+  let source: GeneratedDailyMcqResult['source'] = {
+    textbookId: 'prompt-generation',
+    textbookTitle: 'Prompt Generated Core Set'
+  };
+
   const targetChapter = Array.isArray(params.chapters) && params.chapters.length > 0 ? params.chapters[0] : undefined;
-  const bucketResult = await loadTextbookFromBucket(adminApp, params.className, params.subject, targetChapter);
-  
-  if (!bucketResult) {
-    const classDigit = params.className.replace(/[^0-9]/g, '');
-    const subjectFolder = params.subject.charAt(0).toUpperCase() + params.subject.slice(1);
-    throw new Error(`No textbook found in bucket for ${params.className} ${params.subject}. Please upload a PDF to "Class ${classDigit}/${subjectFolder}/" in your storage bucket.`);
+  let bucketResult = null;
+  try {
+    bucketResult = await loadTextbookFromBucket(adminApp, params.className, params.subject, targetChapter);
+  } catch (error: any) {
+    console.warn(`[MCQ-AUTO] Failed to load textbook from bucket for core: ${error.message}`);
   }
 
-  const driveContent = bucketResult.driveContent;
-  const source = bucketResult.source;
+  if (bucketResult && bucketResult.driveContent.buffer) {
+    try {
+      console.log(`[MCQ-AUTO] Textbook PDF found for core subject. Generating via PDF vision...`);
+      coreQuestions = await generateQuestionsFromText({
+        className: params.className,
+        subject: params.subject,
+        board: params.board || 'odisha',
+        activeDate: params.activeDate,
+        pdfBuffer: bucketResult.driveContent.buffer,
+        chapters: params.chapters,
+      });
+      source = bucketResult.source;
+    } catch (error: any) {
+      console.warn(`[MCQ-AUTO] PDF generation failed for core: ${error.message}. Falling back to prompt generation...`);
+    }
+  }
 
-  const coreQuestions = await generateQuestionsFromText({
-    className: params.className,
-    subject: params.subject,
-    board: params.board || 'odisha',
-    activeDate: params.activeDate,
-    pdfBuffer: driveContent.buffer!,
-    chapters: params.chapters,
-  });
+  if (coreQuestions.length === 0) {
+    console.log(`[MCQ-AUTO] No textbook PDF or PDF generation failed. Generating core questions via prompt...`);
+    coreQuestions = await generateCoreQuestionsFromPrompt(
+      params.className,
+      params.subject,
+      DAILY_MCQ_QUESTION_COUNT,
+      params.chapters
+    );
+    while (coreQuestions.length < DAILY_MCQ_QUESTION_COUNT) {
+      coreQuestions.push(getPlaceholderQuestion(params.subject, targetChapter));
+    }
+  }
 
   let finalQuestions = [...coreQuestions];
   const normalizedClassName = params.className.toLowerCase().trim();
