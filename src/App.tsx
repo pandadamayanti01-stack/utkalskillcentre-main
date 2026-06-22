@@ -8635,6 +8635,68 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack, setActiv
     return translations[lang].subjects[subject] || subject;
   };
 
+  const getSubjectTheme = (subject: string) => {
+    const s = String(subject || '').toLowerCase().trim();
+    if (s.includes('math') || s.includes('algebra') || s.includes('geometry')) {
+      return {
+        gradient: 'from-cyan-500/10 via-blue-500/5 to-indigo-500/10',
+        borderHover: 'hover:border-cyan-500/30',
+        glow: 'bg-cyan-500/5',
+        iconBg: 'bg-gradient-to-br from-cyan-500 to-blue-600',
+        iconShadow: 'shadow-cyan-500/20',
+        textColor: 'text-cyan-400',
+        badgeBg: 'bg-cyan-500/10 border-cyan-500/20 text-cyan-400',
+        icon: Lucide.Calculator
+      };
+    }
+    if (
+      s.includes('science') || 
+      s.includes('physics') || 
+      s.includes('chemistry') || 
+      s.includes('biology') ||
+      s.includes('evs')
+    ) {
+      return {
+        gradient: 'from-emerald-500/10 via-teal-500/5 to-emerald-950/10',
+        borderHover: 'hover:border-emerald-500/30',
+        glow: 'bg-emerald-500/5',
+        iconBg: 'bg-gradient-to-br from-emerald-500 to-teal-600',
+        iconShadow: 'shadow-emerald-500/20',
+        textColor: 'text-emerald-400',
+        badgeBg: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400',
+        icon: Lucide.Atom
+      };
+    }
+    if (
+      s.includes('social') || 
+      s.includes('history') || 
+      s.includes('geography') ||
+      s.includes('civics')
+    ) {
+      return {
+        gradient: 'from-amber-500/10 via-orange-500/5 to-amber-950/10',
+        borderHover: 'hover:border-amber-500/30',
+        glow: 'bg-amber-500/5',
+        iconBg: 'bg-gradient-to-br from-amber-500 to-orange-600',
+        iconShadow: 'shadow-amber-500/20',
+        textColor: 'text-amber-400',
+        badgeBg: 'bg-amber-500/10 border-amber-500/20 text-amber-400',
+        icon: Lucide.Globe
+      };
+    }
+    // Languages (Odia, English, Sanskrit, Hindi, Vocational)
+    return {
+      gradient: 'from-purple-500/10 via-fuchsia-500/5 to-pink-500/10',
+      borderHover: 'hover:border-purple-500/30',
+      glow: 'bg-purple-500/5',
+      iconBg: 'bg-gradient-to-br from-purple-500 to-pink-600',
+      iconShadow: 'shadow-purple-500/20',
+      textColor: 'text-purple-400',
+      badgeBg: 'bg-purple-500/10 border-purple-500/20 text-purple-400',
+      icon: Lucide.Languages
+    };
+  };
+
   useEffect(() => {
     if (selectedTest) {
       const updatedSelected = tests.find((t: MonthlyTest) => t.id === selectedTest.id || (t.translationGroupId && t.translationGroupId === selectedTest.translationGroupId));
@@ -8855,107 +8917,164 @@ function MonthlyTestsView({ tests, submissions, language, user, onBack, setActiv
         {filteredTests.map((test: any) => {
           const submission = getSubmission(test);
           const resultsPublished = test.results_published;
+          const totalMaxMarks = test.questions?.reduce((acc: number, q: any) => acc + (q.marks || 1), 0) || 0;
+          const theme = getSubjectTheme(test.subject);
+          const SubjectIcon = theme.icon;
+          
+          let formattedDate = 'Scheduled';
+          if (test.scheduledDate) {
+            try {
+              formattedDate = new Date(test.scheduledDate).toLocaleDateString(language === 'or' ? 'or-IN' : 'en-IN', {
+                day: 'numeric',
+                month: 'short'
+              });
+            } catch (e) {
+              formattedDate = test.scheduledDate;
+            }
+          }
 
           return (
             <motion.div 
               whileHover={{ y: -8, scale: 1.01 }} 
               key={test.id} 
-              className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2rem] p-8 hover:border-emerald-500/30 transition-all group relative overflow-hidden"
+              className={`bg-slate-950/40 backdrop-blur-2xl border border-white/5 rounded-[2.25rem] p-6 sm:p-8 ${theme.borderHover} transition-all duration-500 group relative overflow-hidden flex flex-col justify-between h-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_20px_50px_rgba(0,0,0,0.5)]`}
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-3xl rounded-full -mr-16 -mt-16 group-hover:bg-emerald-500/10 transition-colors" />
-              
-              <div className="flex items-start justify-between mb-8">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20 group-hover:scale-110 transition-transform">
-                  <Lucide.FileText size={32} />
-                </div>
-                {submission ? (
-                  <div className="flex flex-col items-end gap-1">
-                    <span className="px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] border border-emerald-500/20">
-                      Completed
-                    </span>
-                    <span className="text-[10px] text-slate-500 font-medium">Attempted on {new Date(submission.submittedAt?.toDate?.() || submission.submittedAt).toLocaleDateString()}</span>
+              {/* Dynamic Theme Glow Backgrounds */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${theme.gradient} opacity-30 group-hover:opacity-60 transition-opacity duration-700 pointer-events-none`}></div>
+              <div className={`absolute top-0 right-0 w-36 h-36 ${theme.glow} blur-[50px] rounded-full -mr-16 -mt-16 group-hover:scale-125 transition-transform duration-1000 pointer-events-none`} />
+              <div className={`absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:via-white/20 transition-all duration-700`}></div>
+
+              <div className="relative z-10 flex flex-col justify-between h-full space-y-6">
+                {/* Header Row */}
+                <div className="flex items-start justify-between">
+                  <div className={`w-14 h-14 rounded-2xl ${theme.iconBg} flex items-center justify-center text-white shadow-lg ${theme.iconShadow} group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500`}>
+                    <SubjectIcon size={28} />
                   </div>
-                ) : (
-                  <span className="px-4 py-1.5 rounded-full bg-blue-500/10 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] border border-blue-500/20 animate-pulse">
-                    Open Now
-                  </span>
-                )}
-              </div>
-
-              <h3 className="text-2xl font-bold text-white mb-2">{getLocalizedSubject(test.subject, language)} - {test.month} {test.year}</h3>
-              <p className="text-slate-400 mb-8">Total Questions: {test.questions.length}</p>
-
-              <div className="flex flex-col gap-3">
-                {submission ? (
-                  <>
-                    <div className="grid grid-cols-2 gap-4 mb-2">
-                      <div className="bg-slate-800/50 rounded-2xl p-4 text-center">
-                        <p className="text-xl font-bold text-white">{submission.finalScore || submission.score}<span className="text-xs text-slate-500">/{submission.totalMaxMarks || submission.totalQuestions}</span></p>
-                        <p className="text-[10px] font-bold uppercase text-slate-500">Score</p>
-                      </div>
-                      <div className="bg-slate-800/50 rounded-2xl p-4 text-center">
-                        <p className="text-xl font-bold text-emerald-500">
-                          {resultsPublished ? `#${submission.rank || 'N/A'}` : 'Pending'}
-                        </p>
-                        <p className="text-[10px] font-bold uppercase text-slate-500">Rank</p>
-                      </div>
+                  {submission ? (
+                    <div className="flex flex-col items-end gap-1">
+                      <span className="px-3.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.15)] flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        Completed
+                      </span>
+                      <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Attempted on {new Date(submission.submittedAt?.toDate?.() || submission.submittedAt).toLocaleDateString()}</span>
                     </div>
-                    {resultsPublished && (
-                      <div className="flex flex-col gap-2">
-                        <div className="flex gap-2">
+                  ) : (
+                    <span className="px-3.5 py-1 rounded-full bg-blue-500/10 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] border border-blue-500/20 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.15)] flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                      Open Now
+                    </span>
+                  )}
+                </div>
+
+                {/* Title & Micro-Badges */}
+                <div className="text-left">
+                  <h3 className="text-xl sm:text-2xl font-black text-white mb-3 tracking-tight leading-snug group-hover:text-slate-100 transition-colors">
+                    {getLocalizedSubject(test.subject, language)} - {test.month} {test.year}
+                  </h3>
+                  
+                  {/* Info Pill Badges Grid */}
+                  <div className="flex flex-wrap gap-2">
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-xl bg-white/[0.04] border border-white/[0.05] text-[10px] font-bold text-slate-300">
+                      <Lucide.HelpCircle size={12} className="text-slate-400" />
+                      {test.questions.length} Questions
+                    </span>
+                    <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-xl ${theme.badgeBg} text-[10px] font-bold`}>
+                      <Lucide.Sparkles size={12} />
+                      {totalMaxMarks} Marks
+                    </span>
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-xl bg-white/[0.04] border border-white/[0.05] text-[10px] font-bold text-slate-300">
+                      <Lucide.Calendar size={12} className="text-slate-400" />
+                      {formattedDate}
+                    </span>
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-xl bg-slate-900 border border-white/5 text-[9px] font-black text-slate-500 uppercase tracking-widest">
+                      BSE Odisha
+                    </span>
+                  </div>
+                </div>
+
+                {/* Score & Action Button Area */}
+                <div className="w-full">
+                  {submission ? (
+                    <div className="space-y-4">
+                      {/* Premium Glowing Scoreboard */}
+                      <div className="grid grid-cols-2 gap-3.5">
+                        <div className="bg-slate-950/60 border border-white/5 rounded-2xl p-3.5 text-center relative overflow-hidden group/score">
+                          <div className="absolute inset-0 bg-gradient-to-b from-white/[0.01] to-transparent pointer-events-none"></div>
+                          <p className="text-2xl font-black text-white tracking-tight">
+                            {submission.finalScore || submission.score}
+                            <span className="text-xs text-slate-500 font-bold">/{submission.totalMaxMarks || submission.totalQuestions}</span>
+                          </p>
+                          <p className="text-[9px] font-black uppercase text-slate-500 tracking-widest mt-1">Obtained Score</p>
+                        </div>
+                        <div className="bg-slate-950/60 border border-white/5 rounded-2xl p-3.5 text-center relative overflow-hidden flex flex-col justify-center items-center">
+                          <div className="absolute inset-0 bg-gradient-to-b from-white/[0.01] to-transparent pointer-events-none"></div>
+                          <p className="text-2xl font-black text-emerald-400 flex items-center justify-center gap-1.5 tracking-tight">
+                            {resultsPublished && (submission.rank || 0) <= 3 && (submission.rank || 0) > 0 ? (
+                              <Lucide.Award size={20} className="text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.6)]" />
+                            ) : null}
+                            {resultsPublished ? `#${submission.rank || 'N/A'}` : 'Pending'}
+                          </p>
+                          <p className="text-[9px] font-black uppercase text-slate-500 tracking-widest mt-1">State Rank</p>
+                        </div>
+                      </div>
+
+                      {resultsPublished && (
+                        <div className="flex gap-3">
                           <button 
                             onClick={() => setReviewingResults({ submission, test })}
-                            className="flex-1 py-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-center flex items-center justify-center gap-2 border border-white/5 transition-all"
+                            className="flex-1 py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 border border-white/5 hover:border-white/10 active:scale-98 transition-all duration-300"
                           >
-                            <Lucide.ClipboardList size={18} /> Review Answers
+                            <Lucide.ClipboardList size={16} /> Review Answers
                           </button>
                           <button 
                             onClick={() => setViewingCertificate({ submission, test })}
-                            className="flex-1 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-center flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20"
+                            className="flex-1 py-4 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 active:scale-98 transition-all duration-300 border-t border-white/20"
                           >
-                            <Lucide.Award size={18} /> Certificate
+                            <Lucide.Award size={16} /> Certificate
                           </button>
                         </div>
-                      </div>
-                    )}
-                  </>
-                ) : resultsPublished ? (
-                  <div className="w-full py-4 rounded-2xl bg-slate-900 border border-white/5 text-slate-500 font-bold text-center flex flex-col items-center justify-center gap-1">
-                    <Lucide.Clock size={18} />
-                    <span>Test Ended</span>
-                    <p className="text-[10px] font-medium opacity-60">Results have been published</p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400">
-                          <Lucide.User size={16} />
+                      )}
+                    </div>
+                  ) : resultsPublished ? (
+                    <div className="w-full py-4.5 rounded-2xl bg-slate-950/60 border border-white/5 text-slate-500 font-bold text-center flex flex-col items-center justify-center gap-1">
+                      <Lucide.Clock size={16} className="opacity-60" />
+                      <span className="text-xs uppercase tracking-widest font-black text-slate-400">Test Ended</span>
+                      <p className="text-[9px] font-bold uppercase opacity-60 tracking-wider">Results published</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {/* Identity Confirmation Box */}
+                      <div className="p-3.5 rounded-2xl bg-white/[0.02] border border-white/[0.04] flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-xl bg-slate-900 border border-white/5 flex items-center justify-center text-slate-400">
+                            <Lucide.User size={16} />
+                          </div>
+                          <div className="text-left">
+                            <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Certificate Name</p>
+                            <p className="text-xs font-bold text-white max-w-[120px] truncate">{user.displayName || user.name || 'Student'}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Certificate Name</p>
-                          <p className="text-sm font-bold text-white">{user.displayName || user.name || 'Student'}</p>
-                        </div>
+                        <button 
+                          onClick={() => setActiveTab('profile')}
+                          className="text-[9px] font-black text-emerald-400 hover:text-emerald-300 uppercase tracking-widest hover:underline transition-colors"
+                        >
+                          Change
+                        </button>
                       </div>
+
                       <button 
-                        onClick={() => setActiveTab('profile')}
-                        className="text-[10px] font-black text-emerald-500 uppercase tracking-widest hover:underline"
+                        onClick={() => {
+                          setSelectedTest(test);
+                          setTakingTest(true);
+                        }}
+                        className={`w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-xs uppercase tracking-[0.2em] shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/45 hover:scale-[1.01] active:scale-98 transition-all duration-300 flex items-center justify-center gap-2 group/btn border-t border-white/20`}
                       >
-                        Change
+                        <Lucide.Play size={16} className="group-hover/btn:scale-125 transition-transform" />
+                        {translations[language].takeMonthlyTest}
                       </button>
                     </div>
-
-                    <button 
-                      onClick={() => {
-                        setSelectedTest(test);
-                        setTakingTest(true);
-                      }}
-                      className="w-full py-4 rounded-2xl bg-emerald-500 text-white font-bold hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
-                    >
-                      <Lucide.Play size={18} /> {translations[language].takeMonthlyTest}
-                    </button>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </motion.div>
           );
