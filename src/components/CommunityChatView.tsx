@@ -439,7 +439,7 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
   }
 
   return (
-    <div className={isTab ? "relative flex-grow flex flex-col font-sans overflow-hidden bg-slate-950/90 w-full h-full min-h-0 force-dark-theme" : "fixed inset-0 z-[100] bg-slate-950/95 backdrop-blur-3xl flex flex-col font-sans overflow-hidden force-dark-theme"}>
+    <div className={isTab ? "relative flex-grow flex flex-col font-sans overflow-hidden bg-slate-950 w-full h-full min-h-0 force-dark-theme" : "fixed inset-0 z-[100] bg-slate-950 flex flex-col font-sans overflow-hidden force-dark-theme"}>
       {/* Dynamic Background Elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-500/10 blur-[120px]"></div>
@@ -839,7 +839,7 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
       </div>
 
       {/* Floating Input Area */}
-      <div className={`relative shrink-0 p-4 sm:p-6 bg-slate-950/95 border-t border-white/5 z-20 pb-[calc(1.2rem+env(safe-area-inset-bottom))]`}>
+      <div className={`relative shrink-0 p-4 sm:p-6 bg-slate-950 border-t border-white/5 z-20 pb-[calc(1.2rem+env(safe-area-inset-bottom))]`}>
         {/* Hidden File Input */}
         {canUpload && (
           <input 
@@ -972,7 +972,7 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
                   vibrate(10);
                   fileInputRef.current?.click();
                 }}
-                className="w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/5 transition-all active:scale-90 shrink-0 disabled:opacity-50 relative z-10 mb-0.5"
+                className="w-10 h-10 rounded-full flex items-center justify-center text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 transition-all active:scale-90 shrink-0 disabled:opacity-50 relative z-10 mb-0.5"
                 title={language === 'en' ? 'Upload Worksheet/Image' : 'ୱର୍କସିଟ୍/ଫଟୋ ଅପଲୋଡ୍ କରନ୍ତୁ'}
               >
                 {isUploading ? <Lucide.Loader2 size={18} className="animate-spin text-emerald-400" /> : <Lucide.Paperclip size={18} />}
