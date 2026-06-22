@@ -439,7 +439,7 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
   }
 
   return (
-    <div className={isTab ? "relative flex-grow flex flex-col font-sans overflow-hidden bg-slate-950 w-full h-full min-h-0 force-dark-theme" : "fixed inset-0 z-[100] bg-slate-950 flex flex-col font-sans overflow-hidden force-dark-theme"}>
+    <div className={isTab ? "relative flex-grow flex flex-col font-sans overflow-hidden bg-black w-full h-full min-h-0 force-dark-theme" : "fixed inset-0 z-[100] bg-black flex flex-col font-sans overflow-hidden force-dark-theme"}>
       {/* Dynamic Background Elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-500/10 blur-[120px]"></div>
@@ -447,7 +447,7 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
       </div>
 
       {/* Premium Header */}
-      <div className="pt-[env(safe-area-inset-top)] z-20 shrink-0 bg-slate-900/60 backdrop-blur-xl border-b border-white/5 shadow-lg shadow-black/20">
+      <div className="pt-[env(safe-area-inset-top)] z-20 shrink-0 bg-zinc-900/60 backdrop-blur-xl border-b border-white/5 shadow-lg shadow-black/20">
         <div className="h-16 flex items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-4">
             <button 
@@ -467,13 +467,13 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
                         setIsLoading(true);
                         setActiveClass(e.target.value);
                       }}
-                      className="bg-slate-900/80 border border-emerald-500/30 text-emerald-400 font-black rounded-xl px-3 py-1.5 text-xs outline-none cursor-pointer focus:border-emerald-500 transition-all shadow-inner"
+                      className="bg-zinc-900/80 border border-emerald-500/30 text-emerald-400 font-black rounded-xl px-3 py-1.5 text-xs outline-none cursor-pointer focus:border-emerald-500 transition-all shadow-inner"
                     >
-                      <option value="teachers" className="bg-slate-900 text-amber-400 font-black">
+                      <option value="teachers" className="bg-zinc-900 text-amber-400 font-black">
                         {language === 'en' ? 'Utkal Guru Parivara 👥' : 'ଉତ୍କଳ ଗୁରୁ ପରିବାର 👥'}
                       </option>
                       {[10, 9, 8, 7, 6, 5, 4, 3, 2, 1].map(num => (
-                        <option key={num} value={`class${num}`} className="bg-slate-900 text-white font-bold">
+                        <option key={num} value={`class${num}`} className="bg-zinc-900 text-white font-bold">
                           {language === 'en' ? `Utkal ${englishClassNames[String(num)] || num} Sanga 👥` : `ଉତ୍କଳ ${odiaClassNames[String(num)] || num} ସାଙ୍ଗ 👥`}
                         </option>
                       ))}
@@ -547,7 +547,7 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="px-4 pb-3 pt-1 border-t border-white/5 bg-slate-950/20"
+              className="px-4 pb-3 pt-1 border-t border-white/5 bg-zinc-950/20"
             >
               <div className="relative max-w-3xl mx-auto">
                 <input
@@ -555,7 +555,7 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={language === 'en' ? 'Search by message, filename, or sender...' : 'ମେସେଜ୍, ଫାଇଲ୍ ନାମ କିମ୍ବା ପ୍ରେରକଙ୍କ ନାମ ଖୋଜନ୍ତୁ...'}
-                  className="w-full h-10 pl-10 pr-10 rounded-xl bg-slate-950/80 border border-white/10 text-white font-medium text-xs outline-none focus:border-indigo-500 transition-all shadow-inner"
+                  className="w-full h-10 pl-10 pr-10 rounded-xl bg-zinc-950/80 border border-white/10 text-white font-medium text-xs outline-none focus:border-indigo-500 transition-all shadow-inner"
                   autoFocus
                 />
                 <Lucide.Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -736,7 +736,7 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
                   <p className="text-[15px] leading-relaxed break-words relative z-10 font-medium">{msg.text}</p>
                   
                   {msg.fileUrl && (
-                    <div className="mt-2.5 p-3 rounded-xl bg-slate-950/40 border border-white/10 flex items-center justify-between gap-4 backdrop-blur-sm relative z-10">
+                    <div className="mt-2.5 p-3 rounded-xl bg-zinc-950/40 border border-white/10 flex items-center justify-between gap-4 backdrop-blur-sm relative z-10">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">
                           {msg.fileType === 'image' ? (
@@ -808,7 +808,7 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
                             setActiveReactionMenuId(null);
                           }}
                         />
-                        <div className="absolute left-0 bottom-full mb-1 bg-slate-900 border border-white/10 rounded-full px-2 py-1 shadow-2xl flex items-center gap-2 z-30 animate-in fade-in slide-in-from-bottom-2 duration-150">
+                        <div className="absolute left-0 bottom-full mb-1 bg-zinc-900 border border-white/10 rounded-full px-2 py-1 shadow-2xl flex items-center gap-2 z-30 animate-in fade-in slide-in-from-bottom-2 duration-150">
                           {availableEmojis.map(emoji => {
                             const users = msgReactions[emoji] || [];
                             const hasReacted = users.includes(student.id);
@@ -839,7 +839,7 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
       </div>
 
       {/* Floating Input Area */}
-      <div className={`relative shrink-0 p-4 sm:p-6 bg-slate-950 border-t border-white/5 z-20 pb-[calc(1.2rem+env(safe-area-inset-bottom))]`}>
+      <div className={`relative shrink-0 p-4 sm:p-6 bg-black border-t border-white/5 z-20 pb-[calc(1.2rem+env(safe-area-inset-bottom))]`}>
         {/* Hidden File Input */}
         {canUpload && (
           <input 
@@ -853,7 +853,7 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
 
         {/* Uploading progress bar */}
         {isUploading && (
-          <div className="max-w-3xl mx-auto mb-3 px-4 py-2 rounded-xl bg-slate-900 border border-emerald-500/30 flex items-center justify-between gap-4">
+          <div className="max-w-3xl mx-auto mb-3 px-4 py-2 rounded-xl bg-zinc-900 border border-emerald-500/30 flex items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <Lucide.Loader2 size={16} className="text-emerald-400 animate-spin" />
               <span className="text-xs font-bold text-slate-300">
@@ -875,7 +875,7 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
               exit={{ height: 0, opacity: 0, marginBottom: 0 }}
               className="overflow-hidden"
             >
-              <div className="flex items-center justify-center gap-4 px-4 py-2 bg-slate-900/70 rounded-2xl border border-white/5 backdrop-blur-md max-w-3xl mx-auto shadow-2xl">
+              <div className="flex items-center justify-center gap-4 px-4 py-2 bg-zinc-900/70 rounded-2xl border border-white/5 backdrop-blur-md max-w-3xl mx-auto shadow-2xl">
                 <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider select-none shrink-0 mr-1.5">
                   {language === 'en' ? 'Quick Send:' : 'ତୁରନ୍ତ ପଠାନ୍ତୁ:'}
                 </span>
@@ -911,7 +911,7 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
               initial={{ opacity: 0, y: 30, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 30, scale: 0.9 }}
-              className="absolute bottom-24 left-1/2 -translate-x-1/2 bg-slate-900/90 border border-emerald-500/30 text-emerald-400 px-5 py-3 rounded-full text-xs font-black tracking-wide shadow-[0_10px_30px_rgba(16,185,129,0.2)] z-[110] flex items-center gap-2 backdrop-blur-md whitespace-nowrap"
+              className="absolute bottom-24 left-1/2 -translate-x-1/2 bg-zinc-900/90 border border-emerald-500/30 text-emerald-400 px-5 py-3 rounded-full text-xs font-black tracking-wide shadow-[0_10px_30px_rgba(16,185,129,0.2)] z-[110] flex items-center gap-2 backdrop-blur-md whitespace-nowrap"
             >
               <Lucide.Mic size={16} className="animate-pulse" />
               <span>
@@ -923,7 +923,7 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
 
         <form onSubmit={handleSendMessage} className="flex items-end gap-2.5 max-w-3xl mx-auto w-full px-1">
           {/* Pill Container (Input + Emojis + Attachment) */}
-          <div className="flex-1 flex items-end bg-slate-900/90 backdrop-blur-2xl rounded-[1.75rem] border border-white/10 focus-within:border-emerald-500/40 focus-within:shadow-[0_0_20px_rgba(16,185,129,0.15)] transition-all shadow-2xl relative px-1 py-1 min-h-[50px] group">
+          <div className="flex-1 flex items-end bg-zinc-950 backdrop-blur-2xl rounded-[1.75rem] border border-white/10 focus-within:border-emerald-500/40 focus-within:shadow-[0_0_20px_rgba(16,185,129,0.15)] transition-all shadow-2xl relative px-1 py-1 min-h-[50px] group">
             {/* Background gradient on focus */}
             <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5 opacity-0 group-focus-within:opacity-100 transition-opacity rounded-[1.75rem] pointer-events-none"></div>
 
