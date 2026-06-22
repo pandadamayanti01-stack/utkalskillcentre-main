@@ -34,8 +34,9 @@ GAMIFICATION & LOCAL PERSONA INTEGRATION RULES:
    - Social Science (history, geography, samajika_bignana): Have characters travel to and ask questions about iconic Odisha heritage sites (Konark Temple, Udayagiri Caves, Lingaraj Temple, Dhauli Peace Pagoda) or geographical landmarks (Mahanadi River, Chilika Lake, Similipal Forest, Hirakud Dam).
    - Kruti (Art/Craft): Have characters interact with traditional Odisha arts (painting Raghurajpur Pattachitra using natural shell colors, sewing Pipili Applique/Chandua motifs, inspecting Cuttack Silver Filigree, modeling clay toys for Rath Yatra).
    - Khela Sikhya / Sharirika Yoga (Physical Ed): Have characters play traditional games (Kabaddi, Kho-Kho, Gilli-Danda) or practice healthy yoga poses (Padmasana, Tadasana, Pranayama breathing).
-3. The explanation field should feature cheering remarks from the hosting character in Odia (e.g. "ନାରୁତୋ କୁହେ: ସାବାସ୍! ତୁମେ ଏହାକୁ ଠିକ୍ ସମାଧାନ କଲ!" or "ଭୀମ କুହେ: ବହୁତ ବଢିଆ! ତୁମେ ମୋ ଲଡୁ ଖାଇବା ବେଗ ପରି ଗଣିତ ସମାଧାନ କଲ!").
-4. ALWAYS match the target language rules: English for English subject, Odia for all other subjects. No LaTeX formulas.`;
+3. The explanation field should feature cheering remarks from the hosting character in Odia (e.g. "ନାରୁତୋ କୁହେ: ସାବାସ୍! ତୁମେ ଏହାକୁ ଠିକ୍ ସମାଧାନ କଲ!" or "ଭୀମ କୁହେ: ବହୁତ ବଢିଆ! ତୁମେ ମୋ ଲଡୁ ଖାଇବା ବେଗ ପରି ଗଣିତ ସମାଧାନ କଲ!").
+4. ALWAYS match the target language rules: English for English subject, Odia for all other subjects. No LaTeX formulas.
+5. ODIA ORTHOGRAPHY & SPELLING (ଯୁକ୍ତାକ୍ଷର): When generating text in Odia, ensure absolute correctness of spelling and conjunct letters (ଯୁକ୍ତାକ୍ଷର, e.g., using proper ligatures like ନ୍ଦ, ନ୍ଧ, ଷ୍ଟ, ତ୍ତ, ଳ, ନ୍ତ, etc.). Avoid broken Unicode combinations (like ନ୍‌ଦ or ନ୍‌ଧ) and ensure historical names or terms (like "ଦାଣ୍ଡି ଯାତ୍ରା" / "Dandi March") are spelled exactly as they appear in standard Odia textbooks.`;
 }
 
 /**
