@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="or">
+<head>
+  <meta charset="UTF-8">
+  <title>Monthly Test Series Championship Poster Generator</title>
+  <style>
+    body {
+      background-color: #0b0f19;
+      color: #cbd5e1;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      text-align: center;
+      max-width: 900px;
+    }
+    h1 {
+      color: #fbbf24;
+      font-size: 24px;
+      margin-bottom: 5px;
+      font-weight: 800;
+    }
+    p {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-top: 0;
+      margin-bottom: 25px;
+    }
+    canvas {
+      border: 3px solid #fbbf24;
+      border-radius: 20px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(245, 158, 11, 0.25);
+      max-width: 100%;
+      height: auto;
+      background-color: #080d1a;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+      color: #0b0f19;
+      font-weight: 900;
+      padding: 15px 35px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-size: 16px;
+      margin-top: 30px;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 10px 20px rgba(245, 158, 11, 0.3);
+      transition: all 0.3s ease;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 25px rgba(245, 158, 11, 0.5);
+      background: linear-gradient(135deg, #fef08a 0%, #fbbf24 50%, #f59e0b 100%);
+    }
+    .btn:active {
+      transform: translateY(1px);
+    }
+    .loading-text {
+      font-size: 18px;
+      color: #fbbf24;
+      margin: 20px;
+      font-weight: bold;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🏆 UTKAL SKILL CENTRE</h1>
+  <p>Monthly Test Series Championship Poster Generator</p>
+  
+  <div id="loading" class="loading-text">Loading poster assets...</div>
+  <canvas id="posterCanvas" width="1080" height="1080" style="display: none;"></canvas>
+  
+  <button id="downloadBtn" class="btn" style="display: none;" onclick="downloadPoster()">
+    Download High-Res Poster (PNG)
+  </button>
+</div>
+
+<script>
+  const canvas = document.getElementById('posterCanvas');
+  const ctx = canvas.getContext('2d');
+  const loading = document.getElementById('loading');
+  const downloadBtn = document.getElementById('downloadBtn');
+
+  // Load all images
+  const images = {
+    bg: '/championship_poster_pure_bg.png',
+    logo: '/utkal-512.png',
+    mascot: '/gundulu-pointing-nobg.png'
+  };
+
+  const loadedImages = {};
+  let loadedCount = 0;
+  const totalImages = Object.keys(images).length;
+
+  for (const [key, src] of Object.entries(images)) {
+    const img = new Image();
+    img.src = src;
+    img.onload = () => {
+      loadedImages[key] = img;
+      loadedCount++;
+      if (loadedCount === totalImages) {
+        drawPoster();
+      }
+    };
+    img.onerror = (e) => {
+      console.error('Failed to load image: ' + key, e);
+      loading.innerText = 'Error loading image asset: ' + key + '. Please refresh.';
+    };
+  }
+
+  function drawPoster() {
+    // 1. Draw Background
+    ctx.drawImage(loadedImages.bg, 0, 0, 1080, 1080);
+
+    // 2. Draw Top Bar (Transparent background for logo and top text)
+    ctx.fillStyle = 'rgba(8, 13, 26, 0.4)';
+    ctx.fillRect(0, 0, 1080, 170);
+    ctx.strokeStyle = 'rgba(251, 191, 36, 0.15)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, 170);
+    ctx.lineTo(1080, 170);
+    ctx.stroke();
+
+    // 3. Draw Logo (Top Left)
+    ctx.drawImage(loadedImages.logo, 50, 25, 120, 120);
+
+    // 4. Draw Top Text "ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର" (Utkal Skill Centre in Odia)
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '900 52px "Kalinga", "Oriya", "Lohit Oriya", "Noto Sans Oriya", sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    
+    // Add text shadow/glow
+    ctx.shadowColor = 'rgba(251, 191, 36, 0.4)';
+    ctx.shadowBlur = 8;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+    ctx.fillText('ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର', 200, 85);
+    ctx.shadowBlur = 0; // Reset shadow
+
+    // 5. Draw Title "ମାସିକ ଟେଷ୍ଟ ଚାମ୍ପିଅନସିପ୍" (Large Gold Text in lower half)
+    ctx.textAlign = 'center';
+    ctx.font = '900 72px "Kalinga", "Oriya", "Lohit Oriya", "Noto Sans Oriya", sans-serif';
+    
+    // Draw 3D gold effect
+    const titleX = 540;
+    const titleY = 660;
+    
+    ctx.fillStyle = '#78350f'; // Dark gold shadow
+    ctx.fillText('ମାସିକ ଟେଷ୍ଟ ଚାମ୍ପିଅନସିପ୍', titleX, titleY + 4);
+    
+    // Gradient fill for text
+    const goldGradient = ctx.createLinearGradient(0, titleY - 40, 0, titleY + 30);
+    goldGradient.addColorStop(0, '#fef08a');
+    goldGradient.addColorStop(0.5, '#fbbf24');
+    goldGradient.addColorStop(1, '#ea580c');
+    
+    ctx.fillStyle = goldGradient;
+    ctx.shadowColor = 'rgba(249, 115, 22, 0.5)';
+    ctx.shadowBlur = 20;
+    ctx.fillText('ମାସିକ ଟେଷ୍ଟ ଚାମ୍ପିଅନସିପ୍', titleX, titleY);
+    ctx.shadowBlur = 0; // Reset shadow
+
+    // 6. Draw Subtitle "ପରିଶ୍ରମର ଫଳ" (Below Title)
+    ctx.font = 'bold 44px "Kalinga", "Oriya", "Lohit Oriya", "Noto Sans Oriya", sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowColor = 'rgba(255, 255, 255, 0.3)';
+    ctx.shadowBlur = 10;
+    ctx.fillText('ପରିଶ୍ରମର ଫଳ', 540, 740);
+    ctx.shadowBlur = 0; // Reset shadow
+
+    // 7. Draw Prizes "୧ମ: ₹୫୦୦୦ | ୨ୟ: ₹୩୦୦୦ | ୩ୟ: ₹୨୦୦୦" (Slightly adjusted size)
+    ctx.font = '900 48px "Kalinga", "Oriya", "Lohit Oriya", "Noto Sans Oriya", sans-serif';
+    
+    // Draw background highlight box for prizes
+    const prizeY = 825;
+    ctx.fillStyle = 'rgba(245, 158, 11, 0.1)';
+    ctx.strokeStyle = 'rgba(245, 158, 11, 0.3)';
+    ctx.lineWidth = 1.5;
+    
+    const boxW = 880;
+    const boxH = 75;
+    // Draw rounded rect
+    drawRoundedRect(ctx, 540 - boxW/2, prizeY - boxH/2 - 5, boxW, boxH, 15, true, true);
+    
+    // Draw text
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillText('୧ମ: ₹୫୦୦୦  |  ୨ୟ: ₹୩୦୦୦  |  ୩ୟ: ₹୨୦୦୦', 540, prizeY);
+
+    // 8. Draw Class-wise breakdown in Odia script
+    // (ପ୍ରତି ଶ୍ରେଣୀ ପାଇଁ: ୧ମ ₹୫୦୦, ୨ୟ ₹୩୦୦, ୩ୟ ₹୨୦୦)
+    ctx.font = 'bold 28px "Kalinga", "Oriya", "Lohit Oriya", "Noto Sans Oriya", sans-serif';
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillText('(ପ୍ରତି ଶ୍ରେଣୀ ପାଇଁ: ୧ମ ₹୫୦୦, ୨ୟ ₹୩୦୦, ୩ୟ ₹୨୦୦)', 540, 895);
+
+    // 9. Draw Footer Banner (Sleek dark gradient at bottom)
+    const footerY = 960;
+    ctx.fillStyle = 'rgba(8, 13, 26, 0.9)';
+    ctx.fillRect(0, footerY, 1080, 120);
+    
+    ctx.strokeStyle = 'rgba(251, 191, 36, 0.2)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, footerY);
+    ctx.lineTo(1080, footerY);
+    ctx.stroke();
+
+    // 10. Draw Footer Info (Website, Email, Phone) on the Left Side
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = 'bold 22px "Segoe UI", Arial, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    
+    // Website icon placeholder or text
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillText('🌐  www.utkalskillcentre.com', 50, footerY + 35);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('✉️  support@utkalskillcentre.com', 50, footerY + 80);
+    ctx.fillStyle = '#34d399';
+    ctx.fillText('📞  +91 77351 18243', 520, footerY + 35);
+
+    // 11. Draw "Follow Us" and Social Icons on the Right Side
+    ctx.fillStyle = '#cbd5e1';
+    ctx.font = '900 24px "Kalinga", "Oriya", sans-serif';
+    ctx.fillText('Follow Us:', 520, footerY + 80);
+
+    // Draw Vector Social Icons
+    const iconStartX = 650;
+    const iconY = footerY + 80;
+    const iconSpacing = 50;
+
+    // Draw YouTube Icon
+    drawYouTubeIcon(ctx, iconStartX, iconY, 32);
+    // Draw WhatsApp Icon
+    drawWhatsAppIcon(ctx, iconStartX + iconSpacing, iconY, 32);
+    // Draw Facebook Icon
+    drawFacebookIcon(ctx, iconStartX + iconSpacing * 2, iconY, 32);
+    // Draw Instagram Icon
+    drawInstagramIcon(ctx, iconStartX + iconSpacing * 3, iconY, 32);
+
+    // 12. Draw Mascot (Bottom Right Corner - peeking in)
+    // Mascot dimensions: width 230, height 230
+    const mascotW = 230;
+    const mascotH = 230;
+    const mascotX = 1080 - mascotW + 50; // slightly shifted right
+    const mascotY = footerY - mascotH + 15; // peeks right above the footer bar
+    
+    ctx.drawImage(loadedImages.mascot, mascotX, mascotY, mascotW, mascotH);
+
+    // Reveal UI
+    loading.style.display = 'none';
+    canvas.style.display = 'block';
+    downloadBtn.style.display = 'inline-flex';
+  }
+
+  // Helper: Draw rounded rectangle
+  function drawRoundedRect(ctx, x, y, width, height, radius, fill, stroke) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+    if (fill) ctx.fill();
+    if (stroke) ctx.stroke();
+  }
+
+  // Draw Social Icon functions
+  function drawYouTubeIcon(ctx, x, y, size) {
+    ctx.save();
+    ctx.translate(x - size/2, y - size/2);
+    // Red body
+    ctx.fillStyle = '#ff0000';
+    drawRoundedRect(ctx, 0, 4, size, size - 8, 8, true, false);
+    // White Play triangle
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.moveTo(size * 0.4, size * 0.35);
+    ctx.lineTo(size * 0.65, size * 0.5);
+    ctx.lineTo(size * 0.4, size * 0.65);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawWhatsAppIcon(ctx, x, y, size) {
+    ctx.save();
+    ctx.translate(x - size/2, y - size/2);
+    // Green circle
+    ctx.fillStyle = '#25d366';
+    ctx.beginPath();
+    ctx.arc(size/2, size/2, size/2, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // White bubble tail
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.moveTo(size * 0.3, size * 0.7);
+    ctx.lineTo(size * 0.22, size * 0.85);
+    ctx.lineTo(size * 0.4, size * 0.8);
+    ctx.closePath();
+    ctx.fill();
+
+    // White bubble body
+    ctx.beginPath();
+    ctx.arc(size * 0.52, size * 0.52, size * 0.32, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Inner green phone shape
+    ctx.strokeStyle = '#25d366';
+    ctx.lineWidth = 3.5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.arc(size * 0.55, size * 0.5, size * 0.16, Math.PI * 0.8, Math.PI * 1.5);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawFacebookIcon(ctx, x, y, size) {
+    ctx.save();
+    ctx.translate(x - size/2, y - size/2);
+    // Blue body
+    ctx.fillStyle = '#1877f2';
+    ctx.beginPath();
+    ctx.arc(size/2, size/2, size/2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // White 'f'
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold ' + (size * 0.8) + 'px "Segoe UI", Arial, sans-serif';
+    ctx.fillText('f', size * 0.4, size * 0.7);
+    ctx.restore();
+  }
+
+  function drawInstagramIcon(ctx, x, y, size) {
+    ctx.save();
+    ctx.translate(x - size/2, y - size/2);
+    // Gradient Instagram background
+    const grad = ctx.createRadialGradient(size*0.3, size*0.7, 0, size*0.5, size*0.5, size*0.8);
+    grad.addColorStop(0, '#f9ce34');
+    grad.addColorStop(0.5, '#ee2a7b');
+    grad.addColorStop(1, '#6228d7');
+    ctx.fillStyle = grad;
+    drawRoundedRect(ctx, 0, 0, size, size, 8, true, false);
+
+    // White camera outline
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2.5;
+    drawRoundedRect(ctx, size*0.2, size*0.2, size*0.6, size*0.6, 6, false, true);
+
+    // Lens circle
+    ctx.beginPath();
+    ctx.arc(size/2, size/2, size*0.18, 0, Math.PI*2);
+    ctx.stroke();
+
+    // Small dot
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(size*0.7, size*0.3, size*0.05, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function downloadPoster() {
+    const dataUrl = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.download = 'Monthly_Test_Championship_Poster.png';
+    link.href = dataUrl;
+    link.click();
+  }
+</script>
+
+</body>
+</html>
