@@ -7,13 +7,15 @@ import {
   Camera,
   Image as ImageIcon,
   CheckCircle2,
-  Paperclip
+  Paperclip,
+  Trash2,
+  Eye
 } from 'lucide-react';
 import { translations } from '../translations';
 import { Test } from '../types';
 import { vibrate, requestScreenWakeLock, releaseScreenWakeLock, playSuccessChime } from '../pwa';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { db as firestore, storage } from '../firebase';
 
 interface MonthlyTestEngineProps {
@@ -26,8 +28,8 @@ interface MonthlyTestEngineProps {
 
 export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: MonthlyTestEngineProps) {
   const [currentIdx, setCurrentIdx] = useState(0);
-  const [answers, setAnswers] = useState<number[]>([]);
-  const [roughNotes, setRoughNotes] = useState<Record<number, string>>({});
+  // Answers can store either option index (number) for MCQ or { text: string, imageUrl: string, imageUrls: string[] } for subjective
+  const [answers, setAnswers] = useState<any[]>([]);
   const [uploadingNote, setUploadingNote] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -116,7 +118,7 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
         console.log(`[Upload] File size ${Math.round(file.size / 1024)}KB. Skipping compression.`);
       }
       
-      // 2. Upload with folder-based path
+      // Upload with folder-based path
       const userId = user.id || user.uid || 'anonymous';
       const fileName = `rough_notes/${userId}/${test.id}/q${currentIdx}_${Date.now()}.jpg`;
       const storageRef = ref(storage, fileName);
@@ -139,7 +141,21 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
           async () => {
             console.log("[Upload] Success!");
             const url = await getDownloadURL(storageRef);
-            setRoughNotes(prev => ({ ...prev, [currentIdx]: url }));
+            
+            setAnswers(prev => {
+              const newAnswers = [...prev];
+              const currentAns = (newAnswers[currentIdx] && typeof newAnswers[currentIdx] === 'object')
+                ? { ...newAnswers[currentIdx] }
+                : { text: '', imageUrl: '', imageUrls: [] };
+              
+              const updatedUrls = [...(currentAns.imageUrls || []), url];
+              newAnswers[currentIdx] = {
+                text: currentAns.text || '',
+                imageUrl: updatedUrls[0],
+                imageUrls: updatedUrls
+              };
+              return newAnswers;
+            });
             resolve(url);
           }
         );
@@ -159,12 +175,44 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
     setAnswers(newAnswers);
   };
 
+  const isQuestionAnswered = (idx: number) => {
+    const q = test.questions[idx];
+    const ans = answers[idx];
+    if (q.type === 'subjective' || q.marks > 1) {
+      // Subjective needs at least one uploaded image
+      return ans && typeof ans === 'object' && Array.isArray(ans.imageUrls) && ans.imageUrls.length > 0;
+    } else {
+      // MCQ needs a number index selected
+      return typeof ans === 'number';
+    }
+  };
+
   const handleSubmit = async () => {
+    setSubmitting(false); // Reset submitting to false in case we abort or fail
+    
+    // Validate that all questions are answered before submitting
+    for (let i = 0; i < test.questions.length; i++) {
+      if (!isQuestionAnswered(i)) {
+        alert(language === 'en' 
+          ? `Please answer Question ${i + 1} before submitting.` 
+          : `ଦୟାକରି ସବ୍‌ମିଟ୍ କରିବା ପୂର୍ବରୁ ପ୍ରଶ୍ନ ${i + 1} ର ଉତ୍ତର ଦିଅନ୍ତୁ।`
+        );
+        setCurrentIdx(i);
+        return;
+      }
+    }
+
     setSubmitting(true);
     try {
-      const score = answers.reduce((acc, ansIdx, i) => {
-        const selectedOption = test.questions[i].options[ansIdx];
-        return acc + (selectedOption === test.questions[i].correct_answer ? 1 : 0);
+      // Auto score only counts MCQ questions
+      const score = answers.reduce((acc, ans, i) => {
+        const q = test.questions[i];
+        if (q.type === 'subjective' || q.marks > 1) {
+          return acc; // subjective has manual grading
+        }
+        const ansIdx = ans as number;
+        const selectedOption = q.options[ansIdx];
+        return acc + (selectedOption === q.correct_answer ? 1 : 0);
       }, 0);
 
       const submissionData = {
@@ -176,7 +224,6 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
         month: test.month,
         year: test.year,
         answers,
-        roughNotes,
         score,
         totalQuestions: test.questions.length,
         submittedAt: serverTimestamp(),
@@ -198,6 +245,7 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
   };
 
   const q = test.questions[currentIdx];
+  const isSubjective = q.type === 'subjective' || q.marks > 1;
 
   return (
     <motion.div
@@ -253,91 +301,134 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
             className="space-y-10"
           >
             <div className="space-y-4">
-              <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] border border-emerald-500/20">
-                Question {currentIdx + 1}
-              </span>
+              <div className="flex items-center gap-3">
+                <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] border border-emerald-500/20">
+                  Question {currentIdx + 1}
+                </span>
+                <span className={`inline-block px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.1em] ${q.type === 'mcq' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20'}`}>
+                  {q.type === 'mcq' ? 'Section A: MCQ (1 Mark)' : `Section B: Subjective (${q.marks || 3} Marks)`}
+                </span>
+              </div>
               <h2 className="text-2xl md:text-3xl font-bold text-white leading-tight">
                 {q.question}
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 gap-4">
-              {Array.isArray(q.options) ? (
-                q.options.map((opt: string, idx: number) => (
-                  <button
-                    key={idx}
-                    onClick={() => handleAnswer(idx)}
-                    className={`group flex items-center gap-6 p-6 rounded-[1.5rem] border-2 transition-all text-left relative overflow-hidden ${answers[currentIdx] === idx ? 'bg-emerald-500/10 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.1)]' : 'bg-slate-800/30 border-white/5 hover:border-white/10 hover:bg-slate-800/50'}`}
-                  >
-                    {answers[currentIdx] === idx && (
-                      <motion.div
-                        layoutId="active-bg"
-                        className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-transparent pointer-events-none"
-                      />
-                    )}
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-lg transition-all ${answers[currentIdx] === idx ? 'bg-emerald-500 text-white shadow-lg' : 'bg-slate-700 text-slate-400 group-hover:bg-slate-600'}`}>
-                      {String.fromCharCode(65 + idx)}
-                    </div>
-                    <span className={`text-lg font-bold transition-colors ${answers[currentIdx] === idx ? 'text-white' : 'text-slate-300 group-hover:text-white'}`}>
-                      {opt}
-                    </span>
-                  </button>
-                ))
-              ) : (
-                <div className="text-slate-500 text-sm italic p-8 text-center bg-white/5 rounded-3xl">Options unavailable.</div>
-              )}
-            </div>
-
-            {/* Rough Note Upload Section */}
-            <div className="pt-8 border-t border-white/5">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-6 bg-white/5 p-6 rounded-[2rem] border border-white/5">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500">
-                    <Paperclip size={24} />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-white">Upload Rough Note</h4>
-                    <p className="text-[10px] text-slate-400 uppercase tracking-widest">Optional • Step-by-step working</p>
-                  </div>
+            {/* Answer Options or Upload Section */}
+            {isSubjective ? (
+              <div className="space-y-6">
+                <div className="bg-slate-800/30 border border-white/5 rounded-3xl p-6 space-y-4">
+                  <h3 className="text-sm font-bold text-white uppercase tracking-wider">Instructions:</h3>
+                  <ul className="text-slate-400 text-xs list-disc list-inside space-y-2">
+                    <li>This is a Subjective question worth <span className="text-emerald-400 font-bold">{q.marks || 3} Marks</span>.</li>
+                    <li>Write your step-by-step solution clearly on a piece of paper.</li>
+                    <li>Take a clear photo of your answer sheet using the camera below.</li>
+                    <li>You can upload multiple pages if your answer is long.</li>
+                  </ul>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  {roughNotes[currentIdx] ? (
-                    <div className="flex items-center gap-3 bg-emerald-500/10 px-4 py-2 rounded-xl border border-emerald-500/20">
-                      <CheckCircle2 className="text-emerald-500" size={16} />
-                      <span className="text-xs font-bold text-emerald-500">Uploaded</span>
-                      <button
-                        onClick={() => window.open(roughNotes[currentIdx], '_blank')}
-                        className="text-[10px] uppercase font-black text-white/40 hover:text-white underline ml-2"
-                      >
-                        View
-                      </button>
+                {/* Previews of uploaded pages */}
+                {answers[currentIdx] && typeof answers[currentIdx] === 'object' && Array.isArray(answers[currentIdx].imageUrls) && answers[currentIdx].imageUrls.length > 0 && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Uploaded Pages:</h4>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                      {answers[currentIdx].imageUrls.map((url: string, index: number) => (
+                        <div key={index} className="relative group aspect-[3/4] rounded-xl overflow-hidden border border-white/10 bg-black/40">
+                          <img src={url} alt={`Page ${index + 1}`} className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-2 transition-all">
+                            <button
+                              onClick={() => window.open(url, '_blank')}
+                              className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center gap-1 text-[10px] uppercase font-bold"
+                            >
+                              <Eye size={12} /> View
+                            </button>
+                            <button
+                              onClick={() => {
+                                setAnswers(prev => {
+                                  const newAnswers = [...prev];
+                                  const currentAns = { ...newAnswers[currentIdx] };
+                                  const updatedUrls = currentAns.imageUrls.filter((_: any, uIdx: number) => uIdx !== index);
+                                  newAnswers[currentIdx] = {
+                                    text: currentAns.text || '',
+                                    imageUrl: updatedUrls[0] || '',
+                                    imageUrls: updatedUrls
+                                  };
+                                  return newAnswers;
+                                });
+                              }}
+                              className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-500 flex items-center gap-1 text-[10px] uppercase font-bold"
+                            >
+                              <Trash2 size={12} /> Delete
+                            </button>
+                          </div>
+                          <span className="absolute bottom-2 left-2 bg-black/60 px-2 py-0.5 rounded text-[9px] font-bold text-white">Page {index + 1}</span>
+                        </div>
+                      ))}
                     </div>
-                  ) : (
-                    <div className="flex gap-2">
-                      <label className="cursor-pointer flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">
-                        <Camera size={14} />
-                        Camera
-                        <input type="file" accept="image/*" capture="environment" className="hidden" onChange={handleNoteUpload} onClick={flagUploadStart} />
-                      </label>
-                      <label className="cursor-pointer flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">
-                        <ImageIcon size={14} />
-                        Gallery
-                        <input type="file" accept="image/*" className="hidden" onChange={handleNoteUpload} onClick={flagUploadStart} />
-                      </label>
+                  </div>
+                )}
+
+                {/* Answer Upload Controls */}
+                <div className="flex flex-col md:flex-row items-center justify-between gap-6 bg-white/5 p-6 rounded-[2rem] border border-white/5">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500">
+                      <Camera size={24} />
                     </div>
-                  )}
+                    <div>
+                      <h4 className="text-sm font-bold text-white">Upload Answer Page</h4>
+                      <p className="text-[10px] text-slate-400 uppercase tracking-widest">Mandatory • Take photo or choose file</p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <label className="cursor-pointer flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-emerald-500/15">
+                      <Camera size={14} />
+                      Camera
+                      <input type="file" accept="image/*" capture="environment" className="hidden" onChange={handleNoteUpload} onClick={flagUploadStart} />
+                    </label>
+                    <label className="cursor-pointer flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">
+                      <ImageIcon size={14} />
+                      Gallery
+                      <input type="file" accept="image/*" className="hidden" onChange={handleNoteUpload} onClick={flagUploadStart} />
+                    </label>
+                  </div>
 
                   {uploadingNote === currentIdx && (
                     <div className="flex items-center gap-2 text-amber-500 bg-amber-500/10 px-4 py-2 rounded-xl border border-amber-500/20">
                       <Loader2 size={16} className="animate-spin" />
-                      <span className="text-[10px] font-black uppercase tracking-widest">Uploading...</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest">Uploading Page...</span>
                     </div>
                   )}
-
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4">
+                {Array.isArray(q.options) ? (
+                  q.options.map((opt: string, idx: number) => (
+                    <button
+                      key={idx}
+                      onClick={() => handleAnswer(idx)}
+                      className={`group flex items-center gap-6 p-6 rounded-[1.5rem] border-2 transition-all text-left relative overflow-hidden ${answers[currentIdx] === idx ? 'bg-emerald-500/10 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.1)]' : 'bg-slate-800/30 border-white/5 hover:border-white/10 hover:bg-slate-800/50'}`}
+                    >
+                      {answers[currentIdx] === idx && (
+                        <motion.div
+                          layoutId="active-bg"
+                          className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-transparent pointer-events-none"
+                        />
+                      )}
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-lg transition-all ${answers[currentIdx] === idx ? 'bg-emerald-500 text-white shadow-lg' : 'bg-slate-700 text-slate-400 group-hover:bg-slate-600'}`}>
+                        {String.fromCharCode(65 + idx)}
+                      </div>
+                      <span className={`text-lg font-bold transition-colors ${answers[currentIdx] === idx ? 'text-white' : 'text-slate-300 group-hover:text-white'}`}>
+                        {opt}
+                      </span>
+                    </button>
+                  ))
+                ) : (
+                  <div className="text-slate-500 text-sm italic p-8 text-center bg-white/5 rounded-3xl">Options unavailable.</div>
+                )}
+              </div>
+            )}
           </motion.div>
         </div>
 
@@ -353,7 +444,7 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
 
           {currentIdx === test.questions.length - 1 ? (
             <button
-              disabled={answers[currentIdx] === undefined || submitting}
+              disabled={!isQuestionAnswered(currentIdx) || submitting}
               onClick={handleSubmit}
               className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white px-10 py-4 rounded-2xl font-black text-sm uppercase tracking-[0.2em] shadow-xl shadow-emerald-900/20 disabled:opacity-50 flex items-center gap-3 transition-all hover:scale-105 active:scale-95"
             >
@@ -361,7 +452,7 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
             </button>
           ) : (
             <button
-              disabled={answers[currentIdx] === undefined}
+              disabled={!isQuestionAnswered(currentIdx)}
               onClick={() => setCurrentIdx(prev => prev + 1)}
               className="flex items-center gap-3 bg-white text-slate-900 hover:bg-slate-200 px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-[0.2em] transition-all disabled:opacity-30 hover:scale-105 active:scale-95"
             >

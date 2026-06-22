@@ -8156,22 +8156,7 @@ export const ROADMAP_DATA = [
         "subject": "English",
         "thumbnail": null
       },
-      {
-        "id": "BdUErT0FNVHCxZvowdqQ",
-        "title": "All Things Bright and Beautiful - ସବୁ ଜିନିଷ ଉଜ୍ଜ୍ୱଳ ଓ ସୁନ୍ଦର",
-        "title_en": "All Things Bright and Beautiful",
-        "title_or": "ସବୁ ଜିନିଷ ଉଜ୍ଜ୍ୱଳ ଓ ସୁନ୍ଦର",
-        "subject": "English",
-        "thumbnail": null
-      },
-      {
-        "id": "zjmscF6RCwSzh7UsljMp",
-        "title": "Chapter 1 - ଜ୍ୟାମିତିରେ ସାଦୃଶ୍ୟ (Similarity)",
-        "title_en": "Similarity",
-        "title_or": "ଜ୍ୟାମିତିରେ ସାଦୃଶ୍ୟ",
-        "subject": "geometry",
-        "thumbnail": null
-      },
+
       {
         "id": "class10_vocational_tourism",
         "title": "ବ୍ୟାବସାୟିକ ପର୍ଯ୍ୟଟନ (Class 10 Vocational Tourism)",
@@ -8299,9 +8284,9 @@ export const ROADMAP_DATA = [
       },
       {
         "id": "oIZWnuRA5uerdUx6ixMZ",
-        "title": "AirPollutionAHiddenMenace Ready",
-        "title_en": null,
-        "title_or": null,
+        "title": "Air Pollution: A Hidden Menace",
+        "title_en": "Air Pollution: A Hidden Menace",
+        "title_or": "ବାୟୁ ପ୍ରଦୂଷଣ - ଏକ ଅଦୃଶ୍ୟ ବିପଦ",
         "subject": "english",
         "thumbnail": null
       },

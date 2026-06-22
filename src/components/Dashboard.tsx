@@ -1320,8 +1320,13 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           
           ctx.fillStyle = '#0f172a';
           ctx.font = 'bold 15px Arial, sans-serif';
-          qLines.forEach(line => {
+          qLines.forEach((line, lineIdx) => {
             ctx.fillText(line, 180, y);
+            if (lineIdx === 0) {
+              ctx.textAlign = 'right';
+              ctx.fillText('[1]', 1150, y);
+              ctx.textAlign = 'left';
+            }
             y += 42;
           });
           
@@ -1366,8 +1371,14 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           
           ctx.fillStyle = '#0f172a';
           ctx.font = 'bold 15px Arial, sans-serif';
-          qLines.forEach(line => {
+          qLines.forEach((line, lineIdx) => {
             ctx.fillText(line, 180, y);
+            if (lineIdx === 0) {
+              const marks = q.marks || (idx % 3 === 0 ? 5 : (idx % 3 === 1 ? 2 : 3));
+              ctx.textAlign = 'right';
+              ctx.fillText(`[${marks}]`, 1150, y);
+              ctx.textAlign = 'left';
+            }
             y += 42;
           });
           

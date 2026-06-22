@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 
-function getTargetLanguage(subject: string): string {
+export function getTargetLanguage(subject: string): string {
   const s = subject.toLowerCase();
   if (s.includes('english')) return 'English';
   if (s.includes('odia')) return 'Odia (ଓଡ଼ିଆ)';
@@ -14,7 +14,7 @@ function getTargetLanguage(subject: string): string {
   return 'Odia (ଓଡ଼ିଆ)';
 }
 
-function getGamificationInstructions(subject: string, className: string): string {
+export function getGamificationInstructions(subject: string, className: string): string {
   const normalizedClass = className.toLowerCase().trim();
   const classDigit = parseInt(normalizedClass.replace(/[^0-9]/g, ''), 10) || 10;
   
@@ -34,7 +34,7 @@ GAMIFICATION & LOCAL PERSONA INTEGRATION RULES:
    - Social Science (history, geography, samajika_bignana): Have characters travel to and ask questions about iconic Odisha heritage sites (Konark Temple, Udayagiri Caves, Lingaraj Temple, Dhauli Peace Pagoda) or geographical landmarks (Mahanadi River, Chilika Lake, Similipal Forest, Hirakud Dam).
    - Kruti (Art/Craft): Have characters interact with traditional Odisha arts (painting Raghurajpur Pattachitra using natural shell colors, sewing Pipili Applique/Chandua motifs, inspecting Cuttack Silver Filigree, modeling clay toys for Rath Yatra).
    - Khela Sikhya / Sharirika Yoga (Physical Ed): Have characters play traditional games (Kabaddi, Kho-Kho, Gilli-Danda) or practice healthy yoga poses (Padmasana, Tadasana, Pranayama breathing).
-3. The explanation field should feature cheering remarks from the hosting character in Odia (e.g. "ନାରୁତୋ କୁହେ: ସାବାସ୍! ତୁମେ ଏହାକୁ ଠିକ୍ ସମାଧାନ କଲ!" or "ଭୀମ କୁହେ: ବହୁତ ବଢିଆ! ତୁମେ ମୋ ଲଡୁ ଖାଇବା ବେଗ ପରି ଗଣିତ ସମାଧାନ କଲ!").
+3. The explanation field should feature cheering remarks from the hosting character in Odia (e.g. "ନାରୁତୋ କୁହେ: ସାବାସ୍! ତୁମେ ଏହାକୁ ଠିକ୍ ସମାଧାନ କଲ!" or "ଭୀମ କুହେ: ବହୁତ ବଢିଆ! ତୁମେ ମୋ ଲଡୁ ଖାଇବା ବେଗ ପରି ଗଣିତ ସମାଧାନ କଲ!").
 4. ALWAYS match the target language rules: English for English subject, Odia for all other subjects. No LaTeX formulas.`;
 }
 

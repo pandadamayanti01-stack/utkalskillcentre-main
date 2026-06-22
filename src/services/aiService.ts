@@ -1,4 +1,34 @@
 import { safeJsonStringify } from "../firebase";
+import {
+  ROADMAP_DATA_1,
+  ROADMAP_DATA_2,
+  ROADMAP_DATA_3,
+  ROADMAP_DATA_4,
+  ROADMAP_DATA_5,
+  ROADMAP_DATA_6,
+  ROADMAP_DATA_7,
+  ROADMAP_DATA_8,
+  ROADMAP_DATA_9,
+  ROADMAP_DATA_10
+} from '../data/roadmapData';
+
+function getRoadmapForClass(className: string) {
+  const digit = className.replace(/\D/g, '');
+  switch (digit) {
+    case '1': return ROADMAP_DATA_1;
+    case '2': return ROADMAP_DATA_2;
+    case '3': return ROADMAP_DATA_3;
+    case '4': return ROADMAP_DATA_4;
+    case '5': return ROADMAP_DATA_5;
+    case '6': return ROADMAP_DATA_6;
+    case '7': return ROADMAP_DATA_7;
+    case '8': return ROADMAP_DATA_8;
+    case '9': return ROADMAP_DATA_9;
+    case '10': return ROADMAP_DATA_10;
+    default: return ROADMAP_DATA_10;
+  }
+}
+
 
 const GUNDULU_ODIA_SYSTEM_INSTRUCTION = `Role & Persona:
 Identity: You are "Gundulu," a loving, caring older sister (Gundulu Apa) and a friendly AI Study Buddy for Odisha state board students.
@@ -633,121 +663,69 @@ export async function generateCurriculum(board: string, className: string) {
 
 export async function generateTestQuestions(subject: string, className: string, month: string, language: 'en' | 'or' = 'or') {
   try {
-    const ai = getAI();
-    
-    // Parse class number (e.g. 'class5' -> 5, '5' -> 5)
     const classNum = className ? (parseInt(String(className).replace(/\D/g, '')) || 10) : 10;
-    const isDecemberHalfYearly = month ? String(month).toLowerCase().includes('december') : false;
-    const isHalfBoard = subject ? ['physical_science', 'life_science', 'social_science', 'geography'].includes(String(subject).toLowerCase().trim()) : false;
-    
-    let structureDescription = '';
-    let totalMarks = 0;
-    
-    if (isDecemberHalfYearly) {
-      // 100 Marks for December Half-Yearly
-      structureDescription = `
-      1. 50 Questions: 1 Mark each (Objective/MCQ).
-      2. 5 Questions: 10 Marks each (Long Answer/Subjective).
-      Total: 100 Marks (55 Questions).
-      `;
-      totalMarks = 100;
-    } else {
-      // Regular months
-      if (classNum >= 1 && classNum <= 5) {
-        // Primary classes: 25 Marks
-        structureDescription = `
-        1. 5 Questions: 1 Mark each (Objective/MCQ).
-        2. 3 Questions: 2 Marks each (Short Answer/Subjective).
-        3. 3 Questions: 3 Marks each (Medium Answer/Subjective).
-        4. 1 Question: 5 Marks (Long Answer/Subjective).
-        Total: 25 Marks (12 Questions).
-        `;
-        totalMarks = 25;
-      } else if (classNum >= 6 && classNum <= 8) {
-        // Middle classes: 45 Marks
-        structureDescription = `
-        1. 10 Questions: 1 Mark each (Objective/MCQ).
-        2. 5 Questions: 2 Marks each (Short Answer/Subjective).
-        3. 5 Questions: 3 Marks each (Medium Answer/Subjective).
-        4. 2 Questions: 5 Marks each (Long Answer/Subjective).
-        Total: 45 Marks (22 Questions).
-        `;
-        totalMarks = 45;
-      } else {
-        // High School (Class 9 & 10)
-        if (isHalfBoard) {
-          // Half-Board subjects: 25 Marks
-          structureDescription = `
-          1. 5 Questions: 1 Mark each (Objective/MCQ).
-          2. 3 Questions: 2 Marks each (Short Answer/Subjective).
-          3. 3 Questions: 3 Marks each (Medium Answer/Subjective).
-          4. 1 Question: 5 Marks (Long Answer/Subjective).
-          Total: 25 Marks (12 Questions).
-          `;
-          totalMarks = 25;
-        } else {
-          // Full-Board subjects: 45 Marks
-          structureDescription = `
-          1. 10 Questions: 1 Mark each (Objective/MCQ).
-          2. 5 Questions: 2 Marks each (Short Answer/Subjective).
-          3. 5 Questions: 3 Marks each (Medium Answer/Subjective).
-          4. 2 Questions: 5 Marks each (Long Answer/Subjective).
-          Total: 45 Marks (22 Questions).
-          `;
-          totalMarks = 45;
-        }
-      }
+    const formattedClassName = `Class ${classNum}`;
+
+    let targetMonthString = month;
+    if (month && !month.includes('202')) {
+      targetMonthString = `${month} ${new Date().getFullYear()}`;
     }
 
-    const languageInstruction = `
-    The entire test (questions, options, and model solutions) must be written in the appropriate subject-specific language:
-    CRITICAL SUBJECT-SPECIFIC LANGUAGE RULES:
-    - For "English" subject (e.g. 'english', 'sle'): The entire test questions, options, and answers MUST be written in English only.
-    - For "Odia" / "FLO" subject (e.g. 'odia', 'flo'): The entire test MUST be written in Odia (using Odia script) only.
-    - For "Sanskrit" / "TLS" subject (e.g. 'sanskrit', 'tls'): The entire test MUST be written in Sanskrit (Devanagari script) or bilingual Sanskrit/Odia.
-    - For "Hindi" / "TLH" subject (e.g. 'hindi', 'tlh'): The entire test MUST be written in Hindi (Devanagari script) only.
-    - For "Mathematics" / "Math" / "MTH" subject (e.g. 'math', 'mathematics', 'mth'): The math equations and numbers can be in English/Arabic numerals (e.g. 5, x, y, a^2 + b^2 = c^2), but the question text, options, and explanations MUST be written in Odia. Do not output math questions in English.
-    - For "Science" (e.g. 'science', 'physical_science', 'life_science') and "Social Science" (e.g. 'social_science', 'history', 'geography') subjects: The question text and options MUST be written in Odia.
-    - For all other subjects: The text MUST be written in Odia.
-    `;
-
-    const prompt = `Generate a comprehensive monthly test for "${subject}" for class "${className}" for the month of "${month}".
-    ${languageInstruction}
-    The test must follow this specific structure of questions (Total ${totalMarks} Marks):
-    ${structureDescription}
-
-    For MCQ (1 Mark), provide 4 options and a correct_answer.
-    For Subjective (2, 3, 5, or 10 Marks), provide the question and a detailed "model_answer" in the "correct_answer" field.
-
-    Provide the output in JSON format with the following structure:
-    {
-      "questions": [
-        { 
-          "question": "Question text", 
-          "type": "mcq" | "subjective",
-          "marks": 1 | 2 | 3 | 5 | 10,
-          "options": ["A", "B", "C", "D"], // Only for MCQ, empty for subjective
-          "correct_answer": "Option text for MCQ or Model Answer for Subjective"
+    const roadmap = getRoadmapForClass(formattedClassName);
+    const monthRoadmap = roadmap ? roadmap.find(entry => entry.month === targetMonthString) : null;
+    let chapters: string[] = [];
+    if (monthRoadmap && Array.isArray(monthRoadmap.chapters)) {
+      const normalizedSubject = subject.toLowerCase().trim();
+      const matchedChapters = monthRoadmap.chapters.filter(ch => {
+        const chSub = (ch.subject || '').toLowerCase().trim();
+        if (normalizedSubject === 'math') {
+          return ['math', 'algebra', 'geometry', 'mathematics'].includes(chSub);
         }
-      ]
-    }`;
-
-    const responseText = await withRetry(async (modelName, apiVersion) => {
-      const model = ai.getGenerativeModel({ model: modelName }, { apiVersion });
-      const result = await model.generateContent({
-        contents: [{ role: 'user', parts: [{ text: prompt }] }],
-        generationConfig: {
-          ...(apiVersion === 'v1beta' ? { responseMimeType: "application/json" } : {}),
-        },
+        if (normalizedSubject === 'science') {
+          return ['physical_science', 'life_science', 'science', 'general_science'].includes(chSub);
+        }
+        if (normalizedSubject === 'social_science') {
+          return ['social_science', 'history', 'political_science', 'geography', 'economics'].includes(chSub);
+        }
+        if (normalizedSubject === 'odia') {
+          return ['odia', 'odia_literature', 'odia_grammar', 'flo'].includes(chSub);
+        }
+        if (normalizedSubject === 'english') {
+          return ['english', 'english_literature', 'english_grammar', 'sle'].includes(chSub);
+        }
+        if (normalizedSubject === 'sanskrit') {
+          return ['sanskrit', 'sanskrit_grammar', 'tls'].includes(chSub);
+        }
+        if (normalizedSubject === 'hindi') {
+          return ['hindi', 'hindi_grammar', 'tlh'].includes(chSub);
+        }
+        return chSub === normalizedSubject || chSub.includes(normalizedSubject) || normalizedSubject.includes(chSub);
       });
-      return result.response.text();
-    }, 'flash');
-
-    if (!responseText) {
-      throw new Error("Failed to generate a response.");
+      chapters = matchedChapters.map(c => c.title || c.title_en || c.title_or);
     }
 
-    return safeJsonParse(responseText);
+    if (chapters.length === 0) {
+      chapters = [subject];
+    }
+
+    const response = await fetch('/api/ai/generate-monthly-test', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        className: formattedClassName,
+        subjectName: subject,
+        chapters,
+        language
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to generate test with AI: ${response.statusText}`);
+    }
+
+    return await response.json();
   } catch (error) {
     console.error("Test Questions Generation Error:", error);
     throw error;

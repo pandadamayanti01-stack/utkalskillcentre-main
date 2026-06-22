@@ -2751,6 +2751,9 @@ Sample tone for Class 6-10:
                             const isObjectAns = typeof studentAns === 'object' && studentAns !== null;
                             const answerText = isObjectAns ? studentAns.text : (q.type === 'mcq' ? q.options[studentAns] : studentAns);
                             const imageUrl = isObjectAns ? studentAns.imageUrl : null;
+                            const imageUrls: string[] = isObjectAns && Array.isArray(studentAns.imageUrls)
+                              ? studentAns.imageUrls
+                              : (imageUrl ? [imageUrl] : []);
 
                             return (
                               <div key={i} className="bg-white/5 p-5 rounded-2xl border border-white/10 space-y-4">
@@ -2774,15 +2777,19 @@ Sample tone for Class 6-10:
                                       </p>
                                     )}
                                   </div>
-                                  {imageUrl && (
-                                    <a href={imageUrl} target="_blank" rel="noopener noreferrer" className="relative group aspect-video rounded-xl overflow-hidden border border-white/5 bg-black/20 block">
-                                      <img src={imageUrl} alt="Student Work" className="w-full h-full object-contain" />
-                                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
-                                        <span className="text-white text-xs font-bold flex items-center gap-2">
-                                          <ExternalLink size={14} /> View Full Image
-                                        </span>
-                                      </div>
-                                    </a>
+                                  {imageUrls.length > 0 && (
+                                    <div className="grid grid-cols-2 gap-2">
+                                      {imageUrls.map((url, imgIdx) => (
+                                        <a key={imgIdx} href={url} target="_blank" rel="noopener noreferrer" className="relative group aspect-video rounded-xl overflow-hidden border border-white/5 bg-black/20 block">
+                                          <img src={url} alt={`Student Work Page ${imgIdx + 1}`} className="w-full h-full object-contain" />
+                                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
+                                            <span className="text-white text-[10px] font-bold flex items-center gap-1">
+                                              <ExternalLink size={12} /> Page {imgIdx + 1}
+                                            </span>
+                                          </div>
+                                        </a>
+                                      ))}
+                                    </div>
                                   )}
                                 </div>
 

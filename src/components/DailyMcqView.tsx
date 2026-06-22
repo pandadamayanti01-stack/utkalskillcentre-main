@@ -115,6 +115,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
   // Focused Practice mode states
   const [selectedMcqId, setSelectedMcqId] = useState<string | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
+  const [optSubjects, setOptSubjects] = useState<Record<string, 'sanskrit' | 'hindi' | 'vocational'>>({});
 
   // Notebook OCR scanner states and refs
   const [notebookImages, setNotebookImages] = useState<Record<number, { base64: string; mimeType: string; preview: string }>>({});
@@ -129,71 +130,6 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
 
   const cameraInputRef = React.useRef<HTMLInputElement>(null);
   const galleryInputRef = React.useRef<HTMLInputElement>(null);
-
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>, isCamera: boolean) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      const base64 = result.split(',')[1];
-      setNotebookImages(prev => ({
-        ...prev,
-        [currentQuestionIndex]: { base64, mimeType: file.type, preview: result }
-      }));
-    };
-    reader.readAsDataURL(file);
-    e.target.value = '';
-  };
-
-  const handleScanNotebook = async () => {
-    const imgData = notebookImages[currentQuestionIndex];
-    if (!imgData || !currentQuestion) return;
-
-    setScanningIndex(currentQuestionIndex);
-    try {
-      const result = await scanNotebookAnswer(
-        imgData.base64,
-        imgData.mimeType,
-        currentQuestion.question,
-        language
-      );
-
-      if (result) {
-        setScanFeedbacks(prev => ({
-          ...prev,
-          [currentQuestionIndex]: {
-            feedback: result.feedback || (language === 'or' ? "କୌଣସି ପ୍ରତିକ୍ରିୟା ମିଳିଲା ନାହିଁ।" : "No feedback received."),
-            isCorrect: !!result.isCorrect
-          }
-        }));
-
-        if (result.finalAnswer) {
-          // Pre-fill the answer textarea
-          const nextAnswers = [...selectedSetAnswers];
-          nextAnswers[currentQuestionIndex] = result.finalAnswer;
-          setSelectedAnswers((prev) => ({ ...prev, [selectedMcqId!]: nextAnswers }));
-        }
-      }
-    } catch (err) {
-      console.error("OCR Scan notebook error:", err);
-    } finally {
-      setScanningIndex(null);
-    }
-  };
-
-  const handleRemoveImage = () => {
-    setNotebookImages(prev => {
-      const copy = { ...prev };
-      delete copy[currentQuestionIndex];
-      return copy;
-    });
-    setScanFeedbacks(prev => {
-      const copy = { ...prev };
-      delete copy[currentQuestionIndex];
-      return copy;
-    });
-  };
 
   useEffect(() => {
     setLocalSubmissions((prev) => {
@@ -365,32 +301,42 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
   };
 
   const handleSubmit = async (mcq: DailyMcq) => {
-    const questions = normalizeDailyMcqQuestions(mcq);
-    const answers = selectedAnswers[mcq.id] || [];
-    if (!user?.id || submissionMap[mcq.id] || submittingMcqId === mcq.id || questions.length === 0) return;
+    if (!user?.id || submissionMap[mcq.id] || submittingMcqId === mcq.id || activeQuestions.length === 0) return;
     
-    // Find first unanswered question index
-    const unansweredIndex = questions.findIndex((_, idx) => !answers[idx] || answers[idx].trim().length === 0);
-    if (unansweredIndex !== -1) {
-      setCurrentQuestionIndex(unansweredIndex);
+    // Find first unanswered active question
+    const unansweredActiveQuestion = activeQuestions.find(q => {
+      const ans = selectedSetAnswers[q.originalIndex];
+      return !ans || ans.trim().length === 0;
+    });
+    if (unansweredActiveQuestion) {
+      const activeIdx = activeQuestions.findIndex(q => q.originalIndex === unansweredActiveQuestion.originalIndex);
+      setCurrentQuestionIndex(activeIdx);
       window.alert(t.completeAll);
       return;
     }
 
-    const correctCount = questions.reduce((count, question, index) => {
-      if (question.type === 'subjective') return count + (answers[index]?.trim().length > 0 ? 1 : 0);
-      return count + (answers[index] === question.correct_answer ? 1 : 0);
+    const originalQuestions = normalizeDailyMcqQuestions(mcq);
+    const answers = originalQuestions.map((_, idx) => {
+      return selectedSetAnswers[idx] || "";
+    });
+
+    const correctCount = activeQuestions.reduce((count, question) => {
+      const ans = selectedSetAnswers[question.originalIndex];
+      if (question.type === 'subjective') return count + (ans?.trim().length > 0 ? 1 : 0);
+      return count + (ans === question.correct_answer ? 1 : 0);
     }, 0);
     
-    const correctBonus = questions.reduce((sum, question, index) => {
+    const correctBonus = activeQuestions.reduce((sum, question) => {
+      const ans = selectedSetAnswers[question.originalIndex];
       const isCorrect = question.type === 'subjective' 
-        ? answers[index]?.trim().length > 0 
-        : answers[index] === question.correct_answer;
+        ? ans?.trim().length > 0 
+        : ans === question.correct_answer;
         
       if (!isCorrect) return sum;
       const marks = typeof question.marks === 'number' ? question.marks : 1;
       return sum + marks;
     }, 0);
+
     const totalPointsEarned = ATTEMPT_REWARD + correctBonus;
     const submissionRef = doc(firestore, 'daily_mcq_submissions', `${user.id}_${mcq.id}`);
     const userRef = doc(firestore, 'users', user.id);
@@ -413,7 +359,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
           userId: user.id,
           answers,
           correctCount,
-          totalQuestions: questions.length,
+          totalQuestions: activeQuestions.length,
           attemptReward: ATTEMPT_REWARD,
           correctBonus,
           totalPointsEarned,
@@ -434,7 +380,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
           type: 'daily_mcq',
           referenceId: mcq.id,
           correctCount,
-          totalQuestions: questions.length,
+          totalQuestions: activeQuestions.length,
           createdAt: serverTimestamp(),
         });
       });
@@ -445,7 +391,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
         userId: user.id,
         answers,
         correctCount,
-        totalQuestions: questions.length,
+        totalQuestions: activeQuestions.length,
         attemptReward: ATTEMPT_REWARD,
         correctBonus,
         totalPointsEarned,
@@ -462,12 +408,12 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
       setVictoryData({
         show: true,
         correctCount,
-        totalQuestions: questions.length,
+        totalQuestions: activeQuestions.length,
         pointsEarned: totalPointsEarned
       });
       
       // Haptics & Sound alerts
-      const allCorrect = correctCount === questions.length;
+      const allCorrect = correctCount === activeQuestions.length;
       playSuccessChime(correctCount > 0);
       if (allCorrect) {
         vibrate([50, 30, 100]);
@@ -476,7 +422,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
           spread: 80,
           origin: { y: 0.6 }
         });
-      } else if (correctCount >= Math.ceil(questions.length * 0.7)) {
+      } else if (correctCount >= Math.ceil(activeQuestions.length * 0.7)) {
         vibrate(60);
         confetti({
           particleCount: 85,
@@ -515,17 +461,67 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
 
   // Active MCQ calculations
   const activeMcq = useMemo(() => sortedMcqs.find(mcq => mcq.id === selectedMcqId), [sortedMcqs, selectedMcqId]);
-  const activeQuestions = useMemo(() => activeMcq ? normalizeDailyMcqQuestions(activeMcq) : [], [activeMcq]);
-  const currentQuestion = activeQuestions[currentQuestionIndex];
   const submission = activeMcq ? submissionMap[activeMcq.id] : undefined;
   const isSubmitted = Boolean(submission);
   const selectedSetAnswers = activeMcq ? (selectedAnswers[activeMcq.id] || []) : [];
 
+  // Detected optional subject from existing submission:
+  const detectedOptionalSubject = useMemo(() => {
+    if (!submission || !activeMcq) return undefined;
+    const questionsCount = normalizeDailyMcqQuestions(activeMcq).length;
+    if (questionsCount === 14) {
+      const answers = submission.answers || [];
+      const hasHindi = (answers[10] && String(answers[10]).trim().length > 0) ||
+                       (answers[11] && String(answers[11]).trim().length > 0);
+      if (hasHindi) return 'hindi';
+      return 'sanskrit';
+    } else if (questionsCount === 15) {
+      const answers = submission.answers || [];
+      const hasVocational = (answers[14] && String(answers[14]).trim().length > 0);
+      if (hasVocational) return 'vocational';
+      const hasHindi = (answers[10] && String(answers[10]).trim().length > 0) ||
+                       (answers[11] && String(answers[11]).trim().length > 0);
+      if (hasHindi) return 'hindi';
+      return 'sanskrit';
+    }
+    return undefined;
+  }, [submission, activeMcq]);
+
+  const optionalSubject = activeMcq ? (detectedOptionalSubject || optSubjects[activeMcq.id]) : undefined;
+
+  const activeQuestions = useMemo(() => {
+    if (!activeMcq) return [];
+    const questions = normalizeDailyMcqQuestions(activeMcq).map((q, idx) => ({
+      ...q,
+      originalIndex: idx
+    }));
+
+    if (questions.length === 14) {
+      if (optionalSubject === 'hindi') {
+        return [...questions.slice(0, 10), ...questions.slice(10, 12)];
+      } else if (optionalSubject === 'sanskrit') {
+        return [...questions.slice(0, 10), ...questions.slice(12, 14)];
+      }
+    } else if (questions.length === 15) {
+      if (optionalSubject === 'hindi') {
+        return [...questions.slice(0, 10), ...questions.slice(10, 12)];
+      } else if (optionalSubject === 'sanskrit') {
+        return [...questions.slice(0, 10), ...questions.slice(12, 14)];
+      } else if (optionalSubject === 'vocational') {
+        return [...questions.slice(0, 10), questions[14]];
+      }
+    }
+    return questions;
+  }, [activeMcq, optionalSubject]);
+
+  const currentQuestion = activeQuestions[currentQuestionIndex];
+
   // Completed questions count for progress bar
   const answeredCount = useMemo(() => {
     if (!activeMcq) return 0;
-    return activeQuestions.reduce((count, _, idx) => {
-      const hasAnswer = selectedSetAnswers[idx] !== undefined && String(selectedSetAnswers[idx]).trim().length > 0;
+    return activeQuestions.reduce((count, question) => {
+      const ans = selectedSetAnswers[question.originalIndex];
+      const hasAnswer = ans !== undefined && String(ans).trim().length > 0;
       return (hasAnswer || isSubmitted) ? count + 1 : count;
     }, 0);
   }, [activeMcq, activeQuestions, selectedSetAnswers, isSubmitted]);
@@ -540,6 +536,74 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
   }, [activeMcq]);
 
   const ActiveSubjectIcon = activeSubjectStyle.icon;
+
+  // Moved event handlers below declarations to prevent TDZ issues
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>, isCamera: boolean) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      const base64 = result.split(',')[1];
+      setNotebookImages(prev => ({
+        ...prev,
+        [currentQuestion?.originalIndex ?? currentQuestionIndex]: { base64, mimeType: file.type, preview: result }
+      }));
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
+  const handleScanNotebook = async () => {
+    const qIdx = currentQuestion?.originalIndex ?? currentQuestionIndex;
+    const imgData = notebookImages[qIdx];
+    if (!imgData || !currentQuestion) return;
+
+    setScanningIndex(qIdx);
+    try {
+      const result = await scanNotebookAnswer(
+        imgData.base64,
+        imgData.mimeType,
+        currentQuestion.question,
+        language
+      );
+
+      if (result) {
+        setScanFeedbacks(prev => ({
+          ...prev,
+          [qIdx]: {
+            feedback: result.feedback || (language === 'or' ? "କୌଣସି ପ୍ରତିକ୍ରିୟା ମିଳିଲା ନାହିଁ।" : "No feedback received."),
+            isCorrect: !!result.isCorrect
+          }
+        }));
+
+        if (result.finalAnswer) {
+          // Pre-fill the answer textarea
+          const nextAnswers = [...selectedSetAnswers];
+          nextAnswers[qIdx] = result.finalAnswer;
+          setSelectedAnswers((prev) => ({ ...prev, [selectedMcqId!]: nextAnswers }));
+        }
+      }
+    } catch (err) {
+      console.error("OCR Scan notebook error:", err);
+    } finally {
+      setScanningIndex(null);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    const qIdx = currentQuestion?.originalIndex ?? currentQuestionIndex;
+    setNotebookImages(prev => {
+      const copy = { ...prev };
+      delete copy[qIdx];
+      return copy;
+    });
+    setScanFeedbacks(prev => {
+      const copy = { ...prev };
+      delete copy[qIdx];
+      return copy;
+    });
+  };
 
   return (
     <motion.div
@@ -785,8 +849,71 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
             exit={{ opacity: 0, y: -15 }}
             className="space-y-6"
           >
-            {/* Top Control Bar */}
-            <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-4">
+            {((activeMcq?.questions?.length === 14 || activeMcq?.questions?.length === 15) && !optionalSubject) ? (
+              <div className="glass-card rounded-[2rem] p-8 space-y-6 text-center max-w-md mx-auto my-12 border border-white/10 shadow-[0_0_50px_rgba(6,182,212,0.1)]">
+                <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-emerald-500/20 flex items-center justify-center text-cyan-400 border border-cyan-500/20">
+                  <Lucide.Languages size={28} />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-xl font-bold text-white">
+                    {language === 'or' ? 'ତୃତୀୟ ଭାଷା / ଇଚ୍ଛାଧୀନ ବିଷୟ ଚୟନ କରନ୍ତୁ' : 'Select Optional Subject'}
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    {language === 'or' ? 'ଏହି ଚ୍ୟାଲେଞ୍ଜରେ ସଠିକ୍ ପ୍ରଶ୍ନ ଦେଖିବା ପାଇଁ ଆପଣଙ୍କର ଇଚ୍ଛାଧୀନ ବିଷୟ ବାଛନ୍ତୁ।' : 'Choose your optional subject to load the correct questions for this challenge.'}
+                  </p>
+                </div>
+                <div className="flex flex-col gap-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      vibrate(10);
+                      setOptSubjects(prev => ({ ...prev, [activeMcq.id]: 'sanskrit' }));
+                      setCurrentQuestionIndex(0);
+                    }}
+                    className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold text-sm transition-all duration-300 flex items-center justify-between px-6 group cursor-pointer"
+                  >
+                    <span>{language === 'or' ? 'ସଂସ୍କୃତ (Sanskrit)' : 'Sanskrit'}</span>
+                    <Lucide.ArrowRight size={16} className="text-slate-500 group-hover:text-white transition-colors" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      vibrate(10);
+                      setOptSubjects(prev => ({ ...prev, [activeMcq.id]: 'hindi' }));
+                      setCurrentQuestionIndex(0);
+                    }}
+                    className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold text-sm transition-all duration-300 flex items-center justify-between px-6 group cursor-pointer"
+                  >
+                    <span>{language === 'or' ? 'ହିନ୍ଦୀ (Hindi)' : 'Hindi'}</span>
+                    <Lucide.ArrowRight size={16} className="text-slate-500 group-hover:text-white transition-colors" />
+                  </button>
+                  {activeMcq.questions?.length === 15 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        vibrate(10);
+                        setOptSubjects(prev => ({ ...prev, [activeMcq.id]: 'vocational' }));
+                        setCurrentQuestionIndex(0);
+                      }}
+                      className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold text-sm transition-all duration-300 flex items-center justify-between px-6 group cursor-pointer"
+                    >
+                      <span>{language === 'or' ? 'ଧନ୍ଦାମୂଳକ ଶିକ୍ଷା (Vocational)' : 'Vocational'}</span>
+                      <Lucide.ArrowRight size={16} className="text-slate-500 group-hover:text-white transition-colors" />
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setSelectedMcqId(null)}
+                    className="w-full py-3 rounded-2xl bg-white/5 hover:bg-white/10 text-slate-400 font-bold text-xs transition-all duration-300 mt-2 cursor-pointer"
+                  >
+                    {language === 'or' ? 'ପଛକୁ ଫେରନ୍ତୁ' : 'Go Back'}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                {/* Top Control Bar */}
+                <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-4">
               <button
                 type="button"
                 onClick={() => setSelectedMcqId(null)}
@@ -857,10 +984,10 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                         <textarea
                           disabled={isSubmitted}
                           placeholder={t.typeAnswer}
-                          value={selectedSetAnswers[currentQuestionIndex] || ''}
+                          value={selectedSetAnswers[currentQuestion.originalIndex] || ''}
                           onChange={(e) => {
                             const nextAnswers = [...selectedSetAnswers];
-                            nextAnswers[currentQuestionIndex] = e.target.value;
+                            nextAnswers[currentQuestion.originalIndex] = e.target.value;
                             setSelectedAnswers((prev) => ({ ...prev, [selectedMcqId!]: nextAnswers }));
                           }}
                           className="w-full min-h-[140px] rounded-2xl border border-white/10 bg-white/5 p-4 text-slate-100 placeholder:text-slate-600 focus:border-cyan-500/40 focus:bg-white/10 focus:shadow-[0_0_15px_rgba(6,182,212,0.1)] transition-all outline-none resize-none pr-14"
@@ -903,7 +1030,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                                   setSelectedAnswers((prev) => {
                                     const currentAnswers = prev[selectedMcqId!] || [];
                                     const nextAnswers = [...currentAnswers];
-                                    nextAnswers[currentQuestionIndex] = (nextAnswers[currentQuestionIndex] || '').trim() + ' ' + text.trim();
+                                    nextAnswers[currentQuestion.originalIndex] = (nextAnswers[currentQuestion.originalIndex] || '').trim() + ' ' + text.trim();
                                     return { ...prev, [selectedMcqId!]: nextAnswers };
                                   });
                                 })}
@@ -914,7 +1041,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                                     setSelectedAnswers((prev) => {
                                       const currentAnswers = prev[selectedMcqId!] || [];
                                       const nextAnswers = [...currentAnswers];
-                                      nextAnswers[currentQuestionIndex] = (nextAnswers[currentQuestionIndex] || '').trim() + ' ' + text.trim();
+                                      nextAnswers[currentQuestion.originalIndex] = (nextAnswers[currentQuestion.originalIndex] || '').trim() + ' ' + text.trim();
                                       return { ...prev, [selectedMcqId!]: nextAnswers };
                                     });
                                   });
@@ -968,7 +1095,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                         )}
 
                         {/* Image Preview & Scan Action */}
-                        {notebookImages[currentQuestionIndex] && (
+                        {notebookImages[currentQuestion?.originalIndex ?? currentQuestionIndex] && (
                           <div className="mt-4 p-4 rounded-2xl bg-slate-950/60 border border-white/5 space-y-3">
                             <div className="flex items-center justify-between">
                               <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
@@ -988,7 +1115,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                             <div className="flex flex-col sm:flex-row items-center gap-4">
                               <div className="w-24 h-24 rounded-lg overflow-hidden border border-white/10 relative">
                                 <img
-                                  src={notebookImages[currentQuestionIndex].preview}
+                                  src={notebookImages[currentQuestion?.originalIndex ?? currentQuestionIndex].preview}
                                   alt="Rough work preview"
                                   className="w-full h-full object-cover"
                                 />
@@ -997,15 +1124,15 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                               {!isSubmitted && (
                                 <button
                                   type="button"
-                                  disabled={scanningIndex === currentQuestionIndex}
+                                  disabled={scanningIndex === (currentQuestion?.originalIndex ?? currentQuestionIndex)}
                                   onClick={handleScanNotebook}
                                   className={`px-5 py-3 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2 shadow-lg active:scale-95 ${
-                                    scanningIndex === currentQuestionIndex
+                                    scanningIndex === (currentQuestion?.originalIndex ?? currentQuestionIndex)
                                       ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
                                       : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-950/20'
                                   }`}
                                 >
-                                  {scanningIndex === currentQuestionIndex ? (
+                                  {scanningIndex === (currentQuestion?.originalIndex ?? currentQuestionIndex) ? (
                                     <>
                                       <Lucide.Loader2 size={14} className="animate-spin text-emerald-400" />
                                       {language === 'en' ? 'Scanning...' : 'ସ୍କାନ୍ ହେଉଛି...'}
@@ -1023,21 +1150,21 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                         )}
 
                         {/* Gundulu OCR Corrections Feedback Card */}
-                        {scanFeedbacks[currentQuestionIndex] && (
+                        {scanFeedbacks[currentQuestion?.originalIndex ?? currentQuestionIndex] && (
                           <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             className={`mt-4 p-5 rounded-[1.5rem] border-2 space-y-2.5 backdrop-blur-sm ${
-                              scanFeedbacks[currentQuestionIndex].isCorrect
+                              scanFeedbacks[currentQuestion?.originalIndex ?? currentQuestionIndex].isCorrect
                                 ? 'bg-emerald-500/5 border-emerald-500/20 text-slate-100'
                                 : 'bg-amber-500/5 border-amber-500/20 text-slate-100'
                             }`}
                           >
                             <div className="flex items-center gap-2">
                               <div className={`p-1 rounded-full ${
-                                scanFeedbacks[currentQuestionIndex].isCorrect ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'
+                                scanFeedbacks[currentQuestion?.originalIndex ?? currentQuestionIndex].isCorrect ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'
                               }`}>
-                                {scanFeedbacks[currentQuestionIndex].isCorrect ? (
+                                {scanFeedbacks[currentQuestion?.originalIndex ?? currentQuestionIndex].isCorrect ? (
                                   <Lucide.CheckCircle2 size={16} />
                                 ) : (
                                   <Lucide.HelpCircle size={16} />
@@ -1049,7 +1176,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                             </div>
                             
                             <div className="text-sm leading-relaxed prose prose-invert max-w-none text-slate-300">
-                              <Markdown>{scanFeedbacks[currentQuestionIndex].feedback}</Markdown>
+                              <Markdown>{scanFeedbacks[currentQuestion?.originalIndex ?? currentQuestionIndex].feedback}</Markdown>
                             </div>
                           </motion.div>
                         )}
@@ -1059,7 +1186,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                           <div className="space-y-4 p-4 rounded-2xl bg-cyan-500/5 border border-cyan-500/10">
                             <div>
                               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400/60 mb-1">{t.yourAnswer}</p>
-                              <p className="text-sm text-slate-200">{submission?.answers?.[currentQuestionIndex] || 'No answer submitted'}</p>
+                              <p className="text-sm text-slate-200">{submission?.answers?.[currentQuestion?.originalIndex ?? currentQuestionIndex] || 'No answer submitted'}</p>
                             </div>
                             <div className="pt-3 border-t border-white/5">
                               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400/60 mb-1">{t.modelAnswer}</p>
@@ -1072,9 +1199,9 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                       // Multiple Choice Grid Layout
                       <div className="grid grid-cols-1 gap-3.5">
                         {currentQuestion?.options?.map((option, optionIndex) => {
-                          const isSelected = selectedSetAnswers[currentQuestionIndex] === option;
+                          const isSelected = selectedSetAnswers[currentQuestion.originalIndex] === option;
                           const isCorrectOption = option === currentQuestion.correct_answer;
-                          const isWrongSelected = submission?.answers?.[currentQuestionIndex] === option && option !== currentQuestion.correct_answer;
+                          const isWrongSelected = submission?.answers?.[currentQuestion.originalIndex] === option && option !== currentQuestion.correct_answer;
 
                           let optionClasses = 'border-white/10 bg-white/5 text-slate-200 hover:bg-white/10 hover:border-white/20';
                           let keycapClasses = 'bg-white/10 text-slate-400';
@@ -1104,7 +1231,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                               onClick={() => {
                                 vibrate(12);
                                 const nextAnswers = [...selectedSetAnswers];
-                                nextAnswers[currentQuestionIndex] = option;
+                                nextAnswers[currentQuestion.originalIndex] = option;
                                 setSelectedAnswers((prev) => ({ ...prev, [selectedMcqId!]: nextAnswers }));
                               }}
                               className={`w-full text-left rounded-2xl border px-5 py-4 flex items-center gap-4 transition-all duration-300 cursor-pointer ${optionClasses}`}
@@ -1219,6 +1346,8 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                   <span>{t.earned} +{submission?.totalPointsEarned} XP</span>
                 </div>
               </div>
+            )}
+              </>
             )}
           </motion.div>
         )}

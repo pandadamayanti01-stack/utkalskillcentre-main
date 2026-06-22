@@ -165,7 +165,7 @@ service cloud.firestore {
              data.subject is string && data.subject in getDailyMcqRotation() &&
              data.activeDate is string && data.activeDate.size() >= 10 &&
              data.status in ['draft', 'published'] &&
-             data.questions is list && data.questions.size() == 10;
+             data.questions is list && (data.questions.size() == 10 || data.questions.size() == 14 || data.questions.size() == 15);
     }
 
     function isValidDailyMcqSubmission(data, submissionId) {
@@ -174,8 +174,8 @@ service cloud.firestore {
               data.userId is string &&
               submissionId == data.userId + '_' + data.mcqId &&
               data.answers is list &&
-              data.totalQuestions is int && data.totalQuestions == 10 &&
-              data.answers.size() == data.totalQuestions &&
+              data.totalQuestions is int && (data.totalQuestions == 10 || data.totalQuestions == 11 || data.totalQuestions == 12) &&
+              (data.answers.size() == 10 || data.answers.size() == 14 || data.answers.size() == 15) &&
               data.correctCount is int && data.correctCount >= 0 && data.correctCount <= data.totalQuestions &&
               data.attemptReward is int && data.attemptReward == 1 &&
               // correctBonus now represents earned marks; the daily distribution sums to 21 marks.

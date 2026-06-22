@@ -1446,6 +1446,309 @@ async function startServer() {
     }
   });
 
+  app.post('/api/ai/generate-monthly-test', async (req, res) => {
+    try {
+      const { className, subjectName, chapters, language } = req.body;
+      if (!className || !subjectName) {
+        return res.status(400).json({ error: 'className and subjectName are required' });
+      }
+
+      const rotatorKeys = getRotatorKeys();
+      if (rotatorKeys.length === 0) {
+        return res.status(503).json({ error: 'GEMINI_API_KEY and all rotator keys are missing on the server' });
+      }
+
+      const adminApp = getInitializedAdminApp();
+      let chapterTextContext = '';
+      if (adminApp && Array.isArray(chapters) && chapters.length > 0) {
+        try {
+          const firstChapter = chapters[0];
+          console.log(`[Monthly Test] Loading textbook for ${className} ${subjectName} chapter: ${firstChapter}`);
+          const bucketResult = await loadTextbookFromBucket(adminApp, className, subjectName, firstChapter);
+          if (bucketResult && bucketResult.driveContent?.buffer) {
+            const parsedText = await extractPdfText(bucketResult.driveContent.buffer);
+            if (parsedText && parsedText.trim().length > 50) {
+              chapterTextContext = parsedText.substring(0, 30000);
+              console.log(`[Monthly Test] Successfully extracted ${chapterTextContext.length} chars of chapter text.`);
+            }
+          }
+        } catch (storageErr: any) {
+          console.warn('[Monthly Test] Error loading PDF from storage, falling back to general knowledge:', storageErr.message);
+        }
+      }
+
+      let languageInstruction = '';
+      if (language === 'or') {
+        languageInstruction = `Odia (using Odia script for student content).
+        SUBJECT-SPECIFIC RULES:
+        - For "English" subject: The terms/questions MUST be in English only.
+        - For "Sanskrit" / "Hindi" subjects: The terms/questions MUST be in Sanskrit / Hindi.
+        - For "Mathematics", "Science", and "Social Science" subjects: The questions and options MUST be in Odia (but keep mathematical numbers, equations, or scientific variables clean using standard English/Arabic numerals like 5, x, y, a^2 + b^2).`;
+      } else {
+        languageInstruction = `English.
+        SUBJECT-SPECIFIC RULES:
+        - For "Odia" / "Sanskrit" / "Hindi" subjects: The questions MUST be in their respective scripts.
+        - For all other subjects: The questions MUST be in English.`;
+      }
+
+      const classNum = className ? (parseInt(String(className).replace(/\D/g, '')) || 10) : 10;
+      
+      let structureDescription = '';
+      let outputStructure = '';
+
+      if (classNum >= 1 && classNum <= 5) {
+        structureDescription = `
+        - Exactly 5 MCQ (1 Mark each, with 'options' array containing 4 choices, and 'type' set to "mcq")
+        - Exactly 3 short answer/subjective (2 Marks each, with empty 'options' array, and 'type' set to "subjective")
+        - Exactly 3 medium answer/subjective (3 Marks each, with empty 'options' array, and 'type' set to "subjective")
+        - Exactly 1 long answer/subjective (5 Marks, with empty 'options' array, and 'type' set to "subjective")
+        Total: 25 Marks (12 Questions).
+        `;
+        outputStructure = `
+        {
+          "questions": [
+            {
+              "question": "Question text",
+              "type": "mcq",
+              "marks": 1,
+              "options": ["Option A", "Option B", "Option C", "Option D"],
+              "correct_answer": "Correct option text exactly matching one of the options"
+            },
+            ... 5 MCQs total ...
+            {
+              "question": "Subjective question text",
+              "type": "subjective",
+              "marks": 2,
+              "options": [],
+              "correct_answer": "Model solution or step-by-step hint explaining the answer key"
+            },
+            ... 3 of 2 Marks, 3 of 3 Marks, 1 of 5 Marks ...
+          ]
+        }
+        `;
+      } else if (classNum >= 6 && classNum <= 8) {
+        structureDescription = `
+        - Exactly 10 MCQ (1 Mark each, with 'options' array containing 4 choices, and 'type' set to "mcq")
+        - Exactly 5 short answer/subjective (2 Marks each, with empty 'options' array, and 'type' set to "subjective")
+        - Exactly 5 medium answer/subjective (3 Marks each, with empty 'options' array, and 'type' set to "subjective")
+        - Exactly 2 long answer/subjective (5 Marks each, with empty 'options' array, and 'type' set to "subjective")
+        Total: 45 Marks (22 Questions).
+        `;
+        outputStructure = `
+        {
+          "questions": [
+            {
+              "question": "Question text",
+              "type": "mcq",
+              "marks": 1,
+              "options": ["Option A", "Option B", "Option C", "Option D"],
+              "correct_answer": "Correct option text exactly matching one of the options"
+            },
+            ... 10 MCQs total ...
+            {
+              "question": "Subjective question text",
+              "type": "subjective",
+              "marks": 2,
+              "options": [],
+              "correct_answer": "Model solution or step-by-step hint explaining the answer key"
+            },
+            ... 5 of 2 Marks, 5 of 3 Marks, 2 of 5 Marks ...
+          ]
+        }
+        `;
+      } else {
+        structureDescription = `
+        - Exactly 15 MCQ (1 Mark each, with 'options' array containing 4 choices, and 'type' set to "mcq")
+        - Exactly 15 subjective questions/sub-bits (typically 2, 3, or 4 marks representing board sub-bits like part (a) or part (b), with empty 'options' array, and 'type' set to "subjective")
+        Total: 30 Questions.
+        `;
+        outputStructure = `
+        {
+          "questions": [
+            {
+              "question": "Question text",
+              "type": "mcq",
+              "marks": 1,
+              "options": ["Option A", "Option B", "Option C", "Option D"],
+              "correct_answer": "Correct option text exactly matching one of the options"
+            },
+            ... 15 MCQs total ...
+            {
+              "question": "Subjective sub-bit question text (e.g. (a) Explain X)",
+              "type": "subjective",
+              "marks": 3,
+              "options": [],
+              "correct_answer": "Model solution or step-by-step hint explaining the answer key"
+            },
+            ... 15 Subjectives total ...
+          ]
+        }
+        `;
+      }
+
+      const prompt = `You are an expert curriculum builder and Board exam paper setter for the Board of Secondary Education (BSE) Odisha.
+      Generate exactly the monthly test paper questions of MEDIUM difficulty on the active chapters: "${Array.isArray(chapters) ? chapters.join(', ') : chapters}" in the subject "${subjectName}" for standard "${className}".
+
+      CRITICAL REQUIREMENTS:
+      - The questions must follow this specific structure of questions:
+        ${structureDescription}
+      - The questions must be highly important from a board exam perspective, focusing on active syllabus concepts.
+      - The subjective questions and their model answers/hints must follow the official BSE Odisha board exam pattern style, structure, and standard terminology.
+      - Do NOT use raw LaTeX mathematical symbols or formatting delimiters (like $$, $, \\[, \\], \\frac, \\sqrt). Instead, use standard plain text or standard Unicode symbols (like ÷, ×, ±, ≈, ≠, ≤, ≥, ∞, •, α, β, θ, π, √, ^) so that it renders clearly on any device screen.
+
+      ${chapterTextContext ? `Here is the textbook chapter content to base your questions on:\n\n${chapterTextContext}\n\n` : ''}
+
+      ${languageInstruction}
+
+      Provide the output in JSON format with the following structure:
+      ${outputStructure}
+      Do not include any extra introductory or explanatory text. Return ONLY the JSON object.`;
+
+      let lastError = null;
+      for (const keyToUse of rotatorKeys) {
+        try {
+          console.log(`Backend Monthly Test: Attempting generation using key ${keyToUse.substring(0, 12)}...`);
+          const ai = new GoogleGenerativeAI(keyToUse);
+          const model = ai.getGenerativeModel({
+            model: "gemini-2.5-flash",
+            generationConfig: {
+              responseMimeType: "application/json",
+              temperature: 0.7,
+            }
+          }, { apiVersion: "v1beta" });
+
+          const result = await model.generateContent(prompt);
+          let responseText = result.response.text();
+          
+          if (language === 'or') {
+            responseText = cleanOdiaOrthographyLocal(responseText);
+          }
+
+          const testData = JSON.parse(responseText.replace(/```json\n?|```/g, '').trim());
+          return res.json(testData);
+        } catch (error: any) {
+          lastError = error;
+          console.warn(`Monthly test generation attempt failed using key ${keyToUse.substring(0, 12)}:`, error.message);
+        }
+      }
+
+      throw lastError || new Error('Failed to generate monthly test with all available keys');
+    } catch (error: any) {
+      console.error("Monthly Test AI Endpoint Error:", error);
+      res.status(500).json({ error: error.message || 'Failed to generate monthly test' });
+    }
+  });
+
+  app.post('/api/ai/generate-daily-mcq', async (req, res) => {
+    try {
+      const { className, subjectName, chapters, language, difficulty } = req.body;
+      if (!className || !subjectName) {
+        return res.status(400).json({ error: 'className and subjectName are required' });
+      }
+
+      const rotatorKeys = getRotatorKeys();
+      if (rotatorKeys.length === 0) {
+        return res.status(503).json({ error: 'GEMINI_API_KEY and all rotator keys are missing on the server' });
+      }
+
+      const adminApp = getInitializedAdminApp();
+      let chapterTextContext = '';
+      if (adminApp && Array.isArray(chapters) && chapters.length > 0) {
+        try {
+          const firstChapter = chapters[0];
+          console.log(`[Daily MCQ AI] Loading textbook for ${className} ${subjectName} chapter: ${firstChapter}`);
+          const bucketResult = await loadTextbookFromBucket(adminApp, className, subjectName, firstChapter);
+          if (bucketResult && bucketResult.driveContent?.buffer) {
+            const parsedText = await extractPdfText(bucketResult.driveContent.buffer);
+            if (parsedText && parsedText.trim().length > 50) {
+              chapterTextContext = parsedText.substring(0, 30000);
+              console.log(`[Daily MCQ AI] Successfully extracted ${chapterTextContext.length} chars of chapter text.`);
+            }
+          }
+        } catch (storageErr: any) {
+          console.warn('[Daily MCQ AI] Error loading PDF from storage, falling back to general knowledge:', storageErr.message);
+        }
+      }
+
+      let languageInstruction = '';
+      if (language === 'or') {
+        languageInstruction = `Odia (using Odia script for student content).
+        SUBJECT-SPECIFIC RULES:
+        - For "English" subject: The terms/questions MUST be in English only.
+        - For "Sanskrit" / "Hindi" subjects: The terms/questions MUST be in Sanskrit / Hindi.
+        - For "Mathematics", "Science", and "Social Science" subjects: The questions and options MUST be in Odia (but keep mathematical numbers, equations, or scientific variables clean using standard English/Arabic numerals like 5, x, y, a^2 + b^2).`;
+      } else {
+        languageInstruction = `English.
+        SUBJECT-SPECIFIC RULES:
+        - For "Odia" / "Sanskrit" / "Hindi" subjects: The questions MUST be in their respective scripts.
+        - For all other subjects: The questions MUST be in English.`;
+      }
+
+      const prompt = `You are an expert curriculum builder and Board exam paper setter for the Board of Secondary Education (BSE) Odisha.
+      Generate exactly 10 multiple-choice questions (MCQs) of "${difficulty || 'Medium'}" difficulty level on the chapters/topics: "${Array.isArray(chapters) ? chapters.join(', ') : chapters}" in the subject "${subjectName}" for standard "${className}".
+
+      CRITICAL REQUIREMENTS:
+      - The difficulty level is "${difficulty || 'Medium'}".
+        - If "Recall": Questions must focus on recall of facts, direct formulas, definitions, dates, and names.
+        - If "Understanding": Questions must focus on understanding, explanations, comparisons, and identifying cause-effect.
+        - If "Application": Questions must focus on word problems, applying principles/formulas to scenarios, and syntax analysis.
+      - The questions must follow proper board exam terminology.
+      - Do NOT use raw LaTeX mathematical symbols or formatting delimiters (like $$, $, \\[, \\], \\frac, \\sqrt). Instead, use standard plain text or standard Unicode symbols (like ÷, ×, ±, ≈, ≠, ≤, ≥, ∞, •, α, β, θ, π, √, ^) so that it renders clearly on any device screen.
+
+      ${chapterTextContext ? `Here is the textbook chapter content to base your questions on:\n\n${chapterTextContext}\n\n` : ''}
+
+      ${languageInstruction}
+
+      Provide the output in JSON format with the following structure:
+      {
+        "questions": [
+          {
+            "question": "Question text",
+            "type": "mcq",
+            "marks": 1,
+            "options": ["Option A", "Option B", "Option C", "Option D"],
+            "correct_answer": "Correct option text exactly matching one of the options",
+            "explanation": "Brief explanation/rationale for why this option is correct"
+          }
+        ]
+      }
+      Do not include any extra introductory or explanatory text. Return ONLY the JSON object.`;
+
+      let lastError = null;
+      for (const keyToUse of rotatorKeys) {
+        try {
+          console.log(`Backend Daily MCQ AI: Attempting generation using key ${keyToUse.substring(0, 12)}...`);
+          const ai = new GoogleGenerativeAI(keyToUse);
+          const model = ai.getGenerativeModel({
+            model: "gemini-2.5-flash",
+            generationConfig: {
+              responseMimeType: "application/json",
+              temperature: 0.7,
+            }
+          }, { apiVersion: "v1beta" });
+
+          const result = await model.generateContent(prompt);
+          let responseText = result.response.text();
+          
+          if (language === 'or') {
+            responseText = cleanOdiaOrthographyLocal(responseText);
+          }
+
+          const mcqData = JSON.parse(responseText.replace(/```json\n?|```/g, '').trim());
+          return res.json(mcqData);
+        } catch (error: any) {
+          lastError = error;
+          console.warn(`Daily MCQ generation attempt failed using key ${keyToUse.substring(0, 12)}:`, error.message);
+        }
+      }
+
+      throw lastError || new Error('Failed to generate daily MCQ with all available keys');
+    } catch (error: any) {
+      console.error("Daily MCQ AI Endpoint Error:", error);
+      res.status(500).json({ error: error.message || 'Failed to generate daily MCQ' });
+    }
+  });
+
   app.post('/api/ai/generate-revision-poster', async (req, res) => {
     try {
       const { className, subjectName, chapterName, language } = req.body;

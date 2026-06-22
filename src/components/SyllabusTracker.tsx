@@ -202,8 +202,10 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ user, language
           const stdSub = chSub.includes('algebra') ? 'algebra' :
                          chSub.includes('geometry') ? 'geometry' :
                          chSub.includes('math') ? 'math' :
-                         (chSub.includes('physical_science') || chSub.includes('science')) ? 'physical_science' :
                          chSub.includes('life_science') ? 'life_science' :
+                         chSub.includes('physical_science') ? 'physical_science' :
+                         chSub.includes('social_science') ? 'social_science' :
+                         chSub.includes('science') ? 'physical_science' :
                          (chSub.includes('social') || chSub.includes('history')) ? 'social_science' :
                          chSub.includes('geography') ? (
                            (titleText.includes('econom') || 
