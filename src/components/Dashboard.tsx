@@ -3104,7 +3104,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             {/* Test Series Registration - Premium Alert (Half Size Layout) */}
             {(() => {
               const currentDay = new Date().getDate();
-              const isRegistrationWindow = currentDay >= 1 && currentDay <= 4;
+              const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+              const isRegistrationWindow = (currentDay >= 1 && currentDay <= 4) || isLocalhost;
               
               if (isRegistered || !isRegistrationWindow) return null;
               
