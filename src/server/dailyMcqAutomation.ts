@@ -59,6 +59,13 @@ function getExpectedLanguage(subject: string): 'odia' | 'english' | 'hindi' | 's
 
 export async function extractPdfText(buffer: Buffer): Promise<string> {
   try {
+    if (buffer.length >= 4) {
+      const header = buffer.toString('utf8', 0, 4);
+      if (header !== '%PDF') {
+        console.log(`[extractPdfText] Buffer is already plain text (no %PDF header), skipping PDF parse.`);
+        return buffer.toString('utf8');
+      }
+    }
     const parser = new PDFParse({ data: buffer });
     const result = await parser.getText();
     return result.text || '';
@@ -499,13 +506,53 @@ export async function loadTextbookFromBucket(adminApp: App, className: string, s
       console.warn(`[Bucket Debug] No PDF file matched keywords for ${className}/${subject} in ${TEXTBOOK_BUCKET_NAME}`);
       return null;
     }
-    const [buffer] = await bestFile.download();
+    const txtFileName = bestFileName.replace(/\.pdf$/i, '.txt');
+    const txtFile = bucket.file(txtFileName);
+    try {
+      const [txtExists] = await txtFile.exists();
+      if (txtExists) {
+        console.log(`[Bucket Cache] Found pre-parsed text cache: ${txtFileName}`);
+        const [txtBuffer] = await txtFile.download();
+        return {
+          driveContent: {
+            text: txtBuffer.toString('utf8'),
+            fileName: txtFileName.split('/').pop() || txtFileName,
+            mimeType: 'text/plain',
+            buffer: txtBuffer,
+          },
+          source: {
+            textbookId: `bucket:${txtFileName}`,
+            textbookTitle: txtFileName.split('/').pop() || txtFileName,
+            driveFileName: txtFileName,
+            mimeType: 'text/plain',
+          },
+        };
+      }
+    } catch (cacheErr: any) {
+      console.warn(`[Bucket Cache] Error checking or downloading text cache:`, cacheErr.message);
+    }
+
+    console.log(`[Bucket Cache] Cache not found. Downloading PDF and parsing: ${bestFileName}`);
+    const [pdfBuffer] = await bestFile.download();
+    
+    // Parse the PDF text and save it to the bucket for future runs
+    let parsedText = '';
+    try {
+      parsedText = await extractPdfText(pdfBuffer);
+      if (parsedText && parsedText.trim().length > 50) {
+        await txtFile.save(parsedText, { contentType: 'text/plain' });
+        console.log(`[Bucket Cache] Successfully created and saved text cache: ${txtFileName}`);
+      }
+    } catch (parseErr: any) {
+      console.warn(`[Bucket Cache] Failed to create or save text cache:`, parseErr.message);
+    }
+
     return {
       driveContent: {
-        text: '', 
+        text: parsedText,
         fileName: bestFileName.split('/').pop() || bestFileName,
         mimeType: 'application/pdf',
-        buffer,
+        buffer: pdfBuffer,
       },
       source: {
         textbookId: `bucket:${bestFileName}`,

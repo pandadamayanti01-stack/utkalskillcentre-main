@@ -1171,6 +1171,55 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   const generateCustomWorksheetPDF = async () => {
     setIsGeneratingWorksheet(true);
     setWorksheetStep(3);
+    setWorksheetGeneratingProgress(5);
+
+    // Check if duplicate worksheet exists
+    const classNormalized = `class${userClass || '10'}`;
+    try {
+      setWorksheetGeneratingStatusText(
+        language === 'en' 
+          ? 'Checking if this worksheet is already generated...' 
+          : 'ଏହି ପ୍ରଶ୍ନପତ୍ର ପୂର୍ବରୁ ପ୍ରସ୍ତୁତ ହୋଇଛି କି ନାହିଁ ଯାଞ୍ଚ କରାଯାଉଛି...'
+      );
+      
+      const { getDocs, query, collection, where } = await import('firebase/firestore');
+      const q = query(
+        collection(db, 'community'),
+        where('class', '==', classNormalized),
+        where('fileType', '==', 'pdf'),
+        where('subjectKey', '==', selectedWorksheetSubject)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      let alreadyExists = false;
+      
+      for (const docSnap of querySnapshot.docs) {
+        const docData = docSnap.data();
+        const existingChapters = docData.chapters || [];
+        const hasIntersection = selectedWorksheetChapters.some(ch => existingChapters.includes(ch));
+        if (hasIntersection) {
+          alreadyExists = true;
+          break;
+        }
+      }
+      
+      if (alreadyExists) {
+        alert(
+          language === 'en'
+            ? "This chapter's worksheet has already been generated! Please use the File Manager (folder icon at the top of the chat) to see all downloaded question files."
+            : "ଏହି ଅଧ୍ୟାୟର ପ୍ରଶ୍ନପତ୍ର ପୂର୍ବରୁ ପ୍ରସ୍ତୁତ ସରିଛି! ସମସ୍ତ ଡାଉନଲୋଡ୍ ହୋଇଥିବା ପ୍ରଶ୍ନପତ୍ର ଦେଖିବା ପାଇଁ ଦୟାକରି ଚାଟ୍‌ର ଉପରେ ଥିବା ଫାଇଲ୍ ମ୍ୟାନେଜର୍ (ଫୋଲ୍ଡର୍ ଆଇକନ୍) ବ୍ୟବହାର କରନ୍ତୁ।"
+        );
+        if (onOpenCommunity) {
+          onOpenCommunity();
+        }
+        setIsGeneratingWorksheet(false);
+        setWorksheetStep(1);
+        return;
+      }
+    } catch (checkErr) {
+      console.warn("Failed to check duplicate worksheet:", checkErr);
+    }
+
     setWorksheetGeneratingProgress(10);
 
     const isBoard = userClass === '9' || userClass === '10';
@@ -1528,7 +1577,9 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             userAvatar: null,
             class: classNormalized,
             role: 'admin',
-            timestamp: serverTimestamp()
+            timestamp: serverTimestamp(),
+            subjectKey: selectedWorksheetSubject,
+            chapters: selectedWorksheetChapters
           });
           
           if (onOpenCommunity) {
