@@ -41,6 +41,7 @@ import { generateHomeworkSheet, translateContent } from '../services/aiService';
 import { GoldenTicket } from './GoldenTicket';
 import { MathBlackboard } from './MathBlackboard';
 import { GiftUnlockModal } from './GiftUnlockModal';
+import { MtsChampionshipPoster } from './MtsChampionshipPoster';
 
 interface DashboardProps {
   user: any;
@@ -3098,6 +3099,19 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             </motion.div>
 
           </div>
+
+          {/* Animated Gundulu Motivation Banner */}
+          <MtsChampionshipPoster 
+            isRegistered={isRegistered}
+            onRegisterClick={() => {
+              if (isRegistered) {
+                if (onOpenMonthlyTests) onOpenMonthlyTests();
+              } else {
+                setShowRegistrationForm(true);
+              }
+            }}
+            language={language}
+          />
 
           {/* Middle Row: Registration & Video Matrix */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-6 lg:gap-8 w-full">
