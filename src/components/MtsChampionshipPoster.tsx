@@ -125,6 +125,21 @@ export function MtsChampionshipPoster({ isRegistered, onRegisterClick, language 
     const deadline = new Date('2026-07-04T23:59:59');
     const now = new Date();
     const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const todayStr = now.toISOString().split('T')[0];
+    const dismissedDate = localStorage.getItem('mts_championship_dismissed_date');
+    const shownThisSession = sessionStorage.getItem('mts_championship_shown_session');
+
+    console.log('[MTS Championship Diagnostic]', {
+      now: now.toISOString(),
+      deadline: deadline.toISOString(),
+      isLocalhost,
+      dismissedDate,
+      todayStr,
+      shownThisSession,
+      isDateExpired: now > deadline && !isLocalhost,
+      isDismissedToday: dismissedDate === todayStr,
+      isShownThisSession: shownThisSession === 'true'
+    });
     
     // 1. Date Check: Show until July 4th, 2026
     if (now > deadline && !isLocalhost) {
@@ -133,15 +148,12 @@ export function MtsChampionshipPoster({ isRegistered, onRegisterClick, language 
     }
 
     // 2. Dismissal Check: Once per day check (Remove localhost bypass so daily limits work correctly everywhere)
-    const todayStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
-    const dismissedDate = localStorage.getItem('mts_championship_dismissed_date');
     if (dismissedDate === todayStr) {
       setIsVisible(false);
       return;
     }
 
     // 2b. Session Check: Only show once per browser session to prevent popups on tab switches / back button
-    const shownThisSession = sessionStorage.getItem('mts_championship_shown_session');
     if (shownThisSession === 'true') {
       setIsVisible(false);
       return;
@@ -234,14 +246,15 @@ export function MtsChampionshipPoster({ isRegistered, onRegisterClick, language 
     }
   };
 
-  if (!isVisible || typeof document === 'undefined') return null;
+  if (typeof document === 'undefined') return null;
 
   return createPortal(
     <AnimatePresence>
-      <div 
-        onClick={handleDismiss}
-        className="fixed inset-0 z-[12000] bg-black/85 backdrop-blur-xl flex items-center justify-center p-4 overflow-y-auto"
-      >
+      {isVisible && (
+        <div 
+          onClick={handleDismiss}
+          className="fixed inset-0 z-[12000] bg-black/85 backdrop-blur-xl flex items-center justify-center p-4 overflow-y-auto"
+        >
         {/* Scoped CSS styling block to bypass global !important overrides */}
         <style dangerouslySetInnerHTML={{ __html: `
           body.theme-daybreak .mts-championship-modal-card {
@@ -610,6 +623,7 @@ export function MtsChampionshipPoster({ isRegistered, onRegisterClick, language 
           </div>
         </motion.div>
       </div>
+    )}
     </AnimatePresence>,
     document.body
   );
