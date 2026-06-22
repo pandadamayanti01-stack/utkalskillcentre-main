@@ -76,6 +76,26 @@ function getRotatorKeys(): string[] {
   return keys;
 }
 
+function getMtsSubjectType(subjectName: string): 'math' | 'science_social' | 'language' {
+  const s = subjectName.toLowerCase().trim();
+  if (s.includes('math') || s.includes('algebra') || s.includes('geometry')) {
+    return 'math';
+  }
+  if (
+    s.includes('science') || 
+    s.includes('history') || 
+    s.includes('geography') || 
+    s.includes('social') || 
+    s.includes('physics') || 
+    s.includes('chemistry') || 
+    s.includes('biology') || 
+    s.includes('evs')
+  ) {
+    return 'science_social';
+  }
+  return 'language';
+}
+
 async function generateTestViaGemini(
   className: string,
   subjectName: string,
@@ -168,33 +188,100 @@ async function generateTestViaGemini(
     }
     `;
   } else {
-    structureDescription = `
-    - Exactly 15 MCQ (1 Mark each, with 'options' array containing 4 choices, and 'type' set to "mcq")
-    - Exactly 15 subjective questions/sub-bits (typically 2, 3, or 4 marks representing board sub-bits like part (a) or part (b), with empty 'options' array, and 'type' set to "subjective")
-    Total: 30 Questions.
-    `;
-    outputStructure = `
-    {
-      "questions": [
-        {
-          "question": "Question text",
-          "type": "mcq",
-          "marks": 1,
-          "options": ["Option A", "Option B", "Option C", "Option D"],
-          "correct_answer": "Correct option text exactly matching one of the options"
-        },
-        ... 15 MCQs total ...
-        {
-          "question": "Subjective sub-bit question text (e.g. (a) Explain X)",
-          "type": "subjective",
-          "marks": 3,
-          "options": [],
-          "correct_answer": "Model solution or step-by-step hint explaining the answer key"
-        },
-        ... 15 Subjectives total ...
-      ]
+    const subjectType = getMtsSubjectType(subjectName);
+    if (subjectType === 'science_social') {
+      structureDescription = `
+      - Exactly 10 MCQ (1 Mark each, with 'options' array containing 4 choices, and 'type' set to "mcq")
+      - Exactly 12 subjective questions (with empty 'options' array, and 'type' set to "subjective"):
+        * The first 4 questions (index 0 to 3) must be worth 2 Marks each (assign "marks": 2)
+        * The next 4 questions (index 4 to 7) must be worth 3 Marks each (assign "marks": 3)
+        * The last 4 questions (index 8 to 11) must be worth 5 Marks each (assign "marks": 5)
+      Total: 50 Marks (22 Questions).
+      `;
+      outputStructure = `
+      {
+        "questions": [
+          {
+            "question": "Question text",
+            "type": "mcq",
+            "marks": 1,
+            "options": ["Option A", "Option B", "Option C", "Option D"],
+            "correct_answer": "Correct option text exactly matching one of the options"
+          },
+          ... 10 MCQs total ...
+          {
+            "question": "Subjective question text",
+            "type": "subjective",
+            "marks": 2,
+            "options": [],
+            "correct_answer": "Model solution or step-by-step hint explaining the answer key"
+          },
+          ... 4 of 2 Marks, 4 of 3 Marks, 4 of 5 Marks ...
+        ]
+      }
+      `;
+    } else if (subjectType === 'math') {
+      structureDescription = `
+      - Exactly 10 MCQ (1 Mark each, with 'options' array containing 4 choices, and 'type' set to "mcq")
+      - Exactly 8 subjective questions (with empty 'options' array, and 'type' set to "subjective"):
+        * All 8 questions must strictly be worth 5 Marks each (assign "marks": 5 for all of them)
+      Total: 50 Marks (18 Questions).
+      `;
+      outputStructure = `
+      {
+        "questions": [
+          {
+            "question": "Question text",
+            "type": "mcq",
+            "marks": 1,
+            "options": ["Option A", "Option B", "Option C", "Option D"],
+            "correct_answer": "Correct option text exactly matching one of the options"
+          },
+          ... 10 MCQs total ...
+          {
+            "question": "Long Mathematics/Geometry proof or derivation question text",
+            "type": "subjective",
+            "marks": 5,
+            "options": [],
+            "correct_answer": "Detailed step-by-step mathematical proof or solution key"
+          },
+          ... 8 subjective questions of 5 Marks each ...
+        ]
+      }
+      `;
+    } else {
+      // Language / Vocational
+      structureDescription = `
+      - Exactly 10 MCQ (1 Mark each, with 'options' array containing 4 choices, and 'type' set to "mcq")
+      - Exactly 10 subjective questions (with empty 'options' array, and 'type' set to "subjective"):
+        * The first 4 questions (index 0 to 3) must be worth 2 Marks each (assign "marks": 2)
+        * The next 4 questions (index 4 to 7) must be worth 3 Marks each (assign "marks": 3)
+        * The last 2 questions (index 8 to 9) must be worth 10 Marks each (assign "marks": 10, typically board-style essays, formal letters, translations, or comprehensions)
+      Total: 50 Marks (20 Questions).
+      `;
+      outputStructure = `
+      {
+        "questions": [
+          {
+            "question": "Question text",
+            "type": "mcq",
+            "marks": 1,
+            "options": ["Option A", "Option B", "Option C", "Option D"],
+            "correct_answer": "Correct option text exactly matching one of the options"
+          },
+          ... 10 MCQs total ...
+          {
+            "question": "Subjective question text",
+            "type": "subjective",
+            "marks": 2,
+            "options": [],
+            "correct_answer": "Model solution or step-by-step hint explaining the answer key"
+          },
+          ... 4 of 2 Marks, 4 of 3 Marks, 2 of 10 Marks ...
+        ]
+      }
+      `;
     }
-    `;
   }
 
   const prompt = `You are an expert curriculum builder and Board exam paper setter for the Board of Secondary Education (BSE) Odisha.
