@@ -923,7 +923,7 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
 
         <form onSubmit={handleSendMessage} className="flex items-end gap-2.5 max-w-3xl mx-auto w-full px-1">
           {/* Pill Container (Input + Emojis + Attachment) */}
-          <div className="flex-1 flex items-end bg-zinc-950 backdrop-blur-2xl rounded-[1.75rem] border border-white/10 focus-within:border-emerald-500/40 focus-within:shadow-[0_0_20px_rgba(16,185,129,0.15)] transition-all shadow-2xl relative px-1 py-1 min-h-[50px] group">
+          <div className="flex-1 flex items-end bg-emerald-950/80 backdrop-blur-2xl rounded-[1.75rem] border border-emerald-500/30 focus-within:border-emerald-400 focus-within:shadow-[0_0_20px_rgba(52,211,153,0.25)] transition-all shadow-2xl relative px-1 py-1 min-h-[50px] group">
             {/* Background gradient on focus */}
             <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5 opacity-0 group-focus-within:opacity-100 transition-opacity rounded-[1.75rem] pointer-events-none"></div>
 
@@ -936,7 +936,7 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
                 setShowQuickEmojiBar(prev => !prev);
               }}
               className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all active:scale-90 relative z-10 mb-0.5 ${
-                showQuickEmojiBar ? 'text-emerald-400 bg-emerald-500/10' : 'text-slate-400 hover:text-white hover:bg-white/5'
+                showQuickEmojiBar ? 'text-emerald-400 bg-emerald-500/10' : 'text-emerald-500/70 hover:text-emerald-300 hover:bg-emerald-500/10'
               }`}
               title={language === 'en' ? 'Quick Emojis' : 'ତୁରନ୍ତ ଇମୋଜି'}
             >
@@ -948,7 +948,7 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               placeholder={language === 'en' ? 'Message' : 'ଏଠାରେ ମେସେଜ୍ ଲେଖନ୍ତୁ...'}
-              className="flex-1 bg-transparent text-white px-2 py-2 outline-none resize-none max-h-32 text-[15px] font-medium placeholder:text-slate-500 relative z-10 self-center"
+              className="flex-1 bg-transparent text-white px-2 py-2 outline-none resize-none max-h-32 text-[15px] font-medium placeholder:text-emerald-500/50 relative z-10 self-center"
               rows={1}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
