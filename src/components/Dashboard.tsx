@@ -1535,7 +1535,9 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       setWorksheetGeneratingProgress(95);
       setWorksheetGeneratingStatusText(language === 'en' ? 'Finalizing PDF...' : 'PDF ଚୂଡ଼ାନ୍ତ ରୂପ ଦିଆଯାଉଛି...');
       
-      const filename = `USC_Worksheet_Class${userClass}_${selectedWorksheetSubject.toUpperCase()}_${worksheetDifficulty}.pdf`;
+      const filename = language === 'or'
+        ? `ଉତ୍କଳ_ପ୍ରଶ୍ନପତ୍ର_ଶ୍ରେଣୀ_${userClass}_${subjectLabel.replace(/\s+/g, '_')}.pdf`
+        : `USC_Worksheet_Class${userClass}_${selectedWorksheetSubject.toUpperCase()}_${worksheetDifficulty}.pdf`;
       
       const isStudent = user?.role === 'student' || !user?.role;
       if (isStudent) {
