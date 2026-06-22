@@ -58,12 +58,25 @@ export function TestSeriesRegistrationForm({ user, language, onClose }: TestSeri
     setIsSubmitting(true);
     try {
       const regId = `reg_${user?.uid || user?.id}`;
+      
+      // 1. Save Test Series Registration
       await setDoc(doc(db, 'test_series_registrations', regId), {
         ...formData,
         userId: user?.uid || user?.id,
         registeredAt: serverTimestamp(),
         seriesName: "Monthly Test Series - May 2026"
       });
+
+      // 2. Auto-update main user profile document
+      if (user?.uid || user?.id) {
+        const userRef = doc(db, 'users', user.uid || user.id);
+        await setDoc(userRef, {
+          school: formData.school,
+          district: formData.district,
+          board: formData.board
+        }, { merge: true });
+      }
+
       setIsSuccess(true);
       setTimeout(onClose, 3000);
     } catch (error) {
