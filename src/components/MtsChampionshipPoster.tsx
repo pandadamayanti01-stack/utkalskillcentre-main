@@ -221,7 +221,9 @@ export function MtsChampionshipPoster({ isRegistered, onRegisterClick, language 
 
   const handleCTA = () => {
     handleDismiss(); // Save dismissal for today
-    onRegisterClick(); // Open form/syllabus
+    if (isRegistrationWindow || isRegistered) {
+      onRegisterClick(); // Open form/syllabus
+    }
   };
 
   if (!isVisible || typeof document === 'undefined') return null;
