@@ -3102,97 +3102,82 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           {/* Middle Row: Registration & Video Matrix */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-6 lg:gap-8 w-full">
             {/* Test Series Registration - Premium Alert (Half Size Layout) */}
-            {!isRegistered && (
-              <motion.div 
-                variants={itemVariants}
-                className="bg-slate-950/40 backdrop-blur-2xl border border-amber-500/20 rounded-[2.5rem] p-6 sm:p-8 relative overflow-hidden group hover:border-amber-500/40 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_25px_50px_-12px_rgba(0,0,0,0.5)] transition-all duration-500 flex flex-col justify-between h-full"
-              >
-                {/* Premium Animated Gold/Amber Shimmer */}
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-orange-950/30 opacity-40 group-hover:opacity-75 transition-opacity duration-700 pointer-events-none"></div>
-                <div className="absolute -top-[150px] -right-[150px] w-[350px] h-[350px] bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-full blur-[80px] pointer-events-none group-hover:scale-110 transition-transform duration-1000"></div>
-                <div className="absolute -bottom-[150px] -left-[150px] w-[300px] h-[300px] bg-orange-600/5 rounded-full blur-[60px] pointer-events-none"></div>
-                <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/40 to-transparent opacity-50 group-hover:opacity-100 transition-all duration-700"></div>
+            {(() => {
+              const currentDay = new Date().getDate();
+              const isRegistrationWindow = currentDay >= 1 && currentDay <= 4;
+              
+              if (isRegistered || !isRegistrationWindow) return null;
+              
+              return (
+                <motion.div 
+                  variants={itemVariants}
+                  className="bg-slate-950/40 backdrop-blur-2xl border border-amber-500/20 rounded-[2rem] p-5 sm:p-6 relative overflow-hidden group hover:border-amber-500/40 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_20px_50px_rgba(0,0,0,0.5)] transition-all duration-500 flex flex-col justify-between h-full"
+                >
+                  {/* Premium Animated Gold/Amber Shimmer */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-orange-950/20 opacity-40 group-hover:opacity-60 transition-opacity duration-700 pointer-events-none"></div>
+                  <div className="absolute -top-[100px] -right-[100px] w-[250px] h-[250px] bg-gradient-to-br from-amber-500/10 to-orange-500/5 rounded-full blur-[60px] pointer-events-none group-hover:scale-110 transition-transform duration-1000"></div>
+                  <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent opacity-50 group-hover:opacity-100 transition-all duration-700"></div>
 
-                <div className="flex flex-col justify-between h-full relative z-10 space-y-6">
-                  {/* Top Row: Icon and Title */}
-                  <div className="flex items-center gap-4">
-                    <div className="relative shrink-0">
-                      <div className="absolute inset-0 bg-amber-500 blur-md opacity-25 group-hover:opacity-50 transition-opacity"></div>
-                      <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] group-hover:rotate-12 group-hover:scale-110 transition-all duration-500">
-                        <Lucide.Trophy size={24} className="text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]" />
+                  <div className="flex flex-col justify-between h-full relative z-10 space-y-4">
+                    {/* Top Row: Icon and Title */}
+                    <div className="flex items-center gap-3">
+                      <div className="relative shrink-0">
+                        <div className="absolute inset-0 bg-amber-500 blur-md opacity-25 group-hover:opacity-40 transition-opacity"></div>
+                        <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] group-hover:rotate-12 group-hover:scale-105 transition-all duration-500">
+                          <Lucide.Trophy size={18} className="text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.8)]" />
+                        </div>
+                      </div>
+
+                      <div className="flex-1 text-left">
+                        <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[8px] font-black uppercase tracking-widest shadow-[0_0_10px_rgba(245,158,11,0.15)]">
+                          <Lucide.Sparkles size={8} className="animate-pulse" />
+                          {language === 'en' ? 'Registration Open' : 'ପଞ୍ଜିକରଣ ଚାଲିଛି'}
+                        </div>
+                        <h3 className="text-base sm:text-lg font-black text-white tracking-tight uppercase drop-shadow-md mt-0.5">
+                          {language === 'en' ? 'Monthly Test Series' : 'ମାସିକ ଟେଷ୍ଟ ସିରିଜ୍'}
+                        </h3>
                       </div>
                     </div>
 
-                    <div className="flex-1 text-left">
-                      <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[10px] font-black uppercase tracking-widest shadow-[0_0_10px_rgba(245,158,11,0.15)]">
-                        <Lucide.Sparkles size={10} className="animate-pulse" />
-                        {language === 'en' ? 'Registration Open' : 'ପଞ୍ଜିକରଣ ଚାଲିଛି'}
+                    {/* Middle Section: Compact Value propositions */}
+                    <div className="flex-1 flex flex-col justify-center space-y-3 py-1 text-left">
+                      <div className="flex items-center gap-3">
+                        <Lucide.Trophy size={14} className="text-amber-400 shrink-0" />
+                        <span className="text-xs text-slate-300 font-semibold">
+                          {language === 'en' ? 'Statewide Leaderboard & Ranks' : 'ରାଜ୍ୟ ସ୍ତରୀୟ ଲିଡରବୋର୍ଡ'}
+                        </span>
                       </div>
-                      <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight uppercase drop-shadow-md mt-1.5">
-                        {language === 'en' ? 'Monthly Test Series' : 'ମାସିକ ଟେଷ୍ଟ ସିରିଜ୍'}
-                      </h3>
-                    </div>
-                  </div>
 
-                  {/* Middle Section: Value propositions */}
-                  <div className="flex-1 flex flex-col justify-center space-y-3.5 py-2">
-                    <div className="flex items-start gap-3.5 p-3 rounded-2xl bg-white/[0.02] border border-white/[0.03] group-hover:bg-white/[0.04] group-hover:border-white/[0.06] transition-all duration-300">
-                      <div className="w-8 h-8 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400 shrink-0">
-                        <Lucide.Trophy size={16} />
-                      </div>
-                      <div className="text-left">
-                        <h4 className="text-sm font-bold text-white leading-snug">
-                          {language === 'en' ? 'Statewide Leaderboard' : 'ରାଜ୍ୟ ସ୍ତରୀୟ ଲିଡରବୋର୍ଡ'}
-                        </h4>
-                        <p className="text-xs text-slate-400">
-                          {language === 'en' ? 'Track performance and compete with peers across Odisha.' : 'ଓଡ଼ିଶାର ସମସ୍ତ ଛାତ୍ରଛାତ୍ରୀଙ୍କ ସହ ନିଜର ପ୍ରତିଯୋଗିତା ପରଖନ୍ତୁ ।'}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-3.5 p-3 rounded-2xl bg-white/[0.02] border border-white/[0.03] group-hover:bg-white/[0.04] group-hover:border-white/[0.06] transition-all duration-300">
-                      <div className="w-8 h-8 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-400 shrink-0">
-                        <Lucide.FileText size={16} />
-                      </div>
-                      <div className="text-left">
-                        <h4 className="text-sm font-bold text-white leading-snug">
+                      <div className="flex items-center gap-3">
+                        <Lucide.FileText size={14} className="text-orange-400 shrink-0" />
+                        <span className="text-xs text-slate-300 font-semibold">
                           {language === 'en' ? 'BSE Odisha 2026 Pattern' : 'BSE ଓଡ଼ିଶା ୨୦୨୬ ପ୍ୟାଟର୍ଣ୍ଣ'}
-                        </h4>
-                        <p className="text-xs text-slate-400">
-                          {language === 'en' ? '100% matched selection questions for full board readiness.' : 'ବୋର୍ଡ ପରୀକ୍ଷା ପାଇଁ ୧୦୦% ଉପଯୁକ୍ତ ସିଲେକ୍ସନ ପ୍ରଶ୍ନୋତ୍ତର ।'}
-                        </p>
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <Lucide.Award size={14} className="text-yellow-400 shrink-0" />
+                        <span className="text-xs text-slate-300 font-semibold">
+                          {language === 'en' ? 'Verified PWA Certificates' : 'ପ୍ରମାଣପତ୍ର ଓ ପୁରସ୍କାର'}
+                        </span>
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-3.5 p-3 rounded-2xl bg-white/[0.02] border border-white/[0.03] group-hover:bg-white/[0.04] group-hover:border-white/[0.06] transition-all duration-300">
-                      <div className="w-8 h-8 rounded-xl bg-yellow-500/10 flex items-center justify-center text-yellow-400 shrink-0">
-                        <Lucide.Award size={16} />
-                      </div>
-                      <div className="text-left">
-                        <h4 className="text-sm font-bold text-white leading-snug">
-                          {language === 'en' ? 'Verified Certificates' : 'ପ୍ରମାଣପତ୍ର ଓ ପୁରସ୍କାର'}
-                        </h4>
-                        <p className="text-xs text-slate-400">
-                          {language === 'en' ? 'Earn rank certificates to showcase your academic growth.' : 'ନିଜର ପ୍ରତିଭା ଦେଖାଇବା ପାଇଁ ବୋର୍ଡ ପ୍ୟାଟର୍ଣ୍ଣ ସାର୍ଟିଫିକେଟ ହାସଲ କରନ୍ତୁ ।'}
-                        </p>
-                      </div>
-                    </div>
+                    {/* Bottom Action Button */}
+                    <button 
+                      onClick={() => setShowRegistrationForm(true)}
+                      className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-orange-600 text-white font-bold text-[10px] uppercase tracking-[0.2em] shadow-[0_5px_15px_rgba(245,158,11,0.2)] hover:shadow-[0_8px_25px_rgba(245,158,11,0.35)] hover:scale-[1.01] active:scale-98 transition-all duration-300 relative overflow-hidden group/btn flex items-center justify-center gap-2 border-t border-white/10"
+                    >
+                      <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover/btn:translate-x-0 transition-transform duration-500"></div>
+                      <span className="relative z-10 flex items-center justify-center gap-1.5">
+                        {language === 'en' ? 'Register For Test Series' : 'ଟେଷ୍ଟ ସିରିଜ୍ ପାଇଁ ପଞ୍ଜିକରଣ କରନ୍ତୁ'}
+                        <Lucide.ArrowRight size={12} className="group-hover/btn:translate-x-1 transition-transform duration-300" />
+                      </span>
+                    </button>
                   </div>
-
-                  {/* Bottom Action Button */}
-                  <button 
-                    onClick={() => setShowRegistrationForm(true)}
-                    className="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-orange-600 text-white font-bold text-xs uppercase tracking-[0.2em] shadow-[0_8px_25px_rgba(245,158,11,0.25)] hover:shadow-[0_12px_35px_rgba(245,158,11,0.45)] hover:scale-[1.02] active:scale-98 transition-all duration-300 relative overflow-hidden group/btn flex items-center justify-center gap-2 border-t border-white/20"
-                  >
-                    <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover/btn:translate-x-0 transition-transform duration-500"></div>
-                    <span className="relative z-10 flex items-center justify-center gap-2">
-                      {language === 'en' ? 'Register For Test Series' : 'ଟେଷ୍ଟ ସିରିଜ୍ ପାଇଁ ପଞ୍ଜିକରଣ କରନ୍ତୁ'}
-                      <Lucide.ArrowRight size={14} className="group-hover/btn:translate-x-1.5 transition-transform duration-300" />
-                    </span>
-                  </button>
-                </div>
-              </motion.div>
-            )}
+                </motion.div>
+              );
+            })()}
 
             {/* Class-wise YouTube Matrix - Cinema Style */}
             <div className={`bg-slate-900/40 backdrop-blur-xl rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_15px_40px_-10px_rgba(0,0,0,0.5)] relative overflow-hidden group hover:border-red-500/30 hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between h-full ${isRegistered ? 'lg:col-span-2' : 'col-span-1'}`}>
