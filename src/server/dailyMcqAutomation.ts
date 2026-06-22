@@ -208,7 +208,7 @@ function getSubjectLabel(subject: string) {
   return translations.en.subjects?.[subject] || subject.replace(/_/g, ' ');
 }
 
-function normalizeSubjectKey(input?: string) {
+export function normalizeSubjectKey(input?: string) {
   const rawValue = String(input || '').trim().toLowerCase();
   if (!rawValue) {
     return '';
@@ -227,6 +227,21 @@ function normalizeSubjectKey(input?: string) {
   });
   if (labelMatch) {
     return labelMatch[0];
+  }
+
+  // Check Odia translation dictionary values:
+  const odiaSubjectEntries = Object.entries(translations.or.subjects || {});
+  const odiaDirectMatch = odiaSubjectEntries.find(([subjectKey]) => subjectKey.toLowerCase() === normalizedValue);
+  if (odiaDirectMatch) {
+    return odiaDirectMatch[0];
+  }
+
+  const odiaLabelMatch = odiaSubjectEntries.find(([, subjectLabel]) => {
+    const normalizedLabel = String(subjectLabel || '').toLowerCase().replace(/[()]/g, '').replace(/&/g, 'and').replace(/\s+/g, ' ').trim();
+    return normalizedLabel === normalizedValue;
+  });
+  if (odiaLabelMatch) {
+    return odiaLabelMatch[0];
   }
 
   return normalizedValue.replace(/\s+/g, '_');
@@ -377,8 +392,8 @@ function getSubjectFolderNames(subject: string): string[] {
   if (s === 'science') {
     list.push('Science', 'science', 'Physical_science', 'Life_science', 'Physical science', 'Life science', 'Science_curiosity', 'Science Curiosity');
   }
-  if (s === 'social_science' || s === 'social') {
-    list.push('Social_science', 'Social science', 'Social Science', 'History', 'Geography', 'Social Studies', 'Social_studies');
+  if (s === 'social_science' || s === 'social' || s === 'history' || s === 'geography') {
+    list.push('Social_science', 'Social science', 'Social Science', 'History', 'Geography', 'Social Studies', 'Social_studies', 'social_science', 'geography', 'history');
   }
   if (s === 'physical_education' || s === 'physical') {
     list.push('Physical_education', 'Physical education', 'Physical Education', 'Physical', 'physical');
@@ -630,22 +645,70 @@ function isValidQuestionText(text: string) {
   return !UNWANTED_KEYWORDS.some(keyword => lower.includes(keyword));
 }
 
+function cleanOdiaOrthographyLocal(text: string): string {
+  if (!text) return text;
+  const correctionMap: Record<string, string> = {
+    'ଦାଣ୍ଡି ଜାତ୍ରା': 'ଦାଣ୍ଡି ଯାତ୍ରା',
+    'ଦାଣ୍ଡି ଜାରା': 'ଦାଣ୍ଡି ଯାତ୍ରା',
+    'ଦାଣ୍ଡି ଜାର୍ତ୍ତା': 'ଦାଣ୍ଡି ଯାତ୍ରା',
+    'ଦାଣ୍ଡି ଯାତ୍ର': 'ଦାଣ୍ଡି ଯାତ୍ରା',
+    'ମହାତ୍ମା ଗାନ୍ଧି': 'ମହାତ୍ମା ଗାନ୍ଧୀ',
+    'ଗାନ୍ଧିଜି': 'ଗାନ୍ଧୀଜୀ',
+    'ଜାତ୍ରା': 'ଯାତ୍ରା',
+    'ପରିକ୍ଷା': 'ପରୀକ୍ଷା',
+    'ପରିକ୍ଷାଗାର': 'ପରୀକ୍ଷାଗାର',
+    'ବେବସାୟ': 'ବ୍ୟବସାୟ',
+    'ୱେବସାୟ': 'ବ୍ୟବସାୟ',
+    'ବେକରଣ': 'ବ୍ୟାକରଣ',
+    'ବ୍ୟାକରନ': 'ବ୍ୟାକରଣ',
+    'ସିକ୍ଷା': 'ଶିକ୍ଷା',
+    'ଶିକ୍ଷନ': 'ଶିକ୍ଷଣ',
+    'ସାହିତ୍ୟ ସାଥି': 'ସାହିତ୍ୟ ସାଥୀ',
+    'ବର୍ନ': 'ବର୍ଣ୍ଣ',
+    'ବର୍ନମାଳା': 'ବର୍ଣ୍ଣମାଳା',
+    'ବାଳ ଓ ଗତି': 'ବଳ ଓ ଗତି',
+    'ବାଲ ଓ ଗତି': 'ବଳ ଓ ଗତି',
+    'ବାଲରାମ': 'ବଳରାମ',
+    'ବାଲଦେବ': 'ବଳଦେବ',
+    'ବାଲଶ୍ରୀ': 'ବଳଶ୍ରୀ',
+    'ମାତୃଭକ୍ତି କଥା': 'ମାଡ଼ହାଣ୍ଡି କଥା',
+    'Matrubhakti Katha': 'Madahandi Katha',
+    'ଗୁଣ୍ଡୁଲୁ': 'ଗୁନ୍ଦୁଲୁ',
+    'ଗୁଣ୍ଡୁଳୁ': 'ଗୁନ୍ଦୁଲୁ',
+    'ଗୁଣ୍ଡୁଲି': 'ଗୁନ୍ଦୁଲୁ',
+    'ଗୁଣ୍ଡୁଲ': 'ଗୁନ୍ଦୁଲ',
+  };
+  let correctedText = text;
+  for (const [incorrect, correct] of Object.entries(correctionMap)) {
+    correctedText = correctedText.replaceAll(incorrect, correct);
+  }
+  return correctedText;
+}
+
 function cleanGeneratedQuestions(questions: any[], subject?: string): DailyMcqQuestion[] {
   const expectedLang = subject ? getExpectedLanguage(subject) : null;
+  const isOdia = expectedLang === 'odia';
   const rawQuestions = Array.isArray(questions) ? questions : [];
   const cleaned = [];
 
   for (const q of rawQuestions) {
     // Handle potential key casing issues (question vs Question)
-    const question = String(q?.question || q?.Question || '').trim();
-    const options = Array.isArray(q?.options || q?.Options)
+    let question = String(q?.question || q?.Question || '').trim();
+    let options = Array.isArray(q?.options || q?.Options)
       ? (q.options || q.Options).map((o: any) => String(o || '').trim()).filter(Boolean)
       : [];
-    const correct_answer = String(q?.correct_answer || q?.Correct_Answer || q?.answer || '').trim();
-    const explanation = String(q?.explanation || q?.Explanation || '').trim();
+    let correct_answer = String(q?.correct_answer || q?.Correct_Answer || q?.answer || '').trim();
+    let explanation = String(q?.explanation || q?.Explanation || '').trim();
     const type = (q?.type || q?.Type || '').toLowerCase() === 'subjective' ? 'subjective' : 'mcq';
     const chapter = String(q?.chapter || q?.Chapter || '').trim();
     
+    if (isOdia) {
+      question = cleanOdiaOrthographyLocal(question);
+      options = options.map(o => cleanOdiaOrthographyLocal(o));
+      correct_answer = cleanOdiaOrthographyLocal(correct_answer);
+      explanation = cleanOdiaOrthographyLocal(explanation);
+    }
+
     let reason = '';
     if (!question) reason = 'Missing question text';
     else if (type === 'mcq' && options.length < 2) reason = 'Not enough options (MCQ requires at least 2)';
@@ -846,18 +909,27 @@ function getPlaceholderQuestion(subject: string, chapter?: string): DailyMcqQues
 }
 
 function cleanOptionalQuestions(questions: any[], subject: string, count: number): DailyMcqQuestion[] {
+  const expectedLang = getExpectedLanguage(subject);
+  const isOdia = expectedLang === 'odia';
   const rawQuestions = Array.isArray(questions) ? questions : [];
   const cleaned = [];
 
   for (const q of rawQuestions) {
-    const question = String(q?.question || q?.Question || '').trim();
-    const options = Array.isArray(q?.options || q?.Options)
+    let question = String(q?.question || q?.Question || '').trim();
+    let options = Array.isArray(q?.options || q?.Options)
       ? (q.options || q.Options).map((o: any) => String(o || '').trim()).filter(Boolean)
       : [];
-    const correct_answer = String(q?.correct_answer || q?.Correct_Answer || q?.answer || '').trim();
-    const explanation = String(q?.explanation || q?.Explanation || '').trim();
+    let correct_answer = String(q?.correct_answer || q?.Correct_Answer || q?.answer || '').trim();
+    let explanation = String(q?.explanation || q?.Explanation || '').trim();
     const type = (q?.type || q?.Type || '').toLowerCase() === 'subjective' ? 'subjective' : 'mcq';
     const chapter = String(q?.chapter || q?.Chapter || '').trim();
+
+    if (isOdia) {
+      question = cleanOdiaOrthographyLocal(question);
+      options = options.map(o => cleanOdiaOrthographyLocal(o));
+      correct_answer = cleanOdiaOrthographyLocal(correct_answer);
+      explanation = cleanOdiaOrthographyLocal(explanation);
+    }
 
     let reason = '';
     if (!question) reason = 'Missing question text';

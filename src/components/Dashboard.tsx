@@ -1138,16 +1138,40 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
   const generateCustomWorksheetPDF = async () => {
     setIsGeneratingWorksheet(true);
-    setWorksheetStep(5);
+    setWorksheetStep(3);
     setWorksheetGeneratingProgress(10);
+
+    const isBoard = userClass === '9' || userClass === '10';
+    let totalMcqs = 15;
+    let totalSubjectives = 15;
+
+    if (isBoard) {
+      const sKey = selectedWorksheetSubject.toLowerCase();
+      if (['physical_science', 'life_science', 'social_science', 'geography', 'vocational', 'history'].includes(sKey)) {
+        totalMcqs = 12;
+        totalSubjectives = 18;
+      } else {
+        totalMcqs = 15;
+        totalSubjectives = 15;
+      }
+    } else {
+      const classDigit = parseInt(userClass) || 10;
+      if (classDigit >= 6 && classDigit <= 8) {
+        totalMcqs = 10;
+        totalSubjectives = 12;
+      } else {
+        totalMcqs = 5;
+        totalSubjectives = 7;
+      }
+    }
+
     setWorksheetGeneratingStatusText(
       language === 'en' 
-        ? 'Generating 15 MCQ & 15 Subjective questions via AI...' 
-        : 'AI ସାହାଯ୍ୟରେ ୧୫ଟି MCQ ଓ ୧୫ଟି ଦୀର୍ଘ ପ୍ରଶ୍ନ ପ୍ରସ୍ତୁତ କରାଯାଉଛି...'
+        ? `Generating ${totalMcqs} MCQ & ${totalSubjectives} Subjective questions via AI...` 
+        : `AI ସାହାଯ୍ୟରେ ${totalMcqs}ଟି MCQ ଓ ${totalSubjectives}ଟି ଦୀର୍ଘ ପ୍ରଶ୍ନ ପ୍ରସ୍ତୁତ କରାଯାଉଛି...`
     );
     
     try {
-      const isBoard = userClass === '9' || userClass === '10';
       const subjectLabel = language === 'en' 
         ? (subjects.find((s: any) => s.key === selectedWorksheetSubject)?.labelEn || selectedWorksheetSubject)
         : (subjects.find((s: any) => s.key === selectedWorksheetSubject)?.labelOr || selectedWorksheetSubject);
@@ -1164,8 +1188,11 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         body: JSON.stringify({
           className: `Class ${userClass}`,
           subjectName: subjectLabel,
+          subjectKey: selectedWorksheetSubject,
           chapters: selectedWorksheetChapters,
-          language
+          language,
+          difficulty: 'medium',
+          pattern: 'full'
         })
       });
 
@@ -1252,8 +1279,26 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       ctx.fillStyle = '#0f172a';
       ctx.font = 'bold 17px Arial, sans-serif';
       ctx.fillText(`SUBJECT: ${subjectLabel}`, 180, y);
-      ctx.fillText(`MARKS: ${worksheetPattern === 'quick' ? '25' : (isBoard ? (['physical_science', 'life_science', 'social_science', 'geography', 'vocational'].includes(selectedWorksheetSubject) ? '50' : '100') : '50')}`, 600, y);
-      ctx.fillText(`DIFFICULTY: ${worksheetDifficulty.toUpperCase()}`, 940, y);
+      
+      let totalMarks = 50;
+      if (isBoard) {
+        const sKey = selectedWorksheetSubject.toLowerCase();
+        if (['physical_science', 'life_science', 'social_science', 'geography', 'vocational', 'history'].includes(sKey)) {
+          totalMarks = 50;
+        } else {
+          totalMarks = 100;
+        }
+      } else {
+        const classDigit = parseInt(userClass) || 10;
+        if (classDigit >= 6 && classDigit <= 8) {
+          totalMarks = 45;
+        } else {
+          totalMarks = 25;
+        }
+      }
+
+      ctx.fillText(`MARKS: ${totalMarks}`, 600, y);
+      ctx.fillText(`DIFFICULTY: MEDIUM`, 940, y);
       y += 42;
       
       ctx.fillStyle = '#475569';
@@ -1466,7 +1511,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       
       setWorksheetGeneratingProgress(100);
       setWorksheetGeneratingStatusText(language === 'en' ? 'Downloaded successfully!' : 'ସଫଳତାର ସହ ଡାଉନଲୋଡ୍ ହୋଇଛି!');
-      setWorksheetStep(5);
+      setWorksheetStep(3);
     } catch (err) {
       console.error("Failed to generate PDF:", err);
       alert(language === 'en' ? "Failed to generate worksheet. Please try again." : "ପ୍ରଶ୍ନପତ୍ର ପ୍ରସ୍ତୁତ କରିବାରେ ବିଫଳ ହେଲା। ଦୟାକରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।");
@@ -4118,148 +4163,10 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   </div>
                 )}
 
-                {/* STEP 3: DIFFICULTY SELECT */}
+
+
+                {/* STEP 3: GENERATING PROGRESS OR DONE */}
                 {worksheetStep === 3 && (
-                  <div className="space-y-4">
-                    <h4 className="text-sm font-black text-white uppercase tracking-wider">
-                      {language === 'en' ? 'Step 3: Choose Level' : 'ତୃତୀୟ ସୋପାନ: ସ୍ତର ଚୟନ କରନ୍ତୁ'}
-                    </h4>
-                    <div className="grid grid-cols-1 gap-3">
-                      {(['easy', 'medium', 'hard'] as const).map((level) => {
-                        const active = worksheetDifficulty === level;
-                        const colors = {
-                          easy: { border: 'hover:border-green-500/40 border-green-500/20', bg: 'bg-green-500/5', text: 'text-green-400', desc: language === 'en' ? 'Short MCQs and direct, basic revision problems' : 'ସରଳ MCQ ଏବଂ ସିଧାସଳଖ ପରୀକ୍ଷା ପ୍ରଶ୍ନ' },
-                          medium: { border: 'hover:border-amber-500/40 border-amber-500/20', bg: 'bg-amber-500/5', text: 'text-amber-400', desc: language === 'en' ? 'Balanced state board standard mock questions' : 'ମାଧ୍ୟମିକ ବୋର୍ଡ ସ୍ତରର ମିଶ୍ରିତ ପ୍ରଶ୍ନପତ୍ର' },
-                          hard: { border: 'hover:border-red-500/40 border-red-500/20', bg: 'bg-red-500/5', text: 'text-red-400', desc: language === 'en' ? 'Theorem proofs, multi-step math and detailed explanations' : 'ଉପପାଦ୍ୟ, ଦୀର୍ଘ ପ୍ରଶ୍ନ ଏବଂ ପ୍ରମାଣ ଭିତ୍ତିକ ପ୍ରଶ୍ନ' }
-                        }[level];
-
-                        return (
-                          <button
-                            key={level}
-                            onClick={() => setWorksheetDifficulty(level)}
-                            className={`p-4 rounded-3xl border text-left transition-all duration-300 flex items-start gap-4 ${
-                              active 
-                                ? `${colors.bg} border-emerald-500/60 shadow-[0_0_15px_rgba(16,185,129,0.15)]` 
-                                : `bg-slate-950/40 border-white/5 ${colors.border}`
-                            }`}
-                          >
-                            <div className="mt-1">
-                              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${active ? 'border-emerald-400' : 'border-slate-600'}`}>
-                                {active && <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />}
-                              </div>
-                            </div>
-                            <div>
-                              <h5 className={`text-sm font-black uppercase tracking-wider ${colors.text}`}>
-                                {level.toUpperCase()}
-                              </h5>
-                              <p className="text-[11px] text-slate-400 font-bold mt-1 leading-relaxed">
-                                {colors.desc}
-                              </p>
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    <div className="flex justify-between pt-4 border-t border-white/5">
-                      <button
-                        onClick={() => setWorksheetStep(2)}
-                        className="px-5 py-2.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 text-xs font-black uppercase text-white tracking-wider transition-colors cursor-pointer"
-                      >
-                        {language === 'en' ? 'Back' : 'ପଛକୁ'}
-                      </button>
-                      <button
-                        onClick={() => setWorksheetStep(4)}
-                        className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-xs font-black uppercase text-white tracking-wider transition-all cursor-pointer shadow-lg shadow-emerald-950/20"
-                      >
-                        {language === 'en' ? 'Continue' : 'ଆଗକୁ'}
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* STEP 4: PATTERN SELECT */}
-                {worksheetStep === 4 && (
-                  <div className="space-y-4">
-                    <h4 className="text-sm font-black text-white uppercase tracking-wider">
-                      {language === 'en' ? 'Step 4: Select Format' : 'ଚତୁର୍ଥ ସୋପାନ: ଫର୍ମାଟ୍ ଚୟନ କରନ୍ତୁ'}
-                    </h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {/* Quick Set */}
-                      <button
-                        onClick={() => setWorksheetPattern('quick')}
-                        className={`p-5 rounded-3xl border text-left transition-all duration-300 flex flex-col justify-between gap-4 ${
-                          worksheetPattern === 'quick'
-                            ? 'bg-emerald-500/5 border-emerald-500/60 shadow-[0_0_15px_rgba(16,185,129,0.15)]'
-                            : 'bg-slate-950/40 border-white/5 hover:border-emerald-500/20'
-                        }`}
-                      >
-                        <div>
-                          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-3">
-                            <Lucide.Sparkles size={20} />
-                          </div>
-                          <h5 className="text-sm font-black text-white uppercase tracking-wider">
-                            {language === 'en' ? 'Quick Set (25M)' : 'କ୍ଵିକ୍ ସେଟ୍ (୨୫ Marks)'}
-                          </h5>
-                          <p className="text-[10px] text-slate-400 font-bold mt-1 leading-relaxed">
-                            {language === 'en' 
-                              ? '10 MCQs + 3 short subjective questions. Ideal for quick daily practice.' 
-                              : '୧୦ MCQ + ୩ ସଂକ୍ଷିପ୍ତ ଦୀର୍ଘ ପ୍ରଶ୍ନ । ଦୈନିକ ଅଭ୍ୟାସ ପାଇଁ ସର୍ବୋତ୍ତମ ।'}
-                          </p>
-                        </div>
-                        <span className="px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-slate-950 border border-white/5 text-emerald-400 self-start">
-                          {language === 'en' ? 'Est: 45 Min' : 'ସମୟ: ୪୫ ମିନିଟ୍'}
-                        </span>
-                      </button>
-
-                      {/* Full Mock */}
-                      <button
-                        onClick={() => setWorksheetPattern('full')}
-                        className={`p-5 rounded-3xl border text-left transition-all duration-300 flex flex-col justify-between gap-4 ${
-                          worksheetPattern === 'full'
-                            ? 'bg-purple-500/5 border-purple-500/60 shadow-[0_0_15px_rgba(168,85,247,0.15)]'
-                            : 'bg-slate-950/40 border-white/5 hover:border-purple-500/20'
-                        }`}
-                      >
-                        <div>
-                          <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 mb-3">
-                            <Lucide.Award size={20} />
-                          </div>
-                          <h5 className="text-sm font-black text-white uppercase tracking-wider">
-                            {language === 'en' ? 'Full Mock Exam' : 'ସମ୍ପୂର୍ଣ୍ଣ ମକ୍ ପେପର୍'}
-                          </h5>
-                          <p className="text-[10px] text-slate-400 font-bold mt-1 leading-relaxed">
-                            {userClass === '9' || userClass === '10'
-                              ? (language === 'en' ? 'Follows official BSE Odisha Board blueprint pattern (MCQ + Prose/Poetry bit alternatives).' : 'ଓଡ଼ିଶା ବୋର୍ଡ ପ୍ୟାଟର୍ନ ଅନୁଯାୟୀ ପ୍ରଶ୍ନପତ୍ର (MCQ + ବିକଳ୍ପ ସହ ପ୍ରଶ୍ନ) ।')
-                              : (language === 'en' ? 'Standard school curriculum pattern. 30 MCQs + 5 subjectives.' : 'ବିଦ୍ୟାଳୟ ପାଠ୍ୟଖସଡ଼ା ଅନୁଯାୟୀ । ୩୦ MCQ + ୫ ଦୀର୍ଘ ପ୍ରଶ୍ନ ।')}
-                          </p>
-                        </div>
-                        <span className="px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-slate-950 border border-white/5 text-purple-400 self-start">
-                          {userClass === '9' || userClass === '10' ? (language === 'en' ? '50 / 100 Marks' : '୫୦ / ୧୦୦ ମାର୍କ') : (language === 'en' ? '50 Marks' : '୫୦ ମାର୍କ')}
-                        </span>
-                      </button>
-                    </div>
-
-                    <div className="flex justify-between pt-4 border-t border-white/5">
-                      <button
-                        disabled={isGeneratingWorksheet}
-                        onClick={() => setWorksheetStep(3)}
-                        className="px-5 py-2.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 text-xs font-black uppercase text-white tracking-wider transition-colors cursor-pointer disabled:opacity-50"
-                      >
-                        {language === 'en' ? 'Back' : 'ପଛକୁ'}
-                      </button>
-                      <button
-                        onClick={generateCustomWorksheetPDF}
-                        className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-xs font-black uppercase text-white tracking-wider transition-all cursor-pointer shadow-lg shadow-emerald-950/20"
-                      >
-                        {language === 'en' ? 'Create PDF' : 'ପ୍ରଶ୍ନପତ୍ର ତିଆରି କରନ୍ତୁ'}
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* STEP 5: GENERATING PROGRESS OR DONE */}
-                {worksheetStep === 5 && (
                   <div className="text-center py-6 space-y-6 flex flex-col items-center justify-center">
                     {isGeneratingWorksheet ? (
                       <>

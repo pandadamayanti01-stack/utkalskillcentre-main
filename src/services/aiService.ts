@@ -1147,6 +1147,15 @@ export function cleanOdiaOrthography(text: string, allowLatex: boolean = false):
     'ଗୁଣ୍ଡୁଳୁ': 'ଗୁନ୍ଦୁଲୁ',
     'ଗୁଣ୍ଡୁଲି': 'ଗୁନ୍ଦୁଲୁ',
     'ଗୁଣ୍ଡୁଲ': 'ଗୁନ୍ଦୁଲ',
+
+    // 7. Historical Names and Movements (e.g., Dandi March, Mahatma Gandhi)
+    'ଦାଣ୍ଡି ଜାତ୍ରା': 'ଦାଣ୍ଡି ଯାତ୍ରା',
+    'ଦାଣ୍ଡି ଜାରା': 'ଦାଣ୍ଡି ଯାତ୍ରା',
+    'ଦାଣ୍ଡି ଜାର୍ତ୍ତା': 'ଦାଣ୍ଡି ଯାତ୍ରା',
+    'ଦାଣ୍ଡି ଯାତ୍ର': 'ଦାଣ୍ଡି ଯାତ୍ରା',
+    'ମହାତ୍ମା ଗାନ୍ଧି': 'ମହାତ୍ମା ଗାନ୍ଧୀ',
+    'ଗାନ୍ଧିଜି': 'ଗାନ୍ଧୀଜୀ',
+    'ජାତ୍ରା': 'ଯାତ୍ରା',
   };
 
   let correctedText = text;

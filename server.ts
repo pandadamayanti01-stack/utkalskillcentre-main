@@ -16,7 +16,7 @@ import { getStorage as getAdminStorage } from 'firebase-admin/storage';
 import fs from 'fs';
 import crypto from 'node:crypto';
 import webpush from 'web-push';
-import { registerDailyMcqAutomation, loadTextbookFromBucket, extractPdfText } from './src/server/dailyMcqAutomation.js';
+import { registerDailyMcqAutomation, loadTextbookFromBucket, extractPdfText, normalizeSubjectKey } from './src/server/dailyMcqAutomation.js';
 import { registerYoutubeSyncAutomation } from './src/server/youtubeSync.js';
 import { getServiceAccountCredentials } from './src/server/googleCredentials.js';
 import { BSE_SYLLABUS_MAPPING_9, BSE_SYLLABUS_MAPPING_10 } from './src/data/bseSyllabusMapping.js';
@@ -1276,11 +1276,21 @@ async function startServer() {
         SUBJECT-SPECIFIC RULES:
         - For "English" subject: The terms MUST be in English only.
         - For "Sanskrit" / "Hindi" subjects: The terms MUST be in Sanskrit / Hindi.
-        - For "Mathematics", "Science", and "Social Science" subjects: The terms MUST be in Odia (but keep mathematical numbers or scientific variables clean using standard English/Arabic numerals like 5, x, y, a^2 + b^2).`;
+        - For "Mathematics", "Science", and "Social Science" subjects: The terms MUST be in Odia (but keep mathematical numbers or scientific variables clean using standard English/Arabic numerals like 5, x, y, a^2 + b^2).
+        
+        CRITICAL ODIA ORTHOGRAPHY & SPELLING (ଯୁକ୍ତାକ୍ଷର) RULES:
+        1. Historical Names & Movements: Always spell "ଦାଣ୍ଡି ଯାତ୍ରା" (Dandi March/Jatra) using "ଯ" (ଯାତ୍ରା), NEVER use "ଜ" (ଜାତ୍ରା / ଜାରା / ଜାର୍ତ୍ତା). Always spell "ମହାତ୍ମା ଗାନ୍ଧୀ" (Mahatma Gandhi) using "ଧୀ" (long vowel ୀ), NEVER "ଗାନ୍ଧି" or "ଗାନ୍ଧିଜି" (correct is "ଗାନ୍ଧୀଜୀ").
+        2. Vowel & Matra Accuracy: Use proper long vowels: "ପරୀକ୍ଷା" (never "ପରିକ୍ଷା"), "ବ୍ୟବସାୟ" (never "ବେବସାୟ"), "ବ୍ୟାକରଣ" (never "ବେକରଣ" or "ବ୍ୟାକରନ"), "ଶିକ୍ଷା" (never "ସିକ୍ଷା"), "ଶିକ୍ଷଣ" (never "ଶିକ୍ଷନ"), "ସାହିତ୍ୟ ସାଥୀ" (never "ସାହିତ୍ୟ ସାଥି"), "ବର୍ଣ୍ଣ" (never "ବର୍ନ"), "ବଳ ଓ ଗତି" (never "ବାଳ ଓ ଗତି").
+        3. Conjuncts & Ligatures: Use correct conjuncts/ligatures (e.g. ନ୍ଦ, ନ୍ଧ, ଷ୍ଟ, ତ୍ତ, ନ୍ତ, ଳ). NEVER output broken combinations like "ନ୍‌ଦ" or "ନ୍‌ଧ".`;
       } else {
         languageInstruction = `English.
         SUBJECT-SPECIFIC RULES:
-        - For "Odia" / "Sanskrit" / "Hindi" subjects: The terms MUST be in their respective scripts.
+        - For "Odia" subject: The terms MUST be in correct Odia script following these rules:
+          * Always spell "ଦାଣ୍ଡି ଯାତ୍ରା" (Dandi March/Jatra) using "ଯ" (ଯାତ୍ରା), NEVER use "ଜ" (ଜାତ୍ରା / ଜାରା / ଜାର୍ତ୍ତା).
+          * Always spell "ମହାତ୍ମା ଗାନ୍ଧୀ" (Mahatma Gandhi) using "ଧୀ" (long vowel ୀ), NEVER "ଗାନ୍ଧି" or "ଗାନ୍ଧିଜି" (correct is "ଗାନ୍ଧୀଜୀ").
+          * Use proper spelling like "ପරୀକ୍ଷା", "ବ୍ୟବସାୟ", "ବ୍ୟାକରଣ", "ଶିକ୍ଷା", "ଶିକ୍ଷଣ", "ସାହିତ୍ୟ ସାଥୀ", "ବର୍ଣ୍ଣ", "ବଳ ଓ ଗତି".
+          * Use correct Odia conjuncts/ligatures (e.g. ନ୍ଦ, ନ୍ଧ, ଷ୍ଟ, ତ୍ତ, ନ୍ତ, ଳ). NEVER output broken combinations like "ନ୍‌ଦ" or "ନ୍‌ଧ".
+        - For "Sanskrit" / "Hindi" subjects: The terms MUST be in their respective scripts.
         - For all other subjects: The terms MUST be in English.`;
       }
 
@@ -1338,7 +1348,7 @@ async function startServer() {
 
   app.post('/api/ai/generate-custom-worksheet', async (req, res) => {
     try {
-      const { className, subjectName, chapters, language } = req.body;
+      const { className, subjectName, subjectKey, chapters, language, difficulty, pattern } = req.body;
       if (!className || !subjectName) {
         return res.status(400).json({ error: 'className and subjectName are required' });
       }
@@ -1373,21 +1383,98 @@ async function startServer() {
         SUBJECT-SPECIFIC RULES:
         - For "English" subject: The terms/questions MUST be in English only.
         - For "Sanskrit" / "Hindi" subjects: The terms/questions MUST be in Sanskrit / Hindi.
-        - For "Mathematics", "Science", and "Social Science" subjects: The questions and options MUST be in Odia (but keep mathematical numbers, equations, or scientific variables clean using standard English/Arabic numerals like 5, x, y, a^2 + b^2).`;
+        - For "Mathematics", "Science", and "Social Science" subjects: The questions and options MUST be in Odia (but keep mathematical numbers, equations, or scientific variables clean using standard English/Arabic numerals like 5, x, y, a^2 + b^2).
+        
+        CRITICAL ODIA ORTHOGRAPHY & SPELLING (ଯୁକ୍ତାକ୍ଷର) RULES:
+        1. Historical Names & Movements: Always spell "ଦାଣ୍ଡି ଯାତ୍ରା" (Dandi March/Jatra) using "ଯ" (ଯାତ୍ରା), NEVER use "ଜ" (ଜାତ୍ରା / ଜାରା / ଜାର୍ତ୍ତା). Always spell "ମହାତ୍ମା ଗାନ୍ଧୀ" (Mahatma Gandhi) using "ଧୀ" (long vowel ୀ), NEVER "ଗାନ୍ଧି" or "ଗାନ୍ଧିଜି" (correct is "ଗାନ୍ଧୀଜୀ").
+        2. Vowel & Matra Accuracy: Use proper long vowels: "ପରୀକ୍ଷା" (never "ପରିକ୍ଷା"), "ବ୍ୟବସାୟ" (never "ବେବସାୟ"), "ବ୍ୟାକରଣ" (never "ବେକରଣ" or "ବ୍ୟାକରନ"), "ଶିକ୍ଷା" (never "ସିକ୍ଷା"), "ଶିକ୍ଷଣ" (never "ଶିକ୍ଷନ"), "ସାହିତ୍ୟ ସାଥୀ" (never "ସାହିତ୍ୟ ସାଥି"), "ବର୍ଣ୍ଣ" (never "ବର୍ନ"), "ବଳ ଓ ଗତି" (never "ବାଳ ଓ ଗତି").
+        3. Conjuncts & Ligatures: Use correct conjuncts/ligatures (e.g. ନ୍ଦ, ନ୍ଧ, ଷ୍ଟ, ତ୍ତ, ନ୍ତ, ଳ). NEVER output broken combinations like "ନ୍‌ଦ" or "ନ୍‌ଧ".`;
       } else {
         languageInstruction = `English.
         SUBJECT-SPECIFIC RULES:
-        - For "Odia" / "Sanskrit" / "Hindi" subjects: The questions MUST be in their respective scripts.
+        - For "Odia" subject: The questions MUST be in correct Odia script following these rules:
+          * Always spell "ଦାଣ୍ଡି ଯାତ୍ରା" (Dandi March/Jatra) using "ଯ" (ଯାତ୍ରା), NEVER use "ଜ" (ଜାତ୍ରା / ଜାରା / ଜାର୍ତ୍ତା).
+          * Always spell "ମହାତ୍ମା ଗାନ୍ଧୀ" (Mahatma Gandhi) using "ଧୀ" (long vowel ୀ), NEVER "ଗାନ୍ଧି" or "ଗାନ୍ଧିଜି" (correct is "ଗାନ୍ଧୀଜୀ").
+          * Use proper spelling like "ପରୀକ୍ଷା", "ବ୍ୟବସାୟ", "ବ୍ୟାକରଣ", "ଶିକ୍ଷା", "ଶିକ୍ଷଣ", "ସାହିତ୍ୟ ସାଥୀ", "ବର୍ଣ୍ଣ", "ବଳ ଓ ଗତି".
+          * Use correct Odia conjuncts/ligatures (e.g. ନ୍ଦ, ନ୍ଧ, ଷ୍ଟ, ତ୍ତ, ନ୍ତ, ଳ). NEVER output broken combinations like "ନ୍‌ଦ" or "ନ୍‌ଧ".
+        - For "Sanskrit" / "Hindi" subjects: The questions MUST be in their respective scripts.
         - For all other subjects: The questions MUST be in English.`;
       }
 
+      // Calculate total requested questions based on pattern and subject key
+      const classDigit = parseInt(className.replace(/\D/g, '')) || 1;
+      const isBoard = classDigit >= 9;
+      const sKey = (subjectKey || normalizeSubjectKey(subjectName) || '').toLowerCase();
+
+      let totalMcqs = 15;
+      let totalSubjectives = 15;
+      let marksSegregationInstructions = '';
+
+      if (isBoard) {
+        const isHalfPaper = ['physical_science', 'life_science', 'social_science', 'geography', 'vocational', 'history'].includes(sKey);
+        if (isHalfPaper) {
+          totalMcqs = 12;
+          totalSubjectives = 18;
+          if (sKey === 'vocational') {
+            marksSegregationInstructions = `The 18 subjective questions must be split by marks as follows:
+            - The first 6 questions (index 0 to 5) must be worth 2 marks each (assign "marks": 2).
+            - The next 6 questions (index 6 to 11) must be worth 4 marks each (assign "marks": 4).
+            - The last 6 questions (index 12 to 17) must be worth 5 marks each (assign "marks": 5).`;
+          } else {
+            // Science or Social Science
+            marksSegregationInstructions = `The 18 subjective questions must be split by marks as follows:
+            - The first 6 questions (index 0 to 5) must be worth 2 marks each (assign "marks": 2).
+            - The next 6 questions (index 6 to 11) must be worth 3 marks each (assign "marks": 3).
+            - The last 6 questions (index 12 to 17) must be worth 4 marks each (assign "marks": 4).`;
+          }
+        } else {
+          totalMcqs = 15;
+          totalSubjectives = 15;
+          const isMath = ['algebra', 'geometry', 'mathematics', 'math'].includes(sKey);
+          if (isMath) {
+            marksSegregationInstructions = `The 15 subjective questions must strictly be worth 5 marks each (assign "marks": 5 for all 15 questions).`;
+          } else {
+            // Languages: english, odia, sanskrit, hindi etc.
+            marksSegregationInstructions = `The 15 subjective questions must be split by marks as follows:
+            - The first 5 questions (index 0 to 4) must be worth 2 marks each (assign "marks": 2).
+            - The next 5 questions (index 5 to 9) must be worth 3 marks each (assign "marks": 3).
+            - The next 3 questions (index 10 to 12) must be worth 5 marks each (assign "marks": 5).
+            - The last 2 questions (index 13 to 14) must be worth 10 marks each (assign "marks": 10).`;
+          }
+        }
+      } else if (classDigit >= 6 && classDigit <= 8) {
+        totalMcqs = 10;
+        totalSubjectives = 12;
+        marksSegregationInstructions = `The 12 subjective questions must be split by marks as follows:
+        - The first 5 questions (index 0 to 4) must be worth 2 marks each (assign "marks": 2).
+        - The next 5 questions (index 5 to 9) must be worth 3 marks each (assign "marks": 3).
+        - The last 2 questions (index 10 to 11) must be worth 5 marks each (assign "marks": 5).`;
+      } else {
+        // Class 1 to 5
+        totalMcqs = 5;
+        totalSubjectives = 7;
+        marksSegregationInstructions = `The 7 subjective questions must be split by marks as follows:
+        - The first 3 questions (index 0 to 2) must be worth 2 marks each (assign "marks": 2).
+        - The next 3 questions (index 3 to 5) must be worth 3 marks each (assign "marks": 3).
+        - The last 1 question (index 6) must be worth 5 marks (assign "marks": 5).`;
+      }
+
+      if (pattern === 'quick') {
+        totalMcqs = 10;
+        totalSubjectives = 3;
+        marksSegregationInstructions = `The 3 subjective questions should be worth 5 marks each (assign "marks": 5).`;
+      }
+
       const prompt = `You are an expert curriculum builder and Board exam paper setter for the Board of Secondary Education (BSE) Odisha.
-      Generate exactly 15 multiple-choice questions (MCQs) and exactly 15 subjective questions (total 30 questions) of MEDIUM difficulty on the topic/chapters: "${Array.isArray(chapters) ? chapters.join(', ') : chapters}" in the subject "${subjectName}" for standard "${className}".
+      Generate exactly ${totalMcqs} multiple-choice questions (MCQs) and exactly ${totalSubjectives} subjective questions (total ${totalMcqs + totalSubjectives} questions) of ${difficulty ? difficulty.toUpperCase() : 'MEDIUM'} difficulty on the topic/chapters: "${Array.isArray(chapters) ? chapters.join(', ') : chapters}" in the subject "${subjectName}" for standard "${className}".
       
       CRITICAL REQUIREMENTS:
       - The questions must be highly important from a board exam perspective, focusing on core syllabus concepts.
       - The subjective questions and their model answers/hints must follow the official BSE Odisha board exam pattern style, structure, and standard terminology.
       - Do NOT use raw LaTeX mathematical symbols or formatting delimiters (like $$, $, \\[, \\], \\frac, \\sqrt). Instead, use standard plain text or standard Unicode symbols (like ÷, ×, ±, ≈, ≠, ≤, ≥, ∞, •, α, β, θ, π, √, ^) so that it renders clearly on any device screen.
+      
+      MARKS SEGREGATION RULES:
+      ${marksSegregationInstructions}
 
       ${chapterTextContext ? `Here is the verified textbook chapter content to base your questions on:\n\n${chapterTextContext}\n\n` : ''}
 
@@ -1405,7 +1492,8 @@ async function startServer() {
         "subjectives": [
           {
             "question": "Subjective question text",
-            "hint": "Model solution or step-by-step hint explaining the answer key"
+            "hint": "Model solution or step-by-step hint explaining the answer key",
+            "marks": 5
           }
         ]
       }
@@ -1483,11 +1571,21 @@ async function startServer() {
         SUBJECT-SPECIFIC RULES:
         - For "English" subject: The terms/questions MUST be in English only.
         - For "Sanskrit" / "Hindi" subjects: The terms/questions MUST be in Sanskrit / Hindi.
-        - For "Mathematics", "Science", and "Social Science" subjects: The questions and options MUST be in Odia (but keep mathematical numbers, equations, or scientific variables clean using standard English/Arabic numerals like 5, x, y, a^2 + b^2).`;
+        - For "Mathematics", "Science", and "Social Science" subjects: The questions and options MUST be in Odia (but keep mathematical numbers, equations, or scientific variables clean using standard English/Arabic numerals like 5, x, y, a^2 + b^2).
+        
+        CRITICAL ODIA ORTHOGRAPHY & SPELLING (ଯୁକ୍ତାକ୍ଷର) RULES:
+        1. Historical Names & Movements: Always spell "ଦାଣ୍ଡି ଯାତ୍ରା" (Dandi March/Jatra) using "ଯ" (ଯାତ୍ରା), NEVER use "ଜ" (ଜାତ୍ରା / ଜାରା / ଜାର୍ତ୍ତା). Always spell "ମହାତ୍ମା ଗାନ୍ଧୀ" (Mahatma Gandhi) using "ଧୀ" (long vowel ୀ), NEVER "ଗାନ୍ଧି" or "ଗାନ୍ଧିଜି" (correct is "ଗାନ୍ଧୀଜୀ").
+        2. Vowel & Matra Accuracy: Use proper long vowels: "ପରୀକ୍ଷା" (never "ପରିକ୍ଷା"), "ବ୍ୟବସାୟ" (never "ବେବସାୟ"), "ବ୍ୟାକରଣ" (never "ବେକରଣ" or "ବ୍ୟାକରନ"), "ଶିକ୍ଷା" (never "ସିକ୍ଷା"), "ଶିକ୍ଷଣ" (never "ଶିକ୍ଷନ"), "ସାହିତ୍ୟ ସାଥୀ" (never "ସାହିତ୍ୟ ସାଥି"), "ବର୍ଣ୍ଣ" (never "ବର୍ନ"), "ବଳ ଓ ଗତି" (never "ବାଳ ଓ ଗତି").
+        3. Conjuncts & Ligatures: Use correct conjuncts/ligatures (e.g. ନ୍ଦ, ନ୍ଧ, ଷ୍ଟ, ତ୍ତ, ନ୍ତ, ଳ). NEVER output broken combinations like "ନ୍‌ଦ" or "ନ୍‌ଧ".`;
       } else {
         languageInstruction = `English.
         SUBJECT-SPECIFIC RULES:
-        - For "Odia" / "Sanskrit" / "Hindi" subjects: The questions MUST be in their respective scripts.
+        - For "Odia" subject: The questions MUST be in correct Odia script following these rules:
+          * Always spell "ଦାଣ୍ଡି ଯାତ୍ରା" (Dandi March/Jatra) using "ଯ" (ଯାତ୍ରା), NEVER use "ଜ" (ଜାତ୍ରା / ଜାରା / ଜାର୍ତ୍ତା).
+          * Always spell "ମହାତ୍ମା ଗାନ୍ଧୀ" (Mahatma Gandhi) using "ଧୀ" (long vowel ୀ), NEVER "ଗାନ୍ଧି" or "ଗାନ୍ଧିଜି" (correct is "ଗାନ୍ଧୀଜୀ").
+          * Use proper spelling like "ପରୀକ୍ଷା", "ବ୍ୟବସାୟ", "ବ୍ୟାକରଣ", "ଶିକ୍ଷା", "ଶିକ୍ଷଣ", "ସାହିତ୍ୟ ସାଥୀ", "ବର୍ଣ୍ଣ", "ବଳ ଓ ଗତି".
+          * Use correct Odia conjuncts/ligatures (e.g. ନ୍ଦ, ନ୍ଧ, ଷ୍ଟ, ତ୍ତ, ନ୍ତ, ଳ). NEVER output broken combinations like "ନ୍‌ଦ" or "ନ୍‌ଧ".
+        - For "Sanskrit" / "Hindi" subjects: The questions MUST be in their respective scripts.
         - For all other subjects: The questions MUST be in English.`;
       }
 
@@ -1676,11 +1774,21 @@ async function startServer() {
         SUBJECT-SPECIFIC RULES:
         - For "English" subject: The terms/questions MUST be in English only.
         - For "Sanskrit" / "Hindi" subjects: The terms/questions MUST be in Sanskrit / Hindi.
-        - For "Mathematics", "Science", and "Social Science" subjects: The questions and options MUST be in Odia (but keep mathematical numbers, equations, or scientific variables clean using standard English/Arabic numerals like 5, x, y, a^2 + b^2).`;
+        - For "Mathematics", "Science", and "Social Science" subjects: The questions and options MUST be in Odia (but keep mathematical numbers, equations, or scientific variables clean using standard English/Arabic numerals like 5, x, y, a^2 + b^2).
+        
+        CRITICAL ODIA ORTHOGRAPHY & SPELLING (ଯୁକ୍ତାକ୍ଷର) RULES:
+        1. Historical Names & Movements: Always spell "ଦାଣ୍ଡି ଯାତ୍ରା" (Dandi March/Jatra) using "ଯ" (ଯାତ୍ରା), NEVER use "ଜ" (ଜାତ୍ରା / ଜାରା / ଜାର୍ତ୍ତା). Always spell "ମହାତ୍ମା ଗାନ୍ଧୀ" (Mahatma Gandhi) using "ଧୀ" (long vowel ୀ), NEVER "ଗାନ୍ଧି" or "ଗାନ୍ଧିଜି" (correct is "ଗାନ୍ଧୀଜୀ").
+        2. Vowel & Matra Accuracy: Use proper long vowels: "ପରୀକ୍ଷା" (never "ପରିକ୍ଷା"), "ବ୍ୟବସାୟ" (never "ବେବସାୟ"), "ବ୍ୟାକରଣ" (never "ବେକରଣ" or "ବ୍ୟାକରନ"), "ଶିକ୍ଷା" (never "ସିକ୍ଷା"), "ଶିକ୍ଷଣ" (never "ଶିକ୍ଷନ"), "ସାହିତ୍ୟ ସାଥୀ" (never "ସାହିତ୍ୟ ସାଥି"), "ବର୍ଣ୍ଣ" (never "ବର୍ନ"), "ବଳ ଓ ଗତି" (never "ବାଳ ଓ ଗତି").
+        3. Conjuncts & Ligatures: Use correct conjuncts/ligatures (e.g. ନ୍ଦ, ନ୍ଧ, ଷ୍ଟ, ତ୍ତ, ନ୍ତ, ଳ). NEVER output broken combinations like "ନ୍‌ଦ" or "ନ୍‌ଧ".`;
       } else {
         languageInstruction = `English.
         SUBJECT-SPECIFIC RULES:
-        - For "Odia" / "Sanskrit" / "Hindi" subjects: The questions MUST be in their respective scripts.
+        - For "Odia" subject: The questions MUST be in correct Odia script following these rules:
+          * Always spell "ଦାଣ୍ଡି ଯାତ୍ରା" (Dandi March/Jatra) using "ଯ" (ଯାତ୍ରା), NEVER use "ଜ" (ଜାତ୍ରା / ଜାରା / ଜାର୍ତ୍ତା).
+          * Always spell "ମହାତ୍ମା ଗାନ୍ଧୀ" (Mahatma Gandhi) using "ଧୀ" (long vowel ୀ), NEVER "ଗାନ୍ଧି" or "ଗାନ୍ଧିଜି" (correct is "ଗାନ୍ଧୀଜୀ").
+          * Use proper spelling like "ପରୀକ୍ଷା", "ବ୍ୟବସାୟ", "ବ୍ୟାକରଣ", "ଶିକ୍ଷା", "ଶିକ୍ଷଣ", "ସାହିତ୍ୟ ସାଥୀ", "ବର୍ଣ୍ଣ", "ବଳ ଓ ଗତି".
+          * Use correct Odia conjuncts/ligatures (e.g. ନ୍ଦ, ନ୍ଧ, ଷ୍ଟ, ତ୍ତ, ନ୍ତ, ଳ). NEVER output broken combinations like "ନ୍‌ଦ" or "ନ୍‌ଧ".
+        - For "Sanskrit" / "Hindi" subjects: The questions MUST be in their respective scripts.
         - For all other subjects: The questions MUST be in English.`;
       }
 
@@ -1867,6 +1975,13 @@ async function startServer() {
       'ଗୁଣ୍ଡୁଳୁ': 'ଗୁନ୍ଦୁଲୁ',
       'ଗୁଣ୍ଡୁଲି': 'ଗୁନ୍ଦୁଲୁ',
       'ଗୁଣ୍ଡୁଲ': 'ଗୁନ୍ଦୁଲ',
+      'ଦାଣ୍ଡି ଜାତ୍ରା': 'ଦାଣ୍ଡି ଯାତ୍ରା',
+      'ଦାଣ୍ଡି ଜାରା': 'ଦାଣ୍ଡି ଯାତ୍ରା',
+      'ଦାଣ୍ଡି ଜାର୍ତ୍ତା': 'ଦାଣ୍ଡି ଯାତ୍ରା',
+      'ଦାଣ୍ଡି ଯାତ୍ର': 'ଦାଣ୍ଡି ଯାତ୍ରା',
+      'ମହାତ୍ମା ଗାନ୍ଧି': 'ମହାତ୍ମା ଗାନ୍ଧୀ',
+      'ଗାନ୍ଧିଜି': 'ଗାନ୍ଧୀଜୀ',
+      'ଜାତ୍ରା': 'ଯାତ୍ରା',
     };
 
     let correctedText = text;
