@@ -1492,9 +1492,10 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           ctx.font = 'bold 15px Arial, sans-serif';
           const qLines = wrapText(ctx, `Q${idx + mcqs.length + 1}. ${cleanQ}`, 960);
           
-          ctx.font = 'italic 11px Arial, sans-serif';
+          ctx.font = 'bold italic 11px Arial, sans-serif';
           const cleanHint = cleanLaTeX(q.hint);
-          const hintLines = wrapText(ctx, `Hint: ${cleanHint}`, 960);
+          const hintPrefix = language === 'en' ? 'Hint: ' : 'ସୂଚନା: ';
+          const hintLines = wrapText(ctx, `${hintPrefix}${cleanHint}`, 960);
           
           const optSpace = (qLines.length + 1 + 4 + hintLines.length) * 42;
           y = checkPageOverflow(y, optSpace);
@@ -1521,8 +1522,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           y += 42;
           y += 42 * 4;
           
-          ctx.fillStyle = '#64748b';
-          ctx.font = 'italic 11px Arial, sans-serif';
+          ctx.fillStyle = '#334155';
+          ctx.font = 'bold italic 11px Arial, sans-serif';
           hintLines.forEach(line => {
             ctx.fillText(line, 180, y);
             y += 42;
