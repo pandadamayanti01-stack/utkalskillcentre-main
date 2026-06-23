@@ -1,3 +1,4 @@
+# Cache-enabled Google Cloud Build Pipeline
 steps:
   # 1. Pull the latest image from the registry to use as a cache source
   - name: 'gcr.io/cloud-builders/docker'
