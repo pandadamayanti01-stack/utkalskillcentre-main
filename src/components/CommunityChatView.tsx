@@ -152,7 +152,8 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
     }
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
-      const nameMatch = msg.userName ? msg.userName.toLowerCase().includes(q) : false;
+      const displayUserName = msg.userName === 'Damayanti Panda' ? 'Tiki Apa' : (msg.userName || '');
+      const nameMatch = displayUserName.toLowerCase().includes(q);
       const textMatch = msg.text ? msg.text.toLowerCase().includes(q) : false;
       const fileMatch = msg.fileName ? msg.fileName.toLowerCase().includes(q) : false;
       return nameMatch || textMatch || fileMatch;
@@ -716,7 +717,7 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
                 {showHeader && !isMe && (
                   <div className="flex items-center gap-2 mb-1.5 ml-1">
                     <span className={`text-[11px] font-black tracking-wide ${isAdmin ? 'text-amber-400 drop-shadow-[0_0_5px_rgba(251,191,36,0.5)]' : 'text-slate-300'}`}>
-                      {msg.userName}
+                      {msg.userName === 'Damayanti Panda' ? 'Tiki Apa' : msg.userName}
                     </span>
                     {isAdmin && (
                       <span className="px-1.5 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[9px] font-black uppercase tracking-widest shadow-[0_0_10px_rgba(251,191,36,0.2)]">

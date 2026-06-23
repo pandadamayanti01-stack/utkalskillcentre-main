@@ -1836,7 +1836,7 @@ export default function App() {
       
       const mockUser: Student = {
         id: offlineRole === 'student' ? 'mock_student_uid' : 'mock_teacher_uid',
-        name: offlineRole === 'student' ? 'Anuradha Panda' : 'Damayanti Panda',
+        name: offlineRole === 'student' ? 'Anuradha Panda' : 'Tiki Apa',
         email: offlineRole === 'student' ? 'student@utkal.edu' : 'teacher@utkal.edu',
         phoneNumber: offlineRole === 'student' ? '1234567890' : '9876543210',
         class: '10',
@@ -1939,7 +1939,7 @@ export default function App() {
             if (isTeacherTest) {
               updatedUser = {
                 ...updatedUser,
-                name: (updatedUser.name && updatedUser.name !== 'Educator') ? updatedUser.name : 'Damayanti Panda',
+                name: (updatedUser.name && updatedUser.name !== 'Educator') ? updatedUser.name : 'Tiki Apa',
                 role: updatedUser.role || 'teacher'
               };
             }
@@ -2037,13 +2037,16 @@ export default function App() {
             id: firebaseUser.uid,
             name: isJudgeAccount 
               ? 'Anuradha Panda' 
-              : (userDocSnap.exists() && userDocSnap.data().name && userDocSnap.data().name !== 'Student' && userDocSnap.data().name !== 'Student Achiever'
-                ? userDocSnap.data().name 
-                : (role === 'student' && regDataRef.current.name 
-                  ? regDataRef.current.name 
-                  : (isTeacherTestAccount && role !== 'student' 
-                    ? 'Damayanti Panda' 
-                    : (firebaseUser.displayName || regDataRef.current.name || (role === 'teacher' ? 'Educator' : 'Student'))))),
+              : (() => {
+                  const rawName = (userDocSnap.exists() && userDocSnap.data().name && userDocSnap.data().name !== 'Student' && userDocSnap.data().name !== 'Student Achiever'
+                    ? userDocSnap.data().name 
+                    : (role === 'student' && regDataRef.current.name 
+                      ? regDataRef.current.name 
+                      : (isTeacherTestAccount && role !== 'student' 
+                        ? 'Tiki Apa' 
+                        : (firebaseUser.displayName || regDataRef.current.name || (role === 'teacher' ? 'Educator' : 'Student')))));
+                  return rawName === 'Damayanti Panda' ? 'Tiki Apa' : rawName;
+                })(),
             email: firebaseUser.email || (userDocSnap.exists() ? userDocSnap.data().email : regDataRef.current.email) || '',
             class: (role === 'teacher') ? (regDataRef.current.class || '10') : ((userDocSnap.exists() && userDocSnap.data().class) ? userDocSnap.data().class : (regDataRef.current.class || '10')),
             board: (role === 'teacher') ? (regDataRef.current.board || 'BSE Odisha') : ((userDocSnap.exists() && userDocSnap.data().board) ? userDocSnap.data().board : (regDataRef.current.board || 'BSE Odisha')),
@@ -2672,7 +2675,8 @@ export default function App() {
         authPhone.endsWith('9876543210') ||
         user?.name === 'Anuradha Panda' ||
         user?.name === 'Damayanti Panda' ||
-        (user?.role === 'teacher' && user?.name === 'Damayanti Panda');
+        user?.name === 'Tiki Apa' ||
+        (user?.role === 'teacher' && (user?.name === 'Damayanti Panda' || user?.name === 'Tiki Apa'));
 
       const isJudgeMode = isJudgeUser || 
                           search.includes('judge') || 
@@ -2710,7 +2714,8 @@ export default function App() {
         authPhone.endsWith('1234567890') || 
         authPhone.endsWith('9876543210') ||
         user?.name === 'Anuradha Panda' ||
-        user?.name === 'Damayanti Panda';
+        user?.name === 'Damayanti Panda' ||
+        user?.name === 'Tiki Apa';
 
       const isJudgeMode = isJudgeUser || 
                           window.location.search.includes('judge') || 

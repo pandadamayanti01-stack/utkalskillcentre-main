@@ -260,7 +260,7 @@ export const CommunityModerationTab: React.FC = () => {
                 <div className="flex justify-between items-start gap-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-baseline gap-2 mb-1">
-                      <span className="font-bold text-white truncate">{msg.userName}</span>
+                      <span className="font-bold text-white truncate">{msg.userName === 'Damayanti Panda' ? 'Tiki Apa' : msg.userName}</span>
                       <span className="text-xs text-slate-500">
                         {msg.timestamp?.toDate().toLocaleString()}
                       </span>
