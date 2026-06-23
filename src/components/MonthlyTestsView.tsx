@@ -371,8 +371,14 @@ export function CertificateView({ submission, test, user, onBack, language }: an
         <span className="font-black uppercase tracking-[0.2em] text-xs">{language === 'en' ? 'Back' : 'ଫେରିଯାଅ'}</span>
       </button>
       
-      <div className="max-w-4xl w-full bg-white rounded-lg shadow-2xl p-1 relative overflow-hidden print:p-0 print:shadow-none print:m-0 mt-14 sm:mt-0" ref={certificateRef}>
-        <div className="border-4 sm:border-[12px] border-emerald-600 border-double p-4 sm:p-12 text-center relative">
+      <div className="max-w-4xl w-full bg-[#FCFAF2] rounded-2xl shadow-2xl p-3 sm:p-5 relative overflow-hidden print:p-0 print:shadow-none print:m-0 mt-14 sm:mt-0 border border-amber-400/30" ref={certificateRef}>
+        <div className="border-[6px] sm:border-[12px] border-emerald-700 border-double p-4 sm:p-12 text-center relative">
+          {/* Corner Ornaments */}
+          <div className="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-amber-500/60"></div>
+          <div className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-amber-500/60"></div>
+          <div className="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-amber-500/60"></div>
+          <div className="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-amber-500/60"></div>
+
           <div 
             className="absolute inset-0 opacity-[0.04] pointer-events-none bg-cover bg-center grayscale" 
             style={{ backgroundImage: `url(${watermarkDetail.image})` }}
@@ -387,8 +393,8 @@ export function CertificateView({ submission, test, user, onBack, language }: an
               <h1 className="text-xl sm:text-4xl font-serif font-black text-slate-900 tracking-tight uppercase">
                 ଉତ୍କର୍ଷତା ପ୍ରମାଣପତ୍ର
               </h1>
-              <div className="w-24 sm:w-48 h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-emerald-600 to-transparent mt-2 sm:mt-4"></div>
-              <p className="text-[7px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-[0.3em] sm:tracking-[0.4em] mt-1 sm:mt-2">
+              <div className="w-24 sm:w-48 h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent mt-2 sm:mt-4"></div>
+              <p className="text-[7px] sm:text-[10px] font-bold text-amber-700 uppercase tracking-[0.3em] sm:tracking-[0.4em] mt-1 sm:mt-2">
                 ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର ଶୈକ୍ଷଣିକ ସଫଳତା
               </p>
             </div>
@@ -397,7 +403,7 @@ export function CertificateView({ submission, test, user, onBack, language }: an
               <p className="text-slate-500 font-serif italic text-xs sm:text-lg">
                 ଏତଦ୍ୱାରା ପ୍ରମାଣିତ କରାଯାଉଛି ଯେ,
               </p>
-              <h2 className="text-xl sm:text-5xl font-serif font-bold text-slate-900 border-b border-emerald-100 pb-1 sm:pb-2 px-4 sm:px-8 inline-block">{submission.userName}</h2>
+              <h2 className="text-xl sm:text-5xl font-serif font-bold text-slate-900 border-b border-amber-200 pb-1 sm:pb-2 px-4 sm:px-8 inline-block">{submission.userName}</h2>
               <p className="text-slate-500 text-[10px] sm:text-base font-medium">
                 ମାସିକ ପରୀକ୍ଷାରେ ଉଲ୍ଲେଖନୀୟ ପ୍ରଦର୍ଶନ କରିଥିବାରୁ ଏହି ପ୍ରମାଣପତ୍ର ପ୍ରଦାନ କରାଗଲା।
               </p>
@@ -417,23 +423,23 @@ export function CertificateView({ submission, test, user, onBack, language }: an
               </div>
             </div>
 
-            <div className="flex justify-center items-center gap-6 sm:gap-16 py-3 sm:py-8 relative">
-              <div className="text-center">
-                <p className="text-xl sm:text-4xl font-black text-slate-900 leading-none">{scorePercent}%</p>
-                <p className="text-[8px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1 sm:mt-2">
+            <div className="flex justify-center items-center gap-4 sm:gap-12 py-3 sm:py-6 relative max-w-2xl mx-auto">
+              <div className="bg-amber-50/30 border border-amber-200/50 rounded-2xl py-3 px-4 sm:px-6 text-center flex-1">
+                <p className="text-xl sm:text-3xl font-black text-slate-900 leading-none">{scorePercent}%</p>
+                <p className="text-[7px] sm:text-[9px] font-bold text-amber-700 uppercase tracking-wider mt-1.5">
                   ମୋଟ୍ ସ୍କୋର୍
                 </p>
               </div>
-              <div className="text-center">
-                <p className="text-xl sm:text-4xl font-black text-slate-900 leading-none">#{submission.rank || 'N/A'}</p>
-                <p className="text-[8px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1 sm:mt-2">
+              <div className="text-center bg-amber-50/30 border border-amber-200/50 rounded-2xl py-3 px-4 sm:px-6 flex-1">
+                <p className="text-xl sm:text-3xl font-black text-slate-900 leading-none">#{submission.rank || 'N/A'}</p>
+                <p className="text-[7px] sm:text-[9px] font-bold text-amber-700 uppercase tracking-wider mt-1.5">
                   ରାଜ୍ୟ ରାଙ୍କ
                 </p>
               </div>
               {submission.districtRank && (
-                <div className="text-center">
-                  <p className="text-xl sm:text-4xl font-black text-slate-900 leading-none">#{submission.districtRank}</p>
-                  <p className="text-[8px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1 sm:mt-2">
+                <div className="text-center bg-amber-50/30 border border-amber-200/50 rounded-2xl py-3 px-4 sm:px-6 flex-1">
+                  <p className="text-xl sm:text-3xl font-black text-slate-900 leading-none">#{submission.districtRank}</p>
+                  <p className="text-[7px] sm:text-[9px] font-bold text-amber-700 uppercase tracking-wider mt-1.5">
                     ଜିଲ୍ଲା ରାଙ୍କ
                   </p>
                 </div>
@@ -450,13 +456,13 @@ export function CertificateView({ submission, test, user, onBack, language }: an
                 </p>
               </div>
               <div className="relative">
-                <div className="w-14 h-14 sm:w-28 sm:h-28 bg-emerald-600/5 rounded-full flex items-center justify-center border border-emerald-600/10">
-                  <div className="w-12 h-12 sm:w-24 sm:h-24 bg-emerald-600/10 rounded-full flex items-center justify-center border border-emerald-600/20">
-                    <Lucide.Award className="w-6 h-6 sm:w-14 sm:h-14 text-emerald-600 opacity-80" />
+                <div className="w-14 h-14 sm:w-24 sm:h-24 bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-600 rounded-full flex items-center justify-center border-2 border-white shadow-lg shadow-amber-500/20">
+                  <div className="w-12 h-12 sm:w-20 sm:h-20 bg-transparent rounded-full flex items-center justify-center border border-white/30">
+                    <Lucide.Award className="w-6 h-6 sm:w-10 sm:h-10 text-white" />
                   </div>
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <p className="text-[4px] sm:text-[6px] font-black text-emerald-600/20 uppercase tracking-[0.2em] sm:tracking-[0.3em] rotate-12">Verified Utkal Cert</p>
+                  <p className="text-[4px] sm:text-[6px] font-black text-white/40 uppercase tracking-[0.2em] sm:tracking-[0.3em] rotate-12">Verified Utkal Cert</p>
                 </div>
               </div>
               <div className="text-center">
@@ -535,8 +541,14 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
         <span className="font-black uppercase tracking-[0.2em] text-xs">{language === 'en' ? 'Back' : 'ଫେରିଯାଅ'}</span>
       </button>
 
-      <div className="max-w-4xl w-full bg-white rounded-lg shadow-2xl p-1 relative overflow-hidden print:p-0 print:shadow-none print:m-0 mt-14 sm:mt-0">
-        <div className="border-4 sm:border-[12px] border-emerald-600 border-double p-4 sm:p-12 text-center relative">
+      <div className="max-w-4xl w-full bg-[#FCFAF2] rounded-2xl shadow-2xl p-3 sm:p-5 relative overflow-hidden print:p-0 print:shadow-none print:m-0 mt-14 sm:mt-0 border border-amber-400/30">
+        <div className="border-[6px] sm:border-[12px] border-emerald-700 border-double p-4 sm:p-12 text-center relative">
+          {/* Corner Ornaments */}
+          <div className="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-amber-500/60"></div>
+          <div className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-amber-500/60"></div>
+          <div className="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-amber-500/60"></div>
+          <div className="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-amber-500/60"></div>
+
           <div 
             className="absolute inset-0 opacity-[0.04] pointer-events-none bg-cover bg-center grayscale" 
             style={{ backgroundImage: `url(${watermarkDetail.image})` }}
@@ -551,8 +563,8 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
               <h1 className="text-xl sm:text-4xl font-serif font-black text-slate-900 tracking-tight uppercase">
                 ମିଳିତ ଉତ୍କର୍ଷତା ପ୍ରମାଣପତ୍ର
               </h1>
-              <div className="w-32 sm:w-64 h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-emerald-600 to-transparent mt-2 sm:mt-3"></div>
-              <p className="text-[7px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-[0.3em] sm:tracking-[0.4em] mt-1">
+              <div className="w-32 sm:w-64 h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent mt-2 sm:mt-3"></div>
+              <p className="text-[7px] sm:text-[10px] font-bold text-amber-700 uppercase tracking-[0.3em] sm:tracking-[0.4em] mt-1">
                 ମାସିକ ପରୀକ୍ଷା ସିରିଜ୍ ପ୍ରଦର୍ଶନ ରିପୋର୍ଟ
               </p>
             </div>
@@ -561,7 +573,7 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
               <p className="text-slate-500 font-serif italic text-xs sm:text-md">
                 ଏହି ଶୈକ୍ଷଣିକ ପ୍ରମାଣପତ୍ର ପ୍ରଦାନ କରାଯାଉଛି
               </p>
-              <h2 className="text-xl sm:text-4xl font-serif font-bold text-slate-900 border-b border-emerald-100 pb-1 px-4 sm:px-8 inline-block">{user.displayName || user.name || 'Student'}</h2>
+              <h2 className="text-xl sm:text-4xl font-serif font-bold text-slate-900 border-b border-amber-200 pb-1 px-4 sm:px-8 inline-block">{user.displayName || user.name || 'Student'}</h2>
               <p className="text-slate-500 text-[10px] sm:text-sm font-medium">
                 ସମସ୍ତ ବିଷୟରେ ଅସାଧାରଣ ପ୍ରଦର୍ଶନ ଏବଂ ପାରଦର୍ଶିତା ପାଇଁ
               </p>
@@ -570,16 +582,16 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
               </h3>
             </div>
 
-            <div className="border border-slate-200 rounded-xl overflow-hidden max-w-2xl mx-auto bg-slate-50/50">
+            <div className="border border-amber-200/60 rounded-xl overflow-hidden max-w-2xl mx-auto bg-white/60 backdrop-blur-sm shadow-sm">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-slate-100 text-slate-700 text-[9px] sm:text-xs font-bold uppercase border-b border-slate-200">
-                    <th className="px-4 py-2 sm:py-3">ବିଷୟ</th>
-                    <th className="px-4 py-2 sm:py-3 text-center">ମାର୍କ</th>
-                    <th className="px-4 py-2 sm:py-3 text-right">ସଠିକତା</th>
+                  <tr className="bg-amber-50/50 text-amber-950 text-[9px] sm:text-xs font-bold uppercase border-b border-amber-200/60">
+                    <th className="px-4 py-2 sm:py-3 text-emerald-900">ବିଷୟ</th>
+                    <th className="px-4 py-2 sm:py-3 text-center text-emerald-900">ମାର୍କ</th>
+                    <th className="px-4 py-2 sm:py-3 text-right text-emerald-900">ସଠିକତା</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200 text-slate-800 text-[10px] sm:text-sm font-medium">
+                <tbody className="divide-y divide-amber-100 text-slate-800 text-[10px] sm:text-sm font-medium">
                   {submissions.map((sub: any, idx: number) => {
                     const testItem = tests.find((t: any) => t.id === sub.testId);
                     const subjectLabel = getCorrectSubjectName(testItem?.subject || 'Unknown', 'or');
@@ -595,8 +607,8 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
                       </tr>
                     );
                   })}
-                  <tr className="bg-emerald-50/50 text-emerald-950 font-bold border-t border-slate-300">
-                    <td className="px-4 py-3 text-emerald-800">ସାମଗ୍ରିକ ସଞ୍ଚୟୀ ଫଳାଫଳ</td>
+                  <tr className="bg-emerald-50/30 text-emerald-950 font-bold border-t border-amber-200/60">
+                    <td className="px-4 py-3 text-emerald-900">ସାମଗ୍ରିକ ସଞ୍ଚୟୀ ଫଳାଫଳ</td>
                     <td className="px-4 py-3 text-center font-mono">{overallScore} / {overallMax}</td>
                     <td className="px-4 py-3 text-right font-mono text-emerald-600">{overallPercent}%</td>
                   </tr>
@@ -604,22 +616,22 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
               </table>
             </div>
 
-            <div className="flex justify-center items-center gap-6 sm:gap-12 py-1 max-w-md mx-auto">
-              <div className="bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-2.5 text-center flex-1">
-                <p className="text-[7px] sm:text-[9px] font-black uppercase text-emerald-600 tracking-wider">
-                  ରାଜ୍ୟ ରାଙ୍କ
-                </p>
+            <div className="flex justify-center items-center gap-4 sm:gap-12 py-1 max-w-md mx-auto">
+              <div className="bg-amber-50/30 border border-amber-200/50 rounded-2xl px-4 py-2.5 text-center flex-1">
                 <p className="text-lg sm:text-2xl font-black text-slate-800 font-mono">
                   #{submissions[0]?.rank || 'N/A'}
                 </p>
+                <p className="text-[7px] sm:text-[9px] font-bold uppercase text-amber-700 tracking-wider mt-1">
+                  ରାଜ୍ୟ ରାଙ୍କ
+                </p>
               </div>
               {submissions.some((s: any) => s.districtRank) && (
-                <div className="bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-2.5 text-center flex-1">
-                  <p className="text-[7px] sm:text-[9px] font-black uppercase text-emerald-600 tracking-wider">
-                    ଜିଲ୍ଲା ରାଙ୍କ
-                  </p>
+                <div className="bg-amber-50/30 border border-amber-200/50 rounded-2xl px-4 py-2.5 text-center flex-1">
                   <p className="text-lg sm:text-2xl font-black text-slate-800 font-mono">
                     #{submissions.find((s: any) => s.districtRank)?.districtRank}
+                  </p>
+                  <p className="text-[7px] sm:text-[9px] font-bold uppercase text-amber-700 tracking-wider mt-1">
+                    ଜିଲ୍ଲା ରାଙ୍କ
                   </p>
                 </div>
               )}
@@ -635,9 +647,9 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
                 </p>
               </div>
               <div className="relative hidden sm:block">
-                <div className="w-20 h-20 bg-emerald-600/5 rounded-full flex items-center justify-center border border-emerald-600/10">
-                  <div className="w-16 h-16 bg-emerald-600/10 rounded-full flex items-center justify-center border border-emerald-600/20">
-                    <Lucide.Award className="w-8 h-8 text-emerald-600 opacity-80" />
+                <div className="w-16 h-16 bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-600 rounded-full flex items-center justify-center border-2 border-white shadow-lg shadow-amber-500/20">
+                  <div className="w-12 h-12 bg-transparent rounded-full flex items-center justify-center border border-white/20">
+                    <Lucide.Award className="w-6 h-6 text-white" />
                   </div>
                 </div>
               </div>
