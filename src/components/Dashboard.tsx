@@ -480,8 +480,6 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         if (match) userClass = match[1];
       }
     }
-    const classNum = parseInt(userClass, 10);
-    const hasMtsAccess = !isNaN(classNum) && classNum >= 5 && classNum <= 10;
     // Special Promotion Period: Till July 1st, 2026 (inclusive). No rotation.
     const isSpecialPromoPeriod = new Date() < new Date('2026-07-01T00:00:00+05:30');
     const promoVideoUrl = 'https://www.youtube.com/embed/Ml-_dY7FXrs';
@@ -2444,7 +2442,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
     }
   };
 
-  const showTestResultHanger = hasMtsAccess;
+  const showTestResultHanger = true;
 
   // Odisha high-performance mock student profiles for development realism
   const mockLeaderboardProfiles = React.useMemo(() => [
@@ -3136,19 +3134,17 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           </div>
 
           {/* Animated Gundulu Motivation Banner */}
-          {hasMtsAccess && (
-            <MtsChampionshipPoster 
-              isRegistered={isRegistered}
-              onRegisterClick={() => {
-                if (isRegistered) {
-                  if (onOpenMonthlyTests) onOpenMonthlyTests();
-                } else {
-                  setShowRegistrationForm(true);
-                }
-              }}
-              language={language}
-            />
-          )}
+          <MtsChampionshipPoster 
+            isRegistered={isRegistered}
+            onRegisterClick={() => {
+              if (isRegistered) {
+                if (onOpenMonthlyTests) onOpenMonthlyTests();
+              } else {
+                setShowRegistrationForm(true);
+              }
+            }}
+            language={language}
+          />
 
           {/* Middle Row: Registration & Video Matrix */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-6 lg:gap-8 w-full">
@@ -3158,7 +3154,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
               const isRegistrationWindow = (currentDay >= 1 && currentDay <= 4) || isLocalhost;
               
-              if (isRegistered || !isRegistrationWindow || !hasMtsAccess) return null;
+              if (isRegistered || !isRegistrationWindow) return null;
               
               return (
                 <motion.div 
