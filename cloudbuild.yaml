@@ -1,20 +1,34 @@
 steps:
-  # 1. Build the Docker container image
+  # 1. Pull the latest image from the registry to use as a cache source
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - 'docker pull gcr.io/$PROJECT_ID/$_SERVICE_NAME:latest || exit 0'
+
+  # 2. Build the Docker container image using the cache
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'build',
+      '--cache-from', 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:latest',
       '-t', 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA',
+      '-t', 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:latest',
       '.'
     ]
 
-  # 2. Push the Docker image to Container Registry
+  # 3. Push the Docker images to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'push',
       'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA'
     ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push',
+      'gcr.io/$PROJECT_ID/$_SERVICE_NAME:latest'
+    ]
 
-  # 3. Deploy the container image to Cloud Run
+  # 4. Deploy the container image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -33,6 +47,7 @@ steps:
 
 images:
   - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:latest'
 
 options:
   logging: CLOUD_LOGGING_ONLY
