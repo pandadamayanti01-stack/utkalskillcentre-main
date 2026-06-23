@@ -8,7 +8,7 @@ export const ODISHA_DISTRICTS = [
   { en: 'Boudh', or: 'ବୌଢ଼' },
   { en: 'Cuttack', or: 'କଟକ' },
   { en: 'Deogarh', or: 'ଦେବଗଡ଼' },
-  { en: 'Dhenkanal', or: 'ଧେନ୍କାନାଳ' },
+  { en: 'Dhenkanal', or: 'ଢେଙ୍କାନାଳ' },
   { en: 'Gajapati', or: 'ଗଜପତି' },
   { en: 'Ganjam', or: 'ଗଞ୍ଜାମ' },
   { en: 'Jagatsinghpur', or: 'ଜଗତସିଂହପୁର' },

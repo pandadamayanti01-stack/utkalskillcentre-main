@@ -1294,7 +1294,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       await new Promise(resolve => { logoImg.onload = resolve; logoImg.onerror = resolve; });
       
       const mascotImg = new Image();
-      mascotImg.src = '/gundulu-pointing.png';
+      mascotImg.src = '/gundulu-pointing-nobg.png';
       await new Promise(resolve => { mascotImg.onload = resolve; mascotImg.onerror = resolve; });
       
       setWorksheetGeneratingProgress(50);
@@ -1403,7 +1403,13 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         pageCtx.fillStyle = '#64748b';
         pageCtx.font = 'italic 13px Arial, sans-serif';
         pageCtx.textAlign = 'center';
-        pageCtx.fillText("Practice daily on Utkal Skill Centre • Share this worksheet with friends!", 620, 1665);
+        pageCtx.fillText(
+          language === 'en'
+            ? "Practice daily on Utkal Skill Centre • Share this worksheet with friends!"
+            : "ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରରେ ପ୍ରତିଦିନ ଅଭ୍ୟାସ କରନ୍ତୁ • ଏହି ପ୍ରଶ୍ନପତ୍ରକୁ ସାଙ୍ଗମାନଙ୍କ ସହ ଶେୟାର କରନ୍ତୁ!",
+          620,
+          1665
+        );
         pageCtx.font = 'bold 12px Arial, sans-serif';
         pageCtx.fillText(`Page ${pageNum}`, 620, 1690);
         pageCtx.textAlign = 'left';
@@ -1617,6 +1623,27 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       alert(language === 'en' ? "Failed to generate worksheet. Please try again." : "ପ୍ରଶ୍ନପତ୍ର ପ୍ରସ୍ତୁତ କରିବାରେ ବିଫଳ ହେଲା। ଦୟାକରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।");
     } finally {
       setIsGeneratingWorksheet(false);
+    }
+  };
+
+  const handleShareWorksheet = async () => {
+    const text = language === 'en'
+      ? `Hey! I just generated a custom wobbly-notebook revision worksheet for BSE Odisha class ${userClass} exams on Utkal Skill Centre. It looks amazing! Try it yourself here: https://utkalskillcentre.com`
+      : `ନମସ୍କାର! ମୁଁ ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରରେ ମୋ ପରୀକ୍ଷା ପାଇଁ ଏକ କଷ୍ଟମ୍ ଖାତା ପରି ପ୍ରଶ୍ନପତ୍ର ତିଆରି କରି ଡାଉନଲୋଡ୍ କଲି । ଆପଣ ମଧ୍ୟ ଏଠାରେ ଚେଷ୍ଟା କରନ୍ତୁ: https://utkalskillcentre.com`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: language === 'en' ? 'BSE Odisha Exam Worksheet' : 'BSE ଓଡ଼ିଶା ପରୀକ୍ଷା ପ୍ରଶ୍ନପତ୍ର',
+          text: text,
+          url: 'https://utkalskillcentre.com'
+        });
+      } catch (err) {
+        console.log('Share cancelled or failed', err);
+      }
+    } else {
+      const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+      window.open(whatsappUrl, '_blank');
     }
   };
 
@@ -4326,7 +4353,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                           <div className="absolute inset-2 rounded-full border-[3px] border-emerald-500/30 border-t-emerald-400 animate-spin" />
                           
                           <img
-                            src="/gundulu-pointing.png"
+                            src="/gundulu-pointing-nobg.png"
                             alt="Gundulu"
                             className="w-24 h-24 object-contain animate-bounce-subtle"
                           />
@@ -4365,20 +4392,13 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                         </div>
                         
                         <div className="flex flex-col sm:flex-row gap-3 pt-4 w-full justify-center max-w-md">
-                          {/* Share on WhatsApp */}
-                          <a
-                            href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
-                              language === 'en'
-                                ? `Hey! I just generated a custom wobbly-notebook revision worksheet for BSE Odisha class ${userClass} exams on Utkal Skill Centre. It looks amazing! Try it yourself here: https://utkalskillcentre.com`
-                                : `ନମସ୍କାର! ମୁଁ ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରରେ ମୋ ପରୀକ୍ଷା ପାଇଁ ଏକ କଷ୍ଟମ୍ ଖାତା ପରି ପ୍ରଶ୍ନପତ୍ର ତିଆରି କରି ଡାଉନଲୋଡ୍ କଲି । ଆପଣ ମଧ୍ୟ ଏଠାରେ ଚେଷ୍ଟା କରନ୍ତୁ: https://utkalskillcentre.com`
-                            )}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex-1 py-3 px-5 rounded-2xl bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-black text-xs uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2 shadow-lg shadow-green-950/20"
+                          <button
+                            onClick={handleShareWorksheet}
+                            className="flex-1 py-3 px-5 rounded-2xl bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-black text-xs uppercase tracking-wider tracking-wide transition-all cursor-pointer flex items-center justify-center gap-2 shadow-lg shadow-green-950/20 border-none"
                           >
                             <Lucide.Share2 size={14} />
                             <span>{language === 'en' ? 'Share with Friends' : 'ସାଙ୍ଗମାନଙ୍କୁ ସେୟାର୍'}</span>
-                          </a>
+                          </button>
 
                           <button
                             onClick={() => setWorksheetStep(1)}

@@ -202,27 +202,27 @@ export function ResultsReviewView({ submission, test, onBack, language }: any) {
         <div className="flex items-center justify-between sticky top-0 bg-slate-950/80 backdrop-blur-md py-4 z-10 border-b border-white/5 mb-8">
           <button onClick={onBack} className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
             <Lucide.ArrowLeft size={20} />
-            <span className="font-bold uppercase tracking-widest text-xs">Back</span>
+            <span className="font-bold uppercase tracking-widest text-xs">{language === 'en' ? 'Back' : 'ଫେରିଯାଅ'}</span>
           </button>
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-white">{test.month} {test.year} Results</h2>
-            <p className="text-slate-400 text-xs">Transparency Report & Model Answers</p>
+            <h2 className="text-2xl font-bold text-white">{test.month} {test.year} {language === 'en' ? 'Results' : 'ପରୀକ୍ଷା ଫଳାଫଳ'}</h2>
+            <p className="text-slate-400 text-xs">{language === 'en' ? 'Transparency Report & Model Answers' : 'ସ୍ୱଚ୍ଛତା ରିପୋର୍ଟ ଏବଂ ନମୁନା ଉତ୍ତର'}</p>
           </div>
           <div className="w-20"></div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-slate-900 border border-white/5 p-6 rounded-3xl text-center">
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Final Score</p>
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">{language === 'en' ? 'Final Score' : 'ଚୂଡ଼ାନ୍ତ ମାର୍କ'}</p>
             <p className="text-3xl font-black text-emerald-500">{submission.finalScore || submission.score}/{submission.totalMaxMarks || submission.totalQuestions}</p>
           </div>
           <div className="bg-slate-900 border border-white/5 p-6 rounded-3xl text-center">
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Status</p>
-            <p className="text-xl font-bold text-blue-400">Graded & Verified</p>
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">{language === 'en' ? 'Status' : 'ସ୍ଥିତି'}</p>
+            <p className="text-xl font-bold text-blue-400">{language === 'en' ? 'Graded & Verified' : 'ଯାଞ୍ଚ ଏବଂ ମୂଲ୍ୟାଙ୍କନ ଶେଷ'}</p>
           </div>
           <div className="bg-slate-900 border border-white/5 p-6 rounded-3xl text-center">
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Violations</p>
-            <p className={`text-xl font-bold ${submission.violations > 0 ? 'text-red-500' : 'text-emerald-500'}`}>{submission.violations || 0} Flags</p>
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">{language === 'en' ? 'Violations' : 'ନିୟମ ଉଲ୍ଲଂଘନ'}</p>
+            <p className={`text-xl font-bold ${submission.violations > 0 ? 'text-red-500' : 'text-emerald-500'}`}>{submission.violations || 0} {language === 'en' ? 'Flags' : 'ଫ୍ଲାଗ୍'}</p>
           </div>
         </div>
 
@@ -251,17 +251,17 @@ export function ResultsReviewView({ submission, test, onBack, language }: any) {
                     </div>
                     <div className="flex flex-col gap-1">
                       <span className={`text-[10px] font-black uppercase px-3 py-1 rounded-full ${q.type === 'subjective' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20'}`}>
-                        {q.type === 'subjective' ? 'Subjective' : 'MCQ'} • {q.marks || 1} Marks
+                        {q.type === 'subjective' ? (language === 'en' ? 'Subjective' : 'ସଂକ୍ଷିପ୍ତ ପ୍ରଶ୍ନ') : 'MCQ'} • {q.marks || 1} {language === 'en' ? 'Marks' : 'ମାର୍କ'}
                       </span>
                       {q.isGrace && (
                         <span className="bg-amber-500/10 text-amber-500 text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border border-amber-500/20 flex items-center gap-1">
-                          <Lucide.Sparkles size={8} /> Grace Mark Awarded
+                          <Lucide.Sparkles size={8} /> {language === 'en' ? 'Grace Mark Awarded' : 'ଗ୍ରେସ୍ ମାର୍କ ପ୍ରଦାନ କରାଗଲା'}
                         </span>
                       )}
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Marks Obtained</p>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">{language === 'en' ? 'Marks Obtained' : 'ପ୍ରାପ୍ତ ମାର୍କ'}</p>
                     <p className={`text-xl font-black ${awardedMarks > 0 ? (q.isGrace ? 'text-amber-500' : 'text-emerald-500') : 'text-red-500'}`}>{awardedMarks}/{q.marks || 1}</p>
                   </div>
                 </div>
@@ -295,23 +295,23 @@ export function ResultsReviewView({ submission, test, onBack, language }: any) {
                     <div className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 min-h-[100px] flex flex-col justify-center">
-                          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Your Answer:</p>
-                          <p className="text-slate-300 italic text-sm leading-relaxed">{studentAnsText || 'No text answer provided.'}</p>
+                          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">{language === 'en' ? 'Your Answer:' : 'ଆପଣଙ୍କ ଉତ୍ତର:'}</p>
+                          <p className="text-slate-300 italic text-sm leading-relaxed">{studentAnsText || (language === 'en' ? 'No text answer provided.' : 'କୌଣସି ଉତ୍ତର ଲେଖାଯାଇ ନାହିଁ।')}</p>
                         </div>
                         {studentAnsImg && (
                           <a href={studentAnsImg} target="_blank" rel="noopener noreferrer" className="relative group aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black/20 block">
                             <img src={studentAnsImg} alt="Uploaded Answer Sheet" className="w-full h-full object-contain" />
                             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
                               <span className="text-white text-xs font-bold flex items-center gap-2">
-                                <Lucide.ExternalLink size={14} /> View Full Image
+                                <Lucide.ExternalLink size={14} /> {language === 'en' ? 'View Full Image' : 'ପୂର୍ଣ୍ଣ ଫଟୋ ଦେଖନ୍ତୁ'}
                               </span>
                             </div>
                           </a>
                         )}
                       </div>
                       <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-5">
-                        <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-2">Model Answer / Evaluation Criteria:</p>
-                        <p className="text-emerald-200 text-sm leading-relaxed whitespace-pre-wrap">{q.correct_answer || 'Check textbook for detailed explanation.'}</p>
+                        <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-2">{language === 'en' ? 'Model Answer / Evaluation Criteria:' : 'ଆଦର୍ଶ ଉତ୍ତର / ମୂଲ୍ୟାଙ୍କନ ମାନଦଣ୍ଡ:'}</p>
+                        <p className="text-emerald-200 text-sm leading-relaxed whitespace-pre-wrap">{q.correct_answer || (language === 'en' ? 'Check textbook for detailed explanation.' : 'ବିସ୍ତୃତ ସୂଚନା ପାଇଁ ପାଠ୍ୟପୁସ୍ତକ ଦେଖନ୍ତୁ।')}</p>
                       </div>
                     </div>
                   )}
@@ -327,7 +327,7 @@ export function ResultsReviewView({ submission, test, onBack, language }: any) {
             className="px-12 py-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-3xl text-white font-bold transition-all flex items-center gap-3 group"
           >
             <Lucide.ArrowLeft className="group-hover:-translate-x-1 transition-transform" />
-            Back to Monthly Tests
+            {language === 'en' ? 'Back to Monthly Tests' : 'ମାସିକ ପରୀକ୍ଷାକୁ ଫେରନ୍ତୁ'}
           </button>
         </div>
       </div>
@@ -368,7 +368,7 @@ export function CertificateView({ submission, test, user, onBack, language }: an
         className="fixed top-4 left-4 flex items-center gap-2 text-slate-400 hover:text-white transition-colors z-[110] print:hidden bg-slate-900/85 px-4 py-2.5 rounded-xl border border-white/5 backdrop-blur-md shadow-lg"
       >
         <Lucide.ArrowLeft size={18} />
-        <span className="font-black uppercase tracking-[0.2em] text-xs">Back</span>
+        <span className="font-black uppercase tracking-[0.2em] text-xs">{language === 'en' ? 'Back' : 'ଫେରିଯାଅ'}</span>
       </button>
       
       <div className="max-w-4xl w-full bg-white rounded-lg shadow-2xl p-1 relative overflow-hidden print:p-0 print:shadow-none print:m-0 mt-14 sm:mt-0" ref={certificateRef}>
@@ -384,42 +384,58 @@ export function CertificateView({ submission, test, user, onBack, language }: an
                 <div className="absolute inset-0 bg-emerald-500/10 rounded-full blur-xl"></div>
                 <img src="/utkal-512.png" alt="Utkal Logo" className="w-full h-full object-contain relative z-10" />
               </div>
-              <h1 className="text-xl sm:text-4xl font-serif font-black text-slate-900 tracking-tight uppercase">Certificate of Excellence</h1>
+              <h1 className="text-xl sm:text-4xl font-serif font-black text-slate-900 tracking-tight uppercase">
+                {language === 'en' ? 'Certificate of Excellence' : 'ଉତ୍କର୍ଷତା ପ୍ରମାଣପତ୍ର'}
+              </h1>
               <div className="w-24 sm:w-48 h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-emerald-600 to-transparent mt-2 sm:mt-4"></div>
-              <p className="text-[7px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-[0.3em] sm:tracking-[0.4em] mt-1 sm:mt-2">Utkal Skill Centre Academic Achievement</p>
+              <p className="text-[7px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-[0.3em] sm:tracking-[0.4em] mt-1 sm:mt-2">
+                {language === 'en' ? 'Utkal Skill Centre Academic Achievement' : 'ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍ শৈକ୍ଷଣିକ ସଫଳତା'}
+              </p>
             </div>
 
             <div className="space-y-2 sm:space-y-4 pt-2 sm:pt-4">
-              <p className="text-slate-500 font-serif italic text-xs sm:text-lg">This is to certify that</p>
+              <p className="text-slate-500 font-serif italic text-xs sm:text-lg">
+                {language === 'en' ? 'This is to certify that' : 'ଏତଦ୍ୱାରା ପ୍ରମାଣିତ କରାଯାଉଛି ଯେ'}
+              </p>
               <h2 className="text-xl sm:text-5xl font-serif font-bold text-slate-900 border-b border-emerald-100 pb-1 sm:pb-2 px-4 sm:px-8 inline-block">{submission.userName}</h2>
-              <p className="text-slate-500 text-[10px] sm:text-base font-medium">has demonstrated exceptional performance in the</p>
+              <p className="text-slate-500 text-[10px] sm:text-base font-medium">
+                {language === 'en' ? 'has demonstrated exceptional performance in the' : 'ଙ୍କୁ ମାସିକ ପରୀକ୍ଷାରେ ଉଲ୍ଲେଖନୀୟ ପ୍ରଦର୍ଶନ ପାଇଁ ପ୍ରଦାନ କରାଗଲା'}
+              </p>
             </div>
 
             <div className="space-y-1 sm:space-y-2 py-2 sm:py-4">
-              <h3 className="text-sm sm:text-2xl font-bold text-emerald-800 uppercase tracking-[0.05em] sm:tracking-[0.1em]">{test.month} {test.year} Monthly Assessment</h3>
+              <h3 className="text-sm sm:text-2xl font-bold text-emerald-800 uppercase tracking-[0.05em] sm:tracking-[0.1em]">
+                {test.month} {test.year} {language === 'en' ? 'Monthly Assessment' : 'ମାସିକ ମୂଲ୍ୟାଙ୍କନ'}
+              </h3>
               <div className="flex items-center justify-center gap-1.5 sm:gap-3 text-slate-500 text-[10px] sm:text-sm">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                <span>Subject: <span className="font-bold text-slate-800">{getCorrectSubjectName(test.subject, language)}</span></span>
+                <span>{language === 'en' ? 'Subject' : 'ବିଷୟ'}: <span className="font-bold text-slate-800">{getCorrectSubjectName(test.subject, language)}</span></span>
                 <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                <span>Class: <span className="font-bold text-slate-800">{translations[language].classes?.[submission.class as keyof typeof translations.en.classes] || submission.class}</span></span>
+                <span>{language === 'en' ? 'Class' : 'ଶ୍ରେଣୀ'}: <span className="font-bold text-slate-800">{translations[language].classes?.[submission.class as keyof typeof translations.en.classes] || submission.class}</span></span>
                 <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                <span>District: <span className="font-bold text-slate-800">{user.district || 'Khordha'}</span></span>
+                <span>{language === 'en' ? 'District' : 'ଜିଲ୍ଲା'}: <span className="font-bold text-slate-800">{user.district || 'Khordha'}</span></span>
               </div>
             </div>
 
             <div className="flex justify-center items-center gap-6 sm:gap-16 py-3 sm:py-8 relative">
               <div className="text-center">
                 <p className="text-xl sm:text-4xl font-black text-slate-900 leading-none">{scorePercent}%</p>
-                <p className="text-[8px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1 sm:mt-2">Aggregate Score</p>
+                <p className="text-[8px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1 sm:mt-2">
+                  {language === 'en' ? 'Aggregate Score' : 'ମୋଟ୍ ସ୍କୋର୍'}
+                </p>
               </div>
               <div className="text-center">
                 <p className="text-xl sm:text-4xl font-black text-slate-900 leading-none">#{submission.rank || 'N/A'}</p>
-                <p className="text-[8px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1 sm:mt-2">State Rank</p>
+                <p className="text-[8px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1 sm:mt-2">
+                  {language === 'en' ? 'State Rank' : 'ରାଜ୍ୟ ର୍ୟାଙ୍କ'}
+                </p>
               </div>
               {submission.districtRank && (
                 <div className="text-center">
                   <p className="text-xl sm:text-4xl font-black text-slate-900 leading-none">#{submission.districtRank}</p>
-                  <p className="text-[8px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1 sm:mt-2">District Rank</p>
+                  <p className="text-[8px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1 sm:mt-2">
+                    {language === 'en' ? 'District Rank' : 'ଜିଲ୍ଲା ର୍ୟାଙ୍କ'}
+                  </p>
                 </div>
               )}
             </div>
@@ -429,7 +445,9 @@ export function CertificateView({ submission, test, user, onBack, language }: an
                 <img src="/gundulu-pointing-nobg.png" className="w-12 h-12 object-contain absolute -top-8 opacity-75 print:opacity-100" alt="Gundulu Signature Pin" />
                 <div className="w-16 sm:w-32 border-b border-slate-900 mb-1 sm:mb-2 mx-auto mt-4" />
                 <p className="font-serif font-bold text-slate-900 text-[10px] sm:text-sm">Gundulu</p>
-                <p className="text-[7px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-tighter">AI Learning Advisor</p>
+                <p className="text-[7px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-tighter">
+                  {language === 'en' ? 'AI Learning Advisor' : 'AI ଶିକ୍ଷା ପରାମର୍ଶଦାତା'}
+                </p>
               </div>
               <div className="relative">
                 <div className="w-14 h-14 sm:w-28 sm:h-28 bg-emerald-600/5 rounded-full flex items-center justify-center border border-emerald-600/10">
@@ -444,12 +462,18 @@ export function CertificateView({ submission, test, user, onBack, language }: an
               <div className="text-center">
                 <p className="font-serif italic font-bold text-emerald-700 text-xs sm:text-lg mb-1 relative z-10 print:text-slate-900">Tiki Apa</p>
                 <div className="w-16 sm:w-32 border-b border-slate-900 mb-1 sm:mb-2 mx-auto" />
-                <p className="font-serif font-bold text-slate-900 text-[10px] sm:text-sm">Tiki Apa (Master Head)</p>
-                <p className="text-[7px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-tighter">Director, Utkal Skill Centre</p>
+                <p className="font-serif font-bold text-slate-900 text-[10px] sm:text-sm">
+                  {language === 'en' ? 'Tiki Apa (Master Head)' : 'ଟିକି ଅପା (ପ୍ରଧାନ ଶିକ୍ଷୟିତ୍ରୀ)'}
+                </p>
+                <p className="text-[7px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-tighter">
+                  {language === 'en' ? 'Director, Utkal Skill Centre' : 'ନିର୍ଦ୍ଦେଶକ, ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍'}
+                </p>
               </div>
             </div>
             
-            <p className="text-[7px] sm:text-[9px] text-slate-300 font-mono mt-4 sm:mt-8 italic">Verification ID: {submission.id?.slice(-8).toUpperCase()}</p>
+            <p className="text-[7px] sm:text-[9px] text-slate-300 font-mono mt-4 sm:mt-8 italic">
+              {language === 'en' ? 'Verification ID' : 'ଯାଞ୍ଚ ID'}: {submission.id?.slice(-8).toUpperCase()}
+            </p>
           </div>
         </div>
       </div>
@@ -459,16 +483,20 @@ export function CertificateView({ submission, test, user, onBack, language }: an
           onClick={handleDownload}
           className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-bold flex items-center gap-2 shadow-xl shadow-emerald-500/20 text-sm"
         >
-          <Lucide.Download size={18} /> Print/Save as PDF
+          <Lucide.Download size={18} /> {language === 'en' ? 'Print/Save as PDF' : 'ପ୍ରିଣ୍ଟ କରନ୍ତୁ / PDF ଡାଉନଲୋଡ୍ କରନ୍ତୁ'}
         </button>
         <button 
           onClick={onBack}
           className="bg-white/10 hover:bg-white/20 text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-bold text-sm"
         >
-          Close
+          {language === 'en' ? 'Close' : 'ବନ୍ଦ କରନ୍ତୁ'}
         </button>
       </div>
-      <p className="text-slate-500 text-[10px] sm:text-xs mt-4 print:hidden text-center pb-8">Tip: For best result, set Layout to "Landscape" and "Remove Margins" in print settings.</p>
+      <p className="text-slate-500 text-[10px] sm:text-xs mt-4 print:hidden text-center pb-8">
+        {language === 'en' 
+          ? 'Tip: For best result, set Layout to "Landscape" and "Remove Margins" in print settings.' 
+          : 'ଟିପ୍: ସର୍ବୋତ୍ତମ ଫଳାଫଳ ପାଇଁ, ପ୍ରିଣ୍ଟ୍ ସେଟିଂସରେ ଲେଆଉଟ୍ କୁ "Landscape" ଏବଂ "Margins" କୁ Remove କରନ୍ତୁ।'}
+      </p>
     </div>
   );
 }
@@ -504,7 +532,7 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
         className="fixed top-4 left-4 flex items-center gap-2 text-slate-400 hover:text-white transition-colors z-[110] print:hidden bg-slate-900/85 px-4 py-2.5 rounded-xl border border-white/5 backdrop-blur-md shadow-lg"
       >
         <Lucide.ArrowLeft size={18} />
-        <span className="font-black uppercase tracking-[0.2em] text-xs">Back</span>
+        <span className="font-black uppercase tracking-[0.2em] text-xs">{language === 'en' ? 'Back' : 'ଫେରିଯାଅ'}</span>
       </button>
 
       <div className="max-w-4xl w-full bg-white rounded-lg shadow-2xl p-1 relative overflow-hidden print:p-0 print:shadow-none print:m-0 mt-14 sm:mt-0">
@@ -520,25 +548,35 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
                 <div className="absolute inset-0 bg-emerald-500/10 rounded-full blur-xl"></div>
                 <img src="/utkal-512.png" alt="Utkal Logo" className="w-full h-full object-contain relative z-10" />
               </div>
-              <h1 className="text-xl sm:text-4xl font-serif font-black text-slate-900 tracking-tight uppercase">Consolidated Certificate of Excellence</h1>
+              <h1 className="text-xl sm:text-4xl font-serif font-black text-slate-900 tracking-tight uppercase">
+                {language === 'en' ? 'Consolidated Certificate of Excellence' : 'ମିଳିତ ଉତ୍କର୍ଷତା ପ୍ରମାଣପତ୍ର'}
+              </h1>
               <div className="w-32 sm:w-64 h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-emerald-600 to-transparent mt-2 sm:mt-3"></div>
-              <p className="text-[7px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-[0.3em] sm:tracking-[0.4em] mt-1">Monthly Series Performance Report</p>
+              <p className="text-[7px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-[0.3em] sm:tracking-[0.4em] mt-1">
+                {language === 'en' ? 'Monthly Series Performance Report' : 'ମାସିକ ପରୀକ୍ଷା ସିରିଜ୍ ପ୍ରଦର୍ଶନ ରିପୋର୍ଟ'}
+              </p>
             </div>
 
             <div className="space-y-1 sm:space-y-2">
-              <p className="text-slate-500 font-serif italic text-xs sm:text-md">This academic credential is awarded to</p>
+              <p className="text-slate-500 font-serif italic text-xs sm:text-md">
+                {language === 'en' ? 'This academic credential is awarded to' : 'ଏହି শৈକ୍ଷଣିକ ପ୍ରମାଣପତ୍ର ପ୍ରଦାନ କରାଯାଉଛି'}
+              </p>
               <h2 className="text-xl sm:text-4xl font-serif font-bold text-slate-900 border-b border-emerald-100 pb-1 px-4 sm:px-8 inline-block">{user.displayName || user.name || 'Student'}</h2>
-              <p className="text-slate-500 text-[10px] sm:text-sm font-medium">for demonstrating outstanding academic proficiency across all subjects during</p>
-              <h3 className="text-sm sm:text-xl font-bold text-emerald-800 uppercase tracking-widest">{monthYear} Test Series</h3>
+              <p className="text-slate-500 text-[10px] sm:text-sm font-medium">
+                {language === 'en' ? 'for demonstrating outstanding academic proficiency across all subjects during' : 'ସମସ୍ତ ବିଷୟରେ ଅସାଧାରଣ ପ୍ରଦର୍ଶନ ଏବଂ ପାରଦର୍ଶିତା ପାଇଁ'}
+              </p>
+              <h3 className="text-sm sm:text-xl font-bold text-emerald-800 uppercase tracking-widest">
+                {monthYear} {language === 'en' ? 'Test Series' : 'ମାସିକ ପରୀକ୍ଷା ଶୃଙ୍ଖଳା'}
+              </h3>
             </div>
 
             <div className="border border-slate-200 rounded-xl overflow-hidden max-w-2xl mx-auto bg-slate-50/50">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-slate-100 text-slate-700 text-[9px] sm:text-xs font-bold uppercase border-b border-slate-200">
-                    <th className="px-4 py-2 sm:py-3">Subject (ବିଷୟ)</th>
-                    <th className="px-4 py-2 sm:py-3 text-center">Score (ମାର୍କ)</th>
-                    <th className="px-4 py-2 sm:py-3 text-right">Accuracy (ସଠିକତା)</th>
+                    <th className="px-4 py-2 sm:py-3">{language === 'en' ? 'Subject' : 'ବିଷୟ'} (ବିଷୟ)</th>
+                    <th className="px-4 py-2 sm:py-3 text-center">{language === 'en' ? 'Score' : 'ମାର୍କ'} (ମାର୍କ)</th>
+                    <th className="px-4 py-2 sm:py-3 text-right">{language === 'en' ? 'Accuracy' : 'ସଠିକତା'} (ସଠିକତା)</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 text-slate-800 text-[10px] sm:text-sm font-medium">
@@ -558,7 +596,7 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
                     );
                   })}
                   <tr className="bg-emerald-50/50 text-emerald-950 font-bold border-t border-slate-300">
-                    <td className="px-4 py-3 text-emerald-800">Overall Cumulative (ସାମଗ୍ରିକ ଫଳାଫଳ)</td>
+                    <td className="px-4 py-3 text-emerald-800">{language === 'en' ? 'Overall Cumulative' : 'ସାମଗ୍ରିକ ସଞ୍ଚୟୀ ଫଳାଫଳ'}</td>
                     <td className="px-4 py-3 text-center font-mono">{overallScore} / {overallMax}</td>
                     <td className="px-4 py-3 text-right font-mono text-emerald-600">{overallPercent}%</td>
                   </tr>
@@ -568,14 +606,18 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
 
             <div className="flex justify-center items-center gap-6 sm:gap-12 py-1 max-w-md mx-auto">
               <div className="bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-2.5 text-center flex-1">
-                <p className="text-[7px] sm:text-[9px] font-black uppercase text-emerald-600 tracking-wider">State Rank</p>
+                <p className="text-[7px] sm:text-[9px] font-black uppercase text-emerald-600 tracking-wider">
+                  {language === 'en' ? 'State Rank' : 'ରାଜ୍ୟ ର୍ୟାଙ୍କ'}
+                </p>
                 <p className="text-lg sm:text-2xl font-black text-slate-800 font-mono">
                   #{submissions[0]?.rank || 'N/A'}
                 </p>
               </div>
               {submissions.some((s: any) => s.districtRank) && (
                 <div className="bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-2.5 text-center flex-1">
-                  <p className="text-[7px] sm:text-[9px] font-black uppercase text-emerald-600 tracking-wider">District Rank</p>
+                  <p className="text-[7px] sm:text-[9px] font-black uppercase text-emerald-600 tracking-wider">
+                    {language === 'en' ? 'District Rank' : 'ଜିଲ୍ଲା ର୍ୟାଙ୍କ'}
+                  </p>
                   <p className="text-lg sm:text-2xl font-black text-slate-800 font-mono">
                     #{submissions.find((s: any) => s.districtRank)?.districtRank}
                   </p>
@@ -588,7 +630,9 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
                 <img src="/gundulu-pointing-nobg.png" className="w-12 h-12 object-contain absolute -top-8 opacity-75 print:opacity-100" alt="Gundulu" />
                 <div className="w-16 sm:w-32 border-b border-slate-900 mb-1 sm:mb-2 mx-auto mt-4" />
                 <p className="font-serif font-bold text-slate-900 text-[10px] sm:text-sm">Gundulu</p>
-                <p className="text-[7px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-tighter">AI Learning Advisor</p>
+                <p className="text-[7px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-tighter">
+                  {language === 'en' ? 'AI Learning Advisor' : 'AI ଶିକ୍ଷା ପରାମର୍ଶଦାତା'}
+                </p>
               </div>
               <div className="relative hidden sm:block">
                 <div className="w-20 h-20 bg-emerald-600/5 rounded-full flex items-center justify-center border border-emerald-600/10">
@@ -600,8 +644,12 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
               <div className="text-center">
                 <p className="font-serif italic font-bold text-emerald-700 text-xs sm:text-lg mb-1 relative z-10 print:text-slate-900">Tiki Apa</p>
                 <div className="w-16 sm:w-32 border-b border-slate-900 mb-1 sm:mb-2 mx-auto" />
-                <p className="font-serif font-bold text-slate-900 text-[10px] sm:text-sm">Tiki Apa (Master Head)</p>
-                <p className="text-[7px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-tighter">Director, Utkal Skill Centre</p>
+                <p className="font-serif font-bold text-slate-900 text-[10px] sm:text-sm">
+                  {language === 'en' ? 'Tiki Apa (Master Head)' : 'ଟିକି ଅପା (ପ୍ରଧାନ ଶିକ୍ଷୟିତ୍ରୀ)'}
+                </p>
+                <p className="text-[7px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-tighter">
+                  {language === 'en' ? 'Director, Utkal Skill Centre' : 'ନିର୍ଦ୍ଦେଶକ, ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍'}
+                </p>
               </div>
             </div>
           </div>
@@ -613,13 +661,13 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
           onClick={() => window.print()}
           className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-bold flex items-center gap-2 shadow-xl shadow-emerald-500/20 text-sm border-none cursor-pointer"
         >
-          <Lucide.Download size={18} /> Print/Save as PDF
+          <Lucide.Download size={18} /> {language === 'en' ? 'Print/Save as PDF' : 'ପ୍ରିଣ୍ଟ କରନ୍ତୁ / PDF ଡାଉନଲୋଡ୍ କରନ୍ତୁ'}
         </button>
         <button 
           onClick={onBack}
           className="bg-white/10 hover:bg-white/20 text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-bold text-sm border-none cursor-pointer"
         >
-          Close
+          {language === 'en' ? 'Close' : 'ବନ୍ଦ କରନ୍ତୁ'}
         </button>
       </div>
     </div>
@@ -637,6 +685,30 @@ export function SelectionPaperPrintView({ test, language, onBack }: any) {
 
   const totalMaxMarks = test.questions?.reduce((acc: number, q: any) => acc + (q.marks || 1), 0) || 0;
 
+  const handleShare = async () => {
+    const subjectName = getCorrectSubjectName(test.subject, language);
+    const classLabel = translations[language].classes?.[test.class as keyof typeof translations.en.classes] || `Class ${test.class}`;
+    
+    const text = language === 'or'
+      ? `ଆରେ ସାଙ୍ଗ! ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରରେ ${classLabel} ର ${subjectName} ମାସିକ ସିଲେକ୍ସନ ପ୍ରଶ୍ନପତ୍ର ଦେଖ। ତୁମେ ମଧ୍ୟ ପରୀକ୍ଷା ଦେଇ ପ୍ରମାଣପତ୍ର ପାଅ: https://utkalskillcentre.com/`
+      : `Hey friend! Check out the ${classLabel} ${subjectName} monthly selection question paper on Utkal Skill Centre. Attempt the test to get your certificate: https://utkalskillcentre.com/`;
+      
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: language === 'or' ? `${subjectName} ସିଲେକ୍ସନ ପ୍ରଶ୍ନପତ୍ର` : `${subjectName} Selection Paper`,
+          text: text,
+          url: 'https://utkalskillcentre.com/'
+        });
+      } catch (err) {
+        console.log('Share cancelled or failed', err);
+      }
+    } else {
+      const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+      window.open(whatsappUrl, '_blank');
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-[999999] bg-white overflow-y-auto p-4 sm:p-12 print:p-0 text-slate-900">
       <button 
@@ -644,7 +716,19 @@ export function SelectionPaperPrintView({ test, language, onBack }: any) {
         className="fixed top-4 left-4 flex items-center gap-2 bg-slate-900 text-white px-4 py-2.5 rounded-xl border border-slate-800 shadow-lg print:hidden z-50 cursor-pointer"
       >
         <Lucide.ArrowLeft size={16} />
-        <span className="font-bold text-xs uppercase tracking-widest">Back to Tests</span>
+        <span className="font-bold text-xs uppercase tracking-widest">
+          {language === 'en' ? 'Back to Tests' : 'ପରୀକ୍ଷାକୁ ଫେରନ୍ତୁ'}
+        </span>
+      </button>
+
+      <button 
+        onClick={handleShare}
+        className="fixed top-4 right-4 flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl border border-emerald-500 shadow-lg print:hidden z-50 cursor-pointer"
+      >
+        <Lucide.Share2 size={16} />
+        <span className="font-bold text-xs uppercase tracking-widest">
+          {language === 'en' ? 'Share with Friend' : 'ସାଙ୍ଗମାନଙ୍କ ସହ ସେୟାର'}
+        </span>
       </button>
 
       <div className="border-4 border-double border-slate-950 p-6 sm:p-10 min-h-screen relative flex flex-col justify-between print:border-2">
@@ -653,33 +737,33 @@ export function SelectionPaperPrintView({ test, language, onBack }: any) {
             <div className="flex justify-center items-center gap-4">
               <img src="/gundulu-rath-crest.png" className="w-14 h-14 object-contain" alt="Crest" />
               <div>
-                <h1 className="text-lg sm:text-2xl font-black tracking-tight font-serif uppercase">ଓଡ଼ିଶା ମାଧ୍ୟମିକ ଶିକ୍ଷା ପରିଷଦ (BSE)</h1>
+                <h1 className="text-lg sm:text-2xl font-black tracking-tight font-serif uppercase">ଓଡ଼ିଶା ମାଧ୍ୟମିକ Śିକ୍ଷା ପରିଷଦ (BSE)</h1>
                 <p className="text-xs sm:text-sm font-bold uppercase tracking-widest text-slate-600">Board of Secondary Education, Odisha</p>
               </div>
             </div>
             <div className="pt-2">
               <span className="px-4 py-1 border border-slate-950 font-black text-xs sm:text-sm uppercase tracking-widest">
-                ସିଲେକ୍ସନ ପ୍ରଶ୍ନପତ୍ର - ୨୦୨୬ (Selection Question Paper)
+                {language === 'en' ? 'Selection Question Paper - 2026' : 'ସିଲେକ୍ସନ ପ୍ରଶ୍ନପତ୍ର - ୨୦୨୬'}
               </span>
             </div>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-4 text-xs font-bold border-b border-slate-950 mb-6 bg-slate-50/50 p-3 rounded-lg">
             <div>
-              <p className="text-slate-500 uppercase text-[9px]">Subject (ବିଷୟ)</p>
+              <p className="text-slate-500 uppercase text-[9px]">{language === 'en' ? 'Subject' : 'ବିଷୟ'} (ବିଷୟ)</p>
               <p className="text-sm font-black text-slate-900 mt-0.5">{getCorrectSubjectName(test.subject, language)}</p>
             </div>
             <div>
-              <p className="text-slate-500 uppercase text-[9px]">Class (ଶ୍ରେଣୀ)</p>
+              <p className="text-slate-500 uppercase text-[9px]">{language === 'en' ? 'Class' : 'ଶ୍ରେଣୀ'} (ଶ୍ରେଣୀ)</p>
               <p className="text-sm font-black text-slate-900 mt-0.5">{translations[language].classes?.[test.class as keyof typeof translations.en.classes] || test.class}</p>
             </div>
             <div>
-              <p className="text-slate-500 uppercase text-[9px]">Full Marks (ପୂର୍ଣ୍ଣ ସଂଖ୍ୟା)</p>
-              <p className="text-sm font-black text-slate-900 mt-0.5">{totalMaxMarks} Marks</p>
+              <p className="text-slate-500 uppercase text-[9px]">{language === 'en' ? 'Full Marks' : 'ପୂର୍ଣ୍ଣ ସଂଖ୍ୟା'} (ପୂର୍ଣ୍ଣ ସଂଖ୍ୟା)</p>
+              <p className="text-sm font-black text-slate-900 mt-0.5">{totalMaxMarks} {language === 'en' ? 'Marks' : 'ମାର୍କ'}</p>
             </div>
             <div>
-              <p className="text-slate-500 uppercase text-[9px]">Duration (ସମୟ)</p>
-              <p className="text-sm font-black text-slate-900 mt-0.5">45 Minutes</p>
+              <p className="text-slate-500 uppercase text-[9px]">{language === 'en' ? 'Duration' : 'ସମୟ'} (ସମୟ)</p>
+              <p className="text-sm font-black text-slate-900 mt-0.5">{language === 'en' ? '45 Minutes' : '୪୫ ମିନିଟ୍'}</p>
             </div>
           </div>
 
@@ -719,7 +803,9 @@ export function SelectionPaperPrintView({ test, language, onBack }: any) {
                   ) : (
                     <div className="pl-6 space-y-2">
                       <div className="h-20 border border-dashed border-slate-300 rounded-lg bg-slate-50/10 flex items-center justify-center">
-                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Rough work / calculation space</span>
+                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                          {language === 'en' ? 'Rough work / calculation space' : 'ରଫ୍ କାର୍ଯ୍ୟ କିମ୍ବା ଗଣନା ପାଇଁ ସ୍ଥାନ'}
+                        </span>
                       </div>
                     </div>
                   )}
@@ -738,14 +824,18 @@ export function SelectionPaperPrintView({ test, language, onBack }: any) {
           </div>
           <div className="text-center hidden sm:block">
             <div className="w-12 h-12 rounded-full border border-slate-950 flex items-center justify-center text-[8px] font-black uppercase rotate-12 text-slate-600">
-              BSE SEAL
+              {language === 'en' ? 'BSE SEAL' : 'BSE ସିଲ୍'}
             </div>
           </div>
           <div className="text-center">
             <p className="font-serif italic font-bold text-slate-900 text-xs mb-1">Tiki Apa</p>
             <div className="w-24 border-b border-slate-900 mb-1 mx-auto" />
-            <p className="font-serif font-black text-slate-950 text-xs">Tiki Apa (Master Head)</p>
-            <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Director, Utkal Skill Centre</p>
+            <p className="font-serif font-black text-slate-950 text-xs">
+              {language === 'en' ? 'Tiki Apa (Master Head)' : 'ଟିକି ଅପା (ପ୍ରଧାନ Śିକ୍ଷୟିତ୍ରୀ)'}
+            </p>
+            <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">
+              {language === 'en' ? 'Director, Utkal Skill Centre' : 'ନିର୍ଦ୍ଦେଶକ, ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍'}
+            </p>
           </div>
         </div>
       </div>
@@ -1000,34 +1090,46 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
       <motion.button 
         variants={itemVariants}
         onClick={onBack}
-        className="flex items-center gap-2 text-slate-400 hover:text-white mb-4 transition-colors cursor-pointer bg-transparent border-none"
+        className="flex items-center gap-1.5 text-slate-400 hover:text-white mb-2 md:mb-4 transition-colors cursor-pointer bg-transparent border-none"
       >
-        <Lucide.ArrowLeft size={20} />
-        <span>Back to Dashboard</span>
+        <Lucide.ArrowLeft size={18} />
+        <span className="text-xs md:text-sm">{translations[language].backToDashboard || 'Back to Dashboard'}</span>
       </motion.button>
 
-      <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 p-8 rounded-[2.5rem] border border-white/5 relative overflow-hidden">
+      <motion.div variants={itemVariants} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 md:gap-6 bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 p-3 sm:p-6 md:p-8 rounded-2xl md:rounded-[2.5rem] border border-white/5 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 blur-[80px] -mr-32 -mt-32 rounded-full pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
-          <div className="w-20 h-20 rounded-3xl bg-white p-3 shadow-2xl shadow-emerald-500/20">
+        <div className="relative z-10 flex items-center gap-3 text-left">
+          <div className="w-10 h-10 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-lg sm:rounded-3xl bg-white p-1.5 sm:p-3 shadow-xl shrink-0">
             <img src="/utkal-512.png" alt="Utkal Logo" className="w-full h-full object-contain" />
           </div>
           <div>
-            <h1 className="text-4xl font-black text-white mb-2 tracking-tight">
-              {translations[language].monthlyTests}
-            </h1>
-            <p className="text-slate-400 max-w-md">
-              Participate in premium assessments for {translations[language].classes[user?.class as keyof typeof translations.en.classes] || user?.class} designed by expert educators.
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-base sm:text-2xl md:text-4xl font-black text-white tracking-tight">
+                {translations[language].monthlyTests}
+              </h1>
+              <span className="inline-flex sm:hidden items-center gap-1 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full text-[8px] font-black text-emerald-400 uppercase tracking-wider">
+                <Lucide.Shield size={8} />
+                {language === 'en' ? 'Board Pattern 2026' : 'ବୋର୍ଡ ପ୍ୟାଟର୍ନ ୨୦୨୬'}
+              </span>
+            </div>
+            <p className="text-slate-400 max-w-md text-[10px] sm:text-xs md:text-sm mt-0.5 sm:mt-1 leading-relaxed line-clamp-2 sm:line-clamp-none">
+              {language === 'en' 
+                ? `Participate in premium assessments for ${translations[language].classes[user?.class as keyof typeof translations.en.classes] || user?.class} designed by expert educators.`
+                : `ଅଭିଜ୍ଞ ଶିକ୍ଷକଙ୍କ ଦ୍ୱାରା ପ୍ରସ୍ତୁତ ${translations[language].classes[user?.class as keyof typeof translations.en.classes] || user?.class} ର ପ୍ରିମିୟମ ମୂଲ୍ୟାଙ୍କନରେ ଭାଗ ନିଅନ୍ତୁ।`}
             </p>
           </div>
         </div>
-        <div className="relative z-10 flex items-center gap-4 bg-black/20 backdrop-blur-md px-6 py-4 rounded-3xl border border-white/5">
-          <div className="text-right">
-            <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Active Status</p>
-            <p className="text-sm font-black text-white">Board Pattern 2026</p>
+        <div className="hidden sm:flex relative z-10 items-center justify-between md:justify-start gap-4 bg-black/20 backdrop-blur-md px-4 py-2.5 md:px-6 md:py-4 rounded-xl md:rounded-3xl border border-white/5 w-full md:w-auto">
+          <div className="text-left md:text-right">
+            <p className="text-[9px] md:text-[10px] font-bold text-emerald-500 uppercase tracking-widest">
+              {language === 'en' ? 'Active Status' : 'ସକ୍ରିୟ ସ୍ଥିତି'}
+            </p>
+            <p className="text-xs md:text-sm font-black text-white">
+              {language === 'en' ? 'Board Pattern 2026' : 'ବୋର୍ଡ ପ୍ୟାଟର୍ନ ୨୦୨୬'}
+            </p>
           </div>
-          <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 flex items-center justify-center text-emerald-400">
-            <Lucide.Shield size={20} />
+          <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+            <Lucide.Shield size={16} />
           </div>
         </div>
       </motion.div>
@@ -1035,22 +1137,20 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
       {!user?.district ? (
         <motion.div 
           variants={itemVariants}
-          className="bg-gradient-to-r from-red-500/10 via-amber-500/10 to-red-500/10 border border-amber-500/25 p-5 rounded-3xl flex items-center justify-between gap-4 relative overflow-hidden"
+          className="bg-gradient-to-r from-red-500/10 via-amber-500/10 to-red-500/10 border border-amber-500/25 p-4 rounded-xl sm:rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3"
         >
-          <div className="flex items-center gap-4">
-            <img src="/gundulu-pointing.png" alt="Gundulu Point" className="w-14 h-14 object-contain shrink-0" />
+          <div className="flex items-center gap-3">
+            <img src="/gundulu-pointing-nobg.png" alt="Gundulu Point" className="w-8 h-8 shrink-0" />
             <div className="text-left">
-              <p className="text-sm font-black text-white">📍 {language === 'en' ? 'Missing District in Profile' : 'ଆରେ ସାଙ୍ଗ! ତୁମର ଜିଲ୍ଲା ଚୟନ କରିନାହଁ'}</p>
-              <p className="text-xs text-slate-400 mt-1">
-                {language === 'en' 
-                  ? 'Update your district now to unlock your District Rank in the leaderboard!' 
-                  : 'ଜିଲ୍ଲା ରାଙ୍କ ଦେଖିବା ପାଇଁ ଏବେ ପ୍ରୋଫାଇଲ୍ ଅପଡେଟ୍ କର!'}
+              <p className="text-xs font-black text-white">📍 {language === 'en' ? 'Missing District' : 'ଜିଲ୍ଲା ଚୟନ କରିନାହଁ'}</p>
+              <p className="text-[10px] text-slate-400">
+                {language === 'en' ? 'Update district to unlock Leaderboard!' : 'ଜିଲ୍ଲା ରାଙ୍କ ପାଇଁ ପ୍ରୋଫାଇଲ୍ ଅପଡେଟ୍ କର!'}
               </p>
             </div>
           </div>
           <button 
             onClick={() => setActiveTab('profile')}
-            className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs uppercase tracking-wider transition-colors shrink-0 cursor-pointer border-none"
+            className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-[10px] uppercase transition-colors"
           >
             {language === 'en' ? 'Update Profile' : 'ପ୍ରୋଫାଇଲ୍ ଅପଡେଟ୍'}
           </button>
@@ -1058,28 +1158,28 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
       ) : (
         <motion.div 
           variants={itemVariants}
-          className="bg-slate-900/60 backdrop-blur border border-white/5 p-5 rounded-3xl flex items-center gap-5"
+          className="bg-slate-900/60 backdrop-blur border border-white/5 p-4 rounded-xl sm:rounded-2xl flex items-center gap-3"
         >
-          <img src="/gundulu-pointing.png" alt="Gundulu Point" className="w-14 h-14 object-contain shrink-0" />
+          <img src="/gundulu-pointing-nobg.png" alt="Gundulu Point" className="w-10 h-10 shrink-0" />
           <div className="text-left flex-1">
-            <h4 className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Gundulu's Encouragement • ଗୁନ୍ଦୁଲୁ ପରାମର୍ଶ</h4>
-            <p className="text-xs sm:text-sm font-bold text-slate-200 italic leading-relaxed">
+            <h4 className="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-0.5">Gundulu's Encouragement</h4>
+            <p className="text-xs font-bold text-slate-200 italic leading-relaxed">
               {(() => {
                 const completedCount = testsForSelectedMonth.filter(t => getSubmission(t)).length;
                 const totalCount = testsForSelectedMonth.length;
                 if (completedCount === 0) {
                   return language === 'or' 
-                    ? "“ଆରେ ସାଙ୍ଗ! ତୁମର ମାସିକ ପରୀକ୍ଷା ଆସିଯାଇଛି। ଚାଲ ଶୀଘ୍ର ଆରମ୍ଭ କରିବା! 📝”"
-                    : "“Hey friend! Your monthly tests are ready. Let's start attempting them soon! 📝”";
+                    ? "“ଆରେ ସାଙ୍ଗ! ତୁମର ମାସିକ ପରୀକ୍ଷା ଆସିଯାଇଛି। 📝”"
+                    : "“Hey friend! Your monthly tests are ready. Let's start! 📝”";
                 }
                 if (completedCount === totalCount) {
                   return language === 'or'
-                    ? "“ଅତି ସୁନ୍ଦର! ତୁମେ ତ ଗୁନ୍ଦୁଲୁ ମହାରଥୀ ବନିଗଲ। ଏମିତି ପଢ଼ି ଚାଲ! 🌟”"
-                    : "“Amazing! You completed all tests and became a Gundulu Legend. Keep reading! 🌟”";
+                    ? "“ଅତି ସୁନ୍ଦର! ତୁମେ ତ ଗୁନ୍ଦୁଲୁ ମହାରଥୀ ବନିଗଲ। 🌟”"
+                    : "“Amazing! You are a Gundulu Legend. Keep it up! 🌟”";
                 }
                 return language === 'or'
                   ? "“ବହୁତ ଭଲ ପ୍ରୟାସ! ଆଉ ଟିକେ ଚେଷ୍ଟା କଲେ ତୁମେ ନିଶ୍ଚୟ ଜିଲ୍ଲା ରାଙ୍କ ପାଇବ। 👍”"
-                  : "“Great effort! Keep attempting the rest of the tests to secure your district rank. 👍”";
+                  : "“Great effort! Keep attempting to secure your district rank. 👍”";
               })()}
             </p>
           </div>
@@ -1087,14 +1187,14 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
       )}
 
       {availableMonths.length > 0 && (
-        <motion.div variants={itemVariants} className="flex gap-2.5 overflow-x-auto pb-2 border-b border-white/5 scrollbar-none">
+        <motion.div variants={itemVariants} className="flex gap-1.5 overflow-x-auto pb-2 border-b border-white/5 scrollbar-none">
           {availableMonths.map((m) => {
             const isActive = m === currentMonthFilter;
             return (
               <button
                 key={m}
                 onClick={() => setActiveMonthFilter(m)}
-                className={`px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
+                className={`px-3 py-1.5 sm:px-4 sm:py-2 md:px-6 md:py-3 rounded-lg sm:rounded-xl md:rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
                   isActive
                     ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 border border-emerald-400/20'
                     : 'bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white border border-white/5'
@@ -1108,23 +1208,29 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
       )}
 
       {selectedMonthReport.submissions.length > 0 && (
-        <motion.div variants={itemVariants} className="bg-gradient-to-br from-indigo-500/10 to-blue-500/10 border border-indigo-500/20 rounded-[2rem] p-6 sm:p-8 relative overflow-hidden mb-6 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-6">
+        <motion.div variants={itemVariants} className="bg-gradient-to-br from-indigo-500/10 to-blue-500/10 border border-indigo-500/20 rounded-2xl md:rounded-[2rem] p-4 md:p-8 relative overflow-hidden mb-6 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 md:gap-6">
           <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 blur-[80px] -mr-32 -mt-32 rounded-full pointer-events-none" />
           
-          <div className="flex items-center gap-4 relative z-10 text-left">
-            <div className="w-14 h-14 rounded-2xl bg-indigo-500/20 flex items-center justify-center text-indigo-400">
-              <Lucide.Trophy size={28} />
+          <div className="flex items-center gap-3 md:gap-4 relative z-10 text-left">
+            <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+              <Lucide.Trophy className="w-5 h-5 md:w-7 md:h-7" />
             </div>
             <div>
-              <h3 className="text-xl sm:text-2xl font-black text-white">{currentMonthFilter} Series Report</h3>
-              <p className="text-slate-400 text-xs mt-0.5">Overall Performance Across All Subjects</p>
+              <h3 className="text-base md:text-2xl font-black text-white">
+                {language === 'en' ? `${currentMonthFilter} Series Report` : `${currentMonthFilter} ମାସିକ ରିପୋର୍ଟ`}
+              </h3>
+              <p className="text-slate-400 text-[10px] md:text-xs mt-0.5">
+                {language === 'en' ? 'Overall Performance Across All Subjects' : 'ସମସ୍ତ ବିଷୟର ସାମଗ୍ରିକ ପ୍ରଦର୍ଶନ'}
+              </p>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4 relative z-10">
-            <div className="bg-indigo-500/20 border border-indigo-500/30 px-5 py-3 rounded-2xl text-center min-w-[120px] flex-1 md:flex-initial">
-              <p className="text-[9px] font-black uppercase tracking-wider text-indigo-400 mb-0.5">Total Score</p>
-              <p className="text-2xl font-black text-white">{selectedMonthReport.totalScore} <span className="text-sm text-slate-400">/ {selectedMonthReport.totalMax}</span></p>
+          <div className="flex flex-wrap items-center gap-3 md:gap-4 relative z-10">
+            <div className="bg-indigo-500/20 border border-indigo-500/30 px-4 py-2 md:px-5 md:py-3 rounded-xl md:rounded-2xl text-center min-w-[100px] md:min-w-[120px] flex-1 md:flex-initial">
+              <p className="text-[8px] md:text-[9px] font-black uppercase tracking-wider text-indigo-400 mb-0.5">
+                {language === 'en' ? 'Total Score' : 'ମୋଟ ସ୍କୋର'}
+              </p>
+              <p className="text-lg md:text-2xl font-black text-white">{selectedMonthReport.totalScore} <span className="text-xs text-slate-400">/ {selectedMonthReport.totalMax}</span></p>
             </div>
 
             <button
@@ -1133,15 +1239,15 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
                 submissions: selectedMonthReport.submissions,
                 tests: selectedMonthReport.tests
               })}
-              className="py-4 px-6 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 active:scale-98 transition-all duration-300 border-t border-white/20 flex-1 md:flex-initial cursor-pointer"
+              className="py-3 px-4 md:py-4 md:px-6 rounded-xl md:rounded-2xl bg-gradient-to-br from-indigo-500/20 via-purple-500/10 to-pink-500/20 hover:from-amber-400 hover:to-orange-500 text-white font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25 active:scale-98 transition-all duration-300 border-t border-white/20 flex-1 md:flex-initial cursor-pointer"
             >
-              <Lucide.Award size={16} /> Consolidated Cert
+              <Lucide.Award size={16} /> {language === 'en' ? 'Consolidated Cert' : 'ମିଳିତ ପ୍ରମାଣପତ୍ର'}
             </button>
           </div>
         </motion.div>
       )}
 
-      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {testsForSelectedMonth.map((testItem: any) => {
           const submission = getSubmission(testItem);
           const resultsPublished = testItem.results_published;
@@ -1169,17 +1275,14 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
             <motion.div 
               whileHover={{ y: -8, scale: 1.01 }} 
               key={testItem.id} 
-              className={`bg-slate-950/40 backdrop-blur-2xl border border-white/5 rounded-[2.25rem] p-6 sm:p-8 ${theme.borderHover} transition-all duration-500 group relative overflow-hidden flex flex-col justify-between h-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_20px_50px_rgba(0,0,0,0.5)]`}
+              className={`bg-slate-950/40 backdrop-blur-2xl border border-white/5 rounded-xl md:rounded-[2.25rem] p-3.5 sm:p-5 md:p-8 ${theme.borderHover} transition-all duration-500 group relative overflow-hidden flex flex-col justify-between h-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_20px_50px_rgba(0,0,0,0.5)]`}
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${theme.gradient} opacity-30 group-hover:opacity-60 transition-opacity duration-700 pointer-events-none`}></div>
               <div className={`absolute top-0 right-0 w-36 h-36 ${theme.glow} blur-[50px] rounded-full -mr-16 -mt-16 group-hover:scale-125 transition-transform duration-1000 pointer-events-none`} />
               <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:via-white/20 transition-all duration-700"></div>
 
-              <div className="relative z-10 flex flex-col justify-between h-full space-y-6">
+              <div className="relative z-10 flex flex-col justify-between h-full space-y-3 sm:space-y-4 md:space-y-6">
                 <div className="flex items-start justify-between">
-                  <div className={`w-14 h-14 rounded-2xl ${theme.iconBg} flex items-center justify-center text-white shadow-lg ${theme.iconShadow} group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500`}>
-                    <SubjectIcon size={28} />
-                  </div>
                   {submission ? (
                     <div className="flex flex-col items-end gap-1">
                       <span className="px-3.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.15)] flex items-center gap-1.5">
@@ -1197,29 +1300,29 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
                 </div>
 
                 <div className="text-left">
-                  <h3 className="text-xl sm:text-2xl font-black text-white mb-2 tracking-tight leading-snug group-hover:text-slate-100 transition-colors">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-black text-white mb-1.5 md:mb-2 tracking-tight leading-snug group-hover:text-slate-100 transition-colors">
                     {getCorrectSubjectName(testItem.subject, language)}
                   </h3>
                   
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-xl bg-white/[0.04] border border-white/[0.05] text-[10px] font-bold text-slate-300">
-                      <Lucide.HelpCircle size={12} className="text-slate-400" />
+                  <div className="flex flex-wrap gap-1.5 md:gap-2 mb-2 md:mb-3">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-lg sm:rounded-xl bg-white/[0.04] border border-white/[0.05] text-[9px] sm:text-[10px] font-bold text-slate-300">
+                      <Lucide.HelpCircle size={10} className="text-slate-400" />
                       {testItem.questions.length} Questions
                     </span>
-                    <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-xl ${theme.badgeBg} text-[10px] font-bold`}>
-                      <Lucide.Sparkles size={12} />
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-lg sm:rounded-xl ${theme.badgeBg} text-[9px] sm:text-[10px] font-bold`}>
+                      <Lucide.Sparkles size={10} />
                       {totalMaxMarks} Marks
                     </span>
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-xl bg-white/[0.04] border border-white/[0.05] text-[10px] font-bold text-slate-300">
-                      <Lucide.Calendar size={12} className="text-slate-400" />
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-lg sm:rounded-xl bg-white/[0.04] border border-white/[0.05] text-[9px] sm:text-[10px] font-bold text-slate-300">
+                      <Lucide.Calendar size={10} className="text-slate-400" />
                       {formattedDate}
                     </span>
                   </div>
 
                   {testItem.chapterIds && testItem.chapterIds.length > 0 && (
-                    <div className="bg-white/[0.02] border border-white/[0.04] p-3 rounded-2xl">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 flex items-center gap-1">
-                        <Lucide.BookOpen size={12} className="text-emerald-400" />
+                    <div className="bg-white/[0.02] border border-white/[0.04] p-2.5 rounded-xl sm:rounded-2xl">
+                      <p className="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 sm:mb-1.5 flex items-center gap-1">
+                        <Lucide.BookOpen size={10} className="text-emerald-400" />
                         {language === 'en' ? 'Syllabus Covered:' : 'ପରୀକ୍ଷା ସିଲେବସ:'}
                       </p>
                       <ul className="space-y-1">
@@ -1241,33 +1344,35 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
 
                 <div className="w-full">
                   {submission ? (
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-4 bg-slate-950/60 border border-white/5 rounded-2xl p-4">
-                        <div className="relative w-14 h-14 shrink-0 flex items-center justify-center">
+                    <div className="space-y-3 md:space-y-4">
+                      <div className="flex items-center gap-2.5 md:gap-4 bg-slate-950/60 border border-white/5 rounded-xl md:rounded-2xl p-2.5 md:p-4">
+                        <div className="relative w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 shrink-0 flex items-center justify-center">
                           <svg className="w-full h-full transform -rotate-90">
-                            <circle cx="28" cy="28" r="24" className="stroke-slate-800" strokeWidth="4" fill="transparent" />
-                            <circle cx="28" cy="28" r="24" className="stroke-emerald-400" strokeWidth="4" fill="transparent" strokeDasharray={2 * Math.PI * 24} strokeDashoffset={2 * Math.PI * 24 * (1 - percentage / 100)} strokeLinecap="round" />
+                            <circle cx="16" cy="16" r="12" className="stroke-slate-800 md:hidden" strokeWidth="2.5" fill="transparent" />
+                            <circle cx="28" cy="28" r="24" className="stroke-slate-800 hidden md:block" strokeWidth="4" fill="transparent" />
+                            <circle cx="16" cy="16" r="12" className="stroke-emerald-400 md:hidden" strokeWidth="2.5" fill="transparent" strokeDasharray={2 * Math.PI * 12} strokeDashoffset={2 * Math.PI * 12 * (1 - percentage / 100)} strokeLinecap="round" />
+                            <circle cx="28" cy="28" r="24" className="stroke-emerald-400 hidden md:block" strokeWidth="4" fill="transparent" strokeDasharray={2 * Math.PI * 24} strokeDashoffset={2 * Math.PI * 24 * (1 - percentage / 100)} strokeLinecap="round" />
                           </svg>
-                          <span className="absolute text-[10px] font-black text-white">{percentage}%</span>
+                          <span className="absolute text-[8px] md:text-[10px] font-black text-white">{percentage}%</span>
                         </div>
 
                         <div className="text-left flex-1 min-w-0">
-                          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                          <p className="text-[8px] md:text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                             {language === 'en' ? 'Marks Obtained:' : 'ପ୍ରାପ୍ତ ମାର୍କ:'}
                           </p>
-                          <p className="text-lg font-black text-white mt-0.5">
+                          <p className="text-base md:text-lg font-black text-white mt-0.5">
                             {score} <span className="text-xs text-slate-500">/ {max}</span>
                           </p>
 
-                          <div className="flex flex-wrap gap-2 mt-1.5">
+                          <div className="flex flex-wrap gap-1.5 mt-1 md:mt-1.5">
                             {resultsPublished ? (
-                              <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[9px] font-black uppercase ${
+                              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[8px] md:text-[9px] font-black uppercase ${
                                 (submission.rank || 0) === 1 ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
                                 (submission.rank || 0) === 2 ? 'bg-slate-300/20 text-slate-300 border border-slate-300/30' :
                                 (submission.rank || 0) === 3 ? 'bg-amber-600/20 text-amber-500 border border-amber-500/30' :
                                 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                               }`}>
-                                <Lucide.Award size={10} />
+                                <Lucide.Award size={8} />
                                 {(() => {
                                   if ((submission.rank || 0) === 1) return language === 'or' ? 'ଓଡ଼ିଶା ମହାରଥୀ (Rank #1)' : 'Odisha Legend (Rank #1)';
                                   if ((submission.rank || 0) === 2) return language === 'or' ? 'ରାଜ୍ୟ ବୀର (Rank #2)' : 'State Hero (Rank #2)';
@@ -1276,20 +1381,20 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
                                 })()}
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[9px] font-black uppercase">
-                                <Lucide.Clock size={10} /> Pending State Rank
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[8px] md:text-[9px] font-black uppercase">
+                                <Lucide.Clock size={8} /> {language === 'en' ? 'Pending State Rank' : 'ରାଜ୍ୟ ର୍ୟାଙ୍କ ଅପେକ୍ଷା'}
                               </span>
                             )}
 
                             {resultsPublished ? (
                               user?.district ? (
-                                <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[9px] font-black uppercase ${
+                                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[8px] md:text-[9px] font-black uppercase ${
                                   (submission.districtRank || 0) === 1 ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
                                   (submission.districtRank || 0) === 2 ? 'bg-slate-300/20 text-slate-300 border border-slate-300/30' :
                                   (submission.districtRank || 0) === 3 ? 'bg-amber-600/20 text-amber-500 border border-amber-500/30' :
                                   'bg-teal-500/10 text-teal-400 border border-teal-500/20'
                                 }`}>
-                                  <Lucide.MapPin size={10} />
+                                  <Lucide.MapPin size={8} />
                                   {(() => {
                                     if ((submission.districtRank || 0) === 1) return language === 'or' ? 'ଜିଲ୍ଲା ସେନାପତି (Rank #1)' : 'District General (Rank #1)';
                                     if ((submission.districtRank || 0) === 2) return language === 'or' ? 'ଜିଲ୍ଲା ବୀର (Rank #2)' : 'District Hero (Rank #2)';
@@ -1300,14 +1405,14 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
                               ) : (
                                 <button 
                                   onClick={() => setActiveTab('profile')}
-                                  className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 text-[9px] font-black uppercase hover:bg-red-500/20 transition-all cursor-pointer"
+                                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-red-500/10 text-red-400 border border-red-500/20 text-[8px] md:text-[9px] font-black uppercase hover:bg-red-500/20 transition-all cursor-pointer"
                                 >
-                                  📍 Set District
+                                  {language === 'en' ? '📍 Set District' : '📍 ଜିଲ୍ଲା ଚୟନ କର'}
                                 </button>
                               )
                             ) : (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[9px] font-black uppercase">
-                                <Lucide.Clock size={10} /> Pending Dist Rank
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[8px] md:text-[9px] font-black uppercase">
+                                <Lucide.Clock size={8} /> {language === 'en' ? 'Pending Dist Rank' : 'ଜିଲ୍ଲା ର୍ୟାଙ୍କ ଅପେକ୍ଷା'}
                               </span>
                             )}
                           </div>
@@ -1316,53 +1421,59 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
 
                       {resultsPublished && (
                         <div className="flex flex-col gap-2">
-                          <div className="flex gap-3">
+                          <div className="flex gap-2.5">
                             <button 
                               onClick={() => setReviewingResults({ submission, test: testItem })}
-                              className="flex-1 py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 border border-white/5 hover:border-white/10 active:scale-98 transition-all duration-300 cursor-pointer"
+                              className="flex-1 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-[10px] md:text-xs uppercase tracking-widest flex items-center justify-center gap-1.5 border border-white/5 hover:border-white/10 active:scale-98 transition-all duration-300 cursor-pointer"
                             >
-                              <Lucide.ClipboardList size={16} /> Review Answers
+                              <Lucide.ClipboardList size={14} /> {language === 'en' ? 'Review Answers' : 'ଉତ୍ତର ସମୀକ୍ଷା'}
                             </button>
                             <button 
                               onClick={() => setViewingCertificate({ submission, test: testItem })}
-                              className="flex-1 py-4 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 active:scale-98 transition-all duration-300 border-t border-white/20 cursor-pointer"
+                              className="flex-1 py-3 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-[10px] md:text-xs uppercase tracking-widest flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 active:scale-98 transition-all duration-300 border-t border-white/20 cursor-pointer"
                             >
-                              <Lucide.Award size={16} /> Certificate
+                              <Lucide.Award size={14} /> {language === 'en' ? 'Certificate' : 'ପ୍ରମାଣପତ୍ର'}
                             </button>
                           </div>
 
                           <button
                             onClick={() => setPrintingSelectionPaper({ test: testItem })}
-                            className="w-full py-3.5 rounded-xl bg-slate-950 border border-white/10 hover:border-white/30 text-slate-300 font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:text-white transition-all cursor-pointer"
+                            className="w-full py-3 rounded-lg bg-slate-950 border border-white/10 hover:border-white/30 text-slate-300 font-bold text-[10px] md:text-xs uppercase tracking-widest flex items-center justify-center gap-1.5 hover:text-white transition-all cursor-pointer"
                           >
-                            <Lucide.Download size={14} /> Printable Board Selection Paper
+                            <Lucide.Download size={12} /> {language === 'en' ? 'Printable Board Selection Paper' : 'ବୋର୍ଡ ସିଲେକ୍ସନ ପେପର୍ ପ୍ରିଣ୍ଟ'}
                           </button>
                         </div>
                       )}
                     </div>
                   ) : resultsPublished ? (
-                    <div className="w-full py-4.5 rounded-2xl bg-slate-950/60 border border-white/5 text-slate-500 font-bold text-center flex flex-col items-center justify-center gap-1">
-                      <Lucide.Clock size={16} className="opacity-60" />
-                      <span className="text-xs uppercase tracking-widest font-black text-slate-400">Test Ended</span>
-                      <p className="text-[9px] font-bold uppercase opacity-60 tracking-wider">Results published</p>
+                    <div className="w-full py-3.5 rounded-xl bg-slate-950/60 border border-white/5 text-slate-500 font-bold text-center flex flex-col items-center justify-center gap-1">
+                      <Lucide.Clock size={14} className="opacity-60" />
+                      <span className="text-[10px] md:text-xs uppercase tracking-widest font-black text-slate-400">
+                        {language === 'en' ? 'Test Ended' : 'ପରୀକ୍ଷା ଶେଷ'}
+                      </span>
+                      <p className="text-[8px] md:text-[9px] font-bold uppercase opacity-60 tracking-wider">
+                        {language === 'en' ? 'Results published' : 'ଫଳାଫଳ ପ୍ରକାଶିତ'}
+                      </p>
                     </div>
                   ) : (
-                    <div className="space-y-4">
-                      <div className="p-3.5 rounded-2xl bg-white/[0.02] border border-white/[0.04] flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-xl bg-slate-900 border border-white/5 flex items-center justify-center text-slate-400">
-                            <Lucide.User size={16} />
+                    <div className="space-y-3">
+                      <div className="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.04] flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-lg bg-slate-900 border border-white/5 flex items-center justify-center text-slate-400">
+                            <Lucide.User size={14} />
                           </div>
                           <div className="text-left">
-                            <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Certificate Name</p>
+                            <p className="text-[7px] md:text-[8px] font-black text-slate-500 uppercase tracking-widest">
+                              {language === 'en' ? 'Certificate Name' : 'ସାର୍ଟିଫିକେଟ୍ ନାମ'}
+                            </p>
                             <p className="text-xs font-bold text-white max-w-[120px] truncate">{user.displayName || user.name || 'Student'}</p>
                           </div>
                         </div>
                         <button 
                           onClick={() => setActiveTab('profile')}
-                          className="text-[9px] font-black text-emerald-400 hover:text-emerald-300 uppercase tracking-widest hover:underline transition-colors cursor-pointer bg-transparent border-none"
+                          className="text-[8px] md:text-[9px] font-black text-emerald-400 hover:text-emerald-300 uppercase tracking-widest hover:underline transition-colors cursor-pointer bg-transparent border-none"
                         >
-                          Change
+                          {language === 'en' ? 'Change' : 'ବଦଳାଅ'}
                         </button>
                       </div>
 
@@ -1371,9 +1482,9 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
                           setSelectedTest(testItem);
                           setTakingTest(true);
                         }}
-                        className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-xs uppercase tracking-[0.2em] shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/45 hover:scale-[1.01] active:scale-98 transition-all duration-300 flex items-center justify-center gap-2 group/btn border-t border-white/20 cursor-pointer"
+                        className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-xs uppercase tracking-[0.2em] shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/45 hover:scale-[1.01] active:scale-98 transition-all duration-300 flex items-center justify-center gap-2 group/btn border-t border-white/20 cursor-pointer"
                       >
-                        <Lucide.Play size={16} className="group-hover/btn:scale-125 transition-transform" />
+                        <Lucide.Play size={14} className="group-hover/btn:scale-125 transition-transform" />
                         {translations[language].takeMonthlyTest}
                       </button>
                     </div>
@@ -1387,8 +1498,14 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
         {testsForSelectedMonth.length === 0 && (
           <motion.div variants={itemVariants} className="md:col-span-2 flex flex-col items-center justify-center py-20 text-center bg-slate-900/30 rounded-3xl border border-dashed border-white/10">
             <Lucide.Clock size={48} className="text-slate-600 mb-4" />
-            <h3 className="text-xl font-bold text-white mb-2">No Tests Scheduled</h3>
-            <p className="text-slate-500">Check back later for upcoming monthly assessments for your class and subjects.</p>
+            <h3 className="text-xl font-bold text-white mb-2">
+              {language === 'en' ? 'No Tests Scheduled' : 'କୌଣସି ପରୀକ୍ଷା ନିର୍ଦ୍ଧାରିତ ହୋଇନାହିଁ'}
+            </h3>
+            <p className="text-slate-500">
+              {language === 'en' 
+                ? 'Check back later for upcoming monthly assessments for your class and subjects.' 
+                : 'ଆପଣଙ୍କ ଶ୍ରେଣୀ ଏବଂ ବିଷୟଗୁଡ଼ିକର ଆଗାମୀ ମାସିକ ପରୀକ୍ଷା ପାଇଁ ପରେ ଚେକ୍ କରନ୍ତୁ।'}
+            </p>
           </motion.div>
         )}
       </motion.div>
@@ -1664,14 +1781,16 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
       <div className="max-w-4xl w-full mx-auto flex items-center justify-between bg-slate-900/80 border border-white/5 px-6 py-4 rounded-3xl backdrop-blur-md mb-6">
         <button 
           onClick={() => {
-            if (confirm(language === 'en' ? "Are you sure you want to quit? Your progress will be lost." : "ଆରେ ସାଙ୍개! ତୁମେ ସତରେ ପରୀକ୍ଷା ବନ୍ଦ କରିବାକୁ ଚାହୁଁଛ କି?")) {
+            if (confirm(language === 'en' ? "Are you sure you want to quit? Your progress will be lost." : "ଆରେ ସାଙ୍ଗ! ତୁମେ ସତରେ ପରୀକ୍ଷା ବନ୍ଦ କରିବାକୁ ଚାହୁଁଛ କି?")) {
               onBack();
             }
           }}
           className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors cursor-pointer bg-transparent border-none"
         >
           <Lucide.ArrowLeft size={16} />
-          <span className="text-xs font-bold uppercase tracking-wider">Quit Test</span>
+          <span className="text-xs font-bold uppercase tracking-wider">
+            {language === 'en' ? 'Quit Test' : 'ପରୀକ୍ଷା ବନ୍ଦ କର'}
+          </span>
         </button>
         
         <div className="flex items-center gap-4">
@@ -1683,7 +1802,9 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
           {violations > 0 && (
             <div className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-xs font-bold animate-pulse">
               <Lucide.AlertTriangle size={12} />
-              <span>{violations} Flags</span>
+              <span>
+                {language === 'en' ? `${violations} Flags` : `${violations} ଟି ଚେତାବନୀ`}
+              </span>
             </div>
           )}
 
@@ -1697,7 +1818,9 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
         </div>
 
         <div className="text-right">
-          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Question {currentIdx + 1}/{test.questions.length}</p>
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+            {language === 'en' ? 'Question' : 'ପ୍ରଶ୍ନ'} {currentIdx + 1}/{test.questions.length}
+          </p>
           <div className="w-24 h-1 bg-slate-800 rounded-full mt-1 overflow-hidden">
             <div 
               className="h-full bg-emerald-500 transition-all duration-500" 
@@ -1718,22 +1841,30 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
             >
               <div className="flex items-center gap-3">
                 <Lucide.XCircle className="text-red-500" size={16} />
-                <span>Warning: Do not leave the exam screen. Multiple tab switches will lead to automatic submission.</span>
+                <span>
+                  {language === 'en' 
+                    ? 'Warning: Do not leave the exam screen. Multiple tab switches will lead to automatic submission.' 
+                    : 'ଚେତାବନୀ: ପରୀକ୍ଷା ସ୍କ୍ରିନ ଛାଡ଼ି ଯାଆନ୍ତୁ ନାହିଁ। ବାରମ୍ବାର ଟ୍ୟାବ୍ ବଦଳାଇଲେ ପରୀକ୍ଷା ସ୍ୱତଃ ସବ୍‌ମିଟ୍ ହୋଇଯିବ।'}
+                </span>
               </div>
-              <button onClick={() => setShowWarning(false)} className="text-white hover:underline uppercase tracking-widest text-[10px] bg-transparent border-none cursor-pointer">Close</button>
+              <button onClick={() => setShowWarning(false)} className="text-white hover:underline uppercase tracking-widest text-[10px] bg-transparent border-none cursor-pointer">
+                {language === 'en' ? 'Close' : 'ବନ୍ଦ କର'}
+              </button>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <div className="bg-slate-900/50 border border-white/5 rounded-[2.5rem] p-8 md:p-12 mb-6 relative overflow-hidden">
+        <div className="bg-slate-900/50 border border-white/5 rounded-2xl md:rounded-[2.5rem] p-5 md:p-12 mb-6 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
           
-          <div className="flex items-center gap-3 mb-6">
-            <span className="px-3.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-[9px] font-black uppercase tracking-widest border border-emerald-500/20">
-              {marks} Mark{marks > 1 ? 's' : ''}
+          <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
+            <span className="px-2.5 py-0.5 md:px-3.5 md:py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-[8px] md:text-[9px] font-black uppercase tracking-widest border border-emerald-500/20">
+              {language === 'en' ? `${marks} Mark${marks > 1 ? 's' : ''}` : `${marks} ମାର୍କ`}
             </span>
-            <span className="px-3.5 py-1 rounded-full bg-blue-500/10 text-blue-400 text-[9px] font-black uppercase tracking-widest border border-blue-500/20">
-              {isMcq ? 'Multiple Choice' : 'Subjective Answer'}
+            <span className="px-2.5 py-0.5 md:px-3.5 md:py-1 rounded-full bg-blue-500/10 text-blue-400 text-[8px] md:text-[9px] font-black uppercase tracking-widest border border-blue-500/20">
+              {isMcq 
+                ? (language === 'en' ? 'Multiple Choice' : 'ବହୁବିକଳ୍ପ ପ୍ରଶ୍ନ (MCQ)') 
+                : (language === 'en' ? 'Subjective Answer' : 'ସଂକ୍ଷିପ୍ତ ଉତ୍ତରମୂଳକ ପ୍ରଶ୍ନ')}
             </span>
           </div>
 
@@ -1759,7 +1890,9 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
           ) : (
             <div className="space-y-4">
               <div className="flex justify-between items-center mb-2">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Answer / Calculation Workspace</label>
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                  {language === 'en' ? 'Answer / Calculation Workspace' : 'ଉତ୍ତର / ଗଣନା ସ୍ଥାନ'}
+                </label>
                 <div className="flex gap-2">
                   <label 
                     onClick={() => {
@@ -1768,7 +1901,9 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
                     className="cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 px-3.5 py-2 rounded-xl text-[10px] font-bold text-white flex items-center gap-1.5 transition-all"
                   >
                     {uploadingImage ? <Lucide.Loader2 size={12} className="animate-spin" /> : <Lucide.Camera size={12} />}
-                    {uploadingImage ? 'Uploading...' : 'Camera'}
+                    {uploadingImage 
+                      ? (language === 'en' ? 'Uploading...' : 'ଅପଲୋଡ୍ ହେଉଛି...') 
+                      : (language === 'en' ? 'Camera' : 'କ୍ୟାମେରା')}
                     <input 
                       type="file" 
                       accept="image/*" 
@@ -1791,7 +1926,7 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
                     className="cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 px-3.5 py-2 rounded-xl text-[10px] font-bold text-white flex items-center gap-1.5 transition-all"
                   >
                     <Lucide.Image size={12} />
-                    Gallery
+                    {language === 'en' ? 'Gallery' : 'ଗ୍ୟାଲେରୀ'}
                     <input 
                       type="file" 
                       accept="image/*" 
@@ -1818,7 +1953,7 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
                     : e.target.value;
                   handleAnswer(newVal);
                 }}
-                placeholder="Type your explanation or calculations here..."
+                placeholder={language === 'en' ? 'Type your explanation or calculations here...' : 'ଏଠାରେ ଆପଣଙ୍କର ଉତ୍ତର କିମ୍ବା ଗଣନା ଲେଖନ୍ତୁ...'}
                 className="w-full h-36 bg-black/20 border border-white/10 rounded-2xl p-5 text-white focus:outline-none focus:border-emerald-500/50 transition-all resize-none leading-relaxed text-sm"
               />
 
@@ -1895,7 +2030,7 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
               }}
               className="px-5 py-3.5 rounded-xl bg-white/5 text-amber-500 font-bold hover:bg-white/10 transition-all border border-amber-500/10 cursor-pointer"
             >
-              Skip
+              {language === 'en' ? 'Skip' : 'ଛାଡ଼ିଦିଅ'}
             </button>
           </div>
           
@@ -1905,7 +2040,7 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
               onClick={handleSubmit}
               className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-90 text-white px-8 py-3.5 rounded-xl font-bold transition-all shadow-xl shadow-emerald-500/20 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer border-none"
             >
-              {submitting ? <><Lucide.Loader2 size={16} className="animate-spin" /> Submitting...</> : <><Lucide.Trophy size={16} /> Submit Final Test</>}
+              {submitting ? <><Lucide.Loader2 size={16} className="animate-spin" /> {language === 'en' ? 'Submitting...' : 'ସବ୍‌ମିଟ୍ ହେଉଛି...'}</> : <><Lucide.Trophy size={16} /> {language === 'en' ? 'Submit Final Test' : 'ପରୀକ୍ଷା ସବ୍‌ମିଟ୍ କର'}</>}
             </button>
           ) : (
             <button 
@@ -1913,7 +2048,7 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
               onClick={() => setCurrentIdx(prev => prev + 1)}
               className="flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3.5 rounded-xl font-bold transition-all shadow-lg shadow-emerald-500/10 disabled:opacity-50 cursor-pointer border-none"
             >
-              Next Question <Lucide.ArrowRight size={16} />
+              {language === 'en' ? 'Next Question' : 'ପରବର୍ତ୍ତୀ ପ୍ରଶ୍ନ'} <Lucide.ArrowRight size={16} />
             </button>
           )}
         </div>
