@@ -1846,7 +1846,7 @@ export default function App() {
         preferred_language: 'or',
         role: offlineRole,
         points: offlineRole === 'student' ? 850 : 0,
-        avatar: '/gundulu-v3.png',
+        avatar: '/gundulu-pointing-nobg.png',
         streak: offlineRole === 'student' ? 14 : 0,
         district: 'Khordha',
         school: 'Bhubaneswar Govt High School'
@@ -2055,7 +2055,7 @@ export default function App() {
             preferred_language: (userDocSnap.exists() && userDocSnap.data().preferred_language) ? userDocSnap.data().preferred_language : (languageRef.current || 'or'),
             role: role,
             points: isJudgeAccount ? 850 : (userDocSnap.exists() ? Math.max(userDocSnap.data().points ?? 0, userDocSnap.data().points_today ?? 0) : 0),
-            avatar: userDocSnap.exists() ? (userDocSnap.data().avatar ?? '/gundulu-v3.png') : '/gundulu-v3.png',
+            avatar: userDocSnap.exists() ? (userDocSnap.data().avatar ?? '/gundulu-pointing-nobg.png') : '/gundulu-pointing-nobg.png',
             streak: isJudgeAccount ? 14 : (userDocSnap.exists() ? (userDocSnap.data().streak ?? 0) : 0),
             district: isJudgeAccount ? 'Khordha' : (userDocSnap.exists() ? (userDocSnap.data().district ?? '') : ''),
             school: isJudgeAccount ? 'Bhubaneswar Govt High School' : (userDocSnap.exists() ? (userDocSnap.data().school ?? '') : ''),
@@ -3503,7 +3503,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                 <div className="absolute inset-0 flex items-center justify-center bg-slate-950/80 backdrop-blur-md rounded-full border border-emerald-500/40 shadow-[0_0_35px_rgba(16,185,129,0.45)] overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 to-cyan-500/10 opacity-30 group-hover:opacity-60 transition-opacity duration-300"></div>
                   <img 
-                    src="/gundulu-v3.png" 
+                    src="/gundulu-pointing-nobg.png" 
                     className="w-full h-full object-cover scale-[0.95] relative z-10 transition-transform duration-500 group-hover:scale-[1.1]" 
                     alt="Gundulu Mascot" 
                   />
@@ -3815,7 +3815,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
               className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/10 hover:border-emerald-500/50 transition-colors shrink-0"
             >
               <img 
-                src={user?.avatar || "/gundulu-v3.png"} 
+                src={user?.avatar || "/gundulu-pointing-nobg.png"} 
                 alt="Profile" 
                 className="w-full h-full object-cover bg-slate-800" 
               />
@@ -5040,7 +5040,7 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
                 <Lucide.Loader className="animate-spin text-emerald-400" size={24} />
               </div>
             ) : null}
-            <img src={user.avatar || '/gundulu-v3.png'} alt="Avatar" className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+            <img src={user.avatar || '/gundulu-pointing-nobg.png'} alt="Avatar" className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
             
             <label className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-20">
               <Lucide.Upload size={20} className="text-white mb-1" />
