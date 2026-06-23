@@ -173,7 +173,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 {
                   titleEn: 'Account & Help',
                   titleOr: 'ଖାତା ଓ ସାହାଯ୍ୟ',
-                  items: menuItems.filter(item => ['notifications', 'plans', 'parent_dashboard', 'support', 'about_us'].includes(item.id))
+                  items: menuItems.filter(item => ['notifications', 'plans', 'mo_swapna', 'parent_dashboard', 'support', 'about_us'].includes(item.id))
                 }
               ].filter(group => group.items.length > 0);
 

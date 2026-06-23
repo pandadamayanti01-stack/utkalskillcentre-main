@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as Lucide from 'lucide-react';
+import { getAI, withRetry, cleanOdiaOrthography } from '../services/aiService';
 
 interface MoSwapnaViewProps {
   language: 'en' | 'or';
@@ -269,7 +270,7 @@ const CAREER_DATABASE: CareerRoadmap[] = [
     gradient: 'from-amber-700/20 to-yellow-800/20',
     glowColor: 'rgba(245, 158, 11, 0.45)',
     taglineEn: 'Manage mineral resource excavation in Odisha\'s rich mining sector.',
-    taglineOr: 'ଓଡ଼ିଶାର ସମୃଦ୍ଧ ଖଣି ସମ୍ପଦର ଉତ୍ତୋଳନ, ଗବେଷଣା ଏବଂ ସୁରକ୍ଷା ପରିଚାଳନା କରନ୍ତୁ।',
+    taglineOr: 'ଓଡ଼ିଶାର ସମୃଦ୍ଧ ଖଣି ସମ୍ପଦର ଉତ୍ତୋଳନ, ଗବେଷଣา ଏବଂ ସୁରକ୍ଷା ପରିଚାଳନା କରନ୍ତୁ।',
     examsEn: ['JEE Advanced (for IIT ISM)', 'GATE (Mining/Geology)', 'OMC Recruitment Exam'],
     examsOr: ['JEE Advanced (IIT ISM Dhanbad)', 'GATE (ଖଣି/ଭୂତତ୍ତ୍ୱ)', 'OMC ନିଯୁକ୍ତି ପରୀକ୍ଷା'],
     milestones: [
@@ -280,6 +281,315 @@ const CAREER_DATABASE: CareerRoadmap[] = [
     ],
     roleModels: [
       { name: 'Dr. Pathani Samanta', descEn: 'Legendary astronomer from Odisha who measured the positions of stars with simple tools.', descOr: 'ଓଡ଼ିଶାର ଜ୍ୟୋତିର୍ବିଜ୍ଞାନୀ ମହାପୁରୁଷ ପଠାଣି ସାମନ୍ତ, ଯିଏ ନିଜ ଗବେଷଣା ପାଇଁ ବିଶ୍ୱପ୍ରସିଦ୍ଧ।' }
+    ]
+  },
+  {
+    id: 'police_paramilitary',
+    category: 'government',
+    titleEn: 'Police & Paramilitary Forces',
+    titleOr: 'ଆରକ୍ଷୀ ଓ ସାମରିକ ବଳ (Police & SI)',
+    icon: 'ShieldCheck',
+    gradient: 'from-blue-700/20 to-slate-700/20',
+    glowColor: 'rgba(37, 99, 235, 0.4)',
+    taglineEn: 'Maintain law and order, and protect citizens\' lives.',
+    taglineOr: 'ଆଇନ ଶୃଙ୍ଖଳା ରକ୍ଷା କରିବା ସହ ନାଗରିକଙ୍କ ସୁରକ୍ଷା ନିଶ୍ଚିତ କରନ୍ତୁ।',
+    examsEn: ['Civil Services (for IPS)', 'SSC CPO', 'State Police SI & Constable Exams', 'CAPF Exam'],
+    examsOr: ['ସିଭିଲ୍ ସେବା (IPS ପାଇଁ)', 'SSC CPO ପରୀକ୍ଷା', 'ରାଜ୍ୟ ପୋଲିସ SI ଓ କନଷ୍ଟେବଳ ପରୀକ୍ଷା', 'CAPF ପରୀକ୍ଷା'],
+    milestones: [
+      { stage: '1', titleEn: 'Physical Fitness & Sports', titleOr: 'ଶାରୀରିକ ଯୋଗ୍ୟତା ଓ କ୍ରୀଡ଼ା', descEn: 'Participate in sports, running, and maintain height and physical fitness standards during school.', descOr: 'ସ୍କୁଲ ସମୟରୁ ଦୌଡ଼ିବା, ଖେଳକୁଦ ଓ ଉପଯୁକ୍ତ ଉଚ୍ଚତା ସହ ଶାରୀରିକ ସ୍ୱାସ୍ଥ୍ୟ ବଜାୟ ରଖନ୍ତୁ।' },
+      { stage: '2', titleEn: 'Higher Secondary & NCC', titleOr: 'ଉଚ୍ଚ ମାଧ୍ୟମିକ ଓ NCC', descEn: 'Complete +2 in any stream. Joining NCC (National Cadet Corps) is highly beneficial.', descOr: 'ଯେକୌଣସି ବିଷୟରେ +୨ ପାସ୍ କରନ୍ତୁ। NCC ରେ ଯୋଗଦାନ ଅଧିକ ସହାୟକ ହୋଇଥାଏ।' },
+      { stage: '3', titleEn: 'Graduation / Physical Tests', titleOr: 'ସ୍ନାତକ ଓ ଶାରୀରିକ ପରୀକ୍ଷା', descEn: 'Complete a bachelor\'s degree. Begin training for physical efficiency tests (running, long jump).', descOr: 'ସ୍ନାତକ (Degree) ପାସ୍ କରନ୍ତୁ। ଦୌଡ଼, ଲମ୍ବ ଡିଆଁ ଆଦି ଶାରୀରିକ ଦକ୍ଷତା ପରୀକ୍ଷା ପାଇଁ ଅଭ୍ୟାସ ଆରମ୍ଭ କରନ୍ତୁ।' },
+      { stage: '4', titleEn: 'Written & Physical Exams', titleOr: 'ଲିଖିତ ଓ ସାକ୍ଷାତକାର ପରୀକ୍ଷା', descEn: 'Pass the competitive recruitment exams (General Knowledge, Math, English) and clear the medical checkup.', descOr: 'ନିଯୁକ୍ତି ପାଇଁ ଆବଶ୍ୟକ ଲିଖିତ ପରୀକ୍ଷା (ସାଧାରଣ ଜ୍ଞାନ, ଗଣିତ) ଓ ସ୍ୱାସ୍ଥ୍ୟ ପରୀକ୍ଷା ଉତ୍ତୀର୍ଣ୍ଣ ହୁଅନ୍ତୁ।' }
+    ],
+    roleModels: [
+      { name: 'Kiran Bedi', descEn: 'First woman IPS officer of India, known for prison reforms and strong leadership.', descOr: 'ଭାରତର ପ୍ରଥମ ମହିଳା ଆଇପିଏସ ଅଫିସର, ଯିଏ ନିଜର ଦୃଢ଼ ଶାସନ ପାଇଁ ପ୍ରସିଦ୍ଧ।' }
+    ]
+  },
+  {
+    id: 'judges_legal',
+    category: 'government',
+    titleEn: 'Judges & Legal Officers',
+    titleOr: 'ଜଜ୍ ଓ ସରକାରୀ ଓକିଲ (Judges & Law)',
+    icon: 'Scale',
+    gradient: 'from-amber-800/20 to-stone-800/20',
+    glowColor: 'rgba(217, 119, 6, 0.4)',
+    taglineEn: 'Deliver justice and uphold the constitution.',
+    taglineOr: 'ନ୍ୟାୟ ପ୍ରଦାନ କରିବା ସହ ସମ୍ବିଧାନ ଓ ଆଇନର ରକ୍ଷା କରନ୍ତୁ।',
+    examsEn: ['CLAT (Law Entrance)', 'Odisha Judicial Service (OJS)', 'AIBE Exam'],
+    examsOr: ['CLAT (ଆଇନ ପ୍ରବେଶ)', 'ଓଡ଼ିଶା ଜୁଡିସିଆଲ୍ ସେବା (OJS)', 'AIBE ପରୀକ୍ଷା'],
+    milestones: [
+      { stage: '1', titleEn: 'Debating & Language Skills', titleOr: 'ଭାଷଣ ଓ ଭାଷା ଦକ୍ଷତା', descEn: 'Develop excellent reading, writing, debating, and English language skills in high school.', descOr: 'ସ୍କୁଲ୍ ସ୍ତରରୁ ବିତର୍କ, ବକ୍ତୃତା ଓ ଉଭୟ ଇଂରାଜୀ ଏବଂ ଓଡ଼ିଆ ଭାଷା ଉପରେ ଦକ୍ଷତା ହାସଲ କରନ୍ତୁ।' },
+      { stage: '2', titleEn: 'Integrated Law (BA LLB)', titleOr: 'ସମନ୍ୱିତ ଆଇନ ପାଠ୍ୟକ୍ରମ', descEn: 'Appear for CLAT after +2 to enroll in a 5-year integrated BA LLB course at National Law Universities.', descOr: '+୨ ପରେ CLAT ପରୀକ୍ଷା ଦେଇ ୫-ବର୍ଷର ସମନ୍ୱିତ BA LLB ପାଠ୍ୟକ୍ରମରେ ନାମ ଲେଖାନ୍ତୁ।' },
+      { stage: '3', titleEn: 'Law Practice & Bar Council', titleOr: 'ଓକିଲାତି ଓ ବାର୍ କାଉନସିଲ୍', descEn: 'Graduate in Law, register with the Bar Council, and begin practicing in district courts or high courts.', descOr: 'ଆଇନ ଡିଗ୍ରୀ ଶେଷ କରି ବାର୍ କାଉନସିଲ୍‌ରେ ପଞ୍ଜିକରଣ ସହ ଓକିଲାତି ଅଭ୍ୟାସ ଆରମ୍ଭ କରନ୍ତୁ।' },
+      { stage: '4', titleEn: 'OJS Exam / Judge Posting', titleOr: 'ଜୁଡିସିଆଲ୍ ସେବା ପରୀକ୍ଷା', descEn: 'Clear the Odisha Judicial Service (OJS) exam to be appointed as a Civil Judge / Magistrate.', descOr: 'ଓଡ଼ିଶା ଜୁଡିସିଆଲ୍ ସେବା (OJS) ପରୀକ୍ଷା ଉତ୍ତୀର୍ଣ୍ଣ ହୋଇ ସିଭିଲ୍ ଜଜ୍ ଭାବେ ନିଯୁକ୍ତି ପାଆନ୍ତୁ।' }
+    ],
+    roleModels: [
+      { name: 'Justice Ranganath Misra', descEn: 'Former Chief Justice of India and Human Rights pioneer from Odisha.', descOr: 'ଓଡ଼ିଶାର ବରିଷ୍ଠ ଆଇନଜ୍ଞ ଓ ଭାରତର ପୂର୍ବତନ ପ୍ରଧାନ ବିଚାରପତି।' }
+    ]
+  },
+  {
+    id: 'railway_banking',
+    category: 'government',
+    titleEn: 'Railway & Banking Services',
+    titleOr: 'ରେଳବାଇ ଓ ବ୍ୟାଙ୍କିଙ୍ଗ (Railway & Bank)',
+    icon: 'TrainFront',
+    gradient: 'from-emerald-700/20 to-blue-800/20',
+    glowColor: 'rgba(16, 185, 129, 0.4)',
+    taglineEn: 'Manage public finance, banking, and government transport systems.',
+    taglineOr: 'ସରକାରୀ ଆର୍ଥିକ କାରବାର, ବ୍ୟାଙ୍କିଙ୍ଗ୍ ଏବଂ ରେଳବାଇ ପରିଚାଳନା କରନ୍ତୁ।',
+    examsEn: ['IBPS PO/Clerk', 'SBI PO/Clerk', 'RRB NTPC', 'SSC CGL'],
+    examsOr: ['IBPS PO/Clerk ପରୀକ୍ଷା', 'SBI PO/Clerk ପରୀକ୍ଷା', 'RRB NTPC ରେଳବାଇ', 'SSC CGL ପରୀକ୍ଷା'],
+    milestones: [
+      { stage: '1', titleEn: 'Math & Reasoning Speed', titleOr: 'ଗଣିତ ଓ ମାନସିକ ଦକ୍ଷତା', descEn: 'Focus on speed arithmetic, calculations, and analytical puzzles during school.', descOr: 'ସ୍କୁଲ୍ ସ୍ତରରୁ ଦ୍ରୁତ ଗାଣିତିକ ହିସାବ ଓ ଯୁକ୍ତିମୂଳକ ପ୍ରଶ୍ନର ଅଭ୍ୟାସ କରନ୍ତୁ।' },
+      { stage: '2', titleEn: '+2 & College Graduation', titleOr: '+୨ ଓ ସ୍ନାତକ ଶିକ୍ଷା', descEn: 'Complete intermediate and graduation in any stream (Commerce or Science is helpful).', descOr: 'ଯେକୌଣସି ବିଭାଗରେ +୨ ଏବଂ ସ୍ନାତକ ଡିଗ୍ରୀ ଶେଷ କରନ୍ତୁ।' },
+      { stage: '3', titleEn: 'Bank & Railway Coaching', titleOr: 'ପରୀକ୍ଷା ପ୍ରସ୍ତୁତି', descEn: 'Prepare for banking and railway exams focusing on Quantitative Aptitude, English, and Reasoning.', descOr: 'ଗଣିତ, ଇଂରାଜୀ, ସାଧାରଣ ଜ୍ଞାନ ଓ ମାନସିକ ଦକ୍ଷତା ଉପରେ ଗୁରୁତ୍ୱ ଦେଇ ପ୍ରସ୍ତୁତି କରନ୍ତୁ।' },
+      { stage: '4', titleEn: 'Clear Exams & Join', titleOr: 'ନିଯୁକ୍ତି ଓ ଯୋଗଦାନ', descEn: 'Clear Preliminary, Mains exams, and Interviews to get posted as Bank PO or Railway Officer.', descOr: 'ଲିଖିତ ପରୀକ୍ଷା ଏବଂ ସାକ୍ଷାତକାର ପାସ୍ କରି ବ୍ୟାଙ୍କ୍ କିମ୍ବା ରେଳବାଇରେ କାର୍ଯ୍ୟ ଆରମ୍ଭ କରନ୍ତୁ।' }
+    ],
+    roleModels: [
+      { name: 'Shaktikanta Das', descEn: 'Renowned bureaucrat from Odisha, serving as the Governor of the Reserve Bank of India (RBI).', descOr: 'ଓଡ଼ିଶାର ପ୍ରତିଷ୍ଠିତ ବ୍ୟକ୍ତିତ୍ୱ ଓ ଭାରତୀୟ ରିଜର୍ଭ ବ୍ୟାଙ୍କର ବର୍ତ୍ତମାନର ଗଭର୍ଣ୍ଣର।' }
+    ]
+  },
+  {
+    id: 'govt_teacher',
+    category: 'government',
+    titleEn: 'Government School Teacher',
+    titleOr: 'ସରକାରୀ ବିଦ୍ୟାଳୟ ଶିକ୍ଷକ (Govt Teacher)',
+    icon: 'GraduationCap',
+    gradient: 'from-teal-600/20 to-cyan-700/20',
+    glowColor: 'rgba(20, 184, 166, 0.4)',
+    taglineEn: 'Educate and shape the future of students in government schools.',
+    taglineOr: 'ସରକାରୀ ବିଦ୍ୟାଳୟଗୁଡ଼ିକରେ ଉତ୍ତମ ଶିକ୍ଷା ଦେଇ ଛାତ୍ରଛାତ୍ରୀଙ୍କ ଭବିଷ୍ୟତ ଗଢ଼ନ୍ତୁ।',
+    examsEn: ['CT Exam', 'OTET', 'OSSTET', 'SSD Teacher recruitment'],
+    examsOr: ['CT ପ୍ରବେଶିକା ପରୀକ୍ଷା', 'OTET ଶିକ୍ଷକ ଯୋଗ୍ୟତା', 'OSSTET ପରୀକ୍ଷା', 'ସରକାରୀ ଶିକ୍ଷକ ନିଯୁକ୍ତି'],
+    milestones: [
+      { stage: '1', titleEn: 'Explain concepts simply', titleOr: 'ଶିକ୍ଷାଦାନ ଶୈଳୀ ଓ ଧୈର୍ଯ୍ୟ', descEn: 'Develop communication skills and patience. Help classmates with studies in school.', descOr: 'ସହପାଠୀମାନଙ୍କୁ ପଢ଼ାଇବା ସହ ନିଜର ବୁଝାଇବା ଶୈଳୀ ଓ କଥାବାର୍ତ୍ତା ସୁଧାରନ୍ତୁ।' },
+      { stage: '2', titleEn: '+2 or Graduation', titleOr: '+୨ କିମ୍ବା +୩ ଶିକ୍ଷା', descEn: 'Complete +2 for Primary Teacher (CT path) or Graduation (+3) for High School Teacher (B.Ed path).', descOr: 'ପ୍ରାଥମିକ ଶିକ୍ଷକ ପାଇଁ +୨ କିମ୍ବା ହାଇସ୍କୁଲ୍ ଶିକ୍ଷକ ପାଇଁ ସ୍ନାତକ ଡିଗ୍ରୀ ଶେଷ କରନ୍ତୁ।' },
+      { stage: '3', titleEn: 'CT / B.Ed Professional Training', titleOr: 'ଶିକ୍ଷକ ତାଲିମ ପାଠ୍ୟକ୍ରମ', descEn: 'Enroll in D.El.Ed (CT) or B.Ed (Bachelor of Education) from recognized training institutes.', descOr: 'ଶିକ୍ଷକ ତାଲିମ ଡିଗ୍ରୀ D.El.Ed (CT) କିମ୍ବା B.Ed ପାଠ୍ୟକ୍ରମ ସଫଳତାର ସହ ସମାପ୍ତ କରନ୍ତୁ।' },
+      { stage: '4', titleEn: 'Pass OTET & Get Posting', titleOr: 'OTET ଓ ସରକାରୀ ନିଯୁକ୍ତି', descEn: 'Clear the Odisha Teacher Eligibility Test and state teacher recruitment examinations.', descOr: 'OTET/OSSTET ପାସ୍ କରି ରାଜ୍ୟ ସରକାରୀ ସ୍କୁଲରେ ଶିକ୍ଷକ ଭାବେ ନିଯୁକ୍ତି ପାଆନ୍ତୁ।' }
+    ],
+    roleModels: [
+      { name: 'Dr. Sarvepalli Radhakrishnan', descEn: 'Great philosopher, teacher, and the second President of India, in whose honor Teacher\'s Day is celebrated.', descOr: 'ମହାନ ଦାର୍ଶନିକ ଓ ଶିକ୍ଷକ, ଯାହାଙ୍କ ଜନ୍ମଦିନକୁ ଶିକ୍ଷକ ଦିବସ ଭାବେ ପାଳନ କରାଯାଏ।' }
+    ]
+  },
+  {
+    id: 'software_engineer',
+    category: 'private',
+    titleEn: 'Software Engineer & Web Developer',
+    titleOr: 'ସଫ୍ଟୱେର୍ ଇଞ୍ଜିନିୟର୍ (Software & Web)',
+    icon: 'Code2',
+    gradient: 'from-sky-500/20 to-indigo-600/20',
+    glowColor: 'rgba(14, 165, 233, 0.4)',
+    taglineEn: 'Build web apps, mobile apps, and solve digital problems.',
+    taglineOr: 'ୱେବସାଇଟ୍, ଆପ୍ସ ଏବଂ ବିଭିନ୍ନ ଡିଜିଟାଲ୍ ସଫ୍ଟୱେର୍ ତିଆରି କରନ୍ତୁ।',
+    examsEn: ['JEE Main (for NITs)', 'JEE Advanced (for IITs)', 'OJEE (for Odisha Colleges)'],
+    examsOr: ['JEE Main (NIT ପାଇଁ)', 'JEE Advanced (IIT ପାଇଁ)', 'OJEE (ଓଡ଼ିଶା ଇଞ୍ଜିନିୟରିଂ)'],
+    milestones: [
+      { stage: '1', titleEn: 'Basic Logic & Math', titleOr: 'ଗଣିତ ଓ ପ୍ରାରମ୍ଭିକ କମ୍ପ୍ୟୁଟର', descEn: 'Focus on mathematics, puzzle-solving, and basic computing in school. Learn Scratch/HTML.', descOr: 'ଗଣିତ, ସମସ୍ୟା ସମାଧାନ ଏବଂ ସ୍କୁଲରେ HTML ଓ ମୌଳିକ କମ୍ପ୍ୟୁଟର ଶିଖନ୍ତୁ।' },
+      { stage: '2', titleEn: '+2 Science with CS', titleOr: '+୨ ବିଜ୍ଞାନ ଓ କମ୍ପ୍ୟୁଟର', descEn: 'Choose Science stream with Mathematics and Computer Science (optional) in +2.', descOr: '+୨ ବିଜ୍ଞାନରେ ଗଣିତ ଏବଂ କମ୍ପ୍ୟୁଟର ବିଜ୍ଞାନ ବିଷୟ ରଖି ପଢ଼ନ୍ତୁ।' },
+      { stage: '3', titleEn: 'B.Tech / BCA Degree', titleOr: 'କମ୍ପ୍ୟୁଟର ଇଞ୍ଜିନିୟରିଂ (B.Tech/BCA)', descEn: 'Pursue B.Tech in Computer Science, BCA, or B.Sc in IT from a recognized college.', descOr: 'କମ୍ପ୍ୟୁଟର ବିଜ୍ଞାନରେ B.Tech, BCA କିମ୍ବା B.Sc IT ଡିଗ୍ରୀ ହାସଲ କରନ୍ତୁ।' },
+      { stage: '4', titleEn: 'Learn Coding & Join Tech Teams', titleOr: 'କୋଡିଂ ଅଭ୍ୟାସ ଓ ନିଯୁକ୍ତି', descEn: 'Learn programming languages like Java, Python, JavaScript. Build projects and get hired by IT companies.', descOr: 'Java, Python, JS ଶିଖନ୍ତୁ। କୋଡିଂ ପ୍ରୋଜେକ୍ଟ କରି ସଫ୍ଟୱେର କମ୍ପାନୀରେ ନିଯୁକ୍ତି ପାଆନ୍ତୁ।' }
+    ],
+    roleModels: [
+      { name: 'Sundar Pichai', descEn: 'IIT graduate who became the CEO of Google and Alphabet, leading global tech innovation.', descOr: 'ଆଇଆଇଟି ଛାତ୍ର ଯିଏ ଗୁଗୁଲର CEO ଭାବେ ବିଶ୍ୱରେ ପ୍ରତିଷ୍ଠିତ।' }
+    ]
+  },
+  {
+    id: 'private_doctor',
+    category: 'private',
+    titleEn: 'Private Doctor & Dental Specialist',
+    titleOr: 'ଘରୋଇ ଡାକ୍ତର ଓ ଦନ୍ତ ଚିକିତ୍ସକ (Private Doctor)',
+    icon: 'HeartPulse',
+    gradient: 'from-emerald-500/20 to-cyan-500/20',
+    glowColor: 'rgba(16, 185, 129, 0.4)',
+    taglineEn: 'Offer specialized medical consulting, surgeries, or dental care.',
+    taglineOr: 'ଘରୋଇ ଚିକିତ୍ସାଳୟ କିମ୍ବା ନିଜର କ୍ଲିନିକ୍ ମାଧ୍ୟମରେ ସ୍ୱାସ୍ଥ୍ୟ ସେବା ଯୋଗାନ୍ତୁ।',
+    examsEn: ['NEET-UG', 'NEET-MDS', 'NEET-PG'],
+    examsOr: ['NEET-UG ପ୍ରବେଶିକା', 'NEET-MDS (ଦନ୍ତ ବିଭାଗ)', 'NEET-PG (ସ୍ନାତକୋତ୍ତର)'],
+    milestones: [
+      { stage: '1', titleEn: 'High School Biology', titleOr: 'ବିଜ୍ଞାନ ଓ ଜୀବବିଜ୍ଞାନ', descEn: 'Pay close attention to human biology, plant biology, and general science in Class 9-10.', descOr: 'ସ୍କୁଲ୍ ସମୟରୁ ଜୀବବିଜ୍ଞାନ ଓ ମାନବ ସ୍ୱାସ୍ଥ୍ୟ ସମ୍ପର୍କିତ ପାଠ୍ୟ ପ୍ରତି ରୁଚି ବଢ଼ାନ୍ତୁ।' },
+      { stage: '2', titleEn: '+2 Science (PCB)', titleOr: '+୨ ବିଜ୍ଞାନ (PCB)', descEn: 'Select Physics, Chemistry, Biology in intermediate. Start preparing for NEET exam.', descOr: '+୨ ରେ ଭୌତିକ, ରସାୟନ ଓ ଜୀବବିଜ୍ଞାନ ପଢ଼ି NEET ପାଇଁ ପ୍ରସ୍ତୁତ ହୁଅନ୍ତୁ।' },
+      { stage: '3', titleEn: 'MBBS / BDS Course', titleOr: 'MBBS କିମ୍ବା BDS ଡିଗ୍ରୀ', descEn: 'Pass NEET exam to enroll in MBBS or BDS (Bachelor of Dental Surgery) course in medical colleges.', descOr: 'NEET ପରୀକ୍ଷା ଉତ୍ତୀର୍ଣ୍ଣ ହୋଇ MBBS କିମ୍ବା BDS (ଦନ୍ତ ଚିକିତ୍ସା) କଲେଜରେ ପଢ଼ନ୍ତୁ।' },
+      { stage: '4', titleEn: 'MD Specialization & Practice', titleOr: 'ସ୍ୱତନ୍ତ୍ର ଚିକିତ୍ସା ଓ କ୍ଲିନିକ୍', descEn: 'Complete MD/MS specialization. Join private healthcare groups or start your own specialty clinic.', descOr: 'MD/MS ସ୍ପେଶାଲାଇଜେସନ୍ କରି ବଡ଼ ହସ୍ପିଟାଲରେ ଯୋଗ ଦିଅନ୍ତୁ କିମ୍ବା କ୍ଲିନିକ୍ ଆରମ୍ଭ କରନ୍ତୁ।' }
+    ],
+    roleModels: [
+      { name: 'Dr. Devi Shetty', descEn: 'Renowned cardiac surgeon and founder of Narayana Health, promoting affordable care.', descOr: 'ଭାରତର ପ୍ରସିଦ୍ଧ ହୃଦରୋଗ ବିଶେଷଜ୍ଞ, ଯିଏ ସୁଲଭ ସ୍ୱାସ୍ଥ୍ୟ ସେବା ପାଇଁ ଜଣାଶୁଣା।' }
+    ]
+  },
+  {
+    id: 'private_nurse',
+    category: 'private',
+    titleEn: 'Private Nurse & Lab Technician',
+    titleOr: 'ନର୍ସ ଓ ଲ୍ୟାବ୍ ଟେକ୍ନିସିଆନ୍ (Nurse & Lab Tech)',
+    icon: 'ShieldPlus',
+    gradient: 'from-sky-500/20 to-teal-500/20',
+    glowColor: 'rgba(6, 182, 212, 0.4)',
+    taglineEn: 'Support patient diagnostics and nursing care in modern hospitals.',
+    taglineOr: 'ଘରୋଇ ଚିକିତ୍ସାଳୟ ଓ ରକ୍ତ ପରୀକ୍ଷା କେନ୍ଦ୍ରଗୁଡ଼ିକରେ କାର୍ଯ୍ୟ କରନ୍ତୁ।',
+    examsEn: ['DMLT Entrance', 'B.Sc Nursing Entry Exams'],
+    examsOr: ['DMLT (ଲ୍ୟାବ୍ ଟେକ୍ନିସିଆନ୍ ପ୍ରବେଶ)', 'B.Sc ନର୍ସିଂ ପ୍ରବେଶ ପରୀକ୍ଷା'],
+    milestones: [
+      { stage: '1', titleEn: 'Basic Science & Hygiene', titleOr: 'ସାଧାରଣ ବିଜ୍ଞାନ ଓ ସ୍ୱାସ୍ଥ୍ୟ', descEn: 'Learn biological processes, chemicals, and human body functions in high school.', descOr: 'ସ୍କୁଲ୍‌ରେ ଜୀବବିଜ୍ଞାନ ଏବଂ ସ୍ୱାସ୍ଥ୍ୟରକ୍ଷା ନିୟମ ଭଲ ଭାବରେ ବୁଝନ୍ତୁ।' },
+      { stage: '2', titleEn: 'Intermediate & Tech Courses', titleOr: '+୨ ଓ ବୈଷୟିକ ପାଠ୍ୟକ୍ରମ', descEn: 'Complete +2 in Science. Opt for ANM/GNM courses or DMLT (Diploma in Medical Lab Technology).', descOr: '+୨ ବିଜ୍ଞାନ ପରେ ନର୍ସିଂ (GNM) କିମ୍ବା ଡିପ୍ଲୋମା ଲ୍ୟାବ୍ ଟେକ୍ନୋଲୋଜି (DMLT) ପଢ଼ନ୍ତୁ।' },
+      { stage: '3', titleEn: 'Practical Training & Internship', titleOr: 'ବ୍ୟବହାରିକ ପ୍ରଶିକ୍ଷଣ', descEn: 'Complete internship at hospital labs. Learn handling diagnostic machinery and patient care.', descOr: 'ହସ୍ପିଟାଲ୍ ଲ୍ୟାବ୍‌ରେ ପ୍ରଶିକ୍ଷଣ ନିଅନ୍ତୁ। ବିଭିନ୍ନ ପରୀକ୍ଷା ଯନ୍ତ୍ରପାତି ଚଳାଇବା ଶିଖନ୍ତୁ।' },
+      { stage: '4', titleEn: 'Hospital Placement', titleOr: 'ଚିକିତ୍ସାଳୟରେ ନିଯୁକ୍ତି', descEn: 'Get hired by top private hospitals (Apollo, Care, etc.) or diagnostic centers as a specialist.', descOr: 'B.Sc ନର୍ସିଂ ବା DMLT ସାରି ବଡ଼ ଘରୋଇ ହସ୍ପିଟାଲ୍‌ରେ କାର୍ଯ୍ୟ ଆରମ୍ଭ କରନ୍ତୁ।' }
+    ],
+    roleModels: [
+      { name: 'Florence Nightingale', descEn: 'The founder of modern nursing, whose compassion transformed patient care.', descOr: 'ଆଧୁନିକ ନର୍ସିଂ ସେବାର ଜନନୀ, ଯିଏ ଦୟା ଓ ସେବାର ମହାନ ଆଦର୍ଶ।' }
+    ]
+  },
+  {
+    id: 'entrepreneur',
+    category: 'private',
+    titleEn: 'Entrepreneur & Startup Founder',
+    titleOr: 'ଉଦ୍ୟୋଗୀ ଓ ଷ୍ଟାର୍ଟଅପ୍ ପ୍ରତିଷ୍ଠାତା (Entrepreneur)',
+    icon: 'Lightbulb',
+    gradient: 'from-yellow-500/20 to-amber-600/20',
+    glowColor: 'rgba(234, 179, 8, 0.4)',
+    taglineEn: 'Build businesses, invent new products, and create employment.',
+    taglineOr: 'ନୂତନ ବ୍ୟବସାୟ ଓ ଷ୍ଟାର୍ଟଅପ୍ ଆରମ୍ଭ କରି କର୍ମସଂସ୍ଥାନ ସୃଷ୍ଟି କରନ୍ତୁ।',
+    examsEn: ['No Mandatory Exam', 'Management Entrance (CAT/MAT for MBA)'],
+    examsOr: ['କୌଣସି ନିର୍ଦ୍ଦିଷ୍ଟ ପରୀକ୍ଷା ଆବଶ୍ୟକ ନାହିଁ', 'MBA ପାଇଁ CAT/MAT ପ୍ରବେଶିକା ପରୀକ୍ଷା'],
+    milestones: [
+      { stage: '1', titleEn: 'Problem Solving & Innovation', titleOr: 'ସମସ୍ୟା ସମାଧାନ ଓ କଳ୍ପନା', descEn: 'Find everyday problems around you and think of unique ways to solve them. Build leadership.', descOr: 'ସମାଜରେ ଥିବା ସମସ୍ୟାଗୁଡ଼ିକୁ ଚିହ୍ନଟ କରି ସୃଜନଶୀଳ ଉପାୟରେ ସେଗୁଡ଼ିକର ସମାଧାନ ଚିନ୍ତା କରନ୍ତୁ।' },
+      { stage: '2', titleEn: 'Business Basics & Public Speaking', titleOr: 'ବ୍ୟବସାୟ ଶିକ୍ଷା ଓ କଥାବାର୍ତ୍ତା', descEn: 'Learn basic accounting, business case studies, and presentation/pitching skills.', descOr: 'ଆର୍ଥିକ ହିସାବ କିତାବ, ମାର୍କେଟିଂ ଓ ଲୋକଙ୍କ ଆଗରେ ନିଜ ବିଚାର ଉପସ୍ଥାପନ କରିବା ଦକ୍ଷତା ବଢ଼ାନ୍ତୁ।' },
+      { stage: '3', titleEn: 'Degree in Business / Tech', titleOr: 'ଉଚ୍ଚ ଶିକ୍ଷା (BBA / B.Tech / B.Com)', descEn: 'Complete Graduation. A degree in management (BBA/MBA) or technology helps understand industry.', descOr: 'ସ୍ନାତକ ଡିଗ୍ରୀ ଶେଷ କରନ୍ତୁ। ମ୍ୟାନେଜମେଣ୍ଟ ବା ବୈଷୟିକ ଡିଗ୍ରୀ ନୂଆ ଆଇଡିଆ ପାଇଁ ସହାୟକ ହୋଇଥାଏ।' },
+      { stage: '4', titleEn: 'Launch Startup & Fundraise', titleOr: 'ଷ୍ଟାର୍ଟଅପ୍ ଆରମ୍ଭ ଓ ଅର୍ଥ ଯୋଗାଡ଼', descEn: 'Develop your Minimum Viable Product (MVP), pitch to investors, register your business, and launch!', descOr: 'ନିଜର ପ୍ରଡକ୍ଟ ତିଆରି କରନ୍ତୁ, ନିବେଶକଙ୍କ ସହ ଭାଗିଦାରୀ କରି ନିଜର କମ୍ପାନୀ ଖୋଲନ୍ତୁ।' }
+    ],
+    roleModels: [
+      { name: 'Ritesh Agarwal', descEn: 'Young entrepreneur from Odisha who founded OYO Rooms, becoming one of the youngest billionaires.', descOr: 'ଓଡ଼ିଶାର ଯୁବ ଉଦ୍ୟୋଗୀ ତଥା OYO ରୁମ୍ସର ପ୍ରତିଷ୍ଠାତା।' }
+    ]
+  },
+  {
+    id: 'creative_designer',
+    category: 'private',
+    titleEn: 'Creative Designer & Visual Artist',
+    titleOr: 'କଳାକାର ଓ ଗ୍ରାଫିକ୍ ଡିଜାଇନର୍ (Designer & Artist)',
+    icon: 'Palette',
+    gradient: 'from-pink-500/20 to-rose-600/20',
+    glowColor: 'rgba(244, 63, 94, 0.4)',
+    taglineEn: 'Design user interfaces, 3D animations, and digital brand materials.',
+    taglineOr: 'ଡିଜିଟାଲ୍ ଆର୍ଟ, ଗ୍ରାଫିକ୍ ଡିଜାଇନ୍ ଏବଂ ଆନିମେସନ୍ ସୃଷ୍ଟି କରନ୍ତୁ।',
+    examsEn: ['UCEED (Design Entrance)', 'NID Entrance Exam', 'NIFT Exam'],
+    examsOr: ['UCEED (ଡିଜାଇନ୍ ପ୍ରବେଶ)', 'NID ପ୍ରବେଶିକା ପରୀକ୍ଷା', 'NIFT (ଫ୍ୟାଶନ୍ ଡିଜାଇନ୍)'],
+    milestones: [
+      { stage: '1', titleEn: 'Drawing & Creative Expression', titleOr: 'ଚିତ୍ରାଙ୍କନ ଓ ସୃଜନଶୀଳତା', descEn: 'Practice sketching, colors, photography, and learn basic visual aesthetics at school.', descOr: 'ଚିତ୍ରାଙ୍କନ, ରଙ୍ଗ ମିଶ୍ରଣ, ଫଟୋଗ୍ରାଫି ଓ କଳାତ୍ମକ ଦୃଷ୍ଟିକୋଣ ପ୍ରତି ସ୍କୁଲରେ ଧ୍ୟାନ ଦିଅନ୍ତୁ।' },
+      { stage: '2', titleEn: 'Learn Digital Design Tools', titleOr: 'ଡିଜିଟାଲ୍ ଡିଜାଇନ୍ ଟୁଲ୍ସ', descEn: 'Learn computer graphic tools like Canva, Photoshop, Illustrator, or 3D Blender.', descOr: 'କମ୍ପ୍ୟୁଟର ସଫ୍ଟୱେର୍ ଯେପରିକି Canva, Photoshop କିମ୍ବା 3D ଆନିମେସନ୍ ଟୁଲ୍ସ ଶିଖନ୍ତୁ।' },
+      { stage: '3', titleEn: 'Bachelor of Design (B.Des)', titleOr: 'ଡିଜାଇନ୍ କ୍ଷେତ୍ରରେ ସ୍ନାତକ', descEn: 'Enroll in B.Des (Bachelor of Design) or Bachelor of Fine Arts (BFA) at NID, IIT, or private design academies.', descOr: 'NID, IIT କିମ୍ବା ଡିଜାଇନ୍ ଆଇଟିଆଇରୁ B.Des କିମ୍ବା Fine Arts ରେ ଡିଗ୍ରୀ କରନ୍ତୁ।' },
+      { stage: '4', titleEn: 'Portfolio Development', titleOr: 'ପୋର୍ଟଫୋଲିଓ ଓ ଚାକିରି', descEn: 'Create a portfolio of your design projects. Join tech companies as UI/UX Designer or gaming studios as 3D Artist.', descOr: 'ନିଜର ଡିଜାଇନ୍ ସଂଗ୍ରହ (Portfolio) ତିଆରି କରନ୍ତୁ ଓ ଟେକ୍ କମ୍ପାନୀ କିମ୍ବା ଆନିମେସନ୍ ଷ୍ଟୁଡିଓରେ ଯୋଗ ଦିଅନ୍ତୁ।' }
+    ],
+    roleModels: [
+      { name: 'Sudarshan Pattnaik', descEn: 'World-famous sand artist from Odisha, awarded Padma Shri for his unique art.', descOr: 'ଓଡ଼ିଶାର ଆନ୍ତର୍ଜାତୀୟ ଖ୍ୟାତିସମ୍ପନ୍ନ ବାଲୁକା ଶିଳ୍ପୀ, ଯିଏ ପଦ୍ମଶ୍ରୀ ସମ୍ମାନରେ ସମ୍ମାନିତ।' }
+    ]
+  },
+  {
+    id: 'aviation_hospitality',
+    category: 'private',
+    titleEn: 'Aviation & Hospitality Management',
+    titleOr: 'ବୈମାନିକ ଓ ଆତିଥେୟତା ପରିଚାଳନା (Aviation)',
+    icon: 'Plane',
+    gradient: 'from-sky-600/20 to-blue-700/20',
+    glowColor: 'rgba(2, 132, 199, 0.4)',
+    taglineEn: 'Fly commercial airplanes, manage luxury hotels, or travel the world as cabin crew.',
+    taglineOr: 'ବୈମାନିକ (Pilot), କ୍ୟାବିନ୍ କ୍ରିୟୁ କିମ୍ବା ହୋଟେଲ ପରିଚାଳନା କାର୍ଯ୍ୟ କରନ୍ତୁ।',
+    examsEn: ['IGRUA (Pilot Entrance)', 'NCHMCT JEE (Hotel Management)', 'Aviation Academy Screening'],
+    examsOr: ['IGRUA (ପାଇଲଟ୍ ପ୍ରବେଶ)', 'NCHMCT JEE (ହୋଟେଲ ମ୍ୟାନେଜମେଣ୍ଟ)', 'ଏଭିଏସନ୍ ସ୍କ୍ରିନିଂ ପରୀକ୍ଷା'],
+    milestones: [
+      { stage: '1', titleEn: 'English Fluency & Manners', titleOr: 'ଭାଷା ଦକ୍ଷତା ଓ ଶିଷ୍ଟାଚାର', descEn: 'Build strong oral communication in English, grooming, and interpersonal behavior in school.', descOr: 'ଉତ୍ତମ ଶିଷ୍ଟାଚାର ବଜାୟ ରଖନ୍ତୁ ଏବଂ ଇଂରାଜୀରେ କଥାବାର୍ତ୍ତା କରିବା ଦକ୍ଷତା ବଢ଼ାନ୍ତୁ।' },
+      { stage: '2', titleEn: '+2 Science (PCM) for Pilots', titleOr: '+୨ ଶିକ୍ଷା (ପାଇଲଟ୍ ପାଇଁ PCB/M)', descEn: 'Complete +2. Physics and Mathematics are mandatory for commercial pilot license training.', descOr: '+୨ ଶେଷ କରନ୍ତୁ। ପାଇଲଟ୍ ହେବା ପାଇଁ ଗଣିତ ଓ ପଦାର୍ଥ ବିଜ୍ଞାନ ଆବଶ୍ୟକ।' },
+      { stage: '3', titleEn: 'Flying School / Hotel College', titleOr: 'ପାଇଲଟ୍ ଟ୍ରେନିଂ କିମ୍ବା ହୋଟେଲ ମ୍ୟାନେଜମେଣ୍ଟ', descEn: 'Join a flight school to log flying hours for CPL, or study BHM (Bachelor of Hotel Management).', descOr: 'CPL ଲାଇସେନ୍ସ ପାଇଁ ଫ୍ଲାଇଂ ସ୍କୁଲରେ କିମ୍ବା ହୋଟେଲ ମ୍ୟାନେଜମେଣ୍ଟ (BHM) କଲେଜରେ ଯୋଗ ଦିଅନ୍ତୁ।' },
+      { stage: '4', titleEn: 'Join Airlines / 5-Star Hotels', titleOr: 'ବିମାନ କମ୍ପାନୀ କିମ୍ବା ହୋଟେଲରେ ଯୋଗଦାନ', descEn: 'Join airlines as a pilot/cabin crew, or luxury hotel chains (Taj, Oberoi) as an executive.', descOr: 'ବିଭିନ୍ନ ଏୟାରଲାଇନ୍ସ କମ୍ପାନୀ କିମ୍ବା ପଞ୍ଚତାରକା ହୋଟେଲ୍‌ରେ ନିଯୁକ୍ତି ପାଆନ୍ତୁ।' }
+    ],
+    roleModels: [
+      { name: 'Biju Patnaik', descEn: 'Former Chief Minister of Odisha, legendary freedom fighter, and an extraordinary pilot.', descOr: 'ଓଡ଼ିଶାର ପ୍ରବାଦ ପୁରୁଷ ଓ ପୂର୍ବତନ ମୁଖ୍ୟମନ୍ତ୍ରୀ, ଯିଏ ଜଣେ ସାହସୀ ଓ ଦକ୍ଷ ପାଇଲଟ୍ ଥିଲେ।' }
+    ]
+  },
+  {
+    id: 'odisha_agriculture',
+    category: 'odisha',
+    titleEn: 'Odisha Agriculture & Horticulture Officer',
+    titleOr: 'ଓଡ଼ିଶା କୃଷି ବିଭାଗ ଅଧିକାରୀ (Agriculture Officer)',
+    icon: 'Sprout',
+    gradient: 'from-emerald-700/20 to-green-800/20',
+    glowColor: 'rgba(16, 185, 129, 0.4)',
+    taglineEn: 'Empower farmers, introduce scientific farming, and improve crop yield in Odisha.',
+    taglineOr: 'ବିଜ୍ଞାନସମ୍ମତ ପ୍ରଣାଳୀ ଓ ଔଷଧ ସାହାଯ୍ୟରେ ଓଡ଼ିଶାର କୃଷିର ବିକାଶ କରନ୍ତୁ।',
+    examsEn: ['OUAT Entrance Exam', 'OPSC Agriculture Officer Recruitment'],
+    examsOr: ['OUAT ପ୍ରବେଶିକା ପରୀକ୍ଷା', 'OPSC କୃଷି ଅଧିକାରୀ ନିଯୁକ୍ତି ପରୀକ୍ଷା'],
+    milestones: [
+      { stage: '1', titleEn: 'Life Sciences & Farming Interest', titleOr: 'ଉଦ୍ଭିଦ ବିଜ୍ଞାନ ଓ କୃଷିରେ ରୁଚି', descEn: 'Learn plant science, soil types, and ecology in high school biology.', descOr: 'ଉଦ୍ଭିଦ ପ୍ରକ୍ରିୟା, ମୃତ୍ତିକା ଏବଂ ପ୍ରାକୃତିକ କୃଷି ସମ୍ପର୍କରେ ସ୍କୁଲ୍ ସମୟରୁ ଜ୍ଞାନ ଆହରଣ କରନ୍ତୁ।' },
+      { stage: '2', titleEn: '+2 Science (PCB/PCM)', titleOr: '+୨ ବିଜ୍ଞାନ ଶିକ୍ଷା', descEn: 'Complete +2 Science. Focus on Physics, Chemistry, and Biology (PCB).', descOr: '+୨ ବିଜ୍ଞାନରେ ଜୀବବିଜ୍ଞାନ ଓ ରସାୟନ ବିଜ୍ଞାନ ଭଲ ଭାବରେ ପଢ଼ନ୍ତୁ।' },
+      { stage: '3', titleEn: 'B.Sc Agriculture (OUAT)', titleOr: 'କୃଷି ବିଜ୍ଞାନରେ ସ୍ନାତକ (B.Sc Agri)', descEn: 'Clear the OUAT entrance exam and complete a 4-year B.Sc (Hons) in Agriculture or Horticulture.', descOr: 'OUAT ପରୀକ୍ଷା ଉତ୍ତୀର୍ଣ୍ଣ ହୋଇ କୃଷି କଲେଜରୁ B.Sc (Agriculture) ଡିଗ୍ରୀ ହାସଲ କରନ୍ତୁ।' },
+      { stage: '4', titleEn: 'Clear OPSC & Join Agriculture Dept', titleOr: 'OPSC ପରୀକ୍ଷା ଓ ବ୍ଲକ୍‌ରେ ନିଯୁକ୍ତି', descEn: 'Clear the OPSC Agriculture Services exam to join as an Agricultural Officer (AO) at block level.', descOr: 'OPSC କୃଷି ସେବା ପରୀକ୍ଷା ଦେଇ ବ୍ଲକ୍ ସ୍ତରରେ କୃଷି ଅଧିକାରୀ (AO) ଭାବେ କାର୍ଯ୍ୟ କରନ୍ତୁ।' }
+    ],
+    roleModels: [
+      { name: 'Dr. MS Swaminathan', descEn: 'The father of the Green Revolution in India, whose agricultural research saved millions.', descOr: 'ଭାରତୀୟ ସବୁଜ ବିପ୍ଳବର ଜନକ, ଯିଏ ନୂତନ କୃଷି ଗବେଷଣାର ପ୍ରଦର୍ଶକ ଥିଲେ।' }
+    ]
+  },
+  {
+    id: 'odisha_forest',
+    category: 'odisha',
+    titleEn: 'Odisha Forest & Wildlife Officer',
+    titleOr: 'ଓଡ଼ିଶା ଜଙ୍ଗଲ ବିଭାଗ ଅଧିକାରୀ (Forest Officer)',
+    icon: 'TreePine',
+    gradient: 'from-green-800/20 to-emerald-950/20',
+    glowColor: 'rgba(34, 197, 94, 0.4)',
+    taglineEn: 'Protect Odisha\'s rich forest cover, Similipal tigers, and natural ecosystems.',
+    taglineOr: 'ଓଡ଼ିଶାର ଘଞ୍ଚ ଅରଣ୍ୟ, ବନ୍ୟଜନ୍ତୁ ଏବଂ ଜଳବାୟୁର ସୁରକ୍ଷା ନିଶ୍ଚିତ କରନ୍ତୁ।',
+    examsEn: ['OPSC Forest Service (IFS/OFSD)', 'OSSC Forest Guard Recruitment'],
+    examsOr: ['OPSC ଜଙ୍ଗଲ ସେବା ପରୀକ୍ଷା', 'OSSC ଫରେଷ୍ଟ ଗାର୍ଡ ନିଯୁକ୍ତି ପରୀକ୍ଷା'],
+    milestones: [
+      { stage: '1', titleEn: 'Environmental Science & Outdoor Activities', titleOr: 'ପରିବେଶ ବିଜ୍ଞାନ ଓ ବାହ୍ୟ ପରିକ୍ରମା', descEn: 'Learn about forest trees, animal species, and wildlife conservation at school.', descOr: 'ପରିବେଶ ସନ୍ତୁଳନ, ଗଛଲତା ଏବଂ ଜଙ୍ଗଲ ପ୍ରତି ସ୍କୁଲ୍ ସମୟରୁ ଆଗ୍ରହ ରଖନ୍ତୁ।' },
+      { stage: '2', titleEn: '+2 Science', titleOr: '+୨ ବିଜ୍ଞାନ', descEn: 'Complete +2 Science. Keep regular walking/fitness activities active.', descOr: '+୨ ବିଜ୍ଞାନ ପାସ୍ କରନ୍ତୁ ଏବଂ ନିଜର ଶାରୀରିକ ସ୍ୱାସ୍ଥ୍ୟ ବଜାୟ ରଖନ୍ତୁ।' },
+      { stage: '3', titleEn: 'Science / Forestry Degree', titleOr: 'ସ୍ନାତକ ଡିଗ୍ରୀ (Forestry/Science)', descEn: 'Complete B.Sc in Forestry, Botany, Zoology, or Agricultural Engineering from a recognized college.', descOr: 'Forestry, ଉଦ୍ଭିଦ ବିଜ୍ଞାନ କିମ୍ବା ପ୍ରାଣୀ ବିଜ୍ଞାନରେ B.Sc ଡିଗ୍ରୀ ଶେଷ କରନ୍ତୁ।' },
+      { stage: '4', titleEn: 'Forest Exam & Physical Run', titleOr: 'Forest ପରୀକ୍ଷା ଓ ଶାରୀରିକ ଚାଲି', descEn: 'Clear OPSC Forest Services exams (Written + Physical test consisting of long walking/running).', descOr: 'ଜଙ୍ଗଲ ସେବା ପରୀକ୍ଷା ସହ ଉଦ୍ଦିଷ୍ଟ ଚାଲି ପରୀକ୍ଷା (Physical Test) ଉତ୍ତୀର୍ଣ୍ଣ ହୋଇ ନିଯୁକ୍ତି ପାଆନ୍ତୁ।' }
+    ],
+    roleModels: [
+      { name: 'Dr. Saroj Raj Choudhury', descEn: 'First Director of Similipal Tiger Reserve, pioneer in tiger census and conservation.', descOr: 'ଶିମିଳିପାଳ ବ୍ୟାଘ୍ର ପ୍ରକଳ୍ପର ପ୍ରଥମ ନିର୍ଦ୍ଦେଶକ ଓ ବନ୍ୟପ୍ରାଣୀ ସଂରକ୍ଷକ।' }
+    ]
+  },
+  {
+    id: 'odisha_tourism',
+    category: 'odisha',
+    titleEn: 'Odisha Tourism & Cultural Heritage Manager',
+    titleOr: 'ଓଡ଼ିଶା ପର୍ଯ୍ୟଟନ ଓ ସଂସ୍କୃତି ବିକାଶ (Tourism Manager)',
+    icon: 'Compass',
+    gradient: 'from-amber-600/20 to-red-800/20',
+    glowColor: 'rgba(245, 158, 11, 0.4)',
+    taglineEn: 'Promote Odisha\'s famous art, temples, and natural beauty to visitors worldwide.',
+    taglineOr: 'ଓଡ଼ିଶାର ସଂସ୍କୃତି, କଳାକୃତି ଓ ପର୍ଯ୍ୟଟନ ସ୍ଥଳଗୁଡ଼ିକୁ ବିଶ୍ୱ ଦରବାରରେ ପହଞ୍ଚାନ୍ତୁ।',
+    examsEn: ['NCHMCT JEE', 'Odisha Tourism Dept recruitment exams', 'University specific Entrance'],
+    examsOr: ['NCHMCT JEE ପରୀକ୍ଷା', 'ଓଡ଼ିଶା ପର୍ଯ୍ୟଟନ ନିଯୁକ୍ତି ପରୀକ୍ଷା', 'ମାଷ୍ଟର୍ସ ପ୍ରବେଶିକา ପରୀକ୍ଷା'],
+    milestones: [
+      { stage: '1', titleEn: 'Odia Culture & History Study', titleOr: 'ଇତିହାସ, ସଂସ୍କୃତି ଓ ସାହିତ୍ୟ', descEn: 'Explore Odisha\'s history, tourist sites (Konark, Puri, Chilika), and art forms (Odissi, Pattachitra) in school.', descOr: 'କୋଣାର୍କ, ପୁରୀ, ଚିଲିକା ସମେତ ଓଡ଼ିଶାର କଳା ଓ ଭାସ୍କର୍ଯ୍ୟ ବିଷୟରେ ପଢ଼ନ୍ତୁ।' },
+      { stage: '2', titleEn: 'Higher Secondary School', titleOr: 'ଉଚ୍ଚ ମାଧ୍ୟମିକ ଶିକ୍ଷା', descEn: 'Complete +2 in Arts, Science, or Commerce. Learn languages (English, Hindi, Odia).', descOr: '+୨ ପାସ୍ କରନ୍ତୁ। ବିଭିନ୍ନ ଭାଷา (ଇଂରାଜୀ, ହିନ୍ଦୀ) କହିବା ଏବଂ ବୁଝିବା ଅଭ୍ୟାସ କରନ୍ତୁ।' },
+      { stage: '3', titleEn: 'Tourism Degree (BTTM / MBA)', titleOr: 'ପର୍ଯ୍ୟଟନ ପରିଚାଳନା ଡିଗ୍ରୀ', descEn: 'Pursue Bachelor of Tourism & Travel Management (BTTM) or MBA in Tourism & Hospitality.', descOr: 'ପର୍ଯ୍ୟଟନ ଓ ଭ୍ରମଣ ପରିଚାଳନା (BTTM/MBA) ପାଠ୍ୟକ୍ରମରେ ଶିକ୍ଷା ଗ୍ରହଣ କରନ୍ତୁ।' },
+      { stage: '4', titleEn: 'Join OTDC or Tourism Sector', titleOr: 'OTDC କିମ୍ବା ଘରୋଇ ନିଯୁକ୍ତି', descEn: 'Work with Odisha Tourism Development Corporation (OTDC), international agencies, or start your own tourism enterprise.', descOr: 'ଓଡ଼ିଶା ପର୍ଯ୍ୟଟନ ଉନ୍ନୟନ ନିଗମ (OTDC) କିମ୍ବା ବିଶ୍ୱ ପର୍ଯ୍ୟଟନ ସଂସ୍ଥାରେ କାର୍ଯ୍ୟ ଆରମ୍ଭ କରନ୍ତୁ।' }
+    ],
+    roleModels: [
+      { name: 'Pathani Samanta', descEn: 'Inspiring Odia scholar whose heritage works motivate curiosity and global recognition of Odia intellect.', descOr: 'ପ୍ରତିଷ୍ଠିତ ଓଡ଼ିଆ ବିଜ୍ଞାନ ପୁରୁଷ ଯାହାଙ୍କ ଜ୍ଞାନ ଓ ପରମ୍ପରା ଆମକୁ ଗର୍ବିତ କରିଥାଏ।' }
+    ]
+  }
+,
+  {
+    id: 'sports_athlete',
+    category: 'odisha',
+    titleEn: 'Sports Athlete & Physical Coach',
+    titleOr: 'କ୍ରୀଡ଼ାବିତ୍ ଓ କ୍ରୀଡ଼ା ପ୍ରଶିକ୍ଷକ (Sports Athlete)',
+    icon: 'Trophy',
+    gradient: 'from-orange-600/20 to-amber-700/20',
+    glowColor: 'rgba(249, 115, 22, 0.4)',
+    taglineEn: 'Train in high-performance centers and represent Odisha and India in sports.',
+    taglineOr: 'ଓଡ଼ିଶା ଉଚ୍ଚ-ଦକ୍ଷତା କ୍ରୀଡ଼ା କେନ୍ଦ୍ରରେ ତାଲିମ ନେଇ ଦେଶ ଓ ରାଜ୍ୟ ପାଇଁ ଗର୍ବ ଆଣନ୍ତୁ।',
+    examsEn: ['State/National Trials', 'Sports Hostel Admission Exam', 'NSNIS Diploma in Coaching'],
+    examsOr: ['ରାଜ୍ୟ/ଜାତୀୟ ପ୍ରତିଭା ଚୟନ', 'କ୍ରୀଡ଼ା ହଷ୍ଟେଲ ପ୍ରବେଶ ପରୀକ୍ଷା', 'NSNIS କୋଚିଂ ଡିପ୍ଲୋମା'],
+    milestones: [
+      { stage: '1', titleEn: 'School Sports (Class 6-10)', titleOr: 'ସ୍କୁଲ୍ ସ୍ତରୀୟ କ୍ରୀଡ଼ା', descEn: 'Participate in block/district meets. Try to join government sports hostels for free training.', descOr: 'ବ୍ଲକ୍ ଏବଂ ଜିଲ୍ଲା ସ୍ତରୀୟ କ୍ରୀଡ଼ାରେ ଭାଗ ନିଅନ୍ତୁ। ମାଗଣା ତାଲିମ ପାଇଁ ସରକାରୀ କ୍ରୀଡ଼ା ହଷ୍ଟେଲରେ ଯୋଗ ଦିଅନ୍ତୁ।' },
+      { stage: '2', titleEn: '+2 Higher Secondary & Academy', titleOr: '+୨ ଶିକ୍ଷା ଓ କ୍ରୀଡ଼ା ଏକାଡେମୀ', descEn: 'Enroll in recognized sports academies. Maintain intensive physical fitness and junior national practice.', descOr: '+୨ ବିଜ୍ଞାନ, କଳା କିମ୍ବା ବାଣିଜ୍ୟ ସହ ସ୍ଥାନୀୟ ଏକାଡେମୀରେ ଅଭ୍ୟାସ ଓ ଜାତୀୟ ପ୍ରତିଯୋଗିତା ପାଇଁ ପ୍ରସ୍ତୁତି କରନ୍ତୁ।' },
+      { stage: '3', titleEn: 'HPC & University Level', titleOr: 'ଉଚ୍ଚ-ଦକ୍ଷତା କେନ୍ଦ୍ର ଓ ମହାବିଦ୍ୟାଳୟ', descEn: 'Get scouted for Odisha High Performance Centres (Hockey, Athletics) or SAI training programs.', descOr: 'ଓଡ଼ିଶା କ୍ରୀଡ଼ା ବିଭାଗର ଉଚ୍ଚ-ଦକ୍ଷତା କେନ୍ଦ୍ର (HPC) କିମ୍ବା SAI (Sports Authority of India) କେନ୍ଦ୍ରରେ ଯୋଗ ଦିଅନ୍ତୁ।' },
+      { stage: '4', titleEn: 'Pro Representation / Coaching', titleOr: 'ପ୍ରଫେସନାଲ୍ କ୍ୟାରିଅର୍ ଓ କୋଚିଂ', descEn: 'Compete in national/international championships. Complete NSNIS coaching diploma to serve as a sports guide.', descOr: 'ଦେଶ ପାଇଁ ଖେଳି ସୁନାମ ଆଣନ୍ତୁ, କିମ୍ବା NSNIS ଡିପ୍ଲୋମା ଶେଷ କରି ଜଣେ କ୍ରୀଡ଼ା ପ୍ରଶିକ୍ଷକ ହୁଅନ୍ତୁ।' }
+    ],
+    roleModels: [
+      { name: 'Dutee Chand', descEn: 'Eminent sprinter from Odisha who won two silver medals at the Asian Games.', descOr: 'ଓଡ଼ିଶାର ପ୍ରସିଦ୍ଧ ଦ୍ରୁତ ଧାବିକା, ଯିଏ ଏସୀୟ କ୍ରୀଡ଼ାରେ ଭାରତ ପାଇଁ ଦୁଇଟି ରୌପ୍ୟ ପଦକ ଜିତିଛନ୍ତି।' }
     ]
   }
 ];
@@ -303,6 +613,7 @@ export function MoSwapnaView({ language, onBack, user }: MoSwapnaViewProps) {
     }
   ]);
   const [isTyping, setIsTyping] = useState(false);
+  const [customQuery, setCustomQuery] = useState('');
 
   // Load goals from local storage on mount
   useEffect(() => {
@@ -385,6 +696,67 @@ export function MoSwapnaView({ language, onBack, user }: MoSwapnaViewProps) {
       audio.play().catch(() => {});
     }, 1200);
   };
+
+  const handleSendCustomQuery = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (isTyping || !customQuery.trim()) return;
+
+    const queryText = customQuery.trim();
+    setCustomQuery('');
+
+    // Add user message to UI
+    setChatMessages(prev => [...prev, { sender: 'user', text: queryText }]);
+    setIsTyping(true);
+
+    try {
+      const ai = getAI();
+      const contents = chatMessages.map(msg => ({
+        role: msg.sender === 'user' ? 'user' : 'model',
+        parts: [{ text: msg.text }]
+      }));
+      contents.push({
+        role: 'user',
+        parts: [{ text: queryText }]
+      });
+
+      const systemInstruction = `You are Gundulu, a warm, inspiring, and highly knowledgeable AI Career Guide for school students (Class 1 to 10) in Odisha, India. 
+Your goal is to guide students on how to achieve their dream careers. Follow these guidelines:
+1. Always respond in Odia (ଓଡ଼ିଆ) if the student asks or writes in Odia. If the user writes in English, you can respond in English but maintain Odia context. Keep your language simple and friendly, easy for children to understand.
+2. Provide a step-by-step career path (High school focus, +2 stream, graduation, relevant entrance exams like NEET, JEE, CLAT, UPSC, OPSC OJS/OCSE, and colleges).
+3. Mention Odisha-specific roles, government and private sectors, and local role models (e.g. Biju Patnaik, Dr. APJ Abdul Kalam, Pathani Samanta, Gopabandhu Das) to inspire them.
+4. Keep answers positive, clear, structured, and motivational.
+5. Crucial Spelling Constraint: When writing in Odia, ensure spelling is correct. Avoid spelling mistakes like 'ପରିକ୍ଷା' (use 'ପରୀକ୍ଷା' instead), 'ଗୁଣ୍ଡୁଲୁ' (use 'ଗୁନ୍ଦୁଲୁ' instead).`;
+
+      const responseText = await withRetry(async (modelName, apiVersion) => {
+        const genModel = ai.getGenerativeModel({
+          model: modelName,
+          systemInstruction: systemInstruction,
+        }, { apiVersion });
+
+        const result = await genModel.generateContent({ contents });
+        return result.response.text();
+      }, 'flash');
+
+      const rawReply = responseText || (language === 'en' ? "I couldn't process that. Please try again." : "ଦୟାକରି ପୁଣିଥରେ ଚେଷ୍ଟା କରନ୍ତୁ।");
+      const cleanReply = cleanOdiaOrthography(rawReply);
+
+      setChatMessages(prev => [...prev, { sender: 'gundulu', text: cleanReply }]);
+
+      // Play soft notification sound safely
+      const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3');
+      audio.volume = 0.2;
+      audio.play().catch(() => {});
+    } catch (err) {
+      console.error("Gundulu Advisor AI error:", err);
+      const errorMsg = language === 'en' 
+        ? "Sorry, I am facing connectivity issues. Please try again later." 
+        : "ଦୁଃଖିତ, ସଂଯୋଗରେ ସମସ୍ୟା ଦେଖାଦେଇଛି। ଦୟାକରି ପରେ ଚେଷ୍ଟା କରନ୍ତୁ।";
+      setChatMessages(prev => [...prev, { sender: 'gundulu', text: errorMsg }]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
 
   const filteredCareers = selectedCategory === 'all' 
     ? CAREER_DATABASE 
@@ -768,11 +1140,30 @@ export function MoSwapnaView({ language, onBack, user }: MoSwapnaViewProps) {
                   )}
                 </div>
 
+                {/* Chat Input Section */}
+                <form onSubmit={handleSendCustomQuery} className="p-3 border-t border-slate-800 bg-slate-950/40 flex items-center gap-2 relative z-20">
+                  <input
+                    type="text"
+                    value={customQuery}
+                    onChange={(e) => setCustomQuery(e.target.value)}
+                    placeholder={language === 'en' ? "Ask Gundulu anything about your dream career..." : "ଗୁନ୍ଦୁଲୁକୁ ତୁମର ସ୍ୱପ୍ନ କ୍ୟାରିଅର୍ ବିଷୟରେ ପଚାର..."}
+                    disabled={isTyping}
+                    className="flex-1 px-4 py-2.5 rounded-xl border border-slate-800 bg-slate-900/60 text-white text-xs sm:text-sm font-semibold focus:outline-none focus:border-amber-500/50 transition-all placeholder:text-slate-600"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isTyping || !customQuery.trim()}
+                    className="p-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 disabled:scale-100 cursor-pointer"
+                  >
+                    <Lucide.Send size={14} className="stroke-[2.5]" />
+                  </button>
+                </form>
+
                 {/* Chat Info bottom */}
                 <div className="px-5 py-3 border-t border-slate-800 bg-slate-900/30 text-center text-[10px] text-slate-500 font-semibold">
                   {language === 'en' 
-                    ? 'Click one of the queries on the left to receive dynamic counseling guidance.' 
-                    : 'କ୍ୟାରିଅର୍ ପଥ ପାଇଁ ବାମ ପାର୍ଶ୍ୱରେ ଥିବା ଯେକୌଣସି ପ୍ରଶ୍ନ ଉପରେ କ୍ଲିକ୍ କରନ୍ତୁ।'}
+                    ? 'Type a custom question above or click one of the queries on the left to receive guidance.' 
+                    : 'ଉପରେ ନିଜ ପ୍ରଶ୍ନ ଲେଖନ୍ତୁ କିମ୍ବା ବାମ ପାର୍ଶ୍ୱରେ ଥିବା ପ୍ରଶ୍ନଗୁଡ଼ିକ ଉପରେ କ୍ଲିକ୍ କରି ମାର୍ଗଦର୍ଶନ ପାଆନ୍ତୁ।'}
                 </div>
               </div>
             </div>
