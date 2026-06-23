@@ -1,0 +1,23 @@
+# Ignore dependencies and environment folders
+node_modules
+.venv
+.firebase
+
+# Ignore git history
+.git
+.github
+
+# Ignore build outputs (since we build it fresh inside Docker)
+dist
+
+# Ignore massive textbook data JSON files (these are stored/synced in Firestore anyway)
+textbook_vectors_class_*_progress.json
+gemini_batch_requests.jsonl
+*.csv
+*.jsonl
+
+# Ignore sensitive keys and local configs
+.env
+*.keystore
+utkal-admin-sdk.json
+utkalskillcentre-4ed1afa2f6a3.json
