@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import * as Lucide from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { translations } from '../translations';
+import { ODISHA_DISTRICTS } from '../constants/districts';
 import { SEO } from './SEO';
 import { db as firestore, storage } from '../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -197,7 +198,7 @@ export function getCorrectSubjectName(subject: string, lang: 'en' | 'or'): strin
 
 export function ResultsReviewView({ submission, test, onBack, language }: any) {
   return (
-    <div className="fixed inset-0 z-[80] bg-slate-950 overflow-y-auto p-6">
+    <div className="fixed inset-0 z-[80] bg-slate-950 overflow-y-auto pt-24 pb-8 px-6">
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="flex items-center justify-between sticky top-0 bg-slate-950/80 backdrop-blur-md py-4 z-10 border-b border-white/5 mb-8">
           <button onClick={onBack} className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
@@ -352,6 +353,8 @@ export function CertificateView({ submission, test, user, onBack, language }: an
 
   const scorePercent = Math.round((submission.finalScore || submission.score) / (submission.totalMaxMarks || submission.totalQuestions) * 100);
   const userDistrict = user.district || 'Khordha';
+  const districtObj = ODISHA_DISTRICTS.find(d => d.en.toLowerCase() === userDistrict.toLowerCase());
+  const districtNameOr = districtObj ? districtObj.or : userDistrict;
   const watermarkDetail = DISTRICT_LANDMARKS_WATERMARKS[userDistrict] || {
     landmarkEn: 'State of Odisha',
     landmarkOr: 'ସମସ୍ତ ଓଡ଼ିଶା',
@@ -361,8 +364,27 @@ export function CertificateView({ submission, test, user, onBack, language }: an
   return (
     <div 
       ref={containerRef}
-      className="fixed inset-0 z-[99999] bg-slate-950/95 backdrop-blur-xl overflow-y-auto p-4 md:p-8 flex flex-col items-center justify-start scroll-smooth"
+      className="fixed inset-0 z-[99999] bg-slate-950/95 backdrop-blur-xl overflow-y-auto scroll-smooth"
     >
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media print {
+          @page {
+            size: landscape;
+            margin: 0;
+          }
+          body {
+            margin: 0;
+            padding: 0;
+            background-color: #FCFAF2 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          html, body {
+            height: 100% !important;
+            overflow: hidden !important;
+          }
+        }
+      `}} />
       <button 
         onClick={onBack}
         className="fixed top-4 left-4 flex items-center gap-2 text-slate-400 hover:text-white transition-colors z-[110] print:hidden bg-slate-900/85 px-4 py-2.5 rounded-xl border border-white/5 backdrop-blur-md shadow-lg"
@@ -371,94 +393,94 @@ export function CertificateView({ submission, test, user, onBack, language }: an
         <span className="font-black uppercase tracking-[0.2em] text-xs">{language === 'en' ? 'Back' : 'ଫେରିଯାଅ'}</span>
       </button>
       
-      <div className="max-w-4xl w-full bg-[#FCFAF2] rounded-2xl shadow-2xl p-3 sm:p-5 relative overflow-hidden print:p-0 print:shadow-none print:m-0 mt-14 sm:mt-0 border border-amber-400/30" ref={certificateRef}>
-        <div className="border-[6px] sm:border-[12px] border-emerald-700 border-double p-4 sm:p-12 text-center relative">
+      <div className="min-h-full w-full flex flex-col items-center justify-start pt-24 pb-12 px-4 md:px-8 print:p-0 print:pt-0 print:pb-0 print:justify-center">
+        <div className="max-w-4xl w-full bg-[#FCFAF2] rounded-2xl shadow-2xl p-3 sm:p-5 relative overflow-hidden print:p-0 print:shadow-none print:m-0 mt-14 sm:mt-0 border border-amber-400/30 print:max-w-full" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }} ref={certificateRef}>
+        <div className="border-[6px] sm:border-[12px] border-emerald-700 border-double p-4 sm:p-12 print:p-4 sm:print:p-6 text-center relative">
           {/* Corner Ornaments */}
           <div className="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-amber-500/60"></div>
           <div className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-amber-500/60"></div>
           <div className="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-amber-500/60"></div>
           <div className="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-amber-500/60"></div>
 
-          <div 
-            className="absolute inset-0 opacity-[0.04] pointer-events-none bg-cover bg-center grayscale" 
-            style={{ backgroundImage: `url(${watermarkDetail.image})` }}
+          <img 
+            src={watermarkDetail.image} 
+            alt="Watermark" 
+            className="absolute inset-0 w-full h-full object-cover opacity-[0.15] pointer-events-none grayscale select-none" 
           />
 
-          <div className="relative z-10 space-y-4 sm:space-y-8">
+          <div className="relative z-10 space-y-4 sm:space-y-8 print:space-y-3">
             <div className="flex flex-col items-center">
-              <div className="w-14 h-14 sm:w-24 sm:h-24 mb-2 sm:mb-6 relative">
+              <div className="w-14 h-14 sm:w-24 sm:h-24 print:w-16 print:h-16 mb-2 sm:mb-6 print:mb-2 relative">
                 <div className="absolute inset-0 bg-emerald-500/10 rounded-full blur-xl"></div>
                 <img src="/utkal-512.png" alt="Utkal Logo" className="w-full h-full object-contain relative z-10" />
               </div>
-              <h1 className="text-xl sm:text-4xl font-serif font-black text-slate-900 tracking-tight uppercase">
+              <h1 className="text-xl sm:text-4xl print:text-2xl font-serif font-black text-slate-900 tracking-tight uppercase">
                 ଉତ୍କର୍ଷତା ପ୍ରମାଣପତ୍ର
               </h1>
-              <div className="w-24 sm:w-48 h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent mt-2 sm:mt-4"></div>
-              <p className="text-[7px] sm:text-[10px] font-bold text-amber-700 uppercase tracking-[0.3em] sm:tracking-[0.4em] mt-1 sm:mt-2">
+              <div className="w-24 sm:w-48 print:w-32 h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent mt-2 sm:mt-4 print:mt-2"></div>
+              <p className="text-[7px] sm:text-[10px] font-bold text-amber-700 uppercase tracking-[0.3em] sm:tracking-[0.4em] mt-1 sm:mt-2 print:mt-1">
                 ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର ଶୈକ୍ଷଣିକ ସଫଳତା
               </p>
             </div>
 
-            <div className="space-y-2 sm:space-y-4 pt-2 sm:pt-4">
-              <p className="text-slate-500 font-serif italic text-xs sm:text-lg">
+            <div className="space-y-2 sm:space-y-4 print:space-y-2 pt-2 sm:pt-4 print:pt-2">
+              <p className="text-slate-500 font-serif italic text-xs sm:text-lg print:text-sm">
                 ଏତଦ୍ୱାରା ପ୍ରମାଣିତ କରାଯାଉଛି ଯେ,
               </p>
-              <h2 className="text-xl sm:text-5xl font-serif font-bold text-slate-900 border-b border-amber-200 pb-1 sm:pb-2 px-4 sm:px-8 inline-block">{submission.userName}</h2>
-              <p className="text-slate-500 text-[10px] sm:text-base font-medium">
+              <h2 className="text-xl sm:text-5xl print:text-3xl font-serif font-bold text-slate-900 border-b border-amber-200 pb-1 sm:pb-2 print:pb-1 px-4 sm:px-8 inline-block">{submission.userName}</h2>
+              <p className="text-slate-500 text-[10px] sm:text-base print:text-xs font-medium">
                 ମାସିକ ପରୀକ୍ଷାରେ ଉଲ୍ଲେଖନୀୟ ପ୍ରଦର୍ଶନ କରିଥିବାରୁ ଏହି ପ୍ରମାଣପତ୍ର ପ୍ରଦାନ କରାଗଲା।
               </p>
             </div>
 
-            <div className="space-y-1 sm:space-y-2 py-2 sm:py-4">
-              <h3 className="text-sm sm:text-2xl font-bold text-emerald-800 uppercase tracking-[0.05em] sm:tracking-[0.1em]">
+            <div className="space-y-1 sm:space-y-2 print:space-y-1 py-2 sm:py-4 print:py-2">
+              <h3 className="text-sm sm:text-2xl print:text-lg font-bold text-emerald-800 uppercase tracking-[0.05em] sm:tracking-[0.1em]">
                 {test.month} {test.year} ମାସିକ ମୂଲ୍ୟାଙ୍କନ
               </h3>
-              <div className="flex items-center justify-center gap-1.5 sm:gap-3 text-slate-500 text-[10px] sm:text-sm">
+              <div className="flex items-center justify-center gap-1.5 sm:gap-3 text-slate-500 text-[10px] sm:text-sm print:text-[11px]">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                 <span>ବିଷୟ: <span className="font-bold text-slate-800">{getCorrectSubjectName(test.subject, 'or')}</span></span>
                 <span className="w-1 h-1 rounded-full bg-slate-300"></span>
                 <span>ଶ୍ରେଣୀ: <span className="font-bold text-slate-800">{translations['or'].classes?.[submission.class as keyof typeof translations.or.classes] || submission.class}</span></span>
                 <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                <span>ଜିଲ୍ଲା: <span className="font-bold text-slate-800">{user.district || 'Khordha'}</span></span>
+                <span>ଜିଲ୍ଲା: <span className="font-bold text-slate-800">{districtNameOr}</span></span>
               </div>
             </div>
 
-            <div className="flex justify-center items-center gap-4 sm:gap-12 py-3 sm:py-6 relative max-w-2xl mx-auto">
-              <div className="bg-amber-50/30 border border-amber-200/50 rounded-2xl py-3 px-4 sm:px-6 text-center flex-1">
-                <p className="text-xl sm:text-3xl font-black text-slate-900 leading-none">{scorePercent}%</p>
-                <p className="text-[7px] sm:text-[9px] font-bold text-amber-700 uppercase tracking-wider mt-1.5">
+            <div className="flex justify-center items-center gap-4 sm:gap-12 py-3 sm:py-6 print:py-2 relative max-w-2xl mx-auto">
+              <div className="bg-amber-50/30 border border-amber-200/50 rounded-2xl py-3 px-4 sm:px-6 print:py-1.5 print:px-3 text-center flex-1">
+                <p className="text-xl sm:text-3xl print:text-xl font-black text-slate-900 leading-none">{scorePercent}%</p>
+                <p className="text-[7px] sm:text-[9px] print:text-[8px] font-bold text-amber-700 uppercase tracking-wider mt-1.5">
                   ମୋଟ୍ ସ୍କୋର୍
                 </p>
               </div>
-              <div className="text-center bg-amber-50/30 border border-amber-200/50 rounded-2xl py-3 px-4 sm:px-6 flex-1">
-                <p className="text-xl sm:text-3xl font-black text-slate-900 leading-none">#{submission.rank || 'N/A'}</p>
-                <p className="text-[7px] sm:text-[9px] font-bold text-amber-700 uppercase tracking-wider mt-1.5">
+              <div className="text-center bg-amber-50/30 border border-amber-200/50 rounded-2xl py-3 px-4 sm:px-6 print:py-1.5 print:px-3 flex-1">
+                <p className="text-xl sm:text-3xl print:text-xl font-black text-slate-900 leading-none">#{submission.rank || 'N/A'}</p>
+                <p className="text-[7px] sm:text-[9px] print:text-[8px] font-bold text-amber-700 uppercase tracking-wider mt-1.5">
                   ରାଜ୍ୟ ରାଙ୍କ
                 </p>
               </div>
-              {submission.districtRank && (
-                <div className="text-center bg-amber-50/30 border border-amber-200/50 rounded-2xl py-3 px-4 sm:px-6 flex-1">
-                  <p className="text-xl sm:text-3xl font-black text-slate-900 leading-none">#{submission.districtRank}</p>
-                  <p className="text-[7px] sm:text-[9px] font-bold text-amber-700 uppercase tracking-wider mt-1.5">
-                    ଜିଲ୍ଲା ରାଙ୍କ
-                  </p>
-                </div>
-              )}
+              <div className="text-center bg-amber-50/30 border border-amber-200/50 rounded-2xl py-3 px-4 sm:px-6 print:py-1.5 print:px-3 flex-1">
+                <p className="text-xl sm:text-3xl print:text-xl font-black text-slate-900 leading-none">#{submission.districtRank || 'N/A'}</p>
+                <p className="text-[7px] sm:text-[9px] print:text-[8px] font-bold text-amber-700 uppercase tracking-wider mt-1.5">
+                  ଜିଲ୍ଲା ରାଙ୍କ
+                </p>
+              </div>
             </div>
 
-            <div className="flex justify-between items-end mt-6 sm:mt-12 px-2 sm:px-12 pt-4 sm:pt-8">
+            <div className="flex justify-between items-end mt-6 sm:mt-12 print:mt-4 px-2 sm:px-12 print:px-6 pt-4 sm:pt-8 print:pt-2">
               <div className="text-center relative flex flex-col items-center">
-                <img src="/gundulu-pointing-nobg.png" className="w-12 h-12 object-contain absolute -top-8 opacity-75 print:opacity-100" alt="Gundulu Signature Pin" />
-                <div className="w-16 sm:w-32 border-b border-slate-900 mb-1 sm:mb-2 mx-auto mt-4" />
-                <p className="font-serif font-bold text-slate-900 text-[10px] sm:text-sm">Gundulu</p>
-                <p className="text-[7px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-tighter">
+                <img src="/gundulu-pointing-nobg.png" className="w-12 h-12 print:w-10 print:h-10 object-contain absolute -top-8 print:-top-6 opacity-75 print:opacity-100" alt="Gundulu Signature Pin" />
+                <div className="w-16 sm:w-32 border-b border-slate-900 mb-1 sm:mb-2 mx-auto mt-4 print:mt-3" />
+                <p className="font-serif font-bold text-slate-900 text-[10px] sm:text-sm print:text-xs">Gundulu</p>
+                <p className="text-[7px] sm:text-[9px] print:text-[8px] font-bold text-slate-400 uppercase tracking-tighter">
                   AI ଶିକ୍ଷା ପରାମର୍ଶଦାତା
                 </p>
               </div>
               <div className="relative">
-                <div className="w-14 h-14 sm:w-24 sm:h-24 bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-600 rounded-full flex items-center justify-center border-2 border-white shadow-lg shadow-amber-500/20">
-                  <div className="w-12 h-12 sm:w-20 sm:h-20 bg-transparent rounded-full flex items-center justify-center border border-white/30">
-                    <Lucide.Award className="w-6 h-6 sm:w-10 sm:h-10 text-white" />
+                <div className="w-14 h-14 sm:w-24 sm:h-24 print:w-14 print:h-14 bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-600 rounded-full flex items-center justify-center border-2 border-white shadow-lg shadow-amber-500/20">
+                  <div className="w-12 h-12 sm:w-20 sm:h-20 print:w-10 print:h-10 bg-transparent rounded-full flex items-center justify-center border border-white/30">
+                    <Lucide.Award className="w-6 h-6 sm:w-10 sm:h-10 print:w-6 print:h-6 text-white" />
                   </div>
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -466,18 +488,21 @@ export function CertificateView({ submission, test, user, onBack, language }: an
                 </div>
               </div>
               <div className="text-center">
-                <p className="font-serif italic font-bold text-emerald-700 text-xs sm:text-lg mb-1 relative z-10 print:text-slate-900">Tiki Apa</p>
+                <p className="font-serif italic font-bold text-emerald-700 text-xs sm:text-lg print:text-xs mb-1 relative z-10 print:text-slate-900">Tiki Apa</p>
                 <div className="w-16 sm:w-32 border-b border-slate-900 mb-1 sm:mb-2 mx-auto" />
-                <p className="font-serif font-bold text-slate-900 text-[10px] sm:text-sm">
+                <p className="font-serif font-bold text-slate-900 text-[10px] sm:text-sm print:text-xs">
                   ଟିକି ଅପା (ପ୍ରଧାନ ଶିକ୍ଷୟିତ୍ରୀ)
                 </p>
-                <p className="text-[7px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-tighter">
+                <p className="text-[7px] sm:text-[9px] print:text-[8px] font-bold text-slate-400 uppercase tracking-tighter">
                   ନିର୍ଦ୍ଦେଶକ, ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର
                 </p>
               </div>
             </div>
             
-            <p className="text-[7px] sm:text-[9px] text-slate-300 font-mono mt-4 sm:mt-8 italic">
+            <p className="text-[8px] sm:text-[11px] text-emerald-800/70 font-serif italic mt-3 sm:mt-6 print:mt-3">
+              ପୃଷ୍ଠଭୂମି ଐତିହ୍ୟ: {watermarkDetail.landmarkOr} ({districtNameOr})
+            </p>
+            <p className="text-[7px] sm:text-[9px] text-slate-300 font-mono mt-2 sm:mt-4 print:mt-2 italic">
               ଯାଞ୍ଚ ID: {submission.id?.slice(-8).toUpperCase()}
             </p>
           </div>
@@ -503,6 +528,7 @@ export function CertificateView({ submission, test, user, onBack, language }: an
           ? 'Tip: For best result, set Layout to "Landscape" and "Remove Margins" in print settings.' 
           : 'ଟିପ୍: ସର୍ବୋତ୍ତମ ଫଳାଫଳ ପାଇଁ, ପ୍ରିଣ୍ଟ୍ ସେଟିଂସରେ ଲେଆଉଟ୍ କୁ "Landscape" ଏବଂ "Margins" କୁ Remove କରନ୍ତୁ।'}
       </p>
+      </div>
     </div>
   );
 }
@@ -522,6 +548,8 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
   const overallPercent = overallMax > 0 ? Math.round((overallScore / overallMax) * 100) : 0;
   
   const userDistrict = user.district || 'Khordha';
+  const districtObj = ODISHA_DISTRICTS.find(d => d.en.toLowerCase() === userDistrict.toLowerCase());
+  const districtNameOr = districtObj ? districtObj.or : userDistrict;
   const watermarkDetail = DISTRICT_LANDMARKS_WATERMARKS[userDistrict] || {
     landmarkEn: 'State of Odisha',
     landmarkOr: 'ସମସ୍ତ ଓଡ଼ିଶା',
@@ -531,8 +559,27 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
   return (
     <div 
       ref={containerRef}
-      className="fixed inset-0 z-[99999] bg-slate-950/95 backdrop-blur-xl overflow-y-auto p-4 md:p-8 flex flex-col items-center justify-start scroll-smooth"
+      className="fixed inset-0 z-[99999] bg-slate-950/95 backdrop-blur-xl overflow-y-auto scroll-smooth"
     >
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media print {
+          @page {
+            size: landscape;
+            margin: 0;
+          }
+          body {
+            margin: 0;
+            padding: 0;
+            background-color: #FCFAF2 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          html, body {
+            height: 100% !important;
+            overflow: hidden !important;
+          }
+        }
+      `}} />
       <button 
         onClick={onBack}
         className="fixed top-4 left-4 flex items-center gap-2 text-slate-400 hover:text-white transition-colors z-[110] print:hidden bg-slate-900/85 px-4 py-2.5 rounded-xl border border-white/5 backdrop-blur-md shadow-lg"
@@ -541,57 +588,60 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
         <span className="font-black uppercase tracking-[0.2em] text-xs">{language === 'en' ? 'Back' : 'ଫେରିଯାଅ'}</span>
       </button>
 
-      <div className="max-w-4xl w-full bg-[#FCFAF2] rounded-2xl shadow-2xl p-3 sm:p-5 relative overflow-hidden print:p-0 print:shadow-none print:m-0 mt-14 sm:mt-0 border border-amber-400/30">
-        <div className="border-[6px] sm:border-[12px] border-emerald-700 border-double p-4 sm:p-12 text-center relative">
+      <div className="min-h-full w-full flex flex-col items-center justify-start pt-24 pb-12 px-4 md:px-8 print:p-0 print:pt-0 print:pb-0 print:justify-center">
+
+      <div className="max-w-4xl w-full bg-[#FCFAF2] rounded-2xl shadow-2xl p-3 sm:p-5 relative overflow-hidden print:p-0 print:shadow-none print:m-0 mt-14 sm:mt-0 border border-amber-400/30 print:max-w-full" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}>
+        <div className="border-[6px] sm:border-[12px] border-emerald-700 border-double p-4 sm:p-12 print:p-4 sm:print:p-6 text-center relative">
           {/* Corner Ornaments */}
           <div className="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-amber-500/60"></div>
           <div className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-amber-500/60"></div>
           <div className="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-amber-500/60"></div>
           <div className="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-amber-500/60"></div>
 
-          <div 
-            className="absolute inset-0 opacity-[0.04] pointer-events-none bg-cover bg-center grayscale" 
-            style={{ backgroundImage: `url(${watermarkDetail.image})` }}
+          <img 
+            src={watermarkDetail.image} 
+            alt="Watermark" 
+            className="absolute inset-0 w-full h-full object-cover opacity-[0.15] pointer-events-none grayscale select-none" 
           />
 
-          <div className="relative z-10 space-y-6 sm:space-y-8">
+          <div className="relative z-10 space-y-6 sm:space-y-8 print:space-y-3">
             <div className="flex flex-col items-center">
-              <div className="w-14 h-14 sm:w-24 sm:h-24 mb-2 sm:mb-4 relative">
+              <div className="w-14 h-14 sm:w-24 sm:h-24 print:w-16 print:h-16 mb-2 sm:mb-4 print:mb-2 relative">
                 <div className="absolute inset-0 bg-emerald-500/10 rounded-full blur-xl"></div>
                 <img src="/utkal-512.png" alt="Utkal Logo" className="w-full h-full object-contain relative z-10" />
               </div>
-              <h1 className="text-xl sm:text-4xl font-serif font-black text-slate-900 tracking-tight uppercase">
+              <h1 className="text-xl sm:text-4xl print:text-2xl font-serif font-black text-slate-900 tracking-tight uppercase">
                 ମିଳିତ ଉତ୍କର୍ଷତା ପ୍ରମାଣପତ୍ର
               </h1>
-              <div className="w-32 sm:w-64 h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent mt-2 sm:mt-3"></div>
+              <div className="w-32 sm:w-64 print:w-40 h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent mt-2 sm:mt-3 print:mt-2"></div>
               <p className="text-[7px] sm:text-[10px] font-bold text-amber-700 uppercase tracking-[0.3em] sm:tracking-[0.4em] mt-1">
                 ମାସିକ ପରୀକ୍ଷା ସିରିଜ୍ ପ୍ରଦର୍ଶନ ରିପୋର୍ଟ
               </p>
             </div>
 
-            <div className="space-y-1 sm:space-y-2">
-              <p className="text-slate-500 font-serif italic text-xs sm:text-md">
+            <div className="space-y-1 sm:space-y-2 print:space-y-1">
+              <p className="text-slate-500 font-serif italic text-xs sm:text-md print:text-sm">
                 ଏହି ଶୈକ୍ଷଣିକ ପ୍ରମାଣପତ୍ର ପ୍ରଦାନ କରାଯାଉଛି
               </p>
-              <h2 className="text-xl sm:text-4xl font-serif font-bold text-slate-900 border-b border-amber-200 pb-1 px-4 sm:px-8 inline-block">{user.displayName || user.name || 'Student'}</h2>
-              <p className="text-slate-500 text-[10px] sm:text-sm font-medium">
+              <h2 className="text-xl sm:text-4xl print:text-2xl font-serif font-bold text-slate-900 border-b border-amber-200 pb-1 px-4 sm:px-8 inline-block">{user.displayName || user.name || 'Student'}</h2>
+              <p className="text-slate-500 text-[10px] sm:text-sm print:text-xs font-medium">
                 ସମସ୍ତ ବିଷୟରେ ଅସାଧାରଣ ପ୍ରଦର୍ଶନ ଏବଂ ପାରଦର୍ଶିତା ପାଇଁ
               </p>
-              <h3 className="text-sm sm:text-xl font-bold text-emerald-800 uppercase tracking-widest">
+              <h3 className="text-sm sm:text-xl print:text-lg font-bold text-emerald-800 uppercase tracking-widest">
                 {monthYear} ମାସିକ ପରୀକ୍ଷା ଶୃଙ୍ଖଳା
               </h3>
             </div>
 
-            <div className="border border-amber-200/60 rounded-xl overflow-hidden max-w-2xl mx-auto bg-white/60 backdrop-blur-sm shadow-sm">
+            <div className="border border-amber-200/60 rounded-xl overflow-hidden max-w-2xl mx-auto bg-white/60 backdrop-blur-sm shadow-sm print:my-1">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-amber-50/50 text-amber-950 text-[9px] sm:text-xs font-bold uppercase border-b border-amber-200/60">
-                    <th className="px-4 py-2 sm:py-3 text-emerald-900">ବିଷୟ</th>
-                    <th className="px-4 py-2 sm:py-3 text-center text-emerald-900">ମାର୍କ</th>
-                    <th className="px-4 py-2 sm:py-3 text-right text-emerald-900">ସଠିକତା</th>
+                  <tr className="bg-amber-50/50 text-amber-950 text-[9px] sm:text-xs print:text-[10px] font-bold uppercase border-b border-amber-200/60">
+                    <th className="px-4 py-2 sm:py-3 print:py-1.5 print:px-3 text-emerald-900">ବିଷୟ</th>
+                    <th className="px-4 py-2 sm:py-3 print:py-1.5 print:px-3 text-center text-emerald-900">ମାର୍କ</th>
+                    <th className="px-4 py-2 sm:py-3 print:py-1.5 print:px-3 text-right text-emerald-900">ସଠିକତା</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-amber-100 text-slate-800 text-[10px] sm:text-sm font-medium">
+                <tbody className="divide-y divide-amber-100 text-slate-800 text-[10px] sm:text-sm print:text-[11px] font-medium">
                   {submissions.map((sub: any, idx: number) => {
                     const testItem = tests.find((t: any) => t.id === sub.testId);
                     const subjectLabel = getCorrectSubjectName(testItem?.subject || 'Unknown', 'or');
@@ -601,69 +651,71 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
 
                     return (
                       <tr key={idx} className="hover:bg-slate-100/50">
-                        <td className="px-4 py-2">{subjectLabel}</td>
-                        <td className="px-4 py-2 text-center font-mono font-bold">{score} / {max}</td>
-                        <td className="px-4 py-2 text-right font-mono font-bold text-emerald-700">{percent}%</td>
+                        <td className="px-4 py-2 print:py-1 print:px-3">{subjectLabel}</td>
+                        <td className="px-4 py-2 print:py-1 print:px-3 text-center font-mono font-bold">{score} / {max}</td>
+                        <td className="px-4 py-2 print:py-1 print:px-3 text-right font-mono font-bold text-emerald-700">{percent}%</td>
                       </tr>
                     );
                   })}
                   <tr className="bg-emerald-50/30 text-emerald-950 font-bold border-t border-amber-200/60">
-                    <td className="px-4 py-3 text-emerald-900">ସାମଗ୍ରିକ ସଞ୍ଚୟୀ ଫଳାଫଳ</td>
-                    <td className="px-4 py-3 text-center font-mono">{overallScore} / {overallMax}</td>
-                    <td className="px-4 py-3 text-right font-mono text-emerald-600">{overallPercent}%</td>
+                    <td className="px-4 py-3 print:py-1.5 print:px-3 text-emerald-900">ସାମଗ୍ରିକ ସଞ୍ଚୟୀ ଫଳାଫଳ</td>
+                    <td className="px-4 py-3 print:py-1.5 print:px-3 text-center font-mono">{overallScore} / {overallMax}</td>
+                    <td className="px-4 py-3 print:py-1.5 print:px-3 text-right font-mono text-emerald-600">{overallPercent}%</td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
-            <div className="flex justify-center items-center gap-4 sm:gap-12 py-1 max-w-md mx-auto">
-              <div className="bg-amber-50/30 border border-amber-200/50 rounded-2xl px-4 py-2.5 text-center flex-1">
-                <p className="text-lg sm:text-2xl font-black text-slate-800 font-mono">
+            <div className="flex justify-center items-center gap-4 sm:gap-12 py-1 print:py-0.5 max-w-md mx-auto">
+              <div className="bg-amber-50/30 border border-amber-200/50 rounded-2xl px-4 py-2.5 print:py-1.5 print:px-3 text-center flex-1">
+                <p className="text-lg sm:text-2xl print:text-lg font-black text-slate-800 font-mono">
                   #{submissions[0]?.rank || 'N/A'}
                 </p>
-                <p className="text-[7px] sm:text-[9px] font-bold uppercase text-amber-700 tracking-wider mt-1">
+                <p className="text-[7px] sm:text-[9px] print:text-[8px] font-bold uppercase text-amber-700 tracking-wider mt-1">
                   ରାଜ୍ୟ ରାଙ୍କ
                 </p>
               </div>
-              {submissions.some((s: any) => s.districtRank) && (
-                <div className="bg-amber-50/30 border border-amber-200/50 rounded-2xl px-4 py-2.5 text-center flex-1">
-                  <p className="text-lg sm:text-2xl font-black text-slate-800 font-mono">
-                    #{submissions.find((s: any) => s.districtRank)?.districtRank}
-                  </p>
-                  <p className="text-[7px] sm:text-[9px] font-bold uppercase text-amber-700 tracking-wider mt-1">
-                    ଜିଲ୍ଲା ରାଙ୍କ
-                  </p>
-                </div>
-              )}
+              <div className="bg-amber-50/30 border border-amber-200/50 rounded-2xl px-4 py-2.5 print:py-1.5 print:px-3 text-center flex-1">
+                <p className="text-lg sm:text-2xl print:text-lg font-black text-slate-800 font-mono">
+                  #{submissions.find((s: any) => s.districtRank)?.districtRank || 'N/A'}
+                </p>
+                <p className="text-[7px] sm:text-[9px] print:text-[8px] font-bold uppercase text-amber-700 tracking-wider mt-1">
+                  ଜିଲ୍ଲା ରାଙ୍କ
+                </p>
+              </div>
             </div>
 
-            <div className="flex justify-between items-end mt-4 sm:mt-8 px-2 sm:px-12 pt-2 sm:pt-4">
+            <div className="flex justify-between items-end mt-4 sm:mt-8 print:mt-3 px-2 sm:px-12 print:px-6 pt-2 sm:pt-4 print:pt-1">
               <div className="text-center relative flex flex-col items-center">
-                <img src="/gundulu-pointing-nobg.png" className="w-12 h-12 object-contain absolute -top-8 opacity-75 print:opacity-100" alt="Gundulu" />
-                <div className="w-16 sm:w-32 border-b border-slate-900 mb-1 sm:mb-2 mx-auto mt-4" />
-                <p className="font-serif font-bold text-slate-900 text-[10px] sm:text-sm">Gundulu</p>
-                <p className="text-[7px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-tighter">
+                <img src="/gundulu-pointing-nobg.png" className="w-12 h-12 print:w-10 print:h-10 object-contain absolute -top-8 print:-top-6 opacity-75 print:opacity-100" alt="Gundulu" />
+                <div className="w-16 sm:w-32 border-b border-slate-900 mb-1 sm:mb-2 mx-auto mt-4 print:mt-3" />
+                <p className="font-serif font-bold text-slate-900 text-[10px] sm:text-sm print:text-xs">Gundulu</p>
+                <p className="text-[7px] sm:text-[9px] print:text-[8px] font-bold text-slate-400 uppercase tracking-tighter">
                   AI ଶିକ୍ଷା ପରାମର୍ଶଦାତା
                 </p>
               </div>
-              <div className="relative hidden sm:block">
-                <div className="w-16 h-16 bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-600 rounded-full flex items-center justify-center border-2 border-white shadow-lg shadow-amber-500/20">
-                  <div className="w-12 h-12 bg-transparent rounded-full flex items-center justify-center border border-white/20">
-                    <Lucide.Award className="w-6 h-6 text-white" />
+              <div className="relative hidden sm:block print:block">
+                <div className="w-16 h-16 print:w-12 print:h-12 bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-600 rounded-full flex items-center justify-center border-2 border-white shadow-lg shadow-amber-500/20">
+                  <div className="w-12 h-12 print:w-8 print:h-8 bg-transparent rounded-full flex items-center justify-center border border-white/20">
+                    <Lucide.Award className="w-6 h-6 print:w-4 print:h-4 text-white" />
                   </div>
                 </div>
               </div>
               <div className="text-center">
-                <p className="font-serif italic font-bold text-emerald-700 text-xs sm:text-lg mb-1 relative z-10 print:text-slate-900">Tiki Apa</p>
+                <p className="font-serif italic font-bold text-emerald-700 text-xs sm:text-lg print:text-xs mb-1 relative z-10 print:text-slate-900">Tiki Apa</p>
                 <div className="w-16 sm:w-32 border-b border-slate-900 mb-1 sm:mb-2 mx-auto" />
-                <p className="font-serif font-bold text-slate-900 text-[10px] sm:text-sm">
-                  ଟିକି ଅପା (ପ୍ରଧାନ ଶିକ୍ଷୟିତ୍ରୀ)
+                <p className="font-serif font-bold text-slate-900 text-[10px] sm:text-sm print:text-xs">
+                  ଟିକି ଅପา (ପ୍ରଧାନ ଶିକ୍ଷୟିତ୍ରୀ)
                 </p>
-                <p className="text-[7px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-tighter">
-                  ନିର୍ଦ୍ଦେଶକ, ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର
+                <p className="text-[7px] sm:text-[9px] print:text-[8px] font-bold text-slate-400 uppercase tracking-tighter">
+                  ନิର୍ଦ୍ଦେଶକ, ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର
                 </p>
               </div>
             </div>
+            
+            <p className="text-[8px] sm:text-[11px] text-emerald-800/70 font-serif italic mt-3 sm:mt-6 print:mt-3">
+              ପୃଷ୍ଠଭୂମି ଐତିହ୍ୟ: {watermarkDetail.landmarkOr} ({districtNameOr})
+            </p>
           </div>
         </div>
       </div>
@@ -681,6 +733,7 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
         >
           {language === 'en' ? 'Close' : 'ବନ୍ଦ କରନ୍ତୁ'}
         </button>
+      </div>
       </div>
     </div>
   );
@@ -1788,8 +1841,16 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       key={currentIdx}
-      className="fixed inset-0 z-50 bg-slate-950 overflow-y-auto p-4 sm:p-8 flex flex-col justify-between text-left"
+      className="fixed inset-0 z-[9999] bg-slate-950 overflow-y-auto p-4 sm:p-8 flex flex-col justify-between text-left"
     >
+      <style dangerouslySetInnerHTML={{ __html: `
+        /* Hide global app header, sidebar, and bottom mobile navigation bar during active test */
+        header, 
+        .global-mobile-nav,
+        aside {
+          display: none !important;
+        }
+      `}} />
       <div className="max-w-4xl w-full mx-auto flex items-center justify-between bg-slate-900/80 border border-white/5 px-6 py-4 rounded-3xl backdrop-blur-md mb-6">
         <button 
           onClick={() => {
@@ -1907,9 +1968,10 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
                 </label>
                 <div className="flex gap-2">
                   <label 
-                    onClick={() => {
-                      (window as any).isUploadingRoughNote = true;
-                    }}
+                    onPointerDown={() => { (window as any).isUploadingRoughNote = true; }}
+                    onMouseDown={() => { (window as any).isUploadingRoughNote = true; }}
+                    onTouchStart={() => { (window as any).isUploadingRoughNote = true; }}
+                    onClick={() => { (window as any).isUploadingRoughNote = true; }}
                     className="cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 px-3.5 py-2 rounded-xl text-[10px] font-bold text-white flex items-center gap-1.5 transition-all"
                   >
                     {uploadingImage ? <Lucide.Loader2 size={12} className="animate-spin" /> : <Lucide.Camera size={12} />}
@@ -1921,6 +1983,9 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
                       accept="image/*" 
                       capture="environment"
                       className="hidden" 
+                      onClick={() => {
+                        (window as any).isUploadingRoughNote = true;
+                      }}
                       onChange={(e) => {
                         (window as any).isUploadingRoughNote = true;
                         const file = e.target.files?.[0];
@@ -1932,9 +1997,10 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
                     />
                   </label>
                   <label 
-                    onClick={() => {
-                      (window as any).isUploadingRoughNote = true;
-                    }}
+                    onPointerDown={() => { (window as any).isUploadingRoughNote = true; }}
+                    onMouseDown={() => { (window as any).isUploadingRoughNote = true; }}
+                    onTouchStart={() => { (window as any).isUploadingRoughNote = true; }}
+                    onClick={() => { (window as any).isUploadingRoughNote = true; }}
                     className="cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 px-3.5 py-2 rounded-xl text-[10px] font-bold text-white flex items-center gap-1.5 transition-all"
                   >
                     <Lucide.Image size={12} />
@@ -1943,6 +2009,9 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
                       type="file" 
                       accept="image/*" 
                       className="hidden" 
+                      onClick={() => {
+                        (window as any).isUploadingRoughNote = true;
+                      }}
                       onChange={(e) => {
                         (window as any).isUploadingRoughNote = true;
                         const file = e.target.files?.[0];

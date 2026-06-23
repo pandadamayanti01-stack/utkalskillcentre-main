@@ -1444,6 +1444,7 @@ export default function App() {
         const testingNumbers = ['9556086560', '+919556086560', '6370487877', '+916370487877', '9337956168', '+919337956168', '8926118509', '+918926118509', '8457811227', '+918457811227', '7735118243', '+917735118243'];
         const filteredData = data.filter((s: any) => !testingNumbers.includes(s.phoneNumber));
         setLeaderboard(filteredData);
+        setCachedData(cacheKey, filteredData);
       } catch (err2) {
         handleFirestoreError(err2, OperationType.GET, 'public_profiles');
       }
@@ -3780,7 +3781,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
       <main className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative">
         
         {/* HEADER: Sticky at top */}
-        <header className="h-20 flex items-center justify-between px-6 bg-black/20 backdrop-blur-xl border-b border-white/5 flex-shrink-0 z-20">
+        <header className="h-20 flex items-center justify-between px-6 bg-black/20 backdrop-blur-xl border-b border-white/5 flex-shrink-0 z-20 print:hidden">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-3">
               {/* UTKAL LOGO used in Header */}

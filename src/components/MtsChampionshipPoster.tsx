@@ -49,14 +49,7 @@ export function MtsChampionshipPoster({ isRegistered, onRegisterClick, language 
   const [balloons, setBalloons] = useState<BalloonState[]>([]);
   const [popBursts, setPopBursts] = useState<PopBurst[]>([]);
 
-  // Debugging & Localhost Helpers
-  const isClient = typeof window !== 'undefined';
-  const isLocalhost = isClient && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-  const isDebugMode = isClient && (isLocalhost || window.location.search.includes('debug=true'));
-  const dismissedDateVal = isClient ? localStorage.getItem('mts_championship_dismissed_date') : null;
-  const shownThisSessionVal = isClient ? sessionStorage.getItem('mts_championship_shown_session') : null;
-  const todayStrVal = new Date().toISOString().split('T')[0];
-  const deadlineVal = new Date('2026-07-04T23:59:59');
+
 
   const handlePop = (e: React.MouseEvent, balloon: BalloonState) => {
     e.stopPropagation();
@@ -652,42 +645,7 @@ export function MtsChampionshipPoster({ isRegistered, onRegisterClick, language 
     )}
     </AnimatePresence>
 
-    {/* Floating Debug Panel for developers */}
-    {isDebugMode && (
-      <div className="fixed bottom-6 right-6 z-[999999] bg-slate-950/95 border border-amber-500/30 backdrop-blur-md rounded-2xl p-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col gap-2 text-xs font-sans text-slate-300 w-64 select-none">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-          <span className="font-extrabold text-amber-400 tracking-wider">🏆 MTS POPUP DEBUG</span>
-          <span className={`px-2 py-0.5 rounded-full font-black text-[10px] uppercase ${isVisible ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
-            {isVisible ? 'Visible' : 'Hidden'}
-          </span>
-        </div>
-        <div className="space-y-1.5 font-medium">
-          <div className="flex justify-between">
-            <span>Date Expired:</span>
-            <span className={new Date() > deadlineVal ? 'text-rose-400 font-bold' : 'text-slate-400'}>{new Date() > deadlineVal ? 'Yes' : 'No'}</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Dismissed Today:</span>
-            <span className={dismissedDateVal === todayStrVal ? 'text-rose-400 font-bold' : 'text-slate-400'}>{dismissedDateVal === todayStrVal ? 'Yes' : 'No'}</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Shown in Session:</span>
-            <span className={shownThisSessionVal === 'true' ? 'text-rose-400 font-bold' : 'text-slate-400'}>{shownThisSessionVal === 'true' ? 'Yes' : 'No'}</span>
-          </div>
-        </div>
-        <button
-          onClick={() => {
-            localStorage.removeItem('mts_championship_dismissed_date');
-            sessionStorage.removeItem('mts_championship_shown_session');
-            setIsVisible(true);
-            window.location.reload();
-          }}
-          className="mt-1.5 w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black py-2 rounded-xl transition-all text-center cursor-pointer shadow-lg active:scale-95 border-none"
-        >
-          Reset Storage & Show
-        </button>
-      </div>
-    )}
+
     </>,
     document.body
   );
