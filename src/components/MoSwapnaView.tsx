@@ -1186,7 +1186,7 @@ Your goal is to guide students on how to achieve their dream careers. Follow the
       {/* ROADMAP OVERLAY MODAL */}
       <AnimatePresence>
         {selectedCareer && (
-          <div className="fixed inset-0 z-[12000] bg-black/85 backdrop-blur-xl flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-hidden">
+          <div className="fixed inset-0 z-[12000] bg-black/85 backdrop-blur-xl flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-hidden force-dark-theme">
             {/* Outer golden aura backing */}
             <div 
               style={{ boxShadow: '0 0 150px 40px rgba(245,158,11,0.2)' }}
