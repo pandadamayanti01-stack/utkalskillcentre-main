@@ -389,17 +389,17 @@ export function CertificateView({ submission, test, user, onBack, language }: an
               </h1>
               <div className="w-24 sm:w-48 h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-emerald-600 to-transparent mt-2 sm:mt-4"></div>
               <p className="text-[7px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-[0.3em] sm:tracking-[0.4em] mt-1 sm:mt-2">
-                ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍ ଶୈକ୍ଷଣିକ ସଫଳତା
+                ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର ଶୈକ୍ଷଣିକ ସଫଳତା
               </p>
             </div>
 
             <div className="space-y-2 sm:space-y-4 pt-2 sm:pt-4">
               <p className="text-slate-500 font-serif italic text-xs sm:text-lg">
-                ଏତଦ୍ୱାରା ପ୍ରମାଣିତ କରାଯାଉଛି ଯେ
+                ଏତଦ୍ୱାରା ପ୍ରମାଣିତ କରାଯାଉଛି ଯେ,
               </p>
               <h2 className="text-xl sm:text-5xl font-serif font-bold text-slate-900 border-b border-emerald-100 pb-1 sm:pb-2 px-4 sm:px-8 inline-block">{submission.userName}</h2>
               <p className="text-slate-500 text-[10px] sm:text-base font-medium">
-                ଙ୍କୁ ମାସିକ ପରୀକ୍ଷାରେ ଉଲ୍ଲେଖନୀୟ ପ୍ରଦର୍ଶନ ପାଇଁ ପ୍ରଦାନ କରାଗଲା
+                ମାସିକ ପରୀକ୍ଷାରେ ଉଲ୍ଲେଖନୀୟ ପ୍ରଦର୍ଶନ କରିଥିବାରୁ ଏହି ପ୍ରମାଣପତ୍ର ପ୍ରଦାନ କରାଗଲା।
               </p>
             </div>
 
@@ -427,14 +427,14 @@ export function CertificateView({ submission, test, user, onBack, language }: an
               <div className="text-center">
                 <p className="text-xl sm:text-4xl font-black text-slate-900 leading-none">#{submission.rank || 'N/A'}</p>
                 <p className="text-[8px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1 sm:mt-2">
-                  ରାଜ୍ୟ ର୍ୟାଙ୍କ
+                  ରାଜ୍ୟ ରାଙ୍କ
                 </p>
               </div>
               {submission.districtRank && (
                 <div className="text-center">
                   <p className="text-xl sm:text-4xl font-black text-slate-900 leading-none">#{submission.districtRank}</p>
                   <p className="text-[8px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1 sm:mt-2">
-                    ଜିଲ୍ଲା ର୍ୟାଙ୍କ
+                    ଜିଲ୍ଲା ରାଙ୍କ
                   </p>
                 </div>
               )}
@@ -466,7 +466,7 @@ export function CertificateView({ submission, test, user, onBack, language }: an
                   ଟିକି ଅପା (ପ୍ରଧାନ ଶିକ୍ଷୟିତ୍ରୀ)
                 </p>
                 <p className="text-[7px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-tighter">
-                  ନିର୍ଦ୍ଦେଶକ, ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍
+                  ନିର୍ଦ୍ଦେଶକ, ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର
                 </p>
               </div>
             </div>
@@ -607,7 +607,7 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
             <div className="flex justify-center items-center gap-6 sm:gap-12 py-1 max-w-md mx-auto">
               <div className="bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-2.5 text-center flex-1">
                 <p className="text-[7px] sm:text-[9px] font-black uppercase text-emerald-600 tracking-wider">
-                  ରାଜ୍ୟ ର୍ୟାଙ୍କ
+                  ରାଜ୍ୟ ରାଙ୍କ
                 </p>
                 <p className="text-lg sm:text-2xl font-black text-slate-800 font-mono">
                   #{submissions[0]?.rank || 'N/A'}
@@ -616,7 +616,7 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
               {submissions.some((s: any) => s.districtRank) && (
                 <div className="bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-2.5 text-center flex-1">
                   <p className="text-[7px] sm:text-[9px] font-black uppercase text-emerald-600 tracking-wider">
-                    ଜିଲ୍ଲା ର୍ୟାଙ୍କ
+                    ଜିଲ୍ଲା ରାଙ୍କ
                   </p>
                   <p className="text-lg sm:text-2xl font-black text-slate-800 font-mono">
                     #{submissions.find((s: any) => s.districtRank)?.districtRank}
@@ -648,7 +648,7 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
                   ଟିକି ଅପା (ପ୍ରଧାନ ଶିକ୍ଷୟିତ୍ରୀ)
                 </p>
                 <p className="text-[7px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-tighter">
-                  ନିର୍ଦ୍ଦେଶକ, ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍
+                  ନିର୍ଦ୍ଦେଶକ, ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର
                 </p>
               </div>
             </div>
@@ -831,10 +831,10 @@ export function SelectionPaperPrintView({ test, language, onBack }: any) {
             <p className="font-serif italic font-bold text-slate-900 text-xs mb-1">Tiki Apa</p>
             <div className="w-24 border-b border-slate-900 mb-1 mx-auto" />
             <p className="font-serif font-black text-slate-950 text-xs">
-              {language === 'en' ? 'Tiki Apa (Master Head)' : 'ଟିକି ଅପା (ପ୍ରଧାନ Śିକ୍ଷୟିତ୍ରୀ)'}
+              {language === 'en' ? 'Tiki Apa (Master Head)' : 'ଟିକି ଅପା (ପ୍ରଧାନ ଶିକ୍ଷୟିତ୍ରୀ)'}
             </p>
             <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">
-              {language === 'en' ? 'Director, Utkal Skill Centre' : 'ନିର୍ଦ୍ଦେଶକ, ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍'}
+              {language === 'en' ? 'Director, Utkal Skill Centre' : 'ନିର୍ଦ୍ଦେଶକ, ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର'}
             </p>
           </div>
         </div>
