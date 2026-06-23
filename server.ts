@@ -562,12 +562,9 @@ async function startServer() {
   ];
 
   function getRotatorKeys(): string[] {
-    const keys: string[] = [];
-    const primaryKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
-    if (primaryKey) keys.push(primaryKey);
-    const vertexKey = process.env.VERTEX_API_KEY;
-    if (vertexKey && !keys.includes(vertexKey)) keys.push(vertexKey);
-    return keys;
+    // Rotation is disabled for production. We strictly stick to the single premium GEMINI_API_KEY.
+    const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+    return apiKey ? [apiKey] : [];
   }
 
 
