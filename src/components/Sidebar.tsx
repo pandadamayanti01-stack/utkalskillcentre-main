@@ -49,6 +49,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const allMenuItems = [
     { id: 'profile', icon: Lucide.User, label: 'Profile' },
     { id: 'dashboard', icon: Lucide.LayoutDashboard, label: user?.role === 'teacher' ? (language === 'en' ? 'Educator Studio' : 'ଶିକ୍ଷକ ଷ୍ଟୁଡିଓ') : t.dashboard },
+    { id: 'mo_swapna', icon: Lucide.Compass, label: language === 'en' ? 'Mo Swapna' : 'ମୋ ସ୍ୱପ୍ନ' },
     { id: 'pitch_deck', icon: Lucide.Presentation, label: language === 'en' ? '✨ Project Showcase' : '✨ ପ୍ରୋଜେକ୍ଟ ସ୍ଲାଇଡ୍' },
     { id: 'telemetry', icon: Lucide.Activity, label: language === 'en' ? '📊 System Telemetry' : '📊 ସିଷ୍ଟମ ଟେଲିମେଟ୍ରି' },
     { id: 'notifications', icon: Lucide.Bell, label: language === 'en' ? 'Notifications' : 'ବିଜ୍ଞପ୍ତି' },

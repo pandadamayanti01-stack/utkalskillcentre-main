@@ -90,6 +90,7 @@ const PitchDeckView = lazy(() => import('./components/PitchDeckView').then((modu
 const TelemetryView = lazy(() => import('./components/TelemetryView').then((module) => ({ default: module.TelemetryView })));
 const Gundulu3DLab = lazy(() => import('./components/Gundulu3DLab').then((module) => ({ default: module.Gundulu3DLab })));
 const AboutUsModal = lazy(() => import('./components/AboutUsModal').then((module) => ({ default: module.AboutUsModal })));
+const MoSwapnaView = lazy(() => import('./components/MoSwapnaView').then((module) => ({ default: module.MoSwapnaView })));
 
 function ViewLoader({ fullHeight = false }: { fullHeight?: boolean }) {
   return (
@@ -4033,6 +4034,15 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             {activeTab === 'pitch_deck' && <PitchDeckView language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === 'telemetry' && <TelemetryView language={language} onBack={() => setActiveTab('dashboard')} />}
             {activeTab === '3d_study' && <Gundulu3DLab language={language} user={user} onBack={() => setActiveTab('dashboard')} />}
+            {activeTab === 'mo_swapna' && (
+              <Suspense fallback={<ViewLoader fullHeight />}>
+                <MoSwapnaView 
+                  language={language}
+                  user={user}
+                  onBack={() => setActiveTab('dashboard')} 
+                />
+              </Suspense>
+            )}
             {activeTab === 'about_us' && (
               <Suspense fallback={<ViewLoader />}>
                 <AboutUsModal language={language} onClose={() => setActiveTab('dashboard')} />
