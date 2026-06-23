@@ -1,0 +1,15 @@
+.gcloudignore
+.git
+.github
+node_modules
+dist
+.venv
+.firebase
+textbook_vectors_class_*_progress.json
+gemini_batch_requests.jsonl
+*.csv
+*.jsonl
+*.keystore
+.env
+utkal-admin-sdk.json
+utkalskillcentre-4ed1afa2f6a3.json

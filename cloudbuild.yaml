@@ -1,13 +1,28 @@
 steps:
-  # 1. Build and Deploy to Cloud Run using source code
+  # 1. Build the Docker container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t', 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA',
+      '.'
+    ]
+
+  # 2. Push the Docker image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push',
+      'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA'
+    ]
+
+  # 3. Deploy the container image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
       - 'run'
       - 'deploy'
       - '$_SERVICE_NAME'
-      - '--source'
-      - '.'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA'
       - '--region'
       - '$_DEPLOY_REGION'
       - '--allow-unauthenticated'
@@ -16,8 +31,10 @@ steps:
       - '--set-build-env-vars'
       - 'VITE_RAZORPAY_KEY=$_VITE_RAZORPAY_KEY,VITE_FIREBASE_API_KEY=$_VITE_FIREBASE_API_KEY,VITE_FIREBASE_AUTH_DOMAIN=$_VITE_FIREBASE_AUTH_DOMAIN,VITE_FIREBASE_PROJECT_ID=$_VITE_FIREBASE_PROJECT_ID,VITE_FIREBASE_STORAGE_BUCKET=$_VITE_FIREBASE_STORAGE_BUCKET,VITE_FIREBASE_MESSAGING_SENDER_ID=$_VITE_FIREBASE_MESSAGING_SENDER_ID,VITE_FIREBASE_APP_ID=$_VITE_FIREBASE_APP_ID,VITE_FIREBASE_MEASUREMENT_ID=$_VITE_FIREBASE_MEASUREMENT_ID,VITE_FIREBASE_DATABASE_ID=utkal-prod,VITE_YOUTUBE_API_KEY=$_VITE_YOUTUBE_API_KEY'
 
+images:
+  - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA'
+
 options:
-  # THIS FIXES THE LOGGING ERROR!
   logging: CLOUD_LOGGING_ONLY
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
 
