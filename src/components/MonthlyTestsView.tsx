@@ -1262,8 +1262,7 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
       <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {testsForSelectedMonth.map((testItem: any) => {
           const submission = getSubmission(testItem);
-          const resultsPublished = testItem.results_published || 
-            ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && !!submission);
+          const resultsPublished = testItem.results_published;
           const totalMaxMarks = testItem.questions?.reduce((acc: number, q: any) => acc + (q.marks || 1), 0) || 0;
           const theme = getSubjectTheme(testItem.subject);
           const SubjectIcon = theme.icon;
