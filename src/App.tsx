@@ -1460,13 +1460,53 @@ export default function App() {
     }
     try {
       const snapshot = await getDocs(query(collection(firestore, 'monthly_tests'), where('status', '==', 'published')));
-      const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as MonthlyTest[];
+      let data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as any[];
+      
+      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      if (isLocalhost) {
+        const hasMock = data.some(t => t.id === 'dev_mock_test');
+        if (!hasMock) {
+          data = [
+            {
+              id: 'dev_mock_test',
+              title: { en: 'Developer Assessment (Puri - Konark)', or: 'ପରୀକ୍ଷା ଉଦାହରଣ (ପୁରୀ - କୋଣାର୍କ ମନ୍ଦିର)' },
+              class: user.class || '10',
+              subject: 'Mathematics',
+              month: 'June',
+              year: 2026,
+              status: 'published',
+              results_published: true,
+              scheduledDate: new Date().toISOString().split('T')[0],
+              questions: [
+                {
+                  question: 'ସରଳ କର: 2x + 5 = 15 ହେଲେ, x ର ମୂଲ୍ୟ କେତେ?',
+                  options: ['x = 5', 'x = 10', 'x = 15', 'x = 8'],
+                  correct_answer: 'x = 5',
+                  tutor_explanation: '2x = 15 - 5 => 2x = 10 => x = 5.',
+                  marks: 10,
+                  type: 'mcq'
+                },
+                {
+                  question: 'ପାଇ (π) ର ମୂଲ୍ୟ ପ୍ରାୟତଃ କେତେ ଅଟେ?',
+                  options: ['୩.୧୪', '୨.୭୧', '୧.୪୧', '୧.୭୩'],
+                  correct_answer: '୩.୧୪',
+                  tutor_explanation: 'ପାଇ (π) ର ପ୍ରକୃତ ମୂଲ୍ୟ ପ୍ରାୟ ୩.୧୪୧୫୯ ଅଟେ।',
+                  marks: 10,
+                  type: 'mcq'
+                }
+              ]
+            },
+            ...data
+          ];
+        }
+      }
+      
       setMonthlyTests(data);
       setCachedData(cacheKey, data);
     } catch (err) {
       handleFirestoreError(err, OperationType.GET, 'monthly_tests');
     }
-  }, [user?.id]);
+  }, [user?.id, user?.class]);
 
   const loadDailyMcqs = useCallback(async () => {
     if (!user) return;
