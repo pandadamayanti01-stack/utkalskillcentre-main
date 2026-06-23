@@ -38,12 +38,10 @@ async function trigger() {
       year: 'numeric',
       month: 'long'
     });
-    // Calculate next month: set date to 28th of current month and add 10 days
+    // Default to the current month (since the automation runs on the 1st of the month)
     const now = new Date();
-    const nextMonthDate = new Date(now.getFullYear(), now.getMonth(), 28);
-    nextMonthDate.setDate(nextMonthDate.getDate() + 10);
-    targetMonth = formatter.format(nextMonthDate);
-    console.log(`No override month provided. Defaulting to next month: ${targetMonth}`);
+    targetMonth = formatter.format(now);
+    console.log(`No override month provided. Defaulting to current month: ${targetMonth}`);
   }
 
   const force = process.argv.includes('--force') || 

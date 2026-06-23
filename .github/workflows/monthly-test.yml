@@ -2,8 +2,8 @@ name: Monthly Test Generation
 
 on:
   schedule:
-    # Runs at 00:00 UTC (5:30 AM IST) on the 25th day of every month
-    - cron: '0 0 25 * *'
+    # Runs at 00:00 UTC (5:30 AM IST) on the 1st day of every month
+    - cron: '0 0 1 * *'
   workflow_dispatch:
     inputs:
       target_month:
