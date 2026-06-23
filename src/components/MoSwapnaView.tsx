@@ -599,6 +599,18 @@ export function MoSwapnaView({ language, onBack, user }: MoSwapnaViewProps) {
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'government' | 'private' | 'odisha'>('all');
   const [selectedCareer, setSelectedCareer] = useState<CareerRoadmap | null>(null);
 
+  // Prevent body scroll when career modal is open
+  useEffect(() => {
+    if (selectedCareer) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [selectedCareer]);
+
   // Goal Tracker States
   const [goals, setGoals] = useState<{ id: string; text: string; completed: boolean }[]>([]);
   const [newGoalText, setNewGoalText] = useState('');
@@ -1174,7 +1186,7 @@ Your goal is to guide students on how to achieve their dream careers. Follow the
       {/* ROADMAP OVERLAY MODAL */}
       <AnimatePresence>
         {selectedCareer && (
-          <div className="fixed inset-0 z-[12000] bg-black/85 backdrop-blur-xl flex items-center justify-center p-4 overflow-y-auto">
+          <div className="fixed inset-0 z-[12000] bg-black/85 backdrop-blur-xl flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-hidden">
             {/* Outer golden aura backing */}
             <div 
               style={{ boxShadow: '0 0 150px 40px rgba(245,158,11,0.2)' }}
@@ -1182,23 +1194,23 @@ Your goal is to guide students on how to achieve their dream careers. Follow the
             />
 
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 30 }}
+              initial={{ opacity: 0, scale: 0.95, y: 50 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 30 }}
-              className="relative overflow-hidden rounded-[2.5rem] border border-amber-500/25 bg-[#080d1a] p-6 sm:p-8 md:p-10 shadow-[0_30px_70px_rgba(0,0,0,0.8)] max-w-4xl w-full z-10 space-y-6"
+              exit={{ opacity: 0, scale: 0.95, y: 50 }}
+              className="relative overflow-hidden rounded-t-[2rem] sm:rounded-[2.5rem] border-t sm:border border-amber-500/25 bg-[#080d1a] p-4 sm:p-8 md:p-10 shadow-[0_30px_70px_rgba(0,0,0,0.8)] max-w-4xl w-full h-[88vh] sm:h-auto max-h-[88vh] sm:max-h-[90vh] md:max-h-[85vh] z-10 flex flex-col space-y-4 sm:space-y-6"
             >
               {/* Close Button */}
               <button
                 onClick={() => setSelectedCareer(null)}
-                className="absolute top-6 right-6 p-2 rounded-xl bg-white/10 hover:bg-amber-500/20 border border-white/15 hover:border-amber-500/40 text-white hover:text-amber-300 transition-all cursor-pointer z-30"
+                className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 rounded-xl bg-white/10 hover:bg-amber-500/20 border border-white/15 hover:border-amber-500/40 text-white hover:text-amber-300 transition-all cursor-pointer z-30"
               >
                 <Lucide.X size={18} className="stroke-[2.5]" />
               </button>
 
               {/* Header inside modal */}
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-3 sm:gap-4 pr-12 sm:pr-10">
                 <div 
-                  className={`w-14 h-14 rounded-2xl flex items-center justify-center border bg-gradient-to-br ${selectedCareer.gradient} border-amber-500/30 text-amber-400 shrink-0`}
+                  className={`w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center border bg-gradient-to-br ${selectedCareer.gradient} border-amber-500/30 text-amber-400 shrink-0`}
                   style={{ boxShadow: `0 0 25px ${selectedCareer.glowColor}20` }}
                 >
                   {getLucideIcon(selectedCareer.icon)}
@@ -1209,30 +1221,32 @@ Your goal is to guide students on how to achieve their dream careers. Follow the
                      selectedCareer.category === 'private' ? (language === 'en' ? 'Private / Corporate' : 'ଘରୋଇ ଓ ଟେକ୍') : 
                      (language === 'en' ? 'Odisha Special' : 'ଓଡ଼ିଶା ସ୍ୱତନ୍ତ୍ର')}
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight leading-none">
+                  <h2 className="text-lg sm:text-2xl font-black text-white tracking-tight leading-snug">
                     {language === 'en' ? selectedCareer.titleEn : selectedCareer.titleOr}
                   </h2>
-                  <p className="text-slate-400 text-xs sm:text-sm font-semibold mt-1">
+                  <p className="text-slate-400 text-[10px] sm:text-sm font-semibold mt-1">
                     {language === 'en' ? selectedCareer.taglineEn : selectedCareer.taglineOr}
                   </p>
                 </div>
               </div>
 
-              {/* Grid content inside modal */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
+              {/* Scrollable Content Wrapper */}
+              <div className="flex-1 overflow-y-auto pr-1 sm:pr-3 space-y-4 sm:space-y-6 custom-scrollbar overscroll-contain">
+                {/* Grid content inside modal */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6 pt-2">
                 {/* Left: Roadmaps Timeline */}
                 <div className="lg:col-span-2 space-y-4">
-                  <h3 className="text-sm font-black text-amber-400 uppercase tracking-widest border-b border-slate-800 pb-2">
+                  <h3 className="text-xs sm:text-sm font-black text-amber-400 uppercase tracking-widest border-b border-slate-800 pb-2">
                     🎓 {language === 'en' ? 'Success Milestones' : 'ସ୍ୱପ୍ନ ମାଇଲଖୁଣ୍ଟ'}
                   </h3>
                   
                   {/* Timeline Cards */}
                   <div className="space-y-4">
                     {selectedCareer.milestones.map((m, idx) => (
-                      <div key={idx} className="flex gap-4 relative">
+                      <div key={idx} className="flex gap-3 sm:gap-4 relative">
                         {/* Milestone Number bubble */}
                         <div className="flex flex-col items-center">
-                          <div className="w-8 h-8 rounded-full bg-slate-900 border border-amber-500/30 flex items-center justify-center text-xs font-black text-amber-400 relative z-10">
+                          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-900 border border-amber-500/30 flex items-center justify-center text-[10px] sm:text-xs font-black text-amber-400 relative z-10">
                             {m.stage}
                           </div>
                           {idx < selectedCareer.milestones.length - 1 && (
@@ -1240,8 +1254,8 @@ Your goal is to guide students on how to achieve their dream careers. Follow the
                           )}
                         </div>
                         {/* Milestone Text Box */}
-                        <div className="flex-1 p-4 rounded-2xl bg-slate-950/80 border border-slate-900 space-y-1 relative -top-1.5">
-                          <h4 className="text-xs sm:text-sm font-black text-white leading-none">
+                        <div className="flex-1 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-950/80 border border-slate-900 space-y-1 relative -top-1">
+                          <h4 className="text-xs sm:text-sm font-black text-white leading-tight">
                             {language === 'en' ? m.titleEn : m.titleOr}
                           </h4>
                           <p className="text-slate-400 text-[10px] sm:text-xs leading-relaxed font-bold">
@@ -1254,34 +1268,34 @@ Your goal is to guide students on how to achieve their dream careers. Follow the
                 </div>
 
                 {/* Right: Target Exams & Role Models */}
-                <div className="lg:col-span-1 space-y-5">
+                <div className="lg:col-span-1 space-y-4 sm:space-y-5">
                   {/* Target Exams */}
-                  <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-900 space-y-3">
-                    <h4 className="text-xs font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
-                      <Lucide.GraduationCap size={14} />
+                  <div className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-950/80 border border-slate-900 space-y-2.5 sm:space-y-3">
+                    <h4 className="text-[10px] sm:text-xs font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                      <Lucide.GraduationCap size={13} className="sm:size-[14px]" />
                       {language === 'en' ? 'Target Examinations' : 'ସଫଳତା ପ୍ରବେଶିକା ପରୀକ୍ଷା'}
                     </h4>
-                    <ul className="space-y-2 list-none p-0 m-0">
+                    <ul className="space-y-1.5 sm:space-y-2 list-none p-0 m-0">
                       {(language === 'en' ? selectedCareer.examsEn : selectedCareer.examsOr).map((exam, idx) => (
-                        <li key={idx} className="flex items-center gap-2 text-xs font-semibold text-slate-300">
-                          <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                          {exam}
+                        <li key={idx} className="flex items-start gap-2 text-[10px] sm:text-xs font-bold text-slate-300 leading-normal">
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0 mt-1.5" />
+                          <span>{exam}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
 
                   {/* Role Models */}
-                  <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-900 space-y-3">
-                    <h4 className="text-xs font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
-                      <Lucide.Trophy size={14} />
+                  <div className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-950/80 border border-slate-900 space-y-2.5 sm:space-y-3">
+                    <h4 className="text-[10px] sm:text-xs font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                      <Lucide.Trophy size={13} className="sm:size-[14px]" />
                       {language === 'en' ? 'Inspiring Role Models' : 'ଆଦର୍ଶ ପ୍ରେରଣା ଦାତା'}
                     </h4>
-                    <div className="space-y-2">
+                    <div className="space-y-3 sm:space-y-2.5">
                       {selectedCareer.roleModels.map((rm, idx) => (
-                        <div key={idx} className="space-y-1">
-                          <h5 className="text-xs font-black text-white">{rm.name}</h5>
-                          <p className="text-slate-400 text-[10px] leading-relaxed font-medium">
+                        <div key={idx} className="space-y-0.5 sm:space-y-1">
+                          <h5 className="text-[11px] sm:text-xs font-black text-white leading-snug">{rm.name}</h5>
+                          <p className="text-slate-400 text-[9px] sm:text-[10px] leading-relaxed font-semibold">
                             {language === 'en' ? rm.descEn : rm.descOr}
                           </p>
                         </div>
@@ -1289,6 +1303,7 @@ Your goal is to guide students on how to achieve their dream careers. Follow the
                     </div>
                   </div>
                 </div>
+              </div>
               </div>
             </motion.div>
           </div>
