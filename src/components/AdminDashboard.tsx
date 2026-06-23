@@ -2414,18 +2414,64 @@ Sample tone for Class 6-10:
                         const snap = await getDocs(q);
                         const submissions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-                        // Sort by score desc, then time asc
-                        submissions.sort((a: any, b: any) => {
+                        // Fetch user profiles to backfill/resolve districts if missing
+                        const userIds = Array.from(new Set(submissions.map((s: any) => s.userId)));
+                        const userProfiles: Record<string, any> = {};
+                        for (let i = 0; i < userIds.length; i += 10) {
+                          const batch = userIds.slice(i, i + 10);
+                          const userQ = query(collection(firestore, 'users'), where('__name__', 'in', batch));
+                          const userSnap = await getDocs(userQ);
+                          userSnap.forEach(doc => {
+                            userProfiles[doc.id] = doc.data();
+                          });
+                        }
+
+                        // Attach resolved district and school to submissions for sorting/ranking
+                        const submissionsWithDistrict = submissions.map((s: any) => {
+                          const dist = s.district || userProfiles[s.userId]?.district || 'Khordha';
+                          const sch = s.school || userProfiles[s.userId]?.school || '';
+                          return { ...s, district: dist, school: sch };
+                        });
+
+                        // Sort globally: score desc, then time asc
+                        submissionsWithDistrict.sort((a: any, b: any) => {
                           const scoreA = a.finalScore ?? a.score ?? 0;
                           const scoreB = b.finalScore ?? b.score ?? 0;
                           if (scoreB !== scoreA) return scoreB - scoreA;
                           return (a.submittedAt?.seconds || 0) - (b.submittedAt?.seconds || 0);
                         });
 
-                        // Assign ranks and update
-                        for (let i = 0; i < submissions.length; i++) {
-                          await updateDoc(doc(firestore, 'monthly_test_submissions', submissions[i].id), {
-                            rank: i + 1
+                        // Group by district to compute district ranks
+                        const districtGroups: Record<string, any[]> = {};
+                        submissionsWithDistrict.forEach((s: any) => {
+                          const dist = s.district;
+                          if (!districtGroups[dist]) districtGroups[dist] = [];
+                          districtGroups[dist].push(s);
+                        });
+
+                        // Sort each district group
+                        const districtRanksMap: Record<string, number> = {};
+                        Object.keys(districtGroups).forEach(dist => {
+                          const group = districtGroups[dist];
+                          group.sort((a: any, b: any) => {
+                            const scoreA = a.finalScore ?? a.score ?? 0;
+                            const scoreB = b.finalScore ?? b.score ?? 0;
+                            if (scoreB !== scoreA) return scoreB - scoreA;
+                            return (a.submittedAt?.seconds || 0) - (b.submittedAt?.seconds || 0);
+                          });
+                          group.forEach((s, idx) => {
+                            districtRanksMap[s.id] = idx + 1;
+                          });
+                        });
+
+                        // Assign ranks and update documents
+                        for (let i = 0; i < submissionsWithDistrict.length; i++) {
+                          const sub = submissionsWithDistrict[i];
+                          await updateDoc(doc(firestore, 'monthly_test_submissions', sub.id), {
+                            rank: i + 1,
+                            districtRank: districtRanksMap[sub.id] || null,
+                            district: sub.district,
+                            school: sub.school
                           });
                         }
 

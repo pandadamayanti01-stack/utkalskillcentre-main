@@ -105,10 +105,18 @@ export interface MonthlyTestSubmission {
   userId: string;
   userName: string;
   class: string;
-  answers: number[];
+  answers: any;
   score: number;
   totalQuestions: number;
-  rank?: number;
+  rank?: number | null;
+  districtRank?: number | null;
+  finalScore?: number;
+  totalMaxMarks?: number;
+  subjectiveScores?: Record<number, number>;
+  violations?: number;
+  reports?: Record<number, boolean>;
+  timeSpent?: Record<number, number>;
+  status?: string;
   submittedAt: any;
 }
 

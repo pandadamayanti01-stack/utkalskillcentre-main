@@ -1891,13 +1891,18 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       };
     }
 
-    // Default regular months
-    // Check if the 10th of the current month is a Sunday
-    const date10 = new Date(year, month, 10);
-    const is10thSunday = date10.getDay() === 0;
+    // Check if there is a Sunday between the 5th and 10th of the current month
+    let hasSundayInWindow = false;
+    for (let d = 5; d <= 10; d++) {
+      const dateToCheck = new Date(year, month, d);
+      if (dateToCheck.getDay() === 0) {
+        hasSundayInWindow = true;
+        break;
+      }
+    }
 
-    const goingOnEndDay = is10thSunday ? 11 : 10;
-    const gradingStartDay = is10thSunday ? 12 : 11;
+    const goingOnEndDay = hasSundayInWindow ? 11 : 10;
+    const gradingStartDay = goingOnEndDay + 1;
 
     if (day >= 1 && day <= 4) {
       return {

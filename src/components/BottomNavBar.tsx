@@ -26,8 +26,29 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
   userName,
   userClass
 }) => {
-  const currentDay = new Date().getDate();
-  const isTestWindowActive = currentDay >= 1 && currentDay <= 10 && userRole !== 'teacher';
+  const checkIfTestWindowActive = () => {
+    if (userRole === 'teacher') return false;
+    
+    const now = new Date();
+    const currentDay = now.getDate();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
+    
+    // Check if there is a Sunday between the 5th and 10th of the current month
+    let hasSunday = false;
+    for (let d = 5; d <= 10; d++) {
+      const dateToCheck = new Date(currentYear, currentMonth, d);
+      if (dateToCheck.getDay() === 0) { // 0 = Sunday
+        hasSunday = true;
+        break;
+      }
+    }
+    
+    const endDay = hasSunday ? 11 : 10;
+    return currentDay >= 5 && currentDay <= endDay;
+  };
+
+  const isTestWindowActive = checkIfTestWindowActive();
 
   const navItems = userRole === 'teacher'
     ? [
