@@ -385,35 +385,35 @@ export function CertificateView({ submission, test, user, onBack, language }: an
                 <img src="/utkal-512.png" alt="Utkal Logo" className="w-full h-full object-contain relative z-10" />
               </div>
               <h1 className="text-xl sm:text-4xl font-serif font-black text-slate-900 tracking-tight uppercase">
-                {language === 'en' ? 'Certificate of Excellence' : 'ଉତ୍କର୍ଷତା ପ୍ରମାଣପତ୍ର'}
+                ଉତ୍କର୍ଷତା ପ୍ରମାଣପତ୍ର
               </h1>
               <div className="w-24 sm:w-48 h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-emerald-600 to-transparent mt-2 sm:mt-4"></div>
               <p className="text-[7px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-[0.3em] sm:tracking-[0.4em] mt-1 sm:mt-2">
-                {language === 'en' ? 'Utkal Skill Centre Academic Achievement' : 'ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍ শৈକ୍ଷଣିକ ସଫଳତା'}
+                ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍ ଶୈକ୍ଷଣିକ ସଫଳତା
               </p>
             </div>
 
             <div className="space-y-2 sm:space-y-4 pt-2 sm:pt-4">
               <p className="text-slate-500 font-serif italic text-xs sm:text-lg">
-                {language === 'en' ? 'This is to certify that' : 'ଏତଦ୍ୱାରା ପ୍ରମାଣିତ କରାଯାଉଛି ଯେ'}
+                ଏତଦ୍ୱାରା ପ୍ରମାଣିତ କରାଯାଉଛି ଯେ
               </p>
               <h2 className="text-xl sm:text-5xl font-serif font-bold text-slate-900 border-b border-emerald-100 pb-1 sm:pb-2 px-4 sm:px-8 inline-block">{submission.userName}</h2>
               <p className="text-slate-500 text-[10px] sm:text-base font-medium">
-                {language === 'en' ? 'has demonstrated exceptional performance in the' : 'ଙ୍କୁ ମାସିକ ପରୀକ୍ଷାରେ ଉଲ୍ଲେଖନୀୟ ପ୍ରଦର୍ଶନ ପାଇଁ ପ୍ରଦାନ କରାଗଲା'}
+                ଙ୍କୁ ମାସିକ ପରୀକ୍ଷାରେ ଉଲ୍ଲେଖନୀୟ ପ୍ରଦର୍ଶନ ପାଇଁ ପ୍ରଦାନ କରାଗଲା
               </p>
             </div>
 
             <div className="space-y-1 sm:space-y-2 py-2 sm:py-4">
               <h3 className="text-sm sm:text-2xl font-bold text-emerald-800 uppercase tracking-[0.05em] sm:tracking-[0.1em]">
-                {test.month} {test.year} {language === 'en' ? 'Monthly Assessment' : 'ମାସିକ ମୂଲ୍ୟାଙ୍କନ'}
+                {test.month} {test.year} ମାସିକ ମୂଲ୍ୟାଙ୍କନ
               </h3>
               <div className="flex items-center justify-center gap-1.5 sm:gap-3 text-slate-500 text-[10px] sm:text-sm">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                <span>{language === 'en' ? 'Subject' : 'ବିଷୟ'}: <span className="font-bold text-slate-800">{getCorrectSubjectName(test.subject, language)}</span></span>
+                <span>ବିଷୟ: <span className="font-bold text-slate-800">{getCorrectSubjectName(test.subject, 'or')}</span></span>
                 <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                <span>{language === 'en' ? 'Class' : 'ଶ୍ରେଣୀ'}: <span className="font-bold text-slate-800">{translations[language].classes?.[submission.class as keyof typeof translations.en.classes] || submission.class}</span></span>
+                <span>ଶ୍ରେଣୀ: <span className="font-bold text-slate-800">{translations['or'].classes?.[submission.class as keyof typeof translations.or.classes] || submission.class}</span></span>
                 <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                <span>{language === 'en' ? 'District' : 'ଜିଲ୍ଲା'}: <span className="font-bold text-slate-800">{user.district || 'Khordha'}</span></span>
+                <span>ଜିଲ୍ଲା: <span className="font-bold text-slate-800">{user.district || 'Khordha'}</span></span>
               </div>
             </div>
 
@@ -421,20 +421,20 @@ export function CertificateView({ submission, test, user, onBack, language }: an
               <div className="text-center">
                 <p className="text-xl sm:text-4xl font-black text-slate-900 leading-none">{scorePercent}%</p>
                 <p className="text-[8px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1 sm:mt-2">
-                  {language === 'en' ? 'Aggregate Score' : 'ମୋଟ୍ ସ୍କୋର୍'}
+                  ମୋଟ୍ ସ୍କୋର୍
                 </p>
               </div>
               <div className="text-center">
                 <p className="text-xl sm:text-4xl font-black text-slate-900 leading-none">#{submission.rank || 'N/A'}</p>
                 <p className="text-[8px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1 sm:mt-2">
-                  {language === 'en' ? 'State Rank' : 'ରାଜ୍ୟ ର୍ୟାଙ୍କ'}
+                  ରାଜ୍ୟ ର୍ୟାଙ୍କ
                 </p>
               </div>
               {submission.districtRank && (
                 <div className="text-center">
                   <p className="text-xl sm:text-4xl font-black text-slate-900 leading-none">#{submission.districtRank}</p>
                   <p className="text-[8px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1 sm:mt-2">
-                    {language === 'en' ? 'District Rank' : 'ଜିଲ୍ଲା ର୍ୟାଙ୍କ'}
+                    ଜିଲ୍ଲା ର୍ୟାଙ୍କ
                   </p>
                 </div>
               )}
@@ -446,7 +446,7 @@ export function CertificateView({ submission, test, user, onBack, language }: an
                 <div className="w-16 sm:w-32 border-b border-slate-900 mb-1 sm:mb-2 mx-auto mt-4" />
                 <p className="font-serif font-bold text-slate-900 text-[10px] sm:text-sm">Gundulu</p>
                 <p className="text-[7px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-tighter">
-                  {language === 'en' ? 'AI Learning Advisor' : 'AI ଶିକ୍ଷା ପରାମର୍ଶଦାତା'}
+                  AI ଶିକ୍ଷା ପରାମର୍ଶଦାତା
                 </p>
               </div>
               <div className="relative">
@@ -463,16 +463,16 @@ export function CertificateView({ submission, test, user, onBack, language }: an
                 <p className="font-serif italic font-bold text-emerald-700 text-xs sm:text-lg mb-1 relative z-10 print:text-slate-900">Tiki Apa</p>
                 <div className="w-16 sm:w-32 border-b border-slate-900 mb-1 sm:mb-2 mx-auto" />
                 <p className="font-serif font-bold text-slate-900 text-[10px] sm:text-sm">
-                  {language === 'en' ? 'Tiki Apa (Master Head)' : 'ଟିକି ଅପା (ପ୍ରଧାନ ଶିକ୍ଷୟିତ୍ରୀ)'}
+                  ଟିକି ଅପା (ପ୍ରଧାନ ଶିକ୍ଷୟିତ୍ରୀ)
                 </p>
                 <p className="text-[7px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-tighter">
-                  {language === 'en' ? 'Director, Utkal Skill Centre' : 'ନିର୍ଦ୍ଦେଶକ, ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍'}
+                  ନିର୍ଦ୍ଦେଶକ, ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍
                 </p>
               </div>
             </div>
             
             <p className="text-[7px] sm:text-[9px] text-slate-300 font-mono mt-4 sm:mt-8 italic">
-              {language === 'en' ? 'Verification ID' : 'ଯାଞ୍ଚ ID'}: {submission.id?.slice(-8).toUpperCase()}
+              ଯାଞ୍ଚ ID: {submission.id?.slice(-8).toUpperCase()}
             </p>
           </div>
         </div>
@@ -549,24 +549,24 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
                 <img src="/utkal-512.png" alt="Utkal Logo" className="w-full h-full object-contain relative z-10" />
               </div>
               <h1 className="text-xl sm:text-4xl font-serif font-black text-slate-900 tracking-tight uppercase">
-                {language === 'en' ? 'Consolidated Certificate of Excellence' : 'ମିଳିତ ଉତ୍କର୍ଷତା ପ୍ରମାଣପତ୍ର'}
+                ମିଳିତ ଉତ୍କର୍ଷତା ପ୍ରମାଣପତ୍ର
               </h1>
               <div className="w-32 sm:w-64 h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-emerald-600 to-transparent mt-2 sm:mt-3"></div>
               <p className="text-[7px] sm:text-[10px] font-bold text-emerald-600 uppercase tracking-[0.3em] sm:tracking-[0.4em] mt-1">
-                {language === 'en' ? 'Monthly Series Performance Report' : 'ମାସିକ ପରୀକ୍ଷା ସିରିଜ୍ ପ୍ରଦର୍ଶନ ରିପୋର୍ଟ'}
+                ମାସିକ ପରୀକ୍ଷା ସିରିଜ୍ ପ୍ରଦର୍ଶନ ରିପୋର୍ଟ
               </p>
             </div>
 
             <div className="space-y-1 sm:space-y-2">
               <p className="text-slate-500 font-serif italic text-xs sm:text-md">
-                {language === 'en' ? 'This academic credential is awarded to' : 'ଏହି শৈକ୍ଷଣିକ ପ୍ରମାଣପତ୍ର ପ୍ରଦାନ କରାଯାଉଛି'}
+                ଏହି ଶୈକ୍ଷଣିକ ପ୍ରମାଣପତ୍ର ପ୍ରଦାନ କରାଯାଉଛି
               </p>
               <h2 className="text-xl sm:text-4xl font-serif font-bold text-slate-900 border-b border-emerald-100 pb-1 px-4 sm:px-8 inline-block">{user.displayName || user.name || 'Student'}</h2>
               <p className="text-slate-500 text-[10px] sm:text-sm font-medium">
-                {language === 'en' ? 'for demonstrating outstanding academic proficiency across all subjects during' : 'ସମସ୍ତ ବିଷୟରେ ଅସାଧାରଣ ପ୍ରଦର୍ଶନ ଏବଂ ପାରଦର୍ଶିତା ପାଇଁ'}
+                ସମସ୍ତ ବିଷୟରେ ଅସାଧାରଣ ପ୍ରଦର୍ଶନ ଏବଂ ପାରଦର୍ଶିତା ପାଇଁ
               </p>
               <h3 className="text-sm sm:text-xl font-bold text-emerald-800 uppercase tracking-widest">
-                {monthYear} {language === 'en' ? 'Test Series' : 'ମାସିକ ପରୀକ୍ଷା ଶୃଙ୍ଖଳା'}
+                {monthYear} ମାସିକ ପରୀକ୍ଷା ଶୃଙ୍ଖଳା
               </h3>
             </div>
 
@@ -574,15 +574,15 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-slate-100 text-slate-700 text-[9px] sm:text-xs font-bold uppercase border-b border-slate-200">
-                    <th className="px-4 py-2 sm:py-3">{language === 'en' ? 'Subject' : 'ବିଷୟ'} (ବିଷୟ)</th>
-                    <th className="px-4 py-2 sm:py-3 text-center">{language === 'en' ? 'Score' : 'ମାର୍କ'} (ମାର୍କ)</th>
-                    <th className="px-4 py-2 sm:py-3 text-right">{language === 'en' ? 'Accuracy' : 'ସଠିକତା'} (ସଠିକତା)</th>
+                    <th className="px-4 py-2 sm:py-3">ବିଷୟ</th>
+                    <th className="px-4 py-2 sm:py-3 text-center">ମାର୍କ</th>
+                    <th className="px-4 py-2 sm:py-3 text-right">ସଠିକତା</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 text-slate-800 text-[10px] sm:text-sm font-medium">
                   {submissions.map((sub: any, idx: number) => {
                     const testItem = tests.find((t: any) => t.id === sub.testId);
-                    const subjectLabel = getCorrectSubjectName(testItem?.subject || 'Unknown', language);
+                    const subjectLabel = getCorrectSubjectName(testItem?.subject || 'Unknown', 'or');
                     const score = sub.finalScore ?? sub.score ?? 0;
                     const max = sub.totalMaxMarks ?? sub.totalQuestions ?? 0;
                     const percent = max > 0 ? Math.round((score / max) * 100) : 0;
@@ -596,7 +596,7 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
                     );
                   })}
                   <tr className="bg-emerald-50/50 text-emerald-950 font-bold border-t border-slate-300">
-                    <td className="px-4 py-3 text-emerald-800">{language === 'en' ? 'Overall Cumulative' : 'ସାମଗ୍ରିକ ସଞ୍ଚୟୀ ଫଳାଫଳ'}</td>
+                    <td className="px-4 py-3 text-emerald-800">ସାମଗ୍ରିକ ସଞ୍ଚୟୀ ଫଳାଫଳ</td>
                     <td className="px-4 py-3 text-center font-mono">{overallScore} / {overallMax}</td>
                     <td className="px-4 py-3 text-right font-mono text-emerald-600">{overallPercent}%</td>
                   </tr>
@@ -607,7 +607,7 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
             <div className="flex justify-center items-center gap-6 sm:gap-12 py-1 max-w-md mx-auto">
               <div className="bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-2.5 text-center flex-1">
                 <p className="text-[7px] sm:text-[9px] font-black uppercase text-emerald-600 tracking-wider">
-                  {language === 'en' ? 'State Rank' : 'ରାଜ୍ୟ ର୍ୟାଙ୍କ'}
+                  ରାଜ୍ୟ ର୍ୟାଙ୍କ
                 </p>
                 <p className="text-lg sm:text-2xl font-black text-slate-800 font-mono">
                   #{submissions[0]?.rank || 'N/A'}
@@ -616,7 +616,7 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
               {submissions.some((s: any) => s.districtRank) && (
                 <div className="bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-2.5 text-center flex-1">
                   <p className="text-[7px] sm:text-[9px] font-black uppercase text-emerald-600 tracking-wider">
-                    {language === 'en' ? 'District Rank' : 'ଜିଲ୍ଲା ର୍ୟାଙ୍କ'}
+                    ଜିଲ୍ଲା ର୍ୟାଙ୍କ
                   </p>
                   <p className="text-lg sm:text-2xl font-black text-slate-800 font-mono">
                     #{submissions.find((s: any) => s.districtRank)?.districtRank}
@@ -631,7 +631,7 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
                 <div className="w-16 sm:w-32 border-b border-slate-900 mb-1 sm:mb-2 mx-auto mt-4" />
                 <p className="font-serif font-bold text-slate-900 text-[10px] sm:text-sm">Gundulu</p>
                 <p className="text-[7px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-tighter">
-                  {language === 'en' ? 'AI Learning Advisor' : 'AI ଶିକ୍ଷା ପରାମର୍ଶଦାତା'}
+                  AI ଶିକ୍ଷା ପରାମର୍ଶଦାତା
                 </p>
               </div>
               <div className="relative hidden sm:block">
@@ -645,10 +645,10 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
                 <p className="font-serif italic font-bold text-emerald-700 text-xs sm:text-lg mb-1 relative z-10 print:text-slate-900">Tiki Apa</p>
                 <div className="w-16 sm:w-32 border-b border-slate-900 mb-1 sm:mb-2 mx-auto" />
                 <p className="font-serif font-bold text-slate-900 text-[10px] sm:text-sm">
-                  {language === 'en' ? 'Tiki Apa (Master Head)' : 'ଟିକି ଅପା (ପ୍ରଧାନ ଶିକ୍ଷୟିତ୍ରୀ)'}
+                  ଟିକି ଅପା (ପ୍ରଧାନ ଶିକ୍ଷୟିତ୍ରୀ)
                 </p>
                 <p className="text-[7px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-tighter">
-                  {language === 'en' ? 'Director, Utkal Skill Centre' : 'ନିର୍ଦ୍ଦେଶକ, ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍'}
+                  ନିର୍ଦ୍ଦେଶକ, ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍
                 </p>
               </div>
             </div>
