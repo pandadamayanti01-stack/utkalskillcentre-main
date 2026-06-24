@@ -64,8 +64,8 @@ export const GiftUnlockModal: React.FC<GiftUnlockModalProps> = ({
     prizeAmount = 100;
     rewardNameEn = 'USC Special Motivation Reward';
     rewardNameOr = 'USC ସ୍ପେଶାଲ ପ୍ରେରଣାଦାୟକ ପୁରସ୍କାର';
-    rewardItemsEn = ['⚡ Free Monthly AI Subscription (worth ₹99)', '📓 Special USC Notebook', '✨ Sticker Pack'];
-    rewardItemsOr = ['⚡ ମାସିକ ମାଗଣା AI ସବସ୍କ୍ରିପସନ (ମୂଲ୍ୟ ₹୯୯)', '📓 ସ୍ପେଶାଲ USC ନୋଟବୁକ', '✨ ଷ୍ଟିକର ପ୍ୟାକ୍'];
+    rewardItemsEn = ['📓 Special USC Notebook', '✨ Sticker Pack'];
+    rewardItemsOr = ['📓 ସ୍ପେଶାଲ USC ନୋଟବୁକ', '✨ ଷ୍ଟିକର ପ୍ୟାକ୍'];
     boxColor = 'from-purple-500 via-pink-400 to-indigo-600';
     boxGlow = 'rgba(168,85,247,0.5)';
   } else if (resolvedRank === 1) {
