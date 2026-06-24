@@ -664,25 +664,37 @@
     const shareBtn = document.getElementById('shareBtn');
     const restartLink = document.getElementById('restartLink');
 
-    // Parse class parameter
+    // Parse class parameter and detect Universal GK state
     const urlParams = new URLSearchParams(window.location.search);
-    const activeClassNum = parseInt(urlParams.get('class')) || 10;
+    const classParam = urlParams.get('class');
+    const isUniversal = !classParam || (classParam.toLowerCase() === 'universal') || (classParam.toLowerCase() === 'gk');
+    const activeClassNum = isUniversal ? null : (parseInt(classParam) || 10);
 
-    // Render Class selector pills
+    // Render Class selector pills (Universal GK listed first)
     function initClassSelector() {
       classNav.innerHTML = '';
-      for (let i = 1; i <= 10; i++) {
+      
+      // 1. Render Universal GK pill
+      const gkPill = document.createElement('a');
+      gkPill.href = '?class=universal';
+      gkPill.className = `class-pill ${isUniversal ? 'active' : ''}`;
+      gkPill.innerText = `Universal GK 🌟`;
+      gkPill.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = '?class=universal';
+      });
+      classNav.appendChild(gkPill);
+
+      // 2. Render Class 10 down to Class 1 pills
+      for (let i = 10; i >= 1; i--) {
         const pill = document.createElement('a');
         pill.href = `?class=${i}`;
-        pill.className = `class-pill ${i === activeClassNum ? 'active' : ''}`;
+        pill.className = `class-pill ${(!isUniversal && activeClassNum === i) ? 'active' : ''}`;
         pill.innerText = `Class ${i}`;
-        
-        // Handle click event to prevent full reload flicker in some browsers
         pill.addEventListener('click', (e) => {
           e.preventDefault();
           window.location.href = `?class=${i}`;
         });
-        
         classNav.appendChild(pill);
       }
     }
@@ -793,17 +805,25 @@
       finalScore.innerText = scoreFraction;
 
       const pct = Math.round((score / quiz.questions.length) * 100);
+      const earnedPoints = score * 3;
       
-      // Dynamic responses based on performance
-      if (pct === 100) {
-        resultsTitle.innerText = "🏆 Perfect Score! ଅତି ଉତ୍ତମ!";
-        resultsDesc.innerText = `Outstanding! You answered all questions correctly. You have earned ${score * 3} Kaudi points! Register below to save your streak and secure your learning profile.`;
-      } else if (pct >= 60) {
-        resultsTitle.innerText = "🎉 Great Job! ବହୁତ ବଢ଼ିଆ!";
-        resultsDesc.innerText = `You answered ${scoreFraction} questions correctly, earning ${score * 3} Kaudi points. Don't let your efforts vanish! Register a free account to save your points and streak.`;
+      // Dynamic responses based on class/GK type
+      if (isUniversal) {
+        resultsTitle.innerText = "🏆 Empower Your Child's Education! / ଆପଣଙ୍କ ପିଲାଙ୍କ ପାଠପଢ଼ାକୁ ସହଜ କରନ୍ତୁ!";
+        resultsDesc.innerText = `Outstanding! You scored ${pct}% (${scoreFraction} correct) on today's Odisha GK challenge. Utkal Skill Centre provides mapped daily quizzes, textbooks, and interactive AI tutoring (Gundulu) for Class 1 to 10. Open a free student profile for your child today to start their learning streak!`;
+        ctaBtn.innerText = "👶 Open Free Student Account";
       } else {
-        resultsTitle.innerText = "👍 Nice Effort! ଚେଷ୍ଟା ଜାରି ରଖନ୍ତୁ!";
-        resultsDesc.innerText = `You got ${scoreFraction} correct and earned ${score * 3} Kaudi points. Save your progress now and study with Gundulu AI to score 100% tomorrow!`;
+        ctaBtn.innerText = "🏆 Save your Streak!";
+        if (pct === 100) {
+          resultsTitle.innerText = "🏆 Perfect Score! ଅତି ଉତ୍ତମ!";
+          resultsDesc.innerText = `Outstanding! You answered all questions correctly. You have earned ${earnedPoints} Kaudi points! Register below to save your streak and secure your learning profile.`;
+        } else if (pct >= 60) {
+          resultsTitle.innerText = "🎉 Great Job! ବହୁତ ବଢ଼ିଆ!";
+          resultsDesc.innerText = `You answered ${scoreFraction} questions correctly, earning ${earnedPoints} Kaudi points. Don't let your efforts vanish! Register a free account to save your points and streak.`;
+        } else {
+          resultsTitle.innerText = "👍 Nice Effort! ଚେଷ୍ଟା ଜାରି ରଖନ୍ତୁ!";
+          resultsDesc.innerText = `You got ${scoreFraction} correct and earned ${earnedPoints} Kaudi points. Save your progress now and study with Gundulu AI to score 100% tomorrow!`;
+        }
       }
 
       // Trigger colorful confettis for high scores!
@@ -817,17 +837,18 @@
       }
     }
 
-    // Funnel CTA redirection
+    // Funnel CTA redirection (Redirects to main app with metrics)
     ctaBtn.addEventListener('click', () => {
       const earnedPoints = score * 3;
-      // Redirect to main registration funnel carrying earned metrics
-      window.location.href = `/?ref=daily-mcq&pts=${earnedPoints}&class=${activeClassNum}`;
+      const refClass = isUniversal ? 'universal' : activeClassNum;
+      window.location.href = `https://utkalskillcentre.com/?ref=daily-mcq&pts=${earnedPoints}&class=${refClass}`;
     });
 
     // Share score on WhatsApp
     shareBtn.addEventListener('click', () => {
       const pct = Math.round((score / quiz.questions.length) * 100);
-      const text = `ପ୍ରତିଦିନ ଓଡ଼ିଆ ମାଧ୍ୟମ MCQ ଚ୍ୟାଲେଞ୍ଜ! 🏆 I just scored ${score}/${quiz.questions.length} (${pct}%) on the Utkal Skill Centre Class ${activeClassNum} Daily Challenge! Can you beat my score? Try here: ${window.location.href}`;
+      const targetUrl = `https://quiz.utkalskillcentre.com${isUniversal ? '' : '?class=' + activeClassNum}`;
+      const text = `ପ୍ରତିଦିନ ଓଡ଼ିଆ ମାଧ୍ୟମ MCQ ଚ୍ୟାଲେଞ୍ଜ! 🏆 I just scored ${score}/${quiz.questions.length} (${pct}%) on the Daily Challenge! Can you beat my score? Try here: ${targetUrl}`;
       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
     });
 
