@@ -1891,25 +1891,17 @@ export async function runScheduledGeneration(adminApp: App, databaseId: string, 
       console.log(`[MCQ-AUTO] Subjects to generate for ${className}:`, subjectsToGenerate);
 
       for (const subject of subjectsToGenerate) {
-        // Check if the daily set for this subject already exists for this date
-        const existing = await db.collection('daily_mcqs')
-          .where('class', '==', className)
-          .where('subject', '==', subject)
-          .where('activeDate', '==', activeDate)
-          .get();
+        const docId = `${className}_${subject}_${activeDate}`;
+        const existingDoc = await db.collection('daily_mcqs').doc(docId).get();
 
-        if (!existing.empty) {
+        if (existingDoc.exists) {
           if (!forceRegenerate) {
             console.log(`[MCQ-AUTO] Skipped ${className} ${subject}: Daily set already exists for this date. (Use force to overwrite)`);
             skipped.push({ className: `${className} (${subject})`, reason: 'Daily set already exists for this class, subject, and date.' });
             continue;
           } else {
             console.log(`[MCQ-AUTO] Force overwrite enabled. Deleting existing daily set for ${className} ${subject} on ${activeDate}...`);
-            const batch = db.batch();
-            existing.forEach(doc => {
-              batch.delete(doc.ref);
-            });
-            await batch.commit();
+            await db.collection('daily_mcqs').doc(docId).delete();
           }
         }
 

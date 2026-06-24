@@ -57,7 +57,7 @@ import {
   sendPasswordResetEmail,
   linkWithPopup
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, query, where, getDocs, orderBy, limit, addDoc, updateDoc, increment, getCountFromServer, onSnapshot, Timestamp, deleteDoc, Query, DocumentData } from 'firebase/firestore';
+import { doc, getDoc, setDoc, serverTimestamp, getDocFromServer, collection, query, where, getDocs, orderBy, limit, addDoc, updateDoc, increment, getCountFromServer, onSnapshot, Timestamp, deleteDoc, Query, DocumentData, runTransaction } from 'firebase/firestore';
 import { createSupportSession, endSupportSession, subscribeToQueuePosition } from './services/supportService';
 import { ODISHA_DISTRICTS } from './constants/districts';
 import { translations } from './translations';
@@ -1166,6 +1166,92 @@ export default function App() {
     drainOfflineQueue(); // Also try immediately on load
 
     return () => window.removeEventListener('online', drainOfflineQueue);
+  }, [user?.id]);
+
+  // Offline MCQ Submission Queue Drain — Phase 3 Resiliency
+  // Drains any daily MCQ challenges completed while offline.
+  // Runs on mount and whenever the device comes back online.
+  useEffect(() => {
+    if (!user) return;
+
+    const drainOfflineMcqQueue = async () => {
+      if (!navigator.onLine) return;
+      let raw: string | null = null;
+      try { raw = localStorage.getItem('offline_mcq_queue'); } catch (e) { return; }
+      if (!raw) return;
+      let queue: any[] = [];
+      try { queue = JSON.parse(raw); } catch (e) { return; }
+      if (!queue.length) return;
+
+      const remaining: any[] = [];
+      let drainedCount = 0;
+
+      for (const payload of queue) {
+        if (payload.userId !== user.id) {
+          remaining.push(payload);
+          continue;
+        }
+        try {
+          const submissionRef = doc(firestore, 'daily_mcq_submissions', `${user.id}_${payload.mcqId}`);
+          const userRef = doc(firestore, 'users', user.id);
+          const progressRef = doc(collection(firestore, 'user_progress'));
+
+          await runTransaction(firestore, async (transaction) => {
+            const existingSubmission = await transaction.get(submissionRef);
+            if (existingSubmission.exists()) {
+              return; // Already submitted, skip
+            }
+
+            const userSnap = await transaction.get(userRef);
+            const currentPoints = userSnap.exists() ? Math.floor(Number(userSnap.data().points || 0)) : 0;
+            const currentPointsToday = userSnap.exists() ? Math.floor(Number((userSnap.data() as any).points_today || 0)) : 0;
+
+            const { queuedAt, ...data } = payload;
+            transaction.set(submissionRef, {
+              ...data,
+              submittedAt: serverTimestamp(),
+              _offlineSynced: true,
+              _originalSubmitTime: queuedAt || new Date().toISOString()
+            });
+
+            transaction.set(userRef, {
+              points: currentPoints + Math.floor(payload.totalPointsEarned),
+              points_today: currentPointsToday + Math.floor(payload.totalPointsEarned),
+              updatedAt: serverTimestamp(),
+            }, { merge: true });
+
+            transaction.set(progressRef, {
+              userId: user.id,
+              date: payload.submittedDate,
+              pointsEarned: payload.totalPointsEarned,
+              type: 'daily_mcq',
+              referenceId: payload.mcqId,
+              correctCount: payload.correctCount,
+              totalQuestions: payload.totalQuestions,
+              createdAt: serverTimestamp(),
+            });
+          });
+
+          drainedCount++;
+        } catch (e) {
+          remaining.push(payload); // keep failed ones for next attempt
+        }
+      }
+
+      try { localStorage.setItem('offline_mcq_queue', JSON.stringify(remaining)); } catch (e) { /* ignore */ }
+
+      if (drainedCount > 0) {
+        console.log(`[OfflineMcqQueue] Drained ${drainedCount} daily MCQ submission(s)`);
+        try {
+          localStorage.removeItem(`fs_cache_mcq_subs_${user.id}`);
+        } catch (e) { /* ignore */ }
+      }
+    };
+
+    window.addEventListener('online', drainOfflineMcqQueue);
+    drainOfflineMcqQueue(); // Try immediately on load
+
+    return () => window.removeEventListener('online', drainOfflineMcqQueue);
   }, [user?.id]);
 
   // Support Session Cleanup

@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { collection, doc, runTransaction, serverTimestamp } from 'firebase/firestore';
 import * as Lucide from 'lucide-react';
@@ -121,6 +121,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
   const [localSubmissions, setLocalSubmissions] = useState<DailyMcqSubmission[]>(submissions);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string[]>>({});
   const [submittingMcqId, setSubmittingMcqId] = useState<string | null>(null);
+  const isSubmittingRef = useRef(false);
   const [copiedMcqId, setCopiedMcqId] = useState<string | null>(null);
   
   // Focused Practice mode states
@@ -312,7 +313,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
   };
 
   const handleSubmit = async (mcq: DailyMcq) => {
-    if (!user?.id || submissionMap[mcq.id] || submittingMcqId === mcq.id || activeQuestions.length === 0) return;
+    if (!user?.id || submissionMap[mcq.id] || submittingMcqId === mcq.id || isSubmittingRef.current || activeQuestions.length === 0) return;
     
     // Find first unanswered active question
     const unansweredActiveQuestion = activeQuestions.find(q => {
@@ -353,6 +354,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
     const userRef = doc(firestore, 'users', user.id);
     const progressRef = doc(collection(firestore, 'user_progress'));
 
+    isSubmittingRef.current = true;
     setSubmittingMcqId(mcq.id);
     try {
       await runTransaction(firestore, async (transaction) => {
@@ -446,11 +448,67 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
         vibrate([120, 60, 120]);
       }
     } catch (error) {
-      if (!(error instanceof Error) || error.message !== 'already-submitted') {
-        console.error('Daily MCQ submit error:', error);
-        window.alert(t.submitFailed);
+      if (error instanceof Error && error.message === 'already-submitted') {
+        return;
       }
+
+      console.error('Daily MCQ submit error. Checking connection...');
+      if (!navigator.onLine) {
+        console.log('[Offline MCQ] Network is offline. Queueing submission locally...');
+        
+        const offlinePayload = {
+          mcqId: mcq.id,
+          userId: user.id,
+          answers,
+          correctCount,
+          totalQuestions: activeQuestions.length,
+          attemptReward: ATTEMPT_REWARD,
+          correctBonus,
+          totalPointsEarned,
+          submittedDate: today,
+          queuedAt: new Date().toISOString(),
+        };
+
+        try {
+          const offlineQueue = JSON.parse(localStorage.getItem('offline_mcq_queue') || '[]');
+          if (!offlineQueue.some((item: any) => item.mcqId === mcq.id)) {
+            offlineQueue.push(offlinePayload);
+            localStorage.setItem('offline_mcq_queue', JSON.stringify(offlineQueue));
+          }
+        } catch (e) {
+          console.warn("Failed to save offline MCQ submission:", e);
+        }
+
+        const localSub: DailyMcqSubmission = {
+          id: `${user.id}_${mcq.id}`,
+          mcqId: mcq.id,
+          userId: user.id,
+          answers,
+          correctCount,
+          totalQuestions: activeQuestions.length,
+          attemptReward: ATTEMPT_REWARD,
+          correctBonus,
+          totalPointsEarned,
+          submittedDate: today,
+          submittedAt: new Date() as any,
+        };
+        setLocalSubmissions(prev => [...prev, localSub]);
+
+        setVictoryData({
+          show: true,
+          correctCount,
+          totalQuestions: activeQuestions.length,
+          pointsEarned: totalPointsEarned
+        });
+        
+        playSuccessChime(correctCount > 0);
+        return;
+      }
+
+      console.error('Daily MCQ submit error:', error);
+      window.alert(t.submitFailed);
     } finally {
+      isSubmittingRef.current = false;
       setSubmittingMcqId(null);
     }
   };
