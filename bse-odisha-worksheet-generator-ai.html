@@ -433,6 +433,26 @@
         <div class="preview-sheet" id="preview-sheet">
 # Select parameters above and click "Create Worksheet" to run the AI engine and see a live exam paper preview...
         </div>
+
+        <!-- Teacher Classroom Sharing & Timetable Poster Widget -->
+        <div id="sharing-panel" style="display: none; margin-top: 24px; padding: 24px; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 20px; text-align: left;">
+          <h4 style="margin: 0 0 8px; color: var(--accent-emerald); font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+            📢 Share Worksheet & Monthly Test with Students (ଶ୍ରେଣୀ ସହ ଶେୟାର୍ କରନ୍ତୁ)
+          </h4>
+          <p style="margin: 0 0 16px; color: var(--text-muted); font-size: 13px; line-height: 1.6;">
+            Now that you have generated your BSE board worksheet, assign a matching practice test to your students. Share the timetable and free registration link directly to your student/parent WhatsApp group.
+          </p>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;">
+            <a id="whatsapp-class-share-btn" href="#" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: #25d366; color: white; padding: 12px; border-radius: 12px; text-decoration: none; font-weight: 800; font-size: 13px; text-align: center; transition: all 0.2s;">
+              <svg style="width:16px; height:16px; fill:currentColor;" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.457L0 24zm6.59-4.846c1.66.986 3.288 1.488 4.936 1.489 5.485 0 9.948-4.467 9.952-9.953.001-2.656-1.03-5.155-2.905-7.03C16.756 1.785 14.263.754 11.6.754c-5.486 0-9.949 4.468-9.953 9.953-.001 1.904.498 3.763 1.446 5.4l-.988 3.605 3.693-.969zm11.378-5.367c-.29-.145-1.72-.849-1.986-.945-.266-.096-.46-.145-.654.145-.193.291-.749.945-.918 1.139-.17.194-.339.218-.63.073-.29-.145-1.226-.452-2.335-1.442-.864-.771-1.447-1.723-1.616-2.014-.17-.291-.018-.447.127-.592.13-.13.29-.339.436-.509.145-.17.193-.291.29-.485.097-.194.049-.364-.025-.509-.073-.146-.654-1.577-.896-2.158-.236-.569-.475-.492-.653-.501-.17-.008-.364-.01-.557-.01-.194 0-.509.073-.775.364-.266.29-1.018.995-1.018 2.428 0 1.432 1.042 2.816 1.188 3.01.145.194 2.05 3.13 4.966 4.387.694.299 1.236.478 1.659.613.698.222 1.334.191 1.838.116.56-.084 1.72-.703 1.962-1.383.242-.68.242-1.262.17-1.38-.073-.119-.266-.194-.556-.339z"/></svg>
+              Share Worksheet with Class on WhatsApp
+            </a>
+            <a href="/monthly-tests-for-odisha-students.html" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); color: white; padding: 12px; border-radius: 12px; text-decoration: none; font-weight: 800; font-size: 13px; text-align: center; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+              📋 Download MTS Classroom Poster
+            </a>
+          </div>
+        </div>
       </section>
 
       <!-- Features Grid -->
@@ -513,6 +533,17 @@
             clearInterval(interval);
             loader.style.display = 'none';
             preview.style.display = 'block';
+            
+            // Show Sharing Panel
+            var sharePanel = document.getElementById('sharing-panel');
+            if (sharePanel) {
+              sharePanel.style.display = 'block';
+              var classTxt = wClass;
+              var subjectTxt = wSubject.toUpperCase();
+              var shareBtn = document.getElementById('whatsapp-class-share-btn');
+              var shareMsg = 'Dear students, I have generated a special ' + subjectTxt + ' worksheet for Class ' + classTxt + '. Practice similar questions and test your preparation in the Monthly Test Series on Utkal Skill Centre! Register here for free, check your rank, and win prizes: https://utkalskillcentre.com/monthly-tests-for-odisha-students.html';
+              shareBtn.href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(shareMsg);
+            }
 
             preview.textContent = `===================================================
 UTKAL SKILL CENTRE - AI WORKSHEET GENERATOR

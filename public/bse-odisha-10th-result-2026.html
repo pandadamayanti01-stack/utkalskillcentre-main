@@ -169,6 +169,71 @@
           <p style="font-size:11px; color:var(--muted); margin:0;">ଉଦାହରଣ: <strong>OR10 102CA001</strong> ଲେଖି <strong>5676750</strong> କୁ ପଠାନ୍ତୁ</p>
         </div>
 
+        <!-- Post-Result Next Steps & Viral Success Card Generator -->
+        <div style="margin-top: 28px; padding: 24px; background: linear-gradient(135deg, rgba(16,185,129,0.08) 0%, rgba(59,130,246,0.08) 100%); border: 1px solid rgba(16,185,129,0.2); border-radius: 20px; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+          <h4 style="margin: 0 0 8px; color: #10b981; font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+            🎯 ରେଜଲ୍ଟ ଦେଖିସାରିବା ପରେ ପରବର୍ତ୍ତୀ ପ୍ରସ୍ତୁତି ଆରମ୍ଭ କରନ୍ତୁ! / What's Next After 10th?
+          </h4>
+          <p style="margin: 0 0 18px; color: #94a3b8; font-size: 13px; line-height: 1.6;">
+            Now that results are out, take your next academic step. Get expert career guidance to choose your stream, prepare for Class 11, or chat with our AI Study Buddy!
+          </p>
+          
+          <!-- Next Step Action Buttons -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 24px;">
+            <a href="/#study_buddy" style="display: block; text-align: center; background: #10b981; color: white; text-decoration: none; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px; transition: all 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
+              🤖 Chat with AI Study Buddy
+            </a>
+            <a href="/mo-swapna-career-guidance-odisha.html" style="display: block; text-align: center; background: #3b82f6; color: white; text-decoration: none; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px; transition: all 0.2s;" onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='#3b82f6'">
+              🎓 Explore Career Paths
+            </a>
+            <a href="/monthly-tests-for-odisha-students.html" style="display: block; text-align: center; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); text-decoration: none; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+              📝 Prepare for Class 11 (MTS)
+            </a>
+          </div>
+
+          <!-- Success Card Generator Form Widget -->
+          <div style="border-top: 1px dashed rgba(255, 255, 255, 0.1); padding-top: 20px;">
+            <h5 style="margin: 0 0 10px; color: #fbbf24; font-size: 14px; font-weight: 800;">
+              🏆 Share Your Success on WhatsApp! (ମାର୍କସିଟ୍ ସେୟାର୍ କରନ୍ତୁ)
+            </h5>
+            <p style="margin: 0 0 14px; color: #cbd5e1; font-size: 12.5px; line-height: 1.5;">
+              Enter your name and score below to generate a branded success card to share with friends and family on WhatsApp status.
+            </p>
+            
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;">
+              <input type="text" id="student-name" placeholder="Enter Student Name" style="flex: 1; min-width: 180px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 10px 14px; border-radius: 10px; color: white; font-size: 13px; outline: none;" />
+              <input type="text" id="student-score" placeholder="Enter Score (e.g. 92% or A1)" style="width: 160px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 10px 14px; border-radius: 10px; color: white; font-size: 13px; outline: none;" />
+              <button onclick="generateSuccessCard()" style="background: #fbbf24; color: #1e293b; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 800; font-size: 13px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#f59e0b'" onmouseout="this.style.background='#fbbf24'">
+                Generate Card
+              </button>
+            </div>
+
+            <!-- Dynamic Success Card Render Area -->
+            <div id="success-card-display" style="display: none; margin-top: 16px; padding: 24px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 2px solid #fbbf24; border-radius: 16px; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.3); position: relative; overflow: hidden;">
+              <div style="position: absolute; width: 100px; height: 100px; background: rgba(251,191,36,0.03); border-radius: 50%; top: -30px; left: -30px;"></div>
+              <div style="position: absolute; width: 150px; height: 150px; background: rgba(16,185,129,0.03); border-radius: 50%; bottom: -50px; right: -50px;"></div>
+              
+              <div style="font-size: 24px; margin-bottom: 8px;">🎉</div>
+              <h4 style="margin: 0 0 4px; color: white; font-size: 18px; font-weight: 800; letter-spacing: 0.5px;">CONGRATULATIONS</h4>
+              <p style="margin: 0 0 16px; font-size: 11px; text-transform: uppercase; color: #fbbf24; letter-spacing: 1.5px; font-weight: 700;">BSE Odisha Matric Board 2026</p>
+              
+              <h3 id="card-name" style="margin: 0 0 8px; color: #10b981; font-size: 22px; font-weight: 900;">Subhakanta Rout</h3>
+              <p style="margin: 0 0 8px; color: #cbd5e1; font-size: 13px; font-weight: 600;">has cleared the exam with a brilliant score of</p>
+              <div id="card-score" style="display: inline-block; background: rgba(251,191,36,0.15); border: 1px solid #fbbf24; color: #fbbf24; font-size: 20px; font-weight: 900; padding: 6px 24px; border-radius: 12px; margin-bottom: 20px;">92% Marks</div>
+              
+              <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px; font-size: 11.5px; color: #94a3b8;">
+                Prepared with <strong>Utkal Skill Centre</strong> | Smart Education in Odisha
+              </div>
+            </div>
+            
+            <!-- WhatsApp Share Button for Card -->
+            <a id="whatsapp-share-card-btn" href="#" target="_blank" style="display: none; align-items: center; justify-content: center; gap: 8px; background: #25d366; color: white; padding: 12px; border-radius: 12px; text-decoration: none; font-weight: 800; font-size: 13.5px; margin-top: 14px; text-align: center; transition: all 0.2s;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">
+              <svg style="width:16px; height:16px; fill:currentColor;" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.457L0 24zm6.59-4.846c1.66.986 3.288 1.488 4.936 1.489 5.485 0 9.948-4.467 9.952-9.953.001-2.656-1.03-5.155-2.905-7.03C16.756 1.785 14.263.754 11.6.754c-5.486 0-9.949 4.468-9.953 9.953-.001 1.904.498 3.763 1.446 5.4l-.988 3.605 3.693-.969zm11.378-5.367c-.29-.145-1.72-.849-1.986-.945-.266-.096-.46-.145-.654.145-.193.291-.749.945-.918 1.139-.17.194-.339.218-.63.073-.29-.145-1.226-.452-2.335-1.442-.864-.771-1.447-1.723-1.616-2.014-.17-.291-.018-.447.127-.592.13-.13.29-.339.436-.509.145-.17.193-.291.29-.485.097-.194.049-.364-.025-.509-.073-.146-.654-1.577-.896-2.158-.236-.569-.475-.492-.653-.501-.17-.008-.364-.01-.557-.01-.194 0-.509.073-.775.364-.266.29-1.018.995-1.018 2.428 0 1.432 1.042 2.816 1.188 3.01.145.194 2.05 3.13 4.966 4.387.694.299 1.236.478 1.659.613.698.222 1.334.191 1.838.116.56-.084 1.72-.703 1.962-1.383.242-.68.242-1.262.17-1.38-.073-.119-.266-.194-.556-.339z"/></svg>
+              Share Success Card on WhatsApp
+            </a>
+          </div>
+        </div>
+
       </div>
 
       <!-- Join Utkal Skill Centre -->
@@ -190,5 +255,33 @@
         &copy; 2026 ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍ | ଏହା ସରକାରୀ ୱେବସାଇଟ୍ ନୁହେଁ। ଅଫିସିଆଲ୍ ରେଜଲ୍ଟ bseodisha.ac.in ରେ ଉପଲବ୍ଧ।
       </div>
     </div>
+    <script>
+      function generateSuccessCard() {
+        var nameInput = document.getElementById('student-name').value.trim();
+        var scoreInput = document.getElementById('student-score').value.trim();
+        
+        if (!nameInput || !scoreInput) {
+          alert('Please enter both student name and score.');
+          return;
+        }
+        
+        // Update Card Display Elements
+        document.getElementById('card-name').innerText = nameInput;
+        document.getElementById('card-score').innerText = scoreInput + ' Marks';
+        
+        // Show Card Display and Share Button
+        document.getElementById('success-card-display').style.display = 'block';
+        
+        var shareBtn = document.getElementById('whatsapp-share-card-btn');
+        shareBtn.style.display = 'flex';
+        
+        // Construct WhatsApp Share URL
+        var shareText = '🎉 ' + nameInput + ' has scored a brilliant ' + scoreInput + ' in the BSE Odisha 10th Board Matric Exam! Supported by Utkal Skill Centre. Check your result and next steps here: ' + window.location.href;
+        shareBtn.href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(shareText);
+        
+        // Smooth scroll to display the card
+        document.getElementById('success-card-display').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    </script>
   </body>
 </html>

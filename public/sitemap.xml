@@ -47,6 +47,11 @@
     <priority>0.85</priority>
   </url>
   <url>
+    <loc>https://utkalskillcentre.com/usc-monthly-test-series-july-2026.html</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.90</priority>
+  </url>
+  <url>
     <loc>https://utkalskillcentre.com/class-10-odisha-study-app.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.88</priority>

@@ -1049,6 +1049,14 @@ export default function App() {
           await updateDoc(userRef, {
             totalStudyMinutes: increment(1)
           });
+          try {
+            const pubRef = doc(firestore, 'public_profiles', user.id);
+            await setDoc(pubRef, {
+              totalStudyMinutes: increment(1)
+            }, { merge: true });
+          } catch (pubErr) {
+            console.warn("Failed to sync study time to public_profiles:", pubErr);
+          }
           setUser(prev => prev ? { ...prev, totalStudyMinutes: (prev.totalStudyMinutes || 0) + 1 } : prev);
         } catch (error) {
           console.error("Failed to sync study time:", error);

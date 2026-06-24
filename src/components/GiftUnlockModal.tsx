@@ -12,6 +12,7 @@ interface GiftUnlockModalProps {
   onClaimSuccess: (ticketDoc: any) => void;
   existingTicket?: any;
   rank?: number | null;
+  claimTag?: string;
 }
 
 export const GiftUnlockModal: React.FC<GiftUnlockModalProps> = ({
@@ -20,7 +21,8 @@ export const GiftUnlockModal: React.FC<GiftUnlockModalProps> = ({
   onClose,
   onClaimSuccess,
   existingTicket,
-  rank
+  rank,
+  claimTag: propClaimTag
 }) => {
   const [step, setStep] = useState<'closed' | 'opening' | 'opened' | 'form' | 'success'>('closed');
   const [formData, setFormData] = useState({
@@ -165,7 +167,7 @@ export const GiftUnlockModal: React.FC<GiftUnlockModalProps> = ({
       const activeDate = new Date();
       const activeMonthName = new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'Asia/Kolkata' }).format(activeDate);
       const activeYear = activeDate.getFullYear();
-      const claimTag = `[MTS_CLAIM:${activeMonthName.toLowerCase()}_${activeYear}]`;
+      const claimTag = propClaimTag || `[MTS_CLAIM:${activeMonthName.toLowerCase()}_${activeYear}]`;
       
       const upiPart = prizeAmount > 0 ? `, UPI/PhonePe/GPay: ${formData.upiVal}` : '';
       const ticketMessage = `${claimTag} Name: ${formData.fullName}, Class: ${formData.classVal}${upiPart}, Parent Phone: ${formData.parentPhone}, Prize: ₹${prizeAmount}, Reward Tier: ${rewardNameEn}`;

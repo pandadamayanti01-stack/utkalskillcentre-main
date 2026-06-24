@@ -91,13 +91,69 @@
       ]
     }
     </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOccupationalProgram",
+      "name": "Mo Swapna Career Guidance Program",
+      "description": "Comprehensive career roadmap and academic stream planning program for Odisha Board school students from Classes 6 to 10. Powered by Utkal Skill Centre.",
+      "provider": {
+        "@type": "EducationalOrganization",
+        "name": "Utkal Skill Centre",
+        "url": "https://utkalskillcentre.com"
+      },
+      "programPrerequisites": "Completed Class 6 to 10",
+      "educationalCredentialAwarded": "Academic Stream Stream Recommendation & Foundation Preparation Plan"
+    }
+    </script>
     <script src="/ga.js" defer></script>
   </head>
   <body>
     <div class="wrap">
 
+      <section class="box">
+        <div class="eyebrow">Dream Career Roadmaps</div>
+        <h1>ଓଡ଼ିଶାର ଛାତ୍ରଛାତ୍ରୀଙ୍କ ପାଇଁ କ୍ୟାରିଅର୍ ମାର୍ଗଦର୍ଶନ</h1>
+        <p>
+          ପ୍ରତ୍ୟେକ ଛାତ୍ରଛାତ୍ରୀଙ୍କର ଏକ ସ୍ୱପ୍ନ ଥାଏ। ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍‌ର <strong>"ମୋ ସ୍ୱପ୍ନ" (Mo Swapna)</strong> ପ୍ଲାଟଫର୍ମ ଓଡ଼ିଶାର ଷଷ୍ଠ ରୁ ଦଶମ ଶ୍ରେଣୀର ପିଲାମାନଙ୍କୁ ସେମାନଙ୍କ ଲକ୍ଷ୍ୟ ପଥରେ ଆଗକୁ ବଢ଼ିବାର ସମ୍ପୂର୍ଣ୍ଣ ମାନଚିତ୍ର ପ୍ରଦାନ କରେ। ବିଦ୍ୟାଳୟ ସ୍ତରରୁ କେଉଁ ବିଷୟ ପଢ଼ିବେ, କେଉଁ ପ୍ରବେଶିକା ପରୀକ୍ଷା ଦେବେ ଏବଂ କିପରି ସଫଳ ହେବେ - ସମସ୍ତ ସୂଚନା ଏଠାରେ ପାଆନ୍ତୁ।
+        </p>
+        <a class="button" href="/#mo_swapna" style="margin-top: 10px; width: 100%;">ମୋ ସ୍ୱପ୍ନ କ୍ୟାରିଅର୍ ମାନଚିତ୍ର ଖୋଲନ୍ତୁ</a>
+      </section>
+
+      <!-- Interactive Stream Selector Quiz Widget -->
+      <section class="box" id="stream-quiz-widget" style="background: linear-gradient(135deg, rgba(245,158,11,0.08) 0%, rgba(56,189,248,0.08) 100%); border: 1px solid rgba(245,158,11,0.25); padding: 28px;">
+        <div class="eyebrow" style="color: var(--accent);">CAREER PLANNER QUIZ</div>
+        <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 8px;">🎯 Find Your Ideal Stream in 60 Seconds! (କ୍ୟାରିଅର୍ ସ୍ମାର୍ଟ କୁଇଜ୍)</h2>
+        <p style="margin-bottom: 20px; font-size: 14px;">ଦଶମ ପରେ ଆପଣଙ୍କ ପାଇଁ କେଉଁ କ୍ୟାରିଅର୍ ଶ୍ରେଷ୍ଠ ହେବ? ଆମର କ୍ୟାରିଅର୍ ପ୍ଲାନର୍ କୁଇଜ୍ ମାଧ୍ୟମରେ ତୁରନ୍ତ ଜାଣନ୍ତୁ।</p>
+        
+        <!-- Intro Screen -->
+        <div id="quiz-intro" style="text-align: center; padding: 20px 0;">
+          <button onclick="startQuiz()" class="button" style="padding: 14px 36px; font-size: 14.5px;">କୁଇଜ୍ ଆରମ୍ଭ କରନ୍ତୁ (Start Quiz)</button>
+        </div>
+
+        <!-- Question Screen -->
+        <div id="quiz-questions" style="display: none; padding: 10px 0;">
+          <h3 id="quiz-q-text" style="color: white; font-size: 16px; font-weight: 800; margin-bottom: 16px;">Question Text</h3>
+          <div id="quiz-options" style="display: flex; flex-direction: column; gap: 8px;">
+            <!-- Options will be dynamically rendered here -->
+          </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="quiz-result" style="display: none; text-align: center; padding: 16px; background: rgba(0,0,0,0.2); border-radius: 16px; border: 1px solid rgba(245,158,11,0.15);">
+          <div style="font-size: 24px; margin-bottom: 8px;">🏆</div>
+          <p style="margin: 0 0 4px; font-size: 11px; text-transform: uppercase; color: var(--accent); letter-spacing: 1.5px; font-weight: 700;">YOUR RECOMMENDED PATH IS</p>
+          <h3 id="quiz-res-title" style="color: white; font-size: 20px; font-weight: 900; margin-bottom: 12px;">Result Stream</h3>
+          <p id="quiz-res-desc" style="font-size: 13.5px; line-height: 1.6; color: var(--muted); margin-bottom: 20px;">Result Description</p>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+            <a id="quiz-res-btn" href="#" class="button" style="padding: 10px 24px; font-size: 13px;">Action Button</a>
+            <button onclick="startQuiz()" class="button" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; box-shadow: none; padding: 10px 24px; font-size: 13px;">Retry Quiz</button>
+          </div>
+        </div>
+      </section>
+
       <!-- Class Selector Navigation Bar -->
-      <div class="class-nav">
+      <div class="class-nav" style="margin-top: 24px;">
         <span style="font-size:12px; font-weight:700; color:var(--muted); align-self:center; margin-right:4px;">ଶ୍ରେଣୀ (Class):</span>
         <a href="/?class=sishuvatika(Anganwadi)" class="class-badge">ଶିଶୁବାଟିକା</a>
         <a href="/?class=1" class="class-badge">୧ମ</a>
@@ -172,6 +228,20 @@
         <a class="button" href="/#mo_swapna" style="background: linear-gradient(135deg, var(--accent2), #0ea5e9); color: #fff; width: 100%;">ଗୁନ୍ଦୁଲୁ AI ମାର୍ଗଦର୍ଶକଙ୍କ ସହ କଥା ହୁଅନ୍ତୁ</a>
       </section>
 
+      <!-- AI Study Buddy Class 11 Prep CTA Card -->
+      <section class="box" style="background: linear-gradient(135deg, rgba(16,185,129,0.08) 0%, rgba(56,189,248,0.08) 100%); border: 1px solid rgba(16,185,129,0.25); padding: 28px;">
+        <h2 style="color: #34d399; font-size: 20px; font-weight: 800;">📚 CHSE Class 11 Prep with AI Study Buddy (ଉଚ୍ଚ ମାଧ୍ୟମିକ ପ୍ରସ୍ତୁତି)</h2>
+        <p style="color: var(--text); font-weight: 600; margin-bottom: 12px; font-size: 14.5px;">
+          Decided on your stream? Whether it is CHSE Science, Commerce, or Arts, get ahead of the curriculum!
+        </p>
+        <p style="margin-bottom: 20px; font-size: 14px; line-height: 1.6;">
+          Master Physics, Chemistry, Mathematics, Biology, and Business Studies in both Odia and English. Ask our AI Study Buddy (Gundulu) any textbook question, clear your doubts instantly, and score top marks.
+        </p>
+        <a href="/#study_buddy" class="button" style="background: #34d399; color: #090e1a; padding: 12px 24px; font-size: 13.5px; font-weight: 800;">
+          Start Preparing with AI Study Buddy
+        </a>
+      </section>
+
       <!-- Navigation Section to other pages for SEO Crawler Linking -->
       <section class="box nav-links" style="justify-content: center; padding: 20px;">
         <a href="/">ମୁଖ୍ୟ ଆପ୍ (Home)</a>
@@ -191,5 +261,139 @@
         &copy; 2026 ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍ | All rights reserved.
       </div>
     </div>
+    <script>
+      var currentStep = 0;
+      var answers = { science: 0, commerce: 0, arts: 0, vocational: 0 };
+      
+      var questions = [
+        {
+          q: "୧. ଆପଣଙ୍କର ପ୍ରିୟ ସ୍କୁଲ୍ ବିଷୟ କେଉଁଟି? (Favorite Subject)",
+          options: [
+            { text: "ବିଜ୍ଞାନ ଓ ଗଣିତ (Science & Math)", type: "science" },
+            { text: "ସାମାଜିକ ବିଜ୍ଞାନ ଓ ସାହିତ୍ୟ (Social Science/Odia)", type: "arts" },
+            { text: "ହିସାବ କିତାବ ଓ ମ୍ୟାନେଜମେଣ୍ଟ (Math/Logic)", type: "commerce" },
+            { text: "ହାତକାମ ଓ ମେସିନ୍ ସଜାଡ଼ିବା (Hands-on/Practical)", type: "vocational" }
+          ]
+        },
+        {
+          q: "୨. ଆପଣ ଫ୍ରି ସମୟରେ କଣ କରିବାକୁ ଭଲ ପାଆନ୍ତି? (Free Time)",
+          options: [
+            { text: "ନୂଆ ଟେକ୍ନୋଲୋଜି ବା କୋଡିଂ ବିଷୟରେ ଜାଣିବା", type: "science" },
+            { text: "ବହି ପଢ଼ିବା, ଚିତ୍ର କରିବା ବା ଲେଖିବା", type: "arts" },
+            { text: "ବ୍ୟବସାୟ ଓ ଟଙ୍କା ପଇସା ପରିଚାଳନା ବିଷୟରେ ଚିନ୍ତା କରିବା", type: "commerce" },
+            { text: "ମୋବାଇଲ୍ ବା ଖେଳନା ମରାମତି କରିବା", type: "vocational" }
+          ]
+        },
+        {
+          q: "୩. କେଉଁ କାମ ଆପଣଙ୍କୁ ଅଧିକ ଆକର୍ଷିତ କରେ? (Most Exciting Work)",
+          options: [
+            { text: "କୌଣସି ଜଟିଳ ସମସ୍ୟାର ଷ୍ଟେପ୍-ବାଇ-ଷ୍ଟେପ୍ ସମାଧାନ କରିବା", type: "science" },
+            { text: "ଲୋକମାନଙ୍କୁ ସାହାଯ୍ୟ କରିବା ଓ ନୂଆ ବିଷୟ ଶିଖାଇବା", type: "arts" },
+            { text: "ନୂଆ ଦୋକାନ ବା କାରବାର ଆରମ୍ଭ କରିବା", type: "commerce" },
+            { text: "ମେସିନ୍ କିମ୍ବା ଡିଜାଇନ୍ ଉପରେ କାମ କରିବା", type: "vocational" }
+          ]
+        }
+      ];
+      
+      function startQuiz() {
+        currentStep = 0;
+        answers = { science: 0, commerce: 0, arts: 0, vocational: 0 };
+        document.getElementById('quiz-intro').style.display = 'none';
+        document.getElementById('quiz-questions').style.display = 'block';
+        document.getElementById('quiz-result').style.display = 'none';
+        showQuestion();
+      }
+      
+      function showQuestion() {
+        if (currentStep >= questions.length) {
+          showResult();
+          return;
+        }
+        var qData = questions[currentStep];
+        document.getElementById('quiz-q-text').innerText = qData.q;
+        var optionsDiv = document.getElementById('quiz-options');
+        optionsDiv.innerHTML = '';
+        
+        qData.options.forEach(function(opt) {
+          var btn = document.createElement('button');
+          btn.className = 'button';
+          btn.style.width = '100%';
+          btn.style.textAlign = 'left';
+          btn.style.background = 'rgba(255,255,255,0.04)';
+          btn.style.border = '1px solid rgba(255,255,255,0.1)';
+          btn.style.color = 'white';
+          btn.style.padding = '12px 16px';
+          btn.style.borderRadius = '10px';
+          btn.style.fontSize = '13.5px';
+          btn.style.cursor = 'pointer';
+          btn.style.marginBottom = '8px';
+          btn.onmouseover = function() { btn.style.background = 'rgba(245,158,11,0.1)'; btn.style.borderColor = 'var(--accent)'; };
+          btn.onmouseout = function() { btn.style.background = 'rgba(255,255,255,0.04)'; btn.style.borderColor = 'rgba(255,255,255,0.1)'; };
+          
+          btn.onclick = function() {
+            answers[opt.type]++;
+            currentStep++;
+            showQuestion();
+          };
+          optionsDiv.appendChild(btn);
+          btn.innerText = opt.text;
+        });
+      }
+      
+      function showResult() {
+        document.getElementById('quiz-questions').style.display = 'none';
+        document.getElementById('quiz-result').style.display = 'block';
+        
+        var maxCat = 'science';
+        var maxVal = answers.science;
+        ['commerce', 'arts', 'vocational'].forEach(function(cat) {
+          if (answers[cat] > maxVal) {
+            maxVal = answers[cat];
+            maxCat = cat;
+          }
+        });
+        
+        var resultTitle = '';
+        var resultDesc = '';
+        var ctaText = '';
+        var ctaLink = '';
+        
+        if (maxCat === 'science') {
+          resultTitle = "🔬 Science Stream (ବିଜ୍ଞାନ)";
+          resultDesc = "ଆପଣଙ୍କ ବିଶ୍ଳେଷଣାତ୍ମକ ମନ ପାଇଁ ବିଜ୍ଞାନ ସର୍ବୋତ୍ତମ ବିକଳ୍ପ। ଆପଣ Engineering, Medical, AI କିମ୍ବା Space Research କ୍ଷେତ୍ରରେ କ୍ୟାରିଅର୍ ଗଢ଼ିପାରିବେ। ଆମର AI Study Buddy (Gundulu) ସହ ଆଜିଠାରୁ ହିଁ ପ୍ରସ୍ତୁତି ଆରମ୍ଭ କରନ୍ତୁ!";
+          ctaText = "Chat with AI Study Buddy";
+          ctaLink = "/#study_buddy";
+        } else if (maxCat === 'commerce') {
+          resultTitle = "📊 Commerce Stream (ବାଣିଜ୍ୟ)";
+          resultDesc = "ଆପଣଙ୍କ ବ୍ୟବସାୟିକ ଓ ସାଂଖ୍ୟିକ ଦକ୍ଷତା ପାଇଁ ବାଣିଜ୍ୟ ଶ୍ରେଷ୍ଠ ଅଟେ। ଆପଣ CA, Finance Manager, କିମ୍ବା Entrepreneurship (ଉଦ୍ୟୋଗୀ) ହୋଇପାରିବେ।";
+          ctaText = "Start Commerce Prep with AI Buddy";
+          ctaLink = "/#study_buddy";
+        } else if (maxCat === 'arts') {
+          resultTitle = "🎨 Arts / Humanities Stream (କଳା)";
+          resultDesc = "ଆପଣଙ୍କ ରଚନାତ୍ମକ ଓ ସାମାଜିକ ଚିନ୍ତାଧାରା ପାଇଁ କଳା ବିଭାଗ ଅତ୍ୟନ୍ତ ଉପଯୋଗୀ। ଆପଣ Civil Services (IAS/OAS), ଶିକ୍ଷକତା, ଆଇନ ବା ସାମ୍ବାଦିକତା କ୍ଷେତ୍ରରେ ସଫଳ ହେବେ।";
+          ctaText = "Chat with AI Study Buddy";
+          ctaLink = "/#study_buddy";
+        } else {
+          resultTitle = "⚙️ Vocational / Technical Courses (ଧନ୍ଦାମୂଳକ)";
+          resultDesc = "ଆପଣଙ୍କ ବ୍ୟାବହାରିକ କାର୍ଯ୍ୟ ଦକ୍ଷତା ପାଇଁ ITI, Diploma, କିମ୍ବା Poly-technic ସର୍ବୋତ୍ତମ। ଆପଣ ଶୀଘ୍ର ଚାକିରି ପାଇପାରିବେ କିମ୍ବା ବ୍ୟକ୍ତିଗତ କାର୍ଯ୍ୟାଳୟ ଆରମ୍ଭ କରିପାରିବେ।";
+          ctaText = "Explore Vocational Roadmaps";
+          ctaLink = "/#mo_swapna";
+        }
+        
+        document.getElementById('quiz-res-title').innerText = resultTitle;
+        document.getElementById('quiz-res-desc').innerText = resultDesc;
+        var rBtn = document.getElementById('quiz-res-btn');
+        rBtn.innerText = ctaText;
+        rBtn.href = ctaLink;
+        
+        if (maxCat === 'science' || maxCat === 'commerce' || maxCat === 'arts') {
+          rBtn.style.background = '#34d399';
+          rBtn.style.color = '#090e1a';
+        } else {
+          rBtn.style.background = 'var(--accent)';
+          rBtn.style.color = '#0f172a';
+        }
+      }
+    </script>
   </body>
 </html>

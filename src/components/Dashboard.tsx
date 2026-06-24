@@ -487,6 +487,35 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       ? promoVideoUrl 
        : (classVideoMap[userClass] || classVideoMap['10']);
 
+    // Helper to get the month of the completed/published test series
+    const getCompletedMtsMonth = (date: Date) => {
+      const year = date.getFullYear();
+      const month = date.getMonth(); // 0-indexed: 5 = June, 6 = July
+      const day = date.getDate();
+
+      // If we are in June (month === 5), the completed test is May
+      if (month === 5) {
+        return { monthName: 'May', year: year };
+      }
+      
+      // If we are in July (month === 6):
+      // July results are published on the 13th. Before that, it's May.
+      if (month === 6) {
+        if (day < 13) {
+          return { monthName: 'May', year: year };
+        } else {
+          return { monthName: 'July', year: year };
+        }
+      }
+
+      const monthName = new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'Asia/Kolkata' }).format(date);
+      return { monthName, year };
+    };
+
+    const activeMtsDate = new Date();
+    const { monthName: completedMtsMonth, year: completedMtsYear } = getCompletedMtsMonth(activeMtsDate);
+    const completedMtsClaimTag = `[MTS_CLAIM:${completedMtsMonth.toLowerCase()}_${completedMtsYear}]`;
+
 
 
   const [selectedDistrict, setSelectedDistrict] = useState('');
@@ -1802,36 +1831,9 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                            window.location.search.includes('showcase');
     if (isJudgeAccount) return;
 
-    // Determine current month / year details
-    const activeDate = new Date();
-    
-    // Helper to get the month of the completed/published test series
-    const getCompletedMtsMonth = (date: Date) => {
-      const year = date.getFullYear();
-      const month = date.getMonth(); // 0-indexed: 5 = June, 6 = July
-      const day = date.getDate();
-
-      // If we are in June (month === 5), the completed test is May
-      if (month === 5) {
-        return { monthName: 'May', year: year };
-      }
-      
-      // If we are in July (month === 6):
-      // July results are published on the 13th. Before that, it's May.
-      if (month === 6) {
-        if (day < 13) {
-          return { monthName: 'May', year: year };
-        } else {
-          return { monthName: 'July', year: year };
-        }
-      }
-
-      const monthName = new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'Asia/Kolkata' }).format(date);
-      return { monthName, year };
-    };
-
-    const { monthName: activeMonthName, year: activeYear } = getCompletedMtsMonth(activeDate);
-    const claimTag = `[MTS_CLAIM:${activeMonthName.toLowerCase()}_${activeYear}]`;
+    const activeMonthName = completedMtsMonth;
+    const activeYear = completedMtsYear;
+    const claimTag = completedMtsClaimTag;
 
 
     const checkWinnerAndTicket = async () => {
@@ -2619,7 +2621,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         let docs: any[] = [];
         if (user?.class) {
           const q = query(
-            collection(db, 'users'),
+            collection(db, 'public_profiles'),
             where('class', '==', user.class)
           );
           const snapshot = await getDocs(q);
@@ -2628,7 +2630,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         
         // If we didn't find any or class is not specified, fall back to global
         if (docs.length === 0) {
-          const q = query(collection(db, 'users'));
+          const q = query(collection(db, 'public_profiles'));
           const snapshot = await getDocs(q);
           docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         }
@@ -4196,6 +4198,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             user={user}
             language={language}
             rank={userBestMtsRank}
+            claimTag={completedMtsClaimTag}
             onClose={() => setShowGiftUnlockModal(false)}
             onClaimSuccess={(ticket) => {
               setClaimedTicket(ticket);
