@@ -519,10 +519,17 @@ function SupportOverlay({ session, onEnd }: { session: any, onEnd: () => void })
       const unsubAdminCandidates = onSnapshot(
         collection(firestore, 'remote_support', session.id, 'admin_candidates'),
         (snap) => {
-          snap.docChanges().forEach((change) => {
+          snap.docChanges().forEach(async (change) => {
             if (change.type === 'added') {
-              const candidate = new RTCIceCandidate(change.doc.data());
-              peerConnection.addIceCandidate(candidate);
+              try {
+                const candidateData = change.doc.data();
+                if (candidateData && peerConnection.remoteDescription) {
+                  const candidate = new RTCIceCandidate(candidateData);
+                  await peerConnection.addIceCandidate(candidate);
+                }
+              } catch (err) {
+                console.warn("[WebRTC] Failed to add incoming admin ICE candidate:", err);
+              }
             }
           });
         }

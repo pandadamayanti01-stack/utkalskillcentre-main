@@ -125,12 +125,16 @@ export const subscribeToQueuePosition = (
 
   return onSnapshot(q, (snap) => {
     let position = 1;
+    const sessionTargetTime = sessionCreatedAt?.toMillis ? sessionCreatedAt.toMillis() : Date.now();
+    
     for (const doc of snap.docs) {
       const data = doc.data();
+      const docTime = data.createdAt?.toMillis ? data.createdAt.toMillis() : Date.now();
+      
       // If this document was created before our session, we are behind it in queue
-      if (data.createdAt && sessionCreatedAt && data.createdAt.toMillis() < sessionCreatedAt.toMillis()) {
+      if (docTime < sessionTargetTime) {
         position++;
-      } else if (data.createdAt && sessionCreatedAt && data.createdAt.toMillis() === sessionCreatedAt.toMillis()) {
+      } else if (docTime === sessionTargetTime) {
         break; // Found our session
       }
     }

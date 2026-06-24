@@ -82,10 +82,17 @@ export const LiveSupportTab: React.FC<LiveSupportTabProps> = ({ user }) => {
         const unsubCandidates = onSnapshot(
           collection(db, 'remote_support', activeSession.id, 'student_candidates'),
           (snap) => {
-            snap.docChanges().forEach((change) => {
+            snap.docChanges().forEach(async (change) => {
               if (change.type === 'added') {
-                const candidate = new RTCIceCandidate(change.doc.data());
-                peerConnection.addIceCandidate(candidate);
+                try {
+                  const candidateData = change.doc.data();
+                  if (candidateData && peerConnection.remoteDescription) {
+                    const candidate = new RTCIceCandidate(candidateData);
+                    await peerConnection.addIceCandidate(candidate);
+                  }
+                } catch (err) {
+                  console.warn("[WebRTC] Failed to add incoming student ICE candidate:", err);
+                }
               }
             });
           }
@@ -99,8 +106,12 @@ export const LiveSupportTab: React.FC<LiveSupportTabProps> = ({ user }) => {
   };
 
   useEffect(() => {
-    // Listen for all pending and active sessions
-    const q = query(collection(db, 'remote_support'), orderBy('createdAt', 'asc'));
+    // Listen for only pending and active sessions to avoid loading massive historical logs
+    const q = query(
+      collection(db, 'remote_support'),
+      where('status', 'in', ['pending', 'active']),
+      orderBy('createdAt', 'asc')
+    );
     const unsub = onSnapshot(q, (snap) => {
       const data = snap.docs.map(doc => doc.data() as SupportSession);
       const active = data.find(s => s.status === 'active' && s.adminUid === user?.uid);
