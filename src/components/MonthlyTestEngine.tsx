@@ -17,6 +17,7 @@ import { vibrate, requestScreenWakeLock, releaseScreenWakeLock, playSuccessChime
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { db as firestore, storage } from '../firebase';
+import { gradeSubjectiveAnswer } from '../services/aiService';
 
 interface MonthlyTestEngineProps {
   test: Test;
@@ -208,12 +209,45 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
       const score = answers.reduce((acc, ans, i) => {
         const q = test.questions[i];
         if (q.type === 'subjective' || q.marks > 1) {
-          return acc; // subjective has manual grading
+          return acc; // subjective is graded below
         }
         const ansIdx = ans as number;
         const selectedOption = q.options[ansIdx];
         return acc + (selectedOption === q.correct_answer ? 1 : 0);
       }, 0);
+
+      // Perform AI grading for subjective questions client-side immediately
+      const subjectiveScores: Record<number, number> = {};
+      const aiJustifications: Record<number, string> = {};
+
+      for (let i = 0; i < test.questions.length; i++) {
+        const q = test.questions[i];
+        if (q.type === 'subjective' || q.marks > 1) {
+          const studentAns = answers[i];
+          const studentAnsText = typeof studentAns === 'object' && studentAns !== null ? studentAns.text : (typeof studentAns === 'string' ? studentAns : '');
+          const studentAnsImg = typeof studentAns === 'object' && studentAns !== null ? studentAns.imageUrl : null;
+          
+          try {
+            console.log(`[Gundulu AI] Auto-grading subjective question ${i + 1} of ${test.questions.length}...`);
+            const result = await gradeSubjectiveAnswer(
+              q.question,
+              q.correct_answer || '',
+              studentAnsText,
+              studentAnsImg,
+              q.marks || 1,
+              test.language as 'en' | 'or'
+            );
+            subjectiveScores[i] = result.suggestedMark ?? 0;
+            aiJustifications[i] = result.justification || 'Graded by Gundulu AI.';
+          } catch (gradeErr) {
+            console.error(`[Gundulu AI] Failed to grade question index ${i}:`, gradeErr);
+            subjectiveScores[i] = 0;
+            aiJustifications[i] = 'AI grading timeout. Result saved with 0 marks (reviewable by teacher).';
+          }
+        }
+      }
+
+      const totalManual = Object.values(subjectiveScores).reduce((a, b) => a + b, 0);
 
       const submissionData = {
         testId: test.id,
@@ -224,12 +258,16 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
         month: test.month,
         year: test.year,
         answers,
-        score,
+        score, // MCQ score
+        subjectiveScores,
+        aiJustifications,
+        finalScore: score + totalManual,
+        status: 'reviewed', // Directly mark as reviewed so student can verify immediately
         totalQuestions: test.questions.length,
         submittedAt: serverTimestamp(),
       };
 
-      console.log("Debug: Submitting Monthly Test:", submissionData);
+      console.log("Debug: Submitting Monthly Test with AI Graded Scores:", submissionData);
 
       await addDoc(collection(firestore, 'monthly_test_submissions'), submissionData);
 
@@ -448,7 +486,16 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
               onClick={handleSubmit}
               className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white px-10 py-4 rounded-2xl font-black text-sm uppercase tracking-[0.2em] shadow-xl shadow-emerald-900/20 disabled:opacity-50 flex items-center gap-3 transition-all hover:scale-105 active:scale-95"
             >
-              {submitting ? <><Loader2 size={18} className="animate-spin" /> Submitting...</> : 'Complete Test'}
+              {submitting ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" />
+                  {test.questions.some((q: any) => q.type === 'subjective' || q.marks > 1)
+                    ? (language === 'en' ? 'Gundulu AI is grading...' : 'ଗୁନ୍ଦୁଲୁ AI ମୂଲ୍ୟାଙ୍କନ କରୁଛି...')
+                    : (language === 'en' ? 'Submitting...' : 'ସବ୍‌ମିଟ୍ ହେଉଛି...')}
+                </>
+              ) : (
+                language === 'en' ? 'Complete Test' : 'ଟେଷ୍ଟ ଶେଷ କରନ୍ତୁ'
+              )}
             </button>
           ) : (
             <button

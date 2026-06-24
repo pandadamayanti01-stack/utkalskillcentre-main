@@ -32,37 +32,127 @@ function getRoadmapForClass(className: string) {
   }
 }
 
-function getGroupIndexForSubject(subject: string): number {
+function getGroupIndexForSubject(subject: string, className: string): number {
   const s = subject.toLowerCase().trim();
-  if (s === 'math' || s === 'algebra' || s === 'geometry' || s === 'mathematics') {
-    return 0; // Mathematics
+  const digit = className.replace(/\D/g, '');
+  const classNum = parseInt(digit) || 10;
+
+  // 1. Math subjects
+  const isMath = s.includes('math') || s.includes('ganita') || s === 'algebra' || s === 'geometry' || s.includes('geometry') || s.includes('algebra');
+
+  // 2. Odia subjects
+  const isOdia = s.includes('odia') || s.includes('flo') || s.includes('bhasa') || s.includes('jhulana') || s.includes('sahitya') || s.includes('pallavi') || s.includes('ଓଡ଼ିଆ') || s.includes('ସାହିତ୍ୟ');
+
+  // 3. English subjects
+  const isEnglish = s.includes('english') || s.includes('sle') || s.includes('jasmine');
+
+  // 4. Science / EVS
+  const isScienceEvs = s.includes('science') || s.includes('bignana') || s.includes('jigyasa') || s.includes('paribesa') || s.includes('pruthibi') || s.includes('evs') || s.includes('ଜୀବବିଜ୍ଞାନ');
+
+  // 5. Social Science
+  const isSocialScience = s.includes('social') || s.includes('samajika') || s.includes('history') || s.includes('geography') || s.includes('political') || s.includes('economics') || s.includes('sst') || s.includes('itihasa') || s.includes('bhugola');
+
+  // Adjust isScienceEvs to exclude if it's already Social Science
+  const isScienceEvsFinal = isScienceEvs && !isSocialScience;
+
+  // 6. Sanskrit / Hindi
+  const isSanskritHindi = s.includes('sanskrit') || s.includes('hindi') || s.includes('tls') || s.includes('tlh') || s.includes('third_language');
+
+  // 7. Art
+  const isArt = s.includes('art') || s.includes('kala') || s.includes('kruti') || s.includes('drawing');
+
+  // 8. PE / Wellness
+  const isPe = s.includes('pe') || s.includes('khela') || s.includes('krida') || s.includes('sharirika') || s.includes('yoga') || s.includes('wellness') || s.includes('sports');
+
+  // 9. Vocational
+  const isVocational = s.includes('vocational') || s.includes('kausala') || s.includes('skill') || s === 'it' || s === 'retail' || s === 'travel';
+
+  if (classNum === 1 || classNum === 2) {
+    if (isMath) return 0;
+    if (isOdia) return 1;
+    return -1;
   }
-  if (s === 'physical_science' || s === 'life_science' || s === 'science' || s === 'general_science') {
-    return 1; // General Science
+
+  if (classNum >= 3 && classNum <= 5) {
+    if (isMath) return 0;
+    if (isScienceEvsFinal) return 1;
+    if (isOdia) return 2;
+    if (isEnglish) return 3;
+    if (isArt) return 4;
+    if (isPe) return 5;
+    return -1;
   }
-  if (s === 'social_science' || s === 'history' || s === 'political_science' || s === 'geography' || s === 'economics') {
-    return 2; // Social Science
+
+  if (classNum >= 6 && classNum <= 8) {
+    // Math ➔ Group 0
+    if (isMath) return 0;
+    // English ➔ Group 1
+    if (isEnglish) return 1;
+    // Science / Art ➔ Group 2
+    if (isScienceEvsFinal || isArt) return 2;
+    // Social Science / PE ➔ Group 3
+    if (isSocialScience || isPe) return 3;
+    // Odia / Vocational ➔ Group 4
+    if (isOdia || isVocational) return 4;
+    // Sanskrit / Hindi ➔ Group 5
+    if (isSanskritHindi) return 5;
+    return -1;
   }
-  if (s === 'odia' || s === 'odia_literature' || s === 'odia_grammar' || s === 'flo') {
-    return 3; // First Language (Odia)
-  }
-  if (s === 'english' || s === 'english_literature' || s === 'english_grammar' || s === 'sle') {
-    return 4; // Second Language (English)
-  }
-  if (s === 'sanskrit' || s === 'sanskrit_grammar' || s === 'hindi' || s === 'hindi_grammar' || s === 'tls' || s === 'tlh' || s === 'vocational' || s === 'third_language') {
-    return 5; // Third Language
-  }
+
+  // Class 9 & 10
+  if (isMath) return 0;
+  if (isScienceEvsFinal) return 1;
+  if (isSocialScience) return 2;
+  if (isOdia) return 3;
+  if (isEnglish) return 4;
+  if (isSanskritHindi || isVocational) return 5;
   return -1;
 }
 
-function getGroupName(groupIdx: number): string {
+function getGroupName(groupIdx: number, className: string): string {
+  const digit = className.replace(/\D/g, '');
+  const classNum = parseInt(digit) || 10;
+
+  if (classNum === 1 || classNum === 2) {
+    switch (groupIdx) {
+      case 0: return 'Mathematics';
+      case 1: return 'First Language (Odia)';
+      default: return 'Other';
+    }
+  }
+
+  if (classNum >= 3 && classNum <= 5) {
+    switch (groupIdx) {
+      case 0: return 'Mathematics';
+      case 1: return 'Science / EVS';
+      case 2: return 'First Language (Odia)';
+      case 3: return 'Second Language (English)';
+      case 4: return 'Art Education';
+      case 5: return 'Physical Education';
+      default: return 'Other';
+    }
+  }
+
+  if (classNum >= 6 && classNum <= 8) {
+    switch (groupIdx) {
+      case 0: return 'Mathematics';
+      case 1: return 'Second Language (English)';
+      case 2: return 'Science & Art';
+      case 3: return 'Social Science & PE';
+      case 4: return 'Odia & Vocational';
+      case 5: return 'Third Language (Sanskrit / Hindi)';
+      default: return 'Other';
+    }
+  }
+
+  // Class 9 & 10
   switch (groupIdx) {
     case 0: return 'Mathematics';
     case 1: return 'General Science';
     case 2: return 'Social Science';
     case 3: return 'First Language (Odia)';
     case 4: return 'Second Language (English)';
-    case 5: return 'Third Language (Sanskrit / Hindi / Vocational)';
+    case 5: return 'Third Language / Vocational';
     default: return 'Other';
   }
 }
@@ -386,7 +476,7 @@ export async function generateMonthlyTestsForMonth(
     };
 
     monthRoadmap.chapters.forEach(ch => {
-      const idx = getGroupIndexForSubject(ch.subject);
+      const idx = getGroupIndexForSubject(ch.subject, className);
       if (idx !== -1) {
         chaptersByGroup[idx].push(ch);
       } else {
@@ -399,7 +489,7 @@ export async function generateMonthlyTestsForMonth(
       const groupChapters = chaptersByGroup[groupIdx];
       if (groupChapters.length === 0) continue;
 
-      const groupName = getGroupName(groupIdx);
+      const groupName = getGroupName(groupIdx, className);
       console.log(`[MonthlyTestAuto] Generating test for ${className} - Subject: ${groupName} (${groupChapters.length} chapters)...`);
 
       // Deterministic document ID to prevent duplicates
@@ -480,6 +570,143 @@ export async function generateMonthlyTestsForMonth(
         results.push({ class: className, subject: groupName, status: 'error', error: genErr.message });
       }
     }
+  }
+
+  return results;
+}
+
+export async function publishMonthlyResultsAndRanks(
+  adminApp: App,
+  databaseId: string,
+  targetMonthString: string
+) {
+  const db = getAdminFirestore(adminApp, databaseId);
+  console.log(`[Auto Publish] Starting automated results compilation & rank assignment for: ${targetMonthString}`);
+
+  const parts = targetMonthString.split(' ');
+  const monthName = parts[0];
+  const year = parseInt(parts[1]) || new Date().getFullYear();
+
+  // 1. Fetch all tests for this month/year
+  const testsSnap = await db.collection('monthly_tests')
+    .where('month', '==', monthName)
+    .where('year', '==', year)
+    .get();
+
+  if (testsSnap.empty) {
+    console.log(`[Auto Publish] No monthly tests found for ${targetMonthString}.`);
+    return [];
+  }
+
+  const tests = testsSnap.docs.map(d => ({ id: d.id, ...d.data() as any }));
+  const results: any[] = [];
+
+  // 2. Loop through each test to compile rankings
+  for (const test of tests) {
+    console.log(`[Auto Publish] Compiling rankings for test: ${test.id} (${test.subject} - ${test.class})`);
+
+    // Fetch submissions for this test
+    const subsSnap = await db.collection('monthly_test_submissions')
+      .where('testId', '==', test.id)
+      .get();
+
+    if (subsSnap.empty) {
+      console.log(`[Auto Publish] No submissions found for test ${test.id}. Marking results as published anyway.`);
+      await db.collection('monthly_tests').doc(test.id).update({ 
+        results_published: true, 
+        updatedAt: FieldValue.serverTimestamp() 
+      });
+      results.push({ id: test.id, submissionsCount: 0, status: 'published_empty' });
+      continue;
+    }
+
+    const submissions = subsSnap.docs.map(d => ({ id: d.id, ...d.data() as any }));
+
+    // Fetch user profiles to resolve districts
+    const userIds = Array.from(new Set(submissions.map(s => s.userId).filter(Boolean)));
+    const userProfiles: Record<string, any> = {};
+
+    // Batch query user profiles (Firestore limits 'in' queries to 30 items)
+    for (let i = 0; i < userIds.length; i += 30) {
+      const batchIds = userIds.slice(i, i + 30);
+      const usersSnap = await db.collection('users')
+        .where('__name__', 'in', batchIds)
+        .get();
+      usersSnap.forEach(udoc => {
+        userProfiles[udoc.id] = udoc.data();
+      });
+    }
+
+    // Attach resolved district and school
+    const submissionsWithProfile = submissions.map(s => {
+      const profile = userProfiles[s.userId] || {};
+      const dist = s.district || profile.district || 'Khordha';
+      const sch = s.school || profile.school || '';
+      return { ...s, district: dist, school: sch };
+    });
+
+    // Sort globally: score desc, then submittedAt seconds asc
+    submissionsWithProfile.sort((a, b) => {
+      const scoreA = a.finalScore ?? a.score ?? 0;
+      const scoreB = b.finalScore ?? b.score ?? 0;
+      if (scoreB !== scoreA) return scoreB - scoreA;
+      const timeA = a.submittedAt?.seconds || a.submittedAt?._seconds || 0;
+      const timeB = b.submittedAt?.seconds || b.submittedAt?._seconds || 0;
+      return timeA - timeB;
+    });
+
+    // Group by district to compute district ranks
+    const districtGroups: Record<string, any[]> = {};
+    submissionsWithProfile.forEach(s => {
+      const dist = s.district;
+      if (!districtGroups[dist]) districtGroups[dist] = [];
+      districtGroups[dist].push(s);
+    });
+
+    // Sort and map district ranks
+    const districtRanksMap: Record<string, number> = {};
+    Object.keys(districtGroups).forEach(dist => {
+      const group = districtGroups[dist];
+      group.sort((a, b) => {
+        const scoreA = a.finalScore ?? a.score ?? 0;
+        const scoreB = b.finalScore ?? b.score ?? 0;
+        if (scoreB !== scoreA) return scoreB - scoreA;
+        const timeA = a.submittedAt?.seconds || a.submittedAt?._seconds || 0;
+        const timeB = b.submittedAt?.seconds || b.submittedAt?._seconds || 0;
+        return timeA - timeB;
+      });
+      group.forEach((s, idx) => {
+        districtRanksMap[s.id] = idx + 1;
+      });
+    });
+
+    // Update submissions with ranks (using chunked write batches of 400 to avoid Firestore limits)
+    const CHUNK_SIZE = 400;
+    for (let i = 0; i < submissionsWithProfile.length; i += CHUNK_SIZE) {
+      const chunk = submissionsWithProfile.slice(i, i + CHUNK_SIZE);
+      const writeBatch = db.batch();
+      chunk.forEach((sub, cidx) => {
+        const globalRank = i + cidx + 1;
+        const docRef = db.collection('monthly_test_submissions').doc(sub.id);
+        writeBatch.update(docRef, {
+          rank: globalRank,
+          districtRank: districtRanksMap[sub.id] || null,
+          district: sub.district,
+          school: sub.school,
+          updatedAt: FieldValue.serverTimestamp()
+        });
+      });
+      await writeBatch.commit();
+    }
+
+    // Mark test results as published
+    await db.collection('monthly_tests').doc(test.id).update({
+      results_published: true,
+      updatedAt: FieldValue.serverTimestamp()
+    });
+
+    console.log(`[Auto Publish] Ranked and published ${submissions.length} submissions for test ${test.id}.`);
+    results.push({ id: test.id, submissionsCount: submissions.length, status: 'published' });
   }
 
   return results;

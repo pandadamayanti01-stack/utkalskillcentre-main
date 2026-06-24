@@ -750,6 +750,21 @@ export function SelectionPaperPrintView({ test, language, onBack }: any) {
 
   const totalMaxMarks = test.questions?.reduce((acc: number, q: any) => acc + (q.marks || 1), 0) || 0;
 
+  const durationText = (() => {
+    const classNumStr = String(test.class || '').toLowerCase();
+    if (classNumStr.includes('sishuvatika') || classNumStr.includes('anganwadi') || classNumStr.includes('primary')) {
+      return language === 'or' ? '୩୦ ମିନିଟ୍' : '30 Minutes';
+    }
+    const classNum = parseInt(classNumStr.replace(/\D/g, '')) || 10;
+    if (classNum <= 5) {
+      return language === 'or' ? '୩୦ ମିନିଟ୍' : '30 Minutes';
+    }
+    if (classNum <= 8) {
+      return language === 'or' ? '୪୫ ମିନିଟ୍' : '45 Minutes';
+    }
+    return language === 'or' ? '୬୦ ମିନିଟ୍' : '60 Minutes';
+  })();
+
   const handleShare = async () => {
     const subjectName = getCorrectSubjectName(test.subject, language);
     const classLabel = translations[language].classes?.[test.class as keyof typeof translations.en.classes] || `Class ${test.class}`;
@@ -828,7 +843,7 @@ export function SelectionPaperPrintView({ test, language, onBack }: any) {
             </div>
             <div>
               <p className="text-slate-500 uppercase text-[9px]">{language === 'en' ? 'Duration' : 'ସମୟ'} (ସମୟ)</p>
-              <p className="text-sm font-black text-slate-900 mt-0.5">{language === 'en' ? '45 Minutes' : '୪୫ ମିନିଟ୍'}</p>
+              <p className="text-sm font-black text-slate-900 mt-0.5">{durationText}</p>
             </div>
           </div>
 
@@ -1094,18 +1109,18 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
   const selectedMonthReport = (() => {
     const data = { submissions: [] as any[], tests: [] as any[], totalScore: 0, totalMax: 0 };
     testsForSelectedMonth.forEach((test: any) => {
-      if (test.results_published) {
-        const sub = getSubmission(test);
-        if (sub) {
-          data.submissions.push(sub);
-          data.tests.push(test);
-          data.totalScore += (sub.finalScore ?? sub.score ?? 0);
-          data.totalMax += (sub.totalMaxMarks ?? sub.totalQuestions ?? 0);
-        }
+      const sub = getSubmission(test);
+      if (sub) {
+        data.submissions.push(sub);
+        data.tests.push(test);
+        data.totalScore += (sub.finalScore ?? sub.score ?? 0);
+        data.totalMax += (sub.totalMaxMarks ?? sub.totalQuestions ?? 0);
       }
     });
     return data;
   })();
+
+  const isMonthResultsPublished = testsForSelectedMonth.length > 0 && testsForSelectedMonth.every((test: any) => test.results_published);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -1299,14 +1314,30 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
             </div>
 
             <button
-              onClick={() => setViewingConsolidatedCert({
-                monthYear: currentMonthFilter,
-                submissions: selectedMonthReport.submissions,
-                tests: selectedMonthReport.tests
-              })}
-              className="py-3 px-4 md:py-4 md:px-6 rounded-xl md:rounded-2xl bg-gradient-to-br from-indigo-500/20 via-purple-500/10 to-pink-500/20 hover:from-amber-400 hover:to-orange-500 text-white font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25 active:scale-98 transition-all duration-300 border-t border-white/20 flex-1 md:flex-initial cursor-pointer"
+              onClick={() => {
+                if (!isMonthResultsPublished) {
+                  alert(language === 'en'
+                    ? "Your consolidated report card and certificate will be available on the 12th of this month after rankings are finalized."
+                    : "ରାଙ୍କିଙ୍ଗ୍ ସରିବା ପରେ ଏହି ମାସର ୧୨ ତାରିଖରେ ତୁମର ମିଳିତ ରିପୋର୍ଟ କାର୍ଡ ଏବଂ ପ୍ରମାଣପତ୍ର ଉପଲବ୍ଧ ହେବ।"
+                  );
+                  return;
+                }
+                setViewingConsolidatedCert({
+                  monthYear: currentMonthFilter,
+                  submissions: selectedMonthReport.submissions,
+                  tests: selectedMonthReport.tests
+                });
+              }}
+              className={isMonthResultsPublished 
+                ? "py-3 px-4 md:py-4 md:px-6 rounded-xl md:rounded-2xl bg-gradient-to-br from-indigo-500/20 via-purple-500/10 to-pink-500/20 hover:from-amber-400 hover:to-orange-500 text-white font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25 active:scale-98 transition-all duration-300 border-t border-white/20 flex-1 md:flex-initial cursor-pointer"
+                : "py-3 px-4 md:py-4 md:px-6 rounded-xl md:rounded-2xl bg-slate-900/40 border border-white/5 text-slate-500 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 flex-1 md:flex-initial cursor-pointer opacity-60 hover:text-slate-400 hover:bg-slate-900/60 transition-all"
+              }
             >
-              <Lucide.Award size={16} /> {language === 'en' ? 'Consolidated Cert' : 'ମିଳିତ ପ୍ରମାଣପତ୍ର'}
+              {isMonthResultsPublished ? (
+                <><Lucide.Award size={16} /> {language === 'en' ? 'Consolidated Cert' : 'ମିଳିତ ପ୍ରମାଣପତ୍ର'}</>
+              ) : (
+                <><Lucide.Lock size={16} /> {language === 'en' ? 'Locked (Unlocks on 12th)' : 'ଲକ୍ ଅଛି (୧୨ ତାରିଖରେ ଖୋଲିବ)'}</>
+              )}
             </button>
           </div>
         </motion.div>
@@ -1484,31 +1515,20 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
                         </div>
                       </div>
 
-                      {resultsPublished && (
-                        <div className="flex flex-col gap-2">
-                          <div className="flex gap-2.5">
-                            <button 
-                              onClick={() => setReviewingResults({ submission, test: testItem })}
-                              className="flex-1 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-[10px] md:text-xs uppercase tracking-widest flex items-center justify-center gap-1.5 border border-white/5 hover:border-white/10 active:scale-98 transition-all duration-300 cursor-pointer"
-                            >
-                              <Lucide.ClipboardList size={14} /> {language === 'en' ? 'Review Answers' : 'ଉତ୍ତର ସମୀକ୍ଷା'}
-                            </button>
-                            <button 
-                              onClick={() => setViewingCertificate({ submission, test: testItem })}
-                              className="flex-1 py-3 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-[10px] md:text-xs uppercase tracking-widest flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 active:scale-98 transition-all duration-300 border-t border-white/20 cursor-pointer"
-                            >
-                              <Lucide.Award size={14} /> {language === 'en' ? 'Certificate' : 'ପ୍ରମାଣପତ୍ର'}
-                            </button>
-                          </div>
-
-                          <button
-                            onClick={() => setPrintingSelectionPaper({ test: testItem })}
-                            className="w-full py-3 rounded-lg bg-slate-950 border border-white/10 hover:border-white/30 text-slate-300 font-bold text-[10px] md:text-xs uppercase tracking-widest flex items-center justify-center gap-1.5 hover:text-white transition-all cursor-pointer"
-                          >
-                            <Lucide.Download size={12} /> {language === 'en' ? 'Printable Board Selection Paper' : 'ବୋର୍ଡ ସିଲେକ୍ସନ ପେପର୍ ପ୍ରିଣ୍ଟ'}
-                          </button>
-                        </div>
-                      )}
+                      <div className="flex flex-col gap-2">
+                        <button 
+                          onClick={() => setReviewingResults({ submission, test: testItem })}
+                          className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-[10px] md:text-xs uppercase tracking-widest flex items-center justify-center gap-1.5 border border-white/5 hover:border-white/10 active:scale-98 transition-all duration-300 cursor-pointer"
+                        >
+                          <Lucide.ClipboardList size={14} /> {language === 'en' ? 'Review Answers & AI Evaluation' : 'ଉତ୍ତର ସମୀକ୍ଷା ଏବଂ AI ମୂଲ୍ୟାଙ୍କନ'}
+                        </button>
+                        <button
+                          onClick={() => setPrintingSelectionPaper({ test: testItem })}
+                          className="w-full py-3 rounded-lg bg-slate-950 border border-white/10 hover:border-white/30 text-slate-300 font-bold text-[10px] md:text-xs uppercase tracking-widest flex items-center justify-center gap-1.5 hover:text-white transition-all cursor-pointer"
+                        >
+                          <Lucide.Download size={12} /> {language === 'en' ? 'Printable Board Selection Paper' : 'ବୋର୍ଡ ସିଲେକ୍ସନ ପେପର୍ ପ୍ରିଣ୍ଟ'}
+                        </button>
+                      </div>
                     </div>
                   ) : resultsPublished ? (
                     <div className="w-full py-3.5 rounded-xl bg-slate-950/60 border border-white/5 text-slate-500 font-bold text-center flex flex-col items-center justify-center gap-1">

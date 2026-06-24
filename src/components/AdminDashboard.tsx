@@ -2607,10 +2607,14 @@ Sample tone for Class 6-10:
                         }
                       }
 
+                      const totalManual = Object.values(newSubjectiveScores).reduce((a: any, b: any) => (a as number) + (b as number), 0);
+                      const finalScoreVal = (sub.score || 0) + (totalManual as number);
+
                       // Update Firestore for this submission
                       await updateDoc(doc(firestore, 'monthly_test_submissions', sub.id), {
                         subjectiveScores: newSubjectiveScores,
                         aiJustifications: newAiJustifications,
+                        finalScore: finalScoreVal,
                         status: 'reviewed'
                       });
                       
@@ -2619,6 +2623,7 @@ Sample tone for Class 6-10:
                         ...s,
                         subjectiveScores: newSubjectiveScores,
                         aiJustifications: newAiJustifications,
+                        finalScore: finalScoreVal,
                         status: 'reviewed'
                       } : s));
                       

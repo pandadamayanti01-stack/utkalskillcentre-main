@@ -797,7 +797,7 @@ export async function gradeSubjectiveAnswer(
         },
       });
       return result.response.text();
-    }, 'flash');
+    }, 'pro');
 
     return safeJsonParse(resultText || '{}');
   } catch (error) {
@@ -863,7 +863,7 @@ export async function scanNotebookAnswer(
         },
       });
       return result.response.text();
-    }, 'flash');
+    }, 'pro');
 
     return safeJsonParse(resultText || '{}');
   } catch (error) {
