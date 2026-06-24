@@ -709,5 +709,128 @@ export async function publishMonthlyResultsAndRanks(
     results.push({ id: test.id, submissionsCount: submissions.length, status: 'published' });
   }
 
+  // 3. Compile Consolidated Ranks across all subjects for this month
+  console.log(`[Auto Publish] Starting consolidated overall ranking compilation for: ${targetMonthString}`);
+  const allSubsSnap = await db.collection('monthly_test_submissions')
+    .where('month', '==', monthName)
+    .where('year', '==', year)
+    .get();
+
+  if (!allSubsSnap.empty) {
+    const allSubmissions = allSubsSnap.docs.map(d => ({ id: d.id, ...d.data() as any }));
+
+    // Group submissions by userId
+    const studentSubmissionsMap: Record<string, any[]> = {};
+    allSubmissions.forEach(sub => {
+      if (!studentSubmissionsMap[sub.userId]) {
+        studentSubmissionsMap[sub.userId] = [];
+      }
+      studentSubmissionsMap[sub.userId].push(sub);
+    });
+
+    // Compute consolidated stats for each student
+    const studentStats: any[] = [];
+    Object.entries(studentSubmissionsMap).forEach(([userId, subs]) => {
+      const studentClass = subs[0].class || '10';
+      const studentDistrict = subs[0].district || 'Khordha';
+      const totalScore = subs.reduce((acc, s) => acc + (s.finalScore ?? s.score ?? 0), 0);
+      const totalMax = subs.reduce((acc, s) => acc + (s.totalMaxMarks ?? s.totalQuestions ?? 0), 0);
+      
+      // Get the latest submittedAt timestamp as tie-breaker
+      let latestSubmissionTime = 0;
+      subs.forEach(s => {
+        const timeVal = s.submittedAt?.seconds || (s.submittedAt ? new Date(s.submittedAt).getTime() / 1000 : 0);
+        if (timeVal > latestSubmissionTime) {
+          latestSubmissionTime = timeVal;
+        }
+      });
+
+      studentStats.push({
+        userId,
+        class: studentClass,
+        district: studentDistrict,
+        totalScore,
+        totalMax,
+        latestSubmissionTime,
+        submissions: subs
+      });
+    });
+
+    // Group students by class
+    const classGroups: Record<string, any[]> = {};
+    studentStats.forEach(stat => {
+      if (!classGroups[stat.class]) {
+        classGroups[stat.class] = [];
+      }
+      classGroups[stat.class].push(stat);
+    });
+
+    // Compute overall ranks class by class
+    const updateTasks: { id: string; overallRank: number; overallDistrictRank: number }[] = [];
+
+    for (const [className, statsList] of Object.entries(classGroups)) {
+      // Sort globally within class: totalScore desc, then latestSubmissionTime asc
+      statsList.sort((a, b) => {
+        if (b.totalScore !== a.totalScore) {
+          return b.totalScore - a.totalScore;
+        }
+        return a.latestSubmissionTime - b.latestSubmissionTime;
+      });
+
+      // Group by district to compute district ranks within this class
+      const districtGroups: Record<string, any[]> = {};
+      statsList.forEach(stat => {
+        if (!districtGroups[stat.district]) {
+          districtGroups[stat.district] = [];
+        }
+        districtGroups[stat.district].push(stat);
+      });
+
+      // Sort district lists
+      const districtRanksMap: Record<string, number> = {};
+      Object.entries(districtGroups).forEach(([distName, distStats]) => {
+        distStats.sort((a, b) => {
+          if (b.totalScore !== a.totalScore) {
+            return b.totalScore - a.totalScore;
+          }
+          return a.latestSubmissionTime - b.latestSubmissionTime;
+        });
+        distStats.forEach((stat, idx) => {
+          districtRanksMap[stat.userId] = idx + 1;
+        });
+      });
+
+      // Assign global ranks and add to update tasks
+      statsList.forEach((stat, idx) => {
+        const globalRank = idx + 1;
+        const distRank = districtRanksMap[stat.userId] || 1;
+        stat.submissions.forEach((sub: any) => {
+          updateTasks.push({
+            id: sub.id,
+            overallRank: globalRank,
+            overallDistrictRank: distRank
+          });
+        });
+      });
+    }
+
+    // Write updates back to Firestore using chunked batch writes of 400
+    const CHUNK_SIZE = 400;
+    for (let i = 0; i < updateTasks.length; i += CHUNK_SIZE) {
+      const chunk = updateTasks.slice(i, i + CHUNK_SIZE);
+      const writeBatch = db.batch();
+      chunk.forEach(task => {
+        const docRef = db.collection('monthly_test_submissions').doc(task.id);
+        writeBatch.update(docRef, {
+          overallRank: task.overallRank,
+          overallDistrictRank: task.overallDistrictRank,
+          updatedAt: FieldValue.serverTimestamp()
+        });
+      });
+      await writeBatch.commit();
+    }
+    console.log(`[Auto Publish] Successfully calculated overall consolidated ranks for ${updateTasks.length} submissions.`);
+  }
+
   return results;
 }

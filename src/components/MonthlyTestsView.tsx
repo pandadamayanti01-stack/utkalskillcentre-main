@@ -669,7 +669,7 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
             <div className="flex justify-center items-center gap-4 sm:gap-12 py-1 print:py-0.5 max-w-md mx-auto">
               <div className="bg-amber-50/30 border border-amber-200/50 rounded-2xl px-4 py-2.5 print:py-1.5 print:px-3 text-center flex-1">
                 <p className="text-lg sm:text-2xl print:text-lg font-black text-slate-800 font-mono">
-                  #{submissions[0]?.rank || 'N/A'}
+                  #{submissions[0]?.overallRank || submissions[0]?.rank || 'N/A'}
                 </p>
                 <p className="text-[7px] sm:text-[9px] print:text-[8px] font-bold uppercase text-amber-700 tracking-wider mt-1">
                   ରାଜ୍ୟ ରାଙ୍କ
@@ -677,7 +677,7 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
               </div>
               <div className="bg-amber-50/30 border border-amber-200/50 rounded-2xl px-4 py-2.5 print:py-1.5 print:px-3 text-center flex-1">
                 <p className="text-lg sm:text-2xl print:text-lg font-black text-slate-800 font-mono">
-                  #{submissions.find((s: any) => s.districtRank)?.districtRank || 'N/A'}
+                  #{submissions[0]?.overallDistrictRank || submissions.find((s: any) => s.districtRank)?.districtRank || 'N/A'}
                 </p>
                 <p className="text-[7px] sm:text-[9px] print:text-[8px] font-bold uppercase text-amber-700 tracking-wider mt-1">
                   ଜିଲ୍ଲା ରାଙ୍କ
