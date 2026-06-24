@@ -340,7 +340,7 @@ service cloud.firestore {
     match /support_tickets/{ticketId} {
       allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
       allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
-      allow update: if isAdmin();
+      allow update, delete: if isAdmin();
     }
 
     match /tutor_queries/{logId} {

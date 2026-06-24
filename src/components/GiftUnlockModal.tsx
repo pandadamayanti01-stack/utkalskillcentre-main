@@ -198,7 +198,7 @@ export const GiftUnlockModal: React.FC<GiftUnlockModalProps> = ({
       } else {
         // Create new ticket
         const docRef = await addDoc(collection(db, 'support_tickets'), {
-          userId: user.id,
+          userId: user.id || user.uid || '',
           userName: user.name || 'Winner Student',
           userPhone: user.phoneNumber || user.phone || '',
           userEmail: user.email || '',
