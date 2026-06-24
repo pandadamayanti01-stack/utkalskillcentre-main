@@ -524,42 +524,82 @@ export async function reverifyExistingVideos(adminApp: App, databaseId: string) 
   const db = getAdminFirestore(adminApp, databaseId);
   const videosRef = db.collection('curated_videos');
 
-  const snap = await videosRef.get();
-  const videos = snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+  // Fetch a bounded batch of active videos
+  const snap = await videosRef
+    .where('status', 'not-in', ['backup', 'pending_review'])
+    .limit(40)
+    .get();
+
+  if (snap.empty) {
+    return [];
+  }
+
+  // Filter locally to select up to 15 videos that have either never been verified or were verified > 7 days ago.
+  // This avoids requiring complex composite Firestore indexes.
+  const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const videos = snap.docs
+    .map(doc => ({ id: doc.id, ...doc.data() } as any))
+    .filter(video => {
+      if (video.verificationStatus === 'passed' && video.lastVerifiedAt) {
+        return new Date(video.lastVerifiedAt).getTime() < sevenDaysAgo;
+      }
+      return true;
+    })
+    .slice(0, 15);
 
   const results = [];
-  for (const video of videos) {
-    if (video.status === 'backup' || video.status === 'pending_review') {
-      continue;
-    }
+  const CHUNK_SIZE = 3; // Process in chunks of 3 parallel calls
+  const COOLING_PERIOD_MS = 2500; // 2.5s cooling period between chunks
 
-    const videoId = extractYoutubeId(video.youtubeUrl);
-    if (!videoId) {
-      await videosRef.doc(video.id).update({
-        status: 'pending_review',
-        reviewReason: 'Invalid YouTube URL format.'
-      });
-      results.push({ id: video.id, title: video.title, verified: false, reasoning: 'Invalid YouTube URL format.' });
-      continue;
-    }
+  for (let i = 0; i < videos.length; i += CHUNK_SIZE) {
+    const chunk = videos.slice(i, i + CHUNK_SIZE);
+    
+    const chunkPromises = chunk.map(async (video) => {
+      const videoId = extractYoutubeId(video.youtubeUrl);
+      if (!videoId) {
+        await videosRef.doc(video.id).update({
+          status: 'pending_review',
+          reviewReason: 'Invalid YouTube URL format.'
+        });
+        return { id: video.id, title: video.title, verified: false, reasoning: 'Invalid YouTube URL format.' };
+      }
 
-    const verifyResult = await verifyYoutubeVideoWithGemini(
-      video.classStr,
-      video.subject,
-      video.chapter,
-      video.title,
-      '',
-      videoId
-    );
+      try {
+        const verifyResult = await verifyYoutubeVideoWithGemini(
+          video.classStr,
+          video.subject,
+          video.chapter,
+          video.title,
+          '',
+          videoId
+        );
 
-    if (!verifyResult.verified) {
-      await videosRef.doc(video.id).update({
-        status: 'pending_review',
-        reviewReason: `Failed retroactive OCR verification: ${verifyResult.reasoning}`
-      });
-      results.push({ id: video.id, title: video.title, verified: false, reasoning: verifyResult.reasoning });
-    } else {
-      results.push({ id: video.id, title: video.title, verified: true, reasoning: verifyResult.reasoning });
+        if (!verifyResult.verified) {
+          await videosRef.doc(video.id).update({
+            status: 'pending_review',
+            reviewReason: `Failed retroactive OCR verification: ${verifyResult.reasoning}`
+          });
+          return { id: video.id, title: video.title, verified: false, reasoning: verifyResult.reasoning };
+        }
+
+        // Update verification timestamp and status to avoid redundant checks
+        await videosRef.doc(video.id).update({
+          verificationStatus: 'passed',
+          lastVerifiedAt: new Date().toISOString()
+        });
+        return { id: video.id, title: video.title, verified: true, reasoning: verifyResult.reasoning };
+      } catch (err: any) {
+        console.error(`[Verification Error] Failed for video ${video.id}:`, err.message);
+        return { id: video.id, title: video.title, error: true, message: err.message };
+      }
+    });
+
+    const chunkResults = await Promise.all(chunkPromises);
+    results.push(...chunkResults);
+
+    if (i + CHUNK_SIZE < videos.length) {
+      console.log(`[Retroactive Sync] Chunk complete. Cooling down for ${COOLING_PERIOD_MS}ms to protect API rate limits...`);
+      await new Promise(resolve => setTimeout(resolve, COOLING_PERIOD_MS));
     }
   }
 

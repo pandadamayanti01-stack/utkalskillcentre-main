@@ -13,6 +13,7 @@ import { App, applicationDefault, getApp, getApps, initializeApp } from 'firebas
 import { cert } from 'firebase-admin/app';
 import { getFirestore as getAdminFirestore } from 'firebase-admin/firestore';
 import { getStorage as getAdminStorage } from 'firebase-admin/storage';
+import { getAuth as getAdminAuth } from 'firebase-admin/auth';
 import fs from 'fs';
 import crypto from 'node:crypto';
 import webpush from 'web-push';
@@ -167,10 +168,65 @@ async function startServer() {
     next();
   });
 
+  // Zero-dependency in-memory rate limiter to prevent API cost/resource abuse
+  const ipCache = new Map<string, { count: number; resetTime: number }>();
+  
+  function createRateLimiter(windowMs: number, maxRequests: number, errorMessage: string) {
+    return (req: any, res: any, next: any) => {
+      const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+      const now = Date.now();
+      
+      let record = ipCache.get(ip);
+      if (!record || now > record.resetTime) {
+        record = { count: 1, resetTime: now + windowMs };
+        ipCache.set(ip, record);
+        return next();
+      }
+      
+      record.count++;
+      if (record.count > maxRequests) {
+        return res.status(429).json({ error: errorMessage });
+      }
+      
+      next();
+    };
+  }
 
+  const globalApiLimiter = createRateLimiter(15 * 60 * 1000, 150, 'Too many requests. Please try again in 15 minutes.');
+  const heavyAiLimiter = createRateLimiter(1 * 60 * 1000, 10, 'AI request limit reached. Please wait a minute before asking again.');
+  const imageProxyLimiter = createRateLimiter(5 * 60 * 1000, 30, 'Image proxy rate limit reached.');
+
+  // Apply global rate limiting to all api routes
+  app.use('/api/', globalApiLimiter);
+
+  // Firebase Admin Token Verification & Role Authorization Middleware
+  async function requireAdmin(req: any, res: any, next: any) {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'Unauthorized: Missing token.' });
+    }
+    const token = authHeader.substring(7);
+    try {
+      const decodedToken = await getAdminAuth().verifyIdToken(token);
+      const adminApp = getInitializedAdminApp();
+      if (!adminApp) {
+        return res.status(503).json({ error: 'Firebase Admin is not initialized' });
+      }
+      const db = getAdminFirestore(adminApp, firestoreDatabaseId);
+      const userDoc = await db.collection('users').doc(decodedToken.uid).get();
+      if (!userDoc.exists || userDoc.data()?.role !== 'admin') {
+        return res.status(403).json({ error: 'Forbidden: Administrator privilege required.' });
+      }
+      req.user = decodedToken;
+      next();
+    } catch (err) {
+      console.error('[Auth Error] Admin verification failed:', err);
+      return res.status(401).json({ error: 'Unauthorized: Invalid token.' });
+    }
+  }
 
   // API Routes
-  app.post('/api/upload-textbook', upload.single('file'), async (req: any, res) => {
+  app.post('/api/upload-textbook', requireAdmin, upload.single('file'), async (req: any, res) => {
     try {
       const adminApp = getInitializedAdminApp();
       if (!adminApp) {
@@ -203,7 +259,7 @@ async function startServer() {
   });
 
   // Image Proxy to fetch external textbook pages / diagrams safely bypassing CORS
-  app.get('/api/image-proxy', async (req, res) => {
+  app.get('/api/image-proxy', imageProxyLimiter, async (req, res) => {
     try {
       const imageUrl = req.query.url as string;
       if (!imageUrl) {
@@ -315,7 +371,7 @@ async function startServer() {
   });
 
   // Web Push Notifications - Dispatch Test Push
-  app.post('/api/notifications/send-test', async (req, res) => {
+  app.post('/api/notifications/send-test', requireAdmin, async (req, res) => {
     try {
       const { userId, title, body, url } = req.body;
       if (!userId) {
@@ -361,7 +417,7 @@ async function startServer() {
   });
 
   // Web Push Notifications - Broadcast Push to Audience
-  app.post('/api/notifications/broadcast', async (req, res) => {
+  app.post('/api/notifications/broadcast', requireAdmin, async (req, res) => {
     try {
       const { message, audience } = req.body;
       if (!message) {
@@ -374,55 +430,68 @@ async function startServer() {
       }
 
       const firestore = getAdminFirestore(adminApp, firestoreDatabaseId);
-      
-      // Query users who have registered a pushSubscription
-      const usersSnapshot = await firestore.collection('users')
-        .where('pushSubscription', '!=', null)
-        .get();
-
-      if (usersSnapshot.empty) {
-        return res.json({ success: true, count: 0, message: 'No devices subscribed yet.' });
-      }
-
       const payload = JSON.stringify({
         title: 'Utkal Skill Centre 🔔',
         body: message,
         url: '/'
       });
 
-      let sentCount = 0;
-      const sendPromises = [];
+      console.log('[Web Push] Starting streaming broadcast...');
+      
+      const usersStream = firestore.collection('users')
+        .where('pushSubscription', '!=', null)
+        .stream();
 
-      for (const docSnapshot of usersSnapshot.docs) {
+      let dispatchedCount = 0;
+      let activePromises: Promise<any>[] = [];
+      const CONCURRENCY_LIMIT = 50;
+
+      usersStream.on('data', (docSnapshot) => {
         const userData = docSnapshot.data();
         const subscription = userData.pushSubscription;
 
         // Apply audience filtering if needed
-        if (audience === 'premium' && !userData.isPremium) continue;
-        if (audience === 'free' && userData.isPremium) continue;
+        if (audience === 'premium' && !userData.isPremium) return;
+        if (audience === 'free' && userData.isPremium) return;
 
         if (subscription && subscription.endpoint) {
-          sendPromises.push(
-            webpush.sendNotification(subscription, payload)
-              .then(() => { sentCount++; })
-              .catch((err: any) => {
-                console.error(`[Web Push] Failed to send to user ${docSnapshot.id}:`, err.message);
-                // If subscription has expired or is invalid, automatically clear it from Firestore DB
-                if (err.statusCode === 410 || err.statusCode === 404) {
-                  firestore.collection('users').doc(docSnapshot.id).update({
-                    pushSubscription: null
-                  }).catch(() => {});
-                }
-              })
-          );
+          const promise = webpush.sendNotification(subscription, payload)
+            .then(() => { dispatchedCount++; })
+            .catch((err: any) => {
+              console.error(`[Web Push] Failed to send to user ${docSnapshot.id}:`, err.message);
+              if (err.statusCode === 410 || err.statusCode === 404) {
+                firestore.collection('users').doc(docSnapshot.id).update({
+                  pushSubscription: null
+                }).catch(() => {});
+              }
+            });
+
+          activePromises.push(promise);
+
+          if (activePromises.length >= CONCURRENCY_LIMIT) {
+            usersStream.pause();
+            const currentPromises = activePromises;
+            activePromises = [];
+            Promise.allSettled(currentPromises).then(() => {
+              usersStream.resume();
+            });
+          }
         }
-      }
+      });
 
-      // Wait for all dispatches to finish
-      await Promise.allSettled(sendPromises);
+      usersStream.on('end', async () => {
+        if (activePromises.length > 0) {
+          await Promise.allSettled(activePromises);
+        }
+        console.log(`[Web Push] Streaming broadcast complete. Dispatched to ${dispatchedCount} devices.`);
+        res.json({ success: true, count: dispatchedCount });
+      });
 
-      console.log(`[Web Push] Global broadcast dispatched to ${sentCount} devices.`);
-      res.json({ success: true, count: sentCount });
+      usersStream.on('error', (err) => {
+        console.error('[Web Push] Stream error:', err);
+        res.status(500).json({ error: 'Database streaming failure during broadcast.' });
+      });
+
     } catch (err: any) {
       console.error('[Web Push] Broadcast error:', err);
       res.status(500).json({ error: err.message || 'Failed to dispatch broadcast' });
