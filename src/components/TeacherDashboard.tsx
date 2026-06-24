@@ -178,7 +178,7 @@ export function TeacherDashboard({
   }, [inputClass, loadChapters]);
 
   // Usage Guard Calculations
-  const isFreePeriod = new Date() < new Date('2026-07-01T00:00:00+05:30');
+  const isFreePeriod = new Date() < new Date('2026-07-12T00:00:00+05:30');
   const currentMonth = new Date().toISOString().substring(0, 7);
   const currentUsage = user?.aiUsage?.[currentMonth] || 0;
   const hasRemainingRuns = isPremium || isFreePeriod || currentUsage < 5;
@@ -522,7 +522,7 @@ export function TeacherDashboard({
                       </div>
                       <div>
                         <h4 className="text-xs sm:text-sm font-black text-emerald-400 uppercase tracking-widest">{language === 'en' ? 'Showcase Access Active' : 'ପ୍ରଦର୍ଶନୀ ଅଫର ସକ୍ରିୟ'}</h4>
-                        <p className="text-[9px] sm:text-[10px] text-slate-400 font-bold mt-0.5">{language === 'en' ? 'Unlimited AI Studio until June 30' : '୩୦ ଜୁନ୍ ପର୍ଯ୍ୟନ୍ତ ଅସୀମିତ AI ସୁବିଧା'}</p>
+                        <p className="text-[9px] sm:text-[10px] text-slate-400 font-bold mt-0.5">{language === 'en' ? 'Unlimited AI Studio until July 11' : '୧୧ ଜୁଲାଇ ପର୍ଯ୍ୟନ୍ତ ଅସୀମିତ AI ସୁବିଧା'}</p>
                       </div>
                     </div>
                     <span className="text-[9px] font-black text-emerald-300 bg-emerald-500/10 border border-emerald-500/25 px-2.5 py-1 rounded-lg">

@@ -36,7 +36,7 @@ export const GiftUnlockModal: React.FC<GiftUnlockModalProps> = ({
   let resolvedRank = rank;
   if (resolvedRank === undefined || resolvedRank === null) {
     const userNameLower = (user?.name || '').trim().toLowerCase();
-    if (userNameLower.includes('dibyansh') || userNameLower.includes('sohan')) {
+    if (userNameLower.includes('dibyansh') || userNameLower.includes('sohan') || userNameLower.includes('subhakanta')) {
       resolvedRank = 1;
     } else if (userNameLower.includes('rohan')) {
       resolvedRank = 2;

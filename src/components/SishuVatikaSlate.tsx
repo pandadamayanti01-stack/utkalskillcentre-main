@@ -624,7 +624,7 @@ export const SishuVatikaSlate: React.FC<SishuVatikaSlateProps> = ({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const isFreePeriod = new Date() < new Date('2026-07-01T00:00:00+05:30');
+    const isFreePeriod = new Date() < new Date('2026-07-12T00:00:00+05:30');
     if (!isPremium && freeQueriesCount >= 5 && !isFreePeriod) {
       setShowUpgradeModal(true);
       return;

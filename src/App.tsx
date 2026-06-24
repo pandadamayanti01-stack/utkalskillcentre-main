@@ -2165,8 +2165,8 @@ export default function App() {
         // Check subscription
         const subDocRef = doc(firestore, 'subscriptions', firebaseUser.uid);
         unsubSub = onSnapshot(subDocRef, (subDocSnap) => {
-          // If in the free showcase period (until July 1, 2026), everyone gets free premium access
-          const isFreePeriod = new Date() < new Date('2026-07-01T00:00:00+05:30');
+          // If in the free showcase period (until July 11, 2026), everyone gets free premium access
+          const isFreePeriod = new Date() < new Date('2026-07-12T00:00:00+05:30');
           if (isFreePeriod) {
             setIsPremium(true);
             return;
@@ -6051,7 +6051,7 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
         <span>Back to Dashboard</span>
       </button>
 
-      {new Date() < new Date('2026-07-01T00:00:00+05:30') && (
+      {new Date() < new Date('2026-07-12T00:00:00+05:30') && (
         <div className="max-w-4xl mx-auto mb-10 bg-gradient-to-r from-emerald-500/10 via-teal-500/15 to-emerald-500/10 border border-emerald-500/20 rounded-[2rem] p-6 text-center shadow-lg relative overflow-hidden backdrop-blur-md">
           <div className="absolute top-0 right-0 w-[200px] h-[200px] bg-emerald-500/5 rounded-full blur-[50px] pointer-events-none" />
           <div className="flex flex-col md:flex-row items-center gap-4 text-left">
@@ -6064,8 +6064,8 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
               </h4>
               <p className="text-sm font-medium text-slate-305 leading-relaxed">
                 {language === 'or' 
-                  ? '୩୦ ଜୁନ୍ ୨୦୨୬ ରାତି ୧୧:୫୯ ଟା ପର୍ଯ୍ୟନ୍ତ ଆପଣ ଗୁନ୍ଦୁଲୁ AI ଟ୍ୟୁଟର, ଗଣିତ ବ୍ଲାକବୋର୍ଡ ଏବଂ ଭଏସ୍ ଟ୍ୟୁଟର ର ଅସୀମିତ ବ୍ୟବହାର ମାଗଣାରେ କରିପାରିବେ। ଯଦି ଆପଣ ପ୍ରଦର୍ଶନ ଅଫର ପରେ ମଧ୍ୟ ସେବା ଚାହୁଁଛନ୍ତି, ତେବେ ଆପଣ ଏବେ ସବସ୍କ୍ରାଇବ୍ କରିପାରିବେ।'
-                  : 'You have unlimited AI tutor questions, practice problems, and voice tutor access without a premium subscription until June 30, 2026 at 11:59 PM. If you\'d like to secure your membership for after the showcase period, you can subscribe below.'}
+                  ? '୧୧ ଜୁଲାଇ ୨୦୨୬ ରାତି ୧୧:୫୯ ଟା ପର୍ଯ୍ୟନ୍ତ ଆପଣ ଗୁନ୍ଦୁଲୁ AI ଟ୍ୟୁଟର, ଗଣିତ ବ୍ଲାକବୋର୍ଡ ଏବଂ ଭଏସ୍ ଟ୍ୟୁଟର ର ଅସୀମିତ ବ୍ୟବହାର ମାଗଣାରେ କରିପାରିବେ। ଯଦି ଆପଣ ପ୍ରଦର୍ଶନ ଅଫର ପରେ ମଧ୍ୟ ସେବା ଚାହୁଁଛନ୍ତି, ତେବେ ଆପଣ ଏବେ ସବସ୍କ୍ରାଇବ୍ କରିପାରିବେ।'
+                  : 'You have unlimited AI tutor questions, practice problems, and voice tutor access without a premium subscription until July 11, 2026 at 11:59 PM. If you\'d like to secure your membership for after the showcase period, you can subscribe below.'}
               </p>
             </div>
           </div>

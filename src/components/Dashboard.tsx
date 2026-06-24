@@ -480,8 +480,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         if (match) userClass = match[1];
       }
     }
-    // Special Promotion Period: Till July 1st, 2026 (inclusive). No rotation.
-    const isSpecialPromoPeriod = new Date() < new Date('2026-07-01T00:00:00+05:30');
+    // Special Promotion Period: Till July 11th, 2026 (inclusive). No rotation.
+    const isSpecialPromoPeriod = new Date() < new Date('2026-07-12T00:00:00+05:30');
     const promoVideoUrl = 'https://www.youtube.com/embed/Ml-_dY7FXrs';
     const videoUrl = isSpecialPromoPeriod 
       ? promoVideoUrl 
@@ -1804,9 +1804,35 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
     // Determine current month / year details
     const activeDate = new Date();
-    const activeMonthName = new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'Asia/Kolkata' }).format(activeDate);
-    const activeYear = activeDate.getFullYear();
+    
+    // Helper to get the month of the completed/published test series
+    const getCompletedMtsMonth = (date: Date) => {
+      const year = date.getFullYear();
+      const month = date.getMonth(); // 0-indexed: 5 = June, 6 = July
+      const day = date.getDate();
+
+      // If we are in June (month === 5), the completed test is May
+      if (month === 5) {
+        return { monthName: 'May', year: year };
+      }
+      
+      // If we are in July (month === 6):
+      // July results are published on the 13th. Before that, it's May.
+      if (month === 6) {
+        if (day < 13) {
+          return { monthName: 'May', year: year };
+        } else {
+          return { monthName: 'July', year: year };
+        }
+      }
+
+      const monthName = new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'Asia/Kolkata' }).format(date);
+      return { monthName, year };
+    };
+
+    const { monthName: activeMonthName, year: activeYear } = getCompletedMtsMonth(activeDate);
     const claimTag = `[MTS_CLAIM:${activeMonthName.toLowerCase()}_${activeYear}]`;
+
 
     const checkWinnerAndTicket = async () => {
       try {
@@ -2643,7 +2669,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
   useEffect(() => {
     // If in the special promotional period, lock the video ID and skip rotation
-    if (new Date() < new Date('2026-07-01T00:00:00+05:30')) {
+    if (new Date() < new Date('2026-07-12T00:00:00+05:30')) {
       setDailyVideoId('Ml-_dY7FXrs');
       return;
     }

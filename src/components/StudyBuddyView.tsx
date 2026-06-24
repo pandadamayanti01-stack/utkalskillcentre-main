@@ -103,7 +103,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
     const getFreeQueriesKey = () => `free_ai_queries_used_${user?.uid || user?.id || 'guest'}`;
     const academicQuery = !isGreeting(textToSend);
 
-    const isFreePeriod = new Date() < new Date('2026-07-01T00:00:00+05:30');
+    const isFreePeriod = new Date() < new Date('2026-07-12T00:00:00+05:30');
     if (!isPremium && academicQuery && !isFreePeriod) {
       const freeQueriesUsed = parseInt(localStorage.getItem(getFreeQueriesKey()) || '0', 10);
       if (freeQueriesUsed >= 5) {
@@ -400,13 +400,13 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         </div>
       </div>
 
-      {new Date() < new Date('2026-07-01T00:00:00+05:30') && (
+      {new Date() < new Date('2026-07-12T00:00:00+05:30') && (
         <div className="bg-gradient-to-r from-emerald-500/10 via-teal-500/15 to-emerald-500/10 border-b border-emerald-500/20 px-3 py-1 sm:px-6 sm:py-2 flex items-center justify-center gap-1.5 text-center text-[8px] sm:text-[10px] md:text-xs font-black text-emerald-400 uppercase tracking-widest shrink-0 shadow-lg shadow-emerald-950/20">
           <Sparkles size={8} className="text-emerald-400 animate-spin sm:size-3" style={{ animationDuration: '3s' }} />
           <span className="hidden sm:inline">
             {language === 'or' 
-              ? '🎉 ମାଗଣା ପ୍ରଦର୍ଶନ ଅଫର! ୩୦ ଜୁନ୍ ୨୦୨୬ ପର୍ଯ୍ୟନ୍ତ ଗୁନ୍ଦୁଲୁ AI ର ଅସୀମିତ ବ୍ୟବହାର କରନ୍ତୁ।'
-              : '🎉 Free Showcase Access Active! Enjoy unlimited learning with Gundulu AI until June 30, 2026.'}
+              ? '🎉 ମାଗଣା ପ୍ରଦର୍ଶନ ଅଫର! ୧୧ ଜୁଲାଇ ୨୦୨୬ ପର୍ଯ୍ୟନ୍ତ ଗୁନ୍ଦୁଲୁ AI ର ଅସୀମିତ ବ୍ୟବହାର କରନ୍ତୁ।'
+              : '🎉 Free Showcase Access Active! Enjoy unlimited learning with Gundulu AI until July 11, 2026.'}
           </span>
           <span className="inline sm:hidden truncate max-w-[90vw]">
             {language === 'or' 
@@ -508,7 +508,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
             </div>
           )}
 
-          {!isPremium && freeQueriesCount >= 5 && !(new Date() < new Date('2026-07-01T00:00:00+05:30')) ? (
+          {!isPremium && freeQueriesCount >= 5 && !(new Date() < new Date('2026-07-12T00:00:00+05:30')) ? (
             <div className="relative overflow-hidden p-5 sm:p-6 bg-gradient-to-br from-slate-900/90 via-slate-950/85 to-[#0b2f1d]/20 border border-emerald-500/30 rounded-[2.5rem] shadow-[0_15px_35px_rgba(0,0,0,0.5),0_0_20px_rgba(16,185,129,0.15)] flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 text-center sm:text-left relative z-10">
               {/* background lighting */}
               <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-[40px] pointer-events-none" />

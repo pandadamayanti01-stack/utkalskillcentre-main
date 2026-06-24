@@ -853,7 +853,7 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
   loadChapters,
   onNavigateTo3D
 }) => {
-  const isFreePeriod = new Date() < new Date('2026-07-01T00:00:00+05:30');
+  const isFreePeriod = new Date() < new Date('2026-07-12T00:00:00+05:30');
   const isTutorUnlocked = isPremium || isFreePeriod;
 
   // Navigation states: 'subjects' -> 'chapters' -> 'reader'
