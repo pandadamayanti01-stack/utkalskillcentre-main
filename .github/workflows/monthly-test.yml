@@ -4,8 +4,8 @@ on:
   schedule:
     # Runs at 00:00 UTC (5:30 AM IST) on the 1st day of every month to generate papers
     - cron: '0 0 1 * *'
-    # Runs at 00:00 UTC (5:30 AM IST) on the 12th day of every month to publish ranks & results
-    - cron: '0 0 12 * *'
+    # Runs at 00:00 UTC (5:30 AM IST) daily from the 11th to the 15th day of every month to publish ranks & results
+    - cron: '0 0 11-15 * *'
   workflow_dispatch:
     inputs:
       target_month:
@@ -47,7 +47,7 @@ jobs:
         run: |
           PUBLISH_ARG=""
           DAY_OF_MONTH=$(date +%-d)
-          if [ "${{ github.event.inputs.publish }}" = "true" ] || [ "$DAY_OF_MONTH" = "12" ]; then
+          if [ "${{ github.event.inputs.publish }}" = "true" ] || { [ "$DAY_OF_MONTH" -ge 11 ] && [ "$DAY_OF_MONTH" -le 15 ]; }; then
             PUBLISH_ARG="--publish"
           fi
 

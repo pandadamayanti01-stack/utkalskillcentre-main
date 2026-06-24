@@ -1104,6 +1104,50 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
   })();
 
   const currentMonthFilter = activeMonthFilter || (availableMonths.length > 0 ? availableMonths[0] : '');
+  
+  const publishDay = (() => {
+    if (!currentMonthFilter) return 12;
+    const [mStr, yStr] = currentMonthFilter.split(' ');
+    const y = parseInt(yStr);
+    const mIdx = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].indexOf(mStr);
+    if (y && mIdx !== -1) {
+      // Check if there is a Sunday between the 5th and 10th of the month
+      let hasSunday = false;
+      for (let d = 5; d <= 10; d++) {
+        const dateToCheck = new Date(y, mIdx, d);
+        if (dateToCheck.getDay() === 0) {
+          hasSunday = true;
+          break;
+        }
+      }
+
+      let examStart = 5;
+      if (new Date(y, mIdx, 5).getDay() === 0) {
+        examStart = 6;
+      }
+
+      let examEnd = examStart;
+      let activeDays = 0;
+      while (activeDays < 6) {
+        const currDate = new Date(y, mIdx, examEnd);
+        if (currDate.getDay() !== 0) {
+          activeDays++;
+        }
+        if (activeDays < 6) {
+          examEnd++;
+        }
+      }
+
+      const gradStart = examEnd + 1;
+      let pubStart = gradStart + 1;
+      if (new Date(y, mIdx, pubStart).getDay() === 0) {
+        pubStart += 1;
+      }
+      return pubStart;
+    }
+    return 12;
+  })();
+
   const testsForSelectedMonth = filteredTests.filter((t: any) => `${t.month} ${t.year}` === currentMonthFilter);
 
   const selectedMonthReport = (() => {
@@ -1316,7 +1360,7 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
             <button
               onClick={() => {
                 if (!isMonthResultsPublished) {
-                  alert("ରାଙ୍କିଙ୍ଗ୍ ଚୂଡ଼ାନ୍ତ ହେବା ପରେ ଏହି ମାସର ୧୨ ତାରିଖରେ ତୁମର ମିଳିତ ରିପୋର୍ଟ କାର୍ଡ ଏବଂ ପ୍ରମାଣପତ୍ର ଉପଲବ୍ଧ ହେବ।");
+                  alert(`ରାଙ୍କିଙ୍ଗ୍ ଚୂଡ଼ାନ୍ତ ହେବା ପରେ ଏହି ମାସର ${publishDay} ତାରିଖରେ ତୁମର ମିଳିତ ରିପୋର୍ଟ କାର୍ଡ ଏବଂ ପ୍ରମାଣପତ୍ର ଉପଲବ୍ଧ ହେବ।`);
                   return;
                 }
                 setViewingConsolidatedCert({
@@ -1333,7 +1377,7 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
               {isMonthResultsPublished ? (
                 <><Lucide.Award size={16} /> {language === 'en' ? 'Consolidated Cert' : 'ମିଳିତ ପ୍ରମାଣପତ୍ର'}</>
               ) : (
-                <><Lucide.Lock size={16} /> {language === 'en' ? 'Locked (Unlocks on 12th)' : 'ଲକ୍ ଅଛି (୧୨ ତାରିଖରେ ଖୋଲିବ)'}</>
+                <><Lucide.Lock size={16} /> {language === 'en' ? `Locked (Unlocks on ${publishDay}th)` : `ଲକ୍ ଅଛି (${publishDay} ତାରିଖରେ ଖୋଲିବ)`}</>
               )}
             </button>
           </div>

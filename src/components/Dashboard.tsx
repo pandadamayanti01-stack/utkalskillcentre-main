@@ -1859,6 +1859,44 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
     const month = date.getMonth();
     const day = date.getDate();
 
+    // Check if there is a Sunday between the 5th and 10th of the current month
+    let hasSundayInWindow = false;
+    for (let d = 5; d <= 10; d++) {
+      const dateToCheck = new Date(year, month, d);
+      if (dateToCheck.getDay() === 0) {
+        hasSundayInWindow = true;
+        break;
+      }
+    }
+
+    // Live starts on 5, but if 5 is a Sunday, starts on 6
+    let examStartDay = 5;
+    if (new Date(year, month, 5).getDay() === 0) {
+      examStartDay = 6;
+    }
+
+    // Find examEndDay: we need exactly 6 active (non-Sunday) days starting from examStartDay
+    let examEndDay = examStartDay;
+    let activeDaysCount = 0;
+    while (activeDaysCount < 6) {
+      const dateToCheck = new Date(year, month, examEndDay);
+      if (dateToCheck.getDay() !== 0) {
+        activeDaysCount++;
+      }
+      if (activeDaysCount < 6) {
+        examEndDay++;
+      }
+    }
+
+    const gradingStartDay = examEndDay + 1;
+    let publishStartDay = gradingStartDay + 1;
+    if (new Date(year, month, publishStartDay).getDay() === 0) {
+      publishStartDay += 1;
+    }
+
+    // For December half-yearly cycle, result publishing is on the 16th
+    const actualPublishStartDay = month === 11 ? 16 : publishStartDay;
+
     // Check if we are in the December Half-Yearly Exam cycle (runs from Nov 21 to Dec 20)
     const isHalfYearlyPrep = (month === 10 && day >= 21) || (month === 11 && day <= 4);
     const isHalfYearlyLive = month === 11 && day >= 5 && day <= 10;
@@ -1868,6 +1906,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
     if (isHalfYearlyPrep) {
       return {
         phase: 'half_yearly_prep' as const,
+        publishStartDay: actualPublishStartDay,
         titleEn: 'HALF-YEARLY PREP!',
         titleOr: 'ଅର୍ଦ୍ଧବାର୍ଷିକ ପ୍ରସ୍ତୁତି!',
         subtitleEn: 'Download 100-Mark Mock papers for practice',
@@ -1881,6 +1920,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
     } else if (isHalfYearlyLive) {
       return {
         phase: 'half_yearly_live' as const,
+        publishStartDay: actualPublishStartDay,
         titleEn: 'HALF-YEARLY LIVE!',
         titleOr: 'ଅର୍ଦ୍ଧବାର୍ଷିକ ପରୀକ୍ଷା!',
         subtitleEn: 'Official 100-Mark Exam: Participate Now',
@@ -1894,6 +1934,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
     } else if (isHalfYearlyGrading) {
       return {
         phase: 'half_yearly_grading' as const,
+        publishStartDay: actualPublishStartDay,
         titleEn: 'GRADING IN PROGRESS!',
         titleOr: 'ମୂଲ୍ୟାଙ୍କନ ଚାଲିଛି!',
         subtitleEn: 'Rough work copy review & grading',
@@ -1907,6 +1948,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
     } else if (isHalfYearlyPublished) {
       return {
         phase: 'half_yearly_published' as const,
+        publishStartDay: actualPublishStartDay,
         titleEn: 'RESULTS OUT!',
         titleOr: 'ପରୀକ୍ଷା ଫଳ ପ୍ରକାଶିତ!',
         subtitleEn: 'Download Report Card & Certificate',
@@ -1919,22 +1961,10 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       };
     }
 
-    // Check if there is a Sunday between the 5th and 10th of the current month
-    let hasSundayInWindow = false;
-    for (let d = 5; d <= 10; d++) {
-      const dateToCheck = new Date(year, month, d);
-      if (dateToCheck.getDay() === 0) {
-        hasSundayInWindow = true;
-        break;
-      }
-    }
-
-    const goingOnEndDay = hasSundayInWindow ? 11 : 10;
-    const gradingStartDay = goingOnEndDay + 1;
-
-    if (day >= 1 && day <= 4) {
+    if (day >= 1 && day < examStartDay) {
       return {
         phase: 'coming_soon' as const,
+        publishStartDay: actualPublishStartDay,
         titleEn: 'MTS REGISTERING',
         titleOr: 'ପରୀକ୍ଷା ପଞ୍ଜୀକରଣ',
         subtitleEn: 'MTS Coming Soon! Register Now',
@@ -1945,9 +1975,10 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         textColor: '#fbbf24',
         icon: <Lucide.FileEdit size={11} className="text-yellow-400" />
       };
-    } else if (day >= 5 && day <= goingOnEndDay) {
+    } else if (day >= examStartDay && day <= examEndDay) {
       return {
         phase: 'going_on' as const,
+        publishStartDay: actualPublishStartDay,
         titleEn: 'MTS LIVE NOW!',
         titleOr: 'ପରୀକ୍ଷା ଚାଲିଛି!',
         subtitleEn: 'MTS Going On! Participate Now',
@@ -1958,9 +1989,10 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         textColor: '#34d399',
         icon: <Lucide.Play size={11} className="text-emerald-400 fill-emerald-400 animate-pulse animate-duration-1000" />
       };
-    } else if (day >= gradingStartDay && day <= 15) {
+    } else if (day >= gradingStartDay && day < actualPublishStartDay) {
       return {
         phase: 'grading' as const,
+        publishStartDay: actualPublishStartDay,
         titleEn: 'RESULTS SOON!',
         titleOr: 'ଫଳାଫଳ ଶୀଘ୍ର!',
         subtitleEn: 'MTS Result Publishing Soon!',
@@ -1971,9 +2003,10 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         textColor: '#818cf8',
         icon: <Lucide.Clock size={11} className="text-indigo-400" />
       };
-    } else if (day >= 16 && day <= 20) {
+    } else if (day >= actualPublishStartDay && day <= 15) {
       return {
         phase: 'published' as const,
+        publishStartDay: actualPublishStartDay,
         titleEn: 'MTS RESULT OUT!',
         titleOr: 'ଫଳାଫଳ ପ୍ରକାଶିତ!',
         subtitleEn: 'MTS Result Out! Click to Check',
@@ -1987,6 +2020,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
     } else {
       return {
         phase: 'important_qs' as const,
+        publishStartDay: actualPublishStartDay,
         titleEn: 'EXAM PAPERS!',
         titleOr: 'ପ୍ରଶ୍ନପତ୍ର ଗୁଡ଼ିକ!',
         subtitleEn: 'Exam Important Questions',
@@ -4170,8 +4204,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   <img src="/gundulu-pointing-nobg.png" alt="Gundulu" className="w-10 h-10 rounded-xl object-cover border border-indigo-500/30 shrink-0" />
                   <p className="text-xs text-indigo-200 leading-relaxed font-bold">
                     {language === 'en'
-                      ? "Gundulu is reviewing answers with our board teachers! The statewide leaderboard and certificates will be out on the 16th of this month at 6:00 AM. Get ready!"
-                      : "ଗୁନ୍ଦୁଲୁ ଆପଣଙ୍କ ବୋର୍ଡ ଶିକ୍ଷକଙ୍କ ସହ ଖାତା ଦେଖିବାରେ ବ୍ୟସ୍ତ ଅଛି! ଆସନ୍ତା ୧୬ ତାରିଖ ସକାଳ ୬:୦୦ ଟାରେ ମାର୍କସିଟ୍ ଏବଂ ଲିଡରବୋର୍ଡ ପ୍ରକାଶିତ ହେବ।"}
+                      ? `Gundulu is reviewing answers with our board teachers! The statewide leaderboard and certificates will be out on the ${mtsStatus.publishStartDay}th of this month at 6:00 AM. Get ready!`
+                      : `ଗୁନ୍ଦୁଲୁ ଆପଣଙ୍କ ବୋର୍ଡ ଶିକ୍ଷକଙ୍କ ସହ ଖାତା ଦେଖିବାରେ ବ୍ୟସ୍ତ ଅଛି! ଆସନ୍ତା ${mtsStatus.publishStartDay} ତାରିଖ ସକାଳ ୬:୦୦ ଟାରେ ମାର୍କସିଟ୍ ଏବଂ ଲିଡରବୋର୍ଡ ପ୍ରକାଶିତ ହେବ।`}
                   </p>
                 </div>
 
