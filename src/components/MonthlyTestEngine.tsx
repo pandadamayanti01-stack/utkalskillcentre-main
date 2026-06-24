@@ -194,10 +194,7 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
     // Validate that all questions are answered before submitting
     for (let i = 0; i < test.questions.length; i++) {
       if (!isQuestionAnswered(i)) {
-        alert(language === 'en' 
-          ? `Please answer Question ${i + 1} before submitting.` 
-          : `ଦୟାକରି ସବ୍‌ମିଟ୍ କରିବା ପୂର୍ବରୁ ପ୍ରଶ୍ନ ${i + 1} ର ଉତ୍ତର ଦିଅନ୍ତୁ।`
-        );
+        alert(`ଦୟାକରି ସବ୍‌ମିଟ୍ କରିବା ପୂର୍ବରୁ ପ୍ରଶ୍ନ ${i + 1} ର ଉତ୍ତର ଦିଅନ୍ତୁ।`);
         setCurrentIdx(i);
         return;
       }
@@ -276,7 +273,7 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
       onComplete();
     } catch (err: any) {
       console.error("Submit Test Error:", err);
-      alert(`Failed to submit test: ${err.message || "Unknown error"}. Please check your connection and try again.`);
+      alert("ପରୀକ୍ଷା ସବ୍‌ମିଟ୍ କରିବାରେ ବିଫଳ ହେଲା। ଦୟାକରି ତୁମର ଇଣ୍ଟରନେଟ୍ କନେକ୍ସନ୍ ଯାଞ୍ଚ କରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।");
     } finally {
       setSubmitting(false);
     }

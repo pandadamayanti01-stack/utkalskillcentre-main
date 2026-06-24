@@ -1316,10 +1316,7 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
             <button
               onClick={() => {
                 if (!isMonthResultsPublished) {
-                  alert(language === 'en'
-                    ? "Your consolidated report card and certificate will be available on the 12th of this month after rankings are finalized."
-                    : "ରାଙ୍କିଙ୍ଗ୍ ସରିବା ପରେ ଏହି ମାସର ୧୨ ତାରିଖରେ ତୁମର ମିଳିତ ରିପୋର୍ଟ କାର୍ଡ ଏବଂ ପ୍ରମାଣପତ୍ର ଉପଲବ୍ଧ ହେବ।"
-                  );
+                  alert("ରାଙ୍କିଙ୍ଗ୍ ଚୂଡ଼ାନ୍ତ ହେବା ପରେ ଏହି ମାସର ୧୨ ତାରିଖରେ ତୁମର ମିଳିତ ରିପୋର୍ଟ କାର୍ଡ ଏବଂ ପ୍ରମାଣପତ୍ର ଉପଲବ୍ଧ ହେବ।");
                   return;
                 }
                 setViewingConsolidatedCert({
