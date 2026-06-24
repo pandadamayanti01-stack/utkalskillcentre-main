@@ -1648,14 +1648,45 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
   const [timeSpent, setTimeSpent] = useState<Record<number, number>>({});
   const [uploadingImage, setUploadingImage] = useState(false);
   const uploadingImageRef = useRef(false);
-  
+  // FIX #2: Synchronous submit guard — React state is async and cannot prevent
+  // concurrent calls from timer, anticheat, and manual button firing together.
+  const isSubmittingRef = useRef(false);
+  // FIX #4: Violations ref so anticheat listeners stay stable (no re-registration on every flag)
+  const violationsRef = useRef(0);
+
   useEffect(() => {
     uploadingImageRef.current = uploadingImage;
   }, [uploadingImage]);
+
+  // Sync violations ref whenever state changes
+  useEffect(() => {
+    violationsRef.current = violations;
+  }, [violations]);
   
   const [reports, setReports] = useState<Record<number, boolean>>({});
   const [timeLeft, setTimeLeft] = useState(45 * 60);
+  // FIX #1: Use refs for stable timer so we don't create/destroy setInterval every second
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timeLeftRef = useRef(45 * 60);
   const startTimeRef = useRef<number>(Date.now());
+
+  // FIX #2b: Restore draft answers from localStorage on mount (protects against browser crash)
+  useEffect(() => {
+    const draftKey = `test_draft_${test.id}_${user?.uid || user?.id}`;
+    try {
+      const saved = localStorage.getItem(draftKey);
+      if (saved) {
+        const draft = JSON.parse(saved);
+        // Only restore if saved within the last 2 hours
+        if (Date.now() - draft.savedAt < 2 * 60 * 60 * 1000) {
+          setAnswers(draft.answers || {});
+          console.log('[TestEngine] Draft answers restored from localStorage');
+        } else {
+          localStorage.removeItem(draftKey);
+        }
+      }
+    } catch (e) { /* ignore corrupt drafts */ }
+  }, []);
 
   useEffect(() => {
     requestScreenWakeLock();
@@ -1711,19 +1742,27 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
     }
   }, [test.results_published, language, onBack]);
 
+  // FIX #1: Single stable countdown — no interval recreation every second.
+  // Timer starts once on mount and auto-submits when it reaches 0.
   useEffect(() => {
-    if (timeLeft <= 0) {
-      alert(language === 'en' ? "Time is up! Your test is being submitted automatically." : "ଆରେ ସାଙ୍ଗ! ସମୟ ସରିଗଲା, ତୁମର ପରୀକ୍ଷା ଆପେ ଆପେ ସବ୍‌ମିଟ୍ ହେଉଛି।");
-      handleSubmit();
-      return;
-    }
-
-    const timer = setInterval(() => {
-      setTimeLeft(prev => prev - 1);
+    timerRef.current = setInterval(() => {
+      const next = timeLeftRef.current - 1;
+      timeLeftRef.current = next;
+      setTimeLeft(next);
+      if (next <= 0) {
+        clearInterval(timerRef.current!);
+        timerRef.current = null;
+        alert(language === 'en'
+          ? "Time is up! Your test is being submitted automatically."
+          : "ଆରେ ସାଙ୍ଗ! ସମୟ ସରିଗଲା, ତୁମର ପରୀକ୍ଷା ଆପେ ଆପେ ସବ୍‌ମିଟ୍ ହେଉଛି।");
+        // Defer to escape the interval callback before modifying state
+        setTimeout(() => handleSubmit(), 0);
+      }
     }, 1000);
-
-    return () => clearInterval(timer);
-  }, [timeLeft]);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, []); // Runs once — no churn
 
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600);
@@ -1732,6 +1771,10 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
     return `${h > 0 ? h + ':' : ''}${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
+  // FIX #4: Anti-cheat listeners registered ONCE (empty dep array).
+  // violations value read via violationsRef to avoid stale closure issues.
+  // This also closes the detection gap that the old pattern left open when
+  // removing/re-adding listeners on every flag increment.
   useEffect(() => {
     const handleVisibilityChange = () => {
       if ((window as any).isUploadingRoughNote) {
@@ -1739,16 +1782,17 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
         return;
       }
       if (document.visibilityState === 'hidden') {
-        setViolations(prev => {
-          const next = prev + 1;
-          if (next >= 3) {
-            alert(language === 'en' ? "Test auto-submitted due to multiple tab switches." : "ଆରେ ସାଙ୍ଗ! ବାରମ୍ବାର ଟ୍ୟାବ୍ ବଦଳାଇବା ଯୋଗୁଁ ତୁମର ପରୀକ୍ଷା ଆପେ ଆପେ ସବ୍‌ମିଟ୍ ହୋଇଗଲା।");
-            handleSubmit();
-          } else {
-            setShowWarning(true);
-          }
-          return next;
-        });
+        const next = violationsRef.current + 1;
+        violationsRef.current = next;
+        setViolations(next);
+        if (next >= 3) {
+          alert(language === 'en'
+            ? "Test auto-submitted due to multiple tab switches."
+            : "ଆରେ ସାଙ୍ଗ! ବାରମ୍ବାର ଟ୍ୟାବ୍ ବଦଳାଇବା ଯୋଗୁଁ ତୁମର ପରୀକ୍ଷା ଆପେ ଆପେ ସବ୍‌ମିଟ୍ ହୋଇଗଲା।");
+          setTimeout(() => handleSubmit(), 0);
+        } else {
+          setShowWarning(true);
+        }
       }
     };
 
@@ -1779,7 +1823,7 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
       document.removeEventListener('contextmenu', handleContextMenu);
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [violations]);
+  }, []); // FIX #4: Empty dep — listeners registered exactly once
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -1794,7 +1838,19 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
   const handleAnswer = (val: any) => {
     vibrate(12);
     playClickSound();
-    setAnswers(prev => ({ ...prev, [currentIdx]: val }));
+    setAnswers(prev => {
+      const next = { ...prev, [currentIdx]: val };
+      // FIX #2: Persist draft to localStorage on every answer so data survives
+      // network drops, browser crashes, or unexpected page navigations.
+      try {
+        const draftKey = `test_draft_${test.id}_${user?.uid || user?.id}`;
+        localStorage.setItem(draftKey, JSON.stringify({
+          answers: next,
+          savedAt: Date.now()
+        }));
+      } catch (e) { /* ignore quota errors silently */ }
+      return next;
+    });
   };
 
   const handleImageUpload = async (file: File) => {
@@ -1830,8 +1886,14 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
   };
 
   const handleSubmit = async () => {
-    if (submitting) return;
+    // FIX #2: Synchronous ref-based guard prevents duplicate addDoc calls
+    // when timer, anticheat, and manual submit all fire within the same tick.
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
     setSubmitting(true);
+
+    const draftKey = `test_draft_${test.id}_${user.uid || user.id}`;
+
     try {
       const questions = test.questions;
       let mcqScore = 0;
@@ -1851,8 +1913,8 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
           }
         }
       });
-      
-      await addDoc(collection(firestore, 'monthly_test_submissions'), {
+
+      const submissionPayload = {
         testId: test.id,
         userId: user.uid || user.id,
         userName: user.displayName || user.name || 'Student',
@@ -1874,22 +1936,70 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
         rank: null,
         districtRank: null,
         status: 'pending_review'
-      });
+      };
+      
+      await addDoc(collection(firestore, 'monthly_test_submissions'), submissionPayload);
 
-      try {
-        localStorage.removeItem(`fs_cache_test_subs_${user.uid || user.id}`);
-      } catch (cacheErr) {
-        console.warn("Failed to clear test submissions cache:", cacheErr);
-      }
+      // Clean up draft and cache on successful submission
+      try { localStorage.removeItem(draftKey); } catch (e) { /* ignore */ }
+      try { localStorage.removeItem(`fs_cache_test_subs_${user.uid || user.id}`); } catch (e) { /* ignore */ }
+
       vibrate([60, 40, 120]);
       playSuccessChime(true);
       alert(language === 'en' ? "Test submitted successfully!" : "ଆରେ ସାଙ୍ଗ! ପରୀକ୍ଷା ସଫଳତାର ସହିତ ସବ୍‌ମିଟ୍ ହେଲା! 🎉");
       onComplete();
     } catch (err: any) {
       console.error("Submit Test Error:", err);
-      alert(`Failed to submit test: ${err.message || "Unknown error"}. Please check your connection and try again.`);
+      // FIX #2: Offline queue — save to localStorage for retry on reconnect
+      // so students don't lose their 45-minute exam due to a brief network drop.
+      try {
+        const queue: any[] = JSON.parse(localStorage.getItem('offline_submission_queue') || '[]');
+        const alreadyQueued = queue.some(
+          (q: any) => q.testId === test.id && q.userId === (user.uid || user.id)
+        );
+        if (!alreadyQueued) {
+          // Replace serverTimestamp (non-serialisable) with ISO string
+          const { submittedAt: _ts, ...rest } = {
+            testId: test.id,
+            userId: user.uid || user.id,
+            userName: user.displayName || user.name || 'Student',
+            userEmail: user.email || '',
+            class: user.class,
+            subject: test.subject,
+            month: test.month,
+            year: test.year,
+            district: user.district || '',
+            school: user.school || '',
+            answers,
+            score: 0,
+            totalMaxMarks: test.questions.reduce((a: number, q: any) => a + (q.marks || 1), 0),
+            totalQuestions: test.questions.length,
+            violations,
+            reports,
+            timeSpent,
+            rank: null,
+            districtRank: null,
+            status: 'pending_review',
+            submittedAt: ''
+          };
+          queue.push({ ...rest, _submittedAt: new Date().toISOString(), _offlineQueued: true });
+          localStorage.setItem('offline_submission_queue', JSON.stringify(queue));
+          alert(language === 'en'
+            ? "⚠️ Network error — your answers are saved locally and will auto-submit when you reconnect!"
+            : "⚠️ ନେଟ ସମସ୍ୟା! ଆପଣଙ୍କ ଉତ୍ତର ଡିଭାଇସ୍‌ରେ ସୁରକ୍ଷିତ। ଇଣ୍ଟରନେଟ ଆସିଲେ ଆପେ ଆପେ ଜମା ହେବ!");
+          onComplete(); // Show result screen; queue drains in background
+        } else {
+          alert(language === 'en'
+            ? "Your test is already queued for submission. Please check your connection."
+            : "ଆପଣଙ୍କ ପରୀକ୍ଷା ଜମା ହେବା ପାଇଁ ଅପେକ୍ଷା କରୁଛି। ଇଣ୍ଟରନେଟ ଯାଞ୍ଚ କରନ୍ତୁ।");
+        }
+      } catch (queueErr) {
+        alert(`Failed to submit test: ${err.message || 'Unknown error'}. Please screenshot your answers and contact support!`);
+      }
     } finally {
       setSubmitting(false);
+      // Note: isSubmittingRef stays true — the guard remains permanent for
+      // this component instance so subsequent triggers are always blocked.
     }
   };
 

@@ -349,22 +349,29 @@ export async function solveMathDoubt(
     }
 
     // Build the contents list with chat memory
+    // FIX #7: Sliding-window with per-message char cap to prevent token bloat.
+    // 6-turn window × 800 chars/message ≈ 4,800 chars ≈ ~1,200 tokens of history max.
+    const MAX_HISTORY_TURNS = 6;
+    const MAX_CHARS_PER_MSG = 800;
     const contents: any[] = [];
     if (history && history.length > 0) {
-      // Send the last 6 messages for fast, lightweight contextual tracking
-      const recentHistory = history.slice(-6);
+      const recentHistory = history.slice(-MAX_HISTORY_TURNS);
       recentHistory.forEach((msg) => {
         const role = msg.sender === 'user' ? 'user' : 'model';
+        // Truncate very long messages to prevent token explosion
+        const safeText = msg.text && msg.text.length > MAX_CHARS_PER_MSG
+          ? msg.text.slice(0, MAX_CHARS_PER_MSG) + '…'
+          : (msg.text || '');
         if (contents.length === 0) {
           if (role === 'user') {
-            contents.push({ role, parts: [{ text: msg.text }] });
+            contents.push({ role, parts: [{ text: safeText }] });
           }
         } else {
           const lastTurn = contents[contents.length - 1];
           if (lastTurn.role === role) {
-            lastTurn.parts[0].text += '\n' + msg.text;
+            lastTurn.parts[0].text += '\n' + safeText;
           } else {
-            contents.push({ role, parts: [{ text: msg.text }] });
+            contents.push({ role, parts: [{ text: safeText }] });
           }
         }
       });
@@ -387,6 +394,9 @@ export async function solveMathDoubt(
         contents,
         generationConfig: {
           temperature: 0.7,
+          maxOutputTokens: 600,  // FIX #3: Cap tutor replies — school explanations need ≤600 tokens
+          topP: 0.95,
+          topK: 40,
         },
       });
       return result.response.text();
@@ -427,7 +437,8 @@ async function translateBatch(batch: any[], targetLanguage: 'en' | 'or'): Promis
       const result = await model.generateContent({
         contents: [{ role: 'user', parts: [{ text: textPayload }] }],
         generationConfig: {
-          temperature: 0.1,
+          temperature: 0.05,  // FIX #3: Near-zero for faithful translation
+          maxOutputTokens: 2048,  // FIX #3: Batch of 10 questions fits comfortably
           responseMimeType: "application/json"
         },
       });
@@ -509,7 +520,8 @@ export async function translateContent(text: string | object, targetLanguage: 'e
       const result = await model.generateContent({
         contents: [{ role: 'user', parts: [{ text: textPayload }] }],
         generationConfig: {
-          temperature: 0.1,
+          temperature: 0.05,  // FIX #3: Near-zero for faithful translation
+          maxOutputTokens: 2048,  // FIX #3: Bounded output
         },
       });
       return result.response.text();
@@ -536,6 +548,7 @@ export async function generateChapterContent(title: string, subject: string, lan
         }` }] }],
         generationConfig: {
           ...(apiVersion === 'v1beta' ? { responseMimeType: "application/json" } : {}),
+          maxOutputTokens: 4096,  // FIX #3: Chapter content is bounded
         },
       });
       return result.response.text();
@@ -570,6 +583,7 @@ export async function generateTestContent(title: string, language: 'en' | 'or') 
         }` }] }],
         generationConfig: {
           ...(apiVersion === 'v1beta' ? { responseMimeType: "application/json" } : {}),
+          maxOutputTokens: 2048,  // FIX #3: 10 MCQs fit within 2048 tokens
         },
       });
       return result.response.text();
@@ -645,6 +659,7 @@ export async function generateCurriculum(board: string, className: string) {
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
         generationConfig: {
           ...(apiVersion === 'v1beta' ? { responseMimeType: "application/json" } : {}),
+          maxOutputTokens: 4096,  // FIX #3: Curriculum with 4 subjects × 5 chapters × 3 questions
         },
       });
       return result.response.text();

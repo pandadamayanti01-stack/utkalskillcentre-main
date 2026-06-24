@@ -1,5 +1,30 @@
 import React, { Suspense, lazy, useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import * as Lucide from 'lucide-react';
+// FIX #12: Named imports only — eliminates ~930 unused icons from the lucide bundle
+import {
+  Activity, AlertCircle, ArrowLeft, ArrowRight, BarChart3, Bell, Book,
+  BookOpen, Bot, Camera, CheckCircle, CheckCircle2, ChevronLeft, ChevronRight,
+  Clock, CreditCard, Crown, Download, ExternalLink, Facebook, FileBarChart2,
+  FileText, Flame, FlaskConical, Globe, Hammer, HelpCircle, History, Image,
+  Instagram, Languages, LayoutGrid, Leaf, Library, LifeBuoy, Lightbulb,
+  Loader, Loader2, Lock, Mail, Medal, MessageCircle, Mic, Monitor,
+  Palette, PenTool, Phone, Play, QrCode, Rocket, Save, School, Send,
+  Settings, Shapes, Share2, ShieldAlert, ShieldCheck, ShoppingBag,
+  Sparkles, Trophy, Twitter, Type, Upload, User, UserX, Users, Wind,
+  Youtube, Zap, X
+} from 'lucide-react';
+// Re-export as Lucide namespace for backward compatibility with existing JSX
+const Lucide = {
+  Activity, AlertCircle, ArrowLeft, ArrowRight, BarChart3, Bell, Book,
+  BookOpen, Bot, Camera, CheckCircle, CheckCircle2, ChevronLeft, ChevronRight,
+  Clock, CreditCard, Crown, Download, ExternalLink, Facebook, FileBarChart2,
+  FileText, Flame, FlaskConical, Globe, Hammer, HelpCircle, History, Image,
+  Instagram, Languages, LayoutGrid, Leaf, Library, LifeBuoy, Lightbulb,
+  Loader, Loader2, Lock, Mail, Medal, MessageCircle, Mic, Monitor,
+  Palette, PenTool, Phone, Play, QrCode, Rocket, Save, School, Send,
+  Settings, Shapes, Share2, ShieldAlert, ShieldCheck, ShoppingBag,
+  Sparkles, Trophy, Twitter, Type, Upload, User, UserX, Users, Wind,
+  Youtube, Zap, X
+};
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -1030,11 +1055,17 @@ export default function App() {
     };
   }, []);
 
-  // Active Study Time Tracker
+  // Active Study Time Tracker — FIX #7
+  // Accumulates minutes locally and flushes to Firestore every 5 minutes
+  // instead of every 60 seconds, reducing writes by 5× at scale.
+  // UI state is still updated every minute so the display stays live.
   useEffect(() => {
     if (!user || user.role !== 'student') return;
 
     let isActive = !document.hidden;
+    // Buffer unsynced minutes locally; flushed every SYNC_EVERY ticks
+    let localBuffer = 0;
+    const SYNC_EVERY = 5; // minutes between Firestore writes
 
     const handleVisibilityChange = () => {
       isActive = !document.hidden;
@@ -1043,32 +1074,99 @@ export default function App() {
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     const interval = setInterval(async () => {
-      if (isActive) {
+      if (!isActive) return;
+
+      localBuffer += 1;
+
+      // Always update local UI state so the displayed counter stays current
+      setUser(prev => prev ? { ...prev, totalStudyMinutes: (prev.totalStudyMinutes || 0) + 1 } : prev);
+
+      // Only write to Firestore every SYNC_EVERY minutes
+      if (localBuffer < SYNC_EVERY) return;
+
+      const minutesToFlush = localBuffer;
+      localBuffer = 0;
+
+      try {
+        const userRef = doc(firestore, 'users', user.id);
+        await updateDoc(userRef, {
+          totalStudyMinutes: increment(minutesToFlush)
+        });
         try {
-          const userRef = doc(firestore, 'users', user.id);
-          await updateDoc(userRef, {
-            totalStudyMinutes: increment(1)
-          });
-          try {
-            const pubRef = doc(firestore, 'public_profiles', user.id);
-            await setDoc(pubRef, {
-              totalStudyMinutes: increment(1)
-            }, { merge: true });
-          } catch (pubErr) {
-            console.warn("Failed to sync study time to public_profiles:", pubErr);
-          }
-          setUser(prev => prev ? { ...prev, totalStudyMinutes: (prev.totalStudyMinutes || 0) + 1 } : prev);
-        } catch (error) {
-          console.error("Failed to sync study time:", error);
+          const pubRef = doc(firestore, 'public_profiles', user.id);
+          await setDoc(pubRef, {
+            totalStudyMinutes: increment(minutesToFlush)
+          }, { merge: true });
+        } catch (pubErr) {
+          console.warn("Failed to sync study time to public_profiles:", pubErr);
         }
+      } catch (error) {
+        // Return unsynced minutes to the buffer so they are not lost
+        localBuffer += minutesToFlush;
+        console.error("Failed to sync study time:", error);
       }
-    }, 60000); // 1 minute
+    }, 60000); // tick every 1 minute; write every 5 ticks
 
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       clearInterval(interval);
     };
   }, [user?.id, user?.role]);
+
+  // Offline Submission Queue Drain — FIX #2 companion
+  // Drains any test submissions that failed due to network drops during exam.
+  // Runs on mount and whenever the device comes back online.
+  useEffect(() => {
+    if (!user) return;
+
+    const drainOfflineQueue = async () => {
+      if (!navigator.onLine) return;
+      let raw: string | null = null;
+      try { raw = localStorage.getItem('offline_submission_queue'); } catch (e) { return; }
+      if (!raw) return;
+      let queue: any[] = [];
+      try { queue = JSON.parse(raw); } catch (e) { return; }
+      if (!queue.length) return;
+
+      const remaining: any[] = [];
+      let drainedCount = 0;
+
+      for (const payload of queue) {
+        // Only drain submissions belonging to the current user
+        if (payload.userId !== user.id) {
+          remaining.push(payload);
+          continue;
+        }
+        try {
+          const { _submittedAt, _offlineQueued, ...data } = payload;
+          await addDoc(collection(firestore, 'monthly_test_submissions'), {
+            ...data,
+            submittedAt: serverTimestamp(),
+            _offlineQueued: true,
+            _originalSubmitTime: _submittedAt || new Date().toISOString()
+          });
+          drainedCount++;
+        } catch (e) {
+          remaining.push(payload); // keep failed ones for next attempt
+        }
+      }
+
+      try { localStorage.setItem('offline_submission_queue', JSON.stringify(remaining)); } catch (e) { /* ignore */ }
+
+      if (drainedCount > 0) {
+        console.log(`[OfflineQueue] Drained ${drainedCount} queued submission(s)`);
+        // Refresh submission list after draining
+        if (typeof (window as any).loadTestSubmissions === 'function') {
+          (window as any).loadTestSubmissions();
+        }
+      }
+    };
+
+    window.addEventListener('online', drainOfflineQueue);
+    drainOfflineQueue(); // Also try immediately on load
+
+    return () => window.removeEventListener('online', drainOfflineQueue);
+  }, [user?.id]);
 
   // Support Session Cleanup
   useEffect(() => {
