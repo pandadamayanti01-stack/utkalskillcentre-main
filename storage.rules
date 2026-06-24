@@ -12,13 +12,19 @@ service firebase.storage {
         request.auth.uid == userId ||
         firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin'
       );
-      allow write: if request.auth != null && request.auth.uid == userId;
+      allow write: if request.auth != null && 
+                    request.auth.uid == userId &&
+                    request.resource.size < 10 * 1024 * 1024 && // 10MB Max
+                    request.resource.contentType.matches('image/.*'); // Images only
     }
     
     // Allow users to upload their profile pictures
     match /profile_pictures/{userId}/{allPaths=**} {
       allow read: if true;
-      allow write: if request.auth != null && request.auth.uid == userId;
+      allow write: if request.auth != null && 
+                    request.auth.uid == userId &&
+                    request.resource.size < 5 * 1024 * 1024 && // 5MB Max
+                    request.resource.contentType.matches('image/.*'); // Images only
     }
 
     // Allow reading and writing of textbook chapter PDFs (reads are public, writes restricted to authenticated admins)
@@ -43,16 +49,20 @@ service firebase.storage {
       );
     }
 
-    // Allow reading and writing of community files
-    match /community_files/{allPaths=**} {
+    // Allow reading and writing of community files (isolated by userId to prevent overwriting)
+    match /community_files/{userId}/{allPaths=**} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if request.auth != null && 
+                    request.auth.uid == userId &&
+                    request.resource.size < 10 * 1024 * 1024 && // 10MB Max
+                    (request.resource.contentType.matches('image/.*') || 
+                     request.resource.contentType.matches('application/pdf') || 
+                     request.resource.contentType.matches('audio/.*'));
     }
 
-    // Default deny for everything else (or fallback to authenticated)
+    // Default deny for everything else (Strict security default)
     match /{allPaths=**} {
-      allow read: if true; // Just in case there are public assets
-      allow write: if false;
+      allow read, write: if false;
     }
   }
 }
