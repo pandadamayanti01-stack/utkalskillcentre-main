@@ -2657,6 +2657,146 @@ async function startServer() {
     timezone: "Asia/Kolkata"
   });
 
+  // Dynamic Route for the Public Daily MCQ Challenge landing page
+  app.get(['/daily-mcq-challenge', '/daily-mcq-challenge.html'], async (req, res) => {
+    try {
+      const classQuery = req.query.class ? String(req.query.class).trim() : '10';
+      
+      // Map input parameter (?class=10 or ?class=Class 10) to standard "Class X" representation
+      let targetClassNum = parseInt(classQuery.replace(/\D/g, '')) || 10;
+      if (targetClassNum < 1 || targetClassNum > 10) targetClassNum = 10;
+      const targetClass = `Class ${targetClassNum}`;
+
+      // Fetch today's date in Asia/Kolkata timezone (format: YYYY-MM-DD)
+      const todayDate = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+      
+      console.log(`[Daily MCQ Landing] Loading challenge for ${targetClass} on date: ${todayDate}...`);
+
+      const adminApp = getInitializedAdminApp();
+      if (!adminApp) {
+        throw new Error("Firebase Admin SDK is not initialized");
+      }
+      const db = getAdminFirestore(adminApp, firestoreDatabaseId);
+
+      // Index-safe dynamic fallback query:
+      // Query the 10 most recent MCQs for this class, ordered by activeDate desc.
+      // This uses the existing index on `class (ASC)` + `activeDate (ASC)` in reverse, requiring no new indexes!
+      const snapshot = await db.collection('daily_mcqs')
+        .where('class', '==', targetClass)
+        .orderBy('activeDate', 'desc')
+        .limit(10)
+        .get();
+
+      let activeMcq = null;
+      
+      // 1. First, check if any of the recent documents match today's date and is published
+      for (const doc of snapshot.docs) {
+        const data = doc.data();
+        if (data.activeDate === todayDate && data.status === 'published') {
+          activeMcq = { ...data, id: doc.id };
+          break;
+        }
+      }
+
+      // 2. Fallback: If no MCQ is published for today, pick the most recent published MCQ for that class
+      if (!activeMcq) {
+        console.log(`[Daily MCQ Landing] No published MCQ found for today (${todayDate}). Falling back to most recent published MCQ...`);
+        for (const doc of snapshot.docs) {
+          const data = doc.data();
+          if (data.status === 'published') {
+            activeMcq = { ...data, id: doc.id };
+            break;
+          }
+        }
+      }
+
+      if (!activeMcq) {
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        return res.status(404).send("<h2>Daily MCQ challenges are not published for this class yet. Please check back later! / ଏହି ଶ୍ରେଣୀ ପାଇଁ କୌଣସି ପ୍ରଶ୍ନୋତ୍ତର ମିଳିଲା ନାହିଁ।</h2>");
+      }
+
+      // Slice the questions to a 5-question public preview subset
+      const allQuestions = Array.isArray(activeMcq.questions) ? activeMcq.questions : [];
+      const previewQuestions = allQuestions.slice(0, 5);
+      
+      const quizPayload = {
+        mcqId: activeMcq.id,
+        title: activeMcq.title || `${targetClass} Daily Challenge`,
+        subject: activeMcq.subject || 'Mixed',
+        class: activeMcq.class,
+        activeDate: activeMcq.activeDate,
+        questions: previewQuestions.map((q: any, idx: number) => ({
+          id: String(idx + 1),
+          question: q.question,
+          options: q.options || [],
+          correctAnswer: q.correctAnswer || q.correct_answer,
+          explanation: q.explanation || ''
+        }))
+      };
+
+      // Generate the Google-compliant JSON-LD Quiz Schema
+      const schemaQuestions = quizPayload.questions.map((q: any) => {
+        const correctOptIdx = q.options.indexOf(q.correctAnswer);
+        const acceptedAnswerIndex = correctOptIdx >= 0 ? correctOptIdx : 0;
+        
+        return {
+          "@type": "Question",
+          "name": q.question,
+          "suggestedAnswer": q.options.map((opt: string) => ({
+            "@type": "Answer",
+            "text": opt
+          })),
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": q.correctAnswer,
+            "comment": {
+              "@type": "Comment",
+              "text": q.explanation || "Correct Answer"
+            }
+          }
+        };
+      });
+
+      const quizSchema = {
+        "@context": "https://schema.org",
+        "@type": "Quiz",
+        "name": `${targetClass} Daily MCQ Challenge - Utkal Skill Centre`,
+        "description": `Take today's 5-question bilingual Odia medium ${quizPayload.subject} quiz for ${targetClass}. Instant grading and explanations!`,
+        "learningResourceType": "Quiz",
+        "educationalLevel": targetClass,
+        "about": {
+          "@type": "Thing",
+          "name": quizPayload.subject
+        },
+        "hasPart": schemaQuestions
+      };
+
+      const schemaHtmlBlock = `<script type="application/ld+json">\n${JSON.stringify(quizSchema, null, 2)}\n</script>`;
+
+      // Read the template file (check dist folder in production, fallback to root in dev)
+      let templatePath = path.resolve(__dirname, 'dist', 'daily-mcq-challenge.html');
+      if (!fs.existsSync(templatePath)) {
+        templatePath = path.resolve(__dirname, 'daily-mcq-challenge.html');
+      }
+
+      if (!fs.existsSync(templatePath)) {
+        return res.status(500).send("Template daily-mcq-challenge.html not found.");
+      }
+
+      let html = fs.readFileSync(templatePath, 'utf-8');
+
+      // Inject the JSON payload and JSON-LD script block
+      html = html.replace('/* DAILY_QUIZ_JSON_PLACEHOLDER */', JSON.stringify(quizPayload));
+      html = html.replace('<!-- GOOGLE_QUIZ_SCHEMA_PLACEHOLDER -->', schemaHtmlBlock);
+
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.setHeader('Cache-Control', 'public, max-age=60'); // Cache for 1 minute
+      return res.send(html);
+    } catch (err: any) {
+      console.error('Failed to render Daily MCQ challenge landing page:', err);
+      return res.status(500).send(`Internal Server Error: ${err.message}`);
+    }
+  });
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== 'production' || !fs.existsSync(indexPath)) {

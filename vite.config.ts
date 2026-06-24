@@ -139,6 +139,7 @@ export default defineConfig(({mode}) => {
         },
         input: {
           main: path.resolve(__dirname, 'index.html'),
+          dailyMcqChallenge: path.resolve(__dirname, 'daily-mcq-challenge.html'),
           odishaLearningApp: path.resolve(__dirname, 'odisha-learning-app.html'),
           odiaAiTutor: path.resolve(__dirname, 'odia-ai-tutor.html'),
           classStudyMaterials: path.resolve(__dirname, 'anganwadi-to-class-10-study-materials.html'),

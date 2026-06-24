@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="or">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ଓଡ଼ିଶା ଦୈନିକ ପ୍ରଶ୍ନୋତ୍ତର ଚ୍ୟାଲେଞ୍ଜ | Daily MCQ Challenge - Utkal Skill Centre</title>
+  <meta name="description" content="ପ୍ରତିଦିନ ନୂଆ ଓଡ଼ିଆ ମାଧ୍ୟମ MCQ ଚ୍ୟାଲେଞ୍ଜ! Daily 5-question bilingual MCQ quiz in Odia script for Class 1 to 10. Win Kaudi points and build your learning streak!">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://utkalskillcentre.in/daily-mcq-challenge">
+  <meta property="og:title" content="ଓଡ଼ିଶା ଦୈନିକ ପ୍ରଶ୍ନୋତ୍ତର ଚ୍ୟାଲେଞ୍ଜ | Daily MCQ Challenge">
+  <meta property="og:description" content="Take today's 5-question bilingual Odia medium quiz. Win Kaudi points, check explanations, and save your learning streak!">
+  <meta property="og:image" content="/gundulu-v3.jpg">
+
+  <!-- Google Fonts (Outfit & Inter) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Canvas Confetti CDN for completions -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- Google Quiz Schema Injection Placeholder -->
+  <!-- GOOGLE_QUIZ_SCHEMA_PLACEHOLDER -->
+
+  <style>
+    :root {
+      --font-outfit: 'Outfit', 'Inter', sans-serif;
+      --font-inter: 'Inter', sans-serif;
+
+      /* Premium HSL Palette */
+      --bg-dark: HSL(222, 47%, 7%);
+      --bg-slate: HSL(223, 47%, 11%);
+      --border-color: HSL(217, 32%, 18%);
+      
+      --color-primary: HSL(160, 84%, 39%); /* Emerald Green */
+      --color-primary-glow: rgba(16, 185, 129, 0.15);
+      
+      --color-secondary: HSL(199, 89%, 48%); /* Neon Blue */
+      --color-secondary-glow: rgba(6, 182, 212, 0.15);
+      
+      --color-danger: HSL(0, 84%, 60%); /* Coral Red */
+      --color-danger-glow: rgba(239, 68, 68, 0.15);
+      
+      --color-warning: HSL(45, 93%, 47%); /* Gold */
+      --color-warning-glow: rgba(251, 191, 36, 0.15);
+
+      --text-main: HSL(210, 40%, 96%);
+      --text-muted: HSL(215, 20%, 65%);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-inter);
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem 1rem;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    /* Core Layout Header */
+    header {
+      width: 100%;
+      max-width: 650px;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .brand-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--color-primary);
+      font-family: var(--font-outfit);
+      font-weight: 800;
+      font-size: 1.5rem;
+      text-decoration: none;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 10px var(--color-primary-glow);
+    }
+
+    .brand-logo span {
+      color: var(--text-main);
+    }
+
+    /* Horizontal Class Selector Pill Navigation */
+    .class-selector-wrapper {
+      width: 100%;
+      max-width: 650px;
+      overflow-x: auto;
+      margin-bottom: 2rem;
+      padding-bottom: 0.5rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .class-selector-wrapper::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .class-selector-wrapper::-webkit-scrollbar-thumb {
+      background-color: var(--border-color);
+      border-radius: 4px;
+    }
+
+    .class-nav {
+      display: flex;
+      gap: 0.6rem;
+      padding: 0.2rem;
+      width: max-content;
+    }
+
+    .class-pill {
+      background-color: var(--bg-slate);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.5rem 1.2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .class-pill:hover {
+      border-color: var(--color-secondary);
+      color: var(--text-main);
+      box-shadow: 0 0 10px var(--color-secondary-glow);
+    }
+
+    .class-pill.active {
+      background-color: var(--color-primary-glow);
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+      box-shadow: 0 0 12px var(--color-primary-glow);
+    }
+
+    /* Main Container Card */
+    main {
+      width: 100%;
+      max-width: 650px;
+      background-color: var(--bg-slate);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    main::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--color-secondary), var(--color-primary));
+    }
+
+    /* Info Badge Bar */
+    .info-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .subject-badge {
+      background-color: rgba(6, 182, 212, 0.1);
+      border: 1px solid var(--color-secondary);
+      color: var(--color-secondary);
+      padding: 0.25rem 0.8rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .progress-text {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Progress Bar */
+    .progress-bar-container {
+      width: 100%;
+      height: 6px;
+      background-color: var(--border-color);
+      border-radius: 10px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 20%;
+      background: linear-gradient(90deg, var(--color-secondary), var(--color-primary));
+      border-radius: 10px;
+      transition: width 0.4s ease;
+    }
+
+    /* Question Box */
+    .question-box {
+      margin-bottom: 2rem;
+    }
+
+    .question-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Options Grid */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .option-btn {
+      width: 100%;
+      background-color: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 1rem 1.25rem;
+      border-radius: 14px;
+      font-size: 1rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--color-secondary);
+      background-color: rgba(6, 182, 212, 0.05);
+    }
+
+    .option-btn:disabled {
+      cursor: not-allowed;
+    }
+
+    /* Option States */
+    .option-btn.correct {
+      border-color: var(--color-primary);
+      background-color: var(--color-primary-glow);
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+
+    .option-btn.incorrect {
+      border-color: var(--color-danger);
+      background-color: var(--color-danger-glow);
+      color: var(--color-danger);
+    }
+
+    .option-icon {
+      font-size: 1.2rem;
+      display: none;
+    }
+
+    .option-btn.correct .option-icon.check {
+      display: block;
+    }
+
+    .option-btn.incorrect .option-icon.cross {
+      display: block;
+    }
+
+    /* Explanation Drawer */
+    .explanation-box {
+      display: none;
+      background-color: rgba(251, 191, 36, 0.05);
+      border: 1px solid var(--color-warning);
+      padding: 1.25rem;
+      border-radius: 16px;
+      margin-bottom: 1.5rem;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    .explanation-title {
+      font-weight: 700;
+      color: var(--color-warning);
+      font-size: 0.95rem;
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .explanation-text {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text-main);
+    }
+
+    /* Next Button Controls */
+    .controls-bar {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .next-btn {
+      background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+      border: none;
+      color: var(--bg-dark);
+      padding: 0.9rem 2rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+    }
+
+    .next-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+    }
+
+    /* Completion Summary Screen */
+    .results-screen {
+      display: none;
+      text-align: center;
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    .score-circle {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background-color: var(--bg-dark);
+      border: 6px solid var(--color-primary);
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 0 20px var(--color-primary-glow);
+    }
+
+    .score-num {
+      font-family: var(--font-outfit);
+      font-weight: 800;
+      font-size: 2.2rem;
+      color: var(--color-primary);
+    }
+
+    .score-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .results-title {
+      font-family: var(--font-outfit);
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .results-desc {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      font-size: 1rem;
+      line-height: 1.6;
+      padding: 0 1rem;
+    }
+
+    /* Funnel Call to Action Button */
+    .funnel-cta-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--color-warning), #fb923c);
+      color: var(--bg-dark);
+      border: none;
+      padding: 1.1rem;
+      border-radius: 16px;
+      font-weight: 800;
+      font-size: 1.15rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      box-shadow: 0 8px 25px rgba(251, 191, 36, 0.3);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-bottom: 1rem;
+      animation: pulseGlow 2s infinite;
+    }
+
+    .funnel-cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(251, 191, 36, 0.5);
+    }
+
+    /* Share Button */
+    .share-btn {
+      width: 100%;
+      background-color: #25d366; /* WhatsApp Green */
+      color: white;
+      border: none;
+      padding: 1rem;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      margin-bottom: 1.5rem;
+    }
+
+    .share-btn:hover {
+      background-color: #20ba5a;
+      transform: translateY(-1px);
+    }
+
+    .restart-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: inline-block;
+      transition: color 0.2s ease;
+    }
+
+    .restart-link:hover {
+      color: var(--text-main);
+      text-decoration: underline;
+    }
+
+    /* Floating point coin teaser */
+    .floating-points {
+      position: absolute;
+      color: var(--color-warning);
+      font-weight: 800;
+      font-size: 1.2rem;
+      font-family: var(--font-outfit);
+      pointer-events: none;
+      animation: floatUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+
+    /* Keyframe Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 0; transform: translateY(0) scale(0.8); }
+      20% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-40px) scale(1.1); }
+    }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4); }
+      70% { box-shadow: 0 0 0 12px rgba(251, 191, 36, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+    }
+
+    /* Footer Credits */
+    footer {
+      margin-top: auto;
+      padding-top: 2.5rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--color-primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 480px) {
+      main {
+        padding: 1.5rem 1.25rem;
+      }
+      .question-title {
+        font-size: 1.15rem;
+      }
+      .brand-logo {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="/" class="brand-logo">
+      Utkal <span>Skill Centre</span>
+    </a>
+  </header>
+
+  <!-- Horizontal Class Navigation Selector -->
+  <div class="class-selector-wrapper">
+    <div class="class-nav" id="classNav">
+      <!-- Generated Dynamically by JS -->
+    </div>
+  </div>
+
+  <main>
+    <!-- Quiz Playing Interface -->
+    <div id="quizScreen">
+      <div class="info-bar">
+        <span class="subject-badge" id="subjectBadge">Loading...</span>
+        <span class="progress-text" id="progressText">Question 1 of 5</span>
+      </div>
+
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progressBarFill"></div>
+      </div>
+
+      <div class="question-box">
+        <h2 class="question-title" id="questionText">Loading challenge question...</h2>
+      </div>
+
+      <div class="options-grid" id="optionsGrid">
+        <!-- Generated Dynamically by JS -->
+      </div>
+
+      <!-- Odia Explanation Card -->
+      <div class="explanation-box" id="explanationBox">
+        <div class="explanation-title">
+          <span>💡</span> ସ୍ପଷ୍ଟୀକରଣ (Explanation):
+        </div>
+        <div class="explanation-text" id="explanationText">
+          Loading explanation...
+        </div>
+      </div>
+
+      <div class="controls-bar">
+        <button class="next-btn" id="nextBtn">
+          Next Question ➔
+        </button>
+      </div>
+    </div>
+
+    <!-- Completion Screen -->
+    <div class="results-screen" id="resultsScreen">
+      <div class="score-circle">
+        <span class="score-num" id="finalScore">0/5</span>
+        <span class="score-label">Score</span>
+      </div>
+
+      <h2 class="results-title" id="resultsTitle">🎉 Congratulations!</h2>
+      <p class="results-desc" id="resultsDesc">
+        You successfully finished today's Daily Challenge! You have earned 15 Kaudi points and started a 1-day learning streak.
+      </p>
+
+      <!-- Registration Funnel CTA -->
+      <button class="funnel-cta-btn" id="ctaBtn">
+        🏆 Save your Streak!
+      </button>
+
+      <!-- WhatsApp Share -->
+      <button class="share-btn" id="shareBtn">
+        Share Score on WhatsApp 💬
+      </button>
+
+      <a href="#" class="restart-link" id="restartLink">Take Quiz Again</a>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2026 Utkal Skill Centre. All Rights Reserved.</p>
+    <p>Powered by <a href="/">Gundulu AI Tutor</a>. Approved by BSE Odisha.</p>
+  </footer>
+
+  <script>
+    // Placeholder to be replaced by Express server payload
+    window.DAILY_QUIZ = /* DAILY_QUIZ_JSON_PLACEHOLDER */ null;
+
+    // Standard fallback payload for standalone static local preview (dev fallback)
+    const fallbackQuiz = {
+      mcqId: "sample_mcq",
+      title: "Class 10 Science Challenge",
+      subject: "Science",
+      class: "Class 10",
+      activeDate: "2026-06-25",
+      questions: [
+        {
+          id: "1",
+          question: "Which gas is released during photosynthesis? / ଆଲୋକସଂଶ୍ଲେଷଣ ସମୟରେ କେଉଁ ଗ୍ୟାସ ନିର୍ଗତ ହୁଏ?",
+          options: [
+            "Carbon dioxide / ଅଙ୍ଗାରକାମ୍ଳ",
+            "Oxygen / ଅମ୍ଳଜାନ",
+            "Nitrogen / ଯବକ୍ଷାରଜାନ",
+            "Hydrogen / ଉଦଜାନ"
+          ],
+          correctAnswer: "Oxygen / ଅମ୍ଳଜାନ",
+          explanation: "ଆଲୋକସଂଶ୍ଲେଷଣ ପ୍ରକ୍ରିୟାରେ ସବୁଜ ଉଦ୍ଭିଦ ଅଙ୍ଗାରକାମ୍ଳ ଗ୍ରହଣ କରି ସୂର୍ଯ୍ୟାଲୋକ ସାହାଯ୍ୟରେ ଖାଦ୍ୟ ପ୍ରସ୍ତୁତ କରେ ଏବଂ ଅମ୍ଳଜାନ (Oxygen) ବାୟୁମଣ୍ଡଳକୁ ନିର୍ଗତ କରିଥାଏ।"
+        },
+        {
+          id: "2",
+          question: "What is the formula of rust? / କଳଙ୍କିର ରାସାୟନିକ ସୂତ୍ର କଣ?",
+          options: [
+            "Fe2O3 / ଫେରିକ୍ ଅକ୍ସାଇଡ୍",
+            "Fe3O4",
+            "Fe(OH)2",
+            "Fe2O3 • xH2O"
+          ],
+          correctAnswer: "Fe2O3 • xH2O",
+          explanation: "ଲୁହା ବାୟୁ ଏବଂ ଜଳୀୟ ବାଷ୍ପ ସଂସ୍ପର୍ଶରେ ଆସିଲେ ଏହା ଉପରେ ଏକ ବାଦାମୀ ରଙ୍ଗର ଆସ୍ତରଣ ଜମିଯାଏ, ଯାହାକୁ କଳଙ୍କି କୁହାଯାଏ। ଏହାର ସୂତ୍ର Fe2O3 • xH2O ଅଟେ।"
+        }
+      ]
+    };
+
+    // Main controller state
+    const quiz = window.DAILY_QUIZ || fallbackQuiz;
+    let currentQuestionIdx = 0;
+    let score = 0;
+    let selectedOption = null;
+
+    // DOM References
+    const classNav = document.getElementById('classNav');
+    const quizScreen = document.getElementById('quizScreen');
+    const resultsScreen = document.getElementById('resultsScreen');
+    const subjectBadge = document.getElementById('subjectBadge');
+    const progressText = document.getElementById('progressText');
+    const progressBarFill = document.getElementById('progressBarFill');
+    const questionText = document.getElementById('questionText');
+    const optionsGrid = document.getElementById('optionsGrid');
+    const explanationBox = document.getElementById('explanationBox');
+    const explanationText = document.getElementById('explanationText');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    const finalScore = document.getElementById('finalScore');
+    const resultsTitle = document.getElementById('resultsTitle');
+    const resultsDesc = document.getElementById('resultsDesc');
+    const ctaBtn = document.getElementById('ctaBtn');
+    const shareBtn = document.getElementById('shareBtn');
+    const restartLink = document.getElementById('restartLink');
+
+    // Parse class parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const activeClassNum = parseInt(urlParams.get('class')) || 10;
+
+    // Render Class selector pills
+    function initClassSelector() {
+      classNav.innerHTML = '';
+      for (let i = 1; i <= 10; i++) {
+        const pill = document.createElement('a');
+        pill.href = `?class=${i}`;
+        pill.className = `class-pill ${i === activeClassNum ? 'active' : ''}`;
+        pill.innerText = `Class ${i}`;
+        
+        // Handle click event to prevent full reload flicker in some browsers
+        pill.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.location.href = `?class=${i}`;
+        });
+        
+        classNav.appendChild(pill);
+      }
+    }
+
+    // Load question structure
+    function renderQuestion() {
+      if (!quiz.questions || quiz.questions.length === 0) return;
+      
+      const q = quiz.questions[currentQuestionIdx];
+      selectedOption = null;
+
+      // Update UI Header details
+      subjectBadge.innerText = quiz.subject;
+      progressText.innerText = `Question ${currentQuestionIdx + 1} of ${quiz.questions.length}`;
+      progressBarFill.style.width = `${((currentQuestionIdx + 1) / quiz.questions.length) * 100}%`;
+
+      // Update Question text
+      questionText.innerText = q.question;
+
+      // Hide control bar elements
+      explanationBox.style.display = 'none';
+      nextBtn.style.display = 'none';
+
+      // Render options buttons
+      optionsGrid.innerHTML = '';
+      q.options.forEach((option) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `
+          <span>${option}</span>
+          <span class="option-icon check">✓</span>
+          <span class="option-icon cross">✕</span>
+        `;
+        
+        btn.addEventListener('click', () => selectOption(btn, option, q));
+        optionsGrid.appendChild(btn);
+      });
+    }
+
+    // Handle Option Click
+    function selectOption(clickedBtn, optionText, question) {
+      if (selectedOption !== null) return; // Lock choices
+      selectedOption = optionText;
+
+      const allButtons = optionsGrid.querySelectorAll('.option-btn');
+      allButtons.forEach(btn => btn.disabled = true); // Disable further clicking
+
+      const isCorrect = optionText === question.correctAnswer;
+      
+      if (isCorrect) {
+        score++;
+        clickedBtn.classList.add('correct');
+        triggerFloatingPoints(clickedBtn);
+      } else {
+        clickedBtn.classList.add('incorrect');
+        // Highlight correct option
+        allButtons.forEach(btn => {
+          if (btn.querySelector('span').innerText === question.correctAnswer) {
+            btn.classList.add('correct');
+          }
+        });
+      }
+
+      // Display Explanation
+      if (question.explanation) {
+        explanationText.innerText = question.explanation;
+        explanationBox.style.display = 'block';
+      }
+
+      // Show Next button
+      nextBtn.style.display = 'inline-flex';
+    }
+
+    // Floating +3 Kaudi Animation Effect
+    function triggerFloatingPoints(element) {
+      const rect = element.getBoundingClientRect();
+      const bodyRect = document.body.getBoundingClientRect();
+      const x = rect.left - bodyRect.left + (rect.width / 2) - 30;
+      const y = rect.top - bodyRect.top - 25;
+
+      const floater = document.createElement('div');
+      floater.className = 'floating-points';
+      floater.style.left = `${x}px`;
+      floater.style.top = `${y}px`;
+      floater.innerText = '+3 Kaudi 🪙';
+      document.body.appendChild(floater);
+
+      // Clean up DOM
+      setTimeout(() => floater.remove(), 800);
+    }
+
+    // Progress to next screen
+    function handleNext() {
+      if (currentQuestionIdx < quiz.questions.length - 1) {
+        currentQuestionIdx++;
+        renderQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    // Render completion summary
+    function showResults() {
+      quizScreen.style.display = 'none';
+      resultsScreen.style.display = 'block';
+      
+      const scoreFraction = `${score}/${quiz.questions.length}`;
+      finalScore.innerText = scoreFraction;
+
+      const pct = Math.round((score / quiz.questions.length) * 100);
+      
+      // Dynamic responses based on performance
+      if (pct === 100) {
+        resultsTitle.innerText = "🏆 Perfect Score! ଅତି ଉତ୍ତମ!";
+        resultsDesc.innerText = `Outstanding! You answered all questions correctly. You have earned ${score * 3} Kaudi points! Register below to save your streak and secure your learning profile.`;
+      } else if (pct >= 60) {
+        resultsTitle.innerText = "🎉 Great Job! ବହୁତ ବଢ଼ିଆ!";
+        resultsDesc.innerText = `You answered ${scoreFraction} questions correctly, earning ${score * 3} Kaudi points. Don't let your efforts vanish! Register a free account to save your points and streak.`;
+      } else {
+        resultsTitle.innerText = "👍 Nice Effort! ଚେଷ୍ଟା ଜାରି ରଖନ୍ତୁ!";
+        resultsDesc.innerText = `You got ${scoreFraction} correct and earned ${score * 3} Kaudi points. Save your progress now and study with Gundulu AI to score 100% tomorrow!`;
+      }
+
+      // Trigger colorful confettis for high scores!
+      if (pct >= 60 && typeof confetti === 'function') {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#10b981', '#06b6d4', '#fbbf24', '#f59e0b']
+        });
+      }
+    }
+
+    // Funnel CTA redirection
+    ctaBtn.addEventListener('click', () => {
+      const earnedPoints = score * 3;
+      // Redirect to main registration funnel carrying earned metrics
+      window.location.href = `/?ref=daily-mcq&pts=${earnedPoints}&class=${activeClassNum}`;
+    });
+
+    // Share score on WhatsApp
+    shareBtn.addEventListener('click', () => {
+      const pct = Math.round((score / quiz.questions.length) * 100);
+      const text = `ପ୍ରତିଦିନ ଓଡ଼ିଆ ମାଧ୍ୟମ MCQ ଚ୍ୟାଲେଞ୍ଜ! 🏆 I just scored ${score}/${quiz.questions.length} (${pct}%) on the Utkal Skill Centre Class ${activeClassNum} Daily Challenge! Can you beat my score? Try here: ${window.location.href}`;
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+    });
+
+    // Restart quiz
+    restartLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      currentQuestionIdx = 0;
+      score = 0;
+      resultsScreen.style.display = 'none';
+      quizScreen.style.display = 'block';
+      renderQuestion();
+    });
+
+    nextBtn.addEventListener('click', handleNext);
+
+    // Bootstrap execution
+    initClassSelector();
+    renderQuestion();
+  </script>
+</body>
+</html>
