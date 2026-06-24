@@ -106,7 +106,7 @@ async function generateQuizViaGundulu(targetClass: string, subject: string): Pro
     generationConfig: {
       responseMimeType: "application/json",
       temperature: 0.7,
-      maxOutputTokens: 2048
+      maxOutputTokens: 8192
     }
   });
 
@@ -262,7 +262,7 @@ app.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async (req, 
     }
 
     let html = fs.readFileSync(templatePath, 'utf-8');
-    html = html.replace('/* DAILY_QUIZ_JSON_PLACEHOLDER */', quizPayload ? JSON.stringify(quizPayload) : 'null');
+    html = html.replace('window.DAILY_QUIZ = null; // DAILY_QUIZ_JSON_PLACEHOLDER', 'window.DAILY_QUIZ = ' + (quizPayload ? JSON.stringify(quizPayload) : 'null') + ';');
     html = html.replace('<!-- GOOGLE_QUIZ_SCHEMA_PLACEHOLDER -->', schemaHtmlBlock);
 
     res.setHeader('Content-Type', 'text/html; charset=utf-8');

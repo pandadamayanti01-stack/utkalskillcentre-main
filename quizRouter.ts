@@ -5,6 +5,7 @@ import admin from 'firebase-admin';
 import { fileURLToPath } from 'url';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { getFirestore } from 'firebase-admin/firestore';
+import { getApp, getApps } from 'firebase-admin/app';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,6 +32,8 @@ async function generateQuizViaGundulu(targetClass: string, subject: string): Pro
   const prompt = isUniversal 
     ? `You are Gundulu, a warm, highly intellectual elder sister from Odisha who loves teaching. Your tone is extremely encouraging, proud of Odisha, and filled with affection.
        Generate today's "Universal GK & Odisha Culture Challenge" containing exactly 5 premium, diverse General Knowledge questions.
+       
+       CRITICAL: Do NOT use any double quotes (") inside the question, options, or explanation text values. If you need to use quotes, always use single quotes (') instead.
        
        The questions must cover:
        - Question 1: Odisha History & Heritage (e.g., Konark, Jagannath Temple, Kalinga War, Baji Rout, Madhusudan Das)
@@ -59,6 +62,9 @@ async function generateQuizViaGundulu(targetClass: string, subject: string): Pro
          ]
        }`
     : `You are Gundulu, a warm, sweet, and cute elder sister tutoring a student. Generate a premium, curriculum-mapped multiple choice quiz containing exactly 5 questions for ${targetClass} on the subject of "${subject}".
+       
+       CRITICAL: Do NOT use any double quotes (") inside the question, options, or explanation text values. If you need to use quotes, always use single quotes (') instead.
+       
        The questions must be highly educational, bilingual (English and Odia script), suitable for Odisha board school syllabus, and follow this schema:
        {
          "title": "${targetClass} ${subject} Daily Challenge",
@@ -80,7 +86,7 @@ async function generateQuizViaGundulu(targetClass: string, subject: string): Pro
     generationConfig: {
       responseMimeType: "application/json",
       temperature: 0.7,
-      maxOutputTokens: 2048
+      maxOutputTokens: 8192
     }
   });
 
@@ -105,12 +111,10 @@ quizRouter.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async
     }
 
     // Determine class query:
-    // If on the subdomain root, and no ?class is specified, default to 'universal' (Universal GK)
+    // If no ?class is specified, default to 'universal' (Universal GK)
     let classQuery = 'universal';
     if (req.query.class) {
       classQuery = String(req.query.class).trim().toLowerCase();
-    } else if (isPathRoute) {
-      classQuery = '10';
     }
 
     let targetClass = 'Universal GK';
@@ -130,7 +134,8 @@ quizRouter.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async
     console.log(`[Quiz Router] Subdomain Serve: ${targetClass} (${subject}) on date: ${todayDate} via host: ${host}...`);
 
     // Get database instance (using the active firebase-admin App)
-    const firestoreDb = getFirestore(admin.app(), getDatabaseId());
+    const adminApp = getApps().length > 0 ? getApp() : undefined;
+    const firestoreDb = getFirestore(adminApp, getDatabaseId());
 
     // Index-safe query targeting targetClass
     const snapshot = await firestoreDb.collection('daily_mcqs')
@@ -257,7 +262,7 @@ quizRouter.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async
     }
 
     let html = fs.readFileSync(templatePath, 'utf-8');
-    html = html.replace('/* DAILY_QUIZ_JSON_PLACEHOLDER */', quizPayload ? JSON.stringify(quizPayload) : 'null');
+    html = html.replace('window.DAILY_QUIZ = null; // DAILY_QUIZ_JSON_PLACEHOLDER', 'window.DAILY_QUIZ = ' + (quizPayload ? JSON.stringify(quizPayload) : 'null') + ';');
     html = html.replace('<!-- GOOGLE_QUIZ_SCHEMA_PLACEHOLDER -->', schemaHtmlBlock);
 
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
