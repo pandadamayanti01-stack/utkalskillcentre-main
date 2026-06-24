@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import * as Lucide from 'lucide-react';
 import { db } from '../firebase';
-import { collection, addDoc, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import confetti from 'canvas-confetti';
 
 interface GiftUnlockModalProps {
@@ -11,6 +11,7 @@ interface GiftUnlockModalProps {
   onClose: () => void;
   onClaimSuccess: (ticketDoc: any) => void;
   existingTicket?: any;
+  rank?: number | null;
 }
 
 export const GiftUnlockModal: React.FC<GiftUnlockModalProps> = ({
@@ -18,7 +19,8 @@ export const GiftUnlockModal: React.FC<GiftUnlockModalProps> = ({
   language,
   onClose,
   onClaimSuccess,
-  existingTicket
+  existingTicket,
+  rank
 }) => {
   const [step, setStep] = useState<'closed' | 'opening' | 'opened' | 'form' | 'success'>('closed');
   const [formData, setFormData] = useState({
@@ -30,9 +32,23 @@ export const GiftUnlockModal: React.FC<GiftUnlockModalProps> = ({
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // Determine user's rank, cash prize and items based on their name
-  const userNameLower = (user?.name || '').trim().toLowerCase();
-  
+  // Resolve rank (either passed as prop, or determined from name for fallback)
+  let resolvedRank = rank;
+  if (resolvedRank === undefined || resolvedRank === null) {
+    const userNameLower = (user?.name || '').trim().toLowerCase();
+    if (userNameLower.includes('dibyansh') || userNameLower.includes('sohan')) {
+      resolvedRank = 1;
+    } else if (userNameLower.includes('rohan')) {
+      resolvedRank = 2;
+    } else if (userNameLower.includes('sujata')) {
+      resolvedRank = 3;
+    } else if (userNameLower.includes('anik')) {
+      resolvedRank = 4;
+    } else {
+      resolvedRank = 5;
+    }
+  }
+
   let prizeAmount = 0;
   let rewardNameEn = '';
   let rewardNameOr = '';
@@ -41,45 +57,45 @@ export const GiftUnlockModal: React.FC<GiftUnlockModalProps> = ({
   let boxColor = 'from-amber-500 to-yellow-300';
   let boxGlow = 'rgba(245,158,11,0.4)';
 
-  if (userNameLower.includes('dibyansh') || userNameLower.includes('sohan')) {
+  if (resolvedRank === 1) {
     prizeAmount = 500;
-    rewardNameEn = 'Super Champion Gift Hamper';
-    rewardNameOr = 'ସୁପର ଚାମ୍ପିଅନ ଉପହାର ବାକ୍ସ';
-    rewardItemsEn = ['🏆 USC Gold Medal', '📚 Premium Reference Book Set', '🎖️ Achiever Pin Badge', '✨ Sticker Pack'];
-    rewardItemsOr = ['🏆 USC ସୁବର୍ଣ୍ଣ ପଦକ', '📚 ପ୍ରିମିୟମ ପୁସ୍ତକ ସେଟ୍', '🎖️ କୃତିତ୍ୱ ପିନ ବ୍ୟାଜ୍', '✨ ଷ୍ଟିକର ପ୍ୟାକ୍'];
+    rewardNameEn = 'USC Class Champion Reward';
+    rewardNameOr = 'USC କ୍ଲାସ୍ ଚାମ୍ପିଅନ ପୁରସ୍କାର';
+    rewardItemsEn = ['🏆 USC Gold Medal', '📚 Premium Reference Book Set', '⚡ Free Monthly AI Subscription (worth ₹99)', '🎖️ Achiever Pin Badge', '✨ Sticker Pack'];
+    rewardItemsOr = ['🏆 USC ସୁବର୍ଣ୍ଣ ପଦକ', '📚 ପ୍ରିମିୟମ ପୁସ୍ତକ ସେଟ୍', '⚡ ମାସିକ ମାଗଣା AI ସବସ୍କ୍ରିପସନ (ମୂଲ୍ୟ ₹୯୯)', '🎖️ କୃତିତ୍ୱ ପିନ ବ୍ୟାଜ୍', '✨ ଷ୍ଟିକର ପ୍ୟାକ୍'];
     boxColor = 'from-amber-400 via-yellow-400 to-amber-600';
     boxGlow = 'rgba(251,191,36,0.6)';
-  } else if (userNameLower.includes('rohan')) {
-    prizeAmount = 400;
-    rewardNameEn = 'Champion Gift Hamper';
-    rewardNameOr = 'ଚାମ୍ପିଅନ ଉପହାର ବାକ୍ସ';
-    rewardItemsEn = ['🥈 USC Silver Medal', '📚 Reference Book', '🎖️ Achiever Pin Badge', '✨ Sticker Pack'];
-    rewardItemsOr = ['🥈 USC ରୌପ୍ୟ ପଦକ', '📚 ସନ୍ଦର୍ଭ ପୁସ୍ତକ', '🎖️ କୃତିତ୍ୱ ପିନ ବ୍ୟାଜ୍', '✨ ଷ୍ଟିକର ପ୍ୟାକ୍'];
+  } else if (resolvedRank === 2) {
+    prizeAmount = 300;
+    rewardNameEn = 'USC Class Runner-Up Reward';
+    rewardNameOr = 'USC କ୍ଲାସ୍ ରନର୍ସ-ଅପ୍ ପୁରସ୍କାର';
+    rewardItemsEn = ['🥈 USC Silver Medal', '📚 Reference Book', '⚡ Free Monthly AI Subscription (worth ₹99)', '🎖️ Achiever Pin Badge', '✨ Sticker Pack'];
+    rewardItemsOr = ['🥈 USC ରୌପ୍ୟ ପଦକ', '📚 ସନ୍ଦର୍ଭ ପୁସ୍ତକ', '⚡ ମାସିକ ମାଗଣା AI ସବସ୍କ୍ରିପସନ (ମୂଲ୍ୟ ₹୯୯)', '🎖️ କୃତିତ୍ୱ ପିନ ବ୍ୟାଜ୍', '✨ ଷ୍ଟିକର ପ୍ୟାକ୍'];
     boxColor = 'from-slate-300 via-slate-100 to-slate-500';
     boxGlow = 'rgba(226,232,240,0.5)';
-  } else if (userNameLower.includes('sujata')) {
-    prizeAmount = 300;
-    rewardNameEn = 'Achiever Gift Hamper';
-    rewardNameOr = 'ଅଚିଭର୍ ଉପହାର ବାକ୍ସ';
-    rewardItemsEn = ['🥉 USC Bronze Medal', '📚 Reference Book', '✨ Sticker Pack'];
-    rewardItemsOr = ['🥉 USC କାଂସ୍ୟ ପଦକ', '📚 ସନ୍ଦର୍ଭ ପୁସ୍ତକ', '✨ ଷ୍ଟିକର ପ୍ୟାକ୍'];
+  } else if (resolvedRank === 3) {
+    prizeAmount = 200;
+    rewardNameEn = 'USC Class Second Runner-Up Reward';
+    rewardNameOr = 'USC କ୍ଲାସ୍ ଦ୍ୱିତୀୟ ରନର୍ସ-ଅପ୍ ପୁରସ୍କାର';
+    rewardItemsEn = ['🥉 USC Bronze Medal', '📚 Reference Book', '⚡ Free Monthly AI Subscription (worth ₹99)', '✨ Sticker Pack'];
+    rewardItemsOr = ['🥉 USC କାଂସ୍ୟ ପଦକ', '📚 ସନ୍ଦର୍ଭ ପୁସ୍ତକ', '⚡ ମାସିକ ମାଗଣା AI ସବସ୍କ୍ରିପସନ (ମୂଲ୍ୟ ₹୯୯)', '✨ ଷ୍ଟିକର ପ୍ୟାକ୍'];
     boxColor = 'from-amber-700 via-amber-600 to-yellow-800';
     boxGlow = 'rgba(180,83,9,0.5)';
-  } else if (userNameLower.includes('anik')) {
-    prizeAmount = 200;
-    rewardNameEn = 'Star Performer Gift Box';
-    rewardNameOr = 'ଷ୍ଟାର୍ ପରଫର୍ମର ଉପହାର ବାକ୍ସ';
-    rewardItemsEn = ['📓 Special USC Notebook', '🎖️ Achiever Pin Badge', '✨ Sticker Pack'];
-    rewardItemsOr = ['📓 ସ୍ପେଶାଲ USC ନୋଟବୁକ', '🎖️ କୃତିତ୍ୱ ପିନ ବ୍ୟାଜ୍', '✨ ଷ୍ଟିକର ପ୍ୟାକ୍'];
+  } else if (resolvedRank === 4) {
+    prizeAmount = 0;
+    rewardNameEn = 'USC AI Scholar Reward';
+    rewardNameOr = 'USC AI ସ୍କଲାର୍ ପୁରସ୍କାର';
+    rewardItemsEn = ['⚡ Free Monthly AI Subscription (worth ₹99)', '📓 Special USC Notebook', '✨ Sticker Pack'];
+    rewardItemsOr = ['⚡ ମାସିକ ମାଗଣା AI ସବସ୍କ୍ରିପସନ (ମୂଲ୍ୟ ₹୯୯)', '📓 ସ୍ପେଶାଲ USC ନୋଟବୁକ', '✨ ଷ୍ଟିକର ପ୍ୟାକ୍'];
     boxColor = 'from-emerald-400 via-teal-300 to-emerald-600';
     boxGlow = 'rgba(16,185,129,0.5)';
   } else {
-    // Default fallback or "Student" (Rank 5)
-    prizeAmount = 100;
-    rewardNameEn = 'Rising Star Gift Box';
-    rewardNameOr = 'ରାଇଜିଂ ଷ୍ଟାର୍ ଉପହାର ବାକ୍ସ';
-    rewardItemsEn = ['📓 Special USC Notebook', '✨ Sticker Pack'];
-    rewardItemsOr = ['📓 ସ୍ପେଶାଲ USC ନୋଟବୁକ', '✨ ଷ୍ଟିକର ପ୍ୟାକ୍'];
+    // Rank 5
+    prizeAmount = 0;
+    rewardNameEn = 'USC AI Scholar Reward';
+    rewardNameOr = 'USC AI ସ୍କଲାର୍ ପୁରସ୍କାର';
+    rewardItemsEn = ['⚡ Free Monthly AI Subscription (worth ₹99)', '📓 Special USC Notebook', '✨ Sticker Pack'];
+    rewardItemsOr = ['⚡ ମାସିକ ମାଗଣା AI ସବସ୍କ୍ରିପସନ (ମୂଲ୍ୟ ₹୯୯)', '📓 ସ୍ପେଶାଲ USC ନୋଟବୁକ', '✨ ଷ୍ଟିକର ପ୍ୟାକ୍'];
     boxColor = 'from-purple-500 via-pink-400 to-indigo-600';
     boxGlow = 'rgba(168,85,247,0.5)';
   }
@@ -122,7 +138,7 @@ export const GiftUnlockModal: React.FC<GiftUnlockModalProps> = ({
       setErrorMsg(language === 'en' ? 'Full Name is required' : 'ପୂର୍ଣ୍ଣ ନାମ ଆବଶ୍ୟକ');
       return;
     }
-    if (!formData.upiVal.trim()) {
+    if (prizeAmount > 0 && !formData.upiVal.trim()) {
       setErrorMsg(language === 'en' ? 'UPI ID or GPay/PhonePe number is required' : 'UPI ID କିମ୍ବା GPay/PhonePe ନମ୍ବର ଆବଶ୍ୟକ');
       return;
     }
@@ -135,8 +151,31 @@ export const GiftUnlockModal: React.FC<GiftUnlockModalProps> = ({
     setErrorMsg('');
 
     try {
-      const ticketMessage = `[MTS_CLAIM:may_2026] Name: ${formData.fullName}, Class: ${formData.classVal}, UPI/PhonePe/GPay: ${formData.upiVal}, Parent Phone: ${formData.parentPhone}, Prize: ₹${prizeAmount}, Reward Tier: ${rewardNameEn}`;
+      const activeDate = new Date();
+      const activeMonthName = new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'Asia/Kolkata' }).format(activeDate);
+      const activeYear = activeDate.getFullYear();
+      const claimTag = `[MTS_CLAIM:${activeMonthName.toLowerCase()}_${activeYear}]`;
       
+      const upiPart = prizeAmount > 0 ? `, UPI/PhonePe/GPay: ${formData.upiVal}` : '';
+      const ticketMessage = `${claimTag} Name: ${formData.fullName}, Class: ${formData.classVal}${upiPart}, Parent Phone: ${formData.parentPhone}, Prize: ₹${prizeAmount}, Reward Tier: ${rewardNameEn}`;
+      
+      // Auto-activate the free 1-month AI subscription in Firestore
+      const expiresAtDate = new Date();
+      expiresAtDate.setMonth(expiresAtDate.getMonth() + 1); // 1 month free subscription
+      
+      const subRef = doc(db, 'subscriptions', user.id || user.uid);
+      try {
+        await setDoc(subRef, {
+          active: true,
+          expires_at: expiresAtDate,
+          plan: 'AI Premium (USC Reward)',
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+        console.log("Automatically activated USC Reward AI Subscription for:", user.id || user.uid);
+      } catch (subErr) {
+        console.warn("Failed to activate AI subscription in database:", subErr);
+      }
+
       if (existingTicket && existingTicket.id) {
         // Update existing ticket
         await updateDoc(doc(db, 'support_tickets', existingTicket.id), {
@@ -290,34 +329,67 @@ export const GiftUnlockModal: React.FC<GiftUnlockModalProps> = ({
               </h3>
             </div>
 
-            {/* Cash Reward Card */}
-            <div className="bg-slate-950/60 border border-white/5 rounded-3xl p-5 shadow-inner relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-5">
-                <Lucide.Coins size={100} className="text-amber-400" />
-              </div>
-              <div className="relative z-10 flex flex-col items-center">
-                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">
-                  {language === 'or' ? 'ଉପହାର ରାଶି' : 'CASH REWARD'}
-                </p>
-                <p className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-300 font-mono">
-                  ₹{prizeAmount}
-                </p>
-                <div className="h-[1px] w-1/2 bg-white/5 my-3"></div>
-                <div className="w-full text-left space-y-2">
-                  <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest text-center mb-1">
-                    {language === 'or' ? 'ଉପହାର ସାମଗ୍ରୀ ସମୂହ' : 'HAMPER INCLUDES'}
+            {/* Reward Card */}
+            {prizeAmount > 0 ? (
+              <div className="bg-slate-950/60 border border-white/5 rounded-3xl p-5 shadow-inner relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-4 opacity-5">
+                  <Lucide.Coins size={100} className="text-amber-400" />
+                </div>
+                <div className="relative z-10 flex flex-col items-center">
+                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">
+                    {language === 'or' ? 'ଉପହାର ରାଶି' : 'CASH REWARD'}
                   </p>
-                  <div className="grid grid-cols-1 gap-1.5 max-w-xs mx-auto">
-                    {(language === 'or' ? rewardItemsOr : rewardItemsEn).map((item, i) => (
-                      <div key={i} className="flex items-center gap-2 text-xs font-bold text-slate-300 bg-white/5 px-3 py-1.5 rounded-xl border border-white/5">
-                        <span className="shrink-0">{item.split(' ')[0]}</span>
-                        <span>{item.split(' ').slice(1).join(' ')}</span>
-                      </div>
-                    ))}
+                  <p className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-300 font-mono">
+                    ₹{prizeAmount}
+                  </p>
+                  <div className="h-[1px] w-1/2 bg-white/5 my-3"></div>
+                  <div className="w-full text-left space-y-2">
+                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest text-center mb-1">
+                      {language === 'or' ? 'ଉପହାର ସାମଗ୍ରୀ ସମୂହ' : 'HAMPER INCLUDES'}
+                    </p>
+                    <div className="grid grid-cols-1 gap-1.5 max-w-xs mx-auto">
+                      {(language === 'or' ? rewardItemsOr : rewardItemsEn).map((item, i) => (
+                        <div key={i} className="flex items-center gap-2 text-xs font-bold text-slate-300 bg-white/5 px-3 py-1.5 rounded-xl border border-white/5">
+                          <span className="shrink-0">{item.split(' ')[0]}</span>
+                          <span>{item.split(' ').slice(1).join(' ')}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="bg-slate-950/60 border border-white/5 rounded-3xl p-5 shadow-inner relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-4 opacity-5">
+                  <Lucide.Sparkles size={100} className="text-emerald-400 animate-pulse" />
+                </div>
+                <div className="relative z-10 flex flex-col items-center">
+                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">
+                    {language === 'or' ? 'ପ୍ରିମିୟମ ସଭ୍ୟପଦ' : 'PREMIUM ACCESS'}
+                  </p>
+                  <p className="text-lg sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300 uppercase tracking-wide">
+                    {language === 'or' ? 'ମାଗଣା AI ସବସ୍କ୍ରିପସନ' : 'FREE AI SUBSCRIPTION'}
+                  </p>
+                  <p className="text-[10px] text-slate-400 font-bold mt-1">
+                    {language === 'or' ? 'ମୂଲ୍ୟ ₹୯୯/ମାସ' : 'Worth ₹99/month'}
+                  </p>
+                  <div className="h-[1px] w-1/2 bg-white/5 my-3"></div>
+                  <div className="w-full text-left space-y-2">
+                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest text-center mb-1">
+                      {language === 'or' ? 'ଉପହାର ସାମଗ୍ରୀ ସମୂହ' : 'HAMPER INCLUDES'}
+                    </p>
+                    <div className="grid grid-cols-1 gap-1.5 max-w-xs mx-auto">
+                      {(language === 'or' ? rewardItemsOr : rewardItemsEn).map((item, i) => (
+                        <div key={i} className="flex items-center gap-2 text-xs font-bold text-slate-300 bg-white/5 px-3 py-1.5 rounded-xl border border-white/5">
+                          <span className="shrink-0">{item.split(' ')[0]}</span>
+                          <span>{item.split(' ').slice(1).join(' ')}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="flex gap-4">
               <button
@@ -392,18 +464,20 @@ export const GiftUnlockModal: React.FC<GiftUnlockModalProps> = ({
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
-                  {language === 'or' ? 'UPI ID କିମ୍ବା GPay/PhonePe ନମ୍ବର' : 'UPI ID or GPay/PhonePe Number'}
-                </label>
-                <input
-                  type="text"
-                  value={formData.upiVal}
-                  onChange={(e) => setFormData(prev => ({ ...prev, upiVal: e.target.value }))}
-                  placeholder="e.g. name@upi or 9876543210@ybl"
-                  className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-3.5 text-white focus:outline-none focus:border-amber-500/30 transition-all font-bold text-sm placeholder:text-slate-600"
-                />
-              </div>
+              {prizeAmount > 0 && (
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                    {language === 'or' ? 'UPI ID କିମ୍ବା GPay/PhonePe ନମ୍ବର' : 'UPI ID or GPay/PhonePe Number'}
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.upiVal}
+                    onChange={(e) => setFormData(prev => ({ ...prev, upiVal: e.target.value }))}
+                    placeholder="e.g. name@upi or 9876543210@ybl"
+                    className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-3.5 text-white focus:outline-none focus:border-amber-500/30 transition-all font-bold text-sm placeholder:text-slate-600"
+                  />
+                </div>
+              )}
 
               {errorMsg && (
                 <div className="text-red-400 text-xs font-bold bg-red-500/10 border border-red-500/20 px-4 py-2 rounded-xl text-center">
@@ -452,9 +526,15 @@ export const GiftUnlockModal: React.FC<GiftUnlockModalProps> = ({
                 {language === 'or' ? 'ଅନୁରୋଧ ଗ୍ରହଣ ହେଲା!' : 'CLAIM REQUEST SENT!'}
               </h3>
               <p className="text-xs text-slate-400 font-medium max-w-sm mx-auto leading-relaxed">
-                {language === 'or'
-                  ? 'ଆପଣଙ୍କର ପୁରସ୍କାର ଅନୁରୋଧ ଆଡମିନଙ୍କ ପାଖକୁ ପଠାଯାଇଛି। ଆଡମିନ ଯାଞ୍ଚ କରି ଆପଣଙ୍କ UPI ନମ୍ବର କିମ୍ବା ଖାତାକୁ ତୁରନ୍ତ ଟଙ୍କା ପଠାଇଦେବେ।'
-                  : 'Your prize claim request has been sent to the Admin. The cash prize will be transferred to your account shortly.'}
+                {prizeAmount > 0 ? (
+                  language === 'or'
+                    ? 'ଆପଣଙ୍କର ପୁରସ୍କାର ଅନୁରୋଧ ଆଡମିନଙ୍କ ପାଖକୁ ପଠାଯାଇଛି। ଆଡମିନ ଯାଞ୍ଚ କରି ଆପଣଙ୍କ UPI ନମ୍ବର କିମ୍ବା ଖାତାକୁ ତୁରନ୍ତ ଟଙ୍କା ପଠାଇଦେବେ।'
+                    : 'Your prize claim request has been sent to the Admin. The cash prize will be transferred to your account shortly.'
+                ) : (
+                  language === 'or'
+                    ? 'ଆପଣଙ୍କର ପୁରସ୍କାର ଅନୁରୋଧ ଗ୍ରହଣ କରାଯାଇଛି! ଆପଣଙ୍କ ଆକାଉଣ୍ଟରେ ୧ ମାସର ମାଗଣା AI ସବସ୍କ୍ରିପସନ ତୁରନ୍ତ ସକ୍ରିୟ ହୋଇଯାଇଛି ଏବଂ ଆପଣଙ୍କ ନୋଟବୁକ୍ ପଠାଇବା ପାଇଁ ଆମେ ଯୋଗାଯୋଗ କରିବୁ।'
+                    : 'Your reward request has been received! Your 1-Month Free AI Subscription has been activated instantly on your account, and we will contact you to ship your notebook.'
+                )}
               </p>
             </div>
             

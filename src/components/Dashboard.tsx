@@ -495,6 +495,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   const [showGoldenTicket, setShowGoldenTicket] = useState(false);
   const [showBlackboard, setShowBlackboard] = useState(false);
   const [showGiftUnlockModal, setShowGiftUnlockModal] = useState(false);
+  const [userBestMtsRank, setUserBestMtsRank] = useState<number | null>(null);
   const [showMtsGradingModal, setShowMtsGradingModal] = useState(false);
   const [showImportantPapersModal, setShowImportantPapersModal] = useState(false);
 
@@ -1801,29 +1802,61 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                            window.location.search.includes('showcase');
     if (isJudgeAccount) return;
 
-    const nameLower = user.name.trim().toLowerCase();
-    const isWinner = ['dibyansh', 'sohan', 'rohan', 'sujata', 'anik', 'subhakanta'].some(w => nameLower.includes(w));
-    if (!isWinner) return;
+    // Determine current month / year details
+    const activeDate = new Date();
+    const activeMonthName = new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'Asia/Kolkata' }).format(activeDate);
+    const activeYear = activeDate.getFullYear();
+    const claimTag = `[MTS_CLAIM:${activeMonthName.toLowerCase()}_${activeYear}]`;
 
-    const fetchClaimTicket = async () => {
+    const checkWinnerAndTicket = async () => {
       try {
+        // Query user submissions for this month to check for winning ranks
+        const subQuery = query(
+          collection(db, 'monthly_test_submissions'),
+          where('userId', '==', user.id),
+          where('month', '==', activeMonthName),
+          where('year', '==', activeYear)
+        );
+        const subSnap = await getDocs(subQuery);
+        
+        let dynamicRank: number | null = null;
+        subSnap.docs.forEach(docSnap => {
+          const sData = docSnap.data();
+          if (sData.rank !== null && sData.rank !== undefined) {
+            if (dynamicRank === null || sData.rank < dynamicRank) {
+              dynamicRank = sData.rank;
+            }
+          }
+        });
+
+        const nameLower = user.name.trim().toLowerCase();
+        const isHardcodedWinner = ['dibyansh', 'sohan', 'rohan', 'sujata', 'anik', 'subhakanta'].some(w => nameLower.includes(w));
+        
+        const isWinner = isHardcodedWinner || (dynamicRank !== null && dynamicRank <= 5);
+        if (!isWinner) return;
+
+        setUserBestMtsRank(dynamicRank);
+
+        // Fetch support tickets to see if already claimed
         const q = query(
           collection(db, 'support_tickets'),
           where('userId', '==', user.id)
         );
         const snap = await getDocs(q);
-        const tickets = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        const claim = tickets.find((t: any) => t.message && t.message.includes('[MTS_CLAIM:may_2026]'));
+        const tickets = snap.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
+        const claim = tickets.find((t: any) => t.message && (t.message.includes(claimTag) || t.message.includes('[MTS_CLAIM:may_2026]')));
+        
         if (claim) {
           setClaimedTicket(claim);
         } else {
           setShowGiftUnlockModal(true);
         }
       } catch (err) {
-        console.error("Error fetching MTS claim ticket:", err);
+        console.error("Error checking winner/claim ticket:", err);
       }
     };
-    fetchClaimTicket();
+
+    checkWinnerAndTicket();
   }, [user]);
 
   const monthsList = [
@@ -4136,6 +4169,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           <GiftUnlockModal
             user={user}
             language={language}
+            rank={userBestMtsRank}
             onClose={() => setShowGiftUnlockModal(false)}
             onClaimSuccess={(ticket) => {
               setClaimedTicket(ticket);
