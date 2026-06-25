@@ -214,16 +214,7 @@ export function MtsChampionshipPoster({ isRegistered, onRegisterClick, language 
     setBalloons(initialBalloons);
   }, []);
 
-  // Play audio chime safely (catching autoplay blocks)
-  const playChime = () => {
-    const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3');
-    audio.volume = 0.35;
-    audio.play().catch(() => {
-      // Quietly ignore browser autoplay security blocks
-    });
-  };
-
-  // Trigger staggered sound effects when prizes reveal
+  // Trigger staggered prize reveals
   useEffect(() => {
     if (!isVisible) return;
 
@@ -231,17 +222,14 @@ export function MtsChampionshipPoster({ isRegistered, onRegisterClick, language 
 
     const t1 = setTimeout(() => {
       setRevealedPrizes(1);
-      playChime();
     }, 850);
 
     const t2 = setTimeout(() => {
       setRevealedPrizes(2);
-      playChime();
     }, 1250);
 
     const t3 = setTimeout(() => {
       setRevealedPrizes(3);
-      playChime();
     }, 1650);
 
     return () => {
