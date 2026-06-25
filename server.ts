@@ -2600,13 +2600,32 @@ async function startServer() {
     }
   });
 
-  const sendDailyGreetings = async () => {
+  const sendDailyGreetings = async (force: boolean = false) => {
     console.log('[Cron] Sending daily morning greetings to student rooms...');
     try {
       if (adminApp) {
         const db = getAdminFirestore(adminApp, firestoreDatabaseId);
-        const classes = Array.from({ length: 10 }, (_, i) => `class${i + 1}`);
         const FieldValue = (await import('firebase-admin/firestore')).FieldValue;
+
+        // Deduplicate cron tasks running on multiple scaled Cloud Run container instances
+        if (!force) {
+          const todayDate = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+          const greetingLogRef = db.collection('bot_greetings').doc(todayDate);
+          const greetingLog = await greetingLogRef.get();
+          
+          if (greetingLog.exists) {
+            console.log(`[Cron] Morning greetings for ${todayDate} already sent today. Skipping duplicate trigger.`);
+            return;
+          }
+          
+          // Mark as sent immediately to claim the task lock
+          await greetingLogRef.set({
+            sentAt: FieldValue.serverTimestamp(),
+            status: 'sent'
+          });
+        }
+
+        const classes = Array.from({ length: 10 }, (_, i) => `class${i + 1}`);
 
         const greetingText = `🌅 ଶୁଭ ସକାଳ, ସାଙ୍ଗମାନେ!
 
@@ -2644,7 +2663,7 @@ async function startServer() {
         return res.status(401).json({ error: 'Unauthorized Request' });
       }
 
-      await sendDailyGreetings();
+      await sendDailyGreetings(true);
       return res.json({ success: true, message: 'Daily greetings sent to all student rooms' });
     } catch (err: any) {
       console.error('Failed to trigger daily greetings:', err);
