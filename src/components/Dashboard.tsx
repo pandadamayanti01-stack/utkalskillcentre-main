@@ -2904,11 +2904,6 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 animate={{ y: 0, opacity: 1 }}
                 whileHover={{ y: 3, scale: 1.05 }}
                 onClick={() => {
-                  const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-                  if (isLocalhost) {
-                    if (onOpenMonthlyTests) onOpenMonthlyTests();
-                    return;
-                  }
                   if (mtsStatus.phase === 'coming_soon') {
                     setShowRegistrationForm(true);
                   } else if (mtsStatus.phase === 'going_on' || mtsStatus.phase === 'half_yearly_live') {
