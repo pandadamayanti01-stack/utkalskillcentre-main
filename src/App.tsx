@@ -80,43 +80,64 @@ import ReactMarkdown from 'react-markdown';
 import { cleanMathNotation } from './utils/cleaners';
 import LibraryPortalGate from './components/LibraryPortalGate';
 
-const AdminDashboard = lazy(() =>
-  import('./components/AdminDashboard')
-    .then((module) => ({ default: module.AdminDashboard }))
-    .catch((error) => {
-      if (error.message && error.message.includes('Failed to fetch dynamically imported module')) {
+// Reusable resilient lazy loader that catches chunk/asset preloading errors
+// and automatically reloads the page to retrieve the latest deployed assets.
+function lazyWithRetry<T extends React.ComponentType<any>>(
+  importFn: () => Promise<{ default: T } | T>
+): React.LazyExoticComponent<T> {
+  return lazy(async () => {
+    try {
+      const module = await importFn();
+      if (module && typeof module === 'object' && 'default' in module) {
+        return { default: module.default as T };
+      }
+      return { default: module as T };
+    } catch (error: any) {
+      const errMsg = error?.message || '';
+      if (
+        errMsg.includes('Failed to fetch dynamically imported module') ||
+        errMsg.includes('preload CSS') ||
+        errMsg.includes('Failed to fetch')
+      ) {
+        console.warn('Asset chunk/preload failed. Force reloading to get the latest deployment...', error);
         window.location.reload();
+        // Return a pending promise so the app doesn't crash while reloading
+        return new Promise(() => {});
       }
       throw error;
-    })
-);
-const PracticeQuestion = lazy(() => import('./components/PracticeQuestion').then((module) => ({ default: module.PracticeQuestion })));
-const Dashboard = lazy(() => import('./components/Dashboard').then((module) => ({ default: module.Dashboard })));
-const SishuVatikaDashboard = lazy(() => import('./components/SishuVatikaDashboard').then((module) => ({ default: module.SishuVatikaDashboard })));
-const NotificationsView = lazy(() => import('./components/NotificationsView').then((module) => ({ default: module.NotificationsView })));
-const GunduluHuman = lazy(() => import('./components/GunduluHuman'));
-const GunduluSishuVatika = lazy(() => import('./components/GunduluSishuVatika'));
-const AvatarStore = lazy(() => import('./components/AvatarStore').then((module) => ({ default: module.AvatarStore })));
-const ProgressChart = lazy(() => import('./components/ProgressChart').then((module) => ({ default: module.ProgressChart })));
-const StudyBuddyView = lazy(() => import('./components/StudyBuddyView').then((module) => ({ default: module.StudyBuddyView })));
-const Sidebar = lazy(() => import('./components/Sidebar').then((module) => ({ default: module.Sidebar })));
-const LoginComponent = lazy(() => import('./components/LoginComponent'));
-const TestSeriesPoster = lazy(() => import('./components/TestSeriesPoster'));
-const SyllabusTracker = lazy(() => import('./components/SyllabusTracker').then((module) => ({ default: module.SyllabusTracker })));
-const SocialPosterGenerator = lazy(() => import('./components/SocialPosterGenerator').then((module) => ({ default: module.SocialPosterGenerator })));
-const DigitalLibraryView = lazy(() => import('./components/DigitalLibraryView').then((module) => ({ default: module.DigitalLibraryView })));
-const SmartClassesView = lazy(() => import('./components/SmartClassesView').then((module) => ({ default: module.SmartClassesView })));
-const DigitalLibraryLaunchPopup = lazy(() => import('./components/DigitalLibraryLaunchPopup'));
-const TeacherDashboard = lazy(() => import('./components/TeacherDashboard').then((module) => ({ default: module.TeacherDashboard })));
-const CommunityChatView = lazy(() => import('./components/CommunityChatView').then((module) => ({ default: module.CommunityChatView })));
-const LaunchCelebration = lazy(() => import('./components/LaunchCelebration'));
-const RajaFestivalPoster = lazy(() => import('./components/RajaFestivalPoster'));
-const PitchDeckView = lazy(() => import('./components/PitchDeckView').then((module) => ({ default: module.PitchDeckView })));
-const TelemetryView = lazy(() => import('./components/TelemetryView').then((module) => ({ default: module.TelemetryView })));
-const Gundulu3DLab = lazy(() => import('./components/Gundulu3DLab').then((module) => ({ default: module.Gundulu3DLab })));
-const AboutUsModal = lazy(() => import('./components/AboutUsModal').then((module) => ({ default: module.AboutUsModal })));
-const MoSwapnaView = lazy(() => import('./components/MoSwapnaView').then((module) => ({ default: module.MoSwapnaView })));
-const MonthlyTestsView = lazy(() => import('./components/MonthlyTestsView').then((module) => ({ default: module.MonthlyTestsView })));
+    }
+  });
+}
+
+const AdminDashboard = lazyWithRetry(() => import('./components/AdminDashboard').then((module) => ({ default: module.AdminDashboard })));
+const PracticeQuestion = lazyWithRetry(() => import('./components/PracticeQuestion').then((module) => ({ default: module.PracticeQuestion })));
+const Dashboard = lazyWithRetry(() => import('./components/Dashboard').then((module) => ({ default: module.Dashboard })));
+const SishuVatikaDashboard = lazyWithRetry(() => import('./components/SishuVatikaDashboard').then((module) => ({ default: module.SishuVatikaDashboard })));
+const NotificationsView = lazyWithRetry(() => import('./components/NotificationsView').then((module) => ({ default: module.NotificationsView })));
+const GunduluHuman = lazyWithRetry(() => import('./components/GunduluHuman'));
+const GunduluSishuVatika = lazyWithRetry(() => import('./components/GunduluSishuVatika'));
+const AvatarStore = lazyWithRetry(() => import('./components/AvatarStore').then((module) => ({ default: module.AvatarStore })));
+const ProgressChart = lazyWithRetry(() => import('./components/ProgressChart').then((module) => ({ default: module.ProgressChart })));
+const StudyBuddyView = lazyWithRetry(() => import('./components/StudyBuddyView').then((module) => ({ default: module.StudyBuddyView })));
+const Sidebar = lazyWithRetry(() => import('./components/Sidebar').then((module) => ({ default: module.Sidebar })));
+const LoginComponent = lazyWithRetry(() => import('./components/LoginComponent'));
+const TestSeriesPoster = lazyWithRetry(() => import('./components/TestSeriesPoster'));
+const SyllabusTracker = lazyWithRetry(() => import('./components/SyllabusTracker').then((module) => ({ default: module.SyllabusTracker })));
+const SocialPosterGenerator = lazyWithRetry(() => import('./components/SocialPosterGenerator').then((module) => ({ default: module.SocialPosterGenerator })));
+const DigitalLibraryView = lazyWithRetry(() => import('./components/DigitalLibraryView').then((module) => ({ default: module.DigitalLibraryView })));
+const SmartClassesView = lazyWithRetry(() => import('./components/SmartClassesView').then((module) => ({ default: module.SmartClassesView })));
+const DigitalLibraryLaunchPopup = lazyWithRetry(() => import('./components/DigitalLibraryLaunchPopup'));
+const TeacherDashboard = lazyWithRetry(() => import('./components/TeacherDashboard').then((module) => ({ default: module.TeacherDashboard })));
+const CommunityChatView = lazyWithRetry(() => import('./components/CommunityChatView').then((module) => ({ default: module.CommunityChatView })));
+const LaunchCelebration = lazyWithRetry(() => import('./components/LaunchCelebration'));
+const RajaFestivalPoster = lazyWithRetry(() => import('./components/RajaFestivalPoster'));
+const PitchDeckView = lazyWithRetry(() => import('./components/PitchDeckView').then((module) => ({ default: module.PitchDeckView })));
+const TelemetryView = lazyWithRetry(() => import('./components/TelemetryView').then((module) => ({ default: module.TelemetryView })));
+const Gundulu3DLab = lazyWithRetry(() => import('./components/Gundulu3DLab').then((module) => ({ default: module.Gundulu3DLab })));
+const AboutUsModal = lazyWithRetry(() => import('./components/AboutUsModal').then((module) => ({ default: module.AboutUsModal })));
+const MoSwapnaView = lazyWithRetry(() => import('./components/MoSwapnaView').then((module) => ({ default: module.MoSwapnaView })));
+const MonthlyTestsView = lazyWithRetry(() => import('./components/MonthlyTestsView').then((module) => ({ default: module.MonthlyTestsView })));
+
 
 function ViewLoader({ fullHeight = false }: { fullHeight?: boolean }) {
   return (
