@@ -36,11 +36,6 @@ export const AVAILABLE_PREMIUM_MAPS = [
  * or null otherwise.
  */
 export const getPremiumConceptMapUrl = (chapterId: string, language: 'en' | 'or'): string | null => {
-  if (AVAILABLE_PREMIUM_MAPS.includes(chapterId)) {
-    if (language === 'or' && chapterId !== 'BYsFgUxdUTQkTXoEyiUZ') {
-      return `/concept_maps/${chapterId}_or.png`;
-    }
-    return `/concept_maps/${chapterId}.png`;
-  }
+  // Disabled custom generated image maps in favor of clean interactive SVG maps
   return null;
 };
