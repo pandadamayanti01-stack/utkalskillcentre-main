@@ -102,7 +102,6 @@ quizRouter.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async
   try {
     const host = req.headers.host || '';
     const isSubdomain = host.startsWith('quiz.');
-    const isPathRoute = req.path === '/daily-mcq-challenge' || req.path === '/daily-mcq-challenge.html';
 
     // CRITICAL: If the request is for root '/' but NOT on the 'quiz.' subdomain,
     // let it fall through to serve the main application SPA dashboard.
@@ -110,25 +109,10 @@ quizRouter.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async
       return next();
     }
 
-    // Determine class query:
-    // If no ?class is specified, default to 'universal' (Universal GK)
-    let classQuery = 'universal';
-    if (req.query.class) {
-      classQuery = String(req.query.class).trim().toLowerCase();
-    }
-
-    let targetClass = 'Universal GK';
-    let subject = 'General Knowledge';
-    
-    if (classQuery !== 'universal' && classQuery !== 'gk') {
-      let targetClassNum = parseInt(classQuery.replace(/\D/g, '')) || 10;
-      if (targetClassNum < 1 || targetClassNum > 10) targetClassNum = 10;
-      targetClass = `Class ${targetClassNum}`;
-      // Dynamic subject rotation
-      const subjects = ['Science', 'Mathematics', 'English', 'Social Science'];
-      const day = new Date().getDay();
-      subject = subjects[day % subjects.length];
-    }
+    // Strictly Universal GK & General Knowledge for the public landing page
+    const targetClass = 'Universal GK';
+    const dbClass = 'Universal GK';
+    const subject = 'General Knowledge';
 
     const todayDate = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
     console.log(`[Quiz Router] Subdomain Serve: ${targetClass} (${subject}) on date: ${todayDate} via host: ${host}...`);
@@ -137,9 +121,9 @@ quizRouter.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async
     const adminApp = getApps().length > 0 ? getApp() : undefined;
     const firestoreDb = getFirestore(adminApp, getDatabaseId());
 
-    // Index-safe query targeting targetClass
+    // Index-safe query targeting dbClass
     const snapshot = await firestoreDb.collection('daily_mcqs')
-      .where('class', '==', targetClass)
+      .where('class', '==', dbClass)
       .orderBy('activeDate', 'desc')
       .limit(5)
       .get();
@@ -171,11 +155,11 @@ quizRouter.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async
       console.log(`[Quiz Router] Cache miss. Calling Gundulu AI to generate for ${targetClass}...`);
       try {
         const aiGeneratedData = await generateQuizViaGundulu(targetClass, subject);
-        const newDocId = `${targetClass.replace(/\s+/g, '_')}_${subject.replace(/\s+/g, '_')}_${todayDate}`;
+        const newDocId = `${dbClass}_${subject.replace(/\s+/g, '_')}_${todayDate}`;
         const newMcqDoc = {
           title: aiGeneratedData.title || `${targetClass} Daily Challenge`,
           subject: subject,
-          class: targetClass,
+          class: dbClass,
           activeDate: todayDate,
           status: 'published',
           questions: aiGeneratedData.questions || [],

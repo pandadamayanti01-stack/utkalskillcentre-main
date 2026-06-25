@@ -120,27 +120,17 @@ async function generateQuizViaGundulu(targetClass: string, subject: string): Pro
 // 4. Main Subdomain Router
 app.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async (req, res) => {
   try {
-    const classQuery = req.query.class ? String(req.query.class).trim().toLowerCase() : 'universal';
-    
-    let targetClass = 'Universal GK';
-    let subject = 'General Knowledge';
-    
-    if (classQuery !== 'universal' && classQuery !== 'gk') {
-      let targetClassNum = parseInt(classQuery.replace(/\D/g, '')) || 10;
-      if (targetClassNum < 1 || targetClassNum > 10) targetClassNum = 10;
-      targetClass = `Class ${targetClassNum}`;
-      // Rotate subjects dynamically for classes
-      const subjects = ['Science', 'Mathematics', 'English', 'Social Science'];
-      const day = new Date().getDay();
-      subject = subjects[day % subjects.length];
-    }
+    // Strictly Universal GK & General Knowledge for the public landing page
+    const targetClass = 'Universal GK';
+    const dbClass = 'Universal GK';
+    const subject = 'General Knowledge';
 
     const todayDate = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
     console.log(`[Quiz Server] Serving challenge request for ${targetClass} (${subject}) on date: ${todayDate}...`);
 
     // A. Query Firestore for today's published MCQ
     const snapshot = await firestoreDb.collection('daily_mcqs')
-      .where('class', '==', targetClass)
+      .where('class', '==', dbClass)
       .orderBy('activeDate', 'desc')
       .limit(5)
       .get();
@@ -174,11 +164,11 @@ app.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async (req, 
         const aiGeneratedData = await generateQuizViaGundulu(targetClass, subject);
         
         // Save the generated quiz to Firestore to cache it for the rest of the day
-        const newDocId = `${targetClass.replace(/\s+/g, '_')}_${subject.replace(/\s+/g, '_')}_${todayDate}`;
+        const newDocId = `${dbClass}_${subject.replace(/\s+/g, '_')}_${todayDate}`;
         const newMcqDoc = {
           title: aiGeneratedData.title || `${targetClass} Daily Challenge`,
           subject: subject,
-          class: targetClass,
+          class: dbClass,
           activeDate: todayDate,
           status: 'published',
           questions: aiGeneratedData.questions || [],

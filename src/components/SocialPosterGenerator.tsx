@@ -15,12 +15,14 @@ import {
   FileText,
   ImagePlus,
   Trash2,
-  Sliders
+  Sliders,
+  CloudLightning
 } from 'lucide-react';
 import { CLASS_SUBJECTS } from './DigitalLibraryView';
 import confetti from 'canvas-confetti';
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../firebase';
+import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { db, storage } from '../firebase';
+import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 import {
   ROADMAP_DATA,
   ROADMAP_DATA_1,
@@ -463,6 +465,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
   const [generating, setGenerating] = useState<boolean>(false);
   const [loadedChapters, setLoadedChapters] = useState<any[]>([]);
   const [loadingChapters, setLoadingChapters] = useState<boolean>(false);
+  const [savingToDb, setSavingToDb] = useState<boolean>(false);
 
   // Dynamic Google Font Injection
   useEffect(() => {
@@ -573,9 +576,15 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         ? chapter.title
         : (chapter.title?.or || chapter.title?.en || "Untitled Chapter");
       
-      const questionsList = chapter.quiz_questions || chapter.mcqs;
+      const questionsList = chapter.revisionQuestions || chapter.posterQuestions || chapter.quiz_questions || chapter.mcqs;
+      if (chapter.revisionQuestionCount) {
+        setQuestionCount(chapter.revisionQuestionCount);
+      } else if (questionsList && Array.isArray(questionsList)) {
+        setQuestionCount(Math.min(questionsList.length, 10));
+      }
+
       if (questionsList && Array.isArray(questionsList) && questionsList.length > 0) {
-        const mappedQuestions = questionsList.slice(0, 10).map((q: any, index: number) => {
+        const mappedQuestions: QuestionItem[] = questionsList.slice(0, 10).map((q: any, index: number) => {
           let ansText = '';
           if (q.options && Array.isArray(q.options)) {
             const ansIndex = typeof q.correctAnswer === 'number' ? q.correctAnswer : 0;
@@ -603,11 +612,13 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
             answer: ansText || '',
             sideNote: q.sideNote || note.text,
             sideNoteLabel: sanitizeSideNoteLabel(q.sideNoteLabel || note.label, q.sideNote || note.text),
-            iconType: finalIcon as any
+            iconType: finalIcon as any,
+            imageUrl: q.imageUrl || undefined,
+            imagePrompt: q.imagePrompt || ''
           };
         });
 
-        const fullList = [...mappedQuestions];
+        const fullList: QuestionItem[] = [...mappedQuestions];
         const subjectIcons = getSubjectIconTypes(selectedSubject);
         while (fullList.length < 10) {
           fullList.push({
@@ -651,7 +662,21 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       if (res.ok) {
         const data = await res.json();
         if (data.image) {
-          setQuestions(prev => prev.map(q => q.id === qId ? { ...q, imageUrl: data.image, imageLoading: false } : q));
+          let finalUrl = data.image;
+          // Upload base64 image to Firebase Storage chapter-wise
+          if (selectedChapterId) {
+            try {
+              const imagePath = `revision_posters/${selectedClass}/${selectedSubject}/${selectedChapterId}/q_${qId}.png`;
+              const storageRef = ref(storage, imagePath);
+              await uploadString(storageRef, data.image, 'data_url');
+              finalUrl = await getDownloadURL(storageRef);
+              console.log(`Successfully uploaded question ${qId} diagram to Firebase Storage: ${imagePath}`);
+            } catch (storageErr) {
+              console.warn("Firebase Storage upload failed, using generated data URL directly:", storageErr);
+            }
+          }
+
+          setQuestions(prev => prev.map(q => q.id === qId ? { ...q, imageUrl: finalUrl, imageLoading: false } : q));
           return;
         }
       }
@@ -660,6 +685,59 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
     } catch (err) {
       console.error(`Error generating image for question ID ${qId}:`, err);
       setQuestions(prev => prev.map(q => q.id === qId ? { ...q, imageLoading: false } : q));
+    }
+  };
+
+  const saveQuestionsToFirestore = async (currentQuestions: QuestionItem[]) => {
+    if (!selectedChapterId) {
+      alert("Please select a chapter first!");
+      return;
+    }
+    setSavingToDb(true);
+    try {
+      // Filter active questions based on current count
+      const activeQuestions = currentQuestions.slice(0, questionCount).map(q => ({
+        id: q.id,
+        question: q.question,
+        answer: q.answer,
+        sideNote: q.sideNote,
+        sideNoteLabel: q.sideNoteLabel,
+        iconType: q.iconType,
+        imagePrompt: q.imagePrompt || '',
+        imageUrl: q.imageUrl || ''
+      }));
+
+      const chapterRef = doc(db, 'chapters', selectedChapterId);
+      await updateDoc(chapterRef, {
+        revisionQuestions: activeQuestions,
+        revisionQuestionCount: questionCount
+      });
+
+      // Update locally in loadedChapters
+      setLoadedChapters(prev => prev.map(c => {
+        if (c.id === selectedChapterId) {
+          return {
+            ...c,
+            revisionQuestions: activeQuestions,
+            revisionQuestionCount: questionCount
+          };
+        }
+        return c;
+      }));
+
+      // Success animation and toast
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+      
+      alert("Revision questions and diagrams saved successfully to Firebase Storage chapterwise!");
+    } catch (err) {
+      console.error("Error saving revision questions:", err);
+      alert("Failed to save revision questions to Firestore. Please check your internet connection.");
+    } finally {
+      setSavingToDb(false);
     }
   };
 
@@ -681,7 +759,8 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
           className: selectedClass,
           subjectName: selectedSubject,
           chapterName: chapter.title,
-          language: (selectedSubject === 'english' || selectedSubject === 'english_grammar') ? 'en' : 'or'
+          language: (selectedSubject === 'english' || selectedSubject === 'english_grammar') ? 'en' : 'or',
+          questionCount: questionCount
         })
       });
 
@@ -2928,29 +3007,53 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
           </div>
         </div>
 
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={downloadPosterImage}
-          disabled={generating || questions.some(q => q.imageLoading)}
-          className="px-6 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black rounded-2xl text-sm transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 disabled:opacity-50 hover:brightness-110"
-        >
-          {generating || questions.some(q => q.imageLoading) ? (
-            <>
-              <RefreshCw className="animate-spin text-slate-950" size={18} />
-              <span>
-                {generating 
-                  ? "ପୋଷ୍ଟର ପ୍ରସ୍ତୁତ ହେଉଛି... (Generating Poster...)" 
-                  : `ଚିତ୍ର ପ୍ରସ୍ତୁତ ହେଉଛି... (${questions.filter(q => q.imageUrl).length}/${questions.filter(q => q.imagePrompt).length} Generated)`}
-              </span>
-            </>
-          ) : (
-            <>
-              <Download className="text-slate-950" size={18} />
-              <span>ଡାଉନଲୋଡ୍ କରନ୍ତୁ (Download Branded Poster)</span>
-            </>
+        <div className="flex flex-col sm:flex-row items-center gap-3">
+          {selectedChapterId && (
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => saveQuestionsToFirestore(questions)}
+              disabled={savingToDb || generating || questions.some(q => q.imageLoading)}
+              className="px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black rounded-2xl text-sm transition-all shadow-[0_0_20px_rgba(99,102,241,0.3)] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-110"
+            >
+              {savingToDb ? (
+                <>
+                  <RefreshCw className="animate-spin text-white" size={18} />
+                  <span>ସଂରକ୍ଷଣ ହେଉଛି... (Saving...)</span>
+                </>
+              ) : (
+                <>
+                  <CloudLightning size={18} className="text-blue-200" />
+                  <span>ଅଧ୍ୟାୟରେ ସଂରକ୍ଷଣ କରନ୍ତୁ (Save to Chapter)</span>
+                </>
+              )}
+            </motion.button>
           )}
-        </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={downloadPosterImage}
+            disabled={generating || questions.some(q => q.imageLoading)}
+            className="px-6 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black rounded-2xl text-sm transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 disabled:opacity-50 hover:brightness-110"
+          >
+            {generating || questions.some(q => q.imageLoading) ? (
+              <>
+                <RefreshCw className="animate-spin text-slate-950" size={18} />
+                <span>
+                  {generating 
+                    ? "ପୋଷ୍ଟର ପ୍ରସ୍ତୁତ ହେଉଛି... (Generating Poster...)" 
+                    : `ଚିତ୍ର ପ୍ରସ୍ତୁତ ହେଉଛି... (${questions.filter(q => q.imageUrl).length}/${questions.filter(q => q.imagePrompt).length} Generated)`}
+                </span>
+              </>
+            ) : (
+              <>
+                <Download className="text-slate-950" size={18} />
+                <span>ଡାଉନଲୋଡ୍ କରନ୍ତୁ (Download Branded Poster)</span>
+              </>
+            )}
+          </motion.button>
+        </div>
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 z-10 relative">

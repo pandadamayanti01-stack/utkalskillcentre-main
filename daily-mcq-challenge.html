@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ଓଡ଼ିଶା ଦୈନିକ ପ୍ରଶ୍ନୋତ୍ତର ଚ୍ୟାଲେଞ୍ଜ | Daily MCQ Challenge - Utkal Skill Centre</title>
-  <meta name="description" content="ପ୍ରତିଦିନ ନୂଆ ଓଡ଼ିଆ ମାଧ୍ୟମ MCQ ଚ୍ୟାଲେଞ୍ଜ! Daily 5-question bilingual MCQ quiz in Odia script for Class 1 to 10. Win Kaudi points and build your learning streak!">
+  <meta name="description" content="ପ୍ରତିଦିନ ନୂଆ ଓଡ଼ିଆ ମାଧ୍ୟମ MCQ ଚ୍ୟାଲେଞ୍ଜ! Daily 5-question bilingual MCQ quiz in Odia script. Win Kaudi points and build your learning streak!">
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
@@ -64,17 +64,19 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 1.5rem 1rem;
+      padding: 2rem 1rem;
       overflow-x: hidden;
       line-height: 1.5;
     }
 
     /* Core Layout Header */
-    header {
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       width: 100%;
       max-width: 650px;
-      text-align: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
     }
 
     .brand-logo {
@@ -86,7 +88,6 @@
       font-weight: 800;
       font-size: 1.5rem;
       text-decoration: none;
-      margin-bottom: 0.5rem;
       text-shadow: 0 0 10px var(--color-primary-glow);
     }
 
@@ -94,56 +95,23 @@
       color: var(--text-main);
     }
 
-    /* Horizontal Class Selector Pill Navigation */
-    .class-selector-wrapper {
-      width: 100%;
-      max-width: 650px;
-      overflow-x: auto;
-      margin-bottom: 2rem;
-      padding-bottom: 0.5rem;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .class-selector-wrapper::-webkit-scrollbar {
-      height: 4px;
-    }
-
-    .class-selector-wrapper::-webkit-scrollbar-thumb {
-      background-color: var(--border-color);
-      border-radius: 4px;
-    }
-
-    .class-nav {
-      display: flex;
-      gap: 0.6rem;
-      padding: 0.2rem;
-      width: max-content;
-    }
-
-    .class-pill {
-      background-color: var(--bg-slate);
+    .mute-btn {
+      background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border-color);
-      color: var(--text-muted);
-      padding: 0.5rem 1.2rem;
-      border-radius: 50px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .class-pill:hover {
-      border-color: var(--color-secondary);
       color: var(--text-main);
-      box-shadow: 0 0 10px var(--color-secondary-glow);
+      padding: 0.6rem;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
     }
 
-    .class-pill.active {
-      background-color: var(--color-primary-glow);
-      border-color: var(--color-primary);
-      color: var(--color-primary);
-      box-shadow: 0 0 12px var(--color-primary-glow);
+    .mute-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--color-secondary);
+      box-shadow: 0 0 8px var(--color-secondary-glow);
     }
 
     /* Main Container Card */
@@ -152,11 +120,12 @@
       max-width: 650px;
       background-color: var(--bg-slate);
       border: 1px solid var(--border-color);
-      border-radius: 24px;
-      padding: 2rem;
+      border-radius: 28px;
+      padding: 2.5rem 2rem;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
       position: relative;
       overflow: hidden;
+      transition: all 0.3s ease;
     }
 
     main::before {
@@ -169,12 +138,75 @@
       background: linear-gradient(90deg, var(--color-secondary), var(--color-primary));
     }
 
+    /* Arcade HUD display */
+    .game-hud {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 0.75rem 1.25rem;
+      margin-bottom: 1.25rem;
+      font-family: var(--font-outfit);
+    }
+
+    .hud-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-weight: 800;
+      font-size: 0.9rem;
+    }
+
+    .hud-hearts {
+      color: var(--color-danger);
+      display: flex;
+      gap: 0.2rem;
+    }
+
+    .heart-icon {
+      font-size: 1.2rem;
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease;
+      display: inline-block;
+    }
+
+    .heart-icon.lost {
+      transform: scale(0) rotate(-45deg);
+      opacity: 0;
+    }
+
+    /* Timer Countdown Bar */
+    .timer-container {
+      width: 100%;
+      height: 8px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid var(--border-color);
+    }
+
+    .timer-fill {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, var(--color-secondary), var(--color-primary));
+      border-radius: 10px;
+      transition: width 1s linear, background 0.3s ease;
+    }
+
+    .timer-fill.warning {
+      background: var(--color-danger) !important;
+      animation: flashTimer 0.4s infinite alternate;
+    }
+
     /* Info Badge Bar */
     .info-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
     }
 
     .subject-badge {
@@ -187,30 +219,31 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .combo-badge {
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      color: white;
+      padding: 0.25rem 0.6rem;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+      animation: bounce 0.4s ease infinite alternate;
     }
 
     .progress-text {
       font-size: 0.9rem;
       color: var(--text-muted);
       font-weight: 600;
-    }
-
-    /* Progress Bar */
-    .progress-bar-container {
-      width: 100%;
-      height: 6px;
-      background-color: var(--border-color);
-      border-radius: 10px;
-      margin-bottom: 2rem;
-      overflow: hidden;
-    }
-
-    .progress-bar-fill {
-      height: 100%;
-      width: 20%;
-      background: linear-gradient(90deg, var(--color-secondary), var(--color-primary));
-      border-radius: 10px;
-      transition: width 0.4s ease;
     }
 
     /* Question Box */
@@ -289,7 +322,7 @@
     /* Explanation Drawer */
     .explanation-box {
       display: none;
-      background-color: rgba(251, 191, 36, 0.05);
+      background-color: rgba(251, 191, 36, 0.04);
       border: 1px solid var(--color-warning);
       padding: 1.25rem;
       border-radius: 16px;
@@ -340,7 +373,7 @@
       box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
     }
 
-    /* Completion Summary Screen */
+    /* Completion Summary & Game Over Screens */
     .results-screen {
       display: none;
       text-align: center;
@@ -454,15 +487,80 @@
       text-decoration: underline;
     }
 
-    /* Floating point coin teaser */
+    /* Floating points indicators */
     .floating-points {
       position: absolute;
       color: var(--color-warning);
       font-weight: 800;
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       font-family: var(--font-outfit);
       pointer-events: none;
       animation: floatUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      z-index: 100;
+    }
+
+    /* Live Activity Marquee Ticker */
+    .live-ticker-container {
+      width: 100%;
+      max-width: 650px;
+      background-color: rgba(6, 182, 212, 0.02);
+      border: 1px solid rgba(6, 182, 212, 0.08);
+      border-radius: 16px;
+      padding: 0.6rem 1.2rem;
+      margin-top: 1.75rem;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .ticker-title {
+      font-size: 0.75rem;
+      font-weight: 900;
+      color: var(--color-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .ticker-pulse {
+      width: 6px;
+      height: 6px;
+      background-color: var(--color-primary);
+      border-radius: 50%;
+      animation: flashTimer 0.8s infinite alternate;
+    }
+
+    .ticker-track {
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+    }
+
+    .ticker-text {
+      display: inline-block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      animation: marquee 20s linear infinite;
+      padding-left: 100%;
+    }
+
+    /* Screen Shaking Effect */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    .shake-active {
+      animation: shake 0.35s ease-in-out;
     }
 
     /* Keyframe Animations */
@@ -474,13 +572,44 @@
     @keyframes floatUp {
       0% { opacity: 0; transform: translateY(0) scale(0.8); }
       20% { opacity: 1; }
-      100% { opacity: 0; transform: translateY(-40px) scale(1.1); }
+      100% { opacity: 0; transform: translateY(-50px) scale(1.1); }
     }
 
     @keyframes pulseGlow {
       0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4); }
       70% { box-shadow: 0 0 0 12px rgba(251, 191, 36, 0); }
       100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+    }
+
+    @keyframes marquee {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-100%, 0, 0); }
+    }
+
+    @keyframes flashTimer {
+      0% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes bounce {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-3px); }
+    }
+
+    /* Combo Fire Animation */
+    @keyframes neonFlame {
+      0% {
+        box-shadow: 0 0 10px rgba(6, 182, 212, 0.2), 0 0 20px rgba(6, 182, 212, 0.1);
+        border-color: var(--color-secondary);
+      }
+      100% {
+        box-shadow: 0 0 25px rgba(16, 185, 129, 0.4), 0 0 40px rgba(16, 185, 129, 0.2);
+        border-color: var(--color-primary);
+      }
+    }
+
+    .combo-glow {
+      animation: neonFlame 1s infinite alternate;
     }
 
     /* Footer Credits */
@@ -518,29 +647,47 @@
 </head>
 <body>
 
-  <header>
+  <header class="header-bar">
     <a href="/" class="brand-logo">
       Utkal <span>Skill Centre</span>
     </a>
+    
+    <!-- Sound Controls -->
+    <button class="mute-btn" id="muteBtn" title="Sound On/Off">
+      🔊
+    </button>
   </header>
 
-  <!-- Horizontal Class Navigation Selector -->
-  <div class="class-selector-wrapper">
-    <div class="class-nav" id="classNav">
-      <!-- Generated Dynamically by JS -->
-    </div>
-  </div>
-
-  <main>
+  <main id="mainCard">
     <!-- Quiz Playing Interface -->
     <div id="quizScreen">
-      <div class="info-bar">
-        <span class="subject-badge" id="subjectBadge">Loading...</span>
-        <span class="progress-text" id="progressText">Question 1 of 5</span>
+      <!-- Arcade HUD -->
+      <div class="game-hud">
+        <div class="hud-item" id="hudLives">
+          <span>ଜୀବନ (Lives):</span>
+          <span class="hud-hearts" id="heartBar">
+            <span class="heart-icon">❤️</span>
+            <span class="heart-icon">❤️</span>
+            <span class="heart-icon">❤️</span>
+          </span>
+        </div>
+        <div class="hud-item" id="hudPoints">
+          <span>ସ୍କୋର (Points):</span>
+          <span style="color: var(--color-warning);" id="scoreDisplay">0</span>
+        </div>
       </div>
 
-      <div class="progress-bar-container">
-        <div class="progress-bar-fill" id="progressBarFill"></div>
+      <!-- Speed Timer -->
+      <div class="timer-container">
+        <div class="timer-fill" id="timerFill"></div>
+      </div>
+
+      <div class="info-bar">
+        <span class="subject-badge" id="subjectBadge">Loading...</span>
+        <div class="combo-badge" id="comboBadge" style="display: none;">
+          🔥 <span id="comboMultiplier">2</span>X COMBO!
+        </div>
+        <span class="progress-text" id="progressText">Question 1 of 5</span>
       </div>
 
       <div class="question-box">
@@ -563,7 +710,7 @@
 
       <div class="controls-bar">
         <button class="next-btn" id="nextBtn">
-          Next Question ➔
+          ପରବର୍ତ୍ତୀ ପ୍ରଶ୍ନ (Next) ➔
         </button>
       </div>
     </div>
@@ -572,17 +719,17 @@
     <div class="results-screen" id="resultsScreen">
       <div class="score-circle">
         <span class="score-num" id="finalScore">0/5</span>
-        <span class="score-label">Score</span>
+        <span class="score-label">କଉଡ଼ି (Kaudis)</span>
       </div>
 
-      <h2 class="results-title" id="resultsTitle">🎉 Congratulations!</h2>
+      <h2 class="results-title" id="resultsTitle">🏆 ଆପଣଙ୍କ ଶିକ୍ଷା ସୁରକ୍ଷିତ କରନ୍ତୁ!</h2>
       <p class="results-desc" id="resultsDesc">
-        You successfully finished today's Daily Challenge! You have earned 15 Kaudi points and started a 1-day learning streak.
+        ଚମତ୍କାର ଖେଳ! ଆପଣ ଦୈନିକ ଜ୍ଞାନ ଚ୍ୟାଲେଞ୍ଜରୁ ସଫଳତାର ସହ ପଏଣ୍ଟ ଜିତିଛନ୍ତି। ଏହି ପଏଣ୍ଟଗୁଡ଼ିକୁ ସବୁଦିନ ପାଇଁ ନିଜ ପ୍ରୋଫାଇଲରେ ସାଇତି ରଖିବା ପାଇଁ ଏବେ ହିଁ ଆପଣଙ୍କ ମାଗଣା ଆକାଉଣ୍ଟ ତିଆରି କରନ୍ତୁ!
       </p>
 
       <!-- Registration Funnel CTA -->
       <button class="funnel-cta-btn" id="ctaBtn">
-        🏆 Save your Streak!
+        👶 ମାଗଣା ଛାତ୍ର ପ୍ରୋଫାଇଲ୍ ଖୋଲନ୍ତୁ
       </button>
 
       <!-- WhatsApp Share -->
@@ -590,9 +737,42 @@
         Share Score on WhatsApp 💬
       </button>
 
-      <a href="#" class="restart-link" id="restartLink">Take Quiz Again</a>
+      <a href="#" class="restart-link" id="restartLink">ପୁଣି ଖେଳନ୍ତୁ (Play Again)</a>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div class="results-screen" id="gameOverScreen">
+      <div class="score-circle" style="border-color: var(--color-danger); box-shadow: 0 0 20px var(--color-danger-glow);">
+        <span class="score-num" style="color: var(--color-danger);">💔</span>
+        <span class="score-label" style="color: var(--text-muted); font-weight: bold;">ଖେଳ ସମାପ୍ତ</span>
+      </div>
+
+      <h2 class="results-title" style="color: var(--color-danger);">😢 ଖେଳ ସମାପ୍ତ! (Game Over)</h2>
+      <p class="results-desc" id="gameOverDesc">
+        ଆପଣ ସମସ୍ତ ଜୀବନ (Hearts) ହରାଇଛନ୍ତି! କିନ୍ତୁ ଚିନ୍ତା କରନ୍ତୁ ନାହିଁ - ଆପଣଙ୍କ ଅର୍ଜିତ ବିନ୍ଦୁଗୁଡ଼ିକୁ ସୁରକ୍ଷିତ ରଖିବା ପାଇଁ ଏବେ ହିଁ ମାଗଣା ପଞ୍ଜୀକରଣ କରନ୍ତୁ!
+      </p>
+
+      <!-- Revive Shield CTA -->
+      <button class="funnel-cta-btn" id="reviveCtaBtn" style="background: linear-gradient(135deg, #06b6d4, #0891b2); box-shadow: 0 8px 25px rgba(6, 182, 212, 0.3);">
+        🛡️ ମାଗଣା ସଞ୍ଜୀବନୀ ଢାଲ୍ ବ୍ୟବହାର କରନ୍ତୁ
+      </button>
+
+      <a href="#" class="restart-link" id="gameOverRestartLink">ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ (Retry)</a>
     </div>
   </main>
+
+  <!-- Live Activity Marquee Ticker -->
+  <div class="live-ticker-container">
+    <div class="ticker-title">
+      <div class="ticker-pulse"></div>
+      <span>ସିଧା ପ୍ରସାରଣ (Live Feed):</span>
+    </div>
+    <div class="ticker-track">
+      <div class="ticker-text" id="liveTicker">
+        ଖୋର୍ଦ୍ଧା ରୁ ସୌମ୍ୟ ଏବେ ୧୫ କଉଡ଼ି ଜିତିଲେ! 🪙
+      </div>
+    </div>
+  </div>
 
   <footer>
     <p>© 2026 Utkal Skill Centre. All Rights Reserved.</p>
@@ -600,15 +780,115 @@
   </footer>
 
   <script>
+    // Audio Synth Engine (Zero-dependency Web Audio API)
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+      init() {
+        if (!this.ctx) {
+          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+      }
+      playCorrect() {
+        if (this.muted) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        
+        const now = this.ctx.currentTime;
+        osc.frequency.setValueAtTime(523.25, now); // C5
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); // A5
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      }
+      playWrong() {
+        if (this.muted) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        
+        const now = this.ctx.currentTime;
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.linearRampToValueAtTime(90, now + 0.25);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      }
+      playTick() {
+        if (this.muted) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        
+        const now = this.ctx.currentTime;
+        osc.frequency.setValueAtTime(1000, now);
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+        osc.start(now);
+        osc.stop(now + 0.05);
+      }
+      playCombo() {
+        if (this.muted) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'square';
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        
+        const now = this.ctx.currentTime;
+        osc.frequency.setValueAtTime(587.33, now); // D5
+        osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+        osc.frequency.setValueAtTime(880, now + 0.16); // A5
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+        osc.start(now);
+        osc.stop(now + 0.35);
+      }
+      playGameOver() {
+        if (this.muted) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        
+        const now = this.ctx.currentTime;
+        osc.frequency.setValueAtTime(320, now);
+        osc.frequency.linearRampToValueAtTime(120, now + 0.5);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+        osc.start(now);
+        osc.stop(now + 0.65);
+      }
+    }
+
+    const sound = new SoundEngine();
+
     // Placeholder to be replaced by Express server payload
     window.DAILY_QUIZ = null; // DAILY_QUIZ_JSON_PLACEHOLDER
 
     // Standard fallback payload for standalone static local preview (dev fallback)
     const fallbackQuiz = {
       mcqId: "sample_mcq",
-      title: "Class 10 Science Challenge",
-      subject: "Science",
-      class: "Class 10",
+      title: "Universal GK Challenge",
+      subject: "General Knowledge",
+      class: "Universal GK",
       activeDate: "2026-06-25",
       questions: [
         {
@@ -622,40 +902,42 @@
           ],
           correctAnswer: "Oxygen / ଅମ୍ଳଜାନ",
           explanation: "ଆଲୋକସଂଶ୍ଲେଷଣ ପ୍ରକ୍ରିୟାରେ ସବୁଜ ଉଦ୍ଭିଦ ଅଙ୍ଗାରକାମ୍ଳ ଗ୍ରହଣ କରି ସୂର୍ଯ୍ୟାଲୋକ ସାହାଯ୍ୟରେ ଖାଦ୍ୟ ପ୍ରସ୍ତୁତ କରେ ଏବଂ ଅମ୍ଳଜାନ (Oxygen) ବାୟୁମଣ୍ଡଳକୁ ନିର୍ଗତ କରିଥାଏ।"
-        },
-        {
-          id: "2",
-          question: "What is the formula of rust? / କଳଙ୍କିର ରାସାୟନିକ ସୂତ୍ର କଣ?",
-          options: [
-            "Fe2O3 / ଫେରିକ୍ ଅକ୍ସାଇଡ୍",
-            "Fe3O4",
-            "Fe(OH)2",
-            "Fe2O3 • xH2O"
-          ],
-          correctAnswer: "Fe2O3 • xH2O",
-          explanation: "ଲୁହା ବାୟୁ ଏବଂ ଜଳୀୟ ବାଷ୍ପ ସଂସ୍ପର୍ଶରେ ଆସିଲେ ଏହା ଉପରେ ଏକ ବାଦାମୀ ରଙ୍ଗର ଆସ୍ତରଣ ଜମିଯାଏ, ଯାହାକୁ କଳଙ୍କି କୁହାଯାଏ। ଏହାର ସୂତ୍ର Fe2O3 • xH2O ଅଟେ।"
         }
       ]
     };
 
-    // Main controller state
+    // Main game controller state
     const quiz = window.DAILY_QUIZ || fallbackQuiz;
     let currentQuestionIdx = 0;
-    let score = 0;
+    let score = 0; // Total Points/Kaudis earned
+    let correctCount = 0; // Number of correct answers
     let selectedOption = null;
+    
+    // Arcade State
+    let lives = 3;
+    let combo = 0;
+    let timerVal = 15;
+    let timerInterval = null;
 
     // DOM References
-    const classNav = document.getElementById('classNav');
+    const muteBtn = document.getElementById('muteBtn');
+    const mainCard = document.getElementById('mainCard');
     const quizScreen = document.getElementById('quizScreen');
     const resultsScreen = document.getElementById('resultsScreen');
+    const gameOverScreen = document.getElementById('gameOverScreen');
     const subjectBadge = document.getElementById('subjectBadge');
+    const comboBadge = document.getElementById('comboBadge');
+    const comboMultiplier = document.getElementById('comboMultiplier');
     const progressText = document.getElementById('progressText');
-    const progressBarFill = document.getElementById('progressBarFill');
     const questionText = document.getElementById('questionText');
     const optionsGrid = document.getElementById('optionsGrid');
     const explanationBox = document.getElementById('explanationBox');
     const explanationText = document.getElementById('explanationText');
     const nextBtn = document.getElementById('nextBtn');
+    
+    const heartBar = document.getElementById('heartBar');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    const timerFill = document.getElementById('timerFill');
     
     const finalScore = document.getElementById('finalScore');
     const resultsTitle = document.getElementById('resultsTitle');
@@ -663,40 +945,109 @@
     const ctaBtn = document.getElementById('ctaBtn');
     const shareBtn = document.getElementById('shareBtn');
     const restartLink = document.getElementById('restartLink');
+    
+    const reviveCtaBtn = document.getElementById('reviveCtaBtn');
+    const gameOverRestartLink = document.getElementById('gameOverRestartLink');
+    const liveTicker = document.getElementById('liveTicker');
 
-    // Parse class parameter and detect Universal GK state
-    const urlParams = new URLSearchParams(window.location.search);
-    const classParam = urlParams.get('class');
-    const isUniversal = !classParam || (classParam.toLowerCase() === 'universal') || (classParam.toLowerCase() === 'gk');
-    const activeClassNum = isUniversal ? null : (parseInt(classParam) || 10);
+    // Mute/Unmute toggle
+    muteBtn.addEventListener('click', () => {
+      sound.muted = !sound.muted;
+      muteBtn.innerText = sound.muted ? '🔇' : '🔊';
+      sound.init();
+    });
 
-    // Render Class selector pills (Universal GK listed first)
-    function initClassSelector() {
-      classNav.innerHTML = '';
+    // 15-second Game Timer
+    function startTimer() {
+      clearInterval(timerInterval);
+      timerVal = 15;
+      timerFill.style.width = '100%';
+      timerFill.classList.remove('warning');
       
-      // 1. Render Universal GK pill
-      const gkPill = document.createElement('a');
-      gkPill.href = '?class=universal';
-      gkPill.className = `class-pill ${isUniversal ? 'active' : ''}`;
-      gkPill.innerText = `Universal GK 🌟`;
-      gkPill.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.location.href = '?class=universal';
-      });
-      classNav.appendChild(gkPill);
+      timerInterval = setInterval(() => {
+        timerVal--;
+        timerFill.style.width = `${(timerVal / 15) * 100}%`;
+        
+        if (timerVal <= 5) {
+          timerFill.classList.add('warning');
+          sound.playTick();
+        }
+        
+        if (timerVal <= 0) {
+          clearInterval(timerInterval);
+          handleTimeout();
+        }
+      }, 1000);
+    }
 
-      // 2. Render Class 10 down to Class 1 pills
-      for (let i = 10; i >= 1; i--) {
-        const pill = document.createElement('a');
-        pill.href = `?class=${i}`;
-        pill.className = `class-pill ${(!isUniversal && activeClassNum === i) ? 'active' : ''}`;
-        pill.innerText = `Class ${i}`;
-        pill.addEventListener('click', (e) => {
-          e.preventDefault();
-          window.location.href = `?class=${i}`;
-        });
-        classNav.appendChild(pill);
+    // Handle Speed timer expiration
+    function handleTimeout() {
+      selectedOption = ""; // Lock selection
+      sound.playWrong();
+      triggerScreenShake();
+      
+      // Deduct Life
+      deductLife();
+      
+      // Reset Combo
+      resetCombo();
+
+      // Lock buttons
+      const allButtons = optionsGrid.querySelectorAll('.option-btn');
+      allButtons.forEach(btn => btn.disabled = true);
+
+      // Highlight correct option
+      const q = quiz.questions[currentQuestionIdx];
+      allButtons.forEach(btn => {
+        if (btn.querySelector('span').innerText === q.correctAnswer) {
+          btn.classList.add('correct');
+        }
+      });
+
+      // Display Explanation
+      if (q.explanation) {
+        explanationText.innerText = q.explanation;
+        explanationBox.style.display = 'block';
       }
+
+      nextBtn.style.display = 'inline-flex';
+    }
+
+    // Deduct heart/life
+    function deductLife() {
+      lives--;
+      updateHeartsUI();
+      if (lives <= 0) {
+        clearInterval(timerInterval);
+        setTimeout(showGameOver, 1000);
+      }
+    }
+
+    // Render heart icons
+    function updateHeartsUI() {
+      const hearts = heartBar.querySelectorAll('.heart-icon');
+      hearts.forEach((heart, idx) => {
+        if (idx >= lives) {
+          heart.classList.add('lost');
+        } else {
+          heart.classList.remove('lost');
+        }
+      });
+    }
+
+    // Reset Combo Streaks
+    function resetCombo() {
+      combo = 0;
+      comboBadge.style.display = 'none';
+      mainCard.classList.remove('combo-glow');
+    }
+
+    // Trigger visual screen shake on wrong answer/timeout
+    function triggerScreenShake() {
+      mainCard.classList.add('shake-active');
+      setTimeout(() => {
+        mainCard.classList.remove('shake-active');
+      }, 350);
     }
 
     // Load question structure
@@ -707,14 +1058,10 @@
       selectedOption = null;
 
       // Update UI Header details
-      subjectBadge.innerText = quiz.subject;
-      progressText.innerText = `Question ${currentQuestionIdx + 1} of ${quiz.questions.length}`;
-      progressBarFill.style.width = `${((currentQuestionIdx + 1) / quiz.questions.length) * 100}%`;
+      subjectBadge.innerText = quiz.subject || "General Knowledge";
+      progressText.innerText = `ପ୍ରଶ୍ନ (Question) ${currentQuestionIdx + 1} / ${quiz.questions.length}`;
 
-      // Update Question text
-      questionText.innerText = q.question;
-
-      // Hide control bar elements
+      // Reset explanation
       explanationBox.style.display = 'none';
       nextBtn.style.display = 'none';
 
@@ -732,24 +1079,68 @@
         btn.addEventListener('click', () => selectOption(btn, option, q));
         optionsGrid.appendChild(btn);
       });
+
+      startTimer();
     }
 
     // Handle Option Click
     function selectOption(clickedBtn, optionText, question) {
       if (selectedOption !== null) return; // Lock choices
+      clearInterval(timerInterval);
       selectedOption = optionText;
 
       const allButtons = optionsGrid.querySelectorAll('.option-btn');
-      allButtons.forEach(btn => btn.disabled = true); // Disable further clicking
+      allButtons.forEach(btn => btn.disabled = true); // Disable clicking
 
       const isCorrect = optionText === question.correctAnswer;
       
       if (isCorrect) {
-        score++;
+        correctCount++;
+        
+        // Calculate points
+        let pointsEarned = 10; // Base points
+        let speedBonus = 0;
+        
+        // Speed run bonus (answered in less than 5 seconds)
+        if (timerVal >= 10) {
+          speedBonus = 5;
+        }
+        
+        // Increase Combo
+        combo++;
+        let multiplier = 1;
+        if (combo >= 4) multiplier = 3;
+        else if (combo >= 2) multiplier = 2;
+        
+        pointsEarned = (pointsEarned * multiplier) + speedBonus;
+        score += pointsEarned;
+        scoreDisplay.innerText = score;
+
         clickedBtn.classList.add('correct');
-        triggerFloatingPoints(clickedBtn);
+        
+        // Play correct/combo sounds
+        if (multiplier > 1) {
+          sound.playCombo();
+          comboMultiplier.innerText = multiplier;
+          comboBadge.style.display = 'inline-flex';
+          mainCard.classList.add('combo-glow');
+        } else {
+          sound.playCorrect();
+        }
+
+        // Trigger floating point indicator
+        triggerFloatingPoints(clickedBtn, pointsEarned, speedBonus > 0, multiplier);
       } else {
         clickedBtn.classList.add('incorrect');
+        sound.playWrong();
+        triggerScreenShake();
+        
+        // Deduct life
+        deductLife();
+        
+        // Reset Combo
+        resetCombo();
+
         // Highlight correct option
         allButtons.forEach(btn => {
           if (btn.querySelector('span').innerText === question.correctAnswer) {
@@ -768,19 +1159,39 @@
       nextBtn.style.display = 'inline-flex';
     }
 
-    // Floating +3 Kaudi Animation Effect
-    function triggerFloatingPoints(element) {
+    // Floating Points Animation
+    function triggerFloatingPoints(element, points, hasSpeedBonus, multiplier) {
       const rect = element.getBoundingClientRect();
       const bodyRect = document.body.getBoundingClientRect();
-      const x = rect.left - bodyRect.left + (rect.width / 2) - 30;
+      const x = rect.left - bodyRect.left + (rect.width / 2) - 40;
       const y = rect.top - bodyRect.top - 25;
 
+      // Primary Points Floater
       const floater = document.createElement('div');
       floater.className = 'floating-points';
       floater.style.left = `${x}px`;
       floater.style.top = `${y}px`;
-      floater.innerText = '+3 Kaudi 🪙';
+      
+      let text = `+${points} କଉଡ଼ି 🪙`;
+      if (multiplier > 1) {
+        text += ` (${multiplier}x Combo!)`;
+      }
+      floater.innerText = text;
       document.body.appendChild(floater);
+
+      // Speed Bonus Floater (if applicable)
+      if (hasSpeedBonus) {
+        setTimeout(() => {
+          const speedFloater = document.createElement('div');
+          speedFloater.className = 'floating-points';
+          speedFloater.style.left = `${x + 15}px`;
+          speedFloater.style.top = `${y - 15}px`;
+          speedFloater.style.color = 'var(--color-secondary)';
+          speedFloater.innerText = `+5 ଶୀଘ୍ର ଉତ୍ତର ବୋନସ୍! ⚡`;
+          document.body.appendChild(speedFloater);
+          setTimeout(() => speedFloater.remove(), 850);
+        }, 150);
+      }
 
       // Clean up DOM
       setTimeout(() => floater.remove(), 800);
@@ -798,35 +1209,18 @@
 
     // Render completion summary
     function showResults() {
+      clearInterval(timerInterval);
       quizScreen.style.display = 'none';
       resultsScreen.style.display = 'block';
       
-      const scoreFraction = `${score}/${quiz.questions.length}`;
-      finalScore.innerText = scoreFraction;
-
-      const pct = Math.round((score / quiz.questions.length) * 100);
-      const earnedPoints = score * 3;
+      finalScore.innerText = score;
+      const pct = Math.round((correctCount / quiz.questions.length) * 100);
       
-      // Dynamic responses based on class/GK type
-      if (isUniversal) {
-        resultsTitle.innerText = "🏆 Empower Your Child's Education! / ଆପଣଙ୍କ ପିଲାଙ୍କ ପାଠପଢ଼ାକୁ ସହଜ କରନ୍ତୁ!";
-        resultsDesc.innerText = `Outstanding! You scored ${pct}% (${scoreFraction} correct) on today's Odisha GK challenge. Utkal Skill Centre provides mapped daily quizzes, textbooks, and interactive AI tutoring (Gundulu) for Class 1 to 10. Open a free student profile for your child today to start their learning streak!`;
-        ctaBtn.innerText = "👶 Open Free Student Account";
-      } else {
-        ctaBtn.innerText = "🏆 Save your Streak!";
-        if (pct === 100) {
-          resultsTitle.innerText = "🏆 Perfect Score! ଅତି ଉତ୍ତମ!";
-          resultsDesc.innerText = `Outstanding! You answered all questions correctly. You have earned ${earnedPoints} Kaudi points! Register below to save your streak and secure your learning profile.`;
-        } else if (pct >= 60) {
-          resultsTitle.innerText = "🎉 Great Job! ବହୁତ ବଢ଼ିଆ!";
-          resultsDesc.innerText = `You answered ${scoreFraction} questions correctly, earning ${earnedPoints} Kaudi points. Don't let your efforts vanish! Register a free account to save your points and streak.`;
-        } else {
-          resultsTitle.innerText = "👍 Nice Effort! ଚେଷ୍ଟା ଜାରି ରଖନ୍ତୁ!";
-          resultsDesc.innerText = `You got ${scoreFraction} correct and earned ${earnedPoints} Kaudi points. Save your progress now and study with Gundulu AI to score 100% tomorrow!`;
-        }
-      }
+      resultsTitle.innerText = "🏆 ଆପଣଙ୍କ ଶିକ୍ଷା ସୁରକ୍ଷିତ କରନ୍ତୁ!";
+      resultsDesc.innerText = `ଚମତ୍କାର ଖେଳ! ଆପଣ ଦୈନିକ ଜ୍ଞାନ ଚ୍ୟାଲେଞ୍ଜରୁ ସଫଳତାର ସହ ${score} କଉଡ଼ି ପଏଣ୍ଟ ଜିତିଛନ୍ତି। ଏହି ପଏଣ୍ଟଗୁଡ଼ିକୁ ସବୁଦିନ ପାଇଁ ନିଜ ପ୍ରୋଫାଇଲରେ ସାଇତି ରଖିବା ପାଇଁ ଏବେ ହିଁ ଆପଣଙ୍କ ମାଗଣା ଆକାଉଣ୍ଟ ତିଆରି କରନ୍ତୁ!`;
+      ctaBtn.innerText = "👶 ମାଗଣା ଛାତ୍ର ପ୍ରୋଫାଇଲ୍ ଖୋଲନ୍ତୁ";
 
-      // Trigger colorful confettis for high scores!
+      // Trigger colorful confetti
       if (pct >= 60 && typeof confetti === 'function') {
         confetti({
           particleCount: 100,
@@ -837,35 +1231,87 @@
       }
     }
 
-    // Funnel CTA redirection (Redirects to main app with metrics)
+    // Show Game Over Screen
+    function showGameOver() {
+      quizScreen.style.display = 'none';
+      gameOverScreen.style.display = 'block';
+      sound.playGameOver();
+    }
+
+    // Funnel CTA redirection
     ctaBtn.addEventListener('click', () => {
-      const earnedPoints = score * 3;
-      const refClass = isUniversal ? 'universal' : activeClassNum;
-      window.location.href = `https://utkalskillcentre.com/?ref=daily-mcq&pts=${earnedPoints}&class=${refClass}`;
+      window.location.href = `https://utkalskillcentre.com/?ref=daily-mcq&pts=${score}&class=universal`;
+    });
+
+    reviveCtaBtn.addEventListener('click', () => {
+      window.location.href = `https://utkalskillcentre.com/?ref=daily-mcq-revive&pts=${score}&class=universal`;
     });
 
     // Share score on WhatsApp
     shareBtn.addEventListener('click', () => {
-      const pct = Math.round((score / quiz.questions.length) * 100);
-      const targetUrl = `https://quiz.utkalskillcentre.com${isUniversal ? '' : '?class=' + activeClassNum}`;
-      const text = `ପ୍ରତିଦିନ ଓଡ଼ିଆ ମାଧ୍ୟମ MCQ ଚ୍ୟାଲେଞ୍ଜ! 🏆 I just scored ${score}/${quiz.questions.length} (${pct}%) on the Daily Challenge! Can you beat my score? Try here: ${targetUrl}`;
+      const targetUrl = `https://quiz.utkalskillcentre.com`;
+      const text = `ଓଡ଼ିଶା ଦୈନିକ ପ୍ରଶ୍ନୋତ୍ତର ଚ୍ୟାଲେଞ୍ଜ! 🏆 I just scored ${score} Points in the Live MCQ Arcade Game! Can you beat my score? Try here: ${targetUrl}`;
       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
     });
 
-    // Restart quiz
-    restartLink.addEventListener('click', (e) => {
-      e.preventDefault();
+    // Restart/Reset quiz state
+    function resetQuiz() {
+      clearInterval(timerInterval);
       currentQuestionIdx = 0;
       score = 0;
+      correctCount = 0;
+      lives = 3;
+      combo = 0;
+      scoreDisplay.innerText = 0;
+      
       resultsScreen.style.display = 'none';
+      gameOverScreen.style.display = 'none';
       quizScreen.style.display = 'block';
+      
+      updateHeartsUI();
+      resetCombo();
       renderQuestion();
+    }
+
+    restartLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      resetQuiz();
+    });
+
+    gameOverRestartLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      resetQuiz();
     });
 
     nextBtn.addEventListener('click', handleNext);
 
+    // Live Activity scrolling marquee updates
+    const odiaNames = ['ସୌମ୍ୟ', 'ପ୍ରିୟଙ୍କା', 'ଅଂଶୁମାନ', 'ଦୀପକ', 'ମାମାଲି', 'ଶୁଭଙ୍କର', 'ବିଷ୍ଣୁପ୍ରିୟା', 'ସୁଭଦ୍ରା', 'ରଶ୍ମିରଞ୍ଜନ', 'ଅନନ୍ୟା', 'ଲିପୁନ୍', 'ସରିତା'];
+    const odiaDistricts = ['ଖୋର୍ଦ୍ଧା', 'କଟକ', 'ବାଲେଶ୍ଵର', 'ଗଞ୍ଜାମ', 'ପୁରୀ', 'ସମ୍ବលପୁର', 'ଭଦ୍ରକ', 'ମୟୂରଭଞ୍ଜ', 'ଢେଙ୍କାନାଳ', 'ବଲାଙ୍ଗୀର'];
+    const achievements = [
+      'ଏବେ ୧୦ କଉଡ଼ି ଜିତିଲେ! 🪙',
+      'ଏବେ ୧୫ କଉଡ଼ି ଜିତିଲେ! 🪙',
+      'ଏବେ ୨୦ କଉଡ଼ି ଜିତିଲେ! 🪙',
+      'ଏବେ ୪x କମ୍ବୋ (Combo) ହାସଲ କଲେ! 🔥',
+      '୫ ଦିନର ପାଠପଢ଼ା ଧାରା (Streak) ସୁରକ୍ଷିତ କଲେ! 🏆',
+      'ସମସ୍ତ ପ୍ରଶ୍ନର ସଠିକ୍ ଉତ୍ତର ଦେଇ ରେକର୍ଡ କଲେ! 🌟'
+    ];
+
+    function updateLiveTicker() {
+      const name = odiaNames[Math.floor(Math.random() * odiaNames.length)];
+      const district = odiaDistricts[Math.floor(Math.random() * odiaDistricts.length)];
+      const text = achievements[Math.floor(Math.random() * achievements.length)];
+      
+      liveTicker.innerText = `🟢 ${district} ର ${name} ${text}`;
+      liveTicker.style.animation = 'none';
+      void liveTicker.offsetWidth; // Trigger reflow to restart animation
+      liveTicker.style.animation = 'marquee 25s linear infinite';
+    }
+
+    // Update ticker every 8 seconds
+    setInterval(updateLiveTicker, 8000);
+
     // Bootstrap execution
-    initClassSelector();
     renderQuestion();
   </script>
 </body>
