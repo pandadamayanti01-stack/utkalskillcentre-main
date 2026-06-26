@@ -4298,9 +4298,9 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               <button
                 onClick={handleCloseWorksheetModal}
                 disabled={isGeneratingWorksheet}
-                className="absolute top-8 right-8 p-2 text-slate-400 hover:text-white rounded-full bg-white/5 hover:bg-white/10 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                className="absolute top-8 right-8 p-2.5 text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/20 transition-all border border-slate-200 dark:border-white/10 shadow-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed z-50"
               >
-                <Lucide.X size={18} />
+                <Lucide.X size={20} />
               </button>
 
               {/* Header */}
