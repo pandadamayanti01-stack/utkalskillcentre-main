@@ -776,8 +776,9 @@ export const translations: any = {
       shareToUnlock: "ଏହି ଅଫର୍ ଅନଲକ୍ କରିବାକୁ WhatsApp ରେ ୫ ଜଣ ସାଙ୍ଗଙ୍କ ସହିତ ସେୟାର୍ କରନ୍ତୁ",
       postStatusToUnlock: "ଅନଲକ୍ କରିବାକୁ WhatsApp ଷ୍ଟାଟସ୍‌ରେ ପୋଷ୍ଟ କରନ୍ତୁ",
       sharesRemaining: "ଆଉ {count} ସେୟାର୍ ଆବଶ୍ୟକ",
+      unlocked: "ଅଫର୍ ଅନ୍‌ଲକ୍ ହୋଇଛି! ଏବେ ଦେୟ ଦିଅନ୍ତୁ",
       shareOnWhatsApp: "WhatsApp ରେ ସେୟାର୍ କରନ୍ତୁ",
-      postToStatus: "WhatsApp Status"
+      postToStatus: "WhatsApp ଷ୍ଟାଟସ୍"
     },
     threeDLab: "ଗୁନ୍ଦୁଲୁ ୩D ଲ୍ୟାବ୍",
     viewIn3D: "୩D ଲ୍ୟାବ୍‌ରେ ଦେଖନ୍ତୁ 🔬",

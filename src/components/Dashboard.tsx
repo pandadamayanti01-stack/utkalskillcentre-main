@@ -70,8 +70,10 @@ interface DashboardProps {
   onOpenMonthlyTests?: () => void;
   onOpenGameZone?: () => void;
   onOpenLibrary?: () => void;
+  theme?: string;
 }
-function PerformanceChart({ submissions, tests, language }: any) {
+function PerformanceChart({ submissions, tests, language, theme }: any) {
+  const isLight = theme === 'daybreak';
   const chartData = React.useMemo(() => {
     // Combine test data with submissions to get scores
     // This is a simplified version, ideally we'd pass processed data
@@ -93,14 +95,20 @@ function PerformanceChart({ submissions, tests, language }: any) {
 
   if (chartData.length === 0) {
     return (
-      <div className="glass-card border-slate-700/50 rounded-[2rem] p-4 sm:p-6 lg:p-8 text-center bg-slate-900/40 flex flex-col items-center justify-center h-full hover:border-slate-600 hover:-translate-y-1 transition-all duration-500">
-        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-800/50 border border-slate-700 flex items-center justify-center mb-2 sm:mb-4">
-          <Lucide.TrendingUp size={16} className="sm:w-5 sm:h-5 text-slate-500" />
+      <div className={`glass-card rounded-[2rem] p-4 sm:p-6 lg:p-8 text-center flex flex-col items-center justify-center h-full hover:-translate-y-1 transition-all duration-500 border ${
+        isLight 
+          ? 'border-slate-200 bg-slate-50/40 hover:border-slate-300 shadow-sm' 
+          : 'border-slate-700/50 bg-slate-900/40 hover:border-slate-600'
+      }`}>
+        <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center mb-2 sm:mb-4 border ${
+          isLight ? 'bg-slate-100 border-slate-200 text-slate-500' : 'bg-slate-800/50 border-slate-700 text-slate-400'
+        }`}>
+          <Lucide.TrendingUp size={16} className="sm:w-5 sm:h-5" />
         </div>
-        <p className="text-slate-400 font-black uppercase tracking-widest text-[8px] sm:text-[10px]">
+        <p className="text-slate-700 dark:text-slate-300 font-black uppercase tracking-widest text-[8px] sm:text-[10px]">
           {language === 'en' ? 'No Progress Data Yet' : 'ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ପ୍ରଗତି ତଥ୍ୟ ନାହିଁ'}
         </p>
-        <p className="text-slate-500 text-[8px] sm:text-xs mt-1 sm:mt-2 max-w-[200px]">
+        <p className="text-slate-500 dark:text-slate-400 text-[8px] sm:text-xs mt-1 sm:mt-2 max-w-[200px]">
           {language === 'en' ? 'Take monthly tests to see your growth chart!' : 'ଆପଣଙ୍କର ବିକାଶ ଗ୍ରାଫ୍ ଦେଖିବା ପାଇଁ ମାସିକ ପରୀକ୍ଷା ଦିଅନ୍ତୁ!'}
         </p>
       </div>
@@ -111,14 +119,14 @@ function PerformanceChart({ submissions, tests, language }: any) {
     <div className="glass-card neon-border rounded-3xl p-5 md:p-6 lg:p-8 bg-gradient-to-br from-emerald-500/5 to-transparent">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h3 className="text-lg font-black text-white tracking-tight">
+          <h3 className="text-lg font-black text-slate-800 dark:text-white tracking-tight">
             {language === 'en' ? 'Your Progress Graph' : 'ଆପଣଙ୍କର ପ୍ରଗତି ଗ୍ରାଫ୍'}
           </h3>
-          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em]">
+          <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-[0.2em]">
             {language === 'en' ? 'Monthly Performance Analytics' : 'ମାସିକ ପ୍ରଦର୍ଶନ ବିଶ୍ଳେଷଣ'}
           </p>
         </div>
-        <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+        <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
           <Lucide.TrendingUp size={12} />
           {chartData.length > 1 && chartData[chartData.length-1].score >= chartData[chartData.length-2].score 
             ? (language === 'en' ? 'Improving' : 'ଉନ୍ନତି ହେଉଛି') 
@@ -135,19 +143,24 @@ function PerformanceChart({ submissions, tests, language }: any) {
                 <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isLight ? "rgba(15,23,42,0.06)" : "rgba(255,255,255,0.05)"} />
             <XAxis 
               dataKey="name" 
               axisLine={false} 
               tickLine={false} 
-              tick={{ fill: '#64748b', fontSize: 10, fontWeight: 700 }}
+              tick={{ fill: isLight ? '#475569' : '#64748b', fontSize: 10, fontWeight: 700 }}
               dy={10}
             />
             <YAxis hide domain={[0, 100]} />
             <Tooltip 
-              contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+              contentStyle={{ 
+                backgroundColor: isLight ? '#ffffff' : '#0f172a', 
+                border: isLight ? '1px solid rgba(15,23,42,0.08)' : '1px solid rgba(255,255,255,0.1)', 
+                borderRadius: '12px',
+                boxShadow: '0 8px 30px rgba(0,0,0,0.15)'
+              }}
               itemStyle={{ color: '#10b981', fontWeight: 800, fontSize: '12px' }}
-              labelStyle={{ color: '#94a3b8', fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', marginBottom: '4px' }}
+              labelStyle={{ color: isLight ? '#475569' : '#94a3b8', fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', marginBottom: '4px' }}
               formatter={(value) => [`${value}%`, language === 'en' ? 'SCORE' : 'ସ୍କୋର']}
             />
             <Area 
@@ -446,7 +459,7 @@ const generateFallbackSubjectives = (subjectKey: string, chapters: any[], isBoar
   return subjectives;
 };
 
-export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, hasDailyPractice, todayDailySubject, tomorrowDailySubject, onChallengeComplete, onOpenTutor, onOpenDailyPractice, onShareDailyPractice, isRegistered = false, onRegistrationComplete, onOpenCommunity, following = [], onToggleFollow, isTourStep3, isTourStep4, onOpenRajaPoster, onOpenMonthlyTests, onOpenGameZone, onOpenLibrary }: DashboardProps) {
+export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, hasDailyPractice, todayDailySubject, tomorrowDailySubject, onChallengeComplete, onOpenTutor, onOpenDailyPractice, onShareDailyPractice, isRegistered = false, onRegistrationComplete, onOpenCommunity, following = [], onToggleFollow, isTourStep3, isTourStep4, onOpenRajaPoster, onOpenMonthlyTests, onOpenGameZone, onOpenLibrary, theme }: DashboardProps) {
     // Map class to YouTube video URL (embed links)
     const classVideoMap: Record<string, string> = {
       '1': 'https://www.youtube.com/embed/DxouHyB-IA8',
@@ -2735,6 +2748,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   const currentLevel = Math.floor((user?.points || 0) / 100) + 1;
   const dailyGoal = Math.min(50 + (currentLevel - 1) * 25, 200);
   const dailyProgress = Math.min(((user?.points_today || 0) / dailyGoal) * 100, 100);
+  const isLight = theme === 'daybreak';
 
   // Celebrate 100% completion of the daily target
   const triggerGoalCelebration = () => {
@@ -3137,7 +3151,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
       {activeSubTab === 'overview' ? (
         /* Main Grid Layout */
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-8 force-dark-theme">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-8">
           {/* Left Column - Core Interactions */}
           <div className="lg:col-span-8 space-y-8">
             {claimedTicket && (
@@ -3500,6 +3514,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 submissions={user?.submissions || []} 
                 tests={chapters}
                 language={language} 
+                theme={theme}
               />
             </div>
 
@@ -3507,12 +3522,20 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             <div className="md:col-span-1">
               <div className={`glass-card rounded-[2rem] p-5 border relative overflow-hidden flex flex-col justify-between h-full hover:-translate-y-1 transition-all duration-500 ${
                 isSundayClosed
-                  ? 'border-white/5 bg-slate-950/20 opacity-80'
+                  ? isLight 
+                    ? 'border-slate-200 bg-slate-50/60 shadow-sm opacity-80'
+                    : 'border-white/5 bg-slate-950/20 opacity-80'
                   : displayedStudent?.id === user?.id 
-                    ? 'border-yellow-500/30 bg-gradient-to-br from-yellow-500/10 via-slate-900/40 to-amber-950/20 shadow-[0_10px_30px_rgba(234,179,8,0.1)] hover:border-yellow-500/50' 
+                    ? isLight
+                      ? 'border-yellow-500/40 bg-gradient-to-br from-amber-50 to-yellow-100/60 shadow-[0_10px_25px_rgba(234,179,8,0.12)] hover:border-yellow-500/60'
+                      : 'border-yellow-500/30 bg-gradient-to-br from-yellow-500/10 via-slate-900/40 to-amber-950/20 shadow-[0_10px_30px_rgba(234,179,8,0.1)] hover:border-yellow-500/50' 
                     : displayedStudent
-                      ? 'border-white/10 bg-slate-900/40 hover:border-emerald-500/30'
-                      : 'border-dashed border-white/10 bg-slate-950/10'
+                      ? isLight
+                        ? 'border-emerald-500/20 bg-gradient-to-br from-emerald-50/50 to-teal-50/30 hover:border-emerald-500/40 shadow-sm'
+                        : 'border-white/10 bg-slate-900/40 hover:border-emerald-500/30'
+                      : isLight
+                        ? 'border-dashed border-slate-200 bg-slate-50/50'
+                        : 'border-dashed border-white/10 bg-slate-950/10'
               }`}>
                 {displayedStudent?.id === user?.id && !isSundayClosed && (
                   <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-500/5 rounded-full blur-[40px] -mr-12 -mt-12 pointer-events-none animate-pulse"></div>
@@ -3521,25 +3544,25 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 <div className="flex flex-col h-full justify-between relative z-10">
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                      <h4 className="text-[8px] sm:text-[10px] font-black text-yellow-500 uppercase tracking-widest">
+                      <h4 className="text-[8px] sm:text-[9.5px] font-black text-yellow-600 dark:text-yellow-500 uppercase tracking-widest leading-none">
                         {isSundayClosed
                           ? (language === 'en' ? 'Calculations In Progress' : 'ହିସାବ ଚାଲିଛି')
                           : displayedStudent
                             ? (language === 'en' ? `Study Champion (Rank ${activeRank})` : `ପଠନ ଚାମ୍ପିଅନ୍ (Rank ${activeRank})`)
                             : (language === 'en' ? `Study Champion (Rank ${activeRank})` : `ପଠନ ଚାମ୍ପିଅନ୍ (Rank ${activeRank})`)}
                       </h4>
-                      <p className="text-[7px] sm:text-[9px] text-slate-500 font-bold uppercase tracking-wider mt-0.5">
+                      <p className="text-[7px] sm:text-[8.5px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider mt-1">
                         {isSundayClosed 
                           ? (language === 'en' ? 'Sunday Reset' : 'ରବିବାର ରିସେଟ୍')
                           : (language === 'en' ? 'Top Study Time This Week' : 'ସପ୍ତାହର ସର୍ବାଧିକ ପଠନ')}
                       </p>
                     </div>
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center border shadow-lg shrink-0 ${
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center border shadow-md shrink-0 ${
                       isSundayClosed
-                        ? 'bg-slate-800 border-slate-700 text-slate-500'
+                        ? 'bg-slate-200 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-500'
                         : displayedStudent?.id === user?.id
-                          ? 'bg-yellow-500/20 border-yellow-500/30 text-yellow-400'
-                          : 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400'
+                          ? 'bg-yellow-500/20 border-yellow-500/30 text-yellow-600 dark:text-yellow-400'
+                          : 'bg-emerald-500/20 border-emerald-500/30 text-emerald-600 dark:text-emerald-400'
                     }`}>
                       {isSundayClosed ? (
                         <Lucide.Timer size={14} />
@@ -3552,7 +3575,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   {isSundayClosed ? (
                     <div className="my-6 text-center space-y-2">
                       <Lucide.Hourglass className="mx-auto text-yellow-500/60 animate-spin" size={24} />
-                      <p className="text-[9px] font-bold text-slate-400 leading-relaxed uppercase tracking-wider">
+                      <p className="text-[9px] font-bold text-slate-600 dark:text-slate-400 leading-relaxed uppercase tracking-wider">
                         {language === 'en' 
                           ? 'Weekly Leaderboard is resetting. Check back tomorrow for the new lineup!' 
                           : 'ରବିବାର ପାଇଁ ମାନ୍ୟତା ତାଲିକା ରିସେଟ୍ ହେଉଛି। ଆସନ୍ତାକାଲି ନୂଆ ତାଲିକା ଦେଖନ୍ତୁ!'}
@@ -3561,8 +3584,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   ) : displayedStudent ? (
                     <div className="flex items-center gap-3 my-3">
                       <div className="relative shrink-0">
-                        <div className={`w-12 h-12 rounded-full border flex items-center justify-center overflow-hidden bg-white/5 shadow-md ${
-                          displayedStudent.id === user.id ? 'border-yellow-500/50 ring-4 ring-yellow-500/10' : 'border-white/10'
+                        <div className={`w-12 h-12 rounded-full border flex items-center justify-center overflow-hidden bg-slate-100 dark:bg-white/5 shadow-md ${
+                          displayedStudent.id === user.id ? 'border-yellow-500/50 ring-4 ring-yellow-500/10' : 'border-slate-200 dark:border-white/10'
                         }`}>
                           {displayedStudent.avatar ? (
                             <img 
@@ -3572,7 +3595,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                               referrerPolicy="no-referrer" 
                             />
                           ) : (
-                            <span className="text-sm font-black text-white">
+                            <span className="text-sm font-black text-slate-800 dark:text-white">
                               {(displayedStudent.name || 'S')[0]}
                             </span>
                           )}
@@ -3585,20 +3608,20 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                       </div>
 
                       <div className="flex-1 text-left min-w-0">
-                        <h3 className="text-xs font-bold text-white truncate flex items-center gap-1.5">
+                        <h3 className="text-xs font-black text-slate-800 dark:text-white truncate flex items-center gap-1.5">
                           {displayedStudent.id === user.id 
                             ? (language === 'en' ? 'You! (Study Champion)' : 'ଆପଣ! (ଚାମ୍ପିଅନ୍)')
                             : displayedStudent.name
                           }
                         </h3>
                         {displayedStudent.school && (
-                          <p className="text-[9px] text-slate-400 truncate font-semibold flex items-center gap-1 mt-0.5">
+                          <p className="text-[9px] text-slate-600 dark:text-slate-400 truncate font-semibold flex items-center gap-1 mt-0.5">
                             <Lucide.School size={10} className="text-slate-500 shrink-0" />
                             {displayedStudent.school}
                           </p>
                         )}
                         {displayedStudent.district && (
-                          <p className="text-[9px] text-slate-400 truncate font-semibold flex items-center gap-1 mt-0.5">
+                          <p className="text-[9px] text-slate-600 dark:text-slate-400 truncate font-semibold flex items-center gap-1 mt-0.5">
                             <Lucide.MapPin size={10} className="text-slate-500 shrink-0" />
                             {displayedStudent.district}
                           </p>
@@ -3606,12 +3629,12 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                       </div>
                     </div>
                   ) : (
-                    <div className="my-6 text-center space-y-2 py-2 border border-dashed border-white/5 rounded-2xl bg-white/5">
-                      <Lucide.UserPlus className="mx-auto text-slate-500 animate-pulse" size={20} />
-                      <p className="text-[8px] sm:text-[9.5px] font-black text-slate-400 leading-normal uppercase tracking-wider">
+                    <div className="my-6 text-center space-y-2 py-2.5 border border-dashed border-slate-200 dark:border-white/5 rounded-2xl bg-slate-50 dark:bg-white/5">
+                      <Lucide.UserPlus className="mx-auto text-slate-400 dark:text-slate-500 animate-pulse" size={20} />
+                      <p className="text-[8px] sm:text-[9.5px] font-black text-slate-600 dark:text-slate-400 leading-normal uppercase tracking-wider">
                         {language === 'en' ? 'Spot Available!' : 'ସ୍ଥାନ ଖାଲି ଅଛି!'}
                       </p>
-                      <p className="text-[7px] text-slate-500 max-w-[80%] mx-auto leading-tight">
+                      <p className="text-[7px] text-slate-500 dark:text-slate-500 max-w-[80%] mx-auto leading-tight">
                         {language === 'en' 
                           ? 'Study more to claim this rank this week!' 
                           : 'ଏହି ସ୍ଥାନ ହାସଲ କରିବା ପାଇଁ ଅଧିକ ପାଠ ପଢନ୍ତୁ!'}
@@ -3621,11 +3644,11 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
                   {!isSundayClosed && (
                     <>
-                      <div className="mt-2 pt-3 border-t border-white/5 flex items-center justify-between">
-                        <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">
+                      <div className="mt-2 pt-3 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
+                        <span className="text-[9px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
                           {language === 'en' ? 'Study Time' : 'ପଠନ ସମୟ'}
                         </span>
-                        <span className="text-xs font-black text-emerald-400 font-mono">
+                        <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 font-mono">
                           {(() => {
                             const mins = displayedStudent?.totalStudyMinutes || 0;
                             const hrs = Math.floor(mins / 60);
@@ -3635,7 +3658,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                         </span>
                       </div>
 
-                      <p className="text-[8px] sm:text-[9.5px] font-bold text-slate-400 leading-relaxed mt-3">
+                      <p className="text-[8px] sm:text-[9.5px] font-bold text-slate-600 dark:text-slate-400 leading-relaxed mt-3">
                         {displayedStudent
                           ? displayedStudent.id === user?.id
                             ? (language === 'en' 
@@ -3659,15 +3682,25 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
             {/* Motivation Insight */}
             <div className="md:col-span-1">
-              <div className="glass-card rounded-[2rem] p-4 sm:p-6 border-blue-500/20 bg-slate-900/40 relative overflow-hidden flex flex-col justify-center h-full hover:border-blue-500/40 hover:-translate-y-1 transition-all duration-500">
-                <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl pointer-events-none"></div>
-                <div className="flex flex-col items-center text-center gap-2 sm:gap-3 relative z-10">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shrink-0 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+              <div className={`glass-card rounded-[2rem] p-4 sm:p-6 border relative overflow-hidden flex flex-col justify-center h-full hover:-translate-y-1 transition-all duration-500 ${
+                isLight 
+                  ? 'border-blue-500/20 bg-gradient-to-br from-blue-50/60 via-indigo-50/30 to-blue-50/20 shadow-sm hover:border-blue-500/40' 
+                  : 'border-blue-500/20 bg-slate-900/40 hover:border-blue-500/40'
+              }`}>
+                <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-blue-500/10 dark:bg-blue-500/[0.03] rounded-full blur-2xl pointer-events-none"></div>
+                <div className="flex flex-col items-center text-center gap-2.5 sm:gap-3.5 relative z-10">
+                  <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-500 dark:text-blue-400 shrink-0 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
                     <Lucide.Sparkles size={16} className="sm:w-5 sm:h-5" />
                   </div>
-                  <div className="space-y-1 sm:space-y-2">
-                    <h4 className="text-[7px] sm:text-[9px] font-black text-blue-400 uppercase tracking-wider">{language === 'en' ? "Today's Inspiration" : 'ଆଜିର ପ୍ରେରଣା'}</h4>
-                    <p className="text-slate-300 text-[9px] sm:text-xs font-bold leading-relaxed italic tracking-tight line-clamp-4">"{todayQuote}"</p>
+                  <div className="space-y-1 sm:space-y-2 w-full">
+                    <h4 className="text-[7px] sm:text-[9px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-wider">
+                      {language === 'en' ? "Today's Inspiration" : 'ଆଜିର ପ୍ରେରଣା'}
+                    </h4>
+                    <p className="text-slate-700 dark:text-slate-200 text-[9.5px] sm:text-xs font-serif italic leading-relaxed tracking-tight relative px-3 py-1.5 select-none text-center">
+                      <span className="absolute left-0 top-[-2px] text-blue-400/30 dark:text-blue-400/20 text-2xl font-serif leading-none">“</span>
+                      {todayQuote}
+                      <span className="absolute right-0 bottom-[-6px] text-blue-400/30 dark:text-blue-400/20 text-2xl font-serif leading-none">”</span>
+                    </p>
                   </div>
                 </div>
               </div>
@@ -3683,63 +3716,66 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             <OdishaLiveMap language={language} />
 
             {/* Learning Progress Matrix */}
-            <div className="glass-card rounded-[2rem] p-4 sm:p-6 border-white/5 space-y-3 sm:space-y-4 flex flex-col hover:border-white/10 hover:-translate-y-1 transition-all duration-500 h-[250px] sm:h-[300px] lg:h-auto overflow-hidden">
+            <div className="glass-card rounded-[2rem] p-4 sm:p-6 border-white/5 space-y-3 sm:space-y-4 flex flex-col hover:border-white/10 hover:-translate-y-1 transition-all duration-500 h-[250px] sm:h-[300px] lg:h-auto overflow-hidden shadow-sm dark:shadow-none">
               <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 sm:gap-2.5 truncate">
-                <div className="p-1 sm:p-1.5 bg-emerald-500/10 rounded-lg sm:rounded-xl text-emerald-500 border border-emerald-500/20 shrink-0">
-                  <Lucide.BarChart3 size={14} className="sm:w-4 sm:h-4" />
-                </div>
-                <h3 className="text-[11px] sm:text-md font-black text-white tracking-tight truncate">
-                  {language === 'en' ? 'Subject Mastery' : 'ବିଷୟରେ ଦକ୍ଷତା'}
-                </h3>
-              </div>
-              <Lucide.TrendingUp size={12} className="text-emerald-500 hidden sm:block shrink-0" />
-            </div>
-
-            <div className="space-y-2.5 sm:space-y-4 flex-1 overflow-y-auto pr-1 custom-scrollbar">
-              {user?.subject_progress && Object.entries(user.subject_progress).length > 0 ? (
-                Object.entries(user.subject_progress).map(([subject, progress]: [string, any], idx) => (
-                  <div key={subject} className="space-y-1.5 sm:space-y-2">
-                    <div className="flex justify-between items-end">
-                      <span className="text-[8px] sm:text-[10px] font-black text-slate-300 uppercase tracking-widest truncate max-w-[70%]">
-                        {translations[language].subjects?.[subject] || subject}
-                      </span>
-                      <span className="text-[8px] sm:text-[10px] font-black text-emerald-400 tabular-nums">{progress}%</span>
-                    </div>
-                    <div className="h-2 bg-white/5 rounded-full overflow-hidden border border-white/5 p-0.5">
-                      <motion.div 
-                        initial={{ width: 0 }}
-                        animate={{ width: `${progress}%` }}
-                        transition={{ duration: 1.5, delay: idx * 0.1, ease: "circOut" }}
-                        className="h-full bg-gradient-to-r from-emerald-600 to-teal-400 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.3)]"
-                      />
-                    </div>
+                <div className="flex items-center gap-1.5 sm:gap-2.5 truncate">
+                  <div className="p-1 sm:p-1.5 bg-emerald-500/10 rounded-lg sm:rounded-xl text-emerald-650 dark:text-emerald-500 border border-emerald-500/20 shrink-0">
+                    <Lucide.BarChart3 size={14} className="sm:w-4 sm:h-4" />
                   </div>
-                ))
-              ) : (
-                <div className="text-center py-10 space-y-4 opacity-40">
-                  <Lucide.BarChart3 size={40} className="mx-auto text-slate-600" />
-                  <p className="text-slate-500 font-black text-[10px] uppercase tracking-widest leading-relaxed">
-                    {language === 'en' ? (
-                      <>No data detected.<br/>Commence learning protocols.</>
-                    ) : (
-                      <>କୌଣସି ଡାଟା ମିଳିଲା ନାହିଁ ।<br/>ପଢ଼ା ଆରମ୍ଭ କରନ୍ତୁ ।</>
-                    )}
-                  </p>
+                  <h3 className="text-[11px] sm:text-md font-black text-slate-800 dark:text-white tracking-tight truncate">
+                    {language === 'en' ? 'Subject Mastery' : 'ବିଷୟରେ ଦକ୍ଷତା'}
+                  </h3>
                 </div>
-              )}
+                <Lucide.TrendingUp size={12} className="text-emerald-500 hidden sm:block shrink-0" />
+              </div>
+
+              <div className="space-y-2.5 sm:space-y-4 flex-1 overflow-y-auto pr-1 custom-scrollbar">
+                {user?.subject_progress && Object.entries(user.subject_progress).length > 0 ? (
+                  Object.entries(user.subject_progress).map(([subject, progress]: [string, any], idx) => (
+                    <div key={subject} className="space-y-1.5 sm:space-y-2">
+                      <div className="flex justify-between items-end">
+                        <span className="text-[8px] sm:text-[10px] font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest truncate max-w-[70%]">
+                          {translations[language].subjects?.[subject] || subject}
+                        </span>
+                        <span className="text-[8px] sm:text-[10px] font-black text-emerald-600 dark:text-emerald-400 tabular-nums">{progress}%</span>
+                      </div>
+                      <div className="h-2 bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden border border-slate-200 dark:border-white/5 p-0.5">
+                        <motion.div 
+                          initial={{ width: 0 }}
+                          animate={{ width: `${progress}%` }}
+                          transition={{ duration: 1.5, delay: idx * 0.1, ease: "circOut" }}
+                          className="h-full bg-gradient-to-r from-emerald-600 to-teal-400 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.3)]"
+                        />
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex-1 flex flex-col items-center justify-center py-6 text-center">
+                    <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800/50 flex items-center justify-center text-slate-400 dark:text-slate-600 mb-3 border border-slate-200 dark:border-white/5 shadow-inner">
+                      <Lucide.BarChart3 size={18} />
+                    </div>
+                    <p className="text-slate-800 dark:text-slate-300 font-black text-[9.5px] uppercase tracking-widest leading-normal">
+                      {language === 'en' ? 'No Mastery Data' : 'କୌଣସି ପ୍ରଗତି ତଥ୍ୟ ନାହିଁ'}
+                    </p>
+                    <p className="text-slate-500 dark:text-slate-500 text-[8.5px] max-w-[190px] mt-1.5 leading-normal">
+                      {language === 'en' 
+                        ? 'Complete practice sets and monthly tests to generate your mastery profile!' 
+                        : 'ନିଜର ପ୍ରଗତି ରିପୋର୍ଟ ପ୍ରସ୍ତୁତ କରିବା ପାଇଁ ଅଭ୍ୟାସ ଏବଂ ମାସିକ ପରୀକ୍ଷା ସମ୍ପୂର୍ଣ୍ଣ କରନ୍ତୁ!'}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
           </div>
 
           {/* Achievement Nodes */}
-          <div className="glass-card rounded-3xl p-5 md:p-6 border-white/5 space-y-4">
+          <div className="glass-card rounded-3xl p-5 md:p-6 border-white/5 space-y-4 shadow-sm dark:shadow-none">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="p-1.5 bg-purple-500/10 rounded-xl text-purple-500 border border-purple-500/20">
+                <div className="p-1.5 bg-purple-500/10 rounded-xl text-purple-650 dark:text-purple-500 border border-purple-500/20">
                   <Lucide.Award size={16} />
                 </div>
-                <h3 className="text-md font-black text-white tracking-tight">{t.badges}</h3>
+                <h3 className="text-md font-black text-slate-800 dark:text-white tracking-tight">{t.badges}</h3>
               </div>
               <Lucide.Star size={14} className="text-purple-500" />
             </div>
@@ -3747,8 +3783,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             <div className="grid grid-cols-3 gap-4">
               {user?.stats?.badges && user.stats.badges.length > 0 ? (
                 user.stats.badges.slice(0, 6).map((badge: string, i: number) => (
-                  <div key={i} className="aspect-square rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center group cursor-help relative hover:border-purple-500/30 transition-all">
-                    <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
+                  <div key={i} className="aspect-square rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5 flex items-center justify-center group cursor-help relative hover:border-purple-500/30 transition-all shadow-sm">
+                    <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-650 dark:text-purple-400 group-hover:scale-110 transition-transform">
                       <Lucide.Star size={18} fill={i === 0 ? "currentColor" : "none"} />
                     </div>
                     <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-[9px] font-black text-white uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all whitespace-nowrap z-50 pointer-events-none shadow-2xl">
@@ -3757,9 +3793,22 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   </div>
                 ))
               ) : (
-                <div className="col-span-3 py-8 border border-dashed border-white/5 rounded-[2rem] text-center opacity-30">
-                  <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest italic">
-                    {language === 'en' ? 'No nodes unlocked' : 'କୌଣସି ପଦକ ଅନ୍‌ଲକ୍ ହୋଇନାହିଁ'}
+                <div className="col-span-3 py-4 flex flex-col items-center justify-center gap-3">
+                  <div className="flex gap-4 justify-center">
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="w-11 h-11 rounded-full border border-dashed border-slate-300 dark:border-white/10 flex items-center justify-center text-slate-400 dark:text-slate-700 relative">
+                        <Lucide.Lock size={12} className="text-slate-400 dark:text-slate-600" />
+                        <div className="absolute -bottom-0.5 -right-0.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-full p-0.5 shadow-sm">
+                          <Lucide.Star size={6} className="text-slate-400 dark:text-slate-600" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-slate-800 dark:text-slate-300 text-[9px] font-black uppercase tracking-widest text-center mt-1">
+                    {language === 'en' ? 'No Achievements Unlocked' : 'କୌଣସି ପଦକ ଅନ୍‌ଲକ୍ ହୋଇନାହିଁ'}
+                  </p>
+                  <p className="text-slate-550 dark:text-slate-500 text-[8px] text-center max-w-[180px] -mt-1 leading-normal">
+                    {language === 'en' ? 'Earn XP from daily challenges & games to unlock!' : 'ଅନଲକ୍ କରିବାକୁ ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ ଏବଂ ଗେମ୍ସରୁ XP ଅର୍ଜନ କରନ୍ତୁ!'}
                   </p>
                 </div>
               )}

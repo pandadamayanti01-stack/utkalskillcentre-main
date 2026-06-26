@@ -4427,6 +4427,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                     user={user}
                     leaderboard={leaderboard}
                     language={language}
+                    theme={theme}
                     isPremium={isPremium}
                     onUpgrade={() => setActiveTab('plans')}
                     chapters={chapters}
