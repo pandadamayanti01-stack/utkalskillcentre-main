@@ -106,6 +106,9 @@ const extractSpeechInput = (event: any): SpeechInput => {
   return { primary, candidates: candidates.slice(0, 3), confidence };
 };
 
+// In-memory cache for generated TTS audio blobs to eliminate duplicate TTS generation costs
+const ttsCache = new Map<string, Blob>();
+
 const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack, isPremium = false, onUpgrade, user }: { skipInitialGreeting?: boolean; userClass?: string; onBack?: () => void; isPremium?: boolean; onUpgrade?: () => void; user?: any }) => {
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -437,6 +440,89 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack, isPremiu
   };
 
   const speakWithGeminiVoice = async (text: string, onDone?: () => void, retries = 1): Promise<void> => {
+    const cacheKey = `${language}:${text.trim()}`;
+    const cachedBlob = ttsCache.get(cacheKey);
+
+    if (cachedBlob) {
+      console.log(`[TTS Cache] Hit for: "${text}"`);
+      try {
+        stopCurrentAudio();
+        window.speechSynthesis.cancel();
+        setIsSpeaking(true);
+
+        const audioUrl = URL.createObjectURL(cachedBlob);
+        audioUrlRef.current = audioUrl;
+
+        const audio = new Audio(audioUrl);
+        audioRef.current = audio;
+        audio.onended = () => {
+          setIsSpeaking(false);
+          stopCurrentAudio();
+          onDone?.();
+        };
+        audio.onerror = () => {
+          setIsSpeaking(false);
+          stopCurrentAudio();
+          speakWithBrowserTtsFallback(text, onDone);
+        };
+        
+        animateSubtitle(text, false);
+
+        // Web Audio API analysis for real-time lip-sync/volume pulsing
+        if (!audioContextRef.current) {
+          const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+          if (AudioContextClass) {
+            audioContextRef.current = new AudioContextClass();
+            const analyser = audioContextRef.current.createAnalyser();
+            analyser.fftSize = 64; // Small fftSize for fast, lightweight performance
+            analyserRef.current = analyser;
+          }
+        }
+
+        if (audioContextRef.current && analyserRef.current) {
+          try {
+            if (audioContextRef.current.state === 'suspended') {
+              await audioContextRef.current.resume();
+            }
+            
+            const source = audioContextRef.current.createMediaElementSource(audio);
+            source.connect(analyserRef.current);
+            analyserRef.current.connect(audioContextRef.current.destination);
+            
+            const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
+            const updateVolumeScale = () => {
+              if (!analyserRef.current || !sphereRef.current) return;
+              analyserRef.current.getByteFrequencyData(dataArray);
+              
+              let sum = 0;
+              for (let i = 0; i < dataArray.length; i++) {
+                sum += dataArray[i];
+              }
+              const average = sum / dataArray.length;
+              
+              // Sync volume to audioVolumeRef for the Canvas waveform
+              audioVolumeRef.current = average;
+
+              // Scale the sphere slightly based on voice volume (Max 15% enlargement)
+              const scale = 1 + (average / 255) * 0.15;
+              sphereRef.current.style.transform = `scale(${scale})`;
+              
+              animationFrameRef.current = requestAnimationFrame(updateVolumeScale);
+            };
+            
+            animationFrameRef.current = requestAnimationFrame(updateVolumeScale);
+          } catch (e) {
+            console.warn("Web Audio API binding failed:", e);
+          }
+        }
+
+        await audio.play();
+        return;
+      } catch (err) {
+        console.warn("Failed to play cached TTS, falling back to network fetch...", err);
+      }
+    }
+
     const controller = new AbortController();
     const timeoutId = setTimeout(() => {
       console.warn("Gemini TTS connection timed out (2.5s limit reached). Triggering immediate local browser TTS fallback...");
@@ -462,6 +548,7 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack, isPremiu
       }
 
       const audioBlob = await response.blob();
+      ttsCache.set(cacheKey, audioBlob); // Cache the generated blob
       const audioUrl = URL.createObjectURL(audioBlob);
       audioUrlRef.current = audioUrl;
 
@@ -792,10 +879,20 @@ Understand user intent from these transcripts and respond in Odia only.${turnHin
       // ── STREAMING: collect sentence chunks and pipe each to TTS as it arrives ──
       // This cuts time-to-first-audio from ~2s → ~400ms by starting TTS on the
       // first complete sentence without waiting for the full response.
-      const streamResult = await modelInstance.generateContentStream({
-        contents: chatHistoryRef.current,
-        generationConfig: { temperature: 0.7 },
+      let timeoutId: any;
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(() => reject(new Error('TIMEOUT')), 8000);
       });
+
+      const streamResult = await Promise.race([
+        modelInstance.generateContentStream({
+          contents: chatHistoryRef.current,
+          generationConfig: { temperature: 0.7 },
+        }),
+        timeoutPromise
+      ]) as any;
+
+      if (timeoutId) clearTimeout(timeoutId);
 
       let fullResponse = '';
       let pendingChunk = '';
@@ -893,9 +990,15 @@ Understand user intent from these transcripts and respond in Odia only.${turnHin
       // If stream produced no sentences (e.g. safety block), speak the full response as fallback
       if (!firstSentenceFired) speakResponse(response);
 
-    } catch (error) {
-      const errorMsg = "ଓଃ! କିଛି ଭୁଲ୍ ହୋଇଗଲା |";
-      speakResponse(errorMsg);
+    } catch (error: any) {
+      if (error?.message === 'TIMEOUT') {
+        console.warn("AI generation timed out (8s limit reached). Telling student in Odia.");
+        const slowNetworkMsg = "ଓଃ! ନେଟୱର୍କ ବହୁତ ଧୀମା ଅଛି, ଦୟาକରି ଆଉଥରେ କୁହନ୍ତୁ।";
+        speakResponse(slowNetworkMsg);
+      } else {
+        const errorMsg = "ଓଃ! କିଛି ଭୁଲ୍ ହୋଇଗଲା |";
+        speakResponse(errorMsg);
+      }
     }
   };
 
