@@ -13,152 +13,152 @@ const DISTRICT_LANDMARKS: Record<string, { landmarkEn: string; landmarkOr: strin
   Angul: {
     landmarkEn: 'Satkosia Gorge',
     landmarkOr: 'ସାତକୋଶିଆ ଗଣ୍ଡ',
-    image: 'https://images.unsplash.com/photo-1542856391-010fb87dcfed?w=300&q=80'
+    image: '/districts/angul.jpg'
   },
   Balangir: {
     landmarkEn: 'Harishankar Temple',
     landmarkOr: 'ହରିଶଙ୍କର ମନ୍ଦିର',
-    image: 'https://images.unsplash.com/photo-1561361513-2d000a50f0db?w=300&q=80'
+    image: '/districts/balangir.jpg'
   },
   Balasore: {
     landmarkEn: 'Chandipur Beach',
     landmarkOr: 'ଚାନ୍ଦିପୁର ବେଳାଭୂମି',
-    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&q=80'
+    image: '/districts/balasore.jpg'
   },
   Bargarh: {
     landmarkEn: 'Dhanu Jatra',
     landmarkOr: 'ଧନୁଯାତ୍ରା ମଞ୍ଚ',
-    image: 'https://images.unsplash.com/photo-1514222134-b57cbb8ce073?w=300&q=80'
+    image: '/districts/bargarh.jpg'
   },
   Bhadrak: {
     landmarkEn: 'Akhandalamani Temple',
     landmarkOr: 'ଆଖଣ୍ଡଳମଣି ମନ୍ଦିର',
-    image: 'https://images.unsplash.com/photo-1601579899387-43400787e90e?w=300&q=80'
+    image: '/districts/bhadrak.jpg'
   },
   Boudh: {
     landmarkEn: 'Buddha Statue',
     landmarkOr: 'ବୌଦ୍ଧ ବୁଦ୍ଧ ମୂର୍ତ୍ତି',
-    image: 'https://images.unsplash.com/photo-1608997008609-d3aa359eddcee?w=300&q=80'
+    image: '/districts/boudh.jpg'
   },
   Cuttack: {
     landmarkEn: 'Barabati Fort',
     landmarkOr: 'ବାରବାଟୀ ଦୁର୍ଗ',
-    image: 'https://images.unsplash.com/photo-1596117366373-67c48f2191b5?w=300&q=80'
+    image: '/districts/cuttack.jpg'
   },
   Deogarh: {
     landmarkEn: 'Pradhanpat Falls',
     landmarkOr: 'ପ୍ରଧାନପାଟ ଜଳପ୍ରପାତ',
-    image: 'https://images.unsplash.com/photo-1482862549707-f63cb32c5fd9?w=300&q=80'
+    image: '/districts/deogarh.jpg'
   },
   Dhenkanal: {
     landmarkEn: 'Kapilash Temple',
     landmarkOr: 'କପିଳାସ ମନ୍ଦିର',
-    image: 'https://images.unsplash.com/photo-1545128485-c400e7702796?w=300&q=80'
+    image: '/districts/dhenkanal.jpg'
   },
   Gajapati: {
     landmarkEn: 'Mahendragiri Hills',
     landmarkOr: 'ମହେନ୍ଦ୍ରଗିରି ପର୍ବତ',
-    image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=300&q=80'
+    image: '/districts/gajapati.jpg'
   },
   Ganjam: {
     landmarkEn: 'Tara Tarini Temple',
     landmarkOr: 'ତାରାତାରିଣୀ ମନ୍ଦିର',
-    image: 'https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?w=300&q=80'
+    image: '/districts/ganjam.jpg'
   },
   Jagatsinghpur: {
     landmarkEn: 'Paradip Port',
     landmarkOr: 'ପାରାଦୀପ ବନ୍ଦର',
-    image: 'https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?w=300&q=80'
+    image: '/districts/jagatsinghpur.jpg'
   },
   Jajpur: {
     landmarkEn: 'Biraja Temple',
     landmarkOr: 'ବିରଜା ମନ୍ଦିର',
-    image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=300&q=80'
+    image: '/districts/jajpur.jpg'
   },
   Jharsuguda: {
     landmarkEn: 'Koilighangar Falls',
     landmarkOr: 'କୋଇଲିଘୋଘର ଜଳପ୍ରପାତ',
-    image: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=300&q=80'
+    image: '/districts/jharsuguda.jpg'
   },
   Kalahandi: {
     landmarkEn: 'Phurlijharan Falls',
     landmarkOr: 'ଫୁର୍ଲିଝରଣ ଜଳପ୍ରପାତ',
-    image: 'https://images.unsplash.com/photo-1432406776043-6c76db202811?w=300&q=80'
+    image: '/districts/kalahandi.jpg'
   },
   Kandhamal: {
     landmarkEn: 'Daringbadi Hill Station',
     landmarkOr: 'ଦାରିଙ୍ଗବାଡ଼ି',
-    image: 'https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=300&q=80'
+    image: '/districts/kandhamal.jpg'
   },
   Kendrapara: {
     landmarkEn: 'Bhitarkanika Mangroves',
     landmarkOr: 'ଭିତରକନିକା ହେନ୍ତାଳବନ',
-    image: 'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=300&q=80'
+    image: '/districts/kendrapara.jpg'
   },
   Kendujhar: {
     landmarkEn: 'Sanaghagara Falls',
     landmarkOr: 'ସାନଘାଗରା ଜଳପ୍ରପାତ',
-    image: 'https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=300&q=80'
+    image: '/districts/kendujhar.jpg'
   },
   Khordha: {
     landmarkEn: 'Dhauli Peace Pagoda',
     landmarkOr: 'ଧଉଳି ଶାନ୍ତି ସ୍ତୂପ',
-    image: 'https://images.unsplash.com/photo-1600100397608-f010e42edaba?w=300&q=80'
+    image: '/districts/khordha.jpg'
   },
   Koraput: {
     landmarkEn: 'Deomali Peak',
     landmarkOr: 'ଦେଓମାଳି ପର୍ବତ',
-    image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=300&q=80'
+    image: '/districts/koraput.jpg'
   },
   Malkangiri: {
     landmarkEn: 'Balimela Reservoir',
     landmarkOr: 'ବାଲିମେଳା ଜଳଭଣ୍ଡାର',
-    image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=300&q=80'
+    image: '/districts/malkangiri.jpg'
   },
   Mayurbhanj: {
     landmarkEn: 'Similipal Forests',
     landmarkOr: 'ଶିମିଳିପାଳ ଅରଣ୍ୟ',
-    image: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=300&q=80'
+    image: '/districts/mayurbhanj.jpg'
   },
   Nabarangpur: {
     landmarkEn: 'Sahid Minar',
     landmarkOr: 'ସହିଦ ମିନାର',
-    image: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=300&q=80'
+    image: '/districts/nabarangpur.jpg'
   },
   Nayagarh: {
     landmarkEn: 'Tarabalo Hot Springs',
     landmarkOr: 'ତରବାଲୋ ଉଷ୍ଣପ୍ରସ୍ରବଣ',
-    image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=300&q=80'
+    image: '/districts/nayagarh.jpg'
   },
   Nuapada: {
     landmarkEn: 'Patora Dam',
     landmarkOr: 'ପାତୋରା ଜଳଭଣ୍ଡାର',
-    image: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=300&q=80'
+    image: '/districts/nuapada.jpg'
   },
   Puri: {
     landmarkEn: 'Konark Sun Temple',
     landmarkOr: 'କୋଣାର୍କ ସୂର୍ଯ୍ୟ ମନ୍ଦିର',
-    image: 'https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?w=300&q=80'
+    image: '/districts/puri.jpg'
   },
   Rayagada: {
     landmarkEn: 'Hanging Bridge',
     landmarkOr: 'ଝୁଲା ପୋଲ',
-    image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=300&q=80'
+    image: '/districts/rayagada.jpg'
   },
   Sambalpur: {
     landmarkEn: 'Hirakud Dam',
     landmarkOr: 'ହୀରାକୁଦ ଜଳଭଣ୍ଡାର',
-    image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=300&q=80'
+    image: '/districts/sambalpur.jpg'
   },
   Sonepur: {
     landmarkEn: 'Subarnameru Temple',
     landmarkOr: 'ସୁବର୍ଣ୍ଣମେରୁ ମନ୍ଦିର',
-    image: 'https://images.unsplash.com/photo-1545128485-c400e7702796?w=300&q=80'
+    image: '/districts/sonepur.jpg'
   },
   Sundargarh: {
     landmarkEn: 'Mandira Dam',
     landmarkOr: 'ମନ୍ଦିରା ଜଳଭଣ୍ଡାର',
-    image: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=300&q=80'
+    image: '/districts/sundargarh.jpg'
   }
 };
 
@@ -182,14 +182,13 @@ export function DistrictLeaderboardFilter({ selectedDistrict, setSelectedDistric
       }
     }
   };
-
   // Front card represents "All Odisha"
   const allOdishaOption = {
     en: 'All Odisha',
     or: 'ସମସ୍ତ ଓଡ଼ିଶା',
     landmarkEn: 'Heart of Lord Jagannath',
     landmarkOr: 'ଜଗନ୍ନାଥ କ୍ଷେତ୍ର',
-    image: 'https://images.unsplash.com/photo-1600100397608-f010e42edaba?w=300&q=80' // Konark wheel / Odisha theme
+    image: '/jagannath-temple.png'
   };
 
   return (
@@ -252,12 +251,11 @@ export function DistrictLeaderboardFilter({ selectedDistrict, setSelectedDistric
           </div>
         </button>
 
-        {/* Individual District Cards */}
         {ODISHA_DISTRICTS.map((d) => {
           const detail = DISTRICT_LANDMARKS[d.en] || {
             landmarkEn: 'Scenic Odisha',
             landmarkOr: 'ସୁନ୍ଦର ଓଡ଼ିଶା',
-            image: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=300&q=80'
+            image: `/districts/${d.en.toLowerCase()}.jpg`
           };
           const isSelected = selectedDistrict.toLowerCase() === d.en.toLowerCase();
 
