@@ -1355,8 +1355,8 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                 url: '/gundulu-v3.png',
                 name: 'Gundulu Mascot',
                 bubbleText: language === 'or' 
-                  ? 'ଅତି ସୁନ୍ଦର! ତୁମେ ଆଜିର ଗଣିତ ଚ୍ୟାଲେଞ୍ଜ ସଫଳତାର ସହ ସମାଧାନ କରିଛ। ଏହିପରି ପଢ଼ା ଜାରି ରଖ!' 
-                  : "Fantastic job! You've successfully finished today's math challenge. Let's keep this streak going!"
+                  ? 'ଅତି ସୁନ୍ଦର! ତୁମେ ଆଜିର ଚ୍ୟାଲେଞ୍ଜ ସଫଳତାର ସହ ସମାଧାନ କରିଛ। ଏହିପରି ପଢ଼ା ଜାରି ରଖ!' 
+                  : "Fantastic job! You've successfully finished today's daily challenge. Let's keep this streak going!"
               };
             }
             
@@ -1376,8 +1376,8 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                 url: user.avatar,
                 name: 'Anime Hero',
                 bubbleText: language === 'or'
-                  ? 'ବିକ୍ଟୋରି ରୟାଲ୍! ତୁମେ ଗଣିତରେ ଜବରଦସ୍ତ ସ୍କୋର କରିଛ! ସାବାସ୍!'
-                  : "Victory Royale! You dominated this math set! Dattebayo!"
+                  ? 'ବିକ୍ଟୋରି ରୟାଲ୍! ତୁମେ ଏହି ଚ୍ୟାଲେଞ୍ଜରେ ଜବରଦସ୍ତ ସ୍କୋର କରିଛ! ସାବାସ୍!'
+                  : "Victory Royale! You dominated this challenge set! Dattebayo!"
               };
             }
           };
@@ -1428,12 +1428,12 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                 </div>
 
                 {/* 3D Pedestal Spotlight Scene */}
-                <div className="relative w-full h-36 sm:h-48 flex items-center justify-center">
+                <div className="relative w-full h-44 sm:h-56 flex items-center justify-center mt-2">
                   {/* Spotlight ray */}
                   <div className="absolute top-0 w-24 sm:w-32 h-32 sm:h-44 bg-gradient-to-b from-amber-500/15 to-transparent rounded-full blur-xl pointer-events-none" />
                   
                   {/* Pedestal Base */}
-                  <div className="absolute bottom-4 w-28 sm:w-36 h-4 sm:h-6 bg-slate-950 rounded-[50%] border-t-2 border-amber-500 shadow-[0_8px_30px_rgba(245,158,11,0.4)] flex items-center justify-center">
+                  <div className="absolute bottom-2 w-28 sm:w-36 h-4 sm:h-6 bg-slate-950 rounded-[50%] border-t-2 border-amber-500 shadow-[0_8px_30px_rgba(245,158,11,0.4)] flex items-center justify-center">
                     <div className="absolute inset-0 bg-gradient-to-t from-amber-500/30 to-transparent opacity-80" />
                   </div>
 
@@ -1441,11 +1441,11 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                   <img
                     src={victoryAvatar.url}
                     alt={victoryAvatar.name}
-                    className="w-20 sm:w-28 h-20 sm:h-28 object-contain z-10 animate-bounce-slow drop-shadow-[0_12px_24px_rgba(0,0,0,0.8)]"
+                    className="w-20 sm:w-28 h-20 sm:h-28 object-contain z-10 animate-bounce-slow drop-shadow-[0_12px_24px_rgba(0,0,0,0.8)] translate-y-3 sm:translate-y-4"
                   />
 
-                  {/* Speech Bubble */}
-                  <div className="absolute -top-2 sm:-top-4 right-1 sm:right-6 bg-slate-950 border border-white/10 px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl max-w-[150px] sm:max-w-[180px] shadow-xl text-left text-[10px] sm:text-xs font-semibold text-slate-200 after:content-[''] after:absolute after:bottom-0 after:left-4 after:w-3 after:h-3 after:bg-slate-950 after:border-r after:border-b after:border-white/10 after:rotate-45 after:translate-y-1.5 z-20">
+                  {/* Speech Bubble - Centered above the avatar, with pointer tail centered */}
+                  <div className="absolute -top-3 sm:-top-5 left-1/2 -translate-x-1/2 bg-slate-950 border border-white/10 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-2xl w-[85%] max-w-[280px] shadow-xl text-center text-[10px] sm:text-xs font-semibold text-slate-200 after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-3 after:h-3 after:bg-slate-950 after:border-r after:border-b after:border-white/10 after:rotate-45 after:translate-y-1.5 z-20">
                     {victoryAvatar.bubbleText}
                   </div>
                 </div>

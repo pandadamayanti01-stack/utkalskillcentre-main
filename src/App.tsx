@@ -1747,11 +1747,6 @@ export default function App() {
         ? collection(firestore, 'daily_mcqs')
         : query(collection(firestore, 'daily_mcqs'), where('activeDate', '==', today));
       const snapshot = await getDocs(dailyMcqsQuery);
-      console.log("[DEBUG MCQ] user.class:", user.class, "user.board:", user.board, "today:", today);
-      console.log("[DEBUG MCQ] snapshot docs count:", snapshot.docs.length);
-      snapshot.docs.forEach(doc => {
-        console.log("[DEBUG MCQ] doc in db:", doc.id, "activeDate:", doc.data().activeDate, "class:", doc.data().class, "board:", doc.data().board, "status:", doc.data().status);
-      });
       const normalizedUserClass = String(user.class || '').toLowerCase();
       const shortUserClass = normalizedUserClass.replace('class', '').trim();
       const data = snapshot.docs
@@ -1775,7 +1770,6 @@ export default function App() {
           return rightDate - leftDate;
         }) as DailyMcq[];
       
-      console.log("[DEBUG MCQ] filtered data count:", data.length);
       if (data.length > 0) {
         setDailyMcqs(data);
         setCachedData(cacheKey, data);

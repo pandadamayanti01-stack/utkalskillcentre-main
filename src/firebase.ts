@@ -39,13 +39,15 @@ const firestoreDatabaseId = firebaseConfig.firestoreDatabaseId || '(default)';
 // Initialize Services
 // initializeFirestore with persistentLocalCache replaces the deprecated
 // enableIndexedDbPersistence() API and supports multiple browser tabs natively.
-export const db = initializeFirestore(app, {
-  localCache: persistentLocalCache({
-    tabManager: persistentMultipleTabManager()
-  }),
-  // databaseId is supported at runtime but not in this SDK's FirestoreSettings type declarations
-  ...(firebaseConfig.firestoreDatabaseId ? { databaseId: firebaseConfig.firestoreDatabaseId } : {})
-} as any);
+export const db = initializeFirestore(
+  app,
+  {
+    localCache: persistentLocalCache({
+      tabManager: persistentMultipleTabManager()
+    })
+  },
+  firebaseConfig.firestoreDatabaseId || '(default)'
+);
 
 export const auth = getAuth(app);
 export const storage = getStorage(app);
@@ -141,9 +143,7 @@ async function verifyDatabaseConnection() {
     await getDocFromServer(doc(db, 'system_settings', 'config'));
     console.log(`✅ [Firebase] Success: Connected to Firestore database ${firestoreDatabaseId}.`);
   } catch (error) {
-    if (error instanceof Error && (error.message.includes('offline') || error.message.includes('not found'))) {
-      console.error(`❌ [Firebase] Error: Could not reach Firestore database ${firestoreDatabaseId}. Check Database ID or Authorized Domains.`);
-    }
+    console.error(`❌ [Firebase] Error: Could not reach Firestore database ${firestoreDatabaseId}. Details:`, error);
   }
 }
 verifyDatabaseConnection();
