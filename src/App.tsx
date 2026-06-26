@@ -1777,61 +1777,9 @@ export default function App() {
         throw new Error('NO_MCQ_FOUND');
       }
     } catch (err) {
-      console.warn("Failed to load MCQs from Firestore. Using static mock MCQs for offline fallback.", err);
+      console.warn("Failed to load MCQs from Firestore.", err);
       setIsOfflineMode(true);
-      const mockMcqs: DailyMcq[] = [
-        {
-          id: "mock_mcq_1",
-          title: "Daily MCQ Challenge",
-          subject: "Mathematics",
-          class: user?.class || "10",
-          board: user?.board || "BSE Odisha",
-          activeDate: today,
-          status: "published",
-          questions: [
-            {
-              question: "ଦ୍ୱିଘାତ ସମୀକରଣ ax^2 + bx + c = 0 ରେ ଯଦି b^2 - 4ac > 0 ହୁଏ, ତେବେ ବୀଜଦ୍ୱୟ କିପରି ହେବ?",
-              options: ["ବାସ୍ତବ ଏବଂ ଅସମାନ", "ବାସ୍ତବ ଏବଂ ସମାନ", "ଅବାସ୍ତବ", "ଶୂନ୍ୟ"],
-              correct_answer: "ବାସ୍ତବ ଏବଂ ଅସମାନ",
-              explanation: "ଯଦି ପ୍ରଭେଦକ b^2 - 4ac > 0 ହୁଏ, ତେବେ ବୀଜଦ୍ୱୟ ବାସ୍ତବ ଏବଂ ଅସମାନ ହେବେ।",
-              marks: 1,
-              type: "mcq"
-            },
-            {
-              question: "ବୃତ୍ତର ବ୍ୟାସାର୍ଦ୍ଧ r ହେଲେ, ଏହାର ପରିଧି କେତେ ହେବ?",
-              options: ["πr", "2πr", "πr^2", "2πr^2"],
-              correct_answer: "2πr",
-              explanation: "ବୃତ୍ତର ପରିଧି ହେଉଛି 2πr |",
-              marks: 1,
-              type: "mcq"
-            },
-            {
-              question: "ଉଦ୍ଭିଦ ଶରୀରରେ ଜଳ ପରିବହନ କାହା ଦ୍ୱାରା ହୋଇଥାଏ?",
-              options: ["ଜାଇଲେମ୍ (Xylem)", "ଫ୍ଲୋଏମ୍ (Phloem)", "କାଣ୍ଡ", "ଚେର"],
-              correct_answer: "ଜାଇଲେମ୍ (Xylem)",
-              explanation: "ଜାଇଲେମ୍ ଉଦ୍ଭିଦ ଶରୀରରେ ଜଳ ଓ ଖଣିଜ ଲବଣ ପରିବହନ କରିଥାଏ।",
-              marks: 1,
-              type: "mcq"
-            },
-            {
-              question: "ଆମ ପାଟିରେ ଥିବା ଲାଳରେ କେଉଁ ଏନଜାଇମ୍ ଥାଏ?",
-              options: ["ପେପସିନ୍", "ଟାଇଲିନ୍ (Amylase)", "ଲାଇପେଜ୍", "ଟ୍ରିପସିନ୍"],
-              correct_answer: "ଟାଇଲିନ୍ (Amylase)",
-              explanation: "ଲାଳରେ ଟାଇଲିନ୍ ନାମକ ଏନଜାଇମ୍ ଥାଏ ଯାହା ଶ୍ଵେତସାରକୁ ହଜମ କରିବାରେ ସାହାଯ୍ୟ କରେ।",
-              marks: 1,
-              type: "mcq"
-            },
-            {
-              question: "ନିମ୍ନଲିଖିତ ମଧ୍ୟରୁ କେଉଁଟି ଏକ ପ୍ରତିଫଳିତ କ୍ରିୟାର ଉଦାହରଣ?",
-              options: ["କାନ୍ଦିବା", "ଚାଲିବା", "ଗରମ ବସ୍ତୁ ଛୁଇଁବା କ୍ଷଣି ହାତ ଟାଣିନେବା", "ପଢିବା"],
-              correct_answer: "ଗରମ ବସ୍ତୁ ଛୁଇଁବା କ୍ଷଣି ହାତ ଟାଣିନେବା",
-              explanation: "ଗରମ ବସ୍ତୁ ଛୁଇଁବା କ୍ଷଣି ହାତ ଆପେ ଆପେ ଟାଣି ହୋଇଯିବା ଏକ ପ୍ରତିଫଳିତ କ୍ରିୟା ଅଟେ।",
-              marks: 1,
-              type: "mcq"
-            }
-          ]
-        } as any      ];
-      setDailyMcqs(mockMcqs);
+      setDailyMcqs([]);
     }
   }, [user?.id, user?.class, user?.role]);
 
