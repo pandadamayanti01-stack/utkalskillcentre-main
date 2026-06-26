@@ -2854,8 +2854,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               </div>
             </div>
             
-            {/* Claim Golden Ticket Button */}
-            <div className="flex items-center justify-start pl-1">
+            {/* Claim Golden Ticket Button - Desktop Only (mobile has it in the bottom parallel row) */}
+            <div className="hidden lg:flex items-center justify-start pl-1">
               <button
                 type="button"
                 onClick={() => setShowGoldenTicket(true)}
@@ -2981,19 +2981,40 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               </button>
             </div>
 
-            {/* Compact Daily Target Progress Card (Placed in the yellow space - hidden on desktop to avoid redundancy) */}
-            <div className="mt-4 lg:hidden bg-slate-950/40 border border-white/5 rounded-2xl p-3 flex flex-col gap-2 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] w-full max-w-[130px] sm:max-w-[150px] transition-colors cursor-default">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-emerald-400">
-                  <Lucide.Target size={11} className="text-emerald-400 shrink-0 animate-pulse" />
-                  <span>{language === 'en' ? 'Daily Target' : 'ଦୈନିକ ଲକ୍ଷ୍ୟ'}</span>
-                </div>
-                <span className="text-[10px] font-black text-emerald-400">{Math.round(dailyProgress)}%</span>
+          </div>
+        </div>
+
+        {/* Parallel Action Row for Mobile/Tablet: Golden Ticket & Daily Target */}
+        <div className="flex flex-row items-center justify-between gap-4 mt-5 pt-4 border-t border-white/5 w-full lg:hidden relative z-20">
+          {/* Claim Golden Ticket Button */}
+          <button
+            type="button"
+            onClick={() => setShowGoldenTicket(true)}
+            className="px-4 py-3 bg-gradient-to-r from-amber-500/10 via-orange-500/15 to-amber-500/10 hover:from-amber-500/20 hover:to-orange-500/20 border border-amber-500/30 hover:border-amber-400/50 rounded-2xl flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_5px_15px_rgba(245,158,11,0.05)] group text-amber-300 hover:text-white shrink-0"
+          >
+            <Lucide.Trophy size={14} className="text-amber-400 animate-pulse group-hover:rotate-12 transition-transform shrink-0" />
+            <span className="text-[8px] font-black uppercase tracking-widest text-left leading-tight flex flex-col">
+              <span>{language === 'or' ? 'ସ୍ୱର୍ଣ୍ଣ' : 'Claim'}</span>
+              <span>{language === 'or' ? 'ପତ୍ର' : 'Golden'}</span>
+              <span>{language === 'or' ? 'କ୍ଲେମ' : 'Ticket'}</span>
+            </span>
+          </button>
+
+          {/* Compact Daily Target Progress Card */}
+          <div className="bg-slate-950/40 border border-white/5 rounded-2xl p-3 flex flex-col gap-2 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] w-[140px] sm:w-[160px] cursor-default shrink-0">
+            <div className="flex justify-between items-start">
+              <div className="flex items-center gap-1.5">
+                <Lucide.Target size={12} className="text-emerald-400 shrink-0" />
+                <span className="text-[8px] font-black uppercase tracking-widest text-emerald-400 flex flex-col leading-tight">
+                  <span>{language === 'en' ? 'Daily' : 'ଦୈନିକ'}</span>
+                  <span>{language === 'en' ? 'Target' : 'ଲକ୍ଷ୍ୟ'}</span>
+                </span>
               </div>
-              <div className="h-2 w-full bg-slate-900/60 rounded-full overflow-hidden border border-white/5 relative">
-                <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full transition-all duration-1000" style={{ width: `${dailyProgress}%` }}>
-                  <div className="absolute top-0 right-0 bottom-0 w-20 bg-gradient-to-r from-transparent to-white/20 skew-x-12 animate-[shimmer_2s_infinite]"></div>
-                </div>
+              <span className="text-[11px] font-black text-emerald-400 leading-none">{Math.round(dailyProgress)}%</span>
+            </div>
+            <div className="h-2 w-full bg-slate-900/60 rounded-full overflow-hidden border border-white/5 relative mt-1">
+              <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full transition-all duration-1000" style={{ width: `${dailyProgress}%` }}>
+                <div className="absolute top-0 right-0 bottom-0 w-20 bg-gradient-to-r from-transparent to-white/20 skew-x-12 animate-[shimmer_2s_infinite]"></div>
               </div>
             </div>
           </div>
