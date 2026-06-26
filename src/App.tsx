@@ -79,6 +79,8 @@ import { BottomNavBar } from './components/BottomNavBar';
 import ReactMarkdown from 'react-markdown';
 import { cleanMathNotation } from './utils/cleaners';
 import LibraryPortalGate from './components/LibraryPortalGate';
+import { Capacitor } from '@capacitor/core';
+import { PushNotifications } from '@capacitor/push-notifications';
 
 // Reusable resilient lazy loader that catches chunk/asset preloading errors
 // and automatically reloads the page to retrieve the latest deployed assets.
@@ -1566,28 +1568,24 @@ export default function App() {
     }
     try {
       let chaptersQuery: Query<DocumentData>;
-      if (user.role === 'admin') {
-        chaptersQuery = collection(firestore, 'published_textbooks_chapters');
+      const classDigits = targetClass.replace(/\D/g, '');
+      if (classDigits) {
+        const classVariants = [
+          `class${classDigits}`,
+          `class ${classDigits}`,
+          classDigits
+        ];
+        chaptersQuery = query(
+          collection(firestore, 'chapters'),
+          where('status', '==', 'published'),
+          where('class', 'in', classVariants)
+        );
       } else {
-        const classDigits = targetClass.replace(/\D/g, '');
-        if (classDigits) {
-          const classVariants = [
-            `class${classDigits}`,
-            `class ${classDigits}`,
-            classDigits
-          ];
-          chaptersQuery = query(
-            collection(firestore, 'chapters'),
-            where('status', '==', 'published'),
-            where('class', 'in', classVariants)
-          );
-        } else {
-          chaptersQuery = query(
-            collection(firestore, 'chapters'),
-            where('status', '==', 'published'),
-            where('class', '==', targetClass)
-          );
-        }
+        chaptersQuery = query(
+          collection(firestore, 'chapters'),
+          where('status', '==', 'published'),
+          where('class', '==', targetClass)
+        );
       }
       
       const snapshot = await getDocs(chaptersQuery);
@@ -2518,6 +2516,50 @@ export default function App() {
     }
   }, [user?.id, activeTab, user?.role, loadChapters, loadTextbooks, loadTestSubmissions, loadDailyMcqSubmissions, loadFollowing, loadMonthlyTests]);
 
+  // --- Native Push Notifications Registration via Capacitor ---
+  useEffect(() => {
+    if (typeof window !== 'undefined' && Capacitor.isNativePlatform()) {
+      PushNotifications.requestPermissions().then((result) => {
+        if (result.receive === 'granted') {
+          PushNotifications.register();
+        }
+      });
+
+      PushNotifications.addListener('registration', (token) => {
+        console.log('Capacitor Push registration success, token:', token.value);
+        if (user?.id) {
+          const userRef = doc(firestore, 'users', user.id);
+          updateDoc(userRef, {
+            nativeDeviceToken: token.value,
+            lastTokenUpdate: new Date()
+          }).catch(err => console.warn('Failed to save native device token:', err));
+        }
+      });
+
+      PushNotifications.addListener('registrationError', (err) => {
+        console.error('Capacitor Push registration error:', err);
+      });
+
+      PushNotifications.addListener('pushNotificationReceived', (notification) => {
+        console.log('Push notification received in foreground:', notification);
+        const newNotif = {
+          id: notification.id || Date.now().toString(),
+          title: notification.title || 'Notification',
+          message: notification.body || '',
+          createdAt: new Date(),
+          type: 'general'
+        };
+        setStudentNotifications(prev => [newNotif, ...prev]);
+        setNewNotification(newNotif);
+        setTimeout(() => setNewNotification(null), 10000);
+      });
+
+      PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
+        console.log('Push notification action performed:', notification);
+        setActiveTab('notifications');
+      });
+    }
+  }, [user?.id]);
 
   // --- Per-class MCQ subject rotation ---
   const classSubjectList = React.useMemo(() => {

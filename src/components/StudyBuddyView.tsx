@@ -12,12 +12,14 @@ import {
   Image,
   Plus,
   X,
-  ChevronLeft
+  ChevronLeft,
+  Mic
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
 import { db, handleFirestoreError, OperationType } from '../firebase';
 import { getAI, withRetry, logAiUsage, gunduluSafetySettings } from '../services/aiService';
+import { useVoiceInput } from '../hooks/useVoiceInput';
 import { collection, addDoc, doc, getDoc, query, where, getDocs, limit } from 'firebase/firestore';
 
 interface Message {
@@ -65,6 +67,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const [freeQueriesCount, setFreeQueriesCount] = useState<number>(0);
+  const { isListening, startListening, stopListening } = useVoiceInput(language);
 
   useEffect(() => {
     const getFreeQueriesKey = () => `free_ai_queries_used_${user?.uid || user?.id || 'guest'}`;
@@ -555,6 +558,15 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
                     className="p-1.5 sm:p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-all"
                   >
                     <Plus size={16} className="sm:size-5" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={isListening ? stopListening : () => startListening((text) => setInput(prev => prev + (prev ? ' ' : '') + text))}
+                    className={`p-1.5 sm:p-2 rounded-full transition-all ${isListening ? 'text-red-500 bg-red-500/15 animate-pulse border border-red-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
+                    title={isListening ? (language === 'en' ? 'Stop Listening' : 'ଶୁଣିବା ବନ୍ଦ କରନ୍ତୁ') : (language === 'en' ? 'Speak in Odia/English' : 'ଓଡ଼ିଆ/ଇଂରାଜୀରେ କୁହନ୍ତୁ')}
+                  >
+                    <Mic size={16} className="sm:size-5" />
                   </button>
 
                   {attachmentMenuOpen && (

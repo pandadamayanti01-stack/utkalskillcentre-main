@@ -1,7 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const CLASSES = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+// Classes 1-5, 8, and 9 are completed.
+// Classes 6, 7, and 10 are uncompleted or need reprocessing, and will be staged.
+const CLASSES = ['6', '7', '10'];
 const outputFilename = 'gemini_batch_requests.jsonl';
 const outputPath = path.resolve(__dirname, '..', outputFilename);
 

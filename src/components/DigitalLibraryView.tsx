@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import * as Lucide from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
+import { useVoiceInput } from '../hooks/useVoiceInput';
 import { Helmet } from 'react-helmet-async';
 import { db } from '../firebase';
 import { doc, updateDoc, collection, query, where, getDocs } from 'firebase/firestore';
@@ -862,6 +863,136 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
   const [selectedChapter, setSelectedChapter] = useState<any | null>(null);
   const [useDirectViewer, setUseDirectViewer] = useState<boolean>(false);
 
+  // Semantic Vector Search states
+  const [semanticQuery, setSemanticQuery] = useState('');
+  const [isSearchingTextbook, setIsSearchingTextbook] = useState(false);
+  const [searchResultChunks, setSearchResultChunks] = useState<any[] | null>(null);
+  const [searchError, setSearchError] = useState<string | null>(null);
+  const [selectedSearchChunk, setSelectedSearchChunk] = useState<any | null>(null);
+  const [isExplainingChunk, setIsExplainingChunk] = useState(false);
+  const [chunkExplanation, setChunkExplanation] = useState<string>('');
+
+  const { isListening, startListening, stopListening } = useVoiceInput(language);
+
+  const handleSemanticSearch = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!semanticQuery.trim()) return;
+
+    setIsSearchingTextbook(true);
+    setSearchError(null);
+    try {
+      const response = await fetch('/api/ai/search-textbook', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          queryText: semanticQuery.trim(),
+          class: selectedClass,
+          subject: selectedSubject || undefined,
+          limit: 4
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(language === 'en' ? 'Failed to fetch search results' : 'ସନ୍ଧାନ ଫଳାଫଳ ପାଇବାରେ ବିଫଳ ହେଲା');
+      }
+
+      const data = await response.json();
+      if (data.success && data.results) {
+        setSearchResultChunks(data.results);
+      } else {
+        setSearchResultChunks([]);
+      }
+    } catch (err: any) {
+      console.error('Semantic search error:', err);
+      setSearchError(err.message || 'Error occurred');
+    } finally {
+      setIsSearchingTextbook(false);
+    }
+  };
+
+  const handleVoiceSearch = () => {
+    if (isListening) {
+      stopListening();
+    } else {
+      startListening((text) => {
+        setSemanticQuery(text);
+      });
+    }
+  };
+
+  const handleExplainChunk = async (chunk: any) => {
+    setIsExplainingChunk(true);
+    setChunkExplanation('');
+    try {
+      const prompt = `Please explain this textbook passage clearly for a Class ${selectedClass} student. Break down difficult concepts or words, translate key technical terms to both Odia and English, and explain the core topic simply with quick examples if possible.
+Passage:
+"${chunk.text}"
+
+Write your explanation in a friendly, encouraging, bilingual style (Odia and English mixed) so it is extremely easy for an Odia medium student to understand.`;
+
+      const response = await solveMathDoubt(
+        prompt,
+        language,
+        undefined,
+        `Class ${selectedClass}`,
+        `You are Gundulu, the friendly AI tutor. Explain this textbook passage with elder-sister warmth and clear, simple language.`,
+        []
+      );
+      setChunkExplanation(response);
+    } catch (err) {
+      console.error('Failed to explain passage:', err);
+      setChunkExplanation(language === 'en' ? 'Sorry, I could not generate an explanation right now.' : 'କ୍ଷମା କରିବେ, ମୁଁ ବର୍ତ୍ତମାନ ବ୍ୟାଖ୍ୟା ପ୍ରସ୍ତୁତ କରିପାରିଲି ନାହିଁ।');
+    } finally {
+      setIsExplainingChunk(false);
+    }
+  };
+
+  // Offline caching states
+  const [cachedChapters, setCachedChapters] = useState<Record<string, boolean>>({});
+  const [downloadingChapters, setDownloadingChapters] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    const checkCache = async () => {
+      if (typeof window === 'undefined' || !('caches' in window)) return;
+      try {
+        const cache = await caches.open('utkal-textbooks-cache');
+        const cachedMap: Record<string, boolean> = {};
+        for (const chap of chapters) {
+          const url = chap.pdfUrl || chap.download_url || chap.driveUrl;
+          if (url) {
+            const match = await cache.match(url);
+            cachedMap[chap.id] = !!match;
+          }
+        }
+        setCachedChapters(cachedMap);
+      } catch (e) {
+        console.warn('Error checking offline cache:', e);
+      }
+    };
+    if (chapters.length > 0) {
+      checkCache();
+    }
+  }, [chapters]);
+
+  const downloadChapterOffline = async (chap: any, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent opening the reader view
+    const url = chap.pdfUrl || chap.download_url || chap.driveUrl;
+    if (!url) return;
+
+    setDownloadingChapters(prev => ({ ...prev, [chap.id]: true }));
+    try {
+      if (typeof window !== 'undefined' && 'caches' in window) {
+        const cache = await caches.open('utkal-textbooks-cache');
+        await cache.add(url);
+        setCachedChapters(prev => ({ ...prev, [chap.id]: true }));
+      }
+    } catch (err) {
+      console.error('Failed to cache chapter offline:', err);
+    } finally {
+      setDownloadingChapters(prev => ({ ...prev, [chap.id]: false }));
+    }
+  };
+
   useEffect(() => {
     setUseDirectViewer(false);
   }, [selectedChapter]);
@@ -887,6 +1018,20 @@ export const DigitalLibraryView: React.FC<DigitalLibraryViewProps> = ({
       setSelectedClass(cleanCls);
     }
   }, [user?.class, user?.role]);
+
+  // Load chapters for the selected class dynamically when selectedClass changes
+  useEffect(() => {
+    if (loadChapters) {
+      loadChapters(selectedClass);
+    }
+  }, [selectedClass, loadChapters]);
+
+  // Reset navigation states when class is changed to prevent invalid/inconsistent states
+  useEffect(() => {
+    setCurrentView('subjects');
+    setSelectedSubject('');
+    setSelectedChapter(null);
+  }, [selectedClass]);
 
   const effectivePdfUrl = selectedChapter ? (selectedChapter.pdfUrl || selectedChapter.download_url || selectedChapter.driveUrl || '') : '';
 
@@ -1380,14 +1525,157 @@ Instructions:
           <div style={forceGpuCompositingStyle} className="flex-1 flex flex-col">
             {/* Elegant Compact Digital Library Header */}
             <div className="text-center max-w-2xl mx-auto mb-4">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-400 text-[10px] font-black uppercase tracking-widest mb-4 shadow-sm">
-                <Lucide.Sparkles size={12} className="text-amber-400 animate-pulse" />
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200/60 text-amber-800 text-[10px] font-black uppercase tracking-widest mb-4 shadow-sm">
+                <Lucide.Sparkles size={12} className="text-amber-600 animate-pulse" />
                 <span>{language === 'en' ? 'USC Digital Library' : 'ଉତ୍କଳ ଡିଜିଟାଲ୍ ପାଠାଗାର'}</span>
               </div>
-              <h2 className="text-2xl md:text-3xl font-black text-white">
+              <h2 className="text-2xl md:text-3xl font-black text-slate-800">
                 {language === 'en' ? 'Choose a Subject Textbook' : 'ଆପଣଙ୍କର ପାଠ୍ୟପୁସ୍ତକ ବାଛନ୍ତୁ'}
               </h2>
             </div>
+
+            {/* AI-Powered Semantic Search Bar */}
+            <div className="w-full max-w-3xl mx-auto mb-8 px-4">
+              <form onSubmit={handleSemanticSearch} className="relative flex items-center bg-white border-2 border-amber-500/30 focus-within:border-amber-500 rounded-3xl p-1.5 transition-all shadow-lg">
+                <div className="pl-4 text-amber-600">
+                  <Lucide.Search size={20} />
+                </div>
+                <input
+                  type="text"
+                  value={semanticQuery}
+                  onChange={(e) => setSemanticQuery(e.target.value)}
+                  placeholder={language === 'en' 
+                    ? "Search textbook concepts... (e.g., photosynthesis, gravity, blood pressure)" 
+                    : "ପାଠ୍ୟପୁସ୍ତକ ବିଷୟବସ୍ତୁ ଖୋଜନ୍ତୁ... (ଯେପରିକି: ଆଲୋକ ସଂଶ୍ଳେଷଣ, ମାଧ୍ୟାକର୍ଷଣ, ରକ୍ତଚାପ)"}
+                  className="w-full bg-transparent border-0 outline-none focus:ring-0 text-slate-800 placeholder-slate-400 text-sm py-3 px-3 rounded-2xl"
+                />
+                
+                {/* Voice Search Button */}
+                <button
+                  type="button"
+                  onClick={handleVoiceSearch}
+                  className={`p-2 rounded-full transition-all mr-2 ${isListening ? 'text-red-600 bg-red-50 animate-pulse border border-red-200' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'}`}
+                  title={isListening ? (language === 'en' ? 'Stop Listening' : 'ଶୁଣିବା ବନ୍ଦ କରନ୍ତୁ') : (language === 'en' ? 'Speak with Voice' : 'ଭଏସ୍ ସନ୍ଧାନ')}
+                >
+                  <Lucide.Mic size={18} />
+                </button>
+                
+                <button
+                  type="submit"
+                  disabled={isSearchingTextbook}
+                  className="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-xs rounded-2xl active:scale-95 transition-all shadow-lg hover:shadow-amber-500/25 cursor-pointer disabled:opacity-50 flex items-center gap-2"
+                >
+                  {isSearchingTextbook ? (
+                    <>
+                      <Lucide.Loader2 size={14} className="animate-spin" />
+                      <span>{language === 'en' ? 'Searching...' : 'ସନ୍ଧାନ ଚାଲିଛି...'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Lucide.Sparkles size={14} />
+                      <span>{language === 'en' ? 'Ask AI Search' : 'AI ସନ୍ଧାନ'}</span>
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
+
+            {/* Semantic Search Results */}
+            <AnimatePresence>
+              {searchResultChunks && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="w-full max-w-4xl mx-auto mb-8 bg-white border-2 border-amber-500/30 rounded-[2rem] p-6 shadow-xl relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+                  <div className="absolute bottom-0 left-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
+
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 bg-amber-50 border border-amber-100 text-amber-600 rounded-xl">
+                        <Lucide.Sparkles size={18} className="animate-pulse" />
+                      </div>
+                      <div>
+                        <h3 className="text-md font-black text-slate-800">
+                          {language === 'en' ? 'AI Textbook Smart Match' : 'AI ପାଠ୍ୟପୁସ୍ତକ ସ୍ମାର୍ଟ ମେଳ'}
+                        </h3>
+                        <p className="text-[10px] font-bold text-slate-500">
+                          {language === 'en' 
+                            ? `Found ${searchResultChunks.length} conceptual passages in Class ${selectedClass} textbooks` 
+                            : `${selectedClass} ଶ୍ରେଣୀ ପାଠ୍ୟପୁସ୍ତକରୁ ${searchResultChunks.length}ଟି ପ୍ରାସଙ୍ଗିକ ଅନୁଚ୍ଛେଦ ମିଳିଲା`}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchResultChunks(null);
+                        setSemanticQuery('');
+                      }}
+                      className="p-2 hover:bg-slate-100 border border-slate-200 text-slate-400 hover:text-slate-600 rounded-xl active:scale-95 transition-all"
+                    >
+                      <Lucide.X size={16} />
+                    </button>
+                  </div>
+
+                  {searchError && (
+                    <div className="p-4 bg-red-50 border border-red-100 rounded-2xl text-red-600 text-xs font-bold text-center">
+                      {searchError}
+                    </div>
+                  )}
+
+                  {searchResultChunks.length === 0 ? (
+                    <div className="p-8 text-center text-slate-500 text-xs font-bold">
+                      {language === 'en' 
+                        ? 'No matching passages found. Try rephrasing or asking in standard Odia/English!' 
+                        : 'କୌଣସି ମେଳ ଖାଉଥିବା ଅନୁଚ୍ଛେଦ ମିଳିଲା ନାହିଁ। ଦୟାକରି ଅନ୍ୟ ଶବ୍ଦ ବ୍ୟବହାର କରି ଚେଷ୍ଟା କରନ୍ତୁ!'}
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {searchResultChunks.map((chunk, idx) => (
+                        <motion.div
+                          key={chunk.id || idx}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: idx * 0.05 }}
+                          className="bg-slate-50 border border-slate-100 hover:border-amber-500/30 rounded-2xl p-4 flex flex-col justify-between transition-all group shadow-sm"
+                        >
+                          <div>
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="px-2 py-0.5 rounded bg-emerald-50 border border-emerald-100 text-emerald-700 text-[9px] font-black uppercase tracking-wider">
+                                {chunk.subject ? chunk.subject.toUpperCase() : 'TEXTBOOK'}
+                              </span>
+                              <span className="text-[9px] font-bold text-slate-400">
+                                {chunk.reference || `Page ${idx + 1}`}
+                              </span>
+                            </div>
+                            <p className="text-xs text-slate-600 font-semibold leading-relaxed line-clamp-4 group-hover:line-clamp-none transition-all duration-300">
+                              {chunk.text}
+                            </p>
+                          </div>
+
+                          <div className="flex gap-2 mt-4 pt-3 border-t border-slate-100">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedSearchChunk(chunk);
+                                handleExplainChunk(chunk);
+                              }}
+                              className="flex-1 py-2 bg-white hover:bg-amber-50 border border-slate-200 hover:border-amber-200 text-slate-600 hover:text-amber-700 text-[10px] font-black rounded-xl active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                            >
+                              <Lucide.BookOpen size={12} />
+                              <span>{language === 'en' ? 'Read & Explain' : 'ପଢନ୍ତୁ ଏବଂ ବୁଝନ୍ତୁ'}</span>
+                            </button>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Premium Class Selector Pill-Bar (Only visible to Admins & Teachers) */}
             {(user?.role === 'admin' || user?.role === 'teacher') && (
@@ -1642,8 +1930,31 @@ Instructions:
                       </div>
                     </div>
 
-                    <div className="relative z-10 h-12 w-12 rounded-full bg-slate-800/80 border border-white/5 flex items-center justify-center text-slate-400 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-lg shadow-black/20 group-hover:shadow-[0_0_15px_rgba(16,185,129,0.5)]">
-                      <Lucide.ChevronRight size={20} className="transform group-hover:translate-x-0.5 transition-transform" />
+                    <div className="flex items-center relative z-10">
+                      {(chap.pdfUrl || chap.download_url || chap.driveUrl) && (
+                        <>
+                          {downloadingChapters[chap.id] ? (
+                            <div className="h-10 w-10 mr-3 flex items-center justify-center text-emerald-400">
+                              <Lucide.Loader2 size={20} className="animate-spin" />
+                            </div>
+                          ) : cachedChapters[chap.id] ? (
+                            <div className="h-10 w-10 mr-3 flex items-center justify-center text-emerald-400" title="Available Offline">
+                              <Lucide.CheckCircle2 size={20} />
+                            </div>
+                          ) : (
+                            <button
+                              onClick={(e) => downloadChapterOffline(chap, e)}
+                              className="h-10 w-10 mr-3 rounded-full bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400 flex items-center justify-center transition-all"
+                              title="Download for Offline Use"
+                            >
+                              <Lucide.Download size={16} />
+                            </button>
+                          )}
+                        </>
+                      )}
+                      <div className="h-12 w-12 rounded-full bg-slate-800/80 border border-white/5 flex items-center justify-center text-slate-400 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-lg shadow-black/20 group-hover:shadow-[0_0_15px_rgba(16,185,129,0.5)]">
+                        <Lucide.ChevronRight size={20} className="transform group-hover:translate-x-0.5 transition-transform" />
+                      </div>
                     </div>
                   </motion.div>
                 ))}
@@ -3099,6 +3410,83 @@ Instructions:
                 </div>
               </div>
             </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Search Chunk Reader & AI Explanation Modal */}
+        <AnimatePresence>
+          {selectedSearchChunk && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                className="w-full max-w-2xl bg-slate-900 border border-white/10 rounded-[2rem] p-6 shadow-2xl relative max-h-[85vh] overflow-y-auto"
+              >
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedSearchChunk(null);
+                    setChunkExplanation('');
+                  }}
+                  className="absolute top-4 right-4 p-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-white rounded-xl active:scale-95 transition-all cursor-pointer"
+                >
+                  <Lucide.X size={16} />
+                </button>
+
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-[10px] font-black uppercase">
+                    {selectedSearchChunk.subject ? selectedSearchChunk.subject.toUpperCase() : 'TEXTBOOK'}
+                  </span>
+                  <span className="text-[10px] font-bold text-slate-400">
+                    {selectedSearchChunk.reference} (Class {selectedClass})
+                  </span>
+                </div>
+
+                <h3 className="text-sm font-black text-slate-400 mb-2 uppercase tracking-wide">
+                  {language === 'en' ? 'Textbook Passage' : 'ପାଠ୍ୟପୁସ୍ତକ ଅନୁଚ୍ଛେଦ'}
+                </h3>
+                <div className="p-4 bg-slate-950/60 border border-white/5 rounded-2xl text-slate-200 text-sm font-bold leading-relaxed mb-6">
+                  {selectedSearchChunk.text}
+                </div>
+
+                <div className="border-t border-white/5 pt-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-sm font-black text-amber-400 flex items-center gap-1.5">
+                      <Lucide.Bot size={18} className="animate-pulse" />
+                      <span>{language === 'en' ? "Gundulu's Study Guide" : "ଗୁନ୍ଦୁଲୁର ସାହାଯ୍ୟ"}</span>
+                    </h4>
+                    {isExplainingChunk && (
+                      <span className="text-[10px] font-bold text-slate-400 flex items-center gap-1">
+                        <Lucide.Loader2 size={10} className="animate-spin text-amber-400" />
+                        {language === 'en' ? 'Gundulu is thinking...' : 'ଗୁନ୍ଦୁଲୁ ବିଚାର କରୁଛି...'}
+                      </span>
+                    )}
+                  </div>
+
+                  {isExplainingChunk ? (
+                    <div className="space-y-3">
+                      <div className="h-4 bg-white/5 rounded-md animate-pulse w-3/4" />
+                      <div className="h-4 bg-white/5 rounded-md animate-pulse w-5/6" />
+                      <div className="h-4 bg-white/5 rounded-md animate-pulse w-2/3" />
+                    </div>
+                  ) : chunkExplanation ? (
+                    <div className="p-4 bg-amber-500/5 border border-amber-500/10 rounded-2xl text-slate-300 text-xs sm:text-sm font-bold leading-relaxed prose prose-invert max-w-none">
+                      <ReactMarkdown>{chunkExplanation}</ReactMarkdown>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => handleExplainChunk(selectedSearchChunk)}
+                      className="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-xs rounded-xl active:scale-95 transition-all shadow-lg hover:shadow-amber-500/25 flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <Lucide.Sparkles size={14} />
+                      <span>{language === 'en' ? 'Ask Gundulu to Explain Concept' : 'ଏହି ପ୍ରସଙ୍ଗ ବୁଝାଇବାକୁ ଗୁନ୍ଦୁଲୁକୁ କୁହନ୍ତୁ'}</span>
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            </div>
           )}
         </AnimatePresence>
 

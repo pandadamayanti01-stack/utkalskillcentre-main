@@ -2505,6 +2505,118 @@ async function startServer() {
     }
   });
 
+  // Textbook semantic search endpoint using Firestore Vector Search (KNN)
+  app.post('/api/ai/search-textbook', async (req, res) => {
+    try {
+      const { queryText, limit: reqLimit, class: userClass, subject } = req.body;
+      if (!queryText || typeof queryText !== 'string' || !queryText.trim()) {
+        return res.status(400).json({ error: 'Query text is required' });
+      }
+
+      console.log(`[Semantic Search] Request received: "${queryText}" for class: ${userClass}, subject: ${subject}`);
+
+      const adminApp = getInitializedAdminApp();
+      if (!adminApp) {
+        return res.status(503).json({ error: 'Firebase Admin initialization failed' });
+      }
+
+      const db = getAdminFirestore(adminApp, firestoreDatabaseId);
+      const chunksColl = db.collection('textbook_chunks');
+      const { FieldValue } = await import('firebase-admin/firestore');
+
+      // 1. Resolve keys for embedding generation
+      const rotatorKeys = [];
+      for (let i = 1; i <= 7; i++) {
+        const k = process.env[`GEMINI_ROTATOR_KEY_${i}`];
+        if (k) rotatorKeys.push(k);
+      }
+      if (process.env.GEMINI_API_KEY && !rotatorKeys.includes(process.env.GEMINI_API_KEY)) {
+        rotatorKeys.push(process.env.GEMINI_API_KEY);
+      }
+
+      const keyToUse = rotatorKeys[0] || process.env.GEMINI_API_KEY;
+      if (!keyToUse) {
+        return res.status(503).json({ error: 'GEMINI_API_KEY or rotator keys are missing on the server' });
+      }
+
+      // 2. Generate embedding vector for the search query
+      const embedUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key=${keyToUse}`;
+      const embedRes = await fetch(embedUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: "models/gemini-embedding-001",
+          content: { parts: [{ text: queryText.trim() }] },
+          outputDimensionality: 768
+        })
+      });
+
+      if (!embedRes.ok) {
+        const errText = await embedRes.text();
+        console.error('[Semantic Search] Gemini embedding API error:', embedRes.status, errText);
+        return res.status(502).json({ error: 'Gemini embedding service returned an error', details: errText });
+      }
+
+      const embedData = await embedRes.json();
+      const queryVector = embedData.embedding?.values;
+      if (!queryVector || queryVector.length !== 768) {
+        console.error('[Semantic Search] Invalid embedding response format:', embedData);
+        return res.status(502).json({ error: 'Invalid response format from embedding service' });
+      }
+
+      // 3. Query Firestore using findNearest
+      let searchClass = userClass ? String(userClass).toLowerCase().trim() : null;
+      if (searchClass && searchClass.startsWith('class')) {
+        searchClass = searchClass.replace('class', '').trim();
+      }
+
+      let queryRef: any = chunksColl;
+      if (searchClass) {
+        queryRef = queryRef.where('class', '==', searchClass);
+      }
+      if (subject) {
+        let dbSubject = String(subject).toLowerCase().trim();
+        // Map specific frontend subject keys to the database textbook chunk subject names
+        if (dbSubject === 'jigyasa' || dbSubject === 'physical_science' || dbSubject === 'life_science' || dbSubject === 'ama_chaturbaswara_pruthibi') {
+          dbSubject = 'science';
+        } else if (dbSubject === 'sahitya_sudha' || dbSubject === 'sahitya_suman' || dbSubject === 'sahitya_surabhi' || dbSubject.startsWith('bhasa_mahak') || dbSubject.startsWith('jhulana') || dbSubject === 'shishu_vatika') {
+          dbSubject = 'odia';
+        } else if (dbSubject === 'ganita_khela' || dbSubject === 'maja_majare_ganita' || dbSubject === 'ganita_mela' || dbSubject === 'ganita_prakas') {
+          dbSubject = 'math';
+        }
+        queryRef = queryRef.where('subject', '==', dbSubject);
+      }
+
+      const searchLimit = reqLimit ? Math.min(parseInt(reqLimit, 10), 10) : 5;
+      console.log(`[Semantic Search] Executing findNearest on database: ${firestoreDatabaseId} with limit ${searchLimit}`);
+
+      const vectorQuery = queryRef.findNearest({
+        vectorField: 'embedding',
+        queryVector: FieldValue.vector(queryVector),
+        distanceMeasure: 'COSINE',
+        limit: searchLimit,
+      });
+
+      const snapshot = await vectorQuery.get();
+      const results = snapshot.docs.map((doc: any) => {
+        const data = doc.data();
+        // Remove embedding field to keep network payload minimal
+        const { embedding, ...rest } = data;
+        return {
+          id: doc.id,
+          ...rest
+        };
+      });
+
+      console.log(`[Semantic Search] Successfully retrieved ${results.length} matches`);
+      return res.json({ success: true, results });
+
+    } catch (err: any) {
+      console.error('[Semantic Search] Critical error:', err);
+      return res.status(500).json({ error: err.message || 'Internal server error' });
+    }
+  });
+
   // Login with PIN endpoint
   app.post('/api/auth/login-with-pin', async (req, res) => {
     try {

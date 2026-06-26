@@ -6,8 +6,11 @@ interface SEOProps {
   description?: string;
   subject?: string;
   className?: string;
-  schemaType?: 'Course' | 'FAQPage' | 'HowTo';
+  schemaType?: 'Course' | 'FAQPage' | 'HowTo' | 'WebSite' | 'SoftwareApplication';
   faqs?: Array<{ question: string; answer: string }>;
+  canonicalUrl?: string;
+  image?: string;
+  lang?: string;
 }
 
 /**
@@ -35,7 +38,10 @@ export const SEO: React.FC<SEOProps> = ({
   subject,
   className = "Class 10",
   schemaType = 'Course',
-  faqs
+  faqs,
+  canonicalUrl,
+  image,
+  lang
 }) => {
   const currentMonth = getMonthlyTestName();
   const year = 2026; // Fixed for current focus
@@ -49,31 +55,18 @@ export const SEO: React.FC<SEOProps> = ({
     ? `Download latest BSE Odisha ${className} ${subject} study notes and 100% selection questions in Odia medium. BSE Odisha State Board Exam ${year}. ୨୦୨୬ ମାସିକ ପରୀକ୍ଷା ସିଲେକ୍ସନ ପ୍ରଶ୍ନୋତ୍ତର PDF.`
     : `Download official BSE Odisha Class 1 to 10 school books PDF in Odia medium. Get free chapter-wise study notes, class 10 math textbooks, comfortable eye-care mobile reader, and Gundulu AI instant doubt solving tutor on Odisha's best educational digital library (ଓଡ଼ିଶା ବିଦ୍ୟାଳୟ ପାଠ୍ୟପୁସ୍ତକ).`);
 
+  const activeUrl = canonicalUrl || (typeof window !== 'undefined' ? window.location.origin + window.location.pathname : 'https://utkalskillcentre.com');
+  const seoImage = image || 'https://utkalskillcentre.com/utkal-192.png';
+  const pageLang = lang || 'or';
+
   // Construct Schemas
-  let schemaData: any = {
-    "@context": "https://schema.org",
-    "@type": "Course",
-    "name": seoTitle,
-    "description": seoDescription,
-    "provider": {
-      "@type": "Organization",
-      "name": "Utkal Skill Centre",
-      "url": "https://utkalskillcentre.com"
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "Utkal Skill Centre",
-      "logo": {
-         "@type": "ImageObject",
-         "url": "https://utkalskillcentre.com/utkal-192.png"
-      }
-    }
-  };
+  let schemaData: any = null;
 
   if (schemaType === 'FAQPage' && faqs) {
     schemaData = {
       "@context": "https://schema.org",
       "@type": "FAQPage",
+      "inLanguage": pageLang,
       "mainEntity": faqs.map(f => ({
         "@type": "Question",
         "name": f.question,
@@ -87,6 +80,7 @@ export const SEO: React.FC<SEOProps> = ({
     schemaData = {
       "@context": "https://schema.org",
       "@type": "HowTo",
+      "inLanguage": pageLang,
       "name": `How to check BSE Odisha 10th Result 2026`,
       "step": [
         { "@type": "HowToStep", "text": "Visit orissaresults.nic.in or bseodisha.ac.in" },
@@ -95,56 +89,96 @@ export const SEO: React.FC<SEOProps> = ({
         { "@type": "HowToStep", "text": "Click 'Submit' to view your marksheet" }
       ]
     };
+  } else if (schemaType === 'WebSite') {
+    schemaData = {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Utkal Skill Centre",
+      "url": "https://utkalskillcentre.com",
+      "inLanguage": pageLang,
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://utkalskillcentre.com/?search={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    };
+  } else if (schemaType === 'SoftwareApplication') {
+    schemaData = {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": seoTitle,
+      "description": seoDescription,
+      "operatingSystem": "All",
+      "applicationCategory": "EducationalApplication",
+      "inLanguage": pageLang,
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "INR"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Utkal Skill Centre",
+        "url": "https://utkalskillcentre.com"
+      }
+    };
+  } else {
+    schemaData = {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      "name": seoTitle,
+      "description": seoDescription,
+      "inLanguage": pageLang,
+      "provider": {
+        "@type": "Organization",
+        "name": "Utkal Skill Centre",
+        "url": "https://utkalskillcentre.com"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Utkal Skill Centre",
+        "logo": {
+           "@type": "ImageObject",
+           "url": "https://utkalskillcentre.com/utkal-192.png"
+        }
+      }
+    };
   }
 
-  // High-Density SEO Keywords Targeting Odia medium search queries across Odisha
+  // High-Density SEO Keywords Refined for Byte Savings
   const keywordsList = [
     "school book odia",
     "odia class 1 to 10 books",
     "odia medium books download",
     "bse odisha school books pdf",
-    "odia medium textbook download",
-    "digital library odia",
-    "odia school books class 10",
-    "class 1 to 10 books odisha board",
-    "bse odisha class 10 math book",
-    "bse odisha syllabus pdf",
-    "odia guide book pdf download",
-    "odisha matric selection questions 2026",
-    "10th matric result odisha bse",
-    "୧୦ମ ଶ୍ରେଣୀ ବହି",
-    "ଓଡ଼ିଆ ମାଧ୍ୟମ ପୁସ୍ତକ download",
-    "bseodisha ac in textbooks",
-    "Gundulu AI study buddy",
-    "comfort eye care study reader",
-    "Utkal Skill Centre digital library",
-    "free odia school notes",
-    "orissa results nic in HSC",
-    "odisha primary school books",
-    "odisha board textbook pdf",
-    "chse odisha books",
-    "odia selection paper 2026",
-    "online study odia medium",
-    "odisha exam solution pdf",
-    subject || "",
-    className
-  ].filter(Boolean).join(", ");
+    "Utkal Skill Centre digital library"
+  ].join(", ");
 
   return (
     <Helmet>
+      <html lang={pageLang} />
       <title>{seoTitle}</title>
       <meta name="description" content={seoDescription} />
+      
+      <link rel="canonical" href={activeUrl} />
+      <link rel="alternate" hrefLang="or" href={activeUrl} />
+      <link rel="alternate" hrefLang="en" href={activeUrl} />
       
       {/* Open Graph / Facebook */}
       <meta property="og:title" content={seoTitle} />
       <meta property="og:description" content={seoDescription} />
       <meta property="og:type" content="website" />
-      <meta property="og:url" content="https://utkalskillcentre.com" />
+      <meta property="og:url" content={activeUrl} />
+      <meta property="og:image" content={seoImage} />
       
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={seoTitle} />
       <meta name="twitter:description" content={seoDescription} />
+      <meta name="twitter:image" content={seoImage} />
       
       <meta name="keywords" content={keywordsList} />
 
