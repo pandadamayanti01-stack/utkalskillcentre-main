@@ -570,7 +570,7 @@ Sample tone for Class 6-10:
     // users are loaded via dedicated useEffect below to support dynamic sorting
 
     // user_locks
-    getDocs(query(collection(firestore, 'user_locks'), limit(100))).then(snapshot => {
+    getDocs(query(collection(firestore, 'user_locks'), limit(1000))).then(snapshot => {
       setUserLocks(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     }).catch(err => console.error("Firestore User Locks Error:", err));
 
