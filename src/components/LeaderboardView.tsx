@@ -269,10 +269,7 @@ export function LeaderboardView({ leaderboard, language, onBack, following, user
                         )}
                       </div>
                       <div className="flex flex-col">
-                        <span 
-                          className="font-black flex items-center gap-2"
-                          style={{ color: student?.id === user?.id ? '#34d399' : '#2dd4bf' }}
-                        >
+                        <span className={`font-black flex items-center gap-2 ${student?.id === user?.id ? 'text-emerald-400' : 'text-cyan-400'}`}>
                           {student?.name}
                           {student.streak > 0 && (
                             <span className="flex items-center gap-0.5 text-orange-400 text-[10px] font-black bg-orange-500/10 px-1.5 py-0.5 rounded-full border border-orange-500/20">

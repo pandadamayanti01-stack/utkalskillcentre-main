@@ -4126,10 +4126,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                               </div>
                               <div>
                                 <div className="font-black flex items-center gap-1.5 text-sm">
-                                  <span 
-                                    className="font-black"
-                                    style={{ color: isCurrentUser ? '#34d399' : '#2dd4bf' }}
-                                  >
+                                  <span className={`font-black ${isCurrentUser ? 'text-emerald-400' : 'text-cyan-400'}`}>
                                     {student.name}
                                   </span>
                                   {isCurrentUser && (
@@ -4262,10 +4259,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                                 </div>
                                 <div>
                                   <div className="font-black flex items-center gap-1.5 text-sm">
-                                    <span 
-                                      className="font-black"
-                                      style={{ color: isCurrentUser ? '#fbbf24' : '#facc15' }}
-                                    >
+                                    <span className={`font-black ${isCurrentUser ? 'text-amber-400' : 'text-orange-400'}`}>
                                       {student.name}
                                     </span>
                                     {isCurrentUser && (
