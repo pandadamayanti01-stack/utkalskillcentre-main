@@ -1780,6 +1780,7 @@ export default function App() {
           title: "Daily MCQ Challenge",
           subject: "Mathematics",
           class: user?.class || "10",
+          board: user?.board || "BSE Odisha",
           activeDate: today,
           status: "published",
           questions: [
