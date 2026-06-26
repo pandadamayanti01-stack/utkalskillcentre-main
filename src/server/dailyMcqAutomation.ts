@@ -1018,7 +1018,8 @@ async function generateOptionalQuestionsFromPrompt(
   className: string,
   subject: string,
   count: number,
-  chapterTitle?: string
+  chapterTitle?: string,
+  textbookText?: string  // Pre-parsed plain text from .txt cache — injected directly, avoids Files API
 ): Promise<DailyMcqQuestion[]> {
   const keysToTry = getGeminiApiKeys();
   if (keysToTry.length === 0) {
@@ -1037,9 +1038,15 @@ async function generateOptionalQuestionsFromPrompt(
     3. Conjuncts & Halant: Use correct conjuncts/ligatures (e.g., द्व, द्ध, ज्ञ, क्ष, त्र, प्र, श्र) and proper halant placement (्) (e.g., correct is "किम्", "अस्ति", "पठति"). Do NOT output broken or disjointed Unicode characters.`;
   }
 
+  // If we have pre-parsed textbook text, inject it directly so questions are grounded in real content
+  const textbookContext = textbookText && textbookText.trim().length > 100
+    ? `\n\nTEXTBOOK CONTENT (use this as the primary source for generating questions):\n---\n${textbookText.substring(0, 12000)}\n---`
+    : '';
+
   const prompt = `You are a teacher. Generate exactly ${count} multiple-choice questions (MCQs) for the subject "${subject}" (Class: ${className}).
 ${chapterTitle ? `The questions should focus on the chapter/topic: "${chapterTitle}".` : 'The questions should cover general topics suitable for this class level.'}
 Difficulty: MEDIUM.
+${textbookContext}
 
 Rules:
 1. Make sure to generate EXACTLY ${count} questions.
@@ -1055,8 +1062,7 @@ ${gamificationRules}`;
   const models = [
     "gemini-2.5-flash",
     "gemini-2.5-flash-lite",
-    "gemini-3.1-flash-lite",
-    "gemini-2.0-flash-lite"
+    "gemini-3.1-flash-lite"
   ];
 
   let lastError: any = null;
@@ -1116,29 +1122,43 @@ async function generateOptionalQuestions(
   }
 
   if (bucketResult && bucketResult.driveContent.buffer) {
-    try {
-      console.log(`[MCQ-OPTIONAL] Textbook PDF found. Generating via PDF vision...`);
-      const mcqs = await generateMcqsWithGemini(
-        bucketResult.driveContent.buffer,
-        count + 2, // Generate slightly more to ensure we get enough valid ones
-        subject,
-        className,
-        'daily',
-        'medium',
-        chapterTitle ? [chapterTitle] : undefined
-      );
-      
-      const cleaned = cleanOptionalQuestions(mcqs, subject, count);
-      if (cleaned.length >= count) {
-        return cleaned;
+    const mimeType = bucketResult.driveContent.mimeType || '';
+
+    // If the cached file is plain text (.txt), inject the text directly into the prompt.
+    // Do NOT route through generateMcqsWithGemini (Files API PDF path) — it will fail
+    // with '400: The document has no pages' because a .txt file is not a PDF.
+    if (mimeType === 'text/plain') {
+      console.log(`[MCQ-OPTIONAL] Textbook .txt cache found. Generating via text-prompt (skipping PDF Files API)...`);
+      try {
+        const textContent = bucketResult.driveContent.text || bucketResult.driveContent.buffer.toString('utf8');
+        const mcqs = await generateOptionalQuestionsFromPrompt(className, subject, count, chapterTitle, textContent);
+        if (mcqs.length >= count) return mcqs;
+      } catch (err: any) {
+        console.warn(`[MCQ-OPTIONAL] Text-prompt generation failed: ${err.message}. Trying pure fallback.`);
       }
-      console.warn(`[MCQ-OPTIONAL] PDF generation returned only ${cleaned.length}/${count} valid questions. Falling back to prompt generation.`);
-    } catch (err: any) {
-      console.warn(`[MCQ-OPTIONAL] PDF generation failed: ${err.message}. Falling back to prompt generation.`);
+    } else {
+      // Real PDF buffer — use Gemini Files API vision path
+      try {
+        console.log(`[MCQ-OPTIONAL] Textbook PDF found. Generating via PDF vision...`);
+        const mcqs = await generateMcqsWithGemini(
+          bucketResult.driveContent.buffer,
+          count + 2,
+          subject,
+          className,
+          'daily',
+          'medium',
+          chapterTitle ? [chapterTitle] : undefined
+        );
+        const cleaned = cleanOptionalQuestions(mcqs, subject, count);
+        if (cleaned.length >= count) return cleaned;
+        console.warn(`[MCQ-OPTIONAL] PDF generation returned only ${cleaned.length}/${count} valid questions. Falling back to prompt generation.`);
+      } catch (err: any) {
+        console.warn(`[MCQ-OPTIONAL] PDF generation failed: ${err.message}. Falling back to prompt generation.`);
+      }
     }
   }
 
-  // Fallback to text prompt generation
+  // Final fallback: pure prompt generation with no textbook content
   return generateOptionalQuestionsFromPrompt(className, subject, count, chapterTitle);
 }
 
