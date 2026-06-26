@@ -2901,7 +2901,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           </div>
 
           {/* Animated Gundulu Mascot Video (Right Side) with hanging rope banner */}
-          <div className="flex flex-col items-center shrink-0 -mt-2 md:-mt-6 self-center md:self-auto relative select-none">
+          <div className="flex flex-col items-center shrink-0 mt-0 md:-mt-6 self-center md:self-auto relative select-none">
             {showTestResultHanger && (
               <motion.div
                 initial={{ y: -20, opacity: 0 }}
@@ -2920,7 +2920,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                     setShowImportantPapersModal(true);
                   }
                 }}
-                className="relative cursor-pointer group flex flex-col items-center z-30 mb-8 -mt-11 md:-mt-15"
+                className="relative cursor-pointer group flex flex-col items-center z-30 mb-8 -mt-6 md:-mt-12"
               >
                 {/* Hanging Ropes */}
                 <div className="flex justify-between w-20 h-6 relative z-10 pointer-events-none -mb-1.5">
