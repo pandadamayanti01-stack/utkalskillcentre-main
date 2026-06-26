@@ -3992,14 +3992,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 </div>
               </div>
 
-              {/* Conditional Filters */}
-              {leaderboardType === 'daily' ? (
-                <DistrictLeaderboardFilter 
-                  selectedDistrict={selectedDistrict}
-                  setSelectedDistrict={setSelectedDistrict}
-                  language={language}
-                />
-              ) : (
+              {/* Monthly Dropdowns (Only render if monthly) */}
+              {leaderboardType === 'monthly' && (
                 <div className="flex flex-wrap items-center gap-4">
                   {/* Month Selection Dropdown */}
                   <div className="flex items-center gap-2">
@@ -4034,7 +4028,15 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               )}
             </div>
 
-            {/* Monthly Reward Announcement Box */}
+            {/* Daily District Filter (Occupies FULL width below the header!) */}
+            {leaderboardType === 'daily' && (
+              <DistrictLeaderboardFilter 
+                selectedDistrict={selectedDistrict}
+                setSelectedDistrict={setSelectedDistrict}
+                language={language}
+              />
+            )}
+
             {leaderboardType === 'monthly' && (
               <div className="relative overflow-hidden rounded-[2rem] border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-orange-600/10 to-amber-500/10 p-5 text-center shadow-[0_0_25px_rgba(245,158,11,0.1)] group">
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12 animate-[shimmer_2s_infinite]"></div>
