@@ -4212,27 +4212,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
         }
       }}
     >
-      {isOfflineMode && (
-        <div className="fixed top-4 right-4 z-[9999] px-3 py-2 rounded-xl bg-amber-500/95 border border-amber-600 text-slate-950 shadow-xl flex items-center gap-2.5 backdrop-blur-sm transition-all duration-300">
-          <div className="flex items-center gap-1 font-black text-[10px] uppercase tracking-wider">
-            <Lucide.WifiOff size={13} className="animate-pulse" />
-            <span>{language === 'en' ? 'Offline Mode' : 'ଅଫ୍‌ଲାଇନ୍ ମୋଡ୍'}</span>
-          </div>
-          <button 
-            onClick={(e) => {
-              e.stopPropagation();
-              handleManualRetryConnection();
-            }}
-            disabled={isRetryingConnection}
-            className="px-2 py-1 rounded bg-slate-950 text-amber-500 hover:bg-slate-900 active:scale-95 text-[10px] font-bold uppercase transition-all flex items-center gap-1 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Lucide.RefreshCw size={10} className={isRetryingConnection ? "animate-spin" : ""} />
-            {isRetryingConnection 
-              ? (language === 'en' ? 'Checking...' : 'ଯାଞ୍ଚ ହେଉଛି...')
-              : (language === 'en' ? 'Reconnect' : 'ପୁନର୍ବାର ସଂଯୋଗ')}
-          </button>
-        </div>
-      )}
+
     <SEO 
       subject={
         activeTab === 'study_buddy' ? 'AI Study Buddy' : 
