@@ -1465,6 +1465,7 @@ export default function App() {
   const [isPremium, setIsPremium] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [dbError, setDbError] = useState<string | null>(null);
+  const [isOfflineMode, setIsOfflineMode] = useState(false);
   const [tutorExplanations, setTutorExplanations] = useState<Record<string, string>>({});
   const [tutorLoading, setTutorLoading] = useState<Record<string, boolean>>({});
   const [isSendingOtp, setIsSendingOtp] = useState(false);
@@ -1626,7 +1627,27 @@ export default function App() {
       setChapters(data);
       setCachedData(chaptersCacheKey, data);
     } catch (err) {
-      handleFirestoreError(err, OperationType.GET, 'chapters');
+      console.warn("Failed to load chapters from Firestore. Using static mock chapters for offline fallback.", err);
+      setIsOfflineMode(true);
+      const mockChapters: Chapter[] = [
+        {
+          id: "mock_math_ch1",
+          title: "ଦ୍ୱିଘାତ ସମୀକରଣ (Quadratic Equations)",
+          class: targetClass,
+          subject: "Mathematics",
+          notes: "ଦ୍ୱିଘାତ ସମୀକରଣର ସାଧାରଣ ରୂପ ହେଲା ax^2 + bx + c = 0. ଏହାର ଦୁଇଟି ବୀଜ ଥାଏ। b^2 - 4ac ହେଲା ଏହାର ପ୍ରଭେଦକ।",
+          status: "published"
+        } as any,
+        {
+          id: "mock_sci_ch1",
+          title: "ରାସାୟନିକ ପ୍ରତିକ୍ରିୟା ଏବଂ ସମୀକରଣ (Chemical Reactions)",
+          class: targetClass,
+          subject: "Science",
+          notes: "ଯେଉଁ ପ୍ରକ୍ରିୟାରେ ପ୍ରତିକାରକ ଗୁଡିକ ମଧ୍ୟରେ ପ୍ରତିକ୍ରିୟା ଘଟି ନୂତନ ପଦାର୍ଥ ସୃଷ୍ଟି ହୁଏ, ତାହାକୁ ରାସาୟନିକ ପ୍ରତିକ୍ରିୟା କୁହାଯାଏ।",
+          status: "published"
+        } as any
+      ];
+      setChapters(mockChapters);
     }
   }, [user?.id, user?.class, user?.role, user?.board]);
 
@@ -1664,7 +1685,14 @@ export default function App() {
         setLeaderboard(filteredData);
         setCachedData(cacheKey, filteredData);
       } catch (err2) {
-        handleFirestoreError(err2, OperationType.GET, 'public_profiles');
+        console.warn("Failed to load leaderboard. Using mock leaderboard data.", err2);
+        setIsOfflineMode(true);
+        const mockLeaderboard = [
+          { name: "Anuradha Panda", points: 850, class: user.class, avatar: "/gundulu-pointing-nobg.png" },
+          { name: "Siddharth Dash", points: 720, class: user.class, avatar: "/gundulu-pointing-nobg.png" },
+          { name: "Priyanka Sahoo", points: 610, class: user.class, avatar: "/gundulu-pointing-nobg.png" }
+        ];
+        setLeaderboard(mockLeaderboard);
       }
     }
   }, [user?.id, user?.class]);
@@ -1683,7 +1711,23 @@ export default function App() {
       setMonthlyTests(data);
       setCachedData(cacheKey, data);
     } catch (err) {
-      handleFirestoreError(err, OperationType.GET, 'monthly_tests');
+      console.warn("Failed to load monthly tests. Using mock test.", err);
+      setIsOfflineMode(true);
+      const mockTests: MonthlyTest[] = [
+        {
+          id: "mock_test_1",
+          title: "ମାସିକ ଗଣିତ ପରୀକ୍ଷା - ଜୁନ୍ ୨୦୨୬",
+          status: "published",
+          questions: [
+            {
+              question: "2x^2 - 5x + 3 = 0 ସମୀକରଣର ବୀଜଦ୍ୱୟର ଯୋଗଫଳ କେତେ?",
+              options: ["5/2", "3/2", "-5/2", "1"],
+              correctOption: 0
+            }
+          ]
+        } as any
+      ];
+      setMonthlyTests(mockTests);
     }
   }, [user?.id]);
 
@@ -1727,7 +1771,21 @@ export default function App() {
       setDailyMcqs(data);
       setCachedData(cacheKey, data);
     } catch (err) {
-      handleFirestoreError(err, OperationType.GET, 'daily_mcqs');
+      console.warn("Failed to load MCQs from Firestore. Using static mock MCQs for offline fallback.", err);
+      setIsOfflineMode(true);
+      const mockMcqs: DailyMcq[] = [
+        {
+          id: "mock_mcq_1",
+          question: "ଦ୍ୱିଘାତ ସମୀକରଣ ax^2 + bx + c = 0 ରେ ଯଦି b^2 - 4ac > 0 ହୁଏ, ତେବେ ବୀଜଦ୍ୱୟ କିପରି ହେବ?",
+          options: ["ବାସ୍ତବ ଏବଂ ଅସମାନ", "ବାସ୍ତବ ଏବଂ ସମାନ", "ଅବାସ୍ତବ", "ଶୂନ୍ୟ"],
+          correctOption: 0,
+          explanation: "ଯଦି ପ୍ରଭେଦକ b^2 - 4ac > 0 ହୁଏ, ତେବେ ବୀଜଦ୍ୱୟ ବାସ୍ତବ ଏବଂ ଅସମାନ ହେବେ।",
+          subject: "Mathematics",
+          class: user?.class || "10",
+          date: today
+        } as any
+      ];
+      setDailyMcqs(mockMcqs);
     }
   }, [user?.id, user?.class, user?.role]);
 
@@ -2036,15 +2094,12 @@ export default function App() {
     const isOfflineOrConnectionError = 
       errInfo.error.includes('client is offline') || 
       errInfo.error.includes('Could not reach') ||
+      errInfo.error.includes('TIMEOUT') ||
       errInfo.error.includes('failed-precondition');
 
     if (isOfflineOrConnectionError) {
       console.warn(`[Firestore Offline Warning] Operation: ${operationType} on path: ${path} failed/suspended because client is offline or database is unreachable.`);
-      setDbError(
-        language === 'en'
-          ? "Unable to connect to the database. Running in offline fallback mode."
-          : "ଡାଟାବେସ୍ ସହିତ ସଂଯୋଗ କରିବାରେ ଅସମର୍ଥ | ଅଫ୍‌ଲାଇନ୍ ଫଲବ୍ୟାକ୍ ମୋଡ୍‌ରେ ଚାଲୁଛି ।"
-      );
+      setIsOfflineMode(true);
       setLoading(false);
       setIsSendingOtp(false);
       return; // Return instead of throwing to prevent crashing the app
@@ -2179,12 +2234,28 @@ export default function App() {
             }
           }
         }, (err) => {
-          handleFirestoreError(err, OperationType.GET, `users/${firebaseUser.uid}`);
+          const isOfflineOrConnectionError = 
+            err?.message?.includes('offline') || 
+            err?.message?.includes('Could not reach') ||
+            String(err).includes('offline') ||
+            String(err).includes('Could not reach');
+
+          if (isOfflineOrConnectionError) {
+            console.warn("[Offline Snapshot] Failed to listen to users updates while offline:", err);
+          } else {
+            handleFirestoreError(err, OperationType.GET, `users/${firebaseUser.uid}`);
+          }
         });
 
         try {
-          // Initial sync/creation
-          const userDocSnap = await getDoc(userDocRef);
+          // Initial sync/creation with 2.5s timeout to prevent hanging on offline/unreachable DB
+          const userDocTimeout = new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error('TIMEOUT')), 2500)
+          );
+          const userDocSnap = await Promise.race([
+            getDoc(userDocRef),
+            userDocTimeout
+          ]) as any;
           const userEmail = firebaseUser.email?.toLowerCase();
           const userPhone = firebaseUser.phoneNumber;
           const isAdmin = userEmail === 'pandadamayanti01@gmail.com' || 
@@ -2219,7 +2290,13 @@ export default function App() {
             let emailLock: any = null;
 
             if (selectedClass && selectedBoard && emailLockId) {
-              const emailLockDoc = await getDoc(doc(firestore, 'user_locks', emailLockId));
+              const lockTimeout = new Promise<never>((_, reject) =>
+                setTimeout(() => reject(new Error('TIMEOUT')), 2500)
+              );
+              const emailLockDoc = await Promise.race([
+                getDoc(doc(firestore, 'user_locks', emailLockId)),
+                lockTimeout
+              ]) as any;
               if (emailLockDoc.exists()) {
                 emailLock = emailLockDoc.data();
               }
@@ -2373,8 +2450,10 @@ export default function App() {
               const isOfflineOrConnectionError = 
                 fsErr?.message?.includes('offline') || 
                 fsErr?.message?.includes('Could not reach') ||
+                fsErr?.message?.includes('TIMEOUT') ||
                 String(fsErr).includes('offline') ||
-                String(fsErr).includes('Could not reach');
+                String(fsErr).includes('Could not reach') ||
+                String(fsErr).includes('TIMEOUT');
 
               if (isOfflineOrConnectionError) {
                 console.warn("[Offline Sync] Sync postponed due to offline status:", fsErr);
@@ -2398,8 +2477,10 @@ export default function App() {
           const isOfflineOrConnectionError = 
             fsErr?.message?.includes('offline') || 
             fsErr?.message?.includes('Could not reach') ||
+            fsErr?.message?.includes('TIMEOUT') ||
             String(fsErr).includes('offline') ||
-            String(fsErr).includes('Could not reach');
+            String(fsErr).includes('Could not reach') ||
+            String(fsErr).includes('TIMEOUT');
 
           if (isOfflineOrConnectionError) {
             console.warn("Firestore access failed (offline or database unreachable). Recovering using local cache fallback...", fsErr);
@@ -2461,11 +2542,7 @@ export default function App() {
               setIsAdminView(true);
             }
 
-            setDbError(
-              language === 'en'
-                ? "You are currently offline. Running in offline fallback mode."
-                : "ଆପଣ ବର୍ତ୍ତମାନ ଅଫ୍‌ଲାଇନ୍ ଅଛନ୍ତି। ଅଫ୍‌ଲାଇନ୍ ଫଲବ୍ୟାକ୍ ମୋଡ୍‌ରେ ଚାଲୁଛି।"
-            );
+            setIsOfflineMode(true);
           } else {
             handleFirestoreError(fsErr, OperationType.WRITE, `users/${firebaseUser.uid}`);
             setLoading(false);
@@ -4045,6 +4122,12 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
         }
       }}
     >
+      {isOfflineMode && (
+        <div className="fixed top-4 right-4 z-[9999] px-4 py-2 rounded-full bg-amber-500/90 border border-amber-600 text-slate-950 font-black text-[10px] uppercase tracking-wider shadow-lg flex items-center gap-2 pointer-events-none">
+          <Lucide.AlertCircle size={12} />
+          {language === 'en' ? 'Offline Mode' : 'ଅଫ୍‌ଲାଇନ୍ ମୋଡ୍'}
+        </div>
+      )}
     <SEO 
       subject={
         activeTab === 'study_buddy' ? 'AI Study Buddy' : 
