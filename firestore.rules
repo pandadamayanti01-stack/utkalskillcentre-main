@@ -113,8 +113,8 @@ service cloud.firestore {
              data.userId is string &&
              submissionId == data.userId + '_' + data.mcqId &&
              data.answers is list &&
-             data.totalQuestions is int && (data.totalQuestions == 10 || data.totalQuestions == 11 || data.totalQuestions == 12) &&
-             (data.answers.size() == 10 || data.answers.size() == 14 || data.answers.size() == 15) &&
+             data.totalQuestions is int && data.totalQuestions >= 5 && data.totalQuestions <= 16 &&
+             data.answers.size() >= 5 && data.answers.size() <= 16 &&
              data.correctCount is int && data.correctCount >= 0 && data.correctCount <= data.totalQuestions &&
              data.attemptReward is int && data.attemptReward == 1 &&
              data.correctBonus is int && data.correctBonus >= 0 && data.correctBonus <= 25 &&

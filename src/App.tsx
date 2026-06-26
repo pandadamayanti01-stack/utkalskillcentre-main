@@ -5399,6 +5399,12 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
   });
   const [subscribingPush, setSubscribingPush] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [securityPinInput, setSecurityPinInput] = useState('');
+  useEffect(() => {
+    if (user) {
+      setSecurityPinInput(user.parent_pin || user.pin || '');
+    }
+  }, [user?.parent_pin, user?.pin]);
 
   const handlePushSubscription = async () => {
     setSubscribingPush(true);
@@ -5812,18 +5818,34 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
                       type="password"
                       maxLength={4}
                       placeholder={language === 'en' ? 'Enter a 4-digit PIN' : '୪-ଅଙ୍କ ବିଶିଷ୍ଟ ପିନ୍ ଦିଅନ୍ତୁ'}
-                      value={user.parent_pin || user.pin || ''}
-                      onChange={async (e) => {
+                      value={securityPinInput}
+                      onChange={(e) => {
                         const val = e.target.value.replace(/\D/g, '');
                         if (val.length <= 4) {
-                          await updateDoc(doc(firestore, 'users', user.id), {
-                            parent_pin: val,
-                            pin: val
-                          });
+                          setSecurityPinInput(val);
                         }
                       }}
                       className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 text-center tracking-[1em] font-mono text-xl"
                     />
+                    {securityPinInput !== (user.parent_pin || user.pin || '') && securityPinInput.length === 4 && (
+                      <button
+                        onClick={async () => {
+                          try {
+                            await updateDoc(doc(firestore, 'users', user.id), {
+                              parent_pin: securityPinInput,
+                              pin: securityPinInput
+                            });
+                            alert(language === 'en' ? 'PIN saved successfully!' : 'ପିନ୍ ସଫଳତାର ସହ ସେଟ୍ ହେଲା!');
+                          } catch (err: any) {
+                            alert('Error saving PIN: ' + err.message);
+                          }
+                        }}
+                        className="mt-3 w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold transition-all active:scale-95 cursor-pointer shadow-lg flex items-center justify-center gap-1.5"
+                      >
+                        <Lucide.Save size={14} />
+                        {language === 'en' ? 'Save PIN' : 'ପିନ୍ ସେଭ୍ କରନ୍ତୁ'}
+                      </button>
+                    )}
                   </div>
                 </div>
               )}
@@ -5928,18 +5950,34 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
                         type="password"
                         maxLength={4}
                         placeholder="Set a 4-digit PIN for parent access"
-                        value={user.parent_pin || user.pin || ''}
-                        onChange={async (e) => {
+                        value={securityPinInput}
+                        onChange={(e) => {
                           const val = e.target.value.replace(/\D/g, '');
                           if (val.length <= 4) {
-                            await updateDoc(doc(firestore, 'users', user.id), {
-                              parent_pin: val,
-                              pin: val
-                            });
+                            setSecurityPinInput(val);
                           }
                         }}
                         className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 text-center tracking-[1em] font-mono text-xl"
                       />
+                      {securityPinInput !== (user.parent_pin || user.pin || '') && securityPinInput.length === 4 && (
+                        <button
+                          onClick={async () => {
+                            try {
+                              await updateDoc(doc(firestore, 'users', user.id), {
+                                parent_pin: securityPinInput,
+                                pin: securityPinInput
+                              });
+                              alert(language === 'en' ? 'PIN saved successfully!' : 'ପିନ୍ ସଫଳତାର ସହ ସେଟ୍ ହେଲା!');
+                            } catch (err: any) {
+                              alert('Error saving PIN: ' + err.message);
+                            }
+                          }}
+                          className="mt-3 w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold transition-all active:scale-95 cursor-pointer shadow-lg flex items-center justify-center gap-1.5"
+                        >
+                          <Lucide.Save size={14} />
+                          {language === 'en' ? 'Save PIN' : 'ପିନ୍ ସେଭ୍ କରନ୍ତୁ'}
+                        </button>
+                      )}
                       <p className="text-[10px] text-slate-500 mt-2 text-center">{translations[language].profile.parentPinNote}</p>
                     </div>
                   </div>
