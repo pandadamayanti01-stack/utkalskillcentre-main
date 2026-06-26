@@ -4437,6 +4437,8 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                     isTourStep4={tourStep === 2} // Gundulu AI is Step 2
                     onOpenRajaPoster={() => setShowLaunchPoster(true)}
                     onOpenMonthlyTests={() => setActiveTab('monthly_tests')}
+                    onOpenGameZone={() => setActiveTab('game_zone')}
+                    onOpenLibrary={() => setActiveTab('digital_library')}
                   />
                 )}
               </div>

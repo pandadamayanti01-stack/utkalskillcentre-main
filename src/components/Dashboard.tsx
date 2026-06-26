@@ -68,6 +68,8 @@ interface DashboardProps {
   isTourStep4?: boolean;
   onOpenRajaPoster?: () => void;
   onOpenMonthlyTests?: () => void;
+  onOpenGameZone?: () => void;
+  onOpenLibrary?: () => void;
 }
 function PerformanceChart({ submissions, tests, language }: any) {
   const chartData = React.useMemo(() => {
@@ -444,7 +446,7 @@ const generateFallbackSubjectives = (subjectKey: string, chapters: any[], isBoar
   return subjectives;
 };
 
-export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, hasDailyPractice, todayDailySubject, tomorrowDailySubject, onChallengeComplete, onOpenTutor, onOpenDailyPractice, onShareDailyPractice, isRegistered = false, onRegistrationComplete, onOpenCommunity, following = [], onToggleFollow, isTourStep3, isTourStep4, onOpenRajaPoster, onOpenMonthlyTests }: DashboardProps) {
+export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, chapters, dailyChallenge, hasDailyPractice, todayDailySubject, tomorrowDailySubject, onChallengeComplete, onOpenTutor, onOpenDailyPractice, onShareDailyPractice, isRegistered = false, onRegistrationComplete, onOpenCommunity, following = [], onToggleFollow, isTourStep3, isTourStep4, onOpenRajaPoster, onOpenMonthlyTests, onOpenGameZone, onOpenLibrary }: DashboardProps) {
     // Map class to YouTube video URL (embed links)
     const classVideoMap: Record<string, string> = {
       '1': 'https://www.youtube.com/embed/DxouHyB-IA8',
@@ -4349,7 +4351,14 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   </h4>
 
                   {/* Gundulu Game Zone */}
-                  <div className="p-3 bg-amber-950/10 border border-amber-500/20 rounded-2xl flex items-center justify-between gap-3 hover:border-amber-400/40 transition-colors">
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      setShowTargetModal(false);
+                      onOpenGameZone?.();
+                    }}
+                    className="w-full text-left p-3 bg-amber-950/10 border border-amber-500/20 rounded-2xl flex items-center justify-between gap-3 hover:border-amber-400/40 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer group"
+                  >
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20 shrink-0">
                         <Lucide.Gamepad2 size={16} />
@@ -4359,13 +4368,21 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                         <div className="text-[10px] text-slate-400 font-bold leading-relaxed">{language === 'en' ? 'Play traditional games' : 'ଯେକୌଣସି ପାରମ୍ପରିକ ଖେଳ ଖେଳନ୍ତୁ'}</div>
                       </div>
                     </div>
-                    <div className="text-right shrink-0">
+                    <div className="text-right shrink-0 flex items-center gap-1.5">
                       <span className="text-xs font-black text-amber-400 font-mono">+100 to +150 XP</span>
+                      <Lucide.ChevronRight size={14} className="text-amber-500/40 group-hover:text-amber-400 group-hover:translate-x-0.5 transition-all" />
                     </div>
-                  </div>
+                  </button>
 
                   {/* Daily MCQ Challenge */}
-                  <div className="p-3 bg-emerald-950/10 border border-emerald-500/20 rounded-2xl flex items-center justify-between gap-3 hover:border-emerald-400/40 transition-colors">
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      setShowTargetModal(false);
+                      onOpenDailyPractice?.();
+                    }}
+                    className="w-full text-left p-3 bg-emerald-950/10 border border-emerald-500/20 rounded-2xl flex items-center justify-between gap-3 hover:border-emerald-400/40 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer group"
+                  >
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20 shrink-0">
                         <Lucide.BookOpen size={16} />
@@ -4375,13 +4392,21 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                         <div className="text-[10px] text-slate-400 font-bold leading-relaxed">{language === 'en' ? 'Complete today\'s challenge set' : 'ଆଜିର ପ୍ରଶ୍ନ ସେଟ୍ ସମ୍ପୂର୍ଣ୍ଣ କରନ୍ତୁ'}</div>
                       </div>
                     </div>
-                    <div className="text-right shrink-0">
+                    <div className="text-right shrink-0 flex items-center gap-1.5">
                       <span className="text-xs font-black text-emerald-400 font-mono">+25 XP</span>
+                      <Lucide.ChevronRight size={14} className="text-emerald-500/40 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all" />
                     </div>
-                  </div>
+                  </button>
 
                   {/* Study Textbook Chapters */}
-                  <div className="p-3 bg-cyan-950/10 border border-cyan-500/20 rounded-2xl flex items-center justify-between gap-3 hover:border-cyan-400/40 transition-colors">
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      setShowTargetModal(false);
+                      onOpenLibrary?.();
+                    }}
+                    className="w-full text-left p-3 bg-cyan-950/10 border border-cyan-500/20 rounded-2xl flex items-center justify-between gap-3 hover:border-cyan-400/40 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer group"
+                  >
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-cyan-500/10 text-cyan-400 rounded-xl border border-cyan-500/20 shrink-0">
                         <Lucide.BookOpenCheck size={16} />
@@ -4391,13 +4416,21 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                         <div className="text-[10px] text-slate-400 font-bold leading-relaxed">{language === 'en' ? 'Read books in Digital Library' : 'ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀରେ ଅଧ୍ୟୟନ କରନ୍ତୁ'}</div>
                       </div>
                     </div>
-                    <div className="text-right shrink-0">
+                    <div className="text-right shrink-0 flex items-center gap-1.5">
                       <span className="text-xs font-black text-cyan-400 font-mono">+10 XP / min</span>
+                      <Lucide.ChevronRight size={14} className="text-cyan-500/40 group-hover:text-cyan-400 group-hover:translate-x-0.5 transition-all" />
                     </div>
-                  </div>
+                  </button>
 
                   {/* AI Doubt Solver */}
-                  <div className="p-3 bg-purple-950/10 border border-purple-500/20 rounded-2xl flex items-center justify-between gap-3 hover:border-purple-400/40 transition-colors">
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      setShowTargetModal(false);
+                      onOpenTutor?.();
+                    }}
+                    className="w-full text-left p-3 bg-purple-950/10 border border-purple-500/20 rounded-2xl flex items-center justify-between gap-3 hover:border-purple-400/40 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer group"
+                  >
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-purple-500/10 text-purple-400 rounded-xl border border-purple-500/20 shrink-0">
                         <Lucide.Sparkles size={16} />
@@ -4407,10 +4440,11 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                         <div className="text-[10px] text-slate-400 font-bold leading-relaxed">{language === 'en' ? 'Ask questions in chat' : 'ଚାଟ୍‌ରେ ଆପଣଙ୍କ ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ'}</div>
                       </div>
                     </div>
-                    <div className="text-right shrink-0">
+                    <div className="text-right shrink-0 flex items-center gap-1.5">
                       <span className="text-xs font-black text-purple-400 font-mono">+10 XP / doubt</span>
+                      <Lucide.ChevronRight size={14} className="text-purple-500/40 group-hover:text-purple-400 group-hover:translate-x-0.5 transition-all" />
                     </div>
-                  </div>
+                  </button>
                 </div>
 
                 {/* Close action */}
