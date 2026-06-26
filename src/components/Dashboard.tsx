@@ -2995,7 +2995,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0 group-hover/ticket:rotate-12 group-hover/ticket:scale-105 transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
               <Lucide.Trophy size={16} className="text-amber-400 animate-pulse" />
             </div>
-            <span className="text-[8px] sm:text-[9.5px] font-black uppercase tracking-[0.2em] sm:tracking-[0.25em] text-left leading-tight flex flex-col text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-300 to-amber-200 drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]">
+            <span className="text-[8px] sm:text-[9.5px] font-black uppercase tracking-[0.2em] sm:tracking-[0.25em] text-left leading-tight flex flex-col text-amber-200 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
               <span>{language === 'or' ? 'ସ୍ୱର୍ଣ୍ଣ' : 'Claim'}</span>
               <span>{language === 'or' ? 'ପତ୍ର' : 'Golden'}</span>
               <span>{language === 'or' ? 'କ୍ଲେମ' : 'Ticket'}</span>
@@ -3009,12 +3009,12 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 group-hover/target:rotate-45 group-hover/target:scale-105 transition-all duration-300 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
                   <Lucide.Target size={16} className="text-emerald-400 animate-pulse" />
                 </div>
-                <span className="text-[8px] sm:text-[9.5px] font-black uppercase tracking-[0.2em] sm:tracking-[0.25em] text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-300 to-emerald-200 leading-tight flex flex-col">
+                <span className="text-[8px] sm:text-[9.5px] font-black uppercase tracking-[0.2em] sm:tracking-[0.25em] text-emerald-200 leading-tight flex flex-col drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
                   <span>{language === 'en' ? 'Daily' : 'ଦୈନିକ'}</span>
                   <span>{language === 'en' ? 'Target' : 'ଲକ୍ଷ୍ୟ'}</span>
                 </span>
               </div>
-              <span className="text-sm sm:text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300 drop-shadow-[0_0_8px_rgba(16,185,129,0.4)] leading-none">{Math.round(dailyProgress)}%</span>
+              <span className="text-sm sm:text-base font-black text-emerald-400 drop-shadow-[0_0_10px_rgba(52,211,153,0.5)] leading-none pt-0.5">{Math.round(dailyProgress)}%</span>
             </div>
             <div className="h-2 w-full bg-slate-950/80 rounded-full overflow-hidden border border-white/5 shadow-[inset_0_1px_2px_rgba(0,0,0,0.8)] relative mt-1.5">
               <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-500 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(52,211,153,0.6)]" style={{ width: `${dailyProgress}%` }}>
