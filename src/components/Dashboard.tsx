@@ -3068,16 +3068,16 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             <div className="w-9 h-9 rounded-xl bg-amber-500/25 border border-amber-400/40 flex items-center justify-center text-amber-300 shrink-0 group-hover/ticket:rotate-12 group-hover/ticket:scale-105 transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.3)]">
               <Lucide.Trophy size={16} className="text-amber-300 animate-pulse" />
             </div>
-            <span className="text-[11.5px] sm:text-[13px] font-black uppercase tracking-wide text-left leading-normal flex flex-col text-amber-300 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
+            <span className="text-[11px] sm:text-[12.5px] font-black uppercase tracking-wide text-left leading-tight flex flex-col text-amber-300 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
               {language === 'or' ? (
                 <>
-                  <span>ସ୍ୱର୍ଣ୍ଣ ପତ୍ର</span>
+                  <span className="text-[11.5px] sm:text-[13px] leading-normal">ସ୍ୱର୍ଣ୍ଣ ପତ୍ର</span>
                   <span className="text-[9.5px] sm:text-[10.5px] text-amber-400/90 font-bold tracking-wide mt-0.5">କ୍ଲେମ କରନ୍ତୁ</span>
                 </>
               ) : (
                 <>
-                  <span>Claim</span>
-                  <span className="text-[9.5px] sm:text-[10.5px] text-amber-400/90 font-bold tracking-wide mt-0.5">Golden Ticket</span>
+                  <span>Golden</span>
+                  <span className="text-amber-400/90">Ticket</span>
                 </>
               )}
             </span>
@@ -3094,9 +3094,18 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 <div className="w-9 h-9 rounded-xl bg-emerald-500/25 border border-emerald-400/40 flex items-center justify-center text-emerald-300 shrink-0 group-hover/target:rotate-45 group-hover/target:scale-105 transition-all duration-300 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
                   <Lucide.Target size={16} className="text-emerald-300 animate-pulse" />
                 </div>
-                <span className="text-[11.5px] sm:text-[13px] font-black uppercase tracking-wide text-left leading-normal flex flex-col text-emerald-300 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
-                  <span>{language === 'en' ? 'Daily Target' : 'ଦୈନିକ ଲକ୍ଷ୍ୟ'}</span>
-                  <span className="text-[9.5px] sm:text-[10.5px] text-emerald-400/90 font-bold tracking-wide mt-0.5">{language === 'en' ? 'Track Progress' : 'ପ୍ରଗତି ଟ୍ରାକର୍'}</span>
+                <span className="text-[11px] sm:text-[12.5px] font-black uppercase tracking-wide text-left leading-tight flex flex-col text-emerald-300 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
+                  {language === 'or' ? (
+                    <>
+                      <span className="text-[11.5px] sm:text-[13px] leading-normal">ଦୈନିକ ଲକ୍ଷ୍ୟ</span>
+                      <span className="text-[9.5px] sm:text-[10.5px] text-emerald-400/90 font-bold tracking-wide mt-0.5">ପ୍ରଗତି ଟ୍ରାକର୍</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Daily</span>
+                      <span className="text-emerald-400/90">Target</span>
+                    </>
+                  )}
                 </span>
               </div>
               <span className="text-sm sm:text-base font-black text-emerald-300 drop-shadow-[0_0_12px_rgba(52,211,153,0.7)] leading-none pt-0.5">{Math.round(dailyProgress)}%</span>
