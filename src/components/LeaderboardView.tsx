@@ -170,7 +170,7 @@ export function LeaderboardView({ leaderboard, language, onBack, following, user
             <div className="w-full h-32 md:h-40 bg-gradient-to-t from-slate-900/90 via-slate-800/80 to-slate-400/20 rounded-t-3xl border-t-[3px] border-x border-slate-300/40 flex flex-col items-center justify-start pt-6 shadow-[inset_0_20px_20px_rgba(203,213,225,0.1),0_0_30px_rgba(203,213,225,0.05)] backdrop-blur-xl relative overflow-hidden">
               <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.1)_0%,transparent_100%)] opacity-50" />
               <span className="text-3xl font-black text-slate-300 drop-shadow-lg relative z-10">2</span>
-              <span className="text-xs font-bold text-white mt-2 truncate w-[90%] text-center relative z-10">{filteredLeaderboard[1]?.name}</span>
+              <span className="text-xs font-black mt-2 truncate w-[90%] text-center relative z-10" style={{ color: '#e2e8f0' }}>{filteredLeaderboard[1]?.name}</span>
               <span className="text-[10px] md:text-xs text-emerald-400 font-mono font-bold mt-0.5 relative z-10">{filteredLeaderboard[1]?.points} XP</span>
             </div>
           </div>
@@ -192,7 +192,7 @@ export function LeaderboardView({ leaderboard, language, onBack, following, user
               <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.2)_0%,transparent_100%)] opacity-50" />
               <div className="absolute top-0 inset-x-0 h-1/2 bg-yellow-400/10 blur-xl rounded-full" />
               <span className="text-4xl md:text-5xl font-black text-yellow-400 drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)] relative z-10">1</span>
-              <span className="text-sm md:text-base font-black text-white mt-2 md:mt-3 truncate w-[90%] text-center relative z-10">{filteredLeaderboard[0]?.name}</span>
+              <span className="text-sm md:text-base font-black mt-2 md:mt-3 truncate w-[90%] text-center relative z-10" style={{ color: '#facc15' }}>{filteredLeaderboard[0]?.name}</span>
               <span className="text-xs md:text-sm text-yellow-300 font-mono font-black mt-1 relative z-10 px-2 py-0.5 bg-yellow-500/10 rounded-full border border-yellow-500/20">{filteredLeaderboard[0]?.points} XP</span>
             </div>
           </div>
@@ -210,7 +210,7 @@ export function LeaderboardView({ leaderboard, language, onBack, following, user
             <div className="w-full h-28 md:h-36 bg-gradient-to-t from-slate-900/90 via-slate-800/80 to-orange-700/20 rounded-t-3xl border-t-[3px] border-x border-orange-700/40 flex flex-col items-center justify-start pt-6 shadow-[inset_0_20px_20px_rgba(194,65,12,0.1),0_0_20px_rgba(194,65,12,0.05)] backdrop-blur-xl relative overflow-hidden">
               <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.1)_0%,transparent_100%)] opacity-30" />
               <span className="text-3xl font-black text-orange-600 drop-shadow-lg relative z-10">3</span>
-              <span className="text-xs font-bold text-white mt-2 truncate w-[90%] text-center relative z-10">{filteredLeaderboard[2]?.name}</span>
+              <span className="text-xs font-black mt-2 truncate w-[90%] text-center relative z-10" style={{ color: '#fdba74' }}>{filteredLeaderboard[2]?.name}</span>
               <span className="text-[10px] md:text-xs text-emerald-400 font-mono font-bold mt-0.5 relative z-10">{filteredLeaderboard[2]?.points} XP</span>
             </div>
           </div>
@@ -269,7 +269,10 @@ export function LeaderboardView({ leaderboard, language, onBack, following, user
                         )}
                       </div>
                       <div className="flex flex-col">
-                        <span className="font-semibold text-white flex items-center gap-2">
+                        <span 
+                          className="font-black flex items-center gap-2"
+                          style={{ color: student?.id === user?.id ? '#34d399' : '#2dd4bf' }}
+                        >
                           {student?.name}
                           {student.streak > 0 && (
                             <span className="flex items-center gap-0.5 text-orange-400 text-[10px] font-black bg-orange-500/10 px-1.5 py-0.5 rounded-full border border-orange-500/20">

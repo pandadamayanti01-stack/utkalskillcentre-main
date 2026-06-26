@@ -4108,7 +4108,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                               globalRank === 1 ? 'bg-yellow-500 text-slate-950 shadow-[0_0_15px_rgba(234,179,8,0.4)]' :
                               globalRank === 2 ? 'bg-slate-300 text-slate-950 shadow-[0_0_15px_rgba(203,213,225,0.4)]' :
                               globalRank === 3 ? 'bg-amber-600 text-slate-950 shadow-[0_0_15px_rgba(217,119,6,0.4)]' :
-                              'text-slate-500'
+                              'text-slate-200 bg-slate-950 border border-white/5 font-black'
                             }`}>
                               {globalRank}
                             </div>
@@ -4125,8 +4125,11 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                                 )}
                               </div>
                               <div>
-                                <div className="font-bold text-white flex items-center gap-1.5">
-                                  <span className={isCurrentUser ? 'text-emerald-400' : 'text-white'}>
+                                <div className="font-black flex items-center gap-1.5 text-sm">
+                                  <span 
+                                    className="font-black"
+                                    style={{ color: isCurrentUser ? '#34d399' : '#2dd4bf' }}
+                                  >
                                     {student.name}
                                   </span>
                                   {isCurrentUser && (
@@ -4135,7 +4138,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                                     </span>
                                   )}
                                 </div>
-                                <span className="text-[9px] text-slate-500 font-semibold block mt-0.5 max-w-[200px] truncate">
+                                <span className="text-[10px] text-slate-350 font-black block mt-0.5 max-w-[200px] truncate">
                                   {student.school || (language === 'en' ? 'Regional High School' : 'ଆଞ୍ଚଳିକ ଉଚ୍ଚ ବିଦ୍ୟାଳୟ')}
                                 </span>
                               </div>
@@ -4144,9 +4147,9 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
                           {/* District name */}
                           <td className="px-6 py-4">
-                            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-300">
-                              <Lucide.MapPin size={12} className="text-slate-500 shrink-0" />
-                              <span>
+                            <div className="flex items-center gap-1.5 text-xs font-black text-slate-100">
+                              <Lucide.MapPin size={12} className="text-slate-400 shrink-0" />
+                              <span className="font-black">
                                 {(() => {
                                   const matched = ODISHA_DISTRICTS.find(d => d.en.toLowerCase() === student.district?.toLowerCase());
                                   return matched 
@@ -4160,7 +4163,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                           {/* Rank Badge */}
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-2">
-                              <span className="px-2 py-0.5 rounded bg-slate-950 text-[9px] font-black text-slate-400 border border-white/5 font-mono">
+                              <span className="px-2 py-0.5 rounded bg-slate-950 text-[9px] font-black text-slate-200 border border-white/5 font-mono">
                                 Lvl {badgeInfo.level}
                               </span>
                               <span className="text-xs font-black text-amber-400 uppercase tracking-tight">
@@ -4177,7 +4180,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                                   <Lucide.Check size={12} strokeWidth={3} />
                                 </div>
                               ) : (
-                                <div className="w-5 h-5 rounded-full bg-slate-950 border border-white/5 flex items-center justify-center text-slate-600" title="Daily Challenge Pending">
+                                <div className="w-5 h-5 rounded-full bg-slate-950 border border-white/5 flex items-center justify-center text-slate-650" title="Daily Challenge Pending">
                                   <Lucide.Clock size={10} />
                                 </div>
                               )}
@@ -4186,9 +4189,9 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
                           {/* XP Points */}
                           <td className="px-6 py-4 text-right">
-                            <div className="inline-flex items-center gap-1 text-emerald-400 font-mono font-black text-xs">
-                              <Lucide.Zap size={12} className="text-amber-500 shrink-0 animate-pulse" />
-                              <span>{student.points || 0} XP</span>
+                            <div className="inline-flex items-center gap-1 text-emerald-400 font-mono font-black text-sm">
+                              <Lucide.Zap size={14} className="text-amber-500 shrink-0 animate-pulse" />
+                              <span className="font-black">{student.points || 0} XP</span>
                             </div>
                           </td>
 
@@ -4245,7 +4248,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                                 student.rank === 1 ? 'bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-slate-950 shadow-[0_0_15px_rgba(245,158,11,0.4)] border border-yellow-300' :
                                 student.rank === 2 ? 'bg-slate-300 text-slate-950 shadow-[0_0_15px_rgba(203,213,225,0.4)]' :
                                 student.rank === 3 ? 'bg-amber-600 text-slate-950 shadow-[0_0_15px_rgba(217,119,6,0.4)]' :
-                                'text-slate-500'
+                                'text-slate-200 bg-slate-950 border border-white/5 font-black'
                               }`}>
                                 {student.rank}
                               </div>
@@ -4258,8 +4261,11 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                                   <span className="text-xs font-black text-white uppercase">{student.name?.[0] || 'S'}</span>
                                 </div>
                                 <div>
-                                  <div className="font-bold text-white flex items-center gap-1.5">
-                                    <span className={isCurrentUser ? 'text-amber-400' : 'text-white'}>
+                                  <div className="font-black flex items-center gap-1.5 text-sm">
+                                    <span 
+                                      className="font-black"
+                                      style={{ color: isCurrentUser ? '#fbbf24' : '#facc15' }}
+                                    >
                                       {student.name}
                                     </span>
                                     {isCurrentUser && (
@@ -4274,23 +4280,23 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
                             {/* Class */}
                             <td className="px-6 py-4">
-                              <span className="text-xs font-bold text-slate-300">
+                              <span className="text-xs font-black text-slate-200">
                                 {language === 'en' ? `Class ${student.class}` : `ଶ୍ରେଣୀ ${student.class}`}
                               </span>
                             </td>
 
                             {/* School */}
                             <td className="px-6 py-4">
-                              <span className="text-xs font-bold text-slate-400 block max-w-[250px] truncate">
+                              <span className="text-xs font-black text-slate-300 block max-w-[250px] truncate">
                                 {student.school}
                               </span>
                             </td>
 
                             {/* Marks/Score */}
                             <td className="px-6 py-4 text-right">
-                              <div className="inline-flex items-center gap-1.5 text-amber-400 font-mono font-black text-xs">
-                                <Lucide.Crown size={12} className="text-yellow-400 shrink-0 animate-pulse" />
-                                <span>{student.score} / 25 {language === 'en' ? 'Marks' : 'ମାର୍କ'}</span>
+                              <div className="inline-flex items-center gap-1.5 text-amber-400 font-mono font-black text-sm">
+                                <Lucide.Crown size={14} className="text-yellow-400 shrink-0 animate-pulse" />
+                                <span className="font-black">{student.score} / 25 {language === 'en' ? 'Marks' : 'ମାର୍କ'}</span>
                               </div>
                             </td>
                           </motion.tr>
