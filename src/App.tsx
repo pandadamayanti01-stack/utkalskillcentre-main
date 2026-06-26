@@ -1738,7 +1738,7 @@ export default function App() {
     const today = todayRaw.replace(/\//g, '-').trim();
     const cacheKey = `daily_mcqs_${user.role}_${user.class || 'all'}_${today}`;
     const cached = getCachedData<DailyMcq[]>(cacheKey, 1800000); // 30 mins
-    if (cached) {
+    if (cached && cached.length > 0) {
       setDailyMcqs(cached);
       return;
     }
@@ -1769,8 +1769,13 @@ export default function App() {
           const rightDate = new Date(right.activeDate || 0).getTime();
           return rightDate - leftDate;
         }) as DailyMcq[];
-      setDailyMcqs(data);
-      setCachedData(cacheKey, data);
+      
+      if (data.length > 0) {
+        setDailyMcqs(data);
+        setCachedData(cacheKey, data);
+      } else {
+        throw new Error('NO_MCQ_FOUND');
+      }
     } catch (err) {
       console.warn("Failed to load MCQs from Firestore. Using static mock MCQs for offline fallback.", err);
       setIsOfflineMode(true);
