@@ -4066,7 +4066,6 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                         <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black">{language === 'en' ? 'Badge Title' : 'ପଦକ ଆଖ୍ୟା'}</th>
                         <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black text-center">{language === 'en' ? 'Daily MCQ' : 'ଦୈନିକ MCQ'}</th>
                         <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black text-right">{language === 'en' ? 'XP Points' : 'XP ପଏଣ୍ଟ'}</th>
-                        <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-slate-500 font-black text-right">{language === 'en' ? 'Action' : 'କାର୍ଯ୍ୟ'}</th>
                       </>
                     ) : (
                       <>
@@ -4125,14 +4124,27 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                                 )}
                               </div>
                               <div>
-                                <div className="font-black flex items-center gap-1.5 text-sm">
+                                <div className="font-black flex items-center flex-wrap gap-2 text-sm">
                                   <span className={`font-black ${isCurrentUser ? 'text-emerald-400' : 'text-cyan-400'}`}>
                                     {student.name}
                                   </span>
-                                  {isCurrentUser && (
+                                  {isCurrentUser ? (
                                     <span className="text-[8px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-500/20 font-black uppercase tracking-wider">
                                       {language === 'en' ? 'You' : 'ଆପଣ'}
                                     </span>
+                                  ) : (
+                                    <button
+                                      onClick={() => onToggleFollow?.(student.id)}
+                                      className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-105 active:scale-95 shrink-0 ${
+                                        following?.includes(student.id)
+                                          ? 'bg-slate-950/40 text-slate-350 border border-slate-700/80 hover:bg-red-950/30 hover:text-red-400 hover:border-red-500/30'
+                                          : 'bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-[0_3px_10px_rgba(16,185,129,0.3)] border border-emerald-300/20 hover:from-emerald-500 hover:to-teal-600'
+                                      }`}
+                                    >
+                                      {following?.includes(student.id)
+                                        ? (language === 'en' ? 'Following' : 'ଅନୁସରଣ କରୁଛନ୍ତି')
+                                        : (language === 'en' ? '+ Follow' : '+ ଅନୁସରଣ')}
+                                    </button>
                                   )}
                                 </div>
                                 <span className="text-[10px] text-slate-350 font-black block mt-0.5 max-w-[200px] truncate">
@@ -4192,23 +4204,6 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                             </div>
                           </td>
 
-                          {/* Action buttons (Follow/Friends) */}
-                          <td className="px-6 py-4 text-right">
-                            {student.id !== user?.id && (
-                              <button
-                                onClick={() => onToggleFollow?.(student.id)}
-                                className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-105 active:scale-95 ${
-                                  following?.includes(student.id)
-                                    ? 'bg-slate-950/40 text-slate-300 border border-slate-700/80 hover:bg-red-950/30 hover:text-red-400 hover:border-red-500/30'
-                                    : 'bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-[0_3px_10px_rgba(16,185,129,0.3)] border border-emerald-300/20 hover:from-emerald-500 hover:to-teal-600'
-                                }`}
-                              >
-                                {following?.includes(student.id)
-                                  ? (language === 'en' ? 'Following' : 'ଅନୁସରଣ କରୁଛନ୍ତି')
-                                  : (language === 'en' ? '+ Follow' : '+ ଅନୁସରଣ')}
-                              </button>
-                            )}
-                          </td>
                         </motion.tr>
                       );
                     })

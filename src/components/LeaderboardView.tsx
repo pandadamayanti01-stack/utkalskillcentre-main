@@ -225,7 +225,6 @@ export function LeaderboardView({ leaderboard, language, onBack, following, user
               <th className="px-3 sm:px-8 py-4 sm:py-6 text-xs uppercase tracking-widest text-slate-500 font-bold">{language === 'en' ? 'Student' : 'ଛାତ୍ର'}</th>
               <th className="px-3 sm:px-8 py-4 sm:py-6 text-xs uppercase tracking-widest text-slate-500 font-bold">{language === 'en' ? 'Consistency' : 'ନିରନ୍ତରତା'}</th>
               <th className="px-3 sm:px-8 py-4 sm:py-6 text-xs uppercase tracking-widest text-slate-500 font-bold text-right">{translations[language].effortPoints}</th>
-              <th className="px-3 sm:px-8 py-4 sm:py-6 text-xs uppercase tracking-widest text-slate-500 font-bold text-right">{language === 'en' ? 'Action' : 'କାର୍ଯ୍ୟ'}</th>
             </tr>
           </thead>
           <tbody>
@@ -269,13 +268,25 @@ export function LeaderboardView({ leaderboard, language, onBack, following, user
                         )}
                       </div>
                       <div className="flex flex-col">
-                        <span className={`font-black flex items-center gap-2 ${student?.id === user?.id ? 'text-emerald-400' : 'text-cyan-400'}`}>
+                        <span className={`font-black flex items-center flex-wrap gap-2 ${student?.id === user?.id ? 'text-emerald-400' : 'text-cyan-400'}`}>
                           {student?.name}
                           {student.streak > 0 && (
-                            <span className="flex items-center gap-0.5 text-orange-400 text-[10px] font-black bg-orange-500/10 px-1.5 py-0.5 rounded-full border border-orange-500/20">
+                            <span className="flex items-center gap-0.5 text-orange-400 text-[10px] font-black bg-orange-500/10 px-1.5 py-0.5 rounded-full border border-orange-500/20 shrink-0">
                               <Flame size={10} fill="currentColor" />
                               {student.streak}
                             </span>
+                          )}
+                          {student.id !== user.id && (
+                            <button
+                              onClick={() => onToggleFollow?.(student.id)}
+                              className={`px-2 py-0.5 rounded-full text-[8px] font-black tracking-wider uppercase transition-all shadow-md active:scale-95 cursor-pointer hover:scale-105 shrink-0 ${
+                                following.includes(student.id)
+                                  ? 'bg-slate-950/40 text-slate-350 border border-slate-700/80 hover:bg-red-950/30 hover:text-red-400 hover:border-red-500/30'
+                                  : 'bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-[0_3px_10px_rgba(16,185,129,0.3)] border border-emerald-300/20 hover:from-emerald-500 hover:to-teal-600'
+                              }`}
+                            >
+                              {following.includes(student.id) ? (language === 'en' ? 'Following' : 'ଅନୁସରଣ') : (language === 'en' ? '+ Follow' : '+ ଅନୁସରଣ')}
+                            </button>
                           )}
                         </span>
                         <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{translations[language].classes[student.class] || student.class}</span>
@@ -290,20 +301,6 @@ export function LeaderboardView({ leaderboard, language, onBack, following, user
                     </div>
                   </td>
                   <td className="px-3 sm:px-8 py-4 sm:py-6 text-right font-mono text-emerald-400 font-bold group-hover:scale-110 transition-transform origin-right">{student.points}</td>
-                  <td className="px-3 sm:px-8 py-4 sm:py-6 text-right">
-                    {student.id !== user.id && (
-                      <button
-                        onClick={() => onToggleFollow?.(student.id)}
-                        className={`px-3 py-1.5 rounded-full text-[10px] font-black tracking-wider uppercase transition-all shadow-md active:scale-95 cursor-pointer hover:scale-105 ${
-                          following.includes(student.id)
-                            ? 'bg-slate-950/40 text-slate-300 border border-slate-700/80 hover:bg-red-950/30 hover:text-red-400 hover:border-red-500/30'
-                            : 'bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-[0_3px_10px_rgba(16,185,129,0.3)] border border-emerald-300/20 hover:from-emerald-500 hover:to-teal-600'
-                        }`}
-                      >
-                        {following.includes(student.id) ? (language === 'en' ? 'Following' : 'ଅନୁସରଣ') : (language === 'en' ? '+ Follow' : '+ ଅନୁସରଣ')}
-                      </button>
-                    )}
-                  </td>
                 </motion.tr>
               );
             })

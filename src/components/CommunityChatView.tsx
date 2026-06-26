@@ -108,9 +108,11 @@ interface CommunityChatViewProps {
   student: Student;
   onClose: () => void;
   isTab?: boolean;
+  following?: string[];
+  onToggleFollow?: (targetUserId: string) => void;
 }
 
-export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, student, onClose, isTab = false }) => {
+export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, student, onClose, isTab = false, following = [], onToggleFollow }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -723,6 +725,18 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
                       <span className="px-1.5 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[9px] font-black uppercase tracking-widest shadow-[0_0_10px_rgba(251,191,36,0.2)]">
                         Admin
                       </span>
+                    )}
+                    {msg.userId !== 'gundulu_bot' && (
+                      <button
+                        onClick={() => onToggleFollow?.(msg.userId)}
+                        className={`px-1.5 py-0.5 rounded-full text-[8px] font-black tracking-wider uppercase transition-all shadow-md active:scale-95 cursor-pointer hover:scale-105 shrink-0 ${
+                          following.includes(msg.userId)
+                            ? 'bg-slate-950/40 text-slate-350 border border-slate-700/80 hover:bg-red-950/30 hover:text-red-400 hover:border-red-500/30'
+                            : 'bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-[0_3px_10px_rgba(16,185,129,0.3)] border border-emerald-300/20 hover:from-emerald-500 hover:to-teal-600'
+                        }`}
+                      >
+                        {following.includes(msg.userId) ? (language === 'en' ? 'Following' : 'ଅନୁସରଣ') : (language === 'en' ? '+ Follow' : '+ ଅନୁସରଣ')}
+                      </button>
                     )}
                   </div>
                 )}
