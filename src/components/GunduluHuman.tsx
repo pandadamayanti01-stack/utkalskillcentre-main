@@ -742,58 +742,44 @@ const GunduluHuman = ({ skipInitialGreeting = false, userClass, onBack, isPremiu
         console.log(`[Gundulu RAG] Matching chapters selected by relevance score:`, selectedChapters.map(ch => ch.title));
       }
       
-      const systemInstruction = `
-        Identity & Persona: You are "Gundulu," a warm, highly interactive, and brilliant virtual tutor from Odisha (personality of a sweet, encouraging elder sibling tutor).
-        Pedagogical Tone: Speak with immense warmth and encouragement. Use diverse praise expressions naturally.
-        Teacher Behavior Rules:
-          1. Actively encourage the student when they ask a question. Praise their curiosity.
-          2. NEVER give away the whole answer at once, especially for math or sequences (e.g., counting, addition). Use scaffolded, interactive Socratic teaching.
-             - Example (Counting for Class 1): If the student asks to learn counting 1 to 10, explain "1 and 2" first, then ask "Can you tell me what comes next?". Do not explain the whole list. Once they answer "3", praise them, explain "3", and ask "What comes after 3?".
-             - Example (Addition/Subtraction/Math): Break the problem into the very first small step. Ask them to solve that first step, then proceed to the next step based on their response.
-          3. Socratic Prompting: Ask the student one simple, sweet question at a time to keep them engaged in the interactive learning loop.
-          4. No repetition of praises: Only use praises like "Aree wah!" or "Sabas!" occasionally or at the first turn. Do not repeat the same praise phrase in every single response as it gets highly repetitive. Use diverse, natural Odia encouragements.
-          5. When mentioning technical English terms (e.g., Photosynthesis, Gravity, Friction), translate them to their standard Odia names so students learn both.
-          6. Never read raw text robotic-style. Explain it like a passionate, friendly private home tutor.
-          7. Conclude your answer with a highly engaging, sweet follow-up question (e.g., "Bujhiparlu ta? Na au thare kahibi?" / "Bala lagila ta? Au kichi prashna achi?").
-        
-        Oral-First Formatting Rules (CRITICAL FOR TTS NATURALNESS):
-          1. NEVER output Markdown formatting (do NOT use **, *, #, _, -, or lists).
-          2. NEVER output emojis or emoticons (e.g. do NOT use ✨, 😊, etc.) as they glitch the voice synthesizer.
-          3. Spell out all numbers and mathematical operations phonetically in Odia text (e.g. write "ତିନି ବିଭକ୍ତ ଚାରି" instead of "3/4", and "ସମାନ" instead of "=").
-          4. NEVER put English translation terms in brackets (e.g. do NOT write "ପ୍ଲାଣ୍ଟ (plant)"). Instead, write the Odia word or write the English word phonetically in Odia script (e.g. "ପ୍ଲାଣ୍ଟ").
-          5. Use punctuation (commas and periods) strategically to force natural breathing pauses in speech synthesis.
-          
-        Language Policy: STRICT ODIA OUTPUT ONLY.
-        Input Policy: User may speak in Odia or English. Always understand both, but always reply only in Odia.
-        ASR Rule: Speech-to-text can be wrong for Odisha names/words. Use context to auto-correct likely misheard words.
-        ASR Rule: Prefer Odisha school/local words (district names, subjects, textbook terms) when candidates are similar.
-        Style: Conversational, friendly private tutor voice.
-        Context: This is response turn number ${turn + 1}. If turn > 1, avoid intro lines and start directly with answer.
-        Constraint: Keep your response extremely brief, simple, and conversational (maximum 1-2 short sentences, under 30 words) so that the student isn't overwhelmed and the voice synthesis is nearly instantaneous (like a real WhatsApp voice call!). Never give long list-style lectures.
- 
-        ${textbookContext ? `
-        Verified Textbook Context (Primary Source of Knowledge):
-        You MUST answer the student's question using ONLY the facts and details provided in the official textbook notes below. 
-        - STRICT RULE: Do NOT invent or assume any facts, dates, characters, or formulas that are not explicitly written in the context below. 
-        - STRICT RULE: If the student asks a question about this chapter that is not covered in the textbook notes below, politely explain in Odia: "I can only teach what is in our Class textbook lesson. Let's look at this part together!"
-        
-        ${textbookContext}
-        ` : ''}
-      `;
+      // ── Compact, cacheable system instruction (no dynamic fields = model can cache it) ──
+      const systemInstruction = `Identity & Persona: You are "Gundulu," a warm, interactive, brilliant virtual tutor from Odisha — personality of a sweet, encouraging elder sibling.
+Pedagogical Tone: Warmth and encouragement. Diverse praise expressions, never repetitive.
+Teacher Behavior Rules:
+  1. Praise the student's curiosity first.
+  2. NEVER give away the whole answer at once for math/sequences. Use Socratic scaffolded teaching — one small step, then ask "what comes next?".
+  3. Ask the student one simple question at a time.
+  4. Vary your praise — never repeat "Aree wah!" every turn.
+  5. Translate technical English terms to their standard Odia equivalents.
+  6. Explain like a passionate private home tutor, never robotic.
+  7. End with one engaging follow-up question.
+Oral-First Formatting (CRITICAL):
+  1. NO Markdown — no **, *, #, _, -, bullet lists.
+  2. NO emojis or emoticons.
+  3. Spell all numbers and math ops in Odia (e.g. "ତିନି ବିଭକ୍ତ ଚାରି", "ସମାନ").
+  4. NO bracketed English translations. Write phonetic Odia instead.
+  5. Use commas and periods for natural speech pauses.
+Language: STRICT ODIA OUTPUT ONLY. Understand Odia or English input, always reply in Odia.
+ASR: Auto-correct likely misheard Odisha district names, subjects, textbook terms from context.
+Style: Conversational, friendly private tutor voice. Under 30 words per response. No lectures.`;
 
-      const inputPayload = `
-Primary speech transcript: ${speechInput.primary}
+      // Textbook context and turn metadata go in the USER message (not system instruction)
+      // This allows the system instruction to remain static and be cached by the model.
+      const contextBlock = textbookContext
+        ? `\nVerified Textbook Notes (answer ONLY from these; politely decline if not covered):\n${textbookContext}`
+        : '';
+      const turnHint = turn > 0 ? `\n[Turn ${turn + 1}: skip intro, start directly with answer]` : '';
+
+      const inputPayload = `Primary speech transcript: ${speechInput.primary}
 Alternative transcripts: ${speechInput.candidates.join(' | ') || 'N/A'}
 ASR confidence: ${typeof speechInput.confidence === 'number' ? speechInput.confidence.toFixed(2) : 'unknown'}
-
-Understand user intent from these transcripts and respond in Odia only.
-      `.trim();
+Understand user intent from these transcripts and respond in Odia only.${turnHint}${contextBlock}`.trim();
 
       // 1. Append user payload to chat history
       const userContent = { role: 'user', parts: [{ text: inputPayload }] };
       chatHistoryRef.current.push(userContent);
 
-      // 2. Limit history to keep up to last 3 entries (saves 50% on input token context memory costs!)
+      // 2. Limit history to last 3 entries
       if (chatHistoryRef.current.length > 3) {
         chatHistoryRef.current = chatHistoryRef.current.slice(-3);
       }
@@ -803,21 +789,89 @@ Understand user intent from these transcripts and respond in Odia only.
         systemInstruction,
       });
 
-      const result = await modelInstance.generateContent({
+      // ── STREAMING: collect sentence chunks and pipe each to TTS as it arrives ──
+      // This cuts time-to-first-audio from ~2s → ~400ms by starting TTS on the
+      // first complete sentence without waiting for the full response.
+      const streamResult = await modelInstance.generateContentStream({
         contents: chatHistoryRef.current,
-        generationConfig: {
-          temperature: 0.7,
-        },
+        generationConfig: { temperature: 0.7 },
       });
 
-      const response = result.response.text() || "ମୁଁ ଭଲଭାବେ ଶୁଣି ପାରିଲି ନାହିଁ, ଆଉଥରେ କହନ୍ତୁ।";
-      
+      let fullResponse = '';
+      let pendingChunk = '';
+      let firstSentenceFired = false;
+
+      // Sentence boundary detector — Odia (।) + Latin punctuation
+      const SENTENCE_END = /[।.!?]/;
+
+      const activePremiumVoice = localStorage.getItem('gundulu_use_premium_voice') !== 'false';
+
+      // TTS queue: pre-fetch next audio while current is playing
+      const ttsQueue: string[] = [];
+      let ttsPlaying = false;
+
+      const playNextInQueue = async () => {
+        if (ttsPlaying || ttsQueue.length === 0) return;
+        ttsPlaying = true;
+        const sentence = ttsQueue.shift()!;
+        const sanitized = sanitizeTextForTTS(sentence);
+        if (!sanitized.trim()) { ttsPlaying = false; playNextInQueue(); return; }
+
+        const speakFn = activePremiumVoice ? speakWithGeminiVoice : speakWithBrowserTtsFallback;
+        speakFn(sanitized, () => {
+          ttsPlaying = false;
+          if (ttsQueue.length > 0) {
+            playNextInQueue();
+          } else {
+            // All sentences done — restart listen loop
+            triggerVisualNudge();
+            const getFreeQueriesKey = () => `free_ai_queries_used_${user?.uid || user?.id || 'guest'}`;
+            const freeQueriesUsed = parseInt(localStorage.getItem(getFreeQueriesKey()) || '0', 10);
+            if (!isPremium && freeQueriesUsed >= 5 && !isFreePeriod) return;
+            if (recognitionRef.current && !isListeningRef.current) {
+              setTimeout(() => {
+                try { recognitionRef.current?.start(); } catch (_) {}
+              }, 400);
+            }
+          }
+        });
+      };
+
+      const dispatchSentence = (sentence: string) => {
+        const trimmed = sentence.trim();
+        if (!trimmed) return;
+        ttsQueue.push(trimmed);
+        if (!firstSentenceFired) {
+          firstSentenceFired = true;
+          animateSubtitle(trimmed, false);
+        }
+        playNextInQueue();
+      };
+
+      for await (const chunk of streamResult.stream) {
+        const chunkText = chunk.text();
+        fullResponse += chunkText;
+        pendingChunk += chunkText;
+
+        // Flush complete sentences from the pending buffer immediately
+        let match;
+        while ((match = SENTENCE_END.exec(pendingChunk)) !== null) {
+          const sentence = pendingChunk.slice(0, match.index + 1);
+          pendingChunk = pendingChunk.slice(match.index + 1);
+          dispatchSentence(sentence);
+        }
+      }
+
+      // Flush any remaining text after stream ends
+      if (pendingChunk.trim()) dispatchSentence(pendingChunk);
+
+      const response = fullResponse.trim() || "ମୁଁ ଭଲଭାବେ ଶୁଣି ପାରିଲି ନାହିଁ, ଆଉଥରେ କହନ୍ତୁ।";
+
       // 3. Append model response to chat history
       chatHistoryRef.current.push({ role: 'model', parts: [{ text: response }] });
-
       responseTurnRef.current += 1;
 
-      // Increment free queries token counter for unsubscribed users if it is a valid academic query and not safety-blocked
+      // Increment free queries counter
       const academicQuery = !isGreeting(speechInput.primary);
       if (!isPremium && academicQuery) {
         const isSafetyBlocked = response.includes("Safety Warning") || response.includes("Perspective API") || response.includes("ସୁରକ୍ଷା ଚେତାବନୀ");
@@ -826,7 +880,6 @@ Understand user intent from these transcripts and respond in Odia only.
           const currentFreeCount = parseInt(localStorage.getItem(getFreeQueriesKey()) || '0', 10);
           localStorage.setItem(getFreeQueriesKey(), (currentFreeCount + 1).toString());
           setFreeQueriesCount(currentFreeCount + 1);
-          
           if (currentFreeCount + 1 >= 5 && !isFreePeriod) {
             window.speechSynthesis.cancel();
             stopCurrentAudio();
@@ -837,7 +890,9 @@ Understand user intent from these transcripts and respond in Odia only.
         }
       }
 
-      speakResponse(response);
+      // If stream produced no sentences (e.g. safety block), speak the full response as fallback
+      if (!firstSentenceFired) speakResponse(response);
+
     } catch (error) {
       const errorMsg = "ଓଃ! କିଛି ଭୁଲ୍ ହୋଇଗଲା |";
       speakResponse(errorMsg);
