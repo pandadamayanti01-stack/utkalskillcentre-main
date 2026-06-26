@@ -4556,6 +4556,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                 onParentAccess={() => setActiveTab('parent_dashboard')} 
                 setActiveTab={setActiveTab} 
                 setIsParentUnlocked={setIsParentUnlocked}
+                setUser={setUser}
               />
             )}
             {activeTab === 'parent_dashboard' && (
@@ -4818,9 +4819,13 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                       }
                       // Save PIN to Firestore
                       try {
-                        await updateDoc(doc(firestore, 'users', user.id), {
+                        setUser(prev => prev ? { ...prev, pin: newPinValue, parent_pin: newPinValue } : prev);
+                        setShowSetPinPrompt(false);
+                        updateDoc(doc(firestore, 'users', user.id), {
                           pin: newPinValue,
                           parent_pin: newPinValue
+                        }).catch((err) => {
+                          console.error("Failed to save PIN to Firestore:", err);
                         });
                         alert(language === 'en' ? 'PIN set successfully!' : 'ପିନ୍ ସଫଳତାର ସହ ସେଟ୍ ହେଲା!');
                         setShowSetPinPrompt(false);
@@ -5376,7 +5381,7 @@ function SupportView({ user, language, onBack, handleSupportClick, confirmSuppor
   );
 }
 
-function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, setActiveTab, setIsParentUnlocked }: any) {
+function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, setActiveTab, setIsParentUnlocked, setUser }: any) {
   const [activeProfileTab, setActiveProfileTab] = useState<'student' | 'parent'>('student');
   const [district, setDistrict] = useState(user.district || '');
   const [school, setSchool] = useState(user.school || '');
@@ -5825,9 +5830,12 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
                       <button
                         onClick={async () => {
                           try {
-                            await updateDoc(doc(firestore, 'users', user.id), {
+                            setUser(prev => prev ? { ...prev, pin: securityPinInput, parent_pin: securityPinInput } : prev);
+                            updateDoc(doc(firestore, 'users', user.id), {
                               parent_pin: securityPinInput,
                               pin: securityPinInput
+                            }).catch((err) => {
+                              console.error("Failed to save PIN to Firestore:", err);
                             });
                             alert(language === 'en' ? 'PIN saved successfully!' : 'ପିନ୍ ସଫଳତାର ସହ ସେଟ୍ ହେଲା!');
                           } catch (err: any) {
@@ -5957,9 +5965,12 @@ function ProfileView({ user, language, theme, setTheme, onBack, onParentAccess, 
                         <button
                           onClick={async () => {
                             try {
-                              await updateDoc(doc(firestore, 'users', user.id), {
+                              setUser(prev => prev ? { ...prev, pin: securityPinInput, parent_pin: securityPinInput } : prev);
+                              updateDoc(doc(firestore, 'users', user.id), {
                                 parent_pin: securityPinInput,
                                 pin: securityPinInput
+                              }).catch((err) => {
+                                console.error("Failed to save PIN to Firestore:", err);
                               });
                               alert(language === 'en' ? 'PIN saved successfully!' : 'ପିନ୍ ସଫଳତାର ସହ ସେଟ୍ ହେଲା!');
                             } catch (err: any) {
