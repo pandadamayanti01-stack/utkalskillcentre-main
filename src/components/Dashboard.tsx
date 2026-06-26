@@ -2901,7 +2901,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           </div>
 
           {/* Animated Gundulu Mascot Video (Right Side) with hanging rope banner */}
-          <div className="flex flex-col items-center shrink-0 mt-3 md:mt-0 self-center md:self-auto relative select-none">
+          <div className="flex flex-col items-center shrink-0 -mt-2 md:-mt-6 self-center md:self-auto relative select-none">
             {showTestResultHanger && (
               <motion.div
                 initial={{ y: -20, opacity: 0 }}
@@ -2920,7 +2920,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                     setShowImportantPapersModal(true);
                   }
                 }}
-                className="relative cursor-pointer group flex flex-col items-center z-30 mb-3 -mt-8 md:-mt-12"
+                className="relative cursor-pointer group flex flex-col items-center z-30 mb-3 -mt-11 md:-mt-15"
               >
                 {/* Hanging Ropes */}
                 <div className="flex justify-between w-20 h-6 relative z-10 pointer-events-none -mb-1.5">
@@ -2979,6 +2979,22 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   <Lucide.Volume2 size={16} className="fill-white" />
                 )}
               </button>
+            </div>
+
+            {/* Compact Daily Target Progress Card (Placed in the yellow space - hidden on desktop to avoid redundancy) */}
+            <div className="mt-4 lg:hidden bg-slate-950/40 border border-white/5 rounded-2xl p-3 flex flex-col gap-2 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] w-full max-w-[130px] sm:max-w-[150px] transition-colors cursor-default">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-emerald-400">
+                  <Lucide.Target size={11} className="text-emerald-400 shrink-0 animate-pulse" />
+                  <span>{language === 'en' ? 'Daily Target' : 'ଦୈନିକ ଲକ୍ଷ୍ୟ'}</span>
+                </div>
+                <span className="text-[10px] font-black text-emerald-400">{Math.round(dailyProgress)}%</span>
+              </div>
+              <div className="h-2 w-full bg-slate-900/60 rounded-full overflow-hidden border border-white/5 relative">
+                <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full transition-all duration-1000" style={{ width: `${dailyProgress}%` }}>
+                  <div className="absolute top-0 right-0 bottom-0 w-20 bg-gradient-to-r from-transparent to-white/20 skew-x-12 animate-[shimmer_2s_infinite]"></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
