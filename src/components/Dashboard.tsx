@@ -2990,12 +2990,12 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           <button
             type="button"
             onClick={() => setShowGoldenTicket(true)}
-            className="flex-1 h-[82px] bg-gradient-to-br from-amber-500/10 via-slate-950/75 to-orange-950/20 backdrop-blur-xl border border-amber-500/25 hover:border-amber-400/40 rounded-2xl p-3 flex flex-row items-center justify-start gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer shadow-[0_8px_32px_rgba(0,0,0,0.5),0_0_15px_rgba(245,158,11,0.1),inset_0_1px_1px_rgba(255,255,255,0.1)] group/ticket"
+            className="flex-1 h-[82px] bg-gradient-to-br from-amber-500/20 via-slate-900/90 to-orange-500/20 backdrop-blur-xl border border-amber-500/40 hover:border-amber-400/60 rounded-2xl p-3 flex flex-row items-center justify-start gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer shadow-[0_8px_24px_rgba(245,158,11,0.2),inset_0_1px_1px_rgba(255,255,255,0.15)] group/ticket"
           >
-            <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0 group-hover/ticket:rotate-12 group-hover/ticket:scale-105 transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
-              <Lucide.Trophy size={16} className="text-amber-400 animate-pulse" />
+            <div className="w-9 h-9 rounded-xl bg-amber-500/25 border border-amber-400/40 flex items-center justify-center text-amber-300 shrink-0 group-hover/ticket:rotate-12 group-hover/ticket:scale-105 transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.3)]">
+              <Lucide.Trophy size={16} className="text-amber-300 animate-pulse" />
             </div>
-            <span className="text-[8px] sm:text-[9.5px] font-black uppercase tracking-[0.2em] sm:tracking-[0.25em] text-left leading-tight flex flex-col text-amber-200 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
+            <span className="text-[8px] sm:text-[9.5px] font-black uppercase tracking-[0.2em] sm:tracking-[0.25em] text-left leading-tight flex flex-col text-amber-300 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
               <span>{language === 'or' ? 'ସ୍ୱର୍ଣ୍ଣ' : 'Claim'}</span>
               <span>{language === 'or' ? 'ପତ୍ର' : 'Golden'}</span>
               <span>{language === 'or' ? 'କ୍ଲେମ' : 'Ticket'}</span>
@@ -3003,25 +3003,25 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           </button>
 
           {/* Compact Daily Target Progress Card */}
-          <div className="flex-1 h-[82px] bg-gradient-to-br from-emerald-500/10 via-slate-950/75 to-teal-950/20 backdrop-blur-xl border border-emerald-500/25 hover:border-emerald-400/40 rounded-2xl p-3 flex flex-col justify-between shadow-[0_8px_32px_rgba(0,0,0,0.5),0_0_15px_rgba(16,185,129,0.1),inset_0_1px_1px_rgba(255,255,255,0.1)] transition-all duration-300 cursor-default group/target">
+          <div className="flex-1 h-[82px] bg-gradient-to-br from-emerald-500/20 via-slate-900/90 to-teal-500/20 backdrop-blur-xl border border-emerald-500/40 hover:border-emerald-400/60 rounded-2xl p-3 flex flex-col justify-between shadow-[0_8px_24px_rgba(16,185,129,0.2),inset_0_1px_1px_rgba(255,255,255,0.15)] transition-all duration-300 cursor-default group/target">
             <div className="flex justify-between items-center w-full">
               <div className="flex items-center gap-2">
-                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 group-hover/target:rotate-45 group-hover/target:scale-105 transition-all duration-300 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
-                  <Lucide.Target size={16} className="text-emerald-400 animate-pulse" />
+                <div className="w-9 h-9 rounded-xl bg-emerald-500/25 border border-emerald-400/40 flex items-center justify-center text-emerald-300 shrink-0 group-hover/target:rotate-45 group-hover/target:scale-105 transition-all duration-300 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+                  <Lucide.Target size={16} className="text-emerald-300 animate-pulse" />
                 </div>
-                <span className="text-[8px] sm:text-[9.5px] font-black uppercase tracking-[0.2em] sm:tracking-[0.25em] text-emerald-200 leading-tight flex flex-col drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
+                <span className="text-[8px] sm:text-[9.5px] font-black uppercase tracking-[0.2em] sm:tracking-[0.25em] text-emerald-300 leading-tight flex flex-col drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
                   <span>{language === 'en' ? 'Daily' : 'ଦୈନିକ'}</span>
                   <span>{language === 'en' ? 'Target' : 'ଲକ୍ଷ୍ୟ'}</span>
                 </span>
               </div>
-              <span className="text-sm sm:text-base font-black text-emerald-400 drop-shadow-[0_0_10px_rgba(52,211,153,0.5)] leading-none pt-0.5">{Math.round(dailyProgress)}%</span>
+              <span className="text-sm sm:text-base font-black text-emerald-300 drop-shadow-[0_0_12px_rgba(52,211,153,0.7)] leading-none pt-0.5">{Math.round(dailyProgress)}%</span>
             </div>
-            <div className="h-2 w-full bg-slate-950/80 rounded-full overflow-hidden border border-white/5 shadow-[inset_0_1px_2px_rgba(0,0,0,0.8)] relative mt-1.5">
-              <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-500 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(52,211,153,0.6)]" style={{ width: `${dailyProgress}%` }}>
-                <div className="absolute top-0 right-0 bottom-0 w-20 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 animate-[shimmer_2s_infinite]"></div>
+            <div className="h-2 w-full bg-slate-950/90 rounded-full overflow-hidden border border-white/10 shadow-[inset_0_1px_2px_rgba(0,0,0,0.9)] relative mt-1.5">
+              <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-500 rounded-full transition-all duration-1000 shadow-[0_0_12px_rgba(52,211,153,0.8)]" style={{ width: `${dailyProgress}%` }}>
+                <div className="absolute top-0 right-0 bottom-0 w-20 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 animate-[shimmer_2s_infinite]"></div>
                 {/* Glowing edge indicator */}
                 {dailyProgress > 0 && (
-                  <div className="absolute right-0 top-0 bottom-0 w-1 bg-white shadow-[0_0_8px_#fff,0_0_15px_#34d399] rounded-full"></div>
+                  <div className="absolute right-0 top-0 bottom-0 w-1.5 bg-white shadow-[0_0_8px_#fff,0_0_15px_#34d399] rounded-full"></div>
                 )}
               </div>
             </div>
