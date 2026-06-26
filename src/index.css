@@ -778,6 +778,31 @@ body.theme-daybreak .force-dark-theme div.text-emerald-400 {
   color: #34d399 !important;
 }
 
+.force-dark-theme .text-cyan-400,
+body.theme-daybreak .force-dark-theme .text-cyan-400,
+body.theme-daybreak .force-dark-theme span.text-cyan-400,
+body.theme-daybreak .force-dark-theme h1.text-cyan-400,
+body.theme-daybreak .force-dark-theme h2.text-cyan-400,
+body.theme-daybreak .force-dark-theme h3.text-cyan-400,
+body.theme-daybreak .force-dark-theme h4.text-cyan-400,
+body.theme-daybreak .force-dark-theme p.text-cyan-400,
+body.theme-daybreak .force-dark-theme div.text-cyan-400 {
+  color: #22d3ee !important;
+}
+
+.force-dark-theme .text-orange-400,
+body.theme-daybreak .force-dark-theme .text-orange-400,
+body.theme-daybreak .force-dark-theme span.text-orange-400,
+body.theme-daybreak .force-dark-theme h1.text-orange-400,
+body.theme-daybreak .force-dark-theme h2.text-orange-400,
+body.theme-daybreak .force-dark-theme h3.text-orange-400,
+body.theme-daybreak .force-dark-theme h4.text-orange-400,
+body.theme-daybreak .force-dark-theme p.text-orange-400,
+body.theme-daybreak .force-dark-theme div.text-orange-400 {
+  color: #fb923c !important;
+}
+
+
 .force-dark-theme .text-pink-400,
 body.theme-daybreak .force-dark-theme .text-pink-400,
 body.theme-daybreak .force-dark-theme span.text-pink-400,
