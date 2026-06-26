@@ -250,7 +250,10 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
         };
 
         const mcqBoard = String(mcq.board || 'Odisha State Board').trim();
-        const userBoardRaw = String(user?.board || 'odisha').trim();
+        let userBoardRaw = String(user?.board || 'odisha').trim();
+        if (userBoardRaw === 'BSE Odisha') {
+          userBoardRaw = 'odisha';
+        }
         const userBoardFull = boardMap[userBoardRaw] || userBoardRaw;
 
         return mcqBoard === userBoardFull || 
