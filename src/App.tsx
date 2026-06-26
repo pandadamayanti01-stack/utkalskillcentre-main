@@ -4423,11 +4423,15 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                     hasDailyPractice={dailyMcqs.length > 0}
                     todayDailySubject={todayDailySubject}
                     tomorrowDailySubject={tomorrowDailySubject}
-                    onOpenDailyPractice={() => setActiveTab('daily_mcqs')}
+                    onOpenDailyPractice={() => {
+                      console.log("App: onOpenDailyPractice callback triggered. Setting activeTab to 'daily_mcqs'.");
+                      setActiveTab('daily_mcqs');
+                    }}
                     onShareDailyPractice={handleShareDailyPractice}
                     isRegistered={isRegisteredForTestSeries}
                     onRegistrationComplete={() => setIsRegisteredForTestSeries(true)}
                     onOpenTutor={() => {
+                      console.log("App: onOpenTutor callback triggered. Setting activeTab to 'gundulu'.");
                       setActiveTab('gundulu');
                     }}
                     onOpenCommunity={() => setShowCommunityChat(true)}
@@ -4437,8 +4441,14 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                     isTourStep4={tourStep === 2} // Gundulu AI is Step 2
                     onOpenRajaPoster={() => setShowLaunchPoster(true)}
                     onOpenMonthlyTests={() => setActiveTab('monthly_tests')}
-                    onOpenGameZone={() => setActiveTab('game_zone')}
-                    onOpenLibrary={() => setActiveTab('digital_library')}
+                    onOpenGameZone={() => {
+                      console.log("App: onOpenGameZone callback triggered. Setting activeTab to 'game_zone'.");
+                      setActiveTab('game_zone');
+                    }}
+                    onOpenLibrary={() => {
+                      console.log("App: onOpenLibrary callback triggered. Setting activeTab to 'digital_library'.");
+                      setActiveTab('digital_library');
+                    }}
                   />
                 )}
               </div>

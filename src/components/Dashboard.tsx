@@ -2926,7 +2926,11 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           {/* Middle Section: Desktop Only - Neural Sync Status */}
           <div className="hidden lg:flex flex-1 max-w-xl xl:max-w-2xl mx-4 relative group">
             <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-cyan-500/5 to-emerald-500/5 rounded-[2rem] blur-xl opacity-50 group-hover:opacity-100 transition-opacity"></div>
-            <div className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-emerald-500/10 rounded-[2rem] p-5 flex items-center gap-6 w-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_10px_30px_-10px_rgba(16,185,129,0.15)] transition-all duration-500 hover:border-emerald-500/30">
+            <button 
+              type="button"
+              onClick={() => setShowTargetModal(true)}
+              className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-emerald-500/10 rounded-[2rem] p-5 flex items-center gap-6 w-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_10px_30px_-10px_rgba(16,185,129,0.15)] transition-all duration-500 hover:border-emerald-500/30 text-left hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+            >
               
               <div className="relative shrink-0 w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-700 rounded-full flex items-center justify-center text-white shadow-[0_0_20px_rgba(16,185,129,0.4)] group-hover:scale-105 transition-transform duration-500">
                 <div className="absolute inset-0 rounded-full border-2 border-emerald-400/50 animate-ping" style={{ animationDuration: '3s' }}></div>
@@ -2952,7 +2956,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 </p>
               </div>
 
-            </div>
+            </button>
           </div>
 
           {/* Animated Gundulu Mascot Video (Right Side) with hanging rope banner */}
@@ -3058,7 +3062,11 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           </button>
 
           {/* Compact Daily Target Progress Card */}
-          <div className="flex-1 h-[82px] bg-gradient-to-br from-emerald-500/20 via-slate-900/90 to-teal-500/20 backdrop-blur-xl border border-emerald-500/40 hover:border-emerald-400/60 rounded-2xl p-3 flex flex-col justify-between shadow-[0_8px_24px_rgba(16,185,129,0.2),inset_0_1px_1px_rgba(255,255,255,0.15)] transition-all duration-300 cursor-default group/target">
+          <button
+            type="button"
+            onClick={() => setShowTargetModal(true)}
+            className="flex-1 h-[82px] bg-gradient-to-br from-emerald-500/20 via-slate-900/90 to-teal-500/20 backdrop-blur-xl border border-emerald-500/40 hover:border-emerald-400/60 rounded-2xl p-3 flex flex-col justify-between shadow-[0_8px_24px_rgba(16,185,129,0.2),inset_0_1px_1px_rgba(255,255,255,0.15)] transition-all duration-300 cursor-pointer hover:scale-[1.02] active:scale-[0.98] group/target text-left"
+          >
             <div className="flex justify-between items-center w-full">
               <div className="flex items-center gap-2">
                 <div className="w-9 h-9 rounded-xl bg-emerald-500/25 border border-emerald-400/40 flex items-center justify-center text-emerald-300 shrink-0 group-hover/target:rotate-45 group-hover/target:scale-105 transition-all duration-300 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
@@ -3080,7 +3088,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 )}
               </div>
             </div>
-          </div>
+          </button>
         </div>
       </motion.div>
 
@@ -4354,6 +4362,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   <button 
                     type="button"
                     onClick={() => {
+                      console.log("TargetModal: Game Zone clicked. Invoking onOpenGameZone callback.");
                       setShowTargetModal(false);
                       onOpenGameZone?.();
                     }}
@@ -4378,6 +4387,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   <button 
                     type="button"
                     onClick={() => {
+                      console.log("TargetModal: Daily MCQ Challenge clicked. Invoking onOpenDailyPractice callback.");
                       setShowTargetModal(false);
                       onOpenDailyPractice?.();
                     }}
@@ -4402,6 +4412,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   <button 
                     type="button"
                     onClick={() => {
+                      console.log("TargetModal: Read Textbook Chapters clicked. Invoking onOpenLibrary callback.");
                       setShowTargetModal(false);
                       onOpenLibrary?.();
                     }}
@@ -4426,6 +4437,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   <button 
                     type="button"
                     onClick={() => {
+                      console.log("TargetModal: AI Doubt Solver clicked. Invoking onOpenTutor callback.");
                       setShowTargetModal(false);
                       onOpenTutor?.();
                     }}
