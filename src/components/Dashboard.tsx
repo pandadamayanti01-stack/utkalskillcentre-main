@@ -4199,7 +4199,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                                 onClick={() => onToggleFollow?.(student.id)}
                                 className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider transition-all cursor-pointer hover:scale-105 active:scale-95 ${
                                   following?.includes(student.id)
-                                    ? 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-red-950/30 hover:text-red-400 hover:border-red-500/20'
+                                    ? 'bg-slate-950/40 text-slate-300 border border-slate-700/80 hover:bg-red-950/30 hover:text-red-400 hover:border-red-500/30'
                                     : 'bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-[0_3px_10px_rgba(16,185,129,0.3)] border border-emerald-300/20 hover:from-emerald-500 hover:to-teal-600'
                                 }`}
                               >
