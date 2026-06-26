@@ -10,7 +10,9 @@ import {
   browserLocalPersistence 
 } from 'firebase/auth';
 import { 
-  getFirestore, 
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
   doc, 
   getDoc, 
   setDoc, 
@@ -23,8 +25,7 @@ import {
   updateDoc, 
   deleteDoc, 
   serverTimestamp, 
-  getDocFromServer,
-  enableIndexedDbPersistence
+  getDocFromServer
 } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
@@ -36,15 +37,13 @@ const app = initializeApp(firebaseConfig);
 const firestoreDatabaseId = firebaseConfig.firestoreDatabaseId || '(default)';
 
 // Initialize Services
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
-
-// Enable offline persistence to drastically reduce Firestore reads and allow offline access
-enableIndexedDbPersistence(db).catch((err) => {
-  if (err.code === 'failed-precondition') {
-    console.warn('Multiple tabs open, persistence can only be enabled in one tab at a a time.');
-  } else if (err.code === 'unimplemented') {
-    console.warn('The current browser does not support all of the features required to enable persistence');
-  }
+// initializeFirestore with persistentLocalCache replaces the deprecated
+// enableIndexedDbPersistence() API and supports multiple browser tabs natively.
+export const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({
+    tabManager: persistentMultipleTabManager()
+  }),
+  databaseId: firebaseConfig.firestoreDatabaseId
 });
 
 export const auth = getAuth(app);
