@@ -294,10 +294,10 @@ export function LeaderboardView({ leaderboard, language, onBack, following, user
                     {student.id !== user.id && (
                       <button
                         onClick={() => onToggleFollow?.(student.id)}
-                        className={`px-3 py-1.5 rounded-full text-[10px] font-black tracking-wider uppercase transition-all shadow-md active:scale-95 cursor-pointer ${
+                        className={`px-3 py-1.5 rounded-full text-[10px] font-black tracking-wider uppercase transition-all shadow-md active:scale-95 cursor-pointer hover:scale-105 ${
                           following.includes(student.id)
-                            ? 'bg-slate-800 hover:bg-red-950/80 hover:text-red-400 hover:border-red-500/20 text-slate-400 border border-slate-700'
-                            : 'bg-emerald-500/10 hover:bg-emerald-500 hover:text-slate-950 hover:shadow-emerald-500/30 text-emerald-400 border border-emerald-500/20'
+                            ? 'bg-slate-800 hover:bg-red-950/30 hover:text-red-400 hover:border-red-500/20 text-slate-400 border border-slate-700'
+                            : 'bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-[0_3px_10px_rgba(16,185,129,0.3)] border border-emerald-300/20 hover:from-emerald-500 hover:to-teal-600'
                         }`}
                       >
                         {following.includes(student.id) ? (language === 'en' ? 'Following' : 'ଅନୁସରଣ') : (language === 'en' ? '+ Follow' : '+ ଅନୁସରଣ')}
