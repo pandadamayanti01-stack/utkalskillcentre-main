@@ -4347,7 +4347,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 15 }}
               style={{ backgroundColor: '#0b1329', borderColor: '#1e293b' }}
-              className="relative w-full max-w-lg border rounded-[2rem] p-6 md:p-8 shadow-2xl my-8 md:my-16"
+              className="relative w-full max-w-lg border rounded-[2rem] p-6 md:p-8 shadow-2xl mt-20 mb-8 md:my-16"
             >
               {/* Close Button */}
               <button
