@@ -10,7 +10,7 @@ import {
   Palette, PenTool, Phone, Play, QrCode, Rocket, Save, School, Send,
   Settings, Shapes, Share2, ShieldAlert, ShieldCheck, ShoppingBag,
   Sparkles, Trophy, Twitter, Type, Upload, User, UserX, Users, Wind,
-  Youtube, Zap, X
+  Youtube, Zap, X, WifiOff, RefreshCw
 } from 'lucide-react';
 // Re-export as Lucide namespace for backward compatibility with existing JSX
 const Lucide = {
@@ -23,7 +23,7 @@ const Lucide = {
   Palette, PenTool, Phone, Play, QrCode, Rocket, Save, School, Send,
   Settings, Shapes, Share2, ShieldAlert, ShieldCheck, ShoppingBag,
   Sparkles, Trophy, Twitter, Type, Upload, User, UserX, Users, Wind,
-  Youtube, Zap, X
+  Youtube, Zap, X, WifiOff, RefreshCw
 };
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -1466,6 +1466,7 @@ export default function App() {
   const [showPaywall, setShowPaywall] = useState(false);
   const [dbError, setDbError] = useState<string | null>(null);
   const [isOfflineMode, setIsOfflineMode] = useState(false);
+  const [isRetryingConnection, setIsRetryingConnection] = useState(false);
   const [tutorExplanations, setTutorExplanations] = useState<Record<string, string>>({});
   const [tutorLoading, setTutorLoading] = useState<Record<string, boolean>>({});
   const [isSendingOtp, setIsSendingOtp] = useState(false);
@@ -2061,6 +2062,95 @@ export default function App() {
     return () => window.removeEventListener('pwa-prompt-available', handlePrompt);
   }, []);
 
+  // Periodic background check and manual retry support for recovering online status
+  const checkDatabaseConnectivity = useCallback(async (): Promise<boolean> => {
+    try {
+      const pingDocRef = doc(firestore, 'system', 'connectivity_check');
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('TIMEOUT')), 2000)
+      );
+      await Promise.race([
+        getDoc(pingDocRef),
+        timeoutPromise
+      ]);
+      return true;
+    } catch (err) {
+      console.warn("[Connectivity Check] Database connection check failed:", err);
+      return false;
+    }
+  }, []);
+
+  const handleManualRetryConnection = async () => {
+    setIsRetryingConnection(true);
+    const isOnline = await checkDatabaseConnectivity();
+    if (isOnline) {
+      console.log("[Connectivity Check] Reconnection successful!");
+      setIsOfflineMode(false);
+      // Reload stats/data to sync
+      loadChapters();
+      loadDailyMcqs();
+      loadLeaderboard();
+      loadMonthlyTests();
+    } else {
+      console.warn("[Connectivity Check] Reconnection failed; database is still unreachable.");
+      alert(language === 'en'
+        ? "Database is still unreachable. Remaining in offline fallback mode."
+        : "ଡାଟାବେସକୁ ସଂଯୋଗ କରାଯାଇପାରିଲା ନାହିଁ। ଅଫ୍‌ଲାଇନ୍ ମୋଡ୍‌ରେ ରଖାଯାଇଛି।");
+    }
+    setIsRetryingConnection(false);
+  };
+
+  // Network connection status listener to automatically recover when returning online
+  useEffect(() => {
+    const handleOnline = async () => {
+      console.log("[Network Status] Browser detected online connection. Verifying database stats...");
+      const dbOnline = await checkDatabaseConnectivity();
+      if (dbOnline) {
+        setIsOfflineMode(false);
+        loadChapters();
+        loadDailyMcqs();
+        loadLeaderboard();
+        loadMonthlyTests();
+      }
+    };
+
+    const handleOffline = () => {
+      console.warn("[Network Status] Browser detected offline connection.");
+      setIsOfflineMode(true);
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    // Initial check
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      setIsOfflineMode(true);
+    }
+
+    // Periodic check (every 30 seconds) if we are marked offline, to auto-reconnect if firestore recovers
+    let intervalId: any = null;
+    if (isOfflineMode && typeof navigator !== 'undefined' && navigator.onLine) {
+      intervalId = setInterval(async () => {
+        console.log("[Periodic Check] Verifying database connectivity to recover from offline mode...");
+        const dbOnline = await checkDatabaseConnectivity();
+        if (dbOnline) {
+          console.log("[Periodic Check] Database connection restored. Reconnecting...");
+          setIsOfflineMode(false);
+          loadChapters();
+          loadDailyMcqs();
+          loadLeaderboard();
+          loadMonthlyTests();
+        }
+      }, 30000);
+    }
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [loadChapters, loadDailyMcqs, loadLeaderboard, loadMonthlyTests, checkDatabaseConnectivity, isOfflineMode]);
+
   const handleInstall = async () => {
     const promptEvent = getDeferredPrompt();
     if (!promptEvent) return;
@@ -2522,7 +2612,7 @@ export default function App() {
               
               recoveredUser = {
                 id: firebaseUser.uid,
-                name: firebaseUser.displayName || (userPhone ? `User ${userPhone}` : 'Student'),
+                name: firebaseUser.displayName || (isAdmin ? 'Admin' : 'Student'),
                 email: firebaseUser.email || '',
                 phoneNumber: userPhone || '',
                 class: '10',
@@ -4123,9 +4213,24 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
       }}
     >
       {isOfflineMode && (
-        <div className="fixed top-4 right-4 z-[9999] px-4 py-2 rounded-full bg-amber-500/90 border border-amber-600 text-slate-950 font-black text-[10px] uppercase tracking-wider shadow-lg flex items-center gap-2 pointer-events-none">
-          <Lucide.AlertCircle size={12} />
-          {language === 'en' ? 'Offline Mode' : 'ଅଫ୍‌ଲାଇନ୍ ମୋଡ୍'}
+        <div className="fixed top-4 right-4 z-[9999] px-3 py-2 rounded-xl bg-amber-500/95 border border-amber-600 text-slate-950 shadow-xl flex items-center gap-2.5 backdrop-blur-sm transition-all duration-300">
+          <div className="flex items-center gap-1 font-black text-[10px] uppercase tracking-wider">
+            <Lucide.WifiOff size={13} className="animate-pulse" />
+            <span>{language === 'en' ? 'Offline Mode' : 'ଅଫ୍‌ଲାଇନ୍ ମୋଡ୍'}</span>
+          </div>
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              handleManualRetryConnection();
+            }}
+            disabled={isRetryingConnection}
+            className="px-2 py-1 rounded bg-slate-950 text-amber-500 hover:bg-slate-900 active:scale-95 text-[10px] font-bold uppercase transition-all flex items-center gap-1 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Lucide.RefreshCw size={10} className={isRetryingConnection ? "animate-spin" : ""} />
+            {isRetryingConnection 
+              ? (language === 'en' ? 'Checking...' : 'ଯାଞ୍ଚ ହେଉଛି...')
+              : (language === 'en' ? 'Reconnect' : 'ପୁନର୍ବାର ସଂଯୋଗ')}
+          </button>
         </div>
       )}
     <SEO 
