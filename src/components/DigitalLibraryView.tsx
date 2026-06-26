@@ -1064,7 +1064,7 @@ Write your explanation in a friendly, encouraging, bilingual style (Odia and Eng
 
     const inviteText = language === 'en'
       ? `Hey friends! I am revising "${selectedChapter.title}" in our Digital Library on the Utkal Skill Centre app! 📚 Gundulu AI explains everything so easily with beautiful notes & formulas! Check it out here: https://utkalskillcentre.com`
-      : `ହେଲୋ ସାଙ୍ଗମାନେ! ମୁଁ ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍ ଆପ୍‌ରେ ଆମର ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀରୁ "${selectedChapter.title}" ର ନୋଟ୍ସ ପଢୁଛି! 📚 ଗୁନ୍ଦୁଲୁ AI ବହୁତ ସହଜରେ ସବୁ ସୂତ୍ର ଏବଂ ସାରାଂଶ ବୁଝାଇ ଦେଉଛି। ମାଗଣାରେ ପଢ଼ିବା ପାଇଁ ଏଠାରେ କ୍ଲିକ୍ କରନ୍ତୁ: https://utkalskillcentre.com`;
+      : `ହେଲୋ ସାଙ୍ଗମାନେ! ମୁଁ ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର ଆପ୍‌ରେ ଆମର ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀରୁ "${selectedChapter.title}" ର ନୋଟ୍ସ ପଢୁଛି! 📚 ଗୁନ୍ଦୁଲୁ AI ବହୁତ ସହଜରେ ସବୁ ସୂତ୍ର ଏବଂ ସାରାଂଶ ବୁଝାଇ ଦେଉଛି। ମାଗଣାରେ ପଢ଼ିବା ପାଇଁ ଏଠାରେ କ୍ଲିକ୍ କରନ୍ତୁ: https://utkalskillcentre.com`;
 
     try {
       const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(inviteText)}`;

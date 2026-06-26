@@ -3500,7 +3500,7 @@ export default function App() {
             {/* Text */}
             <div className="flex flex-col items-center gap-2">
               <p className="text-white font-medium tracking-[0.3em] uppercase text-xs">
-                {language === 'en' ? "Utkal Skill Centre" : "ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର୍"}
+                {language === 'en' ? "Utkal Skill Centre" : "ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର"}
               </p>
               <p className="text-emerald-400/80 text-[10px] font-bold uppercase tracking-[0.5em] animate-pulse">
                 {language === 'en' ? "Loading Excellence..." : "ଶ୍ରେଷ୍ଠତା ଲୋଡ୍ ହେଉଛି..."}
