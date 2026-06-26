@@ -1796,10 +1796,41 @@ export default function App() {
               explanation: "ଯଦି ପ୍ରଭେଦକ b^2 - 4ac > 0 ହୁଏ, ତେବେ ବୀଜଦ୍ୱୟ ବାସ୍ତବ ଏବଂ ଅସମାନ ହେବେ।",
               marks: 1,
               type: "mcq"
+            },
+            {
+              question: "ବୃତ୍ତର ବ୍ୟାସାର୍ଦ୍ଧ r ହେଲେ, ଏହାର ପରିଧି କେତେ ହେବ?",
+              options: ["πr", "2πr", "πr^2", "2πr^2"],
+              correct_answer: "2πr",
+              explanation: "ବୃତ୍ତର ପରିଧି ହେଉଛି 2πr |",
+              marks: 1,
+              type: "mcq"
+            },
+            {
+              question: "ଉଦ୍ଭିଦ ଶରୀରରେ ଜଳ ପରିବହନ କାହା ଦ୍ୱାରା ହୋଇଥାଏ?",
+              options: ["ଜାଇଲେମ୍ (Xylem)", "ଫ୍ଲୋଏମ୍ (Phloem)", "କାଣ୍ଡ", "ଚେର"],
+              correct_answer: "ଜାଇଲେମ୍ (Xylem)",
+              explanation: "ଜାଇଲେମ୍ ଉଦ୍ଭିଦ ଶରୀରରେ ଜଳ ଓ ଖଣିଜ ଲବଣ ପରିବହନ କରିଥାଏ।",
+              marks: 1,
+              type: "mcq"
+            },
+            {
+              question: "ଆମ ପାଟିରେ ଥିବା ଲାଳରେ କେଉଁ ଏନଜାଇମ୍ ଥାଏ?",
+              options: ["ପେପସିନ୍", "ଟାଇଲିନ୍ (Amylase)", "ଲାଇପେଜ୍", "ଟ୍ରିପସିନ୍"],
+              correct_answer: "ଟାଇଲିନ୍ (Amylase)",
+              explanation: "ଲାଳରେ ଟାଇଲିନ୍ ନାମକ ଏନଜାଇମ୍ ଥାଏ ଯାହା ଶ୍ଵେତସାରକୁ ହଜମ କରିବାରେ ସାହାଯ୍ୟ କରେ।",
+              marks: 1,
+              type: "mcq"
+            },
+            {
+              question: "ନିମ୍ନଲିଖିତ ମଧ୍ୟରୁ କେଉଁଟି ଏକ ପ୍ରତିଫଳିତ କ୍ରିୟାର ଉଦାହରଣ?",
+              options: ["କାନ୍ଦିବା", "ଚାଲିବା", "ଗରମ ବସ୍ତୁ ଛୁଇଁବା କ୍ଷଣି ହାତ ଟାଣିନେବା", "ପଢିବା"],
+              correct_answer: "ଗରମ ବସ୍ତୁ ଛୁଇଁବା କ୍ଷଣି ହାତ ଟାଣିନେବା",
+              explanation: "ଗରମ ବସ୍ତୁ ଛୁଇଁବା କ୍ଷଣି ହାତ ଆପେ ଆପେ ଟାଣି ହୋଇଯିବା ଏକ ପ୍ରତିଫଳିତ କ୍ରିୟା ଅଟେ।",
+              marks: 1,
+              type: "mcq"
             }
           ]
-        } as any
-      ];
+        } as any      ];
       setDailyMcqs(mockMcqs);
     }
   }, [user?.id, user?.class, user?.role]);
@@ -4813,25 +4844,28 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                     if (btn === '✕') {
                       setNewPinValue(prev => prev.slice(0, -1));
                     } else if (btn === '✓') {
+                      alert("checkmark button clicked! newPinValue = " + newPinValue);
                       if (newPinValue.length !== 4) {
-                        alert(language === 'en' ? 'Please enter a 4-digit PIN' : 'ଦୟาକରି ୪-ଅଙ୍କ ବିଶିଷ୍ଟ ପିନ୍ ଦିଅନ୍ତୁ');
+                        alert(language === 'en' ? 'Please enter a 4-digit PIN' : 'ଦୟାକରି ୪-ଅଙ୍କ ବିଶିଷ୍ଟ ପିନ୍ ଦିଅନ୍ତୁ');
                         return;
                       }
                       // Save PIN to Firestore
                       try {
+                        alert("Setting state optimistic! user.id = " + (user ? user.id : 'undefined'));
                         setUser(prev => prev ? { ...prev, pin: newPinValue, parent_pin: newPinValue } : prev);
                         setShowSetPinPrompt(false);
                         updateDoc(doc(firestore, 'users', user.id), {
                           pin: newPinValue,
                           parent_pin: newPinValue
+                        }).then(() => {
+                          alert("Firestore PIN saved successfully!");
                         }).catch((err) => {
-                          console.error("Failed to save PIN to Firestore:", err);
+                          alert("Firestore PIN save error: " + err.message);
                         });
-                        alert(language === 'en' ? 'PIN set successfully!' : 'ପିନ୍ ସଫଳତାର ସହ ସେଟ୍ ହେଲା!');
-                        setShowSetPinPrompt(false);
+                        alert("PIN set successfully locally!");
                       } catch (err: any) {
                         console.error("Failed to save PIN:", err);
-                        alert("Failed to save PIN: " + err.message);
+                        alert("Failed to save PIN error caught: " + err.message);
                       }
                     } else {
                       if (newPinValue.length < 4) {
