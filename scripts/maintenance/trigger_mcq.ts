@@ -1,6 +1,6 @@
 import { initializeApp, cert, getApps, getApp } from 'firebase-admin/app';
-import { runScheduledGeneration } from './src/server/dailyMcqAutomation.js';
-import { getServiceAccountCredentials } from './src/server/googleCredentials.js';
+import { runScheduledGeneration } from '../../src/server/dailyMcqAutomation.js';
+import { getServiceAccountCredentials } from '../../src/server/googleCredentials.js';
 import dotenv from 'dotenv';
 import path from 'path';
 

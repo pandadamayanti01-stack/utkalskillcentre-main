@@ -56,4 +56,4 @@ jobs:
             FORCE_ARG="--force"
           fi
 
-          npx tsx trigger_monthly_test.ts "${{ github.event.inputs.target_month }}" $PUBLISH_ARG $FORCE_ARG
+          npx tsx scripts/maintenance/trigger_monthly_test.ts "${{ github.event.inputs.target_month }}" $PUBLISH_ARG $FORCE_ARG

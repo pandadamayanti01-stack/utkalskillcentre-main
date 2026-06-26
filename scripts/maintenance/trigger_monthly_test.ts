@@ -1,6 +1,6 @@
 import { initializeApp, cert, getApps, getApp } from 'firebase-admin/app';
-import { generateMonthlyTestsForMonth, publishMonthlyResultsAndRanks } from './src/server/monthlyTestAutomation.js';
-import { getServiceAccountCredentials } from './src/server/googleCredentials.js';
+import { generateMonthlyTestsForMonth, publishMonthlyResultsAndRanks } from '../../src/server/monthlyTestAutomation.js';
+import { getServiceAccountCredentials } from '../../src/server/googleCredentials.js';
 import dotenv from 'dotenv';
 import path from 'path';
 

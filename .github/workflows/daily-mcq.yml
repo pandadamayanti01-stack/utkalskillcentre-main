@@ -31,4 +31,4 @@ jobs:
           FIRESTORE_DATABASE_ID: ${{ secrets.FIRESTORE_DATABASE_ID }}
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}
           # In GitHub Actions, tsx might not load .env properly, so we pass explicit env vars
-        run: npx tsx trigger_mcq.ts
+        run: npx tsx scripts/maintenance/trigger_mcq.ts
