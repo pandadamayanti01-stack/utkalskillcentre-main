@@ -43,8 +43,9 @@ export const db = initializeFirestore(app, {
   localCache: persistentLocalCache({
     tabManager: persistentMultipleTabManager()
   }),
-  databaseId: firebaseConfig.firestoreDatabaseId
-});
+  // databaseId is supported at runtime but not in this SDK's FirestoreSettings type declarations
+  ...(firebaseConfig.firestoreDatabaseId ? { databaseId: firebaseConfig.firestoreDatabaseId } : {})
+} as any);
 
 export const auth = getAuth(app);
 export const storage = getStorage(app);

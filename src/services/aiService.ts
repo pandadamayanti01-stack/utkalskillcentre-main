@@ -309,7 +309,48 @@ export const getAI = (meta?: { class?: string, subject?: string }) => {
            
            const data = await response.json();
            return { response: { text: () => data.text } };
-        }
+         },
+
+         // Streaming proxy: matches real Gemini SDK shape { stream: AsyncIterable, response: Promise }.
+         // Backend returns a complete JSON response; we wrap it as a single-chunk async iterable.
+         // GunduluHuman's sentence splitter handles pipelining to TTS from there.
+         generateContentStream: async (params: any) => {
+           const isPro = opts.model && opts.model.includes('pro');
+           const modelType = isPro ? 'pro' : 'flash';
+
+           const response = await fetch('/api/ai/generate', {
+             method: 'POST',
+             headers: { 'Content-Type': 'application/json' },
+             body: JSON.stringify({
+               contents: params.contents,
+               systemInstruction: opts.systemInstruction,
+               modelType,
+               generationConfig: params.generationConfig,
+               class: meta?.class,
+               subject: meta?.subject,
+               enableGrounding: localStorage.getItem('gundulu_enable_grounding') === 'true',
+               enableDialectBridge: localStorage.getItem('gundulu_enable_dialect_bridge') === 'true'
+             })
+           });
+
+           if (!response.ok) {
+             const err = await response.json().catch(() => ({}));
+             throw new Error(err.error || 'Backend AI generation failed');
+           }
+
+           const data = await response.json();
+           const fullText: string = data.text || '';
+
+           // Yield full text as one chunk — sentence splitter in GunduluHuman handles TTS pipelining
+           async function* makeStream() {
+             yield { text: () => fullText };
+           }
+
+           return {
+             stream: makeStream(),
+             response: Promise.resolve({ text: () => fullText })
+           };
+         }
       };
     }
   };

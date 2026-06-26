@@ -33,7 +33,8 @@ if (credentialsPath && fs.existsSync(credentialsPath)) {
 }
 
 // Canonical Firestore database initialization targeting "utkal-prod"
-const firestoreDb = admin.firestore(databaseId);
+const firestoreDb = admin.firestore();
+firestoreDb.settings({ databaseId });
 
 // 2. Initialize Gemini AI rotators
 const getApiKey = () => {
@@ -270,7 +271,7 @@ app.get('/healthz', (req, res) => {
 });
 
 // Start listening
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(Number(PORT), '0.0.0.0', () => {
   console.log(`==================================================`);
   console.log(`🚀 STANDALONE GUNDULU AI QUIZ SERVER RUNNING ON PORT ${PORT}`);
   console.log(`🎯 Domain Target: quiz.utkalskillcentre.com`);
