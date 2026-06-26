@@ -2920,7 +2920,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                     setShowImportantPapersModal(true);
                   }
                 }}
-                className="relative cursor-pointer group flex flex-col items-center z-30 mb-5 -mt-11 md:-mt-15"
+                className="relative cursor-pointer group flex flex-col items-center z-30 mb-8 -mt-11 md:-mt-15"
               >
                 {/* Hanging Ropes */}
                 <div className="flex justify-between w-20 h-6 relative z-10 pointer-events-none -mb-1.5">
