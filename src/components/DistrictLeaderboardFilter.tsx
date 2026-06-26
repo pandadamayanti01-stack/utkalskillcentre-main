@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { ODISHA_DISTRICTS } from '../constants/districts';
-import { MapPin, Compass } from 'lucide-react';
+import { MapPin, Compass, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface DistrictLeaderboardFilterProps {
   selectedDistrict: string;
@@ -163,6 +163,26 @@ const DISTRICT_LANDMARKS: Record<string, { landmarkEn: string; landmarkOr: strin
 };
 
 export function DistrictLeaderboardFilter({ selectedDistrict, setSelectedDistrict, language }: DistrictLeaderboardFilterProps) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const scrollAmount = 320;
+      scrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (e.deltaY !== 0) {
+      if (scrollRef.current) {
+        scrollRef.current.scrollLeft += e.deltaY;
+      }
+    }
+  };
+
   // Front card represents "All Odisha"
   const allOdishaOption = {
     en: 'All Odisha',
@@ -174,15 +194,38 @@ export function DistrictLeaderboardFilter({ selectedDistrict, setSelectedDistric
 
   return (
     <div className="w-full space-y-3 mb-8">
-      <div className="flex items-center gap-2 px-2">
-        <Compass className="text-emerald-400 animate-spin-slow" size={16} />
-        <span className="text-xs font-black text-slate-400 uppercase tracking-widest">
-          {language === 'en' ? 'Explore Rankings by District' : 'ଜିଲ୍ଲା ଅନୁଯାୟୀ ମାନ୍ୟତା ଦେଖନ୍ତୁ:'}
-        </span>
+      <div className="flex items-center justify-between px-2">
+        <div className="flex items-center gap-2">
+          <Compass className="text-emerald-400 animate-spin-slow" size={16} />
+          <span className="text-xs font-black text-slate-400 uppercase tracking-widest">
+            {language === 'en' ? 'Explore Rankings by District' : 'ଜିଲ୍ଲା ଅନୁଯାୟୀ ମାନ୍ୟତା ଦେଖନ୍ତୁ:'}
+          </span>
+        </div>
+        {/* Navigation buttons for desktop */}
+        <div className="hidden md:flex items-center gap-1.5">
+          <button
+            onClick={() => scroll('left')}
+            className="p-1 rounded-lg bg-slate-950/60 border border-white/5 text-slate-450 hover:text-emerald-400 hover:bg-slate-900 transition-all cursor-pointer"
+            title={language === 'en' ? 'Scroll Left' : 'ବାମକୁ ସ୍କ୍ରୋଲ୍'}
+          >
+            <ChevronLeft size={14} />
+          </button>
+          <button
+            onClick={() => scroll('right')}
+            className="p-1 rounded-lg bg-slate-950/60 border border-white/5 text-slate-450 hover:text-emerald-400 hover:bg-slate-900 transition-all cursor-pointer"
+            title={language === 'en' ? 'Scroll Right' : 'ଡାହାଣକୁ ସ୍କ୍ରୋଲ୍'}
+          >
+            <ChevronRight size={14} />
+          </button>
+        </div>
       </div>
 
       {/* Horizontal scroll track */}
-      <div className="flex overflow-x-auto gap-4 pb-4 px-2 scrollbar-thin scrollbar-thumb-emerald-500/20 scrollbar-track-transparent">
+      <div 
+        ref={scrollRef}
+        onWheel={handleWheel}
+        className="flex overflow-x-auto gap-4 pb-4 px-2 scrollbar-thin scrollbar-thumb-emerald-500/20 scrollbar-track-transparent scroll-smooth"
+      >
         
         {/* All Odisha Card */}
         <button
@@ -245,6 +288,9 @@ export function DistrictLeaderboardFilter({ selectedDistrict, setSelectedDistric
             </button>
           );
         })}
+
+        {/* Spacer at the end to ensure the last district is fully visible and has right spacing */}
+        <div className="w-4 shrink-0 text-transparent select-none pointer-events-none" aria-hidden="true">.</div>
       </div>
     </div>
   );
