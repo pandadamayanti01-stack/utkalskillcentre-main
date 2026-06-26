@@ -80,7 +80,8 @@ service cloud.firestore {
              data.subject is string && (data.subject == 'mixed' || data.subject in getDailyMcqRotation()) &&
              data.activeDate is string && data.activeDate.size() >= 10 &&
              data.status in ['draft', 'published'] &&
-             data.questions is list;
+             data.questions is list &&
+             (data.questions.size() == 10 || data.questions.size() == 14 || data.questions.size() == 15);
     }
 
     function isUniversalGkSubmission(data) {
