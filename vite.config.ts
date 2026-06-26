@@ -111,7 +111,7 @@ export default defineConfig(({mode}) => {
     define: {
       'process.env.GEMINI_API_KEY': '""',
       'import.meta.env.VITE_GEMINI_API_KEY': '""',
-      'import.meta.env.VITE_RAZORPAY_KEY': JSON.stringify(env.VITE_RAZORPAY_KEY || process.env.VITE_RAZORPAY_KEY || "rzp_live_SSN1ujW6x6SBco"),
+      'import.meta.env.VITE_RAZORPAY_KEY': JSON.stringify(env.VITE_RAZORPAY_KEY || process.env.VITE_RAZORPAY_KEY || ""),
       '__FIREBASE_CONFIG__': JSON.stringify(firebaseConfig),
     },
     resolve: {

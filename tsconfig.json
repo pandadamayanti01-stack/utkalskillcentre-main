@@ -27,7 +27,10 @@
   "include": [
     "src/**/*",
     "server.ts",
-    "api/**/*"
+    "quizServer.ts",
+    "quizRouter.ts",
+    "api/**/*",
+    "scripts/**/*"
   ],
   "exclude": [
     "node_modules",

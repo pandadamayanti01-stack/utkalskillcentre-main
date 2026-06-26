@@ -22,3 +22,5 @@ play_store_testers.csv
 *.jks
 extracted_user_list.csv
 gemini_batch_requests.jsonl
+# Local clone directory - should never be committed
+utkalskillcentre-main-clone/
