@@ -49,15 +49,47 @@ service firebase.storage {
       );
     }
 
-    // Allow reading and writing of community files (isolated by userId to prevent overwriting)
-    match /community_files/{userId}/{allPaths=**} {
+    // Allow reading and writing of community files (segregated by classId)
+    match /community_files/{classId}/{allPaths=**} {
       allow read: if true;
       allow write: if request.auth != null && 
-                    request.auth.uid == userId &&
                     request.resource.size < 10 * 1024 * 1024 && // 10MB Max
                     (request.resource.contentType.matches('image/.*') || 
                      request.resource.contentType.matches('application/pdf') || 
                      request.resource.contentType.matches('audio/.*'));
+    }
+
+    // Allow reading and writing of revision posters (reads are public, writes restricted to authenticated admins)
+    match /revision_posters/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null && (
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+        request.auth.token.email == 'pandadamayanti01@gmail.com' ||
+        request.auth.token.phone_number == '+919337956168' ||
+        request.auth.token.phone_number == '9337956168'
+      );
+    }
+
+    // Allow reading and writing of textbooks (reads are public, writes restricted to authenticated admins)
+    match /textbooks/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null && (
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+        request.auth.token.email == 'pandadamayanti01@gmail.com' ||
+        request.auth.token.phone_number == '+919337956168' ||
+        request.auth.token.phone_number == '9337956168'
+      );
+    }
+
+    // Allow reading and writing of 3D GLB models (reads are public, writes restricted to authenticated admins)
+    match /3D_Models_glb/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null && (
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+        request.auth.token.email == 'pandadamayanti01@gmail.com' ||
+        request.auth.token.phone_number == '+919337956168' ||
+        request.auth.token.phone_number == '9337956168'
+      );
     }
 
     // Default deny for everything else (Strict security default)

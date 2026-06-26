@@ -2013,22 +2013,26 @@ async function startServer() {
 
   app.post('/api/ai/generate-revision-poster', async (req, res) => {
     try {
-      const { className, subjectName, chapterName, language } = req.body;
+      const { className, subjectName, chapterName, language, questionCount } = req.body;
       if (!className || !subjectName || !chapterName) {
         return res.status(400).json({ error: 'className, subjectName and chapterName are required' });
       }
+
+      const count = questionCount ? Math.min(Math.max(parseInt(questionCount), 5), 10) : 10;
 
       const rotatorKeys = getRotatorKeys();
       if (rotatorKeys.length === 0) {
         return res.status(503).json({ error: 'GEMINI_API_KEY and all rotator keys are missing on the server' });
       }
 
-      const prompt = `You are an expert curriculum builder for Indian schools.
-      Create a set of 10 revision questions and answers for Class "${className}" in the subject "${subjectName}" for the Chapter: "${chapterName}".
+      const prompt = `You are an expert curriculum builder for BSE Odisha (Board of Secondary Education, Odisha) schools.
+      Create a set of ${count} high-level, conceptual, and analytical revision questions and answers for Class "${className}" in the subject "${subjectName}" for the Chapter: "${chapterName}".
       The output should be generated in ${language === 'or' ? 'Odia (using clean Odia script)' : 'English'}.
       
       CRITICAL INSTRUCTIONS FOR QUESTION QUALITY & DIVERSITY:
-      - HIGH DIVERSITY: Ensure all 10 questions cover completely different aspects, sub-topics, formulas, theorems, properties, or practical applications of the chapter.
+      - BSE ODISHA EXAM FOCUS: Align the questions strictly with the BSE Odisha board curriculum, textbook standards, and matric exam patterns. The questions should reflect the style, terminology, and expectations of BSE board examinations.
+      - HIGH-LEVEL & CONCEPTUAL: Focus on analytical, reasoning, and application-based questions (HOTS - Higher-Order Thinking Skills). Avoid trivial, single-word recall questions. Include conceptual explanations, formula/theorem applications, and core property analysis to challenge students.
+      - HIGH DIVERSITY: Ensure all ${count} questions cover completely different aspects, sub-topics, formulas, theorems, properties, or practical applications of the chapter.
       - AVOID TEMPLATED PAIRS: Do NOT create pairs of identical templated questions with minor word changes (e.g. do NOT make one question for "What is a perfect square?" and a corresponding identical question for "What is a perfect cube?"). Instead, make one question about perfect squares, and a completely different question about properties of cubes, word problems, or estimating roots.
       - TERM TRANSLATION ACCURACY: If outputting in Odia, ensure mathematically correct translations:
         - "Odd numbers" must be translated as "ଅଯୁଗ୍ମ ସଂଖ୍ୟା" (DO NOT use "ଯୁଗ୍ମ ସଂଖ୍ୟା").
@@ -2036,7 +2040,7 @@ async function startServer() {
         - "Square root" is "ବର୍ଗମୂଳ".
         - "Cube root" is "ଘନମୂଳ".
       
-      For each of the 10 questions, generate:
+      For each of the ${count} questions, generate:
       1. A short, highly relevant revision question. In the question text, identify the 1 or 2 most important keywords (such as the main topic, scientific term, or specific subject noun) and wrap them in single asterisks (e.g. "Which is the *famous lake* in Bhubaneswar?" or "*ସରଳ ସହସମୀକରଣ* କହିଲେ କଣ ବୁଝାଏ?"). Do not put asterisks on the question mark or outer punctuation.
       2. A concise and correct answer.
       3. A side note label (MUST be one of: "Important!", "Key Fact", "Remember!", "Note", "Did You Know!", "Formula!").
@@ -2066,7 +2070,7 @@ async function startServer() {
           }
         ]
       }
-      Fill in all 10 questions. Do not wrap the response in any markdown formatting or code blocks. Return ONLY the raw JSON object.`;
+      Fill in all ${count} questions. Do not wrap the response in any markdown formatting or code blocks. Return ONLY the raw JSON object.`;
 
       let lastError = null;
       for (const keyToUse of rotatorKeys) {
