@@ -1239,12 +1239,20 @@
     }
 
     // Funnel CTA redirection
+    const getMainAppUrl = () => {
+      const hostname = window.location.hostname;
+      if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return 'http://localhost:3000';
+      }
+      return 'https://utkalskillcentre.com';
+    };
+
     ctaBtn.addEventListener('click', () => {
-      window.location.href = `https://utkalskillcentre.com/?ref=daily-mcq&pts=${score}&class=universal`;
+      window.location.href = `${getMainAppUrl()}/?ref=daily-mcq&pts=${score}&class=universal`;
     });
 
     reviveCtaBtn.addEventListener('click', () => {
-      window.location.href = `https://utkalskillcentre.com/?ref=daily-mcq-revive&pts=${score}&class=universal`;
+      window.location.href = `${getMainAppUrl()}/?ref=daily-mcq-revive&pts=${score}&class=universal`;
     });
 
     // Share score on WhatsApp

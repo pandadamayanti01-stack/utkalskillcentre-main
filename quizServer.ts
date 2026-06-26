@@ -265,6 +265,22 @@ app.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async (req, 
   }
 });
 
+// Serve the standalone Guest Profile page
+app.get(['/guest', '/guest-profile', '/guest-profile.html'], (req, res) => {
+  try {
+    const guestTemplatePath = path.resolve(__dirname, 'guest-profile.html');
+    if (!fs.existsSync(guestTemplatePath)) {
+      return res.status(404).send("<h2>Guest Profile template (guest-profile.html) not found.</h2>");
+    }
+    const html = fs.readFileSync(guestTemplatePath, 'utf-8');
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    return res.send(html);
+  } catch (err: any) {
+    console.error('[Quiz Server] Error serving guest page:', err);
+    return res.status(500).send(`Internal Server Error: ${err.message}`);
+  }
+});
+
 // Health check endpoint
 app.get('/healthz', (req, res) => {
   res.json({ status: 'ok', service: 'quiz-backend' });

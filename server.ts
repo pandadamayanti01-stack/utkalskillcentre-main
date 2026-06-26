@@ -2011,6 +2011,85 @@ async function startServer() {
     }
   });
 
+  app.get('/api/public/daily-mcq', async (req, res) => {
+    try {
+      const todayDate = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+      console.log(`[Public Daily MCQ] Serving request for date: ${todayDate}...`);
+
+      const rotatorKeys = getRotatorKeys();
+      if (rotatorKeys.length === 0) {
+        return res.status(503).json({ error: 'GEMINI_API_KEY and all rotator keys are missing on the server' });
+      }
+
+      const prompt = `You are Gundulu, a warm, highly intellectual elder sister from Odisha who loves teaching. Your tone is extremely encouraging, proud of Odisha, and filled with affection.
+      Generate today's "Universal GK & Odisha Culture Challenge" for the date ${todayDate} containing exactly 5 premium, diverse General Knowledge questions.
+      
+      The questions must cover:
+      - Question 1: Odisha History & Heritage (e.g., Konark, Jagannath Temple, Kalinga War, Baji Rout, Madhusudan Das)
+      - Question 2: Odisha Geography & Nature (e.g., Chilika Lake, Mahanadi River, Similipal Forest, mineral wealth)
+      - Question 3: Everyday General Science (e.g., how rainbows form, eclipse phenomena, basic physics/chemistry in daily life)
+      - Question 4: Fun Math / Logical Puzzle (e.g., a simple, engaging riddle or pattern puzzle)
+      - Question 5: Odia Language, Proverbs, or Art (e.g., famous proverbs, sand art, Odissi dance, local festivals)
+      
+      Each question must have:
+      - A bilingual question text (English and Odia script).
+      - 4 bilingual options (English and Odia script).
+      - One correct_answer (exact string matching one of the options).
+      - A warm, detailed explanation in Odia script written in Gundulu's encouraging elder-sister voice, sharing a fascinating historical or scientific fact.
+
+      CRITICAL REQUIREMENTS:
+      - Output strictly in JSON format matching this schema:
+      {
+        "title": "Universal GK Challenge",
+        "subject": "General Knowledge",
+        "questions": [
+          {
+            "question": "Question text in English / ଓଡ଼ିଆ ଲେଖା",
+            "options": ["Option A / ଓଡ଼ିଆ", "Option B / ଓଡ଼ିଆ", "Option C / ଓଡ଼ିଆ", "Option D / ଓଡ଼ିଆ"],
+            "correct_answer": "Exact matching option string",
+            "explanation": "Warm, encouraging explanation in Odia script starting with 'ସାଙ୍ଗମାନେ...' or 'ଭାଇ ଭଉଣୀମାନେ...'"
+          }
+        ]
+      }
+      Do not include any extra introductory or explanatory text. Return ONLY the JSON object.`;
+
+      let lastError = null;
+      for (const keyToUse of rotatorKeys) {
+        try {
+          console.log(`[Public Daily MCQ] Attempting generation using key ${keyToUse.substring(0, 12)}...`);
+          const ai = new GoogleGenerativeAI(keyToUse);
+          const model = ai.getGenerativeModel({
+            model: "gemini-2.5-flash",
+            generationConfig: {
+              responseMimeType: "application/json",
+              temperature: 0.7,
+            }
+          }, { apiVersion: "v1beta" });
+
+          const result = await model.generateContent(prompt);
+          let responseText = result.response.text();
+          
+          // Clean up formatting block if any
+          responseText = responseText.replace(/```json\n?|```/g, '').trim();
+          
+          // Apply local Odia spelling cleanup
+          responseText = cleanOdiaOrthographyLocal(responseText);
+
+          const mcqData = JSON.parse(responseText);
+          return res.json(mcqData);
+        } catch (error: any) {
+          lastError = error;
+          console.warn(`[Public Daily MCQ] Attempt failed using key ${keyToUse.substring(0, 12)}:`, error.message);
+        }
+      }
+
+      throw lastError || new Error('Failed to generate public daily MCQ with all available keys');
+    } catch (error: any) {
+      console.error("Public Daily MCQ Endpoint Error:", error);
+      res.status(500).json({ error: error.message || 'Failed to generate public daily MCQ' });
+    }
+  });
+
   app.post('/api/ai/generate-revision-poster', async (req, res) => {
     try {
       const { className, subjectName, chapterName, language, questionCount } = req.body;

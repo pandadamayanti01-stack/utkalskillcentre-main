@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="or">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ଉତ୍କଳ ଗେଷ୍ଟ ପ୍ରୋଫାଇଲ୍ - Guest Profile</title>
+  
+  <!-- Premium Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --color-bg: #020617;
+      --color-primary: #f59e0b; /* Amber */
+      --color-secondary: #10b981; /* Emerald */
+      --color-text: #f1f5f9;
+      --color-glass-bg: rgba(15, 23, 42, 0.65);
+      --color-glass-border: rgba(255, 255, 255, 0.08);
+      --font-sans: 'Inter', sans-serif;
+      --font-outfit: 'Outfit', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    /* Ambient Mesh Glows */
+    .glow-orb-1 {
+      position: absolute;
+      top: -10%;
+      right: -10%;
+      width: 40vw;
+      height: 40vw;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.12); /* Emerald */
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .glow-orb-2 {
+      position: absolute;
+      bottom: -10%;
+      left: -10%;
+      width: 40vw;
+      height: 40vw;
+      border-radius: 50%;
+      background: rgba(245, 158, 11, 0.12); /* Amber */
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .temple-pattern {
+      position: absolute;
+      inset: 0;
+      opacity: 0.03;
+      background-image: url('/temple-pattern.png');
+      background-position: center;
+      background-size: cover;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Top Utility Header */
+    header {
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+      margin-bottom: 2rem;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+
+    .logo-icon {
+      width: 2.25rem;
+      height: 2.25rem;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid var(--color-primary);
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      color: var(--color-primary);
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.15);
+    }
+
+    .logo-text h1 {
+      font-family: var(--font-outfit);
+      font-size: 1.1rem;
+      font-weight: 900;
+      letter-spacing: -0.025em;
+      line-height: 1;
+    }
+
+    .logo-text span {
+      font-size: 0.55rem;
+      color: #64748b;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+    }
+
+    .exit-btn {
+      padding: 0.6rem 1.2rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--color-glass-border);
+      color: #94a3b8;
+      border-radius: 1rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .exit-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--color-text);
+      transform: translateY(-2px);
+    }
+
+    /* Main Container Grid */
+    main {
+      width: 100%;
+      max-width: 800px;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .portal-card {
+      background: var(--color-glass-bg);
+      border: 1px solid var(--color-glass-border);
+      border-radius: 2rem;
+      padding: 2rem;
+      backdrop-filter: blur(24px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .portal-header {
+      text-align: center;
+    }
+
+    .portal-header h2 {
+      font-family: var(--font-outfit);
+      font-size: 1.8rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #fff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.25rem;
+    }
+
+    .portal-header p {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* Mascot Speech Block */
+    .mascot-container {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      width: 100%;
+      padding: 1.25rem;
+      background: rgba(16, 185, 129, 0.05);
+      border: 1px solid rgba(16, 185, 129, 0.15);
+      border-radius: 1.5rem;
+    }
+
+    .mascot-img {
+      width: 4.5rem;
+      height: 4.5rem;
+      object-fit: contain;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .speech-bubble {
+      flex: 1;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: #cbd5e1;
+      font-weight: 600;
+    }
+
+    .speech-bubble strong {
+      color: var(--color-secondary);
+    }
+
+    /* Core Options Grid */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    @media (max-width: 600px) {
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .option-card {
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid var(--color-glass-border);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.75rem;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .option-card:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .option-card.primary:hover {
+      border-color: rgba(16, 185, 129, 0.4);
+      box-shadow: 0 10px 25px rgba(16, 185, 129, 0.1);
+    }
+
+    .option-card.accent:hover {
+      border-color: rgba(245, 158, 11, 0.4);
+      box-shadow: 0 10px 25px rgba(245, 158, 11, 0.1);
+    }
+
+    .option-icon {
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+    }
+
+    .option-card.primary .option-icon {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--color-secondary);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .option-card.accent .option-icon {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--color-primary);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .option-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--color-text);
+    }
+
+    .option-desc {
+      font-size: 0.75rem;
+      color: #64748b;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    /* Subsections - Hidden by default */
+    .section-container {
+      display: none;
+      width: 100%;
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid var(--color-glass-border);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 1. Bagha Chheli CSS styling */
+    .game-layout {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #94a3b8;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding-bottom: 0.5rem;
+    }
+
+    .turn-badge {
+      color: var(--color-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .board-container {
+      width: 100%;
+      max-width: 320px;
+      aspect-ratio: 1;
+      background: #0f172a;
+      border: 2px solid #1e293b;
+      border-radius: 1rem;
+      padding: 10px;
+      box-shadow: inset 0 4px 12px rgba(0,0,0,0.5);
+    }
+
+    .board-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .board-line {
+      stroke: #334155;
+      stroke-width: 2.5;
+    }
+
+    .board-node {
+      fill: #1e293b;
+      stroke: #334155;
+      stroke-width: 2;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .board-node:hover {
+      fill: #475569;
+      stroke: var(--color-primary);
+      r: 10;
+    }
+
+    .board-node.highlighted {
+      fill: rgba(16, 185, 129, 0.2);
+      stroke: var(--color-secondary);
+      stroke-width: 3;
+      r: 11;
+      animation: nodePulse 1.5s infinite alternate;
+    }
+
+    @keyframes nodePulse {
+      from { stroke-width: 2; r: 10; }
+      to { stroke-width: 4; r: 12; }
+    }
+
+    /* Game Pieces styling */
+    .piece-tiger {
+      fill: #ef4444;
+      stroke: #7f1d1d;
+      stroke-width: 2.5;
+      cursor: pointer;
+      filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.5));
+      transition: transform 0.2s ease;
+    }
+
+    .piece-tiger.selected {
+      stroke: #fca5a5;
+      stroke-width: 3.5;
+      filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.8));
+    }
+
+    .piece-goat {
+      fill: #f59e0b;
+      stroke: #78350f;
+      stroke-width: 2;
+      cursor: pointer;
+      filter: drop-shadow(0 0 3px rgba(245, 158, 11, 0.5));
+      transition: transform 0.2s ease;
+    }
+
+    .piece-goat.selected {
+      stroke: #fde68a;
+      stroke-width: 3.5;
+      filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.8));
+    }
+
+    .game-status-box {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #cbd5e1;
+      text-align: center;
+      background: rgba(0,0,0,0.2);
+      padding: 0.75rem 1.25rem;
+      border-radius: 1rem;
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .reset-link {
+      font-size: 0.75rem;
+      color: #64748b;
+      cursor: pointer;
+      font-weight: 700;
+      text-decoration: underline;
+    }
+
+    .reset-link:hover {
+      color: var(--color-primary);
+    }
+
+    /* 2. Chapter Notes Previews selector styling */
+    .class-tabs {
+      display: flex;
+      gap: 0.4rem;
+      overflow-x: auto;
+      width: 100%;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      margin-bottom: 1.25rem;
+      scrollbar-width: none;
+    }
+
+    .class-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .class-tab {
+      padding: 0.5rem 0.9rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--color-glass-border);
+      color: #94a3b8;
+      border-radius: 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .class-tab.active {
+      background: rgba(245, 158, 11, 0.1);
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .chapter-preview-card {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .chapter-meta {
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: var(--color-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .chapter-title {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.4;
+    }
+
+    .chapter-desc {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+
+    .chapter-launch-btn {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--color-primary), #d97706);
+      color: #020617;
+      border: none;
+      border-radius: 1.25rem;
+      font-size: 0.85rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.25);
+      transition: all 0.3s ease;
+    }
+
+    .chapter-launch-btn:hover {
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+      transform: translateY(-2px);
+    }
+
+    footer {
+      width: 100%;
+      max-width: 800px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: #475569;
+      margin-top: 2rem;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow-orb-1"></div>
+  <div class="glow-orb-2"></div>
+  <div class="temple-pattern"></div>
+
+  <!-- Top Utility Header -->
+  <header>
+    <div class="logo-container" onclick="goToMainApp()">
+      <div class="logo-icon">U</div>
+      <div class="logo-text">
+        <h1>UTKAL</h1>
+        <span>Skill Centre</span>
+      </div>
+    </div>
+    <button class="exit-btn" onclick="goToMainApp()">Exit Guest ➔</button>
+  </header>
+
+  <!-- Main Previews Container -->
+  <main>
+    <div class="portal-card">
+      <div class="portal-header">
+        <h2>🧭 ଗେଷ୍ଟ ପ୍ରୋଫାଇଲ୍</h2>
+        <p>Guest Profile Zone</p>
+      </div>
+
+      <!-- Mascot Speech greeting -->
+      <div class="mascot-container">
+        <img src="/gundulu-pointing-nobg.png" alt="Gundulu Mascot" class="mascot-img">
+        <div class="speech-bubble">
+          ନମସ୍କାର ସାଙ୍ଗମାନେ! 🎒 ମୁଁ <strong>ଗୁନ୍ଦୁଲୁ</strong>। ଲଗଇନ୍ ନକରି ବିନା କୌଣସି ଅସୁବିଧାରେ ଆମ ତିନୋଟି ପ୍ରିମିୟମ୍ ବିଶେଷତା ଚେଷ୍ଟା କରନ୍ତୁ! ତଳେ ଥିବା ଯେକୌଣସି ଗେମ୍ କିମ୍ବା ନୋଟ୍ସ ଉପରେ କ୍ଲିକ୍ କରନ୍ତୁ।
+        </div>
+      </div>
+
+      <!-- Option selections -->
+      <div class="options-grid">
+        <div class="option-card primary" onclick="startDailyQuiz()">
+          <div class="option-icon">🎯</div>
+          <div class="option-title">ଦୈନିକ MCQ ଚ୍ୟାଲେଞ୍ଜ୍</div>
+          <div class="option-desc">ଗୁନ୍ଦୁଲୁ ଦ୍ଵାରା ପ୍ରସ୍ତୁତ ଦୈନିକ GK ଓ ଓଡ଼ିଶା କଲ୍ଚର୍ କୁଇଜ୍ ଖେଳନ୍ତୁ।</div>
+        </div>
+
+        <div class="option-card accent" onclick="toggleSection('bagha-chheli')">
+          <div class="option-icon">🐅</div>
+          <div class="option-title">ବାଘ ଛେଳି ଖେଳ</div>
+          <div class="option-desc">ଓଡ଼ିଶାର ପ୍ରସିଦ୍ଧ ପାରମ୍ପରିକ ବୋର୍ଡ ଗେମ୍ ସୋଲୋ ମୋଡ୍‌ରେ ଖେଳନ୍ତୁ।</div>
+        </div>
+      </div>
+
+      <!-- Bagha Chheli section -->
+      <div id="bagha-chheli" class="section-container">
+        <div class="game-layout">
+          <div class="game-header">
+            <span>Turn: <strong id="game-turn" class="turn-badge">GOATS</strong></span>
+            <span id="game-phase-text">Placement (ଗୋଟି ରଖା)</span>
+          </div>
+
+          <div class="board-container">
+            <svg viewBox="0 0 400 400" class="board-svg" id="board-svg">
+              <!-- Grid Lines -->
+              <line x1="50" y1="50" x2="350" y2="50" class="board-line" />
+              <line x1="50" y1="125" x2="350" y2="125" class="board-line" />
+              <line x1="50" y1="200" x2="350" y2="200" class="board-line" />
+              <line x1="50" y1="275" x2="350" y2="275" class="board-line" />
+              <line x1="50" y1="350" x2="350" y2="350" class="board-line" />
+              
+              <line x1="50" y1="50" x2="50" y2="350" class="board-line" />
+              <line x1="125" y1="50" x2="125" y2="350" class="board-line" />
+              <line x1="200" y1="50" x2="200" y2="350" class="board-line" />
+              <line x1="275" y1="50" x2="275" y2="350" class="board-line" />
+              <line x1="350" y1="50" x2="350" y2="350" class="board-line" />
+
+              <line x1="50" y1="50" x2="350" y2="350" class="board-line" />
+              <line x1="50" y1="350" x2="350" y2="50" class="board-line" />
+              <line x1="200" y1="50" x2="50" y2="200" class="board-line" />
+              <line x1="200" y1="50" x2="350" y2="200" class="board-line" />
+              <line x1="50" y1="200" x2="200" y2="350" class="board-line" />
+              <line x1="350" y1="200" x2="200" y2="350" class="board-line" />
+
+              <g id="nodes-group"></g>
+              <g id="pieces-group"></g>
+            </svg>
+          </div>
+
+          <div class="game-status-box" id="game-status">
+            ବାଘ ଠାରୁ ଗୋଟି ରକ୍ଷା କର ଏବଂ ତାକୁ ଚାରିପଟୁ ଘେରି ବାନ୍ଧ!
+          </div>
+
+          <div class="reset-link" onclick="resetGame()">ଖେଳ ପୁନର୍ବାର ଆରମ୍ଭ କରନ୍ତୁ (Restart Game)</div>
+        </div>
+      </div>
+
+      <!-- Chapter notes section -->
+      <div style="display: block;" class="section-container">
+        <div class="chapter-preview-card">
+          <div class="chapter-meta">📖 ମାସିକ ଅଧ୍ୟାୟ ନୋଟ୍ସ (Class 1-10 Previews)</div>
+          
+          <div class="class-tabs">
+            <div class="class-tab active" onclick="selectClass(1)">Class 1</div>
+            <div class="class-tab" onclick="selectClass(2)">Class 2</div>
+            <div class="class-tab" onclick="selectClass(3)">Class 3</div>
+            <div class="class-tab" onclick="selectClass(4)">Class 4</div>
+            <div class="class-tab" onclick="selectClass(5)">Class 5</div>
+            <div class="class-tab" onclick="selectClass(6)">Class 6</div>
+            <div class="class-tab" onclick="selectClass(7)">Class 7</div>
+            <div class="class-tab" onclick="selectClass(8)">Class 8</div>
+            <div class="class-tab" onclick="selectClass(9)">Class 9</div>
+            <div class="class-tab" onclick="selectClass(10)">Class 10</div>
+          </div>
+
+          <div>
+            <h3 class="chapter-title" id="preview-title">ଶ୍ରେଣୀ ୧ - ହସଖେଳ: ବର୍ଣ୍ଣମାଳା ପରିଚୟ</h3>
+            <p class="chapter-desc" id="preview-desc" style="margin-top: 0.5rem; margin-bottom: 1.25rem;">
+              Learn Class 1 Odia Alphabets, vowels, and consonants bilingually with Gundulu AI.
+            </p>
+            <button class="chapter-launch-btn" onclick="launchChapterNotes()">
+              ଅଧ୍ୟାୟ ନୋଟ୍ ପଢନ୍ତୁ (Read Notes) ➔
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2026 Utkal Skill Centre. All Rights Reserved.
+  </footer>
+
+  <script>
+    const getMainAppUrl = () => {
+      const hostname = window.location.hostname;
+      if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return 'http://localhost:3000';
+      }
+      return 'https://utkalskillcentre.com';
+    };
+
+    function goToMainApp() {
+      window.location.href = getMainAppUrl();
+    }
+
+    function startDailyQuiz() {
+      window.location.href = '/';
+    }
+
+    function toggleSection(id) {
+      const el = document.getElementById(id);
+      const isVisible = el.style.display === 'block';
+      
+      document.getElementById('bagha-chheli').style.display = 'none';
+      
+      if (!isVisible) {
+        el.style.display = 'block';
+        if (id === 'bagha-chheli') {
+          initGame();
+        }
+      }
+    }
+
+    const previewsDb = {
+      1: {
+        key: 'class1odia',
+        title: 'ଶ୍ରେଣୀ ୧ - ହସଖେଳ: ବର୍ଣ୍ଣମାଳା ପରିଚୟ',
+        desc: 'Learn Class 1 Odia Alphabets, vowels, and consonants bilingually with Gundulu AI. Ideal for beginners.'
+      },
+      2: {
+        key: 'class2odia',
+        title: 'ଶ୍ରେଣୀ ୨ - ହସଖେଳ: ଓଡ଼ିଆ ଯୁକ୍ତାକ୍ଷର',
+        desc: 'Learn Class 2 Odia Joint Letters (Yuktakshara) with examples, simple pronunciations, and writing guides.'
+      },
+      3: {
+        key: 'class3odia',
+        title: 'ଶ୍ରେଣୀ ୩ - ଆମ ଭାଷା ଆମ ସାହିତ୍ୟ: ସୁନାର ମାଟି',
+        desc: "Read Class 3 Odia poem 'Sunara Mati' summaries, stanza meaning guides, and complete question bank."
+      },
+      4: {
+        key: 'class4odia',
+        title: 'ଚତୁର୍ଥ ଶ୍ରେଣୀ - ସାହିତ୍ୟ କଳିକା: ଜାତୀୟ ପତକା',
+        desc: 'Read Class 4 Odia poem Jatiya Pataka, explaining the history, tricolor code, and values of the Indian flag.'
+      },
+      5: {
+        key: 'class5odia',
+        title: 'ପଞ୍ଚମ ଶ୍ରେଣୀ - ସାହିତ୍ୟ କୁସୁମ: ଧର୍ମପଦ',
+        desc: "Read Class 5 historical tale of Dharmapada, the brave 12-year-old architect who completed the spire of Konark Sun Temple."
+      },
+      6: {
+        key: 'class6odia',
+        title: 'ଷଷ୍ଠ ଶ୍ରେଣୀ - ସାହିତ୍ୟ ଜ୍ୟୋତି: ପ୍ରଭାତ ଅବକାଶ',
+        desc: 'Study the devotion of Banamali Das’s classical morning prayer, with summary guides and grammar explanations.'
+      },
+      7: {
+        key: 'class7odia',
+        title: 'ସପ୍ତମ ଶ୍ରେଣୀ - ସାହିତ୍ୟ ସୌରଭ: କଳସା ଚଉତିଶା',
+        desc: 'Dive into early Odia literature with Bachha Das’s Kalasa Chautisa, tracing the humor and classic wedding story of Lord Shiva.'
+      },
+      8: {
+        key: 'class8odia',
+        title: 'ଅଷ୍ଟମ ଶ୍ରେଣୀ - ସାହିତ୍ୟ ସାଗର: ଭୀମଙ୍କ ସିଂହନାଦ ରଡ଼ି',
+        desc: 'Read the Sarala Das Mahabharata excerpt detailing Bhima’s earth-shaking lion roar to summon Duryodhana.'
+      },
+      9: {
+        key: 'class9odia',
+        title: 'ନବମ ଶ୍ରେଣୀ - ସାହିତ୍ୟ ଧାରା: ବନ୍ଦେ ଉତ୍କଳ ଜନନୀ',
+        desc: 'Read the official Odisha state anthem by Kantakabi Laxmikanta Mohapatra, tracing its vocabulary, structure, and history.'
+      },
+      10: {
+        key: 'class10odia',
+        title: 'ଦଶମ ଶ୍ରେଣୀ - ସାହିତ୍ୟ ସିନ୍ଧୁ: ମଙ୍ଗଳେ ଅଇଲା ଉଷା',
+        desc: 'Read Swabhaba Kabi Gangadhar Meher’s masterwork on the arrival of dawn at Valmiki’s hermitage to welcome Sita.'
+      }
+    };
+
+    let activeClassTab = 1;
+
+    function selectClass(grade) {
+      activeClassTab = grade;
+      
+      const tabs = document.querySelectorAll('.class-tab');
+      tabs.forEach((tab, index) => {
+        if (index + 1 === grade) {
+          tab.classList.add('active');
+        } else {
+          tab.classList.remove('active');
+        }
+      });
+
+      document.getElementById('preview-title').innerText = previewsDb[grade].title;
+      document.getElementById('preview-desc').innerText = previewsDb[grade].desc;
+    }
+
+    function launchChapterNotes() {
+      const activeData = previewsDb[activeClassTab];
+      window.location.href = `${getMainAppUrl()}/?preview=${activeData.key}`;
+    }
+
+    let gameState = {
+      tigers: [
+        { r: 0, c: 0 },
+        { r: 0, c: 4 }
+      ],
+      goats: [],
+      goatsRemainingToPlace: 15,
+      capturedGoats: 0,
+      turn: 'goats', 
+      phase: 'placement', 
+      selectedPiece: null
+    };
+
+    const BOARD_SIZE = 5;
+
+    function areConnected(p1, p2) {
+      const dr = Math.abs(p1.r - p2.r);
+      const dc = Math.abs(p1.c - p2.c);
+      
+      if ((dr === 1 && dc === 0) || (dr === 0 && dc === 1)) return true;
+      if (dr === 1 && dc === 1) {
+        return (p1.r + p1.c) % 2 === 0;
+      }
+      return false;
+    }
+
+    function getCoords(r, c) {
+      const padding = 50;
+      const spacing = 75; 
+      return {
+        x: padding + c * spacing,
+        y: padding + r * spacing
+      };
+    }
+
+    function isOccupiedByGoat(r, c) {
+      return gameState.goats.some(g => g.r === r && g.c === c);
+    }
+
+    function isOccupiedByTiger(r, c) {
+      return gameState.tigers.some(t => t.r === r && t.c === c);
+    }
+
+    function isOccupied(r, c) {
+      return isOccupiedByGoat(r, c) || isOccupiedByTiger(r, c);
+    }
+
+    function getTigerMoves(tigerIndex) {
+      const t = gameState.tigers[tigerIndex];
+      const validMoves = [];
+      const validCaptures = [];
+
+      for (let r = 0; r < BOARD_SIZE; r++) {
+        for (let c = 0; c < BOARD_SIZE; c++) {
+          if (isOccupied(r, c)) continue;
+          
+          const dest = { r, c };
+          if (areConnected(t, dest)) {
+            validMoves.push(dest);
+          } else {
+            const dr = r - t.r;
+            const dc = c - t.c;
+            
+            if (Math.abs(dr) === 2 && dc === 0) {
+              const midR = t.r + dr / 2;
+              if (isOccupiedByGoat(midR, t.c)) {
+                validCaptures.push({ dest, mid: { r: midR, c: t.c } });
+              }
+            } else if (dr === 0 && Math.abs(dc) === 2) {
+              const midC = t.c + dc / 2;
+              if (isOccupiedByGoat(t.r, midC)) {
+                validCaptures.push({ dest, mid: { r: t.r, c: midC } });
+              }
+            } else if (Math.abs(dr) === 2 && Math.abs(dc) === 2 && (t.r + t.c) % 2 === 0) {
+              const midR = t.r + dr / 2;
+              const midC = t.c + dc / 2;
+              if (isOccupiedByGoat(midR, midC)) {
+                validCaptures.push({ dest, mid: { r: midR, c: midC } });
+              }
+            }
+          }
+        }
+      }
+      return { validMoves, validCaptures };
+    }
+
+    function getGoatMoves(goatIndex) {
+      const g = gameState.goats[goatIndex];
+      const validMoves = [];
+      for (let r = 0; r < BOARD_SIZE; r++) {
+        for (let c = 0; c < BOARD_SIZE; c++) {
+          if (!isOccupied(r, c) && areConnected(g, { r, c })) {
+            validMoves.push({ r, c });
+          }
+        }
+      }
+      return validMoves;
+    }
+
+    function checkVictory() {
+      if (gameState.capturedGoats >= 5) {
+        return 'tigers';
+      }
+
+      let totalTigerMoves = 0;
+      for (let i = 0; i < gameState.tigers.length; i++) {
+        const { validMoves, validCaptures } = getTigerMoves(i);
+        totalTigerMoves += validMoves.length + validCaptures.length;
+      }
+
+      if (totalTigerMoves === 0) {
+        return 'goats';
+      }
+
+      return null;
+    }
+
+    function playAITurn() {
+      if (gameState.turn !== 'tigers') return;
+      
+      const statusBox = document.getElementById('game-status');
+      statusBox.innerText = "ବାଘ ଚିନ୍ତା କରୁଛି... (Tiger is thinking...)";
+
+      setTimeout(() => {
+        let bestCapture = null;
+        let bestMove = null;
+
+        for (let i = 0; i < gameState.tigers.length; i++) {
+          const { validMoves, validCaptures } = getTigerMoves(i);
+          
+          if (validCaptures.length > 0) {
+            bestCapture = { 
+              index: i, 
+              dest: validCaptures[0].dest, 
+              mid: validCaptures[0].mid 
+            };
+            break; 
+          }
+
+          if (validMoves.length > 0 && !bestMove) {
+            const randomMove = validMoves[Math.floor(Math.random() * validMoves.length)];
+            bestMove = { index: i, dest: randomMove };
+          }
+        }
+
+        if (bestCapture) {
+          gameState.tigers[bestCapture.index] = bestCapture.dest;
+          gameState.goats = gameState.goats.filter(g => !(g.r === bestCapture.mid.r && g.c === bestCapture.mid.c));
+          gameState.capturedGoats++;
+        } else if (bestMove) {
+          gameState.tigers[bestMove.index] = bestMove.dest;
+        }
+
+        gameState.turn = 'goats';
+        
+        const winner = checkVictory();
+        if (winner) {
+          gameState.phase = winner === 'tigers' ? 'victory_tigers' : 'victory_goats';
+        }
+
+        renderBoard();
+      }, 700);
+    }
+
+    function selectNode(r, c) {
+      const statusBox = document.getElementById('game-status');
+      
+      if (gameState.phase === 'victory_goats' || gameState.phase === 'victory_tigers') return;
+      if (gameState.turn !== 'goats') return; 
+
+      if (gameState.phase === 'placement') {
+        if (isOccupied(r, c)) {
+          statusBox.innerText = "✕ ଏହି ସ୍ଥାନ ପୂର୍ଣ୍ଣ ଅଛି | (Spot occupied)";
+          return;
+        }
+        
+        gameState.goats.push({ r, c });
+        gameState.goatsRemainingToPlace--;
+        
+        if (gameState.goatsRemainingToPlace === 0) {
+          gameState.phase = 'movement';
+        }
+
+        gameState.turn = 'tigers';
+        renderBoard();
+        playAITurn();
+      } else {
+        if (gameState.selectedPiece && gameState.selectedPiece.type === 'goat') {
+          const gIdx = gameState.selectedPiece.index;
+          const moves = getGoatMoves(gIdx);
+          
+          const isValid = moves.some(m => m.r === r && m.c === c);
+          if (isValid) {
+            gameState.goats[gIdx] = { r, c };
+            gameState.selectedPiece = null;
+            gameState.turn = 'tigers';
+            
+            const winner = checkVictory();
+            if (winner) {
+              gameState.phase = winner === 'tigers' ? 'victory_tigers' : 'victory_goats';
+            }
+            
+            renderBoard();
+            if (!winner) playAITurn();
+          } else {
+            gameState.selectedPiece = null;
+            renderBoard();
+            statusBox.innerText = "✕ ଭୁଲ୍ ଚାଲ୍ | ଅନ୍ୟ ଗୋଟିଏ ବାଛନ୍ତୁ | (Invalid move)";
+          }
+        } else {
+          const gIdx = gameState.goats.findIndex(g => g.r === r && g.c === c);
+          if (gIdx >= 0) {
+            gameState.selectedPiece = { type: 'goat', index: gIdx };
+            renderBoard();
+          }
+        }
+      }
+    }
+
+    function initGame() {
+      gameState = {
+        tigers: [
+          { r: 0, c: 0 },
+          { r: 0, c: 4 }
+        ],
+        goats: [],
+        goatsRemainingToPlace: 15,
+        capturedGoats: 0,
+        turn: 'goats',
+        phase: 'placement',
+        selectedPiece: null
+      };
+      
+      const nodesGroup = document.getElementById('nodes-group');
+      nodesGroup.innerHTML = '';
+      for (let r = 0; r < BOARD_SIZE; r++) {
+        for (let c = 0; c < BOARD_SIZE; c++) {
+          const coords = getCoords(r, c);
+          const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          circle.setAttribute('cx', coords.x);
+          circle.setAttribute('cy', coords.y);
+          circle.setAttribute('r', 8);
+          circle.setAttribute('class', 'board-node');
+          circle.setAttribute('id', `node-${r}-${c}`);
+          circle.addEventListener('click', () => selectNode(r, c));
+          nodesGroup.appendChild(circle);
+        }
+      }
+      
+      renderBoard();
+    }
+
+    function renderBoard() {
+      const piecesGroup = document.getElementById('pieces-group');
+      piecesGroup.innerHTML = '';
+
+      for (let r = 0; r < BOARD_SIZE; r++) {
+        for (let c = 0; c < BOARD_SIZE; c++) {
+          const node = document.getElementById(`node-${r}-${c}`);
+          node.setAttribute('class', 'board-node');
+        }
+      }
+
+      if (gameState.selectedPiece && gameState.selectedPiece.type === 'goat') {
+        const gIdx = gameState.selectedPiece.index;
+        const moves = getGoatMoves(gIdx);
+        moves.forEach(m => {
+          const node = document.getElementById(`node-${m.r}-${m.c}`);
+          node.setAttribute('class', 'board-node highlighted');
+        });
+      }
+
+      gameState.goats.forEach((g, index) => {
+        const coords = getCoords(g.r, g.c);
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', coords.x);
+        circle.setAttribute('cy', coords.y);
+        circle.setAttribute('r', 12);
+        
+        let cls = 'piece-goat';
+        if (gameState.selectedPiece && gameState.selectedPiece.type === 'goat' && gameState.selectedPiece.index === index) {
+          cls += ' selected';
+        }
+        circle.setAttribute('class', cls);
+        circle.addEventListener('click', () => selectNode(g.r, g.c));
+        piecesGroup.appendChild(circle);
+      });
+
+      gameState.tigers.forEach((t) => {
+        const coords = getCoords(t.r, t.c);
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', coords.x);
+        circle.setAttribute('cy', coords.y);
+        circle.setAttribute('r', 16);
+        circle.setAttribute('class', 'piece-tiger');
+        piecesGroup.appendChild(circle);
+      });
+
+      const turnBadge = document.getElementById('game-turn');
+      const phaseText = document.getElementById('game-phase-text');
+      const statusBox = document.getElementById('game-status');
+
+      turnBadge.innerText = gameState.turn.toUpperCase();
+      turnBadge.style.color = gameState.turn === 'goats' ? 'var(--color-primary)' : '#ef4444';
+
+      if (gameState.phase === 'placement') {
+        phaseText.innerText = "Placement (ଗୋଟି ରଖା)";
+        statusBox.innerText = `🐐 Goats to place: ${gameState.goatsRemainingToPlace} | Captured: ${gameState.capturedGoats}`;
+      } else if (gameState.phase === 'movement') {
+        phaseText.innerText = "Movement (ଗୋଟି ଚଳା)";
+        statusBox.innerText = `🐐 Goats on board: ${gameState.goats.length} | Captured: ${gameState.capturedGoats}/5`;
+      } else if (gameState.phase === 'victory_goats') {
+        phaseText.innerText = "🏆 Victory!";
+        statusBox.innerHTML = "<strong style='color: var(--color-secondary)'>🎉 ଗୋପାଳ ବାଳକ ବିଜୟୀ! (Goats Win!)</strong>";
+      } else if (gameState.phase === 'victory_tigers') {
+        phaseText.innerText = "🐅 Victory!";
+        statusBox.innerHTML = "<strong style='color: #ef4444'>Tigers Win! captured 5 Goats.</strong>";
+      }
+    }
+
+    function resetGame() {
+      initGame();
+      document.getElementById('game-status').innerText = "ବାଘ ଠାରୁ ଗୋଟି ରକ୍ଷା କର ଏବଂ ତାକୁ ଚାରିପଟୁ ଘେରି ବାନ୍ଧ!";
+    }
+
+    selectClass(1);
+  </script>
+</body>
+</html>

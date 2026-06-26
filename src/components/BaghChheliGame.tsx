@@ -475,16 +475,18 @@ export function BaghChheliGame({ user, onBack, language = 'or', onXpEarned }: Ba
               <Lucide.ChevronRight size={18} className="text-blue-400 group-hover:translate-x-1 transition-transform" />
             </button>
 
-            <button
-              onClick={startMultiplayer}
-              className="p-5 bg-gradient-to-br from-emerald-500/5 to-teal-600/10 border border-emerald-500/20 hover:border-emerald-500/40 rounded-3xl text-left flex items-center justify-between group cursor-pointer hover:shadow-lg transition-all"
-            >
-              <div>
-                <h4 className="text-sm font-black text-emerald-600 group-hover:text-emerald-500 transition-colors">⚔️ Online Multiplayer Tournament</h4>
-                <p className="text-[10px] text-slate-400 mt-1 font-bold">Play live against other students across Odisha districts.</p>
-              </div>
-              <Lucide.ChevronRight size={18} className="text-emerald-400 group-hover:translate-x-1 transition-transform" />
-            </button>
+            {user?.uid !== 'guest' && (
+              <button
+                onClick={startMultiplayer}
+                className="p-5 bg-gradient-to-br from-emerald-500/5 to-teal-600/10 border border-emerald-500/20 hover:border-emerald-500/40 rounded-3xl text-left flex items-center justify-between group cursor-pointer hover:shadow-lg transition-all"
+              >
+                <div>
+                  <h4 className="text-sm font-black text-emerald-600 group-hover:text-emerald-500 transition-colors">⚔️ Online Multiplayer Tournament</h4>
+                  <p className="text-[10px] text-slate-400 mt-1 font-bold">Play live against other students across Odisha districts.</p>
+                </div>
+                <Lucide.ChevronRight size={18} className="text-emerald-400 group-hover:translate-x-1 transition-transform" />
+              </button>
+            )}
           </div>
         )}
 

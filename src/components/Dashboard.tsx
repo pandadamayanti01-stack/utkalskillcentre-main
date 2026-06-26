@@ -3096,10 +3096,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 </div>
                 <span className="text-[11px] sm:text-[12.5px] font-black uppercase tracking-wide text-left leading-tight flex flex-col text-emerald-300 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
                   {language === 'or' ? (
-                    <>
-                      <span className="text-[11.5px] sm:text-[13px] leading-normal">ଦୈନିକ ଲକ୍ଷ୍ୟ</span>
-                      <span className="text-[9.5px] sm:text-[10.5px] text-emerald-400/90 font-bold tracking-wide mt-0.5">ପ୍ରଗତି ଟ୍ରାକର୍</span>
-                    </>
+                    <span className="text-[12px] sm:text-[13.5px] font-bold tracking-wide">ଦୈନିକ ଲକ୍ଷ୍ୟ</span>
                   ) : (
                     <>
                       <span>Daily</span>

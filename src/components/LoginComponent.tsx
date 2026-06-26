@@ -2,10 +2,14 @@ import React, { useState, useRef, useEffect } from 'react';
 import { auth, db, signInWithGoogle } from '../firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber, signInWithCustomToken } from 'firebase/auth';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Phone, Loader2, Globe, ArrowLeft, Shield, ChevronRight, Sparkles, Youtube, Instagram, Facebook, BookOpen } from 'lucide-react';
+import { Phone, Loader2, Globe, ArrowLeft, Shield, ChevronRight, Sparkles, Youtube, Instagram, Facebook, BookOpen, X, Trophy, Gamepad2 } from 'lucide-react';
 import { doc, getDoc } from 'firebase/firestore';
 import { getDeferredPrompt, clearDeferredPrompt } from '../pwa';
 import { AboutUsModal } from './AboutUsModal';
+import { BaghChheliGame } from './BaghChheliGame';
+import ReactMarkdown from 'react-markdown';
+import confetti from 'canvas-confetti';
+import { previewDatabase } from '../data/previewDatabase';
 
 const WhatsAppIcon = ({ size = 18 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -134,6 +138,116 @@ export default function Login({ language, translations, setLanguage, setRegData 
   const [pin, setPin] = useState('');
   const [pinError, setPinError] = useState('');
   const [verifyingPin, setVerifyingPin] = useState(false);
+
+  // Guest Profile States
+  const [showGuestBubble, setShowGuestBubble] = useState(true);
+  const [showGuestDashboard, setShowGuestDashboard] = useState(false);
+  const [activeSubView, setActiveSubView] = useState<'home' | 'quiz' | 'game' | 'notes'>('home');
+  const [selectedNotesGrade, setSelectedNotesGrade] = useState<number>(10);
+
+  // In-memory Quiz states for Public Guest Quiz
+  const [quizQuestions, setQuizQuestions] = useState<any[]>([]);
+  const [loadingQuiz, setLoadingQuiz] = useState(false);
+  const [currentQuizIdx, setCurrentQuizIdx] = useState(0);
+  const [selectedQuizOption, setSelectedQuizOption] = useState<string | null>(null);
+  const [quizSubmitted, setQuizSubmitted] = useState(false);
+  const [quizCorrectCount, setQuizCorrectCount] = useState(0);
+  const [quizFinished, setQuizFinished] = useState(false);
+
+  const startPublicQuiz = async () => {
+    setLoadingQuiz(true);
+    setActiveSubView('quiz');
+    setCurrentQuizIdx(0);
+    setSelectedQuizOption(null);
+    setQuizSubmitted(false);
+    setQuizCorrectCount(0);
+    setQuizFinished(false);
+    
+    try {
+      const response = await fetch('/api/public/daily-mcq');
+      if (response.ok) {
+        const data = await response.json();
+        if (data && Array.isArray(data.questions) && data.questions.length > 0) {
+          setQuizQuestions(data.questions);
+          setLoadingQuiz(false);
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn("Failed to fetch daily quiz, falling back to static offline quiz", err);
+    }
+    
+    // Fallback: A premium set of 5 general knowledge questions about Odisha to guarantee offline reliability!
+    const fallbackQuestions = [
+      {
+        question: "Which temple is famously known as the 'Black Pagoda' of Odisha? / ଓଡ଼ିଶାର କେଉଁ ମନ୍ଦିର 'ବ୍ଲାକ୍ ପାଗୋଡା' ଭାବରେ ଜଣାଶୁଣା?",
+        options: [
+          "Jagannath Temple, Puri / ଜଗନ୍ନାଥ ମନ୍ଦିର, ପୁରୀ",
+          "Konark Sun Temple / କୋଣାର୍କ ସୂର୍ଯ୍ୟ ମନ୍ଦିର",
+          "Lingaraj Temple, Bhubaneswar / ଲିଙ୍ଗରାଜ ମନ୍ଦିର",
+          "Muktashwar Temple / ମୁକ୍ତେଶ୍ୱର ମନ୍ଦିର"
+        ],
+        correct_answer: "Konark Sun Temple / କୋଣାର୍କ ସୂର୍ଯ୍ୟ ମନ୍ଦିର",
+        explanation: "ସାଙ୍ଗମାନେ! କୋଣାର୍କ ସୂର୍ଯ୍ୟ ମନ୍ଦିରକୁ ୧୩ଶ ଶତାବ୍ଦୀରେ ଲାଙ୍ଗୁଳା ନରସିଂହଦେବ ନିର୍ମାଣ କରିଥିଲେ। ସମୁଦ୍ର ଯାତ୍ରା କରୁଥିବା ୟୁରୋପୀୟ ନାବିକମାନେ ଏହାର କଳା ରଙ୍ଗ ଓ ଚୁମ୍ବକୀୟ ଆକର୍ଷଣ ପାଇଁ ଏହାକୁ 'ବ୍ଲାକ୍ ପାଗୋଡା' ବୋଲି କହୁଥିଲେ।"
+      },
+      {
+        question: "Which is the largest brackish water lagoon in Asia, located in Odisha? / ଓଡ଼ିଶାରେ ଅବସ୍ଥିତ ଏସିଆର ସର୍ବବୃହତ ଲବଣାକ୍ତ ହ୍ରଦ କେଉଁଟି?",
+        options: [
+          "Ansupa Lake / ଅଂଶୁପା ହ୍ରଦ",
+          "Chilika Lake / ଚିଲିକା ହ୍ରଦ",
+          "Kanjia Lake / କଞ୍ଜିଆ ହ୍ରଦ",
+          "Hirakud Reservoir / ହୀରାକୁଦ ଜଳาଶୟ"
+        ],
+        correct_answer: "Chilika Lake / ଚିଲିକା ହ୍ରଦ",
+        explanation: "ସାଙ୍ଗମାନେ! ଚିଲିକା ହ୍ରଦ ହେଉଛି ଭାରତର ସର୍ବବୃହତ ଏବଂ ଏସିଆର ସର୍ବବୃହତ ଲବଣାକ୍ତ ଜଳାଶୟ। ଏହା ଅସଂଖ୍ୟ ପ୍ରବାସୀ ପକ୍ଷୀ ଏବଂ ବିରଳ ଇରାୱତୀ ଡଲଫିନମାନଙ୍କର ପ୍ରାକୃତିକ ବାସସ୍ଥାନ ଅଟେ।"
+      },
+      {
+        question: "Who is the legendary 12-year-old architect who sacrificed his life for the Konark Temple? / କୋଣାର୍କ ମନ୍ଦିର ପାଇଁ ନିଜ ଜୀବନ ବଳିଦାନ ଦେଇଥିବା ୧୨ ବର୍ଷର କିମ୍ବଦନ୍ତୀ ସ୍ଥପତି କିଏ?",
+        options: [
+          "Bishu Maharana / ବିଷୁ ମହାରଣା",
+          "Dharmapada / ଧର୍ମପଦ",
+          "Baji Rout / ବାଜି ରାଉତ",
+          "Jayadeva / ଜୟଦେବ"
+        ],
+        correct_answer: "Dharmapada / ଧର୍ମପଦ",
+        explanation: "ଭାଇ ଭଉଣୀମାନେ! ଧର୍ମପଦ ଥିଲେ ବିଷୁ ମହାରଣାଙ୍କ ପୁଅ। ମାତ୍ର ୧୨ ବର୍ଷ ବୟସରେ ସେ କୋଣାର୍କ ମନ୍ଦିରର ଦଧିନଉତି (କଳସ) ମାରି ମନ୍ଦିର ନିର୍ମାଣ ସମ୍ପୂର୍ଣ୍ଣ କରିଥିଲେ ଏବଂ ଅନ୍ୟ କାରିଗରମାନଙ୍କ ଜୀବନ ରକ୍ଷା ପାଇଁ ଚନ୍ଦ୍ରଭାଗାକୁ ଡେଇଁ ପ୍ରାଣବଳି ଦେଇଥିଲେ।"
+      },
+      {
+        question: "Which is the official State Anthem of Odisha? / ଓଡ଼ିଶାର ରାଜ୍ୟ ସଙ୍ଗୀତ କେଉଁଟି?",
+        options: [
+          "Odia Bhasa Ananya / ଓଡ଼ିଆ ଭାଷା ଅନନ୍ୟ",
+          "Bande Utkala Janani / ବନ୍ଦେ ଉତ୍କଳ ଜନନୀ",
+          "Janani Janmabhumischa / ଜନନୀ ଜନ୍ମଭୂମିଶ୍ଚ",
+          "Jai Odisha / ଜୟ ଓଡ଼ିଶา"
+        ],
+        correct_answer: "Bande Utkala Janani / ବନ୍ଦେ ଉତ୍କଳ ଜନନୀ",
+        explanation: "ସାଙ୍ଗମାନେ! ବନ୍ଦେ ଉତ୍କଳ ଜନନୀ ହେଉଛି ଆମର ପବିତ୍ର ରାଜ୍ୟ ସଙ୍ଗୀତ, ଯାହାକୁ କାନ୍ତକବି ଲକ୍ଷ୍ମୀକାନ୍ତ ମହାପାତ୍ର ରଚନା କରିଥିଲେ। ୨୦୨୦ ମସିହାରେ ଓଡ଼ିଶା ସରକାର ଏହାକୁ ଆନୁଷ୍ଠାନିକ ଭାବେ ରାଜ୍ୟ ସଙ୍ଗୀତର ମାନ୍ୟତା ଦେଇଛନ୍ତି।"
+      },
+      {
+        question: "Solve this Gundulu AI math puzzle: If a farmer has 15 sheep and all but 9 die, how many sheep are left? / ଯଦି ଜଣେ ଚାଷୀଙ୍କର ୧୫ଟି ମେଣ୍ଢା ଥାଆନ୍ତି ଏବଂ ୯ଟିକୁ ଛାଡ଼ି ସମସ୍ତେ ମରିଯାଆନ୍ତି, ତେବେ କେତେଟି ମେଣ୍ଢା ବଞ୍ଚି ରହିବେ?",
+        options: [
+          "6",
+          "9",
+          "15",
+          "0"
+        ],
+        correct_answer: "9",
+        explanation: "ଭାଇ ଭଉଣୀମାନେ! ଏହା ଏକ ମଜาଦାର ଧନ୍ଦା। '୯ଟିକୁ ଛାଡ଼ି ସମସ୍ତେ ମରିଗଲେ' ଅର୍ଥାତ୍ କେବଳ ସେହି ୯ଟି ମେଣ୍ଢା ହିଁ ଜୀବିତ ବଞ୍ଚି ରହିଛନ୍ତି। ତେଣୁ ଚାଷୀଙ୍କ ପାଖରେ ୯ଟି ମେଣ୍ଢା ହିଁ ରହିବେ।"
+      }
+    ];
+    setQuizQuestions(fallbackQuestions);
+    setLoadingQuiz(false);
+  };
+
+  const getQuizUrl = () => {
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname;
+      if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return 'http://localhost:3001';
+      }
+    }
+    return 'https://quiz.utkalskillcentre.com';
+  };
 
   useEffect(() => {
     const isJudgeMode = typeof window !== 'undefined' && (
@@ -590,7 +704,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
           <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
           {/* WELCOME BANNER (Slightly Up) */}
-          <div className="w-full text-center space-y-1 pb-1">
+          <div className="w-full text-left space-y-1 pb-1">
             <AnimatePresence mode="wait">
               {loginView === 'switcher' ? (
                 <motion.div key="switcher-header" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }}>
@@ -598,11 +712,11 @@ export default function Login({ language, translations, setLanguage, setRegData 
                     {language === 'en' ? 'Who is studying today?' : 'ଆଜି କିଏ ପଢୁଛି?'}
                   </h2>
                   <p className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mt-1.5">
-                    {language === 'en' ? 'Select profile & enter PIN to switch' : 'ପ୍ରୋଫାଇଲ୍ ବାଛନ୍ତୁ ଏବଂ ପିନ୍ ଦିଅନ୍ତୁ'}
+                     {language === 'en' ? 'Select profile & enter PIN to switch' : 'ପ୍ରୋଫାଇଲ୍ ବାଛନ୍ତୁ ଏବଂ ପିନ୍ ଦିଅନ୍ତୁ'}
                   </p>
                 </motion.div>
               ) : loginView === 'pin' ? (
-                <motion.div key="pin-header" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} className="relative flex items-center justify-center">
+                <motion.div key="pin-header" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} className="relative flex items-center justify-start pl-10">
                   <button 
                     onClick={() => { setLoginView('switcher'); setPin(''); setPinError(''); }}
                     className="absolute left-0 p-2 bg-white/5 hover:bg-white/10 rounded-xl text-slate-400 hover:text-white transition-colors"
@@ -621,12 +735,125 @@ export default function Login({ language, translations, setLanguage, setRegData 
               ) : (
                 <motion.div key="phone-header" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }}>
                   <h2 className="text-white text-3xl sm:text-4xl font-black tracking-tight font-['Outfit']">
-                    {language === 'en' ? 'Odisha\'s #1 ' : 'ଓଡ଼ିଶାର #୧ ' }
-                    <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-emerald-400 bg-clip-text text-transparent">
-                      {language === 'en' ? 'AI Learning App' : 'AI ପାଠପଢ଼ା ଆପ୍'}
-                    </span>
+                    {language === 'en' ? (
+                      <>
+                        Odisha's #1
+                        <div className="flex items-center gap-3 mt-1.5">
+                          <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-emerald-400 bg-clip-text text-transparent">
+                            AI Learning App
+                          </span>
+                          <div className="relative">
+                            {/* Mascot Image (Pointing Up) - Decorative */}
+                            <motion.div
+                              animate={{ y: [0, -3, 0] }}
+                              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                              className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 relative select-none z-10"
+                            >
+                              <img 
+                                src="/gundulu-pointing-up.png" 
+                                className="w-full h-full object-contain" 
+                                alt="Gundulu Mascot" 
+                              />
+                            </motion.div>
+
+                            {/* Speech Bubble (Interactive - Click to navigate) */}
+                            {showGuestBubble && (
+                              <div 
+                                onClick={() => {
+                                  setShowGuestDashboard(true);
+                                  setActiveSubView('home');
+                                }}
+                                className="absolute bottom-[122%] left-1/2 -translate-x-1/2 p-2.5 rounded-2xl bg-slate-950/95 backdrop-blur-md border border-emerald-500/30 hover:border-emerald-400 text-left shadow-2xl w-[160px] sm:w-[180px] select-none pointer-events-auto z-30 flex flex-col gap-1 cursor-pointer hover:scale-105 active:scale-95 transition-all duration-200"
+                              >
+                                <div className="flex items-center justify-between gap-1">
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0"></span>
+                                    <span className="text-[9px] sm:text-[10px] font-black text-emerald-400 uppercase tracking-wider font-['Outfit']">
+                                      🧭 Guest Profile
+                                    </span>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setShowGuestBubble(false);
+                                    }}
+                                    className="text-slate-500 hover:text-slate-300 transition-colors cursor-pointer p-0.5"
+                                  >
+                                    <X size={10} />
+                                  </button>
+                                </div>
+                                <p className="text-[10px] sm:text-[11px] leading-tight text-slate-200 font-bold whitespace-nowrap">
+                                  Free quiz & games! 🎒
+                                </p>
+                                {/* Arrow pointing down to the mascot's finger */}
+                                <div className="absolute bottom-[-4px] left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-950 border-r border-b border-emerald-500/30 rotate-45" />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        ଓଡ଼ିଶାର #୧
+                        <div className="flex items-center gap-3 mt-1.5">
+                          <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-emerald-400 bg-clip-text text-transparent">
+                            AI ପାଠପଢ଼ା ଆପ୍
+                          </span>
+                          <div className="relative">
+                            {/* Mascot Image (Pointing Up) - Decorative */}
+                            <motion.div
+                              animate={{ y: [0, -3, 0] }}
+                              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                              className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 relative select-none z-10"
+                            >
+                              <img 
+                                src="/gundulu-pointing-up.png" 
+                                className="w-full h-full object-contain" 
+                                alt="Gundulu Mascot" 
+                              />
+                            </motion.div>
+
+                            {/* Speech Bubble (Interactive - Click to navigate) */}
+                            {showGuestBubble && (
+                              <div 
+                                onClick={() => {
+                                  setShowGuestDashboard(true);
+                                  setActiveSubView('home');
+                                }}
+                                className="absolute bottom-[122%] left-1/2 -translate-x-1/2 p-2.5 rounded-2xl bg-slate-950/95 backdrop-blur-md border border-emerald-500/30 hover:border-emerald-400 text-left shadow-2xl w-[160px] sm:w-[180px] select-none pointer-events-auto z-30 flex flex-col gap-1 cursor-pointer hover:scale-105 active:scale-95 transition-all duration-200"
+                              >
+                                <div className="flex items-center justify-between gap-1">
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0"></span>
+                                    <span className="text-[9px] sm:text-[10px] font-black text-emerald-400 uppercase tracking-wider font-['Outfit']">
+                                      🧭 ଗେଷ୍ଟ ପ୍ରୋଫାଇଲ୍
+                                    </span>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setShowGuestBubble(false);
+                                    }}
+                                    className="text-slate-500 hover:text-slate-300 transition-colors cursor-pointer p-0.5"
+                                  >
+                                    <X size={10} />
+                                  </button>
+                                </div>
+                                <p className="text-[10px] sm:text-[11px] leading-tight text-slate-200 font-bold whitespace-nowrap">
+                                  ମାଗଣା କୁଇଜ୍ ଓ ଗେମ୍ସ! 🎒
+                                </p>
+                                {/* Arrow pointing down to the mascot's finger */}
+                                <div className="absolute bottom-[-4px] left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-950 border-r border-b border-emerald-500/30 rotate-45" />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </h2>
-                  <p className="text-slate-400 text-[9px] font-black uppercase tracking-[0.15em] mt-1.5 flex items-center justify-center gap-2">
+                  <p className="text-slate-400 text-[9px] font-black uppercase tracking-[0.15em] mt-1.5 flex items-center justify-start gap-2">
                     <span className="h-px w-3 bg-slate-700" />
                     {language === 'en' ? 'Class 1-10 Books & AI Doubt Solver' : 'ଶ୍ରେଣୀ ୧-୧୦ ବହି ଏବଂ AI ସମାଧାନ'}
                     <span className="h-px w-3 bg-slate-700" />
@@ -1110,6 +1337,418 @@ export default function Login({ language, translations, setLanguage, setRegData 
         {showAboutModal && (
           <AboutUsModal language={language} onClose={() => setShowAboutModal(false)} />
         )}
+      </AnimatePresence>
+
+      {/* GUEST DASHBOARD OVERLAY */}
+      <AnimatePresence>
+        {showGuestDashboard && (() => {
+          const language = 'or'; // Force Odia language inside the Guest Profile Zone
+          return (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-slate-950/98 z-50 overflow-y-auto flex flex-col items-center justify-start p-4 sm:p-8 backdrop-blur-xl"
+            >
+            {/* Header controls */}
+            <div className="w-full max-w-4xl flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
+              <div className="flex items-center gap-3">
+                {activeSubView !== 'home' && (
+                  <button
+                    type="button"
+                    onClick={() => setActiveSubView('home')}
+                    className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider cursor-pointer"
+                  >
+                    <ArrowLeft size={14} /> {language === 'en' ? 'Back' : 'ଫେରନ୍ତୁ'}
+                  </button>
+                )}
+                <div>
+                  <h1 className="text-white text-lg sm:text-2xl font-black tracking-tight font-['Outfit'] flex items-center gap-2">
+                    🧭 {language === 'en' ? 'Guest Profile Zone' : 'ଗେଷ୍ଟ ପ୍ରୋଫାଇଲ୍ ଜୋନ୍'}
+                  </h1>
+                  <p className="text-[10px] sm:text-xs text-slate-500 font-bold uppercase tracking-widest">
+                    {language === 'en' ? '100% Free Sandbox Previews' : '୧୦୦% ମାଗଣା ପ୍ରିଭ୍ୟୁ'}
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowGuestDashboard(false)}
+                className="px-4 py-2 rounded-xl bg-red-600/10 border border-red-500/20 hover:bg-red-600/20 text-red-400 hover:text-red-300 transition-all font-bold text-xs uppercase tracking-wider cursor-pointer flex items-center gap-1.5"
+              >
+                {language === 'en' ? 'Exit Guest' : 'ଏକଜିଟ୍ ଗେଷ୍ଟ'} ➔
+              </button>
+            </div>
+
+            {/* Subviews */}
+            <div className="w-full max-w-4xl flex-1 flex flex-col justify-start">
+              {activeSubView === 'home' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="space-y-8"
+                >
+                  {/* Mascot Speech greeting */}
+                  <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800/80 flex flex-col sm:flex-row items-center gap-6 shadow-xl relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-8 opacity-5 text-emerald-400">
+                      <Sparkles size={160} />
+                    </div>
+                    <motion.div 
+                      animate={{ y: [0, -3, 0] }}
+                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                      className="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0"
+                    >
+                      <img src="/gundulu-pointing-up.png" className="w-full h-full object-contain" alt="Gundulu" />
+                    </motion.div>
+                    <div className="space-y-2 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                        <h3 className="text-amber-400 font-black font-['Outfit'] text-sm sm:text-base tracking-wide uppercase">
+                          {language === 'en' ? 'Namaskar from Gundulu!' : 'ଗୁନ୍ଦୁଲୁର ନମସ୍କାର!'}
+                        </h3>
+                      </div>
+                      <p className="text-slate-300 text-sm sm:text-base leading-relaxed font-medium">
+                        {language === 'en' 
+                          ? "Welcome, friend! 🎒 I am Gundulu, your learning sister. Explore our three premium guest features without registering! Tap any card below to play a game, take a daily quiz challenge, or read chapter summaries!" 
+                          : "ନମସ୍କାର ସାଙ୍ଗମାନେ! 🎒 ମୁଁ ଗୁନ୍ଦୁଲୁ, ଆପଣଙ୍କର ପଢ଼ା ସାଥୀ। ଲଗଇନ୍ କିମ୍ବା ରଜିଷ୍ଟ୍ରେସନ୍ ନକରି ବିନା କୌଣସି ଅସୁବିଧାରେ ଆମ ତିନୋଟି ପ୍ରିମିୟମ୍ ବିଶେଷତା ଚେଷ୍ଟା କରନ୍ତୁ! ଖେଳିବା କିମ୍ବା ନୋଟ୍ସ ପଢ଼ିବା ପାଇଁ ତଳେ ଥିବା ଯେକୌଣସି କାର୍ଡ ଉପରେ କ୍ଲିକ୍ କରନ୍ତୁ।"}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Options Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {/* Card 1: Daily MCQ */}
+                    <div 
+                      onClick={startPublicQuiz}
+                      className="group p-6 rounded-3xl bg-slate-900/40 border border-slate-800 hover:border-emerald-500/40 hover:bg-slate-900/80 transition-all duration-300 flex flex-col items-start gap-4 cursor-pointer shadow-lg hover:shadow-emerald-950/20"
+                    >
+                      <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300">
+                        <Trophy size={22} />
+                      </div>
+                      <div>
+                        <h4 className="text-white text-lg font-black font-['Outfit'] mb-1">
+                          {language === 'en' ? 'Daily MCQ Challenge' : 'ଦୈନିକ MCQ ଚ୍ୟାଲେଞ୍ଜ୍'}
+                        </h4>
+                        <p className="text-slate-400 text-xs leading-relaxed font-medium">
+                          {language === 'en' 
+                            ? 'Test your knowledge with 5 fresh daily GK and Odisha culture questions generated by Gundulu AI.' 
+                            : 'ଗୁନ୍ଦୁଲୁ ଦ୍ଵାରା ପ୍ରସ୍ତୁତ ଦୈନିକ GK ଓ ଓଡ଼ିଶା କଲ୍ଚର୍ କୁଇଜ୍ ଖେଳନ୍ତୁ ଏବଂ ନିଜ ଜ୍ଞានକୁ ପରୀକ୍ଷା କରନ୍ତୁ।'}
+                        </p>
+                      </div>
+                      <span className="text-[10px] text-emerald-400 font-black uppercase tracking-wider group-hover:translate-x-1 transition-transform flex items-center gap-1 mt-auto">
+                        {language === 'en' ? 'Play Challenge' : 'କୁଇଜ୍ ଖେଳନ୍ତୁ'} ➔
+                      </span>
+                    </div>
+
+                    {/* Card 2: Bagha Cheli */}
+                    <div 
+                      onClick={() => setActiveSubView('game')}
+                      className="group p-6 rounded-3xl bg-slate-900/40 border border-slate-800 hover:border-amber-500/40 hover:bg-slate-900/80 transition-all duration-300 flex flex-col items-start gap-4 cursor-pointer shadow-lg hover:shadow-amber-950/20"
+                    >
+                      <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-white transition-all duration-300">
+                        <Gamepad2 size={22} />
+                      </div>
+                      <div>
+                        <h4 className="text-white text-lg font-black font-['Outfit'] mb-1">
+                          {language === 'en' ? 'Play Bagha Cheli' : 'ବାଘ ଛେଳି ଖେଳ'}
+                        </h4>
+                        <p className="text-slate-400 text-xs leading-relaxed font-medium">
+                          {language === 'en' 
+                            ? 'Play Odisha\'s famous traditional tiger-and-goat board game against Gundulu AI.' 
+                            : 'ଓଡ଼ିଶାର ପ୍ରସିଦ୍ଧ ପାରମ୍ପରିକ ବୋର୍ଡ ଗେମ୍ "ବାଘ ଛେଳି" ଗୁନ୍ଦୁଲୁ AI (କମ୍ପ୍ୟୁଟର) ସହିତ ଖେଳନ୍ତୁ।'}
+                        </p>
+                      </div>
+                      <span className="text-[10px] text-amber-400 font-black uppercase tracking-wider group-hover:translate-x-1 transition-transform flex items-center gap-1 mt-auto">
+                        {language === 'en' ? 'Start Game' : 'ଖେଳ ଆରମ୍ଭ କରନ୍ତୁ'} ➔
+                      </span>
+                    </div>
+
+                    {/* Card 3: Class 1-10 Notes */}
+                    <div 
+                      onClick={() => {
+                        setActiveSubView('notes');
+                        setSelectedNotesGrade(10);
+                      }}
+                      className="group p-6 rounded-3xl bg-slate-900/40 border border-slate-800 hover:border-cyan-500/40 hover:bg-slate-900/80 transition-all duration-300 flex flex-col items-start gap-4 cursor-pointer shadow-lg hover:shadow-cyan-950/20"
+                    >
+                      <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center group-hover:scale-110 group-hover:bg-cyan-500 group-hover:text-white transition-all duration-300">
+                        <BookOpen size={22} />
+                      </div>
+                      <div>
+                        <h4 className="text-white text-lg font-black font-['Outfit'] mb-1">
+                          {language === 'en' ? 'Odia Chapter Previews' : 'ଓଡ଼ିଆ ଅଧ୍ୟାୟ ନୋଟ୍ସ'}
+                        </h4>
+                        <p className="text-slate-400 text-xs leading-relaxed font-medium">
+                          {language === 'en' 
+                            ? 'Access the first chapter summaries of Odia medium subjects for Class 1 to Class 10 instantly.' 
+                            : 'ଶ୍ରେଣୀ ୧ ରୁ ୧୦ ପର୍ଯ୍ୟନ୍ତ ଓଡ଼ିଆ ମାଧ୍ୟମ ସାହିତ୍ୟ ବହିର ପ୍ରଥମ ଅଧ୍ୟାୟ ନୋଟ୍ସ ଓ ସାରାଂଶ ପଢ଼ନ୍ତୁ।'}
+                        </p>
+                      </div>
+                      <span className="text-[10px] text-cyan-400 font-black uppercase tracking-wider group-hover:translate-x-1 transition-transform flex items-center gap-1 mt-auto">
+                        {language === 'en' ? 'Read Notes' : 'ନୋଟ୍ସ ପଢ଼ନ୍ତୁ'} ➔
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* VIEW: Daily MCQ Quiz Runner */}
+              {activeSubView === 'quiz' && (
+                <div className="flex-1 flex flex-col items-center justify-start py-4">
+                  {loadingQuiz ? (
+                    <div className="flex flex-col items-center justify-center py-20 gap-4">
+                      <Loader2 className="animate-spin text-emerald-400" size={48} />
+                      <p className="text-slate-400 font-bold text-sm uppercase tracking-wider animate-pulse">
+                        {language === 'en' ? 'Gundulu AI is generating questions...' : 'ଗୁନ୍ଦୁଲୁ AI ପ୍ରଶ୍ନ ପ୍ରସ୍ତୁତ କରୁଛି...'}
+                      </p>
+                    </div>
+                  ) : quizFinished ? (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="w-full max-w-xl p-8 rounded-3xl bg-slate-900 border border-slate-800 text-center space-y-6 shadow-2xl relative overflow-hidden"
+                    >
+                      <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-500 via-amber-500 to-cyan-500" />
+                      <div className="w-20 h-20 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center text-4xl mx-auto shadow-lg">
+                        🏆
+                      </div>
+                      <div className="space-y-2">
+                        <h3 className="text-white text-2xl font-black font-['Outfit']">
+                          {language === 'en' ? 'Quiz Completed!' : 'କୁଇଜ୍ ସମ୍ପୂର୍ଣ୍ଣ ହେଲା!'}
+                        </h3>
+                        <p className="text-slate-400 font-medium text-sm">
+                          {language === 'en' ? 'You completed today\'s GK Challenge!' : 'ଆପଣ ଆଜିର ଦୈନିକ କୁଇଜ୍ ସମ୍ପୂର୍ଣ୍ଣ କରିଛନ୍ତି!'}
+                        </p>
+                      </div>
+                      <div className="py-4 px-6 rounded-2xl bg-slate-950/80 border border-slate-800 w-fit mx-auto">
+                        <span className="text-slate-500 font-bold text-xs uppercase tracking-wider block mb-1">
+                          {language === 'en' ? 'Your Score' : 'ଆପଣଙ୍କ ସ୍କୋର'}
+                        </span>
+                        <span className="text-white text-3xl font-black">
+                          {quizCorrectCount} / {quizQuestions.length}
+                        </span>
+                      </div>
+                      <p className="text-slate-300 text-sm font-medium leading-relaxed max-w-sm mx-auto">
+                        {quizCorrectCount === quizQuestions.length
+                          ? (language === 'en' ? 'Outstanding! Perfect score!' : 'ଚମତ୍କାର! ସମସ୍ତ ଉତ୍ତର ସଠିକ୍ ହୋଇଛି।')
+                          : (language === 'en' ? 'Great effort! Keep practicing every day.' : 'ଉତ୍ତମ ଚେଷ୍ଟା! ପ୍ରତିଦିନ ଅଭ୍ୟାସ ଜାରି ରଖନ୍ତୁ।')}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setActiveSubView('home')}
+                        className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest transition-colors shadow-lg shadow-emerald-950/50 cursor-pointer"
+                      >
+                        {language === 'en' ? 'Back to Guest Hub' : 'ଗେଷ୍ଟ ହବ୍‌କୁ ଫେରନ୍ତୁ'}
+                      </button>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="w-full max-w-2xl space-y-6"
+                    >
+                      {/* Quiz Progress Header */}
+                      <div className="flex items-center justify-between text-xs font-bold text-slate-500 uppercase">
+                        <span>{language === 'en' ? 'General Knowledge Challenge' : 'ସାଧାରଣ ଜ୍ଞାନ ଚ୍ୟାଲେଞ୍ଜ୍'}</span>
+                        <span>
+                          {language === 'en' ? 'Question' : 'ପ୍ରଶ୍ନ'} {currentQuizIdx + 1} / {quizQuestions.length}
+                        </span>
+                      </div>
+
+                      {/* Progress Bar */}
+                      <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+                        <div 
+                          className="h-full bg-emerald-500 transition-all duration-300"
+                          style={{ width: `${((currentQuizIdx) / quizQuestions.length) * 100}%` }}
+                        />
+                      </div>
+
+                      {/* Question Card */}
+                      <div className="p-6 sm:p-8 rounded-3xl bg-slate-900 border border-slate-800 space-y-6 shadow-xl">
+                        <h3 className="text-white text-lg sm:text-xl font-bold leading-relaxed">
+                          {quizQuestions[currentQuizIdx]?.question}
+                        </h3>
+
+                        {/* Options */}
+                        <div className="grid grid-cols-1 gap-3">
+                          {quizQuestions[currentQuizIdx]?.options?.map((opt: string) => {
+                            const isSelected = selectedQuizOption === opt;
+                            const isCorrectAnswer = opt === (quizQuestions[currentQuizIdx]?.correct_answer || quizQuestions[currentQuizIdx]?.correctAnswer);
+                            
+                            let btnStyle = "bg-slate-950/60 border-slate-800 text-slate-300 hover:bg-slate-950 hover:border-slate-700";
+                            if (quizSubmitted) {
+                              if (isCorrectAnswer) {
+                                btnStyle = "bg-emerald-500/10 border-emerald-500/40 text-emerald-400";
+                              } else if (isSelected) {
+                                btnStyle = "bg-red-500/10 border-red-500/40 text-red-400";
+                              } else {
+                                btnStyle = "bg-slate-950/20 border-slate-900 text-slate-600 opacity-60";
+                              }
+                            } else if (isSelected) {
+                              btnStyle = "bg-emerald-500/10 border-emerald-500 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.1)]";
+                            }
+
+                            return (
+                              <button
+                                key={opt}
+                                type="button"
+                                disabled={quizSubmitted}
+                                onClick={() => setSelectedQuizOption(opt)}
+                                className={`w-full p-4 rounded-2xl text-left border text-sm font-semibold transition-all cursor-pointer ${btnStyle}`}
+                              >
+                                {opt}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* Feedback & Explanation */}
+                        {quizSubmitted && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-3"
+                          >
+                            <div className="flex items-center gap-2">
+                              {selectedQuizOption === (quizQuestions[currentQuizIdx]?.correct_answer || quizQuestions[currentQuizIdx]?.correctAnswer) ? (
+                                <>
+                                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                                  <span className="text-emerald-400 font-black text-xs uppercase tracking-wider">
+                                    {language === 'en' ? 'Correct!' : 'ସଠିକ୍ ଉତ୍ତର!'}
+                                  </span>
+                                </>
+                              ) : (
+                                <>
+                                  <span className="w-2 h-2 rounded-full bg-red-400" />
+                                  <span className="text-red-400 font-black text-xs uppercase tracking-wider">
+                                    {language === 'en' ? 'Incorrect' : 'ଭୁଲ୍ ଉତ୍ତର'}
+                                  </span>
+                                </>
+                              )}
+                            </div>
+                            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed font-medium">
+                              {quizQuestions[currentQuizIdx]?.explanation}
+                            </p>
+                          </motion.div>
+                        )}
+
+                        {/* Actions */}
+                        <div className="pt-2">
+                          {!quizSubmitted ? (
+                            <button
+                              type="button"
+                              disabled={!selectedQuizOption}
+                              onClick={() => {
+                                const isCorrect = selectedQuizOption === (quizQuestions[currentQuizIdx]?.correct_answer || quizQuestions[currentQuizIdx]?.correctAnswer);
+                                if (isCorrect) setQuizCorrectCount(prev => prev + 1);
+                                setQuizSubmitted(true);
+                              }}
+                              className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg transition-colors cursor-pointer"
+                            >
+                              {language === 'en' ? 'Submit Answer' : 'ଉତ୍ତର ଦିଅନ୍ତୁ'}
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (currentQuizIdx < quizQuestions.length - 1) {
+                                  setCurrentQuizIdx(prev => prev + 1);
+                                  setSelectedQuizOption(null);
+                                  setQuizSubmitted(false);
+                                } else {
+                                  setQuizFinished(true);
+                                  // Trigger confetti for completion
+                                  confetti({
+                                    particleCount: 80,
+                                    spread: 60,
+                                    origin: { y: 0.6 }
+                                  });
+                                }
+                              }}
+                              className="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg transition-colors cursor-pointer"
+                            >
+                              {currentQuizIdx < quizQuestions.length - 1 
+                                ? (language === 'en' ? 'Next Question' : 'ପରବର୍ତ୍ତୀ ପ୍ରଶ୍ନ') 
+                                : (language === 'en' ? 'Finish Quiz' : 'କୁଇଜ୍ ସମ୍ପୂର୍ଣ୍ଣ କରନ୍ତୁ')}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+              )}
+
+              {/* VIEW: Bagha Cheli Game */}
+              {activeSubView === 'game' && (
+                <div className="flex-1 flex flex-col justify-start">
+                  <BaghChheliGame 
+                    language={language} 
+                    user={{ name: language === 'en' ? 'Guest Student' : 'ଅତିଥି ଛାତ୍ର', points: 0, uid: 'guest' }}
+                    onBack={() => setActiveSubView('home')} 
+                  />
+                </div>
+              )}
+
+              {/* VIEW: Class 1-10 Notes Reader */}
+              {activeSubView === 'notes' && (
+                <div className="flex-1 flex flex-col justify-start space-y-6">
+                  {/* Class tabs selector */}
+                  <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-800 scrollbar-none">
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(grade => (
+                      <button
+                        key={grade}
+                        type="button"
+                        onClick={() => setSelectedNotesGrade(grade)}
+                        className={`px-4 py-2 rounded-xl border font-bold text-xs uppercase tracking-wider flex-shrink-0 transition-all cursor-pointer ${
+                          selectedNotesGrade === grade
+                            ? 'bg-cyan-500/10 border-cyan-500 text-cyan-400'
+                            : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
+                        }`}
+                      >
+                        Class {grade}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Notes Reader content */}
+                  {(() => {
+                    const noteKey = `class${selectedNotesGrade}odia`;
+                    const noteData = previewDatabase[noteKey];
+
+                    return (
+                      <motion.div
+                        key={selectedNotesGrade}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-6 sm:p-8 rounded-3xl bg-slate-900 border border-slate-800 shadow-xl space-y-6 max-h-[550px] overflow-y-auto"
+                      >
+                        <div className="border-b border-slate-800 pb-4">
+                          <span className="px-2.5 py-1 rounded bg-cyan-500/10 border border-cyan-500/20 text-[9px] font-black text-cyan-400 uppercase tracking-wider">
+                            📖 {language === 'en' ? `Class ${selectedNotesGrade} Odia Notes` : `ଶ୍ରେଣୀ ${selectedNotesGrade} ଓଡ଼ିଆ ସାହିତ୍ୟ`}
+                          </span>
+                          <h2 className="text-white text-lg sm:text-2xl font-black font-['Outfit'] mt-3 leading-tight">
+                            {noteData?.title}
+                          </h2>
+                          <p className="text-slate-400 text-xs mt-1.5 font-medium">
+                            {noteData?.description}
+                          </p>
+                        </div>
+
+                        {/* Markdown Reader Body */}
+                        <div className="prose prose-invert prose-sm max-w-none text-slate-300 leading-relaxed font-medium space-y-4">
+                          <ReactMarkdown>{noteData?.content}</ReactMarkdown>
+                        </div>
+                      </motion.div>
+                    );
+                  })()}
+                </div>
+              )}
+            </div>
+          </motion.div>
+          );
+        })()}
       </AnimatePresence>
 
     </div>
