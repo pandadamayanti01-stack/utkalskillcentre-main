@@ -4341,13 +4341,13 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
       <AnimatePresence>
         {showTargetModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center px-4 backdrop-blur-md bg-slate-950/55 force-dark-theme">
+          <div className="fixed inset-0 z-50 flex justify-center items-start overflow-y-auto p-4 backdrop-blur-md bg-slate-950/55 force-dark-theme">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 15 }}
               style={{ backgroundColor: '#0b1329', borderColor: '#1e293b' }}
-              className="relative w-full max-w-lg border rounded-[2rem] p-6 md:p-8 shadow-2xl overflow-y-auto max-h-[92vh]"
+              className="relative w-full max-w-lg border rounded-[2rem] p-6 md:p-8 shadow-2xl my-8 md:my-16"
             >
               {/* Close Button */}
               <button
