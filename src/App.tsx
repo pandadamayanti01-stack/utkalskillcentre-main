@@ -3989,16 +3989,16 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             
             <h1 className="text-4xl xl:text-5xl font-black text-white leading-normal mb-4 tracking-tight">
               {language === 'en' ? (
-                <>Master Your Future with <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">Gundulu</span></>
+                <>Odisha's #1 AI Learning App for <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">Class 1-10</span></>
               ) : (
-                <>ଗୁନ୍ଦୁଲୁ ସହ ଗଢ଼ନ୍ତୁ ଆପଣଙ୍କ <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">ଉଜ୍ଜ୍ୱଳ ଭବିଷ୍ୟତ</span></>
+                <>ଓଡ଼ିଶାର ନମ୍ବର ୧ AI ପାଠପଢ଼ା ଆପ୍ - <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">ଶ୍ରେଣୀ ୧ ରୁ ୧୦</span></>
               )}
             </h1>
             
             <p className="text-base text-slate-400 mb-4 leading-relaxed">
               {language === 'en' 
-                ? 'Experience the next generation of education. Our study buddy adapts to your learning style, providing real-time feedback and personalized pathways to success.' 
-                : 'ଶିକ୍ଷାର ପରବର୍ତ୍ତୀ ପିଢିକୁ ଅନୁଭବ କରନ୍ତୁ। ଆମର ଶିକ୍ଷା ସାଥୀ ଆପଣଙ୍କ ପଢିବା ଶୈଳୀ ସହ ଖାପ ଖାଇଥାଏ, ପ୍ରକୃତ ସମୟର ମତାମତ ଏବଂ ସଫଳତାର ମାର୍ଗ ପ୍ରଦାନ କରିଥାଏ।'}
+                ? 'Access complete textbooks, revision notes, daily practice questions, mock exams, and resolve all your doubts instantly in Odia and English with Gundulu, your personal Socratic AI study buddy.' 
+                : 'ବିଦ୍ୟାଳୟ ପାଠ୍ୟପୁସ୍ତକ, ସ୍ପେଶାଲ୍ ନୋଟ୍ସ, ଦୈନିକ MCQ ପରୀକ୍ଷା ଏବଂ ଗୁନ୍ଦୁଲୁ AI ଟ୍ୟୁଟର ସାହାଯ୍ୟରେ ସମସ୍ତ ଗଣିତ ଓ ବିଜ୍ଞାନ ପ୍ରଶ୍ନର ସମାଧାନ ତୁରନ୍ତ ଓଡ଼ିଆ ଓ ଇଂରାଜୀରେ ପାଆନ୍ତୁ।'}
             </p>
 
             {/* Interface Mockup / Floating Elements */}

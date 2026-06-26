@@ -166,6 +166,18 @@ export const Gundulu3DLab: React.FC<Gundulu3DLabProps> = ({
 }) => {
   const t = translations[language];
 
+  // Load model-viewer dynamically to improve initial landing page load times (LCP) and reduce bounce rate
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !customElements.get('model-viewer')) {
+      console.log('Gundulu3DLab: Dynamically injecting model-viewer script...');
+      const script = document.createElement('script');
+      script.type = 'module';
+      script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js';
+      script.async = true;
+      document.head.appendChild(script);
+    }
+  }, []);
+
   // Helper to retrieve user's class level as a number
   const getUserClassNumber = (): number => {
     if (!user || !user.class) return 10; // Default fallback to class 10

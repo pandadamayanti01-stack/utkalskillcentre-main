@@ -621,15 +621,15 @@ export default function Login({ language, translations, setLanguage, setRegData 
               ) : (
                 <motion.div key="phone-header" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }}>
                   <h2 className="text-white text-3xl sm:text-4xl font-black tracking-tight font-['Outfit']">
-                    {language === 'en' ? 'Join the ' : 'ସାମିଲ ହୁଅନ୍ତୁ ' }
+                    {language === 'en' ? 'Odisha\'s #1 ' : 'ଓଡ଼ିଶାର #୧ ' }
                     <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-emerald-400 bg-clip-text text-transparent">
-                      {language === 'en' ? 'AI Era' : 'AI ଯୁଗରେ'}
+                      {language === 'en' ? 'AI Learning App' : 'AI ପାଠପଢ଼ା ଆପ୍'}
                     </span>
                   </h2>
-                  <p className="text-slate-400 text-[9px] font-black uppercase tracking-[0.3em] mt-1.5 flex items-center justify-center gap-2">
-                    <span className="h-px w-4 bg-slate-700" />
-                    {language === 'en' ? 'Personalized Learning' : 'ଆପଣଙ୍କ ପାଇଁ ବ୍ୟକ୍ତିଗତ ଶିକ୍ଷା'}
-                    <span className="h-px w-4 bg-slate-700" />
+                  <p className="text-slate-400 text-[9px] font-black uppercase tracking-[0.15em] mt-1.5 flex items-center justify-center gap-2">
+                    <span className="h-px w-3 bg-slate-700" />
+                    {language === 'en' ? 'Class 1-10 Books & AI Doubt Solver' : 'ଶ୍ରେଣୀ ୧-୧୦ ବହି ଏବଂ AI ସମାଧାନ'}
+                    <span className="h-px w-3 bg-slate-700" />
                   </p>
                 </motion.div>
               )}
@@ -890,7 +890,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
                                 <select 
                                   value={selectedClass} 
                                   onChange={(e) => setSelectedClass(e.target.value)}
-                                  className="w-full py-3.5 pl-4 pr-10 bg-slate-950/80 border-2 border-slate-600 hover:border-amber-500 focus:border-amber-400 rounded-2xl text-white text-xs font-bold outline-none focus:shadow-[0_0_20px_rgba(245,158,11,0.25)] appearance-none transition-all cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
+                                  className="w-full py-3.5 pl-4 pr-10 bg-slate-950/80 border-2 border-slate-500 hover:border-amber-500 focus:border-amber-400 rounded-2xl text-white text-xs font-bold outline-none focus:shadow-[0_0_20px_rgba(245,158,11,0.25)] appearance-none transition-all cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
                                 >
                                   <option className="bg-[#0b0f19]">{t.selectClass} *</option>
                                   {Object.entries(t.classes).map(([k,v]) => <option key={k} value={k} className="bg-[#0b0f19]">{v as string}</option>)}
@@ -909,7 +909,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
                                 <select 
                                   value={selectedBoard} 
                                   onChange={(e) => setSelectedBoard(e.target.value)}
-                                  className="w-full py-3.5 pl-4 pr-10 bg-slate-950/80 border-2 border-slate-600 hover:border-amber-500 focus:border-amber-400 rounded-2xl text-white text-xs font-bold outline-none focus:shadow-[0_0_20px_rgba(245,158,11,0.25)] appearance-none transition-all cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
+                                  className="w-full py-3.5 pl-4 pr-10 bg-slate-950/80 border-2 border-slate-500 hover:border-amber-500 focus:border-amber-400 rounded-2xl text-white text-xs font-bold outline-none focus:shadow-[0_0_20px_rgba(245,158,11,0.25)] appearance-none transition-all cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
                                 >
                                   <option className="bg-[#0b0f19]">{t.selectBoard} *</option>
                                   {t.boards && Object.entries(t.boards).map(([k,v]) => <option key={k} value={k} className="bg-[#0b0f19]">{v as string}</option>)}
@@ -927,7 +927,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
                             <Phone size={12} /> {language === 'en' ? 'Mobile Number' : 'ମୋବାଇଲ୍ ନମ୍ବର'}
                           </label>
                           <div className="flex gap-2.5">
-                            <div className="px-4 py-3.5 bg-slate-950/80 border-2 border-slate-600 rounded-2xl text-amber-400 text-xs font-black flex items-center justify-center shadow-inner">
+                            <div className="px-4 py-3.5 bg-slate-950/80 border-2 border-slate-500 rounded-2xl text-amber-400 text-xs font-black flex items-center justify-center shadow-inner">
                               <span>+91</span>
                             </div>
                             <input 
@@ -937,7 +937,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
                               placeholder={t.enterPhone}
                               inputMode="numeric"
                               autoComplete="tel"
-                              className="flex-1 py-3.5 px-5 bg-slate-950/80 border-2 border-slate-600 hover:border-amber-500 focus:border-amber-400 rounded-2xl text-white text-xs font-black outline-none focus:shadow-[0_0_20px_rgba(245,158,11,0.25)] placeholder:text-slate-600 transition-all shadow-inner" 
+                              className="flex-1 py-3.5 px-5 bg-slate-950/80 border-2 border-slate-500 hover:border-amber-500 focus:border-amber-400 rounded-2xl text-white text-xs font-black outline-none focus:shadow-[0_0_20px_rgba(245,158,11,0.25)] placeholder:text-slate-600 transition-all shadow-inner" 
                             />
                           </div>
                         </div>
@@ -951,7 +951,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
                               ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-emerald-900/40' 
                               : userRole === 'teacher' 
                               ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-purple-900/40' 
-                              : 'bg-gradient-to-r from-amber-600 via-orange-600 to-amber-600 hover:from-amber-500 hover:to-orange-500 text-white shadow-amber-900/40'
+                              : 'bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 text-slate-950 shadow-[0_4px_20px_rgba(245,158,11,0.4)] border border-amber-300/30'
                           }`}
                         >
                           {isSending ? <Loader2 className="animate-spin" size={18} /> : <>{t.sendOtp || 'Continue'} <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" /></>}
