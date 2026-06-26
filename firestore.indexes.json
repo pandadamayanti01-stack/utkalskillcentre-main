@@ -40,6 +40,14 @@
       "collectionGroup": "public_profiles",
       "queryScope": "COLLECTION",
       "fields": [
+        { "fieldPath": "class", "order": "ASCENDING" },
+        { "fieldPath": "lastActiveAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "public_profiles",
+      "queryScope": "COLLECTION",
+      "fields": [
         { "fieldPath": "district", "order": "ASCENDING" },
         { "fieldPath": "points", "order": "DESCENDING" }
       ]

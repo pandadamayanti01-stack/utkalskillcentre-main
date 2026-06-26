@@ -42,6 +42,7 @@ import { GoldenTicket } from './GoldenTicket';
 import { MathBlackboard } from './MathBlackboard';
 import { GiftUnlockModal } from './GiftUnlockModal';
 import { MtsChampionshipPoster } from './MtsChampionshipPoster';
+import confetti from 'canvas-confetti';
 
 interface DashboardProps {
   user: any;
@@ -522,6 +523,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
   const [showGoldenTicket, setShowGoldenTicket] = useState(false);
+  const [showTargetModal, setShowTargetModal] = useState(false);
   const [showBlackboard, setShowBlackboard] = useState(false);
   const [showGiftUnlockModal, setShowGiftUnlockModal] = useState(false);
   const [userBestMtsRank, setUserBestMtsRank] = useState<number | null>(null);
@@ -2727,8 +2729,51 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
   const userRank = leaderboard.findIndex((s: any) => s.id === user.id) + 1;
   const rankDisplay = userRank > 0 ? userRank : '-';
   
-  const dailyGoal = 500;
+  // Adaptive daily goal scaling from 50 XP to 200 XP based on student level (total points / 100)
+  const currentLevel = Math.floor((user?.points || 0) / 100) + 1;
+  const dailyGoal = Math.min(50 + (currentLevel - 1) * 25, 200);
   const dailyProgress = Math.min(((user?.points_today || 0) / dailyGoal) * 100, 100);
+
+  // Celebrate 100% completion of the daily target
+  const triggerGoalCelebration = () => {
+    const duration = 2.5 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 25, spread: 360, ticks: 50, zIndex: 9999 };
+
+    const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
+
+    const interval = setInterval(() => {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 40 * (timeLeft / duration);
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.4), y: Math.random() - 0.2 } });
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.6, 0.9), y: Math.random() - 0.2 } });
+    }, 200);
+  };
+
+  // Trigger celebration once a day automatically when they hit/load with 100% progress
+  useEffect(() => {
+    if (dailyProgress >= 100) {
+      const todayStr = new Date().toISOString().split('T')[0];
+      const lastCelebrated = localStorage.getItem('lastXpGoalCelebrationDate');
+      
+      if (lastCelebrated !== todayStr) {
+        triggerGoalCelebration();
+        localStorage.setItem('lastXpGoalCelebrationDate', todayStr);
+      }
+    }
+  }, [dailyProgress]);
+
+  // Trigger celebration when opening the target modal if they have 100% progress
+  useEffect(() => {
+    if (showTargetModal && dailyProgress >= 100) {
+      triggerGoalCelebration();
+    }
+  }, [showTargetModal, dailyProgress]);
 
   const stats = [
     { label: t.pointsToday, value: user?.points_today || 0, icon: <Lucide.Zap size={20} />, color: 'text-amber-500', bg: 'bg-amber-500/10' },
@@ -2826,11 +2871,13 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               </p>
             </div>
 
-            {/* XP Badge */}
+            {/* XP Badge (Clickable to view target breakdown guide) */}
             <div className="flex items-center justify-start">
-              <div 
-                style={{ backgroundColor: '#090d16', borderColor: '#1e293b' }}
-                className={`backdrop-blur-2xl px-4 md:px-6 py-3 md:py-4 rounded-3xl md:rounded-[2rem] flex items-center gap-3 md:gap-5 border shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_10px_40px_rgba(0,0,0,0.5)] hover:border-emerald-500/30 transition-all duration-500 group cursor-default max-w-max ${isTourStep3 ? 'ring-[4px] ring-amber-500 scale-[1.03] border-amber-500/50 shadow-[0_0_30px_rgba(245,158,11,0.6)] z-30 animate-pulse bg-slate-950/90' : ''}`}
+              <button 
+                type="button"
+                onClick={() => setShowTargetModal(true)}
+                style={{ backgroundColor: '#090d16', borderColor: '#1e293b', textAlign: 'left' }}
+                className={`backdrop-blur-2xl px-4 md:px-6 py-3 md:py-4 rounded-3xl md:rounded-[2rem] flex items-center gap-3 md:gap-5 border shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_10px_40px_rgba(0,0,0,0.5)] hover:border-emerald-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 group cursor-pointer max-w-max ${isTourStep3 ? 'ring-[4px] ring-amber-500 scale-[1.03] border-amber-500/50 shadow-[0_0_30px_rgba(245,158,11,0.6)] z-30 animate-pulse bg-slate-950/90' : ''}`}
               >
                 <div className="text-right">
                   <div className="flex items-center justify-end gap-2 md:gap-3 mb-0.5">
@@ -2855,7 +2902,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                     <Lucide.Zap size={14} style={{ color: '#6ee7b7' }} className="md:w-[18px] md:h-[18px] drop-shadow-md group-hover:scale-110 group-hover:text-white transition-transform duration-300" />
                   </div>
                 </div>
-              </div>
+              </button>
             </div>
             
             {/* Claim Golden Ticket Button - Desktop Only (mobile has it in the bottom parallel row) */}
@@ -2896,8 +2943,10 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                     <div className="absolute top-0 right-0 bottom-0 w-20 bg-gradient-to-r from-transparent to-white/30 skew-x-12 animate-[shimmer_2s_infinite]"></div>
                   </div>
                 </div>
-                <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 italic truncate">
-                  {language === 'en' ? 'Keep learning to maintain your streak and unlock rewards.' : 'ଆପଣଙ୍କର ଦୈନିକ ଲକ୍ଷ୍ୟ ପୂରଣ କରନ୍ତୁ |'}
+                <p className={`text-[10px] font-bold italic truncate ${dailyProgress >= 100 ? 'text-emerald-400 dark:text-emerald-300 font-black animate-pulse' : 'text-slate-400 dark:text-slate-500'}`}>
+                  {dailyProgress >= 100 
+                    ? (language === 'en' ? 'Congratulations! You have completed today\'s target! 🎉' : 'ଅଭିନନ୍ଦନ! ଆପଣ ଆଜିର ଦୈନିକ ଲକ୍ଷ୍ୟ ପୂରଣ କରିଛନ୍ତି! 🎉')
+                    : (language === 'en' ? 'Keep learning to maintain your streak and unlock rewards.' : 'ଆପଣଙ୍କର ଦୈନିକ ଲକ୍ଷ୍ୟ ପୂରଣ କରିବା ପାଇଁ ଅଧ୍ୟୟନ ଜାରି ରଖନ୍ତୁ।')}
                 </p>
               </div>
 
@@ -4232,6 +4281,151 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       </motion.div>
 
       <AnimatePresence>
+        {showTargetModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center px-4 backdrop-blur-md bg-slate-950/55 force-dark-theme">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              style={{ backgroundColor: '#0b1329', borderColor: '#1e293b' }}
+              className="relative w-full max-w-lg border rounded-[2rem] p-6 md:p-8 shadow-2xl overflow-y-auto max-h-[92vh]"
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setShowTargetModal(false)}
+                className="absolute top-5 right-5 p-2 bg-slate-900/80 rounded-xl border border-slate-800 text-slate-400 hover:text-white active:scale-95 transition-all"
+              >
+                <Lucide.X size={16} />
+              </button>
+
+              <div className="space-y-6 mt-2">
+                {/* Header with Gundulu */}
+                <div className="flex items-center gap-4">
+                  <div className="relative shrink-0 w-14 h-14 bg-emerald-500/10 rounded-full flex items-center justify-center border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+                    <img src="/gundulu-v3.png" alt="Gundulu Mascot" className="w-10 h-10 object-contain" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-black text-white flex items-center gap-2">
+                      {language === 'en' ? 'Daily Target Guide' : 'ଦୈନିକ ଲକ୍ଷ୍ୟ ମାର୍ଗଦର୍ଶିକା'}
+                    </h3>
+                    <p className="text-xs text-slate-400 font-bold">
+                      {language === 'en' 
+                        ? `Level ${currentLevel} Student Target • ${dailyGoal} XP Daily` 
+                        : `ଲେଭଲ୍ ${currentLevel} ଛାତ୍ର ଲକ୍ଷ୍ୟ • ଦୈନିକ ${dailyGoal} XP`}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Circular / Progress Sync details */}
+                <div className="p-5 bg-slate-900/60 border border-slate-800 rounded-3xl space-y-4 text-center">
+                  <div className="flex justify-between items-end">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      {language === 'en' ? 'Today\'s Progress' : 'ଆଜିର ପ୍ରଗତି'}
+                    </span>
+                    <span className="text-base font-black text-emerald-450">
+                      {user?.points_today || 0} / {dailyGoal} XP ({Math.round(dailyProgress)}%)
+                    </span>
+                  </div>
+                  
+                  {/* Progress Bar */}
+                  <div className="h-3 w-full bg-slate-800 rounded-full overflow-hidden relative border border-slate-700">
+                    <div 
+                      className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-400 to-teal-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] rounded-full transition-all duration-1000" 
+                      style={{ width: `${dailyProgress}%` }}
+                    />
+                  </div>
+
+                  <p className="text-xs font-bold text-slate-300 leading-relaxed">
+                    {dailyProgress >= 100 
+                      ? (language === 'en' ? 'Fantastic work! Today\'s goal achieved. Keep it up tomorrow!' : 'ଅଦ୍ଭୁତ କାର୍ଯ୍ୟ! ଆଜିର ଲକ୍ଷ୍ୟ ହାସଲ ହୋଇଛି। ଆସନ୍ତାକାଲି ଏହାକୁ ବଜାୟ ରଖନ୍ତୁ!')
+                      : (language === 'en' ? `You need ${dailyGoal - (user?.points_today || 0)} more XP to hit 100%!` : `୧୦୦% ଲକ୍ଷ୍ୟ ପାଇଁ ଆଉ ${dailyGoal - (user?.points_today || 0)} XP ଆବଶ୍ୟକ!`)}
+                  </p>
+                </div>
+
+                {/* How to make 100% list */}
+                <div className="space-y-3">
+                  <h4 className="text-xs font-black uppercase tracking-widest text-slate-400">
+                    {language === 'en' ? 'How to make 100%?' : '୧୦୦% ଲକ୍ଷ୍ୟ କିପରି ହାସଲ କରିବେ?'}
+                  </h4>
+
+                  {/* Gundulu Game Zone */}
+                  <div className="p-3 bg-amber-950/10 border border-amber-500/20 rounded-2xl flex items-center justify-between gap-3 hover:border-amber-400/40 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20 shrink-0">
+                        <Lucide.Gamepad2 size={16} />
+                      </div>
+                      <div>
+                        <div className="text-xs font-black text-white">{language === 'en' ? 'Gundulu Game Zone' : 'ଗୁନ୍ଦୁଲୁ ଗେମ୍ ଜୋନ୍'}</div>
+                        <div className="text-[10px] text-slate-400 font-bold leading-relaxed">{language === 'en' ? 'Play traditional games' : 'ଯେକୌଣସି ପାରମ୍ପରିକ ଖେଳ ଖେଳନ୍ତୁ'}</div>
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span className="text-xs font-black text-amber-400 font-mono">+100 to +150 XP</span>
+                    </div>
+                  </div>
+
+                  {/* Daily MCQ Challenge */}
+                  <div className="p-3 bg-emerald-950/10 border border-emerald-500/20 rounded-2xl flex items-center justify-between gap-3 hover:border-emerald-400/40 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20 shrink-0">
+                        <Lucide.BookOpen size={16} />
+                      </div>
+                      <div>
+                        <div className="text-xs font-black text-white">{language === 'en' ? 'Daily MCQ Challenge' : 'ଦୈନିକ MCQ ପ୍ରଶ୍ନୋତ୍ତର'}</div>
+                        <div className="text-[10px] text-slate-400 font-bold leading-relaxed">{language === 'en' ? 'Complete today\'s challenge set' : 'ଆଜିର ପ୍ରଶ୍ନ ସେଟ୍ ସମ୍ପୂର୍ଣ୍ଣ କରନ୍ତୁ'}</div>
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span className="text-xs font-black text-emerald-400 font-mono">+25 XP</span>
+                    </div>
+                  </div>
+
+                  {/* Study Textbook Chapters */}
+                  <div className="p-3 bg-cyan-950/10 border border-cyan-500/20 rounded-2xl flex items-center justify-between gap-3 hover:border-cyan-400/40 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-cyan-500/10 text-cyan-400 rounded-xl border border-cyan-500/20 shrink-0">
+                        <Lucide.BookOpenCheck size={16} />
+                      </div>
+                      <div>
+                        <div className="text-xs font-black text-white">{language === 'en' ? 'Read Textbook Chapters' : 'ପାଠ୍ୟବହି ପଢ଼ନ୍ତୁ'}</div>
+                        <div className="text-[10px] text-slate-400 font-bold leading-relaxed">{language === 'en' ? 'Read books in Digital Library' : 'ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀରେ ଅଧ୍ୟୟନ କରନ୍ତୁ'}</div>
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span className="text-xs font-black text-cyan-400 font-mono">+10 XP / min</span>
+                    </div>
+                  </div>
+
+                  {/* AI Doubt Solver */}
+                  <div className="p-3 bg-purple-950/10 border border-purple-500/20 rounded-2xl flex items-center justify-between gap-3 hover:border-purple-400/40 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-purple-500/10 text-purple-400 rounded-xl border border-purple-500/20 shrink-0">
+                        <Lucide.Sparkles size={16} />
+                      </div>
+                      <div>
+                        <div className="text-xs font-black text-white">{language === 'en' ? 'Solve Doubts with Gundulu AI' : 'AI ଟ୍ୟୁଟରଙ୍କ ସହ ସମାଧାନ କରନ୍ତୁ'}</div>
+                        <div className="text-[10px] text-slate-400 font-bold leading-relaxed">{language === 'en' ? 'Ask questions in chat' : 'ଚାଟ୍‌ରେ ଆପଣଙ୍କ ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ'}</div>
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span className="text-xs font-black text-purple-400 font-mono">+10 XP / doubt</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Close action */}
+                <button
+                  onClick={() => setShowTargetModal(false)}
+                  style={{ backgroundColor: '#10b981' }}
+                  className="w-full py-3 hover:bg-emerald-600 active:scale-95 text-slate-950 font-black rounded-2xl text-xs transition-all shadow-md shadow-emerald-500/10 text-center cursor-pointer"
+                >
+                  {language === 'en' ? 'Got it!' : 'ବୁଝିଗଲି!'}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
         {showRegistrationForm && (
           <TestSeriesRegistrationForm 
             user={user} 

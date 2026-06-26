@@ -7,6 +7,7 @@ interface KaudiGameProps {
   user: any;
   onBack: () => void;
   language?: 'en' | 'or';
+  onXpEarned?: (amount: number) => void;
 }
 
 interface QuizQuestion {
@@ -16,7 +17,7 @@ interface QuizQuestion {
   subj: 'math' | 'odia';
 }
 
-export function KaudiGame({ user, onBack }: KaudiGameProps) {
+export function KaudiGame({ user, onBack, onXpEarned }: KaudiGameProps) {
   const [gameState, setGameState] = useState<'menu' | 'playing' | 'quiz' | 'gameover'>('menu');
   const [playerPosition, setPlayerPosition] = useState<number>(0); // 0 to 20
   const [rollsCount, setRollsCount] = useState<number>(0);
@@ -210,6 +211,9 @@ export function KaudiGame({ user, onBack }: KaudiGameProps) {
               user.xp = (user.xp || 150) + 150;
               setUserXp(user.xp);
             }
+            if (onXpEarned) {
+              onXpEarned(150);
+            }
           } 
           // Check quiz tile landing trigger (e.g. tile index is multiple of 4: 4, 8, 12, 16)
           else if (nextPos > 0 && nextPos % 4 === 0) {
@@ -265,6 +269,9 @@ export function KaudiGame({ user, onBack }: KaudiGameProps) {
           if (user) {
             user.xp = (user.xp || 150) + 150;
             setUserXp(user.xp);
+          }
+          if (onXpEarned) {
+            onXpEarned(150);
           }
         } else {
           setGameState('playing');

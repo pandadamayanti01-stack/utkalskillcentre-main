@@ -7,6 +7,7 @@ import { PuchiGame } from './PuchiGame';
 import { RumalChoriGame } from './RumalChoriGame';
 import { KaudiGame } from './KaudiGame';
 import { LuchakaliGame } from './LuchakaliGame';
+import { gcpService } from '../services/gcpService';
 
 interface GameZoneProps {
   user: any;
@@ -51,9 +52,6 @@ export function GameZone({ user, onBack }: GameZoneProps) {
   const todayDayIndex = new Date().getDay();
   const todayNameOdia = daysOfWeekOdia[todayDayIndex];
 
-  // Bypass days-of-week locking logic on localhost for easier testing/development
-  const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-
   const games: GameItem[] = [
     {
       id: 'bahi-prustha',
@@ -66,7 +64,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
       points: 500,
       playDay: 'ବୁଧବାର',
       status: 'playable',
-      lore: 'ବହି ପୃଷ୍ଠା ଖେଳ ହେଉଛି ଆମ ଓଡ଼ିଆ ପାଠ୍ୟପୁସ୍ତକକୁ ନେଇ ଏକ ଅତି ସୁନ୍ଦର ଶିକ୍ଷଣୀୟ ଖେଳ। ଏଥିରେ ଗଣିତ ପୃଷ୍ଠା ଯୋଗଫଳ ଏବଂ ଓଡ଼ିଆ ଶବ୍ଦ ଖୋଜିବା ଭଳି ରୋମաଞ୍କକର ରାଉଣ୍ଡ ରହିଛି, ଯାହା ଶିକ୍ଷା ସହିତ ମସ୍ତିଷ୍କର ଶୀଘ୍ର ଚିନ୍ତା କରିବାର ଶକ୍ତି ବଢ଼ାଇଥାଏ।'
+      lore: 'ବହି ପୃଷ୍ଠା ଖେଳ ହେଉଛି ଆମ ଓଡ଼ିଆ ପାଠ୍ୟପୁସ୍ତକକୁ ନେଇ ଏକ ଅତି ସୁନ୍ଦର ଶିକ୍ଷଣୀୟ ଖେଳ। ଏଥିରେ ଗଣିତ ପୃଷ୍ଠା ଯୋଗଫଳ ଏବଂ ଓଡ଼ିଆ ଶବ୍ଦ ଖୋଜିବା ଭଳି ରୋମାଞ୍କକର ରାଉଣ୍ଡ ରହିଛି, ଯାହା ଶିକ୍ଷା ସହିତ ମସ୍ତିଷ୍କର ଶୀଘ୍ର ଚିନ୍ତା କରିବାର ଶକ୍ତି ବଢ଼ାଇଥାଏ।'
     },
     {
       id: 'bagh-chheli',
@@ -110,7 +108,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
     {
       id: 'kaudi',
       title: 'କଉଡ଼ି ଖେଳ',
-      desc: '୩D କଉଡ଼ି ଗুଡ଼ିକୁ ପକାଇ ପ୍ରାକୃତିକ ଭାଗ୍ୟ ଓ ସଂଖ୍ୟାର ରୋମାଞ୍କକର ଗଣନା କରନ୍ତୁ ।',
+      desc: '୩D କଉଡ଼ି ଗୁଡ଼ିକୁ ପକାଇ ପ୍ରାକୃତିକ ଭାଗ୍ୟ ଓ ସଂଖ୍ୟାର ରୋମାଞ୍କକର ଗଣନା କରନ୍ତୁ ।',
       imageUrl: '/gundulu_kaudi.png?v=2',
       icon: <Lucide.Gamepad size={16} />,
       color: 'bg-purple-50 text-purple-600 border-purple-200',
@@ -137,11 +135,42 @@ export function GameZone({ user, onBack }: GameZoneProps) {
 
   const todaysGame = games.find(g => g.playDay === todayNameOdia) || games[0];
 
+  const handleXpEarned = async (amount: number) => {
+    if (!user || !user.id) return;
+    try {
+      const currentPoints = Math.floor(Number(user.points || 0));
+      const currentPointsToday = Math.floor(Number(user.points_today || 0));
+      
+      // Update locally immediately (optimistic update)
+      user.points = currentPoints + amount;
+      user.points_today = currentPointsToday + amount;
+      if ('xp' in user) {
+        user.xp = user.points;
+      }
+      
+      // Save to users collection in Firestore
+      await gcpService.updateDoc('users', user.id, {
+        points: currentPoints + amount,
+        points_today: currentPointsToday + amount
+      });
+      
+      // Save to public_profiles for Leaderboard sync
+      await gcpService.updateDoc('public_profiles', user.id, {
+        points: currentPoints + amount
+      });
+      
+      console.log(`[GameZone] Successfully synced +${amount} XP to database.`);
+    } catch (error) {
+      console.error("[GameZone] Failed to sync XP to Firestore:", error);
+    }
+  };
+
   if (activeGameId === 'bahi-prustha') {
     return (
       <BahiPrusthaGame 
         user={user} 
         onBack={() => setActiveGameId(null)} 
+        onXpEarned={handleXpEarned}
       />
     );
   }
@@ -150,6 +179,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
       <BaghChheliGame 
         user={user} 
         onBack={() => setActiveGameId(null)} 
+        onXpEarned={handleXpEarned}
       />
     );
   }
@@ -158,6 +188,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
       <PuchiGame 
         user={user} 
         onBack={() => setActiveGameId(null)} 
+        onXpEarned={handleXpEarned}
       />
     );
   }
@@ -166,6 +197,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
       <RumalChoriGame 
         user={user} 
         onBack={() => setActiveGameId(null)} 
+        onXpEarned={handleXpEarned}
       />
     );
   }
@@ -174,6 +206,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
       <KaudiGame 
         user={user} 
         onBack={() => setActiveGameId(null)} 
+        onXpEarned={handleXpEarned}
       />
     );
   }
@@ -182,18 +215,14 @@ export function GameZone({ user, onBack }: GameZoneProps) {
       <LuchakaliGame 
         user={user} 
         onBack={() => setActiveGameId(null)} 
+        onXpEarned={handleXpEarned}
       />
     );
   }
 
   const handleGameClick = (game: GameItem) => {
-    const isTodayPlayDay = game.playDay === todayNameOdia || todayNameOdia === 'ରବିବାର';
-    const isPlayable = (isLocalhost || isTodayPlayDay) && game.status === 'playable';
-
-    if (isPlayable) {
+    if (game.status === 'playable') {
       setActiveGameId(game.id);
-    } else {
-      setSelectedLoreGame(game);
     }
   };
 
@@ -261,7 +290,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
             <div>
               <div className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider">ମୋଟ ସ୍କୋର</div>
               <div className="text-lg font-black text-amber-500 font-mono flex items-center gap-1">
-                🪙 {user?.xp || user?.points || 150} XP
+                🪙 {user?.points || user?.xp || 150} XP
               </div>
             </div>
           </div>
@@ -270,24 +299,21 @@ export function GameZone({ user, onBack }: GameZoneProps) {
         <SambalpuriTrim position="bottom" />
       </div>
 
-      {/* ROTATION SCHEDULE BAR */}
-      <div className="bg-slate-50 border border-slate-200/60 rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-3 text-xs font-bold text-slate-600 shadow-sm">
-        <div className="flex items-center gap-2 text-cyan-600">
-          <Lucide.Calendar size={15} />
-          <span>ଆଜିର ବାର: <strong className="text-slate-900 underline decoration-cyan-500 decoration-2 font-black ml-1">{todayNameOdia}</strong></span>
+      {/* GAME ZONE ANNOUNCEMENT BAR */}
+      <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-3 text-xs font-bold text-emerald-800 shadow-sm">
+        <div className="flex items-center gap-2 text-emerald-700">
+          <Lucide.Unlock size={15} className="text-emerald-500 animate-pulse" />
+          <span>ସମସ୍ତ ଖେଳ ମୁକ୍ତ: <strong className="text-slate-900 font-black ml-1">ଆପଣ ଯେକୌଣସି ସମୟରେ ଖେଳିପାରିବେ!</strong></span>
         </div>
-        <div className="text-[10px] text-slate-400 font-black flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-          ପ୍ରତିଦିନ ସୂଚୀ ଅନୁଯାୟୀ ଏକ ନୂଆ ଖେଳ ଖୋଲିବ । ରବିବାର ସବୁ ଖେଳ ମୁକ୍ତ ପ୍ରବେଶ!
+        <div className="text-[10px] text-emerald-600 font-black flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+          ଗୁନ୍ଦୁଲୁ ଗେମ୍ ଜୋନ୍‌ରେ ସମସ୍ତ ପାରମ୍ପରିକ ଖେଳ ସବୁଦିନ ପାଇଁ ଉନ୍ମୁକ୍ତ ହୋଇଗଲା । ଖେଳନ୍ତୁ ଓ XP ଜିତନ୍ତୁ!
         </div>
       </div>
 
       {/* GAMES GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-1">
         {games.map((game, idx) => {
-          const isTodayGame = game.playDay === todayNameOdia || todayNameOdia === 'ରବିବାର';
-          const isPlayable = (isLocalhost || isTodayGame) && game.status === 'playable';
-          
           return (
             <motion.div
               key={game.id}
@@ -295,13 +321,9 @@ export function GameZone({ user, onBack }: GameZoneProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05 }}
               onClick={() => handleGameClick(game)}
-              className={`group flex flex-col justify-between overflow-hidden bg-white border rounded-[2rem] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer shadow-[0_4px_16px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] ${
-                isPlayable 
-                  ? 'border-amber-300 hover:border-amber-400' 
-                  : 'border-slate-200/60 opacity-90'
-              }`}
+              className="group flex flex-col justify-between overflow-hidden bg-white border border-amber-200 hover:border-amber-300 rounded-[2rem] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer shadow-[0_4px_16px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)]"
             >
-              {/* Game Cover Graphic (Themed mascot image banner) */}
+              {/* Game Cover Graphic */}
               <div className="w-full h-36 bg-slate-100 border-b border-slate-100 relative overflow-hidden shrink-0">
                 <img 
                   src={game.imageUrl} 
@@ -314,11 +336,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
                 
                 {/* playday pill on cover */}
                 <div className="absolute top-3 right-3 z-10">
-                  <span className={`text-[10px] font-black px-2.5 py-1 rounded-full border ${
-                    isTodayGame
-                      ? 'bg-emerald-50 text-emerald-700 border-emerald-100 shadow-sm animate-pulse'
-                      : 'bg-white/95 text-slate-500 border-slate-200/40 shadow-sm'
-                  }`}>
+                  <span className="text-[10px] font-black px-2.5 py-1 rounded-full border bg-white/95 text-slate-500 border-slate-200/40 shadow-sm">
                     📅 {game.playDay}
                   </span>
                 </div>
@@ -328,15 +346,10 @@ export function GameZone({ user, onBack }: GameZoneProps) {
                   <div className={`w-7 h-7 rounded-xl flex items-center justify-center border shadow-sm ${game.color} bg-white`}>
                     {game.icon}
                   </div>
-                  {!isPlayable && (
-                    <div className="w-7 h-7 rounded-xl flex items-center justify-center bg-slate-900/80 text-white border border-white/10 shadow-sm backdrop-blur-sm">
-                      <Lucide.Lock size={12} />
-                    </div>
-                  )}
                 </div>
               </div>
 
-              {/* Card Body padding */}
+              {/* Card Body */}
               <div className="p-5 flex flex-col justify-between flex-grow space-y-4">
                 <div className="space-y-1.5">
                   <h3 className="text-lg font-black text-slate-900 group-hover:text-amber-600 transition-colors">
@@ -347,7 +360,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
                   </p>
                 </div>
 
-                {/* Card Footer details */}
+                {/* Card Footer */}
                 <div className="pt-3 border-t border-slate-100 flex items-center justify-between z-10">
                   {/* XP badge */}
                   <div className="flex items-center gap-1 px-2.5 py-1 bg-amber-50 border border-amber-100 rounded-full text-[9px] font-extrabold text-amber-700 font-mono shadow-sm">
@@ -355,114 +368,16 @@ export function GameZone({ user, onBack }: GameZoneProps) {
                     <span>{game.points} XP</span>
                   </div>
 
-                  {isPlayable ? (
-                    <div className="px-4 py-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-black text-xs rounded-xl shadow-md shadow-amber-500/10 hover:shadow-amber-500/20 active:scale-95 transition-all flex items-center gap-1">
-                      <Lucide.Play size={9} fill="currentColor" />
-                      <span>ଖେଳନ୍ତୁ</span>
-                    </div>
-                  ) : (
-                    <div className="px-3.5 py-1.5 bg-slate-50 border border-slate-200/60 text-slate-500 font-black text-[10px] rounded-xl flex items-center gap-1 hover:text-slate-700 transition-colors">
-                      <Lucide.Info size={11} />
-                      <span>ବିବରଣୀ</span>
-                    </div>
-                  )}
+                  <div className="px-4 py-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-black text-xs rounded-xl shadow-md shadow-amber-500/10 hover:shadow-amber-500/20 active:scale-95 transition-all flex items-center gap-1">
+                    <Lucide.Play size={9} fill="currentColor" />
+                    <span>ଖେଳନ୍ତୁ</span>
+                  </div>
                 </div>
               </div>
             </motion.div>
           );
         })}
       </div>
-
-      {/* GUNDULU CULTURAL SPEAKING DIALOGUE MODAL */}
-      <AnimatePresence>
-        {selectedLoreGame && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center px-4 backdrop-blur-sm bg-slate-950/40">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 15 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              className="relative w-full max-w-lg bg-white border border-slate-200 rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-8 shadow-2xl overflow-y-auto max-h-[92vh]"
-            >
-              {/* Modal Top Sambalpuri Border */}
-              <SambalpuriTrim position="top" />
-
-              {/* Close Button */}
-              <button
-                onClick={() => setSelectedLoreGame(null)}
-                className="absolute top-5 right-5 p-2 bg-slate-50 rounded-xl border border-slate-200 text-slate-400 hover:text-slate-700 hover:bg-slate-100 active:scale-95 transition-all"
-              >
-                <Lucide.X size={16} />
-              </button>
-
-              <div className="space-y-6 mt-5">
-                {/* Themed cover graphic inside modal */}
-                <div className="w-full h-32 rounded-2xl overflow-hidden border border-slate-200 relative">
-                  <img 
-                    src={selectedLoreGame.imageUrl} 
-                    alt={selectedLoreGame.title} 
-                    className="w-full h-full object-cover" 
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/50 to-transparent" />
-                  <div className="absolute bottom-3 left-4 text-white z-10">
-                    <h2 className="text-xl font-black">{selectedLoreGame.title}</h2>
-                    <span className="text-[10px] font-black text-amber-300 uppercase tracking-wider">
-                      ଖେଳ ଦିବସ: {selectedLoreGame.playDay}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Gundulu Speech bubble with real mascot image */}
-                <div className="flex gap-3 sm:gap-4 items-start bg-slate-50 border border-slate-100 p-4 sm:p-5 rounded-2xl sm:rounded-[2rem] relative shadow-inner">
-                  {/* Decorative dialogue arrow pointer */}
-                  <div className="absolute top-6 -left-1.5 w-0 h-0 border-t-[6px] border-t-transparent border-r-[8px] border-r-slate-50 border-b-[6px] border-b-transparent" />
-                  
-                  <img 
-                    src="/gundulu-v3.png" 
-                    alt="Gundulu Speaking" 
-                    className="w-11 h-11 sm:w-14 sm:h-14 rounded-full shrink-0 border border-slate-200 bg-white object-contain p-0.5"
-                  />
-                  <div className="space-y-1">
-                    <div className="text-[9px] text-emerald-600 font-extrabold tracking-wider uppercase">ଗୁନ୍ଦୁଲୁ AI (Gundulu AI)</div>
-                    <p className="text-xs text-slate-600 font-bold leading-relaxed">
-                      {selectedLoreGame.lore}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Status indicator */}
-                <div className="bg-slate-50 p-4 border border-slate-200/60 rounded-2xl text-center space-y-1.5">
-                  <p className="text-xs text-slate-500 font-bold">
-                    ଆଜି <span className="text-slate-900 font-extrabold underline">{todayNameOdia}</span>, ତେଣୁ ଏହି ଖେଳଟି ତାଲା ପଡ଼ିଛି ।
-                  </p>
-                  <p className="text-[11px] text-emerald-600 font-black">
-                    ଆଜିର ମୁଖ୍ୟ ଖେଳ <span className="underline font-black text-slate-800">{todaysGame.title}</span> ଖେଳିବା ପାଇଁ ତଳ ବଟନ୍ ଦବାନ୍ତୁ !
-                  </p>
-                </div>
-
-                {/* Actions */}
-                <div className="flex gap-3 pt-2">
-                  <button
-                    onClick={() => setSelectedLoreGame(null)}
-                    className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-600 hover:text-slate-800 font-black rounded-2xl text-xs transition-all border border-slate-200/40"
-                  >
-                    ବନ୍ଦ କରନ୍ତୁ (Close)
-                  </button>
-                  <button
-                    onClick={() => {
-                      setSelectedLoreGame(null);
-                      setActiveGameId(todaysGame.id);
-                    }}
-                    className="flex-1 py-3 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-black rounded-2xl text-xs transition-all shadow-md shadow-amber-500/10"
-                  >
-                    {todaysGame.title} ଖେଳନ୍ତୁ ➔
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
     </div>
   );
 }

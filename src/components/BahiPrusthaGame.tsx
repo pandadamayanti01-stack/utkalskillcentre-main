@@ -17,9 +17,10 @@ interface BahiPrusthaGameProps {
   user: any;
   onBack: () => void;
   language?: 'en' | 'or';
+  onXpEarned?: (amount: number) => void;
 }
 
-export function BahiPrusthaGame({ user, onBack }: BahiPrusthaGameProps) {
+export function BahiPrusthaGame({ user, onBack, onXpEarned }: BahiPrusthaGameProps) {
   // Navigation & Menu States
   const [selectedClass, setSelectedClass] = useState<number>(Number(user?.class?.replace(/\D/g, '')) || 5);
   const [activeMode, setActiveMode] = useState<'syllabus' | 'playbook'>('syllabus');
@@ -362,6 +363,9 @@ export function BahiPrusthaGame({ user, onBack }: BahiPrusthaGameProps) {
     if (user) {
       user.xp = (user.xp || 0) + score;
       setUserXp(user.xp);
+    }
+    if (onXpEarned) {
+      onXpEarned(score);
     }
   };
 

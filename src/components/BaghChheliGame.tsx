@@ -8,6 +8,7 @@ interface BaghChheliGameProps {
   user: any;
   onBack: () => void;
   language?: 'en' | 'or';
+  onXpEarned?: (amount: number) => void;
 }
 
 // 5x5 Board coordinate helpers (grid coordinates: row 0..4, col 0..4)
@@ -47,7 +48,7 @@ function getCoords(r: number, c: number) {
   };
 }
 
-export function BaghChheliGame({ user, onBack, language = 'or' }: BaghChheliGameProps) {
+export function BaghChheliGame({ user, onBack, language = 'or', onXpEarned }: BaghChheliGameProps) {
   const [mode, setMode] = useState<'select' | 'solo' | 'multiplayer'>('select');
   const [gameRole, setGameRole] = useState<'goats' | 'tigers' | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -341,6 +342,9 @@ export function BaghChheliGame({ user, onBack, language = 'or' }: BaghChheliGame
       if (user) {
         user.xp = (user.xp || 150) + 150;
         setUserXp(user.xp);
+      }
+      if (onXpEarned) {
+        onXpEarned(150);
       }
     }
   };

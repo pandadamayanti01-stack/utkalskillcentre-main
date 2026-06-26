@@ -7,6 +7,7 @@ interface PuchiGameProps {
   user: any;
   onBack: () => void;
   language?: 'en' | 'or';
+  onXpEarned?: (amount: number) => void;
 }
 
 interface BeatNote {
@@ -16,7 +17,7 @@ interface BeatNote {
   text: string; // "ତା", "ଧିନ୍", "ପୁଚି", "ନା"
 }
 
-export function PuchiGame({ user, onBack }: PuchiGameProps) {
+export function PuchiGame({ user, onBack, onXpEarned }: PuchiGameProps) {
   const [gameState, setGameState] = useState<'menu' | 'playing' | 'gameover'>('menu');
   const [score, setScore] = useState<number>(0);
   const [streak, setStreak] = useState<number>(0);
@@ -300,6 +301,9 @@ export function PuchiGame({ user, onBack }: PuchiGameProps) {
           if (user) {
             user.xp = (user.xp || 150) + 120;
             setUserXp(user.xp);
+          }
+          if (onXpEarned) {
+            onXpEarned(120);
           }
         }
         return nextS;

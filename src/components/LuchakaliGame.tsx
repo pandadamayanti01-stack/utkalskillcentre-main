@@ -7,6 +7,7 @@ interface LuchakaliGameProps {
   user: any;
   onBack: () => void;
   language?: 'en' | 'or';
+  onXpEarned?: (amount: number) => void;
 }
 
 interface SearchItem {
@@ -23,7 +24,7 @@ interface GameLevel {
   items: Omit<SearchItem, 'isFound' | 'x' | 'y'>[];
 }
 
-export function LuchakaliGame({ user, onBack }: LuchakaliGameProps) {
+export function LuchakaliGame({ user, onBack, onXpEarned }: LuchakaliGameProps) {
   const [gameState, setGameState] = useState<'menu' | 'playing' | 'gameover'>('menu');
   const [currentLevelIdx, setCurrentLevelIdx] = useState<number>(0);
   const [items, setItems] = useState<SearchItem[]>([]);
@@ -298,6 +299,9 @@ export function LuchakaliGame({ user, onBack }: LuchakaliGameProps) {
           if (user) {
             user.xp = (user.xp || 150) + 120;
             setUserXp(user.xp);
+          }
+          if (onXpEarned) {
+            onXpEarned(120);
           }
         }
       }

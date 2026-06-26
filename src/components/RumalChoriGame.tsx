@@ -7,6 +7,7 @@ interface RumalChoriGameProps {
   user: any;
   onBack: () => void;
   language?: 'en' | 'or';
+  onXpEarned?: (amount: number) => void;
 }
 
 interface Character {
@@ -17,7 +18,7 @@ interface Character {
   isPlayer: boolean;
 }
 
-export function RumalChoriGame({ user, onBack }: RumalChoriGameProps) {
+export function RumalChoriGame({ user, onBack, onXpEarned }: RumalChoriGameProps) {
   const [gameState, setGameState] = useState<'menu' | 'playing' | 'gameover'>('menu');
   const [round, setRound] = useState<number>(1);
   const [score, setScore] = useState<number>(0);
@@ -265,6 +266,9 @@ export function RumalChoriGame({ user, onBack }: RumalChoriGameProps) {
           if (user) {
             user.xp = (user.xp || 150) + 100;
             setUserXp(user.xp);
+          }
+          if (onXpEarned) {
+            onXpEarned(100);
           }
         } else {
           setRound(r => r + 1);

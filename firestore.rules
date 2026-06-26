@@ -53,6 +53,7 @@ service cloud.firestore {
              data.role in ['student', 'admin', 'teacher'] &&
              (!('email' in data) || data.email == "" || isValidEmail(data.email)) &&
              (!('points' in data) || data.points is int) &&
+             (!('points_today' in data) || data.points_today is int) &&
              (!('class' in data) || data.class is string) &&
              (!('district' in data) || data.district is string) &&
              (!('school' in data) || data.school is string);
@@ -195,13 +196,8 @@ service cloud.firestore {
 
     match /public_profiles/{userId} {
       allow read: if isAuthenticated();
-      allow create: if isOwner(userId) && 
-                    (!('points' in request.resource.data) || request.resource.data.points == 0) &&
-                    (!('streak' in request.resource.data) || request.resource.data.streak == 0);
-      allow update: if isAdmin() || (
-        isOwner(userId) && 
-        (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['points', 'streak']))
-      );
+      allow create: if isOwner(userId);
+      allow update: if isAdmin() || isOwner(userId);
       allow delete: if isAdmin();
     }
 
