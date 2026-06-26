@@ -530,8 +530,12 @@ export default function Login({ language, translations, setLanguage, setRegData 
             />
           </div>
           <div className="flex flex-col">
-            <h1 className="text-white text-base font-black tracking-tighter uppercase leading-none font-['Outfit']">UTKAL</h1>
-            <p className="text-amber-400 text-[7px] font-black tracking-[0.3em] uppercase opacity-90 mt-0.5 font-['Outfit']">Skill Centre</p>
+            <h1 className="text-white text-base font-black tracking-tighter uppercase leading-none font-['Outfit']">
+              {language === 'or' ? 'ଉତ୍କଳ' : 'UTKAL'}
+            </h1>
+            <p className="text-amber-400 text-[7px] font-black tracking-[0.3em] uppercase opacity-90 mt-0.5 font-['Outfit']">
+              {language === 'or' ? 'ସ୍କିଲ୍ ସେଣ୍ଟର' : 'Skill Centre'}
+            </p>
           </div>
         </motion.div>
 

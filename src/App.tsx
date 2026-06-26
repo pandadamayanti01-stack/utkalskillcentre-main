@@ -3801,7 +3801,9 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
           </main>
 
           <footer className="w-full max-w-4xl py-12 text-center text-[10px] text-slate-600 font-bold uppercase tracking-[0.2em] border-t border-white/5 mt-16">
-            © 2026 Utkal Skill Centre • Built for Odisha State Board Class 1 to 10
+            {language === 'or' 
+              ? '© ୨୦୨୬ ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର • ଓଡ଼ିଶା ରାଜ୍ୟ ବୋର୍ଡ ଶ୍ରେଣୀ ୧ ରୁ ୧୦ ପାଇଁ ନିର୍ମିତ' 
+              : '© 2026 Utkal Skill Centre • Built for Odisha State Board Class 1 to 10'}
           </footer>
         </div>
       );
@@ -3971,10 +3973,12 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
               </div>
               <div className="flex flex-col">
                 <div className="text-xl font-black tracking-wider text-white flex items-center gap-1.5 leading-none">
-                  <span>UTKAL</span>
+                  <span>{language === 'or' ? 'ଉତ୍କଳ' : 'UTKAL'}</span>
                   <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold uppercase tracking-widest scale-90 origin-left">PRO</span>
                 </div>
-                <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400/80 group-hover:text-emerald-400/80 transition-colors mt-1">Skill Centre</div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400/80 group-hover:text-emerald-400/80 transition-colors mt-1">
+                  {language === 'or' ? 'ସ୍କିଲ୍ ସେଣ୍ଟର' : 'Skill Centre'}
+                </div>
               </div>
             </div>
             
@@ -4877,7 +4881,9 @@ function ParentReportView({ user, results, tests, onBack, language }: any) {
             <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-black uppercase tracking-widest">
               Official Progress Report
             </div>
-            <h1 className="text-4xl font-black tracking-tight text-slate-900">Utkal Skill Centre</h1>
+            <h1 className="text-4xl font-black tracking-tight text-slate-900">
+              {language === 'or' ? 'ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର' : 'Utkal Skill Centre'}
+            </h1>
             <div className="space-y-1">
               <p className="text-xl font-bold text-slate-700">Student: {user.name}</p>
               <p className="text-sm text-slate-500">Class: {user.class} | Board: {user.board}</p>
@@ -4943,7 +4949,9 @@ function ParentReportView({ user, results, tests, onBack, language }: any) {
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Guardian's Signature</p>
           </div>
           <div className="text-center">
-            <p className="font-serif font-black text-slate-900 text-xl mb-1 italic">Utkal Skill Centre</p>
+            <p className="font-serif font-black text-slate-900 text-xl mb-1 italic">
+              {language === 'or' ? 'ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର' : 'Utkal Skill Centre'}
+            </p>
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">System Generated</p>
           </div>
         </div>
