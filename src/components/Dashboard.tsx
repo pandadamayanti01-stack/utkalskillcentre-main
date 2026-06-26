@@ -2797,7 +2797,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       {/* Welcome Section - Hyper Premium Header Card */}
       <motion.div 
         variants={itemVariants}
-        className="relative overflow-hidden rounded-none sm:rounded-[2.5rem] border-x-0 sm:border border-white/10 bg-slate-950 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-950/45 via-slate-950/70 to-slate-950 p-5 sm:p-8 md:p-10 shadow-2xl -mx-4 mt-0 sm:mx-0 sm:mt-0"
+        className="relative overflow-hidden rounded-none sm:rounded-[2.5rem] border-x-0 sm:border border-white/10 bg-slate-950 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-950/45 via-slate-950/70 to-slate-950 p-5 sm:p-8 md:p-10 shadow-2xl -mx-4 mt-0 sm:mx-0 sm:mt-0 force-dark-theme"
       >
         <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute -left-12 -bottom-12 w-72 h-72 bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
@@ -2985,7 +2985,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         </div>
 
         {/* Parallel Action Row for Mobile/Tablet: Golden Ticket & Daily Target */}
-        <div className="flex flex-row items-center justify-between gap-3 mt-5 pt-4 border-t border-white/5 w-full lg:hidden relative z-20">
+        <div className="flex flex-row items-center justify-between gap-3 mt-5 pt-4 border-t border-white/5 w-full lg:hidden relative z-20 force-dark-theme">
           {/* Claim Golden Ticket Button */}
           <button
             type="button"
