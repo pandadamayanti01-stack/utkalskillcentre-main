@@ -1777,13 +1777,21 @@ export default function App() {
       const mockMcqs: DailyMcq[] = [
         {
           id: "mock_mcq_1",
-          question: "ଦ୍ୱିଘାତ ସମୀକରଣ ax^2 + bx + c = 0 ରେ ଯଦି b^2 - 4ac > 0 ହୁଏ, ତେବେ ବୀଜଦ୍ୱୟ କିପରି ହେବ?",
-          options: ["ବାସ୍ତବ ଏବଂ ଅସମାନ", "ବାସ୍ତବ ଏବଂ ସମାନ", "ଅବାସ୍ତବ", "ଶୂନ୍ୟ"],
-          correctOption: 0,
-          explanation: "ଯଦି ପ୍ରଭେଦକ b^2 - 4ac > 0 ହୁଏ, ତେବେ ବୀଜଦ୍ୱୟ ବାସ୍ତବ ଏବଂ ଅସମାନ ହେବେ।",
+          title: "Daily MCQ Challenge",
           subject: "Mathematics",
           class: user?.class || "10",
-          date: today
+          activeDate: today,
+          status: "published",
+          questions: [
+            {
+              question: "ଦ୍ୱିଘାତ ସମୀକରଣ ax^2 + bx + c = 0 ରେ ଯଦି b^2 - 4ac > 0 ହୁଏ, ତେବେ ବୀଜଦ୍ୱୟ କିପରି ହେବ?",
+              options: ["ବାସ୍ତବ ଏବଂ ଅସମାନ", "ବାସ୍ତବ ଏବଂ ସମାନ", "ଅବାସ୍ତବ", "ଶୂନ୍ୟ"],
+              correct_answer: "ବାସ୍ତବ ଏବଂ ଅସମାନ",
+              explanation: "ଯଦି ପ୍ରଭେଦକ b^2 - 4ac > 0 ହୁଏ, ତେବେ ବୀଜଦ୍ୱୟ ବାସ୍ତବ ଏବଂ ଅସମାନ ହେବେ।",
+              marks: 1,
+              type: "mcq"
+            }
+          ]
         } as any
       ];
       setDailyMcqs(mockMcqs);
