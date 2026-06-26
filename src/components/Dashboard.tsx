@@ -2802,7 +2802,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute -left-12 -bottom-12 w-72 h-72 bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
 
-        <div className="flex flex-row items-start md:items-center justify-between gap-4 md:gap-6 relative z-20 w-full">
+        <div className="flex flex-row items-center justify-between gap-4 md:gap-6 relative z-20 w-full">
           
           {/* Left Side: Welcome Text + XP Badge */}
           <div className="flex flex-col gap-6 md:gap-4 relative z-10 flex-1 lg:flex-none lg:max-w-md min-w-0">
@@ -2920,7 +2920,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                     setShowImportantPapersModal(true);
                   }
                 }}
-                className="relative cursor-pointer group flex flex-col items-center z-30 mb-3 -mt-11 md:-mt-15"
+                className="relative cursor-pointer group flex flex-col items-center z-30 mb-5 -mt-11 md:-mt-15"
               >
                 {/* Hanging Ropes */}
                 <div className="flex justify-between w-20 h-6 relative z-10 pointer-events-none -mb-1.5">
