@@ -201,14 +201,14 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
           }
 
           // await saveChatHistory(textToSend, foundAnswer);
-          await logAiUsage(
+          logAiUsage(
             user?.uid || 'anonymous',
             user?.name || user?.displayName || 'Student',
             user?.class || 'Unknown',
             textToSend,
             foundAnswer,
             { isFromBucket: true }
-          );
+          ).catch(e => console.error("Telemetry error:", e));
           setLoading(false);
           return;
         }
@@ -294,14 +294,14 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
           }
         }
         // await saveChatHistory(textToSend, responseText);
-        await logAiUsage(
+        logAiUsage(
           user?.uid || 'anonymous',
           user?.name || user?.displayName || 'Student',
           user?.class || 'Unknown',
           textToSend,
           responseText,
           { isFromBucket: false, language }
-        );
+        ).catch(e => console.error("Telemetry error:", e));
 
       } catch (err: any) {
         console.error('Study Buddy Chat Error:', err);
