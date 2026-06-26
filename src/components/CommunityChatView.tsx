@@ -163,17 +163,17 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
 
   // Track presence and fetch recently active
   useEffect(() => {
-    // 1. Update my presence
-    const userRef = doc(db, 'users', student.id);
-    updateDoc(userRef, {
+    // 1. Update my presence on my public profile
+    const pubProfileRef = doc(db, 'public_profiles', student.id);
+    updateDoc(pubProfileRef, {
       lastActiveAt: serverTimestamp()
     }).catch(console.error);
 
-    // 2. Fetch recently active students in this class
+    // 2. Fetch recently active students' public profiles in this class
     const fetchActive = async () => {
       try {
         const activeQ = query(
-          collection(db, 'users'),
+          collection(db, 'public_profiles'),
           where('class', '==', activeClass),
           orderBy('lastActiveAt', 'desc'),
           limit(10)
