@@ -4308,7 +4308,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                 console.log("Header: Logo/Title clicked. Navigating to dashboard.");
                 setActiveTab('dashboard');
               }}
-              className="lg:hidden flex items-center gap-3 cursor-pointer hover:opacity-90 active:scale-95 transition-all group"
+              className="flex items-center gap-3 cursor-pointer hover:opacity-90 active:scale-95 transition-all group"
             >
               {/* UTKAL LOGO used in Header */}
               <img 
