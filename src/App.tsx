@@ -4298,17 +4298,24 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
         {/* HEADER: Sticky at top */}
         <header className="h-20 flex items-center justify-between px-6 bg-black/20 backdrop-blur-xl border-b border-white/5 flex-shrink-0 z-20 print:hidden">
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3">
+            <button 
+              type="button"
+              onClick={() => {
+                console.log("Header: Logo/Title clicked. Navigating to dashboard.");
+                setActiveTab('dashboard');
+              }}
+              className="flex items-center gap-3 cursor-pointer hover:opacity-90 active:scale-95 transition-all group"
+            >
               {/* UTKAL LOGO used in Header */}
               <img 
                 src="/utkal-192.png" 
-                className="h-10 w-10 rounded-full object-cover drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" 
+                className="h-10 w-10 rounded-full object-cover drop-shadow-[0_0_15px_rgba(16,185,129,0.5)] group-hover:scale-105 transition-transform" 
                 alt="Utkal Skill Centre" 
               />
               <h1 className="text-base sm:text-lg font-black bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-400 tracking-tight ml-2 font-serif whitespace-nowrap">
-                Utkal Skill Centre
+                {language === 'or' ? 'ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର' : 'Utkal Skill Centre'}
               </h1>
-            </div>
+            </button>
           </div>
 
           <div className="flex items-center gap-4">
