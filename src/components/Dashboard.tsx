@@ -2812,8 +2812,12 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               <div className="absolute -left-12 -top-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none"></div>
               <div className="flex items-center gap-3 sm:gap-4">
                 <div className="w-1.5 h-8 md:w-2 md:h-12 bg-gradient-to-b from-emerald-400 to-teal-600 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.5)] shrink-0"></div>
-                <h1 className="text-xl sm:text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-slate-800 via-slate-700 to-slate-500 dark:from-white dark:via-white dark:to-slate-400 tracking-tighter leading-tight break-words">
-                  {language === 'en' ? 'Welcome back,' : 'ସ୍ୱାଗତ,'} <br className="sm:hidden" /><span className="text-emerald-500 drop-shadow-sm leading-tight">{user?.name || 'Student'}!</span>
+                <h1 className="text-xl sm:text-3xl md:text-4xl font-black tracking-tighter leading-tight break-words text-slate-800 dark:text-white">
+                  {language === 'en' ? 'Welcome back,' : 'ସ୍ୱାଗତ,'}{" "}
+                  <br className="sm:hidden" />
+                  <span className="text-emerald-400 drop-shadow-sm leading-tight">
+                    {user?.name || 'Student'}!
+                  </span>
                 </h1>
               </div>
               <p className="text-slate-500 dark:text-slate-400 text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] pl-4 sm:pl-6 flex items-center gap-1.5 sm:gap-2 truncate">
@@ -3030,36 +3034,51 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       </motion.div>
 
       {/* Premium Sub-Tab Switcher */}
-      <div className="flex justify-start border-b border-white/5 pb-2 relative z-20">
-        <div className="flex p-1 bg-slate-950/60 backdrop-blur-md border border-white/10 rounded-2xl">
+      <div className="flex justify-start border-b border-white/5 pb-3 relative z-20 force-dark-theme">
+        <div className="flex p-1 bg-slate-950/80 backdrop-blur-xl border border-white/5 rounded-2xl shadow-[inset_0_2px_4px_rgba(0,0,0,0.8)] relative">
+          
+          {/* Overview Tab */}
           <button
             onClick={() => setActiveSubTab('overview')}
-            className={`px-5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-300 flex items-center gap-2 cursor-pointer ${
-              activeSubTab === 'overview'
-                ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20'
-                : 'text-slate-400 hover:text-white'
+            className={`relative px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-colors duration-300 select-none group/tab ${
+              activeSubTab === 'overview' ? 'text-white' : 'text-slate-500 hover:text-slate-200'
             }`}
           >
-            <Lucide.LayoutDashboard size={14} />
-            <span>{language === 'en' ? 'Overview' : 'ପ୍ରୋଫାଇଲ୍ ସାରାଂଶ'}</span>
+            {activeSubTab === 'overview' && (
+              <motion.div
+                layoutId="activeSubTab"
+                className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl shadow-[0_4px_20px_rgba(16,185,129,0.25)]"
+                transition={{ type: "spring", stiffness: 380, damping: 30 }}
+              />
+            )}
+            <Lucide.LayoutDashboard size={14} className={`relative z-10 transition-colors ${activeSubTab === 'overview' ? 'text-emerald-300' : 'text-slate-500 group-hover/tab:text-slate-300'}`} />
+            <span className="relative z-10">{language === 'en' ? 'Overview' : 'ପ୍ରୋଫାଇଲ୍ ସାରାଂଶ'}</span>
           </button>
+
+          {/* Statewide Leaderboard Tab */}
           <button
             onClick={() => setActiveSubTab('leaderboard')}
-            className={`px-5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-300 flex items-center gap-2 cursor-pointer ${
-              activeSubTab === 'leaderboard'
-                ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20'
-                : 'text-slate-400 hover:text-white'
+            className={`relative px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-colors duration-300 select-none group/tab ${
+              activeSubTab === 'leaderboard' ? 'text-white' : 'text-slate-500 hover:text-slate-200'
             }`}
           >
-            <Lucide.Trophy size={14} />
-            <span>{language === 'en' ? 'Statewide Leaderboard' : 'ରାଜ୍ୟ ସ୍ତରୀୟ ଲିଡରବୋର୍ଡ'}</span>
+            {activeSubTab === 'leaderboard' && (
+              <motion.div
+                layoutId="activeSubTab"
+                className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl shadow-[0_4px_20px_rgba(16,185,129,0.25)]"
+                transition={{ type: "spring", stiffness: 380, damping: 30 }}
+              />
+            )}
+            <Lucide.Trophy size={14} className={`relative z-10 transition-colors ${activeSubTab === 'leaderboard' ? 'text-emerald-300' : 'text-slate-500 group-hover/tab:text-slate-300'}`} />
+            <span className="relative z-10">{language === 'en' ? 'Statewide Leaderboard' : 'ରାଜ୍ୟ ସ୍ତରୀୟ ଲିଡରବୋର୍ଡ'}</span>
           </button>
+          
         </div>
       </div>
 
       {activeSubTab === 'overview' ? (
         /* Main Grid Layout */
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-8 force-dark-theme">
           {/* Left Column - Core Interactions */}
           <div className="lg:col-span-8 space-y-8">
             {claimedTicket && (
@@ -3726,7 +3745,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             {/* Quick Stats Block */}
             {leaderboardType === 'monthly' ? (
               <div className="flex items-center gap-4 bg-slate-950/60 p-4 rounded-3xl border border-white/5 shrink-0 w-full md:w-auto justify-around md:justify-start">
-                <div className="text-center px-4 border-r border-white/5">
+                <div className="text-center px-4 border-r border-white/5 hover:scale-[1.05] transition-all duration-300">
                   <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">
                     {language === 'en' ? 'Test Rank' : 'ଟେଷ୍ଟ ର୍ୟାଙ୍କ'}
                   </p>
@@ -3738,7 +3757,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                     })()}
                   </p>
                 </div>
-                <div className="text-center px-4 border-r border-white/5">
+                <div className="text-center px-4 border-r border-white/5 hover:scale-[1.05] transition-all duration-300">
                   <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">
                     {selectedMonth === 'may_2026'
                       ? (language === 'en' ? 'Avg. Score' : 'ହାରାହାରି ସ୍କୋର')
@@ -3752,7 +3771,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                     })()}
                   </p>
                 </div>
-                <div className="text-center px-4">
+                <div className="text-center px-4 hover:scale-[1.05] transition-all duration-300">
                   <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">
                     {language === 'en' ? 'Month' : 'ମାସ'}
                   </p>
@@ -3765,19 +3784,19 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
               </div>
             ) : (
               <div className="flex items-center gap-4 bg-slate-950/60 p-4 rounded-3xl border border-white/5 shrink-0 w-full md:w-auto justify-around md:justify-start">
-                <div className="text-center px-4 border-r border-white/5">
+                <div className="text-center px-4 border-r border-white/5 hover:scale-[1.05] transition-all duration-300">
                   <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">{language === 'en' ? 'Your Rank' : 'ଆପଣଙ୍କ ରାଙ୍କ'}</p>
                   <p className="text-lg font-black text-emerald-400 font-mono">
                     #{combinedLeaderboard.findIndex(s => s.id === user?.id) + 1 || '-'}
                   </p>
                 </div>
-                <div className="text-center px-4 border-r border-white/5">
+                <div className="text-center px-4 border-r border-white/5 hover:scale-[1.05] transition-all duration-300">
                   <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">{language === 'en' ? 'Current Tier' : 'ଆପଣଙ୍କ ସ୍ତର'}</p>
                   <p className="text-lg font-black text-amber-400 font-mono">
                     Lvl {getBadgeInfo(user?.points || 0).level}
                   </p>
                 </div>
-                <div className="text-center px-4">
+                <div className="text-center px-4 hover:scale-[1.05] transition-all duration-300">
                   <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">{language === 'en' ? 'Daily MCQ' : 'ଦୈନିକ MCQ'}</p>
                   <p className={`text-[10px] font-black px-2.5 py-0.5 rounded-full ${
                     user?.points_today > 0
@@ -3945,11 +3964,14 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                       const globalRank = combinedLeaderboard.findIndex(s => s.id === student.id) + 1;
                       
                       return (
-                        <tr 
+                        <motion.tr 
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.35, delay: Math.min(idx * 0.04, 0.4) }}
                           key={student.id} 
-                          className={`hover:bg-white/5 transition-all duration-200 ${
+                          className={`hover:bg-white/10 hover:shadow-[0_4px_12px_rgba(16,185,129,0.1)] hover:scale-[1.005] transition-all duration-300 ${
                             isCurrentUser 
-                              ? 'bg-emerald-500/5 border-l-4 border-l-emerald-500' 
+                              ? 'bg-emerald-500/10 border-l-4 border-l-emerald-500' 
                               : 'border-l-4 border-l-transparent'
                           }`}
                         >
@@ -4060,7 +4082,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                               </button>
                             )}
                           </td>
-                        </tr>
+                        </motion.tr>
                       );
                     })
                   ) : (
@@ -4079,11 +4101,14 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                         const isCurrentUser = student.name?.toLowerCase() === user?.name?.toLowerCase();
                         
                         return (
-                          <tr 
+                          <motion.tr 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.35, delay: Math.min(idx * 0.04, 0.4) }}
                             key={idx} 
-                            className={`hover:bg-white/5 transition-all duration-200 ${
+                            className={`hover:bg-white/10 hover:shadow-[0_4px_12px_rgba(245,158,11,0.1)] hover:scale-[1.005] transition-all duration-300 ${
                               isCurrentUser 
-                                ? 'bg-amber-500/5 border-l-4 border-l-amber-500' 
+                                ? 'bg-amber-500/10 border-l-4 border-l-amber-500' 
                                 : 'border-l-4 border-l-transparent'
                             }`}
                           >
@@ -4141,7 +4166,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                                 <span>{student.score} / 25 {language === 'en' ? 'Marks' : 'ମାର୍କ'}</span>
                               </div>
                             </td>
-                          </tr>
+                          </motion.tr>
                         );
                       });
                     })()
