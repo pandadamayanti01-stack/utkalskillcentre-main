@@ -1,7 +1,7 @@
 export const previewDatabase: Record<string, { title: string; content: string; description: string }> = {
   quadraticequations: {
-    title: "Class 10 Quadratic Equations Revision Notes (ଦ୍ୱିଘାତ ସମୀକରଣ)",
-    description: "Get complete formula sheets, textbook solutions, and standard exam-pattern revision notes for Class 10 Algebra Chapter 2 - Quadratic Equations in Odia Medium.",
+    title: "BSE Odisha Class 10 Algebra Chapter 2: Quadratic Equations Notes & Formulas (ଦ୍ୱିଘାତ ସମୀକରଣ) | Odia Medium",
+    description: "Free PDF & study notes for BSE Odisha Class 10 Algebra Chapter 2 (Quadratic Equations - ଦ୍ୱିଘାତ ସମୀକରଣ). Includes board exam solutions in Odia Medium.",
     content: `## Algebra Chapter 2: Quadratic Equations (ଦ୍ୱିଘାତ ସମୀକରଣ)
 
 ### 1. Introduction & Standard Form (ସଂଜ୍ଞା ଏବଂ ସାଧାରଣ ରୂପ)
@@ -10,7 +10,7 @@ An equation containing a single variable of degree 2 is known as a **Quadratic E
 
 **Standard Form / ସାଧାରଣ ସୂତ୍ର:**
 $$ax^2 + bx + c = 0$$
-Where $a, b, c$ are real numbers (ବାସ୍ତବ ସଂଖ୍ୟା) and $a \\neq 0$.
+Where $a, b, c$ are real numbers (ବାସ୍ତବ ସଂଖ୍ୟา) and $a \\neq 0$.
 
 ---
 
@@ -31,8 +31,8 @@ If $\\alpha$ and $\\beta$ are the roots:
 * **Product of Roots (ବୀଜଦ୍ୱୟର ଗୁଣଫଳ)**: $\\alpha \\cdot \\beta = \\frac{c}{a}$`
   },
   trigonometricidentities: {
-    title: "Class 10 Trigonometry Formulas & Notes (ତ୍ରିକୋଣମିତି)",
-    description: "Download Class 10 Trigonometry formulas, identities proofs, and solved textbook exercises for BSE Odisha Odia Medium standard exams.",
+    title: "BSE Odisha Class 10 Geometry Chapter 4: Trigonometric Identities Notes & Formulas (ତ୍ରିକୋଣମିତି) | Odia Medium",
+    description: "Master Trigonometric Identities (ତ୍ରିକୋଣମିତି ସୂତ୍ରାବଳୀ) for BSE Odisha Class 10 Geometry Chapter 4. Free study notes and board exam formulas in Odia Medium.",
     content: `## Mathematics Chapter 4: Trigonometric Identities (ତ୍ରିକୋଣମିତି ସୂତ୍ରାବଳୀ)
 
 ### 1. Fundamental Trigonometric Ratios (ତ୍ରିକୋଣମିତିକ ଅନୁପาତ)
@@ -62,8 +62,8 @@ For a right-angled triangle (ସମକୋଣୀ ତ୍ରିଭୁଜ):
 * $\\csc(90^\\circ - \\theta) = \\sec \\theta$`
   },
   forceandmotion: {
-    title: "Class 10 Physical Science: Force & Laws of Motion (ବଳ ଏବଂ ଗତି ନିୟମ)",
-    description: "Read Class 10 Physical Science Chapter 3 - Force and Laws of Motion notes in Odia medium. Learn Newton's Laws and Momentum with Gundulu AI.",
+    title: "BSE Odisha Class 10 Physical Science Chapter 3: Force and Laws of Motion Notes (ବଳ ଏବଂ ଗତି ନିୟମ) | Odia Medium",
+    description: "Download BSE Odisha Class 10 Physical Science Chapter 3 (Force and Laws of Motion - ବଳ ଏବଂ ଗତିର ନିୟମ) study guide. Includes Newton's Laws in Odia Medium.",
     content: `## Physical Science Chapter 3: Force & Laws of Motion (ବଳ ଏବଂ ଗତିର ନିୟମ)
 
 ### 1. Concept of Force (ବଳର ସଂଜ୍ଞା)
@@ -90,8 +90,8 @@ To every action, there is an equal and opposite reaction.
 ପ୍ରତ୍ୟେକ କ୍ରିୟାର ଏକ ସମାନ ଏବଂ ବିପରୀତ ପ୍ରତିକ୍ରିୟା ରହିଛି।`
   },
   carboncompounds: {
-    title: "Class 10 Carbon & its Compounds Notes (କାର୍ବନ ଓ ଏହାର ଯୌଗିକ)",
-    description: "Bilingual study notes for Class 10 Chemistry Chapter 4 - Carbon and its Compounds. Free covalent bonding tables in Odia Medium.",
+    title: "BSE Odisha Class 10 Physical Science Chapter 4: Carbon and its Compounds Notes (କାର୍ବନ ଓ ଏହାର ଯୌଗିକ) | Odia Medium",
+    description: "Free study guide for BSE Odisha Class 10 Chemistry/Physical Science Chapter 4 (Carbon and its Compounds - କାର୍ବନ ଓ ଏହାର ଯୌଗିକ) in Odia Medium.",
     content: `## Chemistry Chapter 4: Carbon & its Compounds (କାର୍ବନ ଓ ଏହାର ଯୌଗିକ)
 
 ### 1. Versatile Nature of Carbon (କାର୍ବନର ବହୁମୁଖୀ ପ୍ରକୃତି)
@@ -113,8 +113,8 @@ Compounds containing only Carbon and Hydrogen are called **Hydrocarbons**.
   * Alkynes (ଟ୍ରିପଲ୍ ବନ୍ଧ): $C_nH_{2n-2}$`
   },
   lifeprocesses: {
-    title: "Class 10 Life Science: Life Processes (ଜୀବନ ପ୍ରକ୍ରିୟା - ପୋଷଣ)",
-    description: "Get Class 10 Biology Chapter 1 Nutrition and Respiration summary study notes bilingually in Odia medium for BSE exams.",
+    title: "BSE Odisha Class 10 Life Science Chapter 1: Life Processes Nutrition Notes (ଜୀବନ ପ୍ରକ୍ରିୟା - ପୋଷଣ) | Odia Medium",
+    description: "Best study guide for BSE Odisha Class 10 Life Science Chapter 1 (Life Processes Nutrition - ପୋଷଣ). Free revision notes and questions in Odia Medium.",
     content: `## Life Science Chapter 1: Life Processes (ଜୀବନ ପ୍ରକ୍ରିୟା)
 
 ### 1. Introduction to Nutrition (ପୋଷଣ କଣ?)
@@ -133,18 +133,18 @@ There are two major modes of nutrition:
 $$6CO_2 + 12H_2O \\xrightarrow[\\text{Chlorophyll}]{\\text{Sunlight}} C_6H_{12}O_6 + 6O_2 + 6H_2O$$`
   },
   class1odia: {
-    title: "ଶ୍ରେଣୀ ୧ - ହସଖେଳ: ବର୍ଣ୍ଣମାଳା ପରିଚୟ (Odia Alphabet)",
-    description: "Learn Class 1 Odia Alphabets, vowels, and consonants bilingually with Gundulu AI.",
+    title: "Class 1 Odia Alphabet (ବର୍ଣ୍ଣମାଳା ପରିଚୟ) | BSE Odisha Primary School Study Materials",
+    description: "Interactive learning guide for BSE Odisha Class 1 Odia Alphabet (ବର୍ଣ୍ଣମାଳା - ହସଖେଳ). Learn vowels (ସ୍ୱରବର୍ଣ୍ଣ) and consonants (ବ୍ୟଞ୍ଜନବର୍ଣ୍ଣ) bilingually.",
     content: `## ପ୍ରଥମ ଶ୍ରେଣୀ - ହସଖେଳ: ବର୍ଣ୍ଣମାଳା ପରିଚୟ (Class 1 Odia Alphabets)
 
-### ୧. ସ୍ୱରବର୍ଣ୍ଣ (Vowels)
-ଓଡ଼ିଆ ଭାଷାରେ ମୋଟ ୧୧ ଟି ସ୍ୱରବର୍ଣ୍ଣ ଅଛି | ଆସନ୍ତୁ ସେଗୁଡ଼ିକୁ ପଢ଼ିବା:
+### ୧. ସ୍ୱרବର୍ଣ୍ଣ (Vowels)
+ଓଡ଼ିଆ ଭାଷାରେ ମୋଟ ୧୧ ଟି ସ୍ୱרବର୍ଣ୍ଣ ଅଛି | ଆସନ୍ତୁ ସେଗୁଡ଼ିକୁ ପଢ଼ିବା:
 * **ଅ** (A) - ଅଜଗର (Python)
 * **ଆ** (Aa) - ଆମ୍ବ (Mango)
 * **ଇ** (I) - ଇଟା (Brick)
 * **ଈ** (Ee) - ଈଶ୍ୱର (God)
 * **ଉ** (U) - ଉଦୟ (Sunrise)
-* **ଊ** (Uu) - ଊର୍ଣ୍ଣා (Wool)
+* **ଊ** (Uu) - ଊର୍ଣ୍ଣା (Wool)
 * **ଋ** (Rru) - ଋଷି (Sage)
 * **ଏ** (E) - ଏକତାରା (Lute)
 * **ଐ** (Ai) - ଐରାବତ (Elephant)
@@ -161,13 +161,13 @@ $$6CO_2 + 12H_2O \\xrightarrow[\\text{Chlorophyll}]{\\text{Sunlight}} C_6H_{12}O
 
 ---
 
-### ୩. ଗುନ୍ଦୁଲୁଙ୍କ ସହାୟତା (Gundulu AI Insight)
+### ୩. ଗୁନ୍ଦୁଲୁଙ୍କ ସହାୟତା (Gundulu AI Insight)
 ସାଙ୍ଗମାନେ! ଓଡ଼ିଆ ଭାଷାର ପ୍ରତିଟି ଅକ୍ଷର ବହୁତ ସୁନ୍ଦର। ଏହାକୁ ଖାତାରେ ଲେଖି ଅଭ୍ୟାସ କରନ୍ତୁ!`
   },
   class2odia: {
-    title: "ଶ୍ରେଣୀ ୨ - ହସଖେଳ: ଓଡ଼ିଆ ଯୁକ୍ତାକ୍ଷର (Odia Joint Letters)",
-    description: "Learn Class 2 Odia Joint Letters (Yuktakshara) with examples and simple pronunciations.",
-    content: `## ଦ୍ୱିତୀୟ ଶ୍ରେଣୀ - ହସଖେଳ: ଓଡ଼ିଆ ଯուକ୍ତାକ୍ଷର (Class 2 Joint Letters)
+    title: "Class 2 Odia Joint Letters (ଯୁକ୍ତାକ୍ଷର - ହସଖେଳ) | BSE Odisha Primary School Notes",
+    description: "Learn BSE Odisha Class 2 Odia Joint Letters (ଯୁକ୍ତାକ୍ଷର) with pronunciation examples, word exercises, and worksheets bilingually.",
+    content: `## ଦ୍ୱିତୀୟ ଶ୍ରେଣୀ - ହସଖେଳ: ଓଡ଼ିଆ ଯୁକ୍ତାକ୍ଷର (Class 2 Joint Letters)
 
 ### ୧. ଯୁକ୍ତାକ୍ଷର କଣ? (What are Joint Letters?)
 ଯେତେବେଳେ ଦୁଇଟି ବ୍ୟଞ୍ଜନ ବର୍ଣ୍ଣ ମିଶି ଏକ ନୂଆ ଅକ୍ଷର ଗଠନ କରନ୍ତି, ତାହାକୁ **ଯୁକ୍ତାକ୍ଷର** କୁହାଯାଏ |
@@ -185,8 +185,8 @@ $$6CO_2 + 12H_2O \\xrightarrow[\\text{Chlorophyll}]{\\text{Sunlight}} C_6H_{12}O
 2. **କୃଷ୍ଣ** (Krishna) - 'ଷ୍' + 'ଣ' ମିଶି ଗଠିତ।`
   },
   class3odia: {
-    title: "ଶ୍ରେଣୀ ୩ - ଆମ ଭାଷา ଆମ ସାହିତ୍ୟ: ସୁନାର ମାଟି (Poem: Sunara Mati)",
-    description: "Read Class 3 Odia poem 'Sunara Mati' notes, summaries, and word meanings.",
+    title: "Class 3 Odia Poem: Sunara Mati Notes (ସୁନାର ମାଟି) | BSE Odisha Primary School Syllabus",
+    description: "Download BSE Odisha Class 3 Odia Literature (ସାହିତ୍ୟ - ସୁନାର ମାଟି) poem summary, word meanings, and question-answer guide bilingually.",
     content: `## ତୃତୀୟ ଶ୍ରେଣୀ - ଆମ ଭାଷା ଆମ ସାହିତ୍ୟ: ସୁନାର ମାଟି (Poem: Golden Land)
 
 ### ୧. କବିତାର ସାରାଂଶ (Poem Summary)
@@ -201,15 +201,15 @@ $$6CO_2 + 12H_2O \\xrightarrow[\\text{Chlorophyll}]{\\text{Sunlight}} C_6H_{12}O
 * **ଜନନୀ**: ମାଆ (Mother)`
   },
   class4odia: {
-    title: "ଚତୁର୍ଥ ଶ୍ରେଣୀ - ସାହିତ୍ୟ କଳିକା: ଜାତୀୟ ପତକା (Poem: Jatiya Pataka)",
-    description: "Read Class 4 Odia poem 'Jatiya Pataka' and understand the significance of our National Flag.",
+    title: "Class 4 Odia Poem: Jatiya Pataka Notes (ଜାତୀୟ ପତକା) | BSE Odisha Sahitya Kalika Syllabus",
+    description: "Complete study guide for BSE Odisha Class 4 Odia Literature (ସାହିତ୍ୟ କଳିକା - ଜାତୀୟ ପତକା). Learn flag significance and questions bilingually.",
     content: `## ଚତୁର୍ଥ ଶ୍ରେଣୀ - ସାହିତ୍ୟ କଳିକା: ଜାତୀୟ ପତକା (National Flag)
 
 ### ୧. ଆମ ତ୍ରିରଙ୍ଗା ପତକା (Our Tricolor Flag)
 ଆମ ଜାତୀୟ ପତକା ହେଉଛି ଆମ ଦେଶର ଗୌରବ ଓ ସମ୍ମାନର ପ୍ରତୀକ | ଏଥିରେ ତିନୋଟି ରଙ୍ଗ ରହିଛି:
 1. **ନାରଙ୍ଗୀ (Saffron)** - ସାହସ ଓ ତ୍ୟାଗର ପ୍ରତୀକ (Courage & Sacrifice)
 2. **ଧଳା (White)** - ଶାନ୍ତି ଓ ସତ୍ୟର ପ୍ରତୀକ (Peace & Truth)
-3. **ସବୁଜ (Green)** - ବିଶ୍ୱາସ ଓ ସମୃଦ୍ଧିର ପ୍ରତୀକ (Faith & Prosperity)
+3. **ସବୁଜ (Green)** - ବିଶ୍ୱାସ ଓ ସମୃଦ୍ଧିର ପ୍ରତୀକ (Faith & Prosperity)
 
 ମଝିରେ ଥିବା **ଅଶୋକ ଚକ୍ର** (Ashoka Chakra) ରେ ୨୪ ଟି ଅର ଅଛି, ଯାହା ନିରନ୍ତର ପ୍ରଗତିକୁ ଦର୍ଶାଏ |
 
@@ -220,12 +220,12 @@ $$6CO_2 + 12H_2O \\xrightarrow[\\text{Chlorophyll}]{\\text{Sunlight}} C_6H_{12}O
 * **ଉତ୍ତର**: ଏଥିରେ ତିନୋଟି ପ୍ରକାର ରଙ୍ଗର ପଟି ରହିଥିବାରୁ ଏହାକୁ ତ୍ରିରଙ୍ଗା କୁହାଯାଏ |`
   },
   class5odia: {
-    title: "ପଞ୍ଚମ ଶ୍ରେଣୀ - ସାହିତ୍ୟ କୁସୁମ: ଧର୍ମପଦ (Legend of Dharmapada)",
-    description: "Read Class 5 Odia story of Dharmapada, the brave 12-year old boy who completed Konark Temple spire.",
+    title: "Class 5 Odia: Legend of Dharmapada Notes (ଧର୍ମପଦ) | BSE Odisha Sahitya Kusuma Syllabus",
+    description: "Study the legendary story of Dharmapada (ଧର୍ମପଦ) for BSE Odisha Class 5 Odia Literature. Download summary and questions in Odia Medium.",
     content: `## ପଞ୍ଚମ ଶ୍ରେଣୀ - ସାହିତ୍ୟ କୁସୁମ: ଧର୍ମପଦ (Dharmapada)
 
 ### ୧. କୋଣାର୍କର କାହାଣୀ (The Story of Konark)
-ଓଡ଼ିଶାର ପ୍ରସିଦ୍ଧ କୋଣାର୍କ ସୂର୍ଯ୍ୟ ମନ୍ଦିର ନିର୍ମାଣ ପାଇଁ ମହାରାଜା ଲାଙ୍ଗୁଳା ନରସିଂହଦେବ ୧୧୦୦ ବଢ଼େଇ ନିଯୁକ୍ତ କରିଥିଲେ | ସେମାନଙ୍କର ମୁଖ୍ୟ ଥିଲେ ବିଷୁ ମହାରଣା | କିନ୍ତୁ ଦୀର୍ଘ ବର୍ଷ ପରେ ମଧ୍ୟ ମନ୍ଦିରର ଦଧିନଉତି (Spire) ମାରିବାରେ ସେମାନେ ସଫଳ ହୋଇପାରିନଥିଲେ |
+ଓଡ଼ିଶାର ପ୍ରସିଦ୍ଧ କୋଣାର୍କ ସୂର୍ଯ୍ୟ ମନ୍ଦିର ନିର୍ମାଣ ପାଇଁ ମହାରାଜା ଲାଙ୍ଗୁଳା ନରସିଂହଦେବ ୧୧୦୦ ବଢ଼େଇ ନିଯୁକ୍ତ କରିଥିଲେ | ସେମାନଙ୍କର ମຸଖ୍ୟ ଥିଲେ ବିଷୁ ମହାରଣା | କିନ୍ତୁ ଦୀର୍ଘ ବର୍ଷ ପରେ ମଧ୍ୟ ମନ୍ଦିରର ଦଧିନଉତି (Spire) ମାରିବାରେ ସେମାନେ ସଫଳ ହୋଇପାରିନଥିଲେ |
 
 ---
 
@@ -233,28 +233,28 @@ $$6CO_2 + 12H_2O \\xrightarrow[\\text{Chlorophyll}]{\\text{Sunlight}} C_6H_{12}O
 ବିଷୁ ମହାରଣାଙ୍କ ୧୨ ବର୍ଷର ପୁଅ **ଧର୍ମପଦ** ନିଜ ବୁଦ୍ଧି ବଳରେ ମନ୍ଦିରର ଦଧିନଉତି ମାରିବାରେ ସଫଳ ହେଲା | କିନ୍ତୁ ୧୧୦୦ ବଢ଼େଇଙ୍କ ଜୀବନ ରକ୍ଷା କରିବା ପାଇଁ ସେ ମନ୍ଦିର ଉପରୁ ଚନ୍ଦ୍ରଭାଗା ନଦୀକୁ ଡେଇଁ ନିଜ ଜୀବନ ବିସର୍ଜନ ଦେଲା |`
   },
   class6odia: {
-    title: "ଷଷ୍ଠ ଶ୍ରେଣୀ - ସାହିତ୍ୟ ଜ୍ୟୋତି: ପ୍ରଭାତ ଅବକାଶ (Morning Awakening Poem)",
-    description: "Read Class 6 Odia poem 'Prabhaata Abakasha' by Banamali Das. Summary and explanations.",
+    title: "Class 6 Odia Poem: Prabhata Abakasha Notes (ପ୍ରଭାତ ଅବକାଶ) | BSE Odisha Sahitya Jyoti Syllabus",
+    description: "Download BSE Odisha Class 6 Odia Literature (ସାହିତ୍ୟ ଜ୍ୟୋତି - ପ୍ରଭାତ ଅବକାଶ) poem summary, stanza explanations, and Q&A bilingually.",
     content: `## ଷଷ୍ଠ ଶ୍ରେଣୀ - ସାହିତ୍ୟ ଜ୍ୟୋତି: ପ୍ରଭାତ ଅବକାଶ (Dawn Awakening)
 
 ### ୧. କବି ପରିଚୟ (Poet Introduction)
-ଏହି ଭକ୍ତିପୂତ କବିତାଟି ପ୍ରସିଦ୍ଧ ଭକ୍ତକବି **ବନମାଳୀ ଦାସ**ଙ୍କ ଦ୍ୱାରา ରଚିତ |
+ଏହି ଭକ୍ତିପୂତ କବିତାଟି ପ୍ରସିଦ୍ଧ ଭକ୍ତକବି **ବନମାଳୀ ଦାସ**ଙ୍କ ଦ୍ୱାରା ରଚିତ |
 
 ---
 
 ### ୨. କବିତାର ବିଷୟବସ୍ତୁ (Poem Content)
-ଶ୍ରୀକୃଷ୍ଣଙ୍କୁ ସକାଳୁ ଶଯ୍ୟା ତ୍ୟାଗ କରିବା ପାଇଁ ମାତା ଯଶୋଦା କିପରି ସ୍ନେହରେ ଡାକୁଛନ୍ତି, ଏହି କବିତାରେ ତାହା ବର୍ଣ୍ଣନା କରାଯାଇଛି:
+ଶ୍ରୀକୃଷ୍ଣଙ୍କୁ ସକାଳୁ ଶଯ୍ୟา ତ୍ୟାଗ କରିବା ପାଇଁ ମାତା ଯଶୋଦା କିପରି ସ୍ନେହରେ ଡାକୁଛନ୍ତି, ଏହି କବିତାରେ ତାହା ବର୍ଣ୍ଣନା କରାଯାଇଛି:
 > "ଉଠରେ ନିଶି ପାହିଲା, ପୂରବ ଦିଗ ଗୋଲାପି ହେଲାଣି |"
 
 ମାତା ଯଶୋଦା କୃଷ୍ଣଙ୍କ ପାଇଁ ନୂଆ ସର, ଲହୁଣୀ, ଏବଂ ଦୁଧ ପ୍ରସ୍ତୁତ କରି ରଖିଛନ୍ତି ଏବଂ ଗୋପାଳ ବାଳକମାନେ ତାଙ୍କ˔ୁ ଖେଳିବା ପାଇଁ ଅପେକ୍ଷା କରିଛନ୍ତି |`
   },
   class7odia: {
-    title: "ସପ୍ତମ ଶ୍ରେଣୀ - ସାହିତ୍ୟ ସୌରଭ: କଳସା ଚଉତିଶା (Odia Classic Kalasa Chautisa)",
-    description: "Read Class 7 Odia classical text 'Kalasa Chautisa' by Bachha Das. Explanations and summaries.",
+    title: "Class 7 Odia Literature: Kalasa Chautisa Notes (କଳସା ଚଉତିଶା) | BSE Odisha Sahitya Saurabha",
+    description: "Master classical Odia literature Kalasa Chautisa (କଳସା ଚଉତିଶା) for BSE Odisha Class 7. Download explanations and word meanings.",
     content: `## ସପ୍ତମ ଶ୍ରେଣୀ - ସାହିତ୍ୟ ସୌରଭ: କଳସା ଚଉତିଶା (Kalasa Chautisa)
 
 ### ୧. ଓଡ଼ିଆ ସାହିତ୍ୟର ଆଦି ପ୍ରାରମ୍ଭ (Early Odia Literature)
-**କଳସା ଚଉତିଶା** ହେଉଛି ଓଡ଼ିଆ ସାହିତ୍ୟର ଅନ୍ୟତମ ପ୍ରାଚୀନ ଏବଂ ପ୍ରସିଦ୍ଧ ଚଉତିଶା | ଏହାର ରଚୟିତା ହେଉଛନ୍ତି **ବତ୍ସା ଦାସ** | ଏହି କବିତାରେ ଭଗବାନ ଶିବ ଏବଂ ପାର୍ବତୀଙ୍କର ବିବାହ ପ୍ରସଙ୍ग ହାସ୍ୟରସାତ୍ମକ ଶୈଳୀରେ ବର୍ଣ୍ଣିତ |
+**କଳସା ଚଉତିଶା** ହେଉଛି ଓଡ଼ିଆ ସାହିତ୍ୟର ଅନ୍ୟତମ ପ୍ରାଚୀନ ଏବଂ ପ୍ରସିଦ୍ଧ ଚଉତିଶା | ଏହାର ରଚୟିତା ହେଉଛନ୍ତି **ବତ୍ସା ଦାସ** | ଏହି କବିତାରେ ଭଗବାନ ଶିବ ଏବଂ ପାର୍ବତୀଙ୍କର ବିବାହ ପ୍ରସଙ୍g ହାସ୍ୟରସାତ୍ମକ ଶୈଳୀରେ ବର୍ଣ୍ଣିତ |
 
 ---
 
@@ -262,21 +262,21 @@ $$6CO_2 + 12H_2O \\xrightarrow[\\text{Chlorophyll}]{\\text{Sunlight}} C_6H_{12}O
 କ' ଠାରୁ ଆରମ୍ଭ କରି କ୍ରମାନ୍ୱୟରେ 'କ୍ଷ' ପର୍ଯ୍ୟନ୍ତ ୩୪ ଟି ବ୍ୟଞ୍ଜନ ବର୍ଣ୍ଣକୁ ବ୍ୟବହାର କରି ରଚନା କରାଯାଇଥିବା ଗୀତକୁ **ଚଉତିଶା** କୁହାଯାଏ |`
   },
   class8odia: {
-    title: "ଅଷ୍ଟମ ଶ୍ରେଣୀ - ସାହିତ୍ୟ ସାଗର: ଭୀମଙ୍କ ସିଂହନାଦ ରଡ଼ି (Classical Epic Notes)",
-    description: "Read Class 8 Odia epic chapter 'Bhima Singhanada Rada' by Sarala Das. Character analysis of Bhima and Duryodhana.",
+    title: "Class 8 Odia Literature: Bhima Singhanada Rada Notes (ଭୀମଙ୍କ ସିଂହନାଦ ରଡ଼ି) | BSE Odisha",
+    description: "Explanations and summaries of Bhima Singhanada Rada (ଭୀମଙ୍କ ସିଂହନାଦ ରଡ଼ି) by Sarala Das for BSE Odisha Class 8 Odia Literature.",
     content: `## ଅଷ୍ଟମ ଶ୍ରେଣୀ - ସାହିତ୍ୟ ସାଗର: ଭୀମଙ୍କ ସିଂହନାଦ ରଡ଼ି (Bhima's Lion Roar)
 
 ### ୧. କବି ସାରଳା ଦାସ ଓ ମହାଭାରତ (Sarala Das & Mahabharata)
-ଏହି ବିଷୟଟି ଓଡ଼ିଶାର ଆଦିକବି **ସାରଳା ଦାସ**ଙ୍କ ଦ୍ୱାରา ରଚିତ ଓଡ଼ିଆ 'ମହାଭାରତ' ଗ୍ରନ୍ଥରୁ ଆନୀତ |
+ଏହି ବିଷୟଟି ଓଡ଼ିଶାର ଆଦିକବି **ସାରଳା ଦାସ**ଙ୍କ ଦ୍ୱାରା ରଚିତ ଓଡ଼ିଆ 'ମହାଭାରତ' ଗ୍ରନ୍ଥରୁ ଆନୀତ |
 
 ---
 
 ### ୨. ବିଷୟବସ୍ତୁ ସାରାଂଶ (Summary)
-କୁରୁକ୍ଷେତ୍ର ଯୁଦ୍ଧରେ କୌରବମାନଙ୍କ ପରାଜୟ ପରେ ଦୁର୍ଯ୍ୟୋଧନ ବ୍ୟାସ ସରୋବର ମଧ୍ୟରେ ଆତ୍ମଗୋପନ କରିଥିଲେ | ତାଙ୍କୁ ବାହାରକୁ ଆଣିବା ପାଇଁ ବ୍ୟାସଦେବଙ୍କ ପରାମର୍ଶ କ୍ରମେ ପାଣ୍ଡବ ବୀର ଭୀମସେନ ପ୍ରଭୁ ଶିବଙ୍କ ପ୍ରଦତ୍ତ 'ସିଂହනාଦ' ପାଞ୍ଚଜନ୍ୟ ଶଙ୍ଖ ବଜାଇ ଗର୍ଜନ କରିଥିଲେ |`
+କୁରୁକ୍ଷେତ୍ର ଯୁଦ୍ଧରେ କୌରବମାନଙ୍କ ପରାଜୟ ପରେ ଦୁର୍ଯ୍ୟୋଧନ ବ୍ୟාସ ସରୋବର ମଧ୍ୟରେ ଆତ୍ମଗୋପନ କରିଥିଲେ | ତାଙ୍କୁ ବାହାରକୁ ଆଣିବା ପାଇଁ ବ୍ୟାସଦେବଙ୍କ ପରାମର୍ଶ କ୍ରମେ ପାଣ୍ଡବ ବୀର ଭୀମସେନ ପ୍ରଭୁ ଶିବଙ୍କ ପ୍ରଦତ୍ତ 'ସିଂହනාଦ' ପାଞ୍ଚଜନ୍ୟ ଶଙ୍ଖ ବଜାଇ ଗର୍ଜନ କରିଥିଲେ |`
   },
   class9odia: {
-    title: "ନବମ ଶ୍ରେଣୀ - ସାହିତ୍ୟ ଧାରା: ବନ୍ଦେ ଉତ୍କଳ ଜନନୀ (State Anthem Poem)",
-    description: "Read Class 9 Odia poem 'Bande Utkala Janani' by Kantakabi Laxmikanta Mohapatra. Stanza explanations.",
+    title: "Class 9 Odia Poem: Bande Utkala Janani Notes (ବନ୍ଦେ ଉତ୍କଳ ଜନନୀ) | BSE Odisha Sahitya Dhara",
+    description: "Full study notes for state anthem Bande Utkala Janani (ବନ୍ଦେ ଉତ୍କଳ ଜନନୀ) for BSE Odisha Class 9 Odia Literature. Download PDF notes.",
     content: `## ନବମ ଶ୍ରେଣୀ - ସାହିତ୍ୟ ଧାରା: ବନ୍ଦେ ଉତ୍କଳ ଜନନୀ (State Anthem)
 
 ### ୧. କବି ପରିଚୟ (Poet Details)
@@ -286,15 +286,15 @@ $$6CO_2 + 12H_2O \\xrightarrow[\\text{Chlorophyll}]{\\text{Sunlight}} C_6H_{12}O
 
 ### ୨. ମୁଖ୍ୟ ବୈଶିଷ୍ଟ୍ୟ (Key Themes)
 * **ପ୍ରାକୃତିକ ସୌନ୍ଦର୍ଯ୍ୟ**: ନୀଳ ପର୍ବତମାଳା, ଘଞ୍ଚ ଶାଳ ଅରଣ୍ୟ ଏବଂ ସମୁଦ୍ର କୂଳର ସୌନ୍ଦର୍ଯ୍ୟ ବର୍ଣ୍ଣନା |
-* **ସଂସ୍କୃତି ଓ କଳା**: ମନ୍ଦିରର ଚିତ୍ରକଳା, କୋଣାର୍କର କାରୁକାର୍ଯ୍ୟ ଏବଂ ଓଡ଼ିଶାର ଜ୍ଞାନୀ ଗୁଣୀ ମହାପୁରୁଷମାନଙ୍କର ଗୋପାଳନ ଗାଥା |`
+* **ସଂସ୍କୃତି ଓ କଳା**: ମନ୍ଦିରର ଚିତ୍ରକଳା, କୋଣାର୍କର କାରୁକାର୍ଯ୍ୟ ଏବଂ ଓଡ଼ିଶାର ଜ୍ଞାନୀ ଗۇଣୀ ମହାପୁରୁଷମାନଙ୍କର ଗୋପାଳନ ଗାଥା |`
   },
   class10odia: {
-    title: "ଦଶମ ଶ୍ରେଣୀ - ସାହିତ୍ୟ ସିନ୍ଧୁ: ମଙ୍ଗଳେ ଅଇଲା ଉଷା (Usha's Dawn Arrival)",
-    description: "Read Class 10 Odia poem 'Mangale Aila Usha' by Swabhaba Kabi Gangadhar Meher. Complete study notes.",
+    title: "Class 10 Odia Poem: Mangale Aila Usha Notes (ମଙ୍ଗଳେ ଅଇଲା ଉଷା) | BSE Odisha Sahitya Sindhu",
+    description: "Detailed study guide for Mangale Aila Usha (ମଙ୍ଗଳେ ଅଇଲା ଉଷା) by Gangadhar Meher for BSE Odisha Class 10 Odia Literature (ସାହିତ୍ୟ ସିନ୍ଧୁ).",
     content: `## ଦଶମ ଶ୍ରେଣୀ - ସାହିତ୍ୟ ସିନ୍ଧୁ: ମଙ୍ଗଳେ ଅଇଲା ଉଷା (Arrival of Dawn)
 
 ### ୧. କବି ଗଙ୍ଗାଧର ମେହେର (Gangadhar Meher)
-ଏହି କବିତାଟି ସ୍ୱଭାବ କବି **ଗଙ୍ଗาଧର ମେହେର**ଙ୍କ ପ୍ରସିଦ୍ଧ କାବ୍ୟ 'ତପସ୍ୱିନୀ' ର ଚତୁର୍ଥ ସର୍ଗରୁ ସଂଗୃହୀତ |
+ଏହି କବିତାଟି ସ୍ୱଭାବ କବି **ଗଙ୍ଗାଧର ମେହେର**ଙ୍କ ପ୍ରସିଦ୍ଧ କାବ୍ୟ 'ତପସ୍ୱିନୀ' ର ଚତୁର୍ଥ ସର୍ଗରୁ ସଂଗୃହୀତ |
 
 ---
 
