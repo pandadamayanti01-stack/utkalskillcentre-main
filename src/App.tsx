@@ -3851,22 +3851,73 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
               {language === 'en' ? 'Personalized Learning' : 'ଆପଣଙ୍କ ପାଇଁ ବ୍ୟକ୍ତିଗତ ଶିକ୍ଷା'}
             </div>
             
-            <h1 className="text-4xl xl:text-5xl font-black text-white leading-normal mb-4 tracking-tight">
+            <h1 className="text-3xl xl:text-4xl font-black text-white leading-normal mb-2 tracking-tight">
               {language === 'en' ? (
-                <>Odisha's #1 AI Learning App for <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">Class 1-10</span></>
+                <>Odisha's #1 AI Learning App for <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">Anganwadi, Class 1-10 & Teachers</span></>
               ) : (
-                <>ଓଡ଼ିଶାର ନମ୍ବର ୧ AI ପାଠପଢ଼ା ଆପ୍ - <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">ଶ୍ରେଣୀ ୧ ରୁ ୧୦</span></>
+                <>ଓଡ଼ିଶାର ନମ୍ବର ୧ AI ପାଠପଢ଼ା ଆପ୍ - <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">ଅଙ୍ଗନୱାଡ଼ି, ପ୍ରଥମ ରୁ ଦଶମ ଏବଂ ଶିକ୍ଷକ</span></>
               )}
             </h1>
             
-            <p className="text-base text-slate-400 mb-4 leading-relaxed">
+            <p className="text-sm text-slate-400 mb-2 leading-relaxed">
               {language === 'en' 
-                ? 'Access complete textbooks, revision notes, daily practice questions, mock exams, and resolve all your doubts instantly in Odia and English with Gundulu, your personal Socratic AI study buddy.' 
-                : 'ବିଦ୍ୟାଳୟ ପାଠ୍ୟପୁସ୍ତକ, ସ୍ପେଶାଲ୍ ନୋଟ୍ସ, ଦୈନିକ MCQ ପରୀକ୍ଷା ଏବଂ ଗୁନ୍ଦୁଲୁ AI ଟ୍ୟୁଟର ସାହାଯ୍ୟରେ ସମସ୍ତ ଗଣିତ ଓ ବିଜ୍ଞାନ ପ୍ରଶ୍ନର ସମାଧାନ ତୁରନ୍ତ ଓଡ଼ିଆ ଓ ଇଂରାଜୀରେ ପାଆନ୍ତୁ।'}
+                ? 'From playful learning in Anganwadi (Shishu Vatika) and comprehensive Class 1-10 Odia Medium textbooks, to AI lesson planners for teachers—experience personalized, instant educational support in Odia and English with Gundulu AI.' 
+                : 'ଅଙ୍ଗନୱାଡ଼ି (ଶିଶୁ ବାଟିକା) ର ମଜାଦାର ଶିକ୍ଷା ଓ ପ୍ରଥମ ରୁ ଦଶମ ଶ୍ରେଣୀର ପାଠ୍ୟପୁସ୍ତକ ଠାରು ଆରମ୍ଭ କରି ଶିକ୍ଷକମାନଙ୍କ ପାଇଁ AI ଲେସନ୍ ପ୍ଲାନର୍ ପର୍ଯ୍ୟନ୍ତ—ଗୁଣ୍ଡୁଲୁ AI ସହିତ ଓଡ଼ିଆ ଏବଂ ଇଂରାଜୀରେ ପାଆନ୍ତୁ ବ୍ୟକ୍ତିଗତ ଶିକ୍ଷା ସହାୟତା।'}
             </p>
 
-            {/* Interface Mockup / Floating Elements */}
-            <div className="relative h-64 w-full mt-4">
+            {/* Three-Card Profile Grid (Compact Layout) */}
+            <div className="grid grid-cols-3 gap-3 my-3">
+              {/* Card 1: Anganwadi */}
+              <div className="relative group py-2 px-3 rounded-xl border border-rose-500/15 bg-rose-500/5 backdrop-blur-md shadow-md transition-all duration-300 hover:border-rose-400/30 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(244,63,94,0.1)] flex flex-col items-start text-left">
+                <h3 className="text-white text-xs font-black tracking-tight mb-0.5 font-['Outfit'] flex items-center gap-1.5">
+                  <span className="text-sm">🧸</span>
+                  <span>{language === 'en' ? 'Shishu Vatika' : 'ଶିଶୁ ବାଟିକା'}</span>
+                </h3>
+                <span className="text-[8px] font-black text-rose-400 uppercase tracking-wider mb-1 leading-none">
+                  {language === 'en' ? 'Anganwadi' : 'ଅଙ୍ଗନୱାଡ଼ି'}
+                </span>
+                <p className="text-[9px] text-slate-400 leading-tight font-semibold">
+                  {language === 'en' 
+                    ? 'Rhymes, stories, and drawing slate' 
+                    : 'ମଜାଦାର ଗପ, ଗୀତ ଏବଂ ସ୍ଲେଟ୍'}
+                </p>
+              </div>
+
+              {/* Card 2: Class 1-10 */}
+              <div className="relative group py-2 px-3 rounded-xl border border-emerald-500/15 bg-emerald-500/5 backdrop-blur-md shadow-md transition-all duration-300 hover:border-emerald-400/30 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(16,185,129,0.1)] flex flex-col items-start text-left">
+                <h3 className="text-white text-xs font-black tracking-tight mb-0.5 font-['Outfit'] flex items-center gap-1.5">
+                  <span className="text-sm">📚</span>
+                  <span>{language === 'en' ? 'Class 1 to 10' : 'ପ୍ରଥମ ରୁ ଦଶମ'}</span>
+                </h3>
+                <span className="text-[8px] font-black text-emerald-400 uppercase tracking-wider mb-1 leading-none">
+                  {language === 'en' ? 'Odia Medium' : 'ସ୍କୁଲ୍ ପାଠ୍ୟକ୍ରମ'}
+                </span>
+                <p className="text-[9px] text-slate-400 leading-tight font-semibold">
+                  {language === 'en' 
+                    ? 'Books, notes & AI doubt solver' 
+                    : 'ବହି, ନୋଟ୍ସ ଓ AI ସନ୍ଦେହ ସମାଧାନ'}
+                </p>
+              </div>
+
+              {/* Card 3: Teachers */}
+              <div className="relative group py-2 px-3 rounded-xl border border-purple-500/15 bg-purple-500/5 backdrop-blur-md shadow-md transition-all duration-300 hover:border-purple-400/30 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(168,85,247,0.1)] flex flex-col items-start text-left">
+                <h3 className="text-white text-xs font-black tracking-tight mb-0.5 font-['Outfit'] flex items-center gap-1.5">
+                  <span className="text-sm">👩‍🏫</span>
+                  <span>{language === 'en' ? 'Teacher Hub' : 'ଶିକ୍ଷକ ବିଭାଗ'}</span>
+                </h3>
+                <span className="text-[8px] font-black text-purple-400 uppercase tracking-wider mb-1 leading-none">
+                  {language === 'en' ? 'Educator Access' : 'ଶିକ୍ଷକ ବିଶେଷ ସୁବିଧା'}
+                </span>
+                <p className="text-[9px] text-slate-400 leading-tight font-semibold">
+                  {language === 'en' 
+                    ? 'AI lesson planner & test generator' 
+                    : 'AI ଲେସନ୍ ପ୍ଲାନର୍ ଓ ପ୍ରଶ୍ନପତ୍ର'}
+                </p>
+              </div>
+            </div>
+
+            {/* Interface Mockup / Floating Elements (Compact Height) */}
+            <div className="relative h-48 w-full mt-2">
               {/* Main Core */}
               <motion.div 
                 animate={{
