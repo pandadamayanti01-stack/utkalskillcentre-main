@@ -2055,20 +2055,24 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
 
   const downloadPosterImage = async () => {
     setGenerating(true);
+    const activeFont = questionFont === 'Patrick Hand' ? '"Patrick Hand"' : questionFont;
     try {
       try {
         await Promise.race([
           Promise.all([
-            document.fonts.load('bold 24px Kalam'),
-            document.fonts.load('bold 18px Kalam'),
-            document.fonts.load('italic 15px Caveat'),
-            document.fonts.load('bold 24px Outfit'),
-            document.fonts.load('bold 24px "Patrick Hand"')
+            document.fonts.ready,
+            document.fonts.load(`bold 24px ${activeFont}`),
+            document.fonts.load(`bold 22px ${activeFont}`),
+            document.fonts.load(`bold 18px ${activeFont}`),
+            document.fonts.load(`bold 16px ${activeFont}`),
+            document.fonts.load(`bold 20px ${activeFont}`),
+            document.fonts.load('italic 24px Caveat'),
+            document.fonts.load('italic 15px Caveat')
           ]),
-          new Promise((resolve) => setTimeout(resolve, 2000))
+          new Promise((resolve) => setTimeout(resolve, 2500))
         ]);
       } catch (fontErr) {
-        console.warn('Font loading failed, proceeding with system fonts:', fontErr);
+        console.warn('Font loading failed, proceeding with system fonts fallback:', fontErr);
       }
 
       // Preload all question diagrams
@@ -2098,8 +2102,6 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       canvas.height = 1920;
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
-
-      const activeFont = questionFont === 'Patrick Hand' ? '"Patrick Hand"' : questionFont;
       const theme = SUBJECT_THEMES[getSubjectCategory(selectedSubject)] || SUBJECT_THEMES.math;
 
       // Resolve colors based on paperStyle and fallback to subject theme
@@ -2457,7 +2459,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.stroke();
 
       ctx.fillStyle = primaryColor;
-      ctx.font = 'bold 18px Kalam';
+      ctx.font = `bold 18px ${activeFont}`;
       ctx.fillText(`Date: ${dateStr}`, bx + 15, by + 32);
       ctx.fillText(`Page No.: ${pageNo}`, bx + 15, by + 80);
 
