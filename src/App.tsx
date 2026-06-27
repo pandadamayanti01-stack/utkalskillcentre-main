@@ -8043,6 +8043,19 @@ function LeaderboardView({ leaderboard, language, onBack, following, user, onTog
   );
 }
 
+const escapeXml = (str: string): string => {
+  return str.replace(/[<>&'"]/g, (c) => {
+    switch (c) {
+      case '<': return '&lt;';
+      case '>': return '&gt;';
+      case '&': return '&amp;';
+      case '\'': return '&apos;';
+      case '"': return '&quot;';
+      default: return c;
+    }
+  });
+};
+
 const getGenerativeTextbookCover = (classKey: string, subjectKey: string, title: string): string => {
   const odiaClasses: Record<string, string> = {
     class1: "ପ୍ରଥମ ଶ୍ରେଣୀ",
@@ -8111,6 +8124,9 @@ const getGenerativeTextbookCover = (classKey: string, subjectKey: string, title:
   const odiaClass = odiaClasses[cleanClass] || odiaClasses[classKey] || classKey;
   const odiaSubject = odiaSubjects[subjectKey] || subjectKey;
 
+  const displayClass = escapeXml(odiaClass.toUpperCase());
+  const displaySubject = escapeXml(odiaSubject);
+
   // Determine theme color and pattern based on subject
   let gradient = "from-emerald-500 via-teal-600 to-slate-800";
   let decorativePattern = "";
@@ -8126,6 +8142,28 @@ const getGenerativeTextbookCover = (classKey: string, subjectKey: string, title:
         <line x1="50" y1="250" x2="350" y2="250" />
       </g>
     `;
+  } else if (subLower.includes('history') || subLower.includes('social_science') || subLower.includes('hist')) {
+    gradient = "from-amber-600 via-orange-600 to-amber-800";
+    decorativePattern = `
+      <g stroke="white" stroke-opacity="0.08" stroke-width="2" fill="none">
+        <rect x="120" y="150" width="160" height="200" rx="10" />
+        <line x1="160" y1="150" x2="160" y2="350" />
+        <line x1="200" y1="150" x2="200" y2="350" />
+        <line x1="240" y1="150" x2="240" y2="350" />
+        <circle cx="200" cy="250" r="50" stroke-dasharray="4,4" />
+      </g>
+    `;
+  } else if (subLower.includes('geography') || subLower.includes('geo')) {
+    gradient = "from-teal-500 via-emerald-600 to-slate-800";
+    decorativePattern = `
+      <g stroke="white" stroke-opacity="0.08" stroke-width="2" fill="none">
+        <circle cx="200" cy="250" r="110" />
+        <ellipse cx="200" cy="250" rx="110" ry="40" />
+        <ellipse cx="200" cy="250" rx="40" ry="110" />
+        <line x1="200" y1="140" x2="200" y2="360" />
+        <line x1="90" y1="250" x2="310" y2="250" />
+      </g>
+    `;
   } else if (subLower.includes('science') || subLower.includes('jigyasa') || subLower.includes('bignana') || subLower.includes('physical') || subLower.includes('life')) {
     gradient = "from-cyan-500 via-blue-600 to-indigo-800";
     decorativePattern = `
@@ -8135,7 +8173,7 @@ const getGenerativeTextbookCover = (classKey: string, subjectKey: string, title:
         <circle cx="200" cy="250" r="10" fill="white" fill-opacity="0.1" />
       </g>
     `;
-  } else if (subLower.includes('social') || subLower.includes('samajika') || subLower.includes('geography') || subLower.includes('history')) {
+  } else if (subLower.includes('social') || subLower.includes('samajika')) {
     gradient = "from-amber-500 via-orange-600 to-red-800";
     decorativePattern = `
       <g stroke="white" stroke-opacity="0.08" stroke-width="2" fill="none">
@@ -8194,7 +8232,7 @@ const getGenerativeTextbookCover = (classKey: string, subjectKey: string, title:
   const midColor = colorMap[colors[1]] || '#059669';
   const endColor = colorMap[colors[2]] || '#1e293b';
 
-  const displayTitle = title.length > 22 ? title.substring(0, 19) + "..." : title;
+  const displayTitle = escapeXml(title.length > 22 ? title.substring(0, 19) + "..." : title);
 
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 533" width="100%" height="100%">
@@ -8217,9 +8255,9 @@ const getGenerativeTextbookCover = (classKey: string, subjectKey: string, title:
       <!-- Top Header (Odia Subject Name & Class Name) -->
       <g transform="translate(200, 80)" text-anchor="middle">
         <!-- Class Name -->
-        <text y="0" fill="white" fill-opacity="0.6" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="900" letter-spacing="1.5">${odiaClass.toUpperCase()}</text>
+        <text y="0" fill="white" fill-opacity="0.6" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="900" letter-spacing="1.5">${displayClass}</text>
         <!-- Subject Name -->
-        <text y="35" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="900">${odiaSubject}</text>
+        <text y="35" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="900">${displaySubject}</text>
       </g>
 
       <!-- Center Mascot Crest -->
