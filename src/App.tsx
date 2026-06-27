@@ -1823,7 +1823,7 @@ export default function App() {
 
   const loadTextbooks = useCallback(async () => {
     if (!user) return;
-    const cacheKey = 'textbooks';
+    const cacheKey = 'textbooks_v2';
     const cached = getCachedData<Textbook[]>(cacheKey, 1800000); // 30 mins
     if (cached) {
       setTextbooks(cached);
