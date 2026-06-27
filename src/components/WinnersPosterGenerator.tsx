@@ -46,6 +46,8 @@ export function WinnersPosterGenerator({ onBack }: { onBack: () => void }) {
   const [mascotX, setMascotX] = useState(820);
   const [mascotY, setMascotY] = useState(840);
   const [mascotScale, setMascotScale] = useState(0.4);
+  const [mascotRotation, setMascotRotation] = useState(0);
+  const [mascotFlip, setMascotFlip] = useState(false);
 
   // Auto-align mascot coordinates based on aspect ratio defaults
   useEffect(() => {
@@ -53,14 +55,20 @@ export function WinnersPosterGenerator({ onBack }: { onBack: () => void }) {
       setMascotX(820);
       setMascotY(840);
       setMascotScale(0.4);
+      setMascotRotation(0);
+      setMascotFlip(false);
     } else if (aspectRatio === '9_16') {
       setMascotX(540);
       setMascotY(1520);
       setMascotScale(0.55);
+      setMascotRotation(0);
+      setMascotFlip(false);
     } else if (aspectRatio === '16_9') {
       setMascotX(450);
       setMascotY(800);
       setMascotScale(0.45);
+      setMascotRotation(0);
+      setMascotFlip(true); // default flipped horizontally to point right towards list
     }
   }, [aspectRatio]);
 
@@ -83,6 +91,8 @@ export function WinnersPosterGenerator({ onBack }: { onBack: () => void }) {
     mascotX,
     mascotY,
     mascotScale,
+    mascotRotation,
+    mascotFlip,
     photoLoadedToken
   ]);
 
@@ -488,13 +498,24 @@ export function WinnersPosterGenerator({ onBack }: { onBack: () => void }) {
         const destW = origW * mascotScale;
         const destH = origH * mascotScale;
 
+        ctx.save();
+        // Translate to pivot center
+        ctx.translate(mascotX, mascotY);
+        // Rotate
+        ctx.rotate((mascotRotation * Math.PI) / 180);
+        // Flip / mirror horizontally
+        if (mascotFlip) {
+          ctx.scale(-1, 1);
+        }
+        // Draw centered on pivot
         ctx.drawImage(
           mascotImg, 
-          mascotX - destW / 2, 
-          mascotY - destH / 2, 
+          -destW / 2, 
+          -destH / 2, 
           destW, 
           destH
         );
+        ctx.restore();
       };
     }
   };
@@ -768,6 +789,34 @@ export function WinnersPosterGenerator({ onBack }: { onBack: () => void }) {
                     onChange={(e) => setMascotScale(parseInt(e.target.value, 10) / 100)}
                     className="w-full accent-emerald-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer"
                   />
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-between text-[9px] font-black text-slate-400 uppercase">
+                    <span>Mascot Rotation (Angle)</span>
+                    <span>{mascotRotation}°</span>
+                  </div>
+                  <input 
+                    type="range" 
+                    min="-180" 
+                    max="180" 
+                    value={mascotRotation} 
+                    onChange={(e) => setMascotRotation(parseInt(e.target.value, 10))}
+                    className="w-full accent-emerald-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between pt-1">
+                  <span className="text-[9px] font-black text-slate-400 uppercase">Flip / Point Right (Mirror)</span>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      checked={mascotFlip} 
+                      onChange={(e) => setMascotFlip(e.target.checked)}
+                      className="sr-only peer"
+                    />
+                    <div className="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-500 after:border-slate-400 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500 peer-checked:after:bg-white peer-checked:after:border-transparent"></div>
+                  </label>
                 </div>
               </div>
             </div>
