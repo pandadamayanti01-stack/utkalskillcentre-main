@@ -8212,14 +8212,14 @@ const getGenerativeTextbookCover = (classKey: string, subjectKey: string, title:
       <line x1="25" y1="0" x2="25" y2="533" stroke="white" stroke-opacity="0.08" stroke-width="1" />
 
       <!-- Decorative Overlays -->
-      \${decorativePattern}
+      ${decorativePattern}
 
       <!-- Top Header (Odia Subject Name & Class Name) -->
       <g transform="translate(200, 80)" text-anchor="middle">
         <!-- Class Name -->
-        <text y="0" fill="white" fill-opacity="0.6" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="900" letter-spacing="1.5">\${odiaClass.toUpperCase()}</text>
+        <text y="0" fill="white" fill-opacity="0.6" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="900" letter-spacing="1.5">${odiaClass.toUpperCase()}</text>
         <!-- Subject Name -->
-        <text y="35" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="900">\${odiaSubject}</text>
+        <text y="35" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="900">${odiaSubject}</text>
       </g>
 
       <!-- Center Mascot Crest -->
@@ -8234,7 +8234,7 @@ const getGenerativeTextbookCover = (classKey: string, subjectKey: string, title:
       <rect x="40" y="380" width="320" height="110" rx="18" fill="#020617" fill-opacity="0.75" stroke="white" stroke-opacity="0.05" stroke-width="1.5" />
       
       <!-- Odia Title Display -->
-      <text x="60" y="425" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="800">\${displayTitle}</text>
+      <text x="60" y="425" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="800">${displayTitle}</text>
       <text x="60" y="458" fill="white" fill-opacity="0.4" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="900" letter-spacing="1.2">UTKAL TEXTBOOK • ଉତ୍କଳ ପାଠ୍ୟପୁସ୍ତକ</text>
     </svg>
   `;
