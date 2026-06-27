@@ -8046,46 +8046,10 @@ function LeaderboardView({ leaderboard, language, onBack, following, user, onTog
 function TextbooksView({ user, textbooks, language, onBack }: any) {
   const [subjectFilter, setSubjectFilter] = useState('all');
   const [teacherClassFilter, setTeacherClassFilter] = useState('all');
-  const [isLinking, setIsLinking] = useState(false);
 
   const handleDownload = async (book: Textbook) => {
     if (!auth.currentUser) return;
-    
-    // Check if user has an email
-    if (!auth.currentUser.email) {
-      setIsLinking(true);
-      try {
-        const provider = new GoogleAuthProvider();
-        const result = await linkWithPopup(auth.currentUser, provider);
-        const newEmail = result.user?.email;
-        
-        // Update user document in Firestore
-        if (newEmail) {
-          await updateDoc(doc(firestore, 'users', user.id), {
-            email: newEmail
-          });
-        }
-        
-        // Open the download URL
-        window.open(getDirectDriveDownloadUrl(book.download_url), '_blank');
-      } catch (error: any) {
-        console.error("Error linking Google account:", error);
-        if (error.code === 'auth/credential-already-in-use') {
-          alert(language === 'en' ? "This Google account is already linked to another user. Please try a different account." : "ଏହି Google ଆକาଉଣ୍ଟ୍ ପୂର୍ବରୁ ଅନ୍ୟ ଏକ ଉପଭୋକ୍ତା ସହିତ ଲିଙ୍କ୍ ହୋଇଛି | ଦୟାକରି ଏକ ଭିନ୍ନ ଆକାଉଣ୍ଟ୍ ଚେଷ୍ଟା କରନ୍ତୁ |");
-        } else if (error.code === 'auth/popup-closed-by-user') {
-          console.log("User cancelled Google linking");
-        } else {
-          alert(language === 'en' ? "Failed to link Google account. " + error.message : "Google ଆକାଉଣ୍ଟ୍ ଲିଙ୍କ୍ କରିବାରେ ବିଫଳ ହୋଇଛି | " + error.message);
-        }
-        // Allow download even if linking fails or is cancelled
-        window.open(getDirectDriveDownloadUrl(book.download_url), '_blank');
-      } finally {
-        setIsLinking(false);
-      }
-    } else {
-      // Already has email, just open
-      window.open(getDirectDriveDownloadUrl(book.download_url), '_blank');
-    }
+    window.open(getDirectDriveDownloadUrl(book.download_url), '_blank');
   };
 
   const boardKey = React.useMemo(() => {
@@ -8266,11 +8230,10 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
                 <div className="flex gap-2">
                   <button 
                     onClick={() => handleDownload(book)}
-                    disabled={isLinking}
-                    className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-900/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-900/20"
                   >
                     <Lucide.Download size={18} />
-                    {isLinking ? (language === 'en' ? 'Linking...' : 'ଲିଙ୍କ୍ ହେଉଛି...') : (language === 'en' ? 'Download PDF' : 'PDF ଡାଉନଲୋଡ୍')}
+                    {language === 'en' ? 'Download PDF' : 'PDF ଡାଉନଲୋଡ୍'}
                   </button>
                   <button 
                     onClick={() => {
