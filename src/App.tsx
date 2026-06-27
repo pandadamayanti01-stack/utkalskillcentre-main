@@ -8071,7 +8071,9 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
         const matchesSubject = subjectFilter === 'all' || book.subject === subjectFilter;
         return matchesClass && matchesSubject;
       }
-      const matchesClass = !user?.class || book.class?.toLowerCase() === user.class.toLowerCase();
+      const matchesClass = !user?.class || 
+        book.class?.toLowerCase() === user.class.toLowerCase() || 
+        book.class?.toLowerCase() === `class${user.class.toLowerCase()}`;
       const matchesBoard = !user?.board || book.board?.toLowerCase().includes(boardKey.toLowerCase()) || boardKey.toLowerCase().includes(book.board?.toLowerCase() || '');
       const matchesSubject = subjectFilter === 'all' || book.subject === subjectFilter;
       return matchesClass && matchesBoard && matchesSubject;
@@ -8092,7 +8094,7 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
     const subjects = new Set<string>(
       textbooks
         .filter((b: Textbook) => 
-          b.class?.toLowerCase() === user?.class?.toLowerCase() && 
+          (b.class?.toLowerCase() === user?.class?.toLowerCase() || b.class?.toLowerCase() === `class${user?.class?.toLowerCase()}`) && 
           b.board?.toLowerCase() === boardKey.toLowerCase()
         )
         .map((b: Textbook) => b.subject)
