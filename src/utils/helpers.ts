@@ -33,3 +33,19 @@ export const fetchJson = async (url: string, options?: RequestInit) => {
   }
   return res.json();
 };
+
+export const getDirectDriveDownloadUrl = (url: string): string => {
+  if (!url || typeof url !== 'string') return url || '';
+  
+  const fileDMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (fileDMatch && fileDMatch[1]) {
+    return `https://drive.google.com/uc?export=download&id=${fileDMatch[1]}`;
+  }
+  
+  const idMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (idMatch && idMatch[1]) {
+    return `https://drive.google.com/uc?export=download&id=${idMatch[1]}`;
+  }
+  
+  return url;
+};

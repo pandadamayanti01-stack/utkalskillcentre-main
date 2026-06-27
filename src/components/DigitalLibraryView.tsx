@@ -12,6 +12,7 @@ import { CHAPTERS_MAP } from '../data/chaptersMap';
 import { Gundulu3DLab } from './Gundulu3DLab';
 import { ConceptMapView } from './ConceptMapView';
 import { cleanMathNotation } from '../utils/cleaners';
+import { getDirectDriveDownloadUrl } from '../utils/helpers';
 export { cleanMathNotation };
 
 
@@ -958,7 +959,8 @@ Write your explanation in a friendly, encouraging, bilingual style (Odia and Eng
         const cache = await caches.open('utkal-textbooks-cache');
         const cachedMap: Record<string, boolean> = {};
         for (const chap of chapters) {
-          const url = chap.pdfUrl || chap.download_url || chap.driveUrl;
+          const rawUrl = chap.pdfUrl || chap.download_url || chap.driveUrl;
+          const url = getDirectDriveDownloadUrl(rawUrl);
           if (url) {
             const match = await cache.match(url);
             cachedMap[chap.id] = !!match;
@@ -976,7 +978,8 @@ Write your explanation in a friendly, encouraging, bilingual style (Odia and Eng
 
   const downloadChapterOffline = async (chap: any, e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent opening the reader view
-    const url = chap.pdfUrl || chap.download_url || chap.driveUrl;
+    const rawUrl = chap.pdfUrl || chap.download_url || chap.driveUrl;
+    const url = getDirectDriveDownloadUrl(rawUrl);
     if (!url) return;
 
     setDownloadingChapters(prev => ({ ...prev, [chap.id]: true }));
@@ -1033,7 +1036,7 @@ Write your explanation in a friendly, encouraging, bilingual style (Odia and Eng
     setSelectedChapter(null);
   }, [selectedClass]);
 
-  const effectivePdfUrl = selectedChapter ? (selectedChapter.pdfUrl || selectedChapter.download_url || selectedChapter.driveUrl || '') : '';
+  const effectivePdfUrl = selectedChapter ? getDirectDriveDownloadUrl(selectedChapter.pdfUrl || selectedChapter.download_url || selectedChapter.driveUrl || '') : '';
 
   // Material reader settings
   const [readerMode, setReaderMode] = useState<'notes' | 'concept_map' | 'pdf' | 'video' | '3d'>('notes');

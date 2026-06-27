@@ -82,6 +82,7 @@ import LibraryPortalGate from './components/LibraryPortalGate';
 import { Capacitor } from '@capacitor/core';
 import { PushNotifications } from '@capacitor/push-notifications';
 import { previewDatabase } from './data/previewDatabase';
+import { getDirectDriveDownloadUrl } from './utils/helpers';
 
 // Reusable resilient lazy loader that catches chunk/asset preloading errors
 // and automatically reloads the page to retrieve the latest deployed assets.
@@ -4394,7 +4395,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
                           class: tb.class,
                           subject: 'shishu_vatika',
                           title: tb.title,
-                          pdfUrl: tb.download_url || tb.driveUrl,
+                          pdfUrl: getDirectDriveDownloadUrl(tb.download_url || tb.driveUrl),
                           number: 1,
                           description: 'ଶିଶୁ ବାଟିକା ସଂପୂର୍ଣ୍ଣ ପାଠ୍ୟପୁସ୍ତକ'
                         }))
@@ -8066,24 +8067,24 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
         }
         
         // Open the download URL
-        window.open(book.download_url, '_blank');
+        window.open(getDirectDriveDownloadUrl(book.download_url), '_blank');
       } catch (error: any) {
         console.error("Error linking Google account:", error);
         if (error.code === 'auth/credential-already-in-use') {
-          alert(language === 'en' ? "This Google account is already linked to another user. Please try a different account." : "ଏହି Google ଆକାଉଣ୍ଟ୍ ପୂର୍ବରୁ ଅନ୍ୟ ଏକ ଉପଭୋକ୍ତା ସହିତ ଲିଙ୍କ୍ ହୋଇଛି | ଦୟାକରି ଏକ ଭିନ୍ନ ଆକାଉଣ୍ଟ୍ ଚେଷ୍ଟା କରନ୍ତୁ |");
+          alert(language === 'en' ? "This Google account is already linked to another user. Please try a different account." : "ଏହି Google ଆକาଉଣ୍ଟ୍ ପୂର୍ବରୁ ଅନ୍ୟ ଏକ ଉପଭୋକ୍ତା ସହିତ ଲିଙ୍କ୍ ହୋଇଛି | ଦୟାକରି ଏକ ଭିନ୍ନ ଆକାଉଣ୍ଟ୍ ଚେଷ୍ଟା କରନ୍ତୁ |");
         } else if (error.code === 'auth/popup-closed-by-user') {
           console.log("User cancelled Google linking");
         } else {
           alert(language === 'en' ? "Failed to link Google account. " + error.message : "Google ଆକାଉଣ୍ଟ୍ ଲିଙ୍କ୍ କରିବାରେ ବିଫଳ ହୋଇଛି | " + error.message);
         }
         // Allow download even if linking fails or is cancelled
-        window.open(book.download_url, '_blank');
+        window.open(getDirectDriveDownloadUrl(book.download_url), '_blank');
       } finally {
         setIsLinking(false);
       }
     } else {
       // Already has email, just open
-      window.open(book.download_url, '_blank');
+      window.open(getDirectDriveDownloadUrl(book.download_url), '_blank');
     }
   };
 
@@ -8410,7 +8411,7 @@ function OfflineNotesView({ language, onBack }: { language: 'or' | 'en', onBack:
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <a href={book.download_url} target="_blank" rel="noopener noreferrer" className="p-3 bg-emerald-500/10 text-emerald-500 rounded-xl hover:bg-emerald-500/20 transition-all">
+                    <a href={getDirectDriveDownloadUrl(book.download_url)} target="_blank" rel="noopener noreferrer" className="p-3 bg-emerald-500/10 text-emerald-500 rounded-xl hover:bg-emerald-500/20 transition-all">
                       <Lucide.Download size={18} />
                     </a>
                     <button 
