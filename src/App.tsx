@@ -8446,49 +8446,59 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
               : (book.title?.[language as 'en' | 'or'] || book.title?.en || book.title?.or || 'Untitled');
 
             return (
-            <motion.div whileHover={{ y: -5 }} key={book.id} className="group bg-slate-900/50 border border-white/5 rounded-3xl overflow-hidden hover:border-emerald-500/50 transition-all flex flex-col">
-              <div className="aspect-[3/4] relative overflow-hidden bg-slate-950">
-                <img 
-                  src={getGenerativeTextbookCover(book.class, book.subject, bookTitle)} 
-                  alt={bookTitle}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-              <div className="p-6 flex flex-col flex-1">
-                <h3 className="text-lg font-bold text-white mb-4 line-clamp-2 flex-1">{bookTitle}</h3>
-                <div className="flex gap-2">
-                  <button 
-                    onClick={() => handleDownload(book)}
-                    className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-900/20"
-                  >
-                    <Lucide.Download size={18} />
-                    {language === 'en' ? 'Download PDF' : 'PDF ଡାଉନଲୋଡ୍'}
-                  </button>
-                  <button 
-                    onClick={() => {
-                      OfflineService.saveTextbook(book.id, book);
-                      alert(language === 'en' ? 'Textbook saved for offline!' : 'ପାଠ୍ୟପୁସ୍ତକ ଅଫଲାଇନ୍ ପାଇଁ ସେଭ୍ ହୋଇଛି!');
-                    }}
-                    className="p-3 bg-white/5 border border-white/10 text-slate-400 hover:text-white rounded-xl transition-all"
-                  >
-                    <Lucide.Save size={18} />
-                  </button>
+              <motion.div 
+                whileHover={{ y: -6 }} 
+                key={book.id} 
+                className="group relative bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-[2rem] overflow-hidden hover:border-emerald-500/30 hover:bg-slate-900/60 hover:shadow-[0_20px_50px_rgba(16,185,129,0.1)] transition-all duration-300 flex flex-col"
+              >
+                {/* Radial Glow Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/0 via-teal-500/0 to-emerald-500/0 group-hover:from-emerald-500/5 group-hover:to-teal-500/5 transition-all duration-500 pointer-events-none" />
+
+                {/* Book Cover Frame Container */}
+                <div className="aspect-[3/4] relative overflow-hidden bg-slate-950/80 m-4 mb-0 rounded-2xl border border-white/5 shadow-2xl shadow-black/50">
+                  <img 
+                    src={getGenerativeTextbookCover(book.class, book.subject, bookTitle)} 
+                    alt={bookTitle}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
                 </div>
-                <a 
-                  href={`https://wa.me/?text=${encodeURIComponent(
-                    language === 'en' 
-                      ? `Check out this textbook: ${bookTitle}\nDownload here: ${book.download_url}` 
-                      : `ଏହି ପାଠ୍ୟପୁସ୍ତକଟି ଦେଖନ୍ତୁ: ${bookTitle}\nଏଠାରୁ ଡାଉନଲୋଡ୍ କରନ୍ତୁ: ${book.download_url}`
-                  )}`}
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="w-full py-3 mt-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 rounded-xl font-bold flex items-center justify-center gap-2 transition-all border border-emerald-500/20"
-                >
-                  <Lucide.MessageCircle size={18} />
-                  {language === 'en' ? 'Share on WhatsApp' : 'WhatsApp ରେ ସେୟାର କରନ୍ତୁ'}
-                </a>
-              </div>
-            </motion.div>
+
+                {/* Details and Actions */}
+                <div className="p-5 flex flex-col flex-1 justify-between gap-5 relative z-10">
+                  <div className="space-y-2.5">
+                    <span className="inline-flex px-2.5 py-1 bg-white/5 text-slate-400 text-[10px] font-black uppercase tracking-wider rounded-md border border-white/5">
+                      {translations[language].subjects[book.subject as keyof typeof translations.en.subjects] || book.subject}
+                    </span>
+                    <h3 className="text-base font-extrabold text-white line-clamp-2 leading-snug group-hover:text-emerald-400 transition-colors duration-300">
+                      {bookTitle}
+                    </h3>
+                  </div>
+
+                  {/* Actions Row */}
+                  <div className="flex gap-2.5 mt-auto">
+                    <button 
+                      onClick={() => handleDownload(book)}
+                      className="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 hover:text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-[0_4px_15px_rgba(16,185,129,0.25)] hover:shadow-[0_4px_25px_rgba(16,185,129,0.45)] active:scale-95 duration-200"
+                    >
+                      <Lucide.Download size={16} />
+                      <span>{language === 'en' ? 'Download' : 'ଡାଉନଲୋଡ୍'}</span>
+                    </button>
+                    <a 
+                      href={`https://wa.me/?text=${encodeURIComponent(
+                        language === 'en' 
+                          ? `Check out this textbook: ${bookTitle}\nDownload here: ${book.download_url}` 
+                          : `ଏହି ପାଠ୍ୟପୁସ୍ତକଟି ଦେଖନ୍ତୁ: ${bookTitle}\nଏଠାରୁ ଡାଉନଲୋଡ୍ କରନ୍ତୁ: ${book.download_url}`
+                      )}`}
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="p-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-500/50 rounded-xl transition-all flex items-center justify-center active:scale-95 duration-200 shadow-md shadow-emerald-500/5"
+                      title={language === 'en' ? 'Share on WhatsApp' : 'WhatsApp ରେ ସେୟାର କରନ୍ତୁ'}
+                    >
+                      <Lucide.MessageCircle size={20} className="stroke-[2.5]" />
+                    </a>
+                  </div>
+                </div>
+              </motion.div>
             );
           })}
         </motion.div>
