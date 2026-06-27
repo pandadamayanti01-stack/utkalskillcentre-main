@@ -37,14 +37,19 @@ export const fetchJson = async (url: string, options?: RequestInit) => {
 export const getDirectDriveDownloadUrl = (url: string): string => {
   if (!url || typeof url !== 'string') return url || '';
   
+  let fileId = '';
   const fileDMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
   if (fileDMatch && fileDMatch[1]) {
-    return `https://drive.google.com/uc?export=download&id=${fileDMatch[1]}`;
+    fileId = fileDMatch[1];
+  } else {
+    const idMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (idMatch && idMatch[1]) {
+      fileId = idMatch[1];
+    }
   }
   
-  const idMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  if (idMatch && idMatch[1]) {
-    return `https://drive.google.com/uc?export=download&id=${idMatch[1]}`;
+  if (fileId) {
+    return `https://drive.google.com/uc?export=download&id=${fileId}&authuser=0`;
   }
   
   return url;
