@@ -1342,7 +1342,7 @@ export default function Login({ language, translations, setLanguage, setRegData 
       {/* GUEST DASHBOARD OVERLAY */}
       <AnimatePresence>
         {showGuestDashboard && (() => {
-          const language = 'or'; // Force Odia language inside the Guest Profile Zone
+          const language = 'or' as any; // Force Odia language inside the Guest Profile Zone
           return (
             <motion.div
               initial={{ opacity: 0 }}

@@ -81,6 +81,7 @@ import { cleanMathNotation } from './utils/cleaners';
 import LibraryPortalGate from './components/LibraryPortalGate';
 import { Capacitor } from '@capacitor/core';
 import { PushNotifications } from '@capacitor/push-notifications';
+import { previewDatabase } from './data/previewDatabase';
 
 // Reusable resilient lazy loader that catches chunk/asset preloading errors
 // and automatically reloads the page to retrieve the latest deployed assets.

@@ -2090,6 +2090,49 @@ async function startServer() {
     }
   });
 
+  function getOdiaClassName(cls: string): string {
+    const mapping: Record<string, string> = {
+      'sishuvatika(Anganwadi)': 'ଶିଶୁ ବାଟିକା (ଅଙ୍ଗନୱାଡ଼ି)',
+      'class1': 'ପ୍ରଥମ ଶ୍ରେଣୀ',
+      'class2': 'ଦ୍ୱିତୀୟ ଶ୍ରେଣୀ',
+      'class3': 'ତୃତୀୟ ଶ୍ରେଣୀ',
+      'class4': 'ଚତୁର୍ଥ ଶ୍ରେଣୀ',
+      'class5': 'ପଞ୍ଚମ ଶ୍ରେଣୀ',
+      'class6': 'ଷଷ୍ଠ ଶ୍ରେଣୀ',
+      'class7': 'ସପ୍ତମ ଶ୍ରେଣୀ',
+      'class8': 'ଅଷ୍ଟମ ଶ୍ରେଣୀ',
+      'class9': 'ନବମ ଶ୍ରେଣୀ',
+      'class10': 'ଦଶମ ଶ୍ରେଣୀ'
+    };
+    return mapping[cls] || cls;
+  }
+
+  function getOdiaSubjectName(sub: string): string {
+    const mapping: Record<string, string> = {
+      'shishu_vatika': 'ଶିଶୁ ବାଟିକା',
+      'ganita_khela': 'ଗଣିତ ଖେଳ',
+      'jhulana_1': 'ଝୁଲଣା ୧',
+      'maja_majare_ganita': 'ମଜା ମଜାରେ ଗଣିତ',
+      'jhulana_2': 'ଝୁଲଣା ୨',
+      'algebra': 'ବୀଜଗଣିତ',
+      'geometry': 'ଜ୍ୟାମିତି',
+      'physical_science': 'ଭୌତିକ ବିଜ୍ଞାନ',
+      'life_science': 'ଜୀବ ବିଜ୍ଞାନ',
+      'social_science': 'ଇତିହାସ',
+      'geography': 'ଭୂଗୋଳ',
+      'english': 'ଇଂରାଜୀ',
+      'english_grammar': 'ଇଂରାଜୀ ବ୍ୟାକରଣ',
+      'odia': 'ଓଡ଼ିଆ',
+      'odia_grammar': 'ଓଡ଼ିଆ ବ୍ୟାକରଣ',
+      'sanskrit': 'ସଂସ୍କୃତ',
+      'sanskrit_grammar': 'ସଂସ୍କୃତ ବ୍ୟାକରଣ',
+      'hindi': 'ହିନ୍ଦୀ',
+      'hindi_grammar': 'ହିନ୍ଦୀ ବ୍ୟାକରଣ',
+      'vocational': 'ବ୍ୟାବସାୟିକ ଶିକ୍ଷା'
+    };
+    return mapping[sub] || sub;
+  }
+
   app.post('/api/ai/generate-revision-poster', async (req, res) => {
     try {
       const { className, subjectName, chapterName, language, questionCount } = req.body;
@@ -2104,8 +2147,37 @@ async function startServer() {
         return res.status(503).json({ error: 'GEMINI_API_KEY and all rotator keys are missing on the server' });
       }
 
+      const displayClass = language === 'or' ? getOdiaClassName(className) : className;
+      const displaySubject = language === 'or' ? getOdiaSubjectName(subjectName) : subjectName;
+
+      const jsonStructureExample = language === 'or' ? `{
+        "questions": [
+          {
+            "id": 1,
+            "question": "*ସରଳ ସହସମୀକରଣ* ର ସଂଜ୍ଞା କଣ?",
+            "answer": "ଯେଉଁ ସମୀକରଣରେ ଅଜ୍ଞାତ ରାଶିର ସର୍ବୋଚ୍ଚ ଘାତ ଏକ ହୋଇଥାଏ, ତାହାକୁ ସରଳ ସହସମୀକରଣ କୁହାଯାଏ ।",
+            "sideNoteLabel": "ମନେରଖ!",
+            "sideNote": "ଏହାର ସାଧାରଣ ରୂପ ହେଉଛି ax + by + c = 0 ।",
+            "iconType": "axes",
+            "imagePrompt": "A clean vector diagram showing a cartesian coordinate system with a straight line intersecting the x and y axes, white background, textless."
+          }
+        ]
+      }` : `{
+        "questions": [
+          {
+            "id": 1,
+            "question": "What is a *linear equation*?",
+            "answer": "An equation between two variables that gives a straight line when plotted on a graph.",
+            "sideNoteLabel": "Remember!",
+            "sideNote": "The general form is ax + by + c = 0.",
+            "iconType": "axes",
+            "imagePrompt": "A clean vector diagram showing a cartesian coordinate system with a straight line intersecting the x and y axes, white background, textless."
+          }
+        ]
+      }`;
+
       const prompt = `You are an expert curriculum builder for BSE Odisha (Board of Secondary Education, Odisha) schools.
-      Create a set of ${count} high-level, conceptual, and analytical revision questions and answers for Class "${className}" in the subject "${subjectName}" for the Chapter: "${chapterName}".
+      Create a set of ${count} high-level, conceptual, and analytical revision questions and answers for Class "${displayClass}" in the subject "${displaySubject}" for the Chapter: "${chapterName}".
       The output should be generated in ${language === 'or' ? 'Odia (using clean Odia script)' : 'English'}.
       
       CRITICAL INSTRUCTIONS FOR QUESTION QUALITY & DIVERSITY:
@@ -2122,34 +2194,20 @@ async function startServer() {
       For each of the ${count} questions, generate:
       1. A short, highly relevant revision question. In the question text, identify the 1 or 2 most important keywords (such as the main topic, scientific term, or specific subject noun) and wrap them in single asterisks (e.g. "Which is the *famous lake* in Bhubaneswar?" or "*ସରଳ ସହସମୀକରଣ* କହିଲେ କଣ ବୁଝାଏ?"). Do not put asterisks on the question mark or outer punctuation.
       2. A concise and correct answer.
-      3. A side note label (MUST be one of: "Important!", "Key Fact", "Remember!", "Note", "Did You Know!", "Formula!").
+      3. A side note label (MUST be one of: "Important!", "Key Fact", "Remember!", "Note", "Did You Know!", "Formula!" in English, OR if generating in Odia, use their exact translations: "ଗୁରୁତ୍ଵପୂର୍ଣ୍ଣ!", "ମୁଖ୍ୟ ତଥ୍ୟ", "ମନେରଖ!", "ସୂଚନା", "ଆପଣ ଜାଣନ୍ତି କି!", "ସୂତ୍ର!").
       4. A brief 1-sentence supporting note details.
-      5. An icon type (MUST be one of: "temple", "flower", "mountain", "dance", "leader", "river", "sand", "school", "book", "deer", "mirror", "lens", "prism", "magnet", "concave_mirror", "axes", "triangle", "circle", "matrix", "integral", "beaker", "atom", "dna", "bulb", "globe", "quill", "slate", "puzzle", "palette", "sprout", "scroll"). Choose the icon that best represents the question topic:
-         - Math/Algebra/Geometry: Prefer "axes", "triangle", "circle", "matrix", or "integral".
-         - Science/Physics/Chemistry/Biology: Prefer "beaker", "atom", "dna", "bulb", "mirror", "lens", "prism", "magnet", or "sprout".
-         - Languages & Literature (Odia, English, Hindi, Sanskrit): Prefer "slate", "scroll", "quill", "book", or "school".
-         - Cognitive Reasoning / Comprehension (Bodha Kruti): Prefer "puzzle" or "bulb".
-         - Arts, Culture, Crafts & Vocational (Koshala / Skills): Prefer "palette", "sprout", "dance", "temple", "flower", "mountain", "river", "sand", "deer", or "globe".
+      5. An icon type (MUST be one of: "temple", "flower", "mountain", "dance", "leader", "river", "sand", "school", "book", "deer", "mirror", "lens", "prism", "magnet", "concave_mirror", "axes", "triangle", "circle", "matrix", "integral", "beaker", "atom", "dna", "bulb", "globe", "quill", "slate", "puzzle", "palette", "sprout", "scroll"). Choose the icon that best represents the question topic.
       6. A detailed English visual prompt (imagePrompt) describing a clean textbook-style diagram, graph, sketch, or illustration explaining or illustrating the mathematical/scientific concept of this specific question.
-         - CRITICAL: Even if the question and answer are in Odia, the imagePrompt MUST be in English.
+         - CRITICAL: Even if the question, answer, and sideNote are in Odia, the imagePrompt MUST be in English.
          - The prompt must specify visual elements only, be textless, and have a white background (e.g., "A clean vector diagram of a right-angled triangle showing sides a, b, c with a square angle indicator, white background, textless, no labels").
          - Do not include any words, text, letters, or writings in the prompt or in the generated image.
 
       Provide the output in JSON format with the following structure:
-      {
-        "questions": [
-          {
-            "id": 1,
-            "question": "Question 1 text...",
-            "answer": "Answer 1 text...",
-            "sideNoteLabel": "Key Fact",
-            "sideNote": "Supporting note text...",
-            "iconType": "book",
-            "imagePrompt": "Detailed English visual prompt for the question diagram..."
-          }
-        ]
-      }
-      Fill in all ${count} questions. Do not wrap the response in any markdown formatting or code blocks. Return ONLY the raw JSON object.`;
+      ${jsonStructureExample}
+      
+      Fill in all ${count} questions. Do not wrap the response in any markdown formatting or code blocks. Return ONLY the raw JSON object.
+      
+      CRITICAL LANGUAGE CONSTRAINT: Since the requested language is ${language === 'or' ? 'Odia' : 'English'}, all "question", "answer", "sideNoteLabel", and "sideNote" text fields MUST be written entirely in ${language === 'or' ? 'Odia script (ଓଡ଼ିଆ)' : 'English'}. Only the "imagePrompt" field must be in English. Do NOT mix English and Odia.`;
 
       let lastError = null;
       for (const keyToUse of rotatorKeys) {
