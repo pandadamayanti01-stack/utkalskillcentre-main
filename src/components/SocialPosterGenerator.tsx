@@ -429,15 +429,102 @@ function getClassOdiaHighlight(classKey: string) {
 }
 
 export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; onBack: () => void }) {
+  const DEFAULT_TEMPLATE_QUESTIONS: QuestionItem[] = [
+    {
+      id: 1,
+      question: 'x + y = 5 ଏବଂ x - y = 1 ହେଲେ x ର ମାନ କେତେ?',
+      answer: 'x = 3 (ସମାଧାନ: 2x = 6)',
+      sideNote: 'x ର ମାନ ପାଇଁ ସମୀକରଣ ଦ୍ୱୟକୁ ଯୋଗ କରନ୍ତୁ।',
+      sideNoteLabel: 'Important!',
+      iconType: 'axes'
+    },
+    {
+      id: 2,
+      question: 'ଦ୍ୱିଘାତ ସମୀକରଣ ax² + bx + c = 0 ର ପ୍ରଭେଦକ (Discriminant) କଣ?',
+      answer: 'D = b² - 4ac (ସୂତ୍ର)',
+      sideNote: 'ଯଦି D > 0, ମୂଳଦ୍ୱୟ ବାସ୍ତବ ଓ ଅସମାନ ହେବେ।',
+      sideNoteLabel: 'Remember!',
+      iconType: 'matrix'
+    },
+    {
+      id: 3,
+      question: 'ଯଦି 2x - 3 = 7, ତେବେ x ର ମାନ କେତେ ହେବ?',
+      answer: 'x = 5 (2x = 10)',
+      sideNote: 'ବିୟୋଗ 3 କୁ ଦକ୍ଷିଣ ପାର୍ଶ୍ୱକୁ ନେଲେ ଯୋଗ 3 ହେବ।',
+      sideNoteLabel: 'Key Fact',
+      iconType: 'axes'
+    },
+    {
+      id: 4,
+      question: 'ସମାନ୍ତର ପ୍ରଗତି (A.P.) 2, 5, 8, 11... ର 10ମ ପଦ କେତେ?',
+      answer: 't₁₀ = 29 (ସୂତ୍ର: a + 9d)',
+      sideNote: 'ଏଠାରେ ପ୍ରଥମ ପଦ a = 2 ଏବଂ ସାଧାରଣ ଅନ୍ତର d = 3 ।',
+      sideNoteLabel: 'Formula!',
+      iconType: 'triangle'
+    },
+    {
+      id: 5,
+      question: 'a + b = 8 ଏବଂ ab = 15 ହେଲେ, a² + b² ର ମାନ କେତେ?',
+      answer: 'a² + b² = 34 (ସୂତ୍ର: (a+b)² - 2ab)',
+      sideNote: '(a + b)² = a² + b² + 2ab ସୂତ୍ର ପ୍ରୟୋଗ କରନ୍ତୁ।',
+      sideNoteLabel: 'Remember!',
+      iconType: 'matrix'
+    },
+    {
+      id: 6,
+      question: 'x² - 5x + 6 = 0 ର ମୂଳଦ୍ୱୟର ଗୁଣଫଳ କେତେ?',
+      answer: 'ମୂଳଦ୍ୱୟର ଗୁଣଫଳ = 6 (ସୂତ୍ର: c/a)',
+      sideNote: 'ମୂଳଦ୍ୱୟର ସମଷ୍ଟି -b/a = 5 ଏବଂ ଗୁଣଫଳ c/a ।',
+      sideNoteLabel: 'Key Fact',
+      iconType: 'circle'
+    },
+    {
+      id: 7,
+      question: 'ସରଳ ସହସମୀକରଣର ଅନନ୍ୟ ସମାଧାନ ପାଇଁ ସର୍ତ୍ତ କଣ?',
+      answer: 'a₁/a₂ ≠ b₁/b₂',
+      sideNote: 'ସମୀକରଣ ଦ୍ୱୟ ସଙ୍ଗତ ଓ ସ୍ୱତନ୍ତ୍ର ହେବେ।',
+      sideNoteLabel: 'Important!',
+      iconType: 'axes'
+    },
+    {
+      id: 8,
+      question: 'ସମାନ୍ତର ପ୍ରଗତିର ପ୍ରଥମ n ସଂଖ୍ୟକ ପଦର ସମଷ୍ଟି ସୂତ୍ର କଣ?',
+      answer: 'S_n = n/2 * [2a + (n-1)d]',
+      sideNote: 'ପ୍ରଥମ ଓ ଶେଷ ପଦ ଜଣାଥିଲେ S_n = n/2 * (a + l) ।',
+      sideNoteLabel: 'Formula!',
+      iconType: 'integral'
+    },
+    {
+      id: 9,
+      question: 'x² - 4 = 0 ସମୀକରଣର ମୂଳଦ୍ୱୟ କଣ କଣ?',
+      answer: 'x = 2, -2 (x² = 4)',
+      sideNote: 'ଉଭୟ ପାର୍ଶ୍ୱର ବର୍ଗମୂଳ ନିଅନ୍ତୁ।',
+      sideNoteLabel: 'Note',
+      iconType: 'circle'
+    },
+    {
+      id: 10,
+      question: '3x + 4y = 12 ରେଖାଟି y-ଅକ୍ଷକୁ କେଉଁ ବିନ୍ଦୁରେ ଛେଦ କରେ?',
+      answer: '(0, 3) (x = 0 ହେଲେ)',
+      sideNote: 'y-ଅକ୍ଷ ଉପରେ ଥିବା ଯେକୌଣସି ବିନ୍ଦୁର x-ସ୍ଥାନାଙ୍କ 0 ।',
+      sideNoteLabel: 'Did You Know!',
+      iconType: 'axes'
+    }
+  ];
+
   const [dateStr, setDateStr] = useState<string>(getTodayDateString()); // Today's date
   const [pageNo, setPageNo] = useState<string>('001');
   const [selectedSubject, setSelectedSubject] = useState<string>('algebra');
-  const [titleText, setTitleText] = useState<string>('');
-  const [subtitleText, setSubtitleText] = useState<string>('');
+  const [titleText, setTitleText] = useState<string>('ସରଳ ସହସମୀକରଣ (Algebra Revision)');
+  const [subtitleText, setSubtitleText] = useState<string>('ମାସିକ ପରୀକ୍ଷା ପ୍ରସ୍ତୁତି ସେଟ୍ (Practice Guide)');
   const [footerText, setFooterText] = useState<string>('UTKAL SKILL CENTRE • ପଢ଼ିବ ଓଡ଼ିଶା, ବଢ଼ିବ ଓଡ଼ିଶା');
   const [badgeText, setBadgeText] = useState<string>('SET-01');
   const [logoImage, setLogoImage] = useState<string | null>('/utkal-512.png');
-  const [paperStyle, setPaperStyle] = useState<'ruled' | 'chalkboard' | 'parchment' | 'blueprint' | 'cotton'>('cotton');
+  const [paperStyle, setPaperStyle] = useState<'ruled' | 'chalkboard' | 'parchment' | 'blueprint' | 'cotton' | 'obsidian_gold' | 'forest_sage'>('cotton');
+  const [showMascotSticker, setShowMascotSticker] = useState<boolean>(true);
+  const [showMascotWatermark, setShowMascotWatermark] = useState<boolean>(false);
+  const [useFullSambalpuriFrame, setUseFullSambalpuriFrame] = useState<boolean>(false);
+  const [questionFont, setQuestionFont] = useState<'Kalam' | 'Caveat' | 'Outfit' | 'Patrick Hand'>('Kalam');
 
   // Dynamic Textbook Selection states
   const [selectedClass, setSelectedClass] = useState<string>('class10');
@@ -446,7 +533,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
 
   // AI Illustration & Adaptive Layout states
   const [showAiIllustration, setShowAiIllustration] = useState<boolean>(false);
-  const [questionCount, setQuestionCount] = useState<number>(10);
+  const [questionCount, setQuestionCount] = useState<number>(8);
   const [aiImageUrl, setAiImageUrl] = useState<string | null>(null);
   const [aiImagePrompt, setAiImagePrompt] = useState<string>('');
   const [aiImageCaption, setAiImageCaption] = useState<string>('Figure: Diagram');
@@ -461,7 +548,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
     iconType: 'book'
   }));
 
-  const [questions, setQuestions] = useState<QuestionItem[]>(DEFAULT_BLANK_QUESTIONS);
+  const [questions, setQuestions] = useState<QuestionItem[]>(DEFAULT_TEMPLATE_QUESTIONS);
   const [generating, setGenerating] = useState<boolean>(false);
   const [loadedChapters, setLoadedChapters] = useState<any[]>([]);
   const [loadingChapters, setLoadingChapters] = useState<boolean>(false);
@@ -470,7 +557,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
   // Dynamic Google Font Injection
   useEffect(() => {
     const link = document.createElement('link');
-    link.href = 'https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Kalam:wght@400;700&family=Outfit:wght@400;700;900&display=swap';
+    link.href = 'https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Kalam:wght@400;700&family=Outfit:wght@400;700;900&family=Patrick+Hand&display=swap';
     link.rel = 'stylesheet';
     document.head.appendChild(link);
     return () => {
@@ -1974,7 +2061,9 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
           Promise.all([
             document.fonts.load('bold 24px Kalam'),
             document.fonts.load('bold 18px Kalam'),
-            document.fonts.load('italic 15px Caveat')
+            document.fonts.load('italic 15px Caveat'),
+            document.fonts.load('bold 24px Outfit'),
+            document.fonts.load('bold 24px "Patrick Hand"')
           ]),
           new Promise((resolve) => setTimeout(resolve, 2000))
         ]);
@@ -2010,6 +2099,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
+      const activeFont = questionFont === 'Patrick Hand' ? '"Patrick Hand"' : questionFont;
       const theme = SUBJECT_THEMES[getSubjectCategory(selectedSubject)] || SUBJECT_THEMES.math;
 
       // Resolve colors based on paperStyle and fallback to subject theme
@@ -2066,9 +2156,43 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         darkTextColor = '#2C2218'; // Warm dark coffee
         boxBorder = 'rgba(139, 90, 43, 0.15)';
         marginColor = 'rgba(180, 80, 60, 0.45)'; // Soft organic margin
+      } else if (paperStyle === 'obsidian_gold') {
+        paperBg = '#0B0F19'; // Deep obsidian-slate background
+        ruledColor = 'rgba(245, 158, 11, 0.09)'; // Gold ruled lines
+        primaryColor = '#FBBF24'; // Golden main text
+        secondaryColor = '#F59E0B'; // Rich gold accents
+        accentColor = '#FBBF24'; // Gold highlights
+        lightBg = 'rgba(245, 158, 11, 0.04)'; // Gold-tinted card background
+        darkTextColor = '#F8FAFC'; // White for question text
+        boxBorder = 'rgba(245, 158, 11, 0.2)'; // Gold borders
+        marginColor = 'rgba(245, 158, 11, 0.45)'; // Amber/Gold margin
+        isDarkPaper = true;
+      } else if (paperStyle === 'forest_sage') {
+        paperBg = '#061D12'; // Deep Forest green background
+        ruledColor = 'rgba(52, 211, 153, 0.08)'; // Mint green ruled lines
+        primaryColor = '#34D399'; // Mint green text titles
+        secondaryColor = '#10B981'; // Primary green accents
+        accentColor = '#F59E0B'; // Warm gold highlight accents
+        lightBg = 'rgba(52, 211, 153, 0.04)'; // Faint green card background
+        darkTextColor = '#F0FDF4'; // White-mint for question text
+        boxBorder = 'rgba(52, 211, 153, 0.18)'; // Green/mint borders
+        marginColor = 'rgba(245, 158, 11, 0.45)'; // Amber margin line
+        isDarkPaper = true;
       }
 
-      ctx.fillStyle = paperBg;
+      if (paperStyle === 'obsidian_gold') {
+        const bgGrad = ctx.createRadialGradient(540, 960, 200, 540, 960, 1100);
+        bgGrad.addColorStop(0, '#111827'); // dark slate center
+        bgGrad.addColorStop(1, '#030712'); // obsidian black borders
+        ctx.fillStyle = bgGrad;
+      } else if (paperStyle === 'forest_sage') {
+        const bgGrad = ctx.createRadialGradient(540, 960, 200, 540, 960, 1100);
+        bgGrad.addColorStop(0, '#062013'); // dark forest center
+        bgGrad.addColorStop(1, '#010E08'); // deep dark green border
+        ctx.fillStyle = bgGrad;
+      } else {
+        ctx.fillStyle = paperBg;
+      }
       ctx.fillRect(0, 0, 1080, 1920);
 
       // Draw programmatically generated world-class organic cotton fibers/speckles for "cotton" style
@@ -2105,6 +2229,36 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
           ctx.stroke();
         }
 
+        ctx.restore();
+      }
+
+      // Draw premium gold dust particles for "obsidian_gold" style
+      if (paperStyle === 'obsidian_gold') {
+        ctx.save();
+        ctx.fillStyle = 'rgba(251, 191, 36, 0.08)';
+        for (let j = 0; j < 250; j++) {
+          const sx = Math.random() * 1080;
+          const sy = Math.random() * 1920;
+          const size = 0.5 + Math.random() * 2.0;
+          ctx.beginPath();
+          ctx.arc(sx, sy, size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+
+      // Draw premium organic speckles for "forest_sage" style
+      if (paperStyle === 'forest_sage') {
+        ctx.save();
+        ctx.fillStyle = 'rgba(52, 211, 153, 0.08)';
+        for (let j = 0; j < 250; j++) {
+          const sx = Math.random() * 1080;
+          const sy = Math.random() * 1920;
+          const size = 0.5 + Math.random() * 2.0;
+          ctx.beginPath();
+          ctx.arc(sx, sy, size, 0, Math.PI * 2);
+          ctx.fill();
+        }
         ctx.restore();
       }
 
@@ -2229,32 +2383,62 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.restore();
       ctx.globalAlpha = 1.0;
 
-      // Draw Sambalpuri Margin Pattern on the left
-      ctx.strokeStyle = marginColor;
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(130, 0);
-      ctx.lineTo(130, 1920);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(138, 0);
-      ctx.lineTo(138, 1920);
-      ctx.stroke();
-
-      // Sambalpuri Ikat border details between the two vertical lines
-      ctx.lineWidth = 1.0;
-      ctx.save();
-      ctx.globalAlpha = isDarkPaper ? 0.25 : 0.4;
-      for (let y = 10; y < 1920; y += 30) {
+      // Helper to draw an Ikat border pattern
+      const drawIkatTrack = (x1: number, y1: number, x2: number, y2: number, orientation: 'h' | 'v') => {
+        ctx.strokeStyle = marginColor;
+        ctx.lineWidth = 1.5;
         ctx.beginPath();
-        ctx.moveTo(130, y);
-        ctx.lineTo(138, y + 6);
-        ctx.moveTo(130, y + 12);
-        ctx.lineTo(138, y + 6);
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
         ctx.stroke();
+
+        const offset = 8;
+        ctx.beginPath();
+        if (orientation === 'v') {
+          ctx.moveTo(x1 + offset, y1);
+          ctx.lineTo(x2 + offset, y2);
+        } else {
+          ctx.moveTo(x1, y1 + offset);
+          ctx.lineTo(x2, y2 + offset);
+        }
+        ctx.stroke();
+
+        ctx.lineWidth = 1.0;
+        ctx.save();
+        ctx.globalAlpha = isDarkPaper ? 0.25 : 0.4;
+        
+        if (orientation === 'v') {
+          for (let y = y1 + 10; y < y2; y += 30) {
+            ctx.beginPath();
+            ctx.moveTo(x1, y);
+            ctx.lineTo(x1 + offset, y + 6);
+            ctx.moveTo(x1, y + 12);
+            ctx.lineTo(x1 + offset, y + 6);
+            ctx.stroke();
+          }
+        } else {
+          for (let x = x1 + 10; x < x2; x += 30) {
+            ctx.beginPath();
+            ctx.moveTo(x, y1);
+            ctx.lineTo(x + 6, y1 + offset);
+            ctx.moveTo(x + 12, y1);
+            ctx.lineTo(x + 6, y1 + offset);
+            ctx.stroke();
+          }
+        }
+        ctx.restore();
+      };
+
+      if (useFullSambalpuriFrame) {
+        // Draw full border frame around the page outline
+        drawIkatTrack(30, 30, 30, 1890, 'v');       // Left
+        drawIkatTrack(1042, 30, 1042, 1890, 'v');   // Right
+        drawIkatTrack(30, 30, 1050, 30, 'h');       // Top
+        drawIkatTrack(30, 1882, 1050, 1882, 'h');   // Bottom
+      } else {
+        // Draw standard single left margin line
+        drawIkatTrack(130, 0, 130, 1920, 'v');
       }
-      ctx.restore();
 
       ctx.strokeStyle = isDarkPaper ? 'rgba(255, 255, 255, 0.3)' : '#475569';
       ctx.lineWidth = 2.5;
@@ -2363,17 +2547,17 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.restore();
 
       ctx.fillStyle = secondaryColor;
-      ctx.font = 'bold 20px Kalam';
+      ctx.font = `bold 20px ${activeFont}`;
       ctx.textAlign = 'center';
       ctx.fillText(badgeText, 540, 115);
 
       ctx.fillStyle = primaryColor;
       let titleFontSize = 40;
-      ctx.font = `bold ${titleFontSize}px Kalam`;
+      ctx.font = `bold ${titleFontSize}px ${activeFont}`;
       let textWidth = ctx.measureText(titleText).width;
       while (textWidth > 500 && titleFontSize > 20) {
         titleFontSize -= 2;
-        ctx.font = `bold ${titleFontSize}px Kalam`;
+        ctx.font = `bold ${titleFontSize}px ${activeFont}`;
         textWidth = ctx.measureText(titleText).width;
       }
       ctx.fillText(titleText, 540, 170);
@@ -2389,6 +2573,28 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       }
       ctx.fillText(`— ${subtitleText} —`, 540, 220);
 
+      // Draw background mascot watermark if enabled
+      if (showMascotWatermark) {
+        try {
+          await new Promise<void>((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+              ctx.save();
+              ctx.globalAlpha = isDarkPaper ? 0.035 : 0.022; // Very faint background watermark
+              const targetW = 560;
+              const targetH = 560;
+              ctx.drawImage(img, 540 - targetW / 2, 960 - targetH / 2, targetW, targetH);
+              ctx.restore();
+              resolve();
+            };
+            img.onerror = () => resolve();
+            img.src = '/gundulu-pointing-up.png';
+          });
+        } catch (mascotErr) {
+          console.warn('Background watermark mascot loading failed:', mascotErr);
+        }
+      }
+
       // Pass 1: Pre-calculate heights and check if we exceed our page budget
       const defaultQLineHeight = 25;
       const defaultAnsLineHeight = 26;
@@ -2402,10 +2608,10 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       for (let i = 0; i < activeQuestions.length; i++) {
         const q = activeQuestions[i];
         
-        ctx.font = 'bold 22px Kalam';
+        ctx.font = `bold 22px ${activeFont}`;
         const qLines = wrapText(ctx, `Q. ${q.question}`, 420);
         
-        ctx.font = 'bold 24px Kalam';
+        ctx.font = `bold 24px ${activeFont}`;
         const ansLines = wrapText(ctx, `• Ans. ${q.answer}`, 410);
         
         const qHeight = qLines.length * defaultQLineHeight;
@@ -2414,7 +2620,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         
         let sideNoteHeight = 0;
         if (q.sideNote) {
-          ctx.font = 'bold 16px Kalam';
+          ctx.font = `bold 16px ${activeFont}`;
           const noteLines = wrapText(ctx, q.sideNote, 260);
           const nh = Math.max(90, 48 + noteLines.length * 22);
           sideNoteHeight = -8 + nh;
@@ -2476,10 +2682,10 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
           let testHeight = 0;
           for (let i = 0; i < activeQuestions.length; i++) {
             const q = activeQuestions[i];
-            ctx.font = `bold ${testQFontSize}px Kalam`;
+            ctx.font = `bold ${testQFontSize}px ${activeFont}`;
             const qLines = wrapText(ctx, `Q. ${q.question}`, 420);
             
-            ctx.font = `bold ${testAnsFontSize}px Kalam`;
+            ctx.font = `bold ${testAnsFontSize}px ${activeFont}`;
             const ansLines = wrapText(ctx, `• Ans. ${q.answer}`, 410);
             
             const qH = qLines.length * testQLineHeight;
@@ -2488,7 +2694,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
             
             let sideNoteH = 0;
             if (q.sideNote) {
-              ctx.font = `bold ${testNoteFontSize}px Kalam`;
+              ctx.font = `bold ${testNoteFontSize}px ${activeFont}`;
               const noteLines = wrapText(ctx, q.sideNote, 260);
               const nh = Math.max(90, 48 + noteLines.length * testNoteLineHeight);
               sideNoteH = -8 + nh;
@@ -2522,10 +2728,10 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       for (let i = 0; i < activeQuestions.length; i++) {
         const q = activeQuestions[i];
         
-        ctx.font = `bold ${qFontSize}px Kalam`;
+        ctx.font = `bold ${qFontSize}px ${activeFont}`;
         const qLines = wrapText(ctx, `Q. ${q.question}`, 420);
         
-        ctx.font = `bold ${ansFontSize}px Kalam`;
+        ctx.font = `bold ${ansFontSize}px ${activeFont}`;
         const ansLines = wrapText(ctx, `• Ans. ${q.answer}`, 410);
         
         const qHeight = qLines.length * qLineHeight;
@@ -2534,7 +2740,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         
         let sideNoteHeight = 0;
         if (q.sideNote) {
-          ctx.font = `bold ${noteFontSize}px Kalam`;
+          ctx.font = `bold ${noteFontSize}px ${activeFont}`;
           const noteLines = wrapText(ctx, q.sideNote, 260);
           const nh = Math.max(90, 48 + noteLines.length * noteLineHeight);
           sideNoteHeight = -8 + nh;
@@ -2597,21 +2803,21 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         ctx.closePath();
         ctx.stroke();
 
-        ctx.font = `bold ${Math.max(16, qFontSize - 4)}px Kalam`;
+        ctx.font = `bold ${Math.max(16, qFontSize - 4)}px ${activeFont}`;
         ctx.fillStyle = primaryColor;
         const numStr = String(i + 1);
         const textX = numStr.length > 1 ? 67 : 73;
         ctx.fillText(numStr, textX, startY + 22);
 
         // Draw Question
-        ctx.font = `bold ${qFontSize}px Kalam`;
+        ctx.font = `bold ${qFontSize}px ${activeFont}`;
         const qLines = wrapText(ctx, `Q. ${q.question}`, 420);
         qLines.forEach((line, idx) => {
           drawFormattedTextLine(ctx, line, 160, startY + 14 + idx * qLineHeight, darkTextColor, secondaryColor, highlighterColor);
         });
 
         // Draw Answer
-        ctx.font = `bold ${ansFontSize}px Kalam`;
+        ctx.font = `bold ${ansFontSize}px ${activeFont}`;
         ctx.fillStyle = secondaryColor;
         const ansLines = wrapText(ctx, `• Ans. ${q.answer}`, 410);
         const ansStartY = startY + 14 + qLines.length * qLineHeight + 12;
@@ -2626,7 +2832,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         // Draw Side Note
         let sideNoteHeight = 0;
         if (q.sideNote) {
-          ctx.font = `bold ${noteFontSize}px Kalam`;
+          ctx.font = `bold ${noteFontSize}px ${activeFont}`;
           const noteLines = wrapText(ctx, q.sideNote, 260);
           const nh = Math.max(90, 48 + noteLines.length * noteLineHeight);
           sideNoteHeight = -8 + nh;
@@ -2662,12 +2868,12 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
 
           // Draw label
           ctx.fillStyle = secondaryColor;
-          ctx.font = `bold ${noteLabelSize}px Kalam`;
+          ctx.font = `bold ${noteLabelSize}px ${activeFont}`;
           ctx.fillText(q.sideNoteLabel, nx + 14, ny + 24);
 
           // Draw side-note content
           ctx.fillStyle = darkTextColor;
-          ctx.font = `bold ${noteFontSize}px Kalam`;
+          ctx.font = `bold ${noteFontSize}px ${activeFont}`;
           let noteY = ny + 48;
           noteLines.forEach((line) => {
             ctx.fillText(line, nx + 14, noteY);
@@ -2708,7 +2914,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       // Draw highlighted Class Badge above the footer slogan for extra visibility
       ctx.save();
       const classBadgeText = getClassOdiaHighlight(selectedClass);
-      ctx.font = 'bold 20px Kalam';
+      ctx.font = `bold 20px ${activeFont}`;
       const badgeTextWidth = ctx.measureText(classBadgeText).width;
       const badgeW = badgeTextWidth + 24;
       const badgeH = 34;
@@ -2742,7 +2948,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
 
       ctx.textAlign = 'center';
       ctx.fillStyle = primaryColor;
-      ctx.font = 'bold 24px Kalam';
+      ctx.font = `bold 24px ${activeFont}`;
       ctx.fillText(`★ ${footerText} ★`, 540, 1860);
 
       // Draw dynamic QR Code pointing to utkalskillcentre.com in bottom-left margin
@@ -2783,7 +2989,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
 
             // Draw "Scan to Learn" text underneath QR
             ctx.fillStyle = isDarkPaper ? '#94A3B8' : '#475569';
-            ctx.font = 'bold 9px Kalam';
+            ctx.font = `bold 9px ${activeFont}`;
             ctx.textAlign = 'center';
             ctx.fillText('Scan to Learn', 0, 44);
 
@@ -2797,66 +3003,68 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         console.warn('QR Code generation failed:', err);
       }
 
-      // Draw premium sticker badge for the Gundulu character mascot (pointing pose)
-      try {
-        await new Promise<void>((resolve) => {
-          const img = new Image();
-          // Local asset doesn't need crossOrigin
-          img.onload = () => {
-            ctx.save();
-            ctx.translate(935, 1790);
-            ctx.rotate(-0.08); // slight playful tilt
+      // Draw premium sticker badge for the Gundulu character mascot (pointing pose) if enabled
+      if (showMascotSticker) {
+        try {
+          await new Promise<void>((resolve) => {
+            const img = new Image();
+            // Local asset doesn't need crossOrigin
+            img.onload = () => {
+              ctx.save();
+              ctx.translate(935, 1790);
+              ctx.rotate(-0.08); // slight playful tilt
 
-            // Setup drop shadow for the sticker base
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.15)';
-            ctx.shadowBlur = 10;
-            ctx.shadowOffsetX = 3;
-            ctx.shadowOffsetY = 5;
+              // Setup drop shadow for the sticker base
+              ctx.shadowColor = 'rgba(0, 0, 0, 0.15)';
+              ctx.shadowBlur = 10;
+              ctx.shadowOffsetX = 3;
+              ctx.shadowOffsetY = 5;
 
-            // Draw circular sticker background base (pure white to blend with baby image background)
-            ctx.fillStyle = '#FFFFFF';
-            ctx.beginPath();
-            ctx.arc(0, 0, 65, 0, Math.PI * 2);
-            ctx.fill();
+              // Draw circular sticker background base (pure white to blend with baby image background)
+              ctx.fillStyle = '#FFFFFF';
+              ctx.beginPath();
+              ctx.arc(0, 0, 65, 0, Math.PI * 2);
+              ctx.fill();
 
-            // Clear drop shadow for inner drawings
-            ctx.shadowColor = 'transparent';
-            ctx.shadowBlur = 0;
-            ctx.shadowOffsetX = 0;
-            ctx.shadowOffsetY = 0;
+              // Clear drop shadow for inner drawings
+              ctx.shadowColor = 'transparent';
+              ctx.shadowBlur = 0;
+              ctx.shadowOffsetX = 0;
+              ctx.shadowOffsetY = 0;
 
-            // Clip the image to the circle boundaries so the white corners don't overflow
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(0, 0, 64, 0, Math.PI * 2);
-            ctx.clip();
-            ctx.drawImage(img, -64, -64, 128, 128);
-            ctx.restore();
+              // Clip the image to the circle boundaries so the white corners don't overflow
+              ctx.save();
+              ctx.beginPath();
+              ctx.arc(0, 0, 64, 0, Math.PI * 2);
+              ctx.clip();
+              ctx.drawImage(img, -64, -64, 128, 128);
+              ctx.restore();
 
-            // Draw outer border matching the theme
-            ctx.strokeStyle = primaryColor;
-            ctx.lineWidth = 2.0;
-            ctx.beginPath();
-            ctx.arc(0, 0, 65, 0, Math.PI * 2);
-            ctx.stroke();
+              // Draw outer border matching the theme
+              ctx.strokeStyle = primaryColor;
+              ctx.lineWidth = 2.0;
+              ctx.beginPath();
+              ctx.arc(0, 0, 65, 0, Math.PI * 2);
+              ctx.stroke();
 
-            // Draw inner dashed border matching the theme
-            ctx.strokeStyle = secondaryColor;
-            ctx.lineWidth = 1.2;
-            ctx.setLineDash([4, 3]);
-            ctx.beginPath();
-            ctx.arc(0, 0, 57, 0, Math.PI * 2);
-            ctx.stroke();
-            ctx.setLineDash([]); // Reset dash
+              // Draw inner dashed border matching the theme
+              ctx.strokeStyle = secondaryColor;
+              ctx.lineWidth = 1.2;
+              ctx.setLineDash([4, 3]);
+              ctx.beginPath();
+              ctx.arc(0, 0, 57, 0, Math.PI * 2);
+              ctx.stroke();
+              ctx.setLineDash([]); // Reset dash
 
-            ctx.restore();
-            resolve();
-          };
-          img.onerror = () => resolve();
-          img.src = '/gundulu-pointing.png';
-        });
-      } catch (err) {
-        console.warn('Gundulu character image loading failed:', err);
+              ctx.restore();
+              resolve();
+            };
+            img.onerror = () => resolve();
+            img.src = '/gundulu-pointing.png';
+          });
+        } catch (err) {
+          console.warn('Gundulu character image loading failed:', err);
+        }
       }
 
       const dataUrl = canvas.toDataURL('image/png');
@@ -2926,66 +3134,90 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
   };
 
   // Resolve colors for live preview
-  const isDarkPaper = paperStyle === 'chalkboard' || paperStyle === 'blueprint';
+  const isDarkPaper = paperStyle === 'chalkboard' || paperStyle === 'blueprint' || paperStyle === 'obsidian_gold' || paperStyle === 'forest_sage';
   const previewBg = 
     paperStyle === 'chalkboard' ? 'bg-[#121824]' : 
     paperStyle === 'parchment' ? 'bg-[#F4EBD0]' : 
     paperStyle === 'blueprint' ? 'bg-[#0A3663]' : 
-    paperStyle === 'cotton' ? 'bg-[#F9F6F0] bg-[radial-gradient(rgba(139,90,43,0.07)_1px,transparent_0)] bg-[size:12px_12px]' : 'bg-[#FCFBF9]';
+    paperStyle === 'cotton' ? 'bg-[#F9F6F0] bg-[radial-gradient(rgba(139,90,43,0.07)_1px,transparent_0)] bg-[size:12px_12px]' : 
+    paperStyle === 'obsidian_gold' ? 'bg-gradient-to-b from-[#111827] to-[#030712]' : 
+    paperStyle === 'forest_sage' ? 'bg-gradient-to-b from-[#062013] to-[#010E08]' : 'bg-[#FCFBF9]';
   const previewText = isDarkPaper ? 'text-slate-100' : 'text-slate-900';
   const previewTitle = 
-    paperStyle === 'cotton' ? 'text-[#1F3F24]' : (isDarkPaper ? 'text-white' : 'text-slate-900');
+    paperStyle === 'cotton' ? 'text-[#1F3F24]' : 
+    paperStyle === 'forest_sage' ? 'text-[#34D399]' :
+    paperStyle === 'obsidian_gold' ? 'text-[#FBBF24]' : (isDarkPaper ? 'text-white' : 'text-slate-900');
   const previewSub = 
     paperStyle === 'chalkboard' ? 'text-slate-400' : 
     paperStyle === 'blueprint' ? 'text-slate-300' : 
     paperStyle === 'parchment' ? 'text-amber-950' : 
-    paperStyle === 'cotton' ? 'text-amber-900/60' : 'text-slate-500';
+    paperStyle === 'cotton' ? 'text-amber-900/60' : 
+    paperStyle === 'forest_sage' ? 'text-emerald-500/70' :
+    paperStyle === 'obsidian_gold' ? 'text-amber-500/70' : 'text-slate-500';
   const previewAns = 
     paperStyle === 'chalkboard' ? 'text-sky-400' : 
     paperStyle === 'blueprint' ? 'text-cyan-300' : 
     paperStyle === 'parchment' ? 'text-[#8E3200]' : 
-    paperStyle === 'cotton' ? 'text-[#8D5832]' : 'text-blue-600';
+    paperStyle === 'cotton' ? 'text-[#8D5832]' : 
+    paperStyle === 'forest_sage' ? 'text-[#10B981]' :
+    paperStyle === 'obsidian_gold' ? 'text-[#FBBF24]' : 'text-blue-600';
   const previewNoteText = 
     paperStyle === 'chalkboard' ? 'text-slate-200' : 
     paperStyle === 'blueprint' ? 'text-white' : 
     paperStyle === 'parchment' ? 'text-[#3A2614]' : 
-    paperStyle === 'cotton' ? 'text-[#2C2218]' : theme.darkTextColor;
+    paperStyle === 'cotton' ? 'text-[#2C2218]' : 
+    paperStyle === 'forest_sage' ? 'text-[#F0FDF4]' :
+    paperStyle === 'obsidian_gold' ? 'text-slate-200' : theme.darkTextColor;
   const previewNoteLabel = 
     paperStyle === 'chalkboard' ? 'text-sky-400' : 
     paperStyle === 'blueprint' ? 'text-cyan-400' : 
     paperStyle === 'parchment' ? 'text-[#B45309]' : 
-    paperStyle === 'cotton' ? 'text-[#B8583B]' : theme.secondaryColor;
+    paperStyle === 'cotton' ? 'text-[#B8583B]' : 
+    paperStyle === 'forest_sage' ? 'text-[#34D399]' :
+    paperStyle === 'obsidian_gold' ? 'text-[#FBBF24]' : theme.secondaryColor;
   const previewNoteBg = 
     paperStyle === 'chalkboard' ? 'rgba(255, 255, 255, 0.04)' : 
     paperStyle === 'blueprint' ? 'rgba(255, 255, 255, 0.05)' : 
     paperStyle === 'parchment' ? 'rgba(255, 255, 255, 0.25)' : 
-    paperStyle === 'cotton' ? 'rgba(139, 90, 43, 0.05)' : theme.lightBg;
+    paperStyle === 'cotton' ? 'rgba(139, 90, 43, 0.05)' : 
+    paperStyle === 'forest_sage' ? 'rgba(52, 211, 153, 0.04)' :
+    paperStyle === 'obsidian_gold' ? 'rgba(245, 158, 11, 0.04)' : theme.lightBg;
   const previewNoteBorder = 
     paperStyle === 'chalkboard' ? 'rgba(255, 255, 255, 0.1)' : 
     paperStyle === 'blueprint' ? 'rgba(255, 255, 255, 0.2)' : 
     paperStyle === 'parchment' ? 'rgba(120, 80, 50, 0.15)' : 
-    paperStyle === 'cotton' ? 'rgba(139, 90, 43, 0.12)' : 'rgba(148, 163, 184, 0.2)';
+    paperStyle === 'cotton' ? 'rgba(139, 90, 43, 0.12)' : 
+    paperStyle === 'forest_sage' ? 'rgba(52, 211, 153, 0.18)' :
+    paperStyle === 'obsidian_gold' ? 'rgba(245, 158, 11, 0.18)' : 'rgba(148, 163, 184, 0.2)';
   const previewNoteLeftBorder = 
     paperStyle === 'chalkboard' ? '#38BDF8' : 
     paperStyle === 'blueprint' ? '#22D3EE' : 
     paperStyle === 'parchment' ? '#B45309' : 
-    paperStyle === 'cotton' ? '#B8583B' : theme.accentColor;
+    paperStyle === 'cotton' ? '#B8583B' : 
+    paperStyle === 'forest_sage' ? '#10B981' :
+    paperStyle === 'obsidian_gold' ? '#FBBF24' : theme.accentColor;
   const previewLines = 
     paperStyle === 'chalkboard' ? 'bg-white/[0.04]' : 
     paperStyle === 'blueprint' ? 'bg-white/[0.08]' : 
     paperStyle === 'parchment' ? 'bg-[#785032]/[0.06]' : 
-    paperStyle === 'cotton' ? 'bg-[rgba(180,160,140,0.18)]' : 'bg-blue-500/[0.08]';
+    paperStyle === 'cotton' ? 'bg-[rgba(180,160,140,0.18)]' : 
+    paperStyle === 'forest_sage' ? 'bg-emerald-500/[0.03]' :
+    paperStyle === 'obsidian_gold' ? 'bg-amber-500/[0.03]' : 'bg-blue-500/[0.08]';
   const previewMargin = 
     paperStyle === 'chalkboard' ? 'bg-red-500/20' : 
     paperStyle === 'blueprint' ? 'bg-white/20' : 
     paperStyle === 'parchment' ? 'bg-amber-800/30' : 
-    paperStyle === 'cotton' ? 'bg-[rgba(180,80,60,0.45)]' : 'bg-red-500/30';
+    paperStyle === 'cotton' ? 'bg-[rgba(180,80,60,0.45)]' : 
+    paperStyle === 'forest_sage' ? 'bg-amber-500/30' :
+    paperStyle === 'obsidian_gold' ? 'bg-amber-500/30' : 'bg-red-500/30';
 
   const previewHighlighter = 
     paperStyle === 'chalkboard' ? 'bg-[#22D3EE]/25 text-[#22D3EE] px-1 rounded border border-[#22D3EE]/20 mx-0.5 font-extrabold' : 
     paperStyle === 'blueprint' ? 'bg-[#FB923C]/25 text-[#FB923C] px-1 rounded border border-[#FB923C]/20 mx-0.5 font-extrabold' : 
     paperStyle === 'parchment' ? 'bg-[#D97706]/20 text-[#78350F] px-1 rounded border border-[#D97706]/15 mx-0.5 font-extrabold' : 
     paperStyle === 'cotton' ? 'bg-[#FDE047]/45 text-[#451A03] px-1 rounded border border-[#FDE047]/30 mx-0.5 font-extrabold shadow-sm' : 
+    paperStyle === 'forest_sage' ? 'bg-emerald-500/20 text-[#34D399] px-1 rounded border border-emerald-500/30 mx-0.5 font-extrabold shadow-sm' :
+    paperStyle === 'obsidian_gold' ? 'bg-amber-500/20 text-[#FBBF24] px-1 rounded border border-amber-500/30 mx-0.5 font-extrabold shadow-sm' : 
     'bg-yellow-300/45 text-amber-950 px-1 rounded border border-yellow-400/30 mx-0.5 font-extrabold';
 
   return (
@@ -3171,21 +3403,17 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
 
             <div>
               <label className="text-[9px] text-slate-400 font-black uppercase tracking-wider block mb-1.5">ପୃଷ୍ଠା ଶୈଳୀ (Paper Theme / Style)</label>
-              <div className="grid grid-cols-2 gap-3 mt-1.5">
+              <div className="grid grid-cols-1 gap-3 mt-1.5 font-sans">
                 {[
-                  { id: 'cotton', name: '🌟 Premium Cotton', bg: 'bg-[#F9F6F0] text-emerald-950 border-amber-500/30 shadow-[0_4px_15px_rgba(217,119,6,0.1)]', desc: 'World-class handmade organic cotton paper with natural plant fibers' },
-                  { id: 'ruled', name: 'Classic Notebook', bg: 'bg-[#FCFBF9] text-slate-950 border-slate-300', desc: 'Standard cream lined page' },
-                  { id: 'chalkboard', name: 'Neon Chalkboard', bg: 'bg-[#121824] text-slate-100 border-slate-800', desc: 'Dark chalkboard slate' },
-                  { id: 'parchment', name: 'Vintage Scroll', bg: 'bg-[#F4EBD0] text-amber-950 border-amber-900/30', desc: 'Aged paper with sepia ink' },
-                  { id: 'blueprint', name: 'Blueprint Draft', bg: 'bg-[#0A3663] text-cyan-100 border-cyan-800/30', desc: 'Engineering grid & white pen' },
+                  { id: 'obsidian_gold', name: '👑 Obsidian Gold', bg: 'bg-[#111827] text-amber-400 border-amber-500/30 shadow-[0_4px_15px_rgba(245,158,11,0.15)]', desc: 'Luxury dark slate with gold outlines, gold ruled lines, and margins' },
+                  { id: 'cotton', name: '🌟 Premium Cotton', bg: 'bg-[#F9F6F0] text-emerald-950 border-amber-500/30 shadow-[0_4px_15px_rgba(217,119,6,0.1)]', desc: 'World-class warm organic handmade paper theme with terracotta accents' },
+                  { id: 'forest_sage', name: '🌿 Forest Sage', bg: 'bg-[#061D12] text-emerald-400 border-emerald-500/30 shadow-[0_4px_15px_rgba(16,185,129,0.15)]', desc: 'Deep forest green radial gradient with sage margins and gold highlights' },
                 ].map(style => (
                   <button
                     key={style.id}
                     type="button"
                     onClick={() => setPaperStyle(style.id as any)}
                     className={`p-3 rounded-2xl border-2 text-left transition-all ${
-                      style.id === 'cotton' ? 'col-span-2' : ''
-                    } ${
                       paperStyle === style.id ? 'ring-2 ring-indigo-500 border-transparent scale-[1.01]' : 'hover:bg-white/5 opacity-80 hover:opacity-100'
                     } ${style.bg}`}
                   >
@@ -3193,6 +3421,70 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
                     <div className="text-[8px] opacity-75 mt-0.5 font-bold leading-tight">{style.desc}</div>
                   </button>
                 ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="text-[9px] text-slate-400 font-black uppercase tracking-wider block mb-1.5">ହସ୍ତାକ୍ଷର ଫଣ୍ଟ (Worksheet Font Family)</label>
+              <select
+                value={questionFont}
+                onChange={e => setQuestionFont(e.target.value as any)}
+                className="w-full bg-slate-900 border border-slate-800 px-3 py-2.5 rounded-xl text-xs font-bold text-white focus:border-indigo-500 outline-none"
+              >
+                <option value="Kalam">Kalam (Standard Handwritten)</option>
+                <option value="Caveat">Caveat (Playful Cursive)</option>
+                <option value="Outfit">Outfit (Clean Masterclass)</option>
+                <option value="Patrick Hand">Patrick Hand (Handwritten Slim)</option>
+              </select>
+            </div>
+
+            <div className="pt-2 border-t border-white/5 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="text-[10px] text-slate-300 font-extrabold block">Gundulu Mascot Sticker</label>
+                  <span className="text-[8px] text-slate-400 block font-semibold leading-none mt-0.5">Draw mascot sticker at the bottom-right corner</span>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    checked={showMascotSticker} 
+                    onChange={(e) => setShowMascotSticker(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-500 after:border-slate-400 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500 peer-checked:after:bg-white peer-checked:after:border-transparent"></div>
+                </label>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="text-[10px] text-slate-300 font-extrabold block">Gundulu Watermark</label>
+                  <span className="text-[8px] text-slate-400 block font-semibold leading-none mt-0.5">Center a faint mascot watermark behind contents</span>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    checked={showMascotWatermark} 
+                    onChange={(e) => setShowMascotWatermark(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-500 after:border-slate-400 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500 peer-checked:after:bg-white peer-checked:after:border-transparent"></div>
+                </label>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="text-[10px] text-slate-300 font-extrabold block">Sambalpuri Border Frame</label>
+                  <span className="text-[8px] text-slate-400 block font-semibold leading-none mt-0.5">Frame all 4 edges of the page with Ikat pattern</span>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    checked={useFullSambalpuriFrame} 
+                    onChange={(e) => setUseFullSambalpuriFrame(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-500 after:border-slate-400 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500 peer-checked:after:bg-white peer-checked:after:border-transparent"></div>
+                </label>
               </div>
             </div>
           </div>
@@ -3351,6 +3643,20 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
             <div className={`absolute top-0 bottom-0 left-[35px] w-px ${previewMargin}`} />
             <div className={`absolute top-0 bottom-0 left-[37px] w-px ${previewMargin}`} />
 
+            {/* Mascot Watermark if enabled */}
+            {showMascotWatermark && (
+              <div 
+                className="absolute inset-0 pointer-events-none z-0 flex items-center justify-center overflow-hidden opacity-[0.025]"
+                style={{ filter: isDarkPaper ? 'invert(1) brightness(1.5)' : 'none' }}
+              >
+                <img 
+                  src="/gundulu-pointing-up.png" 
+                  alt="Mascot Watermark" 
+                  className="w-48 h-48 object-contain"
+                />
+              </div>
+            )}
+
             {/* HEADER DETAILS */}
             <div className="relative flex justify-between items-start z-10 mt-2 font-sans">
               <div className={`border px-2 py-0.5 text-[5px] font-mono leading-none ${isDarkPaper ? 'border-white/20 bg-slate-950' : 'border-slate-700/80 bg-white'}`}>
@@ -3358,7 +3664,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
                 <div className="pt-0.5">Page No.: {pageNo}</div>
               </div>
 
-              <div className="text-center flex-grow px-2" style={{ fontFamily: 'Kalam, cursive' }}>
+              <div className="text-center flex-grow px-2" style={{ fontFamily: `${questionFont}, cursive` }}>
                 <div className={`text-[6.5px] font-bold uppercase leading-none tracking-wider ${isDarkPaper ? 'text-slate-400' : 'text-slate-500'}`}>{badgeText}</div>
                 <div className={`text-[10px] font-black leading-tight uppercase mt-0.5 ${previewTitle}`}>{titleText}</div>
                 <div className={`text-[7px] font-black italic mt-0.5 ${previewSub}`}>-- {subtitleText} --</div>
@@ -3374,7 +3680,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
             </div>
 
             {/* QUESTIONS LIST */}
-            <div className="flex-1 flex flex-col justify-between py-4 pl-[45px] pr-2 z-10 space-y-1.5 animate-fadeIn" style={{ fontFamily: 'Kalam, cursive' }}>
+            <div className="flex-1 flex flex-col justify-between py-4 pl-[45px] pr-2 z-10 space-y-1.5 animate-fadeIn" style={{ fontFamily: `${questionFont}, cursive` }}>
               {questions.slice(0, questionCount).map((q, idx) => (
                 <div key={q.id} className="flex justify-between items-start gap-1">
                   <div className="flex-1 space-y-0.5 min-w-0">
@@ -3433,7 +3739,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
             </div>
 
             {/* FOOTER */}
-            <div className="relative text-center text-[9px] font-black z-10 border-t border-slate-200/40 pt-2 pb-1.5 flex flex-col items-center justify-center gap-1" style={{ fontFamily: 'Kalam, cursive' }}>
+            <div className="relative text-center text-[9px] font-black z-10 border-t border-slate-200/40 pt-2 pb-1.5 flex flex-col items-center justify-center gap-1" style={{ fontFamily: `${questionFont}, cursive` }}>
               
               {/* Hand-drawn style QR Code Scanner in bottom-left */}
               <div className="absolute left-1 bottom-1 p-0.5 bg-white border border-slate-200/80 rounded shadow-[0_1px_3px_rgba(0,0,0,0.08)] flex flex-col items-center justify-center rotate-[3deg] z-20">
