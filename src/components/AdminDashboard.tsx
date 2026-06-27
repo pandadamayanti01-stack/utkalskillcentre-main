@@ -98,7 +98,7 @@ import {
   gradeSubjectiveAnswer
 } from '../services/aiService';
 import { joinSupportSession, sendRemoteCommand, updatePointer, endSupportSession } from '../services/supportService';
-import { SocialPosterGenerator } from './SocialPosterGenerator';
+import { PosterGeneratorHub } from './PosterGeneratorHub';
 
 type AdminTab = 'dashboard' | 'smart_classes' | 'content' | 'monthly_tests' | 'daily_mcqs' | 'textbooks' | 'ai_usage' | 'payments' | 'notifications' | 'settings' | 'production_setup' | 'students' | 'teachers' | 'subscriptions' | 'support' | 'user_locks' | 'digital_library_upload' | 'community_chats' | 'poster_generator';
 
@@ -5654,7 +5654,7 @@ Sample tone for Class 6-10:
               {activeTab === 'support' && renderSupport()}
               {activeTab === 'subscriptions' && renderSubscriptions()}
               {activeTab === 'community_chats' && <CommunityModerationTab />}
-              {activeTab === 'poster_generator' && <SocialPosterGenerator chapters={content} onBack={() => setActiveTab('dashboard')} />}
+              {activeTab === 'poster_generator' && <PosterGeneratorHub chapters={content} onBack={() => setActiveTab('dashboard')} />}
             </motion.div>
           </AnimatePresence>
         </div>

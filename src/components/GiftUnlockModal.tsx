@@ -38,7 +38,7 @@ export const GiftUnlockModal: React.FC<GiftUnlockModalProps> = ({
   let resolvedRank = rank;
   if (resolvedRank === undefined || resolvedRank === null) {
     const userNameLower = (user?.name || '').trim().toLowerCase();
-    if (userNameLower.includes('dibyansh') || userNameLower.includes('sohan') || userNameLower.includes('subhakanta')) {
+    if (userNameLower.includes('dibyansh') || userNameLower.includes('sohan')) {
       resolvedRank = 1;
     } else if (userNameLower.includes('rohan')) {
       resolvedRank = 2;
@@ -59,18 +59,7 @@ export const GiftUnlockModal: React.FC<GiftUnlockModalProps> = ({
   let boxColor = 'from-amber-500 to-yellow-300';
   let boxGlow = 'rgba(245,158,11,0.4)';
 
-  const userNameLower = (user?.name || '').trim().toLowerCase();
-  const isSubhakanta = userNameLower.includes('subhakanta');
-
-  if (isSubhakanta) {
-    prizeAmount = 100;
-    rewardNameEn = 'USC Special Motivation Reward';
-    rewardNameOr = 'USC ସ୍ପେଶାଲ ପ୍ରେରଣାଦାୟକ ପୁରସ୍କାର';
-    rewardItemsEn = ['📓 Special USC Notebook', '✨ Sticker Pack'];
-    rewardItemsOr = ['📓 ସ୍ପେଶାଲ USC ନୋଟବୁକ', '✨ ଷ୍ଟିକର ପ୍ୟାକ୍'];
-    boxColor = 'from-purple-500 via-pink-400 to-indigo-600';
-    boxGlow = 'rgba(168,85,247,0.5)';
-  } else if (resolvedRank === 1) {
+  if (resolvedRank === 1) {
     prizeAmount = 500;
     rewardNameEn = 'USC Class Champion Reward';
     rewardNameOr = 'USC କ୍ଲାସ୍ ଚାମ୍ପିଅନ ପୁରସ୍କାର';
