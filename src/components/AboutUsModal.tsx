@@ -18,7 +18,7 @@ export const AboutUsModal: React.FC<AboutUsModalProps> = ({ language, onClose })
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.95, opacity: 0, y: 20 }}
         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full max-w-4xl relative bg-slate-900 border border-amber-500/20 rounded-[2.5rem] overflow-hidden shadow-2xl shadow-black/80 flex flex-col md:flex-row max-h-[90vh] md:max-h-[85vh] overflow-y-auto md:overflow-y-visible force-dark-theme"
+        className="w-full max-w-4xl relative bg-slate-900/90 border border-amber-500/20 rounded-[2.5rem] overflow-hidden shadow-2xl shadow-black/80 flex flex-col md:flex-row max-h-[90vh] md:max-h-[85vh] overflow-y-auto md:overflow-y-visible force-dark-theme backdrop-blur-xl"
       >
         {/* Glow/Light effects */}
         <div className="absolute top-0 right-0 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -34,9 +34,9 @@ export const AboutUsModal: React.FC<AboutUsModalProps> = ({ language, onClose })
           </h3>
           <p className="text-slate-300 text-sm leading-relaxed font-medium">
             {isOdia ? (
-              'ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର ହେଉଛି ଗୁନ୍ଦୁଲୁ ଏଆଇ (Gundulu AI) ଦ୍ୱାରା ଚାଲିତ ଏକ ସକ୍ରେଟିକ୍ ଶିକ୍ଷା ସାଥୀ | ଓଡ଼ିଶାର ଗ୍ରାମାଞ୍ଚଳରେ ସ୍ୱଳ୍ପ ନେଟୱର୍କରେ ଚାଲିବା ପାଇଁ ଏହା ସ୍ୱତନ୍ତ୍ର ଭାବେ ପ୍ରସ୍ତୁତ ଏବଂ ମାସକୁ ମାତ୍ର ୯୯ ଟଙ୍କାରେ ବିଶ୍ୱସ୍ତରୀୟ ଏଆଇ ଶିକ୍ଷା ପ୍ରଦାନ କରିଥାଏ |'
+              'ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର ହେଉଛି ଗୁଣ୍ଡୁଲୁ ଏଆଇ (Gundulu AI) ଦ୍ୱାରା ଚାଲିତ ଏକ ଦ୍ୱିଭାଷୀ ପ୍ରଶ୍ନୋତ୍ତର ଭିତ୍ତିକ ଶିକ୍ଷା ସାଥୀ | ଓଡ଼ିଶାର ସମସ୍ତ ଅଞ୍ଚଳର ପିଲାଙ୍କ ପାଇଁ ସ୍ୱଳ୍ପ ନେଟୱର୍କରେ ଚାଲିବା ସହ ଗୁଣାତ୍ମକ ଶିକ୍ଷା ପ୍ରଦାନ କରିବା ଏହାର ମୁଖ୍ୟ ଲକ୍ଷ୍ୟ |'
             ) : (
-              'Utkal Skill Centre is a digital study companion powered by Gundulu AI, a textbook-grounded, bilingual Socratic tutor. Specially designed for low-bandwidth rural classrooms in Odisha, it makes world-class AI learning affordable at just ₹99/month.'
+              'Utkal Skill Centre is a digital study companion powered by Gundulu AI, a textbook-grounded, bilingual Socratic tutor. Specially designed for low-bandwidth environments in Odisha, it delivers high-quality AI-driven personalized learning to classrooms across the state.'
             )}
           </p>
         </div>
@@ -65,24 +65,24 @@ export const AboutUsModal: React.FC<AboutUsModalProps> = ({ language, onClose })
           {/* Stats Title */}
           <div className="w-full pt-4 border-t border-white/5 space-y-3">
             <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
-              {isOdia ? 'ପାଇଲଟ୍ ସଫଳତା' : 'PILOT TRACTION'}
+              {isOdia ? 'ପ୍ଲାଟଫର୍ମ ପରିସୀମା' : 'PLATFORM SCOPE'}
             </h3>
             
             {/* Stats list */}
             <div className="space-y-3">
               <div className="bg-slate-900/60 border border-white/5 rounded-2xl p-3 flex items-center justify-between hover:border-emerald-500/30 transition-all">
-                <span className="text-xs font-bold text-slate-400">{isOdia ? 'ସକ୍ରିୟ ପାଇଲଟ୍ ଛାତ୍ର' : 'Active Pilot Users'}</span>
-                <span className="text-lg font-black text-emerald-400">445</span>
+                <span className="text-xs font-bold text-slate-400">{isOdia ? 'ଶିକ୍ଷା ସ୍ତର' : 'Educational Focus'}</span>
+                <span className="text-sm font-black text-emerald-400">{isOdia ? 'ଶ୍ରେଣୀ ୧ ରୁ ୧୦' : 'Classes 1 - 10'}</span>
               </div>
               
               <div className="bg-slate-900/60 border border-white/5 rounded-2xl p-3 flex items-center justify-between hover:border-amber-500/30 transition-all">
-                <span className="text-xs font-bold text-slate-400">{isOdia ? 'ପେଡ୍ ସଦସ୍ୟ' : 'Paying Subscribers'}</span>
-                <span className="text-lg font-black text-amber-400">6</span>
+                <span className="text-xs font-bold text-slate-400">{isOdia ? 'ଶିକ୍ଷା ନିୟମାବଳୀ' : 'Curriculum Standard'}</span>
+                <span className="text-sm font-black text-amber-400">BSE & OSEPA</span>
               </div>
               
               <div className="bg-slate-900/60 border border-white/5 rounded-2xl p-3 flex items-center justify-between hover:border-indigo-500/30 transition-all">
                 <span className="text-xs font-bold text-slate-400">{isOdia ? 'ଜିଲ୍ଲା ସଂଖ୍ୟା' : 'Districts Covered'}</span>
-                <span className="text-lg font-black text-indigo-400">30</span>
+                <span className="text-sm font-black text-indigo-400">{isOdia ? 'ସମସ୍ତ ୩୦ ଜିଲ୍ଲା' : 'All 30 Districts'}</span>
               </div>
             </div>
           </div>
@@ -98,9 +98,9 @@ export const AboutUsModal: React.FC<AboutUsModalProps> = ({ language, onClose })
             </h3>
             <p className="text-slate-300 text-sm leading-relaxed font-medium">
               {isOdia ? (
-                'ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର ହେଉଛି ଗୁନ୍ଦୁଲୁ ଏଆଇ (Gundulu AI) ଦ୍ୱାରା ଚାଲିତ ଏକ ସକ୍ରେଟିକ୍ ଶିକ୍ଷା ସାଥୀ | ଓଡ଼ିଶାର ଗ୍ରାମାଞ୍ଚଳରେ ସ୍ୱଳ୍ପ ନେଟୱର୍କରେ ଚାଲିବା ପାଇଁ ଏହା ସ୍ୱତନ୍ତ୍ର ଭାବେ ପ୍ରସ୍ତୁତ ଏବଂ ମାସକୁ ମାତ୍ର ୯୯ ଟଙ୍କାରେ ବିଶ୍ୱସ୍ତରୀୟ ଏଆଇ ଶିକ୍ଷା ପ୍ରଦାନ କରିଥାଏ |'
+                'ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର ହେଉଛି ଗୁଣ୍ଡୁଲୁ ଏଆଇ (Gundulu AI) ଦ୍ୱାରା ଚାଲିତ ଏକ ଦ୍ୱିଭାଷୀ ପ୍ରଶ୍ନୋତ୍ତର ଭିତ୍ତିକ ଶିକ୍ଷା ସାଥୀ | ଓଡ଼ିଶାର ସମସ୍ତ ଅଞ୍ଚଳର ପିଲାଙ୍କ ପାଇଁ ସ୍ୱଳ୍ପ ନେଟୱର୍କରେ ଚାଲିବା ସହ ଗୁଣାତ୍ମକ ଶିକ୍ଷା ପ୍ରଦାନ କରିବା ଏହାର ମୁଖ୍ୟ ଲକ୍ଷ୍ୟ |'
               ) : (
-                'Utkal Skill Centre is a digital study companion powered by Gundulu AI, a textbook-grounded, bilingual Socratic tutor. Specially designed for low-bandwidth rural classrooms in Odisha, it makes world-class AI learning affordable at just ₹99/month.'
+                'Utkal Skill Centre is a digital study companion powered by Gundulu AI, a textbook-grounded, bilingual Socratic tutor. Specially designed for low-bandwidth environments in Odisha, it delivers high-quality AI-driven personalized learning to classrooms across the state.'
               )}
             </p>
           </div>
@@ -118,7 +118,7 @@ export const AboutUsModal: React.FC<AboutUsModalProps> = ({ language, onClose })
                 </div>
                 <div className="space-y-0.5">
                   <span className="text-[8px] font-black text-slate-500 uppercase tracking-wider block">
-                    {isOdia ? 'ପ୍ରତିଷ୍ଠାତା' : 'FOUNDER'}
+                    {isOdia ? 'ପ୍ରତିଷ୍ଠାତା ଓ ଅଙ୍ଗନୱାଡି ଶିକ୍ଷୟିତ୍ରୀ' : 'FOUNDER & ANGANWADI TEACHER'}
                   </span>
                   <span className="text-xs font-bold text-white">Damayanti Panda</span>
                 </div>
@@ -135,6 +135,19 @@ export const AboutUsModal: React.FC<AboutUsModalProps> = ({ language, onClose })
                   <span className="text-xs font-bold text-white">Gyanalok Panda</span>
                 </div>
               </div>
+            </div>
+
+            {/* Anganwadi Collaboration Note */}
+            <div className="p-3 bg-slate-900/60 border border-white/5 rounded-2xl flex items-center gap-3">
+              <div className="w-7 h-7 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0">
+                <Lucide.Heart size={14} className="animate-pulse" />
+              </div>
+              <span className="text-[11px] font-semibold text-slate-300 leading-normal">
+                {isOdia 
+                  ? 'ଶିଶୁର ସର୍ବାଙ୍ଗୀନ ବିକାଶ ପାଇଁ ଏହି ପ୍ଲାଟଫର୍ମ ଅଙ୍ଗନୱାଡି ଶିକ୍ଷୟିତ୍ରୀମାନଙ୍କ ସିଧାସଳଖ ସହଯୋଗରେ ପ୍ରସ୍ତୁତ କରାଯାଇଛି।' 
+                  : 'Designed in close collaboration with Anganwadi educators to deliver high-quality early childhood development.'
+                }
+              </span>
             </div>
 
             <div className="pt-3.5 border-t border-white/5 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">

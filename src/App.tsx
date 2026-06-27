@@ -9,7 +9,7 @@ import {
   Loader, Loader2, Lock, Mail, Medal, MessageCircle, Mic, Monitor,
   Palette, PenTool, Phone, Play, QrCode, Rocket, Save, School, Send,
   Settings, Shapes, Share2, ShieldAlert, ShieldCheck, ShoppingBag,
-  Sparkles, Trophy, Twitter, Type, Upload, User, UserX, Users, Wind,
+  Sparkles, Star, Trophy, Twitter, Type, Upload, User, UserX, Users, Wind,
   Youtube, Zap, X, WifiOff, RefreshCw
 } from 'lucide-react';
 // Re-export as Lucide namespace for backward compatibility with existing JSX
@@ -22,7 +22,7 @@ const Lucide = {
   Loader, Loader2, Lock, Mail, Medal, MessageCircle, Mic, Monitor,
   Palette, PenTool, Phone, Play, QrCode, Rocket, Save, School, Send,
   Settings, Shapes, Share2, ShieldAlert, ShieldCheck, ShoppingBag,
-  Sparkles, Trophy, Twitter, Type, Upload, User, UserX, Users, Wind,
+  Sparkles, Star, Trophy, Twitter, Type, Upload, User, UserX, Users, Wind,
   Youtube, Zap, X, WifiOff, RefreshCw
 };
 import confetti from 'canvas-confetti';
@@ -5169,6 +5169,8 @@ function ParentDashboard({ user, chapters, leaderboard, language, onBack, userPr
 
 function SupportView({ user, language, onBack, handleSupportClick, confirmSupport, supportSession }: any) {
   const [ticket, setTicket] = useState('');
+  const [category, setCategory] = useState<'bug' | 'feature' | 'syllabus' | 'general'>('bug');
+  const [rating, setRating] = useState<number>(5);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -5181,6 +5183,8 @@ function SupportView({ user, language, onBack, handleSupportClick, confirmSuppor
         userName: user.name,
         userPhone: user.phoneNumber || '',
         userEmail: user.email || '',
+        category,
+        rating,
         message: ticket,
         status: 'open',
         createdAt: serverTimestamp()
@@ -5199,83 +5203,229 @@ function SupportView({ user, language, onBack, handleSupportClick, confirmSuppor
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="max-w-2xl mx-auto space-y-8 pb-20"
+      className="max-w-2xl mx-auto space-y-8 pb-20 px-4 sm:px-0"
     >
-      <div className="flex items-center gap-4">
-        <button onClick={onBack} className="p-2 bg-slate-800/50 rounded-xl text-slate-400 hover:text-white">
-          <Lucide.ArrowLeft size={20} />
-        </button>
-        <h2 className="text-2xl font-bold text-white">{translations[language].support.title}</h2>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={onBack} 
+            className="p-2.5 bg-slate-800/80 backdrop-blur-md rounded-2xl text-slate-400 hover:text-white border border-white/5 transition-all"
+          >
+            <Lucide.ArrowLeft size={20} />
+          </motion.button>
+          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">{translations[language].support.title}</h2>
+        </div>
+        <div className="text-xs font-bold text-slate-500 uppercase tracking-widest bg-slate-900/60 border border-white/5 px-4 py-1.5 rounded-full backdrop-blur-md">
+          {language === 'or' ? 'ଡେଭେଲପର ଜୋନ୍' : 'Developer Zone'}
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Grid of contact tools */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Live Support Remote Access */}
         {!supportSession && handleSupportClick && (
-          <button 
+          <motion.button 
+            whileHover={{ scale: 1.03, y: -2 }}
+            whileTap={{ scale: 0.98 }}
             onClick={handleSupportClick} 
-            className={`p-6 border rounded-3xl flex flex-col items-center justify-center gap-3 transition-all ${
+            className={`p-6 border rounded-[2rem] flex flex-col items-center justify-center gap-3 transition-all relative overflow-hidden group shadow-lg ${
               confirmSupport 
-                ? 'bg-rose-500/20 border-rose-500/50 hover:bg-rose-500/30 animate-pulse' 
-                : 'bg-red-500/10 border-red-500/20 hover:bg-red-500/20'
+                ? 'bg-rose-500/10 border-rose-500/40 hover:bg-rose-500/20 shadow-rose-500/5' 
+                : 'bg-red-500/5 border-red-500/15 hover:bg-red-500/10 shadow-red-500/5'
             }`}
           >
-            <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white ${confirmSupport ? 'bg-rose-500' : 'bg-red-500'}`}>
-              <Lucide.LifeBuoy size={24} className={`${confirmSupport ? 'animate-spin' : 'animate-spin-slow'}`} />
+            <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white transition-all shadow-md ${confirmSupport ? 'bg-rose-500 shadow-rose-500/30' : 'bg-red-500 shadow-red-500/25 group-hover:rotate-12'}`}>
+              <Lucide.LifeBuoy size={26} className={`${confirmSupport ? 'animate-spin' : 'animate-spin-slow'}`} />
             </div>
-            <span className="text-white font-bold text-sm text-center">
+            <span className="text-white font-black text-xs uppercase tracking-wider text-center mt-1">
               {confirmSupport ? (language === 'or' ? 'ନିଶ୍ଚିତ କରନ୍ତୁ?' : 'Confirm Connection?') : (language === 'or' ? 'ଲାଇଭ୍ ସହାୟତା' : 'Live Support')}
             </span>
-          </button>
+            <span className="text-[9px] font-bold text-slate-500 text-center">
+              {language === 'or' ? 'ରିମୋଟ ସହାୟତା' : 'Remote Assistant'}
+            </span>
+          </motion.button>
         )}
-        <a href="https://wa.me/919337956168" target="_blank" className="p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-3xl flex flex-col items-center gap-3 hover:bg-emerald-500/20 transition-all">
-          <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center text-white">
-            <Lucide.MessageCircle size={24} />
+
+        {/* WhatsApp Card */}
+        <motion.a 
+          whileHover={{ scale: 1.03, y: -2 }}
+          whileTap={{ scale: 0.98 }}
+          href="https://wa.me/919337956168" 
+          target="_blank" 
+          className="p-6 bg-emerald-500/5 border border-emerald-500/15 rounded-[2rem] flex flex-col items-center justify-center gap-3 hover:bg-emerald-500/10 transition-all relative overflow-hidden group shadow-lg shadow-emerald-500/5"
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="w-14 h-14 rounded-2xl bg-emerald-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/25 transition-all group-hover:scale-110">
+            <Lucide.MessageCircle size={26} />
           </div>
-          <span className="text-white font-bold text-sm text-center">{translations[language].support.whatsappSupport}</span>
-        </a>
-        <a href="mailto:gyanaloka.panda@gmail.com" className="p-6 bg-blue-500/10 border border-blue-500/20 rounded-3xl flex flex-col items-center gap-3 hover:bg-blue-500/20 transition-all">
-          <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white">
-            <Lucide.Mail size={24} />
+          <span className="text-white font-black text-xs uppercase tracking-wider text-center mt-1">{translations[language].support.whatsappSupport}</span>
+          <span className="text-[9px] font-bold text-slate-500 text-center">
+            {language === 'or' ? 'ତତ୍କ୍ଷଣାତ ମେସେଜ୍' : 'Instant Reply'}
+          </span>
+        </motion.a>
+
+        {/* Email Card */}
+        <motion.a 
+          whileHover={{ scale: 1.03, y: -2 }}
+          whileTap={{ scale: 0.98 }}
+          href="mailto:gyanaloka.panda@gmail.com" 
+          className="p-6 bg-blue-500/5 border border-blue-500/15 rounded-[2rem] flex flex-col items-center justify-center gap-3 hover:bg-blue-500/10 transition-all relative overflow-hidden group shadow-lg shadow-blue-500/5"
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="w-14 h-14 rounded-2xl bg-blue-500 flex items-center justify-center text-white shadow-md shadow-blue-500/25 transition-all group-hover:scale-110">
+            <Lucide.Mail size={26} />
           </div>
-          <span className="text-white font-bold text-sm text-center">{translations[language].support.emailSupport}</span>
-        </a>
-        <a href="tel:+919337956168" className="p-6 bg-purple-500/10 border border-purple-500/20 rounded-3xl flex flex-col items-center gap-3 hover:bg-purple-500/20 transition-all">
-          <div className="w-12 h-12 rounded-full bg-purple-500 flex items-center justify-center text-white">
-            <Lucide.Phone size={24} />
+          <span className="text-white font-black text-xs uppercase tracking-wider text-center mt-1">{translations[language].support.emailSupport}</span>
+          <span className="text-[9px] font-bold text-slate-500 text-center">
+            {language === 'or' ? 'ଅଫିସିଆଲ୍ ଇମେଲ୍' : 'Official Channel'}
+          </span>
+        </motion.a>
+
+        {/* Phone Call Card */}
+        <motion.a 
+          whileHover={{ scale: 1.03, y: -2 }}
+          whileTap={{ scale: 0.98 }}
+          href="tel:+919337956168" 
+          className="p-6 bg-purple-500/5 border border-purple-500/15 rounded-[2rem] flex flex-col items-center justify-center gap-3 hover:bg-purple-500/10 transition-all relative overflow-hidden group shadow-lg shadow-purple-500/5"
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="w-14 h-14 rounded-2xl bg-purple-500 flex items-center justify-center text-white shadow-md shadow-purple-500/25 transition-all group-hover:scale-110">
+            <Lucide.Phone size={26} />
           </div>
-          <span className="text-white font-bold text-sm text-center">{translations[language].support.callSupport}</span>
-        </a>
+          <span className="text-white font-black text-xs uppercase tracking-wider text-center mt-1">{translations[language].support.callSupport}</span>
+          <span className="text-[9px] font-bold text-slate-500 text-center">
+            {language === 'or' ? 'ସକ୍ରିୟ କଲ୍ ସର୍ଭିସ୍' : 'Voice Support'}
+          </span>
+        </motion.a>
       </div>
 
-      <div className="p-8 bg-slate-900/50 border border-white/5 rounded-[2.5rem] space-y-6">
+      {/* Ticket/Feedback Box */}
+      <div className="p-8 bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-[2.5rem] shadow-xl relative overflow-hidden">
+        {/* Glow decoration */}
+        <div className="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl" />
+        
         <div>
-          <h3 className="text-xl font-bold text-white mb-2">{translations[language].support.ticketTitle}</h3>
-          <p className="text-slate-400 text-sm">{translations[language].support.ticketDescription}</p>
+          <h3 className="text-xl sm:text-2xl font-black text-white mb-2 tracking-tight">{translations[language].support.ticketTitle}</h3>
+          <p className="text-slate-400 text-sm font-medium">{translations[language].support.ticketDescription}</p>
         </div>
 
-        {success ? (
-          <div className="p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-center">
-            <p className="text-emerald-400 font-bold">{translations[language].support.success}</p>
-            <button onClick={() => setSuccess(false)} className="mt-4 text-emerald-500 text-sm hover:underline">Send another message</button>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            <textarea 
-              value={ticket}
-              onChange={(e) => setTicket(e.target.value)}
-              placeholder="How can we help you?"
-              className="w-full h-32 bg-white/5 border border-white/10 rounded-2xl p-4 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
-            />
-            <button 
-              onClick={handleSubmit}
-              disabled={loading || !ticket.trim()}
-              className="w-full py-4 rounded-2xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+        <div className="mt-6">
+          {success ? (
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="p-8 bg-emerald-500/10 border border-emerald-500/25 rounded-3xl text-center flex flex-col items-center justify-center gap-4"
             >
-              {loading ? <Lucide.Loader2 className="animate-spin" size={20} /> : <Lucide.Send size={20} />}
-              {translations[language].support.submitTicket}
-            </button>
-          </div>
-        )}
+              <div className="w-14 h-14 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shadow-lg border border-emerald-500/25">
+                <Lucide.CheckCircle2 size={32} />
+              </div>
+              <div className="space-y-1">
+                <p className="text-emerald-400 font-black text-base">{translations[language].support.success}</p>
+                <p className="text-slate-400 text-xs font-semibold">
+                  {language === 'or' ? 'ଆମର ଟିମ୍ ଖୁବ୍ ଶୀଘ୍ର ଆପଣଙ୍କ ସହ ଯୋଗାଯୋଗ କରିବେ।' : 'Our developer team will review it shortly.'}
+                </p>
+              </div>
+              <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setSuccess(false)} 
+                className="mt-2 text-emerald-400 text-xs font-bold hover:text-emerald-300 transition-colors bg-emerald-500/5 hover:bg-emerald-500/10 px-6 py-2.5 rounded-xl border border-emerald-500/20"
+              >
+                {language === 'or' ? 'ନୂଆ ମେସେଜ୍ ପଠାନ୍ତୁ' : 'Submit Another Ticket'}
+              </motion.button>
+            </motion.div>
+          ) : (
+            <div className="space-y-6">
+              {/* Category Selector Tabs */}
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 dark:text-white/40 uppercase tracking-widest block">
+                  {language === 'or' ? 'ବିଷୟବସ୍ତୁ (Category)' : 'Ticket Category'}
+                </label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {(['bug', 'feature', 'syllabus', 'general'] as const).map((cat) => (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => setCategory(cat)}
+                      className={`py-2.5 px-3 rounded-2xl text-xs font-bold border transition-all uppercase tracking-wider ${
+                        category === cat
+                          ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 font-extrabold shadow-sm'
+                          : 'bg-white/5 border-white/5 text-slate-400 hover:text-white hover:bg-white/10'
+                      }`}
+                    >
+                      {cat === 'bug' && (language === 'or' ? '🐛 ସମସ୍ୟା' : '🐛 Bug')}
+                      {cat === 'feature' && (language === 'or' ? '✨ ଫିଚର୍' : '✨ Feature')}
+                      {cat === 'syllabus' && (language === 'or' ? '📚 ପାଠ୍ୟକ୍ରମ' : '📚 Syllabus')}
+                      {cat === 'general' && (language === 'or' ? '💬 ସାଧାରଣ' : '💬 General')}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Star Rating Selector */}
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 dark:text-white/40 uppercase tracking-widest block">
+                  {language === 'or' ? 'ଆପଣଙ୍କ ଅନୁଭୂତି (Experience Rating)' : 'Rate your experience'}
+                </label>
+                <div className="flex items-center gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setRating(star)}
+                      className="text-amber-400 hover:scale-125 active:scale-95 transition-all animate-none"
+                    >
+                      <Lucide.Star
+                        size={26}
+                        fill={star <= rating ? '#fbbf24' : 'none'}
+                        className={star <= rating ? 'text-amber-400' : 'text-slate-600'}
+                      />
+                    </button>
+                  ))}
+                  <span className="text-xs font-black text-slate-400 ml-2">
+                    {rating === 5 && (language === 'or' ? 'ବହୁତ ବଢ଼ିଆ' : 'Excellent')}
+                    {rating === 4 && (language === 'or' ? 'ଭଲ' : 'Good')}
+                    {rating === 3 && (language === 'or' ? 'ଠିକ୍ ଅଛି' : 'Average')}
+                    {rating === 2 && (language === 'or' ? 'ଖରାପ' : 'Poor')}
+                    {rating === 1 && (language === 'or' ? 'ବହୁତ ଖରାପ' : 'Very Bad')}
+                  </span>
+                </div>
+              </div>
+
+              {/* Text Input area */}
+              <div className="space-y-2 relative">
+                <div className="flex justify-between items-center">
+                  <label className="text-[10px] font-black text-slate-400 dark:text-white/40 uppercase tracking-widest">
+                    {language === 'or' ? 'ସନ୍ଦେଶ (Your Message)' : 'Message / Details'}
+                  </label>
+                  <span className={`text-[10px] font-bold ${ticket.length > 450 ? 'text-rose-400' : 'text-slate-500'}`}>
+                    {ticket.length} / 500
+                  </span>
+                </div>
+                <textarea 
+                  value={ticket}
+                  onChange={(e) => setTicket(e.target.value.substring(0, 500))}
+                  placeholder={language === 'or' ? "ଆମକୁ କିପରି ସାହାଯ୍ୟ କରିବେ?" : "How can we help you? Describe the issue or suggestion..."}
+                  className="w-full h-36 bg-slate-950/40 border border-white/10 rounded-2.5xl p-4 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all placeholder:text-slate-600"
+                />
+              </div>
+
+              <motion.button 
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleSubmit}
+                disabled={loading || !ticket.trim()}
+                className="w-full py-4 rounded-2.5xl bg-emerald-500 hover:bg-emerald-400 text-white font-extrabold text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/10"
+              >
+                {loading ? <Lucide.Loader2 className="animate-spin" size={20} /> : <Lucide.Send size={18} />}
+                <span>{translations[language].support.submitTicket}</span>
+              </motion.button>
+            </div>
+          )}
+        </div>
       </div>
     </motion.div>
   );
