@@ -76,6 +76,7 @@ import { GameZone } from './components/GameZone';
 import { getDeferredPrompt, clearDeferredPrompt, vibrate, requestScreenWakeLock, releaseScreenWakeLock, shareNative, playSuccessChime, playClickSound, subscribeUserToPush } from './pwa';
 import { SEO } from './components/SEO';
 import { BottomNavBar } from './components/BottomNavBar';
+import { PublicSeoPreview } from './components/PublicSeoPreview';
 import ReactMarkdown from 'react-markdown';
 import { cleanMathNotation } from './utils/cleaners';
 import LibraryPortalGate from './components/LibraryPortalGate';
@@ -3553,125 +3554,17 @@ export default function App() {
     const searchParams = new URLSearchParams(window.location.search);
     const previewKey = searchParams.get('preview') || searchParams.get('chapter');
     
+    const handleClearPreview = () => {
+      window.location.search = '';
+    };
+    
     if (previewKey) {
-      const cleanKey = previewKey.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-
-      const selectedPreview = previewDatabase[cleanKey] || {
-        title: `${previewKey.replace(/([A-Z])/g, ' $1').trim()} Revision Guide (BSE Odisha)`,
-        description: `Get free study guides and selection questions for ${previewKey} in Odia medium. Access free school learning books on Utkal Skill Centre.`,
-        content: `## ${previewKey.replace(/([A-Z])/g, ' $1').trim()}
-
-Welcome to the **Utkal Skill Centre** digital study revision portal. This chapter guide provides important exam-focused points, formulas, and textbook summaries.
-
----
-
-### Key Takeaways (ମୁଖ୍ୟ ବିଷୟବସ୍ତୁ)
-* Designed bilingually in English and standard Odia (ଓଡ଼ିଆ ମାଧ୍ୟମ) to facilitate easy reading.
-* Full study notes, syllabus tracking, and chapter-wise mock examinations are unlocked inside the dashboard.
-* Ask any academic doubt instantly with Gundulu AI tutor.`
-      };
-
-      const handleClearPreview = () => {
-        window.location.search = '';
-      };
-
       return (
-        <div className="min-h-screen bg-[#060913] text-slate-200 relative overflow-hidden font-sans p-4 sm:p-8 flex flex-col items-center">
-          <SEO 
-            title={selectedPreview.title}
-            description={selectedPreview.description}
-            subject={previewKey}
-          />
-          
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 via-purple-500 to-indigo-500" />
-          <div className="absolute top-10 right-10 w-96 h-96 bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
-          <div className="absolute bottom-10 left-10 w-96 h-96 bg-purple-500/5 rounded-full blur-[100px] pointer-events-none" />
-
-          {/* Premium Logo Header */}
-          <div className="w-full max-w-4xl flex justify-between items-center py-6 border-b border-white/5 mb-8">
-            <div className="flex items-center gap-3 cursor-pointer" onClick={handleClearPreview}>
-              <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center font-black text-emerald-400 text-lg shadow-[0_0_20px_rgba(16,185,129,0.1)]">
-                U
-              </div>
-              <div>
-                <h1 className="text-md font-black text-white leading-none tracking-tight">UTKAL</h1>
-                <span className="text-[8px] text-slate-500 font-bold uppercase tracking-[0.2em]">Skill Centre</span>
-              </div>
-            </div>
-            <button 
-              onClick={handleClearPreview}
-              className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-black uppercase tracking-wider text-slate-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
-            >
-              Sign Up For Free ➔
-            </button>
-          </div>
-
-          {/* Content Body */}
-          <main className="w-full max-w-4xl space-y-8 flex-1">
-            <div className="glass-card rounded-[32px] p-6 sm:p-10 border border-white/5 relative overflow-hidden shadow-2xl bg-slate-900/40 backdrop-blur-xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-wider mb-6">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                Free Public Lesson Preview (ଓଡ଼ିଆ ମାଧ୍ୟମ)
-              </div>
-              
-              <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-8">
-                {selectedPreview.title}
-              </h2>
-
-              <div className="prose prose-invert max-w-none text-slate-300 font-medium leading-relaxed space-y-6">
-                <ReactMarkdown>{cleanMathNotation(selectedPreview.content)}</ReactMarkdown>
-              </div>
-
-              {/* Conversion sticky loop box */}
-              <div className="mt-12 p-8 rounded-3xl border border-emerald-500/20 bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-indigo-500/10 text-center space-y-5 relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12 animate-pulse" style={{ animationDuration: '6s' }} />
-                
-                <h3 className="text-lg sm:text-xl font-black text-white leading-tight">
-                  Join 1 Lakh+ Odisha Medium Students! 🏆
-                </h3>
-                <p className="text-xs text-slate-400 max-w-2xl mx-auto leading-relaxed font-bold">
-                  Get instant access to complete textbooks, bilingual revision cards, daily selection MCQs, and resolve all your math & science doubts instantly with your personalized AI study buddy **Gundulu**!
-                </p>
-                <button
-                  onClick={handleClearPreview}
-                  className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-slate-950 font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-emerald-500/20 hover:scale-105 active:scale-95 transition-all cursor-pointer"
-                >
-                  Unlock Full Chapter & AI Buddy Free! 🟢
-                </button>
-              </div>
-            </div>
-
-            {/* Related guides list - High density SEO internal linker web */}
-            <div className="space-y-4">
-              <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.25em]">Popular Odia Medium Chapters</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {[
-                  { key: 'QuadraticEquations', name: 'Quadratic Equations / ଦ୍ୱିଘାତ ସମୀକରଣ' },
-                  { key: 'TrigonometricIdentities', name: 'Trigonometric Identities / ତ୍ରିକୋଣମିତି' },
-                  { key: 'ForceAndMotion', name: 'Force & Motion / ବଳ ଏବଂ ଗତି ନିୟମ' },
-                  { key: 'CarbonCompounds', name: 'Carbon Compounds / କାର୍ବନ ଯୌଗିକ' },
-                  { key: 'LifeProcesses', name: 'Life Processes / ପୋଷଣ ଏବଂ ଗତି' }
-                ]
-                .filter(item => item.key.toLowerCase() !== cleanKey)
-                .map((item) => (
-                  <a
-                    key={item.key}
-                    href={`?preview=${item.key}`}
-                    className="p-4 rounded-2xl border border-white/5 bg-white/2 hover:border-emerald-500/30 hover:bg-emerald-500/5 transition-all font-bold text-xs text-slate-400 hover:text-white"
-                  >
-                    {item.name} ➔
-                  </a>
-                ))}
-              </div>
-            </div>
-          </main>
-
-          <footer className="w-full max-w-4xl py-12 text-center text-[10px] text-slate-600 font-bold uppercase tracking-[0.2em] border-t border-white/5 mt-16">
-            {language === 'or' 
-              ? '© ୨୦୨୬ ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର • ଓଡ଼ିଶା ରାଜ୍ୟ ବୋର୍ଡ ଶ୍ରେଣୀ ୧ ରୁ ୧୦ ପାଇଁ ନିର୍ମିତ' 
-              : '© 2026 Utkal Skill Centre • Built for Odisha State Board Class 1 to 10'}
-          </footer>
-        </div>
+        <PublicSeoPreview 
+          previewKey={previewKey} 
+          language={language} 
+          onBack={handleClearPreview} 
+        />
       );
     }
 
@@ -3691,7 +3584,7 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
     ];
 
     return (
-      <div className="h-screen bg-[#0B0F19] flex flex-col relative overflow-hidden font-sans">
+      <div className="min-h-screen bg-[#0B0F19] flex flex-col relative overflow-y-auto font-sans">
         <SEO 
           title="Utkal Skill Centre | BSE Odisha 10th Result 2026 & Latest Board Pattern MCQs (ଓଡ଼ିଆ ମାଧ୍ୟମ)"
           description="Odisha's top digital learning platform for Class 5-10. Get BSE Odisha result updates, AI-powered doubt solving with Gundulu, and latest board pattern selection questions."
@@ -4075,6 +3968,69 @@ Welcome to the **Utkal Skill Centre** digital study revision portal. This chapte
             </div>
           )}
         </AnimatePresence>
+        {/* Explore Study Directory Sitemap Footer Matrix */}
+        <div className="w-full bg-slate-950/60 border-t border-white/5 py-12 px-6 sm:px-12 xl:px-20 relative z-10">
+          <div className="max-w-7xl mx-auto space-y-8">
+            <div>
+              <h3 className="text-sm font-black text-white uppercase tracking-[0.25em] mb-2">Explore Study Directory</h3>
+              <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Free Odisha School Board (BSE Odisha) Resources bilingually</p>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-left">
+              {/* Classes Column */}
+              <div className="space-y-4">
+                <h4 className="text-xs font-black text-emerald-400 uppercase tracking-widest font-bold">Syllabus By Class</h4>
+                <ul className="space-y-2 text-xs font-bold text-slate-400">
+                  <li><a href="?preview=class_sishuvatika" className="hover:text-white transition-colors">Anganwadi (Shishu Vatika)</a></li>
+                  <li><a href="?preview=class_1" className="hover:text-white transition-colors">Class 1 (ପ୍ରଥମ ଶ୍ରେଣୀ)</a></li>
+                  <li><a href="?preview=class_5" className="hover:text-white transition-colors">Class 5 (ପଞ୍ଚମ ଶ୍ରେଣୀ)</a></li>
+                  <li><a href="?preview=class_9" className="hover:text-white transition-colors">Class 9 (ନବମ ଶ୍ରେଣୀ)</a></li>
+                  <li><a href="?preview=class_10" className="hover:text-white transition-colors">Class 10 (ଦଶମ ଶ୍ରେଣୀ)</a></li>
+                </ul>
+              </div>
+
+              {/* Directories Column */}
+              <div className="space-y-4">
+                <h4 className="text-xs font-black text-emerald-400 uppercase tracking-widest font-bold">Resource Hubs</h4>
+                <ul className="space-y-2 text-xs font-bold text-slate-400">
+                  <li><a href="?preview=directory_library" className="hover:text-white transition-colors">Digital Library Index</a></li>
+                  <li><a href="?preview=directory_games" className="hover:text-white transition-colors">Traditional Games Guide</a></li>
+                  <li><a href="?preview=directory_tools" className="hover:text-white transition-colors">AI Learning Tools</a></li>
+                  <li><a href="?preview=directory_districts" className="hover:text-white transition-colors">Odisha District Hubs</a></li>
+                </ul>
+              </div>
+
+              {/* Games Column */}
+              <div className="space-y-4">
+                <h4 className="text-xs font-black text-emerald-400 uppercase tracking-widest font-bold">Traditional Games</h4>
+                <ul className="space-y-2 text-xs font-bold text-slate-400">
+                  <li><a href="?preview=game_baghchheli" className="hover:text-white transition-colors">Bagh Chheli (ବାଘ ଛେଳି)</a></li>
+                  <li><a href="?preview=game_puchi" className="hover:text-white transition-colors">Puchi (ପୁଚି)</a></li>
+                  <li><a href="?preview=game_kaudi" className="hover:text-white transition-colors">Kaudi (କାଉଡ଼ି)</a></li>
+                  <li><a href="?preview=game_rumalchori" className="hover:text-white transition-colors">Rumal Chori (ରୁମାଲ୍ ଚୋରି)</a></li>
+                </ul>
+              </div>
+
+              {/* AI Tools Column */}
+              <div className="space-y-4">
+                <h4 className="text-xs font-black text-emerald-400 uppercase tracking-widest font-bold">AI Study Tools</h4>
+                <ul className="space-y-2 text-xs font-bold text-slate-400">
+                  <li><a href="?preview=tool_gundulututor" className="hover:text-white transition-colors">Gundulu AI Doubt Solver</a></li>
+                  <li><a href="?preview=tool_mathblackboard" className="hover:text-white transition-colors">Math Blackboard Solver</a></li>
+                  <li><a href="?preview=tool_osepaplanner" className="hover:text-white transition-colors">OSEPA Lesson Planner</a></li>
+                  <li><a href="?preview=tool_aiworksheet" className="hover:text-white transition-colors">AI Worksheet Generator</a></li>
+                </ul>
+              </div>
+            </div>
+            
+            <div className="border-t border-white/5 pt-8 text-center text-[10px] text-slate-600 font-bold uppercase tracking-[0.2em]">
+              {language === 'or' 
+                ? '© ୨୦୨୬ ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର • ଓଡ଼ିଶା ରାଜ୍ୟ ବୋର୍ଡ ଶ୍ରେଣୀ ୧ ରୁ ୧୦ ପାଇଁ ନିର୍ମିତ' 
+                : '© 2026 Utkal Skill Centre • Built for Odisha State Board Class 1 to 10'}
+            </div>
+          </div>
+        </div>
+
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center opacity-30 pointer-events-none">
           <p className="text-[7px] font-black uppercase tracking-[0.6em] text-[#ffd700]">Pride Association of Bigsan Group</p>
           <p className="text-[6px] text-white/60 mt-1 uppercase tracking-widest">v2.1.0-Neural-Matrix • USC Platform</p>
@@ -8056,7 +8012,7 @@ const escapeXml = (str: string): string => {
   });
 };
 
-const getGenerativeTextbookCover = (classKey: string, subjectKey: string, title: string): string => {
+export const getGenerativeTextbookCover = (classKey: string, subjectKey: string, title: string): string => {
   const odiaClasses: Record<string, string> = {
     class1: "ପ୍ରଥମ ଶ୍ରେଣୀ",
     class2: "ଦ୍ୱିତୀୟ ଶ୍ରେଣୀ",

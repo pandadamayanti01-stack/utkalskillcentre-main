@@ -160,6 +160,121 @@ async function startServer() {
     res.redirect(301, '/anganwadi-to-class-10-study-materials.html');
   });
 
+  // Dynamic XML sitemap endpoint for 1,250+ public SEO pages
+  app.get('/sitemap.xml', (req, res) => {
+    res.setHeader('Content-Type', 'application/xml');
+    
+    let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+    xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+    
+    const baseUrl = 'https://utkalskillcentre.com';
+    
+    // 1. Static Pages
+    const staticPages = [
+      '',
+      '/anganwadi-to-class-10-study-materials.html',
+      '/ai-homework-help-odia.html',
+      '/bse-odisha-10th-result-2026.html',
+      '/odia-ai-tutor.html',
+      '/privacy-policy.html',
+      '/terms-of-service.html'
+    ];
+    for (const p of staticPages) {
+      xml += `  <url><loc>${baseUrl}${p}</loc><changefreq>daily</changefreq><priority>1.0</priority></url>\n`;
+    }
+    
+    // 2. Directory Hubs
+    const hubs = ['directory_library', 'directory_games', 'directory_gk', 'directory_tools', 'directory_districts'];
+    for (const h of hubs) {
+      xml += `  <url><loc>${baseUrl}/?preview=${h}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>\n`;
+    }
+    
+    // 3. Class Landing Pages
+    const classes = ['sishuvatika', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+    for (const c of classes) {
+      xml += `  <url><loc>${baseUrl}/?preview=class_${c}</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>\n`;
+    }
+    
+    // 4. Traditional Games
+    const games = ['baghchheli', 'puchi', 'kaudi', 'luchakali', 'rumalchori', 'bahiprustha'];
+    for (const g of games) {
+      xml += `  <url><loc>${baseUrl}/?preview=game_${g}</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>\n`;
+    }
+    
+    // 5. AI Tools
+    const tools = ['gundulututor', 'mathblackboard', 'osepaplanner', 'aiworksheet', 'homeworkhelper'];
+    for (const t of tools) {
+      xml += `  <url><loc>${baseUrl}/?preview=tool_${t}</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>\n`;
+    }
+    
+    // 6. District Hubs
+    const districts = [
+      'cuttack', 'khordha', 'ganjam', 'bhadrak', 'balasore', 'puri', 'jajpur', 'dhenkanal', 
+      'sundargarh', 'mayurbhanj', 'sambalpur', 'angul', 'bargarh', 'bolangir', 'deogarh', 
+      'gajapati', 'jagatsinghpur', 'jharsuguda', 'kalahandi', 'kandhamal', 'kendrapara', 
+      'keonjhar', 'koraput', 'malkangiri', 'nabarangpur', 'nayagarh', 'nuapada', 'rayagada', 
+      'subarnapur', 'boudh'
+    ];
+    for (const d of districts) {
+      xml += `  <url><loc>${baseUrl}/?preview=district_${d}</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>\n`;
+    }
+    
+    // 7. Subject Books & Chapters
+    const CLASS_SUBJECTS_SEO: Record<string, string[]> = {
+      sishuvatika: ["shishu_vatika"],
+      class1: ["ganita_khela", "jhulana_1"],
+      class2: ["maja_majare_ganita", "jhulana_2"],
+      class3: ["bhasa_mahak_1", "kala_sikhya", "ganita_mela", "paribesa_patha", "pallavi", "sharirika_sikhya"],
+      class4: ["bhasa_mahak_2", "paribesa_patha", "ganita_mela", "kala_sikhya", "pallavi", "krida_yoga"],
+      class5: ["bhasa_mahak_3", "ganita_mela", "kala_sikhya", "pallavi", "sharirika_yoga", "ama_chaturbaswara_pruthibi"],
+      class6: ["samajika_bignana", "jigyasa", "kalakunja", "ganita_prakas", "sahitya_sudha", "khela_sikhya", "sanskritakalika_1", "kausala_bodha", "jasmine", "hindi_kalika"],
+      class7: ["sahitya_suman", "kalakruti", "jigyasa", "samajika_bignana", "ganita_prakas", "hindi_kalika", "jasmine", "sanskritakalika_2", "kausala_bodha", "khela_sikhya"],
+      class8: ["kruti", "samajika_bignana", "jigyasa", "jasmine", "ganita_prakas", "sahitya_surabhi", "sanskritakalika_3", "kausala_bodha", "hindi_kalika"],
+      class9: ["life_science", "hindi", "english", "odia_grammar", "odia", "geometry", "algebra", "geography", "social_science", "physical_science", "english_grammar", "hindi_grammar", "sanskrit_grammar", "sanskrit"],
+      class10: ["hindi_grammar", "algebra", "physical_science", "odia", "english_grammar", "social_science", "odia_grammar", "life_science", "hindi", "sanskrit_grammar", "sanskrit", "geography", "geometry", "english"]
+    };
+    
+    // Helper to get Class 9 / 10 chapters from syllabus mapping
+    const getClassSyllabusChapters = (classNum: 9 | 10, subjectKey: string): string[] => {
+      const mapping = classNum === 9 ? BSE_SYLLABUS_MAPPING_9 : BSE_SYLLABUS_MAPPING_10;
+      const chapterSet = new Set<string>();
+      for (const milestone of mapping) {
+        if (milestone.subjects && milestone.subjects[subjectKey]) {
+          for (const chap of milestone.subjects[subjectKey]) {
+            const cleanSlug = chap.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+            if (cleanSlug) chapterSet.add(cleanSlug);
+          }
+        }
+      }
+      return Array.from(chapterSet);
+    };
+    
+    for (const [classKey, subjectsList] of Object.entries(CLASS_SUBJECTS_SEO)) {
+      const clsNum = classKey.replace('class', '');
+      for (const sub of subjectsList) {
+        // Book URL
+        xml += `  <url><loc>${baseUrl}/?preview=book_${classKey}_${sub}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>\n`;
+        
+        // Chapter URLs
+        let chaptersList: string[] = [];
+        if (clsNum === '9') {
+          chaptersList = getClassSyllabusChapters(9, sub);
+        } else if (clsNum === '10') {
+          chaptersList = getClassSyllabusChapters(10, sub);
+        } else {
+          chaptersList = ['chapter1', 'chapter2', 'chapter3', 'chapter4', 'chapter5', 'chapter6'];
+        }
+        
+        for (const chap of chaptersList) {
+          xml += `  <url><loc>${baseUrl}/?preview=chapter_${classKey}_${sub}_${chap}</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>\n`;
+        }
+      }
+    }
+    
+    xml += `</urlset>`;
+    res.status(200).send(xml);
+  });
+
   app.use(express.json({ limit: '50mb' }));
   app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
