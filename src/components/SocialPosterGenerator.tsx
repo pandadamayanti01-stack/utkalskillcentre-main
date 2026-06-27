@@ -524,7 +524,13 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
   const [showMascotSticker, setShowMascotSticker] = useState<boolean>(true);
   const [showMascotWatermark, setShowMascotWatermark] = useState<boolean>(false);
   const [useFullSambalpuriFrame, setUseFullSambalpuriFrame] = useState<boolean>(false);
-  const [questionFont, setQuestionFont] = useState<'Kalam' | 'Caveat' | 'Outfit' | 'Patrick Hand'>('Kalam');
+  const FONT_STACKS = {
+    baloo: "'Baloo Bhaina 2', 'Kalam', sans-serif",
+    alkatra: "'Alkatra', 'Caveat', cursive",
+    anek: "'Anek Odia', 'Outfit', sans-serif",
+    noto_serif: "'Noto Serif Oriya', serif"
+  };
+  const [questionFont, setQuestionFont] = useState<'baloo' | 'alkatra' | 'anek' | 'noto_serif'>('baloo');
 
   // Dynamic Textbook Selection states
   const [selectedClass, setSelectedClass] = useState<string>('class10');
@@ -557,7 +563,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
   // Dynamic Google Font Injection
   useEffect(() => {
     const link = document.createElement('link');
-    link.href = 'https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Kalam:wght@400;700&family=Outfit:wght@400;700;900&family=Patrick+Hand&display=swap';
+    link.href = 'https://fonts.googleapis.com/css2?family=Alkatra:wght@400;700&family=Anek+Odia:wght@400;700;800&family=Baloo+Bhaina+2:wght@400;700;800&family=Noto+Serif+Oriya:wght@400;700&family=Noto+Sans+Oriya:wght@400;700&family=Caveat:wght@400;700&family=Kalam:wght@400;700&family=Outfit:wght@400;700;900&family=Patrick+Hand&display=swap';
     link.rel = 'stylesheet';
     document.head.appendChild(link);
     return () => {
@@ -2055,17 +2061,20 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
 
   const downloadPosterImage = async () => {
     setGenerating(true);
-    const activeFont = questionFont === 'Patrick Hand' ? '"Patrick Hand"' : questionFont;
+    const activeFont = FONT_STACKS[questionFont] || FONT_STACKS.baloo;
     try {
       try {
         await Promise.race([
           Promise.all([
             document.fonts.ready,
-            document.fonts.load(`bold 24px ${activeFont}`),
-            document.fonts.load(`bold 22px ${activeFont}`),
-            document.fonts.load(`bold 18px ${activeFont}`),
-            document.fonts.load(`bold 16px ${activeFont}`),
-            document.fonts.load(`bold 20px ${activeFont}`),
+            document.fonts.load(`bold 24px 'Baloo Bhaina 2'`),
+            document.fonts.load(`bold 22px 'Baloo Bhaina 2'`),
+            document.fonts.load(`bold 18px 'Baloo Bhaina 2'`),
+            document.fonts.load(`bold 16px 'Baloo Bhaina 2'`),
+            document.fonts.load(`bold 20px 'Baloo Bhaina 2'`),
+            document.fonts.load(`bold 24px 'Alkatra'`),
+            document.fonts.load(`bold 24px 'Anek Odia'`),
+            document.fonts.load(`bold 24px 'Noto Serif Oriya'`),
             document.fonts.load('italic 24px Caveat'),
             document.fonts.load('italic 15px Caveat')
           ]),
@@ -2075,26 +2084,44 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         console.warn('Font loading failed, proceeding with system fonts fallback:', fontErr);
       }
 
-      // Preload all question diagrams
-      const activeQuestionsForPreload = questions.slice(0, questionCount);
-      const imageLoadPromises = activeQuestionsForPreload.map((q) => {
+      // Preload all image assets (diagrams, logo, mascot, watermark) in parallel
+      const preloadUrls = [];
+      if (logoImage) {
+        preloadUrls.push({ key: 'logo', url: logoImage });
+      }
+      if (showMascotSticker) {
+        preloadUrls.push({ key: 'mascot', url: '/gundulu-pointing.png' });
+      }
+      if (showMascotWatermark) {
+        preloadUrls.push({ key: 'watermark', url: '/gundulu-pointing-up.png' });
+      }
+
+      questions.slice(0, questionCount).forEach((q) => {
         if (q.imageUrl) {
-          return new Promise<{ id: number; img: HTMLImageElement | null }>((resolve) => {
-            const img = new Image();
-            if (q.imageUrl.startsWith('http') || q.imageUrl.startsWith('https')) {
-              img.crossOrigin = 'anonymous';
-            }
-            img.onload = () => resolve({ id: q.id, img });
-            img.onerror = () => resolve({ id: q.id, img: null });
-            img.src = q.imageUrl;
-          });
+          preloadUrls.push({ key: `q_${q.id}`, url: q.imageUrl });
         }
-        return Promise.resolve({ id: q.id, img: null });
       });
 
-      const loadedImages = await Promise.all(imageLoadPromises);
-      const imagesMap = new Map<number, HTMLImageElement | null>(
-        loadedImages.map((item) => [item.id, item.img])
+      const loadedImagesMap = new Map<string, HTMLImageElement>();
+      await Promise.all(
+        preloadUrls.map(
+          (asset) =>
+            new Promise<void>((resolve) => {
+              const img = new Image();
+              if (asset.url.startsWith('http') || asset.url.startsWith('https')) {
+                img.crossOrigin = 'anonymous';
+              }
+              img.onload = () => {
+                loadedImagesMap.set(asset.key, img);
+                resolve();
+              };
+              img.onerror = () => {
+                console.warn(`Failed to preload image asset: ${asset.url}`);
+                resolve();
+              };
+              img.src = asset.url;
+            })
+        )
       );
 
       const canvas = document.createElement('canvas');
@@ -2463,52 +2490,32 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
       ctx.fillText(`Date: ${dateStr}`, bx + 15, by + 32);
       ctx.fillText(`Page No.: ${pageNo}`, bx + 15, by + 80);
 
-      if (logoImage) {
+      const logoImg = loadedImagesMap.get('logo');
+      if (logoImg) {
         try {
-          await new Promise<void>((resolve) => {
-            const img = new Image();
-            if (logoImage.startsWith('http') || logoImage.startsWith('https')) {
-              img.crossOrigin = 'anonymous';
-            }
-            img.onload = () => {
-              try {
-                ctx.save();
-                ctx.beginPath();
-                ctx.arc(940, 110, 50, 0, Math.PI * 2);
-                ctx.fillStyle = isDarkPaper ? 'rgba(255, 255, 255, 0.1)' : '#FFFFFF';
-                ctx.fill();
-                ctx.clip();
-                ctx.drawImage(img, 890, 60, 100, 100);
-                ctx.restore();
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(940, 110, 50, 0, Math.PI * 2);
+          ctx.fillStyle = isDarkPaper ? 'rgba(255, 255, 255, 0.1)' : '#FFFFFF';
+          ctx.fill();
+          ctx.clip();
+          ctx.drawImage(logoImg, 890, 60, 100, 100);
+          ctx.restore();
 
-                ctx.strokeStyle = isDarkPaper ? 'rgba(255, 255, 255, 0.3)' : '#475569';
-                ctx.lineWidth = 2.5;
-                ctx.beginPath();
-                for (let a = 0; a < Math.PI * 2; a += 0.1) {
-                  const r = 50 + (Math.random() - 0.5) * 1.5;
-                  const px = 940 + Math.cos(a) * r;
-                  const py = 110 + Math.sin(a) * r;
-                  if (a === 0) ctx.moveTo(px, py);
-                  else ctx.lineTo(px, py);
-                }
-                ctx.closePath();
-                ctx.stroke();
-                resolve();
-              } catch (drawErr) {
-                console.error('Error drawing logo image onto canvas:', drawErr);
-                drawJagannathTemple(ctx, 840, 40, primaryColor);
-                resolve();
-              }
-            };
-            img.onerror = (loadErr) => {
-              console.warn('Failed to load logo image:', loadErr);
-              drawJagannathTemple(ctx, 840, 40, primaryColor);
-              resolve();
-            };
-            img.src = logoImage;
-          });
-        } catch (promiseErr) {
-          console.warn('Error processing logo image promise:', promiseErr);
+          ctx.strokeStyle = isDarkPaper ? 'rgba(255, 255, 255, 0.3)' : '#475569';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          for (let a = 0; a < Math.PI * 2; a += 0.1) {
+            const r = 50 + (Math.random() - 0.5) * 1.5;
+            const px = 940 + Math.cos(a) * r;
+            const py = 110 + Math.sin(a) * r;
+            if (a === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+          }
+          ctx.closePath();
+          ctx.stroke();
+        } catch (drawErr) {
+          console.error('Error drawing logo image onto canvas:', drawErr);
           drawJagannathTemple(ctx, 840, 40, primaryColor);
         }
       } else {
@@ -2577,23 +2584,14 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
 
       // Draw background mascot watermark if enabled
       if (showMascotWatermark) {
-        try {
-          await new Promise<void>((resolve) => {
-            const img = new Image();
-            img.onload = () => {
-              ctx.save();
-              ctx.globalAlpha = isDarkPaper ? 0.035 : 0.022; // Very faint background watermark
-              const targetW = 560;
-              const targetH = 560;
-              ctx.drawImage(img, 540 - targetW / 2, 960 - targetH / 2, targetW, targetH);
-              ctx.restore();
-              resolve();
-            };
-            img.onerror = () => resolve();
-            img.src = '/gundulu-pointing-up.png';
-          });
-        } catch (mascotErr) {
-          console.warn('Background watermark mascot loading failed:', mascotErr);
+        const watermarkImg = loadedImagesMap.get('watermark');
+        if (watermarkImg) {
+          ctx.save();
+          ctx.globalAlpha = isDarkPaper ? 0.035 : 0.022; // Very faint background watermark
+          const targetW = 560;
+          const targetH = 560;
+          ctx.drawImage(watermarkImg, 540 - targetW / 2, 960 - targetH / 2, targetW, targetH);
+          ctx.restore();
         }
       }
 
@@ -2884,7 +2882,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
         }
 
         const blockHeight = Math.max(qaHeight, sideNoteHeight, 95);
-        const imgObj = imagesMap.get(q.id);
+        const imgObj = loadedImagesMap.get(`q_${q.id}`);
         if (imgObj) {
           const cardSize = 80;
           const cardX = 900;
@@ -3007,65 +3005,55 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
 
       // Draw premium sticker badge for the Gundulu character mascot (pointing pose) if enabled
       if (showMascotSticker) {
-        try {
-          await new Promise<void>((resolve) => {
-            const img = new Image();
-            // Local asset doesn't need crossOrigin
-            img.onload = () => {
-              ctx.save();
-              ctx.translate(935, 1790);
-              ctx.rotate(-0.08); // slight playful tilt
+        const mascotImg = loadedImagesMap.get('mascot');
+        if (mascotImg) {
+          ctx.save();
+          ctx.translate(935, 1790);
+          ctx.rotate(-0.08); // slight playful tilt
 
-              // Setup drop shadow for the sticker base
-              ctx.shadowColor = 'rgba(0, 0, 0, 0.15)';
-              ctx.shadowBlur = 10;
-              ctx.shadowOffsetX = 3;
-              ctx.shadowOffsetY = 5;
+          // Setup drop shadow for the sticker base
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.15)';
+          ctx.shadowBlur = 10;
+          ctx.shadowOffsetX = 3;
+          ctx.shadowOffsetY = 5;
 
-              // Draw circular sticker background base (pure white to blend with baby image background)
-              ctx.fillStyle = '#FFFFFF';
-              ctx.beginPath();
-              ctx.arc(0, 0, 65, 0, Math.PI * 2);
-              ctx.fill();
+          // Draw circular sticker background base (pure white to blend with baby image background)
+          ctx.fillStyle = '#FFFFFF';
+          ctx.beginPath();
+          ctx.arc(0, 0, 65, 0, Math.PI * 2);
+          ctx.fill();
 
-              // Clear drop shadow for inner drawings
-              ctx.shadowColor = 'transparent';
-              ctx.shadowBlur = 0;
-              ctx.shadowOffsetX = 0;
-              ctx.shadowOffsetY = 0;
+          // Clear drop shadow for inner drawings
+          ctx.shadowColor = 'transparent';
+          ctx.shadowBlur = 0;
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 0;
 
-              // Clip the image to the circle boundaries so the white corners don't overflow
-              ctx.save();
-              ctx.beginPath();
-              ctx.arc(0, 0, 64, 0, Math.PI * 2);
-              ctx.clip();
-              ctx.drawImage(img, -64, -64, 128, 128);
-              ctx.restore();
+          // Clip the image to the circle boundaries so the white corners don't overflow
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(0, 0, 64, 0, Math.PI * 2);
+          ctx.clip();
+          ctx.drawImage(mascotImg, -64, -64, 128, 128);
+          ctx.restore();
 
-              // Draw outer border matching the theme
-              ctx.strokeStyle = primaryColor;
-              ctx.lineWidth = 2.0;
-              ctx.beginPath();
-              ctx.arc(0, 0, 65, 0, Math.PI * 2);
-              ctx.stroke();
+          // Draw outer border matching the theme
+          ctx.strokeStyle = primaryColor;
+          ctx.lineWidth = 2.0;
+          ctx.beginPath();
+          ctx.arc(0, 0, 65, 0, Math.PI * 2);
+          ctx.stroke();
 
-              // Draw inner dashed border matching the theme
-              ctx.strokeStyle = secondaryColor;
-              ctx.lineWidth = 1.2;
-              ctx.setLineDash([4, 3]);
-              ctx.beginPath();
-              ctx.arc(0, 0, 57, 0, Math.PI * 2);
-              ctx.stroke();
-              ctx.setLineDash([]); // Reset dash
+          // Draw inner dashed border matching the theme
+          ctx.strokeStyle = secondaryColor;
+          ctx.lineWidth = 1.2;
+          ctx.setLineDash([4, 3]);
+          ctx.beginPath();
+          ctx.arc(0, 0, 57, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.setLineDash([]); // Reset dash
 
-              ctx.restore();
-              resolve();
-            };
-            img.onerror = () => resolve();
-            img.src = '/gundulu-pointing.png';
-          });
-        } catch (err) {
-          console.warn('Gundulu character image loading failed:', err);
+          ctx.restore();
         }
       }
 
@@ -3221,6 +3209,8 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
     paperStyle === 'forest_sage' ? 'bg-emerald-500/20 text-[#34D399] px-1 rounded border border-emerald-500/30 mx-0.5 font-extrabold shadow-sm' :
     paperStyle === 'obsidian_gold' ? 'bg-amber-500/20 text-[#FBBF24] px-1 rounded border border-amber-500/30 mx-0.5 font-extrabold shadow-sm' : 
     'bg-yellow-300/45 text-amber-950 px-1 rounded border border-yellow-400/30 mx-0.5 font-extrabold';
+
+  const activeFont = FONT_STACKS[questionFont] || FONT_STACKS.baloo;
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-24 p-6 select-none text-slate-100 font-sans bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 rounded-[3rem] border border-slate-800 shadow-3xl relative overflow-hidden force-dark-theme">
@@ -3433,10 +3423,10 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
                 onChange={e => setQuestionFont(e.target.value as any)}
                 className="w-full bg-slate-900 border border-slate-800 px-3 py-2.5 rounded-xl text-xs font-bold text-white focus:border-indigo-500 outline-none"
               >
-                <option value="Kalam">Kalam (Standard Handwritten)</option>
-                <option value="Caveat">Caveat (Playful Cursive)</option>
-                <option value="Outfit">Outfit (Clean Masterclass)</option>
-                <option value="Patrick Hand">Patrick Hand (Handwritten Slim)</option>
+                <option value="baloo">Baloo Bhaina (Odia Round / standard)</option>
+                <option value="alkatra">Alkatra (Odia Artistic / Playful)</option>
+                <option value="anek">Anek Odia (Odia Bold / Modern)</option>
+                <option value="noto_serif">Noto Serif Oriya (Odia Classic / Formal)</option>
               </select>
             </div>
 
@@ -3666,7 +3656,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
                 <div className="pt-0.5">Page No.: {pageNo}</div>
               </div>
 
-              <div className="text-center flex-grow px-2" style={{ fontFamily: `${questionFont}, cursive` }}>
+              <div className="text-center flex-grow px-2" style={{ fontFamily: activeFont }}>
                 <div className={`text-[6.5px] font-bold uppercase leading-none tracking-wider ${isDarkPaper ? 'text-slate-400' : 'text-slate-500'}`}>{badgeText}</div>
                 <div className={`text-[10px] font-black leading-tight uppercase mt-0.5 ${previewTitle}`}>{titleText}</div>
                 <div className={`text-[7px] font-black italic mt-0.5 ${previewSub}`}>-- {subtitleText} --</div>
@@ -3682,7 +3672,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
             </div>
 
             {/* QUESTIONS LIST */}
-            <div className="flex-1 flex flex-col justify-between py-4 pl-[45px] pr-2 z-10 space-y-1.5 animate-fadeIn" style={{ fontFamily: `${questionFont}, cursive` }}>
+            <div className="flex-1 flex flex-col justify-between py-4 pl-[45px] pr-2 z-10 space-y-1.5 animate-fadeIn" style={{ fontFamily: activeFont }}>
               {questions.slice(0, questionCount).map((q, idx) => (
                 <div key={q.id} className="flex justify-between items-start gap-1">
                   <div className="flex-1 space-y-0.5 min-w-0">
@@ -3741,7 +3731,7 @@ export function SocialPosterGenerator({ chapters, onBack }: { chapters?: any[]; 
             </div>
 
             {/* FOOTER */}
-            <div className="relative text-center text-[9px] font-black z-10 border-t border-slate-200/40 pt-2 pb-1.5 flex flex-col items-center justify-center gap-1" style={{ fontFamily: `${questionFont}, cursive` }}>
+            <div className="relative text-center text-[9px] font-black z-10 border-t border-slate-200/40 pt-2 pb-1.5 flex flex-col items-center justify-center gap-1" style={{ fontFamily: activeFont }}>
               
               {/* Hand-drawn style QR Code Scanner in bottom-left */}
               <div className="absolute left-1 bottom-1 p-0.5 bg-white border border-slate-200/80 rounded shadow-[0_1px_3px_rgba(0,0,0,0.08)] flex flex-col items-center justify-center rotate-[3deg] z-20">
