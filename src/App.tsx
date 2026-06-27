@@ -8043,6 +8043,214 @@ function LeaderboardView({ leaderboard, language, onBack, following, user, onTog
   );
 }
 
+const getGenerativeTextbookCover = (classKey: string, subjectKey: string, title: string): string => {
+  const odiaClasses: Record<string, string> = {
+    class1: "ପ୍ରଥମ ଶ୍ରେଣୀ",
+    class2: "ଦ୍ୱିତୀୟ ଶ୍ରେଣୀ",
+    class3: "ତୃତୀୟ ଶ୍ରେଣୀ",
+    class4: "ଚତୁର୍ଥ ଶ୍ରେଣୀ",
+    class5: "ପଞ୍ଚମ ଶ୍ରେଣୀ",
+    class6: "ଷଷ୍ଠ ଶ୍ରେଣୀ",
+    class7: "ସପ୍ତମ ଶ୍ରେଣୀ",
+    class8: "ଅଷ୍ଟମ ଶ୍ରେଣୀ",
+    class9: "ନବମ ଶ୍ରେଣୀ",
+    class10: "ଦଶମ ଶ୍ରେଣୀ",
+    sishuvatika: "ଶିଶୁ ବାଟିକା"
+  };
+
+  const odiaSubjects: Record<string, string> = {
+    ganita_khela: "ଗଣିତ ଖେଳ",
+    jhulana_1: "ଝୁଲଣା ୧",
+    maja_majare_ganita: "ମଜା ମଜାରେ ଗଣିତ",
+    jhulana_2: "ଝୁଲଣା ୨",
+    bhasa_mahak_1: "ଭାଷା ମହକ ୧",
+    ganita_mela: "ଗଣିତ ମେଳା",
+    paribesa_patha: "ପରିବେଶ ପାଠ",
+    pallavi: "ପଲ୍ଲବୀ ଇଂରାଜୀ",
+    kala_sikhya: "କଳା ଶିକ୍ଷା",
+    sharirika_sikhya: "ଶାରୀରିକ ଶିକ୍ଷା",
+    bhasa_mahak_2: "ଭାଷା ମହକ ୨",
+    krida_yoga: "କ୍ରୀଡ଼ା ଓ ଯୋଗ",
+    bhasa_mahak_3: "ଭାଷା ମହକ ୩",
+    ama_chaturbaswara_pruthibi: "ଆମ ଚର୍ତୁର୍ପାଶ୍ଵର ପୃଥିବୀ",
+    sharirika_yoga: "ଶାରୀରିକ ଯୋଗ",
+    ganita_prakas: "ଗଣିତ ପ୍ରକାଶ",
+    sahitya_sudha: "ସାହିତ୍ୟ ସୁଧା",
+    jigyasa: "ଜିଜ୍ଞାସା ବିଜ୍ଞାନ",
+    samajika_bignana: "ସାମାଜିକ ବିଜ୍ଞାନ",
+    jasmine: "ଜାସମିନ ଇଂରାଜୀ",
+    hindi_kalika: "ହିନ୍ଦୀ କଳିକା",
+    sanskritakalika_1: "ସଂସ୍କୃତ କଳିକା ୧",
+    kausala_bodha: "କୌଶଳ ବୋଧ",
+    kalakunja: "କଳାକୁଞ୍ଜ",
+    khela_sikhya: "ଖେଳ ଶିକ୍ଷା",
+    sahitya_suman: "ସାହିତ୍ୟ ସୁମନ",
+    sanskritakalika_2: "ସଂସ୍କୃତ କଳିକା ୨",
+    kalakruti: "କଳାକୃତି",
+    sahitya_surabhi: "ସାହିତ୍ୟ ସୁରଭି",
+    sanskritakalika_3: "ସଂସ୍କୃତ କଳିକା ୩",
+    kruti: "କୃତି",
+    algebra: "ବୀଜଗଣିତ",
+    geometry: "ଜ୍ୟାମିତି",
+    physical_science: "ଭୌତିକ ବିଜ୍ଞାନ",
+    life_science: "ଜୀବ ବିଜ୍ଞାନ",
+    social_science: "ଇତିହାସ",
+    geography: "ଭୂଗୋଳ",
+    english: "ଇଂରାଜୀ",
+    english_grammar: "ଇଂରାଜୀ ବ୍ୟାକରଣ",
+    odia: "ଓଡ଼ିଆ",
+    odia_grammar: "ଓଡ଼ିଆ ବ୍ୟାକରଣ",
+    sanskrit: "ସଂସ୍କୃତ",
+    sanskrit_grammar: "ସଂସ୍କୃତ ବ୍ୟାକରଣ",
+    hindi: "ହିନ୍ଦୀ",
+    hindi_grammar: "ହିନ୍ଦୀ ବ୍ୟାକରଣ",
+    vocational: "ବ୍ୟାବସାୟିକ ଶିକ୍ଷା"
+  };
+
+  const cleanClass = classKey.toLowerCase().replace(/\s+/g, '').replace('th', '');
+  const odiaClass = odiaClasses[cleanClass] || odiaClasses[classKey] || classKey;
+  const odiaSubject = odiaSubjects[subjectKey] || subjectKey;
+
+  // Determine theme color and pattern based on subject
+  let gradient = "from-emerald-500 via-teal-600 to-slate-800";
+  let decorativePattern = "";
+
+  const subLower = subjectKey.toLowerCase();
+  if (subLower.includes('math') || subLower.includes('ganita') || subLower.includes('algebra') || subLower.includes('geometry')) {
+    gradient = "from-teal-500 via-emerald-600 to-amber-700";
+    decorativePattern = `
+      <g stroke="white" stroke-opacity="0.08" stroke-width="2" fill="none">
+        <circle cx="200" cy="250" r="130" />
+        <circle cx="200" cy="250" r="80" />
+        <line x1="200" y1="100" x2="200" y2="400" />
+        <line x1="50" y1="250" x2="350" y2="250" />
+      </g>
+    `;
+  } else if (subLower.includes('science') || subLower.includes('jigyasa') || subLower.includes('bignana') || subLower.includes('physical') || subLower.includes('life')) {
+    gradient = "from-cyan-500 via-blue-600 to-indigo-800";
+    decorativePattern = `
+      <g stroke="white" stroke-opacity="0.08" stroke-width="2" fill="none">
+        <ellipse cx="200" cy="250" rx="140" ry="50" transform="rotate(30 200 250)" />
+        <ellipse cx="200" cy="250" rx="140" ry="50" transform="rotate(-30 200 250)" />
+        <circle cx="200" cy="250" r="10" fill="white" fill-opacity="0.1" />
+      </g>
+    `;
+  } else if (subLower.includes('social') || subLower.includes('samajika') || subLower.includes('geography') || subLower.includes('history')) {
+    gradient = "from-amber-500 via-orange-600 to-red-800";
+    decorativePattern = `
+      <g stroke="white" stroke-opacity="0.08" stroke-width="2" fill="none">
+        <circle cx="200" cy="250" r="110" />
+        <ellipse cx="200" cy="250" rx="110" ry="40" />
+        <ellipse cx="200" cy="250" rx="40" ry="110" />
+      </g>
+    `;
+  } else if (subLower.includes('english') || subLower.includes('jasmine') || subLower.includes('pallavi')) {
+    gradient = "from-purple-500 via-pink-600 to-rose-800";
+    decorativePattern = `
+      <g stroke="white" stroke-opacity="0.08" stroke-width="1.5" fill="none">
+        <path d="M100,150 C150,200 250,200 300,150 C300,150 250,300 200,350 C150,300 100,150 100,150 Z" />
+        <circle cx="200" cy="230" r="50" />
+      </g>
+    `;
+  } else if (subLower.includes('odia') || subLower.includes('sahitya') || subLower.includes('jhulana') || subLower.includes('bhasa')) {
+    gradient = "from-orange-400 via-red-500 to-amber-800";
+    decorativePattern = `
+      <g stroke="white" stroke-opacity="0.08" stroke-width="2" fill="none">
+        <path d="M100,250 Q200,150 300,250 T100,250" stroke-dasharray="5,5" />
+        <circle cx="200" cy="250" r="100" />
+      </g>
+    `;
+  } else if (subLower.includes('sanskrit') || subLower.includes('sanskruta')) {
+    gradient = "from-amber-600 via-yellow-600 to-red-800";
+    decorativePattern = `
+      <g stroke="white" stroke-opacity="0.08" stroke-width="1.5" fill="none">
+        <polygon points="200,130 290,200 290,300 200,370 110,300 110,200" />
+        <circle cx="200" cy="250" r="60" />
+      </g>
+    `;
+  } else if (subLower.includes('hindi')) {
+    gradient = "from-rose-500 via-pink-600 to-red-900";
+    decorativePattern = `
+      <g stroke="white" stroke-opacity="0.08" stroke-width="2" fill="none">
+        <rect x="110" y="160" width="180" height="180" rx="15" transform="rotate(45 200 250)" />
+        <circle cx="200" cy="250" r="40" />
+      </g>
+    `;
+  }
+
+  const colors = gradient.replace('from-', '').replace('via-', '').replace('to-', '').split(' ');
+  const colorMap: Record<string, string> = {
+    'teal-500': '#0d9488', 'emerald-600': '#059669', 'amber-700': '#b45309',
+    'cyan-500': '#0891b2', 'blue-600': '#2563eb', 'indigo-800': '#3730a3',
+    'amber-500': '#d97706', 'orange-600': '#ea580c', 'red-800': '#991b1b',
+    'purple-500': '#9333ea', 'pink-600': '#db2777', 'rose-800': '#9f1239',
+    'orange-400': '#fb923c', 'red-500': '#ef4444', 'amber-800': '#92400e',
+    'amber-600': '#d97706', 'yellow-600': '#ca8a04', 'rose-500': '#f43f5e',
+    'red-900': '#7f1d1d', 'emerald-500': '#10b981', 'teal-600': '#0d9488',
+    'slate-800': '#1e293b'
+  };
+
+  const startColor = colorMap[colors[0]] || '#0d9488';
+  const midColor = colorMap[colors[1]] || '#059669';
+  const endColor = colorMap[colors[2]] || '#1e293b';
+
+  const displayTitle = title.length > 22 ? title.substring(0, 19) + "..." : title;
+
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 533" width="100%" height="100%">
+      <defs>
+        <linearGradient id="textbook_grad_${classKey}_${subjectKey}" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="${startColor}" />
+          <stop offset="50%" stop-color="${midColor}" />
+          <stop offset="100%" stop-color="${endColor}" />
+        </linearGradient>
+      </defs>
+
+      <!-- Card Background -->
+      <rect width="400" height="533" rx="28" fill="url(#textbook_grad_${classKey}_${subjectKey})" />
+      <rect width="25" height="533" fill="black" fill-opacity="0.15" />
+      <line x1="25" y1="0" x2="25" y2="533" stroke="white" stroke-opacity="0.08" stroke-width="1" />
+
+      <!-- Decorative Overlays -->
+      \${decorativePattern}
+
+      <!-- Top Header (Odia Subject Name & Class Name) -->
+      <g transform="translate(200, 80)" text-anchor="middle">
+        <!-- Class Name -->
+        <text y="0" fill="white" fill-opacity="0.6" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="900" letter-spacing="1.5">\${odiaClass.toUpperCase()}</text>
+        <!-- Subject Name -->
+        <text y="35" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="900">\${odiaSubject}</text>
+      </g>
+
+      <!-- Center Mascot Crest -->
+      <g transform="translate(200, 240)" text-anchor="middle">
+        <circle cx="0" cy="0" r="45" fill="white" fill-opacity="0.06" stroke="white" stroke-opacity="0.15" stroke-width="2" />
+        <!-- Crest Icon / Book Graphic -->
+        <path d="M-18,-8 L0,-18 L18,-8 L18,12 L0,22 L-18,12 Z" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M0,-18 L0,22" fill="none" stroke="white" stroke-dasharray="2,2" stroke-width="2" />
+      </g>
+
+      <!-- Bottom Card Metadata Info -->
+      <rect x="40" y="380" width="320" height="110" rx="18" fill="#020617" fill-opacity="0.75" stroke="white" stroke-opacity="0.05" stroke-width="1.5" />
+      
+      <!-- Odia Title Display -->
+      <text x="60" y="425" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="800">\${displayTitle}</text>
+      <text x="60" y="458" fill="white" fill-opacity="0.4" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="900" letter-spacing="1.2">UTKAL TEXTBOOK • ଉତ୍କଳ ପାଠ୍ୟପୁସ୍ତକ</text>
+    </svg>
+  `;
+
+  try {
+    const utf8Bytes = encodeURIComponent(svg).replace(/%([0-9A-F]{2})/g, (_, p1) => {
+      return String.fromCharCode(parseInt(p1, 16));
+    });
+    const base64Svg = btoa(utf8Bytes);
+    return `data:image/svg+xml;base64,${base64Svg}`;
+  } catch (e) {
+    console.error("Failed to base64 encode SVG textbook cover:", e);
+    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+  }
+};
+
 function TextbooksView({ user, textbooks, language, onBack }: any) {
   const [subjectFilter, setSubjectFilter] = useState('all');
   const [teacherClassFilter, setTeacherClassFilter] = useState('all');
@@ -8201,31 +8409,12 @@ function TextbooksView({ user, textbooks, language, onBack }: any) {
 
             return (
             <motion.div whileHover={{ y: -5 }} key={book.id} className="group bg-slate-900/50 border border-white/5 rounded-3xl overflow-hidden hover:border-emerald-500/50 transition-all flex flex-col">
-              <div className={`aspect-[3/4] relative overflow-hidden bg-gradient-to-br ${
-                book.class === 'class1' ? 'from-rose-500/30 to-red-800/40' :
-                book.class === 'class2' ? 'from-orange-400/30 to-orange-800/40' :
-                book.class === 'class3' ? 'from-amber-400/30 to-yellow-800/40' :
-                book.class === 'class4' ? 'from-lime-400/30 to-green-800/40' :
-                book.class === 'class5' ? 'from-emerald-400/30 to-teal-800/40' :
-                book.class === 'class6' ? 'from-cyan-400/30 to-sky-800/40' :
-                book.class === 'class7' ? 'from-blue-400/30 to-indigo-800/40' :
-                book.class === 'class8' ? 'from-violet-400/30 to-purple-800/40' :
-                book.class === 'class9' ? 'from-fuchsia-400/30 to-pink-800/40' :
-                book.class === 'class10' ? 'from-slate-300/30 to-slate-800/50' :
-                'from-emerald-500/20 to-slate-800/60'
-              }`}>
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.16),transparent_45%)]" />
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center px-4">
-                  <img src="/gundulu-rath-crest.png" alt="Class cover" className="h-16 w-16 object-contain opacity-90 drop-shadow-md" />
-                  <div className="text-sm font-black tracking-widest text-white/90">
-                    {translations['or']?.classes?.[book.class as keyof typeof translations.en.classes] || book.class}
-                  </div>
-                </div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <span className="text-[10px] font-bold uppercase text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg border border-emerald-500/20 backdrop-blur-md">
-                    {book.subject}
-                  </span>
-                </div>
+              <div className="aspect-[3/4] relative overflow-hidden bg-slate-950">
+                <img 
+                  src={getGenerativeTextbookCover(book.class, book.subject, bookTitle)} 
+                  alt={bookTitle}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
               </div>
               <div className="p-6 flex flex-col flex-1">
                 <h3 className="text-lg font-bold text-white mb-4 line-clamp-2 flex-1">{bookTitle}</h3>
