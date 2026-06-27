@@ -5,7 +5,215 @@ import ReactMarkdown from 'react-markdown';
 import { SEO } from './SEO';
 import { previewDatabase } from '../data/previewDatabase';
 import { cleanMathNotation } from '../utils/cleaners';
-import { getGenerativeTextbookCover } from '../App';
+const escapeXml = (str: string): string => {
+  return str.replace(/[<>&'"]/g, (c) => {
+    switch (c) {
+      case '<': return '&lt;';
+      case '>': return '&gt;';
+      case '&': return '&amp;';
+      case '\'': return '&apos;';
+      case '"': return '&quot;';
+      default: return c;
+    }
+  });
+};
+
+const getGenerativeTextbookCover = (classKey: string, subjectKey: string, title: string): string => {
+  const odiaClasses: Record<string, string> = {
+    class1: "ପ୍ରଥମ ଶ୍ରେଣୀ",
+    class2: "ଦ୍ୱିତୀୟ ଶ୍ରେଣୀ",
+    class3: "ତୃତୀୟ ଶ୍ରେଣୀ",
+    class4: "ଚତୁର୍ଥ ଶ୍ରେଣୀ",
+    class5: "ପଞ୍ଚମ ଶ୍ରେଣୀ",
+    class6: "ଷଷ୍ଠ ଶ୍ରେଣୀ",
+    class7: "ସପ୍ତମ ଶ୍ରେଣୀ",
+    class8: "ଅଷ୍ଟମ ଶ୍ରେଣୀ",
+    class9: "ନବମ ଶ୍ରେଣୀ",
+    class10: "ଦଶମ ଶ୍ରେଣୀ"
+  };
+
+  const odiaSubjects: Record<string, string> = {
+    shishu_vatika: "ଶିଶୁ ବାଟିକା ପାଠ୍ୟ",
+    ganita_khela: "ଗଣିତ ଖେଳ", jhulana_1: "ଝୁଲଣା ୧", maja_majare_ganita: "ମଜା ମଜାରେ ଗଣିତ",
+    jhulana_2: "ଝୁଲଣา ୨", bhasa_mahak_1: "ଭାଷା ମହକ ୧", ganita_mela: "ଗଣିତ ମେଳା",
+    paribesa_patha: "ପରିବେଶ ପାଠ", pallavi: "ପଲ୍ଲବୀ ଇଂରାଜୀ", kala_sikhya: "କଳା ଶିକ୍ଷା",
+    sharirika_sikhya: "ଶାରୀରିକ ଶିକ୍ଷା", bhasa_mahak_2: "ଭାଷା ମହକ ୨", krida_yoga: "କ୍ରୀଡ଼ା ଓ ଯୋଗ",
+    bhasa_mahak_3: "ଭାଷା ମହକ ୩", ama_chaturbaswara_pruthibi: "ଆମ ଚର୍ତୁର୍ପାଶ୍ଵର ପୃଥିବୀ",
+    sharirika_yoga: "ଶାରୀରିକ ଯୋଗ", ganita_prakas: "ଗଣିତ ପ୍ରକାଶ", sahitya_sudha: "ସାହିତ୍ୟ ସୁଧା",
+    jigyasa: "ଜିଜ୍ଞାସା ବିଜ୍ଞାନ", samajika_bignana: "ସାମାଜିକ ବିଜ୍ଞାନ", jasmine: "ଜାସମିନ ଇଂରାଜୀ",
+    hindi_kalika: "ହିନ୍ଦୀ କଳିକା", sanskritakalika_1: "ସଂସ୍କୃତ କଳିକା ୧", kausala_bodha: "କୌଶଳ ବୋଧ",
+    kalakunja: "କଳାକୁଞ୍ଜ", khela_sikhya: "ଖେଳ ଶିକ୍ଷା", sahitya_suman: "ସାହିତ୍ୟ ସୁମନ",
+    sanskritakalika_2: "ସଂସ୍କୃତ କଳିକା ୨", kalakruti: "କଳାକୃତି", sahitya_surabhi: "ସାହିତ୍ୟ ସୁରଭି",
+    sanskritakalika_3: "ସଂସ୍କୃତ କଳିକା ୩", kruti: "କୃତି", algebra: "ବୀଜଗଣିତ",
+    geometry: "ଜ୍ୟାମିତି", physical_science: "ଭୌତିକ ବିଜ୍ଞାନ", life_science: "ଜୀବ ବିଜ୍ଞାନ",
+    social_science: "ଇତିହାସ", geography: "ଭୂଗୋଳ", english: "ଇଂରାଜୀ",
+    english_grammar: "ଇଂରାଜୀ ବ୍ୟାକରଣ", odia: "ଓଡ଼ିଆ", odia_grammar: "ଓଡ଼ିଆ ବ୍ୟାକରଣ",
+    sanskrit: "ସଂସ୍କୃତ", sanskrit_grammar: "ସଂସ୍କୃତ ବ୍ୟାକରଣ", hindi: "ହିନ୍ଦୀ",
+    hindi_grammar: "ହିନ୍ଦୀ ବ୍ୟାକରଣ", vocational: "ବ୍ୟାବସାୟିକ ଶିକ୍ଷା"
+  };
+
+  const cleanClass = classKey.toLowerCase().replace(/\s+/g, '').replace('th', '');
+  const odiaClass = odiaClasses[cleanClass] || odiaClasses[classKey] || classKey;
+  const odiaSubject = odiaSubjects[subjectKey] || subjectKey;
+
+  const displayClass = escapeXml(odiaClass.toUpperCase());
+  const displaySubject = escapeXml(odiaSubject);
+
+  let gradient = "from-emerald-500 via-teal-600 to-slate-800";
+  let decorativePattern = "";
+
+  const subLower = subjectKey.toLowerCase();
+  if (subLower.includes('math') || subLower.includes('ganita') || subLower.includes('algebra') || subLower.includes('geometry')) {
+    gradient = "from-teal-500 via-emerald-600 to-amber-700";
+    decorativePattern = `
+      <g stroke="white" stroke-opacity="0.08" stroke-width="2" fill="none">
+        <circle cx="200" cy="250" r="130" />
+        <circle cx="200" cy="250" r="80" />
+        <line x1="200" y1="100" x2="200" y2="400" />
+        <line x1="50" y1="250" x2="350" y2="250" />
+      </g>
+    `;
+  } else if (subLower.includes('history') || subLower.includes('social_science') || subLower.includes('hist')) {
+    gradient = "from-amber-600 via-orange-600 to-amber-800";
+    decorativePattern = `
+      <g stroke="white" stroke-opacity="0.08" stroke-width="2" fill="none">
+        <rect x="120" y="150" width="160" height="200" rx="10" />
+        <line x1="160" y1="150" x2="160" y2="350" />
+        <line x1="200" y1="150" x2="200" y2="350" />
+        <line x1="240" y1="150" x2="240" y2="350" />
+        <circle cx="200" cy="250" r="50" stroke-dasharray="4,4" />
+      </g>
+    `;
+  } else if (subLower.includes('geography') || subLower.includes('geo')) {
+    gradient = "from-teal-500 via-emerald-600 to-slate-800";
+    decorativePattern = `
+      <g stroke="white" stroke-opacity="0.08" stroke-width="2" fill="none">
+        <circle cx="200" cy="250" r="110" />
+        <ellipse cx="200" cy="250" rx="110" ry="40" />
+        <ellipse cx="200" cy="250" rx="40" ry="110" />
+        <line x1="200" y1="140" x2="200" y2="360" />
+        <line x1="90" y1="250" x2="310" y2="250" />
+      </g>
+    `;
+  } else if (subLower.includes('science') || subLower.includes('jigyasa') || subLower.includes('bignana') || subLower.includes('physical') || subLower.includes('life')) {
+    gradient = "from-cyan-500 via-blue-600 to-indigo-800";
+    decorativePattern = `
+      <g stroke="white" stroke-opacity="0.08" stroke-width="2" fill="none">
+        <ellipse cx="200" cy="250" rx="140" ry="50" transform="rotate(30 200 250)" />
+        <ellipse cx="200" cy="250" rx="140" ry="50" transform="rotate(-30 200 250)" />
+        <circle cx="200" cy="250" r="10" fill="white" fill-opacity="0.1" />
+      </g>
+    `;
+  } else if (subLower.includes('social') || subLower.includes('samajika')) {
+    gradient = "from-amber-500 via-orange-600 to-red-800";
+    decorativePattern = `
+      <g stroke="white" stroke-opacity="0.08" stroke-width="2" fill="none">
+        <circle cx="200" cy="250" r="110" />
+        <ellipse cx="200" cy="250" rx="110" ry="40" />
+        <ellipse cx="200" cy="250" rx="40" ry="110" />
+      </g>
+    `;
+  } else if (subLower.includes('english') || subLower.includes('jasmine') || subLower.includes('pallavi')) {
+    gradient = "from-purple-500 via-pink-600 to-rose-800";
+    decorativePattern = `
+      <g stroke="white" stroke-opacity="0.08" stroke-width="1.5" fill="none">
+        <path d="M100,150 C150,200 250,200 300,150 C300,150 250,300 200,350 C150,300 100,150 100,150 Z" />
+        <circle cx="200" cy="230" r="50" />
+      </g>
+    `;
+  } else if (subLower.includes('odia') || subLower.includes('sahitya') || subLower.includes('jhulana') || subLower.includes('bhasa')) {
+    gradient = "from-orange-400 via-red-500 to-amber-800";
+    decorativePattern = `
+      <g stroke="white" stroke-opacity="0.08" stroke-width="2" fill="none">
+        <path d="M100,250 Q200,150 300,250 T100,250" stroke-dasharray="5,5" />
+        <circle cx="200" cy="250" r="100" />
+      </g>
+    `;
+  } else if (subLower.includes('sanskrit') || subLower.includes('sanskruta')) {
+    gradient = "from-amber-600 via-yellow-600 to-red-800";
+    decorativePattern = `
+      <g stroke="white" stroke-opacity="0.08" stroke-width="1.5" fill="none">
+        <polygon points="200,130 290,200 290,300 200,370 110,300 110,200" />
+        <circle cx="200" cy="250" r="60" />
+      </g>
+    `;
+  } else if (subLower.includes('hindi')) {
+    gradient = "from-rose-500 via-pink-600 to-red-900";
+    decorativePattern = `
+      <g stroke="white" stroke-opacity="0.08" stroke-width="2" fill="none">
+        <rect x="110" y="160" width="180" height="180" rx="15" transform="rotate(45 200 250)" />
+        <circle cx="200" cy="250" r="40" />
+      </g>
+    `;
+  }
+
+  const colors = gradient.replace('from-', '').replace('via-', '').replace('to-', '').split(' ');
+  const colorMap: Record<string, string> = {
+    'teal-500': '#0d9488', 'emerald-600': '#059669', 'amber-700': '#b45309',
+    'cyan-500': '#0891b2', 'blue-600': '#2563eb', 'indigo-800': '#3730a3',
+    'amber-500': '#d97706', 'orange-600': '#ea580c', 'red-800': '#991b1b',
+    'purple-500': '#9333ea', 'pink-600': '#db2777', 'rose-800': '#9f1239',
+    'orange-400': '#fb923c', 'red-500': '#ef4444', 'amber-800': '#92400e',
+    'amber-600': '#d97706', 'yellow-600': '#ca8a04', 'rose-500': '#f43f5e',
+    'red-900': '#7f1d1d', 'emerald-500': '#10b981', 'teal-600': '#0d9488',
+    'slate-800': '#1e293b'
+  };
+
+  const startColor = colorMap[colors[0]] || '#0d9488';
+  const midColor = colorMap[colors[1]] || '#059669';
+  const endColor = colorMap[colors[2]] || '#1e293b';
+
+  const displayTitle = escapeXml(title.length > 22 ? title.substring(0, 19) + "..." : title);
+
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 533" width="100%" height="100%">
+      <defs>
+        <linearGradient id="textbook_grad_${classKey}_${subjectKey}" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="${startColor}" />
+          <stop offset="50%" stop-color="${midColor}" />
+          <stop offset="100%" stop-color="${endColor}" />
+        </linearGradient>
+      </defs>
+
+      <!-- Card Background -->
+      <rect width="400" height="533" rx="28" fill="url(#textbook_grad_${classKey}_${subjectKey})" />
+      <rect width="25" height="533" fill="black" fill-opacity="0.15" />
+      <line x1="25" y1="0" x2="25" y2="533" stroke="white" stroke-opacity="0.08" stroke-width="1" />
+
+      <!-- Decorative Overlays -->
+      ${decorativePattern}
+
+      <!-- Top Header -->
+      <g transform="translate(200, 80)" text-anchor="middle">
+        <text y="0" fill="white" fill-opacity="0.6" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="900" letter-spacing="1.5">${displayClass}</text>
+        <text y="35" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="900">${displaySubject}</text>
+      </g>
+
+      <!-- Center Mascot Crest -->
+      <g transform="translate(200, 240)" text-anchor="middle">
+        <circle cx="0" cy="0" r="45" fill="white" fill-opacity="0.06" stroke="white" stroke-opacity="0.15" stroke-width="2" />
+        <path d="M-18,-8 L0,-18 L18,-8 L18,12 L0,22 L-18,12 Z" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M0,-18 L0,22" fill="none" stroke="white" stroke-dasharray="2,2" stroke-width="2" />
+      </g>
+
+      <!-- Bottom Card Info -->
+      <rect x="40" y="380" width="320" height="110" rx="18" fill="#020617" fill-opacity="0.75" stroke="white" stroke-opacity="0.05" stroke-width="1.5" />
+      <text x="60" y="425" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="800">${displayTitle}</text>
+      <text x="60" y="458" fill="white" fill-opacity="0.4" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="900" letter-spacing="1.2">UTKAL TEXTBOOK • ଉତ୍କଳ ପାଠ୍ୟପୁସ୍ତକ</text>
+    </svg>
+  `;
+
+  try {
+    const utf8Bytes = encodeURIComponent(svg).replace(/%([0-9A-F]{2})/g, (_, p1) => {
+      return String.fromCharCode(parseInt(p1, 16));
+    });
+    const base64Svg = btoa(utf8Bytes);
+    return `data:image/svg+xml;base64,${base64Svg}`;
+  } catch (e) {
+    console.error("Failed to base64 encode SVG textbook cover:", e);
+    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+  }
+};
 
 interface PublicSeoPreviewProps {
   previewKey: string;

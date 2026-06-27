@@ -3551,11 +3551,24 @@ export default function App() {
   }
 
   if (!user) {
-    const searchParams = new URLSearchParams(window.location.search);
-    const previewKey = searchParams.get('preview') || searchParams.get('chapter');
+    const getQueryParam = (name: string) => {
+      const searchParams = new URLSearchParams(window.location.search);
+      if (searchParams.has(name)) return searchParams.get(name);
+      
+      const hash = window.location.hash;
+      const hashQIndex = hash.indexOf('?');
+      if (hashQIndex !== -1) {
+        const hashParams = new URLSearchParams(hash.substring(hashQIndex));
+        return hashParams.get(name);
+      }
+      return null;
+    };
+
+    const previewKey = getQueryParam('preview') || getQueryParam('chapter');
     
     const handleClearPreview = () => {
       window.location.search = '';
+      window.location.hash = '';
     };
     
     if (previewKey) {
