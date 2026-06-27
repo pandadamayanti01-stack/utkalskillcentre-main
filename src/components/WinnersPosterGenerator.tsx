@@ -20,8 +20,10 @@ export function WinnersPosterGenerator({ onBack }: { onBack: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Form State variables
+  const [brandText, setBrandText] = useState('ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର');
   const [headingText, setHeadingText] = useState('ମାସିକ ଟେଷ୍ଟ ବିଜେତା');
   const [monthText, setMonthText] = useState('ମେ ୨୦୨୬');
+  const [classText, setClassText] = useState('ଦଶମ ଶ୍ରେଣୀ (Class 10)');
   const [winners, setWinners] = useState<WinnerItem[]>(DEFAULT_WINNERS);
   const [websiteText, setWebsiteText] = useState('www.utkalskillcentre.com');
   const [contactText, setContactText] = useState('contact@utkalskillcentre.com');
@@ -41,8 +43,10 @@ export function WinnersPosterGenerator({ onBack }: { onBack: () => void }) {
   useEffect(() => {
     drawPoster();
   }, [
+    brandText,
     headingText,
     monthText,
+    classText,
     winners,
     websiteText,
     contactText,
@@ -103,8 +107,8 @@ export function WinnersPosterGenerator({ onBack }: { onBack: () => void }) {
     logoImg.onload = () => {
       let logoX = 70;
       let logoY = 70;
-      const logoWidth = 110;
-      const logoHeight = 110;
+      const logoWidth = 100;
+      const logoHeight = 100;
 
       if (logoPosition === 'top_center') {
         logoX = 540 - logoWidth / 2;
@@ -118,20 +122,31 @@ export function WinnersPosterGenerator({ onBack }: { onBack: () => void }) {
     // 4. Draw Header Titles
     ctx.textAlign = 'center';
     
+    // Brand Title (e.g. ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର)
+    ctx.font = "bold 32px 'Inter', sans-serif";
+    ctx.fillStyle = '#CBD5E1';
+    ctx.fillText(brandText, 540, 135);
+
     // Heading (e.g. ମାସିକ ଟେଷ୍ଟ ବିଜେତା)
-    ctx.font = "900 68px 'Inter', sans-serif";
+    ctx.font = "900 62px 'Inter', sans-serif";
     ctx.fillStyle = themeStyle === 'obsidian_gold' ? '#FBBF24' : 
                     themeStyle === 'royal_emerald' ? '#A7F3D0' : '#38BDF8'; // primary accent
-    ctx.fillText(headingText, 540, 240);
+    ctx.fillText(headingText, 540, 210);
 
-    // Subtitle (e.g. ମେ ୨୦୨୬)
-    ctx.font = "bold 44px 'Inter', sans-serif";
+    // Subtitle Month (e.g. ମେ ୨୦୨୬)
+    ctx.font = "bold 34px 'Inter', sans-serif";
+    ctx.fillStyle = themeStyle === 'obsidian_gold' ? '#FBBF24' : 
+                    themeStyle === 'royal_emerald' ? '#34D399' : '#60A5FA';
+    ctx.fillText(monthText, 540, 275);
+
+    // Subtitle Class (e.g. ଦଶମ ଶ୍ରେଣୀ (Class 10))
+    ctx.font = "bold 34px 'Inter', sans-serif";
     ctx.fillStyle = '#FFFFFF';
-    ctx.fillText(monthText, 540, 310);
+    ctx.fillText(classText, 540, 335);
 
     // 5. Draw Winners List
-    const startY = 400;
-    const spacingY = 110;
+    const startY = 440;
+    const spacingY = 96;
     ctx.textAlign = 'left';
 
     winners.forEach((w, index) => {
@@ -160,12 +175,12 @@ export function WinnersPosterGenerator({ onBack }: { onBack: () => void }) {
       ctx.fillText(medalSymbol, 120, currentY);
 
       // Draw Rank Label
-      ctx.font = "900 34px 'Inter', sans-serif";
+      ctx.font = "900 32px 'Inter', sans-serif";
       ctx.fillStyle = rankColor;
       ctx.fillText(w.rankText + ':', 180, currentY);
 
       // Draw Winners Names
-      ctx.font = "bold 34px 'Inter', sans-serif";
+      ctx.font = "bold 32px 'Inter', sans-serif";
       ctx.fillStyle = '#FFFFFF';
       
       // Calculate start of name text based on length of rank text
@@ -175,10 +190,10 @@ export function WinnersPosterGenerator({ onBack }: { onBack: () => void }) {
       // Draw separator line below item
       if (index < winners.length - 1) {
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1.5;
         ctx.beginPath();
-        ctx.moveTo(120, currentY + 45);
-        ctx.lineTo(960, currentY + 45);
+        ctx.moveTo(120, currentY + 40);
+        ctx.lineTo(960, currentY + 40);
         ctx.stroke();
       }
     });
@@ -295,6 +310,15 @@ export function WinnersPosterGenerator({ onBack }: { onBack: () => void }) {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Brand Header (Odia)</label>
+                <input 
+                  type="text" 
+                  value={brandText} 
+                  onChange={(e) => setBrandText(e.target.value)}
+                  className="w-full bg-[#020617] border border-white/10 rounded-xl px-4 py-2.5 text-xs font-semibold text-white focus:outline-none focus:border-amber-500 transition-colors"
+                />
+              </div>
+              <div className="space-y-1.5">
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Main Heading</label>
                 <input 
                   type="text" 
@@ -309,6 +333,15 @@ export function WinnersPosterGenerator({ onBack }: { onBack: () => void }) {
                   type="text" 
                   value={monthText} 
                   onChange={(e) => setMonthText(e.target.value)}
+                  className="w-full bg-[#020617] border border-white/10 rounded-xl px-4 py-2.5 text-xs font-semibold text-white focus:outline-none focus:border-amber-500 transition-colors"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Class Level</label>
+                <input 
+                  type="text" 
+                  value={classText} 
+                  onChange={(e) => setClassText(e.target.value)}
                   className="w-full bg-[#020617] border border-white/10 rounded-xl px-4 py-2.5 text-xs font-semibold text-white focus:outline-none focus:border-amber-500 transition-colors"
                 />
               </div>
