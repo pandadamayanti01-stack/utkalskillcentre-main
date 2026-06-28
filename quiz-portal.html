@@ -1031,6 +1031,26 @@
         </a>
       </div>
 
+      <!-- District of the Day Widget -->
+      <div id="districtWidget" style="margin-top: 1.5rem; border-radius: 20px; padding: 1.2rem; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); text-align: left; box-sizing: border-box; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.08);">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 1.25rem;">📍</span>
+            <h3 style="font-size: 0.95rem; color: #fff; margin: 0; font-weight: 800; font-family: var(--font-outfit);">ଓଡ଼ିଶା ଦର୍ଶନ / District of the Day</h3>
+          </div>
+          <span style="font-size: 0.62rem; background: rgba(255,255,255,0.12); color: #fff; padding: 0.2rem 0.5rem; border-radius: 8px; font-weight: 700; font-family: var(--font-inter); text-transform: uppercase; letter-spacing: 0.5px;">Daily Trivia</span>
+        </div>
+
+        <div style="background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 14px; padding: 0.9rem; box-sizing: border-box;">
+          <img id="districtImage" src="" alt="District Card" style="width: 100%; height: 140px; object-fit: cover; border-radius: 10px; margin-bottom: 0.85rem; border: 1px solid rgba(255,255,255,0.1); display: block; background: rgba(0,0,0,0.2);">
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <span style="font-size: 1.1rem;">🏛️</span>
+            <h4 id="districtName" style="font-size: 0.95rem; color: #34d399; margin: 0; font-weight: 800; font-family: var(--font-outfit);">District</h4>
+          </div>
+          <p id="districtOdia" style="font-size: 0.82rem; color: #f8fafc; margin: 0 0 0.5rem 0; font-weight: 600; line-height: 1.45; font-family: var(--font-inter);"></p>
+          <p id="districtEnglish" style="font-size: 0.76rem; color: var(--text-muted); margin: 0; font-weight: 500; line-height: 1.4; font-family: var(--font-inter); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.5rem;"></p>
+        </div>
+      </div>
     </section>
 
     <!-- 2. LEADERBOARD VIEW PANEL -->
@@ -1085,7 +1105,6 @@
           <div class="cat-icon-wrap" style="color: #14b8a6;">🧩</div>
           <h3>ଗଣିତ ଓ କୁହୁକ</h3>
           <p>Math Puzzles</p>
-        </a>
       </div>
     </section>
 
@@ -1594,6 +1613,239 @@
       }
     });
 
+    // Initialize District of the Day Trivia
+    function initDistrictOfTheDay() {
+      const districts = [
+        {
+          name: "ଅନୁଗୋଳ / Angul",
+          odia: "ଏହା ଓଡ଼ିଶାର ଏକ ପ୍ରମୁଖ ଶିଳ୍ପ ସହର ଭାବେ ଜଣାଶୁଣା ଏବଂ ସାତକୋଶିଆ ଗଣ୍ଡ ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Known as a major industrial hub of Odisha, famous for the scenic Satkosia Gorge.",
+          image: "/districts/angul.jpg",
+          background: "linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(30, 41, 59, 0.55))"
+        },
+        {
+          name: "ବଲାଙ୍ଗୀର / Balangir",
+          odia: "ଏହା ହରିଶଙ୍କର ମନ୍ଦିର, ପାଟଣେଶ୍ୱରୀ ମନ୍ଦିର ଏବଂ ସୁନ୍ଦର ଗନ୍ଧମାର୍ଦ୍ଧନ ପାର୍ବତ୍ୟ ମାଳା ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for Harishankar Temple, Pataneswari Temple, and the scenic Gandhamardan hill range.",
+          image: "/districts/balangir.jpg",
+          background: "linear-gradient(135deg, rgba(30, 41, 59, 0.5), rgba(71, 85, 105, 0.55))"
+        },
+        {
+          name: "ବାଲେଶ୍ୱର / Balasore",
+          odia: "ଏହା ଚାନ୍ଦିପୁର ବେଳาଭୂମି (ଯେଉଁଠି ସମୁଦ୍ର ପଛକୁ ହଟିଯାଏ) ଏବଂ କ୍ଷୀରଚୋରା ଗୋପୀନାଥ ମନ୍ଦିର ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for Chandipur Beach (receding sea phenomenon) and Khirachora Gopinath Temple.",
+          image: "/districts/balasore.jpg",
+          background: "linear-gradient(135deg, rgba(13, 148, 136, 0.4), rgba(20, 184, 166, 0.45))"
+        },
+        {
+          name: "ବରଗଡ଼ / Bargarh",
+          odia: "ଏହା ଓଡ଼ିଶାର ଭାତହାଣ୍ଡି ଭାବେ ଜଣାଶୁଣା ଏବଂ ବିଶ୍ୱର ସର୍ବବୃହତ ମୁକ୍ତାକାଶ ରଙ୍ଗମଞ୍ଚ 'ଧନୁଯାତ୍ରା' ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Known as the Rice Bowl of Odisha, famous for the world's largest open-air theater, Dhanu Yatra.",
+          image: "/districts/bargarh.jpg",
+          background: "linear-gradient(135deg, rgba(180, 83, 9, 0.4), rgba(217, 119, 6, 0.45))"
+        },
+        {
+          name: "ଭଦ୍ରକ / Bhadrak",
+          odia: "ଏହା ରକ୍ତତୀର୍ଥ ଈରମ, ପ୍ରସିଦ୍ଧ ଆରଡ଼ିର ଆଖଣ୍ଡଳମଣି ମନ୍ଦିର ଏବଂ କାଳୀ ପୂଜା ପାଇଁ ଜଣାଶୁଣା।",
+          english: "Known for the pilgrim site Aradi (Akhandalamani Temple), Kali Puja, and the historic Eram.",
+          image: "/districts/bhadrak.jpg",
+          background: "linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(71, 85, 105, 0.55))"
+        },
+        {
+          name: "ବୌଦ୍ଧ / Boudh",
+          odia: "ଏହା ପ୍ରାଚୀନ ବୌଦ୍ଧ କୀର୍ତ୍ତିରାଜି, ଗନ୍ଧରାଢ଼ୀର ଯୁଗଳ ମନ୍ଦିର ଏବଂ ସୁନ୍ଦର ବୌଦ୍ଧ ଶାଢ଼ୀ ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for ancient Buddhist heritage, the twin temples of Gandharadi, and Boudh handlooms.",
+          image: "/districts/boudh.jpg",
+          background: "linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(71, 85, 105, 0.55))"
+        },
+        {
+          name: "କଟକ / Cuttack",
+          odia: "ଏହା ଓଡ଼ିଶାର ହଜାର ବର୍ଷର ପୁରୁଣା ରୌପ୍ୟ ସହର, ବାରବାଟୀ ଦୁର୍ଗ ଏବଂ ଐତିହାସିକ ବାଲିଯାତ୍ରା ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Odisha's silver city, famous for its 1000-year-old history, Barabati Fort, and the grand Bali Yatra.",
+          image: "/districts/cuttack.jpg",
+          background: "linear-gradient(135deg, rgba(17, 24, 39, 0.55), rgba(55, 65, 81, 0.5))"
+        },
+        {
+          name: "ଦେବଗଡ଼ / Deogarh",
+          odia: "ଏହା ପ୍ରଧାନପାଟ ଜଳପ୍ରପାତ, ପ୍ରାକୃତିକ ସୌନ୍ଦର୍ଯ୍ୟ ଏବଂ ବାମଣ୍ଡାର ସାହିତ୍ୟିକ ଐତିହ୍ୟ ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for the breathtaking Pradhanpat Waterfall and the rich literary heritage of Bamanda.",
+          image: "/districts/deogarh.jpg",
+          background: "linear-gradient(135deg, rgba(6, 95, 70, 0.4), rgba(4, 120, 87, 0.45))"
+        },
+        {
+          name: "ଢେଙ୍କାନାଳ / Dhenkanal",
+          odia: "ଏହା ମହିମା ଧର୍ମର ପୀଠ କପିଳାସ ମନ୍ଦିର, ଯୋରନ୍ଦା ଗାଦି ଏବଂ ଗଜଲକ୍ଷ୍ମୀ ପୂଜା ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for Kapilash Temple, Joranda (seat of Mahima Dharma), and grand Laxmi Puja celebrations.",
+          image: "/districts/dhenkanal.jpg",
+          background: "linear-gradient(135deg, rgba(88, 28, 135, 0.4), rgba(126, 34, 206, 0.45))"
+        },
+        {
+          name: "ଗଜପତି / Gajapati",
+          odia: "ଏହା ମହେନ୍ଦ୍ରଗିରି ପର୍ବତ, ଚନ୍ଦ୍ରଗିରି ବୌଦ୍ଧ ମନ୍ଦିର (ଜିରାଙ୍ଗ) ଏବଂ ସୌରା ଚିତ୍ରକଳା ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for Mahendragiri Mountain, the Buddhist monastery at Chandragiri, and Saura tribal art.",
+          image: "/districts/gajapati.jpg",
+          background: "linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(71, 85, 105, 0.55))"
+        },
+        {
+          name: "ଗଞ୍ଜାମ / Ganjam",
+          odia: "ଏହା ତାରାତାରିଣୀ ମନ୍ଦିର, ଗୋପାଳପୁର ବେଳାଭୂମି ଏବଂ ଓଲିଭ୍ ରିଡ୍ଲେ କଇଁଛଙ୍କ ଗଣ ସମାବେଶ ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for Tara Tarini Temple, Gopalpur-on-Sea beach, and Olive Ridley sea turtle nesting at Rushikulya.",
+          image: "/districts/ganjam.jpg",
+          background: "linear-gradient(135deg, rgba(30, 58, 138, 0.4), rgba(59, 130, 246, 0.45))"
+        },
+        {
+          name: "ଜଗତସିଂହପୁର / Jagatsinghpur",
+          odia: "ଏହା ମା' ଶାରଳାଙ୍କ ପୀଠ ଝଙ୍କଡ଼ ଏବଂ ଓଡ଼ିଶାର ପ୍ରମୁଖ ସାମୁଦ୍ରିକ ବନ୍ଦର ପାରାଦ୍ୱୀପ ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for the Maa Sarala Temple in Jhankad and Paradip, Odisha's premier deep-water seaport.",
+          image: "/districts/jagatsinghpur.jpg",
+          background: "linear-gradient(135deg, rgba(13, 148, 136, 0.4), rgba(20, 184, 166, 0.45))"
+        },
+        {
+          name: "ଯାଜପୁର / Jajpur",
+          odia: "ଏହା ବୈତରଣୀ ନଦୀ କୂଳରେ ଅବସ୍ଥିତ ମା' ବିରଜାଙ୍କ ଶକ୍ତିପୀଠ ଏବଂ ରତ୍ନଗିରି-ଲଳିତଗିରି ବୌଦ୍ଧ କୀର୍ତ୍ତିରାଜି ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous as the Biraja Kshetra temple town and the Buddhist archaeological sites of Ratnagiri and Lalitgiri.",
+          image: "/districts/jajpur.jpg",
+          background: "linear-gradient(135deg, rgba(180, 83, 9, 0.4), rgba(217, 119, 6, 0.45))"
+        },
+        {
+          name: "ଝାରସୁଗୁଡ଼ା / Jharsuguda",
+          odia: "ଏହା ଓଡ଼ିଶାର କୋଇଲା ଏବଂ ଶିଳ୍ପ ସହର ଭାବେ ଜଣାଶୁଣା, କୋଇଲିଘର ଜଳପ୍ରପାତ ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Known as the industrial powerhouse, famous for Koilighar waterfall and rich mineral reserves.",
+          image: "/districts/jharsuguda.jpg",
+          background: "linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(71, 85, 105, 0.55))"
+        },
+        {
+          name: "କଳାହାଣ୍ଡି / Kalahandi",
+          odia: "ଏହା ଫୁରଲିଝରନ ଜଳପ୍ରପାତ, ମାଣିକେଶ୍ୱରୀ ମନ୍ଦିର ଏବଂ ଧର୍ମଗଡ଼ର କୃଷି କ୍ଷେତ୍ର ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for Phurlijharan Waterfall, Manikeswari Temple, and fertile agricultural plains.",
+          image: "/districts/kalahandi.jpg",
+          background: "linear-gradient(135deg, rgba(120, 53, 15, 0.4), rgba(146, 64, 14, 0.45))"
+        },
+        {
+          name: "କନ୍ଧମାଳ / Kandhamal",
+          odia: "ଏହା ଓଡ଼ିଶାର କାଶ୍ମୀର 'ଦାରିଙ୍ଗବାଡ଼ି', ହଳଦୀ ଚାଷ ଏବଂ ସຸନ୍ଦର ପର୍ବତମାଳา ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for Daringbadi (the Kashmir of Odisha), organic turmeric, and scenic coffee plantations.",
+          image: "/districts/kandhamal.jpg",
+          background: "linear-gradient(135deg, rgba(6, 95, 70, 0.4), rgba(4, 120, 87, 0.45))"
+        },
+        {
+          name: "କେନ୍ଦ୍ରାପଡ଼ା / Kendrapara",
+          odia: "ଏହା ବଳଦେବଜିଉ ମନ୍ଦିର (ତୁଳସୀ କ୍ଷେତ୍ର) ଏବଂ ଭିତରକନିକା ଜାତୀୟ ଉଦ୍ୟାନର ଜଳୀୟ ଅଭୟାରଣ୍ୟ ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for Baladevjew Temple (Tulasi Kshetra) and the saltwater crocodile habitat of Bhitarkanika.",
+          image: "/districts/kendrapara.jpg",
+          background: "linear-gradient(135deg, rgba(13, 148, 136, 0.4), rgba(20, 184, 166, 0.45))"
+        },
+        {
+          name: "କେନ୍ଦୁଝର / Kendujhar",
+          odia: "ଏହା ଧରଣୀଧର ଭୂୟାଁଙ୍କ କର୍ମଭୂମି, ସଂଘଘରା ଓ ବଡ଼ଘାଗରା ଜଳପ୍ରପାତ ଏବଂ ମା' ତାରିଣୀଙ୍କ ଘଟଗาଁ ପୀଠ ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for Maa Tarini Temple in Ghatgaon, Sanghagara and Badaghagara waterfalls, and iron ore mines.",
+          image: "/districts/kendujhar.jpg",
+          background: "linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(71, 85, 105, 0.55))"
+        },
+        {
+          name: "ଖୋର୍ଦ୍ଧା / Khordha",
+          odia: "ଏହା ଐତିହାସିକ ବରୁଣେଇ ପାହାଡ଼, ଓଡ଼ିଶାର ପ୍ରାଣକେନ୍ଦ୍ର ଭୁବନେଶ୍ୱର ଏବଂ ପ୍ରସିଦ୍ଧ ଧଉଳିଗିରି ଶାନ୍ତି ସ୍ତୂପ ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for Barunei Hill (birthplace of Paika Rebellion), Bhubaneswar, and Dhauli Peace Pagoda.",
+          image: "/districts/khordha.jpg",
+          background: "linear-gradient(135deg, rgba(88, 28, 135, 0.4), rgba(126, 34, 206, 0.45))"
+        },
+        {
+          name: "କୋରାପୁଟ / Koraput",
+          odia: "ଏହା ପ୍ରସିଦ୍ଧ ଦେଓମାଳୀ ପର୍ବତ ଶୃଙ୍ଗ, ଗୁପ୍ତେଶ୍ୱର ଶିବ ମନ୍ଦିର ଏବଂ ଜୈବିକ କଫି ଚାଷ ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for Deomali Peak (highest in Odisha), Gupteswar Cave Temple, and organic coffee cultivation.",
+          image: "/districts/koraput.jpg",
+          background: "linear-gradient(135deg, rgba(3, 105, 161, 0.4), rgba(2, 132, 199, 0.45))"
+        },
+        {
+          name: "ମାଲକାନଗିରି / Malkangiri",
+          odia: "ଏହା ବାଲିମେଳା ଜଳଭଣ୍ଡାର, ସତୀଗୁଡ଼ା ବନ୍ଧ ଏବଂ ବଣ୍ଡା ଜନଜାତିଙ୍କ ସଂସ୍କୃତି ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for the Balimela Reservoir, Satiguda Dam, and the unique culture of the Bonda tribe.",
+          image: "/districts/malkangiri.jpg",
+          background: "linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(71, 85, 105, 0.55))"
+        },
+        {
+          name: "ମୟୂରଭଞ୍ଜ / Mayurbhanj",
+          odia: "ଏହା ଶିମିଳିପାଳ ଜାତୀୟ ଉଦ୍ୟାନ, ମୟୂରଭଞ୍ଜ ଛଉ ନୃତ୍ୟ ଏବଂ ଏସିଆର ଦ୍ୱିତୀୟ ପୁରାତନ ଲାଇବ୍ରେରୀ ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for Similipal National Park, Mayurbhanj Chhau dance, and Asia's second-oldest library.",
+          image: "/districts/mayurbhanj.jpg",
+          background: "linear-gradient(135deg, rgba(6, 95, 70, 0.4), rgba(4, 120, 87, 0.45))"
+        },
+        {
+          name: "ନବରଙ୍ଗପୁର / Nabarangpur",
+          odia: "ଏହା ଚନ୍ଦନଧାରା ଜଳପ୍ରପାତ, ଜଗନ୍ନାଥ ମନ୍ଦିର ଏବଂ ସୁନ୍ଦର ହସ୍ତତନ୍ତ କାଠ କାରୁକାର୍ଯ୍ୟ ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for Chandandhara Waterfall, Jagannath Temple, and local wooden crafts.",
+          image: "/districts/nabarangpur.jpg",
+          background: "linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(71, 85, 105, 0.55))"
+        },
+        {
+          name: "ନୟାଗଡ଼ / Nayagarh",
+          odia: "ଏହା ପ୍ରସିଦ୍ଧ ଶରଣକୁଳର ଲଡୁବାବା ମନ୍ଦିର, କଣ୍ଟିଲୋର ନୀଳମାଧବ ମନ୍ଦିର ଏବଂ ଛେନାପୋଡ଼ର ଜନ୍ମସ୍ଥାନ ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for Ladubaba Temple, Kantilo Nilamadhab Temple, and as the birthplace of Chenapoda.",
+          image: "/districts/nayagarh.jpg",
+          background: "linear-gradient(135deg, rgba(180, 83, 9, 0.4), rgba(217, 119, 6, 0.45))"
+        },
+        {
+          name: "ନୂଆପଡ଼ା / Nuapada",
+          odia: "ଏହା ସୁନାବେଡ଼ା ବନ୍ୟପ୍ରାଣୀ ଅଭୟାରଣ୍ୟ, ପାତାଳେଶ୍ୱର ଶିବ ମନ୍ଦିର ଏବଂ ଗୋଡ଼ହସ ଜଳପ୍ରପାତ ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for Sunabeda Wildlife Sanctuary, Pataleswar Shiva Temple, and Godhas waterfall.",
+          image: "/districts/nuapada.jpg",
+          background: "linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(71, 85, 105, 0.55))"
+        },
+        {
+          name: "ପୁରୀ / Puri",
+          odia: "ଏହା ବିଶ୍ୱପ୍ରସିଦ୍ଧ ଶ୍ରୀ ଜଗନ୍ନାଥ ମନ୍ଦିର, ସ୍ୱର୍ଣ୍ଣିମ ବେଳาଭୂମି ଏବଂ କୋଣାର୍କର ସୂର୍ଯ୍ୟ ମନ୍ଦିର ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for the holy Jagannath Temple, Golden Beach, and the UNESCO World Heritage Sun Temple of Konark.",
+          image: "/districts/puri.jpg",
+          background: "linear-gradient(135deg, rgba(180, 83, 9, 0.4), rgba(217, 119, 6, 0.45))"
+        },
+        {
+          name: "ରାୟଗଡ଼ା / Rayagada",
+          odia: "ଏହା ହାତୀପଥର ଜଳପ୍ରପାତ, ମา' ମଝିଘରିଆଣୀ ମନ୍ଦିର ଏବଂ ସୁନ୍ଦର ଲାଞ୍ଜିଆ ସୌରା ଚିତ୍ରକଳା ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for Hatipathar Waterfalls, Majhighariani Temple, and Lanjia Saura tribal art.",
+          image: "/districts/rayagada.jpg",
+          background: "linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(71, 85, 105, 0.55))"
+        },
+        {
+          name: "ସମ୍ବଲପୁର / Sambalpur",
+          odia: "ଏହା ବିଶ୍ୱର ସର୍ବବୃହତ ମାଟି ବନ୍ଧ ହୀରାକୁଦ, ସମ୍ବଲପୁରୀ ବସ୍ତ୍ର ଏବଂ ହୁମାର ବକ୍ର ମନ୍ଦିର ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for Hirakud Dam (longest earthen dam), Sambalpuri handlooms, and the Leaning Temple of Huma.",
+          image: "/districts/sambalpur.jpg",
+          background: "linear-gradient(135deg, rgba(153, 27, 27, 0.4), rgba(220, 38, 38, 0.45))"
+        },
+        {
+          name: "ସୁବର୍ଣ୍ଣପୁର / Sonepur",
+          odia: "ଏହା ସୁବର୍ଣ୍ଣପୁରୀ ହସ୍ତତନ୍ତ, ପାପକ୍ଷୟ ଘାଟ ଏବଂ ପ୍ରସିଦ୍ଧ ସୁବର୍ଣ୍ଣମେରୁ ମନ୍ଦିର ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous as the Temple City Sonepur, Sonepuri silk handlooms, and Kapileswar Temple.",
+          image: "/districts/sonepur.jpg",
+          background: "linear-gradient(135deg, rgba(180, 83, 9, 0.4), rgba(217, 119, 6, 0.45))"
+        },
+        {
+          name: "ସୁନ୍ଦରଗଡ଼ / Sundargarh",
+          odia: "ଏହା ରାଉରକେଲା ଇସ୍ପาତ ସହର, ବିର୍ସା ମୁଣ୍ଡା ଆନ୍ତର୍ଜାତୀୟ ହକି ଷ୍ଟାଡିୟମ ଏବଂ ଖଣ୍ଡାଧାର ଜଳପ୍ରପାତ ପାଇଁ ପ୍ରସିଦ୍ଧ।",
+          english: "Famous for Rourkela Steel City, Birsa Munda International Hockey Stadium, and Khandadhar Waterfall.",
+          image: "/districts/sundargarh.jpg",
+          background: "linear-gradient(135deg, rgba(15, 23, 42, 0.55), rgba(51, 65, 85, 0.5))"
+        }
+      ];
+
+      const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+      const district = districts[dayOfYear % districts.length];
+
+      const widget = document.getElementById('districtWidget');
+      const nameEl = document.getElementById('districtName');
+      const odiaEl = document.getElementById('districtOdia');
+      const englishEl = document.getElementById('districtEnglish');
+      const imgEl = document.getElementById('districtImage');
+
+      if (widget && nameEl && odiaEl && englishEl && imgEl) {
+        nameEl.innerText = district.name;
+        odiaEl.innerText = district.odia;
+        englishEl.innerText = district.english;
+        imgEl.src = district.image;
+        widget.style.background = district.background;
+      }
+    }
+
     // Handle initial route check
     function handleInitialRoute() {
       const path = window.location.pathname;
@@ -1611,6 +1863,7 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       initStreakAndHUD();
+      initDistrictOfTheDay();
       handleInitialRoute();
     });
 
