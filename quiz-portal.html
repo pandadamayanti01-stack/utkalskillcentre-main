@@ -1080,9 +1080,15 @@
           <input type="tel" id="inputPhone" placeholder="Enter 10-digit Mobile Number" pattern="[0-9]{10}" style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.03); color: #fff; font-size: 0.9rem; box-sizing: border-box; outline: none; transition: border-color 0.2s;">
         </div>
 
-        <button class="google-signin-btn" id="saveProfileBtn" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff;">
+        <button class="google-signin-btn" id="saveProfileBtn" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; width: 100%;">
           <span>Sign In / ସାଇନ୍-ଇନ୍‌</span>
         </button>
+
+        <!-- Link to Main School Website for Guests -->
+        <a href="https://utkalskillcentre.com" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; margin-top: 1.5rem; color: #60a5fa; font-size: 0.85rem; text-decoration: none; font-weight: 700; transition: opacity 0.2s; width: 100%;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+          <span>🏫 Visit Main School Website</span>
+          <span>→</span>
+        </a>
       </div>
 
       <!-- Authenticated View -->
@@ -1133,27 +1139,27 @@
 
           <!-- Sign Out Button -->
           <button class="signout-btn" id="signOutBtn">Sign Out / Switch User</button>
+
+          <!-- Link to Main School Website for Authenticated Users -->
+          <div class="school-promo-card" style="margin-top: 1.5rem; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 14px; padding: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem;">
+              <span style="font-size: 1.2rem;">🏫</span>
+              <h4 style="font-size: 0.8rem; color: #fff; font-weight: 700; margin: 0; font-family: var(--font-outfit);">Utkal Skill Centre</h4>
+            </div>
+            <p style="font-size: 0.7rem; color: var(--text-muted); margin: 0 0 0.8rem 0; line-height: 1.45; text-align: left;">
+              Explore interactive online classes and digital textbooks!
+            </p>
+            <a href="https://utkalskillcentre.com" target="_blank" class="school-visit-btn" style="padding: 0.55rem 0.8rem; font-size: 0.75rem;">
+              <span>Visit Main Website</span>
+              <span>→</span>
+            </a>
+          </div>
         </div>
 
         <h3 class="recent-header">Recent Performance</h3>
         <div class="history-list" id="profileHistoryContainer">
           <!-- Loaded Dynamically -->
         </div>
-      </div>
-
-      <!-- Link to Main School Website (Always Visible) -->
-      <div class="school-promo-card">
-        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
-          <span style="font-size: 1.4rem;">🏫</span>
-          <h4 style="font-size: 0.9rem; color: #fff; font-weight: 700; margin: 0; font-family: var(--font-outfit);">Utkal Skill Centre</h4>
-        </div>
-        <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0 0 1rem 0; line-height: 1.45; text-align: left;">
-          Explore our main website for interactive online classes, homework help, and digital textbooks!
-        </p>
-        <a href="https://utkalskillcentre.com" target="_blank" class="school-visit-btn">
-          <span>Visit Main Website / ମୁଖ୍ୟ ୱେବସାଇଟ୍</span>
-          <span style="font-size: 0.9rem;">→</span>
-        </a>
       </div>
     </section>
   </main>
