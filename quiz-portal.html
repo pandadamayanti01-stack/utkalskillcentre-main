@@ -886,6 +886,40 @@
       border-color: rgba(239, 68, 68, 0.35);
       transform: translateY(-1px);
     }
+
+    /* School Promotion Card Styles */
+    .school-promo-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 18px;
+      padding: 1.2rem;
+      margin-top: 1.5rem;
+      text-align: left;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .school-visit-btn {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      border-radius: 12px;
+      color: #60a5fa;
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 0.65rem 1rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    .school-visit-btn:hover {
+      background: rgba(59, 130, 246, 0.22);
+      border-color: rgba(59, 130, 246, 0.45);
+      transform: translateY(-1px);
+    }
   </style>
 </head>
 <body>
@@ -1105,6 +1139,21 @@
         <div class="history-list" id="profileHistoryContainer">
           <!-- Loaded Dynamically -->
         </div>
+      </div>
+
+      <!-- Link to Main School Website (Always Visible) -->
+      <div class="school-promo-card">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+          <span style="font-size: 1.4rem;">🏫</span>
+          <h4 style="font-size: 0.9rem; color: #fff; font-weight: 700; margin: 0; font-family: var(--font-outfit);">Utkal Skill Centre</h4>
+        </div>
+        <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0 0 1rem 0; line-height: 1.45; text-align: left;">
+          Explore our main website for interactive online classes, homework help, and digital textbooks!
+        </p>
+        <a href="https://utkalskillcentre.com" target="_blank" class="school-visit-btn">
+          <span>Visit Main Website / ମୁଖ୍ୟ ୱେବସାଇଟ୍</span>
+          <span style="font-size: 0.9rem;">→</span>
+        </a>
       </div>
     </section>
   </main>
