@@ -3770,7 +3770,7 @@ export default function App() {
             <p className="text-sm text-slate-400 mb-2 leading-relaxed">
               {language === 'en' 
                 ? 'From playful learning in Anganwadi (Shishu Vatika) and comprehensive Class 1-10 Odia Medium textbooks, to AI lesson planners for teachers—experience personalized, instant educational support in Odia and English with Gundulu AI.' 
-                : 'ଅଙ୍ଗନୱାଡ଼ି (ଶିଶୁ ବାଟିକା) ର ମଜାଦାର ଶିକ୍ଷା ଓ ପ୍ରଥମ ରୁ ଦଶମ ଶ୍ରେଣୀର ପାଠ୍ୟପୁସ୍ତକ ଠାରು ଆରମ୍ଭ କରି ଶିକ୍ଷକମାନଙ୍କ ପାଇଁ AI ଲେସନ୍ ପ୍ଲାନର୍ ପର୍ଯ୍ୟନ୍ତ—ଗୁଣ୍ଡୁଲୁ AI ସହିତ ଓଡ଼ିଆ ଏବଂ ଇଂରାଜୀରେ ପାଆନ୍ତୁ ବ୍ୟକ୍ତିଗତ ଶିକ୍ଷା ସହାୟତା।'}
+                : 'ଅଙ୍ଗନୱାଡ଼ି (ଶିଶୁ ବାଟିକା) ର ମଜାଦାର ଶିକ୍ଷା ଓ ପ୍ରଥମ ରୁ ଦଶମ ଶ୍ରେଣୀର ପାଠ୍ୟପୁସ୍ତକ ଠାରು ଆରମ୍ଭ କରି ଶିକ୍ଷକମାନଙ୍କ ପାଇଁ AI ଲେସନ୍ ପ୍ଲାନର୍ ପର୍ଯ୍ୟନ୍ତ—ଗୁନ୍ଦୁଲୁ AI ସହିତ ଓଡ଼ିଆ ଏବଂ ଇଂରାଜୀରେ ପାଆନ୍ତୁ ବ୍ୟକ୍ତିଗତ ଶିକ୍ଷା ସହାୟତା।'}
             </p>
 
             {/* Three-Card Profile Grid (Compact Layout) */}
@@ -6699,7 +6699,7 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
               </h4>
               <p className="text-sm font-medium text-slate-305 leading-relaxed">
                 {language === 'or' 
-                  ? '୧୧ ଜୁଲାଇ ୨୦୨୬ ରାତି ୧୧:୫୯ ଟା ପର୍ଯ୍ୟନ୍ତ ଆପଣ ଗୁଣ୍ଡୁଲୁ AI ଟ୍ୟୁଟର, ଗଣିତ ବ୍ଲାକବୋର୍ଡ ଏବଂ ଭଏସ୍ ଟ୍ୟୁଟର ର ଅସୀମିତ ବ୍ୟବହାର ମାଗଣାରେ କରିପାରିବେ। ଯଦି ଆପଣ ପ୍ରଦର୍ଶନ ଅଫର ପରେ ମଧ୍ୟ ସେବା ଚାହୁଁଛନ୍ତି, ତେବେ ଆପଣ ଏବେ ସବସ୍କ୍ରାଇବ୍ କରିପାରିବେ।'
+                  ? '୧୧ ଜୁଲାଇ ୨୦୨୬ ରାତି ୧୧:୫୯ ଟା ପର୍ଯ୍ୟନ୍ତ ଆପଣ ଗୁନ୍ଦୁଲୁ AI ଟ୍ୟୁଟର, ଗଣିତ ବ୍ଲାକବୋର୍ଡ ଏବଂ ଭଏସ୍ ଟ୍ୟୁଟର ର ଅସୀମିତ ବ୍ୟବହାର ମାଗଣାରେ କରିପାରିବେ। ଯଦି ଆପଣ ପ୍ରଦର୍ଶନ ଅଫର ପରେ ମଧ୍ୟ ସେବା ଚାହୁଁଛନ୍ତି, ତେବେ ଆପଣ ଏବେ ସବସ୍କ୍ରାଇବ୍ କରିପାରିବେ।'
                   : 'You have unlimited AI tutor questions, practice problems, and voice tutor access without a premium subscription until July 11, 2026 at 11:59 PM. If you\'d like to secure your membership for after the showcase period, you can subscribe below.'}
               </p>
             </div>

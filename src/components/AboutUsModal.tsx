@@ -34,7 +34,7 @@ export const AboutUsModal: React.FC<AboutUsModalProps> = ({ language, onClose })
           </h3>
           <p className="text-slate-300 text-sm leading-relaxed font-medium">
             {isOdia ? (
-              'ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର ହେଉଛି ଗୁଣ୍ଡୁଲୁ ଏଆଇ (Gundulu AI) ଦ୍ୱାରା ଚାଲିତ ଏକ ଦ୍ୱିଭାଷୀ ପ୍ରଶ୍ନୋତ୍ତର ଭିତ୍ତିକ ଶିକ୍ଷା ସାଥୀ | ଓଡ଼ିଶାର ସମସ୍ତ ଅଞ୍ଚଳର ପିଲାଙ୍କ ପାଇଁ ସ୍ୱଳ୍ପ ନେଟୱର୍କରେ ଚାଲିବା ସହ ଗୁଣାତ୍ମକ ଶିକ୍ଷା ପ୍ରଦାନ କରିବା ଏହାର ମୁଖ୍ୟ ଲକ୍ଷ୍ୟ |'
+              'ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର ହେଉଛି ଗୁନ୍ଦୁଲୁ ଏଆଇ (Gundulu AI) ଦ୍ୱାରା ଚାଲିତ ଏକ ଦ୍ୱିଭାଷୀ ପ୍ରଶ୍ନୋତ୍ତର ଭିତ୍ତିକ ଶିକ୍ଷା ସାଥୀ | ଓଡ଼ିଶାର ସମସ୍ତ ଅଞ୍ଚଳର ପିଲାଙ୍କ ପାଇଁ ସ୍ୱଳ୍ପ ନେଟୱର୍କରେ ଚାଲିବା ସହ ଗୁଣାତ୍ମକ ଶିକ୍ଷା ପ୍ରଦାନ କରିବା ଏହାର ମୁଖ୍ୟ ଲକ୍ଷ୍ୟ |'
             ) : (
               'Utkal Skill Centre is a digital study companion powered by Gundulu AI, a textbook-grounded, bilingual Socratic tutor. Specially designed for low-bandwidth environments in Odisha, it delivers high-quality AI-driven personalized learning to classrooms across the state.'
             )}
@@ -98,7 +98,7 @@ export const AboutUsModal: React.FC<AboutUsModalProps> = ({ language, onClose })
             </h3>
             <p className="text-slate-300 text-sm leading-relaxed font-medium">
               {isOdia ? (
-                'ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର ହେଉଛି ଗୁଣ୍ଡୁଲୁ ଏଆଇ (Gundulu AI) ଦ୍ୱାରା ଚାଲିତ ଏକ ଦ୍ୱିଭାଷୀ ପ୍ରଶ୍ନୋତ୍ତର ଭିତ୍ତିକ ଶିକ୍ଷା ସାଥୀ | ଓଡ଼ିଶାର ସମସ୍ତ ଅଞ୍ଚଳର ପିଲାଙ୍କ ପାଇଁ ସ୍ୱଳ୍ପ ନେଟୱର୍କରେ ଚାଲିବା ସହ ଗୁଣାତ୍ମକ ଶିକ୍ଷା ପ୍ରଦାନ କରିବା ଏହାର ମୁଖ୍ୟ ଲକ୍ଷ୍ୟ |'
+                'ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର ହେଉଛି ଗୁନ୍ଦୁଲୁ ଏଆଇ (Gundulu AI) ଦ୍ୱାରା ଚାଲିତ ଏକ ଦ୍ୱିଭାଷୀ ପ୍ରଶ୍ନୋତ୍ତର ଭିତ୍ତିକ ଶିକ୍ଷା ସାଥୀ | ଓଡ଼ିଶାର ସମସ୍ତ ଅଞ୍ଚଳର ପିଲାଙ୍କ ପାଇଁ ସ୍ୱଳ୍ପ ନେଟୱର୍କରେ ଚାଲିବା ସହ ଗୁଣାତ୍ମକ ଶିକ୍ଷା ପ୍ରଦାନ କରିବା ଏହାର ମୁଖ୍ୟ ଲକ୍ଷ୍ୟ |'
               ) : (
                 'Utkal Skill Centre is a digital study companion powered by Gundulu AI, a textbook-grounded, bilingual Socratic tutor. Specially designed for low-bandwidth environments in Odisha, it delivers high-quality AI-driven personalized learning to classrooms across the state.'
               )}

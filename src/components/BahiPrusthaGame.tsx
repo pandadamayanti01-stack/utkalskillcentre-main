@@ -232,7 +232,7 @@ export function BahiPrusthaGame({ user, onBack, onXpEarned }: BahiPrusthaGamePro
   const startGame = () => {
     setOpponent({
       id: 'gundulu_bot',
-      name: 'ଗୁଣ୍ଡୁଲୁ AI (ଶ୍ରେଣୀ ' + selectedClass + ')',
+      name: 'ଗୁନ୍ଦୁଲୁ AI (ଶ୍ରେଣୀ ' + selectedClass + ')',
       score: 0,
       currentPage: 1
     });
@@ -324,7 +324,7 @@ export function BahiPrusthaGame({ user, onBack, onXpEarned }: BahiPrusthaGamePro
       const losePhrases = [
         'ଓଃ! ସାମାନ୍ୟ ଭୁଲ ହେଲା, ବ୍ୟସ୍ତ ହୁଅନି।',
         'ଧ୍ୟାନ ଦିଅ, ଆରଥରକୁ ନିଶ୍ଚୟ ହେବ!',
-        'ଚେଷ୍ଟା କର, ଗୁଣ୍ଡୁଲୁ ତୁମ ସାଙ୍ଗରେ ଅଛି!',
+        'ଚେଷ୍ଟା କର, ଗୁନ୍ଦୁଲୁ ତୁମ ସାଙ୍ଗରେ ଅଛି!',
         'ପରବର୍ତ୍ତୀ ପ୍ରଶ୍ନରେ ସାବଧାନ ରୁହ।'
       ];
       setGunduluSpeech(losePhrases[Math.floor(Math.random() * losePhrases.length)]);

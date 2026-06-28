@@ -53,7 +53,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
       id: '1',
       role: 'assistant',
       content: language === 'or'
-        ? 'ନମସ୍କାର! ✨ ମୁଁ ଗୁଣ୍ଡୁଲୁ AI ହୋମୱର୍କ ସହାୟକ! ଆଜି ଆମେ କ’ଣ ପଢ଼ିବା?'
+        ? 'ନମସ୍କାର! ✨ ମୁଁ ଗୁନ୍ଦୁଲୁ AI ହୋମୱର୍କ ସହାୟକ! ଆଜି ଆମେ କ’ଣ ପଢ଼ିବା?'
         : 'Namaskar! ✨ I am Gundulu AI Homework Helper! What shall we learn today?',
       timestamp: new Date(),
     }
@@ -309,7 +309,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
         if (err.message?.includes('503') || err.status === 503) {
           errorMsg = language === 'en'
             ? 'Gundulu is very busy right now! Please try asking again in a minute.'
-            : 'ଗୁଣ୍ଡୁଲୁ ବର୍ତ୍ତମାନ ବହୁତ ବ୍ୟସ୍ତ ଅଛନ୍ତି! ଦୟାକରି କିଛି ସମୟ ପରେ ପୁଣି ପଚାରନ୍ତୁ |';
+            : 'ଗୁନ୍ଦୁଲୁ ବର୍ତ୍ତମାନ ବହୁତ ବ୍ୟସ୍ତ ଅଛନ୍ତି! ଦୟାକରି କିଛି ସମୟ ପରେ ପୁଣି ପଚାରନ୍ତୁ |';
         }
 
         const errorMessage: Message = {
@@ -376,7 +376,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
           </div>
           <div className="min-w-0">
             <h3 className="text-xs sm:text-base md:text-lg font-black text-white tracking-tight truncate whitespace-nowrap">
-              {language === 'en' ? 'Gundulu Chat' : 'ଗୁଣ୍ଡୁଲୁ ଚାଟ୍'}
+              {language === 'en' ? 'Gundulu Chat' : 'ଗୁନ୍ଦୁଲୁ ଚାଟ୍'}
             </h3>
             <div className="flex items-center gap-1 text-[8px] sm:text-[10px] font-black text-[#10b981] uppercase tracking-widest">
               <Sparkles size={6} className="sm:size-[10px]" />
@@ -408,12 +408,12 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
           <Sparkles size={8} className="text-emerald-400 animate-spin sm:size-3" style={{ animationDuration: '3s' }} />
           <span className="hidden sm:inline">
             {language === 'or' 
-              ? '🎉 ମାଗଣା ପ୍ରଦର୍ଶନ ଅଫର! ୧୧ ଜୁଲାଇ ୨୦୨୬ ପର୍ଯ୍ୟନ୍ତ ଗୁଣ୍ଡୁଲୁ AI ର ଅସୀମିତ ବ୍ୟବହାର କରନ୍ତୁ।'
+              ? '🎉 ମାଗଣା ପ୍ରଦର୍ଶନ ଅଫର! ୧୧ ଜୁଲାଇ ୨୦୨୬ ପର୍ଯ୍ୟନ୍ତ ଗୁନ୍ଦୁଲୁ AI ର ଅସୀମିତ ବ୍ୟବହାର କରନ୍ତୁ।'
               : '🎉 Free Showcase Access Active! Enjoy unlimited learning with Gundulu AI until July 11, 2026.'}
           </span>
           <span className="inline sm:hidden truncate max-w-[90vw]">
             {language === 'or' 
-              ? '🎉 ମାଗଣା ପ୍ରଦର୍ଶନ! ଅସୀମିତ ଗୁଣ୍ଡୁଲୁ AI'
+              ? '🎉 ମାଗଣା ପ୍ରଦର୍ଶନ! ଅସୀମିତ ଗୁନ୍ଦୁଲୁ AI'
               : '🎉 Free Showcase! Unlimited Gundulu AI'}
           </span>
         </div>
@@ -526,7 +526,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
                   </h4>
                   <p className="text-[9px] sm:text-xs font-bold text-slate-400 mt-1 leading-relaxed max-w-[420px]">
                     {language === 'or' 
-                      ? 'ଗୁଣ୍ଡୁଲୁ ପ୍ରିମିୟମ୍‌କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ ଏବଂ ଅସୀମିତ ପ୍ରଶ୍ନର ସମାଧାନ କରନ୍ତୁ, ଗୁଣ୍ଡୁଲୁ AI ହୋମୱର୍କ ସହାୟକଙ୍କ ଠାରୁ ଶିକ୍ଷା ସହାୟତା ପାଆନ୍ତୁ!'
+                      ? 'ଗୁନ୍ଦୁଲୁ ପ୍ରିମିୟମ୍‌କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ ଏବଂ ଅସୀମିତ ପ୍ରଶ୍ନର ସମାଧାନ କରନ୍ତୁ, ଗୁନ୍ଦୁଲୁ AI ହୋମୱର୍କ ସହାୟକଙ୍କ ଠାରୁ ଶିକ୍ଷା ସହାୟତା ପାଆନ୍ତୁ!'
                       : 'Upgrade to Gundulu Premium to ask unlimited questions, solve complex chalkboard equations, and get learning assistance from Gundulu AI Homework Helper.'}
                   </p>
                 </div>
@@ -582,7 +582,7 @@ export const StudyBuddyView: React.FC<StudyBuddyViewProps> = ({ language, isPrem
                 </div>
 
                 <textarea
-                  placeholder={language === 'en' ? 'Message Gundulu...' : 'ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହୁଅନ୍ତୁ...'}
+                  placeholder={language === 'en' ? 'Message Gundulu...' : 'ଗୁନ୍ଦୁଲୁ ସହ କଥା ହୁଅନ୍ତୁ...'}
                   className="flex-1 bg-transparent border-none focus:outline-none text-xs sm:text-sm py-1.5 sm:py-3 px-1 sm:px-2 resize-none max-h-20 sm:max-h-32 min-h-[30px] sm:min-h-[44px] custom-scrollbar text-white placeholder-slate-500"
                   rows={1}
                   value={input}

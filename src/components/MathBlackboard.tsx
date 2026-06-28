@@ -1426,7 +1426,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
             <Lucide.HelpCircle className="text-amber-400 flex-shrink-0 mt-0.5" size={16} />
             <div>
               <span className="text-[9px] font-black text-amber-400 uppercase tracking-widest block mb-1">
-                {selectedLang === 'or' ? 'ଗୁଣ୍ଡୁଲୁଙ୍କ ପ୍ରଶ୍ନ (Challenge)' : "Gundulu's Challenge"}
+                {selectedLang === 'or' ? 'ଗୁନ୍ଦୁଲୁଙ୍କ ପ୍ରଶ୍ନ (Challenge)' : "Gundulu's Challenge"}
               </span>
               <p className="text-slate-200 text-xs md:text-sm font-medium leading-relaxed m-0" {...props}>
                 {children}
@@ -1730,7 +1730,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
                     exit={{ opacity: 0, scale: 0.95 }}
                     className="bg-slate-950/90 border border-emerald-500/30 text-emerald-400 text-[8px] font-black uppercase tracking-widest py-1 px-2 rounded-lg shadow-lg pointer-events-none select-none"
                   >
-                    {selectedLang === 'or' ? 'ଗୁଣ୍ଡୁଲୁଙ୍କୁ ପଚାରନ୍ତୁ' : 'Ask Gundulu'}
+                    {selectedLang === 'or' ? 'ଗୁନ୍ଦୁଲୁଙ୍କୁ ପଚାରନ୍ତୁ' : 'Ask Gundulu'}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -1785,7 +1785,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
                       </h3>
                       <p className="text-[11px] md:text-xs font-bold text-slate-350 leading-relaxed">
                         {selectedLang === 'or'
-                          ? 'ଗୁଣ୍ଡୁଲୁ ସ୍ମାର୍ଟ ବୋର୍ଡ ସ୍କାନର୍ ସାହାଯ୍ୟରେ ସମସ୍ତ ବିଷୟର ଜଟିଳ ଗଣିତ ଏବଂ ପ୍ରଶ୍ନର ସମାଧାନ ପାଇବା ପାଇଁ ପ୍ରିମିୟମ୍‌କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ!'
+                          ? 'ଗୁନ୍ଦୁଲୁ ସ୍ମାର୍ଟ ବୋର୍ଡ ସ୍କାନର୍ ସାହାଯ୍ୟରେ ସମସ୍ତ ବିଷୟର ଜଟିଳ ଗଣିତ ଏବଂ ପ୍ରଶ୍ନର ସମାଧାନ ପାଇବା ପାଇଁ ପ୍ରିମିୟମ୍‌କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ!'
                           : 'Upgrade to Gundulu Premium to scan and solve unlimited smart board questions, complex equations, and get dynamic step-by-step guidance.'}
                       </p>
                     </div>
@@ -2021,7 +2021,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
                   </div>
                   <div>
                     <h4 className="text-xs md:text-sm font-black text-white uppercase tracking-widest leading-none mb-1">
-                      {selectedLang === 'or' ? 'ଗୁଣ୍ଡୁଲୁ ଆପା ସମାଧାନ' : 'Gundulu Socratic Answer'}
+                      {selectedLang === 'or' ? 'ଗୁନ୍ଦୁଲୁ ଆପା ସମାଧାନ' : 'Gundulu Socratic Answer'}
                     </h4>
                     <span className="text-[9px] md:text-[10px] font-black text-emerald-400 uppercase tracking-widest">
                       {loading 
@@ -2069,11 +2069,11 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
                     <Lucide.BrainCircuit size={40} className="text-emerald-400 animate-pulse" />
                     <div className="flex flex-col items-center text-center">
                       <p className="text-xs font-black text-emerald-400 uppercase tracking-widest animate-bounce">
-                        {selectedLang === 'or' ? 'ଗୁଣ୍ଡୁଲୁ ହିସାବ କରୁଛି...' : 'Gundulu calculating...'}
+                        {selectedLang === 'or' ? 'ଗୁନ୍ଦୁଲୁ ହିସାବ କରୁଛି...' : 'Gundulu calculating...'}
                       </p>
                       <p className="text-[10px] text-slate-500 mt-1 max-w-[250px]">
                         {selectedLang === 'or' 
-                          ? 'ଗୁଣ୍ଡୁଲୁ ଆପା ଚକ୍ ଗାରଗୁଡିକୁ ପଢି ସମାଧାନ ପ୍ରସ୍ତୁତ କରୁଛନ୍ତି।' 
+                          ? 'ଗୁନ୍ଦୁଲୁ ଆପା ଚକ୍ ଗାରଗୁଡିକୁ ପଢି ସମାଧାନ ପ୍ରସ୍ତୁତ କରୁଛନ୍ତି।' 
                           : 'Reading chalkboard strokes with Gemini Vision OCR.'}
                       </p>
                     </div>
@@ -2158,7 +2158,7 @@ export const MathBlackboard: React.FC<MathBlackboardProps> = ({
                   </div>
                   <div>
                     <h3 className="text-sm font-black text-white uppercase tracking-widest leading-none mb-1">
-                      {selectedLang === 'or' ? 'ଗୁଣ୍ଡୁଲୁ ଆର୍ଟ୍ ଏଆଇ' : 'Gundulu Art (AI Image)'}
+                      {selectedLang === 'or' ? 'ଗୁନ୍ଦୁଲୁ ଆର୍ଟ୍ ଏଆଇ' : 'Gundulu Art (AI Image)'}
                     </h3>
                     <span className="text-[10px] font-black text-violet-400 uppercase tracking-widest">
                       {selectedLang === 'or' ? 'ଇମେଜେନ୍ ୩ ଚିତ୍ର ନିର୍ମାଣକାରୀ' : 'Powered by Imagen 3'}

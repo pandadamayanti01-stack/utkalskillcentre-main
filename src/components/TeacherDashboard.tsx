@@ -243,7 +243,7 @@ export function TeacherDashboard({
     if (!hasRemainingRuns) {
       alert(language === 'en'
         ? "You have used all 5 free Gundulu AI generations for this month. Upgrade to Educator Pro for unlimited access!"
-        : "ଆପଣ ଏହି ମାସ ପାଇଁ ସମସ୍ତ ୫ଟି ମାଗଣା ଗୁଣ୍ଡୁଲୁ AI ଜେନେରେସନ୍ ବ୍ୟବହାର କରିସାରିଛନ୍ତି। ଅସୀମିତ ବ୍ୟବହାର ପାଇଁ ଶିକ୍ଷକ ପ୍ରୋ କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ!");
+        : "ଆପଣ ଏହି ମାସ ପାଇଁ ସମସ୍ତ ୫ଟି ମାଗଣା ଗୁନ୍ଦୁଲୁ AI ଜେନେରେସନ୍ ବ୍ୟବହାର କରିସାରିଛନ୍ତି। ଅସୀମିତ ବ୍ୟବହାର ପାଇଁ ଶିକ୍ଷକ ପ୍ରୋ କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ!");
       setShowGeneratorModal(false);
       setActiveTab?.('plans');
       return;
@@ -450,7 +450,7 @@ export function TeacherDashboard({
                 </div>
 
                 <div className="bg-slate-900/60 border border-white/5 hover:border-purple-500/30 rounded-2xl p-3 flex flex-col justify-between backdrop-blur-md transition-all duration-300 hover:scale-[1.02] shadow-inner group/metric">
-                  <span className="text-[9px] font-black text-slate-500 group-hover/metric:text-purple-400 uppercase tracking-wider transition-colors">{language === 'en' ? 'Gundulu AI Usage' : 'ଗୁଣ୍ଡୁଲୁ AI ବ୍ୟବହାର'}</span>
+                  <span className="text-[9px] font-black text-slate-500 group-hover/metric:text-purple-400 uppercase tracking-wider transition-colors">{language === 'en' ? 'Gundulu AI Usage' : 'ଗୁନ୍ଦୁଲୁ AI ବ୍ୟବହାର'}</span>
                   <div className="flex items-center gap-2 mt-1.5">
                     <div className="w-5 h-5 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400">
                       <Lucide.Sparkles size={11} className="animate-pulse" />
@@ -537,7 +537,7 @@ export function TeacherDashboard({
                       </div>
                       <div>
                         <h4 className="text-xs sm:text-sm font-black text-white uppercase tracking-wider">{language === 'en' ? 'Free Tier Studio' : 'ମାଗଣା ଷ୍ଟୁଡିଓ'}</h4>
-                        <p className="text-[9px] sm:text-[10px] text-slate-400 font-bold mt-0.5">{currentUsage}/5 {language === 'en' ? 'Gundulu AI monthly runs used' : 'ଗୁଣ୍ଡୁଲୁ AI ବ୍ୟବହାର ହୋଇଛି'}</p>
+                        <p className="text-[9px] sm:text-[10px] text-slate-400 font-bold mt-0.5">{currentUsage}/5 {language === 'en' ? 'Gundulu AI monthly runs used' : 'ଗୁନ୍ଦୁଲୁ AI ବ୍ୟବହାର ହୋଇଛି'}</p>
                       </div>
                     </div>
                     <button
@@ -565,7 +565,7 @@ export function TeacherDashboard({
               }`}
             >
               <Lucide.Sparkles size={14} />
-              <span>{language === 'en' ? 'Gundulu AI Workspace' : 'ଗୁଣ୍ଡୁଲୁ AI ୱର୍କସ୍ପେସ୍'}</span>
+              <span>{language === 'en' ? 'Gundulu AI Workspace' : 'ଗୁନ୍ଦୁଲୁ AI ୱର୍କସ୍ପେସ୍'}</span>
             </button>
             <button
               onClick={() => setActiveSubTab('library')}
@@ -618,7 +618,7 @@ export function TeacherDashboard({
               <div className="space-y-6">
                 <h3 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-300 flex items-center gap-2.5">
                   <Lucide.Sparkles size={22} className="text-purple-400 animate-pulse" />
-                  <span>{language === 'en' ? 'Gundulu AI Engines' : 'ଗୁଣ୍ଡୁଲୁ AI ଷ୍ଟୁଡିଓ ଇଞ୍ଜିନ୍'}</span>
+                  <span>{language === 'en' ? 'Gundulu AI Engines' : 'ଗୁନ୍ଦୁଲୁ AI ଷ୍ଟୁଡିଓ ଇଞ୍ଜିନ୍'}</span>
                 </h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -641,7 +641,7 @@ export function TeacherDashboard({
                       
                       <div className="space-y-2">
                         <h4 className="text-lg font-black text-white flex items-center gap-1.5 group-hover:text-purple-300 transition-colors">
-                          {language === 'en' ? 'Gundulu Worksheet Maker' : 'ଗୁଣ୍ଡୁଲୁ ପ୍ରଶ୍ନପତ୍ର ନିର୍ମାତା'}
+                          {language === 'en' ? 'Gundulu Worksheet Maker' : 'ଗୁନ୍ଦୁଲୁ ପ୍ରଶ୍ନପତ୍ର ନିର୍ମାତା'}
                         </h4>
                         
                         <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-300 text-[8.5px] font-black uppercase tracking-wider w-fit">
@@ -697,7 +697,7 @@ export function TeacherDashboard({
                       
                       <div className="space-y-2">
                         <h4 className="text-lg font-black text-white group-hover:text-blue-300 transition-colors">
-                          {language === 'en' ? 'Gundulu Lesson Planner' : 'ଗୁଣ୍ଡୁଲୁ ପାଠ୍ୟ ଯୋଜନା ପ୍ରସ୍ତୁତକାରୀ'}
+                          {language === 'en' ? 'Gundulu Lesson Planner' : 'ଗୁନ୍ଦୁଲୁ ପାଠ୍ୟ ଯୋଜନା ପ୍ରସ୍ତୁତକାରୀ'}
                         </h4>
 
                         <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-300 text-[8.5px] font-black uppercase tracking-wider w-fit">
@@ -753,7 +753,7 @@ export function TeacherDashboard({
                       
                       <div className="space-y-2">
                         <h4 className="text-lg font-black text-white group-hover:text-emerald-300 transition-colors">
-                          {language === 'en' ? 'Gundulu Activities Guide' : 'ଗୁଣ୍ଡୁଲୁ କାର୍ଯ୍ୟକଳାପ ସହାୟକ'}
+                          {language === 'en' ? 'Gundulu Activities Guide' : 'ଗୁନ୍ଦୁଲୁ କାର୍ଯ୍ୟକଳାପ ସହାୟକ'}
                         </h4>
 
                         <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-[8.5px] font-black uppercase tracking-wider w-fit">
@@ -805,13 +805,13 @@ export function TeacherDashboard({
                           <Lucide.PenTool size={26} className="animate-pulse" />
                         </div>
                         <span className="px-2.5 py-1 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-300 text-[8px] font-black uppercase tracking-wider">
-                          {language === 'en' ? 'Gundulu Smart Board' : 'ଗୁଣ୍ଡୁଲୁ ସ୍ମାର୍ଟ ବୋର୍ଡ'}
+                          {language === 'en' ? 'Gundulu Smart Board' : 'ଗୁନ୍ଦୁଲୁ ସ୍ମାର୍ଟ ବୋର୍ଡ'}
                         </span>
                       </div>
                       
                       <div className="space-y-2">
                         <h4 className="text-lg font-black text-white group-hover:text-amber-355 transition-colors">
-                          {language === 'en' ? 'Gundulu Smart Board' : 'ଗୁଣ୍ଡୁଲୁ ସ୍ମାର୍ଟ ବୋର୍ଡ'}
+                          {language === 'en' ? 'Gundulu Smart Board' : 'ଗୁନ୍ଦୁଲୁ ସ୍ମାର୍ଟ ବୋର୍ଡ'}
                         </h4>
 
                         <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-300 text-[8.5px] font-black uppercase tracking-wider w-fit">
@@ -822,7 +822,7 @@ export function TeacherDashboard({
                         <p className="text-xs text-slate-350 leading-relaxed font-medium pt-1">
                           {language === 'en'
                             ? 'Draw shapes, write words, or solve equations. Gundulu AI scans and explains any subject!'
-                            : 'ଖଡ଼ିରେ ଲେଖନ୍ତୁ ବା ଚିତ୍ର ଆଙ୍କନ୍ତୁ, ଗୁଣ୍ଡୁଲୁ ଆପା ଯେକୌଣସି ବିଷୟର ସମାଧାନ ଓ ସମ୍ପୂର୍ଣ୍ଣ ବୁଝାମଣା ଓଡ଼ିଆରେ କରିବେ।'}
+                            : 'ଖଡ଼ିରେ ଲେଖନ୍ତୁ ବା ଚିତ୍ର ଆଙ୍କନ୍ତୁ, ଗୁନ୍ଦୁଲୁ ଆପା ଯେକୌଣସି ବିଷୟର ସମାଧାନ ଓ ସମ୍ପୂର୍ଣ୍ଣ ବୁଝାମଣା ଓଡ଼ିଆରେ କରିବେ।'}
                         </p>
                       </div>
                     </div>
@@ -1050,7 +1050,7 @@ export function TeacherDashboard({
                         <p className="text-xs text-slate-400 max-w-sm mx-auto mt-1 leading-relaxed">
                           {language === 'en' 
                             ? 'Generate worksheets, lesson plans, or activities under the Gundulu AI Workspace tab to build your library.' 
-                            : 'ମୋ ଲାଇବ୍ରେରୀ ଗଠନ କରିବା ପାଇଁ ଗୁଣ୍ଡୁଲୁ AI ୱର୍କସ୍ପେସ୍ ରୁ ନୂତନ ସାମଗ୍ରୀ ପ୍ରସ୍ତୁତ କରନ୍ତୁ।'}
+                            : 'ମୋ ଲାଇବ୍ରେରୀ ଗଠନ କରିବା ପାଇଁ ଗୁନ୍ଦୁଲୁ AI ୱର୍କସ୍ପେସ୍ ରୁ ନୂତନ ସାମଗ୍ରୀ ପ୍ରସ୍ତୁତ କରନ୍ତୁ।'}
                         </p>
                       </div>
                     </div>
@@ -1415,12 +1415,12 @@ export function TeacherDashboard({
                     </div>
                     <div>
                       <h3 className="text-base font-black text-white">
-                        {generatorType === 'worksheet' && (language === 'en' ? 'Gundulu Worksheet Maker' : 'ଗୁଣ୍ଡୁଲୁ ପ୍ରଶ୍ନପତ୍ର ନିର୍ମାତା')}
-                        {generatorType === 'lesson_plan' && (language === 'en' ? 'Gundulu Lesson Planner' : 'ଗୁଣ୍ଡୁଲୁ ପାଠ୍ୟ ଯୋଜନା ପ୍ରସ୍ତୁତକାରୀ')}
-                        {generatorType === 'practical_activity' && (language === 'en' ? 'Gundulu Activities Guide' : 'ଗୁଣ୍ଡୁଲୁ କାର୍ଯ୍ୟକଳାପ ସହାୟକ')}
+                        {generatorType === 'worksheet' && (language === 'en' ? 'Gundulu Worksheet Maker' : 'ଗୁନ୍ଦୁଲୁ ପ୍ରଶ୍ନପତ୍ର ନିର୍ମାତା')}
+                        {generatorType === 'lesson_plan' && (language === 'en' ? 'Gundulu Lesson Planner' : 'ଗୁନ୍ଦୁଲୁ ପାଠ୍ୟ ଯୋଜନା ପ୍ରସ୍ତୁତକାରୀ')}
+                        {generatorType === 'practical_activity' && (language === 'en' ? 'Gundulu Activities Guide' : 'ଗୁନ୍ଦୁଲୁ କାର୍ଯ୍ୟକଳାପ ସହାୟକ')}
                       </h3>
                       <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">
-                        {language === 'en' ? 'Gundulu AI Workspace' : 'ଗୁଣ୍ଡୁଲୁ AI ୱର୍କସ୍ପେସ୍'}
+                        {language === 'en' ? 'Gundulu AI Workspace' : 'ଗୁନ୍ଦୁଲୁ AI ୱର୍କସ୍ପେସ୍'}
                       </p>
                     </div>
                   </div>
@@ -1636,14 +1636,14 @@ export function TeacherDashboard({
                             {language === 'en' ? 'AI Generation Studio Pipeline' : 'AI ଜେନେରେସନ୍ ଷ୍ଟୁଡିଓ ପାଇପଲାଇନ୍'}
                           </h4>
                           <p className="text-xs text-slate-400 leading-relaxed font-medium">
-                            {language === 'en' ? 'Gundulu AI is building your custom pedagogical resources.' : 'ଗୁଣ୍ଡୁଲୁ AI ଆପଣଙ୍କ ପାଇଁ ଶିକ୍ଷଣୀୟ ସାମଗ୍ରୀ ପ୍ରସ୍ତୁତ କରୁଛି।'}
+                            {language === 'en' ? 'Gundulu AI is building your custom pedagogical resources.' : 'ଗୁନ୍ଦୁଲୁ AI ଆପଣଙ୍କ ପାଇଁ ଶିକ୍ଷଣୀୟ ସାମଗ୍ରୀ ପ୍ରସ୍ତୁତ କରୁଛି।'}
                           </p>
                         </div>
 
                         {/* Multi-step progress list */}
                         <div className="w-full max-w-sm bg-slate-950/60 border border-white/5 rounded-2xl p-4 text-left space-y-3">
                           {[
-                            { id: 0, labelEn: 'Connecting to Gundulu AI Engine...', labelOr: 'ଗୁଣ୍ଡୁଲୁ AI ଇଞ୍ଜିନ୍ ସହ ସଂଯୋଗ ହେଉଛି...' },
+                            { id: 0, labelEn: 'Connecting to Gundulu AI Engine...', labelOr: 'ଗୁନ୍ଦୁଲୁ AI ଇଞ୍ଜିନ୍ ସହ ସଂଯୋଗ ହେଉଛି...' },
                             { id: 1, labelEn: 'Analyzing BSE Odisha syllabus guidelines...', labelOr: 'BSE ଓଡ଼ିଶା ପାଠ୍ୟକ୍ରମ ନିର୍ଦ୍ଦେଶาବଳୀ ବିଶ୍ଳେଷଣ ହେଉଛି...' },
                             { id: 2, labelEn: 'Drafting high-quality bilingual content...', labelOr: 'ଉଚ୍ଚ-ଗୁଣବତ୍ତା ଦ୍ଵିଭାଷୀ ବିଷୟବସ୍ତୁ ପ୍ରସ୍ତୁତ ହେଉଛି...' },
                             { id: 3, labelEn: 'Structuring plans / pedagogical keys...', labelOr: 'ଶିକ୍ଷାଦାନ ପଦ୍ଧତି ଅନୁଯାୟୀ ଯୋଜନା ଗଠନ କରାଯାଉଛି...' },
@@ -1783,7 +1783,7 @@ export function TeacherDashboard({
                                       {language === 'en' ? 'Check step-by-step interactive solutions on the App!' : 'ମୋବାଇଲ୍ ଆପ୍ ରେ ପଦକ୍ଷେପ-କ୍ରମିକ ସମାଧାନ ଏବଂ ସନ୍ଦେହ ମୋଚନ ଦେଖନ୍ତୁ!'}
                                     </h4>
                                     <p className="text-xs text-slate-500 max-w-lg mx-auto print:text-slate-600">
-                                      {language === 'en' ? 'Scan this worksheet code to ask Gundulu AI, practice daily MCQs, and access bilingual textbooks for FREE!' : 'ମାଗଣାରେ ଗୁଣ୍ଡୁଲୁ AI କୁ ପ୍ରଶ୍ନ ପଚାରିବା, ଦୈନିକ MCQ ଟେଷ୍ଟ ଦେବା ଏବଂ ପାଠ୍ୟପୁସ୍ତକ ପାଇଁ ଆପ୍ ଡାଉନଲୋଡ୍ କରନ୍ତୁ!'}
+                                      {language === 'en' ? 'Scan this worksheet code to ask Gundulu AI, practice daily MCQs, and access bilingual textbooks for FREE!' : 'ମାଗଣାରେ ଗୁନ୍ଦୁଲୁ AI କୁ ପ୍ରଶ୍ନ ପଚାରିବା, ଦୈନିକ MCQ ଟେଷ୍ଟ ଦେବା ଏବଂ ପାଠ୍ୟପୁସ୍ତକ ପାଇଁ ଆପ୍ ଡାଉନଲୋଡ୍ କରନ୍ତୁ!'}
                                     </p>
                                     <div className="w-32 h-32 bg-white p-2.5 rounded-2xl mx-auto flex flex-col justify-between shadow-xl border border-slate-200">
                                       <div className="flex justify-between h-[30%]"><div className="w-[30%] h-full bg-purple-600 rounded" /><div className="w-[30%] h-full bg-purple-600 rounded" /></div>

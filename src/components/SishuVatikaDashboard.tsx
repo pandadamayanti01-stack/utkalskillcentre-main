@@ -177,7 +177,7 @@ export function SishuVatikaDashboard({
   const handleMascotClick = () => {
     playPopSound();
     const text = language === 'or'
-      ? 'ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ | ଚାଲ ମିଶି ପାଠ ପଢିବା ଏବଂ ଗୁଣ୍ଡୁଲୁ ସହ ଗପିବା!'
+      ? 'ନମସ୍କାର! ମୁଁ ଗୁନ୍ଦୁଲୁ | ଚାଲ ମିଶି ପାଠ ପଢିବା ଏବଂ ଗୁନ୍ଦୁଲୁ ସହ ଗପିବା!'
       : 'Hello! I am Gundulu. Let us read and talk together!';
     speakText(text);
   };
@@ -337,7 +337,7 @@ export function SishuVatikaDashboard({
             </div>
             
             <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-4">
-              ଗୁଣ୍ଡୁଲୁ କୁ ଛୁଇଁ ଶୁଣନ୍ତୁ
+              ଗୁନ୍ଦୁଲୁ କୁ ଛୁଇଁ ଶୁଣନ୍ତୁ
             </p>
           </div>
 
@@ -356,11 +356,11 @@ export function SishuVatikaDashboard({
                 </button>
                 <div className="flex-1">
                   <h3 className="text-2xl font-black text-slate-800 mb-2 leading-snug">
-                    {language === 'or' ? 'ଗୁଣ୍ଡୁଲୁ ଆପଣଙ୍କୁ ସ୍ୱାଗତ କରୁଛି!' : 'Gundulu Welcomes You!'}
+                    {language === 'or' ? 'ଗୁନ୍ଦୁଲୁ ଆପଣଙ୍କୁ ସ୍ୱାଗତ କରୁଛି!' : 'Gundulu Welcomes You!'}
                   </h3>
                   <p className="text-xl font-bold text-slate-600 leading-relaxed">
                     {language === 'or' 
-                      ? 'ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ, ଚାଲ ମିଶି ବହି ପଢିବା ଏବଂ କଥା ହେବା!' 
+                      ? 'ନମସ୍କାର! ମୁଁ ଗୁନ୍ଦୁଲୁ, ଚାଲ ମିଶି ବହି ପଢିବା ଏବଂ କଥା ହେବା!' 
                       : 'Hello! I am Gundulu, let us read our textbook and talk together!'}
                   </p>
                 </div>
@@ -380,7 +380,7 @@ export function SishuVatikaDashboard({
                   className="flex-1 bg-cyan-500 border-b-4 border-cyan-700 hover:bg-cyan-400 text-white font-extrabold py-3.5 px-4 rounded-2xl text-center shadow-md active:translate-y-0.5 active:border-b-2 transition-all flex items-center justify-center gap-2"
                 >
                   <Lucide.Mic size={20} />
-                  <span>ଗୁଣ୍ଡୁଲୁ ସହ କଥା</span>
+                  <span>ଗୁନ୍ଦୁଲୁ ସହ କଥା</span>
                 </button>
               </div>
             </div>
@@ -438,10 +438,10 @@ export function SishuVatikaDashboard({
 
             <div>
               <h3 className="text-3xl font-black text-pink-900 leading-tight mb-2 group-hover:text-pink-950 transition-colors">
-                ଗୁଣ୍ଡୁଲୁ ସହ କଥାବାର୍ତ୍ତା
+                ଗୁନ୍ଦୁଲୁ ସହ କଥାବାର୍ତ୍ତା
               </h3>
               <p className="text-pink-700 font-bold text-lg mb-4">
-                ଗୁଣ୍ଡୁଲୁ କୁ ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ ଓ କାହାଣୀ ଶୁଣନ୍ତୁ!
+                ଗୁନ୍ଦୁଲୁ କୁ ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ ଓ କାହାଣୀ ଶୁଣନ୍ତୁ!
               </p>
 
               {/* Premium fluid jumping soundwave visualizer */}
@@ -479,7 +479,7 @@ export function SishuVatikaDashboard({
 
             <div>
               <h3 className="text-3xl font-black text-emerald-900 leading-tight mb-2 group-hover:text-emerald-950 transition-colors">
-                ଗୁଣ୍ଡୁଲୁ ସ୍ମାର୍ଟ ବୋର୍ଡ
+                ଗୁନ୍ଦୁଲୁ ସ୍ମାର୍ଟ ବୋର୍ଡ
               </h3>
               <p className="text-emerald-700 font-bold text-lg mb-6">
                 ଚାଲ ଚିତ୍ର ଆଙ୍କିବା, ଅକ୍ଷର ଲେଖିବା ଓ ଖେଳିବା!

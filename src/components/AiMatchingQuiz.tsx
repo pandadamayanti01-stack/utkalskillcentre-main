@@ -382,7 +382,7 @@ export function AiMatchingQuiz({ user, language, onClose, onSuccess, isPremium =
             </div>
             <div>
               <h2 className="text-base sm:text-lg font-black text-white tracking-tight leading-none uppercase">
-                {language === 'or' ? 'ଗୁଣ୍ଡୁଲୁ ଗେମ୍ ଜୋନ୍' : "Gundulu Game Zone"}
+                {language === 'or' ? 'ଗୁନ୍ଦୁଲୁ ଗେମ୍ ଜୋନ୍' : "Gundulu Game Zone"}
               </h2>
               <span className="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-widest mt-1 inline-block">
                 {language === 'or' ? 'କାର୍ଡ଼-ମିଳନ ଖେଳ' : 'AI Card-Matching Arena'}
@@ -418,7 +418,7 @@ export function AiMatchingQuiz({ user, language, onClose, onSuccess, isPremium =
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-400 font-medium">
                     {language === 'or'
-                      ? 'ଗୁଣ୍ଡୁଲୁ ଆପଣଙ୍କ ପାଠ୍ୟକ୍ରମ ଅନୁଯାୟୀ ଏକ ମଜାଦାର ମିଳନ ଖେଳ ତିଆରି କରିବ। ଏଥିରୁ +୫୦ XP ମିଳିବ |'
+                      ? 'ଗୁନ୍ଦୁଲୁ ଆପଣଙ୍କ ପାଠ୍ୟକ୍ରମ ଅନୁଯାୟୀ ଏକ ମଜାଦାର ମିଳନ ଖେଳ ତିଆରି କରିବ। ଏଥିରୁ +୫୦ XP ମିଳିବ |'
                       : 'Gundulu will generate a real-time card puzzle matching your class syllabus. Complete it to earn +50 XP.'}
                   </p>
                 </div>
@@ -471,11 +471,11 @@ export function AiMatchingQuiz({ user, language, onClose, onSuccess, isPremium =
 
                 <div className="text-center space-y-2">
                   <h4 className="text-lg font-black text-white uppercase tracking-wider">
-                    {language === 'or' ? 'ଗୁଣ୍ଡୁଲୁ AI ପ୍ରସ୍ତୁତ କରୁଛି...' : 'Gundulu AI Synthesizing Quiz...'}
+                    {language === 'or' ? 'ଗୁନ୍ଦୁଲୁ AI ପ୍ରସ୍ତୁତ କରୁଛି...' : 'Gundulu AI Synthesizing Quiz...'}
                   </h4>
                   <p className="text-xs text-slate-500 font-bold uppercase tracking-widest animate-pulse max-w-sm leading-relaxed">
                     {language === 'or'
-                      ? 'ଗୁଣ୍ଡୁଲୁ ଆପଣଙ୍କ ଶ୍ରେଣୀର ପାଠ ବହି ତଥ୍ୟ ଆଧାରରେ ପ୍ରଶ୍ନ ଓ ଉତ୍ତର ସଜାଡୁଛନ୍ତି।'
+                      ? 'ଗୁନ୍ଦୁଲୁ ଆପଣଙ୍କ ଶ୍ରେଣୀର ପାଠ ବହି ତଥ୍ୟ ଆଧାରରେ ପ୍ରଶ୍ନ ଓ ଉତ୍ତର ସଜାଡୁଛନ୍ତି।'
                       : 'Generating matching metrics based on your textbook curriculum nodes.'}
                   </p>
                 </div>
@@ -714,7 +714,7 @@ export function AiMatchingQuiz({ user, language, onClose, onSuccess, isPremium =
                 </h3>
                 <p className="text-xs md:text-sm font-bold text-slate-300 leading-relaxed">
                   {language === 'or'
-                    ? 'ଗୁଣ୍ଡୁଲୁ ମିଳନ ଖେଳ ଏବଂ ଅନ୍ୟାନ୍ୟ AI ସୁବିଧାର ଅସୀମିତ ବ୍ୟବହାର ପାଇଁ ପ୍ରିମିୟମ୍‌କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ!'
+                    ? 'ଗୁନ୍ଦୁଲୁ ମିଳନ ଖେଳ ଏବଂ ଅନ୍ୟାନ୍ୟ AI ସୁବିଧାର ଅସୀମିତ ବ୍ୟବହାର ପାଇଁ ପ୍ରିମିୟମ୍‌କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ!'
                     : 'Upgrade to Gundulu Premium for unlimited access to matching quizzes, voice conversation, and AI Tutor solvers!'}
                 </p>
               </div>

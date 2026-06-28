@@ -182,7 +182,7 @@ export function AvatarStore({ user, language, onBack }: AvatarStoreProps) {
           <p className="text-slate-300 text-sm leading-relaxed max-w-xl">
             {language === 'en' 
               ? 'Meet Gundulu, your official AI learning companion! Always free and available to guide you through your educational journey.' 
-              : 'ଗୁଣ୍ଡୁଲୁ ଆପଣଙ୍କର ଅଫିସିଆଲ୍ AI ଶିକ୍ଷା ସାଥୀ! ଆପଣଙ୍କ ଶିକ୍ଷା ଯାତ୍ରାରେ ମାର୍ଗଦର୍ଶନ କରିବାକୁ ସର୍ବଦା ମାଗଣା ଏବଂ ଉପଲବ୍ଧ।'}
+              : 'ଗୁନ୍ଦୁଲୁ ଆପଣଙ୍କର ଅଫିସିଆଲ୍ AI ଶିକ୍ଷା ସାଥୀ! ଆପଣଙ୍କ ଶିକ୍ଷା ଯାତ୍ରାରେ ମାର୍ଗଦର୍ଶନ କରିବାକୁ ସର୍ବଦା ମାଗଣା ଏବଂ ଉପଲବ୍ଧ।'}
           </p>
         </div>
 
@@ -203,7 +203,7 @@ export function AvatarStore({ user, language, onBack }: AvatarStoreProps) {
               ) : (
                 <>
                   <Sparkles size={18} />
-                  {language === 'en' ? 'Equip Gundulu' : 'ଗୁଣ୍ଡୁଲୁ ସଜାନ୍ତୁ'}
+                  {language === 'en' ? 'Equip Gundulu' : 'ଗୁନ୍ଦୁଲୁ ସଜାନ୍ତୁ'}
                 </>
               )}
             </button>

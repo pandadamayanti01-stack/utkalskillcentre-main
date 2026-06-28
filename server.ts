@@ -795,6 +795,35 @@ async function startServer() {
   }
 
 
+  app.post('/api/ai/ask-gundulu', async (req, res) => {
+    try {
+      const { question } = req.body;
+      if (!question) {
+        return res.status(400).json({ error: "Question is required." });
+      }
+
+      const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || "";
+      if (!apiKey) {
+        return res.status(500).json({ error: "Gemini API key is not configured on the server." });
+      }
+
+      const ai = new GoogleGenerativeAI(apiKey);
+      const model = ai.getGenerativeModel({
+        model: 'gemini-2.5-flash',
+        systemInstruction: "You are Gundulu (ଗୁନ୍ଦୁଲୁ ମିତ), a friendly and knowledgeable squirrel mascot for the Utkal Quiz application. " +
+                          "Your job is to help users with General Knowledge (GK) questions, facts about Odisha, history, geography, science, or translating terms. " +
+                          "Be extremely encouraging, warm, and helpful. Respond in standard Odia or English based on the user's input language. Keep your answers concise (under 3-4 sentences)."
+      });
+
+      const result = await model.generateContent(question);
+      const text = result.response.text();
+      return res.json({ text });
+    } catch (error: any) {
+      console.error(`[Server] Error in /api/ai/ask-gundulu:`, error.message);
+      return res.status(500).json({ error: error.message });
+    }
+  });
+
   app.post('/api/ai/generate', async (req, res) => {
     try {
       const { contents, systemInstruction, modelType, generationConfig, enableGrounding, enableDialectBridge } = req.body;
@@ -2423,9 +2452,9 @@ async function startServer() {
       'ବାଲଶ୍ରୀ': 'ବଳଶ୍ରୀ',
       'ମାତୃଭକ୍ତି କଥା': 'ମାଡ଼ହାଣ୍ଡି କଥା',
       'Matrubhakti Katha': 'Madahandi Katha',
-      'ଗୁଣ୍ଡୁଲୁ': 'ଗୁଣ୍ଡୁଲୁ',
-      'ଗୁଣ୍ଡୁଳୁ': 'ଗୁଣ୍ଡୁଲୁ',
-      'ଗୁଣ୍ଡୁଲି': 'ଗୁଣ୍ଡୁଲୁ',
+      'ଗୁନ୍ଦୁଲୁ': 'ଗୁନ୍ଦୁଲୁ',
+      'ଗୁଣ୍ଡୁଳୁ': 'ଗୁନ୍ଦୁଲୁ',
+      'ଗୁଣ୍ଡୁଲି': 'ଗୁନ୍ଦୁଲୁ',
       'ଗୁଣ୍ଡୁଲ': 'ଗୁନ୍ଦୁଲ',
       'ଦାଣ୍ଡି ଜାତ୍ରା': 'ଦାଣ୍ଡି ଯାତ୍ରା',
       'ଦାଣ୍ଡି ଜାରା': 'ଦାଣ୍ଡି ଯାତ୍ରା',
@@ -2532,7 +2561,7 @@ async function startServer() {
       const voiceCandidates = [preferredVoice, fallbackVoice];
 
       const ttsPrompt = isOdia
-        ? `ତୁମେ ଗୁଣ୍ଡୁଲୁ (Gundulu), ଜଣେ ବହୁତ ସ୍ନେହୀ ଏବଂ ମଧୁର ବଡ଼ ଭଉଣୀ | ଛୋଟ ପିଲାଙ୍କୁ ପଢ଼ାଇଲା ଭଳି ଅତି ନରମ, ସ୍ନେହପୂର୍ଣ୍ଣ ଏବଂ ସୁନ୍ଦର ଭଉଣୀ ସ୍ୱରରେ ନିମ୍ନଲିଖିତ ଓଡ଼ିଆ ଲେଖାକୁ କୁହ। ପ୍ରତ୍ୟେକ ଓଡ଼ିଆ ଶବ୍ଦର ଉଚ୍ଚାରଣ ଅତ୍ୟନ୍ତ ମଧୁର, ସ୍ପଷ୍ଟ ଏବଂ ସ୍ୱାଭାବିକ ହେବା ଉଚିତ।\n\n${text}`
+        ? `ତୁମେ ଗୁନ୍ଦୁଲୁ (Gundulu), ଜଣେ ବହୁତ ସ୍ନେହୀ ଏବଂ ମଧୁର ବଡ଼ ଭଉଣୀ | ଛୋଟ ପିଲାଙ୍କୁ ପଢ଼ାଇଲା ଭଳି ଅତି ନରମ, ସ୍ନେହପୂର୍ଣ୍ଣ ଏବଂ ସୁନ୍ଦର ଭଉଣୀ ସ୍ୱରରେ ନିମ୍ନଲିଖିତ ଓଡ଼ିଆ ଲେଖାକୁ କୁହ। ପ୍ରତ୍ୟେକ ଓଡ଼ିଆ ଶବ୍ଦର ଉଚ୍ଚାରଣ ଅତ୍ୟନ୍ତ ମଧୁର, ସ୍ପଷ୍ଟ ଏବଂ ସ୍ୱାଭାବିକ ହେବା ଉଚିତ।\n\n${text}`
         : `You are Gundulu, a warm, sweet, and cute elder sister tutoring a young student. Speak this text in an extremely clear, slow-paced, warm, and friendly sister voice with high-pitch enthusiasm:\n\n${text}`;
 
       let lastError = 'Unknown TTS failure';
@@ -2639,7 +2668,7 @@ async function startServer() {
       const voiceCandidates = [preferredVoice, fallbackVoice];
 
       // Custom prompt instructing the model to speak like a 1-2 year old baby girl child in Odia
-      const ttsPrompt = `ତୁମେ ଗୁଣ୍ଡୁଲୁ (Gundulu), ଜଣେ ଅତି କୁନି ୧ ରୁ ୨ ବର୍ଷର ଶିଶୁ କନ୍ୟା (1-2 year old baby girl child) | ଖେଳିଲା ଭଳି ଅତି ମଧୁର, ସରଳ, ଅଳ୍ପ ଅଳ୍ପ ଓ ଧୀରେ କଥା କହିଲା ଭଳି କୁନି ଶିଶୁ ସ୍ୱରରେ ନିମ୍ନଲିଖିତ ଓଡ଼ିଆ ଲେଖାକୁ କୁହ। ପ୍ରତ୍ୟେକ ଓଡ଼ିଆ ଶବ୍ଦର ଉଚ୍ଚାରଣ ଅତ୍ୟନ୍ତ କୁନି ଝିଅର ସ୍ୱାଭାବିକ କଣ୍ଠରେ ହେବା ଉଚିତ।\n\n${text}`;
+      const ttsPrompt = `ତୁମେ ଗୁନ୍ଦୁଲୁ (Gundulu), ଜଣେ ଅତି କୁନି ୧ ରୁ ୨ ବର୍ଷର ଶିଶୁ କନ୍ୟା (1-2 year old baby girl child) | ଖେଳିଲା ଭଳି ଅତି ମଧୁର, ସରଳ, ଅଳ୍ପ ଅଳ୍ପ ଓ ଧୀରେ କଥା କହିଲା ଭଳି କୁନି ଶିଶୁ ସ୍ୱରରେ ନିମ୍ନଲିଖିତ ଓଡ଼ିଆ ଲେଖାକୁ କୁହ। ପ୍ରତ୍ୟେକ ଓଡ଼ିଆ ଶବ୍ଦର ଉଚ୍ଚାରଣ ଅତ୍ୟନ୍ତ କୁନି ଝିଅର ସ୍ୱାଭାବିକ କଣ୍ଠରେ ହେବା ଉଚିତ।\n\n${text}`;
 
       let lastError = 'Unknown TTS failure';
       

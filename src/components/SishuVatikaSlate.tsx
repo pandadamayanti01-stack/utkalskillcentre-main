@@ -745,7 +745,7 @@ export const SishuVatikaSlate: React.FC<SishuVatikaSlateProps> = ({
             <Lucide.HelpCircle className="text-amber-400 flex-shrink-0 mt-0.5" size={16} />
             <div>
               <span className="text-[9px] font-black text-amber-400 uppercase tracking-widest block mb-1">
-                ଗୁଣ୍ଡୁଲୁଙ୍କ ପ୍ରଶ୍ନ
+                ଗୁନ୍ଦୁଲୁଙ୍କ ପ୍ରଶ୍ନ
               </span>
               <p className="text-slate-200 text-xs md:text-sm font-medium leading-relaxed m-0" {...props}>
                 {children}
@@ -838,11 +838,11 @@ export const SishuVatikaSlate: React.FC<SishuVatikaSlateProps> = ({
               </div>
               <div>
                 <h3 className="text-sm md:text-base font-black text-white uppercase tracking-tight">
-                  ଗୁଣ୍ଡୁଲୁ ଶିଶୁ ବାଟିକା ସ୍ମାର୍ଟ ବୋର୍ଡ
+                  ଗୁନ୍ଦୁଲୁ ଶିଶୁ ବାଟିକା ସ୍ମାର୍ଟ ବୋର୍ଡ
                 </h3>
                 <span className="text-[9px] md:text-[11px] text-slate-400 font-bold block mt-0.5 leading-none">
                   {selectedLang === 'or' 
-                    ? 'ଖଡ଼ିରେ ଯେକୌଣସି ବିଷୟର ଲେଖା ବା ଚିତ୍ର ଆଙ୍କନ୍ତୁ, ଗୁଣ୍ଡୁଲୁ ଆପା ସମ୍ପୂର୍ଣ୍ଣ ବୁଝାଇଦେବେ।'
+                    ? 'ଖଡ଼ିରେ ଯେକୌଣସି ବିଷୟର ଲେଖା ବା ଚିତ୍ର ଆଙ୍କନ୍ତୁ, ଗୁନ୍ଦୁଲୁ ଆପା ସମ୍ପୂର୍ଣ୍ଣ ବୁଝାଇଦେବେ।'
                     : 'Draw shapes, write words, or input equations. Gundulu AI will explain step-by-step.'}
                 </span>
               </div>
@@ -915,7 +915,7 @@ export const SishuVatikaSlate: React.FC<SishuVatikaSlateProps> = ({
                     exit={{ opacity: 0, scale: 0.95 }}
                     className="bg-slate-950/90 border border-emerald-500/30 text-emerald-400 text-[8px] font-black uppercase tracking-widest py-1 px-2 rounded-lg shadow-lg pointer-events-none select-none"
                   >
-                    ଗୁଣ୍ଡୁଲୁଙ୍କୁ ପଚାରନ୍ତୁ
+                    ଗୁନ୍ଦୁଲୁଙ୍କୁ ପଚାରନ୍ତୁ
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -969,7 +969,7 @@ export const SishuVatikaSlate: React.FC<SishuVatikaSlateProps> = ({
                         ମାଗଣା ସୀମା ଶେଷ ହୋଇଛି! ✍️
                       </h3>
                       <p className="text-[11px] md:text-xs font-bold text-slate-350 leading-relaxed">
-                        ଗୁଣ୍ଡୁଲୁ ସ୍ମାର୍ଟ ବୋର୍ଡ ସାହାଯ୍ୟରେ ସମସ୍ତ ବିଷୟର ସମାଧାନ ପାଇବା ପାଇଁ ପ୍ରିମିୟମ୍‌କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ!
+                        ଗୁନ୍ଦୁଲୁ ସ୍ମାର୍ଟ ବୋର୍ଡ ସାହାଯ୍ୟରେ ସମସ୍ତ ବିଷୟର ସମାଧାନ ପାଇବା ପାଇଁ ପ୍ରିମିୟମ୍‌କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ!
                       </p>
                     </div>
                     
@@ -1148,7 +1148,7 @@ export const SishuVatikaSlate: React.FC<SishuVatikaSlateProps> = ({
                   </div>
                   <div>
                     <h4 className="text-xs md:text-sm font-black text-white uppercase tracking-widest leading-none mb-1">
-                      ଗୁଣ୍ଡୁଲୁ ଆପାଙ୍କ ଉତ୍ତର
+                      ଗୁନ୍ଦୁଲୁ ଆପାଙ୍କ ଉତ୍ତର
                     </h4>
                     <span className="text-[9px] md:text-[10px] font-black text-emerald-400 uppercase tracking-widest">
                       {loading ? 'ଭାବୁଛି...' : 'ପ୍ରସ୍ତୁତ'}
@@ -1178,10 +1178,10 @@ export const SishuVatikaSlate: React.FC<SishuVatikaSlateProps> = ({
                     <Lucide.BrainCircuit size={40} className="text-emerald-400 animate-pulse" />
                     <div className="flex flex-col items-center text-center">
                       <p className="text-xs font-black text-emerald-400 uppercase tracking-widest animate-bounce">
-                        ଗୁଣ୍ଡୁଲୁ ଆପା ଦେଖୁଛନ୍ତି...
+                        ଗୁନ୍ଦୁଲୁ ଆପା ଦେଖୁଛନ୍ତି...
                       </p>
                       <p className="text-[10px] text-slate-500 mt-1 max-w-[250px]">
-                        ଗୁଣ୍ଡୁଲୁ ଆପା ସ୍ମାର୍ଟ ବୋର୍ଡରେ ଅଙ୍କାଯାଇଥିବା ଚିତ୍ରଟିକୁ ଦେଖୁଛନ୍ତି।
+                        ଗୁନ୍ଦୁଲୁ ଆପା ସ୍ମାର୍ଟ ବୋର୍ଡରେ ଅଙ୍କାଯାଇଥିବା ଚିତ୍ରଟିକୁ ଦେଖୁଛନ୍ତି।
                       </p>
                     </div>
                   </div>

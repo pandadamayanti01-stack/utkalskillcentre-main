@@ -1298,7 +1298,7 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
                 }
                 if (completedCount === totalCount) {
                   return language === 'or'
-                    ? "“ଅତି ସୁନ୍ଦର! ତୁମେ ତ ଗୁଣ୍ଡୁଲୁ ମହାରଥୀ ବନିଗଲ। 🌟”"
+                    ? "“ଅତି ସୁନ୍ଦର! ତୁମେ ତ ଗୁନ୍ଦୁଲୁ ମହାରଥୀ ବନିଗଲ। 🌟”"
                     : "“Amazing! You are a Gundulu Legend. Keep it up! 🌟”";
                 }
                 return language === 'or'

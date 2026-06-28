@@ -343,7 +343,7 @@ export const CommunityChatView: React.FC<CommunityChatViewProps> = ({ language, 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           contents: [{ role: 'user', parts: [{ text: cleanMessageText }] }],
-          systemInstruction: `You are Gundulu AI 🤖 (ଗୁଣ୍ଡୁଲୁ AI), the friendly and wise Socratic AI study companion for Utkal Skill Centre (ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର). You are chatting in the "${activeClass}" student room.
+          systemInstruction: `You are Gundulu AI 🤖 (ଗୁନ୍ଦୁଲୁ AI), the friendly and wise Socratic AI study companion for Utkal Skill Centre (ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର). You are chatting in the "${activeClass}" student room.
 Your goal is to solve students' academic doubts and answer their questions about the platform.
 
 Here is the essential information about Utkal Skill Centre features, pricing, and payments:

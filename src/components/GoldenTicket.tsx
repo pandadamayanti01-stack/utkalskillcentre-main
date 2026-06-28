@@ -31,7 +31,7 @@ export const GoldenTicket: React.FC<GoldenTicketProps> = ({
 
   if (level >= 10) {
     badgeTitle = 'Gundulu Legend';
-    badgeTitleOdia = 'ଗୁଣ୍ଡୁଲୁ ମହାରଥୀ';
+    badgeTitleOdia = 'ଗୁନ୍ଦୁଲୁ ମହାରଥୀ';
     badgeIcon = '👑';
   } else if (level >= 7) {
     badgeTitle = 'Odia Math Master';
@@ -43,7 +43,7 @@ export const GoldenTicket: React.FC<GoldenTicketProps> = ({
     badgeIcon = '⚔️';
   } else if (level >= 3) {
     badgeTitle = 'Gundulu Scholar';
-    badgeTitleOdia = 'ଗୁଣ୍ଡୁଲୁ ପଣ୍ଡିତ';
+    badgeTitleOdia = 'ଗୁନ୍ଦୁଲୁ ପଣ୍ଡିତ';
     badgeIcon = '🎓';
   }
 
@@ -126,7 +126,7 @@ export const GoldenTicket: React.FC<GoldenTicketProps> = ({
           </h2>
           <p className="text-[11px] text-slate-400 font-medium max-w-md mx-auto leading-relaxed mt-1">
             {language === 'or' 
-              ? 'ସଫଳତାର ସହିତ ଅଭ୍ୟାସ ସରିବା ପରେ ଗୁଣ୍ଡୁଲୁ ଅପାଙ୍କ ଦ୍ୱାରା ଦିଆଯାଇଥିବା ସାର୍ଟିଫିକେଟ୍ ବର୍ତ୍ତମାନ ଡାଉନଲୋଡ୍ କରନ୍ତୁ।'
+              ? 'ସଫଳତାର ସହିତ ଅଭ୍ୟାସ ସରିବା ପରେ ଗୁନ୍ଦୁଲୁ ଅପାଙ୍କ ଦ୍ୱାରା ଦିଆଯାଇଥିବା ସାର୍ଟିଫିକେଟ୍ ବର୍ତ୍ତମାନ ଡାଉନଲୋଡ୍ କରନ୍ତୁ।'
               : 'Certified by Gundulu Apa for completing syllabus milestones, streak goals, and daily practice challenges.'}
           </p>
         </div>
@@ -211,7 +211,7 @@ export const GoldenTicket: React.FC<GoldenTicketProps> = ({
               {/* Description */}
               <text x="400" y="280" textAnchor="middle" fill="#cbd5e1" fontSize="12" fontWeight="bold" fontFamily="system-ui">
                 {language === 'or'
-                  ? 'ପାଠ୍ୟକ୍ରମର ଅଭ୍ୟାସ ସାରି, ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ ଜିତି ଗୁଣ୍ଡୁଲୁ ଆପ୍ ପ୍ରଗତି ମାଟ୍ରିକ୍ସରେ ସଫଳତା ପାଇଛନ୍ତି।'
+                  ? 'ପାଠ୍ୟକ୍ରମର ଅଭ୍ୟାସ ସାରି, ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ ଜିତି ଗୁନ୍ଦୁଲୁ ଆପ୍ ପ୍ରଗତି ମାଟ୍ରିକ୍ସରେ ସଫଳତା ପାଇଛନ୍ତି।'
                   : 'has completed active subject challenges and maintained regular learning habits with the Gundulu AI Tutor.'}
               </text>
 
@@ -266,7 +266,7 @@ export const GoldenTicket: React.FC<GoldenTicketProps> = ({
                 {/* Signature text */}
                 <path d="M15,48 C25,25 35,22 45,45 C50,55 55,20 62,35" fill="none" stroke="#fbbf24" strokeWidth="2.5" strokeLinecap="round" />
                 
-                <text x="40" y="52" textAnchor="middle" fill="#fbbf24" fontSize="6.5" fontWeight="black" letterSpacing="1" fontFamily="system-ui">ଗୁଣ୍ଡୁଲୁ ଅପା</text>
+                <text x="40" y="52" textAnchor="middle" fill="#fbbf24" fontSize="6.5" fontWeight="black" letterSpacing="1" fontFamily="system-ui">ଗୁନ୍ଦୁଲୁ ଅପା</text>
                 <text x="40" y="16" textAnchor="middle" fill="#94a3b8" fontSize="5" fontWeight="black" letterSpacing="0.5" fontFamily="system-ui">APPROVED STAMP</text>
               </g>
 

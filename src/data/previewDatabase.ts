@@ -161,7 +161,7 @@ $$6CO_2 + 12H_2O \\xrightarrow[\\text{Chlorophyll}]{\\text{Sunlight}} C_6H_{12}O
 
 ---
 
-### ୩. ଗୁଣ୍ଡୁଲୁଙ୍କ ସହାୟତା (Gundulu AI Insight)
+### ୩. ଗୁନ୍ଦୁଲୁଙ୍କ ସହାୟତା (Gundulu AI Insight)
 ସାଙ୍ଗମାନେ! ଓଡ଼ିଆ ଭାଷାର ପ୍ରତିଟି ଅକ୍ଷର ବହୁତ ସୁନ୍ଦର। ଏହାକୁ ଖାତାରେ ଲେଖି ଅଭ୍ୟାସ କରନ୍ତୁ!`
   },
   class2odia: {

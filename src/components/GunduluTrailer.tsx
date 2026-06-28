@@ -47,7 +47,7 @@ export const GunduluTrailer: React.FC<GunduluTrailerProps> = ({ onClose, onSubsc
     },
     {
       en: "Connecting Odisha's bright minds to Gundulu...",
-      or: "ଓଡ଼ିଶାର ମେଧାବୀ ଛାତ୍ରଙ୍କୁ ଗୁଣ୍ଡୁଲୁ ସହ ସଂଯୋଗ କରୁଛି...",
+      or: "ଓଡ଼ିଶାର ମେଧାବୀ ଛାତ୍ରଙ୍କୁ ଗୁନ୍ଦୁଲୁ ସହ ସଂଯୋଗ କରୁଛି...",
       icon: <Sparkles className="text-amber-400" size={40} />
     },
     {
@@ -208,7 +208,7 @@ export const GunduluTrailer: React.FC<GunduluTrailerProps> = ({ onClose, onSubsc
                 <p className="text-slate-400 text-sm font-medium leading-relaxed mb-8">
                   {language === 'en' 
                     ? "You are just one step away from mastering your future. Subscribe to Gundulu AI and get 24/7 personalized study assistance."
-                    : "ଆପଣ ନିଜ ଭବିଷ୍ୟତ ଗଢ଼ିବାର ମାତ୍ର ଏକ ପାଦ ଦୂରରେ ଅଛନ୍ତି | ଗୁଣ୍ଡୁଲୁ AI ସବସ୍କ୍ରାଇବ୍ କରନ୍ତୁ ଏବଂ ୨୪/୭ ବ୍ୟକ୍ତିଗତ ଶିକ୍ଷା ସହାୟତା ପାଆନ୍ତୁ |"}
+                    : "ଆପଣ ନିଜ ଭବିଷ୍ୟତ ଗଢ଼ିବାର ମାତ୍ର ଏକ ପାଦ ଦୂରରେ ଅଛନ୍ତି | ଗୁନ୍ଦୁଲୁ AI ସବସ୍କ୍ରାଇବ୍ କରନ୍ତୁ ଏବଂ ୨୪/୭ ବ୍ୟକ୍ତିଗତ ଶିକ୍ଷା ସହାୟତା ପାଆନ୍ତୁ |"}
                 </p>
 
                 <button 

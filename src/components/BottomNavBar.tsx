@@ -53,7 +53,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
   const navItems = userRole === 'teacher'
     ? [
         { id: 'dashboard', icon: Lucide.Home, label: language === 'en' ? 'Home' : 'ମୂଳ ପୃଷ୍ଠା' },
-        { id: 'study_buddy', icon: Lucide.MessageSquare, label: language === 'en' ? 'Gundulu Inst' : 'ଗୁଣ୍ଡୁଲୁ ଇନ୍‌ଷ୍ଟ୍ର' },
+        { id: 'study_buddy', icon: Lucide.MessageSquare, label: language === 'en' ? 'Gundulu Inst' : 'ଗୁନ୍ଦୁଲୁ ଇନ୍‌ଷ୍ଟ୍ର' },
         { id: 'digital_library', icon: Lucide.Grid, label: language === 'en' ? 'Library' : 'ଲାଇବ୍ରେରୀ', isCenter: true },
         { id: 'community', icon: Lucide.MessagesSquare, label: language === 'en' ? 'Sikhyaka Sathi' : 'ଶିକ୍ଷକ ସାଥୀ' },
         { id: 'menu', icon: Lucide.User, label: language === 'en' ? 'Profile' : 'ପ୍ରୋଫାଇଲ୍' }
@@ -61,7 +61,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
     : userClass === 'sishuvatika(Anganwadi)'
     ? [
         { id: 'dashboard', icon: Lucide.Home, label: language === 'en' ? 'Home' : 'ମୂଳ ପୃଷ୍ଠା' },
-        { id: 'gundulu', icon: Lucide.Mic, label: language === 'en' ? 'Gundulu AI' : 'ଗୁଣ୍ଡୁଲୁ AI' },
+        { id: 'gundulu', icon: Lucide.Mic, label: language === 'en' ? 'Gundulu AI' : 'ଗୁନ୍ଦୁଲୁ AI' },
         { id: 'digital_library', icon: Lucide.Grid, label: language === 'en' ? 'Library' : 'ଲାଇବ୍ରେରୀ', isCenter: true },
         { id: 'parent_dashboard', icon: Lucide.Users, label: language === 'en' ? 'Parent' : 'ପିତାମାତା' },
         { id: 'menu', icon: Lucide.User, label: language === 'en' ? 'Profile' : 'ପ୍ରୋଫାଇଲ୍' }
@@ -70,7 +70,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
         isTestWindowActive
           ? { id: 'monthly_tests', icon: Lucide.Home, label: language === 'en' ? 'Home' : 'ମୂଳ ପୃଷ୍ଠା' }
           : { id: 'dashboard', icon: Lucide.Home, label: language === 'en' ? 'Home' : 'ମୂଳ ପୃଷ୍ଠା' },
-        { id: 'study_buddy', icon: Lucide.MessageSquare, label: language === 'en' ? 'Gundulu Helper' : 'ଗୁଣ୍ଡୁଲୁ ହେଲ୍ପର' },
+        { id: 'study_buddy', icon: Lucide.MessageSquare, label: language === 'en' ? 'Gundulu Helper' : 'ଗୁନ୍ଦୁଲୁ ହେଲ୍ପର' },
         { id: 'digital_library', icon: Lucide.Grid, label: language === 'en' ? 'Library' : 'ଲାଇବ୍ରେରୀ', isCenter: true },
         { id: 'community', icon: Lucide.MessagesSquare, label: language === 'en' ? 'Mo Sanga' : 'ମୋ ସାଙ୍ଗ' },
         { id: 'menu', icon: Lucide.User, label: language === 'en' ? 'Profile' : 'ପ୍ରୋଫାଇଲ୍' }

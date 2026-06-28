@@ -356,21 +356,21 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
           { title: "ଡିଜିଟାଲ୍ ପଢ଼ା ସାଥୀ", desc: "ଗುନ୍ଦୁଲୁ ଏଆଇ (Gundulu AI) ପିଲାମାନଙ୍କୁ ଭଉଣୀ ଭଳି ଆଦରରେ ସବୁ ପାଠ ବୁଝାଇଥାଏ।" },
           { title: "ନେଟୱର୍କ ଓ ବଜେଟ୍ ସହଜ", desc: "ବାର୍ଷିକ ୧୫,୦୦୦ ଟଙ୍କା ବଦଳରେ ମାସକୁ ମାତ୍ର ୯୯ ଟଙ୍କାରେ ଗ୍ରାମାଞ୍ଚଳର 2G/3G ନେଟୱର୍କ ଅନୁଯାୟୀ ପ୍ରସ୍ତୁତ PWA।" }
         ],
-        speakerNotes: "ଓଡ଼ିଶାର ଗ୍ରାମାଞ୍ଚଳରେ ୭୦ ଲକ୍ଷରୁ ଅଧିକ ଓଡ଼ିଆ ମାଧ୍ୟମ ଛାତ୍ରଛାତ୍ରୀ ଆଜି ଆଧୁନିକ AI ଶିକ୍ଷାରୁ ବଞ୍ଚିତ ଅଛନ୍ତି। ସେମାନଙ୍କ ପାଇଁ ଇଂରାଜୀ ଆପ୍ ବୁଝିବା ଅସମ୍ଭବ ଏବଂ ବାର୍ଷିକ ୧୫,୦୦୦ ଟଙ୍କାର ଫିସ ଦେବା ଗରିବ ପରିବାର ପାଇଁ ଅତି କଷ୍ଟକର। ଏହାର ସମାଧାନ ହେଉଛି ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରର ମାତୃଭାଷା ଶିକ୍ଷା ସାଥୀ ଗୁଣ୍ଡୁଲୁ ଏଆଇ, ଯାହା ମାସିକ ମାତ୍ର ୯୯ ଟଙ୍କାରେ ସ୍ୱଳ୍ପ ନେଟୱର୍କରେ ମଧ୍ୟ ସୁନ୍ଦର ଭାବେ ଚାଲେ।"
+        speakerNotes: "ଓଡ଼ିଶାର ଗ୍ରାମାଞ୍ଚଳରେ ୭୦ ଲକ୍ଷରୁ ଅଧିକ ଓଡ଼ିଆ ମାଧ୍ୟମ ଛାତ୍ରଛାତ୍ରୀ ଆଜି ଆଧୁନିକ AI ଶିକ୍ଷାରୁ ବଞ୍ଚିତ ଅଛନ୍ତି। ସେମାନଙ୍କ ପାଇଁ ଇଂରାଜୀ ଆପ୍ ବୁଝିବା ଅସମ୍ଭବ ଏବଂ ବାର୍ଷିକ ୧୫,୦୦୦ ଟଙ୍କାର ଫିସ ଦେବା ଗରିବ ପରିବାର ପାଇଁ ଅତି କଷ୍ଟକର। ଏହାର ସମାଧାନ ହେଉଛି ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରର ମାତୃଭାଷା ଶିକ୍ଷା ସାଥୀ ଗୁନ୍ଦୁଲୁ ଏଆଇ, ଯାହା ମାସିକ ମାତ୍ର ୯୯ ଟଙ୍କାରେ ସ୍ୱଳ୍ପ ନେଟୱର୍କରେ ମଧ୍ୟ ସୁନ୍ଦର ଭାବେ ଚାଲେ।"
       },
       {
         title: "ସକ୍ରେଟିକ୍ ସ୍ଲେଟ୍ ଓ ଭଏସ୍ AI",
         subtitle: "ପାଠ୍ୟପୁସ୍ତକ ଆଧାରିତ ପାରସ୍ପରିକ ଶିକ୍ଷା ଶୈଳୀ",
         tagline: "ସକ୍ରେଟିକ୍ ଶିକ୍ଷା ପ୍ରଣାଳୀ",
         bullets: [
-          { title: "କଥାବାର୍ତ୍ତା କରୁଥିବା AI", desc: "ପିଲାମାନେ ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହୋଇ ନିଜର ପଢ଼ିବା ସ୍ପିଡ୍ ଓ ବୁଝିବା ଶକ୍ତି ପରୀକ୍ଷา କରିପାରିବେ।" },
+          { title: "କଥାବାର୍ତ୍ତା କରୁଥିବା AI", desc: "ପିଲାମାନେ ଗୁନ୍ଦୁଲୁ ସହ କଥା ହୋଇ ନିଜର ପଢ଼ିବା ସ୍ପିଡ୍ ଓ ବୁଝିବା ଶକ୍ତି ପରୀକ୍ଷา କରିପାରିବେ।" },
           { title: "ପଏଣ୍ଟ-ଏଣ୍ଡ-ଆସ୍କ ସ୍ଲେଟ୍", desc: "ବହିର ଯେକୌଣସି ପୃଷ୍ଠାକୁ ସ୍କ୍ୟାନ୍ କରି ମନ ପସନ୍ଦର ପାଠ୍ୟକ୍ରମ ତୁରନ୍ତ ଖୋଲିପାରିବେ।" },
           { title: "ଡିଜିଟାଲ୍ ସବୁଜ ବୋର୍ଡ", desc: "ସିଧାସଳଖ ଉତ୍ତର ନ ଦେଇ ପ୍ରଶ୍ନ ପଚାରି ପିଲାଙ୍କ ମନରେ କୌତուହଳ ସୃଷ୍ଟି କରେ।" }
         ],
-        speakerNotes: "ଗୁଣ୍ଡୁଲୁ ସହ ପାଠ ପଢ଼ିବା ଅତି ସହଜ ଓ ରୋମାଞ୍ଚକର। ଆମର ଭଏସ୍-ଟୁ-ଭଏସ୍ ଏଆଇ (AI) ମୋଡ୍‌ରେ ପିଲାମାନେ ଆମ ମାସ୍କଟ୍ ସହିତ ସିଧାସଳଖ କଥାବାର୍ତ୍ତା କରି ନିଜର ପଢ଼ିବା ଶୈଳୀ ଓ ଦକ୍ଷତା ଯାଞ୍ଚ କରିପାରିବେ। ବହି ପଢ଼ିବା ପାଇଁ ଆମର ପଏଣ୍ଟ-ଏଣ୍ଡ-ଆସ୍କ ଭିଜନ୍ OCR ଛପା ହୋଇଥିବା ପୃଷ୍ଠାକୁ ସ୍କ୍ୟାନ୍ କରି ଆମ ସକ୍ରେଟିକ୍ କଳାପଟା ଖୋଲିଥାଏ।"
+        speakerNotes: "ଗୁନ୍ଦୁଲୁ ସହ ପାଠ ପଢ଼ିବା ଅତି ସହଜ ଓ ରୋମାଞ୍ଚକର। ଆମର ଭଏସ୍-ଟୁ-ଭଏସ୍ ଏଆଇ (AI) ମୋଡ୍‌ରେ ପିଲାମାନେ ଆମ ମାସ୍କଟ୍ ସହିତ ସିଧାସଳଖ କଥାବାର୍ତ୍ତା କରି ନିଜର ପଢ଼ିବା ଶୈଳୀ ଓ ଦକ୍ଷତା ଯାଞ୍ଚ କରିପାରିବେ। ବହି ପଢ଼ିବା ପାଇଁ ଆମର ପଏଣ୍ଟ-ଏଣ୍ଡ-ଆସ୍କ ଭିଜନ୍ OCR ଛପା ହୋଇଥିବା ପୃଷ୍ଠାକୁ ସ୍କ୍ୟାନ୍ କରି ଆମ ସକ୍ରେଟିକ୍ କଳାପଟା ଖୋଲିଥାଏ।"
       },
       {
-        title: "ଗୁଣ୍ଡୁଲୁ ୩D ଷ୍ଟଡି ଲ୍ୟାବ୍",
+        title: "ଗୁନ୍ଦୁଲୁ ୩D ଷ୍ଟଡି ଲ୍ୟାବ୍",
         subtitle: "ବ୍ରାଉଜର୍ ରେ ଆକର୍ଷଣୀୟ ମାନସିକ ପାଠ୍ୟକ୍ରମ",
         tagline: "ବିଜ୍ଞାନ ୩D ମଡେଲ୍ ପ୍ରଦର୍ଶନୀ",
         bullets: [
@@ -625,7 +625,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                       </span>
                       
                       <h2 className="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-200 uppercase tracking-tight leading-tight mb-1">
-                        {deckLanguage === 'or' ? 'ଗୁଣ୍ଡୁଲୁର ପ୍ରଥମ ସାଥୀ ପାସ୍' : "GUNDULU'S FIRST COMPANION PASS"}
+                        {deckLanguage === 'or' ? 'ଗୁନ୍ଦୁଲୁର ପ୍ରଥମ ସାଥୀ ପାସ୍' : "GUNDULU'S FIRST COMPANION PASS"}
                       </h2>
                       
                       <div className="w-full flex items-center gap-1.5 mb-4 px-4 mt-2">
@@ -700,7 +700,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                     </span>
                     {[
                       { label: deckLanguage === 'or' ? '୧୦ଟି ଶ୍ରେଣୀର ପୂର୍ଣ୍ଣ ସିଲାବସ୍ ମ୍ୟାପିଂ' : 'Standardize 10 Classes Syllabus & Sync', active: true },
-                      { label: deckLanguage === 'or' ? 'ଗୁଣ୍ଡୁଲୁ ଆପ୍ PWA ଏବଂ ଅଫଲାଇନ୍ precache' : 'Gundulu PWA Launch & Standalone Focus', active: true },
+                      { label: deckLanguage === 'or' ? 'ଗୁନ୍ଦୁଲୁ ଆପ୍ PWA ଏବଂ ଅଫଲାଇନ୍ precache' : 'Gundulu PWA Launch & Standalone Focus', active: true },
                       { label: deckLanguage === 'or' ? 'ସ୍ମାର୍ଟ କ୍ଲାସେସ୍ ସମ୍ପୂର୍ଣ୍ଣ ମାଗଣା ଓ ଅନ୍ଲକ୍' : 'Unlock curating Smart Classes for free', active: true }
                     ].map((item, idx) => (
                       <div key={idx} className="flex items-center gap-2 text-[10px] text-slate-300">
@@ -1076,7 +1076,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                   {/* Clickable 3-Phase Roadmap Timeline */}
                   <div className="bg-slate-900/80 border border-white/5 p-4 rounded-2xl space-y-3">
                     <h4 className="text-[10px] uppercase font-black text-amber-500 tracking-wider">
-                      {deckLanguage === 'or' ? 'ଗୁଣ୍ଡୁଲୁ ରୋଡ୍ ମ୍ୟାପ୍ (ରୁଟ୍ ଉପରେ କ୍ଲିକ୍ କରନ୍ତୁ):' : 'Gundulu AI Evolution Roadmap (Click Phase):'}
+                      {deckLanguage === 'or' ? 'ଗୁନ୍ଦୁଲୁ ରୋଡ୍ ମ୍ୟାପ୍ (ରୁଟ୍ ଉପରେ କ୍ଲିକ୍ କରନ୍ତୁ):' : 'Gundulu AI Evolution Roadmap (Click Phase):'}
                     </h4>
                     <div className="flex justify-between relative mt-2">
                       {/* Connector Line */}
@@ -1151,7 +1151,7 @@ export const PitchDeckView: React.FC<PitchDeckViewProps> = ({
                             )}
                             {activeRoadmapPhase === 2 && (
                               deckLanguage === 'or'
-                                ? 'ସ୍ୱୟଂଚାଳିତ ଭଏସ୍-ଟୁ-ଭଏସ୍ ଏଆଇ ବ୍ୟବସ୍ଥା, ଯାହା ଗୁଣ୍ଡୁଲୁକୁ ସମ୍ପୂର୍ଣ୍ଣ କଥାବାର୍ତ୍ତା ମାଧ୍ୟମରେ ପିଲାଙ୍କ ଉଚ୍ଚାରଣ ପରୀକ୍ଷା ଓ ଶିକ୍ଷା ଦେବାକୁ ସକ୍ଷମ କରିବ।'
+                                ? 'ସ୍ୱୟଂଚାଳିତ ଭଏସ୍-ଟୁ-ଭଏସ୍ ଏଆଇ ବ୍ୟବସ୍ଥା, ଯାହା ଗୁନ୍ଦୁଲୁକୁ ସମ୍ପୂର୍ଣ୍ଣ କଥାବାର୍ତ୍ତା ମାଧ୍ୟମରେ ପିଲାଙ୍କ ଉଚ୍ଚାରଣ ପରୀକ୍ଷା ଓ ଶିକ୍ଷା ଦେବାକୁ ସକ୍ଷମ କରିବ।'
                                 : 'Full end-to-end voice-to-voice synthesis, enabling Gundulu mascot to natively hold spoken dialogs and instantly evaluate students\' oral reading speed.'
                             )}
                           </p>
