@@ -1031,24 +1031,17 @@
         </a>
       </div>
 
-      <!-- District of the Day Widget -->
-      <div id="districtWidget" style="margin-top: 1.5rem; border-radius: 20px; padding: 1.2rem; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); text-align: left; box-sizing: border-box; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.08);">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem;">
-          <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <span style="font-size: 1.25rem;">📍</span>
-            <h3 style="font-size: 0.95rem; color: #fff; margin: 0; font-weight: 800; font-family: var(--font-outfit);">ଓଡ଼ିଶା ଦର୍ଶନ / District of the Day</h3>
+      <!-- District of the Day Widget (Compact) -->
+      <div id="districtWidget" style="margin-top: 0.75rem; border-radius: 16px; padding: 0.6rem 0.8rem; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); text-align: left; box-sizing: border-box; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; gap: 0.75rem;">
+        <img id="districtImage" src="" alt="District" style="width: 52px; height: 52px; object-fit: cover; border-radius: 10px; border: 1.5px solid rgba(255,255,255,0.15); flex-shrink: 0; background: rgba(0,0,0,0.2);">
+        <div style="flex: 1; min-width: 0; line-height: 1.2;">
+          <div style="display: flex; align-items: center; gap: 0.3rem; margin-bottom: 0.15rem;">
+            <span style="font-size: 0.65rem; color: rgba(255,255,255,0.6); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; font-family: var(--font-inter);">District of the Day</span>
+            <span style="color: rgba(255,255,255,0.4); font-size: 0.6rem;">•</span>
+            <span id="districtName" style="font-size: 0.78rem; color: #34d399; font-weight: 800; font-family: var(--font-outfit);">District</span>
           </div>
-          <span style="font-size: 0.62rem; background: rgba(255,255,255,0.12); color: #fff; padding: 0.2rem 0.5rem; border-radius: 8px; font-weight: 700; font-family: var(--font-inter); text-transform: uppercase; letter-spacing: 0.5px;">Daily Trivia</span>
-        </div>
-
-        <div style="background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 14px; padding: 0.9rem; box-sizing: border-box;">
-          <img id="districtImage" src="" alt="District Card" style="width: 100%; height: 140px; object-fit: cover; border-radius: 10px; margin-bottom: 0.85rem; border: 1px solid rgba(255,255,255,0.1); display: block; background: rgba(0,0,0,0.2);">
-          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-            <span style="font-size: 1.1rem;">🏛️</span>
-            <h4 id="districtName" style="font-size: 0.95rem; color: #34d399; margin: 0; font-weight: 800; font-family: var(--font-outfit);">District</h4>
-          </div>
-          <p id="districtOdia" style="font-size: 0.82rem; color: #f8fafc; margin: 0 0 0.5rem 0; font-weight: 600; line-height: 1.45; font-family: var(--font-inter);"></p>
-          <p id="districtEnglish" style="font-size: 0.76rem; color: var(--text-muted); margin: 0; font-weight: 500; line-height: 1.4; font-family: var(--font-inter); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.5rem;"></p>
+          <p id="districtOdia" style="font-size: 0.74rem; color: #f8fafc; margin: 0 0 0.1rem 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-inter);"></p>
+          <p id="districtEnglish" style="font-size: 0.65rem; color: var(--text-muted); margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-inter);"></p>
         </div>
       </div>
     </section>
@@ -1840,7 +1833,9 @@
       if (widget && nameEl && odiaEl && englishEl && imgEl) {
         nameEl.innerText = district.name;
         odiaEl.innerText = district.odia;
+        odiaEl.title = district.odia;
         englishEl.innerText = district.english;
+        englishEl.title = district.english;
         imgEl.src = district.image;
         widget.style.background = district.background;
       }
