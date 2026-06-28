@@ -80,6 +80,16 @@ export const AboutUsModal: React.FC<AboutUsModalProps> = ({ language, onClose })
                 <span className="text-sm font-black text-amber-400">BSE & OSEPA</span>
               </div>
               
+              <div className="bg-slate-900/60 border border-white/5 rounded-2xl p-3 flex items-center justify-between hover:border-teal-500/30 transition-all">
+                <span className="text-xs font-bold text-slate-400">{isOdia ? '୫ଟି ରୂପାନ୍ତରୀକରଣ' : 'Governance Model'}</span>
+                <span className="text-sm font-black text-teal-400">{isOdia ? '୫ଟି ମଡେଲ୍ (5T)' : '5T Model'}</span>
+              </div>
+              
+              <div className="bg-slate-900/60 border border-white/5 rounded-2xl p-3 flex items-center justify-between hover:border-pink-500/30 transition-all">
+                <span className="text-xs font-bold text-slate-400">{isOdia ? 'ସ୍କୁଲ ସହଭାଗିତା' : 'School Campaign'}</span>
+                <span className="text-sm font-black text-pink-400">{isOdia ? 'ମୋ ସ୍କୁଲ୍ ଅଭିଯାନ' : 'Mo School Abhiyan'}</span>
+              </div>
+              
               <div className="bg-slate-900/60 border border-white/5 rounded-2xl p-3 flex items-center justify-between hover:border-indigo-500/30 transition-all">
                 <span className="text-xs font-bold text-slate-400">{isOdia ? 'ଜିଲ୍ଲା ସଂଖ୍ୟା' : 'Districts Covered'}</span>
                 <span className="text-sm font-black text-indigo-400">{isOdia ? 'ସମସ୍ତ ୩୦ ଜିଲ୍ଲା' : 'All 30 Districts'}</span>

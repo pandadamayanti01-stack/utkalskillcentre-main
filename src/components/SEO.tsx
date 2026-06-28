@@ -154,7 +154,9 @@ export const SEO: React.FC<SEOProps> = ({
     "odia class 1 to 10 books",
     "odia medium books download",
     "bse odisha school books pdf",
-    "Utkal Skill Centre digital library"
+    "Utkal Skill Centre digital library",
+    "5T Model Odisha",
+    "Mo School Abhiyan"
   ].join(", ");
 
   return (
