@@ -356,6 +356,36 @@ app.get(['/guest', '/guest-profile', '/guest-profile.html'], (req, res) => {
   }
 });
 
+// Dedicated Gundulu AI Chatbot for Quiz Players
+app.post('/api/ai/ask-gundulu', async (req, res) => {
+  try {
+    const { question } = req.body;
+    if (!question) {
+      return res.status(400).json({ error: "Question is required." });
+    }
+
+    const apiKey = getApiKey();
+    if (!apiKey) {
+      return res.status(500).json({ error: "Gemini API key is not configured on the quiz server." });
+    }
+
+    const ai = new GoogleGenerativeAI(apiKey);
+    const model = ai.getGenerativeModel({
+      model: 'gemini-2.5-flash',
+      systemInstruction: "You are Gundulu (ଗୁଣ୍ଡୁଲୁ ମିତ), a friendly and knowledgeable squirrel mascot for the Utkal Quiz application. " +
+                        "Your job is to help users with General Knowledge (GK) questions, facts about Odisha, history, geography, science, or translating terms. " +
+                        "Be extremely encouraging, warm, and helpful. Respond in standard Odia or English based on the user's input language. Keep your answers concise (under 3-4 sentences)."
+    });
+
+    const result = await model.generateContent(question);
+    const text = result.response.text();
+    return res.json({ text });
+  } catch (error: any) {
+    console.error(`[Quiz Server] Error in /api/ai/ask-gundulu:`, error.message);
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 // Health check endpoint
 app.get('/healthz', (req, res) => {
   res.json({ status: 'ok', service: 'quiz-backend' });

@@ -265,8 +265,8 @@
     .selection-card {
       background: rgba(15, 23, 42, 0.5);
       border: 2px solid var(--border-color);
-      border-radius: 28px;
-      padding: 1.8rem 1rem 1.5rem 1rem;
+      border-radius: 20px;
+      padding: 1.1rem 0.8rem 1rem 0.8rem;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -289,8 +289,8 @@
     }
 
     .selection-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 15px 30px var(--card-color-glow);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px var(--card-color-glow);
     }
 
     .selection-card:hover::before {
@@ -325,43 +325,43 @@
     }
 
     .card-circle-icon {
-      width: 68px;
-      height: 68px;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.08);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 1.2rem;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+      margin-bottom: 0.75rem;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
     }
 
     .card-gk .card-circle-icon img {
-      width: 44px;
-      height: 44px;
+      width: 32px;
+      height: 32px;
       object-fit: contain;
     }
 
     .card-circle-icon svg {
-      width: 32px;
-      height: 32px;
+      width: 24px;
+      height: 24px;
     }
 
     .card-title-odia {
       font-family: var(--font-baloo);
-      font-size: 1.3rem;
+      font-size: 1.15rem;
       font-weight: 800;
       color: #fff;
       line-height: 1.25;
-      margin-bottom: 0.1rem;
+      margin-bottom: 0.15rem;
     }
 
     .card-title-eng {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: var(--text-muted);
       font-weight: 500;
-      margin-bottom: 1.2rem;
+      margin-bottom: 0.8rem;
     }
 
     .card-desc {
@@ -1007,9 +1007,8 @@
               </svg>
             </div>
             <h2 class="card-title-odia">ଓଡ଼ିଶା ସାଧାରଣ ଜ୍ଞାନ</h2>
-            <span class="card-title-eng">Odisha General Knowledge</span>
-            <p class="card-desc">Explore Culture & Heritage<br>୧୦୦+ Levels</p>
-            <button class="play-pill-btn">Play Now</button>
+            <span class="card-title-eng">Odisha GK</span>
+            <button class="play-pill-btn" style="margin-top: 0.5rem;">Play Now</button>
           </div>
         </a>
 
@@ -1027,10 +1026,33 @@
             </div>
             <h2 class="card-title-odia">ଚଳନ୍ତି ଘଟଣାବଳୀ</h2>
             <span class="card-title-eng">Current Events</span>
-            <p class="card-desc">Stay Updated with News<br>New Quiz Daily</p>
-            <button class="play-pill-btn">Play Now</button>
+            <button class="play-pill-btn" style="margin-top: 0.5rem;">Play Now</button>
           </div>
         </a>
+      </div>
+
+      <!-- Gundulu Mate AI Assistant Card -->
+      <div class="gundulu-chat-card" style="margin-top: 1.5rem; background: rgba(15, 23, 42, 0.35); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 20px; padding: 1.2rem; backdrop-filter: blur(16px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.8rem;">
+          <div style="font-size: 1.6rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">🐿️</div>
+          <div style="text-align: left;">
+            <h3 style="font-size: 1rem; color: #fff; margin: 0; font-weight: 800; font-family: var(--font-outfit);">Gundulu Mate / ଗୁଣ୍ଡୁଲୁ ମିତ</h3>
+            <p style="font-size: 0.7rem; color: var(--text-muted); margin: 2px 0 0 0;">Ask me any GK or translation question! / ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ!</p>
+          </div>
+        </div>
+        
+        <!-- Chat Response Container -->
+        <div id="gunduluResponseBox" style="display: none; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 0.8rem; font-size: 0.8rem; line-height: 1.5; color: #f1f5f9; text-align: left; margin-bottom: 1rem; max-height: 160px; overflow-y: auto; white-space: pre-wrap; font-family: var(--font-inter);">
+          <!-- Dynamic AI response -->
+        </div>
+
+        <!-- Input Form -->
+        <div style="display: flex; gap: 0.5rem;">
+          <input type="text" id="gunduluInput" placeholder="Ask anything... / ଏଠାରେ ପଚାରନ୍ତୁ..." style="flex: 1; padding: 0.65rem 0.9rem; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.03); color: #fff; font-size: 0.82rem; outline: none; box-sizing: border-box; transition: border-color 0.2s;">
+          <button id="gunduluAskBtn" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; padding: 0 1rem; border-radius: 10px; font-weight: 700; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+            <span id="gunduluBtnText">Ask / ପଚାରନ୍ତୁ</span>
+          </button>
+        </div>
       </div>
     </section>
 
@@ -1459,6 +1481,55 @@
           localStorage.removeItem('quiz_user_name');
           localStorage.removeItem('quiz_user_phone');
           renderProfileStats();
+        });
+      }
+
+      // Bind Gundulu Mate Chat Assistant
+      const gunduluAskBtn = document.getElementById('gunduluAskBtn');
+      const gunduluInput = document.getElementById('gunduluInput');
+      const gunduluResponseBox = document.getElementById('gunduluResponseBox');
+      const gunduluBtnText = document.getElementById('gunduluBtnText');
+
+      if (gunduluAskBtn && gunduluInput && gunduluResponseBox && gunduluBtnText) {
+        const handleGunduluQuery = async () => {
+          const query = gunduluInput.value.trim();
+          if (!query) return;
+
+          // Set loading state
+          gunduluAskBtn.disabled = true;
+          gunduluBtnText.innerText = 'Thinking...';
+          gunduluResponseBox.style.display = 'block';
+          gunduluResponseBox.innerText = 'Gundulu is thinking / ଗୁଣ୍ଡୁଲୁ ଚିନ୍ତା କରୁଛି... 🐿️';
+
+          try {
+            const response = await fetch('/api/ai/ask-gundulu', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ question: query })
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              gunduluResponseBox.innerText = data.text || 'Sorry, I could not generate an answer right now.';
+            } else {
+              const errorText = await response.text();
+              gunduluResponseBox.innerText = `Error / ତ୍ରୁଟି: ${errorText || 'Server error'}`;
+            }
+          } catch (err) {
+            console.error('[Gundulu Chat] Error:', err);
+            gunduluResponseBox.innerText = 'Connection error. Please try again.';
+          } finally {
+            gunduluAskBtn.disabled = false;
+            gunduluBtnText.innerText = 'Ask / ପଚାରନ୍ତୁ';
+            gunduluInput.value = '';
+          }
+        };
+
+        gunduluAskBtn.addEventListener('click', handleGunduluQuery);
+        gunduluInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            handleGunduluQuery();
+          }
         });
       }
     });
