@@ -34,7 +34,7 @@ const GUNDULU_ODIA_SYSTEM_INSTRUCTION = `Role & Persona:
 Identity: You are "Gundulu," a loving, caring older sister (Gundulu Apa) and a friendly AI Study Buddy for Odisha state board students.
 Tone: Warm, supportive, encouraging, and patient. Speak with the affectionate care of an elder sister helping her younger siblings study.
 Language Policy: STRICT ODIA ONLY. Never use blocks of English. If you must use a technical term, write it in Odia script.
-Greeting: Always start your first response with "Namaskar! Mu tumara Gundulu Apa (ଗୁନ୍ଦୁଲୁ ଅପା). Aaji ame kana padhiba? ✨"
+Greeting: Always start your first response with "Namaskar! Mu tumara Gundulu Apa (ଗୁଣ୍ଡୁଲୁ ଅପା). Aaji ame kana padhiba? ✨"
 Instructions: Explain school concepts step-by-step. If a student asks a doubt, provide a clear and simple explanation. Use gentle, caring elder-sister phrases like 'ବୁଝିଲ ଭାଇ' or 'କହିଲ ବୁନି' (or speak with natural, sibling-to-sibling Odia warmth).
 SAFETY & GUARDRAILS: You are an educational tutor designed for young school children. Under no circumstances should you discuss adult topics, violence, self-harm, hate speech, politics, romance, nudity, or inappropriate themes. If a student tries to ask about non-educational, unnecessary, harmful, or inappropriate topics, politely decline and redirect them back to their school lessons.
 
@@ -176,7 +176,7 @@ function generateOfflineSocraticResponse(query: string, isOdia: boolean): string
 ୨. ସମୀକରଣର ଦୁଇ ପାର୍ଶ୍ୱକୁ ସମାନ କରିବାକୁ ଚେଷ୍ଟା କର।
 ପଦକ୍ଷେପଗୁଡ଼ିକୁ ନିଜ ଖାତାରେ ଲେଖି ମୋତେ ଫଟୋ ପଠାଅ, ମୁଁ ଦେଖିବି ତୁମେ ଠିକ୍ କରୁଛ କି ନାହିଁ! ✨`;
     }
-    return `ନମସ୍କାର! ମୁଁ ତୁମର ଗୁନ୍ଦୁଲୁ ଅପା (ଗୁନ୍ଦୁଲୁ ଅପା) । ଆମେ ବର୍ତ୍ତମାନ ଅଫଲାଇନ ମୋଡ୍‌ରେ ଅଛୁ, କିନ୍ତୁ ଆମର ଡିଭାଇସ୍-ନେଟିଭ୍ Odia-Gemma 2B AI ସକ୍ରିୟ ଅଛି।
+    return `ନମସ୍କାର! ମୁଁ ତୁମର ଗୁଣ୍ଡୁଲୁ ଅପା (ଗୁଣ୍ଡୁଲୁ ଅପା) । ଆମେ ବର୍ତ୍ତମାନ ଅଫଲାଇନ ମୋଡ୍‌ରେ ଅଛୁ, କିନ୍ତୁ ଆମର ଡିଭାଇସ୍-ନେଟିଭ୍ Odia-Gemma 2B AI ସକ୍ରିୟ ଅଛି।
 ତୁମେ ପଚାରିଥିବା ବିଷୟ: "${query}"
 ଏହା ବିଷୟରେ ଆସ ଆମେ ସରଳ ଭାବରେ ପଢ଼ିବା ଏବଂ ବୁଝିବା। ତୁମ ବହିର ପୃଷ୍ଠାଗୁଡ଼ିକ ଏଠାରେ ସଂରକ୍ଷିତ ଅଛି। ତୁମେ ଏହି ବିଷୟରେ ଆଉ କଣ ଜାଣିବାକୁ ଚାହୁଁଛ ମତେ ପଚାର!`;
   } else {
@@ -1199,9 +1199,9 @@ export function cleanOdiaOrthography(text: string, allowLatex: boolean = false):
     'Matrubhakti Katha': 'Madahandi Katha',
     
     // 6. Mascot Name Correction
-    'ଗୁଣ୍ଡୁଲୁ': 'ଗୁନ୍ଦୁଲୁ',
-    'ଗୁଣ୍ଡୁଳୁ': 'ଗୁନ୍ଦୁଲୁ',
-    'ଗୁଣ୍ଡୁଲି': 'ଗୁନ୍ଦୁଲୁ',
+    'ଗୁଣ୍ଡୁଲୁ': 'ଗୁଣ୍ଡୁଲୁ',
+    'ଗୁଣ୍ଡୁଳୁ': 'ଗୁଣ୍ଡୁଲୁ',
+    'ଗୁଣ୍ଡୁଲି': 'ଗୁଣ୍ଡୁଲୁ',
     'ଗୁଣ୍ଡୁଲ': 'ଗୁନ୍ଦୁଲ',
 
     // 7. Historical Names and Movements (e.g., Dandi March, Mahatma Gandhi)

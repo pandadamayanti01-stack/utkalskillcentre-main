@@ -487,7 +487,7 @@ export function MonthlyTestEngine({ test, onComplete, onBack, language, user }: 
                 <>
                   <Loader2 size={18} className="animate-spin" />
                   {test.questions.some((q: any) => q.type === 'subjective' || q.marks > 1)
-                    ? (language === 'en' ? 'Gundulu AI is grading...' : 'ଗୁନ୍ଦୁଲୁ AI ମୂଲ୍ୟାଙ୍କନ କରୁଛି...')
+                    ? (language === 'en' ? 'Gundulu AI is grading...' : 'ଗୁଣ୍ଡୁଲୁ AI ମୂଲ୍ୟାଙ୍କନ କରୁଛି...')
                     : (language === 'en' ? 'Submitting...' : 'ସବ୍‌ମିଟ୍ ହେଉଛି...')}
                 </>
               ) : (

@@ -39,7 +39,7 @@ export function RumalChoriGame({ user, onBack, onXpEarned }: RumalChoriGameProps
     { id: 0, name: 'ଆପଣ (You)', emoji: '👦', angle: 90, isPlayer: true }, // bottom
     { id: 1, name: 'ରିଙ୍କି (Rinki)', emoji: '👧', angle: 150, isPlayer: false },
     { id: 2, name: 'ମଣ୍ଟୁ (Mantu)', emoji: '👦', angle: 210, isPlayer: false },
-    { id: 3, name: 'ଗୁନ୍ଦୁଲୁ (Gundu)', emoji: '🐼', angle: 270, isPlayer: false }, // top
+    { id: 3, name: 'ଗୁଣ୍ଡୁଲୁ (Gundu)', emoji: '🐼', angle: 270, isPlayer: false }, // top
     { id: 4, name: 'ଟିଙ୍କୁ (Tinku)', emoji: '👦', angle: 330, isPlayer: false },
     { id: 5, name: 'ସୋନା (Sona)', emoji: '👧', angle: 30, isPlayer: false },
   ];

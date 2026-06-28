@@ -460,7 +460,7 @@ export const ConceptMapView: React.FC<ConceptMapViewProps> = ({
               <p className="text-xs text-slate-300 font-bold max-w-sm leading-relaxed mb-6">
                 {language === 'en'
                   ? 'Access high-resolution visual concept maps, cheat-sheets, and advanced animations for all chapters!'
-                  : 'ସମସ୍ତ ଅଧ୍ୟାୟ ପାଇଁ ଆଇ କ୍ୟାଚିଂ ଚିତ୍ରାତ୍ମକ ସାରାଂଶ, ମୁଖ୍ୟ ସୂତ୍ର ଚିଟ୍-ସିଟ୍ ଏବଂ ଗୁନ୍ଦୁଲୁ ଆନିମେସନ୍ ର ମଜା ନିଅନ୍ତୁ!'}
+                  : 'ସମସ୍ତ ଅଧ୍ୟାୟ ପାଇଁ ଆଇ କ୍ୟାଚିଂ ଚିତ୍ରାତ୍ମକ ସାରାଂଶ, ମୁଖ୍ୟ ସୂତ୍ର ଚିଟ୍-ସିଟ୍ ଏବଂ ଗୁଣ୍ଡୁଲୁ ଆନିମେସନ୍ ର ମଜା ନିଅନ୍ତୁ!'}
               </p>
               {onUpgrade && (
                 <button
@@ -479,7 +479,7 @@ export const ConceptMapView: React.FC<ConceptMapViewProps> = ({
         <div className="w-full max-w-2xl bg-slate-950/40 border border-white/5 rounded-2xl p-4 space-y-3">
           <div className="flex items-center gap-1.5 text-xs text-slate-400 font-bold">
             <Lucide.Sparkles size={12} className="text-emerald-400" />
-            <span>{language === 'en' ? 'Tutor Mode: Ask Gundulu Apa about a key concept' : 'ଟ୍ୟୁଟର ମୋଡ୍: ଗୁନ୍ଦୁଲୁ ଆପାଙ୍କୁ ଏହି ବିଷୟ ପଚାରନ୍ତୁ'}</span>
+            <span>{language === 'en' ? 'Tutor Mode: Ask Gundulu Apa about a key concept' : 'ଟ୍ୟୁଟର ମୋଡ୍: ଗୁଣ୍ଡୁଲୁ ଆପାଙ୍କୁ ଏହି ବିଷୟ ପଚାରନ୍ତୁ'}</span>
           </div>
           <div className="flex flex-wrap gap-2.5">
             {subtopics.map((topic, i) => (
@@ -519,7 +519,7 @@ export const ConceptMapView: React.FC<ConceptMapViewProps> = ({
         <p className="text-[10px] sm:text-xs text-slate-400 font-bold max-w-md mx-auto">
           {language === 'en'
             ? "Click on any node to ask Gundulu Apa to explain the concept!"
-            : "ଯେକୌଣସି ବବଲ୍ ଉପରେ କ୍ଲିକ୍ କରି ଗୁନ୍ଦୁଲୁ ଆପାଙ୍କୁ ସେହି ବିଷୟ ବୁଝାଇବା ପାଇଁ କୁହନ୍ତୁ!"}
+            : "ଯେକୌଣସି ବବଲ୍ ଉପରେ କ୍ଲିକ୍ କରି ଗୁଣ୍ଡୁଲୁ ଆପାଙ୍କୁ ସେହି ବିଷୟ ବୁଝାଇବା ପାଇଁ କୁହନ୍ତୁ!"}
         </p>
       </div>
 

@@ -464,7 +464,7 @@ export const Gundulu3DLab: React.FC<Gundulu3DLabProps> = ({
     if (!selectedModel) return;
     const modelName = language === 'or' ? selectedModel.nameOr : selectedModel.nameEn;
     const greetingText = language === 'or'
-      ? `ଶୁଭେଚ୍ଛା! ମୁଁ ହେଉଛି ଗୁନ୍ଦୁଲୁ AI ଟ୍ୟୁଟର। ଆଜି ଆମେ "${modelName}" ବିଷୟରେ ପଢିବା। ୩D ଚିତ୍ରର ଯେକୌଣସି ଅଂଶକୁ ସ୍ପର୍ଶ କରନ୍ତୁ କିମ୍ବା ମୋତେ କିଛି ବି ପଚାରନ୍ତୁ!`
+      ? `ଶୁଭେଚ୍ଛା! ମୁଁ ହେଉଛି ଗୁଣ୍ଡୁଲୁ AI ଟ୍ୟୁଟର। ଆଜି ଆମେ "${modelName}" ବିଷୟରେ ପଢିବା। ୩D ଚିତ୍ରର ଯେକୌଣସି ଅଂଶକୁ ସ୍ପର୍ଶ କରନ୍ତୁ କିମ୍ବା ମୋତେ କିଛି ବି ପଚାରନ୍ତୁ!`
       : `Hello! I am Gundulu AI, your tutor. Today, we are exploring the "${modelName}" model. Click on any hotspot or ask me any question to learn more!`;
     
     setChatMessages([
@@ -1411,7 +1411,7 @@ export const Gundulu3DLab: React.FC<Gundulu3DLabProps> = ({
               type="text"
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
-              placeholder={language === 'or' ? 'ଗୁନ୍ଦୁଲୁଙ୍କୁ ଏଠାରେ ପଚାରନ୍ତୁ...' : 'Ask Gundulu about this model...'}
+              placeholder={language === 'or' ? 'ଗୁଣ୍ଡୁଲୁଙ୍କୁ ଏଠାରେ ପଚାରନ୍ତୁ...' : 'Ask Gundulu about this model...'}
               className="flex-1 bg-slate-900 border border-white/10 focus:border-orange-500 rounded-xl px-3.5 py-2 text-xs text-white placeholder:text-slate-500 focus:outline-none transition-all font-bold"
             />
             <button

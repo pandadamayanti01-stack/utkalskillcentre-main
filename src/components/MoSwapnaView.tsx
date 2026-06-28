@@ -621,7 +621,7 @@ export function MoSwapnaView({ language, onBack, user }: MoSwapnaViewProps) {
       sender: 'gundulu',
       text: language === 'en' 
         ? "Hello! I am Gundulu, your Career Dream Advisor. Select a query below or tell me about your dream career!" 
-        : "ନମସ୍କାର! ମୁଁ ଗୁନ୍ଦୁଲୁ, ତୁମର କ୍ୟାରିଅର୍ ସ୍ୱପ୍ନ ମାର୍ଗଦର୍ଶକ। ତୁମେ ନିଜ ସ୍ୱପ୍ନ ବିଷୟରେ ମୋତେ ପଚାରି ପାରିବ।"
+        : "ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ, ତୁମର କ୍ୟାରିଅର୍ ସ୍ୱପ୍ନ ମାର୍ଗଦର୍ଶକ। ତୁମେ ନିଜ ସ୍ୱପ୍ନ ବିଷୟରେ ମୋତେ ପଚାରି ପାରିବ।"
     }
   ]);
   const [isTyping, setIsTyping] = useState(false);
@@ -737,7 +737,7 @@ Your goal is to guide students on how to achieve their dream careers. Follow the
 2. Provide a step-by-step career path (High school focus, +2 stream, graduation, relevant entrance exams like NEET, JEE, CLAT, UPSC, OPSC OJS/OCSE, and colleges).
 3. Mention Odisha-specific roles, government and private sectors, and local role models (e.g. Biju Patnaik, Dr. APJ Abdul Kalam, Pathani Samanta, Gopabandhu Das) to inspire them.
 4. Keep answers positive, clear, structured, and motivational.
-5. Crucial Spelling Constraint: When writing in Odia, ensure spelling is correct. Avoid spelling mistakes like 'ପରିକ୍ଷା' (use 'ପରୀକ୍ଷା' instead), 'ଗୁଣ୍ଡୁଲୁ' (use 'ଗୁନ୍ଦୁଲୁ' instead).`;
+5. Crucial Spelling Constraint: When writing in Odia, ensure spelling is correct. Avoid spelling mistakes like 'ପରିକ୍ଷା' (use 'ପରୀକ୍ଷା' instead), 'ଗୁଣ୍ଡୁଲୁ' (use 'ଗୁଣ୍ଡୁଲୁ' instead).`;
 
       const responseText = await withRetry(async (modelName, apiVersion) => {
         const genModel = ai.getGenerativeModel({
@@ -1117,7 +1117,7 @@ Your goal is to guide students on how to achieve their dream careers. Follow the
                     </div>
                     <div>
                       <h4 className="text-xs sm:text-sm font-black text-white leading-none">
-                        {language === 'en' ? 'Gundulu Dream Advisor' : 'ଗୁନ୍ଦୁଲୁ ସ୍ୱପ୍ନ ମାର୍ଗଦର୍ଶକ'}
+                        {language === 'en' ? 'Gundulu Dream Advisor' : 'ଗୁଣ୍ଡୁଲୁ ସ୍ୱପ୍ନ ମାର୍ଗଦର୍ଶକ'}
                       </h4>
                       <span className="text-[8px] sm:text-[9px] font-bold text-emerald-400 tracking-wider flex items-center gap-1 mt-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -1158,7 +1158,7 @@ Your goal is to guide students on how to achieve their dream careers. Follow the
                     type="text"
                     value={customQuery}
                     onChange={(e) => setCustomQuery(e.target.value)}
-                    placeholder={language === 'en' ? "Ask Gundulu anything about your dream career..." : "ଗୁନ୍ଦୁଲୁକୁ ତୁମର ସ୍ୱପ୍ନ କ୍ୟାରିଅର୍ ବିଷୟରେ ପଚାର..."}
+                    placeholder={language === 'en' ? "Ask Gundulu anything about your dream career..." : "ଗୁଣ୍ଡୁଲୁକୁ ତୁମର ସ୍ୱପ୍ନ କ୍ୟାରିଅର୍ ବିଷୟରେ ପଚାର..."}
                     disabled={isTyping}
                     className="flex-1 px-4 py-2.5 rounded-xl border border-slate-800 bg-slate-900/60 text-white text-xs sm:text-sm font-semibold focus:outline-none focus:border-amber-500/50 transition-all placeholder:text-slate-600"
                   />

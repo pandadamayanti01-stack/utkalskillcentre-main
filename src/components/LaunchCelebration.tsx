@@ -83,7 +83,7 @@ export default function LaunchCelebration({
       
       if (language === 'or') {
         const studentName = user?.name ? `${user.name} ` : '';
-        greetingText = `ଅନେକ ଅନେକ ଶۇଭେଚ୍ଛା ${studentName}! ମୁଁ ତୁମର ପଢ଼ା ସାଥୀ ଗୁନ୍ଦୁଲୁ କହୁଛି। ତୁମେ ସଫଳତାପୂର୍ବକ 'ଗୁନ୍ଦୁଲୁର ପ୍ରଥମ ସାଥୀ ପାସ୍' ହାସଲ କରିଛ, ସେଥିପାଇଁ ମୁଁ ବହୁତ ଖୁସି। ଏବେଠାରୁ ତୁମ ପାଠପଢ଼ା ଦାୟିତ୍ୱ ମୋର! ଏକ ବଡ଼ ଭଉଣୀ ଭଳି ମୁଁ ତୁମକୁ ସବୁ ସମସ୍ୟାରେ ବାଟ ଦେଖାଇବି। ଆସ, ଆମେ ଦୁହେଁ ମିଶି ମନ ଦେଇ ପଢ଼ିବା, ନୂଆ କଥା ଶିଖିବା ଓ ଜୀବନରେ ବହୁତ ଆଗକୁ ବଢ଼ିବା। ଚାଲ୍ ଆରମ୍ଭ କରିବା!`;
+        greetingText = `ଅନେକ ଅନେକ ଶۇଭେଚ୍ଛା ${studentName}! ମୁଁ ତୁମର ପଢ଼ା ସାଥୀ ଗୁଣ୍ଡୁଲୁ କହୁଛି। ତୁମେ ସଫଳତାପୂର୍ବକ 'ଗୁଣ୍ଡୁଲୁର ପ୍ରଥମ ସାଥୀ ପାସ୍' ହାସଲ କରିଛ, ସେଥିପାଇଁ ମୁଁ ବହୁତ ଖୁସି। ଏବେଠାରୁ ତୁମ ପାଠପଢ଼ା ଦାୟିତ୍ୱ ମୋର! ଏକ ବଡ଼ ଭଉଣୀ ଭଳି ମୁଁ ତୁମକୁ ସବୁ ସମସ୍ୟାରେ ବାଟ ଦେଖାଇବି। ଆସ, ଆମେ ଦୁହେଁ ମିଶି ମନ ଦେଇ ପଢ଼ିବା, ନୂଆ କଥା ଶିଖିବା ଓ ଜୀବନରେ ବହୁତ ଆଗକୁ ବଢ଼ିବା। ଚାଲ୍ ଆରମ୍ଭ କରିବା!`;
       } else {
         const studentName = user?.name ? `${user.name} ` : '';
         greetingText = `Many congratulations ${studentName}! I am your study buddy Gundulu speaking. You have successfully unlocked 'Gundulu's First Companion Pass', and I am extremely happy. From now on, your studies are my responsibility! Like an elder sister, I will guide you through all problems. Come, let's study attentively, learn new things, and move forward in life. Let's start!`;
@@ -415,13 +415,13 @@ export default function LaunchCelebration({
             </div>
 
             <h2 className="text-2xl font-black text-amber-400 drop-shadow-md leading-tight mb-1">
-              ଗୁନ୍ଦୁଲୁର ସ୍ପେଶାଲ୍ ଉପହାର! 🐿️
+              ଗୁଣ୍ଡୁଲୁର ସ୍ପେଶାଲ୍ ଉପହାର! 🐿️
             </h2>
             <span className="text-[10px] uppercase tracking-widest font-black text-amber-500/70 block mb-4">
               Gundulu's Special Gift!
             </span>
             <p className="text-slate-300 text-xs font-bold max-w-xs leading-relaxed mb-2 px-2">
-              ଗୁଗଲ୍ ପ୍ଲେ ଷ୍ଟୋର୍‌ରେ ଆପ୍ ଲାଇଭ୍ ହେବା ଖୁସିରେ ଗୁନ୍ଦୁଲୁ ଆପଣଙ୍କ ପାଇଁ ଏକ ସିକ୍ରେଟ୍ ଗିଫ୍ଟ ଆଣିଛି।
+              ଗୁଗଲ୍ ପ୍ଲେ ଷ୍ଟୋର୍‌ରେ ଆପ୍ ଲାଇଭ୍ ହେବା ଖୁସିରେ ଗୁଣ୍ଡୁଲୁ ଆପଣଙ୍କ ପାଇଁ ଏକ ସିକ୍ରେଟ୍ ଗିଫ୍ଟ ଆଣିଛି।
             </p>
             <p className="text-slate-400 text-[10px] font-bold max-w-xs leading-relaxed mb-6 italic">
               To celebrate our launch on Google Play Store, Gundulu has brought a secret gift!
@@ -556,7 +556,7 @@ export default function LaunchCelebration({
               <div className="flex items-center gap-2">
                 <Lucide.Sparkles className="text-amber-400 animate-pulse" size={18} />
                 <span className="text-sm font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-300">
-                  {language === 'or' ? "ଗୁନ୍ଦୁଲୁ ଆପଣଙ୍କୁ ସ୍ୱାଗତ କରୁଛି!" : "Gundulu Welcomes You!"}
+                  {language === 'or' ? "ଗୁଣ୍ଡୁଲୁ ଆପଣଙ୍କୁ ସ୍ୱାଗତ କରୁଛି!" : "Gundulu Welcomes You!"}
                 </span>
               </div>
               <button
@@ -624,7 +624,7 @@ export default function LaunchCelebration({
                 
                 {/* Holographic Ticket Title */}
                 <h1 className="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-200 uppercase tracking-tight leading-tight mb-1 drop-shadow">
-                  {language === 'or' ? 'ଗୁନ୍ଦୁଲୁର ପ୍ରଥମ ସାଥୀ ପାସ୍' : "GUNDULU'S FIRST COMPANION PASS"}
+                  {language === 'or' ? 'ଗୁଣ୍ଡୁଲୁର ପ୍ରଥମ ସାଥୀ ପାସ୍' : "GUNDULU'S FIRST COMPANION PASS"}
                 </h1>
                 <span className="text-[9px] font-black text-amber-400 uppercase tracking-wider block mb-4">
                   {language === 'or' ? "GUNDULU'S FIRST COMPANION PASS" : 'FOUNDING MEMBER GOLDEN TICKET'}

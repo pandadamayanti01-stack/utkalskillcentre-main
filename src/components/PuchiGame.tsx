@@ -182,7 +182,7 @@ export function PuchiGame({ user, onBack, onXpEarned }: PuchiGameProps) {
     // Spawning notes
     spawnTimerRef.current = setInterval(() => {
       const lane: 'left' | 'right' = Math.random() > 0.5 ? 'left' : 'right';
-      const syllables = ['ତା', 'ଧିନ୍', 'ପୁଚି', 'ନା', 'ଖେଳ', 'ଗୁନ୍ଦୁଲୁ'];
+      const syllables = ['ତା', 'ଧିନ୍', 'ପୁଚି', 'ନା', 'ଖେଳ', 'ଗୁଣ୍ଡୁଲୁ'];
       const text = syllables[Math.floor(Math.random() * syllables.length)];
       setNotes(prev => [...prev, { id: nextNoteId.current++, lane, y: 0, text }]);
     }, 1200);
@@ -440,7 +440,7 @@ export function PuchiGame({ user, onBack, onXpEarned }: PuchiGameProps) {
           {/* Balance health bar */}
           <div className="space-y-1.5">
             <div className="flex justify-between text-[10px] font-black text-slate-500">
-              <span>⚖️ ଗୁନ୍ଦୁଲୁର ଭାରସାମ୍ୟ (Balance)</span>
+              <span>⚖️ ଗୁଣ୍ଡୁଲୁର ଭାରସାମ୍ୟ (Balance)</span>
               <span>{balance}%</span>
             </div>
             <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200/60 p-0.5">
@@ -621,8 +621,8 @@ export function PuchiGame({ user, onBack, onXpEarned }: PuchiGameProps) {
                       ⚖️ ସନ୍ତୁଳନ ରକ୍ଷା
                     </h3>
                     <ul className="text-xs text-slate-600 space-y-1.5 list-disc pl-4 font-bold leading-relaxed">
-                      <li>ଯଦି ଆପଣ ଟ୍ୟାପ୍ ମିସ୍ କରନ୍ତି, ଗୁନ୍ଦୁଲୁର ସନ୍ତୁଳନ ବିଗିଡ଼ିଯିବ।</li>
-                      <li>ସନ୍ତୁଳନ ବାର୍ ଶୂନ୍ୟ (୦%) ହେବା ପୂର୍ବରୁ ସଠିକ୍ ଟ୍ୟାପ୍ କରି ଗୁନ୍ଦୁଲୁକୁ ସୁସ୍ଥ ରଖନ୍ତୁ।</li>
+                      <li>ଯଦି ଆପଣ ଟ୍ୟାପ୍ ମିସ୍ କରନ୍ତି, ଗୁଣ୍ଡୁଲୁର ସନ୍ତୁଳନ ବିଗିଡ଼ିଯିବ।</li>
+                      <li>ସନ୍ତୁଳନ ବାର୍ ଶୂନ୍ୟ (୦%) ହେବା ପୂର୍ବରୁ ସଠିକ୍ ଟ୍ୟାପ୍ କରି ଗୁଣ୍ଡୁଲୁକୁ ସୁସ୍ଥ ରଖନ୍ତୁ।</li>
                     </ul>
                   </div>
 

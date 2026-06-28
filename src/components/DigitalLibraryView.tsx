@@ -1067,7 +1067,7 @@ Write your explanation in a friendly, encouraging, bilingual style (Odia and Eng
 
     const inviteText = language === 'en'
       ? `Hey friends! I am revising "${selectedChapter.title}" in our Digital Library on the Utkal Skill Centre app! 📚 Gundulu AI explains everything so easily with beautiful notes & formulas! Check it out here: https://utkalskillcentre.com`
-      : `ହେଲୋ ସାଙ୍ଗମାନେ! ମୁଁ ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର ଆପ୍‌ରେ ଆମର ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀରୁ "${selectedChapter.title}" ର ନୋଟ୍ସ ପଢୁଛି! 📚 ଗୁନ୍ଦୁଲୁ AI ବହୁତ ସହଜରେ ସବୁ ସୂତ୍ର ଏବଂ ସାରାଂଶ ବୁଝାଇ ଦେଉଛି। ମାଗଣାରେ ପଢ଼ିବା ପାଇଁ ଏଠାରେ କ୍ଲିକ୍ କରନ୍ତୁ: https://utkalskillcentre.com`;
+      : `ହେଲୋ ସାଙ୍ଗମାନେ! ମୁଁ ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର ଆପ୍‌ରେ ଆମର ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀରୁ "${selectedChapter.title}" ର ନୋଟ୍ସ ପଢୁଛି! 📚 ଗୁଣ୍ଡୁଲୁ AI ବହୁତ ସହଜରେ ସବୁ ସୂତ୍ର ଏବଂ ସାରାଂଶ ବୁଝାଇ ଦେଉଛି। ମାଗଣାରେ ପଢ଼ିବା ପାଇଁ ଏଠାରେ କ୍ଲିକ୍ କରନ୍ତୁ: https://utkalskillcentre.com`;
 
     try {
       const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(inviteText)}`;
@@ -1102,7 +1102,7 @@ Write your explanation in a friendly, encouraging, bilingual style (Odia and Eng
 
       // Reset chatbot to initial greeting
       const greetEn = `Namaskar! Mu Gundulu. 🦜 I am your AI study companion for this chapter: "${selectedChapter.title}". Ask me any math formulas, definitions, or click the suggestions below! How can I help you today? ✨`;
-      const greetOr = `ନମସ୍କାର! ମୁଁ ଗୁନ୍ଦୁଲୁ। 🦜 ଆଜି ଆମେ ଏହି ଅଧ୍ୟାୟ ପଢ଼ିବା: "${selectedChapter.title}"। ଏହି ଅଧ୍ୟାୟର କୌଣସି ପ୍ରଶ୍ନ ବା ସୂତ୍ର ବୁଝିବା ପାଇଁ ମୋତେ ପଚାରନ୍ତୁ, ମୁଁ ସାହାଯ୍ୟ କରିବି! ✨`;
+      const greetOr = `ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। 🦜 ଆଜି ଆମେ ଏହି ଅଧ୍ୟାୟ ପଢ଼ିବା: "${selectedChapter.title}"। ଏହି ଅଧ୍ୟାୟର କୌଣସି ପ୍ରଶ୍ନ ବା ସୂତ୍ର ବୁଝିବା ପାଇଁ ମୋତେ ପଚାରନ୍ତୁ, ମୁଁ ସାହାଯ୍ୟ କରିବି! ✨`;
       setChatMessages([
         {
           id: 'initial',
@@ -1407,7 +1407,7 @@ Instructions:
         let title = language === 'en' ? 'Digital Library | Utkal Skill Centre' : 'ଡିଜିଟାଲ୍ ଲାଇବ୍ରେରୀ | ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର';
         let desc = language === 'en'
           ? `Access complete school textbooks, chapter solutions, MCQs, study notes, and AI support for Classes 1 to 10 in Odia on Utkal Skill Centre.`
-          : `ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରରେ ୧ ରୁ ୧୦ ଶ୍ରେଣୀ ପାଇଁ ଓଡ଼ିଆ ମିଡିୟମ୍ ସ୍କୁଲ୍ ବହି, ସମାଧାନ, MCQ ଏବଂ ଏଆଇ ଶିକ୍ଷକ ଗୁନ୍ଦୁଲୁ ସହ ପାଠପଢ଼ନ୍ତୁ।`;
+          : `ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟରରେ ୧ ରୁ ୧୦ ଶ୍ରେଣୀ ପାଇଁ ଓଡ଼ିଆ ମିଡିୟମ୍ ସ୍କୁଲ୍ ବହି, ସମାଧାନ, MCQ ଏବଂ ଏଆଇ ଶିକ୍ଷକ ଗୁଣ୍ଡୁଲୁ ସହ ପାଠପଢ଼ନ୍ତୁ।`;
 
         let schemaData: any = null;
 
@@ -1831,7 +1831,7 @@ Instructions:
                       <p className="text-sm md:text-base text-white/90 mt-2 font-medium max-w-lg leading-relaxed">
                         {language === 'en'
                           ? 'Immersive holographic chapters & Gundulu study notes await.'
-                          : 'ମୂଳ ବିଷୟବସ୍ତୁ ପଢ଼ନ୍ତୁ କିମ୍ବା ଆମର ସରଳୀକୃତ ଦ୍ୱିଭାଷୀ ଗୁନ୍ଦୁଲୁ ନୋଟ ବ୍ୟବହାର କରନ୍ତୁ।'}
+                          : 'ମୂଳ ବିଷୟବସ୍ତୁ ପଢ଼ନ୍ତୁ କିମ୍ବା ଆମର ସରଳୀକୃତ ଦ୍ୱିଭାଷୀ ଗୁଣ୍ଡୁଲୁ ନୋଟ ବ୍ୟବହାର କରନ୍ତୁ।'}
                       </p>
                     </div>
                     <div className="text-left md:text-right bg-black/10 p-4 rounded-2xl border border-white/10 backdrop-blur-md">
@@ -1927,7 +1927,7 @@ Instructions:
                           )}
                           <span className="flex items-center gap-1 text-amber-400 font-bold bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20 shadow-[0_0_10px_rgba(251,191,36,0.2)]">
                             <Lucide.Sparkles size={10} className="animate-pulse" />
-                            <span>{language === 'en' ? 'Gundulu Note' : 'ଗୁନ୍ଦୁଲୁ ନୋଟ'}</span>
+                            <span>{language === 'en' ? 'Gundulu Note' : 'ଗୁଣ୍ଡୁଲୁ ନୋଟ'}</span>
                           </span>
                         </div>
                       </div>
@@ -2020,7 +2020,7 @@ Instructions:
                       }`}
                   >
                     <Lucide.Sparkles size={14} />
-                    <span>{language === 'en' ? 'Gundulu Note' : 'ଗୁନ୍ଦୁଲୁ ନୋଟ'}</span>
+                    <span>{language === 'en' ? 'Gundulu Note' : 'ଗୁଣ୍ଡୁଲୁ ନୋଟ'}</span>
                   </button>
 
                   <button
@@ -2039,7 +2039,7 @@ Instructions:
                       if (effectivePdfUrl) {
                         setReaderMode('pdf');
                       } else {
-                        alert(language === 'en' ? 'Original PDF not uploaded yet. Please use the Gundulu Note!' : 'ଏହି ବିଷୟର ମୂଳ PDF ଏପର୍ଯ୍ୟନ୍ତ ଅପଲୋଡ୍ ହୋଇନାହିଁ। ଦୟାକରି ଗୁନ୍ଦୁଲୁ ନୋଟ ପଢ଼ନ୍ତୁ!');
+                        alert(language === 'en' ? 'Original PDF not uploaded yet. Please use the Gundulu Note!' : 'ଏହି ବିଷୟର ମୂଳ PDF ଏପର୍ଯ୍ୟନ୍ତ ଅପଲୋଡ୍ ହୋଇନାହିଁ। ଦୟାକରି ଗୁଣ୍ଡୁଲୁ ନୋଟ ପଢ଼ନ୍ତୁ!');
                       }
                     }}
                     className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold tracking-wider transition-all ${!effectivePdfUrl ? 'opacity-40 cursor-not-allowed' : ''
@@ -2067,7 +2067,7 @@ Instructions:
                       }`}
                   >
                     <Lucide.Youtube size={14} />
-                    <span>{language === 'en' ? 'Gundulu Video' : 'ଗୁନ୍ଦୁଲୁ ଭିଡିଓ'}</span>
+                    <span>{language === 'en' ? 'Gundulu Video' : 'ଗୁଣ୍ଡୁଲୁ ଭିଡିଓ'}</span>
                   </button>
 
 
@@ -2206,7 +2206,7 @@ Instructions:
                                   <p className="text-xs text-slate-400 leading-relaxed font-bold">
                                     {language === 'en'
                                       ? 'Sharing is caring! Share this premium study material to one of your WhatsApp school/tuition groups to instantly unlock the entire guide.'
-                                      : 'ଏହି ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ପାଠକୁ ଆପଣଙ୍କ ସ୍କୁଲ୍ WhatsApp ଗ୍ରୁପ୍‌ରେ ଶେୟାର କରନ୍ତୁ ଏବଂ ସମସ୍ତ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଓ ଗୁନ୍ଦୁଲୁ ନୋଟ ତୁରନ୍ତ ପଢ଼ନ୍ତୁ।'}
+                                      : 'ଏହି ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ପାଠକୁ ଆପଣଙ୍କ ସ୍କୁଲ୍ WhatsApp ଗ୍ରୁପ୍‌ରେ ଶେୟାର କରନ୍ତୁ ଏବଂ ସମସ୍ତ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଓ ଗୁଣ୍ଡୁଲୁ ନୋଟ ତୁରନ୍ତ ପଢ଼ନ୍ତୁ।'}
                                   </p>
                                 </div>
 
@@ -2260,7 +2260,7 @@ Instructions:
                                   <p className="text-xs text-slate-400 leading-relaxed font-bold">
                                     {language === 'en'
                                       ? 'Sharing is caring! Share this premium study material to one of your WhatsApp school/tuition groups to instantly unlock the entire guide.'
-                                      : 'ଏହି ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ପାଠକୁ ଆପଣଙ୍କ ସ୍କୁଲ୍ WhatsApp ଗ୍ରୁପ୍‌ରେ ଶେୟାର କରନ୍ତୁ ଏବଂ ସମସ୍ତ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଓ ଗୁନ୍ଦୁଲୁ ନୋଟ ତୁରନ୍ତ ପଢ଼ନ୍ତୁ।'}
+                                      : 'ଏହି ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ପାଠକୁ ଆପଣଙ୍କ ସ୍କୁଲ୍ WhatsApp ଗ୍ରୁପ୍‌ରେ ଶେୟାର କରନ୍ତୁ ଏବଂ ସମସ୍ତ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଓ ଗୁଣ୍ଡୁଲୁ ନୋଟ ତୁରନ୍ତ ପଢ଼ନ୍ତୁ।'}
                                   </p>
                                 </div>
 
@@ -2298,7 +2298,7 @@ Instructions:
                           <p className="text-xs text-slate-400 leading-relaxed font-bold">
                             {language === 'en'
                               ? "Official revision notes are blank. Click below to let Gundulu AI generate & save comprehensive chapter notes and revision formulas directly to Firestore for all students!"
-                              : "ଏହି ଅଧ୍ୟାୟର ନୋଟ୍ସ ଖାଲି ଅଛି। ଗୁନ୍ଦୁଲୁ AI ଦ୍ୱାରା ନୂତନ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଏବଂ ଉଦାହରଣ ପ୍ରସ୍ତୁତ କରି ସିଧାସଳଖ ଡାଟାବେସରେ ସେଭ୍ କରିବା ପାଇଁ ତଳେ କ୍ଲିକ୍ କରନ୍ତୁ!"}
+                              : "ଏହି ଅଧ୍ୟାୟର ନୋଟ୍ସ ଖାଲି ଅଛି। ଗୁଣ୍ଡୁଲୁ AI ଦ୍ୱାରା ନୂତନ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଏବଂ ଉଦାହରଣ ପ୍ରସ୍ତୁତ କରି ସିଧାସଳଖ ଡାଟାବେସରେ ସେଭ୍ କରିବା ପାଇଁ ତଳେ କ୍ଲିକ୍ କରନ୍ତୁ!"}
                           </p>
                         </div>
                         <button
@@ -2315,7 +2315,7 @@ Instructions:
                           ) : (
                             <>
                               <Lucide.Sparkles size={14} className="animate-bounce" />
-                              <span>{language === 'en' ? 'Generate & Save Gundulu Notes ✨' : 'ଗୁନ୍ଦୁଲୁ ନୋଟ୍ସ ପ୍ରସ୍ତୁତ ଓ ସେଭ୍ କରନ୍ତୁ ✨'}</span>
+                              <span>{language === 'en' ? 'Generate & Save Gundulu Notes ✨' : 'ଗୁଣ୍ଡୁଲୁ ନୋଟ୍ସ ପ୍ରସ୍ତୁତ ଓ ସେଭ୍ କରନ୍ତୁ ✨'}</span>
                             </>
                           )}
                         </button>
@@ -2333,7 +2333,7 @@ Instructions:
                           <p className="text-xs text-slate-400 leading-relaxed font-bold">
                             {language === 'en'
                               ? "Revision notes, key formulas, and practice answers for this chapter are being prepared and will be uploaded soon. Stay tuned! 🌟"
-                              : "ଏହି ଅଧ୍ୟାୟର ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରาଂଶ ଏବଂ ଗୁନ୍ଦୁଲୁ ନୋଟ ଖୁବ୍ ଶୀଘ୍ର ଅପଲୋଡ୍ ହେବାକୁ ଯାଉଛି। ଅପେକ୍ଷା କରନ୍ତୁ! 🌟"}
+                              : "ଏହି ଅଧ୍ୟାୟର ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରาଂଶ ଏବଂ ଗୁଣ୍ଡୁଲୁ ନୋଟ ଖୁବ୍ ଶୀଘ୍ର ଅପଲୋଡ୍ ହେବାକୁ ଯାଉଛି। ଅପେକ୍ଷା କରନ୍ତୁ! 🌟"}
                           </p>
                         </div>
                       </div>
@@ -2593,7 +2593,7 @@ Instructions:
                     <div className="flex items-center gap-2">
                       <Lucide.PenTool size={16} className="text-emerald-400 animate-pulse" />
                       <span className="text-xs font-black text-slate-300">
-                        {language === 'en' ? 'Personal Study Notes' : 'ମୋର ଗୁନ୍ଦୁଲୁ ନୋଟ (ସ୍ୱତନ୍ତ୍ର)'}
+                        {language === 'en' ? 'Personal Study Notes' : 'ମୋର ଗୁଣ୍ଡୁଲୁ ନୋଟ (ସ୍ୱତନ୍ତ୍ର)'}
                       </span>
                     </div>
 
@@ -2644,7 +2644,7 @@ Instructions:
                   </div>
                   <div>
                     <h3 className="text-sm font-black text-white flex items-center gap-1.5">
-                      <span>{language === 'en' ? 'Gundulu AI Tutor' : 'ଗୁନ୍ଦୁଲୁ ଏଆଈ ସାଥୀ'}</span>
+                      <span>{language === 'en' ? 'Gundulu AI Tutor' : 'ଗୁଣ୍ଡୁଲୁ ଏଆଈ ସାଥୀ'}</span>
                       <Lucide.Sparkles size={12} className="text-amber-400" />
                     </h3>
                     <p className="text-[10px] text-emerald-400 font-extrabold uppercase tracking-widest flex items-center gap-1">
@@ -2667,12 +2667,12 @@ Instructions:
                   </motion.div>
                   <div className="space-y-3">
                     <h4 className="text-base font-black text-white">
-                      {language === 'en' ? 'Unlock Gundulu AI Tutor' : 'ଗୁନ୍ଦୁଲୁ AI ଟ୍ୟୁଟର ଅନଲକ୍ କରନ୍ତୁ'}
+                      {language === 'en' ? 'Unlock Gundulu AI Tutor' : 'ଗୁଣ୍ଡୁଲୁ AI ଟ୍ୟୁଟର ଅନଲକ୍ କରନ୍ତୁ'}
                     </h4>
                     <p className="text-xs text-slate-400 font-medium leading-relaxed max-w-[260px] mx-auto">
                       {language === 'en'
                         ? 'Chat with Gundulu to solve doubts, explain complex formulas, and get custom interactive practice tests instantly!'
-                        : 'ଗୁନ୍ଦୁଲୁ ସହ କଥା ହୋଇ ସବୁ ଗଣିତ ପ୍ରଶ୍ନର ସମାଧାନ, ସୂତ୍ର ଏବଂ ସ୍ପେସାଲ୍ ଟେଷ୍ଟ ପାଆନ୍ତୁ!'}
+                        : 'ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହୋଇ ସବୁ ଗଣିତ ପ୍ରଶ୍ନର ସମାଧାନ, ସୂତ୍ର ଏବଂ ସ୍ପେସାଲ୍ ଟେଷ୍ଟ ପାଆନ୍ତୁ!'}
                     </p>
                   </div>
                   <button
@@ -2783,7 +2783,7 @@ Instructions:
                       type="text"
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
-                      placeholder={language === 'en' ? 'Ask Gundulu anything...' : 'ଏହି ଅଧ୍ୟାୟ ବିଷୟରେ ଗୁନ୍ଦୁଲୁକୁ ପଚାରନ୍ତୁ...'}
+                      placeholder={language === 'en' ? 'Ask Gundulu anything...' : 'ଏହି ଅଧ୍ୟାୟ ବିଷୟରେ ଗୁଣ୍ଡୁଲୁକୁ ପଚାରନ୍ତୁ...'}
                       className="gundulu-chat-input flex-1 bg-slate-900 border border-white/10 rounded-2xl px-5 py-3 text-sm font-semibold text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 shadow-inner transition-all"
                     />
                     <button
@@ -2937,7 +2937,7 @@ Instructions:
                           <p className="text-xs text-slate-400 leading-relaxed font-bold">
                             {language === 'en'
                               ? "Official revision notes are not uploaded yet. Click below to let Gundulu AI generate comprehensive chapter notes, revision formulas, and laws instantly!"
-                              : "ଏହି ଅଧ୍ୟାୟର ଅଫିସିଆଲ୍ ନୋଟ୍ସ ଏପର୍ଯ୍ୟନ୍ତ ଯୋଡ଼ା ଯାଇନାହିଁ। କିନ୍ତୁ ଆପଣଙ୍କ ପାଇଁ ଗୁନ୍ଦୁଲୁ AI ଗୁରୁତ୍ୱପୂર્ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଏବଂ ଉଦାହରଣ ପ୍ରସ୍ତୁତ କରିବାକୁ ପ୍ରସ୍ତୁତ ଅଛି!"}
+                              : "ଏହି ଅଧ୍ୟାୟର ଅଫିସିଆଲ୍ ନୋଟ୍ସ ଏପର୍ଯ୍ୟନ୍ତ ଯୋଡ଼ା ଯାଇନାହିଁ। କିନ୍ତୁ ଆପଣଙ୍କ ପାଇଁ ଗୁଣ୍ଡୁଲୁ AI ଗୁରୁତ୍ୱପୂર્ଣ୍ଣ ସୂତ୍ର, ସଂକ୍ଷିପ୍ତ ସାରାଂଶ ଏବଂ ଉଦାହରଣ ପ୍ରସ୍ତୁତ କରିବାକୁ ପ୍ରସ୍ତୁତ ଅଛି!"}
                           </p>
                         </div>
                         <button
@@ -2954,7 +2954,7 @@ Instructions:
                           ) : (
                             <>
                               <Lucide.Sparkles size={14} className="animate-bounce" />
-                              <span>{language === 'en' ? 'Generate Gundulu Notes ✨' : 'ଗୁନ୍ଦୁଲୁ ନୋଟ୍ସ ପ୍ରସ୍ତୁତ କରନ୍ତୁ ✨'}</span>
+                              <span>{language === 'en' ? 'Generate Gundulu Notes ✨' : 'ଗୁଣ୍ଡୁଲୁ ନୋଟ୍ସ ପ୍ରସ୍ତୁତ କରନ୍ତୁ ✨'}</span>
                             </>
                           )}
                         </button>
@@ -3224,7 +3224,7 @@ Instructions:
                   </div>
                   <div>
                     <h2 className="text-sm md:text-lg font-black text-white leading-tight flex items-center gap-2">
-                      <span>{language === 'en' ? 'Gundulu AI Chat Room' : 'ଗୁନ୍ଦୁଲୁ ଏଆଈ ଚାଟ୍ ରୁମ୍'}</span>
+                      <span>{language === 'en' ? 'Gundulu AI Chat Room' : 'ଗୁଣ୍ଡୁଲୁ ଏଆଈ ଚାଟ୍ ରୁମ୍'}</span>
                       <span className="hidden sm:inline-block px-2.5 py-0.5 rounded-full text-[9px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 uppercase tracking-widest font-black">
                         {language === 'en' ? 'Active' : 'ସକ୍ରିୟ'}
                       </span>
@@ -3399,7 +3399,7 @@ Instructions:
                       type="text"
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
-                      placeholder={language === 'en' ? 'Ask Gundulu about this chapter...' : 'ଏହି ଅଧ୍ୟାୟ ବିଷୟରେ ଗୁନ୍ଦୁଲୁକୁ ପଚାରନ୍ତୁ...'}
+                      placeholder={language === 'en' ? 'Ask Gundulu about this chapter...' : 'ଏହି ଅଧ୍ୟାୟ ବିଷୟରେ ଗୁଣ୍ଡୁଲୁକୁ ପଚାରନ୍ତୁ...'}
                       className="flex-1 bg-slate-900 border border-white/5 rounded-2xl px-5 py-3 text-sm font-semibold text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/30"
                     />
                     <button
@@ -3457,12 +3457,12 @@ Instructions:
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="text-sm font-black text-amber-400 flex items-center gap-1.5">
                       <Lucide.Bot size={18} className="animate-pulse" />
-                      <span>{language === 'en' ? "Gundulu's Study Guide" : "ଗୁନ୍ଦୁଲୁର ସାହାଯ୍ୟ"}</span>
+                      <span>{language === 'en' ? "Gundulu's Study Guide" : "ଗୁଣ୍ଡୁଲୁର ସାହାଯ୍ୟ"}</span>
                     </h4>
                     {isExplainingChunk && (
                       <span className="text-[10px] font-bold text-slate-400 flex items-center gap-1">
                         <Lucide.Loader2 size={10} className="animate-spin text-amber-400" />
-                        {language === 'en' ? 'Gundulu is thinking...' : 'ଗୁନ୍ଦୁଲୁ ବିଚାର କରୁଛି...'}
+                        {language === 'en' ? 'Gundulu is thinking...' : 'ଗୁଣ୍ଡୁଲୁ ବିଚାର କରୁଛି...'}
                       </span>
                     )}
                   </div>
@@ -3484,7 +3484,7 @@ Instructions:
                       className="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-xs rounded-xl active:scale-95 transition-all shadow-lg hover:shadow-amber-500/25 flex items-center justify-center gap-2 cursor-pointer"
                     >
                       <Lucide.Sparkles size={14} />
-                      <span>{language === 'en' ? 'Ask Gundulu to Explain Concept' : 'ଏହି ପ୍ରସଙ୍ଗ ବୁଝାଇବାକୁ ଗୁନ୍ଦୁଲୁକୁ କୁହନ୍ତୁ'}</span>
+                      <span>{language === 'en' ? 'Ask Gundulu to Explain Concept' : 'ଏହି ପ୍ରସଙ୍ଗ ବୁଝାଇବାକୁ ଗୁଣ୍ଡୁଲୁକୁ କୁହନ୍ତୁ'}</span>
                     </button>
                   )}
                 </div>

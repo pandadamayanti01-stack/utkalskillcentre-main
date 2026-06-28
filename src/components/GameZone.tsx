@@ -244,7 +244,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
             <div>
               <h1 className="text-2xl md:text-3xl font-black text-slate-900 flex items-center gap-2.5">
                 <Lucide.Gamepad2 className="text-emerald-500 animate-pulse" size={28} />
-                ଗୁନ୍ଦୁଲୁ ଗେମ୍ ଜୋନ୍
+                ଗୁଣ୍ଡୁଲୁ ଗେମ୍ ଜୋନ୍
               </h1>
               <div className="mt-2 flex flex-wrap gap-2">
                 <span className="px-3 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1 shadow-sm">
@@ -307,7 +307,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
         </div>
         <div className="text-[10px] text-emerald-600 font-black flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
-          ଗୁନ୍ଦୁଲୁ ଗେମ୍ ଜୋନ୍‌ରେ ସମସ୍ତ ପାରମ୍ପରିକ ଖେଳ ସବୁଦିନ ପାଇଁ ଉନ୍ମୁକ୍ତ ହୋଇଗଲା । ଖେଳନ୍ତୁ ଓ XP ଜିତନ୍ତୁ!
+          ଗୁଣ୍ଡୁଲୁ ଗେମ୍ ଜୋନ୍‌ରେ ସମସ୍ତ ପାରମ୍ପରିକ ଖେଳ ସବୁଦିନ ପାଇଁ ଉନ୍ମୁକ୍ତ ହୋଇଗଲା । ଖେଳନ୍ତୁ ଓ XP ଜିତନ୍ତୁ!
         </div>
       </div>
 

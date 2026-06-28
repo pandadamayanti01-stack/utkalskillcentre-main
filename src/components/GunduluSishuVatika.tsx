@@ -176,7 +176,7 @@ const GunduluSishuVatika = ({ skipInitialGreeting = false, userClass, onBack, is
   });
   
   // Immersive Status States
-  const [status, setStatus] = useState("ଗୁନ୍ଦୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+  const [status, setStatus] = useState("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
   const [subtitle, setSubtitle] = useState("");
   const subtitleContainerRef = useRef<HTMLDivElement>(null);
   const activeSubtitleIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -558,7 +558,7 @@ const GunduluSishuVatika = ({ skipInitialGreeting = false, userClass, onBack, is
     hasPlayedGreetingRef.current = false;
     responseTurnRef.current = 0;
     chatHistoryRef.current = []; // Reset previous chat history on mount
-    setStatus("ଗୁନ୍ଦୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+    setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
     setSubtitle('');
 
     const speakGreeting = () => {
@@ -569,8 +569,8 @@ const GunduluSishuVatika = ({ skipInitialGreeting = false, userClass, onBack, is
 
       hasPlayedGreetingRef.current = true;
 
-      const greeting = "ନମସ୍କାର! ମୁଁ ଗୁନ୍ଦୁଲୁ। ଆସ, ଏବେ ଏକାଠି ପଢ଼ିବା ଓ ଆଗକୁ ବଢ଼ିବା।";
-      setStatus("ଗୁନ୍ଦୁଲୁ କହୁଛି...");
+      const greeting = "ନମସ୍କାର! ମୁଁ ଗୁଣ୍ଡୁଲୁ। ଆସ, ଏବେ ଏକାଠି ପଢ଼ିବା ଓ ଆଗକୁ ବଢ଼ିବା।";
+      setStatus("ଗୁଣ୍ଡୁଲୁ କହୁଛି...");
 
       const activePremiumVoice = localStorage.getItem('gundulu_use_premium_voice') === 'true';
       const speakFn = activePremiumVoice ? speakWithGeminiVoice : speakWithBrowserTtsFallback;
@@ -582,10 +582,10 @@ const GunduluSishuVatika = ({ skipInitialGreeting = false, userClass, onBack, is
             recognitionRef.current.start();
           } catch (e) {
             console.warn("Speech recognition failed to auto-start after greeting:", e);
-            setStatus("ଗୁନ୍ଦୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+            setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
           }
         } else {
-          setStatus("ଗୁନ୍ଦୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+          setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
         }
       });
     };
@@ -605,7 +605,7 @@ const GunduluSishuVatika = ({ skipInitialGreeting = false, userClass, onBack, is
 
       recognition.onstart = () => {
         setIsListening(true);
-        setStatus("ଗୁନ୍ଦୁଲୁ ଶୁଣୁଛି... 👂");
+        setStatus("ଗୁଣ୍ଡୁଲୁ ଶୁଣୁଛି... 👂");
         transcriptBufferRef.current = '';
       };
 
@@ -657,7 +657,7 @@ const GunduluSishuVatika = ({ skipInitialGreeting = false, userClass, onBack, is
           silenceTimeoutRef.current = null;
         }
         if (event.error === 'no-speech') {
-          setStatus("ଗୁନ୍ଦୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+          setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
           return;
         }
         const errorMsg = "ଶୁଣିପାରିଲି ନାହିଁ | ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ |";
@@ -684,7 +684,7 @@ const GunduluSishuVatika = ({ skipInitialGreeting = false, userClass, onBack, is
   };
 
   const processWithGemini = async (speechInput: SpeechInput) => {
-    setStatus("ଗୁନ୍ଦୁଲୁ ଚିନ୍ତା କରୁଛି...");
+    setStatus("ଗୁଣ୍ଡୁଲୁ ଚିନ୍ତା କରୁଛି...");
     setIsListening(false);
     
     try {
@@ -861,10 +861,10 @@ Understand user intent from these transcripts and respond in Odia only.
           recognitionRef.current.start();
         } catch (e) {
           console.warn("Speech recognition failed to auto-start:", e);
-          setStatus("ଗୁନ୍ଦୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+          setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
         }
       } else {
-        setStatus("ଗୁନ୍ଦୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
+        setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ");
       }
     });
   };
@@ -944,7 +944,7 @@ Understand user intent from these transcripts and respond in Odia only.
         >
           <Lucide.Sparkles size={12} className="text-emerald-400 animate-spin" style={{ animationDuration: '3s' }} />
           <span>
-            🎉 ମାଗଣା ପ୍ରଦର୍ଶନ ଅଫର! ୧୧ ଜୁଲାଇ ୨୦୨୬ ରାତି ୧୧:୫୯ ଟା ପର୍ଯ୍ୟନ୍ତ ଗୁନ୍ଦୁଲୁ AI ର ଅସୀମିତ ବ୍ୟବହାର କରନ୍ତୁ।
+            🎉 ମାଗଣା ପ୍ରଦର୍ଶନ ଅଫର! ୧୧ ଜୁଲାଇ ୨୦୨୬ ରାତି ୧୧:୫୯ ଟା ପର୍ଯ୍ୟନ୍ତ ଗୁଣ୍ଡୁଲୁ AI ର ଅସୀମିତ ବ୍ୟବହାର କରନ୍ତୁ।
           </span>
         </div>
       )}
@@ -1028,7 +1028,7 @@ Understand user intent from these transcripts and respond in Odia only.
             </div>
             <div className="card-notes-preview">
               <p className="notes-heading">ପାଠ୍ୟକ୍ରମ ବିବରଣୀ:</p>
-              <p className="notes-text">{activeChapter.notes || "ନମସ୍କାର! ଗୁନ୍ଦୁଲୁ ସହ ପଢିବା ପାଇଁ ଆପଣଙ୍କ ସ୍ୱାଗତ।"}</p>
+              <p className="notes-text">{activeChapter.notes || "ନମସ୍କାର! ଗୁଣ୍ଡୁଲୁ ସହ ପଢିବା ପାଇଁ ଆପଣଙ୍କ ସ୍ୱାଗତ।"}</p>
             </div>
           </div>
         )}
@@ -1065,7 +1065,7 @@ Understand user intent from these transcripts and respond in Odia only.
             stopCurrentAudio();
             setIsSpeaking(false);
             setStatus(nextState ? "ଉନ୍ନତ ସ୍ଵର ସକ୍ରିୟ ହେଲା ✨" : "ସାଧାରଣ ସ୍ଵର ସକ୍ରିୟ ହେଲା 📱");
-            setTimeout(() => setStatus("ଗୁନ୍ଦୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ"), 1500);
+            setTimeout(() => setStatus("ଗୁଣ୍ଡୁଲୁ ସହ କଥା ହେବା ପାଇଁ ସ୍ପର୍ଶ କରନ୍ତୁ"), 1500);
           }}
           title={usePremiumVoice ? "Switch to Standard Voice (Free)" : "Switch to Premium AI Voice (Cloud)"}
           style={{ 
@@ -1117,7 +1117,7 @@ Understand user intent from these transcripts and respond in Odia only.
                 ମାଗଣା ଭଏସ୍ ସୀମା ଶେଷ! 🎤
               </h3>
               <p className="text-xs md:text-sm font-bold text-slate-350 leading-relaxed">
-                ଗୁନ୍ଦୁଲୁ ଆପା ସହିତ ବିନା କୌଣସି ବାଧାରେ ସିଧାସଳଖ କଥାବାର୍ତ୍ତା କରିବା ପାଇଁ ପ୍ରିମିୟମ୍‌କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ!
+                ଗୁଣ୍ଡୁଲୁ ଆପା ସହିତ ବିନା କୌଣସି ବାଧାରେ ସିଧାସଳଖ କଥାବାର୍ତ୍ତା କରିବା ପାଇଁ ପ୍ରିମିୟମ୍‌କୁ ଅପଗ୍ରେଡ୍ କରନ୍ତୁ!
               </p>
             </div>
             

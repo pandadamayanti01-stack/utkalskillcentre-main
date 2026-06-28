@@ -1126,7 +1126,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                                   ) : (
                                     <>
                                       <Lucide.Sparkles size={14} />
-                                      {language === 'en' ? 'Verify Copy with Gundulu' : 'ଗୁନ୍ଦୁଲୁଙ୍କ ସହ ଯାଞ୍ଚ କରନ୍ତୁ'}
+                                      {language === 'en' ? 'Verify Copy with Gundulu' : 'ଗୁଣ୍ଡୁଲୁଙ୍କ ସହ ଯାଞ୍ଚ କରନ୍ତୁ'}
                                     </>
                                   )}
                                 </button>
@@ -1157,7 +1157,7 @@ export function DailyMcqView({ mcqs, submissions, user, language, onBack, onSubm
                                 )}
                               </div>
                               <span className="text-xs font-black uppercase tracking-wider text-white">
-                                {language === 'en' ? "Gundulu's Verification:" : "ଗୁନ୍ଦୁଲୁଙ୍କ ମତାମତ:"}
+                                {language === 'en' ? "Gundulu's Verification:" : "ଗୁଣ୍ଡୁଲୁଙ୍କ ମତାମତ:"}
                               </span>
                             </div>
                             

@@ -244,7 +244,7 @@ export const GiftUnlockModal: React.FC<GiftUnlockModalProps> = ({
               </h2>
               <p className="text-xs text-slate-400 font-medium max-w-sm leading-relaxed mt-2">
                 {language === 'or'
-                  ? 'ଆପଣଙ୍କର ଚମତ୍କାର ମଇ ମାସର ପରୀକ୍ଷା ଫଳାଫଳ ପାଇଁ ଗୁନ୍ଦୁଲୁ ଆପଣଙ୍କ ପାଇଁ ଏକ ସ୍ପେଶାଲ ଉପହାର ରଖିଛନ୍ତି।'
+                  ? 'ଆପଣଙ୍କର ଚମତ୍କାର ମଇ ମାସର ପରୀକ୍ଷା ଫଳାଫଳ ପାଇଁ ଗୁଣ୍ଡୁଲୁ ଆପଣଙ୍କ ପାଇଁ ଏକ ସ୍ପେଶାଲ ଉପହାର ରଖିଛନ୍ତି।'
                   : 'You have a special mystery gift box waiting for your excellent performance in the May Month Test Series!'}
               </p>
             </div>

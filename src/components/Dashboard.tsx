@@ -2617,7 +2617,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
 
     if (level >= 10) {
       badgeTitle = 'Gundulu Legend';
-      badgeTitleOdia = 'ଗୁନ୍ଦୁଲୁ ମହାରଥୀ';
+      badgeTitleOdia = 'ଗୁଣ୍ଡୁଲୁ ମହାରଥୀ';
       badgeIcon = '👑';
     } else if (level >= 7) {
       badgeTitle = 'Odia Math Master';
@@ -2629,7 +2629,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       badgeIcon = '⚔️';
     } else if (level >= 3) {
       badgeTitle = 'Gundulu Scholar';
-      badgeTitleOdia = 'ଗୁନ୍ଦୁଲୁ ପଣ୍ଡିତ';
+      badgeTitleOdia = 'ଗୁଣ୍ଡୁଲୁ ପଣ୍ଡିତ';
       badgeIcon = '🎓';
     }
 
@@ -2823,7 +2823,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
     },
     {
       en: "Use the Gundulu AI Tutor for complex math problems to see step-by-step solutions.",
-      or: "ଜଟିଳ ଗଣିତ ସମସ୍ୟା ପାଇଁ ଗୁନ୍ଦୁଲୁ AI ଟ୍ୟୁଟର ବ୍ୟବହାର କରନ୍ତୁ ଏବଂ ପଦକ୍ଷେପ ଦରକ୍ଷେପ ସମାଧାନ ଦେଖନ୍ତୁ।"
+      or: "ଜଟିଳ ଗଣିତ ସମସ୍ୟା ପାଇଁ ଗୁଣ୍ଡୁଲୁ AI ଟ୍ୟୁଟର ବ୍ୟବହାର କରନ୍ତୁ ଏବଂ ପଦକ୍ଷେପ ଦରକ୍ଷେପ ସମାଧାନ ଦେଖନ୍ତୁ।"
     }
   ];
 
@@ -3238,17 +3238,17 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   <div className="flex flex-wrap items-center justify-start sm:justify-center gap-1 sm:gap-2">
                     <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.2em] shadow-[inset_0_0_10px_rgba(16,185,129,0.15)] whitespace-nowrap">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_5px_#34d399] animate-pulse"></span>
-                      <span className="hidden sm:inline">{language === 'en' ? 'Gundulu AI Tutor Active' : 'ଗୁନ୍ଦୁଲୁ AI ଟ୍ୟୁଟର ସକ୍ରିୟ'}</span>
+                      <span className="hidden sm:inline">{language === 'en' ? 'Gundulu AI Tutor Active' : 'ଗୁଣ୍ଡୁଲୁ AI ଟ୍ୟୁଟର ସକ୍ରିୟ'}</span>
                       <span className="sm:hidden">{language === 'en' ? 'AI Tutor Active' : 'AI ଟ୍ୟୁଟର ସକ୍ରିୟ'}</span>
                     </div>
                   </div>
                   <h3 className="text-sm leading-tight sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-slate-300 tracking-tighter group-hover:text-white transition-colors">
-                    {language === 'en' ? 'Gundulu AI Tutor' : 'ଗୁନ୍ଦୁଲୁ AI ଟ୍ୟୁଟର'}
+                    {language === 'en' ? 'Gundulu AI Tutor' : 'ଗୁଣ୍ଡୁଲୁ AI ଟ୍ୟୁଟର'}
                   </h3>
                   <p className="text-slate-400 text-[9px] sm:text-xs font-bold leading-relaxed max-w-[260px] mx-auto group-hover:text-slate-300 transition-colors hidden sm:block text-center">
                     {language === 'en' 
                       ? 'Talk with Gundulu in Odia! Ask questions, practice pronunciation, and learn through voice conversation.'
-                      : 'ଗୁନ୍ଦୁଲୁଙ୍କ ସହ ଓଡ଼ିଆରେ କଥା ହୁଅନ୍ତୁ! ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ, ଉଚ୍ଚାରଣ ଅଭ୍ୟାସ କରନ୍ତୁ ଏବଂ କଥାବାର୍ତ୍ତା ମାଧ୍ୟମରେ ପଢନ୍ତୁ।'}
+                      : 'ଗୁଣ୍ଡୁଲୁଙ୍କ ସହ ଓଡ଼ିଆରେ କଥା ହୁଅନ୍ତୁ! ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ, ଉଚ୍ଚାରଣ ଅଭ୍ୟାସ କରନ୍ତୁ ଏବଂ କଥାବାର୍ତ୍ତା ମାଧ୍ୟମରେ ପଢନ୍ତୁ।'}
                   </p>
                 </div>
               </div>
@@ -3284,7 +3284,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 
                 <div className="text-left flex flex-col flex-1 justify-center">
                   <h3 className="text-base leading-tight sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-100 to-slate-300 tracking-tighter mb-1.5 sm:mb-2.5">
-                    {language === 'en' ? "Gundulu Daily Challenge" : "ଗୁନ୍ଦୁଲୁ ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ"}
+                    {language === 'en' ? "Gundulu Daily Challenge" : "ଗୁଣ୍ଡୁଲୁ ଦୈନିକ ଚ୍ୟାଲେଞ୍ଜ"}
                   </h3>
                   <p className="text-slate-400 text-[9px] sm:text-xs font-bold leading-relaxed max-w-[260px] group-hover:text-slate-300 transition-colors hidden sm:block">
                     {hasDailyPractice
@@ -3366,16 +3366,16 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
                     <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.2em] shadow-[inset_0_0_10px_rgba(245,158,11,0.15)] whitespace-nowrap">
                       <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_5px_#f59e0b] animate-pulse"></span>
-                      <span>{language === 'en' ? 'Gundulu Smart Board' : 'ଗୁନ୍ଦୁଲୁ ସ୍ମାର୍ଟ ବୋର୍ଡ'}</span>
+                      <span>{language === 'en' ? 'Gundulu Smart Board' : 'ଗୁଣ୍ଡୁଲୁ ସ୍ମାର୍ଟ ବୋର୍ଡ'}</span>
                     </div>
                   </div>
                   <h3 className="text-sm leading-tight sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-amber-100 to-slate-300 tracking-tighter group-hover:text-white transition-colors">
-                    {language === 'en' ? "Gundulu Smart Board" : 'ଗୁନ୍ଦୁଲୁ ସ୍ମାର୍ଟ ବୋର୍ଡ'}
+                    {language === 'en' ? "Gundulu Smart Board" : 'ଗୁଣ୍ଡୁଲୁ ସ୍ମାର୍ଟ ବୋର୍ଡ'}
                   </h3>
                   <p className="text-slate-400 text-[9px] sm:text-xs font-bold leading-relaxed max-w-[260px] mx-auto group-hover:text-slate-300 transition-colors hidden sm:block text-center">
                     {language === 'en' 
                       ? 'Draw shapes, write words, or solve equations. Gundulu AI scans and explains any subject!'
-                      : 'ଖଡ଼ିରେ ଲେଖନ୍ତୁ ବା ଚିତ୍ର ଆଙ୍କନ୍ତୁ, ଗୁନ୍ଦୁଲୁ ଆପା ଯେକୌଣସି ବିଷୟର ସମାଧାନ ଓ ସମ୍ପୂର୍ଣ୍ଣ ବୁଝାମଣା ଓଡ଼ିଆରେ କରିବେ।'}
+                      : 'ଖଡ଼ିରେ ଲେଖନ୍ତୁ ବା ଚିତ୍ର ଆଙ୍କନ୍ତୁ, ଗୁଣ୍ଡୁଲୁ ଆପା ଯେକୌଣସି ବିଷୟର ସମାଧାନ ଓ ସମ୍ପୂର୍ଣ୍ଣ ବୁଝାମଣା ଓଡ଼ିଆରେ କରିବେ।'}
                   </p>
                 </div>
               </div>
@@ -4044,7 +4044,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   <p className="text-xs font-black text-amber-200 tracking-wide uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
                     {language === 'en'
                       ? 'Every month, the top 5 students from each class get free Gundulu monthly access! 🎁'
-                      : 'ପ୍ରତି ମାସରେ ପ୍ରତ୍ୟେକ ଶ୍ରେଣୀର ଶୀର୍ଷ ୫ ଜଣ ଛାତ୍ରଛାତ୍ରୀଙ୍କୁ ମାଗଣାରେ ଗୁନ୍ଦୁଲୁ ମାସିକ ସବସ୍କ୍ରିପସନ ମିଳିବ! 🎁'}
+                      : 'ପ୍ରତି ମାସରେ ପ୍ରତ୍ୟେକ ଶ୍ରେଣୀର ଶୀର୍ଷ ୫ ଜଣ ଛାତ୍ରଛାତ୍ରୀଙ୍କୁ ମାଗଣାରେ ଗୁଣ୍ଡୁଲୁ ମାସିକ ସବସ୍କ୍ରିପସନ ମିଳିବ! 🎁'}
                   </p>
                 </div>
               </div>
@@ -4433,7 +4433,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                         <Lucide.Gamepad2 size={16} />
                       </div>
                       <div>
-                        <div className="text-xs font-black text-white">{language === 'en' ? 'Gundulu Game Zone' : 'ଗୁନ୍ଦୁଲୁ ଗେମ୍ ଜୋନ୍'}</div>
+                        <div className="text-xs font-black text-white">{language === 'en' ? 'Gundulu Game Zone' : 'ଗୁଣ୍ଡୁଲୁ ଗେମ୍ ଜୋନ୍'}</div>
                         <div className="text-[10px] text-slate-400 font-bold leading-relaxed">{language === 'en' ? 'Play traditional games' : 'ଯେକୌଣସି ପାରମ୍ପରିକ ଖେଳ ଖେଳନ୍ତୁ'}</div>
                       </div>
                     </div>
@@ -4637,7 +4637,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   <p className="text-xs text-indigo-200 leading-relaxed font-bold">
                     {language === 'en'
                       ? `Gundulu is reviewing answers with our board teachers! The statewide leaderboard and certificates will be out on the ${mtsStatus.publishStartDay}th of this month at 6:00 AM. Get ready!`
-                      : `ଗୁନ୍ଦୁଲୁ ଆପଣଙ୍କ ବୋର୍ଡ ଶିକ୍ଷକଙ୍କ ସହ ଖାତା ଦେଖିବାରେ ବ୍ୟସ୍ତ ଅଛି! ଆସନ୍ତା ${mtsStatus.publishStartDay} ତାରିଖ ସକାଳ ୬:୦୦ ଟାରେ ମାର୍କସିଟ୍ ଏବଂ ଲିଡରବୋର୍ଡ ପ୍ରକାଶିତ ହେବ।`}
+                      : `ଗୁଣ୍ଡୁଲୁ ଆପଣଙ୍କ ବୋର୍ଡ ଶିକ୍ଷକଙ୍କ ସହ ଖାତା ଦେଖିବାରେ ବ୍ୟସ୍ତ ଅଛି! ଆସନ୍ତା ${mtsStatus.publishStartDay} ତାରିଖ ସକାଳ ୬:୦୦ ଟାରେ ମାର୍କସିଟ୍ ଏବଂ ଲିଡରବୋର୍ଡ ପ୍ରକାଶିତ ହେବ।`}
                   </p>
                 </div>
 
@@ -4645,7 +4645,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   onClick={() => setShowMtsGradingModal(false)}
                   className="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-black text-xs uppercase tracking-widest transition-all cursor-pointer shadow-lg shadow-indigo-950/35 hover:scale-[1.02] active:scale-[0.98] border border-indigo-500/30"
                 >
-                  {language === 'en' ? 'Got it, Gundulu!' : 'ଠିକ୍ ଅଛି ଗୁନ୍ଦୁଲୁ!'}
+                  {language === 'en' ? 'Got it, Gundulu!' : 'ଠିକ୍ ଅଛି ଗୁଣ୍ଡୁଲୁ!'}
                 </button>
               </div>
             </motion.div>
@@ -4680,7 +4680,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 </div>
                 <div>
                   <h3 className="text-lg font-black text-white uppercase tracking-wider">
-                    {language === 'en' ? 'Gundulu Worksheet Maker' : 'ଗୁନ୍ଦୁଲୁ ପରୀକ୍ଷା ପ୍ରଶ୍ନପତ୍ର ମେକର'}
+                    {language === 'en' ? 'Gundulu Worksheet Maker' : 'ଗୁଣ୍ଡୁଲୁ ପରୀକ୍ଷା ପ୍ରଶ୍ନପତ୍ର ମେକର'}
                   </h3>
                   <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-0.5">
                     {language === 'en' ? 'Step-by-Step Lined Revision Sheets' : 'ସୋପାନ-ଅନୁସାରେ ଲାଇନ୍‌ଡ୍ ପେପର୍ ମେକର୍'}

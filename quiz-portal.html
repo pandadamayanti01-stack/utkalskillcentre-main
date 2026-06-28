@@ -1031,29 +1031,6 @@
         </a>
       </div>
 
-      <!-- Gundulu Mate AI Assistant Card -->
-      <div class="gundulu-chat-card" style="margin-top: 1.5rem; background: rgba(15, 23, 42, 0.35); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 20px; padding: 1.2rem; backdrop-filter: blur(16px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);">
-        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.8rem;">
-          <div style="font-size: 1.6rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">🐿️</div>
-          <div style="text-align: left;">
-            <h3 style="font-size: 1rem; color: #fff; margin: 0; font-weight: 800; font-family: var(--font-outfit);">Gundulu Mate / ଗୁଣ୍ଡୁଲୁ ମିତ</h3>
-            <p style="font-size: 0.7rem; color: var(--text-muted); margin: 2px 0 0 0;">Ask me any GK or translation question! / ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ!</p>
-          </div>
-        </div>
-        
-        <!-- Chat Response Container -->
-        <div id="gunduluResponseBox" style="display: none; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 0.8rem; font-size: 0.8rem; line-height: 1.5; color: #f1f5f9; text-align: left; margin-bottom: 1rem; max-height: 160px; overflow-y: auto; white-space: pre-wrap; font-family: var(--font-inter);">
-          <!-- Dynamic AI response -->
-        </div>
-
-        <!-- Input Form -->
-        <div style="display: flex; gap: 0.5rem;">
-          <input type="text" id="gunduluInput" placeholder="Ask anything... / ଏଠାରେ ପଚାରନ୍ତୁ..." style="flex: 1; padding: 0.65rem 0.9rem; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.03); color: #fff; font-size: 0.82rem; outline: none; box-sizing: border-box; transition: border-color 0.2s;">
-          <button id="gunduluAskBtn" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; padding: 0 1rem; border-radius: 10px; font-weight: 700; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
-            <span id="gunduluBtnText">Ask / ପଚାରନ୍ତୁ</span>
-          </button>
-        </div>
-      </div>
     </section>
 
     <!-- 2. LEADERBOARD VIEW PANEL -->
@@ -1487,19 +1464,65 @@
       // Bind Gundulu Mate Chat Assistant
       const gunduluAskBtn = document.getElementById('gunduluAskBtn');
       const gunduluInput = document.getElementById('gunduluInput');
-      const gunduluResponseBox = document.getElementById('gunduluResponseBox');
-      const gunduluBtnText = document.getElementById('gunduluBtnText');
+      const gunduluMessageList = document.getElementById('gunduluMessageList');
 
-      if (gunduluAskBtn && gunduluInput && gunduluResponseBox && gunduluBtnText) {
+      // Global Toggle Function
+      window.toggleGunduluChat = function(isOpen) {
+        const chatWindow = document.getElementById('gunduluChatWindow');
+        const chatTrigger = document.getElementById('gunduluChatTrigger');
+        if (!chatWindow || !chatTrigger) return;
+
+        if (isOpen) {
+          chatWindow.style.display = 'flex';
+          chatTrigger.style.display = 'none';
+          // Trigger reflow for transition
+          setTimeout(() => {
+            chatWindow.style.transform = 'translateY(0)';
+            chatWindow.style.opacity = '1';
+            if (gunduluMessageList) {
+              gunduluMessageList.scrollTop = gunduluMessageList.scrollHeight;
+            }
+          }, 10);
+        } else {
+          chatWindow.style.transform = 'translateY(20px)';
+          chatWindow.style.opacity = '0';
+          setTimeout(() => {
+            chatWindow.style.display = 'none';
+            chatTrigger.style.display = 'flex';
+          }, 300);
+        }
+      };
+
+      if (gunduluAskBtn && gunduluInput && gunduluMessageList) {
         const handleGunduluQuery = async () => {
           const query = gunduluInput.value.trim();
           if (!query) return;
 
+          // Clear input immediately
+          gunduluInput.value = '';
+
+          // Append User Message
+          const userMsg = document.createElement('div');
+          userMsg.style.cssText = "align-self: flex-end; background: linear-gradient(135deg, #10b981, #059669); color: #fff; padding: 0.6rem 0.8rem; border-radius: 12px 12px 4px 12px; font-size: 0.78rem; line-height: 1.45; max-width: 85%; text-align: left; box-shadow: 0 4px 12px rgba(16,185,129,0.15); box-sizing: border-box;";
+          userMsg.innerText = query;
+          gunduluMessageList.appendChild(userMsg);
+          gunduluMessageList.scrollTop = gunduluMessageList.scrollHeight;
+
+          // Append Typing Indicator
+          const typingIndicator = document.createElement('div');
+          typingIndicator.id = 'gunduluTyping';
+          typingIndicator.style.cssText = "display: flex; gap: 0.5rem; align-items: flex-start; max-width: 85%; box-sizing: border-box;";
+          typingIndicator.innerHTML = `
+            <div style="font-size: 1rem; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: rgba(16, 185, 129, 0.1); border-radius: 50%; flex-shrink: 0;">🐿️</div>
+            <div style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.05); color: var(--text-muted); padding: 0.6rem 0.8rem; border-radius: 4px 12px 12px 12px; font-size: 0.78rem; line-height: 1.45; text-align: left; box-sizing: border-box;">
+              Typing... / ଉତ୍ତର ପ୍ରସ୍ତୁତ ହେଉଛି... ✍️
+            </div>
+          `;
+          gunduluMessageList.appendChild(typingIndicator);
+          gunduluMessageList.scrollTop = gunduluMessageList.scrollHeight;
+
           // Set loading state
           gunduluAskBtn.disabled = true;
-          gunduluBtnText.innerText = 'Thinking...';
-          gunduluResponseBox.style.display = 'block';
-          gunduluResponseBox.innerText = 'Gundulu is thinking / ଗୁଣ୍ଡୁଲୁ ଚିନ୍ତା କରୁଛି... 🐿️';
 
           try {
             const response = await fetch('/api/ai/ask-gundulu', {
@@ -1508,20 +1531,51 @@
               body: JSON.stringify({ question: query })
             });
 
+            // Remove Typing Indicator
+            const typing = document.getElementById('gunduluTyping');
+            if (typing) typing.remove();
+
+            const gunduluMsg = document.createElement('div');
+            gunduluMsg.style.cssText = "display: flex; gap: 0.5rem; align-items: flex-start; max-width: 85%; box-sizing: border-box;";
+
             if (response.ok) {
               const data = await response.json();
-              gunduluResponseBox.innerText = data.text || 'Sorry, I could not generate an answer right now.';
+              const text = data.text || 'Sorry, I could not generate an answer right now.';
+              gunduluMsg.innerHTML = `
+                <div style="font-size: 1rem; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: rgba(16, 185, 129, 0.1); border-radius: 50%; flex-shrink: 0;">🐿️</div>
+                <div style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.05); color: #f1f5f9; padding: 0.6rem 0.8rem; border-radius: 4px 12px 12px 12px; font-size: 0.78rem; line-height: 1.45; text-align: left; box-sizing: border-box;">
+                  ${text}
+                </div>
+              `;
             } else {
               const errorText = await response.text();
-              gunduluResponseBox.innerText = `Error / ତ୍ରୁଟି: ${errorText || 'Server error'}`;
+              gunduluMsg.innerHTML = `
+                <div style="font-size: 1rem; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: rgba(239, 68, 68, 0.1); border-radius: 50%; flex-shrink: 0;">⚠️</div>
+                <div style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.15); color: #fca5a5; padding: 0.6rem 0.8rem; border-radius: 4px 12px 12px 12px; font-size: 0.78rem; line-height: 1.45; text-align: left; box-sizing: border-box;">
+                  Error / ତ୍ରୁଟି: ${errorText || 'Server error'}
+                </div>
+              `;
             }
+            gunduluMessageList.appendChild(gunduluMsg);
+            gunduluMessageList.scrollTop = gunduluMessageList.scrollHeight;
           } catch (err) {
             console.error('[Gundulu Chat] Error:', err);
-            gunduluResponseBox.innerText = 'Connection error. Please try again.';
+            // Remove Typing Indicator
+            const typing = document.getElementById('gunduluTyping');
+            if (typing) typing.remove();
+
+            const errorMsg = document.createElement('div');
+            errorMsg.style.cssText = "display: flex; gap: 0.5rem; align-items: flex-start; max-width: 85%; box-sizing: border-box;";
+            errorMsg.innerHTML = `
+              <div style="font-size: 1rem; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: rgba(239, 68, 68, 0.1); border-radius: 50%; flex-shrink: 0;">⚠️</div>
+              <div style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.15); color: #fca5a5; padding: 0.6rem 0.8rem; border-radius: 4px 12px 12px 12px; font-size: 0.78rem; line-height: 1.45; text-align: left; box-sizing: border-box;">
+                Connection error. Please try again.
+              </div>
+            `;
+            gunduluMessageList.appendChild(errorMsg);
+            gunduluMessageList.scrollTop = gunduluMessageList.scrollHeight;
           } finally {
             gunduluAskBtn.disabled = false;
-            gunduluBtnText.innerText = 'Ask / ପଚାରନ୍ତୁ';
-            gunduluInput.value = '';
           }
         };
 
@@ -1531,6 +1585,12 @@
             handleGunduluQuery();
           }
         });
+
+        // Bind Floating Trigger
+        const chatTrigger = document.getElementById('gunduluChatTrigger');
+        if (chatTrigger) {
+          chatTrigger.addEventListener('click', () => toggleGunduluChat(true));
+        }
       }
     });
 
@@ -1637,5 +1697,49 @@
       });
     }
   </script>
+  <!-- Modern Floating Chatbot Widget (Gundulu Mate) -->
+  <!-- Floating Button Trigger -->
+  <div id="gunduluChatTrigger" style="position: fixed; bottom: 85px; right: 20px; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #10b981, #059669); border: 2px solid rgba(255, 255, 255, 0.25); box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 999; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.transform='scale(1.08)';" onmouseout="this.style.transform='scale(1)';">
+    <img src="/gundulu-pointing-nobg.png" alt="Gundulu" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+    <!-- Small Active Notification Dot -->
+    <div style="position: absolute; top: 0; right: 0; width: 13px; height: 13px; background: #ef4444; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
+  </div>
+
+  <!-- Chat Window -->
+  <div id="gunduluChatWindow" style="display: none; position: fixed; bottom: 85px; right: 20px; width: 330px; height: 430px; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5); z-index: 1000; flex-direction: column; overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(20px); opacity: 0; box-sizing: border-box;">
+    <!-- Header -->
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1rem; background: rgba(16, 185, 129, 0.15); border-bottom: 1px solid rgba(16, 185, 129, 0.25); box-sizing: border-box;">
+      <div style="display: flex; align-items: center; gap: 0.6rem;">
+        <img src="/gundulu-pointing-nobg.png" alt="Gundulu" style="width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid #34d399; object-fit: cover;">
+        <div style="text-align: left; line-height: 1.15;">
+          <h4 style="font-family: var(--font-outfit); font-size: 0.9rem; font-weight: 800; color: #fff; margin: 0;">ଗୁଣ୍ଡୁଲୁ ମିତ / Gundulu Mate</h4>
+          <span style="font-size: 0.62rem; color: #34d399; font-weight: 700;">● Online / ସକ୍ରିୟ</span>
+        </div>
+      </div>
+      <button onclick="toggleGunduluChat(false)" style="background: none; border: none; color: rgba(255, 255, 255, 0.6); font-size: 1.4rem; cursor: pointer; padding: 0 0.2rem; transition: color 0.2s; line-height: 1;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255, 255, 255, 0.6)'">×</button>
+    </div>
+
+    <!-- Message History -->
+    <div id="gunduluMessageList" style="flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; scroll-behavior: smooth; box-sizing: border-box;">
+      <!-- Welcome message -->
+      <div style="display: flex; gap: 0.5rem; align-items: flex-start; max-width: 85%;">
+        <div style="font-size: 1rem; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: rgba(16, 185, 129, 0.1); border-radius: 50%; flex-shrink: 0;">🐿️</div>
+        <div style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.05); color: #f1f5f9; padding: 0.6rem 0.8rem; border-radius: 4px 12px 12px 12px; font-size: 0.78rem; line-height: 1.45; text-align: left; box-sizing: border-box;">
+          ନମସ୍କାର ମିତ! 🐿️ ମୁଁ ଗୁଣ୍ଡୁଲୁ। ପାଠପଢ଼ା କିମ୍ବା ସାଧାରଣ ଜ୍ଞାନ ବିଷୟରେ ଯେକୌଣସି ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ!
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Footer -->
+    <div style="padding: 0.75rem; background: rgba(15, 23, 42, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; gap: 0.5rem; box-sizing: border-box; align-items: center;">
+      <input type="text" id="gunduluInput" placeholder="Ask Gundulu... / ପଚାରନ୍ତୁ..." style="flex: 1; padding: 0.6rem 0.8rem; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.03); color: #fff; font-size: 0.8rem; outline: none; box-sizing: border-box; height: 36px;">
+      <button id="gunduluAskBtn" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; box-sizing: border-box;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transform: rotate(45deg); margin-left: -1px; margin-top: 1px;">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+  </div>
 </body>
 </html>
