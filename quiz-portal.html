@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="or">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Utkal Quiz | Odisha GK & Current Events Portal</title>
+  <meta name="description" content="ଉତ୍କଳ କୁଇଜ୍ ଦୈନିକ ଚଳନ୍ତି ଘଟଣାବଳୀ ଏବଂ ସାଧାରଣ ଜ୍ଞାନ ଚ୍ୟାଲେଞ୍ଜ! Play daily GK & Current Events challenges. Track streak & rank!">
+  
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg">
+  <link rel="manifest" href="/manifest.json">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=Baloo+Bhaina+2:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    :root {
+      --font-outfit: 'Outfit', 'Inter', sans-serif;
+      --font-inter: 'Inter', sans-serif;
+      --font-baloo: 'Baloo Bhaina 2', sans-serif;
+
+      --bg-dark: #070b13;
+      --bg-slate: rgba(15, 23, 42, 0.7);
+      --border-glow-green: rgba(16, 185, 129, 0.4);
+      --border-glow-blue: rgba(59, 130, 246, 0.4);
+      
+      --color-emerald: #10b981;
+      --color-emerald-glow: rgba(16, 185, 129, 0.3);
+      
+      --color-blue: #3b82f6;
+      --color-blue-glow: rgba(59, 130, 246, 0.3);
+
+      --color-gold: #f59e0b;
+      --color-gold-glow: rgba(245, 158, 11, 0.25);
+
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-inter);
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 50% 10%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 20% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem 1rem 6rem 1rem;
+      line-height: 1.5;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Starry Background Effect */
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: 
+        radial-gradient(1px 1px at 10% 20%, #fff, transparent),
+        radial-gradient(1px 1px at 30% 50%, rgba(255,255,255,0.7), transparent),
+        radial-gradient(2px 2px at 70% 30%, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 90% 70%, rgba(255,255,255,0.8), transparent);
+      background-size: 300px 300px;
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Glassmorphic Top HUD */
+    .header-hud {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.8rem;
+      width: 100%;
+      max-width: 480px;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 0.8rem 1.8rem;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      margin-bottom: 2rem;
+      z-index: 10;
+      box-sizing: border-box;
+    }
+
+    .hud-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .hud-item-left {
+      justify-content: flex-start;
+    }
+
+    .hud-item-right {
+      justify-content: flex-end;
+    }
+
+    .hud-divider {
+      width: 1px;
+      height: 24px;
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .hud-emoji {
+      font-size: 1.4rem;
+    }
+
+    .hud-value-label {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hud-value {
+      font-family: var(--font-outfit);
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--text-main);
+      line-height: 1.1;
+    }
+
+    .hud-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Main Container Views */
+    main {
+      width: 100%;
+      max-width: 480px;
+      z-index: 5;
+    }
+
+    .view-panel {
+      display: none;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    .view-panel.active {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Mascot Welcome Banner */
+    .mascot-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .mascot-avatar {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: #10b981;
+      border: 2px solid #34d399;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
+      flex-shrink: 0;
+    }
+
+    .mascot-avatar img {
+      width: 110%;
+      height: 110%;
+      object-fit: cover;
+      margin-top: 5px;
+    }
+
+    .speech-bubble {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 0.9rem 1.2rem;
+      position: relative;
+      flex-grow: 1;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    /* Speech bubble arrow indicator */
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 24px;
+      width: 0;
+      height: 0;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-right: 8px solid rgba(15, 23, 42, 0.7);
+    }
+
+    .speech-bubble h3 {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #fff;
+      margin-bottom: 0.2rem;
+      font-family: var(--font-outfit);
+    }
+
+    .speech-bubble p {
+      font-family: var(--font-baloo);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Selector Cards Grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .selection-card {
+      background: rgba(15, 23, 42, 0.5);
+      border: 2px solid var(--border-color);
+      border-radius: 28px;
+      padding: 1.8rem 1rem 1.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .selection-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, var(--card-color-glow) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 0;
+    }
+
+    .selection-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 15px 30px var(--card-color-glow);
+    }
+
+    .selection-card:hover::before {
+      opacity: 0.8;
+    }
+
+    /* Card Glow Themes */
+    .card-gk {
+      --card-color-glow: var(--color-emerald-glow);
+      border-color: rgba(16, 185, 129, 0.15);
+    }
+    .card-gk:hover {
+      border-color: var(--color-emerald);
+    }
+
+    .card-ce {
+      --card-color-glow: var(--color-blue-glow);
+      border-color: rgba(59, 130, 246, 0.15);
+    }
+    .card-ce:hover {
+      border-color: var(--color-blue);
+    }
+
+    .card-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+    }
+
+    .card-circle-icon {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.2rem;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    }
+
+    .card-gk .card-circle-icon img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+    }
+
+    .card-circle-icon svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .card-title-odia {
+      font-family: var(--font-baloo);
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.25;
+      margin-bottom: 0.1rem;
+    }
+
+    .card-title-eng {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-bottom: 1.2rem;
+    }
+
+    .card-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-bottom: 1.5rem;
+      flex-grow: 1;
+    }
+
+    .play-pill-btn {
+      width: 100%;
+      padding: 0.65rem;
+      border-radius: 20px;
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      transition: all 0.2s ease;
+    }
+
+    .card-gk .play-pill-btn {
+      background: linear-gradient(135deg, #10b981, #059669);
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+    }
+    .card-gk .play-pill-btn:hover {
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
+      transform: scale(1.02);
+    }
+
+    .card-ce .play-pill-btn {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+    }
+    .card-ce .play-pill-btn:hover {
+      box-shadow: 0 6px 18px rgba(59, 130, 246, 0.35);
+      transform: scale(1.02);
+    }
+
+    /* LEADERBOARD VIEW */
+    .leaderboard-header {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(15, 23, 42, 0) 100%);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: 24px;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    .leaderboard-cup {
+      font-size: 2.2rem;
+      animation: bounceCup 2s infinite alternate;
+    }
+
+    @keyframes bounceCup {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-4px); }
+    }
+
+    .leaderboard-user-rank-info h3 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--color-gold);
+      font-family: var(--font-outfit);
+    }
+
+    .leaderboard-user-rank-info p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .leaderboard-tabs {
+      display: flex;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 0.3rem;
+      gap: 0.25rem;
+    }
+
+    .leader-tab-btn {
+      flex: 1;
+      padding: 0.6rem;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: var(--font-baloo);
+    }
+
+    .leader-tab-btn.active {
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+    }
+
+    .leader-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .leader-item {
+      display: flex;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 0.9rem 1.2rem;
+      gap: 1rem;
+      transition: background 0.2s ease;
+    }
+
+    .leader-item:hover {
+      background: rgba(15, 23, 42, 0.6);
+    }
+
+    .leader-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.85rem;
+      font-family: var(--font-outfit);
+    }
+
+    .rank-1 .leader-badge { background: #f59e0b; color: #000; }
+    .rank-2 .leader-badge { background: #cbd5e1; color: #000; }
+    .rank-3 .leader-badge { background: #b45309; color: #fff; }
+    .rank-other .leader-badge { background: rgba(255,255,255,0.05); color: var(--text-muted); }
+
+    .leader-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .leader-details {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .leader-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .leader-district {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-family: var(--font-baloo);
+    }
+
+    .leader-score {
+      font-family: var(--font-outfit);
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--color-emerald);
+    }
+
+    /* PROFILE VIEW */
+    .profile-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 28px;
+      padding: 1.8rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .profile-large-avatar {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.03);
+      border: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    }
+
+    .profile-info {
+      text-align: center;
+    }
+
+    .profile-username {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.2rem;
+    }
+
+    .profile-tag {
+      font-size: 0.75rem;
+      color: var(--color-emerald);
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      padding: 0.25rem 0.75rem;
+      border-radius: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+      width: 100%;
+    }
+
+    .stat-box {
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .stat-icon-wrapper {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .stat-text-val {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-value {
+      font-family: var(--font-outfit);
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: #fff;
+      line-height: 1.1;
+    }
+
+    .stat-label {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .recent-header {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #fff;
+      margin-top: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 0.8rem 1.2rem;
+    }
+
+    .history-meta h4 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .history-meta p {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+
+    .history-score {
+      font-family: var(--font-outfit);
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: var(--color-emerald);
+      background: rgba(16, 185, 129, 0.1);
+      padding: 0.2rem 0.6rem;
+      border-radius: 8px;
+    }
+
+    /* CATEGORIES VIEW */
+    .categories-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+    }
+
+    .category-box {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 1.25rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      text-decoration: none;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .category-box:hover {
+      transform: translateY(-3px);
+      background: rgba(15, 23, 42, 0.7);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .cat-icon-wrap {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.03);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 0.75rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .category-box h3 {
+      font-family: var(--font-baloo);
+      font-size: 0.95rem;
+      font-weight: 800;
+      margin-bottom: 0.15rem;
+    }
+
+    .category-box p {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* Floating Navigation Bar */
+    .nav-bar {
+      position: fixed;
+      bottom: 1.25rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 2rem);
+      max-width: 440px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 0.6rem 1rem;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 58px;
+    }
+
+    .nav-icon {
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 24px;
+    }
+
+    .nav-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+
+    /* Active Nav Item Styling */
+    .nav-item.active {
+      color: var(--color-emerald);
+    }
+    
+    .nav-item.active .nav-icon {
+      filter: drop-shadow(0 0 5px var(--color-emerald-glow));
+    }
+
+    #hudInstallItem:hover {
+      transform: scale(1.06);
+      filter: drop-shadow(0 0 5px var(--color-emerald-glow));
+    }
+
+    /* PWA Profile Install Button CSS */
+    .profile-install-btn {
+      width: 100%;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(16, 185, 129, 0.04) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: 16px;
+      color: #34d399;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 0.8rem 1.2rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s ease;
+      margin-top: 1.25rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      box-sizing: border-box;
+    }
+    
+    .profile-install-btn:hover {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.08) 100%);
+      border-color: rgba(16, 185, 129, 0.45);
+      transform: translateY(-2px);
+    }
+
+    /* Firebase Auth Sign-In Styles */
+    .login-prompt-card {
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(24px);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      margin: 2rem auto;
+      max-width: 380px;
+      box-sizing: border-box;
+    }
+    
+    .login-mascot-circle {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.4));
+    }
+    
+    .login-prompt-card h3 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.8rem;
+    }
+    
+    .login-prompt-card p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 2rem;
+    }
+    
+    .google-signin-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      width: 100%;
+      background: #ffffff;
+      color: #1f2937;
+      border: none;
+      padding: 0.8rem 1.2rem;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      transition: all 0.2s ease;
+    }
+    
+    .google-signin-btn:hover {
+      background: #f9fafb;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
+    }
+    
+    .signout-btn {
+      width: 100%;
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 0.75rem;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 1rem;
+    }
+    
+    .signout-btn:hover {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.35);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating HUD Status Bar -->
+  <header class="header-hud">
+    <div class="hud-item">
+      <span class="hud-emoji">🔥</span>
+      <div class="hud-value-label">
+        <span class="hud-value" id="hudStreak">5 Days</span>
+        <span class="hud-label">Daily Streak</span>
+      </div>
+    </div>
+    
+    <!-- Small PWA Install Icon inside HUD -->
+    <div class="hud-item" id="hudInstallItem" style="cursor: pointer; display: none; gap: 0.5rem; transition: transform 0.2s;" title="Install Utkal Quiz App">
+      <span class="hud-emoji" style="color: var(--color-emerald);">📥</span>
+      <div class="hud-value-label">
+        <span class="hud-value" style="color: var(--color-emerald);">Install</span>
+        <span class="hud-label">App</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 1. HOME VIEW PANEL -->
+    <section class="view-panel active" id="viewHome">
+      <!-- Mascot Greetings Row -->
+      <div class="mascot-row">
+        <div class="mascot-avatar">
+          <img src="/gundulu-pointing-nobg.png" alt="Gundulu Mascot">
+        </div>
+        <div class="speech-bubble">
+          <h3>Welcome to Utkal Quiz! Ready to play?</h3>
+          <p>ଉତ୍କଳ କୁଇଜ୍‌କୁ ସ୍ବାଗତ! ଆସନ୍ତୁ ଖେଳିବା?</p>
+        </div>
+      </div>
+
+      <!-- Neon Selection Cards -->
+      <div class="cards-grid">
+        <!-- Card Left: GK -->
+        <a href="/gk" class="selection-card card-gk">
+          <div class="card-content">
+            <div class="card-circle-icon">
+              <!-- Inline Wheel SVG representing Konark Wheel -->
+              <svg viewBox="0 0 100 100" style="filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));">
+                <circle cx="50" cy="50" r="42" fill="none" stroke="#d97706" stroke-width="4" />
+                <circle cx="50" cy="50" r="12" fill="#78350f" stroke="#d97706" stroke-width="3" />
+                <circle cx="50" cy="50" r="4" fill="#f59e0b" />
+                <!-- Spokes -->
+                <line x1="50" y1="8" x2="50" y2="92" stroke="#d97706" stroke-width="3" />
+                <line x1="8" y1="50" x2="92" y2="50" stroke="#d97706" stroke-width="3" />
+                <line x1="20.5" y1="20.5" x2="79.5" y2="79.5" stroke="#d97706" stroke-width="2" />
+                <line x1="79.5" y1="20.5" x2="20.5" y2="79.5" stroke="#d97706" stroke-width="2" />
+                <!-- Inner spokes ring decoration -->
+                <circle cx="50" cy="50" r="28" fill="none" stroke="#d97706" stroke-width="1.5" stroke-dasharray="2 3" />
+              </svg>
+            </div>
+            <h2 class="card-title-odia">ଓଡ଼ିଶା ସାଧାରଣ ଜ୍ଞାନ</h2>
+            <span class="card-title-eng">Odisha General Knowledge</span>
+            <p class="card-desc">Explore Culture & Heritage<br>୧୦୦+ Levels</p>
+            <button class="play-pill-btn">Play Now</button>
+          </div>
+        </a>
+
+        <!-- Card Right: Current Events -->
+        <a href="/current-events" class="selection-card card-ce">
+          <div class="card-content">
+            <div class="card-circle-icon">
+              <!-- Newspaper with Lightning Bolt SVG -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" />
+                <path d="M18 14h-8M18 18h-8M16 6H10v4h6V6Z" />
+                <!-- Lightning overlay in gold -->
+                <path d="M13 2L6 11h6l-1 7 7-9h-6l1-7z" fill="#f59e0b" stroke="#d97706" stroke-width="0.8" transform="scale(0.8) translate(8, 3)" />
+              </svg>
+            </div>
+            <h2 class="card-title-odia">ଚଳନ୍ତି ଘଟଣାବଳୀ</h2>
+            <span class="card-title-eng">Current Events</span>
+            <p class="card-desc">Stay Updated with News<br>New Quiz Daily</p>
+            <button class="play-pill-btn">Play Now</button>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 2. LEADERBOARD VIEW PANEL -->
+    <section class="view-panel" id="viewLeaderboard">
+      <div class="leaderboard-header">
+        <span class="leaderboard-cup">🏆</span>
+        <div class="leaderboard-user-rank-info">
+          <h3 id="leaderboardRankLabel">Rank: #12</h3>
+          <p>Your standing in Odisha today</p>
+        </div>
+      </div>
+
+      <div class="leaderboard-tabs">
+        <button class="leader-tab-btn active" onclick="switchLeaderboardTime('today')">Today</button>
+        <button class="leader-tab-btn" onclick="switchLeaderboardTime('weekly')">Weekly</button>
+      </div>
+
+      <div class="leader-list" id="leaderboardContainer">
+        <!-- Loaded Dynamically -->
+      </div>
+    </section>
+
+    <!-- 3. CATEGORIES VIEW PANEL -->
+    <section class="view-panel" id="viewCategories">
+      <div class="categories-list">
+        <a href="/gk" class="category-box">
+          <div class="cat-icon-wrap" style="color: #f59e0b;">🏛️</div>
+          <h3>ଇତିହାସ ଓ ସଂସ୍କୃତି</h3>
+          <p>History & Heritage</p>
+        </a>
+        <a href="/gk" class="category-box">
+          <div class="cat-icon-wrap" style="color: #3b82f6;">🏔️</div>
+          <h3>ଭୂଗୋଳ ଓ ନଦୀ</h3>
+          <p>Geography & Rivers</p>
+        </a>
+        <a href="/current-events" class="category-box">
+          <div class="cat-icon-wrap" style="color: #10b981;">📜</div>
+          <h3>ସରକାରୀ ଯୋଜନା</h3>
+          <p>Govt. Schemes</p>
+        </a>
+        <a href="/current-events" class="category-box">
+          <div class="cat-icon-wrap" style="color: #ec4899;">🏏</div>
+          <h3>କ୍ରୀଡ଼ା ଖବର</h3>
+          <p>Odisha Sports</p>
+        </a>
+        <a href="/gk" class="category-box">
+          <div class="cat-icon-wrap" style="color: #8b5cf6;">🔬</div>
+          <h3>ସାଧାରଣ ବିଜ୍ଞାନ</h3>
+          <p>General Science</p>
+        </a>
+        <a href="/gk" class="category-box">
+          <div class="cat-icon-wrap" style="color: #14b8a6;">🧩</div>
+          <h3>ଗଣିତ ଓ କୁହୁକ</h3>
+          <p>Math Puzzles</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- 4. PROFILE VIEW PANEL -->
+    <section class="view-panel" id="viewProfile">
+      <!-- Unauthenticated View: Simple Name & Mobile Form -->
+      <div class="login-prompt-card" id="loginPromptCard">
+        <div class="login-mascot-circle">👤</div>
+        <h3>Create Profile / Sign In</h3>
+        <p>Enter your details to track your daily streaks, global rankings, and score history!</p>
+        
+        <div style="text-align: left; margin-bottom: 1.25rem;">
+          <label style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 600;">Your Name / ଆପଣଙ୍କ ନାମ</label>
+          <input type="text" id="inputName" placeholder="Enter Name" style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.03); color: #fff; font-size: 0.9rem; box-sizing: border-box; outline: none; transition: border-color 0.2s;">
+        </div>
+
+        <div style="text-align: left; margin-bottom: 2rem;">
+          <label style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 600;">Mobile Number / ମୋବାଇଲ୍ ନମ୍ବର</label>
+          <input type="tel" id="inputPhone" placeholder="Enter 10-digit Mobile Number" pattern="[0-9]{10}" style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.03); color: #fff; font-size: 0.9rem; box-sizing: border-box; outline: none; transition: border-color 0.2s;">
+        </div>
+
+        <button class="google-signin-btn" id="saveProfileBtn" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff;">
+          <span>Sign In / ସାଇନ୍-ଇନ୍‌</span>
+        </button>
+      </div>
+
+      <!-- Authenticated View -->
+      <div id="authProfileContent" style="display: none;">
+        <div class="profile-card">
+          <div class="profile-large-avatar">👤</div>
+          <div class="profile-info">
+            <h2 class="profile-username" id="profileName">Guest User</h2>
+            <span class="profile-tag" id="profileTier">Odisha Aspirant</span>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-box">
+              <div class="stat-icon-wrapper" style="color: #f59e0b;">🔥</div>
+              <div class="stat-text-val">
+                <span class="stat-value" id="profileStreak">5 Days</span>
+                <span class="stat-label">Streak</span>
+              </div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-icon-wrapper" style="color: #10b981;">🎯</div>
+              <div class="stat-text-val">
+                <span class="stat-value" id="profileAccuracy">85%</span>
+                <span class="stat-label">Accuracy</span>
+              </div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-icon-wrapper" style="color: #3b82f6;">📝</div>
+              <div class="stat-text-val">
+                <span class="stat-value" id="profilePlayed">12</span>
+                <span class="stat-label">Played</span>
+              </div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-icon-wrapper" style="color: #ec4899;">🏆</div>
+              <div class="stat-text-val">
+                <span class="stat-value" id="profileBest">5/5</span>
+                <span class="stat-label">Best Score</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- PWA Install Button -->
+          <button class="profile-install-btn" id="profileInstallBtn">
+            <span>📱 Install Utkal Quiz App</span>
+            <span style="font-size: 0.8rem; opacity: 0.8;">→</span>
+          </button>
+
+          <!-- Sign Out Button -->
+          <button class="signout-btn" id="signOutBtn">Sign Out / Switch User</button>
+        </div>
+
+        <h3 class="recent-header">Recent Performance</h3>
+        <div class="history-list" id="profileHistoryContainer">
+          <!-- Loaded Dynamically -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Bottom Translucent Navigation Bar -->
+  <nav class="nav-bar">
+    <button class="nav-item active" onclick="switchView('Home', this)">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">Home</span>
+    </button>
+    <button class="nav-item" onclick="switchView('Leaderboard', this)">
+      <span class="nav-icon">🏆</span>
+      <span class="nav-label">Leaderboard</span>
+    </button>
+    <button class="nav-item" onclick="switchView('Categories', this)">
+      <!-- Custom grid icon -->
+      <span class="nav-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" />
+          <rect x="14" y="3" width="7" height="7" />
+          <rect x="14" y="14" width="7" height="7" />
+          <rect x="3" y="14" width="7" height="7" />
+        </svg>
+      </span>
+      <span class="nav-label">Categories</span>
+    </button>
+    <button class="nav-item" onclick="switchView('Profile', this)">
+      <span class="nav-icon">👤</span>
+      <span class="nav-label">Profile</span>
+    </button>
+  </nav>
+
+  <script>
+    // Initialize Firebase
+    const firebaseConfig = {
+      projectId: "utkalskillcentre",
+      appId: "1:108736001473:web:07f139fe64f7641c2c6b40",
+      apiKey: "AIzaSyB53Wdjm_c8-55XeBuyxj5l_ozRxfc6Pbc",
+      authDomain: "utkalskillcentre.firebaseapp.com",
+      storageBucket: "utkalskillcentre.firebasestorage.app",
+      messagingSenderId: "108736001473",
+      measurementId: "G-Z2M2G8LL46"
+    };
+
+    if (typeof firebase !== 'undefined') {
+      firebase.initializeApp(firebaseConfig);
+    }
+
+    // SPA view switching logic
+    function switchView(viewName, buttonEl, preventHistoryPush = false) {
+      // Update nav active classes
+      document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+      buttonEl.classList.add('active');
+
+      // Update panels active classes
+      document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
+      const activePanel = document.getElementById('view' + viewName);
+      if (activePanel) {
+        activePanel.classList.add('active');
+      }
+
+      // Initialize sub-panels if needed
+      if (viewName === 'Leaderboard') {
+        renderLeaderboard('today');
+      } else if (viewName === 'Profile') {
+        renderProfileStats();
+      }
+
+      // Dynamically update browser URL paths
+      if (!preventHistoryPush) {
+        const pathMap = {
+          'Home': '/',
+          'Leaderboard': '/leaderboard',
+          'Categories': '/categories',
+          'Profile': '/profile'
+        };
+        const targetPath = pathMap[viewName] || '/';
+        if (window.location.pathname !== targetPath) {
+          window.history.pushState({ view: viewName }, '', targetPath);
+        }
+      }
+    }
+
+    // Leaderboard Render with Mock Data + User Data
+    const mockTodayLeaders = [
+      { name: "Rashmi Ranjan Sahoo", district: "କଟକ (Cuttack)", score: "5/5", rank: 1, avatar: "🤵" },
+      { name: "Priyabrata Panda", district: "ଖୋର୍ଦ୍ଧା (Khordha)", score: "5/5", rank: 2, avatar: "👨" },
+      { name: "Subhasmita Patra", district: "ଗଞ୍ଜାମ (Ganjam)", score: "5/5", rank: 3, avatar: "👩" },
+      { name: "Debashis Mohanty", district: "ବାଲେଶ୍ଵର (Balasore)", score: "4/5", rank: 4, avatar: "👨" },
+      { name: "Alok Kumar Dash", district: "ସମ୍ବଲପୁର (Sambalpur)", score: "4/5", rank: 5, avatar: "🤵" },
+      { name: "Aspirant Soumya", district: "ପୁରୀ (Puri)", score: "4/5", rank: 6, avatar: "👩" }
+    ];
+
+    const mockWeeklyLeaders = [
+      { name: "Priyabrata Panda", district: "ଖୋର୍ଦ୍ଧା (Khordha)", score: "34/35", rank: 1, avatar: "👨" },
+      { name: "Rashmi Ranjan Sahoo", district: "କଟକ (Cuttack)", score: "33/35", rank: 2, avatar: "🤵" },
+      { name: "Chinmayee Jena", district: "ଭଦ୍ରକ (Bhadrak)", score: "32/35", rank: 3, avatar: "👩" },
+      { name: "Manas Ranjan Giri", district: "କେନ୍ଦ୍ରାପଡ଼ା (Kendrapara)", score: "31/35", rank: 4, avatar: "👨" },
+      { name: "Gitanjali Ratha", district: "ବଲାଙ୍ଗୀର (Balangir)", score: "30/35", rank: 5, avatar: "👩" }
+    ];
+
+    function renderLeaderboard(type) {
+      const container = document.getElementById('leaderboardContainer');
+      const list = type === 'today' ? mockTodayLeaders : mockWeeklyLeaders;
+      container.innerHTML = '';
+
+      list.forEach(item => {
+        const itemClass = item.rank === 1 ? 'rank-1' : item.rank === 2 ? 'rank-2' : item.rank === 3 ? 'rank-3' : 'rank-other';
+        const div = document.createElement('div');
+        div.className = `leader-item ${itemClass}`;
+        div.innerHTML = `
+          <div class="leader-badge">${item.rank}</div>
+          <div class="leader-avatar">${item.avatar}</div>
+          <div class="leader-details">
+            <span class="leader-name">${item.name}</span>
+            <span class="leader-district">${item.district}</span>
+          </div>
+          <div class="leader-score">${item.score}</div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function switchLeaderboardTime(type) {
+      // Toggle button classes
+      const tabs = document.querySelectorAll('.leaderboard-tabs .leader-tab-btn');
+      tabs.forEach(btn => btn.classList.remove('active'));
+      if (type === 'today') {
+        tabs[0].classList.add('active');
+      } else {
+        tabs[1].classList.add('active');
+      }
+      renderLeaderboard(type);
+    }
+
+    // Profile Data Loading & LocalStorage initialization
+    function renderProfileStats() {
+      const userName = localStorage.getItem('quiz_user_name');
+      const userPhone = localStorage.getItem('quiz_user_phone');
+      
+      const loginPromptCard = document.getElementById('loginPromptCard');
+      const authProfileContent = document.getElementById('authProfileContent');
+      
+      if (!userName || !userPhone) {
+        // Show login form, hide profile content
+        if (loginPromptCard) loginPromptCard.style.display = 'block';
+        if (authProfileContent) authProfileContent.style.display = 'none';
+        return;
+      }
+      
+      // Show profile content, hide login form
+      if (loginPromptCard) loginPromptCard.style.display = 'none';
+      if (authProfileContent) authProfileContent.style.display = 'block';
+      
+      // Render user details
+      document.getElementById('profileName').innerText = userName;
+      document.getElementById('profileTier').innerText = `Phone: +91 ${userPhone}`;
+
+      // Fetch local storage properties
+      const streak = parseInt(localStorage.getItem('quiz_streak_count') || '5', 10);
+      const totalPlayed = parseInt(localStorage.getItem('quiz_total_played') || '12', 10);
+      const correctAnswers = parseInt(localStorage.getItem('quiz_total_correct') || '51', 10);
+      const totalQuestions = totalPlayed * 5;
+      
+      const accuracy = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 85;
+      const bestScore = localStorage.getItem('quiz_best_score') || '5/5';
+
+      document.getElementById('profileStreak').innerText = `${streak} Days`;
+      document.getElementById('profileAccuracy').innerText = `${accuracy}%`;
+      document.getElementById('profilePlayed').innerText = totalPlayed;
+      document.getElementById('profileBest').innerText = bestScore;
+
+      // Populate local user history
+      const historyContainer = document.getElementById('profileHistoryContainer');
+      const history = JSON.parse(localStorage.getItem('quiz_history_list') || '[]');
+
+      if (history.length === 0) {
+        // Fallback default history items if empty
+        const defaultHistory = [
+          { date: "Yesterday", subject: "Current Events", score: "4/5" },
+          { date: "2 Days Ago", subject: "General Knowledge", score: "5/5" },
+          { date: "3 Days Ago", subject: "General Knowledge", score: "4/5" }
+        ];
+        historyContainer.innerHTML = '';
+        defaultHistory.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'history-item';
+          div.innerHTML = `
+            <div class="history-meta">
+              <h4>${item.subject} Daily Challenge</h4>
+              <p>${item.date}</p>
+            </div>
+            <div class="history-score">${item.score}</div>
+          `;
+          historyContainer.appendChild(div);
+        });
+      } else {
+        historyContainer.innerHTML = '';
+        history.slice(0, 5).forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'history-item';
+          div.innerHTML = `
+            <div class="history-meta">
+              <h4>${item.subject} Challenge</h4>
+              <p>${item.date}</p>
+            </div>
+            <div class="history-score">${item.score}/5</div>
+          `;
+          historyContainer.appendChild(div);
+        });
+      }
+    }
+
+    // Local Stats Sync at startup
+    function initStreakAndHUD() {
+      // Set default values if not exists
+      if (!localStorage.getItem('quiz_streak_count')) {
+        localStorage.setItem('quiz_streak_count', '5');
+      }
+      
+      const streak = localStorage.getItem('quiz_streak_count');
+      document.getElementById('hudStreak').innerText = `${streak} Days`;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initStreakAndHUD();
+      handleInitialRoute();
+      
+      // Bind Profile Save Button
+      const saveProfileBtn = document.getElementById('saveProfileBtn');
+      if (saveProfileBtn) {
+        saveProfileBtn.addEventListener('click', () => {
+          const nameInput = document.getElementById('inputName');
+          const phoneInput = document.getElementById('inputPhone');
+          const nameVal = nameInput ? nameInput.value.trim() : '';
+          const phoneVal = phoneInput ? phoneInput.value.trim() : '';
+          
+          if (!nameVal) {
+            alert('Please enter your name / ଦୟାକରି ଆପଣଙ୍କ ନାମ ଲେଖନ୍ତୁ।');
+            return;
+          }
+          if (!/^\d{10}$/.test(phoneVal)) {
+            alert('Please enter a valid 10-digit mobile number / ଦୟାକରି ଏକ ସଠିକ୍ ୧୦-ଅଙ୍କ ବିଶିଷ୍ଟ ମୋବାଇଲ୍ ନମ୍ବର ଦିଅନ୍ତୁ।');
+            return;
+          }
+          
+          // Save locally
+          localStorage.setItem('quiz_user_name', nameVal);
+          localStorage.setItem('quiz_user_phone', phoneVal);
+          
+          // Synchronize profile details to Firebase Firestore
+          if (typeof firebase !== 'undefined') {
+            try {
+              const db = firebase.firestore();
+              db.collection('quiz_users').doc(phoneVal).set({
+                name: nameVal,
+                phone: phoneVal,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+              }, { merge: true }).then(() => {
+                console.log('[Firestore] User profile synchronized.');
+              }).catch(err => {
+                console.error('[Firestore] Sync failed:', err);
+              });
+            } catch (e) {
+              console.error('[Firestore] Error writing document:', e);
+            }
+          }
+          
+          // Re-render profile view
+          renderProfileStats();
+        });
+      }
+      
+      // Bind Profile Sign Out Button
+      const signOutBtn = document.getElementById('signOutBtn');
+      if (signOutBtn) {
+        signOutBtn.addEventListener('click', () => {
+          localStorage.removeItem('quiz_user_name');
+          localStorage.removeItem('quiz_user_phone');
+          renderProfileStats();
+        });
+      }
+    });
+
+    // Handle initial route check
+    function handleInitialRoute() {
+      const path = window.location.pathname;
+      const navItems = document.querySelectorAll('.nav-item');
+      if (path === '/profile') {
+        switchView('Profile', navItems[3], true);
+      } else if (path === '/leaderboard') {
+        switchView('Leaderboard', navItems[1], true);
+      } else if (path === '/categories') {
+        switchView('Categories', navItems[2], true);
+      } else {
+        switchView('Home', navItems[0], true);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initStreakAndHUD();
+      handleInitialRoute();
+    });
+
+    // Handle back/forward navigation
+    window.addEventListener('popstate', () => {
+      handleInitialRoute();
+    });
+
+    // Handle PWA installation banner prompt
+    let deferredPrompt;
+    const profileInstallBtn = document.getElementById('profileInstallBtn');
+    const hudInstallItem = document.getElementById('hudInstallItem');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (profileInstallBtn) {
+        profileInstallBtn.style.display = 'flex';
+      }
+      if (hudInstallItem) {
+        hudInstallItem.style.display = 'flex';
+      }
+    });
+
+    const triggerPwaInstall = async () => {
+      if (!deferredPrompt) {
+        alert("To install Utkal Quiz App:\n\n1. Click the 'Install' (download/plus) icon in your browser's address bar (top right on desktop).\n2. Or open your browser menu (three dots) and select 'Install app' / 'Add to Home screen'.\n\nIf you have already installed it, look for the 'Utkal Quiz' icon on your screen or desktop!");
+        return;
+      }
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`User choice for PWA installation: ${outcome}`);
+      deferredPrompt = null;
+      if (profileInstallBtn) profileInstallBtn.style.display = 'none';
+      if (hudInstallItem) hudInstallItem.style.display = 'none';
+    };
+
+    if (profileInstallBtn) {
+      profileInstallBtn.addEventListener('click', triggerPwaInstall);
+    }
+    if (hudInstallItem) {
+      hudInstallItem.addEventListener('click', triggerPwaInstall);
+    }
+
+    window.addEventListener('appinstalled', () => {
+      console.log('Utkal Quiz PWA app installed successfully!');
+      if (profileInstallBtn) profileInstallBtn.style.display = 'none';
+      if (hudInstallItem) hudInstallItem.style.display = 'none';
+    });
+
+    // Register PWA service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('[Quiz PWA] Service worker registered:', reg.scope))
+          .catch(err => console.error('[Quiz PWA] Service worker registration failed:', err));
+      });
+    }
+  </script>
+</body>
+</html>

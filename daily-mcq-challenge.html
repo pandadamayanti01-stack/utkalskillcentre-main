@@ -97,6 +97,37 @@
       color: var(--text-main);
     }
 
+    .back-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.5rem 0.9rem;
+      border-radius: 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+    }
+    
+    .back-link-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateX(-3px);
+    }
+    
+    .back-link-btn svg {
+      transition: transform 0.2s ease;
+    }
+    
+    .back-link-btn:hover svg {
+      transform: translateX(-2px);
+    }
+
     .mute-btn {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border-color);
@@ -650,12 +681,22 @@
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+    <link rel="manifest" href="/manifest.json">
   </head>
 <body>
 
   <header class="header-bar">
-    <a href="/" class="brand-logo">
-      Utkal <span>Skill Centre</span>
+    <a href="/" class="back-link-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      <span>ଫେରନ୍ତୁ</span>
+    </a>
+
+    <a href="/" class="brand-logo" style="flex-direction: column; align-items: center; text-align: center; font-size: 1.35rem; line-height: 1.1;">
+      <div>Utkal <span style="color: var(--text-main);">Skill Centre</span></div>
+      <span style="font-size: 0.65rem; color: var(--color-emerald); font-weight: 800; letter-spacing: 1.2px; margin-top: 2px; text-transform: uppercase; text-shadow: none;">Odia Quiz</span>
     </a>
     
     <!-- Sound Controls -->
@@ -1222,9 +1263,45 @@
       finalScore.innerText = score;
       const pct = Math.round((correctCount / quiz.questions.length) * 100);
       
-      resultsTitle.innerText = "🏆 ଆପଣଙ୍କ ଶିକ୍ଷା ସୁରକ୍ଷିତ କରନ୍ତୁ!";
-      resultsDesc.innerText = `ଚମତ୍କାର ଖେଳ! ଆପଣ ଦୈନିକ ଜ୍ଞାନ ଚ୍ୟାଲେଞ୍ଜରୁ ସଫଳତାର ସହ ${score} କଉଡ଼ି ପଏଣ୍ଟ ଜିତିଛନ୍ତି। ଏହି ପଏଣ୍ଟଗୁଡ଼ିକୁ ସବୁଦିନ ପାଇଁ ନିଜ ପ୍ରୋଫାଇଲରେ ସାଇତି ରଖିବା ପାଇଁ ଏବେ ହିଁ ଆପଣଙ୍କ ମାଗଣା ଆକାଉଣ୍ଟ ତିଆରି କରନ୍ତୁ!`;
-      ctaBtn.innerText = "👶 ମାଗଣା ଛାତ୍ର ପ୍ରୋଫାଇଲ୍ ଖୋଲନ୍ତୁ";
+      resultsTitle.innerText = "🎉 ଚ୍ୟାଲେଞ୍ଜ ସମ୍ପୂର୍ଣ୍ଣ ହେଲା!";
+      resultsDesc.innerText = `ଚମତ୍କାର ଖେଳ! ଆପଣ ସଫଳତାର ସହ ଆଜିର ପ୍ରଶ୍ନୋତ୍ତର ସମ୍ପୂର୍ଣ୍ଣ କରି ${score} ପଏଣ୍ଟ ପାଇଛନ୍ତି। ଆପଣଙ୍କ ରାଙ୍କ ଏବଂ ସ୍ଥିତି ଦେଖିବା ପାଇଁ ପ୍ରୋଫାଇଲ୍ ଯାଆନ୍ତୁ।`;
+      ctaBtn.innerText = "📊 ପ୍ରୋଫାଇଲ୍ ଏବଂ ସ୍ଥିତି ଦେଖନ୍ତୁ";
+
+      // Save user metrics locally in localStorage for Profile tab
+      try {
+        const currentStreak = parseInt(localStorage.getItem('quiz_streak_count') || '5', 10);
+        const totalPlayed = parseInt(localStorage.getItem('quiz_total_played') || '12', 10) + 1;
+        const totalCorrect = parseInt(localStorage.getItem('quiz_total_correct') || '51', 10) + correctCount;
+        
+        localStorage.setItem('quiz_total_played', totalPlayed.toString());
+        localStorage.setItem('quiz_total_correct', totalCorrect.toString());
+
+        // Update streak & last date
+        const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+        const lastDate = localStorage.getItem('last_quiz_completed_date');
+        if (lastDate !== today) {
+          localStorage.setItem('quiz_streak_count', (currentStreak + 1).toString());
+          localStorage.setItem('last_quiz_completed_date', today);
+        }
+
+        // Save Best Score
+        const bestScoreStr = localStorage.getItem('quiz_best_score') || '0/5';
+        const bestScoreVal = parseInt(bestScoreStr.split('/')[0], 10);
+        if (correctCount > bestScoreVal) {
+          localStorage.setItem('quiz_best_score', `${correctCount}/5`);
+        }
+
+        // Save History Entry
+        const history = JSON.parse(localStorage.getItem('quiz_history_list') || '[]');
+        const currentSubject = quiz.subject || 'General Knowledge';
+        const exists = history.some(item => item.date === today && item.subject === currentSubject);
+        if (!exists) {
+          history.unshift({ date: today, subject: currentSubject, score: correctCount });
+          localStorage.setItem('quiz_history_list', JSON.stringify(history));
+        }
+      } catch (e) {
+        console.error('Failed to save quiz progress to localStorage:', e);
+      }
 
       // Trigger colorful confetti
       if (pct >= 60 && typeof confetti === 'function') {
@@ -1244,21 +1321,14 @@
       sound.playGameOver();
     }
 
-    // Funnel CTA redirection
-    const getMainAppUrl = () => {
-      const hostname = window.location.hostname;
-      if (hostname === 'localhost' || hostname === '127.0.0.1') {
-        return 'http://localhost:3000';
-      }
-      return 'https://utkalskillcentre.com';
-    };
-
     ctaBtn.addEventListener('click', () => {
-      window.location.href = `${getMainAppUrl()}/?ref=daily-mcq&pts=${score}&class=universal`;
+      // Redirect to profile page
+      window.location.href = `/profile`;
     });
 
     reviveCtaBtn.addEventListener('click', () => {
-      window.location.href = `${getMainAppUrl()}/?ref=daily-mcq-revive&pts=${score}&class=universal`;
+      // Redirect to home page
+      window.location.href = `/`;
     });
 
     // Share score on WhatsApp
@@ -1327,6 +1397,14 @@
 
     // Bootstrap execution
     renderQuestion();
+    // Register PWA service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('[Quiz PWA] Service worker registered:', reg.scope))
+          .catch(err => console.error('[Quiz PWA] Service worker registration failed:', err));
+      });
+    }
   </script>
 </body>
 </html>

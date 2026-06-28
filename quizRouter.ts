@@ -27,10 +27,41 @@ async function generateQuizViaGundulu(targetClass: string, subject: string): Pro
     throw new Error("GEMINI_API_KEY is missing on the server");
   }
 
-  const isUniversal = targetClass === 'Universal GK';
-  
-  const prompt = isUniversal 
-    ? `You are Gundulu, a warm, highly intellectual elder sister from Odisha who loves teaching. Your tone is extremely encouraging, proud of Odisha, and filled with affection.
+  let prompt = "";
+  if (subject === 'Current Events') {
+    prompt = `You are Gundulu, a warm, highly intellectual elder sister from Odisha who loves teaching. Your tone is extremely encouraging, proud of Odisha, and filled with affection.
+       Generate today's "Odisha Current Events & News Challenge" containing exactly 5 premium, diverse multiple choice questions about recent happenings in Odisha.
+       
+       CRITICAL: Do NOT use any double quotes (") inside the question, options, or explanation text values. If you need to use quotes, always use single quotes (') instead.
+       
+       The questions must cover:
+       - Question 1: Recent Odisha Government Policies or Welfare Schemes (e.g., Subhadra Yojana, Ama Odisha Nabin Odisha, KALIA, BSKY/Gopabandhu Jan Arogya Yojana, school transformations).
+       - Question 2: Odisha Infrastructure & Projects (e.g., metro projects in Bhubaneswar/Cuttack, airport developments, heritage corridors, district bridges or development works).
+       - Question 3: Sports News & Achievements in Odisha (e.g., hockey tournaments hosted in Bhubaneswar/Rourkela, Odia athletes winning medals, state sports incentives).
+       - Question 4: Awards, Honors, and Newsmakers (e.g., Padma awards to Odia personalities, appointments of key officials, achievements of Odia students/innovators).
+       - Question 5: Key National or International events that directly impact, feature, or involve Odisha.
+       
+       Each question must have:
+       - A bilingual question text (English and Odia script).
+       - 4 bilingual options (English and Odia script).
+       - One correctAnswer (exact string matching one option).
+       - A warm, detailed explanation in Odia script written in Gundulu's encouraging elder-sister voice, sharing additional context about the news event.
+
+       Output strictly in JSON format matching this schema:
+       {
+         "title": "Odisha Current Events Challenge",
+         "subject": "Current Events",
+         "questions": [
+           {
+             "question": "Question text in English / ଓଡ଼ିଆ ଲେଖା",
+             "options": ["Option A / ଓଡ଼ିଆ", "Option B / ଓଡ଼ିଆ", "Option C / ଓଡ଼ିଆ", "Option D / ଓଡ଼ିଆ"],
+             "correctAnswer": "Exact matching option string",
+             "explanation": "Warm explanation in Odia script starting with 'ସାଙ୍ଗମାନେ...' or 'ଭାଇ ଭଉଣୀମାନେ...'"
+           }
+         ]
+       }`;
+  } else if (targetClass === 'Universal GK') {
+    prompt = `You are Gundulu, a warm, highly intellectual elder sister from Odisha who loves teaching. Your tone is extremely encouraging, proud of Odisha, and filled with affection.
        Generate today's "Universal GK & Odisha Culture Challenge" containing exactly 5 premium, diverse General Knowledge questions.
        
        CRITICAL: Do NOT use any double quotes (") inside the question, options, or explanation text values. If you need to use quotes, always use single quotes (') instead.
@@ -60,8 +91,9 @@ async function generateQuizViaGundulu(targetClass: string, subject: string): Pro
              "explanation": "Warm, encouraging explanation in Odia script starting with 'ସାଙ୍ଗମାନେ...' or 'ଭାଇ ଭଉଣୀମାନେ...'"
            }
          ]
-       }`
-    : `You are Gundulu, a warm, sweet, and cute elder sister tutoring a student. Generate a premium, curriculum-mapped multiple choice quiz containing exactly 5 questions for ${targetClass} on the subject of "${subject}".
+       }`;
+  } else {
+    prompt = `You are Gundulu, a warm, sweet, and cute elder sister tutoring a student. Generate a premium, curriculum-mapped multiple choice quiz containing exactly 5 questions for ${targetClass} on the subject of "${subject}".
        
        CRITICAL: Do NOT use any double quotes (") inside the question, options, or explanation text values. If you need to use quotes, always use single quotes (') instead.
        
@@ -78,6 +110,7 @@ async function generateQuizViaGundulu(targetClass: string, subject: string): Pro
            }
          ]
        }`;
+  }
 
   console.log(`[Quiz Router] Calling Gundulu AI (gemini-2.5-flash) for ${targetClass}...`);
   const ai = new GoogleGenerativeAI(apiKey);
@@ -98,39 +131,67 @@ async function generateQuizViaGundulu(targetClass: string, subject: string): Pro
 }
 
 // Router handler mapping for subdomain and path-based requests
-quizRouter.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async (req, res, next) => {
+const servePortalPage = async (req: any, res: any, next: any) => {
   try {
     const host = req.headers.host || '';
     const isSubdomain = host.startsWith('quiz.');
-
-    // CRITICAL: If the request is for root '/' but NOT on the 'quiz.' subdomain,
-    // let it fall through to serve the main application SPA dashboard.
     if (req.path === '/' && !isSubdomain) {
       return next();
     }
 
-    // Strictly Universal GK & General Knowledge for the public landing page
+    let portalPath = path.resolve(__dirname, 'quiz-portal.html');
+    if (!fs.existsSync(portalPath)) {
+      portalPath = path.resolve(__dirname, 'dist', 'quiz-portal.html');
+    }
+
+    if (!fs.existsSync(portalPath)) {
+      return res.status(500).send("Template quiz-portal.html not found.");
+    }
+
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    return res.sendFile(portalPath);
+  } catch (err: any) {
+    console.error('[Quiz Router] Portal error:', err);
+    return next(err);
+  }
+};
+
+quizRouter.get('/', servePortalPage);
+quizRouter.get('/profile', servePortalPage);
+quizRouter.get('/leaderboard', servePortalPage);
+
+quizRouter.get('/manifest.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.sendFile(path.resolve(__dirname, 'quiz-manifest.json'));
+});
+
+quizRouter.get('/sw.js', (req, res) => {
+  res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+  res.sendFile(path.resolve(__dirname, 'quiz-sw.js'));
+});
+
+// Common handler logic for serving daily quiz challenges
+const serveChallengeQuiz = async (req: any, res: any, next: any, subjectName: string, logLabel: string) => {
+  try {
+    const host = req.headers.host || '';
     const targetClass = 'Universal GK';
     const dbClass = 'Universal GK';
-    const subject = 'General Knowledge';
+    const subject = subjectName;
 
     const todayDate = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
-    console.log(`[Quiz Router] Subdomain Serve: ${targetClass} (${subject}) on date: ${todayDate} via host: ${host}...`);
+    console.log(`[Quiz Router] Subdomain ${logLabel}: ${targetClass} (${subject}) on date: ${todayDate} via host: ${host}...`);
 
-    // Get database instance (using the active firebase-admin App)
     const adminApp = getApps().length > 0 ? getApp() : undefined;
     const firestoreDb = getFirestore(adminApp, getDatabaseId());
 
-    // Index-safe query targeting dbClass
     const snapshot = await firestoreDb.collection('daily_mcqs')
       .where('class', '==', dbClass)
+      .where('subject', '==', subject)
       .orderBy('activeDate', 'desc')
       .limit(5)
       .get();
 
     let activeMcq = null;
-    
-    // Check if any recent document matches today's date and is published
     for (const doc of snapshot.docs) {
       const data = doc.data();
       if (data.activeDate === todayDate && data.status === 'published') {
@@ -139,7 +200,6 @@ quizRouter.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async
       }
     }
 
-    // Fallback 1: Get the most recent published MCQ
     if (!activeMcq) {
       for (const doc of snapshot.docs) {
         const data = doc.data();
@@ -150,14 +210,13 @@ quizRouter.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async
       }
     }
 
-    // Fallback 2: Call Gundulu AI to generate a fresh quiz!
     if (!activeMcq) {
-      console.log(`[Quiz Router] Cache miss. Calling Gundulu AI to generate for ${targetClass}...`);
+      console.log(`[Quiz Router] Cache miss. Calling Gundulu AI to generate for ${targetClass} (${subject})...`);
       try {
         const aiGeneratedData = await generateQuizViaGundulu(targetClass, subject);
         const newDocId = `${dbClass}_${subject.replace(/\s+/g, '_')}_${todayDate}`;
         const newMcqDoc = {
-          title: aiGeneratedData.title || `${targetClass} Daily Challenge`,
+          title: aiGeneratedData.title || `${targetClass} ${subject} Challenge`,
           subject: subject,
           class: dbClass,
           activeDate: todayDate,
@@ -171,10 +230,6 @@ quizRouter.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async
         activeMcq = { ...newMcqDoc, id: newDocId };
       } catch (aiError: any) {
         console.error(`[Quiz Router] Gundulu AI generation failed:`, aiError.message);
-        if (targetClass !== 'Universal GK') {
-          res.setHeader('Content-Type', 'text/html; charset=utf-8');
-          return res.status(503).send("<h2>Gundulu AI is busy preparing today's school questions. Please try again in a few seconds!</h2>");
-        }
       }
     }
 
@@ -187,7 +242,7 @@ quizRouter.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async
       
       quizPayload = {
         mcqId: activeMcq.id,
-        title: activeMcq.title || `${targetClass} Daily Challenge`,
+        title: activeMcq.title || `${targetClass} ${subject} Challenge`,
         subject: activeMcq.subject || subject,
         class: activeMcq.class,
         activeDate: activeMcq.activeDate,
@@ -200,7 +255,6 @@ quizRouter.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async
         }))
       };
 
-      // Generate Google Quiz Schema
       const schemaQuestions = quizPayload.questions.map((q: any) => ({
         "@type": "Question",
         "name": q.question,
@@ -221,8 +275,8 @@ quizRouter.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async
       const quizSchema = {
         "@context": "https://schema.org",
         "@type": "Quiz",
-        "name": `${targetClass} Daily MCQ Challenge - Utkal Skill Centre`,
-        "description": `Take today's 5-question bilingual Odia medium ${quizPayload.subject} quiz for ${targetClass}. Instant grading and explanations!`,
+        "name": `${targetClass} Daily ${subject} Challenge - Utkal Skill Centre`,
+        "description": `Take today's 5-question bilingual Odia medium ${quizPayload.subject} quiz. Instant grading and explanations!`,
         "learningResourceType": "Quiz",
         "educationalLevel": targetClass,
         "about": {
@@ -235,10 +289,9 @@ quizRouter.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async
       schemaHtmlBlock = `<script type="application/ld+json">\n${JSON.stringify(quizSchema, null, 2)}\n</script>`;
     }
 
-    // Load HTML Template
-    let templatePath = path.resolve(__dirname, 'dist', 'daily-mcq-challenge.html');
+    let templatePath = path.resolve(__dirname, 'daily-mcq-challenge.html');
     if (!fs.existsSync(templatePath)) {
-      templatePath = path.resolve(__dirname, 'daily-mcq-challenge.html');
+      templatePath = path.resolve(__dirname, 'dist', 'daily-mcq-challenge.html');
     }
 
     if (!fs.existsSync(templatePath)) {
@@ -250,10 +303,46 @@ quizRouter.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async
     html = html.replace('<!-- GOOGLE_QUIZ_SCHEMA_PLACEHOLDER -->', schemaHtmlBlock);
 
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.setHeader('Cache-Control', 'public, max-age=60'); // 1 minute cache
+    res.setHeader('Cache-Control', 'public, max-age=60');
     return res.send(html);
   } catch (err: any) {
     console.error('[Quiz Router] Error serving page:', err);
-    return res.status(500).send(`Internal Server Error: ${err.message}`);
+    return next(err);
+  }
+};
+
+// GK Challenge Routing
+const serveGkChallenge = async (req: any, res: any, next: any) => {
+  await serveChallengeQuiz(req, res, next, 'General Knowledge', 'GK Serve');
+};
+
+quizRouter.get('/gk', serveGkChallenge);
+quizRouter.get('/daily-mcq-challenge', serveGkChallenge);
+quizRouter.get('/daily-mcq-challenge.html', serveGkChallenge);
+
+// Current Events Routing
+const serveCurrentEventsChallenge = async (req: any, res: any, next: any) => {
+  await serveChallengeQuiz(req, res, next, 'Current Events', 'Current Events Serve');
+};
+
+quizRouter.get('/current-events', serveCurrentEventsChallenge);
+quizRouter.get('/daily-current-events', serveCurrentEventsChallenge);
+
+// Serve the standalone Guest Profile page
+quizRouter.get(['/guest', '/guest-profile', '/guest-profile.html'], (req, res, next) => {
+  try {
+    let guestTemplatePath = path.resolve(__dirname, 'dist', 'guest-profile.html');
+    if (!fs.existsSync(guestTemplatePath)) {
+      guestTemplatePath = path.resolve(__dirname, 'guest-profile.html');
+    }
+    if (!fs.existsSync(guestTemplatePath)) {
+      return res.status(404).send("<h2>Guest Profile template (guest-profile.html) not found.</h2>");
+    }
+    const html = fs.readFileSync(guestTemplatePath, 'utf-8');
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    return res.send(html);
+  } catch (err: any) {
+    console.error('[Quiz Router] Error serving guest page:', err);
+    return next(err);
   }
 });

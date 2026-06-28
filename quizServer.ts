@@ -27,16 +27,13 @@ if (credentialsPath && fs.existsSync(credentialsPath)) {
   });
   console.log(`[Quiz Server] Firebase Admin initialized with project: ${serviceAccount.project_id}`);
 } else {
-  // Application Default Credentials fallback
   admin.initializeApp();
   console.log('[Quiz Server] Firebase Admin initialized with ADC');
 }
 
-// Canonical Firestore database initialization targeting "utkal-prod"
 const firestoreDb = admin.firestore();
 firestoreDb.settings({ databaseId });
 
-// 2. Initialize Gemini AI rotators
 const getApiKey = () => {
   return process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || "";
 };
@@ -45,19 +42,51 @@ const getApiKey = () => {
 app.use(express.static(path.resolve(__dirname, 'public')));
 app.use(express.json());
 
-// 3. Gundulu AI Generator Engine
+// Gundulu AI Quiz Generation Engine
 async function generateQuizViaGundulu(targetClass: string, subject: string): Promise<any> {
   const apiKey = getApiKey();
   if (!apiKey) {
     throw new Error("GEMINI_API_KEY is missing on the server");
   }
 
-  const isUniversal = targetClass === 'Universal GK';
-  
-  // Custom bilingual prompts targeting Gundulu's warm elder-sister persona
-  const prompt = isUniversal 
-    ? `You are Gundulu, a warm, highly intellectual elder sister from Odisha who loves teaching. Your tone is extremely encouraging, proud of Odisha, and filled with affection.
+  let prompt = "";
+  if (subject === 'Current Events') {
+    prompt = `You are Gundulu, a warm, highly intellectual elder sister from Odisha who loves teaching. Your tone is extremely encouraging, proud of Odisha, and filled with affection.
+       Generate today's "Odisha Current Events & News Challenge" containing exactly 5 premium, diverse multiple choice questions about recent happenings in Odisha.
+       
+       CRITICAL: Do NOT use any double quotes (") inside the question, options, or explanation text values. If you need to use quotes, always use single quotes (') instead.
+       
+       The questions must cover:
+       - Question 1: Recent Odisha Government Policies or Welfare Schemes (e.g., Subhadra Yojana, Ama Odisha Nabin Odisha, KALIA, BSKY/Gopabandhu Jan Arogya Yojana, school transformations).
+       - Question 2: Odisha Infrastructure & Projects (e.g., metro projects in Bhubaneswar/Cuttack, airport developments, heritage corridors, district bridges or development works).
+       - Question 3: Sports News & Achievements in Odisha (e.g., hockey tournaments hosted in Bhubaneswar/Rourkela, Odia athletes winning medals, state sports incentives).
+       - Question 4: Awards, Honors, and Newsmakers (e.g., Padma awards to Odia personalities, appointments of key officials, achievements of Odia students/innovators).
+       - Question 5: Key National or International events that directly impact, feature, or involve Odisha.
+       
+       Each question must have:
+       - A bilingual question text (English and Odia script).
+       - 4 bilingual options (English and Odia script).
+       - One correctAnswer (exact string matching one option).
+       - A warm, detailed explanation in Odia script written in Gundulu's encouraging elder-sister voice, sharing additional context about the news event.
+
+       Output strictly in JSON format matching this schema:
+       {
+         "title": "Odisha Current Events Challenge",
+         "subject": "Current Events",
+         "questions": [
+           {
+             "question": "Question text in English / ଓଡ଼ିଆ ଲେଖା",
+             "options": ["Option A / ଓଡ଼ିଆ", "Option B / ଓଡ଼ିଆ", "Option C / ଓଡ଼ିଆ", "Option D / ଓଡ଼ିଆ"],
+             "correctAnswer": "Exact matching option string",
+             "explanation": "Warm explanation in Odia script starting with 'ସାଙ୍ଗମାନେ...' or 'ଭାଇ ଭଉଣୀମାନେ...'"
+           }
+         ]
+       }`;
+  } else if (targetClass === 'Universal GK') {
+    prompt = `You are Gundulu, a warm, highly intellectual elder sister from Odisha who loves teaching. Your tone is extremely encouraging, proud of Odisha, and filled with affection.
        Generate today's "Universal GK & Odisha Culture Challenge" containing exactly 5 premium, diverse General Knowledge questions.
+       
+       CRITICAL: Do NOT use any double quotes (") inside the question, options, or explanation text values. If you need to use quotes, always use single quotes (') instead.
        
        The questions must cover:
        - Question 1: Odisha History & Heritage (e.g., Konark, Jagannath Temple, Kalinga War, Baji Rout, Madhusudan Das)
@@ -84,8 +113,12 @@ async function generateQuizViaGundulu(targetClass: string, subject: string): Pro
              "explanation": "Warm, encouraging explanation in Odia script starting with 'ସାଙ୍ଗମାନେ...' or 'ଭାଇ ଭଉଣୀମାନେ...'"
            }
          ]
-       }`
-    : `You are Gundulu, a warm, sweet, and cute elder sister tutoring a student. Generate a premium, curriculum-mapped multiple choice quiz containing exactly 5 questions for ${targetClass} on the subject of "${subject}".
+       }`;
+  } else {
+    prompt = `You are Gundulu, a warm, sweet, and cute elder sister tutoring a student. Generate a premium, curriculum-mapped multiple choice quiz containing exactly 5 questions for ${targetClass} on the subject of "${subject}".
+       
+       CRITICAL: Do NOT use any double quotes (") inside the question, options, or explanation text values. If you need to use quotes, always use single quotes (') instead.
+       
        The questions must be highly educational, bilingual (English and Odia script), suitable for Odisha board school syllabus, and follow this schema:
        {
          "title": "${targetClass} ${subject} Daily Challenge",
@@ -99,8 +132,9 @@ async function generateQuizViaGundulu(targetClass: string, subject: string): Pro
            }
          ]
        }`;
+  }
 
-  console.log(`[Quiz Server] Calling Gundulu AI (gemini-2.5-flash) for ${targetClass}...`);
+  console.log(`[Quiz Server] Calling Gundulu AI (gemini-2.5-flash) for ${targetClass}...\n`);
   const ai = new GoogleGenerativeAI(apiKey);
   const model = ai.getGenerativeModel({
     model: "gemini-2.5-flash",
@@ -119,26 +153,57 @@ async function generateQuizViaGundulu(targetClass: string, subject: string): Pro
 }
 
 // 4. Main Subdomain Router
-app.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async (req, res) => {
+const servePortalPageServer = async (req: any, res: any) => {
   try {
-    // Strictly Universal GK & General Knowledge for the public landing page
+    let portalPath = path.resolve(__dirname, 'quiz-portal.html');
+    if (!fs.existsSync(portalPath)) {
+      portalPath = path.resolve(__dirname, 'dist', 'quiz-portal.html');
+    }
+
+    if (!fs.existsSync(portalPath)) {
+      return res.status(500).send("Template quiz-portal.html not found.");
+    }
+
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    return res.sendFile(portalPath);
+  } catch (err: any) {
+    console.error('[Quiz Server] Portal error:', err);
+    return res.status(500).send(`Portal Error: ${err.message}`);
+  }
+};
+
+app.get('/', servePortalPageServer);
+app.get('/profile', servePortalPageServer);
+app.get('/leaderboard', servePortalPageServer);
+
+app.get('/manifest.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.sendFile(path.resolve(__dirname, 'quiz-manifest.json'));
+});
+
+app.get('/sw.js', (req, res) => {
+  res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+  res.sendFile(path.resolve(__dirname, 'quiz-sw.js'));
+});
+
+// Common handler logic for serving daily quiz challenges on standalone server
+const serveChallengeQuizServer = async (req: any, res: any, subjectName: string, logLabel: string) => {
+  try {
     const targetClass = 'Universal GK';
     const dbClass = 'Universal GK';
-    const subject = 'General Knowledge';
+    const subject = subjectName;
 
     const todayDate = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
-    console.log(`[Quiz Server] Serving challenge request for ${targetClass} (${subject}) on date: ${todayDate}...`);
+    console.log(`[Quiz Server] Subdomain ${logLabel}: ${targetClass} (${subject}) on date: ${todayDate}...`);
 
-    // A. Query Firestore for today's published MCQ
     const snapshot = await firestoreDb.collection('daily_mcqs')
       .where('class', '==', dbClass)
+      .where('subject', '==', subject)
       .orderBy('activeDate', 'desc')
       .limit(5)
       .get();
 
     let activeMcq = null;
-    
-    // Check if any recent document matches today's date and is published
     for (const doc of snapshot.docs) {
       const data = doc.data();
       if (data.activeDate === todayDate && data.status === 'published') {
@@ -147,7 +212,6 @@ app.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async (req, 
       }
     }
 
-    // B. Fallback 1: If no MCQ exists for today, try to load the most recent published MCQ for that class
     if (!activeMcq) {
       for (const doc of snapshot.docs) {
         const data = doc.data();
@@ -158,16 +222,13 @@ app.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async (req, 
       }
     }
 
-    // C. Fallback 2 (The AI Engine): If still no MCQ exists, call Gundulu AI to generate a fresh one!
     if (!activeMcq) {
-      console.log(`[Quiz Server] Cache miss. Triggering Gundulu AI to generate fresh challenge for ${targetClass}...`);
+      console.log(`[Quiz Server] Cache miss. Calling Gundulu AI to generate for ${targetClass} (${subject})...`);
       try {
         const aiGeneratedData = await generateQuizViaGundulu(targetClass, subject);
-        
-        // Save the generated quiz to Firestore to cache it for the rest of the day
         const newDocId = `${dbClass}_${subject.replace(/\s+/g, '_')}_${todayDate}`;
         const newMcqDoc = {
-          title: aiGeneratedData.title || `${targetClass} Daily Challenge`,
+          title: aiGeneratedData.title || `${targetClass} ${subject} Challenge`,
           subject: subject,
           class: dbClass,
           activeDate: todayDate,
@@ -177,15 +238,10 @@ app.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async (req, 
         };
 
         await firestoreDb.collection('daily_mcqs').doc(newDocId).set(newMcqDoc);
-        console.log(`[Quiz Server] Successfully cached new Gundulu AI quiz in Firestore: ${newDocId}`);
+        console.log(`[Quiz Server] Cached fresh Gundulu AI quiz in Firestore: ${newDocId}`);
         activeMcq = { ...newMcqDoc, id: newDocId };
       } catch (aiError: any) {
-        console.error(`[Quiz Server] Gundulu AI Generation failed:`, aiError.message);
-        // Do not fail if it's Universal GK — the frontend will fall back to its premium built-in quiz!
-        if (targetClass !== 'Universal GK') {
-          res.setHeader('Content-Type', 'text/html; charset=utf-8');
-          return res.status(503).send("<h2>Gundulu AI is busy preparing today's school questions. Please try again in a few seconds!</h2>");
-        }
+        console.error(`[Quiz Server] Gundulu AI generation failed:`, aiError.message);
       }
     }
 
@@ -198,7 +254,7 @@ app.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async (req, 
       
       quizPayload = {
         mcqId: activeMcq.id,
-        title: activeMcq.title || `${targetClass} Daily Challenge`,
+        title: activeMcq.title || `${targetClass} ${subject} Challenge`,
         subject: activeMcq.subject || subject,
         class: activeMcq.class,
         activeDate: activeMcq.activeDate,
@@ -211,7 +267,6 @@ app.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async (req, 
         }))
       };
 
-      // Generate Google Quiz Schema (JSON-LD)
       const schemaQuestions = quizPayload.questions.map((q: any) => ({
         "@type": "Question",
         "name": q.question,
@@ -232,8 +287,8 @@ app.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async (req, 
       const quizSchema = {
         "@context": "https://schema.org",
         "@type": "Quiz",
-        "name": `${targetClass} Daily MCQ Challenge - Utkal Skill Centre`,
-        "description": `Take today's 5-question bilingual Odia medium ${quizPayload.subject} quiz for ${targetClass}. Instant grading and explanations!`,
+        "name": `${targetClass} Daily ${subject} Challenge - Utkal Skill Centre`,
+        "description": `Take today's 5-question bilingual Odia medium ${quizPayload.subject} quiz. Instant grading and explanations!`,
         "learningResourceType": "Quiz",
         "educationalLevel": targetClass,
         "about": {
@@ -246,8 +301,11 @@ app.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async (req, 
       schemaHtmlBlock = `<script type="application/ld+json">\n${JSON.stringify(quizSchema, null, 2)}\n</script>`;
     }
 
-    // Load HTML template from root directory
-    const templatePath = path.resolve(__dirname, 'daily-mcq-challenge.html');
+    let templatePath = path.resolve(__dirname, 'daily-mcq-challenge.html');
+    if (!fs.existsSync(templatePath)) {
+      templatePath = path.resolve(__dirname, 'dist', 'daily-mcq-challenge.html');
+    }
+
     if (!fs.existsSync(templatePath)) {
       return res.status(500).send("Template daily-mcq-challenge.html not found.");
     }
@@ -257,13 +315,30 @@ app.get(['/', '/daily-mcq-challenge', '/daily-mcq-challenge.html'], async (req, 
     html = html.replace('<!-- GOOGLE_QUIZ_SCHEMA_PLACEHOLDER -->', schemaHtmlBlock);
 
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.setHeader('Cache-Control', 'public, max-age=60'); // 1 minute cache
+    res.setHeader('Cache-Control', 'public, max-age=60');
     return res.send(html);
   } catch (err: any) {
     console.error('[Quiz Server] Error serving page:', err);
     return res.status(500).send(`Internal Server Error: ${err.message}`);
   }
-});
+};
+
+// GK Challenge Routing
+const serveGkChallengeServer = async (req: any, res: any) => {
+  await serveChallengeQuizServer(req, res, 'General Knowledge', 'GK Serve');
+};
+
+app.get('/gk', serveGkChallengeServer);
+app.get('/daily-mcq-challenge', serveGkChallengeServer);
+app.get('/daily-mcq-challenge.html', serveGkChallengeServer);
+
+// Current Events Routing
+const serveCurrentEventsChallengeServer = async (req: any, res: any) => {
+  await serveChallengeQuizServer(req, res, 'Current Events', 'Current Events Serve');
+};
+
+app.get('/current-events', serveCurrentEventsChallengeServer);
+app.get('/daily-current-events', serveCurrentEventsChallengeServer);
 
 // Serve the standalone Guest Profile page
 app.get(['/guest', '/guest-profile', '/guest-profile.html'], (req, res) => {
