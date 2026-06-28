@@ -1,4 +1,4 @@
-const CACHE_NAME = 'quiz-odisha-v2';
+const CACHE_NAME = 'quiz-odisha-v3';
 const ASSETS = [
   '/',
   '/profile',

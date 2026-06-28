@@ -53,6 +53,11 @@
       padding: 0;
     }
 
+    html {
+      perspective: 1200px;
+      background-color: var(--bg-dark);
+    }
+
     body {
       font-family: var(--font-inter);
       background-color: var(--bg-dark);
@@ -68,6 +73,15 @@
       line-height: 1.5;
       overflow-x: hidden;
       position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.75s ease;
+      backface-visibility: hidden;
+    }
+
+    body.flip-active {
+      transform: rotateY(180deg);
+      opacity: 0;
+      pointer-events: none;
     }
 
     /* Starry Background Effect */
@@ -91,17 +105,17 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 1.8rem;
-      width: 100%;
-      max-width: 480px;
-      background: rgba(15, 23, 42, 0.5);
-      border: 1px solid var(--border-color);
-      border-radius: 24px;
-      padding: 0.8rem 1.8rem;
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-      margin-bottom: 2rem;
+      gap: 2rem;
+      width: fit-content;
+      min-width: 180px;
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 50px;
+      padding: 0.6rem 1.5rem;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      margin: 0.5rem auto 2rem auto;
       z-index: 10;
       box-sizing: border-box;
     }
@@ -924,23 +938,37 @@
 </head>
 <body>
 
-  <!-- Floating HUD Status Bar -->
-  <header class="header-hud">
-    <div class="hud-item">
-      <span class="hud-emoji">🔥</span>
-      <div class="hud-value-label">
-        <span class="hud-value" id="hudStreak">5 Days</span>
-        <span class="hud-label">Daily Streak</span>
+  <!-- App Brand Header -->
+  <header class="app-header" style="display: flex; align-items: flex-start; justify-content: space-between; width: 100%; max-width: 480px; padding: 1rem 0.5rem; margin-bottom: 2rem; position: relative; z-index: 10;">
+    <!-- Left Branded Logo Group -->
+    <div style="display: flex; align-items: center; gap: 0.6rem; margin-top: -2px;">
+      <img src="/utkal-512.png" alt="Utkal Logo" style="width: 38px; height: 38px; border-radius: 8px; filter: drop-shadow(0 0 5px rgba(16, 185, 129, 0.35)); object-fit: cover;">
+      <div style="display: flex; flex-direction: column; align-items: flex-start; line-height: 1.1;">
+        <span style="font-family: var(--font-outfit); font-size: 1.2rem; font-weight: 900; color: #fff; letter-spacing: -0.2px; text-transform: uppercase;">Utkal</span>
+        <span style="font-size: 0.62rem; color: #f59e0b; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; margin-top: 2px; font-family: var(--font-inter);">Skill Centre</span>
       </div>
     </div>
-    
-    <!-- Small PWA Install Icon inside HUD -->
-    <div class="hud-item" id="hudInstallItem" style="cursor: pointer; display: none; gap: 0.5rem; transition: transform 0.2s;" title="Install Utkal Quiz App">
-      <span class="hud-emoji" style="color: var(--color-emerald);">📥</span>
-      <div class="hud-value-label">
-        <span class="hud-value" style="color: var(--color-emerald);">Install</span>
-        <span class="hud-label">App</span>
+
+    <!-- Right Controls Group -->
+    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.4rem;">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <!-- Streak Pill (In place of language button) -->
+        <div style="display: flex; align-items: center; gap: 0.4rem; background: rgba(15, 23, 42, 0.45); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 0.45rem 0.85rem; height: 34px; box-sizing: border-box;">
+          <span style="font-size: 0.95rem; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));">🔥</span>
+          <span id="hudStreak" style="font-size: 0.75rem; font-weight: 700; color: #f59e0b; font-family: var(--font-inter);">5 Days</span>
+        </div>
+
+        <!-- Install Pill (In place of install button) -->
+        <button id="hudInstallItem" style="display: none; align-items: center; gap: 0.4rem; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 20px; padding: 0.45rem 0.85rem; height: 34px; cursor: pointer; transition: all 0.2s ease; box-sizing: border-box; border-style: solid;" onmouseover="this.style.background='rgba(16, 185, 129, 0.15)'; this.style.transform='scale(1.03)';" onmouseout="this.style.background='rgba(16, 185, 129, 0.08)'; this.style.transform='scale(1)';">
+          <span style="font-size: 0.9rem; color: #10b981;">📥</span>
+          <span style="font-size: 0.7rem; font-weight: 800; color: #34d399; text-transform: uppercase; letter-spacing: 0.5px; font-family: var(--font-inter);">Install</span>
+        </button>
       </div>
+
+      <!-- School Switcher Button (3D Flip) - Positioned directly below the Install button -->
+      <button onclick="flipToSchool()" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); box-sizing: border-box; margin-right: 2px;" title="Switch to Main School Website" onmouseover="this.style.transform='scale(1.08) rotate(10deg)'; this.style.borderColor='rgba(16, 185, 129, 0.4)'; this.style.background='rgba(16, 185, 129, 0.08)';" onmouseout="this.style.transform='scale(1) rotate(0)'; this.style.borderColor='rgba(255, 255, 255, 0.1)'; this.style.background='rgba(255, 255, 255, 0.06)';">
+        <span style="font-size: 1rem; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));">🏫</span>
+      </button>
     </div>
   </header>
 
@@ -1137,23 +1165,14 @@
             <span style="font-size: 0.8rem; opacity: 0.8;">→</span>
           </button>
 
-          <!-- Sign Out Button -->
-          <button class="signout-btn" id="signOutBtn">Sign Out / Switch User</button>
+          <!-- Visit School Button (Directly Below Install Button) -->
+          <a href="https://utkalskillcentre.com" target="_blank" class="profile-install-btn" style="text-decoration: none; margin-top: 0.75rem; background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(59, 130, 246, 0.04) 100%); border-color: rgba(59, 130, 246, 0.25); color: #60a5fa;">
+            <span>🏫 Visit Main School Website</span>
+            <span style="font-size: 0.8rem; opacity: 0.8;">→</span>
+          </a>
 
-          <!-- Link to Main School Website for Authenticated Users -->
-          <div class="school-promo-card" style="margin-top: 1.5rem; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 14px; padding: 1rem;">
-            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem;">
-              <span style="font-size: 1.2rem;">🏫</span>
-              <h4 style="font-size: 0.8rem; color: #fff; font-weight: 700; margin: 0; font-family: var(--font-outfit);">Utkal Skill Centre</h4>
-            </div>
-            <p style="font-size: 0.7rem; color: var(--text-muted); margin: 0 0 0.8rem 0; line-height: 1.45; text-align: left;">
-              Explore interactive online classes and digital textbooks!
-            </p>
-            <a href="https://utkalskillcentre.com" target="_blank" class="school-visit-btn" style="padding: 0.55rem 0.8rem; font-size: 0.75rem;">
-              <span>Visit Main Website</span>
-              <span>→</span>
-            </a>
-          </div>
+          <!-- Sign Out Button -->
+          <button class="signout-btn" id="signOutBtn" style="margin-top: 1.25rem;">Sign Out / Switch User</button>
         </div>
 
         <h3 class="recent-header">Recent Performance</h3>
@@ -1510,6 +1529,33 @@
       if (profileInstallBtn) profileInstallBtn.style.display = 'none';
       if (hudInstallItem) hudInstallItem.style.display = 'none';
     });
+
+    // 3D Flip Transition to Main School Website
+    function flipToSchool() {
+      document.body.classList.add('flip-active');
+      setTimeout(() => {
+        window.location.href = 'https://utkalskillcentre.com';
+      }, 700);
+    }
+
+    // Touch Swipe Gesture Detection (Swipe Right to go to School)
+    let touchStartX = 0;
+    let touchStartY = 0;
+    
+    document.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+    
+    document.addEventListener('touchend', (e) => {
+      const diffX = e.changedTouches[0].screenX - touchStartX;
+      const diffY = e.changedTouches[0].screenY - touchStartY;
+      
+      // Detect swipe right: horizontal movement > 140px, vertical movement < 60px
+      if (diffX > 140 && Math.abs(diffY) < 60) {
+        flipToSchool();
+      }
+    }, { passive: true });
 
     // Register PWA service worker
     if ('serviceWorker' in navigator) {
