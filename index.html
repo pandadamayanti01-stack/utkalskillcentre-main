@@ -111,6 +111,14 @@
     <!-- Google tag (gtag.js) - Google Ads Tracking -->
     <script>
       (function() {
+        var isLocal = window.location.hostname === 'localhost' || 
+                      window.location.hostname === '127.0.0.1' || 
+                      window.location.hostname.startsWith('192.168.');
+        if (isLocal) {
+          console.log('Running on localhost - Google Ads script bypassed.');
+          return;
+        }
+
         var isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
                            navigator.standalone || 
                            (document.referrer && document.referrer.indexOf('android-app://') !== -1) ||

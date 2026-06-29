@@ -1,4 +1,13 @@
 (function () {
+  var isLocalhost = window.location.hostname === 'localhost' || 
+                    window.location.hostname === '127.0.0.1' || 
+                    window.location.hostname.startsWith('192.168.');
+  
+  if (isLocalhost) {
+    console.log('[Analytics] Running on localhost - Google Analytics bypassed.');
+    return;
+  }
+
   var measurementId = 'G-Z2M2G8LL46';
 
   if (!measurementId || window.__uscAnalyticsLoaded) {
