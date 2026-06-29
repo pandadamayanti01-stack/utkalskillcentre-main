@@ -10,7 +10,6 @@
     color: var(--text-main, #e2e8f0) !important;
     font-family: 'Inter', 'Noto Sans Oriya', 'Odia Mukta', sans-serif;
     transition: background-color 0.4s ease, color 0.4s ease;
-    overscroll-behavior: none;
   }
 }
 

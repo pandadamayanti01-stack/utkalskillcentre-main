@@ -713,7 +713,7 @@ Welcome to the public revision notes portal for **${odiaClassName} ${odiaSubName
   }
 
   return (
-    <div className="min-h-screen bg-[#060913] text-slate-200 relative overflow-hidden font-sans p-4 sm:p-8 flex flex-col items-center w-full">
+    <div className="min-h-screen bg-[#060913] text-slate-200 relative overflow-x-hidden font-sans p-4 sm:p-8 flex flex-col items-center w-full">
       <SEO 
         title={seoTitle}
         description={seoDescription}
