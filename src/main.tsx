@@ -6,6 +6,24 @@ import './index.css';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { HelmetProvider } from 'react-helmet-async';
 
+// Global Fetch Interceptor to redirect relative API calls in the native Android/iOS app
+try {
+  const originalFetch = window.fetch;
+  window.fetch = function (input, init) {
+    if (typeof input === 'string' && input.startsWith('/api/')) {
+      const isNative = window.location.origin.startsWith('capacitor://') || 
+                       window.location.origin.startsWith('http://localhost') && !window.location.port ||
+                       (window as any).Capacitor !== undefined;
+      if (isNative) {
+        input = 'https://utkalskillcentre.com' + input;
+      }
+    }
+    return originalFetch.call(this, input, init);
+  };
+} catch (err) {
+  console.warn("Unable to patch window.fetch:", err);
+}
+
 // Global LocalStorage QuotaExceededError Protection & Cache Eviction
 try {
   const originalSetItem = Storage.prototype.setItem;
