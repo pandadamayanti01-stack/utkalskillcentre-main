@@ -3130,12 +3130,16 @@ async function startServer() {
   } else {
     app.use(express.static(distPath, {
       setHeaders: (res, path) => {
-        if (path.endsWith('.html')) {
+        const isHtml = path.endsWith('.html');
+        const isServiceWorker = path.endsWith('sw.js') || path.includes('workbox-');
+        const isManifest = path.endsWith('.webmanifest') || path.endsWith('manifest.json');
+
+        if (isHtml || isServiceWorker || isManifest) {
           res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
           res.setHeader('Pragma', 'no-cache');
           res.setHeader('Expires', '0');
         } else {
-          // Other assets can be cached for a long time since they have hashes in their names
+          // Other assets (like hashed JS/CSS/images) can be cached for a long time
           res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
         }
       }
