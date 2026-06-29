@@ -33,21 +33,13 @@ export default defineConfig(({mode}) => {
           cleanupOutdatedCaches: true,
           clientsClaim: true,
           skipWaiting: true,
-          globPatterns: ['index.html', 'assets/*.{js,css}'],
-          globIgnores: [
-            'assets/AdminDashboard-*.js',
-            'assets/AvatarStore-*.js',
-            'assets/GunduluHuman-*.js',
-            'assets/GunduluHuman-*.css',
-            'assets/NotificationsView-*.js',
-            'assets/PracticeQuestion-*.js',
-            'assets/ProgressChart-*.js',
-            'assets/StudyBuddyView-*.js',
-            'assets/TestSeriesPoster-*.js',
-            'assets/ai-*.js',
-            'assets/charts-*.js',
-            'assets/gcpService-*.js',
-            'assets/markdown-*.js',
+          globPatterns: [
+            'index.html',
+            'assets/main-*.js',
+            'assets/main-*.css',
+            'assets/vendor-*.js',
+            'assets/icons-*.js',
+            'assets/firebase-*.js'
           ],
         },
         manifest: {
