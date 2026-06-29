@@ -12,6 +12,22 @@ const __dirname = path.dirname(__filename);
 
 export const quizRouter = express.Router();
 
+// Subdomain & Port Guard Middleware
+// Bypasses this router entirely if the request is not for the quiz portal.
+// This prevents overriding the main application's manifest.json, sw.js, and main page routes.
+quizRouter.use((req, res, next) => {
+  const host = req.headers.host || '';
+  const isQuizSubdomain = host.startsWith('quiz.');
+  const isQuizPort = host.includes(':3001');
+
+  if (isQuizSubdomain || isQuizPort) {
+    next();
+  } else {
+    // Exit this router instance and pass control back to the parent application
+    next('router');
+  }
+});
+
 const getApiKey = () => {
   return process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || "";
 };

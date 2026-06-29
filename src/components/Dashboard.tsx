@@ -4329,7 +4329,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                 <Lucide.Instagram size={18} />
               </a>
               <a
-                href="https://whatsapp.com/channel/utkalskillcentre"
+                href="https://whatsapp.com/channel/0029VbCvAH31iUxgGopHZ724"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Utkal Skill Centre WhatsApp channel"

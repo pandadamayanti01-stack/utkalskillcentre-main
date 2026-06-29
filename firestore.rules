@@ -234,7 +234,7 @@ service cloud.firestore {
     }
 
     match /system_settings/{document=**} {
-      allow read: if isAuthenticated();
+      allow read: if true;
       allow write: if isAdmin();
     }
 

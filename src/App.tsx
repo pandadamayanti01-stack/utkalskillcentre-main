@@ -76,6 +76,7 @@ import { GameZone } from './components/GameZone';
 import { getDeferredPrompt, clearDeferredPrompt, vibrate, requestScreenWakeLock, releaseScreenWakeLock, shareNative, playSuccessChime, playClickSound, subscribeUserToPush } from './pwa';
 import { SEO } from './components/SEO';
 import { BottomNavBar } from './components/BottomNavBar';
+import LoginComponent from './components/LoginComponent';
 import { PublicSeoPreview } from './components/PublicSeoPreview';
 import ReactMarkdown from 'react-markdown';
 import { cleanMathNotation } from './utils/cleaners';
@@ -125,7 +126,6 @@ const AvatarStore = lazyWithRetry(() => import('./components/AvatarStore').then(
 const ProgressChart = lazyWithRetry(() => import('./components/ProgressChart').then((module) => ({ default: module.ProgressChart })));
 const StudyBuddyView = lazyWithRetry(() => import('./components/StudyBuddyView').then((module) => ({ default: module.StudyBuddyView })));
 const Sidebar = lazyWithRetry(() => import('./components/Sidebar').then((module) => ({ default: module.Sidebar })));
-const LoginComponent = lazyWithRetry(() => import('./components/LoginComponent'));
 const TestSeriesPoster = lazyWithRetry(() => import('./components/TestSeriesPoster'));
 const SyllabusTracker = lazyWithRetry(() => import('./components/SyllabusTracker').then((module) => ({ default: module.SyllabusTracker })));
 const SocialPosterGenerator = lazyWithRetry(() => import('./components/SocialPosterGenerator').then((module) => ({ default: module.SocialPosterGenerator })));
@@ -3463,7 +3463,7 @@ export default function App() {
     );
   }
 
-  if (loading) {
+  if (loading || (auth.currentUser && !user)) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 relative overflow-hidden">
         {/* Background Glows */}
@@ -3945,9 +3945,7 @@ export default function App() {
         {/* Right Content - Login Form */}
         <div className="flex-1 flex flex-col items-center justify-center p-0 relative z-10 overflow-hidden">
           {authStep === 'login' ? (
-            <Suspense fallback={<ViewLoader />}>
-              <LoginComponent language={language} translations={translations} setLanguage={setLanguage} setRegData={setRegData} />
-            </Suspense>
+            <LoginComponent language={language} translations={translations} setLanguage={setLanguage} setRegData={setRegData} />
           ) : (
             <div className="text-white">OTP UI content here</div>
           )}
