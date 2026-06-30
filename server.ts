@@ -1646,13 +1646,17 @@ async function startServer() {
       } else if (isHindiSubject) {
         languageInstruction = `The questions, options, and hints/answers MUST strictly be in Hindi.`;
       } else {
-        languageInstruction = `Odia (using Odia script for student content).
-        - The questions and options MUST be in Odia (but keep mathematical numbers, equations, or scientific variables clean using standard English/Arabic numerals like 5, x, y, a^2 + b^2).
+        languageInstruction = `Bilingual format (Odia and English mixed).
+        - You MUST write each question in a bilingual format: first write the question in Odia, followed immediately by its English translation in parentheses.
+          * Example: "ସରଳ ସହସମୀକରଣର ସାଧାରଣ ରୂପ କଣ? (What is the general form of a linear simultaneous equation?)"
+        - For multiple-choice options (options) and subjective hints (hint), provide them in Odia, but include the English academic terms in parentheses next to key concepts.
+        - Keep all mathematical numbers, equations, or scientific variables clean using standard English/Arabic numerals (like 5, x, y, a^2 + b^2).
         
         CRITICAL ODIA ORTHOGRAPHY & SPELLING (ଯୁକ୍ତାକ୍ଷର) RULES:
-        1. Historical Names & Movements: Always spell "ଦାଣ୍ଡି ଯାତ୍ରା" (Dandi March/Jatra) using "ଯ" (ଯାତ୍ରା), NEVER use "ଜ" (ଜାତ୍ରା / ଜାରା / ଜାର୍ତ୍ତା). Always spell "ମହାତ୍ମା ଗାନ୍ଧୀ" (Mahatma Gandhi) using "ଧୀ" (long vowel ୀ), NEVER "ଗାନ୍ଧି" or "ଗାନ୍ଧିଜି" (correct is "ଗାନ୍ଧୀଜୀ").
-        2. Vowel & Matra Accuracy: Use proper long vowels: "ପରୀକ୍ଷା" (never "ପରିକ୍ଷା"), "ବ୍ୟବସାୟ" (never "ବେବସାୟ"), "ବ୍ୟାକରଣ" (never "ବେକରଣ" or "ବ୍ୟାକରନ"), "ଶିକ୍ଷା" (never "ସିକ୍ଷା"), "ଶିକ୍ଷଣ" (never "ଶିକ୍ଷନ"), "ସାହିତ୍ୟ ସାଥୀ" (never "ସାହିତ୍ୟ ସାଥି"), "ବର୍ଣ୍ଣ" (never "ବର୍ନ"), "ବଳ ଓ ଗତି" (never "ବାଳ ଓ ଗତି").
-        3. Conjuncts & Ligatures: Use correct conjuncts/ligatures (e.g. ନ୍ଦ, ନ୍ଧ, ଷ୍ଟ, ତ୍ତ, ନ୍ତ, ଳ). NEVER output broken combinations like "ନ୍‌ଦ" or "ନ୍‌ଧ".`;
+        1. "Region/area" must be spelled strictly as "ଅଞ୍ଚଳ" (using the Nya-Ca conjunct ଞ୍ଚ, NEVER "ଅଞ୍ଛଳ" or with a ଛ).
+        2. Historical Names & Movements: Always spell "ଦାଣ୍ଡି ଯାତ୍ରା" (Dandi March/Jatra) using "ଯ" (ଯାତ୍ରା), NEVER use "ଜ". Always spell "ମହାତ୍ମା ଗାନ୍ଧୀ" (Mahatma Gandhi) using "ଧୀ" (long vowel ୀ), NEVER "ଗାନ୍ଧି" or "ଗାନ୍ଧିଜି" (correct is "ଗାନ୍ଧୀଜୀ").
+        3. Vowel & Matra Accuracy: Use proper long vowels: "ପରୀକ୍ଷା" (never "ପରିକ୍ଷା"), "ବ୍ୟବସାୟ" (never "ବେବସାୟ"), "ବ୍ୟାକରଣ" (never "ବେକରଣ" or "ବ୍ୟାକରନ"), "ଶିକ୍ଷା" (never "ସିକ୍ଷା"), "ଶିକ୍ଷଣ" (never "ଶିକ୍ଷନ"), "ସାହିତ୍ୟ ସାଥୀ" (never "ସାହିତ୍ୟ ସାଥି"), "ବର୍ଣ୍ଣ" (never "ବର୍ନ"), "ବଳ ଓ ଗତି" (never "ବାଳ ଓ ଗତି").
+        4. Conjuncts & Ligatures: Use correct conjuncts/ligatures (e.g. ନ୍ଦ, ନ୍ଧ, ଷ୍ଟ, ତ୍ତ, ନ୍ତ, ଳ). NEVER output broken combinations like "ନ୍‌ଦ" or "ନ୍‌ଧ".`;
       }
 
       let totalMcqs = 15;

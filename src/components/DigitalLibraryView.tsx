@@ -1304,21 +1304,90 @@ Write your explanation in a friendly, encouraging, bilingual style (Odia and Eng
     }
     setIsGeneratingNotes(true);
     try {
-      const prompt = `Please generate high-quality, comprehensive, and clear student study notes for the textbook chapter: "${selectedChapter.title}" in the subject of "${selectedChapter.subject || selectedSubject || 'Mathematics'}". 
-Include:
-1. Core concepts explained simply with bullet points.
-2. Crucial formulas, theorems, or laws clearly highlighted in LaTeX / markdown format.
-3. At least 2 step-by-step worked out example problems.
-4. Quick revision shortcuts or hints.
+      const subject = selectedChapter.subject || selectedSubject || 'Mathematics';
+      let languageRules = '';
+      const isMathOrScienceOrSocial = /math|science|social|vocational|ଭୂଗୋଳ|ଇତିହାସ|ବିଜ୍ଞାନ|ଗଣିତ/i.test(subject);
+      const isEnglish = /english|ଇଂରାଜୀ/i.test(subject);
+      const isSanskrit = /sanskrit|ସଂସ୍କୃତ/i.test(subject);
+      const isHindi = /hindi|ହିନ୍ଦୀ/i.test(subject);
+      const isOdiaSubject = /odia|ଓଡ଼ିଆ/i.test(subject) && !isMathOrScienceOrSocial;
 
-Write the notes primarily in beautiful, structured markdown, and make them bilingual-friendly (Odia and English mixed) so that an Odia medium student can easily understand all terms. Start directly with the chapter header and notes.`;
+      if (isEnglish) {
+        languageRules = 'Write the notes entirely in English. All text, examples, and definitions must be in English script.';
+      } else if (isSanskrit) {
+        languageRules = 'Write the notes entirely in Sanskrit language using Devanagari script.';
+      } else if (isHindi) {
+        languageRules = 'Write the notes entirely in Hindi language using Devanagari script.';
+      } else if (isOdiaSubject) {
+        languageRules = 'Write the notes entirely in Odia language using Odia script.';
+      } else {
+        languageRules = `Write all explanations, descriptions, and definitions in high-quality, native school-level Odia script.
+However, for all mathematical expressions, algebraic formulas, variables (like x, y, a, b), equations, and numeric values (like 1, 2, 10), you MUST write in standard English/Arabic characters and numerals (e.g. write "x = 2", NOT "x = ୨"). Do not mix Odia numerals in math equations.`;
+      }
+
+      const prompt = `You are a senior academic textbook author and curriculum developer.
+Your goal is to generate exceptionally comprehensive, premium, and mathematically error-free study notes for the chapter: "${selectedChapter.title}" in the subject of "${subject}" (Class ${selectedClass}).
+
+This must be a full, detailed textbook guide (approximately 1500–2000 words) covering the entire syllabus of this chapter. Do NOT write a brief summary.
+
+Strict Language Rules:
+${languageRules}
+
+Odia Quality & Translation Rules:
+- Write in the natural, fluent, and warm tone of a native school teacher from Odisha. Avoid literal English-to-Odia machine translations.
+- Use standard grammatical spelling, correct conjunct letters (ଯୁକ୍ତାକ୍ଷର), and proper Odia sentence structures.
+- CRITICAL SPELLING RULES: Ensure all words are spelled exactly correctly:
+  * "Region/area" must be spelled strictly as "ଅଞ୍ଚଳ" (using the Nya-Ca conjunct ଞ୍ଚ, NEVER "ଅଞ୍ଛଳ" or with a ଛ).
+  * "Chapter" must be spelled strictly as "ଅଧ୍ୟାୟ".
+  * "Question" must be spelled strictly as "ପ୍ରଶ୍ନ".
+  * "Answer" must be spelled strictly as "ଉତ୍ତର".
+  * "Example" must be spelled strictly as "ଉଦାହରଣ".
+- STRICT FACTUAL ACCURACY: You must verify the correct author and genre of the chapter from the official Odisha BSE Board curriculum before writing notes.
+  * For example, the chapter "ଜନ୍ମଭୂମି (Janmabhumi)" is a Prabandha (ପ୍ରବନ୍ଧ - prose essay) written by the famous historian Dr. Krishna Chandra Panigrahi (କୃଷ୍ଣଚନ୍ଦ୍ର ପାଣିଗ୍ରାହୀ). It is NOT a poem (କବିତା) and it is NOT written by Krishna Chandra Tripathi. You must state this correctly!
+- IMPORTANT: Always write the English academic term in parentheses next to the Odia term when introducing key concepts (e.g. write "ସରଳ ସହସମୀକରଣ (Linear Simultaneous Equations)" or "ପ୍ରତିଫଳନ (Reflection)").
+
+Please compile the notes strictly in this format:
+
+1. # ${selectedChapter.title}
+   - Start directly with the main title. No conversational intro, greetings, or chat filler.
+
+2. ## Introduction & Core Concepts (ଉପକ୍ରମଣିକା ଓ ମୁଖ୍ୟ ଧାରଣା)
+   - A detailed explanation of the concept's real-world applications and significance.
+
+3. ## Chapter Syllabus Breakdown (ପାଠ୍ୟକ୍ରମର ବିସ୍ତୃତ ଆଲୋଚନା)
+   Identify and break down the chapter into at least 4 to 5 major subtopics. For EACH subtopic:
+   - ### [Subtopic Name]
+     - Write a detailed academic explanation of the theory, laws, or theorems.
+     - Use comparison tables (using markdown syntax) for contrasting concepts.
+     - Highlight key definitions using blockquotes.
+     - Highlight all equations/formulas using double-dollar LaTeX syntax (e.g. $$a^2 + b^2 = c^2$$).
+
+4. ## Step-by-Step Solved Examples (ସମାଧାନ ସହ ଉଦାହରଣ)
+   - Include 3 to 4 comprehensive, step-by-step solved problems ranging from Easy to Hard.
+   - Write out every algebraic and arithmetic step. Double-check all signs (+/-) and numbers.
+   - Verify all calculations carefully before outputting. Ensure there are ZERO mathematical errors.
+
+5. ## Textbook Exercise Questions & Solutions (ପାଠ୍ୟକ୍ରମ ଅଭ୍ୟାସ ପ୍ରଶ୍ନ ଓ ସମାଧାନ)
+   - Identify and list 4 to 5 key, most important textbook back-exercise questions from this chapter.
+   - For each question, write out its complete, highly detailed, and step-by-step solved answer/solution with absolute correctness.
+   - Ensure the selection covers both conceptual short-answer and long-answer questions.
+
+6. ## Quick Revision Summary (ସଂକ୍ଷିପ୍ତ ସାରାଂଶ)
+   - A summary list of all formulas, key laws, and definitions for quick revision.
+
+7. ## Practice Challenge Questions (ଅଭ୍ୟାସ ପ୍ରଶ୍ନ)
+   - 3 conceptual questions and 2 numerical problems for students to test their understanding.
+
+CRITICAL GUIDELINES:
+- Output ONLY the clean Markdown textbook content.
+- Do not output any apologies, draft corrections, or conversational chat text. If you recalculate a step, output only the correct, direct mathematical steps.`;
 
       const response = await solveMathDoubt(
         prompt,
         language,
         undefined,
         `Class ${selectedClass}`,
-        `You are Gundulu, the expert educational content writer for Utkal Skill Centre. Generate beautifully-structured academic notes.`,
+        `You are Gundulu, the expert textbook curriculum author. Generate beautifully-structured, highly comprehensive academic study notes.`,
         []
       );
 

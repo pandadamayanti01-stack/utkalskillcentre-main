@@ -2103,15 +2103,15 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
       return {
         phase: 'important_qs' as const,
         publishStartDay: actualPublishStartDay,
-        titleEn: 'EXAM PAPERS!',
-        titleOr: 'ପ୍ରଶ୍ନପତ୍ର ଗୁଡ଼ିକ!',
-        subtitleEn: 'Exam Important Questions',
-        subtitleOr: 'ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ପ୍ରଶ୍ନପତ୍ର',
-        borderColor: 'border-purple-400',
-        shadowColor: 'shadow-[0_15px_35px_-5px_rgba(0,0,0,0.8),0_0_20px_rgba(168,85,247,0.3)]',
-        pingColor: 'bg-purple-500',
-        textColor: '#c084fc',
-        icon: <Lucide.FileText size={11} className="text-purple-400" />
+        titleEn: 'Important',
+        titleOr: 'ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ',
+        subtitleEn: 'Question Papers',
+        subtitleOr: 'ପ୍ରଶ୍ନପତ୍ର',
+        borderColor: 'border-amber-500/40',
+        shadowColor: 'shadow-[0_10px_25px_rgba(245,158,11,0.25)]',
+        pingColor: 'bg-amber-500',
+        textColor: '#fef08a',
+        icon: <Lucide.Target size={12} className="text-amber-400" />
       };
     }
   };
@@ -2976,57 +2976,111 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
           {/* Animated Gundulu Mascot Video (Right Side) with hanging rope banner */}
           <div className="flex flex-col items-center shrink-0 mt-0 md:-mt-6 self-center md:self-auto relative select-none">
             {showTestResultHanger && (
-              <motion.div
-                initial={{ y: -20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                whileHover={{ y: 3, scale: 1.05 }}
-                onClick={() => {
-                  if (mtsStatus.phase === 'coming_soon') {
-                    setShowRegistrationForm(true);
-                  } else if (mtsStatus.phase === 'going_on' || mtsStatus.phase === 'half_yearly_live') {
-                    if (onOpenMonthlyTests) onOpenMonthlyTests();
-                  } else if (mtsStatus.phase === 'grading' || mtsStatus.phase === 'half_yearly_grading') {
-                    setShowMtsGradingModal(true);
-                  } else if (mtsStatus.phase === 'published' || mtsStatus.phase === 'half_yearly_published') {
-                    setShowImportantPapersModal(true);
-                  } else if (mtsStatus.phase === 'important_qs' || mtsStatus.phase === 'half_yearly_prep') {
-                    setShowImportantPapersModal(true);
-                  }
-                }}
-                className="relative cursor-pointer group flex flex-col items-center z-30 mb-8 -mt-6 md:-mt-12"
-              >
-                {/* Hanging Ropes */}
-                <div className="flex justify-between w-20 h-6 relative z-10 pointer-events-none -mb-1.5">
-                  <div className="w-[2px] h-full bg-gradient-to-b from-slate-700 via-slate-400 to-slate-800 shadow-[0_1px_3px_rgba(0,0,0,0.8)]"></div>
-                  <div className="w-[2px] h-full bg-gradient-to-b from-slate-700 via-slate-400 to-slate-800 shadow-[0_1px_3px_rgba(0,0,0,0.8)]"></div>
-                </div>
-                
-                {/* Hanging Sign Board (Dynamic theme based on calendar phase) */}
-                <div 
-                  style={{ background: 'linear-gradient(to bottom, #1e293b, #0f172a, #020617)' }}
-                  className={`border-2 ${mtsStatus.borderColor} rounded-2xl px-5 py-3 flex flex-col items-center ${mtsStatus.shadowColor} transition-all duration-300 force-dark-theme`}
+              <div className="select-none relative z-30 mb-8 -mt-6 md:-mt-12 pr-6 translate-x-[16px]">
+                {/* Waving Silk Swallowtail Flag (Waving to the Left) */}
+                <motion.div 
+                  animate={{ 
+                    rotateY: [0, -8, 6, -4, 0],
+                    skewY: [0, -2, 2, -1, 0],
+                    y: [0, -3, 2, -2, 0]
+                  }}
+                  transition={{ 
+                    duration: 6,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  whileHover={{ scale: 1.03, rotateY: -12 }}
+                  style={{ 
+                    clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 15% 50%)',
+                    background: 'linear-gradient(to bottom, #fef08a, #ca8a04, #fbbf24)',
+                    boxShadow: '0 12px 25px -10px rgba(0,0,0,0.8)',
+                    transformStyle: "preserve-3d",
+                    perspective: 1000
+                  }}
+                  onClick={() => {
+                    if (mtsStatus.phase === 'coming_soon') {
+                      setShowRegistrationForm(true);
+                    } else if (mtsStatus.phase === 'going_on' || mtsStatus.phase === 'half_yearly_live') {
+                      if (onOpenMonthlyTests) onOpenMonthlyTests();
+                    } else if (mtsStatus.phase === 'grading' || mtsStatus.phase === 'half_yearly_grading') {
+                      setShowMtsGradingModal(true);
+                    } else if (mtsStatus.phase === 'published' || mtsStatus.phase === 'half_yearly_published') {
+                      setShowImportantPapersModal(true);
+                    } else if (mtsStatus.phase === 'important_qs' || mtsStatus.phase === 'half_yearly_prep') {
+                      setShowImportantPapersModal(true);
+                    }
+                  }}
+                  className="min-h-[68px] w-40 sm:w-44 relative origin-right cursor-pointer mt-8 p-[1.5px] translate-x-[4px]"
                 >
-                  <div className="flex items-center gap-1.5">
-                    <span className={`w-2 h-2 rounded-full ${mtsStatus.pingColor} animate-ping shrink-0`}></span>
+                  {/* Inner Swallowtail with Red Silk Gradient */}
+                  <div 
+                    style={{ 
+                      clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 15% 50%)',
+                      background: 'linear-gradient(to bottom, #ff9933 0%, #ff9933 33.3%, #ffffff 33.3%, #ffffff 66.6%, #128807 66.6%, #128807 100%)'
+                    }}
+                    className="absolute inset-[1.5px] flex flex-col items-center justify-center pl-6 pr-2 py-2"
+                  >
+                    {/* Waving Silk Light Reflection Overlay */}
+                    <motion.div
+                      animate={{ 
+                        backgroundPosition: ["100% 50%", "0% 50%", "100% 50%"]
+                      }}
+                      transition={{ 
+                        duration: 8,
+                        repeat: Infinity,
+                        ease: "linear"
+                      }}
+                      style={{
+                        background: "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 25%, rgba(0,0,0,0.05) 50%, rgba(255,255,255,0.15) 75%, rgba(255,255,255,0) 100%)",
+                        backgroundSize: "200% 100%",
+                        clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 15% 50%)'
+                      }}
+                      className="absolute inset-0 pointer-events-none opacity-30"
+                    />
+
+                    {/* Top Stripe (Saffron): Title */}
                     <span 
-                      style={{ color: mtsStatus.textColor }}
-                      className="text-[12px] font-black uppercase tracking-[0.25em] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+                      style={{ 
+                        fontFamily: "'Outfit', 'Inter', sans-serif",
+                        color: '#ffffff',
+                        transform: 'translateY(-4px)'
+                      }}
+                      className="text-[11px] sm:text-[13px] font-black tracking-[0.15em] uppercase text-center relative z-10 text-white"
                     >
                       {language === 'en' ? mtsStatus.titleEn : mtsStatus.titleOr}
                     </span>
-                  </div>
-                  <div className="flex items-center gap-1 mt-1">
-                    {mtsStatus.icon}
-                    <span className="text-[9px] font-black text-amber-100/90 uppercase tracking-widest text-center truncate max-w-[150px]">
-                      {language === 'en' ? mtsStatus.subtitleEn : mtsStatus.subtitleOr}
+                    
+                    {/* Middle Stripe (White): Bilingual Click Instruction */}
+                    <span 
+                      style={{ 
+                        fontFamily: "'Outfit', 'Inter', sans-serif",
+                        color: '#db2777'
+                      }}
+                      className="text-[8px] sm:text-[9.5px] font-black tracking-wider uppercase text-center my-0.5 relative z-10 !text-pink-600"
+                    >
+                      Click / କ୍ଲିକ୍ 👆
                     </span>
+                    
+                    {/* Bottom Stripe (Green): Subtitle */}
+                    {(mtsStatus.subtitleEn || mtsStatus.subtitleOr) && (
+                      <span 
+                        style={{ 
+                          fontFamily: "'Outfit', 'Inter', sans-serif",
+                          color: '#ffffff',
+                          transform: 'translateY(4px)'
+                        }}
+                        className="text-[9.5px] sm:text-[11.5px] font-black tracking-[0.15em] uppercase text-center relative z-10"
+                      >
+                        {language === 'en' ? mtsStatus.subtitleEn : mtsStatus.subtitleOr}
+                      </span>
+                    )}
                   </div>
-                </div>
-              </motion.div>
+                </motion.div>
+              </div>
             )}
             
             {/* The Mascot Video Player */}
-            <div className="relative w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48 pointer-events-auto group shrink-0">
+            <div className="relative w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48 pointer-events-auto group shrink-0 translate-x-[8px]">
               <div className="absolute inset-0 rounded-full overflow-hidden shadow-[0_0_30px_rgba(16,185,129,0.2)] ring-2 ring-emerald-500/20 bg-black">
                 <video 
                   ref={videoRef}
@@ -3318,7 +3372,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                   onClick={onOpenDailyPractice}
                   className="flex-1 px-3 sm:px-5 py-2.5 sm:py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-[8px] sm:text-[10px] font-black uppercase tracking-[0.1em] sm:tracking-[0.2em] transition-all shadow-[0_10px_20px_-10px_rgba(6,182,212,0.8)] hover:shadow-[0_15px_30px_rgba(6,182,212,0.5)] hover:scale-[1.03] active:scale-95 border-t border-cyan-350 truncate whitespace-nowrap cursor-pointer"
                 >
-                  {language === 'en' ? "Commence Trial" : "ଆରମ୍ଭ କରନ୍ତୁ"}
+                  {language === 'en' ? "Start" : "ଆରମ୍ଭ କରନ୍ତୁ"}
                 </button>
                 <button
                   type="button"
