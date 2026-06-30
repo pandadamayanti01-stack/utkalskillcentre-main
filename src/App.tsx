@@ -3465,47 +3465,63 @@ export default function App() {
 
   if (loading || (auth.currentUser && !user)) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 relative overflow-hidden">
-        {/* Background Glows */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.1)_0%,transparent_70%)]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl" />
-        
+      <div 
+        style={{ 
+          background: 'radial-gradient(circle at top right, rgba(16, 185, 129, 0.08) 0%, transparent 50%), radial-gradient(circle at bottom left, rgba(245, 158, 11, 0.08) 0%, transparent 50%), #ffffff' 
+        }}
+        className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden"
+      >
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex flex-col items-center gap-12 relative z-10"
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="flex flex-col items-center gap-10 relative z-10"
         >
-          {/* Logo with Glow */}
-          <div className="relative">
-            <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-xl scale-125 animate-pulse" />
+          {/* Logo & Mascot Container */}
+          <div className="flex items-center gap-6 relative">
+            {/* Utkal Logo with soft green glow */}
+            <div className="relative">
+              <div className="absolute inset-0 bg-emerald-500/10 rounded-full blur-xl scale-125 animate-pulse" />
+              <motion.img 
+                src="/utkal-192.png" 
+                className="h-20 w-auto relative z-10 rounded-full border border-emerald-500/10 shadow-md bg-white" 
+                alt="Utkal Logo" 
+                referrerPolicy="no-referrer"
+                animate={{ y: [0, -6, 0] }}
+                transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+              />
+            </div>
+
+            {/* Gundulu Mascot pointing up/left */}
             <motion.img 
-              src="/utkal-192.png" 
-              className="h-24 w-auto relative z-10 rounded-full border border-emerald-500/20" 
-              alt="Utkal" 
-              referrerPolicy="no-referrer"
-              animate={{ y: [0, -10, 0] }}
-              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+              src="/gundulu-pointing-nobg.png" 
+              className="h-24 w-auto object-contain relative z-10 drop-shadow-sm" 
+              alt="Gundulu Mascot" 
+              animate={{ y: [-4, 4, -4], rotate: [-1, 2, -1] }}
+              transition={{ repeat: Infinity, duration: 3.5, ease: "easeInOut" }}
             />
           </div>
 
-          {/* Premium Loader */}
-          <div className="flex flex-col items-center gap-5">
-            <div className="relative w-16 h-16">
-              {/* Outer Ring */}
-              <div className="absolute inset-0 border-2 border-emerald-500/20 rounded-full" />
-              {/* Spinning Glow Ring */}
-              <div className="absolute inset-0 border-t-2 border-r-2 border-emerald-500 rounded-full animate-spin" />
-              {/* Inner Glow */}
-              <div className="absolute inset-2 bg-emerald-500/5 rounded-full blur-sm" />
+          {/* Premium Horizontal Progress Loader */}
+          <div className="flex flex-col items-center gap-4 w-64">
+            <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200/50 shadow-inner relative">
+              <motion.div 
+                initial={{ width: "0%" }}
+                animate={{ width: "100%" }}
+                transition={{ duration: 3, ease: "easeInOut", repeat: Infinity }}
+                className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.5)]"
+              />
             </div>
 
             {/* Text */}
-            <div className="flex flex-col items-center gap-2">
-              <p className="text-white font-medium tracking-[0.3em] uppercase text-xs">
+            <div className="flex flex-col items-center gap-1.5">
+              <p 
+                style={{ fontFamily: "'Outfit', 'Inter', sans-serif" }}
+                className="text-slate-800 font-extrabold tracking-[0.25em] uppercase text-[11px]"
+              >
                 {language === 'en' ? "Utkal Skill Centre" : "ଉତ୍କଳ ସ୍କିଲ୍ ସେଣ୍ଟର"}
               </p>
-              <p className="text-emerald-400/80 text-[10px] font-bold uppercase tracking-[0.5em] animate-pulse">
+              <p className="text-emerald-600 font-black text-[9px] uppercase tracking-[0.3em] animate-pulse">
                 {language === 'en' ? "Loading Excellence..." : "ଶ୍ରେଷ୍ଠତା ଲୋଡ୍ ହେଉଛି..."}
               </p>
             </div>
@@ -3513,8 +3529,8 @@ export default function App() {
         </motion.div>
 
         {/* Footer Branding */}
-        <div className="absolute bottom-10 left-0 right-0 flex justify-center opacity-30">
-          <p className="text-[9px] font-medium tracking-[0.3em] uppercase text-slate-500">Powered by Bigsan Group</p>
+        <div className="absolute bottom-10 left-0 right-0 flex justify-center opacity-40">
+          <p className="text-[9px] font-bold tracking-[0.25em] uppercase text-slate-400">Powered by Bigsan Group</p>
         </div>
       </div>
     );

@@ -142,6 +142,20 @@ async function startServer() {
 
   app.use((req, res, next) => {
     const isHttps = req.secure || req.headers['x-forwarded-proto'] === 'https';
+    const origin = req.headers.origin;
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost',
+      'capacitor://localhost',
+      'https://utkalskillcentre.com'
+    ];
+
+    if (origin && (allowedOrigins.includes(origin) || origin.startsWith('http://192.168.'))) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
 
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-Frame-Options', 'SAMEORIGIN');
@@ -150,6 +164,11 @@ async function startServer() {
 
     if (isHttps) {
       res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+    }
+
+    // Handle preflight OPTIONS requests immediately
+    if (req.method === 'OPTIONS') {
+      return res.sendStatus(200);
     }
 
     next();

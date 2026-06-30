@@ -2049,8 +2049,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
         publishStartDay: actualPublishStartDay,
         titleEn: 'MTS REGISTERING',
         titleOr: 'ପରୀକ୍ଷା ପଞ୍ଜୀକରଣ',
-        subtitleEn: 'MTS Coming Soon! Register Now',
-        subtitleOr: 'ମାସିକ ଟେଷ୍ଟ ଶୀଘ୍ର ଆସୁଛି! ପଞ୍ଜୀକରଣ କରନ୍ତୁ',
+        subtitleEn: 'Register Now',
+        subtitleOr: 'ପଞ୍ଜୀକରଣ କରନ୍ତୁ',
         borderColor: 'border-amber-400',
         shadowColor: 'shadow-[0_15px_35px_-5px_rgba(0,0,0,0.8),0_0_20px_rgba(245,158,11,0.3)]',
         pingColor: 'bg-amber-500',
@@ -2888,7 +2888,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
             </div>
 
             {/* XP Badge (Clickable to view target breakdown guide) */}
-            <div className="flex items-center justify-start">
+            <div className="flex items-center justify-start mt-[28px]">
               <button 
                 type="button"
                 onClick={() => setShowTargetModal(true)}
@@ -3043,7 +3043,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                       style={{ 
                         fontFamily: "'Outfit', 'Inter', sans-serif",
                         color: '#ffffff',
-                        transform: 'translateY(-4px)'
+                        transform: 'translateY(8px)'
                       }}
                       className="text-[11px] sm:text-[13px] font-black tracking-[0.15em] uppercase text-center relative z-10 text-white"
                     >
@@ -3054,7 +3054,8 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                     <span 
                       style={{ 
                         fontFamily: "'Outfit', 'Inter', sans-serif",
-                        color: '#000080'
+                        color: '#000080',
+                        transform: 'translateY(8px)'
                       }}
                       className="text-[8px] sm:text-[9.5px] font-black tracking-wider uppercase text-center my-0.5 relative z-10 !text-blue-900"
                     >
@@ -3067,7 +3068,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                         style={{ 
                           fontFamily: "'Outfit', 'Inter', sans-serif",
                           color: '#ffffff',
-                          transform: 'translateY(4px)'
+                          transform: 'translateY(-8px)'
                         }}
                         className="text-[9.5px] sm:text-[11.5px] font-black tracking-[0.15em] uppercase text-center relative z-10"
                       >

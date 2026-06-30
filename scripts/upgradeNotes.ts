@@ -111,14 +111,14 @@ async function upgradeNotes() {
     .map(doc => ({ id: doc.id, ...doc.data() } as any))
     .filter(c => {
       const clsDigit = String(c.class || '').replace(/\D/g, '');
-      return clsDigit === '10';
+      return clsDigit === '6';
     });
   
   // Set to null to process all matching chapters
   const TRIAL_LIMIT: number | null = null;
   const chaptersToProcess = TRIAL_LIMIT ? chapters.slice(0, TRIAL_LIMIT) : chapters;
   
-  console.log(`📋 Found ${chapters.length} published Class 10 chapters. Starting full batch upgrade for all ${chaptersToProcess.length} chapters...`);
+  console.log(`📋 Found ${chapters.length} published Class 6 chapters. Starting full batch upgrade for all ${chaptersToProcess.length} chapters...`);
 
   for (let i = 0; i < chaptersToProcess.length; i++) {
     const chapter = chaptersToProcess[i];
