@@ -3054,9 +3054,9 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                     <span 
                       style={{ 
                         fontFamily: "'Outfit', 'Inter', sans-serif",
-                        color: '#db2777'
+                        color: '#000080'
                       }}
-                      className="text-[8px] sm:text-[9.5px] font-black tracking-wider uppercase text-center my-0.5 relative z-10 !text-pink-600"
+                      className="text-[8px] sm:text-[9.5px] font-black tracking-wider uppercase text-center my-0.5 relative z-10 !text-blue-900"
                     >
                       Click / କ୍ଲିକ୍ 👆
                     </span>
