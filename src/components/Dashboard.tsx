@@ -3043,7 +3043,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                       style={{ 
                         fontFamily: "'Outfit', 'Inter', sans-serif",
                         color: '#ffffff',
-                        transform: 'translateY(2px)'
+                        transform: 'translateY(-2px)'
                       }}
                       className="text-[11px] sm:text-[13px] font-black tracking-[0.15em] uppercase text-center relative z-10 text-white"
                     >
@@ -3055,7 +3055,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                       style={{ 
                         fontFamily: "'Outfit', 'Inter', sans-serif",
                         color: '#000080',
-                        transform: 'translateY(4px)'
+                        transform: 'translateY(1px)'
                       }}
                       className="text-[8px] sm:text-[9.5px] font-black tracking-wider uppercase text-center my-0.5 relative z-10 !text-blue-900"
                     >
@@ -3068,7 +3068,7 @@ export function Dashboard({ user, leaderboard, language, isPremium, onUpgrade, c
                         style={{ 
                           fontFamily: "'Outfit', 'Inter', sans-serif",
                           color: '#ffffff',
-                          transform: 'translateY(-2px)'
+                          transform: 'translateY(2px)'
                         }}
                         className="text-[9.5px] sm:text-[11.5px] font-black tracking-[0.15em] uppercase text-center relative z-10"
                       >
