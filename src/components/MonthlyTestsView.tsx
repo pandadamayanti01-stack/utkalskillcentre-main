@@ -1086,16 +1086,14 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
       />
     );
   }
-
   const filteredTests = tests.filter((t: any) => {
     if (user?.class) {
-      const testClass = String(t.class || '').toLowerCase().trim();
-      const userClass = String(user.class || '').toLowerCase().trim();
-      if (!(testClass === userClass || testClass === userClass.replace('class', ''))) return false;
+      const testClass = String(t.class || '').toLowerCase().replace(/\s+/g, '');
+      const userClass = String(user.class || '').toLowerCase().replace(/\s+/g, '');
+      if (!(testClass === userClass || testClass === userClass.replace('class', '') || testClass.replace('class', '') === userClass)) return false;
     }
     return true;
   });
-
   const availableMonths = (() => {
     const months = new Set<string>();
     filteredTests.forEach((t: any) => {
