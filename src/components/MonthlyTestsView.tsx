@@ -930,6 +930,21 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
   const [reviewingResults, setReviewingResults] = useState<any>(null);
   
   const [activeMonthFilter, setActiveMonthFilter] = useState<string>('');
+  
+  const todayStr = (() => {
+    const d = new Date();
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+    const parts = formatter.formatToParts(d);
+    const year = parts.find(p => p.type === 'year')?.value;
+    const month = parts.find(p => p.type === 'month')?.value;
+    const day = parts.find(p => p.type === 'day')?.value;
+    return `${year}-${month}-${day}`;
+  })();
   const [viewingConsolidatedCert, setViewingConsolidatedCert] = useState<any>(null);
   const [printingSelectionPaper, setPrintingSelectionPaper] = useState<any>(null);
 
@@ -1428,6 +1443,11 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
                       </span>
                       <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Attempted</span>
                     </div>
+                  ) : testItem.scheduledDate && todayStr < testItem.scheduledDate ? (
+                    <span className="px-3.5 py-1 rounded-full bg-slate-500/10 text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] border border-slate-500/20 shadow-[0_0_10px_rgba(100,116,139,0.15)] flex items-center gap-1.5">
+                      <Lucide.Lock size={10} />
+                      Locked
+                    </span>
                   ) : (
                     <span className="px-3.5 py-1 rounded-full bg-blue-500/10 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] border border-blue-500/20 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.15)] flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
@@ -1465,8 +1485,14 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
                       <ul className="space-y-1">
                         {testItem.chapterIds.map((cid: string) => {
                           const ch = chapters?.find((c: any) => c.id === cid);
-                          if (!ch) return null;
-                          const title = language === 'or' ? (ch.title_or || ch.title) : (ch.title_en || ch.title);
+                          let title = '';
+                          if (ch) {
+                            title = language === 'or' ? (ch.title_or || ch.title) : (ch.title_en || ch.title);
+                          } else {
+                            const parts = cid.split('_');
+                            const lastPart = parts[parts.length - 1] || cid;
+                            title = lastPart.replace(/([A-Z])/g, ' $1').trim().replace(/_/g, ' ');
+                          }
                           return (
                             <li key={cid} className="text-[10px] text-slate-300 font-bold flex items-center gap-1.5">
                               <span className="w-1 h-1 rounded-full bg-emerald-500 shrink-0"></span>
@@ -1603,16 +1629,26 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
                         </button>
                       </div>
 
-                      <button 
-                        onClick={() => {
-                          setSelectedTest(testItem);
-                          setTakingTest(true);
-                        }}
-                        className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-xs uppercase tracking-[0.2em] shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/45 hover:scale-[1.01] active:scale-98 transition-all duration-300 flex items-center justify-center gap-2 group/btn border-t border-white/20 cursor-pointer"
-                      >
-                        <Lucide.Play size={14} className="group-hover/btn:scale-125 transition-transform" />
-                        {translations[language].takeMonthlyTest}
-                      </button>
+                      {testItem.scheduledDate && todayStr < testItem.scheduledDate ? (
+                        <button 
+                          disabled
+                          className="w-full py-3 rounded-xl bg-slate-900 border border-white/5 text-slate-500 font-bold text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-2 cursor-not-allowed opacity-50"
+                        >
+                          <Lucide.Lock size={14} />
+                          {language === 'or' ? 'ପରୀକ୍ଷା ଆରମ୍ଭ ହୋଇନାହିଁ' : 'Exam Not Started'}
+                        </button>
+                      ) : (
+                        <button 
+                          onClick={() => {
+                            setSelectedTest(testItem);
+                            setTakingTest(true);
+                          }}
+                          className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-xs uppercase tracking-[0.2em] shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/45 hover:scale-[1.01] active:scale-98 transition-all duration-300 flex items-center justify-center gap-2 group/btn border-t border-white/20 cursor-pointer"
+                        >
+                          <Lucide.Play size={14} className="group-hover/btn:scale-125 transition-transform" />
+                          {translations[language].takeMonthlyTest}
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>

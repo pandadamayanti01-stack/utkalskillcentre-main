@@ -41,10 +41,10 @@ function getGroupIndexForSubject(subject: string, className: string): number {
   const isMath = s.includes('math') || s.includes('ganita') || s === 'algebra' || s === 'geometry' || s.includes('geometry') || s.includes('algebra');
 
   // 2. Odia subjects
-  const isOdia = s.includes('odia') || s.includes('flo') || s.includes('bhasa') || s.includes('jhulana') || s.includes('sahitya') || s.includes('pallavi') || s.includes('ଓଡ଼ିଆ') || s.includes('ସାହିତ୍ୟ');
+  const isOdia = s.includes('odia') || s.includes('flo') || s.includes('bhasa') || s.includes('jhulana') || s.includes('sahitya') || s.includes('ଓଡ଼ିଆ') || s.includes('ସାହିତ୍ୟ');
 
   // 3. English subjects
-  const isEnglish = s.includes('english') || s.includes('sle') || s.includes('jasmine');
+  const isEnglish = s.includes('english') || s.includes('sle') || s.includes('jasmine') || s.includes('pallavi');
 
   // 4. Science / EVS
   const isScienceEvs = s.includes('science') || s.includes('bignana') || s.includes('jigyasa') || s.includes('paribesa') || s.includes('pruthibi') || s.includes('evs') || s.includes('ଜୀବବିଜ୍ଞାନ');
