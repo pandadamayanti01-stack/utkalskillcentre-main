@@ -6602,10 +6602,32 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
   // Subscription is a single flat monthly price for all classes.
   let monthlyPrice = isTeacher ? 499 : (systemSettings?.monthlyPrice || 99);
   let yearlyPrice = isTeacher ? 4999 : (systemSettings?.yearlyPrice || 999);
+  let originalMonthlyPrice = isTeacher ? 1999 : 499;
+  let originalYearlyPrice = isTeacher ? 19999 : 4999;
   if (!isTeacher && user?.class === 'sishuvatika(Anganwadi)') {
     monthlyPrice = 49;
     yearlyPrice = 499;
+    originalMonthlyPrice = 249;
+    originalYearlyPrice = 2499;
   }
+
+  const premiumFeaturesBilingual = isTeacher
+    ? [
+        { en: "🤖 Unlimited AI Worksheet Maker runs", or: "🤖 ଅସୀମିତ AI ପ୍ରଶ୍ନପତ୍ର (Worksheet) ପ୍ରସ୍ତୁତି" },
+        { en: "📋 Unlimited AI Lesson Plan Creator", or: "📋 ଅସୀମିତ AI ପାଠ୍ୟ ଯୋଜନା (Lesson Plan) ପ୍ରସ୍ତୁତି" },
+        { en: "🧪 Unlimited AI Science Experiment Guides", or: "🧪 ଅସୀମିତ AI ବିଜ୍ଞାନ ପରୀକ୍ଷା (Science Experiment) ପ୍ରସ୍ତୁତି" },
+        { en: "📢 Promote your YouTube video lessons globally to all registered students", or: "📢 ନିଜର ୟୁଟ୍ୟୁବ୍ ଭିଡିଓ ଓଡ଼ିଶାର ସମସ୍ତ ପିଲାଙ୍କ ପାଇଁ ପ୍ରୋମୋଟ୍ କରନ୍ତୁ" },
+        { en: "⚡ High-speed priority AI generation", or: "⚡ ଉଚ୍ଚ-ଗତି ପ୍ରାଥମିକତା AI ଜେନେରେସନ୍" },
+        { en: "✨ Exclusive premium badge on your profile", or: "✨ ପ୍ରୋଫାଇଲ୍‌ରେ ଏକ୍ସକ୍ଲୁସିଭ୍ ପ୍ରିମିୟମ୍ ବ୍ୟାଜ୍" }
+      ]
+    : [
+        { en: "🤖 Unlimited AI Doubt Solver", or: "🤖 ଅସୀମିତ AI ସନ୍ଦେହ ସମାଧାନ (ପ୍ରଶ୍ନୋତ୍ତର)" },
+        { en: "📸 Photo Question Solver (Upload images/drawings)", or: "📸 ଫଟୋ ପ୍ରଶ୍ନ ସମାଧାନ (ଫଟୋ ଉଠାଇ ସମାଧାନ)" },
+        { en: "🎤 Voice Assistant Tutor (Learn by speaking)", or: "🎤 ଭଏସ୍ ସହାୟତା (କଥା ହୋଇ ପାଠ ପଢ଼ନ୍ତୁ)" },
+        { en: "🎯 Mapped Chapter MCQs & Live Games", or: "🎯 ବ୍ୟକ୍ତିଗତ ଅଭ୍ୟାସ, MCQ ଓ ଗେମ୍ସ" },
+        { en: "💬 Personal Study Buddy Chat", or: "💬 ଷ୍ଟଡି ବଡି ଚାଟ୍ (ପାଠପଢ଼ା ଚାଟ୍)" },
+        { en: "📊 Progress & Performance Analysis Reports", or: "📊 ପ୍ରଦର୍ଶନ ବିଶ୍ଳେଷଣ ପ୍ରଗତି ରିପୋର୍ଟ" }
+      ];
   let planName = isTeacher 
     ? (language === 'en' ? 'Educator Pro Plan' : 'ଶିକ୍ଷକ ପ୍ରୋ ପ୍ଲାନ୍')
     : p.premium.name;
@@ -6758,18 +6780,66 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
               {translations[language].pricing.currentPlan}
             </div>
           )}
-          <div className="mb-8">
-            <h3 className="text-2xl font-bold text-white mb-2">{planName}</h3>
-            <div className="space-y-1">
-              <div className="text-4xl font-bold text-white">₹{monthlyPrice} <span className="text-lg font-normal text-slate-400">/ {language === 'en' ? 'month' : 'ମାସ'}</span></div>
-              <div className="text-emerald-400 font-bold">₹{yearlyPrice} / {language === 'en' ? 'year' : 'ବର୍ଷ'} (Save 70%)</div>
+          
+          {/* Social Proof Hook Badge */}
+          <div className="bg-emerald-500/15 border border-emerald-500/30 rounded-2xl p-3 mb-6 text-left relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-[50px] h-[50px] bg-emerald-500/5 rounded-full blur-[20px] pointer-events-none" />
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+                <Lucide.Trophy size={14} className="animate-bounce" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[11px] font-black text-white uppercase tracking-wider leading-none">
+                  Odisha's #1 Choice • 10K+ Learners
+                </span>
+                <span className="text-[9.5px] font-bold text-emerald-400 mt-1.5 leading-none">
+                  ଓଡ଼ିଶାର ନମ୍ବର-୧ ପସନ୍ଦ • ୧୦,୦୦୦+ ଛାତ୍ରଛାତ୍ରୀ
+                </span>
+              </div>
             </div>
           </div>
+
+          <div className="mb-6">
+            <h3 className="text-2xl font-bold text-white mb-2">
+              {planName} <span className="text-base font-normal text-slate-400">({translations.or.pricing.premium.name})</span>
+            </h3>
+            <div className="space-y-2">
+              <div className="text-4xl font-bold text-white flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                <span className="text-lg line-through text-slate-500 font-normal">₹{originalMonthlyPrice}</span>
+                <span>₹{monthlyPrice}</span>
+                <span className="text-lg font-normal text-slate-400">/ {language === 'en' ? 'month' : 'ମାସ'}</span>
+                <span className="text-[12px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md">ମାସିକ ₹{monthlyPrice}</span>
+              </div>
+              <div className="text-emerald-400 font-bold flex flex-wrap items-center gap-2">
+                <span className="line-through text-emerald-500/50 font-normal">₹{originalYearlyPrice}</span>
+                <span>₹{yearlyPrice} / {language === 'en' ? 'year' : 'ବର୍ଷ'}</span>
+                <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded-md">ବାର୍ଷିକ ₹{yearlyPrice}</span>
+                <span className="bg-emerald-500/15 text-emerald-400 text-[10px] px-2 py-0.5 rounded-md uppercase font-black tracking-wider animate-pulse">Save 80% (୮୦% ସଞ୍ଚୟ)</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Launch Price Lock Hook Banner */}
+          <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-3.5 mb-6 text-left flex items-start gap-2.5">
+            <Lucide.Zap size={16} className="text-blue-400 shrink-0 mt-0.5 animate-pulse" />
+            <div className="flex flex-col">
+              <span className="text-[11px] font-bold text-white leading-tight">
+                Launch Special: Lock in ₹{monthlyPrice}/month forever before price increases!
+              </span>
+              <span className="text-[9.5px] font-medium text-blue-300 mt-1 leading-tight">
+                ଲଞ୍ଚ୍ ଅଫର୍ ବିଶେଷ: ମୂଲ୍ୟ ବୃଦ୍ଧି ହେବା ପୂର୍ବରୁ ଆଜୀବନ ପାଇଁ ₹{monthlyPrice}/ମାସ ଲକ୍ କରନ୍ତୁ!
+              </span>
+            </div>
+          </div>
+
           <ul className="space-y-4 mb-10 flex-1">
-            {premiumFeatures.map((f: string, i: number) => (
-              <li key={i} className="flex items-center gap-3 text-white">
-                <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-[10px] text-white">✓</div>
-                {f}
+            {premiumFeaturesBilingual.map((f: any, i: number) => (
+              <li key={i} className="flex items-start gap-3 text-white">
+                <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-[10px] text-white shrink-0 mt-0.5">✓</div>
+                <div className="flex flex-col text-left">
+                  <span className="font-semibold text-sm text-white leading-snug">{f.en}</span>
+                  <span className="text-[11px] text-emerald-400 font-medium leading-normal">{f.or}</span>
+                </div>
               </li>
             ))}
           </ul>
