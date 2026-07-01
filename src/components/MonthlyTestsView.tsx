@@ -10,6 +10,34 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { vibrate, requestScreenWakeLock, releaseScreenWakeLock, playSuccessChime, playClickSound } from '../pwa';
 import { CLASS_SUBJECTS } from './DigitalLibraryView';
 import { Test, MonthlyTestSubmission } from '../types';
+import {
+  ROADMAP_DATA_1,
+  ROADMAP_DATA_2,
+  ROADMAP_DATA_3,
+  ROADMAP_DATA_4,
+  ROADMAP_DATA_5,
+  ROADMAP_DATA_6,
+  ROADMAP_DATA_7,
+  ROADMAP_DATA_8,
+  ROADMAP_DATA_9,
+  ROADMAP_DATA as ROADMAP_DATA_10
+} from '../data/roadmapData';
+
+function findChapterInRoadmaps(cid: string): any {
+  const roadmaps = [
+    ROADMAP_DATA_1, ROADMAP_DATA_2, ROADMAP_DATA_3, ROADMAP_DATA_4, ROADMAP_DATA_5,
+    ROADMAP_DATA_6, ROADMAP_DATA_7, ROADMAP_DATA_8, ROADMAP_DATA_9, ROADMAP_DATA_10
+  ];
+  for (const roadmap of roadmaps) {
+    if (!roadmap) continue;
+    for (const monthEntry of roadmap) {
+      if (!monthEntry || !Array.isArray(monthEntry.chapters)) continue;
+      const found = monthEntry.chapters.find((ch: any) => ch.id === cid);
+      if (found) return found;
+    }
+  }
+  return null;
+}
 
 export const DISTRICT_LANDMARKS_WATERMARKS: Record<string, { landmarkEn: string; landmarkOr: string; image: string }> = {
   Angul: {
@@ -1482,9 +1510,14 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
                           if (ch) {
                             title = language === 'or' ? (ch.title_or || ch.title) : (ch.title_en || ch.title);
                           } else {
-                            const parts = cid.split('_');
-                            const lastPart = parts[parts.length - 1] || cid;
-                            title = lastPart.replace(/([A-Z])/g, ' $1').trim().replace(/_/g, ' ');
+                            const roadmapCh = findChapterInRoadmaps(cid);
+                            if (roadmapCh) {
+                              title = language === 'or' ? (roadmapCh.title_or || roadmapCh.title) : (roadmapCh.title_en || roadmapCh.title);
+                            } else {
+                              const parts = cid.split('_');
+                              const lastPart = parts[parts.length - 1] || cid;
+                              title = lastPart.replace(/([A-Z])/g, ' $1').trim().replace(/_/g, ' ');
+                            }
                           }
                           return (
                             <li key={cid} className="text-[10px] text-slate-300 font-bold flex items-center gap-1.5">
