@@ -1093,11 +1093,6 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
       const userClass = String(user.class || '').toLowerCase().trim();
       if (!(testClass === userClass || testClass === userClass.replace('class', ''))) return false;
     }
-    if (user?.role === 'admin') return true;
-    if (t.scheduledDate) {
-      const today = new Date().toISOString().split('T')[0];
-      return t.scheduledDate <= today;
-    }
     return true;
   });
 
