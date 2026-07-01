@@ -3492,10 +3492,10 @@ export default function App() {
               />
             </div>
 
-            {/* Gundulu Mascot pointing up/left */}
+            {/* Gundulu Mascot pointing up/right */}
             <motion.img 
               src="/gundulu-pointing-nobg.png" 
-              className="h-24 w-auto object-contain relative z-10 drop-shadow-sm" 
+              className="h-24 w-auto object-contain relative z-10 drop-shadow-sm scale-x-[-1]" 
               alt="Gundulu Mascot" 
               animate={{ y: [-4, 4, -4], rotate: [-1, 2, -1] }}
               transition={{ repeat: Infinity, duration: 3.5, ease: "easeInOut" }}
@@ -6628,6 +6628,7 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
         { en: "💬 Personal Study Buddy Chat", or: "💬 ଷ୍ଟଡି ବଡି ଚାଟ୍ (ପାଠପଢ଼ା ଚାଟ୍)" },
         { en: "📊 Progress & Performance Analysis Reports", or: "📊 ପ୍ରଦର୍ଶନ ବିଶ୍ଳେଷଣ ପ୍ରଗତି ରିପୋର୍ଟ" }
       ];
+
   let planName = isTeacher 
     ? (language === 'en' ? 'Educator Pro Plan' : 'ଶିକ୍ଷକ ପ୍ରୋ ପ୍ଲାନ୍')
     : p.premium.name;
@@ -6774,25 +6775,107 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
         </div>
 
         {/* Premium Plan */}
-        <div className="bg-gradient-to-br from-emerald-600/20 to-blue-600/20 border border-emerald-500/20 rounded-[2.5rem] p-8 flex flex-col relative overflow-hidden shadow-2xl shadow-emerald-500/10">
-          {isPremium && (
-            <div className="absolute top-4 right-4 bg-emerald-500 text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
-              {translations[language].pricing.currentPlan}
-            </div>
-          )}
-          
+        <div className="wow-premium-card bg-gradient-to-br from-[#0c2035] via-[#05111d] to-[#0c1f30] border border-blue-500/30 rounded-[2.5rem] p-8 flex flex-col relative overflow-hidden shadow-[0_20px_50px_-10px_rgba(59,130,246,0.35)] text-white">
+          {/* Custom CSS styles for WOW effects and Light Mode color overrides */}
+          <style dangerouslySetInnerHTML={{__html: `
+            @keyframes sheen {
+              0% { transform: translateX(-150%) skewX(-15deg); }
+              100% { transform: translateX(150%) skewX(-15deg); }
+            }
+            @keyframes borderGlow {
+              0%, 100% {
+                border-color: rgba(59, 130, 246, 0.25);
+                box-shadow: 0 0 20px rgba(59, 130, 246, 0.1), inset 0 0 15px rgba(59, 130, 246, 0.05);
+              }
+              50% {
+                border-color: rgba(6, 182, 212, 0.4);
+                box-shadow: 0 0 30px rgba(6, 182, 212, 0.2), inset 0 0 20px rgba(6, 182, 212, 0.08);
+              }
+            }
+            @keyframes pricePulse {
+              0%, 100% {
+                text-shadow: 0 0 8px rgba(0, 229, 255, 0.4), 0 0 20px rgba(0, 229, 255, 0.2);
+              }
+              50% {
+                text-shadow: 0 0 15px rgba(0, 229, 255, 0.8), 0 0 30px rgba(0, 229, 255, 0.4), 0 0 40px rgba(0, 229, 255, 0.2);
+              }
+            }
+            .wow-premium-card {
+              position: relative;
+              overflow: hidden;
+              animation: borderGlow 6s infinite ease-in-out;
+            }
+            .wow-premium-card::before {
+              content: '';
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.08) 30%,
+                rgba(255, 255, 255, 0.18) 50%,
+                rgba(255, 255, 255, 0.08) 70%,
+                transparent
+              );
+              transform: translateX(-150%) skewX(-15deg);
+              animation: sheen 4.5s infinite ease-in-out;
+              pointer-events: none;
+            }
+            .wow-price {
+              animation: pricePulse 4s infinite ease-in-out;
+              color: #00e5ff !important;
+              background: none !important;
+            }
+            /* Bulletproof Light-Mode Text Overrides to guarantee readability */
+            .wow-premium-card h3,
+            .wow-premium-card h4,
+            .wow-premium-card span:not(.wow-price):not(.text-emerald-400):not(.text-blue-350):not(.text-blue-300):not(.text-blue-400):not(.text-slate-500),
+            .wow-premium-card li span:first-child,
+            .wow-premium-card ul li div span {
+              color: #ffffff !important;
+            }
+            .wow-premium-card .text-emerald-400 {
+              color: #38bdf8 !important;
+            }
+            .wow-premium-card .text-emerald-600 {
+              color: #0284c7 !important;
+            }
+            .wow-premium-card .text-emerald-700 {
+              color: #38bdf8 !important;
+            }
+            .wow-premium-card .text-blue-300 {
+              color: #93c5fd !important;
+            }
+            .wow-premium-card .text-blue-450 {
+              color: #93c5fd !important;
+            }
+            .wow-premium-card .text-blue-400 {
+              color: #60a5fa !important;
+            }
+            .wow-premium-card .text-slate-500 {
+              color: #94a3b8 !important;
+              text-decoration: line-through !important;
+            }
+            .wow-premium-card .text-slate-400 {
+              color: #cbd5e1 !important;
+            }
+          `}} />
+
           {/* Social Proof Hook Badge */}
-          <div className="bg-emerald-500/15 border border-emerald-500/30 rounded-2xl p-3 mb-6 text-left relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-[50px] h-[50px] bg-emerald-500/5 rounded-full blur-[20px] pointer-events-none" />
+          <div className="bg-blue-500/10 border border-blue-500/25 rounded-2xl p-3 mb-6 text-left relative overflow-hidden backdrop-blur-md">
+            <div className="absolute top-0 right-0 w-[50px] h-[50px] bg-blue-500/5 rounded-full blur-[20px] pointer-events-none" />
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
-                <Lucide.Trophy size={14} className="animate-bounce" />
+              <div className="w-7.5 h-7.5 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400 shrink-0">
+                <Lucide.Trophy size={14} className="text-blue-600 dark:text-blue-400 animate-bounce" style={{ animationDuration: '2.5s' }} />
               </div>
               <div className="flex flex-col">
-                <span className="text-[11px] font-black text-white uppercase tracking-wider leading-none">
+                <span className="text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-wider leading-none">
                   Odisha's #1 Choice • 10K+ Learners
                 </span>
-                <span className="text-[9.5px] font-bold text-emerald-400 mt-1.5 leading-none">
+                <span className="text-[9.5px] font-bold text-blue-700 dark:text-blue-400 mt-1.5 leading-none">
                   ଓଡ଼ିଶାର ନମ୍ବର-୧ ପସନ୍ଦ • ୧୦,୦୦୦+ ଛାତ୍ରଛାତ୍ରୀ
                 </span>
               </div>
@@ -6800,49 +6883,70 @@ function LocalSubscriptionGuard({ onSubscribe, language, isPremium, user, onShar
           </div>
 
           <div className="mb-6">
-            <h3 className="text-2xl font-bold text-white mb-2">
-              {planName} <span className="text-base font-normal text-slate-400">({translations.or.pricing.premium.name})</span>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 tracking-wide">
+              {planName} <span className="text-sm font-normal text-slate-400">({translations.or.pricing.premium.name})</span>
             </h3>
             <div className="space-y-2">
-              <div className="text-4xl font-bold text-white flex flex-wrap items-baseline gap-x-2 gap-y-1">
-                <span className="text-lg line-through text-slate-500 font-normal">₹{originalMonthlyPrice}</span>
-                <span>₹{monthlyPrice}</span>
-                <span className="text-lg font-normal text-slate-400">/ {language === 'en' ? 'month' : 'ମାସ'}</span>
-                <span className="text-[12px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md">ମାସିକ ₹{monthlyPrice}</span>
+              <div className="text-4xl font-black text-slate-950 dark:text-white flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                <span className="text-lg line-through text-slate-400 dark:text-slate-500 font-normal">₹{originalMonthlyPrice}</span>
+                <span className="wow-price">₹{monthlyPrice}</span>
+                <span className="text-lg font-normal text-slate-500 dark:text-slate-400">/ {language === 'en' ? 'month' : 'ମାସ'}</span>
+                <span className="text-[12px] font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-md">ମାସିକ ₹{monthlyPrice}</span>
               </div>
-              <div className="text-emerald-400 font-bold flex flex-wrap items-center gap-2">
-                <span className="line-through text-emerald-500/50 font-normal">₹{originalYearlyPrice}</span>
-                <span>₹{yearlyPrice} / {language === 'en' ? 'year' : 'ବର୍ଷ'}</span>
-                <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded-md">ବାର୍ଷିକ ₹{yearlyPrice}</span>
-                <span className="bg-emerald-500/15 text-emerald-400 text-[10px] px-2 py-0.5 rounded-md uppercase font-black tracking-wider animate-pulse">Save 80% (୮୦% ସଞ୍ଚୟ)</span>
+              <div className="text-blue-400 font-bold flex flex-wrap items-center gap-2">
+                <span className="line-through text-slate-400 dark:text-blue-500/30 font-normal">₹{originalYearlyPrice}</span>
+                <span className="text-blue-300">₹{yearlyPrice} / {language === 'en' ? 'year' : 'ବର୍ଷ'}</span>
+                <span className="text-[10px] font-bold text-blue-500 dark:text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded-md">ବାର୍ଷିକ ₹{yearlyPrice}</span>
+                <span className="bg-blue-500/15 text-blue-400 text-[10px] px-2 py-0.5 rounded-md uppercase font-black tracking-wider animate-pulse">Save 80% (୮୦% ସଞ୍ଚୟ)</span>
               </div>
             </div>
           </div>
 
           {/* Launch Price Lock Hook Banner */}
           <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-3.5 mb-6 text-left flex items-start gap-2.5">
-            <Lucide.Zap size={16} className="text-blue-400 shrink-0 mt-0.5 animate-pulse" />
+            <Lucide.Zap size={16} className="text-blue-500 dark:text-blue-400 shrink-0 mt-0.5 animate-pulse" />
             <div className="flex flex-col">
-              <span className="text-[11px] font-bold text-white leading-tight">
+              <span className="text-[11px] font-bold text-blue-950 dark:text-white leading-tight">
                 Launch Special: Lock in ₹{monthlyPrice}/month forever before price increases!
               </span>
-              <span className="text-[9.5px] font-medium text-blue-300 mt-1 leading-tight">
+              <span className="text-[9.5px] font-medium text-blue-800 dark:text-blue-300 mt-1 leading-tight">
                 ଲଞ୍ଚ୍ ଅଫର୍ ବିଶେଷ: ମୂଲ୍ୟ ବୃଦ୍ଧି ହେବା ପୂର୍ବରୁ ଆଜୀବନ ପାଇଁ ₹{monthlyPrice}/ମାସ ଲକ୍ କରନ୍ତୁ!
               </span>
             </div>
           </div>
 
-          <ul className="space-y-4 mb-10 flex-1">
+          <ul className="space-y-4 mb-8 flex-1">
             {premiumFeaturesBilingual.map((f: any, i: number) => (
-              <li key={i} className="flex items-start gap-3 text-white">
-                <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-[10px] text-white shrink-0 mt-0.5">✓</div>
+              <li key={i} className="flex items-start gap-3 text-slate-800 dark:text-white">
+                <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-[10px] text-white shrink-0 mt-0.5">✓</div>
                 <div className="flex flex-col text-left">
-                  <span className="font-semibold text-sm text-white leading-snug">{f.en}</span>
-                  <span className="text-[11px] text-emerald-400 font-medium leading-normal">{f.or}</span>
+                  <span className="font-semibold text-sm text-slate-800 dark:text-white leading-snug">{f.en}</span>
+                  <span className="text-[11px] text-blue-300 font-medium leading-normal">{f.or}</span>
                 </div>
               </li>
             ))}
           </ul>
+
+          {/* Padhiba Odisha Badhiba Odisha Mascot Banner */}
+          <div className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-2xl p-4 flex items-center gap-4 relative overflow-hidden mb-6">
+            <div className="absolute top-0 right-0 w-[40px] h-[40px] bg-blue-500/5 rounded-full blur-[10px] pointer-events-none" />
+            <img 
+              src="/gundulu-pointing-nobg.png" 
+              alt="Gundulu mascot" 
+              className="w-12 h-12 object-contain shrink-0 animate-bounce scale-x-[-1]" 
+              style={{ animationDuration: '3s' }}
+            />
+            <div className="flex flex-col text-left">
+              <span className="text-[13px] font-black text-blue-400 tracking-wide uppercase">
+                ପଢ଼ିବ ଓଡ଼ିଶା, ବଢ଼ିବ ଓଡ଼ିଶା!
+              </span>
+              <span className="text-[11px] font-extrabold text-slate-700 dark:text-slate-350 mt-0.5 tracking-wider italic">
+                "Padhiba Odisha, Badhiba Odisha"
+              </span>
+            </div>
+          </div>
+          
+
           {!isPremium ? (
             <div className="space-y-4">
               <button 
