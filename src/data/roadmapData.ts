@@ -5,11 +5,13 @@ export const ROADMAP_DATA_1 = [
     "chapters": [
       {
         "id": "XHDqx5EBcSK8ISGZCDz8",
-        "title": "Chapter 1 - Finding Chulubuli the Cat (Pre-counting Concepts)",
-        "title_en": "Finding Chulubuli the Cat (Pre-counting Concepts)",
-        "title_or": "ଚୁଲୁବୁଲି ବିଲେଇକୁ ଖୋଜିବା",
+        "title": "Chapter 1 - Finding Tulutuli the Cat (Pre-counting Concepts)",
+        "title_en": "Finding Tulutuli the Cat (Pre-counting Concepts)",
+        "title_or": "ଟୁଲୁଟୁଲି ବିଲେଇକୁ ଖୋଜିବା",
         "subject": "ganita_khela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FMathematics%2FChapter%201%20-%20%E0%AC%9A%E0%AD%81%E0%AC%B2%E0%AC%AC%E0%AD%81%E0%AC%B2%E0%AC%BF%20%E0%AC%AC%E0%AC%BF%E0%AC%B2%E0%AD%87%E0%AC%87%E0%AC%95%E0%AD%81%20%E0%AC%96%E0%AD%8B%E0%AC%9C%E0%AC%BF%E0%AC%AC%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "tzb8ZgNsF3bYzLcx0fYw",
@@ -17,7 +19,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Which is Long? Which is Round? (Shapes)",
         "title_or": "କେଉଁଟି ଲମ୍ବା ? କେଉଁଟି ଗୋଲ ?",
         "subject": "ganita_khela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FMathematics%2FChapter%202%20-%20%E0%AC%95%E0%AD%87%E0%AC%89%E0%AC%81%E0%AC%9F%E0%AC%BF%20%E0%AC%B2%E0%AC%AE%E0%AD%8D%E0%AC%AC%E0%AC%BE%20%E0%AC%95%E0%AD%87%E0%AC%89%E0%AC%81%E0%AC%9F%E0%AC%BF%20%E0%AC%97%E0%AD%8B%E0%AC%B2.pdf?alt=media",
+        "number": null
       },
       {
         "id": "SawlWuAV6HGY86ZXa0yq",
@@ -25,7 +29,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Let's look at the picture and talk",
         "title_or": "ଆସ ଚିତ୍ରଦେଖି କଥา ହେବା",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch01_Aasa_Chitra_Dekhi.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ZvRgoU0kFI6qXGXvyueF",
@@ -33,7 +39,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Chakuli Kala Te Te - Poem",
         "title_or": "ଚକୁଳି କଳା ତେଁ ତେଁ",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch02_Chakuli_Kala_Chen.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Kc422gXqsOyL8jIxQ3Z1",
@@ -41,7 +49,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Muni Smiled - Story",
         "title_or": "ମୁନି ଦେଲା ହସି",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch03_Muni_Dela_Hasi.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jhulana_class1_ch1",
@@ -49,7 +59,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch01_Aasa_Chitra_Dekhi.pdf?alt=media",
+        "number": 1
       },
       {
         "id": "jhulana_class1_ch2",
@@ -57,7 +69,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch02_Chakuli_Kala_Chen.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "jhulana_class1_ch3",
@@ -65,7 +79,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch03_Muni_Dela_Hasi.pdf?alt=media",
+        "number": 3
       },
       {
         "id": "jhulana_class1_ch4",
@@ -73,7 +89,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch04_Aare_Kau_Aare_Thekua.pdf?alt=media",
+        "number": 4
       }
     ]
   },
@@ -86,7 +104,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Let's Find (Numbers 1 to 9)",
         "title_or": "ଆସ ଖୋଜିବା",
         "subject": "ganita_khela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FMathematics%2FChapter%203%20-%20%E0%AC%86%E0%AC%AE%E0%AD%8D%E0%AC%AC%20%E0%AC%AD%E0%AD%8B%E0%AC%9C%E0%AC%BF.pdf?alt=media",
+        "number": null
       },
       {
         "id": "7vxtIgB06xw5CqVVQpoI",
@@ -94,7 +114,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Come Crow, Come Rabbit - Poem",
         "title_or": "ଆ’ରେ କାଉ , ଆ’ ଠେକୁଆ",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch04_Aare_Kau_Aare_Thekua.pdf?alt=media",
+        "number": null
       },
       {
         "id": "nryCGExutJofHWjXBvaf",
@@ -102,7 +124,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Our Family",
         "title_or": "ଆମ ପରିବାର",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch05_Aama_Paribara.pdf?alt=media",
+        "number": null
       },
       {
         "id": "8XxxKzrZ4RDTUI2pSMiZ",
@@ -110,7 +134,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Let's look at the picture and talk 2",
         "title_or": "ଆସ ଚିତ୍ରଦେଖି କଥା ହେବା ୨",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch06_Aasa_Chitra_Dekhi_2.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jhulana_class1_ch5",
@@ -118,7 +144,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch05_Aama_Paribara.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "jhulana_class1_ch6",
@@ -126,7 +154,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch06_Aasa_Chitra_Dekhi_2.pdf?alt=media",
+        "number": 6
       },
       {
         "id": "jhulana_class1_ch7",
@@ -134,7 +164,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch07_Bada_Kie.pdf?alt=media",
+        "number": 7
       }
     ]
   },
@@ -147,7 +179,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Let's Make 10 (Numbers 10 to 20)",
         "title_or": "ଆସ, ୧୦ ତିଆରି କରିବା",
         "subject": "ganita_khela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FMathematics%2FChapter%204%20-%20%E0%AC%86%E0%AC%B8%20%E0%AD%A7%E0%AD%A6%20%E0%AC%A4%E0%AC%BF%E0%AC%86%E0%AC%B0%E0%AC%BF%20%E0%AC%95%E0%AC%B0%E0%AC%BF%E0%AC%AC%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "KEQ368wuxHqgGm9cRyAM",
@@ -155,7 +189,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "What is the Number? (Addition & Subtraction of 1-Digit Numbers)",
         "title_or": "ସଂଖ୍ୟାଟି କେତେ",
         "subject": "ganita_khela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FMathematics%2FChapter%205%20-%20%E0%AC%B8%E0%AC%82%E0%AC%96%E0%AD%8D%E0%AD%9F%E0%AC%BE%E0%AC%9F%E0%AC%BF%20%E0%AC%95%E0%AD%87%E0%AC%A4%E0%AD%87.pdf?alt=media",
+        "number": null
       },
       {
         "id": "uOaluq8F5ZbItXxAlFx6",
@@ -163,7 +199,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Who is Big? - Story",
         "title_or": "ବଡ଼ କିଏ?",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch07_Bada_Kie.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Ok8e8nWGwvaV0S1HDDzP",
@@ -171,7 +209,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Sparrow - Poem",
         "title_or": "ଚଟିଆ",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch08_Chatia.pdf?alt=media",
+        "number": null
       },
       {
         "id": "HJVegh473QZNqk7CDipY",
@@ -179,7 +219,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Fox Drinking Coconut Water - Story",
         "title_or": "বিଲୁଆର ପଇଡ଼ ପିଆ",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch09_Biluara_Paida_Pia.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jhulana_class1_ch8",
@@ -187,7 +229,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch08_Chatia.pdf?alt=media",
+        "number": 8
       },
       {
         "id": "jhulana_class1_ch9",
@@ -195,7 +239,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch09_Biluara_Paida_Pia.pdf?alt=media",
+        "number": 9
       },
       {
         "id": "jhulana_class1_ch10",
@@ -203,7 +249,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch10_Sabhie_Aamara_Mita.pdf?alt=media",
+        "number": 10
       }
     ]
   },
@@ -216,7 +264,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Vegetable Garden (Addition & Subtraction within 20)",
         "title_or": "ପନିପରିବା ବଗିଚା",
         "subject": "ganita_khela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FMathematics%2FChapter%206%20-%20%E0%AC%AA%E0%AC%A8%E0%AC%BF%E0%AC%AA%E0%AC%B0%E0%AC%BF%E0%AC%AC%E0%AC%BE%20%E0%AC%AC%E0%AC%97%E0%AC%BF%E0%AC%9A%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "zzoGMjMexFnlVGDOsKXM",
@@ -224,7 +274,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Everyone is Our Friend - Poem",
         "title_or": "ସଭିଏଁ ଆମର ମିତ",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch10_Sabhie_Aamara_Mita.pdf?alt=media",
+        "number": null
       },
       {
         "id": "2ERWj901Gr8vujoyX7P1",
@@ -232,7 +284,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Two Words/Sayings",
         "title_or": "ଦୁଇଟି ବାଣୀ",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch11_Duiti_Bani.pdf?alt=media",
+        "number": null
       },
       {
         "id": "GgDB77Vn02yoVAyEfB8V",
@@ -240,7 +294,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Let's look at the picture and talk 3",
         "title_or": "ଆସ ଚିତ୍ରଦେଖି କଥା ହେବା ୩",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch12_Aasa_Chitra_Dekhi_3.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jhulana_class1_ch11",
@@ -248,7 +304,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch11_Duiti_Bani.pdf?alt=media",
+        "number": 11
       },
       {
         "id": "jhulana_class1_ch12",
@@ -256,7 +314,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch12_Aasa_Chitra_Dekhi_3.pdf?alt=media",
+        "number": 12
       },
       {
         "id": "jhulana_class1_ch13",
@@ -264,7 +324,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch13_Aama_Aja.pdf?alt=media",
+        "number": 13
       }
     ]
   },
@@ -277,7 +339,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Lina's Family (Measurement)",
         "title_or": "ଲୀନାର ପରିବାର",
         "subject": "ganita_khela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FMathematics%2FChapter%207%20-%20%E0%AC%B2%E0%AD%80%E0%AC%A8%E0%AC%BE%E0%AC%B0%20%E0%AC%AA%E0%AC%B0%E0%AC%BF%E0%AC%AC%E0%AC%BE%E0%AC%B0.pdf?alt=media",
+        "number": null
       },
       {
         "id": "NQhbSkTA9O8Ir4g1tYN2",
@@ -285,7 +349,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Fun with Numbers (Numbers 21 to 99)",
         "title_or": "ସଂଖ୍ୟାର ମଜା",
         "subject": "ganita_khela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FMathematics%2FChapter%208%20-%20%E0%AC%B8%E0%AC%82%E0%AC%96%E0%AD%8D%E0%AD%9F%E0%AC%BE%E0%AC%B0%20%E0%AC%AE%E0%AC%9C%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "6gDxcmrfVatJx65CZFz7",
@@ -293,7 +359,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Our Grandfather - Poem",
         "title_or": "ଆମ ଅଜା",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch13_Aama_Aja.pdf?alt=media",
+        "number": null
       },
       {
         "id": "am9OspM5HVGE1mL0Sspq",
@@ -301,7 +369,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "The Fun of Rasagola - Story",
         "title_or": "ରସଗୋଲାର ମଜା",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch15_Rasagolara_Maja.pdf?alt=media",
+        "number": null
       },
       {
         "id": "3lQZiYuybyOTUVWq949C",
@@ -309,7 +379,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Our Work",
         "title_or": "ଆମ କାମ",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch16_Aama_Kama.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jhulana_class1_ch14",
@@ -317,7 +389,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch14_Hanumankadara_Chasama.pdf?alt=media",
+        "number": 14
       },
       {
         "id": "jhulana_class1_ch15",
@@ -325,7 +399,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch15_Rasagolara_Maja.pdf?alt=media",
+        "number": 15
       },
       {
         "id": "jhulana_class1_ch16",
@@ -333,7 +409,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch16_Aama_Kama.pdf?alt=media",
+        "number": 16
       }
     ]
   },
@@ -346,7 +424,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Our Festivals (Patterns)",
         "title_or": "ଆମ ପର୍ବପର୍ବାଣୀ",
         "subject": "ganita_khela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FMathematics%2FChapter%209%20-%20%E0%AC%86%E0%AC%AE%20%E0%AC%AA%E0%AC%B0%E0%AD%8D%E0%AC%AC%E0%AC%AA%E0%AC%B0%E0%AD%8D%E0%AC%AC%E0%AC%BE%E0%AC%A3%E0%AD%80.pdf?alt=media",
+        "number": null
       },
       {
         "id": "7aTiz91u5PavOpGUTdxL",
@@ -354,7 +434,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Let's look at the picture and talk 4",
         "title_or": "ଆସ ଚିତ୍ରଦେଖି କଥା ହେବା ୪",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch17_Aasa_Chitra_Dekhi_4.pdf?alt=media",
+        "number": null
       },
       {
         "id": "FtIDYpM5kiHNP8AuWpCC",
@@ -362,7 +444,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Let's Go to the Fair - Poem",
         "title_or": "ଆସରେ ଯିବା ଯାତରା ଦେଖି",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch18_Aasare_Jiba_Jatara.pdf?alt=media",
+        "number": null
       },
       {
         "id": "dAali4qHaeSWByIfwxAS",
@@ -370,7 +454,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Brother Frog seeing Rath Yatra - Story",
         "title_or": "ବେଙ୍ଗଭାଇର ରଥଯାତରା ଦେଖା",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch19_Benga_Chuara_Ratha_Jatra.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jhulana_class1_ch17",
@@ -378,7 +464,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch17_Aasa_Chitra_Dekhi_4.pdf?alt=media",
+        "number": 17
       },
       {
         "id": "jhulana_class1_ch18",
@@ -386,7 +474,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch18_Aasare_Jiba_Jatara.pdf?alt=media",
+        "number": 18
       },
       {
         "id": "jhulana_class1_ch19",
@@ -394,7 +484,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch19_Benga_Chuara_Ratha_Jatra.pdf?alt=media",
+        "number": 19
       }
     ]
   },
@@ -407,7 +499,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "My One Day's Work (Time)",
         "title_or": "ମୋର ଗୋଟିଏ ଦିବସର କାମ",
         "subject": "ganita_khela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FMathematics%2FChapter%2010%20-%20%E0%AC%AE%E0%AD%8B%E0%AC%B0%20%E0%AC%97%E0%AD%8B%E0%AC%9F%E0%AC%BF%E0%AC%8F%20%E0%AC%A6%E0%AC%BF%E0%AC%AC%E0%AC%B8%E0%AC%B0%20%E0%AC%95%E0%AC%BE%E0%AC%AE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "3PP3RsP6jhSxCcONlZTY",
@@ -415,7 +509,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "How Many Times Added? (Multiplication)",
         "title_or": "କେତେ ଥର ମିଶିଲା ?",
         "subject": "ganita_khela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FMathematics%2FChapter%2011%20-%20%E0%AC%95%E0%AD%87%E0%AC%A4%E0%AD%87%20%E0%AC%A5%E0%AC%B0%20%E0%AC%AE%E0%AC%BF%E0%AC%B6%E0%AC%BF%E0%AC%B2%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jF8k3a3emtoNMgWB7Sy6",
@@ -423,7 +519,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Holi - Poem",
         "title_or": "ହୋଲି",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch20_Holi.pdf?alt=media",
+        "number": null
       },
       {
         "id": "yrN8dQVFhNnePPsIXItd",
@@ -431,7 +529,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Seeing the Idol - Story",
         "title_or": "ମେଢ଼ଦେଖା",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch21_Medha_Dekha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "hzx2uPQleDJw4B9pYKfn",
@@ -439,7 +539,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Let's look at the picture and talk 5",
         "title_or": "ଆସ ଚିତ୍ରଦେଖି କଥା ହେବା ୫",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch22_Aasa_Chitra_Dekhi_5.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jhulana_class1_ch20",
@@ -447,7 +549,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch20_Holi.pdf?alt=media",
+        "number": 20
       },
       {
         "id": "jhulana_class1_ch21",
@@ -455,7 +559,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch21_Medha_Dekha.pdf?alt=media",
+        "number": 21
       },
       {
         "id": "jhulana_class1_ch22",
@@ -463,7 +569,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch22_Aasa_Chitra_Dekhi_5.pdf?alt=media",
+        "number": 22
       }
     ]
   },
@@ -476,7 +584,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Let's Buy and Sell (Money)",
         "title_or": "ଆସ କିଣାବିକା କରିବା",
         "subject": "ganita_khela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FMathematics%2FChapter%2012%20-%20%E0%AC%86%E0%AC%B8%20%E0%AC%95%E0%AC%BF%E0%AC%A3%E0%AC%BE%E0%AC%AC%E0%AC%BF%E0%AC%95%E0%AC%BE%20%E0%AC%95%E0%AC%B0%E0%AC%BF%E0%AC%AC%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "OEMD0mHvO7dBCEJIs7uC",
@@ -484,7 +594,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Elephant and Little Crow - Story",
         "title_or": "ହାତୀ ଓ କୁନିକାଉ",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch23_Hati_O_Kunikaou.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Oapyp30DPCxnjPkiXwAm",
@@ -492,7 +604,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "The Gift - Story",
         "title_or": "ଉପହାର",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch24_Upahara.pdf?alt=media",
+        "number": null
       },
       {
         "id": "LguMwIeS8pfJsAORhCPg",
@@ -500,7 +614,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Suni Won - Story",
         "title_or": "ସୁନିଗଲା ଜିତି",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch25_Sunigala_Jiti.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jhulana_class1_ch23",
@@ -508,7 +624,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch23_Hati_O_Kunikaou.pdf?alt=media",
+        "number": 23
       },
       {
         "id": "jhulana_class1_ch24",
@@ -516,7 +634,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch24_Upahara.pdf?alt=media",
+        "number": 24
       },
       {
         "id": "jhulana_class1_ch25",
@@ -524,7 +644,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch25_Sunigala_Jiti.pdf?alt=media",
+        "number": 25
       }
     ]
   },
@@ -537,7 +659,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Wow, So Many Toys! (Data Handling)",
         "title_or": "ବାଃ, ଏତେଗୁଡ଼ିଏ ଖେଳଣା",
         "subject": "ganita_khela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FMathematics%2FChapter%2013%20-%20%E0%AC%AC%E0%AC%BE%E0%AC%83%20%E0%AC%8F%E0%AC%A4%E0%AD%87%E0%AC%97%E0%AD%81%E0%AC%A1%E0%AC%BC%E0%AC%BF%E0%AC%8F%20%E0%AC%96%E0%AD%87%E0%AC%B3%E0%AC%A3%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "IU6KYnSGfpzHty7tbmA7",
@@ -545,7 +669,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "My Village - Poem",
         "title_or": "ମୋ ଗାଆଁ",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch26_Mo_Gaan.pdf?alt=media",
+        "number": null
       },
       {
         "id": "NJsdd0gYsvBqiMEJDceY",
@@ -553,7 +679,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "The Jackfruit Rolls Away - Story",
         "title_or": "ଗଡ଼ିଗଡ଼ି ଯାଏ ପଣସ",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch27_Gadigadi_Jae_Panasa.pdf?alt=media",
+        "number": null
       },
       {
         "id": "00IcP5vSqjxFV9zM8EqH",
@@ -561,7 +689,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": "Alphabet Song - Poem",
         "title_or": "ଅକ୍ଷର ଗୀତ",
         "subject": "jhulana_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch28_Akshyara_Gita.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jhulana_class1_ch26",
@@ -569,7 +699,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch26_Mo_Gaan.pdf?alt=media",
+        "number": 26
       },
       {
         "id": "jhulana_class1_ch27",
@@ -577,7 +709,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch27_Gadigadi_Jae_Panasa.pdf?alt=media",
+        "number": 27
       },
       {
         "id": "jhulana_class1_ch28",
@@ -585,7 +719,9 @@ export const ROADMAP_DATA_1 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%201%2FOdia%2FClass1_Ch28_Akshyara_Gita.pdf?alt=media",
+        "number": 28
       }
     ]
   }
@@ -602,7 +738,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Mankada Bhaira Kankada Jhola",
         "title_or": "ମାଙ୍କଡ଼ ଭାଇର କାଙ୍କଡ଼ ଝୋଳ",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch01_Mankada_Khaiba_Kakudi.pdf?alt=media",
+        "number": null
       },
       {
         "id": "7LhPkGMnCggEpL3NyTqt",
@@ -610,7 +748,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Holira Maja / Fun of Holi",
         "title_or": "ହୋଲିର ମଜା",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch02_Holira_Maja.pdf?alt=media",
+        "number": null
       },
       {
         "id": "dsXkP7oVivWb45tmACDe",
@@ -618,7 +758,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Who will be like my mother",
         "title_or": "ମାଆ ପରି ମୋର କିଏ ସେ ହେବ",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch03_Maa_Pari_Mora.pdf?alt=media",
+        "number": null
       },
       {
         "id": "cb9gCy47ARkBnJcl7EAC",
@@ -626,7 +768,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "A Day at the Beach",
         "title_or": "ସମୁଦ୍ର କୂଳରେ ଦିନଟିଏ",
         "subject": "maja_majare_ganita",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FMathematics%2FChapter%201%20-%20%E0%AC%B8%E0%AC%AE%E0%AD%81%E0%AC%A6%E0%AD%8D%E0%AC%B0%20%E0%AC%95%E0%AD%82%E0%AC%B3%E0%AC%B0%E0%AD%87%20%E0%AC%A6%E0%AC%BF%E0%AC%A8%E0%AC%9F%E0%AC%BF%E0%AC%8F.pdf?alt=media",
+        "number": null
       },
       {
         "id": "fgirhWPvmrGZCyd7S0Tw",
@@ -634,7 +778,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Shapes Around Us",
         "title_or": "ଆମ ଚାରିପାଖରେ ଥିବା ଆକୃତି",
         "subject": "maja_majare_ganita",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FMathematics%2FChapter%202%20-%20%E0%AC%86%E0%AC%AE%20%E0%AC%9A%E0%AC%BE%E0%AC%B0%E0%AC%BF%E0%AC%AA%E0%AC%BE%E0%AC%96%E0%AC%B0%E0%AD%87%20%E0%AC%A5%E0%AC%BF%E0%AC%AC%E0%AC%BE%20%E0%AC%86%E0%AC%95%E0%AD%83%E0%AC%A4%E0%AC%BF.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jhulana_class2_ch1",
@@ -642,7 +788,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch01_Mankada_Khaiba_Kakudi.pdf?alt=media",
+        "number": 1
       },
       {
         "id": "jhulana_class2_ch2",
@@ -650,7 +798,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch02_Holira_Maja.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "jhulana_class2_ch3",
@@ -658,7 +808,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch03_Maa_Pari_Mora.pdf?alt=media",
+        "number": 3
       }
     ]
   },
@@ -671,7 +823,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Aunt Kanchana's House",
         "title_or": "କାଞ୍ଚନ ମାଉସୀ ଘର",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch04_Kanchana_Mausi_Ghara.pdf?alt=media",
+        "number": null
       },
       {
         "id": "v8oh5VWOQkRxOsoWkYPd",
@@ -679,7 +833,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Elephant and Tiger will go to Uncle's house",
         "title_or": "ହାତୀ ବାଘ ଯିବେ ମାମୁ ଘର",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch05_Hati_Bagha_Mamu_Ghara.pdf?alt=media",
+        "number": null
       },
       {
         "id": "wELVOsBWhZe7n6kvh85l",
@@ -687,7 +843,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Parrot's Beak, Cuckoo's Voice",
         "title_or": "ଶୁଆର ଥଣ୍ଟ କୋଇଲିର କଣ୍ଠ",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch06_Suara_Thanta_Koilira_Kantha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "StnG1c9IKAr978YgApR0",
@@ -695,7 +853,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Fun with Numbers",
         "title_or": "ସଂଖ୍ୟା ସହିତ ମଜା",
         "subject": "maja_majare_ganita",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FMathematics%2FChapter%203%20-%20%E0%AC%B8%E0%AC%82%E0%AC%96%E0%AD%8D%E0%AD%9F%E0%AC%BE%20%E0%AC%B8%E0%AC%B9%E0%AC%BF%E0%AC%A4%20%E0%AC%AE%E0%AC%9C%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jhulana_class2_ch4",
@@ -703,7 +863,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch04_Kanchana_Mausi_Ghara.pdf?alt=media",
+        "number": 4
       },
       {
         "id": "jhulana_class2_ch5",
@@ -711,7 +873,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch05_Hati_Bagha_Mamu_Ghara.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "jhulana_class2_ch6",
@@ -719,7 +883,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch06_Suara_Thanta_Koilira_Kantha.pdf?alt=media",
+        "number": 6
       }
     ]
   },
@@ -732,7 +898,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Sajie Hele Khusi",
         "title_or": "ସଜିଏଁ ହେଲେ ଖୁସି",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch07_Sabhie_Hele_Khusi.pdf?alt=media",
+        "number": null
       },
       {
         "id": "d9QuJEbnh6i3TOMWUNk5",
@@ -740,7 +908,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Mamuni's Doll",
         "title_or": "ମାମୁନିର କଣ୍ଢେଇ",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch08_Mamunira_Kandhei.pdf?alt=media",
+        "number": null
       },
       {
         "id": "IFM9MlDMinUxgdet2iIK",
@@ -748,7 +918,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "The Balloon Flew Away",
         "title_or": "ବେଲୁନ୍ ଗଲା ଉଡ଼ି",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch09_Belun_Gala_Udi.pdf?alt=media",
+        "number": null
       },
       {
         "id": "FTcHsEAoXWC5Qz4P4gvG",
@@ -756,7 +928,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Story of Shadows",
         "title_or": "ଛାୟାର କାହାଣୀ",
         "subject": "maja_majare_ganita",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FMathematics%2FChapter%204%20-%20%E0%AC%9B%E0%AC%BE%E0%AD%9F%E0%AC%BE%E0%AC%B0%20%E0%AC%95%E0%AC%BE%E0%AC%B9%E0%AC%BE%E0%AC%A3%E0%AD%80.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jhulana_class2_ch7",
@@ -764,7 +938,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch07_Sabhie_Hele_Khusi.pdf?alt=media",
+        "number": 7
       },
       {
         "id": "jhulana_class2_ch8",
@@ -772,7 +948,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch08_Mamunira_Kandhei.pdf?alt=media",
+        "number": 8
       },
       {
         "id": "jhulana_class2_ch9",
@@ -780,7 +958,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch09_Belun_Gala_Udi.pdf?alt=media",
+        "number": 9
       }
     ]
   },
@@ -793,7 +973,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "The King has a Fever",
         "title_or": "ମହାରାଜାଙ୍କୁ ଜ୍ୱର",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch10_Maharajanku_Jwara.pdf?alt=media",
+        "number": null
       },
       {
         "id": "tHwf7dDEVeyLop9CUFWY",
@@ -801,7 +983,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "The Color Faded",
         "title_or": "ରଙ୍ଗ ଛାଡ଼ିଗଲା",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch11_Ranga_Chhadigala.pdf?alt=media",
+        "number": null
       },
       {
         "id": "RYC1YU1tGsrXdZNdWPoq",
@@ -809,7 +993,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Queen of Rain",
         "title_or": "ବରଷାରାଣୀ",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch12_Barasharani.pdf?alt=media",
+        "number": null
       },
       {
         "id": "BIVJzIzDWQr3psLjrqux",
@@ -817,7 +1003,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Playing with Lines",
         "title_or": "ଗାର ସହିତ ଖେଳିବା",
         "subject": "maja_majare_ganita",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FMathematics%2FChapter%205%20-%20%E0%AC%97%E0%AC%BE%E0%AC%B0%20%E0%AC%B8%E0%AC%B9%E0%AC%BF%E0%AC%A4%20%E0%AC%96%E0%AD%87%E0%AC%B3%E0%AC%BF%E0%AC%AC%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jhulana_class2_ch10",
@@ -825,7 +1013,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch10_Maharajanku_Jwara.pdf?alt=media",
+        "number": 10
       },
       {
         "id": "jhulana_class2_ch11",
@@ -833,7 +1023,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch11_Ranga_Chhadigala.pdf?alt=media",
+        "number": 11
       },
       {
         "id": "jhulana_class2_ch12",
@@ -841,7 +1033,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch12_Barasharani.pdf?alt=media",
+        "number": 12
       }
     ]
   },
@@ -854,7 +1048,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Farmer Brother",
         "title_or": "ଚାଷୀଭାଇ",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch13_Chashibhai.pdf?alt=media",
+        "number": null
       },
       {
         "id": "HgeIZ03q9IKRdy10wX25",
@@ -862,7 +1058,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "The Golden Field Smiled",
         "title_or": "ହସିଲା ସୁନାର କ୍ଷେତ",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch14_Hasila_Sunara_Khetya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "od3G0OG5FieqVu7NVvei",
@@ -870,7 +1068,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Tale of Twelve Months",
         "title_or": "ବାରମାସର କଥା",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch15_Baramasara_Katha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "LMSM80o7y0UW81aeEGKn",
@@ -878,7 +1078,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Decoration for the Festival",
         "title_or": "ପର୍ବ ପାଇଁ ସାଜସଜ୍ଜା",
         "subject": "maja_majare_ganita",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FMathematics%2FChapter%206%20-%20%E0%AC%AA%E0%AC%B0%E0%AD%8D%E0%AC%AC%20%E0%AC%AA%E0%AC%BE%E0%AC%87%E0%AC%81%20%E0%AC%B8%E0%AC%BE%E0%AC%9C%E0%AC%B8%E0%AC%9C%E0%AD%8D%E0%AC%9C%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "lWe4MwcSchRrp4UmNd5n",
@@ -886,7 +1088,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "The Queen's Gift",
         "title_or": "ରାଣୀଙ୍କ ଉପହାର",
         "subject": "maja_majare_ganita",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FMathematics%2FChapter%207%20-%20%E0%AC%B0%E0%AC%BE%E0%AC%A3%E0%AD%80%E0%AC%99%E0%AD%8D%E0%AC%95%20%E0%AC%89%E0%AC%AA%E0%AC%B9%E0%AC%BE%E0%AC%B0.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jhulana_class2_ch13",
@@ -894,7 +1098,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch13_Chashibhai.pdf?alt=media",
+        "number": 13
       },
       {
         "id": "jhulana_class2_ch14",
@@ -902,7 +1108,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch14_Hasila_Sunara_Khetya.pdf?alt=media",
+        "number": 14
       },
       {
         "id": "jhulana_class2_ch15",
@@ -910,7 +1118,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch15_Baramasara_Katha.pdf?alt=media",
+        "number": 15
       }
     ]
   },
@@ -923,7 +1133,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Kalpana's Birthday",
         "title_or": "କଳ୍ପନାର ଜନ୍ମଦିନ",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch16_Kalpanara_Janmadina.pdf?alt=media",
+        "number": null
       },
       {
         "id": "1jA6A4yOtWlFFEdbvCN7",
@@ -931,7 +1143,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Let my earth keep smiling",
         "title_or": "ମାଟି ମୋର ହସୁଥାଉ",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch17_Mati_Mora_Hasuthau.pdf?alt=media",
+        "number": null
       },
       {
         "id": "UMLT7dHvlHidab1AIdWa",
@@ -939,7 +1153,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Our earth will smile again",
         "title_or": "ହସିବ ପୁଣି ଆମ ଧରଣୀ",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch18_Hasiba_Puni_Aama_Dharani.pdf?alt=media",
+        "number": null
       },
       {
         "id": "WjPv6oS79eaE4xMAikQM",
@@ -947,7 +1163,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Grouping and Sharing",
         "title_or": "ଏକାଠି କରିବା ଓ ବାଣ୍ଟିବା",
         "subject": "maja_majare_ganita",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FMathematics%2FChapter%208%20-%20%E0%AC%8F%E0%AC%95%E0%AC%BE%E0%AC%A0%E0%AC%BF%20%E0%AC%95%E0%AC%B0%E0%AC%BF%E0%AC%AC%E0%AC%BE%20%E0%AC%93%20%E0%AC%AC%E0%AC%BE%E0%AC%A3%E0%AD%8D%E0%AC%9F%E0%AC%BF%E0%AC%AC%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jhulana_class2_ch16",
@@ -955,7 +1173,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch16_Kalpanara_Janmadina.pdf?alt=media",
+        "number": 16
       },
       {
         "id": "jhulana_class2_ch17",
@@ -963,7 +1183,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch17_Mati_Mora_Hasuthau.pdf?alt=media",
+        "number": 17
       },
       {
         "id": "jhulana_class2_ch18",
@@ -971,7 +1193,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch18_Hasiba_Puni_Aama_Dharani.pdf?alt=media",
+        "number": 18
       }
     ]
   },
@@ -984,7 +1208,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Bargarh Dhanuyatra",
         "title_or": "ବରଗଡ଼ ଧନୁଯାତ୍ରା",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch19_Bargarh_Dhanujatra.pdf?alt=media",
+        "number": null
       },
       {
         "id": "B0616C00pIeKqFxkzrz8",
@@ -992,7 +1218,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Ballabhi Studied",
         "title_or": "ବଲ୍ଲଭୀ ପଢ଼ିଲା ପାଠ",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch20_Ballavi_Padhila_Patha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "MC4xh5k1PGjPaE4lwCwP",
@@ -1000,7 +1228,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Strength of Unity",
         "title_or": "ଏକତାର ବଳ",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch21_Ekatara_Bala.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jlWFT57PMrT01m3RHz55",
@@ -1008,7 +1238,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Basket of Seasons",
         "title_or": "ଋତୁ ପସରା",
         "subject": "maja_majare_ganita",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FMathematics%2FChapter%209%20-%20%E0%AC%8B%E0%AC%A4%E0%AD%81%20%E0%AC%AA%E0%AC%B8%E0%AC%B0%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jhulana_class2_ch19",
@@ -1016,7 +1248,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch19_Bargarh_Dhanujatra.pdf?alt=media",
+        "number": 19
       },
       {
         "id": "jhulana_class2_ch20",
@@ -1024,7 +1258,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch20_Ballavi_Padhila_Patha.pdf?alt=media",
+        "number": 20
       },
       {
         "id": "jhulana_class2_ch21",
@@ -1032,7 +1268,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch21_Ekatara_Bala.pdf?alt=media",
+        "number": 21
       }
     ]
   },
@@ -1045,7 +1283,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Festivals of Odisha",
         "title_or": "ଓଡ଼ିଶାର ପର୍ବପର୍ବାଣି",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch22_Odishara_Parbaparbani.pdf?alt=media",
+        "number": null
       },
       {
         "id": "W7zBcTe1y7dgfFDuVsB6",
@@ -1053,7 +1293,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Four Directions",
         "title_or": "ଚାରିଦିଗ",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch23_Charidiga.pdf?alt=media",
+        "number": null
       },
       {
         "id": "uGPYu8nf80qSKIjDTwGr",
@@ -1061,7 +1303,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Let's get ready",
         "title_or": "ସଜାଡ଼ି ହେବା ଆମେ",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch24_Sajadi_Heba_Aame.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ymrKsZ0GTIputueS1mDf",
@@ -1069,7 +1313,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Fun at the Fair",
         "title_or": "ମେଳାରେ ମଜା",
         "subject": "maja_majare_ganita",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FMathematics%2FChapter%2010%20-%20%E0%AC%AE%E0%AD%87%E0%AC%B3%E0%AC%BE%E0%AC%B0%E0%AD%87%20%E0%AC%AE%E0%AC%9C%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jhulana_class2_ch22",
@@ -1077,7 +1323,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch22_Odishara_Parbaparbani.pdf?alt=media",
+        "number": 22
       },
       {
         "id": "jhulana_class2_ch23",
@@ -1085,7 +1333,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch23_Charidiga.pdf?alt=media",
+        "number": 23
       },
       {
         "id": "jhulana_class2_ch24",
@@ -1093,7 +1343,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch24_Sajadi_Heba_Aame.pdf?alt=media",
+        "number": 24
       }
     ]
   },
@@ -1106,7 +1358,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Twinkling Sky",
         "title_or": "ଝିଲିମିଲି ଆକାଶ",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch25_Jhilimili_Akasha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ZClrvyOI9grE78gpn5Cf",
@@ -1114,7 +1368,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Moon's Hide and Seek",
         "title_or": "ଜହ୍ନର ଲୁଚକାଳି ଖେଳ",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch26_Jahnara_Luchakali.pdf?alt=media",
+        "number": null
       },
       {
         "id": "A3SkMCOYHEFb62sUi2U0",
@@ -1122,7 +1378,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Tell me who am I",
         "title_or": "କହିଲ ଦେଖି ମୁଁ କିଏ",
         "subject": "jhulana_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch27_Kahila_Dekhi_Mun_Kie.pdf?alt=media",
+        "number": null
       },
       {
         "id": "gQb7yBrjQpGIHqN75q7f",
@@ -1130,7 +1388,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": "Data Handling",
         "title_or": "ତଥ୍ୟ ପରିଚାଳନା",
         "subject": "maja_majare_ganita",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FMathematics%2FChapter%2011%20-%20%E0%AC%A4%E0%AC%A5%E0%AD%8D%E0%AD%9F%20%E0%AC%AA%E0%AC%B0%E0%AC%BF%E0%AC%9A%E0%AC%BE%E0%AC%B3%E0%AC%A8%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jhulana_class2_ch25",
@@ -1138,7 +1398,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch25_Jhilimili_Akasha.pdf?alt=media",
+        "number": 25
       },
       {
         "id": "jhulana_class2_ch26",
@@ -1146,7 +1408,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch26_Jahnara_Luchakali.pdf?alt=media",
+        "number": 26
       },
       {
         "id": "jhulana_class2_ch27",
@@ -1154,7 +1418,9 @@ export const ROADMAP_DATA_2 = [
         "title_en": null,
         "title_or": null,
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%202%2FOdia%2FClass2_Ch27_Kahila_Dekhi_Mun_Kie.pdf?alt=media",
+        "number": 27
       }
     ]
   }
@@ -1171,7 +1437,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "No one is like him/her/it",
         "title_or": "କେହି ନୁହେଁ ତା’ ସରି",
         "subject": "bhasa_mahak_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FOdia%2FClass3_Ch01_Kehi_Nuhen_Ta_Sari.pdf?alt=media",
+        "number": null
       },
       {
         "id": "0itIM6MYd0iTjtcBK480",
@@ -1179,7 +1447,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Ant",
         "title_or": "ପିମ୍ପୁଡ଼ି",
         "subject": "bhasa_mahak_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FOdia%2FClass3_Ch02_Pimpudi.pdf?alt=media",
+        "number": null
       },
       {
         "id": "FHlTPTN8IkyJFgCrcGCv",
@@ -1187,7 +1457,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Parts of the Body",
         "title_or": "Parts of the Body",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEnglish%2FClass3_Pallavi_Ch01_Unit1_Ch1_Parts_of_the_Body.pdf?alt=media",
+        "number": null
       },
       {
         "id": "F42z7zpXtFfmCxkFbQiL",
@@ -1195,7 +1467,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Learn English Letters (Part 1)",
         "title_or": "Learn English Letters (Part 1)",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEnglish%2FClass3_Pallavi_Ch02_Unit1_Ch2_Learn_English_Letters_Part1.pdf?alt=media",
+        "number": null
       },
       {
         "id": "yVJibK9hMXAhRwEusQRX",
@@ -1203,7 +1477,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "What is in a name?",
         "title_or": "ନାମରେ କ’ଣ ଅଛି",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FMathematics%2FChapter%201%20-%20%E0%AC%A8%E0%AC%BE%E0%AC%AE%E0%AC%B0%E0%AD%87%20%E0%AC%95'%E0%AC%A3%20%E0%AC%85%E0%AC%9B%E0%AC%BF.pdf?alt=media",
+        "number": null
       },
       {
         "id": "wQXXRUjXe61ZOq3xLE51",
@@ -1211,7 +1487,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Fun with Toys",
         "title_or": "ଖେଳନାର ମଜା",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FMathematics%2FChapter%202%20-%20%E0%AC%96%E0%AD%87%E0%AC%B3%E0%AC%A8%E0%AC%BE%E0%AC%B0%20%E0%AC%AE%E0%AC%9C%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "2BZc364E5zW71UO7tVgd",
@@ -1219,7 +1497,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Family and Friends",
         "title_or": "ପରିବାର ଏବଂ ବନ୍ଧୁବାନ୍ଧବ",
         "subject": "paribesa_patha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEvs%2FClass3_EVS_Ch01_Unit1_Ch01_Paribara_Ebam_Bandhubandhaba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "HtB0fGb6tYwyKJapMJec",
@@ -1227,7 +1507,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Visiting the Palm Fair",
         "title_or": "ତାଳ ମେଳା ବୁଲିଯିବା",
         "subject": "paribesa_patha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEvs%2FClass3_EVS_Ch02_Unit1_Ch02_Chala_Mela_Bulijiba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "iwO5KfMFhtGvXoFSU5Rw",
@@ -1235,7 +1517,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Throwing and Catching",
         "title_or": "ଫିଙ୍ଗିବା ଏବଂ ଧରିବା",
         "subject": "sharirika_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FPhysical_education%2FClass3_PE_Ch01_Unit1_Ch01_Phingiba_Ebam_Dhariba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "j1a8GDOqNNO6crUlmGdB",
@@ -1243,7 +1527,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Artistic Objects",
         "title_or": "କଳାତ୍ମକ ବସ୍ତୁ",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FArt%2FClass3_KalaKruti_Ch01_VisualArts_Ch01_Kalatmaka_Bastu.pdf?alt=media",
+        "number": null
       },
       {
         "id": "BPUptRXaJjAHVouSjpYg",
@@ -1251,7 +1537,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Plants and Creepers in Art",
         "title_or": "ଚିତ୍ରକଳାରେ ବୃକ୍ଷଲତା",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FArt%2FClass3_KalaKruti_Ch02_VisualArts_Ch02_Chitrakalare_Brukhyalata.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -1264,7 +1552,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Whose legs are how many",
         "title_or": "କାହାର କେତେ ଗୋଡ଼",
         "subject": "bhasa_mahak_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FOdia%2FClass3_Ch04_Kahara_Kete_Goda.pdf?alt=media",
+        "number": null
       },
       {
         "id": "3OxYYehpzFbyTlkWPCXE",
@@ -1272,7 +1562,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Earth is our Mother",
         "title_or": "ମାଟି ଆମର ମାଆ",
         "subject": "bhasa_mahak_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FOdia%2FClass3_Ch06_Mati_Aamara_Maa.pdf?alt=media",
+        "number": null
       },
       {
         "id": "lJ0lBwy63P7wpR1GOpdl",
@@ -1280,7 +1572,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Learn English Letters (Part 2)",
         "title_or": "Learn English Letters (Part 2)",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEnglish%2FClass3_Pallavi_Ch03_Unit1_Ch2_Learn_English_Letters_Part2.pdf?alt=media",
+        "number": null
       },
       {
         "id": "D3ovNrFW6hMfYv2xLuhu",
@@ -1288,7 +1582,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Double Century / Numbers up to 200",
         "title_or": "ବିଶତକ",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FMathematics%2FChapter%203%20-%20%E0%AC%A6%E0%AD%8D%E0%AC%AC%E0%AC%BF%E0%AC%B6%E0%AC%A4%E0%AC%95.pdf?alt=media",
+        "number": null
       },
       {
         "id": "sZlVU5ccox15nAWhwVjW",
@@ -1296,7 +1592,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Holidays with Grandma",
         "title_or": "ଛୁଟିରେ ଆଇ ମା’ଙ୍କ ସହ",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FMathematics%2FChapter%204%20-%20%E0%AC%9B%E0%AD%81%E0%AC%9F%E0%AC%BF%E0%AC%B0%E0%AD%87%20%E0%AC%86%E0%AC%88%E0%AC%AE%E0%AC%BE%E2%80%99%E0%AC%99%E0%AD%8D%E0%AC%95%20%E0%AC%B8%E0%AC%B9.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Gg4xmrohON5RNdegIZ8g",
@@ -1304,7 +1602,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Celebrating Festivals",
         "title_or": "ପର୍ବପର୍ବାଣି ପାଳନ",
         "subject": "paribesa_patha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEvs%2FClass3_EVS_Ch03_Unit1_Ch03_Parbaparbani_Palana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "uQCiN9YVoM0BZFoOkX5Q",
@@ -1312,7 +1612,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Kicking and Stopping/Catching",
         "title_or": "ଗୋଡ଼ରେ ମାରିବା ଏବଂ ଧରିବା",
         "subject": "sharirika_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FPhysical_education%2FClass3_PE_Ch02_Unit1_Ch02_Godare_Mariba_Ebam_Dhariba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "WxP0x8HBXFyV5Tezok9c",
@@ -1320,7 +1622,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Animals in Art",
         "title_or": "କଳାରେ ଜୀବଜନ୍ତୁ",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FArt%2FClass3_KalaKruti_Ch03_VisualArts_Ch03_Kalare_Jeebajantu.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -1333,7 +1637,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Somuna's Mango Tree",
         "title_or": "ସୋମୁନାର ଆମ୍ବଗଛ",
         "subject": "bhasa_mahak_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FOdia%2FClass3_Ch07_Somunara_Aambagachha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "kPJ6MFkYvXSxlL3k8yKw",
@@ -1341,7 +1647,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Learn English Letters (Part 3)",
         "title_or": "Learn English Letters (Part 3)",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEnglish%2FClass3_Pallavi_Ch04_Unit1_Ch2_Learn_English_Letters_Part3.pdf?alt=media",
+        "number": null
       },
       {
         "id": "aKr4U5EM4zc5F4wnkJ5v",
@@ -1349,7 +1657,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Family Members",
         "title_or": "Family Members",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEnglish%2FClass3_Pallavi_Ch05_Unit1_Ch3_Family_Members.pdf?alt=media",
+        "number": null
       },
       {
         "id": "8g9RcSH71H0WX9le4oD5",
@@ -1357,7 +1667,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Fun with Shapes",
         "title_or": "ଆକୃତିର ମଜା",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FMathematics%2FChapter%205%20-%20%E0%AC%86%E0%AC%95%E0%AD%83%E0%AC%A4%E0%AC%BF%E0%AC%B0%20%E0%AC%AE%E0%AC%9C%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ce3sWXRBZE8Z9gZGPBF4",
@@ -1365,7 +1677,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Knowing About Plants",
         "title_or": "ଉଦ୍ଭିଦ ବିଷୟରେ ଜାଣିବା",
         "subject": "paribesa_patha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEvs%2FClass3_EVS_Ch04_Unit2_Ch04_Udbhida_Bishayare_Janiba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "lmDXeuS62q7jS9OcztZO",
@@ -1373,7 +1687,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Hitting the Ball",
         "title_or": "ବଲ୍କୁ ମାରିବା",
         "subject": "sharirika_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FPhysical_education%2FClass3_PE_Ch03_Unit1_Ch03_Ball_Ku_Mariba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "wPwYze7aHhMy6vQ23llu",
@@ -1381,7 +1697,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "People Around Us",
         "title_or": "ଆମ ଚାରିପାଖରେ ଥିବା ମଣିଷ",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FArt%2FClass3_KalaKruti_Ch04_VisualArts_Ch04_Aama_Charipatara_Manisa.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -1394,7 +1712,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Branch Bird and Elephant",
         "title_or": "ଡାଳ ଚଢ଼େଇ ଓ ହାତୀ",
         "subject": "bhasa_mahak_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FOdia%2FClass3_Ch08_Bai_Chadhhei_O_Hati.pdf?alt=media",
+        "number": null
       },
       {
         "id": "o8vUWX0JY4EnmMb8udBA",
@@ -1402,7 +1722,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Letter to a Friend",
         "title_or": "ବନ୍ଧୁକୁ ପତ୍ର",
         "subject": "bhasa_mahak_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FOdia%2FClass3_Ch09_Bandhunku_Patra.pdf?alt=media",
+        "number": null
       },
       {
         "id": "AWCWod2I3EwWIYCQW3aC",
@@ -1410,7 +1732,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Picture Time",
         "title_or": "Picture Time",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEnglish%2FClass3_Pallavi_Ch06_Unit2_Ch1_Picture_Time.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ndoSlbKwJCeASV0RcT0X",
@@ -1418,7 +1742,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "House of Hundreds-1",
         "title_or": "ଶହେର ଘର-୧",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FMathematics%2FChapter%206%20-%20%E0%AC%B6%E0%AC%B9%E0%AD%87%E0%AC%B0%20%E0%AC%98%E0%AC%B0-%E0%AD%A7.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ZGnR9eQ7ENLfdW9UP7HJ",
@@ -1426,7 +1752,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "House of Hundreds-2",
         "title_or": "ଶହେର ଘର-୨",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FMathematics%2FChapter%207%20-%20%E0%AC%B6%E0%AC%B9%E0%AD%87%E0%AC%B0%20%E0%AC%98%E0%AC%B0-%202.pdf?alt=media",
+        "number": null
       },
       {
         "id": "RLgSqNh9YAxZyVVb4K86",
@@ -1434,7 +1762,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Plants and Animals Living Together",
         "title_or": "ଉଦ୍ଭିଦ ଓ ପ୍ରାଣୀଙ୍କ ଏକତ୍ର ବସବାସ",
         "subject": "paribesa_patha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEvs%2FClass3_EVS_Ch05_Unit2_Ch05_Udbhida_O_Praninka_Ekatra_Basabasa.pdf?alt=media",
+        "number": null
       },
       {
         "id": "JBp3ztEhWcH0OXlBS1Nl",
@@ -1442,7 +1772,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Living Together Harmoniously",
         "title_or": "ମିଳିମିଶି ବଞ୍ଚିବା",
         "subject": "paribesa_patha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEvs%2FClass3_EVS_Ch06_Unit2_Ch06_Milimishi_Banchiba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Nn5eXntgoFKRuzoDWRU3",
@@ -1450,7 +1782,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Small Steps",
         "title_or": "ଛୋଟ ପଦକ୍ଷେପ",
         "subject": "sharirika_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FPhysical_education%2FClass3_PE_Ch04_Unit1_Ch04_Chhota_Padakhepa.pdf?alt=media",
+        "number": null
       },
       {
         "id": "3owkDU4g1IN8pyD7f3RB",
@@ -1458,7 +1792,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Festivals and Celebrations",
         "title_or": "ପର୍ବପର୍ବାଣୀ ଏବଂ ଉତ୍ସବ",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FArt%2FClass3_KalaKruti_Ch05_VisualArts_Ch05_Parbaparbani_Ebam_Utsaba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ZdX3t2hSu1MfTgzTS4Im",
@@ -1466,7 +1802,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Our National Anthem",
         "title_or": "ଆମ ଜାତୀୟ ସଙ୍ଗୀତ",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FArt%2FClass3_KalaKruti_Ch06_Music_Ch06_Aama_Jatiya_Sangeeta.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -1479,7 +1817,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Ruchi's Game",
         "title_or": "ରୁଚିର ଖେଳ",
         "subject": "bhasa_mahak_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FOdia%2FClass3_Ch10_Buddira_Khela.pdf?alt=media",
+        "number": null
       },
       {
         "id": "7RJcNgBUrgjiklrFzcWm",
@@ -1487,7 +1827,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "The Frog & The Crow",
         "title_or": "The Frog & The Crow",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEnglish%2FClass3_Pallavi_Ch07_Unit2_Ch2_The_Frog_and_The_Crow.pdf?alt=media",
+        "number": null
       },
       {
         "id": "1aPqZcw4brGeLy00joxQ",
@@ -1495,7 +1837,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "You know English",
         "title_or": "You know English",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEnglish%2FClass3_Pallavi_Ch08_Unit2_Ch3_You_know_English.pdf?alt=media",
+        "number": null
       },
       {
         "id": "4mtuyQRVZEDeyO4tNyfa",
@@ -1503,7 +1847,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Rakhi Purnima",
         "title_or": "ରାକ୍ଷୀ ପୂର୍ଣ୍ଣିମା",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FMathematics%2FChapter%208%20-%20%E0%AC%B0%E0%AC%BE%E0%AC%95%E0%AD%8D%E0%AC%B7%E0%AD%80%20%E0%AC%AA%E0%AD%82%E0%AC%B0%E0%AD%8D%E0%AC%A3%E0%AD%8D%E0%AC%A3%E0%AC%BF%E0%AC%AE%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "2FRTKyzWQXG3ptmtuYqB",
@@ -1511,7 +1857,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Water - A Valuable Gift of Nature",
         "title_or": "ଜଳ - ପ୍ରକୃତିର ଏକ ମୂଲ୍ୟବାନ ଉପହାର",
         "subject": "paribesa_patha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEvs%2FClass3_EVS_Ch07_Unit3_Ch07_Jala_Prakrutira_Mulyabana_Upahara.pdf?alt=media",
+        "number": null
       },
       {
         "id": "KxhM8oArQew2Tn1oX9pn",
@@ -1519,7 +1867,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Feel the Rhythm",
         "title_or": "ତାଳକୁ ଅନୁଭବ କର",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FArt%2FClass3_KalaKruti_Ch07_Music_Ch07_Tala_Ku_Anubhaba_Kara.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -1532,7 +1882,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Odia New Year",
         "title_or": "ଓଡ଼ିଆ ନୂଆବର୍ଷ",
         "subject": "bhasa_mahak_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FOdia%2FClass3_Ch12_Odia_Nuabarsa.pdf?alt=media",
+        "number": null
       },
       {
         "id": "9MnZGXsUiswpdgXfWNxt",
@@ -1540,7 +1892,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Hide and Seek",
         "title_or": "ଲୁଚକାଳି ଖେଳ",
         "subject": "bhasa_mahak_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FOdia%2FClass3_Ch03_Luchakali_Khela.pdf?alt=media",
+        "number": null
       },
       {
         "id": "rh6vbvkuURxlTT0NkhdF",
@@ -1548,7 +1902,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "A Farm",
         "title_or": "A Farm",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEnglish%2FClass3_Pallavi_Ch09_Unit2_Ch4_A_Farm.pdf?alt=media",
+        "number": null
       },
       {
         "id": "1nuaLWaE9GsGMpiQImdV",
@@ -1556,7 +1912,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Equal Distribution",
         "title_or": "ସମବଣ୍ଟନ",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FMathematics%2FChapter%209%20-%20%E0%AC%B8%E0%AC%AE%E0%AC%AC%E0%AC%A3%E0%AD%8D%E0%AC%9F%E0%AC%A8.pdf?alt=media",
+        "number": null
       },
       {
         "id": "bnfv5r8Q7WLP2JPbYEnR",
@@ -1564,7 +1922,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Fun in the Classroom",
         "title_or": "ଶ୍ରେଣୀରେ ମଜା",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FMathematics%2FChapter%2010%20-%20%E0%AC%B6%E0%AD%8D%E0%AC%B0%E0%AD%87%E0%AC%A3%E0%AD%80%E0%AC%B0%E0%AD%87%20%E0%AC%AE%E0%AC%9C%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "J9J7hlwYZxF6mye3yw4r",
@@ -1572,7 +1932,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Our Food",
         "title_or": "ଆମ ଖାଦ୍ୟ",
         "subject": "paribesa_patha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEvs%2FClass3_EVS_Ch08_Unit3_Ch08_Aama_Khadya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "r7JIISDVHe7uwcwwYrC7",
@@ -1580,7 +1942,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Regional and Traditional Sports",
         "title_or": "ଆଞ୍ଚଳିକ ଏବଂ ପାରମ୍ପରିକ କ୍ରୀଡ଼ା",
         "subject": "sharirika_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FPhysical_education%2FClass3_PE_Ch05_Unit2_Ch05_Anchalika_O_Paramparika_Krida.pdf?alt=media",
+        "number": null
       },
       {
         "id": "hm19KeaVJD2FFwZXw0JS",
@@ -1588,7 +1952,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Journey to Different Regions",
         "title_or": "ବିଭିନ୍ନ ଅଞ୍ଚଳକୁ ଯାତ୍ରା",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FArt%2FClass3_KalaKruti_Ch08_Music_Ch08_Bibhinna_Anchalaku_Yatra.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -1601,7 +1967,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Magic Box",
         "title_or": "କୁହୁକ ପେଡ଼ି",
         "subject": "bhasa_mahak_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FOdia%2FClass3_Ch16_Kuhuka_Pedi.pdf?alt=media",
+        "number": null
       },
       {
         "id": "j0I2ml11NU6CRlofHbO0",
@@ -1609,7 +1977,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Fun with Pictures",
         "title_or": "Fun with Pictures",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEnglish%2FClass3_Pallavi_Ch10_Unit3_Ch1_Fun_with_Pictures.pdf?alt=media",
+        "number": null
       },
       {
         "id": "6g6BhaiL0eAG92Dp0zEI",
@@ -1617,7 +1987,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "The Food we eat",
         "title_or": "The Food we eat",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEnglish%2FClass3_Pallavi_Ch11_Unit3_Ch2_The_Food_we_eat.pdf?alt=media",
+        "number": null
       },
       {
         "id": "YyfV2pAIIaoaDKr5bFjg",
@@ -1625,7 +1997,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Filling and Pouring",
         "title_or": "ଭରିବା ଓ ଓଜାଡ଼ିବା",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FMathematics%2FChapter%2011%20-%20%E0%AC%AD%E0%AC%B0%E0%AC%BF%E0%AC%AC%E0%AC%BE%20%E0%AC%93%20%E0%AC%89%E0%AC%A0%E0%AC%BE%E0%AC%87%E0%AC%AC%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "hCLuQfHdDHvH1VU3zimd",
@@ -1633,7 +2007,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Staying Healthy and Happy",
         "title_or": "ସୁସ୍ଥ ଓ ସୁଖୀ ରହିବା",
         "subject": "paribesa_patha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEvs%2FClass3_EVS_Ch09_Unit3_Ch09_Sustha_O_Sukhi_Rahiba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "yFzgddJxJ0DMWTEaczAg",
@@ -1641,7 +2017,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "World of Materials",
         "title_or": "ପଦାର୍ଥର ଦୁନିଆ",
         "subject": "paribesa_patha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEvs%2FClass3_EVS_Ch10_Unit4_Ch10_Padarthara_Duniya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "d1wJEZy5oUnRW1UJCHLQ",
@@ -1649,7 +2027,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Yoga for Daily Life",
         "title_or": "ଦୈନନ୍ଦିନ ଜୀବନ ପାଇଁ ଯୋଗ",
         "subject": "sharirika_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FPhysical_education%2FClass3_PE_Ch06_Unit3_Ch06_Dainandina_Jibana_Pain_Yoga.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Mox47aQZh4pfBCPCQJ3n",
@@ -1657,7 +2037,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Musical Instruments",
         "title_or": "ସଙ୍ଗୀତରେ ବ୍ୟବହୃତ ବାଦ୍ୟଯନ୍ତ୍ର",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FArt%2FClass3_KalaKruti_Ch09_Music_Ch09_Sangeetare_Babyahruta_Badyayantra.pdf?alt=media",
+        "number": null
       },
       {
         "id": "B9Kaiqd3L7QkcNXylUOK",
@@ -1665,7 +2047,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Festival Music",
         "title_or": "ଉତ୍ସବ ସମ୍ପର୍କୀୟ ସଙ୍ଗୀତ",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FArt%2FClass3_KalaKruti_Ch10_Music_Ch10_Utsaba_Samparkiya_Sangeeta.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -1678,7 +2062,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Mind Changed",
         "title_or": "ମନ ବଦଳିଲା",
         "subject": "bhasa_mahak_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FOdia%2FClass3_Ch17_Mana_Badalila.pdf?alt=media",
+        "number": null
       },
       {
         "id": "02MFqJr3z8LWyujB86jP",
@@ -1686,7 +2072,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "A Small Child Like You",
         "title_or": "ତୁମ ପରି ଛୋଟ ପିଲାଟିଏ",
         "subject": "bhasa_mahak_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FOdia%2FClass3_Ch18_Tuma_Pari_Chhota_Pilatie.pdf?alt=media",
+        "number": null
       },
       {
         "id": "0hhFwzJbS3Eoi0ap0V4h",
@@ -1694,7 +2082,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Days and Months",
         "title_or": "Days and Months",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEnglish%2FClass3_Pallavi_Ch12_Unit4_Ch1_Days_and_Months.pdf?alt=media",
+        "number": null
       },
       {
         "id": "JLixWwElXCHfwrnZGx7M",
@@ -1702,7 +2092,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Giving and Taking",
         "title_or": "ଦେବା ଓ ନେବା",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FMathematics%2FChapter%2012%20-%20%E0%AC%A6%E0%AD%87%E0%AC%AC%E0%AC%BE%20%E0%AC%93%20%E0%AC%A8%E0%AD%87%E0%AC%AC%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ysBCdX3sbDm5dEoeDjqy",
@@ -1710,7 +2102,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Time Rolls On",
         "title_or": "ସମୟ ଗଡ଼ିଚାଲେ",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FMathematics%2FChapter%2013%20-%20%E0%AC%B8%E0%AC%AE%E0%AD%9F%20%E0%AC%97%E0%AC%A1%E0%AC%BC%E0%AC%BF%E0%AC%9A%E0%AC%BE%E0%AC%B2%E0%AD%87.pdf?alt=media",
+        "number": null
       },
       {
         "id": "2cnFJcub372K0VGxzp75",
@@ -1718,7 +2112,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Objects from Materials",
         "title_or": "ପଦାର୍ଥରୁ ବସ୍ତୁ",
         "subject": "paribesa_patha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEvs%2FClass3_EVS_Ch11_Unit4_Ch11_Padartharu_Bastu.pdf?alt=media",
+        "number": null
       },
       {
         "id": "mEjjsQywi2bp0nkyNWQO",
@@ -1726,7 +2122,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Yoga Practice / Yogasanas",
         "title_or": "ଯୋଗ ଅଭ୍ୟାସ (ଯୋଗାସନ)",
         "subject": "sharirika_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FPhysical_education%2FClass3_PE_Ch07_Unit3_Ch07_Yoga_Abhyasa_Sadhana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Oa0ww7kCqUSeyLlozs9p",
@@ -1734,7 +2132,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Come Let's Dance",
         "title_or": "ଆସ ନୃତ୍ୟ କରିବା",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FArt%2FClass3_KalaKruti_Ch11_Dance_Ch11_Aasa_Nritya_Kariba.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -1747,7 +2147,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Clever Farmer",
         "title_or": "ଚତୁର କୃଷକ",
         "subject": "bhasa_mahak_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FOdia%2FClass3_Ch19_Chatura_Krushaka.pdf?alt=media",
+        "number": null
       },
       {
         "id": "DquVvmvLnwNmtolUdy72",
@@ -1755,7 +2157,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Seasons",
         "title_or": "Seasons",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEnglish%2FClass3_Pallavi_Ch13_Unit4_Ch2_Seasons.pdf?alt=media",
+        "number": null
       },
       {
         "id": "iC368doOg9hiGkdY4Shs",
@@ -1763,7 +2167,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Pond Fair",
         "title_or": "ପୋଖରୀ ମେଳା",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FMathematics%2FChapter%2014%20-%20%E0%AC%AF%E0%AD%8B%E0%AC%B0%E0%AC%A8%E0%AD%8D%E0%AC%A6%E0%AC%BE%20%E0%AC%AE%E0%AD%87%E0%AC%B3%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "eWkUybLXOag7lxDjMcnH",
@@ -1771,7 +2177,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Waste Management",
         "title_or": "ଆବର୍ଜନାର ପରିଚାଳନା",
         "subject": "paribesa_patha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FEvs%2FClass3_EVS_Ch12_Unit4_Ch12_Abarjanara_Parichalana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "QxIZwkQ4XKf0tXAtDGzK",
@@ -1779,7 +2187,9 @@ export const ROADMAP_DATA_3 = [
         "title_en": "Joyful Dance",
         "title_or": "ଆନନ୍ଦରେ ନୃତ୍ୟ",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%203%2FArt%2FClass3_KalaKruti_Ch12_Dance_Ch12_Aanandare_Nritya.pdf?alt=media",
+        "number": null
       }
     ]
   }
@@ -1796,7 +2206,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "My Bicycle",
         "title_or": "ମୋ ସାଇକେଲ",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FEnglish%2FClass4_Pallavi_Ch01_Unit1_Ch1_My_Bicycle.pdf?alt=media",
+        "number": null
       },
       {
         "id": "NEtgHjsgmenxUrhX69qY",
@@ -1804,7 +2216,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Badal And Moti",
         "title_or": "ବାଦଲ ଏବଂ ମୋତି",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FEnglish%2FClass4_Pallavi_Ch02_Unit1_Ch2_Badal_And_Moti.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Hd1D9xzEF7GfEoBroDDi",
@@ -1812,7 +2226,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Arranging objects and drawing",
         "title_or": "ବସ୍ତୁଗୁଡ଼ିକୁ ସଜାଇ ଚିତ୍ର ଆଙ୍କିବା",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FArt%2FClass4_KalaSikhya_Ch01_VisualArts_Ch01_Bastugudiku_Sajai_Chitra_Ankiba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "nRhVbqYBldjY2kzuYRO3",
@@ -1820,7 +2236,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Nature's repetitive patterned background",
         "title_or": "ପ୍ରକୃତିର ଆବୃତ୍ତା ଛାପବା ପୃଷ୍ଠଭାଗ",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FArt%2FClass4_KalaSikhya_Ch02_VisualArts_Ch02_Prakrutira_Aabada_Khabada_Prusthabhaga.pdf?alt=media",
+        "number": null
       },
       {
         "id": "lcd0zysfDI97gzPprf2h",
@@ -1828,7 +2246,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Shapes around us",
         "title_or": "ଆମ ଚାରିପାଖର ଆକୃତି",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FMathematics%2FChapter%201%20-%20%E0%AC%86%E0%AC%AE%20%E0%AC%9A%E0%AC%BE%E0%AC%B0%E0%AC%BF%E0%AC%AA%E0%AC%BE%E0%AC%96%E0%AC%B0%20%E0%AC%86%E0%AC%95%E0%AD%83%E0%AC%A4%E0%AC%BF.pdf?alt=media",
+        "number": null
       },
       {
         "id": "GAHbM6KiZA64zZwGPXI7",
@@ -1836,7 +2256,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Hide and seek",
         "title_or": "ଲୁଚକାଳି ଖେଳ",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FMathematics%2FChapter%202%20-%20%E0%AC%B2%E0%AD%81%E0%AC%9A%E0%AC%95%E0%AC%BE%E0%AC%B3%E0%AC%BF%20%E0%AC%96%E0%AD%87%E0%AC%B3.pdf?alt=media",
+        "number": null
       },
       {
         "id": "BYsFgUxdUTQkTXoEyiUZ",
@@ -1844,7 +2266,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Karuna Sagara Prabhuhe / Tiki Chadhei",
         "title_or": "କରୁଣା ସାଗର ପ୍ରଭୁହେ / ଟିକି ଚଢ଼େଇ",
         "subject": "bhasa_mahak_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FOdia%2FClass4_Ch01_Karuna_Sagara_Prabhuhe.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Qm1wOSnqnJWmZOmAohj8",
@@ -1852,7 +2276,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Swadhina Deshara Santana Ame",
         "title_or": "ସ୍ୱାଧୀନ ଦେଶର ସନ୍ତାନ ଆମେ",
         "subject": "bhasa_mahak_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FOdia%2FClass4_Ch04_Swadhina_Deshara_Santana_Aame.pdf?alt=media",
+        "number": null
       },
       {
         "id": "DrBHn4Y8q4o7s3yMLb36",
@@ -1860,7 +2286,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Throwing and Catching",
         "title_or": "ଫିଙ୍ଗିବା ଏବଂ ଧରିବା",
         "subject": "krida_yoga",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FPhysical_education%2FClass4_PE_Ch01_Unit1_Ch01_Phingiba_Ebam_Dhariba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "p6ILPRxRnviNqHefoVvw",
@@ -1868,7 +2296,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Living together",
         "title_or": "ଏକତ୍ର ବାସ କରିବା",
         "subject": "paribesa_patha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FEvs%2FClass4_EVS_Ch01_Unit1_Ch01_Ekatra_Basa_Kariba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "oYXTFPfkdbgInxa3Hnpl",
@@ -1876,7 +2306,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Knowing our neighbors",
         "title_or": "ଆମ ପଡ଼ୋଶୀମାନଙ୍କୁ ଜାଣିବା",
         "subject": "paribesa_patha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FEvs%2FClass4_EVS_Ch02_Unit1_Ch02_Aama_Padoshimananku_Janiba.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -1889,7 +2321,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Between Home And School",
         "title_or": "ଘର ଏବଂ ବିଦ୍ୟାଳୟ ମଧ୍ୟରେ",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FEnglish%2FClass4_Pallavi_Ch03_Unit2_Ch3_Between_Home_And_School.pdf?alt=media",
+        "number": null
       },
       {
         "id": "sts5f38EFwbWJFmB2tUY",
@@ -1897,7 +2331,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Water world",
         "title_or": "ଜଳ ଜଗତ",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FArt%2FClass4_KalaSikhya_Ch03_VisualArts_Ch03_Jala_Jagata.pdf?alt=media",
+        "number": null
       },
       {
         "id": "1BnlmY64fYTSQCZaIJZ3",
@@ -1905,7 +2341,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Folk art processes",
         "title_or": "ଲୋକଜ କାର୍ଯ୍ୟ ପ୍ରକ୍ରିୟା",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FArt%2FClass4_KalaSikhya_Ch04_VisualArts_Ch04_Lokanka_Karjya_Prakriya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "K9WEkGkmlVFxOwnLnKJq",
@@ -1913,7 +2351,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Patterns around us",
         "title_or": "ଆମ ଚାରିପାଖର ସଂରଚନା",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FMathematics%2FChapter%203%20-%20%E0%AC%86%E0%AC%AE%20%E0%AC%9A%E0%AC%BE%E0%AC%B0%E0%AC%BF%E0%AC%AA%E0%AC%BE%E0%AC%96%E0%AC%B0%20%E0%AC%B8%E0%AC%82%E0%AC%B0%E0%AC%9A%E0%AC%A8%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "E7ucI5HGZpIugDGjpqDG",
@@ -1921,7 +2361,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Nakali Suna / Shapatha",
         "title_or": "ନକଲି ସୁନା / ଶପଥ",
         "subject": "bhasa_mahak_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FOdia%2FClass4_Ch06_Nakali_Hira.pdf?alt=media",
+        "number": null
       },
       {
         "id": "sdqSfJx5Fn5m4d3yisPN",
@@ -1929,7 +2371,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Jayi Rajaguru",
         "title_or": "ଜୟୀ ରାଜଗୁରୁ",
         "subject": "bhasa_mahak_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FOdia%2FClass4_Ch08_Jayee_Rajguru.pdf?alt=media",
+        "number": null
       },
       {
         "id": "AYzO1AGePA1Sai5BGihG",
@@ -1937,7 +2381,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Kicking and Receiving",
         "title_or": "ଗୋଇଠା ମାରିବା ଏବଂ ଗ୍ରହଣ କରିବା",
         "subject": "krida_yoga",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FPhysical_education%2FClass4_PE_Ch02_Unit1_Ch02_Godare_Mariba_Ebam_Dhariba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "DyLkm2GQlfjZmbIpsHK0",
@@ -1945,7 +2391,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Nature walk",
         "title_or": "ପ୍ରକୃତି ଯାତ୍ରା",
         "subject": "paribesa_patha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FEvs%2FClass4_EVS_Ch03_Unit2_Ch03_Prakruti_Yatra.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -1958,7 +2406,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "This Is My Town",
         "title_or": "ଏହା ମୋର ସହର",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FEnglish%2FClass4_Pallavi_Ch04_Unit2_Ch4_This_Is_My_Town.pdf?alt=media",
+        "number": null
       },
       {
         "id": "rOk5365KBH4AS7rybZ1X",
@@ -1966,7 +2416,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Investigation",
         "title_or": "ଅନୁସନ୍ଧାନ",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FArt%2FClass4_KalaSikhya_Ch05_Drama_Ch05_Anusandhana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "rfSMq0TpVu5N8uu8fv3c",
@@ -1974,7 +2426,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Imagination / Planning",
         "title_or": "ପରିକଳ୍ପନା",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FArt%2FClass4_KalaSikhya_Ch06_Drama_Ch06_Parikalpana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "EzajBq7K1OD1DzG5hn6E",
@@ -1982,7 +2436,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Introduction to thousands",
         "title_or": "ହଜାରର ପରିଚୟ",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FMathematics%2FChapter%204%20-%20%E0%AC%B9%E0%AC%9C%E0%AC%BE%E0%AC%B0%E0%AC%B0%20%E0%AC%AA%E0%AC%B0%E0%AC%BF%E0%AC%9A%E0%AD%9F.pdf?alt=media",
+        "number": null
       },
       {
         "id": "G42FcYtTwnj2fvukqF0a",
@@ -1990,7 +2446,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Dividing and measuring",
         "title_or": "ବାଣ୍ଟିବା ଓ ମାପିବା",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FMathematics%2FChapter%205%20-%20%E0%AC%AC%E0%AC%BE%E0%AC%A3%E0%AD%8D%E0%AC%9F%E0%AC%BF%E0%AC%AC%E0%AC%BE%20%E0%AC%93%20%E0%AC%AE%E0%AC%BE%E0%AC%AA%E0%AC%BF%E0%AC%AC%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "tpW2aE0GbmuMqAGdyoOa",
@@ -1998,7 +2456,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Odisha Mora Desha",
         "title_or": "ଓଡ଼ିଶା ମୋର ଦେଶ",
         "subject": "bhasa_mahak_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FOdia%2FClass4_Ch10_Odisha_Mora_Desha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "9BYx0lqIXSDxIi1KBwTm",
@@ -2006,7 +2466,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Hitting the Shuttlecock",
         "title_or": "ସଟଲ୍କକ୍କୁ ମାରିବା",
         "subject": "krida_yoga",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FPhysical_education%2FClass4_PE_Ch03_Unit1_Ch03_Ball_Ku_Mariba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "RwVEdLCngfzbEibxkvYS",
@@ -2014,7 +2476,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Growing with nature",
         "title_or": "ପ୍ରକୃତି ସହିତ ବଢ଼ିବା",
         "subject": "paribesa_patha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FEvs%2FClass4_EVS_Ch04_Unit2_Ch04_Prakruti_Sahita_Badhiba.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -2027,7 +2491,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "The Crow",
         "title_or": "କାଉ",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FEnglish%2FClass4_Pallavi_Ch06_Unit3_Ch6_The_Crow.pdf?alt=media",
+        "number": null
       },
       {
         "id": "30gOi0topZzYryRZ9rlm",
@@ -2035,7 +2501,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Out In The Garden",
         "title_or": "ବଗିଚା ବାହାରେ",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FEnglish%2FClass4_Pallavi_Ch07_Unit4_Ch7_Out_In_The_Garden.pdf?alt=media",
+        "number": null
       },
       {
         "id": "KHaBsBZaxhlkflZN6H0Y",
@@ -2043,7 +2511,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Let's create",
         "title_or": "ଆସ ସର୍ଜନା କରିବା",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FArt%2FClass4_KalaSikhya_Ch07_Drama_Ch07_Aasa_Sarjana_Kariba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "l2bElHBUABBB7eBCgdpv",
@@ -2051,7 +2521,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Look around",
         "title_or": "ଚତୁଃପାର୍ଶ୍ୱକୁ ଦେଖ",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FArt%2FClass4_KalaSikhya_Ch08_Drama_Ch08_Chatuhparswaku_Dekha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "bpODntY6rOiCy3ZHftdf",
@@ -2059,7 +2531,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Measuring length",
         "title_or": "ଦୈର୍ଘ୍ୟ ମାପିବା",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FMathematics%2FChapter%206%20-%20%E0%AC%A6%E0%AD%88%E0%AC%B0%E0%AD%8D%E0%AC%98%E0%AD%8D%E0%AD%9F%20%E0%AC%AE%E0%AC%BE%E0%AC%AA%E0%AC%BF%E0%AC%AC%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "IQ2XMDi8b4iuKWIJkiDr",
@@ -2067,7 +2541,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Acharya Harihara",
         "title_or": "ଆଚାର୍ଯ୍ୟ ହରିହର",
         "subject": "bhasa_mahak_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FOdia%2FClass4_Ch12_Acharya_Harihara.pdf?alt=media",
+        "number": null
       },
       {
         "id": "2ZpxFDKHO7NhGYIhPuxb",
@@ -2075,7 +2551,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Ama Surjyayana",
         "title_or": "ଆମ ସୂର୍ଯ୍ୟଯାନ",
         "subject": "bhasa_mahak_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FOdia%2FClass4_Ch14_Aama_Suryayayana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "QSuT1ZXQjuuIBEhGcSy9",
@@ -2083,7 +2561,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Short Steps",
         "title_or": "ଛୋଟ ସୋପାନ",
         "subject": "krida_yoga",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FPhysical_education%2FClass4_PE_Ch04_Unit1_Ch04_Chhota_Sopana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "p14nNmriwvEjiTIr7UPZ",
@@ -2091,7 +2571,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Food and health",
         "title_or": "ଖାଦ୍ୟ ଓ ସ୍ୱାସ୍ଥ୍ୟ",
         "subject": "paribesa_patha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FEvs%2FClass4_EVS_Ch05_Unit3_Ch05_Khadya_O_Swasthya.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -2104,7 +2586,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Paper Boats",
         "title_or": "କାଗଜ ଡଙ୍ଗା",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FEnglish%2FClass4_Pallavi_Ch08_Unit4_Ch8_Paper_Boats.pdf?alt=media",
+        "number": null
       },
       {
         "id": "WEutliqLKqN3tMvFXFJn",
@@ -2112,7 +2596,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Singing and playing",
         "title_or": "ଗାଇବା ଓ ଖେଳିବା",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FArt%2FClass4_KalaSikhya_Ch09_Music_Ch09_Gaiba_O_Kheliba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "LzTHgQhttDReIf0Zz6p3",
@@ -2120,7 +2606,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Preparing music",
         "title_or": "ସଙ୍ଗୀତ ପ୍ରସ୍ତୁତ କରିବା",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FArt%2FClass4_KalaSikhya_Ch10_Music_Ch10_Sangeeta_Prastuta_Kariba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "HsUV4JV2zvqITQnQcO25",
@@ -2128,7 +2616,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "The cleanest village",
         "title_or": "ସବୁଠାରୁ ସ୍ୱଚ୍ଛ ଗ୍ରାମ",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FMathematics%2FChapter%207%20-%20%E0%AC%B8%E0%AC%AC%E0%AD%81%E0%AC%A0%E0%AC%BE%E0%AC%B0%E0%AD%81%20%E0%AC%B8%E0%AD%8D%E0%AD%B1%E0%AC%9A%E0%AD%8D%E0%AC%9B%20%E0%AC%97%E0%AD%8D%E0%AC%B0%E0%AC%BE%E0%AC%AE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "tjZVwBeLDMWHbvu1LNVZ",
@@ -2136,7 +2626,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Measuring and filling",
         "title_or": "ମାପିବା ଓ ଭରିବା",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FMathematics%2FChapter%208%20-%20%E0%AC%AE%E0%AC%BE%E0%AC%AA%E0%AC%BF%E0%AC%AC%E0%AC%BE%20%E0%AC%93%20%E0%AC%AD%E0%AC%B0%E0%AC%BF%E0%AC%AC%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "xc5EfZubGRGLMnUM5jcK",
@@ -2144,7 +2636,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Computer- An Introduction",
         "title_or": "କମ୍ପ୍ୟୁଟର-ଏକ ପରିଚୟ",
         "subject": "bhasa_mahak_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FOdia%2FClass4_Ch16_Computer_Eka_Parichaya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "cII4CoNVfozY3dv0oabv",
@@ -2152,7 +2646,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Joyful healthy living",
         "title_or": "ଆନନ୍ଦମୟ ସୁସ୍ଥ ଜୀବନଯାପନ",
         "subject": "paribesa_patha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FEvs%2FClass4_EVS_Ch06_Unit3_Ch06_Aanandamaya_Sustha_Jibanayapana.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -2165,7 +2661,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Seeing Without Seeing",
         "title_or": "ନଦେଖି ଦେଖିବା",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FEnglish%2FClass4_Pallavi_Ch09_Unit5_Ch9_Seeing_Without_Seeing.pdf?alt=media",
+        "number": null
       },
       {
         "id": "NWDNYBkn66TT24YRX4vH",
@@ -2173,7 +2671,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Song and story",
         "title_or": "ଗୀତ ଏବଂ କାହାଣୀ",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FArt%2FClass4_KalaSikhya_Ch11_Music_Ch11_Geeta_Ebam_Kahani.pdf?alt=media",
+        "number": null
       },
       {
         "id": "suQtHFSHYc1205uUg2jq",
@@ -2181,7 +2681,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Think, feel and create",
         "title_or": "ଭାବ, ଅନୁଭବ କର ଏବଂ ସୃଷ୍ଟି କର",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FArt%2FClass4_KalaSikhya_Ch12_Music_Ch12_Bhaba_Anubhaba_Kara_Ebam_Srusti_Kara.pdf?alt=media",
+        "number": null
       },
       {
         "id": "urx0fCg2AxKUukq8uc8r",
@@ -2189,7 +2691,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "We are all in one team",
         "title_or": "ଆମେ ସବୁ ଏକା ଦଳର",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FMathematics%2FChapter%2010%20-%20%E0%AC%86%E0%AC%AE%E0%AD%87%20%E0%AC%B8%E0%AC%AC%E0%AD%81%20%E0%AC%8F%E0%AC%95%E0%AC%BE%20%E0%AC%A6%E0%AC%B3%E0%AC%B0.pdf?alt=media",
+        "number": null
       },
       {
         "id": "tP2yy07CLeJ3aMlOToDn",
@@ -2197,7 +2701,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Mu Nimagachha",
         "title_or": "ମୁଁ ନିମଗଛ",
         "subject": "bhasa_mahak_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FOdia%2FClass4_Ch18_Mu_Nimbagachha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "aZetvwnMasj3fruq5HoA",
@@ -2205,7 +2711,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Gachha O Kathuria",
         "title_or": "ଗଛ ଓ କାଠୁରିଆ",
         "subject": "bhasa_mahak_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FOdia%2FClass4_Ch20_Gachha_O_Kathuria.pdf?alt=media",
+        "number": null
       },
       {
         "id": "fhdQWOiTEJpH7uoJVMHO",
@@ -2213,7 +2721,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Local and Traditional Games",
         "title_or": "ସ୍ଥାନୀୟ ଏବଂ ପାରମ୍ପରିକ ଖେଳ",
         "subject": "krida_yoga",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FPhysical_education%2FClass4_PE_Ch05_Unit2_Ch05_Sthaniya_O_Paramparika_Khela.pdf?alt=media",
+        "number": null
       },
       {
         "id": "RYV3G3Gf1okfgTMwJKSO",
@@ -2221,7 +2731,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "How things work",
         "title_or": "ଜିନିଷଗୁଡ଼ିକ କିପରି କାର୍ଯ୍ୟ କରନ୍ତି",
         "subject": "paribesa_patha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FEvs%2FClass4_EVS_Ch07_Unit4_Ch07_Jinishagudika_Kipari_Karjya_Karanti.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -2234,7 +2746,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Little Drops Of Water",
         "title_or": "ପାଣିର ଛୋଟ ବୁନ୍ଦା",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FEnglish%2FClass4_Pallavi_Ch10_Unit6_Ch10_Little_Drops_Of_Water.pdf?alt=media",
+        "number": null
       },
       {
         "id": "IGhE6yorMcCOtdEeFbL2",
@@ -2242,7 +2756,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "We Are All Indians",
         "title_or": "ଆମେ ସମସ୍ତେ ଭାରତୀୟ",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FEnglish%2FClass4_Pallavi_Ch11_Unit6_Ch11_We_Are_All_Indians.pdf?alt=media",
+        "number": null
       },
       {
         "id": "93V7ddCPFdTrtO2K3D5r",
@@ -2250,7 +2766,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Voice and musical instruments",
         "title_or": "ସ୍ୱର ଏବଂ ବାଦ୍ୟଯନ୍ତ୍ର",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FArt%2FClass4_KalaSikhya_Ch13_Music_Ch13_Swara_Ebam_Badyayantra.pdf?alt=media",
+        "number": null
       },
       {
         "id": "5NKl1GUBUTG9ugGFA3AB",
@@ -2258,7 +2776,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "My body in dance",
         "title_or": "ନୃତ୍ୟରେ ମୋର ଶରୀର",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FArt%2FClass4_KalaSikhya_Ch14_Dance_Ch14_Nrityare_Mora_Sarira.pdf?alt=media",
+        "number": null
       },
       {
         "id": "4foh48o8AHazX6KXZiEI",
@@ -2266,7 +2786,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Fun with symmetry",
         "title_or": "ପ୍ରତିସମତାର ମଜା",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FMathematics%2FChapter%2011%20-%20%E0%AC%AA%E0%AD%8D%E0%AC%B0%E0%AC%A4%E0%AC%BF%E0%AC%B8%E0%AC%AE%E0%AC%A4%E0%AC%BE%E0%AC%B0%20%E0%AC%AE%E0%AC%9C%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ZI8nIla62J7iieTj7SqL",
@@ -2274,7 +2796,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Clock goes tick tick, calendar says tick tick",
         "title_or": "ଘଣ୍ଟା ଚାଲେ ଟିକ୍ ଟିକ୍, କ୍ୟାଲେଣ୍ଡର କହେ ଟିକ୍ ଟିକ୍",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FMathematics%2FChapter%2012%20-%20%E0%AC%98%E0%AC%A3%E0%AD%8D%E0%AC%9F%E0%AC%BE%20%E0%AC%9A%E0%AC%BE%E0%AC%B2%E0%AD%87%20%E0%AC%9F%E0%AC%BF%E0%AC%95%E0%AD%8D%20%E0%AC%9F%E0%AC%BF%E0%AC%95%E0%AD%8D,%20%E0%AC%95%E0%AD%8D%E0%AD%9F%E0%AC%BE%E0%AC%B2%E0%AD%87%E0%AC%A3%E0%AD%8D%E0%AC%A1%E0%AC%B0%20%E0%AC%95%E0%AC%B9%E0%AD%87%20%E0%AC%A0%E0%AC%BF%E0%AC%95%E0%AD%8D%20%E0%AC%A0%E0%AC%BF%E0%AC%95%E0%AD%8D.pdf?alt=media",
+        "number": null
       },
       {
         "id": "qyPJvEyEhMqLCV1Dcwdj",
@@ -2282,7 +2806,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Nibedana",
         "title_or": "ନିବେଦନ",
         "subject": "bhasa_mahak_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FOdia%2FClass4_Ch22_Nibedana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "s8eTilNvqLoPPtPGAu5n",
@@ -2290,7 +2816,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Yoga for Daily Life",
         "title_or": "ଦୈନନ୍ଦିନ ଜୀବନ ପାଇଁ ଯୋଗ",
         "subject": "krida_yoga",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FPhysical_education%2FClass4_PE_Ch06_Unit3_Ch06_Dainandina_Jibana_Pain_Yoga.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ZIhi9F6hHnGsqgDFmkiU",
@@ -2298,7 +2826,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Structure of things",
         "title_or": "ଜିନିଷଗୁଡ଼ିକର ଗଠନ ପ୍ରଣାଳୀ",
         "subject": "paribesa_patha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FEvs%2FClass4_EVS_Ch08_Unit4_Ch08_Jinishagudikara_Gathana_Pranali.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -2311,7 +2841,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Night",
         "title_or": "ରାତି",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FEnglish%2FClass4_Pallavi_Ch12_Unit7_Ch12_Night.pdf?alt=media",
+        "number": null
       },
       {
         "id": "QGTDnVWWd4BhvrTs1OER",
@@ -2319,7 +2851,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "My dance tells a story",
         "title_or": "ମୋର ନୃତ୍ୟ କାହାଣୀ କହେ",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FArt%2FClass4_KalaSikhya_Ch15_Dance_Ch15_Mora_Nritya_Kahani_Kahe.pdf?alt=media",
+        "number": null
       },
       {
         "id": "wmUMrDWHLgEsIJsq5aYP",
@@ -2327,7 +2861,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "My dance composition",
         "title_or": "ମୋର ନୃତ୍ୟ ସଂରଚନା",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FArt%2FClass4_KalaSikhya_Ch16_Dance_Ch16_Mora_Nritya_Sanrachana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ic4jbFLvQk4zVmQoIqpH",
@@ -2335,7 +2871,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Transport museum",
         "title_or": "ପରିବହନ ସଂଗ୍ରହାଳୟ",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FMathematics%2FChapter%2013%20-%20%E0%AC%AA%E0%AC%B0%E0%AC%BF%E0%AC%AC%E0%AC%B9%E0%AC%A8%20%E0%AC%B8%E0%AC%82%E0%AC%97%E0%AD%8D%E0%AC%B0%E0%AC%B9%E0%AC%BE%E0%AC%B3%E0%AD%9F.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Ouwu9Kn27iigM8Wvk1iN",
@@ -2343,7 +2881,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Boita Bandana O Baliyatra",
         "title_or": "ବୋଇତ ବନ୍ଦାଣ ଓ ବାଲିଯାତ୍ରା",
         "subject": "bhasa_mahak_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FOdia%2FClass4_Ch24_Boita_Bandana_O_Balijatra.pdf?alt=media",
+        "number": null
       },
       {
         "id": "iZUjXDY9hIX1cRG9xMJQ",
@@ -2351,7 +2891,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Kabadi Khelara Maja",
         "title_or": "କବାଡ଼ି ଖେଳର ମଜା",
         "subject": "bhasa_mahak_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FOdia%2FClass4_Ch26_Kabadi_Khelara_Maja.pdf?alt=media",
+        "number": null
       },
       {
         "id": "hdRLQ2DeJhhzW3D3gzN5",
@@ -2359,7 +2901,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Yoga Practice",
         "title_or": "ଯୋଗ ସାଧନା",
         "subject": "krida_yoga",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FPhysical_education%2FClass4_PE_Ch07_Unit3_Ch07_Yoga_Sadhana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "q7Bfk3OgohzlGfS8asFA",
@@ -2367,7 +2911,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Different lands, different lives",
         "title_or": "ଭିନ୍ନ ଭୂମି, ଭିନ୍ନ ଜୀବନ",
         "subject": "paribesa_patha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FEvs%2FClass4_EVS_Ch09_Unit5_Ch09_Bhinna_Bhumi_Bhinna_Jibana.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -2380,7 +2926,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Chandrayaan",
         "title_or": "ଚନ୍ଦ୍ରଯାନ",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FEnglish%2FClass4_Pallavi_Ch13_Unit7_Ch13_Chandrayaan.pdf?alt=media",
+        "number": null
       },
       {
         "id": "YIDaq7a0liJ5h4lTgiT3",
@@ -2388,7 +2936,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Emotion and expression in dance",
         "title_or": "ନୃତ୍ୟରେ ଭାବ ଏବଂ ଅଭିବ୍ୟକ୍ତି",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FArt%2FClass4_KalaSikhya_Ch17_Dance_Ch17_Nrityare_Bhaba_Ebam_Abhivyakti.pdf?alt=media",
+        "number": null
       },
       {
         "id": "LGw5EgqlHiKe6L0dHCWU",
@@ -2396,7 +2946,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Dance traditions of our country",
         "title_or": "ଆମ ଦେଶର ନୃତ୍ୟ ପରମ୍ପରା",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FArt%2FClass4_KalaSikhya_Ch18_Dance_Ch18_Aama_Deshara_Nritya_Parampara.pdf?alt=media",
+        "number": null
       },
       {
         "id": "VWRk5RYAKyLrHPnzyRN5",
@@ -2404,7 +2956,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Data handling",
         "title_or": "ତଥ୍ୟ ପରିଚାଳନା",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FMathematics%2FChapter%2014%20-%20%E0%AC%A4%E0%AC%A5%E0%AD%8D%E0%AD%9F%20%E0%AC%AA%E0%AC%B0%E0%AC%BF%E0%AC%9A%E0%AC%BE%E0%AC%B3%E0%AC%A8%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "sleYYO4I4kJ1w3QVdOf6",
@@ -2412,7 +2966,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Application Letter",
         "title_or": "ଆବେଦନ ପତ୍ର",
         "subject": "bhasa_mahak_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FOdia%2FClass4_Ch27_Aabedana_Patra.pdf?alt=media",
+        "number": null
       },
       {
         "id": "j8n19RjClpKSmeZCmJPX",
@@ -2420,7 +2976,9 @@ export const ROADMAP_DATA_4 = [
         "title_en": "Our sky",
         "title_or": "ଆମ ଆକାଶ",
         "subject": "paribesa_patha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%204%2FEvs%2FClass4_EVS_Ch10_Unit5_Ch10_Aama_Akasha.pdf?alt=media",
+        "number": null
       }
     ]
   }
@@ -2437,7 +2995,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "We all are travellers-1",
         "title_or": "ଆମେ ସମସ୍ତେ ଯାତ୍ରୀ-୧",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FMathematics%2FChapter_1_%E0%AC%86%E0%AC%AE%E0%AD%87%20%E0%AC%B8%E0%AC%AE%E0%AC%B8%E0%AD%8D%E0%AC%A4%E0%AD%87%20%E0%AC%AF%E0%AC%BE%E0%AC%A4%E0%AD%8D%E0%AC%B0%E0%AD%80-%E0%AD%A7.pdf?alt=media",
+        "number": null
       },
       {
         "id": "9GXxBpBIQk0HY9tCRE1N",
@@ -2445,7 +3005,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Fractions",
         "title_or": "ଭଗ୍ନ ସଂଖ୍ୟା",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FMathematics%2FChapter_2_%E0%AC%AD%E0%AC%97%E0%AD%8D%E0%AC%A8%20%E0%AC%B8%E0%AC%82%E0%AC%96%E0%AD%8D%E0%AD%9F%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "JZ02bDPwcYhOaYtsLXMz",
@@ -2453,7 +3015,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Pictures of Moving Objects",
         "title_or": "ଗତି କରୁଥିବା ବସ୍ତୁଗୁଡ଼ିକର ଚିତ୍ର",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FArt%2FClass5_KalaKruti_Ch01_VisualArts_Ch01_Gati_Karuthiba_Bastura_Chitra.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Gc6WboHMnHDFzRchs5jI",
@@ -2461,7 +3025,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Look out the window and draw",
         "title_or": "ଝରକା ବାହାରକୁ ଦେଖ ଓ ଆଙ୍କ",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FArt%2FClass5_KalaKruti_Ch02_VisualArts_Ch02_Jharaka_Baharaku_Dekha_O_Anka.pdf?alt=media",
+        "number": null
       },
       {
         "id": "M0AZeB6hmpmflzXCYF1R",
@@ -2469,7 +3035,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Stories in Paintings",
         "title_or": "ଚିତ୍ରକଳାରେ କାହାଣୀ",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FArt%2FClass5_KalaKruti_Ch03_VisualArts_Ch03_Chitrakalare_Kahani.pdf?alt=media",
+        "number": null
       },
       {
         "id": "pXABy3CZ8TeBGBfvs7l9",
@@ -2477,7 +3045,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Grandpa's Glasses",
         "title_or": "ଜେଜେବାପାଙ୍କ ଚଷମା",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FEnglish%2FClass5_Pallavi_Ch01_Unit1_Ch01_Grandpas_Glasses.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ECpaqijX6IhDECsklZXX",
@@ -2485,7 +3055,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Gone with the Scooter",
         "title_or": "ସ୍କୁଟର ସହିତ ଉଭାନ୍",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FEnglish%2FClass5_Pallavi_Ch02_Unit1_Ch02_Gone_with_the_Scooter.pdf?alt=media",
+        "number": null
       },
       {
         "id": "RzqxHiWFWvEvw1UFjkra",
@@ -2493,7 +3065,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Throwing and Catching",
         "title_or": "ଫିଙ୍ଗିବା ଏବଂ ଧରିବା",
         "subject": "sharirika_yoga",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FPhysical_education%2FClass5_PE_Ch01_Unit1_Ch01_Phingiba_Ebam_Dhariba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "S2eWPphKlgv9UJks2szj",
@@ -2501,7 +3075,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "The Story of a Tree",
         "title_or": "ଗଛ କାହାଣୀ",
         "subject": "bhasa_mahak_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FOdia%2FClass5_Ch01_Gachha_Kahani.pdf?alt=media",
+        "number": null
       },
       {
         "id": "AMkiDX5ZrSQy2LOlPFC0",
@@ -2509,7 +3085,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "The Throne of Justice",
         "title_or": "ନ୍ୟାୟର ସିଂହାସନ",
         "subject": "bhasa_mahak_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FOdia%2FClass5_Ch03_Nyayara_Singhasana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "OoFIOwLloZOGFZrXlgDh",
@@ -2517,7 +3095,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Water is Life",
         "title_or": "ଜଳ ହିଁ ଜୀବନ",
         "subject": "ama_chaturbaswara_pruthibi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FEvs%2FClass5_EVS_Ch01_Unit1_Ch01_Jala_Hi_Jibana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "eyFuV3cNK5BeUQUKkiSS",
@@ -2525,7 +3105,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Story of a River",
         "title_or": "ଏକ ନଦୀର କାହାଣୀ",
         "subject": "ama_chaturbaswara_pruthibi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FEvs%2FClass5_EVS_Ch02_Unit1_Ch02_Eka_Nadira_Kahani.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -2538,7 +3120,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Angles of Rotation",
         "title_or": "ଘୂର୍ଣ୍ଣନର କୋଣ",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FMathematics%2FChapter_3_%E0%AC%A6%E0%AD%83%E0%AC%B7%E0%AD%8D%E0%AC%9F%E0%AC%BF%E0%AC%B0%20%E0%AC%95%E0%AD%8B%E0%AC%A3.pdf?alt=media",
+        "number": null
       },
       {
         "id": "sHQN4OVIQrve8EOPf9Nf",
@@ -2546,7 +3130,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "We all are travellers-2",
         "title_or": "ଆମେ ସମସ୍ତେ ଯାତ୍ରୀ - ୨",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FMathematics%2FChapter_4_%E0%AC%86%E0%AC%AE%E0%AD%87%20%E0%AC%B8%E0%AC%AE%E0%AC%B8%E0%AD%8D%E0%AC%A4%E0%AD%87%20%E0%AC%AF%E0%AC%BE%E0%AC%A4%E0%AD%8D%E0%AC%B0%E0%AD%80-%E0%AD%A8.pdf?alt=media",
+        "number": null
       },
       {
         "id": "xmLc6z1nsW4Ai8Z2KqiW",
@@ -2554,7 +3140,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Imagination in Art",
         "title_or": "କଳାରେ କାଳ୍ପନିକତା",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FArt%2FClass5_KalaKruti_Ch04_VisualArts_Ch04_Kalare_Kalpanikata.pdf?alt=media",
+        "number": null
       },
       {
         "id": "weYxVzlcAmzkhvCU9pgU",
@@ -2562,7 +3150,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Communication through Art",
         "title_or": "କଳାଦ୍ୱାରା ବାର୍ତ୍ତା ପ୍ରସାରଣ",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FArt%2FClass5_KalaKruti_Ch05_VisualArts_Ch05_Kaladwara_Barta_Prasarana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Vrdo4q86nIh8NLaZAyER",
@@ -2570,7 +3160,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Together We Can",
         "title_or": "ଆମେ ମିଳିମିଶି କରିପାରିବା",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FEnglish%2FClass5_Pallavi_Ch03_Unit2_Ch03_Together_We_Can.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jbJlGl0A7zh4l7nTfnhT",
@@ -2578,7 +3170,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Kicking and Receiving",
         "title_or": "ଗୋଡ଼ରେ ମାରିବା ଏବଂ ଗ୍ରହଣ କରିବା",
         "subject": "sharirika_yoga",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FPhysical_education%2FClass5_PE_Ch02_Unit1_Ch02_Godare_Mariba_Ebam_Grahana_Kariba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "SUunZIyGD81P3SaVtmY8",
@@ -2586,7 +3180,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Everyone Helps Their Own",
         "title_or": "ଯେ ଯାହା ଘର ଉପକାରେ",
         "subject": "bhasa_mahak_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FOdia%2FClass5_Ch05_Je_Thae_Para_Upakare.pdf?alt=media",
+        "number": null
       },
       {
         "id": "7UG3lfGz7U838CQStsPW",
@@ -2594,7 +3190,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Mystery of Food",
         "title_or": "ଖାଦ୍ୟର ରହସ୍ୟ",
         "subject": "ama_chaturbaswara_pruthibi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FEvs%2FClass5_EVS_Ch03_Unit2_Ch03_Khadhara_Rahasya.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -2607,7 +3205,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Near and Far",
         "title_or": "ପାଖ ଓ ଦୂର",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FMathematics%2FChapter_5_%E0%AC%AA%E0%AC%BE%E0%AC%96%20%E0%AC%93%20%E0%AC%A6%E0%AD%82%E0%AC%B0.pdf?alt=media",
+        "number": null
       },
       {
         "id": "AYw47cNVzDlbwt3EGf5Z",
@@ -2615,7 +3215,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Create a Scene",
         "title_or": "ଗୋଟିଏ ଦୃଶ୍ୟ ସୃଷ୍ଟି କର",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FArt%2FClass5_KalaKruti_Ch06_Drama_Ch06_Gotiye_Drushya_Srusti_Kara.pdf?alt=media",
+        "number": null
       },
       {
         "id": "crA14hbY4aOPAOSthBbU",
@@ -2623,7 +3225,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Create a Story",
         "title_or": "କାହାଣୀ ସୃଷ୍ଟି କରିବା",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FArt%2FClass5_KalaKruti_Ch07_Drama_Ch07_Kahani_Srusti_Kariba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Ns7Afoud4Z74LtJokybS",
@@ -2631,7 +3235,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Be Smart, Be Safe",
         "title_or": "ଚତୁର ହୁଅ, ସୁରକ୍ଷିତ ରୁହ",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FEnglish%2FClass5_Pallavi_Ch04_Unit2_Ch04_Be_Smart_Be_Safe.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ie1ZndrFRrWMkvxUnNDn",
@@ -2639,7 +3245,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Striking an Object",
         "title_or": "ବସ୍ତୁକୁ ଆଘାତ କର",
         "subject": "sharirika_yoga",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FPhysical_education%2FClass5_PE_Ch03_Unit1_Ch03_Bastuku_Aaghata_Kara.pdf?alt=media",
+        "number": null
       },
       {
         "id": "UyNbpCihw9YLG0ZHfD4Y",
@@ -2647,7 +3255,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Tales of Childhood",
         "title_or": "ଶୈଶବର କଥା",
         "subject": "bhasa_mahak_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FOdia%2FClass5_Ch07_Saisabara_Katha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "9Je7OiX0wg2S0RsHMKHz",
@@ -2655,7 +3265,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "The Post of Leader Suits You",
         "title_or": "ଦଳପତି ପଦ ତୁମକୁ ସାଜେ",
         "subject": "bhasa_mahak_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FOdia%2FClass5_Ch09_Dalapati_Pada_Tumaku_Saje.pdf?alt=media",
+        "number": null
       },
       {
         "id": "5LkIofXKLqa93FxglstJ",
@@ -2663,7 +3275,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Our School - A Joyful Place",
         "title_or": "ଆମ ବିଦ୍ୟାଳୟ-ଏକ ଆନନ୍ଦମୟ ସ୍ଥାନ",
         "subject": "ama_chaturbaswara_pruthibi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FEvs%2FClass5_EVS_Ch04_Unit2_Ch04_Aama_Bidyalaya_Anandamaya_Sthana.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -2676,7 +3290,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Milk Production Center",
         "title_or": "ଦୁଗ୍ଧ ଉତ୍ପାଦନ କେନ୍ଦ୍ର",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FMathematics%2FChapter_6_%E0%AC%AC%E0%AD%83%E0%AC%A4%E0%AD%8D%E0%AC%A4%20%E0%AC%89%E0%AC%A4%E0%AD%8D%E0%AC%AA%E0%AC%BE%E0%AC%A6%E0%AC%A8%20%E0%AC%95%E0%AD%87%E0%AC%A8%E0%AD%8D%E0%AC%A6%E0%AD%8D%E0%AC%B0.pdf?alt=media",
+        "number": null
       },
       {
         "id": "1KHyeVRkNW7jbL98gaxy",
@@ -2684,7 +3300,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Shapes and Patterns",
         "title_or": "ଆକୃତି ଓ ସଂରଚନା",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FMathematics%2FChapter_7_%E0%AC%86%E0%AC%95%E0%AD%83%E0%AC%A4%E0%AC%BF%20%E0%AC%93%20%E0%AC%B8%E0%AC%82%E0%AC%B0%E0%AC%9A%E0%AC%A8%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "LDrkyJmlv4mwHcGxYxjR",
@@ -2692,7 +3310,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Time, Team and Skill",
         "title_or": "କାଳ, ଦଳ ଏବଂ କୌଶଳ",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FArt%2FClass5_KalaKruti_Ch08_Drama_Ch08_Kala_Dala_Ebam_Kausala.pdf?alt=media",
+        "number": null
       },
       {
         "id": "X2YycCyPXO0JVwGUGDYC",
@@ -2700,7 +3320,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Watch and Review",
         "title_or": "ଦେଖିବା ଏବଂ ସମାଲୋଚନା କରିବା",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FArt%2FClass5_KalaKruti_Ch09_Drama_Ch09_Dekhiba_Ebam_Samalochana_Kariba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "SWOg60Tijuqf8YloaQ6t",
@@ -2708,7 +3330,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "The Rainbow",
         "title_or": "ଇନ୍ଦ୍ରଧନୁ",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FEnglish%2FClass5_Pallavi_Ch05_Unit3_Ch05_The_Rainbow.pdf?alt=media",
+        "number": null
       },
       {
         "id": "O37U5Z1uEhgYq2bc1HIT",
@@ -2716,7 +3340,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "The Wise Parrot",
         "title_or": "ଚତୁର ଶୁଆ",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FEnglish%2FClass5_Pallavi_Ch06_Unit3_Ch06_The_Wise_Parrot.pdf?alt=media",
+        "number": null
       },
       {
         "id": "AEpbFXURzIQ2Kvx2JgOS",
@@ -2724,7 +3350,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Small Steps",
         "title_or": "ଛୋଟ ଛୋଟ ପଦକ୍ଷେପ",
         "subject": "sharirika_yoga",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FPhysical_education%2FClass5_PE_Ch04_Unit1_Ch04_Chhota_Chhota_Padakhepa.pdf?alt=media",
+        "number": null
       },
       {
         "id": "x8m8VXeuwfxmgv213vGh",
@@ -2732,7 +3360,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Nuakhai Festival",
         "title_or": "ନୂଆଖାଇ",
         "subject": "bhasa_mahak_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FOdia%2FClass5_Ch11_Nuakhai.pdf?alt=media",
+        "number": null
       },
       {
         "id": "HMaGdUvjTAky2jkhVoAj",
@@ -2740,7 +3370,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Our Progressive Country",
         "title_or": "ଆମ ପ୍ରଗତିଶୀଳ ଦେଶ",
         "subject": "ama_chaturbaswara_pruthibi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FEvs%2FClass5_EVS_Ch05_Unit3_Ch05_Aama_Pragatisila_Desa.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -2753,7 +3385,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Weight and Capacity",
         "title_or": "ଓଜନ ଓ ଧାରକତ୍ୱ",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FMathematics%2FChapter_8_%E0%AC%93%E0%AC%9C%E0%AC%A8%20%E0%AC%93%20%E0%AC%A7%E0%AC%BE%E0%AC%B0%E0%AC%95%E0%AC%A4%E0%AD%8D%E0%AD%B1.pdf?alt=media",
+        "number": null
       },
       {
         "id": "SsVpjFN3pyiF8OmLjH5m",
@@ -2761,7 +3395,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Coconut Orchard",
         "title_or": "ନଡ଼ିଆ ବଗିଚା",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FMathematics%2FChapter_9_%E0%AC%A8%E0%AC%A1%E0%AC%BC%E0%AC%BF%E0%AC%86%20%E0%AC%AC%E0%AC%97%E0%AC%BF%E0%AC%9A%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "UZMOjhCLoeZK2IQ2mvop",
@@ -2769,7 +3405,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Singing and Style",
         "title_or": "ଗୀତ ଗାଇବା ଏବଂ ଶୈଳୀକା",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FArt%2FClass5_KalaKruti_Ch10_Music_Ch10_Gita_Gaiba_Ebam_Kheliba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "AHt686MDz1ZNM891gKDS",
@@ -2777,7 +3415,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Music around me",
         "title_or": "ମୋ ଚାରିପାଖର ସଙ୍ଗୀତ",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FArt%2FClass5_KalaKruti_Ch11_Music_Ch11_Mo_Charipakara_Sangeeta.pdf?alt=media",
+        "number": null
       },
       {
         "id": "kdIAHEPqAtNEI5qjzjJ1",
@@ -2785,7 +3425,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Fit Body, Fit Mind, Fit Nation",
         "title_or": "ସୁସ୍ଥ ଶରୀର, ସୁସ୍ଥ ମନ, ସୁସ୍ଥ ରାଷ୍ଟ୍ର",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FEnglish%2FClass5_Pallavi_Ch07_Unit4_Ch07_Fit_Body_Fit_Mind_Fit_Nation.pdf?alt=media",
+        "number": null
       },
       {
         "id": "HzZBH5PpXOM6KE0RZho6",
@@ -2793,7 +3435,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Kaziranga National Park",
         "title_or": "କାଜିରଙ୍ଗା ଜାତୀୟ ଉଦ୍ୟାନ",
         "subject": "bhasa_mahak_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FOdia%2FClass5_Ch13_Kaziranga_Jatiya_Udyana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "4JbNMP7EPEtjvXMpCvBJ",
@@ -2801,7 +3445,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "The Story of Three Fishes",
         "title_or": "ତିନି ମାଛର କାହାଣୀ",
         "subject": "bhasa_mahak_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FOdia%2FClass5_Ch15_Tini_Machhara_Kahani.pdf?alt=media",
+        "number": null
       },
       {
         "id": "lGDIFn1Qc8FQyVSFGmbz",
@@ -2809,7 +3455,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Some Unique Places",
         "title_or": "କେତେକ ଅନନ୍ୟ ସ୍ଥାନ",
         "subject": "ama_chaturbaswara_pruthibi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FEvs%2FClass5_EVS_Ch06_Unit3_Ch06_Keteka_Ananya_Sthana.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -2822,7 +3470,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Symmetrical Figures",
         "title_or": "ପ୍ରତିସମ ଚିତ୍ର",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FMathematics%2FChapter_10_%E0%AC%AA%E0%AD%8D%E0%AC%B0%E0%AC%A4%E0%AC%BF%E0%AC%B8%E0%AC%AE%20%E0%AC%9A%E0%AC%BF%E0%AC%A4%E0%AD%8D%E0%AC%B0.pdf?alt=media",
+        "number": null
       },
       {
         "id": "JG3V9jVoKChHrnvKpA1T",
@@ -2830,7 +3480,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Musical Instruments and Sound",
         "title_or": "ବାଦ୍ୟ ଯନ୍ତ୍ର ଏବଂ ଧ୍ୱନି",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FArt%2FClass5_KalaKruti_Ch12_Music_Ch12_Badya_Yantra_Ebam_Dhwani.pdf?alt=media",
+        "number": null
       },
       {
         "id": "QeFfcp3KWAuBEQkcLJ6I",
@@ -2838,7 +3490,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Building Blocks",
         "title_or": "ବିଲ୍ଡିଂ ବ୍ଲକ୍",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FArt%2FClass5_KalaKruti_Ch13_Music_Ch13_Building_Blocks.pdf?alt=media",
+        "number": null
       },
       {
         "id": "j2NReNx95wIynK1rvxQe",
@@ -2846,7 +3500,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "The Lagori Champions",
         "title_or": "ଲାଗୋରି ବିଜେତା",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FEnglish%2FClass5_Pallavi_Ch08_Unit4_Ch08_The_Lagori_Champions.pdf?alt=media",
+        "number": null
       },
       {
         "id": "842AbM4rRPDN81uAt2Me",
@@ -2854,7 +3510,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Local and Traditional Games",
         "title_or": "ସ୍ଥାନୀୟ ଏବଂ ପାରମ୍ପରିକ",
         "subject": "sharirika_yoga",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FPhysical_education%2FClass5_PE_Ch05_Unit2_Ch05_Sthaniya_O_Paramparika_Khela.pdf?alt=media",
+        "number": null
       },
       {
         "id": "pvjFAP9NIPpueaBalyoZ",
@@ -2862,7 +3520,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "The Stone Tells a Story",
         "title_or": "ପଥର କହୁଛି କଥା",
         "subject": "bhasa_mahak_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FOdia%2FClass5_Ch17_Pathara_Kahuchi_Katha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "AYExLysmXWE9sP4FVOLv",
@@ -2870,7 +3530,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Energy and Work",
         "title_or": "ଶକ୍ତି ଓ କାର୍ଯ୍ୟ",
         "subject": "ama_chaturbaswara_pruthibi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FEvs%2FClass5_EVS_Ch07_Unit4_Ch07_Sakti_O_Karjya.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -2883,7 +3545,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Grandma's Blanket",
         "title_or": "ଜେଜେମା'ଙ୍କ କମ୍ବଳ",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FMathematics%2FChapter_11_%E0%AC%9C%E0%AD%87%E0%AC%9C%E0%AD%87%E0%AC%AE%E0%AC%BE%E0%AC%99%E0%AD%8D%E0%AC%95%20%E0%AC%95%E0%AC%AE%E0%AD%8D%E0%AC%AC%E0%AC%B3.pdf?alt=media",
+        "number": null
       },
       {
         "id": "qhPK31VqDiYhXoOzfcFJ",
@@ -2891,7 +3555,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Measurement of Time",
         "title_or": "ସମୟର ମାପ",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FMathematics%2FChapter_12_%E0%AC%B8%E0%AC%AE%E0%AD%9F%E0%AC%B0%20%E0%AC%AE%E0%AC%BE%E0%AC%AA.pdf?alt=media",
+        "number": null
       },
       {
         "id": "fNvZxEU4PnGKc7WjzIvt",
@@ -2899,7 +3565,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Planning and Inspiration",
         "title_or": "ପରିକଳ୍ପନା ଏବଂ ଅନୁପ୍ରେରଣା",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FArt%2FClass5_KalaKruti_Ch14_Music_Ch14_Parikalpana_Ebam_Anuprerana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "n0jN4pcoBoIRIZwE4b1h",
@@ -2907,7 +3575,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "My Dance Flow in Daily Activities",
         "title_or": "ଦୈନନ୍ଦିନ କାର୍ଯ୍ୟରେ ମୋର ନୃତ୍ୟଧାରା",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FArt%2FClass5_KalaKruti_Ch15_Dance_Ch15_Dainandina_Karjyare_Mo_Nrityadhara.pdf?alt=media",
+        "number": null
       },
       {
         "id": "3AmNYVGl1DbWOUDwctnV",
@@ -2915,7 +3585,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "The Swing",
         "title_or": "ଦୋଳି",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FEnglish%2FClass5_Pallavi_Ch09_Unit5_Ch09_The_Swing.pdf?alt=media",
+        "number": null
       },
       {
         "id": "KppRYqNa8EnmElbiT8dP",
@@ -2923,7 +3595,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "The Decision of the Panchayat",
         "title_or": "ପଞ୍ଚାୟତର ନିଷ୍ପତ୍ତି",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FEnglish%2FClass5_Pallavi_Ch10_Unit5_Ch10_The_Decision_of_the_Panchayat.pdf?alt=media",
+        "number": null
       },
       {
         "id": "herP7kshBCPEVY5fcuw9",
@@ -2931,7 +3605,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Yoga in Daily Life",
         "title_or": "ଦୈନନ୍ଦିନ ଜୀବନରେ ଯୋଗ",
         "subject": "sharirika_yoga",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FPhysical_education%2FClass5_PE_Ch06_Unit3_Ch06_Dainandina_Jibanare_Yoga.pdf?alt=media",
+        "number": null
       },
       {
         "id": "4XpLX98zTZPsJi2MpR8Y",
@@ -2939,7 +3615,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "National Flag",
         "title_or": "ଜାତୀୟପତାକା",
         "subject": "bhasa_mahak_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FOdia%2FClass5_Ch19_Jatiya_Pataka.pdf?alt=media",
+        "number": null
       },
       {
         "id": "eYmgS5N5UqMuu0P6DY23",
@@ -2947,7 +3625,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "The Story of the Ganges",
         "title_or": "ଗଙ୍ଗାର କାହାଣୀ",
         "subject": "bhasa_mahak_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FOdia%2FClass5_Ch21_Gangara_Kahani.pdf?alt=media",
+        "number": null
       },
       {
         "id": "iiKVn910eGnSfsSv0jYA",
@@ -2955,7 +3635,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Preparation of Clothes",
         "title_or": "ପୋଷାକ ପ୍ରସ୍ତୁତି",
         "subject": "ama_chaturbaswara_pruthibi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FEvs%2FClass5_EVS_Ch08_Unit4_Ch08_Poshaka_Prastuti.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -2968,7 +3650,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Jumping Animals",
         "title_or": "ପ୍ରାଣୀ ଡେଇଁକା",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FMathematics%2FChapter_13_%E0%AC%AA%E0%AD%8D%E0%AC%B0%E0%AC%BE%E0%AC%A3%E0%AD%80%20%E0%AC%A1%E0%AC%BF%E0%AC%86%E0%AC%81.pdf?alt=media",
+        "number": null
       },
       {
         "id": "VFUHycEgXLxudq9AVP9C",
@@ -2976,7 +3660,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Map and Location",
         "title_or": "ମାନଚିତ୍ର ଓ ଅବସ୍ଥାନ",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FMathematics%2FChapter_14_%E0%AC%AE%E0%AC%BE%E0%AC%A8%E0%AC%9A%E0%AC%BF%E0%AC%A4%E0%AD%8D%E0%AC%B0%20%E0%AC%93%20%E0%AC%85%E0%AC%AC%E0%AC%B8%E0%AD%8D%E0%AC%A5%E0%AC%BE%E0%AC%A8.pdf?alt=media",
+        "number": null
       },
       {
         "id": "huspiulTLq5UszXuSa5b",
@@ -2984,7 +3670,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Rhythm and Tempo in Dance",
         "title_or": "ନୃତ୍ୟରେ ତାଳ ଓ ଲୟ",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FArt%2FClass5_KalaKruti_Ch16_Dance_Ch16_Nrityare_Tala_O_Laya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Gwqt4i0qEpV138hiwBQp",
@@ -2992,7 +3680,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Dance of my Nation",
         "title_or": "ମୋ ରାଷ୍ଟ୍ରର ନୃତ୍ୟ",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FArt%2FClass5_KalaKruti_Ch17_Dance_Ch17_Mo_Rashtrara_Nritya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "xSiI9cg0LV31HzoovdA3",
@@ -3000,7 +3690,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "The Old Stag",
         "title_or": "ବୃଦ୍ଧ ହରିଣ",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FEnglish%2FClass5_Pallavi_Ch11_Unit6_Ch11_The_Old_Stag.pdf?alt=media",
+        "number": null
       },
       {
         "id": "kdrRrcptIZ53lZGqNqcw",
@@ -3008,7 +3700,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Yoga Practice",
         "title_or": "ଯୋଗ ସାଧନା",
         "subject": "sharirika_yoga",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FPhysical_education%2FClass5_PE_Ch07_Unit3_Ch07_Yoga_Sadhana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "UgGPWD90HgH3SDSBZzPa",
@@ -3016,7 +3710,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "You Gave Me a Great Lesson",
         "title_or": "ଦେଲୁ ମୋତେ ମହାଶିକ୍ଷା",
         "subject": "bhasa_mahak_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FOdia%2FClass5_Ch23_Delu_Mote_Mahasikhya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "uavaEk7aDjc4PwSN43Xz",
@@ -3024,7 +3720,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Flow of Nature",
         "title_or": "ପ୍ରକୃତିର ଧାରା",
         "subject": "ama_chaturbaswara_pruthibi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FEvs%2FClass5_EVS_Ch09_Unit5_Ch09_Prakrutira_Dhara.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -3037,7 +3735,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Information through Pictures",
         "title_or": "ଚିତ୍ର ମାଧ୍ୟମରେ ତଥ୍ୟ",
         "subject": "ganita_mela",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FMathematics%2FChapter_15_%E0%AC%9A%E0%AC%BF%E0%AC%A4%E0%AD%8D%E0%AC%B0%20%E0%AC%AE%E0%AC%BE%E0%AC%A7%E0%AD%8D%E0%AD%9F%E0%AC%AE%E0%AC%B0%E0%AD%87%20%E0%AC%A4%E0%AC%A5%E0%AD%8D%E0%AD%9F.pdf?alt=media",
+        "number": null
       },
       {
         "id": "tAVi1ceTcmwRhxdVAILe",
@@ -3045,7 +3745,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Expression and Storytelling in my Dance",
         "title_or": "ମୋ ନୃତ୍ୟରେ ଭାବ ପ୍ରକାଶ ଏବଂ କାହାଣୀ ବର୍ଣ୍ଣନା",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FArt%2FClass5_KalaKruti_Ch18_Dance_Ch18_Bhaba_Prakasha_O_Kahani_Barnana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ecBPBPy9H7ot6I3lapq2",
@@ -3053,7 +3755,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "My Dance and Room Dance",
         "title_or": "ମୋ ନୃତ୍ୟ ଓ ରୁମ୍ ନୃତ୍ୟ",
         "subject": "kala_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FArt%2FClass5_KalaKruti_Ch19_Dance_Ch19_Mo_Nritya_O_Tuma_Nritya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ReaaawW5sHxoPKqBY8u4",
@@ -3061,7 +3765,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Braille",
         "title_or": "ବ୍ରେଲି",
         "subject": "pallavi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FEnglish%2FClass5_Pallavi_Ch12_Unit6_Ch12_Braille.pdf?alt=media",
+        "number": null
       },
       {
         "id": "aPeq5xqwaEizSq9OOHwo",
@@ -3069,7 +3775,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Return/Reward",
         "title_or": "ପ୍ରତିଦାନ",
         "subject": "bhasa_mahak_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FOdia%2FClass5_Ch25_Pratidana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "zDHoCM91YnWTcKcdzl2W",
@@ -3077,7 +3785,9 @@ export const ROADMAP_DATA_5 = [
         "title_en": "Earth - Our Habitat",
         "title_or": "ପୃଥିବୀ - ଆମ ବାସସ୍ଥାନ",
         "subject": "ama_chaturbaswara_pruthibi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%205%2FEvs%2FClass5_EVS_Ch10_Unit5_Ch10_Pruthibi_Aama_Basasthana.pdf?alt=media",
+        "number": null
       }
     ]
   }
@@ -3094,7 +3804,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Let's Look, Recognize and Practice",
         "title_or": "आइए, देखें, पहचानें और अभ्यास करें",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch01_Ch01_Aaiye_Dekhen_Pahchanen.pdf?alt=media",
+        "number": null
       },
       {
         "id": "spL0aIFzZmmR63pONZMO",
@@ -3102,7 +3814,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Know the Alphabet",
         "title_or": "वर्णमाला जानें",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch02_Ch02_Varnamala_Janen.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ACaHUFdNYmBerxxctw9w",
@@ -3110,7 +3824,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Learn the Writing Style of Letters",
         "title_or": "वर्ण लेखन की शैली सीखें",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch03_Ch03_Varna_Lekhan_Ki_Shaili.pdf?alt=media",
+        "number": null
       },
       {
         "id": "QUtP3Nl26CW7pww7t47Q",
@@ -3118,7 +3834,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "The Wonderful World of Science",
         "title_or": "ବିଜ୍ଞାନର ଚମତ୍କାର ଦୁନିଆ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FScience_curiosity%2FClass6_Science_Ch01_Ch01_Bijnyanara_Chamatkara_Duniya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "IuuFXIBrV8vo95fpc2Y5",
@@ -3126,7 +3844,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Diversity in the Living World",
         "title_or": "ଜୀବଜଗତରେ ବିବିଧତା",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FScience_curiosity%2FClass6_Science_Ch02_Ch02_Jibajagatara_Bibidhata.pdf?alt=media",
+        "number": null
       },
       {
         "id": "tLI2qL3dPnaBxKACUoZI",
@@ -3134,7 +3854,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Motherland",
         "title_or": "ଜନ୍ମଭୂମି",
         "subject": "sahitya_sudha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FOdia%2FClass6_Ch01_Janmabhumi.pdf?alt=media",
+        "number": null
       },
       {
         "id": "tXtGPn06G6ulTmmi32Kt",
@@ -3142,7 +3864,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "This Country, This Soil",
         "title_or": "ଏଇ ଦେଶ ଏଇ ମାଟି",
         "subject": "sahitya_sudha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FOdia%2FClass6_Ch02_Eka_Desha_Eka_Mati.pdf?alt=media",
+        "number": null
       },
       {
         "id": "4gkEGIHkfuiJVDCllxM0",
@@ -3150,7 +3874,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Locating Places on Earth",
         "title_or": "ପୃଥିବୀରେ ସ୍ଥାନ ଚିହ୍ନଟ କରିବା",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSocial_science%2FClass6_SocSci_Ch01_Geo_Ch01_Pruthibire_Sthana_Chihnata_Kariba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "LEvdlCHQbQcibaHBiDXG",
@@ -3158,7 +3884,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Oceans and Continents",
         "title_or": "ମହାସାଗର ଏବଂ ମହାଦେଶ",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSocial_science%2FClass6_SocSci_Ch02_Geo_Ch02_Mahasagara_Ebam_Mahadesa.pdf?alt=media",
+        "number": null
       },
       {
         "id": "DjiIXgTRoT3kddbgcVIf",
@@ -3166,7 +3894,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Object Drawing",
         "title_or": "ବସ୍ତୁ ଚିତ୍ରଣ",
         "subject": "kalakunja",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FArt%2FClass6_KalaKruti_Ch01_VisualArts_Ch01_Bastu_Chitrana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "vy2amvwpyLRMbfndVahV",
@@ -3174,7 +3904,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Modifying Illustrative Drawing",
         "title_or": "ଦୃଷ୍ଟାନ୍ତ ଚିତ୍ରର ପରିବର୍ଦ୍ଧନ",
         "subject": "kalakunja",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FArt%2FClass6_KalaKruti_Ch02_VisualArts_Ch02_Drustanta_Chitrara_Paribarjana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "SiR5MQ0QeZI1RDptBswz",
@@ -3182,7 +3914,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Human Drawing",
         "title_or": "ବ୍ୟକ୍ତି ଚିତ୍ରଣ",
         "subject": "kalakunja",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FArt%2FClass6_KalaKruti_Ch03_VisualArts_Ch03_Byakti_Chitrana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "BXnNf1JsqoaMm5GOn7TK",
@@ -3190,7 +3924,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "A Bottle of Dew",
         "title_or": "A Bottle of Dew",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FEnglish%2FClass6_Jasmine_Ch01_Unit1_Ch01_A_Bottle_of_Dew.pdf?alt=media",
+        "number": null
       },
       {
         "id": "dwd8kdXzj5ulMZxYtaPa",
@@ -3198,7 +3934,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "The Raven and the Fox",
         "title_or": "The Raven and the Fox",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FEnglish%2FClass6_Jasmine_Ch02_Unit1_Ch02_The_Raven_and_the_Fox.pdf?alt=media",
+        "number": null
       },
       {
         "id": "1OnxLx50t2RfAQKafLEw",
@@ -3206,7 +3944,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Introduction to Alphabets",
         "title_or": "वर्णपरिचयः (ବର୍ଣ୍ଣ ପରିଚୟ)",
         "subject": "sanskritakalika_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSanskrit%2FClass6_Sanskrit_Ch01_Ch01_Varnaparichayah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "X5lVVvEWr9zexqeRm0Bl",
@@ -3214,7 +3954,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Introduction to Vowel Signs",
         "title_or": "मात्रापरिचयः (ମାତ୍ରା ପରିଚୟ)",
         "subject": "sanskritakalika_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSanskrit%2FClass6_Sanskrit_Ch02_Ch02_Matraparichayah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "DPqR8XQBz9VAbbFHfHTE",
@@ -3222,7 +3964,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Addition of Vowel Signs",
         "title_or": "मात्रायोगः (ମାତ୍ରା ଯୋଗ)",
         "subject": "sanskritakalika_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSanskrit%2FClass6_Sanskrit_Ch03_Ch03_Matrayogah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "hvGDi51aNQIJoBlfLx9c",
@@ -3230,7 +3974,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Patterns in Mathematics",
         "title_or": "ଗଣିତରେ ସଂରଚନା",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FMathematics%2FClass6_Chapter_1_%E0%AC%97%E0%AC%A3%E0%AC%BF%E0%AC%A4%E0%AC%B0%E0%AD%87%20%E0%AC%B8%E0%AC%82%E0%AC%B0%E0%AC%9A%E0%AC%A8%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "q7bb7vScXQLVVywiF0kh",
@@ -3238,15 +3984,19 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Lines and Angles",
         "title_or": "ରେଖା ଏବଂ କୋଣ",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FMathematics%2FClass6_Chapter_2_%E0%AC%B0%E0%AD%87%E0%AC%96%E0%AC%BE%20%E0%AC%8F%E0%AC%AC%E0%AC%82%20%E0%AC%95%E0%AD%8B%E0%AC%A3.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "uoO7q8NMwyQyYevy6wps",
-        "title": "Project 3 - Project 3: Construction Skills",
-        "title_en": "Project 3: Construction Skills",
-        "title_or": "ପ୍ରକଳ୍ପ ୩: ନିର୍ମାଣ ଦକ୍ଷତା",
+        "id": "6frJ8fVdVyOOmNLIIqTg",
+        "title": "Project 1 - Project 1: School Kitchen Garden",
+        "title_en": "Project 1: School Kitchen Garden",
+        "title_or": "ପ୍ରକଳ୍ପ ୧: ବିଦ୍ୟାଳୟ ପାକଶାଳା ବଗିଚା",
         "subject": "kausala_bodha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FVocational%2FClass6_KousalaBodha_Ch01_Part1_Topic01_Bidyalaya_Pakasala_Bagicha_Excel.pdf?alt=media",
+        "number": null
       },
       {
         "id": "SpxX02unTUqowUiivU8n",
@@ -3254,7 +4004,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Importance of Physical Education and Wellness",
         "title_or": "ଶାରୀରିକ ଶିକ୍ଷା ଏବଂ ସୁସ୍ଥତାର ଗୁରୁତ୍ବ",
         "subject": "khela_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FPhysical_education%2FClass6_PhysEd_Ch01_Ch01_Importance_of_Physical_Education_and_Wellness.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -3267,7 +4019,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Recognize Vowel Signs",
         "title_or": "मात्राएँ पहचानें",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch04_Ch04_Matraen_Pahchanen.pdf?alt=media",
+        "number": null
       },
       {
         "id": "KIpfwRE4UHM4DIprgLzI",
@@ -3275,7 +4029,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Learn Conjunct Letters",
         "title_or": "संयुक्त वर्ण एवं उनके मानक रूप जानें",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch05_Ch05_Sanyukta_Varna_Standard_Forms.pdf?alt=media",
+        "number": null
       },
       {
         "id": "2VvMr5UPyMcTNjPsYQAC",
@@ -3283,7 +4039,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Look and Read",
         "title_or": "देखें और पढ़ें",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch06_Ch06_Dekhen_Aur_Padhen.pdf?alt=media",
+        "number": null
       },
       {
         "id": "PJhSlL4CNEHni32KKTY3",
@@ -3291,7 +4049,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Balanced Diet: Way to a Healthy Body",
         "title_or": "ସୁଷମ ଖାଦ୍ୟ: ସୁସ୍ଥ ଶରୀରର ଉପାୟ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FScience_curiosity%2FClass6_Science_Ch03_Ch03_Susama_Khadya_Sustha_Sarira.pdf?alt=media",
+        "number": null
       },
       {
         "id": "603lytLw4DKWye0JSTuj",
@@ -3299,7 +4059,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Hockey",
         "title_or": "ହକି",
         "subject": "sahitya_sudha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FOdia%2FClass6_Ch03_Hockey.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Ib1vBl6ypoz6ozempSph",
@@ -3307,7 +4069,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Mountaineer Kalpana Dash",
         "title_or": "ପର୍ବତାରୋହୀ କଳ୍ପନା ଦାଶ",
         "subject": "sahitya_sudha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FOdia%2FClass6_Ch04_Parbatarohi_Kalpana_Dash.pdf?alt=media",
+        "number": null
       },
       {
         "id": "BVFp2Q7OgkDUj0uGnpcu",
@@ -3315,7 +4079,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Landforms and Life",
         "title_or": "ଭୂମିରୂପ ଏବଂ ଜୀବନ",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSocial_science%2FClass6_SocSci_Ch03_Geo_Ch03_Bhumirupa_Ebam_Jibana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "CZ390t8xYksYPWwaYTwU",
@@ -3323,7 +4089,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Timeline and Sources of History",
         "title_or": "ଇତିହାସର ସମୟସୀମା ଏବଂ ଉତ୍ସ",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSocial_science%2FClass6_SocSci_Ch04_Hist_Ch04_Itihasara_Samayasima_O_Uthsa.pdf?alt=media",
+        "number": null
       },
       {
         "id": "XEXfG3pAflrOXOZxyqrQ",
@@ -3331,7 +4099,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Paper Art",
         "title_or": "କାଗଜ କଳା",
         "subject": "kalakunja",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FArt%2FClass6_KalaKruti_Ch04_VisualArts_Ch04_Kagaja_Kala.pdf?alt=media",
+        "number": null
       },
       {
         "id": "C9apNhYBlMf0HCLYmab6",
@@ -3339,7 +4109,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Printmaking",
         "title_or": "ଛାପ ଚିତ୍ର",
         "subject": "kalakunja",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FArt%2FClass6_KalaKruti_Ch05_VisualArts_Ch05_Chhapa_Chitra.pdf?alt=media",
+        "number": null
       },
       {
         "id": "sSZA8euC9MEskzdpJ6jf",
@@ -3347,7 +4119,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Rama to the Rescue",
         "title_or": "Rama to the Rescue",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FEnglish%2FClass6_Jasmine_Ch03_Unit1_Ch03_Rama_to_the_Rescue.pdf?alt=media",
+        "number": null
       },
       {
         "id": "3l9RH73MNZMJWvYvbbkg",
@@ -3355,7 +4129,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "True Friendship",
         "title_or": "True Friendship",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FEnglish%2FClass6_Jasmine_Ch04_Unit2_Ch04_True_Friendship.pdf?alt=media",
+        "number": null
       },
       {
         "id": "92qEKUKaGF1gDSQ9Tm8O",
@@ -3363,7 +4139,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Conjunct Consonants",
         "title_or": "संयुक्ताक्षराणि (ଯୁକ୍ତାକ୍ଷର)",
         "subject": "sanskritakalika_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSanskrit%2FClass6_Sanskrit_Ch04_Ch04_Sanyuktaksarani.pdf?alt=media",
+        "number": null
       },
       {
         "id": "tZpXupxXTXaJduH51YK2",
@@ -3371,7 +4149,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Introduction to Gender",
         "title_or": "लिङ्गपरिचयः (ଲିଙ୍ଗ ପରିଚୟ)",
         "subject": "sanskritakalika_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSanskrit%2FClass6_Sanskrit_Ch05_Ch05_Lingaparichayah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "CgDseWH7sbt8TtUudTcv",
@@ -3379,15 +4159,19 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Playing with Numbers",
         "title_or": "ସଂଖ୍ୟା ଖେଳ",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FMathematics%2FClass6_Chapter_3_%E0%AC%B8%E0%AC%82%E0%AC%96%E0%AD%8D%E0%AD%9F%E0%AC%BE%20%E0%AC%96%E0%AD%87%E0%AC%B3.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "6frJ8fVdVyOOmNLIIqTg",
-        "title": "Project 1 - Project 1: School Kitchen Garden",
-        "title_en": "Project 1: School Kitchen Garden",
-        "title_or": "ପ୍ରକଳ୍ପ ୧: ବିଦ୍ୟାଳୟ ପାକଶାଳା ବଗିଚା",
+        "id": "me7YHUW3xw1Mdv47NXO6",
+        "title": "Project 2 - Project 2: Biodiversity Register",
+        "title_en": "Project 2: Biodiversity Register",
+        "title_or": "ପ୍ରକଳ୍ପ ୨: ଜୈବ ବିବିଧତା ପଞ୍ଜିକା",
         "subject": "kausala_bodha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FVocational%2FClass6_KousalaBodha_Ch02_Part1_Topic02_Jaiba_Bibidhata_Panjika_Biodiversity.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Pj1JnPiqWRZ198RFvQvt",
@@ -3395,7 +4179,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Neuro-Muscular Coordination Skills",
         "title_or": "ସ୍ନାୟୁ ମାଂସପେଶୀୟ ଚଳନର ଦକ୍ଷତା",
         "subject": "khela_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FPhysical_education%2FClass6_PhysEd_Ch02_Ch02_Neuro_Muscular_Coordination_Skills.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -3408,7 +4194,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Family",
         "title_or": "परिवार (चित्र और बातचीत)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch07_Ch07_Parivar_Conversation.pdf?alt=media",
+        "number": null
       },
       {
         "id": "gAVpVptQcoWjjAVkWq5f",
@@ -3416,7 +4204,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Learn Counting",
         "title_or": "गिनती सीखें",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch08_Ch08_Ginti_Seekhen.pdf?alt=media",
+        "number": null
       },
       {
         "id": "rQM7f4kUCRbSwvgRNVFU",
@@ -3424,7 +4214,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Alphabet Song",
         "title_or": "अक्षर गीत",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch09_Ch09_Akshar_Geet.pdf?alt=media",
+        "number": null
       },
       {
         "id": "CzBisZvlBGZyHWRCImyd",
@@ -3432,7 +4224,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Exploring Magnets",
         "title_or": "ଚୁମ୍ବକ ଅନ୍ୱେଷଣ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FScience_curiosity%2FClass6_Science_Ch04_Ch04_Chumbaka_Anwesana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "9JoomsDQ5wji1nRbA60a",
@@ -3440,7 +4234,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Rain",
         "title_or": "ବର୍ଷା",
         "subject": "sahitya_sudha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FOdia%2FClass6_Ch05_Barsha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jo0SHWfpS4yC8f6pP8QF",
@@ -3448,7 +4244,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "India, that is Bharat",
         "title_or": "ଇଣ୍ଡିଆ, ଅର୍ଥାତ୍ ଭାରତ",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSocial_science%2FClass6_SocSci_Ch05_Hist_Ch05_India_Arthat_Bharata.pdf?alt=media",
+        "number": null
       },
       {
         "id": "eLhKMSQVfECAHDPQeEAe",
@@ -3456,7 +4254,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Music and Emotion",
         "title_or": "ସଙ୍ଗୀତ ଓ ଭାବ",
         "subject": "kalakunja",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FArt%2FClass6_KalaKruti_Ch06_Music_Ch06_Sangeeta_O_Bhaba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "nOWfGDWsD0rqnsIybR2X",
@@ -3464,7 +4264,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Musical Instruments",
         "title_or": "ସଙ୍ଗୀତମୟ ବାଦ୍ୟଯନ୍ତ୍ର",
         "subject": "kalakunja",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FArt%2FClass6_KalaKruti_Ch07_Music_Ch07_Sangeetamaya_Badyajantra.pdf?alt=media",
+        "number": null
       },
       {
         "id": "xMs4ZPt0Tn8bl1N7YeJ4",
@@ -3472,7 +4274,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Nobody's Friend",
         "title_or": "Nobody's Friend",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FEnglish%2FClass6_Jasmine_Ch05_Unit2_Ch05_Nobodys_Friend.pdf?alt=media",
+        "number": null
       },
       {
         "id": "JETLH7vubuyuusN7mrkh",
@@ -3480,7 +4284,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "The Chair",
         "title_or": "The Chair",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FEnglish%2FClass6_Jasmine_Ch06_Unit2_Ch06_The_Chair.pdf?alt=media",
+        "number": null
       },
       {
         "id": "X5EnzFHAYmGbjPpF0mwg",
@@ -3488,7 +4294,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Introduction to Number",
         "title_or": "वचनपरिचयः (ବଚନ ପରିଚୟ)",
         "subject": "sanskritakalika_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSanskrit%2FClass6_Sanskrit_Ch06_Ch06_Vachanaparichayah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "4FfpSkblba2qbwoJX8cE",
@@ -3496,7 +4304,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Pronouns",
         "title_or": "सर्वनामानि (ସର୍ବନାମ)",
         "subject": "sanskritakalika_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSanskrit%2FClass6_Sanskrit_Ch07_Ch07_Sarvanamani.pdf?alt=media",
+        "number": null
       },
       {
         "id": "b9kaxyyy2VGC7aqRPQlw",
@@ -3504,7 +4314,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Data Representation and Management",
         "title_or": "ତଥ୍ୟ ଉପସ୍ଥାପନା ଓ ପରିଚାଳନା",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FMathematics%2FClass6_Chapter_4_%E0%AC%A4%E0%AC%A5%E0%AD%8D%E0%AD%9F%20%E0%AC%89%E0%AC%AA%E0%AC%B8%E0%AD%8D%E0%AC%A5%E0%AC%BE%E0%AC%AA%E0%AC%A8%E0%AC%BE%20%E0%AC%93%20%E0%AC%AA%E0%AC%B0%E0%AC%BF%E0%AC%9A%E0%AC%BE%E0%AC%B3%E0%AC%A8%E0%AC%BE.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -3517,7 +4329,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Rain and Frog",
         "title_or": "बरसात और मेंढक",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch10_Ch10_Barsat_Aur_Medhak.pdf?alt=media",
+        "number": null
       },
       {
         "id": "popErO91gra0KFd6Ep8Z",
@@ -3525,7 +4339,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Four Directions",
         "title_or": "चार दिशाएँ",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch11_Ch11_Char_Dishaen.pdf?alt=media",
+        "number": null
       },
       {
         "id": "IAasVcNIORLTY2BV1qaT",
@@ -3533,7 +4349,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Meena's Family",
         "title_or": "मीना का परिवार",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch12_Ch12_Meena_Ka_Parivar.pdf?alt=media",
+        "number": null
       },
       {
         "id": "M7VOnHXTOjQdTD8J5lt2",
@@ -3541,7 +4359,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Measurement of Length and Motion",
         "title_or": "ଦୈର୍ଘ୍ୟ ମାପ ଏବଂ ଗତି",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FScience_curiosity%2FClass6_Science_Ch05_Ch05_Dairghya_Mapa_Ebam_Gati.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ORieEkO3nScTj3o4NKSj",
@@ -3549,7 +4369,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Things Around Us",
         "title_or": "ଆମ ଚତୁଃପାର୍ଶ୍ୱରେ ଥିବା ବସ୍ତୁ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FScience_curiosity%2FClass6_Science_Ch06_Ch06_Aama_Chatuhparsware_Thiba_Bastu.pdf?alt=media",
+        "number": null
       },
       {
         "id": "u7cLAzBqYKJGl0MQFUwa",
@@ -3557,7 +4379,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "If You Try to Deceive...",
         "title_or": "ଠକି ବସିଲେ ଓକିଲିବ",
         "subject": "sahitya_sudha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FOdia%2FClass6_Ch06_Thaki_Basile_Thakijiba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "z3QjKwyHNxPXQ8ur9Z96",
@@ -3565,7 +4389,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Moral Sayings",
         "title_or": "ନୀତି-ବଚନ",
         "subject": "sahitya_sudha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FOdia%2FClass6_Ch07_Nati_Bachana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "xED22sbiCYWQnYqoXMKs",
@@ -3573,7 +4399,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Beginning of Indian Civilization",
         "title_or": "ଭାରତୀୟ ସଭ୍ୟତାର ପ୍ରାରମ୍ଭ",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSocial_science%2FClass6_SocSci_Ch06_Hist_Ch06_Bharatiya_Sabhyatara_Prarambha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "XRXI22xLrQI63IpO3km1",
@@ -3581,7 +4409,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Cultural Basis of India",
         "title_or": "ଭାରତର ସାଂସ୍କୃତିକ ଆଧାର",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSocial_science%2FClass6_SocSci_Ch07_Hist_Ch07_Bharatar_Sanskrutika_Aadhara.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Pw8eNl96vrfld2RsSR07",
@@ -3589,7 +4419,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Raga and Tala",
         "title_or": "ରାଗ ଓ ତାଳ",
         "subject": "kalakunja",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FArt%2FClass6_KalaKruti_Ch08_Music_Ch08_Raga_O_Tala.pdf?alt=media",
+        "number": null
       },
       {
         "id": "oPWihzsVY6aV78zHk3ze",
@@ -3597,7 +4429,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Sweet Melodies of Various Songs",
         "title_or": "비ଭିନ୍ନ ଗୀତର ମଧୁର ସ୍ୱର",
         "subject": "kalakunja",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FArt%2FClass6_KalaKruti_Ch09_Music_Ch09_Bibidha_Geetara_Madhura_Swara.pdf?alt=media",
+        "number": null
       },
       {
         "id": "WQRp05GHHWrFfgujBs75",
@@ -3605,7 +4439,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Song Writing Skills",
         "title_or": "ଗୀତ ରଚନାର କୌଶଳ",
         "subject": "kalakunja",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FArt%2FClass6_KalaKruti_Ch10_Music_Ch10_Geeta_Rachanara_Kausala.pdf?alt=media",
+        "number": null
       },
       {
         "id": "9MkFZy6Fn9xdQtzqUS4y",
@@ -3613,7 +4449,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Neem Baba",
         "title_or": "Neem Baba",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FEnglish%2FClass6_Jasmine_Ch07_Unit3_Ch07_Neem_Baba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "oREILfoUizTc9atmMWjD",
@@ -3621,7 +4459,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "What a Bird Thought",
         "title_or": "What a Bird Thought",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FEnglish%2FClass6_Jasmine_Ch08_Unit3_Ch08_What_a_Bird_Thought.pdf?alt=media",
+        "number": null
       },
       {
         "id": "CatD8wAGP4qNwVr8sGUy",
@@ -3629,7 +4469,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Use of You and I",
         "title_or": "युष्मद्-अस्मच्छब्दप्रयोगः (ଯୁଷ୍ମଦ୍-ଅସ୍କଦ୍ ଶବ୍ଦ ପ୍ରୟୋଗ)",
         "subject": "sanskritakalika_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSanskrit%2FClass6_Sanskrit_Ch08_Ch08_Yusmad_Asmad_Shabdaprayogah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "QaQVcCbqURiQjvCFZPps",
@@ -3637,7 +4479,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Counting Numbers",
         "title_or": "संख्यागणना (ସଂଖ୍ୟା ଗଣନା)",
         "subject": "sanskritakalika_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSanskrit%2FClass6_Sanskrit_Ch09_Ch09_Sankhyaganana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "FCOa1dJp17q6hLNY0fWU",
@@ -3645,15 +4489,19 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Prime Numbers",
         "title_or": "ମୌଳିକ ସଂଖ୍ୟା",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FMathematics%2FClass6_Chapter_5_%E0%AC%AE%E0%AD%8C%E0%AC%B3%E0%AC%BF%E0%AC%95%20%E0%AC%B8%E0%AC%82%E0%AC%96%E0%AD%8D%E0%AD%9F%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "me7YHUW3xw1Mdv47NXO6",
-        "title": "Project 2 - Project 2: Biodiversity Register",
-        "title_en": "Project 2: Biodiversity Register",
-        "title_or": "ପ୍ରକଳ୍ପ ୨: ଜୈବ ବିବିଧତା ପଞ୍ଜିକା",
+        "id": "uoO7q8NMwyQyYevy6wps",
+        "title": "Project 3 - Project 3: Construction Skills",
+        "title_en": "Project 3: Construction Skills",
+        "title_or": "ପ୍ରକଳ୍ପ ୩: ନିର୍ମାଣ ଦକ୍ଷତା",
         "subject": "kausala_bodha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FVocational%2FClass6_KousalaBodha_Ch03_Part2_Topic03_Nirmana_Kariba_To_Construct.pdf?alt=media",
+        "number": null
       },
       {
         "id": "lLtMWwGETNQHVYg85JPt",
@@ -3661,7 +4509,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Fundamental Skills of Kho-Kho",
         "title_or": "ଖୋ-ଖୋ ର ମୌଳିକ କୌଶଳ",
         "subject": "khela_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FPhysical_education%2FClass6_PhysEd_Ch03_Ch03_Fundamental_Skills_of_Kho_Kho.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -3674,7 +4524,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "The Rooster Crowed",
         "title_or": "मुर्गा बोला, ‘कुकडू-कूँ’",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch13_Ch13_Murga_Bola_Kukdoo_Koon.pdf?alt=media",
+        "number": null
       },
       {
         "id": "o4xo4LrwoasMdSRi1DT4",
@@ -3682,7 +4534,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Fair",
         "title_or": "मेला (चित्र और बातचीत)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch14_Ch14_Mela_Conversation.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Uf9J0Wsce85O23owcIlj",
@@ -3690,7 +4544,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Temperature and its Measurement",
         "title_or": "ତାପମାତ୍ରା ଏବଂ ଏହାର ମାପ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FScience_curiosity%2FClass6_Science_Ch07_Ch07_Tapamatra_Ebam_Ehara_Mapa.pdf?alt=media",
+        "number": null
       },
       {
         "id": "rO1EUln6twoqvl06RF55",
@@ -3698,7 +4554,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Unforgettable Story of My Life",
         "title_or": "ମୋ ଜୀବନର ଅଭୁଲାକଥା",
         "subject": "sahitya_sudha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FOdia%2FClass6_Ch08_Mo_Jibanara_Abhulakatha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "mQerS6aqGfXnMSBKXjCK",
@@ -3706,7 +4564,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Children of Utkal",
         "title_or": "ଉତ୍କଳ ସନ୍ତାନ",
         "subject": "sahitya_sudha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FOdia%2FClass6_Ch09_Utkala_Santana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ALeaUBGgXF2lb3EOe1C4",
@@ -3714,7 +4574,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Unity in Diversity, or 'One in Many'",
         "title_or": "ବିବିଧତା ମଧ୍ୟରେ ଏକତା, ବା ‘ଅନେକରେ ଏକ’",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSocial_science%2FClass6_SocSci_Ch08_Civ_Ch08_Bibhidhata_Madhye_Ekata.pdf?alt=media",
+        "number": null
       },
       {
         "id": "QW8h2gFzOokB72ZvDZKx",
@@ -3722,7 +4584,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Music and Society",
         "title_or": "ସଙ୍ଗୀତ ଓ ସମାଜ",
         "subject": "kalakunja",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FArt%2FClass6_KalaKruti_Ch11_Music_Ch11_Sangeeta_O_Samaja.pdf?alt=media",
+        "number": null
       },
       {
         "id": "UpYHUj7meaHjuuwPh45G",
@@ -3730,7 +4594,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "My Body in Motion",
         "title_or": "ଚଳଚଞ୍ଚଳତାରେ ମୋ ଶରୀର",
         "subject": "kalakunja",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FArt%2FClass6_KalaKruti_Ch12_Dance_Ch12_Chalachanchalatare_Mo_Sarira.pdf?alt=media",
+        "number": null
       },
       {
         "id": "3JECTEsAJi4fbTQKvYWe",
@@ -3738,7 +4604,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Our Daily Spices",
         "title_or": "Our Daily Spices",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FEnglish%2FClass6_Jasmine_Ch09_Unit3_Ch09_Our_Daily_Spices.pdf?alt=media",
+        "number": null
       },
       {
         "id": "HzsEtnY8rjG0QUaGWOvx",
@@ -3746,7 +4614,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Ordinal Numbers",
         "title_or": "पूरणवाचकशब्दाः (ପୂରଣବାଚକ ଶବ୍ଦ)",
         "subject": "sanskritakalika_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSanskrit%2FClass6_Sanskrit_Ch10_Ch10_Puranavachakashabdah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "KTtQozEdwXfDs8NUQ7sN",
@@ -3754,7 +4624,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Days of the Week",
         "title_or": "वासरः (ବାର)",
         "subject": "sanskritakalika_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSanskrit%2FClass6_Sanskrit_Ch11_Ch11_Vasarah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "HWdbKonikoxvgkkOanVw",
@@ -3762,7 +4634,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Time",
         "title_or": "समयः (ସମୟ)",
         "subject": "sanskritakalika_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSanskrit%2FClass6_Sanskrit_Ch12_Ch12_Samayah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Nd0xchC7ge7nMYVPAhEh",
@@ -3770,7 +4644,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Perimeter and Area",
         "title_or": "ପରିସୀମା ଓ କ୍ଷେତ୍ରଫଳ",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FMathematics%2FClass6_Chapter_6_%E0%AC%AA%E0%AC%B0%E0%AC%BF%E0%AC%B8%E0%AD%80%E0%AC%AE%E0%AC%BE%20%E0%AC%93%20%E0%AC%95%E0%AD%8D%E0%AC%B7%E0%AD%87%E0%AC%A4%E0%AD%8D%E0%AC%B0%E0%AC%AB%E0%AC%B3.pdf?alt=media",
+        "number": null
       },
       {
         "id": "PZTXz0nhvfho8lgTZGPm",
@@ -3778,7 +4654,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Project 4: Animation and Games",
         "title_or": "ପ୍ରକଳ୍ପ ୪: ଆନିମେସନ୍ ଏବଂ ଖେଳ",
         "subject": "kausala_bodha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FVocational%2FClass6_KousalaBodha_Ch04_Part2_Topic04_Animation_Ebam_Gapa_Story.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -3791,7 +4669,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Learn from Nature",
         "title_or": "प्रकृति से सीखो",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch15_Ch15_Prakriti_Se_Seekho.pdf?alt=media",
+        "number": null
       },
       {
         "id": "iIfN2jpwYMrxDjM8u0nB",
@@ -3799,7 +4679,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Reena's Day",
         "title_or": "रीना का दिन",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch16_Ch16_Reena_Ka_Din.pdf?alt=media",
+        "number": null
       },
       {
         "id": "sc5bxQnh3TaubHfj0v4J",
@@ -3807,7 +4689,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Dance",
         "title_or": "नृत्य (चित्र और बातचीत)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch17_Ch17_Nritya_Conversation.pdf?alt=media",
+        "number": null
       },
       {
         "id": "1uSm8ZKExa0ICb1aSXUH",
@@ -3815,7 +4699,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Different States of Water",
         "title_or": "ଜଳର ବିଭିନ୍ନ ଅବସ୍ଥା",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FScience_curiosity%2FClass6_Science_Ch08_Ch08_Jalara_Bibhibna_Abasthana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "JgECAZdcFK4EfEkuwSYz",
@@ -3823,7 +4709,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Chhau Dance",
         "title_or": "ଛଉନୃତ୍ୟ",
         "subject": "sahitya_sudha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FOdia%2FClass6_Ch10_Chhau_Nritya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "k7zj7ULTH6AhNmoZiAeL",
@@ -3831,7 +4719,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Family and Community",
         "title_or": "ପରିବାର ଓ ଗୋଷ୍ଠୀ",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSocial_science%2FClass6_SocSci_Ch09_Civ_Ch09_Paribara_O_Gosthi.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Vena1r1vC9hrgsH0PNfU",
@@ -3839,7 +4729,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Grassroots Democracy - Part 1: Governance",
         "title_or": "ତୃଣମୂଳ ଗଣତନ୍ତ୍ର – ଭାଗ ୧: ଶାସନବିଧି",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSocial_science%2FClass6_SocSci_Ch10_Civ_Ch10_Trunamula_Ganatantra_Part1_Sasanabidhi.pdf?alt=media",
+        "number": null
       },
       {
         "id": "1YDtZ1eSH1Ti4lyxcnKs",
@@ -3847,7 +4739,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Overcoming Obstacles in Dance",
         "title_or": "ନୃତ୍ୟରେ ପ୍ରତିବନ୍ଧକ ଦୂରୀକରଣ",
         "subject": "kalakunja",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FArt%2FClass6_KalaKruti_Ch13_Dance_Ch13_Nrityare_Pratibandhaka_Dureekarana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "DY1Ax4cFwLSIpYQQ0I5l",
@@ -3855,7 +4749,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Dance Movement Coordination",
         "title_or": "ନୃତ୍ୟର ଗତି ସମନ୍ୱୟ",
         "subject": "kalakunja",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FArt%2FClass6_KalaKruti_Ch14_Dance_Ch14_Nrityara_Gati_Samanwaya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "86PoUgMOZ6ywtT3E1vrO",
@@ -3863,7 +4759,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Change of Heart",
         "title_or": "Change of Heart",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FEnglish%2FClass6_Jasmine_Ch10_Unit4_Ch10_Change_of_Heart.pdf?alt=media",
+        "number": null
       },
       {
         "id": "noYfEXmvXlVsGYwEo0KV",
@@ -3871,7 +4769,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "The Winner",
         "title_or": "The Winner",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FEnglish%2FClass6_Jasmine_Ch11_Unit4_Ch11_The_Winner.pdf?alt=media",
+        "number": null
       },
       {
         "id": "itgFATHJOj8edN7ZsU71",
@@ -3879,7 +4779,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "We are Brave, We are Patient",
         "title_or": "शूराः वयं धीराः वयम् (ଆମେ ବୀର ଆମେ ଧୀର)",
         "subject": "sanskritakalika_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSanskrit%2FClass6_Sanskrit_Ch13_Ch13_Shurah_Vayam_Dhirah_Vayam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "WGTaWnbWI9K5ErCFR70P",
@@ -3887,7 +4789,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Guest is God",
         "title_or": "अतिथिदेवो भव (ଅତିଥି ଦେବୋ ଭବ)",
         "subject": "sanskritakalika_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSanskrit%2FClass6_Sanskrit_Ch14_Ch14_Atithidevo_Bhava.pdf?alt=media",
+        "number": null
       },
       {
         "id": "tyweGW7kdgg443NvVsrw",
@@ -3895,7 +4799,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Fractions",
         "title_or": "ଭଗ୍ନାଂଶ",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FMathematics%2FClass6_Chapter_7_%E0%AC%AD%E0%AC%97%E0%AD%8D%E0%AC%A8%E0%AC%BE%E0%AC%82%E0%AC%B6.pdf?alt=media",
+        "number": null
       },
       {
         "id": "xKwfYO6RxY0O5yqf5W2f",
@@ -3903,7 +4809,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Fundamental Skills of Handball",
         "title_or": "ହ୍ୟାଣ୍ଡବଲ୍ର ମୌଳିକ ଦକ୍ଷତା",
         "subject": "khela_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FPhysical_education%2FClass6_PhysEd_Ch04_Ch04_Fundamental_Skills_of_Handball.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -3916,7 +4824,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Colorful World",
         "title_or": "दुनिया रंग-बिरंगी",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch18_Ch18_Duniya_Rang_Birangi.pdf?alt=media",
+        "number": null
       },
       {
         "id": "1v24LIRsgd5IGLtyVz7T",
@@ -3924,7 +4834,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Don't be Afraid",
         "title_or": "डरो मत",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch19_Ch19_Daro_Mat.pdf?alt=media",
+        "number": null
       },
       {
         "id": "dKgu0daSbfy53j57qO3W",
@@ -3932,7 +4844,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Plant a Tree on Your Birthday",
         "title_or": "जन्म-दिवस पर पेड़ लगाओ",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch20_Ch20_Janmadivas_Par_Ped_Lagao.pdf?alt=media",
+        "number": null
       },
       {
         "id": "afXqZida6qHFuq7b5AcD",
@@ -3940,7 +4854,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Methods of Separation",
         "title_or": "ପୃଥକୀକରଣ ପଦ୍ଧତି",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FScience_curiosity%2FClass6_Science_Ch09_Ch09_Pruthakikarana_Paddhati.pdf?alt=media",
+        "number": null
       },
       {
         "id": "BT5cendZ78zKRWPvd8pY",
@@ -3948,7 +4864,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Characteristics of the Living World",
         "title_or": "ଜୀବଜଗତର ବୈଶିଷ୍ଟ୍ୟ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FScience_curiosity%2FClass6_Science_Ch10_Ch10_Jibajagatara_Baisistya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "GCijfR5Myo66CRWIftpV",
@@ -3956,7 +4874,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Why Will You Fly So Fast?",
         "title_or": "ଉଡ଼ିବୁ ଏଡ଼େ ବେଗି କାହିଁକିରେ ?",
         "subject": "sahitya_sudha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FOdia%2FClass6_Ch11_Uthilu_Ede_Begi_Kahinkire.pdf?alt=media",
+        "number": null
       },
       {
         "id": "4Ttr02llxTecD3JSsouv",
@@ -3964,7 +4884,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Three Boons",
         "title_or": "ତିନୋଟି ବର",
         "subject": "sahitya_sudha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FOdia%2FClass6_Ch12_Tinoti_Bara.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jQSaUjcnz3UbaBEgsBXL",
@@ -3972,7 +4894,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Grassroots Democracy - Part 2: Local Government in Rural Areas",
         "title_or": "ତୃଣମୂଳ ଗଣତନ୍ତ୍ର – ଭାଗ ୨: ଗ୍ରାମାଞ୍ଚଳରେ ସ୍ଥାନୀୟ ସରକାର",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSocial_science%2FClass6_SocSci_Ch11_Civ_Ch11_Trunamula_Ganatantra_Part2_Gramanchala.pdf?alt=media",
+        "number": null
       },
       {
         "id": "z1I01xX8fxeCjm4trMyO",
@@ -3980,7 +4904,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Dance of Our Region",
         "title_or": "ଆମ ଅଞ୍ଚଳର ନୃତ୍ୟ",
         "subject": "kalakunja",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FArt%2FClass6_KalaKruti_Ch15_Dance_Ch15_Aama_Anchalara_Nritya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "CLfhQwo9UBQomKCXbfg5",
@@ -3988,7 +4914,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Unveiling Rasas",
         "title_or": "ରସ ଉନ୍ମୋଚନ",
         "subject": "kalakunja",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FArt%2FClass6_KalaKruti_Ch16_Theatre_Ch16_Rasa_Unmochana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "dnZN4cjpbIE5l2BAWBqv",
@@ -3996,7 +4924,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Let's Decorate / Stage Setup",
         "title_or": "ଆସ ସଜାଇବା",
         "subject": "kalakunja",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FArt%2FClass6_KalaKruti_Ch17_Theatre_Ch17_Aasa_Sajaaiba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "qwl5g86wosZijOIJayx9",
@@ -4004,7 +4934,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Yoga: A Way of Life",
         "title_or": "Yoga: A Way of Life",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FEnglish%2FClass6_Jasmine_Ch12_Unit4_Ch12_Yoga_A_Way_of_Life.pdf?alt=media",
+        "number": null
       },
       {
         "id": "hElNuOlv3VEVcyu2mPfE",
@@ -4012,7 +4944,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Our Bharat: Incredible India",
         "title_or": "Our Bharat: Incredible India",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FEnglish%2FClass6_Jasmine_Ch13_Unit5_Ch13_Our_Bharat_Incredible_India.pdf?alt=media",
+        "number": null
       },
       {
         "id": "kIL0IXvvZGoGdQDSwuCO",
@@ -4020,7 +4954,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Intelligence Accomplishes Everything",
         "title_or": "बुद्धिः सर्वार्थसाधिका (ବୁଦ୍ଧି ହିଁ ସବୁକିଛି ସାଧନ କରେ)",
         "subject": "sanskritakalika_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSanskrit%2FClass6_Sanskrit_Ch15_Ch15_Buddhih_Sarvarthasadhika.pdf?alt=media",
+        "number": null
       },
       {
         "id": "3H3n2L6WFzQWtErf3pxJ",
@@ -4028,7 +4964,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "He Who Knows is Wise",
         "title_or": "यो जानाति सः पण्डितः (ଯିଏ ଜାଣେ ସିଏ ପଣ୍ଡିତ)",
         "subject": "sanskritakalika_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSanskrit%2FClass6_Sanskrit_Ch16_Ch16_Yo_Janati_Sah_Panditah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "xSpnMMIWeIWXLtg3umTu",
@@ -4036,7 +4974,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Geometrical Constructions",
         "title_or": "ଜ୍ୟାମିତିକ ଅଙ୍କନ",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FMathematics%2FClass6_Chapter_8_%E0%AC%9C%E0%AD%8D%E0%AD%9F%E0%AC%BE%E0%AC%AE%E0%AC%BF%E0%AC%A4%E0%AC%BF%E0%AC%95%20%E0%AC%85%E0%AC%99%E0%AD%8D%E0%AC%95%E0%AC%A8.pdf?alt=media",
+        "number": null
       },
       {
         "id": "YcRWdD87MIHGSxS0EStp",
@@ -4044,7 +4984,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Project 5: School Museum",
         "title_or": "ପ୍ରକଳ୍ପ ୫: ବିଦ୍ୟାଳୟ ସଂଗ୍ରହାଳୟ",
         "subject": "kausala_bodha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FVocational%2FClass6_KousalaBodha_Ch05_Part3_Topic05_Bidyalaya_Sangrahalaya_Museum.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -4057,7 +4999,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Squirrel's Story",
         "title_or": "गिलहरी की कहानी (चित्र और बातचीत)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch21_Ch21_Gilahari_Ki_Kahani.pdf?alt=media",
+        "number": null
       },
       {
         "id": "bnbOse03MiAtJzl3nz3r",
@@ -4065,7 +5009,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "The Balloon Man",
         "title_or": "गुब्बारे वाला",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch22_Ch22_Gubbare_Wala.pdf?alt=media",
+        "number": null
       },
       {
         "id": "0XsN605RJdtErEQbKxz0",
@@ -4073,7 +5019,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Tosiya's Dream",
         "title_or": "तोसिया का सपना",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch23_Ch23_Tosiya_Ka_Sapna.pdf?alt=media",
+        "number": null
       },
       {
         "id": "R6vavVYearqanDQAqjSw",
@@ -4081,7 +5029,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Natural Resources",
         "title_or": "ପ୍ରାକୃତିକ ସମ୍ପଦ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FScience_curiosity%2FClass6_Science_Ch11_Ch11_Prakrutika_Sampada.pdf?alt=media",
+        "number": null
       },
       {
         "id": "l58TTVV1r2kW9tXCU4PJ",
@@ -4089,7 +5039,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Ketaka's Bravery",
         "title_or": "କେତକର ବୀରତା",
         "subject": "sahitya_sudha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FOdia%2FClass6_Ch13_Chetakara_Birata.pdf?alt=media",
+        "number": null
       },
       {
         "id": "BmmTkjvflgIuUlcYmHCY",
@@ -4097,7 +5049,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Traveller's Letter",
         "title_or": "ଭ୍ରମଣକାରୀର ପତ୍ର",
         "subject": "sahitya_sudha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FOdia%2FClass6_Ch14_Bhramanakarira_Patra.pdf?alt=media",
+        "number": null
       },
       {
         "id": "MXj2MrdXReffhpo7C6Ar",
@@ -4105,7 +5059,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Grassroots Democracy - Part 3: Local Government in Urban Areas",
         "title_or": "ତୃଣମୂଳ ଗଣତନ୍ତ୍ର – ଭାଗ ୩: ସହରାଞ୍ଚଳରେ ସ୍ଥାନୀୟ ସରକାର",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSocial_science%2FClass6_SocSci_Ch12_Civ_Ch12_Trunamula_Ganatantra_Part3_Saharachala.pdf?alt=media",
+        "number": null
       },
       {
         "id": "xKRCbJflXLiYZvHPFdwl",
@@ -4113,7 +5069,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Value of Work",
         "title_or": "କାର୍ଯ୍ୟର ମୂଲ୍ୟ",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSocial_science%2FClass6_SocSci_Ch13_Eco_Ch13_Karjyara_Mulya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "aLj9ZIkOVwCazsstOBA5",
@@ -4121,7 +5079,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "With the Theatre Group",
         "title_or": "ନାଟ୍ୟଦଳ ସହ",
         "subject": "kalakunja",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FArt%2FClass6_KalaKruti_Ch18_Theatre_Ch18_Natyadala_Saha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "4IduoILX7HDYZ0RPVa2D",
@@ -4129,7 +5089,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Shadow and String Puppetry",
         "title_or": "ଛାଇ ଏବଂ ସୂତାର କଥା କଣ୍ଢେଇ ନାଚ",
         "subject": "kalakunja",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FArt%2FClass6_KalaKruti_Ch19_Theatre_Ch19_Chhai_Ebam_Sutara_Katha_Kandhei_Nacha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "9cfLRPlVlD2l893mCpT1",
@@ -4137,7 +5099,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "The Kites",
         "title_or": "The Kites",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FEnglish%2FClass6_Jasmine_Ch14_Unit5_Ch14_The_Kites.pdf?alt=media",
+        "number": null
       },
       {
         "id": "oaaIeHdaqcD5L3yiDB1O",
@@ -4145,7 +5109,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Ila Sachani: Embroidering Dreams",
         "title_or": "Ila Sachani: Embroidering Dreams",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FEnglish%2FClass6_Jasmine_Ch15_Unit5_Ch15_Ila_Sachani_Embroidering_Dreams.pdf?alt=media",
+        "number": null
       },
       {
         "id": "FvphDf1HpTg1A0Dovbwi",
@@ -4153,7 +5119,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Good Sayings",
         "title_or": "सुभाषितानि (ସୁଭାଷିତ)",
         "subject": "sanskritakalika_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSanskrit%2FClass6_Sanskrit_Ch17_Ch17_Subhasitani.pdf?alt=media",
+        "number": null
       },
       {
         "id": "tGzJqiX2uH4p8ObTrAzJ",
@@ -4161,7 +5129,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Madhav's Favorite Body Part",
         "title_or": "माधवस्य प्रियम् अङ्गम् (ମାଧବଙ୍କ ପ୍ରିୟ ଅଙ୍ଗ)",
         "subject": "sanskritakalika_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSanskrit%2FClass6_Sanskrit_Ch18_Ch18_Madhavasya_Priyam_Angam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "8MojDutow0VZlSclmCjM",
@@ -4169,7 +5139,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Symmetry",
         "title_or": "ପ୍ରତିସମତା",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FMathematics%2FClass6_Chapter_9_%E0%AC%AA%E0%AD%8D%E0%AC%B0%E0%AC%A4%E0%AC%BF%E0%AC%B8%E0%AC%AE%E0%AC%A4%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "NhAQxxj4TFbu1t1mz8Ab",
@@ -4177,7 +5149,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Project 6: Fireless Cooking",
         "title_or": "ପ୍ରକଳ୍ପ ୬: ଅଗ୍ନିବିହୀନ ରୋଷେଇ",
         "subject": "kausala_bodha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FVocational%2FClass6_KousalaBodha_Ch06_Part3_Topic06_Agni_Vihina_Rosei_Fireless_Cooking.pdf?alt=media",
+        "number": null
       },
       {
         "id": "amEgZe76eBpLJGWClmfX",
@@ -4185,7 +5159,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Yoga",
         "title_or": "ଯୋଗ",
         "subject": "khela_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FPhysical_education%2FClass6_PhysEd_Ch05_Ch05_Yoga.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -4198,7 +5174,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Farmer",
         "title_or": "किसान",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch24_Ch24_Kisan.pdf?alt=media",
+        "number": null
       },
       {
         "id": "nl1oqbh3WoDMdG8rwUmz",
@@ -4206,7 +5184,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Sports and Games",
         "title_or": "खेलकूद (चित्र और बातचीत)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FHindi%2FClass6_Hindi_Ch25_Ch25_Khelkood_Conversation.pdf?alt=media",
+        "number": null
       },
       {
         "id": "pW3yWEAKoTZxICMz1q7N",
@@ -4214,7 +5194,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Our Universe",
         "title_or": "ଆମ ବିଶ୍ୱ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FScience_curiosity%2FClass6_Science_Ch12_Ch12_Aama_Biswa.pdf?alt=media",
+        "number": null
       },
       {
         "id": "nZ5Y4BcLDfrDdniYBDtu",
@@ -4222,7 +5204,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Trees and Creepers are Our Friends",
         "title_or": "ବୃକ୍ଷଲତା ଆମର ବନ୍ଧୁ",
         "subject": "sahitya_sudha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FOdia%2FClass6_Ch15_Brukhyalata_Aamara_Bandhu.pdf?alt=media",
+        "number": null
       },
       {
         "id": "IqWACc6bgAcKhLWhOIpd",
@@ -4230,7 +5214,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Economic Activities Around Us",
         "title_or": "ଆମ ଚତୁଃପାର୍ଶ୍ୱର ଅର୍ଥନୈତିକ କାର୍ଯ୍ୟକଳାପ",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSocial_science%2FClass6_SocSci_Ch14_Eco_Ch14_Aama_Chatuhparswara_Arthanaitika_Karjyakalapa.pdf?alt=media",
+        "number": null
       },
       {
         "id": "SPJx1D9CWvgcl4B9rrxa",
@@ -4238,7 +5224,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Conclusion",
         "title_or": "ଉପସଂହାର",
         "subject": "kalakunja",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FArt%2FClass6_KalaKruti_Ch20_Theatre_Ch20_Upasanhara.pdf?alt=media",
+        "number": null
       },
       {
         "id": "sCyZb5ZEzspew8ivrqLg",
@@ -4246,7 +5234,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Integration of Art Forms",
         "title_or": "କଳାରୂପ ଗୁଡ଼ିକର ଏକତ୍ରୀକରଣ",
         "subject": "kalakunja",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FArt%2FClass6_KalaKruti_Ch21_Theatre_Ch21_Kalarupa_Gudikara_Ekatreekarana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jW9OCUs7TQieI3nYrbla",
@@ -4254,7 +5244,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "National War Memorial",
         "title_or": "National War Memorial",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FEnglish%2FClass6_Jasmine_Ch16_Unit5_Ch16_National_War_Memorial.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Ht4tHgCyys3SPZxNc99A",
@@ -4262,7 +5254,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "He is the Great Painter",
         "title_or": "स एव महान् चित्रकारः (ସେ ହିଁ ମହାନ ଚିତ୍ରକାର)",
         "subject": "sanskritakalika_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSanskrit%2FClass6_Sanskrit_Ch19_Ch19_Sa_Eva_Mahan_Chitrakarah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "pr0JVBwYO1PNZBt9Aw9A",
@@ -4270,7 +5264,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Helping Others",
         "title_or": "परोपकारः (ପରୋପକାର)",
         "subject": "sanskritakalika_1",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FSanskrit%2FClass6_Sanskrit_Ch20_Ch20_Paropakarah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "usXCCa6FGMoGZRoYC6Rl",
@@ -4278,7 +5274,9 @@ export const ROADMAP_DATA_6 = [
         "title_en": "Whole Numbers",
         "title_or": "ପୂର୍ଣ୍ଣ ସଂଖ୍ୟା",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%206%2FMathematics%2FClass6_Chapter_10_%E0%AC%AA%E0%AD%82%E0%AC%B0%E0%AD%8D%E0%AC%A3%E0%AD%8D%E0%AC%A3%20%E0%AC%B8%E0%AC%82%E0%AC%96%E0%AD%8D%E0%AD%9F%E0%AC%BE.pdf?alt=media",
+        "number": null
       }
     ]
   }
@@ -4295,7 +5293,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Geographical Diversity of India",
         "title_or": "ଭାରତର ଭୌଗୋଳିକ ବିବିଧତା",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSocial_science%2FClass7_SocSci_Ch01_Geo_Ch01_Bharatar_Bhaugolika_Bibhidhata.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ws9svxF9CRVXKjp22kga",
@@ -4303,7 +5303,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Understanding weather",
         "title_or": "ପାଣିପାଗକୁ ବୁଝିବା",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSocial_science%2FClass7_SocSci_Ch02_Geo_Ch02_Panipagaku_Bujhiba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "v0oJoRyVPAWkxgDLk4A6",
@@ -4311,7 +5313,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "The ever-evolving world of science",
         "title_or": "ଚିର ବିକାଶଶୀଳ ବିଜ୍ଞାନ ଜଗତ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FScience_curiosity%2FClass7_Science_Ch01_Ch01_Chira_Bikasasila_Bijnyana_Jagata.pdf?alt=media",
+        "number": null
       },
       {
         "id": "shom9ZBSlrTFLc48gBrE",
@@ -4319,7 +5323,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Investigation of acids, bases and neutral substances",
         "title_or": "ଅମ୍ଳ, କ୍ଷାରକ ଓ ନିରପେକ୍ଷ ପଦାର୍ଥର ଅନୁସନ୍ଧାନ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FScience_curiosity%2FClass7_Science_Ch02_Ch02_Amliya_Kshariya_O_Nirapekha_Padartha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "6V7zp6sWGwbxz6euiELF",
@@ -4327,7 +5333,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Ru Karanta Pumlingah",
         "title_or": "ଋ କାରାନ୍ତ ପୁଂଲିଙ୍ଗଃ",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch01_Ch01_Rikarantah_Pumlingah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "49xgfpUgCudn0VB0Pmkh",
@@ -4335,7 +5343,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "I Karanta Strilingah",
         "title_or": "ଇ କାରାନ୍ତ ସ୍ତ୍ରୀଲିଙ୍ଗଃ",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch02_Ch02_Ikarantah_Strilingah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Bf5Z8UeGNWnCp0hFh0OL",
@@ -4343,7 +5353,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Ee Karanta Strilingah",
         "title_or": "ଈ କାରାନ୍ତ ସ୍ତ୍ରୀଲିଙ୍ଗଃ",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch03_Ch03_Eekarantah_Strilingah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "LyLFuJpm7QFRfKDTYGY9",
@@ -4351,7 +5363,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Natyarasa",
         "title_or": "ନାଟ୍ୟରସ",
         "subject": "kalakruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FArt%2FClass7_KalaKruti_Ch01_Drama_Ch01_Natyarasa.pdf?alt=media",
+        "number": null
       },
       {
         "id": "DSU1eTfCV3PuFkbjJLHz",
@@ -4359,7 +5373,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Mukabhinaya / Pantomime",
         "title_or": "କଥା ନ କହି ଅଧିକ କୁହ ମୂକାଭିନୟ",
         "subject": "kalakruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FArt%2FClass7_KalaKruti_Ch02_Drama_Ch02_Mukaabhinaya_Mime.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Ik4eVOQIV80UvrGYdNZ6",
@@ -4367,7 +5383,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Mancha Shilpa / Stage Craft",
         "title_or": "ଆସ ଆମେ ସଜାଇବା ମଞ୍ଚ ଶିଳ୍ପ",
         "subject": "kalakruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FArt%2FClass7_KalaKruti_Ch03_Drama_Ch03_Mancha_Silpa_StageCraft.pdf?alt=media",
+        "number": null
       },
       {
         "id": "6tOs29UXa5uoVoD4n3N0",
@@ -4375,7 +5393,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Seekho",
         "title_or": "सीखो (Seekho)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FHindi%2FClass7_Hindi_Ch01_Unit1_Ch01_Seekho_Padyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "1JodQTDnpzOlQs7eP8fp",
@@ -4383,7 +5403,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Apna-Apna Kaam",
         "title_or": "अपना-अपना काम (Apna-Apna Kaam)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FHindi%2FClass7_Hindi_Ch02_Unit1_Ch02_Apna_Apna_Kaam_Gadyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Fv6vaIxaDvl0nSCLdJ02",
@@ -4391,7 +5413,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Unit 1: Fundamental components of physical education and fitness",
         "title_or": "ଏକକ-୧: ଶାରୀରିକ ଶିକ୍ଷା ଏବଂ ସୁସ୍ଥତାର ମୌଳିକ ଉପାଦାନ",
         "subject": "khela_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FPhysical_education%2FClass7_PhysEd_Ch01_Unit1_Saririka_Sikhya_O_Susutara_Moulik_Upadana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "EARppILzbkB8aBzqiZMj",
@@ -4399,7 +5423,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Large numbers around us",
         "title_or": "ଆମ ଚାରିପଟେ ଥିବା ବଡ଼ ସଂଖ୍ୟା",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FMathematics%2FClass7_Chapter_1_%E0%AC%86%E0%AC%AE%20%E0%AC%9A%E0%AC%BE%E0%AC%B0%E0%AC%BF%E0%AC%AA%E0%AC%9F%E0%AD%87%20%E0%AC%A5%E0%AC%BF%E0%AC%AC%E0%AC%BE%20%E0%AC%AC%E0%AC%A1%E0%AC%BC%20%E0%AC%B8%E0%AC%82%E0%AC%96%E0%AD%8D%E0%AD%9F%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
         "id": "77VCVmJK8yXi6jTh2Eu0",
@@ -4407,7 +5433,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Kalamanikare",
         "title_or": "କଳାମାଣିକରେ",
         "subject": "sahitya_suman",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FOdia%2FClass7_Ch01_Kalamani_kare.pdf?alt=media",
+        "number": null
       },
       {
         "id": "TgSBENcvhLxNex39bizN",
@@ -4415,7 +5443,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Madahandi Katha",
         "title_or": "ମାଡ଼ହାଣ୍ଡି କଥା",
         "subject": "sahitya_suman",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FOdia%2FClass7_Ch02_Madihandi_Katha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ZLiTO4iH5vtSABNV9iYO",
@@ -4423,7 +5453,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "The Day the River Spoke",
         "title_or": "The Day the River Spoke",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FEnglish%2FClass7_Eng_Ch01_Unit1_Ch01_The_Day_the_River_Spoke.pdf?alt=media",
+        "number": null
       },
       {
         "id": "l1bn8igE6JflRLQMRUVW",
@@ -4431,7 +5463,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Try Again",
         "title_or": "Try Again",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FEnglish%2FClass7_Eng_Ch02_Unit1_Ch02_Try_Again.pdf?alt=media",
+        "number": null
       },
       {
         "id": "IBDdqPnY9gjm9X4M2p5h",
@@ -4439,7 +5473,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Project 1: Tara Udyan / Star Garden",
         "title_or": "ପ୍ରକଳ୍ପ-୧: ତାରା ଉଦ୍ୟାନ",
         "subject": "kausala_bodha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FVocational%2FClass7_KousalaBodha_Ch01_Part1_Project01_Chara_Udyana_Plant_Nursery.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -4452,7 +5488,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Climate of India",
         "title_or": "ଭାରତର ଜଳବାୟୁ",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSocial_science%2FClass7_SocSci_Ch03_Geo_Ch03_Bharatar_Jalabayu.pdf?alt=media",
+        "number": null
       },
       {
         "id": "LoJf18SJxdNnd3Duuo2s",
@@ -4460,7 +5498,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Electricity: Its circuit and components",
         "title_or": "ବିଦ୍ୟୁତ୍: ଏହାର ପରିପଥ ଓ ଉପାଦାନ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FScience_curiosity%2FClass7_Science_Ch03_Ch03_Bidyut_Ehara_Paripatha_O_Upadana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "q4yR0PwxgA8TffjF2rop",
@@ -4468,7 +5508,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "U Uu evang Ru Karanta Strilingah",
         "title_or": "ଉ ଊ ଏବଂ ଋ କାରାନ୍ତ ସ୍ତ୍ରୀଲିଙ୍ଗଃ",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch04_Ch04_U_Oo_Ebham_Rikarantah_Strilingah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "j5cLG9N5hBW9r5p9DjR5",
@@ -4476,7 +5518,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "I U Karanta Napunsakalingah",
         "title_or": "ଇ ଉ କାରାନ୍ତ ନପୁଂସକଲିଙ୍ଗଃ",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch05_Ch05_I_U_Karantah_Napunsakalingah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "7a2ADZw5ChMtD6YSdfqh",
@@ -4484,7 +5528,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Karaka-Bibhakti Prayogah (Prathama)",
         "title_or": "କାରକ-ବିଭକ୍ତି ପ୍ରୟୋଗଃ (ପ୍ରଥମା ବିଭକ୍ତି ପ୍ରୟୋଗଃ)",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch06_Ch06_Karaka_Bibhakti_Prayogah_Prathama.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ADJ2OSrkZZVKQe5ZT5r4",
@@ -4492,7 +5538,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "India's Storytelling Tradition",
         "title_or": "ଭାରତର କାହାଣୀ କହିବା ପରମ୍ପରା",
         "subject": "kalakruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FArt%2FClass7_KalaKruti_Ch04_Drama_Ch04_Bharatar_Kahani_Kahiba_Parampara.pdf?alt=media",
+        "number": null
       },
       {
         "id": "5BjEOja1lsq4wwnrOGC1",
@@ -4500,7 +5548,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Musical Composition",
         "title_or": "ସଙ୍ଗୀତ ସଂରଚନା",
         "subject": "kalakruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FArt%2FClass7_KalaKruti_Ch05_Music_Ch05_Sangeeta_Sanrachana_Composition.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Ihm9GL5ReVUgMLhQqrXr",
@@ -4508,7 +5558,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Aayi Varsha Rani",
         "title_or": "आई वर्षा रानी (Aayi Varsha Rani)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FHindi%2FClass7_Hindi_Ch03_Unit1_Ch03_Aai_Varsha_Rani_Padyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "PPsG8JetyPwUImfoGK2q",
@@ -4516,7 +5568,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Aasman Gira",
         "title_or": "आसमान गिरा (Aasman Gira)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FHindi%2FClass7_Hindi_Ch04_Unit2_Ch04_Aasman_Gira_Gadyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ApXMEhi95b7xHcwYFFAZ",
@@ -4524,7 +5578,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Unit 1: Physical and motor fitness",
         "title_or": "ଏକକ-୧: ଶାରୀରିକ ଏବଂ ଗତି ସମ୍ବନ୍ଧୀୟ ସୁସ୍ଥତା",
         "subject": "khela_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FPhysical_education%2FClass7_PhysEd_Ch02_Unit2_Saririka_O_Gati_Sambandhiya_Susuta.pdf?alt=media",
+        "number": null
       },
       {
         "id": "c04iLz7qHsqZWLVdvwq0",
@@ -4532,15 +5588,19 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Arithmetic expressions",
         "title_or": "ପାଟୀଗାଣିତିକ ପରିପ୍ରକାଶ",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FMathematics%2FClass7_Chapter_2_%E0%AC%AA%E0%AC%BE%E0%AC%9F%E0%AD%80%E0%AC%97%E0%AC%BE%E0%AC%A3%E0%AC%BF%E0%AC%A4%E0%AC%BF%E0%AC%95%20%E0%AC%AA%E0%AC%B0%E0%AC%BF%E0%AC%AA%E0%AD%8D%E0%AC%B0%E0%AC%95%E0%AC%BE%E0%AC%B6.pdf?alt=media",
+        "number": null
       },
       {
         "id": "wTaDIddmI14Zy2jeGqRx",
         "title": "Chapter 3 - Jatiya Pakhi",
         "title_en": "Jatiya Pakhi",
-        "title_or": "ଜาତୀୟପଣା",
+        "title_or": "ଜାତୀୟ ପକ୍ଷୀ",
         "subject": "sahitya_suman",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FOdia%2FClass7_Ch03_Jatiya_Pataka.pdf?alt=media",
+        "number": null
       },
       {
         "id": "cju6KKruZocXAJftfrkP",
@@ -4548,7 +5608,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Panire Pani",
         "title_or": "ପାଣିରେ ପାଣି",
         "subject": "sahitya_suman",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FOdia%2FClass7_Ch04_Panire_Pani.pdf?alt=media",
+        "number": null
       },
       {
         "id": "aq85LUjqLwV3Iq61JAuc",
@@ -4556,7 +5618,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Three Days to See",
         "title_or": "Three Days to See",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FEnglish%2FClass7_Eng_Ch03_Unit1_Ch03_Three_Days_to_See.pdf?alt=media",
+        "number": null
       },
       {
         "id": "epFWt7AnvF9238xk8Wnz",
@@ -4564,7 +5628,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Animals, Birds, and Dr. Dolittle",
         "title_or": "Animals, Birds, and Dr. Dolittle",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FEnglish%2FClass7_Eng_Ch04_Unit2_Ch04_Animals_Birds_and_Dr_Dolittle.pdf?alt=media",
+        "number": null
       },
       {
         "id": "0BhULpZrtAJklb7CvaNO",
@@ -4572,7 +5638,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Project 2: School Residential Garden",
         "title_or": "ପ୍ରକଳ୍ପ-୨: ବିଦ୍ୟାଳୟ ଆବାସ ଉଦ୍ୟାନ",
         "subject": "kausala_bodha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FVocational%2FClass7_KousalaBodha_Ch02_Part1_Project02_Bidyalaya_Aabasa_Udyana_School_Garden.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -4585,7 +5653,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "New Emergence: Cities and States",
         "title_or": "ନୂତନ ଅଭ୍ୟୁଦୟ: ସହର ଓ ରାଜ୍ୟ",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSocial_science%2FClass7_SocSci_Ch04_Hist_Ch04_Nutana_Abhyudaya_Sahara_O_Rajya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "sR6AUHbfLgeUvrUvmN5d",
@@ -4593,7 +5663,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "World of metals and non-metals",
         "title_or": "ଧାତୁ ଓ ଅଧାତୁର ଦୁନିଆ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FScience_curiosity%2FClass7_Science_Ch04_Ch04_Dhatu_O_Adhatura_Duniya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "xMabo91SFodYg1XitMKo",
@@ -4601,7 +5673,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Dwitiya Bibhakti Prayogah",
         "title_or": "ଦ୍ୱିତୀୟା ବିଭକ୍ତି ପ୍ରୟୋଗଃ",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch07_Ch07_Dwitiya_Bibhakti_Prayogah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "E03Gjn6qX05x0KPuvVk7",
@@ -4609,7 +5683,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Trutiya Bibhakti Prayogah",
         "title_or": "ତୃତୀୟା ବିଭକ୍ତି ପ୍ରୟୋଗଃ",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch08_Ch08_Tritiya_Bibhakti_Prayogah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "BZjXUDiu3U1J0SZIq5kq",
@@ -4617,7 +5693,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Music, Emotion and Creativity",
         "title_or": "ସଙ୍ଗୀତ, ଭାବନା ଏବଂ ସୃଜନଶୀଳତା",
         "subject": "kalakruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FArt%2FClass7_KalaKruti_Ch06_Music_Ch06_Sangeeta_Bhabana_Srujanasilitata.pdf?alt=media",
+        "number": null
       },
       {
         "id": "NHBrcn7jet3yPUerY49m",
@@ -4625,7 +5703,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Melody and Rhythm",
         "title_or": "ରାଗ ଓ ତାଳ",
         "subject": "kalakruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FArt%2FClass7_KalaKruti_Ch07_Music_Ch07_Raga_O_Tala.pdf?alt=media",
+        "number": null
       },
       {
         "id": "UgzzQwNUsLvzFZ8Qxa0h",
@@ -4633,7 +5713,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Rathyatra",
         "title_or": "रथयात्रा (Rathyatra)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FHindi%2FClass7_Hindi_Ch05_Unit2_Ch05_Rathyatra_Reading.pdf?alt=media",
+        "number": null
       },
       {
         "id": "4ADx7qb0nUo5zaWZnzpt",
@@ -4641,7 +5723,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Magic of point among numbers / Decimals",
         "title_or": "ସଂଖ୍ୟାର ମଝିରେ ବିନ୍ଦୁର କମାଲ",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FMathematics%2FClass7_Chapter_3_%E0%AC%B8%E0%AC%82%E0%AC%96%E0%AD%8D%E0%AD%9F%E0%AC%BE%E0%AC%B0%20%E0%AC%AE%E0%AC%9D%E0%AC%BF%E0%AC%B0%E0%AD%87%20%E0%AC%AC%E0%AC%BF%E0%AC%A8%E0%AD%8D%E0%AC%A6%E0%AD%81%E0%AC%B0%20%E0%AC%95%E0%AC%AE%E0%AC%BE%E0%AC%B2.pdf?alt=media",
+        "number": null
       },
       {
         "id": "N7W2qfZUMPCfW81mnpt7",
@@ -4649,15 +5733,19 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Balabuddhi",
         "title_or": "ବଳବୁଦ୍ଧି",
         "subject": "sahitya_suman",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FOdia%2FClass7_Ch06_Balabruddha.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "9qK6q9CfdyUDNAPdK9aB",
-        "title": "Chapter 6 - Mahan Biplabi Matho Singh",
-        "title_en": "Mahan Biplabi Matho Singh",
-        "title_or": "ମହାନ୍ ବିପ୍ଳବୀ ମାଥୋ ସିଂହ",
+        "id": "wlP5QJKElYeHYYuCrqve",
+        "title": "Extra Reading - Extra Reading: Bisweswaraya",
+        "title_en": "Extra Reading: Bisweswaraya",
+        "title_or": "ଅତିରିକ୍ତ ପଠନ: ବିଶ୍ୱେଶ୍ୱରାୟ",
         "subject": "sahitya_suman",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FOdia%2FClass7_Ch05_Visvesvaraya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "NHSB9mVv3v82zeEJ526s",
@@ -4665,7 +5753,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "A Funny Man",
         "title_or": "A Funny Man",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FEnglish%2FClass7_Eng_Ch05_Unit2_Ch05_A_Funny_Man.pdf?alt=media",
+        "number": null
       },
       {
         "id": "OPMxrKyEK7pJEC5WX0FB",
@@ -4673,7 +5763,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Project 3: Tie and Dye / Box Work",
         "title_or": "ପ୍ରକଳ୍ପ-୩: ବାନ୍ଧ କାମ / ବାକ୍ସ କାମ",
         "subject": "kausala_bodha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FVocational%2FClass7_KousalaBodha_Ch03_Part2_Project03_Box_Kama_Box_Making.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -4686,7 +5778,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Emergence of Empire",
         "title_or": "ସାମ୍ରାଜ୍ୟର ଅଭ୍ୟୁଦୟ",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSocial_science%2FClass7_SocSci_Ch05_Hist_Ch05_Samrajyara_Abhyudaya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "baRfFz96tUnEhODXIcPI",
@@ -4694,7 +5788,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Era of Reformation",
         "title_or": "ପୁନର୍ଗଠନର ଯୁଗ",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSocial_science%2FClass7_SocSci_Ch06_Hist_Ch06_Punargathanara_Yuga.pdf?alt=media",
+        "number": null
       },
       {
         "id": "KwPOMkvSAzbxEAdMfdna",
@@ -4702,7 +5798,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Physical and chemical changes around us",
         "title_or": "ଆମ ଚତୁଃପାର୍ଶ୍ୱରେ ଭୌତିକ ଓ ରାସାୟନିକ ପରିବର୍ତ୍ତନ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FScience_curiosity%2FClass7_Science_Ch05_Ch05_Bhautika_O_Rasayanika_Paribartana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "pTC9St1Z8cWcWkJ2usVT",
@@ -4710,7 +5808,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Adolescence: Growth and change",
         "title_or": "କିଶୋରାବସ୍ଥା: ବୃଦ୍ଧି ଓ ପରିବର୍ତ୍ତନ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FScience_curiosity%2FClass7_Science_Ch06_Ch06_Kisorabastha_Bruddhi_O_Paribartana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "vjEL6LxIKem5iRilqAeO",
@@ -4718,7 +5818,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Chaturthi Bibhakti Prayogah",
         "title_or": "ଚତୁର୍ଥୀ ବିଭକ୍ତି ପ୍ରୟୋଗଃ",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch09_Ch09_Chaturthi_Bibhakti_Prayogah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ytQVULbR8cD4rWkUedad",
@@ -4726,7 +5828,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Panchami Bibhakti Prayogah",
         "title_or": "ପଞ୍ଚମୀ ବିଭକ୍ତି ପ୍ରୟୋଗଃ",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch10_Ch10_Panchami_Bibhakti_Prayogah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "6LKxOwMzDo9uFNhZrJo7",
@@ -4734,7 +5838,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Shashthi Bibhakti Prayogah",
         "title_or": "ଷଷ୍ଠୀ ବିଭକ୍ତି ପ୍ରୟୋଗଃ",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch11_Ch11_Sasthi_Bibhakti_Prayogah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "dBvzA7mkpiAb86kLgF47",
@@ -4742,7 +5848,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Folk Music",
         "title_or": "ଲୋକମାନଙ୍କ ସଙ୍ଗୀତ",
         "subject": "kalakruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FArt%2FClass7_KalaKruti_Ch08_Music_Ch08_Loka_Sangeeta_Folk.pdf?alt=media",
+        "number": null
       },
       {
         "id": "6hz8dkE3Cr75ymDrBoMR",
@@ -4750,7 +5858,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Performance",
         "title_or": "ପରିବେଷଣ",
         "subject": "kalakruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FArt%2FClass7_KalaKruti_Ch09_Music_Ch09_Paribesana_Performance.pdf?alt=media",
+        "number": null
       },
       {
         "id": "DmGX9LyBSvnjRowGKLaV",
@@ -4758,7 +5868,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Baya Hamari Chidiya Rani",
         "title_or": "बया हमारी चिड़िया रानी (Baya Hamari Chidiya Rani)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FHindi%2FClass7_Hindi_Ch06_Unit2_Ch06_Baya_Hamari_Chidiya_Rani_Padyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "H6Uy48vv469Q51Z2WZG5",
@@ -4766,7 +5878,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Kavi Yadumani",
         "title_or": "कवि यदुमणि (Kavi Yadumani)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FHindi%2FClass7_Hindi_Ch07_Unit3_Ch07_Kavi_Yadumani_Gadyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Nv89agtIBL080OcfDLH6",
@@ -4774,7 +5888,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Unit 2: Basic skills of sports - Badminton",
         "title_or": "ଏକକ-୨: କ୍ରୀଡ଼ାର ମୌଳିକ କୌଶଳ - ବ୍ୟାଡ୍ମିଣ୍ଟନ୍",
         "subject": "khela_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FPhysical_education%2FClass7_PhysEd_Ch03_Unit3_Kridara_Moulika_Kausala_Badminton.pdf?alt=media",
+        "number": null
       },
       {
         "id": "z7fu2GIhoFjNBac8vlYP",
@@ -4782,7 +5898,19 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Mathematical expression using letters and numbers / Algebra",
         "title_or": "ଅକ୍ଷର ଓ ସଂଖ୍ୟା ମାଧ୍ୟମରେ ଗାଣିତିକ ପରିପ୍ରକାଶ",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FMathematics%2FClass7_Chapter_4_%E0%AC%85%E0%AC%95%E0%AD%8D%E0%AC%B7%E0%AC%B0%20%E0%AC%93%20%E0%AC%B8%E0%AC%82%E0%AC%96%E0%AD%8D%E0%AD%9F%E0%AC%BE%20%E0%AC%AE%E0%AC%BE%E0%AC%A7%E0%AD%8D%E0%AD%9F%E0%AC%AE%E0%AC%B0%E0%AD%87%20%E0%AC%97%E0%AC%BE%E0%AC%A3%E0%AC%BF%E0%AC%A4%E0%AC%BF%E0%AC%95%20%E0%AC%AA%E0%AC%B0%E0%AC%BF%E0%AC%AA%E0%AD%8D%E0%AC%B0%E0%AC%95%E0%AC%BE%E0%AC%B6.pdf?alt=media",
+        "number": null
+      },
+      {
+        "id": "9qK6q9CfdyUDNAPdK9aB",
+        "title": "Chapter 6 - Mahan Biplabi Matho Singh",
+        "title_en": "Mahan Biplabi Matho Singh",
+        "title_or": "ମହାନ୍ ବିପ୍ଳବୀ ମାଥୋ ସିଂହ",
+        "subject": "sahitya_suman",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FOdia%2FClass7_Ch07_Mahan_Biplabi_Madho_Singh.pdf?alt=media",
+        "number": null
       },
       {
         "id": "gRxXVLIceH3hKDRgo76T",
@@ -4790,15 +5918,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Karmagitika",
         "title_or": "କର୍ମଗୀତିକା",
         "subject": "sahitya_suman",
-        "thumbnail": null
-      },
-      {
-        "id": "hy1Zg3JchGOEoflXR8sE",
-        "title": "Chapter 8 - Mo Pilabela Katha",
-        "title_en": "Mo Pilabela Katha",
-        "title_or": "ମୋ ପିଲାବେଳ କଥା",
-        "subject": "sahitya_suman",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FOdia%2FClass7_Ch08_Karma_Gitika.pdf?alt=media",
+        "number": null
       },
       {
         "id": "RH35qKiY8rN6rQc0QMtX",
@@ -4806,7 +5928,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Say the Right Thing",
         "title_or": "Say the Right Thing",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FEnglish%2FClass7_Eng_Ch06_Unit2_Ch06_Say_the_Right_Thing.pdf?alt=media",
+        "number": null
       },
       {
         "id": "2t0SQk7aJ5ceNOgiST6L",
@@ -4814,7 +5938,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "My Brother's Great Invention",
         "title_or": "My Brother's Great Invention",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FEnglish%2FClass7_Eng_Ch07_Unit3_Ch07_My_Brothers_Great_Invention.pdf?alt=media",
+        "number": null
       },
       {
         "id": "DuPlclKbQbYTW16UWh8n",
@@ -4822,7 +5948,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Project 4: AI Assistant",
         "title_or": "ପ୍ରକଳ୍ପ-୪: କୃତ୍ରିମ ବୁଦ୍ଧିମତ୍ତା ସହାୟକ",
         "subject": "kausala_bodha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FVocational%2FClass7_KousalaBodha_Ch04_Part2_Project04_Krutrima_Buddhimatta_Sahayaka_AIAssistant.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -4835,7 +5963,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Gupta Era: An example of continuous creativity",
         "title_or": "ଗୁପ୍ତଯୁଗ: ନିରନ୍ତର ସୃଜନଶୀଳତାର ଏକ ନିଦର୍ଶନ",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSocial_science%2FClass7_SocSci_Ch07_Hist_Ch07_Guptayuga_Srujanasilitara_Nidarsana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "fENPqT9IRVyJALVu2hbS",
@@ -4843,7 +5973,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Heat transfer in nature",
         "title_or": "ପ୍ରକୃତିରେ ତାପ ସ୍ଥାନାନ୍ତରଣ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FScience_curiosity%2FClass7_Science_Ch07_Ch07_Prakrutire_Tapa_Sthanantarana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "0wMJiBBaWpwPoN2lRdtF",
@@ -4851,7 +5983,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Saptami Bibhakti Prayogah",
         "title_or": "ସପ୍ତମୀ ବିଭକ୍ତି ପ୍ରୟୋଗଃ",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch12_Ch12_Saptami_Bibhakti_Prayogah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "7tzN2KqzNKEkSeriQNxW",
@@ -4859,7 +5993,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Agya Gurunam Hyabicharaniya",
         "title_or": "ଆଜ୍ଞା ଗୁରୂଣାଂ ହ୍ୟବିଚାରଣୀୟା",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch13_Ch13_Aajna_Gurunang_Hyabicharaniya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "2lhpyHREMrr8zderSJiN",
@@ -4867,7 +6003,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Kirtiryasya Sa Jibati",
         "title_or": "କୀର୍ତ୍ତିର୍ଯସ୍ୟ ସ ଜୀବତି",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch14_Ch14_Kirtiryasya_Sa_Jivati.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ylWbIBJHCYI6fnes0yR5",
@@ -4875,7 +6013,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Dance and Expressive Art",
         "title_or": "ନୃତ୍ୟ ଏବଂ ଭାବମୟ କଳା",
         "subject": "kalakruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FArt%2FClass7_KalaKruti_Ch10_Dance_Ch10_Nritya_O_Sastriya_Kala.pdf?alt=media",
+        "number": null
       },
       {
         "id": "PSTnHsffHaN4K1SFk8IV",
@@ -4883,7 +6023,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Dance Elements and Skills",
         "title_or": "ନୃତ୍ୟ ଉପାଦାନ ଏବଂ କୌଶଳ",
         "subject": "kalakruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FArt%2FClass7_KalaKruti_Ch11_Dance_Ch11_Nritya_Upadana_O_Kausala.pdf?alt=media",
+        "number": null
       },
       {
         "id": "NyAceMiS7Vkno4D3PSSN",
@@ -4891,7 +6033,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Dance, Sequence and Creativity",
         "title_or": "ନୃତ୍ୟ, କ୍ରମେ ଏବଂ ସୃଜନଶୀଳତା",
         "subject": "kalakruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FArt%2FClass7_KalaKruti_Ch12_Dance_Ch12_Nritya_Tume_O_Srujanasilitata.pdf?alt=media",
+        "number": null
       },
       {
         "id": "uXO7xOZeqW1Jqt3bUA9z",
@@ -4899,7 +6043,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Neem",
         "title_or": "नीम (Neem)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FHindi%2FClass7_Hindi_Ch08_Unit3_Ch08_Neem_Padyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "csMr96PNuDT5dDocJEg7",
@@ -4907,7 +6053,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Unit 3: Basic skills of sports - Football",
         "title_or": "ଏକକ-୩: କ୍ରୀଡ଼ାର ମୌଳିକ କୌଶଳ - ଫୁଟବଲ୍",
         "subject": "khela_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FPhysical_education%2FClass7_PhysEd_Ch04_Unit4_Kridara_Moulika_Kausala_Football.pdf?alt=media",
+        "number": null
       },
       {
         "id": "rnf4qS86IJeBCWeH2dcr",
@@ -4915,7 +6063,19 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Parallel lines and transversals",
         "title_or": "ସମାନ୍ତର ସରଳ ରେଖା ଓ ଛେଦକ",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FMathematics%2FClass7_Chapter_5_%E0%AC%B8%E0%AC%AE%E0%AC%BE%E0%AC%A8%E0%AD%8D%E0%AC%A4%E0%AC%B0%20%E0%AC%B8%E0%AC%B0%E0%AC%B3%20%E0%AC%B0%E0%AD%87%E0%AC%96%E0%AC%BE%20%E0%AC%93%20%E0%AC%9B%E0%AD%87%E0%AC%A6%E0%AC%95.pdf?alt=media",
+        "number": null
+      },
+      {
+        "id": "hy1Zg3JchGOEoflXR8sE",
+        "title": "Chapter 8 - Mo Pilabela Katha",
+        "title_en": "Mo Pilabela Katha",
+        "title_or": "ମୋ ପିଲାବେଳ କଥା",
+        "subject": "sahitya_suman",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FOdia%2FClass7_Ch09_Mo_Pilabela_Katha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "RR0fTjPpb8BRH0AQ2bou",
@@ -4923,15 +6083,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Sharata Raja",
         "title_or": "ଶରତ ରାଜା",
         "subject": "sahitya_suman",
-        "thumbnail": null
-      },
-      {
-        "id": "eUTXTqwHLk55voGkHusS",
-        "title": "Chapter 10 - Bemara Bahana",
-        "title_en": "Bemara Bahana",
-        "title_or": "ବେମାର ବାହାନା",
-        "subject": "sahitya_suman",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FOdia%2FClass7_Ch10_Sarata_Raja.pdf?alt=media",
+        "number": null
       },
       {
         "id": "vemoFeFixyFdgzq6LAC4",
@@ -4939,7 +6093,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Paper Boats",
         "title_or": "Paper Boats",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FEnglish%2FClass7_Eng_Ch08_Unit3_Ch08_Paper_Boats.pdf?alt=media",
+        "number": null
       },
       {
         "id": "3xMR5zBBWvtMOS2S8KXp",
@@ -4947,7 +6103,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "North, South, East, West",
         "title_or": "North, South, East, West",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FEnglish%2FClass7_Eng_Ch09_Unit3_Ch09_North_South_East_West.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -4960,7 +6118,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "How land becomes a thread?",
         "title_or": "ଭୂମି ସୂତ୍ର ହୁଏ କିପରି ?",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSocial_science%2FClass7_SocSci_Ch08_Hist_Ch08_Bhumi_Pabitra_Hue_Kipari.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Ia87tnBfXQUZ8OYMAMKY",
@@ -4968,7 +6128,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Measurement of time and motion",
         "title_or": "ସମୟ ଏବଂ ଗତିର ପରିମାପ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FScience_curiosity%2FClass7_Science_Ch08_Ch08_Samaya_Ebam_Gatira_Parimapa.pdf?alt=media",
+        "number": null
       },
       {
         "id": "K7gnQORUyQ2LF0RM3nO5",
@@ -4976,7 +6138,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Sma Prayogah: Sambhashanam",
         "title_or": "ସ୍ମ ପ୍ରୟୋଗଃ ସମ୍ଭାଷଣମ୍",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch15_Ch15_Sma_Prayogah_Sambhasanam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "vIfa71GfvvhTsbxGn4Lk",
@@ -4984,7 +6148,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Kartabyam Palayet",
         "title_or": "କର୍ତ୍ତବ୍ୟଂ ପାଳୟେତ୍",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch16_Ch16_Kartabyam_Palayet.pdf?alt=media",
+        "number": null
       },
       {
         "id": "InLQ9G5FEFoR9jAkgesw",
@@ -4992,7 +6158,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Famous Personalities",
         "title_or": "ପ୍ରସିଦ୍ଧ ବ୍ୟକ୍ତିତ୍ୱ",
         "subject": "kalakruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FArt%2FClass7_KalaKruti_Ch13_Dance_Ch13_Prasidha_Byaktitwa_Personalities.pdf?alt=media",
+        "number": null
       },
       {
         "id": "bmUjFk8GTnIeP5IJ8Pt3",
@@ -5000,7 +6168,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Natya / Dance Drama",
         "title_or": "ନାଟ୍ୟ",
         "subject": "kalakruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FArt%2FClass7_KalaKruti_Ch14_Dance_Ch14_Natya_Dance_Drama.pdf?alt=media",
+        "number": null
       },
       {
         "id": "hxUsWqF28ZUDuILTx25w",
@@ -5008,7 +6178,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Chandrayaan",
         "title_or": "चंद्रयान (Chandrayaan)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FHindi%2FClass7_Hindi_Ch09_Unit3_Ch09_Chandrayaan_Samvaad.pdf?alt=media",
+        "number": null
       },
       {
         "id": "9BAuHmSHJhU5YRgDoeuE",
@@ -5016,7 +6188,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Himalaya",
         "title_or": "हिमालय (Himalaya)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FHindi%2FClass7_Hindi_Ch10_Unit4_Ch10_Himalaya_Padyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "jz3EKqwa1Ls6zEsMJ9xa",
@@ -5024,7 +6198,19 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Number games",
         "title_or": "ସଂଖ୍ୟା ଖେଳ",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FMathematics%2FClass7_Chapter_6_%E0%AC%B8%E0%AC%82%E0%AC%96%E0%AD%8D%E0%AD%9F%E0%AC%BE%20%E0%AC%96%E0%AD%87%E0%AC%B3.pdf?alt=media",
+        "number": null
+      },
+      {
+        "id": "eUTXTqwHLk55voGkHusS",
+        "title": "Chapter 10 - Bemara Bahana",
+        "title_en": "Bemara Bahana",
+        "title_or": "ବେମାର ବାହାନା",
+        "subject": "sahitya_suman",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FOdia%2FClass7_Ch11_Bemara_Bahana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "kaxfqlqzvLJ4rwHJrG73",
@@ -5032,15 +6218,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Interview with Kelucharan Mahapatra",
         "title_or": "ପଦ୍ମବିଭୂଷଣ କେଳୁଚରଣ ମହାପାତ୍ରଙ୍କ ସହ ସାକ୍ଷାତକାର",
         "subject": "sahitya_suman",
-        "thumbnail": null
-      },
-      {
-        "id": "GgyQGWYzUuP32RZEXdRZ",
-        "title": "Chapter 12 - Daraja Kholi Deba",
-        "title_en": "Daraja Kholi Deba",
-        "title_or": "ଦରଜା ଖୋଲି ଦେବା",
-        "subject": "sahitya_suman",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FOdia%2FClass7_Ch12_Interview_with_Kelucharan_Mohapatra.pdf?alt=media",
+        "number": null
       },
       {
         "id": "MaZD49FfwAYv8TkbWRVO",
@@ -5048,7 +6228,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "The Tunnel",
         "title_or": "The Tunnel",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FEnglish%2FClass7_Eng_Ch10_Unit4_Ch10_The_Tunnel.pdf?alt=media",
+        "number": null
       },
       {
         "id": "SJ5d8ctOvFaRSBm6w9lI",
@@ -5056,7 +6238,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Project 5: Puppet Show",
         "title_or": "ପ୍ରକଳ୍ପ-୫: କଣ୍ଢେଇ ନାଚ",
         "subject": "kausala_bodha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FVocational%2FClass7_KousalaBodha_Ch05_Part3_Project05_Kandhei_Nacha_Puppet_Show.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -5069,7 +6253,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "From Rulers to Ruled: Types of Government",
         "title_or": "ଶାସକଙ୍କ ଠାରୁ ଶାସିତଙ୍କ ପର୍ଯ୍ୟନ୍ତ: ସରକାରର ପ୍ରକାର ଭେଦ",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSocial_science%2FClass7_SocSci_Ch09_Civ_Ch09_Sarasakarara_Prakara_Bheda.pdf?alt=media",
+        "number": null
       },
       {
         "id": "G301MDVSxz70hDg9obWa",
@@ -5077,7 +6263,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Constitution of India: An Introduction",
         "title_or": "ଭାରତର ସମ୍ବିଧାନ: ଏକ ପରିଚୟ",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSocial_science%2FClass7_SocSci_Ch10_Civ_Ch10_Bharatar_Sambidhana_Eka_Parichaya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "MkiZcqKVJlmCXA0rG4ie",
@@ -5085,7 +6273,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Life processes of animals",
         "title_or": "ପ୍ରାଣୀମାନଙ୍କ ଜୀବନ ପ୍ରକ୍ରିୟା",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FScience_curiosity%2FClass7_Science_Ch09_Ch09_Pranimananka_Jibana_Prakriya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "EtjwBanVtMz0TsQb9X8m",
@@ -5093,7 +6283,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Life processes in plants",
         "title_or": "ଉଦ୍ଭିଦରେ ଜୀବନ ପ୍ରକ୍ରିୟା",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FScience_curiosity%2FClass7_Science_Ch10_Ch10_Udbhidare_Jibana_Prakriya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "AruKj3iVeJYIns9lfiO6",
@@ -5101,7 +6293,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Sunagarikah",
         "title_or": "ସୁନାଗରିକଃ",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch17_Ch17_Sunagarikah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "nI9lvPSMroHLDEPp1V7W",
@@ -5109,7 +6303,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Bande Bharatamataram",
         "title_or": "ବନ୍ଦେ ଭାରତମାତରମ୍",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch18_Ch18_Bande_Bharatamataram.pdf?alt=media",
+        "number": null
       },
       {
         "id": "c95nkTwwjvx6BsDkEtdn",
@@ -5117,7 +6313,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Nityam Pibamah Subhashitarasam",
         "title_or": "ନିତ୍ୟଂ ପିବାମଃ ସୁଭାଷିତରସମ୍",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch19_Ch19_Nityam_Pibamah_Subhasitarasam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ULqwiQGFiKzYh4yCY7Oh",
@@ -5125,7 +6323,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Estimation and Symbolism in Objects",
         "title_or": "ଆକଳନ ଏବଂ ପ୍ରତୀକରେ ବସ୍ତୁ",
         "subject": "kalakruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FArt%2FClass7_KalaKruti_Ch15_VisualArts_Ch15_Aankiba_O_Prateekare_Bastu.pdf?alt=media",
+        "number": null
       },
       {
         "id": "GCLydJlBqGkBzdzbCuLA",
@@ -5133,7 +6333,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Palette of Nature",
         "title_or": "ପ୍ରକୃତିର ପ୍ୟାଲେଟ",
         "subject": "kalakruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FArt%2FClass7_KalaKruti_Ch16_VisualArts_Ch16_Prakrutira_Challenge.pdf?alt=media",
+        "number": null
       },
       {
         "id": "QOFh7nsEO3ovsG9kvUq7",
@@ -5141,7 +6343,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Hamare Madhubabu",
         "title_or": "हमारे मधुबाबू (Hamare Madhubabu)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FHindi%2FClass7_Hindi_Ch11_Unit4_Ch11_Hamare_Madhubabu_Gadyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "kHIg6aRBqhGYUtz5XHoK",
@@ -5149,7 +6353,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Unit 4: Basic skills of sports - Kabaddi",
         "title_or": "ଏକକ-୪: କ୍ରୀଡ଼ାର ମୌଳିକ କୌଶଳ - କବାଡ଼ି",
         "subject": "khela_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FPhysical_education%2FClass7_PhysEd_Ch05_Unit5_Kridara_Moulika_Kausala_Kabaddi.pdf?alt=media",
+        "number": null
       },
       {
         "id": "GNBVoVfB6aoOEBLbuUSE",
@@ -5157,15 +6363,19 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Story of three intersecting lines / Triangles",
         "title_or": "ତିନୋଟି ପରସ୍ପର ଛେଦୀ ସରଳ ରେଖାର କଥା",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FMathematics%2FClass7_Chapter_7_%E0%AC%A4%E0%AC%BF%E0%AC%A8%E0%AD%8B%E0%AC%9F%E0%AC%BF%20%E0%AC%AA%E0%AC%B0%E0%AC%B8%E0%AD%8D%E0%AC%AA%E0%AC%B0%20%E0%AC%9B%E0%AD%87%E0%AC%A6%E0%AD%80%20%E0%AC%B8%E0%AC%B0%E0%AC%B3%20%E0%AC%B0%E0%AD%87%E0%AC%96%E0%AC%BE%E0%AC%B0%20%E0%AC%95%E0%AC%A5%E0%AC%BE.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "wlP5QJKElYeHYYuCrqve",
-        "title": "Extra Reading - Extra Reading: Bisweswaraya",
-        "title_en": "Extra Reading: Bisweswaraya",
-        "title_or": "ଅତିରିକ୍ତ ପଠନ: ବିଶ୍ୱେଶ୍ୱରାୟ",
+        "id": "GgyQGWYzUuP32RZEXdRZ",
+        "title": "Chapter 12 - Daraja Kholi Deba",
+        "title_en": "Daraja Kholi Deba",
+        "title_or": "ଦରଜା ଖୋଲି ଦେବା",
         "subject": "sahitya_suman",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FOdia%2FClass7_Ch14_Daraja_Kholi_Deba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "HVHMOOhB81fqoU2hrkHv",
@@ -5173,7 +6383,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Extra Reading: Dancer Sudha Chandran",
         "title_or": "ଅତିରିକ୍ତ ପଠନ: ନୃତ୍ୟାଙ୍ଗନା ସୁଧା ଚନ୍ଦ୍ରନ",
         "subject": "sahitya_suman",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FOdia%2FClass7_Ch13_Dancer_Sudha_Chandran.pdf?alt=media",
+        "number": null
       },
       {
         "id": "TYFh4IZmR4GYW8coHmk3",
@@ -5181,7 +6393,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Travel",
         "title_or": "Travel",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FEnglish%2FClass7_Eng_Ch11_Unit4_Ch11_Travel.pdf?alt=media",
+        "number": null
       },
       {
         "id": "c4kLPbAQB6Gy5rJc7fZK",
@@ -5189,7 +6403,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Conquering the Summit",
         "title_or": "Conquering the Summit",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FEnglish%2FClass7_Eng_Ch12_Unit4_Ch12_Conquering_the_Summit.pdf?alt=media",
+        "number": null
       },
       {
         "id": "RlP3Jzfq0jXxrZh2312X",
@@ -5197,7 +6413,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Project 6: Family Health Booklet / Health Journal",
         "title_or": "ପ୍ରକଳ୍ପ-୬: ପରିବାର ସ୍ୱାସ୍ଥ୍ୟ ପୁସ୍ତିକା",
         "subject": "kausala_bodha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FVocational%2FClass7_KousalaBodha_Ch06_Part3_Project06_Paribara_Swasthya_Pustika_Health_Journal.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -5210,7 +6428,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "From Barter to Money",
         "title_or": "ଦ୍ରବ୍ୟ ବିନିମୟରୁ ମୁଦ୍ରା ପର୍ଯ୍ୟନ୍ତ",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSocial_science%2FClass7_SocSci_Ch11_Eco_Ch11_Draba_Binimayaru_Mudra_Parjyanta.pdf?alt=media",
+        "number": null
       },
       {
         "id": "j4NUGT2qtyrYnuLfJjnF",
@@ -5218,7 +6438,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Light: Shadows and reflection",
         "title_or": "ଆଲୋକ: ଛାୟା ଓ ପ୍ରତିଫଳନ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FScience_curiosity%2FClass7_Science_Ch11_Ch11_Aaloka_Chhaya_O_Pratifalana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "WZPpy9nSAKABT0p6d8Mg",
@@ -5226,7 +6448,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Suryanamaskarah",
         "title_or": "ସୂର୍ଯ୍ୟନମସ୍କାରଃ",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch20_Ch20_Suryanamaskarah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "SFeLBD4KSTYWCd4xDUOP",
@@ -5234,7 +6458,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Seba Hi Paramadharmah",
         "title_or": "ସେବା ହି ପରମଧର୍ମଃ",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch21_Ch21_Seba_Hi_Paramadharmah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "qCUeH7prxFBsoceColAa",
@@ -5242,7 +6468,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Antyakshari Krida",
         "title_or": "ଅନ୍ତ୍ୟାକ୍ଷରୀ କ୍ରୀଡ଼ା",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch22_Ch22_Antyaksari_Krida.pdf?alt=media",
+        "number": null
       },
       {
         "id": "RTlNHjEk3Q1BFR3NmjQW",
@@ -5250,7 +6478,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "How to Experience Gradually",
         "title_or": "କ୍ରମେ କିପରି ଅନୁଭବ କର",
         "subject": "kalakruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FArt%2FClass7_KalaKruti_Ch17_VisualArts_Ch17_Tume_Kipari_Anubhaba_Kara.pdf?alt=media",
+        "number": null
       },
       {
         "id": "PEoBI63oNL7S2WqYKv9s",
@@ -5258,7 +6488,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Weaving and Our Tradition",
         "title_or": "ବୟନ ଓ ଆମ ପରମ୍ପରା",
         "subject": "kalakruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FArt%2FClass7_KalaKruti_Ch18_VisualArts_Ch18_Bayana_O_Aama_Parampara_Weaving.pdf?alt=media",
+        "number": null
       },
       {
         "id": "VAJDF8a6AmQxNVjoq88E",
@@ -5266,7 +6498,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Hum Anek Kintu Ek",
         "title_or": "हम अनेक किंतु एक (Hum Anek Kintu Ek)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FHindi%2FClass7_Hindi_Ch12_Unit4_Ch12_Hum_Anek_Kintu_Ek_Padyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Fb0QLsyBYZ0W9XFUt1yx",
@@ -5274,7 +6508,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Sundar Hockey Ka Garh",
         "title_or": "सुंदर हॉकी का गढ़ (Sundar Hockey Ka Garh)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FHindi%2FClass7_Hindi_Ch13_Unit4_Ch13_Sundar_Hockey_Ka_Garh_Reading.pdf?alt=media",
+        "number": null
       },
       {
         "id": "R9pQ7a7stQMHKvLH6kM5",
@@ -5282,7 +6518,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Unit 5: Yoga",
         "title_or": "ଏକକ-୫: ଯୋଗ",
         "subject": "khela_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FPhysical_education%2FClass7_PhysEd_Ch06_Unit6_Yoga.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Yw9sq7brPRklRKbx9FOV",
@@ -5290,15 +6528,19 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Use of fractions",
         "title_or": "ଭଗ୍ନାଂଶର ବ୍ୟବହାର",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FMathematics%2FClass7_Chapter_8_%E0%AC%AD%E0%AC%97%E0%AD%8D%E0%AC%A8%E0%AC%B8%E0%AC%82%E0%AC%96%E0%AD%8D%E0%AD%9F%E0%AC%BE%E0%AC%B0%20%E0%AC%AC%E0%AD%8D%E0%AD%9F%E0%AC%AC%E0%AC%B9%E0%AC%BE%E0%AC%B0.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "cKmYOnMR6ugFM1lMTWXX",
-        "title": "Extra Reading - Extra Reading: Re Pataka Jatir Garaba",
-        "title_en": "Extra Reading: Re Pataka Jatir Garaba",
-        "title_or": "ଅତିରିକ୍ତ ପଠନ: ରେ ପତାକା ଜାତିର ଗରବ",
+        "id": "q1pg1q89SLHGY88YjGbR",
+        "title": "Extra Reading - Extra Reading: Swami Bhakta Kumara",
+        "title_en": "Extra Reading: Swami Bhakta Kumara",
+        "title_or": "ଅତିରିକ୍ତ ପଠନ: ସ୍ୱାମୀ ଭକ୍ତ କୁମର",
         "subject": "sahitya_suman",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FOdia%2FClass7_Ch15_Swami_Bhakta_Sumukha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "tXdRQNFxQmtxRdvEtZt0",
@@ -5306,7 +6548,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Extra Reading: Road Safety",
         "title_or": "ଅତିରିକ୍ତ ପଠନ: ସଡ଼କ ନିରାପତ୍ତା",
         "subject": "sahitya_suman",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FOdia%2FClass7_Ch16_Road_Safety.pdf?alt=media",
+        "number": null
       },
       {
         "id": "VTsxAeafUXmKEeAEsbAx",
@@ -5314,7 +6558,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "A Homage to Our Brave Soldiers",
         "title_or": "A Homage to Our Brave Soldiers",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FEnglish%2FClass7_Eng_Ch13_Unit5_Ch13_A_Homage_to_Our_Brave_Soldiers.pdf?alt=media",
+        "number": null
       },
       {
         "id": "INYLlddwosHuYSxHXE9B",
@@ -5322,7 +6568,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "My Dear Soldiers",
         "title_or": "My Dear Soldiers",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FEnglish%2FClass7_Eng_Ch14_Unit5_Ch14_My_Dear_Soldiers.pdf?alt=media",
+        "number": null
       },
       {
         "id": "WFo5U8EyjnZ8a0P17oGI",
@@ -5330,7 +6578,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Planning for Skill Fair",
         "title_or": "କୌଶଳ ମେଳା ପାଇଁ ଯୋଜନା",
         "subject": "kausala_bodha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FVocational%2FClass7_KousalaBodha_Ch07_Part3_Kousala_Mela_Pain_Yojana_Skill_Fair.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -5343,7 +6593,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Understanding Market",
         "title_or": "ବଜାରକୁ ବୁଝିବା",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSocial_science%2FClass7_SocSci_Ch12_Eco_Ch12_Bajaraku_Bujhiba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "UVjcIETkPPM4voFgq7YX",
@@ -5351,7 +6603,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Earth, Moon and Sun",
         "title_or": "ପୃଥିବୀ, ଚନ୍ଦ୍ର ଓ ସୂର୍ଯ୍ୟ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FScience_curiosity%2FClass7_Science_Ch12_Ch12_Pruthibi_Chandra_O_Surjya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "MtN46y366xxT65XZgDXX",
@@ -5359,7 +6613,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Ishabasyam Idam Sarbam",
         "title_or": "ଈଶାବାସ୍ୟମ୍ ଇଦଂ ସର୍ବମ୍",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch23_Ch23_Isabasyam_Idam_Sarbam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "r2BnxKqZoVTJqdPVTIFu",
@@ -5367,7 +6623,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Suktimala",
         "title_or": "ସୂକ୍ତିମାଳା",
         "subject": "sanskritakalika_2",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FSanskrit%2FClass7_Sanskrit_Ch24_Ch24_Suktimala.pdf?alt=media",
+        "number": null
       },
       {
         "id": "j9XYHqhe1tmecT0lvETs",
@@ -5375,7 +6633,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Beautiful Handicraft Art",
         "title_or": "ସୁନ୍ଦର ହସ୍ତଶିଳ୍ପ କଳା",
         "subject": "kalakruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FArt%2FClass7_KalaKruti_Ch19_VisualArts_Ch19_Sundara_Hastalikhana_Kala_Calligraphy.pdf?alt=media",
+        "number": null
       },
       {
         "id": "3dZDPmtLsDJ1degGMEfD",
@@ -5383,7 +6643,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Sculptures of All Artists Come Alive",
         "title_or": "ସମସ୍ତ କଳାକାରଙ୍କ ମୂର୍ତ୍ତିକଳା ପ୍ରାଣବନ୍ତ ହୁଏ",
         "subject": "kalakruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FArt%2FClass7_KalaKruti_Ch20_VisualArts_Ch20_Murtikala_Sculpture.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ZtuP1HKuC5TnM5LXgfiw",
@@ -5391,15 +6653,19 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Paheliyan",
         "title_or": "पहेलियाँ (Paheliyan)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FHindi%2FClass7_Hindi_Ch14_Unit4_Ch14_Paheliyan_Entertainment.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "q1pg1q89SLHGY88YjGbR",
-        "title": "Extra Reading - Extra Reading: Swami Bhakta Kumara",
-        "title_en": "Extra Reading: Swami Bhakta Kumara",
-        "title_or": "ଅତିରିକ୍ତ ପଠନ: ସ୍ୱାମୀ ଭକ୍ତ କୁମର",
+        "id": "cKmYOnMR6ugFM1lMTWXX",
+        "title": "Extra Reading - Extra Reading: Re Pataka Jatir Garaba",
+        "title_en": "Extra Reading: Re Pataka Jatir Garaba",
+        "title_or": "ଅତିରିକ୍ତ ପଠନ: ରେ ପତାକା ଜାତିର ଗରବ",
         "subject": "sahitya_suman",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FOdia%2FClass7_Ch17_Re_Pataka_Jatira_Garaba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "3FF0j1UVU4PGZY1DTkgN",
@@ -5407,7 +6673,9 @@ export const ROADMAP_DATA_7 = [
         "title_en": "Rani Abbakka",
         "title_or": "Rani Abbakka",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%207%2FEnglish%2FClass7_Eng_Ch15_Unit5_Ch15_Rani_Abbakka.pdf?alt=media",
+        "number": null
       }
     ]
   }
@@ -5424,7 +6692,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Exploration of the World of Science",
         "title_or": "ବିଜ୍ଞାନ ଜଗତର ଅନ୍ୱେଷଣ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FScience_curiosity%2FClass8_Science_Ch01_Ch01_Bijnyan_Jagatara_Anwesana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "qg5wbWsywFbEKqQZHjFO",
@@ -5432,7 +6702,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Microbial World",
         "title_or": "ଅଣୁଜୀବ ଜଗତ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FScience_curiosity%2FClass8_Science_Ch02_Ch02_Anujiba_Jagata.pdf?alt=media",
+        "number": null
       },
       {
         "id": "21sNEy5KYoQKj7UFMiHv",
@@ -5440,7 +6712,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Natural Resources and Their Use",
         "title_or": "ପ୍ରାକୃତିକ ସମ୍ପଦ ଓ ତାହାର ବ୍ୟବହାର",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FSocial_science%2FClass8_SocSci_Ch01_Geo_Ch01_Prakrutika_Sampada_O_Tahara_Byabahara.pdf?alt=media",
+        "number": null
       },
       {
         "id": "gUmteSMlbYUAyHXcHhaA",
@@ -5448,7 +6722,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Making Words Alive",
         "title_or": "ଶବ୍ଦକୁ ଜୀବନ୍ତ କରିବା",
         "subject": "kruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FArt%2FClass8_Kruti_Ch01_Drama_Ch01_Shabdaku_Jibanta_Kariba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "bSzcSXY2c8GfFx8HuLNn",
@@ -5456,7 +6732,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "One Stage, Many Manuscripts",
         "title_or": "ଏକ ମଞ୍ଚ, ଅନେକ ପାଣ୍ଡୁଲିପି",
         "subject": "kruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FArt%2FClass8_Kruti_Ch02_Drama_Ch02_Eka_Mancha_Aneka_Pandulipi.pdf?alt=media",
+        "number": null
       },
       {
         "id": "7tgBGSJilq032VV6QB0g",
@@ -5464,7 +6742,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "From Composition to Performance",
         "title_or": "ରଚନାରୁ ମଞ୍ଚନା ପର୍ଯ୍ୟନ୍ତ",
         "subject": "kruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FArt%2FClass8_Kruti_Ch03_Drama_Ch03_Rachanatharu_Manchana_Parjyanta.pdf?alt=media",
+        "number": null
       },
       {
         "id": "08bvBWrLXBwiW8aiXwXd",
@@ -5472,7 +6752,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Hydroponics",
         "title_or": "ହାଇଡ୍ରୋପୋନିକ୍ସ",
         "subject": "kausala_bodha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FVocational%2FClass8_KousalaBodha_Ch01_Part1_Project01_Hydroponics.pdf?alt=media",
+        "number": null
       },
       {
         "id": "qUePXHPcBd32PjtGeivU",
@@ -5480,7 +6762,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Kabir ke Dohe (Padyam)",
         "title_or": "କବୀରଙ୍କ ଦୋହା (ପଦ୍ୟ)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FHindi%2FClass8_Hindi_Ch01_Unit1_Ch01_Kabir_ke_Dohe_Padyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Q99MflI3ut7wcOsb6Ypu",
@@ -5488,7 +6772,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Ek Tokri Bhar Mitti (Gadyam)",
         "title_or": "ଏକ ଟୋକେଇ ଭରି ମାଟି (ଗଦ୍ୟ)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FHindi%2FClass8_Hindi_Ch02_Unit1_Ch02_Ek_Tokri_Bhar_Mitti_Gadyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "3kJOOcP3NEGAmH1vV2oi",
@@ -5496,7 +6782,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Come, O' Odia!",
         "title_or": "ଆସ ଉତ୍କଳୀୟ",
         "subject": "sahitya_surabhi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FOdia%2FClass8_Ch01_Aasa_Utkaliya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "QrxJM5aEjtIr4QQ0poOV",
@@ -5504,7 +6792,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "The Bird's Revolution",
         "title_or": "ବିହଙ୍ଗ ବିପ୍ଳବ",
         "subject": "sahitya_surabhi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FOdia%2FClass8_Ch02_Bihanga_Biplaba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "qiInqLIlt8BQdtxVxi4x",
@@ -5512,7 +6802,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "The Wit that Won Hearts",
         "title_or": "ହୃଦୟ ଜିତିଥିବା ବୁଦ୍ଧି",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FEnglish%2FClass8_Eng_Ch01_Unit1_Ch01_The_Wit_that_Won_Hearts.pdf?alt=media",
+        "number": null
       },
       {
         "id": "9uUo2y8wazs78MdIuTm7",
@@ -5520,7 +6812,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "A Concrete Example",
         "title_or": "ଏକ ମୂର୍ତ୍ତିମାନ ଉଦାହରଣ",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FEnglish%2FClass8_Eng_Ch02_Unit1_Ch02_A_Concrete_Example.pdf?alt=media",
+        "number": null
       },
       {
         "id": "yfmB1qOTSrRv1vQiDJcy",
@@ -5528,7 +6822,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Square and Cube",
         "title_or": "ବର୍ଗ ଓ ଘନ",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FMathematics%2FClass8_Chapter_1_%E0%AC%AC%E0%AC%B0%E0%AD%8D%E0%AC%97%20%E0%AC%93%20%E0%AC%98%E0%AC%A8.pdf?alt=media",
+        "number": null
       },
       {
         "id": "PTFQRxep02lG8oEB7s0e",
@@ -5536,7 +6832,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Physical Education and the Foundation of Fitness",
         "title_or": "ଶାରୀରିକ ଶିକ୍ଷା ଓ ସୁସ୍ଥତାର ମୂଳଦୁଆ",
         "subject": "khela_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FPhysical%20Education%2FClass8_KhelaSikhya_Ch01_Unit1_Saririka_Sikhya_O_Susutara_Muladua.pdf?alt=media",
+        "number": null
       },
       {
         "id": "wTnfiVB0fW46HBTCYSO4",
@@ -5544,7 +6842,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Discrimination Should Not Be Done",
         "title_or": "ଭେଦଭାବଃ ନ କର୍ତ୍ତବ୍ୟଃ",
         "subject": "sanskritakalika_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FSanskrit%2FClass8_Sanskrit_Ch01_Ch01_Bhedabhavho_Na_Kartabyah.pdf?alt=media",
+        "number": null
       },
       {
         "id": "EoQZEBzY2A6znJYP6eb6",
@@ -5552,7 +6852,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "He Who Acts Is Wise",
         "title_or": "ଯଃ କ୍ରିୟାବାନ୍ ସଃ ପଣ୍ଡିତଃ",
         "subject": "sanskritakalika_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FSanskrit%2FClass8_Sanskrit_Ch02_Ch02_Yah_Kriyaban_Sah_Panditah.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -5565,7 +6867,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Health is Wealth",
         "title_or": "ସ୍ୱାସ୍ଥ୍ୟ ହିଁ ସମ୍ପଦ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FScience_curiosity%2FClass8_Science_Ch03_Ch03_Swasthya_Hi_Sampada.pdf?alt=media",
+        "number": null
       },
       {
         "id": "AFgvvSNv04D62YwPd4cz",
@@ -5573,7 +6877,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Reconstruction of India's Political Map",
         "title_or": "ଭାରତର ରାଜନୈତିକ ମାନଚିତ୍ରର ପୁନର୍ଗଠନ",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FSocial_science%2FClass8_SocSci_Ch02_Hist_Ch02_Bharatar_Rajanaitika_Manachitrar_Punargathana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "kF7qsF5UGJSqnLsdOoHX",
@@ -5581,7 +6887,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Applause and Advice",
         "title_or": "କରତାଳି ଓ ଉପଦେଶ",
         "subject": "kruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FArt%2FClass8_Kruti_Ch04_Drama_Ch04_Karatali_O_Upadesha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "6a8oymA1ivcUKsZoWlMY",
@@ -5589,7 +6897,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Discovering the Elements of Music",
         "title_or": "ସଙ୍ଗୀତର ଉପାଦାନଗୁଡିକୁ ଆବିଷ୍କାର କରିବା",
         "subject": "kruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FArt%2FClass8_Kruti_Ch05_Music_Ch05_Sangeetara_Upadanagudiku_Aabiskara_Kariba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "lBLuk7Zlvq9nuxq7xK5L",
@@ -5597,7 +6907,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Care and Feeding of Domestic Animals",
         "title_or": "ଗୃହପାଳିତ ପଶୁଙ୍କ ଯତ୍ନ ଓ ଖାଦ୍ୟ",
         "subject": "kausala_bodha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FVocational%2FClass8_KousalaBodha_Ch02_Part1_Project02_Care_And_Feed_Domestic_Animals.pdf?alt=media",
+        "number": null
       },
       {
         "id": "6M6xPKuDJwfBTuwnEmR9",
@@ -5605,7 +6917,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Bana Do Madhur Mera Jeevan (Padyam)",
         "title_or": "ମୋ ଜୀବନକୁ ମଧୁର କରିଦିଅ (ପଦ୍ୟ)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FHindi%2FClass8_Hindi_Ch03_Unit1_Ch03_Bana_Do_Madhur_Mera_Jeevan_Padyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "5KRKPhjPfQuNvtVFx3DD",
@@ -5613,7 +6927,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Tarun Ke Swapna (Gadyam)",
         "title_or": "ତରୁଣର ସ୍ୱପ୍ନ (ଗଦ୍ୟ)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FHindi%2FClass8_Hindi_Ch04_Unit1_Ch04_Tarun_Ke_Swapna_Gadyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "bfrNyJe7eCAKcOaastWF",
@@ -5621,7 +6937,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Oath",
         "title_or": "ଶପଥ",
         "subject": "sahitya_surabhi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FOdia%2FClass8_Ch03_Shapatha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "4HNmlmcnMdSNEHoHIQ12",
@@ -5629,7 +6947,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Wisdom Paves the Way",
         "title_or": "ଜ୍ଞାନ ପଥ ପ୍ରସ୍ତୁତ କରେ",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FEnglish%2FClass8_Eng_Ch03_Unit1_Ch03_Wisdom_Paves_the_Way.pdf?alt=media",
+        "number": null
       },
       {
         "id": "9QOlFdSp1yrrmD9aJ59u",
@@ -5637,7 +6957,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "A Tale of Valour",
         "title_or": "ଏକ ବୀରତ୍ୱର କାହାଣୀ",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FEnglish%2FClass8_Eng_Ch04_Unit2_Ch04_A_Tale_of_Valour.pdf?alt=media",
+        "number": null
       },
       {
         "id": "O9oJ8NL6NqvkUP3Se1hS",
@@ -5645,7 +6967,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Game of Exponents",
         "title_or": "ଘାତର ଖେଳ",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FMathematics%2FClass8_Chapter_2_%E0%AC%98%E0%AC%BE%E0%AC%A4%E0%AC%B0%20%E0%AC%96%E0%AD%87%E0%AC%B3.pdf?alt=media",
+        "number": null
       },
       {
         "id": "KYgprD7PHaMGwOsCpyMs",
@@ -5653,7 +6977,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Physical and Movement-Related Fitness",
         "title_or": "ଶାରୀରିକ ଓ ଗତି ସମ୍ବନ୍ଧୀୟ ସୁସ୍ଥତା",
         "subject": "khela_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FPhysical%20Education%2FClass8_KhelaSikhya_Ch02_Unit2_Saririka_O_Gati_Sambandhiya_Susuta.pdf?alt=media",
+        "number": null
       },
       {
         "id": "7CI4eSjMnWwY0hdAcAP3",
@@ -5661,7 +6987,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Who Is Healthy? Who Is Healthy?",
         "title_or": "କଃ ଅରୁକ୍? କଃ ଅରୁକ୍?",
         "subject": "sanskritakalika_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FSanskrit%2FClass8_Sanskrit_Ch03_Ch03_Koh_Aruk_Koh_Aruk.pdf?alt=media",
+        "number": null
       },
       {
         "id": "p6vD2oaL5N3Ey3fRH5HA",
@@ -5669,7 +6997,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Walk Together, Speak Together",
         "title_or": "ସଙ୍ଗଚ୍ଛଧ୍ୱଂ ସଂବଦଧ୍ୱମ୍",
         "subject": "sanskritakalika_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FSanskrit%2FClass8_Sanskrit_Ch04_Ch04_Sangachhadhwam_Sambadadhwam_Padyam.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -5682,7 +7012,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Magnetic and Thermal Effects of Electricity",
         "title_or": "ବିଦ୍ୟୁତର ଚୁମ୍ବକୀୟ ଓ ତାପୀୟ ପ୍ରଭାବ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FScience_curiosity%2FClass8_Science_Ch04_Ch04_Bidyutara_Chumbakiya_O_Tapiya_Prabhaba.pdf?alt=media",
+        "number": null
       },
       {
         "id": "IFj0oMjo59w0bfJhdUkO",
@@ -5690,7 +7022,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Rise of the Maratha Empire",
         "title_or": "ମରାଠା ସାମ୍ରାଜ୍ୟର ଉତ୍ଥାନ",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FSocial_science%2FClass8_SocSci_Ch03_Hist_Ch03_Maratha_Samrajyara_Udthana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "neWQPkFPhE6xDSyq3la4",
@@ -5698,7 +7032,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Musical Instruments",
         "title_or": "ସଙ୍ଗୀତମୟ ବାଦ୍ୟଯନ୍ତ୍ର",
         "subject": "kruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FArt%2FClass8_Kruti_Ch06_Music_Ch06_Sangeetamaya_Badyajantra.pdf?alt=media",
+        "number": null
       },
       {
         "id": "36v8qNOveQOzg9RJDQHK",
@@ -5706,7 +7042,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Indian Classical Music",
         "title_or": "ଭାରତୀୟ ଶାସ୍ତ୍ରୀୟ ସଙ୍ଗୀତ",
         "subject": "kruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FArt%2FClass8_Kruti_Ch07_Music_Ch07_Bharatiya_Shastriya_Sangeeta.pdf?alt=media",
+        "number": null
       },
       {
         "id": "fHXYEFl3A7LSve9E7lNs",
@@ -5714,7 +7052,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Wood and Bamboo Work",
         "title_or": "କାଠ ଓ ବାଉଁଶ କାର୍ଯ୍ୟ",
         "subject": "kausala_bodha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FVocational%2FClass8_KousalaBodha_Ch03_Part2_Project03_Wood_And_Bamboo_Work.pdf?alt=media",
+        "number": null
       },
       {
         "id": "mMOaS0WE2SK1MoIfw2L7",
@@ -5722,7 +7062,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Beti (Padyam)",
         "title_or": "ଝିଅ (ପଦ୍ୟ)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FHindi%2FClass8_Hindi_Ch05_Unit2_Ch05_Beti_Padyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "87DI6rpBb5oLTKT8cqxy",
@@ -5730,7 +7072,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Bhakt Kavi Balram Das (Gadyam)",
         "title_or": "ଭକ୍ତ କବି ବଳରାମ ଦାସ (ଗଦ୍ୟ)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FHindi%2FClass8_Hindi_Ch06_Unit2_Ch06_Bhakt_Kavi_Balram_Das_Gadyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "lq1G0y9q8Rv6mTdX0gSq",
@@ -5738,7 +7082,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Damkach",
         "title_or": "ଦମକଚ",
         "subject": "sahitya_surabhi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FOdia%2FClass8_Ch04_Damkach.pdf?alt=media",
+        "number": null
       },
       {
         "id": "UFlowMVaGmmNBSfcbejd",
@@ -5746,7 +7092,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Somebody's Mother",
         "title_or": "କାହାର ମାଆ",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FEnglish%2FClass8_Eng_Ch05_Unit2_Ch05_Somebodys_Mother.pdf?alt=media",
+        "number": null
       },
       {
         "id": "RkebiH5rqWq3FvSUIMWc",
@@ -5754,7 +7102,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Story of Numbers",
         "title_or": "ସଂଖ୍ୟାର କାହାଣୀ",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FMathematics%2FClass8_Chapter_3_%E0%AC%B8%E0%AC%82%E0%AC%96%E0%AD%8D%E0%AD%9F%E0%AC%BE%E0%AC%B0%20%E0%AC%95%E0%AC%BE%E0%AC%B9%E0%AC%BE%E0%AC%A3%E0%AD%80.pdf?alt=media",
+        "number": null
       },
       {
         "id": "LMt93U9d6ZJKWI6ky9bj",
@@ -5762,7 +7112,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Utkalamani Gopabandhu",
         "title_or": "ଉତ୍କଳମଣି ଗୋପବନ୍ଧୁଃ",
         "subject": "sanskritakalika_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FSanskrit%2FClass8_Sanskrit_Ch05_Ch05_Utkalamani_Gopabandhuh.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -5775,7 +7127,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Exploration of Force",
         "title_or": "ବଳର ଅନ୍ୱେଷଣ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FScience_curiosity%2FClass8_Science_Ch05_Ch05_Balara_Anwesana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "daGkaF5SUIQKzuBlzNNS",
@@ -5783,7 +7137,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Heat, Air Current, and Storms",
         "title_or": "ତାପ, ବାୟୁ ପ୍ରବାହ ଓ ଝଡ଼ ବାତ୍ୟା",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FScience_curiosity%2FClass8_Science_Ch06_Ch06_Tapa_Bayu_Prabaha_O_Jhada_Batya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "w3R1AqvBnDtog9phbgJt",
@@ -5791,7 +7147,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Colonial Era in India",
         "title_or": "ଭାରତରେ ଉପନିବେଶିକ ଯୁଗ",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FSocial_science%2FClass8_SocSci_Ch04_Hist_Ch04_Bharatare_Oupanibesika_Yuga.pdf?alt=media",
+        "number": null
       },
       {
         "id": "HZyoGLjW0xRcuttqwfpd",
@@ -5799,7 +7157,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Inspiration and Imagination",
         "title_or": "ପ୍ରେରଣା ଏବଂ କଳ୍ପନା",
         "subject": "kruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FArt%2FClass8_Kruti_Ch08_Music_Ch08_Prerana_Ebam_Kalpana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "WQiWNTfyB6vzeRfZpQsC",
@@ -5807,7 +7167,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "My World of Music",
         "title_or": "ମୋ ସଙ୍ଗୀତର ଜଗତ",
         "subject": "kruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FArt%2FClass8_Kruti_Ch09_Music_Ch09_Mo_Sangeetara_Jagata.pdf?alt=media",
+        "number": null
       },
       {
         "id": "8LHS8I93vAWxEA1GcZJS",
@@ -5815,7 +7177,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Automated Smart Home",
         "title_or": "ସ୍ୱୟଂଚାଳିତ ସ୍ମାର୍ଟ ହୋମ୍",
         "subject": "kausala_bodha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FVocational%2FClass8_KousalaBodha_Ch04_Part2_Project04_Automated_Smart_Home.pdf?alt=media",
+        "number": null
       },
       {
         "id": "JeMw5gio3fJjV44puskm",
@@ -5823,7 +7187,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Swadesh (Padyam)",
         "title_or": "ସ୍ୱଦେଶ (ପଦ୍ୟ)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FHindi%2FClass8_Hindi_Ch07_Unit2_Ch07_Swadesh_Padyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "615aExFgemt7DlsMQPAj",
@@ -5831,7 +7197,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Mera Bachpan (Gadyam)",
         "title_or": "ମୋର ପିଲାଦିନ (ଗଦ୍ୟ)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FHindi%2FClass8_Hindi_Ch08_Unit2_Ch08_Mera_Bachpan_Gadyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "CtJ0LYQlD2ycQmhRCJpf",
@@ -5839,7 +7207,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Collection of Bhagabata Sayings",
         "title_or": "ଭାଗବତ ସୁକ୍ତି ସଂଗ୍ରହ",
         "subject": "sahitya_surabhi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FOdia%2FClass8_Ch05_Bhagabata_Sukti_Sangraha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ZVXHiroVqDcnZ02s4Yhd",
@@ -5847,7 +7217,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Still Alive",
         "title_or": "ଏବେ ମଧ୍ୟ ବଞ୍ଚିଛି",
         "subject": "sahitya_surabhi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FOdia%2FClass8_Ch06_Ebe_Madhya_Banchichi.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ODJlhGGy1MQkZS9WZRcb",
@@ -5855,7 +7227,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Verghese Kurien's Dream",
         "title_or": "ଭର୍ଗିସ୍ କୁରିଏନ୍‌ଙ୍କ ସ୍ୱପ୍ନ",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FEnglish%2FClass8_Eng_Ch06_Unit2_Ch06_Verghese_Kurien_Dream.pdf?alt=media",
+        "number": null
       },
       {
         "id": "x93CmPhKNEpVuJP0NHka",
@@ -5863,7 +7237,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "The Case of the Fifth Word",
         "title_or": "ପଞ୍ଚମ ଶବ୍ଦର ମାମଲା",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FEnglish%2FClass8_Eng_Ch07_Unit3_Ch07_The_Case_of_the_Fifth_Word.pdf?alt=media",
+        "number": null
       },
       {
         "id": "5L5edZ4whoKapY9QDJx1",
@@ -5871,7 +7247,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Quadrilateral",
         "title_or": "ଚତୁର୍ଭୁଜ",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FMathematics%2FClass8_Chapter_4_%E0%AC%9A%E0%AC%A4%E0%AD%81%E0%AC%B0%E0%AD%8D%E0%AC%AD%E0%AD%81%E0%AC%9C.pdf?alt=media",
+        "number": null
       },
       {
         "id": "swFPAf7I6ZnaQaE8jXXz",
@@ -5879,7 +7257,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Basic Skills of Sports: Athletics",
         "title_or": "କ୍ରୀଡ଼ାର ମୌଳିକ କୌଶଳ: ଆଥଲେଟିକ୍ସ",
         "subject": "khela_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FPhysical%20Education%2FClass8_KhelaSikhya_Ch03_Unit3_Kridara_Moulika_Kausala_Athletics.pdf?alt=media",
+        "number": null
       },
       {
         "id": "g7jIjxL3YmfreKKPP1fl",
@@ -5887,7 +7267,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Brave Woman Sukadevi",
         "title_or": "ବୀରାଙ୍ଗନା ସୁକାଦେବୀ",
         "subject": "sanskritakalika_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FSanskrit%2FClass8_Sanskrit_Ch06_Ch06_Birangana_Sukadebi.pdf?alt=media",
+        "number": null
       },
       {
         "id": "EIWp1cHGxJQ4kZ42n5fd",
@@ -5895,7 +7277,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "The Gita Should Be Well Sung",
         "title_or": "ଗୀତା ସୁଗୀତା କର୍ତ୍ତବ୍ୟା",
         "subject": "sanskritakalika_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FSanskrit%2FClass8_Sanskrit_Ch07_Ch07_Gita_Sugita_Kartabya_Padyam.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -5908,7 +7292,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Particle Nature of Matter",
         "title_or": "ପଦାର୍ଥର କଣିକା ପ୍ରକୃତି",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FScience_curiosity%2FClass8_Science_Ch07_Ch07_Padarthara_Kanika_Prakruti.pdf?alt=media",
+        "number": null
       },
       {
         "id": "vY7YmlBf3OcrloVk0C7y",
@@ -5916,7 +7302,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Internal Movements of Dance",
         "title_or": "ନୃତ୍ୟର ଆଭ୍ୟନ୍ତରୀଣ ଗତିବିଧି",
         "subject": "kruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FArt%2FClass8_Kruti_Ch10_Dance_Ch10_Nrityara_Abhyantarina_Gatibidhi.pdf?alt=media",
+        "number": null
       },
       {
         "id": "0vq9O6JFYat1T63XLhTA",
@@ -5924,7 +7312,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Pan-Indian Dance Styles",
         "title_or": "ସର୍ବଭାରତୀୟ ନୃତ୍ୟଶୈଳୀ",
         "subject": "kruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FArt%2FClass8_Kruti_Ch11_Dance_Ch11_Sarbabharatiya_Nrityasaili.pdf?alt=media",
+        "number": null
       },
       {
         "id": "rzXnWATZXjCSG9S5MaTI",
@@ -5932,7 +7322,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Meri Kutiya Dekho (Padyam)",
         "title_or": "ମୋ କୁଟିର ଦେଖ (ପଦ୍ୟ)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FHindi%2FClass8_Hindi_Ch09_Unit3_Ch09_Meri_Kutiya_Dekho_Padyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "P9t5qgFL9235FAUXJ8LZ",
@@ -5940,7 +7332,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Konark (Gadyam)",
         "title_or": "କୋଣାର୍କ (ଗଦ୍ୟ)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FHindi%2FClass8_Hindi_Ch10_Unit3_Ch10_Konark_Gadyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "UrzIzJUUa8gIxOeloHH1",
@@ -5948,7 +7342,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Dreamy Bird",
         "title_or": "ସ୍ୱପ୍ନିଳ ବିହଙ୍ଗ",
         "subject": "sahitya_surabhi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FOdia%2FClass8_Ch07_Swapnila_Bihanga.pdf?alt=media",
+        "number": null
       },
       {
         "id": "AEMKm2xpCbf6wYHXvOSg",
@@ -5956,7 +7352,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "The Magic Brush of Dreams",
         "title_or": "ସ୍ୱପ୍ନର ମାୟା ତୂଳୀ",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FEnglish%2FClass8_Eng_Ch08_Unit3_Ch08_The_Magic_Brush_of_Dreams.pdf?alt=media",
+        "number": null
       },
       {
         "id": "cFgaU279YpTDGnkKXuQp",
@@ -5964,7 +7362,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Spectacular Wonders",
         "title_or": "ଅଦ୍ଭୁତ ଆଶ୍ଚର୍ଯ୍ୟ",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FEnglish%2FClass8_Eng_Ch09_Unit3_Ch09_Spectacular_Wonders.pdf?alt=media",
+        "number": null
       },
       {
         "id": "01Yzlwy8LA0vJqE4N7AF",
@@ -5972,7 +7372,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Basic Skills of Sports: Table Tennis",
         "title_or": "କ୍ରୀଡ଼ାର ମୌଳିକ କୌଶଳ: ଟେବୁଲ ଟେନିସ",
         "subject": "khela_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FPhysical%20Education%2FClass8_KhelaSikhya_Ch04_Unit4_Kridara_Moulika_Kausala_TableTennis.pdf?alt=media",
+        "number": null
       },
       {
         "id": "OWhBDhNFVQ49viO1V4Ev",
@@ -5980,7 +7382,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "The Pumpkin Feast Restaurant",
         "title_or": "କୁଷ୍ମାଣ୍ଡଭୋଜନଳୟଃ",
         "subject": "sanskritakalika_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FSanskrit%2FClass8_Sanskrit_Ch08_Ch08_Kusmandabhojanalayah_Natakam.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -5993,7 +7397,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Nature of Matter: Elements, Compounds, Mixtures",
         "title_or": "ପଦାର୍ଥର ପ୍ରକୃତି: ମୌଳିକ, ଯୌଗିକ, ମିଶ୍ରଣ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FScience_curiosity%2FClass8_Science_Ch08_Ch08_Padarthara_Prakruti_Maulik_Jougil_Misrana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "C2RPpxIzAMqCoMEzFEJe",
@@ -6001,7 +7407,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Universal Suffrage and Electoral System",
         "title_or": "ସାର୍ବଜନୀନ ମତଦାନ ଓ ନିର୍ବାଚନ ବ୍ୟବସ୍ଥା",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FSocial_science%2FClass8_SocSci_Ch05_Civ_Ch05_Sarbojanina_Matadana_O_Nirbachana_Byabastha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "eJxYZ0YeS70gh9iytBep",
@@ -6009,7 +7417,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Dance for Wellness",
         "title_or": "ସୁସ୍ଥତା ପାଇଁ ନୃତ୍ୟ",
         "subject": "kruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FArt%2FClass8_Kruti_Ch12_Dance_Ch12_Susthata_Pain_Nritya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "7toQnWUpQFnzMmCgwuOs",
@@ -6017,7 +7427,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Innovative Inclusion and Change",
         "title_or": "ଅଭିନବ ସମାବେଶ ଓ ପରିବର୍ତ୍ତନ",
         "subject": "kruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FArt%2FClass8_Kruti_Ch13_Dance_Ch13_Abhinaba_Samabesa_O_Paribartana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "sXyVXbgyn6fH92HDHbWB",
@@ -6025,7 +7437,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Water Management Review",
         "title_or": "ଜଳ ପରିଚାଳନା ସମୀକ୍ଷା",
         "subject": "kausala_bodha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FVocational%2FClass8_KousalaBodha_Ch05_Part3_Project05_Water_Management_Review.pdf?alt=media",
+        "number": null
       },
       {
         "id": "9hvNt5FbXKleVMI93rqJ",
@@ -6033,7 +7447,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Ek Aashirvaad (Padyam)",
         "title_or": "ଏକ ଆଶୀର୍ବାଦ (ପଦ୍ୟ)",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FHindi%2FClass8_Hindi_Ch11_Unit3_Ch11_Ek_Aashirvaad_Padyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "E8hnDqQ0K8Xu5RzHaR1G",
@@ -6041,7 +7457,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Traditional Chhau Dance",
         "title_or": "ପାରମ୍ପରିକ ଛଉ ନୃତ୍ୟ",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FHindi%2FClass8_Hindi_Ch12_Unit3_Ch12_Paramparik_Nritya_Chhau_Gadyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "i0mskISkcrdhNQJ2W8Dj",
@@ -6049,7 +7467,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Offering",
         "title_or": "ଆହୁତି",
         "subject": "sahitya_surabhi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FOdia%2FClass8_Ch08_Ahuti.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ggS29zh199m5fY60kbYJ",
@@ -6057,7 +7477,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "The Cherry Tree",
         "title_or": "ଚେରି ଗଛ",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FEnglish%2FClass8_Eng_Ch10_Unit4_Ch10_The_Cherry_Tree.pdf?alt=media",
+        "number": null
       },
       {
         "id": "mHjUCUJZBrEd77BiiN1n",
@@ -6065,7 +7487,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Number Game",
         "title_or": "ସଂଖ୍ୟା ଖେଳ",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FMathematics%2FClass8_Chapter_5_%E0%AC%B8%E0%AC%82%E0%AC%96%E0%AD%8D%E0%AD%9F%E0%AC%BE%20%E0%AC%96%E0%AD%87%E0%AC%B3.pdf?alt=media",
+        "number": null
       },
       {
         "id": "7gVPxYW5mZYOguLRRo3c",
@@ -6073,7 +7497,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Digital India",
         "title_or": "ଡିଜି ଭାରତମ୍",
         "subject": "sanskritakalika_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FSanskrit%2FClass8_Sanskrit_Ch09_Ch09_Digi_Bharatam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "yhkbPJt9OPd7TfQNh69n",
@@ -6081,7 +7507,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "The Essence of Good Sayings",
         "title_or": "ସୁଭାଷିତରସଃ",
         "subject": "sanskritakalika_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FSanskrit%2FClass8_Sanskrit_Ch10_Ch10_Subhasitarasah_Padyam.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -6094,7 +7522,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Light, Mirror, and Lens",
         "title_or": "ଆଲୋକ, ଦର୍ପଣ ଓ ଲେନ୍ସ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FScience_curiosity%2FClass8_Science_Ch10_Ch10_Aaloka_Darpana_O_Lens.pdf?alt=media",
+        "number": null
       },
       {
         "id": "2ILnEKmCo49OWZvnndlt",
@@ -6102,7 +7532,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "The Sky, Moon, and Sun's Motion",
         "title_or": "ଆକାଶ, ଚନ୍ଦ୍ର ଓ ସୂର୍ଯ୍ୟଙ୍କ ଗତି",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FScience_curiosity%2FClass8_Science_Ch11_Ch11_Aakasa_Chandra_Suryanka_Gati.pdf?alt=media",
+        "number": null
       },
       {
         "id": "kB2sefqk2EL51TyxCsq7",
@@ -6110,7 +7542,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "India's Parliamentary System",
         "title_or": "ଭାରତର ସଂସଦୀୟ ବ୍ୟବସ୍ଥା",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FSocial_science%2FClass8_SocSci_Ch06_Civ_Ch06_Bharatar_Sansadiya_Byabastha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "G9Iwlpsv694KmChh8PGo",
@@ -6118,7 +7552,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Choreography for Dance Performance",
         "title_or": "ନୃତ୍ୟ ପରିବେଷଣ ପାଇଁ ସଞ୍ଚରଚନା",
         "subject": "kruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FArt%2FClass8_Kruti_Ch14_Dance_Ch14_Nritya_Paribesana_Pain_Sancharachana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "N1maX2rqjgZo4ZiQxIwT",
@@ -6126,7 +7562,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Originality in Visual Arts Design",
         "title_or": "ଦୃଶ୍ୟକଳା ରୂପାଙ୍କନରେ ମୌଳିକତା",
         "subject": "kruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FArt%2FClass8_Kruti_Ch15_VisualArts_Ch15_Drushyakala_Rupankanare_Maulikata.pdf?alt=media",
+        "number": null
       },
       {
         "id": "nrVCRGicUp3TzNKD8Z3u",
@@ -6134,7 +7572,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Advertisement Preparation",
         "title_or": "ବିଜ୍ଞାପନ ପ୍ରସ୍ତୁତି",
         "subject": "kausala_bodha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FVocational%2FClass8_KousalaBodha_Ch06_Part3_Project06_Advertisement_Preparation.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ABaaq3Pd4z3YUfNbvH34",
@@ -6142,7 +7582,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "The Story of Devoted Sumukh",
         "title_or": "ସ୍ୱାମୀଭକ୍ତ ସୁମୁଖର କାହାଣୀ",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FHindi%2FClass8_Hindi_Ch13_Unit3_Ch13_Swamibhakt_Sumukh_Kahani.pdf?alt=media",
+        "number": null
       },
       {
         "id": "E17f3g2mdwwqpleyuEpC",
@@ -6150,7 +7592,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "The First Drop",
         "title_or": "ପ୍ରଥମ ବୁନ୍ଦା",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FHindi%2FClass8_Hindi_Ch14_Unit4_Ch14_Pehli_Boond_Padyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Hnedg61cDr3B7DhgmNKi",
@@ -6158,7 +7602,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Motherland",
         "title_or": "ମାତୃଭୂମି",
         "subject": "sahitya_surabhi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FOdia%2FClass8_Ch09_Matrubhumi.pdf?alt=media",
+        "number": null
       },
       {
         "id": "eYnVNKEgMRTWBAycOjdC",
@@ -6166,7 +7612,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Bharata's Journey to Chitrakuta",
         "title_or": "ଭରତଙ୍କ ଚିତ୍ରକୂଟ ଯାତ୍ରା",
         "subject": "sahitya_surabhi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FOdia%2FClass8_Ch10_Bharatanka_Chitrakuta_Jatra.pdf?alt=media",
+        "number": null
       },
       {
         "id": "QNaf4Zolq8l2NTjKw5X3",
@@ -6174,7 +7622,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Harvest Hymn",
         "title_or": "ଅମଳ ଗୀତ",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FEnglish%2FClass8_Eng_Ch11_Unit4_Ch11_Harvest_Hymn.pdf?alt=media",
+        "number": null
       },
       {
         "id": "8knXUEmdRWjI1g0wyPoZ",
@@ -6182,7 +7632,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Waiting for the Rain",
         "title_or": "ବର୍ଷାକୁ ଅପେକ୍ଷା କରିବା",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FEnglish%2FClass8_Eng_Ch12_Unit4_Ch12_Waiting_for_the_Rain.pdf?alt=media",
+        "number": null
       },
       {
         "id": "rQabkKY5kCrjzQzKF0iA",
@@ -6190,7 +7642,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Principles of Division",
         "title_or": "ବାଣ୍ଟିଲେ ପଢ଼େ",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FMathematics%2FClass8_Chapter_6_%E0%AC%AC%E0%AC%BE%E0%AC%A3%E0%AD%8D%E0%AC%9F%E0%AC%BF%E0%AC%B2%E0%AD%87%20%E0%AC%AA%E0%AC%A2%E0%AC%BC%E0%AD%87.pdf?alt=media",
+        "number": null
       },
       {
         "id": "iVVtJpWLkqmzBZffGtlc",
@@ -6198,7 +7652,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Basic Skills of Sports: Volleyball",
         "title_or": "କ୍ରୀଡ଼ାର ମୌଳିକ କୌଶଳ: ଭଲିବଲ",
         "subject": "khela_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FPhysical%20Education%2FClass8_KhelaSikhya_Ch05_Unit5_Kridara_Moulika_Kausala_Volleyball.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Zd9gJvts8UFdsj4y0vzW",
@@ -6206,7 +7662,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "My Beloved India",
         "title_or": "ପ୍ରିୟଂ ମେ ଭାରତବର୍ଷମ୍",
         "subject": "sanskritakalika_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FSanskrit%2FClass8_Sanskrit_Ch11_Ch11_Priyam_Me_Bharatabarsam.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -6219,7 +7677,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Harmony of Nature",
         "title_or": "ପ୍ରକୃତିର ସମନ୍ୱୟ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FScience_curiosity%2FClass8_Science_Ch12_Ch12_Prakrutira_Samanwaya.pdf?alt=media",
+        "number": null
       },
       {
         "id": "EYdMQJxd3j8efzyuxj03",
@@ -6227,7 +7687,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Factors of Production",
         "title_or": "ଉତ୍ପାଦନର କାରକ",
         "subject": "samajika_bignana",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FSocial_science%2FClass8_SocSci_Ch07_Eco_Ch07_Utpadanara_Karaka.pdf?alt=media",
+        "number": null
       },
       {
         "id": "RIGghMi66zW2k9QJ2z6D",
@@ -6235,7 +7697,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Application of Color in Still Life Painting",
         "title_or": "ସ୍ଥିର ବସ୍ତୁ ଚିତ୍ରଣରେ ରଙ୍ଗର ପ୍ରୟୋଗ",
         "subject": "kruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FArt%2FClass8_Kruti_Ch16_VisualArts_Ch16_Sthira_Bastu_Chitranare_Rangara_Prayoga.pdf?alt=media",
+        "number": null
       },
       {
         "id": "5kA0hO0keJ6J5hbQoRqh",
@@ -6243,7 +7707,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "People in Different Places",
         "title_or": "ବିଭିନ୍ନ ସ୍ଥାନଗୁଡିକରେ ଲୋକମାନେ",
         "subject": "kruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FArt%2FClass8_Kruti_Ch17_VisualArts_Ch17_Bibhibna_Sthanagudikare_Lokamane.pdf?alt=media",
+        "number": null
       },
       {
         "id": "suw2Mk8fApB3N4wktuBI",
@@ -6251,7 +7717,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Planning for Skill Fair",
         "title_or": "ଦକ୍ଷତା ମେଳା ପାଇଁ ଯୋଜନା",
         "subject": "kausala_bodha",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FVocational%2FClass8_KousalaBodha_Ch07_Part3_Planning_For_Skill_Fair.pdf?alt=media",
+        "number": null
       },
       {
         "id": "n4iOUhR4XBQeEkYjIQnF",
@@ -6259,7 +7727,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Flight of Dreams",
         "title_or": "ସ୍ୱପ୍ନର ଉଡ଼ାଣ",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FHindi%2FClass8_Hindi_Ch15_Unit4_Ch15_Sapnon_Ki_Udaan_Gadyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "FAkyPonY8XwSHlqFn9D3",
@@ -6267,7 +7737,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "We Must Walk Together",
         "title_or": "ଏକାଠି ଚାଲିବାକୁ ପଡ଼ିବ",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FHindi%2FClass8_Hindi_Ch16_Unit4_Ch16_Kadam_Milakar_Chalna_Hoga_Padyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "5PQTOB0ujc94CagugdUp",
@@ -6275,7 +7747,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Timeless Verses",
         "title_or": "କାଳଜୟୀ ପଦ ପଂକ୍ତି",
         "subject": "sahitya_surabhi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FOdia%2FClass8_Ch11_Kalajayi_Pada_Pankti.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Watet2elCCSGsSa1w0xN",
@@ -6283,7 +7757,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Feathered Friend",
         "title_or": "ପକ୍ଷୀ ବନ୍ଧୁ",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FEnglish%2FClass8_Eng_Ch13_Unit5_Ch13_Feathered_Friend.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ipDsMZjIxVZHxMb3XzKA",
@@ -6291,7 +7767,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Magnifying Glass",
         "title_or": "ଆବର୍ଦ୍ଧକ କାଚ",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FEnglish%2FClass8_Eng_Ch14_Unit5_Ch14_Magnifying_Glass.pdf?alt=media",
+        "number": null
       },
       {
         "id": "uaqbpOUe3xFmStqXqqv3",
@@ -6299,7 +7777,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Proportional Reasoning - 1",
         "title_or": "ସମାନୁପାତିକ ଯୁକ୍ତି-୧",
         "subject": "ganita_prakas",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FMathematics%2FClass8_Chapter_7_%E0%AC%B8%E0%AC%AE%E0%AC%BE%E0%AC%A8%E0%AD%81%E0%AC%AA%E0%AC%BE%E0%AC%A4%E0%AC%BF%E0%AC%95%20%E0%AC%AF%E0%AD%81%E0%AC%95%E0%AD%8D%E0%AC%A4%E0%AC%BF-%E0%AD%A7.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ECZl0zUGOELMif3HnaVC",
@@ -6307,7 +7787,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Yoga",
         "title_or": "ଯୋଗ",
         "subject": "khela_sikhya",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FPhysical%20Education%2FClass8_KhelaSikhya_Ch06_Unit6_Yoga_Complete.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Kxdyx66UeCoH4Y1vHduR",
@@ -6315,7 +7797,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Happy New Year",
         "title_or": "ନବବର୍ଷଂ ଶୁଭମସ୍ତୁ",
         "subject": "sanskritakalika_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FSanskrit%2FClass8_Sanskrit_Ch12_Ch12_Navabarsam_Subhamastu.pdf?alt=media",
+        "number": null
       },
       {
         "id": "XlPfeLr3aTVIOiER82Je",
@@ -6323,7 +7807,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Grandfather's Letter",
         "title_or": "ପିତାମହସ୍ୟ ପତ୍ରମ୍",
         "subject": "sanskritakalika_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FSanskrit%2FClass8_Sanskrit_Ch13_Ch13_Pitamahasya_Patram.pdf?alt=media",
+        "number": null
       }
     ]
   },
@@ -6336,7 +7822,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Our Earth: A Unique Planet",
         "title_or": "ଆମ ପୃଥିବୀ: ଅନନ୍ୟ ଗ୍ରହ",
         "subject": "jigyasa",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FScience_curiosity%2FClass8_Science_Ch13_Ch13_Aama_Pruthibi_Ananya_Graha.pdf?alt=media",
+        "number": null
       },
       {
         "id": "c4CuY0bRwiZomiB0PYjX",
@@ -6344,7 +7832,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Art of the People, for the People",
         "title_or": "କଳା ଜନତାଙ୍କର, ଜନତାଙ୍କ ପାଇଁ",
         "subject": "kruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FArt%2FClass8_Kruti_Ch18_VisualArts_Ch18_Kala_Janatankara_Janatanka_Pain.pdf?alt=media",
+        "number": null
       },
       {
         "id": "J5D3ovhmeMeyoDAenvFF",
@@ -6352,7 +7842,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Promotion and Dissemination for Art Awareness",
         "title_or": "କଳା ସଚେତନତା ପାଇଁ ପ୍ରଚାର ପ୍ରସାରଣ",
         "subject": "kruti",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FArt%2FClass8_Kruti_Ch19_VisualArts_Ch19_Kala_Sachetanata_Pain_Prachara_Prasarana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "3PeuKkNsdNSsUyz46GTj",
@@ -6360,7 +7852,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Mukariyan",
         "title_or": "ମୁକରିୟାଁ",
         "subject": "hindi_kalika",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FHindi%2FClass8_Hindi_Ch17_Unit4_Ch17_Mukariyan_Padyam.pdf?alt=media",
+        "number": null
       },
       {
         "id": "hVjNVMCSeEEHVIyi2PZA",
@@ -6368,7 +7862,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Dictionary",
         "title_or": "ଅଭିଧାନ",
         "subject": "sahitya_surabhi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FOdia%2FClass8_Ch12_Abhidhana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "wGL3EgVnzQCLDydPT7II",
@@ -6376,7 +7872,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Bibha Chowdhuri: Beam of Light",
         "title_or": "ବିଭା ଚୌଧୁରୀ: ଆଲୋକର ରଶ୍ମି",
         "subject": "jasmine",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FEnglish%2FClass8_Eng_Ch15_Unit5_Ch15_Bibha_Chowdhuri_Beam_of_Light.pdf?alt=media",
+        "number": null
       },
       {
         "id": "2LxFddYDwunV2VdhRWt7",
@@ -6384,7 +7882,9 @@ export const ROADMAP_DATA_8 = [
         "title_en": "Bharatagitika Verse",
         "title_or": "ଭାରତଗୀତିକା ପଦ୍ୟମ୍",
         "subject": "sanskritakalika_3",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%208%2FSanskrit%2FClass8_Sanskrit_Ch14_Ch14_Bharatagitika_Padyam.pdf?alt=media",
+        "number": null
       }
     ]
   }
@@ -6401,7 +7901,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Colonialism in Asia and Africa",
         "title_or": "ଏସିଆ ଓ ଆଫ୍ରିକାରେ ଉପନିବେଶବାଦ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch01_Hist_Ch01_L01_Colonialism_Asia_Africa.pdf?alt=media",
+        "number": 1
       },
       {
         "id": "ICHNkSfQx0UjqdDakxKN",
@@ -6409,7 +7911,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "First World War: Causes and Effects",
         "title_or": "ପ୍ରଥମ ବିଶ୍ୱଯୁଦ୍ଧ : କାରଣ ଓ ଫଳାଫଳ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch02_Hist_Ch01_L02_WW1_Causes_Effects.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "2mEA3WeAUGKjhMFRPUX7",
@@ -6417,7 +7921,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Russian Revolution",
         "title_or": "ଋଷ୍ ବିପ୍ଳବ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch03_Hist_Ch01_L03_Russian_Revolution.pdf?alt=media",
+        "number": 3
       },
       {
         "id": "y0XGJudDuhw7ls0m5mi8",
@@ -6425,7 +7931,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Alphabet and Pronunciation",
         "title_or": "ବର୍ଣ୍ଣ ଓ ଉଚ୍ଚାରଣ",
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit_Grammar%2FClass9_SanGram_Ch01_Ch01_Barna.pdf?alt=media",
+        "number": 1
       },
       {
         "id": "lIazLK6OKL3rDk7YFjlh",
@@ -6433,7 +7941,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Sandhi",
         "title_or": "ସନ୍ଧି",
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit_Grammar%2FClass9_SanGram_Ch02_Ch02_Paribhasika_Shabda.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "J7aH6Z2o334vTNrSRDWW",
@@ -6441,7 +7951,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Matter in our Surroundings",
         "title_or": "ଆମ ଚତୁଃପାର୍ଶ୍ବରେ ଥିବା ପଦାର୍ଥ",
         "subject": "physical_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FPhysical_science%2FClass9_PhySci_Ch01_Ch01_Aama_Chatuhparsware_Thiba_Padartha.pdf?alt=media",
+        "number": 1
       },
       {
         "id": "fpxxniDI3VVmBVRCljST",
@@ -6449,7 +7961,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Word Formation",
         "title_or": "ଶବ୍ଦଗଠନ",
         "subject": "odia_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia_Grammar%2FClass9_OdiaGram_Ch01_Ch01_Shabdagathana.pdf?alt=media",
+        "number": 1
       },
       {
         "id": "Lw4tIVKP91Dd0Iy3oUF8",
@@ -6457,7 +7971,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Sandhi",
         "title_or": "ସନ୍ଧି",
         "subject": "odia_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia_Grammar%2FClass9_OdiaGram_Ch02_Ch02_Sandhi.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "yKY36WWkb8CdIuBCQ1hO",
@@ -6465,7 +7981,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Kaha Mukha Anai Banchibi",
         "title_or": "କାହା ମୁଖ ଅନାଇ ବଞ୍ଚିବି",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia%2FClass9_Ch01_Kaha_Mukha_Anai_Banchibi.pdf?alt=media",
+        "number": 1
       },
       {
         "id": "Jr6OIbv86jTvqRn5rxx5",
@@ -6473,7 +7991,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Padma",
         "title_or": "ପଦ୍ମ",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia%2FClass9_Ch02_Padma.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "WqNinhXVwTwhO06s3viH",
@@ -6481,7 +8001,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "He Mora Kalama",
         "title_or": "ହେ ମୋର କଲମ",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia%2FClass9_Ch03_He_Mora_Kalama.pdf?alt=media",
+        "number": 3
       },
       {
         "id": "hykYKxuygmsC54AI1lql",
@@ -6489,7 +8011,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Bharatavandanagitika",
         "title_or": "ଭାରତବନ୍ଦନଗୀତିକା",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch01_Ch01_Bharatavandanagitika.pdf?alt=media",
+        "number": 1
       },
       {
         "id": "pxJ818Wj57Lz5EnehNKq",
@@ -6497,7 +8021,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Sinhasasakakatha",
         "title_or": "ସିଂହଶଶକକଥା",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch02_Ch02_Simhashashakakatha.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "fk2sQqUlVO353XQRdPId",
@@ -6505,7 +8031,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Satyam",
         "title_or": "ସତ୍ୟମ୍",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch03_Ch03_Satyam.pdf?alt=media",
+        "number": 3
       },
       {
         "id": "qjH43lmxEUZTzRfiJ3pE",
@@ -6513,7 +8041,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Lines and Angles",
         "title_or": "ରେଖା ଓ କୋଣ",
         "subject": "geometry",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FGeometry%2FClass9_Geometry_Ch01_Ch01_Rekha_O_Kona.pdf?alt=media",
+        "number": 1
       },
       {
         "id": "rGUm6hTj7T1LCHHY5TGX",
@@ -6521,7 +8051,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Anmol Moti",
         "title_or": "ଅନମୋଲ ମୋତି",
         "subject": "hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi%2FClass9_HindiLit_Ch01_Ch01_Anmol_Moti.pdf?alt=media",
+        "number": 1
       },
       {
         "id": "JBthtDAGoOki4cB8nGWj",
@@ -6529,7 +8061,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Priyatam",
         "title_or": "ପ୍ରିୟତମ",
         "subject": "hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi%2FClass9_HindiLit_Ch02_Ch02_Priyatam_Nirala.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "fyiknKsHDeWfQwvtXj4f",
@@ -6537,7 +8071,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "India: Size and Location",
         "title_or": "ଭାରତ: ଆକାର ଓ ଅବସ୍ଥିତି",
         "subject": "geography",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FGeography%2FClass9_GeoEco_Ch01_Geo_Ch01_L01_Akara_O_Abasthiti.pdf?alt=media",
+        "number": 1
       },
       {
         "id": "VqQ3M5NLzLzNSsFhrJZr",
@@ -6545,7 +8081,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Physical Divisions of India",
         "title_or": "ଭାରତର ପ୍ରାକୃତିକ ବିଭାଗ",
         "subject": "geography",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FGeography%2FClass9_GeoEco_Ch02_Geo_Ch01_L02_Prakrutika_Bibhaga.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "cdv35i9pdX4ECOo0p5gK",
@@ -6553,7 +8091,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Vyakaran Kyon",
         "title_or": "ବ୍ୟାକରଣ କ୍ୟୁଁ",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi_Grammar%2FClass9_HindiGram_Ch01_Ch01_Vyakaran_Kyon.pdf?alt=media",
+        "number": 1
       },
       {
         "id": "PpuUH6k8Zd4ZDsjumAPm",
@@ -6561,7 +8101,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Dhwani aur Varna",
         "title_or": "ଧ୍ୱନି ଓ ବର୍ଣ୍ଣ",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi_Grammar%2FClass9_HindiGram_Ch02_Ch02_Dhvani_Aur_Varna.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "iZLgi16I9AgPQhNXSi9C",
@@ -6569,7 +8111,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "The Priceless Gift",
         "title_or": "ଅମୂଲ୍ୟ ଉପହାର",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish%2FClass9_Eng_Ch01_The_Priceless_Gift.pdf?alt=media",
+        "number": 1
       },
       {
         "id": "GvuaRVweENJ0IQxt61aR",
@@ -6577,7 +8121,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "The Swimmer Who Does Not Need Her Legs!",
         "title_or": "ଦି ସ୍ୱିମର୍ ହୁ ଡଜ୍ ନଟ୍ ନିଡ୍ ହର୍ ଲେଗ୍ସ!",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish%2FClass9_Eng_Ch02_The_Swimmer_Who_Does_Not_Need_Her_Legs.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "gBf1RAvCLU15TTO2jQ1a",
@@ -6585,7 +8131,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Parts of a Sentence",
         "title_or": "ବାକ୍ୟର ବିଭିନ୍ନ ଅଂଶ",
         "subject": "english_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish_Grammar%2FClass9_EngGram_Ch01_Ch01_Parts_of_a_Sentence.pdf?alt=media",
+        "number": 1
       },
       {
         "id": "p0ITofk5ibvmqhhwrlF5",
@@ -6593,7 +8141,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Verbs",
         "title_or": "କ୍ରିୟାପଦ",
         "subject": "english_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish_Grammar%2FClass9_EngGram_Ch02_Ch02_Verbs.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "6cgqcLcxtloOMRUWBP78",
@@ -6601,7 +8151,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Biodiversity",
         "title_or": "ଜୈବ ବିବିଧତା",
         "subject": "life_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FLife_Science%2FClass9_LifeSci_Ch01_Ch01_Jaiba_Bibidhata.pdf?alt=media",
+        "number": 1
       },
       {
         "id": "rEwPDUZHAwzJA0ZEEEp9",
@@ -6609,7 +8161,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Set Operations and Application",
         "title_or": "ସେଟ୍ ପ୍ରକ୍ରିୟା ଏବଂ ସେଟ୍ର ପ୍ରୟୋଗ",
         "subject": "algebra",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FMathematics%2FChapter%201%20-%20Set%20Theory%2FC9_Alg_Ch1_SetTheory_Ready.pdf?alt=media",
+        "number": 1
       }
     ]
   },
@@ -6622,7 +8176,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "League of Nations",
         "title_or": "ରାଷ୍ଟ୍ରସଂଘ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch04_Hist_Ch01_L04_League_of_Nations.pdf?alt=media",
+        "number": 4
       },
       {
         "id": "IQkasymIxvsf9sr3g1iW",
@@ -6630,7 +8186,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Fascism and Nazism",
         "title_or": "ଫାସୀବାଦ ଓ ନାଜୀବାଦ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch05_Hist_Ch02_L01_Fascism_Nazism.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "2M5WBcOBQX1w2j8rT4Hl",
@@ -6638,7 +8196,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Second World War: Causes and Effects",
         "title_or": "ଦ୍ବିତୀୟ ବିଶ୍ୱଯୁଦ୍ଧ : କାରଣ ଓ ଫଳାଫଳ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch06_Hist_Ch02_L02_WW2_Causes_Effects.pdf?alt=media",
+        "number": 6
       },
       {
         "id": "YOW4E9RoWcw8eUDrkRRo",
@@ -6646,7 +8206,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Pada Prakarana",
         "title_or": "ପଦ ପ୍ରକରଣ",
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit_Grammar%2FClass9_SanGram_Ch03_Ch03_Pada_Prakarana.pdf?alt=media",
+        "number": 3
       },
       {
         "id": "OT2PHctuXnDd1iYt6Oq0",
@@ -6654,7 +8216,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Is Matter Around us Pure ?",
         "title_or": "ଆମ ଚାରିପାଖରେ ଥିବା ପଦାର୍ଥ ବିଶୁଦ୍ଧ କି ?",
         "subject": "physical_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FPhysical_science%2FClass9_PhySci_Ch02_Ch02_Aama_Charipakhare_Thiba_Padartha_Bisuddha_Ki.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "zdiCM2Mj1XWseBoi4CnA",
@@ -6662,7 +8226,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Samasa",
         "title_or": "ସମାସ",
         "subject": "odia_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia_Grammar%2FClass9_OdiaGram_Ch03_Ch03_Samasa.pdf?alt=media",
+        "number": 3
       },
       {
         "id": "QnbLcv3y3bv27zVIGjV9",
@@ -6670,7 +8236,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Manisha Bhai",
         "title_or": "ମଣିଷ ଭାଇ",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia%2FClass9_Ch04_Manisa_Bhai.pdf?alt=media",
+        "number": 4
       },
       {
         "id": "jg0mvn693SLuFpFtrSHi",
@@ -6678,7 +8246,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Gopa Prayana",
         "title_or": "ଗୋପ ପ୍ରୟାଣ",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia%2FClass9_Ch05_Gopa_Prayana.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "iMszk3rwT4xG08FrG2Tz",
@@ -6686,7 +8256,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Atmagunavikashanam",
         "title_or": "ଆତ୍ମଗୁଣବିକାସନମ୍",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch04_Ch04_Atmagunavikasanam.pdf?alt=media",
+        "number": 4
       },
       {
         "id": "AQN0pFu11qIUaurHCpul",
@@ -6694,7 +8266,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Utkalagouravam",
         "title_or": "ଉତ୍କଳଗୌରବମ୍",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch05_Ch05_Utkalagauravam.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "vqyzACl9OGPugQNb9St3",
@@ -6702,7 +8276,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Samayanuvartita",
         "title_or": "ସମୟାନୁବର୍ତ୍ତିତା",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch06_Ch06_Samayanuvarttita.pdf?alt=media",
+        "number": 6
       },
       {
         "id": "6lmg30zsqPtO31fERDt8",
@@ -6710,7 +8286,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Congruence of Triangles",
         "title_or": "ତ୍ରିଭୁଜମାନଙ୍କ ସର୍ବସମତା",
         "subject": "geometry",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FGeometry%2FClass9_Geometry_Ch02_Ch02_Tribhujamanankara_Sarbasamata.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "snQcLHKlBGteTvDVlU0I",
@@ -6718,7 +8296,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Rahul Janani",
         "title_or": "ରାହୁଲ ଜନନୀ",
         "subject": "hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi%2FClass9_HindiLit_Ch03_Ch03_Rahul_Janani_Gupta.pdf?alt=media",
+        "number": 3
       },
       {
         "id": "lO51T9qhYwAvDrm4fg7e",
@@ -6726,7 +8306,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Hazards and Disasters",
         "title_or": "ବିପତ୍ତି ଓ ବିପର୍ଯ୍ୟୟ",
         "subject": "geography",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FGeography%2FClass9_GeoEco_Ch03_Geo_Ch01_L03_Bipatti_O_Biparjyaya.pdf?alt=media",
+        "number": 3
       },
       {
         "id": "KcDR95RcN3GVIdhwBUQO",
@@ -6734,7 +8316,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "How to learn good Hindi: Writing, Nasalization, and Anuswar",
         "title_or": "ଆଚ୍ଛି ହିନ୍ଦୀ କୈସେ ସିଖେଁ",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi_Grammar%2FClass9_HindiGram_Ch03_Ch03_Achhi_Hindi_Kaise_Sikhen.pdf?alt=media",
+        "number": 3
       },
       {
         "id": "IeOpneqAOgfxGOtzox5O",
@@ -6742,7 +8326,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Roop Vichar",
         "title_or": "ରୂପ ବିଚାର",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi_Grammar%2FClass9_HindiGram_Ch04_Ch04_Roop_Vichar.pdf?alt=media",
+        "number": 4
       },
       {
         "id": "nsTB62XKS72hSeNtImH0",
@@ -6750,7 +8336,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Road Safety Week",
         "title_or": "ସଡ଼କ ସୁରକ୍ଷା ସପ୍ତାହ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish%2FClass9_Eng_Ch03_Road_Safety_Week.pdf?alt=media",
+        "number": 3
       },
       {
         "id": "k7J5aqBaiDMl9dGQDpwi",
@@ -6758,7 +8346,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Missile Man of India",
         "title_or": "ମିସାଇଲ ମ୍ୟାନ ଅଫ ଇଣ୍ଡିଆ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish%2FClass9_Eng_Ch04_Missile_Man_of_India.pdf?alt=media",
+        "number": 4
       },
       {
         "id": "BHwUb0J9ifDW3kp7PvM3",
@@ -6766,7 +8356,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Time and Tense",
         "title_or": "ସମୟ ଓ କାଳ",
         "subject": "english_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish_Grammar%2FClass9_EngGram_Ch03_Ch03_Time_and_Tense.pdf?alt=media",
+        "number": 3
       },
       {
         "id": "cKWKEOfWFfAgXculDHFv",
@@ -6774,7 +8366,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Cell and its Organisation",
         "title_or": "ଜୀବକୋଷ ଓ ଏହାର ସଂଗଠନ",
         "subject": "life_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FLife_Science%2FClass9_LifeSci_Ch02_Ch02_Koshiya_O_Ehara_Sangathana.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "xzRdIeQy9xACVlNyCrni",
@@ -6782,7 +8376,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Real Numbers",
         "title_or": "ବାସ୍ତବ ସଂଖ୍ୟା",
         "subject": "algebra",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FMathematics%2FChapter%202%20-%20Real%20Numbers%2FC9_Alg_C9_Alg_Ch2_RealNumbers_Ready.pdf?alt=media",
+        "number": 2
       }
     ]
   },
@@ -6795,7 +8391,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Nationalist Movement in Asia and Africa",
         "title_or": "ଏସିଆ ଓ ଆଫ୍ରିକାରେ ଜାତୀୟତାବାଦୀ ଆନ୍ଦୋଳନ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch07_Hist_Ch02_L03_Nationalism_Asia_Africa.pdf?alt=media",
+        "number": 7
       },
       {
         "id": "U0ShrSvguGfnh2JYBA5N",
@@ -6803,7 +8401,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Cold War",
         "title_or": "ଶୀତଳ ଯୁଦ୍ଧ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch08_Hist_Ch03_L01_Cold_War.pdf?alt=media",
+        "number": 8
       },
       {
         "id": "IzXG8bBzzMYjmFqWmWmB",
@@ -6811,7 +8411,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Gender, Number and Person",
         "title_or": "ଲିଙ୍ଗ, ବଚନ ଓ ପୁରୁଷ",
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit_Grammar%2FClass9_SanGram_Ch04_Ch04_Linga_Bachana_Purusa.pdf?alt=media",
+        "number": 4
       },
       {
         "id": "7N752CSW8XbfdUppZXDj",
@@ -6819,7 +8421,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Atoms and Molecules",
         "title_or": "ପରମାଣୁ ଓ ଅଣୁ",
         "subject": "physical_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FPhysical_science%2FClass9_PhySci_Ch03_Ch03_Paramanu_O_Anu.pdf?alt=media",
+        "number": 3
       },
       {
         "id": "vEGRwCrWdEIHquuxbeYs",
@@ -6827,7 +8431,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Upasarga",
         "title_or": "ଉପସର୍ଗ",
         "subject": "odia_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia_Grammar%2FClass9_OdiaGram_Ch04_Ch04_Upasarga.pdf?alt=media",
+        "number": 4
       },
       {
         "id": "1N7VM22WVz084JMZirSR",
@@ -6835,7 +8441,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Paikabadhura Udbodhana",
         "title_or": "ପାଇକବଧୂର ଉଦ୍ବୋଧନ",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia%2FClass9_Ch06_Paikabadhura_Udbodhana.pdf?alt=media",
+        "number": 6
       },
       {
         "id": "KMCqES4FdGCdqTdO92vL",
@@ -6843,7 +8451,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Matira Manisha",
         "title_or": "ମାଟିର ମଣିଷ",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia%2FClass9_Ch07_Matira_Manisa.pdf?alt=media",
+        "number": 7
       },
       {
         "id": "OMQbWlwORSGVEtSzY9RQ",
@@ -6851,7 +8461,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Mudhah Sahayakah",
         "title_or": "ମୂଢଃ ସହାୟକଃ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch07_Ch07_Mudha_Sahayakah.pdf?alt=media",
+        "number": 7
       },
       {
         "id": "jQB36mhrinIF75k0PUrC",
@@ -6859,7 +8471,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Sambhashanam - 1",
         "title_or": "ସମ୍ଭାଷଣମ୍ (ପ୍ରଥମମ୍)",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch08_Sambhashana_01_Prathamam.pdf?alt=media",
+        "number": 8
       },
       {
         "id": "rEUrbOixH7CfDLYBkByE",
@@ -6867,7 +8481,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Sambhashanam - 2",
         "title_or": "ସମ୍ଭାଷଣମ୍ (ଦ୍ୱିତୀୟମ୍)",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch09_Sambhashana_02_Dwitiyam.pdf?alt=media",
+        "number": 9
       },
       {
         "id": "5YsDHmIIyx9cWlSRkMtz",
@@ -6875,7 +8491,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Quadrilaterals",
         "title_or": "ଚତୁର୍ଭୁଜ",
         "subject": "geometry",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FGeometry%2FClass9_Geometry_Ch03_Ch03_Chaturbhuja.pdf?alt=media",
+        "number": 3
       },
       {
         "id": "DrHRFzklM1fDyiE9jpYF",
@@ -6883,7 +8501,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Phir Mahan Ban",
         "title_or": "ଫିର୍ ମହାନ ବନ୍",
         "subject": "hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi%2FClass9_HindiLit_Ch04_Ch04_Phir_Mahan_Ban_Sharma.pdf?alt=media",
+        "number": 4
       },
       {
         "id": "O9nsm2MEgV0ILr73DZRE",
@@ -6891,7 +8511,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Rivers of India",
         "title_or": "ଭାରତର ନଦୀନଦୀ",
         "subject": "geography",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FGeography%2FClass9_GeoEco_Ch04_Geo_Ch02_Bharatar_Nadi.pdf?alt=media",
+        "number": 4
       },
       {
         "id": "0nC1xq4nA4PAbSpm9HmF",
@@ -6899,7 +8521,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Sangya",
         "title_or": "ସଂଜ୍ଞା",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi_Grammar%2FClass9_HindiGram_Ch05_Ch05_Sangya.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "ZhnFwn2Lt2wFhYmGaHNf",
@@ -6907,7 +8531,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "A Hero",
         "title_or": "ଏ ହିରୋ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish%2FClass9_Eng_Ch05_A_Hero.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "mNFf275kL1ZKnLf3PF9H",
@@ -6915,7 +8541,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Home and Love",
         "title_or": "ହୋମ ଆଣ୍ଡ ଲଭ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish%2FClass9_Eng_Ch06_Home_and_Love.pdf?alt=media",
+        "number": 6
       },
       {
         "id": "eabduSMZCWgHyK6qziSX",
@@ -6923,7 +8551,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Auxiliaries",
         "title_or": "ସହାୟକ କ୍ରିୟା",
         "subject": "english_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish_Grammar%2FClass9_EngGram_Ch04_Ch04_Auxiliaries.pdf?alt=media",
+        "number": 4
       },
       {
         "id": "vnVRu3EZt43dfDmC52hC",
@@ -6931,7 +8561,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Algebraic Expressions and Identities",
         "title_or": "ବୀଜଗାଣିତିକ ପରିପ୍ରକାଶ ଓ ଅଭେଦ",
         "subject": "algebra",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FMathematics%2FChapter%203%20-%20Algebraic%20Expressions%2FC9_Alg_Ch3_AlgebraicExpressions_Ready.pdf?alt=media",
+        "number": 3
       }
     ]
   },
@@ -6944,7 +8576,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Military Alliances and Armaments",
         "title_or": "ସାମରିକ ମେଣ୍ଟ ଓ ଅସ୍ତ୍ରଶସ୍ତ୍ର ପ୍ରତିଯୋଗିତା",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch09_Hist_Ch03_L02_Military_Alliances_Armaments.pdf?alt=media",
+        "number": 9
       },
       {
         "id": "ARHuWpOYXeuejwvZAkxL",
@@ -6952,7 +8586,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Non-Aligned Movement",
         "title_or": "ଗୋଷ୍ଠୀ ନିରପେକ୍ଷ ଆନ୍ଦୋଳନ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch10_Hist_Ch03_L03_Non_Aligned_Movement.pdf?alt=media",
+        "number": 10
       },
       {
         "id": "GrpdciU3Su1nFaIovzgS",
@@ -6960,7 +8596,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Dissolution of the Soviet Union",
         "title_or": "ସୋଭିଏତ୍ ସଂଘର ବିଲୟ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch11_Hist_Ch03_L04_Dissolution_of_Soviet_Union.pdf?alt=media",
+        "number": 11
       },
       {
         "id": "PrFKKnmQE0oEIhPFlGKi",
@@ -6968,7 +8606,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Nattwabidhi",
         "title_or": "ଣତ୍ୱବିଧି",
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit_Grammar%2FClass9_SanGram_Ch05_Ch05_Nattwabidhi.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "RX23rERSQvHjqavNHY0m",
@@ -6976,7 +8616,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Structure of the Atom",
         "title_or": "ପରମାଣୁ ଗଠନ",
         "subject": "physical_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FPhysical_science%2FClass9_PhySci_Ch04_Ch04_Paramanu_Gathana.pdf?alt=media",
+        "number": 4
       },
       {
         "id": "CK2TuzmX7UJBmbEZ4frc",
@@ -6984,7 +8626,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Krudanta",
         "title_or": "କୃଦନ୍ତ",
         "subject": "odia_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia_Grammar%2FClass9_OdiaGram_Ch05_Ch05_Krudanta.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "VyrOZy1CDRms5RNQKwFz",
@@ -6992,7 +8636,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Jatiya Jibana",
         "title_or": "ଜାତୀୟ ଜୀବନ",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia%2FClass9_Ch08_Jatiya_Jibana.pdf?alt=media",
+        "number": 8
       },
       {
         "id": "UTe2LvL1d4OZFJJuqsG4",
@@ -7000,7 +8646,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Bhasha O Jatiyata",
         "title_or": "ଭାଷା ଓ ଜାତୀୟତା",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia%2FClass9_Ch09_Bhasha_O_Jatiyata.pdf?alt=media",
+        "number": 9
       },
       {
         "id": "AZulIpDcRQEcMOB4NXMf",
@@ -7008,7 +8656,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Samayah",
         "title_or": "ସମୟଃ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch10_Sambhashana_03_Tritiyam.pdf?alt=media",
+        "number": 10
       },
       {
         "id": "tNugDrdOOKfEnPYRSq13",
@@ -7016,7 +8666,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Sambhashanam - 3",
         "title_or": "ସମ୍ଭାଷଣମ୍ (ତୃତୀୟମ୍)",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch11_Sambhashana_Samayah.pdf?alt=media",
+        "number": 11
       },
       {
         "id": "LXa8olxYQtLCOoEPB1Pd",
@@ -7024,7 +8676,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Nitiwani",
         "title_or": "ନୀତିବାଣୀ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch12_Padya_01_Nitivani.pdf?alt=media",
+        "number": 12
       },
       {
         "id": "waFHMnnjvCtoedjA4dkq",
@@ -7032,7 +8686,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Area",
         "title_or": "କ୍ଷେତ୍ରଫଳ",
         "subject": "geometry",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FGeometry%2FClass9_Geometry_Ch04_Ch04_Kshetraphala.pdf?alt=media",
+        "number": 4
       },
       {
         "id": "3kzuO57cz58uWPhX6MAS",
@@ -7040,7 +8696,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Mera Naya Bachpan",
         "title_or": "ମେରା ନୟା ବଚପନ୍",
         "subject": "hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi%2FClass9_HindiLit_Ch05_Ch05_Mera_Naya_Bachpan_Chauhan.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "xTsKAMcvdkwK92YPuQWx",
@@ -7048,7 +8706,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Climate",
         "title_or": "ଜଳବାୟୁ",
         "subject": "geography",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FGeography%2FClass9_GeoEco_Ch05_Geo_Ch03_Jalabayu.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "lZTEPqIg8Qi1A3XgrnAC",
@@ -7056,7 +8716,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Natural Vegetation of India",
         "title_or": "ଭାରତର ପ୍ରାକୃତିକ ଉଦ୍ଭିଦ",
         "subject": "geography",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FGeography%2FClass9_GeoEco_Ch06_Geo_Ch04_L01_Prakrutika_Udbhida.pdf?alt=media",
+        "number": 6
       },
       {
         "id": "dPAB8D4AxQ8mIsDr9fNI",
@@ -7064,7 +8726,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Ling",
         "title_or": "ଲିଙ୍ଗ",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi_Grammar%2FClass9_HindiGram_Ch06_Ch06_Ling.pdf?alt=media",
+        "number": 6
       },
       {
         "id": "nQJEyT9xdunmkEtxUNgN",
@@ -7072,7 +8736,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Vachan",
         "title_or": "ବଚନ",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi_Grammar%2FClass9_HindiGram_Ch07_Ch07_Vachan.pdf?alt=media",
+        "number": 7
       },
       {
         "id": "I6zujwgHGyXP5XWrTEpZ",
@@ -7080,7 +8746,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Nine Gold Medals",
         "title_or": "ନାଇନ ଗୋଲ୍ଡ ମେଡାଲ୍ସ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish%2FClass9_Eng_Ch07_Nine_Gold_Medals.pdf?alt=media",
+        "number": 7
       },
       {
         "id": "GXKqD3dvB7MyeUDrEeqG",
@@ -7088,7 +8756,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "The Noble Nature",
         "title_or": "ଦି ନୋବେଲ ନେଚର",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish%2FClass9_Eng_Ch08_The_Noble_Nature.pdf?alt=media",
+        "number": 8
       },
       {
         "id": "s8HNkvVFlAvmrOE69MWK",
@@ -7096,7 +8766,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "The Noun Phrase",
         "title_or": "ବିଶେଷ୍ୟ ପଦବନ୍ଧ",
         "subject": "english_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish_Grammar%2FClass9_EngGram_Ch05_Ch05_The_Noun_Phrase.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "gm27xldeNxhOLvNdStnS",
@@ -7104,7 +8776,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Pre and Post Modifiers in the Noun Phrase",
         "title_or": "ବିଶେଷ୍ୟ ପଦବନ୍ଧରେ ବିଶେଷକ",
         "subject": "english_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish_Grammar%2FClass9_EngGram_Ch06_Ch06_Modifiers_in_Noun_Phrase.pdf?alt=media",
+        "number": 6
       },
       {
         "id": "QKzKZR8Gsb6LjBWI9EQu",
@@ -7112,7 +8786,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Tissue System",
         "title_or": "ଟିସୁ ତନ୍ତ୍ର",
         "subject": "life_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FLife_Science%2FClass9_LifeSci_Ch03_Ch03_Tissu_Tantra.pdf?alt=media",
+        "number": 3
       },
       {
         "id": "3930hm9apoZ0o85WBnGZ",
@@ -7120,7 +8796,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Algebraic Equations",
         "title_or": "ବୀଜଗାଣିତିକ ସମୀକରଣ",
         "subject": "algebra",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FMathematics%2FChapter%204%20-%20Algebraic%20Equations%2FC9_Alg_Ch4_AlgebraicEquations_Ready.pdf?alt=media",
+        "number": 4
       }
     ]
   },
@@ -7133,7 +8811,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Indian Culture: Unity and Diversity",
         "title_or": "ଭାରତୀୟ ସଂସ୍କୃତି: ଏକତା ଓ ବିବିଧତା",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch12_Hist_Ch04_L01_Indian_Culture_Unity_Diversity.pdf?alt=media",
+        "number": 12
       },
       {
         "id": "ezSz2DNgPXyHXBkbhgnO",
@@ -7141,7 +8821,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Indian Traditions",
         "title_or": "ଭାରତୀୟ ପରମ୍ପରା",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch13_Hist_Ch04_L02_Indian_Traditions.pdf?alt=media",
+        "number": 13
       },
       {
         "id": "KZ3cziHQ9Foym8mnR2eS",
@@ -7149,7 +8831,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Indian Art, Architecture and Science",
         "title_or": "ଭାରତୀୟ କଳା, ସ୍ଥାପତ୍ୟ ଓ ବିଜ୍ଞାନ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch14_Hist_Ch04_L03_Indian_Art_Architecture_Science.pdf?alt=media",
+        "number": 14
       },
       {
         "id": "mB63nNs5bVFL0m0BK0cE",
@@ -7157,7 +8841,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Sattwabidhi",
         "title_or": "ଷତ୍ୱବିଧି",
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit_Grammar%2FClass9_SanGram_Ch06_Ch06_Sattwabidhi.pdf?alt=media",
+        "number": 6
       },
       {
         "id": "zbMkQBkvgCwKK4TlL7QY",
@@ -7165,7 +8851,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Motion",
         "title_or": "ଗତି",
         "subject": "physical_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FPhysical_science%2FClass9_PhySci_Ch05_Ch05_Gati.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "qMjCKfEVGDTFfWfPUT2Q",
@@ -7173,7 +8861,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Taddhita",
         "title_or": "ତଦ୍ଧିତ",
         "subject": "odia_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia_Grammar%2FClass9_OdiaGram_Ch06_Ch06_Taddhita.pdf?alt=media",
+        "number": 6
       },
       {
         "id": "XEkm3hDoSXZdQRTexZPz",
@@ -7181,7 +8871,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Karak and Vibhakti",
         "title_or": "କାରକ ଓ ବିଭକ୍ତି",
         "subject": "odia_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia_Grammar%2FClass9_OdiaGram_Ch07_Ch07_Karaka.pdf?alt=media",
+        "number": 7
       },
       {
         "id": "BWlOYP0FesCYJvD39lc7",
@@ -7189,7 +8881,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Bamanara Hata O Akashara Chandra",
         "title_or": "ବାମନର ହାତ ଓ ଆକାଶର ଚନ୍ଦ୍ର",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia%2FClass9_Ch10_Bamanara_Hata_O_Akashara_Chandra.pdf?alt=media",
+        "number": 10
       },
       {
         "id": "IfNJ4V7gJdGuBw7vAlqB",
@@ -7197,7 +8891,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Prakruta Bandhu",
         "title_or": "ପ୍ରକୃତ ବନ୍ଧୁ",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia%2FClass9_Ch11_Prakruta_Bandhu.pdf?alt=media",
+        "number": 11
       },
       {
         "id": "ZuRNrqdwpq0BFFrEB0wn",
@@ -7205,7 +8901,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Prahelikah",
         "title_or": "ପ୍ରହେଲିକାଃ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch13_Padya_02_Prahelikah.pdf?alt=media",
+        "number": 13
       },
       {
         "id": "mnw7b4iuYDU3ZjbTVYsx",
@@ -7213,7 +8911,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Samayagitika",
         "title_or": "ସମୟଗୀତିକା",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch14_Padya_03_Samayagitika.pdf?alt=media",
+        "number": 14
       },
       {
         "id": "9h3LBmQRLzjUPMp6KFry",
@@ -7221,7 +8921,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Vasumati",
         "title_or": "ବସୁମତୀ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch15_Padya_04_Vasumati.pdf?alt=media",
+        "number": 15
       },
       {
         "id": "Y3kl8JjkwJZ4PPOqGBQk",
@@ -7229,7 +8931,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Sathi! Dukh se ghabrata hai?",
         "title_or": "ସାଥୀ! ଦୁଃଖ ସେ ଘବରାତା ହୈ?",
         "subject": "hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi%2FClass9_HindiLit_Ch06_Ch06_Sathi_Dukh_Se_Ghabrata_Hai_Neeraj.pdf?alt=media",
+        "number": 6
       },
       {
         "id": "703O1CdFmxgu7zoXgfkY",
@@ -7237,7 +8941,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Wildlife",
         "title_or": "ବନ୍ୟପ୍ରାଣୀ",
         "subject": "geography",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FGeography%2FClass9_GeoEco_Ch07_Geo_Ch04_L02_Banyapranhi.pdf?alt=media",
+        "number": 7
       },
       {
         "id": "Rj89kApl3YAVx2YvVMwW",
@@ -7245,7 +8951,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Karak",
         "title_or": "କାରକ",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi_Grammar%2FClass9_HindiGram_Ch08_Ch08_Karak.pdf?alt=media",
+        "number": 8
       },
       {
         "id": "ajqUzzqR1L9RTIN52mYd",
@@ -7253,7 +8961,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "No Men are Foreign",
         "title_or": "ନୋ ମେନ ଆର ଫରେନ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish%2FClass9_Eng_Ch09_No_Men_are_Foreign.pdf?alt=media",
+        "number": 9
       },
       {
         "id": "ubvJNXKPQuDkPH5Piwy0",
@@ -7261,7 +8971,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Countables and Uncountables",
         "title_or": "ଗଣନୀୟ ଓ ଅଗଣନୀୟ",
         "subject": "english_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish_Grammar%2FClass9_EngGram_Ch07_Ch07_Countables_and_Uncountables.pdf?alt=media",
+        "number": 7
       },
       {
         "id": "0xrFdXfec6cLmqLdRElB",
@@ -7269,7 +8981,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Improvement of Food Resources",
         "title_or": "ଖାଦ୍ୟ ସଂପଦର ଉନ୍ନତୀକରଣ",
         "subject": "life_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FLife_Science%2FClass9_LifeSci_Ch04_Ch04_Khadya_Sampadara_Unnatikarana.pdf?alt=media",
+        "number": 4
       },
       {
         "id": "VWBNp0Z84ZMc7Cj5PsvO",
@@ -7277,7 +8991,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Coordinate Geometry",
         "title_or": "ସ୍ଥାନାଙ୍କ ଜ୍ୟାମିତି",
         "subject": "algebra",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FMathematics%2FChapter%205%20-%20Coordinate%20Geometry%2FC9_Alg_Ch5_CoordinateGeometry_Ready.pdf?alt=media",
+        "number": 5
       }
     ]
   },
@@ -7290,7 +9006,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Heritage of Odisha",
         "title_or": "ଓଡ଼ିଶାର ସାଂସ୍କୃତିକ ଐତିହ୍ୟ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch15_Hist_Ch04_L04_Heritage_of_Odisha.pdf?alt=media",
+        "number": 15
       },
       {
         "id": "YWsO8IRQ9KjVUQRSghjN",
@@ -7298,7 +9016,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Fundamental Rights",
         "title_or": "මୌଳିକ ଅଧିକାର",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch16_Pol_Ch01_L01_Fundamental_Rights.pdf?alt=media",
+        "number": 16
       },
       {
         "id": "yo6YAGb2MOKkAOaqD3iI",
@@ -7306,7 +9026,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Sandhi Prakarana",
         "title_or": "ସନ୍ଧି ପ୍ରକରଣ",
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit_Grammar%2FClass9_SanGram_Ch07_Ch07_Sandhi_Prakarana.pdf?alt=media",
+        "number": 7
       },
       {
         "id": "8V7Nu4EgwZC2Hh40VBTm",
@@ -7314,7 +9036,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Force and Laws of Motion",
         "title_or": "ବଳ ଓ ଗତି ନିୟମ",
         "subject": "physical_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FPhysical_science%2FClass9_PhySci_Ch06_Ch06_Bala_O_Gati_Niyama.pdf?alt=media",
+        "number": 6
       },
       {
         "id": "tP6MzQ0FlzU57M3bqBAS",
@@ -7322,7 +9046,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Vibhakti",
         "title_or": "ବିଭକ୍ତି",
         "subject": "odia_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia_Grammar%2FClass9_OdiaGram_Ch08_Ch08_Bibhakti.pdf?alt=media",
+        "number": 8
       },
       {
         "id": "tfqX4rqjRQZrnMYhJEyv",
@@ -7330,7 +9056,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Samuha Drusti",
         "title_or": "ସମୂହ ଦୃଷ୍ଟି",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia%2FClass9_Ch12_Samuha_Drusti.pdf?alt=media",
+        "number": 12
       },
       {
         "id": "7FyobyANPW6btXvwqWmM",
@@ -7338,7 +9066,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Sakti O Jnana",
         "title_or": "ଶକ୍ତି ଓ ଜ୍ଞାନ",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia%2FClass9_Ch13_Sakti_O_Jnana.pdf?alt=media",
+        "number": 13
       },
       {
         "id": "fRQg6Ic0ShMmxtT6bJBQ",
@@ -7346,7 +9076,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Passage 1",
         "title_or": "ପ୍ରଥମଃ ଅନୁଚ୍ଛେଦଃ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch16_Anuchheda_01.pdf?alt=media",
+        "number": 16
       },
       {
         "id": "WckqcsS8dCrR3OUEqM22",
@@ -7354,7 +9086,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Passage 2",
         "title_or": "ଦ୍ୱିତୀୟଃ ଅନୁଚ୍ଛେଦଃ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch17_Anuchheda_02.pdf?alt=media",
+        "number": 17
       },
       {
         "id": "flfBVoKyGk0ibrYziEam",
@@ -7362,7 +9096,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Passage 3",
         "title_or": "ତୃତୀୟଃ ଅନୁଚ୍ଛେଦଃ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch18_Anuchheda_03.pdf?alt=media",
+        "number": 18
       },
       {
         "id": "CN2vF71fvpISYZQdSyo7",
@@ -7370,7 +9106,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Mensuration",
         "title_or": "ପରିମିତି",
         "subject": "geometry",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FGeometry%2FClass9_Geometry_Ch05_Ch05_Parimiti.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "oeTVPeARoYfmgWLGq6CV",
@@ -7378,7 +9116,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Shram ki Pratishtha",
         "title_or": "ଶ୍ରମ କି ପ୍ରତିଷ୍ଠା",
         "subject": "hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi%2FClass9_HindiLit_Ch07_Ch07_Shram_Ki_Pratishtha_Bhave.pdf?alt=media",
+        "number": 7
       },
       {
         "id": "8qoKhfND9rO037ad2t0U",
@@ -7386,7 +9126,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Population",
         "title_or": "ଜନସଂଖ୍ୟା",
         "subject": "geography",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FGeography%2FClass9_GeoEco_Ch08_Geo_Ch05_Janasankhya.pdf?alt=media",
+        "number": 8
       },
       {
         "id": "L0BbejTlYN8UGzmr93h4",
@@ -7394,7 +9136,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Sarvanam",
         "title_or": "ସର୍ବନାମ",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi_Grammar%2FClass9_HindiGram_Ch09_Ch09_Sarvanam.pdf?alt=media",
+        "number": 9
       },
       {
         "id": "uZAz2Q6dN6DyT1Q9V0lf",
@@ -7402,7 +9146,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Visheshan",
         "title_or": "ବିଶେଷଣ",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi_Grammar%2FClass9_HindiGram_Ch10_Ch10_Visheshon.pdf?alt=media",
+        "number": 10
       },
       {
         "id": "414ZgANlqWwyp9BcYILh",
@@ -7410,7 +9156,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Alexander Selkirk",
         "title_or": "ଆଲେକ୍ସଜାଣ୍ଡାର ସେଲକିର୍କ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish%2FClass9_Eng_Ch10_Alexander_Selkirk.pdf?alt=media",
+        "number": 10
       },
       {
         "id": "u8v8MAnFUK6HkvVygGLI",
@@ -7418,7 +9166,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Project",
         "title_or": "ପ୍ରକଳ୍ପ କାର୍ଯ୍ୟ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish%2FClass9_Eng_Ch11_Project_Work.pdf?alt=media",
+        "number": 11
       },
       {
         "id": "a3FM9EUPq77pzz3uFUYw",
@@ -7426,7 +9176,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Determiners",
         "title_or": "ନିର୍ଦ୍ଧାରକ",
         "subject": "english_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish_Grammar%2FClass9_EngGram_Ch08_Ch08_Determiners.pdf?alt=media",
+        "number": 8
       },
       {
         "id": "8espf73Ro8U4dlairG2N",
@@ -7434,7 +9186,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Ratio and Proportion",
         "title_or": "ଅନୁପାତ ଓ ସମାନୁପାତ",
         "subject": "algebra",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FMathematics%2FChapter%206%20-%20Ratio%20and%20Proportion%2FC9_Alg_Ch6_RatioAndProportion_Ready.pdf?alt=media",
+        "number": 6
       }
     ]
   },
@@ -7447,7 +9201,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Fundamental Duties",
         "title_or": "ମୌଳିକ କର୍ତ୍ତବ୍ୟ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch17_Pol_Ch01_L02_Fundamental_Duties.pdf?alt=media",
+        "number": 17
       },
       {
         "id": "yE8x3NYSmbIOJHWthyZt",
@@ -7455,7 +9211,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Directive Principles of State Policy",
         "title_or": "ରାଷ୍ଟ୍ରନୀତି ନିର୍ଦ୍ଦେଶକ ନିୟମାବଳୀ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch18_Pol_Ch01_L03_Directive_Principles.pdf?alt=media",
+        "number": 18
       },
       {
         "id": "wB7zFDCxZLe4ZpBqlFOR",
@@ -7463,7 +9221,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Human Rights",
         "title_or": "ମାନବାଧିକାର",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch19_Pol_Ch02_L01_Human_Rights.pdf?alt=media",
+        "number": 19
       },
       {
         "id": "NSlIitLiAqzqlfyMXUB7",
@@ -7471,7 +9231,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Word Declensions",
         "title_or": "ଶବ୍ଦରୂପ",
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit_Grammar%2FClass9_SanGram_Ch08_Ch08_Shabda_Roopa.pdf?alt=media",
+        "number": 8
       },
       {
         "id": "TPrjARjjSZg5QLV2o934",
@@ -7479,7 +9241,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Gravitation",
         "title_or": "ମହାକର୍ଷଣ",
         "subject": "physical_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FPhysical_science%2FClass9_PhySci_Ch07_Ch07_Mahakarsana.pdf?alt=media",
+        "number": 7
       },
       {
         "id": "D8J6mu5yEXpOKt5fJdJE",
@@ -7487,7 +9251,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Paragraph Writing",
         "title_or": "ଅନୁଚ୍ଛେଦ ଲିଖନ",
         "subject": "odia_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia_Grammar%2FClass9_OdiaGram_Ch09_Ch09_Anuchheda_Likhana.pdf?alt=media",
+        "number": 9
       },
       {
         "id": "oBj87HgDeqPlTAiV19fQ",
@@ -7495,7 +9261,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Odia Sahitya Katha",
         "title_or": "ଓଡ଼ିଆ ସାହିତ୍ୟ କଥା",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia%2FClass9_Ch14_Odia_Sahitya_Katha.pdf?alt=media",
+        "number": 14
       },
       {
         "id": "H3ljch0KhTkTJNXv5NXh",
@@ -7503,7 +9271,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Budha Sankhari",
         "title_or": "ବୁଢ଼ା ଶଙ୍ଖାରି",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia%2FClass9_Ch15_Budha_Sankhari.pdf?alt=media",
+        "number": 15
       },
       {
         "id": "KvFXFXMuGmmXodykgCYc",
@@ -7511,7 +9281,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Passage 4",
         "title_or": "ଚତୁର୍ଥଃ ଅନୁଚ୍ଛେଦଃ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch19_Anuchheda_04.pdf?alt=media",
+        "number": 19
       },
       {
         "id": "bUiwPqFPDBBliaAkpJLE",
@@ -7519,7 +9291,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Passage 5",
         "title_or": "ପଞ୍ଚମଃ ଅନୁଚ୍ଛେଦଃ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch20_Anuchheda_05.pdf?alt=media",
+        "number": 20
       },
       {
         "id": "ncm5jRDC4FEcILqGGpkJ",
@@ -7527,7 +9301,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Passage 6",
         "title_or": "ଷଷ୍ଠଃ ଅନୁଚ୍ଛେଦଃ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch21_Anuchheda_06.pdf?alt=media",
+        "number": 21
       },
       {
         "id": "5sC6FO1jZ3KJDHXto8zF",
@@ -7535,7 +9311,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Construction",
         "title_or": "ଅଙ୍କନ",
         "subject": "geometry",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FGeometry%2FClass9_Geometry_Ch06_Ch06_Ankana.pdf?alt=media",
+        "number": 6
       },
       {
         "id": "HsCBKUpxWVp5ITpV97Bl",
@@ -7543,7 +9321,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Mamata",
         "title_or": "ମମତା",
         "subject": "hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi%2FClass9_HindiLit_Ch08_Ch08_Mamta_Prasad.pdf?alt=media",
+        "number": 8
       },
       {
         "id": "dCoIdzwqc48so9bVqptI",
@@ -7551,7 +9331,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Economic Development",
         "title_or": "ଆର୍ଥନୀତିକ ବିକାଶ",
         "subject": "geography",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FGeography%2FClass9_GeoEco_Ch09_Eco_Ch01_L01_Arthanitika_Bikasha.pdf?alt=media",
+        "number": 9
       },
       {
         "id": "I431AsHi5uEaNbzHqAZD",
@@ -7559,7 +9341,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Money, Banking and Insurance",
         "title_or": "ମୁଦ୍ରା, ବ୍ୟାଙ୍କିଙ୍ଗ୍ ଓ ବୀମା",
         "subject": "geography",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FGeography%2FClass9_GeoEco_Ch10_Eco_Ch01_L02_Mudra_Banking_Ebam_Bima.pdf?alt=media",
+        "number": 10
       },
       {
         "id": "KYfj672DWB12DywHIS6G",
@@ -7567,7 +9351,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Kriya",
         "title_or": "କ୍ରିୟା",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi_Grammar%2FClass9_HindiGram_Ch11_Ch11_Kriya.pdf?alt=media",
+        "number": 11
       },
       {
         "id": "pmxk9r8TYbLxu1Leh1HE",
@@ -7575,7 +9361,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "The Trunk of Ganesh",
         "title_or": "ଗଣେଶଙ୍କ ଶୁଣ୍ଢ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish%2FClass9_Eng_Ch12_The_Trunk_of_Ganesh.pdf?alt=media",
+        "number": 12
       },
       {
         "id": "XVVmT8oKyTv9u7SvXkt2",
@@ -7583,7 +9371,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "The Lost Child",
         "title_or": "ହଜିଯାଇଥିବା ଶିଶୁ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish%2FClass9_Eng_Ch13_The_Lost_Child.pdf?alt=media",
+        "number": 13
       },
       {
         "id": "b8qzSsDLR4jWL65CZfgq",
@@ -7591,7 +9381,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Adjectives",
         "title_or": "ବିଶେଷଣ",
         "subject": "english_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish_Grammar%2FClass9_EngGram_Ch09_Ch09_Adjectives.pdf?alt=media",
+        "number": 9
       },
       {
         "id": "8FWK1Zc1p5JtoMwZdZDV",
@@ -7599,7 +9391,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Adverbs and Adverbials",
         "title_or": "କ୍ରିୟା ବିଶେଷଣ ଓ କ୍ରିୟା ବିଶେଷଣ ପଦବନ୍ଧ",
         "subject": "english_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish_Grammar%2FClass9_EngGram_Ch10_Ch10_Adverbs_and_Adverbials.pdf?alt=media",
+        "number": 10
       },
       {
         "id": "ZZGMMMc9ZgXgSgkUQyZT",
@@ -7607,7 +9401,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Disease and its Treatment",
         "title_or": "ରୋଗ ଓ ତାହାର ନିରାକରଣ",
         "subject": "life_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FLife_Science%2FClass9_LifeSci_Ch05_Ch05_Roga_O_Tahara_Nirakarana.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "JUK8CDGUs0lHEmEpQjv3",
@@ -7615,7 +9411,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Statistics",
         "title_or": "ପରିସଂଖ୍ୟାନ",
         "subject": "algebra",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FMathematics%2FChapter%207%20-%20Statistics%2FC9_Alg_Ch7_Statistics_Ready.pdf?alt=media",
+        "number": 7
       }
     ]
   },
@@ -7628,7 +9426,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Right to Information Act",
         "title_or": "ସୂଚନା ଅଧିକାର ଆଇନ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch20_Pol_Ch02_L02_Right_to_Information_Act.pdf?alt=media",
+        "number": 20
       },
       {
         "id": "HMXSJcDpabg4x730Xf5A",
@@ -7636,7 +9436,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Indian Nationalism",
         "title_or": "ଭାରତୀୟ ଜାତୀୟତାବାଦ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch21_Pol_Ch03_L01_Indian_Nationalism.pdf?alt=media",
+        "number": 21
       },
       {
         "id": "J1FSm6DAmrmm0LxmJ1Q7",
@@ -7644,7 +9446,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "National Integration",
         "title_or": "ଜାତୀୟ ସଂହତି",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch22_Pol_Ch03_L02_National_Integration.pdf?alt=media",
+        "number": 22
       },
       {
         "id": "zt8FCMezoqdhix1s0y3l",
@@ -7652,7 +9456,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Verb Conjugations",
         "title_or": "ଧାତୁରୂପ",
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit_Grammar%2FClass9_SanGram_Ch09_Ch09_Dhatu_Prakarana.pdf?alt=media",
+        "number": 9
       },
       {
         "id": "HxbxUc0qGO0BhuGsrqWq",
@@ -7660,7 +9466,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Work and Energy",
         "title_or": "କାର୍ଯ୍ୟ ଓ ଶକ୍ତି",
         "subject": "physical_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FPhysical_science%2FClass9_PhySci_Ch08_Ch08_Karjya_O_Sakti.pdf?alt=media",
+        "number": 8
       },
       {
         "id": "U6TuGxeTfJu5atCFK9zY",
@@ -7668,7 +9476,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Advertisement Writing",
         "title_or": "ବିଜ୍ଞାପନ ଲିଖନ",
         "subject": "odia_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia_Grammar%2FClass9_OdiaGram_Ch10_Ch10_Bijnapana_Likhana.pdf?alt=media",
+        "number": 10
       },
       {
         "id": "rCld0xIyy8pnBqOAMmKa",
@@ -7676,7 +9486,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Pataka Uttolana",
         "title_or": "ପତାକା ଉତ୍ତୋଳନ",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia%2FClass9_Ch16_Pataka_Uttolana.pdf?alt=media",
+        "number": 16
       },
       {
         "id": "t6VtHOd0Ik4cjvSF7iK4",
@@ -7684,7 +9496,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Lakshmira Abhisara",
         "title_or": "ଲକ୍ଷ୍ମୀର ଅଭିସାର",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia%2FClass9_Ch17_Laxmira_Abhisara.pdf?alt=media",
+        "number": 17
       },
       {
         "id": "wf054hMlNV7plbXdaaqZ",
@@ -7692,7 +9506,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Passage 7",
         "title_or": "ସପ୍ତମଃ ଅନୁଚ୍ଛେଦଃ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch22_Anuchheda_07.pdf?alt=media",
+        "number": 22
       },
       {
         "id": "t5aQg6wANPztimheuU8V",
@@ -7700,7 +9516,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Passage 8",
         "title_or": "ଅଷ୍ଟମଃ ଅନୁଚ୍ଛେଦଃ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch23_Anuchheda_08.pdf?alt=media",
+        "number": 23
       },
       {
         "id": "PzXj6CRQyVlstBxvq9pE",
@@ -7708,7 +9526,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Passage 9",
         "title_or": "ନବମଃ ଅନୁଚ୍ଛେଦଃ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch24_Anuchheda_09.pdf?alt=media",
+        "number": 24
       },
       {
         "id": "yjYuvfGmjWGdhkca3gIB",
@@ -7716,7 +9536,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Trigonometry",
         "title_or": "ତ୍ରିକୋଣମିତି",
         "subject": "geometry",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FGeometry%2FClass9_Geometry_Ch07_Ch07_Trikonamiti.pdf?alt=media",
+        "number": 7
       },
       {
         "id": "19Rm5C8WfJ3SVvhuinbr",
@@ -7724,7 +9546,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "My Friends in Jail",
         "title_or": "ଜେଲ୍ ମେଁ ମେରେ ମିତ୍ର",
         "subject": "hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi%2FClass9_HindiLit_Ch09_Ch09_Jail_Mein_Mere_Mitra_Nehru.pdf?alt=media",
+        "number": 9
       },
       {
         "id": "QPpTAtnuvr6FayjNY0eq",
@@ -7732,7 +9556,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Sustainable Development",
         "title_or": "ଧାରଣୀୟ ବିକାଶ",
         "subject": "geography",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FGeography%2FClass9_GeoEco_Ch11_Eco_Ch02_Dharaniya_Bikasha.pdf?alt=media",
+        "number": 11
       },
       {
         "id": "wmxW9qnrhFmWrvCT78Kx",
@@ -7740,7 +9566,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Avyaya",
         "title_or": "ଅବ୍ୟୟ",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi_Grammar%2FClass9_HindiGram_Ch12_Ch12_Avyay.pdf?alt=media",
+        "number": 12
       },
       {
         "id": "Wp0znoNeaXXwAtHzmBD6",
@@ -7748,7 +9576,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Reading and Comprehension of Unseen Passages",
         "title_or": "ଅପଠିତ ଅନୁଚ୍ଛେଦ",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi_Grammar%2FClass9_HindiGram_Ch13_Ch13_Apathit_Anuchhed.pdf?alt=media",
+        "number": 13
       },
       {
         "id": "loaArdiOJQpdEjYe2nRS",
@@ -7756,7 +9586,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "The First Step",
         "title_or": "ପ୍ରଥମ ପାଦ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish%2FClass9_Eng_Ch14_The_First_Step.pdf?alt=media",
+        "number": 14
       },
       {
         "id": "OkXuCdPmRYHDztlk8E2v",
@@ -7764,7 +9596,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "The Magic Flute",
         "title_or": "ଯାଦୁ ବଂଶୀ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish%2FClass9_Eng_Ch15_The_Magic_Flute.pdf?alt=media",
+        "number": 15
       },
       {
         "id": "4Rj5WNs1Nw2FbLkEUdYo",
@@ -7772,7 +9606,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Negatives and Interrogatives",
         "title_or": "ନକାରାତ୍ମକ ଓ ପ୍ରଶ୍ନବାଚକ",
         "subject": "english_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish_Grammar%2FClass9_EngGram_Ch11_Ch11_Negatives_and_Interrogatives.pdf?alt=media",
+        "number": 11
       },
       {
         "id": "YtGyhKwlZXAghDyWFRtt",
@@ -7780,7 +9616,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Natural Resources & Its Pollution",
         "title_or": "ପ୍ରାକୃତିକ ସଂପଦ ଓ ତାହାର ପ୍ରଦୂଷଣ",
         "subject": "life_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FLife_Science%2FClass9_LifeSci_Ch06_Ch06_Prakrutika_Sampada_O_Tahara_Pradusana.pdf?alt=media",
+        "number": 6
       },
       {
         "id": "0iyOSoLXnySiCj8Hvzdp",
@@ -7788,7 +9626,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Probability",
         "title_or": "ସମ୍ଭାବ୍ୟତା",
         "subject": "algebra",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FMathematics%2FChapter%208%20-%20Probability%2FC9_Alg_Ch8_Probability_Ready.pdf?alt=media",
+        "number": 8
       }
     ]
   },
@@ -7801,7 +9641,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Democratic Values",
         "title_or": "ଗଣତାନ୍ତ୍ରିକ ମୂଲ୍ୟବୋଧ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch23_Pol_Ch03_L03_Democratic_Values.pdf?alt=media",
+        "number": 23
       },
       {
         "id": "YSweIvu1TSCytXm6lYBJ",
@@ -7809,7 +9651,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "United Nations and India",
         "title_or": "ସଂଯୁକ୍ତ ରାଷ୍ଟ୍ରସଂଘ ଓ ଭାରତ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHistory%2FClass9_HistPol_Ch24_Pol_Ch04_United_Nations_and_India.pdf?alt=media",
+        "number": 24
       },
       {
         "id": "oJpBdXNEutmBhp5QhX3I",
@@ -7817,7 +9661,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Cases and Declension rules",
         "title_or": "କାରକ ଓ ବିଭକ୍ତି",
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit_Grammar%2FClass9_SanGram_Ch10_Ch10_Karaka_O_Bibhakti.pdf?alt=media",
+        "number": 10
       },
       {
         "id": "VoLSP04K7PKppDqtIbe6",
@@ -7825,7 +9671,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Sound",
         "title_or": "ଧ୍ବନି",
         "subject": "physical_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FPhysical_science%2FClass9_PhySci_Ch09_Ch09_Dhwani.pdf?alt=media",
+        "number": 9
       },
       {
         "id": "gpar00JDfaPQLVXjY5Up",
@@ -7833,7 +9681,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Official Letter and Application",
         "title_or": "ସରକାରୀ ପତ୍ର ଓ ଦରଖାସ୍ତ",
         "subject": "odia_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia_Grammar%2FClass9_OdiaGram_Ch11_Ch11_Sarakari_Patra_O_Darakhasta.pdf?alt=media",
+        "number": 11
       },
       {
         "id": "ODQGh1y0qXvYIv9yUci6",
@@ -7841,7 +9691,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Dalabehera",
         "title_or": "ଦଳବେହେରା",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia%2FClass9_Ch18_Dalabehera.pdf?alt=media",
+        "number": 18
       },
       {
         "id": "idn9IVsJLCUIUYdrD32Y",
@@ -7849,7 +9701,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Dura Pahada",
         "title_or": "ଦୂର ପାହାଡ଼",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FOdia%2FClass9_Ch19_Dura_Pahada.pdf?alt=media",
+        "number": 19
       },
       {
         "id": "kloQOl7xTvUWZu5AC1QM",
@@ -7857,7 +9711,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Passage 10",
         "title_or": "ଦଶମଃ ଅନୁଚ୍ଛେଦଃ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch25_Anuchheda_10.pdf?alt=media",
+        "number": 25
       },
       {
         "id": "3nOIxxrxzzZZVyb3xqLT",
@@ -7865,7 +9721,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Picture Section",
         "title_or": "ଚିତ୍ରବିଭାଗଃ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FSanskrit%2FClass9_Sanskrit_Ch26_Anuchheda_Chitravibhagah.pdf?alt=media",
+        "number": 26
       },
       {
         "id": "4xxH6aAMnYT4qhSrYu3l",
@@ -7873,7 +9731,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Chandrasekhar Venkata Raman",
         "title_or": "ଚନ୍ଦ୍ରଶେଖର ଭେଙ୍କଟ ରମଣ",
         "subject": "hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi%2FClass9_HindiLit_Ch10_Ch10_Chandrasekhar_Venkata_Raman_Malve.pdf?alt=media",
+        "number": 10
       },
       {
         "id": "2LAdgI8zvrS56M9KWWxI",
@@ -7881,7 +9741,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Human Made Disasters and Management",
         "title_or": "ମାନବୀୟ ବିପତ୍ତି ଓ ପରିଚାଳନା",
         "subject": "geography",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FGeography%2FClass9_GeoEco_Ch12_Eco_Ch03_Manabiya_Bipatti_O_Parichalana.pdf?alt=media",
+        "number": 12
       },
       {
         "id": "jzEpL8c1RAOeKpAEK3Ii",
@@ -7889,7 +9751,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "Translation",
         "title_or": "ଅନୁବାଦ",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FHindi_Grammar%2FClass9_HindiGram_Ch14_Ch14_Anuvad.pdf?alt=media",
+        "number": 14
       },
       {
         "id": "dbpI50VhMdRP80EF3GGw",
@@ -7897,7 +9761,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "The Portrait of a Lady",
         "title_or": "ଏକ ମହିଳାଙ୍କ ଚିତ୍ର",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish%2FClass9_Eng_Ch16_The_Portrait_of_a_Lady.pdf?alt=media",
+        "number": 16
       },
       {
         "id": "ynVJHiklCl38cxCREd0j",
@@ -7905,7 +9771,9 @@ export const ROADMAP_DATA_9 = [
         "title_en": "The Predicate Phrase",
         "title_or": "ବିଧେୟ ପଦବନ୍ଧ",
         "subject": "english_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%209%2FEnglish_Grammar%2FClass9_EngGram_Ch12_Ch12_The_Predicate_Phrase.pdf?alt=media",
+        "number": 12
       }
     ]
   }
@@ -7922,7 +9790,9 @@ export const ROADMAP_DATA = [
         "title_en": "Bhimanka Singhanada Radi",
         "title_or": "ଭୀମଙ୍କ ସିଂଘନାଦ ରଡ଼ି",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia%2FClass10_Ch01_Bhimanka_Singhanada_Radi.pdf?alt=media",
+        "number": 1
       },
       {
         "id": "WJx36nRZJ0INsq7PIOma",
@@ -7930,7 +9800,9 @@ export const ROADMAP_DATA = [
         "title_en": "Raghabanka Lanka Jatranukula",
         "title_or": "ରାଘବଙ୍କ ଲଙ୍କା ଯାତ୍ରାନୁକୂଳ",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia%2FClass10_Ch02_Raghabanka_Lanka_Yatranukula.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "kx9ZyXXQMJsKRRTodEQS",
@@ -7938,7 +9810,9 @@ export const ROADMAP_DATA = [
         "title_en": "Emergence of Gandhi in Indian National Movement",
         "title_or": "ଭାରତୀୟ ଜାତୀୟ ଆନ୍ଦୋଳନରେ ଗାନ୍ଧିଜୀଙ୍କ ଆବିର୍ଭାବ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch01_Gandhiji_and_National_Movement.pdf?alt=media",
+        "number": 1
       },
       {
         "id": "nPPpzIFEnVkjuFCelTsg",
@@ -7946,7 +9820,9 @@ export const ROADMAP_DATA = [
         "title_en": "Non-Cooperation Movement in India and its impact on Odisha",
         "title_or": "ଭାରତରେ ଅସହଯୋଗ ଆନ୍ଦୋଳନ ଓ ଓଡ଼ିଶାରେ ଏହାର ପ୍ରଭାବ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch02_Non_Cooperation_Movement_Odisha.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "hidhAbSnwqVdU0YLK6KA",
@@ -7954,7 +9830,39 @@ export const ROADMAP_DATA = [
         "title_en": "Civil Disobedience Movement in India and the role of Odisha in it",
         "title_or": "ଭାରତରେ ଆଇନ ଅମାନ୍ୟ ଆନ୍ଦୋଳନ ଏବଂ ଏଥିରେ ଓଡ଼ିଶାର ଭୂମିକା",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch03_Civil_Disobedience_Movement_Odisha.pdf?alt=media",
+        "number": 3
+      },
+      {
+        "id": "FI8QyA4Z225rUdEFJPp2",
+        "title": "Chapter 1 - ସମ୍ବଳ ଓ ତାହାର ବିକାଶ (Resource and its Development)",
+        "title_en": "Resource and its Development",
+        "title_or": "ସମ୍ବଳ ଓ ତାହାର ବିକାଶ",
+        "subject": "geography",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeography%2FClass10_Geo_Ch01_Resources_and_Development.pdf?alt=media",
+        "number": null
+      },
+      {
+        "id": "OTsBEuCXNjIniVHfgL6S",
+        "title": "Chapter 2 - ଭୂ ସମ୍ବଳ (Land Resources)",
+        "title_en": "Land Resources",
+        "title_or": "ଭୂ ସମ୍ବଳ",
+        "subject": "geography",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeography%2FClass10_Geo_Ch02_Land_Resources.pdf?alt=media",
+        "number": null
+      },
+      {
+        "id": "iLF803pws0PWZW9yZu20",
+        "title": "Chapter 3 - ମୃତ୍ତିକା ସମ୍ବଳ (Soil Resources)",
+        "title_en": "Soil Resources",
+        "title_or": "ମୃତ୍ତିକା ସମ୍ବଳ",
+        "subject": "geography",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeography%2FClass10_Geo_Ch03_Soil_Resources.pdf?alt=media",
+        "number": null
       },
       {
         "id": "p2hfLK0fRZYvu1yYmKUe",
@@ -7962,7 +9870,9 @@ export const ROADMAP_DATA = [
         "title_en": "Sentence Analysis",
         "title_or": "ବାକ୍ୟ ବିଚାର",
         "subject": "odia_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia_Grammar%2FClass10_Grammar_Ch01_Bakya_Bichara.pdf?alt=media",
+        "number": null
       },
       {
         "id": "NTRImG9Zt18wGXzkNdoE",
@@ -7970,7 +9880,9 @@ export const ROADMAP_DATA = [
         "title_en": "Bharatagitika",
         "title_or": "ଭାରତଗୀତିକା",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch01_Bharatagitika.pdf?alt=media",
+        "number": 1
       },
       {
         "id": "1DjkHuhfAnOsjoNDHC0O",
@@ -7978,7 +9890,9 @@ export const ROADMAP_DATA = [
         "title_en": "Vande Utkalajanani!",
         "title_or": "ବନ୍ଦେ ଉତ୍କଳଜନନି !",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch02_Bande_Utkalajanani.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "8Aic8Rbe715HhcUvdRb7",
@@ -7986,7 +9900,9 @@ export const ROADMAP_DATA = [
         "title_en": "Upadeshamrutam",
         "title_or": "ଉପଦେଶାମୃତମ୍",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch03_Upadeshamrutam.pdf?alt=media",
+        "number": 3
       },
       {
         "id": "Tb1Vumwx11BS8fzXU8b8",
@@ -7994,7 +9910,9 @@ export const ROADMAP_DATA = [
         "title_en": "Sushishyah Upamanyuh",
         "title_or": "ସୁଶିଷ୍ୟ ଉପମନ୍ୟୁଃ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch04_Sushishya_Upamanyu.pdf?alt=media",
+        "number": 4
       },
       {
         "id": "class10_sanskrit_grammar",
@@ -8002,55 +9920,69 @@ export const ROADMAP_DATA = [
         "title_en": "Class 10 Sanskrit Grammar",
         "title_or": "ସଂସ୍କୃତ ବ୍ୟାକରଣ",
         "subject": "Sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre-admin/o/Class%2010%2FSanskrit_Grammar%2FClass_10_Sanskrit_Grammar.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "vj31M0Mavg8DJajjqz2g",
-        "title": "AGrainAsBigAsAHen sEgg Ready",
-        "title_en": "A Grain As Big As A Hen's Egg",
-        "title_or": "କୁକୁଡ଼ା ଅଣ୍ଡା ପରି ଏକ ଶସ୍ୟ",
+        "id": "rlh2LCv1oPp08CXV0KGm",
+        "title": "AllThingsBrightAndBeautiful Ready",
+        "title_en": "All Things Bright and Beautiful",
+        "title_or": "ସମସ୍ତ ଉଜ୍ଜ୍ୱଳ ଓ ସୁନ୍ଦର ବସ୍ତୁ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish%2FChapter%201%20-%20All%20Things%20Bright%20and%20Beautiful%2FC10_Eng_Ch1_AllThingsBrightAndBeautiful_Ready.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "eEp8FUOklA6eNKU9V1XK",
-        "title": "AGreatSonOfIndia Ready",
-        "title_en": "A Great Son of India",
-        "title_or": "ଭାରତର ଜଣେ ମହାନ ପୁତ୍ର",
+        "id": "db9gGSQQIOe51JJXAuu4",
+        "title": "ALetterToGod Ready",
+        "title_en": "A Letter to God",
+        "title_or": "ଭଗବାନଙ୍କୁ ଏକ ଚିଠି",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish%2FChapter%202%20-%20A%20Letter%20to%20God%2FC10_Eng_Ch2_ALetterToGod_Ready.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "Q0q5BTuSGqzYm8Oz8QzI",
-        "title": "Anuvada Niyamabali",
-        "title_en": "Translation Rules",
-        "title_or": "ଅନୁବାଦ ନିୟମାବଳୀ",
+        "id": "AyJyknRgVDBZ9xJYFl91",
+        "title": "Stri Pratyaya",
+        "title_en": "Feminine Suffixes",
+        "title_or": "ସ୍ତ୍ରୀ ପ୍ରତ୍ୟୟ",
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit_Grammar%2FClass10_SanGram_Ch01_Stri_Pratyaya.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "tV23aNM5otdokzL0l501",
-        "title": "Atmanepada Vidhana",
-        "title_en": "Atmanepada Rules",
-        "title_or": "ଆତ୍ମନେପଦ ବିଧାନ",
+        "id": "tpioTGaUyNQlDeQRXPBw",
+        "title": "Samasa",
+        "title_en": null,
+        "title_or": null,
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit_Grammar%2FClass10_SanGram_Ch02_Samasa.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "CFYagyWavUlIHZBay0q7",
-        "title": "Adverb Clauses",
-        "title_en": "Adverb Clauses",
-        "title_or": "କ୍ରିୟାବିଶେଷଣ ଉପବାକ୍ୟ",
+        "id": "MBepkKS891Hu1PaA6RIP",
+        "title": "Tense Revisited",
+        "title_en": "Tense Revisited",
+        "title_or": "କାଳର ପୁନରାଲୋଚନା",
         "subject": "english_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish_Grammar%2FClass10_EngGrammar_Ch01_Tense_Revisited.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "5SuzqhklTz5pPn4wTv2E",
-        "title": "Direct and Indirect Speech",
-        "title_en": "Direct and Indirect Speech",
-        "title_or": "ପ୍ରତ୍ୟକ୍ଷ ଓ ପରୋକ୍ଷ ଉକ୍ତି",
+        "id": "y5IAnhRM5Rz7X3qmn741",
+        "title": "Types of Sentences",
+        "title_en": "Types of Sentences",
+        "title_or": "ବାକ୍ୟ ପ୍ରକାରଭେଦ",
         "subject": "english_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish_Grammar%2FClass10_EngGrammar_Ch02_Types_of_Sentences.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Vx3FQK8ZAl67KwvDi1Iy",
@@ -8058,39 +9990,29 @@ export const ROADMAP_DATA = [
         "title_en": "Nutrition",
         "title_or": "ପୋଷଣ",
         "subject": " ଜୀବବିଜ୍ଞାନ(Life Science)",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": null,
+        "number": null
       },
       {
-        "id": "yEpFBOFHNX07NnGyz7k3",
-        "title": "Conservation of Natural Resources",
-        "title_en": "Conservation of Natural Resources",
-        "title_or": "ପ୍ରାକୃତିକ ସମ୍ବଳର ସଂରକ୍ଷଣ",
+        "id": "WHZAR4BSAWixmaPmHuqW",
+        "title": "Nutrition",
+        "title_en": "Nutrition",
+        "title_or": "ପୁଷ୍ଟି",
         "subject": "life_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FLife_science%2FClass10_LifeSci_Ch01_Nutrition.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "PVqIhNgzghFKacVchjs1",
-        "title": "Control and Coordination",
-        "title_en": "Control and Coordination",
-        "title_or": "ନିୟନ୍ତ୍ରଣ ଓ ସମନ୍ୱୟ",
+        "id": "YILwHvMcyPII0LXrnAmJ",
+        "title": "Respiration",
+        "title_en": "Respiration",
+        "title_or": "ଶ୍ୱାସକ୍ରିୟା",
         "subject": "life_science",
-        "thumbnail": null
-      },
-      {
-        "id": "YTnMbW2N3mWohlKqDzPn",
-        "title": "Chapter 1 - ସମ୍ବଳ ଓ ତାହାର ବିକାଶ (Resource and its Development)",
-        "title_en": "Resource and its Development",
-        "title_or": "ସମ୍ବଳ ଓ ତାହାର ବିକାଶ",
-        "subject": "geography",
-        "thumbnail": null
-      },
-      {
-        "id": "FN8FhsHoupXuZ30AMsCV",
-        "title": "Chapter 2 - ଭୂ ସମ୍ବଳ (Land Resources)",
-        "title_en": "Land Resources",
-        "title_or": "ଭୂ ସମ୍ବଳ",
-        "subject": "geography",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FLife_science%2FClass10_LifeSci_Ch02_Respiration.pdf?alt=media",
+        "number": null
       },
       {
         "id": "7EEftwwhRxF503aiQ0Nb",
@@ -8098,7 +10020,9 @@ export const ROADMAP_DATA = [
         "title_en": "Tense Revisit",
         "title_or": "କାଳର ପୁନରାଲୋଚନା",
         "subject": "English Grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": null,
+        "number": null
       },
       {
         "id": "TeYE3hAY504TO4x6zDiD",
@@ -8106,7 +10030,9 @@ export const ROADMAP_DATA = [
         "title_en": "Customer Centric Service",
         "title_or": "ଗ୍ରାହକ କେନ୍ଦ୍ରିତ ସେବା",
         "subject": "vocational",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FVocational%2FClass10_Tourism_Ch01_Customer_Centric_Service.pdf?alt=media",
+        "number": 1
       },
       {
         "id": "r7qUHdqGQqYx26Xyh6H2",
@@ -8114,7 +10040,9 @@ export const ROADMAP_DATA = [
         "title_en": "Anmol Vani",
         "title_or": "ଅନମୋଲ ବାଣୀ",
         "subject": "hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi%2FClass10_Hindi_Ch01_Anmol_Vani.pdf?alt=media",
+        "number": 1
       },
       {
         "id": "Ocse7UkAtzq4TDN7oX1a",
@@ -8122,7 +10050,9 @@ export const ROADMAP_DATA = [
         "title_en": "Manushyata",
         "title_or": "ମନୁଷ୍ୟତା",
         "subject": "hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi%2FClass10_Hindi_Ch02_Manushyata.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "CUQwtkjyKesVfAtJYiky",
@@ -8130,7 +10060,9 @@ export const ROADMAP_DATA = [
         "title_en": "Chemical Reactions and Equations",
         "title_or": "ରାସାୟନିକ ପ୍ରତିକ୍ରିୟା ଓ ରାସାୟନିକ ସମୀକରଣ",
         "subject": "physical_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FPhysical_science%2Fchapter1.pdf?alt=media",
+        "number": 1
       },
       {
         "id": "DICN051vIrUEDopKc9zc",
@@ -8138,7 +10070,9 @@ export const ROADMAP_DATA = [
         "title_en": "Vyakaran Avashya Padhein",
         "title_or": "ବ୍ୟାକରଣ ଅବଶ୍ୟ ପଢ଼ିବା",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi_Grammar%2FClass10_HindiGrammar_Ch01_Vyakaran_Avashya_Padhen.pdf?alt=media",
+        "number": 1
       },
       {
         "id": "smGn2FhZOvWvOynHoyTA",
@@ -8146,7 +10080,9 @@ export const ROADMAP_DATA = [
         "title_en": "Hindi Dhwaniyan aur Varnamala",
         "title_or": "ହିନ୍ଦୀ ଧ୍ୱନି ଓ ବର୍ଣ୍ଣମାଳା",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi_Grammar%2FClass10_HindiGrammar_Ch02_Dhvaniya_aur_Varnamala.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "GEJMS5Ed5K6EsbwcRFdR",
@@ -8154,16 +10090,39 @@ export const ROADMAP_DATA = [
         "title_en": "All Things Bright and Beautiful",
         "title_or": "ସବୁ ଉଜ୍ଜ୍ୱଳ ଓ ସୁନ୍ଦର ବସ୍ତୁ",
         "subject": "English",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": null,
+        "number": null
       },
-
+      {
+        "id": "BdUErT0FNVHCxZvowdqQ",
+        "title": "All Things Bright and Beautiful - ସବୁ ଜିନିଷ ଉଜ୍ଜ୍ୱଳ ଓ ସୁନ୍ଦର",
+        "title_en": "All Things Bright and Beautiful",
+        "title_or": "ସବୁ ଜିନିଷ ଉଜ୍ଜ୍ୱଳ ଓ ସୁନ୍ଦର",
+        "subject": "English",
+        "thumbnail": null,
+        "pdfUrl": null,
+        "number": null
+      },
+      {
+        "id": "zjmscF6RCwSzh7UsljMp",
+        "title": "Chapter 1 - ଜ୍ୟାମିତିରେ ସାଦୃଶ୍ୟ (Similarity)",
+        "title_en": "Similarity",
+        "title_or": "ଜ୍ୟାମିତିରେ ସାଦୃଶ୍ୟ",
+        "subject": "geometry",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeometry%2FClass10_Geo_Ch01_Similarity_in_Geometry.pdf?alt=media",
+        "number": 1
+      },
       {
         "id": "class10_vocational_tourism",
         "title": "ବ୍ୟାବସାୟିକ ପର୍ଯ୍ୟଟନ (Class 10 Vocational Tourism)",
         "title_en": "Class 10 Vocational Tourism",
         "title_or": "ବ୍ୟାବସାୟିକ ପର୍ଯ୍ୟଟନ",
         "subject": "Vocational",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre-admin/o/Class%2010%2FVocational%2FClass%20X%20-%20Vocational%20Tourism.pdf?alt=media",
+        "number": null
       },
       {
         "id": "class10_hindi_grammar",
@@ -8171,7 +10130,9 @@ export const ROADMAP_DATA = [
         "title_en": "हिन्दी व्याकरण",
         "title_or": "Class 10 Hindi Grammar",
         "subject": "Hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre-admin/o/Class%2010%2FHindi_Grammar%2FClass_10_Hindi_Grammar.pdf?alt=media",
+        "number": null
       },
       {
         "id": "lw9n7sG7qxnfbwm4kLY9",
@@ -8179,7 +10140,9 @@ export const ROADMAP_DATA = [
         "title_en": "Linear Simultaneous Equations",
         "title_or": "ସରଳ ସହସମୀକରଣ",
         "subject": "algebra",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/chapters_pdf%2F1778499901805_C10_Alg_Ch1_LinearEquations_Ready.pdf?alt=media&token=8a87c309-f793-4f72-8248-4f538e0f5e21",
+        "number": 1
       },
       {
         "id": "x0or0kBIRph6tfIFj7xF",
@@ -8187,7 +10150,9 @@ export const ROADMAP_DATA = [
         "title_en": "Sentence Analysis",
         "title_or": "ବାକ୍ୟ ବିଚାର",
         "subject": "ଓଡ଼ିଆ ବ୍ୟାକରଣ (Odia Grammar)",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": null,
+        "number": null
       },
       {
         "id": "HlfuVAm9dcK1gGpNkpuq",
@@ -8195,7 +10160,9 @@ export const ROADMAP_DATA = [
         "title_en": "Similarity in Geometry",
         "title_or": "ଜ୍ୟାମିତିରେ ସାଦୃଶ୍ୟ",
         "subject": "Geometry",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": null,
+        "number": null
       },
       {
         "id": "DJO5ghl1p9F3C6FLYFct",
@@ -8203,7 +10170,9 @@ export const ROADMAP_DATA = [
         "title_en": null,
         "title_or": null,
         "subject": "ସାହିତ୍ୟ",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": null,
+        "number": null
       }
     ]
   },
@@ -8216,7 +10185,9 @@ export const ROADMAP_DATA = [
         "title_en": "Chilikare Sayantana Drushya",
         "title_or": "ଚିଲିକାରେ ସାୟନ୍ତନ ଦୃଶ୍ୟ",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia%2FClass10_Ch03_Chilikare_Sayantana_Drushya.pdf?alt=media",
+        "number": 3
       },
       {
         "id": "WMa2wCbpY75sElxzNEJY",
@@ -8224,7 +10195,9 @@ export const ROADMAP_DATA = [
         "title_en": "Mangale Aila Usha",
         "title_or": "ମଙ୍ଗଳେ ଅଇଲା ଉଷା",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia%2FClass10_Ch04_Mangale_Aila_Usha.pdf?alt=media",
+        "number": 4
       },
       {
         "id": "it6lInKbY6uyMB8Or05j",
@@ -8232,7 +10205,9 @@ export const ROADMAP_DATA = [
         "title_en": "Quit India Movement and the role of Odisha in it",
         "title_or": "ଭାରତ ଛାଡ଼ ଆନ୍ଦୋଳନ ଏବଂ ଏଥିରେ ଓଡ଼ିଶାର ଭୂମିକା",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch04_Quit_India_Movement_Odisha.pdf?alt=media",
+        "number": 4
       },
       {
         "id": "ZcpbuQaCPkf0OGwXwTu7",
@@ -8240,7 +10215,9 @@ export const ROADMAP_DATA = [
         "title_en": "Subhash Chandra Bose and Indian National Army",
         "title_or": "ସୁଭାଷ ଚନ୍ଦ୍ର ବୋଷ ଓ ଭାରତୀୟ ଜାତୀୟସେନା",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch05_Subhas_Bose_and_INA.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "iLheVk0JgDW63OXGaKCe",
@@ -8248,15 +10225,39 @@ export const ROADMAP_DATA = [
         "title_en": "Indian Independence Act, Partition of India and Independence",
         "title_or": "ଭାରତ ସ୍ଵାଧୀନତା ଆଇନ, ଭାରତ ବିଭାଜନ ଓ ସ୍ଵାଧୀନତା",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch06_Independence_and_Partition.pdf?alt=media",
+        "number": 6
       },
       {
-        "id": "mKClBmBGmqPPBXBUMBea",
-        "title": "Anubada Prakarana",
-        "title_en": "Translation",
-        "title_or": "ଅନୁବାଦ ପ୍ରକରଣ",
+        "id": "xxfoeGVDPxsJFdeXm0K9",
+        "title": "Chapter 4 - ଅରଣ୍ୟ ସମ୍ବଳ (Forest Resources)",
+        "title_en": "Forest Resources",
+        "title_or": "ଅରଣ୍ୟ ସମ୍ବଳ",
+        "subject": "geography",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeography%2FClass10_Geo_Ch04_Forest_Resources.pdf?alt=media",
+        "number": null
+      },
+      {
+        "id": "408aEuq4c39HaQQ2rxMp",
+        "title": "Chapter 5 - ବନ୍ୟ ପ୍ରାଣୀ ସମ୍ବଳ (Wildlife Resources)",
+        "title_en": "Wildlife Resources",
+        "title_or": "ବନ୍ୟ ପ୍ରାଣୀ ସମ୍ବଳ",
+        "subject": "geography",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeography%2FClass10_Geo_Ch05_Wildlife_Resources.pdf?alt=media",
+        "number": null
+      },
+      {
+        "id": "bSKzdhrG8X2718jemnbO",
+        "title": "Natwa Satwa Bidhi O Asuddhi",
+        "title_en": "Natwa Vidhi, Shatwa Vidhi, and Common Errors",
+        "title_or": "‘ଣତ୍ବ’ ବିଧୂ, ‘ଷତ୍ବ’ ବିଧୂ ଓ ସାଧାରଣ ଅଶୁଦ୍ଧି",
         "subject": "odia_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia_Grammar%2FClass10_Grammar_Ch02_Natwa_Satwa_Bidhi_O_Asuddhi.pdf?alt=media",
+        "number": null
       },
       {
         "id": "ZArgYhjHcXyiY8m9m0Qz",
@@ -8264,7 +10265,9 @@ export const ROADMAP_DATA = [
         "title_en": "Varahopakhyanam",
         "title_or": "ବରାହୋପାଖ୍ୟାନମ୍",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch05_Varahopakhyanam.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "reuuh3Zfigvce5d2aeGi",
@@ -8272,7 +10275,9 @@ export const ROADMAP_DATA = [
         "title_en": "Singhashrugalashishukatha",
         "title_or": "ସଂହଶୃଗାଳଶିଶୁକଥା",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch06_Singhashrugalashishukatha.pdf?alt=media",
+        "number": 6
       },
       {
         "id": "QQQcjrvI5rKZlXzJEy4p",
@@ -8280,31 +10285,39 @@ export const ROADMAP_DATA = [
         "title_en": "Bakakulirakakatha",
         "title_or": "ବକକୁଳୀରକକଥା",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch07_Bakakulirakakatha.pdf?alt=media",
+        "number": 7
       },
       {
-        "id": "oIZWnuRA5uerdUx6ixMZ",
-        "title": "Air Pollution: A Hidden Menace",
-        "title_en": "Air Pollution: A Hidden Menace",
-        "title_or": "ବାୟୁ ପ୍ରଦୂଷଣ - ଏକ ଅଦୃଶ୍ୟ ବିପଦ",
+        "id": "9ipljxstd8IWuQGYHKGH",
+        "title": "WeAreSeven Ready",
+        "title_en": "We Are Seven",
+        "title_or": "ଆମେ ସାତ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish%2FChapter%203%20-%20We%20Are%20Seven%2FC10_Eng_Ch3_WeAreSeven_Ready.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "db9gGSQQIOe51JJXAuu4",
-        "title": "ALetterToGod Ready",
-        "title_en": "A Letter to God",
-        "title_or": "ଭଗବାନଙ୍କୁ ଏକ ଚିଠି",
+        "id": "ATSXUBG1qs8hhMzbI0ow",
+        "title": "TrystWithDestiny Ready",
+        "title_en": "Tryst With Destiny",
+        "title_or": "ନିୟତି ସହ ଭେଟ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish%2FChapter%204%20-%20Tryst%20with%20Destiny%2FC10_Eng_Ch4_TrystWithDestiny_Ready.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "GmpIgHGvqfBNVSvEyPM2",
-        "title": "Bhrama Sanshodhana",
-        "title_en": "Error Correction",
-        "title_or": "ଭ୍ରମ ସଂଶୋଧନ",
+        "id": "jYLYELTjcSejLzdLCJKo",
+        "title": "Tadhita Prakarana",
+        "title_en": "Taddhita Suffixes",
+        "title_or": "ତଦ୍ଧିତ ପ୍ରକରଣ",
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit_Grammar%2FClass10_SanGram_Ch03_Tadhita_Prakarana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "e00P37AXMDVDSXWWuEjU",
@@ -8312,39 +10325,29 @@ export const ROADMAP_DATA = [
         "title_en": "Verbal Derivatives",
         "title_or": "କୃଦନ୍ତ ପ୍ରକରଣ",
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit_Grammar%2FClass10_SanGram_Ch04_Kridanta_Prakarana.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "twyOYkUTU1fa2fKpdV31",
-        "title": "Non finite Verb Forms",
-        "title_en": "Non finite Verb Forms",
-        "title_or": "ଅସମାପିକା କ୍ରିୟା ରୂପ",
+        "id": "4Sq0hC4lYY5D13a5JfwL",
+        "title": "Subject Verb Agreement",
+        "title_en": "Subject Verb Agreement",
+        "title_or": "କର୍ତ୍ତା-କ୍ରିୟା ସମନ୍ୱୟ",
         "subject": "english_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish_Grammar%2FClass10_EngGrammar_Ch03_Subject_Verb_Agreement.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "FE7XoiswjRxPglXwvzwd",
-        "title": "Covid 19 Management",
-        "title_en": null,
-        "title_or": null,
+        "id": "SIqN8U9fvVQfhCzwkWNi",
+        "title": "Transportation and Circulation",
+        "title_en": "Transportation and Circulation",
+        "title_or": "ପରିବହନ ଓ ସଞ୍ଚାଳନ",
         "subject": "life_science",
-        "thumbnail": null
-      },
-      {
-        "id": "S5mmJU9l8kSVlYwIRhyr",
-        "title": "Chapter 3 - ମୃତ୍ତିକା ସମ୍ବଳ (Soil Resources)",
-        "title_en": "Soil Resources",
-        "title_or": "ମୃତ୍ତିକା ସମ୍ବଳ",
-        "subject": "geography",
-        "thumbnail": null
-      },
-      {
-        "id": "9bAXsQDwicPrXFs4TeR0",
-        "title": "Chapter 4 - ଅରଣ୍ୟ ସମ୍ବଳ (Forest Resources)",
-        "title_en": "Forest Resources",
-        "title_or": "ଅରଣ୍ୟ ସମ୍ବଳ",
-        "subject": "geography",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FLife_science%2FClass10_LifeSci_Ch03_Transportation_and_Circulation.pdf?alt=media",
+        "number": null
       },
       {
         "id": "5ug8LjhQcbBas4mDDCci",
@@ -8352,7 +10355,9 @@ export const ROADMAP_DATA = [
         "title_en": "Etiquette and Attitude",
         "title_or": "ଶିଷ୍ଟାଚାର ଓ ମନୋଭାବ",
         "subject": "vocational",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FVocational%2FClass10_Tourism_Ch02_Etiquette_and_Attitude.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "ymj1WlSIIppNYxaz8tej",
@@ -8360,7 +10365,9 @@ export const ROADMAP_DATA = [
         "title_en": "Ek Tinka",
         "title_or": "ଏକ ତୁଣ",
         "subject": "hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi%2FClass10_Hindi_Ch03_Ek_Tinka.pdf?alt=media",
+        "number": 3
       },
       {
         "id": "5n7Dg8pphGZT8XG2xKHW",
@@ -8368,7 +10375,9 @@ export const ROADMAP_DATA = [
         "title_en": "Acids, Bases and Salts",
         "title_or": "ଅମ୍ଳ, କ୍ଷାରକ ଓ ଲବଣ",
         "subject": "physical_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FPhysical_science%2Fchapter2.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "7BOrXipBSKlbjyiTYdw1",
@@ -8376,7 +10385,9 @@ export const ROADMAP_DATA = [
         "title_en": "Lekhan - Vartani / Spelling",
         "title_or": "ଲେଖନ (ବର୍ତ୍ତନୀ)",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi_Grammar%2FClass10_HindiGrammar_Ch03_Lekhan_Vartani.pdf?alt=media",
+        "number": 3
       },
       {
         "id": "TPEwSuNkdoNuoeijL2lF",
@@ -8384,7 +10395,9 @@ export const ROADMAP_DATA = [
         "title_en": "Lessons Learned and Beyond",
         "title_or": "ଶିକ୍ଷା ଓ ଅନୁଶୀଳନ",
         "subject": "English",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": null,
+        "number": null
       },
       {
         "id": "bq9cINIoZgSaIWag7JLM",
@@ -8392,7 +10405,9 @@ export const ROADMAP_DATA = [
         "title_en": "Circles",
         "title_or": "ବୃତ୍ତ",
         "subject": "geometry",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeometry%2FClass10_Geo_Ch02_Circle.pdf?alt=media",
+        "number": 2
       },
       {
         "id": "bH692tqUJlkINiHpNJMk",
@@ -8400,7 +10415,9 @@ export const ROADMAP_DATA = [
         "title_en": "Quadratic Equations",
         "title_or": "ଦ୍ବିଘାତ ସମୀକରଣ",
         "subject": "algebra",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/chapters_pdf%2F1779074771681_C10_Alg_Ch2_QuadraticEquations.pdf?alt=media&token=26f17c0d-c8c2-423e-b75c-8936b72c5835",
+        "number": 2
       }
     ]
   },
@@ -8413,7 +10430,9 @@ export const ROADMAP_DATA = [
         "title_en": "Jaga Bandhanahara",
         "title_or": "ଜାଗ ବନ୍ଧନହରା",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia%2FClass10_Ch05_Jaga_Bandhanahara.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "050OFWWLYZ9HcVNXPlDg",
@@ -8421,7 +10440,9 @@ export const ROADMAP_DATA = [
         "title_en": "Sarbansaha Mati",
         "title_or": "ସର୍ବଂସହା ମାଟି",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia%2FClass10_Ch06_Sarbamsaha_Mati.pdf?alt=media",
+        "number": 6
       },
       {
         "id": "0xPOBJuCH4LoFyvGR1J5",
@@ -8429,7 +10450,9 @@ export const ROADMAP_DATA = [
         "title_en": "Formation of Separate Odisha Province",
         "title_or": "ସ୍ବତନ୍ତ୍ର ଓଡ଼ିଶା ପ୍ରଦେଶ ଗଠନ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch07_Growth_of_Odia_Nationalism.pdf?alt=media",
+        "number": 7
       },
       {
         "id": "TpCW4PZaIe2JjqQSknqr",
@@ -8437,7 +10460,9 @@ export const ROADMAP_DATA = [
         "title_en": "Formation of Utkal Sammilani",
         "title_or": "ଉତ୍କଳ ସମ୍ମିଳନୀର ଗଠନ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch08_Utkal_Sammilani.pdf?alt=media",
+        "number": 8
       },
       {
         "id": "WB6De31pzTVtVaAQCxS9",
@@ -8445,15 +10470,39 @@ export const ROADMAP_DATA = [
         "title_en": "Odia Movement till 1936 and Formation of Separate Odisha Province",
         "title_or": "୧୯୩୬ ମସିହା ପର୍ଯ୍ୟନ୍ତ ଓଡ଼ିଆ ଆନ୍ଦୋଳନ ଓ ସ୍ଵତନ୍ତ୍ର ଓଡ଼ିଶା ପ୍ରଦେଶ ଗଠନ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch09_Odia_Movement_and_1936_Formation.pdf?alt=media",
+        "number": 9
       },
       {
-        "id": "BmrPG6YsY0WeoqZoUFzk",
-        "title": "Chhanda O Alankara",
-        "title_en": "Prosody and Figures of Speech",
-        "title_or": "ଛନ୍ଦ ଓ ଅଳଙ୍କାର",
+        "id": "bFmH9dYhhJB8iyxiqzQP",
+        "title": "Chapter 6 - ଜଳ ସମ୍ବଳ (Water Resources)",
+        "title_en": "Water Resources",
+        "title_or": "ଜଳ ସମ୍ବଳ",
+        "subject": "geography",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeography%2FClass10_Geo_Ch06_Water_Resources.pdf?alt=media",
+        "number": null
+      },
+      {
+        "id": "W84QZbW0F3KQNUguIsPH",
+        "title": "Chapter 7 - ଖଣିଜ ସମ୍ବଳ (Mineral Resources)",
+        "title_en": "Mineral Resources",
+        "title_or": "ଖଣିଜ ସମ୍ବଳ",
+        "subject": "geography",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeography%2FClass10_Geo_Ch07_Mineral_Resources.pdf?alt=media",
+        "number": null
+      },
+      {
+        "id": "qwNARHd5y1yYwoOE0YJK",
+        "title": "Rudhi O Lokabani",
+        "title_en": "Idioms and Proverbs",
+        "title_or": "ରୂଢ଼ି ଓ ଲୋକବାଣୀ",
         "subject": "odia_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia_Grammar%2FClass10_Grammar_Ch03_Rudhi_O_Lokabani.pdf?alt=media",
+        "number": null
       },
       {
         "id": "BvNQwxnTmLMWjAp278ee",
@@ -8461,7 +10510,9 @@ export const ROADMAP_DATA = [
         "title_en": "Janmavarvarakatha",
         "title_or": "ଜନ୍ମବର୍ବରକଥା",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch08_Janmavarrakatha.pdf?alt=media",
+        "number": 8
       },
       {
         "id": "G3TfWt0iAKomJmf5VmzX",
@@ -8469,7 +10520,9 @@ export const ROADMAP_DATA = [
         "title_en": "Baliyasi Kevalamishvarechha",
         "title_or": "ବଳୀୟସୀ କେବଳମୀଶ୍ୱରେଚ୍ଛା",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch09_Baliyesi_Kebalamishwarechha.pdf?alt=media",
+        "number": 9
       },
       {
         "id": "iBuhW5PeoGRE0FtOEir0",
@@ -8477,31 +10530,39 @@ export const ROADMAP_DATA = [
         "title_en": "Swami Vivekanandah",
         "title_or": "ସ୍ୱାମୀ ବିବେକାନନ୍ଦଃ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch10_Swami_Vivekananda.pdf?alt=media",
+        "number": 10
       },
       {
-        "id": "rlh2LCv1oPp08CXV0KGm",
-        "title": "AllThingsBrightAndBeautiful Ready",
-        "title_en": "All Things Bright and Beautiful",
-        "title_or": "ସମସ୍ତ ଉଜ୍ଜ୍ୱଳ ଓ ସୁନ୍ଦର ବସ୍ତୁ",
+        "id": "MXG5vkCK9P9HtJ1hHoNK",
+        "title": "VillageSong Ready",
+        "title_en": "Village Song",
+        "title_or": "ଗାଁ ଗୀତ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish%2FChapter%205%20-%20Village%20Song%2FC10_Eng_Ch5_VillageSong_Ready.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "NSkPtovh2SRgyFgkNoa6",
-        "title": "Namadhatu",
-        "title_en": "Denominative Roots",
-        "title_or": "ନାମଧାତୁ",
+        "id": "pqL3NGsv9WrhRHYaRxXk",
+        "title": "Nijanta",
+        "title_en": null,
+        "title_or": null,
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit_Grammar%2FClass10_SanGram_Ch05_Nijanta.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "GkmzoNORwf9iZNsQ39sN",
-        "title": "Noun Clauses and Relative Clauses",
-        "title_en": "Noun Clauses and Relative Clauses",
-        "title_or": "ବିଶେଷ୍ୟ ଉପବାକ୍ୟ ଏବଂ ସମ୍ବନ୍ଧବାଚକ ଉପବାକ୍ୟ",
+        "id": "twyOYkUTU1fa2fKpdV31",
+        "title": "Non finite Verb Forms",
+        "title_en": "Non finite Verb Forms",
+        "title_or": "ଅସମାପିକା କ୍ରିୟା ରୂପ",
         "subject": "english_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish_Grammar%2FClass10_EngGrammar_Ch04_Non_finite_Verb_Forms.pdf?alt=media",
+        "number": null
       },
       {
         "id": "fNy21816t8C3EMrsdP4S",
@@ -8509,23 +10570,9 @@ export const ROADMAP_DATA = [
         "title_en": "Excretion",
         "title_or": "ରେଚନ",
         "subject": "life_science",
-        "thumbnail": null
-      },
-      {
-        "id": "ZPtKirnDPw2XrvXmWKjA",
-        "title": "Chapter 5 - ବନ୍ୟ ପ୍ରାଣୀ ସମ୍ବଳ (Wildlife Resources)",
-        "title_en": "Wildlife Resources",
-        "title_or": "ବନ୍ୟ ପ୍ରାଣୀ ସମ୍ବଳ",
-        "subject": "geography",
-        "thumbnail": null
-      },
-      {
-        "id": "UeZElffwwGostNzfcHeo",
-        "title": "Chapter 6 - ଜଳ ସମ୍ବଳ (Water Resources)",
-        "title_en": "Water Resources",
-        "title_or": "ଜଳ ସମ୍ବଳ",
-        "subject": "geography",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FLife_science%2FClass10_LifeSci_Ch04_Excretion.pdf?alt=media",
+        "number": null
       },
       {
         "id": "MDyaRgkWMTnqEZbPTxc4",
@@ -8533,7 +10580,9 @@ export const ROADMAP_DATA = [
         "title_en": "Gender and Respect Sensitivity",
         "title_or": "ଲିଙ୍ଗ ଓ ସମ୍ମାନ ସମ୍ବେଦନଶୀଳତା",
         "subject": "vocational",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FVocational%2FClass10_Tourism_Ch03_Gender_and_Respect_Sensitivity.pdf?alt=media",
+        "number": 3
       },
       {
         "id": "s2PPYxrCapQkiIK4NA5S",
@@ -8541,7 +10590,9 @@ export const ROADMAP_DATA = [
         "title_en": "Chand Ka Jhingola",
         "title_or": "ଚାନ୍ଦ କା ଝିଙ୍ଗୋଲା",
         "subject": "hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi%2FClass10_Hindi_Ch04_Chand_Ka_Jhingola.pdf?alt=media",
+        "number": 4
       },
       {
         "id": "hN2uO4iyaCERFcPLmran",
@@ -8549,7 +10600,9 @@ export const ROADMAP_DATA = [
         "title_en": "Metals and Non-Metals",
         "title_or": "ଧାତୁ ଓ ଅଧାତୁ",
         "subject": "physical_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FPhysical_science%2Fchapter3.pdf?alt=media",
+        "number": 3
       },
       {
         "id": "xUCwgb2VnLdf0MAN22l5",
@@ -8557,7 +10610,9 @@ export const ROADMAP_DATA = [
         "title_en": "Shabd-Vichar - Word Analysis",
         "title_or": "ଶବ୍ଦ-ବିଚାର",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi_Grammar%2FClass10_HindiGrammar_Ch04_Shabd_Vichar.pdf?alt=media",
+        "number": 4
       },
       {
         "id": "F2D4CKuEkoyogm3kjPs5",
@@ -8565,7 +10620,9 @@ export const ROADMAP_DATA = [
         "title_en": "School's Goodbye",
         "title_or": "Farewell and Future Paths | ବିଦ୍ୟାଳୟର ବିଦାୟ - ଭବିଷ୍ୟତ ପାଇଁ ପ୍ରସ୍ତୁତି",
         "subject": "English",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": null,
+        "number": null
       },
       {
         "id": "2KW4iX3mVHfTXSlZG64b",
@@ -8573,7 +10630,9 @@ export const ROADMAP_DATA = [
         "title_en": "Seeds of Revenge: The Bullocks' Fate",
         "title_or": "ପ୍ରତିଶୋଧର ବୀଜ: ବଳଦମାନଙ୍କ ଭାଗ୍ୟ",
         "subject": "English",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": null,
+        "number": null
       }
     ]
   },
@@ -8586,7 +10645,9 @@ export const ROADMAP_DATA = [
         "title_en": "Janmabhumi",
         "title_or": "ଜନ୍ମଭୂମି",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia%2FClass10_Ch07_Janmabhumi.pdf?alt=media",
+        "number": 7
       },
       {
         "id": "W5UBvXOor7CVSkiDpduy",
@@ -8594,7 +10655,9 @@ export const ROADMAP_DATA = [
         "title_en": "Sabhyata O Bijnana",
         "title_or": "ସଭ୍ୟତା ଓ ବିଜ୍ଞାନ",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia%2FClass10_Ch08_Sabyata_O_Bijnana.pdf?alt=media",
+        "number": 8
       },
       {
         "id": "gG0SqPnMWEavJBSTAoNI",
@@ -8602,7 +10665,9 @@ export const ROADMAP_DATA = [
         "title_en": "Establishment of Separate Odisha Province",
         "title_or": "ସ୍ୱତନ୍ତ୍ର ଓଡ଼ିଶା ପ୍ରଦେଶର ପ୍ରତିଷ୍ଠା",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch10_Establishment_of_Separate_Odisha.pdf?alt=media",
+        "number": 10
       },
       {
         "id": "AVBlistqMpSRkKbhXHVj",
@@ -8610,7 +10675,9 @@ export const ROADMAP_DATA = [
         "title_en": "Merger of Princely States",
         "title_or": "ଦେଶୀୟ ରାଜ୍ୟମାନଙ୍କର ମିଶ୍ରଣ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch11_Merger_of_Princely_States.pdf?alt=media",
+        "number": 11
       },
       {
         "id": "Vyrf0RgzlevJNHNjE19h",
@@ -8618,15 +10685,39 @@ export const ROADMAP_DATA = [
         "title_en": "Merger of Garhjat States with Odisha",
         "title_or": "ଓଡ଼ିଶା ସହିତ ଗଡ଼ଜାତ ରାଜ୍ୟମାନଙ୍କର ମିଶ୍ରଣ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch12_Merger_of_Garjat_States_Odisha.pdf?alt=media",
+        "number": 12
       },
       {
-        "id": "bSKzdhrG8X2718jemnbO",
-        "title": "Natwa Satwa Bidhi O Asuddhi",
-        "title_en": "Natwa Vidhi, Shatwa Vidhi, and Common Errors",
-        "title_or": "‘ଣତ୍ବ’ ବିଧୂ, ‘ଷତ୍ବ’ ବିଧୂ ଓ ସାଧାରଣ ଅଶୁଦ୍ଧି",
+        "id": "QilqJ4bfigxjmM0wAMmH",
+        "title": "Chapter 8 - ଶକ୍ତି ସମ୍ବଳ (Energy Resources)",
+        "title_en": "Energy Resources",
+        "title_or": "ଶକ୍ତି ସମ୍ବଳ",
+        "subject": "geography",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeography%2FClass10_Geo_Ch08_Energy_Resources.pdf?alt=media",
+        "number": null
+      },
+      {
+        "id": "IjB57U76zskrQmjuI2yA",
+        "title": "Chapter 9 - କୃଷି (Agriculture)",
+        "title_en": "Agriculture",
+        "title_or": "କୃଷି",
+        "subject": "geography",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeography%2FClass10_Geo_Ch09_Agriculture.pdf?alt=media",
+        "number": null
+      },
+      {
+        "id": "mKClBmBGmqPPBXBUMBea",
+        "title": "Anubada Prakarana",
+        "title_en": "Translation",
+        "title_or": "ଅନୁବାଦ ପ୍ରକରଣ",
         "subject": "odia_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia_Grammar%2FClass10_Grammar_Ch04_Anubada_Prakarana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "PJV4LABzTYtG4VL6QWaN",
@@ -8634,7 +10725,9 @@ export const ROADMAP_DATA = [
         "title_en": "Vaigyanikah Dr. Abdul Kalamah",
         "title_or": "ବୈଜ୍ଞାନିକଃ ଡକ୍ଟର ଅବ୍ଦୁଲକଲାମଃ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch11_Scientist_Abdul_Kalam.pdf?alt=media",
+        "number": 11
       },
       {
         "id": "Zok7LYOORDXKRaPT6hmg",
@@ -8642,7 +10735,9 @@ export const ROADMAP_DATA = [
         "title_en": "Bhautikam Paryavaranam",
         "title_or": "ଭୌତିକଂ ପର୍ଯ୍ୟାବରଣମ୍",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch12_Bhautikam_Paryavaranam.pdf?alt=media",
+        "number": 12
       },
       {
         "id": "s936ZZ39BATtfDjuTBOS",
@@ -8650,15 +10745,9 @@ export const ROADMAP_DATA = [
         "title_en": "Shishuvatsalyam",
         "title_or": "ଶିଶୁବାତ୍ସଲ୍ୟମ୍",
         "subject": "sanskrit",
-        "thumbnail": null
-      },
-      {
-        "id": "CpNpm4NDo8pEQLSHCYm1",
-        "title": "ATigerInTheHouse Ready",
-        "title_en": null,
-        "title_or": null,
-        "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch13_Shishuvatsalyam.pdf?alt=media",
+        "number": 13
       },
       {
         "id": "cGAzdHqY6eyYgK2lqdOC",
@@ -8666,55 +10755,59 @@ export const ROADMAP_DATA = [
         "title_en": "Kapil Dev",
         "title_or": "କପିଳ ଦେବ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish%2FChapter%206%20-%20Kapil%20Dev%2FC10_Eng_Ch6_KapilDev_Ready.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "pqL3NGsv9WrhRHYaRxXk",
-        "title": "Nijanta",
-        "title_en": null,
-        "title_or": null,
+        "id": "25orOHbkJ8aVraDlwPIu",
+        "title": "TheBrook Ready",
+        "title_en": "The Brook",
+        "title_or": "ଝରଣା",
+        "subject": "english",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish%2FChapter%207%20-%20The%20Brook%2FC10_Eng_Ch7_TheBrook_Ready.pdf?alt=media",
+        "number": null
+      },
+      {
+        "id": "dx2FJG3J7PmGFsgxkKzz",
+        "title": "Sananta",
+        "title_en": "Desiderative Verbs",
+        "title_or": "ସାନନ୍ତ",
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit_Grammar%2FClass10_SanGram_Ch06_Sananta.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "Oy2cpnaN4FtvBDQbXsBa",
-        "title": "Parasmaipada Vidhana",
-        "title_en": "Parasmaipada Rules",
-        "title_or": "ପରସ୍ମୈପଦ ବିଧାନ",
+        "id": "CH3z1JCzaWffsz7sDCtq",
+        "title": "Yanganta Dhatu",
+        "title_en": "Yaṅ-ending Roots",
+        "title_or": "ୟଙ୍ଗନ୍ତ ଧାତୁ",
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit_Grammar%2FClass10_SanGram_Ch07_Yanganta_Dhatu.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "DlgkbWBs9ap13bfs8LJn",
-        "title": "Phrasal Verbs",
-        "title_en": "Phrasal Verbs",
-        "title_or": "ବାକ୍ୟାଂଶ କ୍ରିୟାପଦ",
+        "id": "gLEMovRTaQT7U5Ktksko",
+        "title": "Prepositions",
+        "title_en": "Prepositions",
+        "title_or": "ପୂର୍ବସର୍ଗ",
         "subject": "english_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish_Grammar%2FClass10_EngGrammar_Ch05_Prepositions.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "zti7Pcoic1HhlnFlsGxK",
-        "title": "Heredity and Evolution",
-        "title_en": "Heredity and Evolution",
-        "title_or": "ବଂଶାନୁକ୍ରମ ଓ ଅଭିବ୍ୟକ୍ତି",
+        "id": "PVqIhNgzghFKacVchjs1",
+        "title": "Control and Coordination",
+        "title_en": "Control and Coordination",
+        "title_or": "ନିୟନ୍ତ୍ରଣ ଓ ସମନ୍ୱୟ",
         "subject": "life_science",
-        "thumbnail": null
-      },
-      {
-        "id": "TmTesAXWxgfFIjTzX54p",
-        "title": "Chapter 7 - ଖଣିଜ ସମ୍ବଳ (Mineral Resources)",
-        "title_en": "Mineral Resources",
-        "title_or": "ଖଣିଜ ସମ୍ବଳ",
-        "subject": "geography",
-        "thumbnail": null
-      },
-      {
-        "id": "oZrBx2lV585y7SmUYjdC",
-        "title": "Chapter 8 - ଶକ୍ତି ସମ୍ବଳ (Energy Resources)",
-        "title_en": "Energy Resources",
-        "title_or": "ଶକ୍ତି ସମ୍ବଳ",
-        "subject": "geography",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FLife_science%2FClass10_LifeSci_Ch05_Control_and_Coordination.pdf?alt=media",
+        "number": null
       },
       {
         "id": "B6nLhX1BTCLG222BnbQG",
@@ -8722,7 +10815,9 @@ export const ROADMAP_DATA = [
         "title_en": "Asset Rights, Organization and Customer",
         "title_or": "ସମ୍ପତ୍ତି ଅଧିକାର, ସଂଗଠନ ଓ ଗ୍ରାହକ",
         "subject": "vocational",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FVocational%2FClass10_Tourism_Ch04_Asset_Rights_Org_and_Customer.pdf?alt=media",
+        "number": 4
       },
       {
         "id": "lFaqWqDLF4Fp0EhJ7FCf",
@@ -8730,7 +10825,9 @@ export const ROADMAP_DATA = [
         "title_en": "Need Ka Nirman Phir Phir",
         "title_or": "ନୀଡ଼ କା ନିର୍ମାଣ ଫିର୍ ଫିର୍",
         "subject": "hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi%2FClass10_Hindi_Ch05_Need_Ka_Nirman_Phir_Phir.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "vfXYwB9Po1rB4Aty4q3Y",
@@ -8738,7 +10835,9 @@ export const ROADMAP_DATA = [
         "title_en": "Carbon and its Compounds",
         "title_or": "କାର୍ବନ ଓ ଏହାର ଯୌଗିକ",
         "subject": "physical_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FPhysical_science%2Fchapter4.pdf?alt=media",
+        "number": 4
       },
       {
         "id": "hPL7VJI1fKYLpDMWW59m",
@@ -8746,7 +10845,9 @@ export const ROADMAP_DATA = [
         "title_en": "Shabd-Rachna - Word Formation",
         "title_or": "ଶବ୍ଦ-ରଚନା",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi_Grammar%2FClass10_HindiGrammar_Ch05_Shabd_Rachna.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "0QJoAt2ZBkGDDdO83woZ",
@@ -8754,7 +10855,9 @@ export const ROADMAP_DATA = [
         "title_en": "Roop-Vichar - Form Analysis",
         "title_or": "ରୂପ-ବିଚାର",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi_Grammar%2FClass10_HindiGrammar_Ch06_Roop_Vichar_Morphology.pdf?alt=media",
+        "number": 6
       },
       {
         "id": "PpOJxGT6q5qcbJvQIx6t",
@@ -8762,7 +10865,9 @@ export const ROADMAP_DATA = [
         "title_en": "The Beggar",
         "title_or": "ଭିକାରୀ",
         "subject": "English",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": null,
+        "number": null
       },
       {
         "id": "j5ym70mivqsTXHpAnMxJ",
@@ -8770,7 +10875,9 @@ export const ROADMAP_DATA = [
         "title_en": "Tangents to a Circle",
         "title_or": "ବୃତ୍ତର ସ୍ପର୍ଶକ",
         "subject": "geometry",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeometry%2FClass10_Geo_Ch03_Tangents_to_a_Circle.pdf?alt=media",
+        "number": 3
       },
       {
         "id": "ZNhThX6hmIa5GKYUDpIX",
@@ -8778,7 +10885,9 @@ export const ROADMAP_DATA = [
         "title_en": "Arithmetic Progression",
         "title_or": "ସମାନ୍ତର ପ୍ରଗତି",
         "subject": "algebra",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/chapters_pdf%2F1779075075351_C10_Alg_Ch3_ArithmeticProgression.pdf?alt=media&token=52cbde02-9562-47d2-85ad-282a7fb6ba37",
+        "number": 3
       }
     ]
   },
@@ -8791,7 +10900,9 @@ export const ROADMAP_DATA = [
         "title_en": "Matrubhasha O Lokashiksha",
         "title_or": "ମାତୃଭାଷା ଓ ଲୋକଶିକ୍ଷା",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia%2FClass10_Ch09_Matrubhasha_O_Lokasikhya.pdf?alt=media",
+        "number": 9
       },
       {
         "id": "EwPG1yUPysycbDHiHsNW",
@@ -8799,7 +10910,9 @@ export const ROADMAP_DATA = [
         "title_en": "Liberation of Goa and Puducherry",
         "title_or": "ଗୋଆ ଓ ପୁଦୁଚେରୀର ମୁକ୍ତି",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch13_Liberation_of_Goa_and_Puducherry.pdf?alt=media",
+        "number": 13
       },
       {
         "id": "dQHhTCPldi3muRPIANZK",
@@ -8807,7 +10920,9 @@ export const ROADMAP_DATA = [
         "title_en": "Post-Independence Indian Economy",
         "title_or": "ସ୍ଵାଧୀନତା ପରବର୍ତ୍ତୀ ଭାରତୀୟ ଅର୍ଥନୀତି",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch14_Post_Independence_Economy.pdf?alt=media",
+        "number": 14
       },
       {
         "id": "YvslIaTGW0d2ilOnmqpH",
@@ -8815,7 +10930,29 @@ export const ROADMAP_DATA = [
         "title_en": "Development of Science and Technology in India",
         "title_or": "ଭାରତରେ ବିଜ୍ଞାନ ଓ ବୈଷୟିକ ଜ୍ଞାନର ବିକାଶ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch15_Science_and_Technology_Development.pdf?alt=media",
+        "number": 15
+      },
+      {
+        "id": "xzW4ktAlw7BzGtQcZTSH",
+        "title": "Chapter 10 - ବିନିର୍ମାଣ ଉଦ୍ୟୋଗ (Manufacturing Industries)",
+        "title_en": "Manufacturing Industries",
+        "title_or": "বিନିର୍ମାଣ ଉଦ୍ୟୋଗ",
+        "subject": "geography",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeography%2FClass10_Geo_Ch10_Manufacturing_Industries.pdf?alt=media",
+        "number": null
+      },
+      {
+        "id": "JYgB8WRDmKMUIIvGf2eq",
+        "title": "Chapter 11 - ପରିବହନ, ଯୋଗାଯୋଗ ଏବଂ ବାଣିଜ୍ୟ (Transport, Communication and Trade)",
+        "title_en": "Transport, Communication and Trade",
+        "title_or": "ପରିବହନ, ଯୋଗାଯୋଗ ଏବଂ ବାଣିଜ୍ୟ",
+        "subject": "geography",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeography%2FClass10_Geo_Ch11_Transport_Communication_Trade.pdf?alt=media",
+        "number": null
       },
       {
         "id": "gXHG1bbogfLx7Xki26Wb",
@@ -8823,7 +10960,9 @@ export const ROADMAP_DATA = [
         "title_en": "Dehi Padapallavamudaram",
         "title_or": "ଦେହି ପଦପଲ୍ଲବମୁଦାରମ୍",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch14_Dehi_Padapallavamudaram.pdf?alt=media",
+        "number": 14
       },
       {
         "id": "PJUaODyXtCbW6OyQkEYb",
@@ -8831,7 +10970,9 @@ export const ROADMAP_DATA = [
         "title_en": "Sitayah Vanagamanam",
         "title_or": "ସୀତାୟାଃ ବନଗମନମ୍",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch15_Sitaya_Vanagamanam.pdf?alt=media",
+        "number": 15
       },
       {
         "id": "VpC8egX7tgEfzh4u9HpN",
@@ -8839,7 +10980,9 @@ export const ROADMAP_DATA = [
         "title_en": "Yudhishthirayakshasamvadah",
         "title_or": "ଯୁଧିଷ୍ଠିରଯକ୍ଷସମ୍ବାଦଃ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch16_Yudhisthira_Yaksha_Sambada.pdf?alt=media",
+        "number": 16
       },
       {
         "id": "class10_sanskrit_literature",
@@ -8847,71 +10990,69 @@ export const ROADMAP_DATA = [
         "title_en": "Class 10 Sanskrit Literature",
         "title_or": "ସଂସ୍କୃତ ସାହିତ୍ୟ ମଞ୍ଜରୀ",
         "subject": "Sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre-admin/o/Class%2010%2FSanskrit%2FClass_10_Sanskrit.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "U1sW3KZwNnE8I5W66XDU",
-        "title": "School sGoodbye Ready",
-        "title_en": "School Goodbye",
-        "title_or": "ବିଦ୍ୟାଳୟ ବିଦାୟ",
+        "id": "oIZWnuRA5uerdUx6ixMZ",
+        "title": "Air Pollution: A Hidden Menace",
+        "title_en": "Air Pollution: A Hidden Menace",
+        "title_or": "ବାୟୁ ପ୍ରଦୂଷଣ - ଏକ ଅଦୃଶ୍ୟ ବିପଦ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish%2FChapter%208%20-%20Air%20Pollution%2FC10_Eng_Ch8_AirPollutionAHiddenMenace_Ready.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "abMV8UUn3WggXxleJc4a",
-        "title": "TheBeggar Ready",
-        "title_en": "The Beggar",
-        "title_or": "ଭିକାରୀ",
+        "id": "j5UA5Fk8Xdn8NdMyUKnj",
+        "title": "Virtue Ready",
+        "title_en": "Virtue",
+        "title_or": "ସଦ୍‌ଗୁଣ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish%2FChapter%209%20-%20Virtue%2FC10_Eng_Ch9_Virtue_Ready.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "JPhWK5yJvwxmsS6pG8YL",
-        "title": "Practical Vocabulary",
-        "title_en": "Practical Vocabulary",
-        "title_or": "ବ୍ୟାବହାରିକ ଶବ୍ଦାବଳୀ",
+        "id": "NSkPtovh2SRgyFgkNoa6",
+        "title": "Namadhatu",
+        "title_en": "Denominative Roots",
+        "title_or": "ନାମଧାତୁ",
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit_Grammar%2FClass10_SanGram_Ch08_Namadhatu.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "gLEMovRTaQT7U5Ktksko",
-        "title": "Prepositions",
-        "title_en": "Prepositions",
-        "title_or": "ପୂର୍ବସର୍ଗ",
+        "id": "DlgkbWBs9ap13bfs8LJn",
+        "title": "Phrasal Verbs",
+        "title_en": "Phrasal Verbs",
+        "title_or": "ବାକ୍ୟାଂଶ କ୍ରିୟାପଦ",
         "subject": "english_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish_Grammar%2FClass10_EngGrammar_Ch06_Phrasal_Verbs.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "WHZAR4BSAWixmaPmHuqW",
-        "title": "Nutrition",
-        "title_en": "Nutrition",
-        "title_or": "ପୁଷ୍ଟି",
+        "id": "Jb1gxditmbVBJIubDjok",
+        "title": "Reproduction",
+        "title_en": "Reproduction",
+        "title_or": "ପ୍ରଜନନ",
         "subject": "life_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FLife_science%2FClass10_LifeSci_Ch06_Reproduction.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "8kGT8tSrIIFZ3sxoeyXt",
-        "title": "Our Environment",
-        "title_en": "Our Environment",
-        "title_or": "ଆମ ପରିବେଶ",
+        "id": "zti7Pcoic1HhlnFlsGxK",
+        "title": "Heredity and Evolution",
+        "title_en": "Heredity and Evolution",
+        "title_or": "ବଂଶାନୁକ୍ରମ ଓ ଅଭିବ୍ୟକ୍ତି",
         "subject": "life_science",
-        "thumbnail": null
-      },
-      {
-        "id": "1jmH72jocqaxorAsUSWO",
-        "title": "Chapter 9 - କୃଷି (Agriculture)",
-        "title_en": "Agriculture",
-        "title_or": "କୃଷି",
-        "subject": "geography",
-        "thumbnail": null
-      },
-      {
-        "id": "KCsa47tJoVBty27ucEv6",
-        "title": "Chapter 10 - ବିନିର୍ମାଣ ଉଦ୍ୟୋଗ (Manufacturing Industries)",
-        "title_en": "Manufacturing Industries",
-        "title_or": "ବିନିର୍ମାଣ ଉଦ୍ୟୋଗ",
-        "subject": "geography",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FLife_science%2FClass10_LifeSci_Ch07_Heredity_and_Evolution.pdf?alt=media",
+        "number": null
       },
       {
         "id": "wFtvKukEkpVJzb9UsLs2",
@@ -8919,7 +11060,9 @@ export const ROADMAP_DATA = [
         "title_en": "Kante Kam-se-Kam Mat Boao",
         "title_or": "କାଣ୍ଟେ କମ୍‌ସେ କମ୍ ମତ୍ ବୋଓ",
         "subject": "hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi%2FClass10_Hindi_Ch06_Kante_Kam_se_Kam_Mat_Boo.pdf?alt=media",
+        "number": 6
       },
       {
         "id": "jsRvOcIo9mU7fDNHYlPb",
@@ -8927,7 +11070,9 @@ export const ROADMAP_DATA = [
         "title_en": "Madhur Bhashan",
         "title_or": "ମଧୁର ଭାଷଣ",
         "subject": "hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi%2FClass10_Hindi_Ch07_Madhur_Bhashan.pdf?alt=media",
+        "number": 7
       },
       {
         "id": "vYSgSwsyfXAUGTHZPMHk",
@@ -8935,7 +11080,9 @@ export const ROADMAP_DATA = [
         "title_en": "Periodic Classification of Elements",
         "title_or": "ମୌଳିକଗୁଡ଼ିକର ପର୍ଯ୍ୟାୟୀ ଶ୍ରେଣୀକରଣ",
         "subject": "physical_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FPhysical_science%2Fchapter5.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "cTJS71eJCUrRonP7a9jN",
@@ -8943,7 +11090,9 @@ export const ROADMAP_DATA = [
         "title_en": "Vakya-Vichar - Sentence Analysis",
         "title_or": "ବାକ୍ୟ - ବିଚାର",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi_Grammar%2FClass10_HindiGrammar_Ch07_Vakya_Vichar.pdf?alt=media",
+        "number": 7
       },
       {
         "id": "1wvVdFQo01UhLkQRNzuX",
@@ -8951,7 +11100,9 @@ export const ROADMAP_DATA = [
         "title_en": "The Breaking of a Bond: The Aunt's Plea",
         "title_or": "ବନ୍ଧନ ଭାଙ୍ଗିବା: ଖୁଡ଼ୀଙ୍କ ଅନୁରୋଧ",
         "subject": "English",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": null,
+        "number": null
       },
       {
         "id": "pfX9lKk8VqugpEYvYsOu",
@@ -8959,7 +11110,9 @@ export const ROADMAP_DATA = [
         "title_en": "The First Judgment: Justice Prevails",
         "title_or": "ପ୍ରଥମ ରାୟ: ନ୍ୟାୟର ବିଜୟ",
         "subject": "English",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": null,
+        "number": null
       },
       {
         "id": "cHD1xEpJvTclMfvi5ZJH",
@@ -8967,7 +11120,9 @@ export const ROADMAP_DATA = [
         "title_en": "Trigonometry",
         "title_or": "ତ୍ରିକୋଣମିତି",
         "subject": "geometry",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeometry%2FClass10_Geo_Ch04_Trigonometry.pdf?alt=media",
+        "number": 4
       },
       {
         "id": "class10_hindi_literature",
@@ -8975,7 +11130,9 @@ export const ROADMAP_DATA = [
         "title_en": "हिन्दी सौरभ",
         "title_or": "Class 10 Hindi Literature",
         "subject": "Hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre-admin/o/Class%2010%2FHindi%2FClass_10_Hindi.pdf?alt=media",
+        "number": null
       },
       {
         "id": "lQX4qU8uY9Rjy5wrcUhX",
@@ -8983,7 +11140,9 @@ export const ROADMAP_DATA = [
         "title_en": "Probability",
         "title_or": "ସମ୍ଭାବ୍ୟତା",
         "subject": "algebra",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/chapters_pdf%2F1779074531470_C10_Alg_Ch4_Probability.pdf?alt=media&token=236fd5da-d472-4ead-a92e-4e12cf6a7233",
+        "number": 4
       }
     ]
   },
@@ -8996,7 +11155,9 @@ export const ROADMAP_DATA = [
         "title_en": "Naren ru Vivekananda",
         "title_or": "ନରେନ୍ରୁ ବିବେକାନନ୍ଦ",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia%2FClass10_Ch10_Narenru_Bivekananda.pdf?alt=media",
+        "number": 10
       },
       {
         "id": "pP8cBauCfw0n0JIWflaj",
@@ -9004,7 +11165,9 @@ export const ROADMAP_DATA = [
         "title_en": "Odia Sahitya Katha",
         "title_or": "ଓଡ଼ିଆ ସାହିତ୍ୟ କଥା",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia%2FClass10_Ch11_Odia_Sahitya_Katha.pdf?alt=media",
+        "number": 11
       },
       {
         "id": "BbXcUAtLrYxvRd2iM1ht",
@@ -9012,7 +11175,9 @@ export const ROADMAP_DATA = [
         "title_en": "Social Development",
         "title_or": "ସାମାଜିକ ବିକାଶ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch16_Social_Development_Odisha.pdf?alt=media",
+        "number": 16
       },
       {
         "id": "k9JDUP4Wtlsr4FPdDxaI",
@@ -9020,7 +11185,9 @@ export const ROADMAP_DATA = [
         "title_en": "Educational Development",
         "title_or": "ଶିକ୍ଷାର ବିକାଶ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch17_Educational_Development_Odisha.pdf?alt=media",
+        "number": 17
       },
       {
         "id": "DGWPPQGqNXNOhaBlZEwb",
@@ -9028,15 +11195,39 @@ export const ROADMAP_DATA = [
         "title_en": "Agricultural Development",
         "title_or": "କୃଷିର ବିକାଶ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch18_Agricultural_Development_Odisha.pdf?alt=media",
+        "number": 18
       },
       {
-        "id": "qwNARHd5y1yYwoOE0YJK",
-        "title": "Rudhi O Lokabani",
-        "title_en": "Idioms and Proverbs",
-        "title_or": "ରୂଢ଼ି ଓ ଲୋକବାଣୀ",
+        "id": "QY2Wvc3D43dNjzCg3mzV",
+        "title": "Chapter 12 - ବିପର୍ଯ୍ୟୟ ପରିଚାଳନା (Disaster Management)",
+        "title_en": "Disaster Management",
+        "title_or": "ବିପର୍ଯ୍ୟୟ ପରିଚାଳନା",
+        "subject": "geography",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeography%2FClass10_Geo_Ch12_Disaster_Management.pdf?alt=media",
+        "number": null
+      },
+      {
+        "id": "yfwwU6F8UuZclRugCUYt",
+        "title": "Chapter 13 - ଆର୍ଥନୀତିକ ବିକାଶ (Economic Development)",
+        "title_en": "Economic Development",
+        "title_or": "ଆର୍ଥନୀତିକ ବିକାଶ",
+        "subject": "geography",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeography%2FClass10_Geo_Ch13_Economic_Development.pdf?alt=media",
+        "number": null
+      },
+      {
+        "id": "BmrPG6YsY0WeoqZoUFzk",
+        "title": "Chhanda O Alankara",
+        "title_en": "Prosody and Figures of Speech",
+        "title_or": "ଛନ୍ଦ ଓ ଅଳଙ୍କାର",
         "subject": "odia_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia_Grammar%2FClass10_Grammar_Ch05_Chhanda_O_Alankara.pdf?alt=media",
+        "number": null
       },
       {
         "id": "6Fv1QQ7heAcLjsKwSfRy",
@@ -9044,7 +11235,9 @@ export const ROADMAP_DATA = [
         "title_en": "Mohamudgarah",
         "title_or": "ମୋହମୁଦ୍ଗରଃ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch17_Mohamudgarah.pdf?alt=media",
+        "number": 17
       },
       {
         "id": "QsL9fqpqDWxtiEMgqCgj",
@@ -9052,7 +11245,9 @@ export const ROADMAP_DATA = [
         "title_en": "Janani Gariyasi",
         "title_or": "ଜନନୀ ଗରୀୟସୀ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch18_Janani_Gariyasi.pdf?alt=media",
+        "number": 18
       },
       {
         "id": "K4DkLzrrZxlLdMhO8OvN",
@@ -9060,63 +11255,59 @@ export const ROADMAP_DATA = [
         "title_en": "Asadhyasadhanam",
         "title_or": "ଅସାଧ୍ୟସାଧନମ୍",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch19_Asadhyasadhanam.pdf?alt=media",
+        "number": 19
       },
       {
-        "id": "25orOHbkJ8aVraDlwPIu",
-        "title": "TheBrook Ready",
-        "title_en": "The Brook",
-        "title_or": "ଝରଣା",
+        "id": "U1sW3KZwNnE8I5W66XDU",
+        "title": "School sGoodbye Ready",
+        "title_en": "School Goodbye",
+        "title_or": "ବିଦ୍ୟାଳୟ ବିଦାୟ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish%2FChapter%2010%20-%20School's%20Goodbye%2FC10_Eng_Ch10_School_sGoodbye_Ready.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "tpioTGaUyNQlDeQRXPBw",
-        "title": "Samasa",
-        "title_en": null,
-        "title_or": null,
+        "id": "Oy2cpnaN4FtvBDQbXsBa",
+        "title": "Parasmaipada Vidhana",
+        "title_en": "Parasmaipada Rules",
+        "title_or": "ପରସ୍ମୈପଦ ବିଧାନ",
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit_Grammar%2FClass10_SanGram_Ch09_Parasmaipada_Vidhana.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "dx2FJG3J7PmGFsgxkKzz",
-        "title": "Sananta",
-        "title_en": "Desiderative Verbs",
-        "title_or": "ସାନନ୍ତ",
+        "id": "tV23aNM5otdokzL0l501",
+        "title": "Atmanepada Vidhana",
+        "title_en": "Atmanepada Rules",
+        "title_or": "ଆତ୍ମନେପଦ ବିଧାନ",
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit_Grammar%2FClass10_SanGram_Ch10_Atmanepada_Vidhana.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "4Sq0hC4lYY5D13a5JfwL",
-        "title": "Subject Verb Agreement",
-        "title_en": "Subject Verb Agreement",
-        "title_or": "କର୍ତ୍ତା-କ୍ରିୟା ସମନ୍ୱୟ",
+        "id": "GkmzoNORwf9iZNsQ39sN",
+        "title": "Noun Clauses and Relative Clauses",
+        "title_en": "Noun Clauses and Relative Clauses",
+        "title_or": "ବିଶେଷ୍ୟ ଉପବାକ୍ୟ ଏବଂ ସମ୍ବନ୍ଧବାଚକ ଉପବାକ୍ୟ",
         "subject": "english_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish_Grammar%2FClass10_EngGrammar_Ch07_Noun_Clauses_and_Relative_Clauses.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "Jb1gxditmbVBJIubDjok",
-        "title": "Reproduction",
-        "title_en": "Reproduction",
-        "title_or": "ପ୍ରଜନନ",
+        "id": "gknuEN2rccGYW4RiMvRw",
+        "title": "Sources of Energy",
+        "title_en": "Sources of Energy",
+        "title_or": "ଶକ୍ତିର ଉତ୍ସ",
         "subject": "life_science",
-        "thumbnail": null
-      },
-      {
-        "id": "gGZsJbeTp8L5qGOk4NC0",
-        "title": "Chapter 11 - ପରିବହନ, ଯୋଗାଯୋଗ ଏବଂ ବାଣିଜ୍ୟ (Transport, Communication and Trade)",
-        "title_en": "Transport, Communication and Trade",
-        "title_or": "ପରିବହନ, ଯୋଗାଯୋଗ ଏବଂ ବାଣିଜ୍ୟ",
-        "subject": "geography",
-        "thumbnail": null
-      },
-      {
-        "id": "GeoCh12DisasterMgmt10",
-        "title": "Chapter 12 - ବିପର୍ଯ୍ୟୟ ପରିଚାଳନା (Disaster Management)",
-        "title_en": "Disaster Management",
-        "title_or": "ବିପର୍ଯ୍ୟୟ ପରିଚାଳନା",
-        "subject": "geography",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FLife_science%2FClass10_LifeSci_Ch08_Sources_of_Energy.pdf?alt=media",
+        "number": null
       },
       {
         "id": "NFRvIs9SY2qHuUk5GpKU",
@@ -9124,7 +11315,9 @@ export const ROADMAP_DATA = [
         "title_en": "Health and Hygiene",
         "title_or": "ସ୍ୱାସ୍ଥ୍ୟ ଓ ପରିମଳ",
         "subject": "vocational",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FVocational%2FClass10_Tourism_Ch05_Health_and_Hygiene.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "hQ6eEOUKSxzbk1M6kJeR",
@@ -9132,7 +11325,9 @@ export const ROADMAP_DATA = [
         "title_en": "Bodh",
         "title_or": "ବୋଧ",
         "subject": "hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi%2FClass10_Hindi_Ch08_Bodh.pdf?alt=media",
+        "number": 8
       },
       {
         "id": "RCcFvgtfQscdEfx2ppWB",
@@ -9140,7 +11335,9 @@ export const ROADMAP_DATA = [
         "title_en": "Light - Reflection and Refraction",
         "title_or": "ଆଲୋକ– ପ୍ରତିଫଳନ ଓ ପ୍ରତିସରଣ",
         "subject": "physical_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FPhysical_science%2Fchapter6.pdf?alt=media",
+        "number": 6
       },
       {
         "id": "U9CEWL4QPAb14ZXUAzqH",
@@ -9148,7 +11345,9 @@ export const ROADMAP_DATA = [
         "title_en": "Viram Chinh - Punctuation Marks",
         "title_or": "ବିରାମ ଚିହ୍ନ",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi_Grammar%2FClass10_HindiGrammar_Ch08_Viram_Chinh.pdf?alt=media",
+        "number": 8
       },
       {
         "id": "fkyI0tF9qhaRVpaSr67X",
@@ -9156,7 +11355,9 @@ export const ROADMAP_DATA = [
         "title_en": "The Second Judgment: Reconciliation and Wisdom",
         "title_or": "ଦ୍ୱିତୀୟ ରାୟ: ମେଳ ଓ ଜ୍ଞାନ",
         "subject": "English",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": null,
+        "number": null
       }
     ]
   },
@@ -9169,7 +11370,9 @@ export const ROADMAP_DATA = [
         "title_en": "Katha",
         "title_or": "କାଠ",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia%2FClass10_Ch12_Katha.pdf?alt=media",
+        "number": 12
       },
       {
         "id": "hrK9pzFTsgjPPVDHK4YP",
@@ -9177,7 +11380,9 @@ export const ROADMAP_DATA = [
         "title_en": "Kalara Kapola Tale",
         "title_or": "କାଳର କପୋଳ ତଳେ",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia%2FClass10_Ch13_Kalara_Kapola_Tale.pdf?alt=media",
+        "number": 13
       },
       {
         "id": "s3UaHAByuszh0Ily1xK2",
@@ -9185,7 +11390,9 @@ export const ROADMAP_DATA = [
         "title_en": "Industrial Development",
         "title_or": "ଶିଳ୍ପର ବିକାଶ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch19_Industrial_Development_Odisha.pdf?alt=media",
+        "number": 19
       },
       {
         "id": "uQ0y5UX0pIHCB1uEQjee",
@@ -9193,7 +11400,9 @@ export const ROADMAP_DATA = [
         "title_en": "Infrastructure Development",
         "title_or": "ଭିଭିଭୂମିର ବିକାଶ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch20_Infrastructure_Development_Odisha.pdf?alt=media",
+        "number": 20
       },
       {
         "id": "2TSMGtdHUtndfLy0ZMPP",
@@ -9201,7 +11410,29 @@ export const ROADMAP_DATA = [
         "title_en": "Formation of New States",
         "title_or": "ନୂତନ ରାଜ୍ୟଗୁଡ଼ିକର ଗଠନ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch21_Reorganisation_of_States.pdf?alt=media",
+        "number": 21
+      },
+      {
+        "id": "RgkuV0iW4oeG2aUUCW6L",
+        "title": "Chapter 14 - ଦରବୃଦ୍ଧି ଓ ଆର୍ଥିକ ଯୋଜନା (Inflation and Financial Planning)",
+        "title_en": "Inflation and Financial Planning",
+        "title_or": "ଦରବୃଦ୍ଧି ଓ ଆର୍ଥିକ ଯୋଜନା",
+        "subject": "geography",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeography%2FClass10_Geo_Ch14_Price_Rise_Financial_Planning.pdf?alt=media",
+        "number": null
+      },
+      {
+        "id": "XRfJDvmktOOhlplrS9u6",
+        "title": "Chapter 15 - ଖାଉଟି ସଚେତନତା (Consumer Awareness)",
+        "title_en": "Consumer Awareness",
+        "title_or": "ଖାଉଟି ସଚେତନତା",
+        "subject": "geography",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeography%2FClass10_Geo_Ch15_Consumer_Awareness.pdf?alt=media",
+        "number": null
       },
       {
         "id": "hGwLArMQe333f3gdMndp",
@@ -9209,7 +11440,9 @@ export const ROADMAP_DATA = [
         "title_en": "Factual Reports",
         "title_or": "ତଥ୍ୟଭିତ୍ତିକ ବିବରଣୀ",
         "subject": "odia_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia_Grammar%2FClass10_Grammar_Ch06_Tathyabhittika_Bibarani.pdf?alt=media",
+        "number": null
       },
       {
         "id": "n3Ddlt5jUM7gIGIAJaU1",
@@ -9217,7 +11450,9 @@ export const ROADMAP_DATA = [
         "title_en": "Sannimitte Varam Tyagah",
         "title_or": "ସନ୍ନିମିତ୍ତେ ବରଂ ତ୍ୟାଗଃ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch20_Sannimitte_Varam_Tyaga.pdf?alt=media",
+        "number": 20
       },
       {
         "id": "fSm3GjfrrJtjvxryIHdX",
@@ -9225,7 +11460,9 @@ export const ROADMAP_DATA = [
         "title_en": "Buddhiryasya Balam Tasya",
         "title_or": "ବୁଦ୍ଧିର୍ଯସ୍ୟ ବଳଂ ତସ୍ୟ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch21_Buddhiryasya_Balam_Tasya.pdf?alt=media",
+        "number": 21
       },
       {
         "id": "a0xwC4esdaGVqhoacRCd",
@@ -9233,63 +11470,59 @@ export const ROADMAP_DATA = [
         "title_en": "Yashodehena Jivati",
         "title_or": "ଯଶୋଦେହେନ ଜୀବତି",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch22_Yashodehena_Jivati.pdf?alt=media",
+        "number": 22
       },
       {
-        "id": "pMsLFvy2i0JcoeWkIk4b",
-        "title": "TheVillageJudge Ready",
-        "title_en": "The Village Judge",
-        "title_or": "ଗ୍ରାମ ବିଚାରକ",
+        "id": "CpNpm4NDo8pEQLSHCYm1",
+        "title": "ATigerInTheHouse Ready",
+        "title_en": null,
+        "title_or": null,
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish%2FChapter%2011%20-%20A%20Tiger%20in%20the%20House%2FC10_Eng_Ch11_ATigerInTheHouse_Ready.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "ATSXUBG1qs8hhMzbI0ow",
-        "title": "TrystWithDestiny Ready",
-        "title_en": "Tryst With Destiny",
-        "title_or": "ନିୟତି ସହ ଭେଟ",
+        "id": "abMV8UUn3WggXxleJc4a",
+        "title": "TheBeggar Ready",
+        "title_en": "The Beggar",
+        "title_or": "ଭିକାରୀ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish%2FChapter%2012%20-%20The%20Beggar%2FC10_Eng_Ch12_TheBeggar_Ready.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "AyJyknRgVDBZ9xJYFl91",
-        "title": "Stri Pratyaya",
-        "title_en": "Feminine Suffixes",
-        "title_or": "ସ୍ତ୍ରୀ ପ୍ରତ୍ୟୟ",
+        "id": "2MHzsYooPQJvXshYwq77",
+        "title": "Vachya Prakarana",
+        "title_en": "Voice",
+        "title_or": "ବାଚ୍ୟ ପ୍ରକରଣ",
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit_Grammar%2FClass10_SanGram_Ch11_Vachya_Prakarana.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "MBepkKS891Hu1PaA6RIP",
-        "title": "Tense Revisited",
-        "title_en": "Tense Revisited",
-        "title_or": "କାଳର ପୁନରାଲୋଚନା",
+        "id": "CFYagyWavUlIHZBay0q7",
+        "title": "Adverb Clauses",
+        "title_en": "Adverb Clauses",
+        "title_or": "କ୍ରିୟାବିଶେଷଣ ଉପବାକ୍ୟ",
         "subject": "english_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish_Grammar%2FClass10_EngGrammar_Ch08_Adverb_Clauses.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "YILwHvMcyPII0LXrnAmJ",
-        "title": "Respiration",
-        "title_en": "Respiration",
-        "title_or": "ଶ୍ୱାସକ୍ରିୟା",
+        "id": "8kGT8tSrIIFZ3sxoeyXt",
+        "title": "Our Environment",
+        "title_en": "Our Environment",
+        "title_or": "ଆମ ପରିବେଶ",
         "subject": "life_science",
-        "thumbnail": null
-      },
-      {
-        "id": "QISTLcWQrEA1Ly13noYM",
-        "title": "Chapter 13 - ଆର୍ଥନୀତିକ ବିକାଶ (Economic Development)",
-        "title_en": "Economic Development",
-        "title_or": "ଆର୍ଥନୀତିକ ବିକାଶ",
-        "subject": "geography",
-        "thumbnail": null
-      },
-      {
-        "id": "nLOhAO54z3xvdo3xbg5I",
-        "title": "Chapter 14 - ଦରବୃଦ୍ଧି ଓ ଆର୍ଥିକ ଯୋଜନା (Inflation and Financial Planning)",
-        "title_en": "Inflation and Financial Planning",
-        "title_or": "ଦରବୃଦ୍ଧି ଓ ଆର୍ଥିକ ଯୋଜନା",
-        "subject": "geography",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FLife_science%2FClass10_LifeSci_Ch09_Our_Environment.pdf?alt=media",
+        "number": null
       },
       {
         "id": "I5ouNuduyRLg0oYK8cJQ",
@@ -9297,7 +11530,9 @@ export const ROADMAP_DATA = [
         "title_en": "Safety at Workplace",
         "title_or": "କର୍ମକ୍ଷେତ୍ରରେ ନିରାପତ୍ତା",
         "subject": "vocational",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FVocational%2FClass10_Tourism_Ch06_Safety_at_Workplace.pdf?alt=media",
+        "number": 6
       },
       {
         "id": "EgHEqCeDIjRaBu8RL65f",
@@ -9305,7 +11540,9 @@ export const ROADMAP_DATA = [
         "title_en": "Deshpremi Sanyasi",
         "title_or": "ଦେଶପ୍ରେମୀ ସନ୍ନ୍ୟାସୀ",
         "subject": "hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi%2FClass10_Hindi_Ch09_Deshpremi_Sanyasi.pdf?alt=media",
+        "number": 9
       },
       {
         "id": "yBsU83fVRBM0lGzhfG5N",
@@ -9313,7 +11550,9 @@ export const ROADMAP_DATA = [
         "title_en": "The Human Eye and the Colourful World",
         "title_or": "ମାନବ ଚକ୍ଷୁ ଓ ବର୍ଣ୍ଣଜଗତ",
         "subject": "physical_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FPhysical_science%2Fchapter7.pdf?alt=media",
+        "number": 7
       },
       {
         "id": "n37czbbJIKuJZ5kkHcNL",
@@ -9321,7 +11560,9 @@ export const ROADMAP_DATA = [
         "title_en": "Anuvad - Translation",
         "title_or": "ଅନୁବାଦ",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi_Grammar%2FClass10_HindiGrammar_Ch09_Anuvad.pdf?alt=media",
+        "number": 9
       },
       {
         "id": "p3taVwITKXE8JKMSn9hJ",
@@ -9329,7 +11570,9 @@ export const ROADMAP_DATA = [
         "title_en": "Nibandh-Lekhan - Essay Writing",
         "title_or": "ନିବନ୍ଧ-ଲେଖନ",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi_Grammar%2FClass10_HindiGrammar_Ch10_Nibandh_Lekhan.pdf?alt=media",
+        "number": 10
       },
       {
         "id": "uhPSaVykxg9MzSzpgRDf",
@@ -9337,7 +11580,9 @@ export const ROADMAP_DATA = [
         "title_en": "The Tiger Cub's Discovery",
         "title_or": "ବାଘ ଛୁଆର ଆବିଷ୍କାର",
         "subject": "English",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": null,
+        "number": null
       },
       {
         "id": "CVhIdp3uiQMoVg16mGNu",
@@ -9345,7 +11590,9 @@ export const ROADMAP_DATA = [
         "title_en": "The Zoo Encounter and The Bitter Truth",
         "title_or": "ଚିଡ଼ିଆଖାନାର ଭେଟ ଓ କଠୋର ସତ୍ୟ",
         "subject": "English",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": null,
+        "number": null
       },
       {
         "id": "4XpiLqgcg15qMNkQdgMm",
@@ -9353,7 +11600,9 @@ export const ROADMAP_DATA = [
         "title_en": "Mensuration",
         "title_or": "ପରିମିତି",
         "subject": "geometry",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeometry%2FClass10_Geo_Ch05_Mensuration.pdf?alt=media",
+        "number": 5
       },
       {
         "id": "zM3ZUo9MXaprYQbtlbC4",
@@ -9361,7 +11610,9 @@ export const ROADMAP_DATA = [
         "title_en": "Statistics",
         "title_or": "ପରିସଂଖ୍ୟାନ",
         "subject": "algebra",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/chapters_pdf%2F1779074611906_C10_Alg_Ch5_Statistics.pdf?alt=media&token=08e50b32-374d-4c02-9298-76d6c3de1aea",
+        "number": 5
       }
     ]
   },
@@ -9374,7 +11625,9 @@ export const ROADMAP_DATA = [
         "title_en": "Bela, Aswattha O Batabruksha",
         "title_or": "ବେଲ, ଅଶ୍ଵତ୍ଥ ଓ ବଟବୃକ୍ଷ",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia%2FClass10_Ch14_Bela_Aswattha_O_Batabrukshya.pdf?alt=media",
+        "number": 14
       },
       {
         "id": "vQvlL2irIdJSzjoAD6by",
@@ -9382,7 +11635,9 @@ export const ROADMAP_DATA = [
         "title_en": "Phalgu",
         "title_or": "ଫଲ୍ଗୁ",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia%2FClass10_Ch15_Falgu.pdf?alt=media",
+        "number": 15
       },
       {
         "id": "CZAmTu5rsc7xVtzk4SJM",
@@ -9390,7 +11645,9 @@ export const ROADMAP_DATA = [
         "title_en": "Constitutional Provisions",
         "title_or": "ସାମ୍ବିଧାନିକ ବ୍ୟବସ୍ଥା",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch22_Constitutional_Provisions.pdf?alt=media",
+        "number": 22
       },
       {
         "id": "43ebGPTuJLI1auumB1Wd",
@@ -9398,7 +11655,9 @@ export const ROADMAP_DATA = [
         "title_en": "Democracy in India (Election Process and Election Commission)",
         "title_or": "ଭାରତରେ ଗଣତନ୍ତ୍ର (ନିର୍ବାଚନ ପ୍ରକ୍ରିୟା ଓ ନିର୍ବାଚନ ଆୟୋଗ)",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch23_Election_Commission_and_Process.pdf?alt=media",
+        "number": 23
       },
       {
         "id": "mCqo2JEtMtD4CYkGGs4C",
@@ -9406,7 +11665,29 @@ export const ROADMAP_DATA = [
         "title_en": "Road Safety, Awareness and Fuel Conservation",
         "title_or": "ସଡ଼କ ନିରାପତ୍ତା, ସଚେତନତା ଓ ଇନ୍ଧନ ସଂରକ୍ଷଣ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch24_Road_Safety_and_Fuel_Conservation.pdf?alt=media",
+        "number": 24
+      },
+      {
+        "id": "5h5WkCQkxHEA6cIZbuIr",
+        "title": "Chapter 16 - ଦାରିଦ୍ର୍ୟ (Poverty)",
+        "title_en": "Poverty",
+        "title_or": "ଦାରିଦ୍ର୍ୟ",
+        "subject": "geography",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeography%2FClass10_Geo_Ch16_Poverty.pdf?alt=media",
+        "number": null
+      },
+      {
+        "id": "NCZGlaRFiso94CMAKuh2",
+        "title": "Chapter 17 - ବେକାରୀ (Unemployment)",
+        "title_en": "Unemployment",
+        "title_or": "ବେକାରୀ",
+        "subject": "geography",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeography%2FClass10_Geo_Ch17_Unemployment.pdf?alt=media",
+        "number": null
       },
       {
         "id": "PC8FHKNcMjQW961faQFL",
@@ -9414,7 +11695,9 @@ export const ROADMAP_DATA = [
         "title_en": "Note and Draft Preparation",
         "title_or": "ଟିପ୍‌ପଣୀ ଓ ଚିଠା ପ୍ରସ୍ତୁତି",
         "subject": "odia_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia_Grammar%2FClass10_Grammar_Ch07_Tippani_O_Chitha_Prastuti.pdf?alt=media",
+        "number": null
       },
       {
         "id": "Strdd1gmlwmiCYAaT6c2",
@@ -9422,7 +11705,9 @@ export const ROADMAP_DATA = [
         "title_en": "Hirakudabandhah",
         "title_or": "ହୀରାକୁଦବନ୍ଧଃ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch23_Hirakudabandha.pdf?alt=media",
+        "number": 23
       },
       {
         "id": "5PVzBRUtXuwhQMTX3nqe",
@@ -9430,7 +11715,9 @@ export const ROADMAP_DATA = [
         "title_en": "Parabuddhirbhayankari",
         "title_or": "ପରବୁଦ୍ଧିର୍ଭୟଙ୍କରୀ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch24_Parabuddhirbhavayankari.pdf?alt=media",
+        "number": 24
       },
       {
         "id": "mAjjDndizTtA46MSCvu5",
@@ -9438,39 +11725,49 @@ export const ROADMAP_DATA = [
         "title_en": "Sarvamsaha",
         "title_or": "ସର୍ବଂସହା",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch25_Sarbamsaha.pdf?alt=media",
+        "number": 25
       },
       {
-        "id": "MXG5vkCK9P9HtJ1hHoNK",
-        "title": "VillageSong Ready",
-        "title_en": "Village Song",
-        "title_or": "ଗାଁ ଗୀତ",
+        "id": "pMsLFvy2i0JcoeWkIk4b",
+        "title": "TheVillageJudge Ready",
+        "title_en": "The Village Judge",
+        "title_or": "ଗ୍ରାମ ବିଚାରକ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish%2FChapter%2013%20-%20The%20Village%20Judge%2FC10_Eng_Ch13_TheVillageJudge_Ready.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "j5UA5Fk8Xdn8NdMyUKnj",
-        "title": "Virtue Ready",
-        "title_en": "Virtue",
-        "title_or": "ସଦ୍‌ଗୁଣ",
+        "id": "vj31M0Mavg8DJajjqz2g",
+        "title": "AGrainAsBigAsAHen sEgg Ready",
+        "title_en": "A Grain As Big As A Hen's Egg",
+        "title_or": "କୁକୁଡ଼ା ଅଣ୍ଡା ପରି ଏକ ଶସ୍ୟ",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish%2FChapter%2014%20-%20A%20Grain%20As%20Big%20As%20A%20Hen's%20Egg%2FC10_Eng_Ch14_AGrainAsBigAsAHen_sEgg_Ready.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "jYLYELTjcSejLzdLCJKo",
-        "title": "Tadhita Prakarana",
-        "title_en": "Taddhita Suffixes",
-        "title_or": "ତଦ୍ଧିତ ପ୍ରକରଣ",
+        "id": "Q0q5BTuSGqzYm8Oz8QzI",
+        "title": "Anuvada Niyamabali",
+        "title_en": "Translation Rules",
+        "title_or": "ଅନୁବାଦ ନିୟମାବଳୀ",
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit_Grammar%2FClass10_SanGram_Ch12_Anuvada_Niyamabali.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "2MHzsYooPQJvXshYwq77",
-        "title": "Vachya Prakarana",
-        "title_en": "Voice",
-        "title_or": "ବାଚ୍ୟ ପ୍ରକରଣ",
+        "id": "GmpIgHGvqfBNVSvEyPM2",
+        "title": "Bhrama Sanshodhana",
+        "title_en": "Error Correction",
+        "title_or": "ଭ୍ରମ ସଂଶୋଧନ",
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit_Grammar%2FClass10_SanGram_Ch13_Bhrama_Sanshodhana.pdf?alt=media",
+        "number": null
       },
       {
         "id": "BqJFmhjUvJoEUFII2kly",
@@ -9478,31 +11775,19 @@ export const ROADMAP_DATA = [
         "title_en": "The Passive",
         "title_or": "କର୍ମବାଚ୍ୟ",
         "subject": "english_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish_Grammar%2FClass10_EngGrammar_Ch09_The_Passive.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "gknuEN2rccGYW4RiMvRw",
-        "title": "Sources of Energy",
-        "title_en": "Sources of Energy",
-        "title_or": "ଶକ୍ତିର ଉତ୍ସ",
+        "id": "yEpFBOFHNX07NnGyz7k3",
+        "title": "Conservation of Natural Resources",
+        "title_en": "Conservation of Natural Resources",
+        "title_or": "ପ୍ରାକୃତିକ ସମ୍ବଳର ସଂରକ୍ଷଣ",
         "subject": "life_science",
-        "thumbnail": null
-      },
-      {
-        "id": "3STbRkURjlVyKzj5AB6G",
-        "title": "Chapter 15 - ଖାଉଟି ସଚେତନତା (Consumer Awareness)",
-        "title_en": "Consumer Awareness",
-        "title_or": "ଖାଉଟି ସଚେତନତା",
-        "subject": "geography",
-        "thumbnail": null
-      },
-      {
-        "id": "I4WE9ipy66RHtmBCkotX",
-        "title": "Chapter 16 - ଦାରିଦ୍ର୍ୟ (Poverty)",
-        "title_en": "Poverty",
-        "title_or": "ଦାରିଦ୍ର୍ୟ",
-        "subject": "geography",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FLife_science%2FClass10_LifeSci_Ch10_Conservation_of_Natural_Resources.pdf?alt=media",
+        "number": null
       },
       {
         "id": "OPxrsZKNJFW1ElKitCWI",
@@ -9510,7 +11795,9 @@ export const ROADMAP_DATA = [
         "title_en": "Foreign and Regional Language",
         "title_or": "ବିଦେଶୀ ଓ ଆଞ୍ଚଳିକ ଭାଷା",
         "subject": "vocational",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FVocational%2FClass10_Tourism_Ch07_Foreign_and_Regional_Language.pdf?alt=media",
+        "number": 7
       },
       {
         "id": "Fwb6GmJuxQQ2AMiKTIwz",
@@ -9518,7 +11805,9 @@ export const ROADMAP_DATA = [
         "title_en": "Gillu",
         "title_or": "ଗିଲ୍ଲୁ",
         "subject": "hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi%2FClass10_Hindi_Ch10_Gillu.pdf?alt=media",
+        "number": 10
       },
       {
         "id": "BkI12z7DPpAaIozm4bKH",
@@ -9526,7 +11815,9 @@ export const ROADMAP_DATA = [
         "title_en": "Electricity",
         "title_or": "ବିଦ୍ଯୁତ୍",
         "subject": "physical_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FPhysical_science%2Fchapter8.pdf?alt=media",
+        "number": 8
       },
       {
         "id": "dId7gTh1jJoRH6JtHatH",
@@ -9534,7 +11825,9 @@ export const ROADMAP_DATA = [
         "title_en": "Apathit Path - Unseen Passages",
         "title_or": "ଅପଠିତ ପାଠ",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi_Grammar%2FClass10_HindiGrammar_Ch11_Apathit_Path.pdf?alt=media",
+        "number": 11
       },
       {
         "id": "SMh4xI6onYByBDWke0gm",
@@ -9542,7 +11835,9 @@ export const ROADMAP_DATA = [
         "title_en": "Timothy's Growing Pains",
         "title_or": "ଟିମୋଥିର ବୃଦ୍ଧି ଓ ପରିବର୍ତ୍ତନ",
         "subject": "English",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": null,
+        "number": null
       },
       {
         "id": "7Yukb86gfwmb9Bptpbwd",
@@ -9550,7 +11845,9 @@ export const ROADMAP_DATA = [
         "title_en": "Construction",
         "title_or": "ଅଙ୍କନ",
         "subject": "geometry",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeometry%2FClass10_Geo_Ch06_Construction.pdf?alt=media",
+        "number": 6
       },
       {
         "id": "cKl1PFkdrkgSnGH7AReP",
@@ -9558,7 +11855,9 @@ export const ROADMAP_DATA = [
         "title_en": "Co-ordinate Geometry",
         "title_or": "ସ୍ଥାନାଙ୍କ ଜ୍ୟାମିତି",
         "subject": "algebra",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/chapters_pdf%2F1779075040515_C10_Alg_Ch6_CoordinateGeometry.pdf?alt=media&token=d41c842f-2fd2-4b8d-8019-bf85f2b6fa99",
+        "number": 6
       }
     ]
   },
@@ -9571,7 +11870,9 @@ export const ROADMAP_DATA = [
         "title_en": "Konarka",
         "title_or": "କୋଣାର୍କ",
         "subject": "odia",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FOdia%2FClass10_Ch16_Konarka.pdf?alt=media",
+        "number": 16
       },
       {
         "id": "sN7vBKLN6Ral78MA3iXe",
@@ -9579,7 +11880,9 @@ export const ROADMAP_DATA = [
         "title_en": "India's relations with USA and Russia",
         "title_or": "ଭାରତର ଯୁକ୍ତରାଷ୍ଟ୍ର ଆମେରିକା ଓ ଋଷିଆ ସହିତ ସମ୍ପର୍କ",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch25_Foreign_Policy_USA_Russia.pdf?alt=media",
+        "number": 25
       },
       {
         "id": "7gF7jKw3togWA52Z4oZn",
@@ -9587,7 +11890,29 @@ export const ROADMAP_DATA = [
         "title_en": "India and its Neighbouring Countries",
         "title_or": "ଭାରତ ଓ ତାହାର ପଡ଼ୋଶୀ ରାଷ୍ଟ୍ର",
         "subject": "social_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHistory%2FClass10_HistPol_Ch26_India_and_Neighbouring_Countries.pdf?alt=media",
+        "number": 26
+      },
+      {
+        "id": "492gbyIpVp0d2YpyDxaX",
+        "title": "Chapter 18 - ଔଦ୍ଯୋଗୀକରଣ (Entrepreneurship)",
+        "title_en": "Entrepreneurship",
+        "title_or": "ଔଦ୍ଯୋଗୀକରଣ",
+        "subject": "geography",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeography%2FClass10_Geo_Ch18_Industrialization.pdf?alt=media",
+        "number": null
+      },
+      {
+        "id": "ZfB7GsaKQavoOkNBqhJK",
+        "title": "Chapter 19 - ଉଦ୍ୟୋଗ ପ୍ରତିଷ୍ଠା ପାଠ (Enterprise set-up)",
+        "title_en": "Enterprise set-up",
+        "title_or": "ଉଦ୍ୟୋଗ ପ୍ରତିଷ୍ଠା ପାଠ",
+        "subject": "geography",
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FGeography%2FClass10_Geo_Ch19_Setting_up_Enterprises.pdf?alt=media",
+        "number": null
       },
       {
         "id": "6klpHQ6PjQI7b7LHNLRU",
@@ -9595,7 +11920,9 @@ export const ROADMAP_DATA = [
         "title_en": "Kim Phalamasti Danasya",
         "title_or": "କିଂ ଫଳମସ୍ତି ଦାନସ୍ୟ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch26_Kim_Phalamasti_Danasya.pdf?alt=media",
+        "number": 26
       },
       {
         "id": "doCJveq8wnrDl6pV2zu8",
@@ -9603,7 +11930,9 @@ export const ROADMAP_DATA = [
         "title_en": "Ahinsacharanam",
         "title_or": "ଅହିଂସାଚରଣମ୍",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch27_Ahimsacharanam.pdf?alt=media",
+        "number": 27
       },
       {
         "id": "9gfMkXsN2qIlk3iaUOgo",
@@ -9611,63 +11940,49 @@ export const ROADMAP_DATA = [
         "title_en": "Asmakam Rashtriyadhvajah",
         "title_or": "ଅସ୍ମାକଂ ରାଷ୍ଟ୍ରିୟଧ୍ୱଜଃ",
         "subject": "sanskrit",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit%2FClass10_San_Ch28_Asmakam_Rashtradhwaja.pdf?alt=media",
+        "number": 28
       },
       {
-        "id": "9ipljxstd8IWuQGYHKGH",
-        "title": "WeAreSeven Ready",
-        "title_en": "We Are Seven",
-        "title_or": "ଆମେ ସାତ",
+        "id": "eEp8FUOklA6eNKU9V1XK",
+        "title": "AGreatSonOfIndia Ready",
+        "title_en": "A Great Son of India",
+        "title_or": "ଭାରତର ଜଣେ ମହାନ ପୁତ୍ର",
         "subject": "english",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish%2FChapter%2015%20-%20A%20Great%20Son%20of%20India%2FC10_Eng_Ch15_AGreatSonOfIndia_Ready.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "CH3z1JCzaWffsz7sDCtq",
-        "title": "Yanganta Dhatu",
-        "title_en": "Yaṅ-ending Roots",
-        "title_or": "ୟଙ୍ଗନ୍ତ ଧାତୁ",
+        "id": "JPhWK5yJvwxmsS6pG8YL",
+        "title": "Practical Vocabulary",
+        "title_en": "Practical Vocabulary",
+        "title_or": "ବ୍ୟାବହାରିକ ଶବ୍ଦାବଳୀ",
         "subject": "sanskrit_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FSanskrit_Grammar%2FClass10_SanGram_Ch14_Practical_Vocabulary.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "y5IAnhRM5Rz7X3qmn741",
-        "title": "Types of Sentences",
-        "title_en": "Types of Sentences",
-        "title_or": "ବାକ୍ୟ ପ୍ରକାରଭେଦ",
+        "id": "5SuzqhklTz5pPn4wTv2E",
+        "title": "Direct and Indirect Speech",
+        "title_en": "Direct and Indirect Speech",
+        "title_or": "ପ୍ରତ୍ୟକ୍ଷ ଓ ପରୋକ୍ଷ ଉକ୍ତି",
         "subject": "english_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FEnglish_Grammar%2FClass10_EngGrammar_Ch10_Direct_and_Indirect_Speech.pdf?alt=media",
+        "number": null
       },
       {
-        "id": "SIqN8U9fvVQfhCzwkWNi",
-        "title": "Transportation and Circulation",
-        "title_en": "Transportation and Circulation",
-        "title_or": "ପରିବହନ ଓ ସଞ୍ଚାଳନ",
+        "id": "FE7XoiswjRxPglXwvzwd",
+        "title": "Covid 19 Management",
+        "title_en": null,
+        "title_or": null,
         "subject": "life_science",
-        "thumbnail": null
-      },
-      {
-        "id": "ROtmb20WpiKRMKl72XJT",
-        "title": "Chapter 17 - ବେକାରୀ (Unemployment)",
-        "title_en": "Unemployment",
-        "title_or": "ବେକାରୀ",
-        "subject": "geography",
-        "thumbnail": null
-      },
-      {
-        "id": "SBPKyQxEbgjng85e8k96",
-        "title": "Chapter 18 - ଔଦ୍ଯୋଗୀକରଣ (Entrepreneurship)",
-        "title_en": "Entrepreneurship",
-        "title_or": "ଔଦ୍ଯୋଗୀକରଣ",
-        "subject": "geography",
-        "thumbnail": null
-      },
-      {
-        "id": "4Qft5SbVmYojrCjF79uj",
-        "title": "Chapter 19 - ଉଦ୍ୟୋଗ ପ୍ରତିଷ୍ଠା ପାଠ (Enterprise set-up)",
-        "title_en": "Enterprise set-up",
-        "title_or": "ଉଦ୍ୟୋଗ ପ୍ରତିଷ୍ଠା ପାଠ",
-        "subject": "geography",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FLife_science%2FClass10_LifeSci_Ch11_Covid_19_Management.pdf?alt=media",
+        "number": null
       },
       {
         "id": "JsDraftMrkHJqLAgRsUN",
@@ -9675,7 +11990,9 @@ export const ROADMAP_DATA = [
         "title_en": "Janani Janmabhumi",
         "title_or": "ଜନନୀ ଜନ୍ମଭୂମି",
         "subject": "hindi",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi%2FClass10_Hindi_Ch11_Janani_Janmabhoomi.pdf?alt=media",
+        "number": 11
       },
       {
         "id": "vIk5JIUpltQXmdbvknis",
@@ -9683,7 +12000,9 @@ export const ROADMAP_DATA = [
         "title_en": "Magnetic Effects of Electric Current",
         "title_or": "ବିଦ୍ୟୁତ୍ ସ୍ରୋତର ଚୁମ୍ବକୀୟ ପ୍ରଭାବ",
         "subject": "physical_science",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FPhysical_science%2Fchapter9.pdf?alt=media",
+        "number": 9
       },
       {
         "id": "V5PejpEA2ad9flrrrlrn",
@@ -9691,7 +12010,9 @@ export const ROADMAP_DATA = [
         "title_en": "Muhavare aur Kahavatein - Idioms and Proverbs",
         "title_or": "ମୁହାବରେ ଓ କାହାବତେଁ",
         "subject": "hindi_grammar",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": "https://firebasestorage.googleapis.com/v0/b/utkalskillcentre.firebasestorage.app/o/Chapter%20Wise%20Text%20Book%2FClass%2010%2FHindi_Grammar%2FClass10_HindiGrammar_Ch12_Muhavare_aur_Kahavaten.pdf?alt=media",
+        "number": 12
       },
       {
         "id": "ODVVKWJcEQU8OS5JV6nU",
@@ -9699,7 +12020,9 @@ export const ROADMAP_DATA = [
         "title_en": "Village Song",
         "title_or": "ଗ୍ରାମ୍ୟ ଗୀତ",
         "subject": "English",
-        "thumbnail": null
+        "thumbnail": null,
+        "pdfUrl": null,
+        "number": null
       }
     ]
   }

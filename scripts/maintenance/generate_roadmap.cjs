@@ -2,7 +2,7 @@ const admin = require('firebase-admin');
 const fs = require('fs');
 
 const { getFirestore } = require('firebase-admin/firestore');
-const serviceAccount = require('./utkal-admin-sdk.json');
+const serviceAccount = require('../../utkal-admin-sdk.json');
 
 // Check if app is already initialized
 const app = admin.apps.length === 0 
@@ -114,7 +114,9 @@ async function run() {
       title_en: data.title_en || null,
       title_or: data.title_or || null,
       subject: sub,
-      thumbnail: data.thumbnail || null
+      thumbnail: data.thumbnail || null,
+      pdfUrl: data.pdfUrl || null,
+      number: data.number ?? data.chapterNumber ?? null
     };
 
     if (!chaptersByClassAndSubject[classNum]) {
