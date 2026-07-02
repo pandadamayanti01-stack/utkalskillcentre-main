@@ -2,7 +2,59 @@ import React, { useState, useEffect, useRef } from 'react';
 import { collection, query, orderBy, onSnapshot, deleteDoc, doc, getDocs, where, Timestamp, limit, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db, auth } from '../../firebase';
 import { ChatMessage } from '../../types';
-import { Trash2, Shield, Search, AlertCircle, RefreshCw, Send, Paperclip, Loader2 } from 'lucide-react';
+import { Trash2, Shield, Search, AlertCircle, RefreshCw, Send, Paperclip, Loader2, Image, FileText, FileSpreadsheet, Presentation, Archive, File, Download } from 'lucide-react';
+
+const getFileDetails = (fileName: string, fileType: string) => {
+  const name = String(fileName || '').toLowerCase();
+  const type = String(fileType || '').toLowerCase();
+  if (type === 'image' || type.includes('image')) {
+    return {
+      icon: <Image size={18} className="text-emerald-400" />,
+      label: 'Image File',
+      color: 'text-emerald-400'
+    };
+  }
+  if (type === 'pdf' || name.endsWith('.pdf')) {
+    return {
+      icon: <FileText size={18} className="text-rose-400" />,
+      label: 'PDF Document',
+      color: 'text-rose-400'
+    };
+  }
+  if (type === 'word' || name.endsWith('.doc') || name.endsWith('.docx')) {
+    return {
+      icon: <FileText size={18} className="text-blue-400" />,
+      label: 'Word Document',
+      color: 'text-blue-400'
+    };
+  }
+  if (type === 'excel' || name.endsWith('.xls') || name.endsWith('.xlsx')) {
+    return {
+      icon: <FileSpreadsheet size={18} className="text-emerald-500" />,
+      label: 'Spreadsheet',
+      color: 'text-emerald-500'
+    };
+  }
+  if (type === 'ppt' || name.endsWith('.ppt') || name.endsWith('.pptx')) {
+    return {
+      icon: <Presentation size={18} className="text-orange-400" />,
+      label: 'Presentation',
+      color: 'text-orange-400'
+    };
+  }
+  if (type === 'zip' || name.endsWith('.zip') || name.endsWith('.rar')) {
+    return {
+      icon: <Archive size={18} className="text-amber-400" />,
+      label: 'Archive (ZIP)',
+      color: 'text-amber-400'
+    };
+  }
+  return {
+    icon: <File size={18} className="text-slate-400" />,
+    label: 'Document',
+    color: 'text-slate-400'
+  };
+};
 
 export const CommunityModerationTab: React.FC = () => {
   const [selectedClass, setSelectedClass] = useState<string>('class10');
@@ -171,11 +223,27 @@ export const CommunityModerationTab: React.FC = () => {
             const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
             const currentUser = auth.currentUser;
             
+            let fType = 'document';
+            const nameLower = file.name.toLowerCase();
+            if (file.type.startsWith('image/')) {
+              fType = 'image';
+            } else if (file.type.includes('pdf') || nameLower.endsWith('.pdf')) {
+              fType = 'pdf';
+            } else if (nameLower.endsWith('.doc') || nameLower.endsWith('.docx')) {
+              fType = 'word';
+            } else if (nameLower.endsWith('.xls') || nameLower.endsWith('.xlsx')) {
+              fType = 'excel';
+            } else if (nameLower.endsWith('.ppt') || nameLower.endsWith('.pptx')) {
+              fType = 'ppt';
+            } else if (nameLower.endsWith('.zip') || nameLower.endsWith('.rar')) {
+              fType = 'zip';
+            }
+
             await addDoc(collection(db, 'community'), {
               text: `Sent a file: ${file.name}`,
               fileUrl: downloadUrl,
               fileName: file.name,
-              fileType: file.type.startsWith('image/') ? 'image' : 'pdf',
+              fileType: fType,
               userId: currentUser?.uid || 'admin',
               userName: currentUser?.displayName || 'Administrator',
               userAvatar: currentUser?.photoURL || null,
@@ -266,31 +334,44 @@ export const CommunityModerationTab: React.FC = () => {
                       </span>
                     </div>
                     <p className="text-slate-300 whitespace-pre-wrap break-words">{msg.text}</p>
-                    {msg.fileUrl && (
-                      <div className="mt-2.5 p-3 rounded-xl bg-slate-950/40 border border-white/10 flex items-center justify-between gap-4 backdrop-blur-sm relative z-10 max-w-md">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30">
-                            {msg.fileType === 'image' ? (
-                              <Shield size={18} className="text-indigo-400" />
-                            ) : (
-                              <AlertCircle size={18} className="text-indigo-400" />
-                            )}
-                          </div>
-                          <div className="flex flex-col text-left">
-                            <span className="text-xs font-bold text-white max-w-[150px] truncate">{msg.fileName || 'document.pdf'}</span>
-                            <span className="text-[10px] text-slate-400 uppercase tracking-wider">{msg.fileType === 'image' ? 'Image File' : 'PDF Document'}</span>
+                    {msg.fileUrl && (() => {
+                      const fileDetails = getFileDetails(msg.fileName || '', msg.fileType || '');
+                      const isImage = msg.fileType === 'image' || (msg.fileName && /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(msg.fileName));
+                      return (
+                        <div className="mt-2.5 space-y-2 relative z-10 max-w-md">
+                          {isImage && (
+                            <div className="rounded-xl overflow-hidden border border-white/10 max-h-48 max-w-full flex items-center justify-center bg-black/20">
+                              <img 
+                                src={msg.fileUrl} 
+                                alt={msg.fileName || 'Uploaded image'} 
+                                className="object-cover max-h-48 w-full hover:scale-105 transition-transform duration-300 cursor-pointer"
+                                onClick={() => window.open(msg.fileUrl, '_blank')}
+                              />
+                            </div>
+                          )}
+                          
+                          <div className="p-3 rounded-xl bg-slate-950/40 border border-white/10 flex items-center justify-between gap-4 backdrop-blur-sm">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30">
+                                {fileDetails.icon}
+                              </div>
+                              <div className="flex flex-col text-left">
+                                <span className="text-xs font-bold text-white max-w-[150px] truncate">{msg.fileName || 'file'}</span>
+                                <span className="text-[10px] text-slate-400 uppercase tracking-wider">{fileDetails.label}</span>
+                              </div>
+                            </div>
+                            <a 
+                              href={msg.fileUrl} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="px-3 py-1.5 rounded-lg bg-indigo-500 hover:bg-indigo-400 text-white text-xs font-bold transition-all active:scale-95 flex items-center justify-center shadow-md shadow-indigo-950/50"
+                            >
+                              Download
+                            </a>
                           </div>
                         </div>
-                        <a 
-                          href={msg.fileUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="px-3 py-1.5 rounded-lg bg-indigo-500 hover:bg-indigo-400 text-white text-xs font-bold transition-all active:scale-95 flex items-center justify-center shadow-md shadow-indigo-950/50"
-                        >
-                          Download
-                        </a>
-                      </div>
-                    )}
+                      );
+                    })()}
                   </div>
                   <button
                     onClick={() => handleDeleteMessage(msg.id)}
@@ -310,7 +391,6 @@ export const CommunityModerationTab: React.FC = () => {
           type="file" 
           ref={fileInputRef} 
           onChange={handleFileChange} 
-          accept=".pdf,image/*" 
           className="hidden" 
         />
 
