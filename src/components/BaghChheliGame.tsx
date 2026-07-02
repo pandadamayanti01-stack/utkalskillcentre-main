@@ -9,6 +9,7 @@ interface BaghChheliGameProps {
   onBack: () => void;
   language?: 'en' | 'or';
   onXpEarned?: (amount: number) => void;
+  onOpenAdvisor?: (gameTitle: string) => void;
 }
 
 // 5x5 Board coordinate helpers (grid coordinates: row 0..4, col 0..4)
@@ -48,7 +49,7 @@ function getCoords(r: number, c: number) {
   };
 }
 
-export function BaghChheliGame({ user, onBack, language = 'or', onXpEarned }: BaghChheliGameProps) {
+export function BaghChheliGame({ user, onBack, language = 'or', onXpEarned, onOpenAdvisor }: BaghChheliGameProps) {
   const [mode, setMode] = useState<'select' | 'solo' | 'multiplayer'>('select');
   const [gameRole, setGameRole] = useState<'goats' | 'tigers' | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -553,14 +554,21 @@ export function BaghChheliGame({ user, onBack, language = 'or', onXpEarned }: Ba
       </div>
 
       {/* GUNDULU BUBBLE DIALOGUE */}
-      <div className="flex gap-3 items-center bg-slate-50 border border-slate-100 p-3.5 rounded-2xl relative shadow-inner">
+      <div 
+        onClick={() => onOpenAdvisor?.('ବାଘ-ଛେଳି ଖେଳ')}
+        className="flex gap-3 items-center bg-slate-50 border border-slate-100 p-3.5 rounded-2xl relative shadow-inner cursor-pointer hover:bg-slate-100 active:scale-98 transition-all"
+        title="ଗୁନ୍ଦୁଲୁ ସହ କଥା ହୁଅ (Ask Gundulu AI)"
+      >
         <div className="absolute top-1/2 -left-1.5 -translate-y-1/2 w-0 h-0 border-t-[5px] border-t-transparent border-r-[7px] border-r-slate-50 border-b-[5px] border-b-transparent" />
         <img 
           src="/gundulu-v3.png" 
           alt="Gundulu Coach" 
           className="w-10 h-10 object-contain shrink-0 border border-slate-200 bg-white rounded-full p-0.5" 
         />
-        <p className="text-[11px] sm:text-xs text-slate-600 font-bold leading-relaxed">{gunduluSpeech}</p>
+        <p className="text-[11px] sm:text-xs text-slate-600 font-bold leading-relaxed">
+          {gunduluSpeech}
+          <span className="block text-[9px] text-amber-500 font-extrabold mt-0.5">💡 Click to Ask Gundulu AI</span>
+        </p>
       </div>
 
       {/* SCOREBOARD STATUS HEADER */}

@@ -18,9 +18,10 @@ interface BahiPrusthaGameProps {
   onBack: () => void;
   language?: 'en' | 'or';
   onXpEarned?: (amount: number) => void;
+  onOpenAdvisor?: (gameTitle: string) => void;
 }
 
-export function BahiPrusthaGame({ user, onBack, onXpEarned }: BahiPrusthaGameProps) {
+export function BahiPrusthaGame({ user, onBack, onXpEarned, onOpenAdvisor }: BahiPrusthaGameProps) {
   // Navigation & Menu States
   const [selectedClass, setSelectedClass] = useState<number>(Number(user?.class?.replace(/\D/g, '')) || 5);
   const [activeMode, setActiveMode] = useState<'syllabus' | 'playbook'>('syllabus');
@@ -849,12 +850,17 @@ export function BahiPrusthaGame({ user, onBack, onXpEarned }: BahiPrusthaGamePro
               </div>
 
               {/* Gundulu Speech Bubble bubble */}
-              <div className="flex-1 bg-slate-950/60 border border-emerald-500/20 p-3 rounded-xl flex items-start gap-2.5">
+              <div 
+                onClick={() => onOpenAdvisor?.('ବହି ପୃଷ୍ଠା ଖେଳ')}
+                className="flex-1 bg-slate-950/60 border border-emerald-500/20 p-3 rounded-xl flex items-start gap-2.5 cursor-pointer hover:bg-slate-900/60 active:scale-98 transition-all"
+                title="ଗୁନ୍ଦୁଲୁ ସହ କଥା ହୁଅ (Ask Gundulu AI)"
+              >
                 <div className="w-8 h-8 rounded-full bg-slate-900 shrink-0 flex items-center justify-center border border-emerald-500/20 overflow-hidden">
                   <img src="/gundulu-v3.png" alt="Gundulu" className="h-full w-full object-contain p-0.5" />
                 </div>
                 <p className="text-[11px] text-emerald-300 leading-snug font-black">
                   {gunduluSpeech}
+                  <span className="block text-[8px] text-amber-400 font-extrabold mt-1 uppercase tracking-wider">💡 Click to Ask Gundulu AI</span>
                 </p>
               </div>
             </div>

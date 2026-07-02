@@ -1298,3 +1298,37 @@ export function checkPromptSafety(contents: any[]): { safe: boolean; reason?: st
 
   return { safe: true };
 }
+
+export async function askGunduluGameAdvisor(
+  gameId: string,
+  studentClass: string,
+  messages: { role: 'user' | 'assistant'; content: string }[]
+): Promise<string> {
+  try {
+    const chatHistory = messages.map(msg => ({
+      role: msg.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: msg.content }]
+    }));
+
+    const response = await fetch('/api/ai/game-chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: chatHistory,
+        gameId,
+        class: studentClass
+      })
+    });
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.error || 'Game Advisor request failed');
+    }
+
+    const data = await response.json();
+    return data.text || '';
+  } catch (error: any) {
+    console.error("Error in askGunduluGameAdvisor:", error);
+    return "ମୁଁ ଦୟାକରି ଏହାକୁ ପୁଣି ଚେଷ୍ଟା କରିବି। (Game Advisor Error)";
+  }
+}

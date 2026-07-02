@@ -8,6 +8,7 @@ interface KaudiGameProps {
   onBack: () => void;
   language?: 'en' | 'or';
   onXpEarned?: (amount: number) => void;
+  onOpenAdvisor?: (gameTitle: string) => void;
 }
 
 interface QuizQuestion {
@@ -17,7 +18,7 @@ interface QuizQuestion {
   subj: 'math' | 'odia';
 }
 
-export function KaudiGame({ user, onBack, onXpEarned }: KaudiGameProps) {
+export function KaudiGame({ user, onBack, onXpEarned, onOpenAdvisor }: KaudiGameProps) {
   const [gameState, setGameState] = useState<'menu' | 'playing' | 'quiz' | 'gameover'>('menu');
   const [playerPosition, setPlayerPosition] = useState<number>(0); // 0 to 20
   const [rollsCount, setRollsCount] = useState<number>(0);
@@ -37,16 +38,42 @@ export function KaudiGame({ user, onBack, onXpEarned }: KaudiGameProps) {
   const totalTiles = 20;
   const maxRolls = 12;
 
-  // Simple inline syllabus question bank (Class 5-10 standard)
-  const quizBank: QuizQuestion[] = [
-    { q: "x + y = 6 ଏବଂ x - y = 2 ହେଲେ, x ର ମାନ କେତେ?", opts: ["x = 4", "x = 3", "x = 2", "x = 5"], ans: 0, subj: 'math' },
-    { q: "ଯଦି D = 0 ହୁଏ, ତେବେ ସମୀକରଣର କେତୋଟି ସମାଧାନ ରହିବ?", opts: ["କୌଣସି ସମାଧାନ ନାହିଁ", "ଅନନ୍ୟ ସମାଧାନ", "ଅସୀମ ସମାଧାନ", "ଦୁଇଟି ସମାଧାନ"], ans: 2, subj: 'math' },
-    { q: "‘କୃତିତ୍ୱ’ ଶବ୍ଦର ଶୁଦ୍ଧ ବନାନ କେଉଁଟି?", opts: ["କୃତିତ୍ଵ", "କୃତିତ୍ୟ", "କୃତ୍ତିତ୍ବ", "କୃତିତ୍ବ"], ans: 3, subj: 'odia' },
-    { q: "‘ଧନ’ ର ବିପରୀତ ଶବ୍ଦ କେଉଁଟି?", opts: ["ନିର୍ଦ୍ଧନ", "ଦରିଦ୍ର", "ଗରିବ", "ଟଙ୍କା"], ans: 0, subj: 'odia' },
-    { q: "| 3  2 | / | 1  4 | ଡିଟରମିନାଣ୍ଟ ର ମୂଲ୍ୟ କେତେ?", opts: ["10", "14", "2", "-10"], ans: 0, subj: 'math' },
-    { q: "‘ସାବାସ’ ଶବ୍ଦଟି କେଉଁ ପ୍ରକାର ଅବ୍ୟୟ?", opts: ["ଭାବସୂଚକ", "ସମ୍ବୋଧନସୂଚକ", "ବିଭକ୍ତିସୂଚକ", "ସାଦୃଶ୍ୟସୂଚକ"], ans: 0, subj: 'odia' },
-    { q: "ସମାନ୍ତର ପ୍ରଗତି (AP) ରେ nth ପଦର ସୂତ୍ର କଣ?", opts: ["a + nd", "a + (n-1)d", "a + (n+1)d", "n/2(2a + d)"], ans: 1, subj: 'math' },
-  ];
+  const classDigit = Number(user?.class?.replace(/\D/g, '')) || 5;
+
+  // Class-specific syllabus question bank
+  const quizBank: QuizQuestion[] = React.useMemo(() => {
+    if (classDigit <= 5) {
+      return [
+        { q: "୫ + ୭ କେତେ ହେବ?", opts: ["୧୦", "୧୨", "୧୧", "୧୩"], ans: 1, subj: 'math' },
+        { q: "୪ × ୩ ର ମାନ କେତେ?", opts: ["୧୨", "୧୦", "୧୪", "୮"], ans: 0, subj: 'math' },
+        { q: "‘ଦିନ’ ର ବିପରୀତ ଶବ୍ଦ କେଉଁଟି?", opts: ["ସନ୍ଧ୍ୟା", "ସକାଳ", "ରାତି", "ଦିପହର"], ans: 2, subj: 'odia' },
+        { q: "‘ବଡ଼’ ର ବିପରୀତ ଶବ୍ଦ କେଉଁଟି?", opts: ["ସାନ", "ଛୋଟ", "ଧନୀ", "ଉଚ୍ଚ"], ans: 0, subj: 'odia' },
+        { q: "୧୫ - ୬ କେତେ ହେବ?", opts: ["୮", "୯", "୭", "୧୦"], ans: 1, subj: 'math' },
+        { q: "‘ହସ’ ର ବିପରୀତ ଶବ୍ଦ କେଉଁଟି?", opts: ["ଖୁସି", "ଦୁଃଖ", "କାନ୍ଦ", "ରାଗ"], ans: 2, subj: 'odia' },
+        { q: "ଗୋଟିଏ ତ୍ରିଭୁଜର କେତୋଟି କୋଣ ଥାଏ?", opts: ["୨", "୩", "୪", "୫"], ans: 1, subj: 'math' }
+      ];
+    } else if (classDigit <= 8) {
+      return [
+        { q: "x + ୫ = ୧୨ ହେଲେ, x ର ମାନ କେତେ?", opts: ["୫", "୭", "୬", "୮"], ans: 1, subj: 'math' },
+        { q: "୨/୫ + ୧/୫ ର ଯୋଗଫଳ କେତେ?", opts: ["୩/୫", "୩/୧୦", "୧/୫", "୪/୫"], ans: 0, subj: 'math' },
+        { q: "‘ଗଛ’ ର ପ୍ରତିଶବ୍ଦ କେଉଁଟି?", opts: ["ଫୁଲ", "ବୃକ୍ଷ", "ଲତା", "ପତ୍ର"], ans: 1, subj: 'odia' },
+        { q: "‘ଧନ’ ର ବିପରୀତ ଶବ୍ଦ କେଉଁଟି?", opts: ["ନିର୍ଦ୍ଧନ", "ଦରିଦ୍ର", "ଗରିବ", "କାଙ୍ଗାଳ"], ans: 0, subj: 'odia' },
+        { q: "୩x = ୧୮ ହେଲେ, x ର ମାନ କେତେ?", opts: ["୫", "୬", "୪", "୭"], ans: 1, subj: 'math' },
+        { q: "‘ଶୀଘ୍ର’ ର ବିପରୀତ ଶବ୍ଦ କେଉଁଟି?", opts: ["ଧୀରେ", "ବିଳମ୍ବ", "ଶୂନ୍ୟ", "ତୁରନ୍ତ"], ans: 1, subj: 'odia' },
+        { q: "ବର୍ଗକ୍ଷେତ୍ରର କେତୋଟି ବାହୁ ଥାଏ?", opts: ["୩", "୪", "୫", "୬"], ans: 1, subj: 'math' }
+      ];
+    } else {
+      return [
+        { q: "x + y = 6 ଏବଂ x - y = 2 ହେଲେ, x ର ମାନ କେତେ?", opts: ["x = 4", "x = 3", "x = 2", "x = 5"], ans: 0, subj: 'math' },
+        { q: "ଯଦି D = 0 ହୁଏ, ତେବେ ସମୀକରଣର କେତୋଟି ସମାଧାନ ରହିବ?", opts: ["କୌଣସି ସମାଧାନ ନାହିଁ", "ଅନନ୍ୟ ସମାଧାନ", "ଅସୀମ ସମାଧାନ", "ଦୁଇଟି ସମାଧାନ"], ans: 2, subj: 'math' },
+        { q: "‘କୃତିତ୍ୱ’ ଶବ୍ଦର ଶୁଦ୍ଧ ବନାନ କେଉଁଟି?", opts: ["କୃତିତ୍ଵ", "କୃତିତ୍ୟ", "କୃତ୍ତିତ୍ବ", "କୃତିତ୍ବ"], ans: 3, subj: 'odia' },
+        { q: "‘ଧନ’ ର ବିପରୀତ ଶବ୍ଦ କେଉଁଟି?", opts: ["ନିର୍ଦ୍ଧନ", "ଦରିଦ୍ର", "ଗରିବ", "ଟଙ୍କା"], ans: 0, subj: 'odia' },
+        { q: "| 3  2 | / | 1  4 | ଡିଟରମିନାଣ୍ଟ ର ମୂଲ୍ୟ କେତେ?", opts: ["10", "14", "2", "-10"], ans: 0, subj: 'math' },
+        { q: "‘ସାବାସ’ ଶବ୍ଦଟି କେଉଁ ପ୍ରକାର ଅବ୍ୟୟ?", opts: ["ଭାବସୂଚକ", "ସମ୍ବୋଧନସୂଚକ", "ବିଭକ୍ତିସୂଚକ", "ସାଦୃଶ୍ୟସୂଚକ"], ans: 0, subj: 'odia' },
+        { q: "ସମାନ୍ତର ପ୍ରଗତି (AP) ରେ nth ପଦର ସୂତ୍ର କଣ?", opts: ["a + nd", "a + (n-1)d", "a + (n+1)d", "n/2(2a + d)"], ans: 1, subj: 'math' }
+      ];
+    }
+  }, [classDigit]);
 
   // Synthesizer
   const playSynthSound = (type: 'shake' | 'bounce' | 'correct' | 'wrong' | 'victory' | 'lose') => {
@@ -345,14 +372,21 @@ export function KaudiGame({ user, onBack, onXpEarned }: KaudiGameProps) {
       </div>
 
       {/* GUNDULU DIALOGUE */}
-      <div className="flex gap-3 items-center bg-slate-50 border border-slate-100 p-3.5 rounded-2xl relative shadow-inner">
+      <div 
+        onClick={() => onOpenAdvisor?.('କଉଡ଼ି ଖେଳ')}
+        className="flex gap-3 items-center bg-slate-50 border border-slate-100 p-3.5 rounded-2xl relative shadow-inner cursor-pointer hover:bg-slate-100 active:scale-98 transition-all"
+        title="ଗୁନ୍ଦୁଲୁ ସହ କଥା ହୁଅ (Ask Gundulu AI)"
+      >
         <div className="absolute top-1/2 -left-1.5 -translate-y-1/2 w-0 h-0 border-t-[5px] border-t-transparent border-r-[7px] border-r-slate-50 border-b-[5px] border-b-transparent" />
         <img 
           src="/gundulu-v3.png" 
           alt="Gundulu Coach" 
           className="w-10 h-10 object-contain shrink-0 border border-slate-200 bg-white rounded-full p-0.5" 
         />
-        <p className="text-[11px] sm:text-xs text-slate-600 font-bold leading-relaxed">{gunduluSpeech}</p>
+        <p className="text-[11px] sm:text-xs text-slate-600 font-bold leading-relaxed">
+          {gunduluSpeech}
+          <span className="block text-[9px] text-amber-500 font-extrabold mt-0.5">💡 Click to Ask Gundulu AI</span>
+        </p>
       </div>
 
       {gameState === 'menu' && (

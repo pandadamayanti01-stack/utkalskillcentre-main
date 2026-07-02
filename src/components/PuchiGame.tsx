@@ -8,6 +8,7 @@ interface PuchiGameProps {
   onBack: () => void;
   language?: 'en' | 'or';
   onXpEarned?: (amount: number) => void;
+  onOpenAdvisor?: (gameTitle: string) => void;
 }
 
 interface BeatNote {
@@ -17,7 +18,7 @@ interface BeatNote {
   text: string; // "ତା", "ଧିନ୍", "ପୁଚି", "ନା"
 }
 
-export function PuchiGame({ user, onBack, onXpEarned }: PuchiGameProps) {
+export function PuchiGame({ user, onBack, onXpEarned, onOpenAdvisor }: PuchiGameProps) {
   const [gameState, setGameState] = useState<'menu' | 'playing' | 'gameover'>('menu');
   const [score, setScore] = useState<number>(0);
   const [streak, setStreak] = useState<number>(0);
@@ -177,7 +178,9 @@ export function PuchiGame({ user, onBack, onXpEarned }: PuchiGameProps) {
     setBalance(100);
     setNotes([]);
     nextNoteId.current = 0;
-    setGunduluSpeech('ଚାଲ ପୁଚି ଗୀତରେ ଗୋଡ଼ ମିଳାଇବା! ହେଇ ଆସିଲା ବିଟ୍!');
+    const classDigit = Number(user?.class?.replace(/\D/g, '')) || 5;
+    const spawnInterval = classDigit <= 5 ? 1500 : classDigit <= 8 ? 1200 : 900;
+    const fallSpeed = classDigit <= 5 ? 0.5 : classDigit <= 8 ? 0.8 : 1.1;
 
     // Spawning notes
     spawnTimerRef.current = setInterval(() => {
@@ -185,7 +188,7 @@ export function PuchiGame({ user, onBack, onXpEarned }: PuchiGameProps) {
       const syllables = ['ତା', 'ଧିନ୍', 'ପୁଚି', 'ନା', 'ଖେଳ', 'ଗୁନ୍ଦୁଲୁ'];
       const text = syllables[Math.floor(Math.random() * syllables.length)];
       setNotes(prev => [...prev, { id: nextNoteId.current++, lane, y: 0, text }]);
-    }, 1200);
+    }, spawnInterval);
 
     // Animation frame for sliding notes down
     let lastTime = performance.now();
@@ -198,7 +201,7 @@ export function PuchiGame({ user, onBack, onXpEarned }: PuchiGameProps) {
         let missedCount = 0;
 
         prev.forEach(note => {
-          const nextY = note.y + 0.8 * delta; // speed factor
+          const nextY = note.y + fallSpeed * delta; // class-specific speed factor
           
           // Target hit zone is y=90..95. Miss threshold is y > 105.
           if (nextY > 105) {
@@ -389,14 +392,21 @@ export function PuchiGame({ user, onBack, onXpEarned }: PuchiGameProps) {
       </div>
 
       {/* GUNDULU Dialogue Bubble */}
-      <div className="flex gap-3 items-center bg-slate-50 border border-slate-100 p-3.5 rounded-2xl relative shadow-inner">
+      <div 
+        onClick={() => onOpenAdvisor?.('ପୁଚି ଖେଳ')}
+        className="flex gap-3 items-center bg-slate-50 border border-slate-100 p-3.5 rounded-2xl relative shadow-inner cursor-pointer hover:bg-slate-100 active:scale-98 transition-all"
+        title="ଗୁନ୍ଦୁଲୁ ସହ କଥା ହୁଅ (Ask Gundulu AI)"
+      >
         <div className="absolute top-1/2 -left-1.5 -translate-y-1/2 w-0 h-0 border-t-[5px] border-t-transparent border-r-[7px] border-r-slate-50 border-b-[5px] border-b-transparent" />
         <img 
           src="/gundulu-v3.png" 
           alt="Gundulu Coach" 
           className="w-10 h-10 object-contain shrink-0 border border-slate-200 bg-white rounded-full p-0.5" 
         />
-        <p className="text-[11px] sm:text-xs text-slate-600 font-bold leading-relaxed">{gunduluSpeech}</p>
+        <p className="text-[11px] sm:text-xs text-slate-600 font-bold leading-relaxed">
+          {gunduluSpeech}
+          <span className="block text-[9px] text-amber-500 font-extrabold mt-0.5">💡 Click to Ask Gundulu AI</span>
+        </p>
       </div>
 
       {gameState === 'menu' && (

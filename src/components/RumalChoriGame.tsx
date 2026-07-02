@@ -8,6 +8,7 @@ interface RumalChoriGameProps {
   onBack: () => void;
   language?: 'en' | 'or';
   onXpEarned?: (amount: number) => void;
+  onOpenAdvisor?: (gameTitle: string) => void;
 }
 
 interface Character {
@@ -18,7 +19,7 @@ interface Character {
   isPlayer: boolean;
 }
 
-export function RumalChoriGame({ user, onBack, onXpEarned }: RumalChoriGameProps) {
+export function RumalChoriGame({ user, onBack, onXpEarned, onOpenAdvisor }: RumalChoriGameProps) {
   const [gameState, setGameState] = useState<'menu' | 'playing' | 'gameover'>('menu');
   const [round, setRound] = useState<number>(1);
   const [score, setScore] = useState<number>(0);
@@ -214,9 +215,12 @@ export function RumalChoriGame({ user, onBack, onXpEarned }: RumalChoriGameProps
     setIsThiefRunning(false);
     setStatusMessage(targetCharId === 0 ? 'ରୁମାଲ୍ ଆପଣଙ୍କ ପଛରେ ପଡ଼ିଛି! ତୁରନ୍ତ ଟ୍ୟାପ୍ କରନ୍ତୁ!' : `${characters[targetCharId].name} ପଛରେ ରୁମାଲ୍ ପଡ଼ିଛି! ଆଲର୍ଟ କରନ୍ତୁ!`);
 
-    // Set reaction time limit based on round difficulty
-    // Round 1: 1200ms, Round 2: 1000ms, Round 3: 850ms, Round 4+: 700ms
-    const reactionWindow = Math.max(700, 1300 - round * 150);
+    // Set reaction time limit based on round difficulty and class group
+    const classDigit = Number(user?.class?.replace(/\D/g, '')) || 5;
+    const baseReaction = classDigit <= 5 ? 2000 : classDigit <= 8 ? 1500 : 1200;
+    const decayFactor = classDigit <= 5 ? 200 : classDigit <= 8 ? 150 : 120;
+    const minLimit = classDigit <= 5 ? 1200 : classDigit <= 8 ? 900 : 600;
+    const reactionWindow = Math.max(minLimit, baseReaction - round * decayFactor);
 
     reactionTimeoutRef.current = setTimeout(() => {
       handleReactionTimeout(targetCharId);
@@ -332,14 +336,21 @@ export function RumalChoriGame({ user, onBack, onXpEarned }: RumalChoriGameProps
       </div>
 
       {/* GUNDULU Dialouge */}
-      <div className="flex gap-3 items-center bg-slate-50 border border-slate-100 p-3.5 rounded-2xl relative shadow-inner">
+      <div 
+        onClick={() => onOpenAdvisor?.('ରୁମାଲ ଚୋରି')}
+        className="flex gap-3 items-center bg-slate-50 border border-slate-100 p-3.5 rounded-2xl relative shadow-inner cursor-pointer hover:bg-slate-100 active:scale-98 transition-all"
+        title="ଗୁନ୍ଦୁଲୁ ସହ କଥା ହୁଅ (Ask Gundulu AI)"
+      >
         <div className="absolute top-1/2 -left-1.5 -translate-y-1/2 w-0 h-0 border-t-[5px] border-t-transparent border-r-[7px] border-r-slate-50 border-b-[5px] border-b-transparent" />
         <img 
           src="/gundulu-v3.png" 
           alt="Gundulu Coach" 
           className="w-10 h-10 object-contain shrink-0 border border-slate-200 bg-white rounded-full p-0.5" 
         />
-        <p className="text-[11px] sm:text-xs text-slate-600 font-bold leading-relaxed">{gunduluSpeech}</p>
+        <p className="text-[11px] sm:text-xs text-slate-600 font-bold leading-relaxed">
+          {gunduluSpeech}
+          <span className="block text-[9px] text-amber-500 font-extrabold mt-0.5">💡 Click to Ask Gundulu AI</span>
+        </p>
       </div>
 
       {gameState === 'menu' && (

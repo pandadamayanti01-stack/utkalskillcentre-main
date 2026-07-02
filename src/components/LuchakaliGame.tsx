@@ -8,6 +8,7 @@ interface LuchakaliGameProps {
   onBack: () => void;
   language?: 'en' | 'or';
   onXpEarned?: (amount: number) => void;
+  onOpenAdvisor?: (gameTitle: string) => void;
 }
 
 interface SearchItem {
@@ -24,7 +25,7 @@ interface GameLevel {
   items: Omit<SearchItem, 'isFound' | 'x' | 'y'>[];
 }
 
-export function LuchakaliGame({ user, onBack, onXpEarned }: LuchakaliGameProps) {
+export function LuchakaliGame({ user, onBack, onXpEarned, onOpenAdvisor }: LuchakaliGameProps) {
   const [gameState, setGameState] = useState<'menu' | 'playing' | 'gameover'>('menu');
   const [currentLevelIdx, setCurrentLevelIdx] = useState<number>(0);
   const [items, setItems] = useState<SearchItem[]>([]);
@@ -40,48 +41,138 @@ export function LuchakaliGame({ user, onBack, onXpEarned }: LuchakaliGameProps) 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 3 Game Levels
-  const levels: GameLevel[] = [
-    {
-      prompt: "ଶୁଦ୍ଧ ଓଡ଼ିଆ ଶବ୍ଦ ଖୋଜନ୍ତୁ (Find correct Odia spellings):",
-      items: [
-        { id: 1, text: "କୃତିତ୍ବ", isTarget: true },
-        { id: 2, text: "ଧୂଳି", isTarget: true },
-        { id: 3, text: "ପୂଜା", isTarget: true },
-        { id: 4, text: "ଶୀତଳ", isTarget: true },
-        { id: 5, text: "କୃତିତ୍ୟ", isTarget: false }, // decoy
-        { id: 6, text: "ଦୂଳି", isTarget: false }, // decoy
-        { id: 7, text: "ପୁଜା", isTarget: false }, // decoy
-        { id: 8, text: "ସୀତଳ", isTarget: false }, // decoy
-      ]
-    },
-    {
-      prompt: "x = 2 ହେଉଥିବା ସମୀକରଣ ଖୋଜନ୍ତୁ (Find equations where x = 2):",
-      items: [
-        { id: 1, text: "2x = 4", isTarget: true },
-        { id: 2, text: "x + 3 = 5", isTarget: true },
-        { id: 3, text: "3x - 2 = 4", isTarget: true },
-        { id: 4, text: "5 - x = 3", isTarget: true },
-        { id: 5, text: "2x = 6", isTarget: false }, // decoy (x=3)
-        { id: 6, text: "x - 1 = 3", isTarget: false }, // decoy (x=4)
-        { id: 7, text: "x + 2 = 5", isTarget: false }, // decoy (x=3)
-        { id: 8, text: "4x = 4", isTarget: false }, // decoy (x=1)
-      ]
-    },
-    {
-      prompt: "ସହସମୀକରଣ (Simultaneous Equations) ର ସମ୍ବନ୍ଧୀୟ ଶବ୍ଦ ଖୋଜନ୍ତୁ:",
-      items: [
-        { id: 1, text: "ଲେଖଚିତ୍ର", isTarget: true },
-        { id: 2, text: "କ୍ରାମର ନିୟମ", isTarget: true },
-        { id: 3, text: "ସୁସଙ୍ଗତ", isTarget: true },
-        { id: 4, text: "ଅସଙ୍ଗତ", isTarget: true },
-        { id: 5, text: "ତ୍ରିକୋଣମିତି", isTarget: false }, // decoy
-        { id: 6, text: "ଲସାଗୁ", isTarget: false }, // decoy
-        { id: 7, text: "ଉତ୍ପାଦକ", isTarget: false }, // decoy
-        { id: 8, text: "ପରିମିତି", isTarget: false }, // decoy
-      ]
+  const classDigit = Number(user?.class?.replace(/\D/g, '')) || 5;
+
+  // 3 Class-Specific Game Levels
+  const levels: GameLevel[] = React.useMemo(() => {
+    if (classDigit <= 5) {
+      return [
+        {
+          prompt: "ଫଳ ର ନାମ ଗୁଡ଼ିକୁ ଖୋଜନ୍ତୁ (Find fruit names in Odia):",
+          items: [
+            { id: 1, text: "ସେଓ", isTarget: true },
+            { id: 2, text: "ଆମ୍ବ", isTarget: true },
+            { id: 3, text: "କଦଳୀ", isTarget: true },
+            { id: 4, text: "ପିଜୁଳି", isTarget: true },
+            { id: 5, text: "ବହି", isTarget: false },
+            { id: 6, text: "କଲମ", isTarget: false },
+            { id: 7, text: "ଚୌକି", isTarget: false },
+            { id: 8, text: "ଖାତା", isTarget: false }
+          ]
+        },
+        {
+          prompt: "ଯୁଗ୍ମ ସଂଖ୍ୟା ଗୁଡ଼ିକୁ ଖୋଜନ୍ତୁ (Find even numbers):",
+          items: [
+            { id: 1, text: "୨", isTarget: true },
+            { id: 2, text: "୪", isTarget: true },
+            { id: 3, text: "୬", isTarget: true },
+            { id: 4, text: "୮", isTarget: true },
+            { id: 5, text: "୧", isTarget: false },
+            { id: 6, text: "୩", isTarget: false },
+            { id: 7, text: "୫", isTarget: false },
+            { id: 8, text: "୭", isTarget: false }
+          ]
+        },
+        {
+          prompt: "ସରଳ ବିପରୀତ ଶବ୍ଦ ଯୋଡ଼ି ଖୋଜନ୍ତୁ (Find opposite words):",
+          items: [
+            { id: 1, text: "ଦିନ", isTarget: true },
+            { id: 2, text: "ରାତି", isTarget: true },
+            { id: 3, text: "ବଡ଼", isTarget: true },
+            { id: 4, text: "ସାନ", isTarget: true },
+            { id: 5, text: "ଆକାଶ", isTarget: false },
+            { id: 6, text: "ପବନ", isTarget: false },
+            { id: 7, text: "ମାଟି", isTarget: false },
+            { id: 8, text: "ପଥର", isTarget: false }
+          ]
+        }
+      ];
+    } else if (classDigit <= 8) {
+      return [
+        {
+          prompt: "ମୌଳିକ ସଂଖ୍ୟା ଗୁଡ଼ିକୁ ଖୋଜନ୍ତୁ (Find prime numbers):",
+          items: [
+            { id: 1, text: "୩", isTarget: true },
+            { id: 2, text: "୫", isTarget: true },
+            { id: 3, text: "୭", isTarget: true },
+            { id: 4, text: "୧୧", isTarget: true },
+            { id: 5, text: "୪", isTarget: false },
+            { id: 6, text: "୬", isTarget: false },
+            { id: 7, text: "୮", isTarget: false },
+            { id: 8, text: "୯", isTarget: false }
+          ]
+        },
+        {
+          prompt: "x = 3 ହେଉଥିବା ସମୀକରଣ ଖୋଜନ୍ତୁ (Find equations where x = 3):",
+          items: [
+            { id: 1, text: "x + 2 = 5", isTarget: true },
+            { id: 2, text: "2x = 6", isTarget: true },
+            { id: 3, text: "x - 1 = 2", isTarget: true },
+            { id: 4, text: "4 - x = 1", isTarget: true },
+            { id: 5, text: "x + 1 = 5", isTarget: false },
+            { id: 6, text: "3x = 12", isTarget: false },
+            { id: 7, text: "x - 2 = 4", isTarget: false },
+            { id: 8, text: "5 - x = 3", isTarget: false }
+          ]
+        },
+        {
+          prompt: "ଶୁଦ୍ଧ ଓଡ଼ିଆ ଶବ୍ଦ ଖୋଜନ୍ତୁ (Find correct spellings):",
+          items: [
+            { id: 1, text: "ଧୂଳି", isTarget: true },
+            { id: 2, text: "ପୂଜା", isTarget: true },
+            { id: 3, text: "ଶୀତଳ", isTarget: true },
+            { id: 4, text: "ନଦୀ", isTarget: true },
+            { id: 5, text: "ଦୂଳି", isTarget: false },
+            { id: 6, text: "ପୁଜା", isTarget: false },
+            { id: 7, text: "ସୀତଳ", isTarget: false },
+            { id: 8, text: "ନଦି", isTarget: false }
+          ]
+        }
+      ];
+    } else {
+      return [
+        {
+          prompt: "ଶୁଦ୍ଧ ଓଡ଼ିଆ ଶବ୍ଦ ଖୋଜନ୍ତୁ (Find correct Odia spellings):",
+          items: [
+            { id: 1, text: "କୃତିତ୍ବ", isTarget: true },
+            { id: 2, text: "ଧୂଳି", isTarget: true },
+            { id: 3, text: "ପୂଜା", isTarget: true },
+            { id: 4, text: "ଶୀତଳ", isTarget: true },
+            { id: 5, text: "କୃତିତ୍ୟ", isTarget: false },
+            { id: 6, text: "ଦୂଳି", isTarget: false },
+            { id: 7, text: "ପୁଜା", isTarget: false },
+            { id: 8, text: "ସୀତଳ", isTarget: false }
+          ]
+        },
+        {
+          prompt: "x = 2 ହେଉଥିବା ସମୀକରଣ ଖୋଜନ୍ତୁ (Find equations where x = 2):",
+          items: [
+            { id: 1, text: "2x = 4", isTarget: true },
+            { id: 2, text: "x + 3 = 5", isTarget: true },
+            { id: 3, text: "3x - 2 = 4", isTarget: true },
+            { id: 4, text: "5 - x = 3", isTarget: true },
+            { id: 5, text: "2x = 6", isTarget: false },
+            { id: 6, text: "x - 1 = 3", isTarget: false },
+            { id: 7, text: "x + 2 = 5", isTarget: false },
+            { id: 8, text: "4x = 4", isTarget: false }
+          ]
+        },
+        {
+          prompt: "ସହସମୀକରଣ (Simultaneous Equations) ର ସମ୍ବନ୍ଧୀୟ ଶବ୍ଦ ଖୋଜନ୍ତୁ:",
+          items: [
+            { id: 1, text: "ଲେଖଚିତ୍ର", isTarget: true },
+            { id: 2, text: "କ୍ରାମର ନିୟମ", isTarget: true },
+            { id: 3, text: "ସୁସଙ୍ଗତ", isTarget: true },
+            { id: 4, text: "ଅସଙ୍ଗତ", isTarget: true },
+            { id: 5, text: "ତ୍ରିକୋଣମିତି", isTarget: false },
+            { id: 6, text: "ଲସାଗୁ", isTarget: false },
+            { id: 7, text: "ଉତ୍ପାଦକ", isTarget: false },
+            { id: 8, text: "ପରିମିତି", isTarget: false }
+          ]
+        }
+      ];
     }
-  ];
+  }, [classDigit]);
 
   // Sound Synth
   const playSynthSound = (type: 'light-on' | 'found' | 'wrong' | 'victory' | 'lose') => {
@@ -356,14 +447,21 @@ export function LuchakaliGame({ user, onBack, onXpEarned }: LuchakaliGameProps) 
       </div>
 
       {/* GUNDULU DIALOGUE */}
-      <div className="flex gap-3 items-center bg-slate-50 border border-slate-100 p-3.5 rounded-2xl relative shadow-inner">
+      <div 
+        onClick={() => onOpenAdvisor?.('ଲୁଚକାଳି ଖେଳ')}
+        className="flex gap-3 items-center bg-slate-50 border border-slate-100 p-3.5 rounded-2xl relative shadow-inner cursor-pointer hover:bg-slate-100 active:scale-98 transition-all"
+        title="ଗୁନ୍ଦୁଲୁ ସହ କଥା ହୁଅ (Ask Gundulu AI)"
+      >
         <div className="absolute top-1/2 -left-1.5 -translate-y-1/2 w-0 h-0 border-t-[5px] border-t-transparent border-r-[7px] border-r-slate-50 border-b-[5px] border-b-transparent" />
         <img 
           src="/gundulu-v3.png" 
           alt="Gundulu Coach" 
           className="w-10 h-10 object-contain shrink-0 border border-slate-200 bg-white rounded-full p-0.5" 
         />
-        <p className="text-[11px] sm:text-xs text-slate-600 font-bold leading-relaxed">{gunduluSpeech}</p>
+        <p className="text-[11px] sm:text-xs text-slate-600 font-bold leading-relaxed">
+          {gunduluSpeech}
+          <span className="block text-[9px] text-amber-500 font-extrabold mt-0.5">💡 Click to Ask Gundulu AI</span>
+        </p>
       </div>
 
       {gameState === 'menu' && (

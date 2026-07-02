@@ -843,231 +843,296 @@ async function startServer() {
     }
   });
 
-  app.post('/api/ai/generate', async (req, res) => {
-    try {
-      const { contents, systemInstruction, modelType, generationConfig, enableGrounding, enableDialectBridge } = req.body;
-      
-      let finalSystemInstruction = systemInstruction;
-      if (enableDialectBridge) {
-        finalSystemInstruction = (finalSystemInstruction || '') + 
-          "\n\n[REGIONAL DIALECT TRANSLATION BRIDGE: ACTIVE]\n" +
-          "The student may write or speak in regional Odia dialects like Sambalpuri (e.g., using terms like 'କାଣା', 'କାଁ', 'ଖାଇଛ', 'କରସି'), Ganjami, or Desia. " +
-          "You must automatically translate and understand these regional terms as their standard Odia equivalents, and respond back in standard Odia with extra elder-sister warmth.";
-      }
+  async function generateAIContentHelper({
+    contents,
+    systemInstruction,
+    modelType,
+    generationConfig,
+    enableGrounding,
+    enableDialectBridge
+  }: any): Promise<string> {
+    let finalSystemInstruction = systemInstruction;
+    if (enableDialectBridge) {
+      finalSystemInstruction = (finalSystemInstruction || '') + 
+        "\n\n[REGIONAL DIALECT TRANSLATION BRIDGE: ACTIVE]\n" +
+        "The student may write or speak in regional Odia dialects like Sambalpuri (e.g., using terms like 'କାଣା', 'କାଁ', 'ଖାଇଛ', 'କରସି'), Ganjami, or Desia. " +
+        "You must automatically translate and understand these regional terms as their standard Odia equivalents, and respond back in standard Odia with extra elder-sister warmth.";
+    }
 
-      const useVertex = process.env.USE_VERTEX_AI === 'true';
-      let vertexErrorText = '';
-      
-      if (useVertex) {
-        try {
-          console.log("Backend AI (Server): Attempting Vertex AI route...");
-          const creds = getServiceAccountCredentials();
-          let accessToken: string | null | undefined = null;
-          let projectId = process.env.FIREBASE_PROJECT_ID || 'utkalskillcentre';
+    const useVertex = process.env.USE_VERTEX_AI === 'true';
+    let vertexErrorText = '';
+    
+    if (useVertex) {
+      try {
+        console.log("Backend AI (Server): Attempting Vertex AI route...");
+        const creds = getServiceAccountCredentials();
+        let accessToken: string | null | undefined = null;
+        let projectId = process.env.FIREBASE_PROJECT_ID || 'utkalskillcentre';
 
-          if (creds) {
-            projectId = creds.project_id || projectId;
-            const vertexAuth = new google.auth.JWT({
-              email: creds.client_email,
-              key: creds.private_key,
+        if (creds) {
+          projectId = creds.project_id || projectId;
+          const vertexAuth = new google.auth.JWT({
+            email: creds.client_email,
+            key: creds.private_key,
+            scopes: ['https://www.googleapis.com/auth/cloud-platform']
+          });
+          const authClient = await vertexAuth.authorize();
+          accessToken = authClient.access_token;
+        } else {
+          try {
+            const auth = new google.auth.GoogleAuth({
               scopes: ['https://www.googleapis.com/auth/cloud-platform']
             });
-            const authClient = await vertexAuth.authorize();
-            accessToken = authClient.access_token;
-          } else {
-            // Attempt Application Default Credentials (ADC) for Cloud Run
-            try {
-              const auth = new google.auth.GoogleAuth({
-                scopes: ['https://www.googleapis.com/auth/cloud-platform']
-              });
-              const authClient = await auth.getClient();
-              const tokenResponse = await authClient.getAccessToken();
-              accessToken = tokenResponse.token;
-              projectId = await auth.getProjectId() || projectId;
-              console.log("Backend AI (Server): Successfully fetched ambient Cloud Run access token for project:", projectId);
-            } catch (adcErr: any) {
-              console.warn("Backend AI (Server): Ambient ADC authentication failed:", adcErr.message);
-            }
+            const authClient = await auth.getClient();
+            const tokenResponse = await authClient.getAccessToken();
+            accessToken = tokenResponse.token;
+            projectId = await auth.getProjectId() || projectId;
+            console.log("Backend AI (Server): Successfully fetched ambient Cloud Run access token for project:", projectId);
+          } catch (adcErr: any) {
+            console.warn("Backend AI (Server): Ambient ADC authentication failed:", adcErr.message);
           }
-
-          if (accessToken) {
-            const vertexModel = modelType === 'pro' ? 'gemini-2.5-pro' : 'gemini-2.5-flash';
-            
-            console.log(`Backend AI (Server): Calling Vertex AI model ${vertexModel} via global endpoint for project ${projectId}...`);
-            const vertexUrl = `https://aiplatform.googleapis.com/v1/projects/${projectId}/locations/global/publishers/google/models/${vertexModel}:generateContent`;
-            
-            const formattedSystemInstruction = finalSystemInstruction 
-              ? { parts: [{ text: finalSystemInstruction }] } 
-              : undefined;
-
-            const response = await fetch(vertexUrl, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}`
-              },
-              body: JSON.stringify({
-                contents,
-                systemInstruction: formattedSystemInstruction,
-                generationConfig,
-                safetySettings: [
-                  { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_LOW_AND_ABOVE" },
-                  { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_LOW_AND_ABOVE" },
-                  { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_LOW_AND_ABOVE" },
-                  { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_LOW_AND_ABOVE" }
-                ],
-                ...(enableGrounding ? { tools: [{ googleSearch: {} }] } : {})
-              })
-            });
-            
-            if (response.ok) {
-              const data = await response.json();
-              const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-              if (text) {
-                console.log("Backend AI (Server): Vertex AI API request successful!");
-                return res.json({ text });
-              }
-            } else {
-              vertexErrorText = await response.text();
-              console.warn(`Backend AI (Server): Vertex AI API returned error: ${response.status} - ${vertexErrorText}`);
-            }
-          } else {
-            console.warn("Backend AI (Server): Could not resolve service account or ADC access token for Vertex AI.");
-          }
-
-          // Fall back to Vertex API Key if provided as a direct developer key URL bypass
-          const vertexKey = process.env.VERTEX_API_KEY || process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
-          if (vertexKey) {
-            console.log("Backend AI (Server): Attempting to call Vertex endpoints using direct developer key...");
-            const apiKeyModel = modelType === 'pro' ? 'gemini-2.5-pro' : 'gemini-2.5-flash';
-            const isVertexKey = vertexKey.startsWith('AQ.');
-            const vertexKeyUrl = isVertexKey
-              ? `https://aiplatform.googleapis.com/v1/publishers/google/models/${apiKeyModel}:generateContent?key=${vertexKey}`
-              : `https://generativelanguage.googleapis.com/v1beta/models/${apiKeyModel}:generateContent?key=${vertexKey}`;
-
-            const response = await fetch(vertexKeyUrl, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                contents,
-                systemInstruction: finalSystemInstruction ? { parts: [{ text: finalSystemInstruction }] } : undefined,
-                generationConfig,
-                safetySettings: [
-                  { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_LOW_AND_ABOVE" },
-                  { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_LOW_AND_ABOVE" },
-                  { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_LOW_AND_ABOVE" },
-                  { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_LOW_AND_ABOVE" }
-                ],
-                ...(enableGrounding ? { tools: [{ googleSearch: {} }] } : {})
-              })
-            });
-
-            if (response.ok) {
-              const data = await response.json();
-              const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-              if (text) {
-                console.log("Backend AI (Server): Vertex AI key-based request successful!");
-                return res.json({ text });
-              }
-            } else {
-              const errText = await response.text();
-              console.warn(`Backend AI (Server): Developer key fallback returned error: ${response.status} - ${errText}`);
-            }
-          }
-        } catch (vertexErr: any) {
-          vertexErrorText = vertexErr.message;
-          console.warn("Backend AI (Server): Vertex AI execution error:", vertexErr.message);
         }
-        
-        console.log("Backend AI (Server): Vertex AI failed. Falling back to Google AI Studio standard developer key route.");
-      }
 
-      const rotatorKeys = getRotatorKeys();
-      if (rotatorKeys.length === 0) {
-        return res.status(503).json({ 
-          error: 'GEMINI_API_KEY and all rotator keys are missing on the server',
-          details: 'Vertex AI was tried but failed, and Google AI Studio backup API key is missing.',
-          vertexError: vertexErrorText || undefined
-        });
-      }
-
-      const FLASH_MODELS = [
-        "gemini-2.5-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite",
-        "gemini-flash-latest", "gemini-flash-lite-latest", "gemini-2.5-flash-lite", "gemini-2.5-flash-image"
-      ];
-      const PRO_MODELS = [
-        "gemini-2.5-pro", "gemini-3.1-pro-preview", "gemini-3-pro-preview", "gemini-pro-latest"
-      ];
-      
-      let models = modelType === 'pro' ? [...PRO_MODELS, ...FLASH_MODELS] : [...FLASH_MODELS];
-
-      let lastError = null;
-
-      for (const keyToUse of rotatorKeys) {
-        const ai = new GoogleGenerativeAI(keyToUse);
-        let keyFailed = false;
-        
-        for (const modelName of models) {
-          if (keyFailed) break;
+        if (accessToken) {
+          const vertexModel = modelType === 'pro' ? 'gemini-2.5-pro' : 'gemini-2.5-flash';
           
-          for (const apiVersion of ["v1beta", "v1"]) {
-            if (keyFailed) break;
-            try {
-              console.log(`Backend AI: Attempting ${modelName} via ${apiVersion} using key ${keyToUse.substring(0, 12)}...`);
-              const model = ai.getGenerativeModel({
-                 model: modelName,
-                 systemInstruction: finalSystemInstruction,
-                 safetySettings: gunduluSafetySettings,
-                 ...(enableGrounding ? { tools: [{ googleSearch: {} }] as any } : {})
-              }, { apiVersion: apiVersion as any });
-              
-              const result = await model.generateContent({ contents, generationConfig });
-              return res.json({ text: result.response.text() });
-            } catch(err: any) {
-              lastError = err;
-              const is503 = err.message?.includes('503') || err.status === 503 || err.code === 503;
-              const is404 = err.message?.includes('404') || err.status === 404 || err.code === 404;
-              const isAuthError = err.message?.includes('403') || err.message?.includes('401') || 
-                                 err.status === 403 || err.status === 401;
-              const isBadRequest = err.message?.includes('400') || err.status === 400 || err.code === 400;
-              const isQuotaOrDepleted = err.message?.includes('429') || err.message?.includes('quota') || err.message?.includes('prepayment') || err.status === 429;
+          console.log(`Backend AI (Server): Calling Vertex AI model ${vertexModel} via global endpoint for project ${projectId}...`);
+          const vertexUrl = `https://aiplatform.googleapis.com/v1/projects/${projectId}/locations/global/publishers/google/models/${vertexModel}:generateContent`;
+          
+          const formattedSystemInstruction = finalSystemInstruction 
+            ? { parts: [{ text: finalSystemInstruction }] } 
+            : undefined;
 
-              if (isAuthError) {
-                console.warn(`Backend AI Auth Error for key ${keyToUse.substring(0, 12)}: ${err.message}. Trying next key.`);
-                keyFailed = true;
-                break;
-              }
+          const response = await fetch(vertexUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${accessToken}`
+            },
+            body: JSON.stringify({
+              contents,
+              systemInstruction: formattedSystemInstruction,
+              generationConfig,
+              safetySettings: [
+                { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_LOW_AND_ABOVE" },
+                { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_LOW_AND_ABOVE" },
+                { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_LOW_AND_ABOVE" },
+                { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_LOW_AND_ABOVE" }
+              ],
+              ...(enableGrounding ? { tools: [{ googleSearch: {} }] } : {})
+            })
+          });
 
-              if (isBadRequest) {
-                if (err.message?.toLowerCase().includes('api key') || err.message?.toLowerCase().includes('key expired') || err.message?.toLowerCase().includes('invalid')) {
-                  console.warn(`Backend AI Key Error for key ${keyToUse.substring(0, 12)}: ${err.message}. Trying next key.`);
-                  keyFailed = true;
-                  break;
-                }
-                console.error("Backend AI Bad Request:", err.message);
-                return res.status(400).json({ error: err.message || "Invalid request parameters." });
-              }
-
-              if (isQuotaOrDepleted) {
-                console.warn(`Key ${keyToUse.substring(0, 12)} is depleted or rate limited (429). Trying next key.`);
-                keyFailed = true;
-                break;
-              }
-
-              if (is404) {
-                continue; // Try next API version
-              }
-              console.error(`Model Attempt Failed: ${modelName} (${apiVersion}) using key ${keyToUse.substring(0, 12)}:`, err.message);
+          if (response.ok) {
+            const data = await response.json();
+            const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (text) {
+              console.log("Backend AI (Server): Vertex AI API request successful!");
+              return text;
             }
+          } else {
+            vertexErrorText = await response.text();
+            console.warn(`Backend AI (Server): Vertex AI API returned error: ${response.status} - ${vertexErrorText}`);
+          }
+        } else {
+          console.warn("Backend AI (Server): Could not resolve service account or ADC access token for Vertex AI.");
+        }
+
+        const vertexKey = process.env.VERTEX_API_KEY || process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+        if (vertexKey) {
+          console.log("Backend AI (Server): Attempting to call Vertex endpoints using direct developer key...");
+          const apiKeyModel = modelType === 'pro' ? 'gemini-2.5-pro' : 'gemini-2.5-flash';
+          const isVertexKey = vertexKey.startsWith('AQ.');
+          const vertexKeyUrl = isVertexKey
+            ? `https://aiplatform.googleapis.com/v1/publishers/google/models/${apiKeyModel}:generateContent?key=${vertexKey}`
+            : `https://generativelanguage.googleapis.com/v1beta/models/${apiKeyModel}:generateContent?key=${vertexKey}`;
+
+          const response = await fetch(vertexKeyUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents,
+              systemInstruction: finalSystemInstruction ? { parts: [{ text: finalSystemInstruction }] } : undefined,
+              generationConfig,
+              safetySettings: [
+                { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_LOW_AND_ABOVE" },
+                { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_LOW_AND_ABOVE" },
+                { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_LOW_AND_ABOVE" },
+                { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_LOW_AND_ABOVE" }
+              ],
+              ...(enableGrounding ? { tools: [{ googleSearch: {} }] } : {})
+            })
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (text) {
+              console.log("Backend AI (Server): Vertex AI key-based request successful!");
+              return text;
+            }
+          } else {
+            const errText = await response.text();
+            console.warn(`Backend AI (Server): Developer key fallback returned error: ${response.status} - ${errText}`);
+          }
+        }
+      } catch (vertexErr: any) {
+        vertexErrorText = vertexErr.message;
+        console.warn("Backend AI (Server): Vertex AI execution error:", vertexErr.message);
+      }
+      console.log("Backend AI (Server): Vertex AI failed. Falling back to Google AI Studio standard developer key route.");
+    }
+
+    const rotatorKeys = getRotatorKeys();
+    if (rotatorKeys.length === 0) {
+      throw new Error(`GEMINI_API_KEY and rotator keys are missing on the server. Vertex error: ${vertexErrorText}`);
+    }
+
+    const FLASH_MODELS = [
+      "gemini-2.5-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite",
+      "gemini-flash-latest", "gemini-flash-lite-latest", "gemini-2.5-flash-lite", "gemini-2.5-flash-image"
+    ];
+    const PRO_MODELS = [
+      "gemini-2.5-pro", "gemini-3.1-pro-preview", "gemini-3-pro-preview", "gemini-pro-latest"
+    ];
+    let models = modelType === 'pro' ? [...PRO_MODELS, ...FLASH_MODELS] : [...FLASH_MODELS];
+    let lastError = null;
+
+    for (const keyToUse of rotatorKeys) {
+      const ai = new GoogleGenerativeAI(keyToUse);
+      let keyFailed = false;
+      
+      for (const modelName of models) {
+        if (keyFailed) break;
+        
+        for (const apiVersion of ["v1beta", "v1"]) {
+          if (keyFailed) break;
+          try {
+            console.log(`Backend AI: Attempting ${modelName} via ${apiVersion} using key ${keyToUse.substring(0, 12)}...`);
+            const model = ai.getGenerativeModel({
+               model: modelName,
+               systemInstruction: finalSystemInstruction,
+               safetySettings: gunduluSafetySettings,
+               ...(enableGrounding ? { tools: [{ googleSearch: {} }] as any } : {})
+            }, { apiVersion: apiVersion as any });
+            
+            const result = await model.generateContent({ contents, generationConfig });
+            return result.response.text();
+          } catch(err: any) {
+            lastError = err;
+            const is503 = err.message?.includes('503') || err.status === 503 || err.code === 503;
+            const is404 = err.message?.includes('404') || err.status === 404 || err.code === 404;
+            const isAuthError = err.message?.includes('403') || err.message?.includes('401') || 
+                               err.status === 403 || err.status === 401;
+            const isBadRequest = err.message?.includes('400') || err.status === 400 || err.code === 400;
+            const isQuotaOrDepleted = err.message?.includes('429') || err.message?.includes('quota') || err.message?.includes('prepayment') || err.status === 429;
+
+            if (isAuthError) {
+              console.warn(`Backend AI Auth Error for key ${keyToUse.substring(0, 12)}: ${err.message}. Trying next key.`);
+              keyFailed = true;
+              break;
+            }
+
+            if (isBadRequest) {
+              if (err.message?.toLowerCase().includes('api key') || err.message?.toLowerCase().includes('key expired') || err.message?.toLowerCase().includes('invalid')) {
+                console.warn(`Backend AI Key Error for key ${keyToUse.substring(0, 12)}: ${err.message}. Trying next key.`);
+                keyFailed = true;
+                break;
+              }
+              throw err;
+            }
+
+            if (isQuotaOrDepleted) {
+              console.warn(`Key ${keyToUse.substring(0, 12)} is depleted or rate limited (429). Trying next key.`);
+              keyFailed = true;
+              break;
+            }
+
+            if (is404) {
+              continue; // Try next API version
+            }
+            console.error(`Model Attempt Failed: ${modelName} (${apiVersion}):`, err.message);
           }
         }
       }
-      
-      throw lastError || new Error("All AI models and all rotator keys failed");
+    }
+    
+    throw lastError || new Error("All AI models and all rotator keys failed");
+  }
 
-    } catch(error: any) {
+  app.post('/api/ai/generate', async (req, res) => {
+    try {
+      const text = await generateAIContentHelper(req.body);
+      res.json({ text });
+    } catch (error: any) {
       console.error("Backend AI Generic Error:", error);
       res.status(500).json({ error: error.message || 'AI Generation failed' });
+    }
+  });
+
+  app.post('/api/ai/game-chat', async (req, res) => {
+    try {
+      const { contents, gameId, class: studentClass, generationConfig } = req.body;
+
+      let classNum = Number(String(studentClass || '').replace(/\D/g, '')) || 5;
+      let gameTitle = '';
+      if (gameId === 'bahi-prustha') gameTitle = 'ବହି ପୃଷ୍ଠା ଖେଳ (Book Page Game)';
+      else if (gameId === 'bagh-chheli') gameTitle = 'ବାଘ-ଛେଳି ଖେଳ (Tigers & Goats)';
+      else if (gameId === 'puchi') gameTitle = 'ପୁଚି ଖେଳ (Puchi Rhythm Game)';
+      else if (gameId === 'rumal-chori') gameTitle = 'ରୁମାଲ ଚୋରି (Rumal Chori)';
+      else if (gameId === 'kaudi') gameTitle = 'କଉଡ଼ି ଖେଳ (Kaudi Game)';
+      else if (gameId === 'luchakali') gameTitle = 'ଲୁଚକାଳି ଖେଳ (Spotlight Search)';
+      else gameTitle = 'Gundulu Game Zone';
+
+      let classScopeText = '';
+      if (classNum <= 5) {
+        classScopeText = `
+- TARGET AUDIENCE: Lower Primary Student (Class 1 to 5).
+- Persona: "Gapa Sathi" (Story Companion / Playful Mascot).
+- Tone & Vocabulary: Speak using very simple Odia words (or light bilingual Odia/English mix like "game", "win"). Keep sentences short and sweet. Use child-friendly descriptions, counting concepts, and storytelling logic.
+- Socratic Guidance: Give simple, easy hints. Instead of math formulas, encourage them to count or visualize shapes.
+`;
+      } else {
+        classScopeText = `
+- TARGET AUDIENCE: Upper / Middle Student (Class 6 to 10).
+- Persona: "Tech-Guru / Logic Study Partner".
+- Tone & Vocabulary: Speak using standard, clean Odia. Be highly logical and analytical.
+- Socratic Guidance: Give strategic advice based on game theory, coordinates, grid blocks, math rules (like digit sums, probability, Cramer's rule, algebra). Guide them step-by-step to calculate the correct strategy.
+`;
+      }
+
+      const finalSystemInstruction = `Role & Identity:
+You are "Gundulu AI" (ଗୁନ୍ଦୁଲୁ AI), the friendly, wise, and enthusiastic game companion of Utkal Skill Centre.
+You are helping the student with the game: "${gameTitle}".
+
+Linguistic Guidelines:
+- Primary Language: Odia (or a friendly, warm Odia-English mix suitable for children).
+- Always use correct Odia script spelling. Do not write typos like "Kisiba" or "Kishiba". For "any" or "some", use authentic Odia words like "କୌଣସି" (kounasi) or "କିଛି" (kichi).
+- Speak with the warm, encouraging care of an elder brother or sister (Gundulu Apa/Bhai).
+
+Socratic Teaching:
+- Do NOT directly give the exact answer or tell the player exactly which button/square to click.
+- Ask questions and drop small clues to guide the student to think of the winning move, math answer, or spelling correctness on their own.
+
+Safety Guardrails:
+- Strictly Educational & Playful: Only discuss the traditional game being played, its rules, history, strategy, and related math/spelling trivia.
+- Politely decline off-topic queries in character and redirect the student back to the game.
+
+${classScopeText}
+`;
+
+      const text = await generateAIContentHelper({
+        contents,
+        systemInstruction: finalSystemInstruction,
+        modelType: 'flash',
+        generationConfig,
+        enableGrounding: false,
+        enableDialectBridge: false
+      });
+      res.json({ text });
+    } catch (error: any) {
+      console.error("Backend AI Game Chat Error:", error);
+      res.status(500).json({ error: error.message || 'Game AI generation failed' });
     }
   });
 

@@ -8,6 +8,7 @@ import { RumalChoriGame } from './RumalChoriGame';
 import { KaudiGame } from './KaudiGame';
 import { LuchakaliGame } from './LuchakaliGame';
 import { gcpService } from '../services/gcpService';
+import { GunduluGameAdvisor } from './GunduluGameAdvisor';
 
 interface GameZoneProps {
   user: any;
@@ -46,6 +47,17 @@ const SambalpuriTrim = ({ position }: { position: 'top' | 'bottom' }) => (
 export function GameZone({ user, onBack }: GameZoneProps) {
   const [activeGameId, setActiveGameId] = useState<string | null>(null);
   const [selectedLoreGame, setSelectedLoreGame] = useState<GameItem | null>(null);
+  
+  // AI Advisor States
+  const [advisorOpen, setAdvisorOpen] = useState(false);
+  const [advisorGameId, setAdvisorGameId] = useState('');
+  const [advisorGameTitle, setAdvisorGameTitle] = useState('');
+
+  const openAdvisor = (gameId: string, gameTitle: string) => {
+    setAdvisorGameId(gameId);
+    setAdvisorGameTitle(gameTitle);
+    setAdvisorOpen(true);
+  };
 
   // Get current day of the week in Odia
   const daysOfWeekOdia = ['ରବିବାର', 'ସୋମବାର', 'ମଙ୍ଗଳବାର', 'ବୁଧବାର', 'ଗୁରୁବାର', 'ଶୁକ୍ରବାର', 'ଶନିବାର'];
@@ -171,6 +183,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
         user={user} 
         onBack={() => setActiveGameId(null)} 
         onXpEarned={handleXpEarned}
+        onOpenAdvisor={(title: string) => openAdvisor('bahi-prustha', title)}
       />
     );
   }
@@ -180,6 +193,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
         user={user} 
         onBack={() => setActiveGameId(null)} 
         onXpEarned={handleXpEarned}
+        onOpenAdvisor={(title: string) => openAdvisor('bagh-chheli', title)}
       />
     );
   }
@@ -189,6 +203,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
         user={user} 
         onBack={() => setActiveGameId(null)} 
         onXpEarned={handleXpEarned}
+        onOpenAdvisor={(title: string) => openAdvisor('puchi', title)}
       />
     );
   }
@@ -198,6 +213,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
         user={user} 
         onBack={() => setActiveGameId(null)} 
         onXpEarned={handleXpEarned}
+        onOpenAdvisor={(title: string) => openAdvisor('rumal-chori', title)}
       />
     );
   }
@@ -207,6 +223,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
         user={user} 
         onBack={() => setActiveGameId(null)} 
         onXpEarned={handleXpEarned}
+        onOpenAdvisor={(title: string) => openAdvisor('kaudi', title)}
       />
     );
   }
@@ -216,6 +233,7 @@ export function GameZone({ user, onBack }: GameZoneProps) {
         user={user} 
         onBack={() => setActiveGameId(null)} 
         onXpEarned={handleXpEarned}
+        onOpenAdvisor={(title: string) => openAdvisor('luchakali', title)}
       />
     );
   }
@@ -269,7 +287,11 @@ export function GameZone({ user, onBack }: GameZoneProps) {
             </div>
             
             {/* Real Gundulu V3 Image */}
-            <div className="relative shrink-0 animate-bounce-slow">
+            <div 
+              className="relative shrink-0 animate-bounce-slow cursor-pointer hover:scale-105 active:scale-95 transition-all"
+              onClick={() => openAdvisor('lobby', 'ଗୁନ୍ଦୁଲୁ ଗେମ୍ ଆରେନା')}
+              title="ଗୁନ୍ଦୁଲୁ ସହ କଥା ହୁଅ"
+            >
               <img 
                 src="/gundulu-v3.png" 
                 alt="Gundulu Mascot" 
@@ -378,6 +400,15 @@ export function GameZone({ user, onBack }: GameZoneProps) {
           );
         })}
       </div>
+
+      {/* AI Advisor Panel Component */}
+      <GunduluGameAdvisor 
+        isOpen={advisorOpen} 
+        onClose={() => setAdvisorOpen(false)} 
+        gameId={advisorGameId} 
+        gameTitle={advisorGameTitle} 
+        studentClass={user?.class || 'ଶ୍ରେଣୀ ୫'} 
+      />
     </div>
   );
 }
