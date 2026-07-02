@@ -7957,10 +7957,10 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "mKClBmBGmqPPBXBUMBea",
-        "title": "Anubada Prakarana",
-        "title_en": "Translation",
-        "title_or": "ଅନୁବାଦ ପ୍ରକରଣ",
+        "id": "p2hfLK0fRZYvu1yYmKUe",
+        "title": "Bakya Bichara",
+        "title_en": "Sentence Analysis",
+        "title_or": "ବାକ୍ୟ ବିଚାର",
         "subject": "odia_grammar",
         "thumbnail": null
       },
@@ -8251,10 +8251,10 @@ export const ROADMAP_DATA = [
         "thumbnail": null
       },
       {
-        "id": "p2hfLK0fRZYvu1yYmKUe",
-        "title": "Bakya Bichara",
-        "title_en": "Sentence Analysis",
-        "title_or": "ବାକ୍ୟ ବିଚାର",
+        "id": "mKClBmBGmqPPBXBUMBea",
+        "title": "Anubada Prakarana",
+        "title_en": "Translation",
+        "title_or": "ଅନୁବାଦ ପ୍ରକରଣ",
         "subject": "odia_grammar",
         "thumbnail": null
       },
