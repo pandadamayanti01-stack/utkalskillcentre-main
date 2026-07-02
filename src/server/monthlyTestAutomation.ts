@@ -464,9 +464,21 @@ export async function generateMonthlyTestsForMonth(
       continue;
     }
 
-    const monthRoadmap = roadmap.find(entry => entry.month === targetMonthString);
-    if (!monthRoadmap || !Array.isArray(monthRoadmap.chapters) || monthRoadmap.chapters.length === 0) {
-      console.log(`[MonthlyTestAuto] No chapters found for ${className} in ${targetMonthString}. Skipping.`);
+    const targetMonths = [targetMonthString];
+    if (targetMonthString === 'July 2026') {
+      targetMonths.push('June 2026');
+    }
+
+    const allMonthChapters: any[] = [];
+    for (const mStr of targetMonths) {
+      const mRoadmap = roadmap.find(entry => entry.month === mStr);
+      if (mRoadmap && Array.isArray(mRoadmap.chapters)) {
+        allMonthChapters.push(...mRoadmap.chapters);
+      }
+    }
+
+    if (allMonthChapters.length === 0) {
+      console.log(`[MonthlyTestAuto] No chapters found for ${className} in ${targetMonthString} (and June). Skipping.`);
       continue;
     }
 
@@ -475,7 +487,7 @@ export async function generateMonthlyTestsForMonth(
       0: [], 1: [], 2: [], 3: [], 4: [], 5: []
     };
 
-    monthRoadmap.chapters.forEach(ch => {
+    allMonthChapters.forEach(ch => {
       const idx = getGroupIndexForSubject(ch.subject, className);
       if (idx !== -1) {
         chaptersByGroup[idx].push(ch);
@@ -509,9 +521,13 @@ export async function generateMonthlyTestsForMonth(
 
       // Try to load textbook buffer from Firebase Storage bucket for the first chapter
       let chapterTextContext = '';
+      const isLocal = !process.env.GITHUB_ACTIONS;
+      if (isLocal) {
+        console.log(`[MonthlyTestAuto] Local environment detected. Bypassing textbook bucket search to prevent network hang.`);
+      }
       try {
         const firstChapter = groupChapters[0];
-        const bucketResult = await loadTextbookFromBucket(adminApp, className, firstChapter.subject, firstChapter.title || firstChapter.title_en || firstChapter.title_or);
+        const bucketResult = isLocal ? null : await loadTextbookFromBucket(adminApp, className, firstChapter.subject, firstChapter.title || firstChapter.title_en || firstChapter.title_or);
         if (bucketResult && bucketResult.driveContent?.text) {
           const parsedText = bucketResult.driveContent.text;
           if (parsedText && parsedText.trim().length > 50) {

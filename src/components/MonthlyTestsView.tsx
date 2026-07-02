@@ -196,9 +196,131 @@ export const DISTRICT_LANDMARKS_WATERMARKS: Record<string, { landmarkEn: string;
  * Robust subject name translator that scans the local translations
  * and falls back to checking textbook subjects in the Digital Library.
  */
-export function getCorrectSubjectName(subject: string, lang: 'en' | 'or'): string {
+export function getCorrectSubjectName(subject: string, lang: 'en' | 'or', className?: string): string {
   const cleanSubject = String(subject || '').trim();
   const lowerSubject = cleanSubject.toLowerCase();
+  const classNum = className ? (parseInt(className.replace(/\D/g, '')) || 0) : 0;
+
+  // Custom mapping for Class 9 and 10 combined subjects
+  if (classNum === 9 || classNum === 10) {
+    const class910Map: Record<string, { en: string; or: string }> = {
+      'mathematics': {
+        en: 'Math (Algebra & Geometry)',
+        or: 'ଗଣିତ (ବୀଜଗଣିତ ଓ ଜ୍ୟାମିତି)'
+      },
+      'general science': {
+        en: 'Science (Physical & Life)',
+        or: 'ବିଜ୍ଞାନ (ଭୌତିକ ଓ ଜୀବ ବିଜ୍ଞାନ)'
+      },
+      'social science': {
+        en: 'Social Science (History & Geography)',
+        or: 'ସାମାଜିକ ବିଜ୍ଞାନ (ଇତିହାସ ଓ ଭୂଗୋଳ)'
+      },
+      'first language (odia)': {
+        en: 'First Language (Odia & Grammar)',
+        or: 'ଓଡ଼ିଆ (ସାହିତ୍ୟ ଓ ବ୍ୟାକରଣ)'
+      },
+      'second language (english)': {
+        en: 'Second Language (English & Grammar)',
+        or: 'ଇଂରାଜୀ (English & Grammar)'
+      },
+      'third language / vocational': {
+        en: 'Third Language / Vocational',
+        or: 'ତୃତୀୟ ଭାଷା / ବ୍ୟାବସାୟିକ ଶିକ୍ଷା'
+      }
+    };
+    
+    const key = lowerSubject.replace(/\s+/g, ' ');
+    if (class910Map[key]) {
+      return lang === 'or' ? class910Map[key].or : class910Map[key].en;
+    }
+  }
+
+  // Custom mapping for Classes 6 to 8 combined subjects
+  if (classNum >= 6 && classNum <= 8) {
+    const class68Map: Record<string, { en: string; or: string }> = {
+      'mathematics': {
+        en: 'Ganita Prakas',
+        or: 'ଗଣିତ ପ୍ରକାଶ'
+      },
+      'second language (english)': {
+        en: 'Jasmine English',
+        or: 'JASMINE (English)'
+      },
+      'science & art': {
+        en: 'Jigyasa Science & Art',
+        or: 'ଜିଜ୍ଞାସା ଓ କଳା କୃତି'
+      },
+      'social science & pe': {
+        en: 'Social Science & Sports',
+        or: 'ସାମାଜିକ ବିଜ୍ଞାନ ଓ ଖେଳ ଶିକ୍ଷା'
+      },
+      'odia & vocational': {
+        en: 'Odia & Skills (Kausala)',
+        or: 'ଓଡ଼ିଆ ଓ କୌଶଳ ବୋଧ'
+      },
+      'third language (sanskrit / hindi)': {
+        en: 'Sanskrit / Hindi',
+        or: 'ସଂସ୍କୃତ / ହିନ୍ଦୀ'
+      }
+    };
+    const key = lowerSubject.replace(/\s+/g, ' ');
+    if (class68Map[key]) {
+      return lang === 'or' ? class68Map[key].or : class68Map[key].en;
+    }
+  }
+
+  // Custom mapping for Classes 3 to 5
+  if (classNum >= 3 && classNum <= 5) {
+    const class35Map: Record<string, { en: string; or: string }> = {
+      'mathematics': {
+        en: 'Ganita Mela',
+        or: 'ଗଣିତ ମେଳା'
+      },
+      'first language (odia)': {
+        en: 'Bhasa Mahak',
+        or: 'ଭାଷା ମହକ'
+      },
+      'science / evs': {
+        en: 'Paribesa Patha',
+        or: 'ପରିବେଶ ପାଠ'
+      },
+      'second language (english)': {
+        en: 'Pallavi English',
+        or: 'Pallavi (English)'
+      },
+      'art education': {
+        en: 'Art Education',
+        or: 'କଳା ଶିକ୍ଷା'
+      },
+      'physical education': {
+        en: 'Physical Ed & Wellness',
+        or: 'ଶାରୀରିକ ଶିକ୍ଷା ଏବଂ ସୁସ୍ଥତା'
+      }
+    };
+    const key = lowerSubject.replace(/\s+/g, ' ');
+    if (class35Map[key]) {
+      return lang === 'or' ? class35Map[key].or : class35Map[key].en;
+    }
+  }
+
+  // Custom mapping for Classes 1 & 2
+  if (classNum === 1 || classNum === 2) {
+    const class12Map: Record<string, { en: string; or: string }> = {
+      'mathematics': {
+        en: classNum === 1 ? 'Ganita Khela' : 'Maja Majare Ganita',
+        or: classNum === 1 ? 'ଗଣିତ ଖେଳ' : 'ମଜା ମଜାରେ ଗଣିତ'
+      },
+      'first language (odia)': {
+        en: classNum === 1 ? 'Jhulana 1' : 'Jhulana 2',
+        or: classNum === 1 ? 'ଝୁଲଣା ୧' : 'ଝୁଲଣା ୨'
+      }
+    };
+    const key = lowerSubject.replace(/\s+/g, ' ');
+    if (class12Map[key]) {
+      return lang === 'or' ? class12Map[key].or : class12Map[key].en;
+    }
+  }
 
   // 1. Try key translation map first
   if (translations[lang]?.subjects?.[lowerSubject as keyof typeof translations.en.subjects]) {
@@ -467,7 +589,7 @@ export function CertificateView({ submission, test, user, onBack, language }: an
               </h3>
               <div className="flex items-center justify-center gap-1.5 sm:gap-3 text-slate-500 text-[10px] sm:text-sm print:text-[11px]">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                <span>ବିଷୟ: <span className="font-bold text-slate-800">{getCorrectSubjectName(test.subject, 'or')}</span></span>
+                <span>ବିଷୟ: <span className="font-bold text-slate-800">{getCorrectSubjectName(test.subject, 'or', test.class)}</span></span>
                 <span className="w-1 h-1 rounded-full bg-slate-300"></span>
                 <span>ଶ୍ରେଣୀ: <span className="font-bold text-slate-800">{translations['or'].classes?.[submission.class as keyof typeof translations.or.classes] || submission.class}</span></span>
                 <span className="w-1 h-1 rounded-full bg-slate-300"></span>
@@ -672,7 +794,7 @@ export function ConsolidatedCertificateView({ monthYear, submissions, tests, use
                 <tbody className="divide-y divide-amber-100 text-slate-800 text-[10px] sm:text-sm print:text-[11px] font-medium">
                   {submissions.map((sub: any, idx: number) => {
                     const testItem = tests.find((t: any) => t.id === sub.testId);
-                    const subjectLabel = getCorrectSubjectName(testItem?.subject || 'Unknown', 'or');
+                    const subjectLabel = getCorrectSubjectName(testItem?.subject || 'Unknown', 'or', testItem?.class);
                     const score = sub.finalScore ?? sub.score ?? 0;
                     const max = sub.totalMaxMarks ?? sub.totalQuestions ?? 0;
                     const percent = max > 0 ? Math.round((score / max) * 100) : 0;
@@ -794,7 +916,7 @@ export function SelectionPaperPrintView({ test, language, onBack }: any) {
   })();
 
   const handleShare = async () => {
-    const subjectName = getCorrectSubjectName(test.subject, language);
+    const subjectName = getCorrectSubjectName(test.subject, language, test.class);
     const classLabel = translations[language].classes?.[test.class as keyof typeof translations.en.classes] || `Class ${test.class}`;
     
     const text = language === 'or'
@@ -859,7 +981,7 @@ export function SelectionPaperPrintView({ test, language, onBack }: any) {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-4 text-xs font-bold border-b border-slate-950 mb-6 bg-slate-50/50 p-3 rounded-lg">
             <div>
               <p className="text-slate-500 uppercase text-[9px]">{language === 'en' ? 'Subject' : 'ବିଷୟ'} (ବିଷୟ)</p>
-              <p className="text-sm font-black text-slate-900 mt-0.5">{getCorrectSubjectName(test.subject, language)}</p>
+              <p className="text-sm font-black text-slate-900 mt-0.5">{getCorrectSubjectName(test.subject, language, test.class)}</p>
             </div>
             <div>
               <p className="text-slate-500 uppercase text-[9px]">{language === 'en' ? 'Class' : 'ଶ୍ରେଣୀ'} (ଶ୍ରେଣୀ)</p>
@@ -1479,7 +1601,7 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
 
                 <div className="text-left">
                   <h3 className="text-lg sm:text-xl md:text-2xl font-black text-white mb-1.5 md:mb-2 tracking-tight leading-snug group-hover:text-slate-100 transition-colors">
-                    {getCorrectSubjectName(testItem.subject, language)}
+                    {getCorrectSubjectName(testItem.subject, language, testItem.class)}
                   </h3>
                   
                   <div className="flex flex-wrap gap-1.5 md:gap-2 mb-2 md:mb-3">
