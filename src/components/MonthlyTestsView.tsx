@@ -1618,39 +1618,6 @@ export function MonthlyTestsView({ tests, submissions, language, user, onBack, s
                       {formattedDate}
                     </span>
                   </div>
-
-                  {testItem.chapterIds && testItem.chapterIds.length > 0 && (
-                    <div className="bg-white/[0.02] border border-white/[0.04] p-2.5 rounded-xl sm:rounded-2xl">
-                      <p className="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 sm:mb-1.5 flex items-center gap-1">
-                        <Lucide.BookOpen size={10} className="text-emerald-400" />
-                        {language === 'en' ? 'Syllabus Covered:' : 'ପରୀକ୍ଷା ସିଲେବସ:'}
-                      </p>
-                      <ul className="space-y-1">
-                        {testItem.chapterIds.map((cid: string) => {
-                          const ch = chapters?.find((c: any) => c.id === cid);
-                          let title = '';
-                          if (ch) {
-                            title = language === 'or' ? (ch.title_or || ch.title) : (ch.title_en || ch.title);
-                          } else {
-                            const roadmapCh = findChapterInRoadmaps(cid);
-                            if (roadmapCh) {
-                              title = language === 'or' ? (roadmapCh.title_or || roadmapCh.title) : (roadmapCh.title_en || roadmapCh.title);
-                            } else {
-                              const parts = cid.split('_');
-                              const lastPart = parts[parts.length - 1] || cid;
-                              title = lastPart.replace(/([A-Z])/g, ' $1').trim().replace(/_/g, ' ');
-                            }
-                          }
-                          return (
-                            <li key={cid} className="text-[10px] text-slate-300 font-bold flex items-center gap-1.5">
-                              <span className="w-1 h-1 rounded-full bg-emerald-500 shrink-0"></span>
-                              <span className="truncate max-w-[280px]">{title}</span>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  )}
                 </div>
 
                 <div className="w-full">
