@@ -942,7 +942,6 @@ Here is the essential information about Utkal Skill Centre features, pricing, an
             type="file" 
             ref={fileInputRef} 
             onChange={handleFileChange} 
-            accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar" 
             className="hidden" 
           />
         )}
