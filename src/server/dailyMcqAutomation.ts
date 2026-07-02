@@ -1453,9 +1453,16 @@ async function buildGeneratedDailyMcq(adminApp: App, databaseId: string, params:
     } else {
       const classRoadmap = ROADMAPS_BY_CLASS[normalizedClassName];
       if (classRoadmap) {
-        const monthEntry = classRoadmap.find(entry => entry.month === monthStr);
-        if (monthEntry && Array.isArray(monthEntry.chapters)) {
-          activeChapters = monthEntry.chapters;
+        const targetMonths = [monthStr];
+        if (monthStr === 'July 2026') {
+          targetMonths.push('June 2026');
+        }
+        activeChapters = [];
+        for (const mStr of targetMonths) {
+          const monthEntry = classRoadmap.find(entry => entry.month === mStr);
+          if (monthEntry && Array.isArray(monthEntry.chapters)) {
+            activeChapters.push(...monthEntry.chapters);
+          }
         }
       }
     }
@@ -1898,9 +1905,16 @@ export async function runScheduledGeneration(adminApp: App, databaseId: string, 
         // Lower classes -> Use standard monthly roadmap
         const classRoadmap = ROADMAPS_BY_CLASS[normalizedClassName];
         if (classRoadmap) {
-          const monthEntry = classRoadmap.find(entry => entry.month === monthString);
-          if (monthEntry && Array.isArray(monthEntry.chapters)) {
-            activeChapters = monthEntry.chapters;
+          const targetMonths = [monthString];
+          if (monthString === 'July 2026') {
+            targetMonths.push('June 2026');
+          }
+          activeChapters = [];
+          for (const mStr of targetMonths) {
+            const monthEntry = classRoadmap.find(entry => entry.month === mStr);
+            if (monthEntry && Array.isArray(monthEntry.chapters)) {
+              activeChapters.push(...monthEntry.chapters);
+            }
           }
         }
       }
